@@ -2,183 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6380E26AD45
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D3B26ACFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727686AbgIOTNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
+        id S1727944AbgIOTHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727876AbgIOTBY (ORCPT
+        with ESMTP id S1727879AbgIOTCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:01:24 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9E4C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:01:07 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t10so4484138wrv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w5YqpllGkEhbUqBHfOeKyCpHAJAP7nCJ7uA9Og5Y3N0=;
-        b=DX/XslHWstHmoXV3z9+jZRklMKGmuWTt+LE6drX1s90S+KWYF/13VSXkZNSimQ8TE5
-         xQS+tt7uTf/hTFoov2EVRwbRg8jKEYSQyif3HlrLkX6tjSsxjACHd3wpM2Ft69eq8MZh
-         1+p/Nu9y1PdtxlE/Qkv/XxtG3KuWSMgP5G4X/G6DKfh66A5cgPVu4yLQFM3gPRrPAHw/
-         Q2VqDA7A/BIWNjwNYdcOpSdL53Dce8BugmUqCZ3+ftmqAW6qKhUKiPlHANbKrmm7LNTK
-         IJwo9CSCL7ytmtMCDYFBP9oTJxLRKvivGu1yCoSfoAQ80pA8TppvxeMX13fhR3947IaP
-         253w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w5YqpllGkEhbUqBHfOeKyCpHAJAP7nCJ7uA9Og5Y3N0=;
-        b=sN8ynMpQOaPc1klGe8loou2VBGS+Vf+XRaVOGLYbdEBX85YCKG6R4B+MxAUBgGhJJb
-         LgJLiIQd1sIh2kdY8gn2657kr1vd2se0OjYojv8q122oqNaWlcy/Aspqamvv6r9QBiAh
-         gUURkfhKn6+5JfOg8tdshCO6a7BsapdyDgwRyRR5vg4j8LJZicTcpt54lcP+Ty/CJGec
-         dZclwq2/0O1AAUClSUm4hRqJv6R2UeM6EQYYYrs6mRZWOFAl1G2VljRYcwiK3wd6RJSQ
-         jSt+VTDiIO4s6/bHconBOaRSbH8xh8ZIXYwY3NyZc7hPhuuqDujETOnImdzrMFHaUacI
-         XqgA==
-X-Gm-Message-State: AOAM532y4fZTto16DfS+WoCPtaOLBYesCj0GEjdbhDWF5sTHwQzlhqia
-        /uCX9HxpJQhiG62WBBWwNE9GywKxsG6hqmAkHzY=
-X-Google-Smtp-Source: ABdhPJx1DHgoxeZrju3jbJYcv3wbxCLaXhWMCkEHgn3amTjhKjouKilvEJkDrqVN75M9YRXOhqxLaVDJ8DQjJppUCG4=
-X-Received: by 2002:adf:dd82:: with SMTP id x2mr24242119wrl.419.1600196465753;
- Tue, 15 Sep 2020 12:01:05 -0700 (PDT)
+        Tue, 15 Sep 2020 15:02:08 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2915EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ymmqREas2LZJIgQhq9lsWOfXEb7yQiOblzgzUXrW0zM=; b=UPjsyl8sYOkuRo7V/icxtflz7
+        YSjurEUPYpKBYagt8EVd1JUCFsLfYKOSdysJ1a6Ald5dc8tT3MEPXDQJLYaTNxZbj2ZR/UN5mphuV
+        HQcPhb6qj2nImRy8M5GUFVKtTjNim/cNZ7xADOmDwpfjZFN2JuPUUD17rP6ILWWCuQKCmIMBsEw42
+        fwMoZ19EMiB+FCS4cz5tXZR+TBzGcNiwhF3WsTpxS8qdqd9zHZoj8mhRZmS8Obq087gJrpdvGcq+n
+        KFFp16EikoGh0OZRkkdcWFgZ5A8n+Sf1d2GwjqYLM8QrPqDo8kI/DZNfGQ0zVjt9LE3YlJDPuLyxL
+        NB83Df8Aw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34076)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kIGD4-0003Q9-IK; Tue, 15 Sep 2020 20:01:46 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kIGD1-0003vm-Re; Tue, 15 Sep 2020 20:01:43 +0100
+Date:   Tue, 15 Sep 2020 20:01:43 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        patches-armlinux <patches@armlinux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Jianguo Chen <chenjianguo3@huawei.com>
+Subject: Re: [PATCH v2 2/2] ARM: support PHYS_OFFSET minimum aligned at 64KiB
+ boundary
+Message-ID: <20200915190143.GP1551@shell.armlinux.org.uk>
+References: <20200915131615.3138-1-thunder.leizhen@huawei.com>
+ <20200915131615.3138-3-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-References: <a31672e7-9047-e4ef-93d8-d0c9afd47964@infradead.org>
-In-Reply-To: <a31672e7-9047-e4ef-93d8-d0c9afd47964@infradead.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 15 Sep 2020 15:00:54 -0400
-Message-ID: <CADnq5_NS2UB5VNKe2j6s4X3v2OQ7ow=se2xtFp0UD=7gJ4wMTA@mail.gmail.com>
-Subject: Re: [PATCH] drm: amd/display: fix spelling of "function"
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915131615.3138-3-thunder.leizhen@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-Alex
-
-On Wed, Sep 9, 2020 at 3:05 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> From: Randy Dunlap <rdunlap@infradead.org>
->
-> Fix spellos of "function" in drivers/gpu/drm/amd/display/.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
+On Tue, Sep 15, 2020 at 09:16:15PM +0800, Zhen Lei wrote:
+> Currently, only support the kernels where the base of physical memory is
+> at a 16MiB boundary. Because the add/sub instructions only contains 8bits
+> unrotated value. But we can use one more "add/sub" instructions to handle
+> bits 23-16. The performance will be slightly affected.
+> 
+> Since most boards meet 16 MiB alignment, so add a new configuration
+> option ARM_PATCH_PHYS_VIRT_RADICAL (default n) to control it. Say Y if
+> anyone really needs it.
+> 
+> All r0-r7 (r1 = machine no, r2 = atags or dtb, in the start-up phase) are
+> used in __fixup_a_pv_table() now, but the callee saved r11 is not used in
+> the whole head.S file. So choose it.
+> 
+> Because the calculation of "y = x + __pv_offset[63:24]" have been done,
+> so we only need to calculate "y = y + __pv_offset[23:16]", that's why
+> the parameters "to" and "from" of __pv_stub() and __pv_add_carry_stub()
+> in the scope of CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL are all passed "t"
+> (above y).
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
->  drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.h   |    2 +-
->  drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.h |    2 +-
->  drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.h   |    2 +-
->  drivers/gpu/drm/amd/display/dc/gpio/dce120/hw_factory_dce120.c      |    2 +-
->  drivers/gpu/drm/amd/display/dc/gpio/dcn10/hw_factory_dcn10.c        |    2 +-
->  drivers/gpu/drm/amd/display/dc/gpio/dcn20/hw_factory_dcn20.c        |    2 +-
->  drivers/gpu/drm/amd/display/dc/gpio/dcn21/hw_factory_dcn21.c        |    2 +-
->  drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c        |    2 +-
->  8 files changed, 8 insertions(+), 8 deletions(-)
->
-> --- linux-next-20200908.orig/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.h
-> +++ linux-next-20200908/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.h
-> @@ -33,7 +33,7 @@ struct display_mode_lib;
->
->  // Function: dml_rq_dlg_get_rq_reg
->  //  Main entry point for test to get the register values out of this DML class.
-> -//  This function calls <get_rq_param> and <extract_rq_regs> fucntions to calculate
-> +//  This function calls <get_rq_param> and <extract_rq_regs> functions to calculate
->  //  and then populate the rq_regs struct
->  // Input:
->  //  pipe_src_param - pipe source configuration (e.g. vp, pitch, etc.)
-> --- linux-next-20200908.orig/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.h
-> +++ linux-next-20200908/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.h
-> @@ -33,7 +33,7 @@ struct display_mode_lib;
->
->  // Function: dml_rq_dlg_get_rq_reg
->  //  Main entry point for test to get the register values out of this DML class.
-> -//  This function calls <get_rq_param> and <extract_rq_regs> fucntions to calculate
-> +//  This function calls <get_rq_param> and <extract_rq_regs> functions to calculate
->  //  and then populate the rq_regs struct
->  // Input:
->  //  pipe_src_param - pipe source configuration (e.g. vp, pitch, etc.)
-> --- linux-next-20200908.orig/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.h
-> +++ linux-next-20200908/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.h
-> @@ -32,7 +32,7 @@ struct display_mode_lib;
->
->  // Function: dml_rq_dlg_get_rq_reg
->  //  Main entry point for test to get the register values out of this DML class.
-> -//  This function calls <get_rq_param> and <extract_rq_regs> fucntions to calculate
-> +//  This function calls <get_rq_param> and <extract_rq_regs> functions to calculate
->  //  and then populate the rq_regs struct
->  // Input:
->  //  pipe_param - pipe source configuration (e.g. vp, pitch, scaling, dest, etc.)
-> --- linux-next-20200908.orig/drivers/gpu/drm/amd/display/dc/gpio/dce120/hw_factory_dce120.c
-> +++ linux-next-20200908/drivers/gpu/drm/amd/display/dc/gpio/dce120/hw_factory_dce120.c
-> @@ -162,7 +162,7 @@ static void define_hpd_registers(struct
->  }
->
->
-> -/* fucntion table */
-> +/* function table */
->  static const struct hw_factory_funcs funcs = {
->         .init_ddc_data = dal_hw_ddc_init,
->         .init_generic = NULL,
-> --- linux-next-20200908.orig/drivers/gpu/drm/amd/display/dc/gpio/dcn10/hw_factory_dcn10.c
-> +++ linux-next-20200908/drivers/gpu/drm/amd/display/dc/gpio/dcn10/hw_factory_dcn10.c
-> @@ -194,7 +194,7 @@ static void define_hpd_registers(struct
->  }
->
->
-> -/* fucntion table */
-> +/* function table */
->  static const struct hw_factory_funcs funcs = {
->         .init_ddc_data = dal_hw_ddc_init,
->         .init_generic = dal_hw_generic_init,
-> --- linux-next-20200908.orig/drivers/gpu/drm/amd/display/dc/gpio/dcn20/hw_factory_dcn20.c
-> +++ linux-next-20200908/drivers/gpu/drm/amd/display/dc/gpio/dcn20/hw_factory_dcn20.c
-> @@ -221,7 +221,7 @@ static void define_generic_registers(str
->         generic->base.regs = &generic_regs[en].gpio;
->  }
->
-> -/* fucntion table */
-> +/* function table */
->  static const struct hw_factory_funcs funcs = {
->         .init_ddc_data = dal_hw_ddc_init,
->         .init_generic = dal_hw_generic_init,
-> --- linux-next-20200908.orig/drivers/gpu/drm/amd/display/dc/gpio/dcn21/hw_factory_dcn21.c
-> +++ linux-next-20200908/drivers/gpu/drm/amd/display/dc/gpio/dcn21/hw_factory_dcn21.c
-> @@ -202,7 +202,7 @@ static void define_hpd_registers(struct
->  }
->
->
-> -/* fucntion table */
-> +/* function table */
->  static const struct hw_factory_funcs funcs = {
->         .init_ddc_data = dal_hw_ddc_init,
->         .init_generic = dal_hw_generic_init,
-> --- linux-next-20200908.orig/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c
-> +++ linux-next-20200908/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c
-> @@ -218,7 +218,7 @@ static void define_hpd_registers(struct
->  }
->
->
-> -/* fucntion table */
-> +/* function table */
->  static const struct hw_factory_funcs funcs = {
->         .init_ddc_data = dal_hw_ddc_init,
->         .init_generic = dal_hw_generic_init,
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  arch/arm/Kconfig              | 18 +++++++++++++++++-
+>  arch/arm/include/asm/memory.h | 16 +++++++++++++---
+>  arch/arm/kernel/head.S        | 25 +++++++++++++++++++------
+>  3 files changed, 49 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index e00d94b16658765..19fc2c746e2ce29 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -240,12 +240,28 @@ config ARM_PATCH_PHYS_VIRT
+>  	  kernel in system memory.
+>  
+>  	  This can only be used with non-XIP MMU kernels where the base
+> -	  of physical memory is at a 16MB boundary.
+> +	  of physical memory is at a 16MiB boundary.
+>  
+>  	  Only disable this option if you know that you do not require
+>  	  this feature (eg, building a kernel for a single machine) and
+>  	  you need to shrink the kernel to the minimal size.
+>  
+> +config ARM_PATCH_PHYS_VIRT_RADICAL
+> +	bool "Support PHYS_OFFSET minimum aligned at 64KiB boundary"
+> +	default n
+
+Please drop the "default n" - this is the default anyway.
+
+> @@ -236,6 +243,9 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
+>  	 * in place where 'r' 32 bit operand is expected.
+>  	 */
+>  	__pv_stub((unsigned long) x, t, "sub", __PV_BITS_31_24);
+> +#ifdef CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL
+> +	__pv_stub((unsigned long) t, t, "sub", __PV_BITS_23_16);
+
+t is already unsigned long, so this cast is not necessary.
+
+I've been debating whether it would be better to use "movw" for this
+for ARMv7.  In other words:
+
+	movw	tmp, #16-bit
+	adds	%Q0, %1, tmp, lsl #16
+	adc	%R0, %R0, #0
+
+It would certainly be less instructions, but at the cost of an
+additional register - and we'd have to change the fixup code to
+know about movw.
+
+Thoughts?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
