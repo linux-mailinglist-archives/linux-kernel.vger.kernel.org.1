@@ -2,99 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55A126A301
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2101526A2FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgIOKR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIOKRO (ORCPT
+        id S1726198AbgIOKRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:17:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27771 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726102AbgIOKRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:17:14 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F31EC06174A;
-        Tue, 15 Sep 2020 03:17:12 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id w2so2806251wmi.1;
-        Tue, 15 Sep 2020 03:17:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dsGi0JQoJFYExpZv5IKen/TvRayT7TQ3lBJ+W8DLyKQ=;
-        b=UWgjLAu/s9I4mTNInOri41CwAUD9uaDvrBqDolg0yTXUyejinL0GevwA/gyyCBXPQb
-         7EI9M/K4rENREWX4R04CzCvZ4muLoQb0Ltdxol26RvaHH58x2pxmIBycyqEHeMJODZyO
-         nq3PTcWrbefWCDCh8I09ON991FLHvOn3xKrGwq2Og5LJLPIlVD0HWacgHBhwdH2B0M3c
-         BZRgs24cMaFR/EuwUirY0///M7vBRr8Zu+Brm/KEDftR0w9FuMtfl+JlWuXWwpEQ1VRC
-         r72f4lqdSP7KTjuIyv2ToJcA0P+x+K1dMqfBD3bFqSY8vqkT0G0czOFV6omDgjIeZAY0
-         PX+A==
+        Tue, 15 Sep 2020 06:17:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600165023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lvDxiNfszvjzZ71NMuSHhOpWhvbYiEYO1BfYGhw1hYw=;
+        b=bFSgoidacUQBpsh3c7jcYbCvWPPpmd6JXw+fsdVD4t4bEjhiB1AznJQIX/T3PQZGRoroYp
+        ew3yYdKKauo2MiqLn0QuL3dbNAbCJVZJ94n1tfw1GY6cchS0QbIhroAk9Wn9lXECsK1k4o
+        9lvpoRv1CSNP1S9uiG+CC2s0yhL2mHA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-261-CCoTYjA4MHKN32p6xBGMXA-1; Tue, 15 Sep 2020 06:17:02 -0400
+X-MC-Unique: CCoTYjA4MHKN32p6xBGMXA-1
+Received: by mail-wr1-f71.google.com with SMTP id v12so1047295wrm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:17:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dsGi0JQoJFYExpZv5IKen/TvRayT7TQ3lBJ+W8DLyKQ=;
-        b=AXeyCGQIVJMfcavR6wcSt+1Tai1djdGWqaERkg7Nv5x9TnxBzEihTDGFZJMMqkz5vi
-         gcpKTIzVLefrn7d8viJADxl8wvcNi+R4OsZE2rlbivoklLhsXCqShOjBb0jd3J/kvoBL
-         eP5JGU+q0Lk018WfUhCs22Q0XzPNcdzCms5y4liFQaGQ/lOhTZv01nRLNrGKPhZpUw7d
-         v7SLW4Vs5OFfoHbp9HxOJoycGHUaDjIkAP3QGsvSZ5lMBFIxWB7nYfBT7Yf2oCXFnl/V
-         WIxL3E3dw/lA1i7DTK2EsjzAT1lcCG/fHxkUzm1lzLMzFCSuBcKYxJFbns+xmYDkYhie
-         aDUA==
-X-Gm-Message-State: AOAM531I0Dw8Gd+ujMXKned701XqVLaqL/mYXEt2WtEprNU7BFEGBbdW
-        3tpoI+zj1q7PgcIMxd31tjyvegWyiriLSg==
-X-Google-Smtp-Source: ABdhPJxSLJnTZS5iBpeppjcFzotLOcGHpIfmPZkNxHh/wNTPEJHQAt30J3BRZ/GU1v4KTEhVYEuFPA==
-X-Received: by 2002:a05:600c:214e:: with SMTP id v14mr4116017wml.118.1600165031323;
-        Tue, 15 Sep 2020 03:17:11 -0700 (PDT)
-Received: from localhost.localdomain ([85.153.229.188])
-        by smtp.gmail.com with ESMTPSA id n3sm7132225wmn.39.2020.09.15.03.17.09
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=lvDxiNfszvjzZ71NMuSHhOpWhvbYiEYO1BfYGhw1hYw=;
+        b=gHwkwZba1bXgbFS5w7l3hsU9j0HEyF6rkExwx4ajHxO4zT+oLNWxEhLX+fb8iaYi6M
+         Pjid4EReaLLi/NrTcAXM91IlcB4GkQkcOQ98AA55f9DA/zvikcgdiiHtNCT1m7eSIRpm
+         ofIeYf39KIwwNUVxsypGBP1HOpYp0IXEtHEZ3CT5MOjZqVB085yz4HraAshQbvCeieMJ
+         ElS+9D9AIdqY8GgkoAW2Xs56owSceBD2gGzbYIs8cBVPYRfcMHif30eXKvu1JboasE9W
+         1tF/6ZoRzJ3YsPpqX2TvhdYq/Q3CsEIu+WPn0TAaN2riBa7LikX9nUPkIYe3G2cSC6MQ
+         w16A==
+X-Gm-Message-State: AOAM530voNNJTLz8rAl23ld+Iz0NNj7Fan4Fu7roRo23OeFNSRjtkQVC
+        NubN9RXfGW7xY3Ch+YaqcZMCwSGTmot9aWBe2lZKIigfoDENNKTK4Y1i7unhmRMda3ERpozybRf
+        yivyqm3VozpEu2TNoCwFW53vt
+X-Received: by 2002:a5d:4ccc:: with SMTP id c12mr20381522wrt.160.1600165020818;
+        Tue, 15 Sep 2020 03:17:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbSRV/JarLXH4jdQkPEdpmjY/jHaczd6pEh5Z7HCZ1RyRuon98yVLOetuc0w33FBKkbh666g==
+X-Received: by 2002:a5d:4ccc:: with SMTP id c12mr20381495wrt.160.1600165020611;
+        Tue, 15 Sep 2020 03:17:00 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t17sm1559921wrx.82.2020.09.15.03.16.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 03:17:10 -0700 (PDT)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     dledford@redhat.com
-Cc:     jgg@mellanox.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] IB/rxe: fix kconfig dependency warning for RDMA_RXE
-Date:   Tue, 15 Sep 2020 13:16:00 +0300
-Message-Id: <20200915101559.33292-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 15 Sep 2020 03:17:00 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nudasnev@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH RFC v1 06/18] x86/hyperv: allocate output arg pages if required
+In-Reply-To: <20200914112802.80611-7-wei.liu@kernel.org>
+References: <20200914112802.80611-1-wei.liu@kernel.org> <20200914112802.80611-7-wei.liu@kernel.org>
+Date:   Tue, 15 Sep 2020 12:16:58 +0200
+Message-ID: <871rj3l4yt.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When RDMA_RXE is enabled and CRYPTO is disabled, it results in the
-following Kbuild warning:
+Wei Liu <wei.liu@kernel.org> writes:
 
-WARNING: unmet direct dependencies detected for CRYPTO_CRC32
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && (!64BIT || ARCH_DMA_ADDR_T_64BIT [=n])
+> When Linux runs as the root partition, it will need to make hypercalls
+> which return data from the hypervisor.
+>
+> Allocate pages for storing results when Linux runs as the root
+> partition.
+>
+> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+>  arch/x86/hyperv/hv_init.c       | 45 +++++++++++++++++++++++++++++----
+>  arch/x86/include/asm/mshyperv.h |  1 +
+>  2 files changed, 41 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index cac8e4c56261..ebba4be4185d 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -45,6 +45,9 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
+>  void  __percpu **hyperv_pcpu_input_arg;
+>  EXPORT_SYMBOL_GPL(hyperv_pcpu_input_arg);
+>  
+> +void  __percpu **hyperv_pcpu_output_arg;
+> +EXPORT_SYMBOL_GPL(hyperv_pcpu_output_arg);
+> +
+>  u32 hv_max_vp_index;
+>  EXPORT_SYMBOL_GPL(hv_max_vp_index);
+>  
+> @@ -75,14 +78,29 @@ static int hv_cpu_init(unsigned int cpu)
+>  	u64 msr_vp_index;
+>  	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
+>  	void **input_arg;
+> -	struct page *pg;
+> +	struct page *input_pg;
+>  
+>  	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
+>  	/* hv_cpu_init() can be called with IRQs disabled from hv_resume() */
+> -	pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
+> -	if (unlikely(!pg))
+> +	input_pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
+> +	if (unlikely(!input_pg))
+>  		return -ENOMEM;
+> -	*input_arg = page_address(pg);
+> +	*input_arg = page_address(input_pg);
+> +
+> +	if (hv_root_partition) {
+> +		struct page *output_pg;
+> +		void **output_arg;
+> +
+> +		output_pg = alloc_page(irqs_disabled() ? GFP_ATOMIC :
+>  	GFP_KERNEL);
 
-The reason is that RDMA_RXE selects CRYPTO_CRC32 without depending on or
-selecting CRYPTO while CRYPTO_CRC32 is subordinate to CRYPTO.
+To simplify the code, can we just rename 'input_arg' to 'hypercall_args'
+and do alloc_pages(rqs_disabled() ? GFP_ATOMIC : GFP_KERNEL, 1) to
+allocate two pages above?
 
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+> +		if (unlikely(!output_pg)) {
+> +			free_page((unsigned long)*input_arg);
+> +			*input_arg = NULL;
+> +			return -ENOMEM;
+> +		}
+> +
+> +		output_arg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
+> +		*output_arg = page_address(output_pg);
+> +	}
+>  
+>  	hv_get_vp_index(msr_vp_index);
+>  
+> @@ -209,14 +227,25 @@ static int hv_cpu_die(unsigned int cpu)
+>  	unsigned int new_cpu;
+>  	unsigned long flags;
+>  	void **input_arg;
+> -	void *input_pg = NULL;
+> +	void *input_pg = NULL, *output_pg = NULL;
+>  
+>  	local_irq_save(flags);
+>  	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
+>  	input_pg = *input_arg;
+>  	*input_arg = NULL;
+> +
+> +	if (hv_root_partition) {
+> +		void **output_arg;
+> +
+> +		output_arg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
+> +		output_pg = *output_arg;
+> +		*output_arg = NULL;
+> +	}
+> +
+>  	local_irq_restore(flags);
+> +
+>  	free_page((unsigned long)input_pg);
+> +	free_page((unsigned long)output_pg);
+>  
+>  	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
+>  		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
+> @@ -350,6 +379,12 @@ void __init hyperv_init(void)
+>  
+>  	BUG_ON(hyperv_pcpu_input_arg == NULL);
+>  
+> +	/* Allocate the per-CPU state for output arg for root */
+> +	if (hv_root_partition) {
+> +		hyperv_pcpu_output_arg = alloc_percpu(void  *);
+					redundant space ^^^^^
 
-Fixes: 0812ed132178 ("IB/rxe: Change RDMA_RXE kconfig to use select")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- drivers/infiniband/sw/rxe/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+> +		BUG_ON(hyperv_pcpu_output_arg == NULL);
+> +	}
+> +
+>  	/* Allocate percpu VP index */
+>  	hv_vp_index = kmalloc_array(num_possible_cpus(), sizeof(*hv_vp_index),
+>  				    GFP_KERNEL);
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index 2a2cc81beac6..f5c62140f28d 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -63,6 +63,7 @@ static inline void hv_disable_stimer0_percpu_irq(int irq) {}
+>  #if IS_ENABLED(CONFIG_HYPERV)
+>  extern void *hv_hypercall_pg;
+>  extern void  __percpu  **hyperv_pcpu_input_arg;
+> +extern void  __percpu  **hyperv_pcpu_output_arg;
+>  
+>  static inline u64 hv_do_hypercall(u64 control, void *input, void *output)
+>  {
 
-diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
-index a0c6c7dfc181..e1f52710edfc 100644
---- a/drivers/infiniband/sw/rxe/Kconfig
-+++ b/drivers/infiniband/sw/rxe/Kconfig
-@@ -4,6 +4,7 @@ config RDMA_RXE
- 	depends on INET && PCI && INFINIBAND
- 	depends on !64BIT || ARCH_DMA_ADDR_T_64BIT
- 	select NET_UDP_TUNNEL
-+	select CRYPTO
- 	select CRYPTO_CRC32
- 	select DMA_VIRT_OPS
- 	help
 -- 
-2.25.1
+Vitaly
 
