@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E8C26A3A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3685026A36A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgIOKvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:51:25 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:47951 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgIOKnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:43:40 -0400
+        id S1726457AbgIOKoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:44:55 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:62164 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726321AbgIOKnX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:43:23 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600166619; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1600166603; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=BWW/4GK8les7T5qjaYSZmqGije65u6/TuHXB/zIE7fI=; b=oR3BCjRxeqzKpt0L1jK8d4ZtgdRL+LfSCeld7sG/c/tdMhB4zKxu0uGEd+3ymBYy96H+BXgw
- QihbGAWsbyhL9mFj1Yh14dZlysFuhPoljSATHKZpc50BMwUJk10xGunOZBktU2C3wTxJthT1
- vwW5v/j+10Bu71+q3DdWyl0z3qc=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ Sender; bh=2JXlwjdxdFhqJ8uMYrIqAHwY4Q8bKWRYk+e6/k2DJ54=; b=HRdUZcMxJdTblqsGss8AghhMwIYFqScoCJkj2R+uvtTDgYct0Pd5/yqakNTezf9Uzi4BFBC0
+ /TgV/fLm81v4mKlQndc+5uj5dOS9dqaa0XiJzzzUcSh7PlRyFYEZrjlbaeDonX8hDkLMuSA7
+ oVcAgNKHlg5+o/Iz0z5sE+3ffI8=
+X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f609ac6947f606f7e1becd4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 10:43:18
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f609acbd7b4e2691390eac5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 10:43:23
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0840C433F1; Tue, 15 Sep 2020 10:43:17 +0000 (UTC)
+        id F40C4C4339C; Tue, 15 Sep 2020 10:43:22 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -36,9 +37,9 @@ Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0F1AC433FF;
-        Tue, 15 Sep 2020 10:43:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A0F1AC433FF
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8749FC433FE;
+        Tue, 15 Sep 2020 10:43:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8749FC433FE
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingwei@codeaurora.org
 From:   Tingwei Zhang <tingwei@codeaurora.org>
@@ -57,9 +58,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Tingwei Zhang <tingwei@codeaurora.org>
-Subject: [PATCH v11 17/24] coresight: cti: Fix remove sysfs link error
-Date:   Tue, 15 Sep 2020 18:41:09 +0800
-Message-Id: <20200915104116.16789-18-tingwei@codeaurora.org>
+Subject: [PATCH v11 18/24] coresight: cti: Fix bug clearing sysfs links on callback
+Date:   Tue, 15 Sep 2020 18:41:10 +0800
+Message-Id: <20200915104116.16789-19-tingwei@codeaurora.org>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20200915104116.16789-1-tingwei@codeaurora.org>
 References: <20200915104116.16789-1-tingwei@codeaurora.org>
@@ -72,60 +73,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Leach <mike.leach@linaro.org>
 
-CTI code to remove sysfs link to other devices on shutdown, incorrectly
-tries to remove a single ended link when these are all double ended. This
-implementation leaves elements in the link info structure undefined which
-results in a crash in recent tests for driver module unload.
+During module unload, a coresight driver module will call back into
+the CTI driver to remove any links between the two devices.
 
-This patch corrects the link removal code.
+The current code has 2 issues:-
+1) in the CTI driver the matching code is matching to the wrong device
+so misses all the links.
+2) The callback is called too late in the unload process resulting in a
+crash.
 
-Fixes: 73274abb6557 ("coresight: cti: Add in sysfs links to other coresight devices")
+This fixes both the issues.
+
+Fixes: 177af8285b59 ("coresight: cti: Enable CTI associated with devices")
 Reported-by: Tingwei Zhang <tingwei@codeaurora.org>
 Signed-off-by: Mike Leach <mike.leach@linaro.org>
+Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-cti.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/hwtracing/coresight/coresight-cti.c | 2 +-
+ drivers/hwtracing/coresight/coresight.c     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
-index 5003d1f59af0..abc8b32e79b3 100644
+index abc8b32e79b3..38e785d913b0 100644
 --- a/drivers/hwtracing/coresight/coresight-cti.c
 +++ b/drivers/hwtracing/coresight/coresight-cti.c
-@@ -494,12 +494,15 @@ static bool cti_add_sysfs_link(struct cti_drvdata *drvdata,
- 	return !link_err;
- }
- 
--static void cti_remove_sysfs_link(struct cti_trig_con *tc)
-+static void cti_remove_sysfs_link(struct cti_drvdata *drvdata,
-+				  struct cti_trig_con *tc)
- {
- 	struct coresight_sysfs_link link_info;
- 
-+	link_info.orig = drvdata->csdev;
- 	link_info.orig_name = tc->con_dev_name;
- 	link_info.target = tc->con_dev;
-+	link_info.target_name = dev_name(&drvdata->csdev->dev);
- 	coresight_remove_sysfs_link(&link_info);
- }
- 
-@@ -589,7 +592,7 @@ static void cti_remove_assoc_from_csdev(struct coresight_device *csdev)
+@@ -591,7 +591,7 @@ static void cti_remove_assoc_from_csdev(struct coresight_device *csdev)
+ 		ctidrv = csdev_to_cti_drvdata(csdev->ect_dev);
  		ctidev = &ctidrv->ctidev;
  		list_for_each_entry(tc, &ctidev->trig_cons, node) {
- 			if (tc->con_dev == csdev->ect_dev) {
--				cti_remove_sysfs_link(tc);
-+				cti_remove_sysfs_link(ctidrv, tc);
+-			if (tc->con_dev == csdev->ect_dev) {
++			if (tc->con_dev == csdev) {
+ 				cti_remove_sysfs_link(ctidrv, tc);
  				tc->con_dev = NULL;
  				break;
- 			}
-@@ -641,7 +644,7 @@ static void cti_remove_conn_xrefs(struct cti_drvdata *drvdata)
- 		if (tc->con_dev) {
- 			coresight_set_assoc_ectdev_mutex(tc->con_dev,
- 							 NULL);
--			cti_remove_sysfs_link(tc);
-+			cti_remove_sysfs_link(drvdata, tc);
- 			tc->con_dev = NULL;
- 		}
- 	}
+diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
+index 4f4485b17458..b8b0a20e93c9 100644
+--- a/drivers/hwtracing/coresight/coresight.c
++++ b/drivers/hwtracing/coresight/coresight.c
+@@ -1246,8 +1246,6 @@ static void coresight_device_release(struct device *dev)
+ {
+ 	struct coresight_device *csdev = to_coresight_device(dev);
+ 
+-	if (cti_assoc_ops && cti_assoc_ops->remove)
+-		cti_assoc_ops->remove(csdev);
+ 	fwnode_handle_put(csdev->dev.fwnode);
+ 	kfree(csdev->refcnt);
+ 	kfree(csdev);
+@@ -1582,6 +1580,8 @@ void coresight_unregister(struct coresight_device *csdev)
+ {
+ 	etm_perf_del_symlink_sink(csdev);
+ 	/* Remove references of that device in the topology */
++	if (cti_assoc_ops && cti_assoc_ops->remove)
++		cti_assoc_ops->remove(csdev);
+ 	coresight_remove_conns(csdev);
+ 	coresight_clear_default_sink(csdev);
+ 	coresight_release_platform_data(csdev, csdev->pdata);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
