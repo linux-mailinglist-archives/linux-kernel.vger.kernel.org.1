@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB5D26B750
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C69A26B66B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgIPAV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:21:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33662 "EHLO mail.kernel.org"
+        id S1727245AbgIPAEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:04:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726812AbgIOOV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:21:58 -0400
+        id S1726982AbgIOO3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:29:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBEB422268;
-        Tue, 15 Sep 2020 14:17:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D65E229F0;
+        Tue, 15 Sep 2020 14:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179446;
-        bh=k8c3nZHzRZk9w8IeCVgw9DWgfPrClQ1VdaISZXLzUPQ=;
+        s=default; t=1600179681;
+        bh=IzvOLuKBuom4AqwMojGTEU28oIpd/oul5A89xgN4JRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x+WPkDypZHxeE4XNYTMK1J3UcAW/IXzge9hqvRC8B8XntzZCn3+jSBrMbSxUsSj6k
-         rNaLBndNqNevAWylEtuTrBKnm6tE33e6mwQQfmoSGLGknIXitDFQ3YKjx/UJPkfekT
-         q3lnn4e6EQXJCE13y+tx9QbGkpdu73OqSiNizQEU=
+        b=BA4PUZroj6Qak47M6qRncdV2IZeuvN2Tpdr0QM5nPapT95qQOhIoLZf2wN7ZUYXxX
+         5NCUFPoU3/+d1vscmR26Jb67vcGZD/3l9Mt+XmyY9kZrAO9RZGywylVq9zNxSrdrr/
+         SVtRotEychP44t+6AQWGuvlZFtdsY83R8qNzh31Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeniy Didin <Evgeniy.Didin@synopsys.com>,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 33/78] ARC: [plat-hsdk]: Switch ethernet phy-mode to rgmii-id
-Date:   Tue, 15 Sep 2020 16:12:58 +0200
-Message-Id: <20200915140635.234081767@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 5.4 077/132] iio:light:ltr501 Fix timestamp alignment issue.
+Date:   Tue, 15 Sep 2020 16:12:59 +0200
+Message-Id: <20200915140647.956961472@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
+References: <20200915140644.037604909@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,53 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeniy Didin <Evgeniy.Didin@synopsys.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 26907eb605fbc3ba9dbf888f21d9d8d04471271d ]
+commit 2684d5003490df5398aeafe2592ba9d4a4653998 upstream.
 
-HSDK board has Micrel KSZ9031, recent commit
-bcf3440c6dd ("net: phy: micrel: add phy-mode support for the KSZ9031 PHY")
-caused a breakdown of Ethernet.
-Using 'phy-mode = "rgmii"' is not correct because accodring RGMII
-specification it is necessary to have delay on RX (PHY to MAX)
-which is not generated in case of "rgmii".
-Using "rgmii-id" adds necessary delay and solves the issue.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+Here we use a structure on the stack.  The driver already did an
+explicit memset so no data leak was possible.
 
-Also adding name of PHY placed on HSDK board.
+Forced alignment of ts is not strictly necessary but probably makes
+the code slightly less fragile.
 
-Signed-off-by: Evgeniy Didin <Evgeniy.Didin@synopsys.com>
-Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-Cc: Alexey Brodkin <abrodkin@synopsys.com>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Note there has been some rework in this driver of the years, so no
+way this will apply cleanly all the way back.
+
+Fixes: 2690be905123 ("iio: Add Lite-On ltr501 ambient light / proximity sensor driver")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arc/boot/dts/hsdk.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/light/ltr501.c |   15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
-index ab01b75bfa67d..f6b6e3c9ca8aa 100644
---- a/arch/arc/boot/dts/hsdk.dts
-+++ b/arch/arc/boot/dts/hsdk.dts
-@@ -175,7 +175,7 @@
- 			reg = <0x8000 0x2000>;
- 			interrupts = <10>;
- 			interrupt-names = "macirq";
--			phy-mode = "rgmii";
-+			phy-mode = "rgmii-id";
- 			snps,pbl = <32>;
- 			snps,multicast-filter-bins = <256>;
- 			clocks = <&gmacclk>;
-@@ -193,7 +193,7 @@
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 				compatible = "snps,dwmac-mdio";
--				phy0: ethernet-phy@0 {
-+				phy0: ethernet-phy@0 { /* Micrel KSZ9031 */
- 					reg = <0>;
- 					ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
- 					ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
--- 
-2.25.1
-
+--- a/drivers/iio/light/ltr501.c
++++ b/drivers/iio/light/ltr501.c
+@@ -1242,13 +1242,16 @@ static irqreturn_t ltr501_trigger_handle
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct ltr501_data *data = iio_priv(indio_dev);
+-	u16 buf[8];
++	struct {
++		u16 channels[3];
++		s64 ts __aligned(8);
++	} scan;
+ 	__le16 als_buf[2];
+ 	u8 mask = 0;
+ 	int j = 0;
+ 	int ret, psdata;
+ 
+-	memset(buf, 0, sizeof(buf));
++	memset(&scan, 0, sizeof(scan));
+ 
+ 	/* figure out which data needs to be ready */
+ 	if (test_bit(0, indio_dev->active_scan_mask) ||
+@@ -1267,9 +1270,9 @@ static irqreturn_t ltr501_trigger_handle
+ 		if (ret < 0)
+ 			return ret;
+ 		if (test_bit(0, indio_dev->active_scan_mask))
+-			buf[j++] = le16_to_cpu(als_buf[1]);
++			scan.channels[j++] = le16_to_cpu(als_buf[1]);
+ 		if (test_bit(1, indio_dev->active_scan_mask))
+-			buf[j++] = le16_to_cpu(als_buf[0]);
++			scan.channels[j++] = le16_to_cpu(als_buf[0]);
+ 	}
+ 
+ 	if (mask & LTR501_STATUS_PS_RDY) {
+@@ -1277,10 +1280,10 @@ static irqreturn_t ltr501_trigger_handle
+ 				       &psdata, 2);
+ 		if (ret < 0)
+ 			goto done;
+-		buf[j++] = psdata & LTR501_PS_DATA_MASK;
++		scan.channels[j++] = psdata & LTR501_PS_DATA_MASK;
+ 	}
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buf,
++	iio_push_to_buffers_with_timestamp(indio_dev, &scan,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ done:
 
 
