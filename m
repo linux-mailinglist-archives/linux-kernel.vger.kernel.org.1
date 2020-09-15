@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6082926B556
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A2226B53E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbgIOXmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:42:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47672 "EHLO mail.kernel.org"
+        id S1727387AbgIOXkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727106AbgIOOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727115AbgIOOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 10:34:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D29A620829;
-        Tue, 15 Sep 2020 14:16:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 563DC2222D;
+        Tue, 15 Sep 2020 14:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179389;
-        bh=68ifFe8bMTvCqox7vYKsjUGQ2ojIVQTihFkdsvI06uY=;
+        s=default; t=1600179391;
+        bh=hmWrwfrqHutEDO5G3ccIAni9EKGj79SQoDeFS3TxWxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWW9vehwTBtEd2jLDRrjSf7V8xxvUSNMuwcAi3KPts8OJY5/ZwnrAeJYYBhMH1aTN
-         C7iqoa+tdOUjapnBzMV3Svjx80VOSJlCEsZsRHVq3gMBH/c3iS4lrCjJhlPtOLTAUh
-         Yvm3JnG+nf2M3EDVUqsSSknBfVlxumEtKF8jRtR8=
+        b=jtLuMvI+peJ0w57YBUkarYw9hJDORkmjthJ3gCqnGAty4Hjr1e5OI8E9QRAp6IWK5
+         XzE1/uwUSrtY30GxmCPYPnZCVHx9y6MHl6WQSNt8qqkS5g+cL9gjPltHopdEp3Ip4I
+         TYzwd7pEVIyUJ9ED6g4DVilEzXQjUfp7GZzWGQEg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Kochetkov <fido_max@inbox.ru>,
-        Maxim Kiselev <bigunclemax@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 41/78] iio: adc: ti-ads1015: fix conversion when CONFIG_PM is not set
-Date:   Tue, 15 Sep 2020 16:13:06 +0200
-Message-Id: <20200915140635.641067364@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.19 42/78] iio:light:ltr501 Fix timestamp alignment issue.
+Date:   Tue, 15 Sep 2020 16:13:07 +0200
+Message-Id: <20200915140635.692471455@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
 References: <20200915140633.552502750@linuxfoundation.org>
@@ -46,57 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kochetkov <fido_max@inbox.ru>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit e71e6dbe96ac80ac2aebe71a6a942e7bd60e7596 upstream.
+commit 2684d5003490df5398aeafe2592ba9d4a4653998 upstream.
 
-To stop conversion ads1015_set_power_state() function call unimplemented
-function __pm_runtime_suspend() from pm_runtime_put_autosuspend()
-if CONFIG_PM is not set.
-In case of CONFIG_PM is not set: __pm_runtime_suspend() returns -ENOSYS,
-so ads1015_read_raw() failed because ads1015_set_power_state() returns an
-error.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+Here we use a structure on the stack.  The driver already did an
+explicit memset so no data leak was possible.
 
-If CONFIG_PM is disabled, there is no need to start/stop conversion.
-Fix it by adding return 0 function variant if CONFIG_PM is not set.
+Forced alignment of ts is not strictly necessary but probably makes
+the code slightly less fragile.
 
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
-Fixes: ecc24e72f437 ("iio: adc: Add TI ADS1015 ADC driver support")
-Tested-by: Maxim Kiselev <bigunclemax@gmail.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: <Stable@vger.kernel.org>
+Note there has been some rework in this driver of the years, so no
+way this will apply cleanly all the way back.
+
+Fixes: 2690be905123 ("iio: Add Lite-On ltr501 ambient light / proximity sensor driver")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/ti-ads1015.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/iio/light/ltr501.c |   15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
---- a/drivers/iio/adc/ti-ads1015.c
-+++ b/drivers/iio/adc/ti-ads1015.c
-@@ -312,6 +312,7 @@ static const struct iio_chan_spec ads111
- 	IIO_CHAN_SOFT_TIMESTAMP(ADS1015_TIMESTAMP),
- };
+--- a/drivers/iio/light/ltr501.c
++++ b/drivers/iio/light/ltr501.c
+@@ -1245,13 +1245,16 @@ static irqreturn_t ltr501_trigger_handle
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct ltr501_data *data = iio_priv(indio_dev);
+-	u16 buf[8];
++	struct {
++		u16 channels[3];
++		s64 ts __aligned(8);
++	} scan;
+ 	__le16 als_buf[2];
+ 	u8 mask = 0;
+ 	int j = 0;
+ 	int ret, psdata;
  
-+#ifdef CONFIG_PM
- static int ads1015_set_power_state(struct ads1015_data *data, bool on)
- {
- 	int ret;
-@@ -329,6 +330,15 @@ static int ads1015_set_power_state(struc
- 	return ret < 0 ? ret : 0;
- }
+-	memset(buf, 0, sizeof(buf));
++	memset(&scan, 0, sizeof(scan));
  
-+#else /* !CONFIG_PM */
-+
-+static int ads1015_set_power_state(struct ads1015_data *data, bool on)
-+{
-+	return 0;
-+}
-+
-+#endif /* !CONFIG_PM */
-+
- static
- int ads1015_get_adc_result(struct ads1015_data *data, int chan, int *val)
- {
+ 	/* figure out which data needs to be ready */
+ 	if (test_bit(0, indio_dev->active_scan_mask) ||
+@@ -1270,9 +1273,9 @@ static irqreturn_t ltr501_trigger_handle
+ 		if (ret < 0)
+ 			return ret;
+ 		if (test_bit(0, indio_dev->active_scan_mask))
+-			buf[j++] = le16_to_cpu(als_buf[1]);
++			scan.channels[j++] = le16_to_cpu(als_buf[1]);
+ 		if (test_bit(1, indio_dev->active_scan_mask))
+-			buf[j++] = le16_to_cpu(als_buf[0]);
++			scan.channels[j++] = le16_to_cpu(als_buf[0]);
+ 	}
+ 
+ 	if (mask & LTR501_STATUS_PS_RDY) {
+@@ -1280,10 +1283,10 @@ static irqreturn_t ltr501_trigger_handle
+ 				       &psdata, 2);
+ 		if (ret < 0)
+ 			goto done;
+-		buf[j++] = psdata & LTR501_PS_DATA_MASK;
++		scan.channels[j++] = psdata & LTR501_PS_DATA_MASK;
+ 	}
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buf,
++	iio_push_to_buffers_with_timestamp(indio_dev, &scan,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ done:
 
 
