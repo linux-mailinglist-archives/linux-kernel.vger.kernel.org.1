@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEE526A975
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DBD26A957
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727607AbgIOQPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
+        id S1727558AbgIOQIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727430AbgIOPXB (ORCPT
+        with ESMTP id S1727023AbgIOPSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:23:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE67C061788;
-        Tue, 15 Sep 2020 08:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=bCMdefcbVNK1n/7kExQP4kHzaTJA1/jyiOiumdm05Vg=; b=JTvp10HXp5J69jy2CuzD9GhhpT
-        DDjNKmn/2H6kDp88475wME6gUvl9+f3wRoFLOTLRz3S4MzOpFpW99mnsebG7jG0lF/epV73VMWLqs
-        6rlHBaaETOo2D12OSMO42xSsZAtbPpnIpfQGgYc5CZNFbZc5g0o1DD23sYsplsEAglwIWPIKCSkDV
-        9qeGpB7rTwZY6t8/erSjBJX3LtFIVUKogeW/OSS8IvTrBg/ORZHDm1hot46XBw9bDYewalYVHh9GO
-        DVyg8qV8FRjz+bfG4e7Ggq7zdO8L3OQ3rEJ2SUfMaq/4+eetzjdH995hp/8iQYQ0gmf3EwHmRUTet
-        kYO6k9pQ==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kICnE-0001A7-PD; Tue, 15 Sep 2020 15:22:53 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 01/12] fs: remove the unused SB_I_MULTIROOT flag
-Date:   Tue, 15 Sep 2020 17:18:18 +0200
-Message-Id: <20200915151829.1767176-2-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915151829.1767176-1-hch@lst.de>
-References: <20200915151829.1767176-1-hch@lst.de>
+        Tue, 15 Sep 2020 11:18:44 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12E6C06174A;
+        Tue, 15 Sep 2020 08:18:34 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id o5so3698970wrn.13;
+        Tue, 15 Sep 2020 08:18:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZLNp53JnXqD+zI2AfbeY3jtwOS37p2pT80fxgLiWZN8=;
+        b=vMUOfnucxpczHnWvB+f5WMzHUAw3odnOlDddbX5Qms5eQnxEPkZuGEBsFrH9Hx2brs
+         4EhjylGdU2T1HM+nFS4hkEGNotC528/Finps0OSX4OUCaD679lDNPshLWoDM2d+r0/YP
+         66ZzwP2znUksqEESxJYeO/iUJ8coQff6dSQrVZaDO7wcFengNrBmfxWTJ64PAf5Jnowz
+         6wNc053uWNZAX1q5O9HZd0GZlesITrAEpqz0QAIq/hgT8jea339psONFXSHR7z8fqJ+z
+         iWiOr/0u9I38tvaqFmympOKp4X7CXxzotFk1ehM1kJdSpTY/rCC4FOtOMrESqpoFLiqP
+         k/NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZLNp53JnXqD+zI2AfbeY3jtwOS37p2pT80fxgLiWZN8=;
+        b=c9j+81H86g0LMQvZo01OOfQ4D6d7e9YOqbgMLPBs7wlDYvtp9WiwQzee+tXiPLWMVE
+         23x7b+sY+MUSyNV5JrcogRfd+Hp5No/d7Gke7NQelzmeBixUmBnjGjybnIsLL70MnHo8
+         +BUDquCKThrP+gRaIvNkC0ek0yBG6Rfxq0bqS3uTw8kh/1La2NKDAqvIAA9x28L6K85h
+         Dp4YvjCf7lMa4MHTYwqsimNuBK1ru3odugTGSSp4xOHpiNtam9cJmcy1lTJ+lZSNEwsS
+         uyfc3rcLjEi+ghotgrCF31NqQnk354cxZb2MiEEkQVamSOfxle5aGiN0sSmllfk8sdvO
+         xCyg==
+X-Gm-Message-State: AOAM531WJ0IQcLRPI9k9VW+vRoCI7CHqX4/mPCMCjkMrWBQsIe/OIwO+
+        a1I2o1NXN2fmfyplQtqcBROy2Z8xCMoQtH7u5gg=
+X-Google-Smtp-Source: ABdhPJy8Aacl0eZ69vdzAYYGA2hLxLkklddZa1Z+vpkwnGOXg3eRfCeWWWygKDpBDzculKRm6NyRTg==
+X-Received: by 2002:a5d:458a:: with SMTP id p10mr21319559wrq.282.1600183113296;
+        Tue, 15 Sep 2020 08:18:33 -0700 (PDT)
+Received: from [10.127.42.3] ([94.156.155.144])
+        by smtp.gmail.com with ESMTPSA id t16sm27840401wrm.57.2020.09.15.08.18.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 08:18:32 -0700 (PDT)
+Subject: Re: [PATCH 3/4] kselftests/arm64: add PAuth test for whether exec()
+ changes keys
+To:     Dave Martin <Dave.Martin@arm.com>,
+        Boyan Karatotev <boyan.karatotev@arm.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        amit.kachhap@arm.com, vincenzo.frascino@arm.com,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20200828131606.7946-1-boyan.karatotev@arm.com>
+ <20200828131606.7946-4-boyan.karatotev@arm.com>
+ <20200902170052.GJ6642@arm.com>
+ <70e207ea-f7c2-2c9d-e868-3ba3b6451c6f@arm.com>
+ <20200907102717.GM6642@arm.com>
+From:   Boyan Karatotev <boian4o1@gmail.com>
+Message-ID: <4f38a974-d5a0-87e6-3db3-647e3cc32c0e@gmail.com>
+Date:   Tue, 15 Sep 2020 16:18:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200907102717.GM6642@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The last user of SB_I_MULTIROOT is disappeared with commit f2aedb713c28
-("NFS: Add fs_context support.")
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/namei.c         | 4 ++--
- include/linux/fs.h | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/fs/namei.c b/fs/namei.c
-index e99e2a9da0f7de..f1eb8ccd2be958 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -568,8 +568,8 @@ static bool path_connected(struct vfsmount *mnt, struct dentry *dentry)
- {
- 	struct super_block *sb = mnt->mnt_sb;
- 
--	/* Bind mounts and multi-root filesystems can have disconnected paths */
--	if (!(sb->s_iflags & SB_I_MULTIROOT) && (mnt->mnt_root == sb->s_root))
-+	/* Bind mounts can have disconnected paths */
-+	if (mnt->mnt_root == sb->s_root)
- 		return true;
- 
- 	return is_subdir(dentry, mnt->mnt_root);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7519ae003a082c..fbd74df5ce5f34 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1385,7 +1385,6 @@ extern int send_sigurg(struct fown_struct *fown);
- #define SB_I_CGROUPWB	0x00000001	/* cgroup-aware writeback enabled */
- #define SB_I_NOEXEC	0x00000002	/* Ignore executables on this fs */
- #define SB_I_NODEV	0x00000004	/* Ignore devices on this fs */
--#define SB_I_MULTIROOT	0x00000008	/* Multiple roots to the dentry tree */
- 
- /* sb->s_iflags to limit user namespace mounts */
- #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
--- 
-2.28.0
-
+On 07/09/2020 11:27 am, Dave Martin wrote:
+> On Thu, Sep 03, 2020 at 11:20:25AM +0100, Boyan Karatotev wrote:
+>> On 02/09/2020 18:00, Dave Martin wrote:
+>>> On Fri, Aug 28, 2020 at 02:16:05PM +0100, Boyan Karatotev wrote:
+>>>> +int exec_sign_all(struct signatures *signed_vals, size_t val)
+>>>> +{
+>>>
+>>> Could popen(3) be used here?
+>>>
+>>> Fork-and-exec is notoriously fiddly, so it's preferable to use a library
+>>> function to do it where applicable.I would love to, but the worker needs a bidirectional channel and popen
+>> only gives a unidirectional stream.
+> 
+> Ah, fair point.
+> 
+> Would it help if you created an additional pipe before calling popen()?
+> 
+> May not be worth it, though.  For one thing, wiring that extra pipe to
+> stdin or stdout in the child process would require some extra work...
+Well, I probably could, but I doubt the result would be any better. I
+agree that I'm not sure the effort is worth it and would rather keep it
+the same.
