@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0D326AA83
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E236B26AA89
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgIORZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:25:30 -0400
-Received: from mga03.intel.com ([134.134.136.65]:15993 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727727AbgIOQec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:34:32 -0400
-IronPort-SDR: TKmHPQajpT9Aas5aPuMS31wIAAbfW9wZY/fi+1lUSx0g27l5f0UPe4HvoyOvfFrxt7WIJSy4NL
- RScx6uVKTIhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="159351555"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="159351555"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 09:34:07 -0700
-IronPort-SDR: HRL3h+nm8BNYN0J2iQPS6GJHto9b57Orq670MPfyXwsMVm/zPZVkbOSaPQTeCNWCS8CF7J1/Ev
- c0ncLkLc81RA==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="288054955"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 09:34:07 -0700
-Date:   Tue, 15 Sep 2020 09:34:05 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 26/35] KVM: SVM: Guest FPU state save/restore not
- needed for SEV-ES guest
-Message-ID: <20200915163405.GD8420@sjchrist-ice>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <ac35a419e395d355d86f3b44ce219dc63864db00.1600114548.git.thomas.lendacky@amd.com>
- <20200914213917.GD7192@sjchrist-ice>
- <b37cd9e1-c610-bebb-936a-ab8f73766e63@amd.com>
+        id S1727875AbgIOR1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:27:21 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:32991 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727755AbgIOQjA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:39:00 -0400
+Received: by mail-il1-f194.google.com with SMTP id x2so3654056ilm.0;
+        Tue, 15 Sep 2020 09:38:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DTzkkYbk2jIELRszsQOMk/GOI+jJqqHog/KwqOMwjSE=;
+        b=TMp9N4f+SfGlvQFLyW3JN/5pqas+0v0ac3JHD5+1Z1p08NFAIwlOkxqIJ+hDC1+hgH
+         p0Ht37KMrG9ybD4slHhOOfeQ+EfZCGpCrHNmmKbeP2cx2/aVSOo8M6l4GhdtV+e7LeA1
+         +M8T/9l4gFn/fbP7WyCUvYIxFxAfVTJ0FfXWfL2+74T+vLyin4ne7RKZhh2rw40bgr1k
+         e4TXq/D7cQ75zammOVy7Ab2ReGZtxeH2dLVxq/Ayx6cc4DcC78lQS7Abb7qJStLXtH8E
+         pRrN88yUzwUE37GPTPY/QKvTjegXAYdy6m4cg70iBS40dhSqxtUcb1FwUVsx13hKY99x
+         5+Lg==
+X-Gm-Message-State: AOAM531Vud46FUAvPS2JYz0RvY/gYVst8dm+wxJl9ucsqqXcqYfplbYa
+        pweKGJM1phanFHt5T578rw==
+X-Google-Smtp-Source: ABdhPJzIqXAg61MtcWBLixcRoN4fp/9lBLh2wQnLqX1wSfxxtFaTCOycI/TjvPHZeEQEoMB6pi7FIw==
+X-Received: by 2002:a92:c60d:: with SMTP id p13mr12842226ilm.272.1600187939233;
+        Tue, 15 Sep 2020 09:38:59 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z10sm7762968ioi.13.2020.09.15.09.38.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 09:38:58 -0700 (PDT)
+Received: (nullmailer pid 2089328 invoked by uid 1000);
+        Tue, 15 Sep 2020 16:38:56 -0000
+Date:   Tue, 15 Sep 2020 10:38:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     robh+dt@kernel.org, bjorn.andersson@linaro.org, amitk@kernel.org,
+        dmitry.baryshkov@linaro.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, viresh.kumar@linaro.org,
+        tdas@codeaurora.org
+Subject: Re: [PATCH 1/7] dt-bindings: cpufreq: cpufreq-qcom-hw: Document
+ SM8250 compatible
+Message-ID: <20200915163856.GA2089296@bogus>
+References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
+ <20200908075716.30357-2-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b37cd9e1-c610-bebb-936a-ab8f73766e63@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200908075716.30357-2-manivannan.sadhasivam@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:25:18AM -0500, Tom Lendacky wrote:
-> On 9/14/20 4:39 PM, Sean Christopherson wrote:
-> > On Mon, Sep 14, 2020 at 03:15:40PM -0500, Tom Lendacky wrote:
-> >> From: Tom Lendacky <thomas.lendacky@amd.com>
-> >>
-> >> The guest FPU is automatically restored on VMRUN and saved on VMEXIT by
-> >> the hardware, so there is no reason to do this in KVM.
-> > 
-> > I assume hardware has its own buffer?  If so, a better approach would be to
-> > not allocate arch.guest_fpu in the first place, and then rework KVM to key
-> > off !guest_fpu.
+On Tue, 08 Sep 2020 13:27:10 +0530, Manivannan Sadhasivam wrote:
+> Document the SM8250 SoC specific compatible for Qualcomm Cpufreq HW. The
+> hardware block which carries out CPUFreq operations on SM8250 SoC is
+> called EPSS.
 > 
-> Yup, let me look into that.
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Heh, it's on our todo list as well :-)
+Acked-by: Rob Herring <robh@kernel.org>
