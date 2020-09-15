@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49239269A74
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BCA269A75
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgIOAdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgIOAdx (ORCPT
+        id S1726129AbgIOAeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:34:05 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54397 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbgIOAeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:33:53 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF01C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:33:51 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id e14so928413vsa.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:33:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fPfeV9qgDeTqgNaChhvEE2Dbzg4FicG6GKASHAz4oAw=;
-        b=rAj7my/QJeZ4arXd5i743220uLWu5uZjHy6Nt0HQYEYpiCPVzDaBgIVGtFoogmyhDc
-         vgpM11abaIgQnvc8QLLdMQbGvieLiTEGMiktWvrYRCh/bCdqm0mdXD0TlQCgCpg9I+mZ
-         kTOpCCb7Y2Jm+fJ0bym04+nbP3J7nEbwScTqMWrVdDVuYUbDaqriWfvP8n1tn/fymYjy
-         q8Fwi5sw5CqjVs/CCK6NiR4RnQs9M67iBhJfYPrBwCVL1sEddYBkXZVCWzcG3ERGJaW+
-         cZTXnr5JXlgrFdrZ0fc6kbz/VgQyALL5b/EXrWJMfIa9uZisZm6Pn0ofCrqRZFgydkx/
-         YFgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fPfeV9qgDeTqgNaChhvEE2Dbzg4FicG6GKASHAz4oAw=;
-        b=CMaMVOxUIKk5Yo0QHgyIuPeFda/m4pE2KE68zBanMyOCN8al2ezln3Ax4KgpjewfOU
-         DEWw7e11EgYQ4+VfW/gjb68rIueN1vXblwAY1b65NYGx2JKGv3x3No5ggCggPkP3LsuC
-         S/PdAP7s4dFWa1jSX2rfE2MGOLcow9XuYI0tIaq8tN58q0zKpq/AYHbVUVXmNuEsZYAG
-         Hdxdb6ehFqTz/f9aTiPGaQFcW3SSP0LmoHRtji6twm8j61yeuLe+gskyaxSKLJGFxK3F
-         /56zOgtyDakya+G+aKCfgpgE8Gl8zLwBC13ZiG9XPGyBkiAzf6SX2v8S9oFugpzv1rzb
-         54Uw==
-X-Gm-Message-State: AOAM531Bu9GL0bKS3+OdZbq3lAOXSDT7wH2TFGmQmZVAHfYwbCCKm6sj
-        8mXsQnKPPnUhcuyU48kzRyLlqeQikdg+Iywlu/Y=
-X-Google-Smtp-Source: ABdhPJzzCNdR7aBCyJKKPlmBkWPc3MTSzrK/wVKwuB6kjj1d/OmIzDC+XgUWGXrRskB/D6MFNNKYvMyYb7pwHcsFc8A=
-X-Received: by 2002:a67:33c4:: with SMTP id z187mr9152346vsz.0.1600130030617;
- Mon, 14 Sep 2020 17:33:50 -0700 (PDT)
+        Mon, 14 Sep 2020 20:34:02 -0400
+Received: from [123.112.108.22] (helo=[192.168.0.106])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <hui.wang@canonical.com>)
+        id 1kHyuw-0007LQ-2C; Tue, 15 Sep 2020 00:33:54 +0000
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable front panel headset LED on
+ Lenovo ThinkStation P520
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        Kailang Yang <kailang@realtek.com>, tiwai@suse.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        Jian-Hong Pan <jian-hong@endlessm.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+References: <20200914070231.13192-1-kai.heng.feng@canonical.com>
+ <c4a9ed79-1c9d-8fbc-8c3b-eab191bd56bd@canonical.com>
+ <07CC762F-BA94-43C0-A8C8-5B3C43291F3E@canonical.com>
+From:   Hui Wang <hui.wang@canonical.com>
+Message-ID: <b3d97430-027e-a753-9c07-c16142735c5e@canonical.com>
+Date:   Tue, 15 Sep 2020 08:33:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200912041101.2123-1-henrywolfeburns@gmail.com> <20200914223716.GK166601@kernel.org>
-In-Reply-To: <20200914223716.GK166601@kernel.org>
-From:   Henry Burns <henrywolfeburns@gmail.com>
-Date:   Mon, 14 Sep 2020 20:33:39 -0400
-Message-ID: <CADJK47PjKYCZiZ72oKnYnx2OPfOZXUzDdUD9m3yKJTpdpicAxA@mail.gmail.com>
-Subject: Re: [PATCH] perf vendor events amd: remove trailing comma
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Vijay Thakkar <vijaythakkar@me.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <07CC762F-BA94-43C0-A8C8-5B3C43291F3E@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > amdzen2/core.json had a trailing comma on the x_ret_fus_brnch_inst
-> > event. Since that goes against the JSON standard, lets remove it.
->
-> is this the only case in all the .json files we have in
-> tools/perf/pmu-events/?
+OK,  then looks fine to me.
 
-I just searched the  pmu-events/arch/ folder, and found one other instance in
-amdzen1. I'll send an updated patch now.
+Acked-by:Hui Wang <hui.wang@canonical.com>
+
+On 2020/9/14 下午4:07, Kai-Heng Feng wrote:
+> Hi Hui,
 >
-> - Arnaldo
+>> On Sep 14, 2020, at 16:04, Hui Wang <hui.wang@canonical.com> wrote:
+>>
+>> Thanks Kaiheng, and we just had one P520 in the Beijing office and I also worked on this issue happenly. Does the led change according to jack plugging in or plugging out with your patch?
+> No, the LED won't reflect the jack plugging status.
 >
-> > Signed-off-by: Henry Burns <henrywolfeburns@gmail.com>
-> > ---
-> >  tools/perf/pmu-events/arch/x86/amdzen2/core.json | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/pmu-events/arch/x86/amdzen2/core.json b/tools/perf/pmu-events/arch/x86/amdzen2/core.json
-> > index de89e5a44ff1..4b75183da94a 100644
-> > --- a/tools/perf/pmu-events/arch/x86/amdzen2/core.json
-> > +++ b/tools/perf/pmu-events/arch/x86/amdzen2/core.json
-> > @@ -125,6 +125,6 @@
-> >    {
-> >      "EventName": "ex_ret_fus_brnch_inst",
-> >      "EventCode": "0x1d0",
-> > -    "BriefDescription": "Retired Fused Instructions. The number of fuse-branch instructions retired per cycle. The number of events logged per cycle can vary from 0-8.",
-> > +    "BriefDescription": "Retired Fused Instructions. The number of fuse-branch instructions retired per cycle. The number of events logged per cycle can vary from 0-8."
-> >    }
-> >  ]
-> > --
-> > 2.25.1
-> >
+> The LED is always on under Windows, so we are doing the same here.
 >
-> --
+> Kai-Heng
 >
-> - Arnaldo
+>> I also prepared a patchset but my patchset has more code than yours, please take a look. :-)
+>>
+>> Thanks.
+>>
+>> Hui.
+>>
+>> On 2020/9/14 下午3:02, Kai-Heng Feng wrote:
+>>> On Lenovo P520, the front panel headset LED isn't lit up right now.
+>>>
+>>> Realtek states that the LED needs to be enabled by ALC233's GPIO2, so
+>>> let's do it accordingly to light the LED up.
+>>>
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>> ---
+>>>   sound/pci/hda/patch_realtek.c | 7 +++++++
+>>>   1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>>> index c521a1f17096..ba941bd0b792 100644
+>>> --- a/sound/pci/hda/patch_realtek.c
+>>> +++ b/sound/pci/hda/patch_realtek.c
+>>> @@ -6017,6 +6017,7 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+>>>   #include "hp_x360_helper.c"
+>>>     enum {
+>>> +	ALC269_FIXUP_GPIO2,
+>>>   	ALC269_FIXUP_SONY_VAIO,
+>>>   	ALC275_FIXUP_SONY_VAIO_GPIO2,
+>>>   	ALC269_FIXUP_DELL_M101Z,
+>>> @@ -6194,6 +6195,10 @@ enum {
+>>>   };
+>>>     static const struct hda_fixup alc269_fixups[] = {
+>>> +	[ALC269_FIXUP_GPIO2] = {
+>>> +		.type = HDA_FIXUP_FUNC,
+>>> +		.v.func = alc_fixup_gpio2,
+>>> +	},
+>>>   	[ALC269_FIXUP_SONY_VAIO] = {
+>>>   		.type = HDA_FIXUP_PINCTLS,
+>>>   		.v.pins = (const struct hda_pintbl[]) {
+>>> @@ -7013,6 +7018,8 @@ static const struct hda_fixup alc269_fixups[] = {
+>>>   	[ALC233_FIXUP_LENOVO_MULTI_CODECS] = {
+>>>   		.type = HDA_FIXUP_FUNC,
+>>>   		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
+>>> +		.chained = true,
+>>> +		.chain_id = ALC269_FIXUP_GPIO2
+>>>   	},
+>>>   	[ALC233_FIXUP_ACER_HEADSET_MIC] = {
+>>>   		.type = HDA_FIXUP_VERBS,
