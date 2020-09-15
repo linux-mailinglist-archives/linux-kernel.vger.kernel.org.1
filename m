@@ -2,230 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB21F26AFEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4BB26AFF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgIOVvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728115AbgIOVuZ (ORCPT
+        id S1728134AbgIOVw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:52:28 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:56630 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727999AbgIOVvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:50:25 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F11EC06178C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:50:10 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id n18so4544928qtw.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gwAGdDXVM4r4OL55XSo1884lNeDAwaOm7bwctRtLrys=;
-        b=uOWcBox38dGodh/iQrPqVF2GLIJyW9L4Y3ANaEZXp2ypNq6/uKrX+x43BZP8K1yuwB
-         TjBbkfHme3SAZjHyCDwS27BnDVQcAodcI29aOajz9qZKP6YTdfgiHiG7ERgW0xkoMkZc
-         vnnYhnh1hdS2aYSiqfXF918Ttjkg/AZluGilhI1SM4HJ2oSeNm8sbJrtEH/4xheskIPM
-         Fn349hTQnPUj1MoyZwZEIsaKO2GhGt3GRpPEws4hszG3mSahAm4PmzMdhBav2zpg/aGG
-         GkAk3u/IFwWEN8bb5pmjgdXCg+UJyIAZ1cTAk/PMXcWapHOK0hyjAleZE0fB0RVgd8O4
-         IhMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gwAGdDXVM4r4OL55XSo1884lNeDAwaOm7bwctRtLrys=;
-        b=M46u+7wl4NAWMIUu8Bf+dbqATi3564+H0/Q/8zNEwCxRBpI/BeIQReUBh5BPyTMV2o
-         5g/HE5oWvdxfOtwhqXdRMYeATpXsxeYhXkuerSTZMBtXRC1fobWQRbLi1nu9VBmGq3w/
-         MItzn0twlx5AjlQT6g59LOhpg/CNkDXkXW0pgFtcjVxiSObVCNIShHRocIMF5svjP9dX
-         qG3dw+VVNbvAl/pDUQyuE9M0E99ro6yiPvQW3gmy2hkDCsbYtShXt/GLvauUaDWAxxql
-         5zkfgTwZfg/FlFGTXQOaePP/4MWt00J2vgW9CVCHKLIOz7qC2NZJHb0rNUuNJKyLpmCd
-         WAdQ==
-X-Gm-Message-State: AOAM530tV5O+ka4nSCA5xCZBXXjkYj3EIT2E6XPQEClMHOkhrmdgw/Ba
-        4bIHLzpebjx/zM00gwzLD9ztZw==
-X-Google-Smtp-Source: ABdhPJzQh75yII3N5KV/1tjYmS/zxa6QaCbe44anS0rhYQ2i1j9XbUmXAcwDIwvYDSQHA5IH+rQ8SQ==
-X-Received: by 2002:ac8:863:: with SMTP id x32mr7523555qth.27.1600206609589;
-        Tue, 15 Sep 2020 14:50:09 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:124c])
-        by smtp.gmail.com with ESMTPSA id b79sm18586859qkg.10.2020.09.15.14.50.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 14:50:08 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 17:48:45 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     tj@kernel.org, lizefan@huawei.com, corbet@lwn.net,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        rdunlap@infradead.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v5] mm: memcontrol: Add the missing numa_stat interface
- for cgroup v2
-Message-ID: <20200915214845.GB189808@cmpxchg.org>
-References: <20200915171801.39761-1-songmuchun@bytedance.com>
+        Tue, 15 Sep 2020 17:51:48 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLnmoR027388;
+        Tue, 15 Sep 2020 21:49:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=rHvhpgj7laAjHgkr4DLOBBS/uirpv7rnF3o3VrDMY1U=;
+ b=GYNOL+0hzTDueVI/QSHkhCYwsLq8QUBznLkJcb54m93BSAMIqauW7e9cQ6AuZrOsJebq
+ ims/bWmF/mwRoHuKRoRR1JWYFSPO9OJmAc/8D+m4oTaC9m7WcPsxl92uEtVrd1yXgyRH
+ n8qzQ75chTQmJIhCLHMo+ixV/02KXHxjxf8vMDivCxV6TUbfE/bB6CNu7LFCQ5x8Sfea
+ lZ0Cneuc3x77p+C7lF6NPjOjrl7T53YZ5cfl8eopNCNiST1gEI/Hz7U/OeRFZoqzudBp
+ O4TZGZ+XtjyNHsuXMqlSSjqtSZyvwMdhZdLVFR/N2Pkh+kpu3OY+MheHNguW0vwItA4n EQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 33gnrqysy6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 21:49:49 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLTSF4011393;
+        Tue, 15 Sep 2020 21:49:34 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33h8864sd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 21:49:34 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FLnTwH002605;
+        Tue, 15 Sep 2020 21:49:30 GMT
+Received: from [192.168.0.193] (/69.207.174.138)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Sep 2020 21:49:29 +0000
+Subject: Re: [RFC PATCH v7 11/23] sched/fair: core wide cfs task priority
+ comparison
+To:     Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>
+Cc:     mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
+        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
+        Aaron Lu <ziqian.lzq@antfin.com>
+References: <cover.1598643276.git.jdesfossez@digitalocean.com>
+ <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
+From:   chris hyser <chris.hyser@oracle.com>
+Message-ID: <f20f4d5b-574a-7c3d-8c08-3e6b7893fc58@oracle.com>
+Date:   Tue, 15 Sep 2020 17:49:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915171801.39761-1-songmuchun@bytedance.com>
+In-Reply-To: <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009150168
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
+ clxscore=1011 mlxlogscore=999 adultscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150169
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:18:01AM +0800, Muchun Song wrote:
-> In the cgroup v1, we have a numa_stat interface. This is useful for
-> providing visibility into the numa locality information within an
-> memcg since the pages are allowed to be allocated from any physical
-> node. One of the use cases is evaluating application performance by
-> combining this information with the application's CPU allocation.
-> But the cgroup v2 does not. So this patch adds the missing information.
+On 8/28/20 3:51 PM, Julien Desfossez wrote:
+> From: Aaron Lu <aaron.lwe@gmail.com>
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Suggested-by: Shakeel Butt <shakeelb@google.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> This patch provides a vruntime based way to compare two cfs task's
+> priority, be it on the same cpu or different threads of the same core.
+> 
+> When the two tasks are on the same CPU, we just need to find a common
+> cfs_rq both sched_entities are on and then do the comparison.
+> 
+> When the two tasks are on differen threads of the same core, each thread
+> will choose the next task to run the usual way and then the root level
+> sched entities which the two tasks belong to will be used to decide
+> which task runs next core wide.
+> 
+> An illustration for the cross CPU case:
+> 
+>     cpu0         cpu1
+>   /   |  \     /   |  \
+> se1 se2 se3  se4 se5 se6
+>      /  \            /   \
+>    se21 se22       se61  se62
+>    (A)                    /
+>                         se621
+>                          (B)
+> 
+> Assume CPU0 and CPU1 are smt siblings and cpu0 has decided task A to
+> run next and cpu1 has decided task B to run next. To compare priority
+> of task A and B, we compare priority of se2 and se6. Whose vruntime is
+> smaller, who wins.
+> 
+> To make this work, the root level sched entities' vruntime of the two
+> threads must be directly comparable. So one of the hyperthread's root
+> cfs_rq's min_vruntime is chosen as the core wide one and all root level
+> sched entities' vruntime is normalized against it.
+> 
+> All sub cfs_rqs and sched entities are not interesting in cross cpu
+> priority comparison as they will only participate in the usual cpu local
+> schedule decision so no need to normalize their vruntimes.
+> 
+> Signed-off-by: Aaron Lu <ziqian.lzq@antfin.com>
+> ---
+>   kernel/sched/core.c  |  23 +++----
+>   kernel/sched/fair.c  | 142 ++++++++++++++++++++++++++++++++++++++++++-
+>   kernel/sched/sched.h |   3 +
+>   3 files changed, 150 insertions(+), 18 deletions(-)
 
-Yup, that would be useful information to have. Just a few comments on
-the patch below:
 
-> @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
->  		collapsing an existing range of pages. This counter is not
->  		present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
->  
-> +  memory.numa_stat
-> +	A read-only flat-keyed file which exists on non-root cgroups.
+While investigating reported 'uperf' performance regressions between core sched v5 and core sched v6/v7, this patch 
+seems to be the first indicator of about a 40% perf loss in moving between v5 and v6 (and the accounting here is carried 
+forward into this patch). Unfortunately, it is not the easiest thing to trace back as the patchsets are not directly 
+comparable in this case and moving into v7, the base kernel revision has changed from 5.6 to 5.9.
 
-It's a nested key file, not flat.
+The regressions were duplicated with the following setup: on a 24 core VM, create a cgroup and in it, fire off the uperf 
+server and the client running 2 mins worth of 100 threads doing short TCP reads and writes. Do this for both the cgroup 
+core sched tagged and not tagged (technically tearing everything down and rebuilding it in between). Short and easy to 
+do dozens of runs for statistical averaging.
 
-> +	This breaks down the cgroup's memory footprint into different
-> +	types of memory, type-specific details, and other information
-> +	per node on the state of the memory management system.
-> +
-> +	This is useful for providing visibility into the NUMA locality
-> +	information within an memcg since the pages are allowed to be
-> +	allocated from any physical node. One of the use case is evaluating
-> +	application performance by combining this information with the
-> +	application's CPU allocation.
-> +
-> +	All memory amounts are in bytes.
-> +
-> +	The output format of memory.numa_stat is::
-> +
-> +	  type N0=<bytes in node 0> N1=<bytes in node 1> ...
-> +
-> +	The entries are ordered to be human readable, and new entries
-> +	can show up in the middle. Don't rely on items remaining in a
-> +	fixed position; use the keys to look up specific values!
-> +
-> +	  anon
-> +		Amount of memory per node used in anonymous mappings such
-> +		as brk(), sbrk(), and mmap(MAP_ANONYMOUS).
-> +
-> +	  file
-> +		Amount of memory per node used to cache filesystem data,
-> +		including tmpfs and shared memory.
-> +
-> +	  kernel_stack
-> +		Amount of memory per node allocated to kernel stacks.
-> +
-> +	  shmem
-> +		Amount of cached filesystem data per node that is swap-backed,
-> +		such as tmpfs, shm segments, shared anonymous mmap()s.
-> +
-> +	  file_mapped
-> +		Amount of cached filesystem data per node mapped with mmap().
-> +
-> +	  file_dirty
-> +		Amount of cached filesystem data per node that was modified but
-> +		not yet written back to disk.
-> +
-> +	  file_writeback
-> +		Amount of cached filesystem data per node that was modified and
-> +		is currently being written back to disk.
-> +
-> +	  anon_thp
-> +		Amount of memory per node used in anonymous mappings backed by
-> +		transparent hugepages.
-> +
-> +	  inactive_anon, active_anon, inactive_file, active_file, unevictable
-> +		Amount of memory, swap-backed and filesystem-backed,
-> +		per node on the internal memory management lists used
-> +		by the page reclaim algorithm.
-> +
-> +		As these represent internal list state (e.g. shmem pages are on
-> +		anon memory management lists), inactive_foo + active_foo may not
-> +		be equal to the value for the foo counter, since the foo counter
-> +		is type-based, not list-based.
-> +
-> +	  slab_reclaimable
-> +		Amount of memory per node used for storing in-kernel data
-> +		structures which might be reclaimed, such as dentries and
-> +		inodes.
-> +
-> +	  slab_unreclaimable
-> +		Amount of memory per node used for storing in-kernel data
-> +		structures which cannot be reclaimed on memory pressure.
-> +
->    memory.swap.current
->  	A read-only single value file which exists on non-root
->  	cgroups.
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 75cd1a1e66c8..ff919ef3b57b 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6425,6 +6425,86 @@ static int memory_stat_show(struct seq_file *m, void *v)
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_NUMA
-> +struct numa_stat {
-> +	const char *name;
-> +	unsigned int ratio;
-> +	enum node_stat_item idx;
-> +};
-> +
-> +static struct numa_stat numa_stats[] = {
-> +	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
-> +	{ "file", PAGE_SIZE, NR_FILE_PAGES },
-> +	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
-> +	{ "shmem", PAGE_SIZE, NR_SHMEM },
-> +	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
-> +	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
-> +	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +	/*
-> +	 * The ratio will be initialized in numa_stats_init(). Because
-> +	 * on some architectures, the macro of HPAGE_PMD_SIZE is not
-> +	 * constant(e.g. powerpc).
-> +	 */
-> +	{ "anon_thp", 0, NR_ANON_THPS },
-> +#endif
-> +	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
-> +	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
-> +	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
-> +	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
-> +	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
-> +	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
-> +	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-> +};
+What ever the above version of this test might map to in real life, it presumably exacerbates the competition between 
+softirq threads and the core sched tagged threads which was observed in the reports.
 
-This is a bit duplicative with memory_stat_format(), and the
-collections will easily go out of sync as we add/change stat items.
+Here are the uperf results of the various patchsets. Note, that disabling smt is better for these tests and that that 
+presumably reflects the overall overhead of core scheduling which went from bad to really bad. The primary focus in this 
+email is to start to understand what happened within core sched itself.
 
-Can you please convert memory_stat_format() to use the same shared table?
+patchset          smt=on/cs=off  smt=off    smt=on/cs=on
+--------------------------------------------------------
+v5-v5.6.y      :    1.78Gb/s     1.57Gb/s     1.07Gb/s
+pre-v6-v5.6.y  :    1.75Gb/s     1.55Gb/s    822.16Mb/s
+v6-5.7         :    1.87Gs/s     1.56Gb/s    561.6Mb/s
+v6-5.7-hotplug :    1.75Gb/s     1.58Gb/s    438.21Mb/s
+v7             :    1.80Gb/s     1.61Gb/s    440.44Mb/s
 
-You may have to add another flag for the MEMCG_* items for which we
-don't have per-node counters.
+If you start by contrasting v5 and v6 on the same base 5.6 kernel to try to rule out kernel to kernel version 
+differences, bisecting v6 pointed to the v6 version of (ie this patch):
 
-The same applies to the documentation. Please don't duplicate the list
-of items, but have memory.numa_stat refer to the list for memory.stat.
-You can add (not in memory.numa_stat) or something to percpu and sock.
+"[RFC PATCH v7 11/23] sched/fair: core wide cfs task priority comparison"
 
-> +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
-> +					   unsigned int nid,
-> +					   enum node_stat_item idx)
-> +{
-> +	VM_BUG_ON(nid >= nr_node_ids);
-> +	return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
-> +}
+although all that really seems to be saying is that the new means of vruntime accounting (still present in v7) has 
+caused performance in the patchset to drop which is plausible; different numbers, different scheduler behavior. A rough 
+attempt to verify this by backporting parts of the new accounting onto the v5 patchset show where that initial switching 
+from old to new accounting dropped perf to about 791Mb/s and the rest of the changes (as shown in the v6 numbers though 
+not backported), only bring the v6 patchset back to 822.16Mb/s. That is not 100% proof, but seems very suspicious.
 
-Please drop this wrapper and use lruvec_page_state directly below.
+This change in vruntime accounting seems to account for about 40% of the total v5-to-v7 perf loss though clearly lots of 
+other changes have occurred in between. Certainly not saying there is a bug here, just time to bring in the original 
+authors and start a general discussion.
 
-Otherwise, this looks reasonable to me.
+-chrish
