@@ -2,150 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D2B26AD71
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEB326AD75
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727631AbgIOTXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:23:41 -0400
-Received: from mail-bn8nam11on2119.outbound.protection.outlook.com ([40.107.236.119]:32928
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727956AbgIOTWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:22:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z5Y3xXe4iaPhW6GhrNK/QhD6NAgIdqVuqcqVG+BgswXBjum7INZM+QxTeH/YqGH9lxdr/wuk6T2FcsvX1E6auCFkBpBMDKVRoMFZ/KSMeLGVrA6Vl9gmPJXRWEXtU2GusaqpxisAgRqX/WCKsoZNXrTpXnfQvntPrwiZ8Bz/vfndf7pp+iwsTDVIXaRtNk6oMj7JGIa0/dSzcbgW+Nr+rwT8yo62ZIWoAZOjwHjwx76jUKF916OneW+LcD3e8kQG7LsZN62fuYGSOzIlXN7SgYTloMpHdPFGz684+lwVn7jGl0QyWm58oY72DZ8NRD703czHZDslRNMCghtq6YwfPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MH5DvWREHtG3pRYM7LQvOmalK1dAAGqYb2lum8FzLhg=;
- b=eAdcAzlOy3CldusQZWHAISaH2q1nyBZ53SaIWZU/kSojNRhwcrtbxO4kgWBj/mMj3NLMgAgJGTVjStlgsX6fctCztfO5hugrsBNJ+Cfev4wjDPIE96V6GKc7h7ZsJd2hKuOJSoDe1Ysh/Z4wksb+zRExMAMdWt58cWQIUr3rDvi7kSkdTwNg3qfFD5rMXRWcmZtfsGbZRyTNZ/4XVFhOJZ5Fvl1ppwLDkYFYBo1wVx9GYphAXYvG5heAZ8AmoSbxCQNJUNZlIfdM0KAEwST168KEethEd5dRyXe3trAV5hduwiHYQtbHzkdVEydEWfQufjGWkJxKrw04MKwciPbMhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MH5DvWREHtG3pRYM7LQvOmalK1dAAGqYb2lum8FzLhg=;
- b=E+nbAnYyZr0zkW5ayMDvWQa0y+3vmFOWGh8syEpwDpvm5eXF0MEk5O9n1iLgnB9QuqgzOoyARAVk/fHlAchSsUA1yd3ci85z6INsrvr27nh69sD2PZVLwaX018GROFsI6oITys9b2/FZcT5Ed1NUAOERcHRMWD2Xr65X3SlTOhA=
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com (2603:10b6:302:a::16)
- by MW2PR2101MB0921.namprd21.prod.outlook.com (2603:10b6:302:10::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.2; Tue, 15 Sep
- 2020 19:22:29 +0000
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::d00b:3909:23b:83f1]) by MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::d00b:3909:23b:83f1%4]) with mapi id 15.20.3412.001; Tue, 15 Sep 2020
- 19:22:29 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>
-Subject: RE: [PATCH v7 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
- structure for VMBus hardening
-Thread-Topic: [PATCH v7 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
- structure for VMBus hardening
-Thread-Index: AQHWhTK4CcuAC1huL0WTSe45bNSLyqlqIGbg
-Date:   Tue, 15 Sep 2020 19:22:28 +0000
-Message-ID: <MW2PR2101MB1052A6B693E554F03F9C9038D7200@MW2PR2101MB1052.namprd21.prod.outlook.com>
-References: <20200907161920.71460-1-parri.andrea@gmail.com>
- <20200907161920.71460-2-parri.andrea@gmail.com>
-In-Reply-To: <20200907161920.71460-2-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-09-15T19:22:27Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=70425c3f-e195-41e8-993a-712b53ca6095;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4fb5675e-4481-4575-fbab-08d859acafc7
-x-ms-traffictypediagnostic: MW2PR2101MB0921:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW2PR2101MB0921B7B3460A1B1852FD3FB5D7200@MW2PR2101MB0921.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1265;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2OwnGZ4Dl4YMmdxuPYN6EZhG3SBq2o2bk4jk/+Q27xu8yGjnZLz9k4RrP5bRRSt6igqXAyjdCF8IkvzcnpDJHP/jN51DeYEJ+zuYgSTTmCDnMbrgh+bzjzjjIJ7yEv1wtDkpuWngs1cI15gnIrFIF2Z32dspy7XRCRrgdCe4NRPEo1mzJ/JLHcmwafZJxEYR2sleMvYkrNPdCFIS8jSQBRG0DEyAmLsp4snpA81B8SJ6QjqzoCqksIOy6KvGLIdk7VE25rSihzo0Nx4yU65l/lQI6AFMLEQKKVg9fNWaVakUVlJXKBowogXxcZnXcj/CJDPw86Y5PpqxDLGXbNLAoB2KkDRJp5fz22axIft698CfLUhtOGcebfGt2ZfuXfL/
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(396003)(136003)(39860400002)(10290500003)(6506007)(7696005)(110136005)(316002)(2906002)(33656002)(26005)(186003)(54906003)(82960400001)(8936002)(478600001)(8676002)(82950400001)(66446008)(52536014)(55016002)(4326008)(9686003)(107886003)(76116006)(64756008)(66556008)(66946007)(83380400001)(86362001)(66476007)(5660300002)(8990500004)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: JUGfGsu+WD0PSJrSHiEjyXFUCvl9GfF1rgZ4saqiQNNBjgEnDatx6QHdscu34Ao2uN2mgcnL5CYDhhAhKM2Jj5tQaG+GislZXTPjx1atBHMFHKczcj9A4w9pUE2r/9XIiW/gkfIkujdYM10GEOsQ0DJc6tgQcXPX+ofoG4AhqaZST6tPaM3o9j+g7KWeCohdnAsS+KYZ6TWR5mJzdkNpZmrLo4ScUyFm2X9WX8mnZBhpuMwJCQ0utHGWxagYhOo5+D4tKg102d92ZxzwoX6okYEFt7E7/1Yko/Rc+kseaCC1cDmC9Dw3NQaJOG9vso/cWN/MBZeUL/FA2qienuk10Rg5zjuKynUxVqn9OzxK2V70FBy9FqG5rCUYXSv6I1Tcnuj0wGEd4TMBW911u2mYLSYzIP+P/pqpFTaO2QyXPKz2dJ71nVYEUcpUOQKS1ZNuxobdho5/833dzkGDMx1zE4nBTMkeuoZM8dJaICZQGfa/qSKchjibG4LkR4rQ4hvQMvklRODNHnzyBPuNykDTK4qENnoJjcR17aBMi6KjRVE3oultJ2hhZaYG1v36Q+JVBNyIY3pnMb4DgU0f8Fdxdo+RG9H4ICIIUvoZegdlemZ/yWJKeUaQIv7vxggUvrnE/VnXjX6aS5EMLE85JLr5mQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727925AbgIOTYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727906AbgIOTXT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 15:23:19 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21925C06178C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:23:17 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z4so4519254wrr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xaKrPrgrBMlaZS38zpubG0Tl9ZPTk+y0W+Heq7aSri0=;
+        b=dcHWqN2/DpwqyJ5fhRCM5yW2IHn71hLOeS3/sZnQGLwIyf/rqUBIs0mMrs37jxjGsC
+         aUJPjhHhH75YzNfcKKDhzSjWS9NroOCtTtDg4X86Jdcuck8eVhjYWVlC0uS2SijhVdZO
+         kahp3K3RrtKDUAh9WJkNTOzneOz52ZNngoHCmWXhntdLPXlZwlqDA8OAHn2cnnSh/hws
+         w0Lf8GyYxPBH8J6PlskI0Z6tLrR5zn1xFYiorSc6rvW6bz3mYY6Wi2qE3gfeAYdHRqhD
+         vlpB94CQ7b3NmNoKWtNZh9+aho9deElmGArcuxe7Fpz3pwxNBwtEfQ9brq8TybDjSeE2
+         wQmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xaKrPrgrBMlaZS38zpubG0Tl9ZPTk+y0W+Heq7aSri0=;
+        b=r6oQIb+p0WHEQ7/1aXd7HQeo+fEARHycwvbK2HnFeQBmdgRuUlXUQJwEEUPqFVjeqx
+         SRN+/kCO08twTk0sn9s8DGg4lP0Uyqt/bjdlbiY0dZRmcZoZyEaJdJp0ASfwFT+FcYwq
+         34l3oAXCURDFOEiRSrG5iKR7jm2KNA9P2svzWYHmkVdGaeua04BqT1ixWwTIg5+oSeYh
+         VdpXxhBEdKL+Y2HG8QALuGhr30uabtAluJfyXk2YBUK7iZULn1kCCw0kuqiU+1v5KD3u
+         zUvT/LS7A48lJ3y9D/cQ4nTj4KArmfOQ4S+Zf6FWk2TiBcgkw8jUql1lmj0AnYzUGAdR
+         ac6Q==
+X-Gm-Message-State: AOAM5333K9y0k52AxepfJyJIXS5pI4G6LFQuAp2o7XD732AZ8q4CitE0
+        TweN8LSV+4w3W4J1I4fnkwwncw==
+X-Google-Smtp-Source: ABdhPJxWQXdJLEG5oDeGFEeYUF/vrSRY9Tqwlwma5wZ2kLJYvIlIAvVSVcHO77MmmESpE8oFcvfKMA==
+X-Received: by 2002:a5d:6283:: with SMTP id k3mr23754401wru.191.1600197795717;
+        Tue, 15 Sep 2020 12:23:15 -0700 (PDT)
+Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
+        by smtp.gmail.com with ESMTPSA id f23sm1651722wmc.3.2020.09.15.12.23.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 12:23:15 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 22:23:11 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200915192311.GA124360@apalos.home>
+References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
+ <20200915131102.GA26439@willie-the-truck>
+ <20200915135344.GA113966@apalos.home>
+ <20200915141707.GB26439@willie-the-truck>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fb5675e-4481-4575-fbab-08d859acafc7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 19:22:28.9242
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qGJeTaKVf/ToUOMVUWG4msxMSVNfV1OaZjH1uz1a2Daq1papeIkEyKvDNVDu0lmE2K9pTXw1szf8KNkRQpBHhKRiWNpcwFi4IHDY59G9OjU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0921
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915141707.GB26439@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Monday, Septe=
-mber 7, 2020 9:19 AM
+Hi Will, 
 
->=20
-> From: Andres Beltran <lkmlabelt@gmail.com>
->=20
-> Currently, VMbus drivers use pointers into guest memory as request IDs
-> for interactions with Hyper-V. To be more robust in the face of errors
-> or malicious behavior from a compromised Hyper-V, avoid exposing
-> guest memory addresses to Hyper-V. Also avoid Hyper-V giving back a
-> bad request ID that is then treated as the address of a guest data
-> structure with no validation. Instead, encapsulate these memory
-> addresses and provide small integers as request IDs.
->=20
-> Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
-> Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> ---
-> Changes in v7:
-> 	- Move the allocation of the request ID after the data has been
-> 	  copied into the ring buffer.
-> Changes in v6:
->         - Offset request IDs by 1 keeping the original initialization
->           code.
-> Changes in v5:
->         - Add support for unsolicited messages sent by the host with a
->           request ID of 0.
-> Changes in v4:
->         - Use channel->rqstor_size to check if rqstor has been
->           initialized.
-> Changes in v3:
->         - Check that requestor has been initialized in
->           vmbus_next_request_id() and vmbus_request_addr().
-> Changes in v2:
->         - Get rid of "rqstor" variable in __vmbus_open().
->=20
->  drivers/hv/channel.c      | 174 ++++++++++++++++++++++++++++++++++++--
->  drivers/hv/hyperv_vmbus.h |   3 +-
->  drivers/hv/ring_buffer.c  |  28 +++++-
->  include/linux/hyperv.h    |  22 +++++
->  4 files changed, 218 insertions(+), 9 deletions(-)
->=20
+On Tue, Sep 15, 2020 at 03:17:08PM +0100, Will Deacon wrote:
+> On Tue, Sep 15, 2020 at 04:53:44PM +0300, Ilias Apalodimas wrote:
+> > On Tue, Sep 15, 2020 at 02:11:03PM +0100, Will Deacon wrote:
+> > > Hi Ilias,
+> > > 
+> > > On Mon, Sep 14, 2020 at 07:03:55PM +0300, Ilias Apalodimas wrote:
+> > > > Running the eBPF test_verifier leads to random errors looking like this:
+> > > > 
+> > > > [ 6525.735488] Unexpected kernel BRK exception at EL1
+> > > > [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
+> > > 
+> > > Does this happen because we poison the BPF memory with BRK instructions?
+> > > Maybe we should look at using a special immediate so we can detect this,
+> > > rather than end up in the ptrace handler.
+> > 
+> > As discussed offline this is what aarch64_insn_gen_branch_imm() will return for
+> > offsets > 128M and yes replacing the handler with a more suitable message would 
+> > be good.
+> 
+> Can you give the diff below a shot, please? Hopefully printing a more useful
+> message will mean these things get triaged/debugged better in future.
 
-With my previous comments shown to be incorrect, I'm good
-with this code.
+[...]
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+The error print is going to be helpful imho. At least it will help
+people notice something is wrong a lot faster than the previous one.
+
+
+[  575.273203] BPF JIT generated an invalid instruction at bpf_prog_64e6f4ba80861823_F+0x2e4/0x9a4!
+[  575.281996] Unexpected kernel BRK exception at EL1
+[  575.286786] Internal error: BRK handler: f2000100 [#5] PREEMPT SMP
+[  575.292965] Modules linked in: crct10dif_ce drm ip_tables x_tables ipv6 btrfs blake2b_generic libcrc32c xor xor_neon zstd_compress raid6_pq nvme nvme_core realtek
+[  575.307516] CPU: 21 PID: 11760 Comm: test_verifier Tainted: G      D W         5.9.0-rc3-01410-ged6d9b022813-dirty #1
+[  575.318125] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
+[  575.326825] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+[  575.332396] pc : bpf_prog_64e6f4ba80861823_F+0x2e4/0x9a4
+[  575.337705] lr : bpf_prog_d3e125b76c96daac+0x40/0xdec
+[  575.342752] sp : ffff8000144e3ba0
+[  575.346061] x29: ffff8000144e3bd0 x28: 0000000000000000
+[  575.351371] x27: 00000085f19dc08d x26: 0000000000000000
+[  575.356681] x25: ffff8000144e3ba0 x24: ffff800011fdf038
+[  575.361991] x23: ffff8000144e3d20 x22: 0000000000000001
+[  575.367301] x21: ffff800011fdf000 x20: ffff0009609d4740
+[  575.372611] x19: 0000000000000000 x18: 0000000000000000
+[  575.377921] x17: 0000000000000000 x16: 0000000000000000
+[  575.383231] x15: 0000000000000000 x14: 0000000000000000
+[  575.388540] x13: 0000000000000000 x12: 0000000000000000
+[  575.393850] x11: 0000000000000000 x10: ffff8000000bc65c
+[  575.399160] x9 : 0000000000000000 x8 : ffff8000144e3c58
+[  575.404469] x7 : 0000000000000000 x6 : 0000000dd7ae967a
+[  575.409779] x5 : 00ffffffffffffff x4 : 0007fabd6992cf96
+[  575.415088] x3 : 0000000000000018 x2 : ffff8000000ba214
+[  575.420398] x1 : 000000000000000a x0 : 0000000000000009
+[  575.425708] Call trace:
+[  575.428152]  bpf_prog_64e6f4ba80861823_F+0x2e4/0x9a4
+[  575.433114]  bpf_prog_d3e125b76c96daac+0x40/0xdec
+[  575.437822]  bpf_dispatcher_xdp_func+0x10/0x1c
+[  575.442265]  bpf_test_run+0x80/0x240
+[  575.445838]  bpf_prog_test_run_xdp+0xe8/0x190
+[  575.450196]  __do_sys_bpf+0x8e8/0x1b00
+[  575.453943]  __arm64_sys_bpf+0x24/0x510
+[  575.457780]  el0_svc_common.constprop.0+0x6c/0x170
+[  575.462570]  do_el0_svc+0x24/0x90
+[  575.465883]  el0_sync_handler+0x90/0x19c
+[  575.469802]  el0_sync+0x158/0x180
+[  575.473118] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
+[  575.479211] ---[ end trace 8cd54c7d5c0ffda4 ]---
+
+Cheers
+/Ilias
