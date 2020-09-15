@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9AE26B535
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C2526B53D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgIOXjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:39:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46174 "EHLO mail.kernel.org"
+        id S1727163AbgIOXke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:40:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727071AbgIOOet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:34:49 -0400
+        id S1727109AbgIOOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:34:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B78422224;
-        Tue, 15 Sep 2020 14:16:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C5AC22211;
+        Tue, 15 Sep 2020 14:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179374;
-        bh=VMRScTNZjqcuxBSNlIcKXYNZRhstNmmeSh2GLH+N330=;
+        s=default; t=1600179377;
+        bh=g/ZbVp3gFIHqVMhtI6f2AuOJ8RFTxxibUkVrVntdm/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q9+ZFo6WJV99XpfcW/E096RTq96cAsLvbkG1nhoQX+xGWFqVjo5u/1m4PRvF1KMAk
-         j8dhI5TZnzCVvXRvcMvbIixwbczEDpai9jrAGA0rs4FhD4lUSeZBR5Oa3IqGmRPz04
-         PjLyRoG4/leU2LkB7NBizAggKi1Hp8aNVydcMtzo=
+        b=XjsjSQRf38b8lEwh5f8xb/oFKUJ4gxcKoJGKjhJCEoxovVIZdnilUMsT+m13LQxPJ
+         512eBhe9gmvF3aFrz1Td4vXC5NVS/4K200Y3uQQHruUHDXTa4tMh67B/2nLHQcIX4s
+         kV7LBbFnHDeYdqVOLL11uJCwlyxxe9rA+j1Cv3F0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Jirman <megous@megous.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Angelo Compagnucci <angelo.compagnucci@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/78] drm/sun4i: Fix dsi dcs long write function
-Date:   Tue, 15 Sep 2020 16:12:33 +0200
-Message-Id: <20200915140633.952390220@linuxfoundation.org>
+Subject: [PATCH 4.19 09/78] iio: adc: mcp3422: fix locking on error path
+Date:   Tue, 15 Sep 2020 16:12:34 +0200
+Message-Id: <20200915140634.010489871@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
 References: <20200915140633.552502750@linuxfoundation.org>
@@ -45,46 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megous@megous.com>
+From: Angelo Compagnucci <angelo.compagnucci@gmail.com>
 
-[ Upstream commit fd90e3808fd2c207560270c39b86b71af2231aa1 ]
+[ Upstream commit a139ffa40f0c24b753838b8ef3dcf6ad10eb7854 ]
 
-It's writing too much data. regmap_bulk_write expects number of
-register sized chunks to write, not a byte sized length of the
-bounce buffer. Bounce buffer needs to be padded too, so that
-regmap_bulk_write will not read past the end of the buffer.
+Reading from the chip should be unlocked on error path else the lock
+could never being released.
 
-Fixes: 133add5b5ad4 ("drm/sun4i: Add Allwinner A31 MIPI-DSI controller support")
-Signed-off-by: Ondrej Jirman <megous@megous.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200828125032.937148-1-megous@megous.com
+Fixes: 07914c84ba30 ("iio: adc: Add driver for Microchip MCP3422/3/4 high resolution ADC")
+Fixes: 3f1093d83d71 ("iio: adc: mcp3422: fix locking scope")
+Acked-by: Jonathan Cameron <jonathan.cameron@huawei.com>
+Signed-off-by: Angelo Compagnucci <angelo.compagnucci@gmail.com>
+Link: https://lore.kernel.org/r/20200901093218.1500845-1-angelo.compagnucci@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/adc/mcp3422.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-index 79eb11cd185d1..9a5584efd5e78 100644
---- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-+++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-@@ -761,7 +761,7 @@ static int sun6i_dsi_dcs_write_long(struct sun6i_dsi *dsi,
- 	regmap_write(dsi->regs, SUN6I_DSI_CMD_TX_REG(0),
- 		     sun6i_dsi_dcs_build_pkt_hdr(dsi, msg));
- 
--	bounce = kzalloc(msg->tx_len + sizeof(crc), GFP_KERNEL);
-+	bounce = kzalloc(ALIGN(msg->tx_len + sizeof(crc), 4), GFP_KERNEL);
- 	if (!bounce)
- 		return -ENOMEM;
- 
-@@ -772,7 +772,7 @@ static int sun6i_dsi_dcs_write_long(struct sun6i_dsi *dsi,
- 	memcpy((u8 *)bounce + msg->tx_len, &crc, sizeof(crc));
- 	len += sizeof(crc);
- 
--	regmap_bulk_write(dsi->regs, SUN6I_DSI_CMD_TX_REG(1), bounce, len);
-+	regmap_bulk_write(dsi->regs, SUN6I_DSI_CMD_TX_REG(1), bounce, DIV_ROUND_UP(len, 4));
- 	regmap_write(dsi->regs, SUN6I_DSI_CMD_CTL_REG, len + 4 - 1);
- 	kfree(bounce);
+diff --git a/drivers/iio/adc/mcp3422.c b/drivers/iio/adc/mcp3422.c
+index 819f260115005..a5a687257c0b8 100644
+--- a/drivers/iio/adc/mcp3422.c
++++ b/drivers/iio/adc/mcp3422.c
+@@ -148,8 +148,10 @@ static int mcp3422_read_channel(struct mcp3422 *adc,
+ 		config &= ~MCP3422_PGA_MASK;
+ 		config |= MCP3422_PGA_VALUE(adc->pga[req_channel]);
+ 		ret = mcp3422_update_config(adc, config);
+-		if (ret < 0)
++		if (ret < 0) {
++			mutex_unlock(&adc->lock);
+ 			return ret;
++		}
+ 		msleep(mcp3422_read_times[MCP3422_SAMPLE_RATE(adc->config)]);
+ 	}
  
 -- 
 2.25.1
