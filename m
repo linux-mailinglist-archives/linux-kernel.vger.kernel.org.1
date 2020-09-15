@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53BA426A2AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B36826A2B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgIOKEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:04:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:59676 "EHLO foss.arm.com"
+        id S1726198AbgIOKFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:05:18 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:46416 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgIOKE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:04:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0EA3D1396;
-        Tue, 15 Sep 2020 03:04:29 -0700 (PDT)
-Received: from [10.37.12.52] (unknown [10.37.12.52])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D2DB3F68F;
-        Tue, 15 Sep 2020 03:04:27 -0700 (PDT)
-Subject: Re: [PATCH 1/4] cpufreq: stats: Defer stats update to
- cpufreq_stats_record_transition()
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cristian.marussi@arm.com, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org
-References: <cover.1599031227.git.viresh.kumar@linaro.org>
- <973bd0536c4957d03f36447398498cfacb2393d9.1599031227.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <bd6e6d93-7491-0971-3bed-27d1885c38cd@arm.com>
-Date:   Tue, 15 Sep 2020 11:04:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726095AbgIOKFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:05:16 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kI7pi-0003Es-DJ; Tue, 15 Sep 2020 20:05:07 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 15 Sep 2020 20:05:06 +1000
+Date:   Tue, 15 Sep 2020 20:05:06 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC
+ unconditionally
+Message-ID: <20200915100506.GA27268@gondor.apana.org.au>
+References: <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+ <20200915033024.GB25789@gondor.apana.org.au>
+ <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com>
+ <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com>
+ <20200915070523.GA26629@gondor.apana.org.au>
+ <878sdb5qp5.fsf@nanos.tec.linutronix.de>
+ <CAMj1kXHsqZzfJ2qmsrUWEU_XWxmR1PhY3zo-yz9Vau90-WphXg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <973bd0536c4957d03f36447398498cfacb2393d9.1599031227.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHsqZzfJ2qmsrUWEU_XWxmR1PhY3zo-yz9Vau90-WphXg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
-
-On 9/2/20 8:24 AM, Viresh Kumar wrote:
-> In order to prepare for lock-less stats update, add support to defer any
-> updates to it until cpufreq_stats_record_transition() is called.
+On Tue, Sep 15, 2020 at 01:02:10PM +0300, Ard Biesheuvel wrote:
+>
+> > I'd rather go for a preemptible/sleepable version of highmem mapping
+> > which is in itself consistent for both highmen and not highmem.
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->   drivers/cpufreq/cpufreq_stats.c | 75 ++++++++++++++++++++++++---------
->   1 file changed, 56 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
-> index 94d959a8e954..fdf9e8556a49 100644
-> --- a/drivers/cpufreq/cpufreq_stats.c
-> +++ b/drivers/cpufreq/cpufreq_stats.c
-> @@ -22,17 +22,22 @@ struct cpufreq_stats {
+> I don't think we need to obsess about highmem, although we should
+> obviously take care not to regress its performance unnecessarily. What
+> I want to avoid is to burden a brand new subsystem with legacy highmem
+> baggage simply because we could not agree on how to avoid that.
 
-Would it be possible to move this structure in the
-linux/cpufreq.h header? Any subsystem could have access to it,
-like to the cpuidle stats.
+I think what Thomas is proposing should address your concerns Ard.
+As long as nobody objects to the slight performance degradation on
+legacy highmem platforms it should make kmap_atomic just go away on
+modern platforms.
 
-Apart from that (and the comment regarding the 'atomic_t' field)
-I don't see any issues.
-
-Regards,
-Lukasz
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
