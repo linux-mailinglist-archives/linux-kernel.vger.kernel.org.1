@@ -2,158 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEBF26A856
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550B726A895
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgIOPHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:07:47 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:59620 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbgIOOlb (ORCPT
+        id S1727136AbgIOPRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727335AbgIOOpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:41:31 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FEduQ2150785;
-        Tue, 15 Sep 2020 14:40:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=ob0tiNJJ2VTB74z1m5YoBvbdwfodTrserhVba6hRRVA=;
- b=Vt67dayvJ1CvcEjVXjDDNI5aiebMMgRTZ+Dn0mmB0GYmPHxMq86FGGwhHOdq33uwb3Ip
- WQ48SLXqtcmtSGzjHt74Qs/fh1b3UtsCi8Hae1P4BQAIBhfThupREHYmsEpkizByfySo
- cHv3PEg+CPF3K4H231lfBoH9VFOROPwVR9mzVi5sTYXfCHjDMPmmd234Sy9e5CyWUUwx
- tptRdXw381UFl/eUZeO6bKEqZI4KSuwYeocSLitWAwX9iCjdoHn8/+W8h0K2+lPZojCT
- U6a1jIQHhHsdB1qlJ6LiI3D6M7wWYEJP0R7d+0n7TeK0Oc5xSzuE0obnSTxiTeJRBWh9 qg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 33gnrqwg95-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 14:40:45 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FEeiYi095980;
-        Tue, 15 Sep 2020 14:40:45 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33h88ye624-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 14:40:44 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FEeckQ019070;
-        Tue, 15 Sep 2020 14:40:38 GMT
-Received: from [10.39.253.102] (/10.39.253.102)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 14:40:38 +0000
-Subject: Re: [PATCH] dma-direct: Fix potential NULL pointer dereference
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     konrad.wilk@oracle.com, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <1600178594-22801-1-git-send-email-thomas.tai@oracle.com>
- <20200915140719.GA14831@lst.de>
- <f5cba632-421a-f375-3697-51a182a53a32@oracle.com>
- <20200915142624.GA16005@lst.de>
-From:   Thomas Tai <thomas.tai@oracle.com>
-Message-ID: <da9ec51d-aab5-695d-e388-5ae7c0bb30ea@oracle.com>
-Date:   Tue, 15 Sep 2020 10:40:39 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 15 Sep 2020 10:45:02 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2CEC06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:44:47 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id c63so876734vkb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zT4idoY3GXU6AKl9P1KDotBGRD6i9BlOD/Yn8HDxrN8=;
+        b=cZcT/XO2v6Dw0s2Q7AzR/zkwbrn4Ls20hHCTCwjhdEm4E90JV0hcQRXDXeZO0/79hQ
+         aF+uMGX1TJIcuD68ObaYkd9bA7Qdk0HFRWwA/rZBI/5tw6+sCym7qpOxSaA1MKQzKvA+
+         PKT/I2wOPNx697M0Kt0AyARG4MwGHIMriU4Y05nxMvOVLHijn/kzh8bV9Lmyfx5IX6ls
+         rO3tL24NeY+O0sTDx89AZcGI995Ai5XwqYKMrD8Arrvow+1WyE8b+lLmjZzvByom/hw5
+         jE0q04luXWatzViaRyWafy86MVsVozNRTnWLmGTUMkBfAricswHoyVpHKVc9XAVxLIke
+         RGNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zT4idoY3GXU6AKl9P1KDotBGRD6i9BlOD/Yn8HDxrN8=;
+        b=kjrbvXoojf1V24rU1JAjZpwXYt4ssGpTzKP9JadPMVX0rGy+X46n8HZl5Lf1atI2Jn
+         KOPtR7JfoJb2aiIP0kCrFuYNjSNTXyikvd//voOsYulYhP9ne64TDX7ToTB7IPSD/58y
+         VcUSa9qVMmWApjMXIwcaDRDnCPJFiUuHZeCDVMXAQKzR99v9SDvxonYf1wqo91C5GzW2
+         yAhydiDBp/mO+EG0b+9NBJ6wvJbbFl4oROcm1d4XUzZn6WbryHS1kqk8PejuiZwz5GL9
+         9MJ0aIz5HJKsdVU6INAwjJcseWFrrG/CFGdfN5j7wodpruei3nYxodLib56ELTZxUMNL
+         zzuw==
+X-Gm-Message-State: AOAM532EXLTK4ZczRCpfWPCBH0F/nJHX1iZXf7OBerNEW2F6sRe0s0+o
+        gXT2B43GgKvXeVjKWtGI08H4nX0szGR30K94Og3VH8fY5vJBwrmt
+X-Google-Smtp-Source: ABdhPJz9V+xdlRF8ie6wyANpoDEf4gTRpkJcbnRPg71Sjm27NaLv4OKg5H8hiYkDipcT92cxG4GzEtlmJZG5SuY43QQ=
+X-Received: by 2002:a1f:7882:: with SMTP id t124mr1612757vkc.22.1600181085580;
+ Tue, 15 Sep 2020 07:44:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200915142624.GA16005@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150123
+References: <20200915140644.037604909@linuxfoundation.org>
+In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Sep 2020 20:14:34 +0530
+Message-ID: <CA+G9fYv5hvOYNdfX6F40aZPP9Vr6aEsP_-22gX2P+Q95TrfF-A@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/132] 5.4.66-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 15 Sep 2020 at 19:50, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.66 release.
+> There are 132 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.66-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-On 2020-09-15 10:26 a.m., Christoph Hellwig wrote:
-> On Tue, Sep 15, 2020 at 10:11:51AM -0400, Thomas Tai wrote:
->>
->>
->> On 2020-09-15 10:07 a.m., Christoph Hellwig wrote:
->>> On Tue, Sep 15, 2020 at 08:03:14AM -0600, Thomas Tai wrote:
->>>> When booting the kernel v5.9-rc4 on a VM, the kernel would panic when
->>>> printing a warning message in swiotlb_map(). It is because dev->dma_mask
->>>> can potentially be a null pointer. Using the dma_get_mask() macro can
->>>> avoid the NULL pointer dereference.
->>>
->>> dma_mask must not be zero.  This means drm is calling DMA API functions
->>> on something weird.  This needs to be fixed in the caller.
->>>
->>
->> Thanks, Christoph for your comment. The caller already fixed the null
->> pointer in the latest v5.9-rc5. I am thinking that if we had used the
->> dma_get_mask(), the kernel couldn't panic and could properly print out the
->> warning message.
-> 
-> If we want to solve this something like this patch is probably the
-> right way:
-> 
-> 
-> 
-> diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-> index 6e87225600ae35..064870844f06c1 100644
-> --- a/include/linux/dma-direct.h
-> +++ b/include/linux/dma-direct.h
-> @@ -62,9 +62,6 @@ static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size,
->   {
->   	dma_addr_t end = addr + size - 1;
->   
-> -	if (!dev->dma_mask)
-> -		return false;
-> -
+arm and arm64 build breaks on stable rc 5.4.
 
-I am concerned that some drivers may rely on this NULL checking. Would 
-you think we can keep this checking and use the following WARN_ON_ONCE()?
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm
+CROSS_COMPILE=3Darm-linux-gnueabihf- HOSTCC=3Dgcc CC=3D"sccache
+arm-linux-gnueabihf-gcc" O=3Dbuild zImage
+#
+../kernel/kprobes.c: In function =E2=80=98kill_kprobe=E2=80=99:
+../kernel/kprobes.c:1081:33: warning: statement with no effect [-Wunused-va=
+lue]
+ 1081 | #define disarm_kprobe_ftrace(p) (-ENODEV)
+      |                                 ^
+../kernel/kprobes.c:2113:3: note: in expansion of macro =E2=80=98disarm_kpr=
+obe_ftrace=E2=80=99
+ 2113 |   disarm_kprobe_ftrace(p);
+      |   ^~~~~~~~~~~~~~~~~~~~
+#
+# make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm
+CROSS_COMPILE=3Darm-linux-gnueabihf- HOSTCC=3Dgcc CC=3D"sccache
+arm-linux-gnueabihf-gcc" O=3Dbuild modules
+#
+../drivers/gpu/drm/msm/adreno/a5xx_preempt.c: In function =E2=80=98preempt_=
+init_ring=E2=80=99:
+../drivers/gpu/drm/msm/adreno/a5xx_preempt.c:235:21: error:
+=E2=80=98MSM_BO_MAP_PRIV=E2=80=99 undeclared (first use in this function)
+  235 |   MSM_BO_UNCACHED | MSM_BO_MAP_PRIV, gpu->aspace, &bo, &iova);
+      |                     ^~~~~~~~~~~~~~~
+../drivers/gpu/drm/msm/adreno/a5xx_preempt.c:235:21: note: each
+undeclared identifier is reported only once for each function it
+appears in
+make[5]: *** [../scripts/Makefile.build:266:
+drivers/gpu/drm/msm/adreno/a5xx_preempt.o] Error 1
+../drivers/gpu/drm/msm/adreno/a6xx_gpu.c: In function =E2=80=98a6xx_hw_init=
+=E2=80=99:
+../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:414:6: error: implicit
+declaration of function =E2=80=98adreno_is_a640=E2=80=99; did you mean
+=E2=80=98adreno_is_a540=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+  414 |  if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu)) {
+      |      ^~~~~~~~~~~~~~
+      |      adreno_is_a540
+../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:414:36: error: implicit
+declaration of function =E2=80=98adreno_is_a650=E2=80=99; did you mean
+=E2=80=98adreno_is_a540=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+  414 |  if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu)) {
+      |                                    ^~~~~~~~~~~~~~
+      |                                    adreno_is_a540
+../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:415:18: error:
+=E2=80=98REG_A6XX_GBIF_QSB_SIDE0=E2=80=99 undeclared (first use in this fun=
+ction)
+  415 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE0, 0x00071620);
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~
+../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:415:18: note: each undeclared
+identifier is reported only once for each function it appears in
+../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:416:18: error:
+=E2=80=98REG_A6XX_GBIF_QSB_SIDE1=E2=80=99 undeclared (first use in this fun=
+ction)
+  416 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE1, 0x00071620);
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~
+../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:417:18: error:
+=E2=80=98REG_A6XX_GBIF_QSB_SIDE2=E2=80=99 undeclared (first use in this fun=
+ction)
+  417 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE2, 0x00071620);
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~
+../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:418:18: error:
+=E2=80=98REG_A6XX_GBIF_QSB_SIDE3=E2=80=99 undeclared (first use in this fun=
+ction)
+  418 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE3, 0x00071620);
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
+make[5]: *** [../scripts/Makefile.build:265:
+drivers/gpu/drm/msm/adreno/a6xx_gpu.o] Error 1
+In file included from ../drivers/gpu/drm/msm/msm_gpu.c:7:
+../drivers/gpu/drm/msm/msm_gpu.c: In function =E2=80=98msm_gpu_init=E2=80=
+=99:
+../drivers/gpu/drm/msm/msm_gpu.h:330:22: error: =E2=80=98MSM_BO_MAP_PRIV=E2=
+=80=99
+undeclared (first use in this function)
+  330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+      |                      ^~~~~~~~~~~~~~~
+../drivers/gpu/drm/msm/msm_gpu.c:935:3: note: in expansion of macro
+=E2=80=98check_apriv=E2=80=99
+  935 |   check_apriv(gpu, MSM_BO_UNCACHED), gpu->aspace, &gpu->memptrs_bo,
+      |   ^~~~~~~~~~~
+../drivers/gpu/drm/msm/msm_gpu.h:330:22: note: each undeclared
+identifier is reported only once for each function it appears in
+  330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+      |                      ^~~~~~~~~~~~~~~
+../drivers/gpu/drm/msm/msm_gpu.c:935:3: note: in expansion of macro
+=E2=80=98check_apriv=E2=80=99
+  935 |   check_apriv(gpu, MSM_BO_UNCACHED), gpu->aspace, &gpu->memptrs_bo,
+      |   ^~~~~~~~~~~
+make[5]: *** [../scripts/Makefile.build:266:
+drivers/gpu/drm/msm/msm_gpu.o] Error 1
+In file included from ../drivers/gpu/drm/msm/msm_ringbuffer.c:8:
+../drivers/gpu/drm/msm/msm_ringbuffer.c: In function =E2=80=98msm_ringbuffe=
+r_new=E2=80=99:
+../drivers/gpu/drm/msm/msm_gpu.h:330:22: error: =E2=80=98MSM_BO_MAP_PRIV=E2=
+=80=99
+undeclared (first use in this function)
+  330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+      |                      ^~~~~~~~~~~~~~~
+../drivers/gpu/drm/msm/msm_ringbuffer.c:30:3: note: in expansion of
+macro =E2=80=98check_apriv=E2=80=99
+   30 |   check_apriv(gpu, MSM_BO_WC | MSM_BO_GPU_READONLY),
+      |   ^~~~~~~~~~~
+../drivers/gpu/drm/msm/msm_gpu.h:330:22: note: each undeclared
+identifier is reported only once for each function it appears in
+  330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+      |                      ^~~~~~~~~~~~~~~
+../drivers/gpu/drm/msm/msm_ringbuffer.c:30:3: note: in expansion of
+macro =E2=80=98check_apriv=E2=80=99
+   30 |   check_apriv(gpu, MSM_BO_WC | MSM_BO_GPU_READONLY),
+      |   ^~~~~~~~~~~
+make[5]: *** [../scripts/Makefile.build:265:
+drivers/gpu/drm/msm/msm_ringbuffer.o] Error 1
+make[5]: Target '__build' not remade because of errors.
+make[4]: *** [../scripts/Makefile.build:500: drivers/gpu/drm/msm] Error 2
+make[4]: Target '__build' not remade because of errors.
+make[3]: *** [../scripts/Makefile.build:500: drivers/gpu/drm] Error 2
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [../scripts/Makefile.build:500: drivers/gpu] Error 2
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [/linux/Makefile:1729: drivers] Error 2
+make[1]: Target 'modules' not remade because of errors.
+make: *** [Makefile:179: sub-make] Error 2
+make: Target 'modules' not remade because of errors.
 
->   	if (is_ram && !IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT) &&
->   	    min(addr, end) < phys_to_dma(dev, PFN_PHYS(min_low_pfn)))
->   		return false;
-> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> index 0d129421e75fc8..2b01d8f7baf160 100644
-> --- a/kernel/dma/mapping.c
-> +++ b/kernel/dma/mapping.c
-> @@ -144,6 +144,10 @@ dma_addr_t dma_map_page_attrs(struct device *dev, struct page *page,
->   	dma_addr_t addr;
->   
->   	BUG_ON(!valid_dma_direction(dir));
-> +
-> +	if (WARN_ON_ONCE(!dev->dma_mask))
-> +		return DMA_MAPPING_ERROR;
-> +
->   	if (dma_map_direct(dev, ops))
->   		addr = dma_direct_map_page(dev, page, offset, size, dir, attrs);
->   	else
-> @@ -179,6 +183,10 @@ int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
->   	int ents;
->   
->   	BUG_ON(!valid_dma_direction(dir));
-> +
-> +	if (WARN_ON_ONCE(!dev->dma_mask))
-> +		return 0;
-> +
->   	if (dma_map_direct(dev, ops))
->   		ents = dma_direct_map_sg(dev, sg, nents, dir, attrs);
->   	else
-> @@ -217,6 +225,9 @@ dma_addr_t dma_map_resource(struct device *dev, phys_addr_t phys_addr,
->   	if (WARN_ON_ONCE(pfn_valid(PHYS_PFN(phys_addr))))
->   		return DMA_MAPPING_ERROR;
->   
-> +	if (WARN_ON_ONCE(!dev->dma_mask))
-> +		return DMA_MAPPING_ERROR;
-> +
->   	if (dma_map_direct(dev, ops))
->   		addr = dma_direct_map_resource(dev, phys_addr, size, dir, attrs);
->   	else if (ops->map_resource)
-> 
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
