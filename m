@@ -2,113 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3D726AAB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCEF26AAE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbgIORbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:31:19 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36794 "EHLO m43-7.mailgun.net"
+        id S1727960AbgIORk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727787AbgIOQsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:48:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600188468; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=Zj8H4MSyOK22ukzy0KaQrrwY/oa0CFBox252XyYOyuw=; b=q6qIda//iJpOCMIs080u+FL15CDoC1p7sIVVm31uvbQnqisbeVnlNhmh9M2iry15gFKtGMn+
- 9pl245VtIVrnBeFlvOWw1bTecrIZpB0YhQE335lmukRJvotSyHqupH2p8FO4UEmRHsDUm0q+
- jVP6WkevoBRKdEv78iAVBH0Lnr8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f60ed6e4ba82a82fd297e64 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 16:35:58
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9FA55C43395; Tue, 15 Sep 2020 16:35:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727881AbgIORPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:15:55 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E838C433C8;
-        Tue, 15 Sep 2020 16:35:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5E838C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Eric Anholt <eric@anholt.net>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/msm: Fix the a650 hw_apriv check
-Date:   Tue, 15 Sep 2020 10:35:51 -0600
-Message-Id: <20200915163551.1713571-1-jcrouse@codeaurora.org>
-X-Mailer: git-send-email 2.25.1
+        by mail.kernel.org (Postfix) with ESMTPSA id 00CA520829;
+        Tue, 15 Sep 2020 16:51:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600188719;
+        bh=tEfWkFhBw6aXsEPuLRdnhZblwHrDK74rFy82LcC3M38=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aRlOZ5m2CH1ifaqJh3Aj12xUWVN2zrA9yc3v1GZ4Ewmd/3170CShpLgLtkKJLZ+HK
+         TTlUFvhZINdLyXCaqz/1nqN7ZdSiV/7+koF/F1aZs6Dbo0sa5OF38RVjUX4Rnx9EeT
+         /BnxHEVTI5jfW33qRZSQwPwQ9qynRV4j/JoMkDGA=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 986C9400E9; Tue, 15 Sep 2020 13:51:56 -0300 (-03)
+Date:   Tue, 15 Sep 2020 13:51:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 04/11] perf parse-event: Fix cpu map leaks
+Message-ID: <20200915165156.GL720847@kernel.org>
+References: <20200915031819.386559-1-namhyung@kernel.org>
+ <20200915031819.386559-5-namhyung@kernel.org>
+ <20200915121814.GE720847@kernel.org>
+ <CAM9d7chORRmiE2R4LnzGh0uS2nKqL_tk+qxV2TfeqZctvCsJ5w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7chORRmiE2R4LnzGh0uS2nKqL_tk+qxV2TfeqZctvCsJ5w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 604234f33658 ("drm/msm: Enable expanded apriv support for a650")
-was checking the result of adreno_is_a650() before the gpu revision
-got probed in adreno_gpu_init() so it was always coming across as
-false. Snoop into the revision ID ahead of time to correctly set the
-hw_apriv flag so that it can be used by msm_gpu to properly setup
-global buffers.
+Em Tue, Sep 15, 2020 at 11:39:56PM +0900, Namhyung Kim escreveu:
+> Hi Arnaldo,
+> 
+> On Tue, Sep 15, 2020 at 9:18 PM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Tue, Sep 15, 2020 at 12:18:12PM +0900, Namhyung Kim escreveu:
+> > > Like evlist cpu map, evsel's cpu map should have proper refcount by
+> > > releasing the original count after creation.
+> >
+> > "releasing original count after creation"?
+> >
+> > There are two fixes here, one its legit, i.e. when failing to create
+> > the new evsel, if you created the perf_cpu_map, drop the refcount,
+> > which, in this case, will free it since perf_cpu_map__new() sets it to
+> > 1.
+> >
+> > But what about the other? Humm, I see, since a new refcount is being
+> > obtained, then we need to drop the first.
+> >
+> > This all got complicated, perhaps the following patch is simpler?
+> >
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > index c4d2394e2b2dc60f..3dceeacf8669bc5d 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -353,18 +353,20 @@ __add_event(struct list_head *list, int *idx,
+> >             const char *cpu_list)
+> >  {
+> >         struct evsel *evsel;
+> > -       struct perf_cpu_map *cpus = pmu ? pmu->cpus :
+> > +       struct perf_cpu_map *cpus = pmu ? perf_cpu_map__get(pmu->cpus) :
+> >                                cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
+> >
+> >         if (init_attr)
+> >                 event_attr_init(attr);
+> >
+> >         evsel = evsel__new_idx(attr, *idx);
+> > -       if (!evsel)
+> > +       if (!evsel) {
+> > +               perf_cpu_map__put(cpus);
+> >                 return NULL;
+> > +       }
+> >
+> >         (*idx)++;
+> > -       evsel->core.cpus   = perf_cpu_map__get(cpus);
+> > +       evsel->core.cpus     = cpus;
+> >         evsel->core.own_cpus = perf_cpu_map__get(cpus);
+> >         evsel->core.system_wide = pmu ? pmu->is_uncore : false;
+> >         evsel->auto_merge_stats = auto_merge_stats;
+> >
+> >
+> > ---
+> >
+> > I.e. if we're going to share pmu->cpus, grab the necessary refcount at
+> > that point, if we're going to create one (pmu == NULL), then
+> > perf_cpu_map__new() will have the refcount we need (will set it to 1).
+> >
+> > Then, if we fail to create the new evsel, we just drop the refcount we
+> > got either from perf_cpu_map__get(pmu->cpus) or from
+> > perf_cpu_map__new(cpu_list) (NULL is ok for __put() operations, that
+> > covers that last ': NULL').
+> >
+> > And then, when we go make evsel->core.cpus share that cpu_map, we know
+> > we have the necessary refcount already, right?
+> 
+> Indeed! This looks a lot better.  Do you want me to resend?
 
-Fixes: 604234f33658 ("drm/msm: Enable expanded apriv support for a650")
-Reported-by: Jonathan Marek <jonathan@marek.ca>
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-Tested-by: Jonathan Marek <jonathan@marek.ca>
----
+Please, feel free to use whatever snippets from my explanations.
 
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+But please consider breaking it into two patches, without thinking too
+much about it at this time, it seems there are two fixes to be done in
+this case.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 74bc27eb4203..f3b6d93c207c 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1048,6 +1048,8 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
- {
- 	struct msm_drm_private *priv = dev->dev_private;
- 	struct platform_device *pdev = priv->gpu_pdev;
-+	struct adreno_platform_config *config = pdev->dev.platform_data;
-+	const struct adreno_info *info;
- 	struct device_node *node;
- 	struct a6xx_gpu *a6xx_gpu;
- 	struct adreno_gpu *adreno_gpu;
-@@ -1064,7 +1066,14 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
- 	adreno_gpu->registers = NULL;
- 	adreno_gpu->reg_offsets = a6xx_register_offsets;
- 
--	if (adreno_is_a650(adreno_gpu))
-+	/*
-+	 * We need to know the platform type before calling into adreno_gpu_init
-+	 * so that the hw_apriv flag can be correctly set. Snoop into the info
-+	 * and grab the revision number
-+	 */
-+	info = adreno_info(config->rev);
-+
-+	if (info && info->revn == 650)
- 		adreno_gpu->base.hw_apriv = true;
- 
- 	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
--- 
-2.25.1
-
+- Arnaldo
