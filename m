@@ -2,164 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDF9269E5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6987269E5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgIOGVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 02:21:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726033AbgIOGVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 02:21:11 -0400
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E769820829;
-        Tue, 15 Sep 2020 06:21:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600150871;
-        bh=yHPOwHAJMf2CyGYn5iaGApE31+NbMN1jtYRrQr3OqtY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TmmxknEGZyvx8vlGW5CGW73+O4uXGgraFnOf4HjrP8W3fP+hO00OxomgQPDZMrWul
-         TTPtnmKpuFwwNrUFpHPuMsrGwVxISsxidGAMi4sBmKygdDvEVG1y6hO3MT19lxjr8u
-         N8b5Mw4ZsilvmmxhDCjXlk2EUymtxsG5fkzIFbZw=
-Received: by mail-oi1-f181.google.com with SMTP id t76so2601491oif.7;
-        Mon, 14 Sep 2020 23:21:10 -0700 (PDT)
-X-Gm-Message-State: AOAM532JEFrNyVHpVvb+wHWzd3dsPQ590j1jMbQS1d/HZBmAzKD+2EmP
-        mFapXA9Xoy8foO4dBQsD5kaexBIBbd9lTXLeW0Y=
-X-Google-Smtp-Source: ABdhPJyUSykKZBGXRh2yEfSyDpEqCADm2R5enp/Wn0v7qrNEGX7YgMeVQQUInE2Y4YU+sX9Jw9CdsuzBUOw9ncgQn/s=
-X-Received: by 2002:aca:d845:: with SMTP id p66mr2094330oig.47.1600150870261;
- Mon, 14 Sep 2020 23:21:10 -0700 (PDT)
+        id S1726110AbgIOGWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 02:22:19 -0400
+Received: from mail-eopbgr30070.outbound.protection.outlook.com ([40.107.3.70]:65346
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726031AbgIOGWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 02:22:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VhQXhreAam5xcAuSxTzRwk4ncAu72mNvpmbbfz1LQ77N0g6NwshEbTi8G1uNxljZ4ElzSncz/qFtmFFkD5mgaAtVBPDIJRnZSLlYDMcLNpUzjKpo9Ol2mlMUTUJUk4Eni/RocjTsFgYgHty2KwN6TwZaapgs6VwUsFevLKUg58iY6l0cM5JwFLjlXFZTXXUFa8Rb+5urg/cRHG7nENnPYE80VEuePUAndmWmLCiSPY/dzAbKTp3hngFuJrNlkUTLr1GcltSwzUKyUqHYpYsiCX83b5GIok/kluXjNEVySK/l4m9Q6mx+/J7ieiepdSHvRdg0EfFVtVPY1wAk8LrhOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YXeU/0VsJkIBmEBhrVtJJMC7t0T5f/DOI7CKH4RQkxc=;
+ b=WaXGCL5NMVODBx9a7AgB4gAtfsamNm02kKJsu7Dw+gpPpNvDf95WUgo6prcOCOK9t9chyU9c3p6mYNISYZpl6Ku/usNudmMK/2wZEjYnZA3BEkX1L/njBJOrTufqmI+IdgGkfaowK+Errikx5u7RPVa6srAiYA0505H/OxB8EkUZxVER25C/KWGTHZ/s1PldmErFxpdNuswEH5WrVFY7yfGdRRenP2H6OZN3KosfI8hCBVmimpIKiwj8IXNSbciLhuMK8nCW9DP6nltNCa2t08lEkKNnKv8FU+ZpvCXxUGmEz4wM0P6g9SAZwM6DPhzFoUODjDpclXMe3Yua+Ky30A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YXeU/0VsJkIBmEBhrVtJJMC7t0T5f/DOI7CKH4RQkxc=;
+ b=oHuE0uI2crsKc9Hhswkf8Bj5Vum7o4aRxjbGihwq3DJaLf5PQAj88QDiVrIHPIix0wRSA30dFsg6dZK/WXXfLjaXEpFphMvIP472YPy7SyXdbf9C/APOJm3UD2GXMwEfmHeYzOIyBNtYMn+ZhTu7erxFWHpJ6fSUXU976Opcmew=
+Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
+ by HE1PR0402MB3513.eurprd04.prod.outlook.com (2603:10a6:7:87::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.19; Tue, 15 Sep
+ 2020 06:22:10 +0000
+Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
+ ([fe80::c872:d354:7cf7:deb9]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
+ ([fe80::c872:d354:7cf7:deb9%3]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 06:22:10 +0000
+From:   "Z.q. Hou" <zhiqiang.hou@nxp.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        Leo Li <leoyang.li@nxp.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "M.h. Lian" <minghuan.lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>
+Subject: RE: [PATCH 2/7] PCI: layerscape: Change to use the DWC common link-up
+ check function
+Thread-Topic: [PATCH 2/7] PCI: layerscape: Change to use the DWC common
+ link-up check function
+Thread-Index: AQHWhNorVJwSS0SST0alZtlNLjNSpKlo8uEAgAAjpSA=
+Date:   Tue, 15 Sep 2020 06:22:08 +0000
+Message-ID: <HE1PR0402MB3371B5DC2E034A6F59CABB7484200@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+References: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
+ <20200907053801.22149-3-Zhiqiang.Hou@nxp.com> <20200915011944.GB640859@bogus>
+In-Reply-To: <20200915011944.GB640859@bogus>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a2c0b3e4-eef0-4a8e-419d-08d8593fad76
+x-ms-traffictypediagnostic: HE1PR0402MB3513:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR0402MB3513270A297639DE876079DC84200@HE1PR0402MB3513.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VvWEKgTem2Y4UbtzEqdR2FrJmh6uGdWebrlBKm4YiVJUhewmkKyx0XWlMZKTdiJnAMEJSmuw/G5FAM6uwXCodOZppMpE04yKgqTW79uNNEPzR7GhWw3C73BlNOvt+L4dFQjSFFYPHLSie5+XV7eRhW/S1AWvGkC+v9csu09sOgBAWM8pli7tzbOOo7UibXka9eBtchd2POhVWjiOrM4FF68248cBlD1NzedRGLnWnLwnfvwi8o1NtwqUldF2BARQdLMEwB8RtNuCDXeAvAx5+eONM+4m2a7EQ6XhDYEaPAmGTI+XWq0MMfMn612XOQo/YCNiP6RUZXUq6m5KVOh0LmWeeow2yg7mqB4jwzeoznYLdZgWyUfSid0ukiSRTHbC
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(396003)(39860400002)(5660300002)(4326008)(83380400001)(55016002)(478600001)(71200400001)(66476007)(9686003)(64756008)(6506007)(53546011)(66946007)(7696005)(76116006)(8676002)(8936002)(186003)(66446008)(26005)(66556008)(86362001)(2906002)(54906003)(33656002)(6916009)(316002)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: V+zXsTCWN/5l0FhkeZLKPiJdg+xkQrWMtAU1P99drpizr5w25QTyv3xNw/bIxbpbMTUl1BknIWElWqdykUgl3cw9akbOJfarRfQrKCgmZUcJYEf3PTuH1MdrStfx+yeXBYU9OVYGRnf5i57AGf1ajYracoHJKi60w8y7E7tFjt+2SH4Ix6pcypn5qNIKQlus5eMks6bUGrMN146947JY3+0XqTBJwxyctevu3N/9zHo1P+oGyWKYRtCRHL+QKr2m9I5len10LF5m/SU9H4qXI7DXnuj7ViUnzxQhvIb+MRNj1ufqb9VjcRZsCAc7OOLwWz1F0n9EEGSowttq62yLCMwEl/mTlns+EivVtFkwwonvqrKjigAs4vY1AwIB80Bv1eH8eh4BtVPaVWzRk0uELHbD8pVIIKA9mA2stoNW2Bkb8EZw9Fg+AGrGSFULU7edln3wydlKpIR/LnK47v+vCg3R2NuvssLVTHfJTjURNVHpN398EldtZ3qQZ3xha1+lgUSM9i+n5tjkU6kh2fc09PQGvsbJa97+t9wbxpW4H9SA1WZSdWSlMchVcKyT6mRDLLxMgbtXIeKDTGRoJuto3tZIbzXiCos4MkpOBjIJVJYFKZ4KzFFF4lqM8lE12LnVUrqoxtOsqocQKwZkjAZlAA==
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 15 Sep 2020 09:20:59 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
-Message-ID: <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2c0b3e4-eef0-4a8e-419d-08d8593fad76
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 06:22:09.8716
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LBD4iq3cNda0i0XtAFpYUIqZKuivfLR5GfoS+5eTDozYOptedBFAfja/7xUb/gQ5KOQf0z2HYeXv+jX25ne9Rg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0402MB3513
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 01:43, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Sep 14, 2020 at 3:24 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Ard and Herbert added to participants: see
-> > chacha20poly1305_crypt_sg_inplace(), which does
-> >
-> >         flags = SG_MITER_TO_SG;
-> >         if (!preemptible())
-> >                 flags |= SG_MITER_ATOMIC;
-> >
-> > introduced in commit d95312a3ccc0 ("crypto: lib/chacha20poly1305 -
-> > reimplement crypt_from_sg() routine").
->
-> As far as I can tell, the only reason for this all is to try to use
-> "kmap()" rather than "kmap_atomic()".
->
-> And kmap() actually has the much more complex "might_sleep()" tests,
-> and apparently the "preemptible()" check wasn't even the proper full
-> debug check, it was just a complete hack to catch the one that
-> triggered.
->
-
-This was not driven by a failing check.
-
-The documentation of kmap_atomic() states the following:
-
- * The use of kmap_atomic/kunmap_atomic is discouraged - kmap/kunmap
- * gives a more generic (and caching) interface. But kmap_atomic can
- * be used in IRQ contexts, so in some (very limited) cases we need
- * it.
-
-so if this is no longer accurate, perhaps we should fix it?
-
-But another reason I tried to avoid kmap_atomic() is that it disables
-preemption unconditionally, even on 64-bit architectures where HIGHMEM
-is irrelevant. So using kmap_atomic() here means that the bulk of
-WireGuard packet encryption runs with preemption disabled, essentially
-for legacy reasons.
-
-
-> From a quick look, that code should probably just get rid of
-> SG_MITER_ATOMIC entirely, and alwayse use kmap_atomic().
->
-> kmap_atomic() is actually the faster and proper interface to use
-> anyway (never mind that any of this matters on any sane hardware). The
-> old kmap() and kunmap() interfaces should generally be avoided like
-> the plague - yes, they allow sleeping in the middle and that is
-> sometimes required, but if you don't need that, you should never ever
-> use them.
->
-> We used to have a very nasty kmap_atomic() that required people to be
-> very careful and know exactly which atomic entry to use, and that was
-> admitedly quite nasty.
->
-> So it _looks_ like this code started using kmap() - probably back when
-> kmap_atomic() was so cumbersome to use - and was then converted
-> (conditionally) to kmap_atomic() rather than just changed whole-sale.
-> Is there actually something that wants to use those sg_miter functions
-> and sleep?
->
-> Because if there is, that choice should come from the outside, not
-> from inside lib/scatterlist.c trying to make some bad guess based on
-> the wrong thing entirely.
->
->                  Linus
+SGkgUm9iLA0KDQpUaGFua3MgYSBsb3QgZm9yIHlvdXIgcmV2aWV3IQ0KDQo+IC0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+
+IFNlbnQ6IDIwMjDE6jnUwjE1yNUgOToyMA0KPiBUbzogWi5xLiBIb3UgPHpoaXFpYW5nLmhvdUBu
+eHAuY29tPg0KPiBDYzogbGludXgtcGNpQHZnZXIua2VybmVsLm9yZzsgZGV2aWNldHJlZUB2Z2Vy
+Lmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGJoZWxnYWFzQGdv
+b2dsZS5jb207DQo+IHNoYXduZ3VvQGtlcm5lbC5vcmc7IExlbyBMaSA8bGVveWFuZy5saUBueHAu
+Y29tPjsNCj4gbG9yZW56by5waWVyYWxpc2lAYXJtLmNvbTsgZ3VzdGF2by5waW1lbnRlbEBzeW5v
+cHN5cy5jb207IE0uaC4gTGlhbg0KPiA8bWluZ2h1YW4ubGlhbkBueHAuY29tPjsgTWluZ2thaSBI
+dSA8bWluZ2thaS5odUBueHAuY29tPjsgUm95IFphbmcNCj4gPHJveS56YW5nQG54cC5jb20+DQo+
+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMi83XSBQQ0k6IGxheWVyc2NhcGU6IENoYW5nZSB0byB1c2Ug
+dGhlIERXQyBjb21tb24NCj4gbGluay11cCBjaGVjayBmdW5jdGlvbg0KPiANCj4gT24gTW9uLCBT
+ZXAgMDcsIDIwMjAgYXQgMDE6Mzc6NTZQTSArMDgwMCwgWmhpcWlhbmcgSG91IHdyb3RlOg0KPiA+
+IEZyb206IEhvdSBaaGlxaWFuZyA8WmhpcWlhbmcuSG91QG54cC5jb20+DQo+ID4NCj4gPiBUaGUg
+Y3VycmVudCBMYXllcnNjYXBlIFBDSWUgZHJpdmVyIGRpcmVjdGx5IHVzZXMgdGhlIHBoeXNpY2Fs
+IGxheWVyDQo+ID4gTFRTU00gY29kZSB0byBjaGVjayB0aGUgbGluay11cCBzdGF0ZSwgd2hpY2gg
+dHJlYXRzIHRoZSA+IEwwIHN0YXRlcyBhcw0KPiA+IGxpbmstdXAuIFRoaXMgaXMgbm90IGNvcnJl
+Y3QsIHNpbmNlIHRoZXJlIGlzIG5vdCBleHBsaWNpdCBtYXAgYmV0d2Vlbg0KPiA+IGxpbmstdXAg
+c3RhdGUgYW5kIExUU1NNLiBTbyB0aGlzIHBhdGNoIGNoYW5nZXMgdG8gdXNlIHRoZSBEV0MgY29t
+bW9uDQo+ID4gbGluay11cCBjaGVjayBmdW5jdGlvbi4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IEhvdSBaaGlxaWFuZyA8WmhpcWlhbmcuSG91QG54cC5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZl
+cnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaS1sYXllcnNjYXBlLmMgfCAxNDENCj4gPiArKy0tLS0t
+LS0tLS0tLS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgMTMx
+IGRlbGV0aW9ucygtKQ0KPiANCj4gSUlSQywgdGhlIGNvbW1vbiBmdW5jdGlvbiB1c2VzIGEgZGVi
+dWcgcmVnaXN0ZXIuIEkndmUgYmVlbiB3b25kZXJpbmcgZG8NCj4gdGhlIGNvbW1vbiBQQ0llIGNv
+bmZpZyBzcGFjZSByZWdpc3RlcnMgbm90IHdvcmsgb24gRFdDPyBJZiB5b3UgaGF2ZSBhbg0KPiBh
+bnN3ZXIsIHRoYXQgd291bGQgYmUgZ3JlYXQgZm9yIHNvbWUgcG90ZW50aWFsIGFkZGl0aW9uYWwg
+Y2xlYW51cHMuDQo+IA0KDQpZb3UncmUgcmlnaHQgaXQgdXNlcyBhIHBvcnQgZGVidWcgcmVnaXN0
+ZXIsIGJ1dCBJJ20gbm90IHN1cmUgaWYgdGhlIExpbmsgc3RhdHVzDQpSZWdpc3RlciBvZiBjb21t
+b24gUENJZSBjb25maWcgc3BhY2Ugd29ya3Mgb3Igbm90IG9uIERXQy4NCg0KR3VzdGF2bywgY2Fu
+IHlvdSBoZWxwIGFuc3dlciB0aGlzIHF1ZXJ5Pw0KDQpSZWdhcmRzLA0KWmhpcWlhbmcNCg0KPiBF
+aXRoZXIgd2F5LA0KPiANCj4gUmV2aWV3ZWQtYnk6IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5v
+cmc+DQo=
