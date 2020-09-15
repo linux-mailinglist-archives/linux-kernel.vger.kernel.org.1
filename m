@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC43226A1B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E847F26A1BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIOJKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
+        id S1726316AbgIOJLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgIOJKp (ORCPT
+        with ESMTP id S1726130AbgIOJLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:10:45 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E1DC06174A;
-        Tue, 15 Sep 2020 02:10:44 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t10so2501836wrv.1;
-        Tue, 15 Sep 2020 02:10:44 -0700 (PDT)
+        Tue, 15 Sep 2020 05:11:21 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242A8C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:11:20 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id a3so3077604oib.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=txzfbZrnakH2vaBjHQaalxnwyww01JCiom2JkdV9wmw=;
-        b=kUnELQITvGByzN0wd3bKx6OJ8cJu1FkJ9Pr9qtd4PWLcZRGOmv2Ig3K2HXRQLNwwT3
-         Z4Vak+BFA2C6caVthL7H6Nl0hDPfI0nmPbEJn5i+FrRPU09AsFQyAlWpYvZLhvLZzZXU
-         MuePsAIavbIZHbxXqMd1q5YNAMQW0kBM30a2mabmO1DARz/MxyxXDAQ/FT5IgUe+hS7Y
-         t1hlautpQ5hfbOzDumuqW4NCwbgmOLDFBATHnjI02gGFxidmilgni0GutfSB3QUxH8yH
-         jOG1NSmiCsVPUY5iXX6lBwO6qoEI+g2fKq311AdqErkcp2+U5MBm+3nUbbYHeeJ3+DZZ
-         3ZXQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mZ2fuXwvtEurQKAt+nYzsoseQxdibBoC9LJBPLlnUjM=;
+        b=dT59auUkAf3fXnvPDrmv8mgOLSdtkq4DpzpQzwNby4xzvgwjE2SJMPs801jzvFj5+7
+         OttO4eEy2IfkguxU70AFqCnX0IipJ9jFbJwPSptYl0BwGESo5/YPM4AY0D7hAoOV+b30
+         BWvSetMWr2QrtbqSyYy4n3yrw5FeTUANxWq5JJNnlN6vR/EvE9iVK1h3UEBemoARaWIe
+         OP57frMu/yttrBzoX5oD7e5SMnjHLT7/UjVc9o5iOW1gJ5S8Gs/VEyT8k7/ydXEUGXmv
+         WSinYH964Uf5mPm5jINDqxgtLHInsWkMVt8YuEa+A89kgp7jAenpIe3ZIHED27HO8ftC
+         E6zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=txzfbZrnakH2vaBjHQaalxnwyww01JCiom2JkdV9wmw=;
-        b=sSp+/ksMyv+B+USefKPsIBXeidhlw6my9HNoWOf/79YdBedXw4qK1qFyTY6NxpJihm
-         UdhXs82uML+NPXMRuNS4pK+FT0GpB7QoK9IY00gKRd+qy9UzpCASiep99E/gZaHx3QHg
-         yQsLqSH1pb4gPRvHfTHmsnnREPD6OGQy1/3LG8VOU0Iucoo1AGJxApjY6ZdcL1KXRg2n
-         BH82pUpks4MiiT3ibpOLx3hP5RjefPQAPzbHxEX629sJEJoWgRdOnp1CfVpcPUyOJ6Ic
-         tOV0z9n9vs/U7Cw8hVGaWZl3X+4IpL3ShUye6n1IXgxxT7nUJHkxm0rh69suixiciAWB
-         EuZQ==
-X-Gm-Message-State: AOAM531nj9STB83gLLdBWuUBXhAbuuehAzBKhnhDRqi/gFNjvAG990ID
-        8bko1ZPUHUQ9H0Ps77MzRAU=
-X-Google-Smtp-Source: ABdhPJyrM+kjDYT88l6l/yATdBcYMsvxnYG7dYhRpSdBRWmEE30T7FpRxEL3HiiAJTKwT3PHNC4CwQ==
-X-Received: by 2002:adf:f88d:: with SMTP id u13mr21801771wrp.213.1600161043205;
-        Tue, 15 Sep 2020 02:10:43 -0700 (PDT)
-Received: from localhost.localdomain ([85.153.229.188])
-        by smtp.gmail.com with ESMTPSA id k4sm25899060wrx.51.2020.09.15.02.10.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 02:10:42 -0700 (PDT)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     andy@infradead.org
-Cc:     matan@svgalib.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] platform/x86: fix kconfig dependency warning for LG_LAPTOP
-Date:   Tue, 15 Sep 2020 12:09:23 +0300
-Message-Id: <20200915090922.16423-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mZ2fuXwvtEurQKAt+nYzsoseQxdibBoC9LJBPLlnUjM=;
+        b=diEY1kboT9pdroIiOUa8K9ssvfPBO+lxRPICrHzLPUaBmS3keTXR4ow2ASi4Nh8B5y
+         SW5iOOsWEi7mt2/P+hEFHndcRCUFLB/0eKdEiCAr3/5VUXmRCTZoDue3kHMNF6O/1Px7
+         FzhAOT2efAIQuYC39SlGWCeYeQBgbzgqcRGEHyuj/ZykoLaYQV3sQZUdN5lzxJIyCoOo
+         7glg01lueIA4ZUQk1HNnt4ZJvksBIRAi1R8Nj3na1GFS8HanHTmcnKABGb0O6qp1y9l8
+         UU6S+nlp5t/o5v65ddL/2SBqeDSBUCUlewkaGczJ3W71Psgf3FB5bzEt2PujZ/0051K4
+         OD6Q==
+X-Gm-Message-State: AOAM532sEkSF6CaWAcOHpQj3RnbV1WBJH6Uy3G2likAba/0FUdZKFcc8
+        HQlpvKo70Y8Lz0cZ4EoIssihsVD30q2jjCdIiVY=
+X-Google-Smtp-Source: ABdhPJx8TWU3CPIVdiGuzIdBp2Cpma5uEr0hEMgLGory95+uWx9byEtbMC3zvqQ+upch6wMqAXsv9qUL6E3/y19qiyg=
+X-Received: by 2002:aca:3708:: with SMTP id e8mr2531991oia.101.1600161079428;
+ Tue, 15 Sep 2020 02:11:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200914100340.17608-1-vincent.guittot@linaro.org> <20200914100340.17608-5-vincent.guittot@linaro.org>
+In-Reply-To: <20200914100340.17608-5-vincent.guittot@linaro.org>
+From:   Jiang Biao <benbjiang@gmail.com>
+Date:   Tue, 15 Sep 2020 17:11:08 +0800
+Message-ID: <CAPJCdBmNK2ZbvsOkzx=6TnzSD=EN28MjD=4ZsmnWjb907MC41g@mail.gmail.com>
+Subject: Re: [PATCH 4/4] sched/fair: reduce busy load balance interval
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When LG_LAPTOP is enabled and NEW_LEDS is disabled, it results in the
-following Kbuild warning:
+Hi, Vincent
 
-WARNING: unmet direct dependencies detected for LEDS_CLASS
-  Depends on [n]: NEW_LEDS [=n]
-  Selected by [y]:
-  - LG_LAPTOP [=y] && X86 [=y] && X86_PLATFORM_DEVICES [=y] && ACPI [=y] && ACPI_WMI [=y] && INPUT [=y]
+On Mon, 14 Sep 2020 at 18:07, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> The busy_factor, which increases load balance interval when a cpu is busy,
+> is set to 32 by default. This value generates some huge LB interval on
+> large system like the THX2 made of 2 node x 28 cores x 4 threads.
+> For such system, the interval increases from 112ms to 3584ms at MC level.
+> And from 228ms to 7168ms at NUMA level.
+Agreed that the interval is too big for that case.
+But would it be too small for an AMD environment(like ROME) with 8cpu
+at MC level(CCX), if we reduce busy_factor?
+For that case, the interval could be reduced from 256ms to 128ms.
+Or should we define an MIN_INTERVAL for MC level to avoid too small interval?
 
-The reason is that LG_LAPTOP selects LEDS_CLASS without depending on or
-selecting NEW_LEDS while LEDS_CLASS is subordinate to NEW_LEDS.
+Thx.
+Regards,
+Jiang
 
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
-
-Fixes: dbf0c5a6b1f8 ("platform/x86: Add LG Gram laptop special features driver")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- drivers/platform/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 40219bba6801..81f6079d08e6 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1112,6 +1112,7 @@ config LG_LAPTOP
- 	depends on ACPI_WMI
- 	depends on INPUT
- 	select INPUT_SPARSEKMAP
-+	select NEW_LEDS
- 	select LEDS_CLASS
- 	help
- 	 This driver adds support for hotkeys as well as control of keyboard
--- 
-2.25.1
-
+>
+> Even on smaller system, a lower busy factor has shown improvement on the
+> fair distribution of the running time so let reduce it for all.
+>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>  kernel/sched/topology.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 1a84b778755d..a8477c9e8569 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1336,7 +1336,7 @@ sd_init(struct sched_domain_topology_level *tl,
+>         *sd = (struct sched_domain){
+>                 .min_interval           = sd_weight,
+>                 .max_interval           = 2*sd_weight,
+> -               .busy_factor            = 32,
+> +               .busy_factor            = 16,
+>                 .imbalance_pct          = 117,
+>
+>                 .cache_nice_tries       = 0,
+> --
+> 2.17.1
+>
