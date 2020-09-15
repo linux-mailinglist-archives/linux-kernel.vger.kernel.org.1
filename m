@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071C926B4AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F99F26B501
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbgIOX3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:29:49 -0400
-Received: from smtprelay0240.hostedemail.com ([216.40.44.240]:41866 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727391AbgIOX3p (ORCPT
+        id S1727542AbgIOXfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:35:30 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:41221 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727057AbgIOOf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:29:45 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 1864E182CED28;
-        Tue, 15 Sep 2020 23:29:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2693:2828:2898:2902:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:4250:4321:5007:6119:10004:10400:10848:11026:11232:11658:11914:12295:12296:12297:12438:12679:12740:12760:12895:13069:13160:13229:13311:13357:13439:14659:14721:21080:21433:21627:21740:21939:30012:30054:30070:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: kick55_460a4e627115
-X-Filterd-Recvd-Size: 1859
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 15 Sep 2020 23:29:42 +0000 (UTC)
-Message-ID: <9441ed0f247d0cac6e85f3847e1b4c32a199dd8f.camel@perches.com>
-Subject: Re: [PATCH] nfs: remove incorrect fallthrough label
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>
-Cc:     "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Hongxiang Lou <louhongxiang@huawei.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Date:   Tue, 15 Sep 2020 16:29:41 -0700
-In-Reply-To: <20200915225751.274531-1-ndesaulniers@google.com>
-References: <20200915225751.274531-1-ndesaulniers@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 15 Sep 2020 10:35:29 -0400
+Received: by mail-oi1-f193.google.com with SMTP id x69so4080721oia.8;
+        Tue, 15 Sep 2020 07:35:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XFJbV8gqtdgXON44AjHs01o37Q1aP3y+2+6LNfuSBbg=;
+        b=aMn+a2izYD0N0/HGHxw1jMkzf8xryX+UROIPQJMtvx6MkZ8aSP4tPsKyMY7IEsQsJj
+         0i/oKjOT4mrNzz3OwkhRV75lTRr7gfhfKKiBxnBWD8hGQHT608xJF7iNG8CroImYHEqy
+         uOv5DngDbmMqSUsQ844vnGmQjxYhObhdYRJk2Ddjsxeofb/0ZpzOuAyItba6rBgcpB7p
+         Uvc4Ne/CDP33v1oq+Geqpmmne9nPuxXYlFqkfdf3KtKYmXKKA2w6G/IQnn8wgCzZu6rd
+         hWINLfZ09KT1/FoJv3T261E0MZbrxbFyS2SH3qdY8IMEkTaaDcSp0n2mLFPVMovqoOTf
+         dl4w==
+X-Gm-Message-State: AOAM530NDM0ksVtY1k/u1uO/yqEmPJtMmo/ANCkkjDGhXEJhJnedrgfB
+        7VmYU9SJktJowkM0LT78Fi4MGqqQDfHbyWfQ5yOo89MS
+X-Google-Smtp-Source: ABdhPJzZ3UVmsOsTh4cqJBlDJ7vzhFrrmrBKHqhfHpds3yc77F0pv64OlNm3mClJtOeFqGGDm7n+2njVKcAuwriGQnA=
+X-Received: by 2002:aca:52d6:: with SMTP id g205mr3393965oib.54.1600176702442;
+ Tue, 15 Sep 2020 06:31:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200915131216.21137-1-fabrizio.castro.jz@renesas.com> <20200915131216.21137-4-fabrizio.castro.jz@renesas.com>
+In-Reply-To: <20200915131216.21137-4-fabrizio.castro.jz@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Sep 2020 15:31:30 +0200
+Message-ID: <CAMuHMdXdsHDKZS1ZdACK0-wGsc6cfQFGETykJ_sQX=bat3WZ7w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] media: dt-bindings: media: renesas,drif: Add r8a77990 support
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-15 at 15:57 -0700, Nick Desaulniers wrote:
-> There is no case after the default from which to fallthrough to. Clang
-> will error in this case (unhelpfully without context, see link below)
-> and GCC will with -Wswitch-unreachable.
-> 
-> The previous commit should have just removed the comment.
-[]
-> diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-[]
-> @@ -889,7 +889,6 @@ static struct nfs_server *nfs_try_mount_request(struct fs_context *fc)
->  		default:
->  			if (rpcauth_get_gssinfo(flavor, &info) != 0)
->  				continue;
-> -			fallthrough;
+On Tue, Sep 15, 2020 at 3:12 PM Fabrizio Castro
+<fabrizio.castro.jz@renesas.com> wrote:
+> The r8a77990 (a.k.a. R-Car E3) device tree schema is
+> compatible with R-Car H3 and M3-W schema.
+>
+> Document r8a77990 support within renesas,drif.yaml.
+>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 
-My preference would be to convert the fallthrough
-to a break here so if someone ever adds another
-label after default: for any reason, the code would
-still work as expected.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
->  		}
-> 
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
