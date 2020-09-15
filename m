@@ -2,114 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D7326ADB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30B726ADF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgIOTgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
+        id S1727729AbgIOTry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727713AbgIOTd7 (ORCPT
+        with ESMTP id S1727909AbgIOTmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:33:59 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B44FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:33:53 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l191so2524757pgd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:33:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ilVz9b6REPKrYKXGMSZDZJ/4PE1awctJVmiZRDvsYnM=;
-        b=T7rHCHK0yazSYxhoaeaaQAUQX0wEWreFsk+vdLUAaIF9OT32QkScrYl9jeFQDyyyot
-         FRTU55mhu00DYjkz+ay7xre1umF6i+TK5fLA42jOP6DXmvl+xpdoADeJ5AS8vjC4OY7D
-         BZBc9v0KPA2iVChzpd+yln0egBare2E3ka2pBIAtj1qAlWY9llCXvf+Mm+a0pbW85AN7
-         Iaz+RCoYUi92hv4Tk4E66SuTZGjDe+T6B9YNVdWgwCGXsm+mqj1s7PDj8XbydbB0Qhdn
-         K+X5RKUKrSIP3iGKzaZAeAROmrjiFMlEaXrDKax/xzn5mPcWoX2DIto3pJ0O3cW2UmUN
-         2itg==
+        Tue, 15 Sep 2020 15:42:52 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11640C06178A;
+        Tue, 15 Sep 2020 12:35:13 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id f82so4130882ilh.8;
+        Tue, 15 Sep 2020 12:35:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ilVz9b6REPKrYKXGMSZDZJ/4PE1awctJVmiZRDvsYnM=;
-        b=tAvjFt/6R72UWo8wnkXDZPtirVZg2GH8V+qsI3/IansmdTS0a5d6HRUbNUpw14Oo1/
-         WKYirfId5TbDdIBTqmEV0Kn37dAk4UZxrRh88PF/EZk/JVPrfjUgRO9SpE9e9rssx2jr
-         s4q17JW3L7LXEti3v/ve/vx+qr+mCeVsN/HGHh7LIwiC4UmpVSOqVy9e1/PVLucvv3/k
-         wrc54hDPsHoSNDQnlMwf12hmTJj9ersbSJ4QZZPtdvrlyfDGqjuD8jr5ex1Ypf1vRsQS
-         Cu3N7bVwr4VJwuMVPOjYCwuu1re3YRDpfW04hOuZPAlN4XKlb/wCmMaT21aN83srkKBy
-         R4Dw==
-X-Gm-Message-State: AOAM532/RIu5c4aU74+1cHpmcxlXBK8kVYPEAhW+N/2tbHU+JsowGW1x
-        hqHdQWCjHm5Z9MFCSKRNNWU=
-X-Google-Smtp-Source: ABdhPJznkwpNsB+sy8J0qXZ93Bl9U+K9ML5t3hG5Wx3ldlKKF3zqkhg3Z98T2b8VQn5WuCXwiK8rOQ==
-X-Received: by 2002:a62:fc06:0:b029:142:2501:397d with SMTP id e6-20020a62fc060000b02901422501397dmr3255460pfh.66.1600198432651;
-        Tue, 15 Sep 2020 12:33:52 -0700 (PDT)
-Received: from [10.230.28.120] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g129sm2655042pfb.9.2020.09.15.12.33.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 12:33:51 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] mailbox: Add Broadcom STB mailbox driver
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200915193109.16034-1-james.quinlan@broadcom.com>
- <20200915193109.16034-2-james.quinlan@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6924a28d-ceb6-6d96-b84a-9f8919de9866@gmail.com>
-Date:   Tue, 15 Sep 2020 12:33:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.2.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bEYIZJwFtkYMd++2czsZyfzHNeNAv9o1qIOqHFzs83s=;
+        b=JlvHoTyCln7peZxLP/IMUFVMjBLJJHQZG62Fz9ZlfKyucPG8A1wyGrQSr0vhAmb2b5
+         DGsaEWuIdLDqUhxlox+1ApD0vItYBDdqUgJxOV4p/STwLtFIhJfucZjwMuE9q4iCRES7
+         49u6R/DL0jbYpw2ngL2nZKaTk9lKceLTVNf/AH19ML7dvhhseKNUYYqhYuzvB0zZPdPj
+         MRaf5jMopDAql8JdFmR8pcu3KeCtvvLsYZynoDGdx3OQz2LMZOOkIcnzL6BuK0Q2luOD
+         u+8IptWjDLBeZuAO0Yv0rvc3vuPveESwNQ/WAMjlC7ud7lgcLy0n7vTcb3ashLFD6Eb+
+         cbcw==
+X-Gm-Message-State: AOAM532acJeW4yLjFvU/qopoEiMM0ooNtmwItx/BajMbsZjF8k1HUgHO
+        yIt9ACZVhGzfBdw3VDO0IQ==
+X-Google-Smtp-Source: ABdhPJxEdvAu0HMREPS2cEWjOs1/LLRV65dP5oXmITJa4Nat5+p+35d5hIBgWA7/MBqZGnzpYgIJig==
+X-Received: by 2002:a92:8b8d:: with SMTP id i135mr17718234ild.153.1600198512138;
+        Tue, 15 Sep 2020 12:35:12 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id f21sm7994348ioh.1.2020.09.15.12.35.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 12:35:11 -0700 (PDT)
+Received: (nullmailer pid 2368750 invoked by uid 1000);
+        Tue, 15 Sep 2020 19:35:10 -0000
+Date:   Tue, 15 Sep 2020 13:35:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 1/2] dt-bindings: mailbox : arm,mhu: Convert to
+ Json-schema
+Message-ID: <20200915193510.GA2362311@bogus>
+References: <7f50b23d157a97242c79bd8f2ab649a9272b9b59.1599731645.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200915193109.16034-2-james.quinlan@broadcom.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7f50b23d157a97242c79bd8f2ab649a9272b9b59.1599731645.git.viresh.kumar@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jim,
-
-On 9/15/2020 12:31 PM, Jim Quinlan wrote:
-> This is a simple mailbox driver to be used by the SCMI protocol stack.  It
-> only implements the agent-to-platform channel; we may implement the
-> platform-to-agent channel in the future.  An unusual aspect of this driver
-> is how the completion of an SCMI message is indicated.  An SCMI message is
-> initiated with an ARM SMC call, but the return of this call does not
-> indicate the execution or completion of the message.  Rather, the message's
-> completion is signaled by an interrupt.
+On Thu, Sep 10, 2020 at 03:25:18PM +0530, Viresh Kumar wrote:
+> Convert the DT binding over to Json-schema.
 > 
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->   drivers/mailbox/Kconfig           |  13 +++
->   drivers/mailbox/Makefile          |   2 +
->   drivers/mailbox/brcmstb-mailbox.c | 173 ++++++++++++++++++++++++++++++
->   3 files changed, 188 insertions(+)
->   create mode 100644 drivers/mailbox/brcmstb-mailbox.c
+> V3: New patch.
 > 
-> diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-> index 05b1009e2820..bebf7da778bc 100644
-> --- a/drivers/mailbox/Kconfig
-> +++ b/drivers/mailbox/Kconfig
-> @@ -254,4 +254,17 @@ config QCOM_IPCC
->   	  acts as an interrupt controller for receiving interrupts from clients.
->   	  Say Y here if you want to build this driver.
->   
-> +config BRCMSTB_MBOX
-> +	tristate "Broadcom STB Mailbox"
-> +	depends on ARM64 || ARM
-> +	depends on ARM_SCMI_PROTOCOL && ARCH_BRCMSTB
-> +	depends on SMP
+>  .../devicetree/bindings/mailbox/arm,mhu.yaml  | 86 +++++++++++++++++++
+>  .../devicetree/bindings/mailbox/arm-mhu.txt   | 43 ----------
+>  2 files changed, 86 insertions(+), 43 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mailbox/arm-mhu.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+> new file mode 100644
+> index 000000000000..4e840cedb2e4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+> @@ -0,0 +1,86 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mailbox/arm,mhu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ARM MHU Mailbox Controller
+> +
+> +maintainers:
+> +  - Jassi Brar <jaswinder.singh@linaro.org>
 
-We can actually remove the SMP dependency cannot we? This was needed 
-back when we used the hackish way of hooking to IPIs in the downstream 
-kernel which we fortunately no longer do.
--- 
-Florian
+Ideally, this should be someone familiar with the h/w, not the subsystem 
+maintainer. Sudeep or you in this case?
+ 
+> +
+> +description: |
+> +  The ARM's Message-Handling-Unit (MHU) is a mailbox controller that has 3
+> +  independent channels/links to communicate with remote processor(s).  MHU links
+> +  are hardwired on a platform. A link raises interrupt for any received data.
+> +  However, there is no specified way of knowing if the sent data has been read
+> +  by the remote. This driver assumes the sender polls STAT register and the
+> +  remote clears it after having read the data.  The last channel is specified to
+> +  be a 'Secure' resource, hence can't be used by Linux running NS.
+> +
+> +# We need a select here so we don't match all nodes with 'arm,primecell'
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: arm,mhu
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: arm,mhu
+> +      - const: arm,primecell
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: |
+> +      Interrupt information corresponding to each of the 3 links of MHU,
+> +      low-priority non-secure, high-priority non-secure, and secure.
+> +    maxItems: 3
+
+items:
+  - description: low-priority non-secure
+  - description: high-priority non-secure
+  - description: Secure
+
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: apb_pclk
+> +
+> +  '#mbox-cells':
+> +    description: Index of the channel.
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - '#mbox-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        mhuA: mailbox@2b1f0000 {
+> +            #mbox-cells = <1>;
+> +            compatible = "arm,mhu", "arm,primecell";
+> +            reg = <0 0x2b1f0000 0 0x1000>;
+> +            interrupts = <0 36 4>, /* LP-NonSecure */
+> +                         <0 35 4>, /* HP-NonSecure */
+> +                         <0 37 4>; /* Secure */
+> +            clocks = <&clock 0 2 1>;
+> +            clock-names = "apb_pclk";
+> +        };
+> +
+> +        mhu_client_scb: scb@2e000000 {
+> +            compatible = "fujitsu,mb86s70-scb-1.0";
+> +            reg = <0 0x2e000000 0 0x4000>;
+> +            mboxes = <&mhuA 1>; /* HP-NonSecure */
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/mailbox/arm-mhu.txt b/Documentation/devicetree/bindings/mailbox/arm-mhu.txt
+> deleted file mode 100644
+> index 4971f03f0b33..000000000000
+> --- a/Documentation/devicetree/bindings/mailbox/arm-mhu.txt
+> +++ /dev/null
+> @@ -1,43 +0,0 @@
+> -ARM MHU Mailbox Driver
+> -======================
+> -
+> -The ARM's Message-Handling-Unit (MHU) is a mailbox controller that has
+> -3 independent channels/links to communicate with remote processor(s).
+> - MHU links are hardwired on a platform. A link raises interrupt for any
+> -received data. However, there is no specified way of knowing if the sent
+> -data has been read by the remote. This driver assumes the sender polls
+> -STAT register and the remote clears it after having read the data.
+> -The last channel is specified to be a 'Secure' resource, hence can't be
+> -used by Linux running NS.
+> -
+> -Mailbox Device Node:
+> -====================
+> -
+> -Required properties:
+> ---------------------
+> -- compatible:		Shall be "arm,mhu" & "arm,primecell"
+> -- reg:			Contains the mailbox register address range (base
+> -			address and length)
+> -- #mbox-cells		Shall be 1 - the index of the channel needed.
+> -- interrupts:		Contains the interrupt information corresponding to
+> -			each of the 3 links of MHU.
+> -
+> -Example:
+> ---------
+> -
+> -	mhu: mailbox@2b1f0000 {
+> -		#mbox-cells = <1>;
+> -		compatible = "arm,mhu", "arm,primecell";
+> -		reg = <0 0x2b1f0000 0x1000>;
+> -		interrupts = <0 36 4>, /* LP-NonSecure */
+> -			     <0 35 4>, /* HP-NonSecure */
+> -			     <0 37 4>; /* Secure */
+> -		clocks = <&clock 0 2 1>;
+> -		clock-names = "apb_pclk";
+> -	};
+> -
+> -	mhu_client: scb@2e000000 {
+> -		compatible = "fujitsu,mb86s70-scb-1.0";
+> -		reg = <0 0x2e000000 0x4000>;
+> -		mboxes = <&mhu 1>; /* HP-NonSecure */
+> -	};
+> -- 
+> 2.25.0.rc1.19.g042ed3e048af
+> 
