@@ -2,118 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5AD26A0D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7472426A0E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgIOI0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:26:09 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:5171 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgIOI0F (ORCPT
+        id S1726333AbgIOI3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:29:41 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:40803 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgIOI33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:26:05 -0400
-X-Originating-IP: 90.65.88.165
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 57203240008;
-        Tue, 15 Sep 2020 08:26:02 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 10:26:02 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 3/3] ASoC: tlv320aic32x4: Enable fast charge
-Message-ID: <20200915082602.GH4230@piout.net>
-References: <20200911173140.29984-1-miquel.raynal@bootlin.com>
- <20200911173140.29984-4-miquel.raynal@bootlin.com>
+        Tue, 15 Sep 2020 04:29:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600158568; x=1631694568;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fTwn5T1pKJoEK59ue7GNAJ2X0iCUowH1el/JpPlsyUU=;
+  b=lQhjU+I+GdpllOf3d8j099orGe/okkaTrxVNPgdYD2PC7owKKNSAh11G
+   +pkn2lCV1oSp24KlSn8ItsZWFEA0XXxJRrGta3/ZEDfgN1GFZDLSauUpR
+   dgB4veDdbmsDiuhOzGZohzH4vFORPSQAidfZri/u89J6PlYxkCEMiDC+L
+   uxWWFqFwTLJLkDbhzegHd+i2XhDp5enpOCMfkukY+2MBMaj3uheuPZ9mN
+   AyuMRHoy4gc7n3dLkpR3glCDuUnfs8690ohSlQ55MuCISJLFb9OtLeUDq
+   bdoEO+eO0Coqf5kVv5GEGwWR5aAiB9xXdy8sCjXBsaFm7CGixZr+tqE8p
+   Q==;
+IronPort-SDR: NTXXUh8W7UGlRIh3NYvTRg3imnAHdVO9PbXTh/qe189wADZPMm7FsK6a1D28TsSmbjCRYpFM8W
+ Rbt/tSEuRZ9Gi7ruA/yfm4mxInDR6vItb5CywcYszlsqsy0pNNIDjRpoS3dxERxiLKmwiKBCtO
+ RV2JwkKzbKqC0bBxslYUlAxGXKvTGuDnYozLxz9x76Zx5nonaZzd3y2+++eoYpC8dditdUfF0x
+ sUF6DDG8NSfdqHSwJthwkjm2Mhs7BnVwPpRJY+fejd4pG6HrFPwXiJ3LWAiDkmSFANKQXewUUe
+ w1U=
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="26444736"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2020 01:29:27 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 01:29:26 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 15 Sep 2020 01:29:18 -0700
+Date:   Tue, 15 Sep 2020 08:26:51 +0000
+From:   "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+CC:     "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH RFC 2/7] bridge: cfm: Add BRIDGE_CFM to Kconfig.
+Message-ID: <20200915082651.4c5s734la37iqwfz@soft-test08>
+References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
+ <20200904091527.669109-3-henrik.bjoernlund@microchip.com>
+ <e145b130ba56460ecf11318f9a4550d2637aa222.camel@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20200911173140.29984-4-miquel.raynal@bootlin.com>
+In-Reply-To: <e145b130ba56460ecf11318f9a4550d2637aa222.camel@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Thanks for your review. I will update in the next version as suggested.
 
-On 11/09/2020 19:31:40+0200, Miquel Raynal wrote:
-> At power-up the analog circuits may take up to one full second before
-> being charged with the default configuration. Using the analog blocks
-> before they are ready generates a *very* crappy sound.
+Regards
+Henrik
+
+
+The 09/08/2020 12:18, Nikolay Aleksandrov wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> Enable the fast charge feature, which will require a bit more power
-> than normal charge but will definitely speed up the starting operation
-> by shrinking this delay to up to 40 ms.
+> On Fri, 2020-09-04 at 09:15 +0000, Henrik Bjoernlund wrote:
+> > This makes it possible to include or exclude the CFM
+> > protocol according to 802.1Q section 12.14.
+> >
+> > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
+> > ---
+> >  net/bridge/Kconfig      | 11 +++++++++++
+> >  net/bridge/br_device.c  |  3 +++
+> >  net/bridge/br_private.h |  3 +++
+> >  3 files changed, 17 insertions(+)
+> >
+> > diff --git a/net/bridge/Kconfig b/net/bridge/Kconfig
+> > index 80879196560c..3c8ded7d3e84 100644
+> > --- a/net/bridge/Kconfig
+> > +++ b/net/bridge/Kconfig
+> > @@ -73,3 +73,14 @@ config BRIDGE_MRP
+> >         Say N to exclude this support and reduce the binary size.
+> >
+> >         If unsure, say N.
+> > +
+> > +config BRIDGE_CFM
+> > +     bool "CFM protocol"
+> > +     depends on BRIDGE
+> > +     help
+> > +       If you say Y here, then the Ethernet bridge will be able to run CFM
+> > +       protocol according to 802.1Q section 12.14
+> > +
+> > +       Say N to exclude this support and reduce the binary size.
+> > +
+> > +       If unsure, say N.
+> > diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
+> > index a9232db03108..d12f5626a4b1 100644
+> > --- a/net/bridge/br_device.c
+> > +++ b/net/bridge/br_device.c
+> > @@ -476,6 +476,9 @@ void br_dev_setup(struct net_device *dev)
+> >       INIT_LIST_HEAD(&br->ftype_list);
+> >  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> >       INIT_LIST_HEAD(&br->mrp_list);
+> > +#endif
+> > +#if IS_ENABLED(CONFIG_BRIDGE_CFM)
+> > +     INIT_LIST_HEAD(&br->mep_list);
+> >  #endif
+> >       spin_lock_init(&br->hash_lock);
+> >
+> > diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+> > index e67c6d9e8bea..6294a3e51a33 100644
+> > --- a/net/bridge/br_private.h
+> > +++ b/net/bridge/br_private.h
+> > @@ -445,6 +445,9 @@ struct net_bridge {
+> >  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> >       struct list_head                mrp_list;
+> >  #endif
+> > +#if IS_ENABLED(CONFIG_BRIDGE_CFM)
+> > +     struct list_head                mep_list;
+> > +#endif
+> >  };
+> >
+> >  struct br_input_skb_cb {
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  sound/soc/codecs/tlv320aic32x4.c | 8 ++++++++
->  sound/soc/codecs/tlv320aic32x4.h | 7 +++++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-> index 7a1ffbaf48be..5fb8ba109bc9 100644
-> --- a/sound/soc/codecs/tlv320aic32x4.c
-> +++ b/sound/soc/codecs/tlv320aic32x4.c
-> @@ -1009,6 +1009,14 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
->  				AIC32X4_LADC_EN | AIC32X4_RADC_EN);
->  	snd_soc_component_write(component, AIC32X4_ADCSETUP, tmp_reg);
->  
-> +	/*
-> +	 * Enable the fast charging feature and ensure the needed 40ms ellapsed
-> +	 * before using the analog circuits.
-> +	 */
-> +	snd_soc_component_write(component, AIC32X4_REFPOWERUP,
-> +				AIC32X4_REFPOWERUP_40MS);
-> +	msleep(40);
-> +
-
-Maybe the actual REFPOWERUP value could be exposed as a control so
-userspace has a way to set the policy? 
-
-I'm not sure it make sense to have the delay in probe because it is not
-enable the analog part of the codec. The delay should probable be after
-the clocks have been set up because the datasheet says that it is mdac
-and madc that is starting the analog circuitry.
-
->  	return 0;
->  }
->  
-> diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-> index 38f47704bb75..7550122e9f8a 100644
-> --- a/sound/soc/codecs/tlv320aic32x4.h
-> +++ b/sound/soc/codecs/tlv320aic32x4.h
-> @@ -96,6 +96,7 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
->  #define AIC32X4_FLOATINGINPUT	AIC32X4_REG(1, 58)
->  #define AIC32X4_LMICPGAVOL	AIC32X4_REG(1, 59)
->  #define AIC32X4_RMICPGAVOL	AIC32X4_REG(1, 60)
-> +#define AIC32X4_REFPOWERUP	AIC32X4_REG(1, 123)
->  
->  /* Bits, masks, and shifts */
->  
-> @@ -205,6 +206,12 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
->  #define AIC32X4_RMICPGANIN_IN1L_10K	0x10
->  #define AIC32X4_RMICPGANIN_CM1R_10K	0x40
->  
-> +/* AIC32X4_REFPOWERUP */
-> +#define AIC32X4_REFPOWERUP_SLOW		0x04
-> +#define AIC32X4_REFPOWERUP_40MS		0x05
-> +#define AIC32X4_REFPOWERUP_80MS		0x06
-> +#define AIC32X4_REFPOWERUP_120MS	0x07
-> +
->  /* Common mask and enable for all of the dividers */
->  #define AIC32X4_DIVEN           BIT(7)
->  #define AIC32X4_DIV_MASK        GENMASK(6, 0)
-> -- 
-> 2.20.1
+> Looks good, perhaps also can use hlist to reduce the head size in net_bridge.
 > 
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+/Henrik
