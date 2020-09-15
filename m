@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D90E26AFDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260AA26AFDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgIOVqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:46:51 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:34984 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728053AbgIOVqV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728065AbgIOVqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 15 Sep 2020 17:46:21 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLSwWt096490;
-        Tue, 15 Sep 2020 21:46:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=gDATj3HQu5NX3oZavtrEX8T1UG7fxQo1Pj8JOqxXU+o=;
- b=uQb5YDGRqJZ8BQoTIrtCu4YuTgZb2evLd14yOxSBHm2RIdFAFC5Eavn+KFhGlbLK0ZZ1
- FRdm/wdR5WFH5VxPuDVXrhYEORylzbZZ9uHblLfNFXB2upQoe3FQNpQTII2iteZ1WTet
- xKruFtnNSYPIJqajW3VOZLf7lfchHSJ4Hd6/M0qoyXDYGw/MP7kpBmXged7Oi/PEwX/s
- Xgr2Uzp/G8kLALs51oujYpy3aDpXNTvrNOuCiplJ45srzgt0vVqSYp8HzzhlGIjjtQft
- 4m0eSdKzVoYbgqZelsEfzJBoCmCqrK47DoNTNfJGpCEaMFTRmDMGsHaTRxsCxgdFMdgg TA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33gp9m7r5h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 21:46:08 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLUhtW026571;
-        Tue, 15 Sep 2020 21:44:07 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 33h89031h3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 21:44:07 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FLi3Ym015438;
-        Tue, 15 Sep 2020 21:44:03 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 21:44:02 +0000
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     <linuxdrivers@attotech.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: esas2r: prevent a potential NULL dereference in
- esas2r_probe()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq11rj267ij.fsf@ca-mkp.ca.oracle.com>
-References: <20200909084653.79341-1-jingxiangfeng@huawei.com>
-Date:   Tue, 15 Sep 2020 17:44:00 -0400
-In-Reply-To: <20200909084653.79341-1-jingxiangfeng@huawei.com> (Jing
-        Xiangfeng's message of "Wed, 9 Sep 2020 16:46:53 +0800")
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727999AbgIOVqN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:46:13 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DD3C061797
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:45:14 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y15so930456wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9KMVC1YG0Zgl+FYlCNkjyM0mDusyj+CBKlA/V00wdpg=;
+        b=Xb7UczPakAqjh0s7AzauUIfKdNEFZ0A8228lXc8AQsdh0Kmwgk5lkpS+1EIwII0dXu
+         CIt/VcnjGSZnKr7dAV5DkDLY1s7Gq0NV6PFLJXD1PpTVUFIAYwiC2/97S5XAEWMrXErs
+         hKJd0JZ1yFJRuLER8PxCsexh05g/HlAvFn3HozjVa503kS1sZ59CL+E+51w47YvCDi+F
+         /1Pcg3HMmAbbxJ4GyeZ8LShbSB7ia87HAp48UYUOeiCzSoSG5v2WR1pamdXFRFjQj3RN
+         3++WXdntatcFiy56ghIk6GgXYYYXH/vYAsDUISCeFwz62KMhrKEtOIdyFLejxoUxWCP0
+         Dtjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9KMVC1YG0Zgl+FYlCNkjyM0mDusyj+CBKlA/V00wdpg=;
+        b=F612V4SsaiZY2XsqjGTwHoLHDZzqKwGNyK+7BzQZuXRierrrojNDKuriFS9qzMpNgD
+         zyjvE8/G93XMI/lh/BQS+R60EIwn3dgSy+SLafRqQGXALsH5GZfCOeZ61bba1ocFCJc5
+         vxcD3wfj8LIglTn9OhviHq7EB5o9bgg1m35msw+PqZR72tnJtZm2E8GOnDe92SoYnvKf
+         bj82kZJJmnbrNR+Xgnzu2gPd3gFFMTaeNeDDpEm3kJC0sse7kQx1bqQZUTIVX1kDt9Nf
+         hCMViguQcmaZDeVBTlSY1v8pFoob8LmoHDDvo6v2cO38X7m/KDwvkVEaYj+yVXBp0EyL
+         ixAg==
+X-Gm-Message-State: AOAM533LeMbQPA35++iqjB5Z+s9/33iuuwEOmrvpDXJ5u4jg0JYrJ97N
+        ew7kjYK0/vCgjcxEzcpXBq0zLw==
+X-Google-Smtp-Source: ABdhPJymR6Ry5JFvKnoD5Xxv9aObqndWEzvNlMxWJ9h6FbBqRTfoX1UHM+GtvIxRLfqeaRTG9SEQMg==
+X-Received: by 2002:a05:600c:2246:: with SMTP id a6mr1412838wmm.38.1600206313133;
+        Tue, 15 Sep 2020 14:45:13 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id i6sm31643363wra.1.2020.09.15.14.45.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Sep 2020 14:45:12 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     bjorn.andersson@linaro.org
+Cc:     robh+dt@kernel.org, robdclark@gmail.com, amit.pundir@linaro.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Georgi Djakov <georgi.djakov@linaro.org>
+Subject: [PATCH] arm64: dts: qcom: sdm845: Add interconnects property for display
+Date:   Wed, 16 Sep 2020 00:45:11 +0300
+Message-Id: <20200915214511.786-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=1 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150168
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150168
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add the interconnect paths that are used by the display (MDSS). This
+will allow the driver to request the needed bandwidth and prevent
+display flickering.
 
-Jing,
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
+This patch depends on:
+https://lore.kernel.org/r/20200903133134.17201-6-georgi.djakov@linaro.org/
 
-> esas2r_probe() calls scsi_host_put() in an error path. However,
-> esas2r_log_dev() may hit a potential NULL dereference. So use NUll instead.
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Wouldn't it be better to move the scsi_host_put() call after the error
-message?
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 86457d9bc229..f8f09ab3442f 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -3813,6 +3813,10 @@ mdss: mdss@ae00000 {
+ 			interrupt-controller;
+ 			#interrupt-cells = <1>;
+ 
++			interconnects = <&mmss_noc MASTER_MDP0 0 &mem_noc SLAVE_EBI1 0>,
++					<&mmss_noc MASTER_MDP1 0 &mem_noc SLAVE_EBI1 0>;
++			interconnect-names = "mdp0-mem", "mdp1-mem";
++
+ 			iommus = <&apps_smmu 0x880 0x8>,
+ 			         <&apps_smmu 0xc80 0x8>;
+ 
