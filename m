@@ -2,189 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CB026A6BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B7E26A6C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgIOOEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:04:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55684 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726745AbgIONzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:55:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A288AE0C;
-        Tue, 15 Sep 2020 13:35:27 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 15:35:11 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] mm: replace memmap_context by meminit_context
-Message-ID: <20200915133511.GA3736@dhcp22.suse.cz>
-References: <20200915121541.GD4649@dhcp22.suse.cz>
- <20200915132624.9723-1-ldufour@linux.ibm.com>
+        id S1726792AbgIOOHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726701AbgIONti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:49:38 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2153C061A2A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:37:07 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k18so3481853wmj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yqLuuHaDPyMZVYvimcEZ7loynWyyZ/gx/ESoc2H8RgI=;
+        b=NbFFa/sH+YSHIMHYgG6y+VP6Rtaq7brZnnEH5p9fkhvhHrS70345ou7fSALoGVmJEb
+         iQR1crdjRF9adAfUXYlZKFmFpZjm/TLUNapOr1q+jc33+3mA78YJimFt/qtHQApbP1PZ
+         9CAZ24egKoDdBnVZZUhuPJEvgfIiddMReF+1fH0bc7AlJ463gjh2JJRTc83/KpgHbOul
+         X/S5BuThOTrRcMsLAaU9EHU9bRZesA0P1e4zVmVc081PywUpFB64hrQaqBKCWFACJbO+
+         giZQQ00zWCI2DPoERJCzyZ3YpiEfxgko1GnPxi7xJF7mu+bYmjNK/pBgGAmCwkO+Jq++
+         uW0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yqLuuHaDPyMZVYvimcEZ7loynWyyZ/gx/ESoc2H8RgI=;
+        b=jcqpzDrCaB2IZg9dt2aqzEeGYSxXhILDSM+WuUOO0QixFhmVLfZywpDMMvL9a8E4oZ
+         mwL3h+cvTFKA6R/JFLusOOMU7OolMWsjNz5d9zAzyr0oh8FOsZgnNa5SCmyeeIGVV4+i
+         T9jx3hJUve5/qY3758fjlyf2ygD+KimPotZwnc355Y2hHpspyOUBm0KZzCGCU00o9SjR
+         0uJP++dfYFJtM2tZjRBacbXpkg0hRTeLbURsTkUQ/IXBpDcnuL4c8fzN+GELo9FyAlZD
+         cAadmL1S7C1JCGiOZfR1TkB0HMXdk6ApjV+4Fe/V5Iw58H+/kTErexodIzne0p4WgyS9
+         8ENA==
+X-Gm-Message-State: AOAM530zO9g9oMjrdvSj6SJ86jM9GKkzvDBnY8PzJ1b0fy3IUAgXJ+L2
+        kUFQS1Xj7eocVCC+0R1kiHcYFQ==
+X-Google-Smtp-Source: ABdhPJwDuI1DT+CUN2L98nHfTizNA421ofnREorseq+7fgmsW7YGpQnQiJxwQHh+JLrZGtgnQVxmqQ==
+X-Received: by 2002:a05:600c:4104:: with SMTP id j4mr4669381wmi.36.1600177026314;
+        Tue, 15 Sep 2020 06:37:06 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id d18sm27231619wrm.10.2020.09.15.06.37.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 06:37:05 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 15:37:05 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@nvidia.com>
+Cc:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4 10/15] net/mlx5: Add support for devlink
+ reload action fw activate
+Message-ID: <20200915133705.GR2236@nanopsycho.orion>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-11-git-send-email-moshe@mellanox.com>
+ <20200914135442.GJ2236@nanopsycho.orion>
+ <565e63b3-2a01-4eba-42d3-f5abc6794ee8@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915132624.9723-1-ldufour@linux.ibm.com>
+In-Reply-To: <565e63b3-2a01-4eba-42d3-f5abc6794ee8@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15-09-20 15:26:24, Laurent Dufour wrote:
-> The memmap_context enum is used to detect whether a memory operation is due
-> to a hot-add operation or happening at boot time.
-> 
-> Make it general to the hotplug operation and rename it as meminit_context.
-> 
-> There is no functional change introduced by this patch
-> 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Tue, Sep 15, 2020 at 02:44:02PM CEST, moshe@nvidia.com wrote:
+>
+>On 9/14/2020 4:54 PM, Jiri Pirko wrote:
+>> Mon, Sep 14, 2020 at 08:07:57AM CEST, moshe@mellanox.com wrote:
+>> 
+>> [..]
+>> 
+>> > +static void mlx5_fw_reset_complete_reload(struct mlx5_core_dev *dev)
+>> > +{
+>> > +	struct mlx5_fw_reset *fw_reset = dev->priv.fw_reset;
+>> > +
+>> > +	/* if this is the driver that initiated the fw reset, devlink completed the reload */
+>> > +	if (test_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags)) {
+>> > +		complete(&fw_reset->done);
+>> > +	} else {
+>> > +		mlx5_load_one(dev, false);
+>> > +		devlink_reload_implicit_actions_performed(priv_to_devlink(dev),
+>> > +							  DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE,
+>> > +							  BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
+>> > +							  BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE));
+>> Hmm, who originated the reset? Devlink_reload of the same devlink
+>> instance?
+>
+>
+>Not the same devlink instance for sure. I defer it by the flag above
+>MLX5_FW_RESET_FLAG_PENDING_COMP. If the flag set, I set complete to the
+>reload_down() waiting for it.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Hmm, thinking about the stats, as
+devlink_reload_implicit_actions_performed() is called only in case
+another instance does the reload, shouldn't it be a separate set of
+stats? I think that the user would like to distinguish local and remote
+reload, don't you think?
 
-> ---
->  arch/ia64/mm/init.c    |  6 +++---
->  include/linux/mm.h     |  2 +-
->  include/linux/mmzone.h | 11 ++++++++---
->  mm/memory_hotplug.c    |  2 +-
->  mm/page_alloc.c        | 10 +++++-----
->  5 files changed, 18 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-> index 0b3fb4c7af29..8e7b8c6c576e 100644
-> --- a/arch/ia64/mm/init.c
-> +++ b/arch/ia64/mm/init.c
-> @@ -538,7 +538,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
->  	if (map_start < map_end)
->  		memmap_init_zone((unsigned long)(map_end - map_start),
->  				 args->nid, args->zone, page_to_pfn(map_start),
-> -				 MEMMAP_EARLY, NULL);
-> +				 MEMINIT_EARLY, NULL);
->  	return 0;
->  }
->  
-> @@ -547,8 +547,8 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
->  	     unsigned long start_pfn)
->  {
->  	if (!vmem_map) {
-> -		memmap_init_zone(size, nid, zone, start_pfn, MEMMAP_EARLY,
-> -				NULL);
-> +		memmap_init_zone(size, nid, zone, start_pfn,
-> +				 MEMINIT_EARLY, NULL);
->  	} else {
->  		struct page *start;
->  		struct memmap_init_callback_data args;
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 1983e08f5906..e942f91ed155 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2409,7 +2409,7 @@ extern int __meminit __early_pfn_to_nid(unsigned long pfn,
->  
->  extern void set_dma_reserve(unsigned long new_dma_reserve);
->  extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
-> -		enum memmap_context, struct vmem_altmap *);
-> +		enum meminit_context, struct vmem_altmap *);
->  extern void setup_per_zone_wmarks(void);
->  extern int __meminit init_per_zone_wmark_min(void);
->  extern void mem_init(void);
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 8379432f4f2f..0f7a4ff4b059 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -824,10 +824,15 @@ bool zone_watermark_ok(struct zone *z, unsigned int order,
->  		unsigned int alloc_flags);
->  bool zone_watermark_ok_safe(struct zone *z, unsigned int order,
->  		unsigned long mark, int highest_zoneidx);
-> -enum memmap_context {
-> -	MEMMAP_EARLY,
-> -	MEMMAP_HOTPLUG,
-> +/*
-> + * Memory initialization context, use to differentiate memory added by
-> + * the platform statically or via memory hotplug interface.
-> + */
-> +enum meminit_context {
-> +	MEMINIT_EARLY,
-> +	MEMINIT_HOTPLUG,
->  };
-> +
->  extern void init_currently_empty_zone(struct zone *zone, unsigned long start_pfn,
->  				     unsigned long size);
->  
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index e9d5ab5d3ca0..fc25886ad719 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -729,7 +729,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
->  	 * are reserved so nobody should be touching them so we should be safe
->  	 */
->  	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
-> -			MEMMAP_HOTPLUG, altmap);
-> +			 MEMINIT_HOTPLUG, altmap);
->  
->  	set_zone_contiguous(zone);
->  }
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index fab5e97dc9ca..5661fa164f13 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5975,7 +5975,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
->   * done. Non-atomic initialization, single-pass.
->   */
->  void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
-> -		unsigned long start_pfn, enum memmap_context context,
-> +		unsigned long start_pfn, enum meminit_context context,
->  		struct vmem_altmap *altmap)
->  {
->  	unsigned long pfn, end_pfn = start_pfn + size;
-> @@ -6007,7 +6007,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
->  		 * There can be holes in boot-time mem_map[]s handed to this
->  		 * function.  They do not exist on hotplugged memory.
->  		 */
-> -		if (context == MEMMAP_EARLY) {
-> +		if (context == MEMINIT_EARLY) {
->  			if (overlap_memmap_init(zone, &pfn))
->  				continue;
->  			if (defer_init(nid, pfn, end_pfn))
-> @@ -6016,7 +6016,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
->  
->  		page = pfn_to_page(pfn);
->  		__init_single_page(page, pfn, zone, nid);
-> -		if (context == MEMMAP_HOTPLUG)
-> +		if (context == MEMINIT_HOTPLUG)
->  			__SetPageReserved(page);
->  
->  		/*
-> @@ -6099,7 +6099,7 @@ void __ref memmap_init_zone_device(struct zone *zone,
->  		 * check here not to call set_pageblock_migratetype() against
->  		 * pfn out of zone.
->  		 *
-> -		 * Please note that MEMMAP_HOTPLUG path doesn't clear memmap
-> +		 * Please note that MEMINIT_HOTPLUG path doesn't clear memmap
->  		 * because this is done early in section_activate()
->  		 */
->  		if (!(pfn & (pageblock_nr_pages - 1))) {
-> @@ -6137,7 +6137,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
->  		if (end_pfn > start_pfn) {
->  			size = end_pfn - start_pfn;
->  			memmap_init_zone(size, nid, zone, start_pfn,
-> -					 MEMMAP_EARLY, NULL);
-> +					 MEMINIT_EARLY, NULL);
->  		}
->  	}
->  }
-> -- 
-> 2.28.0
 
--- 
-Michal Hocko
-SUSE Labs
+>
+>
+>> [..]
