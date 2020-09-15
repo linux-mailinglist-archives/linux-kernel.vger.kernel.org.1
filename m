@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA7D26B674
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CEF26B73A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgIPAFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:05:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42984 "EHLO mail.kernel.org"
+        id S1727093AbgIPATt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:19:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726976AbgIOO3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:29:01 -0400
+        id S1726884AbgIOOWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:22:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD19622A84;
-        Tue, 15 Sep 2020 14:21:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 885FE22272;
+        Tue, 15 Sep 2020 14:17:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179689;
-        bh=X5TVl7ZiumJRI9j4Ydvor+UpyVUz5md9qjnynv0E7QA=;
+        s=default; t=1600179456;
+        bh=Hw1X4RE33CTzK4sAiopuEovNVhAN4Phqjl630csa/VU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gl4nJVn8R4U5GyGEpgMU9mWOGujZjcyyOiM1N4+024J4Y8k1q6K9R0juBlKvZmqtW
-         C45GUxTut8fSEkmyzHmJOCORsQH/OzJK+epfHuIj3mMTvKANl2F0GVqa6WVaQLK6yW
-         rxtzIFpHRjNjqOr5jPiOx8ohYDNQ1/ATaDWGFFE4=
+        b=uOSXVAXhAX5LaGy4jaSrXVypvXpoyaChxKkNy/0IB6UREcpIEByprdIBk/oFdFVl+
+         LghERBl7lQdV+sFODIoHJA1HpucjE/BFzMmiLrI5O0vjWQuZlmirwCjdOB9vKFAbqR
+         36aS24UyXLo4CkBTulEmzqocHan+8jpmueV3HAxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 5.4 079/132] iio:accel:bmc150-accel: Fix timestamp alignment and prevent data leak.
-Date:   Tue, 15 Sep 2020 16:13:01 +0200
-Message-Id: <20200915140648.055474786@linuxfoundation.org>
+        stable@vger.kernel.org, Sandeep Raghuraman <sandy.8925@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 37/78] drm/amdgpu: Fix bug in reporting voltage for CIK
+Date:   Tue, 15 Sep 2020 16:13:02 +0200
+Message-Id: <20200915140635.439028153@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-References: <20200915140644.037604909@linuxfoundation.org>
+In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
+References: <20200915140633.552502750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,74 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Sandeep Raghuraman <sandy.8925@gmail.com>
 
-commit a6f86f724394de3629da63fe5e1b7a4ab3396efe upstream.
+[ Upstream commit d98299885c9ea140c1108545186593deba36c4ac ]
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 16 byte array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by moving
-to a suitable structure in the iio_priv() data with alignment
-ensured by use of an explicit c structure.  This data is allocated
-with kzalloc so no data can leak appart from previous readings.
+On my R9 390, the voltage was reported as a constant 1000 mV.
+This was due to a bug in smu7_hwmgr.c, in the smu7_read_sensor()
+function, where some magic constants were used in a condition,
+to determine whether the voltage should be read from PLANE2_VID
+or PLANE1_VID. The VDDC mask was incorrectly used, instead of
+the VDDGFX mask.
 
-Fixes tag is beyond some major refactoring so likely manual backporting
-would be needed to get that far back.
+This patch changes the code to use the correct defined constants
+(and apply the correct bitshift), thus resulting in correct voltage reporting.
 
-Whilst the force alignment of the ts is not strictly necessary, it
-does make the code less fragile.
-
-Fixes: 3bbec9773389 ("iio: bmc150_accel: add support for hardware fifo")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sandeep Raghuraman <sandy.8925@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/bmc150-accel-core.c |   15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/accel/bmc150-accel-core.c
-+++ b/drivers/iio/accel/bmc150-accel-core.c
-@@ -189,6 +189,14 @@ struct bmc150_accel_data {
- 	struct mutex mutex;
- 	u8 fifo_mode, watermark;
- 	s16 buffer[8];
-+	/*
-+	 * Ensure there is sufficient space and correct alignment for
-+	 * the timestamp if enabled
-+	 */
-+	struct {
-+		__le16 channels[3];
-+		s64 ts __aligned(8);
-+	} scan;
- 	u8 bw_bits;
- 	u32 slope_dur;
- 	u32 slope_thres;
-@@ -922,15 +930,16 @@ static int __bmc150_accel_fifo_flush(str
- 	 * now.
- 	 */
- 	for (i = 0; i < count; i++) {
--		u16 sample[8];
- 		int j, bit;
- 
- 		j = 0;
- 		for_each_set_bit(bit, indio_dev->active_scan_mask,
- 				 indio_dev->masklength)
--			memcpy(&sample[j++], &buffer[i * 3 + bit], 2);
-+			memcpy(&data->scan.channels[j++], &buffer[i * 3 + bit],
-+			       sizeof(data->scan.channels[0]));
- 
--		iio_push_to_buffers_with_timestamp(indio_dev, sample, tstamp);
-+		iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
-+						   tstamp);
- 
- 		tstamp += sample_period;
- 	}
+diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
+index 219440bebd052..72c0a2ae2dd4f 100644
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
+@@ -3566,7 +3566,8 @@ static int smu7_read_sensor(struct pp_hwmgr *hwmgr, int idx,
+ 	case AMDGPU_PP_SENSOR_GPU_POWER:
+ 		return smu7_get_gpu_power(hwmgr, (uint32_t *)value);
+ 	case AMDGPU_PP_SENSOR_VDDGFX:
+-		if ((data->vr_config & 0xff) == 0x2)
++		if ((data->vr_config & VRCONF_VDDGFX_MASK) ==
++		    (VR_SVI2_PLANE_2 << VRCONF_VDDGFX_SHIFT))
+ 			val_vid = PHM_READ_INDIRECT_FIELD(hwmgr->device,
+ 					CGS_IND_REG__SMC, PWR_SVI2_STATUS, PLANE2_VID);
+ 		else
+-- 
+2.25.1
+
 
 
