@@ -2,225 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813BA269D13
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E85269D49
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgIOEWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 00:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
+        id S1726267AbgIOEYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 00:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgIOEWh (ORCPT
+        with ESMTP id S1726123AbgIOEYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 00:22:37 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628B2C06174A;
-        Mon, 14 Sep 2020 21:22:37 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id v54so2218403qtj.7;
-        Mon, 14 Sep 2020 21:22:37 -0700 (PDT)
+        Tue, 15 Sep 2020 00:24:14 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8992AC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 21:24:12 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w3so1561383ljo.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 21:24:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jvCpaWoKl3y2G34oeLNnfPa7Fz736trZYpBdRyWF9i8=;
-        b=LngxjjfDPrOlJfXqYYh4WhSQl5B5mZ1YqcI7LFSdhb8cl4ismbWIH30hiFPk3dE3Eo
-         ldA+hfAmuzEFVbfmV/C7FQk5bv3d6FuVjdjFofUTfJyXJuBt7AQX+4eoWoSBcJThvkMO
-         ZL3VSX7L173IJVjvaog1KCwHuP0UVAc82iLBE/cO1Ph0n4E7auJ90ECRg0451DxKdLDd
-         DEDUjXykbedQya734Un/uY+tDRP6UrMIYSJ6IEVVvrmLQrZUmz77yk3cau7JQbUXNoMa
-         4HjFC0BPY83V3BEF29MVU+RsWCTvH2c5uC0lcPpEMD5BRCkxRqCApUFte7g7eBG48hca
-         Y5fg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PBQszRvBcpddfdSGm+HLooLgRnTgwy/19XVpfGXCozI=;
+        b=uGJMXjqhCGd3SZkZNGGSyYMd0UpuNBHn8EY307GGWrsURCr0IYnhfzsd2LsuILvVBD
+         nhq31oHLmEj/x0agiZelOjAa82Zkloe/gbYmGcT3kE9IM0Hhrp6587dA0g/NkeDoK06y
+         TJeLCow/s0tr43DsoN+ZLLg46X7CxtZfFmIz8eJlSxPha0T5zdywm9w5bs5swQtjLLYZ
+         y3e6jC6HvnM8gdSm1CzmzsZgVa6ZxhNA91F84gVmB/ebZl4uJJ0I8eqi2HgnLrXTO4rb
+         Mwr4SK3ZUcus4de2TKsJzq5HcVnLnxNfzHOtptW/vSuSjsxdyMmo9VQId0s1ZAAEWDD3
+         I4Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jvCpaWoKl3y2G34oeLNnfPa7Fz736trZYpBdRyWF9i8=;
-        b=WgAgc4BnylK4cZMai7Mb633s5bESk1vhU2VjRHO0JO05soSSyq3+W+k2FutCkcFlcP
-         JZ2dRCPeErhfUoN8MeUSsT3hkM1HrD1y8y7oJlza0JYSsQL7rrMooc1603BqDXf5f+0F
-         I+UXr0/tLPSCPHU3jzDAnCH1luwbA6jkGsKBEKgCoyT4m1geQGBGdqVEUiST0RkeimIx
-         S9pn4226cYlGCdhnfZc7B+duyLvS8W45PJBjnCKERLw7WPvEHUe2EHS6j7NExnUxw4U1
-         pKooRzv5rHHPX6FvN8ZZqvTEGfRqgtKeD4tNqXp7Y0JPc0kV32v8K7oVtxxg0UywLZmg
-         bj/g==
-X-Gm-Message-State: AOAM530Sn4S19r7Tys/PR0GmTF9sQL2AOBIP/5ifF7W4JiNDmljm8U5e
-        S1baML8kMymb1K3lM9+RtfM=
-X-Google-Smtp-Source: ABdhPJz4bfs9/+ONXJ1VQ6YvzTdoWKSnoNzoKQ723kW8RplJdRZl9qTCJi/dGvPt6h4913anqPG1ug==
-X-Received: by 2002:ac8:5d43:: with SMTP id g3mr4191287qtx.295.1600143756335;
-        Mon, 14 Sep 2020 21:22:36 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id u66sm17422235qka.136.2020.09.14.21.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 21:22:35 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 21:22:33 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andy Lavr <andy.lavr@gmail.com>, Joe Perches <joe@perches.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v5] lib/string.c: implement stpcpy
-Message-ID: <20200915042233.GA816510@ubuntu-n2-xlarge-x86>
-References: <20200914160958.889694-1-ndesaulniers@google.com>
- <20200914161643.938408-1-ndesaulniers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PBQszRvBcpddfdSGm+HLooLgRnTgwy/19XVpfGXCozI=;
+        b=e5+MqgSSRTUXJ+7JWSY7+7tpTC9xVNHgdwMGaQA9q16keHDtaqp/U3cgaM7wSg2YK5
+         NV2gy4WwylDsnTLhFv2HcQMJ9EKMuPq6xEaJvol6zhBvzxoDmTqVFV9uU2Pep7Z3PuNc
+         cEnh9Yuy/E6HqQNocTlVvydF/EVr4oTJorVdgsDNKB/W1H2yqltNysPpCyv/zUojtSoA
+         fCM1Q4EbC7u9B8b8hutMegdC+ZhK9afODUgFcUPB0x+cLthqMBOWkmQgU61FG/0bQK8o
+         /0EuxduAJ6GZ3ypPbUeTx3pWvvFqJb/UBqEvv4wVxFj885VcP1eGSaOx+jAz38EA2Jp0
+         0H/Q==
+X-Gm-Message-State: AOAM530HBWmaNlvisiZlvEJWK8CbmKN9WYawr7en8K/EeSw84T9kHykL
+        xWSrbADtiRIjyvBCRt88e1ZsZaGKKIRe1CiXJpOIojkOquVMlMSp
+X-Google-Smtp-Source: ABdhPJy5vhhyUJ1ZCfBYqoNmC8bZgbT/qPaLlMhIvu1fHG+IKPeYfzky1LiSmZ5e/eIWs/dXZjluz6WJBbSRmjQHwgY=
+X-Received: by 2002:a2e:b8d1:: with SMTP id s17mr5818687ljp.222.1600143850965;
+ Mon, 14 Sep 2020 21:24:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914161643.938408-1-ndesaulniers@google.com>
+References: <20200909152047.27905-1-zangchunxin@bytedance.com>
+ <20200914093032.GG16999@dhcp22.suse.cz> <CAKRVAeP1yPDTcdcW+H6EnMrDHsWGNkooGcSyeYWHi8CXCc+u4Q@mail.gmail.com>
+ <20200914134713.GS16999@dhcp22.suse.cz> <CAKRVAeOejq8D63FC=Vhhu7VcRba__d-m8OGUQoRDvcUuh7L2ZA@mail.gmail.com>
+ <20200914151736.GA16999@dhcp22.suse.cz>
+In-Reply-To: <20200914151736.GA16999@dhcp22.suse.cz>
+From:   Chunxin Zang <zangchunxin@bytedance.com>
+Date:   Tue, 15 Sep 2020 12:23:59 +0800
+Message-ID: <CAKRVAeOQyx4+OjvQa2UV2cy3E6bB5epznjHudOJYqe8NC=Uqkg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm/vmscan: fix infinite loop in drop_slab_node
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:16:43AM -0700, Nick Desaulniers wrote:
-> LLVM implemented a recent "libcall optimization" that lowers calls to
-> `sprintf(dest, "%s", str)` where the return value is used to
-> `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-> in parsing format strings.  `stpcpy` is just like `strcpy` except it
-> returns the pointer to the new tail of `dest`.  This optimization was
-> introduced into clang-12.
-> 
-> Implement this so that we don't observe linkage failures due to missing
-> symbol definitions for `stpcpy`.
-> 
-> Similar to last year's fire drill with:
-> commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
-> 
-> The kernel is somewhere between a "freestanding" environment (no full libc)
-> and "hosted" environment (many symbols from libc exist with the same
-> type, function signature, and semantics).
-> 
-> As H. Peter Anvin notes, there's not really a great way to inform the
-> compiler that you're targeting a freestanding environment but would like
-> to opt-in to some libcall optimizations (see pr/47280 below), rather than
-> opt-out.
-> 
-> Arvind notes, -fno-builtin-* behaves slightly differently between GCC
-> and Clang, and Clang is missing many __builtin_* definitions, which I
-> consider a bug in Clang and am working on fixing.
-> 
-> Masahiro summarizes the subtle distinction between compilers justly:
->   To prevent transformation from foo() into bar(), there are two ways in
->   Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
->   only one in GCC; -fno-buitin-foo.
-> 
-> (Any difference in that behavior in Clang is likely a bug from a missing
-> __builtin_* definition.)
-> 
-> Masahiro also notes:
->   We want to disable optimization from foo() to bar(),
->   but we may still benefit from the optimization from
->   foo() into something else. If GCC implements the same transform, we
->   would run into a problem because it is not -fno-builtin-bar, but
->   -fno-builtin-foo that disables that optimization.
-> 
->   In this regard, -fno-builtin-foo would be more future-proof than
->   -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
->   may want to prevent calls from foo() being optimized into calls to
->   bar(), but we still may want other optimization on calls to foo().
-> 
-> It seems that compilers today don't quite provide the fine grain control
-> over which libcall optimizations pseudo-freestanding environments would
-> prefer.
-> 
-> Finally, Kees notes that this interface is unsafe, so we should not
-> encourage its use.  As such, I've removed the declaration from any
-> header, but it still needs to be exported to avoid linkage errors in
-> modules.
-> 
-> Reported-by: Sami Tolvanen <samitolvanen@google.com>
-> Suggested-by: Andy Lavr <andy.lavr@gmail.com>
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Joe Perches <joe@perches.com>
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+On Mon, Sep 14, 2020 at 11:17 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 14-09-20 23:02:15, Chunxin Zang wrote:
+> > On Mon, Sep 14, 2020 at 9:47 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > > On Mon 14-09-20 21:25:59, Chunxin Zang wrote:
+> > > > On Mon, Sep 14, 2020 at 5:30 PM Michal Hocko <mhocko@suse.com> wrot=
+e:
+> > > >
+> > > > > The subject is misleading because this patch doesn't fix an infin=
+ite
+> > > > > loop, right? It just allows the userspace to interrupt the operat=
+ion.
+> > > > >
+> > > > >
+> > > > Yes,  so we are making a separate patch follow Vlastimil's
+> > > recommendations.
+> > > > Use double of threshold to end the loop.
+> > >
+> > > That still means the changelog needs an update
+> > >
+> >
+> > The patch is already merged in Linux-next branch.  Can I update the
+> > changelog now?
+>
+> Yes. Andrew will refresh it. He doesn't have a git tree which would
+> prevent rewriting the patch.
+>
+> > This is my first patch, please forgive me :)
+>
+> No worries. The mm patch workflow is rather different from others.
+>
+> > > > On Thu, Sep 10, 2020 at 1:59 AM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+> > > > > > From: Chunxin Zang <zangchunxin@bytedance.com>
+> > > > > >
+> > > > > ...
+> > > > > - IMHO it's still worth to bail out in your scenario even without=
+ a
+> > > > > signal, e.g.
+> > > > > by the doubling of threshold. But it can be a separate patch.
+> > > > > Thanks!
+> > > > > ...
+> > > >
+> > > >
+> > > >
+> > > > On Wed 09-09-20 23:20:47, zangchunxin@bytedance.com wrote:
+> > > > > > From: Chunxin Zang <zangchunxin@bytedance.com>
+> > > > > >
+> > > > > > On our server, there are about 10k memcg in one machine. They u=
+se
+> > > memory
+> > > > > > very frequently. When I tigger drop caches=EF=BC=8Cthe process =
+will infinite
+> > > loop
+> > > > > > in drop_slab_node.
+> > > > >
+> > > > > Is this really an infinite loop, or it just takes a lot of time t=
+o
+> > > > > process all the metadata in that setup? If this is really an infi=
+nite
+> > > > > loop then we should look at it. My current understanding is that =
+the
+> > > > > operation would finish at some time it just takes painfully long =
+to get
+> > > > > there.
+> > > > >
+> > > >
+> > > > Yes,  it's really an infinite loop.  Every loop spends a lot of tim=
+e. In
+> > > > this time,
+> > > > memcg will alloc/free memory,  so the next loop, the total of  'fre=
+ed'
+> > > > always bigger than 10.
+> > >
+> > > I am still not sure I follow. Do you mean that there is somebody
+> > > constantly generating more objects to reclaim?
+> > >
+> >
+> > Yes, this is my meaning. :)
+> >
+> >
+> > > Maybe we are just not agreeing on the definition of an infinite loop =
+but
+> > > in my book that means that the final condition can never be met. Whil=
+e a
+> > > busy adding new object might indeed cause drop caches to loop for a l=
+ong
+> > > time this is to be expected from that interface as it is supposed to
+> > > drop all the cache and that can grow during the operation.
+> > > --
+> > >
+> >
+> > Because I have 10k memcg , all of them are heavy users of memory.
+> > During each loop, there are always more than 10 reclaimable objects
+> > generating, so the
+> > condition is never met.
+>
+> 10k or any number of memcgs shouldn't really make much of a difference.
+> Except for the time the scan adds. Fundamentally we are talking about
+> freed objects and whether they are on the global or per memcg lists
+> should result in a similar behavior.
+>
+> > The drop cache process has no chance to exit the
+> > loop.
+> > Although the purpose of the 'drop cache' interface is to release all
+> > caches, we still need a
+> > way to terminate it, e.g. in this case, the process took too long to ru=
+n .
+>
+> Yes, this is perfectly understandable. Having a bail out on fatal signal
+> is a completely reasonable thing to do. I am mostly confused by your
+> infinite loop claims and what the relation of this patch to it. I would
+> propose this wording instead
+>
+> "
+> We have observed that drop_caches can take a considerable amount of
+> time (<put data here>). Especially when there are many memcgs involved
+> because they are adding an additional overhead.
+>
+> It is quite unfortunate that the operation cannot be interrupted by a
+> signal currently. Add a check for fatal signals into the main loop
+> so that userspace can control early bailout.
+> "
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+I understand what you mean. Yes, you are right, The patch only
+provides a way for
+users to terminate the process, not to reduce time consumption, not improve
+the situation about loops.
+I will update the description of the patch in v3.
+Thanks so much :)
 
-It would be nice to get this into mainline sooner rather than later so
-that it can start filtering into the stable trees. ToT LLVM builds have
-been broken for a month now.
+> or something along those lines.
+>
+> >
+> >   root  357956 ... R    Aug25 21119854:55 echo 3 > /proc/sys/vm/drop_ca=
+ches
+>
+> --
+> Michal Hocko
+> SUSE Labs
 
-> Cc: stable@vger.kernel.org
-> Link: https://bugs.llvm.org/show_bug.cgi?id=47162
-> Link: https://bugs.llvm.org/show_bug.cgi?id=47280
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1126
-> Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
-> Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
-> Link: https://reviews.llvm.org/D85963
-> ---
-> Changes V5:
-> * fix missing parens in comment.
-> 
-> Changes V4:
-> * Roll up Kees' comment fixup from
->   https://lore.kernel.org/lkml/202009060302.4574D8D0E0@keescook/#t.
-> * Keep Nathan's tested by tag.
-> * Add Kees' reviewed by tag from
->   https://lore.kernel.org/lkml/202009031446.3865FE82B@keescook/.
-
-For the record, I don't see Kees' review tag on this.
-
-> 
-> Changes V3:
-> * Drop Sami's Tested by tag; newer patch.
-> * Add EXPORT_SYMBOL as per Andy.
-> * Rewrite commit message, rewrote part of what Masahiro said to be
->   generic in terms of foo() and bar().
-> * Prefer %NUL-terminated to NULL terminated. NUL is the ASCII character
->   '\0', as per Arvind and Rasmus.
-> 
-> Changes V2:
-> * Added Sami's Tested by; though the patch changed implementation, the
->   missing symbol at link time was the problem Sami was observing.
-> * Fix __restrict -> __restrict__ typo as per Joe.
-> * Drop note about restrict from commit message as per Arvind.
-> * Fix NULL -> NUL as per Arvind; NUL is ASCII '\0'. TIL
-> * Fix off by one error as per Arvind; I had another off by one error in
->   my test program that was masking this.
-> 
->  lib/string.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/lib/string.c b/lib/string.c
-> index 6012c385fb31..4288e0158d47 100644
-> --- a/lib/string.c
-> +++ b/lib/string.c
-> @@ -272,6 +272,30 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
->  }
->  EXPORT_SYMBOL(strscpy_pad);
->  
-> +/**
-> + * stpcpy - copy a string from src to dest returning a pointer to the new end
-> + *          of dest, including src's %NUL-terminator. May overrun dest.
-> + * @dest: pointer to end of string being copied into. Must be large enough
-> + *        to receive copy.
-> + * @src: pointer to the beginning of string being copied from. Must not overlap
-> + *       dest.
-> + *
-> + * stpcpy differs from strcpy in a key way: the return value is a pointer
-> + * to the new %NUL-terminating character in @dest. (For strcpy, the return
-> + * value is a pointer to the start of @dest). This interface is considered
-> + * unsafe as it doesn't perform bounds checking of the inputs. As such it's
-> + * not recommended for usage. Instead, its definition is provided in case
-> + * the compiler lowers other libcalls to stpcpy.
-> + */
-> +char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
-> +char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-> +{
-> +	while ((*dest++ = *src++) != '\0')
-> +		/* nothing */;
-> +	return --dest;
-> +}
-> +EXPORT_SYMBOL(stpcpy);
-> +
->  #ifndef __HAVE_ARCH_STRCAT
->  /**
->   * strcat - Append one %NUL-terminated string to another
-> -- 
-> 2.28.0.618.gf4bc123cb7-goog
-> 
+Best wishes
+Chunxin
