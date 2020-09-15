@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48EB269F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AFF269FAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgIOHXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726031AbgIOHWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:22:14 -0400
-Received: from mail.kernel.org (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36FCB20EDD;
-        Tue, 15 Sep 2020 07:22:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600154533;
-        bh=oCvrzKbAPo2pXN2csnzS1LlIhxmlfQMu70M/hn3lOlU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rx/7CG+wFpfz07GPulc7XxJjd5Y6SpvEf1cOulP6ag8Od7h9Z3aZbVl7MESbZ7nLB
-         LQ3/Q+xk0gLRxZxDRzT+i8XDZC4gM2R9b5WeaAsHBvX4v++4nCk+ajMTblMiGh6JJ6
-         X5OOR2RKGAmhphiEbjw8DkwmjaNSg2rGDjoqCw+4=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kI5I2-004XJj-Q1; Tue, 15 Sep 2020 09:22:10 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 3/3] media: vidtv.rst: update it to better describe the frequencies
-Date:   Tue, 15 Sep 2020 09:22:09 +0200
-Message-Id: <be96344fb96ab821576ee9b6de05b6432b02163f.1600154449.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1600154449.git.mchehab+huawei@kernel.org>
-References: <cover.1600154449.git.mchehab+huawei@kernel.org>
+        id S1726299AbgIOH0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:26:07 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51828 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726276AbgIOHZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:25:36 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id F211E6C0183021CA70D0;
+        Tue, 15 Sep 2020 15:25:31 +0800 (CST)
+Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.184.59) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 15 Sep 2020 15:25:23 +0800
+From:   Shenming Lu <lushenming@huawei.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <wanghaibin.wang@huawei.com>
+Subject: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll on the GICR_VENPENDBASER.Dirty bit
+Date:   Tue, 15 Sep 2020 15:22:13 +0800
+Message-ID: <20200915072213.62-1-lushenming@huawei.com>
+X-Mailer: git-send-email 2.27.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.184.59]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The virtual driver has now a minimal set of frequencies for a
-single transponder to be found by each DVB standard.
+Every time the vPE is scheduled, the code starts polling the
+GICR_VPENDBASER.Dirty bit until it becomes 0. It's OK. But
+the delay_us of the poll function is directly set to 10, which
+is a long time for most interrupts. In our measurement, it takes
+only 1~2 microseconds, or even hundreds of nanoseconds, to finish
+parsing the VPT in most cases. However, in the current implementation,
+if the GICR_VPENDBASER.Dirty bit is not 0 immediately after the
+vPE is scheduled, it will directly wait for 10 microseconds,
+resulting in meaningless waiting.
 
-Document it, and update related information about the
-simulated LNBf.
+In order to avoid meaningless waiting, we can set the delay_us
+to 0, which can exit the poll function immediately when the Dirty
+bit becomes 0.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Shenming Lu <lushenming@huawei.com>
 ---
- Documentation/driver-api/media/drivers/vidtv.rst | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/irqchip/irq-gic-v3-its.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/driver-api/media/drivers/vidtv.rst b/Documentation/driver-api/media/drivers/vidtv.rst
-index c9f62fcfdd9b..65115448c52d 100644
---- a/Documentation/driver-api/media/drivers/vidtv.rst
-+++ b/Documentation/driver-api/media/drivers/vidtv.rst
-@@ -62,6 +62,14 @@ When compiled as a module, run::
- That's it! The bridge driver will initialize the tuner and demod drivers as
- part of its own initialization.
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 548de7538632..5cfcf0c2ce1a 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -3803,7 +3803,7 @@ static void its_wait_vpt_parse_complete(void)
+ 	WARN_ON_ONCE(readq_relaxed_poll_timeout_atomic(vlpi_base + GICR_VPENDBASER,
+ 						       val,
+ 						       !(val & GICR_VPENDBASER_Dirty),
+-						       10, 500));
++						       0, 500));
+ }
  
-+By default, it will accept the following frequencies:
-+
-+	- 474 MHz for DVB-T/T2/C;
-+	- 11,362 GHz for DVB-S/S2.
-+
-+For satellite systems, the driver simulates an universal extended
-+LNBf, with frequencies at Ku-Band, ranging from 10.7 GHz to 12.75 GHz.
-+
- You can optionally define some command-line arguments to vidtv.
- 
- Command-line arguments to vidtv
-@@ -86,13 +94,13 @@ mock_tune_delay_msec
- 	Simulate a tune delay.  Default 0.
- 
- vidtv_valid_dvb_t_freqs
--	Valid DVB-T frequencies to simulate.
-+	Valid DVB-T frequencies to simulate, in Hz.
- 
- vidtv_valid_dvb_c_freqs
--	Valid DVB-C frequencies to simulate.
-+	Valid DVB-C frequencies to simulate, in Hz.
- 
- vidtv_valid_dvb_s_freqs
--	Valid DVB-C frequencies to simulate.
-+	Valid DVB-S/S2 frequencies to simulate at Ku-Band, in kHz.
- 
- max_frequency_shift_hz,
- 	Maximum shift in HZ allowed when tuning in a channel.
+ static void its_vpe_schedule(struct its_vpe *vpe)
 -- 
-2.26.2
+2.19.1
 
