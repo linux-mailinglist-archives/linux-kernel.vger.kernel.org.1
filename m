@@ -2,167 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2174A26A9DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC76926A9EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbgIOQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:33:22 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:16527 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727513AbgIOPzA (ORCPT
+        id S1727743AbgIOQfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:35:21 -0400
+Received: from esa4.mentor.iphmx.com ([68.232.137.252]:27871 "EHLO
+        esa4.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727522AbgIOPzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:55:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600185299; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=QpUGNIr/jF6kgQq0YrPqmOxm1WxZPk5WINz0ZO/1jn4=; b=C9WvsByneORQ0XcwZjHU7hHeGdyUky1Qp1S8gdA0GIlJz9gV30RaqXFfJYxDWpn2KzZRjvBH
- 7RNJxyhyXRQsbP9380wT/IOjMvdhS7912GrGfHRmkzoR09w8YcTM8eiD76DVUzbFGAV57eFT
- N+BefuIdB0qkRAOJCmUzTn08BcY=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f60e3c49bdf68cc030dd4f1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 15:54:44
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D1BABC433FE; Tue, 15 Sep 2020 15:54:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6C01C433F0;
-        Tue, 15 Sep 2020 15:54:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C6C01C433F0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Tue, 15 Sep 2020 09:54:39 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>
-Subject: Re: [PATCH 5.4 105/132] drm/msm: Split the a5xx preemption record
-Message-ID: <20200915155439.GA22371@jcrouse1-lnx.qualcomm.com>
-References: <20200915140644.037604909@linuxfoundation.org>
- <20200915140649.400517956@linuxfoundation.org>
+        Tue, 15 Sep 2020 11:55:44 -0400
+IronPort-SDR: aWuggq7saDB4dCzxTdl7hIeZ3CS9cmzAmx3PKznMhJmrXga5wo+OBdvgEqI69mtKBdtiDzub1R
+ 5Pvie2Do6SGiBBMYu2DjHhm9jONaZRDAZM5YlHROYquEJ7UIN/PmTtFxpEq8SPxA3ifMB610af
+ oGeevpcmJ2bdLGSqNE1EK3nb/PVjJbigC6lh4IGllmW+ET7mWbDNs3ZI6wR0eRNxzKooJIQrUB
+ Wk8hqxiIquqG4Wz+ebih5qbsbl/vBoIQgcMp55uOtooLXUQHsDT8BfkhFv7kxd95c5FyCcXRhq
+ dsk=
+X-IronPort-AV: E=Sophos;i="5.76,430,1592899200"; 
+   d="scan'208";a="53045835"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa4.mentor.iphmx.com with ESMTP; 15 Sep 2020 07:55:19 -0800
+IronPort-SDR: VbsX45tek/EebeSfqEIQRCpew1b8Md1SID/+lcBER4COCcOHwtwwiVx2onegCEuobLbrMVhngb
+ 24L1W8PwykVrvuEeZXngBQDfqiP1+5+T3F02JCFnFNwc13UC5EfNA5kl4O52VfWl7Ms9jtthSF
+ /5bgjXYKTuaLbsg+F+tD0AQcJpsvINcBrkvIoweaCKKKw+f05WQFLDeLnbiHNVpE3uf5s6OeoP
+ rCQrBYFO6BgkCfg2C7QdmLTtfKZy9ss2r5R2Tzbn2FTdwmzPTQR/36lecYmYa1KIpIo2q8lYn7
+ /WA=
+Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CC:     <nick@shmanahar.org>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <andy.shevchenko@gmail.com>,
+        <erosca@de.adit-jv.com>, <Andrew_Gabbasov@mentor.com>
+References: <20200912005521.26319-1-jiada_wang@mentor.com>
+ <20200913165644.GF1665100@dtor-ws>
+ <65d1b9f2-a8e3-6398-712d-41d8067d06a1@gmail.com>
+ <20200914193340.GV1665100@dtor-ws> <20200914193603.GW1665100@dtor-ws>
+ <e3dca702-7489-be94-9eee-46024f988372@gmail.com>
+From:   "Wang, Jiada" <jiada_wang@mentor.com>
+Message-ID: <b451e91a-ed9f-51cb-1765-e68867e0a86f@mentor.com>
+Date:   Wed, 16 Sep 2020 00:55:13 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915140649.400517956@linuxfoundation.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <e3dca702-7489-be94-9eee-46024f988372@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: svr-orw-mbx-08.mgc.mentorg.com (147.34.90.208) To
+ svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 04:13:27PM +0200, Greg Kroah-Hartman wrote:
-> From: Jordan Crouse <jcrouse@codeaurora.org>
-> 
-> commit 34221545d2069dc947131f42392fd4cebabe1b39 upstream.
-> 
-> The main a5xx preemption record can be marked as privileged to
-> protect it from user access but the counters storage needs to be
-> remain unprivileged. Split the buffers and mark the critical memory
-> as privileged.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi Dmitry
 
-Hi. The MSM_BO_MAP_PRIV feature was added after 5.4. 
-
-Since we are pulling in 7b3f3948c8b7 ("drm/msm: Disable preemption on all
-5xx targets)" preemption will be disabled in the 5.4 stable tree which is enough
-to cover the security concern that this patch helped address.
-
-This patch can be dropped.
-
-Jordan
-
-> ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.h     |    1 +
->  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |   25 ++++++++++++++++++++-----
->  2 files changed, 21 insertions(+), 5 deletions(-)
+On 2020/09/15 6:33, Dmitry Osipenko wrote:
+> 14.09.2020 22:36, Dmitry Torokhov пишет:
+>> On Mon, Sep 14, 2020 at 12:33:40PM -0700, Dmitry Torokhov wrote:
+>>> On Mon, Sep 14, 2020 at 08:29:44PM +0300, Dmitry Osipenko wrote:
+>>>> 13.09.2020 19:56, Dmitry Torokhov пишет:
+>>>>> Hi Jiada,
+>>>>>
+>>>>> On Sat, Sep 12, 2020 at 09:55:21AM +0900, Jiada Wang wrote:
+>>>>>> From: Nick Dyer <nick.dyer@itdev.co.uk>
+>>>>>>
+>>>>>> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
+>>>>>> when they are in a sleep state. It must be retried after a delay for the
+>>>>>> chip to wake up.
+>>>>>
+>>>>> Do we know when the chip is in sleep state? Can we do a quick I2C
+>>>>> transaction in this case instead of adding retry logic to everything? Or
+>>>>> there is another benefit for having such retry logic?
+>>>>
+>>>> Hello!
+>>>>
+>>>> Please take a look at page 29 of:
+>>>>
+>>>> https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
+>>>>
+>>>> It says that the retry is needed after waking up from a deep-sleep mode.
+>>>>
+>>>> There are at least two examples when it's needed:
+>>>>
+>>>> 1. Driver probe. Controller could be in a deep-sleep mode at the probe
+>>>> time, and then first __mxt_read_reg() returns I2C NACK on reading out TS
+>>>> hardware info.
+>>>>
+>>>> 2. Touchscreen input device is opened. The touchscreen is in a
+>>>> deep-sleep mode at the time when input device is opened, hence first
+>>>> __mxt_write_reg() invoked from mxt_start() returns I2C NACK.
+>>>>
+>>>> I think placing the retries within __mxt_read() / write_reg() should be
+>>>> the most universal option.
+>>>>
+>>>> Perhaps it should be possible to add mxt_wake() that will read out some
+>>>> generic register
+>>>
+>>> I do not think we need to read a particular register, just doing a quick
+>>> read:
+>>>
+>>> 	i2c_smbus_xfer(client->adapter, client->addr,
+>>> 			0, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &dummy)
+>>>
+>>> should suffice.
+>>>
+>>>> and then this helper should be invoked after HW
+>>>> resetting (before mxt_read_info_block()) and from mxt_start() (before
+>>>> mxt_set_t7_power_cfg()). But this approach feels a bit fragile to me.
+>>>>
+>>>
+>>> Actually, reading the spec, it all depends on how the WAKE pin is wired
+>>> up on a given board. In certain setups retrying transaction is the right
+>>> approach, while in others explicit control is needed. So indeed, we need
+>>> a "wake" helper that we should call in probe and resume paths.
 > 
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.h
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.h
-> @@ -31,6 +31,7 @@ struct a5xx_gpu {
->  	struct msm_ringbuffer *next_ring;
->  
->  	struct drm_gem_object *preempt_bo[MSM_GPU_MAX_RINGS];
-> +	struct drm_gem_object *preempt_counters_bo[MSM_GPU_MAX_RINGS];
->  	struct a5xx_preempt_record *preempt[MSM_GPU_MAX_RINGS];
->  	uint64_t preempt_iova[MSM_GPU_MAX_RINGS];
->  
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_preempt.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_preempt.c
-> @@ -226,19 +226,31 @@ static int preempt_init_ring(struct a5xx
->  	struct adreno_gpu *adreno_gpu = &a5xx_gpu->base;
->  	struct msm_gpu *gpu = &adreno_gpu->base;
->  	struct a5xx_preempt_record *ptr;
-> -	struct drm_gem_object *bo = NULL;
-> -	u64 iova = 0;
-> +	void *counters;
-> +	struct drm_gem_object *bo = NULL, *counters_bo = NULL;
-> +	u64 iova = 0, counters_iova = 0;
->  
->  	ptr = msm_gem_kernel_new(gpu->dev,
->  		A5XX_PREEMPT_RECORD_SIZE + A5XX_PREEMPT_COUNTER_SIZE,
-> -		MSM_BO_UNCACHED, gpu->aspace, &bo, &iova);
-> +		MSM_BO_UNCACHED | MSM_BO_MAP_PRIV, gpu->aspace, &bo, &iova);
->  
->  	if (IS_ERR(ptr))
->  		return PTR_ERR(ptr);
->  
-> +	/* The buffer to store counters needs to be unprivileged */
-> +	counters = msm_gem_kernel_new(gpu->dev,
-> +		A5XX_PREEMPT_COUNTER_SIZE,
-> +		MSM_BO_UNCACHED, gpu->aspace, &counters_bo, &counters_iova);
-> +	if (IS_ERR(counters)) {
-> +		msm_gem_kernel_put(bo, gpu->aspace, true);
-> +		return PTR_ERR(counters);
-> +	}
-> +
->  	msm_gem_object_set_name(bo, "preempt");
-> +	msm_gem_object_set_name(counters_bo, "preempt_counters");
->  
->  	a5xx_gpu->preempt_bo[ring->id] = bo;
-> +	a5xx_gpu->preempt_counters_bo[ring->id] = counters_bo;
->  	a5xx_gpu->preempt_iova[ring->id] = iova;
->  	a5xx_gpu->preempt[ring->id] = ptr;
->  
-> @@ -249,7 +261,7 @@ static int preempt_init_ring(struct a5xx
->  	ptr->data = 0;
->  	ptr->cntl = MSM_GPU_RB_CNTL_DEFAULT;
->  	ptr->rptr_addr = rbmemptr(ring, rptr);
-> -	ptr->counter = iova + A5XX_PREEMPT_RECORD_SIZE;
-> +	ptr->counter = counters_iova;
->  
->  	return 0;
->  }
-> @@ -260,8 +272,11 @@ void a5xx_preempt_fini(struct msm_gpu *g
->  	struct a5xx_gpu *a5xx_gpu = to_a5xx_gpu(adreno_gpu);
->  	int i;
->  
-> -	for (i = 0; i < gpu->nr_rings; i++)
-> +	for (i = 0; i < gpu->nr_rings; i++) {
->  		msm_gem_kernel_put(a5xx_gpu->preempt_bo[i], gpu->aspace, true);
-> +		msm_gem_kernel_put(a5xx_gpu->preempt_counters_bo[i],
-> +			gpu->aspace, true);
-> +	}
->  }
->  
->  void a5xx_preempt_init(struct msm_gpu *gpu)
+> The WAKE-GPIO was never supported and I'm not sure whether anyone
+> actually needs it. I think we could ignore this case until anyone would
+> really need and could test it.
 > 
+>> By the way, I would like to avoid the unnecessary retries in probe paths
+>> if possible. I.e. on Chrome OS we really keep an eye on boot times and
+>> in case of multi-sourced touchscreens we may legitimately not have
+>> device at given address.
 > 
+> We could add a new MXT1386 DT compatible and then do:
+> 
+> static void mxt_wake(struct mxt_data *data)
+> {
+> 	struct i2c_client *client = data->client;
+> 	struct device *dev = &data->client->dev;
+> 	union i2c_smbus_data dummy;
+> 
+> 	if (!of_device_is_compatible(dev, "atmel,mXT1386"))
+> 		return;
+> 
+> 	/* TODO: add WAKE-GPIO support */
+> 
+> 	i2c_smbus_xfer(client->adapter, client->addr,
+> 			0, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE,
+> 			&dummy);
+> 
+> 	msleep(MXT_WAKEUP_TIME);
+> }
+> 
+> Jiada, will you be able to re-work this patch? Please note that the new
+> "atmel,mXT1386" DT compatible needs to be added into the
+> atmel,maxtouch.txt binding.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Yes, I can re-work this patch, and add one more change to dts-binding.
+
+to summarize long discussion in this thread,
+I think what I need to do are:
+1) since the change will be different from current one, I will need to 
+start a new patch
+2) call mxt_wake() in mxt_probe() and mxt_resume()
+3) update atmel,maxtouch.txt binding
+
+please correct me if I am wrong.
+
+Thanks,
+Jiada
+> 
