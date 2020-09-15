@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C2E26A84B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D112326A852
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbgIOPFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:05:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49842 "EHLO mail.kernel.org"
+        id S1727136AbgIOPHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727151AbgIOOjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:39:47 -0400
+        id S1727257AbgIOOki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:40:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2387E23D20;
-        Tue, 15 Sep 2020 14:29:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B06A722242;
+        Tue, 15 Sep 2020 14:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600180197;
-        bh=YyA7VUKTSTDrFSQMiIR9540oXL+Hk7219jpS6Lyi+XM=;
+        s=default; t=1600180226;
+        bh=ZyeAyIGJMPcQBcXm3JZ7JKU6J5uWY8weGq+9FpfRY/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p+vkyOBInf9lGruEazH56SP+2BpGKiEcUQV8NSreyXxZv4Sju8UnGTLXMAHJTNDWN
-         Zn8YARpX74+vFg1q1pBRKFdQffRAnodpZIIa6iqGjYiatjc/X4JVWqlgiGJAzzaIay
-         keMqAaXEKwqmO1q7b7malSh9ZrxuZQ1RqEkxmYSs=
+        b=OsT6O/FMvH915hF6ackDjDmUzi30SNdIMkjkceiqZ5bITliWqFsySBz/Gof+MfcjK
+         LzKL/7YD3oHZDiNDX+hg5qUAlyH87BzNpA6N6UFEx74gsJiA++wlGX5PuRLnOWY8Ek
+         KLEgyThigeU+3mp/Z0S3pClTjUj0rlSd3R8RTx6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.8 146/177] mmc: sdio: Use mmc_pre_req() / mmc_post_req()
-Date:   Tue, 15 Sep 2020 16:13:37 +0200
-Message-Id: <20200915140700.651150531@linuxfoundation.org>
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH 5.8 150/177] RDMA/rxe: Fix the parent sysfs read when the interface has 15 chars
+Date:   Tue, 15 Sep 2020 16:13:41 +0200
+Message-Id: <20200915140700.874983171@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
 References: <20200915140653.610388773@linuxfoundation.org>
@@ -44,107 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Yi Zhang <yi.zhang@redhat.com>
 
-commit f0c393e2104e48c8a881719a8bd37996f71b0aee upstream.
+commit 60b1af64eb35074a4f2d41cc1e503a7671e68963 upstream.
 
-SDHCI changed from using a tasklet to finish requests, to using an IRQ
-thread i.e. commit c07a48c2651965 ("mmc: sdhci: Remove finish_tasklet").
-Because this increased the latency to complete requests, a preparatory
-change was made to complete the request from the IRQ handler if
-possible i.e. commit 19d2f695f4e827 ("mmc: sdhci: Call mmc_request_done()
-from IRQ handler if possible").  That alleviated the situation for MMC
-block devices because the MMC block driver makes use of mmc_pre_req()
-and mmc_post_req() so that successful requests are completed in the IRQ
-handler and any DMA unmapping is handled separately in mmc_post_req().
-However SDIO was still affected, and an example has been reported with
-up to 20% degradation in performance.
+'parent' sysfs reads will yield '\0' bytes when the interface name has 15
+chars, and there will no "\n" output.
 
-Looking at SDIO I/O helper functions, sdio_io_rw_ext_helper() appeared
-to be a possible candidate for making use of asynchronous requests
-within its I/O loops, but analysis revealed that these loops almost
-never iterate more than once, so the complexity of the change would not
-be warrented.
+To reproduce, create one interface with 15 chars:
 
-Instead, mmc_pre_req() and mmc_post_req() are added before and after I/O
-submission (mmc_wait_for_req) in mmc_io_rw_extended().  This still has
-the potential benefit of reducing the duration of interrupt handlers, as
-well as addressing the latency issue for SDHCI.  It also seems a more
-reasonable solution than forcing drivers to do everything in the IRQ
-handler.
+ [root@test ~]# ip a s enp0s29u1u7u3c2
+ 2: enp0s29u1u7u3c2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+     link/ether 02:21:28:57:47:17 brd ff:ff:ff:ff:ff:ff
+     inet6 fe80::ac41:338f:5bcd:c222/64 scope link noprefixroute
+        valid_lft forever preferred_lft forever
+ [root@test ~]# modprobe rdma_rxe
+ [root@test ~]# echo enp0s29u1u7u3c2 > /sys/module/rdma_rxe/parameters/add
+ [root@test ~]# cat /sys/class/infiniband/rxe0/parent
+ enp0s29u1u7u3c2[root@test ~]#
+ [root@test ~]# f="/sys/class/infiniband/rxe0/parent"
+ [root@test ~]# echo "$(<"$f")"
+ -bash: warning: command substitution: ignored null byte in input
+ enp0s29u1u7u3c2
 
-Reported-by: Dmitry Osipenko <digetx@gmail.com>
-Fixes: c07a48c2651965 ("mmc: sdhci: Remove finish_tasklet")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Use scnprintf and PAGE_SIZE to fill the sysfs output buffer.
+
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200903082007.18715-1-adrian.hunter@intel.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20200820153646.31316-1-yi.zhang@redhat.com
+Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Yi Zhang <yi.zhang@redhat.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/core/sdio_ops.c |   39 ++++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_verbs.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mmc/core/sdio_ops.c
-+++ b/drivers/mmc/core/sdio_ops.c
-@@ -121,6 +121,7 @@ int mmc_io_rw_extended(struct mmc_card *
- 	struct sg_table sgtable;
- 	unsigned int nents, left_size, i;
- 	unsigned int seg_size = card->host->max_seg_size;
-+	int err;
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1083,7 +1083,7 @@ static ssize_t parent_show(struct device
+ 	struct rxe_dev *rxe =
+ 		rdma_device_to_drv_device(device, struct rxe_dev, ib_dev);
  
- 	WARN_ON(blksz == 0);
- 
-@@ -170,28 +171,32 @@ int mmc_io_rw_extended(struct mmc_card *
- 
- 	mmc_set_data_timeout(&data, card);
- 
--	mmc_wait_for_req(card->host, &mrq);
-+	mmc_pre_req(card->host, &mrq);
- 
--	if (nents > 1)
--		sg_free_table(&sgtable);
-+	mmc_wait_for_req(card->host, &mrq);
- 
- 	if (cmd.error)
--		return cmd.error;
--	if (data.error)
--		return data.error;
--
--	if (mmc_host_is_spi(card->host)) {
-+		err = cmd.error;
-+	else if (data.error)
-+		err = data.error;
-+	else if (mmc_host_is_spi(card->host))
- 		/* host driver already reported errors */
--	} else {
--		if (cmd.resp[0] & R5_ERROR)
--			return -EIO;
--		if (cmd.resp[0] & R5_FUNCTION_NUMBER)
--			return -EINVAL;
--		if (cmd.resp[0] & R5_OUT_OF_RANGE)
--			return -ERANGE;
--	}
-+		err = 0;
-+	else if (cmd.resp[0] & R5_ERROR)
-+		err = -EIO;
-+	else if (cmd.resp[0] & R5_FUNCTION_NUMBER)
-+		err = -EINVAL;
-+	else if (cmd.resp[0] & R5_OUT_OF_RANGE)
-+		err = -ERANGE;
-+	else
-+		err = 0;
-+
-+	mmc_post_req(card->host, &mrq, err);
-+
-+	if (nents > 1)
-+		sg_free_table(&sgtable);
- 
--	return 0;
-+	return err;
+-	return snprintf(buf, 16, "%s\n", rxe_parent_name(rxe, 1));
++	return scnprintf(buf, PAGE_SIZE, "%s\n", rxe_parent_name(rxe, 1));
  }
  
- int sdio_reset(struct mmc_host *host)
+ static DEVICE_ATTR_RO(parent);
 
 
