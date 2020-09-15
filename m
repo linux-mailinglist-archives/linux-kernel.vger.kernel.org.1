@@ -2,123 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC0726A02E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6196626A03B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgIOHvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgIOHv1 (ORCPT
+        id S1726191AbgIOHyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:54:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32705 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726189AbgIOHxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:51:27 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49882C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:51:27 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id w186so3378454qkd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:51:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
-        bh=w5tc9cbOehLAywHlBo2Tn7koEhhESNIiqMonIppKdcc=;
-        b=JkavMRh6oyCevlqAdtvEHCuA7VM1wdoKsDVyv9jk+yAYDjZtp3AaAlWzTNWZobwbXC
-         crzh6IHu55s+uiBeJgL1cRhiYk7+x9JiIuMBL9/Ai2csN7UTcUz+B9yEicgw8rlUP9w2
-         EKWgCfZNS2Y6YxLj4oW8KZevv5aWhs71sUre8lILgG/Fr1mvFdMLM/M7FkiBbwrQe6rm
-         x39xGHPro7oB5hphFr0kZwRphh/1Aec1dmUsnoG0DZ4UzRd27Vk4sBxr5E30NrILhx7K
-         BpYKWxfIWcH/o6SnXP3CQCJORTz9/E5YHwoFdiNHAcQWDe9dY9/+7z+fzgZtp2sA62Ls
-         BQhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
-         :mime-version;
-        bh=w5tc9cbOehLAywHlBo2Tn7koEhhESNIiqMonIppKdcc=;
-        b=QH3qT5YsiJtod54dYvoengvUrKJWTA8uR15wmW22qnKGk1cTJFu6Br1trPJXCPM2aO
-         INXAUqHL0mB8VWkk+QM7p2WM+PiCAtU9qwqS+sjmBfisFNqcxthVrmH+AaRK2ImTARzY
-         /YpY7hwKtLhcVBAHZ3nA7CascCQpdBVU0LmqCuiqhS5J/yAYPuCjxgS87oxwdV/DeJAR
-         qeXgwuWQnoSiP9DHpl7Or34j4/fj049KEkjDOhfTa80nWQRJc3SaRKPDn+mnNZvdaV4c
-         8x5l6aFDDycqfNQ34AXAeMpkEaZdQ/WPcdVm5et67BfTAsIhxyp8tsy0lZ6C7tIve9BX
-         ywUQ==
-X-Gm-Message-State: AOAM530s/sogX8dBJ8dGu5ydRTqb3+g74QFqKGsTKLvc7bilTTWWBHmD
-        1GNtLOZSFUv2hG+z+M/hGjo+Og==
-X-Google-Smtp-Source: ABdhPJwMQFnhqCsm/LQt1wT5UWzKruTmYBlNV9pPGzNrQIKY+6qWLiX0RR3OGsdbBvHEqh4FLfPWow==
-X-Received: by 2002:a37:6543:: with SMTP id z64mr16563968qkb.173.1600156286129;
-        Tue, 15 Sep 2020 00:51:26 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id q185sm15245373qke.25.2020.09.15.00.51.22
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 15 Sep 2020 00:51:23 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 00:50:54 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Static call dependency on libelf version?
-Message-ID: <alpine.LSU.2.11.2009142337530.1550@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Tue, 15 Sep 2020 03:53:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600156405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lGaRRpjQpf+p1Uh5RvyOwyknbPxdKoLhOu6iSyQOJLQ=;
+        b=CvxHaP96CKDSfEhVFfqiXyF+ln4QEftHglvVYy3QiiIw2AU2EyRu8A1n5BpR4u5prjweW2
+        bXhD1QFv7lKCqtK5w9sQPEHCvVFelQbe+3PiLzG+rsMG2CgVolQ+hNVV/rsnpbxtAKsFzD
+        VWE3uXQsHlT6zhk/wfXY0zivH+y7ehQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-CKquWnuHPniKTi8BnrRA9A-1; Tue, 15 Sep 2020 03:53:23 -0400
+X-MC-Unique: CKquWnuHPniKTi8BnrRA9A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F8A58014D9;
+        Tue, 15 Sep 2020 07:53:22 +0000 (UTC)
+Received: from [10.72.13.94] (ovpn-13-94.pek2.redhat.com [10.72.13.94])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A4A27EB8B;
+        Tue, 15 Sep 2020 07:53:17 +0000 (UTC)
+Subject: Re: [PATCH] vhost: reduce stack usage in log_used
+To:     Li Wang <li.wang@windriver.com>, mst@redhat.com
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1199326218.16921082.1600051335160.JavaMail.zimbra@redhat.com>
+ <1600106889-25013-1-git-send-email-li.wang@windriver.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <7c22eeb8-6060-929d-15d7-f1403b98c17f@redhat.com>
+Date:   Tue, 15 Sep 2020 15:53:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <1600106889-25013-1-git-send-email-li.wang@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is just an FYI written from a position of ignorance: I may
-have got it wrong, and my build environment too piecemeal to matter
-to anyone else; but what I saw was weird enough to be worth mentioning,
-in case it saves someone some time.
 
-I usually build and test on mmotm weekly rather linux-next daily.
-No problem with 5.9-rc3-mm1 from 2020-09-04, nor with 5.9-rc5, but
-(on two machines) 5.9-rc5-mm1 from 2020-09-13 could not link vmlinux:
+On 2020/9/15 上午2:08, Li Wang wrote:
+> Fix the warning: [-Werror=-Wframe-larger-than=]
+>
+> drivers/vhost/vhost.c: In function log_used:
+> drivers/vhost/vhost.c:1906:1:
+> warning: the frame size of 1040 bytes is larger than 1024 bytes
+>
+> Signed-off-by: Li Wang <li.wang@windriver.com>
+> ---
+>   drivers/vhost/vhost.c | 2 +-
+>   drivers/vhost/vhost.h | 1 +
+>   2 files changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index b45519c..31837a5
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -1884,7 +1884,7 @@ static int log_write_hva(struct vhost_virtqueue *vq, u64 hva, u64 len)
+>   
+>   static int log_used(struct vhost_virtqueue *vq, u64 used_offset, u64 len)
+>   {
+> -	struct iovec iov[64];
+> +	struct iovec *iov = vq->log_iov;
+>   	int i, ret;
+>   
+>   	if (!vq->iotlb)
+> diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
+> index 9032d3c..5fe4b47
+> --- a/drivers/vhost/vhost.h
+> +++ b/drivers/vhost/vhost.h
+> @@ -123,6 +123,7 @@ struct vhost_virtqueue {
+>   	/* Log write descriptors */
+>   	void __user *log_base;
+>   	struct vhost_log *log;
+> +	struct iovec log_iov[64];
+>   
+>   	/* Ring endianness. Defaults to legacy native endianness.
+>   	 * Set to true when starting a modern virtio device. */
 
-  AR      init/built-in.a
-  LD      vmlinux.o
-ld: warning: init/main.o has a corrupt section with a size (7472747368732e00) larger than the file size
-ld: warning: init/main.o has a corrupt section with a size (7472747368732e00) larger than the file size
-ld: warning: init/main.o has a corrupt section with a size (7472747368732e00) larger than the file size
-ld: warning: init/main.o has a corrupt section with a size (7472747368732e00) larger than the file size
-ld: init/built-in.a: member init/main.o in archive is not an object
-make[1]: *** [vmlinux] Error 1
-make: *** [__sub-make] Error 2
 
-On the third machine, a more recent installation, but using the same
-gcc and the same binutils, I could build the same config successfully.
-init/main.o was the same size on each (49216 bytes), but diff of hd
-of the good against the bad showed:
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-2702,2709c2702,2709
-< 00bfc0 000001db 00000001 00000003 00000000  >................<
-< 00bfd0 00000000 00000000 0000b316 00000000  >................<
-< 00bfe0 00000018 00000000 00000000 00000000  >................<
-< 00bff0 00000001 00000000 00000008 00000000  >................<
-< 00c000 000001ee 00000004 00000040 00000000  >........@.......<
-< 00c010 00000000 00000000 0000b330 00000000  >........0.......<
-< 00c020 00000090 00000000 0000002d 00000030  >........-...0...<
-< 00c030 00000008 00000000 00000018 00000000  >................<
----
-> 00bfc0 00000000 00000000 000001f1 00000000  >................<
-> 00bfd0 79732e00 6261746d 74732e00 62617472  >..symtab..strtab<
-> 00bfe0 68732e00 74727473 2e006261 616c6572  >..shstrtab..rela<
-> 00bff0 7865742e 722e0074 2e616c65 61746164  >.text..rela.data<
-> 00c000 73622e00 722e0073 5f616c65 6172745f  >..bss..rela__tra<
-> 00c010 6f706563 73746e69 7274705f 722e0073  >cepoints_ptrs..r<
-> 00c020 2e616c65 74617473 635f6369 2e6c6c61  >ela.static_call.<
-> 00c030 74786574 65722e00 692e616c 2e74696e  >text..rela.init.<
 
-and 217 other .os in the build tree also "corrupted".
-
-CONFIG_HAVE_STATIC_CALL=y
-CONFIG_HAVE_STATIC_CALL_INLINE=y
-stand out as new in the .config for 5.9-rc5-mm1, and references
-to objtool in static_call.h and static_call_types.h took me to
-tools/objtool/Makefile, with its use of libelf.
-
-I've copied over files of the newer libelf (0.168) to the failing
-machines, which are now building the 5.9-rc5-mm1 vmlinux correctly.
-
-It looks as if CONFIG_HAVE_STATIC_CALL=y depends on a newer libelf
-than I had before (0.155), and should either insist on a minimum
-version, or else be adjusted to work with older versions.
-
-Hope this helps,
-Hugh
