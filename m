@@ -2,256 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BB2269A5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC11269A5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgIOAUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:20:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbgIOAUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:20:13 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726100AbgIOAVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:21:10 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:47145 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725994AbgIOAVJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 20:21:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600129267;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JIxbVL3SsLhU/KOArzoRLZaTcknM6wozcZMj8Pv2cYs=;
+        b=bc2XjpWNOUEtUBBGZ67nVkxGFEBkKRXOMw7TKkF4jNltRUQOeAeTWdW7DfH/4h4GO+j/3Y
+        xIwgmSSWZ82Y4Ss89xS3H1GV/vnlSMYxTnS1WNYZ0BQW3X/+WV9jcL/6I2Vhv8Lbbk1egf
+        Y73iJ2I9iLmJzZQ0uBXzPhR1MD4z7Nw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-92-QcTzheqtO-y6XW1X_6h32w-1; Mon, 14 Sep 2020 20:21:02 -0400
+X-MC-Unique: QcTzheqtO-y6XW1X_6h32w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A8EA208DB;
-        Tue, 15 Sep 2020 00:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600129212;
-        bh=KpQcyw4rRtH7VKNeV9Vu9Ov4ZG0MW+PZLdYwJFvWQ/8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fFGv5T3c9maMM26lk1DHaV4i/s24/M4XwSahghU7CzgCcrDVjE+pmIisFmdX6ApP7
-         Nb9d9iN1tJES5rul/GZkTpKK9UiNLHUdzm3UnPe4egrKTd6sSGMpmuAClU3K92+45I
-         dai+gA/GBg2oKhxSVaX0FGU8CbxqPnR/sFuZSvm4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id CCE6A35227CC; Mon, 14 Sep 2020 17:20:11 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 17:20:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        nikolay@cumulusnetworks.com, davem@davemloft.net,
-        netdev@vger.kernel.org, josh@joshtriplett.org,
-        peterz@infradead.org, christian.brauner@ubuntu.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sfr@canb.auug.org.au, roopa@nvidia.com
-Subject: Re: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from swallowing
- the condition
-Message-ID: <20200915002011.GJ29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200908173624.160024-1-kuba@kernel.org>
- <5ABC15D5-3709-4CA4-A747-6A7812BB12DD@cumulusnetworks.com>
- <20200908172751.4da35d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200914202122.GC2579423@google.com>
- <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9B1D1074642;
+        Tue, 15 Sep 2020 00:21:00 +0000 (UTC)
+Received: from ovpn-113-249.rdu2.redhat.com (ovpn-113-249.rdu2.redhat.com [10.10.113.249])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D135727C2A;
+        Tue, 15 Sep 2020 00:20:53 +0000 (UTC)
+Message-ID: <224bd11b533dd2acff3f6cce51ab4ca676eb4f9f.camel@redhat.com>
+Subject: Re: [PATCH v2 0/5] seqlock: Introduce PREEMPT_RT support
+From:   Qian Cai <cai@redhat.com>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Date:   Mon, 14 Sep 2020 20:20:53 -0400
+In-Reply-To: <20200904153231.11994-1-a.darwish@linutronix.de>
+References: <20200904153231.11994-1-a.darwish@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:47:38PM -0700, Jakub Kicinski wrote:
-> On Mon, 14 Sep 2020 16:21:22 -0400 Joel Fernandes wrote:
-> > On Tue, Sep 08, 2020 at 05:27:51PM -0700, Jakub Kicinski wrote:
-> > > On Tue, 08 Sep 2020 21:15:56 +0300 nikolay@cumulusnetworks.com wrote:  
-> > > > Ah, you want to solve it for all. :) 
-> > > > Looks and sounds good to me, 
-> > > > Reviewed-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>  
-> > > 
-> > > Actually, I give up, lockdep_is_held() is not defined without
-> > > CONFIG_LOCKDEP, let's just go with your patch..  
-> > 
-> > Care to send a patch just for the RCU macro then? Not sure what Dave is
-> > applying but if the net-next tree is not taking the RCU macro change, then
-> > send another one with my tag:
+On Fri, 2020-09-04 at 17:32 +0200, Ahmed S. Darwish wrote:
+> Hi,
 > 
-> Seems like quite a few places depend on the macro disappearing its
-> argument. I was concerned that it's going to be had to pick out whether
-> !LOCKDEP builds should return true or false from LOCKDEP helpers, but
-> perhaps relying on the linker errors even more is not such poor taste?
+> Changelog-v2
+> ============
 > 
-> Does the patch below look acceptable to you?
+>   - Standardize on seqcount_LOCKNAME_t as the canonical reference for
+>     sequence counters with associated locks, instead of v1
+>     seqcount_LOCKTYPE_t.
+> 
+>   - Use unique prefix "seqprop_*" for all seqcount_t/seqcount_LOCKNAME_t
+>     property accessors.
+> 
+>   - Touch-up the lock-unlock rationale for more clarity. Enforce writer
+>     non-preemitiblity using "__seq_enforce_writer_non_preemptibility()".
+> 
+> Cover letter (v1)
+> =================
+> 
+> https://lkml.kernel.org/r/20200828010710.5407-1-a.darwish@linutronix.de
+> 
+> Preemption must be disabled before entering a sequence counter write
+> side critical section.  Otherwise the read side section can preempt the
+> write side section and spin for the entire scheduler tick.  If that
+> reader belongs to a real-time scheduling class, it can spin forever and
+> the kernel will livelock.
+> 
+> Disabling preemption cannot be done for PREEMPT_RT though: it can lead
+> to higher latencies, and the write side sections will not be able to
+> acquire locks which become sleeping locks (e.g. spinlock_t).
+> 
+> To remain preemptible, while avoiding a possible livelock caused by the
+> reader preempting the writer, use a different technique: let the reader
+> detect if a seqcount_LOCKNAME_t writer is in progress. If that's the
+> case, acquire then release the associated LOCKNAME writer serialization
+> lock. This will allow any possibly-preempted writer to make progress
+> until the end of its writer serialization lock critical section.
+> 
+> Implement this lock-unlock technique for all seqcount_LOCKNAME_t with
+> an associated (PREEMPT_RT) sleeping lock, and for seqlock_t.
 
-The thing to check would be whether all compilers do sufficient
-dead-code elimination (it used to be that they did not).  One way to
-get a quick sniff test of this would be to make sure that a dead-code
-lockdep_is_held() is in common code, and then expose this patch to kbuild
-test robot.
+Reverting this patchset [1] from today's linux-next fixed a splat below. The
+splat looks like a false positive anyway because the existing locking dependency
+chains from the task #1 here:
 
-Seem reasonable?
+&s->seqcount#2 ---> pidmap_lock
 
-							Thanx, Paul
+[  528.078061][ T7867] -> #1 (pidmap_lock){....}-{2:2}:
+[  528.078078][ T7867]        lock_acquire+0x10c/0x560
+[  528.078089][ T7867]        _raw_spin_lock_irqsave+0x64/0xb0
+[  528.078108][ T7867]        free_pid+0x5c/0x160
+free_pid at kernel/pid.c:131
+[  528.078127][ T7867]        release_task.part.40+0x59c/0x7f0
+__unhash_process at kernel/exit.c:76
+(inlined by) __exit_signal at kernel/exit.c:147
+(inlined by) release_task at kernel/exit.c:198
+[  528.078145][ T7867]        do_exit+0x77c/0xda0
+exit_notify at kernel/exit.c:679
+(inlined by) do_exit at kernel/exit.c:826
+[  528.078163][ T7867]        kthread+0x148/0x1d0
+[  528.078182][ T7867]        ret_from_kernel_thread+0x5c/0x80
 
-> --->8------------
+It is write_seqlock(&sig->stats_lock) in __exit_signal(), but the &s->seqcount#2 
+in read_mems_allowed_begin() is read_seqcount_begin(&current->mems_allowed_seq), 
+so there should be no deadlock?
+
+[1] git revert --no-edit 0c9794c8b678..1909760f5fc3
+
+[  528.077900][ T7867] WARNING: possible circular locking dependency detected
+[  528.077912][ T7867] 5.9.0-rc5-next-20200914 #1 Not tainted
+[  528.077921][ T7867] ------------------------------------------------------
+[  528.077931][ T7867] runc:[1:CHILD]/7867 is trying to acquire lock:
+[  528.077942][ T7867] c000001fce5570c8 (&s->seqcount#2){....}-{0:0}, at: __slab_alloc+0x34/0xf0
+[  528.077972][ T7867] 
+[  528.077972][ T7867] but task is already holding lock:
+[  528.077983][ T7867] c0000000056b0198 (pidmap_lock){....}-{2:2}, at: alloc_pid+0x258/0x590
+[  528.078009][ T7867] 
+[  528.078009][ T7867] which lock already depends on the new lock.
+[  528.078009][ T7867] 
+[  528.078031][ T7867] 
+[  528.078031][ T7867] the existing dependency chain (in reverse order) is:
+[  528.078061][ T7867] 
+[  528.078061][ T7867] -> #1 (pidmap_lock){....}-{2:2}:
+[  528.078078][ T7867]        lock_acquire+0x10c/0x560
+[  528.078089][ T7867]        _raw_spin_lock_irqsave+0x64/0xb0
+[  528.078108][ T7867]        free_pid+0x5c/0x160
+free_pid at kernel/pid.c:131
+[  528.078127][ T7867]        release_task.part.40+0x59c/0x7f0
+__unhash_process at kernel/exit.c:76
+(inlined by) __exit_signal at kernel/exit.c:147
+(inlined by) release_task at kernel/exit.c:198
+[  528.078145][ T7867]        do_exit+0x77c/0xda0
+exit_notify at kernel/exit.c:679
+(inlined by) do_exit at kernel/exit.c:826
+[  528.078163][ T7867]        kthread+0x148/0x1d0
+[  528.078182][ T7867]        ret_from_kernel_thread+0x5c/0x80
+[  528.078208][ T7867] 
+[  528.078208][ T7867] -> #0 (&s->seqcount#2){....}-{0:0}:
+[  528.078241][ T7867]        check_prevs_add+0x1c4/0x1120
+check_prev_add at kernel/locking/lockdep.c:2820
+(inlined by) check_prevs_add at kernel/locking/lockdep.c:2944
+[  528.078260][ T7867]        __lock_acquire+0x176c/0x1c00
+validate_chain at kernel/locking/lockdep.c:3562
+(inlined by) __lock_acquire at kernel/locking/lockdep.c:4796
+[  528.078278][ T7867]        lock_acquire+0x10c/0x560
+[  528.078297][ T7867]        ___slab_alloc+0xa40/0xb40
+seqcount_lockdep_reader_access at include/linux/seqlock.h:103
+(inlined by) read_mems_allowed_begin at include/linux/cpuset.h:135
+(inlined by) get_any_partial at mm/slub.c:2035
+(inlined by) get_partial at mm/slub.c:2078
+(inlined by) new_slab_objects at mm/slub.c:2577
+(inlined by) ___slab_alloc at mm/slub.c:2745
+[  528.078324][ T7867]        __slab_alloc+0x34/0xf0
+[  528.078342][ T7867]        kmem_cache_alloc+0x2d4/0x470
+[  528.078362][ T7867]        create_object+0x74/0x430
+[  528.078381][ T7867]        slab_post_alloc_hook+0xa4/0x670
+[  528.078399][ T7867]        kmem_cache_alloc+0x1b4/0x470
+[  528.078418][ T7867]        radix_tree_node_alloc.constprop.19+0xe4/0x160
+[  528.078438][ T7867]        idr_get_free+0x298/0x360
+[  528.078456][ T7867]        idr_alloc_u32+0x84/0x130
+[  528.078474][ T7867]        idr_alloc_cyclic+0x7c/0x150
+[  528.078493][ T7867]        alloc_pid+0x27c/0x590
+[  528.078511][ T7867]        copy_process+0xc90/0x1930
+copy_process at kernel/fork.c:2104
+[  528.078529][ T7867]        kernel_clone+0x120/0xa10
+[  528.078546][ T7867]        __do_sys_clone+0x88/0xd0
+[  528.078565][ T7867]        system_call_exception+0xf8/0x1d0
+[  528.078592][ T7867]        system_call_common+0xe8/0x218
+[  528.078609][ T7867] 
+[  528.078609][ T7867] other info that might help us debug this:
+[  528.078609][ T7867] 
+[  528.078650][ T7867]  Possible unsafe locking scenario:
+[  528.078650][ T7867] 
+[  528.078670][ T7867]        CPU0                    CPU1
+[  528.078695][ T7867]        ----                    ----
+[  528.078713][ T7867]   lock(pidmap_lock);
+[  528.078730][ T7867]                                lock(&s->seqcount#2);
+[  528.078751][ T7867]                                lock(pidmap_lock);
+[  528.078770][ T7867]   lock(&s->seqcount#2);
+[  528.078788][ T7867] 
+[  528.078788][ T7867]  *** DEADLOCK ***
+[  528.078788][ T7867] 
+[  528.078800][ T7867] 2 locks held by runc:[1:CHILD]/7867:
+[  528.078808][ T7867]  #0: c000001ffea6f4f0 (lock#2){+.+.}-{2:2}, at: __radix_tree_preload+0x8/0x370
+__radix_tree_preload at lib/radix-tree.c:322
+[  528.078844][ T7867]  #1: c0000000056b0198 (pidmap_lock){....}-{2:2}, at: alloc_pid+0x258/0x590
+[  528.078870][ T7867] 
+[  528.078870][ T7867] stack backtrace:
+[  528.078890][ T7867] CPU: 46 PID: 7867 Comm: runc:[1:CHILD] Not tainted 5.9.0-rc5-next-20200914 #1
+[  528.078921][ T7867] Call Trace:
+[  528.078940][ T7867] [c000001ff07eefc0] [c00000000063f8c8] dump_stack+0xec/0x144 (unreliable)
+[  528.078964][ T7867] [c000001ff07ef000] [c00000000013f44c] print_circular_bug.isra.43+0x2dc/0x350
+[  528.078978][ T7867] [c000001ff07ef0a0] [c00000000013f640] check_noncircular+0x180/0x1b0
+[  528.079000][ T7867] [c000001ff07ef170] [c000000000140b84] check_prevs_add+0x1c4/0x1120
+[  528.079022][ T7867] [c000001ff07ef280] [c0000000001446ec] __lock_acquire+0x176c/0x1c00
+[  528.079043][ T7867] [c000001ff07ef3a0] [c00000000014578c] lock_acquire+0x10c/0x560
+[  528.079066][ T7867] [c000001ff07ef490] [c0000000003565f0] ___slab_alloc+0xa40/0xb40
+[  528.079079][ T7867] [c000001ff07ef590] [c000000000356724] __slab_alloc+0x34/0xf0
+[  528.079100][ T7867] [c000001ff07ef5e0] [c000000000356ab4] kmem_cache_alloc+0x2d4/0x470
+[  528.079122][ T7867] [c000001ff07ef670] [c000000000397e14] create_object+0x74/0x430
+[  528.079144][ T7867] [c000001ff07ef720] [c000000000351944] slab_post_alloc_hook+0xa4/0x670
+[  528.079165][ T7867] [c000001ff07ef7e0] [c000000000356994] kmem_cache_alloc+0x1b4/0x470
+[  528.079187][ T7867] [c000001ff07ef870] [c00000000064e004] radix_tree_node_alloc.constprop.19+0xe4/0x160
+radix_tree_node_alloc at lib/radix-tree.c:252
+[  528.079219][ T7867] [c000001ff07ef8e0] [c00000000064f2b8] idr_get_free+0x298/0x360
+idr_get_free at lib/radix-tree.c:1507
+[  528.079249][ T7867] [c000001ff07ef970] [c000000000645db4] idr_alloc_u32+0x84/0x130
+idr_alloc_u32 at lib/idr.c:46 (discriminator 4)
+[  528.079271][ T7867] [c000001ff07ef9e0] [c000000000645f8c] idr_alloc_cyclic+0x7c/0x150
+idr_alloc_cyclic at lib/idr.c:126 (discriminator 1)
+[  528.079301][ T7867] [c000001ff07efa40] [c0000000000e48ac] alloc_pid+0x27c/0x590
+[  528.079342][ T7867] [c000001ff07efb20] [c0000000000acc60] copy_process+0xc90/0x1930
+[  528.079404][ T7867] [c000001ff07efc40] [c0000000000adc00] kernel_clone+0x120/0xa10
+[  528.079499][ T7867] [c000001ff07efd00] [c0000000000ae578] __do_sys_clone+0x88/0xd0
+[  528.079579][ T7867] [c000001ff07efdc0] [c000000000029c48] system_call_exception+0xf8/0x1d0
+[  528.079691][ T7867] [c000001ff07efe20] [c00000000000d0a8] system_call_common+0xe8/0x218
+
 > 
-> rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
+> 8<--------------
 > 
-> We run into a unused variable warning in bridge code when
-> variable is only used inside the condition of
-> rcu_dereference_protected().
+> Ahmed S. Darwish (5):
+>   seqlock: seqcount_LOCKNAME_t: Standardize naming convention
+>   seqlock: Use unique prefix for seqcount_t property accessors
+>   seqlock: seqcount_t: Implement all read APIs as statement expressions
+>   seqlock: seqcount_LOCKNAME_t: Introduce PREEMPT_RT support
+>   seqlock: PREEMPT_RT: Do not starve seqlock_t writers
 > 
->  #define mlock_dereference(X, br) \
-> 	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
+>  include/linux/seqlock.h | 281 ++++++++++++++++++++++++----------------
+>  1 file changed, 167 insertions(+), 114 deletions(-)
 > 
-> Since on builds with CONFIG_PROVE_RCU=n rcu_dereference_protected()
-> compiles to nothing the compiler doesn't see the variable use.
-> 
-> Prevent the warning by adding the condition as dead code.
-> We need to un-hide the declaration of lockdep_tasklist_lock_is_held(),
-> lockdep_sock_is_held(), RCU lock maps and remove some declarations
-> in net/sched header, because they have a wrong type.
-> 
-> Add forward declarations of lockdep_is_held(), lock_is_held() which
-> will cause a linker errors if actually used with !LOCKDEP.
-> At least RCU expects some locks _not_ to be held so it's hard to
-> pick true/false for a dummy implementation.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->  include/linux/lockdep.h        |  6 ++++++
->  include/linux/rcupdate.h       | 11 ++++++-----
->  include/linux/rcupdate_trace.h |  4 ++--
->  include/linux/sched/task.h     |  2 --
->  include/net/sch_generic.h      | 12 ------------
->  include/net/sock.h             |  2 --
->  6 files changed, 14 insertions(+), 23 deletions(-)
-> 
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 6a584b3e5c74..c4b6225ee320 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -371,6 +371,12 @@ static inline void lockdep_unregister_key(struct lock_class_key *key)
->  
->  #define lockdep_depth(tsk)	(0)
->  
-> +/*
-> + * Dummy forward declarations, allow users to write less ifdef-y code
-> + * and depend on dead code elimination.
-> + */
-> +int lock_is_held(const void *);
-> +int lockdep_is_held(const void *);
->  #define lockdep_is_held_type(l, r)		(1)
->  
->  #define lockdep_assert_held(l)			do { (void)(l); } while (0)
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index d15d46db61f7..50d45781fa99 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -234,6 +234,11 @@ bool rcu_lockdep_current_cpu_online(void);
->  static inline bool rcu_lockdep_current_cpu_online(void) { return true; }
->  #endif /* #else #if defined(CONFIG_HOTPLUG_CPU) && defined(CONFIG_PROVE_RCU) */
->  
-> +extern struct lockdep_map rcu_lock_map;
-> +extern struct lockdep_map rcu_bh_lock_map;
-> +extern struct lockdep_map rcu_sched_lock_map;
-> +extern struct lockdep_map rcu_callback_map;
-> +
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  
->  static inline void rcu_lock_acquire(struct lockdep_map *map)
-> @@ -246,10 +251,6 @@ static inline void rcu_lock_release(struct lockdep_map *map)
->  	lock_release(map, _THIS_IP_);
->  }
->  
-> -extern struct lockdep_map rcu_lock_map;
-> -extern struct lockdep_map rcu_bh_lock_map;
-> -extern struct lockdep_map rcu_sched_lock_map;
-> -extern struct lockdep_map rcu_callback_map;
->  int debug_lockdep_rcu_enabled(void);
->  int rcu_read_lock_held(void);
->  int rcu_read_lock_bh_held(void);
-> @@ -320,7 +321,7 @@ static inline void rcu_preempt_sleep_check(void) { }
->  
->  #else /* #ifdef CONFIG_PROVE_RCU */
->  
-> -#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
-> +#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
->  #define rcu_sleep_check() do { } while (0)
->  
->  #endif /* #else #ifdef CONFIG_PROVE_RCU */
-> diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-> index aaaac8ac927c..25cdef506cae 100644
-> --- a/include/linux/rcupdate_trace.h
-> +++ b/include/linux/rcupdate_trace.h
-> @@ -11,10 +11,10 @@
->  #include <linux/sched.h>
->  #include <linux/rcupdate.h>
->  
-> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> -
->  extern struct lockdep_map rcu_trace_lock_map;
->  
-> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> +
->  static inline int rcu_read_lock_trace_held(void)
->  {
->  	return lock_is_held(&rcu_trace_lock_map);
-> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-> index a98965007eef..9f943c391df9 100644
-> --- a/include/linux/sched/task.h
-> +++ b/include/linux/sched/task.h
-> @@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
->  extern union thread_union init_thread_union;
->  extern struct task_struct init_task;
->  
-> -#ifdef CONFIG_PROVE_RCU
->  extern int lockdep_tasklist_lock_is_held(void);
-> -#endif /* #ifdef CONFIG_PROVE_RCU */
->  
->  extern asmlinkage void schedule_tail(struct task_struct *prev);
->  extern void init_idle(struct task_struct *idle, int cpu);
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index d60e7c39d60c..1aaa9e3d2e9c 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -432,7 +432,6 @@ struct tcf_block {
->  	struct mutex proto_destroy_lock; /* Lock for proto_destroy hashtable. */
->  };
->  
-> -#ifdef CONFIG_PROVE_LOCKING
->  static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
->  {
->  	return lockdep_is_held(&chain->filter_chain_lock);
-> @@ -442,17 +441,6 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
->  {
->  	return lockdep_is_held(&tp->lock);
->  }
-> -#else
-> -static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
-> -{
-> -	return true;
-> -}
-> -
-> -static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
-> -{
-> -	return true;
-> -}
-> -#endif /* #ifdef CONFIG_PROVE_LOCKING */
->  
->  #define tcf_chain_dereference(p, chain)					\
->  	rcu_dereference_protected(p, lockdep_tcf_chain_is_locked(chain))
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index eaa5cac5e836..1c67b1297a72 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1566,13 +1566,11 @@ do {									\
->  	lockdep_init_map(&(sk)->sk_lock.dep_map, (name), (key), 0);	\
->  } while (0)
->  
-> -#ifdef CONFIG_LOCKDEP
->  static inline bool lockdep_sock_is_held(const struct sock *sk)
->  {
->  	return lockdep_is_held(&sk->sk_lock) ||
->  	       lockdep_is_held(&sk->sk_lock.slock);
->  }
-> -#endif
->  
->  void lock_sock_nested(struct sock *sk, int subclass);
->  
-> -- 
-> 2.24.1
-> 
+> base-commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
+> --
+> 2.28.0
+
