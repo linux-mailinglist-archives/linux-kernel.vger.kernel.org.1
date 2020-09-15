@@ -2,72 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7446926AC62
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E36E26AC60
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgIOSox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:44:53 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:33858 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727689AbgIORcT (ORCPT
+        id S1727919AbgIOSo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727682AbgIORdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:32:19 -0400
-Received: by mail-il1-f194.google.com with SMTP id a8so3820710ilk.1;
-        Tue, 15 Sep 2020 10:32:19 -0700 (PDT)
+        Tue, 15 Sep 2020 13:33:10 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A14C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:32:42 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id r4so963796ooq.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PAtDVfuEJhlt1elf5/lgoBo+0AnWtv6A1Q7VC77Ff04=;
+        b=d0JaJ9en3sRyhoZPnW1QJJsxEdsVuPco3gIwh9SOrfnk19I2FwZ7GOdGlPhvQTrY1k
+         txY0wp2cgnvWub0vDpMs/MJk8Pu0yM9YHo71bPPgXGTmrj9nzguJi8qtik3HijV58bFt
+         d2O3luG/WR9UWz1jRPucM/caqSWmjD+RDDJXnr1xoFcys3qOaGdlWvq4ZmxcVwZrx/uI
+         ozBsIng1hGBF00/o2vwNEvqKXH5n+W0odVBB5j6WYIu+mwKz8DADLNADAd9ic1lxeC/z
+         G1T+PpfVFVmx/i24SgJG/1ndRmiiK8yYYYDVKwOqn1uak0gt53v94/41Wg3i8R6SJtn0
+         JVNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=frFFMJ3Z3B3UaKwbid0/RrGkT/BahZj6LxQeVuYq3XQ=;
-        b=LSWHa0O7r2Wup4kJHu/2+HJdO8s5eELckJ2fpBzZzQpfjCcpta/Za8Uft+buAy/g7Z
-         DRFpirUzF89lrN0J4WQjNDJRz+JxsioIsq7H4cTqdu4UkWKN7/e1m4kyGg6nNX+By6cJ
-         gdL0NkIn1GI6gptQLLJtM2n/aJnbFgTFhs4vLKaFgkhkpJqt9JUJoioXYOrIz9d17qni
-         gJNHg7nXemqbP+eI63QQwqZuT1QfD77Z+M/Bf821fXIdvxxEgAO4SwrfR+IqiNJ0ODUd
-         GvwggIuolPW6UEORYxyccnIwGBNFt7SOo92t3QKa0QEMPmq3BpnLA+HiHhRvemYUei1f
-         Xb+Q==
-X-Gm-Message-State: AOAM530q7pQFuOOqw7SdT6vEI3/ZH2mpHlqJ+LNsGmSayL0c5fFMeb92
-        QJba3klbje/ilA/ifWvF8w==
-X-Google-Smtp-Source: ABdhPJxXbXGTnaORsXEdhvEv5PnM9NDeew6jEv7xOkE2izK1Ih7By9AaUvcVt6EleEiLs0p/dp5qYA==
-X-Received: by 2002:a92:8501:: with SMTP id f1mr13864759ilh.54.1600191138903;
-        Tue, 15 Sep 2020 10:32:18 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id w8sm9412336ilc.85.2020.09.15.10.32.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 10:32:18 -0700 (PDT)
-Received: (nullmailer pid 2174489 invoked by uid 1000);
-        Tue, 15 Sep 2020 17:32:17 -0000
-Date:   Tue, 15 Sep 2020 11:32:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: arm: fsl: Add binding for Variscite
- Symphony board with VAR-SOM-MX8MN
-Message-ID: <20200915173217.GA2174436@bogus>
-References: <20200909152434.18643-1-krzk@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PAtDVfuEJhlt1elf5/lgoBo+0AnWtv6A1Q7VC77Ff04=;
+        b=KOLyouXiENe86fvIwI5xH4gOBBpOLSrdgjUc5zuX4NuDgUXiIAo5llvoJDW382tWoJ
+         bGwIur7rDB9WrOPNAS8mKMJERcUxf9zJkREiRQTyvQPDicrCF9CWTxk1mXm5FahFXeOp
+         FhNjIhOxL4ztboWWUEmKExf9h4uUZcfCoGUsfOC0a+5fl4bNenU3Gxk29dt/zpwxRGFd
+         x52qXypj65omE6u2+0ITcRiI7A+330WUfbhFkRdobohib4q3yEaQo/YUYM7hbnSeGXBy
+         PlOwlAP+kBvUBKPexOAW7g/Xp371QM84WDCiKGg6a+HAARLRkWGJkxyC6Cpt3pzeIRKa
+         hOzA==
+X-Gm-Message-State: AOAM530VKl6h52fAqcWuLIg0IaxjhQMAQEEpFszK7hf2WrFLb+1JswhJ
+        rPFciD5DibuRquyeaMoAOIyKnsgL9T5J6VeXmt1dlQ==
+X-Google-Smtp-Source: ABdhPJyCzInxRpJlSmxXfBdbgreenCQjI8gKUscz7zGArVGzNAylhuh/sQNja0PJx+ORauOO7/zkeU7+nZkaJKmgHdU=
+X-Received: by 2002:a4a:751a:: with SMTP id j26mr14993283ooc.14.1600191160831;
+ Tue, 15 Sep 2020 10:32:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909152434.18643-1-krzk@kernel.org>
+References: <20200914172750.852684-1-georgepope@google.com>
+ <20200914172750.852684-7-georgepope@google.com> <202009141509.CDDC8C8@keescook>
+ <20200915102458.GA1650630@google.com> <CANpmjNOTcS_vvZ1swh1iHYaRbTvGKnPAe4Q2DpR1MGhk_oZDeA@mail.gmail.com>
+ <20200915120105.GA2294884@google.com>
+In-Reply-To: <20200915120105.GA2294884@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 15 Sep 2020 19:32:28 +0200
+Message-ID: <CANpmjNPpq7LfTHYesz2wTVw6Pqv0FQ2gc-vmSB6Mdov+XWPZiw@mail.gmail.com>
+Subject: Re: [PATCH 06/14] Fix CFLAGS for UBSAN_BOUNDS on Clang
+To:     George Popescu <georgepope@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, maz@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        David Brazdil <dbrazdil@google.com>, broonie@kernel.org,
+        Fangrui Song <maskray@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Sep 2020 17:24:32 +0200, Krzysztof Kozlowski wrote:
-> Add a binding for the Variscite Symphony evaluation kit board with
-> VAR-SOM-MX8MN System on Module.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+On Tue, 15 Sep 2020 at 14:01, George Popescu <georgepope@google.com> wrote:
+>
+> On Tue, Sep 15, 2020 at 01:18:11PM +0200, Marco Elver wrote:
+> > On Tue, 15 Sep 2020 at 12:25, George Popescu <georgepope@google.com> wrote:
+> > > On Mon, Sep 14, 2020 at 03:13:14PM -0700, Kees Cook wrote:
+> > > > On Mon, Sep 14, 2020 at 05:27:42PM +0000, George-Aurelian Popescu wrote:
+> > > > > From: George Popescu <georgepope@google.com>
+> > > > >
+> > > > > When the kernel is compiled with Clang, UBSAN_BOUNDS inserts a brk after
+> > > > > the handler call, preventing it from printing any information processed
+> > > > > inside the buffer.
+> > > > > For Clang -fsanitize=bounds expands to -fsanitize=array-bounds and
+> > > > > -fsanitize=local-bounds, and the latter adds a brk after the handler
+> > > > > call
+> > > >
+> > > This would mean losing the local-bounds coverage. I tried to  test it without
+> > > local-bounds and with a locally defined array on the stack and it works fine
+> > > (the handler is called and the error reported). For me it feels like
+> > > --array-bounds and --local-bounds are triggered for the same type of
+> > > undefined_behaviours but they are handling them different.
+> >
+> > Does -fno-sanitize-trap=bounds help?>
+>
+> I tried replacing it with:
+>       ifdef CONFIG_CC_IS_CLANG
+>             CFLAGS_UBSAN += $(call cc-option, -fno-sanitize-trap=bounds)
+>             CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+>       else
+>             CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+>       endif
+>
+> The code traps.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+What's your config? Do you have CONFIG_UBSAN_TRAP=y? If so, you have 2
+options: honor UBSAN_TRAP and crash the kernel, or have a
+'CFLAGS_REMOVE_... = -fsanitize-undefined-trap-on-error' for the files
+where you can't deal with traps.
+
+Thanks,
+-- Marco
