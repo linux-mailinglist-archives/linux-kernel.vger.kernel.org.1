@@ -2,112 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1152926A279
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCACB26A27C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgIOJoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:44:20 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36275 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726437AbgIOJoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:44:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600163053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lbu0S0cU/fsoJ+GJyj5DcLjuEJa0U3NyiPwssHnVX5Q=;
-        b=MjOfwcCow00rUxLyBzocmXQDf+5S+tYyc80cbaJc2yiN6/oZWaf+5l7nYo6n00qEWsPC8D
-        +Kc20QPUWj71Kpl75oJ2UM1Rq8GFieL7Wrft5m2wnAnAxI0gGTwBweAx9ceRvEwjwG8SWq
-        u3sxavn7uxfPj5OhOYWtZWseptFws6M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-570-OpyvX78FNlm8c7F0Zm2C2Q-1; Tue, 15 Sep 2020 05:44:12 -0400
-X-MC-Unique: OpyvX78FNlm8c7F0Zm2C2Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726481AbgIOJoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:44:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726372AbgIOJoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:44:46 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D996218B9ECB;
-        Tue, 15 Sep 2020 09:44:10 +0000 (UTC)
-Received: from gondolin (ovpn-113-4.ams2.redhat.com [10.36.113.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C667E60BE5;
-        Tue, 15 Sep 2020 09:44:03 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 11:44:01 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     alex.williamson@redhat.com, pmorel@linux.ibm.com,
-        schnelle@linux.ibm.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] vfio iommu: Add dma available capability
-Message-ID: <20200915114401.4db5e009.cohuck@redhat.com>
-In-Reply-To: <1600122331-12181-2-git-send-email-mjrosato@linux.ibm.com>
-References: <1600122331-12181-1-git-send-email-mjrosato@linux.ibm.com>
-        <1600122331-12181-2-git-send-email-mjrosato@linux.ibm.com>
-Organization: Red Hat GmbH
+        by mail.kernel.org (Postfix) with ESMTPSA id AB86B2080C;
+        Tue, 15 Sep 2020 09:44:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600163084;
+        bh=RbizKIqrqO/ALU1xFvlAwmrRVGMO098Fa7HI04zSuug=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TX502w4Lb3TBtT1biEarYXDs0RMgK5Jwd+WRXfhY3G9vRen8GIGD+aVy4BjsJoaQc
+         SJS07r9bjKKWfIYsPnQqCZewD7OaIh31CiI98dqNpkM50CxVRE2rapna7Fw7rIwycM
+         RMP24jX60/bY130cRTLOGKecvQYoYJTzCiUQsiec=
+Date:   Tue, 15 Sep 2020 11:44:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 0/3] io_uring: Fix async workqueue is not canceled on
+ some corner case
+Message-ID: <20200915094441.GA264332@kroah.com>
+References: <20200915081551.12140-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915081551.12140-1-songmuchun@bytedance.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 18:25:31 -0400
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-
-> Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container")
-> added the ability to limit the number of memory backed DMA mappings.
-> However on s390x, when lazy mapping is in use, we use a very large
-> number of concurrent mappings.  Let's provide the current allowable
-> number of DMA mappings to userspace via the IOMMU info chain so that
-> userspace can take appropriate mitigation.
+On Tue, Sep 15, 2020 at 04:15:48PM +0800, Muchun Song wrote:
+> We should make sure that async workqueue is canceled on exit, but on
+> some corner case, we found that the async workqueue is not canceled
+> on exit in the linux-5.4. So we started an in-depth investigation.
+> Fortunately, we finally found the problem. The commit:
 > 
-> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 17 +++++++++++++++++
->  include/uapi/linux/vfio.h       | 16 ++++++++++++++++
->  2 files changed, 33 insertions(+)
+>   1c4404efcf2c ("io_uring: make sure async workqueue is canceled on exit")
+> 
+> did not completely solve this problem. This patch series to solve this
+> problem completely. And there's no upstream variant of this commit, so
+> this patch series is just fix the linux-5.4.y stable branch.
+> 
+> Muchun Song (2):
+>   io_uring: Fix missing smp_mb() in io_cancel_async_work()
+>   io_uring: Fix remove irrelevant req from the task_list
+> 
+> Yinyin Zhu (1):
+>   io_uring: Fix resource leaking when kill the process
+> 
+>  fs/io_uring.c | 45 +++++++++++++++++++++++++++++----------------
+>  1 file changed, 29 insertions(+), 16 deletions(-)
+> 
+> -- 
+> 2.11.0
+> 
 
-(...)
 
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 9204705..a8cc4a5 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -1039,6 +1039,22 @@ struct vfio_iommu_type1_info_cap_migration {
->  	__u64	max_dirty_bitmap_size;		/* in bytes */
->  };
->  
-> +/*
-> + * The DMA available capability allows to report the current number of
-> + * simultaneously outstanding DMA mappings that are allowed.
-> + *
-> + * The structures below define version 1 of this capability.
+<formletter>
 
-"The structure below defines..." ?
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-> + *
-> + * max: specifies the maximum number of outstanding DMA mappings allowed.
-
-I think you forgot to tweak that one:
-
-"avail: specifies the current number of outstanding DMA mappings allowed."
-
-?
-
-> + */
-> +#define VFIO_IOMMU_TYPE1_INFO_DMA_AVAIL 3
-> +
-> +struct vfio_iommu_type1_info_dma_avail {
-> +	struct	vfio_info_cap_header header;
-> +	__u32	avail;
-> +};
-> +
-> +
->  #define VFIO_IOMMU_GET_INFO _IO(VFIO_TYPE, VFIO_BASE + 12)
->  
->  /**
-
+</formletter>
