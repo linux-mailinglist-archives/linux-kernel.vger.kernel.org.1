@@ -2,163 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9319E269A5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BB2269A5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgIOATh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:19:37 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:41081 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726122AbgIOATd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:19:33 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 4C44BD3B;
-        Mon, 14 Sep 2020 20:19:32 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Mon, 14 Sep 2020 20:19:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=vX1pFnhbIBzXQa2l8jrntsGgk3Q5UmP
-        7jCafClE7Hgo=; b=KH4N2pvdomgLPmSLP6DwsoQksbgjq+1HmS02GZw0PVlW7wJ
-        7eRbnkXNQyjS1qp50xJTYJTJIiDxZR3Fb2AFB83jb9Y/ZtXm6mCxjtAUSTM5RG8x
-        FecRyTX4NpASSe85SlpVjzgshFpklUCk8Q+BV+vQBRfMdKi9SkBggajLKcgUlzUd
-        b0DNIderw3vssz5ettckkgR2Mnyc+lMEevsJy2VJXkTW0djlpt5O8EydxZrHP8TR
-        kxkw/djIXGyUvTfF+4YEPKT9Vwubr3k+cFfjogCP3oMcuo6TO9Gw9orGJZ/lpgw6
-        NO4Gy2AF54PyOiqHWfRWxgi00J/jCp/lrko/hVA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vX1pFn
-        hbIBzXQa2l8jrntsGgk3Q5UmP7jCafClE7Hgo=; b=VcUQJVy44hFI1unHR3BUM7
-        lTy4QL+/Gh0k1KU4//AbOGucOx0l8HfD36WUAXGBE9lync5Kv+sj3rJ2NSkO3cvN
-        JqZ0eygL1qb+xjO3mmjs0bX3tV48QeI4e/qMrzFzoK20qStPQDAuG3tgyfoLYU6s
-        /M3mJMAj/0/B9BboFXKhy4cvXN+FnEmkVPCcFkJXTtSQsD4ofd90Bm63wy6Kln7g
-        OIFZGYN9eLq1JVT1Qq8+iEv5x4IRBX7N27elmGhmsBpi1dmciyAdm0NxQPgLucSi
-        5D82tlD+OEL/v8+/KBR8h1PdkRObPyPSpfikNtv0SBV2X/yWBxJhsYyM/0KmoVjg
-        ==
-X-ME-Sender: <xms:kghgX99dRYOfJmbIU2wka8w5UR-QK2UZO9ISUrp2D-fHbXsWGVUUZQ>
-    <xme:kghgXxtuaWprmeB_Ss84dyvmN28exDTKl0eiQlGYpM6GGqxaXS706Xs5ho4KyqG4T
-    jWldm9UPfNl_jH09Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeijedgvdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:kghgX7B7FOq23585XEUK3AOBQ23I_YInMg7AZEXqF-JmlqFqskq-5Q>
-    <xmx:kghgXxc2_PzR_vuX4nR6Az1AUZuEr3Mxq4uwtc4Vk_HUgLNoExHqWA>
-    <xmx:kghgXyN2c1sUoodgZY9ri5HDAvH6kRLec65WjgXc7IOYAdbX6FhsHA>
-    <xmx:kwhgX_ob7dhTXLjy5nNTDphiY4DdtnGlWLpw8cnuyuf2o4r5UFNRjw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 56C88E00BF; Mon, 14 Sep 2020 20:19:30 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-259-g88fbbfa-fm-20200903.003-g88fbbfa3
-Mime-Version: 1.0
-Message-Id: <6e14e75f-f9c1-4d33-b95d-0c7dd7131a9f@www.fastmail.com>
-In-Reply-To: <e7a64983-fe1d-1ba2-b0c3-ae4a791f7a75@roeck-us.net>
-References: <20200914122811.3295678-1-andrew@aj.id.au>
- <e7a64983-fe1d-1ba2-b0c3-ae4a791f7a75@roeck-us.net>
-Date:   Tue, 15 Sep 2020 09:49:10 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Guenter Roeck" <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Cc:     "Jean Delvare" <jdelvare@suse.com>, wsa@kernel.org,
-        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Throttle I2C transfers to UCD9000 devices
-Content-Type: text/plain
+        id S1726159AbgIOAUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:20:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726024AbgIOAUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 20:20:13 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A8EA208DB;
+        Tue, 15 Sep 2020 00:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600129212;
+        bh=KpQcyw4rRtH7VKNeV9Vu9Ov4ZG0MW+PZLdYwJFvWQ/8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=fFGv5T3c9maMM26lk1DHaV4i/s24/M4XwSahghU7CzgCcrDVjE+pmIisFmdX6ApP7
+         Nb9d9iN1tJES5rul/GZkTpKK9UiNLHUdzm3UnPe4egrKTd6sSGMpmuAClU3K92+45I
+         dai+gA/GBg2oKhxSVaX0FGU8CbxqPnR/sFuZSvm4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id CCE6A35227CC; Mon, 14 Sep 2020 17:20:11 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 17:20:11 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        nikolay@cumulusnetworks.com, davem@davemloft.net,
+        netdev@vger.kernel.org, josh@joshtriplett.org,
+        peterz@infradead.org, christian.brauner@ubuntu.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sfr@canb.auug.org.au, roopa@nvidia.com
+Subject: Re: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from swallowing
+ the condition
+Message-ID: <20200915002011.GJ29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200908173624.160024-1-kuba@kernel.org>
+ <5ABC15D5-3709-4CA4-A747-6A7812BB12DD@cumulusnetworks.com>
+ <20200908172751.4da35d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200914202122.GC2579423@google.com>
+ <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 15 Sep 2020, at 02:13, Guenter Roeck wrote:
-> On 9/14/20 5:28 AM, Andrew Jeffery wrote:
-> > Hello,
+On Mon, Sep 14, 2020 at 03:47:38PM -0700, Jakub Kicinski wrote:
+> On Mon, 14 Sep 2020 16:21:22 -0400 Joel Fernandes wrote:
+> > On Tue, Sep 08, 2020 at 05:27:51PM -0700, Jakub Kicinski wrote:
+> > > On Tue, 08 Sep 2020 21:15:56 +0300 nikolay@cumulusnetworks.com wrote:  
+> > > > Ah, you want to solve it for all. :) 
+> > > > Looks and sounds good to me, 
+> > > > Reviewed-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>  
+> > > 
+> > > Actually, I give up, lockdep_is_held() is not defined without
+> > > CONFIG_LOCKDEP, let's just go with your patch..  
 > > 
-> > While working with system designs making use of TI's UCD90320 Power
-> > Sequencer we've found that communication with the device isn't terribly
-> > reliable.
-> > 
-> > It appears that back-to-back transfers where commands addressed to the
-> > device are put onto the bus with intervals between STOP and START in the
-> > neighbourhood of 250us or less can cause bad behaviour. This primarily
-> > happens during driver probe while scanning the device to determine its
-> > capabilities.
-> > 
-> > We have observed the device causing excessive clock stretches and bus
-> > lockups, and also corruption of the device's volatile state (requiring it
-> > to be reset).  The latter is particularly disruptive in that the controlled
-> > rails are brought down either by:
-> > 
-> > 1. The corruption causing a fault condition, or
-> > 2. Asserting the device's reset line to recover
-> > 
-> > A further observation is that pacing transfers to the device appears to
-> > mitigate the bad behaviour. We're in discussion with TI to better
-> > understand the limitations and at least get the behaviour documented.
-> > 
-> > This short series implements the mitigation in terms of a throttle in the
-> > i2c_client associated with the device's driver. Before the first
-> > communication with the device in the probe() of ucd9000 we configure the
-> > i2c_client to throttle transfers with a minimum of a 1ms delay (with the
-> > delay exposed as a module parameter).
-> > 
-> > The series is RFC for several reasons:
-> > 
-> > The first is to sus out feelings on the general direction. The problem is
-> > pretty unfortunate - are there better ways to implement the mitigation?
-> > 
-> > If there aren't, then:
-> > 
-> > I'd like thoughts on whether we want to account for i2c-dev clients.
-> > Implementing throttling in i2c_client feels like a solution-by-proxy as the
-> > throttling is really a property of the targeted device, but we don't have a
-> > coherent representation between platform devices and devices associated
-> > with i2c-dev clients. At the moment we'd have to resort to address-based
-> > lookups for platform data stashed in the transfer functions.
-> > 
-> > Next is that I've only implemented throttling for SMBus devices. I don't
-> > yet have a use-case for throttling non-SMBus devices so I'm not sure it's
-> > worth poking at it, but would appreciate thoughts there.
-> > 
-> > Further, I've had a bit of a stab at dealing with atomic transfers that's
-> > not been tested. Hopefully it makes sense.
-> > 
-> > Finally I'm also interested in feedback on exposing the control in a little
-> > more general manner than having to implement a module parameter in all
-> > drivers that want to take advantage of throttling. This isn't a big problem
-> > at the moment, but if anyone has thoughts there then I'm happy to poke at
-> > those too.
-> > 
+> > Care to send a patch just for the RCU macro then? Not sure what Dave is
+> > applying but if the net-next tree is not taking the RCU macro change, then
+> > send another one with my tag:
 > 
-> As mentioned in patch 2/2, I don't think a module parameter is a good idea.
-> I think this should be implemented on driver level, similar to zl6100.c,
-> it should be limited to affected devices and not be user controllable.
-
-Yep. I will look at zl6100.c.
-
+> Seems like quite a few places depend on the macro disappearing its
+> argument. I was concerned that it's going to be had to pick out whether
+> !LOCKDEP builds should return true or false from LOCKDEP helpers, but
+> perhaps relying on the linker errors even more is not such poor taste?
 > 
-> In respect to implementation in the i2c core vs in drivers: So far we
-> encountered this problem for some Zilker labs devices and for some LTC
-> devices. While the solution needed here looks similar to the solution
-> implemented for Zilker labs devices, the solution for LTC devices is
-> different. I am not sure if an implementation in the i2c core is
-> desirable. It looks quite invasive to me, and it won't solve the problem
-> for all devices since it isn't always a simple "wait <n> microseconds
-> between accesses". For example, some devices may require a wait after
-> a write but not after a read, or a wait only after certain commands (such
-> as commands writing to an EEPROM). Other devices may require a mechanism
-> different to "wait a certain period of time". It seems all but impossible
-> to implement a generic mechanism on i2c level.
+> Does the patch below look acceptable to you?
 
-Yep, that's fair. I went this route to avoid implementing two sets of handlers 
-providing the pacing in the driver (for before and after we register with the 
-pmbus core), but it is invasive as you point out. Let me look at your suggested 
-alternatives and get back to you.
+The thing to check would be whether all compilers do sufficient
+dead-code elimination (it used to be that they did not).  One way to
+get a quick sniff test of this would be to make sure that a dead-code
+lockdep_is_held() is in common code, and then expose this patch to kbuild
+test robot.
 
-Andrew
+Seem reasonable?
+
+							Thanx, Paul
+
+> --->8------------
+> 
+> rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
+> 
+> We run into a unused variable warning in bridge code when
+> variable is only used inside the condition of
+> rcu_dereference_protected().
+> 
+>  #define mlock_dereference(X, br) \
+> 	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
+> 
+> Since on builds with CONFIG_PROVE_RCU=n rcu_dereference_protected()
+> compiles to nothing the compiler doesn't see the variable use.
+> 
+> Prevent the warning by adding the condition as dead code.
+> We need to un-hide the declaration of lockdep_tasklist_lock_is_held(),
+> lockdep_sock_is_held(), RCU lock maps and remove some declarations
+> in net/sched header, because they have a wrong type.
+> 
+> Add forward declarations of lockdep_is_held(), lock_is_held() which
+> will cause a linker errors if actually used with !LOCKDEP.
+> At least RCU expects some locks _not_ to be held so it's hard to
+> pick true/false for a dummy implementation.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+>  include/linux/lockdep.h        |  6 ++++++
+>  include/linux/rcupdate.h       | 11 ++++++-----
+>  include/linux/rcupdate_trace.h |  4 ++--
+>  include/linux/sched/task.h     |  2 --
+>  include/net/sch_generic.h      | 12 ------------
+>  include/net/sock.h             |  2 --
+>  6 files changed, 14 insertions(+), 23 deletions(-)
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 6a584b3e5c74..c4b6225ee320 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -371,6 +371,12 @@ static inline void lockdep_unregister_key(struct lock_class_key *key)
+>  
+>  #define lockdep_depth(tsk)	(0)
+>  
+> +/*
+> + * Dummy forward declarations, allow users to write less ifdef-y code
+> + * and depend on dead code elimination.
+> + */
+> +int lock_is_held(const void *);
+> +int lockdep_is_held(const void *);
+>  #define lockdep_is_held_type(l, r)		(1)
+>  
+>  #define lockdep_assert_held(l)			do { (void)(l); } while (0)
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index d15d46db61f7..50d45781fa99 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -234,6 +234,11 @@ bool rcu_lockdep_current_cpu_online(void);
+>  static inline bool rcu_lockdep_current_cpu_online(void) { return true; }
+>  #endif /* #else #if defined(CONFIG_HOTPLUG_CPU) && defined(CONFIG_PROVE_RCU) */
+>  
+> +extern struct lockdep_map rcu_lock_map;
+> +extern struct lockdep_map rcu_bh_lock_map;
+> +extern struct lockdep_map rcu_sched_lock_map;
+> +extern struct lockdep_map rcu_callback_map;
+> +
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  
+>  static inline void rcu_lock_acquire(struct lockdep_map *map)
+> @@ -246,10 +251,6 @@ static inline void rcu_lock_release(struct lockdep_map *map)
+>  	lock_release(map, _THIS_IP_);
+>  }
+>  
+> -extern struct lockdep_map rcu_lock_map;
+> -extern struct lockdep_map rcu_bh_lock_map;
+> -extern struct lockdep_map rcu_sched_lock_map;
+> -extern struct lockdep_map rcu_callback_map;
+>  int debug_lockdep_rcu_enabled(void);
+>  int rcu_read_lock_held(void);
+>  int rcu_read_lock_bh_held(void);
+> @@ -320,7 +321,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+>  
+>  #else /* #ifdef CONFIG_PROVE_RCU */
+>  
+> -#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
+> +#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
+>  #define rcu_sleep_check() do { } while (0)
+>  
+>  #endif /* #else #ifdef CONFIG_PROVE_RCU */
+> diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+> index aaaac8ac927c..25cdef506cae 100644
+> --- a/include/linux/rcupdate_trace.h
+> +++ b/include/linux/rcupdate_trace.h
+> @@ -11,10 +11,10 @@
+>  #include <linux/sched.h>
+>  #include <linux/rcupdate.h>
+>  
+> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -
+>  extern struct lockdep_map rcu_trace_lock_map;
+>  
+> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> +
+>  static inline int rcu_read_lock_trace_held(void)
+>  {
+>  	return lock_is_held(&rcu_trace_lock_map);
+> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+> index a98965007eef..9f943c391df9 100644
+> --- a/include/linux/sched/task.h
+> +++ b/include/linux/sched/task.h
+> @@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
+>  extern union thread_union init_thread_union;
+>  extern struct task_struct init_task;
+>  
+> -#ifdef CONFIG_PROVE_RCU
+>  extern int lockdep_tasklist_lock_is_held(void);
+> -#endif /* #ifdef CONFIG_PROVE_RCU */
+>  
+>  extern asmlinkage void schedule_tail(struct task_struct *prev);
+>  extern void init_idle(struct task_struct *idle, int cpu);
+> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+> index d60e7c39d60c..1aaa9e3d2e9c 100644
+> --- a/include/net/sch_generic.h
+> +++ b/include/net/sch_generic.h
+> @@ -432,7 +432,6 @@ struct tcf_block {
+>  	struct mutex proto_destroy_lock; /* Lock for proto_destroy hashtable. */
+>  };
+>  
+> -#ifdef CONFIG_PROVE_LOCKING
+>  static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
+>  {
+>  	return lockdep_is_held(&chain->filter_chain_lock);
+> @@ -442,17 +441,6 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+>  {
+>  	return lockdep_is_held(&tp->lock);
+>  }
+> -#else
+> -static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
+> -{
+> -	return true;
+> -}
+> -
+> -static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+> -{
+> -	return true;
+> -}
+> -#endif /* #ifdef CONFIG_PROVE_LOCKING */
+>  
+>  #define tcf_chain_dereference(p, chain)					\
+>  	rcu_dereference_protected(p, lockdep_tcf_chain_is_locked(chain))
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index eaa5cac5e836..1c67b1297a72 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -1566,13 +1566,11 @@ do {									\
+>  	lockdep_init_map(&(sk)->sk_lock.dep_map, (name), (key), 0);	\
+>  } while (0)
+>  
+> -#ifdef CONFIG_LOCKDEP
+>  static inline bool lockdep_sock_is_held(const struct sock *sk)
+>  {
+>  	return lockdep_is_held(&sk->sk_lock) ||
+>  	       lockdep_is_held(&sk->sk_lock.slock);
+>  }
+> -#endif
+>  
+>  void lock_sock_nested(struct sock *sk, int subclass);
+>  
+> -- 
+> 2.24.1
+> 
