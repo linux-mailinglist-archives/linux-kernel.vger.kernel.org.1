@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3D526AEB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FC426AEB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgIOUct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:32:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61478 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728036AbgIOUau (ORCPT
+        id S1727857AbgIOUbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:31:04 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:37013 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727916AbgIOUYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:30:50 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FJ2ist135652;
-        Tue, 15 Sep 2020 15:18:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=jPmLWamHj5njq52hGHvp+d5qBX3n9dlTmk4CMxzTFUc=;
- b=UkWAzekDd6fxnWHKd5a8Pq5fhGD/ekoaGuDTkqaAMsiYPH69Vg+cOc84S14Ga7JIVXJA
- mJv1MJdfVRPO7ZngIIANEc1IPHz618tX8xm5UO734zBgCnB+7IKKhXlhkiWXQJhu/vKH
- sPCpL7ZcVhDrjIHt2iCKXDApnsLMal4bhSG2rcKOD8ZgrVPOwBg1t1rAeEEfAE6rwdE4
- EOMoxTvo+kxv/vqxAaY0fIv8VuynZiVqU2qIHQ7wbw3ATdqmkMJIQYkypjBD3/aKDaR1
- 9wOk9nrf3+IhwhJ42WGCHFN3CNhwA3iVtF0KYyB3U1CzoezLq/mOLfh8RJ4ZTZZcrFct Uw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33k2pp1hjn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 15:18:15 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08FJ498T140637;
-        Tue, 15 Sep 2020 15:18:15 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33k2pp1hjj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 15:18:15 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08FJ7O0O029380;
-        Tue, 15 Sep 2020 19:18:15 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma03wdc.us.ibm.com with ESMTP id 33gny8spqe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 19:18:15 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08FJIDqG1835692
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 19:18:13 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CD4AB13604F;
-        Tue, 15 Sep 2020 19:18:13 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 30C3E136059;
-        Tue, 15 Sep 2020 19:18:13 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.163.85.51])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Sep 2020 19:18:12 +0000 (GMT)
-Subject: Re: [PATCH v3] vfio iommu: Add dma available capability
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-To:     alex.williamson@redhat.com, cohuck@redhat.com
-Cc:     pmorel@linux.ibm.com, schnelle@linux.ibm.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1600196718-23238-1-git-send-email-mjrosato@linux.ibm.com>
-Message-ID: <4437b2a0-c2db-4210-305a-3397bcc18050@linux.ibm.com>
-Date:   Tue, 15 Sep 2020 15:18:12 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 15 Sep 2020 16:24:41 -0400
+Received: by mail-io1-f68.google.com with SMTP id y13so5639558iow.4;
+        Tue, 15 Sep 2020 13:24:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k8g/clW7IPHG1LbRVHMEnaiVeLkzzxw5Wen9ULU36ns=;
+        b=CHM/qGMjDqVbsE0mo3Aw3YJMEuMzDA9cvd0yl8Zl/5+CnuU1zf733X3u96MWoNHumh
+         XCC8FYkdYihVCeDcjTYrxgZnsyAUp4JRF0iXUqi6uQj6M0n34JUW/qN66l4Va/ynxbm6
+         ASf/APLt1FwS/ySGyhenPd7DP2tTh73fi4MiZiziUzeSplxIaEhCypNk8gsnX749Hnw8
+         yOO7er6/rVDCxrdL0LaxGqc1saJ5DhzUO4bXFQTJ6lK+jSKOOxc2JxXii7ZezQICumqq
+         pJOaGyTdKGdg71o1p53W0MjBlExLMrFF2zpLecQbuJeXrXPqySTNI0hOhX3UArNSOB95
+         Xotg==
+X-Gm-Message-State: AOAM530dnE58USy2gpqe50urtfv7XlBvOTyqkubHgyJ1IgphXqNm1FAc
+        kNjA0kNEzbnATGQhf/dw3A==
+X-Google-Smtp-Source: ABdhPJy2mL/IlfHwqDOlJmg6GztMT0Y5BZaayRHvuBr8GnCGguHN/BrCKaUKyrH49aML4FbYZNQWxw==
+X-Received: by 2002:a05:6602:2e89:: with SMTP id m9mr16868980iow.77.1600201475599;
+        Tue, 15 Sep 2020 13:24:35 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id v20sm9357819ile.42.2020.09.15.13.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 13:24:34 -0700 (PDT)
+Received: (nullmailer pid 2448015 invoked by uid 1000);
+        Tue, 15 Sep 2020 20:24:32 -0000
+Date:   Tue, 15 Sep 2020 14:24:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        devicetree@vger.kernel.org, Rob Clark <robdclark@chromium.org>
+Subject: Re: [PATCH v3 01/10] dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy
+ information
+Message-ID: <20200915202432.GA2435458@bogus>
+References: <20200910004902.2252694-1-swboyd@chromium.org>
+ <20200910004902.2252694-2-swboyd@chromium.org>
+ <159972050159.2295844.14715100754744266014@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <1600196718-23238-1-git-send-email-mjrosato@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_12:2020-09-15,2020-09-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- mlxlogscore=939 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009150147
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159972050159.2295844.14715100754744266014@swboyd.mtv.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 3:05 PM, Matthew Rosato wrote:
-> Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container") added
-> a limit to the number of concurrent DMA requests for a vfio container.
-> However, lazy unmapping in s390 can in fact cause quite a large number of
-> outstanding DMA requests to build up prior to being purged, potentially
-> the entire guest DMA space.  This results in unexpected 'VFIO_MAP_DMA
-> failed: No space left on device' conditions seen in QEMU.
+On Wed, Sep 09, 2020 at 11:48:21PM -0700, Stephen Boyd wrote:
+> Quoting Stephen Boyd (2020-09-09 17:48:53)
+> > This binding only describes the USB phy inside the USB3 + DP "combo"
+> > phy. Add information for the DP phy and describe the sub-nodes that
+> > represent the DP and USB3 phys that exist inside the combo wrapper.
+> > Remove reg-names from required properties because it isn't required nor
+> > used by the kernel driver.
+> > 
+> > Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
+> > Cc: Chandan Uddaraju <chandanu@codeaurora.org>
+> > Cc: Vara Reddy <varar@codeaurora.org>
+> > Cc: Tanmay Shah <tanmay@codeaurora.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Manu Gautam <mgautam@codeaurora.org>
+> > Cc: Sandeep Maheswaram <sanm@codeaurora.org>
+> > Cc: Douglas Anderson <dianders@chromium.org>
+> > Cc: Sean Paul <seanpaul@chromium.org>
+> > Cc: Jonathan Marek <jonathan@marek.ca>
+> > Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > Cc: <devicetree@vger.kernel.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Rob Clark <robdclark@chromium.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >  .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml    | 91 +++++++++++++++++--
+> >  1 file changed, 81 insertions(+), 10 deletions(-)
 > 
-> This patch proposes to provide the remaining number of allowable DMA
-> requests via the VFIO_IOMMU_GET_INFO ioctl as a new capability.  A
-> subsequent patchset to QEMU would collect this information and use it in
-> s390 PCI support to tap the guest on the shoulder before overrunning the
-> vfio limit.
+> I noticed that I didn't document the new compatible string I'm using,
+> qcom,sc7180-qmp-usb3-dp-phy, ugh.
+> 
+> Should I copy the whole file over and make a new document for the new
+> compatible string? That feels like the better solution vs. making this
+> binding have min/max stuff where it fails to enforce the DP part of the
+> phy. We can delete this binding once the kernel tree isn't using it,
+> right?
 
-Link to latest QEMU patchset:
-https://lists.gnu.org/archive/html/qemu-devel/2020-09/msg05505.html
+It generally depends on how much if/then schema you have (or should 
+have) vs. how much is common, but it's a judgement call. It looks 
+like you are just extending the binding for the most part. If there's 
+dtb warnings until the existing stuff gets updated, that's fine.
 
-> 
-> Changes from v2:
-> - Typos / fixed stale comment block
-> 
-> Matthew Rosato (1):
->    vfio iommu: Add dma available capability
-> 
->   drivers/vfio/vfio_iommu_type1.c | 17 +++++++++++++++++
->   include/uapi/linux/vfio.h       | 15 +++++++++++++++
->   2 files changed, 32 insertions(+)
-> 
-
+Rob
