@@ -2,172 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A491A26B3FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0D926B3AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727195AbgIOXOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:14:04 -0400
-Received: from m176151.mail.qiye.163.com ([59.111.176.151]:64044 "EHLO
-        m176151.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727175AbgIOOki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:40:38 -0400
-X-Greylist: delayed 578 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Sep 2020 10:40:29 EDT
-Received: from vivo.com (wm-11.qy.internal [127.0.0.1])
-        by m176151.mail.qiye.163.com (Hmail) with ESMTP id 8DB074840C0;
-        Tue, 15 Sep 2020 22:29:57 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AF6ACABWDR4m6pFQbR54AqoA.3.1600180197571.Hmail.bailu.lin@vivo.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Harry Wei <harryxiyou@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@vivo.com, wangqing@vivo.com
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gRG9jdW1lbnRhdGlvbjogQ2hpbmVzZSB0cmFuc2xhdGlvbiBvZiBEb2N1bWVudGF0aW9uL2FybTY0L2FtdS5yc3Q=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
-In-Reply-To: <7c584fe4-5b77-3345-79d3-a48735e36816@linux.alibaba.com>
+        id S1727375AbgIOXHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:07:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727278AbgIOOlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:41:40 -0400
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23F7922265;
+        Tue, 15 Sep 2020 14:32:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600180327;
+        bh=utJVhgwJTrunVJwtarb0ds5g2F08QaKajk/8z09HS/I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TFk0KmOgqkxPnPhwCUKPEH/u1GObeQ1s3DyU/vyGg9+rqkrmmgXCM3vQPAlVv4IwE
+         N5R1qn5EJsfYcQSTp9mJ2R9ouUzUzDtnj4xZzOJjrAcbaMdhsCpd+crPPqi8zQ+DIG
+         dari9jShrtKauwrggJ+jY94Hw+p1UL8pw3YCmTGQ=
+Received: by mail-ot1-f47.google.com with SMTP id o8so3440225otl.4;
+        Tue, 15 Sep 2020 07:32:07 -0700 (PDT)
+X-Gm-Message-State: AOAM530xGpfA2Y6dQwR6fFQ9riHJ3Om6cS6iW9j3uKlJknlZofW5VRFI
+        aAJlTzcW9FF34f/MA0B8/OWbAA6LzlkoYzn2Cw==
+X-Google-Smtp-Source: ABdhPJxotHRWZRWMUoSLoNeE7xePoRIjifT/7QqjsQ5ljfN00watvkgScFQsGBTpsE8eUJBLvPaa5rChQkwszRGChsw=
+X-Received: by 2002:a9d:411:: with SMTP id 17mr13481301otc.192.1600180326428;
+ Tue, 15 Sep 2020 07:32:06 -0700 (PDT)
 MIME-Version: 1.0
-Received: from bailu.lin@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 15 Sep 2020 22:29:57 +0800 (GMT+08:00)
-From:   =?UTF-8?B?5p6X55m96bmt?= <bailu.lin@vivo.com>
-Date:   Tue, 15 Sep 2020 22:29:57 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGU5IS01JTEJLSBhMVkpNS0tKQ0tKQkxNSUhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VKS0tZBg++
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU5DTUlLTElDQk5IN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6PU06ODo5LD8pTxZNCz0qGSlOTzoKFDpVSFVKTUtLSkNLSkJDS0JNVTMWGhIXVRkaEhcOVRcS
-        FTsNEg0UVRgUFkVZV1kSC1lBWU5DVUlOSlVMT1VJSU1ZV1kIAVlBSkpDTko3Bg++
-X-HM-Tid: 0a74922c18d293b5kuws8db074840c0
+References: <20200905133230.1014581-1-j.neuschaefer@gmx.net>
+ <20200905133230.1014581-5-j.neuschaefer@gmx.net> <20200915005443.GA604385@bogus>
+ <20200915082348.2f6fff7a@aktux>
+In-Reply-To: <20200915082348.2f6fff7a@aktux>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 15 Sep 2020 08:31:55 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL=gQxiU5uK-AEJtG3daOy83aS_D6G2Jo8_-dzKH70NkQ@mail.gmail.com>
+Message-ID: <CAL_JsqL=gQxiU5uK-AEJtG3daOy83aS_D6G2Jo8_-dzKH70NkQ@mail.gmail.com>
+Subject: Re: [PATCH v2 04/10] dt-bindings: pwm: Add bindings for PWM function
+ in Netronix EC
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxleAoKPkkgY2FuIG5vdCBhcHBseSB5b3VyIHBhdGNoIGV2ZW4gYWZ0ZXIgbWFudWFsIHNl
-dCAnY2hhcnNldD1VVEYtOCcKPmFuZCB2aW0gY2FuJ3QgZmlndXJlIG91dCB0aGUgY2hpbmVzZSBj
-aGFycy4gQ291bGQgeW91IGxpa2UgdG8gY2hlY2sgYW5kIGZpeAo+aXQ/IAo+QWxzbyBpdCdzIGJl
-dHRlciB0byBydW4gJ21ha2UgaHRtbGRvY3MnIGFuZCB0aGVuIHB1dCB0aGUgb3V0cHV0IHRvIHdl
-YnNpdGUKPnRvIHNlZSBpZiBldmVyeXRoaW5nIGluIHlvdXIgZG9jIGFwcGVhciBjb3JyZWN0bHkg
-b24gd2Vic2l0ZS4KCkkgd2lsbCBtYWtlIGh0bWxkb2NzIGFuZCBjaGVjay4KCj5BcHBseWluZzog
-RG9jdW1lbnRhdGlvbjogQ2hpbmVzZSB0cmFuc2xhdGlvbiBvZiBEb2N1bWVudGF0aW9uL2FybTY0
-L2FtdS5yc3QKPmVycm9yOiBkZXYvbnVsbDogZG9lcyBub3QgZXhpc3QgaW4gaW5kZXgKCkkgd2ls
-bCBzZW5kIHRoZSBhZGRlZCBpbmRleCBwYXRjaCBmb3IgYXJtNjQgZGlyIGZpcnN0LgoKPlBhdGNo
-IGZhaWxlZCBhdCAwMDAxIERvY3VtZW50YXRpb246IENoaW5lc2UgdHJhbnNsYXRpb24gb2YgRG9j
-dW1lbnRhdGlvbi9hcm02NC9hbXUucnN0Cj5Vc2UgJ2dpdCBhbSAtLXNob3ctY3VycmVudC1wYXRj
-aCcgdG8gc2VlIHRoZSBmYWlsZWQgcGF0Y2gKPldoZW4geW91IGhhdmUgcmVzb2x2ZWQgdGhpcyBw
-cm9ibGVtLCBydW4gImdpdCBhbSAtLWNvbnRpbnVlIi4KPklmIHlvdSBwcmVmZXIgdG8gc2tpcCB0
-aGlzIHBhdGNoLCBydW4gImdpdCBhbSAtLXNraXAiIGluc3RlYWQuCj5UbyByZXN0b3JlIHRoZSBv
-cmlnaW5hbCBicmFuY2ggYW5kIHN0b3AgcGF0Y2hpbmcsIHJ1biAiZ2l0IGFtIC0tYWJvcnQiLgoK
-SSBqdXN0IGdpdCBhbSAtLWFib3J0ICwgdGhlbiBzZW5kIFtQQVRDSCB2Ml0sIHRoYXQncyBvaz8K
-Cj4nc2Vjb25kYXJ5IGNwdScgYmV0dGVyIHRvIHRyYW5zbGF0ZSBhcyAn56ys5LqM5LiqY3B1JwoK
-SW4gQVJNIHNtcCwgdGhlIGNwdTAgaXMgYm9vdCBjcHUgb3IgcHJpbWFyeSBjcHUsICBhbmQgb3Ro
-ZXIgY3B1IGlzIG5vYm9vdCBjcHUgb3IgIHNlY29uZGFyeSBjcHUuClRoZSAn56ys5LqM5LiqY3B1
-JyBpcyBub3Qgc3VpdGFibGUsICBzbyB3ZSBjYW4ga2VlcCAnc2Vjb25kYXJ5Jy4gCgpGcm9tOiBB
-bGV4IFNoaSA8YWxleC5zaGlAbGludXguYWxpYmFiYS5jb20+CkRhdGU6IDIwMjAtMDktMTUgMTQ6
-MzQ6NTYKVG86ICBCYWlsdSBMaW4gPGJhaWx1LmxpbkB2aXZvLmNvbT4sSGFycnkgV2VpIDxoYXJy
-eXhpeW91QGdtYWlsLmNvbT4sSm9uYXRoYW4gQ29yYmV0IDxjb3JiZXRAbHduLm5ldD4sbGludXgt
-ZG9jQHZnZXIua2VybmVsLm9yZyxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCkNjOiAga2Vy
-bmVsQHZpdm8uY29tLHdhbmdxaW5nQHZpdm8uY29tClN1YmplY3Q6IFJlOiBbUEFUQ0hdIERvY3Vt
-ZW50YXRpb246IENoaW5lc2UgdHJhbnNsYXRpb24gb2YgRG9jdW1lbnRhdGlvbi9hcm02NC9hbXUu
-cnN0PkhpIEJhaWx1LAo+Cj5JIGNhbiBub3QgYXBwbHkgeW91ciBwYXRjaCBldmVuIGFmdGVyIG1h
-bnVhbCBzZXQgJ2NoYXJzZXQ9VVRGLTgnCj5hbmQgdmltIGNhbid0IGZpZ3VyZSBvdXQgdGhlIGNo
-aW5lc2UgY2hhcnMuIENvdWxkIHlvdSBsaWtlIHRvIGNoZWNrIGFuZCBmaXgKPml0PyAKPkFsc28g
-aXQncyBiZXR0ZXIgdG8gcnVuICdtYWtlIGh0bWxkb2NzJyBhbmQgdGhlbiBwdXQgdGhlIG91dHB1
-dCB0byB3ZWJzaXRlCj50byBzZWUgaWYgZXZlcnl0aGluZyBpbiB5b3VyIGRvYyBhcHBlYXIgY29y
-cmVjdGx5IG9uIHdlYnNpdGUuCj4KPkFsc28gd2UgdXNlICdbUEFUQ0ggdjJdJyBpbiBzdWJqZWN0
-IHRvIHNob3cgdGhlIDJuZCB2ZXJzaW9uIG9mIHNhbWUgcGF0Y2guCj5hbmQgcmVwbHkgaXQgb24g
-dGhlIGZpcnN0IHZlcnNpb24gdGhyZWFkIGNvdWxkIGF2b2lkIHBlb3BsZSBvdmVybG9vayBpdC4K
-Pgo+Cj5BcHBseWluZzogRG9jdW1lbnRhdGlvbjogQ2hpbmVzZSB0cmFuc2xhdGlvbiBvZiBEb2N1
-bWVudGF0aW9uL2FybTY0L2FtdS5yc3QKPmVycm9yOiBkZXYvbnVsbDogZG9lcyBub3QgZXhpc3Qg
-aW4gaW5kZXgKPlBhdGNoIGZhaWxlZCBhdCAwMDAxIERvY3VtZW50YXRpb246IENoaW5lc2UgdHJh
-bnNsYXRpb24gb2YgRG9jdW1lbnRhdGlvbi9hcm02NC9hbXUucnN0Cj5Vc2UgJ2dpdCBhbSAtLXNo
-b3ctY3VycmVudC1wYXRjaCcgdG8gc2VlIHRoZSBmYWlsZWQgcGF0Y2gKPldoZW4geW91IGhhdmUg
-cmVzb2x2ZWQgdGhpcyBwcm9ibGVtLCBydW4gImdpdCBhbSAtLWNvbnRpbnVlIi4KPklmIHlvdSBw
-cmVmZXIgdG8gc2tpcCB0aGlzIHBhdGNoLCBydW4gImdpdCBhbSAtLXNraXAiIGluc3RlYWQuCj5U
-byByZXN0b3JlIHRoZSBvcmlnaW5hbCBicmFuY2ggYW5kIHN0b3AgcGF0Y2hpbmcsIHJ1biAiZ2l0
-IGFtIC0tYWJvcnQiLgo+Cj7lnKggMjAyMC85LzE1IOS4iuWNiDEwOjU4LCBCYWlsdSBMaW4g5YaZ
-6YGTOgo+PiBUaGlzIGlzIGEgQ2hpbmVzZSB0cmFuc2xhdGVkIHZlcnNpb24gb2YgRG9jdW1lbnRh
-dGlvbi9hcm02NC9hbXUucnN0Cj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBCYWlsdSBMaW4gPGJhaWx1
-LmxpbkB2aXZvLmNvbT4KPj4gLS0tCj4+ICAuLi4vdHJhbnNsYXRpb25zL3poX0NOL2FybTY0L2Ft
-dS5yc3QgICAgICAgICAgfCAxMDIgKysrKysrKysrKysrKysrKysrCj4+ICAxIGZpbGUgY2hhbmdl
-ZCwgMTAyIGluc2VydGlvbnMoKykKPj4gCj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL3Ry
-YW5zbGF0aW9ucy96aF9DTi9hcm02NC9hbXUucnN0IGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlv
-bnMvemhfQ04vYXJtNjQvYW11LnJzdAo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLmIwMmQ1NGI5MTI5
-Mgo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3po
-X0NOL2FybTY0L2FtdS5yc3QKPj4gQEAgLTAsMCArMSwxMDIgQEAKPj4gKy4uIFNQRFgtTGljZW5z
-ZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4+ICsKPj4gKy4uIGluY2x1ZGU6OiAuLi9kaXNjbGFpbWVy
-LXpoX0NOLnJzdAo+PiArCj4+ICs6T3JpZ2luYWw6IDpyZWY6YERvY3VtZW50YXRpb24vYXJtNjQv
-YW11LnJzdGAKPj4gKwo+PiArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4KPmRvbid0IG5lZWQgYWJvdmUgZGFzaGxp
-bmUuIGFuZCBhZGQgdGhlICdUcmFuc2xhdG9yOiB4eHgnIGhlcmUuCj4+ICsKPj4gKz09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4gK0FBcmNoNjQgTGludXgg5Lit5omp5bGV55qE
-5rS75Yqo55uR5o6n5Y2V5YWDCj4+ICs9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-Cj4KPmRvZXMgdGhlICc9JyBudW1iZXIgYWxpZ24gd2l0aCBjaGFycz8KPgo+PiArCj4+ICvkvZzo
-gIU6IElvbmVsYSBWb2luZXNjdSA8aW9uZWxhLnZvaW5lc2N1QGFybS5jb20+Cj4+ICsKPj4gK+aX
-peacnzogMjAxOS0wOS0xMAo+PiArCj4+ICvmnKzmlofmoaPnroDopoHmj4/ov7DkuoYgQUFyY2g2
-NCBMaW51eCDmlK/mjIHnmoTmtLvliqjnm5HmjqfljZXlhYPnmoTop4TojIPjgIIKPj4gKwo+PiAr
-Cj4+ICvmnrbmnoTmgLvov7AKPj4gKy0tLS0tLS0tCj4+ICsKPj4gK+a0u+WKqOebkeaOp+aYryBB
-Uk12OC40IENQVSDmnrbmnoTlvJXlhaXnmoTkuIDkuKrlj6/pgInmianlsZXnibnmgKfjgIIKPj4g
-Kwo+PiAr5rS75Yqo55uR5o6n5Y2V5YWDKOWcqOavj+S4qiBDUFUg5Lit5a6e546wKeS4uuezu+e7
-n+euoeeQhuaPkOS+m+S6huaAp+iDveiuoeaVsOWZqOOAguaXouWPr+S7pemAmgo+PiAr6L+H57O7
-57uf5a+E5a2Y5Zmo55qE5pa55byP6K6/6Zeu6K6h5pWw5Zmo77yM5ZCM5pe25Lmf5pSv5oyB5aSW
-6YOo5YaF5a2Y5pig5bCE55qE5pa55byP6K6/6Zeu6K6h5pWw5Zmo44CCCj4+ICsKPj4gK0FNVXYx
-IOaetuaehOWunueOsOS6huS4gOS4queUsTTkuKrlm7rlrprnmoQ2NOS9jeS6i+S7tuiuoeaVsOWZ
-qOe7hOaIkOeahOiuoeaVsOWZqOe7hOOAggo+PiArCj4+ICsgIC0gQ1BVIOWRqOacn+iuoeaVsOWZ
-qO+8muWQjCBDUFUg55qE6aKR546H5aKe6ZW/Cj4+ICsgIC0g5bi46YeP6K6h5pWw5Zmo77ya5ZCM
-5Zu65a6a55qE57O757uf5pe26ZKf6aKR546H5aKe6ZW/Cj4+ICsgIC0g5reY5rGw5oyH5Luk6K6h
-5pWw5ZmoOiDlkIzmr4/mrKHmnrbmnoTmjIfku6TmiafooYzlop7plb8KPj4gKyAgLSDlhoXlrZjl
-gZzpob/lkajmnJ/orqHmlbDlmajvvJrorqHnrpfnlLHlnKjml7bpkp/ln5/lhoXnmoTmnIDlkI7k
-uIDnuqfnvJPlrZjkuK3mnKrlkb3kuK3ogIzlvJXotbcKPj4gKyAgICDnmoTmjIfku6TosIPluqbl
-gZzpob/lkajmnJ/mlbAKPj4gKwo+PiAr5b2T5aSE5LqOIFdGSSDmiJbogIUgV0ZFIOeKtuaAgeaX
-tu+8jOiuoeaVsOWZqOS4jeS8muWinumVv+OAggo+PiArCj4+ICtBTVUg5p625p6E5o+Q5L6b5LqG
-5LiA5Liq6auY6L6+MTbkvY3nmoTkuovku7borqHmlbDlmajnqbrpl7TvvIzmnKrmnaXmlrDnmoQg
-QU1VIOeJiOacrOS4reWPr+iDvQo+PiAr55So5a6D5p2l5a6e546w5paw5aKe55qE5LqL5Lu26K6h
-5pWw5Zmo44CCCj4+ICsKPj4gK+WPpuWklu+8jEFNVXYxIOWunueOsOS6huS4gOS4quWkmui+vjE2
-5LiqNjTkvY3ovoXliqnkuovku7borqHmlbDlmajnmoTorqHmlbDlmajnu4TjgIIKPj4gKwo+PiAr
-5Ya35aSN5L2N5pe25omA5pyJ55qE6K6h5pWw5Zmo5Lya5riF6Zu244CCCj4+ICsKPj4gKwo+PiAr
-5Z+65pys5pSv5oyBCj4+ICstLS0tLS0tLQo+PiArCj4+ICvlhoXmoLjlj6/ku6XlronlhajlnLDo
-v5DooYzlnKjmlK/mjIEgQU1VIOWSjOS4jeaUr+aMgSBBTVUg55qEIENQVSDnu4TlkIjkuK3jgIIK
-Pj4gK+WboOatpO+8jOW9k+mFjee9riBDT05GSUdfQVJNNjRfQU1VX0VYVE4g5ZCO5oiR5Lus5peg
-5p2h5Lu25L2/6IO95ZCO57utKOWJr+WQr+WKqOaIlueDreaPkuaLlCkKPgo+J3NlY29uZGFyeSBj
-cHUnIGJldHRlciB0byB0cmFuc2xhdGUgYXMgJ+esrOS6jOS4qmNwdScKPgo+VGhhbmtzCj5BbGV4
-Cj4+ICtDUFUg5qOA5rWL5ZKM5L2/55So6L+Z5Liq54m55oCn44CCCj4+ICsKPj4gK+W9k+WcqCBD
-UFUg5LiK5qOA5rWL5Yiw6K+l54m55oCn5pe277yM5oiR5Lus5Lya5qCH6K6w5Li654m55oCn5Y+v
-55So5L2G5piv5LiN6IO95L+d6K+B6K6h5pWw5Zmo55qE5Yqf6IO977yMCj4+ICvku4XooajmmI7m
-nInmianlsZXlsZ7mgKfjgIIKPj4gKwo+PiAr5Zu65Lu2KOS7o+eggei/kOihjOWcqOmrmOW8guW4
-uOe6p+WIq++8jOS+i+WmgiBhcm0tdGYgKemcgOaUr+aMgeS7peS4i+WKn+iDve+8mgo+PiArCj4+
-ICsgLSDmj5DkvpvkvY7lvILluLjnuqfliKsoRUwyIOWSjCBFTDEp6K6/6ZeuIEFNVSDlr4TlrZjl
-majnmoTog73lipvjgIIKPj4gKyAtIOS9v+iDveiuoeaVsOWZqOOAguWmguaenOacquS9v+iDve+8
-jOWug+eahOWAvOW6lOS4uiAw44CCCj4+ICsgLSDlnKjku47nlLXmupDlhbPpl63nirbmgIHlkK/l
-iqggQ1BVIOWJjeaIluWQjuS/neWtmOaIluiAheaBouWkjeiuoeaVsOWZqOOAggo+PiArCj4+ICvl
-vZPkvb/nlKjkvb/og73kuobor6XnibnmgKfnmoTlhoXmoLjlkK/liqjkvYblm7rku7bmjZ/lnY/m
-l7bvvIzorr/pl67orqHmlbDlmajlr4TlrZjlmajlj6/og73kvJrpga3pgYcKPj4gK3BhbmljIOaI
-luiAheatu+mUgeOAguWNs+S9v+acquWPkeeOsOi/meS6m+eXh+eKtu+8jOiuoeaVsOWZqOWvhOWt
-mOWZqOi/lOWbnueahOaVsOaNrue7k+aenOW5tuS4jeS4gAo+PiAr5a6a6IO95Y+N5pig55yf5a6e
-5oOF5Ya144CC6YCa5bi477yM6K6h5pWw5Zmo5Lya6L+U5ZueIDDvvIzooajmmI7ku5bku6zmnKro
-oqvkvb/og73jgIIKPj4gKwo+PiAr5aaC5p6c5Zu65Lu25rKh5pyJ5o+Q5L6b6YCC5b2T55qE5pSv
-5oyB5pyA5aW95YWz6ZetIENPTkZJR19BUk02NF9BTVVfRVhUTuOAggo+PiAr5YC85b6X5rOo5oSP
-55qE5piv77yM5Ye65LqO5a6J5YWo5Y6f5Zug77yM5LiN6KaB57uV6L+HIEFNVVNFUlJFTlJfRUww
-IOiuvue9ruiAjOaNleiOt+S7jgo+PiArRUwwKOeUqOaIt+epuumXtCkg6K6/6ZeuIEVMMSjlhoXm
-oLjnqbrpl7Qp44CCIOWboOatpO+8jOWbuuS7tuW6lOivpeehruS/neiuv+mXriBBTVXlr4TlrZjl
-magKPj4gK+S4jeS8muWbsOWcqCBFTDLmiJZFTDPjgIIKPj4gKwo+PiArQU1VdjEg55qE5Zu65a6a
-6K6h5pWw5Zmo5Y+v5Lul6YCa6L+H5aaC5LiL57O757uf5a+E5a2Y5Zmo6K6/6Zeu77yaCj4+ICsK
-Pj4gKyAtIFNZU19BTUVWQ05UUjBfQ09SRV9FTDAKPj4gKyAtIFNZU19BTUVWQ05UUjBfQ09OU1Rf
-RUwwCj4+ICsgLSBTWVNfQU1FVkNOVFIwX0lOU1RfUkVUX0VMMAo+PiArIC0gU1lTX0FNRVZDTlRS
-MF9NRU1fU1RBTExfRUwwCj4+ICsKPj4gK+eJueWumui+heWKqeiuoeaVsOWZqOWPr+S7pemAmui/
-hyBTWVNfQU1FVkNOVFIxX0VMMChuKSDorr/pl67vvIzlhbbkuK1u5LuL5LqOMOWIsDE144CCCj4+
-ICsKPj4gK+ivpue7huS/oeaBr+WumuS5ieWcqOebruW9le+8mmFyY2gvYXJtNjQvaW5jbHVkZS9h
-c20vc3lzcmVnLmjjgIIKPj4gKwo+PiArCj4+ICvnlKjmiLfnqbrpl7Torr/pl64KPj4gKy0tLS0t
-LS0tLS0tLQo+PiArCj4+ICvnlLHkuo7ku6XkuIvljp/lm6DvvIzlvZPliY3npoHmraLku47nlKjm
-iLfnqbrpl7Torr/pl64gQU1VIOeahOWvhOWtmOWZqO+8mgo+PiArCj4+ICsgIC0g5a6J5YWo5Zug
-5pWw77ya5Y+v6IO95Lya5pq06Zyy5aSE5LqO5a6J5YWo5qih5byP5omn6KGM55qE5Luj56CB5L+h
-5oGv44CCCj4+ICsgIC0g5oSP5oS/77yaQU1VIOaYr+eUqOS6juezu+e7n+euoeeQhueahOOAggo+
-PiArCj4+ICvlkIzmoLfvvIzor6Xlip/og73lr7nnlKjmiLfnqbrpl7TkuI3lj6/op4HjgIIKPj4g
-Kwo+PiArCj4+ICvomZrmi5/ljJYKPj4gKy0tLS0tLQo+PiArCj4+ICvnlLHkuo7ku6XkuIvljp/l
-m6DvvIzlvZPliY3npoHmraLku44gS1ZNIOWuouaIt+err+eahOeUqOaIt+epuumXtChFTDAp5ZKM
-5YaF5qC456m66Ze0KEVMMSkKPj4gK+iuv+mXriBBTVUg55qE5a+E5a2Y5Zmo77yaCj4+ICsKPj4g
-KyAgLSDlronlhajlm6DmlbDvvJrlj6/og73kvJrmmrTpnLLnu5nlhbbku5blrqLmiLfnq6/miJbk
-uLvmnLrnq6/miafooYznmoTku6PnoIHkv6Hmga/jgIIKPj4gKwo+PiAr5Lu75L2V6K+V5Zu+6K6/
-6ZeuIEFNVSDlr4TlrZjlmajnmoTooYzkuLrpg73kvJrop6blj5HkuIDkuKrms6jlhozlnKjlrqLm
-iLfnq6/nmoTmnKrlrprkuYnlvILluLjjgIIKPj4gCg0KDQo=
+On Tue, Sep 15, 2020 at 12:24 AM Andreas Kemnade <andreas@kemnade.info> wro=
+te:
+>
+> Hi,
+>
+> On Mon, 14 Sep 2020 18:54:43 -0600
+> Rob Herring <robh@kernel.org> wrote:
+>
+> > On Sat, Sep 05, 2020 at 03:32:24PM +0200, Jonathan Neusch=C3=A4fer wrot=
+e:
+> > > The Netronix embedded controller as found in Kobo Aura and Tolino Shi=
+ne
+> > > supports one PWM channel, which is used to control the frontlight
+> > > brightness on these devices.
+> > >
+> > > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> > > ---
+> > >
+> > > v2:
+> > > - Add plaintext binding to patch description, for comparison
+> > > - Fix pwm-cells property (should be 2, not 1)
+> > > - Add dummy regulator to example, because the pwm-backlight binding r=
+equires a
+> > >   power supply
+> > >
+> > >
+> > > For reference, here is the binding in text form:
+> > >
+> > >
+> > >   PWM functionality in Netronix Embedded Controller
+> > >
+> > >   Required properties:
+> > >   - compatible: should be "netronix,ntxec-pwm"
+> > >   - #pwm-cells: should be 2.
+> > >
+> > >   Available PWM channels:
+> > >   - 0: The PWM channel controlled by registers 0xa1-0xa7
+> > >
+> > >   Example:
+> > >
+> > >     embedded-controller@43 {
+> > >             compatible =3D "netronix,ntxec";
+> > >             ...
+> > >
+> > >             ec_pwm: pwm {
+> > >                     compatible =3D "netronix,ntxec-pwm";
+> > >                     #pwm-cells =3D <1>;
+> > >             };
+> > >     };
+> > >
+> > >     ...
+> > >
+> > >     backlight {
+> > >             compatible =3D "pwm-backlight";
+> > >             pwms =3D <&ec_pwm 0 50000>;
+> > >     };
+> > > ---
+> > >  .../bindings/mfd/netronix,ntxec.yaml          | 19 +++++++++++
+> > >  .../bindings/pwm/netronix,ntxec-pwm.yaml      | 33 +++++++++++++++++=
+++
+> > >  2 files changed, 52 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/pwm/netronix,nt=
+xec-pwm.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/mfd/netronix,ntxec.yam=
+l b/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> > > index 596df460f98eb..73c873dda3e70 100644
+> > > --- a/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> > > +++ b/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> > > @@ -31,6 +31,9 @@ properties:
+> > >      description:
+> > >        The EC can signal interrupts via a GPIO line
+> > >
+> > > +  pwm:
+> > > +    $ref: ../pwm/netronix,ntxec-pwm.yaml
+> > > +
+> > >  required:
+> > >    - compatible
+> > >    - reg
+> > > @@ -53,5 +56,21 @@ examples:
+> > >                      interrupts =3D <11 IRQ_TYPE_EDGE_FALLING>;
+> > >                      interrupt-controller;
+> > >                      #interrupt-cells =3D <1>;
+> > > +
+> > > +                    ec_pwm: pwm {
+> > > +                            compatible =3D "netronix,ntxec-pwm";
+> > > +                            #pwm-cells =3D <2>;
+> > > +                    };
+> > >              };
+> > >      };
+> > > +
+> > > +    backlight {
+> > > +            compatible =3D "pwm-backlight";
+> > > +            pwms =3D <&ec_pwm 0 50000>;
+> > > +            power-supply =3D <&backlight_regulator>;
+> > > +    };
+> > > +
+> > > +    backlight_regulator: regulator-dummy {
+> > > +            compatible =3D "regulator-fixed";
+> > > +            regulator-name =3D "backlight";
+> > > +    };
+> > > diff --git a/Documentation/devicetree/bindings/pwm/netronix,ntxec-pwm=
+.yaml b/Documentation/devicetree/bindings/pwm/netronix,ntxec-pwm.yaml
+> > > new file mode 100644
+> > > index 0000000000000..0c9d2801b8de1
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/pwm/netronix,ntxec-pwm.yaml
+> > > @@ -0,0 +1,33 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/pwm/netronix,ntxec-pwm.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: PWM functionality in Netronix embedded controller
+> > > +
+> > > +maintainers:
+> > > +  - Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> > > +
+> > > +description: |
+> > > +  See also Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> > > +
+> > > +  The Netronix EC contains PWM functionality, which is usually used =
+to drive
+> > > +  the backlight LED.
+> > > +
+> > > +  The following PWM channels are supported:
+> > > +    - 0: The PWM channel controlled by registers 0xa1-0xa7
+> > > +
+> > > +allOf:
+> > > +  - $ref: pwm.yaml#
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: netronix,ntxec-pwm
+> > > +
+> > > +  "#pwm-cells":
+> > > +    const: 2
+> >
+> > Just move this to the parent and make the parent a pwm provider. There'=
+s
+> > no need for child nodes for this or the rtc.
+> >
+> hmm, there are apparently devices without rtc. If there is a child node
+> for the rtc, the corresponding devicetrees could disable rtc by not
+> having that node.
+> But maybe using the controller version is also feasible for that task.
+
+If not probeable, then the compatible string should distinguish that.
+
+Rob
