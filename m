@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1707326A9F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3BB26AA01
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727766AbgIOQih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:38:37 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:44828 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727533AbgIOP4S (ORCPT
+        id S1727712AbgIOQjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727532AbgIOP4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:56:18 -0400
-X-IronPort-AV: E=Sophos;i="5.76,430,1592838000"; 
-   d="scan'208";a="57341061"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 16 Sep 2020 00:56:08 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5BEEF400F7C1;
-        Wed, 16 Sep 2020 00:56:05 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>, linux-media@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH] media: v4l2-fwnode: Return -EINVAL for invalid bus-type
-Date:   Tue, 15 Sep 2020 16:55:44 +0100
-Message-Id: <20200915155544.826-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 15 Sep 2020 11:56:08 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E90AC06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:56:08 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id z17so2219351pgc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:56:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gu3jry4B0AmzKkFeYjUaKPbyQDrej3ixHxhQeqH0BLU=;
+        b=io1LGxHCa+bzpTsA004NgcNc1/CPR3FyTOIzwxWhYkryYEBxZnX16fd1+ybJ1IqjKt
+         JHTA9TnuQzWt8K+BCuyuSXUCv+gmCFfkCrXdpJEKNVjZ6gfh8ZhVcn9SqlTvYpw0pZ1P
+         q0MJkdS2mVtbRcn/DRRlERCwlJAhZKyFoABcNJDlNfntWr4nebJ3ry1fwQYQBmy8De9B
+         1AWZAbkGyhhg+8v9QzPBCBOgsg8/dvzqzuOOFqvEoLoVmpL0YnA1oBfqcOMK6HddCrZo
+         pdwJ32lfd+/AElGAnoxGAFw8+i4ljnn60UPn16TzcdxTSdsOEGLC23dk5COBcgnjhxHU
+         peEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gu3jry4B0AmzKkFeYjUaKPbyQDrej3ixHxhQeqH0BLU=;
+        b=okq/Ilx+9QGsDbEUXIlxs4EWzhNAn36TnaxhPknbp1ElwIERHT0m5hJSQcyv9AnCiK
+         NeOhIlN+NWNb6iusuO0Ne2byAscKisMpr3wLchTpcQ0tL67OgySn9wazhoGCInsq53Tp
+         Hogyskjlyw5BrqicZRHbxiLQ5jek5Prkx4/DFnp5GU3h9w/8uwG3bwZ6gHZAlDV6SAge
+         ueXvzDtklTUrvP3kzbOnNG33xjRAWDNrFgGTCsHEbNbMl0Q4+Y0f1uYgUJ0xSHZAvXLc
+         gfDX/BX6YYHHLOmNEAJ7amFFJGHMMUV5XSD2wnZWCTjv0YS3VsM9CozBGrawmW3vOXrU
+         FmIg==
+X-Gm-Message-State: AOAM5305rmY8blXAtAmUsf1aU99M6VglFuAgOxr+yg/5mC4ljebBi3AF
+        gZqytxX4c4PDQ9Fc1zZErdMINQ==
+X-Google-Smtp-Source: ABdhPJxzhG+emjG10bx4k2+p37+o/FSSbscV6LIByFWdsZd55jr6UgNYr33jGE//tnR4R9iVgA0rHA==
+X-Received: by 2002:a63:4822:: with SMTP id v34mr14875815pga.342.1600185367654;
+        Tue, 15 Sep 2020 08:56:07 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id f5sm13458346pfj.212.2020.09.15.08.56.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 08:56:06 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kIDJN-006U3b-68; Tue, 15 Sep 2020 12:56:05 -0300
+Date:   Tue, 15 Sep 2020 12:56:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200915155605.GI1221970@ziepe.ca>
+References: <20200821234958.7896-1-peterx@redhat.com>
+ <20200821234958.7896-2-peterx@redhat.com>
+ <20200914143829.GA1424636@nvidia.com>
+ <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
+ <20200914183436.GD30881@xz-x1>
+ <20200914211515.GA5901@xz-x1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914211515.GA5901@xz-x1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the current implementation if invalid bus-type is passed via DT
-v4l2_fwnode_endpoint_parse() defaulted the mus-type to V4L2_MBUS_PARALLEL
-instead of returning error.
+On Mon, Sep 14, 2020 at 05:15:15PM -0400, Peter Xu wrote:
+> On Mon, Sep 14, 2020 at 02:34:36PM -0400, Peter Xu wrote:
+> > On Mon, Sep 14, 2020 at 10:32:11AM -0700, Linus Torvalds wrote:
+> > > On Mon, Sep 14, 2020 at 7:38 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > > >
+> > > > I don't have a detailed explanation right now, but this patch appears
+> > > > to be causing a regression where RDMA subsystem tests fail. Tests
+> > > > return to normal when this patch is reverted.
+> > > >
+> > > > It kind of looks like the process is not seeing DMA'd data to a
+> > > > pin_user_pages()?
+> > > 
+> > > I'm a nincompoop. I actually _talked_ to Hugh Dickins about this when
+> > > he raised concerns, and I dismissed his concerns with "but PAGE_PIN is
+> > > special".
+> > > 
+> > > As usual, Hugh was right. Page pinning certainly _is_ special, but
+> > > it's not that different from the regular GUP code.
+> > > 
+> > > But in the meantime, I have a lovely confirmation from the kernel test
+> > > robot, saying that commit 09854ba94c results in a
+> > > "vm-scalability.throughput 31.4% improvement", which was what I was
+> > > hoping for - the complexity wasn't just complexity, it was active
+> > > badness due to the page locking horrors.
+> > > 
+> > > I think what we want to do is basically do the "early COW", but only
+> > > do it for FOLL_PIN (and not turn them into writes for anything but the
+> > > COW code). So basically redo the "enforced COW mechanism", but rather
+> > > than do it for everything, now do it only for FOLL_PIN, and only in
+> > > that COW path.
+> > > 
+> > > Peter - any chance you can look at this? I'm still looking at the page
+> > > lock fairness performance regression, although I now think I have a
+> > > test patch for Phoronix to test out.
+> > 
+> > Sure, I'll try to prepare something like that and share it shortly.
+> 
+> Jason, would you please try the attached patch to see whether it unbreaks the
+> rdma test?  Thanks!
 
-This Patch adds V4L2_MBUS_INVALID entry to v4l2_mbus_type enum and when
-invalid bus-type is detected in v4l2_fwnode_endpoint_parse() it returns
--EINVAL to the caller.
+Hi Peter,
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/media/v4l2-core/v4l2-fwnode.c | 6 +++++-
- include/media/v4l2-mediabus.h         | 2 ++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+My tester says the patch does not help (modified as Leon pointed to
+make it compile).
 
-diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index a4c3c77c1894..a6f3549eadd3 100644
---- a/drivers/media/v4l2-core/v4l2-fwnode.c
-+++ b/drivers/media/v4l2-core/v4l2-fwnode.c
-@@ -93,7 +93,7 @@ v4l2_fwnode_bus_type_to_mbus(enum v4l2_fwnode_bus_type type)
- 	const struct v4l2_fwnode_bus_conv *conv =
- 		get_v4l2_fwnode_bus_conv_by_fwnode_bus(type);
- 
--	return conv ? conv->mbus_type : V4L2_MBUS_UNKNOWN;
-+	return conv ? conv->mbus_type : V4L2_MBUS_INVALID;
- }
- 
- static const char *
-@@ -436,6 +436,10 @@ static int __v4l2_fwnode_endpoint_parse(struct fwnode_handle *fwnode,
- 		 v4l2_fwnode_mbus_type_to_string(vep->bus_type),
- 		 vep->bus_type);
- 	mbus_type = v4l2_fwnode_bus_type_to_mbus(bus_type);
-+	if (mbus_type == V4L2_MBUS_INVALID) {
-+		pr_debug("unsupported bus type %u\n", bus_type);
-+		return -EINVAL;
-+	}
- 
- 	if (vep->bus_type != V4L2_MBUS_UNKNOWN) {
- 		if (mbus_type != V4L2_MBUS_UNKNOWN &&
-diff --git a/include/media/v4l2-mediabus.h b/include/media/v4l2-mediabus.h
-index 45f88f0248c4..b4f630783cb7 100644
---- a/include/media/v4l2-mediabus.h
-+++ b/include/media/v4l2-mediabus.h
-@@ -78,6 +78,7 @@
-  * @V4L2_MBUS_CCP2:	CCP2 (Compact Camera Port 2)
-  * @V4L2_MBUS_CSI2_DPHY: MIPI CSI-2 serial interface, with D-PHY
-  * @V4L2_MBUS_CSI2_CPHY: MIPI CSI-2 serial interface, with C-PHY
-+ * @V4L2_MBUS_INVALID:	invalid bus type (keep it last for sanity)
-  */
- enum v4l2_mbus_type {
- 	V4L2_MBUS_UNKNOWN,
-@@ -87,6 +88,7 @@ enum v4l2_mbus_type {
- 	V4L2_MBUS_CCP2,
- 	V4L2_MBUS_CSI2_DPHY,
- 	V4L2_MBUS_CSI2_CPHY,
-+	V4L2_MBUS_INVALID,
- };
- 
- /**
--- 
-2.17.1
+He did another test where all forks were removed and the test program
+succeeds. Overall in our test suites we see failurs on tests that
+involve fork and success on tests that don't.
 
+So fork and COW seem very likely to be the issue.
+
+Thanks,
+Jason
