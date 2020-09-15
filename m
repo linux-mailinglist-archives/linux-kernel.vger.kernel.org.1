@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2A526ACF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E93D26ACFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgIOTFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727915AbgIOTEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:04:05 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31089C061788;
-        Tue, 15 Sep 2020 12:04:04 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600196642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FdxWKAjCFS83IiMhKQBg5fI17hkPi4evmAcGceo04xo=;
-        b=xAOtFxaLRLqJPrtW71uHDeLw30N6grk81Lf8XE2Xl0MU5MA4KKhkOrNzJ2osP0x9L4LOYT
-        /WtX9XJsgz0GiPSK/bdDMXRNtwYs9HaOE5NpGfa/lwiiCOktd9iH4DwV9sLPiDATlMPeOp
-        uiqMoKp2OwAItxo4xSjuZDvQnFLq+UwHQUN1Z2pNp83phZ+1zKIMOsgvI/azCOiuhIW9gp
-        myGYkIdr6CED7J5i9uhl2Q5na0tbM7Ax00t/FU7c/red+T9KMWALHJM/QpSxVk13eINkxc
-        pzpDY7yTcvnJM0upRkt8qcRYPzTnsfvnLEwEhrI+X7+l1hVHtqZ6nOXxXtAFpQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600196642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FdxWKAjCFS83IiMhKQBg5fI17hkPi4evmAcGceo04xo=;
-        b=/vF0ubImrcXFCvY9FHrTLQYQaHp8ceb3S1pZCltCZnCIF01ROhqvttt7XXbc47KhNaTkqz
-        7CceZN8Blr8z4yAA==
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC unconditionally
-In-Reply-To: <20200915101043.GA27327@gondor.apana.org.au>
-References: <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com> <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com> <20200915033024.GB25789@gondor.apana.org.au> <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com> <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com> <20200915070523.GA26629@gondor.apana.org.au> <878sdb5qp5.fsf@nanos.tec.linutronix.de> <CAMj1kXHsqZzfJ2qmsrUWEU_XWxmR1PhY3zo-yz9Vau90-WphXg@mail.gmail.com> <20200915100506.GA27268@gondor.apana.org.au> <CAMj1kXHAHrCCCTce3aLX0v=TDiWDiiwGaUPZQfqekKAsByMSvg@mail.gmail.com> <20200915101043.GA27327@gondor.apana.org.au>
-Date:   Tue, 15 Sep 2020 21:04:01 +0200
-Message-ID: <874kny6evy.fsf@nanos.tec.linutronix.de>
+        id S1727982AbgIOTG2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 15:06:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:42204 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727749AbgIOTEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 15:04:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E7D8101E;
+        Tue, 15 Sep 2020 12:04:40 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA0CE3F718;
+        Tue, 15 Sep 2020 12:04:38 -0700 (PDT)
+References: <20200914100340.17608-1-vincent.guittot@linaro.org> <20200914100340.17608-3-vincent.guittot@linaro.org>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] sched/fair: reduce minimal imbalance threshold
+In-reply-to: <20200914100340.17608-3-vincent.guittot@linaro.org>
+Date:   Tue, 15 Sep 2020 20:04:33 +0100
+Message-ID: <jhjimce6ev2.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15 2020 at 20:10, Herbert Xu wrote:
-> On Tue, Sep 15, 2020 at 01:08:31PM +0300, Ard Biesheuvel wrote:
->>
->> But making atomic kmap preemptible/sleepable creates the exact same
->> problem, i.e., that we have no idea which existing callers are
->> currently relying on those preemption disabling semantics, so we can't
->> just take them away. Or am I missing something?
+
+On 14/09/20 11:03, Vincent Guittot wrote:
+> The 25% default imbalance threshold for DIE and NUMA domain is large
+> enough to generate significant unfairness between threads. A typical
+> example is the case of 11 threads running on 2x4 CPUs. The imbalance of
+> 20% between the 2 groups of 4 cores is just low enough to not trigger
+> the load balance between the 2 groups. We will have always the same 6
+> threads on one group of 4 CPUs and the other 5 threads on the other
+> group of CPUS. With a fair time sharing in each group, we ends up with
+> +20% running time for the group of 5 threads.
 >
-> Good point.
+
+AIUI this is the culprit:
+
+                if (100 * busiest->avg_load <=
+                                env->sd->imbalance_pct * local->avg_load)
+                        goto out_balanced;
+
+As in your case imbalance_pct=120 becomes the tipping point.
+
+Now, ultimately this would need to scale based on the underlying topology,
+right? If you have a system with 2x32 cores running {33 threads, 34
+threads}, the tipping point becomes imbalance_pct≈103; but then since you
+have this many more cores, it is somewhat questionable.
+
+> Consider decreasing the imbalance threshold for overloaded case where we
+> use the load to balance task and to ensure fair time sharing.
 >
-> Thomas mentioned that RT has been doing this for a while now so
-> perhaps someone has studied this problem already? Thomas?
-
-RT is substituting preempt_disable() with migrate_disable() which pins
-the task on the CPU so that per CPU stuff still works. And we did quite
-some staring whether there is code which purely relies on the
-preempt_disable() to prevent reentrancy, but there is almost none.
-
-Though we don't have migrate disable on !RT and PeterZ is not a great
-fan of making it available as it wreckages schedulability - though IMO
-not much more than preempt disable :)
-
-Thanks,
-
-        tglx
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>  kernel/sched/topology.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 9079d865a935..1a84b778755d 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1337,7 +1337,7 @@ sd_init(struct sched_domain_topology_level *tl,
+>               .min_interval		= sd_weight,
+>               .max_interval		= 2*sd_weight,
+>               .busy_factor		= 32,
+> -		.imbalance_pct		= 125,
+> +		.imbalance_pct		= 117,
+>
+>               .cache_nice_tries	= 0,
