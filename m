@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6104426B633
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783D126B55D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbgIOX6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:58:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43012 "EHLO mail.kernel.org"
+        id S1727252AbgIOXmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727017AbgIOOaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:30:24 -0400
+        id S1727022AbgIOOei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:34:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7202622B2B;
-        Tue, 15 Sep 2020 14:22:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB05A21D80;
+        Tue, 15 Sep 2020 14:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179737;
-        bh=jeOg/tDfVDnb1MejOcNsq1POFj6bdB/SRk7/p9m+VMM=;
+        s=default; t=1600179328;
+        bh=5wG56LdaQbiFS+Ocf2zZ7D+B6WkKUwF9hxlX/ka52qY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s/IVyeGdW4+8sXs16YKVgoccMzA5sTPOeqznukw4l4RI0fwilusk9EjOvU6myQ+/L
-         c2oBCNde9CS+O/xVa9TJrAxJiGKxyg0fbhjBs9cJtcx5/vOBe2UXYbslrHmI9PS0YR
-         CqRKiO372qTClvUHXTTNNun+8d5VbpF9cQCprhVY=
+        b=uYa7r3Vd2ISy0KnTS4eNfSwvtETWb7Mt0Ilm/w3rnInAQuekAChdAZNu0tlBm4pJs
+         Il1bbAd4xGTWtSVJ/L1k93Puc3iix+MdSsF07r0A9QwEB3BtlzbsohFdygU2XQ0kiE
+         oYoHKSFY+xb8xyujAm3q8LPdQ8f/AUyZi3Gr5dUE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 059/132] nvme-rdma: fix reset hang if controller died in the middle of a reset
-Date:   Tue, 15 Sep 2020 16:12:41 +0200
-Message-Id: <20200915140647.062696541@linuxfoundation.org>
+Subject: [PATCH 4.19 17/78] ARC: HSDK: wireup perf irq
+Date:   Tue, 15 Sep 2020 16:12:42 +0200
+Message-Id: <20200915140634.421430857@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-References: <20200915140644.037604909@linuxfoundation.org>
+In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
+References: <20200915140633.552502750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit 2362acb6785611eda795bfc12e1ea6b202ecf62c ]
+[ Upstream commit fe81d927b78c4f0557836661d32e41ebc957b024 ]
 
-If the controller becomes unresponsive in the middle of a reset, we
-will hang because we are waiting for the freeze to complete, but that
-cannot happen since we have commands that are inflight holding the
-q_usage_counter, and we can't blindly fail requests that times out.
+Newer version of HSDK aka HSDK-4xD (with dual issue HS48x4 CPU) wired up
+the perf interrupt, so enable that in DT.
+This is OK for old HSDK where this irq is ignored because pct irq is not
+wired up in hardware.
 
-So give a timeout and if we cannot wait for queue freeze before
-unfreezing, fail and have the error handling take care how to
-proceed (either schedule a reconnect of remove the controller).
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/rdma.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ arch/arc/boot/dts/hsdk.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 4e73da2c45bb6..f0847f2bb117b 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -899,7 +899,15 @@ static int nvme_rdma_configure_io_queues(struct nvme_rdma_ctrl *ctrl, bool new)
+diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
+index d131c54acd3ec..ab01b75bfa67d 100644
+--- a/arch/arc/boot/dts/hsdk.dts
++++ b/arch/arc/boot/dts/hsdk.dts
+@@ -83,6 +83,8 @@
  
- 	if (!new) {
- 		nvme_start_queues(&ctrl->ctrl);
--		nvme_wait_freeze(&ctrl->ctrl);
-+		if (!nvme_wait_freeze_timeout(&ctrl->ctrl, NVME_IO_TIMEOUT)) {
-+			/*
-+			 * If we timed out waiting for freeze we are likely to
-+			 * be stuck.  Fail the controller initialization just
-+			 * to be safe.
-+			 */
-+			ret = -ENODEV;
-+			goto out_wait_freeze_timed_out;
-+		}
- 		blk_mq_update_nr_hw_queues(ctrl->ctrl.tagset,
- 			ctrl->ctrl.queue_count - 1);
- 		nvme_unfreeze(&ctrl->ctrl);
-@@ -907,6 +915,9 @@ static int nvme_rdma_configure_io_queues(struct nvme_rdma_ctrl *ctrl, bool new)
+ 	arcpct: pct {
+ 		compatible = "snps,archs-pct";
++		interrupt-parent = <&cpu_intc>;
++		interrupts = <20>;
+ 	};
  
- 	return 0;
- 
-+out_wait_freeze_timed_out:
-+	nvme_stop_queues(&ctrl->ctrl);
-+	nvme_rdma_stop_io_queues(ctrl);
- out_cleanup_connect_q:
- 	if (new)
- 		blk_cleanup_queue(ctrl->ctrl.connect_q);
+ 	/* TIMER0 with interrupt for clockevent */
 -- 
 2.25.1
 
