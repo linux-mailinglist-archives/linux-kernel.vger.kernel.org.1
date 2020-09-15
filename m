@@ -2,162 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7B826B917
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07ED626B91C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgIPA4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:56:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30586 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726222AbgIOLRH (ORCPT
+        id S1726444AbgIPA5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgIOLPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:17:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600168621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yepvtMKn+6+XBcz8DK1yijuVwPuVaYyQMfi00UvSTyw=;
-        b=KklnTGg8Jm03sZWkQpyjgFl93MBkFT7vTOmgIoPzhp+Ov2m6uOO/bDRngBBE9qaBhgB6h1
-        KMoS6M6HIEvv5IuzKbjHuB6IQFow7hg+UhCp48sgIrJoNZQIcd5snevhshF3PJwdZnqTxb
-        OJNXWCob/4wYxEwTbOeN0JtOepBey1Q=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-yCfcQps3PZCwZ5lCkuvGyA-1; Tue, 15 Sep 2020 07:14:20 -0400
-X-MC-Unique: yCfcQps3PZCwZ5lCkuvGyA-1
-Received: by mail-wr1-f70.google.com with SMTP id j7so1094372wro.14
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:14:19 -0700 (PDT)
+        Tue, 15 Sep 2020 07:15:45 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C000C06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:15:45 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s65so1842625pgb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UukMH/vE9A7R2o9IjYO9vd03rZJWF9Snk9WS+EPtjXs=;
+        b=A3uPZSTZrOgPCZ2zggQw1tcZ06j5QLfAdMIC0pE1fs/nwoS81HZJVZjS20pgME5X9I
+         +eINnqb4zIzdL4g5QtolfSbyRxr6/yBLD0vUVCdaluw89k1H5Ml9EbsBsxJ4MiY+sqOm
+         YCzdSfcPykPBaZylJI9Cvmt0h8i6Q0Bi5wKZrwsMx8/3/6lSD4tYdhZ4qfu0SE+WT4lP
+         EZ+ScCI/NtJ01/M+x5Ac6iH1CLptOVa2/osCQ/eZUDGzfhzqK/O43IMOAr9MZu9WIlol
+         +9hW9Fl0ZnXcNQjoBHCOA9FIpEWRUTrsOqFjbleZRoEkQL+8SCZKgGmkXBiD59KzZD2x
+         pQEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=yepvtMKn+6+XBcz8DK1yijuVwPuVaYyQMfi00UvSTyw=;
-        b=rLpo/8AGQAgBtxIplDDuN0K1U5ul6NQgxVuk9+9yX4BCNol+CBuOpAVXbHqN2Jhc2V
-         rzklp7y6MrrN+gEUfdJUnbdKxARkhvcThSaTUV5xwO45ytsND2aW0GMppl3cIJaZxgAv
-         WDi16ybSS41rhmlDqIDdcKD4PkSbPiLYV3xxsWxQufLkyn2vUdlNglfCI3nq5vo5PIUn
-         vQGq9AjhaWHDFlpP3go1wtYHBDEwrVZt6pH4OESjQLKqQu07Z/qA4eqmPpImBIWGsd9Y
-         LhK48e7is5fYu/yaL5BpX79HK4xYuoE8G4l3uoUNlTbXf4qtqAms4dO9nWQLa5rcfOLf
-         ogDQ==
-X-Gm-Message-State: AOAM533QzQL4oeAdId99zeep9F6JSA0BV0taS0ibz1MuviTf5Z2LgGr9
-        3hDgNR+8G2qj1TdoQlbpZrWp/pGjcFsC+oaXgOE6hoEcLkZzDkYQj39vgnjbxSZdUwWbSrfLu0V
-        y7HjAt4sl72xiVMqFbtlWGNvm
-X-Received: by 2002:a1c:2403:: with SMTP id k3mr4031972wmk.153.1600168458809;
-        Tue, 15 Sep 2020 04:14:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyOzi3Ja62k21YvM26bciVJnHAtZqdXuOel1sIRIJNA9BcjPXAZhIRYZguDOvo2rTnyovo1Uw==
-X-Received: by 2002:a1c:2403:: with SMTP id k3mr4031937wmk.153.1600168458576;
-        Tue, 15 Sep 2020 04:14:18 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o6sm27250404wrm.76.2020.09.15.04.14.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UukMH/vE9A7R2o9IjYO9vd03rZJWF9Snk9WS+EPtjXs=;
+        b=Pd0k86N+h1eJTAww+CWb1ou2DpdiMwO1Df8XCX/OXd1YsSgtUf4QtXPAXBUTUlbfHX
+         gEQq3Q4tzaTDfnCtmpC2JihwyFuLDbYMfoFd2MhvOjVdGxrXTpBxjajugZiz8ig00rfM
+         ZIRV9TQXEnLj7iINfAQ9R/vAN4pNODTd3KqdrmtqHt8sIhszR2PmhbcXOA+fSnrL6ZzX
+         vyrzvECC/H9JCw+iLLTx24HtVWcSgmihjfwGLKfWPAspJYyy+IPxM4lEbtKKfmdbhV7C
+         GTgYtpRlaJ/mZ81C4H6JB4mTV+1IaTLqFKI4Kpbo/PyAh1u7YuM49MCPQ33cYgqw4/PE
+         MB5A==
+X-Gm-Message-State: AOAM533HtNpg+aYYrx5GnazkE/C6OemsjWHvMNddpXGLOOvLCpO3szgM
+        80HyHrR0cCshd+sjRGfuO9I=
+X-Google-Smtp-Source: ABdhPJz46bE04HyNijFMSkAHOFC2swk5PHwjSyZtTP7qSc1o7smdJUBiy+KWM3xO2gXMvmK4UqtcaQ==
+X-Received: by 2002:a63:e741:: with SMTP id j1mr14403476pgk.422.1600168544998;
+        Tue, 15 Sep 2020 04:15:44 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id r1sm7847376pgl.66.2020.09.15.04.15.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 04:14:18 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nudasnev@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH RFC v1 10/18] x86/hyperv: implement and use hv_smp_prepare_cpus
-In-Reply-To: <20200914115928.83184-2-wei.liu@kernel.org>
-References: <20200914112802.80611-1-wei.liu@kernel.org> <20200914115928.83184-2-wei.liu@kernel.org>
-Date:   Tue, 15 Sep 2020 13:14:16 +0200
-Message-ID: <87mu1rjnqv.fsf@vitty.brq.redhat.com>
+        Tue, 15 Sep 2020 04:15:44 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 20:15:41 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCHv2] perf kvm: add kvm-stat for arm64
+Message-ID: <20200915111541.GB604@jagdpanzerIV.localdomain>
+References: <20200915091140.152775-1-sergey.senozhatsky@gmail.com>
+ <20200915103644.GA32758@leoy-ThinkPad-X240s>
+ <20200915105702.GA604@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915105702.GA604@jagdpanzerIV.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
-
-> Microsoft Hypervisor requires the root partition to make a few
-> hypercalls to setup application processors before they can be used.
+On (20/09/15 19:57), Sergey Senozhatsky wrote:
+> On (20/09/15 18:36), Leo Yan wrote:
+> > > +#define HVC_STUB_ERR		  0xbadca11
+> > > +
+> > > +/* Per asm/kvm_asm.h */
+> > > +#define ARM_EXCEPTION_IRQ		0
+> > > +#define ARM_EXCEPTION_EL1_SERROR	1
+> > > +#define ARM_EXCEPTION_TRAP		2
+> > > +#define ARM_EXCEPTION_IL		3
+> >
+> > Nitpick: from completeness, we also can give out KVM exiting reason
+> > for 'ARM_EXCEPTION_IL'.
 >
-> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
-> CPU hotplug and unplug is not yet supported in this setup, so those
-> paths remain untouched.
-> ---
->  arch/x86/kernel/cpu/mshyperv.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index 1bf57d310f78..7522cae02759 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -203,6 +203,31 @@ static void __init hv_smp_prepare_boot_cpu(void)
->  	hv_init_spinlocks();
->  #endif
->  }
-> +
-> +static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
-> +{
-> +#if defined(CONFIG_X86_64)
+> OK, let me take a look.
 
-I think it makes little sense to try to make Linux work as Hyper-V root
-partition when !CONFIG_X86_64. If we still care about Hyper-V enablement
-for !CONFIG_X86_64 we can probably introduce something like
-CONFIG_HYPERV_ROOT and enable it automatically, e.g.
+I think ARM_EXCEPTION_IL are reported as HYP_GONE. According to
+arch/arm64/include/asm/kvm_asm.h
 
-config HYPERV_ROOT
-        def_bool HYPERV && X86_64
+---
+#define ARM_EXCEPTION_IRQ	  0
+#define ARM_EXCEPTION_EL1_SERROR  1
+#define ARM_EXCEPTION_TRAP	  2
+#define ARM_EXCEPTION_IL	  3
 
-and use it instead.
+#define kvm_arm_exception_type					\
+	{ARM_EXCEPTION_IRQ,		"IRQ"		},	\
+	{ARM_EXCEPTION_EL1_SERROR, 	"SERROR"	},	\
+	{ARM_EXCEPTION_TRAP, 		"TRAP"		},	\
+	{ARM_EXCEPTION_HYP_GONE,	"HYP_GONE"	}
+---
 
-> +	int i;
-> +	int vp_index = 1;
-> +	int ret;
-> +
-> +	native_smp_prepare_cpus(max_cpus);
-> +
-> +	for_each_present_cpu(i) {
-> +		if (i == 0)
-> +			continue;
-> +		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, cpu_physical_id(i));
-> +		BUG_ON(ret);
-> +	}
-> +
-> +	for_each_present_cpu(i) {
-> +		if (i == 0)
-> +			continue;
-> +		ret = hv_call_create_vp(numa_cpu_node(i), hv_current_partition_id, vp_index++, i);
+So it should be reported already.
 
-So vp_index variable is needed here to make sure there are no gaps? (or
-we could've just used 'i')?
-
-> +		BUG_ON(ret);
-> +	}
-> +#endif
-> +}
->  #endif
->  
->  static void __init ms_hyperv_init_platform(void)
-> @@ -359,6 +384,8 @@ static void __init ms_hyperv_init_platform(void)
->  
->  # ifdef CONFIG_SMP
->  	smp_ops.smp_prepare_boot_cpu = hv_smp_prepare_boot_cpu;
-> +	if (hv_root_partition)
-> +		smp_ops.smp_prepare_cpus = hv_smp_prepare_cpus;
->  # endif
->  
->  	/*
-
--- 
-Vitaly
-
+	-ss
