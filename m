@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538CE26B2B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26ADB26B296
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727623AbgIOWwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:52:18 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:39244 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726995AbgIOPmE (ORCPT
+        id S1727701AbgIOWu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727468AbgIOPns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:42:04 -0400
-Received: by mail-pg1-f195.google.com with SMTP id d13so2186938pgl.6;
-        Tue, 15 Sep 2020 08:41:56 -0700 (PDT)
+        Tue, 15 Sep 2020 11:43:48 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19868C061356
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:34:55 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id z18so1912279qvp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:34:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1jVIX31GM5OzuiYwy1qDVu4nYwPXpIvipqpPe/D5Y2c=;
+        b=UvKHSOmupikGcEZR6eMV5XwM7v47cWXDW6Bi9HV3skxooR9FE3AMXz6SoYNdF42JDj
+         S+F9oN0Yc/o2jjj/iiU83PDfBZN6xOxy+xsa4esg2d0QPsqyxaKJDpnraW3jdR9B0wjP
+         iowBL7c2/rm6mUR2CF3JX5LL65AO+lyvG0qfo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1fyZNgMatRtDRm5F6K1pH9IP38hhZV0WXalrPxYTXEE=;
-        b=gRH5GNj4jis9UwagTheFb7FS9mBgVZvQG5S7DlMdrl31EGyorrn5zRvtRsCUgE9uFX
-         WnB21tzeP721uhtVrTyy7MJsFg5n3pZi6ZoE6CxOlPkX9rznkVPc9AyVZP88JQiuIvsp
-         /XU3al9FKzUwe9B9YshGaI+7CTSgIACJ5Ky5Z1f9JcZQCKn5eNCX7DQUHutVz6U/9F66
-         tXb7h+QJvrKdo5b8RggIud9mIdbOORX60KsygWaJL/wcGTdMUnQAE8KcMzD71aCbLtTE
-         RQn+UtIJFknY1CAvFfWMlksTii9eHOpuMYBfJ5RAHSvTsIj7EWdk4DnfLfz2q7feMep0
-         r0OA==
-X-Gm-Message-State: AOAM530Zt/91J8F4s4RuoSDczaAzkGLf2SWriE8pQdKPCTvCOu6icjCI
-        Nt9bRSED4Jc72zwMJ1rTOx8o66f1MR1udZw=
-X-Google-Smtp-Source: ABdhPJxblB60qGKbpa/uRK4I1ZRiB+vOa9NARrpUQLiQeXrWQ1UDd3ksQ1EdqPx06vtV1foov4egLg==
-X-Received: by 2002:a92:8509:: with SMTP id f9mr14662065ilh.253.1600184054677;
-        Tue, 15 Sep 2020 08:34:14 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id m87sm9266352ilb.58.2020.09.15.08.34.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 08:34:13 -0700 (PDT)
-Received: (nullmailer pid 1988443 invoked by uid 1000);
-        Tue, 15 Sep 2020 15:34:13 -0000
-Date:   Tue, 15 Sep 2020 09:34:13 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     daniel@ffwll.ch, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] dt-bindings: display: amlogic,meson-vpu: add
- bindings for VPU found in AXG SoCs
-Message-ID: <20200915153413.GA1982161@bogus>
-References: <20200907081825.1654-1-narmstrong@baylibre.com>
- <20200907081825.1654-2-narmstrong@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1jVIX31GM5OzuiYwy1qDVu4nYwPXpIvipqpPe/D5Y2c=;
+        b=VlAsPIRgkvcw63YonguKWeIF9kQ1ps/IPWItmCFKXCwxqadQWzeUkFZL1vjsALr6Cc
+         cY6LvGeRpvqkS1qZh96s192QVo7FmBIeVX+rpfwbB/ocwwQIxmrMltpnp6ZI+EjJTmfP
+         ANnYgxN9j/jLroYC08mowhLaF7jgRPigycN4+wEu+RYIv9NTPM2jstFm5vhsLQ1aDtfN
+         NqB7UIQtT97qenlb9+K/SLrQ2w4dFFa7fOG0OHEO/zNhKRMAU+ZjHegGTKo6jxLcSY6x
+         uZNiuOMoj0co4dFMLsFwsP7vYlCL9SIEYINwgnnR5OaVw2TlrFoVxwuzHhXGn8Hf/bKI
+         aHcw==
+X-Gm-Message-State: AOAM530kd1SBPipDNb1aO9mef4P6XWc5Nz/rsHQ4LVXC+CP8elvh10lB
+        WQpNdz4zNlbfNbsbw84b1lYMDha5fb4H7oDT5hU/uw==
+X-Google-Smtp-Source: ABdhPJwkC4hm7BcxmhV5CDSmUFQNZ2hdNWaW5YlfLwuZujsNFQKpTZ3kga7ew9IG1JhkM/FRuINPna4b3fe+DUjZOKw=
+X-Received: by 2002:ad4:43e5:: with SMTP id f5mr17990138qvu.12.1600184094258;
+ Tue, 15 Sep 2020 08:34:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907081825.1654-2-narmstrong@baylibre.com>
+References: <20200909040400.908217-1-swboyd@chromium.org> <720fcfbb-3f3a-9679-bd33-56d7f65651a5@collabora.com>
+In-Reply-To: <720fcfbb-3f3a-9679-bd33-56d7f65651a5@collabora.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Tue, 15 Sep 2020 08:34:41 -0700
+Message-ID: <CACeCKacudCkMoT40UJaf8PKUQu9G0csBmhih8cBO2Y3TAhV-0Q@mail.gmail.com>
+Subject: Re: [PATCH] platform/chrome: cros_ec_debugfs: Support pd_info v2 format
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 10:18:20AM +0200, Neil Armstrong wrote:
-> The Amlogic AXG SoC family has a downgraded VPU supporting only MIPI-DSI output
-> after it's ENCL DPI encoder output.
-> 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->  .../bindings/display/amlogic,meson-vpu.yaml   | 36 +++++++++++++++++--
->  1 file changed, 33 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml b/Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml
-> index a8d202c9d004..e2e7d99d8ace 100644
-> --- a/Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml
-> +++ b/Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml
-> @@ -31,8 +31,10 @@ description: |
->  
->    The Video Input Unit is in charge of the pixel scanout from the DDR memory.
->    It fetches the frames addresses, stride and parameters from the "Canvas" memory.
-> +  On the AXG family, the Video Input Unit direclty reads from DDR memory.
->    This part is also in charge of the CSC (Colorspace Conversion).
->    It can handle 2 OSD Planes and 2 Video Planes.
-> +  On the AXG family, only a single OSD plane without scalins is supported.
+HI Enric,
 
-s/scalins/scaling/ ?
+On Tue, Sep 15, 2020 at 5:48 AM Enric Balletbo i Serra
+<enric.balletbo@collabora.com> wrote:
+>
+> Hi Stephen, Prashant,
+>
+> On 9/9/20 6:04, Stephen Boyd wrote:
+> > Let's try to read more information out of more modern cros_ec devices by
+> > using the v2 format first and then fall back to the v1 format. This
+> > gives us more information about things such as DP mode of the typec pins
+> > and the CC state, along with some more things.
+> >
+> > Cc: Gwendal Grignou <gwendal@chromium.org>
+> > Cc: Prashant Malani <pmalani@chromium.org>
+> > Cc: Guenter Roeck <groeck@chromium.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >
+>
+> I saw some discussion going on in gerrit (a pity the discussion didn't happen in
+> mainline) Did you end with a conclusion? Can I remove this patch from my backlog?
 
-Otherwise,
+My apologies for not posting the comment here.
+To summarize: the userspace EC utility ectool [1] can offer the
+equivalent output, but with better formatting. So I believe the
+decision is to use that instead of this patch.
+I also posed a counter-question: can we remove this debugfs pdinfo
+file entirely, since we can pull this information using ectool?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+[1]: https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/master/util/ectool.c
+
+Best regards,
