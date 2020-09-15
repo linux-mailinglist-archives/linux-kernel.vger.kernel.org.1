@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483FF26B007
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EB526AFA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728093AbgIOV5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43668 "EHLO
+        id S1728147AbgIOVfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728107AbgIOV3Y (ORCPT
+        with ESMTP id S1728071AbgIOV1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:29:24 -0400
-Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626B4C061221
+        Tue, 15 Sep 2020 17:27:52 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B24C061222
         for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:17:21 -0700 (PDT)
-Received: by mail-ej1-x64a.google.com with SMTP id jz22so1853484ejb.4
+Received: by mail-qk1-x749.google.com with SMTP id j5so4092506qka.7
         for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=uQBUcw70N5/pZNHz2QWMX765YU53M7496uPmAAbH/iU=;
-        b=BMgCiDxI+ewSN9duc+vPhe1zL2wKt3c6rQlKYz9QH0ToEvMf9sfoL11ylpKV3yAh4t
-         oALaiLPmKJtO5+cn5UwTLE5xrflMtIwwKQQj+kzXXG8bipIoxcKPpay1Pm37fb4lRf0+
-         W6NOp5qYE/ik0nutl3QC6yPy5/M4NVt8dzp09IBcnMvPV3OrigakDyyt1sI8LJi+kdKu
-         vrK/smCBgTxnx2bBlpJKODNo5p5lX2c20XklJ5LKqv+YYdcyFPtVo+PBEuEQBdesT8l1
-         u+qj0kr40IC0Ark3xu2y4Ic/2Y+pTpby0p0pJqKia3b7oH5zmigy+cSlmRQ8HvgTACO5
-         ZBfw==
+        bh=8gCy5LzCrZ4Ippif5C2Kr6pI1Q8A3vPTLrXylwHP5Is=;
+        b=vmOgCDX4Ovlo+g3q/YjlH2gzNXCBg6oYk1uHca7WFAJy0wEyxCaO7diA4/HQFhbfTm
+         vZCxg8qtkEXtSmNVkwvmd3y9aPHfb1O3HzVcCMYG5GkvRSxpNmSqOEo731jm0j0k1tVu
+         OEKw5b06tRh6HL9jAeFZXqBsP1qLSDni5lS66o6K10BKTIu2Gh3yDizNmuHcNyx++XHH
+         tHYzDWRe+6TQkK1QpWT99yOl6ce7cDGFlAIEDlSgVkns9356jlEzO60Y5PwCulcoS0Vx
+         tVwDbjoZHJktHkYmPTJ4GRQBmCpdAnlxFId4luoMymcP63yZ58/CEn/wg3c6xs89g66t
+         gxGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=uQBUcw70N5/pZNHz2QWMX765YU53M7496uPmAAbH/iU=;
-        b=jPykrRl9eoNDT3DMGINH34NwwoEtGzbeif3F0e+5mil12mj8HVHM9IVTUJuECd/9Pu
-         8Xms7LqWGx2Y5lSE41ZGe26f43PeC6dFQydPCERVb/BRKAlVH5clM1fUz3B1OQLCeJMk
-         yDDZIfUiq/D2HRrTtQOjzgN20SwuvNmoM58Rw4vYCnmFT207aSM46jpmaA0gfKQO39t2
-         ehHBACXrm1y+Ei9rcTzTux5AgvJJD4oqL2iATbZRhDkmPWVJyyNK7r0jJkdY5xFANqAK
-         aaOMJ1uUcFocvQeGzG1RRWf6saCZjQ8RYrPjTbFdoCAYx4DITsTpzUkbe0vS7fTYWDQm
-         6MvA==
-X-Gm-Message-State: AOAM532Cmyl/jp9fSA38ZSs9RmcYgJsXXrjRDV+pbI8Iv771hjlw1GP7
-        SKcHT1/DZdLWJ5avUAy+JzZDTxIeRFUj0rmP
-X-Google-Smtp-Source: ABdhPJwWctjYlK1i0RQ9U5rwbx1MXyXTqF8P/2W35vyRuLyCkaQtqJgTmv97oJ7dLulE5XOcJgCU96m1Yrxfbnde
+        bh=8gCy5LzCrZ4Ippif5C2Kr6pI1Q8A3vPTLrXylwHP5Is=;
+        b=HcL1buzXo1nus8OxDjvvK9xNQ8aX6BRxyhOuu46zlu7VTd32XcABfFEQAzybnfRd73
+         BbBpEfkz1HzhOdzRMVG6kMsWIQi7hcktodUa+LWll6nliUqbvR1stYkxPhNMHVZrG9Fz
+         SAmEavnfgi7inC2MYkm9K8JsARjne7ACRrgmHEGwQMv0NX3Q8ABI6Cd8TxE82hRQUg3t
+         J9JSPMsgMdtKwuGnlahzCwk3HUCIaKniqkn3CKF/1HxaPcKod71ToQA12IR0M/UU4v5/
+         BdCsebyijMjHN8ZW5Zt/1DWppsrAzaB192AoIxvkpOKoGI6v67smljpOibJRsYEWDheM
+         YJAw==
+X-Gm-Message-State: AOAM5328Obt4ElXqz5nHYI6V88WPhvtMZ5R63J7YnA/WOcc9LFAAZZs7
+        BizC/jVyPw3dW6/NPXHhtCwKAtMhB+VhLZDi
+X-Google-Smtp-Source: ABdhPJx1hOhDWmjDE0HlzEorlVjxg9QmeE8fIeKQfK3gTvzMzRC6zTbmaUqg7dVWWCVncgIssdu5E4KU6Pu81Z6R
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6402:18d:: with SMTP id
- r13mr23596971edv.267.1600204638418; Tue, 15 Sep 2020 14:17:18 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 23:16:05 +0200
+ (user=andreyknvl job=sendgmr) by 2002:ad4:5745:: with SMTP id
+ q5mr19950252qvx.29.1600204640737; Tue, 15 Sep 2020 14:17:20 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 23:16:06 +0200
 In-Reply-To: <cover.1600204505.git.andreyknvl@google.com>
-Message-Id: <b52bdc9fc7fd11bf3e0003c96855bb4c191cc4fa.1600204505.git.andreyknvl@google.com>
+Message-Id: <7866d9e6f11f12f1bad42c895bf4947addba71c2.1600204505.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1600204505.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH v2 23/37] arm64: kasan: Add arch layer for memory tagging helpers
+Subject: [PATCH v2 24/37] arm64: mte: Add in-kernel tag fault handler
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -75,73 +75,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add a set of arch_*() memory tagging helpers currently only
-defined for arm64 when hardware tag-based KASAN is enabled. These helpers
-will be used by KASAN runtime to implement the hardware tag-based mode.
+From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-The arch-level indirection level is introduced to simplify adding hardware
-tag-based KASAN support for other architectures in the future by defining
-the appropriate arch_*() macros.
+Add the implementation of the in-kernel fault handler.
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+When a tag fault happens on a kernel address:
+* a warning is logged,
+* MTE is disabled on the current CPU,
+* the execution continues.
+
+When a tag fault happens on a user address:
+* the kernel executes do_bad_area() and panics.
+
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
-Change-Id: I42b0795a28067872f8308e00c6f0195bca435c2a
+Change-Id: I9b8aa79567f7c45f4d6a1290efcf34567e620717
 ---
- arch/arm64/include/asm/memory.h |  8 ++++++++
- mm/kasan/kasan.h                | 19 +++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ arch/arm64/mm/fault.c | 36 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index e424fc3a68cb..268a3b6cebd2 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -231,6 +231,14 @@ static inline const void *__tag_set(const void *addr, u8 tag)
- 	return (const void *)(__addr | __tag_shifted(tag));
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index a3bd189602df..cdc23662691c 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -33,6 +33,7 @@
+ #include <asm/debug-monitors.h>
+ #include <asm/esr.h>
+ #include <asm/kprobes.h>
++#include <asm/mte.h>
+ #include <asm/processor.h>
+ #include <asm/sysreg.h>
+ #include <asm/system_misc.h>
+@@ -294,6 +295,18 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
+ 	do_exit(SIGKILL);
  }
  
-+#ifdef CONFIG_KASAN_HW_TAGS
-+#define arch_init_tags(max_tag)			mte_init_tags(max_tag)
-+#define arch_get_random_tag()			mte_get_random_tag()
-+#define arch_get_mem_tag(addr)			mte_get_mem_tag(addr)
-+#define arch_set_mem_tag_range(addr, size, tag)	\
-+			mte_set_mem_tag_range((addr), (size), (tag))
-+#endif /* CONFIG_KASAN_HW_TAGS */
++static void report_tag_fault(unsigned long addr, unsigned int esr,
++			     struct pt_regs *regs)
++{
++	bool is_write = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
 +
- /*
-  * Physical vs virtual RAM address space conversion.  These are
-  * private definitions which should NOT be used outside memory.h
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 1d3c7c6ce771..8b43fc163ed1 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -240,6 +240,25 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- #define reset_tag(addr)		((void *)arch_kasan_reset_tag(addr))
- #define get_tag(addr)		arch_kasan_get_tag(addr)
++	pr_alert("Memory Tagging Extension Fault in %pS\n", (void *)regs->pc);
++	pr_alert("  %s at address %lx\n", is_write ? "Write" : "Read", addr);
++	pr_alert("  Pointer tag: [%02x], memory tag: [%02x]\n",
++			mte_get_ptr_tag(addr),
++			mte_get_mem_tag((void *)addr));
++}
++
+ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+ 			      struct pt_regs *regs)
+ {
+@@ -641,10 +654,31 @@ static int do_sea(unsigned long addr, unsigned int esr, struct pt_regs *regs)
+ 	return 0;
+ }
  
-+#ifndef arch_init_tags
-+#define arch_init_tags(max_tag)
-+#endif
-+#ifndef arch_get_random_tag
-+#define arch_get_random_tag()	(0xFF)
-+#endif
-+#ifndef arch_get_mem_tag
-+#define arch_get_mem_tag(addr)	(0xFF)
-+#endif
-+#ifndef arch_set_mem_tag_range
-+#define arch_set_mem_tag_range(addr, size, tag) ((void *)(addr))
-+#endif
++static void do_tag_recovery(unsigned long addr, unsigned int esr,
++			   struct pt_regs *regs)
++{
++	report_tag_fault(addr, esr, regs);
 +
-+#define init_tags(max_tag)			arch_init_tags(max_tag)
-+#define get_random_tag()			arch_get_random_tag()
-+#define get_mem_tag(addr)			arch_get_mem_tag(addr)
-+#define set_mem_tag_range(addr, size, tag)	\
-+				arch_set_mem_tag_range((addr), (size), (tag))
++	/*
++	 * Disable Memory Tagging Extension Tag Checking on the local CPU
++	 * for the current EL.
++	 * It will be done lazily on the other CPUs when they will hit a
++	 * tag fault.
++	 */
++	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_NONE);
++	isb();
++}
 +
- /*
-  * Exported functions for interfaces called from assembly or from generated
-  * code. Declarations here to avoid warning about missing declarations.
++
+ static int do_tag_check_fault(unsigned long addr, unsigned int esr,
+ 			      struct pt_regs *regs)
+ {
+-	do_bad_area(addr, esr, regs);
++	/* The tag check fault (TCF) is per TTBR */
++	if (is_ttbr0_addr(addr))
++		do_bad_area(addr, esr, regs);
++	else
++		do_tag_recovery(addr, esr, regs);
++
+ 	return 0;
+ }
+ 
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
