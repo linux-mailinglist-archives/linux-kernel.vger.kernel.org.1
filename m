@@ -2,141 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D999D269F79
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DC3269F7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgIOHPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:15:44 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:39329 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgIOHP1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:15:27 -0400
-Received: by mail-ot1-f68.google.com with SMTP id u25so2280245otq.6;
-        Tue, 15 Sep 2020 00:15:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0AAGDKBZ0tFUr5jZMaLm57FUfXngPQn4Fl7eT0hJb94=;
-        b=LBvZdPi5b8z7Pf914TrPv2mremD6kGRtz1OXrkI2Ibm7AvHwE2l3NuMuCMBKMj9iGb
-         Fx87uQGb0HVlW89R+qJTub4pg4hTIXTKg1yyIwDp5eOAshXTOY0vDXQ4dHFE0FnGegJF
-         LrQNSBLhd2J3bzUmOayXMiuNLsc0/d3gBAHwg4isFiFLGfYFnfDMrcg14J3HRbPtUn5s
-         tHOlpqa0th3oQAlOKbaYWYHEp0PK6tp7o9HH715sclBlPnx/cnVy33pArh1qDPuUZk+x
-         aCIHfL3ZYujfEOiiSZFR6K+hVRnWIwGBZ7UbuU89FAovtMNyAzkqjx7iX7+HS9h12ykE
-         OfyA==
-X-Gm-Message-State: AOAM532lCbRn2/R/15kCqClN7f1KPveLYvhsXx6B9wNpSVEEiYJA6w0H
-        v9H9rzdi88Nz/wlVLjemg5CAo7roS4NSKb9tfs8=
-X-Google-Smtp-Source: ABdhPJzpO6RY/Lf4aDWUwHVYZc+GKQNaoNRQKjM2D7I9mlw4/3hODeF9iB9mFH88D/jBylkfQL8N1JMQjv4xKH0nCAY=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr11032303otp.107.1600154122683;
- Tue, 15 Sep 2020 00:15:22 -0700 (PDT)
+        id S1726167AbgIOHRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:17:10 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12260 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726062AbgIOHRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:17:05 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 7EDE4213A5CEF33B6F5B;
+        Tue, 15 Sep 2020 15:17:00 +0800 (CST)
+Received: from [10.174.176.220] (10.174.176.220) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 15 Sep 2020 15:16:53 +0800
+Subject: Re: [PATCH v12 0/9] support reserving crashkernel above 4G on arm64
+ kdump
+To:     <catalin.marinas@arm.com>, <dyoung@redhat.com>
+References: <20200907134745.25732-1-chenzhou10@huawei.com>
+CC:     <will@kernel.org>, <james.morse@arm.com>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bhe@redhat.com>, <corbet@lwn.net>,
+        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
+        <bhsharma@redhat.com>, <horms@verge.net.au>, <robh+dt@kernel.org>,
+        <arnd@arndb.de>, <nsaenzjulienne@suse.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <05b1fdbb-5bb3-1345-14ac-9bf91df16aa4@huawei.com>
+Date:   Tue, 15 Sep 2020 15:16:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
- <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com> <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Sep 2020 09:15:11 +0200
-Message-ID: <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
-Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform driver
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200907134745.25732-1-chenzhou10@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
 
-On Tue, Sep 15, 2020 at 3:17 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Mon, 14 Sep 2020, Geert Uytterhoeven wrote:
-> > On Mon, Sep 14, 2020 at 4:47 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > > Add platform devices for the Mac IDE controller variants. Convert the
-> > > macide module into a platform driver to support two of those variants.
-> > > For the third, use a generic "pata_platform" driver instead.
-> > > This enables automatic loading of the appropriate module and begins
-> > > the process of replacing the driver with libata alternatives.
-> > >
-> > > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > Cc: Joshua Thompson <funaho@jurai.org>
-> > > References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-> > > References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-> > > Tested-by: Stan Johnson <userm57@yahoo.com>
-> > > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> > > ---
-> > > This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-> > > using both pata_platform and ide_platform drivers.
-> > > The next step will be to try using these generic drivers with the other
-> > > IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-> > > driver can be entirely replaced with libata drivers.
-> > >
-> > > Changed since v1:
-> > >  - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
-> > >  - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
-> > >    and IRQF_SHARED makes no difference in this case.
-> > >  - Removed redundant release_mem_region() call.
-> > >  - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
-> > >    CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
-> > >    patch (as this patch has some unrelated benefits).
-> >
-> > Thanks for the update!
-> >
-> > BTW, who do you envision taking this (or the next version)? IDE or m68k?
-> >
+
+On 2020/9/7 21:47, Chen Zhou wrote:
+> There are following issues in arm64 kdump:
+> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+> will fail when there is no enough low memory.
+> 2. If reserving crashkernel above 4G, in this case, crash dump
+> kernel will boot failure because there is no low memory available
+> for allocation.
+> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
+> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
+> the devices in crash dump kernel need to use ZONE_DMA will alloc
+> fail.
 >
-> It's unclear from the diff stat. But the focus is on the platform which
-> probably means it is more interesting to you, as the arch maintainer.
-
-Fair enough.
-
-Looking for an Acked-by from the IDE maintainer...
-
-> > > --- a/drivers/ide/macide.c
-> > > +++ b/drivers/ide/macide.c
-> >
-> > > @@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
-> > >   * Probe for a Macintosh IDE interface
-> > >   */
-> > >
-> > > -static int __init macide_init(void)
-> > > +static int mac_ide_probe(struct platform_device *pdev)
-> > >  {
-> >
-> > >         printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
-> > >                          mac_ide_name[macintosh_config->ide_type - 1]);
-> > >
-> > > -       macide_setup_ports(&hw, base, irq);
-> > > +       macide_setup_ports(&hw, mem->start, irq->start);
-> > >
-> > > -       return ide_host_add(&d, hws, 1, NULL);
-> > > +       rc = ide_host_add(&d, hws, 1, &host);
-> > > +       if (rc)
-> > > +               return rc;
-> > > +
-> > > +       platform_set_drvdata(pdev, host);
-> >
-> > Move one up, to play it safe?
-> >
+> To solve these issues, change the behavior of crashkernel=X.
+> crashkernel=X tries low allocation in DMA zone, and fall back to
+> high allocation if it fails.
+> If requized size X is too large and leads to very little low memory
+> in DMA zone after low allocation, the system may not work normally.
+> So add a threshold and go for high allocation directly if the required
+> size is too large. The value of threshold is set as the half of
+> the low memory.
 >
-> You mean, before calling ide_host_add? The 'host' pointer is uninitialized
-> prior to that call.
+> We can also use "crashkernel=X,high" to select a high region above
+> DMA zone, which also tries to allocate at least 256M low memory in
+> DMA zone automatically.
+> "crashkernel=Y,low" can be used to allocate specified size low memory.
+> For non-RPi4 platforms, change DMA zone memtioned above to DMA32 zone.
+>
+> When reserving crashkernel in high memory, some low memory is reserved
+> for crash dump kernel devices. So there may be two regions reserved for
+> crash dump kernel.
+> In order to distinct from the high region and make no effect to the use
+> of existing kexec-tools, rename the low region as "Crash kernel (low)",
+> and pass the low region by reusing DT property
+> "linux,usable-memory-range". We made the low memory region as the last
+> range of "linux,usable-memory-range" to keep compatibility with existing
+> user-space and older kdump kernels.
+>
+> Besides, we need to modify kexec-tools:
+> arm64: support more than one crash kernel regions(see [1])
+>
+> Another update is document about DT property 'linux,usable-memory-range':
+> schemas: update 'linux,usable-memory-range' node schema(see [2])
+>
+> This patchset contains the following nine patches:
+> 0001-x86-kdump-move-CRASH_ALIGN-to-2M.patch
+> 0002-x86-kdump-make-the-lower-bound-of-crash-kernel-reser.patch
+> 0003-x86-kdump-use-macro-CRASH_ADDR_LOW_MAX-in-functions-.patch
+> 0004-x86-kdump-move-reserve_crashkernel-_low-into-crash_c.patch
+> 0005-arm64-kdump-introduce-some-macroes-for-crash-kernel-.patch
+> 0006-arm64-kdump-reimplement-crashkernel-X.patch
+> 0007-kdump-add-threshold-for-the-required-memory.patch
+> 0008-arm64-kdump-add-memory-for-devices-by-DT-property-li.patch
+> 0009-kdump-update-Documentation-about-crashkernel.patch
+>
+> 0001-0003 are some x86 cleanups which prepares for making
+> functionsreserve_crashkernel[_low]() generic.
+>
+> 0004 makes functions reserve_crashkernel[_low]() generic.
+> 0005-0006 reimplements crashkernel=X.
+> 0007 adds threshold for the required memory.
+> 0008 adds memory for devices by DT property linux,usable-memory-range.
+> 0009 updates the doc.
+Hi Catalin and Dave,
 
-Oh right, so the IDE subsystem doesn't let you use the drvdata inside
-your driver (besides in remove()) in a safe way :-(
+Any other suggestions about this patchset? Let me know if you have any questions.
 
-Gr{oetje,eeting}s,
+Thanks,
+Chen Zhou
+>
+> Changes since [v11]
+> - Rebased on top of 5.9-rc4.
+> - Make the function reserve_crashkernel() of x86 generic.
+> Suggested by Catalin, make the function reserve_crashkernel() of x86 generic
+> and arm64 use the generic version to reimplement crashkernel=X.
+>
+> Changes since [v10]
+> - Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
+>
+> Changes since [v9]
+> - Patch 1 add Acked-by from Dave.
+> - Update patch 5 according to Dave's comments.
+> - Update chosen schema.
+>
+> Changes since [v8]
+> - Reuse DT property "linux,usable-memory-range".
+> Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
+> memory region.
+> - Fix kdump broken with ZONE_DMA reintroduced.
+> - Update chosen schema.
+>
+> Changes since [v7]
+> - Move x86 CRASH_ALIGN to 2M
+> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
+> - Update Documentation/devicetree/bindings/chosen.txt.
+> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
+> suggested by Arnd.
+> - Add Tested-by from Jhon and pk.
+>
+> Changes since [v6]
+> - Fix build errors reported by kbuild test robot.
+>
+> Changes since [v5]
+> - Move reserve_crashkernel_low() into kernel/crash_core.c.
+> - Delete crashkernel=X,high.
+> - Modify crashkernel=X,low.
+> If crashkernel=X,low is specified simultaneously, reserve spcified size low
+> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
+> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
+> pass to crash dump kernel by DT property "linux,low-memory-range".
+> - Update Documentation/admin-guide/kdump/kdump.rst.
+>
+> Changes since [v4]
+> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
+>
+> Changes since [v3]
+> - Add memblock_cap_memory_ranges back for multiple ranges.
+> - Fix some compiling warnings.
+>
+> Changes since [v2]
+> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
+> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
+> patch.
+>
+> Changes since [v1]:
+> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
+> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
+> in fdt_enforce_memory_region().
+> There are at most two crash kernel regions, for two crash kernel regions
+> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
+> and then remove the memory range in the middle.
+>
+> [1]: http://lists.infradead.org/pipermail/kexec/2020-June/020737.html
+> [2]: https://github.com/robherring/dt-schema/pull/19 
+> [v1]: https://lkml.org/lkml/2019/4/2/1174
+> [v2]: https://lkml.org/lkml/2019/4/9/86
+> [v3]: https://lkml.org/lkml/2019/4/9/306
+> [v4]: https://lkml.org/lkml/2019/4/15/273
+> [v5]: https://lkml.org/lkml/2019/5/6/1360
+> [v6]: https://lkml.org/lkml/2019/8/30/142
+> [v7]: https://lkml.org/lkml/2019/12/23/411
+> [v8]: https://lkml.org/lkml/2020/5/21/213
+> [v9]: https://lkml.org/lkml/2020/6/28/73
+> [v10]: https://lkml.org/lkml/2020/7/2/1443
+> [v11]: https://lkml.org/lkml/2020/8/1/150
+>
+> Chen Zhou (9):
+>   x86: kdump: move CRASH_ALIGN to 2M
+>   x86: kdump: make the lower bound of crash kernel reservation
+>     consistent
+>   x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
+>     reserve_crashkernel[_low]()
+>   x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
+>   arm64: kdump: introduce some macroes for crash kernel reservation
+>   arm64: kdump: reimplement crashkernel=X
+>   kdump: add threshold for the required memory
+>   arm64: kdump: add memory for devices by DT property
+>     linux,usable-memory-range
+>   kdump: update Documentation about crashkernel
+>
+>  Documentation/admin-guide/kdump/kdump.rst     |  25 ++-
+>  .../admin-guide/kernel-parameters.txt         |  13 +-
+>  arch/arm64/include/asm/kexec.h                |  15 ++
+>  arch/arm64/include/asm/processor.h            |   1 +
+>  arch/arm64/kernel/setup.c                     |  13 +-
+>  arch/arm64/mm/init.c                          | 105 ++++------
+>  arch/arm64/mm/mmu.c                           |   4 +
+>  arch/x86/include/asm/kexec.h                  |  28 +++
+>  arch/x86/kernel/setup.c                       | 165 +--------------
+>  include/linux/crash_core.h                    |   4 +
+>  include/linux/kexec.h                         |   2 -
+>  kernel/crash_core.c                           | 192 ++++++++++++++++++
+>  kernel/kexec_core.c                           |  17 --
+>  13 files changed, 328 insertions(+), 256 deletions(-)
+>
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
