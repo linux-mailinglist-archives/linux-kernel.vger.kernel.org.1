@@ -2,175 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0A526B26A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D200F26B28E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgIOWrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:47:13 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:48738 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727490AbgIOPpH (ORCPT
+        id S1727493AbgIOWtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:49:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34290 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727458AbgIOPnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:45:07 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FFP3ca146660;
-        Tue, 15 Sep 2020 15:44:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=dtTmhZe5n21zVdQpTOTAtBeFkVA42Abq50W1Y+Hydlc=;
- b=OprU6tm8Pf4j3FOvGuBH51uVcE2dGBc9k0MwnaLrDqBQCLrURlJNlqWziuCTfnbk4Z7F
- qHn24Yd4VFJjk8SX6+USk320Gh0QowSG/Ybhe/eXGv0E/LjcwhgrsHNulUbwxbh3B028
- 8YhbegIF1sYOwt9YScVT8Y+ukRsj8mE4XnuHfODlKLRlXSRfJsWt5IzT/BdHjW0Y/BlO
- 4nlL4AdKVN1as2QX2ae/nXhWTgxLXwDChJwCwWPnCvst5Kvhnje9b3kOHbBfJyIKbQnp
- cVBi586AVkx4Ij/22PY89PVqyI1pm9PIvwilhHZYY2ITh4S+OxT7ZGIKK87pzf0ZMdaL Rg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33gp9m5x17-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 15:44:40 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FFJxKU017009;
-        Tue, 15 Sep 2020 15:42:39 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33h7wpadr9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 15:42:39 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FFgVH5017794;
-        Tue, 15 Sep 2020 15:42:33 GMT
-Received: from dhcp-10-65-178-159.vpn.oracle.com (/10.65.178.159)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 15:42:30 +0000
-Content-Type: text/plain; charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v3] certs: Add EFI_CERT_X509_GUID support for dbx entries
-From:   Eric Snowberg <eric.snowberg@oracle.com>
-In-Reply-To: <20200914181227.GF9369@linux.intel.com>
-Date:   Tue, 15 Sep 2020 09:42:27 -0600
-Cc:     dhowells@redhat.com, dwmw2@infradead.org, jmorris@namei.org,
-        serge@hallyn.com, nayna@linux.ibm.com, erichte@linux.ibm.com,
-        mpe@ellerman.id.au, zohar@linux.ibm.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, rdunlap@infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F25F6F0E-7E13-4C9D-A7BA-33CDEF7074F2@oracle.com>
-References: <20200911182230.62266-1-eric.snowberg@oracle.com>
- <20200914181227.GF9369@linux.intel.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-X-Mailer: Apple Mail (2.3273)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
- adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150128
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=3 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150128
+        Tue, 15 Sep 2020 11:43:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600184609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XXFy/q65vk1jisWRQyxPpPLWskYCS/ybqHocfTlHIhM=;
+        b=ftS8G8DNd/aN/EEq0ZPX10thJSTTJsOtk7+T5s7OzPDPrJB+QNdZXLYDmKBiVA3KNY1BWm
+        J+TbzuV03PtqotYGuNWXSF9zmj7GJG/kxGugvfyhyrk9sNAyzpstMN/qrlm3uyneDWahs3
+        q7sc3u407Auxd7dex4kNOhL32w+4oSY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-6yHQjql2OuyEZgQS79cm9w-1; Tue, 15 Sep 2020 11:43:25 -0400
+X-MC-Unique: 6yHQjql2OuyEZgQS79cm9w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6856C1963FE6;
+        Tue, 15 Sep 2020 15:43:13 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 23E9C1992D;
+        Tue, 15 Sep 2020 15:43:10 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Wei Huang <whuang2@amd.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH RFC 1/2] KVM: x86: allocate vcpu->arch.cpuid_entries dynamically
+Date:   Tue, 15 Sep 2020 17:43:05 +0200
+Message-Id: <20200915154306.724953-2-vkuznets@redhat.com>
+In-Reply-To: <20200915154306.724953-1-vkuznets@redhat.com>
+References: <20200915154306.724953-1-vkuznets@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current limit for guest CPUID leaves (KVM_MAX_CPUID_ENTRIES, 80)
+is reported to be insufficient but before we bump it let's switch to
+allocating vcpu->arch.cpuid_entries dynamically. Currenly,
+'struct kvm_cpuid_entry2' is 40 bytes so vcpu->arch.cpuid_entries is
+3200 bytes which accounts for 1/4 of the whole 'struct kvm_vcpu_arch'
+but having it pre-allocated (for all vCPUs which we also pre-allocate)
+gives us no benefits.
 
-> On Sep 14, 2020, at 12:12 PM, Jarkko Sakkinen =
-<jarkko.sakkinen@linux.intel.com> wrote:
->=20
-> On Fri, Sep 11, 2020 at 02:22:30PM -0400, Eric Snowberg wrote:
->> The Secure Boot Forbidden Signature Database, dbx, contains a list of =
-now
->> revoked signatures and keys previously approved to boot with UEFI =
-Secure
->> Boot enabled.  The dbx is capable of containing any number of
->> EFI_CERT_X509_SHA256_GUID, EFI_CERT_SHA256_GUID, and =
-EFI_CERT_X509_GUID
->> entries.
->>=20
->> Currently when EFI_CERT_X509_GUID are contained in the dbx, the =
-entries are
->> skipped.
->>=20
->> Add support for EFI_CERT_X509_GUID dbx entries. When a =
-EFI_CERT_X509_GUID
->> is found, it is added as an asymmetrical key to the .blacklist =
-keyring.
->> Anytime the .platform keyring is used, the keys in the .blacklist =
-keyring
->> are referenced, if a matching key is found, the key will be rejected.
->>=20
->> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
->> ---
->> v3:
->> Fixed an issue when CONFIG_PKCS7_MESSAGE_PARSER is not builtin and =
-defined
->> as a module instead, pointed out by Randy Dunlap
->>=20
->> v2:=20
->> Fixed build issue reported by kernel test robot <lkp@intel.com>
->> Commit message update (suggested by Jarkko Sakkinen)
->> ---
->> certs/blacklist.c                             | 33 =
-+++++++++++++++++++
->> certs/blacklist.h                             | 12 +++++++
->> certs/system_keyring.c                        |  6 ++++
->> include/keys/system_keyring.h                 | 11 +++++++
->> .../platform_certs/keyring_handler.c          | 11 +++++++
->> 5 files changed, 73 insertions(+)
->>=20
->> diff --git a/certs/blacklist.c b/certs/blacklist.c
->> index 6514f9ebc943..3d1514ba5d47 100644
->> --- a/certs/blacklist.c
->> +++ b/certs/blacklist.c
->> @@ -100,6 +100,39 @@ int mark_hash_blacklisted(const char *hash)
->> 	return 0;
->> }
->>=20
->> +int mark_key_revocationlisted(const char *data, size_t size)
->> +{
->> +	key_ref_t key;
->> +
->> +	key =3D key_create_or_update(make_key_ref(blacklist_keyring, =
-true),
->> +				   "asymmetric",
->> +				   NULL,
->> +				   data,
->> +				   size,
->> +				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | =
-KEY_USR_VIEW),
->> +				   KEY_ALLOC_NOT_IN_QUOTA | =
-KEY_ALLOC_BUILT_IN);
->> +
->> +	if (IS_ERR(key)) {
->> +		pr_err("Problem with revocation key (%ld)\n", =
-PTR_ERR(key));
->> +		return PTR_ERR(key);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +int is_key_revocationlisted(struct pkcs7_message *pkcs7)
->> +{
->> +	int ret;
->> +
->> +	ret =3D validate_trust(pkcs7, blacklist_keyring);
->> +
->> +	if (ret =3D=3D 0)
->> +		return -EKEYREJECTED;
->> +
->> +	return -ENOKEY;
->> +}
->> +EXPORT_SYMBOL_GPL(is_key_revocationlisted);
->=20
-> Hmm... ignore my previous comment about this. Export symbol is called
-> only by system keyring code.
->=20
-> Would be best if the commit message would explicitly reason new =
-exports.
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/include/asm/kvm_host.h |  2 +-
+ arch/x86/kvm/cpuid.c            | 55 ++++++++++++++++++++++++---------
+ arch/x86/kvm/x86.c              |  1 +
+ 3 files changed, 42 insertions(+), 16 deletions(-)
 
-I don=E2=80=99t see a good reason to keep the export now, I=E2=80=99ll =
-remove it from the
-next version.  Thanks.
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 5303dbc5c9bc..0c5f2ca3e838 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -636,7 +636,7 @@ struct kvm_vcpu_arch {
+ 	int halt_request; /* real mode on Intel only */
+ 
+ 	int cpuid_nent;
+-	struct kvm_cpuid_entry2 cpuid_entries[KVM_MAX_CPUID_ENTRIES];
++	struct kvm_cpuid_entry2 *cpuid_entries;
+ 
+ 	int maxphyaddr;
+ 	int max_tdp_level;
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 3fd6eec202d7..0ce943a8a39a 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -195,6 +195,7 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+ {
+ 	int r, i;
+ 	struct kvm_cpuid_entry *cpuid_entries = NULL;
++	struct kvm_cpuid_entry2 *cpuid_entries2 = NULL;
+ 
+ 	r = -E2BIG;
+ 	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
+@@ -207,31 +208,42 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+ 			r = PTR_ERR(cpuid_entries);
+ 			goto out;
+ 		}
++		cpuid_entries2 = kvmalloc_array(cpuid->nent, sizeof(cpuid_entries2[0]),
++						GFP_KERNEL_ACCOUNT);
++		if (!cpuid_entries2) {
++			r = -ENOMEM;
++			goto out_free_cpuid;
++		}
+ 	}
+ 	for (i = 0; i < cpuid->nent; i++) {
+-		vcpu->arch.cpuid_entries[i].function = cpuid_entries[i].function;
+-		vcpu->arch.cpuid_entries[i].eax = cpuid_entries[i].eax;
+-		vcpu->arch.cpuid_entries[i].ebx = cpuid_entries[i].ebx;
+-		vcpu->arch.cpuid_entries[i].ecx = cpuid_entries[i].ecx;
+-		vcpu->arch.cpuid_entries[i].edx = cpuid_entries[i].edx;
+-		vcpu->arch.cpuid_entries[i].index = 0;
+-		vcpu->arch.cpuid_entries[i].flags = 0;
+-		vcpu->arch.cpuid_entries[i].padding[0] = 0;
+-		vcpu->arch.cpuid_entries[i].padding[1] = 0;
+-		vcpu->arch.cpuid_entries[i].padding[2] = 0;
++		cpuid_entries2[i].function = cpuid_entries[i].function;
++		cpuid_entries2[i].eax = cpuid_entries[i].eax;
++		cpuid_entries2[i].ebx = cpuid_entries[i].ebx;
++		cpuid_entries2[i].ecx = cpuid_entries[i].ecx;
++		cpuid_entries2[i].edx = cpuid_entries[i].edx;
++		cpuid_entries2[i].index = 0;
++		cpuid_entries2[i].flags = 0;
++		cpuid_entries2[i].padding[0] = 0;
++		cpuid_entries2[i].padding[1] = 0;
++		cpuid_entries2[i].padding[2] = 0;
+ 	}
++	kvfree(vcpu->arch.cpuid_entries);
++	vcpu->arch.cpuid_entries = cpuid_entries2;
+ 	vcpu->arch.cpuid_nent = cpuid->nent;
++
+ 	r = kvm_check_cpuid(vcpu);
+ 	if (r) {
++		kvfree(vcpu->arch.cpuid_entries);
++		vcpu->arch.cpuid_entries = NULL;
+ 		vcpu->arch.cpuid_nent = 0;
+-		kvfree(cpuid_entries);
+-		goto out;
++		goto out_free_cpuid;
+ 	}
+ 
+ 	cpuid_fix_nx_cap(vcpu);
+ 	kvm_update_cpuid_runtime(vcpu);
+ 	kvm_vcpu_after_set_cpuid(vcpu);
+ 
++out_free_cpuid:
+ 	kvfree(cpuid_entries);
+ out:
+ 	return r;
+@@ -241,18 +253,31 @@ int kvm_vcpu_ioctl_set_cpuid2(struct kvm_vcpu *vcpu,
+ 			      struct kvm_cpuid2 *cpuid,
+ 			      struct kvm_cpuid_entry2 __user *entries)
+ {
++	struct kvm_cpuid_entry2 *cpuid_entries2 = NULL;
+ 	int r;
+ 
+ 	r = -E2BIG;
+ 	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
+ 		goto out;
+ 	r = -EFAULT;
+-	if (copy_from_user(&vcpu->arch.cpuid_entries, entries,
+-			   cpuid->nent * sizeof(struct kvm_cpuid_entry2)))
+-		goto out;
++
++	if (cpuid->nent) {
++		cpuid_entries2 = vmemdup_user(entries,
++					      array_size(sizeof(cpuid_entries2[0]),
++							 cpuid->nent));
++		if (IS_ERR(cpuid_entries2)) {
++			r = PTR_ERR(cpuid_entries2);
++			goto out;
++		}
++	}
++	kvfree(vcpu->arch.cpuid_entries);
++	vcpu->arch.cpuid_entries = cpuid_entries2;
+ 	vcpu->arch.cpuid_nent = cpuid->nent;
++
+ 	r = kvm_check_cpuid(vcpu);
+ 	if (r) {
++		kvfree(vcpu->arch.cpuid_entries);
++		vcpu->arch.cpuid_entries = NULL;
+ 		vcpu->arch.cpuid_nent = 0;
+ 		goto out;
+ 	}
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 1994602a0851..42259a6ec1d8 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9610,6 +9610,7 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_destroy(vcpu);
+ 	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+ 	free_page((unsigned long)vcpu->arch.pio_data);
++	kvfree(vcpu->arch.cpuid_entries);
+ 	if (!lapic_in_kernel(vcpu))
+ 		static_key_slow_dec(&kvm_no_apic_vcpu);
+ }
+-- 
+2.25.4
 
