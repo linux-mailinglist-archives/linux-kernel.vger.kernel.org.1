@@ -2,86 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B453A269A00
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C27269A03
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726079AbgIOABG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:01:06 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:62376 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgIOABF (ORCPT
+        id S1726117AbgIOABr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgIOABn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:01:05 -0400
-Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08F00XrC002502;
-        Tue, 15 Sep 2020 09:00:33 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
- Tue, 15 Sep 2020 09:00:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
-Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08F00SmU002432
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 15 Sep 2020 09:00:33 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH 3/3] fbcon: remove no-op fbcon_set_origin()
-Date:   Tue, 15 Sep 2020 09:00:19 +0900
-Message-Id: <20200915000019.3422-3-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200915000019.3422-1-penguin-kernel@I-love.SAKURA.ne.jp>
-References: <20200915000019.3422-1-penguin-kernel@I-love.SAKURA.ne.jp>
+        Mon, 14 Sep 2020 20:01:43 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F5BC061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:01:42 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id m5so1152206lfp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:01:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Hu//T2azdvRyVHxl3mRyjvYW4R0wVlKthLELBcPcxho=;
+        b=Ta5+k+o3qxoWahciS/gM9Q0JPi/6tGLQJDl2f0MbKgfVn+TEoZU0FHUZ7tvLeOK/LG
+         JRhqNv0bZN6QN17CBmPGk5wPYZpAOjVBt3iveJkAT/hXrI9mB0q1mLY6QZRY6JL69eaU
+         gc2BpQW9pCDcvaNFbnXuLrUFolq2eA9cYGe0q3xAqiWmBGVEMNjjsQ3K0RnlkhicPqwZ
+         Erkr5nDB9EIqqKbUeWPX1ddG1/8gAiOrFhVjoCNibnUXv+osIBujau0I4CiuvK0n+IMz
+         6dfrivdBiGvPlgY8fmE/KsgbHYQXvaM1CA/6Tcq54UNvWXdXxgM2uRpLyt+QWgM1kqHp
+         qSZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Hu//T2azdvRyVHxl3mRyjvYW4R0wVlKthLELBcPcxho=;
+        b=bfCO8DgyKtw57kplB0mOIBqD3tx/aplCs9KSS5q9SwEN76J8qpebRIXkjebRN/+ChJ
+         r5EH4yKFyX2FUoDjTUiXKWhmNEQ/JAWxYSjxj9wpxZUIYVRTeKs+D8+318rLU5B9M+yx
+         mV7jBhm1mLDOALL4vddzfZDHrE2HVo2H0oBki3IEOTUwUG4/2m14b1bkpDt9A5E/4C7b
+         BN06wMYIAN1QShONBz4E5w/s1FBWa9u7veQnjkm5otlmXAr/NNvFn54+gy+f9exicdzw
+         T39TtcZa2hC6TUsidZicF4F0xJCinruBWKyLdCTOE8VuoOcA5Rj+NEHWdykWjP56QXih
+         xO/g==
+X-Gm-Message-State: AOAM531z0JNyNQe0qNgqyFeGMo3h1MST8Ms0YNN1RYpfUT64ouEicm0Y
+        nwtTIdAZ7npIPpXGhbQqevGbWA==
+X-Google-Smtp-Source: ABdhPJxE4wrwdhDsZhPb4g6plz/u3j9wzWSM9urqjqX+TyGUyhx9V4jowwrjtXRGzShWsaP3Ld7uIg==
+X-Received: by 2002:a19:3f0d:: with SMTP id m13mr5929891lfa.91.1600128101125;
+        Mon, 14 Sep 2020 17:01:41 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id f25sm3658798lfh.120.2020.09.14.17.01.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 17:01:40 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 02:01:40 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v3] media: rcar-vin: Enable YDS bit depending on
+ bus_width and data_shift
+Message-ID: <20200915000140.GA1698816@oden.dyn.berto.se>
+References: <20200913181608.32077-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200914234532.GI15543@pendragon.ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200914234532.GI15543@pendragon.ideasonboard.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't need to call vc->vc_sw->con_set_origin() from set_origin()
-if it is no-op.
+Hi Lad,
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- drivers/video/fbdev/core/fbcon.c | 8 --------
- 1 file changed, 8 deletions(-)
+Thanks for your work.
 
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 0b49b0f44edf..f0786af316f1 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -163,8 +163,6 @@ static const struct consw fb_con;
- 
- #define advance_row(p, delta) (unsigned short *)((unsigned long)(p) + (delta) * vc->vc_size_row)
- 
--static int fbcon_set_origin(struct vc_data *);
--
- static int fbcon_cursor_noblink;
- 
- #define divides(a, b)	((!(a) || (b)%(a)) ? 0 : 1)
-@@ -2635,11 +2633,6 @@ static void fbcon_invert_region(struct vc_data *vc, u16 * p, int cnt)
- 	}
- }
- 
--static int fbcon_set_origin(struct vc_data *vc)
--{
--	return 0;
--}
--
- void fbcon_suspended(struct fb_info *info)
- {
- 	struct vc_data *vc = NULL;
-@@ -3110,7 +3103,6 @@ static const struct consw fb_con = {
- 	.con_font_default	= fbcon_set_def_font,
- 	.con_font_copy 		= fbcon_copy_font,
- 	.con_set_palette 	= fbcon_set_palette,
--	.con_set_origin 	= fbcon_set_origin,
- 	.con_invert_region 	= fbcon_invert_region,
- 	.con_screen_pos 	= fbcon_screen_pos,
- 	.con_getxy 		= fbcon_getxy,
+On 2020-09-15 02:45:32 +0300, Laurent Pinchart wrote:
+> Hi Prabhakar,
+> 
+> Thank you for the patch.
+> 
+> On Sun, Sep 13, 2020 at 07:16:08PM +0100, Lad Prabhakar wrote:
+> > Enable YDS bit if bus_width and data_shift is set to 8 in parallel mode
+> > for MEDIA_BUS_FMT_UYVY8_2X8 format.
+> > 
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> > Changes for v3:
+> > * Dropped BIT macro
+> > * Introduced struct v4l2_fwnode_bus_parallel
+> > 
+> > Changes for v2:
+> > * Dropped DT binding documentation patch
+> > * Select the data pins depending on bus-width and data-shift
+> > 
+> > v1 -
+> > https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=323799
+> > ---
+> >  drivers/media/platform/rcar-vin/rcar-core.c |  9 ++++-----
+> >  drivers/media/platform/rcar-vin/rcar-dma.c  | 17 ++++++++++++++---
+> >  drivers/media/platform/rcar-vin/rcar-vin.h  |  5 +++--
+> >  3 files changed, 21 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
+> > index 7440c8965d27..1149ab76cf5c 100644
+> > --- a/drivers/media/platform/rcar-vin/rcar-core.c
+> > +++ b/drivers/media/platform/rcar-vin/rcar-core.c
+> > @@ -626,12 +626,11 @@ static int rvin_parallel_parse_v4l2(struct device *dev,
+> >  
+> >  	switch (vin->parallel->mbus_type) {
+> >  	case V4L2_MBUS_PARALLEL:
+> > -		vin_dbg(vin, "Found PARALLEL media bus\n");
+> > -		vin->parallel->mbus_flags = vep->bus.parallel.flags;
+> > -		break;
+> >  	case V4L2_MBUS_BT656:
+> > -		vin_dbg(vin, "Found BT656 media bus\n");
+> > -		vin->parallel->mbus_flags = 0;
+> > +		vin_dbg(vin, "Found %s media bus\n",
+> > +			vin->parallel->mbus_type == V4L2_MBUS_PARALLEL ?
+> > +			"PARALLEL" : "BT656");
+> 
+> I'd write "parallel" and "BT.656".
+
+I agree with this change.
+
+> 
+> > +		vin->parallel->bus = vep->bus.parallel;
+> >  		break;
+> >  	default:
+> >  		vin_err(vin, "Unknown media bus type\n");
+> > diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+> > index a5dbb90c5210..d067439b0b0d 100644
+> > --- a/drivers/media/platform/rcar-vin/rcar-dma.c
+> > +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+> > @@ -125,6 +125,7 @@
+> >  #define VNDMR2_VPS		(1 << 30)
+> >  #define VNDMR2_HPS		(1 << 29)
+> >  #define VNDMR2_CES		(1 << 28)
+> > +#define VNDMR2_YDS		(1 << 22)
+> >  #define VNDMR2_FTEV		(1 << 17)
+> >  #define VNDMR2_VLV(n)		((n & 0xf) << 12)
+> >  
+> > @@ -698,16 +699,26 @@ static int rvin_setup(struct rvin_dev *vin)
+> >  
+> >  	if (!vin->is_csi) {
+> >  		/* Hsync Signal Polarity Select */
+> > -		if (!(vin->parallel->mbus_flags & V4L2_MBUS_HSYNC_ACTIVE_LOW))
+> > +		if (!(vin->parallel->bus.flags & V4L2_MBUS_HSYNC_ACTIVE_LOW))
+> >  			dmr2 |= VNDMR2_HPS;
+> >  
+> >  		/* Vsync Signal Polarity Select */
+> > -		if (!(vin->parallel->mbus_flags & V4L2_MBUS_VSYNC_ACTIVE_LOW))
+> > +		if (!(vin->parallel->bus.flags & V4L2_MBUS_VSYNC_ACTIVE_LOW))
+> >  			dmr2 |= VNDMR2_VPS;
+> >  
+> >  		/* Data Enable Polarity Select */
+> > -		if (vin->parallel->mbus_flags & V4L2_MBUS_DATA_ENABLE_LOW)
+> > +		if (vin->parallel->bus.flags & V4L2_MBUS_DATA_ENABLE_LOW)
+> >  			dmr2 |= VNDMR2_CES;
+> > +
+> > +		switch (vin->mbus_code) {
+> > +		case MEDIA_BUS_FMT_UYVY8_2X8:
+> > +			if (vin->parallel->bus.bus_width == 8 &&
+> 
+> You can possibly drop this check, as UYVY8_2X8 implies a bus_width equal
+> to 8. Apart from that,
+
+I agree here as well, I think the check for UYVY8_2X8 may be dropped.
+
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> > +			    vin->parallel->bus.data_shift == 8)
+> > +				dmr2 |= VNDMR2_YDS;
+> > +			break;
+> > +		default:
+> > +			break;
+> > +		}
+> >  	}
+> >  
+> >  	/*
+> > diff --git a/drivers/media/platform/rcar-vin/rcar-vin.h b/drivers/media/platform/rcar-vin/rcar-vin.h
+> > index c19d077ce1cb..8396e0e45478 100644
+> > --- a/drivers/media/platform/rcar-vin/rcar-vin.h
+> > +++ b/drivers/media/platform/rcar-vin/rcar-vin.h
+> > @@ -19,6 +19,7 @@
+> >  #include <media/v4l2-ctrls.h>
+> >  #include <media/v4l2-dev.h>
+> >  #include <media/v4l2-device.h>
+> > +#include <media/v4l2-fwnode.h>
+> >  #include <media/videobuf2-v4l2.h>
+> >  
+> >  /* Number of HW buffers */
+> > @@ -92,7 +93,7 @@ struct rvin_video_format {
+> >   * @asd:	sub-device descriptor for async framework
+> >   * @subdev:	subdevice matched using async framework
+> >   * @mbus_type:	media bus type
+> > - * @mbus_flags:	media bus configuration flags
+> > + * @bus:	media bus parallel configuration
+> >   * @source_pad:	source pad of remote subdevice
+> >   * @sink_pad:	sink pad of remote subdevice
+> >   *
+> > @@ -102,7 +103,7 @@ struct rvin_parallel_entity {
+> >  	struct v4l2_subdev *subdev;
+> >  
+> >  	enum v4l2_mbus_type mbus_type;
+> > -	unsigned int mbus_flags;
+> > +	struct v4l2_fwnode_bus_parallel bus;
+
+I think you could break this change (and the fallout) out to a separate 
+patch to make the functional change clearer.
+
+> >  
+> >  	unsigned int source_pad;
+> >  	unsigned int sink_pad;
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
+
 -- 
-2.25.1
-
+Regards,
+Niklas Söderlund
