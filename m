@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B1326A4AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0478C26A4A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgIOMHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbgIOL7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:59:19 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5464D21D7B;
-        Tue, 15 Sep 2020 11:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600171143;
-        bh=bAHStdZBUJVfsBb4E6LEysvo2W312lbCuwZ1ty8lOt8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TwyNj5xAquE0d3gT5R2SIDq6kdvMTJfCCFJm4XzVUZuJXI3lSMcdf1I107cM0/RdN
-         COsuFiSV69/7VjrWySrUJfxAtGVvlLBpXdHcXkJMXuhoc83QRwUXCt3ZVTzmByIySl
-         0+77wR/ptVpWV24e00WAu5kOIICKFMny9pBlLJbs=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7318940D3D; Tue, 15 Sep 2020 08:59:01 -0300 (-03)
-Date:   Tue, 15 Sep 2020 08:59:01 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH 02/11] perf metric: Fix some memory leaks - part 2
-Message-ID: <20200915115901.GD720847@kernel.org>
-References: <20200915031819.386559-1-namhyung@kernel.org>
- <20200915031819.386559-3-namhyung@kernel.org>
+        id S1726245AbgIOMGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:06:55 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:32882 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726371AbgIOL7U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 07:59:20 -0400
+Received: by mail-wm1-f66.google.com with SMTP id e11so10944251wme.0;
+        Tue, 15 Sep 2020 04:59:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8IT9TYa324z97FaDa7D5p2wa9NqPdqT/+VgBeB+G8GM=;
+        b=ugsCZBOZzZ8gcfuBVbdqrP30xu8+BHfoOQjW7Ov3u2Jy+2Q/SAxMdQQKax8zYzcgim
+         EFQIs5Huc5uJVRc49ZpB2wInIIbdvOK1xHOPtolGhC2QStPonyB6mp6bIDYT28g9U+tz
+         dmNOyZcKsnWCivWWhKQjvHtRq/LfAJAXM4qb2LGnelQIcZm4MJPukEwjNTkaSVBZobNb
+         zO9uxN9HcDBPL/aXgXC8Z77cTq0QZOe6C1c4+vx3yIgNdsRxZN21K26au83m6NumZJR8
+         1QTeYtXtN+RoyOgIlTGuxgPAg0q5ox31hDJayR2xFG1z4xtT+BLv449hWhDjjzIXXNGC
+         diZw==
+X-Gm-Message-State: AOAM531ASuxKSfJZhZQxn6hych2ySarCOywL8EDLpVmpgj2uPwT174QO
+        JD6LWPYEdtaQMCbY1lf75rk=
+X-Google-Smtp-Source: ABdhPJz4L2F5DwXsSda6AFOngVUweOzE+YXEMob/UWofIdHjvM/6tHBywH2/ZJTKWafEAzT1do1GNw==
+X-Received: by 2002:a1c:9ecb:: with SMTP id h194mr4248660wme.140.1600171145065;
+        Tue, 15 Sep 2020 04:59:05 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id a17sm27983502wra.24.2020.09.15.04.59.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 04:59:04 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 11:59:03 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nudasnev@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH RFC v1 13/18] asm-generic/hyperv: introduce hv_device_id
+ and auxiliary structures
+Message-ID: <20200915115903.yxrj6ay4pvcn42vz@liuwe-devbox-debian-v2>
+References: <20200914112802.80611-1-wei.liu@kernel.org>
+ <20200914115928.83184-5-wei.liu@kernel.org>
+ <87k0wvjnmc.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915031819.386559-3-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <87k0wvjnmc.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 15, 2020 at 12:18:10PM +0900, Namhyung Kim escreveu:
-> The metric_event_delete() missed to free expr->metric_events and it
-> should free an expr when metric_refs allocation failed.
- 
-
-Thanks, applied.
-
-- Arnaldo
-
-> Cc: Kajol Jain <kjain@linux.ibm.com>
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-> Fixes: 4ea2896715e67 ("perf metric: Collect referenced metrics in struct metric_expr")
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/metricgroup.c | 2 ++
->  1 file changed, 2 insertions(+)
+On Tue, Sep 15, 2020 at 01:16:59PM +0200, Vitaly Kuznetsov wrote:
+[...]
+> > +union hv_device_id {
+> > +	u64 as_uint64;
+> > +
+> > +	struct {
+> > +		u64 :62;
+> > +		u64 device_type:2;
+> > +	};
+> > +
+> > +	// HV_DEVICE_TYPE_LOGICAL
 > 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 90d14c63babb..53747df601fa 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -84,6 +84,7 @@ static void metric_event_delete(struct rblist *rblist __maybe_unused,
->  
->  	list_for_each_entry_safe(expr, tmp, &me->head, nd) {
->  		free(expr->metric_refs);
-> +		free(expr->metric_events);
->  		free(expr);
->  	}
->  
-> @@ -315,6 +316,7 @@ static int metricgroup__setup_events(struct list_head *groups,
->  			if (!metric_refs) {
->  				ret = -ENOMEM;
->  				free(metric_events);
-> +				free(expr);
->  				break;
->  			}
->  
-> -- 
-> 2.28.0.618.gf4bc123cb7-goog
+> Nit: please no '//' comments.
 > 
 
--- 
+Fixed. Thanks.
 
-- Arnaldo
+Wei.
