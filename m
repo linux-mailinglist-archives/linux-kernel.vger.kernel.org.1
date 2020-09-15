@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC2326B555
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DB226B534
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbgIOXmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:42:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47670 "EHLO mail.kernel.org"
+        id S1727288AbgIOXjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:39:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727107AbgIOOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:34:42 -0400
+        id S1727128AbgIOOe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:34:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D461921D94;
-        Tue, 15 Sep 2020 14:15:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4765D221E2;
+        Tue, 15 Sep 2020 14:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179341;
-        bh=XbwKwVJGhjg2g05fL+HKZshm0QMK9+MQv21YwmNwFIw=;
+        s=default; t=1600179343;
+        bh=SVM4W5wXaNyf73xv0yoCvz8VhLonYYqx0D7XUUIDUVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bnrs+7L+/cUIBBXXl16yb5oTZhWhxvopnGt7MipqV1FvtCkNHhtwwxgHM21SlzCEc
-         y+ffM/gN4LLWdO63oHdgAXSrlhffqtgO3ndVcwmc6ngZq6fsdoG+BwkxSD7rpMupEy
-         Fva/Jmn0J5Jm+Dqmu3DO4u4PGK882eodfOmR39WQ=
+        b=HCRdQzoNMX2v8lzXAlghM0OX7C3ziXGUWVCAqrSFdG5AifXoaDIec8DMWWxgTyVUZ
+         YyEEMzwxGEx4XGCS8IOR9NYVD0OuVxaifP18x8ahQ7CNM3F1T4sT61Is/ig0dBd1xu
+         Ur50V6eyENRLdLOhT97pe6cd0RQqTOMfUORTWVBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/78] NFC: st95hf: Fix memleak in st95hf_in_send_cmd
-Date:   Tue, 15 Sep 2020 16:12:46 +0200
-Message-Id: <20200915140634.607762500@linuxfoundation.org>
+Subject: [PATCH 4.19 22/78] firestream: Fix memleak in fs_open
+Date:   Tue, 15 Sep 2020 16:12:47 +0200
+Message-Id: <20200915140634.661888233@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
 References: <20200915140633.552502750@linuxfoundation.org>
@@ -46,31 +46,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit f97c04c316d8fea16dca449fdfbe101fbdfee6a2 ]
+[ Upstream commit 15ac5cdafb9202424206dc5bd376437a358963f9 ]
 
-When down_killable() fails, skb_resp should be freed
-just like when st95hf_spi_send() fails.
+When make_rate() fails, vcc should be freed just
+like other error paths in fs_open().
 
 Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nfc/st95hf/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/atm/firestream.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nfc/st95hf/core.c b/drivers/nfc/st95hf/core.c
-index 01acb6e533655..c4b6e29c07192 100644
---- a/drivers/nfc/st95hf/core.c
-+++ b/drivers/nfc/st95hf/core.c
-@@ -981,7 +981,7 @@ static int st95hf_in_send_cmd(struct nfc_digital_dev *ddev,
- 	rc = down_killable(&stcontext->exchange_lock);
- 	if (rc) {
- 		WARN(1, "Semaphore is not found up in st95hf_in_send_cmd\n");
--		return rc;
-+		goto free_skb_resp;
- 	}
- 
- 	rc = st95hf_spi_send(&stcontext->spicontext, skb->data,
+diff --git a/drivers/atm/firestream.c b/drivers/atm/firestream.c
+index 112b1001c2694..ef395b238816c 100644
+--- a/drivers/atm/firestream.c
++++ b/drivers/atm/firestream.c
+@@ -1013,6 +1013,7 @@ static int fs_open(struct atm_vcc *atm_vcc)
+ 				error = make_rate (pcr, r, &tmc0, NULL);
+ 				if (error) {
+ 					kfree(tc);
++					kfree(vcc);
+ 					return error;
+ 				}
+ 			}
 -- 
 2.25.1
 
