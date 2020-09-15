@@ -2,91 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30DD26AF81
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3898B26AF80
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgIOVX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:23:57 -0400
-Received: from mga09.intel.com ([134.134.136.24]:28756 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728021AbgIOVUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:20:35 -0400
-IronPort-SDR: f8NHnWMX1O33VTm7sKyJB3aTB4FPR/+QAzPt4vKGb4+gcP9MLffjxtZRIlwwsQWfUMM4wSO60K
- HDh2IQxULQyw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="160283133"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="160283133"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 14:19:50 -0700
-IronPort-SDR: 5he6km/6lWMs12kwE0KT/d5duW+O2FupTX1dLWYbGaty065qvt2xskpcHAiYRRiIkkA+VXrVWY
- UVbFx4sho3tQ==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="343657747"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 14:19:50 -0700
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 2BB536369;
-        Tue, 15 Sep 2020 14:19:50 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 14:19:50 -0700
-From:   mark gross <mgross@linux.intel.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: Add Driver to set up lid GPEs on MS
- Surface device
-Message-ID: <20200915211950.GL103884@mtg-dev.jf.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20200908171934.1661509-1-luzmaximilian@gmail.com>
- <20200911221053.GF103884@mtg-dev.jf.intel.com>
- <e6125bee-d42e-f485-295a-8b9ad6777d4a@gmail.com>
+        id S1727758AbgIOVXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727998AbgIOVUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:20:43 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA44DC061788;
+        Tue, 15 Sep 2020 14:20:42 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id a3so5587617oib.4;
+        Tue, 15 Sep 2020 14:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kgwhp6oomGrG//FJ4IaZ4jY90heMqg4iryVxsn2sPAo=;
+        b=aSgas9/1Jvbmf8th0cpGRYHBLlYUY9njpmeNTsl2l8ID1RnrSHfsTyAEw4VU++XZPI
+         ImIea+lzlqDNuNZ5gGOoAkBIuL/aE/TZ3eUaM2kOSfxXwghpRZdbMZNnNjoSZ5sHLnZb
+         4XA89+T6MjwZMpNuewprx05dEu1od9R8JRzBDyLbWzZIV0vowujkcnR93FpU82hMAfeZ
+         J1DNkVnFAyfdwGdv7MtmtYMRGI2Hm/Mt8fBY5bcpbRF8F+jgBOpmlxZI2Qfl7L8aWKqQ
+         /Ds6Q3S6oA+Ts0CJO1aPvAejtcVvFgB+LA1kp0H5v30L9BWhLamimB2f33vmNI5lsKZF
+         blFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kgwhp6oomGrG//FJ4IaZ4jY90heMqg4iryVxsn2sPAo=;
+        b=oWWNEbitlcnAA7KJSYT/NjU38pTWdj+EzkW4pTJHFKOlYtIrqRVw96s/b2TU+qTjoh
+         dFBVvJjXG8RF0UVkjIZmI+uZwXELMkTu2M4jJ/AUsy7CixcG8dZO10ZAkF2hVsMjJvzq
+         BRPairYzdcLnkjOF8eGXLZUAOdVuAfLg/CvqoOs4t37fW7Jqzw6wwjzRQM2uehuODE7s
+         9ROvqBbqxQg8ElAkHR4vhjMPgRUnx4gqzAkuSeI4RUded31wn/rH9wDCsQbKgoqXjMRH
+         4sUNtEwDNCmgnC7irJIktp8Zt/oNqRhwEMY74zF4+GyUGzOlpGBvCXaDoELSj3VL0DdS
+         UEXw==
+X-Gm-Message-State: AOAM53377k1UNuvAG1IVGOY+1TigrSu9fA2pAERGVtnlcite062ewT3c
+        uw8mVUPze1E4ARHFTV0WGgzXoTlsoV6ZhdX2Atc=
+X-Google-Smtp-Source: ABdhPJxxLeU9sU7zfpVQXzYAXAbWMv5zUuaU0G05yYqQVc4aUYXKQd7yA2WsSDTmz5R8Oo5AZ8EYE3evic2VrSo/3dg=
+X-Received: by 2002:a05:6808:a05:: with SMTP id n5mr1006436oij.154.1600204842036;
+ Tue, 15 Sep 2020 14:20:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e6125bee-d42e-f485-295a-8b9ad6777d4a@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com> <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Wed, 16 Sep 2020 00:20:12 +0300
+Message-ID: <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 12:46:30AM +0200, Maximilian Luz wrote:
-> On 9/12/20 12:10 AM, mark gross wrote:
-> > Surface devices are tablets with detachable keyboards.  they don't really
-> > have a "lid" as the tablet is the "lid".
-> 
-> The Surface Laptop series doesn't have a detachable keyboard, yet still
-> requires this. Arguably, the Surface Books are also more laptop than
-> tablet (at least that's the way I use mine...). Finally, on the actual
-> tablets (Surface Pro series) the lid switch detects when the keyboard
-> cover is opened (or at least that's what I have been told, I don't
-> own/have access to a Pro series device).
-> 
-> Regardless of that, this patch is intended to provide the same behavior
-> as found on Windows, for all devices included in this patch, which is:
-> When you open the lid, or in case of the Pro series fold away the
-> keyboard cover, the device wakes from suspend/s2idle. Without this
-> patch, that doesn't work.
-> 
-> > I'm just questioning if the creator of the device designed it the way they did
-> > maybe we should think twice about doing this.
-> 
-> As far as I can tell, the intended behavior is to wake the device when
-> the lid is opened, which on the Laptops and Books is a more conventional
-> lid and on the Pros constitutes opening the cover.
-> 
-> I'm open for any alternative though.
-> 
-> Also please note that I've already sent a v2 of this patch with Andy's
-> comments addressed: https://lore.kernel.org/patchwork/patch/1303997/
-never mind then.
---mark
+On Wed, Sep 16, 2020 at 12:04 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Tue, 15 Sep 2020 23:46:58 +0300 Oded Gabbay wrote:
+> > On Tue, Sep 15, 2020 at 11:35 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > On Tue, 15 Sep 2020 20:10:08 +0300 Oded Gabbay wrote:
+> > > > Hello,
+> > > >
+> > > > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > > > into the habanalabs driver.
+> > > >
+> > > > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > > > are in that patch's commit message.
+> > >
+> > > You keep reposting this, yet this SDK shim^W^W driver is still living in
+> > > drivers/misc. If you want to make it look like a NIC, the code belongs
+> > > where NIC drivers are.
+> > >
+> > > Then again, is it a NIC? Why do you have those custom IOCTLs? That's far
+> > > from normal.
+> >
+> > I'm sorry but from your question it seems as if you didn't read my
+> > cover letter at all, as I took great lengths in explaining exactly
+> > what our device is and why we use custom IOCTLs.
+> > TL;DR
+> > We have an accelerator for deep learning (GAUDI) which uses RDMA as
+> > infrastructure for communication between multiple accelerators. Same
+> > as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> > The RDMA implementation we did does NOT support some basic RDMA
+> > IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> > library or to connect to the rdma infrastructure in the kernel. We
+> > wanted to do it but when we analyzed it, we saw we wouldn't be able to
+> > support basic stuff and therefore we had to revert to our IOCTLs.
+> > To sum it up, because our NIC is used for intra-communication, we
+> > don't expose nor intend users to use it as a NIC per-se. However, to
+> > be able to get statistics and manage them in a standard way, and
+> > support control plane over Ethernet, we do register each port to the
+> > net subsystem (i.e. create netdev per port).
+> >
+> > I hope this short summary explains this better.
+>
+> I read your cover letter. Networking drivers don't get to define random
+> IOCTLs as they please. You have to take that part out of the "NIC"
+> driver.
 
+The IOCTLs are not for the Ethernet part. They are strictly for the
+RDMA operations. RDMA drivers also have IOCTLs as interfaces in the
+drivers/infiniband area, so I don't think I'm doing something
+different here.
+And my driver is not networking. It is an accelerator which has some
+network ports.
+btw, this is only a single new IOCTL call. The rest of the IOCTLs are
+already upstreamed and are for the rest of the ASIC's compute
+functionality. What I'm trying to say is that it's very common to
+define IOCTLs for accelerators.
+
+>
+> > As per your request that this code lives in the net subsystem, I think
+> > that will make it only more complicated and hard to upstream and
+> > maintain.
+> > I see there are other examples (e.g. sgi-xp) that contain networking
+> > driver code in misc so I don't understand this objection.
+>
+> The maintenance structure and CI systems for the kernel depend on the
+> directory layout. If you don't understand that I don't know how to help
+> you.
+I completely understand but you didn't answer my question. How come
+there are drivers which create netdev objects, and specifically sgi-xp
+in misc (but I also saw it in usb drivers) that live outside
+drivers/net ? Why doesn't your request apply to them as well ?
+When we wrote the code, we saw those examples and therefore assumed it was fine.
+
+>
+> > > Please make sure to CC linux-rdma. You clearly stated that the device
+> > > does RDMA-like transfers.
+> >
+> > We don't use the RDMA infrastructure in the kernel and we can't
+> > connect to it due to the lack of H/W support we have so I don't see
+> > why we need to CC linux-rdma.
+>
+> You have it backward. You don't get to pick and choose which parts of
+> the infrastructure you use, and therefore who reviews your drivers.
+> The device uses RDMA under the hood so Linux RDMA experts must very
+> much be okay with it getting merged. That's how we ensure Linux
+> interfaces are consistent and good quality.
+
+I understand your point of view but If my H/W doesn't support the
+basic requirements of the RDMA infrastructure and interfaces, then
+really there is nothing I can do about it. I can't use them.
+I wish I was able to use that infrastructure but I can't. That's why
+we wrote the IOCTLs in our accelerator driver.
+
+Thanks,
+Oded
