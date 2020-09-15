@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CF326B3AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D88726B412
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbgIOXHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:07:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48770 "EHLO mail.kernel.org"
+        id S1727423AbgIOXQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727300AbgIOOlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:41:40 -0400
+        id S1727245AbgIOOj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:39:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BD20222E8;
-        Tue, 15 Sep 2020 14:18:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85820224DF;
+        Tue, 15 Sep 2020 14:29:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179506;
-        bh=rEpSmYtoIujAmsNAmPFB5csU6aLFmwaRf49gUuUAa5U=;
+        s=default; t=1600180170;
+        bh=QduQ/ZmSzkBv1AI7qd8SI9R4jUOhKQsVcgPU49+Pr3c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Xri6pYsYSCzxxbEgcsgQY4aEMaVqQYeEyS8o71UFy8XxNFaZr9WBcszDIaRAEXhx
-         cv8KzBqVUPzkWHic4iUEDvOzk2QxbIHyNtRSYc489VkfvCIz8FkQaSfhDAhKfbsF5L
-         52bGHBBHbrtP+PoC8/ZvOybagxgyJKd1uV3X15Rg=
+        b=Wxl0dRBn9kBqara9WAIclAkqssmQWo9+H0rWsdxr4sI2LBEzrEw1bbGYbj270kBbx
+         lwIgH3KhDAW0YFsA5kmHm5Yq+6O7m2CGVPyKdvYTmZUueXPVmXfDcgU1LZbCSCJjzM
+         t/WZ8wkGiR7w9xA3H+K1GNHsQj3lJfQQMoFMesdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.19 61/78] drm/tve200: Stabilize enable/disable
-Date:   Tue, 15 Sep 2020 16:13:26 +0200
-Message-Id: <20200915140636.627659051@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.8 136/177] regulator: plug of_node leak in regulator_register()s error path
+Date:   Tue, 15 Sep 2020 16:13:27 +0200
+Message-Id: <20200915140700.169832494@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
+References: <20200915140653.610388773@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,90 +45,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-commit f71800228dc74711c3df43854ce7089562a3bc2d upstream.
+commit d3c731564e09b6c2ebefcd1344743a91a237d6dc upstream.
 
-The TVE200 will occasionally print a bunch of lost interrupts
-and similar dmesg messages, sometimes during boot and sometimes
-after disabling and coming back to enablement. This is probably
-because the hardware is left in an unknown state by the boot
-loader that displays a logo.
+By calling device_initialize() earlier and noting that kfree(NULL) is
+ok, we can save a bit of code in error handling and plug of_node leak.
+Fixed commit already did part of the work.
 
-This can be fixed by bringing the controller into a known state
-by resetting the controller while enabling it. We retry reset 5
-times like the vendor driver does. We also put the controller
-into reset before de-clocking it and clear all interrupts before
-enabling the vblank IRQ.
-
-This makes the video enable/disable/enable cycle rock solid
-on the D-Link DIR-685. Tested extensively.
-
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Fixes: 9177514ce349 ("regulator: fix memory leak on error path of regulator_register()")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
+Acked-by: Vladimir Zapolskiy <vz@mleia.com>
 Cc: stable@vger.kernel.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20200820203144.271081-1-linus.walleij@linaro.org
+Link: https://lore.kernel.org/r/f5035b1b4d40745e66bacd571bbbb5e4644d21a1.1597195321.git.mirq-linux@rere.qmqm.pl
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/tve200/tve200_display.c |   22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ drivers/regulator/core.c |   13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
---- a/drivers/gpu/drm/tve200/tve200_display.c
-+++ b/drivers/gpu/drm/tve200/tve200_display.c
-@@ -17,6 +17,7 @@
- #include <linux/version.h>
- #include <linux/dma-buf.h>
- #include <linux/of_graph.h>
-+#include <linux/delay.h>
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -5094,6 +5094,7 @@ regulator_register(const struct regulato
+ 		ret = -ENOMEM;
+ 		goto rinse;
+ 	}
++	device_initialize(&rdev->dev);
  
- #include <drm/drmP.h>
- #include <drm/drm_panel.h>
-@@ -132,9 +133,25 @@ static void tve200_display_enable(struct
- 	struct drm_connector *connector = priv->connector;
- 	u32 format = fb->format->format;
- 	u32 ctrl1 = 0;
-+	int retries;
+ 	/*
+ 	 * Duplicate the config so the driver could override it after
+@@ -5101,9 +5102,8 @@ regulator_register(const struct regulato
+ 	 */
+ 	config = kmemdup(cfg, sizeof(*cfg), GFP_KERNEL);
+ 	if (config == NULL) {
+-		kfree(rdev);
+ 		ret = -ENOMEM;
+-		goto rinse;
++		goto clean;
+ 	}
  
- 	clk_prepare_enable(priv->clk);
+ 	init_data = regulator_of_get_init_data(dev, regulator_desc, config,
+@@ -5115,10 +5115,8 @@ regulator_register(const struct regulato
+ 	 * from a gpio extender or something else.
+ 	 */
+ 	if (PTR_ERR(init_data) == -EPROBE_DEFER) {
+-		kfree(config);
+-		kfree(rdev);
+ 		ret = -EPROBE_DEFER;
+-		goto rinse;
++		goto clean;
+ 	}
  
-+	/* Reset the TVE200 and wait for it to come back online */
-+	writel(TVE200_CTRL_4_RESET, priv->regs + TVE200_CTRL_4);
-+	for (retries = 0; retries < 5; retries++) {
-+		usleep_range(30000, 50000);
-+		if (readl(priv->regs + TVE200_CTRL_4) & TVE200_CTRL_4_RESET)
-+			continue;
-+		else
-+			break;
-+	}
-+	if (retries == 5 &&
-+	    readl(priv->regs + TVE200_CTRL_4) & TVE200_CTRL_4_RESET) {
-+		dev_err(drm->dev, "can't get hardware out of reset\n");
-+		return;
-+	}
-+
- 	/* Function 1 */
- 	ctrl1 |= TVE200_CTRL_CSMODE;
- 	/* Interlace mode for CCIR656: parameterize? */
-@@ -231,8 +248,9 @@ static void tve200_display_disable(struc
+ 	/*
+@@ -5171,7 +5169,6 @@ regulator_register(const struct regulato
+ 	}
  
- 	drm_crtc_vblank_off(crtc);
- 
--	/* Disable and Power Down */
-+	/* Disable put into reset and Power Down */
- 	writel(0, priv->regs + TVE200_CTRL);
-+	writel(TVE200_CTRL_4_RESET, priv->regs + TVE200_CTRL_4);
- 
- 	clk_disable_unprepare(priv->clk);
- }
-@@ -280,6 +298,8 @@ static int tve200_display_enable_vblank(
- 	struct drm_device *drm = crtc->dev;
- 	struct tve200_drm_dev_private *priv = drm->dev_private;
- 
-+	/* Clear any IRQs and enable */
-+	writel(0xFF, priv->regs + TVE200_INT_CLR);
- 	writel(TVE200_INT_V_STATUS, priv->regs + TVE200_INT_EN);
- 	return 0;
- }
+ 	/* register with sysfs */
+-	device_initialize(&rdev->dev);
+ 	rdev->dev.class = &regulator_class;
+ 	rdev->dev.parent = dev;
+ 	dev_set_name(&rdev->dev, "regulator.%lu",
+@@ -5249,13 +5246,11 @@ wash:
+ 	mutex_lock(&regulator_list_mutex);
+ 	regulator_ena_gpio_free(rdev);
+ 	mutex_unlock(&regulator_list_mutex);
+-	put_device(&rdev->dev);
+-	rdev = NULL;
+ clean:
+ 	if (dangling_of_gpiod)
+ 		gpiod_put(config->ena_gpiod);
+-	kfree(rdev);
+ 	kfree(config);
++	put_device(&rdev->dev);
+ rinse:
+ 	if (dangling_cfg_gpiod)
+ 		gpiod_put(cfg->ena_gpiod);
 
 
