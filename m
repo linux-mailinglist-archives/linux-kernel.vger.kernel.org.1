@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FB926AF39
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9512D26AF32
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgIOVLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:11:39 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:45868 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727845AbgIOU0w (ORCPT
+        id S1728047AbgIOVJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:09:43 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:36724 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728001AbgIOU2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:26:52 -0400
-Received: by mail-io1-f65.google.com with SMTP id y74so5566403iof.12;
-        Tue, 15 Sep 2020 13:26:17 -0700 (PDT)
+        Tue, 15 Sep 2020 16:28:45 -0400
+Received: by mail-il1-f193.google.com with SMTP id t12so4310428ilh.3;
+        Tue, 15 Sep 2020 13:28:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Lkiuck1dpqoY8hk2xhRbf0iSHZzrbHgAvYh0DjmUxuk=;
-        b=rVATaa4LyhEmM4F3wHE/BTP6sp56yq/4DYk3we28co80qxgsbUlaUGzpdT1qJxQvDt
-         gk6X1uDxTkMjqQlpA9R2LSf6l6AyLaP61VxpGgdiltvsJ99Oy3D2X8vsUwqfz92FdBDv
-         kd71uaspKMjpL9G3LfitIee1yvUgfa7jCREp7V4al+7VWoN3bMevISLucC6P2PCSUjHp
-         gwkXwCK/dYOwvgTBhE1T+zNT98suJxZgn8Ra9RVhZ+EIiT1dkPFl7lazcdc8OXEhlNV0
-         cQzZsCLfNDiVH15vpZ6ShLMox3U+Gvqa3MdUQQURu/yMQWtiwcW70pHy5UJZPTkx5ezD
-         Jcrg==
-X-Gm-Message-State: AOAM532ouGF8d1/iv6od21DtNdVAaydRK6itfZ1wATgd55rjwovDKt5Y
-        QXnCf9zahVxsqKGl9YmOAg==
-X-Google-Smtp-Source: ABdhPJzyWohZ65GbQAbr2ukWUAn4GsntRKdTC/Pb9M773BsKkyysdyrVMLR3122AIM+KQWrHWt14CQ==
-X-Received: by 2002:a02:778e:: with SMTP id g136mr19740297jac.49.1600201577250;
-        Tue, 15 Sep 2020 13:26:17 -0700 (PDT)
+        bh=jkjqJJoLf46hsZcBiW4RAEbj7jPvHIEIrC163Ok851k=;
+        b=Yly3mztlq8O7BHahFHA0o7GbV5/VIol5tdrhYTVQYTMSkDrswfi9Pm6IRwpapP3868
+         bvaiC9Sq0cDUS6cCj1gZQSyHMYVk8KUvjr4Vh2+TLh0si1JVRP2D10hVvAQb9hmLpDwN
+         YyGxw1kd5HBXPzUNZt/J8kKE6c8D9IqY0wach3u1a/bAEMwPkMZUhY0/5TaYE++IeziK
+         4vTxcjPpLFEGSeRarnX/db5XR5F1KWyjzmn3stse2UEOp39aB80LywQAd7Yqnx2UncgJ
+         +KEHUwRPzFZvU6fHbh43M6rdR7xschu0axNJ5kcrDyyxs8deGWEy/U1c9S5ZdAFocPyn
+         LN+w==
+X-Gm-Message-State: AOAM531P7HNMMKG3zVa/3PSUMyRkyVvU4JZKbscrmeQ4ItARSc5GItW/
+        p/NEudtgxoVyC3age5uyPnolgwiTKM/aKis=
+X-Google-Smtp-Source: ABdhPJwrhDODEjHZ8RLAir9uwMQEdZvCz3g4kBb+8Ml4Uh7tFdytEvo26zCoazCq0d2QFZ81Fwq5hw==
+X-Received: by 2002:a92:c791:: with SMTP id c17mr18450577ilk.107.1600201718947;
+        Tue, 15 Sep 2020 13:28:38 -0700 (PDT)
 Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id z4sm9293793ilh.45.2020.09.15.13.26.16
+        by smtp.gmail.com with ESMTPSA id p17sm9387851ilj.81.2020.09.15.13.28.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 13:26:16 -0700 (PDT)
-Received: (nullmailer pid 2451001 invoked by uid 1000);
-        Tue, 15 Sep 2020 20:26:15 -0000
-Date:   Tue, 15 Sep 2020 14:26:15 -0600
+        Tue, 15 Sep 2020 13:28:38 -0700 (PDT)
+Received: (nullmailer pid 2454976 invoked by uid 1000);
+        Tue, 15 Sep 2020 20:28:37 -0000
+Date:   Tue, 15 Sep 2020 14:28:37 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Grant Likely <grant.likely@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/1] of: properties of reserved-memory nodes
-Message-ID: <20200915202615.GA2450947@bogus>
-References: <20200910162020.3927-1-xypron.glpk@gmx.de>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: example: Extend based on practice
+Message-ID: <20200915202837.GA2453633@bogus>
+References: <20200910184706.9677-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910162020.3927-1-xypron.glpk@gmx.de>
+In-Reply-To: <20200910184706.9677-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 18:20:20 +0200, Heinrich Schuchardt wrote:
-> The reusable and the no-map property are mutually exclusive.
-> Clarify this in the documentation.
+On Thu, 10 Sep 2020 20:47:06 +0200, Krzysztof Kozlowski wrote:
+> Extend the example schema with common rules which seems to be not that
+> obvious:
+> 1. Expecting arrays of phandles to be always ordered, regardless if
+>    "xxx-names" is provided (e.g. clocks),
+> 2. Add example of altering a property based on presence of other
+>    property,
+> 3. Document usage of unevaluatedProperties.
 > 
-> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  .../devicetree/bindings/reserved-memory/reserved-memory.txt    | 3 +++
->  1 file changed, 3 insertions(+)
+>  .../devicetree/bindings/example-schema.yaml   | 33 ++++++++++++++-----
+>  1 file changed, 25 insertions(+), 8 deletions(-)
 > 
 
 Applied, thanks!
+
+I keep meaning to go work on improving this...
