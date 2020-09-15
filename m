@@ -2,91 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6650F269AD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B975269ADF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgIOBFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:05:16 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9259 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgIOBFO (ORCPT
+        id S1726082AbgIOBJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:09:31 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:32817 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgIOBJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:05:14 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6012be0000>; Mon, 14 Sep 2020 18:02:54 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 14 Sep 2020 18:05:14 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 14 Sep 2020 18:05:14 -0700
-Received: from nvdebian.localnet (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
- 2020 01:05:12 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <linux-mm@kvack.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Jonathan Corbet <corbet@lwn.net>,
-        "Ralph Campbell" <rcampbell@nvidia.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        =?ISO-8859-1?Q?J=E9r=F4me?= Glisse <jglisse@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm/doc: add usage description for migrate_vma_*()
-Date:   Tue, 15 Sep 2020 11:05:10 +1000
-Message-ID: <2077765.OaWJzLOgzI@nvdebian>
-In-Reply-To: <20200910172514.GN87483@ziepe.ca>
-References: <20200909212956.20104-1-rcampbell@nvidia.com> <20200910105657.6007c5ca@lwn.net> <20200910172514.GN87483@ziepe.ca>
+        Mon, 14 Sep 2020 21:09:27 -0400
+Received: by mail-io1-f67.google.com with SMTP id r25so2308017ioj.0;
+        Mon, 14 Sep 2020 18:09:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pUxGtvaIRUoyqovEVYWusEf+ErNPYsvl3hrLi3RtD/U=;
+        b=B3QARGafoc4UVGNa5KuuuOGNTpXpe5WClvL1wRgIYeRu0gr99z/zyeYcHVJPjeWofU
+         Hbo75Xo44IdZLnLDy8E99CIdEyR29nWtUG4wNjPs7bnKv2SggIGo6rDeurYDJcBEe5hv
+         8XrczIPhYJRgA4XEjBpA1JUVS+1NQF92qr7w0BlMlIBqctngtxFLmiujTJI4uc3O3GZZ
+         uErvKwM8lmZtznknW1HiPVZCa/8roEKc9642lYNhRbcLypykqi/SOFHvHJa4UOiFZIv9
+         p9mIW5I6JCR+BY7PAmk+js5ELtbyFo3XhTAoApur4wkgpc42kJKYU17c6Jiyjd2DH1/P
+         h4Xg==
+X-Gm-Message-State: AOAM533mxkMfw39rcN4z2OpIp4D4NycsvBqwCSrsVkblsejiEPw3CrmM
+        MWaxSFwg6nccHeuODKd1SQ==
+X-Google-Smtp-Source: ABdhPJxLiHjz61DfOBs3dWFIQPtmOLahnEoMRx0JaOoZ3VNzcjZEmyPMmUqbqG6agxIN66M2mOAjag==
+X-Received: by 2002:a02:a615:: with SMTP id c21mr15364024jam.106.1600132165659;
+        Mon, 14 Sep 2020 18:09:25 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id p9sm6877547iov.18.2020.09.14.18.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 18:09:24 -0700 (PDT)
+Received: (nullmailer pid 633962 invoked by uid 1000);
+        Tue, 15 Sep 2020 01:09:22 -0000
+Date:   Mon, 14 Sep 2020 19:09:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Artur Rojek <contact@artur-rojek.eu>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: power: Convert ingenic,battery.txt
+ to YAML
+Message-ID: <20200915010922.GA629419@bogus>
+References: <20200906144726.8852-1-contact@artur-rojek.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600131774; bh=swLcarL+SErbGe4glwQXQ2j09SBuEg2MIzY+X2J3l/E=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding:Content-Type:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=omD2/CikmXtQsewRW5Xcm6oLfynqUJws+0m9UxbArOKZ0GcmdQre2epYqgYYw8iY1
-         1x9LjsDoKmZRL9kIaukuFDfwbS6Km5frbBRyNf9YV0fjqIjsrcWvGFsxJ59HXFf0h1
-         jToV31axdAx0lqMhhQ6XL2SNOas1CrCe1MroFFMgJtg3bsZ52RlDfJCeIIiM47vvXU
-         XGYPrk+OgKNVYE+wNkYb/3T9iUL5KFvqaQMa+GG0nBGgvDf1vwHUsOTv2m3qRv2SPM
-         mD4H8N1RDdROB9zI0eUB4hRzp8LU86Dhmtmv/p8ECXlAsDvwmP+KNpTiEcm5Zuucsq
-         x4VpKil5RbPIQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200906144726.8852-1-contact@artur-rojek.eu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 11 September 2020 3:25:14 AM AEST Jason Gunthorpe wrote:
-> On Thu, Sep 10, 2020 at 10:56:57AM -0600, Jonathan Corbet wrote:
-> > On Wed, 9 Sep 2020 14:29:56 -0700
-> > 
-> > Ralph Campbell <rcampbell@nvidia.com> wrote:
-> > > The migrate_vma_setup(), migrate_vma_pages(), and migrate_vma_finalize()
-> > > API usage by device drivers is not well documented.
-> > > Add a description for how device drivers are expected to use it.
-> > > 
-> > > Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> > > 
-> > > There shouldn't be any merge conflict with my previous patch which
-> > > touched hmm.rst but since Jonathan Corbet took my last patch, perhaps he
-> > > would like to take this one through his tree too.
-> > 
-> > I'm happy to take it, but it certainly needs an ack from somebody who
-> > understands HMM better than I do.
+On Sun, Sep 06, 2020 at 04:47:25PM +0200, Artur Rojek wrote:
+> Convert the textual documentation of Device Tree bindings for the
+> Ingenic JZ47xx SoCs battery to YAML.
 > 
-> Ralph wrote all the in kernel tests for this API, so I think he is
-> well positioned to write the documentation :)
+> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+> ---
+> 
+> Changes:
+>     v2: move introduction of new compatibles into a separate patch
+> 
+>  .../bindings/power/supply/ingenic,battery.txt | 31 ----------
+>  .../power/supply/ingenic,battery.yaml         | 60 +++++++++++++++++++
+>  2 files changed, 60 insertions(+), 31 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/power/supply/ingenic,battery.txt
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/power/supply/ingenic,battery.txt b/Documentation/devicetree/bindings/power/supply/ingenic,battery.txt
+> deleted file mode 100644
+> index 66430bf73815..000000000000
+> --- a/Documentation/devicetree/bindings/power/supply/ingenic,battery.txt
+> +++ /dev/null
+> @@ -1,31 +0,0 @@
+> -* Ingenic JZ47xx battery bindings
+> -
+> -Required properties:
+> -
+> -- compatible: Must be "ingenic,jz4740-battery".
+> -- io-channels: phandle and IIO specifier pair to the IIO device.
+> -  Format described in iio-bindings.txt.
+> -- monitored-battery: phandle to a "simple-battery" compatible node.
+> -
+> -The "monitored-battery" property must be a phandle to a node using the format
+> -described in battery.txt, with the following properties being required:
+> -
+> -- voltage-min-design-microvolt: Drained battery voltage.
+> -- voltage-max-design-microvolt: Fully charged battery voltage.
+> -
+> -Example:
+> -
+> -#include <dt-bindings/iio/adc/ingenic,adc.h>
+> -
+> -simple_battery: battery {
+> -	compatible = "simple-battery";
+> -	voltage-min-design-microvolt = <3600000>;
+> -	voltage-max-design-microvolt = <4200000>;
+> -};
+> -
+> -ingenic_battery {
+> -	compatible = "ingenic,jz4740-battery";
+> -	io-channels = <&adc INGENIC_ADC_BATTERY>;
+> -	io-channel-names = "battery";
+> -	monitored-battery = <&simple_battery>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml b/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
+> new file mode 100644
+> index 000000000000..b4e0275ac63a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2019-2020 Artur Rojek
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/power/supply/ingenic,battery.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Ingenic JZ47xx battery bindings
+> +
+> +maintainers:
+> +  - Artur Rojek <contact@artur-rojek.eu>
+> +
+> +properties:
+> +  compatible:
+> +    const: ingenic,jz4740-battery
+> +
+> +  io-channels:
+> +    items:
+> +      - description: >
+> +          phandle and IIO specifier pair to the IIO device.
+> +          See Documentation/devicetree/bindings/iio/iio-bindings.txt for more
+> +          details.
 
-I have recently read through most of the code to get back up to date with 
-recent HMM developments and the documentation here didn't conflict with my 
-understanding based on the code. The description of pgmap_owner is good as 
-it's usage wasn't immediately clear on the first code read through. So feel 
-free to add:
+No need to redefine common properties. 'maxItems: 1' is sufficient here.
 
-Reviewed-by: Alistair Popple <apopple@nvidia.com>
- 
-> Jason
+> +
+> +  io-channel-names:
+> +    const: "battery"
 
+Don't need quotes.
 
+> +
+> +  monitored-battery:
+> +    items:
+> +      - description: >
 
+'monitored-battery' is always a single item. So just need 'description'.
 
+> +          phandle to a "simple-battery" compatible node.
+> +
+> +          This property must be a phandle to a node using the format described
+> +          in battery.txt, with the following properties being required:
+> +          - voltage-min-design-microvolt: drained battery voltage,
+> +          - voltage-max-design-microvolt: fully charged battery voltage.
+> +
+> +required:
+> +  - compatible
+> +  - io-channels
+> +  - io-channel-names
+> +  - monitored-battery
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/iio/adc/ingenic,adc.h>
+> +
+> +    simple_battery: battery {
+> +            compatible = "simple-battery";
+> +            voltage-min-design-microvolt = <3600000>;
+> +            voltage-max-design-microvolt = <4200000>;
+> +    };
+> +
+> +    ingenic-battery {
+> +            compatible = "ingenic,jz4740-battery";
+> +            io-channels = <&adc INGENIC_ADC_BATTERY>;
+> +            io-channel-names = "battery";
+> +            monitored-battery = <&simple_battery>;
+> +    };
+> -- 
+> 2.28.0
+> 
