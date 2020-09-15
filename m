@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B964F26A4BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278B426A4C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgIOMLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726135AbgIOMGv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:06:51 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028B2C061797;
-        Tue, 15 Sep 2020 05:06:50 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id ay8so2749075edb.8;
-        Tue, 15 Sep 2020 05:06:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NmVDpJdigpjIPbGElj6CdKUWLmHIIbTZhWfFEbQeewo=;
-        b=BuvQKhiWj+3hbhvV0VVSPjWSe8kCnsGwqhkEN+C0rwJErOXkb5dwaGF8lrTMDJTTCe
-         qAL22p1C3W+4im5GDM7M5h5sODxXm+TBq2H+IG22ynm7ONRtq070BPQuwni3oVQ7DKyK
-         WNnVWqmhwtP1Dia0MBrm1fFQex6DCFsEZfTQukOo2GMn0kxEW1lawgNrTl+VduwjCM6U
-         RJL/4hJ8zQEyFzhU8edD1iSdZr8IY8I08PPfDTl95VHQ/81rzRQeClOGMFjD4JB3xdoG
-         Voft3UxL3+VNmTaglbYJT0kzLE6MsMv4y4ZmCPiFLAneFWcYg4ALTV+As57z4v3XlXGW
-         gIEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NmVDpJdigpjIPbGElj6CdKUWLmHIIbTZhWfFEbQeewo=;
-        b=Rxwzefqk5t9sDVzssDpXFFQD8u1zlehH91kosmZMIKlPi/m0K83U0DX1NktkdKNwww
-         xGS9axB1sNqSSW7SQtG1E0mgQXMI727f6/UoaEwofTd+qlZ6ylUwemCJhjbvGb7Q3X9q
-         k2CkFZL7gmvQgMpnEEF7CSxFEV+NX47mHaXx+90DYej6FJop02Ar3EgE4KUmaBhADS6c
-         I50ZmyAYuev4FctT67qTUAHKGz8UpXKf+UBV8S+fwS70MsJ9xsqlKZY7F4mV1hFVCYKF
-         +znV/oJTvtZMGli0IEZWZaTxZp7sr9KL1Y8Fc01M7vmIe1PZhlkpR7GqyVDtp8yclyW8
-         h3Ww==
-X-Gm-Message-State: AOAM530k1LQj0JTiew2cXCjzez+aaQXynYYA6WMUu1b7uVUI0az31YwI
-        0TXj9jjNJjjEQDW0AUsTUJY=
-X-Google-Smtp-Source: ABdhPJwWgfIdyXmGY8qKT75hbTyNfAB2jWyQ8CRZQJRBoTiL/Ib/I7g4KqVdxe+18sIDrfLKX5ykrQ==
-X-Received: by 2002:a50:bb26:: with SMTP id y35mr22847033ede.234.1600171609579;
-        Tue, 15 Sep 2020 05:06:49 -0700 (PDT)
-Received: from [192.168.0.105] ([77.124.39.109])
-        by smtp.gmail.com with ESMTPSA id u23sm9932339ejc.108.2020.09.15.05.06.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 05:06:48 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: ethernet: mlx4: Avoid assigning a value to
- ring_cons but not used it anymore in mlx4_en_xmit()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>, luojiaxing@huawei.com,
-        idos@mellanox.com, ogerlitz@mellanox.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-References: <1599898095-10712-1-git-send-email-luojiaxing@huawei.com>
- <20200912.182219.1013721666435098048.davem@davemloft.net>
- <c0987225-0079-617a-bf89-b672b07f298a@gmail.com>
- <20200914130259.6b0e2ec6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <d2ba619c-5d56-243b-7527-4c2efb6859ff@gmail.com>
-Date:   Tue, 15 Sep 2020 15:06:46 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726461AbgIOMMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:12:40 -0400
+Received: from mga04.intel.com ([192.55.52.120]:45448 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726525AbgIOMJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 08:09:50 -0400
+IronPort-SDR: pW9dv9gQlygV3P8PyPYWcE8OxSkYE2xVbuZzm0oo4XNdbNpHqFfey6EUi9lRh+GjuNY7rDl5lN
+ l5LM+55Xmmzw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156635715"
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="156635715"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 05:09:30 -0700
+IronPort-SDR: OpWECFioi/uB+JIHVoGKyrUR/3crHOVfLtUiFAzcVeHGWhFbEeLEPQyNAi1CCsSQgglLz5f7l6
+ sjUV+OglDI7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="409182339"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2020 05:09:27 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 15 Sep 2020 15:09:27 +0300
+Date:   Tue, 15 Sep 2020 15:09:27 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/14] TCPM support for FRS and AutoDischarge
+ Disconnect
+Message-ID: <20200915120927.GA1139641@kuha.fi.intel.com>
+References: <20200901025927.3596190-1-badhri@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200914130259.6b0e2ec6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901025927.3596190-1-badhri@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 31, 2020 at 07:59:13PM -0700, Badhri Jagan Sridharan wrote:
+> First of all apologies for mixing up the patch version as noted by
+> Heikki and Greg. All of them were v1's but since I was manually adding
+> the version numbers I mixed them up. Using the --reroll-count option
+> now. Updating the patch version to v6 (highest version number in the
+> previous patchset + 1) to avoid confusion.
+
+If this is v6, then where are v2 - v5? And what changed? Why didn't
+you just make this v2?
 
 
-On 9/14/2020 11:02 PM, Jakub Kicinski wrote:
-> On Sun, 13 Sep 2020 13:12:05 +0300 Tariq Toukan wrote:
->> 2. When MLX4_EN_PERF_STAT is not defined, we should totally remove the
->> local variable declaration, not only its usage.
+> I also rebased on to off of the recent usb-next tip:
+> 5fedf0d295d3 (origin/usb-testing, origin/usb-next) Merge 5.9-rc3 into usb-next
+> Which had the following changes causing merge conflict:
+> 3ed8e1c2ac99 usb: typec: tcpm: Migrate workqueue to RT priority for processing events
+> 6bbe2a90a0bb usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
 > 
-> I was actually wondering about this when working on the pause stat
-> patch. Where is MLX4_EN_PERF_STAT ever defined?
+> Addressed comments from Heikki and Randy which have described in the
+> individual commit's change history as well.
 > 
-> $ git grep MLX4_EN_PERF_STAT
-> drivers/net/ethernet/mellanox/mlx4/mlx4_en.h:#ifdef MLX4_EN_PERF_STAT
-> drivers/net/ethernet/mellanox/mlx4/mlx4_en.h:#endif /* MLX4_EN_PERF_STAT */
-> drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h:#ifdef MLX4_EN_PERF_STAT
+> Badhri Jagan Sridharan (14):
+>   usb: typec: tcpci: Add register definitions to tcpci
+>   usb: typec: tcpci: Add support when hidden tx registers are
+>     inaccessible
+>   usb: typec: tcpci: update ROLE_CONTROL for DRP
+>   usb: typec: tcpci: Add a getter method to retrieve tcpm_port reference
+>   usb: typec: tcpci: Add set_vbus tcpci callback
+>   dt-bindings: usb: Maxim type-c controller device tree binding document
+>   usb: typec: tcpci_maxim: Chip level TCPC driver
+>   dt-bindings: connector: Add property to set initial current cap for
+>     FRS
+>   usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)
+>   usb: typec: tcpci: Implement callbacks for FRS
+>   usb: typec: tcpci_maxim: Add support for Sink FRS
+>   usb: typec: tcpm: Implement enabling Auto Discharge disconnect support
+>   usb: typec: tcpci: Implement Auto discharge disconnect callbacks
+>   usb: typec: tcpci_maxim: Implemnent set_auto_vbus_discharge_threshold
 > 
+>  .../bindings/connector/usb-connector.txt      | 128 ++++
+>  .../devicetree/bindings/usb/maxim,tcpci.txt   |  44 ++
+>  drivers/usb/typec/tcpm/Kconfig                |   5 +
+>  drivers/usb/typec/tcpm/Makefile               |  13 +-
+>  drivers/usb/typec/tcpm/tcpci.c                | 146 ++++-
+>  drivers/usb/typec/tcpm/tcpci.h                |  43 ++
+>  drivers/usb/typec/tcpm/tcpci_maxim.c          | 564 ++++++++++++++++++
+>  drivers/usb/typec/tcpm/tcpm.c                 | 291 ++++++++-
+>  include/dt-bindings/usb/pd.h                  |  10 +
+>  include/linux/usb/pd.h                        |  19 +-
+>  include/linux/usb/tcpm.h                      |  24 +-
+>  include/linux/usb/typec.h                     |  13 +
+>  12 files changed, 1266 insertions(+), 34 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/connector/usb-connector.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.txt
+>  create mode 100644 drivers/usb/typec/tcpm/tcpci_maxim.c
+> 
+> 
+> base-commit: 5fedf0d295d3ef69fd85fdee4cb68fd3756b54c2
+> -- 
+> 2.28.0.402.g5ffc5be6b7-goog
 
-Good point.
-
-This was introduced long ago, since day 1 of mlx4 driver.
-I believe it had off-tree usage back then, not sure though...
-
-Anyway, I don't find it useful anymore.
-Should be removed. I'll prepare a cleanup patch for net-next.
-
-Thanks,
-Tariq
+-- 
+heikki
