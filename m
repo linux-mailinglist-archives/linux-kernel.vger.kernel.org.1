@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B15B26B006
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8AA26B004
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgIOV4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43664 "EHLO
+        id S1728112AbgIOV4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728105AbgIOV3Y (ORCPT
+        with ESMTP id S1728090AbgIOV3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 17:29:24 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470FEC061226
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:17:32 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id a12so1706664wrg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:17:32 -0700 (PDT)
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAC9C0611C1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:17:37 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id l15so241621wmh.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:17:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=gQNZi1xbbNqueATb+Ofst812z+wTX6Uhy5JHBLW29HQ=;
-        b=Yy3NAxKGs0090BOPTba/nzO4cFPD9qSiFj0muhX6uXXMpAPGomh/ZDVdoYoyMlJR2H
-         lIazQ2HvczoFsJTOWPdKzJYfc2/WOOw9C0hGyRF9UQYgPE3AgqDYVZNtdqTPibhmoXf1
-         VMf+YKRB6flrLwpkd/7RoFRlnJ08ZGYvHEW2PcJoF+BsjcFwlCOhxqpdr/MY9g7x5o7R
-         VH9u2MeaeqzIdTc+ZxJb27i3vPDxpiSRfNRQmZDcS6TPnaY9a9KOzceh+71b+fUis8/9
-         GkMM1tMTE9Ao04l35J6odqEAVgW/k0Ib0q1fXWI+cyy/5MUehNYMowaBVV3WbqukJYDt
-         FAgw==
+        bh=SMbpusk9UPFJ5bty/4o1CBzmR923bOTqJu4p/yHyDoA=;
+        b=et5na2SrMTeEtk7EWiOzMg0RIlxhLHym2BHU/vxQbTuVAB46m56Vgt+uJkfq6C1HPC
+         LdLXNgovu/Qc5xh0rc0eA0wF96LwrPAujajBypmTg2C9f00xeyv2mMhZBtqDmrJPwnmx
+         wItchGs3NqcMVlvP2XrDs63cj25TUc29zJtXuj8oAElnc584tZimCx/2j9MN+aveLpbe
+         6CExqkZyjmo1zU4cX09+bUDu5QeTKo0OoBQfzNRGLVcv7Pxfas6s/765v6fOyapNv95w
+         Ef+ox4JfLp90yekqgK4IN7gatUONDMd8P8B2lydG89kADRCDIGIqUbs8vlf0OeozcRfe
+         bYNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=gQNZi1xbbNqueATb+Ofst812z+wTX6Uhy5JHBLW29HQ=;
-        b=DrWxgnHPxwIz/6Lj8oL3eu89wQKhc1cWkghbFL3auwMYXDC8IdeWkPhNcpY5MpaLH3
-         yiib/GtcQ4EKrOui8i+2tMo8xv39YjsIERKogK26a9lHIlS3ihF/cG7r39GzxBoruv8I
-         +B5eioyv4M7UAnanYGpLryTe8OzlMY+IdSPgtS1HevHJAo50AaoWpqlO/UKSmuDjYtxf
-         nVTYmCz8nll4xwSn6VqK+tMa0tOfGGKMDkHjMCgtGcrhx6rFBprivQoBw9gEJ9uiq9zJ
-         mFoVoegANHM6yS41fY4UEE8RNpjVO46VQBkLDc0tRr8ucnuk9XSob9LDZUt6ZOMD4TEm
-         qR2Q==
-X-Gm-Message-State: AOAM533rDBzukHJXutywRwhre5NwFYg3QpfJucLO+fHWhTuQTx1TO49U
-        DuPlyk7FphDJgfORReZ7JeXwt4+mHvf5iXAn
-X-Google-Smtp-Source: ABdhPJxSdz7eZtkr4LcxuG7RUBwuiBQj3nl4wipePG7BDeui7hcx3jwqP/ZGF3lGDPtyJkewnREY16db2QT71g3F
+        bh=SMbpusk9UPFJ5bty/4o1CBzmR923bOTqJu4p/yHyDoA=;
+        b=nKLc8UKys4V5ZKFLgOQnMIWPcJliEtVh+17WztBswuwplQx/ukZvOxYRisUXmJQtW1
+         rS7Vy4WIAhBiLVjT8PWVrZLuM7r+8ak0cOE2dUFazNteQvYn4VENcbBDqgzKvfx/gSml
+         TvAuMFpkAGncjCFRRi76j6MZhQdrY5M0cEcwehbGYzHNpmoYfjOtscuOU2kFThYMMxsi
+         Aod1Q/AXOQdFIcd5FdqExxByiAqwOB1e8IsmaXdC+3pip3IFCBXG6bpx/yQ90XIvmFhA
+         Z6eKcavNI0dHktyuGaaY2dg5i8FMDSPfwRqOK719e+fXc5AMMEztcGIlRcu3HJpmLzd9
+         AiKg==
+X-Gm-Message-State: AOAM533wyTcuOdAt1ZRkW6bQFHsxWXysVClEhAPCmgL2fUUd3LhHMrVj
+        NvCjRRmgWYYc+dMFS2RosC4IzMkydGsrWSyx
+X-Google-Smtp-Source: ABdhPJwujyv1jICnb8Z84hBJXMAHZtwatucCSBcuhq+9tnfe5N4bmea9C5aR+KvNqkTUUlaGyRY0Mdi7Bwl5AIg1
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:adf:dd44:: with SMTP id
- u4mr22386734wrm.22.1600204650809; Tue, 15 Sep 2020 14:17:30 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 23:16:10 +0200
+ (user=andreyknvl job=sendgmr) by 2002:a5d:5281:: with SMTP id
+ c1mr23095217wrv.184.1600204655669; Tue, 15 Sep 2020 14:17:35 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 23:16:12 +0200
 In-Reply-To: <cover.1600204505.git.andreyknvl@google.com>
-Message-Id: <9ecc27d43a01ca32bcacf44b393a9a100e0dfdb2.1600204505.git.andreyknvl@google.com>
+Message-Id: <3a3002e1d70f8faf2dfc07176c3ece22450b68a3.1600204505.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1600204505.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH v2 28/37] arm64: kasan: Enable TBI EL1
+Subject: [PATCH v2 30/37] kasan: define KASAN_GRANULE_SIZE for HW_TAGS
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -75,62 +75,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Hardware tag-based KASAN has granules of MTE_GRANULE_SIZE. Define
+KASAN_GRANULE_SIZE to MTE_GRANULE_SIZE for CONFIG_KASAN_HW_TAGS.
 
-Hardware tag-based KASAN relies on Memory Tagging Extension (MTE) that is
-built on top of the Top Byte Ignore (TBI) feature.
-
-Enable in-kernel TBI when CONFIG_KASAN_HW_TAGS is turned on by enabling
-the TCR_TBI1 bit in proc.S.
-
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
-Change-Id: I91944903bc9c9c9044f0d50e74bcd6b9971d21ff
+Change-Id: I5d1117e6a991cbca00d2cfb4ba66e8ae2d8f513a
 ---
- arch/arm64/mm/proc.S | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ mm/kasan/kasan.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-index 5ba7ac5e9c77..1687447dee7a 100644
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -40,9 +40,13 @@
- #define TCR_CACHE_FLAGS	TCR_IRGN_WBWA | TCR_ORGN_WBWA
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 8b43fc163ed1..ba63d8a62968 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -5,7 +5,13 @@
+ #include <linux/kasan.h>
+ #include <linux/stackdepot.h>
  
- #ifdef CONFIG_KASAN_SW_TAGS
--#define TCR_KASAN_FLAGS TCR_TBI1
-+#define TCR_KASAN_SW_FLAGS TCR_TBI1
- #else
--#define TCR_KASAN_FLAGS 0
-+#define TCR_KASAN_SW_FLAGS 0
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
++#else
++#include <asm/mte-helpers.h>
++#define KASAN_GRANULE_SIZE	(MTE_GRANULE_SIZE)
 +#endif
 +
-+#ifdef CONFIG_KASAN_HW_TAGS
-+#define TCR_KASAN_HW_FLAGS TCR_TBI1
- #endif
+ #define KASAN_GRANULE_MASK	(KASAN_GRANULE_SIZE - 1)
  
- /*
-@@ -462,7 +466,7 @@ SYM_FUNC_START(__cpu_setup)
- 	 */
- 	mov_q	x10, TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \
- 			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
--			TCR_TBI0 | TCR_A1 | TCR_KASAN_FLAGS
-+			TCR_TBI0 | TCR_A1 | TCR_KASAN_SW_FLAGS
- 	tcr_clear_errata_bits x10, x9, x5
- 
- #ifdef CONFIG_ARM64_VA_BITS_52
-@@ -495,6 +499,9 @@ SYM_FUNC_START(__cpu_setup)
- 	/* Update TCR_EL1 if MTE is supported (ID_AA64PFR1_EL1[11:8] > 1) */
- 	cbz	mte_present, 1f
- 	orr	x10, x10, #SYS_TCR_EL1_TCMA1
-+#ifdef CONFIG_KASAN_HW_TAGS
-+	orr	x10, x10, #TCR_KASAN_HW_FLAGS
-+#endif
- 1:
- 	.unreq	mte_present
- #endif
+ #define KASAN_TAG_KERNEL	0xFF /* native kernel pointers tag */
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
