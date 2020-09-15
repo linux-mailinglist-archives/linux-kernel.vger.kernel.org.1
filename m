@@ -2,188 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4735D26A12B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D0B26A122
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgIOIn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:43:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56516 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726400AbgIOInn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:43:43 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 5588C4068A3ED1F2C5ED;
-        Tue, 15 Sep 2020 16:43:40 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 15 Sep 2020 16:43:31 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Guo Ren <guoren@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Jianguo Chen" <chenjianguo3@huawei.com>
-Subject: [PATCH v4 3/4] irqchip: dw-apb-ictl: support hierarchy irq domain
-Date:   Tue, 15 Sep 2020 16:43:04 +0800
-Message-ID: <20200915084305.3085-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200915084305.3085-1-thunder.leizhen@huawei.com>
-References: <20200915084305.3085-1-thunder.leizhen@huawei.com>
+        id S1726392AbgIOInX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726122AbgIOInU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:43:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3292C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:43:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gPWjjj+GEm0phhGhPA/UBCYH87qq+66qidJCKcgCVto=; b=EzwBj3zYLSed25LzNLifTiZlQz
+        Xgcfdh+BlMYrhowWaE6nZoBNO28uuQLlns8hCIbcC+JB9UEmGcTxtNmHdQpUdVsAyeHqOSu5KQgvk
+        Ji6imwJ7/7gkmEkoHvBMTO5hOAmTnWWPXdhRa2b06X0CBZ8WzytHEjhEaWA2We5fbYUyn1C/kD6WF
+        lvoB/yV8cQqYRT3GzMY9XYjrxqqlwbYc4zP/S1tueZo/7/upQfMz9QGH/kGAqgeOE5fYsvdv1G5SD
+        UMzK6AWPWhQXj2fRr4bENYAKp6viBeydOpsr+PY/9ydLC2KalJIsHFCqvxOM/4GCGjOYrKxYsEGeN
+        xaXzGISQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kI6YL-0007MC-Nd; Tue, 15 Sep 2020 08:43:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7CFFB3019CE;
+        Tue, 15 Sep 2020 10:43:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6DAFC2C639FCF; Tue, 15 Sep 2020 10:43:04 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 10:43:04 +0200
+From:   peterz@infradead.org
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Logan Gunthorpe <logang@deltatee.com>
+Subject: Re: [PATCH] x86/unwind/fp: Fix FP unwinding in ret_from_fork
+Message-ID: <20200915084304.GU1362448@hirez.programming.kicks-ass.net>
+References: <f366bbf5a8d02e2318ee312f738112d0af74d16f.1600103007.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f366bbf5a8d02e2318ee312f738112d0af74d16f.1600103007.git.jpoimboe@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to use dw-apb-ictl as primary interrupt controller.
+On Mon, Sep 14, 2020 at 12:04:22PM -0500, Josh Poimboeuf wrote:
+> There have been some reports of "bad bp value" warnings printed by the
+> frame pointer unwinder:
+> 
+>   WARNING: kernel stack regs at 000000005bac7112 in sh:1014 has bad 'bp' value 0000000000000000
+> 
+> This warning happens when unwinding from an interrupt in
+> ret_from_fork().  If entry code gets interrupted, the state of the frame
+> pointer (rbp) may be undefined, which can confuse the unwinder,
+> resulting in warnings like the above.
+> 
+> There's an in_entry_code() check which normally silences such warnings
+> for entry code.  But in this case, ret_from_fork() is getting
+> interrupted.  It recently got moved out of .entry.text, so the
+> in_entry_code() check no longer works.
+> 
+> We could move it back into .entry.text, but that would break the noinstr
+> validation because of the call to schedule_tail().
+> 
+> Instead, initialize each new task's RBP to point to the task's entry
+> regs via an encoded frame pointer.  That will allow the unwinder to
+> reach the end of the stack gracefully.
+> 
+> Fixes: b9f6976bfb94 ("x86/entry/64: Move non entry code into .text section")
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: Logan Gunthorpe <logang@deltatee.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Tested-by: Haoyu Lv <lvhaoyu@huawei.com>
----
- drivers/irqchip/Kconfig           |  2 +-
- drivers/irqchip/irq-dw-apb-ictl.c | 74 ++++++++++++++++++++++++++++++++++-----
- 2 files changed, 67 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index bfc9719dbcdc31c..7c2d1c8fa551a66 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -148,7 +148,7 @@ config DAVINCI_CP_INTC
- config DW_APB_ICTL
- 	bool
- 	select GENERIC_IRQ_CHIP
--	select IRQ_DOMAIN
-+	select IRQ_DOMAIN_HIERARCHY
- 
- config FARADAY_FTINTC010
- 	bool
-diff --git a/drivers/irqchip/irq-dw-apb-ictl.c b/drivers/irqchip/irq-dw-apb-ictl.c
-index 5458004242e9d20..418183b9983dfad 100644
---- a/drivers/irqchip/irq-dw-apb-ictl.c
-+++ b/drivers/irqchip/irq-dw-apb-ictl.c
-@@ -17,6 +17,7 @@
- #include <linux/irqchip/chained_irq.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
-+#include <linux/interrupt.h>
- 
- #define APB_INT_ENABLE_L	0x00
- #define APB_INT_ENABLE_H	0x04
-@@ -26,6 +27,27 @@
- #define APB_INT_FINALSTATUS_H	0x34
- #define APB_INT_BASE_OFFSET	0x04
- 
-+/* irq domain of the primary interrupt controller. */
-+static struct irq_domain *dw_apb_ictl_irq_domain;
-+
-+static void __irq_entry dw_apb_ictl_handle_irq(struct pt_regs *regs)
-+{
-+	struct irq_domain *d = dw_apb_ictl_irq_domain;
-+	int n;
-+
-+	for (n = 0; n < d->revmap_size; n += 32) {
-+		struct irq_chip_generic *gc = irq_get_domain_generic_chip(d, n);
-+		u32 stat = readl_relaxed(gc->reg_base + APB_INT_FINALSTATUS_L);
-+
-+		while (stat) {
-+			u32 hwirq = ffs(stat) - 1;
-+
-+			handle_domain_irq(d, hwirq, regs);
-+			stat &= ~BIT(hwirq);
-+		}
-+	}
-+}
-+
- static void dw_apb_ictl_handle_irq_cascaded(struct irq_desc *desc)
- {
- 	struct irq_domain *d = irq_desc_get_handler_data(desc);
-@@ -50,6 +72,30 @@ static void dw_apb_ictl_handle_irq_cascaded(struct irq_desc *desc)
- 	chained_irq_exit(chip, desc);
- }
- 
-+static int dw_apb_ictl_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
-+				unsigned int nr_irqs, void *arg)
-+{
-+	int i, ret;
-+	irq_hw_number_t hwirq;
-+	unsigned int type = IRQ_TYPE_NONE;
-+	struct irq_fwspec *fwspec = arg;
-+
-+	ret = irq_domain_translate_onecell(domain, fwspec, &hwirq, &type);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < nr_irqs; i++)
-+		irq_map_generic_chip(domain, virq + i, hwirq + i);
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops dw_apb_ictl_irq_domain_ops = {
-+	.translate = irq_domain_translate_onecell,
-+	.alloc = dw_apb_ictl_irq_domain_alloc,
-+	.free = irq_domain_free_irqs_top,
-+};
-+
- #ifdef CONFIG_PM
- static void dw_apb_ictl_resume(struct irq_data *d)
- {
-@@ -75,13 +121,20 @@ static int __init dw_apb_ictl_init(struct device_node *np,
- 	void __iomem *iobase;
- 	int ret, nrirqs, parent_irq, i;
- 	u32 reg;
--	const struct irq_domain_ops *domain_ops = &irq_generic_chip_ops;
--
--	/* Map the parent interrupt for the chained handler */
--	parent_irq = irq_of_parse_and_map(np, 0);
--	if (parent_irq <= 0) {
--		pr_err("%pOF: unable to parse irq\n", np);
--		return -EINVAL;
-+	const struct irq_domain_ops *domain_ops;
-+
-+	if (!parent || (np == parent)) {
-+		/* It's used as the primary interrupt controller */
-+		parent_irq = 0;
-+		domain_ops = &dw_apb_ictl_irq_domain_ops;
-+	} else {
-+		/* Map the parent interrupt for the chained handler */
-+		parent_irq = irq_of_parse_and_map(np, 0);
-+		if (parent_irq <= 0) {
-+			pr_err("%pOF: unable to parse irq\n", np);
-+			return -EINVAL;
-+		}
-+		domain_ops = &irq_generic_chip_ops;
- 	}
- 
- 	ret = of_address_to_resource(np, 0, &r);
-@@ -146,8 +199,13 @@ static int __init dw_apb_ictl_init(struct device_node *np,
- 		gc->chip_types[0].chip.irq_resume = dw_apb_ictl_resume;
- 	}
- 
--	irq_set_chained_handler_and_data(parent_irq,
-+	if (parent_irq) {
-+		irq_set_chained_handler_and_data(parent_irq,
- 				dw_apb_ictl_handle_irq_cascaded, domain);
-+	} else {
-+		dw_apb_ictl_irq_domain = domain;
-+		set_handle_irq(dw_apb_ictl_handle_irq);
-+	}
- 
- 	return 0;
- 
--- 
-1.8.3
-
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
