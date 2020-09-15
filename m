@@ -2,212 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E4626B8C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED6C26B8A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgIPAtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:49:49 -0400
-Received: from mail-dm6nam11on2060.outbound.protection.outlook.com ([40.107.223.60]:13664
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726419AbgIOLlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:41:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d1JwU7Pa6/aW3Tm0DPt1WKhOODYhN3d7TJqqeTpkpUDDakRqAKVmzGFU8aSBTfWBqcBqUjBkNfD44JF/7ZjUg8pdwvAqj4/XQ0HPfXU3r8KZlHJS8KowfuDtOHhgRo2oXMSTI4F7zaCmUKUZtuV+PhhdBYtIBHr4W+bTQcAbzxHb/QrvP04PqJJ77xSl4UkOIXT/KLvonJc1esERsR9zAxT3fwz+SUr7NAPRVopdZIdvQtMUJaHR8DpDbkkq3C68FCvi4/RUTEtE39ypWO6hfXv+X4S6CS96bK8ZJVXI6rcA7taKXd8JvLGgXWloUiAV4nbZypbWVtWat0vi9l+BsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r0JrounKjNbmsBGB5jkGgOi7I2rbySO70MqZ5gOWhB4=;
- b=iAWp3+xVcbsytKDHPo/z/loDNs5t8TJlv5lZJFOXLklHTRw7YM4p9tJ1rA2wOqMvRI7+/i8vjWWm6FjH4fpkVZHHvXuDj/l2bZnI8/YGmIl6DpR/0gnEg3lC30cEvWHxM3g+qa3mh8F/pieqgMmbQuhROYjJsfWI2lzhsSgUpvUY7uXq2lWO3LbI4NFzdF8zF0h0PctNuD1ra00mteMTtwWzaHacUzL9LbMc1NEqkCOhhLvHPEr3FE5XpJORvPls8vpzZBmUCTcR/VSbP1QumEqTECNYUZKKvLm+0VLPS6i7VcYnKlQsZ5RL+vyQKHBaN3DRvQnP3ddowfsgk2d/+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1726726AbgIPAse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgIOLm1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 07:42:27 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA07C061354;
+        Tue, 15 Sep 2020 04:41:50 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id nw23so4577983ejb.4;
+        Tue, 15 Sep 2020 04:41:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r0JrounKjNbmsBGB5jkGgOi7I2rbySO70MqZ5gOWhB4=;
- b=NtRyuSX3RHMXOAJcOZON5KlgRw82crYVg17oi0UesrEv0LnCuaSjaiaiOrq1YfhPRurdB04Gh0g0BK6+20nDLDZDK5UQqZgAeGZiHZRcYbpdpMVrmdw0Xass5dzw+FeZEdtYQPSHXS7XeRDk8Nh7pgdZeFmxVpCxQ1DrCZH/g7Y=
-Received: from MN2PR17CA0020.namprd17.prod.outlook.com (2603:10b6:208:15e::33)
- by BYAPR02MB5014.namprd02.prod.outlook.com (2603:10b6:a03:64::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
- 2020 11:41:09 +0000
-Received: from BL2NAM02FT063.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:15e:cafe::44) by MN2PR17CA0020.outlook.office365.com
- (2603:10b6:208:15e::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend
- Transport; Tue, 15 Sep 2020 11:41:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT063.mail.protection.outlook.com (10.152.77.121) with Microsoft SMTP
- Server id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 11:41:09
- +0000
-Received: from [149.199.38.66] (port=56533 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1kI9KZ-0000cv-AN; Tue, 15 Sep 2020 04:41:03 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by smtp.xilinx.com with smtp (Exim 4.63)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1kI9Ke-0006b1-QH; Tue, 15 Sep 2020 04:41:08 -0700
-Received: from xsj-pvapsmtp01 (mailman.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 08FBf5gp008485;
-        Tue, 15 Sep 2020 04:41:05 -0700
-Received: from [172.30.17.109]
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <michals@xilinx.com>)
-        id 1kI9Ka-0006a2-SL; Tue, 15 Sep 2020 04:41:05 -0700
-Subject: Re: [PATCH] spi: xilinx: Fix info message during probe
-To:     Ricardo Ribalda <ribalda@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200915112936.320647-1-ribalda@kernel.org>
-From:   Michal Simek <michal.simek@xilinx.com>
-Autocrypt: addr=michals@xilinx.com; keydata=
- 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
- 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
-Message-ID: <3ed01356-d0a7-d4a4-3d8c-87013c3eab93@xilinx.com>
-Date:   Tue, 15 Sep 2020 13:41:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=NyM9HKb/kB48ewijaPDo434N6k5WI8+ETaVUXwUOERY=;
+        b=FpkBGw5dci4/yPmSnmb3rmcg5LPBylECw3fR5n22HGr9YoDHbPKSxcYDyQdoL05dif
+         jjWVlK6LplvNk576zM8kE+1q151rc3oz9UmFl1cus5o4i2RgTWDpS+E+dIgVYkZP0viv
+         OuyGigtBpbF6RLr/qX0eozuNp9p2agJohwEa0X9j8JYA9Sv8LyKiXyhf0bMH0/zgG4sz
+         L7xBxCFpv7tqGUNHEfcqaQ18uvTVTAMhc+5w16vjQaEmDwAZobQO9lTYWtRenQGqWNKC
+         AUif2YLw4p2vKPOZrsJxBhaeRNmfM1FNXLVWJZFtL9CSoUf/3aH3m7Bk1lDKNw0zWS4m
+         rBKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=NyM9HKb/kB48ewijaPDo434N6k5WI8+ETaVUXwUOERY=;
+        b=JSt0YkomSIOyBE2LaNX7U2/ZGPuPq2zbZF1NzJ8X/PO6q4XlBsGXjq4ZyW+DFILjEq
+         zIjDV9lZX345NvI88jduiavAmxCoFY8Te6XeToRMW8JIdtVabQp+dHmUYt8GARE4wfj6
+         fGjR6irTSsf+nwJ/luSXxjpMr+CIIhNQYvDkMLNnzXAkOWtvHi5OaA0anslcGpi/OI9I
+         rHCGb3hCXJbS+LqQ2YZQaGiXRKamh1e1Z8Y2fdvgc3jbNOnMGJJQauLf4Myx935SKzEj
+         02yWTiNMYsfWmx+VTNPsidfZEsWjnk0tSB/mW2Wfcot5/oPjBbMQ74IfbzqIAO9lr7go
+         Bmpg==
+X-Gm-Message-State: AOAM533BM7Ldb7TwHh2UAGmid1LlZwslVnyy5Qw12VlBDUTO+4/IAtCJ
+        oOBkIIM4jFhSwyBdb9AtcSbbdRXm/CwKSUSqNp7Pz+atwR7aFw==
+X-Google-Smtp-Source: ABdhPJzYDdXIPX3j8eWwRY0yxEWDRCb5Jm2mA5uRp46jqAQqBui5N8IOlx1PBLoLlqkQsvoWZcAgal69cFA73RESmr4=
+X-Received: by 2002:a17:906:858a:: with SMTP id v10mr7524020ejx.61.1600170108871;
+ Tue, 15 Sep 2020 04:41:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200915112936.320647-1-ribalda@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cd3ba5d6-5211-4342-ba73-08d8596c3d58
-X-MS-TrafficTypeDiagnostic: BYAPR02MB5014:
-X-Microsoft-Antispam-PRVS: <BYAPR02MB5014CCD26417485BC1BF487DC6200@BYAPR02MB5014.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jyGbZx2SJDBNxGvqMolG6x5p8wxnKNPFKOVASHuAMgaFbCSOs2NOGuLYQfBES9AL/b41doCDV1Jr0LJ9jpy/5YrihEXwk12lXbIZSl7My/0gxvNFuS1tndW99VU6G7Y8fcHWdT9FrNdV+8lTyFUwaY0I6N5qxg728JsEDDA8bdwb1mlPZQpXbrT4dpUMQf9pZecrR86jBhAGG2ICiRrmEa6flSClYlShn9JZVqbGJy27d6IJt9Nj+3Yw6Z5mlDcmO0YQeWAD5MWo0cYr3hon3xp6sHmHqrDjRMhG3/z3SWU/9VHN8O7fQRjmhNTkLE6geBobovc7iXjjHg61s5FQiGFmMaj6UsOe+PlfeQTtWGOQe2lhcOKII4VZJwkelHk3ughV3hax05iaA553VufuQoqLZbMhDsrv7UnWKBD8sK/O329fdlHK9hmucjW6X6vdIWYbrmVD0935/anoMlfo/RSVMqYpuiwahaRSlDKZgro=
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(136003)(396003)(346002)(39860400002)(376002)(46966005)(8676002)(31696002)(186003)(82740400003)(110136005)(2906002)(26005)(2616005)(70586007)(478600001)(44832011)(47076004)(31686004)(5660300002)(82310400003)(15650500001)(83380400001)(36756003)(70206006)(81166007)(9786002)(336012)(6666004)(316002)(8936002)(356005)(426003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 11:41:09.3415
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd3ba5d6-5211-4342-ba73-08d8596c3d58
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT063.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5014
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Tue, 15 Sep 2020 07:41:38 -0400
+Message-ID: <CAMdYzYoRFBOA0b8tZgZpvbWkrtNrcyDXt9zHCF7yqtm2heYSXQ@mail.gmail.com>
+Subject: [BUG] slab: double free detected in cache 'kmalloc-128', objp daff5780
+To:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good Morning,
 
+I discovered a double free bug in kmalloc-128 in v5.9 on arm.
+It is with the tegra_defconfig, running on a tegra30.
+I've reliably reproduced it by compiling the kernel on the board then rebooting.
+It will sometimes trigger early into compilation.
+I've begun bisecting and will report if I find the offending commit.
 
-On 15. 09. 20 13:29, Ricardo Ribalda wrote:
-> The info message was showing the mapped address of the device. To avoid
-> security problems, all virtual addresses are converted to __ptrval__, so
-> the message was useless/ugly:
-> 
-> [    2.304949] xilinx_spi b0010000.spi-flash: at 0xB0010000 mapped to 0x(____ptrval____), irq=37
-> 
-> Use %pR instead:
-> 
-> [   15.021354] xilinx_spi b0010000.spi-flash: at [mem 0xb0010000-0xb001ffff], irq=37
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@kernel.org>
-> ---
->  drivers/spi/spi-xilinx.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-xilinx.c b/drivers/spi/spi-xilinx.c
-> index 8dd2bb99cb4d..523edfdf5dcd 100644
-> --- a/drivers/spi/spi-xilinx.c
-> +++ b/drivers/spi/spi-xilinx.c
-> @@ -491,8 +491,7 @@ static int xilinx_spi_probe(struct platform_device *pdev)
->  		goto put_master;
->  	}
->  
-> -	dev_info(&pdev->dev, "at 0x%08llX mapped to 0x%p, irq=%d\n",
-> -		(unsigned long long)res->start, xspi->regs, xspi->irq);
-> +	dev_info(&pdev->dev, "at %pR, irq=%d\n", res, xspi->irq);
->  
->  	if (pdata) {
->  		for (i = 0; i < pdata->num_devices; i++)
-> 
-
-Acked-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
+[  OK  ] Reached target Reboot.
+[33632.950829] slab: double free detected in cache 'kmalloc-128', objp daff5780
+[33632.958035] ------------[ cut here ]------------
+[33632.962702] kernel BUG at mm/slab.c:2535!
+[33632.965984] systemd-shutdown[1]: All filesystems unmounted.
+[33632.966764] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+[33632.966770] Modules linked in: fuse brcmfmac brcmutil
+[33632.966785] CPU: 1 PID: 15 Comm: ksoftirqd/1 Not tainted 5.9.0-rc4 #30
+[33632.966788] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+[33632.966803] PC is at free_block.constprop.0+0x228/0x22c
+[33632.966807] LR is at free_block.constprop.0+0x228/0x22c
+[33632.966810] pc : [<c02d1110>]    lr : [<c02d1110>]    psr: 60000193
+[33632.966813] sp : df0f5c78  ip : 000007bf  fp : 00000000
+[33632.966815] r10: c1337480  r9 : df612750  r8 : 00000000
+[33632.966818] r7 : 0000000f  r6 : daff5b00  r5 : dfa42e78  r4 : daff5b1f
+[33632.966820] r3 : c1204ec8  r2 : 00000000  r1 : 1e4a0000  r0 : 00000040
+[33632.966827] Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM
+Segment none
+[33632.972626] systemd-shutdown[1]: Deactivating swaps.
+[33632.978351] Control: 10c5387d  Table: 9d1c804a  DAC: 00000051
+[33632.978357] Process ksoftirqd/1 (pid: 15, stack limit = 0x8c4e77fe)
+[33632.978361] Stack: (0xdf0f5c78 to 0xdf0f6000)
+[33632.978365] 5c60:
+    00000010 df001084
+[33632.978370] 5c80: df001094 df0f5cd4 0000956f df0000c0 d6bdde00
+c1172740 c1337480 1e4a0000
+[33632.978375] 5ca0: df612740 df001080 00332b14 c02d1aa4 00001e96
+c3b88900 00000010 00000000
+[33632.978382] 5cc0: df612750 df60e180 df0ca140 00000005 00003e80
+df0f5cd4 df0f5cd4 c1204ec8
+[33632.986457] systemd-shutdown[1]: All swaps deactivated.
+[33632.990067] 5ce0: df0ca140 d6bdde00 c02d2288 a0000193 c0efa504
+9d74e35b 09f91102 d6bfae80
+[33632.996428] systemd-shutdown[1]: Detaching loop devices.
+[33633.001653] 5d00: 00000020 c02d207c 00000001 df0000c0 df9a9f28
+df0000c0 00000000 c02d2288
+[33633.012540] systemd-shutdown[1]: All loop devices detached.
+[33633.013237] 5d20: df0000c0 df9a9f28 d6bfaf80 c02d238c df0f5d94
+df0f5d90 df0f5d94 df0000c0
+[33633.018562] systemd-shutdown[1]: Detaching DM devices.
+[33633.023783] 5d40: 00000122 00000100 df612740 df001080 00407ad8
+c02d2468 df0000c0 dca86800
+[33633.030686] systemd-shutdown[1]: All DM devices detached.
+[33633.036926] 5d60: c1172740 c1337480 1e4a0000 c02d1c24 0032dcdb
+0008f24d 00000010 00000000
+[33633.036931] 5d80: df612750 df0f4000 df0f5da0 38e38e39 c12e7640
+df0f5d94 df0f5d94 c1204ec8
+[33633.036935] 5da0: df606628 dca86800 c02d2288 a0000193 c0efa504
+9d74e35b 09f91102 dc45ca08
+[33633.036940] 5dc0: 00000019 c02d207c 0009c463 df08cf00 dfa70cf0
+df08cf00 00000000 c02d2288
+[33633.044239] systemd-shutdown[1]: All filesystems, swaps, loop
+devices and DM devices detached.
+[33633.049219] 5de0: df08cf00 dfa70cf0 dc45cf00 c02d238c df0f5e54
+df0f5e50 df0f5e54 df08cf00
+[33633.049224] 5e00: 00000122 00000100 df6131c4 df084fc0 00437334
+c02d2468 df08cf00 ddfa51e0
+[33633.049228] 5e20: c11731c4 c1337480 1e4a0000 c02d1c24 00000010
+00000000 00000010 00000120
+[33633.049233] 5e40: df6131d4 d84156c5 c3b887c0 ddfa51e0 df0f5e4c
+df0f5e54 df0f5e54 c1204ec8
+[33633.233225] 5e60: c0303a00 c01a1f00 a0000113 ddfa51e8 df0f5ed0
+ddfa5268 df0f4000 00000100
+[33633.241442] 5e80: c12ef6b8 c02d1f0c 20000113 ddfa51e8 c12ef5a0
+c1204eec c1213f00 c01a1f00
+[33633.249698] 5ea0: 00000000 c1309e00 00000001 c015d9b4 df60e1b0
+00000000 00000011 df60e9ac
+[33633.257944] 5ec0: df60e980 c12ef6b8 00000000 00000000 ddfa51c8
+de7a3da8 fffffff6 c1204ec8
+[33633.266197] 5ee0: c12030a4 c12030a4 0000000a 00000009 00000200
+df0f4000 c12ef1a4 00000100
+[33633.274416] 5f00: df0f5f08 c01013bc ffffe000 df0f4000 c1203080
+c1162360 00000009 c116dd00
+[33633.282664] 5f20: c116dd00 c11622ec 0032dcda c1203d00 df0c0140
+04208040 df0ca0c0 df0f4000
+[33633.290927] 5f40: 00000000 df0c0140 c120cb6c ffffe000 00000000
+df0b1e04 df0c00a4 c012ac80
+[33633.299164] 5f60: df0f4000 c014a980 df0c0080 df0c00c0 df0f4000
+00000000 c014a87c df0c0140
+[33633.307431] 5f80: df0b1e04 c0146f20 00000000 df0c00c0 c0146d94
+00000000 00000000 00000000
+[33633.315740] 5fa0: 00000000 00000000 00000000 c01001a8 00000000
+00000000 00000000 00000000
+[33633.324006] 5fc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[33633.331491] systemd-shutdown[1]: Syncing filesystems and block devices.
+[33633.332254] 5fe0: 00000000 00000000 00000000 00000000 00000013
+00000000 00000000 00000000
+[33633.339097] systemd-shutdown[1]: Rebooting.
+[33633.347196] [<c02d1110>] (free_block.constprop.0) from [<c02d1aa4>]
+(___cache_free+0x3ac/0x6f4)
+[33633.347202] [<c02d1aa4>] (___cache_free) from [<c02d207c>] (kfree+0x98/0x194)
+[33633.367354] [<c02d207c>] (kfree) from [<c02d2288>]
+(kmem_freepages+0x110/0x134)
+[33633.374733] [<c02d2288>] (kmem_freepages) from [<c02d238c>]
+(slab_destroy+0xd4/0x16c)
+[33633.382651] [<c02d238c>] (slab_destroy) from [<c02d2468>]
+(slabs_destroy+0x44/0x60)
+[33633.390344] [<c02d2468>] (slabs_destroy) from [<c02d1c24>]
+(___cache_free+0x52c/0x6f4)
+[33633.398297] [<c02d1c24>] (___cache_free) from [<c02d207c>] (kfree+0x98/0x194)
+[33633.405501] [<c02d207c>] (kfree) from [<c02d2288>]
+(kmem_freepages+0x110/0x134)
+[33633.412845] [<c02d2288>] (kmem_freepages) from [<c02d238c>]
+(slab_destroy+0xd4/0x16c)
+[33633.420747] [<c02d238c>] (slab_destroy) from [<c02d2468>]
+(slabs_destroy+0x44/0x60)
+[33633.428477] [<c02d2468>] (slabs_destroy) from [<c02d1c24>]
+(___cache_free+0x52c/0x6f4)
+[33633.436468] [<c02d1c24>] (___cache_free) from [<c02d1f0c>]
+(kmem_cache_free.part.0+0x24/0xf0)
+[33633.445034] [<c02d1f0c>] (kmem_cache_free.part.0) from [<c01a1f00>]
+(rcu_core+0x2d8/0xb3c)
+[33633.453375] [<c01a1f00>] (rcu_core) from [<c01013bc>]
+(__do_softirq+0x114/0x3dc)
+[33633.460852] [<c01013bc>] (__do_softirq) from [<c012ac80>]
+(run_ksoftirqd+0x2c/0x34)
+[33633.468549] [<c012ac80>] (run_ksoftirqd) from [<c014a980>]
+(smpboot_thread_fn+0x104/0x270)
+[33633.476889] [<c014a980>] (smpboot_thread_fn) from [<c0146f20>]
+(kthread+0x18c/0x190)
+[33633.484701] [<c0146f20>] (kthread) from [<c01001a8>]
+(ret_from_fork+0x14/0x2c)
+[33633.491956] Exception stack(0xdf0f5fb0 to 0xdf0f5ff8)
+[33633.497080] 5fa0:                                     00000000
+00000000 00000000 00000000
+[33633.505325] 5fc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[33633.513534] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[33633.520220] Code: e5901040 e30a0440 e34c00ef ebfad8dd (e7f001f2)
+[33633.526353] ---[ end trace 0d2364af0084bf74 ]---
+[33633.538355] Kernel panic - not syncing: Fatal exception in interrupt
+[33633.544747] CPU0: stopping
+[33633.547533] CPU: 0 PID: 24031 Comm: kworker/0:1 Tainted: G      D
+        5.9.0-rc4 #30
+[33633.555738] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+[33633.562077] Workqueue: events dbs_work_handler
+[33633.566567] [<c0111a6c>] (unwind_backtrace) from [<c010b95c>]
+(show_stack+0x10/0x14)
+[33633.574382] [<c010b95c>] (show_stack) from [<c0512450>]
+(dump_stack+0xc4/0xd8)
+[33633.581677] [<c0512450>] (dump_stack) from [<c010fcd4>]
+(handle_IPI+0x3f4/0x420)
+[33633.589113] [<c010fcd4>] (handle_IPI) from [<c052b380>]
+(gic_handle_irq+0x8c/0x90)
+[33633.596753] [<c052b380>] (gic_handle_irq) from [<c0100b8c>]
+(__irq_svc+0x6c/0xa8)
+[33633.604301] Exception stack(0xdcf29c60 to 0xdcf29ca8)
+[33633.609385] 9c60: 00000001 00000004 df611c40 00000011 df5faac0
+c1205004 c1205318 df5faac4
+[33633.617628] 9c80: dcf29d78 1e4c8000 c1171c40 00000004 00000000
+dcf29cb0 c01c7594 c01c75cc
+[33633.625870] 9ca0: 000f0113 ffffffff
+[33633.629402] [<c0100b8c>] (__irq_svc) from [<c01c75cc>]
+(smp_call_function_many_cond+0x398/0x42c)
+[33633.638258] [<c01c75cc>] (smp_call_function_many_cond) from
+[<c01c76c4>] (smp_call_function+0x48/0x84)
+[33633.647594] [<c01c76c4>] (smp_call_function) from [<c01c772c>]
+(on_each_cpu+0x2c/0x70)
+[33633.655581] [<c01c772c>] (on_each_cpu) from [<c0110e48>]
+(twd_rate_change+0x28/0x30)
+[33633.663399] [<c0110e48>] (twd_rate_change) from [<c0148230>]
+(notifier_call_chain+0x48/0x80)
+[33633.671905] [<c0148230>] (notifier_call_chain) from [<c0148448>]
+(__srcu_notifier_call_chain+0x44/0x9c)
+[33633.681328] [<c0148448>] (__srcu_notifier_call_chain) from
+[<c01484b8>] (srcu_notifier_call_chain+0x18/0x20)
+[33633.691229] [<c01484b8>] (srcu_notifier_call_chain) from
+[<c0587cfc>] (__clk_notify+0x80/0xb4)
+[33633.699911] [<c0587cfc>] (__clk_notify) from [<c058b6f8>]
+(clk_change_rate+0x1a8/0x594)
+[33633.707982] [<c058b6f8>] (clk_change_rate) from [<c058b6b0>]
+(clk_change_rate+0x160/0x594)
+[33633.716314] [<c058b6b0>] (clk_change_rate) from [<c058b6b0>]
+(clk_change_rate+0x160/0x594)
+[33633.724609] [<c058b6b0>] (clk_change_rate) from [<c058bc5c>]
+(clk_core_set_rate_nolock+0x178/0x1a0)
+[33633.733721] [<c058bc5c>] (clk_core_set_rate_nolock) from
+[<c058bcb4>] (clk_set_rate+0x30/0x88)
+[33633.742402] [<c058bcb4>] (clk_set_rate) from [<c0851efc>]
+(dev_pm_opp_set_rate+0x210/0x5e8)
+[33633.750822] [<c0851efc>] (dev_pm_opp_set_rate) from [<c085ae64>]
+(set_target+0x2c/0x54)
+[33633.758861] [<c085ae64>] (set_target) from [<c0855f44>]
+(__cpufreq_driver_target+0x168/0x528)
+[33633.767456] [<c0855f44>] (__cpufreq_driver_target) from
+[<c0859560>] (od_dbs_update+0x13c/0x160)
+[33633.776309] [<c0859560>] (od_dbs_update) from [<c085a25c>]
+(dbs_work_handler+0x2c/0x58)
+[33633.784387] [<c085a25c>] (dbs_work_handler) from [<c01402d4>]
+(process_one_work+0x1dc/0x594)
+[33633.792856] [<c01402d4>] (process_one_work) from [<c01406d8>]
+(worker_thread+0x4c/0x520)
+[33633.801016] [<c01406d8>] (worker_thread) from [<c0146f20>]
+(kthread+0x18c/0x190)
+[33633.808480] [<c0146f20>] (kthread) from [<c01001a8>]
+(ret_from_fork+0x14/0x2c)
+[33633.815730] Exception stack(0xdcf29fb0 to 0xdcf29ff8)
+[33633.820850] 9fa0:                                     00000000
+00000000 00000000 00000000
+[33633.829057] 9fc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[33633.837300] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[33633.843981] CPU3: stopping
+[33633.846728] CPU: 3 PID: 1 Comm: systemd-shutdow Tainted: G      D
+        5.9.0-rc4 #30
+[33633.854971] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+[33633.861275] [<c0111a6c>] (unwind_backtrace) from [<c010b95c>]
+(show_stack+0x10/0x14)
+[33633.869087] [<c010b95c>] (show_stack) from [<c0512450>]
+(dump_stack+0xc4/0xd8)
+[33633.876380] [<c0512450>] (dump_stack) from [<c010fcd4>]
+(handle_IPI+0x3f4/0x420)
+[33633.883810] [<c010fcd4>] (handle_IPI) from [<c052b380>]
+(gic_handle_irq+0x8c/0x90)
+[33633.891449] [<c052b380>] (gic_handle_irq) from [<c0100b8c>]
+(__irq_svc+0x6c/0xa8)
+[33633.898996] Exception stack(0xdf0b1d78 to 0xdf0b1dc0)
+[33633.904080] 1d60:
+    00000000 df0b1dd0
+[33633.912324] 1d80: df60ea80 00000011 df0b1dd0 df611b00 c025b59c
+00000001 00000001 ffffe000
+[33633.920568] 1da0: 00000000 df611b08 df611c40 df0b1dc8 00000000
+c01c7030 200b0013 ffffffff
+[33633.928779] [<c0100b8c>] (__irq_svc) from [<c01c7030>]
+(smp_call_function_single+0x1ec/0x294)
+[33633.937376] [<c01c7030>] (smp_call_function_single) from
+[<c0251338>] (perf_event_exit_cpu_context+0x64/0x9c)
+[33633.947356] [<c0251338>] (perf_event_exit_cpu_context) from
+[<c0251390>] (perf_reboot+0x20/0x44)
+[33633.956210] [<c0251390>] (perf_reboot) from [<c0148230>]
+(notifier_call_chain+0x48/0x80)
+[33633.964332] [<c0148230>] (notifier_call_chain) from [<c01488c0>]
+(blocking_notifier_call_chain+0x44/0x60)
+[33633.973966] [<c01488c0>] (blocking_notifier_call_chain) from
+[<c0149a14>] (kernel_restart_prepare+0x18/0x38)
+[33633.983861] [<c0149a14>] (kernel_restart_prepare) from [<c0149aec>]
+(kernel_restart+0xc/0x50)
+[33633.992454] [<c0149aec>] (kernel_restart) from [<c0149d40>]
+(__do_sys_reboot+0x10c/0x204)
+[33634.000700] [<c0149d40>] (__do_sys_reboot) from [<c01000c0>]
+(ret_fast_syscall+0x0/0x54)
+[33634.008819] Exception stack(0xdf0b1fa8 to 0xdf0b1ff0)
+[33634.013939] 1fa0:                   01234567 be9c5b28 fee1dead
+28121969 01234567 487de000
+[33634.022183] 1fc0: 01234567 be9c5b28 be9c5b24 00000058 be9c5b28
+be9c5b24 fffff000 be9c5b2c
+[33634.030388] 1fe0: 00000058 be9c5a9c b6f08d65 b6e87be6
+[33634.035509] CPU2: stopping
+[33634.038258] CPU: 2 PID: 0 Comm: swapper/2 Tainted: G      D
+  5.9.0-rc4 #30
+[33634.045982] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+[33634.052287] [<c0111a6c>] (unwind_backtrace) from [<c010b95c>]
+(show_stack+0x10/0x14)
+[33634.060102] [<c010b95c>] (show_stack) from [<c0512450>]
+(dump_stack+0xc4/0xd8)
+[33634.067357] [<c0512450>] (dump_stack) from [<c010fcd4>]
+(handle_IPI+0x3f4/0x420)
+[33634.074826] [<c010fcd4>] (handle_IPI) from [<c052b380>]
+(gic_handle_irq+0x8c/0x90)
+[33634.082466] [<c052b380>] (gic_handle_irq) from [<c0100b8c>]
+(__irq_svc+0x6c/0xa8)
+[33634.089978] Exception stack(0xdf0ebf08 to 0xdf0ebf50)
+[33634.095100] bf00:                   00000000 c12ab680 1e4b4000
+00000060 c12ab620 00000001
+[33634.103345] bf20: 00000001 00000001 df6213b8 eb7fd8c0 00001e96
+c12efb40 fffffff6 df0ebf58
+[33634.111551] bf40: c085c108 c085c1d4 60000113 ffffffff
+[33634.116675] [<c0100b8c>] (__irq_svc) from [<c085c1d4>]
+(cpuidle_enter_state+0x244/0x4d0)
+[33634.124833] [<c085c1d4>] (cpuidle_enter_state) from [<c085c4c4>]
+(cpuidle_enter+0x50/0x54)
+[33634.133130] [<c085c4c4>] (cpuidle_enter) from [<c0158c4c>]
+(do_idle+0x204/0x294)
+[33634.140594] [<c0158c4c>] (do_idle) from [<c0158fdc>]
+(cpu_startup_entry+0x18/0x1c)
+[33634.148233] [<c0158fdc>] (cpu_startup_entry) from [<8010172c>] (0x8010172c)
+[33634.164335] Rebooting in 10 seconds..
