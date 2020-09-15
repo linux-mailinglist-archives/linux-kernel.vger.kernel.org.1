@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4CF26B23B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C569D26B23A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727574AbgIOWnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:43:49 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:9240 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727440AbgIOPzp (ORCPT
+        id S1727864AbgIOWnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:43:42 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47906 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727374AbgIOPzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:55:45 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FFhaGC017288;
-        Tue, 15 Sep 2020 17:54:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=xiFhVzR1YyqGzg2OheLi0xZmDY1r+Df1efVdmesMDrs=;
- b=yXJ1OBpPKdC02sxYdOGPBGVcEih1BjLc1inPNM7UXQ9ma1jBybK/Ur4xgJPHBq6vouiw
- 24iBFiloH/Kxkr8PR+3STffYTp0lz5qP2qi+ZI6PoUI8JMHbkzFeX+hgu/eePGH8DXDj
- VbPxpqw3GdBEWb9s1TEJneaRuJ3HRlGrcteJy2YSYnlzwPCcK9gFs2Ybjab4s0w3hgYV
- YZ5TpypfeI4uXgAmOyptsdQRQIZ26/9Y9cfNIZ/rGwzgziUvIcmQyJP9IXLaVn9TjYNY
- J7wx6YllWxMX+RilZYB5iGWM+kV92VYLUePQ63MI7mikXiVBR6tnT4EquZ+zDY1waQZG Wg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33gkt0gpac-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 17:54:44 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0E08D10002A;
-        Tue, 15 Sep 2020 17:54:41 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 995D02BA2DB;
-        Tue, 15 Sep 2020 17:54:41 +0200 (CEST)
-Received: from SFHDAG6NODE1.st.com (10.75.127.16) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
- 2020 17:54:41 +0200
-Received: from SFHDAG6NODE1.st.com ([fe80::8d96:4406:44e3:eb27]) by
- SFHDAG6NODE1.st.com ([fe80::8d96:4406:44e3:eb27%20]) with mapi id
- 15.00.1473.003; Tue, 15 Sep 2020 17:54:41 +0200
-From:   Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: stm32/crc32 - Avoid lock if hardware is already
- used
-Thread-Topic: [PATCH] crypto: stm32/crc32 - Avoid lock if hardware is already
- used
-Thread-Index: AQHWgq4lZ9k8lMJnVkmAkne1J9B/yKliwQwAgAcJHIA=
-Date:   Tue, 15 Sep 2020 15:54:41 +0000
-Message-ID: <28561e25-1140-9a08-1546-4422150b65f7@st.com>
-References: <20200904112527.15677-1-nicolas.toromanoff@st.com>
- <20200911042816.GA5531@gondor.apana.org.au>
-In-Reply-To: <20200911042816.GA5531@gondor.apana.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.49]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7BA07147189E834E80D683C23146B657@st.com>
-Content-Transfer-Encoding: base64
+        Tue, 15 Sep 2020 11:55:49 -0400
+Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kIDJ4-0005bW-Pu; Tue, 15 Sep 2020 15:55:46 +0000
+Date:   Tue, 15 Sep 2020 17:55:46 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christian Brauner <christian@brauner.io>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 03/15] selftests/seccomp: mips: Define SYSCALL_NUM_SET
+ macro
+Message-ID: <20200915155546.ht4vo7nqswxrgymb@wittgenstein>
+References: <20200912110820.597135-1-keescook@chromium.org>
+ <20200912110820.597135-4-keescook@chromium.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_11:2020-09-15,2020-09-15 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200912110820.597135-4-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gSGVyYmVydCwNCg0KT24gOS8xMS8yMCA2OjI4IEFNLCBIZXJiZXJ0IFh1IHdyb3RlOg0K
-PiBPbiBGcmksIFNlcCAwNCwgMjAyMCBhdCAwMToyNToyN1BNICswMjAwLCBOaWNvbGFzIFRvcm9t
-YW5vZmYgd3JvdGU6DQo+PiBJZiBTVE0zMiBDUkMgZGV2aWNlIGlzIGFscmVhZHkgaW4gdXNlLCBj
-YWxjdWxhdGUgQ1JDIGJ5IHNvZnR3YXJlLg0KPj4NCj4+IFRoaXMgd2lsbCByZWxlYXNlIENQVSBj
-b25zdHJhaW50IGZvciBhIGNvbmN1cnJlbnQgYWNjZXNzIHRvIHRoZQ0KPj4gaGFyZHdhcmUsIGFu
-ZCBhdm9pZCBtYXNraW5nIGlycXMgZHVyaW5nIHRoZSB3aG9sZSBibG9jayBwcm9jZXNzaW5nLg0K
-Pj4NCj4+IEZpeGVzOiA3Nzk1YzBiYWY1YWMgKCJjcnlwdG86IHN0bTMyL2NyYzMyIC0gcHJvdGVj
-dCBmcm9tIGNvbmN1cnJlbnQgYWNjZXNzZXMiKQ0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IE5pY29s
-YXMgVG9yb21hbm9mZiA8bmljb2xhcy50b3JvbWFub2ZmQHN0LmNvbT4NCj4+IC0tLQ0KPj4gICBk
-cml2ZXJzL2NyeXB0by9zdG0zMi9LY29uZmlnICAgICAgIHwgIDIgKysNCj4+ICAgZHJpdmVycy9j
-cnlwdG8vc3RtMzIvc3RtMzItY3JjMzIuYyB8IDE1ICsrKysrKysrKysrKy0tLQ0KPj4gICAyIGZp
-bGVzIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvY3J5cHRvL3N0bTMyL0tjb25maWcgYi9kcml2ZXJzL2NyeXB0by9z
-dG0zMi9LY29uZmlnDQo+PiBpbmRleCA0ZWYzZWIxMTM2MWMuLjhkNjA1YjA3NTcxZiAxMDA2NDQN
-Cj4+IC0tLSBhL2RyaXZlcnMvY3J5cHRvL3N0bTMyL0tjb25maWcNCj4+ICsrKyBiL2RyaXZlcnMv
-Y3J5cHRvL3N0bTMyL0tjb25maWcNCj4+IEBAIC0zLDYgKzMsOCBAQCBjb25maWcgQ1JZUFRPX0RF
-Vl9TVE0zMl9DUkMNCj4+ICAgCXRyaXN0YXRlICJTdXBwb3J0IGZvciBTVE0zMiBjcmMgYWNjZWxl
-cmF0b3JzIg0KPj4gICAJZGVwZW5kcyBvbiBBUkNIX1NUTTMyDQo+PiAgIAlzZWxlY3QgQ1JZUFRP
-X0hBU0gNCj4+ICsJc2VsZWN0IENSWVBUT19DUkMzMg0KPj4gKwlzZWxlY3QgQ1JZUFRPX0NSQzMy
-Qw0KPiANCj4gU2hvdWxkbid0IHRoaXMgYmUgInNlbGVjdCBDUkMzMiI/DQoNCkNvcnJlY3QgInNl
-bGVjdCBDUkMzMiIgaXMgZW5vdWdoLg0KSSdsbCBzZW5kIGEgdmVyc2lvbiAyIHdpdGggb25seSAi
-c2VsZWN0IENSQzMyIi4NCg0KDQpOaWNvbGFzLg==
+On Sat, Sep 12, 2020 at 04:08:08AM -0700, Kees Cook wrote:
+> Remove the mips special-case in change_syscall().
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  tools/testing/selftests/seccomp/seccomp_bpf.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> index 1c83e743bfb1..02a9a6599746 100644
+> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> @@ -1742,6 +1742,13 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+>  # define ARCH_REGS		struct pt_regs
+>  # define SYSCALL_NUM(_regs)	(_regs).regs[2]
+>  # define SYSCALL_SYSCALL_NUM	regs[4]
+> +# define SYSCALL_NUM_SET(_regs, _nr)			\
+> +	do {						\
+> +		if ((_regs).regs[2] == __NR_O32_Linux)	\
+> +			(_regs).regs[4] = _nr;		\
+> +		else					\
+> +			(_regs).regs[2] = _nr;		\
+> +	} while (0)
+
+I think that
+
+# define SYSCALL_NUM_SET(_regs, _nr)				\
+	do {							\
+		if (SYSCALL_NUM(_regs) == __NR_O32_Linux)	\
+			(_regs).regs[4] = _nr;			\
+		else						\
+			(_regs).regs[2] = _nr;			\
+	} while (0)
+
+would read better but that's just a matter of taste. :)
+
+Looks good!
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
