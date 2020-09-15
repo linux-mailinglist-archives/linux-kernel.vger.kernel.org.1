@@ -2,192 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5E126B892
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5075826B896
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbgIPAqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
+        id S1726573AbgIPAqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgIOM6V (ORCPT
+        with ESMTP id S1726530AbgIONAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:58:21 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7004EC061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 05:58:21 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z19so1872785pfn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 05:58:21 -0700 (PDT)
+        Tue, 15 Sep 2020 09:00:24 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDACC06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:00:08 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k13so1303030plk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:00:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=antmicro.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z7G2CzOYqiH9ibUColb5tVhNMevQLWkjnQ9SIdmc0AU=;
-        b=bd1YdxZZomrEmxn/plX06V/cZuYuZAA+EkG5aXcyoXsX4PS9BCuGp3EjMmbgX9uEyQ
-         ITNfIiYiyR8/V7qtGzLmbiYIkbhd19hK6XNVK+GyD7VQHYlS5uhz9bCTwp52aDeyTcXG
-         CGQTqRLc3xfX0MZ2esmJAGooRl4Mar7tTboQY=
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IFig9ACO4bSS32kx/lDqlgTRWm2lqua6M6hUcvyGFR8=;
+        b=B9ojoIjDFZ9eF0ICOMpjQvnzYZWgEFslXcMRchF5bHGTN+Gs/cQhddDbUEdXc6MeyB
+         R+TMnXJoPPxmQwJ56a9Gnc01PpUNBX1HIANP0gYofuAA3aAmgq+tvGo8U6HiqIm0C/J0
+         oEIAe6LSlOXWtpadXOgFatYpd6+V6hATPrGv2gLfOM/1cwTEe0n4atiy3M40UeuoTaXn
+         y/NstleAjNRdvriNCxTKAdt3OvF/KC2gGdvH5sjewgWAeb3PKRA02U+bdiLympzTrsPV
+         YoNhH97t7Dd7k9wcRYVVMVdkTmZ0WJZGpElS0kZUAzHxwu+yOIekQSpcGXzhznPTCLNt
+         Byrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z7G2CzOYqiH9ibUColb5tVhNMevQLWkjnQ9SIdmc0AU=;
-        b=fQS25HCncq+f8jBwbHqEH4dMXXGESGbja1MjttnLVUtcOHXGbciTXNVEKvWITacev0
-         pJKP0zTCsRybpFhInw4ffVvS6kJz+sqIHqk0t+KUQA+9EIwlRT8g2/ttDC653SiguGqL
-         xV7l9U1SOHZIYgP0RU/6gG7+cGvWelb+Bj4TkaaKthG6bEPK75RfSKcr8a7mnWSnyOVP
-         8jh9RfOOCnJoh27wFeSAIlfftUYxDcdDFIbVNLxFhsCzECY3pdjR30yrcEzDuu4A9XXj
-         qYJ+XRrIzc88ZYqb8+T09647hYhjMw2aq6R7gzTJ+oHkaqLi0piiuzQN3c+ni7nU45+G
-         Ta6w==
-X-Gm-Message-State: AOAM533Ots1IYdNUpWKin6wa7yRofScDCbKcruGKl0cilCk/bMb0FfAE
-        DF+UUePYe4ri3BepPfpdyfT0XlhdT+QwTc7vQUEAGA==
-X-Google-Smtp-Source: ABdhPJze8e//GhCZuhvxKjphXB1Pvoi+mg7wGBazyHURu7t47g/o6713ZFFjPMbSdxMoGyr1OqPX6Vgp1G/RiekKwC8=
-X-Received: by 2002:aa7:956d:0:b029:142:2501:35d2 with SMTP id
- x13-20020aa7956d0000b0290142250135d2mr1682052pfq.50.1600174700627; Tue, 15
- Sep 2020 05:58:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IFig9ACO4bSS32kx/lDqlgTRWm2lqua6M6hUcvyGFR8=;
+        b=We+St+mJ7kOTnoO34oUYaOlLb6ASRpfgc92n1YW5XmKY80ChJmshuwWLyHVC1Ulm/M
+         20SBobq/ZnJAhN0joFlaylUJTBVlhUz+t8HUh/nvGWxiS+4hezkJKSRDkHpKaQrsTnzp
+         VbETcRatTIdUYNd/Y045C4496LBLpAeukOLZdmQJz5Q1ezlYcOvn0rkGNb+LpX4duZBT
+         7bAfLo89Hd+UDyU39evfAoUZKEzut4IPdq3JRz3moFM5ot42+qcgUhr36klJqhcgtXXE
+         Ur09n9vBEITaYmwP8hq5Cj0nFodcBcBCzlw+Tt/4yfetjYcMdTgsF2xE7WNSPWTRok9k
+         McPw==
+X-Gm-Message-State: AOAM530RHGIHlkFq5kqx7Zv8sRGObzRO9MAolVMOch7sAOD/khCdQglC
+        q3whyP74C9EoHDjScjWUjCHU5A==
+X-Google-Smtp-Source: ABdhPJweCFGKb+8Bpk7lpOwwgL1O+W4g/G43QI96b0WrwCjZbzTFpN+tMKrXVGoqnvzds1F5KoKRqA==
+X-Received: by 2002:a17:90b:2347:: with SMTP id ms7mr3974046pjb.135.1600174807782;
+        Tue, 15 Sep 2020 06:00:07 -0700 (PDT)
+Received: from localhost.bytedance.net ([103.136.220.66])
+        by smtp.gmail.com with ESMTPSA id w185sm14269855pfc.36.2020.09.15.05.59.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Sep 2020 06:00:07 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap pages of hugetlb page
+Date:   Tue, 15 Sep 2020 20:59:23 +0800
+Message-Id: <20200915125947.26204-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-References: <20200812143324.2394375-0-mholenko@antmicro.com>
- <20200812143324.2394375-3-mholenko@antmicro.com> <20200911005740.GN3562056@lianli.shorne-pla.net>
- <CAPk366Tvb9g960e3ZLv3+_H8FZJRRe0Jqa4q7tejE+svMcQvLA@mail.gmail.com> <20200914132433.GB2512402@lianli.shorne-pla.net>
-In-Reply-To: <20200914132433.GB2512402@lianli.shorne-pla.net>
-From:   Mateusz Holenko <mholenko@antmicro.com>
-Date:   Tue, 15 Sep 2020 14:58:08 +0200
-Message-ID: <CAPk366QvUdK1EVpUEVBkgb4me5aMfx6GBWSVNy8OKb8reT0Xvw@mail.gmail.com>
-Subject: Re: [PATCH v10 3/5] drivers/soc/litex: add LiteX SoC Controller driver
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gabriel L. Somlo" <gsomlo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 3:24 PM Stafford Horne <shorne@gmail.com> wrote:
->
-> On Mon, Sep 14, 2020 at 12:33:11PM +0200, Mateusz Holenko wrote:
-> > On Fri, Sep 11, 2020 at 2:57 AM Stafford Horne <shorne@gmail.com> wrote:
-> > >
-> > > On Wed, Aug 12, 2020 at 02:34:34PM +0200, Mateusz Holenko wrote:
-> > > > From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > > >
-> > > > This commit adds driver for the FPGA-based LiteX SoC
-> > > > Controller from LiteX SoC builder.
-> > > >
-> > > > Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > > Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > > > ---
-> > > > +     node = dev->of_node;
-> > > > +     if (!node)
-> > > > +             return -ENODEV;
->
-> We return here without BUG() if the setup fails.
->
-> > > > +
-> > > > +     soc_ctrl_dev = devm_kzalloc(dev, sizeof(*soc_ctrl_dev), GFP_KERNEL);
-> > > > +     if (!soc_ctrl_dev)
-> > > > +             return -ENOMEM;
->
-> We return here without BUG() if we are out of memory.
->
-> > > > +
-> > > > +     soc_ctrl_dev->base = devm_platform_ioremap_resource(pdev, 0);
-> > > > +     if (IS_ERR(soc_ctrl_dev->base))
-> > > > +             return PTR_ERR(soc_ctrl_dev->base);
->
-> Etc.
+Hi all,
 
-You are totally right - this is not consistent.
-We should probably either trigger BUG() in each case or don't bother at all.
+This patch series will free some vmemmap pages(struct page structures)
+associated with each hugetlbpage when preallocated to save memory.
 
->
-> > > > +
-> > > > +     result = litex_check_csr_access(soc_ctrl_dev->base);
-> > > > +     if (result) {
-> > > > +             // LiteX CSRs access is broken which means that
-> > > > +             // none of LiteX drivers will most probably
-> > > > +             // operate correctly
-> > > The comment format here with // is not usually used in the kernel, but its not
-> > > forbidded.  Could you use the /* */ multiline style?
-> >
-> > Sure, I'll change the commenting style here.
-> >
-> > >
-> > > > +             BUG();
-> > > Instead of stopping the system with BUG, could we just do:
-> > >
-> > >         return litex_check_csr_access(soc_ctrl_dev->base);
-> > >
-> > > We already have failure for NODEV/NOMEM so might as well not call BUG() here
-> > > too.
-> >
-> > It's true that litex_check_csr_accessors() already generates error
-> > codes that could be
-> > returned directly.
-> > The point of using BUG() macro here, however, is to stop booting the
-> > system so that it's visible
-> > (and impossible to miss for the user) that an unresolvable HW issue
-> > was encountered.
-> >
-> > CSR-accessors - the litex_{g,s}et_reg() functions - are intended to be
-> > used by other LiteX drivers
-> > and it's very unlikely that those drivers would work properly after
-> > the fail of litex_check_csr_accessors().
-> > Since in such case the UART driver will be affected too (no boot logs
-> > and error messages visible to the user),
-> > I thought it'll be easier to spot and debug the problem if the system
-> > stopped in the BUG loop.
-> > Perhaps there are other, more linux-friendly, ways of achieving a
-> > similar goal - I'm open for suggestions.
->
-> I see your point, but I thought if failed with an exit status above, we could do
-> the same here.  But I guess failing here means that something is really wrong as
-> validation failed.
->
-> Some points:
->  - If we return here, the system will still boot but there will be no UART
->  - If we bail with BUG(), here the system stops, and there is no UART
->  - Both cases the user can connect with a debugger and read "dmesg", to see what
->    is wrong, but BUG() does not print an error message on all architectures.
->
-> We could also use:
->
->  - WARN(1, "Failed to validate CSR registers, the system is probably broken.");
->
-> If you want to keep BUG() it may be fine.
->
-> I am not an expert on handling these type of bailout's so other input is
-> appreciated.
+Nowadays we track the status of physical page frames using `struct page`
+arranged in one or more arrays. And here exists one-to-one mapping between
+the physical page frame and the corresponding `struct page`.
 
-I don't have a strong opinion about using BUG() here - I just thought
-it would be easier for the user.
-If this is, however, not how linux typically works, I'm ok with
-reworking this part.
+The hugetlbpage support is built on top of multiple page size support
+that is provided by most modern architectures. For example, x86 CPUs
+normally support 4K and 2M (1G if architecturally supported) page sizes.
+Every hugetlbpage has more than one `struct page`. The 2M hugetlbpage
+has 512 `struct page` and 1G hugetlbpage has 4096 `struct page`. But
+in the core of hugetlbpage only uses the first 4 `struct page` to store
+metadata associated with each hugetlbpage. The rest of the `struct page`
+are usually read the compound_head field which are all the same value.
+If we can free some struct page memory to buddy system so that We can
+save a lot of memory.
 
-> -Stafford
+When the system boot up, every 2M hugetlbpage has 512 `struct page` which
+is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
 
-Best,
-Mateusz
+   hugetlbpage                   struct page(8 pages)          page frame(8 pages)
+  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+  |           |                     |     0     | -------------> |     0     |
+  |           |                     |     1     | -------------> |     1     |
+  |           |                     |     2     | -------------> |     2     |
+  |           |                     |     3     | -------------> |     3     |
+  |           |                     |     4     | -------------> |     4     |
+  |     2M    |                     |     5     | -------------> |     5     |
+  |           |                     |     6     | -------------> |     6     |
+  |           |                     |     7     | -------------> |     7     |
+  |           |                     +-----------+                +-----------+
+  |           |
+  |           |
+  +-----------+
 
---
-Mateusz Holenko
-Antmicro Ltd | www.antmicro.com
-Roosevelta 22, 60-829 Poznan, Poland
+
+When a hugetlbpage is preallocated, we can change the mapping from above to
+bellow.
+
+   hugetlbpage                   struct page(8 pages)          page frame(8 pages)
+  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+  |           |                     |     0     | -------------> |     0     |
+  |           |                     |     1     | -------------> |     1     |
+  |           |                     |     2     | -------------> +-----------+
+  |           |                     |     3     | -----------------^ ^ ^ ^ ^
+  |           |                     |     4     | -------------------+ | | |
+  |     2M    |                     |     5     | ---------------------+ | |
+  |           |                     |     6     | -----------------------+ |
+  |           |                     |     7     | -------------------------+
+  |           |                     +-----------+
+  |           |
+  |           |
+  +-----------+
+
+The mapping of the first page(index 0) and the second page(index 1) is
+unchanged. The remaining 6 pages are all mapped to the same page(index
+1). So we only need 2 pages for vmemmap area and free 6 pages to the
+buddy system to save memory. Why we can do this? Because the content
+of the remaining 7 pages are usually same except the first page.
+
+When a hugetlbpage is freed to the buddy system, we should allocate 6
+pages for vmemmap pages and restore the previous mapping relationship.
+
+If we uses the 1G hugetlbpage, we can save 4095 pages. This is a very
+substantial gain. On our server, run some SPDK applications which will
+use 300GB hugetlbpage. With this feature enabled, we can save 4797MB
+memory.
+
+Muchun Song (24):
+  mm/memory_hotplug: Move bootmem info registration API to
+    bootmem_info.c
+  mm/memory_hotplug: Move {get,put}_page_bootmem() to bootmem_info.c
+  mm/hugetlb: Introduce a new config HUGETLB_PAGE_FREE_VMEMMAP
+  mm/hugetlb: Register bootmem info when
+    CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+  mm/hugetlb: Introduce nr_free_vmemmap_pages in the struct hstate
+  mm/hugetlb: Introduce pgtable allocation/freeing helpers
+  mm/hugetlb: Add freeing unused vmemmap pages support for x86
+  mm/bootmem_info: Introduce {free,prepare}_vmemmap_page()
+  x86/mm: Introduce VMEMMAP_SIZE/VMEMMAP_END macro
+  mm/hugetlb: Free the vmemmap pages associated with each hugetlb page
+  mm/hugetlb: Add vmemmap_pmd_huge macro for x86
+  mm/hugetlb: Defer freeing of hugetlb pages
+  mm/hugetlb: Allocate the vmemmap pages associated with each hugetlb
+    page
+  mm/hugetlb: Introduce remap_huge_page_pmd_vmemmap helper
+  mm/hugetlb: Use PG_slab to indicate split pmd
+  mm/hugetlb: Support freeing vmemmap pages of gigantic page
+  mm/hugetlb: Add a BUILD_BUG_ON to check if struct page size is a power
+    of two
+  mm/hugetlb: Clear PageHWPoison on the non-error memory page
+  mm/hugetlb: Flush work when dissolving hugetlb page
+  mm/hugetlb: Add a kernel parameter hugetlb_free_vmemmap
+  mm/hugetlb: Merge pte to huge pmd only for gigantic page
+  mm/hugetlb: Implement vmemmap_pmd_mkhuge macro
+  mm/hugetlb: Gather discrete indexes of tail page
+  mm/hugetlb: Add BUILD_BUG_ON to catch invalid usage of tail struct
+    page
+
+ .../admin-guide/kernel-parameters.txt         |   9 +
+ Documentation/admin-guide/mm/hugetlbpage.rst  |   3 +
+ arch/x86/include/asm/hugetlb.h                |  20 +
+ arch/x86/include/asm/pgtable_64_types.h       |   8 +
+ arch/x86/mm/init_64.c                         |   5 +-
+ fs/Kconfig                                    |  15 +
+ include/linux/bootmem_info.h                  |  65 ++
+ include/linux/hugetlb.h                       |  64 ++
+ include/linux/hugetlb_cgroup.h                |  15 +-
+ include/linux/memory_hotplug.h                |  27 -
+ mm/Makefile                                   |   1 +
+ mm/bootmem_info.c                             | 125 +++
+ mm/hugetlb.c                                  | 834 +++++++++++++++++-
+ mm/memory_hotplug.c                           | 116 ---
+ mm/sparse.c                                   |   1 +
+ 15 files changed, 1143 insertions(+), 165 deletions(-)
+ create mode 100644 include/linux/bootmem_info.h
+ create mode 100644 mm/bootmem_info.c
+
+-- 
+2.20.1
+
