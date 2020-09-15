@@ -2,168 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB4126B7C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730F826B74F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgIPA2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:28:43 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:51518 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbgIOOFu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:05:50 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FDsng9156976;
-        Tue, 15 Sep 2020 14:05:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=9c0AXOcTWsVHzDzUN3KwIxGxdoDyDkNUwPGWxuGjmd0=;
- b=dhWwml113FRzQdGqLkIbc6s7Kz1Mskng7mEYQgO5don0ihgl3NFdyy9oZRf7wsgSY+ch
- QyGbau0ZNX4KvbMfybFK2sdblFn/2wj4HrXFL6cW4is5QCpN/U8k97avmL4kJrCgrOVv
- uXsx0Prew9O7aa654VnrEFewzbZcjoz4uHjgSsy4dmQ5w1SzZ1bj/3uFL5f5ju+5R5mI
- 5I6tuXuyS/u8z2Rx+vFHQRY/gT1g4OkT+IIdPd0Br72uM62lejCiYpJH8Ygjt+2se70C
- uIdn2Nl2FgTufYrmoBoXCdvDiOILIBpa05NpsEbqey/75GeRtjv9aaEwZsg6SetmXyre rg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33gp9m57nd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 14:05:16 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FDshBU072893;
-        Tue, 15 Sep 2020 14:03:15 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 33h88yb5cx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 14:03:15 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08FDt460076562;
-        Tue, 15 Sep 2020 14:03:15 GMT
-Received: from brm-x32-13.us.oracle.com (brm-x32-13.us.oracle.com [10.80.150.47])
-        by userp3030.oracle.com with ESMTP id 33h88yb5c4-1;
-        Tue, 15 Sep 2020 14:03:15 +0000
-From:   Thomas Tai <thomas.tai@oracle.com>
-To:     konrad.wilk@oracle.com, m.szyprowski@samsung.com, hch@lst.de,
-        robin.murphy@arm.com
-Cc:     thomas.tai@oracle.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dma-direct: Fix potential NULL pointer dereference
-Date:   Tue, 15 Sep 2020 08:03:14 -0600
-Message-Id: <1600178594-22801-1-git-send-email-thomas.tai@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150117
+        id S1727070AbgIPAVW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 20:21:22 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3602 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726811AbgIOOVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:21:41 -0400
+Received: from dggemi406-hub.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id BE050A997A71D30631CE;
+        Tue, 15 Sep 2020 22:04:37 +0800 (CST)
+Received: from DGGEMI522-MBS.china.huawei.com ([169.254.8.78]) by
+ dggemi406-hub.china.huawei.com ([10.3.17.144]) with mapi id 14.03.0487.000;
+ Tue, 15 Sep 2020 22:04:31 +0800
+From:   lushenming <lushenming@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
+        yuzenghui <yuzenghui@huawei.com>
+Subject: RE: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll
+ on the GICR_VPENDBASER.Dirty bit
+Thread-Topic: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll
+ on the GICR_VPENDBASER.Dirty bit
+Thread-Index: AdaLYvuHeQKSQv5lQ9G9IAytgjmwLg==
+Date:   Tue, 15 Sep 2020 14:04:31 +0000
+Message-ID: <343E0E168479F04FACCB176989D12DE7EE1D2D@dggemi522-mbs.china.huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.184.59]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When booting the kernel v5.9-rc4 on a VM, the kernel would panic when
-printing a warning message in swiotlb_map(). It is because dev->dma_mask
-can potentially be a null pointer. Using the dma_get_mask() macro can
-avoid the NULL pointer dereference.
+Thanks for your quick response.
 
-Fixes: d323bb44e4d2 ("drm/virtio: Call the right shmem helpers")
+Okay, I agree that busy-waiting may add more overhead at the RD level. But I think that the delay time can be adjusted. In our latest hardware implementation, we optimize the search of the VPT, now even the VPT full of interrupts (56k) can be parsed within 2 microseconds. It is true that the parse speeds of various hardware are different, but does directly waiting for 10 microseconds make the optimization of those fast hardware be completely masked? Maybe we can set the delay time smaller, like 1 microseconds?
 
-[drm] Initialized virtio_gpu 0.1.0 0 for virtio0 on minor 0
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] SMP PTI
- CPU: 1 PID: 331 Comm: systemd-udevd Not tainted 5.9.0-rc4 #1
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
- BIOS 1.13.0-1ubuntu1 04/01/2014
- RIP: 0010:swiotlb_map+0x1ac/0x200
- Code: e8 d9 fc ff ff 80 3d 92 ee 4c 01 00 75 51 49 8b 84 24 48 02 00 00
- 4d 8b 6c 24 50 c6 05 7c ee 4c 01 01 4d 8b bc 24 58 02 00 00 <4c> 8b 30
- 4d 85 ed 75 04 4d 8b 2c 24 4c 89 e7 e8 10 6b 4f 00 4d 89
- RSP: 0018:ffff9f96801af6f8 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: 0000000000001000 RCX: 0000000000000080
- RDX: 000000000000007f RSI: 0000000000000202 RDI: 0000000000000202
- RBP: ffff9f96801af748 R08: ffffffffffffffff R09: 0000000000000020
- R10: 0000000000000000 R11: ffff8fabfffa3000 R12: ffff8faad02c7810
- R13: 0000000000000000 R14: 0000000000000020 R15: 0000000000000000
- FS:  00007fabc63588c0(0000) GS:ffff8fabf7c80000(0000)
- knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 0000000151496005 CR4: 0000000000370ee0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-  dma_direct_map_sg+0x124/0x210
-  dma_map_sg_attrs+0x32/0x50
-  drm_gem_shmem_get_pages_sgt+0x6a/0x90 [drm]
-  virtio_gpu_object_create+0x140/0x2f0 [virtio_gpu]
-  ? ww_mutex_unlock+0x26/0x30
-  virtio_gpu_mode_dumb_create+0xab/0x160 [virtio_gpu]
-  drm_mode_create_dumb+0x82/0x90 [drm]
-  drm_client_framebuffer_create+0xaa/0x200 [drm]
-  drm_fb_helper_generic_probe+0x59/0x150 [drm_kms_helper]
-  drm_fb_helper_single_fb_probe+0x29e/0x3e0 [drm_kms_helper]
-  __drm_fb_helper_initial_config_and_unlock+0x41/0xd0 [drm_kms_helper]
-  drm_fbdev_client_hotplug+0xe6/0x1a0 [drm_kms_helper]
-  drm_fbdev_generic_setup+0xaf/0x170 [drm_kms_helper]
-  virtio_gpu_probe+0xea/0x100 [virtio_gpu]
-  virtio_dev_probe+0x14b/0x1e0 [virtio]
-  really_probe+0x1db/0x440
-  driver_probe_device+0xe9/0x160
-  device_driver_attach+0x5d/0x70
-  __driver_attach+0x8f/0x150
-  ? device_driver_attach+0x70/0x70
-  bus_for_each_dev+0x7e/0xc0
-  driver_attach+0x1e/0x20
-  bus_add_driver+0x152/0x1f0
-  driver_register+0x74/0xd0
-  ? 0xffffffffc0529000
-  register_virtio_driver+0x20/0x30 [virtio]
-  virtio_gpu_driver_init+0x15/0x1000 [virtio_gpu]
-  do_one_initcall+0x4a/0x1fa
-  ? _cond_resched+0x19/0x30
-  ? kmem_cache_alloc_trace+0x16b/0x2e0
-  do_init_module+0x62/0x240
-  load_module+0xe0e/0x1100
-  ? security_kernel_post_read_file+0x5c/0x70
-  __do_sys_finit_module+0xbe/0x120
-  ? __do_sys_finit_module+0xbe/0x120
-  __x64_sys_finit_module+0x1a/0x20
-  do_syscall_64+0x38/0x50
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+In addition, 10 microseconds seems to be the data that our team reported earlier, which is the parse time in worst case.
 
-Signed-off-by: Thomas Tai <thomas.tai@oracle.com>
----
- include/linux/dma-direct.h | 2 +-
- kernel/dma/swiotlb.c       | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+-----Original Message-----
+From: Marc Zyngier [mailto:maz@kernel.org] 
+Sent: 2020-09-15 15:41
+To: lushenming <lushenming@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>; Jason Cooper <jason@lakedaemon.net>; linux-kernel@vger.kernel.org; Wanghaibin (D) <wanghaibin.wang@huawei.com>
+Subject: Re: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll on the GICR_VENPENDBASER.Dirty bit
 
-diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-index 6e87225..7556067 100644
---- a/include/linux/dma-direct.h
-+++ b/include/linux/dma-direct.h
-@@ -168,7 +168,7 @@ static inline dma_addr_t dma_direct_map_page(struct device *dev,
- 
- 		dev_WARN_ONCE(dev, 1,
- 			     "DMA addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
--			     &dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);
-+			     &dma_addr, size, dma_get_mask(dev), dev->bus_dma_limit);
- 		return DMA_MAPPING_ERROR;
- 	}
- 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index c19379fa..aa7727b 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -682,7 +682,7 @@ dma_addr_t swiotlb_map(struct device *dev, phys_addr_t paddr, size_t size,
- 			attrs | DMA_ATTR_SKIP_CPU_SYNC);
- 		dev_WARN_ONCE(dev, 1,
- 			"swiotlb addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
--			&dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);
-+			&dma_addr, size, dma_get_mask(dev), dev->bus_dma_limit);
- 		return DMA_MAPPING_ERROR;
- 	}
- 
--- 
-1.8.3.1
+On 2020-09-15 08:22, Shenming Lu wrote:
+> Every time the vPE is scheduled, the code starts polling the 
+> GICR_VPENDBASER.Dirty bit until it becomes 0. It's OK. But the 
+> delay_us of the poll function is directly set to 10, which is a long 
+> time for most interrupts. In our measurement, it takes only 1~2 
+> microseconds, or even hundreds of nanoseconds, to finish parsing the 
+> VPT in most cases. However, in the current implementation, if the 
+> GICR_VPENDBASER.Dirty bit is not 0 immediately after the vPE is 
+> scheduled, it will directly wait for 10 microseconds, resulting in 
+> meaningless waiting.
+> 
+> In order to avoid meaningless waiting, we can set the delay_us to 0, 
+> which can exit the poll function immediately when the Dirty bit 
+> becomes 0.
 
+We clearly have a difference in interpretation of the word "meaningless".
+
+With this, you are busy-waiting on the register, adding even more overhead at the RD level. How is that better? The whole point is to back off and let the RD do its stuff in the background. This is also based on a massive sample of *one* implementation. How is that representative?
+
+It would be a lot more convincing if you measured the difference it makes on the total scheduling latency of a vcpu. Assuming it makes
+*any* observable difference.
+
+Thanks,
+
+         M.
+
+> 
+> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+> ---
+>  drivers/irqchip/irq-gic-v3-its.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c
+> b/drivers/irqchip/irq-gic-v3-its.c
+> index 548de7538632..5cfcf0c2ce1a 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -3803,7 +3803,7 @@ static void its_wait_vpt_parse_complete(void)
+>  	WARN_ON_ONCE(readq_relaxed_poll_timeout_atomic(vlpi_base + 
+> GICR_VPENDBASER,
+>  						       val,
+>  						       !(val & GICR_VPENDBASER_Dirty),
+> -						       10, 500));
+> +						       0, 500));
+>  }
+> 
+>  static void its_vpe_schedule(struct its_vpe *vpe)
+--
+Jazz is not dead. It just smells funny...
