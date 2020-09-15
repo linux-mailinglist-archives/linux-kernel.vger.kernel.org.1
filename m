@@ -2,206 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1822526B0AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B7926B09F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgIOWRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:17:00 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:40260 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727714AbgIOQdm (ORCPT
+        id S1727689AbgIOWPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727281AbgIOQgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:33:42 -0400
-Received: by mail-io1-f66.google.com with SMTP id j2so4762378ioj.7;
-        Tue, 15 Sep 2020 09:33:38 -0700 (PDT)
+        Tue, 15 Sep 2020 12:36:12 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E1AC061351
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:36:11 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id z13so4771648iom.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hTYtDNRWZ3IQd17IVwiFvjdPJC2m5bl5cpimFc01bsE=;
+        b=dd8bL7ebVaZyzMDfsYKo20tvtiuZtcDmrHxwpMH6xunQdc01MjGuk18V+0XPn8WHrl
+         Fis6Uo8ZkZSeYMw/H78zlSzVvrGy4lwsCvjqkxiT5CkoD8OYqyA+IbeH5o+YrirpA6r0
+         K8iLbnom0h1MLtbmdJo3GIQKZLGp8PT7JlepSGsUyzIZ6zgUM0WQ7PA3XVS8h2Jhq2pJ
+         kzHaBtpJJTkGGvgCKfbE1evnoBXp1Dad1Boq4Vl9c9ekuQvXK4qX4JS1c1w7QWEIZ0q7
+         lhbLIxyyUMt0OvM1lYg8LZlT0B+Pe0m3kwJXdmKVS7TF7Hciljn7WW/NJvTrGqu6jynF
+         Td1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YpUloxOmiyYoc4eUGVdn8xMYBlRSXLF/jQf6LOfQZOE=;
-        b=kHA8u4Kp7UreUAKfh0TUXSrZdjohutCx8dAx8ZL317Omz5jr9vwiNcxjazyI/dhl6B
-         Y9rRAJvYkU7tM3YzFMGKd48MbgLPNA/iwDG/xGtkO0Gejw+Z3PG+KCuNNo0j4vBZvaNn
-         ODauHiG2zZwfDu6wQY2+fvwvS1FZTNGoqzfS0eKLNpfnb0NkFVuqMhlCJoFhQTN3wwx8
-         AlLhrJQIREDWDzwPVryiz8Fq1QzBghwjHWAeMcWHcsW9ahjwKondFvZIdzzsPF7c/pp7
-         ICR0dPCcQl7JC2oYrXK2mh34cq/gTbC8y9Z4gaEzulXQiHQmf+8E9lrfltXxnuwOzI4H
-         Gq2w==
-X-Gm-Message-State: AOAM530pU52M6UaQKZAy+cyB0t8QW8J3Q+jHwLCQ89DN6zaHucqfRtnT
-        aT82u7frDC/xw0SLIif/gQ==
-X-Google-Smtp-Source: ABdhPJwLrL4G8mq+DgCg8GGlNZN/+c8RSkRPHwrsd/RyW2ftyn4Q26wDTuzcKVvGCACU6fzLu4toUQ==
-X-Received: by 2002:a6b:d304:: with SMTP id s4mr14424111iob.104.1600187617987;
-        Tue, 15 Sep 2020 09:33:37 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id k16sm8882262ilc.38.2020.09.15.09.33.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 09:33:37 -0700 (PDT)
-Received: (nullmailer pid 2080473 invoked by uid 1000);
-        Tue, 15 Sep 2020 16:33:35 -0000
-Date:   Tue, 15 Sep 2020 10:33:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        =?iso-8859-1?Q?Myl=E8ne?= Josserand 
-        <mylene.josserand@collabora.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv2 4/4] Input: rotary-encoder - Add gpio as push button
-Message-ID: <20200915163335.GA2063609@bogus>
-References: <20200907204045.95530-1-sebastian.reichel@collabora.com>
- <20200907204045.95530-5-sebastian.reichel@collabora.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hTYtDNRWZ3IQd17IVwiFvjdPJC2m5bl5cpimFc01bsE=;
+        b=ricqnZ29KjZMFq2t61paR+6UxsMcMQOMn7n50meGV1A2YPJz1TELqK2RPHugRRVTZn
+         sX3kQg75rdVmIOY66y86/XRHTfm3im9pttjXhAKSeCdmbmhXO/aYuQC1Jnklt618WPdE
+         6NbrMjU29Nem4YmswSke5B5nLS58YqSbg/r0TgAKmcQSoOdVKw9lIbFpDYPKdBVlnfCy
+         dS69X3Vo2w3ZDh/EBhA53vrhs987Zh1smJV92Tte+TlM9prlOAqGBilb7n4ttDCY4QIc
+         HNhEMHS+xK2nXYvBpWGS6UulRsSrBn8/2AHh5Bxqyq1rbYpsxYNNF6HCsBcT4XzpEWB3
+         TQTw==
+X-Gm-Message-State: AOAM530Dec/BNJr1ey41/xYSFXzeOeZXQ28sYH3vNLLMrQ2xIMhxW0Jk
+        v6SDywc+lQuYagGs3/d+SbUGbMcz5VFC2NOykdiEWA==
+X-Google-Smtp-Source: ABdhPJxfSpUADTY11rW/0vm2ayF8vH2q7+GTpuu5qgBeHOpVJABcAhpG1Zc/csWA4GJs7zkMIHdIbQ5efNp5B3lCemM=
+X-Received: by 2002:a05:6638:1643:: with SMTP id a3mr18483174jat.4.1600187770959;
+ Tue, 15 Sep 2020 09:36:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200907204045.95530-5-sebastian.reichel@collabora.com>
+References: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
+ <20200911143022.414783-4-nicolas.rybowski@tessares.net> <CAPhsuW5Gbx2pWgM1XcSYqVsN6L=q+0u3QFNxG7A+Qez=Tziu2A@mail.gmail.com>
+In-Reply-To: <CAPhsuW5Gbx2pWgM1XcSYqVsN6L=q+0u3QFNxG7A+Qez=Tziu2A@mail.gmail.com>
+From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
+Date:   Tue, 15 Sep 2020 18:35:59 +0200
+Message-ID: <CACXrtpRzZuCyZnduYcV+1d2Z3qTK2b7Mcj2gQvcRbnv7+k0VRw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/5] bpf: selftests: add MPTCP test base
+To:     Song Liu <song@kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 10:40:45PM +0200, Sebastian Reichel wrote:
-> From: Mylène Josserand <mylene.josserand@collabora.com>
-> 
-> Add the support of a gpio that can be defined as a push button.
-> Thanks to that, it is possible to emit a keycode in case of a
-> "push" event, if the rotary supports that.
-> 
-> The keycode to emit is defined using "linux,code" property
-> (such as in gpio-keys).
+Hi Song,
 
-But it is not...
+Thanks for the feedback !
 
-> Signed-off-by: Mylène Josserand <mylene.josserand@collabora.com>
-> [code cleanup to current standards and renamed some properties]
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  .../bindings/input/rotary-encoder.yaml        | 21 +++++++++
+On Mon, Sep 14, 2020 at 8:07 PM Song Liu <song@kernel.org> wrote:
+>
+> On Fri, Sep 11, 2020 at 8:02 AM Nicolas Rybowski
+> <nicolas.rybowski@tessares.net> wrote:
+> >
+> > This patch adds a base for MPTCP specific tests.
+> >
+> > It is currently limited to the is_mptcp field in case of plain TCP
+> > connection because for the moment there is no easy way to get the subflow
+> > sk from a msk in userspace. This implies that we cannot lookup the
+> > sk_storage attached to the subflow sk in the sockops program.
+> >
+> > Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> > Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+>
+> Acked-by: Song Liu <songliubraving@fb.com>
+>
+> With some nitpicks below.
+>
+> > ---
+> >
+> > Notes:
+> >     v1 -> v2:
+> >     - new patch: mandatory selftests (Alexei)
+> >
+> [...]
+> >                      int timeout_ms);
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> > new file mode 100644
+> > index 000000000000..0e65d64868e9
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> > @@ -0,0 +1,119 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <test_progs.h>
+> > +#include "cgroup_helpers.h"
+> > +#include "network_helpers.h"
+> > +
+> > +struct mptcp_storage {
+> > +       __u32 invoked;
+> > +       __u32 is_mptcp;
+> > +};
+> > +
+> > +static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 is_mptcp)
+> > +{
+> > +       int err = 0, cfd = client_fd;
+> > +       struct mptcp_storage val;
+> > +
+> > +       /* Currently there is no easy way to get back the subflow sk from the MPTCP
+> > +        * sk, thus we cannot access here the sk_storage associated to the subflow
+> > +        * sk. Also, there is no sk_storage associated with the MPTCP sk since it
+> > +        * does not trigger sockops events.
+> > +        * We silently pass this situation at the moment.
+> > +        */
+> > +       if (is_mptcp == 1)
+> > +               return 0;
+> > +
+> > +       if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &cfd, &val) < 0)) {
+> > +               perror("Failed to read socket storage");
+>
+> Maybe simplify this with CHECK(), which contains a customized error message?
+> Same for some other calls.
+>
 
-Bindings should be a separate patch.
+The whole logic here is strongly inspired from prog_tests/tcp_rtt.c
+where CHECK_FAIL is used.
+Also the CHECK macro will print a PASS message on successful map
+lookup, which is not expected at this point of the tests.
+I think it would be more interesting to leave it as it is to keep a
+cohesion between TCP and MPTCP selftests. What do you think?
 
->  drivers/input/misc/rotary_encoder.c           | 43 +++++++++++++++++++
->  2 files changed, 64 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/input/rotary-encoder.yaml b/Documentation/devicetree/bindings/input/rotary-encoder.yaml
-> index 5b60ea86bd62..682fee104004 100644
-> --- a/Documentation/devicetree/bindings/input/rotary-encoder.yaml
-> +++ b/Documentation/devicetree/bindings/input/rotary-encoder.yaml
-> @@ -74,6 +74,24 @@ properties:
->        need to be passed.
->      type: boolean
->  
-> +  push-gpios:
-> +    description: GPIO used as a detection of a push from the rotary-encoder.
-> +    maxItems: 1
-> +
-> +  linux,push-code:
-> +    description:
-> +      keycode to emit with the push-gpio of this rotary encoder.
-> +      If not specified defaults to <28> == KEY_ENTER.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: 28
-> +
-> +  linux,push-type:
-> +    description:
-> +      Specify event type this button/key generates.
-> +      If not specified defaults to <1> == EV_KEY.
-> +    $ref: /schemas/types.yaml#definitions/uint32
-> +    default: 1
+If there are no objections, I will send a v3 with the other requested
+changes and a rebase on the latest bpf-next.
 
-Can we just use 'linux,code' and 'linux,input-type' here. That's 
-problematic if there's ever more than 1, but so is the current solution 
-having to make up new property names every time.
-
-Why can't the gpio-keys binding just be used here? Is it important to 
-have the events on the same device? Is there some coordination needed 
-between the functions?
-
-> +
->  required:
->    - compatible
->    - gpios
-> @@ -97,4 +115,7 @@ examples:
->              linux,axis = <ABS_Y>;
->              rotary-encoder,encoding = "binary";
->              rotary-encoder,rollover;
-> +            push-gpios = <&gpio 23 GPIO_ACTIVE_HIGH>;
-> +            linux,push-code = <KEY_ENTER>;
-> +            linux,push-type = <EV_KEY>;
->      };
-> diff --git a/drivers/input/misc/rotary_encoder.c b/drivers/input/misc/rotary_encoder.c
-> index 16ad86fad7cb..484042a5afa0 100644
-> --- a/drivers/input/misc/rotary_encoder.c
-> +++ b/drivers/input/misc/rotary_encoder.c
-> @@ -47,12 +47,33 @@ struct rotary_encoder {
->  
->  	unsigned int *irq;
->  
-> +	struct gpio_desc *push_gpio;
-> +	unsigned int push_code;
-> +	unsigned int push_type;
-> +
->  	bool armed;
->  	signed char dir;	/* 1 - clockwise, -1 - CCW */
->  
->  	unsigned int last_stable;
->  };
->  
-> +static irqreturn_t rotary_push_irq(int irq, void *dev_id)
-> +{
-> +	struct rotary_encoder *encoder = dev_id;
-> +	int val;
-> +
-> +	mutex_lock(&encoder->access_mutex);
-> +
-> +	val = gpiod_get_value_cansleep(encoder->push_gpio);
-> +
-> +	input_report_key(encoder->input, encoder->push_code, val);
-> +	input_sync(encoder->input);
-> +
-> +	mutex_unlock(&encoder->access_mutex);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static unsigned int rotary_encoder_get_state(struct rotary_encoder *encoder)
->  {
->  	int i;
-> @@ -248,6 +269,16 @@ static int rotary_encoder_probe(struct platform_device *pdev)
->  		return -EINVAL;
->  	}
->  
-> +	encoder->push_gpio = devm_gpiod_get_optional(dev, "push", GPIOD_IN);
-> +	if (IS_ERR(encoder->push_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(encoder->push_gpio), "failed to get push-gpio\n");
-> +
-> +	encoder->push_code = KEY_ENTER;
-> +	device_property_read_u32(dev, "linux,push-code", &encoder->push_code);
-> +
-> +	encoder->push_type = EV_KEY;
-> +	device_property_read_u32(dev, "linux,push-type", &encoder->push_type);
-> +
->  	input = devm_input_allocate_device(dev);
->  	if (!input)
->  		return -ENOMEM;
-> @@ -304,6 +335,18 @@ static int rotary_encoder_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> +	if (encoder->push_gpio) {
-> +		input_set_capability(encoder->input, encoder->push_type, encoder->push_code);
-> +		err = devm_request_threaded_irq(dev, gpiod_to_irq(encoder->push_gpio),
-> +						NULL, rotary_push_irq,
-> +						IRQF_TRIGGER_RISING |
-> +						IRQF_TRIGGER_FALLING |
-> +						IRQF_ONESHOT,
-> +						DRV_NAME, encoder);
-> +		if (err)
-> +			return dev_err_probe(dev, err, "unable to request push IRQ\n");
-> +	}
-> +
->  	err = input_register_device(input);
->  	if (err) {
->  		dev_err(dev, "failed to register input device\n");
-> -- 
-> 2.28.0
-> 
+> > +               return -1;
+> > +       }
+> > +
+> > +       if (val.invoked != 1) {
+> > +               log_err("%s: unexpected invoked count %d != %d",
+> > +                       msg, val.invoked, 1);
+> > +               err++;
+> > +       }
+> > +
+> > +       if (val.is_mptcp != is_mptcp) {
+> > +               log_err("%s: unexpected bpf_tcp_sock.is_mptcp %d != %d",
+> > +                       msg, val.is_mptcp, is_mptcp);
+> > +               err++;
+> > +       }
+> > +
+> > +       return err;
+> > +}
+> > +
+> > +static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
+> [...]
+>
+> > +
+> > +       client_fd = is_mptcp ? connect_to_mptcp_fd(server_fd, 0) :
+> > +                              connect_to_fd(server_fd, 0);
+> > +       if (client_fd < 0) {
+> > +               err = -1;
+> > +               goto close_client_fd;
+>
+> This should be "goto close_bpf_object;", and we don't really need the label
+> close_client_fd.
+>
+> > +       }
+> > +
+> > +       err += is_mptcp ? verify_sk(map_fd, client_fd, "MPTCP subflow socket", 1) :
+>
+> It doesn't really change the logic, but I guess we only need "err = xxx"?
+>
+> > +                         verify_sk(map_fd, client_fd, "plain TCP socket", 0);
+> > +
+> > +close_client_fd:
+> > +       close(client_fd);
+> > +
+> > +close_bpf_object:
+> > +       bpf_object__close(obj);
+> > +       return err;
+> > +}
+> > +
