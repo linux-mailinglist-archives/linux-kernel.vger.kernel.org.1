@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182D126ACBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65B726ACC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgIOS6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727928AbgIOS5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:57:41 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3C9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:57:41 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id y190so2548339vsy.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6iXFFj/7ZUvX7XyypdlyCYEl/6h4et7lVvH8K/NN6VA=;
-        b=T2lQW/481b7kgPVDGjkvC5eLU6vgL7uH+JU7QtyQ11DTdW5JZx5H63O8ifl5idzaJN
-         40XhbIDOS4fThmXgbCUetV9IeII2bECWLYeZ98Fiy0Mel2qClzKT1Yk61NV8n9W5hGSt
-         MLptBRiqBeoi9axT3NpiKkMjrWnj1H/yi8YNHSd4touHj4yClW0REFrvnxywmyRTaoEz
-         zyCPjmlfKgPjnw0qHzX/tUEcv86Gf5uTv9zCgyxX/MHIwn8V9004lVUZ8Ps/G+h7Gwbl
-         Cf2abAmALXW4jHEW7G6XrMXjvx2kU9/NyIz0NVQYp8f2TEoa0OU1l0oA8BjjTOv2WKwb
-         HBIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6iXFFj/7ZUvX7XyypdlyCYEl/6h4et7lVvH8K/NN6VA=;
-        b=NDmTPyzILa1eyXFaGeHfpt/9xaTBlAd6Mcs3oAIYF+pgmA4S003jGJJs/LQYDjO0Um
-         PWBgHBTWcSNrTeYXpRgMV1SPqnTs5yv2ta43wkK0kSFCstUunvp8sMlyPm9og/HgHI3X
-         0xlY1Ri83pGuakcKGQ6QJs+IGonuIb3VtA2mIqR4OrMkSGq1ziISdj/SxnBQPGZpd7se
-         RBknc00RB5p5UF06Kc9uGBn0EUxzRzbrCZOLD7v7Gy/Yhu7YrA7y7c3874SoQnm2x8OJ
-         m/S9Nbc9B/Bt0oId+MSB9qOx8aSMQ/xKOtpEWUz3MIZokyd9EE8tb8UVVzpodnWn1TBB
-         Ei6Q==
-X-Gm-Message-State: AOAM530noZbvNz3gyVLFyd4jQD3GjRak9Ol4Pi3TXBLEXtScrEaH1h2L
-        +xisHKHniUcvAWOKli8DRfXbcQaWXVVdfYGBHKyFEA==
-X-Google-Smtp-Source: ABdhPJxXF5r2HqaLbL2aeJB4a8Im/TdqEDpE3zeFJdTCPa1a+snpD5i2D32445PuCsghNPTZe5KVDP9VQBCM8LKINXM=
-X-Received: by 2002:a67:fc48:: with SMTP id p8mr2562113vsq.53.1600196259856;
- Tue, 15 Sep 2020 11:57:39 -0700 (PDT)
+        id S1727924AbgIOS7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:59:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727586AbgIOS66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 14:58:58 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3727206A2;
+        Tue, 15 Sep 2020 18:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600196337;
+        bh=juSKAG7syOLlUYOT/UKl355JCRZZOGDkrasKdEEz39E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=e2w5Hqi9JkBpUnlrN5XfE/k2m6h+fKQEj8q6iT8EZjet+xs78hLa9RwQzL8ocMMTV
+         0IY43wpGOPpuARr9YTm8piLOmfRA5PTuA7ukhAyc+M2WIs1nQZ8d6Am6TUYKnzzQMY
+         RueIR/ZYkX4ncjWgBfJrMGQ99j5Oz93RMrZ9u0F0=
+Received: by mail-ot1-f44.google.com with SMTP id g10so4262340otq.9;
+        Tue, 15 Sep 2020 11:58:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533m8fAlEL1ty8lM5dXFmilB7q2AEnHcM1rMK0V4V2D5wwgNV4N8
+        K75ynTv1n3iN/DUkIYj1GbNkct12uirBSmWr1Q==
+X-Google-Smtp-Source: ABdhPJwxLB1kpbhsA7tycgvi/wQZ1bmGZ7Ya81h12b8iMN2Ulxr/O/tPMFAVeA5YU7PbFFwr6ajyqH978MziIm2iLbU=
+X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr12931310otp.107.1600196337137;
+ Tue, 15 Sep 2020 11:58:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200831225810.2287294-1-posk@google.com> <CAFTs51WPjmEk2nQaxPAgOLN+3E7rfCVQ_=Q6PwD7dS2wyAKu5w@mail.gmail.com>
- <1071966201.11729.1600184387644.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1071966201.11729.1600184387644.JavaMail.zimbra@efficios.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Tue, 15 Sep 2020 11:57:29 -0700
-Message-ID: <CAFTs51V=u1S4HuMn7WZEMJBRL79sUVT1g_9JcHqx4bW6zuyh4g@mail.gmail.com>
-Subject: Re: [PATCH 1/2 v6] rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Oskolkov <posk@google.com>, paulmck <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>
+References: <20200904131152.17390-1-paul@crapouillou.net> <20200904131152.17390-3-paul@crapouillou.net>
+ <20200914221230.GA349829@bogus> <CS2PGQ.I4UMQBYTB15I2@crapouillou.net>
+ <CAL_JsqLUSZFf_3zgFrapc7vJETG9+XDTZPtD_yEBvi4GO3xPSA@mail.gmail.com> <EGJPGQ.QVHGTYQDQR872@crapouillou.net>
+In-Reply-To: <EGJPGQ.QVHGTYQDQR872@crapouillou.net>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 15 Sep 2020 12:58:44 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+O7YD+WuABOMvWT-uyuDvt6L9wQmeFunR-z4RpXLFo2A@mail.gmail.com>
+Message-ID: <CAL_Jsq+O7YD+WuABOMvWT-uyuDvt6L9wQmeFunR-z4RpXLFo2A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] i2c: jz4780: Remove of_match_ptr()
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     od@zcrc.me, Linux I2C <linux-i2c@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 8:39 AM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
+On Tue, Sep 15, 2020 at 10:07 AM Paul Cercueil <paul@crapouillou.net> wrote=
+:
 >
-> ----- On Sep 15, 2020, at 2:12 AM, Peter Oskolkov posk@posk.io wrote:
 >
-> > Any comments here? Should I change anything?
 >
-> See below,
+> Le mar. 15 sept. 2020 =C3=A0 10:03, Rob Herring <robh@kernel.org> a =C3=
+=A9crit :
+> > On Tue, Sep 15, 2020 at 4:07 AM Paul Cercueil <paul@crapouillou.net>
+> > wrote:
+> >>
+> >>  Hi Rob,
+> >>
+> >>  Le lun. 14 sept. 2020 =C3=A0 16:12, Rob Herring <robh@kernel.org> a
+> >> =C3=A9crit :
+> >>  > On Fri, Sep 04, 2020 at 03:11:52PM +0200, Paul Cercueil wrote:
+> >>  >>  CONFIG_OF is selected by CONFIG_MACH_INGENIC, therefore we don't
+> >>  >> need to
+> >>  >>  handle the case where Device Tree is not supported.
+> >>  >
+> >>  > What about COMPILE_TEST? If not supported, why not?
+> >>
+> >>  What about it? It will still compile fine with COMPILE_TEST.
+> >
+> > CONFIG_OF could be disabled in that case, so the above reasoning
+> > doesn't hold.
+> >
+>
+> CONFIG_OF can be disabled in that case, correct, but why should we
+> care? The driver will still compile fine.
 
-Thanks for the review - all done in V7. Please have a look.
+Indeed, because jz4780_i2c_of_matches isn't within a CONFIG_OF ifdef
+as is sometimes done and is when you need of_match_ptr(). IMO, the
+commit msg should have something like "The driver is only used with
+CONFIG_OF enabled, so of_match_ptr() is not necessary.
+jz4780_i2c_of_matches is always defined."
 
-Thanks,
-Peter
-
-[...]
+Rob
