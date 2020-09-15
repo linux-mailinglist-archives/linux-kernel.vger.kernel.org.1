@@ -2,103 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3254C269A97
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25DF269A9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgIOAnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:43:52 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:34782 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgIOAnq (ORCPT
+        id S1726091AbgIOAoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:44:38 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:39105 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726062AbgIOAoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:43:46 -0400
-Received: by mail-il1-f195.google.com with SMTP id a8so1422032ilk.1;
-        Mon, 14 Sep 2020 17:43:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UNo7mnvbrxfEkc0MpSN1laoGb3kvFf+1FihcAh2kuwA=;
-        b=czHw3kjO2bsqlXToKgdCZvxcClIlBc6OUWDEi/UCyq4pbqUmdjD0BwQ/SdAO8lk/8R
-         PGS6kcvPPooj8p+IUJrFMYR7SQr4MH0DXPQ8SjzEXnLPnFB9o6KbrfoT8Za4utaHqg4C
-         NpQnG7qBINZrX3sGvIJ5cwIVGIac9Folk1aUpHmolmZg1n3SFwpd28ESvYpdmkRrxq7+
-         i4vIAtm/mMCVGB+EgCWnkx7P5yvcZroDnKlfYhbAsgN9lK/dw1tbjQhKiZdC4r0e+r4P
-         m7Oxa1FBj9Z8zbhzvmgd7RjEsfSLjgK7ypY+clhMHHkcxwlC1YbTWVgd0q+eC5899OEp
-         JrqQ==
-X-Gm-Message-State: AOAM53386ZvXI1MEIRx86j21TyvWdJRzWZQC+C/YT7NImr1LRuFxnZmR
-        /9fFji/5/3epQFESbG76HMkRHkI+KIRE
-X-Google-Smtp-Source: ABdhPJxzFLfpkXRw4xeAxrjp/JRY1XR9O5cts0wBuIhefTxqHs0fAUX8/qOZkEySJsYxiU3gLAuz7g==
-X-Received: by 2002:a92:7711:: with SMTP id s17mr6292866ilc.236.1600130625930;
-        Mon, 14 Sep 2020 17:43:45 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id w15sm7796085ilq.46.2020.09.14.17.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 17:43:45 -0700 (PDT)
-Received: (nullmailer pid 593532 invoked by uid 1000);
-        Tue, 15 Sep 2020 00:43:40 -0000
-Date:   Mon, 14 Sep 2020 18:43:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-rtc@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, allen <allen.chen@ite.com.tw>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Mark Brown <broonie@kernel.org>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-arm-kernel@lists.infradead.org,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        linux-pwm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH v2 01/10] dt-bindings: Add vendor prefix for Netronix,
- Inc.
-Message-ID: <20200915004340.GA593474@bogus>
-References: <20200905133230.1014581-1-j.neuschaefer@gmx.net>
- <20200905133230.1014581-2-j.neuschaefer@gmx.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200905133230.1014581-2-j.neuschaefer@gmx.net>
+        Mon, 14 Sep 2020 20:44:32 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id E6D5C4B9;
+        Mon, 14 Sep 2020 20:44:30 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 14 Sep 2020 20:44:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=Q96ecm6Fh2HW7IzVYh/+DlYr1BnZskX
+        RguVfWn9NZoY=; b=egH0gfz6DQqKjqINfH01fl+Fidfq6dOPqampmZTMi3293Ni
+        LHsMOq7B3GW9PJ4sedks1m+AnB9+dVlcmH3uplFWO/isOonmMcc5obJV21eIUtuD
+        o2KO+VvRl0CP1MxVMFq1xuiWXUrJv+RuGXHFjwOvl6qdlNDWSrswQRCoSOP+tOhd
+        2CKWfpxeh6ojXqv1jw/4+qv3IHCz8LuUU/XIZGivjvH91GjPvsevXI47Uh1ZiPBE
+        5TC+F/RcY80fZ2Qov77Dhjp+kqfvb2yohJMxbUZS7k7v4jcCfs7NQRP0F+9lC6Pp
+        +3K1DLQpLknu4S4K60PX7VZwMjy1CQjLbkeTWzQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Q96ecm
+        6Fh2HW7IzVYh/+DlYr1BnZskXRguVfWn9NZoY=; b=SzCs7F4/rKj8sk+V9Wiy04
+        wzEtw50hcwBwTg2SW7ZlDbeUK91cuS3xF28dKNQKF2SV2ml+Fj2z0T6EzE1pNLjn
+        B2Yf23BHv9zg2+lVG/aRC43JDgdYGvKYLCJ/Uz53AhvV+CzWLYOYlRN6T+ftegUu
+        WN05FlbtEHFvu2mctp1brWCTuQAYLquX1k1IDJjFkDwdESgJmopd/MuLS81/+9XG
+        jKBHLmqLIwrQm2wl3cdZmCyNmAPG48gDfEHkAfSouh91TbMqPJ1x8fNKaGjZt/5+
+        Hls574iM88Bn3fLtwNa7Xfn9XNJw5waQlPzX9DUrq+glSqrsZrT4CfEuZVXDZHLA
+        ==
+X-ME-Sender: <xms:bQ5gX8EkLfdwFy6CfXTNiCbKtCbeBUdnOwGj404k1UkFR5yUl0ELSw>
+    <xme:bQ5gX1UoIFWmUv0WqBTrOO12wDgqXg98S3ROzAayKPyM_xPsotzQJtqJjgpLDPSUG
+    p1K9aLumxxqSZOv2w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeijedgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepteehteelkedukeekjeejgeelkeduieejgeejudeugeelvdekjeelffet
+    fffgjeeunecuffhomhgrihhnpeihrghmlhdrrghsnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:bQ5gX2Liqf7V9DlGhIdl2N4bWR1uyyCD5WBTMoMLjABvW_hFWB3YFA>
+    <xmx:bQ5gX-Hb9AL_90bdbUQtz0zwhixwyXxG-16a52V3SIm0nx5ETPrcyQ>
+    <xmx:bQ5gXyWJfU2Qy7PhE8PgZkXQUHeClznlTAAXewWhbUHCUdGR5vEs-w>
+    <xmx:bg5gX0I8oc-gCIetjU5IQH1XTcOvRg36hEUibMEnyz6iYbAamQx5eg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 041DAE00C7; Mon, 14 Sep 2020 20:44:29 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-259-g88fbbfa-fm-20200903.003-g88fbbfa3
+Mime-Version: 1.0
+Message-Id: <e4bab65c-8a81-4a4b-be3f-3a07d5c7f95f@www.fastmail.com>
+In-Reply-To: <CAPDyKFq+QYzJNT94eFt2EsQBVqQciUoqnMDdrr3DbbkpnHRpCw@mail.gmail.com>
+References: <20200910105440.3087723-1-andrew@aj.id.au>
+ <20200910105440.3087723-2-andrew@aj.id.au>
+ <CAPDyKFq+QYzJNT94eFt2EsQBVqQciUoqnMDdrr3DbbkpnHRpCw@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 10:13:58 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Ulf Hansson" <ulf.hansson@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?Re:_[PATCH_1/3]_dt:_bindings:_mmc:_Add_phase_control_propertie?=
+ =?UTF-8?Q?s_for_the_Aspeed_SDHCI?=
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Sep 2020 15:32:21 +0200, Jonathan Neuschäfer wrote:
-> Netronix, Inc. (http://www.netronixinc.com/) makes ebook reader board
-> designs, which are for example used in Kobo and Tolino devices.
-> 
-> An alternative prefix for Netronix would be "ntx", which is already used
-> in code released by Netronix. It is shorter, but perhaps less clear.
-> 
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> ---
-> v2:
-> - No changes
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On Mon, 14 Sep 2020, at 19:11, Ulf Hansson wrote:
+> On Thu, 10 Sep 2020 at 12:54, Andrew Jeffery <andrew@aj.id.au> wrote:
+> >
+> > Add properties to control the phase delay for input and output data
+> > sampling.
+> >
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > ---
+> >  Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > index 987b287f3bff..75effd411554 100644
+> > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > @@ -61,6 +61,14 @@ patternProperties:
+> >        sdhci,auto-cmd12:
+> >          type: boolean
+> >          description: Specifies that controller should use auto CMD12
+> > +      "aspeed,input-phase":
+> > +        $ref: '/schemas/types.yaml#/definitions/uint32'
+> > +        description:
+> > +          The input clock phase delay value.
+> > +      "aspeed,output-phase":
+> > +        $ref: '/schemas/types.yaml#/definitions/uint32'
+> > +        description:
+> > +          The output clock phase delay value.
+> 
+> We already have a common mmc clk-phase* binding, see
+> mmc-controller.yaml. As matter of fact, there is one binding per speed
+> mode.
+> 
+> Could that work for this case as well?
+
+Ah, great, I think so. Sorry for overlooking that. I just need to extract from 
+Aspeed what units the damn register fields are using :/
+
+Andrew
