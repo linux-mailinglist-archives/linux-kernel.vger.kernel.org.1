@@ -2,197 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E5A26AB9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8183E26ABA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727907AbgIOSNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:13:19 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:36428 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727938AbgIOSJH (ORCPT
+        id S1727992AbgIOSPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:15:45 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:58239 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727733AbgIOSJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:09:07 -0400
-Received: by mail-pl1-f195.google.com with SMTP id k13so1760950plk.3;
-        Tue, 15 Sep 2020 11:07:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Avu9zQOxQ4NDvG2l7r65UNNFEBIgVGhnU50sKCSELa8=;
-        b=NyrvaQs2n78Pp3f2Hb3IQjxUf+7JMXbD6OrXoutt50Rll+750vhUojlmI/gvWYXFv8
-         QVOST/LkFJiZ7+4kDU03LoWn4wv7mSgzZE34ugi+tNldstsMqfVvxg9Q1JXFAOLK9eEJ
-         F4Cf5xgv37fMXXYlNNSJ5AREyUjfNc6EEshKAxmxp4WpstXeT1M4vkZKkDr/4Ncc0tr1
-         sWJhovp4FxNsdAt/VJurQwHz8husD1I3xU54/D8Jl6uh3TxnbvKJW4PEIcsVCSkawqLe
-         BLmozi3rUrcNSawt1SPlsjpMEYLMTNtfoXuMtr19PtdJpQ2HB+BLsfegUIu+MpaOlB7Q
-         LcgA==
-X-Gm-Message-State: AOAM5300cqyLZpX0O1wlGhSxECV2LP7vGlKbGobBlLU1UaTEKmQhL00w
-        Ag9jeyvcKCb6sQOObrMipnCYA5YHlQBphg==
-X-Google-Smtp-Source: ABdhPJw9b1X9XAoDtwOubjNwl7RN9sTW6IBtcxixdLkExwz/fIo991YAFS99Un0/UM/MOUNNsvRYtQ==
-X-Received: by 2002:a17:90a:d70b:: with SMTP id y11mr509884pju.15.1600193276623;
-        Tue, 15 Sep 2020 11:07:56 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id o1sm14005705pfg.83.2020.09.15.11.07.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 11:07:56 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 11:07:55 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     "Xu, Yilun" <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: Re: [PATCH v2 2/4] dfl: add dfl bus support to MODULE_DEVICE_TABLE()
-Message-ID: <20200915180755.GA11862@epycbox.lan>
-References: <1600140473-12351-1-git-send-email-yilun.xu@intel.com>
- <1600140473-12351-3-git-send-email-yilun.xu@intel.com>
- <20200915035927.GB2217@epycbox.lan>
- <DM6PR11MB381970CD3C77534AA3E4C76385200@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20200915051933.GA13516@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819106F9D50E39F7CC7837D85200@DM6PR11MB3819.namprd11.prod.outlook.com>
+        Tue, 15 Sep 2020 14:09:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600193356; x=1631729356;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=hFApYuTtXawBb/Q1U5pmebyMoxtW2mY4qfAUML9XXzE=;
+  b=Oqy7yp9+xQNOx88MKXfHF+3CTjK7kW2k3NGIE4mo6hUtGiq0p7YYHjMs
+   kvHChWCgEQvcE3ToRwMjrmJjuMDW29U9nnwwk8QucIxfaCaiz1RsHuGsH
+   X9nvs1AnAwg3FBBKLcMD3f57yaFONy6uIUfb51TTzD2mc13Zn5nPdFpFf
+   M=;
+X-IronPort-AV: E=Sophos;i="5.76,430,1592870400"; 
+   d="scan'208";a="54192495"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 15 Sep 2020 18:08:53 +0000
+Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 6A613A1E4E;
+        Tue, 15 Sep 2020 18:08:40 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.85) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 15 Sep 2020 18:08:22 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH 0/2] DAMON: Improve User Space Interface
+Date:   Tue, 15 Sep 2020 20:08:07 +0200
+Message-ID: <20200915180807.18812-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200915180225.17439-2-sjpark@amazon.com>
+References: <20200915180225.17439-2-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3819106F9D50E39F7CC7837D85200@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.85]
+X-ClientProxiedBy: EX13D46UWB004.ant.amazon.com (10.43.161.204) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hao, Xu,
+From: SeongJae Park <sjpark@amazon.de>
 
-On Tue, Sep 15, 2020 at 05:58:46AM +0000, Wu, Hao wrote:
-> > On Tue, Sep 15, 2020 at 12:08:38PM +0800, Wu, Hao wrote:
-> > > > On Tue, Sep 15, 2020 at 11:27:51AM +0800, Xu Yilun wrote:
-> > > > > Device Feature List (DFL) is a linked list of feature headers within the
-> > > > > device MMIO space. It is used by FPGA to enumerate multiple sub
-> > features
-> > > > > within it. Each feature can be uniquely identified by DFL type and
-> > > > > feature id, which can be read out from feature headers.
-> > > > >
-> > > > > A dfl bus helps DFL framework modularize DFL device drivers for
-> > different
-> > > > > sub features. The dfl bus matches its devices and drivers by DFL type
-> > and
-> > > > > feature id.
-> > > > >
-> > > > > This patch add dfl bus support to MODULE_DEVICE_TABLE() by adding
-> > info
-> > > > > about struct dfl_device_id in devicetable-offsets.c and add a dfl entry
-> > > > > point in file2alias.c.
-> > > > >
-> > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > > Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > > > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > > > Acked-by: Wu Hao <hao.wu@intel.com>
-> > >
-> > > Yilun,
-> > >
-> > > I haven't acked-by this patch as it doesn't modify any dfl files, ideally you
-> > 
-> > Sorry, I misunderstood your comments "Acked-by: xxx for DFL related
-> > changes after this fix".
+Seems lore.kernel.org missed original posting of this mail.  Resending.
 
-Yeah it wasn't entirely clear to me either :)
-> 
-> Because the first patch contains changes to non-dfl files as well. : )
-> 
-> Hao
-> 
-> > 
-> > > need acked-by from real maintainer of scripts/mod code, right?
-> > 
-> > Ideally yes. From the MAINTAINERS it is Masahiro Yamada, I added him on
-> > the "to"
-> > list. But I see some other patches (also for devtable entries) in kernel
-> > don't have his acked-by.
+NOTE: This is only an RFC for future features of DAMON patchset[1], which is
+not merged in the mainline yet.  The aim of this RFC is to show how DAMON would
+be evolved once it is merged in.  So, if you have some interest in this RFC,
+please consider reviewing the DAMON patchset, either.
 
-Yeah, I've looked at that and most patches for those files seem to be
-from subsystem maintainers. So I *think* it should be fine?
+After posting DAMON patchset[1], we received a number of comments.  Based on
+those, we listed and shared future works for DAMON in the kernel summit
+2020[2] and had a poll for the priorities of the works.  As a result, the user
+space interface improvement received a second highest priority[3].  For the
+reason, this patchset is came out.
 
-> > 
-> > Hi Moritz:
-> > 
-> > Do you have any ideas on that?
-> > 
-> > Thanks,
-> > Yilun.
-> > 
-> > >
-> > > Thanks
-> > > Hao
-> > >
-> > > > > ---
-> > > > > v2: add comments for the format of modalias
-> > > > > ---
-> > > > >  scripts/mod/devicetable-offsets.c |  4 ++++
-> > > > >  scripts/mod/file2alias.c          | 17 +++++++++++++++++
-> > > > >  2 files changed, 21 insertions(+)
-> > > > >
-> > > > > diff --git a/scripts/mod/devicetable-offsets.c
-> > b/scripts/mod/devicetable-
-> > > > offsets.c
-> > > > > index 27007c1..d8350ee 100644
-> > > > > --- a/scripts/mod/devicetable-offsets.c
-> > > > > +++ b/scripts/mod/devicetable-offsets.c
-> > > > > @@ -243,5 +243,9 @@ int main(void)
-> > > > >  DEVID(mhi_device_id);
-> > > > >  DEVID_FIELD(mhi_device_id, chan);
-> > > > >
-> > > > > +DEVID(dfl_device_id);
-> > > > > +DEVID_FIELD(dfl_device_id, type);
-> > > > > +DEVID_FIELD(dfl_device_id, feature_id);
-> > > > > +
-> > > > >  return 0;
-> > > > >  }
-> > > > > diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-> > > > > index 2417dd1..9fd2e60 100644
-> > > > > --- a/scripts/mod/file2alias.c
-> > > > > +++ b/scripts/mod/file2alias.c
-> > > > > @@ -1368,6 +1368,22 @@ static int do_mhi_entry(const char
-> > *filename,
-> > > > void *symval, char *alias)
-> > > > >  return 1;
-> > > > >  }
-> > > > >
-> > > > > +/* Looks like: dfl:tNfN */
-> > > > > +static int do_dfl_entry(const char *filename, void *symval, char *alias)
-> > > > > +{
-> > > > > +DEF_FIELD(symval, dfl_device_id, type);
-> > > > > +DEF_FIELD(symval, dfl_device_id, feature_id);
-> > > > > +
-> > > > > +/*
-> > > > > + * type contains 4 valid bits and feature_id contains 12 valid bits
-> > > > > + * according to DFL specification.
-> > > > > + */
-> > > > > +sprintf(alias, "dfl:t%01Xf%03X", type, feature_id);
-> > > > > +
-> > > > > +add_wildcard(alias);
-> > > > > +return 1;
-> > > > > +}
-> > > > > +
-> > > > >  /* Does namelen bytes of name exactly match the symbol? */
-> > > > >  static bool sym_is(const char *name, unsigned namelen, const char
-> > > > *symbol)
-> > > > >  {
-> > > > > @@ -1442,6 +1458,7 @@ static const struct devtable devtable[] = {
-> > > > >  {"tee", SIZE_tee_client_device_id, do_tee_entry},
-> > > > >  {"wmi", SIZE_wmi_device_id, do_wmi_entry},
-> > > > >  {"mhi", SIZE_mhi_device_id, do_mhi_entry},
-> > > > > +{"dfl", SIZE_dfl_device_id, do_dfl_entry},
-> > > > >  };
-> > > > >
-> > > > >  /* Create MODULE_ALIAS() statements.
-> > > > > --
-> > > > > 2.7.4
-> > > > >
-> > > > Applied to for-next,
-> > > >
-> > > > Thanks
+The 1st patch puts more information in the monitoring thread name so that user
+space could charge the DAMON's CPU usage on them by themselves, in fine
+granularity.  The 2nd patch makes multiple monitoring contexts available using
+the debugfs interface.
 
-Cheers,
-Moritz
+[1] https://lore.kernel.org/linux-mm/20200817105137.19296-1-sjpark@amazon.com/
+[2] https://linuxplumbersconf.org/event/7/contributions/659/
+[3] https://lore.kernel.org/linux-mm/20200831112235.2675-1-sjpark@amazon.com/
+
+Baseline and Complete Git Trees
+===============================
+
+The patches are based on the v5.8 plus DAMON v20 patchset[1], RFC v14 of DAMOS
+patchset, RFC v8 of physical address space support patchset, and some more
+trivial fixes (s/snprintf/scnprintf).  You can also clone the complete git
+tree:
+
+    $ git clone git://github.com/sjp38/linux -b damon-usi/rfc/v1
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/damon-usi/rfc/v1
+
+[1] https://lore.kernel.org/linux-mm/20200817105137.19296-1-sjpark@amazon.com/
+[2] https://lore.kernel.org/linux-mm/20200804142430.15384-1-sjpark@amazon.com/
+[3] https://lore.kernel.org/linux-mm/20200831104730.28970-1-sjpark@amazon.com/
+
+SeongJae Park (2):
+  mm/damon: Put more information in kdamond thread name
+  mm/damon/debugfs: Support multiple contexts
+
+ include/linux/damon.h |   2 +
+ mm/damon-test.h       |  34 ++--
+ mm/damon.c            | 361 +++++++++++++++++++++++++++++++++---------
+ 3 files changed, 308 insertions(+), 89 deletions(-)
+
+-- 
+2.17.1
+
