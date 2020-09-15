@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943D926A671
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 15:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8870326A666
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 15:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbgIONo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 09:44:26 -0400
-Received: from mga12.intel.com ([192.55.52.136]:44272 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726136AbgIONmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:42:21 -0400
-IronPort-SDR: uuk7rt+Bx5gRn6vhLtoIv0hXsKasV/ilT5Q9LcHstlAKPealUwj6CV3oeAChZowsSIuQvA1my4
- d8oH0ovxb4vQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="138760631"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="138760631"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 06:33:50 -0700
-IronPort-SDR: j6TeeDyGh39bdU5PkSMdU1urcJOKOPuTNaIj4Pkf8xXLqQVkzQolliJ1Drn9AqnVOPjYEIKWfJ
- +H33ywpqXyDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="409202130"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2020 06:33:48 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 15 Sep 2020 16:33:47 +0300
-Date:   Tue, 15 Sep 2020 16:33:47 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/14] TCPM support for FRS and AutoDischarge
- Disconnect
-Message-ID: <20200915133347.GK1139641@kuha.fi.intel.com>
-References: <20200901025927.3596190-1-badhri@google.com>
+        id S1726456AbgIONjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 09:39:41 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:50905 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726658AbgIONbd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:31:33 -0400
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 3D90324000B;
+        Tue, 15 Sep 2020 13:31:00 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 15:34:51 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 3/3] media: docs: v4l2-subdev: move generic paragraph to
+ the introduction
+Message-ID: <20200915133451.jydprottrtskqe7y@uno.localdomain>
+References: <20200904215141.20862-1-luca@lucaceresoli.net>
+ <20200904215141.20862-3-luca@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200901025927.3596190-1-badhri@google.com>
+In-Reply-To: <20200904215141.20862-3-luca@lucaceresoli.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 07:59:13PM -0700, Badhri Jagan Sridharan wrote:
-> First of all apologies for mixing up the patch version as noted by
-> Heikki and Greg. All of them were v1's but since I was manually adding
-> the version numbers I mixed them up. Using the --reroll-count option
-> now. Updating the patch version to v6 (highest version number in the
-> previous patchset + 1) to avoid confusion.
-> 
-> I also rebased on to off of the recent usb-next tip:
-> 5fedf0d295d3 (origin/usb-testing, origin/usb-next) Merge 5.9-rc3 into usb-next
-> Which had the following changes causing merge conflict:
-> 3ed8e1c2ac99 usb: typec: tcpm: Migrate workqueue to RT priority for processing events
-> 6bbe2a90a0bb usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
-> 
-> Addressed comments from Heikki and Randy which have described in the
-> individual commit's change history as well.
+Hi Luca,
 
-I'll try to study the AutoDischarge a bit before reviewing the last
-patches. They all appeared to be only about AutoDischarge. Sorry, I
-didn't have time for that yet. If Guenter is fine with those, then
-feel free to add my ACK to those patches. But Guenter really should
-review these in any case. Hope he has time.
+On Fri, Sep 04, 2020 at 11:51:41PM +0200, Luca Ceresoli wrote:
+> This paragraph provides generic information to explain what v4l2_subdev is
+> useful for. Placing it in the middle of paragraphs describing the details
+> of subdev registration does not make much sense. Move it near the beginning
+> of the section when the v4l2_subdev idea has just been introduced and
+> before going into its details.
+>
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> ---
+>  Documentation/driver-api/media/v4l2-subdev.rst | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/Documentation/driver-api/media/v4l2-subdev.rst b/Documentation/driver-api/media/v4l2-subdev.rst
+> index fb66163deb38..1c1e3f9da142 100644
+> --- a/Documentation/driver-api/media/v4l2-subdev.rst
+> +++ b/Documentation/driver-api/media/v4l2-subdev.rst
+> @@ -12,6 +12,12 @@ Usually these are I2C devices, but not necessarily. In order to provide the
+>  driver with a consistent interface to these sub-devices the
+>  :c:type:`v4l2_subdev` struct (v4l2-subdev.h) was created.
+>
+> +The advantage of using :c:type:`v4l2_subdev` is that it is a generic struct and
+> +does not contain any knowledge about the underlying hardware. So a driver might
+> +contain several subdevs that use an I2C bus, but also a subdev that is
+> +controlled through GPIO pins. This distinction is only relevant when setting
+> +up the device, but once the subdev is registered it is completely transparent.
+> +
+>  Each sub-device driver must have a :c:type:`v4l2_subdev` struct. This struct
+>  can be stand-alone for simple sub-devices or it might be embedded in a larger
+>  struct if more state information needs to be stored. Usually there is a
+> @@ -235,12 +241,6 @@ it can call ``v4l2_subdev_notify(sd, notification, arg)``. This macro checks
+>  whether there is a ``notify()`` callback defined and returns ``-ENODEV`` if not.
+>  Otherwise the result of the ``notify()`` call is returned.
+>
+> -The advantage of using :c:type:`v4l2_subdev` is that it is a generic struct and
+> -does not contain any knowledge about the underlying hardware. So a driver might
+> -contain several subdevs that use an I2C bus, but also a subdev that is
+> -controlled through GPIO pins. This distinction is only relevant when setting
+> -up the device, but once the subdev is registered it is completely transparent.
+> -
 
-Br,
+Have you considered moving the whole part that describes how to call
+operations, which comes after the synchronous registration case to a
+dedicated sub-section ? The above paragraph makes sense in the context
+of describing why v4l2_subdev is advantageous as it abstract the
+underlying details under a unified call interface.
 
--- 
-heikki
+This could become
+
+V4L2 sub-devices
+----------------
+
+Intro
+~~~~~
+
+Registration
+~~~~~~~~~~~~
+
+**synchronous**
+**asynchronous**
+
+Operations call (or a better name :)
+~~~~~~~~~~~~~~~
+
+What do you think ?
+
+Thanks
+  j
+
+>  In the **asynchronous** case subdevice probing can be invoked independently of
+>  the bridge driver availability. The subdevice driver then has to verify whether
+>  all the requirements for a successful probing are satisfied. This can include a
+> --
+> 2.28.0
+>
