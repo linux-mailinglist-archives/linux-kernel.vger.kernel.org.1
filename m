@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB98126B540
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B75826B63D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727400AbgIOXku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:40:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48028 "EHLO mail.kernel.org"
+        id S1727248AbgIPAA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:00:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727114AbgIOOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:34:42 -0400
+        id S1726842AbgIOOaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:30:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF7872222E;
-        Tue, 15 Sep 2020 14:16:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD1A622AAB;
+        Tue, 15 Sep 2020 14:21:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179394;
-        bh=0UWIwUObDoXc88RA1kBQm3/Ttdtb0YaBcDx5KmFlTCE=;
+        s=default; t=1600179719;
+        bh=3Z67A8+P2v8hhSTbh7eQemkVGjSUpEUK12e9BJrmSpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SO3+IZLfRjCPzmHNWtNAOGF+GhW0MYQAbGrUU8HQ9JJ75JQjhOJscbS3z/CPbgkTm
-         LE2z+8vMhNDhqLNHFVGvxIyzBIsPDa3OqJtpqYG/EOBy6fxWGkIkGXoro+zVWdH61g
-         LERAUR5I/sNy5TBQDPhnLndxpssBEG2gmQEFAa0g=
+        b=M8zfuN73fKlYu4v2Vv0pEIndLJFH92/Nd0JlLehGMsE7P/cRbbfrGqSxpqk7g4JK7
+         lsNabo7lTXz3cz8lGTmuSpNhG+gBv6SgBfuDvyXn0v0GKUS4XwF52U2Vnfs0e8McbC
+         LrDhZhaA0tauH6QrGO2igni04w+DB+rwWutf9eFk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.19 43/78] iio:accel:bmc150-accel: Fix timestamp alignment and prevent data leak.
-Date:   Tue, 15 Sep 2020 16:13:08 +0200
-Message-Id: <20200915140635.739533351@linuxfoundation.org>
+        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
+        syzbot+22794221ab96b0bab53a@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 090/132] staging: wlan-ng: fix out of bounds read in prism2sta_probe_usb()
+Date:   Tue, 15 Sep 2020 16:13:12 +0200
+Message-Id: <20200915140648.619754785@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
+References: <20200915140644.037604909@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,74 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Rustam Kovhaev <rkovhaev@gmail.com>
 
-commit a6f86f724394de3629da63fe5e1b7a4ab3396efe upstream.
+commit fea22e159d51c766ba70473f473a0ec914cc7e92 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 16 byte array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by moving
-to a suitable structure in the iio_priv() data with alignment
-ensured by use of an explicit c structure.  This data is allocated
-with kzalloc so no data can leak appart from previous readings.
+let's use usb_find_common_endpoints() to discover endpoints, it does all
+necessary checks for type and xfer direction
 
-Fixes tag is beyond some major refactoring so likely manual backporting
-would be needed to get that far back.
+remove memset() in hfa384x_create(), because we now assign endpoints in
+prism2sta_probe_usb() and because create_wlan() uses kzalloc() to
+allocate hfa384x struct before calling hfa384x_create()
 
-Whilst the force alignment of the ts is not strictly necessary, it
-does make the code less fragile.
-
-Fixes: 3bbec9773389 ("iio: bmc150_accel: add support for hardware fifo")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
+Fixes: faaff9765664 ("staging: wlan-ng: properly check endpoint types")
+Reported-and-tested-by: syzbot+22794221ab96b0bab53a@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=22794221ab96b0bab53a
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200804145614.104320-1-rkovhaev@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/accel/bmc150-accel-core.c |   15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ drivers/staging/wlan-ng/hfa384x_usb.c |    5 -----
+ drivers/staging/wlan-ng/prism2usb.c   |   19 ++++++-------------
+ 2 files changed, 6 insertions(+), 18 deletions(-)
 
---- a/drivers/iio/accel/bmc150-accel-core.c
-+++ b/drivers/iio/accel/bmc150-accel-core.c
-@@ -197,6 +197,14 @@ struct bmc150_accel_data {
- 	struct mutex mutex;
- 	u8 fifo_mode, watermark;
- 	s16 buffer[8];
-+	/*
-+	 * Ensure there is sufficient space and correct alignment for
-+	 * the timestamp if enabled
-+	 */
-+	struct {
-+		__le16 channels[3];
-+		s64 ts __aligned(8);
-+	} scan;
- 	u8 bw_bits;
- 	u32 slope_dur;
- 	u32 slope_thres;
-@@ -915,15 +923,16 @@ static int __bmc150_accel_fifo_flush(str
- 	 * now.
- 	 */
- 	for (i = 0; i < count; i++) {
--		u16 sample[8];
- 		int j, bit;
+--- a/drivers/staging/wlan-ng/hfa384x_usb.c
++++ b/drivers/staging/wlan-ng/hfa384x_usb.c
+@@ -526,13 +526,8 @@ static void hfa384x_usb_defer(struct wor
+  */
+ void hfa384x_create(struct hfa384x *hw, struct usb_device *usb)
+ {
+-	memset(hw, 0, sizeof(*hw));
+ 	hw->usb = usb;
  
- 		j = 0;
- 		for_each_set_bit(bit, indio_dev->active_scan_mask,
- 				 indio_dev->masklength)
--			memcpy(&sample[j++], &buffer[i * 3 + bit], 2);
-+			memcpy(&data->scan.channels[j++], &buffer[i * 3 + bit],
-+			       sizeof(data->scan.channels[0]));
+-	/* set up the endpoints */
+-	hw->endp_in = usb_rcvbulkpipe(usb, 1);
+-	hw->endp_out = usb_sndbulkpipe(usb, 2);
+-
+ 	/* Set up the waitq */
+ 	init_waitqueue_head(&hw->cmdq);
  
--		iio_push_to_buffers_with_timestamp(indio_dev, sample, tstamp);
-+		iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
-+						   tstamp);
+--- a/drivers/staging/wlan-ng/prism2usb.c
++++ b/drivers/staging/wlan-ng/prism2usb.c
+@@ -61,23 +61,14 @@ static int prism2sta_probe_usb(struct us
+ 			       const struct usb_device_id *id)
+ {
+ 	struct usb_device *dev;
+-	const struct usb_endpoint_descriptor *epd;
+-	const struct usb_host_interface *iface_desc = interface->cur_altsetting;
++	struct usb_endpoint_descriptor *bulk_in, *bulk_out;
++	struct usb_host_interface *iface_desc = interface->cur_altsetting;
+ 	struct wlandevice *wlandev = NULL;
+ 	struct hfa384x *hw = NULL;
+ 	int result = 0;
  
- 		tstamp += sample_period;
+-	if (iface_desc->desc.bNumEndpoints != 2) {
+-		result = -ENODEV;
+-		goto failed;
+-	}
+-
+-	result = -EINVAL;
+-	epd = &iface_desc->endpoint[1].desc;
+-	if (!usb_endpoint_is_bulk_in(epd))
+-		goto failed;
+-	epd = &iface_desc->endpoint[2].desc;
+-	if (!usb_endpoint_is_bulk_out(epd))
++	result = usb_find_common_endpoints(iface_desc, &bulk_in, &bulk_out, NULL, NULL);
++	if (result)
+ 		goto failed;
+ 
+ 	dev = interface_to_usbdev(interface);
+@@ -96,6 +87,8 @@ static int prism2sta_probe_usb(struct us
  	}
+ 
+ 	/* Initialize the hw data */
++	hw->endp_in = usb_rcvbulkpipe(dev, bulk_in->bEndpointAddress);
++	hw->endp_out = usb_sndbulkpipe(dev, bulk_out->bEndpointAddress);
+ 	hfa384x_create(hw, dev);
+ 	hw->wlandev = wlandev;
+ 
 
 
