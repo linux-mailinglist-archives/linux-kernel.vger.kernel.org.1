@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE3E26A2D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459DD26A2D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgIOKLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:11:55 -0400
-Received: from mout.web.de ([217.72.192.78]:55627 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIOKLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:11:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1600164700;
-        bh=UogIhfq9qNNjo/T+q6FmRMfIDnT2whLvdoBDxqlHAEs=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=mo2oBME0u5fne9FEa4B5xkFugDV6prx2KU5zNkWvyvOU8C7Qprr54aO/xUbJyf3nd
-         ITGswlFR08pV9NGLLVdWtm6032Xpe6eiVyFz5fqZOsAYQWjqgPHl238P6KFgQxKBtM
-         x1EXFG2DztgDdKiCStTJ/tOxE+8Py71F+/quAsTI=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.3.160] ([91.64.89.12]) by smtp.web.de (mrweb102
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0Lc8c5-1kjniw49q9-00jZs1; Tue, 15
- Sep 2020 12:11:40 +0200
-To:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-From:   Dirk Neukirchen <dirkneukirchen@web.de>
-Subject: Haswell Regression in 5.9-rcX and lower 5.7.x, 5.8.x #2024 - Revert
- 47f8253d2b89 ("drm/i915/gen7: Clear all EU/L3 residual contexts") ?
-Message-ID: <fc85dfc7-7f82-51f3-4fae-efea02a8339c@web.de>
-Date:   Tue, 15 Sep 2020 12:10:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726171AbgIOKKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIOKKa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:10:30 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C55BC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:10:29 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id y1so1722682pgk.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:10:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=qR6tiWJn7kxo+DIs8zg6eblEW9TAkN8VfiPXomJ6+aE=;
+        b=AB4LmWD3rvF1/YbhMPHDr3QdQs3Sd09BISzezMRRvMIeOyVTtXCTWs0uCldHQAiz6a
+         0MWyTN0SWc6E9ATuHvfhQ33I37EKwdDSNR4TCYlOybh0Yk+BsM4k/GGafJGyWjd9Sp24
+         19ctai/BBeQYH1I219ks8YMYZ6VyNYGkqWPcKlfQW32UhwhZiJxkFmGPGqsmBmHdhth7
+         20W/Mx1Ptbjxa3MBGj2iky65udUHPzaUf3j6J8wr08cE4LKN4AzEiU99gnveq6lkvpNN
+         LzyA+v3BMgMfD8YhXhEHc78A5QDmDAl2ts4c11MDT5X1YVzHd2/Fz2klAA7UDRwtPLx3
+         YMGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=qR6tiWJn7kxo+DIs8zg6eblEW9TAkN8VfiPXomJ6+aE=;
+        b=ofr3O1iFMLpwEYI5iM3cVJ+uAjieZZO7WX7cpiz6L5tR8sZiMRTy+lC+I3C9W4LVJ3
+         j13+hLURqBNExT3Kg1/1N6UN1aL4ir9qGBm9AD+iQgiDNYc/i19MGh4BA5yic19v20dj
+         Ms5MHH0A6/wNMGLH2Rk1SVjgMF6a4JMrYiZTIi/5bm6SqbRtGBNQsGf92sVExynrsqlj
+         kMJtHNjkBSByFEvA6/sfJYOeLQJEOO7zVWpGWxuqKSQ3gqC0LrNQ17875HFagoBNhy6e
+         J0gh41T0htaA2UnTZL/gLJ7Kp+dyegbnyQN/g1NyXdHf7+CuxWn1ozjC1iFO9ER+MGt1
+         KgaQ==
+X-Gm-Message-State: AOAM530SInH+Mls8Lg3CLeC91R3C0CKfIQOEybcbjo6UFdLRjWdddK22
+        63+IsZtaeajxPltUqDeiK6GelA518/XwQlvfu3s=
+X-Google-Smtp-Source: ABdhPJwpsCgwtqduJp5V60twwkONNMKJ4Hz1hcWg0r9cbOfOdYnkCcIhvXrZF0iCKhSVJwlK19ilPYf3Q0qMOs1FMX0=
+X-Received: by 2002:a62:2c09:0:b029:142:2501:34f8 with SMTP id
+ s9-20020a622c090000b0290142250134f8mr1178398pfs.81.1600164628904; Tue, 15 Sep
+ 2020 03:10:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US-large
+Received: by 2002:a17:90a:f2d2:0:0:0:0 with HTTP; Tue, 15 Sep 2020 03:10:28
+ -0700 (PDT)
+Reply-To: ebrimsegun@yandex.com
+From:   Refat Ebrima <usmanbanu004@gmail.com>
+Date:   Tue, 15 Sep 2020 04:10:28 -0600
+Message-ID: <CAO6m5ySq29sWJq0+apawMY35Lp=ZYL1UFhLMfX4qeXE6tCwbXQ@mail.gmail.com>
+Subject: This invitation needs your response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:q1PcOu+oSzo73KlR10JHwU4DZPm6zwsG9wzPFGol2UjC9PqS7YP
- PVUfiJNrmkAoHZ0YDTdE8OuMsPwCKuHQZFM5HgYoL640C6VGWbH9MEmnvTOdvUs1VTfgX5/
- RxcREQgi/m2yaeEM430y2aSTJlm9kSsU/wJyGV4yXPIIe9wqBm8CP2BbFy9MpQ8vqKIaQ4x
- fuF+/VWm6JjWgUh8YvkBw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JlVRHei2pwk=:EX3Y/fSRQzFBWWx51DGjOn
- ExUUxDL6tGkjSiuh7N332LRTNnPXtkyfAkxlM0UtUMRJodKTQ937gfNLdDNh2U4TpIut+ffUa
- Ar4J51GD96pdC88I/5UCAj/nwDtjoabDj4bG+WtZjIVfGzHRXeMiwjzc/ag1hEVWbaFilgdea
- 7AQfAcxq6l4lrkXBnCTzwg4sP9aQlZLEgYbYpTq00B4Ij0cjgbMjpgvgRevKHMCJy9viS3WdE
- ToML53KYd+ogjkHkMVk5WBZAPZ+5z1E7CMtuA+DiVCCNvxrL9NCH5hrGSX/Lr/wEm4aAkhnKi
- 8xAfn2LuuO9Ec068hAeXWfppmDNAUfMHhShVXJmHQndvCUcfA3mztVUZJh/llxMCqVt73rvTv
- AqtqhIuzECac0I8VYSM8PZdC4JFnqOrC3u3NNQ1sL0RPBaEbNxFBmRCXBqZ3PjIPgJudQRAsP
- dk3fdMDfs3vexiU8S86IalnbTssGDHv6Xkf5lsW+FQ+qrMZLY68VSCGG16C0qaWjkLpifq9cI
- KHaFWUg2iw14Fo9j3qmMDNjSyNLV7mtqYKxbHc8yOie+mqy4kzBclzrtNw9GhTnbWzWHc8ZBX
- 08tO8WIU0VuDfYR1tOb8o6ooCAsgAFC3U/ZiymcN3AHCQsn/MwXd6ELQOKgNFT8Jm0Fm0If5A
- 3gHMQvtmbsl7u9A7wiI937ZmgHquhGHbzkKarW8J/7xyzBLtU1aC/vi4W5CDuxNvattU1NdQS
- 7O4HgEsiV3+ZF1LUqT0ox/886IbF/jPsmIT79uEeyFhIm0X8sUUdHi/UxrmcU47C1IOyes2eO
- SV56de1Dx3DzNYqyioYUeiMkGSLI0WnR3CCsUumamwUuPLO5uR6235vjwAlAPXfrSwMYc04i9
- Ex/r2Mq23KNHPmMajldlkVP8BjrBAWrXUUoYtNwStzcOUSNmq292Tr6eO7gXc0dz92F12vK5z
- opMyOmrqFu8QrAY//kgBPZgxJvDA16/yJwAFx7I5Qzp/sR8ygxWzxGXqw5sDvAEexThkjoh1M
- 5oC4jNvJHPHqDgyoHdRbyvN8Vk8xVDhB1B/u2E7j/uPtP1ihKnFTj2vtt3ZE1zJwH85MmFeQs
- JcfjKh8jmXISflxR5jt3ZD4sbN7z+GW4hn0azo8i2UGLTsxkvvlJBOQQ3+NmhEmso7Ej78zEn
- HvvgoofQUtFiFvBx8eM0nt7/shO9kiw6oP5gLJCsaY+rdPit8/GQ5uGf/wdRldQQxfT2X3cGm
- D+itlaKc41QT79ouhSI9oaA14ZrjhF13FuQCxsA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David, Chris and lists
+Greetings,
 
-I am inquiring about the current status of #2024 [1]
+With due respect to your personality and much sincerity of this
+purpose, I make this contact with you believing that you can be of
+great assistance to me. I'm Mr. Refat Ebrima, from Burkina Faso, I'm
+the Chairman of FOREIGN PAYMENTS CONTRACT AWARD COMMITTEE and also I
+currently hold the post of Internal Audit Manager of our bank in
+Ouagadougou Branch, Please see this as a confidential message and do
+not reveal it to another person because it=E2=80=99s a top secret.
 
-Problem: Kernels 5.7.x , 5.8.x, current 5.9-rcs and drm-tip have a large r=
-egression on (some?) Haswell (HSW)
+We are imposition to reclaim and inherit the sum of US $(38,850,000
+Million ) without any trouble, from a dormant account which remains
+unclaimed since 7 years the owner died. This is a U.S Dollars account
+and the beneficiary died without trace of his family to claim the
+fund.
 
-This is verified by _multiple people_ using different methods.
-All his is documented in [1]  , Kernel 5.6.19 was fine
-Result: no output, no usable desktop due to gpu crashes
+Upon my personal audit investigation into the details of the account,
+I find out that the deceased is a foreigner, which makes it possible
+for you as a foreigner no matter your country to lay claim on the
+balance as the Foreign Business Partner or Extended Relative to the
+deceased, provided you are not from here.
 
-Hardware : 2x Acer C720 Chromebooks and potentially others
+Your integrity and trustworthiness will make us succeed without any
+risk. Please if you think that the amount is too much to be
+transferred into your account, you have the right to ask our bank to
+transfer the fund into your account bit by bit after approval or you
+double the account. Once this fund is transferred into your account,
+we will share the fund accordingly. 45%, for you, 45%, for me, 5%, had
+been mapped out for the expense made in this transaction, 5% as a free
+will donation to charity and motherless babies homes in both our
+countries as sign of breakthrough and more blessings.
 
-Methods:
-- running mpv with vaapi enabled
-- glxgears
-- automatic desktop environment start (probably with acceleration)
 
-There is atm no fix in drm-tip integrated (5.9.0_rc5bisect_g30b3e38bd6d5 f=
-or example still errors)
- and no activity from Intel in the bug report beside the "working" suggest=
-ed patches / hacks there
+If you are interested to help without disappointment or breach of
+trust, reply me, so that I will guide you on the proper banking
+guidelines to follow for the claim. After the transfer, I will fly to
+your country for sharing of funds according to our agreement.
+Assurance: Note that this transaction will never in any way harm or
+foiled your good post or reputation in your country, because
+everything will follow legal process.
 
-There should be enough bisection info an there.
-Nobody asked there to get more info or different bisects/trees.
-
-So - the ticket is still open.
-
-Because Fedora uses newish Kernels I would like to use it "normally" witho=
-ut
-going for 5.4 LTS or waiting an unknown amount of time - as 5.9.x currentl=
-y seems to have the
-same regression.
-
-Affected Hardware at my end:
-- C720 with a Intel Celeron 2955U
-- UEFI Bios instead of original Bios (mrchromebox.tech) if thats relevant =
-for hardware init related bugs;
-But the Kernel should take care of the correct initialization anyway
-
-Feel free to comment which trees, branches, tags or patches we should try =
-to help
-and what _more_ to report for "Report-By" , "Tested-By", "Verified-By"
-tagging so that [1] can be closed.
-
-Greetings, Dirk
-
-[1]https://gitlab.freedesktop.org/drm/intel/-/issues/2024
-
+I am looking forward to hear from you soonest.
+Yours faithfully,
+Mr Refat Ebrima
