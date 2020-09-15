@@ -2,354 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB9D26B081
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B796B26B13F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727524AbgIOQmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        id S1727553AbgIOQTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727501AbgIOP5x (ORCPT
+        with ESMTP id S1727405AbgIOP1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:57:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8E1C061788;
-        Tue, 15 Sep 2020 08:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=u+PjVn2iYv8vGBp3/U/FpUBxU+1ybYDlmuDi1nd7xKA=; b=AOe5obOuKb42rxAHU0QIHLXO+M
-        B+yvvdR630CDcTRAMzyOtj5AZ4J4J76yA78HlqT0RfDxzHzkigIvUDigf4ZsHOHBfMsgSDtg+i1v1
-        RkcAFzt7V/6Ueh/4tkkNM7Rn3k4OnzDTTMLHR/yV1JDlpimjS68tMR02nXOQx6MaAtfm04Rve036y
-        3gpt8If62eCLEywi+5r9F3nypWqMGz93UFfiPGr+I9kW4QGbhG7QB14fHEH55wQrsYPwKIzWY2ajV
-        +Dw584z0qMAeGzAMDC+Z0RRNa7VuKR8ra3aHpb8PL09A4D0y/8tSXV4arzNlu4tmbgyD7GUjDtKPP
-        cIakDnYQ==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIDAW-0002nn-JP; Tue, 15 Sep 2020 15:46:56 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 12/12] bdi: replace BDI_CAP_NO_{WRITEBACK,ACCT_DIRTY} with a single flag
-Date:   Tue, 15 Sep 2020 17:18:29 +0200
-Message-Id: <20200915151829.1767176-13-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915151829.1767176-1-hch@lst.de>
-References: <20200915151829.1767176-1-hch@lst.de>
+        Tue, 15 Sep 2020 11:27:22 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D3DC06174A;
+        Tue, 15 Sep 2020 08:26:27 -0700 (PDT)
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTP id 6DE76140A5E;
+        Tue, 15 Sep 2020 17:26:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1600183583; bh=TAQFroqD15GzajgK4PXx1VB35Pw0xMcmdE2KPLPIZGw=;
+        h=From:To:Date;
+        b=b4k7qsoFgI7upbuLvppGqqfjkwc967ve/FXJ7vPa3CxOfRH0vh5zbRkLfRybYxsPE
+         iaRyoeF8T6Kx67ITueynxv1gllo+8YkC2UzkfQcPMnwwsoaiZDE/pBJ0kPpOAkVL1L
+         tG8ICPLj36YU/kDcNjLb23uc2cjyv8PL7O9pZZ7U=
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+To:     linux-leds@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+Subject: [PATCH leds + devicetree v2 2/2] leds: trigger: netdev: parse `trigger-sources` from device tree
+Date:   Tue, 15 Sep 2020 17:26:16 +0200
+Message-Id: <20200915152616.20591-3-marek.behun@nic.cz>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200915152616.20591-1-marek.behun@nic.cz>
+References: <20200915152616.20591-1-marek.behun@nic.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Spam-Status: No, score=0.00
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the two negative flags that are always used together with a
-single positive flag that indicates the writeback capability instead
-of two related non-capabilities.  Also remove the pointless wrappers
-to just check the flag.
+Allow setting netdev LED trigger as default when given LED DT node has
+the `trigger-sources` property pointing to a node corresponding to a
+network device.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+The specific netdev trigger mode is determined from the `function` LED
+property.
+
+Example:
+  eth0: ethernet@30000 {
+    compatible = "xyz";
+    #trigger-source-cells = <0>;
+  };
+
+  led {
+    color = <LED_COLOR_ID_GREEN>;
+    function = LED_FUNCTION_LINK;
+    trigger-sources = <&eth0>;
+  };
+
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 ---
- fs/9p/vfs_file.c            |  2 +-
- fs/fs-writeback.c           |  7 +++---
- include/linux/backing-dev.h | 48 ++++++++-----------------------------
- mm/backing-dev.c            |  6 ++---
- mm/filemap.c                |  4 ++--
- mm/memcontrol.c             |  2 +-
- mm/memory-failure.c         |  2 +-
- mm/migrate.c                |  2 +-
- mm/mmap.c                   |  2 +-
- mm/page-writeback.c         | 12 +++++-----
- 10 files changed, 29 insertions(+), 58 deletions(-)
+ drivers/leds/trigger/ledtrig-netdev.c | 80 ++++++++++++++++++++++++++-
+ include/dt-bindings/leds/common.h     |  1 +
+ 2 files changed, 80 insertions(+), 1 deletion(-)
 
-diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-index 3576123d82990e..6ecf863bfa2f4b 100644
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -625,7 +625,7 @@ static void v9fs_mmap_vm_close(struct vm_area_struct *vma)
- 
- 	inode = file_inode(vma->vm_file);
- 
--	if (!mapping_cap_writeback_dirty(inode->i_mapping))
-+	if (!mapping_can_writeback(inode->i_mapping))
- 		wbc.nr_to_write = 0;
- 
- 	might_sleep();
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 149227160ff0b0..d4f84a2fe0878e 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -2321,7 +2321,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 
- 			wb = locked_inode_to_wb_and_lock_list(inode);
- 
--			WARN(bdi_cap_writeback_dirty(wb->bdi) &&
-+			WARN((wb->bdi->capabilities & BDI_CAP_WRITEBACK) &&
- 			     !test_bit(WB_registered, &wb->state),
- 			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
- 
-@@ -2346,7 +2346,8 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 			 * to make sure background write-back happens
- 			 * later.
- 			 */
--			if (bdi_cap_writeback_dirty(wb->bdi) && wakeup_bdi)
-+			if (wakeup_bdi &&
-+			    (wb->bdi->capabilities & BDI_CAP_WRITEBACK))
- 				wb_wakeup_delayed(wb);
- 			return;
- 		}
-@@ -2581,7 +2582,7 @@ int write_inode_now(struct inode *inode, int sync)
- 		.range_end = LLONG_MAX,
- 	};
- 
--	if (!mapping_cap_writeback_dirty(inode->i_mapping))
-+	if (!mapping_can_writeback(inode->i_mapping))
- 		wbc.nr_to_write = 0;
- 
- 	might_sleep();
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index b217344a2c63be..44df4fcef65c1e 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -110,27 +110,14 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
- /*
-  * Flags in backing_dev_info::capability
-  *
-- * The first three flags control whether dirty pages will contribute to the
-- * VM's accounting and whether writepages() should be called for dirty pages
-- * (something that would not, for example, be appropriate for ramfs)
-- *
-- * WARNING: these flags are closely related and should not normally be
-- * used separately.  The BDI_CAP_NO_ACCT_AND_WRITEBACK combines these
-- * three flags into a single convenience macro.
-- *
-- * BDI_CAP_NO_ACCT_DIRTY:  Dirty pages shouldn't contribute to accounting
-- * BDI_CAP_NO_WRITEBACK:   Don't write pages back
-- * BDI_CAP_WRITEBACK_ACCT: Automatically account writeback pages
-- * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
-+ * BDI_CAP_WRITEBACK:		Supports dirty page writeback, and dirty pages
-+ *				should contribute to accounting
-+ * BDI_CAP_WRITEBACK_ACCT:	Automatically account writeback pages
-+ * BDI_CAP_STRICTLIMIT:		Keep number of dirty pages below bdi threshold
-  */
--#define BDI_CAP_NO_ACCT_DIRTY	0x00000001
--#define BDI_CAP_NO_WRITEBACK	0x00000002
--#define BDI_CAP_WRITEBACK_ACCT	0x00000004
--#define BDI_CAP_STRICTLIMIT	0x00000010
--#define BDI_CAP_CGROUP_WRITEBACK 0x00000020
--
--#define BDI_CAP_NO_ACCT_AND_WRITEBACK \
--	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY)
-+#define BDI_CAP_WRITEBACK		(1 << 0)
-+#define BDI_CAP_WRITEBACK_ACCT		(1 << 1)
-+#define BDI_CAP_STRICTLIMIT		(1 << 2)
- 
- extern struct backing_dev_info noop_backing_dev_info;
- 
-@@ -169,24 +156,9 @@ static inline int wb_congested(struct bdi_writeback *wb, int cong_bits)
- long congestion_wait(int sync, long timeout);
- long wait_iff_congested(int sync, long timeout);
- 
--static inline bool bdi_cap_writeback_dirty(struct backing_dev_info *bdi)
--{
--	return !(bdi->capabilities & BDI_CAP_NO_WRITEBACK);
--}
--
--static inline bool bdi_cap_account_dirty(struct backing_dev_info *bdi)
--{
--	return !(bdi->capabilities & BDI_CAP_NO_ACCT_DIRTY);
--}
--
--static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
--{
--	return bdi_cap_writeback_dirty(inode_to_bdi(mapping->host));
--}
--
--static inline bool mapping_cap_account_dirty(struct address_space *mapping)
-+static inline bool mapping_can_writeback(struct address_space *mapping)
- {
--	return bdi_cap_account_dirty(inode_to_bdi(mapping->host));
-+	return inode_to_bdi(mapping->host)->capabilities & BDI_CAP_WRITEBACK;
+diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
+index d5e774d830215..99fc2f0c68e12 100644
+--- a/drivers/leds/trigger/ledtrig-netdev.c
++++ b/drivers/leds/trigger/ledtrig-netdev.c
+@@ -20,6 +20,7 @@
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
++#include <linux/of_net.h>
+ #include <linux/spinlock.h>
+ #include <linux/timer.h>
+ #include "../leds.h"
+@@ -389,6 +390,70 @@ static void netdev_trig_work(struct work_struct *work)
+ 			(atomic_read(&trigger_data->interval)*2));
  }
  
- static inline int bdi_sched_wait(void *word)
-@@ -223,7 +195,7 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
++static bool netdev_trig_of_parse(struct led_classdev *led_cdev,
++				 struct led_netdev_data *trigger_data)
++{
++	struct of_phandle_args args;
++	struct net_device *netdev;
++	struct device_node *np;
++	const char *function;
++	unsigned long mode;
++	int err;
++
++	/* netdev trigger can have only one source */
++	if (of_led_count_trigger_sources(led_cdev) != 1)
++		return false;
++
++	err = of_led_get_trigger_source(led_cdev, 0, &args);
++	if (err)
++		return false;
++
++	netdev = of_find_net_device_by_node(args.np);
++	if (!netdev)
++		return false;
++
++	np = dev_of_node(led_cdev->dev);
++	if (!np)
++		return false;
++
++	err = of_property_read_string(np, "function", &function);
++	if (err && err != -ENOENT) {
++		dev_warn(led_cdev->dev, "Failed parsing function for %pOF!\n",
++			 np);
++		return false;
++	} else if (err == -ENOENT) {
++		/* default function is link */
++		function = LED_FUNCTION_LINK;
++	}
++
++	mode = 0;
++	if (!strcmp(function, LED_FUNCTION_LINK)) {
++		set_bit(NETDEV_LED_LINK, &mode);
++	} else if (!strcmp(function, LED_FUNCTION_ACTIVITY)) {
++		set_bit(NETDEV_LED_TX, &mode);
++		set_bit(NETDEV_LED_RX, &mode);
++	} else if (!strcmp(function, LED_FUNCTION_RX)) {
++		set_bit(NETDEV_LED_RX, &mode);
++	} else if (!strcmp(function, LED_FUNCTION_TX)) {
++		set_bit(NETDEV_LED_TX, &mode);
++	} else {
++		dev_dbg(led_cdev->dev,
++			"Unsupported netdev trigger function for %pOF!\n", np);
++		return false;
++	}
++
++	if (trigger_data) {
++		dev_hold(netdev);
++		trigger_data->net_dev = netdev;
++		memcpy(trigger_data->device_name, netdev->name, IFNAMSIZ);
++		trigger_data->mode = mode;
++		if (netif_carrier_ok(netdev))
++			set_bit(NETDEV_LED_MODE_LINKUP, &trigger_data->mode);
++	}
++
++	return true;
++}
++
+ static int netdev_trig_activate(struct led_classdev *led_cdev)
+ {
+ 	struct led_netdev_data *trigger_data;
+@@ -414,10 +479,17 @@ static int netdev_trig_activate(struct led_classdev *led_cdev)
+ 	trigger_data->last_activity = 0;
  
- 	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
- 		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
--		bdi_cap_account_dirty(bdi) &&
-+		(bdi->capabilities & BDI_CAP_WRITEBACK) &&
- 		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
+ 	led_set_trigger_data(led_cdev, trigger_data);
++	netdev_trig_of_parse(led_cdev, trigger_data);
+ 
+ 	rc = register_netdevice_notifier(&trigger_data->notifier);
+-	if (rc)
++	if (rc) {
++		if (trigger_data->net_dev)
++			dev_put(trigger_data->net_dev);
+ 		kfree(trigger_data);
++	} else {
++		if (trigger_data->net_dev)
++			set_baseline_state(trigger_data);
++	}
+ 
+ 	return rc;
+ }
+@@ -436,10 +508,16 @@ static void netdev_trig_deactivate(struct led_classdev *led_cdev)
+ 	kfree(trigger_data);
  }
  
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index ab0415dde5c66c..5d0991e75ca337 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -14,9 +14,7 @@
- #include <linux/device.h>
- #include <trace/events/writeback.h>
++static bool netdev_trig_has_valid_source(struct led_classdev *led_cdev)
++{
++	return netdev_trig_of_parse(led_cdev, NULL);
++}
++
+ static struct led_trigger netdev_led_trigger = {
+ 	.name = "netdev",
+ 	.activate = netdev_trig_activate,
+ 	.deactivate = netdev_trig_deactivate,
++	.has_valid_source = netdev_trig_has_valid_source,
+ 	.groups = netdev_trig_groups,
+ };
  
--struct backing_dev_info noop_backing_dev_info = {
--	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
--};
-+struct backing_dev_info noop_backing_dev_info;
- EXPORT_SYMBOL_GPL(noop_backing_dev_info);
- 
- static struct class *bdi_class;
-@@ -744,7 +742,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
- 		kfree(bdi);
- 		return NULL;
- 	}
--	bdi->capabilities = BDI_CAP_WRITEBACK_ACCT;
-+	bdi->capabilities = BDI_CAP_WRITEBACK | BDI_CAP_WRITEBACK_ACCT;
- 	bdi->ra_pages = VM_READAHEAD_PAGES;
- 	bdi->io_pages = VM_READAHEAD_PAGES;
- 	return bdi;
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 1aaea26556cc7e..6c2a0139e22fa3 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -414,7 +414,7 @@ int __filemap_fdatawrite_range(struct address_space *mapping, loff_t start,
- 		.range_end = end,
- 	};
- 
--	if (!mapping_cap_writeback_dirty(mapping) ||
-+	if (!mapping_can_writeback(mapping) ||
- 	    !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
- 		return 0;
- 
-@@ -1702,7 +1702,7 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- no_page:
- 	if (!page && (fgp_flags & FGP_CREAT)) {
- 		int err;
--		if ((fgp_flags & FGP_WRITE) && mapping_cap_account_dirty(mapping))
-+		if ((fgp_flags & FGP_WRITE) && mapping_can_writeback(mapping))
- 			gfp_mask |= __GFP_WRITE;
- 		if (fgp_flags & FGP_NOFS)
- 			gfp_mask &= ~__GFP_FS;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b807952b4d431b..d2352f76d6519f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5643,7 +5643,7 @@ static int mem_cgroup_move_account(struct page *page,
- 		if (PageDirty(page)) {
- 			struct address_space *mapping = page_mapping(page);
- 
--			if (mapping_cap_account_dirty(mapping)) {
-+			if (mapping_can_writeback(mapping)) {
- 				__mod_lruvec_state(from_vec, NR_FILE_DIRTY,
- 						   -nr_pages);
- 				__mod_lruvec_state(to_vec, NR_FILE_DIRTY,
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index f1aa6433f40416..a1e73943445e77 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1006,7 +1006,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
- 	 */
- 	mapping = page_mapping(hpage);
- 	if (!(flags & MF_MUST_KILL) && !PageDirty(hpage) && mapping &&
--	    mapping_cap_writeback_dirty(mapping)) {
-+	    mapping_can_writeback(mapping)) {
- 		if (page_mkclean(hpage)) {
- 			SetPageDirty(hpage);
- 		} else {
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 34a842a8eb6a7b..9d2f42a3a16294 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -503,7 +503,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
- 			__dec_lruvec_state(old_lruvec, NR_SHMEM);
- 			__inc_lruvec_state(new_lruvec, NR_SHMEM);
- 		}
--		if (dirty && mapping_cap_account_dirty(mapping)) {
-+		if (dirty && mapping_can_writeback(mapping)) {
- 			__dec_node_state(oldzone->zone_pgdat, NR_FILE_DIRTY);
- 			__dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
- 			__inc_node_state(newzone->zone_pgdat, NR_FILE_DIRTY);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 40248d84ad5fbd..1fc0e92be4ba9b 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1666,7 +1666,7 @@ int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
- 
- 	/* Can the mapping track the dirty pages? */
- 	return vma->vm_file && vma->vm_file->f_mapping &&
--		mapping_cap_account_dirty(vma->vm_file->f_mapping);
-+		mapping_can_writeback(vma->vm_file->f_mapping);
- }
- 
- /*
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 0139f9622a92da..358d6f28c627b7 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -1882,7 +1882,7 @@ void balance_dirty_pages_ratelimited(struct address_space *mapping)
- 	int ratelimit;
- 	int *p;
- 
--	if (!bdi_cap_account_dirty(bdi))
-+	if (!(bdi->capabilities & BDI_CAP_WRITEBACK))
- 		return;
- 
- 	if (inode_cgwb_enabled(inode))
-@@ -2423,7 +2423,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
- 
- 	trace_writeback_dirty_page(page, mapping);
- 
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		struct bdi_writeback *wb;
- 
- 		inode_attach_wb(inode, page);
-@@ -2450,7 +2450,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
- void account_page_cleaned(struct page *page, struct address_space *mapping,
- 			  struct bdi_writeback *wb)
- {
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		dec_lruvec_page_state(page, NR_FILE_DIRTY);
- 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
- 		dec_wb_stat(wb, WB_RECLAIMABLE);
-@@ -2513,7 +2513,7 @@ void account_page_redirty(struct page *page)
- {
- 	struct address_space *mapping = page->mapping;
- 
--	if (mapping && mapping_cap_account_dirty(mapping)) {
-+	if (mapping && mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
-@@ -2625,7 +2625,7 @@ void __cancel_dirty_page(struct page *page)
- {
- 	struct address_space *mapping = page_mapping(page);
- 
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
-@@ -2665,7 +2665,7 @@ int clear_page_dirty_for_io(struct page *page)
- 
- 	VM_BUG_ON_PAGE(!PageLocked(page), page);
- 
--	if (mapping && mapping_cap_account_dirty(mapping)) {
-+	if (mapping && mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
+diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds/common.h
+index 52b619d44ba25..c7f9d34d60206 100644
+--- a/include/dt-bindings/leds/common.h
++++ b/include/dt-bindings/leds/common.h
+@@ -77,6 +77,7 @@
+ #define LED_FUNCTION_HEARTBEAT "heartbeat"
+ #define LED_FUNCTION_INDICATOR "indicator"
+ #define LED_FUNCTION_LAN "lan"
++#define LED_FUNCTION_LINK "link"
+ #define LED_FUNCTION_MAIL "mail"
+ #define LED_FUNCTION_MTD "mtd"
+ #define LED_FUNCTION_PANIC "panic"
 -- 
-2.28.0
+2.26.2
 
