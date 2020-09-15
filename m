@@ -2,279 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECE826B42F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0407526B46B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgIOXTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:19:09 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59141 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727305AbgIOXSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:18:43 -0400
-IronPort-SDR: JU3koeQd+eO/dw4ECUEq6BrH1iCFolrmmSLbN78zkFnkaYVhkcLE4PYwldIQSyvW9KLfuY2mAP
- If0O93qfVp9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="147118811"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="147118811"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:18:41 -0700
-IronPort-SDR: +ynZSTyFjIeqvGWrBWLEWGFH34MZZS/PO6SwNa3//jyiufqCKtmY6WljdBmW6vTKXF86CO61rq
- ZX3tnxet7i9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="483047225"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by orsmga005.jf.intel.com with ESMTP; 15 Sep 2020 16:18:41 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     rjw@rjwysocki.net, lenb@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] ACPI / DPTF: Add PCH FIVR participant driver
-Date:   Tue, 15 Sep 2020 16:18:14 -0700
-Message-Id: <20200915231814.408117-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726320AbgIOXXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726825AbgIOXWl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 19:22:41 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286C1C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:22:41 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q4so4701876ils.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:22:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4H2qVK4w547uV3EqUqVyJ9uKvMaqmmH5qAQ7XSG/+SE=;
+        b=cT+m4/Sflfb21KpiBS3nTulUK8OLY6yo61bKQZVdoFM6SCxUKhElw2KyKlIXFrchpg
+         fM38fIst4G/Olouvu2xJ5zaByp/vzngH0K1TAQEQOKfT+x1+9J499/TFGqjSlfVCT+9B
+         8WfUF2eA9JlcI9Cex3U9paNzZ4oJNVENJ2jIpd+kRGh1mvVzdJMcTgVKlgJqJ3WzwaQC
+         N+r9LCHtTTxzrVFd1vZ/UWT1ZO8zgj0MABs2LzgjMBzxhnSrRdZEXuoth+x4F+xEDalA
+         7K62jfybhHLd9VwXk0dqdv85dP2lXuQ33/PT+FFfsN3tlxwslG0HNidXSDXOZcuO1HvY
+         K+YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4H2qVK4w547uV3EqUqVyJ9uKvMaqmmH5qAQ7XSG/+SE=;
+        b=uWyposumR+BU/pX1cNrJJ+CVNwahOUbY2o/5TOPMFqJYiKDTk8fvuvyzy1NAXefq4K
+         J9mEQmfkywGJflX/SEHdUFmsjpAka7Zr2WYQSgy05GyIExYyzEyH8gpBwFeiGGIgOUi2
+         fnM5JK2MBngQxZxf+j9nM5AWTMkdCNI3FdgKxU97RkGHNtPxCGlw4hCnQjRFf/9V6kmr
+         2T7jN/8XRLM3SjWovjRLBD3iZbHKlTdaaLyWCZinkvUJ4PRfZmiG3mqM3U2bLxsHwGXg
+         oS+6cUAKuWKpIsBVTlRbFeWgPM4pVlr2rIz6J0wvEOfOaO9+VnoSGRBNnxaWvEsKPIhr
+         n9EA==
+X-Gm-Message-State: AOAM532HH5PdVmHfPI79BSgBhgBOTFv7x5Zdw/zRUHEk7k3gSJ9EiqHR
+        3d35GCz1Dx8VafiLSQukHXpesw==
+X-Google-Smtp-Source: ABdhPJy5sWk6NAbW8AaJioc5f7jA1q5VOQMgOXwcVU+NB3JLXVbl3BCKxo6FPyXMBhrMw296gGWhsQ==
+X-Received: by 2002:a92:194b:: with SMTP id e11mr18171975ilm.43.1600212160225;
+        Tue, 15 Sep 2020 16:22:40 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id m5sm606593ilc.79.2020.09.15.16.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 16:22:39 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kIKHW-006itc-FP; Tue, 15 Sep 2020 20:22:38 -0300
+Date:   Tue, 15 Sep 2020 20:22:38 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200915232238.GO1221970@ziepe.ca>
+References: <20200914211515.GA5901@xz-x1>
+ <20200914225542.GO904879@nvidia.com>
+ <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
+ <20200914232851.GH1221970@ziepe.ca>
+ <20200915145040.GA2949@xz-x1>
+ <20200915160553.GJ1221970@ziepe.ca>
+ <20200915182933.GM1221970@ziepe.ca>
+ <20200915191346.GD2949@xz-x1>
+ <20200915193838.GN1221970@ziepe.ca>
+ <20200915213330.GE2949@xz-x1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915213330.GE2949@xz-x1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver adds support for Dynamic Platform and Thermal Framework
-(DPTF) PCH (Platform Controller Hub) FIVR (Fully Integrated Voltage
-Regulator) participant support.
+On Tue, Sep 15, 2020 at 05:33:30PM -0400, Peter Xu wrote:
 
-This participant is responsible for exposing platform telemetry and
-control for:
-	freq_mhz_high_clock
-	freq_mhz_low_clock
+> > RDMA doesn't ever use !WRITE
+> > 
+> > I'm guessing #5 is the issue, just with a different ordering. If the
+> > #3 pin_user_pages() preceeds the #2 fork, don't we get to the same #5?
+> 
+> Right, but only if without MADV_DONTFORK?
 
-These attributes are used to get and set PCH FIVR switching frequency
-for thermal and radio frequency interference mitigation.
-
-Refer to Documentation/ABI/testing/sysfs-platform-dptf for ABI details.
-
-ACPI methods description used in this driver:
-RFC0: This ACPI method to set PCH FIVR switching frequency when FIVR
-clock is 19.2MHz or 24MHz. The ACPI method takes a DWORD value.
-GFC0: This ACPI method to get PCH FIVR switching frequency when FIVR
-clock is 19.2MHz or 24MHz.
-RFC1: This ACPI method to set PCH FIVR switching frequency when FIVR
-clock is 38.4MHz. The ACPI method takes a DWORD value.
-GFC1: This ACPI method to get PCH FIVR switching frequency when FIVR
-clock is 38.4MHz.
-
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- Documentation/ABI/testing/sysfs-platform-dptf |  16 +++
- drivers/acpi/dptf/Kconfig                     |  14 ++
- drivers/acpi/dptf/Makefile                    |   1 +
- drivers/acpi/dptf/dptf_pch_fivr.c             | 126 ++++++++++++++++++
- drivers/acpi/dptf/int340x_thermal.c           |   1 +
- 5 files changed, 158 insertions(+)
- create mode 100644 drivers/acpi/dptf/dptf_pch_fivr.c
-
-diff --git a/Documentation/ABI/testing/sysfs-platform-dptf b/Documentation/ABI/testing/sysfs-platform-dptf
-index eeed81ca6949..2cbc660d163b 100644
---- a/Documentation/ABI/testing/sysfs-platform-dptf
-+++ b/Documentation/ABI/testing/sysfs-platform-dptf
-@@ -92,3 +92,19 @@ Contact:	linux-acpi@vger.kernel.org
- Description:
- 		(RO) The battery discharge current capability obtained from battery fuel gauge in
- 		milli Amps.
-+
-+What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/freq_mhz_low_clock
-+Date:		November, 2020
-+KernelVersion:	v5.10
-+Contact:	linux-acpi@vger.kernel.org
-+Description:
-+		(RW) The PCH FIVR (Fully Integrated Voltage Regulator) switching frequency in MHz,
-+		when FIVR clock is 19.2MHz or 24MHz.
-+
-+What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/freq_mhz_high_clock
-+Date:		November, 2020
-+KernelVersion:	v5.10
-+Contact:	linux-acpi@vger.kernel.org
-+Description:
-+		(RW) The PCH FIVR (Fully Integrated Voltage Regulator) switching frequency in MHz,
-+		when FIVR clock is 38.4MHz.
-diff --git a/drivers/acpi/dptf/Kconfig b/drivers/acpi/dptf/Kconfig
-index 90a2fd979282..51f06f36cafa 100644
---- a/drivers/acpi/dptf/Kconfig
-+++ b/drivers/acpi/dptf/Kconfig
-@@ -14,3 +14,17 @@ config DPTF_POWER
+Yes, results are that MADV_DONTFORK resolves the issue for initial
+tests. I should know if a bigger test suite passes in a few days.
  
- 	  To compile this driver as a module, choose M here:
- 	  the module will be called dptf_power.
-+
-+config DPTF_PCH_FIVR
-+	tristate "DPTF PCH FIVR Participant"
-+	depends on X86
-+	help
-+	  This driver adds support for Dynamic Platform and Thermal Framework
-+	  (DPTF) PCH FIVR Participant device support. This driver allows to
-+	  switch PCH FIVR (Fully Integrated Voltage Regulator) frequency.
-+	  This participant is responsible for exposing:
-+		freq_mhz_low_clock
-+		freq_mhz_high_clock
-+
-+	  To compile this driver as a module, choose M here:
-+	  the module will be called dptf_pch_fivr.
-diff --git a/drivers/acpi/dptf/Makefile b/drivers/acpi/dptf/Makefile
-index 1a9b0a2b25bf..297340682f66 100644
---- a/drivers/acpi/dptf/Makefile
-+++ b/drivers/acpi/dptf/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_ACPI)             += int340x_thermal.o
- obj-$(CONFIG_DPTF_POWER)	+= dptf_power.o
-+obj-$(CONFIG_DPTF_PCH_FIVR)	+= dptf_pch_fivr.o
-diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c b/drivers/acpi/dptf/dptf_pch_fivr.c
-new file mode 100644
-index 000000000000..4ab288827747
---- /dev/null
-+++ b/drivers/acpi/dptf/dptf_pch_fivr.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * dptf_pch_fivr:  DPTF PCH FIVR Participant driver
-+ * Copyright (c) 2020, Intel Corporation.
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+
-+/*
-+ * Presentation of attributes which are defined for INT1045
-+ * They are:
-+ * freq_mhz_low_clock : Set PCH FIVR switching freq for
-+ *			FIVR clock 19.2MHz and 24MHz
-+ * freq_mhz_high_clock : Set PCH FIVR switching freq for
-+ *			FIVR clock 38.4MHz
-+ */
-+#define PCH_FIVR_SHOW(name, method) \
-+static ssize_t name##_show(struct device *dev,\
-+			   struct device_attribute *attr,\
-+			   char *buf)\
-+{\
-+	struct acpi_device *acpi_dev = dev_get_drvdata(dev);\
-+	unsigned long long val;\
-+	acpi_status status;\
-+\
-+	status = acpi_evaluate_integer(acpi_dev->handle, #method,\
-+				       NULL, &val);\
-+	if (ACPI_SUCCESS(status))\
-+		return sprintf(buf, "%d\n", (int)val);\
-+	else\
-+		return -EINVAL;\
-+}
-+
-+#define PCH_FIVR_STORE(name, method) \
-+static ssize_t name##_store(struct device *dev,\
-+			    struct device_attribute *attr,\
-+			    const char *buf, size_t count)\
-+{\
-+	struct acpi_device *acpi_dev = dev_get_drvdata(dev);\
-+	acpi_status status;\
-+	u32 val;\
-+\
-+	if (kstrtouint(buf, 0, &val) < 0)\
-+		return -EINVAL;\
-+\
-+	status = acpi_execute_simple_method(acpi_dev->handle, #method, val);\
-+	if (ACPI_SUCCESS(status))\
-+		return count;\
-+\
-+	return -EINVAL;\
-+}
-+
-+PCH_FIVR_SHOW(freq_mhz_low_clock, GFC0)
-+PCH_FIVR_SHOW(freq_mhz_high_clock, GFC1)
-+PCH_FIVR_STORE(freq_mhz_low_clock, RFC0)
-+PCH_FIVR_STORE(freq_mhz_high_clock, RFC1)
-+
-+static DEVICE_ATTR_RW(freq_mhz_low_clock);
-+static DEVICE_ATTR_RW(freq_mhz_high_clock);
-+
-+static struct attribute *fivr_attrs[] = {
-+	&dev_attr_freq_mhz_low_clock.attr,
-+	&dev_attr_freq_mhz_high_clock.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group pch_fivr_attribute_group = {
-+	.attrs = fivr_attrs,
-+	.name = "pch_fivr_switch_frequency"
-+};
-+
-+static int pch_fivr_add(struct platform_device *pdev)
-+{
-+	struct acpi_device *acpi_dev;
-+	unsigned long long ptype;
-+	acpi_status status;
-+	int result;
-+
-+	acpi_dev = ACPI_COMPANION(&(pdev->dev));
-+	if (!acpi_dev)
-+		return -ENODEV;
-+
-+	status = acpi_evaluate_integer(acpi_dev->handle, "PTYP", NULL, &ptype);
-+	if (ACPI_FAILURE(status) || ptype != 0x05)
-+		return -ENODEV;
-+
-+	result = sysfs_create_group(&pdev->dev.kobj,
-+				    &pch_fivr_attribute_group);
-+	if (result)
-+		return result;
-+
-+	platform_set_drvdata(pdev, acpi_dev);
-+
-+	return 0;
-+}
-+
-+static int pch_fivr_remove(struct platform_device *pdev)
-+{
-+	sysfs_remove_group(&pdev->dev.kobj, &pch_fivr_attribute_group);
-+
-+	return 0;
-+}
-+
-+static const struct acpi_device_id pch_fivr_device_ids[] = {
-+	{"INTC1045", 0},
-+	{"", 0},
-+};
-+MODULE_DEVICE_TABLE(acpi, pch_fivr_device_ids);
-+
-+static struct platform_driver pch_fivr_driver = {
-+	.probe = pch_fivr_add,
-+	.remove = pch_fivr_remove,
-+	.driver = {
-+		.name = "DPTF PCH FIVR",
-+		.acpi_match_table = pch_fivr_device_ids,
-+	},
-+};
-+
-+module_platform_driver(pch_fivr_driver);
-+
-+MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("ACPI DPTF PCH FIVR driver");
-diff --git a/drivers/acpi/dptf/int340x_thermal.c b/drivers/acpi/dptf/int340x_thermal.c
-index bc71a6a60334..8d420c7e7178 100644
---- a/drivers/acpi/dptf/int340x_thermal.c
-+++ b/drivers/acpi/dptf/int340x_thermal.c
-@@ -27,6 +27,7 @@ static const struct acpi_device_id int340x_thermal_device_ids[] = {
- 	{"INTC1040"},
- 	{"INTC1043"},
- 	{"INTC1044"},
-+	{"INTC1045"},
- 	{"INTC1047"},
- 	{""},
- };
--- 
-2.25.4
+> > > If this is a problem, we may still need the fix patch (maybe not as urgent as
+> > > before at least).  But I'd like to double confirm, just in case I miss some
+> > > obvious facts above.
+> > 
+> > I'm worred that the sudden need to have MAD_DONTFORK is going to be a
+> > turn into a huge regression. It already blew up our first level of
+> > synthetic test cases. I'm worried what we will see when the
+> > application suite is run in a few months :\
+> 
+> For my own preference I'll consider changing kernel behavior if the impact is
+> still under control (the performance report of 30%+ boost is also attractive
+> after the simplify-cow patch).  The other way is to maintain the old reuse
+> logic forever, that'll be another kind of burden.  Seems no easy way on either
+> side...
 
+It seems very strange that a physical page exclusively owned by a
+process can become copied if pin_user_pages() is active and the
+process did fork() at some point. 
+
+Could the new pin_user_pages() logic help here? eg the
+GUP_PIN_COUNTING_BIAS stuff?
+
+Could the COW code consider a refcount of GUP_PIN_COUNTING_BIAS + 1 as
+being owned by the current mm and not needing COW? The DMA pin would
+be 'invisible' for COW purposes?
+
+Perhaps an ideal thing would be to have fork() not set the write
+protect on pages that have GUP_PIN_COUNTING_BIAS (ie are under DMA),
+instead immediately copy during fork(). Then we don't get into this
+situation and also don't need MADV_DONTFORK anymore (yay!!). Feels like
+this could be low cost as fork() must already be touching the
+refcount?
+
+It looks like RDMA, media, vfio, vdpa, io_uring (!!) and xdp all use
+FOLL_LONGTERM and may be at regression risk.
+
+I can't say at this point the scope of the problem with RDMA.
+*Technicaly* apps forking without MADV_DONTFORK are against the
+defined programming model, but since the old kernel didn't fail
+robustly there could be misses. FWIW the failure is catastrophic, the
+app just breaks completely.
+
+io_uring seems like something that would have interest to mix with
+fork.. I see mentions of MADV_DONTFORK in io_uring documentation,
+however it is not documented as a 'if you ever call fork() you have to
+use this API'. That seems worrying.
+
+> > > IMHO it worked because the page to do RDMA has mapcount==1, so it was reused
+> > > previously just as-is even after the fork without MADV_DONTFORK and after the
+> > > child quits.
+> > 
+> > That would match the results we see.. So this patch changes things so
+> > it is not re-used as-is, but replaced with Y?
+> 
+> Yes. The patch lets "replaced with Y" (cow) happen earlier at step #3.  Then
+> with MADV_DONTFORK, reuse should not happen any more.
+
+?? Step #3 is pin_user_pages(), why would that replace with COW?
+
+Thanks,
+Jason
