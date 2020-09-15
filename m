@@ -2,119 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E5C269CA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFEB269CA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgIODjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:39:41 -0400
-Received: from mail-am6eur05on2059.outbound.protection.outlook.com ([40.107.22.59]:23488
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726019AbgIODji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:39:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=boYqbj51EluemcPuIha5h3J28UeF9v+Q8OXWcT39AyK2waET0QkJ/kOm+Jqdzlunxkc0q+6jzut1B204jOKV0K6AiQjLuLrcIEqa/TPyfEs+3WZCYaPIE6n7sdhGeVRn/oKQ2Qeb0HO/ee8CTeN4Z5EUZez0vQg4jXiLXhxOzyZR0gZzgifCHQoY4MfcDpHKPhcDHJmgNAsfHd6mX+tMkiBP66Gf6R92RiIT9ruFwplS/vBX/LTrSr4BeigXzA5wstwFAMd9295gAJKWZJ9F2Lix5iXljOLi6IX1amk/b3f0t0r+LKSRnYSfeDTCQEr7fLUBMFz2xsRYzCgRxtcT4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k88uhHgqxhMlAaryXXH/zo1IXdH0Q20Zx1jQ0ggORB0=;
- b=nGzJbk5kO8hVnknPSLDrueALtynwNjtiEY/enSM2cLiYPBajM0zl0hvln/cXAaY4jhdwpGLB+MsKD+b8xhAxwRarraauZjlKUfezMj2vVZ1Xgy+74BRG8QejYx7nxBpuAQrKQuSADpvjMbYKv678gnMEPXNiYMNvvO2e+h5l7Z0VihaBAunqSXvfpgTjvkMwCirhPNIKZncbNRYf3LinyBD0wC+2xlElBkvLO/pxRr6wnpGt9x4MEz7CAr2UjE6T+b84oDitOD/UleVoCGZl/1v13Q+f8swDyZUSd536rl+JzCkB31YA4ioG5oOaU8N3IZL3qktcZt5RUFuzh9RwNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k88uhHgqxhMlAaryXXH/zo1IXdH0Q20Zx1jQ0ggORB0=;
- b=YxVcmbvwMDYkujvVKey5kfR5brchfGeSJH9mEGdMS9TXJqeqQ5qSSrS329US1SD5DZIFagVi4D+pyVpH1L7sAbn/UjslgXaRvi06N5FXvsUz6kB6KGVNRFTb4FuUCztl7wBGDOYhdW7uUik57ABMkWFkqmzJA3KLFhDzbI5Wieo=
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
- by HE1PR04MB3081.eurprd04.prod.outlook.com (2603:10a6:7:1e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Tue, 15 Sep
- 2020 03:39:34 +0000
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9%3]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 03:39:34 +0000
-From:   "Z.q. Hou" <zhiqiang.hou@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "M.h. Lian" <minghuan.lian@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
-Subject: RE: [PATCH 5/7] dt-bindings: pci: layerscape-pci: Update the
- description of SCFG property
-Thread-Topic: [PATCH 5/7] dt-bindings: pci: layerscape-pci: Update the
- description of SCFG property
-Thread-Index: AQHWhNow7GLPj4js/k6DpyxHQzXq1Klo9hEAgAAjrhA=
-Date:   Tue, 15 Sep 2020 03:39:34 +0000
-Message-ID: <HE1PR0402MB33719DC0B6E0DE849ED870FF84200@HE1PR0402MB3371.eurprd04.prod.outlook.com>
-References: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
- <20200907053801.22149-6-Zhiqiang.Hou@nxp.com> <20200915013108.GA668381@bogus>
-In-Reply-To: <20200915013108.GA668381@bogus>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 16dbd8e9-b251-40ff-fbb1-08d85928f6ad
-x-ms-traffictypediagnostic: HE1PR04MB3081:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR04MB3081F47FE0E122EABB970B7584200@HE1PR04MB3081.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wOF4koBnvbrTLs4CB0HmKGBN13cKm5IdumdY4cSCd1YaNX5O6eqCX0jgE8r0bAnPOfNV8W4aAMdI4Vb9G8J1RciNx43CdEeIvKbYYYMGNY5AGC/rTV/zy1VN/dwCIxwwZ5m6laDPpZoMxGfZep/HlxKTbmNX0rfdidEahtghrBGLCMraR3Ad1NOUWD8opdgA0gW6zWVhl8HgHkD27feQXLpib75lgQwk3T2OuL5JvkBn5tS+7JXi/VNvspo5LHVnr/kM6j+p9V40r2FwpX+QQJyVGaLYcbCQutXJGh8qU6ysewQOf5nFOKVXKdX6oQc3oLfEPsNK1i69Omh9+IlXfA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39860400002)(136003)(366004)(5660300002)(71200400001)(316002)(54906003)(4326008)(33656002)(9686003)(4744005)(55016002)(83380400001)(52536014)(8936002)(66476007)(66946007)(76116006)(53546011)(8676002)(86362001)(15650500001)(66556008)(7696005)(26005)(478600001)(64756008)(186003)(66446008)(6506007)(6916009)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: guF54ZmE9kAUmOfxMrLL8Yelivn57DJS/UiUCvK64sjl7G2DxHTvIKNfaVS8nd1efafiOvwcyJxz0M7k+K1T1lYKAt5NpgLoh4j319tIAntltbUNpKos46DHrBZ8+OFK05U45aipGvDaIwQnycF/I3ZDTFdaK+atJ/BqJA4r8otncvFxAXSskvqyJdSE8bDRXHQF3+i5QILFPVYqolc5v1iLbkaSoU0zb7daLZu5i8/iqZ2zsL1Z/aPT3d8obLWVth4JS5TSKJf99pbnxs5Kjaw47Aq0r7gYMFnKK7n03CEKcmVCmcgCJPMXNYJxsyLqy2c9nbJmre+Xh+jl13YsH2HzFy/C9XhuqHaj4BGiX3IlYBga6dAMgKod7/6SisCUAbmPaVJjFlsqT0AwFk+TqeF9UqV0OuejgOB350QNflIhydN8WZ4Ltq9sT05+2yS40WCmf+KlXRwdE8tcLalPCLqksOjllT6jFnVh6kE3SYN4G3BB4KmfdFDkrdREx5x/5nKuP3del+Uun3y6rpemuEDNa+2WZMCpxqzOjWMCmpSQ7T9OuwF6bSWcMJNGrvAp2JTvwQuZVm5wOds2+ITbXUvQnV8VCJ8nkLybojvSuNl3cFwgrkzPoH7ij2RHaNBueryqX/PFOIyDIeF4W4c4cQ==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1726091AbgIODlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 23:41:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726019AbgIODll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 23:41:41 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D4B5206E6;
+        Tue, 15 Sep 2020 03:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600141300;
+        bh=boBs+ih/xCgehR8v9KyKoDZHTJl5JCZYEq3XzxrMuOk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=XyyfrhB3yYnFeYyIkQ7sbrESLl71OJjSlKzX742W7VcJi6JZQaankcT7dBCxntNl5
+         wo8InNJ9A6Rr8ERwk2im0YKmqu3F7Oq7PXQUsy5tipImlWVPSxWOg2C0fdXE9/3XIu
+         xh6XOUGywXyOmNjOgZUq2lB8vX60s5XjkFMoFDH0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 08DAB35227CC; Mon, 14 Sep 2020 20:41:40 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 20:41:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= RCU: Question on
+ force_qs_rnp
+Message-ID: <20200915034139.GK29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200914194208.GA2579423@google.com>
+ <20200914205642.GE29330@paulmck-ThinkPad-P72>
+ <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16dbd8e9-b251-40ff-fbb1-08d85928f6ad
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 03:39:34.3397
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VE2DJjkt/++ESDYv7uVnArZ2XeYkcvQYIVC4oesF6j/Wra/FVM9P6bxV05Wdxolbh4qGSkxxr3GYsLUkDVTcIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR04MB3081
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLA0KDQpUaGFua3MgYSBsb3QgZm9yIHlvdXIgcmV2aWV3IGFuZCBhY2shDQoNClJlZ2Fy
-ZHMsDQpaaGlxaWFuZw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJv
-YiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IDIwMjDE6jnUwjE1yNUgOTozMQ0K
-PiBUbzogWi5xLiBIb3UgPHpoaXFpYW5nLmhvdUBueHAuY29tPg0KPiBDYzogbGludXgtcGNpQHZn
-ZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgTS5oLiBMaWFuDQo+
-IDxtaW5naHVhbi5saWFuQG54cC5jb20+OyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsNCj4g
-Z3VzdGF2by5waW1lbnRlbEBzeW5vcHN5cy5jb207IHJvYmgrZHRAa2VybmVsLm9yZzsgTWluZ2th
-aSBIdQ0KPiA8bWluZ2thaS5odUBueHAuY29tPjsgUm95IFphbmcgPHJveS56YW5nQG54cC5jb20+
-Ow0KPiBzaGF3bmd1b0BrZXJuZWwub3JnOyBMZW8gTGkgPGxlb3lhbmcubGlAbnhwLmNvbT47DQo+
-IGJoZWxnYWFzQGdvb2dsZS5jb207IGxvcmVuem8ucGllcmFsaXNpQGFybS5jb20NCj4gU3ViamVj
-dDogUmU6IFtQQVRDSCA1LzddIGR0LWJpbmRpbmdzOiBwY2k6IGxheWVyc2NhcGUtcGNpOiBVcGRh
-dGUgdGhlDQo+IGRlc2NyaXB0aW9uIG9mIFNDRkcgcHJvcGVydHkNCj4gDQo+IE9uIE1vbiwgMDcg
-U2VwIDIwMjAgMTM6Mzc6NTkgKzA4MDAsIFpoaXFpYW5nIEhvdSB3cm90ZToNCj4gPiBGcm9tOiBI
-b3UgWmhpcWlhbmcgPFpoaXFpYW5nLkhvdUBueHAuY29tPg0KPiA+DQo+ID4gVXBkYXRlIHRoZSBk
-ZXNjcmlwdGlvbiBvZiB0aGUgc2Vjb25kIGVudHJ5IG9mICdmc2wscGNpZS1zY2ZnJw0KPiA+IHBy
-b3BlcnR5LCBhcyB0aGUgTFMxMDQzQSBQQ0llIGNvbnRyb2xsZXIgYWxzbyBoYXMgc29tZSBjb250
-cm9sDQo+ID4gcmVnaXN0ZXJzIGluIFNDRkcgYmxvY2ssIHdoaWxlIGl0IGhhcyAzIGNvbnRyb2xs
-ZXJzLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogSG91IFpoaXFpYW5nIDxaaGlxaWFuZy5Ib3VA
-bnhwLmNvbT4NCj4gPiAtLS0NCj4gPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3BjaS9sYXllcnNjYXBlLXBjaS50eHQgfCAyICstDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
-c2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+IA0KPiBBY2tlZC1ieTogUm9iIEhlcnJp
-bmcgPHJvYmhAa2VybmVsLm9yZz4NCg==
+On Tue, Sep 15, 2020 at 03:18:23AM +0000, Zhang, Qiang wrote:
+> 
+> 
+> ________________________________________
+> 发件人: Paul E. McKenney <paulmck@kernel.org>
+> 发送时间: 2020年9月15日 4:56
+> 收件人: Joel Fernandes
+> 抄送: Zhang, Qiang; Uladzislau Rezki; josh@joshtriplett.org; rostedt@goodmis.org; mathieu.desnoyers@efficios.com; Lai Jiangshan; rcu@vger.kernel.org; LKML
+> 主题: Re: RCU: Question on force_qs_rnp
+> 
+> On Mon, Sep 14, 2020 at 03:42:08PM -0400, Joel Fernandes wrote:
+> > On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
+> > > Hello Paul
+> > >
+> > > I have some questions for you .
+> > > in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
+> > > report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
+> > > after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0,
+> > > we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
+> >
+> > Could you clarify what good is this going to do? What problem are you trying to
+> > address?
+> >
+> > You could have a task that is blocked in an RCU leaf node, but the
+> > force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
+> > CPU could be dyntick-idle and a quiescent state is reported. However, the GP
+> > must not end and the rcu leaf node should still be present in its parent
+> > intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
+> > any relevance.
+> >
+> > Or am I missing the point of the question?
+> 
+> >Hello, Qiang,
+> 
+> >Another way of making Joel's point is to say that the additional check
+> >you are asking for is already being done, but by rcu_report_qs_rnp().
+> 
+> >                                                        Thanx, Paul
+> 
+> Hello Pual,  Joel
+> 
+> What I want to express is as follows :
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 7623128d0020..beb554539f01 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2622,6 +2622,11 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+>                 if (mask != 0) {
+>                         /* Idle/offline CPUs, report (releases rnp->lock). */
+>                         rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+> +                       raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> +                       if (rnp->qsmask == 0 && rcu_preempt_blocked_readers_cgp(rnp))
+> +                               rcu_initiate_boost(rnp, flags);
+> +                       else
+> +                               raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>                 } else {
+>                         /* Nothing to do here, so just drop the lock. */
+>                         raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+
+But in that case, why duplicate the code from rcu_initiate_boost()?
+
+							Thanx, Paul
