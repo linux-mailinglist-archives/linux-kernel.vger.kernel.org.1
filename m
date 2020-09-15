@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3FB26AE67
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190EF26AE6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgIOUGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgIOUFs (ORCPT
+        id S1727928AbgIOUHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:07:41 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3609 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727713AbgIOUGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:05:48 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37B6C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 13:05:46 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id gr14so6891807ejb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 13:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=929GSb0jD8VArUXhfmYBsMFwZ1mStozLOcAe1ulKSRA=;
-        b=Cnotiy1xwz41qBAegUiDzJAt6Hn/SdpnzDg8KiK0nPtb0LP7VV9WTQndyQJk2LCYPO
-         jhWDF/vFCQFlNnQfvfijlXLmY3p1tiPae/NwnpFl6dIxroMHd92kipIiwMfXBg1+Zmcc
-         2O1jEJdBiVUAgNNKGNPBnb0gLZZ3FqWDDXv+Y4cZsEv4kfsZX5H4MX48i/unEhRs6rZc
-         8Kvrlp2dsxj+NDjWKu7rbrk2u/Mtd3oPseqpLW+jlIIptp8JlQdm9pj842duMe77HlvL
-         t2H6Y6w8xP/gArO7pKVrm6G0Ud64EhZcC4NkyA68/Xc9GOrExMD3BeXvG4Joz7cQ0dsi
-         hc7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=929GSb0jD8VArUXhfmYBsMFwZ1mStozLOcAe1ulKSRA=;
-        b=aY5zQf2/vTFvbUAq+/JuTYAi8ikNgUsNIBOfaLQhmu5cW0/qA2VVcVkqPDn1qMXV+c
-         NJqfGGMGcq/XtosCwxbcJkKjADU8Du6MDwFgRbbJwhGy6/uzV9pVTq7xwEPjuNP7Pft8
-         Z4+7mYKnQKa9Fi6Bgg0ovqSrrYdIbjHiD/ghbxeOTk85KIP4GKK3HaXyAHfybuKUQ/T0
-         bxiKpn2KXazvXanOu59MHxN14+O5u6McbKx8A6SFhyeal5EaIyo6l8KTrmno6s4UABj0
-         9HsixuHYdUXI+QIUkPiYHZincYLmSGw9QpOarZNxw/+s4rRNzkwE53FxL6R6rOR6N99T
-         FpQQ==
-X-Gm-Message-State: AOAM5330HquG8cWZWYXBolWP95i3DVkGNzzfuTjl6FfiyYfyM5LnbtTL
-        FLtkODI9TSBQMgTfvhVyQSsq2PWfbJG/BMwrjYk=
-X-Google-Smtp-Source: ABdhPJyUqReON7GONBckbkkGKGZUOL4jUSZNjbi9MDzz1vg1tQm8PhqyWWXULUNsdNzDSnCGbg1/ooa3UWIpA9W8Q4s=
-X-Received: by 2002:a17:906:4902:: with SMTP id b2mr21441225ejq.208.1600200345705;
- Tue, 15 Sep 2020 13:05:45 -0700 (PDT)
+        Tue, 15 Sep 2020 16:06:46 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f611eba0005>; Tue, 15 Sep 2020 13:06:18 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 15 Sep 2020 13:06:31 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 15 Sep 2020 13:06:31 -0700
+Received: from [10.21.180.184] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
+ 2020 20:06:19 +0000
+Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
+ to devlink reload command
+To:     Jiri Pirko <jiri@resnulli.us>
+CC:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-2-git-send-email-moshe@mellanox.com>
+ <20200914122732.GE2236@nanopsycho.orion>
+ <996866b1-5472-dd95-f415-85c34c4d01c0@nvidia.com>
+ <20200915132614.GN2236@nanopsycho.orion>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <b457bd8b-cf60-95a6-60eb-33b7a5ec06a4@nvidia.com>
+Date:   Tue, 15 Sep 2020 23:06:16 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200909160409.8678-1-narmstrong@baylibre.com> <20200909160409.8678-6-narmstrong@baylibre.com>
-In-Reply-To: <20200909160409.8678-6-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 15 Sep 2020 22:05:34 +0200
-Message-ID: <CAFBinCDH8sAqvaDJ=0iZ86fw30Y7Xos0vaRw6v8ECADqeJNn7Q@mail.gmail.com>
-Subject: Re: [PATCH 5/5] arm64: dts: meson-axg-s400: enable USB OTG
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200915132614.GN2236@nanopsycho.orion>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600200378; bh=Lm81+AojpWyUlTb+BaNAF9XupWRNESqPe0U1Q1CgUr8=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:
+         Content-Transfer-Encoding:Content-Language:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=FJa71lPrXTERv9ih7d4QbPrTAOkE7TyRa8i+iOzPRTmDzkAu08K+2OnK5Aet3sXgS
+         hMj628IVIsnsWw95WjzMqbF1xfZUxojeUM2eqNQCT17l8XpE20PAmhO6D/uWzisty6
+         3sJPvFsOjvOpSGlp6qOgm4EcpiNLAjQh+YkuYic25MGVD1ZF3vz57DrjfqUCWvG+eB
+         +AdwNXDd2XKCnIqz2/zB207vYoNNNRwYJhjMfKBY851XARVlxnTrNUIs8mT8RU31tS
+         HQii4G/6V6xlG5ORfSwu1IAsEPOzlU/3nC4zlJOiXh3C/GGNsqvkSXPpvpn1qPs0v3
+         /nW6Zl5shI2VQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
 
-On Wed, Sep 9, 2020 at 6:05 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
-[...]
-> +&usb {
-> +       status = "okay";
-> +       dr_mode = "otg";
-> +       vbus-supply = <&usb_pwr>;
-> +};
-> +
-> +&usb2_phy1 {
-> +       phy-supply = <&vcc_5v>;
-out of curiosity: why do we need this phy-supply here?
-isn't the usb_pwr regulator as vbus-supply above enough?
+On 9/15/2020 4:26 PM, Jiri Pirko wrote:
+> Tue, Sep 15, 2020 at 02:12:25PM CEST, moshe@nvidia.com wrote:
+>> On 9/14/2020 3:27 PM, Jiri Pirko wrote:
+>>> Mon, Sep 14, 2020 at 08:07:48AM CEST, moshe@mellanox.com wrote:
+> [..]	
+> 	
+>>>> @@ -7392,6 +7485,11 @@ struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size)
+>>>> 	if (!devlink)
+>>>> 		return NULL;
+>>>> 	devlink->ops = ops;
+>>>> +	if (devlink_reload_actions_verify(devlink)) {
+>>> Move this check to the beginning. You don't need devlink instance for
+>>> the check, just ops.
+>>
+>> Right, will fix.
+>>
+>>> also, your devlink_reload_actions_verify() function returns
+>>> 0/-ESOMETHING. Treat it accordingly here.
+>>
+>> Well, yes, but I rather return NULL here since devlink_alloc() failed. If
+>> devlink_reload_actions_verify() fails it has WARN_ON which will lead the
+>> driver developer to his bug.
+> So let the verify() return bool.
+> My point is, if a function return 0/-ESOMETHING, you should not check
+> the return value directly but you should use int err/ret.
 
 
-Best regards,
-Martin
+OK, will fix.
+
+>>>> +		kfree(devlink);
+>>>> +		return NULL;
+>>>> +	}
+> [...]
