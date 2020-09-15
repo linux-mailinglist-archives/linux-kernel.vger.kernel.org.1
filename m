@@ -2,164 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FF826A08E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A2D26A07F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgIOIU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgIOIUo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:20:44 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC51C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:20:42 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id md22so6335469pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JXi3eWzHsacG9MiKaF2epjpO9JenzGDAlAFqx0AKKoQ=;
-        b=lMpB1pljYp1umVqCH0/XJPiTF6/6bIG3bYmmiUuO+hfVVvMfXcZzIG2wIzO+aUdune
-         gt7pQRZsiMV9ZINKbXVoN7z96ofijXZ0W+YuxeHNtYr8BbDloBxasvXzhOB11uNt6NFD
-         qAaRznxO7XaqXNWTM4RcyTsZ6ylbAZWLFfp7iP575gSFhoujhfJUvAgMMvwQG09A1sP8
-         p2LWIFXBvyww8HgN2H10NTpPmTWprwnjm5U0RafHklbGvJvSFXJtIZjtVt3MqCkEedr+
-         AGLsRJVID+odElWiNdOnDp02g9vUBZu8TzQBPLO+ILSQru8etSDAd5iDs5HvvHq+9nQR
-         9xlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JXi3eWzHsacG9MiKaF2epjpO9JenzGDAlAFqx0AKKoQ=;
-        b=RTdsiFGSFgiM74KVbHIBqfqHyO3D8eVWLqj+z4YzVCsZYq2VXO/QoMU/+2LvqEwp4v
-         jDk1QL3CJEehsaeHXMd0b+L2RwhXHG8MYGH4fxYw5jog2v25ExRY5h0V31vqckOc8/1K
-         MK8INY4pwcvzGDt9WYt/s9iphQb+E2fEdAQxhSM9AayY7dKNXqHZve2pcykjK9NPaEAl
-         OCz1lpoPnb9S5BeMVuVk/5aebC9JJIjNumx4gloYnI6q4KLdpPZ7rnQs2oVOeJr8VK/D
-         SkwN4CKdLDnHBwg5/7RTo0UO71xszmmX9L4/hZqEm/0qusPxliM2dwq+GlMN87CAdEJQ
-         CmCw==
-X-Gm-Message-State: AOAM53361Tl8iNm0Ciwxq2ou4DkCYIQ6pYt4xtliavUlqPZ+1n52irzb
-        GWAZiNvGQaueFcMeRFheSuA1fkR84MK+So0=
-X-Google-Smtp-Source: ABdhPJziTUpzkuItTYtzGErbjHDEGCPJyaSXVak38t6wpYZcMjlnt3KOFIp//8zvV7ab1gFWMGtt5A==
-X-Received: by 2002:a17:90b:1988:: with SMTP id mv8mr3183054pjb.23.1600158042010;
-        Tue, 15 Sep 2020 01:20:42 -0700 (PDT)
-Received: from mani ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id y202sm13045064pfc.179.2020.09.15.01.20.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Sep 2020 01:20:41 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 13:50:36 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org
-Subject: Re: [PATCH v1] bus: mhi: core: Add const qualifier to MHI config
- information
-Message-ID: <20200915082036.GC12395@mani>
-References: <1599812017-32680-1-git-send-email-hemantk@codeaurora.org>
- <010101747c3a6fdd-33efa632-e20c-476d-9e39-01cb1f2d1cea-000000@us-west-2.amazonses.com>
+        id S1726350AbgIOIRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:17:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:57674 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726311AbgIOIQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:16:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A653930E;
+        Tue, 15 Sep 2020 01:16:52 -0700 (PDT)
+Received: from [10.57.48.219] (unknown [10.57.48.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 813B83F68F;
+        Tue, 15 Sep 2020 01:16:51 -0700 (PDT)
+Subject: Re: [PATCH v5] perf: arm_dsu: Support DSU ACPI devices
+To:     tuanphan@amperemail.onmicrosoft.com
+Cc:     will@kernel.org, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1599694141-16056-1-git-send-email-tuanphan@os.amperecomputing.com>
+ <202009102143.A4pW4A7I%lkp@intel.com>
+ <C7729DCE-57C3-4ADD-AFD4-3992798F1FF9@amperemail.onmicrosoft.com>
+ <6b04416d-497b-4687-2c79-08d029cf758d@arm.com>
+ <05A48968-34CD-41DA-9699-0FC051D8553B@amperemail.onmicrosoft.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <01794d54-4aeb-431d-dd67-d56ec231a19e@arm.com>
+Date:   Tue, 15 Sep 2020 09:21:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <010101747c3a6fdd-33efa632-e20c-476d-9e39-01cb1f2d1cea-000000@us-west-2.amazonses.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <05A48968-34CD-41DA-9699-0FC051D8553B@amperemail.onmicrosoft.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 08:13:58AM +0000, Hemant Kumar wrote:
-> MHI channel, event and controller config data needs to be
-> treated read only information. Add const qualifier to make
-> sure config information passed by MHI controller is not
-> modified by MHI core driver.
-> 
-> Suggested-by: Kalle Valo <kvalo@codeaurora.org>
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+Hi Tuan
 
-Applied to mhi-next!
+On 09/14/2020 05:21 PM, Tuan Phan wrote:
 
-Thanks,
-Mani
+>>>> Reported-by: kernel test robot <lkp@intel.com <mailto:lkp@intel.com>>
+>>>>
+>>>> All warnings (new ones prefixed by >>):
+>>>>
+>>>>>> drivers/perf/arm_dsu_pmu.c:799:36: warning: unused variable 
+>>>>>> 'dsu_pmu_acpi_match' [-Wunused-const-variable]
+>>>>   static const struct acpi_device_id dsu_pmu_acpi_match[] = {
+>>>>                                      ^
+>>>>   1 warning generated.
+>>>>
+>>> Do you need me to fix this warning when CONFIG_ACPI not defined?
+>>
+>> Yes, please. The kernel should compile fine in any config. Any compiler
+>> warning is not good (unless the compiler is wrong).
+> 
+> I will fix it. I asked because with no CONFIG_ACPI, i saw the same 
+> message on other drivers.
 
-> ---
->  drivers/bus/mhi/core/init.c | 12 ++++++------
->  include/linux/mhi.h         |  6 +++---
->  2 files changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index f69a2f3..d232938 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -562,10 +562,10 @@ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
->  }
->  
->  static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
-> -			struct mhi_controller_config *config)
-> +			const struct mhi_controller_config *config)
->  {
->  	struct mhi_event *mhi_event;
-> -	struct mhi_event_config *event_cfg;
-> +	const struct mhi_event_config *event_cfg;
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->  	int i, num;
->  
-> @@ -648,9 +648,9 @@ static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
->  }
->  
->  static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
-> -			struct mhi_controller_config *config)
-> +			const struct mhi_controller_config *config)
->  {
-> -	struct mhi_channel_config *ch_cfg;
-> +	const struct mhi_channel_config *ch_cfg;
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->  	int i;
->  	u32 chan;
-> @@ -766,7 +766,7 @@ static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
->  }
->  
->  static int parse_config(struct mhi_controller *mhi_cntrl,
-> -			struct mhi_controller_config *config)
-> +			const struct mhi_controller_config *config)
->  {
->  	int ret;
->  
-> @@ -803,7 +803,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
->  }
->  
->  int mhi_register_controller(struct mhi_controller *mhi_cntrl,
-> -			    struct mhi_controller_config *config)
-> +			    const struct mhi_controller_config *config)
->  {
->  	struct mhi_event *mhi_event;
->  	struct mhi_chan *mhi_chan;
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 6b987e8..b2c0214 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -280,9 +280,9 @@ struct mhi_controller_config {
->  	u32 timeout_ms;
->  	u32 buf_len;
->  	u32 num_channels;
-> -	struct mhi_channel_config *ch_cfg;
-> +	const struct mhi_channel_config *ch_cfg;
->  	u32 num_events;
-> -	struct mhi_event_config *event_cfg;
-> +	const struct mhi_event_config *event_cfg;
->  	bool use_bounce_buf;
->  	bool m2_no_db;
->  };
-> @@ -545,7 +545,7 @@ struct mhi_driver {
->   * @config: Configuration to use for the controller
->   */
->  int mhi_register_controller(struct mhi_controller *mhi_cntrl,
-> -			    struct mhi_controller_config *config);
-> +			const struct mhi_controller_config *config);
->  
->  /**
->   * mhi_unregister_controller - Unregister MHI controller
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Please could you share the logs here, we could fix them too. Or patches
+welcome.
+
+Cheers
+Suzuki
