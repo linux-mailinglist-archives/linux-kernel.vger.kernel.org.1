@@ -2,239 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7383E26B267
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216AD26B266
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbgIOWrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727491AbgIOPpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:45:07 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE4EC061353;
-        Tue, 15 Sep 2020 08:45:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=gUZlssLy9UpUFUzUUCOc7PANoLHYkS36G70FuogZvb8=; b=zrgVHfSTZglugojNEb8HXIzBxp
-        6R1zZhKMLMt5Dvsabny+4pvxMQhm6V1JmPmfcwouiourPdiUh/k3JejnXSrIfNhk7bmfX3q6RMwls
-        9eLWk/1HXQVbrbJGmaIqzzh96xZaIxZk67aFsVGWJcgoowvo/ju2Qqx8hYqC6Ozips/6APnRPi3OJ
-        T0CpQFsJhMhgbjGVobHrY7LJwsaEnoQzpSJntNJvlSUQkurgJjbVh24HXIiAZXNc7VBt3AapozQ5q
-        g7NC6IZgvgdQsWRPdyisf8KHzZTHhMALJs0Q4M9Jo7dlP5x411Sg3ZNF2o81r+fAYKW4oLlh4o1Tk
-        CTroo6iA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kID8g-0005BT-KU; Tue, 15 Sep 2020 15:45:02 +0000
-Subject: Re: [PATCH v4] mm: memcontrol: Add the missing numa_stat interface
- for cgroup v2
-To:     Muchun Song <songmuchun@bytedance.com>, tj@kernel.org,
-        lizefan@huawei.com, hannes@cmpxchg.org, corbet@lwn.net,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com
-Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20200915055825.5279-1-songmuchun@bytedance.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a3e2a7bf-ae5a-9ca8-74f9-57af795f0380@infradead.org>
-Date:   Tue, 15 Sep 2020 08:44:55 -0700
+        id S1727770AbgIOWqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:46:54 -0400
+Received: from mail-dm6nam12on2087.outbound.protection.outlook.com ([40.107.243.87]:64288
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727492AbgIOPpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:45:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bNP3TnFmi1bgpc0f9mUsBE3hmHlNC9MaVKfAZLpWKv/A09YJ26Gz0iqOkvJSU+0h2DrrVGown+xwhRSbaKQMThS4E0JFNba/2tjePVvkiWx6jX2kKskV/fXUr51EEbPkwylXHa2vCzIi2OXuQyigOmMPiE2i39cSFWLsHXzjHt8MPv76I4BeMb0Ku5/Cv2MhrrZnhv54ewxo1bQje3XEQvwwXiujj2ph4G0ZQReIP9Cwm9ZSqCfFcc1XP7A15kYZ1RnsDol+QLpGB3vv2c/GmAJey0usyvvwnoaGzbAyPl3OM9w4ozTYptaNYG5mVefvJ79L9xdlG+PAlqvoQNxLsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WcjiMe2+++PDyCbACMTLxSbh5q8ZcGbHDCLL8v2xAfM=;
+ b=HF7YN5vise69bLIOoomwNdq98Q99iLWYfCG2DVV5c88CB6sIThwF1I2c7VAsl3w145a5g7dl1nFZ6itMUVo46TeWC6vc5MoOI0xEM/tN8S04ag0K2uJCCCXd/InyXnXqf5gUvP+Z3a0NJNF2nq6h7jY/FwlO0b5DtokIw3ZNFZ6cj97ODhNZoAJc4MpzlcA7mMcUqn/rvZEweU6ooHmETclN00DSdYDFAxxjlaVEd0G02rwQUaU3nRwMcAaHCYlf1X9vGoEWHuMU+lYUMpcuK0tvHK3IjnR/Ic7prkqMcff1DHMQHKBNKaovccLDscRL2SJevSsHZpeHFkxqHwd0wg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WcjiMe2+++PDyCbACMTLxSbh5q8ZcGbHDCLL8v2xAfM=;
+ b=bCAKQD8Uw6xQy3Gy+XkfFWPWjBAUzVFmHzTJe2K7EZz3C80ynVImEGn4VAHYLA5mMDCQfDpMKjbsplESRj1GeXQeRpWWepMdFLikoY+OgzEX6tke+yQguLvAKSW99lDYBLOSeBsT07W5n+ncdIlrOTBl+ZMy2Tne3q9r9XaABxE=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
+ by CY4PR1201MB0166.namprd12.prod.outlook.com (2603:10b6:910:24::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
+ 2020 15:45:18 +0000
+Received: from CY4PR12MB1352.namprd12.prod.outlook.com
+ ([fe80::989b:b1b2:464c:443]) by CY4PR12MB1352.namprd12.prod.outlook.com
+ ([fe80::989b:b1b2:464c:443%10]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 15:45:18 +0000
+Subject: Re: [RFC PATCH 21/35] KVM: SVM: Add support for EFER write traps for
+ an SEV-ES guest
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <240ce8d7c9bd84adf66a4a0625150a1ae215345e.1600114548.git.thomas.lendacky@amd.com>
+ <20200914220800.GI7192@sjchrist-ice>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <c5a57f9a-abbb-d12f-c45a-9d5528562212@amd.com>
+Date:   Tue, 15 Sep 2020 10:45:15 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200915055825.5279-1-songmuchun@bytedance.com>
+ Thunderbird/68.10.0
+In-Reply-To: <20200914220800.GI7192@sjchrist-ice>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR01CA0006.prod.exchangelabs.com (2603:10b6:5:296::11)
+ To CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by DM6PR01CA0006.prod.exchangelabs.com (2603:10b6:5:296::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 15:45:17 +0000
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c74f795f-0886-45cf-6130-08d8598e58ba
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0166:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB01668A0FE6AF6F13B660B3C3EC200@CY4PR1201MB0166.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sKvVyOCAIYLV6m/AeNqu3pUXIJypM4ZU4BZXBNvRcKZy+DCIcuBLHm/JSpTxfUB8iswkn0ZXhmxhEjv5HB5ZOr5lDf2bpDgZ0H+vsdgYuMG9vB5z5Y57fUeV1m2qmAJmax+ndO0Tv7n9C1Q469zFq3fP5MHUil89CPDRb13KRb3tazaAd42uxSjYXZPBqexQEE42SwdtI7SnPUIXGhNJeisy1ICjAcP/SFKgCsgZuQnD2xKns5OdnNsr0S7o4VpBADKY3jhzaoxxrKXOEoUaWTIdt/jdw6jm6vJOYOdO7Dy+LiLqZjAWWHKIgXKeQYwf7l9CMjbE3uy4hHseOS5ykyMOn0c65TwfCjPF/WlWk7B3ySV05zwLd8FODiZmfK8o
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(52116002)(6486002)(2616005)(36756003)(6916009)(956004)(5660300002)(31686004)(54906003)(53546011)(4326008)(66556008)(66476007)(2906002)(16526019)(316002)(16576012)(8676002)(186003)(478600001)(26005)(66946007)(83380400001)(8936002)(86362001)(31696002)(7416002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: H9rSsVjU1By0TISTO2lMYW19bVsLUhsMek+AN4N4W89FyicKoHHXuJ7Zb5D9fu1Vi4NM+C7i0HZjuO/ciEmeGicK+srlB5qITlViKe95JaPXOos3I+stcXoyxSJflG5/WRYCspaBMxliaXvkSMaYfpeuNjjB5qotWYeZSQYCxluTQ3OwA/8H4rsQyv2QOZeq/7lGuNE0bVNm5wZTNvUKlaig0W4tlQnsiJNYCmXw7CzMOQsXeiLrBXAdmi0RVwFCqpgX8g3sutISoO7ObX3YVYNip6jFy0dbEV/DM7eWI3/5d/IuTy2YGv2tf7JuVegckxjqxHm55fpQHIkQFNDa0Rx8dm9txhr6nkoS1rofJDxp4930pLq+PI813wZySq+jzKh+8XyPBrglcNObNFJkqIu13X0pQirpQAHZtdxIuSZEUbt1l0yVstrY37ostxCCzk2v9cXOOMW1UdToKUhPTuOLBqDeKygofPN1jg8W9S7pxRZ+cw6kSQlUkWsKiK5/16SEKVVyCwHMQYpK/BbWERr9ycRmcWgqdGj859/r/dF4ehhslvLUjpX/eTtg0+BX4k+dakQU/1+9ybN/A+pZY1aJBniKQRoEM3fAPLZiUXVz2ujijDtdIo4O6pCbKI0u1IxrZfDGE50W4Q8BjbddiA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c74f795f-0886-45cf-6130-08d8598e58ba
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 15:45:18.4531
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2Vgy8Azj9UN+BHcZN6pEuVkJK1BgRkPv+chg4UVWIx+CmZg46SoZsv2PM4GoKgaZtDzxi3vVGE3VQDhsTXoZMg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0166
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/14/20 10:58 PM, Muchun Song wrote:
-> In the cgroup v1, we have a numa_stat interface. This is useful for
-> providing visibility into the numa locality information within an
-> memcg since the pages are allowed to be allocated from any physical
-> node. One of the use cases is evaluating application performance by
-> combining this information with the application's CPU allocation.
-> But the cgroup v2 does not. So this patch adds the missing information.
+On 9/14/20 5:08 PM, Sean Christopherson wrote:
+> On Mon, Sep 14, 2020 at 03:15:35PM -0500, Tom Lendacky wrote:
+>> From: Tom Lendacky <thomas.lendacky@amd.com>
+>>
+>> For SEV-ES guests, the interception of EFER write access is not
+>> recommended. EFER interception occurs prior to EFER being modified and
+>> the hypervisor is unable to modify EFER itself because the register is
+>> located in the encrypted register state.
+>>
+>> SEV-ES guests introduce a new EFER write trap. This trap provides
+>> intercept support of an EFER write after it has been modified. The new
+>> EFER value is provided in the VMCB EXITINFO1 field, allowing the
+>> hypervisor to track the setting of the guest EFER.
+>>
+>> Add support to track the value of the guest EFER value using the EFER
+>> write trap so that the hypervisor understands the guest operating mode.
+>>
+>> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+>> ---
+>>  arch/x86/include/asm/kvm_host.h |  1 +
+>>  arch/x86/include/uapi/asm/svm.h |  2 ++
+>>  arch/x86/kvm/svm/svm.c          | 12 ++++++++++++
+>>  arch/x86/kvm/x86.c              | 12 ++++++++++++
+>>  4 files changed, 27 insertions(+)
+>>
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>> index 7320a9c68a5a..b535b690eb66 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -1427,6 +1427,7 @@ void kvm_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
+>>  int kvm_task_switch(struct kvm_vcpu *vcpu, u16 tss_selector, int idt_index,
+>>  		    int reason, bool has_error_code, u32 error_code);
+>>  
+>> +int kvm_track_efer(struct kvm_vcpu *vcpu, u64 efer);
+>>  int kvm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0);
+>>  int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3);
+>>  int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4);
+>> diff --git a/arch/x86/include/uapi/asm/svm.h b/arch/x86/include/uapi/asm/svm.h
+>> index 0bc3942ffdd3..ce937a242995 100644
+>> --- a/arch/x86/include/uapi/asm/svm.h
+>> +++ b/arch/x86/include/uapi/asm/svm.h
+>> @@ -77,6 +77,7 @@
+>>  #define SVM_EXIT_MWAIT_COND    0x08c
+>>  #define SVM_EXIT_XSETBV        0x08d
+>>  #define SVM_EXIT_RDPRU         0x08e
+>> +#define SVM_EXIT_EFER_WRITE_TRAP		0x08f
+>>  #define SVM_EXIT_NPF           0x400
+>>  #define SVM_EXIT_AVIC_INCOMPLETE_IPI		0x401
+>>  #define SVM_EXIT_AVIC_UNACCELERATED_ACCESS	0x402
+>> @@ -183,6 +184,7 @@
+>>  	{ SVM_EXIT_MONITOR,     "monitor" }, \
+>>  	{ SVM_EXIT_MWAIT,       "mwait" }, \
+>>  	{ SVM_EXIT_XSETBV,      "xsetbv" }, \
+>> +	{ SVM_EXIT_EFER_WRITE_TRAP,	"write_efer_trap" }, \
+>>  	{ SVM_EXIT_NPF,         "npf" }, \
+>>  	{ SVM_EXIT_AVIC_INCOMPLETE_IPI,		"avic_incomplete_ipi" }, \
+>>  	{ SVM_EXIT_AVIC_UNACCELERATED_ACCESS,   "avic_unaccelerated_access" }, \
+>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>> index ac64a5b128b2..ac467225a51d 100644
+>> --- a/arch/x86/kvm/svm/svm.c
+>> +++ b/arch/x86/kvm/svm/svm.c
+>> @@ -2466,6 +2466,17 @@ static int cr8_write_interception(struct vcpu_svm *svm)
+>>  	return 0;
+>>  }
+>>  
+>> +static int efer_trap(struct vcpu_svm *svm)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = kvm_track_efer(&svm->vcpu, svm->vmcb->control.exit_info_1);
+>> +	if (ret)
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Suggested-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  changelog in v4:
->  1. Fix some document problems pointed out by Randy Dunlap.
->  2. Remove memory_numa_stat_format() suggested by Shakeel Butt.
+> Shouldn't this be a WARN or something?  E.g. KVM thinks the WRMSR has faulted,
+> while it obviously hasn't, which means KVM's internal model is now out of sync.
+
+Makes sense, I can add something here.
+
 > 
->  changelog in v3:
->  1. Fix compiler error on powerpc architecture reported by kernel test robot.
->  2. Fix a typo from "anno" to "anon".
+>> +		return ret;
+>> +
+>> +	return kvm_complete_insn_gp(&svm->vcpu, 0);
+>> +}
+>> +
+>>  static int svm_get_msr_feature(struct kvm_msr_entry *msr)
+>>  {
+>>  	msr->data = 0;
+>> @@ -2944,6 +2955,7 @@ static int (*const svm_exit_handlers[])(struct vcpu_svm *svm) = {
+>>  	[SVM_EXIT_MWAIT]			= mwait_interception,
+>>  	[SVM_EXIT_XSETBV]			= xsetbv_interception,
+>>  	[SVM_EXIT_RDPRU]			= rdpru_interception,
+>> +	[SVM_EXIT_EFER_WRITE_TRAP]		= efer_trap,
+>>  	[SVM_EXIT_NPF]				= npf_interception,
+>>  	[SVM_EXIT_RSM]                          = rsm_interception,
+>>  	[SVM_EXIT_AVIC_INCOMPLETE_IPI]		= avic_incomplete_ipi_interception,
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 674719d801d2..b65bd0c986d4 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -1480,6 +1480,18 @@ static int set_efer(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>  	return 0;
+>>  }
+>>  
+>> +int kvm_track_efer(struct kvm_vcpu *vcpu, u64 efer)
+>> +{
+>> +	struct msr_data msr_info;
+>> +
+>> +	msr_info.host_initiated = false;
+>> +	msr_info.index = MSR_EFER;
+>> +	msr_info.data = efer;
+>> +
+>> +	return set_efer(vcpu, &msr_info);
+>> +}
+>> +EXPORT_SYMBOL_GPL(kvm_track_efer);
 > 
->  changelog in v2:
->  1. Add memory.numa_stat interface in cgroup v2.
+> I don't see any reason to put this in x86.c, just copy-paste the guts into
+> efer_trap() and s/set_efer/kvm_set_msr_common.
+
+Ok, I can do that. I'll add a comment to indicate that the result of doing
+that is that set_efer() is ultimately invoked through that path.
+
+Thanks,
+Tom
+
 > 
->  Documentation/admin-guide/cgroup-v2.rst | 72 +++++++++++++++++++++
->  mm/memcontrol.c                         | 86 +++++++++++++++++++++++++
->  2 files changed, 158 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 6be43781ec7f..bcb7b202e88d 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
->  		collapsing an existing range of pages. This counter is not
->  		present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
->  
-> +  memory.numa_stat
-> +	A read-only flat-keyed file which exists on non-root cgroups.
-> +
-> +	This breaks down the cgroup's memory footprint into different
-> +	types of memory, type-specific details, and other information
-> +	per node on the state of the memory management system.
-> +
-> +	This is useful for providing visibility into the NUMA locality
-> +	information within an memcg since the pages are allowed to be
-> +	allocated from any physical node. One of the use cases is evaluating
-> +	application performance by combining this information with the
-> +	application's CPU allocation.
-> +
-> +	All memory amounts are in bytes.
-> +
-> +	The output format of memory.numa_stat is::
-> +
-> +	  type N0=<bytes in node 0 pages> N1=<bytes in node 1 pages> ...
-
-I'm OK with Shakeel's suggested change here.
-
-> +	The entries are ordered to be human readable, and new entries
-> +	can show up in the middle. Don't rely on items remaining in a
-> +	fixed position; use the keys to look up specific values!
-> +
-> +	  anon
-> +		Amount of memory per node used in anonymous mappings such
-> +		as brk(), sbrk(), and mmap(MAP_ANONYMOUS).
-> +
-> +	  file
-> +		Amount of memory per node used to cache filesystem data,
-> +		including tmpfs and shared memory.
-> +
-> +	  kernel_stack
-> +		Amount of memory per node allocated to kernel stacks.
-> +
-> +	  shmem
-> +		Amount of cached filesystem data per node that is swap-backed,
-> +		such as tmpfs, shm segments, shared anonymous mmap()s.
-> +
-> +	  file_mapped
-> +		Amount of cached filesystem data per node mapped with mmap().
-> +
-> +	  file_dirty
-> +		Amount of cached filesystem data per node that was modified but
-> +		not yet written back to disk.
-> +
-> +	  file_writeback
-> +		Amount of cached filesystem data per node that was modified and
-> +		is currently being written back to disk.
-> +
-> +	  anon_thp
-> +		Amount of memory per node used in anonymous mappings backed by
-> +		transparent hugepages.
-> +
-> +	  inactive_anon, active_anon, inactive_file, active_file, unevictable
-> +		Amount of memory, swap-backed and filesystem-backed,
-> +		per node on the internal memory management lists used
-> +		by the page reclaim algorithm.
-> +
-> +		As these represent internal list state (e.g. shmem pages are on
-> +		anon memory management lists), inactive_foo + active_foo may not
-> +		be equal to the value for the foo counter, since the foo counter
-> +		is type-based, not list-based.
-> +
-> +	  slab_reclaimable
-> +		Amount of memory per node used for storing in-kernel data
-> +		structures which might be reclaimed, such as dentries and
-> +		inodes.
-> +
-> +	  slab_unreclaimable
-> +		Amount of memory per node used for storing in-kernel data
-> +		structures which cannot be reclaimed on memory pressure.
-> +
->    memory.swap.current
->  	A read-only single value file which exists on non-root
->  	cgroups.
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 75cd1a1e66c8..ff919ef3b57b 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6425,6 +6425,86 @@ static int memory_stat_show(struct seq_file *m, void *v)
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_NUMA
-> +struct numa_stat {
-> +	const char *name;
-> +	unsigned int ratio;
-> +	enum node_stat_item idx;
-> +};
-> +
-> +static struct numa_stat numa_stats[] = {
-> +	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
-> +	{ "file", PAGE_SIZE, NR_FILE_PAGES },
-> +	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
-> +	{ "shmem", PAGE_SIZE, NR_SHMEM },
-> +	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
-> +	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
-> +	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +	/*
-> +	 * The ratio will be initialized in numa_stats_init(). Because
-> +	 * on some architectures, the macro of HPAGE_PMD_SIZE is not
-> +	 * constant(e.g. powerpc).
-> +	 */
-> +	{ "anon_thp", 0, NR_ANON_THPS },
-> +#endif
-> +	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
-> +	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
-> +	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
-> +	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
-> +	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
-> +	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
-> +	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-> +};
-> +
-> +static int __init numa_stats_init(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +		if (numa_stats[i].idx == NR_ANON_THPS)
-> +			numa_stats[i].ratio = HPAGE_PMD_SIZE;
-> +#endif
-> +	}
-
-Although the loop may be needed sometime in the future due to
-other changes.. why couldn't it be like this for now?
-
-
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +	for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
-> +		if (numa_stats[i].idx == NR_ANON_THPS)
-> +			numa_stats[i].ratio = HPAGE_PMD_SIZE;
-> +	}
-> +#endif
-
-
-> +
-> +	return 0;
-> +}
-> +pure_initcall(numa_stats_init);
-
-
-thanks.
--- 
-~Randy
-
+>> +
+>>  void kvm_enable_efer_bits(u64 mask)
+>>  {
+>>         efer_reserved_bits &= ~mask;
+>> -- 
+>> 2.28.0
+>>
