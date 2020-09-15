@@ -2,201 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0872C26A08C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A92C26A093
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgIOIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:20:34 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:26236 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726202AbgIOITg (ORCPT
+        id S1726095AbgIOIV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:21:58 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:56845 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgIOITe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:19:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600157975; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=UIUW1dHR5cml3n2LMnUXM45+Y7HjtAfi1SOtnIzY24w=; b=gxsq1bYkJuovTiqcHc5/uR1nwjJ9KLRBEckaMzpTl6uDIZ2y8n+R5vXQz4VQ/xxUIMC7D0au
- 1vculAIiOsPLIMGsAuehjzGK2x/4eomLbFXa70eKCrgNbwH+TW3gzA1PVPLzHMq/B/mEHr4T
- Cmo+MrexaLXf5Ww8sV4srCYK9F8=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f60790725e1ee75863f3029 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 08:19:19
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B00FEC433F0; Tue, 15 Sep 2020 08:19:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9A7EC433CA;
-        Tue, 15 Sep 2020 08:19:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A9A7EC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   Rakesh Pillai <pillair@codeaurora.org>
-To:     ath10k@lists.infradead.org
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH v2] ath10k: Use bdf calibration variant for snoc targets
-Date:   Tue, 15 Sep 2020 13:49:08 +0530
-Message-Id: <1600157948-2042-1-git-send-email-pillair@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 15 Sep 2020 04:19:34 -0400
+X-Originating-IP: 91.224.148.103
+Received: from localhost.localdomain (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 14C3A20004;
+        Tue, 15 Sep 2020 08:19:17 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mtd: spear_smi: use for_each_child_of_node() macro
+Date:   Tue, 15 Sep 2020 10:19:16 +0200
+Message-Id: <20200915081916.24626-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200914061324.3230-1-miaoqinglang@huawei.com>
+References: 
+MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: 670c898cee31abb40bf31ca678a92aef3a8e685a
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Board Data File (BDF) is loaded upon driver boot-up procedure.
-The right board data file is identified using bus and qmi-board-id.
+On Mon, 2020-09-14 at 06:13:24 UTC, Qinglang Miao wrote:
+> Use for_each_child_of_node() macro instead of open coding it.
+> 
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-The problem, however, can occur when the (default) board data
-file cannot fulfill with the vendor requirements and it is
-necessary to use a different board data file.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-Also using the chip_id for identifying the board data helps
-in dealing with different variants of the board data file based
-on the RF card. If the chip_id is not programmed, a default value
-of 0xff will be used for parsing the board data file.
-
-Add the support to get the variant field from DTSI and
-use this information along with the chip_id to load the vendor
-specific BDF.
-
-The device tree requires addition strings to define the variant name
-
-    wifi@a000000 {
-            status = "okay";
-            qcom,ath10k-calibration-variant = "xyz-v2";
-    };
-
-    wifi@a800000 {
-            status = "okay";
-            qcom,ath10k-calibration-variant = "xyz-v1";
-    };
-
-This would create the boarddata identifiers for the board-2.bin search
-
- *  bus=snoc,qmi-board-id=16,qmi-chip-id=0,variant=xyz-v1
- *  bus=snoc,qmi-board-id=17,qmi-chip-id=0,variant=xyz-v2
-
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
-Changes from v1:
-- Updated the commit text to add details about chip_id used for
-  loading bdf.
-
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 18 +++++++++++++-----
- drivers/net/wireless/ath/ath10k/core.h |  2 ++
- drivers/net/wireless/ath/ath10k/qmi.c  |  8 ++++++++
- 3 files changed, 23 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5f4e121..d73ad60 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1022,7 +1022,7 @@ static int ath10k_core_check_smbios(struct ath10k *ar)
- 	return 0;
- }
- 
--static int ath10k_core_check_dt(struct ath10k *ar)
-+int ath10k_core_check_dt(struct ath10k *ar)
- {
- 	struct device_node *node;
- 	const char *variant = NULL;
-@@ -1043,6 +1043,7 @@ static int ath10k_core_check_dt(struct ath10k *ar)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(ath10k_core_check_dt);
- 
- static int ath10k_download_fw(struct ath10k *ar)
- {
-@@ -1437,10 +1438,17 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
- 	}
- 
- 	if (ar->id.qmi_ids_valid) {
--		scnprintf(name, name_len,
--			  "bus=%s,qmi-board-id=%x",
--			  ath10k_bus_str(ar->hif.bus),
--			  ar->id.qmi_board_id);
-+		if (with_variant && ar->id.bdf_ext[0] != '\0')
-+			scnprintf(name, name_len,
-+				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
-+				  ath10k_bus_str(ar->hif.bus),
-+				  ar->id.qmi_board_id, ar->id.qmi_chip_id,
-+				  variant);
-+		else
-+			scnprintf(name, name_len,
-+				  "bus=%s,qmi-board-id=%x",
-+				  ath10k_bus_str(ar->hif.bus),
-+				  ar->id.qmi_board_id);
- 		goto out;
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 4cf5bd4..b50ab9e 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1076,6 +1076,7 @@ struct ath10k {
- 		bool bmi_ids_valid;
- 		bool qmi_ids_valid;
- 		u32 qmi_board_id;
-+		u32 qmi_chip_id;
- 		u8 bmi_board_id;
- 		u8 bmi_eboard_id;
- 		u8 bmi_chip_id;
-@@ -1315,6 +1316,7 @@ int ath10k_core_register(struct ath10k *ar,
- 			 const struct ath10k_bus_params *bus_params);
- void ath10k_core_unregister(struct ath10k *ar);
- int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type);
-+int ath10k_core_check_dt(struct ath10k *ar);
- void ath10k_core_free_board_files(struct ath10k *ar);
- 
- #endif /* _CORE_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 5468a41..ae6b1f4 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -576,6 +576,8 @@ static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
- 	if (resp->chip_info_valid) {
- 		qmi->chip_info.chip_id = resp->chip_info.chip_id;
- 		qmi->chip_info.chip_family = resp->chip_info.chip_family;
-+	} else {
-+		qmi->chip_info.chip_id = 0xFF;
- 	}
- 
- 	if (resp->board_info_valid)
-@@ -817,12 +819,18 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
- static int ath10k_qmi_fetch_board_file(struct ath10k_qmi *qmi)
- {
- 	struct ath10k *ar = qmi->ar;
-+	int ret;
- 
- 	ar->hif.bus = ATH10K_BUS_SNOC;
- 	ar->id.qmi_ids_valid = true;
- 	ar->id.qmi_board_id = qmi->board_info.board_id;
-+	ar->id.qmi_chip_id = qmi->chip_info.chip_id;
- 	ar->hw_params.fw.dir = WCN3990_HW_1_0_FW_DIR;
- 
-+	ret = ath10k_core_check_dt(ar);
-+	if (ret)
-+		ath10k_dbg(ar, ATH10K_DBG_QMI, "DT bdf variant name not set.\n");
-+
- 	return ath10k_core_fetch_board_file(qmi->ar, ATH10K_BD_IE_BOARD);
- }
- 
--- 
-2.7.4
-
+Miquel
