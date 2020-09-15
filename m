@@ -2,120 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B565426ABE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCAE26ACA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgIOS3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgIOS3g (ORCPT
+        id S1727558AbgIOSy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:54:58 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:52734 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727222AbgIORXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:29:36 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B7AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:29:36 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id j2so5197669ioj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QH0oevRAXAfKjkr8xwGWq7ufd7Zmd6cGXZiCflHDesA=;
-        b=a5D8w8T9XU1Z5Sg3El875tpdfLEgvabG4sAGeB37Wr1WfMICFJ1rqI8EuyKuvKFyqh
-         ctfGnliM0miH9CluA8q6wGyqcv8uoRUwKJv4avYtqpZD4YJzJvlGvHh7shIPeYLjqfgE
-         YWl+Ati9kVlc7YjQcKkn5lzOIe8Uj0vt1ho1m5QvYhc2Zg+nCk6WumnncLPwfApQaP1F
-         yG2TXV8o1w0tAlJFQs0tVe0boOSeXBXHzCsx258y4QSFvQAYGV8CAz/85XFxMjNvjqXu
-         Xw8I17Y/orn+PMg2qFeslypqX86SNsS23BXpBGNhN7R1tKvT2A/i8kTfmSrXRM2T9Nyb
-         U5og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QH0oevRAXAfKjkr8xwGWq7ufd7Zmd6cGXZiCflHDesA=;
-        b=lQswLdshwSNkrdAjWmzVE2Cf7ytCCQFwVKm6yopCK8eDzQK2jdllC/ZDb2qiRrZ3Rk
-         flfNO2vmt8hDWKRl0MZ5mccplSFOG1iRxnLp+WhE0UeTeGkXYmjyYnDBHtWXuTruIO2z
-         mhJ20p71JoFJa1262wvtH61SFefnpe+K9/jule885GZglkuf8ybHdzcj0pA4MBR3u45O
-         o/qh0SLJxqrNI11ORnC9CI/YHvbcikRd7PAcFf0yzCE8i22eVkIf5f75jwpc33JRMxbd
-         lD2fYp+1jeusYuAqqhgZYP8tLBcrqhRSBUMHnocpLrBkUAYt9ZSIDvrqkrzMM3p9EDMg
-         3pCw==
-X-Gm-Message-State: AOAM530Rz34pa+H1X+8f35cUWVXhmELo3+DqITDsTe/uTDPrpc3kCzOa
-        N7AYa3mmEUzmLpWuqgKfrVI6UQ==
-X-Google-Smtp-Source: ABdhPJwmx/LUpglx7XpAipNeMR+kHJPe2QCViaCkWocmK98vW3k5whvbv4Z0KH1re3/hxdhjxsU/yw==
-X-Received: by 2002:a05:6638:24c1:: with SMTP id y1mr18589650jat.119.1600194575776;
-        Tue, 15 Sep 2020 11:29:35 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id p17sm9234963ilj.81.2020.09.15.11.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 11:29:34 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kIFht-006eMK-OT; Tue, 15 Sep 2020 15:29:33 -0300
-Date:   Tue, 15 Sep 2020 15:29:33 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200915182933.GM1221970@ziepe.ca>
-References: <20200821234958.7896-2-peterx@redhat.com>
- <20200914143829.GA1424636@nvidia.com>
- <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
- <20200914183436.GD30881@xz-x1>
- <20200914211515.GA5901@xz-x1>
- <20200914225542.GO904879@nvidia.com>
- <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
- <20200914232851.GH1221970@ziepe.ca>
- <20200915145040.GA2949@xz-x1>
- <20200915160553.GJ1221970@ziepe.ca>
+        Tue, 15 Sep 2020 13:23:08 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FFm4P5007907;
+        Tue, 15 Sep 2020 10:48:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600184884;
+        bh=jtPuMyFLqNYxSalBBSBkvCc2uQoE2YZgaf6m96gJsIA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=qBkSaaGGQmJ79Mvpn7qPcy57kOYVC9NrqiZ3MX+IGv3lD6pzEWBtgn/ppObTwv7ta
+         OnxrQ36lWLa26HG2eW0UJCdcaUxepoUURvm/xUOwTcAzb2+n95WmfccawD+FHGcXOf
+         NKCtWBxHZ+Uo4TxjGy0iq70PPQt1++WtV4ZJgK8E=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FFm47i037284
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 10:48:04 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
+ Sep 2020 10:48:04 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 15 Sep 2020 10:48:04 -0500
+Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FFlv31034789;
+        Tue, 15 Sep 2020 10:47:58 -0500
+Subject: Re: [RFC PATCH 00/22] Enhance VHOST to enable SoC-to-SoC
+ communication
+To:     Jason Wang <jasowang@redhat.com>, Cornelia Huck <cohuck@redhat.com>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-ntb@googlegroups.com>,
+        <linux-pci@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>
+References: <20200702082143.25259-1-kishon@ti.com>
+ <20200702055026-mutt-send-email-mst@kernel.org>
+ <603970f5-3289-cd53-82a9-aa62b292c552@redhat.com>
+ <14c6cad7-9361-7fa4-e1c6-715ccc7e5f6b@ti.com>
+ <59fd6a0b-8566-44b7-3dae-bb52b468219b@redhat.com>
+ <ce9eb6a5-cd3a-a390-5684-525827b30f64@ti.com>
+ <da2b671c-b05d-a57f-7bdf-8b1043a41240@redhat.com>
+ <fee8a0fb-f862-03bd-5ede-8f105b6af529@ti.com>
+ <b2178e1d-2f5c-e8a3-72fb-70f2f8d6aa45@redhat.com>
+ <45a8a97c-2061-13ee-5da8-9877a4a3b8aa@ti.com>
+ <c8739d7f-e12e-f6a2-7018-9eeaf6feb054@redhat.com>
+ <20200828123409.4cd2a812.cohuck@redhat.com>
+ <ac8f7e4f-9f46-919a-f5c2-89b07794f0ab@ti.com>
+ <9cd58cd1-0041-3d98-baf7-6e5bc2e7e317@redhat.com>
+ <edf25301-93c0-4ba6-aa85-5f04137d0906@ti.com>
+ <5733dbfc-76c1-45dc-6dce-ef5449eacc73@redhat.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <181ae83d-edeb-9406-27cc-1195fe29ae95@ti.com>
+Date:   Tue, 15 Sep 2020 21:17:51 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915160553.GJ1221970@ziepe.ca>
+In-Reply-To: <5733dbfc-76c1-45dc-6dce-ef5449eacc73@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:05:53PM -0300, Jason Gunthorpe wrote:
-> On Tue, Sep 15, 2020 at 10:50:40AM -0400, Peter Xu wrote:
-> > On Mon, Sep 14, 2020 at 08:28:51PM -0300, Jason Gunthorpe wrote:
-> > > Yes, this stuff does pin_user_pages_fast() and MADV_DONTFORK
-> > > together. It sets FOLL_FORCE and FOLL_WRITE to get an exclusive copy
-> > > of the page and MADV_DONTFORK was needed to ensure that a future fork
-> > > doesn't establish a COW that would break the DMA by moving the
-> > > physical page over to the fork. DMA should stay with the process that
-> > > called pin_user_pages_fast() (Is MADV_DONTFORK still needed with
-> > > recent years work to GUP/etc? It is a pretty terrible ancient thing)
-> > 
-> > ... Now I'm more confused on what has happened.
+Hi Jason,
+
+On 15/09/20 1:48 pm, Jason Wang wrote:
+> Hi Kishon:
 > 
-> I'm going to try to confirm that the MADV_DONTFORK is actually being
-> done by userspace properly, more later.
+> On 2020/9/14 下午3:23, Kishon Vijay Abraham I wrote:
+>>> Then you need something that is functional equivalent to virtio PCI
+>>> which is actually the concept of vDPA (e.g vDPA provides alternatives if
+>>> the queue_sel is hard in the EP implementation).
+>> Okay, I just tried to compare the 'struct vdpa_config_ops' and 'struct
+>> vhost_config_ops' ( introduced in [RFC PATCH 03/22] vhost: Add ops for
+>> the VHOST driver to configure VHOST device).
+>>
+>> struct vdpa_config_ops {
+>>     /* Virtqueue ops */
+>>     int (*set_vq_address)(struct vdpa_device *vdev,
+>>                   u16 idx, u64 desc_area, u64 driver_area,
+>>                   u64 device_area);
+>>     void (*set_vq_num)(struct vdpa_device *vdev, u16 idx, u32 num);
+>>     void (*kick_vq)(struct vdpa_device *vdev, u16 idx);
+>>     void (*set_vq_cb)(struct vdpa_device *vdev, u16 idx,
+>>               struct vdpa_callback *cb);
+>>     void (*set_vq_ready)(struct vdpa_device *vdev, u16 idx, bool ready);
+>>     bool (*get_vq_ready)(struct vdpa_device *vdev, u16 idx);
+>>     int (*set_vq_state)(struct vdpa_device *vdev, u16 idx,
+>>                 const struct vdpa_vq_state *state);
+>>     int (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
+>>                 struct vdpa_vq_state *state);
+>>     struct vdpa_notification_area
+>>     (*get_vq_notification)(struct vdpa_device *vdev, u16 idx);
+>>     /* vq irq is not expected to be changed once DRIVER_OK is set */
+>>     int (*get_vq_irq)(struct vdpa_device *vdv, u16 idx);
+>>
+>>     /* Device ops */
+>>     u32 (*get_vq_align)(struct vdpa_device *vdev);
+>>     u64 (*get_features)(struct vdpa_device *vdev);
+>>     int (*set_features)(struct vdpa_device *vdev, u64 features);
+>>     void (*set_config_cb)(struct vdpa_device *vdev,
+>>                   struct vdpa_callback *cb);
+>>     u16 (*get_vq_num_max)(struct vdpa_device *vdev);
+>>     u32 (*get_device_id)(struct vdpa_device *vdev);
+>>     u32 (*get_vendor_id)(struct vdpa_device *vdev);
+>>     u8 (*get_status)(struct vdpa_device *vdev);
+>>     void (*set_status)(struct vdpa_device *vdev, u8 status);
+>>     void (*get_config)(struct vdpa_device *vdev, unsigned int offset,
+>>                void *buf, unsigned int len);
+>>     void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
+>>                const void *buf, unsigned int len);
+>>     u32 (*get_generation)(struct vdpa_device *vdev);
+>>
+>>     /* DMA ops */
+>>     int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
+>>     int (*dma_map)(struct vdpa_device *vdev, u64 iova, u64 size,
+>>                u64 pa, u32 perm);
+>>     int (*dma_unmap)(struct vdpa_device *vdev, u64 iova, u64 size);
+>>
+>>     /* Free device resources */
+>>     void (*free)(struct vdpa_device *vdev);
+>> };
+>>
+>> +struct vhost_config_ops {
+>> +    int (*create_vqs)(struct vhost_dev *vdev, unsigned int nvqs,
+>> +              unsigned int num_bufs, struct vhost_virtqueue *vqs[],
+>> +              vhost_vq_callback_t *callbacks[],
+>> +              const char * const names[]);
+>> +    void (*del_vqs)(struct vhost_dev *vdev);
+>> +    int (*write)(struct vhost_dev *vdev, u64 vhost_dst, void *src,
+>> int len);
+>> +    int (*read)(struct vhost_dev *vdev, void *dst, u64 vhost_src, int
+>> len);
+>> +    int (*set_features)(struct vhost_dev *vdev, u64 device_features);
+>> +    int (*set_status)(struct vhost_dev *vdev, u8 status);
+>> +    u8 (*get_status)(struct vhost_dev *vdev);
+>> +};
+>> +
+>> struct virtio_config_ops
+>> I think there's some overlap here and some of the ops tries to do the
+>> same thing.
+>>
+>> I think it differs in (*set_vq_address)() and (*create_vqs)().
+>> [create_vqs() introduced in struct vhost_config_ops provides
+>> complimentary functionality to (*find_vqs)() in struct
+>> virtio_config_ops. It seemingly encapsulates the functionality of
+>> (*set_vq_address)(), (*set_vq_num)(), (*set_vq_cb)(),..].
+>>
+>> Back to the difference between (*set_vq_address)() and (*create_vqs)(),
+>> set_vq_address() directly provides the virtqueue address to the vdpa
+>> device but create_vqs() only provides the parameters of the virtqueue
+>> (like the number of virtqueues, number of buffers) but does not directly
+>> provide the address. IMO the backend client drivers (like net or vhost)
+>> shouldn't/cannot by itself know how to access the vring created on
+>> virtio front-end. The vdpa device/vhost device should have logic for
+>> that. That will help the client drivers to work with different types of
+>> vdpa device/vhost device and can access the vring created by virtio
+>> irrespective of whether the vring can be accessed via mmio or kernel
+>> space or user space.
+>>
+>> I think vdpa always works with client drivers in userspace and providing
+>> userspace address for vring.
+> 
+> 
+> Sorry for being unclear. What I meant is not replacing vDPA with the
+> vhost(bus) you proposed but the possibility of replacing virtio-pci-epf
+> with vDPA in:
 
-It turns out the test is broken and does not call MADV_DONTFORK when
-doing forks - it is an opt-in it didn't do.
+Okay, so the virtio back-end still use vhost and front end should use
+vDPA. I see. So the host side PCI driver for EPF should populate
+vdpa_config_ops and invoke vdpa_register_device().
+> 
+> My question is basically for the part of virtio_pci_epf_send_command(),
+> so it looks to me you have a vendor specific API to replace the
+> virtio-pci layout of the BAR:
 
-It looks to me like this patch makes it much more likely that the COW
-break after page pinning will end up moving the pinned physical page
-to the fork while before it was not very common. Does that make sense?
+Even when we use vDPA, we have to use some sort of
+virtio_pci_epf_send_command() to communicate with virtio backend right?
 
-Given that the tests are wrong it seems like broken userspace,
-however, it also worked reliably for a fairly long time.
+Right, the layout is slightly different from the standard layout.
 
-I'm waiting for confirmation that adding the missing MADV_DONTFORKS
-restores all tests to success even with this patch.
+This is the layout
+struct epf_vhost_reg_queue {
+        u8 cmd;
+        u8 cmd_status;
+        u16 status;
+        u16 num_buffers;
+        u16 msix_vector;
+        u64 queue_addr;
+} __packed;
 
-Regards,
-Jason
+struct epf_vhost_reg {
+        u64 host_features;
+        u64 guest_features;
+        u16 msix_config;
+        u16 num_queues;
+        u8 device_status;
+        u8 config_generation;
+        u32 isr;
+        u8 cmd;
+        u8 cmd_status;
+        struct epf_vhost_reg_queue vq[MAX_VQS];
+} __packed;
+> 
+> 
+> +static int virtio_pci_epf_send_command(struct virtio_pci_device *vp_dev,
+> +                       u32 command)
+> +{
+> +    struct virtio_pci_epf *pci_epf;
+> +    void __iomem *ioaddr;
+> +    ktime_t timeout;
+> +    bool timedout;
+> +    int ret = 0;
+> +    u8 status;
+> +
+> +    pci_epf = to_virtio_pci_epf(vp_dev);
+> +    ioaddr = vp_dev->ioaddr;
+> +
+> +    mutex_lock(&pci_epf->lock);
+> +    writeb(command, ioaddr + HOST_CMD);
+> +    timeout = ktime_add_ms(ktime_get(), COMMAND_TIMEOUT);
+> +    while (1) {
+> +        timedout = ktime_after(ktime_get(), timeout);
+> +        status = readb(ioaddr + HOST_CMD_STATUS);
+> +
+> 
+> Several questions:
+> 
+> - It's not clear to me how the synchronization is done between the RC
+> and EP. E.g how and when the value of HOST_CMD_STATUS can be changed.
+
+The HOST_CMD (commands sent to the EP) is serialized by using mutex.
+Once the EP reads the command, it resets the value in HOST_CMD. So
+HOST_CMD is less likely an issue.
+
+A sufficiently large time is given for the EP to complete it's operation
+(1 Sec) where the EP provides the status in HOST_CMD_STATUS. After it
+expires, HOST_CMD_STATUS_NONE is written to HOST_CMD_STATUS. There could
+be case where EP updates HOST_CMD_STATUS after RC writes
+HOST_CMD_STATUS_NONE, but by then HOST has already detected this as
+failure and error-ed out.
+ 
+> If you still want to introduce a new transport, a virtio spec patch
+> would be helpful for us to understand the device API.
+
+Okay, that should be on https://github.com/oasis-tcs/virtio-spec.git?
+> - You have you vendor specific layout (according to
+> virtio_pci_epb_table()), so I guess you it's better to have a vendor
+> specific vDPA driver instead
+
+Okay, with vDPA, we are free to define our own layouts.
+> - The advantage of vendor specific vDPA driver is that it can 1) have
+> less codes 2) support userspace drivers through vhost-vDPA (instead of
+> inventing new APIs since we can't use vfio-pci here).
+
+I see there's an additional level of indirection from virtio to vDPA and
+probably no need for spec update but don't exactly see how it'll reduce
+code.
+
+For 2, Isn't vhost-vdpa supposed to run on virtio backend?
+
+From a high level, I think I should be able to use vDPA for
+virtio_pci_epf.c. Would you also suggest using vDPA for ntb_virtio.c?
+([RFC PATCH 20/22] NTB: Add a new NTB client driver to implement VIRTIO
+functionality).
+
+Thanks
+Kishon
