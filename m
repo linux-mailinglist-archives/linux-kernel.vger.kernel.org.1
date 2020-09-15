@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B4326A739
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE5926A79E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727202AbgIOOiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:38:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38172 "EHLO mail.kernel.org"
+        id S1727216AbgIOO4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:56:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726926AbgIOO0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:26:50 -0400
+        id S1726995AbgIOOhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:37:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DFF922473;
-        Tue, 15 Sep 2020 14:19:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBDEE22404;
+        Tue, 15 Sep 2020 14:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179588;
-        bh=wOb0MOvzDb/ZrwrJ3pg48ni2ycaY2oXkvvjZPPz+c+Y=;
+        s=default; t=1600180015;
+        bh=jFs0Sz+sEpFY5xXgoP8wsxu+kifj4dt4TaFrRZotE2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X+TYrIatKRMw1wR5rZRCEQRkckMTdbaz2FPDeSaJJ1R2+dpQ0DPb5MqqyZX0F7OJ+
-         spAai+gUwO21GHoR7PYrwXq5LRn5TQOuhIKK9tu0Sop0T/vmiVq8S4bQJS5iX69cHO
-         RiJ9YSY0TBb4lN97ZlJNQJu+EjLJ/P+Kx06fZ+p4=
+        b=0wSYqpCZTooJHihen6BzxoOdqm6XLSU4IHVhV6Ut6O5n2tA8xi+eLQB71zmOF7oqb
+         xpVYkkFW02YS8OYAFahY17QV3ZVVNAxji2//YhzQOfCDCnR9IoUzZEIiYhVOZDSL+g
+         z+tKMICGN7qZv+10eW12ZrEkiGR9E+jvlY/FB1Xw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/132] NFC: st95hf: Fix memleak in st95hf_in_send_cmd
-Date:   Tue, 15 Sep 2020 16:12:22 +0200
-Message-Id: <20200915140646.128661704@linuxfoundation.org>
+Subject: [PATCH 5.8 074/177] xfs: fix off-by-one in inode alloc block reservation calculation
+Date:   Tue, 15 Sep 2020 16:12:25 +0200
+Message-Id: <20200915140657.185084329@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-References: <20200915140644.037604909@linuxfoundation.org>
+In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
+References: <20200915140653.610388773@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +44,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Brian Foster <bfoster@redhat.com>
 
-[ Upstream commit f97c04c316d8fea16dca449fdfbe101fbdfee6a2 ]
+[ Upstream commit 657f101930bc6c5b41bd7d6c22565c4302a80d33 ]
 
-When down_killable() fails, skb_resp should be freed
-just like when st95hf_spi_send() fails.
+The inode chunk allocation transaction reserves inobt_maxlevels-1
+blocks to accommodate a full split of the inode btree. A full split
+requires an allocation for every existing level and a new root
+block, which means inobt_maxlevels is the worst case block
+requirement for a transaction that inserts to the inobt. This can
+lead to a transaction block reservation overrun when tmpfile
+creation allocates an inode chunk and expands the inobt to its
+maximum depth. This problem has been observed in conjunction with
+overlayfs, which makes frequent use of tmpfiles internally.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The existing reservation code goes back as far as the Linux git repo
+history (v2.6.12). It was likely never observed as a problem because
+the traditional file/directory creation transactions also include
+worst case block reservation for directory modifications, which most
+likely is able to make up for a single block deficiency in the inode
+allocation portion of the calculation. tmpfile support is relatively
+more recent (v3.15), less heavily used, and only includes the inode
+allocation block reservation as tmpfiles aren't linked into the
+directory tree on creation.
+
+Fix up the inode alloc block reservation macro and a couple of the
+block allocator minleft parameters that enforce an allocation to
+leave enough free blocks in the AG for a full inobt split.
+
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nfc/st95hf/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/libxfs/xfs_ialloc.c      | 4 ++--
+ fs/xfs/libxfs/xfs_trans_space.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nfc/st95hf/core.c b/drivers/nfc/st95hf/core.c
-index 9642971e89cea..4578547659839 100644
---- a/drivers/nfc/st95hf/core.c
-+++ b/drivers/nfc/st95hf/core.c
-@@ -966,7 +966,7 @@ static int st95hf_in_send_cmd(struct nfc_digital_dev *ddev,
- 	rc = down_killable(&stcontext->exchange_lock);
- 	if (rc) {
- 		WARN(1, "Semaphore is not found up in st95hf_in_send_cmd\n");
--		return rc;
-+		goto free_skb_resp;
- 	}
+diff --git a/fs/xfs/libxfs/xfs_ialloc.c b/fs/xfs/libxfs/xfs_ialloc.c
+index 7fcf62b324b0d..8c1a7cc484b65 100644
+--- a/fs/xfs/libxfs/xfs_ialloc.c
++++ b/fs/xfs/libxfs/xfs_ialloc.c
+@@ -688,7 +688,7 @@ xfs_ialloc_ag_alloc(
+ 		args.minalignslop = igeo->cluster_align - 1;
  
- 	rc = st95hf_spi_send(&stcontext->spicontext, skb->data,
+ 		/* Allow space for the inode btree to split. */
+-		args.minleft = igeo->inobt_maxlevels - 1;
++		args.minleft = igeo->inobt_maxlevels;
+ 		if ((error = xfs_alloc_vextent(&args)))
+ 			return error;
+ 
+@@ -736,7 +736,7 @@ xfs_ialloc_ag_alloc(
+ 		/*
+ 		 * Allow space for the inode btree to split.
+ 		 */
+-		args.minleft = igeo->inobt_maxlevels - 1;
++		args.minleft = igeo->inobt_maxlevels;
+ 		if ((error = xfs_alloc_vextent(&args)))
+ 			return error;
+ 	}
+diff --git a/fs/xfs/libxfs/xfs_trans_space.h b/fs/xfs/libxfs/xfs_trans_space.h
+index c6df01a2a1585..7ad3659c5d2a9 100644
+--- a/fs/xfs/libxfs/xfs_trans_space.h
++++ b/fs/xfs/libxfs/xfs_trans_space.h
+@@ -58,7 +58,7 @@
+ #define	XFS_IALLOC_SPACE_RES(mp)	\
+ 	(M_IGEO(mp)->ialloc_blks + \
+ 	 ((xfs_sb_version_hasfinobt(&mp->m_sb) ? 2 : 1) * \
+-	  (M_IGEO(mp)->inobt_maxlevels - 1)))
++	  M_IGEO(mp)->inobt_maxlevels))
+ 
+ /*
+  * Space reservation values for various transactions.
 -- 
 2.25.1
 
