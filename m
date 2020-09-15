@@ -2,84 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5243A269F97
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440EA269FA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgIOHYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:24:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgIOHY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:24:29 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF02C2080C;
-        Tue, 15 Sep 2020 07:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600154669;
-        bh=lmjngYh7GkGxScGYSERfmVDd4/xBELC3JZvwsqs9C3Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PkKnTTTv3w9GFzkaUDzMcdHecq7ssNK9tMwzIJ9YPrOyQ6z6tgVXECEHXc3wYJV8+
-         e9ctxR3+/LMeC1mTVWRiCq8Q7wvc5Vy8SzZ4E6tDLs0yALhEUnHpFLCVIUOSl7Rplw
-         PoTFS+WkAR9P7eCCtad3p9CfolnnDndEz1YJ0Owc=
-Date:   Tue, 15 Sep 2020 16:24:24 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     <rostedt@goodmis.org>, <linux-kernel@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] bootconfig: init: make xbc_namebuf static
-Message-Id: <20200915162424.a947b5d51695f726db2af2a9@kernel.org>
-In-Reply-To: <20200915070324.2239473-1-yanaijie@huawei.com>
-References: <20200915070324.2239473-1-yanaijie@huawei.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726244AbgIOHZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgIOHY4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:24:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D540C061788;
+        Tue, 15 Sep 2020 00:24:47 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600154684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BBI2zNFANGXkWYE4Qif9cyGi7S1uMUtiVcafI/NKee0=;
+        b=Gm/q+1/LmIgUKVhaBfxbtH41gZrDIBH8IS1H4zgztvnc5soB5Q5S9GFvwqD6AMThAJg7Eu
+        ICkbMzhHS8winOchbTgcb1qlmuZD7JVBas9osW7dkmUkrA19fW7G1Z84ERIdydT1XwABtV
+        b3YTiGY6/hGrgHGqtbAMSZ6WiChgMDc5V88LWXOoC6nxdSrZr6KYOF2hnpnoShLvzpGVZ4
+        qfLpRcJbnCwBly7jDRkK74aDmCV0ZOOHMRl3SoG6khP3VCoWYVF9b0W5VeuBj1d+MuAvxt
+        6cYp5N7yEfk2d6IXe87eOWbHI/ZdUwoUn1UDCyhqgpi5uCSq9M8lJDN8rwQv1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600154684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BBI2zNFANGXkWYE4Qif9cyGi7S1uMUtiVcafI/NKee0=;
+        b=MuKXrmlhK1T+BH9XqoTgVQdGqBSQY5pVtsbiA531viHwxJXMJTBsBB/Iwr2EqMuOspN/XP
+        6hM/wG9/ctqUbmCQ==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+In-Reply-To: <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com> <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com> <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com> <20200915062253.GA26275@gondor.apana.org.au> <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 09:24:44 +0200
+Message-ID: <87een35woz.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 15:03:24 +0800
-Jason Yan <yanaijie@huawei.com> wrote:
+On Mon, Sep 14 2020 at 23:39, Linus Torvalds wrote:
+> On Mon, Sep 14, 2020 at 11:24 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>> > But another reason I tried to avoid kmap_atomic() is that it disables
+>> > preemption unconditionally, even on 64-bit architectures where HIGHMEM
+>> > is irrelevant. So using kmap_atomic() here means that the bulk of
+>> > WireGuard packet encryption runs with preemption disabled, essentially
+>> > for legacy reasons.
+>>
+>> Agreed.  We should definitely fix that.
+>
+> Well, honestly, one big reason for that is debugging.
+>
+> The *semantics* of the kmap_atomic() is in the name - you can't sleep
+> in between it and the kunmap_atomic().
+>
+> On any sane architecture, kmap_atomic() ends up being a no-op from an
+> implementation standpoint, and sleeping would work just fine.
+>
+> But we very much want to make sure that people don't then write code
+> that doesn't work on the bad old 32-bit machines where it really needs
+> that sequence to be safe from preemption.
 
-> This eliminates the following sparse warning:
-> 
-> init/main.c:306:6: warning: symbol 'xbc_namebuf' was not declared.
-> Should it be static?
+Alternatively we just make highmem a bit more expensive by making these
+maps preemptible. RT is doing this for a long time and it's not that
+horrible.
 
+The approach is to keep track about the number of active maps in a task
+and on an eventual context switch save them away in the task struct and
+restore them when the task is scheduled back in.
 
-Yes, this looks good to me.
+Thanks,
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->  init/main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/init/main.c b/init/main.c
-> index 92773a5daf8d..5ac07eb4a300 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -303,7 +303,7 @@ static void * __init get_boot_config_from_initrd(u32 *_size, u32 *_csum)
->  
->  #ifdef CONFIG_BOOT_CONFIG
->  
-> -char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
-> +static char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
->  
->  #define rest(dst, end) ((end) > (dst) ? (end) - (dst) : 0)
->  
-> -- 
-> 2.25.4
-> 
+        tglx
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
