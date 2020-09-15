@@ -2,585 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D69C26B87F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B7126B867
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgIPAol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726542AbgIONBA (ORCPT
+        id S1726905AbgIPAnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:43:21 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:9977 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgIONCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:01:00 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AFEC061351;
-        Tue, 15 Sep 2020 06:00:58 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 827D729882C
-Subject: Re: [PATCH v5 1/2] platform/chrome: cros_ec_uart: Add cros-ec-uart
- transport layer
-To:     Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Furquan Shaikh <furquan@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Raul E Rangel <rrangel@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Duncan Laurie <dlaurie@google.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Eric Peers <epeers@google.com>
-References: <20200804155833.v5.1.Ic98067cd92a0b7fed9cd3dfb7b4e736e76551cda@changeid>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <4dfc6fc5-9971-74bb-17ec-9b82ec84e5e5@collabora.com>
-Date:   Tue, 15 Sep 2020 15:00:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 15 Sep 2020 09:02:12 -0400
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7B97324000D;
+        Tue, 15 Sep 2020 13:02:07 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 15:02:07 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 3/3] ASoC: tlv320aic32x4: Enable fast charge
+Message-ID: <20200915130207.GA9675@piout.net>
+References: <20200911173140.29984-1-miquel.raynal@bootlin.com>
+ <20200911173140.29984-4-miquel.raynal@bootlin.com>
+ <20200915082602.GH4230@piout.net>
+ <20200915115034.GA5576@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20200804155833.v5.1.Ic98067cd92a0b7fed9cd3dfb7b4e736e76551cda@changeid>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915115034.GA5576@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhanu,
+On 15/09/2020 12:50:34+0100, Mark Brown wrote:
+> On Tue, Sep 15, 2020 at 10:26:02AM +0200, Alexandre Belloni wrote:
+> > On 11/09/2020 19:31:40+0200, Miquel Raynal wrote:
+> 
+> > > +	/*
+> > > +	 * Enable the fast charging feature and ensure the needed 40ms ellapsed
+> > > +	 * before using the analog circuits.
+> > > +	 */
+> > > +	snd_soc_component_write(component, AIC32X4_REFPOWERUP,
+> > > +				AIC32X4_REFPOWERUP_40MS);
+> > > +	msleep(40);
+> > > +
+> 
+> > Maybe the actual REFPOWERUP value could be exposed as a control so
+> > userspace has a way to set the policy? 
+> 
+> We very rarely do this, there's not usially anything 
+> 
 
-Very sorry about the long delay. For some reason I forgot about this patch.
+Could you suggest something then? This mainly changes the power
+codec power consumption. I guess people will want to trade latency
+for less consumption.
 
-On 5/8/20 0:59, Bhanu Prakash Maiya wrote:
-> From: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
+> > I'm not sure it make sense to have the delay in probe because it is not
+> > enable the analog part of the codec. The delay should probable be after
+> > the clocks have been set up because the datasheet says that it is mdac
+> > and madc that is starting the analog circuitry.
 > 
-> This patch does following:
-> 1. Adds a new cros-ec-uart driver. This driver can send EC requests on
->    UART and process response packets received on UART transport.
-> 2. Once probed, this driver will initialize the serdev device based on
->    the underlying information in the ACPI resource. After serdev device
->    properties are set, this driver will register itself cros-ec.
-> 3. High level driver can use this implementation to talk to ChromeOS
->    Embedded Controller device in case it supports UART as transport.
-> 4. When cros-ec driver initiates a request packet, outgoing message is
->    processed in buffer and sent via serdev. Once bytes are sent, driver
->    enables a wait_queue.
-> 5. Since ChromeOS EC device sends response asynchronously, AP's TTY
->    driver accumulates response bytes and calls the registered callback.
->    TTY driver can send multiple callback for bytes ranging from 1 to MAX
->    bytes supported by EC device.
-> 6. Driver waits for EC_MSG_DEADLINE_MS to collect and process received
->    bytes. It wakes wait_queue if expected bytes are received or else
->    wait_queue timeout. Based on the error condition, driver returns
->    data_len or error to cros_ec.
-> 
-> Signed-off-by: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
-> ---
-> 
-> Changes in v5:
-> - Fixed checkpatch.pl warnings.
-> 
-> Changes in v4:
-> - Change EC_MSG_DEADLINE_MS from 3 secs to 1 sec. 3 secs timeout prevents
->   driver from intercepting EC in RO stage. In case of request failure, 1
->   sec allows driver to retry and send HC when EC is in RO.
-> - Add more information in commit message.
-> 
-> Changes in v3:
-> - checkpatch.pl script warns about char len 80 even though we have
->   relaxed view guideline for line below 100 chars. Currently sticking
->   with 80 chars in v3.
-> - Fixed style issues
-> 
-> Changes in v2:
-> - Fixed build error on v1.
-> - Changed EC timeout for response packet to 3 Sec and added comments.
-> - Fixed cros_ec_uart_rx_bytes function to handle rx buffer < size of response header.
-> 
->  MAINTAINERS                            |   6 +
->  drivers/platform/chrome/Kconfig        |  10 +
->  drivers/platform/chrome/Makefile       |   1 +
->  drivers/platform/chrome/cros_ec_uart.c | 415 +++++++++++++++++++++++++
->  4 files changed, 432 insertions(+)
->  create mode 100644 drivers/platform/chrome/cros_ec_uart.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c8e8232c65da9..1603efb897a18 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4133,6 +4133,12 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
->  F:	sound/soc/codecs/cros_ec_codec.*
->  
-> +CHROMEOS EC UART DRIVER
-> +M:	Bhanu Prakash Maiya <bhanumaiya@chromium.org>
-> +R:	Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> +S:	Maintained
-> +F:	drivers/platform/chrome/cros_ec_uart.c
-> +
->  CHROMEOS EC SUBDRIVERS
->  M:	Benson Leung <bleung@chromium.org>
->  M:	Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> diff --git a/drivers/platform/chrome/Kconfig b/drivers/platform/chrome/Kconfig
-> index cf072153bdc5d..88b1b7b277ba3 100644
-> --- a/drivers/platform/chrome/Kconfig
-> +++ b/drivers/platform/chrome/Kconfig
-> @@ -118,6 +118,16 @@ config CROS_EC_SPI
->  	  response time cannot be guaranteed, we support ignoring
->  	  'pre-amble' bytes before the response actually starts.
->  
-> +config CROS_EC_UART
-> +	tristate "ChromeOS Embedded Controller (UART)"
-> +	depends on CROS_EC && ACPI && SERIAL_DEV_BUS
-> +	help
-> +	  If you say Y here, you get support for talking to the ChromeOS EC
-> +	  through a UART, using a byte-level protocol.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called cros_ec_uart.
-> +
->  config CROS_EC_LPC
->  	tristate "ChromeOS Embedded Controller (LPC)"
->  	depends on CROS_EC && ACPI && (X86 || COMPILE_TEST)
-> diff --git a/drivers/platform/chrome/Makefile b/drivers/platform/chrome/Makefile
-> index 41baccba033f7..47d8d0f890ca2 100644
-> --- a/drivers/platform/chrome/Makefile
-> +++ b/drivers/platform/chrome/Makefile
-> @@ -11,6 +11,7 @@ obj-$(CONFIG_CROS_EC_I2C)		+= cros_ec_i2c.o
->  obj-$(CONFIG_CROS_EC_ISHTP)		+= cros_ec_ishtp.o
->  obj-$(CONFIG_CROS_EC_RPMSG)		+= cros_ec_rpmsg.o
->  obj-$(CONFIG_CROS_EC_SPI)		+= cros_ec_spi.o
-> +obj-$(CONFIG_CROS_EC_UART)		+= cros_ec_uart.o
->  cros_ec_lpcs-objs			:= cros_ec_lpc.o cros_ec_lpc_mec.o
->  obj-$(CONFIG_CROS_EC_TYPEC)		+= cros_ec_typec.o
->  obj-$(CONFIG_CROS_EC_LPC)		+= cros_ec_lpcs.o
-> diff --git a/drivers/platform/chrome/cros_ec_uart.c b/drivers/platform/chrome/cros_ec_uart.c
-> new file mode 100644
-> index 0000000000000..6b4510e26bd12
-> --- /dev/null
-> +++ b/drivers/platform/chrome/cros_ec_uart.c
-> @@ -0,0 +1,415 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * UART interface for ChromeOS Embedded Controller
-> + *
-> + * Copyright 2020 Google LLC.
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/errno.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/acpi.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_data/cros_ec_commands.h>
-> +#include <linux/platform_data/cros_ec_proto.h>
-> +#include <linux/serdev.h>
-> +#include <linux/slab.h>
-> +#include <uapi/linux/sched/types.h>
-> +
-> +#include "cros_ec.h"
-> +
-> +/*
-> + * EC sends contiguous bytes of response packet on UART AP RX.
-> + * TTY driver in AP accumulates incoming bytes and calls the registered callback
-> + * function. Byte count can range from 1 to MAX bytes supported by EC.
-> + * This driver should wait for long time for all callbacks to be processed.
-> + * Considering the worst case scenario, wait for ~1 sec. This timeout should
-> + * account for max latency and some additional guard time.
-> + * Best case: Entire packet is received in ~1 ms, wait queue will be released
-> + * and packet will be processed.
-> + * Worst case: TTY driver sends bytes in multiple callbacks. In this case this
-> + * driver will wait for ~1 sec beyond which it will timeout.
-> + * This timeout value should not exceed ~1.2 secs because in case if
-> + * EC_CMD_REBOOT_EC sent, high level driver should be able to intercept EC
-> + * in RO.
-> + */
-> +#define EC_MSG_DEADLINE_MS		1000
-> +
-> +/**
-> + * struct response_info - Encapsulate EC response related
-> + *			information for passing between function
-> + *			cros_ec_uart_pkt_xfer() and cros_ec_uart_rx_bytes()
-> + *			callback.
-> + * @data:		Copy the data received from EC here.
-> + * @max_size:		Max size allocated for the @data buffer. If the
-> + *			received data exceeds this value, we log an error.
-> + * @size:		Actual size of data received from EC. This is also
-> + *			used to accumulate byte count with response is received
-> + *			in dma chunks.
-> + * @exp_len:		Expected bytes of response from EC including header.
-> + * @error:		0 for success, negative error code for a failure.
-> + * @received:		Set to true on receiving a valid EC response.
-> + * @wait_queue:		Wait queue EC response where the cros_ec sends request
-> + *			to EC and waits
-> + */
-> +struct response_info {
-> +	void *data;
-> +	size_t max_size;
-> +	size_t size;
-> +	int error;
-> +	size_t exp_len;
-> +	bool received;
-> +	wait_queue_head_t wait_queue;
-> +};
-> +
-> +/**
-> + * struct cros_ec_uart - information about a uart-connected EC
-> + *
-> + * @serdev_device:	serdev uart device we are connected to.
-> + * @baudrate:		UART baudrate of attached EC device.
-> + * @flowcontrol:	UART flowcontrol of attached device.
-> + * @irq:		Linux IRQ number of associated serial device.
-> + * @response:		Response info passing between cros_ec_uart_pkt_xfer()
-> + *			and cros_ec_uart_rx_bytes()
-> + */
-> +struct cros_ec_uart {
-> +	struct serdev_device *serdev;
-> +	u32 baudrate;
-> +	u8  flowcontrol;
-> +	u32 irq;
-> +	struct response_info response;
-> +};
-> +
-> +static int cros_ec_uart_rx_bytes(struct serdev_device *serdev,
-> +				 const u8 *data,
-> +				 size_t count)
-> +{
-> +	struct ec_host_response *response;
-> +	struct cros_ec_device *ec_dev = serdev_device_get_drvdata(serdev);
-> +	struct cros_ec_uart *ec_uart = ec_dev->priv;
-> +
-> +	/* Check if bytes were sent out of band */
-> +	if (!ec_uart->response.data)
-> +		/* Discard all bytes */
-> +		return count;
-> +
-> +	/*
-> +	 * Check if incoming bytes + response.size are less than allocated
-> +	 * buffer in din by cros_ec. This will ensure that if EC sends more
-> +	 * bytes than max_size, waiting process will be notified with an error.
-> +	 */
-> +	if (ec_uart->response.size + count <= ec_uart->response.max_size) {
-> +		/* Copy bytes in data in buffer */
-> +		memcpy((void *)ec_uart->response.data + ec_uart->response.size,
-> +		       (void *)data, count);
-> +
-> +		/* Add incoming bytes in size */
-> +		ec_uart->response.size += count;
-> +
-> +		/*
-> +		 * Read data_len if we received response header and if exp_len
-> +		 * was not read before.
-> +		 */
-> +		if (ec_uart->response.size >= sizeof(*response) &&
-> +		    ec_uart->response.exp_len == 0) {
-> +			/* Get expected response length from response header */
-> +			response = (struct ec_host_response *)
-> +							ec_uart->response.data;
-> +
-> +			ec_uart->response.exp_len = response->data_len +
-> +				sizeof(*response);
-> +		}
-> +
-> +		/*
-> +		 * If driver received response header and payload from EC,
-> +		 * Wake up the wait queue.
-> +		 */
-> +		if (ec_uart->response.size >= sizeof(*response) &&
-> +		    ec_uart->response.size == ec_uart->response.exp_len) {
-> +			/* Set flag before waking up the caller */
-> +			ec_uart->response.received = true;
-> +
-> +			/* Wake the calling thread */
-> +			wake_up_interruptible(&ec_uart->response.wait_queue);
-> +		}
-> +	} else {
-> +		/* Received bytes are more the allocated buffer*/
-> +		ec_uart->response.error = -EMSGSIZE;
-> +
-> +		/* Wake the calling thread */
-> +		wake_up_interruptible(&ec_uart->response.wait_queue);
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static int cros_ec_uart_pkt_xfer(struct cros_ec_device *ec_dev,
-> +				 struct cros_ec_command *ec_msg)
-> +{
-> +	struct cros_ec_uart *ec_uart = ec_dev->priv;
-> +	struct serdev_device *serdev = ec_uart->serdev;
-> +	struct ec_host_response *response;
-> +	unsigned int len;
-> +	int ret, i;
-> +	u8 sum = 0;
-> +
-> +	/* Prepare an outgoing message in the output buffer */
-> +	len = cros_ec_prepare_tx(ec_dev, ec_msg);
-> +	dev_dbg(ec_dev->dev, "Prepared len=%d\n", len);
-> +
-> +	/* Setup for incoming response */
-> +	ec_uart->response.data = ec_dev->din;
-> +	ec_uart->response.max_size = ec_dev->din_size;
-> +	ec_uart->response.size = 0;
-> +	ec_uart->response.error = 0;
-> +	ec_uart->response.exp_len = 0;
-> +	ec_uart->response.received = false;
-> +
-> +	/* Write serial device buffer */
-> +	ret = serdev_device_write_buf(serdev, ec_dev->dout, len);
-> +	if (ret < len) {
-> +		dev_err(&serdev->dev,
-> +			"Unable to write data to serial device %s",
-> +			dev_name(&serdev->dev));
-> +
-> +		/* Return EIO as controller had issues writing buffer */
-> +		ret = -EIO;
-> +		goto exit;
-> +	}
-> +
-> +	/* Once request is successfully sent to EC, wait to wait_queue */
-> +	wait_event_interruptible_timeout(ec_uart->response.wait_queue,
-> +					 ec_uart->response.received,
-> +					 msecs_to_jiffies(EC_MSG_DEADLINE_MS));
-> +
-> +	/* Check if wait_queue was interrupted due to an error */
-> +	if (ec_uart->response.error < 0) {
-> +		dev_warn(&serdev->dev, "Response error detected.\n");
-> +
-> +		ret = ec_uart->response.error;
-> +		goto exit;
-> +	}
-> +
-> +	/* Check if valid response was received or there was a timeout */
-> +	if (!ec_uart->response.received) {
-> +		dev_warn(&serdev->dev, "EC failed to respond in time.\n");
-> +
-> +		ret = -ETIMEDOUT;
-> +		goto exit;
-> +	}
-> +
-> +	/* Check response error code */
-> +	response = (struct ec_host_response *)ec_dev->din;
-> +	ec_msg->result = response->result;
-> +
-> +	/* Check if received response is longer than expected */
-> +	if (response->data_len > ec_msg->insize) {
-> +		dev_err(ec_dev->dev, "Resp too long (%d bytes, expected %d)",
-> +			response->data_len,
-> +			ec_msg->insize);
-> +		ret = -ENOSPC;
-> +		goto exit;
-> +	}
-> +
-> +	/* Copy response packet to ec_msg data buffer */
-> +	memcpy(ec_msg->data,
-> +	       ec_dev->din + sizeof(*response),
-> +	       response->data_len);
-> +
-> +	/* Add all response header bytes for checksum calculation */
-> +	for (i = 0; i < sizeof(*response); i++)
-> +		sum += ec_dev->din[i];
-> +
-> +	/* Copy response packet payload and compute checksum */
-> +	for (i = 0; i < response->data_len; i++)
-> +		sum += ec_msg->data[i];
-> +
-> +	if (sum) {
-> +		dev_err(ec_dev->dev,
-> +			"Bad packet checksum calculated %x\n",
-> +			sum);
-> +		ret = -EBADMSG;
-> +		goto exit;
-> +	}
-> +
-> +	/* Return data_len to cros_ec */
-> +	ret = response->data_len;
-> +
-> +exit:
-> +	/* Reset ec_uart */
-> +	ec_uart->response.data = NULL;
-> +	ec_uart->response.max_size = 0;
-> +	ec_uart->response.size = 0;
-> +	ec_uart->response.error = 0;
-> +	ec_uart->response.exp_len = 0;
-> +	ec_uart->response.received = false;
-> +
-> +	if (ec_msg->command == EC_CMD_REBOOT_EC)
-> +		msleep(EC_REBOOT_DELAY_MS);
-> +
-> +	return ret;
-> +}
-> +
-> +static int cros_ec_uart_resource(struct acpi_resource *ares, void *data)
-> +{
-> +	struct cros_ec_uart *ec_uart = data;
-> +	struct acpi_resource_uart_serialbus *sb;
-> +
-> +	switch (ares->type) {
-> +	case ACPI_RESOURCE_TYPE_SERIAL_BUS:
-> +		sb = &ares->data.uart_serial_bus;
-> +		if (sb->type == ACPI_RESOURCE_SERIAL_TYPE_UART) {
-> +			ec_uart->baudrate = sb->default_baud_rate;
-> +			dev_dbg(&ec_uart->serdev->dev, "Baudrate %d\n",
-> +				ec_uart->baudrate);
-> +
-> +			ec_uart->flowcontrol = sb->flow_control;
-> +			dev_dbg(&ec_uart->serdev->dev, "Flow control %d\n",
-> +				ec_uart->flowcontrol);
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int cros_ec_uart_acpi_probe(struct cros_ec_uart *ec_uart)
-> +{
-> +	LIST_HEAD(resources);
-> +	struct acpi_device *adev = ACPI_COMPANION(&ec_uart->serdev->dev);
-> +	int ret;
-> +
-> +	/* Retrieve UART ACPI info */
-> +	ret = acpi_dev_get_resources(adev, &resources,
-> +				     cros_ec_uart_resource, ec_uart);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	acpi_dev_free_resource_list(&resources);
-> +
-> +	/* Retrieve GpioInt and translate it to Linux IRQ number */
-> +	ret = acpi_dev_gpio_irq_get(adev, 0);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ec_uart->irq = ret;
-> +	dev_dbg(&ec_uart->serdev->dev, "IRQ number %d\n", ec_uart->irq);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct serdev_device_ops cros_ec_uart_client_ops = {
-> +	.receive_buf = cros_ec_uart_rx_bytes,
-> +};
-> +
-> +static int cros_ec_uart_probe(struct serdev_device *serdev)
-> +{
-> +	struct device *dev = &serdev->dev;
-> +	struct cros_ec_device *ec_dev;
-> +	struct cros_ec_uart *ec_uart;
-> +	int ret;
-> +
-> +	ec_uart = devm_kzalloc(dev, sizeof(*ec_uart), GFP_KERNEL);
-> +	if (!ec_uart)
-> +		return -ENOMEM;
-> +
-> +	ec_dev = devm_kzalloc(dev, sizeof(*ec_dev), GFP_KERNEL);
-> +	if (!ec_dev)
-> +		return -ENOMEM;
-> +
-> +	ec_uart->serdev = serdev;
-> +
-> +	/* Open the serial device */
-> +	ret = devm_serdev_device_open(dev, ec_uart->serdev);
-> +	if (ret) {
-> +		dev_err(dev, "Unable to open UART device %s",
-> +			dev_name(&serdev->dev));
-> +		return ret;
-> +	}
-> +
-> +	serdev_device_set_drvdata(serdev, ec_dev);
-> +
-> +	serdev_device_set_client_ops(serdev, &cros_ec_uart_client_ops);
-> +
-> +	/* Initialize wait queue */
-> +	init_waitqueue_head(&ec_uart->response.wait_queue);
-> +
-> +	ret = cros_ec_uart_acpi_probe(ec_uart);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to get ACPI info (%d)", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Set baud rate of serial device */
-> +	ret = serdev_device_set_baudrate(serdev, ec_uart->baudrate);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to set up host baud rate (%d)", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Set flow control of serial device */
-> +	serdev_device_set_flow_control(serdev, ec_uart->flowcontrol);
-> +
-> +	/* Initialize ec_dev for cros_ec  */
-> +	ec_dev->phys_name = dev_name(&ec_uart->serdev->dev);
-> +	ec_dev->dev = dev;
-> +	ec_dev->priv = ec_uart;
-> +	ec_dev->irq = ec_uart->irq;
-> +	ec_dev->cmd_xfer = NULL;
-> +	ec_dev->pkt_xfer = cros_ec_uart_pkt_xfer;
-> +	ec_dev->din_size = sizeof(struct ec_host_response) +
-> +			   sizeof(struct ec_response_get_protocol_info);
-> +	ec_dev->dout_size = sizeof(struct ec_host_request);
-> +
-> +	/* Register a new cros_ec device */
-> +	return cros_ec_register(ec_dev);
-> +}
-> +
-> +static void cros_ec_uart_remove(struct serdev_device *serdev)
-> +{
-> +	struct cros_ec_device *ec_dev = serdev_device_get_drvdata(serdev);
-> +
-> +	cros_ec_unregister(ec_dev);
-> +};
-> +
-> +static int __maybe_unused cros_ec_uart_suspend(struct device *dev)
-> +{
-> +	struct cros_ec_device *ec_dev = dev_get_drvdata(dev);
-> +
-> +	return cros_ec_suspend(ec_dev);
-> +}
-> +
-> +static int __maybe_unused cros_ec_uart_resume(struct device *dev)
-> +{
-> +	struct cros_ec_device *ec_dev = dev_get_drvdata(dev);
-> +
-> +	return cros_ec_resume(ec_dev);
-> +}
-> +
-> +static SIMPLE_DEV_PM_OPS(cros_ec_uart_pm_ops, cros_ec_uart_suspend,
-> +			 cros_ec_uart_resume);
-> +
-> +static const struct of_device_id cros_ec_uart_of_match[] = {
-> +	{ .compatible = "google,cros-ec-uart" },
-> +	{}
-> +};
-> +
+> Deferring the delay to a workqueue is the usual thing where there's
+> concerns about slowing down boot.
 
-IMO this is wrong, this is an ACPI driver not a DT driver. Instantiate an ACPI
-driver with the OF hook is tricky. So you should properly use an ACPI id or a
-DMI table for matching the device ID.
+Well, that was not my concern. I didn't realize Miquel actually used the
+Force power-up values and though the actual power up happened after
+configuring the clocks (as is the case for the dafule values). In this
+case, the delay is at the proper location.
 
-Thanks,
-
-  Enric
-
-> +static struct serdev_device_driver cros_ec_uart_driver = {
-> +	.driver	= {
-> +		.name	= "cros-ec-uart",
-> +		.of_match_table = cros_ec_uart_of_match,
-> +		.pm	= &cros_ec_uart_pm_ops,
-> +	},
-> +	.probe		= cros_ec_uart_probe,
-> +	.remove		= cros_ec_uart_remove,
-> +};
-> +
-> +module_serdev_device_driver(cros_ec_uart_driver);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("UART interface for ChromeOS Embedded Controller");
-> +MODULE_AUTHOR("Bhanu Prakash Maiya <bhanumaiya@chromium.org>");
-> 
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
