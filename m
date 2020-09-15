@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE3426B4B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE4B26B4B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbgIOXaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:30:15 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57460 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727196AbgIOX3c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:29:32 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FNTNTg075733;
-        Tue, 15 Sep 2020 18:29:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600212563;
-        bh=f31VW0gtdRpGEDp6axuwxXoDMfdhCxcxnCweY4Nqnpc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=oV1FNHWbs4X5N/wyU7TnZjYg49dt0/riQh95fTuZhOAp1hd8Ae7p/IxTyvYd+Tv6h
-         8T3xekBvlYs0p2bpczQ0OWe7B0W6iNw8j4wRxdLE5kNGLmLbLpCDeIXNOyQ2zOa0kx
-         mo1A92x6AuYuu72S2GDusHF5gnDudV0iJbURHKMQ=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FNTNrt030035;
-        Tue, 15 Sep 2020 18:29:23 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 18:29:22 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 18:29:22 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FNTMif048879;
-        Tue, 15 Sep 2020 18:29:22 -0500
-Subject: Re: [PATCH net-next 1/3] ethtool: Add 100base-FX link mode entries
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <mkubecek@suse.cz>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200915181708.25842-1-dmurphy@ti.com>
- <20200915181708.25842-2-dmurphy@ti.com> <20200915202113.GE3526428@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <f2a38c01-8726-a7fe-f645-2c83fe30b932@ti.com>
-Date:   Tue, 15 Sep 2020 18:29:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727293AbgIOXae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:30:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:59908 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727232AbgIOX31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 19:29:27 -0400
+IronPort-SDR: 6WUEQ+pPJrTJW16WmztSGy3dbfBg2+goEAFsNm+KF2PDuLZGt5kTxXhHkjSu0HJ5UjkqFmNxNd
+ gPBZtE9wVY2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="147120160"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="147120160"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:29:26 -0700
+IronPort-SDR: EAu9yNq+VH45IieXXe+oaFmwbky6X7Vd9Y6W2Fb1GLbSz/u9fj/tlipxM08N6PvN9cFwKCRf9e
+ 1pKj0B6TfO1A==
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="319642576"
+Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:29:24 -0700
+Subject: [PATCH v3 16/18] dmaengine: idxd: add ABI documentation for
+ mediated device support
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
+        bhelgaas@google.com, tglx@linutronix.de,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
+        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
+        jgg@mellanox.com, rafael@kernel.org, netanelg@mellanox.com,
+        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
+        pbonzini@redhat.com, samuel.ortiz@intel.com, mona.hossain@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
+Date:   Tue, 15 Sep 2020 16:29:24 -0700
+Message-ID: <160021256431.67751.2268297306094926564.stgit@djiang5-desk3.ch.intel.com>
+In-Reply-To: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+User-Agent: StGit/unknown-version
 MIME-Version: 1.0
-In-Reply-To: <20200915202113.GE3526428@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+From: Jing Lin <jing.lin@intel.com>
 
-On 9/15/20 3:21 PM, Andrew Lunn wrote:
-> On Tue, Sep 15, 2020 at 01:17:06PM -0500, Dan Murphy wrote:
->> Add entries for the 100base-FX full and half duplex supported modes.
->>
->> $ ethtool eth0
->>          Supported ports: [ TP    MII     FIBRE ]
->>          Supported link modes:   10baseT/Half 10baseT/Full
->>                                  100baseT/Half 100baseT/Full
->>                                  100baseFX/Half 100baseFX/Full
->>          Supported pause frame use: Symmetric Receive-only
->>          Supports auto-negotiation: No
->>          Supported FEC modes: Not reported
->>          Advertised link modes:  10baseT/Half 10baseT/Full
->>                                  100baseT/Half 100baseT/Full
->>                                  100baseFX/Half 100baseFX/Full
-> I thought this PHY could not switch between TP and Fibre. It has a
-> strap which decides? So i would expect the supported modes to be
-> either BaseT or BaseFX. Not both. Same for Advertised?
->
->         Andrew
+Add the sysfs attribute bits in ABI/stable for mediated device and guest
+support.
 
-I found that the phy-device was setting all these bits in phy_init in 
-features_init.
+Signed-off-by: Jing Lin <jing.lin@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+---
+ Documentation/ABI/stable/sysfs-driver-dma-idxd |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-My first pass was to clear all these bits as well because the PHY was 
-still advertising these modes.
-
-But you are right this PHY cannot switch without strapping.
-
-I can clear these bits.
-
-Dan
+diff --git a/Documentation/ABI/stable/sysfs-driver-dma-idxd b/Documentation/ABI/stable/sysfs-driver-dma-idxd
+index b44183880935..6bb925b55027 100644
+--- a/Documentation/ABI/stable/sysfs-driver-dma-idxd
++++ b/Documentation/ABI/stable/sysfs-driver-dma-idxd
+@@ -77,6 +77,12 @@ Contact:        dmaengine@vger.kernel.org
+ Description:    The operation capability bit mask specify the operation types
+ 		supported by the this device.
+ 
++What:           /sys/bus/dsa/devices/dsa<m>/ims_size
++Date:           Sep 8, 2020
++KernelVersion:  5.10.0
++Contact:        dmaengine@vger.kernel.org
++Description:	Number of entries in the interrupt message storage table.
++
+ What:           /sys/bus/dsa/devices/dsa<m>/state
+ Date:           Oct 25, 2019
+ KernelVersion:  5.6.0
+@@ -139,8 +145,9 @@ Date:           Oct 25, 2019
+ KernelVersion:  5.6.0
+ Contact:        dmaengine@vger.kernel.org
+ Description:    The type of this work queue, it can be "kernel" type for work
+-		queue usages in the kernel space or "user" type for work queue
+-		usages by applications in user space.
++		queue usages in the kernel space, "user" type for work queue
++		usages by applications in user space, or "mdev" type for
++		VFIO mediated devices.
+ 
+ What:           /sys/bus/dsa/devices/wq<m>.<n>/cdev_minor
+ Date:           Oct 25, 2019
 
