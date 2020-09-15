@@ -2,98 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69610269B06
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C73F269B10
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgIOB0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:26:38 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:30473 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725999AbgIOB0g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:26:36 -0400
-X-UUID: 618224d777264c818e3900a54fe92d30-20200915
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=v1LAQZT/+da26rpDxPw8oEAIptxIIsuOkmEvO0weCVA=;
-        b=saX+E0ITo7RPpXuo6nhwQ3xxkMZViPxpWSDX9sVGN1cm7YMpkYb35kLKmnkw9WU/co5FhKV/emydW0fuMfYTSCzcuqTahtCwuvy1Nn5AO/UrnGm9xff9sWAZDMW9pYMsYg7VDLG4/YPdlv5zSn8C6Ab9sjzqjPobb1vmSxfxYM0=;
-X-UUID: 618224d777264c818e3900a54fe92d30-20200915
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1807177968; Tue, 15 Sep 2020 09:26:31 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 15 Sep
- 2020 09:26:30 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Sep 2020 09:26:29 +0800
-Message-ID: <1600133066.25719.9.camel@mhfsdcap03>
-Subject: Re: [PATCH] i2c: mediatek: Fix generic definitions for bus
- frequencies
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Wolfram Sang <wsa@the-dreams.de>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Leilk Liu <leilk.liu@mediatek.com>
-Date:   Tue, 15 Sep 2020 09:24:26 +0800
-In-Reply-To: <CAHp75VeBuR4fkVk0z=+d7EonHz0h=4=eRj3Wfe8R_8T=eyHaeA@mail.gmail.com>
-References: <1599890246-21191-1-git-send-email-qii.wang@mediatek.com>
-         <CAHp75VeBuR4fkVk0z=+d7EonHz0h=4=eRj3Wfe8R_8T=eyHaeA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1726133AbgIOB1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:27:54 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:42192 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726019AbgIOB1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 21:27:51 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C077638B7FC8035A70EF;
+        Tue, 15 Sep 2020 09:27:49 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 15 Sep 2020
+ 09:27:43 +0800
+Subject: Re: [PATCH v2 0/9] clocksource: sp804: add support for Hisilicon
+ sp804 timer
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Jianguo Chen <chenjianguo3@huawei.com>
+References: <20200912114536.2910-1-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <b6bc2ed2-cf83-cca4-d599-ad4f20438349@huawei.com>
+Date:   Tue, 15 Sep 2020 09:27:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 72A8E3EE9FC676B4DD2AB151602F01D4F7A087AFF58CB94C603E5F97AE3294AF2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200912114536.2910-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA5LTE0IGF0IDE1OjQ4ICswMzAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
-DQo+IE9uIFNhdCwgU2VwIDEyLCAyMDIwIGF0IDk6MDIgQU0gPHFpaS53YW5nQG1lZGlhdGVrLmNv
-bT4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBRaWkgV2FuZyA8cWlpLndhbmdAbWVkaWF0ZWsuY29t
-Pg0KPiA+DQo+ID4gVGhlIG1hc3RlciBjb2RlIG5lZWRzIHRvIGJlaW5nIHNlbnQgd2hlbiB0aGUg
-c3BlZWQgaXMgbW9yZSB0aGFuDQo+ID4gSTJDX01BWF9GQVNUX01PREVfUExVU19GUkVRIGluc3Rl
-YWQgb2YNCj4gPiBJMkNfTUFYX0hJR0hfU1BFRURfTU9ERV9GUkVRLiBGaXggaXQuDQo+ID4NCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBRaWkgV2FuZyA8cWlpLndhbmdAbWVkaWF0ZWsuY29tPg0KPiA+IC0t
-LQ0KPiA+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jIHwgNiArKystLS0NCj4gPiAg
-MSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jIGIvZHJpdmVycy9p
-MmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiA+IGluZGV4IGVmYzE0MDQuLjBjYmRmYmUgMTAwNjQ0
-DQo+ID4gLS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiA+ICsrKyBiL2Ry
-aXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMNCj4gPiBAQCAtNjgxLDggKzY4MSw4IEBAIHN0
-YXRpYyBpbnQgbXRrX2kyY19jYWxjdWxhdGVfc3BlZWQoc3RydWN0IG10a19pMmMgKmkyYywgdW5z
-aWduZWQgaW50IGNsa19zcmMsDQo+ID4gICAgICAgICB1bnNpZ25lZCBpbnQgY250X211bDsNCj4g
-PiAgICAgICAgIGludCByZXQgPSAtRUlOVkFMOw0KPiA+DQo+ID4gLSAgICAgICBpZiAodGFyZ2V0
-X3NwZWVkID4gSTJDX01BWF9GQVNUX01PREVfUExVU19GUkVRKQ0KPiA+IC0gICAgICAgICAgICAg
-ICB0YXJnZXRfc3BlZWQgPSBJMkNfTUFYX0ZBU1RfTU9ERV9QTFVTX0ZSRVE7DQo+ID4gKyAgICAg
-ICBpZiAodGFyZ2V0X3NwZWVkID4gSTJDX01BWF9ISUdIX1NQRUVEX01PREVfRlJFUSkNCj4gPiAr
-ICAgICAgICAgICAgICAgdGFyZ2V0X3NwZWVkID0gSTJDX01BWF9ISUdIX1NQRUVEX01PREVfRlJF
-UTsNCj4gDQo+IFRoYW5rcyBmb3IgZml4aW5nIHRoaXMuIEluZGVlZCwgc29tZWhvdyBJIG1lc3Nl
-ZCB0aGVzZSB1cC4NCj4gDQo+ID4NCj4gPiAgICAgICAgIG1heF9zdGVwX2NudCA9IG10a19pMmNf
-bWF4X3N0ZXBfY250KHRhcmdldF9zcGVlZCk7DQo+ID4gICAgICAgICBiYXNlX3N0ZXBfY250ID0g
-bWF4X3N0ZXBfY250Ow0KPiA+IEBAIC03NTksNyArNzU5LDcgQEAgc3RhdGljIGludCBtdGtfaTJj
-X3NldF9zcGVlZChzdHJ1Y3QgbXRrX2kyYyAqaTJjLCB1bnNpZ25lZCBpbnQgcGFyZW50X2NsaykN
-Cj4gPiAgICAgICAgIGZvciAoY2xrX2RpdiA9IDE7IGNsa19kaXYgPD0gbWF4X2Nsa19kaXY7IGNs
-a19kaXYrKykgew0KPiA+ICAgICAgICAgICAgICAgICBjbGtfc3JjID0gcGFyZW50X2NsayAvIGNs
-a19kaXY7DQo+ID4NCj4gPiAtICAgICAgICAgICAgICAgaWYgKHRhcmdldF9zcGVlZCA+IEkyQ19N
-QVhfRkFTVF9NT0RFX0ZSRVEpIHsNCj4gPiArICAgICAgICAgICAgICAgaWYgKHRhcmdldF9zcGVl
-ZCA+IEkyQ19NQVhfRkFTVF9NT0RFX1BMVVNfRlJFUSkgew0KPiANCj4gQnV0IHRoaXMgb25lIGlz
-IG5vdCByZWxhdGVkLiBPcmlnaW5hbCBjb2RlIHVzZWQgdG8gaGF2ZQ0KPiANCj4gI2RlZmluZSBN
-QVhfRlNfTU9ERV9TUEVFRCAgICAgICAgICAgICAgNDAwMDAwDQo+IA0KPiAgICAgICAgaWYgKHRh
-cmdldF9zcGVlZCA+IE1BWF9GU19NT0RFX1NQRUVEKSB7DQo+IA0KPiBBbmQgdGhpcyBjaGFuZ2Ug
-ZG9lc24ndCBmaXggdGhlIGFib3ZlIG1lbnRpb25lZCBwcm9ibGVtLg0KPiANCj4gU28sIHBsZWFz
-ZSBzcGxpdCBpbnRvIHR3byBzZXBhcmF0ZSBjaGFuZ2VzLg0KPiANCg0Kb2ssIFRoYW5rIHlvdSBm
-b3IgeW91ciBjb21tZW50cw0KDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgLyogU2V0IG1h
-c3RlciBjb2RlIHNwZWVkIHJlZ2lzdGVyICovDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
-cmV0ID0gbXRrX2kyY19jYWxjdWxhdGVfc3BlZWQoaTJjLCBjbGtfc3JjLA0KPiA+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEkyQ19NQVhfRkFT
-VF9NT0RFX0ZSRVEsDQo+ID4gLS0NCj4gPiAxLjkuMQ0KPiANCj4gDQo+IA0KDQo=
+Hi, Daniel Lezcano, Thomas Gleixner:
+  Do you have time to review these patches?
+
+On 2020/9/12 19:45, Zhen Lei wrote:
+> v1 --> v2:
+> 1. Split the Patch 3 of v1 into three patches: Patch 3-5
+> 2. Change compatible "hisi,sp804" to "hisilicon,sp804" in Patch 7.
+> 3. Add dt-binding description of "hisilicon,sp804", Patch 9
+> 
+> Other patches are not changed.
+> 
+> 
+> v1:
+> The ARM SP804 supports a maximum of 32-bit counter, but Hisilicon extends
+> it to 64-bit. That means, the registers: TimerXload, TimerXValue and
+> TimerXBGLoad are 64bits, all other registers are the same as those in the
+> SP804. The driver code can be completely reused except that the register
+> offset is different
+> 
+> The register offset differences between ARM-SP804 and HISI-SP804 are as follows:
+> 
+> 	ARM-SP804			HISI-SP804
+> TIMER_LOAD      0x00		HISI_TIMER_LOAD         0x00
+> 				HISI_TIMER_LOAD_H       0x04
+> TIMER_VALUE     0x04		HISI_TIMER_VALUE        0x08
+> 				HISI_TIMER_VALUE_H      0x0c
+> TIMER_CTRL      0x08		HISI_TIMER_CTRL         0x10
+> TIMER_INTCLR    0x0c		HISI_TIMER_INTCLR       0x14
+> TIMER_RIS       0x10		HISI_TIMER_RIS          0x18
+> TIMER_MIS       0x14		HISI_TIMER_MIS          0x1c
+> TIMER_BGLOAD    0x18		HISI_TIMER_BGLOAD       0x20
+> 				HISI_TIMER_BGLOAD_H     0x24
+> TIMER_2_BASE    0x20		HISI_TIMER_2_BASE       0x40
+> ----------------
+> 
+> In order to make the timer-sp804 driver support both ARM-SP804 and HISI-SP804.
+> Create a new structure "sp804_clkevt" to record the calculated registers
+> address in advance, avoid judging and calculating the register address every
+> place that is used.
+> 
+> For example:
+> 	struct sp804_timer arm_sp804_timer = {
+> 		.ctrl	= TIMER_CTRL,
+> 	};
+> 
+> 	struct sp804_timer hisi_sp804_timer = {
+> 		.ctrl	= HISI_TIMER_CTRL,
+> 	};
+> 
+> 	struct sp804_clkevt clkevt;
+> 
+> In the initialization phase:
+> 	if (hisi_sp804)
+> 		clkevt.ctrl = base + hisi_sp804_timer.ctrl;
+> 	else if (arm_sp804)
+> 		clkevt.ctrl = base + arm_sp804_timer.ctrl;
+> 
+> After initialization:
+> -	writel(0, base + TIMER_CTRL);
+> +	writel(0, clkevt.ctrl);
+> ----------------
+> 
+> Additional information:
+> These patch series are the V2 of https://lore.kernel.org/patchwork/cover/681876/
+> And many of the main ideas in https://lore.kernel.org/patchwork/patch/681875/ have been considered.
+> Thanks for Daniel Lezcano's review comments.
+> 
+> Kefeng Wang (1):
+>   clocksource: sp804: cleanup clk_get_sys()
+> 
+> Zhen Lei (8):
+>   clocksource: sp804: remove unused sp804_timer_disable() and
+>     timer-sp804.h
+>   clocksource: sp804: delete the leading "__" of some functions
+>   clocksource: sp804: remove a mismatched comment
+>   clocksource: sp804: prepare for support non-standard register offset
+>   clocksource: sp804: support non-standard register offset
+>   clocksource: sp804: add support for Hisilicon sp804 timer
+>   clocksource: sp804: enable Hisilicon sp804 timer 64bit mode
+>   dt-bindings: sp804: add support for Hisilicon sp804 timer
+> 
+>  .../devicetree/bindings/timer/arm,sp804.txt   |   2 +
+>  drivers/clocksource/timer-sp.h                |  47 +++++
+>  drivers/clocksource/timer-sp804.c             | 195 ++++++++++++------
+>  include/clocksource/timer-sp804.h             |  29 ---
+>  4 files changed, 181 insertions(+), 92 deletions(-)
+>  delete mode 100644 include/clocksource/timer-sp804.h
+> 
 
