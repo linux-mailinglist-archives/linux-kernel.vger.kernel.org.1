@@ -2,93 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C563F26ABAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CCA26ABB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgIOSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
+        id S1727846AbgIOSWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727952AbgIOSNx (ORCPT
+        with ESMTP id S1727733AbgIOSPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:13:53 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D76AC06178A;
-        Tue, 15 Sep 2020 11:13:52 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id t20so3923414qtr.8;
-        Tue, 15 Sep 2020 11:13:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding:content-disposition;
-        bh=PkfGd1AFuSaun8fDUiryvY9jnrNtkMGkmE9AZRe7yos=;
-        b=IE/Rr4l5Em7F95R7NhtZd7mnz4VVkjx5jC6FNA96lRcHaLW1mxvvLeLWcKzOz6X/f8
-         Lf8Vm4b3gsFHqlBagMXtRdAlODBb25VUmfauKEwBqFFD170/Ku0aSc3t5pRPpqziJJ0D
-         FInveJxq3fhMcCeE3LVJyXXy1RcJDFZ5Hm5Q+F8M3G/Exbi7TL1SKlguUlOIc6/tgNKF
-         aomCwd8WXY0huDUvkz8PBzx2c0gdgyAocu4qIK9axHcu5onwOb52G14s49xvHI/jYf/V
-         yK+oeXBVK9B66oHnbND/ofMAIiddDr5zkzr6cpgkIxFl9/OdPYl6EccWqaGb5nOxiQ5E
-         hK0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding
-         :content-disposition;
-        bh=PkfGd1AFuSaun8fDUiryvY9jnrNtkMGkmE9AZRe7yos=;
-        b=F3+TtM1/zrSF31ZrRksyG6JAzOUOTjjSeBW2yFdyVJmc0CNtdJqvdXAy+YFx4UxMm9
-         QZ1LRZPYvG27f9VSASy9QokeIvGTqrfafDPA+V8TT0M6Fe6EXxHRSN76+jGxU9wWIRI8
-         H6pyRaZiws15zkN6xil+mIGZF4si3d0+7r4gUrcWi3ygdWLshtQ2SZXQJRTVUjifURoX
-         kDFzai9TOuq3nV62Z3CB5uXMpKQ+qjT+tQ7hWW9tEFRiVc9YR0tXdJBE1uPjlaTZQ2X0
-         pwYUTZ8UBG47+aZDtBcF3gi4v7APF2+DxxBWT9kJqNiW6YWRBlfUP+ho07P3hNKYuKvW
-         7nrQ==
-X-Gm-Message-State: AOAM533CBJSDxOOUjUVBwDiQotQIm8AohtgzLTqbHPOtHN57SFiP+WaU
-        sVl4xWMFfTQ6TG95m4QiiXd5PrRCgj0Gfg==
-X-Google-Smtp-Source: ABdhPJzrzn2PMydfT2DVw16s4CG4h17YOiXLocDodOhJHzPQxvvYoWYpJlhpzstPv+46wSqWaBYm0Q==
-X-Received: by 2002:ac8:44a7:: with SMTP id a7mr7104598qto.173.1600193631564;
-        Tue, 15 Sep 2020 11:13:51 -0700 (PDT)
-Received: from dwls-dell ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
-        by smtp.gmail.com with ESMTPSA id r64sm17485003qkf.119.2020.09.15.11.13.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 11:13:50 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:13:46 -0300
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "=?utf-8?Q?mchehab+huawei=40kernel.org?=" <mchehab+huawei@kernel.org>,
-        "=?utf-8?Q?r.verdejo=40samsung.com?=" <r.verdejo@samsung.com>,
-        "=?utf-8?Q?nicolas=40ndufresne.ca?=" <nicolas@ndufresne.ca>,
-        "=?utf-8?Q?linux-media=40vger.kernel.org?=" 
-        <linux-media@vger.kernel.org>,
-        "=?utf-8?Q?skhan=40linuxfoundation.org?=" <skhan@linuxfoundation.org>,
-        "=?utf-8?Q?linux-kernel-mentees=40lists.linuxfoundation.org?=" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
-        <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <607EC72C-E8F5-4998-87FF-EABB1FC717EC@getmailspring.com>
-In-Reply-To: <CAMuHMdVfoQ-vW3VeO8vDVALNREBV1afaSnwnc0jnkoXmvw6xhQ@mail.gmail.com>
-References: <CAMuHMdVfoQ-vW3VeO8vDVALNREBV1afaSnwnc0jnkoXmvw6xhQ@mail.gmail.com>
-Subject: Re: [v10 3/4] media: vidtv: add a bridge driver
-X-Mailer: Mailspring
+        Tue, 15 Sep 2020 14:15:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E1AC06178A;
+        Tue, 15 Sep 2020 11:15:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eXN7kFAR+gEpJNTnaqlhtCgmixCtDEYWogMlLi09BOM=; b=g3b3ifw6Kcqd0noxwqMen2vSMe
+        GaeV+rwhGta+j00CbRGZ2ThYXW7YmoKrXYSxCWGN5xwbcs9+0r02yI6vTLiEtiDIZZgc2+MqYRH6C
+        MIhkSnVLyMtoG6kPM0lt72jNvlIOvb8wKBeTp/x65OyrO3UvheGhvlhvHoyaSn+yqsUfpVV3CTseW
+        r/+Zt9EBkx4Q9FSU0TlVr+roYq1e/CgCgLInKsHmRZuO4QX7Xlz6UhUNkICF8ycSi4Lxg6C01VJqg
+        NZTH7buqYS/nojHG42M6l71Z25z7F9ahPsBvn+Hb9GKG/2welJsm4xllPkGvGvEQJG7g17xWDDfQi
+        PFiEJIJA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIFUI-0004Cf-71; Tue, 15 Sep 2020 18:15:30 +0000
+Date:   Tue, 15 Sep 2020 19:15:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de, almasrymina@google.com,
+        David Rientjes <rientjes@google.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [External] Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap
+ pages of hugetlb page
+Message-ID: <20200915181530.GL5449@casper.infradead.org>
+References: <20200915125947.26204-1-songmuchun@bytedance.com>
+ <20200915143241.GH5449@casper.infradead.org>
+ <CAMZfGtW0PqU6SLihLABA8rU+FuBqm8NksDW=EkLXy1RZfYeDGA@mail.gmail.com>
+ <20200915154213.GI5449@casper.infradead.org>
+ <CAMZfGtVTjopGgFv4xCDcF1+iGeRva_ypH4EQWcDUFBdsfqhQbA@mail.gmail.com>
+ <20200915173948.GK5449@casper.infradead.org>
+ <CAMZfGtW3S8kGJwff6oH14QWPXKTuQEAGdYwcLRUZxuJ7q8s7sA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAMZfGtW3S8kGJwff6oH14QWPXKTuQEAGdYwcLRUZxuJ7q8s7sA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there Geert!
+On Wed, Sep 16, 2020 at 02:03:15AM +0800, Muchun Song wrote:
+> On Wed, Sep 16, 2020 at 1:39 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Wed, Sep 16, 2020 at 01:32:46AM +0800, Muchun Song wrote:
+> > > On Tue, Sep 15, 2020 at 11:42 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > >
+> > > > On Tue, Sep 15, 2020 at 11:28:01PM +0800, Muchun Song wrote:
+> > > > > On Tue, Sep 15, 2020 at 10:32 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > >
+> > > > > > On Tue, Sep 15, 2020 at 08:59:23PM +0800, Muchun Song wrote:
+> > > > > > > This patch series will free some vmemmap pages(struct page structures)
+> > > > > > > associated with each hugetlbpage when preallocated to save memory.
+> > > > > >
+> > > > > > It would be lovely to be able to do this.  Unfortunately, it's completely
+> > > > > > impossible right now.  Consider, for example, get_user_pages() called
+> > > > > > on the fifth page of a hugetlb page.
+> > > > >
+> > > > > Can you elaborate on the problem? Thanks so much.
+> > > >
+> > > > OK, let's say you want to do a 2kB I/O to offset 0x5000 of a 2MB page
+> > > > on a 4kB base page system.  Today, that results in a bio_vec containing
+> > > > {head+5, 0, 0x800}.  Then we call page_to_phys() on that (head+5) struct
+> > > > page to get the physical address of the I/O, and we turn it into a struct
+> > > > scatterlist, which similarly has a reference to the page (head+5).
+> > >
+> > > As I know, in this case, the get_user_pages() will get a reference
+> > > to the head page (head+0) before returning such that the hugetlb
+> > > page can not be freed. Although get_user_pages() returns the
+> > > page (head+5) and the scatterlist has a reference to the page
+> > > (head+5), this patch series can handle this situation. I can not
+> > > figure out where the problem is. What I missed? Thanks.
+> >
+> > You freed pages 4-511 from the vmemmap so they could be used for
+> > something else.  Page 5 isn't there any more.  So if you return head+5,
+> > then when we complete the I/O, we'll look for the compound_head() of
+> > head+5 and we won't find head.
+> 
+> We do not free pages 4-511 from the vmemmap. Actually, we only
+> free pages 128-511 from the vmemmap.
+> 
+> The 512 struct pages occupy 8 pages of physical memory. We only
+> free 6 physical page frames to the buddy. But we will create a new
+> mapping just like below. The virtual address of the freed pages will
+> remap to the second page frame. So the second page frame is
+> reused.
 
-Sorry for breaking stuff :)
+Oh!  I get what you're doing now.
 
-Anyways I just sent in a fix. I decided to drop that entire function
-because as I said, it needs a do-over and that can be done later at a
-slower pace.
+For the vmemmap case, you free the last N-2 physical pages but map the
+second physical page multiple times.  So for the 512 pages case, we
+see pages:
 
-I'm not sure on how to go about testing this properly. I tried 'make
-ARCH=x86' for example and it built fine, so I assume this is working?
+abcdefgh | ijklmnop | ijklmnop | ijklmnop | ijklmnop | ijklmnop | ijklmnop ...
 
-Otherwise let me know.
+Huh.  I think that might work, except for PageHWPoison.  I'll go back
+to your patch series and look at that some more.
 
--- thanks
--- Daniel
