@@ -2,178 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F11C26B7EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C19526B7E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgIPAcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:32:35 -0400
-Received: from mga06.intel.com ([134.134.136.31]:12686 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgIONnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:43:52 -0400
-IronPort-SDR: 5VUYrtk3rIMvv4isXiWS5/yKWxMoKTGl521tkVHPEbbfSmhYreBd0SxeHlIPa/s2kQHs2jKj4b
- mTrXyr8zaxHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="220812028"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="220812028"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 06:43:32 -0700
-IronPort-SDR: Z3Fv20sJmew1RWHSqC5FzzVcov16F7xeFZ+n7CyLRceIWwEA9CG+uC5vSOL+36RFfE67OB38cK
- t1t7G8Uda+CA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="306627993"
-Received: from lkp-server01.sh.intel.com (HELO 96654786cb26) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 15 Sep 2020 06:43:30 -0700
-Received: from kbuild by 96654786cb26 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kIBF4-00008g-4n; Tue, 15 Sep 2020 13:43:30 +0000
-Date:   Tue, 15 Sep 2020 21:42:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/seves] BUILD SUCCESS WITH WARNING
- e6eb15c9ba3165698488ae5c34920eea20eaa38e
-Message-ID: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726737AbgIPAbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgIONox (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:44:53 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23620C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:43:41 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id o8so3275732otl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B9DG7AFGOCi4fDIA/pebWsaF98Vfs0PhS8LEaercJUM=;
+        b=owBOhW6EC7dR5wsl+J+VKIlsez0gsh9VM0JvmxWSZxWow81fml9LtpKBl4uX3tavXV
+         lElVW/PinQeJb5cLZZBBk/hdlHr1yq52Wkrb0rFD4RVn9+JEFDqKJU8Y7VZ5bhPUPNdA
+         myx4gU3MvUS5aCqwKxtuOgU3CQJAApWfYy5D9KWp7VZd5rokkIOL6Q9OrP9I8YmnI7Mv
+         2PyW4S3jl2HsHVAiOLxJfZXZRs7z5AzcfxmmvFnMN//9OXoO3FQ/RI2Z3H0B74PlaAfI
+         RpQegVQmIbVCJjxHPj8nkKUT7KsN2AiACJCN1d6eHiY+GRQkr0sp8YN6uRo0yzcY7IdA
+         ICfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B9DG7AFGOCi4fDIA/pebWsaF98Vfs0PhS8LEaercJUM=;
+        b=DSOa04jVLYzaH734a1Y03C4gxEEpBqcNAUPFnYxy9J8QDLSLHzjfqxrZoFc73+iQXs
+         AoqIRQ0Ucex2ct6fNV78isP81ck4QdeZ82I0wMxG0aLPD6COdr6p90FhXavOwoG3myRl
+         UvpysEcflaq8RBNNBPv0DWkQJ6C2OdHsBoskZAwSEP7yeP1MwVCDA5kweW2VExBBZeXD
+         WDvUOPlENB1Zr1WhVniSdwSA/NXc/BRZsUklS7JnOGe/7WkRA26G0R9Mi3jhUTHLPX1+
+         +fJ2uI9XjcSdklACF3QBUbbZoXIZZBMZUOivgMBZx3KxMdUZKLP3+USoBhBbQWMpWy2e
+         CivA==
+X-Gm-Message-State: AOAM530dU9wB86MG91/NE1UmepeEloLhhocF30qChEy/FuvOiQXVl/G+
+        OsuH6zp1xxGjDAbbWjgIE9LFXw==
+X-Google-Smtp-Source: ABdhPJwGr+GRet1pRxe3nZ/L2fOWfupvdFYKrPB2ph9ZOkRDUTpxsjgx1wdTPacAmCm2yl+UzZeslA==
+X-Received: by 2002:a9d:7b48:: with SMTP id f8mr13079469oto.297.1600177420799;
+        Tue, 15 Sep 2020 06:43:40 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
+        by smtp.gmail.com with ESMTPSA id w19sm5635176otq.70.2020.09.15.06.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 06:43:40 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 08:43:35 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     nguyenb@codeaurora.org
+Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] scsi: dt-bindings: ufs: Add vcc-voltage-level for
+ UFS
+Message-ID: <20200915134335.GE670377@yoga>
+References: <cover.1598939393.git.nguyenb@codeaurora.org>
+ <0a9d395dc38433501f9652a9236856d0ac840b77.1598939393.git.nguyenb@codeaurora.org>
+ <20200915044154.GB670377@yoga>
+ <748d238a3d9e53834a498c6f37f9f3c9@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <748d238a3d9e53834a498c6f37f9f3c9@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  x86/seves
-branch HEAD: e6eb15c9ba3165698488ae5c34920eea20eaa38e  KVM: nSVM: Avoid freeing uninitialized pointers in svm_set_nested_state()
+On Tue 15 Sep 03:14 CDT 2020, nguyenb@codeaurora.org wrote:
 
-Warning in current branch:
+> On 2020-09-14 21:41, Bjorn Andersson wrote:
+> > On Tue 01 Sep 01:00 CDT 2020, Bao D. Nguyen wrote:
+> > 
+> > > UFS's specifications supports a range of Vcc operating
+> > > voltage levels. Add documentation for the UFS's Vcc voltage
+> > > levels setting.
+> > > 
+> > > Signed-off-by: Can Guo <cang@codeaurora.org>
+> > > Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> > > Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> > > b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> > > index 415ccdd..7257b32 100644
+> > > --- a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> > > +++ b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> > > @@ -23,6 +23,8 @@ Optional properties:
+> > >                            with "phys" attribute, provides phandle
+> > > to UFS PHY node
+> > >  - vdd-hba-supply        : phandle to UFS host controller supply
+> > > regulator node
+> > >  - vcc-supply            : phandle to VCC supply regulator node
+> > > +- vcc-voltage-level     : specifies voltage levels for VCC supply.
+> > > +                          Should be specified in pairs (min, max),
+> > > units uV.
+> > 
+> > What exactly are these pairs representing?
+> The pair is the min and max Vcc voltage request to the PMIC chip.
+> As a result, the regulator output voltage would only be in this range.
+> 
 
-arch/x86/kernel/sev-es.o: warning: objtool: ist_exc_vmm_communication()+0x12: unreachable instruction
+If you have static min/max voltage constraints for a device on a
+particular board the right way to handle this is to adjust the board's
+regulator-min-microvolt and regulator-max-microvolt accordingly - and
+not call regulator_set_voltage() from the river at all.
 
-Warning ids grouped by kconfigs:
+In other words, you shouldn't add this new property to describe
+something already described in the node vcc-supply points to.
 
-clang_recent_errors
-`-- x86_64-randconfig-r001-20200913
-    `-- arch-x86-kernel-sev-es.o:warning:objtool:ist_exc_vmm_communication():unreachable-instruction
+Regards,
+Bjorn
 
-elapsed time: 1267m
-
-configs tested: 106
-configs skipped: 2
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                          hp300_defconfig
-sh                          sdk7786_defconfig
-powerpc                          g5_defconfig
-arm                           tegra_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                        icon_defconfig
-sh                          r7780mp_defconfig
-powerpc                    mvme5100_defconfig
-um                             i386_defconfig
-arc                            hsdk_defconfig
-powerpc                    gamecube_defconfig
-powerpc                 mpc836x_mds_defconfig
-arm                         shannon_defconfig
-powerpc                      pcm030_defconfig
-parisc                generic-64bit_defconfig
-sh                        dreamcast_defconfig
-arm                            mps2_defconfig
-arm                       aspeed_g4_defconfig
-arm                            pleb_defconfig
-ia64                             allyesconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-arm                       aspeed_g5_defconfig
-sparc                       sparc64_defconfig
-powerpc                     tqm8560_defconfig
-riscv                            allmodconfig
-arm                        spear3xx_defconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                        m5307c3_defconfig
-c6x                              alldefconfig
-arm                        trizeps4_defconfig
-arm                        multi_v7_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-arc                              allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20200914
-x86_64               randconfig-a006-20200914
-x86_64               randconfig-a003-20200914
-x86_64               randconfig-a002-20200914
-x86_64               randconfig-a001-20200914
-x86_64               randconfig-a005-20200914
-i386                 randconfig-a004-20200914
-i386                 randconfig-a006-20200914
-i386                 randconfig-a001-20200914
-i386                 randconfig-a003-20200914
-i386                 randconfig-a002-20200914
-i386                 randconfig-a005-20200914
-i386                 randconfig-a015-20200914
-i386                 randconfig-a014-20200914
-i386                 randconfig-a011-20200914
-i386                 randconfig-a013-20200914
-i386                 randconfig-a016-20200914
-i386                 randconfig-a012-20200914
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20200913
-x86_64               randconfig-a004-20200913
-x86_64               randconfig-a003-20200913
-x86_64               randconfig-a002-20200913
-x86_64               randconfig-a005-20200913
-x86_64               randconfig-a001-20200913
-x86_64               randconfig-a014-20200914
-x86_64               randconfig-a011-20200914
-x86_64               randconfig-a016-20200914
-x86_64               randconfig-a012-20200914
-x86_64               randconfig-a015-20200914
-x86_64               randconfig-a013-20200914
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > 
+> > Is this supposed to be 3 pairs of (min,max) for vcc, vcc and vccq2 to be
+> > passed into a regulator_set_voltage() for each regulator?
+> Yes, that's right. I should include the other power supplies in this change
+> as well.
+> > 
+> > Or are these some sort of "operating points" for the vcc-supply?
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > >  - vccq-supply           : phandle to VCCQ supply regulator node
+> > >  - vccq2-supply          : phandle to VCCQ2 supply regulator node
+> > >  - vcc-supply-1p8        : For embedded UFS devices, valid VCC range
+> > > is 1.7-1.95V
+> > > --
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> > > Forum,
+> > > a Linux Foundation Collaborative Project
+> > > 
