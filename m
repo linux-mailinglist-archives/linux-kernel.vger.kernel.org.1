@@ -2,361 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F6E26AB18
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F331426AB1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbgIORtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:49:12 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:46779 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbgIORbI (ORCPT
+        id S1727801AbgIORuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:50:03 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19308 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727758AbgIORbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:31:08 -0400
-Received: by mail-io1-f66.google.com with SMTP id g7so4942291iov.13;
-        Tue, 15 Sep 2020 10:31:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2me8Sk20DKG9OBMVJhmDkF6GKPWBfCEhKi/ChgbtDhA=;
-        b=P5e02evvs+CdjbgH8KUTrVDVzaNnanNZmjSemZSAWQU1Ez1gQqCOYw5EFDxZAZImYC
-         dd3unybCyIPIbCLCHR0cKTxTA2kUH1vdU1UA+0VFs78AswPq1LZGnRzlYjqqS+JZRN2B
-         2+4h3LG3LrJJlF8frSjRre7mhBsUu3RnFGsl6OE7gHFBhWmw2GxJPPzCAWF2hmekqLU4
-         1b3SQDY/f6eQwP8GdOKi+dCn6RwywEk87X9361f/A6Svp6J5EUHIrQDZMM+8DWfDgGeo
-         S4o59gM2cVqth+01ZVEQWVApjsopwbP5M8ejrYz4ki22zq/O71d5taqrNO9oJQmqyrbv
-         bF9g==
-X-Gm-Message-State: AOAM53048PIOXHUlABQopDkwbd7TVPryvy3kHTE4JPe+nZcWJX+vQhET
-        nx1P4UzUtdWv3vj1CF6z/A==
-X-Google-Smtp-Source: ABdhPJz+kEke6dlOHEDrD8eDVwsMil2jdFSu8qRnpU4nlE1pv9/RepGSKH9WcVMCuvSmtzk77+JCfw==
-X-Received: by 2002:a05:6638:ec5:: with SMTP id q5mr18815399jas.13.1600191066394;
-        Tue, 15 Sep 2020 10:31:06 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id s1sm3334523iln.22.2020.09.15.10.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 10:31:03 -0700 (PDT)
-Received: (nullmailer pid 2172175 invoked by uid 1000);
-        Tue, 15 Sep 2020 17:31:01 -0000
-Date:   Tue, 15 Sep 2020 11:31:01 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hongtao Wu <wuht06@gmail.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hongtao Wu <billows.wu@unisoc.com>
-Subject: Re: [PATCH v3 2/2] PCI: sprd: Add support for Unisoc SoCs' PCIe
- controller
-Message-ID: <20200915173101.GB2146778@bogus>
-References: <1599644912-29245-1-git-send-email-wuht06@gmail.com>
- <1599644912-29245-3-git-send-email-wuht06@gmail.com>
+        Tue, 15 Sep 2020 13:31:40 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f60f9e90000>; Tue, 15 Sep 2020 10:29:13 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 15 Sep 2020 10:31:34 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 15 Sep 2020 10:31:34 -0700
+Received: from [10.2.52.22] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
+ 2020 17:31:28 +0000
+Subject: Re: [PATCH v2] mm/gup: fix gup_fast with dynamic page table folding
+To:     Vasily Gorbik <gor@linux.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Andrey Ryabinin" <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Christian Borntraeger" <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+References: <20200911200511.GC1221970@ziepe.ca>
+ <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <9daa9203-d164-ec78-8a8d-30b8b22cb1da@nvidia.com>
+Date:   Tue, 15 Sep 2020 10:31:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599644912-29245-3-git-send-email-wuht06@gmail.com>
+In-Reply-To: <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600190953; bh=0LuXBF+QuyfRd7vsh816EU5TQVILtq5WYJSSBYonuEo=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=W/i1+jdP/N55Xza2MEm/gNz+nYX0bLMaq7K4jpYOydN5L+jzX14UrU6QLlOAou+x4
+         5llBNT9lKJ5kA0wXGCkfISrtAVC77+n+sNZvHsqoSgJnBEAxkiaKKljqwFvVixVgt5
+         kS73XbEMXl9BfBEOqZvSjLoxf/8kpnSdyvYceULQC6Z6HqzD61F8GqcBS1pTkJoByO
+         +4jmgHZSu4rRE5U2vRhPciij3I+cXnK0og81egRmf4sgJVhePYSfOwVDDhzMufBwCA
+         crQDAaOYbstfztYG1D3h6XvP7ewjVrlMuhoWQa7v0odeBQEwLVADbGDE2bQJEFOJAC
+         ttS6TCVAHFe/Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 05:48:32PM +0800, Hongtao Wu wrote:
-> From: Hongtao Wu <billows.wu@unisoc.com>
+On 9/11/20 1:36 PM, Vasily Gorbik wrote:
+> Currently to make sure that every page table entry is read just once
+> gup_fast walks perform READ_ONCE and pass pXd value down to the next
+> gup_pXd_range function by value e.g.:
 > 
-> This series adds PCIe controller driver for Unisoc SoCs.
-> This controller is based on DesignWare PCIe IP.
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                           unsigned int flags, struct page **pages, int *nr)
+> ...
+>          pudp = pud_offset(&p4d, addr);
 > 
-> Signed-off-by: Hongtao Wu <billows.wu@unisoc.com>
+> This function passes a reference on that local value copy to pXd_offset,
+> and might get the very same pointer in return. This happens when the
+> level is folded (on most arches), and that pointer should not be iterated.
+> 
+> On s390 due to the fact that each task might have different 5,4 or
+> 3-level address translation and hence different levels folded the logic
+> is more complex and non-iteratable pointer to a local copy leads to
+> severe problems.
+> 
+> Here is an example of what happens with gup_fast on s390, for a task
+> with 3-levels paging, crossing a 2 GB pud boundary:
+> 
+> // addr = 0x1007ffff000, end = 0x10080001000
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                           unsigned int flags, struct page **pages, int *nr)
+> {
+>          unsigned long next;
+>          pud_t *pudp;
+> 
+>          // pud_offset returns &p4d itself (a pointer to a value on stack)
+>          pudp = pud_offset(&p4d, addr);
+>          do {
+>                  // on second iteratation reading "random" stack value
+>                  pud_t pud = READ_ONCE(*pudp);
+> 
+>                  // next = 0x10080000000, due to PUD_SIZE/MASK != PGDIR_SIZE/MASK on s390
+>                  next = pud_addr_end(addr, end);
+>                  ...
+>          } while (pudp++, addr = next, addr != end); // pudp++ iterating over stack
+> 
+>          return 1;
+> }
+> 
+> This happens since s390 moved to common gup code with
+> commit d1874a0c2805 ("s390/mm: make the pxd_offset functions more robust")
+> and commit 1a42010cdc26 ("s390/mm: convert to the generic
+> get_user_pages_fast code"). s390 tried to mimic static level folding by
+> changing pXd_offset primitives to always calculate top level page table
+> offset in pgd_offset and just return the value passed when pXd_offset
+> has to act as folded.
+> 
+> What is crucial for gup_fast and what has been overlooked is
+> that PxD_SIZE/MASK and thus pXd_addr_end should also change
+> correspondingly. And the latter is not possible with dynamic folding.
+> 
+> To fix the issue in addition to pXd values pass original
+> pXdp pointers down to gup_pXd_range functions. And introduce
+> pXd_offset_lockless helpers, which take an additional pXd
+> entry value parameter. This has already been discussed in
+> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
+> 
+> Cc: <stable@vger.kernel.org> # 5.2+
+> Fixes: 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast code")
+> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 > ---
->  drivers/pci/controller/dwc/Kconfig     |  13 ++
->  drivers/pci/controller/dwc/Makefile    |   1 +
->  drivers/pci/controller/dwc/pcie-sprd.c | 231 +++++++++++++++++++++++++++++++++
->  3 files changed, 245 insertions(+)
->  create mode 100644 drivers/pci/controller/dwc/pcie-sprd.c
+
+Looks cleaner than I'd dared hope for. :)
+
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+> v2: added brackets &pgd -> &(pgd)
 > 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index 044a376..0553010 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -311,4 +311,17 @@ config PCIE_AL
->  	  required only for DT-based platforms. ACPI platforms with the
->  	  Annapurna Labs PCIe controller don't need to enable this.
+>   arch/s390/include/asm/pgtable.h | 42 +++++++++++++++++++++++----------
+>   include/linux/pgtable.h         | 10 ++++++++
+>   mm/gup.c                        | 18 +++++++-------
+>   3 files changed, 49 insertions(+), 21 deletions(-)
 > 
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index 7eb01a5459cd..b55561cc8786 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -1260,26 +1260,44 @@ static inline pgd_t *pgd_offset_raw(pgd_t *pgd, unsigned long address)
+>   
+>   #define pgd_offset(mm, address) pgd_offset_raw(READ_ONCE((mm)->pgd), address)
+>   
+> -static inline p4d_t *p4d_offset(pgd_t *pgd, unsigned long address)
+> +static inline p4d_t *p4d_offset_lockless(pgd_t *pgdp, pgd_t pgd, unsigned long address)
+>   {
+> -	if ((pgd_val(*pgd) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R1)
+> -		return (p4d_t *) pgd_deref(*pgd) + p4d_index(address);
+> -	return (p4d_t *) pgd;
+> +	if ((pgd_val(pgd) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R1)
+> +		return (p4d_t *) pgd_deref(pgd) + p4d_index(address);
+> +	return (p4d_t *) pgdp;
+>   }
+> +#define p4d_offset_lockless p4d_offset_lockless
+>   
+> -static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
+> +static inline p4d_t *p4d_offset(pgd_t *pgdp, unsigned long address)
+>   {
+> -	if ((p4d_val(*p4d) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R2)
+> -		return (pud_t *) p4d_deref(*p4d) + pud_index(address);
+> -	return (pud_t *) p4d;
+> +	return p4d_offset_lockless(pgdp, *pgdp, address);
+> +}
 > +
-> +config PCIE_SPRD
-> +	tristate "Unisoc PCIe controller - Host Mode"
-> +	depends on ARCH_SPRD || COMPILE_TEST
-> +	depends on PCI_MSI_IRQ_DOMAIN
-> +	select PCIE_DW_HOST
-> +	help
-> +	  Unisoc PCIe controller uses the DesignWare core. It can be configured
-> +	  as an Endpoint (EP) or a Root complex (RC). In order to enable host
-> +	  mode (the controller works as RC), PCIE_SPRD must be selected.
-> +	  Say Y or M here if you want to PCIe RC controller support on Unisoc
-> +	  SoCs.
+> +static inline pud_t *pud_offset_lockless(p4d_t *p4dp, p4d_t p4d, unsigned long address)
+> +{
+> +	if ((p4d_val(p4d) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R2)
+> +		return (pud_t *) p4d_deref(p4d) + pud_index(address);
+> +	return (pud_t *) p4dp;
+> +}
+> +#define pud_offset_lockless pud_offset_lockless
 > +
->  endmenu
-> diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-> index a751553..eb546e9 100644
-> --- a/drivers/pci/controller/dwc/Makefile
-> +++ b/drivers/pci/controller/dwc/Makefile
-> @@ -20,6 +20,7 @@ obj-$(CONFIG_PCI_MESON) += pci-meson.o
->  obj-$(CONFIG_PCIE_TEGRA194) += pcie-tegra194.o
->  obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
->  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
-> +obj-$(CONFIG_PCIE_SPRD) += pcie-sprd.o
+> +static inline pud_t *pud_offset(p4d_t *p4dp, unsigned long address)
+> +{
+> +	return pud_offset_lockless(p4dp, *p4dp, address);
+>   }
+>   #define pud_offset pud_offset
+>   
+> -static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
+> +static inline pmd_t *pmd_offset_lockless(pud_t *pudp, pud_t pud, unsigned long address)
+> +{
+> +	if ((pud_val(pud) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R3)
+> +		return (pmd_t *) pud_deref(pud) + pmd_index(address);
+> +	return (pmd_t *) pudp;
+> +}
+> +#define pmd_offset_lockless pmd_offset_lockless
+> +
+> +static inline pmd_t *pmd_offset(pud_t *pudp, unsigned long address)
+>   {
+> -	if ((pud_val(*pud) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R3)
+> -		return (pmd_t *) pud_deref(*pud) + pmd_index(address);
+> -	return (pmd_t *) pud;
+> +	return pmd_offset_lockless(pudp, *pudp, address);
+>   }
+>   #define pmd_offset pmd_offset
+>   
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index e8cbc2e795d5..90654cb63e9e 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1427,6 +1427,16 @@ typedef unsigned int pgtbl_mod_mask;
+>   #define mm_pmd_folded(mm)	__is_defined(__PAGETABLE_PMD_FOLDED)
+>   #endif
+>   
+> +#ifndef p4d_offset_lockless
+> +#define p4d_offset_lockless(pgdp, pgd, address) p4d_offset(&(pgd), address)
+> +#endif
+> +#ifndef pud_offset_lockless
+> +#define pud_offset_lockless(p4dp, p4d, address) pud_offset(&(p4d), address)
+> +#endif
+> +#ifndef pmd_offset_lockless
+> +#define pmd_offset_lockless(pudp, pud, address) pmd_offset(&(pud), address)
+> +#endif
+> +
+>   /*
+>    * p?d_leaf() - true if this entry is a final mapping to a physical address.
+>    * This differs from p?d_huge() by the fact that they are always available (if
+> diff --git a/mm/gup.c b/mm/gup.c
+> index e5739a1974d5..578bf5bd8bf8 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2485,13 +2485,13 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
+>   	return 1;
+>   }
+>   
+> -static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
+> +static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned long end,
+>   		unsigned int flags, struct page **pages, int *nr)
+>   {
+>   	unsigned long next;
+>   	pmd_t *pmdp;
+>   
+> -	pmdp = pmd_offset(&pud, addr);
+> +	pmdp = pmd_offset_lockless(pudp, pud, addr);
+>   	do {
+>   		pmd_t pmd = READ_ONCE(*pmdp);
+>   
+> @@ -2528,13 +2528,13 @@ static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
+>   	return 1;
+>   }
+>   
+> -static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+> +static int gup_pud_range(p4d_t *p4dp, p4d_t p4d, unsigned long addr, unsigned long end,
+>   			 unsigned int flags, struct page **pages, int *nr)
+>   {
+>   	unsigned long next;
+>   	pud_t *pudp;
+>   
+> -	pudp = pud_offset(&p4d, addr);
+> +	pudp = pud_offset_lockless(p4dp, p4d, addr);
+>   	do {
+>   		pud_t pud = READ_ONCE(*pudp);
+>   
+> @@ -2549,20 +2549,20 @@ static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>   			if (!gup_huge_pd(__hugepd(pud_val(pud)), addr,
+>   					 PUD_SHIFT, next, flags, pages, nr))
+>   				return 0;
+> -		} else if (!gup_pmd_range(pud, addr, next, flags, pages, nr))
+> +		} else if (!gup_pmd_range(pudp, pud, addr, next, flags, pages, nr))
+>   			return 0;
+>   	} while (pudp++, addr = next, addr != end);
+>   
+>   	return 1;
+>   }
+>   
+> -static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
+> +static int gup_p4d_range(pgd_t *pgdp, pgd_t pgd, unsigned long addr, unsigned long end,
+>   			 unsigned int flags, struct page **pages, int *nr)
+>   {
+>   	unsigned long next;
+>   	p4d_t *p4dp;
+>   
+> -	p4dp = p4d_offset(&pgd, addr);
+> +	p4dp = p4d_offset_lockless(pgdp, pgd, addr);
+>   	do {
+>   		p4d_t p4d = READ_ONCE(*p4dp);
+>   
+> @@ -2574,7 +2574,7 @@ static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
+>   			if (!gup_huge_pd(__hugepd(p4d_val(p4d)), addr,
+>   					 P4D_SHIFT, next, flags, pages, nr))
+>   				return 0;
+> -		} else if (!gup_pud_range(p4d, addr, next, flags, pages, nr))
+> +		} else if (!gup_pud_range(p4dp, p4d, addr, next, flags, pages, nr))
+>   			return 0;
+>   	} while (p4dp++, addr = next, addr != end);
+>   
+> @@ -2602,7 +2602,7 @@ static void gup_pgd_range(unsigned long addr, unsigned long end,
+>   			if (!gup_huge_pd(__hugepd(pgd_val(pgd)), addr,
+>   					 PGDIR_SHIFT, next, flags, pages, nr))
+>   				return;
+> -		} else if (!gup_p4d_range(pgd, addr, next, flags, pages, nr))
+> +		} else if (!gup_p4d_range(pgdp, pgd, addr, next, flags, pages, nr))
+>   			return;
+>   	} while (pgdp++, addr = next, addr != end);
+>   }
 > 
->  # The following drivers are for devices that use the generic ACPI
->  # pci_root.c driver but don't support standard ECAM config access.
-> diff --git a/drivers/pci/controller/dwc/pcie-sprd.c b/drivers/pci/controller/dwc/pcie-sprd.c
-> new file mode 100644
-> index 0000000..cec4f34
-> --- /dev/null
-> +++ b/drivers/pci/controller/dwc/pcie-sprd.c
-> @@ -0,0 +1,231 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * PCIe host controller driver for Unisoc SoCs
-> + *
-> + * Copyright (C) 2020 Unisoc, Inc.
-> + *
-> + * Author: Hongtao Wu <Billows.Wu@unisoc.com>
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +#include <linux/regmap.h>
-> +
-> +#include "pcie-designware.h"
-> +
-> +#define NUM_OF_ARGS 5
-> +
-> +struct sprd_pcie {
-> +	struct dw_pcie pci;
-> +};
-> +
-> +static int sprd_pcie_syscon_setting(struct platform_device *pdev, char *env)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	int i, count, err;
-> +	u32 type, delay, reg, mask, val, tmp_val;
-> +	struct of_phandle_args out_args;
-> +	struct regmap *iomap;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	if (!of_find_property(np, env, NULL)) {
-> +		dev_info(dev, "There isn't property %s in dts\n", env);
-> +		return 0;
-> +	}
-> +
-> +	count = of_property_count_elems_of_size(np, env,
-> +					(NUM_OF_ARGS + 1) * sizeof(u32));
-> +	dev_info(dev, "Property (%s) reg count is %d :\n", env, count);
-> +
-> +	for (i = 0; i < count; i++) {
-> +		err = of_parse_phandle_with_fixed_args(np, env, NUM_OF_ARGS,
-> +						       i, &out_args);
-> +		if (err < 0)
-> +			return err;
-> +
-> +		type = out_args.args[0];
-> +		delay = out_args.args[1];
-> +		reg = out_args.args[2];
-> +		mask = out_args.args[3];
-> +		val = out_args.args[4];
-> +
-> +		iomap = syscon_node_to_regmap(out_args.np);
-> +
-> +		switch (type) {
-> +		case 0:
-> +			regmap_update_bits(iomap, reg, mask, val);
-> +			break;
-> +
-> +		case 1:
-> +			regmap_read(iomap, reg, &tmp_val);
-> +			tmp_val &= (~mask);
-> +			tmp_val |= (val & mask);
-> +			regmap_write(iomap, reg, tmp_val);
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +
-> +		if (delay)
-> +			usleep_range(delay, delay + 10);
-> +
-> +		regmap_read(iomap, reg, &tmp_val);
-> +		dev_dbg(dev,
-> +			"%2d:reg[0x%8x] mask[0x%8x] val[0x%8x] result[0x%8x]\n",
-> +			i, reg, mask, val, tmp_val);
-> +	}
-> +
-> +	return i;
-> +}
-> +
-> +static int sprd_pcie_perst_assert(struct platform_device *pdev)
-> +{
-> +	return sprd_pcie_syscon_setting(pdev, "sprd,pcie-perst-assert");
 
-Not documented. This should probably use the reset binding.
-
-> +}
-> +
-> +static int sprd_pcie_perst_deassert(struct platform_device *pdev)
-> +{
-> +	return sprd_pcie_syscon_setting(pdev, "sprd,pcie-perst-deassert");
-> +}
-> +
-> +static int sprd_pcie_power_on(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	ret = sprd_pcie_syscon_setting(pdev, "sprd,pcie-poweron-syscons");
-> +	if (ret < 0)
-> +		dev_err(dev,
-> +			"failed to set pcie poweroff syscons, return %d\n",
-> +			ret);
-> +
-> +	sprd_pcie_perst_deassert(pdev);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sprd_pcie_power_off(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	sprd_pcie_perst_assert(pdev);
-> +
-> +	ret = sprd_pcie_syscon_setting(pdev, "sprd,pcie-poweroff-syscons");
-> +	if (ret < 0)
-> +		dev_err(dev,
-> +			"failed to set pcie poweroff syscons, return %d\n",
-> +			ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sprd_pcie_host_init(struct pcie_port *pp)
-> +{
-> +	int ret;
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +
-> +	dw_pcie_setup_rc(pp);
-> +	dw_pcie_msi_init(pp);
-> +
-> +	ret = dw_pcie_wait_for_link(pci);
-> +	if (ret)
-> +		dev_err(pci->dev, "pcie ep may has not been powered on yet\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct dw_pcie_host_ops sprd_pcie_host_ops = {
-> +	.host_init = sprd_pcie_host_init,
-> +};
-> +
-> +static int sprd_add_pcie_port(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct sprd_pcie *ctrl = platform_get_drvdata(pdev);
-> +	struct dw_pcie *pci = &ctrl->pci;
-> +	struct pcie_port *pp = &pci->pp;
-> +
-> +	pci->dbi_base = devm_platform_ioremap_resource_byname(pdev, "dbi");
-> +	if (IS_ERR(pci->dbi_base)) {
-> +		dev_err(dev, "failed to get rc dbi base\n");
-> +		return PTR_ERR(pci->dbi_base);
-> +	}
-> +
-> +	pp->ops = &sprd_pcie_host_ops;
-> +
-> +	if (IS_ENABLED(CONFIG_PCI_MSI)) {
-
-I don't think this check is needed. The DW core won't setup the MSI if 
-not enabled, so doesn't matter if msi_irq is initialized.
-
-> +		pp->msi_irq = platform_get_irq_byname(pdev, "msi");
-> +		if (pp->msi_irq < 0) {
-> +			dev_err(dev, "failed to get msi, return %d\n",
-> +				pp->msi_irq);
-
-No need to print an error, the core does this.
-
-> +			return pp->msi_irq;
-> +		}
-> +	}
-> +
-> +	return dw_pcie_host_init(pp);
-> +}
-> +
-> +static int sprd_pcie_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct sprd_pcie *ctrl;
-> +	struct dw_pcie *pci;
-> +	int ret;
-> +
-> +	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-> +	if (!ctrl)
-> +		return -ENOMEM;
-> +
-> +	pci = &ctrl->pci;
-> +	pci->dev = dev;
-> +
-> +	platform_set_drvdata(pdev, ctrl);
-> +
-> +	ret = sprd_pcie_power_on(pdev);
-> +	if (ret < 0) {
-> +		dev_err(dev, "failed to get pcie poweron syscons, return %d\n",
-> +			ret);
-> +		goto err_power_off;
-> +	}
-> +
-> +	ret = sprd_add_pcie_port(pdev);
-> +	if (ret) {
-> +		dev_warn(dev, "failed to initialize RC controller\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_power_off:
-> +	sprd_pcie_power_off(pdev);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id sprd_pcie_of_match[] = {
-> +	{
-> +		.compatible = "sprd,pcie-rc",
-> +	},
-> +	{},
-> +};
-> +
-> +static struct platform_driver sprd_pcie_driver = {
-> +	.probe = sprd_pcie_probe,
-
-You need a .remove hook.
-
-> +	.driver = {
-> +		.name = "sprd-pcie",
-> +		.of_match_table = sprd_pcie_of_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(sprd_pcie_driver);
-> +
-> +MODULE_DESCRIPTION("Unisoc PCIe host controller driver");
-> +MODULE_LICENSE("GPL v2");
-> --
-> 2.7.4
-> 
