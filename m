@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B1226A3B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3B326A3C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIOK5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgIOK5H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:57:07 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56A7C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:57:06 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id m15so1141963pls.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jwkMsDqbHDpkmL1DX5NgTbbCQ3AjMnA4hImq/0BH+g8=;
-        b=Z1en/MsuS0FkLwP9QiKP4RDKQ4lDQrtoQcNhaQbkkWLL0C7dop77EY6E35zFR3KEPv
-         tHy4ymOajbSYRNFipuUxO/ue+Ey0xOrnD0w+KURVDA8S9vTK9qYklTQFqXpb12xuHvmJ
-         +sZj50iAni6pL8qSngd1dy/Wfa9or7UJIURMLST69b/CWmTFoNeAHdC7npkdyK/qLhs5
-         tKLUukQJlbpxfnW+5tksh44wwjw8nOtwhDxh1qVUHDQw2XdjjF0Mb35LJGYGqo9hkvMa
-         cb3KTdqAxVTD6vI4qGGWAWVq0ld7iPOHwXP9XTjoo5PzX1x5PFL57t9yku8TRVsyqTrX
-         XreA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jwkMsDqbHDpkmL1DX5NgTbbCQ3AjMnA4hImq/0BH+g8=;
-        b=o1Y4JeIt4ighq1iiqrr5/CJGryNn6rgYf6xJGnjPkMMdh6WzZ0nKNq8l2qCztH8FSe
-         8ehMaZeNWPQ4L/r2c6tWJrXj8y5sAOQ3SJKYeWjv1pGOMpyfWf8XJb6cZQb9Enko1bmZ
-         01ImTnjs/vK+ivelCP6IneUAh1KEFezK4A7UCq2iJS2SCO2E+B/gv5jXPtuuL3/LWrH3
-         MOIGX0eTAJ0es0M6TNfXJL6PodZmDdNC3h41WeygT5Q/uUYgsZesiKNszfqHVibVSWLT
-         k6Vd1QPIVBVivj2RS6K34dNuY/BlSYTzPYM6NqeOocAJkhzihB2+n96oa6Nh118t294I
-         v3iA==
-X-Gm-Message-State: AOAM533EisDgUwsFsDJmCR5pBiGA8Sza3UfaEQ3FLBGvwaisAppYXEWa
-        8JBM8kdQZFopZBNYLhzadSY=
-X-Google-Smtp-Source: ABdhPJzRoeYwWAVjm+161ifDeODD584x26HaSlSK2Ee2HVdWhaSe/P++BaS7m2BhbnFG3MOgK3KsjA==
-X-Received: by 2002:a17:90b:d89:: with SMTP id bg9mr3429765pjb.26.1600167425864;
-        Tue, 15 Sep 2020 03:57:05 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id s28sm13471235pfd.111.2020.09.15.03.57.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 03:57:04 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 19:57:02 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2] perf kvm: add kvm-stat for arm64
-Message-ID: <20200915105702.GA604@jagdpanzerIV.localdomain>
-References: <20200915091140.152775-1-sergey.senozhatsky@gmail.com>
- <20200915103644.GA32758@leoy-ThinkPad-X240s>
+        id S1726155AbgIOK7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:59:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726095AbgIOK7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:59:37 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4103A206DC;
+        Tue, 15 Sep 2020 10:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600167568;
+        bh=zNET5dRCkhuJrz/6kd8w9Ne6fthI7xID0DnCWQFJUo4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qwCQo/uPyhuwHTbDHiSz9tMi25wgehruQvsUgCL4CBocL5x0AqySv4IhXrPqdtjA+
+         7MXDVxt3FziJaPvWwe2gZO6mMzrJA1t4BGCj87icpX5cd4fkUgCl6lmDQ92hi7NQKj
+         5YTVJctiG9PhUgv57PTEsjWTuQt64+1vOftOD+qk=
+Date:   Tue, 15 Sep 2020 13:59:20 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Cc:     dledford@redhat.com, jgg@mellanox.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu
+Subject: Re: [PATCH] IB/rxe: fix kconfig dependency warning for RDMA_RXE
+Message-ID: <20200915105920.GA486552@unreal>
+References: <20200915101559.33292-1-fazilyildiran@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915103644.GA32758@leoy-ThinkPad-X240s>
+In-Reply-To: <20200915101559.33292-1-fazilyildiran@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On (20/09/15 18:36), Leo Yan wrote:
-> > +#define HVC_STUB_ERR		  0xbadca11
-> > +
-> > +/* Per asm/kvm_asm.h */
-> > +#define ARM_EXCEPTION_IRQ		0
-> > +#define ARM_EXCEPTION_EL1_SERROR	1
-> > +#define ARM_EXCEPTION_TRAP		2
-> > +#define ARM_EXCEPTION_IL		3
+On Tue, Sep 15, 2020 at 01:16:00PM +0300, Necip Fazil Yildiran wrote:
+> When RDMA_RXE is enabled and CRYPTO is disabled, it results in the
+> following Kbuild warning:
 >
-> Nitpick: from completeness, we also can give out KVM exiting reason
-> for 'ARM_EXCEPTION_IL'.
-
-OK, let me take a look.
-
-> > +define_exit_reasons_table(arm64_exit_reasons, kvm_arm_exception_type);
-> > +define_exit_reasons_table(arm64_trap_exit_reasons, kvm_arm_exception_class);
-> > +
-> > +const char *kvm_trap_exit_reason = "esr_ec";
-> > +const char *vcpu_id_str = "id";
-> > +const int decode_str_len = 20;
-> > +const char *kvm_exit_reason = "ret";
-> > +const char *kvm_entry_trace = "kvm:kvm_entry";
-> > +const char *kvm_exit_trace = "kvm:kvm_exit";
-> > +
-> > +const char *kvm_events_tp[] = {
-> > +	"kvm:kvm_entry",
-> > +	"kvm:kvm_exit",
+> WARNING: unmet direct dependencies detected for CRYPTO_CRC32
+>   Depends on [n]: CRYPTO [=n]
+>   Selected by [y]:
+>   - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && (!64BIT || ARCH_DMA_ADDR_T_64BIT [=n])
 >
-> I think Arm64 needs to support event 'kvm_mmio'.  It's good to use a
-> new patch for support this event?
+> The reason is that RDMA_RXE selects CRYPTO_CRC32 without depending on or
+> selecting CRYPTO while CRYPTO_CRC32 is subordinate to CRYPTO.
 
-Yes, I guess a follow up kvm_mmio patch would be a better option.
+It is not RXE specific issue and almost all users of CRYPTO_* configs
+don't select CRYPTO.
 
-> > +int cpu_isa_init(struct perf_kvm_stat *kvm, const char *cpuid __maybe_unused)
-> > +{
-> > +	kvm->exit_reasons = arm64_exit_reasons;
+There are two possible solutions.
+1. Fix crypto/Kconfig to enable CRYPTO.
+2. Change "select CRYPTO_CRC32" to be "depends on CRYPTO_CRC32".
+
+Thanks
+
 >
-> Since the "kvm->exit_reasons" will be always set in the function
-> event_get_key(), seems to me here can remove this assignment.
-
-Yes, this assignment is a leftover.
-
-	-ss
+> Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+>
+> Fixes: 0812ed132178 ("IB/rxe: Change RDMA_RXE kconfig to use select")
+> Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+> ---
+>  drivers/infiniband/sw/rxe/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
+> index a0c6c7dfc181..e1f52710edfc 100644
+> --- a/drivers/infiniband/sw/rxe/Kconfig
+> +++ b/drivers/infiniband/sw/rxe/Kconfig
+> @@ -4,6 +4,7 @@ config RDMA_RXE
+>  	depends on INET && PCI && INFINIBAND
+>  	depends on !64BIT || ARCH_DMA_ADDR_T_64BIT
+>  	select NET_UDP_TUNNEL
+> +	select CRYPTO
+>  	select CRYPTO_CRC32
+>  	select DMA_VIRT_OPS
+>  	help
+> --
+> 2.25.1
+>
