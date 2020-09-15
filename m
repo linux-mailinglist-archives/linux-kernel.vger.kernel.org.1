@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062DD26AD31
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416C426AD2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgIOTLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:11:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:42260 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727967AbgIOTFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:05:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6369A12FC;
-        Tue, 15 Sep 2020 12:05:07 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D2C53F718;
-        Tue, 15 Sep 2020 12:05:06 -0700 (PDT)
-References: <20200914100340.17608-1-vincent.guittot@linaro.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] sched/fair: Improve fairness between cfs tasks
-In-reply-to: <20200914100340.17608-1-vincent.guittot@linaro.org>
-Date:   Tue, 15 Sep 2020 20:05:03 +0100
-Message-ID: <jhjeen26eu8.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1727972AbgIOTLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:11:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59090 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727974AbgIOTFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 15:05:36 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FJ4xa3062413;
+        Tue, 15 Sep 2020 15:05:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=3N1ir76TaMTroe2Z0iyhhmpI17QSxN5F7DswCeEgg2U=;
+ b=G0hcZ8qMH29+ISBvKGhjH69bi5azkliZO1XUZqHmEyaW2z5niZUmkPlXB76AADROgsW2
+ C1vQ5DjsWZAzJxSdDIW9qaoHdxwk/pLZ+B7YLqOIVVIh/PsHKdOW2QxtRxbgT7qe3pjA
+ 52RiOFchR6ITjNEeGB7tC/SUqL3jQDtwxrggQZcEkkUQUCvuOVEn+/g8kG0rTbRsDl/w
+ 1y0GGwza6+xKB9OAYO+IQDRHh/jL7FTgj5mQr5bpM1OKsea17G2h05Y6zCsrwz/Tq1qS
+ I+zgTdVlPD72B8eDo1f0pR5g4JkKap2MOZsWfO8BzmLdt9+ef2CYZTI8wAfrcQPQtpsp ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33k1tdamhy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 15:05:25 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08FJ5Oq2064403;
+        Tue, 15 Sep 2020 15:05:24 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33k1tdamhr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 15:05:24 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08FIuRga006636;
+        Tue, 15 Sep 2020 19:05:23 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma04dal.us.ibm.com with ESMTP id 33gny982fb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 19:05:23 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08FJ5IOu33293016
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 19:05:18 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3552D78066;
+        Tue, 15 Sep 2020 19:05:22 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 819C87805E;
+        Tue, 15 Sep 2020 19:05:21 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.163.85.51])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Sep 2020 19:05:21 +0000 (GMT)
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com
+Cc:     pmorel@linux.ibm.com, schnelle@linux.ibm.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] vfio iommu: Add dma available capability
+Date:   Tue, 15 Sep 2020 15:05:17 -0400
+Message-Id: <1600196718-23238-1-git-send-email-mjrosato@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-15_12:2020-09-15,2020-09-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=671
+ phishscore=0 impostorscore=0 mlxscore=0 spamscore=0 bulkscore=0
+ adultscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150147
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container") added
+a limit to the number of concurrent DMA requests for a vfio container.
+However, lazy unmapping in s390 can in fact cause quite a large number of
+outstanding DMA requests to build up prior to being purged, potentially 
+the entire guest DMA space.  This results in unexpected 'VFIO_MAP_DMA
+failed: No space left on device' conditions seen in QEMU.
 
-Hi Vincent,
+This patch proposes to provide the remaining number of allowable DMA 
+requests via the VFIO_IOMMU_GET_INFO ioctl as a new capability.  A 
+subsequent patchset to QEMU would collect this information and use it in 
+s390 PCI support to tap the guest on the shoulder before overrunning the 
+vfio limit.
 
-On 14/09/20 11:03, Vincent Guittot wrote:
-> When the system doesn't have enough cycles for all tasks, the scheduler
-> must ensure a fair split of those CPUs cycles between CFS tasks. The
-> fairness of some use cases can't be solved with a static distribution of
-> the tasks on the system and requires a periodic rebalancing of the system
-> but this dynamic behavior is not always optimal and the fair distribution
-> of the CPU's time is not always ensured.
->
-> The patchset improves the fairness by decreasing  the constraint for
-> selecting migratable tasks with the number of failed load balance. This
-> change enables then to decrease the imbalance threshold because 1st LB
-> will try to migrate tasks that fully match the imbalance.
->
-> Some tests results:
->
-> - small 2 x 4 cores arm64 system
->
-> hackbench -l (256000/#grp) -g #grp
->
-> grp    tip/sched/core         +patchset             improvement
-> 1      1.420(+/- 11.72 %)     1.382(+/-10.50 %)     2.72 %
-> 4      1.295(+/-  2.72 %)     1.218(+/- 2.97 %)     0.76 %
-> 8      1.220(+/-  2.17 %)     1.218(+/- 1.60 %)     0.17 %
-> 16     1.258(+/-  1.88 %)     1.250(+/- 1,78 %)     0.58 %
->
->
-> fairness tests: run always running rt-app threads
-> monitor the ratio between min/max work done by threads
->
->                   v5.9-rc1             w/ patchset
-> 9 threads  avg     78.3% (+/- 6.60%)   91.20% (+/- 2.44%)
->            worst   68.6%               85.67%
->
-> 11 threads avg     65.91% (+/- 8.26%)  91.34% (+/- 1.87%)
->            worst   53.52%              87.26%
->
-> - large 2 nodes x 28 cores x 4 threads arm64 system
->
-> The hackbench tests that I usually run as well as the sp.C.x and lu.C.x
-> tests with 224 threads have not shown any difference with a mix of less
-> than 0.5% of improvements or regressions.
->
+Changes from v2:
+- Typos / fixed stale comment block
 
-Few nitpicks from my end, but no major objections - this looks mostly
-sane to me.
+Matthew Rosato (1):
+  vfio iommu: Add dma available capability
 
-> Vincent Guittot (4):
->   sched/fair: relax constraint on task's load during load balance
->   sched/fair: reduce minimal imbalance threshold
->   sched/fair: minimize concurrent LBs between domain level
->   sched/fair: reduce busy load balance interval
->
->  kernel/sched/fair.c     | 7 +++++--
->  kernel/sched/topology.c | 4 ++--
->  2 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/vfio/vfio_iommu_type1.c | 17 +++++++++++++++++
+ include/uapi/linux/vfio.h       | 15 +++++++++++++++
+ 2 files changed, 32 insertions(+)
+
+-- 
+1.8.3.1
+
