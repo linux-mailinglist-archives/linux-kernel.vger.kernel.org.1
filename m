@@ -2,157 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A161269AA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84F3269AB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgIOAqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgIOAp6 (ORCPT
+        id S1726117AbgIOAuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:50:51 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:34559 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgIOAum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:45:58 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A608C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:45:57 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id q13so416147vkd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=dV85Eacc1roIo+vHD48suvcriSw+9fgCYtp8+g0r3Mw=;
-        b=dAMvoWOtgEPXKSBKyqewg9cq8up9VQcD/Ew8s0A+uDIcs9bgSOS8jq1teYtFyzRuRI
-         EqRuo3R7BCmfpMHxrwcUtcfEtQajPdTniDGXcpGfw+MJxpAwv4TkaPCX9JXzQEjgeC6E
-         e2V48o+hvAWIOLA6zTcVApW8poXgFLexOE4mUNFyoZDsZEkc9xo/PdBdH2WbWRF8r7fd
-         jQAB+us7BTrOtmpFjOVNlNs1FsHl7pOFMn6qZaMIbPuglLLB05Vo58xpSkkLlIT9cxDP
-         8vrgy7uo7P16TaqBPAGPWMOQckYOyKsWLM/GBYIPBa0AVNIg+D0T1gVwh5xdyHNaLSxl
-         yyXA==
+        Mon, 14 Sep 2020 20:50:42 -0400
+Received: by mail-io1-f68.google.com with SMTP id m17so2247512ioo.1;
+        Mon, 14 Sep 2020 17:50:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=dV85Eacc1roIo+vHD48suvcriSw+9fgCYtp8+g0r3Mw=;
-        b=BlDDqp7wxoBw1Nl2aIhtUFtsWnO8cJNdtEQ1c0YYfX2/qAuwzZn0TOB3gXkYhSbEEA
-         blX4RQm+yTbHjJpnP+BKouvITzlLC+wAl5AwTNpmdbRt6rmSnENrbhznG6yRx9WrtCSh
-         htm6nnnl9QxXvk6GCLNJ3g/jxTscHJ0io6x03RRc9u3rUgRqkr+zmIfm5Yf/BMEOAvId
-         WidpQw561CqhdhPpxfNlGeo/IW1wgnY03Ebvt8AKiLhU6LJk+hOWNb5nYfP/DG0mAydC
-         GaoqsLMQsFq9iO6TpyafJxkpPrMf/yIntSqpVixnuR5+AJRn31yoD0SsV1/lBnJWA8Fh
-         4KmA==
-X-Gm-Message-State: AOAM532dZt+91YYaXsdhhxCJwEqMf3nAV/XG5756xt8tlskQrR/T5kss
-        O07anFnvCC5Vwj3hBWi9S3DXhCk4f7ImZtVLX8dbHg==
-X-Google-Smtp-Source: ABdhPJwur+ZPMEXzGEBYaFZfUgKfnExHnoeiaZe2G4sGEagBISoIY642qWB3YQBsgez2XNI2Qc7OCEGgdk1dolWAUIk=
-X-Received: by 2002:a1f:26cd:: with SMTP id m196mr8849886vkm.7.1600130755541;
- Mon, 14 Sep 2020 17:45:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=numAVrZHb/8qHZ8ZB/q47ZsqxyQJj3mtvFr+S2iyq1s=;
+        b=ARCOKiCUBscvfFvDQW7E5C3sAcZM2KgjH2EktKnfNWdwu2scLAmpcXAxTIg+IEBN3C
+         8K33S9Z+1+H9IctOEOeuZdpSF/Jk2F9RBERiFKsl1I6+0pSqzpSKnZsxZvmWxIGSvZyJ
+         Iey3i4kDaAhMnP+L9J5cFbp4eKj42gPwGW77FhHpCEDZkaq6zGG7dA7JW6wE96/DRqr+
+         B2Wq6l6JGHDCH5DUk+PwCJ9nYQS+htUsI3p0gCheuDWX1xFue6DkcbEoSPfCPD9VLA8M
+         vnV1lfLxOrnZHpZgOKJPN5hFdJpPRoc0Ng1/8EwZAzKn6QX7IfCkUc1570AUDhwvOdGy
+         9f9g==
+X-Gm-Message-State: AOAM533fEsMTlQ/Tn6sQVOMQ2/47wHlWAgRD3D809oER51B6IcamUnmY
+        4fjlwBslut41nr8+09GtfBYXQFi58EG6
+X-Google-Smtp-Source: ABdhPJzkrOQ/Tj7bU50E5bkevBB2M2BB4OOXNmNinYGgnhVgF/+j7fw6h1GCd5QDyj11FlbJwqaGpw==
+X-Received: by 2002:a02:a305:: with SMTP id q5mr15660693jai.121.1600131041000;
+        Mon, 14 Sep 2020 17:50:41 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id s85sm8227021ilk.35.2020.09.14.17.50.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 17:50:40 -0700 (PDT)
+Received: (nullmailer pid 604109 invoked by uid 1000);
+        Tue, 15 Sep 2020 00:50:34 -0000
+Date:   Mon, 14 Sep 2020 18:50:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>
+Subject: Re: [PATCH v2 02/10] dt-bindings: mfd: Add binding for Netronix's
+ embedded controller
+Message-ID: <20200915005034.GA593718@bogus>
+References: <20200905133230.1014581-1-j.neuschaefer@gmx.net>
+ <20200905133230.1014581-3-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 14 Sep 2020 17:45:44 -0700
-Message-ID: <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
-Subject: Re: [RFC]: userspace memory reaping
-To:     linux-api@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200905133230.1014581-3-j.neuschaefer@gmx.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ linux-kernel@vger.kernel.org
+On Sat, Sep 05, 2020 at 03:32:22PM +0200, Jonathan Neuschäfer wrote:
+> This EC is found in e-book readers of multiple brands (e.g. Kobo,
+> Tolino), and is typically implemented as a TI MSP430 microcontroller.
+> 
+> It controls different functions of the system, such as power on/off,
+> RTC, PWM for the backlight. The exact functionality provided can vary
+> between boards.
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
+> v2:
+> - Add the plaintext DT binding for comparison
+> 
+> 
+> For reference, here is the binding in text form:
+> 
+>   Netronix Embedded Controller
+> 
+>   This EC is found in e-book readers of multiple brands (e.g. Kobo, Tolino), and
+>   is typically implemented as a TI MSP430 microcontroller.
+> 
+> 
+>   Required properties:
+>   - compatible: should be "netronix,ntxec"
+>   - reg: The I2C address of the EC
+> 
+>   Optional properties:
+>   - system-power-controller:
+>     See Documentation/devicetree/bindings/power/power-controller.txt
+>   - interrupts or interrupts-extended
+>   - interrupt-controller
+>   - #interrupt-cells: Should be 1
+> 
+>   Optional subnodes:
+> 
+>   Sub-nodes are identified by their compatible string.
+> 
+>    compatible string              | description
+>   --------------------------------|--------------------------------------
+>    netronix,ntxec-pwm             | PWM (used for backlight)
+>    netronix,ntxec-rtc             | real time clock
+> 
+> 
+>   Example:
+> 
+>   &i2c3 {
+>   	pinctrl-names = "default";
+>   	pinctrl-0 = <&pinctrl_i2c3>;
+>   	status = "okay";
+> 
+>   	ec: embedded-controller@43 {
+>   		pinctrl-names = "default";
+>   		pinctrl-0 = <&pinctrl_ntxec>;
+> 
+>   		compatible = "netronix,ntxec";
+>   		reg = <0x43>;
+>   		system-power-controller;
+>   		interrupt-parent = <&gpio4>;
+>   		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
+>   		interrupt-controller;
+>   		#interrupt-cells = <1>;
+> 
+>   		pwm {
+>   			compatible = "netronix,ntxec-pwm";
+>   			#pwm-cells = <2>;
+>   		};
+> 
+>   		rtc {
+>   			compatible = "netronix,ntxec-rtc";
+>   			interrupts-extended = <&ec 15>;
+>   			interrupt-names = "alarm";
+>   		};
+>   	};
+>   };
+> ---
+>  .../bindings/mfd/netronix,ntxec.yaml          | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml b/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> new file mode 100644
+> index 0000000000000..596df460f98eb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/netronix,ntxec.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Netronix Embedded Controller
+> +
+> +maintainers:
+> +  - Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> +
+> +description: |
+> +  This EC is found in e-book readers of multiple brands (e.g. Kobo, Tolino), and
+> +  is typically implemented as a TI MSP430 microcontroller.
+> +
+> +
+> +properties:
+> +  compatible:
+> +    const: netronix,ntxec
+> +
+> +  reg:
+> +    items:
+> +      - description: The I2C address of the EC
+> +
+> +  system-power-controller:
+> +    type: boolean
+> +    description: See Documentation/devicetree/bindings/power/power-controller.txt
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    description:
+> +      The EC can signal interrupts via a GPIO line
+> +
+> +required:
+> +  - compatible
+> +  - reg
 
-On Mon, Sep 14, 2020 at 5:43 PM Suren Baghdasaryan <surenb@google.com> wrot=
-e:
->
-> Last year I sent an RFC about using oom-reaper while killing a
-> process: https://patchwork.kernel.org/cover/10894999. During LSFMM2019
-> discussion https://lwn.net/Articles/787217 a couple of alternative
-> options were discussed with the most promising one (outlined in the
-> last paragraph of https://lwn.net/Articles/787217) suggesting to use a
-> remote version of madvise(MADV_DONTNEED) operation to force memory
-> reclaim of a killed process. With process_madvise() making its way
-> through reviews (https://patchwork.kernel.org/patch/11747133/), I
-> would like to revive this discussion and get feedback on several
-> possible options, their pros and cons.
->
-> The need is similar to why oom-reaper was introduced - when a process
-> is being killed to free memory we want to make sure memory is freed
-> even if the victim is in uninterruptible sleep or is busy and reaction
-> to SIGKILL is delayed by an unpredictable amount of time. I
-> experimented with enabling process_madvise(MADV_DONTNEED) operation
-> and using it to force memory reclaim of the target process after
-> sending SIGKILL. Unfortunately this approach requires the caller to
-> read proc/pid/maps to extract the list of VMAs to pass as an input to
-> process_madvise(). This is a time consuming operation. I measured
-> times similar to what Minchan indicated in
-> https://lore.kernel.org/linux-mm/20190528032632.GF6879@google.com/ and
-> the reason reading proc/pid/maps consumes that much time is the number
-> of read syscalls required to read this file. proc/pid/maps file, being
-> a seq_file, can be read in chunks of up to 4096 bytes (1 page). Even
-> if userspace provides bigger buffer, only up to 4096 bytes will be
-> read with one syscall. Measured on Qualcomm=C2=AE Snapdragon 855=E2=84=A2=
- using its
-> Big core of 2.84GHz a single read syscall takes between 50 and 200us
-> (in case there was no contention on mmap_sem or some other lock during
-> the syscall). Taking one typical example from my tests, a 219232 bytes
-> long proc/pid/maps file describing 1623 VMAs required 55 read
-> syscalls. With mmap_sem contention proc/pid/maps read can take even
-> longer. In my tests I measured typical delays of 3-7ms with occasional
-> delays of up to 20ms when a read syscall was blocked and the process
-> got into uninterruptible sleep.
->
-> While the objective is to guarantee forward progress even when the
-> victim cannot terminate, we still want this mechanism to be efficient
-> because we perform these operations to relieve memory pressure before
-> it affects user experience.
->
-> Alternative options I would like your feedback are:
-> 1. Introduce a dedicated process_madvise(MADV_DONTNEED_MM)
-> specifically for this case to indicate that the whole mm can be freed.
-> 2. A new syscall to efficiently obtain a vector of VMAs (start,
-> length, flags) of the process instead of reading /proc/pid/maps. The
-> size of the vector is still limited by UIO_MAXIOV (1024), so several
-> calls might be needed to query larger number of VMAs, however it will
-> still be an order of magnitude more efficient than reading
-> /proc/pid/maps file in 4K or smaller chunks.
-> 3. Use process_madvise() flags parameter to indicate a bulk operation
-> which ignores input vectors. Sample usage: process_madvise(pidfd,
-> MADV_DONTNEED, vector=3DNULL, vlen=3D0, flags=3DPMADV_FLAG_FILE |
-> PMADV_FLAG_ANON);
-> 4. madvise()/process_madvise() handle gaps between VMAs, so we could
-> provide one vector element spanning the entire address space. There
-> are technical issues with this approach (process_madvise return value
-> can't handle such a large number of bytes and there is MAX_RW_COUNT
-> limit on max number of bytes one process_madvise call can handle) but
-> I would still like to hear opinions about it. If this option is
-> preferable maybe we can deal with these limitations.
->
-> We can also go back to reclaiming victim's memory asynchronously but
-> synchronous method has the following advantages:
-> - reaping will be performed in the caller's context and therefore with
-> caller's priority, CPU affinity, CPU bandwidth, reaping workload will
-> be charged to the caller and accounted for.
-> - reaping is a blocking/synchronous operation for the caller, so when
-> it's finished, the caller can be sure mm is freed (or almost freed
-> considering lazy freeing and batching mechanisms) and it can reassess
-> the memory conditions right away.
-> - for very large MMs (not really my case) caller could split the VMA
-> vector and perform reaping from multiple threads to make it faster.
-> This would not be possible with options (1) and (3).
->
-> Would really appreciate your feedback on these options for future develop=
-ment.
-> Thanks,
-> Suren.
+additionalProperties: false
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2c {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            ec: embedded-controller@43 {
+> +                    pinctrl-names = "default";
+> +                    pinctrl-0 = <&pinctrl_ntxec>;
+> +
+> +                    compatible = "netronix,ntxec";
+> +                    reg = <0x43>;
+> +                    system-power-controller;
+> +                    interrupt-parent = <&gpio4>;
+> +                    interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
+
+> +                    interrupt-controller;
+> +                    #interrupt-cells = <1>;
+
+These need to be documented too.
+
+> +            };
+> +    };
+> --
+> 2.28.0
+> 
