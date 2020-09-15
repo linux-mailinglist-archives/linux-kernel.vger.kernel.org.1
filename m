@@ -2,70 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762CF26B21C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B55B26B262
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbgIOWll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727396AbgIOP5x (ORCPT
+        id S1727663AbgIOWqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:46:37 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:35247 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727436AbgIOPxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:57:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC9EC061351;
-        Tue, 15 Sep 2020 08:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9hpqrM0yq5Ww64iJO3HcA4+NwEdTQm35KV/P4mwZVJ8=; b=Ld8EqgoTHdhtpXDolfkH6H8955
-        WruBG1aYD6Yzgd0KGMn5LG/XdiTjqpJayTXIZJPGsHoO2OlPUygq7PKR6gJflJxy6AAhgs+gwnrD4
-        gwA4p82nbFgJxHk51dAZBJ3pomaao852oedeL5oJlv/N8ObKdMjc2T3MOu7eyjYQdjWU0Yrnkx9qB
-        CGP7Kj91TJbLimXQ0puCBDNC0OxZGlIVJEvC9EFoIfiMMjlFX7gMOjBw+lO5Y20877/EWw4k2hgG6
-        Asf3XkrMLaNfUI7U8J0+RAyqsP2J62ZETQcXEChi6hharp4fYKPNuqrKvVqCItl38spq9NmXSuOV1
-        H2ZJ6fRw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIDDB-0002uB-5c; Tue, 15 Sep 2020 15:49:41 +0000
-Date:   Tue, 15 Sep 2020 16:49:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>
-Subject: Re: [PATCH v2 2/9] fs: Introduce i_blocks_per_page
-Message-ID: <20200915154941.GJ5449@casper.infradead.org>
-References: <20200910234707.5504-1-willy@infradead.org>
- <20200910234707.5504-3-willy@infradead.org>
- <0c874f14499c4d819f3e8e09f5086d77@AcuMS.aculab.com>
+        Tue, 15 Sep 2020 11:53:42 -0400
+Received: by mail-io1-f66.google.com with SMTP id r9so4631228ioa.2;
+        Tue, 15 Sep 2020 08:51:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2fs7SMwS/+kOOtqsTbeeObOSneugEnlEWVTIUPzi7/M=;
+        b=mYPxP3+zoN72jtvbR3yoTLrZS7IgoynqekRfcs5HAKHailfSmYWgOzXN5vyMHNnofg
+         a/j/dQCy6QFKVcd6Zi7dlEHPeAoZIm0vrhaYHaWuCfFLqs/06u/UdfKpRCTwQhI64KrJ
+         eDIbwli2zvswkjmBElLVdfmTOej5OdNvn/6lVFPdUGl4JYB1mWp8F9v+TYK4UHs/NBjE
+         YXYtd8LklH8OQ6QNhZbROoViPccvOet/yRroEye6l7MQevdXGM45wAildFjExcsT7jMZ
+         cgOtE/8DoQKajLwJZC6bBCsKHPFDk8vWgIRpE9ZoZQUDZZtaskAc4K17QPzUMQVmmnjM
+         SJRg==
+X-Gm-Message-State: AOAM5330M3gDLZItOnGiwEcHyvr9IvxKUrX82zTarkSgyAK9bNl6VUo0
+        /p6MjSI77Tokli0v1qpSLw==
+X-Google-Smtp-Source: ABdhPJzMu3VnLfAfdGcQC3WYkoaqFWuwnuHMMcFql1ck4IO2LlmOdlqYTm35tPLkkqNHvjD2Mqi7mw==
+X-Received: by 2002:a02:ac5:: with SMTP id 188mr19022733jaw.79.1600185065853;
+        Tue, 15 Sep 2020 08:51:05 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a23sm7600985ioc.54.2020.09.15.08.51.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 08:51:04 -0700 (PDT)
+Received: (nullmailer pid 2013916 invoked by uid 1000);
+        Tue, 15 Sep 2020 15:51:01 -0000
+Date:   Tue, 15 Sep 2020 09:51:01 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     jacek.anaszewski@gmail.com, pavel@ucw.cz, matthias.bgg@gmail.com,
+        dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v3 2/2] dt-bindings: leds: Add bindings for MT6360 LED
+Message-ID: <20200915155101.GA2003197@bogus>
+References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1599474459-20853-3-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0c874f14499c4d819f3e8e09f5086d77@AcuMS.aculab.com>
+In-Reply-To: <1599474459-20853-3-git-send-email-gene.chen.richtek@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 03:40:52PM +0000, David Laight wrote:
-> > @@ -147,7 +147,7 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
-> >  	unsigned int i;
-> > 
-> >  	spin_lock_irqsave(&iop->uptodate_lock, flags);
-> > -	for (i = 0; i < PAGE_SIZE / i_blocksize(inode); i++) {
-> > +	for (i = 0; i < i_blocks_per_page(inode, page); i++) {
+On Mon, Sep 07, 2020 at 06:27:39PM +0800, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
 > 
-> You probably don't want to call the helper every time
-> around the loop.
+> Add bindings document for LED support on MT6360 PMIC
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>  .../devicetree/bindings/leds/leds-mt6360.yaml      | 105 +++++++++++++++++++++
+>  1 file changed, 105 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> new file mode 100644
+> index 0000000..72914c6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> @@ -0,0 +1,105 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LED driver for MT6360 PMIC from MediaTek Integrated.
+> +
+> +maintainers:
+> +  - Gene Chen <gene_chen@richtek.com>
+> +
+> +description: |
+> +  This module is part of the MT6360 MFD device.
+> +  The LED controller is represented as a sub-node of the PMIC node on
+> +  the device tree.
+> +  This device has six current sinks.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt6360-led
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^led@[0-5]$":
+> +    type: object
+> +    description: |
 
-This is a classic example of focusing on the details and missing the
-larger picture.  We don't want the loop at all, and if you'd kept reading
-the patch series, you'd see it disappear later.
+Don't need '|' if no line breaks/formatting to maintain.
+
+> +      Properties for a single LED.
+
+This needs to reference leds/common.yaml.
+
+> +
+> +    properties:
+> +      reg:
+> +        description: Index of the LED.
+> +        enum:
+> +          - 0 # LED output INDICATOR1
+> +          - 1 # LED output INDICATOR2
+> +          - 2 # LED output INDICATOR3
+> +          - 3 # LED output INDICATOR4
+> +          - 4 # LED output FLED1
+> +          - 5 # LED output FLED2
+
+       unevaluatedProperties: false
+
+> +
+> +required:
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> + - |
+> +   #include <dt-bindings/leds/common.h>
+> +   led-controller {
+> +     compatible = "mediatek,mt6360-led";
+> +     #address-cells = <1>;
+> +     #size-cells = <0>;
+> +
+> +     led@0 {
+> +       reg = <0>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_RED>;
+> +       default-state = "off";
+> +     };
+> +     led@1 {
+> +       reg = <1>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_GREEN>;
+> +       default-state = "off";
+> +     };
+> +     led@2 {
+> +       reg = <2>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_BLUE>;
+> +       default-state = "off";
+> +     };
+> +     led@3 {
+> +       reg = <3>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_AMBER>;
+> +       default-state = "off";
+> +     };
+> +     led@4 {
+> +       reg = <4>;
+> +       function = LED_FUNCTION_FLASH;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       function-enumerator = <1>;
+> +       default-state = "off";
+> +       led-max-microamp = <200000>;
+> +       flash-max-microamp = <500000>;
+> +       flash-max-timeout-us = <1024000>;
+> +     };
+> +     led@5 {
+> +       reg = <5>;
+> +       function = LED_FUNCTION_FLASH;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       function-enumerator = <2>;
+> +       default-state = "off";
+> +       led-max-microamp = <200000>;
+> +       flash-max-microamp = <500000>;
+> +       flash-max-timeout-us = <1024000>;
+> +     };
+> +   };
+> +...
+> -- 
+> 2.7.4
+> 
