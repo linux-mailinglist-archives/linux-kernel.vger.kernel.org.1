@@ -2,183 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCEC26A228
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5866726A22B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgIOJ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:29:48 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:54434 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726235AbgIOJ3p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:29:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600162184; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=hHIbfLl6RWvz4DJdAyYziC/fu0CysGUZFrToZk/mxTE=;
- b=u17xLSH27B6rA+QdffKfKNH1/D3bk7e78DCxMztVVI226/FUiOTrprpaCsHhAi8wpeQH1GiD
- P3rO4EmJbPW+q+AQgloDHIKb7GpsuwCGN0FRcTOjrcYVBNsO6mbxuzHONiNXcvArDtHwWuVv
- tAzVFdv9wzBhnHpYAkL77VQIWJY=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f60897cd7b4e269137b8d63 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 09:29:32
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B259EC433F0; Tue, 15 Sep 2020 09:29:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rjliao)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DE217C433CA;
-        Tue, 15 Sep 2020 09:29:31 +0000 (UTC)
+        id S1726383AbgIOJaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:30:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42270 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIOJaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:30:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AC03CB2FC;
+        Tue, 15 Sep 2020 09:30:30 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 11:30:14 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v5 5/6] printk: ringbuffer: add
+ finalization/extension support
+Message-ID: <20200915093012.GE11154@alley>
+References: <20200914123354.832-1-john.ogness@linutronix.de>
+ <20200914123354.832-6-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 15 Sep 2020 17:29:31 +0800
-From:   Rocky Liao <rjliao@codeaurora.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2] Bluetooth: btusb: Add Qualcomm Bluetooth SoC WCN6855
- support
-In-Reply-To: <4FCC6630-8350-4E4A-B156-42B2F3581BFD@holtmann.org>
-References: <0101017457c6b819-d1292819-1fae-43af-8fb8-3bc572f53cd5-000000@us-west-2.amazonses.com>
- <20200914092744.17464-1-rjliao@codeaurora.org>
- <4FCC6630-8350-4E4A-B156-42B2F3581BFD@holtmann.org>
-Message-ID: <c9912094c4627b34f49458ae36c9cd25@codeaurora.org>
-X-Sender: rjliao@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914123354.832-6-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+On Mon 2020-09-14 14:39:53, John Ogness wrote:
+> Add support for extending the newest data block. For this, introduce
+> a new finalization state (desc_finalized) denoting a committed
+> descriptor that cannot be extended.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-在 2020-09-14 21:28，Marcel Holtmann 写道：
-> Hi Rocky,
-> 
->> This patch add support for WCN6855 i.e. patch and nvm download
->> support.
->> 
->> Signed-off-by: Rocky Liao <rjliao@codeaurora.org>
->> ---
->> drivers/bluetooth/btusb.c | 50 ++++++++++++++++++++++++++++++++++-----
->> 1 file changed, 44 insertions(+), 6 deletions(-)
->> 
->> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
->> index fe80588c7bd3..789e8d5e829e 100644
->> --- a/drivers/bluetooth/btusb.c
->> +++ b/drivers/bluetooth/btusb.c
->> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
->> #define BTUSB_MEDIATEK		0x200000
->> #define BTUSB_WIDEBAND_SPEECH	0x400000
->> #define BTUSB_VALID_LE_STATES   0x800000
->> +#define BTUSB_QCA_WCN6855	0x1000000
->> 
->> static const struct usb_device_id btusb_table[] = {
->> 	/* Generic Bluetooth USB device */
->> @@ -273,6 +274,10 @@ static const struct usb_device_id 
->> blacklist_table[] = {
->> 	{ USB_DEVICE(0x13d3, 0x3496), .driver_info = BTUSB_QCA_ROME },
->> 	{ USB_DEVICE(0x13d3, 0x3501), .driver_info = BTUSB_QCA_ROME },
->> 
->> +	/* QCA WCN6855 chipset */
->> +	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
->> +						     BTUSB_WIDEBAND_SPEECH },
->> +
->> 	/* Broadcom BCM2035 */
->> 	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
->> 	{ USB_DEVICE(0x0a5c, 0x200a), .driver_info = BTUSB_WRONG_SCO_MTU },
->> @@ -3391,6 +3396,26 @@ static int btusb_set_bdaddr_ath3012(struct 
->> hci_dev *hdev,
->> 	return 0;
->> }
->> 
->> +static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
->> +				const bdaddr_t *bdaddr)
->> +{
->> +	struct sk_buff *skb;
->> +	u8 buf[6];
->> +	long ret;
->> +
->> +	memcpy(buf, bdaddr, sizeof(bdaddr_t));
->> +
->> +	skb = __hci_cmd_sync(hdev, 0xfc14, sizeof(buf), buf, 
->> HCI_INIT_TIMEOUT);
->> +	if (IS_ERR(skb)) {
->> +		ret = PTR_ERR(skb);
->> +		bt_dev_err(hdev, "Change address command failed (%ld)", ret);
->> +		return ret;
->> +	}
->> +	kfree_skb(skb);
->> +
->> +	return 0;
->> +}
->> +
->> #define QCA_DFU_PACKET_LEN	4096
->> 
->> #define QCA_GET_TARGET_VERSION	0x09
->> @@ -3428,6 +3453,8 @@ static const struct qca_device_info 
->> qca_devices_table[] = {
->> 	{ 0x00000201, 28, 4, 18 }, /* Rome 2.1 */
->> 	{ 0x00000300, 28, 4, 18 }, /* Rome 3.0 */
->> 	{ 0x00000302, 28, 4, 18 }, /* Rome 3.2 */
->> +	{ 0x00130100, 40, 4, 18 }, /* WCN6855 1.0 */
->> +	{ 0x00130200, 40, 4, 18 }  /* WCN6855 2.0 */
->> };
->> 
->> static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
->> request,
->> @@ -3529,8 +3556,8 @@ static int btusb_setup_qca_load_rampatch(struct 
->> hci_dev *hdev,
->> {
->> 	struct qca_rampatch_version *rver;
->> 	const struct firmware *fw;
->> -	u32 ver_rom, ver_patch;
->> -	u16 rver_rom, rver_patch;
->> +	u32 ver_rom, ver_patch, rver_rom;
->> +	u16 rver_rom_low, rver_rom_high, rver_patch;
->> 	char fwname[64];
->> 	int err;
->> 
->> @@ -3549,9 +3576,16 @@ static int btusb_setup_qca_load_rampatch(struct 
->> hci_dev *hdev,
->> 	bt_dev_info(hdev, "using rampatch file: %s", fwname);
->> 
->> 	rver = (struct qca_rampatch_version *)(fw->data + info->ver_offset);
->> -	rver_rom = le16_to_cpu(rver->rom_version);
->> +	rver_rom_low = le16_to_cpu(rver->rom_version);
->> 	rver_patch = le16_to_cpu(rver->patch_version);
->> 
->> +	if (ver_rom & ~0xffffU) {
->> +		rver_rom_high = le16_to_cpu(*(__le16 *)(fw->data + 16));
->> +		rver_rom = le32_to_cpu(rver_rom_high << 16 | rver_rom_low);
->> +	} else {
->> +		rver_rom = (__force u32)rver_rom_low;
->> +	}
->> +
-> 
-> I don’t get this. Is anything wrong with get_unaligned_le32 etc.?
-> 
-> My brain just hurts with your casting and pointer magic. Maybe the
-> whole rver logic needs a clean up first.
-> 
-It's not a 4 bytes le data, for example the version stream is 0x13, 
-0x00, 0x00, 0x01 and we need to convert it to 0x00130100. So we have to 
-convert it to 2 u16 value then combine them to a u32.
+Looks good to me:
 
-> Regards
-> 
-> Marcel
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+There seems to be possible a small clean up, see below. But I would do
+it in a followup patch to avoid yet another respin.
+
+
+> diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+> index 911fbe150e9a..4e526c79f89c 100644
+> --- a/kernel/printk/printk_ringbuffer.c
+> +++ b/kernel/printk/printk_ringbuffer.c
+> +/*
+> + * Try to resize an existing data block associated with the descriptor
+> + * specified by @id. If the resized data block should become wrapped, it
+> + * copies the old data to the new data block. If @size yields a data block
+> + * with the same or less size, the data block is left as is.
+> + *
+> + * Fail if this is not the last allocated data block or if there is not
+> + * enough space or it is not possible make enough space.
+> + *
+> + * Return a pointer to the beginning of the entire data buffer or NULL on
+> + * failure.
+> + */
+> +static char *data_realloc(struct printk_ringbuffer *rb,
+> +			  struct prb_data_ring *data_ring, unsigned int size,
+> +			  struct prb_data_blk_lpos *blk_lpos, unsigned long id)
+> +{
+> +	struct prb_data_block *blk;
+> +	unsigned long head_lpos;
+> +	unsigned long next_lpos;
+> +	bool wrapped;
+> +
+> +	/* Reallocation only works if @blk_lpos is the newest data block. */
+> +	head_lpos = atomic_long_read(&data_ring->head_lpos);
+> +	if (head_lpos != blk_lpos->next)
+> +		return NULL;
+> +
+> +	/* Keep track if @blk_lpos was a wrapping data block. */
+> +	wrapped = (DATA_WRAPS(data_ring, blk_lpos->begin) != DATA_WRAPS(data_ring, blk_lpos->next));
+> +
+> +	size = to_blk_size(size);
+> +
+> +	next_lpos = get_next_lpos(data_ring, blk_lpos->begin, size);
+> +
+> +	/* If the data block does not increase, there is nothing to do. */
+> +	if (head_lpos - next_lpos < DATA_SIZE(data_ring)) {
+> +		blk = to_block(data_ring, blk_lpos->begin);
+> +		return &blk->data[0];
+> +	}
+> +
+> +	if (!data_push_tail(rb, data_ring, next_lpos - DATA_SIZE(data_ring)))
+> +		return NULL;
+> +
+> +	/* The memory barrier involvement is the same as data_alloc:A. */
+> +	if (!atomic_long_try_cmpxchg(&data_ring->head_lpos, &head_lpos,
+> +				     next_lpos)) { /* LMM(data_realloc:A) */
+> +		return NULL;
+> +	}
+> +
+> +	blk = to_block(data_ring, blk_lpos->begin);
+> +
+> +	if (DATA_WRAPS(data_ring, blk_lpos->begin) != DATA_WRAPS(data_ring, next_lpos)) {
+> +		struct prb_data_block *old_blk = blk;
+> +
+> +		/* Wrapping data blocks store their data at the beginning. */
+> +		blk = to_block(data_ring, 0);
+> +
+> +		/*
+> +		 * Store the ID on the wrapped block for consistency.
+> +		 * The printk_ringbuffer does not actually use it.
+> +		 */
+> +		blk->id = id;
+
+Small cleanup: The "id" should already be there when the block has
+already been wrapped before. By other words, even the above
+need to be done only when (!wrapped).
+
+> +
+> +		if (!wrapped) {
+> +			/*
+> +			 * Since the allocated space is now in the newly
+> +			 * created wrapping data block, copy the content
+> +			 * from the old data block.
+> +			 */
+> +			memcpy(&blk->data[0], &old_blk->data[0],
+> +			       (blk_lpos->next - blk_lpos->begin) - sizeof(blk->id));
+> +		}
+> +	}
+> +
+> +	blk_lpos->next = next_lpos;
+> +
+> +	return &blk->data[0];
+> +}
+> +
+>  /* Return the number of bytes used by a data block. */
+>  static unsigned int space_used(struct prb_data_ring *data_ring,
+>  			       struct prb_data_blk_lpos *blk_lpos)
+
+Best Regards,
+Petr
