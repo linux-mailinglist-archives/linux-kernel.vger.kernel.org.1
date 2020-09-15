@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD0B26B513
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3D126B574
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbgIOXgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S1727283AbgIOXof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727577AbgIOXgG (ORCPT
+        with ESMTP id S1727285AbgIOXnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:36:06 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBDCC06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:36:05 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id e23so4968240otk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:36:05 -0700 (PDT)
+        Tue, 15 Sep 2020 19:43:52 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53778C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:43:52 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id e2so2932147vsr.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:43:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LPIBIQbbpXb5b+E+3fSEaQzi61gRepS0Kzj7VhcTRxw=;
-        b=n4d86YrHF/WQAuo/E0fzBxBRTgzGDadWKnl52eKGrx4eTm+BZnjXBwF26cGAchj+Iu
-         U3HcSqeD4njaKBABeFq3T6PCWzrKXXoeNikboDU7QXBodvt2UON8O6i4i84wMpX8dGaF
-         ACqGZtTMfgX35JNWMezHF4XYHOJaNQuHNFm/hH+F9BaCtmuYHg1JTIXoVJ9+6I4Xyx9e
-         oUgBT5edshZ3uHwi0bNlDWURE1wf4xMCgM5eiJaW0vaVicCOu/KazJnigaIV9DYjeaFI
-         MPA8jNhM5OGR+XzUKcsomKd3MqRa5gjdMdDqXM+MGs22O2f28H92+Yc1x0XalIBuMjDi
-         vn2g==
+         :cc:content-transfer-encoding;
+        bh=1DPRkUZDl392dX2kwtfz30F6Ge2UvEVr5Xwbj157Pec=;
+        b=TgmvDqGep6Mg+RrQgN0IuphaYGXD5YK6lGXof/b3gC2ZUQI3baIKi/dcwzaEEh+X9a
+         oVea6cQC/2QlSGMIIl6TSuGQfMJiz1SODtof0lTh5O2mr72EIG45+zImzt9+OA4FzN2X
+         irXtM6lwLw9k7aRfZgduhshxzqoVtaD297lhYn3gAOG23peLwr9zIDlNfZJtEIPPXCtN
+         8yLaBAIo0ODxh2rUchR66hr05MQz694vyC3ulncxAawih0GO1dRVCEShB5sp8Xe+l+w6
+         OargJSouEY7d9+Qua7bC9zf667ZfZXDkqqKzdXWG9HynCmT2wM1DEGPKQKYwGYOkHfTo
+         TYDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LPIBIQbbpXb5b+E+3fSEaQzi61gRepS0Kzj7VhcTRxw=;
-        b=W6G0VgI4NwBVaUHDyB4eASaYZfVZLPPygx8zI+/tcC7k264Adtu9iXoDFyHMQFEi6K
-         HzO0w4evM3M7JHOtw2buASgSBcKI9B9iUEtCLnVeKSDtxaWNUzU5X8WGgKelo6dxj43t
-         hMFTbj5ccxtiEqK4E37Dx2XtOpDMrMXScjvMnnhnjsY/KsnldL8PlHQq5kEftTE+B2QK
-         B+DeEEUmU/Gqv2GpWk4vdqqfzuVHlqqnhBiCHNVkWy2bd3mrgFPJ/aH2qW8f6HXgUSWZ
-         RZR6m9Uk9OLzY4fVuvkuADQx++xwbvvmvzHWForWOAO1KA431IMOU5urBZPsBpSpRn5V
-         IDhQ==
-X-Gm-Message-State: AOAM533MEiRp5/F/CPFXY/ajF3GHVdBfn/heuq813K0lV5qDexWRjLk4
-        Gg2tXdrXVRI1SH4YpUZjv6R3CJPVmrtDuZ3VuyAfzA==
-X-Google-Smtp-Source: ABdhPJzR/ellVCtnCr18ZyYuoA8Tr5FujGTsbRFahthBlgbjhJAABO5VgJyH06GV11rFf+W3DyjyQNfVVQqjJqvU/SQ=
-X-Received: by 2002:a9d:758b:: with SMTP id s11mr13757374otk.251.1600212964087;
- Tue, 15 Sep 2020 16:36:04 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1DPRkUZDl392dX2kwtfz30F6Ge2UvEVr5Xwbj157Pec=;
+        b=Y8bIOmFjji/ceCshtHGwEzU26IBi+adsAD1SNs13dU9GuHE6WwZY1tC4nMtp2YcAsw
+         qMjSx/9YH2QHYHFz88F+BbFGNSQzn8mihgug3cIxS27ls3YbcVRvdwDU8Ahj28MnUuV2
+         lrv/lHrQJwi03VgHqOb3Lco3NsXo5FJ7AI7F/p4rYPoBFufSTz/aAndvz9TUoh3RIbve
+         SjHbgwbSy2ov9gMqMXhsjsTHhG84gcWHq91TQI/uSG65npxIzCWwgkdqvJlrzFApMTTz
+         KuQdGfPCVU5mUDs4OGqmis7gXfCu+vhflNukn6C59VB7g1k/r3sr/V43mXOJHJBviyq0
+         Xpmw==
+X-Gm-Message-State: AOAM531l+bKtqX38UCwWq/YYGK7RUMojKPdqtg5mvYSuY7VlOHPJcFdk
+        brS9PEbk2pNdtg/Mh6cXWam2CCJSi51bIzwjs2K0
+X-Google-Smtp-Source: ABdhPJxDsDmh1UhpZ9JnDm+RZz60OFyCMd+BjldyowwnjBe3TMzfHABs8c5D/Ic9i9iCyeyQ6GuTtZ3TexGVYicQ4kQ=
+X-Received: by 2002:a67:f7cb:: with SMTP id a11mr3011158vsp.58.1600213431006;
+ Tue, 15 Sep 2020 16:43:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble> <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
- <CAKwvOdmNzapwEo26m0soAR2OLFxOoERPKbKgvQ0bfoqjNkEVCg@mail.gmail.com> <20200915212804.vvm7ovffqynkvi5a@treble>
-In-Reply-To: <20200915212804.vvm7ovffqynkvi5a@treble>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 16 Sep 2020 01:35:52 +0200
-Message-ID: <CANpmjNMWtZCUv-yB5eRBXaB=FLZESmtruq56Q3dS7hu2zDr9kQ@mail.gmail.com>
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+References: <CAKwvOdnjHbyamsW71FJ=Cd36YfVppp55ftcE_eSDO_z+KE9zeQ@mail.gmail.com>
+ <441AA771-A859-4145-9425-E9D041580FE4@amacapital.net> <7233f4cf-5b1d-0fca-0880-f1cf2e6e765b@citrix.com>
+In-Reply-To: <7233f4cf-5b1d-0fca-0880-f1cf2e6e765b@citrix.com>
+From:   Bill Wendling <morbo@google.com>
+Date:   Tue, 15 Sep 2020 16:43:39 -0700
+Message-ID: <CAGG=3QUUgqLFdKMtJQuvASdD2JiGuiM4BcYrUrpLto+jmB6ohw@mail.gmail.com>
+Subject: Re: [PATCH] x86/smap: Fix the smap_save() asm
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>
+        Greg Thelen <gthelen@google.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 23:28, Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> On Tue, Sep 15, 2020 at 02:13:01PM -0700, Nick Desaulniers wrote:
-> > Triple checking what I wrote above; it looks like the randconfig had
-> > BOTH CONFIG_KASAN=y and CONFIG_UBSAN=y enabled.  Aren't the sanitizers
-> > supposed to be mutually exclusive?  If so, we should ensure that via
-> > kconfig these can't be selected together via randconfig.
+On Tue, Sep 15, 2020 at 4:40 PM Andrew Cooper <andrew.cooper3@citrix.com> w=
+rote:
 >
-> No idea...
+> On 16/09/2020 00:11, Andy Lutomirski wrote:
+> >> On Sep 15, 2020, at 2:24 PM, Nick Desaulniers <ndesaulniers@google.com=
+> wrote:
+> >>
+> >> =EF=BB=BFOn Tue, Sep 15, 2020 at 1:56 PM Andy Lutomirski <luto@kernel.=
+org> wrote:
+> >>> The old smap_save() code was:
+> >>>
+> >>>  pushf
+> >>>  pop %0
+> >>>
+> >>> with %0 defined by an "=3Drm" constraint.  This is fine if the
+> >>> compiler picked the register option, but it was incorrect with an
+> >>> %rsp-relative memory operand.
+> >> It is incorrect because ... (I think mentioning the point about the
+> >> red zone would be good, unless there were additional concerns?)
+> > This isn=E2=80=99t a red zone issue =E2=80=94 it=E2=80=99s a just-plain=
+-wrong issue.  The popf is storing the result in the wrong place in memory =
+=E2=80=94 it=E2=80=99s RSP-relative, but RSP is whatever the compiler think=
+s it should be minus 8, because the compiler doesn=E2=80=99t know that push=
+fq changed RSP.
+>
+> It's worse than that.  Even when stating that %rsp is modified in the
+> asm, the generated code sequence is still buggy, for recent Clang and GCC=
+.
+>
+> https://godbolt.org/z/ccz9v7
+>
+> It's clearly not safe to ever use memory operands with pushf/popf asm
+> fragments.
+>
+Would this apply to native_save_fl() and native_restore_fl in
+arch/x86/include/asm/irqflags.h? It was like that two revisions ago,
+but it was changed (back) to "=3Drm" with a comment about it being safe.
 
-They are not mutually exclusive. The big ones like KASAN/KCSAN/KMSAN
-are mutually exclusive (compiler complains if you mix the flags), but
-UBSAN can be enabled with other sanitizers (and fsanitize-coverage,
-although not strictly a "sanitizer" it's still instrumentation based).
-In general, we shouldn't artificially disallow mixing them if it's
-supported by the compiler and our runtime can handle it.
+> >> This is something we should fix.  Bill, James, and I are discussing
+> >> this internally.  Thank you for filing a bug; I owe you a beer just
+> >> for that.
+> > I=E2=80=99m looking forward to the day that beers can be exchanged in p=
+erson again :)
+>
+> +1 to that.
+>
++100
 
-I'll have a look at the rest tomorrow (UBSAN_TRAP stuff, which
-coincidentally also came up in some other patch).
-
-Thanks,
--- Marco
+-bw
