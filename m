@@ -2,143 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7472426A0E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF8426A0DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgIOI3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:29:41 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:40803 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgIOI33 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:29:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1600158568; x=1631694568;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fTwn5T1pKJoEK59ue7GNAJ2X0iCUowH1el/JpPlsyUU=;
-  b=lQhjU+I+GdpllOf3d8j099orGe/okkaTrxVNPgdYD2PC7owKKNSAh11G
-   +pkn2lCV1oSp24KlSn8ItsZWFEA0XXxJRrGta3/ZEDfgN1GFZDLSauUpR
-   dgB4veDdbmsDiuhOzGZohzH4vFORPSQAidfZri/u89J6PlYxkCEMiDC+L
-   uxWWFqFwTLJLkDbhzegHd+i2XhDp5enpOCMfkukY+2MBMaj3uheuPZ9mN
-   AyuMRHoy4gc7n3dLkpR3glCDuUnfs8690ohSlQ55MuCISJLFb9OtLeUDq
-   bdoEO+eO0Coqf5kVv5GEGwWR5aAiB9xXdy8sCjXBsaFm7CGixZr+tqE8p
-   Q==;
-IronPort-SDR: NTXXUh8W7UGlRIh3NYvTRg3imnAHdVO9PbXTh/qe189wADZPMm7FsK6a1D28TsSmbjCRYpFM8W
- Rbt/tSEuRZ9Gi7ruA/yfm4mxInDR6vItb5CywcYszlsqsy0pNNIDjRpoS3dxERxiLKmwiKBCtO
- RV2JwkKzbKqC0bBxslYUlAxGXKvTGuDnYozLxz9x76Zx5nonaZzd3y2+++eoYpC8dditdUfF0x
- sUF6DDG8NSfdqHSwJthwkjm2Mhs7BnVwPpRJY+fejd4pG6HrFPwXiJ3LWAiDkmSFANKQXewUUe
- w1U=
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="26444736"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2020 01:29:27 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Sep 2020 01:29:26 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 15 Sep 2020 01:29:18 -0700
-Date:   Tue, 15 Sep 2020 08:26:51 +0000
-From:   "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>
-CC:     "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH RFC 2/7] bridge: cfm: Add BRIDGE_CFM to Kconfig.
-Message-ID: <20200915082651.4c5s734la37iqwfz@soft-test08>
-References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
- <20200904091527.669109-3-henrik.bjoernlund@microchip.com>
- <e145b130ba56460ecf11318f9a4550d2637aa222.camel@nvidia.com>
+        id S1726315AbgIOI3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:29:12 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2820 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726200AbgIOI3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:29:05 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 84069BFBFBC69C6223F5;
+        Tue, 15 Sep 2020 09:28:58 +0100 (IST)
+Received: from localhost (10.52.121.217) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 15 Sep
+ 2020 09:28:57 +0100
+Date:   Tue, 15 Sep 2020 09:27:20 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Atish Patra <atishp@atishpatra.org>
+CC:     Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>, <linux-arch@vger.kernel.org>,
+        Jia He <justin.he@arm.com>, Anup Patel <anup@brainfault.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: Re: [RFC/RFT PATCH v2 2/5] arm64, numa: Change the numa init
+ function name to be generic
+Message-ID: <20200915092720.0000173b@Huawei.com>
+In-Reply-To: <CAOnJCUJDk0LnLNwzq5DBogEsO9Ai1Rh10hqbrJjiqJXu0B+Hmw@mail.gmail.com>
+References: <20200912013441.9730-1-atish.patra@wdc.com>
+        <20200912013441.9730-3-atish.patra@wdc.com>
+        <20200914153048.000038ed@Huawei.com>
+        <CAOnJCUJDk0LnLNwzq5DBogEsO9Ai1Rh10hqbrJjiqJXu0B+Hmw@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <e145b130ba56460ecf11318f9a4550d2637aa222.camel@nvidia.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.217]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your review. I will update in the next version as suggested.
+On Mon, 14 Sep 2020 12:32:41 -0700
+Atish Patra <atishp@atishpatra.org> wrote:
 
-Regards
-Henrik
-
-
-The 09/08/2020 12:18, Nikolay Aleksandrov wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> On Mon, Sep 14, 2020 at 7:32 AM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Fri, 11 Sep 2020 18:34:38 -0700
+> > Atish Patra <atish.patra@wdc.com> wrote:
+> >  
+> > > As we are using generic numa implementation code, modify the init function
+> > > name to indicate that generic implementation.
+> > >
+> > > Signed-off-by: Atish Patra <atish.patra@wdc.com>  
+> >
+> > A few comments inline but more about which layer we do the build protections
+> > at than anything important.
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >  
+> > > ---
+> > >  arch/arm64/kernel/acpi_numa.c | 13 -------------
+> > >  arch/arm64/mm/init.c          |  4 ++--
+> > >  drivers/base/arch_numa.c      | 29 ++++++++++++++++++++++++++---
+> > >  include/asm-generic/numa.h    |  4 ++--
+> > >  4 files changed, 30 insertions(+), 20 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
+> > > index 7ff800045434..96502ff92af5 100644
+> > > --- a/arch/arm64/kernel/acpi_numa.c
+> > > +++ b/arch/arm64/kernel/acpi_numa.c
+> > > @@ -117,16 +117,3 @@ void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa)
+> > >
+> > >       node_set(node, numa_nodes_parsed);
+> > >  }
+> > > -
+> > > -int __init arm64_acpi_numa_init(void)
+> > > -{
+> > > -     int ret;
+> > > -
+> > > -     ret = acpi_numa_init();
+> > > -     if (ret) {
+> > > -             pr_info("Failed to initialise from firmware\n");
+> > > -             return ret;
+> > > -     }
+> > > -
+> > > -     return srat_disabled() ? -EINVAL : 0;
+> > > -}
+> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > > index 481d22c32a2e..93b660229e1d 100644
+> > > --- a/arch/arm64/mm/init.c
+> > > +++ b/arch/arm64/mm/init.c
+> > > @@ -418,10 +418,10 @@ void __init bootmem_init(void)
+> > >       max_pfn = max_low_pfn = max;
+> > >       min_low_pfn = min;
+> > >
+> > > -     arm64_numa_init();
+> > > +     arch_numa_init();
+> > >
+> > >       /*
+> > > -      * must be done after arm64_numa_init() which calls numa_init() to
+> > > +      * must be done after arch_numa_init() which calls numa_init() to
+> > >        * initialize node_online_map that gets used in hugetlb_cma_reserve()
+> > >        * while allocating required CMA size across online nodes.
+> > >        */
+> > > diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
+> > > index 73f8b49d485c..a4039dcabd3e 100644
+> > > --- a/drivers/base/arch_numa.c
+> > > +++ b/drivers/base/arch_numa.c
+> > > @@ -13,7 +13,9 @@
+> > >  #include <linux/module.h>
+> > >  #include <linux/of.h>
+> > >
+> > > +#ifdef CONFIG_ACPI_NUMA
+> > >  #include <asm/acpi.h>
+> > > +#endif  
+> >
+> > Could include linux/acpi.h which I think gets you everything you need in here
+> > and has protections against building for non ACPI cases.
+> >  
 > 
-> On Fri, 2020-09-04 at 09:15 +0000, Henrik Bjoernlund wrote:
-> > This makes it possible to include or exclude the CFM
-> > protocol according to 802.1Q section 12.14.
-> >
-> > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
-> > ---
-> >  net/bridge/Kconfig      | 11 +++++++++++
-> >  net/bridge/br_device.c  |  3 +++
-> >  net/bridge/br_private.h |  3 +++
-> >  3 files changed, 17 insertions(+)
-> >
-> > diff --git a/net/bridge/Kconfig b/net/bridge/Kconfig
-> > index 80879196560c..3c8ded7d3e84 100644
-> > --- a/net/bridge/Kconfig
-> > +++ b/net/bridge/Kconfig
-> > @@ -73,3 +73,14 @@ config BRIDGE_MRP
-> >         Say N to exclude this support and reduce the binary size.
-> >
-> >         If unsure, say N.
-> > +
-> > +config BRIDGE_CFM
-> > +     bool "CFM protocol"
-> > +     depends on BRIDGE
-> > +     help
-> > +       If you say Y here, then the Ethernet bridge will be able to run CFM
-> > +       protocol according to 802.1Q section 12.14
-> > +
-> > +       Say N to exclude this support and reduce the binary size.
-> > +
-> > +       If unsure, say N.
-> > diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
-> > index a9232db03108..d12f5626a4b1 100644
-> > --- a/net/bridge/br_device.c
-> > +++ b/net/bridge/br_device.c
-> > @@ -476,6 +476,9 @@ void br_dev_setup(struct net_device *dev)
-> >       INIT_LIST_HEAD(&br->ftype_list);
-> >  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
-> >       INIT_LIST_HEAD(&br->mrp_list);
-> > +#endif
-> > +#if IS_ENABLED(CONFIG_BRIDGE_CFM)
-> > +     INIT_LIST_HEAD(&br->mep_list);
-> >  #endif
-> >       spin_lock_init(&br->hash_lock);
-> >
-> > diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-> > index e67c6d9e8bea..6294a3e51a33 100644
-> > --- a/net/bridge/br_private.h
-> > +++ b/net/bridge/br_private.h
-> > @@ -445,6 +445,9 @@ struct net_bridge {
-> >  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
-> >       struct list_head                mrp_list;
-> >  #endif
-> > +#if IS_ENABLED(CONFIG_BRIDGE_CFM)
-> > +     struct list_head                mep_list;
-> > +#endif
-> >  };
-> >
-> >  struct br_input_skb_cb {
+> Sure. will do that.
 > 
-> Looks good, perhaps also can use hlist to reduce the head size in net_bridge.
+> > >  #include <asm/sections.h>
+> > >
+> > >  struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
+> > > @@ -444,16 +446,37 @@ static int __init dummy_numa_init(void)
+> > >       return 0;
+> > >  }
+> > >
+> > > +#ifdef CONFIG_ACPI_NUMA
+> > > +int __init arch_acpi_numa_init(void)
+> > > +{
+> > > +     int ret;
+> > > +
+> > > +     ret = acpi_numa_init();  
+> >
+> > I wonder if this is the correct level at which to stub this out
+> > as opposed to providing a stub for acpi_numa_init()
+> > and srat_disabled()
+> >  
+> 
+> I guess you mean adding a stub in acpi.h and acpi_numa.h ?
+> As it would touch x86 related code as well, I think it is better to do
+> it as a followup
+> series when we try to unify x86 numa code as well (at least some part of it) ?
+
+It would only affect x86 not using ACPI.  
+If that happened, you wouldn't expect it to current call these stubs anyway.
+
+Sure, can leave it for later.
+
+Jonathan
+
+> 
+> > At this stage I'm not sure I care too strongly though.
+> >  
+> > > +     if (ret) {
+> > > +             pr_info("Failed to initialise from firmware\n");
+> > > +             return ret;
+> > > +     }
+> > > +
+> > > +     return srat_disabled() ? -EINVAL : 0;
+> > > +}
+> > > +#else
+> > > +int __init arch_acpi_numa_init(void)
+> > > +{
+> > > +     return -EOPNOTSUPP;
+> > > +}
+> > > +
+> > > +#endif
+> > > +
+> > >  /**
+> > > - * arm64_numa_init() - Initialize NUMA
+> > > + * arch_numa_init() - Initialize NUMA
+> > >   *
+> > >   * Try each configured NUMA initialization method until one succeeds. The
+> > >   * last fallback is dummy single node config encomapssing whole memory.
+> > >   */
+> > > -void __init arm64_numa_init(void)
+> > > +void __init arch_numa_init(void)
+> > >  {
+> > >       if (!numa_off) {
+> > > -             if (!acpi_disabled && !numa_init(arm64_acpi_numa_init))
+> > > +             if (!acpi_disabled && !numa_init(arch_acpi_numa_init))
+> > >                       return;
+> > >               if (acpi_disabled && !numa_init(of_numa_init))
+> > >                       return;
+> > > diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
+> > > index 2718d5a6ff03..e7962db4ba44 100644
+> > > --- a/include/asm-generic/numa.h
+> > > +++ b/include/asm-generic/numa.h
+> > > @@ -27,7 +27,7 @@ static inline const struct cpumask *cpumask_of_node(int node)
+> > >  }
+> > >  #endif
+> > >
+> > > -void __init arm64_numa_init(void);
+> > > +void __init arch_numa_init(void);
+> > >  int __init numa_add_memblk(int nodeid, u64 start, u64 end);
+> > >  void __init numa_set_distance(int from, int to, int distance);
+> > >  void __init numa_free_distance(void);
+> > > @@ -41,7 +41,7 @@ void numa_remove_cpu(unsigned int cpu);
+> > >  static inline void numa_store_cpu_info(unsigned int cpu) { }
+> > >  static inline void numa_add_cpu(unsigned int cpu) { }
+> > >  static inline void numa_remove_cpu(unsigned int cpu) { }
+> > > -static inline void arm64_numa_init(void) { }
+> > > +static inline void arch_numa_init(void) { }
+> > >  static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
+> > >
+> > >  #endif       /* CONFIG_NUMA */  
+> >
+> >
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv  
+> 
+> 
 > 
 
--- 
-/Henrik
+
