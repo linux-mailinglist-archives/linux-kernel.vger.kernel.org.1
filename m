@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00F726B72F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764E626B688
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbgIPASo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:18:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726894AbgIOOWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:22:47 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A812222B8;
-        Tue, 15 Sep 2020 14:18:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179483;
-        bh=miPX4RjeJn5w/r+hKoXTnbvZZrD4git9/cOHZbzQ3fQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ORQvH7gO/gnIOHufprZ1c6i0WJ+m861rPmNBqoJrLl9UXtRWHdGbszLNMi129Pm5V
-         vmCfjIso/m5dnfjphqVK5AwFEvP7gjbVfzRYm5sbiD1IHaAWMRudAHmEcQGfGwLsah
-         lz0rz0W357noFZ7wYExwFTyOYokxEp32s7AERVyQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: [PATCH 4.19 78/78] usb: typec: ucsi: acpi: Check the _DEP dependencies
-Date:   Tue, 15 Sep 2020 16:13:43 +0200
-Message-Id: <20200915140637.507948901@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1727079AbgIPAG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726970AbgIOO2m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:28:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8BCC061223;
+        Tue, 15 Sep 2020 07:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VAFP2+lHvsV1SPJ5crPA3cULhiQoRhi403/H/7JF2+8=; b=QR2hMiotY714HixEB18KO4UMkA
+        dsT/mYwU5lOtboVpU9HPkIUwXQl1fjqq2TkMtIp/eolnn0tdunOBGHvtS2J+tqZECpTXEZYXP9qo+
+        dv4cJ2UfqvDb7FW3A1dKdum8o+v4hovMfAcqknVms0cyPD1S6VhFKHeHHqifn124i0TEPhEO1GVWj
+        jEZnfquFDd97jHMreoDhubWvfLR1Zp3VEXbi06WxXW6OempRGF5ubBTujfEiVJWQL7/WzBHe36+8r
+        mnN+YhqrYxB//1UNxJQtxXjIxF5R0i2hBqTumFxM4cNGpLUWEdjLVPMb8ZpQRq86LV4btHypzNp5o
+        OSs+c7Gw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIBjQ-00051X-Ac; Tue, 15 Sep 2020 14:14:52 +0000
+Date:   Tue, 15 Sep 2020 15:14:52 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, linux-pci@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        George Cherian <george.cherian@marvell.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH 1/2] sparc32: Move ioremap/iounmap declaration before
+ asm-generic/io.h include
+Message-ID: <20200915141452.GA19202@infradead.org>
+References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
+ <20200915093203.16934-2-lorenzo.pieralisi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915093203.16934-2-lorenzo.pieralisi@arm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> diff --git a/arch/sparc/include/asm/io_32.h b/arch/sparc/include/asm/io_32.h
+> index 9a52d9506f80..042201c79ad1 100644
+> --- a/arch/sparc/include/asm/io_32.h
+> +++ b/arch/sparc/include/asm/io_32.h
+> @@ -11,6 +11,16 @@
+>  #define memcpy_fromio(d,s,sz) _memcpy_fromio(d,s,sz)
+>  #define memcpy_toio(d,s,sz)   _memcpy_toio(d,s,sz)
+>  
+> +#ifdef __KERNEL__
+> +
+> +/*
+> + * Bus number may be embedded in the higher bits of the physical address.
+> + * This is why we have no bus number argument to ioremap().
+> + */
+> +void __iomem *ioremap(phys_addr_t offset, size_t size);
+> +void iounmap(volatile void __iomem *addr);
+> +#endif
 
-commit 1f3546ff3f0a1000971daef58406954bad3f7061 upstream.
-
-Failing probe with -EPROBE_DEFER until all dependencies
-listed in the _DEP (Operation Region Dependencies) object
-have been met.
-
-This will fix an issue where on some platforms UCSI ACPI
-driver fails to probe because the address space handler for
-the operation region that the UCSI ACPI interface uses has
-not been loaded yet.
-
-Fixes: 8243edf44152 ("usb: typec: ucsi: Add ACPI driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Link: https://lore.kernel.org/r/20200904110918.51546-1-heikki.krogerus@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/usb/typec/ucsi/ucsi_acpi.c |    4 ++++
- 1 file changed, 4 insertions(+)
-
---- a/drivers/usb/typec/ucsi/ucsi_acpi.c
-+++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
-@@ -64,11 +64,15 @@ static void ucsi_acpi_notify(acpi_handle
- 
- static int ucsi_acpi_probe(struct platform_device *pdev)
- {
-+	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
- 	struct ucsi_acpi *ua;
- 	struct resource *res;
- 	acpi_status status;
- 	int ret;
- 
-+	if (adev->dep_unmet)
-+		return -EPROBE_DEFER;
-+
- 	ua = devm_kzalloc(&pdev->dev, sizeof(*ua), GFP_KERNEL);
- 	if (!ua)
- 		return -ENOMEM;
-
-
+No need for an __KERNEL__ in non-uapi headers.
