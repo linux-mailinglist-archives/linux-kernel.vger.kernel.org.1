@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9E926A4D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA7F26A4CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgIOMPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:15:06 -0400
-Received: from mga07.intel.com ([134.134.136.100]:7457 "EHLO mga07.intel.com"
+        id S1726503AbgIOMOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:14:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:45047 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgIOMMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726466AbgIOMMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 08:12:49 -0400
-IronPort-SDR: mp8ew39PG/JY9hTpAjxheHcaR031G1kj/MEoyvlBavRueG4/0jNZ+zUCNfhyJ3oPHhrZUumw0B
- H3dw3v8yXELQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="223427217"
+IronPort-SDR: Kw4TQnqxCCgZHVHtW2E4uQsLSvMnrF4S1JAz9bLGwHkAR89NpX+NS9N2Wi7IPKuo6VIlsL7kYk
+ jy6Ovfd+awrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="146931356"
 X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="223427217"
+   d="scan'208";a="146931356"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 05:11:38 -0700
-IronPort-SDR: EWk3CrOWwytj+n/jfixJoDsSNngy7reLxXjm6xvpMXl4qGO7DoaxCnOZmmEwlvbMnMUMo7elLw
- MZCacKUAOaTw==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 05:12:19 -0700
+IronPort-SDR: yAREuQbk4980ARyBOoiXGAyvrjN8/059oMNvClMF8Qex/WwuehQj0r91EvFoXSIPZaukkz1dEv
+ Tmc3FG0uFMiw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="409182703"
+   d="scan'208";a="409182851"
 Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2020 05:11:35 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 15 Sep 2020 15:11:34 +0300
-Date:   Tue, 15 Sep 2020 15:11:34 +0300
+  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2020 05:12:17 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 15 Sep 2020 15:12:16 +0300
+Date:   Tue, 15 Sep 2020 15:12:16 +0300
 From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
 To:     Badhri Jagan Sridharan <badhri@google.com>
 Cc:     Guenter Roeck <linux@roeck-us.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 02/14] usb: typec: tcpci: Add support when hidden tx
- registers are inaccessible
-Message-ID: <20200915121134.GC1139641@kuha.fi.intel.com>
+Subject: Re: [PATCH v6 03/14] usb: typec: tcpci: update ROLE_CONTROL for DRP
+Message-ID: <20200915121216.GD1139641@kuha.fi.intel.com>
 References: <20200901025927.3596190-1-badhri@google.com>
- <20200901025927.3596190-3-badhri@google.com>
+ <20200901025927.3596190-4-badhri@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901025927.3596190-3-badhri@google.com>
+In-Reply-To: <20200901025927.3596190-4-badhri@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 07:59:15PM -0700, Badhri Jagan Sridharan wrote:
-> TCPCI spec forbids direct access of TX_BUF_BYTE_x register.
-> The existing version of tcpci driver assumes that those registers
-> are directly addressible. Add support for tcpci chips which do
-> not support direct access to TX_BUF_BYTE_x registers. TX_BUF_BYTE_x
-> can only be accessed by I2C_WRITE_BYTE_COUNT.
+On Mon, Aug 31, 2020 at 07:59:16PM -0700, Badhri Jagan Sridharan wrote:
+> ROLE_CONTROL register would not have the actual CC terminations
+> unless the port does not set ROLE_CONTROL.DRP. For DRP ports,
+> CC_STATUS.cc1/cc2 indicates the final terminations applied
+> when TCPC enters potential_connect_as_source/_sink.
+> For DRP ports, infer port role from CC_STATUS and set corresponding
+> CC terminations before setting the orientation.
 > 
 > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
@@ -61,101 +61,64 @@ Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
 > ---
 > Changes since v1:
->  - Refactored the code to check for TX_BUF_BYTE_x_hidden as suggested by
->    Heikki.
->  - Not formatting the tcpci_pd_transmit to follow the 100 character/line
->    limit as suggested by Heikki. (Should be a separate change).
 >  - Changing patch version to v6 to fix version number confusion.
 > ---
->  drivers/usb/typec/tcpm/tcpci.c | 46 ++++++++++++++++++++++++++--------
->  drivers/usb/typec/tcpm/tcpci.h |  8 ++++++
->  2 files changed, 43 insertions(+), 11 deletions(-)
+>  drivers/usb/typec/tcpm/tcpci.c | 37 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 36 insertions(+), 1 deletion(-)
 > 
 > diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> index bd80e03b2b6f..7d36d5e2d3f7 100644
+> index 7d36d5e2d3f7..7d9491ba62fb 100644
 > --- a/drivers/usb/typec/tcpm/tcpci.c
 > +++ b/drivers/usb/typec/tcpm/tcpci.c
-> @@ -330,23 +330,47 @@ static int tcpci_pd_transmit(struct tcpc_dev *tcpc,
+> @@ -191,12 +191,47 @@ static int tcpci_set_polarity(struct tcpc_dev *tcpc,
+>  	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+>  	unsigned int reg;
 >  	int ret;
+> +	enum typec_cc_status cc1, cc2;
 >  
->  	cnt = msg ? pd_header_cnt(header) * 4 : 0;
-> -	ret = regmap_write(tcpci->regmap, TCPC_TX_BYTE_CNT, cnt + 2);
-> -	if (ret < 0)
-> -		return ret;
-> +	/**
-> +	 * TCPCI spec forbids direct access of TCPC_TX_DATA.
-> +	 * But, since some of the chipsets offer this capability,
-> +	 * it's fair to support both.
-> +	 */
-> +	if (tcpci->data->TX_BUF_BYTE_x_hidden) {
-> +		u8 buf[TCPC_TRANSMIT_BUFFER_MAX_LEN] = {0,};
-> +		u8 pos = 0;
->  
-> -	ret = tcpci_write16(tcpci, TCPC_TX_HDR, header);
-> -	if (ret < 0)
-> -		return ret;
-> +		/* Payload + header + TCPC_TX_BYTE_CNT */
-> +		buf[pos++] = cnt + 2;
-> +
-> +		if (msg)
-> +			memcpy(&buf[pos], &msg->header, sizeof(msg->header));
-> +
-> +		pos += sizeof(header);
->  
-> -	if (cnt > 0) {
-> -		ret = regmap_raw_write(tcpci->regmap, TCPC_TX_DATA,
-> -				       &msg->payload, cnt);
-> +		if (cnt > 0)
-> +			memcpy(&buf[pos], msg->payload, cnt);
-> +
-> +		pos += cnt;
-> +		ret = regmap_raw_write(tcpci->regmap, TCPC_TX_BYTE_CNT, buf, pos);
-> +		if (ret < 0)
-> +			return ret;
-> +	} else {
-> +		ret = regmap_write(tcpci->regmap, TCPC_TX_BYTE_CNT, cnt + 2);
->  		if (ret < 0)
->  			return ret;
-> +
-> +		ret = tcpci_write16(tcpci, TCPC_TX_HDR, header);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if (cnt > 0) {
-> +			ret = regmap_raw_write(tcpci->regmap, TCPC_TX_DATA, &msg->payload, cnt);
-> +			if (ret < 0)
-> +				return ret;
-> +		}
->  	}
->  
-> -	reg = (PD_RETRY_COUNT << TCPC_TRANSMIT_RETRY_SHIFT) |
-> -		(type << TCPC_TRANSMIT_TYPE_SHIFT);
-> +	reg = (PD_RETRY_COUNT << TCPC_TRANSMIT_RETRY_SHIFT) | (type << TCPC_TRANSMIT_TYPE_SHIFT);
->  	ret = regmap_write(tcpci->regmap, TCPC_TRANSMIT, reg);
+> -	/* Keep the disconnect cc line open */
+> +	/* Obtain Rp setting from role control */
+>  	ret = regmap_read(tcpci->regmap, TCPC_ROLE_CTRL, &reg);
 >  	if (ret < 0)
 >  		return ret;
-> diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-> index fd26ca35814c..cf9d8b63adcb 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.h
-> +++ b/drivers/usb/typec/tcpm/tcpci.h
-> @@ -128,9 +128,17 @@
->  #define TCPC_VBUS_VOLTAGE_ALARM_HI_CFG		0x76
->  #define TCPC_VBUS_VOLTAGE_ALARM_LO_CFG		0x78
 >  
-> +/* I2C_WRITE_BYTE_COUNT + 1 when TX_BUF_BYTE_x is only accessible I2C_WRITE_BYTE_COUNT */
-> +#define TCPC_TRANSMIT_BUFFER_MAX_LEN		31
+> +	ret = tcpci_get_cc(tcpc, &cc1, &cc2);
+> +	if (ret < 0)
+> +		return ret;
 > +
-> +/*
-> + * @TX_BUF_BYTE_x_hidden
-> + *		optional; Set when TX_BUF_BYTE_x can only be accessed through I2C_WRITE_BYTE_COUNT.
-> + */
->  struct tcpci;
->  struct tcpci_data {
->  	struct regmap *regmap;
-> +	unsigned char TX_BUF_BYTE_x_hidden:1;
->  	int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
->  	int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
->  			 bool enable);
+> +	/*
+> +	 * When port has drp toggling enabled, ROLE_CONTROL would only have the initial
+> +	 * terminations for the toggling and does not indicate the final cc
+> +	 * terminations when ConnectionResult is 0 i.e. drp toggling stops and
+> +	 * the connection is resolbed. Infer port role from TCPC_CC_STATUS based on the
+> +	 * terminations seen. The port role is then used to set the cc terminations.
+> +	 */
+> +	if (reg & TCPC_ROLE_CTRL_DRP) {
+> +		/* Disable DRP for the OPEN setting to take effect */
+> +		reg = reg & ~TCPC_ROLE_CTRL_DRP;
+> +
+> +		if (polarity == TYPEC_POLARITY_CC2) {
+> +			reg &= ~(TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT);
+> +			/* Local port is source */
+> +			if (cc2 == TYPEC_CC_RD)
+> +				/* Role control would have the Rp setting when DRP was enabled */
+> +				reg |= TCPC_ROLE_CTRL_CC_RP << TCPC_ROLE_CTRL_CC2_SHIFT;
+> +			else
+> +				reg |= TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC2_SHIFT;
+> +		} else {
+> +			reg &= ~(TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT);
+> +			/* Local port is source */
+> +			if (cc1 == TYPEC_CC_RD)
+> +				/* Role control would have the Rp setting when DRP was enabled */
+> +				reg |= TCPC_ROLE_CTRL_CC_RP << TCPC_ROLE_CTRL_CC1_SHIFT;
+> +			else
+> +				reg |= TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC1_SHIFT;
+> +		}
+> +	}
+> +
+>  	if (polarity == TYPEC_POLARITY_CC2)
+>  		reg |= TCPC_ROLE_CTRL_CC_OPEN << TCPC_ROLE_CTRL_CC1_SHIFT;
+>  	else
 > -- 
 > 2.28.0.402.g5ffc5be6b7-goog
 
