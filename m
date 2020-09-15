@@ -2,307 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862DB26B7FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B8D26B7F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgIPAdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:33:35 -0400
-Received: from node.akkea.ca ([192.155.83.177]:32806 "EHLO node.akkea.ca"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726657AbgIONm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:42:29 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by node.akkea.ca (Postfix) with ESMTP id CEB424E2058;
-        Tue, 15 Sep 2020 13:32:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
-        t=1600176773; bh=W/EoS2mL7h2HrtkbP52JfusURqiS2FGXfXRqLggxE20=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=iyKyaZdhQpR4Z1MLzZahoazEd75mFyw/dU0nyRjgcFp4d0VgkxNmDEYIAVg5ePB3u
-         KNRiP9JwcpNNuDv2V8vBWvEFPIWAxrx42SEnkm75IhGinczudOM6nED2IQE4YVynde
-         QLQrGDa55vSGpqOCOAXF05uCfG16EKMKTtqK75qI=
-X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
-Received: from node.akkea.ca ([127.0.0.1])
-        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id J_eV-NfgbEku; Tue, 15 Sep 2020 13:32:53 +0000 (UTC)
-Received: from www.akkea.ca (node.akkea.ca [192.155.83.177])
-        by node.akkea.ca (Postfix) with ESMTPSA id 596B04E200E;
-        Tue, 15 Sep 2020 13:32:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
-        t=1600176773; bh=W/EoS2mL7h2HrtkbP52JfusURqiS2FGXfXRqLggxE20=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=iyKyaZdhQpR4Z1MLzZahoazEd75mFyw/dU0nyRjgcFp4d0VgkxNmDEYIAVg5ePB3u
-         KNRiP9JwcpNNuDv2V8vBWvEFPIWAxrx42SEnkm75IhGinczudOM6nED2IQE4YVynde
-         QLQrGDa55vSGpqOCOAXF05uCfG16EKMKTtqK75qI=
+        id S1726798AbgIPAcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726693AbgIONnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:43:10 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C284C0611C1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:33:12 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d4so3381917wmd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hzZUY6CzToqBP67sQ2Eg3vFtmd/tMofW6+beTEUER7c=;
+        b=ApkNpCciOAKKyfaftQveS7q+/ZQq6pyHPB7v7pNLGKIZR74KS+b1NJjOPyNRK9+Lwl
+         QsopcajViP1UTRhKo5wdkv7k0rmkMAcqExdskjTq0CAv32qka0Yi3v8JFlLWT+NI02UB
+         dpUmvJLlDbS8W4Uh67iuQxWP7xOzRvAQ61t6dIMwslJ4QshFQWyMzPgGnoENMS4mTdrb
+         wTmL4jMZ4uz3nMLOd22ZXNmjmvYi8wszy5VrAttSHn39fdGqeJg1apZN7hZKys8C18O5
+         jvOYRZWKKgtWEyeffn3L5WAtJZ/ENM99O6cuWPP3k4zlakhGJ6UUY09aDLCbSygEjqtL
+         a6Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hzZUY6CzToqBP67sQ2Eg3vFtmd/tMofW6+beTEUER7c=;
+        b=I1stJvwZqaPAVYdsAfUDKWvQs/L9PWla1m4WeviaN2sJBBpRdSSgvOgruPMoCxdLsf
+         byl1ScWYJeuCU6E7cxD+QBAowyKvSky5+ZPAJqEVSXL6911azN1Bk9VwnpDIycvTfCfG
+         znPP5oT95OkjUraM2u9d+GR7t5Oxzm/8xSY+Kk+W4bNLF9Lbu2fclj2LQGA/dP7ZBHJM
+         UDjYrHMyKBp7UMdGOVUYyAMjXzFYfOpZSv4I6ojGr7xiShPpgqza4wIc9OqZoxmqlNug
+         SmoLpV0RTNR2M0LyviZl3PDrEnnbtYgPKaeP0ADF8dzx3mQp9CyKtRFnYlg4TdrB1WVf
+         6lXA==
+X-Gm-Message-State: AOAM533jo6vlVHIV3y2w+/Wsl57BknlS8ojcC2hVubgpzql2AWESAD9B
+        2uE1/bVUo9Dxp4iHFEq9xwqwfA==
+X-Google-Smtp-Source: ABdhPJwKIkraQzTjlFbY2Afo3K6JNJUm2UD3bjsCgU+mxVYvkIiOP2RbJSQjaDkc5Li/EARQL2g/GA==
+X-Received: by 2002:a1c:e0d4:: with SMTP id x203mr5113109wmg.91.1600176790703;
+        Tue, 15 Sep 2020 06:33:10 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id a11sm23856074wmm.18.2020.09.15.06.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 06:33:10 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 15:33:09 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@nvidia.com>
+Cc:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4 03/15] devlink: Add reload action stats
+Message-ID: <20200915133309.GP2236@nanopsycho.orion>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-4-git-send-email-moshe@mellanox.com>
+ <20200914133939.GG2236@nanopsycho.orion>
+ <a5b7cbd5-ef55-1d74-a21e-5fb962307773@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Sep 2020 06:32:51 -0700
-From:   Angus Ainslie <angus@akkea.ca>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     kernel@puri.sm, MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        bryan.odonoghue@linaro.org
-Subject: Re: [PATCH 2/4] usb: typec: tps6589x: register as an extcon provider
-In-Reply-To: <8e7247d6-9a4f-dc22-971f-9a253c159a37@samsung.com>
-References: <20200914164639.1487650-1-angus@akkea.ca>
- <CGME20200914165842epcas1p2cb6c22eaf5de75678bb08abc8172abc2@epcas1p2.samsung.com>
- <20200914164639.1487650-3-angus@akkea.ca>
- <8e7247d6-9a4f-dc22-971f-9a253c159a37@samsung.com>
-Message-ID: <b2e011b9d565bf73975a746d02429b9d@akkea.ca>
-X-Sender: angus@akkea.ca
-User-Agent: Roundcube Webmail/1.3.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a5b7cbd5-ef55-1d74-a21e-5fb962307773@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Tue, Sep 15, 2020 at 02:30:19PM CEST, moshe@nvidia.com wrote:
+>
+>On 9/14/2020 4:39 PM, Jiri Pirko wrote:
+>> Mon, Sep 14, 2020 at 08:07:50AM CEST, moshe@mellanox.com wrote:
 
-On 2020-09-14 18:19, Chanwoo Choi wrote:
-> Hi,
-> 
-> On 9/15/20 1:46 AM, Angus Ainslie wrote:
->> The tps6598x type C chip can negotiate the VBUS sink/source status as
->> well as the VBUS voltage and current. Notify the extcon consumers of
->> these changes.
->> 
->> Signed-off-by: Angus Ainslie <angus@akkea.ca>
->> ---
->>  drivers/usb/typec/tps6598x.c | 138 
->> +++++++++++++++++++++++++++++++++++
->>  1 file changed, 138 insertions(+)
->> 
->> diff --git a/drivers/usb/typec/tps6598x.c 
->> b/drivers/usb/typec/tps6598x.c
->> index 3db33bb622c3..3b06d43c810d 100644
->> --- a/drivers/usb/typec/tps6598x.c
->> +++ b/drivers/usb/typec/tps6598x.c
->> @@ -8,6 +8,8 @@
->> 
->>  #include <linux/i2c.h>
->>  #include <linux/acpi.h>
->> +#include <linux/extcon.h>
->> +#include <linux/extcon-provider.h>
->>  #include <linux/module.h>
->>  #include <linux/regmap.h>
->>  #include <linux/interrupt.h>
->> @@ -95,7 +97,12 @@ struct tps6598x {
->>  	struct typec_port *port;
->>  	struct typec_partner *partner;
->>  	struct usb_pd_identity partner_identity;
->> +
->>  	struct usb_role_switch *role_sw;
->> +
->> +#ifdef CONFIG_EXTCON
-> 
-> Is it necessary of 'ifdef CONFIG_EXTCON'?
-> If you just add 'select EXTCON' for this driver,
-> you don't need to check CONFIG_EXTCON.
-> 
-> If any device driver need some framework,
-> we can add the 'select EXTCON'.
-> 
+[..]
 
-Sure I can change that for v2
 
-Angus
+>> > +/**
+>> > + *	devlink_reload_implicit_actions_performed - Update devlink on reload actions
+>> > + *	  performed which are not a direct result of devlink reload call.
+>> > + *
+>> > + *	This should be called by a driver after performing reload actions in case it was not
+>> > + *	a result of devlink reload call. For example fw_activate was performed as a result
+>> > + *	of devlink reload triggered fw_activate on another host.
+>> > + *	The motivation for this function is to keep data on reload actions performed on this
+>> > + *	function whether it was done due to direct devlink reload call or not.
+>> > + *
+>> > + *	@devlink: devlink
+>> > + *	@limit_level: reload action limit level
+>> > + *	@actions_performed: bitmask of actions performed
+>> > + */
+>> > +void devlink_reload_implicit_actions_performed(struct devlink *devlink,
+>> > +					       enum devlink_reload_action_limit_level limit_level,
+>> > +					       unsigned long actions_performed)
+>> What I'm a bit scarred of that the driver would call this from withing
+>> reload_down()/up() ops. Perheps this could be WARN_ON'ed here (or in
+>> devlink_reload())?
+>> 
+>
+>Not sure how I know if it was called from devlink_reload_down()/up() ? Maybe
+>mutex ? So the warn will be actually mutex deadlock ?
 
->> +	struct extcon_dev *edev;
->> +#endif
->>  };
+No. Don't abuse mutex for this.
+Just make sure that the counters do not move when you call
+reload_down/up().
+
+
+>
+>> > +{
+>> > +	if (!devlink_reload_supported(devlink))
+>> Hmm. I think that the driver does not have to support the reload and can
+>> still be reloaded by another instance and update the stats here. Why
+>> not?
 >> 
->>  /*
->> @@ -209,6 +216,62 @@ static void tps6598x_set_data_role(struct 
->> tps6598x *tps,
->>  	typec_set_data_role(tps->port, role);
->>  }
+>
+>But I show counters only for supported reload actions and levels, otherwise
+>we will have these counters on devlink dev show output for other drivers that
+>don't have support for devlink reload and didn't implement any of these
+>including this function and these drivers may do some actions like
+>fw_activate in another way and don't update the stats and so that will make
+>these stats misleading. They will show history "stats" but they don't update
+>them as they didn't apply anything related to devlink reload.
+
+The case I tried to point at is the driver instance, that does not
+implement reload ops itself, but still it can be reloaded by someone else -
+the other driver instance outside.
+
+The counters should work no matter if the driver implements reload ops
+or not. Why wouldn't they? The user still likes to know that the devices
+was reloaded.
+
+
+
+>
+>> > +		return;
+>> > +	devlink_reload_action_stats_update(devlink, limit_level, actions_performed);
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(devlink_reload_implicit_actions_performed);
+>> > +
+>> > static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+>> > 			  enum devlink_reload_action action,
+>> > 			  enum devlink_reload_action_limit_level limit_level,
+>> > -			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+>> > +			  struct netlink_ext_ack *extack, unsigned long *actions_performed_out)
+>> > {
+>> > +	unsigned long actions_performed;
+>> > 	int err;
+>> > 
+>> > 	if (!devlink->reload_enabled)
+>> > @@ -2998,9 +3045,14 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+>> > 	if (dest_net && !net_eq(dest_net, devlink_net(devlink)))
+>> > 		devlink_reload_netns_change(devlink, dest_net);
+>> > 
+>> > -	err = devlink->ops->reload_up(devlink, action, limit_level, extack, actions_performed);
+>> > +	err = devlink->ops->reload_up(devlink, action, limit_level, extack, &actions_performed);
+>> > 	devlink_reload_failed_set(devlink, !!err);
+>> > -	return err;
+>> > +	if (err)
+>> > +		return err;
+>> > +	devlink_reload_action_stats_update(devlink, limit_level, actions_performed);
+>> > +	if (actions_performed_out)
+>> Just make the caller to provide valid pointer, as I suggested in the
+>> other patch review.
+>
+>
+>Ack.
+>
 >> 
->> +#ifdef CONFIG_EXTCON
->> +static void tps6589x_set_extcon_state(struct tps6598x *tps,
->> +				      u32 status, u16 pwr_status, bool state)
->> +{
->> +	union extcon_property_value val;
->> +	int max_current;
->> +
->> +	if (TPS_STATUS_DATAROLE(status)) {
->> +		extcon_set_state(tps->edev, EXTCON_USB, false);
->> +		extcon_set_state(tps->edev, EXTCON_USB_HOST, state);
->> +	} else {
->> +		extcon_set_state(tps->edev, EXTCON_USB, state);
->> +		extcon_set_state(tps->edev, EXTCON_USB_HOST, false);
->> +	}
->> +
->> +	val.intval = TPS_STATUS_PORTROLE(status);
->> +	extcon_set_property(tps->edev, EXTCON_USB_HOST,
->> +			    EXTCON_PROP_USB_VBUS_SRC,
->> +			    val);
->> +
->> +	extcon_set_property(tps->edev, EXTCON_USB,
->> +			    EXTCON_PROP_USB_VBUS_SRC,
->> +			    val);
->> +
->> +	switch (TPS_POWER_STATUS_PWROPMODE(pwr_status)) {
->> +	case TYPEC_PWR_MODE_USB:
->> +		max_current = 500;
->> +		extcon_set_state(tps->edev, EXTCON_CHG_USB_SDP, state);
->> +		extcon_set_state(tps->edev, EXTCON_CHG_USB_SLOW, state);
->> +		break;
->> +	case TYPEC_PWR_MODE_1_5A:
->> +		max_current = 1500;
->> +		break;
->> +	case TYPEC_PWR_MODE_3_0A:
->> +		max_current = 3000;
->> +		break;
->> +	case TYPEC_PWR_MODE_PD:
->> +		max_current = 500;
->> +		break;
->> +	}
->> +
->> +	val.intval = max_current;
->> +	extcon_set_property(tps->edev, EXTCON_USB,
->> +			    EXTCON_PROP_USB_VBUS_CURRENT,
->> +			    val);
->> +	extcon_set_property(tps->edev, EXTCON_USB_HOST,
->> +			    EXTCON_PROP_USB_VBUS_CURRENT,
->> +			    val);
->> +
->> +	extcon_sync(tps->edev, EXTCON_USB);
->> +	extcon_sync(tps->edev, EXTCON_USB_HOST);
->> +	extcon_sync(tps->edev, EXTCON_CHG_USB_SDP);
->> +	extcon_sync(tps->edev, EXTCON_CHG_USB_SLOW);
->> +}
->> +#endif
->> +
->>  static int tps6598x_connect(struct tps6598x *tps, u32 status)
->>  {
->>  	struct typec_partner_desc desc;
->> @@ -248,18 +311,41 @@ static int tps6598x_connect(struct tps6598x 
->> *tps, u32 status)
->>  	if (desc.identity)
->>  		typec_partner_set_identity(tps->partner);
->> 
->> +#ifdef CONFIG_EXTCON
->> +	tps6598x_set_extcon_state(tps, status, pwr_status, true);
->> +#endif
->> +
->>  	return 0;
->>  }
->> 
->>  static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
->>  {
->> +	enum typec_pwr_opmode mode;
->> +	u16 pwr_status;
->> +	int ret;
->> +
->>  	if (!IS_ERR(tps->partner))
->>  		typec_unregister_partner(tps->partner);
->>  	tps->partner = NULL;
->>  	typec_set_pwr_opmode(tps->port, TYPEC_PWR_MODE_USB);
->>  	typec_set_pwr_role(tps->port, TPS_STATUS_PORTROLE(status));
->>  	typec_set_vconn_role(tps->port, TPS_STATUS_VCONN(status));
->> +	typec_set_data_role(tps->port, TPS_STATUS_DATAROLE(status));
->>  	tps6598x_set_data_role(tps, TPS_STATUS_DATAROLE(status), false);
->> +
->> +	ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &pwr_status);
->> +	if (ret < 0)
->> +		return;
->> +
->> +	mode = TPS_POWER_STATUS_PWROPMODE(pwr_status);
->> +
->> +	dev_dbg(tps->dev, "%s: mode 0x%x pwr_role %d vconn_role %d data_role 
->> %d\n",
->> +		__func__, mode, TPS_STATUS_PORTROLE(status),
->> +		TPS_STATUS_VCONN(status), TPS_STATUS_DATAROLE(status));
->> +
->> +#ifdef CONFIG_EXTCON
->> +	tps6598x_set_extcon_state(tps, status, 0, false);
->> +#endif
->>  }
->> 
->>  static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
->> @@ -407,6 +493,9 @@ static irqreturn_t tps6598x_interrupt(int irq, 
->> void *data)
->>  		goto err_unlock;
->>  	}
->> 
->> +	dev_dbg(tps->dev, "Received irq event: 0x%llx: 0x%x 0x%x", event1,
->> +	       (u32)((event1 & 0xFFFFFFFF00000000) >> 32), (u32)(event1 & 
->> 0xFFFFFFFF));
->> +
->>  	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
->>  	if (ret) {
->>  		dev_err(tps->dev, "%s: failed to read status\n", __func__);
->> @@ -467,6 +556,18 @@ static const struct regmap_config 
->> tps6598x_regmap_config = {
->>  	.max_register = 0x7F,
->>  };
->> 
->> +#ifdef CONFIG_EXTCON
->> +/* List of detectable cables */
->> +static const unsigned int tps6598x_extcon_cable[] = {
->> +	EXTCON_USB,
->> +	EXTCON_USB_HOST,
->> +	EXTCON_CHG_USB_SDP,
->> +	EXTCON_CHG_USB_SLOW,
->> +	EXTCON_CHG_USB_FAST,
->> +	EXTCON_NONE,
->> +};
->> +#endif
->> +
->>  static int tps6598x_probe(struct i2c_client *client)
->>  {
->>  	struct typec_capability typec_cap = { };
->> @@ -567,10 +668,47 @@ static int tps6598x_probe(struct i2c_client 
->> *client)
->>  	}
->>  	fwnode_handle_put(fwnode);
->> 
->> +#ifdef CONFIG_EXTCON
->> +	/* Allocate extcon device */
->> +	tps->edev = devm_extcon_dev_allocate(tps->dev, 
->> tps6598x_extcon_cable);
->> +	if (IS_ERR(tps->edev)) {
->> +		dev_err(tps->dev, "failed to allocate memory for extcon\n");
->> +		typec_unregister_port(tps->port);
->> +		return -ENOMEM;
->> +	}
->> +
->> +	/* Register extcon device */
->> +	ret = devm_extcon_dev_register(tps->dev, tps->edev);
->> +	if (ret) {
->> +		dev_err(tps->dev, "failed to register extcon device\n");
->> +		typec_unregister_port(tps->port);
->> +		return ret;
->> +	}
->> +
->> +	extcon_set_property_capability(tps->edev, EXTCON_USB,
->> +				       EXTCON_PROP_USB_VBUS);
->> +	extcon_set_property_capability(tps->edev, EXTCON_USB,
->> +				       EXTCON_PROP_USB_VBUS_SRC);
->> +	extcon_set_property_capability(tps->edev, EXTCON_USB,
->> +				       EXTCON_PROP_USB_VBUS_VOLTAGE);
->> +	extcon_set_property_capability(tps->edev, EXTCON_USB,
->> +				       EXTCON_PROP_USB_VBUS_CURRENT);
->> +	extcon_set_property_capability(tps->edev, EXTCON_USB_HOST,
->> +				       EXTCON_PROP_USB_VBUS);
->> +	extcon_set_property_capability(tps->edev, EXTCON_USB_HOST,
->> +				       EXTCON_PROP_USB_VBUS_SRC);
->> +	extcon_set_property_capability(tps->edev, EXTCON_USB_HOST,
->> +				       EXTCON_PROP_USB_VBUS_VOLTAGE);
->> +	extcon_set_property_capability(tps->edev, EXTCON_USB_HOST,
->> +				       EXTCON_PROP_USB_VBUS_CURRENT);
->> +#endif
->> +
->>  	if (status & TPS_STATUS_PLUG_PRESENT) {
->>  		ret = tps6598x_connect(tps, status);
->>  		if (ret)
->>  			dev_err(&client->dev, "failed to register partner\n");
->> +	} else {
->> +		tps6598x_disconnect(tps, status);
->>  	}
->> 
->>  	ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
->> 
+>> > +		*actions_performed_out = actions_performed;
+>> > +	return 0;
+>> > }
+>> > 
+>> > static int
+>> > -- 
+>> > 2.17.1
+>> > 
