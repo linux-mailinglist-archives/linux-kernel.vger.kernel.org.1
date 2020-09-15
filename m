@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126F2269EF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A16269EFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgIOG4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 02:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgIOG4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 02:56:43 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35F1F214F1;
-        Tue, 15 Sep 2020 06:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600153003;
-        bh=skqr9nmrj5gOWqcf3jzuhwSkFXzOKRagbuQYkkpOPIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h3N8YfhmWeI0UbfFLZChBznYbsE9YX3GRDm7tBI0StsTNg6mT5J0UuvfTqvrq0Lmz
-         E0VoTX5JwvylLVqKbsOePjirUc77QX6xl/KpjbUh7L/RiAiabkebVrPouO04wDN6VM
-         YLgQmyZQjKFqHX0PyAw7DP1xrZGz0OcnLcoCobPE=
-Date:   Tue, 15 Sep 2020 08:56:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>, linux-arm-msm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH] irqchip/qcom-pdc: Allow QCOM_PDC to be loadable as a
- permanent module
-Message-ID: <20200915065630.GE3622460@kroah.com>
-References: <20200912125148.1271481-7-maz@kernel.org>
- <20200914210423.67579-1-john.stultz@linaro.org>
+        id S1726102AbgIOG6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 02:58:33 -0400
+Received: from mail-eopbgr60077.outbound.protection.outlook.com ([40.107.6.77]:36743
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726031AbgIOG62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 02:58:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EJCkhUVgk6fPLDIUEkGohbs1M2BR9W64bWA5mtZZaCUojbGjO40Q7JoG1k/UjwL7iI0gKeQg6qlIbwPuEynR3Oa4WeNIZtA56/CZRMnLP0dsdsVcq49ZrhCHt4l/eb24Xd1U0A6Qfzxh3HOqi05g1QzYXl4az0rcH3UMDUkpvRFMfTsWOskyTgQGUD2ehHDoqAM+J4ItdCyayEFPaklG+lqHFZ2+2V6O/ZauZZenvyCK8xGlX232BCNxQu6mMh3RW9fWhxHS2eXM4K9CCgogJl+ffeFgU6jT8VaB84Z8ZXLJDJ/4BiNPAG+sjb08nLAiLkNNxtVe8m4pkuAuRCrI7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fc7lAaRm6zKqktEQ98LbIyUFKubJ6Dl/RXtlbGuOoSw=;
+ b=k11wTSKXoPMNx67UrdU1jEwFGf21hfa4WCYrSrRtCDEa5J2OEMvHBS/PkLaNPGVRY4q3bvMYKq2ZP/nSyNTgywDdJ224hTmraMlRwQ25yfLZZ0xwfGveQgj9WIp7GnvXeFRRQGn4G+z3Fl+QTQyjNQZ4fdbcpjc87PlgNxrmZ+5ZXWzlNCQUDJ8HSJA0riM7IQ38A6FaNOuhnq7rSOJisJzvE2D0EekiA5B0WoAaGbVtxdyQ1sU0DHxtD5/pqlVqr8O1bV+D+qePbfnpv9cpF8dtTYKewfstP2foPba3NSTPgVyVYk/AhzRYH5hmFxQ8+dIUEhiW4PL49d6n9xDsZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fc7lAaRm6zKqktEQ98LbIyUFKubJ6Dl/RXtlbGuOoSw=;
+ b=sk6aamn3QdWHQt+9kQ4dhjDH/0Qkz+0Mp2ZC8GxUGR3tx2AnSnlrlqu5gSWNJBBdvZ21OwpXUirJSUSVNeZXiRCGFPCnyYTBfWeJrFff8GGTusO922aizqUCqu5iiLRtin1eKnN98KQik5WJyzJv4adWd//WnfkdmSKW3eA6o68=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB7PR04MB5498.eurprd04.prod.outlook.com (2603:10a6:10:80::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Tue, 15 Sep
+ 2020 06:58:24 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::d12e:689a:169:fd68]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::d12e:689a:169:fd68%8]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 06:58:24 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     "sean@mess.org" <sean@mess.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        LnxRevLi <LnxRevLi@nxp.com>
+Subject: Recall: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+ system
+Thread-Topic: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+ system
+Thread-Index: AQHWiy2bq+eMdBITkk6RhyWwegYPvw==
+X-CallingTelephoneNumber: IPM.Note
+X-VoiceMessageDuration: 35
+X-FaxNumberOfPages: 0
+Date:   Tue, 15 Sep 2020 06:58:24 +0000
+Message-ID: <DB8PR04MB6795DA37297A19D37907701AE6200@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mess.org; dkim=none (message not signed)
+ header.d=none;mess.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 98ab7ef5-8d86-44e6-f64a-08d85944bd92
+x-ms-traffictypediagnostic: DB7PR04MB5498:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB5498021FDDEF5096F2A027BAE6200@DB7PR04MB5498.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tdKRAiXUaQ+zMvqvRwXPqZWur6Ay6zk/c8UJPVAyvDm+lQrBmveChKvvq3YT9pz783zsAgLz2sRs/G/ekoC/kYzomKreMiwRg7Jy8eCt3Im9nmde+PlvrhXMozWhdickCBjqJLHERaW3SZmOkKqjAKDWjuLneEn3TMVl9hZBUz5QmMAC8+Ts/XuJVqw97ViyxreXUP6Bz3ns0GWj35mhbkGKv9dx6qcnQGXPksKaa8TrqxQJL0FnyMDLUkPOaijROfNj2Kb5BhiFjHEC8ie5jE/W5CDNjpca+n+ZAOW/i0hv1SgvOvgApDtzRr0lzSZPHl036qVvQMEdsIq8lSW1XQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39860400002)(366004)(346002)(6506007)(2906002)(110136005)(54906003)(7696005)(8676002)(66476007)(66556008)(64756008)(66446008)(76116006)(52536014)(71200400001)(83380400001)(5660300002)(66946007)(478600001)(86362001)(558084003)(316002)(4326008)(26005)(9686003)(186003)(55016002)(33656002)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 9+yDrQhVYYqsGMVS2z/IsLeiHPFirAKTrLN3u4dTWxx7acOxeNvAOT06fe486ndaCcRN1QxQjNzm5Qelq5hdDX+VXiQQGtIZemSWHPk3XuE7KXdHpHUDVUy3j1pMskG60MF0ft/UF9GJOyNgOFG4pKmzYCzTzYfzilfRaW9/HEoHNcgjKeufRnUv78ryL+vZxCK3PgIhvUtL5jlMAg3vrU6ahfN1x1P5IBMR26GU4HhHTpD4vng4JEKs1QzwEpBuoJBdYbJ+iv0xQsv0vGdmMZ0PzqCk34PTuIyaR80/wCzpg/H7VFXGUP+aw5Ne4SZDcgWPkbPpvS50wCTFcNMGZTieCXJsxDQmTv1cX+s5cytHg8q3qOFQLfGFzjaXbVXYJ1XAH2tclOppRseZ2vms3hx5cy0Qcfj5EwVE2HiKgwn8gmHlDWGQn7ZrGyVMrP0Q6pdUY20XaT+632WzMz8eHMZzuKp6N8uNXLQ1ADoX/VhwTi1qcFFmbJLmgoeKLwTCgc6KYqZNrtNJysC1M+MXdRKH5TApxKwkUC4sRRkNwR3UMHRJDPz5KYd3dalkLJaalanqrth35mucn/1W5/C6QMxwf2ipvIVzxGX2A4bkAeE7ZMqi4FTcwuyXYEqGo+v41uq9y02xoH98YA/KV8yYFw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914210423.67579-1-john.stultz@linaro.org>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98ab7ef5-8d86-44e6-f64a-08d85944bd92
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 06:58:24.5431
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: R1X2hD11lgjSAsvoQG4603TIAz0CjaXlDJJfZ9HzjDVLrXTQkoxj4XpwW/GEi497ugsxr1AYvM9Y6toQ4SL00Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5498
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:04:23PM +0000, John Stultz wrote:
-> Allows qcom-pdc driver to be loaded as a permanent module.
-> 
-> An earlier version of this patch was merged in a larger patchset
-> but was reverted entirely when issues were found with other
-> drivers, so now that Marc has provided a better solution in his
-> Hybrid probing patch set, I wanted to re-submit this change.
-> 
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Maulik Shah <mkshah@codeaurora.org>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-gpio@vger.kernel.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
-
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Joakim Zhang would like to recall the message, "[PATCH] media: rc: gpio-ir-=
+recv: add QoS support for cpuidle system".=
