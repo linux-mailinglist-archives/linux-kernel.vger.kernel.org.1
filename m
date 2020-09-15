@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD4026AE32
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397F926AE11
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727730AbgIOTyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:54:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52182 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727806AbgIORH2 (ORCPT
+        id S1727702AbgIOTuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727830AbgIORKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:07:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600189625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=walQ61YYGzyVqfuTJ3FRBx41wBNDB3XgqTy7en19sog=;
-        b=BOiKWkvgL0zaa6q+k4jFH1U2GBcTjMNKiNKLMXe2nkc6MT9L2Ys5ZzqAEsyiDRa3CYoX6N
-        h2iVM1escL6klA2+poxBVWoCTnPCkEVjayActZapzmJsNA6nv3CvjS5NPRlXf05uCVn75m
-        5B750syjYFfjmr/3vTrj3Cif5Bq17qc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-c5pfAVJMMm2Wno7Kl1o0YA-1; Tue, 15 Sep 2020 12:58:52 -0400
-X-MC-Unique: c5pfAVJMMm2Wno7Kl1o0YA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77D1D18BFECB;
-        Tue, 15 Sep 2020 16:58:49 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 237865DC17;
-        Tue, 15 Sep 2020 16:58:49 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08FGwmjQ031604;
-        Tue, 15 Sep 2020 12:58:48 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08FGwkUQ031600;
-        Tue, 15 Sep 2020 12:58:47 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Tue, 15 Sep 2020 12:58:46 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Dan Williams <dan.j.williams@intel.com>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
-        <rajesh.tadakamadla@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: [RFC] nvfs: a filesystem for persistent memory
-In-Reply-To: <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com>
-Message-ID: <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Tue, 15 Sep 2020 13:10:50 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E019C0612F2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:00:32 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id r78so990025vke.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AD44iUMYidPiEvY0GREEGObw8s+cZqGFqFLZt/WuWbY=;
+        b=HXXdpEQu7Pg7iPzOEaa08AqlWK3FNqlZevxpAIv60vMGwoWlBshZDNmw3Sw33p+IJJ
+         O5dG1xbSbC+g24gEX/HVlccbvpQBGBXG18HZA7mwmby4fM1dQJccbJvUHnfV8DIv6qA4
+         qk36l5nqIP8fepYx0Nh2UYAGnOPjOQ8AYkQzw9kp2LZj2UOQWOunLTzXyMeT2CY3CGTT
+         HkrpIOrWybwprMRsiBIaTH0f1nIUqMj/lGT4KtaapT1FRAxIRME1VX0rJCLObHBtHzYR
+         mkO/hS0B2EEqdHG7sLsRQpNs1g9GuSId5vVjiInO5ySX9awBX2fZgdTYY6gYKw4ye8pe
+         c3cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AD44iUMYidPiEvY0GREEGObw8s+cZqGFqFLZt/WuWbY=;
+        b=qn2Ah3asndoIHSv4v1JNnta67P7LWfBr8cyX5NkvgUcHKfxe3sZJ0JGrXOygJTjlVy
+         I7Dsyra8X/HmOtQKF7Ufjhgddws6d7np2NPSpD/El5/AfWLgOqarB664GWn+CSdo+7UO
+         bDU7GrGXGTAFqASTM+z8tZLoNGu4ZLz0lu1CD1B2vLW3l1DhOtey9Ct/+IJG/1DpobJ9
+         6MV/Lz6AtK0nNvb2dNNBTQtlXeYCWBLvLywSObbxcmy3ztD6ll94/YcEQBa0LDkGLmeC
+         qHXAsdANhmHxveATOHaT3MPXHAy7/HzRaRNqYPfDB2OghcQLaVQu9TPjAZIyLr0RJY3q
+         fhAA==
+X-Gm-Message-State: AOAM532MO6qiUyjOqkaaqfkYb4c5VdvTBHh0GCPOZ9eclZ+xnqdaQE/r
+        4wdh5K4vnp+qUA5AaI0Ay61NtkrGuuFCq9xAieVhzw==
+X-Google-Smtp-Source: ABdhPJxyiyh7xsUQINRaFa+K9y6YtLwuY9B97luN6UU9cNTRgWjfWfKwWmuV2bx1S55GGixSJn7HoJPKCiN/Z0lSV+A=
+X-Received: by 2002:a1f:964c:: with SMTP id y73mr11317771vkd.8.1600189229548;
+ Tue, 15 Sep 2020 10:00:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200901025927.3596190-1-badhri@google.com> <20200915133347.GK1139641@kuha.fi.intel.com>
+In-Reply-To: <20200915133347.GK1139641@kuha.fi.intel.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Tue, 15 Sep 2020 09:59:53 -0700
+Message-ID: <CAPTae5LbTO0MH6VasNXzHTR1UkiuR4Qw52V3nVus-7-e6UB4Tw@mail.gmail.com>
+Subject: Re: [PATCH v6 00/14] TCPM support for FRS and AutoDischarge Disconnect
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 15, 2020 at 6:33 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Mon, Aug 31, 2020 at 07:59:13PM -0700, Badhri Jagan Sridharan wrote:
+> > First of all apologies for mixing up the patch version as noted by
+> > Heikki and Greg. All of them were v1's but since I was manually adding
+> > the version numbers I mixed them up. Using the --reroll-count option
+> > now. Updating the patch version to v6 (highest version number in the
+> > previous patchset + 1) to avoid confusion.
+> >
+> > I also rebased on to off of the recent usb-next tip:
+> > 5fedf0d295d3 (origin/usb-testing, origin/usb-next) Merge 5.9-rc3 into usb-next
+> > Which had the following changes causing merge conflict:
+> > 3ed8e1c2ac99 usb: typec: tcpm: Migrate workqueue to RT priority for processing events
+> > 6bbe2a90a0bb usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
+> >
+> > Addressed comments from Heikki and Randy which have described in the
+> > individual commit's change history as well.
+>
+> I'll try to study the AutoDischarge a bit before reviewing the last
+> patches. They all appeared to be only about AutoDischarge. Sorry, I
+> didn't have time for that yet. If Guenter is fine with those, then
+> feel free to add my ACK to those patches. But Guenter really should
+> review these in any case. Hope he has time.
 
+Really appreciate you spending time on reviewing the patches. So
+thanks for doing that.
+I quickly went through the comments you have given. Will respond today.
 
-On Tue, 15 Sep 2020, Dan Williams wrote:
+Thanks & Regards,
+Badhri
 
-> > - when the fsck.nvfs tool mmaps the device /dev/pmem0, the kernel uses
-> > buffer cache for the mapping. The buffer cache slows does fsck by a factor
-> > of 5 to 10. Could it be possible to change the kernel so that it maps DAX
-> > based block devices directly?
-> 
-> We've been down this path before.
-> 
-> 5a023cdba50c block: enable dax for raw block devices
-> 9f4736fe7ca8 block: revert runtime dax control of the raw block device
-> acc93d30d7d4 Revert "block: enable dax for raw block devices"
-
-It says "The functionality is superseded by the new 'Device DAX' 
-facility". But the fsck tool can't change a fsdax device into a devdax 
-device just for checking. Or can it?
-
-> EXT2/4 metadata buffer management depends on the page cache and we
-> eliminated a class of bugs by removing that support. The problems are
-> likely tractable, but there was not a straightforward fix visible at
-> the time.
-
-Thinking about it - it isn't as easy as it looks...
-
-Suppose that the user mounts an ext2 filesystem and then uses the tune2fs 
-tool on the mounted block device. The tune2fs tool reads and writes the 
-mounted superblock directly.
-
-So, read/write must be coherent with the buffer cache (otherwise the 
-kernel would not see the changes written by tune2fs). And mmap must be 
-coherent with read/write.
-
-So, if we want to map the pmem device directly, we could add a new flag 
-MAP_DAX. Or we could test if the fd has O_DIRECT flag and map it directly 
-in this case. But the default must be to map it coherently in order to not 
-break existing programs.
-
-> > - __copy_from_user_inatomic_nocache doesn't flush cache for leading and
-> > trailing bytes.
-> 
-> You want copy_user_flushcache(). See how fs/dax.c arranges for
-> dax_copy_from_iter() to route to pmem_copy_from_iter().
-
-Is it something new for the kernel 5.10? I see only __copy_user_flushcache 
-that is implemented just for x86 and arm64.
-
-There is __copy_from_user_flushcache implemented for x86, arm64 and power. 
-It is used in lib/iov_iter.c under
-#ifdef CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE - so should I use this?
-
-Mikulas
-
+>
+> Br,
+>
+> --
+> heikki
