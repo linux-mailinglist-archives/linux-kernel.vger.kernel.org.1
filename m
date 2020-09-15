@@ -2,97 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C344269B36
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC1D269B3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgIOBcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:32:36 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38631 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726024AbgIOBca (ORCPT
+        id S1726114AbgIOBeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgIOBeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:32:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U9-qPWX_1600133547;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U9-qPWX_1600133547)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 15 Sep 2020 09:32:27 +0800
-Date:   Tue, 15 Sep 2020 09:32:27 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2 0/4] tracing: trivial cleanup
-Message-ID: <20200915013227.GA2007@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200712011036.70948-1-richard.weiyang@linux.alibaba.com>
- <20200828034257.GA8994@L-31X9LVDL-1304.local>
- <20200914185528.77d36e9d@gandalf.local.home>
+        Mon, 14 Sep 2020 21:34:08 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1C0C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:34:06 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id p65so2035394qtd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F8AlCLAV1HscFrgrzr1S9FE6d/dYHSlsoWGmZr5WVpk=;
+        b=wXH4I8gS8cNhd0LTEB+VsCvhZK+09l41Risz3tX+sg/sxyiv+mQBbvP2tjbzVgqsvR
+         7hJXWmnhXun81miYRjI38B5/knaRhNmCw2ll+rct/SsSpY+SxJaCSwzxtdv/P0zCvBVc
+         1nPMkf79oOQYrg6PRm82Vg1p8N4zUv3jdK44c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F8AlCLAV1HscFrgrzr1S9FE6d/dYHSlsoWGmZr5WVpk=;
+        b=NhTJIYdnzaqcB47CI6Nwffok+UZ+Xy3Qu9rOlh1iq3/LjLQuYguMY78YMK1bMphGXX
+         L1MzYQEPZN21i0G8P3edn4DGBM8iUojAsmQQnV/DLYO29TorPkXI3s+VJLIFeFU46gfc
+         SqTO57J/rXhrm7R3zSvNVXWdNRyKQZ+B3cF4tx+Vd8/yniMV+pyx7px3fa+20qIS4/Jw
+         7eKohRPqRkXkJpcQRD41c4Spd3k+fR5IxXdELezH0wAysxwFAQRqXel7h5kWvOROwG4Y
+         nlg6dQn0fLd68Uuzr/5mG/8YLg5uMDalp3RXiDTfx7vOXllI33gQbk1tUbfASiruGhP7
+         r8cQ==
+X-Gm-Message-State: AOAM5306bxNGdidBIlxUKjNfGnkN6gxPVCZXyXUv874p6X9ff0hCTDp3
+        uSwGx+aSSUMVbPOtmLeck+vIDg==
+X-Google-Smtp-Source: ABdhPJy5CUVCmrWoxck70sxGRS8t75c6pstAoCLJMG2wn2bkDlLz3XDYROp4K+otpR7dZLw8LhIG7g==
+X-Received: by 2002:aed:2003:: with SMTP id 3mr15553386qta.356.1600133645847;
+        Mon, 14 Sep 2020 18:34:05 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id v56sm16142158qtc.49.2020.09.14.18.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 18:34:05 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 21:34:04 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     nikolay@cumulusnetworks.com, davem@davemloft.net,
+        netdev@vger.kernel.org, paulmck@kernel.org, josh@joshtriplett.org,
+        peterz@infradead.org, christian.brauner@ubuntu.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sfr@canb.auug.org.au, roopa@nvidia.com
+Subject: Re: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from swallowing
+ the condition
+Message-ID: <20200915013404.GD2579423@google.com>
+References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200908173624.160024-1-kuba@kernel.org>
+ <5ABC15D5-3709-4CA4-A747-6A7812BB12DD@cumulusnetworks.com>
+ <20200908172751.4da35d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200914202122.GC2579423@google.com>
+ <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914185528.77d36e9d@gandalf.local.home>
+In-Reply-To: <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 06:55:28PM -0400, Steven Rostedt wrote:
->On Fri, 28 Aug 2020 11:42:57 +0800
->Wei Yang <richard.weiyang@linux.alibaba.com> wrote:
->
->> Steven,
->> 
->> Would you like to pick this up?
->> 
->
->Hmm, patch 1 and 2 have been accepted (different subjects though):
->
->   746cf3459f11859 ("tracing: Simplify defining of the next event id")
->   36b8aacf2a483ba ("tracing: Save one trace_event->type by using __TRACE_LAST_TYPE")
->
->I'm not sure why I didn't pick up patches 3 and 4. I'm looking into that
->now.
->
+On Mon, Sep 14, 2020 at 03:47:38PM -0700, Jakub Kicinski wrote:
+> On Mon, 14 Sep 2020 16:21:22 -0400 Joel Fernandes wrote:
+> > On Tue, Sep 08, 2020 at 05:27:51PM -0700, Jakub Kicinski wrote:
+> > > On Tue, 08 Sep 2020 21:15:56 +0300 nikolay@cumulusnetworks.com wrote:  
+> > > > Ah, you want to solve it for all. :) 
+> > > > Looks and sounds good to me, 
+> > > > Reviewed-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>  
+> > > 
+> > > Actually, I give up, lockdep_is_held() is not defined without
+> > > CONFIG_LOCKDEP, let's just go with your patch..  
+> > 
+> > Care to send a patch just for the RCU macro then? Not sure what Dave is
+> > applying but if the net-next tree is not taking the RCU macro change, then
+> > send another one with my tag:
+> 
+> Seems like quite a few places depend on the macro disappearing its
+> argument. I was concerned that it's going to be had to pick out whether
+> !LOCKDEP builds should return true or false from LOCKDEP helpers, but
+> perhaps relying on the linker errors even more is not such poor taste?
+> 
+> Does the patch below look acceptable to you?
+> 
+> --->8------------
+> 
+> rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
+> 
+> We run into a unused variable warning in bridge code when
+> variable is only used inside the condition of
+> rcu_dereference_protected().
+> 
+>  #define mlock_dereference(X, br) \
+> 	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
+> 
+> Since on builds with CONFIG_PROVE_RCU=n rcu_dereference_protected()
+> compiles to nothing the compiler doesn't see the variable use.
+> 
+> Prevent the warning by adding the condition as dead code.
+> We need to un-hide the declaration of lockdep_tasklist_lock_is_held(),
+> lockdep_sock_is_held(), RCU lock maps and remove some declarations
+> in net/sched header, because they have a wrong type.
+> 
+> Add forward declarations of lockdep_is_held(), lock_is_held() which
+> will cause a linker errors if actually used with !LOCKDEP.
+> At least RCU expects some locks _not_ to be held so it's hard to
+> pick true/false for a dummy implementation.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+>  include/linux/lockdep.h        |  6 ++++++
+>  include/linux/rcupdate.h       | 11 ++++++-----
+>  include/linux/rcupdate_trace.h |  4 ++--
+>  include/linux/sched/task.h     |  2 --
+>  include/net/sch_generic.h      | 12 ------------
+>  include/net/sock.h             |  2 --
 
-Yep, thanks a lot :-)
+Would it make sense to split it into individual patches?
 
->-- Steve
->
->
->> On Sun, Jul 12, 2020 at 09:10:32AM +0800, Wei Yang wrote:
->> >Some trivial cleanup for tracing.
->> >
->> >v2:
->> >  * drop patch 1
->> >  * merge patch 4 & 5
->> >  * introduce a new patch change the return value of tracing_init_dentry()
->> >
->> >Wei Yang (4):
->> >  tracing: simplify the logic by defining next to be "lasst + 1"
->> >  tracing: save one trace_event->type by using __TRACE_LAST_TYPE
->> >  tracing: toplevel d_entry already initialized
->> >  tracing: make tracing_init_dentry() returns an integer instead of a
->> >    d_entry pointer
->> >
->> > kernel/trace/trace.c                 | 36 ++++++++++++++--------------
->> > kernel/trace/trace.h                 |  2 +-
->> > kernel/trace/trace_dynevent.c        |  8 +++----
->> > kernel/trace/trace_events.c          |  9 ++-----
->> > kernel/trace/trace_events_synth.c    |  9 +++----
->> > kernel/trace/trace_functions_graph.c |  8 +++----
->> > kernel/trace/trace_hwlat.c           |  8 +++----
->> > kernel/trace/trace_kprobe.c          | 10 ++++----
->> > kernel/trace/trace_output.c          | 14 +++++------
->> > kernel/trace/trace_printk.c          |  8 +++----
->> > kernel/trace/trace_stack.c           | 12 +++++-----
->> > kernel/trace/trace_stat.c            |  8 +++----
->> > kernel/trace/trace_uprobe.c          |  9 ++++---
->> > 13 files changed, 66 insertions(+), 75 deletions(-)
->> >
->> >-- 
->> >2.20.1 (Apple Git-117)  
->> 
+So 1 for rcu, 1 for lockdep and then 1 for networking. The lockdep ones may
+need PeterZ's ack.
 
--- 
-Wei Yang
-Help you, Help me
+thanks,
+
+ - Joel
+
+
+>  6 files changed, 14 insertions(+), 23 deletions(-)
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 6a584b3e5c74..c4b6225ee320 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -371,6 +371,12 @@ static inline void lockdep_unregister_key(struct lock_class_key *key)
+>  
+>  #define lockdep_depth(tsk)	(0)
+>  
+> +/*
+> + * Dummy forward declarations, allow users to write less ifdef-y code
+> + * and depend on dead code elimination.
+> + */
+> +int lock_is_held(const void *);
+> +int lockdep_is_held(const void *);
+>  #define lockdep_is_held_type(l, r)		(1)
+>  
+>  #define lockdep_assert_held(l)			do { (void)(l); } while (0)
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index d15d46db61f7..50d45781fa99 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -234,6 +234,11 @@ bool rcu_lockdep_current_cpu_online(void);
+>  static inline bool rcu_lockdep_current_cpu_online(void) { return true; }
+>  #endif /* #else #if defined(CONFIG_HOTPLUG_CPU) && defined(CONFIG_PROVE_RCU) */
+>  
+> +extern struct lockdep_map rcu_lock_map;
+> +extern struct lockdep_map rcu_bh_lock_map;
+> +extern struct lockdep_map rcu_sched_lock_map;
+> +extern struct lockdep_map rcu_callback_map;
+> +
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  
+>  static inline void rcu_lock_acquire(struct lockdep_map *map)
+> @@ -246,10 +251,6 @@ static inline void rcu_lock_release(struct lockdep_map *map)
+>  	lock_release(map, _THIS_IP_);
+>  }
+>  
+> -extern struct lockdep_map rcu_lock_map;
+> -extern struct lockdep_map rcu_bh_lock_map;
+> -extern struct lockdep_map rcu_sched_lock_map;
+> -extern struct lockdep_map rcu_callback_map;
+>  int debug_lockdep_rcu_enabled(void);
+>  int rcu_read_lock_held(void);
+>  int rcu_read_lock_bh_held(void);
+> @@ -320,7 +321,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+>  
+>  #else /* #ifdef CONFIG_PROVE_RCU */
+>  
+> -#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
+> +#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
+>  #define rcu_sleep_check() do { } while (0)
+>  
+>  #endif /* #else #ifdef CONFIG_PROVE_RCU */
+> diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+> index aaaac8ac927c..25cdef506cae 100644
+> --- a/include/linux/rcupdate_trace.h
+> +++ b/include/linux/rcupdate_trace.h
+> @@ -11,10 +11,10 @@
+>  #include <linux/sched.h>
+>  #include <linux/rcupdate.h>
+>  
+> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -
+>  extern struct lockdep_map rcu_trace_lock_map;
+>  
+> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> +
+>  static inline int rcu_read_lock_trace_held(void)
+>  {
+>  	return lock_is_held(&rcu_trace_lock_map);
+> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+> index a98965007eef..9f943c391df9 100644
+> --- a/include/linux/sched/task.h
+> +++ b/include/linux/sched/task.h
+> @@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
+>  extern union thread_union init_thread_union;
+>  extern struct task_struct init_task;
+>  
+> -#ifdef CONFIG_PROVE_RCU
+>  extern int lockdep_tasklist_lock_is_held(void);
+> -#endif /* #ifdef CONFIG_PROVE_RCU */
+>  
+>  extern asmlinkage void schedule_tail(struct task_struct *prev);
+>  extern void init_idle(struct task_struct *idle, int cpu);
+> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+> index d60e7c39d60c..1aaa9e3d2e9c 100644
+> --- a/include/net/sch_generic.h
+> +++ b/include/net/sch_generic.h
+> @@ -432,7 +432,6 @@ struct tcf_block {
+>  	struct mutex proto_destroy_lock; /* Lock for proto_destroy hashtable. */
+>  };
+>  
+> -#ifdef CONFIG_PROVE_LOCKING
+>  static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
+>  {
+>  	return lockdep_is_held(&chain->filter_chain_lock);
+> @@ -442,17 +441,6 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+>  {
+>  	return lockdep_is_held(&tp->lock);
+>  }
+> -#else
+> -static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
+> -{
+> -	return true;
+> -}
+> -
+> -static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+> -{
+> -	return true;
+> -}
+> -#endif /* #ifdef CONFIG_PROVE_LOCKING */
+>  
+>  #define tcf_chain_dereference(p, chain)					\
+>  	rcu_dereference_protected(p, lockdep_tcf_chain_is_locked(chain))
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index eaa5cac5e836..1c67b1297a72 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -1566,13 +1566,11 @@ do {									\
+>  	lockdep_init_map(&(sk)->sk_lock.dep_map, (name), (key), 0);	\
+>  } while (0)
+>  
+> -#ifdef CONFIG_LOCKDEP
+>  static inline bool lockdep_sock_is_held(const struct sock *sk)
+>  {
+>  	return lockdep_is_held(&sk->sk_lock) ||
+>  	       lockdep_is_held(&sk->sk_lock.slock);
+>  }
+> -#endif
+>  
+>  void lock_sock_nested(struct sock *sk, int subclass);
+>  
+> -- 
+> 2.24.1
+> 
