@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D112926A843
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E125026A845
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727390AbgIOPEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
+        id S1727405AbgIOPE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:04:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727224AbgIOOic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727223AbgIOOic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 10:38:32 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32F44206B7;
-        Tue, 15 Sep 2020 14:29:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EE0E23CCD;
+        Tue, 15 Sep 2020 14:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600180140;
-        bh=sK7ILSZVozEYvJaWTYMPr5b05a5jAp2muVMYn6xpy3k=;
+        s=default; t=1600180135;
+        bh=SNGHeGnn3ml8oKJyN1DTu6PUWD0bQmOixttiH6UUWU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fjRAYw1t78R0nd0X0Lc0rN1nWRzUpNr1emcihMJO6IlgneMjuc6taTygRA37rlOV2
-         O0jNnnPnDU16VpNXp4TqhVOBsmDcHE7flwiKr/uQzbgncwq84Vk1TBzZbEe4PohXs2
-         6GulpU0OCvt5z5F+77ViY06n8EFL+ocUZaZnzh2c=
+        b=JJUfrmEaGsa1yPcQLti7VT/zwNL824zRRa9sg3DyT19douYRt2BLK8GK0i2noL3vX
+         Shl4I39ii9UcsvppbZTeoM5GbrzWy0ilHGwNG8h7PwBnAxaCk+avNrIC3KFoyaQN51
+         ln5IKgvz/0yVYBan702GANNI6xfN+aYeZzMfpWWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 085/177] nvme: have nvme_wait_freeze_timeout return if it timed out
-Date:   Tue, 15 Sep 2020 16:12:36 +0200
-Message-Id: <20200915140657.715189410@linuxfoundation.org>
+        stable@vger.kernel.org, Nirenjan Krishnan <nirenjan@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 093/177] HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for all Saitek X52 devices
+Date:   Tue, 15 Sep 2020 16:12:44 +0200
+Message-Id: <20200915140658.099621184@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
 References: <20200915140653.610388773@linuxfoundation.org>
@@ -44,57 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Nirenjan Krishnan <nirenjan@gmail.com>
 
-[ Upstream commit 7cf0d7c0f3c3b0203aaf81c1bc884924d8fdb9bd ]
+[ Upstream commit 77df710ba633dfb6c65c65cf99ea9e084a1c9933 ]
 
-Users can detect if the wait has completed or not and take appropriate
-actions based on this information (e.g. weather to continue
-initialization or rather fail and schedule another initialization
-attempt).
+The Saitek X52 family of joysticks has a pair of axes that were
+originally (by the Windows driver) used as mouse pointer controls. The
+corresponding usage page is the Game Controls page, which is not
+recognized by the generic HID driver, and therefore, both axes get
+mapped to ABS_MISC. The quirk makes the second axis get mapped to
+ABS_MISC+1, and therefore made available separately.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+One Saitek X52 device is already fixed. This patch fixes the other two
+known devices with VID/PID 06a3:0255 and 06a3:0762.
+
+Signed-off-by: Nirenjan Krishnan <nirenjan@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 3 ++-
- drivers/nvme/host/nvme.h | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/hid/hid-ids.h    | 2 ++
+ drivers/hid/hid-quirks.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index fa0039dcacc66..da82ba1896d8d 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -4287,7 +4287,7 @@ void nvme_unfreeze(struct nvme_ctrl *ctrl)
- }
- EXPORT_SYMBOL_GPL(nvme_unfreeze);
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 6ea3619842d8d..8fa034b3b7073 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -1014,6 +1014,8 @@
+ #define USB_DEVICE_ID_SAITEK_RAT9	0x0cfa
+ #define USB_DEVICE_ID_SAITEK_MMO7	0x0cd0
+ #define USB_DEVICE_ID_SAITEK_X52	0x075c
++#define USB_DEVICE_ID_SAITEK_X52_2	0x0255
++#define USB_DEVICE_ID_SAITEK_X52_PRO	0x0762
  
--void nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout)
-+int nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout)
- {
- 	struct nvme_ns *ns;
- 
-@@ -4298,6 +4298,7 @@ void nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout)
- 			break;
- 	}
- 	up_read(&ctrl->namespaces_rwsem);
-+	return timeout;
- }
- EXPORT_SYMBOL_GPL(nvme_wait_freeze_timeout);
- 
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index e268f1d7e1a0f..c053aedbc55db 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -538,7 +538,7 @@ void nvme_kill_queues(struct nvme_ctrl *ctrl);
- void nvme_sync_queues(struct nvme_ctrl *ctrl);
- void nvme_unfreeze(struct nvme_ctrl *ctrl);
- void nvme_wait_freeze(struct nvme_ctrl *ctrl);
--void nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout);
-+int nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout);
- void nvme_start_freeze(struct nvme_ctrl *ctrl);
- 
- #define NVME_QID_ANY -1
+ #define USB_VENDOR_ID_SAMSUNG		0x0419
+ #define USB_DEVICE_ID_SAMSUNG_IR_REMOTE	0x0001
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index a65aef6a322fb..7a2be0205dfd1 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -150,6 +150,8 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_RETROUSB, USB_DEVICE_ID_RETROUSB_SNES_RETROPORT), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_RUMBLEPAD), HID_QUIRK_BADPAD },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52_2), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52_PRO), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SEMICO, USB_DEVICE_ID_SEMICO_USB_KEYKOARD2), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SEMICO, USB_DEVICE_ID_SEMICO_USB_KEYKOARD), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SENNHEISER, USB_DEVICE_ID_SENNHEISER_BTD500USB), HID_QUIRK_NOGET },
 -- 
 2.25.1
 
