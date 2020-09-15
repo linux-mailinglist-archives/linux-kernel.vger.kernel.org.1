@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6196626A03B
+	by mail.lfdr.de (Postfix) with ESMTP id CEC4926A03C
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgIOHyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:54:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32705 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726189AbgIOHxc (ORCPT
+        id S1726244AbgIOHyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:54:32 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:53834 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726134AbgIOHxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:53:32 -0400
+        Tue, 15 Sep 2020 03:53:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600156405;
+        s=mimecast20190719; t=1600156414;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lGaRRpjQpf+p1Uh5RvyOwyknbPxdKoLhOu6iSyQOJLQ=;
-        b=CvxHaP96CKDSfEhVFfqiXyF+ln4QEftHglvVYy3QiiIw2AU2EyRu8A1n5BpR4u5prjweW2
-        bXhD1QFv7lKCqtK5w9sQPEHCvVFelQbe+3PiLzG+rsMG2CgVolQ+hNVV/rsnpbxtAKsFzD
-        VWE3uXQsHlT6zhk/wfXY0zivH+y7ehQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-CKquWnuHPniKTi8BnrRA9A-1; Tue, 15 Sep 2020 03:53:23 -0400
-X-MC-Unique: CKquWnuHPniKTi8BnrRA9A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F8A58014D9;
-        Tue, 15 Sep 2020 07:53:22 +0000 (UTC)
-Received: from [10.72.13.94] (ovpn-13-94.pek2.redhat.com [10.72.13.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A4A27EB8B;
-        Tue, 15 Sep 2020 07:53:17 +0000 (UTC)
-Subject: Re: [PATCH] vhost: reduce stack usage in log_used
-To:     Li Wang <li.wang@windriver.com>, mst@redhat.com
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1199326218.16921082.1600051335160.JavaMail.zimbra@redhat.com>
- <1600106889-25013-1-git-send-email-li.wang@windriver.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <7c22eeb8-6060-929d-15d7-f1403b98c17f@redhat.com>
-Date:   Tue, 15 Sep 2020 15:53:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=TR7JxnOBNr424Beez9Q5MTM9hQnK+cl0m0mKhD17YaA=;
+        b=Yo2DkjvhLOWfCdHKTbJX8AUSF5WcBJB7Epu77Voz6GUVE7ZSUnzNmexUxk8dWri6S/lZMJ
+        AeZO+3rhvdBNA38gI3WDWY1ZGqo1RwfHfD5Lz2QVe2Ndc7b55G9QZopNN1PWnVRaFrlNHd
+        GpFPhvk4x67aiS4KL+vse8pf8d0Go0U=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-HcdBepG6Pz-HKtCykrbjrg-1; Tue, 15 Sep 2020 03:53:33 -0400
+X-MC-Unique: HcdBepG6Pz-HKtCykrbjrg-1
+Received: by mail-wr1-f70.google.com with SMTP id a10so877506wrw.22
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:53:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TR7JxnOBNr424Beez9Q5MTM9hQnK+cl0m0mKhD17YaA=;
+        b=dZXVoOdqbVmPiYypeLwtjvujhFeyo2Cn4ifIvK6VslBGBlypEX3LuFY30ubgTVcZXX
+         aBJaQYi/r2M87AQdeQibADSrZi7lwircadkbaTs1MrE/hpadZsn6CSKq8iDP9hamzZ0F
+         yyrwoTJuvy0tqsX0iEisQgRMhO1BWXY1fCuWhsgcAi+/6fbWBoZqIiZdHQMV0RKdL2qY
+         c0DvtxQiIlZCBljKn+ZDwbtnJKKIfxUUTzwewoDP1wf6X+qguomuZGnlY7hgDNqRa7/+
+         cDq5dNKMKkTvwST3wAefixdF3g/T6zrfoIeQokDw/QdzDVL4Pv/WQ5BOk8btvPuVRH0D
+         1Ufw==
+X-Gm-Message-State: AOAM531FBF/pVcKIX1p+7mBbJZTjci+YwPIFAMjjeKOCCQXGNSqsaeg0
+        RnDRoAaRx5HkZM41t6JRB5bAM1FEwOxkMvc2VYK/ng2MTW4i/4uVo/3Ny7PEjur/mIoCPNybMW3
+        RjRMBY5M2eBgH2IbFc4bm25q5
+X-Received: by 2002:a5d:67d0:: with SMTP id n16mr21603275wrw.198.1600156411512;
+        Tue, 15 Sep 2020 00:53:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcnuPIQLgkGz4EQMffvKTc4V/aYPutLoJf1Mxip9nYIgSetEZ9acO+lGavC3kJYRL7eYi9qQ==
+X-Received: by 2002:a5d:67d0:: with SMTP id n16mr21603256wrw.198.1600156411382;
+        Tue, 15 Sep 2020 00:53:31 -0700 (PDT)
+Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id t16sm25301572wrm.57.2020.09.15.00.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 00:53:30 -0700 (PDT)
+From:   Julien Thierry <jthierry@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
+        Julien Thierry <jthierry@redhat.com>
+Subject: [PATCH 1/3] objtool: check: Remove useless tests
+Date:   Tue, 15 Sep 2020 08:53:16 +0100
+Message-Id: <20200915075318.7336-2-jthierry@redhat.com>
+X-Mailer: git-send-email 2.21.3
+In-Reply-To: <20200915075318.7336-1-jthierry@redhat.com>
+References: <20200915075318.7336-1-jthierry@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1600106889-25013-1-git-send-email-li.wang@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+save_reg already checks that the register being saved does not already
+have a saved state.
 
-On 2020/9/15 上午2:08, Li Wang wrote:
-> Fix the warning: [-Werror=-Wframe-larger-than=]
->
-> drivers/vhost/vhost.c: In function log_used:
-> drivers/vhost/vhost.c:1906:1:
-> warning: the frame size of 1040 bytes is larger than 1024 bytes
->
-> Signed-off-by: Li Wang <li.wang@windriver.com>
-> ---
->   drivers/vhost/vhost.c | 2 +-
->   drivers/vhost/vhost.h | 1 +
->   2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> index b45519c..31837a5
-> --- a/drivers/vhost/vhost.c
-> +++ b/drivers/vhost/vhost.c
-> @@ -1884,7 +1884,7 @@ static int log_write_hva(struct vhost_virtqueue *vq, u64 hva, u64 len)
->   
->   static int log_used(struct vhost_virtqueue *vq, u64 used_offset, u64 len)
->   {
-> -	struct iovec iov[64];
-> +	struct iovec *iov = vq->log_iov;
->   	int i, ret;
->   
->   	if (!vq->iotlb)
-> diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-> index 9032d3c..5fe4b47
-> --- a/drivers/vhost/vhost.h
-> +++ b/drivers/vhost/vhost.h
-> @@ -123,6 +123,7 @@ struct vhost_virtqueue {
->   	/* Log write descriptors */
->   	void __user *log_base;
->   	struct vhost_log *log;
-> +	struct iovec log_iov[64];
->   
->   	/* Ring endianness. Defaults to legacy native endianness.
->   	 * Set to true when starting a modern virtio device. */
+Remove redundant checks before processing a register storing operation.
 
+Signed-off-by: Julien Thierry <jthierry@redhat.com>
+---
+ tools/objtool/check.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 4e2f703b6a25..fd2edab8e672 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2030,7 +2030,7 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
+ 				/* drap: push %rbp */
+ 				cfi->stack_size = 0;
+ 
+-			} else if (regs[op->src.reg].base == CFI_UNDEFINED) {
++			} else {
+ 
+ 				/* drap: push %reg */
+ 				save_reg(cfi, op->src.reg, CFI_BP, -cfi->stack_size);
+@@ -2059,9 +2059,7 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
+ 
+ 				/* save drap offset so we know when to restore it */
+ 				cfi->drap_offset = op->dest.offset;
+-			}
+-
+-			else if (regs[op->src.reg].base == CFI_UNDEFINED) {
++			} else {
+ 
+ 				/* drap: mov reg, disp(%rbp) */
+ 				save_reg(cfi, op->src.reg, CFI_BP, op->dest.offset);
+-- 
+2.21.3
 
