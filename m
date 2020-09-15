@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF3126A9D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E037126A9D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727705AbgIOQcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
+        id S1727703AbgIOQaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727504AbgIOPyI (ORCPT
+        with ESMTP id S1727428AbgIOPxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:54:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30423C061355;
-        Tue, 15 Sep 2020 08:54:07 -0700 (PDT)
+        Tue, 15 Sep 2020 11:53:42 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AAA6C06174A;
+        Tue, 15 Sep 2020 08:52:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=2UlbGdiZDTOnbAr3xs1aHbeR9XTzI0Lit7D+l7hf2I4=; b=oc+kgjLwN6z7KfpzJBCa7G7OBj
-        xMg3Fwxams8c4EpKokR8UZQx2ybyjDj6drc+aW/2LIv1O+PR2BmjXm+WhI4RUptwlI8TGWRoAeWLn
-        tDzzTX6C7Wcaz+wjCgZzqB/SScThzcLyj8JgUrilV2pjnlwL2WrjnmkdPgkjiBopQKBs17NlwGyrT
-        ONpkConNykQRC+jrpDpmqw3ajb1dphcelbcTILjH85oTRbiw7nNGsu7203+03im4y0uv272kq3shG
-        s0VEBKB5Z/ya3O5D9oa/TJdMgnhrtizoC8G9P+/zAzkC5+arP3EQvUavmCF3BtD/B11AifbDQWTH6
-        Z2mcOZcw==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIDGv-0003AQ-TI; Tue, 15 Sep 2020 15:53:34 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org
-Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: a saner API for allocating DMA addressable pages v3
-Date:   Tue, 15 Sep 2020 17:51:04 +0200
-Message-Id: <20200915155122.1768241-1-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CVAqHaHH33AZ+oBegMlU0v54kTGf0Fk88db9aLUGWW8=; b=MD6yoZC5JuFe13k0gswTa+6VHc
+        g4JTWT6rT+8BAoHMIwKX++SkP98aCnLln4FDdwZpuelKE6Mb75hag72Jv5qUIe6TU2v3XRnbz9JQZ
+        CriqRQt6lzqrj6q6AVplZ8AmGuIn7zrecAU/xn/ExmwUDdtbeaHSuTXbGEujWok75m78moty6Jlmj
+        IAOVWmMX5Pf/BoY+H/XZnj39rsMuxreF+uItJMApilsxH070/Mgt/GkgMgtNtauLAD79gzusZndl3
+        WJceNNOMVa5z/bB5EEYVcnx/6BY36K1IGK7uK0GeYkmC93Qa2JyT8n123mOIBWrybwbc5yKQFGwNQ
+        0RWfhsHg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIDFK-0006B8-RR; Tue, 15 Sep 2020 15:51:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D7B9E3006D0;
+        Tue, 15 Sep 2020 17:51:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B9CAB203EB17D; Tue, 15 Sep 2020 17:51:50 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 17:51:50 +0200
+From:   peterz@infradead.org
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915153113.GA6881@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, Sep 15, 2020 at 05:31:14PM +0200, Oleg Nesterov wrote:
 
-this series replaced the DMA_ATTR_NON_CONSISTENT flag to dma_alloc_attrs
-with a separate new dma_alloc_pages API, which is available on all
-platforms.  In addition to cleaning up the convoluted code path, this
-ensures that other drivers that have asked for better support for
-non-coherent DMA to pages with incurring bounce buffering over can finally
-be properly supported.
+> > So yeah, fs/super totally abuses percpu_rwsem, and yes, using it from
+> > IRQ context is totally out of spec. That said, we've (grudgingly)
+> > accomodated them before.
+> 
+> Yes, I didn't expect percpu_up_ can be called from IRQ :/
 
-As a follow up I plan to move the implementation of the
-DMA_ATTR_NO_KERNEL_MAPPING flag over to this framework as well, given
-that is also is a fundamentally non coherent allocation.  The replacement
-for that flag would then return a struct page, as it is allowed to
-actually return pages without a kernel mapping as the name suggested
-(although most of the time they will actually have a kernel mapping..)
+Yeah, me neither. That's well out of spec for a blocking primitive in
+general.
 
-In addition to the conversions of the existing non-coherent DMA users,
-I've also added a patch to convert the firewire ohci driver to use
-the new dma_alloc_pages API.
+> > This seems to be a fairly long standing issue, and certainly not unique
+> > to ARM64 either (Power, and anyone else using asm-gemeric/percpu.h,
+> > should be similarly affected I think). The issue seems to stem from
+> > Oleg's original rewrite:
+> >
+> >   a1fd3e24d8a4 ("percpu_rw_semaphore: reimplement to not block the readers unnecessarily")
+> 
+> Not really... I think it was 70fe2f48152e ("aio: fix freeze protection of aio writes").
 
-The first patch is queued up for 5.9 in the media tree, but included here
-for completeness.
+Ah, that came later? Fair enough, I'll change the Fixes line.
 
+> And iiuc io_uring does the same.
 
-A git tree is available here:
+Indeed, I just went through a bunch of the file_end_write() callers.
 
-    git://git.infradead.org/users/hch/misc.git dma_alloc_pages
+> > and is certainly an understandable mistake.
+> >
+> > I'm torn on what to do, using this_cpu over __this_cpu is going to
+> > adversely affect code-gen (and possibly performance) for all the
+> > percpu-rwsem users that are not quite so 'creative'.
+> 
+> Yes, but what else can we do?
 
-Gitweb:
+Well, I just talked about it with Will, there's a bunch of things we
+could do, but they're all quite ugly.
 
-    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dma_alloc_pages
+My leading alternative was adding: percpu_down_read_irqsafe() /
+percpu_up_read_irqsafe(), which use local_irq_save() instead of
+preempt_disable().
 
+But blergh.. Will also argued that by going with this patch, we'll get
+an affected workload when someone reports a performance regression,
+which I suppose is a bonus.
 
-Changes since v2:
- - fix up the patch reshuffle which wasn't quite correct
- - fix up a few commit messages
-
-Changes since v1:
- - rebased on the latests dma-mapping tree, which merged many of the
-   cleanups
- - fix an argument passing typo in 53c700, caught by sparse
- - rename a few macro arguments in 53c700
- - pass the right device to the DMA API in the lib82596 drivers
- - fix memory ownershiptransfers in sgiseeq
- - better document what a page in the direct kernel mapping means
- - split into dma_alloc_pages that returns a struct page and is in the
-   direct mapping vs dma_alloc_noncoherent that can be vmapped
- - conver the firewire ohci driver to dma_alloc_pages
-
-Diffstat:
+Anyway, I'll rewrite the Changelog and stuff it in locking/urgent.
