@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C6926A4C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5297F26A4E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgIOMNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        id S1726201AbgIOMSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgIOMHw (ORCPT
+        with ESMTP id S1726362AbgIOMHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 08:07:52 -0400
 Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDFFC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:57:03 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id a3so3539584oib.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:57:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECF7C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:57:17 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id 185so3482733oie.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=46qkXYBzzl32SKFnSZdE3/cfCOxFi6epSy1AcDD8C7A=;
-        b=an9h8NlrVyDqw3/Nelwhy+HmK4AMivI+ZRQgtHQ7JEEq4KjMFJvZ0nimyvI7R2raEj
-         6b2j+DPibko2NVqJ0/RGMbk9RKXPuoEIhWMgDC8sWyp1aV74YCaIEbaDrUAkB0oHIBuq
-         IYqNLRiuRb8AXV/e/ZFsApEb26WRuW7OQsOLFa5D7w33veZJuJkLUcTvKHAaG448DZeK
-         2W8XckP+r8UpgkMb5iGUmzoGkyo58c/OcW8xmUQFDFQKoXj4eKQEr+Le/WVM16HpB906
-         oEVdTVxdKiYP4ZZieDI1bID5TbsuJTwePI42VzUBTgOWT7UvMHSzDo4APGnkJJUxJwHK
-         y6lw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=23eBwkikbUdFI1VwBzcQWw7s0HgJQ31gftfd5FbE1mY=;
+        b=iNQIoNnKEoXn+rmps+MpJko2fm2R+Gfq1CQxxIF7Y9fc6zHbvxkb9lPdWa1/DjWpUi
+         Puk+o6VlK/AHBNBfEAMkg8Ok13oAjXf0YzFUeGsyYdkmcbCcdX5SeVY4SPNH0ajUHgpu
+         X/1uIzLx+Vi+m+TXmogBlcGsE0wc0pntBjHPQ716vH8HpvKATK8J1Pt4FgXRV4kyn3Gk
+         XvW0w+olHq2Vkt9AtB/cBYrqRL50IxyBUQgxekmhVaClWCJT5ouIxmqWgJAnJQx+9bAQ
+         ofctiibzVKD+i5ItT3yBt0h1qfPXS76Fs9svTAS1lmfjMF05zhZdeQmWDXwt3gOJbRc/
+         X2yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=46qkXYBzzl32SKFnSZdE3/cfCOxFi6epSy1AcDD8C7A=;
-        b=fc4/XlLOx7/By3Hfz48y1vn7j3Pzb4DATehHC26bVMudD8P/PqDjm4hMup4OJE7j3x
-         DG34OEm9bLrwBZLHAc3BY228qRSBWFAA/zl1x4Vi+zTarJ8JVlBtFJFYJ3ilhLvKS8M5
-         E8aUhOkoak17kyHykkB6bfD68E2oi0iOz3rPn571dG3Sr+s5eGDIrSbEIReFr5FTRFDW
-         u2eg4P3FXa8h9cjVRV2/clltn9cvG5nZlhhYFLfSNAcpZfG5P1DRljLNSgzyKrKILbGL
-         4d3GI82O1UUfyUb1Zn4OQdq00bssA3VFwMASa98UwlyA9GFOX/n75wiJSemcM1JhF86K
-         vHyg==
-X-Gm-Message-State: AOAM530xtM9153KIBj0oX0No0VxJgqg2Myldu6dCSBiVh4/G2jAChk/w
-        vOcm2rcgEAhB8YW45AiGP68=
-X-Google-Smtp-Source: ABdhPJz3YkvBDEkifdJwBiU3B4cARIjXtHukT5iJNFhnN3Slf0WcynE9ibgqbHm3UzfZr8UacJr8jg==
-X-Received: by 2002:aca:568d:: with SMTP id k135mr3160462oib.136.1600171022594;
-        Tue, 15 Sep 2020 04:57:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=23eBwkikbUdFI1VwBzcQWw7s0HgJQ31gftfd5FbE1mY=;
+        b=tTrcxRhsQqxcSzuDZfAxR4nJfCSwXjv3scZshTITykyrUj0ETT12sVdzieJWuitL7J
+         ryacm4hMgPca4KtEauSYkRMmKRYW4Yxc7jE3VOOQrj4Bt+y+oOumnH62VmqSzJpOPuxm
+         lQGdF1xBtDhQxyWGrXYv8cj49R+LlI2nmjfPsHAl5lJyB8V78DYRodLzknzgLvzYIxMs
+         0WwP5zJc8ePs+i+hjBgOLK9/DFT6WRAsvw3KHf66JLlK7PivnrChmPjL0Tc/FQEt2yvj
+         C1kEyI26MgE0ydIFrm9uG5VU8Uq3s9nyerrB+wSGuFZNhxhk2SXI4X42Cgi2YIysR7M7
+         z99g==
+X-Gm-Message-State: AOAM531I++7iYWiBkdEIoBbjfklhuEG6WmhpMJ4mbpQUDwrsKDSF6YX9
+        DHkcr2fttXV8mMGeuk9G+d0=
+X-Google-Smtp-Source: ABdhPJyr47554yiUF4kCGTgUdSKvJMH/nWXBoJ5WtAURSx0/mM6U9PpGXX5Za2DBQvcdb2Y1OeWi6g==
+X-Received: by 2002:aca:f40a:: with SMTP id s10mr3114125oih.126.1600171036734;
+        Tue, 15 Sep 2020 04:57:16 -0700 (PDT)
 Received: from localhost.localdomain ([111.205.198.3])
-        by smtp.gmail.com with ESMTPSA id y17sm5373055otq.68.2020.09.15.04.56.59
+        by smtp.gmail.com with ESMTPSA id y17sm5373055otq.68.2020.09.15.04.57.13
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 04:57:02 -0700 (PDT)
+        Tue, 15 Sep 2020 04:57:16 -0700 (PDT)
 From:   qianjun.kernel@gmail.com
 To:     tglx@linutronix.de, peterz@infradead.org, will@kernel.org,
         luto@kernel.org, linux-kernel@vger.kernel.org
 Cc:     laoar.shao@gmail.com, qais.yousef@arm.com, urezki@gmail.com,
         jun qian <qianjun.kernel@gmail.com>
-Subject: [PATCH V7 0/4] Softirq:avoid large sched delay from the pending softirqs
-Date:   Tue, 15 Sep 2020 19:56:05 +0800
-Message-Id: <20200915115609.85106-1-qianjun.kernel@gmail.com>
+Subject: [PATCH V7 1/4] softirq: Use sched_clock() based timeout
+Date:   Tue, 15 Sep 2020 19:56:06 +0800
+Message-Id: <20200915115609.85106-2-qianjun.kernel@gmail.com>
 X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+In-Reply-To: <20200915115609.85106-1-qianjun.kernel@gmail.com>
+References: <20200915115609.85106-1-qianjun.kernel@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,25 +68,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: jun qian <qianjun.kernel@gmail.com>
 
-When get the pending softirqs, it need to process all the pending
-softirqs in the while loop. If the processing time of each pending
-softirq is need more than 2 msec in this loop, or one of the softirq
-will running a long time, according to the original code logic, it
-will process all the pending softirqs without wakeuping ksoftirqd,
-which will cause a relatively large scheduling delay on the
-corresponding CPU, which we do not wish to see. The patch will check
-the total time to process pending softirq, if the time exceeds 2 ms
-we need to wakeup the ksofirqd to aviod large sched delay.
+Replace the jiffies based timeout with a sched_clock() based one.
 
-jun qian (4):
-  softirq: Use sched_clock() based timeout
-  softirq: Factor loop termination condition
-  softirq: Rewrite softirq processing loop
-  softirq: Allow early break the softirq processing loop
+Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+---
+ kernel/softirq.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
- kernel/softirq.c | 168 +++++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 120 insertions(+), 48 deletions(-)
-
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index c4201b7f..0db77ab 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -25,6 +25,7 @@
+ #include <linux/smpboot.h>
+ #include <linux/tick.h>
+ #include <linux/irq.h>
++#include <linux/sched/clock.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/irq.h>
+@@ -210,7 +211,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+  * we want to handle softirqs as soon as possible, but they
+  * should not be able to lock up the box.
+  */
+-#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
++#define MAX_SOFTIRQ_TIME	(2 * NSEC_PER_MSEC)
+ #define MAX_SOFTIRQ_RESTART 10
+ 
+ #ifdef CONFIG_TRACE_IRQFLAGS
+@@ -248,7 +249,7 @@ static inline void lockdep_softirq_end(bool in_hardirq) { }
+ 
+ asmlinkage __visible void __softirq_entry __do_softirq(void)
+ {
+-	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
++	u64 start = sched_clock();
+ 	unsigned long old_flags = current->flags;
+ 	int max_restart = MAX_SOFTIRQ_RESTART;
+ 	struct softirq_action *h;
+@@ -307,7 +308,7 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+ 
+ 	pending = local_softirq_pending();
+ 	if (pending) {
+-		if (time_before(jiffies, end) && !need_resched() &&
++		if (sched_clock() - start < MAX_SOFTIRQ_TIME && !need_resched() &&
+ 		    --max_restart)
+ 			goto restart;
+ 
 -- 
 1.8.3.1
 
