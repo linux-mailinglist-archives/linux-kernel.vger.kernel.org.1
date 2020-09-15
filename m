@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB6726B2D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C686C26B21D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727507AbgIOWyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
+        id S1727816AbgIOWlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727340AbgIOPil (ORCPT
+        with ESMTP id S1727511AbgIOP5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:38:41 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BF0C06178B
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:28:38 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d6so2124528pfn.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:28:38 -0700 (PDT)
+        Tue, 15 Sep 2020 11:57:53 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D4EC06178C;
+        Tue, 15 Sep 2020 08:29:41 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id bh1so1527051plb.12;
+        Tue, 15 Sep 2020 08:29:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3hFA+AYRcOFg15m1pODeTESDGf29GxzkowTbH/0FwhE=;
-        b=NvD9FH7jzHdmmVqx2+B3GaZyyb7SzVJCGbxcurxADdLywqS4prFZe+m15IKNLz/lZb
-         uufZgZRL5fc24zy97GUZiwuSjWy5SmkECf811W3pWN5ZmcZNLUppvpAj0LRvDeW5fg15
-         oxG0UXwRhqo/E0iSVuDLvwhhwAx6ZwjTAngSWBzPBAbBn+umSmm1DTYlDuAIMdMnoQTv
-         0Ffe/ORg2/b1UkMDmEKFU7XkXQUBqYfUZk1WNhhn6lDem+yq/j1f+uzz1zHXTBjRU+yO
-         2GqP9m9QdmD7dghZrVk93zAxLCXvJeT4QxQrEIhB4kRwR81ZyPu3Ikwm8LeaqyvlVhxo
-         MssA==
+        bh=Bk8FHoNYavjQaDMXukfCSYNC7rOp0MBvdAbTSFJ9/og=;
+        b=LM3vKSgY2UgkNKUQYWyLUW3BKLsSq+62daDFWAUjlul9vZzWf4dzoBZ90heTZum4QG
+         MghPqoe0FtuJFRhPz0Xc3khKfOsoGWKeHTX/T4fTeVCe16wj/R0bgzOcluhVJDyx2Jzq
+         5CS4QyXxh4BwcJ5mmGUmlU2z2Tr/0N1MdeQLGcDIksOcKxsIyMp0s9dYEqVbtoCzXCRP
+         TymqMryLPlGrEOQuD5YbuYMP9xtaKuO0nkiBODXXKDA4BR1d49aGFVJ8SrN2qQamDtT0
+         2QdE+lo3mfc0XEHYv6HTeEKVvW4OqQjVd6r6dzxD4eHFs32rzrNKiNT50+1DLG9JEWV7
+         1hgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3hFA+AYRcOFg15m1pODeTESDGf29GxzkowTbH/0FwhE=;
-        b=MWsYvYE2SqAU0AL+AYD4g/t8ToUb04rwyeo+v0UvnS5iendBjv/aSPgJ/gBDmGLuOa
-         n4PQp+oBDqMYwBxjnymPBN/sv37HWLMOOWLhVOulHaGziceLxz1MHhpLm8sR0k6jIQAS
-         jwFiej3xBy+qov0Jp+L2QMpyhzYQ0uEV9VYE457DQ9Z/JiHMSPDR5ZsLQ6K+fMG+5tob
-         3URNpKjLTFQYXZZdWDtwh69s42QqFgY6AqimNIARe1SyFKziMl+wbo8rSEgAu9NktFWb
-         X67B2vr+Xv0B0s8fr1a9m3bsEEb7iR1iXkihsheabQc1lcAm7YVNfa+5EGIyt4jDlX3A
-         GABQ==
-X-Gm-Message-State: AOAM532oSK81O4ay7h3TyDdBwPxYp3Ylo8jEWhkkh/e/B/fB8Tt8Jklz
-        Ss+smlNO45CFUcj10wk+ntApQOsVYPWl87QEFSATlA==
-X-Google-Smtp-Source: ABdhPJxqFxl0ezhOPvlUoXv87DU4ARGU0sUArN1IhU04uIEVn+Sze3RMVgqCcwOmxVDT3336+MmXOQXZxq6T9WdXFms=
-X-Received: by 2002:aa7:8287:0:b029:142:2501:39ec with SMTP id
- s7-20020aa782870000b0290142250139ecmr2349117pfm.59.1600183717500; Tue, 15 Sep
- 2020 08:28:37 -0700 (PDT)
+        bh=Bk8FHoNYavjQaDMXukfCSYNC7rOp0MBvdAbTSFJ9/og=;
+        b=IdXvRi6ALTqw9kccGpE9tOOUYz1RktAsifSwKRG2ATJKxW99QioZz1Dz7HjTMWRjJZ
+         uqBqmv7VhWf9jjFUx02XtNsGAQAD76+G+vn7VgARRxDpxamSfm09PeFhmZiqAFWhFaR6
+         OY6vzCF8gsZN5eO1B/5ssD8W3dmSvEnFlYNWQBLogkLgpWQVSj/vkoG4KkIqa7nfTQvv
+         UpDFqWbV9JjCxAV6I187XhiQkhtSYRZLuziVWmPPaFU42DxRbzg5xPX+LEzXBvfAV2SX
+         M24uag9D2bdfhZOrZZo7LXHoE+w29ZZmhjJ6E9P+vhwoaOXQnkzrfPEngoVuGOKcsr+k
+         qVjA==
+X-Gm-Message-State: AOAM531+PL/d5UmtfTcO9uu9ohUBTs5F32E0XQyg70JWzEq66SGIuidR
+        Hvz0k41l1EDtDKmBRhWk/8XUzohd3VOVz5UFxCx3lHJKh7N6OQ==
+X-Google-Smtp-Source: ABdhPJxKjhiVblnEJ+XgcD+hNUOkCKuxtSDTmDTGsfu64NbYz0Yrj+ANymccEQG44AElxPbr0SwISTERfqm9I8z5NKc=
+X-Received: by 2002:a17:902:b7c7:b029:d1:cc21:9c38 with SMTP id
+ v7-20020a170902b7c7b02900d1cc219c38mr8557505plz.21.1600183780761; Tue, 15 Sep
+ 2020 08:29:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200915125947.26204-1-songmuchun@bytedance.com> <20200915143241.GH5449@casper.infradead.org>
-In-Reply-To: <20200915143241.GH5449@casper.infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 15 Sep 2020 23:28:01 +0800
-Message-ID: <CAMZfGtW0PqU6SLihLABA8rU+FuBqm8NksDW=EkLXy1RZfYeDGA@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap
- pages of hugetlb page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de, almasrymina@google.com,
-        David Rientjes <rientjes@google.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org
+References: <20200909102640.1657622-1-warthog618@gmail.com> <20200909102640.1657622-8-warthog618@gmail.com>
+In-Reply-To: <20200909102640.1657622-8-warthog618@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 15 Sep 2020 18:29:23 +0300
+Message-ID: <CAHp75VcJjPverHO9JxTBPfTn+L8rZnc2u=bhjJh63ZKbO1MPCA@mail.gmail.com>
+Subject: Re: [PATCH v8 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
+ and GPIO_V2_LINE_GET_VALUES_IOCTL
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:32 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, Sep 9, 2020 at 1:35 PM Kent Gibson <warthog618@gmail.com> wrote:
 >
-> On Tue, Sep 15, 2020 at 08:59:23PM +0800, Muchun Song wrote:
-> > This patch series will free some vmemmap pages(struct page structures)
-> > associated with each hugetlbpage when preallocated to save memory.
+> Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
+> returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
 >
-> It would be lovely to be able to do this.  Unfortunately, it's completely
-> impossible right now.  Consider, for example, get_user_pages() called
-> on the fifth page of a hugetlb page.
+> The struct linereq implementation is based on the v1 struct linehandle
+> implementation.
 
-Can you elaborate on the problem? Thanks so much.
+Seems I have reviewed v7 of this. According to the changelog most of
+the comments are still applicable I think.
 
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> ---
 >
-> I've spent a lot of time thinking about this, and there's a lot of work
-> that needs to happen before we can do this, mostly in device drivers.
-> Do you want to help?  It's a multi-year project.
-
-Welcome, we can work together.
+> The linereq_ioctl() is a simple wrapper around linereq_get_values() here,
+> but will be extended with other ioctls in subsequent patches.
+>
+> Similarly, the struct line only contains the desc here, but will receive
+> the edge detector and debouncer fields in subsequent patches.
+>
+> Changed for v8:
+>  - fix BUILD_BUG_ON conditions and relocate them before the return in
+>    gpiolib_cdev_register()
 
 
 -- 
-Yours,
-Muchun
+With Best Regards,
+Andy Shevchenko
