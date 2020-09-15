@@ -2,184 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4BB26AFF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA7B26AFF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgIOVw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:52:28 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:56630 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727999AbgIOVvs (ORCPT
+        id S1728093AbgIOVwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727928AbgIOVty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:51:48 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLnmoR027388;
-        Tue, 15 Sep 2020 21:49:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=rHvhpgj7laAjHgkr4DLOBBS/uirpv7rnF3o3VrDMY1U=;
- b=GYNOL+0hzTDueVI/QSHkhCYwsLq8QUBznLkJcb54m93BSAMIqauW7e9cQ6AuZrOsJebq
- ims/bWmF/mwRoHuKRoRR1JWYFSPO9OJmAc/8D+m4oTaC9m7WcPsxl92uEtVrd1yXgyRH
- n8qzQ75chTQmJIhCLHMo+ixV/02KXHxjxf8vMDivCxV6TUbfE/bB6CNu7LFCQ5x8Sfea
- lZ0Cneuc3x77p+C7lF6NPjOjrl7T53YZ5cfl8eopNCNiST1gEI/Hz7U/OeRFZoqzudBp
- O4TZGZ+XtjyNHsuXMqlSSjqtSZyvwMdhZdLVFR/N2Pkh+kpu3OY+MheHNguW0vwItA4n EQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 33gnrqysy6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 21:49:49 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLTSF4011393;
-        Tue, 15 Sep 2020 21:49:34 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33h8864sd4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 21:49:34 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FLnTwH002605;
-        Tue, 15 Sep 2020 21:49:30 GMT
-Received: from [192.168.0.193] (/69.207.174.138)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 21:49:29 +0000
-Subject: Re: [RFC PATCH v7 11/23] sched/fair: core wide cfs task priority
- comparison
-To:     Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>
-Cc:     mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
-        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
-        Aaron Lu <ziqian.lzq@antfin.com>
-References: <cover.1598643276.git.jdesfossez@digitalocean.com>
- <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
-From:   chris hyser <chris.hyser@oracle.com>
-Message-ID: <f20f4d5b-574a-7c3d-8c08-3e6b7893fc58@oracle.com>
-Date:   Tue, 15 Sep 2020 17:49:23 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 15 Sep 2020 17:49:54 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C4CC06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:49:54 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x123so2728222pfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WRpHw5zCBEIhYxwdkTdUPJPPtKwwg9WVoW0/dlXYOFU=;
+        b=U2tjPWXOoaQZvfXCC/xDjl73VW3KlPBjDw0G8/0+99qDr1gTOXlYOv0Jdz321rbma7
+         ORHpkjm+Yn18tZI9TzuQws7IUWw3eXPbETqjR6MoePsAyFDJ0FfOTLU6Asu4c6OQWw2t
+         TG2rWc9SF6o2I8D55bxtMt2WAVhk6ZPRTMLL8jT9zGbtjqUu/WG850DsaJnqN5dVOxO/
+         cYxXC6GDh94W1NuLcjjtua1FYsaurb7Evm1Z2752lxDUK3poyEw0ZutwNaWGFLxbGll3
+         s06/rFWKxOYH4ZnDQZpy6N9Qqwy3lG9ATY2PKaNmOE0p6Ejt2CA+yfcL8NsHenfvjbdb
+         gXlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WRpHw5zCBEIhYxwdkTdUPJPPtKwwg9WVoW0/dlXYOFU=;
+        b=Yq9xjWWeQuUSVEoIASGDDvFUuV80vxV6dnkBxI0Vq6+3EEJZyoHtoH53zFjilQorj+
+         AWglSR15l3Ye8XuNozHWVGCLl+HLy9EnkN7gz7/6hp1flTzg1TkbbvY1PjvUlpgIb2Pr
+         46PwKALN+FyUfoaX5rknfVyQQ+jg6afz9wLj4gkJGOLRRQq/RpMDQMr7qOVP7uXqI0fJ
+         5AbSLphgDvvWmzX06AdYoOgendYSFJG4wtHbgrBWUOVNUKBeEPGIZfdiXKGKa+pz8JuX
+         4cmPfpCM/CARtK8xaBYLU6454bqoJDNQ058f0w9QU4hjTsaiyGoJz8/0fuv8fGdjEodz
+         JFFw==
+X-Gm-Message-State: AOAM533XXB89vzF3uY9iRUC1Uc8mLmDPDoTqbfwOm7Hn0G0g//HPSJFZ
+        dXwLBQrtgG8/TcyfkwmTMU8MDE5mOwvnkva6gI0riw==
+X-Google-Smtp-Source: ABdhPJxYUdP/+ZEn0ANnOVR2hOfK2Y2KqTaiOoe3ydR+wyKezAj/LWiQzFNxpWdxpQH7vyQDbl3Q9w2R5YWPGLrroDs=
+X-Received: by 2002:a63:7882:: with SMTP id t124mr6423889pgc.381.1600206593276;
+ Tue, 15 Sep 2020 14:49:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150168
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1011 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150169
+References: <20200915172658.1432732-1-rkir@google.com> <20200915174643.GT14436@zn.tnic>
+ <CAKwvOdm9bQmL=gZypkosH0MG=S28=jJ6wZiTMCNP6=Z+NfN1AA@mail.gmail.com>
+ <20200915182530.GV14436@zn.tnic> <CAKwvOdkKk1KuAFDoWNLnMUi3_JnV7atDFnvS7CdkgNXnNg0p1g@mail.gmail.com>
+ <20200915202034.GZ14436@zn.tnic>
+In-Reply-To: <20200915202034.GZ14436@zn.tnic>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 15 Sep 2020 14:49:40 -0700
+Message-ID: <CAKwvOdmmXEu40m9bVL9zY5XyBRs2f15cs3FZQLCCh4u3i07pDA@mail.gmail.com>
+Subject: Re: [PATCH] arch: x86: power: cpu: init %gs before
+ __restore_processor_state (clang)
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     =?UTF-8?Q?Martin_Li=C5=A1ka?= <mliska@suse.cz>,
+        Roman Kiryanov <rkir@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-pm@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Alistair Delva <adelva@google.com>,
+        Haitao Shan <hshan@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/20 3:51 PM, Julien Desfossez wrote:
-> From: Aaron Lu <aaron.lwe@gmail.com>
-> 
-> This patch provides a vruntime based way to compare two cfs task's
-> priority, be it on the same cpu or different threads of the same core.
-> 
-> When the two tasks are on the same CPU, we just need to find a common
-> cfs_rq both sched_entities are on and then do the comparison.
-> 
-> When the two tasks are on differen threads of the same core, each thread
-> will choose the next task to run the usual way and then the root level
-> sched entities which the two tasks belong to will be used to decide
-> which task runs next core wide.
-> 
-> An illustration for the cross CPU case:
-> 
->     cpu0         cpu1
->   /   |  \     /   |  \
-> se1 se2 se3  se4 se5 se6
->      /  \            /   \
->    se21 se22       se61  se62
->    (A)                    /
->                         se621
->                          (B)
-> 
-> Assume CPU0 and CPU1 are smt siblings and cpu0 has decided task A to
-> run next and cpu1 has decided task B to run next. To compare priority
-> of task A and B, we compare priority of se2 and se6. Whose vruntime is
-> smaller, who wins.
-> 
-> To make this work, the root level sched entities' vruntime of the two
-> threads must be directly comparable. So one of the hyperthread's root
-> cfs_rq's min_vruntime is chosen as the core wide one and all root level
-> sched entities' vruntime is normalized against it.
-> 
-> All sub cfs_rqs and sched entities are not interesting in cross cpu
-> priority comparison as they will only participate in the usual cpu local
-> schedule decision so no need to normalize their vruntimes.
-> 
-> Signed-off-by: Aaron Lu <ziqian.lzq@antfin.com>
-> ---
->   kernel/sched/core.c  |  23 +++----
->   kernel/sched/fair.c  | 142 ++++++++++++++++++++++++++++++++++++++++++-
->   kernel/sched/sched.h |   3 +
->   3 files changed, 150 insertions(+), 18 deletions(-)
+On Tue, Sep 15, 2020 at 1:20 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Sep 15, 2020 at 12:51:47PM -0700, Nick Desaulniers wrote:
+> > I agree; I also would not have sent the patch though.
+>
+> Maybe google folks should run stuff by you before sending it up... :-)
 
+Ha!
 
-While investigating reported 'uperf' performance regressions between core sched v5 and core sched v6/v7, this patch 
-seems to be the first indicator of about a 40% perf loss in moving between v5 and v6 (and the accounting here is carried 
-forward into this patch). Unfortunately, it is not the easiest thing to trace back as the patchsets are not directly 
-comparable in this case and moving into v7, the base kernel revision has changed from 5.6 to 5.9.
+1. they don't pay me enough for that.
+2. even if they did, I wouldn't want that responsibility
+3. I'm probably least qualified for that.  Google has many strong
+upstream contributors with much longer contribution history than
+myself.  Maybe toolchain specific stuff though...
+4. you generally don't want people like that in any organization.
+More gatekeepers winds up being a synchronization/contention point.
+Remember, the goal is to train others to be self sufficient, so you
+can drink margaritas on the roof.  That suggestion goes against the
+ultimate goal.
+5. You'd think a multi-billion-dollar per quarter company could hire a
+few more people to help; instead stock buybacks are more attractive I
+guess?  Maybe better ROI?  I suspect one too many managers
+internalized the Mythical Man Month's point about "adding more people
+to a late software project just makes it later" to mean "starve your
+projects for resources" and run a ghost-ship (ie. big boat, with
+little to no deck hands to ensure the boat doesn't "Costa Concordia"
+(noun-as-a-verb...oh well)).  To be fair, hiring has been impacted by
+COVID; my point is more so being stretched incredibly thin.  There's
+been what, 3 Clang related kernel bugs you and I have been CC'ed on
+today.  Hard to fix compiler bugs AND triage from the fire hose.  I
+should probably just put down LKML for today and start fixing the
+[haunted][damned] compiler.
 
-The regressions were duplicated with the following setup: on a 24 core VM, create a cgroup and in it, fire off the uperf 
-server and the client running 2 mins worth of 100 threads doing short TCP reads and writes. Do this for both the cgroup 
-core sched tagged and not tagged (technically tearing everything down and rebuilding it in between). Short and easy to 
-do dozens of runs for statistical averaging.
+>
+> > Until LTO has landed upstream, this is definitely somewhat self
+> > inflicted. This was only debugged last week; even with a compiler fix
+> > in hand today, it still takes time to ship that compiler and qualify
+> > it; for other folks on tighter timelines, I can understand why the
+> > patch was sent,
+>
+> ... because they have the requirement that a patch which gets backported
+> to a kernel used at google needs to be upstream?
 
-What ever the above version of this test might map to in real life, it presumably exacerbates the competition between 
-softirq threads and the core sched tagged threads which was observed in the reports.
+That's a rule for stable, yes.  But also because we have folks that
+don't seem to understand (moreso maybe haven't considered) that
+"forking is not free" when upstream moves faster than you and you'd
+also like to rebase someday; as such acquiring technical debt at a
+rate that's impossible to pay off.
 
-Here are the uperf results of the various patchsets. Note, that disabling smt is better for these tests and that that 
-presumably reflects the overall overhead of core scheduling which went from bad to really bad. The primary focus in this 
-email is to start to understand what happened within core sched itself.
+> Because I'm willing to
+> bet a lot of cash that no one runs bleeding egde 5.9-rcX in production
+> over there right now :-)
 
-patchset          smt=on/cs=off  smt=off    smt=on/cs=on
---------------------------------------------------------
-v5-v5.6.y      :    1.78Gb/s     1.57Gb/s     1.07Gb/s
-pre-v6-v5.6.y  :    1.75Gb/s     1.55Gb/s    822.16Mb/s
-v6-5.7         :    1.87Gs/s     1.56Gb/s    561.6Mb/s
-v6-5.7-hotplug :    1.75Gb/s     1.58Gb/s    438.21Mb/s
-v7             :    1.80Gb/s     1.61Gb/s    440.44Mb/s
+I guess you're paying for beers then.  "Android Common Kernels" run
+mainline.  (They're a bit esoteric in terms of "production" but
+cuttlefish virtual devices are running Android on mainline).
 
-If you start by contrasting v5 and v6 on the same base 5.6 kernel to try to rule out kernel to kernel version 
-differences, bisecting v6 pointed to the v6 version of (ie this patch):
+> > It would be much nicer if we had the flexibility to disable stack
+> > protectors per function, rather than per translation unit.  I'm going
+> > to encourage you to encourage your favorite compile vendor ("write to
+> > your senator") to support the function attribute
+> > __attribute__((no_stack_protector)) so that one day,
+>
+> I already forgot why gcc doesn't do that... Martin, do you know?
 
-"[RFC PATCH v7 11/23] sched/fair: core wide cfs task priority comparison"
+Martin has patches for that, he has CC'ed me when sending them
+upstream for review.  Review was stalled, so I provided some feedback.
+I'll review a GCC patch (once it's updated with my previous feedback)
+if I have to; I'm not against it. w/e so long as we have a timeline
+for a kernel fix.
 
-although all that really seems to be saying is that the new means of vruntime accounting (still present in v7) has 
-caused performance in the patchset to drop which is plausible; different numbers, different scheduler behavior. A rough 
-attempt to verify this by backporting parts of the new accounting onto the v5 patchset show where that initial switching 
-from old to new accounting dropped perf to about 791Mb/s and the rest of the changes (as shown in the v6 numbers though 
-not backported), only bring the v6 patchset back to 822.16Mb/s. That is not 100% proof, but seems very suspicious.
+> > And the case that's causing the compiler bug in question is something
+> > all compiler vendors will need to consider in their implementations.
+>
+> Are you talking to gcc folks about it already so that they DTRT too?
 
-This change in vruntime accounting seems to account for about 40% of the total v5-to-v7 perf loss though clearly lots of 
-other changes have occurred in between. Certainly not saying there is a bug here, just time to bring in the original 
-authors and start a general discussion.
+I CC'ed Martin on the LLVM bug, since this is a case I'm looking for
+his input on, or at least for him to be aware of the test case.
 
--chrish
+> Btw, if it is any consolation, talking to compiler folks is like a charm
+> in comparison to talking to hardware vendors and trying to get them
+> to agree on something because they seem to think that the kernel is
+> software and sure, can be changed to do whatever. But that's another
+> story for the beers... :-)
+
+I look forward to it.
+-- 
+Thanks,
+~Nick Desaulniers
