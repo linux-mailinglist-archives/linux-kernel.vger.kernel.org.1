@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19131269C8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4D0269C91
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgIODac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:30:32 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:44438 "EHLO fornost.hmeau.com"
+        id S1726106AbgIODc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 23:32:29 -0400
+Received: from mga05.intel.com ([192.55.52.43]:64033 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725953AbgIODac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:30:32 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kI1fk-0005Nq-Gl; Tue, 15 Sep 2020 13:30:25 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 15 Sep 2020 13:30:24 +1000
-Date:   Tue, 15 Sep 2020 13:30:24 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC
- unconditionally
-Message-ID: <20200915033024.GB25789@gondor.apana.org.au>
-References: <20200914204209.256266093@linutronix.de>
- <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de>
- <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1725953AbgIODc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 23:32:28 -0400
+IronPort-SDR: /Ff7Sc/2bAMfuFL28DUZnfXGPOCtrvHJofIWhL+lTr+gtO/4/oUfQ80CxImNwwezSyyrKJm9ve
+ c8TiUFWwWHUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="244026443"
+X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
+   d="scan'208";a="244026443"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 20:32:26 -0700
+IronPort-SDR: kgHvH0nwnQ+JiW06ax7Jyzv9UWdWRdiaBpic9eRw2HuNDzQTCp7Ql2kUhNUFJ6PWreu1yehA+3
+ A1Xwv+DpM8iQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
+   d="scan'208";a="482596385"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga005.jf.intel.com with ESMTP; 14 Sep 2020 20:32:24 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, masahiroy@kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, Xu Yilun <yilun.xu@intel.com>
+Subject: [PATCH v2 0/4] add DFL bus support to MODULE_DEVICE_TABLE()
+Date:   Tue, 15 Sep 2020 11:27:49 +0800
+Message-Id: <1600140473-12351-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I trimmed the cc as the mailing lists appear to be blocking this
-email because of it.
+Patch #1 and #2 add dfl bus support to MODULE_DEVICE_TABLE(), so that
+dfl driver modules could be auto-loaded when dfl devices are added.
 
-On Mon, Sep 14, 2020 at 03:37:49PM -0700, Linus Torvalds wrote:
->
-> So it _looks_ like this code started using kmap() - probably back when
-> kmap_atomic() was so cumbersome to use - and was then converted
-> (conditionally) to kmap_atomic() rather than just changed whole-sale.
-> Is there actually something that wants to use those sg_miter functions
-> and sleep?
+Patch #3 is a fix of the description of fields in struct dfl_device.
 
-I dug up the old zinc patch submissions and this wasn't present at
-all in the original.  The original zinc code used blkcipher_walk
-which unconditinoally does kmap_atomic.
+Patch #4 moves the dfl bus APIs to a new header file in the public
+folder so that scattered dfl device drivers could include the common
+dfl bus APIs.
 
-So it's only the SG miter conversion that introduced this change,
-which appears to be a simple oversight (I think Ard was working on
-latency issues at that time, perhaps he was worried about keeping
-preemption off unnecessarily).
+Main changes from v1:
+- A new patch (Patch #3) to fix the description.
+- Rename the dfl-bus.h to dfl.h
+- Updated the MAINTAINERS under FPGA DFL DRIVERS.
+- Improve comments and minor fixes.
 
----8<---
-There is no reason for the chacha20poly1305 SG miter code to use
-kmap instead of kmap_atomic as the critical section doesn't sleep
-anyway.  So we can simply get rid of the preemptible check and
-set SG_MITER_ATOMIC unconditionally.
+Xu Yilun (4):
+  fpga: dfl: move dfl_device_id to mod_devicetable.h
+  dfl: add dfl bus support to MODULE_DEVICE_TABLE()
+  fpga: dfl: fix the comments of type & feature_id fields
+  fpga: dfl: move dfl bus related APIs to include/linux/fpga/dfl.h
 
-Even if we need to reenable preemption to lower latency we should
-be doing that by interrupting the SG miter walk rather than using
-kmap.
+ MAINTAINERS                       |  1 +
+ drivers/fpga/dfl-n3000-nios.c     |  3 +-
+ drivers/fpga/dfl.c                |  1 +
+ drivers/fpga/dfl.h                | 85 +-------------------------------------
+ include/linux/fpga/dfl.h          | 86 +++++++++++++++++++++++++++++++++++++++
+ include/linux/mod_devicetable.h   | 12 ++++++
+ scripts/mod/devicetable-offsets.c |  4 ++
+ scripts/mod/file2alias.c          | 17 ++++++++
+ 8 files changed, 123 insertions(+), 86 deletions(-)
+ create mode 100644 include/linux/fpga/dfl.h
 
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/lib/crypto/chacha20poly1305.c b/lib/crypto/chacha20poly1305.c
-index 431e04280332..5850f3b87359 100644
---- a/lib/crypto/chacha20poly1305.c
-+++ b/lib/crypto/chacha20poly1305.c
-@@ -251,9 +251,7 @@ bool chacha20poly1305_crypt_sg_inplace(struct scatterlist *src,
- 			poly1305_update(&poly1305_state, pad0, 0x10 - (ad_len & 0xf));
- 	}
- 
--	flags = SG_MITER_TO_SG;
--	if (!preemptible())
--		flags |= SG_MITER_ATOMIC;
-+	flags = SG_MITER_TO_SG | SG_MITER_ATOMIC;
- 
- 	sg_miter_start(&miter, src, sg_nents(src), flags);
- 
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.7.4
+
