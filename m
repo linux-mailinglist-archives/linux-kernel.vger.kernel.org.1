@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF49426A32A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8BF26A386
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726243AbgIOKbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:31:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56026 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726153AbgIOKbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:31:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 02318B0F2;
-        Tue, 15 Sep 2020 10:32:04 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 12:31:45 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        mhocko@suse.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] mm: don't rely on system state to detect hot-plug
- operations
-Message-ID: <20200915103145.GB30015@linux>
-References: <20200915094143.79181-1-ldufour@linux.ibm.com>
- <20200915094143.79181-3-ldufour@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915094143.79181-3-ldufour@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726366AbgIOKqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726191AbgIOKn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:43:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5811C06174A;
+        Tue, 15 Sep 2020 03:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=VUh0x74rFETn1g3Yut3ZTkkDJyuzqbAXdAXZp2icBLA=; b=uZp0qBVO7EA2b4U9UE3pkYlpRm
+        Skm19GN/kZHisiT/YZXL/HiTJqeVFHQF7AC2EWBmJEkEACC0H84gdHLjrMnctcUj1NE63NVhMC8Cd
+        uKkUryTxfC+SOPbeaJAgSBzwI3RevZ99IGUwxjsPlJFor55u0JTtes9eV1haMCqwBk6zzCcofTtIi
+        JbiBRYIp9BYY/PTL7j1vfZSTU7K5rr2lElOroXFKeRPh6oCB8VArdTIN/hRCpmPceIIWOrEq2vWla
+        XIB6nZH9BnCwJpyZ8pqOuAPIgj+8g+18Gs2EZRwjTs0+Oy3a3BWyOLhYKnQ618zHNjaaiSk1ZvX13
+        vwpwi04A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kI8R5-0006v6-7X; Tue, 15 Sep 2020 10:43:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B003B305C16;
+        Tue, 15 Sep 2020 12:43:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 8A932214EDD4A; Tue, 15 Sep 2020 12:43:40 +0200 (CEST)
+Message-ID: <20200915103157.345404192@infradead.org>
+User-Agent: quilt/0.66
+Date:   Tue, 15 Sep 2020 12:31:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     rjw@rjwysocki.net, bp@alien8.de
+Cc:     x86@kernel.org, tony.luck@intel.com, lenb@kernel.org,
+        daniel.lezcano@linaro.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        ulf.hansson@linaro.org, paulmck@kernel.org, tglx@linutronix.de,
+        naresh.kamboju@linaro.org, peterz@infradead.org
+Subject: [RFC][PATCH 0/4] Fix up ACPI processor idle vs RCU
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:41:42AM +0200, Laurent Dufour wrote:
-> [1] According to Oscar Salvador, using this qemu command line, ACPI memory
-> hotplug operations are raised at SYSTEM_SCHEDULING state:
+Hi,
 
-I would like to stress that this is not the only way we can end up
-hotplugging memor while state = SYSTEM_SCHEDULING.
-According to David, we can end up doing this if we reboot a VM
-with hotplugged memory.
-(And I have seen other virtualization technologies do the same)
+A number of people have been tripping over the improved RCU-lockdep complaints
+in idle.
 
- 
-> Fixes: 4fbce633910e ("mm/memory_hotplug.c: make register_mem_sect_under_node() a callback of walk_memory_range()")
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Cc: stable@vger.kernel.org
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
+These 4 patches attempt to cure ACPI processor idle. I've done my best to not
+wreck things, but it's all magical code with very few comments, so who knows..
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Boris tested an earlier version of these patches and they worked for his
+32bit Atom board that was triggering complaints.
 
--- 
-Oscar Salvador
-SUSE L3
