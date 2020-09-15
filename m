@@ -2,132 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFF6269A58
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9319E269A5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgIOAT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726122AbgIOATX (ORCPT
+        id S1726148AbgIOATh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:19:37 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:41081 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726122AbgIOATd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:19:23 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0A1C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:19:22 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id k25so1257856ljk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NZ/X7Z1ojnGM1c/SapOK8GvcEU91nHo1ce5yJcGFuqE=;
-        b=C1z9mpPdVuT7rcGZrLZVAaF2cq1LYNf/HFVhxP5utJEBX3TwILpnb8fWI3/bprzx9B
-         a8Ku50zNIR/rB9Pym36a4xwgWcV9TuJAxI9292KLBbdvcFjc5bI95VjT+gjB3G8nSOOV
-         lW4/QVnW97B9Kh8PAFpB06DAaPV3Tb0L/8nr8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NZ/X7Z1ojnGM1c/SapOK8GvcEU91nHo1ce5yJcGFuqE=;
-        b=QmI/szudHYFU9/LmtlMBfVPgsqz1NTtIek60I6TZaobIbkGK3J6bVQHC9DyYyFE2Hx
-         /7px3ohgs5mEeIiwK7I5QD4axJ98JDvj/yKaZa827Ti0ORxbwpXpClrTGbDdhGfiDxxM
-         qh0YYutDLmF1iStrIKNp6kWZnBN+B5BM9asW6AD+7XojAM9bAhD5F2v7cLxlGvMfzoU+
-         ZLoOioM5H9vSLW1ZyK+2BmaednqatwVDS3fgKBXMncgHZPpnflQVWuRqk7Zf3xcFFngX
-         Eu/DF5KrMKad8hGqLPSSFtOUo3XyQ9mfz+cIBsZZ/CENiKGB5eqwBy9zhneBOFHfhoqB
-         VfTA==
-X-Gm-Message-State: AOAM533meT01e/6RIiBD3JjuF+e2kK7xnqSQUzXIlsHe30kB2hnPYkIU
-        BVNQG/VUKm+kv2G4S8FGjjBw93wZqMpj8w==
-X-Google-Smtp-Source: ABdhPJy3To2SReTmwfpmG+C8/fIDo4Z8qgrylFXPn3GKm1EmBL03JqjUt5qQ1ig4/F53Xai8uDdbwQ==
-X-Received: by 2002:a2e:99c4:: with SMTP id l4mr6320695ljj.428.1600129160668;
-        Mon, 14 Sep 2020 17:19:20 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id k205sm3954309lfk.19.2020.09.14.17.19.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 17:19:19 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id a15so1242491ljk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:19:18 -0700 (PDT)
-X-Received: by 2002:a2e:84d6:: with SMTP id q22mr5387477ljh.70.1600129158238;
- Mon, 14 Sep 2020 17:19:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200821234958.7896-1-peterx@redhat.com> <20200821234958.7896-2-peterx@redhat.com>
- <20200914143829.GA1424636@nvidia.com> <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
- <20200914183436.GD30881@xz-x1> <20200914211515.GA5901@xz-x1>
- <20200914225542.GO904879@nvidia.com> <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
- <20200914232851.GH1221970@ziepe.ca>
-In-Reply-To: <20200914232851.GH1221970@ziepe.ca>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 14 Sep 2020 17:19:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh8-FpGdVRYoOvcfuL_YyB5oF2A9qyzpyxbAU4HnAqXeg@mail.gmail.com>
-Message-ID: <CAHk-=wh8-FpGdVRYoOvcfuL_YyB5oF2A9qyzpyxbAU4HnAqXeg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Peter Xu <peterx@redhat.com>, Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 14 Sep 2020 20:19:33 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 4C44BD3B;
+        Mon, 14 Sep 2020 20:19:32 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 14 Sep 2020 20:19:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=vX1pFnhbIBzXQa2l8jrntsGgk3Q5UmP
+        7jCafClE7Hgo=; b=KH4N2pvdomgLPmSLP6DwsoQksbgjq+1HmS02GZw0PVlW7wJ
+        7eRbnkXNQyjS1qp50xJTYJTJIiDxZR3Fb2AFB83jb9Y/ZtXm6mCxjtAUSTM5RG8x
+        FecRyTX4NpASSe85SlpVjzgshFpklUCk8Q+BV+vQBRfMdKi9SkBggajLKcgUlzUd
+        b0DNIderw3vssz5ettckkgR2Mnyc+lMEevsJy2VJXkTW0djlpt5O8EydxZrHP8TR
+        kxkw/djIXGyUvTfF+4YEPKT9Vwubr3k+cFfjogCP3oMcuo6TO9Gw9orGJZ/lpgw6
+        NO4Gy2AF54PyOiqHWfRWxgi00J/jCp/lrko/hVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vX1pFn
+        hbIBzXQa2l8jrntsGgk3Q5UmP7jCafClE7Hgo=; b=VcUQJVy44hFI1unHR3BUM7
+        lTy4QL+/Gh0k1KU4//AbOGucOx0l8HfD36WUAXGBE9lync5Kv+sj3rJ2NSkO3cvN
+        JqZ0eygL1qb+xjO3mmjs0bX3tV48QeI4e/qMrzFzoK20qStPQDAuG3tgyfoLYU6s
+        /M3mJMAj/0/B9BboFXKhy4cvXN+FnEmkVPCcFkJXTtSQsD4ofd90Bm63wy6Kln7g
+        OIFZGYN9eLq1JVT1Qq8+iEv5x4IRBX7N27elmGhmsBpi1dmciyAdm0NxQPgLucSi
+        5D82tlD+OEL/v8+/KBR8h1PdkRObPyPSpfikNtv0SBV2X/yWBxJhsYyM/0KmoVjg
+        ==
+X-ME-Sender: <xms:kghgX99dRYOfJmbIU2wka8w5UR-QK2UZO9ISUrp2D-fHbXsWGVUUZQ>
+    <xme:kghgXxtuaWprmeB_Ss84dyvmN28exDTKl0eiQlGYpM6GGqxaXS706Xs5ho4KyqG4T
+    jWldm9UPfNl_jH09Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeijedgvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:kghgX7B7FOq23585XEUK3AOBQ23I_YInMg7AZEXqF-JmlqFqskq-5Q>
+    <xmx:kghgXxc2_PzR_vuX4nR6Az1AUZuEr3Mxq4uwtc4Vk_HUgLNoExHqWA>
+    <xmx:kghgXyN2c1sUoodgZY9ri5HDAvH6kRLec65WjgXc7IOYAdbX6FhsHA>
+    <xmx:kwhgX_ob7dhTXLjy5nNTDphiY4DdtnGlWLpw8cnuyuf2o4r5UFNRjw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 56C88E00BF; Mon, 14 Sep 2020 20:19:30 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-259-g88fbbfa-fm-20200903.003-g88fbbfa3
+Mime-Version: 1.0
+Message-Id: <6e14e75f-f9c1-4d33-b95d-0c7dd7131a9f@www.fastmail.com>
+In-Reply-To: <e7a64983-fe1d-1ba2-b0c3-ae4a791f7a75@roeck-us.net>
+References: <20200914122811.3295678-1-andrew@aj.id.au>
+ <e7a64983-fe1d-1ba2-b0c3-ae4a791f7a75@roeck-us.net>
+Date:   Tue, 15 Sep 2020 09:49:10 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Guenter Roeck" <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Cc:     "Jean Delvare" <jdelvare@suse.com>, wsa@kernel.org,
+        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] Throttle I2C transfers to UCD9000 devices
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 4:28 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> Hmm. If symptoms stop with this patch should we investigate
-> MADV_DONTFORK?
 
-I took a quick look at it, and it all looks trivially correct.
 
-All MADV_DONTFORK does is to set the VM_DONTCOPY flag in the vma.
+On Tue, 15 Sep 2020, at 02:13, Guenter Roeck wrote:
+> On 9/14/20 5:28 AM, Andrew Jeffery wrote:
+> > Hello,
+> > 
+> > While working with system designs making use of TI's UCD90320 Power
+> > Sequencer we've found that communication with the device isn't terribly
+> > reliable.
+> > 
+> > It appears that back-to-back transfers where commands addressed to the
+> > device are put onto the bus with intervals between STOP and START in the
+> > neighbourhood of 250us or less can cause bad behaviour. This primarily
+> > happens during driver probe while scanning the device to determine its
+> > capabilities.
+> > 
+> > We have observed the device causing excessive clock stretches and bus
+> > lockups, and also corruption of the device's volatile state (requiring it
+> > to be reset).  The latter is particularly disruptive in that the controlled
+> > rails are brought down either by:
+> > 
+> > 1. The corruption causing a fault condition, or
+> > 2. Asserting the device's reset line to recover
+> > 
+> > A further observation is that pacing transfers to the device appears to
+> > mitigate the bad behaviour. We're in discussion with TI to better
+> > understand the limitations and at least get the behaviour documented.
+> > 
+> > This short series implements the mitigation in terms of a throttle in the
+> > i2c_client associated with the device's driver. Before the first
+> > communication with the device in the probe() of ucd9000 we configure the
+> > i2c_client to throttle transfers with a minimum of a 1ms delay (with the
+> > delay exposed as a module parameter).
+> > 
+> > The series is RFC for several reasons:
+> > 
+> > The first is to sus out feelings on the general direction. The problem is
+> > pretty unfortunate - are there better ways to implement the mitigation?
+> > 
+> > If there aren't, then:
+> > 
+> > I'd like thoughts on whether we want to account for i2c-dev clients.
+> > Implementing throttling in i2c_client feels like a solution-by-proxy as the
+> > throttling is really a property of the targeted device, but we don't have a
+> > coherent representation between platform devices and devices associated
+> > with i2c-dev clients. At the moment we'd have to resort to address-based
+> > lookups for platform data stashed in the transfer functions.
+> > 
+> > Next is that I've only implemented throttling for SMBus devices. I don't
+> > yet have a use-case for throttling non-SMBus devices so I'm not sure it's
+> > worth poking at it, but would appreciate thoughts there.
+> > 
+> > Further, I've had a bit of a stab at dealing with atomic transfers that's
+> > not been tested. Hopefully it makes sense.
+> > 
+> > Finally I'm also interested in feedback on exposing the control in a little
+> > more general manner than having to implement a module parameter in all
+> > drivers that want to take advantage of throttling. This isn't a big problem
+> > at the moment, but if anyone has thoughts there then I'm happy to poke at
+> > those too.
+> > 
+> 
+> As mentioned in patch 2/2, I don't think a module parameter is a good idea.
+> I think this should be implemented on driver level, similar to zl6100.c,
+> it should be limited to affected devices and not be user controllable.
 
-And dup_mmap() in kernel/fork.c is very trivial, and does
+Yep. I will look at zl6100.c.
 
-                if (mpnt->vm_flags & VM_DONTCOPY) {
-                        vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
-                        continue;
-                }
+> 
+> In respect to implementation in the i2c core vs in drivers: So far we
+> encountered this problem for some Zilker labs devices and for some LTC
+> devices. While the solution needed here looks similar to the solution
+> implemented for Zilker labs devices, the solution for LTC devices is
+> different. I am not sure if an implementation in the i2c core is
+> desirable. It looks quite invasive to me, and it won't solve the problem
+> for all devices since it isn't always a simple "wait <n> microseconds
+> between accesses". For example, some devices may require a wait after
+> a write but not after a read, or a wait only after certain commands (such
+> as commands writing to an EEPROM). Other devices may require a mechanism
+> different to "wait a certain period of time". It seems all but impossible
+> to implement a generic mechanism on i2c level.
 
-for a vma that has that VM_DONTCOPY flag.
+Yep, that's fair. I went this route to avoid implementing two sets of handlers 
+providing the pacing in the driver (for before and after we register with the 
+pmbus core), but it is invasive as you point out. Let me look at your suggested 
+alternatives and get back to you.
 
-So I don't think it's MADV_DONTFORK, and in fact if that _had_ been
-broken, then the old "look at page_mapcount()" would have shown the
-problem too, since by definition a fork() would have increased that
-count.
-
-That said, the thing Hugh worried about was random other VM-internal
-reasons why the page flags end up being elevated, that aren't due to
-these things. And he's right. The new aggressive COW by that
-do_wp_page() simplification will basically COW for any random thing.
-
-My argument to Hugh was that if the page has become private to a
-single mapping, even if it has its count elevated it should all simply
-be writable, ie it shouldn't have gotten the paeg fault that causes
-the COW in the first place. IOW, my thinking was that any proper page
-pinning will also have to make sure that the page is already writable
-and dirty, so no amount of other page counts should even matter.
-
-But that argument may be entirely bogus, because I didn't think of
-case "insert random case here".
-
-My original force-COW patch for GUP avoided this issue, exactly
-because it basically said that a GUP is a write - so it didn't care
-about whatever state the page had, it *forced* the page to be mapped
-dirty and writable in the target.
-
-But part of the argument for the do_wp_page() simplification thing was
-that it allowed us to remove my force-COW thing.
-
-Is there perhaps some easy test-case that shows this that doesn't
-require any actual rdma hardware?
-
-                  Linus
+Andrew
