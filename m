@@ -2,142 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E76326B7C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BD626B7CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbgIPA3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
+        id S1727307AbgIPA3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgIONti (ORCPT
+        with ESMTP id S1726727AbgIONti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 09:49:38 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9E1C061A28
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:36:57 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id g96so3191978otb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:36:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5nixci3CSSlm0JVJHjLv8kSY8PhichT9C9IRwcdycYA=;
-        b=frM1guUPtYEMHzBHOmBXc1LJN0o/Mhxc876Up3RbNvLAopbQ51jsxn66hMudOWe+7D
-         qb0q6byNtnMAi7YZ/5QVMXXBGRO8H+YZre3Z0q+2wt1a/4W5UmqMAoPDfsHXvx/gaacZ
-         f9VKtNiD/2RmhiywtqC6DD11yNsMPRZHlVGu+H8XXcT7nMXl0TKxbHdXwp2msnugNfda
-         5FMcbZ5ppng5F+r02LNIJJvEOmSKmXygmLJuVT1IevEOJqkJpB2Z9xq0q0A5nRd25IjN
-         FsYcvSBU0Fre2hTvb7hD+Dc7Ro39e+TKVPUsoQrkRDiwf2ncucLBcd23rPxa1gqOO8pG
-         g65w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5nixci3CSSlm0JVJHjLv8kSY8PhichT9C9IRwcdycYA=;
-        b=aA5RyOx+oztYs1tW7nAqt7Zer4zHvAs6WHkX/TuQczvhQVE4rvGkB2qE+4MXQxkevH
-         n1Iyx/PmwHPR7Rc8XlWCIVCEnVv0ugzuKtJzyqusR09SNo12srdIpoBzeV0OxG2ouz4A
-         kWhPZQ84PRmgYfw8yKh3Xw8nX+mdAEdAd3/mY1Fr0JKzw2Hn4Il5aWZ4ENNCZpQsTJU9
-         aYTBPy172yVZ+yNn8suwMQi0iBlSkBLwkdL0+jJnt22obc6NlhEydrmmtPsHmQFyearK
-         oOV9YHQ1ahnvGASPQpnxFLi7D47EecjmQZ9k4qWcrXpgc4sx0pI6rx5eKomzR4vdXYK4
-         NxhQ==
-X-Gm-Message-State: AOAM530+hkgOwyx8DOAbUpiTt3w5f52+xmi49BsOAfv4ALTgSwg1G9qf
-        j9klChVVIUOcpz62MbMBfag9UVOjvBM6QqRZ
-X-Google-Smtp-Source: ABdhPJx6pSgCgdr+Rct0Mxa3o9lj8STvJmmRBbJOVmXhNia2GSJl/blPThqV+VQFP2sH8jbgfvKpMw==
-X-Received: by 2002:a9d:315:: with SMTP id 21mr13659132otv.278.1600177016337;
-        Tue, 15 Sep 2020 06:36:56 -0700 (PDT)
-Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id o13sm5597673otj.2.2020.09.15.06.36.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 06:36:55 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: fix the bug of child process can't do io task
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Yinyin Zhu <zhuyinyin@bytedance.com>, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200915130245.89585-1-zhuyinyin@bytedance.com>
- <e206f1b4-1f22-c3f5-21a6-cec498d9c830@kernel.dk>
-Message-ID: <0d66eabc-3b8b-2f84-05b7-981c2b6fe5dd@kernel.dk>
-Date:   Tue, 15 Sep 2020 07:36:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8B9C061A30;
+        Tue, 15 Sep 2020 06:39:38 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0e42005feaf7d7c7b8ac70.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:5fea:f7d7:c7b8:ac70])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C50F91EC0268;
+        Tue, 15 Sep 2020 15:39:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600177176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=dhZKzpi5NwMqC2Y026MmSG+nykHvIQDoT2w6gPXuHLY=;
+        b=AjgSKk+El2fiX1ZPu1zYW9Y2RA3GDtJQrL8mk6+2XTAekAmZGsZIzyuOJLDysNejm/iQRU
+        VJhKxq8d1orYvUmiZlPuF4gTajNhWAIwPNULeLJtyCGbmblkT4XSQ+5+lhzj27gn5NFQXY
+        CpCKKDQhSvjzzeGp9XE/TEU0mASstzg=
+Date:   Tue, 15 Sep 2020 15:39:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
+ Control hardware bits
+Message-ID: <20200915133929.GI14436@zn.tnic>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
+ <20200914151816.u6camicid4bd5lgo@treble>
+ <20200914153812.c6uh3spqmcy2ft3d@treble>
+ <20200915095716.GI3612@linux.intel.com>
+ <20200915132725.a2qbdio3jsu7rsqs@treble>
 MIME-Version: 1.0
-In-Reply-To: <e206f1b4-1f22-c3f5-21a6-cec498d9c830@kernel.dk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200915132725.a2qbdio3jsu7rsqs@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 7:25 AM, Jens Axboe wrote:
-> On 9/15/20 7:02 AM, Yinyin Zhu wrote:
->> when parent process setup a io_uring_instance, the ctx->sqo_mm was
->> assigned of parent process'mm. Then it fork a child
->> process. So the child process inherits the io_uring_instance fd from
->> parent process. Then the child process submit a io task to the io_uring
->> instance. The kworker will do the io task actually, and use
->> the ctx->sqo_mm as its mm, but this ctx->sqo_mm is parent process's mm,
->> not the child process's mm. so child do the io task unsuccessfully. To
->> fix this bug, when a process submit a io task to the kworker, assign the
->> ctx->sqo_mm with this process's mm.
-> 
-> Hmm, what's the test case for this? There's a 5.9 regression where we
-> don't always grab the right context for certain linked cases, below
-> is the fix. Does that fix your case?
+On Tue, Sep 15, 2020 at 08:27:25AM -0500, Josh Poimboeuf wrote:
+> I see the v37 missing patches now, but they're not threaded with the
+> original thread.
 
-Ah hang on, you're on the 5.4 code base... I think this is a better
-approach. Any chance you can test it?
+Probably because he bounced only the ones you didn't get, separately.
 
-The problem with yours is that you can have multiple pending async
-ones, and you can't just re-assign ctx->sqo_mm. That one should only
-be used by the SQPOLL thread.
+> v38 has some missing patches as well.
 
+And I got them twice. Can we please stop the spamming?
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 2a539b794f3b..e8a4b4ae7006 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -514,7 +514,7 @@ static inline void io_queue_async_work(struct io_ring_ctx *ctx,
- 		}
- 	}
- 
--	req->task = current;
-+	req->task = get_task_struct(current);
- 
- 	spin_lock_irqsave(&ctx->task_lock, flags);
- 	list_add(&req->task_list, &ctx->task_list);
-@@ -1832,6 +1832,7 @@ static void io_poll_complete_work(struct work_struct *work)
- 	spin_unlock_irq(&ctx->completion_lock);
- 
- 	io_cqring_ev_posted(ctx);
-+	put_task_struct(req->task);
- 	io_put_req(req);
- out:
- 	revert_creds(old_cred);
-@@ -2234,11 +2235,11 @@ static void io_sq_wq_submit_work(struct work_struct *work)
- 
- 		ret = 0;
- 		if (io_req_needs_user(req) && !cur_mm) {
--			if (!mmget_not_zero(ctx->sqo_mm)) {
-+			if (!mmget_not_zero(req->task->mm)) {
- 				ret = -EFAULT;
- 				goto end_req;
- 			} else {
--				cur_mm = ctx->sqo_mm;
-+				cur_mm = req->task->mm;
- 				use_mm(cur_mm);
- 				old_fs = get_fs();
- 				set_fs(USER_DS);
-@@ -2275,6 +2276,7 @@ static void io_sq_wq_submit_work(struct work_struct *work)
- 		}
- 
- 		/* drop submission reference */
-+		put_task_struct(req->task);
- 		io_put_req(req);
- 
- 		if (ret) {
+And yeah, use another mail service - all those companies switching the
+o365 and mimecast, means time to move kernel development off of company
+mail because company mail simply can't handle it.
 
 -- 
-Jens Axboe
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
