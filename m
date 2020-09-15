@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6108D269A2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C6E269A3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgIOAJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:09:29 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:51519 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725994AbgIOAJ2 (ORCPT
+        id S1726134AbgIOANv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIOANn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:09:28 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id A4FBCCA0;
-        Mon, 14 Sep 2020 20:09:26 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Mon, 14 Sep 2020 20:09:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=w9scfiDXERdUZ5OX9u5Pjp32MnkhZcx
-        HYXolYSkIPck=; b=RRZCPo2s7nPXNunsAdodeVfcNTnVLeZlHtyf63zWTC09zRB
-        syZi/SPl5fCxNcs3tYnJ205tQ+QJswp0mYfojiip3gVh5gayTa0O8iBA0OuTa8ZD
-        GrjhlyLZDpDvPyeEEcquZRRBQ0wYndfa5KgpzK3lXaw/FoDzXiqG3FcRh7R8Ql3A
-        5byNQihkSZSdmALmrdCLP85N5e1rPXsafcu0M7mGPY9W9p+6OcBIGf7ZPq+rzAtQ
-        5oUn3cU6tHQ/vaGOhBoH6W84ZQto210hK7ApQbyAaa8u0WZAPakqGRizv/SwKq4q
-        wAiDLCk4EgGkMvNaEuvEH/FpQO0amXiGZqbhT1Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=w9scfi
-        DXERdUZ5OX9u5Pjp32MnkhZcxHYXolYSkIPck=; b=sDtLK/DCaZhi93kXhLlCn0
-        F0+srl2C2FpbczmGkSKqnkhQgWORB2/0lFTTpjSgDlgLy/8gQXGn/rxLy6kJvCq0
-        sCKTxaU769j0ORqGELr0o3BebYqQTq+gIormDt4AGsSlS0wqNSglF/Xns7b83dGB
-        HXXCP28bNAigV13wgFNbmNnJSUyOE6Sm7NnBE8cmX/FtmcdIFerEEFrvP3Bd0mUX
-        f/1qTLNTIKV+fUs+Mc+3RF4RZQu13RqjXaezUzJ+fqrIqbbbLJvms/6dZPKWsE5P
-        sO2yL2Q7RaUb8i9Ti6mwGYMdWEJ6hokCiZzy5kSPuTs/UlUDSvcMUMmRfuwCUQRw
-        ==
-X-ME-Sender: <xms:NQZgX0hNwYMu5A1PrQS06vDCCM4n3x3_6NdWObCrb-auE-LjaMTIAw>
-    <xme:NQZgX9CzErvlMLVG_1ozKxe4YX1fs7l_Mi_J9GdUfZlDdVgcK83i3QrjEzJjJl-BN
-    sA8Hq-ZseJ_B5Hygw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeijedgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:NQZgX8HHo49cMmYEgPMeZmsv8FdRz1wiZAyKz2V9DMMi_LN03ac0IQ>
-    <xmx:NQZgX1TfAhdFOmCeS-arK7sB6U5mzMlXpnA44sc50N6WsETLyUgXSA>
-    <xmx:NQZgXxxTklYCTl9C8XT3f54uyKxg9LYWGXYhC1glGyjmom8rSa4jYQ>
-    <xmx:NgZgXzt74FKU8LPiEpPJPlFGu7ANQ0y2MrvR8Q6P7Q6zzq_LvBtBlg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id C9649E00BF; Mon, 14 Sep 2020 20:09:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-259-g88fbbfa-fm-20200903.003-g88fbbfa3
-Mime-Version: 1.0
-Message-Id: <95dff829-d810-489b-9b05-cebe72272ae5@www.fastmail.com>
-In-Reply-To: <71067b18-c4bc-533a-0069-f21069c5fd0d@roeck-us.net>
-References: <20200914122811.3295678-1-andrew@aj.id.au>
- <20200914122811.3295678-3-andrew@aj.id.au>
- <71067b18-c4bc-533a-0069-f21069c5fd0d@roeck-us.net>
-Date:   Tue, 15 Sep 2020 09:39:04 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Guenter Roeck" <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Cc:     "Jean Delvare" <jdelvare@suse.com>, wsa@kernel.org,
-        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[RFC_PATCH_2/2]_hwmon:_(pmbus/ucd9000)_Throttle_SMBus_tran?=
- =?UTF-8?Q?sfers_to_avoid_poor_behaviour?=
-Content-Type: text/plain
+        Mon, 14 Sep 2020 20:13:43 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33705C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:13:43 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id u48so465238uau.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vbe1AqHS58DfWSfiPA4xYQAF16nRd6xvbt+9w/fq7F8=;
+        b=a9nIWOuBsncn5CebByhLCjo54A9sj/xgJrXzTbXB4c+iGvDoxRz2kj+HDFuTlz6FHe
+         ccTCakQhRnSTvbseiPYReW0cS/V95isQRNkbPDnFi3195ZDjjfks6GzN4NKVPvcaGFRA
+         OiJFlEWiuip89VPeG5qgsATN0udSYhMKAY1mk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vbe1AqHS58DfWSfiPA4xYQAF16nRd6xvbt+9w/fq7F8=;
+        b=bX41iOiwEw7ngVUhIYWX9lJPFoNM42c8TJYDLkGtBZir6cOL7QguKS+yWHvmLRqQ1X
+         EYr4rQD/jFELm6bmcSUdI7a092STMwxA+qGKmL16SoxbfbLix1/PXl267A2WsjbTnkeI
+         MMk+iuPZC2oQh7Gm+UaIn7VqYGeNJKUwx8zSP34xesfT3jizfZmV0jtRKYSQgGVuqeQP
+         GKWZP8jMt65fN+mN+RUMiYeDeigtjxE0gL/4hVSvnUWqUGm2KRhY3+JGKui1Sl/fP2SA
+         81/jkBvunUcOZhoY+D3LJ6VP5Rvkp5Mv6KKU8OavnnJLQxAiVLZhuaPS/F/ZhEz1o1cU
+         CI1A==
+X-Gm-Message-State: AOAM53243d9lOtFOfNwgOjEa4gz71VcoeQHeRl++yA8xCKl0Uf6hMEm8
+        83CItnFpYkW9vFwSs5t4bGahUuFlD6//XA==
+X-Google-Smtp-Source: ABdhPJxZGmxqLlbPdPOR/p0/fHJrf1WRrxqvP8uaqrykvv9J/Jt+3V9nP4uc4I4vxHGguY3kQoYtxQ==
+X-Received: by 2002:ab0:130a:: with SMTP id g10mr8869179uae.100.1600128820926;
+        Mon, 14 Sep 2020 17:13:40 -0700 (PDT)
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
+        by smtp.gmail.com with ESMTPSA id w6sm1723163uan.4.2020.09.14.17.13.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 17:13:40 -0700 (PDT)
+Received: by mail-vk1-f175.google.com with SMTP id n7so393031vkq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:13:40 -0700 (PDT)
+X-Received: by 2002:a1f:1dcf:: with SMTP id d198mr2927179vkd.30.1600128819652;
+ Mon, 14 Sep 2020 17:13:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200914130143.1322802-1-daniel.thompson@linaro.org> <20200914130143.1322802-4-daniel.thompson@linaro.org>
+In-Reply-To: <20200914130143.1322802-4-daniel.thompson@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 14 Sep 2020 17:13:28 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VUPXdHoPaQg=Pp=bH-iORicO+1LjBZ0PNu0=SumC5tYw@mail.gmail.com>
+Message-ID: <CAD=FV=VUPXdHoPaQg=Pp=bH-iORicO+1LjBZ0PNu0=SumC5tYw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] kernel: debug: Centralize dbg_[de]activate_sw_breakpoints
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        Patch Tracking <patches@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On Mon, Sep 14, 2020 at 6:02 AM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> During debug trap execution we expect dbg_deactivate_sw_breakpoints()
+> to be paired with an dbg_activate_sw_breakpoint(). Currently although
+> the calls are paired correctly they are needlessly smeared across three
+> different functions. Worse this also results in code to drive polled I/O
+> being called with breakpoints activated which, in turn, needlessly
+> increases the set of functions that will recursively trap if breakpointed.
+>
+> Fix this by moving the activation of breakpoints into the debug core.
+>
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+> ---
+>  kernel/debug/debug_core.c       | 2 ++
+>  kernel/debug/gdbstub.c          | 1 -
+>  kernel/debug/kdb/kdb_debugger.c | 2 --
+>  3 files changed, 2 insertions(+), 3 deletions(-)
 
-On Mon, 14 Sep 2020, at 23:44, Guenter Roeck wrote:
-> On 9/14/20 5:28 AM, Andrew Jeffery wrote:
-> > Short turn-around times between transfers to e.g. the UCD90320 can lead
-> > to problematic behaviour, including excessive clock stretching, bus
-> > lockups and potential corruption of the device's volatile state.
-> > 
-> > Introduce transfer throttling for the device with a minimum access
-> > delay of 1ms.
-> > 
-> 
-> Some Zilker labs devices have the same problem, though not as bad
-> to need a 1ms delay. See zl6100.c. Various LTS devices have a similar
-> problem, but there it is possible to poll the device until it is ready.
-> See ltc2978.c.
+I like the idea, but previously the kgdb_arch_handle_exception() was
+always called after the SW breakpoints were activated.  Are you sure
+it's OK to swap those two orders across all architectures?
 
-Ah, this kind of info is what I was hoping for. Thanks.
-
-> 
-> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> > ---
-> >  drivers/hwmon/pmbus/ucd9000.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/hwmon/pmbus/ucd9000.c b/drivers/hwmon/pmbus/ucd9000.c
-> > index 81f4c4f166cd..a0b97d035326 100644
-> > --- a/drivers/hwmon/pmbus/ucd9000.c
-> > +++ b/drivers/hwmon/pmbus/ucd9000.c
-> > @@ -9,6 +9,7 @@
-> >  #include <linux/debugfs.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/module.h>
-> > +#include <linux/moduleparam.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/init.h>
-> >  #include <linux/err.h>
-> > @@ -18,6 +19,9 @@
-> >  #include <linux/gpio/driver.h>
-> >  #include "pmbus.h"
-> >  
-> > +static unsigned long smbus_delay_us = 1000;
-> 
-> Is that to be on the super-safe side ? Patch 0 talks about needing 250 uS.
-
-Yeah, 250us was what we came to after 5 minutes of playing with values and a 
-logic analyzer, we didn't really take the time to determine a minimum with 
-confidence. TI mentioned the minimum time between transfers in their test 
-environment is 2.5ms, so 1ms is aggressive by comparison.
-
-> 
-> > +module_param(smbus_delay_us, ulong, 0664);
-> > +
-> 
-> I would not want to have this in user control, and it should not affect devices
-> not known to be affected. 
-
-Certainly agree with the latter, and regarding the former, it was mostly a
-convenient mechanism for me to experiment with values. I agree that it's
-not something we would want to be changed arbitrarily by a system admin.
-
-> I would suggest an implementation similar to other
-> affected devices; again, see zl6100.c or ltc2978.c for examples.
-
-Yes, thanks for these pointers, I will take a look.
-
-Andrew
+-Doug
