@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2883026A8A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DCE26A8AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727164AbgIOPUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:20:40 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:43466 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727279AbgIOOvz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:51:55 -0400
-Received: by mail-wr1-f67.google.com with SMTP id k15so3627012wrn.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:51:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ScEzOicQhZHRQe3GX8Ad88ihCQg+83EKj9SS+tMXjbE=;
-        b=bMcdV1ffiNIsg3aOYxHmQa+6RxNePsrevI1dnfxmazc+PwAZcUOjRN6Xi8pvvuOuTF
-         V3AAVJ8Ret3zPKYRIS07rH8L1cj9pss3kCCjdiBkkyVoQDReCWase//WYB3osH8vVewy
-         wlgdN0ofj9nb4onH1aiFBChvOKKeP9chhSY7CLD0r6BYpq4hb64LeHaT+ekZ83AAwsQ2
-         Z/A9TxWQk1lixsmsniXxrS1Goj/BMc/yhEWsZJ7wFbIEdO0LweczPi9CJt7FV9eH4o6j
-         T+WMgafUo3wPeSqA7IKzLnwwEpUThl1Q+18OeThwHxLqtuEF7FPXQa0r8hlkpDLtnOXQ
-         SJrA==
-X-Gm-Message-State: AOAM5333k018h1bO+kPUPC49j6m6MW5vGINvAbsmho3JJ3b0+htJWy9g
-        01rQmrEW2sxDOfm/OwGh8bMnDOFmaYBRgPzW2UGZzLgUh+M=
-X-Google-Smtp-Source: ABdhPJxcCUSlOQwqbpFQAWsKv/oIZYpN6A3Abt+Re3PX3fKmT9dh2zQizI53nrKJs0RjknxGgEbhSCknGbufFOyKKmw=
-X-Received: by 2002:adf:a418:: with SMTP id d24mr14046208wra.80.1600181493570;
- Tue, 15 Sep 2020 07:51:33 -0700 (PDT)
+        id S1727427AbgIOPWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:22:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727304AbgIOOwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:52:20 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B313206DC;
+        Tue, 15 Sep 2020 14:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600181537;
+        bh=N9yGY1aXOgj8bD3rTeab7VM/6L6jqcYODfBu/4dZQGM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Jbgi3oTgKCpRS/gcC9HQAD47dKQc/oM65Tos9j05uzQrWfx4loznW5bLcAkc7yYSH
+         oZ39xph87f6693yZghtnM8+YJL7WWunTt6QrvJhm8Z4MzKNY6TYqcWqEpy7/8nPz/I
+         tYnVVlP2EOReRmi0uWS5VUyUGVnJfqJ/ydj0TPx0=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kICJb-00C2UB-8i; Tue, 15 Sep 2020 15:52:15 +0100
 MIME-Version: 1.0
-References: <20200915081541.41004-1-yuehaibing@huawei.com>
-In-Reply-To: <20200915081541.41004-1-yuehaibing@huawei.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 15 Sep 2020 23:51:22 +0900
-Message-ID: <CAM9d7cjzPHR4wB3KA_3MfyhwH+PAwF5ucjwWe=xeSL7SHPch+A@mail.gmail.com>
-Subject: Re: [PATCH -next] perf metric: Remove duplicate include
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 15 Sep 2020 15:52:15 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>, kernel-team@android.com
+Subject: Re: [PATCH 1/2] irqchip/gic: Handle non-standard SGI deactivation on
+ Samsung's Franken-GIC
+In-Reply-To: <d1301d9c-5529-0089-f163-2a728055712c@samsung.com>
+References: <20200915133944.1285456-1-maz@kernel.org>
+ <CGME20200915134023eucas1p2d2af4f3690329eb8de61f18700134122@eucas1p2.samsung.com>
+ <20200915133944.1285456-2-maz@kernel.org>
+ <d1301d9c-5529-0089-f163-2a728055712c@samsung.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <0a9212ef8a350bb78a145dab704a580e@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: m.szyprowski@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2020-09-15 15:06, Marek Szyprowski wrote:
+> On 15.09.2020 15:39, Marc Zyngier wrote:
+>> The GIC available on some of Samsung's A9-based platform is
+>> thankfully one of a kind. On top of not presenting a banked
+>> programing model (each CPU has its own base addresses for both
+>> distributor and CPU interface), it also encodes the source CPU
+>> for SGIs in the INTID read from IAR, and requires this exact
+>> value to be written back to EOI.
+>> 
+>> Without this, interrupts are never deactivated, and the kernel
+>> grinds to a halt.
+>> 
+>> Work around it by stashing the INTID for in-flight SGIs, and
+>> using that value on EOI. This only works because we don't nest
+>> SGIs.
+>> 
+>> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>> Fixes: ac063232d4b0 ("irqchip/gic: Configure SGIs as standard 
+>> interrupts")
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> 
+> Works fine, thanks!
+> 
+> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-On Tue, Sep 15, 2020 at 5:16 PM YueHaibing <yuehaibing@huawei.com> wrote:
->
-> Remove duplicate header which is included twice.
->
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Thanks for having reported the failure, and your patience with testing
+all kind of random things! ;-)
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-Thanks
-Namhyung
-
-
-> ---
->  tools/perf/tests/parse-metric.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-> index 23db8acc492d..b344decfb91b 100644
-> --- a/tools/perf/tests/parse-metric.c
-> +++ b/tools/perf/tests/parse-metric.c
-> @@ -11,8 +11,6 @@
->  #include "debug.h"
->  #include "expr.h"
->  #include "stat.h"
-> -#include <perf/cpumap.h>
-> -#include <perf/evlist.h>
->
->  static struct pmu_event pme_test[] = {
->  {
-> --
-> 2.17.1
->
->
+         M.
+-- 
+Jazz is not dead. It just smells funny...
