@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC4926A03C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D071126A04A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgIOHyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:54:32 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:53834 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726134AbgIOHxf (ORCPT
+        id S1726314AbgIOH5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:57:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58834 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726200AbgIOHxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:53:35 -0400
+        Tue, 15 Sep 2020 03:53:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600156414;
+        s=mimecast20190719; t=1600156416;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TR7JxnOBNr424Beez9Q5MTM9hQnK+cl0m0mKhD17YaA=;
-        b=Yo2DkjvhLOWfCdHKTbJX8AUSF5WcBJB7Epu77Voz6GUVE7ZSUnzNmexUxk8dWri6S/lZMJ
-        AeZO+3rhvdBNA38gI3WDWY1ZGqo1RwfHfD5Lz2QVe2Ndc7b55G9QZopNN1PWnVRaFrlNHd
-        GpFPhvk4x67aiS4KL+vse8pf8d0Go0U=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-HcdBepG6Pz-HKtCykrbjrg-1; Tue, 15 Sep 2020 03:53:33 -0400
-X-MC-Unique: HcdBepG6Pz-HKtCykrbjrg-1
-Received: by mail-wr1-f70.google.com with SMTP id a10so877506wrw.22
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:53:32 -0700 (PDT)
+        bh=Xh3QZ8ID/7ql002ovloJv8B+3KJ5CVPIhkMReh+pQ9Q=;
+        b=Ns9LYz8oMW2AeW3ATsjrhaKOY9uFgntJxePCIqI0avQZoIsFzAyJ6kYmCe4JUk1b1DWzgD
+        5FXtyWDFoSLNcRKOuWliX+fjsdPVKhs19bBan7XPqmQSjctvwPnRsIvvOkeroDGJJokciW
+        ewSVnK92T4yLSjSXk1cdIWQvwwZytQY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-cEi-hpc7OPqKfno41JhAEQ-1; Tue, 15 Sep 2020 03:53:34 -0400
+X-MC-Unique: cEi-hpc7OPqKfno41JhAEQ-1
+Received: by mail-wr1-f72.google.com with SMTP id x15so894056wrm.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:53:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TR7JxnOBNr424Beez9Q5MTM9hQnK+cl0m0mKhD17YaA=;
-        b=dZXVoOdqbVmPiYypeLwtjvujhFeyo2Cn4ifIvK6VslBGBlypEX3LuFY30ubgTVcZXX
-         aBJaQYi/r2M87AQdeQibADSrZi7lwircadkbaTs1MrE/hpadZsn6CSKq8iDP9hamzZ0F
-         yyrwoTJuvy0tqsX0iEisQgRMhO1BWXY1fCuWhsgcAi+/6fbWBoZqIiZdHQMV0RKdL2qY
-         c0DvtxQiIlZCBljKn+ZDwbtnJKKIfxUUTzwewoDP1wf6X+qguomuZGnlY7hgDNqRa7/+
-         cDq5dNKMKkTvwST3wAefixdF3g/T6zrfoIeQokDw/QdzDVL4Pv/WQ5BOk8btvPuVRH0D
-         1Ufw==
-X-Gm-Message-State: AOAM531FBF/pVcKIX1p+7mBbJZTjci+YwPIFAMjjeKOCCQXGNSqsaeg0
-        RnDRoAaRx5HkZM41t6JRB5bAM1FEwOxkMvc2VYK/ng2MTW4i/4uVo/3Ny7PEjur/mIoCPNybMW3
-        RjRMBY5M2eBgH2IbFc4bm25q5
-X-Received: by 2002:a5d:67d0:: with SMTP id n16mr21603275wrw.198.1600156411512;
-        Tue, 15 Sep 2020 00:53:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcnuPIQLgkGz4EQMffvKTc4V/aYPutLoJf1Mxip9nYIgSetEZ9acO+lGavC3kJYRL7eYi9qQ==
-X-Received: by 2002:a5d:67d0:: with SMTP id n16mr21603256wrw.198.1600156411382;
-        Tue, 15 Sep 2020 00:53:31 -0700 (PDT)
+        bh=Xh3QZ8ID/7ql002ovloJv8B+3KJ5CVPIhkMReh+pQ9Q=;
+        b=scO7z5C0QtWESQ81H8Tjb28pCbgO6fnLYpXqYLpcclJ/fj9+WYmD4bITh67I92VX57
+         /OwZOweiX+ST7StVugOclj1l8k974vfEMowdJZ/oz5KO1PUEUuhnSlfeA9q//A92/KX4
+         JWgaClsznwv64wtPjewoSDRGh1ePLLkQt+BazbC+YJQgYQ/rQ+JEtv3PJ+2ApA6AQgL9
+         Cs4SY0MTEUHoRf1m1SNBCc2kHxa+NVNbo12Hj/1TV8/I/aA/Qa4XxsNEs9ig+I52W4d+
+         c2epbqh4mv8JUX7jHkwrfa04aPG/rPjNi6c1dPX7MdZZlOOJLFFXz0d0GyLIHU4Dtgus
+         yf9Q==
+X-Gm-Message-State: AOAM530s9qcKXxX1zMVQCLlw3WbEfJ1BBZzambH7hp0hFEjZZk0ZS2JU
+        0lS9u7LIzcVGFdlKz1TLq/0gOH9WOJFVmjFhKscX6Vf2m7sjwBQrGGxATdkHfxuBwyrxTzee5ZZ
+        OXFSAu5xdx6o7UA0KjY3/5GO4
+X-Received: by 2002:a7b:cd8b:: with SMTP id y11mr3328246wmj.172.1600156413192;
+        Tue, 15 Sep 2020 00:53:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyS1Fjlx86ZUvAqrxA6yTfTYJJl0wekkDxr5EmXWVBknBneNhDNskiWqNXEiMwxYKm59Lq/PA==
+X-Received: by 2002:a7b:cd8b:: with SMTP id y11mr3328236wmj.172.1600156413053;
+        Tue, 15 Sep 2020 00:53:33 -0700 (PDT)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id t16sm25301572wrm.57.2020.09.15.00.53.30
+        by smtp.gmail.com with ESMTPSA id t16sm25301572wrm.57.2020.09.15.00.53.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 00:53:30 -0700 (PDT)
+        Tue, 15 Sep 2020 00:53:32 -0700 (PDT)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
         Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH 1/3] objtool: check: Remove useless tests
-Date:   Tue, 15 Sep 2020 08:53:16 +0100
-Message-Id: <20200915075318.7336-2-jthierry@redhat.com>
+Subject: [PATCH 2/3] objtool: check: Ignore unreachable fake jumps
+Date:   Tue, 15 Sep 2020 08:53:17 +0100
+Message-Id: <20200915075318.7336-3-jthierry@redhat.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200915075318.7336-1-jthierry@redhat.com>
 References: <20200915075318.7336-1-jthierry@redhat.com>
@@ -68,40 +68,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-save_reg already checks that the register being saved does not already
-have a saved state.
-
-Remove redundant checks before processing a register storing operation.
+It is possible for alternative code to unconditionally jump out of the
+alternative region. In such a case, if a fake jump is added at the end
+of the alternative instructions, the fake jump will never be reached.
+Since the fake jump is just a mean to make sure code validation does not
+go beyond the set of alternatives, reaching it is not a requirement.
 
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/check.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ tools/objtool/check.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 4e2f703b6a25..fd2edab8e672 100644
+index fd2edab8e672..cd7c6698d316 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -2030,7 +2030,7 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
- 				/* drap: push %rbp */
- 				cfi->stack_size = 0;
+@@ -2648,6 +2648,9 @@ static bool ignore_unreachable_insn(struct instruction *insn)
+ 	    !strcmp(insn->sec->name, ".altinstr_aux"))
+ 		return true;
  
--			} else if (regs[op->src.reg].base == CFI_UNDEFINED) {
-+			} else {
++	if (insn->type == INSN_JUMP_UNCONDITIONAL && insn->offset == FAKE_JUMP_OFFSET)
++		return true;
++
+ 	if (!insn->func)
+ 		return false;
  
- 				/* drap: push %reg */
- 				save_reg(cfi, op->src.reg, CFI_BP, -cfi->stack_size);
-@@ -2059,9 +2059,7 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
- 
- 				/* save drap offset so we know when to restore it */
- 				cfi->drap_offset = op->dest.offset;
--			}
--
--			else if (regs[op->src.reg].base == CFI_UNDEFINED) {
-+			} else {
- 
- 				/* drap: mov reg, disp(%rbp) */
- 				save_reg(cfi, op->src.reg, CFI_BP, op->dest.offset);
 -- 
 2.21.3
 
