@@ -2,173 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACC426B716
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA4426B6D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727343AbgIPAQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:16:35 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:35540 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgIOOXS (ORCPT
+        id S1727343AbgIPAMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726928AbgIOO0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:23:18 -0400
-Received: by mail-il1-f194.google.com with SMTP id y9so3185967ilq.2;
-        Tue, 15 Sep 2020 07:21:47 -0700 (PDT)
+        Tue, 15 Sep 2020 10:26:30 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA54CC0611C0;
+        Tue, 15 Sep 2020 07:25:16 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id y17so3296434lfa.8;
+        Tue, 15 Sep 2020 07:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x2ena36266wspP5Tvq0z3LkWyHPiOIA4EJedY59v6W8=;
+        b=WAKxs8a8KXr9nguLjtBBb9lvjVcObesbz4bgZPIN6UV8LTMWJLG2hsQOUWcUjKJJOe
+         +ry+c/ulbt7UJhJOjZoNu2gCG3dw3XAlntnnCt3u6grclGsrY5bRvnhv40TBxclnXH6D
+         ffpP1PCig83WCd8UFDFgEAbHGq2we4MMKShlv40XIYwkARD+GpATv3PkTzlOZumFeM6Q
+         /Hjil6otG/utDTP/xseXKQ1eTNuvo5Zob1mOvG+71Wu0zozlgUw7r+sqsDi8efJK25W/
+         7JyKPdDhYQLeQ8puWbNqSHukcc7NAGsKbvwxmm164hbsgSbDlBQUKhYhM0Gm5Fm1s3xr
+         8BxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oibcEZaus/KsE9Tzx8ei6QcB5cjiNKskz7YSAoeajEU=;
-        b=VUL0UUDL1tN2ZbWB7++YaOqMpVNu19aNMDXf2tcDFp63gnbNWnb41Ag+8+nLkYQ2O5
-         GICDmqlLV+89s+oObukZSUd7HnIIAJv74xbMsr3jGi6KZDHQ08i5GCTQwqRjYvFysYcS
-         orlnyHkr7KoJjfaCjTqV17AwcOB7YG1t9jqhJf/QHWT5dJgxMfHSgMxxMbqLwkCEV8My
-         xi2kz7ZO0HaQ2QYfWMle8hycYJCm5BhrtIrCWzSdjd+85k+WScLQrzCVBUaQ9AgXDa+z
-         gmJ+wvPVBav1gZ9/MOqAL9kusBfHqQCZyfNYmF5AbD9BCah3Q/3/XEuRKVy4wDKLht+n
-         yWiA==
-X-Gm-Message-State: AOAM531avnZsmncym+mrXHWCJVOsiOVa+/FtYA58MweHnz3Yi8AvMSB8
-        l5QywPYxhPr3vu8tgcaOSw==
-X-Google-Smtp-Source: ABdhPJzt8yV1vKiC8DPNIwCsSdd5HBuc1l0C2uul6JJjtgEd9/PutB30hWIdnJ86bLqeEaT6LV9bZA==
-X-Received: by 2002:a92:9146:: with SMTP id t67mr16054340ild.297.1600179707146;
-        Tue, 15 Sep 2020 07:21:47 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id p17sm8912639ilj.81.2020.09.15.07.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 07:21:46 -0700 (PDT)
-Received: (nullmailer pid 1873185 invoked by uid 1000);
-        Tue, 15 Sep 2020 14:21:45 -0000
-Date:   Tue, 15 Sep 2020 08:21:45 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        linux-usb@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: usb: Add binding for onboard USB hubs
-Message-ID: <20200915142145.GA1861636@bogus>
-References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x2ena36266wspP5Tvq0z3LkWyHPiOIA4EJedY59v6W8=;
+        b=GiEqSvY0OWl4C+yvKO9BNly3pMOb7cdkafr0t9hYO3NvbaDrAyq+XqUgbPs8NawB9O
+         adHs67kPN2EWzfrDIF8OSObNU16Tg/qVNqgohVs8j6/xQ3t0niuWI1cOjQCXmTDqgVN/
+         4cOMv1IiEGGKQ+7gafoF66c3wSemwqmsxAK/ZE+ZNCzQ+lrUmgG+RNY8FVCwNJ3V+LU7
+         OaJ9qQ/b5XheiB/Jc4t5BuHWKS6Puw9A7GgjTP1IhBLl5ml/VgcwMfCKSpepb/zs6zrI
+         voszd/O1PYIp3L59LaNFObk+tQ/BZkuHtceZvX2QZFB/oTk1JDxs/S2rkYsCny5jPf4X
+         p4XQ==
+X-Gm-Message-State: AOAM532zB8LbZRBGbXraHA/EmV0/UG6djGqdL6OLr+RwMPOqM7FNL6tU
+        zgPnrHPVrwb6DEaT2LSHtSvC7/QxoUTy8fiq+II=
+X-Google-Smtp-Source: ABdhPJziiDvVv5TwjyT08hovVM0PLo9ow1i+dQdNZ+baakeZcwhIiYbCH+Y2gkFMgubUzmc05g4szm56woQ7TLPYUIo=
+X-Received: by 2002:a19:dcb:: with SMTP id 194mr6279863lfn.25.1600179913805;
+ Tue, 15 Sep 2020 07:25:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+References: <20200915140141.42876-1-yuehaibing@huawei.com>
+In-Reply-To: <20200915140141.42876-1-yuehaibing@huawei.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 15 Sep 2020 11:25:02 -0300
+Message-ID: <CAOMZO5BOBqCoLgM=yHBKFdM3oXR91mDdRnJY1gOyGmQWiMq+Dg@mail.gmail.com>
+Subject: Re: [PATCH -next] clk: imx35: Make mx35_clocks_init static
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:27:48AM -0700, Matthias Kaehlcke wrote:
-> Onboard USB hubs need to be powered and may require initiaization of
-> other resources (like GPIOs or clocks) to work properly. This adds
-> a device tree binding for these hubs.
+Hi YueHaibing,
 
-We already have bindings for these. 2 in fact as I2C controlled hubs are 
-often described under the I2C bus.
+On Tue, Sep 15, 2020 at 11:02 AM YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> Fix sparse warning:
+>
+> drivers/clk/imx/clk-imx35.c:251:12: warning:
+>  symbol 'mx35_clocks_init' was not declared. Should it be static?
 
-> 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
-> 
->  .../bindings/usb/onboard_usb_hub.yaml         | 70 +++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> new file mode 100644
-> index 000000000000..f82d8f459eed
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/onboard_usb_hub.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binding for onboard USB hubs
-> +
-> +maintainers:
-> +  - Matthias Kaehlcke <mka@chromium.org>
-> +
-> +allOf:
-> +  - $ref: /schemas/usb/onboard_usb_hub.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - onboard-usb-hub
-> +      - realtek,rts5411
-> +
-> +  power-off-in-suspend:
-> +    description:
-> +      The hub should be powered off during system suspend. When the
-> +      "wakeup-source" property is also provided the hub is only powered
-> +      off during suspend when no wakeup capable descendants are connected.
-> +    type: boolean
-> +
-> +  vdd-supply:
-> +    description:
-> +      phandle to the regulator that provides power to the hub.
-> +
-> +  wakeup-source:
-> +    description:
-> +      Wakeup capable USB devices connected to this hub can be used as
-> +      wakeup source.
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - vdd-supply
-> +
-> +examples:
-> +  - |
-> +    usb_hub: usb-hub {
-> +        compatible = "realtek,rts5411", "onboard-usb-hub";
-> +        vdd-supply = <&pp3300_hub>;
-> +        power-off-in-suspend;
-> +        wakeup-source;
+This is not the correct fix. mx35_clocks_init() was only used by imx35
+board files.
 
-This is the hub device?
+Now that imx35 board files are gone, this function can be removed.
 
-> +    };
-> +
-> +    &usb_1_dwc3 {
-> +	dr_mode = "host";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	/* 2.0 hub on port 1 */
-> +	hub@1 {
-> +		compatible = "usbbda,5411";
-> +		reg = <1>;
-> +		hub = <&usb_hub>;
-
-Or this node is?
-
-> +	};
-> +
-> +	/* 3.0 hub on port 2 */
-> +	hub@2 {
-> +		compatible = "usbbda,411";
-> +		reg = <2>;
-> +		hub = <&usb_hub>;
-
-Or this node is?
-
-The hub node belongs here.
-
-If you really have it connected to 2 upstream ports, then just do 
-one node with 'reg = <1 2>;'.
-
-Rob
-
-> +	};
-> +
-> +...
-> -- 
-> 2.28.0.618.gf4bc123cb7-goog
-> 
+I will send a patch removing it.
