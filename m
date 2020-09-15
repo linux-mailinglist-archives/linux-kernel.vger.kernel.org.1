@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67CC26A3CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2072E26A3DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgIOLFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 07:05:21 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:39314 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgIOLAn (ORCPT
+        id S1726148AbgIOLJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 07:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726079AbgIOLIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:00:43 -0400
-Received: by mail-io1-f79.google.com with SMTP id y16so1878999ioy.6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:00:33 -0700 (PDT)
+        Tue, 15 Sep 2020 07:08:41 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9425FC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:01:14 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id w11so2654627lfn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=VDzzatZNSBpQX7pKPfZ2Jk0vfUIzw5Bf9Eon3mMy8po=;
+        b=CHlUmc7RPVH81nY89i759+N+3bpbtClFAivxfPnGTq9kK/PratYX/V4yYmYbJLtMDd
+         NO5VHoN4YOOLfTO/j8oKpQI2nbjZvaC1AT0Eld357rjKFHYr4oBW/7NxNK2ZyM2MVfwJ
+         08KmfRMz1/MvFhWIE+gDl+z3i2aoJzirAiUmsMPO9L0eCy8+F89ZRgYm+GmVvU9yW3rY
+         eZXcf5c3+Abvvs7QtdE2T9AWD5ahLttZm+fTEMgOAQ8XiuWBQDROs/EMmK1gdskB0Zxp
+         zPo8CGPEUs4MmjcULfpxqYQ6PvrqP08HEJ2fv0nHB1vvw3gci9DzA9Q2wvRfqNqmPSVx
+         uOPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=58qLiwvX+9V/OpLahru/OEuKtk2KKFaE+wKNx1A2XkM=;
-        b=Mn8XOxExqkZlrcW/tP7JW8/xYRKw4mpB5fzTIFDIWbA6nF3cJjqE6RujNYh5ZYoPGh
-         Ag3cj8Lj+cqTzVLAyPMxc4X0UL07ZEc96bWQe4v4kMHlItPVz2Yxkxf3LHppHCjmyOho
-         lYarzqoqHiAonxX8lN7/ekzBrGOyLIhllmeba0+NpEOxqbRAwTVkiYKV6gbdmI1CB1ts
-         mlDX6v9UmatmpAReppeUDicUZklvPxE99EEjpLL4cRDDeONyuKRuxTleXcsfBVJcAQuZ
-         Rr+kN7WvORVxxpIIv0IjkmcQXpWc64Xtb7TietrSo33hSsVlgYE3WsmCORvr2Q6D41CG
-         L2kw==
-X-Gm-Message-State: AOAM531iBZhNwXmMOwc1GQILoGMXO6EJ+Wzd9ilOe4dXvFv8/i5ACcI5
-        tt6st6uby/MLuXMCXtYBBX4uF8HvQM+l+x8WdOabDuulUO55
-X-Google-Smtp-Source: ABdhPJxklLlY99p5/t7j14dLe4DOLysVAWxGXvS4F7qQ+qHFSMS/cEb/+ApDo6q33uzwtVGESX5XGm7TURdyZjQFMozGkWwii9aS
-MIME-Version: 1.0
-X-Received: by 2002:a92:d087:: with SMTP id h7mr9239735ilh.198.1600167621301;
- Tue, 15 Sep 2020 04:00:21 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 04:00:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a61d6b05af580e62@google.com>
-Subject: kernel BUG at lib/string.c:LINE! (5)
-From:   syzbot <syzbot+e864a35d361e1d4e29a5@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=VDzzatZNSBpQX7pKPfZ2Jk0vfUIzw5Bf9Eon3mMy8po=;
+        b=ozND55o3PDmKktJAIpRb4h45KNI1V46MIW8tUVBv/+NUUs0oVIJw81FR+prn4OBGuO
+         ErxF/B/H24kzNbz+vaI0Neuk36L59iHlZopjYEfYEbYrWkHQs/vW0JsRdcrKroit/5Ws
+         dfAE5gvxAnEMSEL9DMYJhtB2mfh1eZdSVP67A8Y6fnl4I3qpFUMS5LnvyLIX3mgoyM/W
+         pqNAFTKImEgbUtpoFDTtH8OsTdz0yhgUW/ro5nXVy1K9BiTNyYflYYdOceuixVtoa2B7
+         qVFL74uprfl/ePrBoAfoBv4PJvQ5/K3P6g0q2JgXAedvwCWKaTN86KGwiNXpC1AOisZd
+         5AiA==
+X-Gm-Message-State: AOAM533aQau7EOjH3yyUeqmVzx2tnFex/AD8kQ8BAMvLGFerS87HttpB
+        DPNy3vsnNnAQplI6t9I87fw7nw==
+X-Google-Smtp-Source: ABdhPJxi1eJT7NU7liu0QBCxMR+g+0qBdUBCH3RJ43+uG7Hm3Dkdke+R9A2OiggP5qYYPyl76lzKNQ==
+X-Received: by 2002:ac2:5547:: with SMTP id l7mr5848074lfk.153.1600167672741;
+        Tue, 15 Sep 2020 04:01:12 -0700 (PDT)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id n3sm4588916ljj.59.2020.09.15.04.01.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Sep 2020 04:01:12 -0700 (PDT)
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        s-anna@ti.com
+Cc:     grzegorz.jaszczyk@linaro.org, robh+dt@kernel.org,
+        lee.jones@linaro.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, david@lechnology.com,
+        praneeth@ti.com
+Subject: [PATCH v6 0/5] Add TI PRUSS Local Interrupt Controller IRQChip driver
+Date:   Tue, 15 Sep 2020 13:00:46 +0200
+Message-Id: <1600167651-20851-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi All,
 
-syzbot found the following issue on:
+The following is a v6 version of the series [1-5] that adds an IRQChip
+driver for the local interrupt controller present within a Programmable
+Real-Time Unit and Industrial Communication Subsystem (PRU-ICSS) present on a
+number of TI SoCs including OMAP architecture based AM335x, AM437x, AM57xx SoCs,
+Keystone 2 architecture based 66AK2G SoCs, Davinci architecture based
+OMAP-L138/DA850 SoCs and the latest K3 architecture based AM65x and J721E SoCs.
+Please see the v1 cover-letter [1] for details about the features of this
+interrupt controller.  More details can be found in any of the supported SoC
+TRMs.  Eg: Chapter 30.1.6 of AM5728 TRM [6]
 
-HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b17bed900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=e864a35d361e1d4e29a5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177582be900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13deb2b5900000
+Please see the individual patches for exact changes in each patch, following are
+the main changes from v5:
+ - Improve patch #2 with regards to various Marc Zyngier comments.
+ - Drop example from commit description of patch #4.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e864a35d361e1d4e29a5@syzkaller.appspotmail.com
+[1] https://patchwork.kernel.org/cover/11034561/
+[2] https://patchwork.kernel.org/cover/11069749/
+[3] https://patchwork.kernel.org/cover/11639055/
+[4] https://patchwork.kernel.org/cover/11688727/
+[5] https://patchwork.kernel.org/cover/11746463/
+[6] http://www.ti.com/lit/pdf/spruhz6
 
-detected buffer overflow in memcpy
-------------[ cut here ]------------
-kernel BUG at lib/string.c:1129!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 26 Comm: kworker/u4:2 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: btrfs-endio-meta btrfs_work_helper
-RIP: 0010:fortify_panic+0xf/0x20 lib/string.c:1129
-Code: 89 c7 48 89 74 24 08 48 89 04 24 e8 ab 39 00 fe 48 8b 74 24 08 48 8b 04 24 eb d5 48 89 fe 48 c7 c7 40 22 97 88 e8 b0 8c a9 fd <0f> 0b cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 41 57 41 56 41
-RSP: 0018:ffffc90000e27980 EFLAGS: 00010286
-RAX: 0000000000000022 RBX: ffff8880a80dca64 RCX: 0000000000000000
-RDX: ffff8880a90860c0 RSI: ffffffff815dba07 RDI: fffff520001c4f22
-RBP: ffff8880a80dca00 R08: 0000000000000022 R09: ffff8880ae7318e7
-R10: 0000000000000000 R11: 0000000000077578 R12: 00000000ffffff6e
-R13: 0000000000000008 R14: ffffc90000e27a40 R15: 1ffff920001c4f3c
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000557335f440d0 CR3: 000000009647d000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- memcpy include/linux/string.h:405 [inline]
- btree_readpage_end_io_hook.cold+0x206/0x221 fs/btrfs/disk-io.c:642
- end_bio_extent_readpage+0x4de/0x10c0 fs/btrfs/extent_io.c:2854
- bio_endio+0x3cf/0x7f0 block/bio.c:1449
- end_workqueue_fn+0x114/0x170 fs/btrfs/disk-io.c:1695
- btrfs_work_helper+0x221/0xe20 fs/btrfs/async-thread.c:318
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace b68924293169feef ]---
-RIP: 0010:fortify_panic+0xf/0x20 lib/string.c:1129
-Code: 89 c7 48 89 74 24 08 48 89 04 24 e8 ab 39 00 fe 48 8b 74 24 08 48 8b 04 24 eb d5 48 89 fe 48 c7 c7 40 22 97 88 e8 b0 8c a9 fd <0f> 0b cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 41 57 41 56 41
-RSP: 0018:ffffc90000e27980 EFLAGS: 00010286
-RAX: 0000000000000022 RBX: ffff8880a80dca64 RCX: 0000000000000000
-RDX: ffff8880a90860c0 RSI: ffffffff815dba07 RDI: fffff520001c4f22
-RBP: ffff8880a80dca00 R08: 0000000000000022 R09: ffff8880ae7318e7
-R10: 0000000000000000 R11: 0000000000077578 R12: 00000000ffffff6e
-R13: 0000000000000008 R14: ffffc90000e27a40 R15: 1ffff920001c4f3c
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f95b7c4d008 CR3: 000000009647d000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Best regards
+Grzegorz
 
+David Lechner (1):
+  irqchip/irq-pruss-intc: Implement irq_{get,set}_irqchip_state ops
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Grzegorz Jaszczyk (1):
+  irqchip/irq-pruss-intc: Add a PRUSS irqchip driver for PRUSS
+    interrupts
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Suman Anna (3):
+  dt-bindings: irqchip: Add PRU-ICSS interrupt controller bindings
+  irqchip/irq-pruss-intc: Add logic for handling reserved interrupts
+  irqchip/irq-pruss-intc: Add support for ICSSG INTC on K3 SoCs
+
+ .../interrupt-controller/ti,pruss-intc.yaml        | 158 +++++
+ drivers/irqchip/Kconfig                            |  10 +
+ drivers/irqchip/Makefile                           |   1 +
+ drivers/irqchip/irq-pruss-intc.c                   | 664 +++++++++++++++++++++
+ 4 files changed, 833 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+ create mode 100644 drivers/irqchip/irq-pruss-intc.c
+
+-- 
+2.7.4
+
