@@ -2,141 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4635A26A23B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7B026A249
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgIOJc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:32:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:59076 "EHLO foss.arm.com"
+        id S1726476AbgIOJdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:33:45 -0400
+Received: from gofer.mess.org ([88.97.38.141]:56753 "EHLO gofer.mess.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726438AbgIOJcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:32:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83E8F11B3;
-        Tue, 15 Sep 2020 02:32:17 -0700 (PDT)
-Received: from red-moon.arm.com (unknown [10.57.14.23])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D26FB3F68F;
-        Tue, 15 Sep 2020 02:32:15 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        George Cherian <george.cherian@marvell.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 2/2] asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP pci_iounmap() implementation
-Date:   Tue, 15 Sep 2020 10:32:03 +0100
-Message-Id: <20200915093203.16934-3-lorenzo.pieralisi@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
-References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
+        id S1726208AbgIOJdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:33:44 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 08B51C6366; Tue, 15 Sep 2020 10:33:42 +0100 (BST)
+Date:   Tue, 15 Sep 2020 10:33:42 +0100
+From:   Sean Young <sean@mess.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+ system
+Message-ID: <20200915093342.GA24139@gofer.mess.org>
+References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For arches that do not select CONFIG_GENERIC_IOMAP, the current
-pci_iounmap() function does nothing causing obvious memory leaks
-for mapped regions that are backed by MMIO physical space.
 
-In order to detect if a mapped pointer is IO vs MMIO, a check must made
-available to the pci_iounmap() function so that it can actually detect
-whether the pointer has to be unmapped.
+Hi Joakim,
 
-In configurations where CONFIG_HAS_IOPORT_MAP && !CONFIG_GENERIC_IOMAP,
-a mapped port is detected using an ioport_map() stub defined in
-asm-generic/io.h.
+Thanks for your patch, I think it looks good in principle but needs a
+few small fixes.
 
-Use the same logic to implement a stub (ie __pci_ioport_unmap()) that
-detects if the passed in pointer in pci_iounmap() is IO vs MMIO to
-iounmap conditionally and call it in pci_iounmap() fixing the issue.
+On Tue, Sep 15, 2020 at 11:02:02PM +0800, Joakim Zhang wrote:
+> GPIO IR receive is much rely on interrupt response, uneven interrupt
+> latency will lead to incorrect timing, so the decoder fails to decode
+> it. The issue is particularly acute on systems which supports
+> cpuidle, dynamically disable and enable cpuidle can solve this problem
+> to a great extent.
 
-Leave __pci_ioport_unmap() as a NOP for all other config options.
+This is the first soc to be affected by this problem, and gpio-ir-recv
+has been used on my systems. For example, the raspberry pi has cpu idle
+enabled and does not suffer from this problem. There are many more; this
+driver has been used on many arm devices, which will have cpuidle enabled.
 
-Reported-by: George Cherian <george.cherian@marvell.com>
-Link: https://lore.kernel.org/lkml/20200905024811.74701-1-yangyingliang@huawei.com
-Link: https://lore.kernel.org/lkml/20200824132046.3114383-1-george.cherian@marvell.com
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: George Cherian <george.cherian@marvell.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Yang Yingliang <yangyingliang@huawei.com>
----
- include/asm-generic/io.h | 39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+> 
+> However, there is a downside to this approach, the measurement of header
+> on the first frame may incorrect. Test on i.MX8M serials, when enable
+> cpuidle, interrupt latency could be about 500us.
+> 
+> With this patch:
+> 1. has no side effect on non-cpuidle system.
+> 2. latency is still much longer for the first gpio interrupt on cpuidle
+> system, so the first frame may not be decoded. Generally, RC would transmit
+> multiple frames at once press, we can sacrifice the first frame.
+> 
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+>  drivers/media/rc/gpio-ir-recv.c | 49 ++++++++++++++++++++++++++++++++-
+>  1 file changed, 48 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/rc/gpio-ir-recv.c b/drivers/media/rc/gpio-ir-recv.c
+> index a20413008c3c..42c942ce98cd 100644
+> --- a/drivers/media/rc/gpio-ir-recv.c
+> +++ b/drivers/media/rc/gpio-ir-recv.c
+> @@ -11,6 +11,8 @@
+>  #include <linux/of.h>
+>  #include <linux/of_gpio.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/pm_qos.h>
+>  #include <linux/irq.h>
+>  #include <media/rc-core.h>
+>  
+> @@ -20,17 +22,36 @@ struct gpio_rc_dev {
+>  	struct rc_dev *rcdev;
+>  	struct gpio_desc *gpiod;
+>  	int irq;
+> +	struct pm_qos_request qos;
+>  };
+>  
+>  static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)
+>  {
+> -	int val;
+> +	int ret, val;
+>  	struct gpio_rc_dev *gpio_dev = dev_id;
+> +	struct device *dev = gpio_dev->rcdev->dev.parent;
+> +
+> +	/*
+> +	 * For cpuidle system:
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index dabf8cb7203b..9ea83d80eb6f 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -911,18 +911,6 @@ static inline void iowrite64_rep(volatile void __iomem *addr,
- #include <linux/vmalloc.h>
- #define __io_virt(x) ((void __force *)(x))
- 
--#ifndef CONFIG_GENERIC_IOMAP
--struct pci_dev;
--extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
--
--#ifndef pci_iounmap
--#define pci_iounmap pci_iounmap
--static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
--{
--}
--#endif
--#endif /* CONFIG_GENERIC_IOMAP */
--
- /*
-  * Change virtual addresses to physical addresses and vv.
-  * These are pretty trivial
-@@ -1016,6 +1004,16 @@ static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
- 	port &= IO_SPACE_LIMIT;
- 	return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
- }
-+#define __pci_ioport_unmap __pci_ioport_unmap
-+static inline void __pci_ioport_unmap(void __iomem *p)
-+{
-+	uintptr_t start = (uintptr_t) PCI_IOBASE;
-+	uintptr_t addr = (uintptr_t) p;
-+
-+	if (addr >= start && addr < start + IO_SPACE_LIMIT)
-+		return;
-+	iounmap(p);
-+}
- #endif
- 
- #ifndef ioport_unmap
-@@ -1030,6 +1028,23 @@ extern void ioport_unmap(void __iomem *p);
- #endif /* CONFIG_GENERIC_IOMAP */
- #endif /* CONFIG_HAS_IOPORT_MAP */
- 
-+#ifndef CONFIG_GENERIC_IOMAP
-+struct pci_dev;
-+extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
-+
-+#ifndef __pci_ioport_unmap
-+static inline void __pci_ioport_unmap(void __iomem *p) {}
-+#endif
-+
-+#ifndef pci_iounmap
-+#define pci_iounmap pci_iounmap
-+static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
-+{
-+	__pci_ioport_unmap(p);
-+}
-+#endif
-+#endif /* CONFIG_GENERIC_IOMAP */
-+
- /*
-  * Convert a virtual cached pointer to an uncached pointer
-  */
--- 
-2.26.1
+For some cpuidle systems, not all. This is why this feature needs a
+device tree option for enabling. Otherwise, it will negatively affect
+power usage on e.g. raspberry pi.
 
+> +	 * Respond to interrupt taking more latency when cpu in idle.
+> +	 * Invoke asynchronous pm runtime get from interrupt context,
+> +	 * this may introduce a millisecond delay to call resume callback,
+> +	 * where to disable cpuilde.
+> +	 *
+> +	 * Two issues lead to fail to decode first frame, one is latency to
+> +	 * respond interupt, another is delay introduced by async api.
+> +	 */
+> +	ret = pm_runtime_get(dev);
+> +	if (ret < 0)
+> +		return IRQ_NONE;
+
+If we end up here, we also abandon sending the IR to rc-core (below). I
+don't think it should do that. It should call ir_raw_event_store_edge()
+always even if it can't do the pm things.
+
+>  
+>  	val = gpiod_get_value(gpio_dev->gpiod);
+>  	if (val >= 0)
+>  		ir_raw_event_store_edge(gpio_dev->rcdev, val == 1);
+>  
+> +	pm_runtime_mark_last_busy(dev);
+> +	pm_runtime_put_autosuspend(dev);
+> +
+>  	return IRQ_HANDLED;
+>  }
+>  
+> @@ -92,6 +113,12 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, gpio_dev);
+>  
+> +
+> +	pm_runtime_set_autosuspend_delay(dev, (rcdev->timeout / 1000 / 1000));
+
+rcdev->timeout is in microseconds (since very recently), so this is wrong.
+Also, the timeout can be changed using the LIRC_SET_REC_TIMEOUT ioctl
+(using ir-ctl -t in userspace). The autosuspend delay should be updated
+when this happens. This can be done by implementing the s_timeout rcdev
+function.
+
+> +	pm_runtime_use_autosuspend(dev);
+> +	pm_runtime_set_suspended(dev);
+> +	pm_runtime_enable(dev);
+> +
+>  	return devm_request_irq(dev, gpio_dev->irq, gpio_ir_recv_irq,
+>  				IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
+>  				"gpio-ir-recv-irq", gpio_dev);
+> @@ -122,9 +149,29 @@ static int gpio_ir_recv_resume(struct device *dev)
+>  	return 0;
+>  }
+>  
+> +static int gpio_ir_recv_runtime_suspend(struct device *dev)
+> +{
+> +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
+> +
+> +	cpu_latency_qos_remove_request(&gpio_dev->qos);
+> +
+> +	return 0;
+> +}
+> +
+> +static int gpio_ir_recv_runtime_resume(struct device *dev)
+> +{
+> +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
+> +
+> +	cpu_latency_qos_add_request(&gpio_dev->qos, 0);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct dev_pm_ops gpio_ir_recv_pm_ops = {
+>  	.suspend        = gpio_ir_recv_suspend,
+>  	.resume         = gpio_ir_recv_resume,
+> +	.runtime_suspend = gpio_ir_recv_runtime_suspend,
+> +	.runtime_resume  = gpio_ir_recv_runtime_resume,
+>  };
+>  #endif
+>  
+> -- 
+> 2.17.1
