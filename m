@@ -2,203 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E8126AF49
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68AB26AF7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgIOVQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
+        id S1728072AbgIOVWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727860AbgIOVOt (ORCPT
+        with ESMTP id S1727953AbgIOVQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:14:49 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB28C061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:14:48 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id i199so4758569ybg.22
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:14:48 -0700 (PDT)
+        Tue, 15 Sep 2020 17:16:27 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3ED5C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:16:26 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id 33so1726635wre.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:16:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=K+OfCoM6oTmkFdqxGs+YSyPIFR+NJtTdbrbahx+pi8o=;
-        b=Bfbb6PAjFKNPNmBiLhOhqp8uf+5dfGDcVtfLcv83W6I4mmz8leffU/S6ATJ0NoEcAS
-         v1VM7hSpryC5Zauqdu6RcvSUTpFZwn0SROVOg8yfdiPto085QZO2xD+JPI0lb5kBTuK5
-         sRXkaD5z5MkbrYn2N/Eu/MAMtEUePcvEBd33t7RdW3i4TuR6llHN4ezRrgipgYs2+33i
-         IhBVEV/aHL1iMHk7sX1HiMGJVcDCemlIYsORCB84pLS6RjpT6RNH+MlgKDSi2A6p6Bbz
-         IKK1p5CaBXGfFWRijvbhUT/GCHri9hZhxul8R6Cm7YmExyGEfivaE0P6MZucOBtoFRX5
-         n95g==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=ssmRcE1kYrAL6ZSKtgqrQSJk1HXoJcRhQCNgYvB5iuc=;
+        b=hdJRfah27omL2Icwf/rxTkSFi5BnYgCVvskJ11E2UfIrsn1Mb/F7yTQcD06APh0cwH
+         /PQM+iEq1I9X1SVCRt7GsbyaBFZ08nXIez8Ee31J+csXHA5G+18bpBS5Ki1z1hmKdAKU
+         6aSiakRBh6ZFQ4FZoVBwXy53lbVrt3vVsusrJZHcUrT4kmDelLNgmQKyMb1LPB7Eyp/0
+         9hxtjgFINQ+sYWtGquoG4hX7la9aJEm/9GWxIbMuRVtwFTKa9VItfgPlTwxd87Khgpfv
+         /i9M6iSRPhprO4Ku7DQa5UReY8WpiUcbvMSF5+/rPjX3hDZ/4BKLyTMacs7ztFqkbKV6
+         GPHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=K+OfCoM6oTmkFdqxGs+YSyPIFR+NJtTdbrbahx+pi8o=;
-        b=CN8zpUylovAfevSQmmt91EvLXoLmLsXPgBK2OJkabDJt/UpVFwflrI7fGzazWrzqWI
-         +X9zqWxa8fKAfcP5zCL+yzy5LBU9IVHEgPRCp0JjFETcv5V9t+8RDjmqSolNwCiv5Pfs
-         2x5dnYDCnDiIa0d9nOR7s2S6wrfMQDwR8WCXtwuwLIyU8TObub8VpevNeP93gliGjD8B
-         vPput24P2xZCE0oXey4LZl+b9cvmGqMRBjPNZernqKqarijGB36aLLhfmDLP47Hk7RXh
-         tdQXybRYy1FOu1fpVLBxZRKL6JFSO6liYzqCVNEl4OK9yci4ShALvGQSNj5OjRcVNF/L
-         Y4FQ==
-X-Gm-Message-State: AOAM53286duc2X9l18HOZx250/wuU4YfOsTsB6rsSGxx9kzKo2gn9guH
-        nIF7ollmVaePGl/T6m44kEUHYqI/QaoxHWjYB+X2
-X-Google-Smtp-Source: ABdhPJyww2+5qPFKot6oq/w5hjYv4FO0/obmugq2VwsJRMK9d8CCeO5bHaloVjkf47P7tieu34FzW1yIWD4tngmvw+TY
-X-Received: from danielwinkler-linux.mtv.corp.google.com ([2620:15c:202:201:f693:9fff:fef4:4e59])
- (user=danielwinkler job=sendgmr) by 2002:a25:3783:: with SMTP id
- e125mr8595152yba.423.1600204487979; Tue, 15 Sep 2020 14:14:47 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 14:14:27 -0700
-Message-Id: <20200915141229.1.Icfac86f8dfa0813bba6c7604c420d11c3820b4ab@changeid>
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=ssmRcE1kYrAL6ZSKtgqrQSJk1HXoJcRhQCNgYvB5iuc=;
+        b=sJ3IlSHK5GRG8Sh8fuj4G8ztsKTYXkYDMemLX2juAusGnntXCGn4ogYyCeY7q9/6bi
+         enxfg1rAmWvt81A6SmEySq8P9kYpWkNN6jr5e2FfAH9L82oTrEbz+llWGxAHRLLKGgU7
+         I50ne4MAV1VbI0dk1J3pT8YmHZvZys4rzk1lhz5ZzDIMuz3v3Xepz2zlRB5CjnJpmFbo
+         dz09l77UjY824x8be1/At2410fmQjJCJnRBHABpk0TG1p5h1s+tSfwVM5SS//e1UgKAH
+         bqaYkzYV95y7HUkI5dc0FdK+ccFo8FVn1o7sXCXmotkEe0cySD93ygPqREbDuGd1G8KK
+         fiig==
+X-Gm-Message-State: AOAM532Zb0FLS1cnwJUrarjOc5TeRuOVH4YIOM3FWJv5bn4KlGEuGejf
+        OJroiyyshWquEg6Pi68uzQEFhFFHDxfEKP09
+X-Google-Smtp-Source: ABdhPJxK3f6kOYACU+1LPYljRJxMyomUs5lqQAssZQ0ReoMmGpVcJpTajmnKJKzKQyrcVQ3n/6jTySujdqs9K7LP
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:adf:ffca:: with SMTP id
+ x10mr15472756wrs.342.1600204585311; Tue, 15 Sep 2020 14:16:25 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 23:15:43 +0200
+In-Reply-To: <cover.1600204505.git.andreyknvl@google.com>
+Message-Id: <2de958570c5bccf438cde8eb8c2fce7e5a37deed.1600204505.git.andreyknvl@google.com>
 Mime-Version: 1.0
+References: <cover.1600204505.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH] Bluetooth: pause/resume advertising around suspend
-From:   Daniel Winkler <danielwinkler@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        Daniel Winkler <danielwinkler@google.com>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 01/37] kasan: KASAN_VMALLOC depends on KASAN_GENERIC
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the controller will continue advertising when the system
-enters suspend. This patch makes sure that all advertising instances are
-paused when entering suspend, and resumed when suspend exits.
+Currently only generic KASAN mode supports vmalloc, reflect that
+in the config.
 
-The Advertising and Suspend/Resume test suites were both run on this
-change on 4.19 kernel with both hardware offloaded multi-advertising and
-software rotated multi-advertising. In addition, a new test was added
-that performs the following steps:
-* Register 3 advertisements via bluez RegisterAdvertisement
-* Verify reception of all advertisements by remote peer
-* Enter suspend on DUT
-* Verify failure to receive all advertisements by remote peer
-* Exit suspend on DUT
-* Verify reception of all advertisements by remote peer
-
-Signed-off-by: Daniel Winkler <danielwinkler@google.com>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
+Change-Id: I1889e5b3bed28cc5d607802fb6ae43ba461c0dc1
+---
+ lib/Kconfig.kasan | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- net/bluetooth/hci_request.c | 67 +++++++++++++++++++++++++++++++------
- 1 file changed, 57 insertions(+), 10 deletions(-)
-
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index e17bc8a1c66ddd..413e3a5aabf544 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1111,6 +1111,53 @@ static void hci_req_config_le_suspend_scan(struct hci_request *req)
- 	set_bit(SUSPEND_SCAN_ENABLE, req->hdev->suspend_tasks);
- }
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index 047b53dbfd58..e1d55331b618 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -156,7 +156,7 @@ config KASAN_SW_TAGS_IDENTIFY
  
-+static void cancel_adv_timeout(struct hci_dev *hdev)
-+{
-+	if (hdev->adv_instance_timeout) {
-+		hdev->adv_instance_timeout = 0;
-+		cancel_delayed_work(&hdev->adv_instance_expire);
-+	}
-+}
-+
-+/* This function requires the caller holds hdev->lock */
-+static void hci_suspend_adv_instances(struct hci_request *req)
-+{
-+	bt_dev_dbg(req->hdev, "Suspending advertising instances");
-+
-+	/* Call to disable any advertisements active on the controller.
-+	 * This will succeed even if no advertisements are configured.
-+	 */
-+	__hci_req_disable_advertising(req);
-+
-+	/* If we are using software rotation, pause the loop */
-+	if (!ext_adv_capable(req->hdev))
-+		cancel_adv_timeout(req->hdev);
-+}
-+
-+/* This function requires the caller holds hdev->lock */
-+static void hci_resume_adv_instances(struct hci_request *req)
-+{
-+	struct adv_info *adv;
-+
-+	bt_dev_dbg(req->hdev, "Resuming advertising instances");
-+
-+	if (ext_adv_capable(req->hdev)) {
-+		/* Call for each tracked instance to be re-enabled */
-+		list_for_each_entry(adv, &req->hdev->adv_instances, list) {
-+			__hci_req_enable_ext_advertising(req,
-+							 adv->instance);
-+		}
-+
-+	} else {
-+		/* Schedule for most recent instance to be restarted and begin
-+		 * the software rotation loop
-+		 */
-+		__hci_req_schedule_adv_instance(req,
-+						req->hdev->cur_adv_instance,
-+						true);
-+	}
-+}
-+
- static void suspend_req_complete(struct hci_dev *hdev, u8 status, u16 opcode)
- {
- 	bt_dev_dbg(hdev, "Request complete opcode=0x%x, status=0x%x", opcode,
-@@ -1153,7 +1200,7 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 		hdev->discovery_paused = true;
- 		hdev->discovery_old_state = old_state;
- 
--		/* Stop advertising */
-+		/* Stop directed advertising */
- 		old_state = hci_dev_test_flag(hdev, HCI_ADVERTISING);
- 		if (old_state) {
- 			set_bit(SUSPEND_PAUSE_ADVERTISING, hdev->suspend_tasks);
-@@ -1162,6 +1209,10 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 					   &hdev->discov_off, 0);
- 		}
- 
-+		/* Pause other advertisements */
-+		if (hdev->adv_instance_cnt)
-+			hci_suspend_adv_instances(&req);
-+
- 		hdev->advertising_paused = true;
- 		hdev->advertising_old_state = old_state;
- 		/* Disable page scan */
-@@ -1212,7 +1263,7 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 		/* Reset passive/background scanning to normal */
- 		hci_req_config_le_suspend_scan(&req);
- 
--		/* Unpause advertising */
-+		/* Unpause directed advertising */
- 		hdev->advertising_paused = false;
- 		if (hdev->advertising_old_state) {
- 			set_bit(SUSPEND_UNPAUSE_ADVERTISING,
-@@ -1223,6 +1274,10 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 			hdev->advertising_old_state = 0;
- 		}
- 
-+		/* Resume other advertisements */
-+		if (hdev->adv_instance_cnt)
-+			hci_resume_adv_instances(&req);
-+
- 		/* Unpause discovery */
- 		hdev->discovery_paused = false;
- 		if (hdev->discovery_old_state != DISCOVERY_STOPPED &&
-@@ -2186,14 +2241,6 @@ int __hci_req_schedule_adv_instance(struct hci_request *req, u8 instance,
- 	return 0;
- }
- 
--static void cancel_adv_timeout(struct hci_dev *hdev)
--{
--	if (hdev->adv_instance_timeout) {
--		hdev->adv_instance_timeout = 0;
--		cancel_delayed_work(&hdev->adv_instance_expire);
--	}
--}
--
- /* For a single instance:
-  * - force == true: The instance will be removed even when its remaining
-  *   lifetime is not zero.
+ config KASAN_VMALLOC
+ 	bool "Back mappings in vmalloc space with real shadow memory"
+-	depends on HAVE_ARCH_KASAN_VMALLOC
++	depends on KASAN_GENERIC && HAVE_ARCH_KASAN_VMALLOC
+ 	help
+ 	  By default, the shadow region for vmalloc space is the read-only
+ 	  zero page. This means that KASAN cannot detect errors involving
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
