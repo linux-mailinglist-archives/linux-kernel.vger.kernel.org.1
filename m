@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694D826A49A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061B326A49D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgIOMDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:03:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52570 "EHLO mail.kernel.org"
+        id S1726280AbgIOMEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:04:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgIOLt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:49:28 -0400
-Received: from coco.lan (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
+        id S1726245AbgIOLvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 07:51:40 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B683120732;
-        Tue, 15 Sep 2020 11:49:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F9A620732;
+        Tue, 15 Sep 2020 11:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600170567;
-        bh=iFfL19rgJxrWSGlMzNKS3xGMGw/adMkm9oDIVhpXLh8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Rc8KkBEBeA+6Gw3xlipEwz9GlAgOcjryIcCl4mOPcT34FIhJrlNBeVboZEX7OJhqY
-         aE3T1DzkI5xTRlDh3iEk8J8zRffJZUXu7egy+JD+u1zlqdMBFftIz5Rm+D28csBTK+
-         XsK3u07PDPvd90qt/rIHEojFSVVkYYMRif7vuSh0=
-Date:   Tue, 15 Sep 2020 13:49:23 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-Subject: Re: [PATCH RFC 06/11] media: vidtv: get rid of some endiannes
- nonsense
-Message-ID: <20200915134923.4794f704@coco.lan>
-In-Reply-To: <68DDA2DD-4341-45A9-99CF-BF41573C9AED@getmailspring.com>
-References: <47ccbcbd23e44159bbb11274b540d7c2bb66be7c.1600073975.git.mchehab+huawei@kernel.org>
-        <68DDA2DD-4341-45A9-99CF-BF41573C9AED@getmailspring.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        s=default; t=1600170682;
+        bh=4AdVvb9OpJlCLAFzmltxBUT5yXR5yQZ90HPJkguTE/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S6Oi9kNO6jEJRVa0oQ7wJE9zm2k9LSZ8fHzXrkc2iG9HPQCC/RL9evS85vQ0UuNqa
+         j0mC1xGz7Qh2AnPRsfQMYXHpoEL0Ai0tYEKoFtleucmMt7+LFODhK4cqpKchawBdTE
+         EkHzNEW5D1KsyGkYeHyF3nW60lzX0wZVECcvkhSw=
+Date:   Tue, 15 Sep 2020 12:50:34 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 3/3] ASoC: tlv320aic32x4: Enable fast charge
+Message-ID: <20200915115034.GA5576@sirena.org.uk>
+References: <20200911173140.29984-1-miquel.raynal@bootlin.com>
+ <20200911173140.29984-4-miquel.raynal@bootlin.com>
+ <20200915082602.GH4230@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
+Content-Disposition: inline
+In-Reply-To: <20200915082602.GH4230@piout.net>
+X-Cookie: Where am I?  Who am I?  Am I?  I
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
 
-Em Mon, 14 Sep 2020 12:14:38 -0300
-"Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Hi Mauro,
-> 
-> > Genmask is always highest order to low order. It doesn't make
-> > any sense to make it depends on endiannes.
-> >   
-> 
-> I added these #ifdefs due to this:
-> 
-> https://lwn.net/Articles/741762/
-> 
-> i.e.
-> 
-> Fields to access are specified as GENMASK() values - an N-bit field
-> starting at bit #M is encoded as GENMASK(M + N - 1, N).  Note that
-> bit numbers refer to endianness of the object we are working with -
-> e.g. GENMASK(11, 0) in __be16 refers to the second byte and the lower
-> 4 bits of the first byte.  In __le16 it would refer to the first byte
-> and the lower 4 bits of the second byte, etc.
-> 
-> I am not 100% sure, but maybe we actually need them? 
+On Tue, Sep 15, 2020 at 10:26:02AM +0200, Alexandre Belloni wrote:
+> On 11/09/2020 19:31:40+0200, Miquel Raynal wrote:
 
-By looking at the changes you did with regards to bitfields,
-it sounds that you didn't quite get how BE/LE works.
+> > +	/*
+> > +	 * Enable the fast charging feature and ensure the needed 40ms ellaps=
+ed
+> > +	 * before using the analog circuits.
+> > +	 */
+> > +	snd_soc_component_write(component, AIC32X4_REFPOWERUP,
+> > +				AIC32X4_REFPOWERUP_40MS);
+> > +	msleep(40);
+> > +
 
-Basically, if the CPU needs to store a value (like 0x8001) on some 
-place, it will store two values: 0x80 and 0x01. Depending on the
-endiannes, either 0x80 or 0x01 will be stored first. See:
+> Maybe the actual REFPOWERUP value could be exposed as a control so
+> userspace has a way to set the policy?=20
 
-	https://en.wikipedia.org/wiki/Endianness
+We very rarely do this, there's not usially anything=20
 
-In any case, when you do something like:
+> I'm not sure it make sense to have the delay in probe because it is not
+> enable the analog part of the codec. The delay should probable be after
+> the clocks have been set up because the datasheet says that it is mdac
+> and madc that is starting the analog circuitry.
 
-	mask = GENMASK(11, 0);
-	ret = be16_to_cpu(s->bitfield) & mask;
+Deferring the delay to a workqueue is the usual thing where there's
+concerns about slowing down boot.
 
-The be16_to_cpu() will ensure that the bits will be at the
-position expected by the CPU endiannes. So, no need to check
-for __BIG_ENDIAN or __LITTLE_ENDIAN when be*_to_cpu() macros 
-are used.
+--C7zPtVaVf+AK4Oqc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please also notice that, when there's just one byte to be
-stored (e. g. 8 bits), the endiannes won't matter, as the bits 
-will still be stored at the same way. that's why there's no
-be8_to_cpu() or cpu_to_be8() macros.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mauro
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9gqokACgkQJNaLcl1U
+h9BxmAf/UcMuAW76u6rLlk8ONETf/rGaWtTY69AB4XXcR3C5KFDbnlRR+se+WUaZ
+jaaNRa0HzZQIRqTCHz6SaGc2hXvR1Ua6uFT6KEroJkRtfyxVdNS70PEyykyNPe09
+u12QaUYrzpQ3PVGZ3ngEXk3jFnb+8NziK5riqM8S8GqD8bwl9H47rDBReMNDY2Lq
+UKP52Nv0qFYzK0cj7dBtPLYozZSXDNi+Vyve6jxnmE1iRHIc+VZvGZFBNBMb+vfY
+RS9ojAe/BNibV+4sT/2SBQAyIc/AKjYn8crR9m43onChyuuryn0sS9Dn2Qkh1/25
++RYK+VVmlF/4DjcJSUjfcS9l/H4Q9g==
+=5ecU
+-----END PGP SIGNATURE-----
+
+--C7zPtVaVf+AK4Oqc--
