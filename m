@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1A926B6D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B5526B70A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgIPAMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:12:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38308 "EHLO mail.kernel.org"
+        id S1727418AbgIPAQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:16:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726938AbgIOO0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:26:30 -0400
+        id S1726914AbgIOOYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:24:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD2AD2245F;
-        Tue, 15 Sep 2020 14:19:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA602223BF;
+        Tue, 15 Sep 2020 14:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179570;
-        bh=IJGbvK/EOOaibm70TZ2Guw+wM3bImoQ0GafNoiRZ7LY=;
+        s=default; t=1600179516;
+        bh=KvAxRi37pf9MNsDAsPZsL3r3hZ+RCMisYCJ0EwJcKoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2iQl1GyR8twbpUmlaLFt+F/6ts3yMJQoJtn0Mguwb6xqGLOBSrlMvJ2HKk5Kzjnaa
-         mRzB5q0fpoe4YeFYu+rZyQt3lZd97/4X/akzJbfkyMmTtuxiP/jp2Dp0fEkYRbQt08
-         C66IdxTVMmInYYuir3S7JuhbLWX3ktJ6qnMLEndw=
+        b=rEx44+R+9OHC4pvmgU0i0Gy2Sxs4Diiihx4cykuPbUoyqiNBVooCJJW2KWf2V/NEn
+         X31uoPJc8Y/dio9HpbKbLy2gn8Gf07pLrvx0imSebCJkYU8Jmw2m5man37I8iKbWEB
+         cpbl3EwBG5yAhE45UmoMGuQugOXXaDdV8bbTD2es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anson Huang <Anson.Huang@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 009/132] ARM: dts: imx7ulp: Correct gpio ranges
-Date:   Tue, 15 Sep 2020 16:11:51 +0200
-Message-Id: <20200915140644.538491455@linuxfoundation.org>
+Subject: [PATCH 5.4 012/132] RDMA/rxe: Fix panic when calling kmem_cache_create()
+Date:   Tue, 15 Sep 2020 16:11:54 +0200
+Message-Id: <20200915140644.683152649@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
 References: <20200915140644.037604909@linuxfoundation.org>
@@ -44,65 +44,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anson Huang <Anson.Huang@nxp.com>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-[ Upstream commit deb6323b739c54e1a1e83cd3a2bae4901e3eebf6 ]
+[ Upstream commit d862060a4b43479887ae8e2c0b74a58c4e27e5f3 ]
 
-Correct gpio ranges according to i.MX7ULP pinctrl driver:
+To avoid the following kernel panic when calling kmem_cache_create() with
+a NULL pointer from pool_cache(), Block the rxe_param_set_add() from
+running if the rdma_rxe module is not initialized.
 
-gpio_ptc: ONLY pin 0~19 are available;
-gpio_ptd: ONLY pin 0~11 are available;
-gpio_pte: ONLY pin 0~15 are available;
-gpio_ptf: ONLY pin 0~19 are available;
+ BUG: unable to handle kernel NULL pointer dereference at 000000000000000b
+ PGD 0 P4D 0
+ Oops: 0000 [#1] SMP NOPTI
+ CPU: 4 PID: 8512 Comm: modprobe Kdump: loaded Not tainted 4.18.0-231.el8.x86_64 #1
+ Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 10/02/2018
+ RIP: 0010:kmem_cache_alloc+0xd1/0x1b0
+ Code: 8b 57 18 45 8b 77 1c 48 8b 5c 24 30 0f 1f 44 00 00 5b 48 89 e8 5d 41 5c 41 5d 41 5e 41 5f c3 81 e3 00 00 10 00 75 0e 4d 89 fe <41> f6 47 0b 04 0f 84 6c ff ff ff 4c 89 ff e8 cc da 01 00 49 89 c6
+ RSP: 0018:ffffa2b8c773f9d0 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000005
+ RDX: 0000000000000004 RSI: 00000000006080c0 RDI: 0000000000000000
+ RBP: ffff8ea0a8634fd0 R08: ffffa2b8c773f988 R09: 00000000006000c0
+ R10: 0000000000000000 R11: 0000000000000230 R12: 00000000006080c0
+ R13: ffffffffc0a97fc8 R14: 0000000000000000 R15: 0000000000000000
+ FS:  00007f9138ed9740(0000) GS:ffff8ea4ae800000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 000000000000000b CR3: 000000046d59a000 CR4: 00000000003406e0
+ Call Trace:
+  rxe_alloc+0xc8/0x160 [rdma_rxe]
+  rxe_get_dma_mr+0x25/0xb0 [rdma_rxe]
+  __ib_alloc_pd+0xcb/0x160 [ib_core]
+  ib_mad_init_device+0x296/0x8b0 [ib_core]
+  add_client_context+0x11a/0x160 [ib_core]
+  enable_device_and_get+0xdc/0x1d0 [ib_core]
+  ib_register_device+0x572/0x6b0 [ib_core]
+  ? crypto_create_tfm+0x32/0xe0
+  ? crypto_create_tfm+0x7a/0xe0
+  ? crypto_alloc_tfm+0x58/0xf0
+  rxe_register_device+0x19d/0x1c0 [rdma_rxe]
+  rxe_net_add+0x3d/0x70 [rdma_rxe]
+  ? dev_get_by_name_rcu+0x73/0x90
+  rxe_param_set_add+0xaf/0xc0 [rdma_rxe]
+  parse_args+0x179/0x370
+  ? ref_module+0x1b0/0x1b0
+  load_module+0x135e/0x17e0
+  ? ref_module+0x1b0/0x1b0
+  ? __do_sys_init_module+0x13b/0x180
+  __do_sys_init_module+0x13b/0x180
+  do_syscall_64+0x5b/0x1a0
+  entry_SYSCALL_64_after_hwframe+0x65/0xca
+ RIP: 0033:0x7f9137ed296e
 
-Fixes: 20434dc92c05 ("ARM: dts: imx: add common imx7ulp dtsi support")
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+This can be triggered if a user tries to use the 'module option' which is
+not actually a real module option but some idiotic (and thankfully no
+obsolete) sysfs interface.
+
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20200825151725.254046-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx7ulp.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/infiniband/sw/rxe/rxe.c       | 4 ++++
+ drivers/infiniband/sw/rxe/rxe.h       | 2 ++
+ drivers/infiniband/sw/rxe/rxe_sysfs.c | 5 +++++
+ 3 files changed, 11 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx7ulp.dtsi b/arch/arm/boot/dts/imx7ulp.dtsi
-index 3dac6898cdc57..0108b63df77d3 100644
---- a/arch/arm/boot/dts/imx7ulp.dtsi
-+++ b/arch/arm/boot/dts/imx7ulp.dtsi
-@@ -397,7 +397,7 @@
- 			clocks = <&pcc2 IMX7ULP_CLK_RGPIO2P1>,
- 				 <&pcc3 IMX7ULP_CLK_PCTLC>;
- 			clock-names = "gpio", "port";
--			gpio-ranges = <&iomuxc1 0 0 32>;
-+			gpio-ranges = <&iomuxc1 0 0 20>;
- 		};
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index dee0c2b7897ac..70c4ea438664d 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -48,6 +48,8 @@ static void rxe_cleanup_ports(struct rxe_dev *rxe)
  
- 		gpio_ptd: gpio@40af0000 {
-@@ -411,7 +411,7 @@
- 			clocks = <&pcc2 IMX7ULP_CLK_RGPIO2P1>,
- 				 <&pcc3 IMX7ULP_CLK_PCTLD>;
- 			clock-names = "gpio", "port";
--			gpio-ranges = <&iomuxc1 0 32 32>;
-+			gpio-ranges = <&iomuxc1 0 32 12>;
- 		};
+ }
  
- 		gpio_pte: gpio@40b00000 {
-@@ -425,7 +425,7 @@
- 			clocks = <&pcc2 IMX7ULP_CLK_RGPIO2P1>,
- 				 <&pcc3 IMX7ULP_CLK_PCTLE>;
- 			clock-names = "gpio", "port";
--			gpio-ranges = <&iomuxc1 0 64 32>;
-+			gpio-ranges = <&iomuxc1 0 64 16>;
- 		};
++bool rxe_initialized;
++
+ /* free resources for a rxe device all objects created for this device must
+  * have been destroyed
+  */
+@@ -355,6 +357,7 @@ static int __init rxe_module_init(void)
+ 		return err;
  
- 		gpio_ptf: gpio@40b10000 {
-@@ -439,7 +439,7 @@
- 			clocks = <&pcc2 IMX7ULP_CLK_RGPIO2P1>,
- 				 <&pcc3 IMX7ULP_CLK_PCTLF>;
- 			clock-names = "gpio", "port";
--			gpio-ranges = <&iomuxc1 0 96 32>;
-+			gpio-ranges = <&iomuxc1 0 96 20>;
- 		};
- 	};
+ 	rdma_link_register(&rxe_link_ops);
++	rxe_initialized = true;
+ 	pr_info("loaded\n");
+ 	return 0;
+ }
+@@ -366,6 +369,7 @@ static void __exit rxe_module_exit(void)
+ 	rxe_net_exit();
+ 	rxe_cache_exit();
  
++	rxe_initialized = false;
+ 	pr_info("unloaded\n");
+ }
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+index fb07eed9e4028..cae1b0a24c850 100644
+--- a/drivers/infiniband/sw/rxe/rxe.h
++++ b/drivers/infiniband/sw/rxe/rxe.h
+@@ -67,6 +67,8 @@
+ 
+ #define RXE_ROCE_V2_SPORT		(0xc000)
+ 
++extern bool rxe_initialized;
++
+ static inline u32 rxe_crc32(struct rxe_dev *rxe,
+ 			    u32 crc, void *next, size_t len)
+ {
+diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+index ccda5f5a3bc0a..2af31d421bfc3 100644
+--- a/drivers/infiniband/sw/rxe/rxe_sysfs.c
++++ b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+@@ -61,6 +61,11 @@ static int rxe_param_set_add(const char *val, const struct kernel_param *kp)
+ 	struct net_device *ndev;
+ 	struct rxe_dev *exists;
+ 
++	if (!rxe_initialized) {
++		pr_err("Module parameters are not supported, use rdma link add or rxe_cfg\n");
++		return -EAGAIN;
++	}
++
+ 	len = sanitize_arg(val, intf, sizeof(intf));
+ 	if (!len) {
+ 		pr_err("add: invalid interface name\n");
 -- 
 2.25.1
 
