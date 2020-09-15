@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCCE26B819
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B476B26B815
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727247AbgIPAgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
+        id S1727122AbgIPAgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgION1L (ORCPT
+        with ESMTP id S1726634AbgION1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:27:11 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B28C0611C0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:26:17 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z1so3335152wrt.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:26:16 -0700 (PDT)
+        Tue, 15 Sep 2020 09:27:17 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD14DC0611C2;
+        Tue, 15 Sep 2020 06:26:23 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id t138so4195164qka.0;
+        Tue, 15 Sep 2020 06:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Nj5427NwfkAcod/jrpxPO35Ai9seXyFseb14ybySFfM=;
-        b=QdJ2+kJmwNT2Rpeynd20wnfA2n5PgwvW8q0QlYHqLR7ro3Toewl4315Be5CVsKBHZh
-         OMgk03EvoactAAXW/p2vTIkFSHggeL09y0WS6v9YSbB5sBgKsBc1LIwTyxViUDecSze3
-         j7f+9+k8UuQGNij/vw1YOL1TLdZVVCsB2h7SbbdsQ+jS/hUhlDRzEDXUbI2eUs+mc6OX
-         1MpflgJ5M/nzMSdaRl5D72mgdrbnQSgo3t7miz06w0bL1d2D2xEIGYCzQk0+AHzwq5H+
-         cUsIogqEoCMxr3MR+pxkoSQt/LNuvKx9fizekZYmIyA2x+ga2SG3eGTbcZVJX6UYvHLc
-         Lj5Q==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding:content-disposition;
+        bh=ECv1tH4dixNsdKxQCqvGJD0xyYRqc/3rORp/BHVcsQ4=;
+        b=rrUc/Nra5A278GUSmFmQgG0+9yiyz/Kp+IF8tT6eTd3T2zNG1ooEzO9ZlSCCOlPi9X
+         hG+YWCMJqq8/nKJTh+UiUyP6E0SMGLppdAPCAjaCaYUxKK9DFJQnilOVBKn6ywicFDW9
+         T/ep8wEpWgIA4CJKCzGviWoNMJFKt7DlgQ9U8gBz4HvwOmAkzWa1iRRXhtlTfNTo8kYK
+         0Hh34hrXFgxJGrpV+bUnZYlVeXVlXR61XN5mr9hcMvIBijH7CUpZH5Ym59hVq3kWILQU
+         DSxDsdz+dODQ0fV5f6teQgCvV8Lb7WfrlqTz0PghqhgX0cWebwp42woWsJ9gpR9iVoNM
+         iUXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nj5427NwfkAcod/jrpxPO35Ai9seXyFseb14ybySFfM=;
-        b=b2Ppyu9ufg11I+yEipsXzYxfFDEXW0RAuMcrQeBOOIvF9FgQ3qS43CRi5rl8RaGMtw
-         BvgqD3p2XweeHngP3Q24HZpP7TOBLS1zzOtO9innB9EIg4z1Vm/AMHgUlOY2ncTSHoC0
-         QV/1MHyKla0nogdQQHq6YAH9sUHsz0zdda2YoqFtGqBfFC273fXBhw4I+SwRnkjLk+Y5
-         Nd1g5qgiQaVz1DQABQHlin17zZ6yiI/4z5zdnPKOkx8RaHuhONEcH1ks0Onr3z1Qi9oy
-         6OXUDZvD55kLWwQsTVvwSxj6Q1zfoGuFDsxg0uZdRifEiWRw7wUZxmaGCjxk/pZjeJQ4
-         s6yg==
-X-Gm-Message-State: AOAM530glwD72w0VOiRaByiKas9GjG//RlRJ50K8esddAnI35DvFY/Og
-        6ORoJUeSsBYF2fGQNZQmqzSRvw==
-X-Google-Smtp-Source: ABdhPJxUX3SywtAgbIzvAPBC3VuqGFTB/q/j/ez9t1LNPTmXjvJgQ8L9UOasQDwBRHrHUf+PvOb/og==
-X-Received: by 2002:adf:d4c7:: with SMTP id w7mr21860249wrk.263.1600176375639;
-        Tue, 15 Sep 2020 06:26:15 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id m4sm28137345wro.18.2020.09.15.06.26.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:26:15 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:26:14 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Moshe Shemesh <moshe@nvidia.com>
-Cc:     Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
- to devlink reload command
-Message-ID: <20200915132614.GN2236@nanopsycho.orion>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-2-git-send-email-moshe@mellanox.com>
- <20200914122732.GE2236@nanopsycho.orion>
- <996866b1-5472-dd95-f415-85c34c4d01c0@nvidia.com>
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding
+         :content-disposition;
+        bh=ECv1tH4dixNsdKxQCqvGJD0xyYRqc/3rORp/BHVcsQ4=;
+        b=Ju0QQeeXlNAkiUqnCFHgoU3oP5xMqJDNV+1x7BzbtboOmS+M5Z157hxVOS9SAFo7IH
+         iR4gr4W7wVyHOy0jQ71E71c1JRXtdhM3wE5xhoaDr3wx+52Vct7RpqUSbnx1JgSkptap
+         LWxEn/RjRaNz9OLtQEHISvb6V77yOfNcNZOuk9hlSF0XGyZ1BRbEeHomQg6Idho+0LdU
+         EzAFNYvHZaKiBZKnukRDsZQ56bosvd/odS4joSmlmumruqJAADHxpPNvlYeH7mtXv3Vm
+         pwi1x+hS25GPyhKRRpgeXnB+QxNm1L9eyc2heTEey/fAJ/OefUxiL2cumsbE/Eff/ukQ
+         f9Cg==
+X-Gm-Message-State: AOAM531ggIQXjc39GoT9KFwRBaG9DVRfb/5rJXo+xdQ5XoVvLoZehUqK
+        Ff/l5IMh1qgZjDlRtsfRd8g=
+X-Google-Smtp-Source: ABdhPJzuz0o4wLDw+Cjo2IgGvOxLPSDN8JBtV21hG89SBTjGoXxWC7vpcN1/qhgD+HtvnbTR9wKs5w==
+X-Received: by 2002:a05:620a:13e8:: with SMTP id h8mr17496044qkl.322.1600176383031;
+        Tue, 15 Sep 2020 06:26:23 -0700 (PDT)
+Received: from dwls-dell ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
+        by smtp.gmail.com with ESMTPSA id g45sm17473139qtb.60.2020.09.15.06.26.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Sep 2020 06:26:22 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 10:26:17 -0300
+From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "=?utf-8?Q?mchehab+huawei=40kernel.org?=" <mchehab+huawei@kernel.org>,
+        "=?utf-8?Q?r.verdejo=40samsung.com?=" <r.verdejo@samsung.com>,
+        "=?utf-8?Q?nicolas=40ndufresne.ca?=" <nicolas@ndufresne.ca>,
+        "=?utf-8?Q?linux-media=40vger.kernel.org?=" 
+        <linux-media@vger.kernel.org>,
+        "=?utf-8?Q?skhan=40linuxfoundation.org?=" <skhan@linuxfoundation.org>,
+        "=?utf-8?Q?linux-kernel-mentees=40lists.linuxfoundation.org?=" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
+        <linux-kernel@vger.kernel.org>
+Message-ID: <EA89ED5D-E477-4464-B523-D729796CE0D0@getmailspring.com>
+In-Reply-To: <alpine.DEB.2.21.2009151345001.31296@ramsan.of.borg>
+References: <alpine.DEB.2.21.2009151345001.31296@ramsan.of.borg>
+Subject: Re: [v10 3/4] media: vidtv: add a bridge driver
+X-Mailer: Mailspring
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <996866b1-5472-dd95-f415-85c34c4d01c0@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Sep 15, 2020 at 02:12:25PM CEST, moshe@nvidia.com wrote:
->
->On 9/14/2020 3:27 PM, Jiri Pirko wrote:
->> Mon, Sep 14, 2020 at 08:07:48AM CEST, moshe@mellanox.com wrote:
+Hi Geert,
 
-[..]	
-	
->> > @@ -7392,6 +7485,11 @@ struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size)
->> > 	if (!devlink)
->> > 		return NULL;
->> > 	devlink->ops = ops;
->> > +	if (devlink_reload_actions_verify(devlink)) {
->> Move this check to the beginning. You don't need devlink instance for
->> the check, just ops.
->
->
->Right, will fix.
->
->> also, your devlink_reload_actions_verify() function returns
->> 0/-ESOMETHING. Treat it accordingly here.
->
->
->Well, yes, but I rather return NULL here since devlink_alloc() failed. If
->devlink_reload_actions_verify() fails it has WARN_ON which will lead the
->driver developer to his bug.
+Thanks for bringing this to my attention.
 
-So let the verify() return bool.
-My point is, if a function return 0/-ESOMETHING, you should not check
-the return value directly but you should use int err/ret.
 
->
->> 
->> > +		kfree(devlink);
->> > +		return NULL;
->> > +	}
+>> +	u32 nbytes = 0;  /* the number of bytes written by this function */
+>> +
+>> +	u64 nbytes_expected; /* the number of bytes we should have written */
+>> +	u64 nbytes_streamed; /* the number of bytes we actually wrote */
+>> +	u32 num_null_pkts; /* number of null packets to bridge the gap */
+>> +
+>> +	u64 elapsed_time_msecs = jiffies_to_usecs(m->timing.current_jiffies -
+>> +						  m->timing.past_jiffies);
+>> +
+>> +	elapsed_time_msecs = min(elapsed_time_msecs,
+>> (u64)VIDTV_MAX_SLEEP_USECS / 1000);
+>> +	nbytes_expected = div64_u64(m->mux_rate_kbytes_sec * 1000, MSEC_PER_SEC);
+> 
+> Seriously?!?
+> 
+> You multiply by 1000 first, followed by a division by 1000 using an
+> expensive 64-by-64 division?
 
-[...]
+This entire function is broken and needs a do-over :)
+
+> using an expensive 64-by-64 division?
+
+I am new to kernel development. I wasn't even aware that this was
+expensive, to be honest.
+
+
+>> +	if (nbytes_streamed < nbytes_expected) {
+>> +		/* can't write half a packet: roundup to a 188 multiple */
+>> +		nbytes_expected  = roundup(nbytes_expected - nbytes_streamed, TS_PACKET_LEN);
+> 
+> drivers/media/test-drivers/vidtv/vidtv_mux.o: In function `vidtv_mux_tick':
+> vidtv_mux.c:(.text+0x788): undefined reference to `__udivdi3'
+> 
+> This is a 64-by-32 division, hence it should use a helper from
+> <linux/math64.h>.
+> 
+> However, I'm wondering if "nbytes_expected - nbytes_streamed" is
+> guaranteed to be a "small" number, hence a 32-by-32 division would be
+> sufficient?
+
+I think so.
+
+I will send a patch to address the things you pointed out in this email.
+
+-- thanks
+-- Daniel
