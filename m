@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7153726AF23
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CACF26AF20
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgIOVFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727860AbgIOVDw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:03:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ADDC06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:03:52 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kII79-00006G-Jl; Tue, 15 Sep 2020 23:03:47 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kII73-00019G-6I; Tue, 15 Sep 2020 23:03:41 +0200
-Date:   Tue, 15 Sep 2020 23:03:40 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Michael Walle <michael@walle.cc>, Lee Jones <lee.jones@linaro.org>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        id S1728079AbgIOVE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:04:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727816AbgIOVEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:04:43 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CC2720732;
+        Tue, 15 Sep 2020 21:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600203861;
+        bh=juX7apZ1AwwxlXqaRlp4XCoAqy31Vj6ful3pNCaYqy0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WLIfCUjtdhxDSazrDuQlCrruDRnzfyHwgyk9AHjKQDEptGaT89l/E0S4aenUbNZXE
+         p4qScTvhduz5jpPHtOcX2095R3q1Lp9iCDd/C7o/cV8HQ5Ybzm9selOO00iDX9GtcD
+         xIn4yMJcLH1iOpudXoTxXHDgT5ydH46AbZeuIBV8=
+Date:   Tue, 15 Sep 2020 14:04:18 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v10 06/13] pwm: add support for sl28cpld PWM controller
-Message-ID: <20200915210340.xg5xwmajufedyltr@pengutronix.de>
-References: <20200914214341.14268-1-michael@walle.cc>
- <20200914214341.14268-7-michael@walle.cc>
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+        <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cyiwyjcsxpn452wt"
-Content-Disposition: inline
-In-Reply-To: <20200914214341.14268-7-michael@walle.cc>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 15 Sep 2020 23:46:58 +0300 Oded Gabbay wrote:
+> On Tue, Sep 15, 2020 at 11:35 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > On Tue, 15 Sep 2020 20:10:08 +0300 Oded Gabbay wrote:  
+> > > Hello,
+> > >
+> > > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > > into the habanalabs driver.
+> > >
+> > > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > > are in that patch's commit message.  
+> >
+> > You keep reposting this, yet this SDK shim^W^W driver is still living in
+> > drivers/misc. If you want to make it look like a NIC, the code belongs
+> > where NIC drivers are.
+> >
+> > Then again, is it a NIC? Why do you have those custom IOCTLs? That's far
+> > from normal.  
+> 
+> I'm sorry but from your question it seems as if you didn't read my
+> cover letter at all, as I took great lengths in explaining exactly
+> what our device is and why we use custom IOCTLs.
+> TL;DR
+> We have an accelerator for deep learning (GAUDI) which uses RDMA as
+> infrastructure for communication between multiple accelerators. Same
+> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> The RDMA implementation we did does NOT support some basic RDMA
+> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> library or to connect to the rdma infrastructure in the kernel. We
+> wanted to do it but when we analyzed it, we saw we wouldn't be able to
+> support basic stuff and therefore we had to revert to our IOCTLs.
+> To sum it up, because our NIC is used for intra-communication, we
+> don't expose nor intend users to use it as a NIC per-se. However, to
+> be able to get statistics and manage them in a standard way, and
+> support control plane over Ethernet, we do register each port to the
+> net subsystem (i.e. create netdev per port).
+> 
+> I hope this short summary explains this better.
 
---cyiwyjcsxpn452wt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I read your cover letter. Networking drivers don't get to define random
+IOCTLs as they please. You have to take that part out of the "NIC"
+driver.
 
-On Mon, Sep 14, 2020 at 11:43:34PM +0200, Michael Walle wrote:
-> Add support for the PWM controller of the sl28cpld board management
-> controller. This is part of a multi-function device driver.
->=20
-> The controller has one PWM channel and can just generate four distinct
-> frequencies.
->=20
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Acked-by: Thierry Reding <thierry.reding@gmail.com>
+> As per your request that this code lives in the net subsystem, I think
+> that will make it only more complicated and hard to upstream and
+> maintain.
+> I see there are other examples (e.g. sgi-xp) that contain networking
+> driver code in misc so I don't understand this objection.
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+The maintenance structure and CI systems for the kernel depend on the
+directory layout. If you don't understand that I don't know how to help
+you.
 
-@Lee: From my side taking the patch via your mfd tree is fine.
+> > Please make sure to CC linux-rdma. You clearly stated that the device
+> > does RDMA-like transfers.  
+> 
+> We don't use the RDMA infrastructure in the kernel and we can't
+> connect to it due to the lack of H/W support we have so I don't see
+> why we need to CC linux-rdma.
 
-Thanks for your effort to align your patch to my reviews
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---cyiwyjcsxpn452wt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9hLCkACgkQwfwUeK3K
-7AmJogf/X2AMslmJpJk0/t52+83yxuLmP8HEPZ/fZLyaE9/xTy0N/O2LeLsp13pK
-Jy7h+pQXkSORq2B/y38E5O+HAYSHquEkhnJKCG6sQk6gFxBH4F4eU14Y3LB7etqM
-8mNonE4LjJoNew2Mv2hBdO+9fTMum16bEe7rcQwBY3B6BYFkmad7ZK9XoDYm4cfB
-V5aLHywUaFB9/CZ2fqXDvtN/47Rf+ejnkrijTYwwu+BGf8i6bxIOUzSTHrrm5KnF
-fZ+GAFFikBriPAKpJvrVA0w3/tOhHpaOhNu405ghN4+aNwieSq0f6OZVP8IgJP3T
-c/G/lstWFGVi0MbWlbzQfVxcrCnBpg==
-=I40k
------END PGP SIGNATURE-----
-
---cyiwyjcsxpn452wt--
+You have it backward. You don't get to pick and choose which parts of
+the infrastructure you use, and therefore who reviews your drivers.
+The device uses RDMA under the hood so Linux RDMA experts must very
+much be okay with it getting merged. That's how we ensure Linux
+interfaces are consistent and good quality.
