@@ -2,125 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD3D26B0FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B1426B11F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727676AbgIOQZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:25:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23192 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727331AbgIOPim (ORCPT
+        id S1727691AbgIOWZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727624AbgIOQWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:38:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600184262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EmGrGH1ln4DKY4ewYIRXTs91iln6HTRv+ClUeKFLEss=;
-        b=b2QyoeG941G7Eg8JiZC4HkN2SXgP0/AGpS6HniXwDIxyEhmplLk9howtB/Sj5Fy6h3IkVL
-        e8xN39LKC3r1st87lASNj3+6nYOBjOB4B5Avy7OHPtLulrNWIMgVGMdCSIeqI30VXgdgbd
-        46Br+UvJmnMI380Pca/OXu/f8BQfYIM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-381-R4v6z8tHOkSyi745y3kBZg-1; Tue, 15 Sep 2020 11:35:26 -0400
-X-MC-Unique: R4v6z8tHOkSyi745y3kBZg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1ECD31868410;
-        Tue, 15 Sep 2020 15:35:25 +0000 (UTC)
-Received: from Diego (unknown [10.40.208.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3DA9F75138;
-        Tue, 15 Sep 2020 15:35:22 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 17:35:20 +0200 (CEST)
-From:   Michael Petlan <mpetlan@redhat.com>
-X-X-Sender: Michael@Diego
-To:     Jiri Olsa <jolsa@redhat.com>
-cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Wade Mealing <wmealing@redhat.com>
-Subject: Re: [PATCH] perf: Fix race in perf_mmap_close function
-In-Reply-To: <20200914205936.GD1714160@krava>
-Message-ID: <alpine.LRH.2.20.2009151734230.12057@Diego>
-References: <20200910104153.1672460-1-jolsa@kernel.org> <CAM9d7cjqq8+wcZWJ77oONKXu-FsaT_YvRxzaGbRT8PjLOw-AkQ@mail.gmail.com> <20200910144744.GA1663813@krava> <CAM9d7ciEAA_3Quo1-q7hU=Te+hBgJ2wYAjbDazXd7yS70HrhPA@mail.gmail.com> <20200911074931.GA1714160@krava>
- <CAM9d7cicyzZvkrXTvSrGrOE626==myvF2hnuUNiUoLXiOKHB+A@mail.gmail.com> <20200914205936.GD1714160@krava>
-User-Agent: Alpine 2.20 (LRH 67 2015-01-07)
+        Tue, 15 Sep 2020 12:22:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DA6C06174A;
+        Tue, 15 Sep 2020 08:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=yG7qWXKBUIxg7RQ3+cci8dpYxavPbFHR4ZLuySoica4=; b=t6Ws/MdHdLJs2XLcTrYc7bL7HB
+        OLZi/bOn/73POpUaXeC1ed/v/kFUkUxTJLfl12YpD3qYAUQgZ6kE65MhsxkCerZanCvd5xJnuGXVP
+        d5yX2p/2ZLmheiBRRktpBIy42haP2KLL/hBmeEjfStYgrd/sIfatnvsRXhMp4FwqBhDQMDuNFuNKw
+        ggXRbUlyeGOFi0hj24V+mj/JOjuhyPv5M7pE9Hr+ZE+yckaVWBw+/BC1uJFrpcacKnyKov8pttEEa
+        4VtqRW2WqCleQn5wsPxUOKeUxILx3bToavJ30o/oJgwoHWUbYxQ3FkO2BPGoJpzxcsEw/syGg3B+W
+        Btf+oB9g==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIDLA-0003bv-2A; Tue, 15 Sep 2020 15:57:56 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org
+Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org
+Subject: [PATCH 02/18] mm: turn alloc_pages into an inline function
+Date:   Tue, 15 Sep 2020 17:51:06 +0200
+Message-Id: <20200915155122.1768241-3-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200915155122.1768241-1-hch@lst.de>
+References: <20200915155122.1768241-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020, Jiri Olsa wrote:
-> On Mon, Sep 14, 2020 at 09:48:43PM +0900, Namhyung Kim wrote:
-> > On Fri, Sep 11, 2020 at 4:49 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > ugh, that's right.. how about change below
-> > 
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> 
-> thanks, I'll send full patch after we're done testing this
-> 
-> jirka
+To prevent a compiler error when a method call alloc_pages is
+added (which I plan to for the dma_map_ops).
 
-I've tested the change and seems OK to me.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ include/linux/gfp.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Tested-by: Michael Petlan <mpetlan@redhat.com>
-
-> 
-> > 
-> > Thanks
-> > Namhyung
-> > 
-> > 
-> > >
-> > > jirka
-> > >
-> > >
-> > > ---
-> > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > index 7ed5248f0445..8ab2400aef55 100644
-> > > --- a/kernel/events/core.c
-> > > +++ b/kernel/events/core.c
-> > > @@ -5868,11 +5868,11 @@ static void perf_pmu_output_stop(struct perf_event *event);
-> > >  static void perf_mmap_close(struct vm_area_struct *vma)
-> > >  {
-> > >         struct perf_event *event = vma->vm_file->private_data;
-> > > -
-> > >         struct perf_buffer *rb = ring_buffer_get(event);
-> > >         struct user_struct *mmap_user = rb->mmap_user;
-> > >         int mmap_locked = rb->mmap_locked;
-> > >         unsigned long size = perf_data_size(rb);
-> > > +       bool detach_rest = false;
-> > >
-> > >         if (event->pmu->event_unmapped)
-> > >                 event->pmu->event_unmapped(event, vma->vm_mm);
-> > > @@ -5903,7 +5903,8 @@ static void perf_mmap_close(struct vm_area_struct *vma)
-> > >                 mutex_unlock(&event->mmap_mutex);
-> > >         }
-> > >
-> > > -       atomic_dec(&rb->mmap_count);
-> > > +       if (atomic_dec_and_test(&rb->mmap_count))
-> > > +               detach_rest = true;
-> > >
-> > >         if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
-> > >                 goto out_put;
-> > > @@ -5912,7 +5913,7 @@ static void perf_mmap_close(struct vm_area_struct *vma)
-> > >         mutex_unlock(&event->mmap_mutex);
-> > >
-> > >         /* If there's still other mmap()s of this buffer, we're done. */
-> > > -       if (atomic_read(&rb->mmap_count))
-> > > +       if (!detach_rest)
-> > >                 goto out_put;
-> > >
-> > >         /*
-> > >
-> > 
-> 
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 67a0774e080b98..dd2577c5407112 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -550,8 +550,10 @@ extern struct page *alloc_pages_vma(gfp_t gfp_mask, int order,
+ #define alloc_hugepage_vma(gfp_mask, vma, addr, order) \
+ 	alloc_pages_vma(gfp_mask, order, vma, addr, numa_node_id(), true)
+ #else
+-#define alloc_pages(gfp_mask, order) \
+-		alloc_pages_node(numa_node_id(), gfp_mask, order)
++static inline struct page *alloc_pages(gfp_t gfp_mask, unsigned int order)
++{
++	return alloc_pages_node(numa_node_id(), gfp_mask, order);
++}
+ #define alloc_pages_vma(gfp_mask, order, vma, addr, node, false)\
+ 	alloc_pages(gfp_mask, order)
+ #define alloc_hugepage_vma(gfp_mask, vma, addr, order) \
+-- 
+2.28.0
 
