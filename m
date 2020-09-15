@@ -2,243 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AB6269BC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EC2269BC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbgIOCHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 22:07:31 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:54597 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726019AbgIOCHZ (ORCPT
+        id S1726087AbgIOCJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 22:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726034AbgIOCJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 22:07:25 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U9-Pd4L_1600135638;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U9-Pd4L_1600135638)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 15 Sep 2020 10:07:18 +0800
-Date:   Tue, 15 Sep 2020 10:07:18 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-s390@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH v2 1/7] kernel/resource: make
- release_mem_region_adjustable() never fail
-Message-ID: <20200915020718.GB2007@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200908201012.44168-1-david@redhat.com>
- <20200908201012.44168-2-david@redhat.com>
+        Mon, 14 Sep 2020 22:09:39 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789E9C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 19:09:39 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id h17so1794734otr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 19:09:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+Jy9eauNbFDzBgKyJguCjgDmFC1x20RHctsHosQ27vk=;
+        b=BdtId+oISnBdI2PHU0pQTwj2C4jcfRN5mEe9S4xmOc63uEKe7PcfyPFvb25rCQttOP
+         jwYSO9mtPDNJd6c01L0KOqoPmXxDMq/ZYX4OyZNI8rMmEeat9f77zJIkZfuPMR3TaxLz
+         poiS0gXE5z6juvGKQ86s7hCqTJevGiBsJmiq6UjoM+gC2z5yqTiHPrQ4Q2B3r9XZCxtR
+         ptr2Nd/QA3yLWg6WFJVnTWawDODKVi/QRp9iE/qhYn9SaEsVFEWZ3EBAZB+GSyq77xAB
+         joSGfYphydelPFxIA4QR2TxpyEkRD++c/yxs/gYnZZFA6vnW1wwqGG47/8MrR93TbPaj
+         VItw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+Jy9eauNbFDzBgKyJguCjgDmFC1x20RHctsHosQ27vk=;
+        b=lJhvTxmhChmT4OGOJrNe1+agz5uhwBs7XO5foRRBTXmPq93hfTHF78x2ggVJazDBhP
+         U9ku6z5hf2WJMLyrgglaqdCYZwgh0ng97EDF6EWTG+6Vc6c8uQqA8mxrMlHYn1JGKOs1
+         506wjLO1aS2TAXZkdr9gaTbK2AeWLVaLrleTEwU+Q9Ob3nCXBi64oQiqEnCldyvy0Ir6
+         6mQSkuT6ndNKlcgzJnorszc3yKGPxSVE41bjUlNet+NPvvardvM5dU74nG5muL3JGa55
+         KF6GyD5dNGBa+mrOqJhZpes8SU+QR30NUU9PAN4AAmbN44VWio8pFwDGhUjc2xQDVMpz
+         CZPQ==
+X-Gm-Message-State: AOAM532GiD+pCYmNJF7CRl2QM6p+Il3EKgeQ78H+Nf5Z42KdEPihxIp1
+        /m+nGvjQ3OTi9n5UxEKIwFemEyoYNJgIlpuafn4=
+X-Google-Smtp-Source: ABdhPJw0UE+Fwr0N9bcADYKYklk1R6yh6Y1btiV9znRWERHXpy6vkKZK/HHom1ep1fB9jeJdVd+CT8NUQsWTVq962bw=
+X-Received: by 2002:a9d:1445:: with SMTP id h63mr10855819oth.343.1600135778760;
+ Mon, 14 Sep 2020 19:09:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908201012.44168-2-david@redhat.com>
+References: <1595601083-10183-1-git-send-email-qianjun.kernel@gmail.com> <87sgddaru7.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87sgddaru7.fsf@nanos.tec.linutronix.de>
+From:   jun qian <qianjun.kernel@gmail.com>
+Date:   Tue, 15 Sep 2020 10:09:27 +0800
+Message-ID: <CAKc596JD=COaLV37nvFqkTnN6hjJyzLpLKo8h5J9W62BJ4W0EA@mail.gmail.com>
+Subject: Re: [PATCH V4] Softirq:avoid large sched delay from the pending softirqs
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     peterz@infradead.org, will@kernel.org, luto@kernel.org,
+        linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 10:10:06PM +0200, David Hildenbrand wrote:
->Let's make sure splitting a resource on memory hotunplug will never fail.
->This will become more relevant once we merge selected System RAM
->resources - then, we'll trigger that case more often on memory hotunplug.
+Thomas Gleixner <tglx@linutronix.de> =E4=BA=8E2020=E5=B9=B47=E6=9C=8827=E6=
+=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=8811:41=E5=86=99=E9=81=93=EF=BC=9A
 >
->In general, this function is already unlikely to fail. When we remove
->memory, we free up quite a lot of metadata (memmap, page tables, memory
->block device, etc.). The only reason it could really fail would be when
->injecting allocation errors.
+> Qian,
 >
->All other error cases inside release_mem_region_adjustable() seem to be
->sanity checks if the function would be abused in different context -
->let's add WARN_ON_ONCE() in these cases so we can catch them.
+> qianjun.kernel@gmail.com writes:
+> >  /*
+> >   * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times=
+,
+> >   * but break the loop if need_resched() is set or after 2 ms.
+> > - * The MAX_SOFTIRQ_TIME provides a nice upper bound in most cases, but=
+ in
+> > - * certain cases, such as stop_machine(), jiffies may cease to
+> > - * increment and so we need the MAX_SOFTIRQ_RESTART limit as
+> > - * well to make sure we eventually return from this method.
+> > + * In the loop, if the processing time of the softirq has exceeded 2
+> > + * milliseconds, we also need to break the loop to wakeup the
+> > ksofirqd.
 >
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Michal Hocko <mhocko@suse.com>
->Cc: Dan Williams <dan.j.williams@intel.com>
->Cc: Jason Gunthorpe <jgg@ziepe.ca>
->Cc: Kees Cook <keescook@chromium.org>
->Cc: Ard Biesheuvel <ardb@kernel.org>
->Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->Cc: Baoquan He <bhe@redhat.com>
->Cc: Wei Yang <richardw.yang@linux.intel.com>
->Signed-off-by: David Hildenbrand <david@redhat.com>
->---
-> include/linux/ioport.h |  4 ++--
-> kernel/resource.c      | 49 ++++++++++++++++++++++++------------------
-> mm/memory_hotplug.c    | 22 +------------------
-> 3 files changed, 31 insertions(+), 44 deletions(-)
+> You are removing the MAX_SOFTIRQ_RESTART limit explanation and I rather
+> have MAX_SOFTIRQ_TIME_NS there than '2 milliseconds' in case the value
+> gets adjusted later on. Also while sched_clock() is granular on many
+> systems it still can be jiffies based and then the above problem
+> persists.
 >
->diff --git a/include/linux/ioport.h b/include/linux/ioport.h
->index 6c2b06fe8beb7..52a91f5fa1a36 100644
->--- a/include/linux/ioport.h
->+++ b/include/linux/ioport.h
->@@ -248,8 +248,8 @@ extern struct resource * __request_region(struct resource *,
-> extern void __release_region(struct resource *, resource_size_t,
-> 				resource_size_t);
-> #ifdef CONFIG_MEMORY_HOTREMOVE
->-extern int release_mem_region_adjustable(struct resource *, resource_size_t,
->-				resource_size_t);
->+extern void release_mem_region_adjustable(struct resource *, resource_size_t,
->+					  resource_size_t);
-> #endif
-> 
-> /* Wrappers for managed devices */
->diff --git a/kernel/resource.c b/kernel/resource.c
->index f1175ce93a1d5..36b3552210120 100644
->--- a/kernel/resource.c
->+++ b/kernel/resource.c
->@@ -1258,21 +1258,28 @@ EXPORT_SYMBOL(__release_region);
->  *   assumes that all children remain in the lower address entry for
->  *   simplicity.  Enhance this logic when necessary.
->  */
->-int release_mem_region_adjustable(struct resource *parent,
->-				  resource_size_t start, resource_size_t size)
->+void release_mem_region_adjustable(struct resource *parent,
->+				   resource_size_t start, resource_size_t size)
-> {
->+	struct resource *new_res = NULL;
->+	bool alloc_nofail = false;
-> 	struct resource **p;
-> 	struct resource *res;
->-	struct resource *new_res;
-> 	resource_size_t end;
->-	int ret = -EINVAL;
-> 
-> 	end = start + size - 1;
->-	if ((start < parent->start) || (end > parent->end))
->-		return ret;
->+	if (WARN_ON_ONCE((start < parent->start) || (end > parent->end)))
->+		return;
-> 
->-	/* The alloc_resource() result gets checked later */
->-	new_res = alloc_resource(GFP_KERNEL);
->+	/*
->+	 * We free up quite a lot of memory on memory hotunplug (esp., memap),
->+	 * just before releasing the region. This is highly unlikely to
->+	 * fail - let's play save and make it never fail as the caller cannot
->+	 * perform any error handling (e.g., trying to re-add memory will fail
->+	 * similarly).
->+	 */
->+retry:
->+	new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
-> 
+> > @@ -299,6 +298,19 @@ asmlinkage __visible void __softirq_entry __do_sof=
+tirq(void)
+> >               }
+> >               h++;
+> >               pending >>=3D softirq_bit;
+> > +
+> > +             /*
+> > +              * the softirq's action has been running for too much tim=
+e
+> > +              * so it may need to wakeup the ksoftirqd
+> > +              */
+> > +             if (need_resched() && sched_clock() > end) {
+> > +                     /*
+> > +                      * Ensure that the remaining pending bits are
+> > +                      * handled.
+> > +                      */
+> > +                     or_softirq_pending(pending << (vec_nr + 1));
+>
+> To or the value interrupts need to be disabled because otherwise you can
+> lose a bit when an interrupt happens in the middle of the RMW operation
+> and raises a softirq which is not in @pending and not in the per CPU
+> local softirq pending storage.
+>
+> There is another problem. Assume bit 0 and 1 are pending when the
+> processing starts. Now it breaks out after bit 0 has been handled and
+> stores back bit 1 as pending. Before ksoftirqd runs bit 0 gets raised
+> again. ksoftirqd runs and handles bit 0, which takes more than the
+> timeout. As a result the bit 0 processing can starve all other softirqs.
+>
+> So this needs more thought.
+HI Thomas, The problem as you described, i am trying to solve it, but
+i found the
+other problem,just like this,for example
 
-It looks like a bold change, while I don't find a reason to object it.
+the pending bits is 1010110110, when the bit4 was handled, and the
+loop processing
+time more than 2ms, in my patch, the loop will break early. In the
+next time, the loop
+will process the bit5, if before the soft action, the
+bit6,bit8,bit0,bit3 were set, the loop
+will process the bit5,6,7,8,9,0,1,2,3, that will be the bit6 and bit8
+wil be processed before
+bit0 and bit3.
 
-> 	p = &parent->child;
-> 	write_lock(&resource_lock);
->@@ -1298,7 +1305,6 @@ int release_mem_region_adjustable(struct resource *parent,
-> 		 * so if we are dealing with them, let us just back off here.
-> 		 */
-> 		if (!(res->flags & IORESOURCE_SYSRAM)) {
->-			ret = 0;
-> 			break;
-> 		}
-> 
->@@ -1315,20 +1321,23 @@ int release_mem_region_adjustable(struct resource *parent,
-> 			/* free the whole entry */
-> 			*p = res->sibling;
-> 			free_resource(res);
->-			ret = 0;
-> 		} else if (res->start == start && res->end != end) {
-> 			/* adjust the start */
->-			ret = __adjust_resource(res, end + 1,
->-						res->end - end);
->+			WARN_ON_ONCE(__adjust_resource(res, end + 1,
->+						       res->end - end));
-> 		} else if (res->start != start && res->end == end) {
-> 			/* adjust the end */
->-			ret = __adjust_resource(res, res->start,
->-						start - res->start);
->+			WARN_ON_ONCE(__adjust_resource(res, res->start,
->+						       start - res->start));
-> 		} else {
->-			/* split into two entries */
->+			/* split into two entries - we need a new resource */
-> 			if (!new_res) {
->-				ret = -ENOMEM;
->-				break;
->+				new_res = alloc_resource(GFP_ATOMIC);
->+				if (!new_res) {
->+					alloc_nofail = true;
->+					write_unlock(&resource_lock);
->+					goto retry;
->+				}
-> 			}
-> 			new_res->name = res->name;
-> 			new_res->start = end + 1;
->@@ -1339,9 +1348,8 @@ int release_mem_region_adjustable(struct resource *parent,
-> 			new_res->sibling = res->sibling;
-> 			new_res->child = NULL;
-> 
->-			ret = __adjust_resource(res, res->start,
->-						start - res->start);
->-			if (ret)
->+			if (WARN_ON_ONCE(__adjust_resource(res, res->start,
->+							   start - res->start)))
-> 				break;
-> 			res->sibling = new_res;
-> 			new_res = NULL;
->@@ -1352,7 +1360,6 @@ int release_mem_region_adjustable(struct resource *parent,
-> 
-> 	write_unlock(&resource_lock);
-> 	free_resource(new_res);
->-	return ret;
-> }
-> #endif	/* CONFIG_MEMORY_HOTREMOVE */
-> 
->diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
->index baded53b9ff92..4c47b68a9f4b5 100644
->--- a/mm/memory_hotplug.c
->+++ b/mm/memory_hotplug.c
->@@ -1724,26 +1724,6 @@ void try_offline_node(int nid)
-> }
-> EXPORT_SYMBOL(try_offline_node);
-> 
->-static void __release_memory_resource(resource_size_t start,
->-				      resource_size_t size)
->-{
->-	int ret;
->-
->-	/*
->-	 * When removing memory in the same granularity as it was added,
->-	 * this function never fails. It might only fail if resources
->-	 * have to be adjusted or split. We'll ignore the error, as
->-	 * removing of memory cannot fail.
->-	 */
->-	ret = release_mem_region_adjustable(&iomem_resource, start, size);
->-	if (ret) {
->-		resource_size_t endres = start + size - 1;
->-
->-		pr_warn("Unable to release resource <%pa-%pa> (%d)\n",
->-			&start, &endres, ret);
->-	}
->-}
->-
-> static int __ref try_remove_memory(int nid, u64 start, u64 size)
-> {
-> 	int rc = 0;
->@@ -1777,7 +1757,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
-> 		memblock_remove(start, size);
-> 	}
-> 
->-	__release_memory_resource(start, size);
->+	release_mem_region_adjustable(&iomem_resource, start, size);
-> 
-> 	try_offline_node(nid);
-> 
->-- 
->2.26.2
+Do we need to consider this scenario. Do you have any good suggestions.
 
--- 
-Wei Yang
-Help you, Help me
+Thanks.
+>
+> Thanks,
+>
+>         tglx
