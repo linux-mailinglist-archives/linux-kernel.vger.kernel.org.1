@@ -2,114 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304AE26B091
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB93126B093
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727711AbgIOWOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:14:05 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:39134 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727620AbgIOQjA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:39:00 -0400
-Received: by mail-il1-f196.google.com with SMTP id s88so3621978ilb.6;
-        Tue, 15 Sep 2020 09:38:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fQjq4psADqOTnHj/5X1me47R++0Wgzo4u+nIQzoreps=;
-        b=Sfo3JtsgiNdG5PPVa8FD/kozMhckR1uaP64Uz22YZhAq/5arVVSQodJuwgBo6RpdlN
-         Z3CD6i/BmLIbCqTrOF80KjoEuF5OTTn4Oxx50F5GPP1H6D/9oDmW+BCnsI8m4JSnEMr+
-         bcyGOZkBB+VZgL6LvpUAlAeEmXnh/d8YMCJT6A9lhN43a81ffrWep8uSJO7TLTDlanis
-         p2mU6zOOS/q0q7Js6b10gJglXiMxYGs94VwaHadainnql8j4lUpCCWQzLSwz9tRFF5um
-         SkZ05777oNU82U4OeKFjxkihWOJEKKIv+3YDIJcSBv1vAnAQaBYWC0ncFFU3ZLfd8FjH
-         yESg==
-X-Gm-Message-State: AOAM53186k5WOOMn5NJVd2NQ+IxH70Uiojbqb0fBu05fF5C9tjQdKOqQ
-        6s+bG0hRwU0OjnE/ZAH5Cg==
-X-Google-Smtp-Source: ABdhPJyc/WK+I+3WGB3O4e0d/McGvpjNZjWv2eTGNesdR8lUL+lh2ZG1y+ZQBTzSh6qPvBnsqH/w/w==
-X-Received: by 2002:a92:6f0a:: with SMTP id k10mr15682854ilc.5.1600187897117;
-        Tue, 15 Sep 2020 09:38:17 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v20sm9059138ile.42.2020.09.15.09.38.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 09:38:16 -0700 (PDT)
-Received: (nullmailer pid 2088114 invoked by uid 1000);
-        Tue, 15 Sep 2020 16:38:14 -0000
-Date:   Tue, 15 Sep 2020 10:38:14 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Felipe Balbi <balbi@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: document a new quirk for dwc3
-Message-ID: <20200915163814.GA2084568@bogus>
-References: <cover.1599549364.git.mchehab+huawei@kernel.org>
- <cb821a8b5ef2d44ce32c8ce1d01c34b7afb70eb2.1599549364.git.mchehab+huawei@kernel.org>
+        id S1728030AbgIOWOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:14:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727747AbgIOQi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:38:59 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98656206B6;
+        Tue, 15 Sep 2020 16:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600187911;
+        bh=lhrLVWfuKn2BXppu3oqyjQrDnTIcYKHbBOmuXDEUnZU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MucNqneYIEnWPDKekHUhJ6utUM5R+mdliD7hXYbBOVmOenDgxPGzAcJHK4C8yXzlU
+         RWPutBTl1B/TNQkqD1mxqE8/Sm82pfdPZI2f1GQtqVMylBHl7cUqJovA6QHlgvCq6m
+         N8GSY6QVGj0pYB+S2bWyo1TMh5PnQTAbjDMH3HQo=
+Date:   Tue, 15 Sep 2020 18:39:07 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>
+Subject: Re: [PATCH 5.4 105/132] drm/msm: Split the a5xx preemption record
+Message-ID: <20200915163907.GA35563@kroah.com>
+References: <20200915140644.037604909@linuxfoundation.org>
+ <20200915140649.400517956@linuxfoundation.org>
+ <20200915155439.GA22371@jcrouse1-lnx.qualcomm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cb821a8b5ef2d44ce32c8ce1d01c34b7afb70eb2.1599549364.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20200915155439.GA22371@jcrouse1-lnx.qualcomm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 09:20:57AM +0200, Mauro Carvalho Chehab wrote:
-> At Hikey 970, setting the SPLIT disable at the General
-> User Register 3 is required.
+On Tue, Sep 15, 2020 at 09:54:39AM -0600, Jordan Crouse wrote:
+> On Tue, Sep 15, 2020 at 04:13:27PM +0200, Greg Kroah-Hartman wrote:
+> > From: Jordan Crouse <jcrouse@codeaurora.org>
+> > 
+> > commit 34221545d2069dc947131f42392fd4cebabe1b39 upstream.
+> > 
+> > The main a5xx preemption record can be marked as privileged to
+> > protect it from user access but the counters storage needs to be
+> > remain unprivileged. Split the buffers and mark the critical memory
+> > as privileged.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> Without that, the URBs generated by the usbhid driver
-> return -EPROTO errors. That causes the code at
-> hid-core.c to call hid_io_error(), which schedules
-> a reset_work, causing a call to hid_reset().
+> Hi. The MSM_BO_MAP_PRIV feature was added after 5.4. 
 > 
-> In turn, the code there will call:
+> Since we are pulling in 7b3f3948c8b7 ("drm/msm: Disable preemption on all
+> 5xx targets)" preemption will be disabled in the 5.4 stable tree which is enough
+> to cover the security concern that this patch helped address.
 > 
-> 	usb_queue_reset_device(usbhid->intf);
-> 
-> The net result is that the input devices won't work, and
-> will be reset on every 0.5 seconds:
-> 
-> 	[   33.122384] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> 	[   33.378220] usb 1-1.1: reset low-speed USB device number 3 using xhci-hcd
-> 	[   33.698394] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0000
-> 	[   34.882365] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> 	[   35.138217] usb 1-1.1: reset low-speed USB device number 3 using xhci-hcd
-> 	[   35.458617] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0000
-> 	[   36.642392] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> 	[   36.898207] usb 1-1.1: reset low-speed USB device number 3 using xhci-hcd
-> 	[   37.218598] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0000
-> 	[   38.402368] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> 	[   38.658174] usb 1-1.1: reset low-speed USB device number 3 using xhci-hcd
-> 	[   38.978594] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0000
-> 	[   40.162361] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> 	[   40.418148] usb 1-1.1: reset low-speed USB device number 3 using xhci-hcd
-> 	...
-> 	[  397.698132] usb 1-1.1: reset low-speed USB device number 3 using xhci-hcd
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/devicetree/bindings/usb/dwc3.txt | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
-> index d03edf9d3935..1aae2b6160c1 100644
-> --- a/Documentation/devicetree/bindings/usb/dwc3.txt
-> +++ b/Documentation/devicetree/bindings/usb/dwc3.txt
-> @@ -78,6 +78,9 @@ Optional properties:
->  			park mode are disabled.
->   - snps,dis_metastability_quirk: when set, disable metastability workaround.
->  			CAUTION: use only if you are absolutely sure of it.
-> + - snps,dis-split-quirk: when set, change the way URBs are handled by the
-> +			 driver. Needed to avoid -EPROTO errors with usbhid
-> +			 on some devices (Hikey 970).
+> This patch can be dropped.
 
-Can't this be implied by the compatible string? Yes we have quirk 
-properties already, but the problem with them is you can't address them 
-without a DT change.
+Now dropped,t hanks!
 
-Rob
+greg k-h
