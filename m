@@ -2,214 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8435269ECF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5663269ED4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgIOGsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 02:48:11 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:38583 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgIOGsH (ORCPT
+        id S1726139AbgIOGtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 02:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726031AbgIOGtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 02:48:07 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200915064802euoutp027e32ec15a8c811ceffa0dd46befef21d~04jSHdnxY2705427054euoutp028
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:48:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200915064802euoutp027e32ec15a8c811ceffa0dd46befef21d~04jSHdnxY2705427054euoutp028
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600152482;
-        bh=ldNThNHU1aIcNBv7WFXBp5WXZzNOLca70KwulNoR3Y8=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=tNcF2zik2F/J9G+x1ksTIncE/zULNeiQ5ddRDDCd1VuRe7kCPS4voK5gNRPCWg8uB
-         ilCD2FT5cliADhkcaD4QOeHAm0l1XrxUUBUwd+CLjfGkTW139z/dpqqTLGqiCwxmKW
-         hkbcVDazycsjh779TONWwwYEcuZZvwiVc6WtSMlw=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200915064802eucas1p1a628567da13171e504a09bec724aa579~04jRevy6Z0581705817eucas1p1A;
-        Tue, 15 Sep 2020 06:48:02 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 97.92.06318.2A3606F5; Tue, 15
-        Sep 2020 07:48:02 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200915064801eucas1p27e91f102110979fa3430097e2de85a6f~04jQ5ISI21868818688eucas1p2m;
-        Tue, 15 Sep 2020 06:48:01 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200915064801eusmtrp2e7e4e14437180de7aa696e901273ca41~04jQ4WmyZ2912929129eusmtrp2j;
-        Tue, 15 Sep 2020 06:48:01 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-b1-5f6063a2b3f8
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id CA.5C.06017.1A3606F5; Tue, 15
-        Sep 2020 07:48:01 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200915064800eusmtip167f08b3e1b9b825d3831d5cc69fc9ce2~04jP7Wmuj1582115821eusmtip17;
-        Tue, 15 Sep 2020 06:48:00 +0000 (GMT)
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Saravana Kannan <saravanak@google.com>,
-        kernel-team@android.com,
-        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <33e3ef7c-44e9-a509-74ad-c2e39779fd9d@samsung.com>
-Date:   Tue, 15 Sep 2020 08:48:02 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Tue, 15 Sep 2020 02:49:10 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4780CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:49:10 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t7so1262237pjd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:49:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s8Y8jIfnu2JVAS1j+0KEUXwHHRIpYqRhW26zB0qzDvU=;
+        b=O1fDZO0OTcPfVTyEkhiGWvaakbkTxJU0OJFtzwi70nuSM1bxWIrUPTq7zpjOn/QhnF
+         xYkuFux85KyXuG+8V3yUW0kIh/CaModSD05AlDgShdaoLkOfvfJSsxA++A1Md6hvO7Hp
+         4+yBWtCiJm9Lrkc3p7tDW4BiNyWrbAzj3EgZb4dl3CdNLJkgolPXFA2I/JT0JbVZviU1
+         182AQxDmGBLRJu4xt1KGfb5dDHSxV7vKzFLIdhZWz4Y6sMwC1dow6rOBXoYizPMdeupQ
+         74ROpxiQWU+87RcvEGrA8sprQhgfCACC91xIWHN/MSsPkRBpSsZ8msTFLxwlMzob3EhN
+         KeFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=s8Y8jIfnu2JVAS1j+0KEUXwHHRIpYqRhW26zB0qzDvU=;
+        b=W5aOV6Ehg33h0zXxkexxOYvzCb5QUgzqq0RuCjaVZ0j1oArAbSyZvAuiKcIAIr8v5q
+         l4HvcFpAozMYAdJUxXMfFKZCsq7VavtUvqzvf55t5J6GoriT8HfhMbhRJICPLAf5cslu
+         fgJGRPPj70UJGItuebugxPTJ6d1qk/wN+Y5zTsSaRxQ9TN/zXTkW0f/CT3PBRlrRWcqH
+         uCC1Y2KuC2HMZ2va6hA0zqUac1mEVScR0gs/zc53Yu3wka+pPqn4piFshCChKw4dyduo
+         cQ2DcKOQc4VEbM3YQf5iCzWQcnyrGQj0MChr0zBd/wLFmMhayN/0+vtigMmWM4t0OaOv
+         nQSQ==
+X-Gm-Message-State: AOAM532UNRmZxsj7MFM9T9dlwclZv854F+wJgpg7s0PIqnEoas+3gqK3
+        RfV8dQbf26ZOCHFp0RxmkAtAHKgeBU4YBhtT
+X-Google-Smtp-Source: ABdhPJwKAZXEdCnhPxhlCR79rvCV/I50ra4JqXvRqFle6q52sz/IfSaVsbgToE+24Qk/c5ywvs0QzQ==
+X-Received: by 2002:a17:90a:aa94:: with SMTP id l20mr2748960pjq.95.1600152549827;
+        Mon, 14 Sep 2020 23:49:09 -0700 (PDT)
+Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
+        by smtp.gmail.com with ESMTPSA id gb19sm11059249pjb.38.2020.09.14.23.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 23:49:09 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 15:49:05 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+Subject: Re: [RFC PATCH V3 10/21] mmc: sdhci: UHS-II support, dump UHS-II
+ registers
+Message-ID: <20200915064905.GD2860208@laputa>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20200710111034.29456-1-benchuanggli@gmail.com>
+ <bd374ef8-8b8b-031b-0e59-d6f881cb9330@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <14e2c690bf99280588538989014c7356@kernel.org>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0yMcRzH+97z3HNPx7WnK/oslrkwTNFi+wpRw56NlgwzGzn1rKJf7lwp
-        mai1um5JY3I1Z6kkCRenX6uc1om5i5uWlIlqaf2w0lL51fUU/fd6fz7vz/fzY1+akKopVzoi
-        +gyniJZHyigxaWiaMHsUhBwP3tDZSGFLp5HAj3IfCPFwsQbhyaFGEc4vScAXC60krnzqjC2W
-        hyKs/9IqxNbqfArnWuoE+INVgqvym4VYbfxF4fK6LApX6K8R+KlugsCpHZt2SFlDjUHIlt0s
-        Q2xqioZib5adY6u0nSL2ll7F6kszKDa5wUKyHa21FDtkNovYisILbFXlqIDNelyK2FG92z6H
-        I+KtoVxkRBynWO97XBzekGamYt+sPps5chclI627GtnTwGyEytzbhBqJaSlTgiCzvn1WfEdw
-        qame4sUogndj5cK5Euv7DAGfuIPgRXHFrBhGMHUvW2BzOTH7oTPzCrKxM7McRlqakc1EMAYh
-        GI3GmQTFeIF6UE3ZWML4wsDHLpGNSWYlZDWYCBsvYo5B08vPJO9xhOYb3TNsz/hATd6PGT/B
-        LIOUJ3kEzy7Q3q2bmQiYWhrMOVcpfu6d0DdVL+LZCfpNj2d5KfypmitIQdBlvi/ihQaB9VIu
-        4l1boMM8Of0SPd1iDTyoXs+H/aA/vUhoCwPjAG2DjvwQDpBjuE7wYQmkp0l59yrQmsr/tX3W
-        8pbIRjLtvNW089bRzltH+7/vLUSWIhdOpYwK45Te0Vy8p1IepVRFh3mGxETp0fQPffXbNFaJ
-        6n6eMCKGRrKFEloVHCwVyuOUCVFGBDQhc5b4v351TCoJlSckcoqYYIUqklMa0RKalLlIvAu+
-        HpUyYfIz3CmOi+UUc1kBbe+aPH2f4thHm6e6UtU/03xloX4HIwLOi/1f2mUe7RovXbHUFOTj
-        cflbhVtvgEqXuNhQuLYoeSCobcGeIfC2O0n1lA8n7hr9tPH6anNT/JSm73CZY6DrHzIjSe05
-        WRNrt/tQr9eaJI7YlbDOXaPyHg8sanV67nPg9LNtjTvCdYHbezR75TJSGS73WksolPK/aiY+
-        V50DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDKsWRmVeSWpSXmKPExsVy+t/xu7oLkxPiDVackrQ4f/cQs8XGGetZ
-        Ld4v62G0+PXuCLvFnBWVFo1LLrNY7NguYnH+/AZ2i02Pr7FaXN41h81ixvl9TBa3L/Na7Jxz
-        ktWi69BfNot1+/rYLDZvmspssX3+T2aLljumDkIe23ZvY/VYM28No0dLcw+bx7w11R47Z91l
-        91iwqdRj06pONo+GA+dZPO5c28Pm8e7cOXaPzUvqPXbu+Mzk0bdlFaPH501yAXxRejZF+aUl
-        qQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZGpkr6djYpqTmZZalF+nYJehkH2s6xFVzUqOj+
-        tJKxgXGWchcjJ4eEgInE5ZudTF2MXBxCAksZJa4c3sICkZCRODmtgRXCFpb4c62LDaLoLaNE
-        f2sLI0hCWCBI4m73RDBbREBR4tOFk4wgRcwCO1glZm44xALR8Z9Jov3WXjaQKjYBQ4mut11g
-        Nq+AncSbew/ZQWwWAVWJvgPHmUFsUYE4iTM9L6BqBCVOznwCdhKngJXE7tk/wOqZBcwk5m1+
-        yAxhy0s0b50NZYtL3Hoyn2kCo9AsJO2zkLTMQtIyC0nLAkaWVYwiqaXFuem5xUZ6xYm5xaV5
-        6XrJ+bmbGIEpY9uxn1t2MHa9Cz7EKMDBqMTDm1AeHy/EmlhWXJl7iFGCg1lJhNfp7Ok4Id6U
-        xMqq1KL8+KLSnNTiQ4ymQM9NZJYSTc4HprO8knhDU0NzC0tDc2NzYzMLJXHeDoGDMUIC6Ykl
-        qdmpqQWpRTB9TBycUg2M/YXlQklrpuyY9cQ4RaMw/5lggoPz/S8qP4+tE/zI0cU66ZDyTNHW
-        fC3OJRMPbTA5nLjnC/v/qElWfxUm7Xvl5Gfq3JIXKnv3c+zeFu6PBlJrFXfauBireHx+Fep/
-        Zo3NOuE7WzN2syo7Be3TiO19Wacqo3n/0M50jcCWjLJmpa4rO/N6Q7KVWIozEg21mIuKEwE0
-        zO25LwMAAA==
-X-CMS-MailID: 20200915064801eucas1p27e91f102110979fa3430097e2de85a6f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
-References: <20200901144324.1071694-1-maz@kernel.org>
-        <20200901144324.1071694-9-maz@kernel.org>
-        <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
-        <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
-        <8642847d83ef5bb15663d0246d6af668@kernel.org>
-        <65565f85-d932-37f3-a8cd-dbd13d7dbfad@samsung.com>
-        <14e2c690bf99280588538989014c7356@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd374ef8-8b8b-031b-0e59-d6f881cb9330@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Fri, Aug 21, 2020 at 05:04:54PM +0300, Adrian Hunter wrote:
+> On 10/07/20 2:10 pm, Ben Chuang wrote:
+> > From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > 
+> > Dump UHS-II specific registers, if available, in sdhci_dumpregs()
+> > for informative/debugging use.
+> > 
+> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > ---
+> >  drivers/mmc/host/sdhci.c | 24 ++++++++++++++++++++++++
+> >  1 file changed, 24 insertions(+)
+> > 
+> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> > index 37b1158c1c0c..c2f6923d296c 100644
+> > --- a/drivers/mmc/host/sdhci.c
+> > +++ b/drivers/mmc/host/sdhci.c
+> > @@ -111,6 +111,30 @@ void sdhci_dumpregs(struct sdhci_host *host)
+> >  		}
+> >  	}
+> >  
+> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > +	    host->mmc && host->mmc->flags & MMC_UHS2_SUPPORT) {
+> > +		SDHCI_DUMP("==================== UHS2 ==================\n");
+> > +		SDHCI_DUMP("Blk Size:  0x%08x | Blk Cnt:  0x%08x\n",
+> > +			   sdhci_readw(host, SDHCI_UHS2_BLOCK_SIZE),
+> > +			   sdhci_readl(host, SDHCI_UHS2_BLOCK_COUNT));
+> > +		SDHCI_DUMP("Cmd:       0x%08x | Trn mode: 0x%08x\n",
+> > +			   sdhci_readw(host, SDHCI_UHS2_COMMAND),
+> > +			   sdhci_readw(host, SDHCI_UHS2_TRANS_MODE));
+> > +		SDHCI_DUMP("Int Stat:  0x%08x | Dev Sel : 0x%08x\n",
+> > +			   sdhci_readw(host, SDHCI_UHS2_DEV_INT_STATUS),
+> > +			   sdhci_readb(host, SDHCI_UHS2_DEV_SELECT));
+> > +		SDHCI_DUMP("Dev Int Code:  0x%08x\n",
+> > +			   sdhci_readb(host, SDHCI_UHS2_DEV_INT_CODE));
+> > +		SDHCI_DUMP("Reset:     0x%08x | Timer:    0x%08x\n",
+> > +			   sdhci_readw(host, SDHCI_UHS2_SW_RESET),
+> > +			   sdhci_readw(host, SDHCI_UHS2_TIMER_CTRL));
+> > +		SDHCI_DUMP("ErrInt:    0x%08x | ErrIntEn: 0x%08x\n",
+> > +			   sdhci_readl(host, SDHCI_UHS2_ERR_INT_STATUS),
+> > +			   sdhci_readl(host, SDHCI_UHS2_ERR_INT_STATUS_EN));
+> > +		SDHCI_DUMP("ErrSigEn:  0x%08x\n",
+> > +			   sdhci_readl(host, SDHCI_UHS2_ERR_INT_SIG_EN));
+> > +	}
+> > +
+> 
+> Let's make this a host op instead ie.
+> 
+> 	if (host->ops->dump_uhs2_regs)
+> 		host->ops->dump_uhs2_regs(host);
 
-On 14.09.2020 17:09, Marc Zyngier wrote:
-> On 2020-09-14 14:26, Marek Szyprowski wrote:
->> On 14.09.2020 15:13, Marc Zyngier wrote:
->>> On 2020-09-14 14:06, Marek Szyprowski wrote:
->>>> On 01.09.2020 16:43, Marc Zyngier wrote:
->>>>> Change the way we deal with GIC SGIs by turning them into proper
->>>>> IRQs, and calling into the arch code to register the interrupt range
->>>>> instead of a callback.
->>>>>
->>>>> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
->>>>> Signed-off-by: Marc Zyngier <maz@kernel.org>
->>>> This patch landed in linux next-20200914 as commit ac063232d4b0
->>>> ("irqchip/gic: Configure SGIs as standard interrupts"). Sadly it 
->>>> breaks
->>>> booting of all Samsung Exynos 4210/4412 based boards (dual/quad ARM
->>>> Cortex A9 based). Here are the last lines from the bootlog:
->>>>
->>>> [    0.106322] CPU: Testing write buffer coherency: ok
->>>> [    0.109895] CPU0: Spectre v2: using BPIALL workaround
->>>> [    0.116057] CPU0: thread -1, cpu 0, socket 9, mpidr 80000900
->>>> [    0.123885] Setting up static identity map for 0x40100000 -
->>>> 0x40100060
->>>> [    0.130191] rcu: Hierarchical SRCU implementation.
->>>> [    0.137195] soc soc0: Exynos: CPU[EXYNOS4210] PRO_ID[0x43210211]
->>>> REV[0x11] Detected
->>>> [    0.145129] smp: Bringing up secondary CPUs ...
->>>> [    0.156279] CPU1: thread -1, cpu 1, socket 9, mpidr 80000901
->>>> [    0.156291] CPU1: Spectre v2: using BPIALL workaround
->>>> [    2.716379] random: fast init done
->>>
->>> Thanks for the report. Is this the funky non-banked GIC?
->>
->> Both Exynos 4210 and 4412 use non-zero cpu-offset in GIC node in
->> device-tree: arch/arm/boot/dts/exynos{4210,4412}.dtsi, so I assume that
->> the GIC registers are not banked.
->
-> Annoyingly, it seems to work correctly in QEMU:
->
-> root@unassigned-hostname:~# cat /proc/interrupts
->            CPU0       CPU1
->  40:          0          0     GIC-0  89 Level     mct_comp_irq
->  41:      16144          0     GIC-0  74 Level     mct_tick0
->  42:          0      15205     GIC-0  80 Level     mct_tick1
->  43:          0          0  COMBINER  18 Edge      arm-pmu
->  44:          0          0  COMBINER  26 Edge      arm-pmu
->  46:       2270          0     GIC-0 107 Level     mmc0
->  48:        878          0     GIC-0  84 Level     13800000.serial
->  52:          0          0     GIC-0  90 Level     13860000.i2c
->  54:          0          0     GIC-0  67 Level     12680000.pdma
->  55:          0          0     GIC-0  68 Level     12690000.pdma
->  56:          0          0     GIC-0  66 Level     12850000.mdma
->  59:          0          0  COMBINER  45 Edge      13620000.sysmmu
->  60:          0          0  COMBINER  46 Edge      13630000.sysmmu
->  61:          0          0  COMBINER  44 Edge      12e20000.sysmmu
->  62:          0          0  COMBINER  34 Edge      11a20000.sysmmu
->  63:          0          0  COMBINER  35 Edge      11a30000.sysmmu
->  64:          0          0  COMBINER  36 Edge      11a40000.sysmmu
->  65:          0          0  COMBINER  37 Edge      11a50000.sysmmu
->  66:          0          0  COMBINER  38 Edge      11a60000.sysmmu
->  67:          0          0  COMBINER  40 Edge      12a30000.sysmmu
->  68:          0          0  COMBINER  42 Edge      11e20000.sysmmu
->  74:          0          0     GIC-0  79 Level 11400000.pinctrl
->  75:          0          0     GIC-0  78 Level 11000000.pinctrl
->  77:          0          0  COMBINER  39 Edge      12a20000.sysmmu
->  78:          0          0  COMBINER  43 Edge      12220000.sysmmu
-> IPI0:          0          1  CPU wakeup interrupts
-> IPI1:          0          0  Timer broadcast interrupts
-> IPI2:         32         63  Rescheduling interrupts
-> IPI3:       3925       5381  Function call interrupts
-> IPI4:          0          0  CPU stop interrupts
-> IPI5:       4375       3778  IRQ work interrupts
-> IPI6:          0          0  completion interrupts
-> Err:          0
->
-> Do you happen to know whether the QEMU emulation is trustworthy?
+Sure.
 
-I didn't play much with Exynos emulation on QEMU. All I know is that 
-this patch simply doesn't work on the real hw.
+-Takahiro Akashi
 
-If there is anything to check or test, let me know. I will try to help 
-as much as possible.
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+> >  	if (host->ops->dump_vendor_regs)
+> >  		host->ops->dump_vendor_regs(host);
+> >  
+> > 
+> 
