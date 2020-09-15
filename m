@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D69B26ABA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C563F26ABAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgIOSTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
+        id S1728018AbgIOSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727666AbgIOSL1 (ORCPT
+        with ESMTP id S1727952AbgIOSNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:11:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6EC3C06178A;
-        Tue, 15 Sep 2020 11:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Skf+RnDeQwakungqw7FkIqPZOV4lMwNMB+kvGSAk4Fo=; b=JTQVrkMe6r+LRHsSnRnH1uq06d
-        qrmUghk3Eb8xpQcwJBTi3Xbo6QjVFHKi7OhAB5WAr5nQAZ9dghtH0p3YFKyEldcO5Vg794DBCOvNJ
-        X1ljG+EOZ6V4NtA3BjAldhyx+r5uZ809aDHz1QDqRPdyuNaXItiD+wk2zbUu1BI5YkL1fXQwabItP
-        oRGrHS9XIQYek8AI1VMMN5oZ+phGZ3wzwKzqn57AwYAtxejKV/FVXOQtyasR20Ih1XfrOn+UerAO4
-        SgLwOzvpU/oTtE4+R4k12VmCUe2q0DXYXOv1WcixKSUq+J2oZH/RT7tlutib7YhxXvkIx9VBrh+tM
-        2sGe7Pjw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIFQB-0003uk-MM; Tue, 15 Sep 2020 18:11:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 408683050F0;
-        Tue, 15 Sep 2020 20:11:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DEEC82BB9C564; Tue, 15 Sep 2020 20:11:12 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 20:11:12 +0200
-From:   peterz@infradead.org
-To:     Will Deacon <will@kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Hou Tao <houtao1@huawei.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200915181112.GE2674@hirez.programming.kicks-ass.net>
-References: <20200915140750.137881-1-houtao1@huawei.com>
- <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
- <20200915161123.GC26745@willie-the-truck>
+        Tue, 15 Sep 2020 14:13:53 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D76AC06178A;
+        Tue, 15 Sep 2020 11:13:52 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id t20so3923414qtr.8;
+        Tue, 15 Sep 2020 11:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding:content-disposition;
+        bh=PkfGd1AFuSaun8fDUiryvY9jnrNtkMGkmE9AZRe7yos=;
+        b=IE/Rr4l5Em7F95R7NhtZd7mnz4VVkjx5jC6FNA96lRcHaLW1mxvvLeLWcKzOz6X/f8
+         Lf8Vm4b3gsFHqlBagMXtRdAlODBb25VUmfauKEwBqFFD170/Ku0aSc3t5pRPpqziJJ0D
+         FInveJxq3fhMcCeE3LVJyXXy1RcJDFZ5Hm5Q+F8M3G/Exbi7TL1SKlguUlOIc6/tgNKF
+         aomCwd8WXY0huDUvkz8PBzx2c0gdgyAocu4qIK9axHcu5onwOb52G14s49xvHI/jYf/V
+         yK+oeXBVK9B66oHnbND/ofMAIiddDr5zkzr6cpgkIxFl9/OdPYl6EccWqaGb5nOxiQ5E
+         hK0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding
+         :content-disposition;
+        bh=PkfGd1AFuSaun8fDUiryvY9jnrNtkMGkmE9AZRe7yos=;
+        b=F3+TtM1/zrSF31ZrRksyG6JAzOUOTjjSeBW2yFdyVJmc0CNtdJqvdXAy+YFx4UxMm9
+         QZ1LRZPYvG27f9VSASy9QokeIvGTqrfafDPA+V8TT0M6Fe6EXxHRSN76+jGxU9wWIRI8
+         H6pyRaZiws15zkN6xil+mIGZF4si3d0+7r4gUrcWi3ygdWLshtQ2SZXQJRTVUjifURoX
+         kDFzai9TOuq3nV62Z3CB5uXMpKQ+qjT+tQ7hWW9tEFRiVc9YR0tXdJBE1uPjlaTZQ2X0
+         pwYUTZ8UBG47+aZDtBcF3gi4v7APF2+DxxBWT9kJqNiW6YWRBlfUP+ho07P3hNKYuKvW
+         7nrQ==
+X-Gm-Message-State: AOAM533CBJSDxOOUjUVBwDiQotQIm8AohtgzLTqbHPOtHN57SFiP+WaU
+        sVl4xWMFfTQ6TG95m4QiiXd5PrRCgj0Gfg==
+X-Google-Smtp-Source: ABdhPJzrzn2PMydfT2DVw16s4CG4h17YOiXLocDodOhJHzPQxvvYoWYpJlhpzstPv+46wSqWaBYm0Q==
+X-Received: by 2002:ac8:44a7:: with SMTP id a7mr7104598qto.173.1600193631564;
+        Tue, 15 Sep 2020 11:13:51 -0700 (PDT)
+Received: from dwls-dell ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
+        by smtp.gmail.com with ESMTPSA id r64sm17485003qkf.119.2020.09.15.11.13.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Sep 2020 11:13:50 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 15:13:46 -0300
+From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "=?utf-8?Q?mchehab+huawei=40kernel.org?=" <mchehab+huawei@kernel.org>,
+        "=?utf-8?Q?r.verdejo=40samsung.com?=" <r.verdejo@samsung.com>,
+        "=?utf-8?Q?nicolas=40ndufresne.ca?=" <nicolas@ndufresne.ca>,
+        "=?utf-8?Q?linux-media=40vger.kernel.org?=" 
+        <linux-media@vger.kernel.org>,
+        "=?utf-8?Q?skhan=40linuxfoundation.org?=" <skhan@linuxfoundation.org>,
+        "=?utf-8?Q?linux-kernel-mentees=40lists.linuxfoundation.org?=" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
+        <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <607EC72C-E8F5-4998-87FF-EABB1FC717EC@getmailspring.com>
+In-Reply-To: <CAMuHMdVfoQ-vW3VeO8vDVALNREBV1afaSnwnc0jnkoXmvw6xhQ@mail.gmail.com>
+References: <CAMuHMdVfoQ-vW3VeO8vDVALNREBV1afaSnwnc0jnkoXmvw6xhQ@mail.gmail.com>
+Subject: Re: [v10 3/4] media: vidtv: add a bridge driver
+X-Mailer: Mailspring
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20200915161123.GC26745@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 05:11:23PM +0100, Will Deacon wrote:
-> On Tue, Sep 15, 2020 at 06:03:44PM +0200, peterz@infradead.org wrote:
-> > On Tue, Sep 15, 2020 at 05:51:50PM +0200, peterz@infradead.org wrote:
-> > 
-> > > Anyway, I'll rewrite the Changelog and stuff it in locking/urgent.
-> > 
-> > How's this?
-> > 
-> > ---
-> > Subject: locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
-> > From: Hou Tao <houtao1@huawei.com>
-> > Date: Tue, 15 Sep 2020 22:07:50 +0800
-> > 
-> > From: Hou Tao <houtao1@huawei.com>
-> > 
-> > The __this_cpu*() accessors are (in general) IRQ-unsafe which, given
-> > that percpu-rwsem is a blocking primitive, should be just fine.
-> > 
-> > However, file_end_write() is used from IRQ context and will cause
-> > load-store issues.
-> 
-> ... on architectures where the per-cpu accessors are not atomic.
+Hi there Geert!
 
-That's not entirely accurate, on x86 for example the per-cpu ops are not
-atomic, but they are not susceptible to this problem due to them being a
-single instruction from the point of interrupts -- either they wholly
-happen or they don't.
+Sorry for breaking stuff :)
 
-So I'd reformulate it like: "... on architectures where the per-cpu
-accessors are not natively irq-safe" ?
+Anyways I just sent in a fix. I decided to drop that entire function
+because as I said, it needs a do-over and that can be done later at a
+slower pace.
 
+I'm not sure on how to go about testing this properly. I tried 'make
+ARCH=x86' for example and it built fine, so I assume this is working?
 
+Otherwise let me know.
 
+-- thanks
+-- Daniel
