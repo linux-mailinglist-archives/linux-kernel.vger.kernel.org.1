@@ -2,138 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B6D26AB8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A295526AB94
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbgIOSKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:10:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60824 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727954AbgIOSIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:08:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B5B8B302;
-        Tue, 15 Sep 2020 18:07:30 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     Michal Suchanek <msuchanek@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Ganesh Goudar <ganeshgr@linux.ibm.com>,
-        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH] Revert "powerpc/64s: machine check interrupt update NMI accounting"
-Date:   Tue, 15 Sep 2020 20:06:59 +0200
-Message-Id: <20200915180659.12503-1-msuchanek@suse.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915084302.GG29778@kitsune.suse.cz>
-References: <20200915084302.GG29778@kitsune.suse.cz>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727918AbgIOSME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727990AbgIOSI4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 14:08:56 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FC3C061797;
+        Tue, 15 Sep 2020 11:07:27 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id a12so3903555eds.13;
+        Tue, 15 Sep 2020 11:07:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=vvxOGxNKj/7yxq3LDFIGsq+9PQEexQTaLJnBkK3tSHg=;
+        b=tQEqOEqMWWwt2fWyREs3dQj94iTfe6kl3oM9wFHmaJ4HPYJiupV069c1OIfEPQYorl
+         kWYVZRsah58o5Tn8a8Q1vLjtmxH5vUe87cIHcGxPvYoW6NbM5piXCwvoAQZgi/9rGXmx
+         2RSZ37eqH9Y23mB7Yz+CgTg9UTW5x8BDyvTSXWQYA3MUfkgSLkn/irrjwRYO9Z+drmHD
+         U3dlQAeK7i4zszrn+yEM8HvguHPSlYpys2u4Q2pU7D2NxssO2Zgf8tDbQOb1lPeAP26b
+         0ZFfaPXXHVohIoDsAtwn40w1hnCsQyfg9X7LbpqCgAD26G8HFwXIbLkTdTYN5liz0hvo
+         eM2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=vvxOGxNKj/7yxq3LDFIGsq+9PQEexQTaLJnBkK3tSHg=;
+        b=kHv9i+Z48GKEjqjX3mQlIYJN4IDBN1omqnkxBXgoeKnQ82g+HaG46xJEIwt1Neow7R
+         7ROV6YYzLY9hK5Pu5kgT4m1DMa1ooHhN2OyseFg8om2EMbOCnE6zkpx/l78sqWQDfPVj
+         uMQzzoUaSyhdctXxQ+mgAWipQJYZzqrwb55tR/5ZaaZUtiGWqXcPQVm9on+slEnTGY5h
+         bsESYYJUKHHvpUdO9LsMvTJnn6K8Mwckxdm3V1FYsT2jLzKGOCXSLL8BMZOB9mjA1Ief
+         DEWRTxnjBsAue/x1KLeMT8nVCrn/v+LPkpsRKdxQjiQGDXdZHXofC9GA9GrKjPUBDK/q
+         KD3A==
+X-Gm-Message-State: AOAM533XLNolykSQsQ4rAx7xxDVYIVWJn39Enm3xm9seIn8eCoxYVuox
+        O7cj813uS6IsQOLDAE52HWE=
+X-Google-Smtp-Source: ABdhPJwwmJtEBhCSFDITxvEDupYDusK1WH0s4Kua1S4sxBDhRbbXG5dHdaH+NP8G3je5YgPgPAhz4w==
+X-Received: by 2002:a05:6402:1641:: with SMTP id s1mr24493949edx.66.1600193245886;
+        Tue, 15 Sep 2020 11:07:25 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:598:b890:1ee4:75d6:3bdd:1167:483e])
+        by smtp.gmail.com with ESMTPSA id k25sm10687083ejk.3.2020.09.15.11.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 11:07:25 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] scsi: ufs-qcom: use devm_platform_ioremap_resource_byname()
+Date:   Tue, 15 Sep 2020 20:07:08 +0200
+Message-Id: <20200915180708.12311-3-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200915180708.12311-1-huobean@gmail.com>
+References: <20200915180708.12311-1-huobean@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 116ac378bb3ff844df333e7609e7604651a0db9d.
+From: Bean Huo <beanhuo@micron.com>
 
-This commit causes the kernel to oops and reboot when injecting a SLB
-multihit which causes a MCE.
+Use devm_platform_ioremap_resource_byname() to simplify the code.
 
-Before this commit a SLB multihit was corrected by the kernel and the
-system continued to operate normally.
-
-cc: stable@vger.kernel.org
-Fixes: 116ac378bb3f ("powerpc/64s: machine check interrupt update NMI accounting")
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+Signed-off-by: Bean Huo <beanhuo@micron.com>
 ---
- arch/powerpc/kernel/mce.c   |  7 -------
- arch/powerpc/kernel/traps.c | 18 +++---------------
- 2 files changed, 3 insertions(+), 22 deletions(-)
+ drivers/scsi/ufs/ufs-qcom-ice.c |  9 +--------
+ drivers/scsi/ufs/ufs-qcom.c     | 23 +++++++++--------------
+ 2 files changed, 10 insertions(+), 22 deletions(-)
 
-diff --git a/arch/powerpc/kernel/mce.c b/arch/powerpc/kernel/mce.c
-index ada59f6c4298..2e13528dcc92 100644
---- a/arch/powerpc/kernel/mce.c
-+++ b/arch/powerpc/kernel/mce.c
-@@ -591,14 +591,10 @@ EXPORT_SYMBOL_GPL(machine_check_print_event_info);
- long notrace machine_check_early(struct pt_regs *regs)
- {
- 	long handled = 0;
--	bool nested = in_nmi();
- 	u8 ftrace_enabled = this_cpu_get_ftrace_enabled();
+diff --git a/drivers/scsi/ufs/ufs-qcom-ice.c b/drivers/scsi/ufs/ufs-qcom-ice.c
+index bbb0ad7590ec..cd67869a725e 100644
+--- a/drivers/scsi/ufs/ufs-qcom-ice.c
++++ b/drivers/scsi/ufs/ufs-qcom-ice.c
+@@ -97,25 +97,18 @@ int ufs_qcom_ice_init(struct ufs_qcom_host *host)
+ 	struct ufs_hba *hba = host->hba;
+ 	struct device *dev = hba->dev;
+ 	struct platform_device *pdev = to_platform_device(dev);
+-	struct resource *res;
+ 	int err;
  
- 	this_cpu_set_ftrace_enabled(0);
+ 	if (!(ufshcd_readl(hba, REG_CONTROLLER_CAPABILITIES) &
+ 	      MASK_CRYPTO_SUPPORT))
+ 		return 0;
  
--	if (!nested)
--		nmi_enter();
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ice");
+-	if (!res) {
+-		dev_warn(dev, "ICE registers not found\n");
+-		goto disable;
+-	}
 -
- 	hv_nmi_check_nonrecoverable(regs);
+ 	if (!qcom_scm_ice_available()) {
+ 		dev_warn(dev, "ICE SCM interface not found\n");
+ 		goto disable;
+ 	}
  
- 	/*
-@@ -607,9 +603,6 @@ long notrace machine_check_early(struct pt_regs *regs)
- 	if (ppc_md.machine_check_early)
- 		handled = ppc_md.machine_check_early(regs);
+-	host->ice_mmio = devm_ioremap_resource(dev, res);
++	host->ice_mmio = devm_platform_ioremap_resource_byname(pdev, "ice");
+ 	if (IS_ERR(host->ice_mmio)) {
+ 		err = PTR_ERR(host->ice_mmio);
+ 		dev_err(dev, "Failed to map ICE registers; err=%d\n", err);
+diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index f9d6ef356540..c0c76da5472a 100644
+--- a/drivers/scsi/ufs/ufs-qcom.c
++++ b/drivers/scsi/ufs/ufs-qcom.c
+@@ -976,7 +976,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+ 	struct device *dev = hba->dev;
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct ufs_qcom_host *host;
+-	struct resource *res;
  
--	if (!nested)
--		nmi_exit();
--
- 	this_cpu_set_ftrace_enabled(ftrace_enabled);
+ 	if (strlen(android_boot_dev) && strcmp(android_boot_dev, dev_name(dev)))
+ 		return -ENODEV;
+@@ -1059,20 +1058,16 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+ 		host->dev_ref_clk_en_mask = BIT(26);
+ 	} else {
+ 		/* "dev_ref_clk_ctrl_mem" is optional resource */
+-		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+-						   "dev_ref_clk_ctrl_mem");
+-		if (res) {
+-			host->dev_ref_clk_ctrl_mmio =
+-					devm_ioremap_resource(dev, res);
+-			if (IS_ERR(host->dev_ref_clk_ctrl_mmio)) {
+-				dev_warn(dev,
+-					"%s: could not map dev_ref_clk_ctrl_mmio, err %ld\n",
+-					__func__,
+-					PTR_ERR(host->dev_ref_clk_ctrl_mmio));
+-				host->dev_ref_clk_ctrl_mmio = NULL;
+-			}
+-			host->dev_ref_clk_en_mask = BIT(5);
++		host->dev_ref_clk_ctrl_mmio =
++			devm_platform_ioremap_resource_byname(pdev,
++							"dev_ref_clk_ctrl_mem");
++		if (IS_ERR(host->dev_ref_clk_ctrl_mmio)) {
++			dev_warn(dev,
++			"%s: could not map dev_ref_clk_ctrl_mmio, err %ld\n",
++			__func__, PTR_ERR(host->dev_ref_clk_ctrl_mmio));
++			host->dev_ref_clk_ctrl_mmio = NULL;
+ 		}
++		host->dev_ref_clk_en_mask = BIT(5);
+ 	}
  
- 	return handled;
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index d1ebe152f210..7853b770918d 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -827,19 +827,7 @@ void machine_check_exception(struct pt_regs *regs)
- {
- 	int recover = 0;
- 
--	/*
--	 * BOOK3S_64 does not call this handler as a non-maskable interrupt
--	 * (it uses its own early real-mode handler to handle the MCE proper
--	 * and then raises irq_work to call this handler when interrupts are
--	 * enabled).
--	 *
--	 * This is silly. The BOOK3S_64 should just call a different function
--	 * rather than expecting semantics to magically change. Something
--	 * like 'non_nmi_machine_check_exception()', perhaps?
--	 */
--	const bool nmi = !IS_ENABLED(CONFIG_PPC_BOOK3S_64);
--
--	if (nmi) nmi_enter();
-+	nmi_enter();
- 
- 	__this_cpu_inc(irq_stat.mce_exceptions);
- 
-@@ -865,7 +853,7 @@ void machine_check_exception(struct pt_regs *regs)
- 	if (check_io_access(regs))
- 		goto bail;
- 
--	if (nmi) nmi_exit();
-+	nmi_exit();
- 
- 	die("Machine check", regs, SIGBUS);
- 
-@@ -876,7 +864,7 @@ void machine_check_exception(struct pt_regs *regs)
- 	return;
- 
- bail:
--	if (nmi) nmi_exit();
-+	nmi_exit();
- }
- 
- void SMIException(struct pt_regs *regs)
+ 	err = ufs_qcom_init_lane_clks(host);
 -- 
-2.28.0
+2.17.1
 
