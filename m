@@ -2,182 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313F326AFBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFA726AFBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgIOVlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
+        id S1728091AbgIOVlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728057AbgIOVkq (ORCPT
+        with ESMTP id S1727591AbgIOVk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:40:46 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65326C061797
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:40:26 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id j185so2805913vsc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:40:26 -0700 (PDT)
+        Tue, 15 Sep 2020 17:40:26 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7182DC06178B
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:40:22 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z1so4826954wrt.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:40:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Odc+dz8lFAW14dZfz5AFMwOnSiDQKXWw1NmIQbo2M64=;
-        b=wAFA9gFD6p9wC/BryAbO1WBNIfKR7Xj7UksGJv3wvSIB+Iv3EpI9vrrggDZ7mvQZxd
-         x8G5/kqhmgtd+JKV2BFtL38u26LfLqJn5LzGFB345A8RHumxjIEzgVtasUdj3/0GSUPE
-         I4A1wPTTrdf8Rw750dtLO13pY93ks3+ZZnKS+doGI4tKbSNpPcMIhhDcYqF7ow1cXcxI
-         wETjSnnQv8aVS+bXeiCtT3WPxXJFZF5YRzDjtKVyufSc7zl0HiU/iGxLYRWjTrTHEE6P
-         qOReE/29M/nT6jJLg2YmKNupzNuW8mgXAtA8Kk9b45GOF75a36UK0RjmCm+0BdV6MzK1
-         RkkA==
+        h=subject:to:cc:references:from:autocrypt:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZyrGKVFDx4BGNZ/Sa7IJ5z8va1EbUDyxko9EIPRujuM=;
+        b=veI3AvonDskRaUwF5ORDqWFJETZI+22t06b/E6CdpcUb2Bzet3eVUU+UbEoXj1wSQD
+         OGEwGLzQwLOITt4yQYbu1Ie+NhSn1/be3xk3XtV2QILTMQMBjh+aJ0UpN9pQ8mpszEeE
+         kXSR8rL/V1SbcsTZ7EK2+nY4J4F4WSIfRRNfbWPSxbxhUMRUMI097f484mmSRO6pX6rY
+         D6pt8gDg5MvVwfT1GtNlmnmorUrZ+k/hCNb2a2/hfjXAYcgXcJqZG+RTzVLyA2KUTthX
+         ZjVfvZ0sTXMyhkyKNP+m95A/ZlvhmFnw/gYhj82/QTMufjmd/wgIM63mEm+fXS4iVePJ
+         fpOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Odc+dz8lFAW14dZfz5AFMwOnSiDQKXWw1NmIQbo2M64=;
-        b=aq8+u/yqWlt8y++dDWpnYuJSy+Tqq3mZc455L+Zl8has1SJM/uhxKoR4fiEivtEOfu
-         rWLE+eWcpqVzEbKEUuN8oQjFpfrYK64fukvOcpIQEfte5teNfzHuTKVFqLFkKjX1Btxp
-         gxZdXRoV6rrmS2CCFqEF9eEk85Y75YTXKV8V1Ww1erQaf8dN/gn2d3ehh6PC+uuvgfWP
-         XHHe566CNbvjnMku4zbx4tDoDZX39/HkYIXC4uqz0ClsLE8jvzMAIs0n2lxbJXWlmVF+
-         obDSe9x+JmXvGuUgVlr2b5a1MULpeufUMXWcE5nx9THY7GhnJxVJg9OJIvWMBKEwgjjJ
-         wmnw==
-X-Gm-Message-State: AOAM530kikOZElBiqrudQLksekH61x3yLwxBQJBHH6tgnlGoLlH2egKo
-        YcmzSd7iWMNn7uGOZjx5VN3DuxIYFHBH4zdbKNJMbA==
-X-Google-Smtp-Source: ABdhPJwVkTFLnJI6TBRIoFIKaO0yXllxB3NB36NQ+glNVdef/q9WAsNxIuNPrjBnfZD75rffLQEig5FQTJQUQ5Dqf3Y=
-X-Received: by 2002:a67:3009:: with SMTP id w9mr816780vsw.19.1600206025349;
- Tue, 15 Sep 2020 14:40:25 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZyrGKVFDx4BGNZ/Sa7IJ5z8va1EbUDyxko9EIPRujuM=;
+        b=a4m6Jsp+yCgrcXqD/EDD9rQBdyS2VYIQ2ZIUckz9Frw4zo0RyQ6R2q4OnCBAzOpzjs
+         E3lmzRVXQ/oxdz8z2nUL76lEmoFRHj/U925xLu9pGTYo66EnewUiazrkfqmwaIJVILXF
+         ZZxP6xZEiSOydbvMeVf+HQH5wRcb+pnye8keGyEdyR+Vlo688+NHBa/GGXQjFlFThseM
+         rxKiJCFKQB874d00hRXc5LGSMehtR59E1YBbI1DV+pS44BUEuJz0dOr+RC9zeePl7rE+
+         JIMIiTcISK5A7XgYF1vR8lG/SAplcRXUzKVOUkBuYyOIQj1gD1CPH8ywbByCOAsNf6H9
+         ICGg==
+X-Gm-Message-State: AOAM531MONf8N7TA7Q3TNqUOgUwA98/DnFecDILd03L9QH4PZIap5oBU
+        rEAlVkHZXiG0LOaugxWMoTo+jQ==
+X-Google-Smtp-Source: ABdhPJyxWNiKiFioPsFe2QDV2mvw1qAZrQlyU6fOTAFIT5XSLZvrE8JtKxXTq+yytVPmhh3AebY7qg==
+X-Received: by 2002:a5d:69cd:: with SMTP id s13mr22613427wrw.379.1600206021323;
+        Tue, 15 Sep 2020 14:40:21 -0700 (PDT)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id g14sm443358wrv.25.2020.09.15.14.40.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 14:40:20 -0700 (PDT)
+Subject: Re: [PATCH RFC v6 1/6] dt-bindings: exynos-bus: Add documentation for
+ interconnect properties
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     cw00.choi@samsung.com, krzk@kernel.org, devicetree@vger.kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200702163724.2218-1-s.nawrocki@samsung.com>
+ <CGME20200702163748eucas1p2cf7eab70bc072dea9a95183018b38ad3@eucas1p2.samsung.com>
+ <20200702163724.2218-2-s.nawrocki@samsung.com>
+ <20200709210448.GA876103@bogus>
+ <65af1a5c-8f8a-ef65-07f8-e0b3d04c336c@samsung.com>
+ <35d9d396-b553-a815-1f3b-1af4dc37a2ca@samsung.com>
+ <b711257d-c34b-b609-3ada-312871967b98@linaro.org>
+ <e6e369fb-ccf2-09ed-ad6a-680e67198359@samsung.com>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
+ 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
+ KEmKjLDvB0pePJkdTw==
+Message-ID: <ae438269-fbb5-326a-aa97-f04033c2b3b6@linaro.org>
+Date:   Wed, 16 Sep 2020 00:40:18 +0300
 MIME-Version: 1.0
-References: <CA+G9fYvYEsxjU_cnm6oWFgOrU4x0T1CMoN-L2SHLGeJC6MF54Q@mail.gmail.com>
-In-Reply-To: <CA+G9fYvYEsxjU_cnm6oWFgOrU4x0T1CMoN-L2SHLGeJC6MF54Q@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 15 Sep 2020 23:39:48 +0200
-Message-ID: <CAPDyKFqVB_hgDghaYU1B1BbWUuL6GHhWMbZEYM-cXDQ8T8ThfQ@mail.gmail.com>
-Subject: Re: Unable to handle kernel paging request at virtual address dead - __clk_put
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e6e369fb-ccf2-09ed-ad6a-680e67198359@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 16:33, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> arm64 dragonboard-410c boot failed while running linux next 2020915 due to
-> the kernel crash.
->
-> metadata:
->   git branch: master
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->   git describe: next-20200915
->   make_kernelversion: 5.9.0-rc5
->   kernel-config:
-> https://builds.tuxbuild.com/J5oDTkph2aj855oeGOd45Q/kernel.config
->
->
-> crash log:
-> -------------
-> [    3.517615] Synopsys Designware Multimedia Card Interface Driver
-> [    3.524258] sdhci-pltfm: SDHCI platform and OF driver helper
-> [    3.531302] Unable to handle kernel paging request at virtual
-> address dead000000000108
-> [    3.531396] Mem abort info:
-> [    3.531460] sdhci_msm 7864900.sdhci: Got CD GPIO
-> [    3.539182]   ESR = 0x96000044
-> [    3.541953] ledtrig-cpu: registered to indicate activity on CPUs
-> [    3.546692]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    3.546701]   SET = 0, FnV = 0
-> [    3.555694] usbcore: registered new interface driver usbhid
-> [    3.555703] usbhid: USB HID core driver
-> [    3.561638] genirq: irq_chip msmgpio did not update eff. affinity
-> mask of irq 75
-> [    3.563908]   EA = 0, S1PTW = 0
-> [    3.580792] Data abort info:
-> [    3.583673]   ISV = 0, ISS = 0x00000044
-> [    3.583900] NET: Registered protocol family 10
-> [    3.586785]   CM = 0, WnR = 1
-> [    3.586794] [dead000000000108] address between user and kernel address ranges
-> [    3.586806] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-> [    3.591869] Segment Routing with IPv6
-> [    3.594829] Modules linked in:
-> [    3.594841] CPU: 2 PID: 7 Comm: kworker/u8:0 Not tainted
-> 5.9.0-rc5-next-20200915 #1
-> [    3.594844] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> [    3.594862] Workqueue: events_unbound async_run_entry_fn
-> [    3.597959] NET: Registered protocol family 17
-> [    3.604991] pstate: 60000005 (nZCv daif -PAN -UAO BTYPE=--)
-> [    3.605000] pc : __clk_put+0x40/0x140
-> [    3.605009] lr : __clk_put+0x2c/0x140
-> [    3.610613] 9pnet: Installing 9P2000 support
-> [    3.614183] sp : ffff80001005bbe0
-> [    3.614189] x29: ffff80001005bbe0
-> [    3.617233] Key type dns_resolver registered
-> [    3.624696] x28: 000000000000002e
-> [    3.624701] x27: ffff00003b620a68 x26: ffff800011496568
-> [    3.624708] x25: ffff00003fcfe8f8 x24: ffff00003d30c410
-> [    3.632518] registered taskstats version 1
-> [    3.636931] x23: ffff800011495cf8 x22: ffff00003b620a40
-> [    3.636938] x21: ffff00003d30c400 x20: ffff00003b620580
-> [    3.636945] x19: ffff00003b64f380 x18: 0000000007824000
-> [    3.636951] x17: ffff00003b620a00 x16: ffff00003b6205d0
-> [    3.636958] x15: ffff8000119929f8 x14: ffffffffffffffff
-> [    3.636965] x13: ffff800012947000 x12: ffff800012947000
-> [    3.636975] x11: 0000000000000020
-> [    3.641233] Loading compiled-in X.509 certificates
-> [    3.646650] x10: 0101010101010101
-> [    3.646654] x9 : ffff8000107b4c84 x8 : 7f7f7f7f7f7f7f7f
-> [    3.646661] x7 : ffff000009fe5880 x6 : 0000000000000000
-> [    3.646668] x5 : 0000000000000000 x4 : ffff000009fe5880
-> [    3.646674] x3 : ffff80001250d7a0 x2 : ffff000009fe5880
-> [    3.746653] x1 : ffff00003b64f680 x0 : dead000000000100
-> [    3.751949] Call trace:
-> [    3.757243]  __clk_put+0x40/0x140
-> [    3.759413]  clk_put+0x18/0x28
-> [    3.762885]  dev_pm_opp_put_clkname+0x30/0x58
-> [    3.765837]  sdhci_msm_probe+0x288/0x9a8
-> [    3.770265]  platform_drv_probe+0x5c/0xb0
-> [    3.774258]  really_probe+0xf0/0x4d8
-> [    3.778163]  driver_probe_device+0xfc/0x168
-> [    3.781810]  __driver_attach_async_helper+0xbc/0xc8
-> [    3.785717]  async_run_entry_fn+0x4c/0x1b0
-> [    3.790575]  process_one_work+0x1c8/0x498
-> [    3.794741]  worker_thread+0x54/0x428
-> [    3.798822]  kthread+0x120/0x158
-> [    3.802467]  ret_from_fork+0x10/0x30
-> [    3.805771] Code: 35000720 a9438660 f9000020 b4000040 (f9000401)
-> [    3.809334] ---[ end trace 1a607a5ea6891b9f ]---
->
-> full test log link,
-> https://lkft.validation.linaro.org/scheduler/job/1765840#L2014
-> https://lkft.validation.linaro.org/scheduler/job/1765842#L1960
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+Hi Sylwester,
 
-Naresh, thanks for reporting!
+On 9/9/20 17:47, Sylwester Nawrocki wrote:
+> Hi Georgi,
+> 
+> On 09.09.2020 11:07, Georgi Djakov wrote:
+>> On 8/28/20 17:49, Sylwester Nawrocki wrote:
+>>> On 30.07.2020 14:28, Sylwester Nawrocki wrote:
+>>>> On 09.07.2020 23:04, Rob Herring wrote:
+>>>>> On Thu, Jul 02, 2020 at 06:37:19PM +0200, Sylwester Nawrocki wrote:
+>>>>>> Add documentation for new optional properties in the exynos bus nodes:
+>>>>>> samsung,interconnect-parent, #interconnect-cells, bus-width.
+>>>>>> These properties allow to specify the SoC interconnect structure which
+>>>>>> then allows the interconnect consumer devices to request specific
+>>>>>> bandwidth requirements.
+>>>>>>
+>>>>>> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
+>>>>>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>>>
+>>>>>> --- a/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
+>>>>>> +++ b/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
+> 
+>>>>>> +Optional properties for interconnect functionality (QoS frequency constraints):
+>>>>>> +- samsung,interconnect-parent: phandle to the parent interconnect node; for
+>>>>>> +  passive devices should point to same node as the exynos,parent-bus property.
+>>>
+>>>>> Adding vendor specific properties for a common binding defeats the 
+>>>>> point.
+>>>
+>>> Actually we could do without any new property if we used existing interconnect
+>>> consumers binding to specify linking between the provider nodes. I think those
+>>> exynos-bus nodes could well be considered both the interconnect providers 
+>>> and consumers. The example would then be something along the lines 
+>>> (yes, I know the bus node naming needs to be fixed):
+>>>
+>>> 	soc {
+>>> 		bus_dmc: bus_dmc {
+>>> 			compatible = "samsung,exynos-bus";
+>>> 			/* ... */
+>>> 			samsung,data-clock-ratio = <4>;
+>>> 			#interconnect-cells = <0>;
+>>> 		};
+>>>
+>>> 		bus_leftbus: bus_leftbus {
+>>> 			compatible = "samsung,exynos-bus";
+>>> 			/* ... */
+>>> 			interconnects = <&bus_leftbus &bus_dmc>;
+>>> 			#interconnect-cells = <0>;
+>>> 		};
+>>>
+>>> 		bus_display: bus_display {
+>>> 			compatible = "samsung,exynos-bus";
+>>> 			/* ... */
+>>> 			interconnects = <&bus_display &bus_leftbus>;
+>>
+>> Hmm, bus_display being a consumer of itself is a bit odd? Did you mean:
+>>  			interconnects = <&bus_dmc &bus_leftbus>;
+> 
+> Might be, but we would need to swap the phandles so <source, destination>
+> order is maintained, i.e. interconnects = <&bus_leftbus &bus_dmc>;
 
-There have been regressions related to the opp library this cycle, so
-I am wondering if Viresh may have any ideas, before going into more
-details.
+Ok, i see. Thanks for clarifying! Currently the "interconnects" property is
+defined as a pair of initiator and target nodes. You can keep it also as
+interconnects = <&bus_display &bus_dmc>, but you will need to figure out
+during probe that there is another node in the middle and defer. I assume
+that if a provider is also an interconnect consumer, we will link it to
+whatever nodes are specified in the "interconnects" property?
 
-One thing that also changed from the sdhci-msm point of view, is that
-we enabled async probe [1]. This could be the thing that triggers an
-untested error path of the probe?
+> My intention here was to describe the 'bus_display -> bus_leftbus' part 
+> of data path 'bus_display -> bus_leftbus -> bus_dmc', bus_display is
+> really a consumer of 'bus_leftbus -> bus_dmc' path.
+>
+> I'm not sure if it is allowed to specify only single phandle (and 
+> interconnect provider specifier) in the interconnect property, that would
+> be needed for the bus_leftbus node to define bus_dmc as the interconnect 
+> destination port. There seems to be such a use case in arch/arm64/boot/
+> dts/allwinner/sun50i-a64.dtsi.
 
-Otherwise we can always try to revert "mmc: sdhci-msm: Unconditionally
-call dev_pm_opp_of_remove_table()", which I recently applied again
-after the earlier errors.
+In the general case you have to specify pairs. The "dma-mem" is a reserved
+name for devices that perform DMA through another bus with separate address
+translation rules.
 
-Kind regards
-Uffe
+>>> 			#interconnect-cells = <0>;
+>>> 		};
+>>>
+>>>
+>>> 		&mixer {
+>>> 			compatible = "samsung,exynos4212-mixer";
+>>> 			interconnects = <&bus_display &bus_dmc>;
+>>> 			/* ... */
+>>> 		};
+>>> 	};
+>>>
+>>> What do you think, Georgi, Rob?
+>>
+>> I can't understand the above example with bus_display being it's own consumer.
+>> This seems strange to me. Could you please clarify it?
+> 
+>> Otherwise the interconnect consumer DT bindings are already well established
+>> and i don't see anything preventing a node to be both consumer and provider.
+>> So this should be okay in general.
+> 
+> Thanks, below is an updated example according to your suggestions. 
+> Does it look better now?
+> 
+> ---------------------------8<------------------------------
+> soc {
+> 	bus_dmc: bus_dmc {
+> 		compatible = "samsung,exynos-bus";
+> 		/* ... */
+> 		samsung,data-clock-ratio = <4>;
+> 		#interconnect-cells = <0>;
+> 	};
+> 
+> 	bus_leftbus: bus_leftbus {
+> 		compatible = "samsung,exynos-bus";
+> 		/* ... */
+> 		interconnects = <&bus_dmc>;
+> 		#interconnect-cells = <0>;
+> 	};
+> 
+> 	bus_display: bus_display {
+> 		compatible = "samsung,exynos-bus";
+> 		/* ... */
+> 		interconnects = <&bus_leftbus &bus_dmc>;
+> 		#interconnect-cells = <0>;
+> 	};
+> 
+> 	&mixer {
+> 		compatible = "samsung,exynos4212-mixer";
+> 		interconnects = <&bus_display &bus_dmc>;
+> 		/* ... */
+> 	};
+> };
+> ---------------------------8<------------------------------
 
-[1]
-"mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()"
-https://patchwork.kernel.org/patch/11752095/
+It's difficult to have a common way to describe all the different kinds of
+topologies in DT, as some SoCs are very complex, having multi-tiered topologies
+with hundreds of nodes, with multiple links between them etc. Currently, the
+idea is to have the topology as platform data, but i guess that you want to
+avoid this. I hope that we will be able to describe simpler topologies in DT in
+the future, but we don't have such support in the framework yet.
+
+So maybe we could try your proposal and see how it will work for exynos.
+
+Thanks,
+Georgi
