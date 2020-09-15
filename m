@@ -2,272 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFA726AFBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FA226AFD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbgIOVlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727591AbgIOVk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:40:26 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7182DC06178B
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:40:22 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z1so4826954wrt.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:autocrypt:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZyrGKVFDx4BGNZ/Sa7IJ5z8va1EbUDyxko9EIPRujuM=;
-        b=veI3AvonDskRaUwF5ORDqWFJETZI+22t06b/E6CdpcUb2Bzet3eVUU+UbEoXj1wSQD
-         OGEwGLzQwLOITt4yQYbu1Ie+NhSn1/be3xk3XtV2QILTMQMBjh+aJ0UpN9pQ8mpszEeE
-         kXSR8rL/V1SbcsTZ7EK2+nY4J4F4WSIfRRNfbWPSxbxhUMRUMI097f484mmSRO6pX6rY
-         D6pt8gDg5MvVwfT1GtNlmnmorUrZ+k/hCNb2a2/hfjXAYcgXcJqZG+RTzVLyA2KUTthX
-         ZjVfvZ0sTXMyhkyKNP+m95A/ZlvhmFnw/gYhj82/QTMufjmd/wgIM63mEm+fXS4iVePJ
-         fpOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZyrGKVFDx4BGNZ/Sa7IJ5z8va1EbUDyxko9EIPRujuM=;
-        b=a4m6Jsp+yCgrcXqD/EDD9rQBdyS2VYIQ2ZIUckz9Frw4zo0RyQ6R2q4OnCBAzOpzjs
-         E3lmzRVXQ/oxdz8z2nUL76lEmoFRHj/U925xLu9pGTYo66EnewUiazrkfqmwaIJVILXF
-         ZZxP6xZEiSOydbvMeVf+HQH5wRcb+pnye8keGyEdyR+Vlo688+NHBa/GGXQjFlFThseM
-         rxKiJCFKQB874d00hRXc5LGSMehtR59E1YBbI1DV+pS44BUEuJz0dOr+RC9zeePl7rE+
-         JIMIiTcISK5A7XgYF1vR8lG/SAplcRXUzKVOUkBuYyOIQj1gD1CPH8ywbByCOAsNf6H9
-         ICGg==
-X-Gm-Message-State: AOAM531MONf8N7TA7Q3TNqUOgUwA98/DnFecDILd03L9QH4PZIap5oBU
-        rEAlVkHZXiG0LOaugxWMoTo+jQ==
-X-Google-Smtp-Source: ABdhPJyxWNiKiFioPsFe2QDV2mvw1qAZrQlyU6fOTAFIT5XSLZvrE8JtKxXTq+yytVPmhh3AebY7qg==
-X-Received: by 2002:a5d:69cd:: with SMTP id s13mr22613427wrw.379.1600206021323;
-        Tue, 15 Sep 2020 14:40:21 -0700 (PDT)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id g14sm443358wrv.25.2020.09.15.14.40.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 14:40:20 -0700 (PDT)
-Subject: Re: [PATCH RFC v6 1/6] dt-bindings: exynos-bus: Add documentation for
- interconnect properties
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     cw00.choi@samsung.com, krzk@kernel.org, devicetree@vger.kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200702163724.2218-1-s.nawrocki@samsung.com>
- <CGME20200702163748eucas1p2cf7eab70bc072dea9a95183018b38ad3@eucas1p2.samsung.com>
- <20200702163724.2218-2-s.nawrocki@samsung.com>
- <20200709210448.GA876103@bogus>
- <65af1a5c-8f8a-ef65-07f8-e0b3d04c336c@samsung.com>
- <35d9d396-b553-a815-1f3b-1af4dc37a2ca@samsung.com>
- <b711257d-c34b-b609-3ada-312871967b98@linaro.org>
- <e6e369fb-ccf2-09ed-ad6a-680e67198359@samsung.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
- 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
- KEmKjLDvB0pePJkdTw==
-Message-ID: <ae438269-fbb5-326a-aa97-f04033c2b3b6@linaro.org>
-Date:   Wed, 16 Sep 2020 00:40:18 +0300
-MIME-Version: 1.0
-In-Reply-To: <e6e369fb-ccf2-09ed-ad6a-680e67198359@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1728111AbgIOVo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:44:58 -0400
+Received: from mail-dm3gcc02on2104.outbound.protection.outlook.com ([40.107.91.104]:22176
+        "EHLO GCC02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727845AbgIOVnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:43:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gP59+M9kP3ZEQtpnFruwMJTxipkpx5mXy/SAn2tLXN3JL4qzMJ1ovTpHbiAiF/nRgN+JWCDnMI8WCCcRMUXjnFduBiNpgILfXKaDFIuooiqrtNQxzbDEq+ZXqd/6dyBNj6iD6CmIZdrBoo6eEZJhIR2gVWzt1Zu1x2I8WkY2+RjJDlgZrfvNwRcw/4U3TdF97r5ksdewF0BlNby6ZExrsumudCVvW+WO8hM/di5362QOMxgKtlaqtFHQX4/sqqgAZs6qXS1WZMpGBjKNYO3kZhTdRl0X06MFZ2UnBUMt/P9Vh4IpyS3dUHF9DQWGbOXmF9OR97gJSP4UYP6Vo+NIvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5XTZZ/aS36tpTnR5M4LBDQk4eW6LhdJERW6/8ZQBdjg=;
+ b=AEMkmqRUg3UZV5ehyVTDA4QkihRZ0LrGTYP4+eEdl+HOkLUjAoN3uBVLLoJlH2fPtc1OtuPBOe6RA6OE3dr3FKkRGBU86TJAfPr8Mr8nkNHkKcK2wXE2uMFPinGFNIq8DVH2P5c8qKxMSe/e48ddMFm/cKT/T6YCQHAtxWOBQSrZM9Gm3Dci1Vc6xbAceeaIrV7uqIAt+aSmcu7+HnZT3PDT1IsxxgdT5xexteAv8RKROzjmpwlzYCMuMeLNN2zV7TMVCaqZUkMQEe6MjAsvnvQ4erXTZ1441TMna1uCIsttHHrkV3rb9UABF9g5P5ffrbNzUXeKwEMYjUjUFq6SXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starlab.io; dmarc=pass action=none header.from=starlab.io;
+ dkim=pass header.d=starlab.io; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=starlab.io;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5XTZZ/aS36tpTnR5M4LBDQk4eW6LhdJERW6/8ZQBdjg=;
+ b=aJuHPsEZcvYEP98mtq2JKo/LbYpT9T2mpgQahKfEPFXnrB3ajaaj7edTDPFd88SsdHU/wC7pVNVj0g8Ybc9hBn483uen/K+fV2fNe2IiND7jJO/8+jusNVQEVcBbNcaGNFA1idd4Us3/7XC9AqnJ7uKjYcLlkpDC5MooQ2ALKLA=
+Authentication-Results: starlab.io; dkim=none (message not signed)
+ header.d=none;starlab.io; dmarc=none action=none header.from=starlab.io;
+Received: from SA9PR09MB5246.namprd09.prod.outlook.com (2603:10b6:806:4b::9)
+ by SA9PR09MB5376.namprd09.prod.outlook.com (2603:10b6:806:44::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
+ 2020 21:43:23 +0000
+Received: from SA9PR09MB5246.namprd09.prod.outlook.com
+ ([fe80::e90f:c1b7:2964:d2ac]) by SA9PR09MB5246.namprd09.prod.outlook.com
+ ([fe80::e90f:c1b7:2964:d2ac%7]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 21:43:23 +0000
+From:   Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J . Bruce Fields" <bfields@fieldses.org>
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+Subject: [PATCH v2] nfs: Fix security label length not being reset
+Date:   Tue, 15 Sep 2020 16:42:52 -0500
+Message-Id: <20200915214252.262881-1-jeffrey.mitchell@starlab.io>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200914154958.55451-1-jeffrey.mitchell@starlab.io>
+References: <20200914154958.55451-1-jeffrey.mitchell@starlab.io>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SN4PR0701CA0023.namprd07.prod.outlook.com
+ (2603:10b6:803:28::33) To SA9PR09MB5246.namprd09.prod.outlook.com
+ (2603:10b6:806:4b::9)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from jeffrey-work-20 (75.1.70.238) by SN4PR0701CA0023.namprd07.prod.outlook.com (2603:10b6:803:28::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 21:43:22 +0000
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [75.1.70.238]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f6b6cbb7-73d3-494f-9182-08d859c05e6a
+X-MS-TrafficTypeDiagnostic: SA9PR09MB5376:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA9PR09MB537678871DE105834C46ED4BF8200@SA9PR09MB5376.namprd09.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ve0rVm2dgAEEJAHk636eMFSzbaG54N1EjudpqWLYW0DylXWpm1XPdYOKGIJ7OQAUpYFiKRVvvCCHJyBpHbHzGKC4nG5t9P4JC8cVt7aPrOwpeaPSxWzUaFp0k9bOYDPZUOJ8XLYLs7IY1pk2rtYoLLTdDcfG5Kzzo2J3bIaePbV3MKzQ0UsODbgcJZlEpmQscx6xeqDlu+uG1mYjrtw5UiZLSQAD5lbkudMm2EmmZLEYqmYHzwFZpOujih7ONUEwBPmwH3cgEdqhdth5H9fRA5RelGwfRwMIn7uLA+/xqi7XnIvhkfvfdF/IyPz3eBCA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA9PR09MB5246.namprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39830400003)(346002)(136003)(376002)(366004)(16526019)(186003)(107886003)(4326008)(8676002)(8936002)(36756003)(6496006)(66946007)(2906002)(15650500001)(52116002)(66556008)(66476007)(316002)(6666004)(86362001)(26005)(5660300002)(1076003)(44832011)(83380400001)(478600001)(2616005)(110136005)(956004)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: q4wBhvrjMzSF6Plz5Ht6sf9Uu69ig8LJutAd8jEyaoRDqKTewYyNQQYzV/bQE3XEV4LlM1hb3ypXtn2UD9kZ/IWTmgpl/Y1MFe+L1ElTHVh//V3w7gSJ81b08ickMgWfthsYiUVGueTLp5bDY8dzcUXctkSBIycLijlMk9+jcS/InJxM/w8oiMk/mNtfX7EFuhtrsvQyWRN5ixKH/jgHOhkH7+r8SK5ywKJUxitBRQHXKyBbJ9wi7nEbTIzYCW4WKtrnhYoNWNvKgjBUWA0LPrhxeO1sXAk5oq+Vuw0Oo4uzI4RtN84ucfhZCYEh5tbZXN7/hZ7VucAojcwKizYByZwF9Y7Tms+Qu6o+0mYEg8rv3674tDIbW55gvLpoClnMmUgAKEzNg3gEgaTkoYgW2ASPlIsKNy1rO+ukeMT7BSsbPQRBapQYtCSIs/TsmQcBp2XuuNqtXEhKJNwc+yV3tT3/D7hfCg9JfhdCwpS03f5o4OZPzwW+O0EF3E4KpZkQ81iTRmt6v5H+6f57VRofr6IckSvmbX+Mwbis7sXKBegIgGp8/a87r847npRq68Rao6ZDV+Z7R7M5FYP/bzJZOIWJmmn8EIoY/0as0nZmCFPxewig4O+RKwxixWqNxIYAEZZWR96si8n53nHTsMOJHQ==
+X-OriginatorOrg: starlab.io
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6b6cbb7-73d3-494f-9182-08d859c05e6a
+X-MS-Exchange-CrossTenant-AuthSource: SA9PR09MB5246.namprd09.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 21:43:22.8388
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5e611933-986f-4838-a403-4acb432ce224
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: chYVMMkYAvfiR0om1oU7hkRD1vHWk8vWKpUFgxhDUxbYALnkAu4ki99P8nO5pZmG5IsEx33nXgcNyg9tcTPVyxPI/upgYllWlX/Q0iCwT6Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA9PR09MB5376
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sylwester,
+nfs_readdir_page_filler() iterates over entries in a directory, reusing
+the same security label buffer, but does not reset the buffer's length.
+This causes decode_attr_security_label() to return -ERANGE if an entry's
+security label is longer than the previous one's. This error, in
+nfs4_decode_dirent(), only gets passed up as -EAGAIN, which causes another
+failed attempt to copy into the buffer. The second error is ignored and
+the remaining entries do not show up in ls, specifically the getdents64()
+syscall.
 
-On 9/9/20 17:47, Sylwester Nawrocki wrote:
-> Hi Georgi,
-> 
-> On 09.09.2020 11:07, Georgi Djakov wrote:
->> On 8/28/20 17:49, Sylwester Nawrocki wrote:
->>> On 30.07.2020 14:28, Sylwester Nawrocki wrote:
->>>> On 09.07.2020 23:04, Rob Herring wrote:
->>>>> On Thu, Jul 02, 2020 at 06:37:19PM +0200, Sylwester Nawrocki wrote:
->>>>>> Add documentation for new optional properties in the exynos bus nodes:
->>>>>> samsung,interconnect-parent, #interconnect-cells, bus-width.
->>>>>> These properties allow to specify the SoC interconnect structure which
->>>>>> then allows the interconnect consumer devices to request specific
->>>>>> bandwidth requirements.
->>>>>>
->>>>>> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
->>>>>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->>>
->>>>>> --- a/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
->>>>>> +++ b/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
-> 
->>>>>> +Optional properties for interconnect functionality (QoS frequency constraints):
->>>>>> +- samsung,interconnect-parent: phandle to the parent interconnect node; for
->>>>>> +  passive devices should point to same node as the exynos,parent-bus property.
->>>
->>>>> Adding vendor specific properties for a common binding defeats the 
->>>>> point.
->>>
->>> Actually we could do without any new property if we used existing interconnect
->>> consumers binding to specify linking between the provider nodes. I think those
->>> exynos-bus nodes could well be considered both the interconnect providers 
->>> and consumers. The example would then be something along the lines 
->>> (yes, I know the bus node naming needs to be fixed):
->>>
->>> 	soc {
->>> 		bus_dmc: bus_dmc {
->>> 			compatible = "samsung,exynos-bus";
->>> 			/* ... */
->>> 			samsung,data-clock-ratio = <4>;
->>> 			#interconnect-cells = <0>;
->>> 		};
->>>
->>> 		bus_leftbus: bus_leftbus {
->>> 			compatible = "samsung,exynos-bus";
->>> 			/* ... */
->>> 			interconnects = <&bus_leftbus &bus_dmc>;
->>> 			#interconnect-cells = <0>;
->>> 		};
->>>
->>> 		bus_display: bus_display {
->>> 			compatible = "samsung,exynos-bus";
->>> 			/* ... */
->>> 			interconnects = <&bus_display &bus_leftbus>;
->>
->> Hmm, bus_display being a consumer of itself is a bit odd? Did you mean:
->>  			interconnects = <&bus_dmc &bus_leftbus>;
-> 
-> Might be, but we would need to swap the phandles so <source, destination>
-> order is maintained, i.e. interconnects = <&bus_leftbus &bus_dmc>;
+Reproduce by creating multiple files in NFS and giving one of the later
+files a longer security label. ls will not see that file nor any that are
+added afterwards, though they will exist on the backend.
 
-Ok, i see. Thanks for clarifying! Currently the "interconnects" property is
-defined as a pair of initiator and target nodes. You can keep it also as
-interconnects = <&bus_display &bus_dmc>, but you will need to figure out
-during probe that there is another node in the middle and defer. I assume
-that if a provider is also an interconnect consumer, we will link it to
-whatever nodes are specified in the "interconnects" property?
+In nfs_readdir_page_filler(), reset security label buffer length before
+every reuse
 
-> My intention here was to describe the 'bus_display -> bus_leftbus' part 
-> of data path 'bus_display -> bus_leftbus -> bus_dmc', bus_display is
-> really a consumer of 'bus_leftbus -> bus_dmc' path.
->
-> I'm not sure if it is allowed to specify only single phandle (and 
-> interconnect provider specifier) in the interconnect property, that would
-> be needed for the bus_leftbus node to define bus_dmc as the interconnect 
-> destination port. There seems to be such a use case in arch/arm64/boot/
-> dts/allwinner/sun50i-a64.dtsi.
+Signed-off-by: Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+---
+v2: Added explanation from cover letter as requested by J. Bruce Fields
+    <bfields@fieldses.org>
 
-In the general case you have to specify pairs. The "dma-mem" is a reserved
-name for devices that perform DMA through another bus with separate address
-translation rules.
+ fs/nfs/dir.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
->>> 			#interconnect-cells = <0>;
->>> 		};
->>>
->>>
->>> 		&mixer {
->>> 			compatible = "samsung,exynos4212-mixer";
->>> 			interconnects = <&bus_display &bus_dmc>;
->>> 			/* ... */
->>> 		};
->>> 	};
->>>
->>> What do you think, Georgi, Rob?
->>
->> I can't understand the above example with bus_display being it's own consumer.
->> This seems strange to me. Could you please clarify it?
-> 
->> Otherwise the interconnect consumer DT bindings are already well established
->> and i don't see anything preventing a node to be both consumer and provider.
->> So this should be okay in general.
-> 
-> Thanks, below is an updated example according to your suggestions. 
-> Does it look better now?
-> 
-> ---------------------------8<------------------------------
-> soc {
-> 	bus_dmc: bus_dmc {
-> 		compatible = "samsung,exynos-bus";
-> 		/* ... */
-> 		samsung,data-clock-ratio = <4>;
-> 		#interconnect-cells = <0>;
-> 	};
-> 
-> 	bus_leftbus: bus_leftbus {
-> 		compatible = "samsung,exynos-bus";
-> 		/* ... */
-> 		interconnects = <&bus_dmc>;
-> 		#interconnect-cells = <0>;
-> 	};
-> 
-> 	bus_display: bus_display {
-> 		compatible = "samsung,exynos-bus";
-> 		/* ... */
-> 		interconnects = <&bus_leftbus &bus_dmc>;
-> 		#interconnect-cells = <0>;
-> 	};
-> 
-> 	&mixer {
-> 		compatible = "samsung,exynos4212-mixer";
-> 		interconnects = <&bus_display &bus_dmc>;
-> 		/* ... */
-> 	};
-> };
-> ---------------------------8<------------------------------
+diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+index e732580fe47b..cb52db9a0cfb 100644
+--- a/fs/nfs/dir.c
++++ b/fs/nfs/dir.c
+@@ -579,6 +579,9 @@ int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct nfs_entry *en
+ 	xdr_set_scratch_buffer(&stream, page_address(scratch), PAGE_SIZE);
+ 
+ 	do {
++		if (entry->label)
++			entry->label->len = NFS4_MAXLABELLEN;
++
+ 		status = xdr_decode(desc, entry, &stream);
+ 		if (status != 0) {
+ 			if (status == -EAGAIN)
+-- 
+2.25.1
 
-It's difficult to have a common way to describe all the different kinds of
-topologies in DT, as some SoCs are very complex, having multi-tiered topologies
-with hundreds of nodes, with multiple links between them etc. Currently, the
-idea is to have the topology as platform data, but i guess that you want to
-avoid this. I hope that we will be able to describe simpler topologies in DT in
-the future, but we don't have such support in the framework yet.
-
-So maybe we could try your proposal and see how it will work for exynos.
-
-Thanks,
-Georgi
