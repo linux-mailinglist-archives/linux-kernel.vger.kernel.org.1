@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAB126AC28
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9EB26AC1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgIOSiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727411AbgIOSHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:07:02 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27DEA20738;
-        Tue, 15 Sep 2020 18:06:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600193174;
-        bh=8Bkz/AaoLuYq/JpMcx55TXM/Y/n9rpfhHksMXOG/X/k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VzH21k8tWsnMRpcWFzTngBmcAX87k4b5rRKcDvUNx9Csbri5WH2TKN3PhpZ7VLLEu
-         zLzEmxTr6CPzedJhRuwC2/eimadj9ycQi9x0ONmLOu6TazjI+RDOh2w4ggIyLxx3k/
-         6MApWg/vAPsmLwxSf8HnJgdDkd8zNU0wX0ISXWVk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D2C133522718; Tue, 15 Sep 2020 11:06:13 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 11:06:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang,Qiang" <qiang.zhang@windriver.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= RCU: Question on
- force_qs_rnp
-Message-ID: <20200915180613.GQ29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200914194208.GA2579423@google.com>
- <20200914205642.GE29330@paulmck-ThinkPad-P72>
- <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200915034139.GK29330@paulmck-ThinkPad-P72>
- <1079509d-c474-42bd-44e9-18cfa948fbae@windriver.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1079509d-c474-42bd-44e9-18cfa948fbae@windriver.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1727957AbgIOShY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727974AbgIOSIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 14:08:53 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E31DC06178A;
+        Tue, 15 Sep 2020 11:07:24 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id i1so3991857edv.2;
+        Tue, 15 Sep 2020 11:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Cf1iAlZ7KW1crellt7Mb98w82iNdc/UJBUN0U2Sts40=;
+        b=cLpOUy6yWPdQ6VmED21jNgkVOJHDl7n7dVXX0yb84QeXtpQ6BFeWf7QrIM4FFM0nVB
+         oAjy/cFnJ89fK8SFyLLMCeWKCI+TniZxw7z9n6il7qHMazDEjSvm8sWSqJtU1B1EHClO
+         EGOReqSI2jMtARbcW+ibkfYtGCgweMtnGDaDz67uUt54Q34fgsegkkVP2p6cb95odG35
+         cqn9KmxD/20IzwqHnxIyoKJiHBZmkT13aWOA1GGBXQ/voX9cT8RSHA+JnVox99i1xqLs
+         jqiSww8O3gUTp+OQ+cSUiifNZqPv5/Kx8UXX7qGYiQ+Rbhu1UNRtRpYjOorLCncp77TR
+         vf1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Cf1iAlZ7KW1crellt7Mb98w82iNdc/UJBUN0U2Sts40=;
+        b=TwgClWgCymwhykF7m/1bd6XCSQ9YaYDUFzsKivRKx9/TRdxiFcu0WnHcLtOf8Onl8n
+         aboEvXBZaDC5ixLNzJhB2eUmB9lbXSG6hZPYwaOtFZySPji7BromVGSZLzbvLLUDheCb
+         T/04GROm/mhojDTFSW+5/CTvqSGN/02tnBkIuDUFqan1fDfEh5N7RyCH21XNYKBQa+Mc
+         l8Yq5wDPkN44mTBBPXFodoUW4P2WS9ZzsLlS7GqwaIlxsPJ2XmFTgw+cJgPjgXiwofnb
+         P+0XNLCwoyYbFd2AVsrqXGLY9hBHCTp089qB0AH1XTG2jMJ5qqHuYth1dDr20tGo4La0
+         d6tg==
+X-Gm-Message-State: AOAM5304Rz95fe4vHGgxsAzN82IxBtZEhE9x+g4hZTt/mq+yF86d5c14
+        4UziTMajm1jhJVkMCHu9qRZNIYQKxd0=
+X-Google-Smtp-Source: ABdhPJy1Q2hvhWMQ2fCeUCqU3OIoJM2WrHy0Eqkzh3Nl59GcGdTyhXA+nJ9yVmXqW5Ndw4NP2favZg==
+X-Received: by 2002:a50:8c66:: with SMTP id p93mr24032312edp.156.1600193242760;
+        Tue, 15 Sep 2020 11:07:22 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:598:b890:1ee4:75d6:3bdd:1167:483e])
+        by smtp.gmail.com with ESMTPSA id k25sm10687083ejk.3.2020.09.15.11.07.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 11:07:22 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Use devm_platform_ioremap_resource_byname()
+Date:   Tue, 15 Sep 2020 20:07:06 +0200
+Message-Id: <20200915180708.12311-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:16:39PM +0800, Zhang,Qiang wrote:
-> 
-> 
-> On 9/15/20 11:41 AM, Paul E. McKenney wrote:
-> > On Tue, Sep 15, 2020 at 03:18:23AM +0000, Zhang, Qiang wrote:
-> > > 
-> > > 
-> > > ________________________________________
-> > > 发件人: Paul E. McKenney <paulmck@kernel.org>
-> > > 发送时间: 2020年9月15日 4:56
-> > > 收件人: Joel Fernandes
-> > > 抄送: Zhang, Qiang; Uladzislau Rezki; josh@joshtriplett.org; rostedt@goodmis.org; mathieu.desnoyers@efficios.com; Lai Jiangshan; rcu@vger.kernel.org; LKML
-> > > 主题: Re: RCU: Question on force_qs_rnp
-> > > 
-> > > On Mon, Sep 14, 2020 at 03:42:08PM -0400, Joel Fernandes wrote:
-> > > > On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
-> > > > > Hello Paul
-> > > > > 
-> > > > > I have some questions for you .
-> > > > > in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
-> > > > > report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
-> > > > > after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0,
-> > > > > we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
-> > > > 
-> > > > Could you clarify what good is this going to do? What problem are you trying to
-> > > > address?
-> > > > 
-> > > > You could have a task that is blocked in an RCU leaf node, but the
-> > > > force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
-> > > > CPU could be dyntick-idle and a quiescent state is reported. However, the GP
-> > > > must not end and the rcu leaf node should still be present in its parent
-> > > > intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
-> > > > any relevance.
-> > > > 
-> > > > Or am I missing the point of the question?
-> > > 
-> > > > Hello, Qiang,
-> > > 
-> > > > Another way of making Joel's point is to say that the additional check
-> > > > you are asking for is already being done, but by rcu_report_qs_rnp().
-> > > 
-> > > >                                                         Thanx, Paul
-> > > 
-> > > Hello Pual,  Joel
-> > > 
-> > > What I want to express is as follows :
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 7623128d0020..beb554539f01 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -2622,6 +2622,11 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
-> > >                  if (mask != 0) {
-> > >                          /* Idle/offline CPUs, report (releases rnp->lock). */
-> > >                          rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
-> > > +                       raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> > > +                       if (rnp->qsmask == 0 && rcu_preempt_blocked_readers_cgp(rnp))
-> > > +                               rcu_initiate_boost(rnp, flags);
-> > > +                       else
-> > > +                               raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> > >                  } else {
-> > >                          /* Nothing to do here, so just drop the lock. */
-> > >                          raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> > 
-> > But in that case, why duplicate the code from rcu_initiate_boost()?
-> > 
-> > 							Thanx, Paul
-> > 
-> 
-> Hello Paul
-> 
-> When we force a qs for rnp, we first check the leaf node "rnp->qsmask" if it
-> is reached zero, will check if there are some blocked readers in this leaf
-> rnp node, if so we need to priority-boost blocked readers.
-> if not we will check cpu dyntick-idle and report leaf node qs, after this
-> leaf rnp node report qs, there is may be some blocked readers in this node,
-> should we also need to priority-boost blocked readers?
+From: Bean Huo <beanhuo@micron.com>
 
-Yes, but we will do that on the next time around, a few milliseconds
-later.  And by that time, it is quite possible that the reader will have
-completed, which will save us from having to priority-boost it.
+platform_get_resource_byname() and devm_ioremap_resource() have been wrapped
+to the single helper devm_platform_ioremap_resource_byname(), so use it and
+simplify the code.
 
-							Thanx, Paul
+Bean Huo (2):
+  scsi: ufs-mediatek: use devm_platform_ioremap_resource_byname()
+  scsi: ufs-qcom: use devm_platform_ioremap_resource_byname()
+
+ drivers/scsi/ufs/ufs-exynos.c   | 10 +++-------
+ drivers/scsi/ufs/ufs-qcom-ice.c |  9 +--------
+ drivers/scsi/ufs/ufs-qcom.c     | 23 +++++++++--------------
+ 3 files changed, 13 insertions(+), 29 deletions(-)
+
+-- 
+2.17.1
+
