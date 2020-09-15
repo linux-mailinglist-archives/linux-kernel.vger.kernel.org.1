@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB2326B01E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C99826B021
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbgIOWBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:01:23 -0400
-Received: from lobo.ruivo.org ([173.14.175.98]:60026 "EHLO lobo.ruivo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728074AbgIOV17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:27:59 -0400
-X-Greylist: delayed 307 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Sep 2020 17:27:59 EDT
-Received: by lobo.ruivo.org (Postfix, from userid 1011)
-        id 9B68D53091; Tue, 15 Sep 2020 17:22:45 -0400 (EDT)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on tate.lan.ruivo
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=3.5 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from jake.ruivo.org (bob.qemu.ruivo [192.168.72.19])
-        by lobo.ruivo.org (Postfix) with ESMTPA id 0861E52B01;
-        Tue, 15 Sep 2020 17:22:22 -0400 (EDT)
-Received: by jake.ruivo.org (Postfix, from userid 1000)
-        id B66B91A18EC; Tue, 15 Sep 2020 17:22:22 -0400 (EDT)
-Date:   Tue, 15 Sep 2020 17:22:22 -0400
-From:   Aristeu Rozanski <aris@ruivo.org>
-To:     Oscar Salvador <osalvador@suse.de>, naoya.horiguchi@nec.com
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org, tony.luck@intel.com,
-        cai@lca.pw, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 0/5] HWpoison: further fixes and cleanups
-Message-ID: <20200915212222.GA18315@cathedrallabs.org>
-References: <20200914101559.17103-1-osalvador@suse.de>
+        id S1728014AbgIOWBm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 18:01:42 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:47330 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728108AbgIOV5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:57:46 -0400
+X-Greylist: delayed 383 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Sep 2020 17:57:42 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 37A1D6074029;
+        Tue, 15 Sep 2020 23:50:54 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id FJeDlkGzqKO8; Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id C0322607403C;
+        Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 173xIe-uMIop; Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 93E5F6074029;
+        Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     horia geanta <horia.geanta@nxp.com>
+Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        davem <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-imx <linux-imx@nxp.com>, david <david@sigma-star.at>
+Message-ID: <881550786.93213.1600206653402.JavaMail.zimbra@nod.at>
+In-Reply-To: <ffc5254a-cecb-20b8-fca3-d2cd8486362d@nxp.com>
+References: <1594591536-531-1-git-send-email-iuliana.prodan@nxp.com> <1594591536-531-3-git-send-email-iuliana.prodan@nxp.com> <CAFLxGvy0T-E-YecWbGZsDVPajuYVc8L-Uf8UCST_61+t+nfhrA@mail.gmail.com> <CAFLxGvw4zvL0N5+wChKq3=_xLuuCYLKDOyKKnKFy3UiWMUwf-g@mail.gmail.com> <ffc5254a-cecb-20b8-fca3-d2cd8486362d@nxp.com>
+Subject: Re: [PATCH 2/2] crypto: caam - support tagged keys for skcipher
+ algorithms
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914101559.17103-1-osalvador@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: crypto: caam - support tagged keys for skcipher algorithms
+Thread-Index: SwVP6sBZjOv2Q9WeUVK81sHWwzKQnQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oscar, Naoya,
-
-On Mon, Sep 14, 2020 at 12:15:54PM +0200, Oscar Salvador wrote:
-> The important bit of this patchset is patch#1, which is a fix to take off
-> HWPoison pages off a buddy freelist since it can lead us to having HWPoison
-> pages back in the game without no one noticing it.
-> So fix it (we did that already for soft_offline_page [1]).
+----- Ursprüngliche Mail -----
+> Von: "horia geanta" <horia.geanta@nxp.com>
+>>> How to use it with cryptsetup?
+>>> I'm asking because it is not clear to me why you are not implementing
+>>> a new kernel key type (KEYS subsystem)
+>>> to utilize tagged keys.
+>>> Many tools already support the keyctl userspace interface (cryptsetup,
+>>> fscrypt, ...).
+>> 
+>> *friendly ping*
+>> 
+> We didn't include the key management part in this series,
+> just the crypto API support for algorithms with protected keys,
+> to get early feedback.
 > 
-> The other patches are clean-ups and not that important, so if anything,
-> consider patch#1 for inclusion.
+> Wrt. key management:
+> The NXP vendor / downstream kernel (to be included in i.MX BSP Q3 release)
+> will have support for protected keys generation.
+> Besides this, a dedicated ioctl-based interface will allow userspace to
+> generate and export these keys. After this, user can use standard keyctl
+> to add a key (as user / logon type) in the keyring, such that it would be
+> available to dm-crypt.
 > 
-> [1] https://patchwork.kernel.org/cover/11704083/
+> We know that adding new ioctls is frowned upon, so before trying to upstream
+> the ioctl-based solution the plan is checking the feasibility of
+> extending keyctl as David Howells suggested:
+> https://lore.kernel.org/lkml/8060.1533226481@warthog.procyon.org.uk
+> (Note the difference b/w adding new key type - which was rejected -
+> and a key "subtype extension".)
 
-I found something strange with your and Naoya's hwpoison rework. We have a
-customer with a testcase that basically does:
+We have also a keyctl based patch series which should go upstream.
+Since we also added a new keytype, it got rejected so far.
 
-	p1 = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	p2 = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+Do you have git repo with the WIP patches available?
+Not that we do the work twice. :-)
+Our patch series also supports DCP beside of CAAM.
 
-	madvise(p1, size, MADV_MERGEABLE);
-	madvise(p2, size, MADV_MERGEABLE);
-
-	memset(p1, 'a', size);
-	memset(p2, 'a', size);
-
-	madvise(p1, size, MADV_SOFT_OFFLINE);
-
-	madvise(p1, size, MADV_UNMERGEABLE);
-	madvise(p2, size, MADV_UNMERGEABLE);
-
-
-where size is about 200,000 pages. It works on a x86_64 box (with and without the
-hwpoison rework). On ppc64 boxes (tested 3 different ones with at least 250GB memory)
-it fails to take a page off the buddy list (page_handle_poison()/take_page_off_buddy())
-(madvise MADV_SOFT_OFFLINE returns -EBUSY). Without the hwpoison rework the test passes.
-
-Possibly related is that ppc64 takes a long time to run this test and according
-perf, it spends most of the time clearing pages:
-
-	  17.15%  ksm_poison  [kernel.kallsyms]  [k] copypage_power7
-	  13.39%  ksm_poison  [kernel.kallsyms]  [k] clear_user_page
-	   8.70%  ksm_poison  libc-2.28.so       [.] __memset_power8
-	   8.63%  ksm_poison  [kernel.kallsyms]  [k] opal_return
-	   6.04%  ksm_poison  [kernel.kallsyms]  [k] __opal_call
-	   2.67%  ksm_poison  [kernel.kallsyms]  [k] opal_call
-	   1.52%  ksm_poison  [kernel.kallsyms]  [k] _raw_spin_lock
-	   1.45%  ksm_poison  [kernel.kallsyms]  [k] opal_flush_console
-	   1.43%  ksm_poison  [unknown]          [k] 0x0000000030005138
-	   1.43%  ksm_poison  [kernel.kallsyms]  [k] opal_console_write_buffer_space
-	   1.26%  ksm_poison  [kernel.kallsyms]  [k] hvc_console_print
-(...)
-
-I've run these tests using mmotm and mmotm with this patchset on top.
-
-Do you know what might be happening here?
-
--- 
-Aristeu
-
+Thanks,
+//richard
