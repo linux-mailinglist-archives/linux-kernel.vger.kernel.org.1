@@ -2,62 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1519526A34C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E1826A34E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgIOKkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:40:03 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38587 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgIOKjt (ORCPT
+        id S1726245AbgIOKkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbgIOKjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:39:49 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kI8N0-0002fg-UJ; Tue, 15 Sep 2020 10:39:31 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     tiwai@suse.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Andrew Oakley <andrew@adoakley.name>,
-        Chris Boyle <chris@boyle.name>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] Revert "ALSA: usb-audio: Disable Lenovo P620 Rear line-in volume control"
-Date:   Tue, 15 Sep 2020 18:39:23 +0800
-Message-Id: <20200915103925.12777-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 15 Sep 2020 06:39:53 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A32C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:39:51 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id a2so2712259otr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ulpeSnyY5/ewevGEpTqNXhDdyzWhPxYuGEnSEK0qUFE=;
+        b=ig5tEx0h7bfKi5EybZqA+C68o6gYUIfa+RfL190q/C/6enFMceUUZeuDygc7lBryyo
+         Y39LD8nxmbQQ2ZpJi/7Bu1MrZHh+9AmFkAC82cd1/Ss7084QYOZc1Q6UWRtMFDibGKuJ
+         Yhfx18xPVi60zG4gPhH/H78zP9lEy3I29XQis=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ulpeSnyY5/ewevGEpTqNXhDdyzWhPxYuGEnSEK0qUFE=;
+        b=d1QxnP1BuGhXaXNFUqoSEkJ7IXkLLuQMR+kY5p/sRsgAems5fUClxJvxDjRPEYzAc8
+         7FOrCHCQ7cX3InkZXvRPyPBi7fCaQKZV6AhtmjD5ACWiZk7/tiMAA6QNVIBPPLDOnfvL
+         KZn1A5jYQIE0E93tHZGIySpO4fqHwICgD0TNOr9ijjg9oEF9t+D4j/Z2aCqkGSUgciM/
+         l9gLbsTZjw7fFuZ/ptNt2j6CWmmd8IWwTUx0CG0a++Xj8YETjJOngY7vSLqykOGkEs7x
+         cuxfiR7ZJHjgdTLR3coNQ+fR+AI4v/4GHcsPygjk2lqwNY6okJI8yTqICM5/01j6jcIg
+         XsHQ==
+X-Gm-Message-State: AOAM531RHcjfJlDxtQ8s/cQRhAEftHf4ubu/542CMBe4PWX944PY/wJG
+        G1CL9vbQu1Lo7DSssvIIZ7PcMXwT6JFkgcVPa9FJYQ==
+X-Google-Smtp-Source: ABdhPJzbKPKIRS8EfyunRCEi31t2CsfncQrKriVKuMZ+LvqfMKqrLvYa64Bhcsp3AhwdlFX/YDNiySv4RihZaKzNLEU=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr11974578otj.303.1600166390649;
+ Tue, 15 Sep 2020 03:39:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200914132920.59183-1-christian.koenig@amd.com> <20200914132920.59183-2-christian.koenig@amd.com>
+In-Reply-To: <20200914132920.59183-2-christian.koenig@amd.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 15 Sep 2020 12:39:39 +0200
+Message-ID: <CAKMK7uHnZgCBUBQ-5D7gCj1v3Z4wKkeO91tefAoJE1B49JFtww@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm/shmem-helpers: revert "Redirect mmap for imported dma-buf"
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Linux MM <linux-mm@kvack.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 34dedd2a83b241ba6aeb290260313c65dc58660e.
+On Mon, Sep 14, 2020 at 3:29 PM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
+>
+> This reverts commit 26d3ac3cb04d171a861952e89324e347598a347f.
+>
+> We need to figure out if dma_buf_mmap() is valid or not first.
+>
+> Signed-off-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 
-According to Realtek, volume FU works for line-in.
+The trouble is that doing dma-buf mmap by looking at the struct pages
+behind the sg list and just inserting those into userspace doesn't
+really work any better. You still won't get the unmap_mapping_range
+and hence pte shoot-down. So maybe dma_buf_mmap forwarding doesn't
+work, but this doesn't make it any better.
 
-I can confirm volume control works after device firmware is updated.
+Also commit message should probably explain a bit the context here,
+not a lot of people have been in our private discussion on this.
+-Daniel
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/usb/mixer_maps.c | 1 -
- 1 file changed, 1 deletion(-)
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm=
+_gem_shmem_helper.c
+> index 0a952f27c184..cd727343f72b 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -594,9 +594,6 @@ int drm_gem_shmem_mmap(struct drm_gem_object *obj, st=
+ruct vm_area_struct *vma)
+>         /* Remove the fake offset */
+>         vma->vm_pgoff -=3D drm_vma_node_start(&obj->vma_node);
+>
+> -       if (obj->import_attach)
+> -               return dma_buf_mmap(obj->dma_buf, vma, 0);
+> -
+>         shmem =3D to_drm_gem_shmem_obj(obj);
+>
+>         ret =3D drm_gem_shmem_get_pages(shmem);
+> --
+> 2.17.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index 5b43e9e40e49..c369c81e74c4 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -371,7 +371,6 @@ static const struct usbmix_name_map asus_rog_map[] = {
- };
- 
- static const struct usbmix_name_map lenovo_p620_rear_map[] = {
--	{ 19, NULL, 2 }, /* FU, Volume */
- 	{ 19, NULL, 12 }, /* FU, Input Gain Pad */
- 	{}
- };
--- 
-2.17.1
 
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
