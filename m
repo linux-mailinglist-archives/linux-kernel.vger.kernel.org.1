@@ -2,152 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A295526AB94
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E5A26AB9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgIOSME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbgIOSI4 (ORCPT
+        id S1727907AbgIOSNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:13:19 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:36428 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbgIOSJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:08:56 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FC3C061797;
-        Tue, 15 Sep 2020 11:07:27 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id a12so3903555eds.13;
-        Tue, 15 Sep 2020 11:07:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=vvxOGxNKj/7yxq3LDFIGsq+9PQEexQTaLJnBkK3tSHg=;
-        b=tQEqOEqMWWwt2fWyREs3dQj94iTfe6kl3oM9wFHmaJ4HPYJiupV069c1OIfEPQYorl
-         kWYVZRsah58o5Tn8a8Q1vLjtmxH5vUe87cIHcGxPvYoW6NbM5piXCwvoAQZgi/9rGXmx
-         2RSZ37eqH9Y23mB7Yz+CgTg9UTW5x8BDyvTSXWQYA3MUfkgSLkn/irrjwRYO9Z+drmHD
-         U3dlQAeK7i4zszrn+yEM8HvguHPSlYpys2u4Q2pU7D2NxssO2Zgf8tDbQOb1lPeAP26b
-         0ZFfaPXXHVohIoDsAtwn40w1hnCsQyfg9X7LbpqCgAD26G8HFwXIbLkTdTYN5liz0hvo
-         eM2Q==
+        Tue, 15 Sep 2020 14:09:07 -0400
+Received: by mail-pl1-f195.google.com with SMTP id k13so1760950plk.3;
+        Tue, 15 Sep 2020 11:07:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=vvxOGxNKj/7yxq3LDFIGsq+9PQEexQTaLJnBkK3tSHg=;
-        b=kHv9i+Z48GKEjqjX3mQlIYJN4IDBN1omqnkxBXgoeKnQ82g+HaG46xJEIwt1Neow7R
-         7ROV6YYzLY9hK5Pu5kgT4m1DMa1ooHhN2OyseFg8om2EMbOCnE6zkpx/l78sqWQDfPVj
-         uMQzzoUaSyhdctXxQ+mgAWipQJYZzqrwb55tR/5ZaaZUtiGWqXcPQVm9on+slEnTGY5h
-         bsESYYJUKHHvpUdO9LsMvTJnn6K8Mwckxdm3V1FYsT2jLzKGOCXSLL8BMZOB9mjA1Ief
-         DEWRTxnjBsAue/x1KLeMT8nVCrn/v+LPkpsRKdxQjiQGDXdZHXofC9GA9GrKjPUBDK/q
-         KD3A==
-X-Gm-Message-State: AOAM533XLNolykSQsQ4rAx7xxDVYIVWJn39Enm3xm9seIn8eCoxYVuox
-        O7cj813uS6IsQOLDAE52HWE=
-X-Google-Smtp-Source: ABdhPJwwmJtEBhCSFDITxvEDupYDusK1WH0s4Kua1S4sxBDhRbbXG5dHdaH+NP8G3je5YgPgPAhz4w==
-X-Received: by 2002:a05:6402:1641:: with SMTP id s1mr24493949edx.66.1600193245886;
-        Tue, 15 Sep 2020 11:07:25 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:598:b890:1ee4:75d6:3bdd:1167:483e])
-        by smtp.gmail.com with ESMTPSA id k25sm10687083ejk.3.2020.09.15.11.07.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Avu9zQOxQ4NDvG2l7r65UNNFEBIgVGhnU50sKCSELa8=;
+        b=NyrvaQs2n78Pp3f2Hb3IQjxUf+7JMXbD6OrXoutt50Rll+750vhUojlmI/gvWYXFv8
+         QVOST/LkFJiZ7+4kDU03LoWn4wv7mSgzZE34ugi+tNldstsMqfVvxg9Q1JXFAOLK9eEJ
+         F4Cf5xgv37fMXXYlNNSJ5AREyUjfNc6EEshKAxmxp4WpstXeT1M4vkZKkDr/4Ncc0tr1
+         sWJhovp4FxNsdAt/VJurQwHz8husD1I3xU54/D8Jl6uh3TxnbvKJW4PEIcsVCSkawqLe
+         BLmozi3rUrcNSawt1SPlsjpMEYLMTNtfoXuMtr19PtdJpQ2HB+BLsfegUIu+MpaOlB7Q
+         LcgA==
+X-Gm-Message-State: AOAM5300cqyLZpX0O1wlGhSxECV2LP7vGlKbGobBlLU1UaTEKmQhL00w
+        Ag9jeyvcKCb6sQOObrMipnCYA5YHlQBphg==
+X-Google-Smtp-Source: ABdhPJw9b1X9XAoDtwOubjNwl7RN9sTW6IBtcxixdLkExwz/fIo991YAFS99Un0/UM/MOUNNsvRYtQ==
+X-Received: by 2002:a17:90a:d70b:: with SMTP id y11mr509884pju.15.1600193276623;
+        Tue, 15 Sep 2020 11:07:56 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id o1sm14005705pfg.83.2020.09.15.11.07.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 11:07:25 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] scsi: ufs-qcom: use devm_platform_ioremap_resource_byname()
-Date:   Tue, 15 Sep 2020 20:07:08 +0200
-Message-Id: <20200915180708.12311-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200915180708.12311-1-huobean@gmail.com>
-References: <20200915180708.12311-1-huobean@gmail.com>
+        Tue, 15 Sep 2020 11:07:56 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 11:07:55 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     "Wu, Hao" <hao.wu@intel.com>
+Cc:     "Xu, Yilun" <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+Subject: Re: [PATCH v2 2/4] dfl: add dfl bus support to MODULE_DEVICE_TABLE()
+Message-ID: <20200915180755.GA11862@epycbox.lan>
+References: <1600140473-12351-1-git-send-email-yilun.xu@intel.com>
+ <1600140473-12351-3-git-send-email-yilun.xu@intel.com>
+ <20200915035927.GB2217@epycbox.lan>
+ <DM6PR11MB381970CD3C77534AA3E4C76385200@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <20200915051933.GA13516@yilunxu-OptiPlex-7050>
+ <DM6PR11MB3819106F9D50E39F7CC7837D85200@DM6PR11MB3819.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB3819106F9D50E39F7CC7837D85200@DM6PR11MB3819.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Hi Hao, Xu,
 
-Use devm_platform_ioremap_resource_byname() to simplify the code.
+On Tue, Sep 15, 2020 at 05:58:46AM +0000, Wu, Hao wrote:
+> > On Tue, Sep 15, 2020 at 12:08:38PM +0800, Wu, Hao wrote:
+> > > > On Tue, Sep 15, 2020 at 11:27:51AM +0800, Xu Yilun wrote:
+> > > > > Device Feature List (DFL) is a linked list of feature headers within the
+> > > > > device MMIO space. It is used by FPGA to enumerate multiple sub
+> > features
+> > > > > within it. Each feature can be uniquely identified by DFL type and
+> > > > > feature id, which can be read out from feature headers.
+> > > > >
+> > > > > A dfl bus helps DFL framework modularize DFL device drivers for
+> > different
+> > > > > sub features. The dfl bus matches its devices and drivers by DFL type
+> > and
+> > > > > feature id.
+> > > > >
+> > > > > This patch add dfl bus support to MODULE_DEVICE_TABLE() by adding
+> > info
+> > > > > about struct dfl_device_id in devicetable-offsets.c and add a dfl entry
+> > > > > point in file2alias.c.
+> > > > >
+> > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > > Signed-off-by: Wu Hao <hao.wu@intel.com>
+> > > > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > > > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > > > > Acked-by: Wu Hao <hao.wu@intel.com>
+> > >
+> > > Yilun,
+> > >
+> > > I haven't acked-by this patch as it doesn't modify any dfl files, ideally you
+> > 
+> > Sorry, I misunderstood your comments "Acked-by: xxx for DFL related
+> > changes after this fix".
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufs-qcom-ice.c |  9 +--------
- drivers/scsi/ufs/ufs-qcom.c     | 23 +++++++++--------------
- 2 files changed, 10 insertions(+), 22 deletions(-)
+Yeah it wasn't entirely clear to me either :)
+> 
+> Because the first patch contains changes to non-dfl files as well. : )
+> 
+> Hao
+> 
+> > 
+> > > need acked-by from real maintainer of scripts/mod code, right?
+> > 
+> > Ideally yes. From the MAINTAINERS it is Masahiro Yamada, I added him on
+> > the "to"
+> > list. But I see some other patches (also for devtable entries) in kernel
+> > don't have his acked-by.
 
-diff --git a/drivers/scsi/ufs/ufs-qcom-ice.c b/drivers/scsi/ufs/ufs-qcom-ice.c
-index bbb0ad7590ec..cd67869a725e 100644
---- a/drivers/scsi/ufs/ufs-qcom-ice.c
-+++ b/drivers/scsi/ufs/ufs-qcom-ice.c
-@@ -97,25 +97,18 @@ int ufs_qcom_ice_init(struct ufs_qcom_host *host)
- 	struct ufs_hba *hba = host->hba;
- 	struct device *dev = hba->dev;
- 	struct platform_device *pdev = to_platform_device(dev);
--	struct resource *res;
- 	int err;
- 
- 	if (!(ufshcd_readl(hba, REG_CONTROLLER_CAPABILITIES) &
- 	      MASK_CRYPTO_SUPPORT))
- 		return 0;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ice");
--	if (!res) {
--		dev_warn(dev, "ICE registers not found\n");
--		goto disable;
--	}
--
- 	if (!qcom_scm_ice_available()) {
- 		dev_warn(dev, "ICE SCM interface not found\n");
- 		goto disable;
- 	}
- 
--	host->ice_mmio = devm_ioremap_resource(dev, res);
-+	host->ice_mmio = devm_platform_ioremap_resource_byname(pdev, "ice");
- 	if (IS_ERR(host->ice_mmio)) {
- 		err = PTR_ERR(host->ice_mmio);
- 		dev_err(dev, "Failed to map ICE registers; err=%d\n", err);
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index f9d6ef356540..c0c76da5472a 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -976,7 +976,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
- 	struct device *dev = hba->dev;
- 	struct platform_device *pdev = to_platform_device(dev);
- 	struct ufs_qcom_host *host;
--	struct resource *res;
- 
- 	if (strlen(android_boot_dev) && strcmp(android_boot_dev, dev_name(dev)))
- 		return -ENODEV;
-@@ -1059,20 +1058,16 @@ static int ufs_qcom_init(struct ufs_hba *hba)
- 		host->dev_ref_clk_en_mask = BIT(26);
- 	} else {
- 		/* "dev_ref_clk_ctrl_mem" is optional resource */
--		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
--						   "dev_ref_clk_ctrl_mem");
--		if (res) {
--			host->dev_ref_clk_ctrl_mmio =
--					devm_ioremap_resource(dev, res);
--			if (IS_ERR(host->dev_ref_clk_ctrl_mmio)) {
--				dev_warn(dev,
--					"%s: could not map dev_ref_clk_ctrl_mmio, err %ld\n",
--					__func__,
--					PTR_ERR(host->dev_ref_clk_ctrl_mmio));
--				host->dev_ref_clk_ctrl_mmio = NULL;
--			}
--			host->dev_ref_clk_en_mask = BIT(5);
-+		host->dev_ref_clk_ctrl_mmio =
-+			devm_platform_ioremap_resource_byname(pdev,
-+							"dev_ref_clk_ctrl_mem");
-+		if (IS_ERR(host->dev_ref_clk_ctrl_mmio)) {
-+			dev_warn(dev,
-+			"%s: could not map dev_ref_clk_ctrl_mmio, err %ld\n",
-+			__func__, PTR_ERR(host->dev_ref_clk_ctrl_mmio));
-+			host->dev_ref_clk_ctrl_mmio = NULL;
- 		}
-+		host->dev_ref_clk_en_mask = BIT(5);
- 	}
- 
- 	err = ufs_qcom_init_lane_clks(host);
--- 
-2.17.1
+Yeah, I've looked at that and most patches for those files seem to be
+from subsystem maintainers. So I *think* it should be fine?
 
+> > 
+> > Hi Moritz:
+> > 
+> > Do you have any ideas on that?
+> > 
+> > Thanks,
+> > Yilun.
+> > 
+> > >
+> > > Thanks
+> > > Hao
+> > >
+> > > > > ---
+> > > > > v2: add comments for the format of modalias
+> > > > > ---
+> > > > >  scripts/mod/devicetable-offsets.c |  4 ++++
+> > > > >  scripts/mod/file2alias.c          | 17 +++++++++++++++++
+> > > > >  2 files changed, 21 insertions(+)
+> > > > >
+> > > > > diff --git a/scripts/mod/devicetable-offsets.c
+> > b/scripts/mod/devicetable-
+> > > > offsets.c
+> > > > > index 27007c1..d8350ee 100644
+> > > > > --- a/scripts/mod/devicetable-offsets.c
+> > > > > +++ b/scripts/mod/devicetable-offsets.c
+> > > > > @@ -243,5 +243,9 @@ int main(void)
+> > > > >  DEVID(mhi_device_id);
+> > > > >  DEVID_FIELD(mhi_device_id, chan);
+> > > > >
+> > > > > +DEVID(dfl_device_id);
+> > > > > +DEVID_FIELD(dfl_device_id, type);
+> > > > > +DEVID_FIELD(dfl_device_id, feature_id);
+> > > > > +
+> > > > >  return 0;
+> > > > >  }
+> > > > > diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+> > > > > index 2417dd1..9fd2e60 100644
+> > > > > --- a/scripts/mod/file2alias.c
+> > > > > +++ b/scripts/mod/file2alias.c
+> > > > > @@ -1368,6 +1368,22 @@ static int do_mhi_entry(const char
+> > *filename,
+> > > > void *symval, char *alias)
+> > > > >  return 1;
+> > > > >  }
+> > > > >
+> > > > > +/* Looks like: dfl:tNfN */
+> > > > > +static int do_dfl_entry(const char *filename, void *symval, char *alias)
+> > > > > +{
+> > > > > +DEF_FIELD(symval, dfl_device_id, type);
+> > > > > +DEF_FIELD(symval, dfl_device_id, feature_id);
+> > > > > +
+> > > > > +/*
+> > > > > + * type contains 4 valid bits and feature_id contains 12 valid bits
+> > > > > + * according to DFL specification.
+> > > > > + */
+> > > > > +sprintf(alias, "dfl:t%01Xf%03X", type, feature_id);
+> > > > > +
+> > > > > +add_wildcard(alias);
+> > > > > +return 1;
+> > > > > +}
+> > > > > +
+> > > > >  /* Does namelen bytes of name exactly match the symbol? */
+> > > > >  static bool sym_is(const char *name, unsigned namelen, const char
+> > > > *symbol)
+> > > > >  {
+> > > > > @@ -1442,6 +1458,7 @@ static const struct devtable devtable[] = {
+> > > > >  {"tee", SIZE_tee_client_device_id, do_tee_entry},
+> > > > >  {"wmi", SIZE_wmi_device_id, do_wmi_entry},
+> > > > >  {"mhi", SIZE_mhi_device_id, do_mhi_entry},
+> > > > > +{"dfl", SIZE_dfl_device_id, do_dfl_entry},
+> > > > >  };
+> > > > >
+> > > > >  /* Create MODULE_ALIAS() statements.
+> > > > > --
+> > > > > 2.7.4
+> > > > >
+> > > > Applied to for-next,
+> > > >
+> > > > Thanks
+
+Cheers,
+Moritz
