@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB6D26A9C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A8B26A9BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgIOQ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:29:44 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:34417 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727446AbgIOPmx (ORCPT
+        id S1727580AbgIOQ2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:28:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727454AbgIOPnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:42:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600184572; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=Zz4BNUqKbCHLO8ckozEFnp9zSsg8XUlX5psi9jFrCPQ=; b=H0PI8hC83deXVNsXw6Bf4+PcoSWuicFws6EzCC0Sm7ED5W3r0sVsW5nRZ5+q0vEM+aWvZm6N
- uEdDuneKbpB1ZBxXRLc1tdoL0rISDrr9SAmBD3dcHZSY6f+CcBJY7SHp+RsV0wPn0T3jw8DH
- Ci99kMHFroLZLOpg42LXlPRcQMA=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f60e0fb73afa3417eb9a215 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 15:42:51
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1EC05C433F1; Tue, 15 Sep 2020 15:42:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Tue, 15 Sep 2020 11:43:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600184596;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=S7LOvCl7XUVBU80Y/PU+FTVOH70oxm6JnXxMde/HKVE=;
+        b=LLEva9hWSkYksK8FihM07TdSQcZklvlTOQpA+T2fUuK1hpZykRTeUdtSDU6gZstkduG2W3
+        p1wHp/AcpDx0LicFCwmP7xLy0y3LYP9Etrst9GCnjuMAa1/cjyyIqdwS0JWXcrJi5IRq6g
+        JFkW/j492lmhRNz5Xi5xgUJ7NIAxdjY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-HNLXfCHwMlOI095IlUogdg-1; Tue, 15 Sep 2020 11:43:12 -0400
+X-MC-Unique: HNLXfCHwMlOI095IlUogdg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69077C433F0;
-        Tue, 15 Sep 2020 15:42:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 69077C433F0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srinivas.kandagatla@linaro.org,
-        stable@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH] soc: qcom: apr: Fixup the error displayed on lookup failure
-Date:   Tue, 15 Sep 2020 21:12:32 +0530
-Message-Id: <20200915154232.27523-1-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA9D2CF983;
+        Tue, 15 Sep 2020 15:43:10 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 120A119D61;
+        Tue, 15 Sep 2020 15:43:07 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Wei Huang <whuang2@amd.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH RFC 0/2] KVM: x86: allow for more CPUID entries
+Date:   Tue, 15 Sep 2020 17:43:04 +0200
+Message-Id: <20200915154306.724953-1-vkuznets@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-APR client incorrectly prints out "ret" variable on pdr_add_lookup failure,
-it should be printing the error value returned by the lookup instead.
+With QEMU and newer AMD CPUs (namely: Epyc 'Rome') the current limit for
+KVM_MAX_CPUID_ENTRIES(80) is reported to be hit. Last time it was raised
+from '40' in 2010. We can, of course, just bump it a little bit to fix
+the immediate issue but the report made me wonder why we need to pre-
+allocate vcpu->arch.cpuid_entries array instead of sizing it dynamically.
+This RFC is intended to feed my curiosity.
 
-Fixes: 8347356626028 ("soc: qcom: apr: Add avs/audio tracking functionality")
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
- drivers/soc/qcom/apr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Very mildly tested with selftests/kvm-unit-tests and nothing seems to
+break. I also don't have access to the system where the original issue
+was reported but chances we're fixing it are very good IMO as just the
+second patch alone was reported to be sufficient.
 
-diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
-index 1f35b097c6356..7abfc8c4fdc72 100644
---- a/drivers/soc/qcom/apr.c
-+++ b/drivers/soc/qcom/apr.c
-@@ -328,7 +328,7 @@ static int of_apr_add_pd_lookups(struct device *dev)
- 
- 		pds = pdr_add_lookup(apr->pdr, service_name, service_path);
- 		if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
--			dev_err(dev, "pdr add lookup failed: %d\n", ret);
-+			dev_err(dev, "pdr add lookup failed: %ld\n", PTR_ERR(pds));
- 			return PTR_ERR(pds);
- 		}
- 	}
+Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+
+Vitaly Kuznetsov (2):
+  KVM: x86: allocate vcpu->arch.cpuid_entries dynamically
+  KVM: x86: bump KVM_MAX_CPUID_ENTRIES
+
+ arch/x86/include/asm/kvm_host.h |  4 +--
+ arch/x86/kvm/cpuid.c            | 55 ++++++++++++++++++++++++---------
+ arch/x86/kvm/x86.c              |  1 +
+ 3 files changed, 43 insertions(+), 17 deletions(-)
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.25.4
 
