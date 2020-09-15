@@ -2,128 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E169F269E4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A55269E3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbgIOGN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 02:13:56 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:21793 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726198AbgIOGN1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 02:13:27 -0400
-X-UUID: 61ed0938819e4c93ba98968d9b663810-20200915
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=XLnueKG77zqgGlKTvOF9hBmcnot7DeiZK4sccS5sVaQ=;
-        b=iArR4DRX2NGk8hjLmvgJS2foaEw8LHLUScw723dW1VhaszHVMZVeoG1r+7QAtUDSMWIKFJ5BVMKY9Kd6sxsFlsFC+1YRXhm7L76maxJFJea5+sHWOuZdtQ9UBpg/zUOhncjk0MC281MN6fNwlJtd/9Jpb0Gin8mz6oh8EuqUx10=;
-X-UUID: 61ed0938819e4c93ba98968d9b663810-20200915
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 109680203; Tue, 15 Sep 2020 14:13:23 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Sep 2020 14:13:21 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Sep 2020 14:13:21 +0800
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>
-Subject: [RESEND 3/3] mmc: mediatek: Add subsys clock control for MT8192 msdc
-Date:   Tue, 15 Sep 2020 14:11:10 +0800
-Message-ID: <20200915061110.25833-4-wenbin.mei@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200915061110.25833-1-wenbin.mei@mediatek.com>
-References: <20200915061110.25833-1-wenbin.mei@mediatek.com>
+        id S1726114AbgIOGLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 02:11:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726057AbgIOGL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 02:11:28 -0400
+Received: from mail.kernel.org (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB784206B2;
+        Tue, 15 Sep 2020 06:11:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600150287;
+        bh=8EzCGZb9hhJIZCxpuPsy+aIAHBckgwelp4BuBumDmLo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1hTJZWMz2mRGuuwhW1vGGo35+cMwXZHopJGnEfHV5PFxkw2ZvvBUn6SB6F/agDBkg
+         m/pa3aochA8aDKE++22/1s+twVbMGjEeM744c/aWB5yIw0osm0Ff3mcgOJ7h/DCpih
+         T7kIMLMMx/7oMc0Tz+0RhJ2nWe0jEXTUppHZo6UE=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kI4BZ-004Suk-7Y; Tue, 15 Sep 2020 08:11:25 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: vidtv: don't initialize cnr2qual var
+Date:   Tue, 15 Sep 2020 08:11:23 +0200
+Message-Id: <741043b02c2e00c8fea1a0f6f8ce43c6326cd9e8.1600092692.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TVQ4MTkyIG1zZGMgaXMgYW4gaW5kZXBlbmRlbnQgc3ViIHN5c3RlbSwgd2UgbmVlZCBjb250cm9s
-IG1vcmUgYnVzDQpjbG9ja3MgZm9yIGl0Lg0KQWRkIHN1cHBvcnQgZm9yIHRoZSBhZGRpdGlvbmFs
-IHN1YnN5cyBjbG9ja3MgdG8gYWxsb3cgaXQgdG8gYmUNCmNvbmZpZ3VyZWQgYXBwcm9wcmlhdGVs
-eS4NCg0KU2lnbmVkLW9mZi1ieTogV2VuYmluIE1laSA8d2VuYmluLm1laUBtZWRpYXRlay5jb20+
-DQotLS0NCiBkcml2ZXJzL21tYy9ob3N0L210ay1zZC5jIHwgNzcgKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDU5IGluc2VydGlvbnMoKyks
-IDE4IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tbWMvaG9zdC9tdGstc2Qu
-YyBiL2RyaXZlcnMvbW1jL2hvc3QvbXRrLXNkLmMNCmluZGV4IGVkMmIyNDY5MWI0Zi4uZjMxMTE5
-MmM4ZDA1IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tbWMvaG9zdC9tdGstc2QuYw0KKysrIGIvZHJp
-dmVycy9tbWMvaG9zdC9tdGstc2QuYw0KQEAgLTQyNiw2ICs0MjYsOCBAQCBzdHJ1Y3QgbXNkY19o
-b3N0IHsNCiAJc3RydWN0IGNsayAqaF9jbGs7ICAgICAgLyogbXNkYyBoX2NsayAqLw0KIAlzdHJ1
-Y3QgY2xrICpidXNfY2xrOwkvKiBidXMgY2xvY2sgd2hpY2ggdXNlZCB0byBhY2Nlc3MgcmVnaXN0
-ZXIgKi8NCiAJc3RydWN0IGNsayAqc3JjX2Nsa19jZzsgLyogbXNkYyBzb3VyY2UgY2xvY2sgY29u
-dHJvbCBnYXRlICovDQorCXN0cnVjdCBjbGsgKnN5c19jbGtfY2c7CS8qIG1zZGMgc3Vic3lzIGNs
-b2NrIGNvbnRyb2wgZ2F0ZSAqLw0KKwlzdHJ1Y3QgY2xrX2J1bGtfZGF0YSBidWxrX2Nsa3NbM107
-CS8qIHBjbGssIGF4aSwgYWhiIGNsb2NrIGNvbnRyb2wgZ2F0ZSAqLw0KIAl1MzIgbWNsazsJCS8q
-IG1tYyBzdWJzeXN0ZW0gY2xvY2sgZnJlcXVlbmN5ICovDQogCXUzMiBzcmNfY2xrX2ZyZXE7CS8q
-IHNvdXJjZSBjbG9jayBmcmVxdWVuY3kgKi8NCiAJdW5zaWduZWQgY2hhciB0aW1pbmc7DQpAQCAt
-Nzg0LDYgKzc4Niw4IEBAIHN0YXRpYyB2b2lkIG1zZGNfc2V0X2J1c3lfdGltZW91dChzdHJ1Y3Qg
-bXNkY19ob3N0ICpob3N0LCB1NjQgbnMsIHU2NCBjbGtzKQ0KIA0KIHN0YXRpYyB2b2lkIG1zZGNf
-Z2F0ZV9jbG9jayhzdHJ1Y3QgbXNkY19ob3N0ICpob3N0KQ0KIHsNCisJY2xrX2J1bGtfZGlzYWJs
-ZV91bnByZXBhcmUoQVJSQVlfU0laRShob3N0LT5idWxrX2Nsa3MpLA0KKwkJCQkgICBob3N0LT5i
-dWxrX2Nsa3MpOw0KIAljbGtfZGlzYWJsZV91bnByZXBhcmUoaG9zdC0+c3JjX2Nsa19jZyk7DQog
-CWNsa19kaXNhYmxlX3VucHJlcGFyZShob3N0LT5zcmNfY2xrKTsNCiAJY2xrX2Rpc2FibGVfdW5w
-cmVwYXJlKGhvc3QtPmJ1c19jbGspOw0KQEAgLTc5MiwxMCArNzk2LDE3IEBAIHN0YXRpYyB2b2lk
-IG1zZGNfZ2F0ZV9jbG9jayhzdHJ1Y3QgbXNkY19ob3N0ICpob3N0KQ0KIA0KIHN0YXRpYyB2b2lk
-IG1zZGNfdW5nYXRlX2Nsb2NrKHN0cnVjdCBtc2RjX2hvc3QgKmhvc3QpDQogew0KKwlpbnQgcmV0
-Ow0KKw0KIAljbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+aF9jbGspOw0KIAljbGtfcHJlcGFyZV9l
-bmFibGUoaG9zdC0+YnVzX2Nsayk7DQogCWNsa19wcmVwYXJlX2VuYWJsZShob3N0LT5zcmNfY2xr
-KTsNCiAJY2xrX3ByZXBhcmVfZW5hYmxlKGhvc3QtPnNyY19jbGtfY2cpOw0KKwlyZXQgPSBjbGtf
-YnVsa19wcmVwYXJlX2VuYWJsZShBUlJBWV9TSVpFKGhvc3QtPmJ1bGtfY2xrcyksDQorCQkJCSAg
-ICAgIGhvc3QtPmJ1bGtfY2xrcyk7DQorCWlmIChyZXQpDQorCQlkZXZfZGJnKGhvc3QtPmRldiwg
-ImVuYWJsZSBjbGtzIGZhaWxlZCFcbiIpOw0KKw0KIAl3aGlsZSAoIShyZWFkbChob3N0LT5iYXNl
-ICsgTVNEQ19DRkcpICYgTVNEQ19DRkdfQ0tTVEIpKQ0KIAkJY3B1X3JlbGF4KCk7DQogfQ0KQEAg
-LTIzNjEsNiArMjM3Miw1MiBAQCBzdGF0aWMgdm9pZCBtc2RjX29mX3Byb3BlcnR5X3BhcnNlKHN0
-cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsDQogCQlob3N0LT5jcWhjaSA9IGZhbHNlOw0KIH0N
-CiANCitzdGF0aWMgaW50IG1zZGNfb2ZfY2xvY2tfcGFyc2Uoc3RydWN0IHBsYXRmb3JtX2Rldmlj
-ZSAqcGRldiwNCisJCQkgICAgICAgc3RydWN0IG1zZGNfaG9zdCAqaG9zdCkNCit7DQorCXN0cnVj
-dCBjbGsgKmNsazsNCisNCisJaG9zdC0+c3JjX2NsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2
-LCAic291cmNlIik7DQorCWlmIChJU19FUlIoaG9zdC0+c3JjX2NsaykpDQorCQlyZXR1cm4gUFRS
-X0VSUihob3N0LT5zcmNfY2xrKTsNCisNCisJaG9zdC0+aF9jbGsgPSBkZXZtX2Nsa19nZXQoJnBk
-ZXYtPmRldiwgImhjbGsiKTsNCisJaWYgKElTX0VSUihob3N0LT5oX2NsaykpDQorCQlyZXR1cm4g
-UFRSX0VSUihob3N0LT5oX2Nsayk7DQorDQorCWhvc3QtPmJ1c19jbGsgPSBkZXZtX2Nsa19nZXQo
-JnBkZXYtPmRldiwgImJ1c19jbGsiKTsNCisJaWYgKElTX0VSUihob3N0LT5idXNfY2xrKSkNCisJ
-CWhvc3QtPmJ1c19jbGsgPSBOVUxMOw0KKw0KKwkvKnNvdXJjZSBjbG9jayBjb250cm9sIGdhdGUg
-aXMgb3B0aW9uYWwgY2xvY2sqLw0KKwlob3N0LT5zcmNfY2xrX2NnID0gZGV2bV9jbGtfZ2V0KCZw
-ZGV2LT5kZXYsICJzb3VyY2VfY2ciKTsNCisJaWYgKElTX0VSUihob3N0LT5zcmNfY2xrX2NnKSkN
-CisJCWhvc3QtPnNyY19jbGtfY2cgPSBOVUxMOw0KKw0KKwlob3N0LT5zeXNfY2xrX2NnID0gZGV2
-bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzeXNfY2ciKTsNCisJaWYgKElTX0VSUihob3N0LT5zeXNf
-Y2xrX2NnKSkNCisJCWhvc3QtPnN5c19jbGtfY2cgPSBOVUxMOw0KKwllbHNlDQorCQljbGtfcHJl
-cGFyZV9lbmFibGUoaG9zdC0+c3lzX2Nsa19jZyk7DQorDQorCWNsayA9IGRldm1fY2xrX2dldCgm
-cGRldi0+ZGV2LCAicGNsa19jZyIpOw0KKwlpZiAoSVNfRVJSKGNsaykpDQorCQljbGsgPSBOVUxM
-Ow0KKwlob3N0LT5idWxrX2Nsa3NbMF0uY2xrID0gY2xrOw0KKw0KKwljbGsgPSBkZXZtX2Nsa19n
-ZXQoJnBkZXYtPmRldiwgImF4aV9jZyIpOw0KKwlpZiAoSVNfRVJSKGNsaykpDQorCQljbGsgPSBO
-VUxMOw0KKwlob3N0LT5idWxrX2Nsa3NbMV0uY2xrID0gY2xrOw0KKw0KKwljbGsgPSBkZXZtX2Ns
-a19nZXQoJnBkZXYtPmRldiwgImFoYl9jZyIpOw0KKwlpZiAoSVNfRVJSKGNsaykpDQorCQljbGsg
-PSBOVUxMOw0KKwlob3N0LT5idWxrX2Nsa3NbMl0uY2xrID0gY2xrOw0KKw0KKwlyZXR1cm4gMDsN
-Cit9DQorDQogc3RhdGljIGludCBtc2RjX2Rydl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNl
-ICpwZGV2KQ0KIHsNCiAJc3RydWN0IG1tY19ob3N0ICptbWM7DQpAQCAtMjQwMCwyNSArMjQ1Nyw5
-IEBAIHN0YXRpYyBpbnQgbXNkY19kcnZfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRl
-dikNCiAJaWYgKHJldCkNCiAJCWdvdG8gaG9zdF9mcmVlOw0KIA0KLQlob3N0LT5zcmNfY2xrID0g
-ZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzb3VyY2UiKTsNCi0JaWYgKElTX0VSUihob3N0LT5z
-cmNfY2xrKSkgew0KLQkJcmV0ID0gUFRSX0VSUihob3N0LT5zcmNfY2xrKTsNCi0JCWdvdG8gaG9z
-dF9mcmVlOw0KLQl9DQotDQotCWhvc3QtPmhfY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYs
-ICJoY2xrIik7DQotCWlmIChJU19FUlIoaG9zdC0+aF9jbGspKSB7DQotCQlyZXQgPSBQVFJfRVJS
-KGhvc3QtPmhfY2xrKTsNCisJcmV0ID0gbXNkY19vZl9jbG9ja19wYXJzZShwZGV2LCBob3N0KTsN
-CisJaWYgKHJldCkNCiAJCWdvdG8gaG9zdF9mcmVlOw0KLQl9DQotDQotCWhvc3QtPmJ1c19jbGsg
-PSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgImJ1c19jbGsiKTsNCi0JaWYgKElTX0VSUihob3N0
-LT5idXNfY2xrKSkNCi0JCWhvc3QtPmJ1c19jbGsgPSBOVUxMOw0KLQkvKnNvdXJjZSBjbG9jayBj
-b250cm9sIGdhdGUgaXMgb3B0aW9uYWwgY2xvY2sqLw0KLQlob3N0LT5zcmNfY2xrX2NnID0gZGV2
-bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzb3VyY2VfY2ciKTsNCi0JaWYgKElTX0VSUihob3N0LT5z
-cmNfY2xrX2NnKSkNCi0JCWhvc3QtPnNyY19jbGtfY2cgPSBOVUxMOw0KIA0KIAlob3N0LT5yZXNl
-dCA9IGRldm1fcmVzZXRfY29udHJvbF9nZXRfb3B0aW9uYWxfZXhjbHVzaXZlKCZwZGV2LT5kZXYs
-DQogCQkJCQkJCQkiaHJzdCIpOw0KLS0gDQoyLjE4LjANCg==
+As reported by gcc:
+
+	drivers/media/test-drivers/vidtv/vidtv_demod.c: In function 'vidtv_demod_set_frontend':
+	drivers/media/test-drivers/vidtv/vidtv_demod.c:265:42: warning: variable 'cnr2qual' set but not used [-Wunused-but-set-variable]
+	  265 |  const struct vidtv_demod_cnr_to_qual_s *cnr2qual = NULL;
+	      |                                          ^~~~~~~~
+
+It turns that the var is not needed at all. So, just drop it.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/test-drivers/vidtv/vidtv_demod.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_demod.c b/drivers/media/test-drivers/vidtv/vidtv_demod.c
+index c825842758f0..2d05910bbc26 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_demod.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_demod.c
+@@ -73,8 +73,7 @@ static const struct vidtv_demod_cnr_to_qual_s vidtv_demod_t_cnr_2_qual[] = {
+ 	{ QAM_64, FEC_7_8, 22000, 24000},
+ };
+ 
+-static const struct vidtv_demod_cnr_to_qual_s
+-	     *vidtv_match_cnr_s(struct dvb_frontend *fe)
++static const struct vidtv_demod_cnr_to_qual_s *vidtv_match_cnr_s(struct dvb_frontend *fe)
+ {
+ 	const struct vidtv_demod_cnr_to_qual_s *cnr2qual = NULL;
+ 	struct device *dev = fe->dvb->device;
+@@ -262,7 +261,6 @@ static int vidtv_demod_get_frontend(struct dvb_frontend *fe,
+ 
+ static int vidtv_demod_set_frontend(struct dvb_frontend *fe)
+ {
+-	const struct vidtv_demod_cnr_to_qual_s *cnr2qual = NULL;
+ 	struct vidtv_demod_state *state = fe->demodulator_priv;
+ 	u32 tuner_status = 0;
+ 	int ret;
+@@ -284,7 +282,6 @@ static int vidtv_demod_set_frontend(struct dvb_frontend *fe)
+ 						    FE_HAS_SYNC    |
+ 						    FE_HAS_LOCK	 :
+ 						    0;
+-	cnr2qual = vidtv_match_cnr_s(fe);
+ 
+ 	vidtv_demod_update_stats(fe);
+ 
+-- 
+2.26.2
 
