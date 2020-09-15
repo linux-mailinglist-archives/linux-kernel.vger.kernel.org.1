@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A0126AB6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B23126AB73
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgIOSD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727712AbgIOR5a (ORCPT
+        id S1727920AbgIOSEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:04:51 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:47362 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727411AbgIOSB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:57:30 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75D9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:57:29 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id w11so4095182lfn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:57:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zC/SbxYzkjp6OcGCx+rUfTP966C1m59d2H5efDgrVWA=;
-        b=gOM8yiiLag62BKZvBU1Ld3EaS+uEABdHMAHOQYXp4gYgK6MWnEoBDMAH46BUf5TmB+
-         TeiK1flI2V9KV9iTOku256yuojEHjYQL/SAkqm8hwmwq348GzbP3X55WgpJgFyA65Dwa
-         edcbkgZ7rYAClxokvf5Qgc9mIXDGstbDigyxRjuqO7KfNRieXo/v1P7K4TScxYmUoSs/
-         P5aQPFH6A9jxovWESXl9bVN6Ub7fP+bQIlsS7BGzFm5YRBD0C9sMWEkCH4yqIaNadUgv
-         YKZB3sxoc01LhnoKnY5chFTddDEGyKupJziTRTxccKqSUBlHJWEQp9W6um13MiR3jbSm
-         I+dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zC/SbxYzkjp6OcGCx+rUfTP966C1m59d2H5efDgrVWA=;
-        b=lEq0039IU5il3/jt/LHgfk7oZYIYT/52KB4j3tLaCV3JSCyzYGfSzrUnI2TzF+jiGu
-         v6mQ1OTlckC3WlU3pMiB7i4bAu/BDwq4GC7VdYuuYXCuEuRfq9TRdcGOItGWrU8kYp6E
-         fS30OkFpg7QmRVhWWL8JxovVasnjVdSaXuOwOY4UyKyJJKdmCG8g8f98KqHVu+eZ06HG
-         e0c3I84GMjxVx8P8Wlz/gG5cKuArAieijexK2vgVEFm5d0sqmbOa7opNmlz8uzx8bkU0
-         JCsRwrFlNM+i0wN5uEThZiBaRtzP5vATN0qoJC/fya2z/KVdtEaNgOpWYD02jwqxPRmj
-         WoGQ==
-X-Gm-Message-State: AOAM532P21xgIYD9eXzxclAngZmcCJluqjxdADe4479hDb/x6BIRt7Fm
-        F0G0L5zZlGh2aNCVKjjLx8u2o+cDbhM2RncdBcyE8Q==
-X-Google-Smtp-Source: ABdhPJxiAfjaIb5OwsUu7wWgQQUH27aiEppISRg5ojFfZ2j3xreHT6y4fAfiPh/OE+XTn7Y+z1CPhpz3d5Jsez3n8n4=
-X-Received: by 2002:ac2:511c:: with SMTP id q28mr6086175lfb.411.1600192647744;
- Tue, 15 Sep 2020 10:57:27 -0700 (PDT)
+        Tue, 15 Sep 2020 14:01:26 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FHsLj1101401;
+        Tue, 15 Sep 2020 17:58:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=pNW3rt82sSHqqDjP4vSHLYhzjCwLYAMPkCqtg7Nl/7s=;
+ b=OCoShOephW8kGU3PmOXez997SQX1mYogfDF8U6Y4lcnrWoaz4ShPQMtx+7Wq4WXsbgRp
+ LwaiugZGaaDR3R8RO3zwKM3RtCeYUDPKz0hPErJsR1TZWn+edxTJveH+Y7IouiBM1LyO
+ n2g0Nt9UxAk7F8zmofjFf4RXvP4vEtb2MLSUTk/a5ahDmFF4vs6oVoB27ChiJxfRnl8/
+ ir5YCm/gm3lyyIbMMyT8o8/ziuDCPS9sWnNYyvGAkwNpOReYLgE5kHqjHxthsRaayM6q
+ MrBb6xDZXDlGst48U8RRIpDU/1ZzWr2BRSdRFB/J7CigAwjEzyj/2HVYNLKIzdbaCoXj 7Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33j91dgar3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 17:58:55 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FHtqXM026565;
+        Tue, 15 Sep 2020 17:58:54 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 33hm31087y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 17:58:54 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FHwlk8005756;
+        Tue, 15 Sep 2020 17:58:47 GMT
+Received: from localhost.localdomain (/10.159.248.187)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Sep 2020 17:58:46 +0000
+Subject: Re: [PATCH] KVM: SVM: Get rid of the variable 'exit_fastpath'
+To:     lihaiwei.kernel@gmail.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, hpa@zytor.com,
+        Haiwei Li <lihaiwei@tencent.com>
+References: <20200915113033.61817-1-lihaiwei.kernel@gmail.com>
+From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Message-ID: <e43717a4-cf87-4704-27d5-3d8acce75685@oracle.com>
+Date:   Tue, 15 Sep 2020 10:58:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200915172658.1432732-1-rkir@google.com> <20200915174643.GT14436@zn.tnic>
-In-Reply-To: <20200915174643.GT14436@zn.tnic>
-From:   Roman Kiryanov <rkir@google.com>
-Date:   Tue, 15 Sep 2020 10:57:16 -0700
-Message-ID: <CAOGAQepp_1QXrNAAXbLpW8qrujfdszfU2rMoh804wKK-Ja66Yw@mail.gmail.com>
-Subject: Re: [PATCH] arch: x86: power: cpu: init %gs before
- __restore_processor_state (clang)
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     rjw@rjwysocki.net, pavel@ucw.cz,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        x86@kernel.org, linux-pm@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alistair Delva <adelva@google.com>,
-        Haitao Shan <hshan@google.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200915113033.61817-1-lihaiwei.kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=994
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009150144
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150144
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:46 AM Borislav Petkov <bp@alien8.de> wrote:
 
-Hi Borislav, thank you for a quick response.
-
-> Ok, google guys, pls make sure you Cc LKML too as this is where *all*
-> patches and discussions are archived. Adding it now to Cc.
-
-Thank you, I did not know this.
-
-> Ok, so why is the kernel supposed to take yet another ugly workaround
-> because there's a bug in the compiler?
-
-I believe the kernel makes a questionable assumption on how clang
-uses registers (gs will not be used if stack protection is disabled).
-Both kernel and clang behaves unfortunate here.
-
-> disable LTO
-
-CFI depends on LTO.
+On 9/15/20 4:30 AM, lihaiwei.kernel@gmail.com wrote:
+> From: Haiwei Li <lihaiwei@tencent.com>
+>
+> 'exit_fastpath' isn't used anywhere else, so remove it.
+>
+> Suggested-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
+> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+> ---
+>   arch/x86/kvm/svm/svm.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index c44f3e9..6e88658 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3413,7 +3413,6 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+>   
+>   static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>   {
+> -	fastpath_t exit_fastpath;
+>   	struct vcpu_svm *svm = to_svm(vcpu);
+>   
+>   	svm->vmcb->save.rax = vcpu->arch.regs[VCPU_REGS_RAX];
+> @@ -3536,8 +3535,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>   		svm_handle_mce(svm);
+>   
+>   	svm_complete_interrupts(svm);
+> -	exit_fastpath = svm_exit_handlers_fastpath(vcpu);
+> -	return exit_fastpath;
+> +	return svm_exit_handlers_fastpath(vcpu);
+>   }
+>   
+>   static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long root,
+Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
