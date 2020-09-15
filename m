@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26BD26A5A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9B926A5A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgIOMyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
+        id S1726455AbgIOMz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgIOMpb (ORCPT
+        with ESMTP id S1726387AbgIOMqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:45:31 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D13C06178B;
-        Tue, 15 Sep 2020 05:45:24 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z19so1854512pfn.8;
-        Tue, 15 Sep 2020 05:45:24 -0700 (PDT)
+        Tue, 15 Sep 2020 08:46:03 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16AEC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 05:45:57 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id w5so3151193wrp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 05:45:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XLvKC1QgKkHaTyoOvehGhV+Ht6Yp+maIHFDFeeVXq8M=;
-        b=U5TrWgn8lEBzlVwpiipMur62Lm5Vpbnbt1ijTULCsAAOrzIK9+Qm69Aggok2xEYHxb
-         /vCWXARkKZO26GJYPXyLmoK7V+Gz7n0GF2xhC2pveIV9XLUAihKLvURt28xed3TWUynR
-         7QxCO3GYgw1aG+Cu9NDkBPJ91F40lhlwdlFghCore2RpK8gnmCKyfr8LIy0gaFdG8xHQ
-         /mzbSYdzlu3860JCuALGlyHW0n5PJBNnUCoTEQ8OnVFyVSbcgd4HIHr6A4Zao0TR049m
-         eipWdvq3ZfrurEIRpiWgmsWIL5Tnd9Ha7KTwwh0ffyclogguk8QELt3fSpxMQzoE09TR
-         0QWw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PUcUK8YA7xOYjNtjzxXPOPtmn9lpMNim28eyU9a7Hf4=;
+        b=vnq12OZ8h+snAbmU97iIZz1Xs6BZApGeIO+pwz8ITYX8upAHSJfhj4ZI+YsVyDfd3t
+         78y7H0Qi1P0lHHPn/CMTUbHSCT1uascuXBTiCv+E1xPSeRrOLgGltLj1G9V2aCXe8soZ
+         /rNy2cpnLf6NjM5HZfoEp54Ra+pSLk/xaQvI6aGFFTpiwoBX3WiFVcw7b/AAwE78Xsjh
+         JseJEkm65hME+gZKqdhLAeKhGN8A+PinC+RGE6WtYds9wZvUIt8Z9LHJf5VBdPGC6Wrm
+         hxRF54lld9/K/YjwTC6ECTGJvis46Zk8sfS9pyyTNUJPFZFwIrgex+ljhrkhshLnEjKB
+         6OuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XLvKC1QgKkHaTyoOvehGhV+Ht6Yp+maIHFDFeeVXq8M=;
-        b=iIgWKC2Cvc/At6hkgdYzWAy/TmZCMDBNW5s7nuEGKtGzJtdwoNNmyCiOc+QqyZ4t3l
-         KqUZbzVekPMNKfFSJgrEERCc5x6dOZw0MbAA01N4erRcA1tsKeXwjXXTSDQBkAlsRbq3
-         lX3DxYwIK6N9CpiTtZmtAhtyepjKcqQa3QPiLnxf4RM/2Kfz+9YJP5+W+NXOMO694k/h
-         YaUz2KcVZUn10Oevlg/6dn2+KGzsSzD0VgxVYDKsZbkj2gbuGvT8mN0GrOsLjnaqmYjI
-         ZtOAC/xaOaWcBCjuU7RMjASzgApqCgOYy6+BLyi7GsbEgEDkSX+7ojTcDXHBP608/era
-         zd3g==
-X-Gm-Message-State: AOAM533YOuf84krH6e7XDYnQoM289hX+raGsYRXtNGqVRIDLd40celLZ
-        rmsc9rN6sC7jLg1ZbqeQXRsDIv6aff3KK6J7OeI=
-X-Google-Smtp-Source: ABdhPJwGJUPVEVWbhzPPDlRLJ7w8+OtzA3zxmhxY9wEbd9cZp9qKfZZDo8HrD5NKHnTBl9DAZ+5l7JvG+cRpReQFtFE=
-X-Received: by 2002:aa7:9e43:0:b029:142:2501:34e3 with SMTP id
- z3-20020aa79e430000b0290142250134e3mr1632591pfq.60.1600173924139; Tue, 15 Sep
- 2020 05:45:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PUcUK8YA7xOYjNtjzxXPOPtmn9lpMNim28eyU9a7Hf4=;
+        b=t/r3YB6VpFkfOjvCKPEoTGs4Ll8up+2Yx6h8usXgEYfxZmNSZQbREfzw5OmruPr7Eb
+         Xzyyrvuvy4NMz6RVYKbFar5HZ3ulBOIW1leK2OP6VzJBjmN3vTKgm782Wm+gcSZhU9ca
+         xFzbQ9aXSYieRMcP6CDKeA1+Ci1I4MlwPAF6/kciJMGHkKnrSsrOpKqmXfRALcn2Ypno
+         3+aRTwkztA5ZvHljbw9TD9s3I49Bv0AwBj0kAmLzavPdN4kh1HP8bBTIau8+v85GR7lX
+         o4E0fwVTkEY8b2gQ/DV90P9EK2P7Zimwf938g7wk3LO/8bem++X8DXj1Wbc0pzJTRjFp
+         eY3g==
+X-Gm-Message-State: AOAM531Oza/ipe/U8rgYJfKdubclVHAB/EL6lg86YxqOAMYx+297S/5I
+        UhbsoomHvDd3KUT99W5eL/ueyrmnytLxd40N
+X-Google-Smtp-Source: ABdhPJxwMlDEHZh9fctKaT98W85S9FRLO1xXWLr+E4hFyfBsptLyDwy8SoxnjHKzdeZGkqN83g5/CA==
+X-Received: by 2002:a5d:40c7:: with SMTP id b7mr21519638wrq.300.1600173956444;
+        Tue, 15 Sep 2020 05:45:56 -0700 (PDT)
+Received: from bender.baylibre.local (home.beaume.starnux.net. [82.236.8.43])
+        by smtp.gmail.com with ESMTPSA id q8sm26548589wrx.79.2020.09.15.05.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 05:45:55 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     jbrunet@baylibre.com
+Cc:     linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v2 0/4] clk: meson: axg: add clocks for MIPI-DSI support
+Date:   Tue, 15 Sep 2020 14:45:49 +0200
+Message-Id: <20200915124553.8056-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-References: <20200915101559.33292-1-fazilyildiran@gmail.com> <20200915112341.GU904879@nvidia.com>
-In-Reply-To: <20200915112341.GU904879@nvidia.com>
-From:   =?UTF-8?B?TmVjaXAgRi4gWcSxbGTEsXJhbg==?= <fazilyildiran@gmail.com>
-Date:   Tue, 15 Sep 2020 15:45:13 +0300
-Message-ID: <CAODUWC5j9VZYedQ620RvunxHO4AnaQokhGniT4FgPyjE=Vzgjg@mail.gmail.com>
-Subject: Re: [PATCH] IB/rxe: fix kconfig dependency warning for RDMA_RXE
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steps to reproduce this for v5.9-rc4 on x86 machine (using make.cross [1]
-to cross compile for arm64):
-1. make.cross ARCH=arm64 allnoconfig
-2. make.cross ARCH=arm64 menuconfig
-  a. Enable NET
-  b. Enable INET
-  c. Enable PCI
-  d. Enable INFINIBAND
-  e. Enable RDMA_RXE
-3. make.cross ARCH=arm64 olddefconfig # WARNING: unmet direct
-dependencies detected for CRYPTO_CRC32
+This adds the VPU & VAPB clocks along the MIPI DSI Host clock.
 
-[1] https://github.com/fengguang/lkp-tests/blob/master/sbin/make.cross
+The clock scheme is based on the GXBB & G12A VPU clocks, with a different CTS
+clock output used for MIPI-DSI.
 
-Thanks
-Necip
+Changes since v1 at [1]:
+- update patch 3 commit message to reflect drm driver state
+- added comments in patch 3 for clock specificities
+- removed useless parents comments in patch 2
+- fixed bad flags in patch 4
+- removed holes in axg_vdin_meas_parent_data in patch 4
 
-On Tue, Sep 15, 2020 at 2:23 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Tue, Sep 15, 2020 at 01:16:00PM +0300, Necip Fazil Yildiran wrote:
-> > When RDMA_RXE is enabled and CRYPTO is disabled, it results in the
-> > following Kbuild warning:
-> >
-> > WARNING: unmet direct dependencies detected for CRYPTO_CRC32
-> >   Depends on [n]: CRYPTO [=n]
-> >   Selected by [y]:
-> >   - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && (!64BIT || ARCH_DMA_ADDR_T_64BIT [=n])
->
-> ?? how did you get here? I thought the kconfig front ends were
-> supposed to prevent this.
->
-> Jason
+[1] https://lkml.kernel.org/r/20200907093810.6585-1-narmstrong@baylibre.com
+
+Neil Armstrong (4):
+  dt-bindings: clk: axg-clkc: add Video Clocks
+  dt-bindings: clk: axg-clkc: add MIPI DSI Host clock binding
+  clk: meson: axg: add Video Clocks
+  clk: meson: axg: add MIPI DSI Host clock
+
+ drivers/clk/meson/axg.c              | 819 +++++++++++++++++++++++++++
+ drivers/clk/meson/axg.h              |  23 +-
+ include/dt-bindings/clock/axg-clkc.h |  25 +
+ 3 files changed, 866 insertions(+), 1 deletion(-)
+
+-- 
+2.22.0
+
