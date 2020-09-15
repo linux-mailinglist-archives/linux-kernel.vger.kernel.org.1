@@ -2,147 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DFD26A934
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8FE26A8EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727497AbgIOP5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:57:02 -0400
-Received: from mail-dm6nam11on2063.outbound.protection.outlook.com ([40.107.223.63]:38284
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727396AbgIOPQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:16:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nZxKlywqOMClmj7mGx0oHc7cWZfxxw+xkMO7eRsF3gDFostwD8kY1DHQHBCYW8uC8ZVxUz/SJrAYm/geHrJTUf3iZ/jJ5xCO4qKsC8tpFFEe0O9RIFI3cD+pdp1PFcf/oKiiYYJIbjDuEVBlCo6ubIzVYFabR/qbHId36g0d1xwTHTxHI/ujU5fDlaASkTcYE4Br/C4f/TIRdEi09DwuTMQnBsiPeUW4D7SPvyy4bajvX7khGruJqC9xFyiJYoTCm6BE29DkQYJANbgVOrzQQef89vIihjVn3uM6oAb4OdwU5aP5tw4WNKN60Sz7FAg3g/nENCvVpOrlzxjRufFbRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3am9umqPy/RvqfH58I+TKLP98VS3OIUlNWNgPr5rTvg=;
- b=RWGcqLbW2M5RNKQ/J+2p+wbMzdt3XykbySD7FIa/uOmC0Ym9RzPqKNSrlahWuTzEj+djQPWaLQeDhHQ7B5VVeEYN3RomO9J6YS7BIswyYn6a7DxE6wn3tEuuxD3FLEyr2gmdRKq27dpsZZltHgRVuWogZedf3yYJYxW9GH/na5FsfmuQAmjVPn5+T0jqT59bXadY5oauvnki95Q3jOilE3JIqJtL+h5YvMSOVwKE1iMnedfITvsBw40cTUFz82NhwMbY8rJH6efXpxVmUh3wdb5dr7li+jR1snja+wDQuohz87nwxnm32OY/AtZROqgcT+nn+XeUKLiobKFE9bv9SA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3am9umqPy/RvqfH58I+TKLP98VS3OIUlNWNgPr5rTvg=;
- b=NiPfH+6H8dIDJ9nJnQvYWVWbj0lnRNBcd7ZCQ5GEBEDmkWu+PdwqMKJBZ0wRJOSXvGJU7GXni/xbD3gv2YrbBKukp3cPk9q9+kYtFYtxf2kbcYI/N7Z59xXSKwIq+VO/qzgt3tzVVMzMX1QIoEPZjypYdY4F1gsEO38uBbBtJ7g=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
- by CY4PR12MB1926.namprd12.prod.outlook.com (2603:10b6:903:11b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Tue, 15 Sep
- 2020 13:38:54 +0000
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::989b:b1b2:464c:443]) by CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::989b:b1b2:464c:443%10]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 13:38:54 +0000
-Subject: Re: [RFC PATCH 09/35] KVM: SVM: Do not emulate MMIO under SEV-ES
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <c4ccb48b41f3996bc9000730309455e449cb1136.1600114548.git.thomas.lendacky@amd.com>
- <20200914213352.GB7192@sjchrist-ice>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <2b220348-171b-68dc-689b-c238e90301cc@amd.com>
-Date:   Tue, 15 Sep 2020 08:38:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200914213352.GB7192@sjchrist-ice>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM5PR1101CA0001.namprd11.prod.outlook.com
- (2603:10b6:4:4c::11) To CY4PR12MB1352.namprd12.prod.outlook.com
- (2603:10b6:903:3a::13)
+        id S1726995AbgIOP15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:27:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59104 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726586AbgIOOxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:53:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 23A54B261;
+        Tue, 15 Sep 2020 14:04:23 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 16:04:06 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mateusz Nosek <mateusznosek0@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [RFC PATCH] mm/page_alloc.c: micro-optimization reduce oom
+ critical section size
+Message-ID: <20200915140406.GE3736@dhcp22.suse.cz>
+References: <20200914100654.21746-1-mateusznosek0@gmail.com>
+ <20200914142233.GT16999@dhcp22.suse.cz>
+ <e26d7699-cc51-ffec-321e-ffabc49110e1@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by DM5PR1101CA0001.namprd11.prod.outlook.com (2603:10b6:4:4c::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 13:38:53 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ef4af0a4-9a64-43f6-39a3-08d8597cb032
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1926:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1926D07E7F878927CFCED076EC200@CY4PR12MB1926.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5xmQk799wrCG97yR0QKhVmV87Zeyd/ib6jPcjTZ67b4M8eiMXdYMBeFMlMw75MxcJdum5E4F6uiL7R1c1QjrNd+cdd6IiOx43Qvj9RQHMSpiwH3Hzz06dlw2HK7f08TayVR27rkTg5aIEzls2FiuIvLRAuEI+D7AzTFRtEDMM0TCMHc1Ta6tr/oPB/m41K+OWTgH2L1AnanLcV+AU5hg16RUOjC7hCxJVa3vnB/ukEDr8tpxVmEROvU/Xvb3d5HDmfZIYCAYzcKnFlXoORNkebQAv7nZQq7Ohpon2tzuJJ/z/igbVmI7hytLohjJWX+H9DVvfdzEWRiBjPda4IirqYbq9lGc5gKYq6CAj9VI6jdUdd6zAnp9D7vi0GHDekMK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(366004)(346002)(136003)(8676002)(6916009)(31696002)(54906003)(31686004)(83380400001)(86362001)(2906002)(5660300002)(66946007)(66476007)(66556008)(478600001)(7416002)(8936002)(26005)(6486002)(36756003)(53546011)(16576012)(4326008)(316002)(16526019)(186003)(52116002)(2616005)(956004)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: +ztvglHnmUXyALU07IaeHVP6jhwn27G3OZHnt2/UriUhvdMlc2Ez0fgwI5JqwKK0paGhr3RQvTKVszqUUGh4ajoaKa3egBEVXBacBm2ubcn4Rob4yZlkh0H2/Gdkd4Mw+ji38XGpAEnFvghyzfvkmV4ieY7KFcIfOwHpPqaAvmHmNtXj3TIzdTSFCvoumhKiQboBXbrK54ifsLmBYVToR9wddV4UhmTWtvv6vBtOk461SPtEumlQKt3G4eRVLK3SI3TOXKpZTY/vsL6s39/Gld7vk21PTHMtn0n4ww1rxuqxygMnby40mTUcTvvM7PHGAaQmMzsW7PY7O1xVSVnqTr5Cd1qeOH8SswqKXbKRm1mPxyxDarR7tarV8jJVVzgvrzznRa0LPYJ/rlM2cJt/aHw68wP/9dq5zlqy8xnkmEcjGT5xNDxHKjMqy2WUe6ot/fkQ6QtQoUXoK5mzW1R0BmEiRjC4LlmtDanSbkWHKzg+MnLXgflIin3JwHFK4C74/oVYemK0A2zSIuJ+zX1G4TZkrvKogulAdD5tH51GNS41Wk6hlqOVsPVxOwmPc2DXwAG8zoLTMPZfF/X9gsx2NC5xFgbt+Q1e3Sm4knhs7HNfO0cZJRj2h4dpW6zYC9g+Of7kQILF64Wu2WjzbtXN4A==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef4af0a4-9a64-43f6-39a3-08d8597cb032
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 13:38:54.3191
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DCMUvyWQq6MJRL7yfP0I506nqxQsGio03QI8tDPj2EmwijJ9+Rq3DNpWq4eijhR7DROnVttjymaJW4Jfk8GYBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1926
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e26d7699-cc51-ffec-321e-ffabc49110e1@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 4:33 PM, Sean Christopherson wrote:
-> On Mon, Sep 14, 2020 at 03:15:23PM -0500, Tom Lendacky wrote:
->> From: Tom Lendacky <thomas.lendacky@amd.com>
->>
->> When a guest is running as an SEV-ES guest, it is not possible to emulate
->> MMIO. Add support to prevent trying to perform MMIO emulation.
->>
->> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
->> ---
->>  arch/x86/kvm/mmu/mmu.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->> index a5d0207e7189..2e1b8b876286 100644
->> --- a/arch/x86/kvm/mmu/mmu.c
->> +++ b/arch/x86/kvm/mmu/mmu.c
->> @@ -5485,6 +5485,13 @@ int kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 error_code,
->>  	if (!mmio_info_in_cache(vcpu, cr2_or_gpa, direct) && !is_guest_mode(vcpu))
->>  		emulation_type |= EMULTYPE_ALLOW_RETRY_PF;
->>  emulate:
->> +	/*
->> +	 * When the guest is an SEV-ES guest, emulation is not possible.  Allow
->> +	 * the guest to handle the MMIO emulation.
->> +	 */
->> +	if (vcpu->arch.vmsa_encrypted)
->> +		return 1;
+On Tue 15-09-20 15:09:59, Mateusz Nosek wrote:
 > 
-> A better approach is to refactor need_emulation_on_page_fault() (the hook
-> that's just out of sight in this patch) into a more generic
-> kvm_x86_ops.is_emulatable() so that the latter can be used to kill emulation
-> everywhere, and for other reasons.  E.g. TDX obviously shares very similar
-> logic, but SGX also adds a case where KVM can theoretically end up in an
-> emulator path without the ability to access the necessary guest state.
 > 
-> I have exactly such a prep patch (because SGX and TDX...), I'll get it posted
-> in the next day or two.
-
-Sounds good. I'll check it out when it's posted.
-
-Thanks,
-Tom
-
+> On 9/14/2020 4:22 PM, Michal Hocko wrote:
+> > On Mon 14-09-20 12:06:54, mateusznosek0@gmail.com wrote:
+> > > From: Mateusz Nosek <mateusznosek0@gmail.com>
+> > > 
+> > > Most operations from '__alloc_pages_may_oom' do not require oom_mutex hold.
+> > > Exception is 'out_of_memory'. The patch refactors '__alloc_pages_may_oom'
+> > > to reduce critical section size and improve overall system performance.
+> > 
+> > This is a real slow path. What is the point of optimizing it? Do you
+> > have any numbers?
+> > 
 > 
->> +
->>  	/*
->>  	 * On AMD platforms, under certain conditions insn_len may be zero on #NPF.
->>  	 * This can happen if a guest gets a page-fault on data access but the HW
->> -- 
->> 2.28.0
->>
+> I agree that as this is the slow path, then the hard, complicated
+> optimizations are not recommended. In my humble opinion introduced patch is
+> not complex and does not decrease code readability or maintainability. In a
+> nutshell I see no drawbacks of applying it.
+
+This is clearly a matter of taste. I do not see a good reason to apply
+it TBH. It is a claimed optimization without any numbers to back that
+claim. It is also a tricky area so I am usually very careful to touch
+this code without a strong reason.  Others might feel differently of
+course.
+
+[...]
+
+Anyway, I have only now looked closer at the patch...
+
+> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > index b9bd75cacf02..b07f950a5825 100644
+> > > --- a/mm/page_alloc.c
+> > > +++ b/mm/page_alloc.c
+> > > @@ -3935,18 +3935,7 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+> > >   		.order = order,
+> > >   	};
+> > >   	struct page *page;
+> > > -
+> > > -	*did_some_progress = 0;
+> > > -
+> > > -	/*
+> > > -	 * Acquire the oom lock.  If that fails, somebody else is
+> > > -	 * making progress for us.
+> > > -	 */
+> > > -	if (!mutex_trylock(&oom_lock)) {
+> > > -		*did_some_progress = 1;
+> > > -		schedule_timeout_uninterruptible(1);
+> > > -		return NULL;
+> > > -	}
+> > > +	bool success;
+> > >   	/*
+> > >   	 * Go through the zonelist yet one more time, keep very high watermark
+> > > @@ -3959,14 +3948,17 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+> > >   				      ~__GFP_DIRECT_RECLAIM, order,
+> > >   				      ALLOC_WMARK_HIGH|ALLOC_CPUSET, ac);
+> > >   	if (page)
+> > > -		goto out;
+> > > +		return page;
+> > > +
+> > > +	/* Check if somebody else is making progress for us. */
+> > > +	*did_some_progress = mutex_is_locked(&oom_lock);
+
+This is not only quite ugly but wrong as well. In general checking for a
+lock state is racy unless the lock is taken somewhere up the call chain.
+
+In this particular case it wouldn't be a big deal because an additional
+retry (did_some_progress = 1) is not really critical. It would likely be
+nicer to be deterministic here and not retry on all the early bailouts
+regardless of the lock state.
+
+> > >   	/* Coredumps can quickly deplete all memory reserves */
+> > >   	if (current->flags & PF_DUMPCORE)
+> > > -		goto out;
+> > > +		return NULL;
+> > >   	/* The OOM killer will not help higher order allocs */
+> > >   	if (order > PAGE_ALLOC_COSTLY_ORDER)
+> > > -		goto out;
+> > > +		return NULL;
+> > >   	/*
+> > >   	 * We have already exhausted all our reclaim opportunities without any
+> > >   	 * success so it is time to admit defeat. We will skip the OOM killer
+> > > @@ -3976,12 +3968,12 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+> > >   	 * The OOM killer may not free memory on a specific node.
+> > >   	 */
+> > >   	if (gfp_mask & (__GFP_RETRY_MAYFAIL | __GFP_THISNODE))
+> > > -		goto out;
+> > > +		return NULL;
+> > >   	/* The OOM killer does not needlessly kill tasks for lowmem */
+> > >   	if (ac->highest_zoneidx < ZONE_NORMAL)
+> > > -		goto out;
+> > > +		return NULL;
+> > >   	if (pm_suspended_storage())
+> > > -		goto out;
+> > > +		return NULL;
+> > >   	/*
+> > >   	 * XXX: GFP_NOFS allocations should rather fail than rely on
+> > >   	 * other request to make a forward progress.
+> > > @@ -3992,8 +3984,20 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+> > >   	 * failures more gracefully we should just bail out here.
+> > >   	 */
+> > > +	/*
+> > > +	 * Acquire the oom lock.  If that fails, somebody else is
+> > > +	 * making progress for us.
+> > > +	 */
+> > > +	if (!mutex_trylock(&oom_lock)) {
+> > > +		*did_some_progress = 1;
+> > > +		schedule_timeout_uninterruptible(1);
+> > > +		return NULL;
+> > > +	}
+> > > +	success = out_of_memory(&oc);
+> > > +	mutex_unlock(&oom_lock);
+> > > +
+> > >   	/* Exhausted what can be done so it's blame time */
+> > > -	if (out_of_memory(&oc) || WARN_ON_ONCE(gfp_mask & __GFP_NOFAIL)) {
+> > > +	if (success || WARN_ON_ONCE(gfp_mask & __GFP_NOFAIL)) {
+> > >   		*did_some_progress = 1;
+> > >   		/*
+> > > @@ -4004,8 +4008,7 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+> > >   			page = __alloc_pages_cpuset_fallback(gfp_mask, order,
+> > >   					ALLOC_NO_WATERMARKS, ac);
+> > >   	}
+> > > -out:
+> > > -	mutex_unlock(&oom_lock);
+> > > +
+> > >   	return page;
+> > >   }
+> > > -- 
+> > > 2.20.1
+> > > 
+> > 
+> Sincerely yours,
+> Mateusz Nosek
+
+-- 
+Michal Hocko
+SUSE Labs
