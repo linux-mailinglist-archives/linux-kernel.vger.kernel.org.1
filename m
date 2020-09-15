@@ -2,251 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5FC26A09A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0872C26A08C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgIOIWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:22:22 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:20830 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726296AbgIOITH (ORCPT
+        id S1726139AbgIOIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:20:34 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:26236 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726202AbgIOITg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:19:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600157945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3bhDFHrLKx2Ugr++K3UZXsMiyEdJCQXQW25owbTuEPc=;
-        b=M7qnzUAG/TbOi3ONJ+hprfvJXwUQ0rXuUXrLXZAUQ6wroHPIIvJiqFgAhO4mCqv/IMMJxj
-        rAI5lsdsEikAXeTXiXayhbP3KyiQpLQ/LkjxsLRhRpI4x1BYba75In5pM72Dvp0VCcNh4a
-        eZK/b2EAVb6Re4CU0GImc5WmbjBLt0U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-zNagHMNCPB-SgFEqX8TqPw-1; Tue, 15 Sep 2020 04:19:03 -0400
-X-MC-Unique: zNagHMNCPB-SgFEqX8TqPw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 15 Sep 2020 04:19:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600157975; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=UIUW1dHR5cml3n2LMnUXM45+Y7HjtAfi1SOtnIzY24w=; b=gxsq1bYkJuovTiqcHc5/uR1nwjJ9KLRBEckaMzpTl6uDIZ2y8n+R5vXQz4VQ/xxUIMC7D0au
+ 1vculAIiOsPLIMGsAuehjzGK2x/4eomLbFXa70eKCrgNbwH+TW3gzA1PVPLzHMq/B/mEHr4T
+ Cmo+MrexaLXf5Ww8sV4srCYK9F8=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f60790725e1ee75863f3029 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 08:19:19
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B00FEC433F0; Tue, 15 Sep 2020 08:19:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53E0480F040;
-        Tue, 15 Sep 2020 08:19:01 +0000 (UTC)
-Received: from [10.72.13.94] (ovpn-13-94.pek2.redhat.com [10.72.13.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A9D55DDB8;
-        Tue, 15 Sep 2020 08:18:47 +0000 (UTC)
-Subject: Re: [RFC PATCH 00/22] Enhance VHOST to enable SoC-to-SoC
- communication
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-ntb@googlegroups.com,
-        linux-pci@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <20200702082143.25259-1-kishon@ti.com>
- <20200702055026-mutt-send-email-mst@kernel.org>
- <603970f5-3289-cd53-82a9-aa62b292c552@redhat.com>
- <14c6cad7-9361-7fa4-e1c6-715ccc7e5f6b@ti.com>
- <59fd6a0b-8566-44b7-3dae-bb52b468219b@redhat.com>
- <ce9eb6a5-cd3a-a390-5684-525827b30f64@ti.com>
- <da2b671c-b05d-a57f-7bdf-8b1043a41240@redhat.com>
- <fee8a0fb-f862-03bd-5ede-8f105b6af529@ti.com>
- <b2178e1d-2f5c-e8a3-72fb-70f2f8d6aa45@redhat.com>
- <45a8a97c-2061-13ee-5da8-9877a4a3b8aa@ti.com>
- <c8739d7f-e12e-f6a2-7018-9eeaf6feb054@redhat.com>
- <20200828123409.4cd2a812.cohuck@redhat.com>
- <ac8f7e4f-9f46-919a-f5c2-89b07794f0ab@ti.com>
- <9cd58cd1-0041-3d98-baf7-6e5bc2e7e317@redhat.com>
- <edf25301-93c0-4ba6-aa85-5f04137d0906@ti.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <5733dbfc-76c1-45dc-6dce-ef5449eacc73@redhat.com>
-Date:   Tue, 15 Sep 2020 16:18:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <edf25301-93c0-4ba6-aa85-5f04137d0906@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9A7EC433CA;
+        Tue, 15 Sep 2020 08:19:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A9A7EC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     ath10k@lists.infradead.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v2] ath10k: Use bdf calibration variant for snoc targets
+Date:   Tue, 15 Sep 2020 13:49:08 +0530
+Message-Id: <1600157948-2042-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon:
+Board Data File (BDF) is loaded upon driver boot-up procedure.
+The right board data file is identified using bus and qmi-board-id.
 
-On 2020/9/14 下午3:23, Kishon Vijay Abraham I wrote:
->> Then you need something that is functional equivalent to virtio PCI
->> which is actually the concept of vDPA (e.g vDPA provides alternatives if
->> the queue_sel is hard in the EP implementation).
-> Okay, I just tried to compare the 'struct vdpa_config_ops' and 'struct
-> vhost_config_ops' ( introduced in [RFC PATCH 03/22] vhost: Add ops for
-> the VHOST driver to configure VHOST device).
->
-> struct vdpa_config_ops {
-> 	/* Virtqueue ops */
-> 	int (*set_vq_address)(struct vdpa_device *vdev,
-> 			      u16 idx, u64 desc_area, u64 driver_area,
-> 			      u64 device_area);
-> 	void (*set_vq_num)(struct vdpa_device *vdev, u16 idx, u32 num);
-> 	void (*kick_vq)(struct vdpa_device *vdev, u16 idx);
-> 	void (*set_vq_cb)(struct vdpa_device *vdev, u16 idx,
-> 			  struct vdpa_callback *cb);
-> 	void (*set_vq_ready)(struct vdpa_device *vdev, u16 idx, bool ready);
-> 	bool (*get_vq_ready)(struct vdpa_device *vdev, u16 idx);
-> 	int (*set_vq_state)(struct vdpa_device *vdev, u16 idx,
-> 			    const struct vdpa_vq_state *state);
-> 	int (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
-> 			    struct vdpa_vq_state *state);
-> 	struct vdpa_notification_area
-> 	(*get_vq_notification)(struct vdpa_device *vdev, u16 idx);
-> 	/* vq irq is not expected to be changed once DRIVER_OK is set */
-> 	int (*get_vq_irq)(struct vdpa_device *vdv, u16 idx);
->
-> 	/* Device ops */
-> 	u32 (*get_vq_align)(struct vdpa_device *vdev);
-> 	u64 (*get_features)(struct vdpa_device *vdev);
-> 	int (*set_features)(struct vdpa_device *vdev, u64 features);
-> 	void (*set_config_cb)(struct vdpa_device *vdev,
-> 			      struct vdpa_callback *cb);
-> 	u16 (*get_vq_num_max)(struct vdpa_device *vdev);
-> 	u32 (*get_device_id)(struct vdpa_device *vdev);
-> 	u32 (*get_vendor_id)(struct vdpa_device *vdev);
-> 	u8 (*get_status)(struct vdpa_device *vdev);
-> 	void (*set_status)(struct vdpa_device *vdev, u8 status);
-> 	void (*get_config)(struct vdpa_device *vdev, unsigned int offset,
-> 			   void *buf, unsigned int len);
-> 	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
-> 			   const void *buf, unsigned int len);
-> 	u32 (*get_generation)(struct vdpa_device *vdev);
->
-> 	/* DMA ops */
-> 	int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
-> 	int (*dma_map)(struct vdpa_device *vdev, u64 iova, u64 size,
-> 		       u64 pa, u32 perm);
-> 	int (*dma_unmap)(struct vdpa_device *vdev, u64 iova, u64 size);
->
-> 	/* Free device resources */
-> 	void (*free)(struct vdpa_device *vdev);
-> };
->
-> +struct vhost_config_ops {
-> +	int (*create_vqs)(struct vhost_dev *vdev, unsigned int nvqs,
-> +			  unsigned int num_bufs, struct vhost_virtqueue *vqs[],
-> +			  vhost_vq_callback_t *callbacks[],
-> +			  const char * const names[]);
-> +	void (*del_vqs)(struct vhost_dev *vdev);
-> +	int (*write)(struct vhost_dev *vdev, u64 vhost_dst, void *src, int len);
-> +	int (*read)(struct vhost_dev *vdev, void *dst, u64 vhost_src, int len);
-> +	int (*set_features)(struct vhost_dev *vdev, u64 device_features);
-> +	int (*set_status)(struct vhost_dev *vdev, u8 status);
-> +	u8 (*get_status)(struct vhost_dev *vdev);
-> +};
-> +
-> struct virtio_config_ops
-> I think there's some overlap here and some of the ops tries to do the
-> same thing.
->
-> I think it differs in (*set_vq_address)() and (*create_vqs)().
-> [create_vqs() introduced in struct vhost_config_ops provides
-> complimentary functionality to (*find_vqs)() in struct
-> virtio_config_ops. It seemingly encapsulates the functionality of
-> (*set_vq_address)(), (*set_vq_num)(), (*set_vq_cb)(),..].
->
-> Back to the difference between (*set_vq_address)() and (*create_vqs)(),
-> set_vq_address() directly provides the virtqueue address to the vdpa
-> device but create_vqs() only provides the parameters of the virtqueue
-> (like the number of virtqueues, number of buffers) but does not directly
-> provide the address. IMO the backend client drivers (like net or vhost)
-> shouldn't/cannot by itself know how to access the vring created on
-> virtio front-end. The vdpa device/vhost device should have logic for
-> that. That will help the client drivers to work with different types of
-> vdpa device/vhost device and can access the vring created by virtio
-> irrespective of whether the vring can be accessed via mmio or kernel
-> space or user space.
->
-> I think vdpa always works with client drivers in userspace and providing
-> userspace address for vring.
+The problem, however, can occur when the (default) board data
+file cannot fulfill with the vendor requirements and it is
+necessary to use a different board data file.
 
+Also using the chip_id for identifying the board data helps
+in dealing with different variants of the board data file based
+on the RF card. If the chip_id is not programmed, a default value
+of 0xff will be used for parsing the board data file.
 
-Sorry for being unclear. What I meant is not replacing vDPA with the 
-vhost(bus) you proposed but the possibility of replacing virtio-pci-epf 
-with vDPA in:
+Add the support to get the variant field from DTSI and
+use this information along with the chip_id to load the vendor
+specific BDF.
 
-My question is basically for the part of virtio_pci_epf_send_command(), 
-so it looks to me you have a vendor specific API to replace the 
-virtio-pci layout of the BAR:
+The device tree requires addition strings to define the variant name
 
+    wifi@a000000 {
+            status = "okay";
+            qcom,ath10k-calibration-variant = "xyz-v2";
+    };
 
-+static int virtio_pci_epf_send_command(struct virtio_pci_device *vp_dev,
-+                       u32 command)
-+{
-+    struct virtio_pci_epf *pci_epf;
-+    void __iomem *ioaddr;
-+    ktime_t timeout;
-+    bool timedout;
-+    int ret = 0;
-+    u8 status;
+    wifi@a800000 {
+            status = "okay";
+            qcom,ath10k-calibration-variant = "xyz-v1";
+    };
+
+This would create the boarddata identifiers for the board-2.bin search
+
+ *  bus=snoc,qmi-board-id=16,qmi-chip-id=0,variant=xyz-v1
+ *  bus=snoc,qmi-board-id=17,qmi-chip-id=0,variant=xyz-v2
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+Changes from v1:
+- Updated the commit text to add details about chip_id used for
+  loading bdf.
+
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 18 +++++++++++++-----
+ drivers/net/wireless/ath/ath10k/core.h |  2 ++
+ drivers/net/wireless/ath/ath10k/qmi.c  |  8 ++++++++
+ 3 files changed, 23 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5f4e121..d73ad60 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1022,7 +1022,7 @@ static int ath10k_core_check_smbios(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static int ath10k_core_check_dt(struct ath10k *ar)
++int ath10k_core_check_dt(struct ath10k *ar)
+ {
+ 	struct device_node *node;
+ 	const char *variant = NULL;
+@@ -1043,6 +1043,7 @@ static int ath10k_core_check_dt(struct ath10k *ar)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(ath10k_core_check_dt);
+ 
+ static int ath10k_download_fw(struct ath10k *ar)
+ {
+@@ -1437,10 +1438,17 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
+ 	}
+ 
+ 	if (ar->id.qmi_ids_valid) {
+-		scnprintf(name, name_len,
+-			  "bus=%s,qmi-board-id=%x",
+-			  ath10k_bus_str(ar->hif.bus),
+-			  ar->id.qmi_board_id);
++		if (with_variant && ar->id.bdf_ext[0] != '\0')
++			scnprintf(name, name_len,
++				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
++				  ath10k_bus_str(ar->hif.bus),
++				  ar->id.qmi_board_id, ar->id.qmi_chip_id,
++				  variant);
++		else
++			scnprintf(name, name_len,
++				  "bus=%s,qmi-board-id=%x",
++				  ath10k_bus_str(ar->hif.bus),
++				  ar->id.qmi_board_id);
+ 		goto out;
+ 	}
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 4cf5bd4..b50ab9e 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1076,6 +1076,7 @@ struct ath10k {
+ 		bool bmi_ids_valid;
+ 		bool qmi_ids_valid;
+ 		u32 qmi_board_id;
++		u32 qmi_chip_id;
+ 		u8 bmi_board_id;
+ 		u8 bmi_eboard_id;
+ 		u8 bmi_chip_id;
+@@ -1315,6 +1316,7 @@ int ath10k_core_register(struct ath10k *ar,
+ 			 const struct ath10k_bus_params *bus_params);
+ void ath10k_core_unregister(struct ath10k *ar);
+ int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type);
++int ath10k_core_check_dt(struct ath10k *ar);
+ void ath10k_core_free_board_files(struct ath10k *ar);
+ 
+ #endif /* _CORE_H_ */
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 5468a41..ae6b1f4 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -576,6 +576,8 @@ static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
+ 	if (resp->chip_info_valid) {
+ 		qmi->chip_info.chip_id = resp->chip_info.chip_id;
+ 		qmi->chip_info.chip_family = resp->chip_info.chip_family;
++	} else {
++		qmi->chip_info.chip_id = 0xFF;
+ 	}
+ 
+ 	if (resp->board_info_valid)
+@@ -817,12 +819,18 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+ static int ath10k_qmi_fetch_board_file(struct ath10k_qmi *qmi)
+ {
+ 	struct ath10k *ar = qmi->ar;
++	int ret;
+ 
+ 	ar->hif.bus = ATH10K_BUS_SNOC;
+ 	ar->id.qmi_ids_valid = true;
+ 	ar->id.qmi_board_id = qmi->board_info.board_id;
++	ar->id.qmi_chip_id = qmi->chip_info.chip_id;
+ 	ar->hw_params.fw.dir = WCN3990_HW_1_0_FW_DIR;
+ 
++	ret = ath10k_core_check_dt(ar);
++	if (ret)
++		ath10k_dbg(ar, ATH10K_DBG_QMI, "DT bdf variant name not set.\n");
 +
-+    pci_epf = to_virtio_pci_epf(vp_dev);
-+    ioaddr = vp_dev->ioaddr;
-+
-+    mutex_lock(&pci_epf->lock);
-+    writeb(command, ioaddr + HOST_CMD);
-+    timeout = ktime_add_ms(ktime_get(), COMMAND_TIMEOUT);
-+    while (1) {
-+        timedout = ktime_after(ktime_get(), timeout);
-+        status = readb(ioaddr + HOST_CMD_STATUS);
-+
-
-Several questions:
-
-- It's not clear to me how the synchronization is done between the RC 
-and EP. E.g how and when the value of HOST_CMD_STATUS can be changed.  
-If you still want to introduce a new transport, a virtio spec patch 
-would be helpful for us to understand the device API.
-- You have you vendor specific layout (according to 
-virtio_pci_epb_table()), so I guess you it's better to have a vendor 
-specific vDPA driver instead
-- The advantage of vendor specific vDPA driver is that it can 1) have 
-less codes 2) support userspace drivers through vhost-vDPA (instead of 
-inventing new APIs since we can't use vfio-pci here).
-
-
->>> "Virtio Over NTB" should anyways be a new transport.
->>>> Does that make any sense?
->>> yeah, in the approach I used the initial features are hard-coded in
->>> vhost-rpmsg (inherent to the rpmsg) but when we have to use adapter
->>> layer (vhost only for accessing virtio ring and use virtio drivers on
->>> both front end and backend), based on the functionality (e.g, rpmsg),
->>> the vhost should be configured with features (to be presented to the
->>> virtio) and that's why additional layer or APIs will be required.
->> A question here, if we go with vhost bus approach, does it mean the
->> virtio device can only be implemented in EP's userspace?
-> The vhost bus approach doesn't provide any restriction in where the
-> virto backend device should be created. This series creates two types of
-> virtio backend device (one for PCIe endpoint and the other for NTB) and
-> both these devices are created in kernel.
-
-
-Ok.
-
-Thanks
-
-
->
-> Thanks
-> Kishon
->
+ 	return ath10k_core_fetch_board_file(qmi->ar, ATH10K_BD_IE_BOARD);
+ }
+ 
+-- 
+2.7.4
 
