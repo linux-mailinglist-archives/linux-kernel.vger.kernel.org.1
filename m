@@ -2,166 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BCB269DB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F57F269DBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgIOFPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgIOFP3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:15:29 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED3CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:15:27 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z4so1833149wrr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:15:27 -0700 (PDT)
+        id S1726140AbgIOFQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:16:55 -0400
+Received: from mail-dm6nam12on2074.outbound.protection.outlook.com ([40.107.243.74]:35009
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726046AbgIOFQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:16:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jU8C74e38e8Qk07weLp9IIb+/Gkz5XArvyMOko1bUjcYlIHPc7hMU3+WdMZxi0G0GYwRZW7zYZz7UxRexWAB7CSg9AfF6jduzq5LxtDqiLtSvFcQbwTyAF1B8SwqX7gf/e0vIn5ZSYncmzcBMqA8VVbs0kBkxl4JObceO9ELH2vU+r7wDUzrazDH7ke9XWuA5+YhwUeGsEbgwg21ogyFPPb21niTKx4PYD6EjQtKSFoBVEqw1e1OX+/wv+QJpgfF28u10X/+NwrFANHUn73bO6OaEmy7Ffi+HLthRgUsIjJmoAgFSEsqcIJyoFkwnoBJaVFAU990faa1OP0r42sVPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TVVHBu3GQ8+i+xWY7BJYzYjD2c/aKR/1Qz9LNLo4Z0c=;
+ b=kV3RZ1/fMhfvNI62g8hGMx7svcFAbQoIZm3X+PhxesycpDNOjRbx1cymCymb0wm9k9YCqlE0vHcSqDGxxBOwOKTkverOkmAzvJEL1YNBOk4IcZI3anuiqpjOfxvxKSUEHm4GrzTjEVVjmKrkNDqk/PN/H3pRnV3Fjn5qDzSGY1iyJshAHhlOy4ntGo/7F0AGsLl7O7vV4Q4PLwAAHxrRRV1oFq5IpuVJ+lvV2pRocfhHWUAgA4G9zcRrco2lTcpes7/bQQ3g0m/av1Hf5p9/1EDeE1sZUmB6OK/FjIUcvkIaxmMTgtHKIb1yKHEYpRQkGbeMbwqTqbMxbnZJptRGJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iR9itKcMJs79Q2oWzWkGeUGaEOEnD9YYCRPWnD87X7M=;
-        b=jLhkzP3EuzQA7vsDJ+JKyctmtLYh43QXXIDmjrFhKNXAbWTcpveooeLiVzV67JKaBq
-         ZAuDTPOKVjrc+gS+4bIM0oEpBWLg/BxQ21XHZSx2jcQFq/KkJ2ep9WMBEJCINvNr7mkU
-         7XOZhjASfEV45szPp+z25HoIVzt/2HUoTxuoxq5DYHGT904SlrMDDSl2Rbw4u1b8njZJ
-         i2YXQs+CL8t8FPkTMd5is3AhmEYGfethaseiLjyNhxfoILqlWKMQeDiXQw/UXGLz3sSP
-         Y3pkQiJOZhG9U9Y60YUSNm1ttMXnRIMVFOIUUy1SrOOU16OlHC6qMvxPi+TloAtUhmLH
-         q9fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iR9itKcMJs79Q2oWzWkGeUGaEOEnD9YYCRPWnD87X7M=;
-        b=CEQFvVmDrhuX/BzNgZBN9bE7yQyG/LRyV+hTXq3vE1HctW15QS+P3KJEZ1iY5mWXOL
-         ZQrqx9uTjsFu8u81UWEDNwgzy/UnPL4sQCYweOWoS+8MJLcima/MZFafhSlcnAXSBjBp
-         da46+agy+m/bSGnlf7HZk7AZiizBxC72DT9nlN1fJNNoJPhXRKMtTJjCGHFHNQRh1+up
-         D6600M5MdEYr3lrMa723P/n9EHCF03ZxZtJxzV+h3CQFHjnz5GUcrU9L1hwfayfF8LSx
-         6fZ+gZiRHQsYCDQzn4yfDKJ7SjlzUzBU40ahzufjWxHyYqCDh8MwBdMxa3Iv/HQop3n/
-         c+4Q==
-X-Gm-Message-State: AOAM530TL18cKWty5zJ85G5DUWAHlY+KlRF5JaZkdTEFlcQe9zZ04xDy
-        QXd/03ZVQeLWK6FHEVGTMw7HixBo255ABIUCznFyBA==
-X-Google-Smtp-Source: ABdhPJyjn9OxxCAgBUQF5UsjcS6sExXAF1MB4/6Ha96nJpDjCQdaTVCL47qsg9DAmndT66Dn7HlKiaVpqux5aVX9NQw=
-X-Received: by 2002:a5d:608a:: with SMTP id w10mr18581226wrt.48.1600146926452;
- Mon, 14 Sep 2020 22:15:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200915031819.386559-1-namhyung@kernel.org>
-In-Reply-To: <20200915031819.386559-1-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 14 Sep 2020 22:15:11 -0700
-Message-ID: <CAP-5=fXejVaQa9qfW66cY77qB962+jbe8tT5bsLoOOcFmODnWQ@mail.gmail.com>
-Subject: Re: [PATCHSET v2 00/11] perf tools: Fix various memory leaks
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TVVHBu3GQ8+i+xWY7BJYzYjD2c/aKR/1Qz9LNLo4Z0c=;
+ b=bhlnk76SSSbT0F8sbpvaHbS8B0V2dywYCCvA2uiGfHM++BU7zXRIqm0KKURbXjRjqqsepUTSOTSV0/6Ade95J0ciRhs8oAP34WFNdbaJcmtRO70iCDkEBopW/xtbgyXtBRI4t6cUeR5ED/bTtX8P/FhLHOLn97FnmlkswYfMi8Y=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB3557.namprd11.prod.outlook.com (2603:10b6:a03:b4::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
+ 2020 05:16:48 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 05:16:47 +0000
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnA=?=
+To:     paulmck@kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200914194208.GA2579423@google.com>
+ <20200914205642.GE29330@paulmck-ThinkPad-P72>
+ <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200915034139.GK29330@paulmck-ThinkPad-P72>
+From:   "Zhang,Qiang" <qiang.zhang@windriver.com>
+Message-ID: <1079509d-c474-42bd-44e9-18cfa948fbae@windriver.com>
+Date:   Tue, 15 Sep 2020 13:16:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+In-Reply-To: <20200915034139.GK29330@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: HK0PR03CA0097.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::13) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.183] (60.247.85.82) by HK0PR03CA0097.apcprd03.prod.outlook.com (2603:1096:203:b0::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Tue, 15 Sep 2020 05:16:45 +0000
+X-Originating-IP: [60.247.85.82]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 615f5082-94e3-4e53-10e7-08d859368b51
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3557:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB3557A85FB1A8FFC49ABCBBBBFF200@BYAPR11MB3557.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qy/2jrNGw9DQYYDjKe3Mt+/8KG5ojTnGoQKj/lA41WhBVXmfknZ8CfHSm95tG9MX6iLLq3W50UkCy7o4EBDfJkW+X6qJpzgArKazSJ5/KoWwOsBZpozdKUCiNH5mN3GmvHWWp/PNqs53FuMTFGUWzYyAHT4VDKGS7Yb2TI0djZnrYsDEE+lYqhzGQZb1m3LiKKgKBZYAUhmnZcUNS/d1LU7GTYveI34oNQcVs27HEo5E3ffg1Oq0yVA5rxu99zBnI4AJeOuxW/U9AP/nhxjtR9jGrrSv+GVFSiWR0l58ujUg0j9nfKXdsN4eihmM5fsQXbr/wcVpA0A/mmzZbr0Rl114A6vS2IvtffQQRFHeuxDZ78rBsp3Ni53uZULDvL6XNVSvjd+GwDm3+EHm/es+KQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(376002)(346002)(366004)(396003)(6486002)(66574015)(36756003)(4326008)(26005)(956004)(316002)(478600001)(31686004)(224303003)(16576012)(2616005)(5660300002)(54906003)(66946007)(66476007)(31696002)(66556008)(6706004)(6916009)(52116002)(2906002)(16526019)(186003)(53546011)(6666004)(86362001)(8936002)(83380400001)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: nVBTRYL1XmiMtERjDu/0nUl44SSmQQMudTB7tO8LamDeeWQ5uwmFA8P2FgQiWTsNpxaO5ZO+WcFe88KiNXvGymrZrvg/lX1bonvpDfQSdU/RftXGhAU7flxV8R4NH6OG/FdZ4HW0GAaT0eV4yc8QXbK0cTP/Xdt5wVNrymdZfaBo2ORSXM/25OgBN+njZGHdbww/bRXai8eo2lBg87LknhY+zc8Lk44k2oBmYpiYNFOYoiG6Q7QJLaWtpRXytQdWibDl70ZsYGjBXNCD0VShXRnR0Vnm07JkkBrSeQTdOhwERbN5yrizuBpStiuQ5mSU13UO8BRZNApSf6oiM/Qon1vo6gpoBbKFkqbYmxpvk+xkmMza+0suzqK4D6kD4rXIwb6zWYeImxdtJg44hkFBlwuZP5m+0gES/gwXepcc/bp7xE7CSyU7G8Ko9bf0gJPj2mSlJoOYqdI7HJAys/9xucuu6V+9g5RsJ3OhOBRfa3k8qoYl56y53TgXlNV3aJIzhmGzBHRoDKp7UGOVNdZnr10QJGVZM0QFxmutZBm0xNAi8BOgiZGxdnyd+NAxbFbkf1Em0+jrTCcX2Rh4DkrHW/ijtu4fzEBcP2CDbJtG+7DpMNq8+oHjtTC8rzjGIiew2A7zAzzxAxQqTQJGnJb1mg==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 615f5082-94e3-4e53-10e7-08d859368b51
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 05:16:47.6315
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AmmOUfw+++qBdnKBnED6uMswIxbGbIg5LBEO4AbibWhmfW2D2XC2NwWpeOwZEmeNvkfUhghsCa/fV71kN4q4IQJHI6TcL/jiYjqc+XXLwDA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3557
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 8:18 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hello,
->
-> I've found and fixed a bunch of memory leaks during perf pmu and
-> metric tests with address sanitizer.  Before this, the tests were
-> mostly failed due to the leaks since ASAN makes it return non-zero.
->
-> Now I'm seeing no error with ASAN like below:
->
->   $ ./perf test pmu metric
->    9: Parse perf pmu format                                 : Ok
->   10: PMU events                                            :
->   10.1: PMU event table sanity                              : Ok
->   10.2: PMU event map aliases                               : Ok
->   10.3: Parsing of PMU event table metrics                  : Skip (some metrics failed)
->   10.4: Parsing of PMU event table metrics with fake PMUs   : Ok
->   67: Parse and process metrics                             : Ok
->
-> The failure in 10.3 seems due to parse errors like below:
->
->   Multiple errors dropping message: unknown term 'filter_opc' for pmu 'uncore_cbox_0'
->   (valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
->                 branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
->                 nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size)
->
->
->   Parse event failed metric 'DRAM_Parallel_Reads' id 'arb/event=0x80,umask=0x2,thresh=1/'
->     expr 'arb@event\=0x80\,umask\=0x2@ / arb@event\=0x80\,umask\=0x2\,thresh\=1@'
->   Error string 'unknown term 'thresh' for pmu 'uncore_arb'' help
->     'valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
->                   branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
->                   nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size'
 
-The 10.3 failure seems to be a problem in the skl metric DRAM_Parallel_Reads:
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/pmu-events/arch/x86/skylake/skl-metrics.json?h=perf/core#n319
-arb@event\\=0x80\\,umask\\=0x2@ / arb@event\\=0x80\\,umask\\=0x2\\,thresh\\=1@
 
-The test failure message is:
-Parse event failed metric 'DRAM_Parallel_Reads' id
-'arb/event=0x80,umask=0x2,thresh=1/' expr
-'arb@event\=0x80\,umask\=0x2@ /
-arb@event\=0x80\,umask\=0x2\,thresh\=1@'
-Error string 'unknown term 'thresh' for pmu 'uncore_arb'' help 'valid
-terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size'
+On 9/15/20 11:41 AM, Paul E. McKenney wrote:
+> On Tue, Sep 15, 2020 at 03:18:23AM +0000, Zhang, Qiang wrote:
+>>
+>>
+>> ________________________________________
+>> 发件人: Paul E. McKenney <paulmck@kernel.org>
+>> 发送时间: 2020年9月15日 4:56
+>> 收件人: Joel Fernandes
+>> 抄送: Zhang, Qiang; Uladzislau Rezki; josh@joshtriplett.org; rostedt@goodmis.org; mathieu.desnoyers@efficios.com; Lai Jiangshan; rcu@vger.kernel.org; LKML
+>> 主题: Re: RCU: Question on force_qs_rnp
+>>
+>> On Mon, Sep 14, 2020 at 03:42:08PM -0400, Joel Fernandes wrote:
+>>> On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
+>>>> Hello Paul
+>>>>
+>>>> I have some questions for you .
+>>>> in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
+>>>> report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
+>>>> after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0,
+>>>> we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
+>>>
+>>> Could you clarify what good is this going to do? What problem are you trying to
+>>> address?
+>>>
+>>> You could have a task that is blocked in an RCU leaf node, but the
+>>> force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
+>>> CPU could be dyntick-idle and a quiescent state is reported. However, the GP
+>>> must not end and the rcu leaf node should still be present in its parent
+>>> intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
+>>> any relevance.
+>>>
+>>> Or am I missing the point of the question?
+>>
+>>> Hello, Qiang,
+>>
+>>> Another way of making Joel's point is to say that the additional check
+>>> you are asking for is already being done, but by rcu_report_qs_rnp().
+>>
+>>>                                                         Thanx, Paul
+>>
+>> Hello Pual,  Joel
+>>
+>> What I want to express is as follows :
+>>
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index 7623128d0020..beb554539f01 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -2622,6 +2622,11 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+>>                  if (mask != 0) {
+>>                          /* Idle/offline CPUs, report (releases rnp->lock). */
+>>                          rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+>> +                       raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>> +                       if (rnp->qsmask == 0 && rcu_preempt_blocked_readers_cgp(rnp))
+>> +                               rcu_initiate_boost(rnp, flags);
+>> +                       else
+>> +                               raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>>                  } else {
+>>                          /* Nothing to do here, so just drop the lock. */
+>>                          raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> 
+> But in that case, why duplicate the code from rcu_initiate_boost()?
+> 
+> 							Thanx, Paul
+> 
 
-The 01.org version of this from:
-https://download.01.org/perfmon/TMA_Metrics.xlsx
-is:
-UNC_ARB_TRK_OCCUPANCY.DATA_READ / UNC_ARB_TRK_OCCUPANCY.DATA_READ:c1
+Hello Paul
 
-It seems that :c1 has been translated into thresh=1 but that thresh
-doesn't exist as a format option (just "cmask edge event inv umask"
-are present). I wonder if Andi or Jin you could look into this broken
-metric?
+When we force a qs for rnp, we first check the leaf node "rnp->qsmask" 
+if it is reached zero, will check if there are some blocked readers in 
+this leaf rnp node, if so we need to priority-boost blocked readers.
+if not we will check cpu dyntick-idle and report leaf node qs, after 
+this leaf rnp node report qs, there is may be some blocked readers in 
+this node, should we also need to priority-boost blocked readers?
 
-Thanks,
-Ian
+Thanks
 
-> * Changes from v1:
->  - Add 'Acked-by: Jiri'
->
->
-> The patches are also available at 'perf/metric-fix-v2' branch on
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
->
-> Thanks
-> Namhyung
->
->
-> Namhyung Kim (11):
->   perf metric: Fix some memory leaks
->   perf metric: Fix some memory leaks - part 2
->   perf evlist: Fix cpu/thread map leak
->   perf parse-event: Fix cpu map leaks
->   perf parse-event: Fix memory leak in evsel->unit
->   perf test: Fix memory leaks in parse-metric test
->   perf metric: Release expr_parse_ctx after testing
->   perf metric: Free metric when it failed to resolve
->   perf metric: Do not free metric when failed to resolve
->   perf test: Free aliases for PMU event map aliases test
->   perf test: Free formats for perf pmu parse test
->
->  tools/perf/tests/parse-metric.c | 14 ++++++++-----
->  tools/perf/tests/pmu-events.c   |  5 +++++
->  tools/perf/tests/pmu.c          |  1 +
->  tools/perf/util/evlist.c        | 11 ++++++++---
->  tools/perf/util/metricgroup.c   | 35 +++++++++++++++++++++++----------
->  tools/perf/util/parse-events.c  |  9 +++++++--
->  tools/perf/util/pmu.c           | 13 +++++++++++-
->  tools/perf/util/pmu.h           |  2 ++
->  tools/perf/util/stat-shadow.c   |  8 +++++---
->  9 files changed, 74 insertions(+), 24 deletions(-)
->
-> --
-> 2.28.0.618.gf4bc123cb7-goog
->
+Qiang
+
+
