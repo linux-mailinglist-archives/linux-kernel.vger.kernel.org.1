@@ -2,113 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C66269A43
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B40269A48
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgIOAOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbgIOAOf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:14:35 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEECC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:14:35 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id e2so916274vsr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:14:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aJnbONMeYZfyVdyxeGsIkJTHYkKRPSNz8vRxzIqGNEU=;
-        b=d6gCudIK5g9Xugrn0/5pf/xRr0qPusWV9CWQYguGjj3LhcFyO8LTKBFmPsg7RfcHD3
-         R2gUlTkMLn1B1RF/E7q/eSwLpevMLjOdwQQHQt6uq3KC9yEZJ1uxlK2N031hdXOkkYkf
-         o9LHRKj4aCWRZS40y/4pMy6E/Bg3CS5QnHv2I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aJnbONMeYZfyVdyxeGsIkJTHYkKRPSNz8vRxzIqGNEU=;
-        b=ZROToewwbPwbapfQ99JAUq3HMWqp+/j7SMk68P9wzmBIK1tu2I4xSmLoUyzsTfJb5h
-         QzElU/Rq34QTRdscLMD1vTAwJKz6JnvjypP/NSM8B4jPh2KSMnaYFvvravPklROi3Ljv
-         PRU7RoNvMW3j+weFLF1y/lpopWThd0KVL0Y743A0Cp09LFM16EfITihlNr8GxKCnzBDt
-         G7fKZYn9gBgzTz5x/u3OoWeLDBbhG10oCRdWWwFJJ0qNqPqLlfhs18vLdXdXemOs5ZjN
-         9ABqw/NvP4jS2C41ia17DZfu9Q+Wiccg/FC7R6MmKm+dhDFhmZ51NE3XlE4ldzyGuuZW
-         A4mw==
-X-Gm-Message-State: AOAM531coJ4gBxcjvghhjBHff7K4MDG3vcv1bCIxw7ICOWflPlquLfmS
-        g9ZQH4nPR+pXVOwAnVuBrWv1VRxzUOUa/g==
-X-Google-Smtp-Source: ABdhPJzQ+ftnMt/kzu2IkM4KO65bnH0YlTyfTF+81bCJcnBpghMQzQcHcMh7Ozkk40AkRlEdEXn6nA==
-X-Received: by 2002:a67:6952:: with SMTP id e79mr9023410vsc.11.1600128874759;
-        Mon, 14 Sep 2020 17:14:34 -0700 (PDT)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
-        by smtp.gmail.com with ESMTPSA id d5sm851283vkf.39.2020.09.14.17.14.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 17:14:34 -0700 (PDT)
-Received: by mail-ua1-f53.google.com with SMTP id u48so465912uau.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:14:33 -0700 (PDT)
-X-Received: by 2002:ab0:5905:: with SMTP id n5mr8290763uad.90.1600128873477;
- Mon, 14 Sep 2020 17:14:33 -0700 (PDT)
+        id S1726172AbgIOAPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:15:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725999AbgIOAPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 20:15:48 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AC79206E9;
+        Tue, 15 Sep 2020 00:15:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600128947;
+        bh=eJAKXbjQRhlUWNf6yttu6zsF7yiDxg1ojRKUmhKU2rE=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=fVaCKp6Kpiv+E8WkGRRSUgEYvetWdCMynnenDYkap3CJeSXzLLc/1EVOEtAw8cVyU
+         lMGWBLMYTBwarJNPzUbrodotuNY0xHpomoKNEGitu0lB5iYjnCJnGabAvPynOMoSJu
+         OAYIqVOUL7q3b+ZE0OwAzccczCs3CasCtHCLtpdE=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200914130143.1322802-1-daniel.thompson@linaro.org> <20200914130143.1322802-3-daniel.thompson@linaro.org>
-In-Reply-To: <20200914130143.1322802-3-daniel.thompson@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 14 Sep 2020 17:14:22 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XTgNxVLwytSY1wmCj7Dex3cWGVMA+Rkpp9gb1UN5CU_A@mail.gmail.com>
-Message-ID: <CAD=FV=XTgNxVLwytSY1wmCj7Dex3cWGVMA+Rkpp9gb1UN5CU_A@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] kgdb: Add NOKPROBE labels on the trap handler functions
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        Patch Tracking <patches@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1599584848-15530-3-git-send-email-tdas@codeaurora.org>
+References: <1599584848-15530-1-git-send-email-tdas@codeaurora.org> <1599584848-15530-3-git-send-email-tdas@codeaurora.org>
+Subject: Re: [PATCH v1 2/3] dt-bindings: clock: Add YAML schemas for the QCOM Camera clock bindings.
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Mon, 14 Sep 2020 17:15:45 -0700
+Message-ID: <160012894580.4188128.6576587604872852836@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Quoting Taniya Das (2020-09-08 10:07:27)
+> The Camera Subsystem clock provider have a bunch of generic properties
+> that are needed in a device tree. Add a YAML schemas for those.
+>=20
+> Add clock ids for Camera clocks which are required to bring the camera
 
-On Mon, Sep 14, 2020 at 6:02 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> Currently kgdb honours the kprobe blocklist but doesn't place its own
-> trap handling code on the list. Add labels to discourage attempting to
-> use kgdb to debug itself.
->
-> Not every functions that executes from the trap handler needs to be
-> marked up: relatively early in the trap handler execution (just after
-> we bring the other CPUs to a halt) all breakpoints are replaced with
-> the original opcodes. This patch marks up code in the debug_core that
-> executes between trap entry and the breakpoints being deactivated
-> and, also, code that executes between breakpoint activation and trap
-> exit.
+Why capitalize camera?
 
-Other functions that seem to be missing from a quick skim:
-* kgdb_io_ready()
-* kgdb_roundup_cpus()
-* kgdb_call_nmi_hook()
+> subsystem out of reset.
+>=20
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> ---
+>  .../bindings/clock/qcom,sc7180-camcc.yaml          |  73 +++++++++++++
+>  include/dt-bindings/clock/qcom,camcc-sc7180.h      | 121 +++++++++++++++=
+++++++
+>  2 files changed, 194 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7180-c=
+amcc.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,camcc-sc7180.h
+>=20
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.ya=
+ml b/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.yaml
+> new file mode 100644
+> index 0000000..07bd38e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/qcom,sc7180-camcc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Camera Clock & Reset Controller Binding for SC7180
+> +
+> +maintainers:
+> +  - Taniya Das <tdas@codeaurora.org>
+> +
+> +description: |
+> +  Qualcomm camera clock control module which supports the clocks, resets=
+ and
+> +  power domains on SC7180.
+> +
+> +  See also:
+> +  - dt-bindings/clock/qcom,camcc-sc7180.h.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sc7180-camcc
+> +
+> +  clocks:
+> +    items:
+> +      - description: Board XO source
 
-I'm not confident in my ability to spot every code path, though, so
-I'm not sure at what point we stop looking.  I only spent a few
-minutes and, if important, I could dig more.  Did you have any chance
-to see if there was any way to have a magic linker script just add
-this to everything under "kernel/debug" or something like that where
-we just use a heavier hammer to whack a whole bunch?
+Why do we need board XO
 
-In general any extra annotation here is better than no annotation, I
-suppose.  ...so if you just want to commit what you have (maybe with
-the above 3 extra functions) then I suppose it'd be fine.
+> +      - description: Camera_ahb clock from GCC
+> +      - description: Camera XO clock from GCC
+> +
 
--Doug
+And also the gate on XO in GCC? Presumably only the one in GCC should be
+going to the camera clock controller?
 
-
--Doug
+> +  clock-names:
+> +    items:
+> +      - const: bi_tcxo
+> +      - const: iface
+> +      - const: xo
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  '#reset-cells':
+> +    const: 1
+> +
+> +  '#power-domain-cells':
+> +    const: 1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - '#clock-cells'
+> +  - '#reset-cells'
+> +  - '#power-domain-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-sc7180.h>
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+> +    clock-controller@ad00000 {
+> +      compatible =3D "qcom,sc7180-camcc";
+> +      reg =3D <0x0ad00000 0x10000>;
+> +      clocks =3D <&rpmhcc RPMH_CXO_CLK>,
+> +               <&gcc GCC_CAMERA_AHB_CLK>,
+> +               <&gcc GCC_CAMERA_XO_CLK>;
+> +      clock-names =3D "bi_tcxo", "iface", "xo";
+> +      #clock-cells =3D <1>;
+> +      #reset-cells =3D <1>;
+> +      #power-domain-cells =3D <1>;
+> +    };
+> +...
