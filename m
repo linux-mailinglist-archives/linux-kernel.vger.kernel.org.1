@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA4926A718
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4962F26A76D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgIOOar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34546 "EHLO mail.kernel.org"
+        id S1727333AbgIOOpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:45:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726379AbgIOOUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:20:53 -0400
+        id S1726276AbgIOOaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:30:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35E9622240;
-        Tue, 15 Sep 2020 14:16:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06BCE22B2C;
+        Tue, 15 Sep 2020 14:22:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179402;
-        bh=CE3QUOg42KxiXLvlDiM/XXgY2b+uUBnrBOGwPivyvUI=;
+        s=default; t=1600179740;
+        bh=SrPfW7Km04ghLD43fTl2ZdHUS+G2DLTqir5xE6cf6CA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DKae7+LVOYVTogIKysYlpiGOv6rSOfCFRi9ZtDtiIq8beRJi/Tx0h8lBIVptD4j0m
-         foa5vEJeNkCj2kgxLGZoKQN9spwxD1UbC4v/6oREbTPwPHugiYdLtpFkam5cBP5DTB
-         mI2RX9T/j3vf71qtI1S/MY1D98ha6p+vtoaNxXTY=
+        b=m7FJ1c2rWv76v9/vrWQkUJM5B4FfUL+J1AtGDpbCs7TRLTrChetj92K4hmuMIoTHB
+         XTkrpxmZC2zZnFaySKnM/xwfHSnWu0yCuRGwzTUBoA8UJJneW6Lv+a6XckhQhFfR+q
+         Ma9E/unoiAitBd2IVd2XFP52TcIWxcYHh0SVeqEg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.19 46/78] iio:adc:max1118 Fix alignment of timestamp and data leak issues
-Date:   Tue, 15 Sep 2020 16:13:11 +0200
-Message-Id: <20200915140635.889822953@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 092/132] btrfs: fix lockdep splat in add_missing_dev
+Date:   Tue, 15 Sep 2020 16:13:14 +0200
+Message-Id: <20200915140648.748193758@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
+References: <20200915140644.037604909@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,70 +45,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit db8f06d97ec284dc018e2e4890d2e5035fde8630 upstream.
+commit fccc0007b8dc952c6bc0805cdf842eb8ea06a639 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv() data.
+Nikolay reported a lockdep splat in generic/476 that I could reproduce
+with btrfs/187.
 
-This data is allocated with kzalloc so no data can leak apart
-from previous readings.
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  5.9.0-rc2+ #1 Tainted: G        W
+  ------------------------------------------------------
+  kswapd0/100 is trying to acquire lock:
+  ffff9e8ef38b6268 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node.part.0+0x3f/0x330
 
-The explicit alignment of ts is necessary to ensure correct padding
-on architectures where s64 is only 4 bytes aligned such as x86_32.
+  but task is already holding lock:
+  ffffffffa9d74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
 
-Fixes: a9e9c7153e96 ("iio: adc: add max1117/max1118/max1119 ADC driver")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
+  which lock already depends on the new lock.
+
+  the existing dependency chain (in reverse order) is:
+
+  -> #2 (fs_reclaim){+.+.}-{0:0}:
+	 fs_reclaim_acquire+0x65/0x80
+	 slab_pre_alloc_hook.constprop.0+0x20/0x200
+	 kmem_cache_alloc_trace+0x3a/0x1a0
+	 btrfs_alloc_device+0x43/0x210
+	 add_missing_dev+0x20/0x90
+	 read_one_chunk+0x301/0x430
+	 btrfs_read_sys_array+0x17b/0x1b0
+	 open_ctree+0xa62/0x1896
+	 btrfs_mount_root.cold+0x12/0xea
+	 legacy_get_tree+0x30/0x50
+	 vfs_get_tree+0x28/0xc0
+	 vfs_kern_mount.part.0+0x71/0xb0
+	 btrfs_mount+0x10d/0x379
+	 legacy_get_tree+0x30/0x50
+	 vfs_get_tree+0x28/0xc0
+	 path_mount+0x434/0xc00
+	 __x64_sys_mount+0xe3/0x120
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #1 (&fs_info->chunk_mutex){+.+.}-{3:3}:
+	 __mutex_lock+0x7e/0x7e0
+	 btrfs_chunk_alloc+0x125/0x3a0
+	 find_free_extent+0xdf6/0x1210
+	 btrfs_reserve_extent+0xb3/0x1b0
+	 btrfs_alloc_tree_block+0xb0/0x310
+	 alloc_tree_block_no_bg_flush+0x4a/0x60
+	 __btrfs_cow_block+0x11a/0x530
+	 btrfs_cow_block+0x104/0x220
+	 btrfs_search_slot+0x52e/0x9d0
+	 btrfs_lookup_inode+0x2a/0x8f
+	 __btrfs_update_delayed_inode+0x80/0x240
+	 btrfs_commit_inode_delayed_inode+0x119/0x120
+	 btrfs_evict_inode+0x357/0x500
+	 evict+0xcf/0x1f0
+	 vfs_rmdir.part.0+0x149/0x160
+	 do_rmdir+0x136/0x1a0
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
+	 __lock_acquire+0x1184/0x1fa0
+	 lock_acquire+0xa4/0x3d0
+	 __mutex_lock+0x7e/0x7e0
+	 __btrfs_release_delayed_node.part.0+0x3f/0x330
+	 btrfs_evict_inode+0x24c/0x500
+	 evict+0xcf/0x1f0
+	 dispose_list+0x48/0x70
+	 prune_icache_sb+0x44/0x50
+	 super_cache_scan+0x161/0x1e0
+	 do_shrink_slab+0x178/0x3c0
+	 shrink_slab+0x17c/0x290
+	 shrink_node+0x2b2/0x6d0
+	 balance_pgdat+0x30a/0x670
+	 kswapd+0x213/0x4c0
+	 kthread+0x138/0x160
+	 ret_from_fork+0x1f/0x30
+
+  other info that might help us debug this:
+
+  Chain exists of:
+    &delayed_node->mutex --> &fs_info->chunk_mutex --> fs_reclaim
+
+   Possible unsafe locking scenario:
+
+	 CPU0                    CPU1
+	 ----                    ----
+    lock(fs_reclaim);
+				 lock(&fs_info->chunk_mutex);
+				 lock(fs_reclaim);
+    lock(&delayed_node->mutex);
+
+   *** DEADLOCK ***
+
+  3 locks held by kswapd0/100:
+   #0: ffffffffa9d74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
+   #1: ffffffffa9d65c50 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x115/0x290
+   #2: ffff9e8e9da260e0 (&type->s_umount_key#48){++++}-{3:3}, at: super_cache_scan+0x38/0x1e0
+
+  stack backtrace:
+  CPU: 1 PID: 100 Comm: kswapd0 Tainted: G        W         5.9.0-rc2+ #1
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+  Call Trace:
+   dump_stack+0x92/0xc8
+   check_noncircular+0x12d/0x150
+   __lock_acquire+0x1184/0x1fa0
+   lock_acquire+0xa4/0x3d0
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   __mutex_lock+0x7e/0x7e0
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   ? lock_acquire+0xa4/0x3d0
+   ? btrfs_evict_inode+0x11e/0x500
+   ? find_held_lock+0x2b/0x80
+   __btrfs_release_delayed_node.part.0+0x3f/0x330
+   btrfs_evict_inode+0x24c/0x500
+   evict+0xcf/0x1f0
+   dispose_list+0x48/0x70
+   prune_icache_sb+0x44/0x50
+   super_cache_scan+0x161/0x1e0
+   do_shrink_slab+0x178/0x3c0
+   shrink_slab+0x17c/0x290
+   shrink_node+0x2b2/0x6d0
+   balance_pgdat+0x30a/0x670
+   kswapd+0x213/0x4c0
+   ? _raw_spin_unlock_irqrestore+0x46/0x60
+   ? add_wait_queue_exclusive+0x70/0x70
+   ? balance_pgdat+0x670/0x670
+   kthread+0x138/0x160
+   ? kthread_create_worker_on_cpu+0x40/0x40
+   ret_from_fork+0x1f/0x30
+
+This is because we are holding the chunk_mutex when we call
+btrfs_alloc_device, which does a GFP_KERNEL allocation.  We don't want
+to switch that to a GFP_NOFS lock because this is the only place where
+it matters.  So instead use memalloc_nofs_save() around the allocation
+in order to avoid the lockdep splat.
+
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/max1118.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ fs/btrfs/volumes.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/iio/adc/max1118.c
-+++ b/drivers/iio/adc/max1118.c
-@@ -38,6 +38,11 @@ struct max1118 {
- 	struct spi_device *spi;
- 	struct mutex lock;
- 	struct regulator *reg;
-+	/* Ensure natural alignment of buffer elements */
-+	struct {
-+		u8 channels[2];
-+		s64 ts __aligned(8);
-+	} scan;
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4,6 +4,7 @@
+  */
  
- 	u8 data ____cacheline_aligned;
- };
-@@ -162,7 +167,6 @@ static irqreturn_t max1118_trigger_handl
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct max1118 *adc = iio_priv(indio_dev);
--	u8 data[16] = { }; /* 2x 8-bit ADC data + padding + 8 bytes timestamp */
- 	int scan_index;
- 	int i = 0;
+ #include <linux/sched.h>
++#include <linux/sched/mm.h>
+ #include <linux/bio.h>
+ #include <linux/slab.h>
+ #include <linux/buffer_head.h>
+@@ -6708,8 +6709,17 @@ static struct btrfs_device *add_missing_
+ 					    u64 devid, u8 *dev_uuid)
+ {
+ 	struct btrfs_device *device;
++	unsigned int nofs_flag;
  
-@@ -180,10 +184,10 @@ static irqreturn_t max1118_trigger_handl
- 			goto out;
- 		}
++	/*
++	 * We call this under the chunk_mutex, so we want to use NOFS for this
++	 * allocation, however we don't want to change btrfs_alloc_device() to
++	 * always do NOFS because we use it in a lot of other GFP_KERNEL safe
++	 * places.
++	 */
++	nofs_flag = memalloc_nofs_save();
+ 	device = btrfs_alloc_device(NULL, &devid, dev_uuid);
++	memalloc_nofs_restore(nofs_flag);
+ 	if (IS_ERR(device))
+ 		return device;
  
--		data[i] = ret;
-+		adc->scan.channels[i] = ret;
- 		i++;
- 	}
--	iio_push_to_buffers_with_timestamp(indio_dev, data,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &adc->scan,
- 					   iio_get_time_ns(indio_dev));
- out:
- 	mutex_unlock(&adc->lock);
 
 
