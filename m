@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA28726AE61
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D49826AE5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgIOUEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:04:40 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:56142 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727842AbgIOT6w (ORCPT
+        id S1727767AbgIOUD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:03:26 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41718 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727812AbgIOT7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:58:52 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FJsnUt102248;
-        Tue, 15 Sep 2020 19:58:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=v0NKh7M5wU1FAUkHEpWeQ8Ylp8QhhcGBMw8R9tj3QoA=;
- b=kZaeigrORs4TQ6y0QKiuUNom/gnVff8yEJmJ6p/nVzbEBDK7pAYql+qrEoTBNOGkMjTJ
- ffZTFoS/LqDp7FMhioJG1ata4NzDqLtGm9FHmVvZc+cgZk3glnB32eSBHP1AICFkLptr
- L7s7EN10dL/n4SQcfrEXcVBdxw/SfTM+k/I9MybXsU+0bl/SSHHOT8RssfRQYtv9P7Ge
- lu9JZ6xrC+JsfcRiYIvYcFYQRco1cu4GjI3hCc6nYc2kt7KwblYqL1C9BQd/MzDOkL03
- r0uRE8gXv4S7SqvuQOHXeLRIOmmGDW1xfZy13KdIYGqUAAcXEoVT4Qb7Bms1Nvy6kgD0 BQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33gp9m7a0b-1
+        Tue, 15 Sep 2020 15:59:34 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FJsYdd148170;
+        Tue, 15 Sep 2020 19:58:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=zszz4Wk0Z8hYu0e6GbpBILedfHLAamVV3KpsQALk+MY=;
+ b=cYabd4XRLzwlPu6EI22Jl3KW8FThCr3NHJRiRVIFuiWBisN/7ig7eIjuQJLSO7XmRVoJ
+ wxyif9kkcBZVUoUeICjdq33ky2ESTX66AwH8EickV/S+oNJ0dHnKUuybQt36q0qpWk2K
+ cgh0zggcNZsbxuvU6Lh2mMl+TcDdDigeaEUmVy/c55Xb4sXm2pPlHH7InMVxAjRgR12G
+ gvZtb5xpz6yHLqOpLyOKYaNupCnvf0aF6rMxShvXHL8uQzgV8K63N/gyFP4JPPOgtagD
+ lHoFX63R9IERITY1rCk08FhC/CIkyjWOJiPNJwNUm24KKp4pBZjgADEs0Fge+Sq5aqPp lg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33j91dgxat-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 19:58:12 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FJsgpV103786;
-        Tue, 15 Sep 2020 19:58:09 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 33h88yxey7-1
+        Tue, 15 Sep 2020 19:58:55 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FJtpB5041155;
+        Tue, 15 Sep 2020 19:58:55 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 33hm315t7e-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 19:58:08 +0000
+        Tue, 15 Sep 2020 19:58:54 +0000
 Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FJvx3s027051;
-        Tue, 15 Sep 2020 19:58:00 GMT
-Received: from dhcp-10-39-206-109.vpn.oracle.com (/10.39.206.109)
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FJwpf6030579;
+        Tue, 15 Sep 2020 19:58:51 GMT
+Received: from [10.74.86.196] (/10.74.86.196)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 19:57:59 +0000
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v11 4/5] locking/qspinlock: Introduce starvation avoidance
- into CNA
-From:   Alex Kogan <alex.kogan@oracle.com>
-In-Reply-To: <8019917d-5e8e-e03d-583c-6809dee7a5c2@infradead.org>
-Date:   Tue, 15 Sep 2020 15:57:55 -0400
-Cc:     linux@armlinux.org.uk, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, longman@redhat.com,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        hpa@zytor.com, x86@kernel.org, guohanjun@huawei.com,
-        jglauber@marvell.com, steven.sistare@oracle.com,
-        daniel.m.jordan@oracle.com, dave.dice@oracle.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5FC23678-02D3-444B-B5AF-74E210026185@oracle.com>
-References: <20200915180535.2975060-1-alex.kogan@oracle.com>
- <20200915180535.2975060-5-alex.kogan@oracle.com>
- <8019917d-5e8e-e03d-583c-6809dee7a5c2@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-X-Mailer: Apple Mail (2.3445.104.11)
+        with ESMTP ; Tue, 15 Sep 2020 19:58:50 +0000
+Subject: Re: [PATCH v3 01/11] xen/manage: keep track of the on-going suspend
+ mode
+To:     Anchal Agarwal <anchalag@amazon.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, jgross@suse.com, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org, kamatam@amazon.com, sstabellini@kernel.org,
+        konrad.wilk@oracle.com, roger.pau@citrix.com, axboe@kernel.dk,
+        davem@davemloft.net, rjw@rjwysocki.net, len.brown@intel.com,
+        pavel@ucw.cz, peterz@infradead.org, eduval@amazon.com,
+        sblbir@amazon.com, xen-devel@lists.xenproject.org,
+        vkuznets@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dwmw@amazon.co.uk,
+        benh@kernel.crashing.org
+References: <cover.1598042152.git.anchalag@amazon.com>
+ <9b970e12491107afda0c1d4a6f154b52d90346ac.1598042152.git.anchalag@amazon.com>
+ <4b2bbc8b-7817-271a-4ff0-5ee5df956049@oracle.com>
+ <20200914214754.GA19975@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <e9b94104-d20a-b6b2-cbe0-f79b1ed09c98@oracle.com>
+ <20200915180055.GB19975@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <5f1e4772-7bd9-e6c0-3fe6-eef98bb72bd8@oracle.com>
+Date:   Tue, 15 Sep 2020 15:58:45 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
+MIME-Version: 1.0
+In-Reply-To: <20200915180055.GB19975@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=3 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2009150154
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=3 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150154
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150154
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -83,79 +89,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Sep 15, 2020, at 3:24 PM, Randy Dunlap <rdunlap@infradead.org> =
-wrote:
->=20
-> Hi,
->=20
-> Entries in the kernel-parameters.txt file should be kept in =
-alphabetical order
-> mostly (there are a few exceptions where related options are kept =
-together).
->=20
->=20
->=20
-> On 9/15/20 11:05 AM, Alex Kogan wrote:
->> Keep track of the time the thread at the head of the secondary queue
->> has been waiting, and force inter-node handoff once this time passes
->> a preset threshold. The default value for the threshold (10ms) can be
->> overridden with the new kernel boot command-line option
->> "numa_spinlock_threshold". The ms value is translated internally to =
-the
->> nearest rounded-up jiffies.
->>=20
->> Signed-off-by: Alex Kogan <alex.kogan@oracle.com>
->> Reviewed-by: Steve Sistare <steven.sistare@oracle.com>
->> Reviewed-by: Waiman Long <longman@redhat.com>
->> ---
->> .../admin-guide/kernel-parameters.txt         |  9 ++
->> kernel/locking/qspinlock_cna.h                | 95 =
-++++++++++++++++---
->> 2 files changed, 92 insertions(+), 12 deletions(-)
->>=20
->> diff --git a/Documentation/admin-guide/kernel-parameters.txt =
-b/Documentation/admin-guide/kernel-parameters.txt
->> index 51ce050f8701..73ab23a47b97 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -3363,6 +3363,15 @@
->> 			Not specifying this option is equivalent to
->> 			numa_spinlock=3Dauto.
->>=20
->> +	numa_spinlock_threshold=3D	[NUMA, PV_OPS]
->> +			Set the time threshold in milliseconds for the
->> +			number of intra-node lock hand-offs before the
->> +			NUMA-aware spinlock is forced to be passed to
->> +			a thread on another NUMA node.	Valid values
->> +			are in the [1..100] range. Smaller values result
->> +			in a more fair, but less performant spinlock,
->> +			and vice versa. The default value is 10.
->> +
->> 	cpu0_hotplug	[X86] Turn on CPU0 hotplug feature when
->> 			CONFIG_BOOTPARAM_HOTPLUG_CPU0 is off.
->> 			Some features depend on CPU0. Known dependencies =
-are:
->=20
->=20
-> This new entry and numa_spinlock from patch 3/5 should go between =
-these other 2 NUMA entries:
->=20
-> 	numa_balancing=3D	[KNL,X86] Enable or disable automatic =
-NUMA balancing.
-> 			Allowed values are enable and disable
->=20
-> 	numa_zonelist_order=3D [KNL, BOOT] Select zonelist order for =
-NUMA.
-> 			'node', 'default' can be specified
-> 			This can be set from sysctl after boot.
-> 			See Documentation/admin-guide/sysctl/vm.rst for =
-details.
-Will fix that, thanks.
+>>
+>>
+>>>>> +
+>>>>> +static int xen_setup_pm_notifier(void)
+>>>>> +{
+>>>>> +     if (!xen_hvm_domain() || xen_initial_domain())
+>>>>> +             return -ENODEV;
+>>>>
+>>>> I don't think this works anymore.
+>>> What do you mean?
+>>> The first check is for xen domain types and other is for architecture support.
+>>> The reason I put this check here is because I wanted to segregate the two.
+>>> I do not want to register this notifier at all for !hmv guest and also if its
+>>> an initial control domain.
+>>> The arm check only lands in notifier because once hibernate() api is called ->
+>>> calls pm_notifier_call_chain for PM_HIBERNATION_PREPARE this will fail for
+>>> aarch64.
+>>> Once we have support for aarch64 this notifier can go away altogether.
+>>>
+>>> Is there any other reason I may be missing why we should move this check to
+>>> notifier?
+>>
+>>
+>> Not registering this notifier is equivalent to having it return NOTIFY_OK.
+>>
+> How is that different from current behavior?
+>>
+>> In your earlier versions just returning NOTIFY_OK was not sufficient for
+>> hibernation to proceed since the notifier would also need to set
+>> suspend_mode appropriately. But now your notifier essentially filters
+>> out unsupported configurations. And so if it is not called your
+>> configuration (e.g. PV domain) will be considered supported.
+>>
+> I am sorry if I am having a bit of hard time understanding this. 
+> How will it be considered supported when its not even registered? My
+> understanding is if its not registered, it will not land in notifier call chain
+> which is invoked in pm_notifier_call_chain().
 
->=20
->=20
-> Oooh, that cpu0_hotplug entry is way out of place.  I'll send a patch =
-for that.
-Sounds good.
 
-=E2=80=94 Alex=
+Returning an error from xen_setup_pm_notifier() doesn't have any effect
+on whether hibernation will start. It's the notifier that can stop it.
+
+> 
+> As Roger, mentioned in last series none of this should be a part of PVH dom0 
+> hibernation as its not tested but this series should also not break anything.
+> If I register this notifier for PVH dom0 and return error later that will alter
+> the current behavior right?
+> 
+> If a pm_notifier for pvh dom0 is not registered then it will not land in the
+> notifier call chain and system will work as before this series.
+> If I look for unsupported configurations, then !hvm domain is also one but we
+> filter that out at the beginning and don't even bother about it.
+> 
+> Unless you mean guest running VMs itself? [Trying to read between the lines may
+> not be the case though]
+
+
+
+In hibernate():
+
+        error = __pm_notifier_call_chain(PM_HIBERNATION_PREPARE, -1,
+&nr_calls);
+        if (error) {
+                nr_calls--;
+                goto Exit;
+        }
+
+
+Is you don't have notifier registered (as will be the case with PV
+domains and dom0) you won't get an error and proceed with hibernation.
+(And now I actually suspect it didn't work even with your previous patches)
+
+
+But something like this I think will do what you want:
+
+
+static int xen_pm_notifier(struct notifier_block *notifier,
+	unsigned long pm_event, void *unused)
+
+{
+
+       if (IS_ENABLED(CONFIG_ARM64) ||
+	   !xen_hvm_domain() || xen_initial_domain() ||
+	   (pm_event == PM_SUSPEND_PREPARE)) {
+		if ((pm_event == PM_SUSPEND_PREPARE) || (pm_event ==
+PM_HIBERNATION_PREPARE))
+			pr_warn("%s is not supported for this guest",
+				(pm_event == PM_SUSPEND_PREPARE) ?
+				"Suspend" : "Hibernation");
+                return NOTIFY_BAD;
+
+        return NOTIFY_OK;
+
+}
+
+static int xen_setup_pm_notifier(void)
+{
+	return register_pm_notifier(&xen_pm_notifier_block);
+}
+
+
+I tried to see if there is a way to prevent hibernation without using
+notifiers (like having a global flag or something) but didn't find
+anything obvious. Perhaps others can point to a simpler way of doing this.
+
+
+-boris
+
