@@ -2,112 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38171269C51
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E573269C52
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgIODGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:06:38 -0400
-Received: from mail-bn8nam11on2073.outbound.protection.outlook.com ([40.107.236.73]:4448
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726068AbgIODGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:06:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ONBPMIqLDM/l8vNFs8j7UceGttsdyWJDOetsjrWCvMofpL3YVmLrY7mKwVpZhYHvtOPH17ODQxkqHvZlhLmE3EemDFKpFg/MNlkzYnOfOXLLmAjfmr2TxraRdtAb6pxpKdT83D50PQJV2L0pEsQjwlL3uwaqWMe4O3/3ydrAQVkZRA1Gcc7AlGpFhtVsBlEQ7eXMuggTKvTip+oUALUj/C0fZzKDK6epqpgD8tXfLCPIzWbATI/T+oDK/5znIPVySyqD3AAqoQhvwUbGRlb82aRlgn5Ysd0XEX0K6l5od33eigtLwMsoGMxZRM4LxxFO3IVwj8cKIGZEmvt6dl+/9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4G3rdL3U6zak2Z6x7qQqGujOMvA0z80Zco1TKHOI654=;
- b=GEm2mNbwk4Y1SV7/xSgj9SCGnQaqJXFgRmmX6uewGA+XEm4uohpvluX9ARRtR7VrpuP9GbKIWOdfKS2Thd7nMUS+hh5Z8lfZnYlua9OENDMRqWw0QVILViKJs2MoHZy2V1XpgUuqb8l1g03X1yl+5Nyzn6PEOXJJRaGjs7Ig6H0Vl1xg6rVpPj2FYruewNTeJ/kSqloVAm88bD6v7OZgUyplrluoKDV5LndTEaUQPw8y9HjmMpj0VnU7k+w+24ssvb3Um51JfVQ+p0nO0oUjVmoPqZhDjJWwzxydaAtEEktqg1JLCZXFV5OguOAFkN3oTPxw/OAe4QVBD9Jq04HTBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1726152AbgIODHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 23:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726091AbgIODHc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 23:07:32 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B957C06174A;
+        Mon, 14 Sep 2020 20:07:32 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id v23so1492592ljd.1;
+        Mon, 14 Sep 2020 20:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4G3rdL3U6zak2Z6x7qQqGujOMvA0z80Zco1TKHOI654=;
- b=hkD667oSMaRJNWnn5QRcvQnA/127Kr9rAIH834WKWT0+kE6D9xk+hyHLXrluIhAUrZuzSkunqILlNxOA737Fku6NJeUjj9sTfyXtMkrEWUB1oRz5qpKKMBfQFRobMbPKC/Qd5vg9sT6u96MmYHVz28cvy+RioDIgp1wRA4VzXbg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB2946.namprd12.prod.outlook.com (2603:10b6:408:9d::13)
- by BN8PR12MB2979.namprd12.prod.outlook.com (2603:10b6:408:66::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
- 2020 03:06:32 +0000
-Received: from BN8PR12MB2946.namprd12.prod.outlook.com
- ([fe80::a92d:18c0:971b:48e6]) by BN8PR12MB2946.namprd12.prod.outlook.com
- ([fe80::a92d:18c0:971b:48e6%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 03:06:32 +0000
-Subject: Re: [PATCH v2] perf vendor events amd: remove trailing commas
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Henry Burns <henrywolfeburns@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Vijay Thakkar <vijaythakkar@me.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200912041101.2123-1-henrywolfeburns@gmail.com>
- <20200915004125.971-1-henrywolfeburns@gmail.com>
- <CAM9d7cjnYm8cBFJBVSkbnyfNw2-SApsAkm7xLdNkmnSOhJZOZw@mail.gmail.com>
-From:   Kim Phillips <kim.phillips@amd.com>
-Message-ID: <11f884ef-9a5d-e09b-b9e8-218953ab4699@amd.com>
-Date:   Mon, 14 Sep 2020 22:06:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CAM9d7cjnYm8cBFJBVSkbnyfNw2-SApsAkm7xLdNkmnSOhJZOZw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0072.namprd11.prod.outlook.com
- (2603:10b6:806:d2::17) To BN8PR12MB2946.namprd12.prod.outlook.com
- (2603:10b6:408:9d::13)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3gqr6jBNEY+ASWMIkvM8cpZA4SkbUkARE19dPv6D5kI=;
+        b=U9FPg+d3tnMPwrger9NcG55Q9DB0VbUlYIzHPxVvtrOxmZHDf7vWTFPv+NTJmkdt2Z
+         ykrgU30+rW8/wsXHEBIGjEn2p5nvg3n7KRbnUidf2Hy4iGhMSEcJKRwzyPsQJz/dAj0Y
+         sDrw0252O8puBsQTb3kEltwwyelhXRjE7I8RujCexrcpnh8XKD97y6r/XqHeGOYd2AmC
+         7OaqHU0vJ3Ao+YPZ1ke0sEk6BopwPblu0tuhdV8XEzX+abNZ4CNOXOGMLlg6Dk1MGi/q
+         YZWJWLyQHQn/FBxGIVMq8VKLXm1QbnPMbGSPTS0eErTEQABqR8oXeXignVgQrud8PeRd
+         EbnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3gqr6jBNEY+ASWMIkvM8cpZA4SkbUkARE19dPv6D5kI=;
+        b=kByEip0uxCE4jSizAoEuD77i7d0elW2bewP0XPK1CiZY+CKR3cFw9QbyhVuKavAvrL
+         kdcHxDCL6R8wAwJt79/khCwy1I8fOyERXwmkDIfGF/vQMApsuhOkdnZ8F2R/SwjBQym/
+         A7cJJ7DR8KBkYoUWFIDS1xRFulPw7uixqEDaBgsMlJc1p3WN/l+eNzveZ+YYJzeqk6Zh
+         1mIAM1KuzvjlSmd88j53TunX8wy3ZMp7BMyNsVdXVnWrnDZ7fqn79UzSoAoV4MsbtzVT
+         78t5/vm2QmuNfNmeJqbKYFK552L8pmTDXX8VEi8h8gqt2yMdbKVltOEdlYeiMZ9XEQ3f
+         zQSQ==
+X-Gm-Message-State: AOAM531mqCPQnnZe67EpjnRCsF23h0aN0fs6uwdLPNQVMZBXLYP9Zz66
+        t3e35YRo4fG41Xcq+AmKxvxuXsIu68UNcXynHb4=
+X-Google-Smtp-Source: ABdhPJyuBg+E2YcqDm0il606vPK4VVYMwHW5wQRazUTgDHNzhNDYb+aKd7NPekYjUkDYhiTmfhYKjYmpEQdBWz+V0Hc=
+X-Received: by 2002:a2e:907:: with SMTP id 7mr6436762ljj.470.1600139250537;
+ Mon, 14 Sep 2020 20:07:30 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.17.193] (165.204.77.11) by SA0PR11CA0072.namprd11.prod.outlook.com (2603:10b6:806:d2::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 03:06:30 +0000
-X-Originating-IP: [165.204.77.11]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 40a4f4b9-7731-4215-04e0-08d8592458ce
-X-MS-TrafficTypeDiagnostic: BN8PR12MB2979:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB29790D8611A935A1A972380687200@BN8PR12MB2979.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:660;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8ilsfJKn1vSh+HJp9pJzuPwe8JDVY1tWOKlq6IA9aAAKFdXl0J8Rg8evacyryomRmkW23xuxPI2pnZplfG5P4iZNGO/PP6uyGSiQNMCFazhXKNjhNUG3sLfSE8IiJRthCErBouNhu8oH4bIlvgjSk5NSqZCdQURVEFKsJ/iaZUyilAVBob4MQy5K6aZbz768ng78r1dpMkE2myEJhvo8poUNO9O5qEqc77lYbmMXdAG4dAkfrrUxElbAfdYqMyDo3kXodYS4ooTHv6Mz6cLCylFDc9ZkkMRnYO5ymXvd46PhYVz8Ms6fWe1NaX66wkNddKdRW6XVHl2i5TagQdVPluucumN+zczl5/FMzYUyrFsQ4ZNZc1SNbJrb5jjdE4PT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB2946.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(16576012)(2616005)(6486002)(44832011)(956004)(36756003)(53546011)(31686004)(5660300002)(54906003)(4326008)(52116002)(110136005)(4744005)(478600001)(8676002)(16526019)(316002)(186003)(66556008)(66476007)(2906002)(66946007)(8936002)(26005)(7416002)(31696002)(86362001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 0AlrCZBMfvkfx6rfGDG5/YxntsL6miKRPCabQGRw9YajO0K2xq5jE/r2Uk8D5SZIRNez/uHwZsbOg/JMWfsA86n5FcWy/EZ/ao8GLRY7xaa9tsqY580T0UPyFbnQFjVQ8jbOm7WPrFl2qETjK92Mr8hX4Xwe6aUVfj5ki4ipIKPxN+F0iyT5TrROIb+NHFK6gbsS6hdfQonbyCgs+eE44VS9rtOnRcPbTDMn+/7ErD+buKzWmQVN4mWus5bliR+iZlC3AAVnf4u+yiL7HzrLRNofecZxGnblmuYZmv49cEsBT5vb0bBSXYjKPPL3O8aD6Pah4lzjxKAstBKzA3gnzAnWvC5laYJlS988jS9sp/d8I938aPt2MTt3duMSEPNJjKhn9oqonHlJAT2I5IAh2tt3M1JgpZgMzxACGRhaI7yaTyMnoIMwewipgn1A+Odhtbx7dnSqyafOjX1u4WJpE0h1jqmWjKGfw4TqY9c+KOj2h3tMZY/NsqBAphslUn3xN7AL6Eq+pQuwByoSfVy3qwYxq2+LlBv+0tImeMrAMIaQv7UlHep+behsmU3txJJZ70/cDgCNUdK3wJHq2eNceEDMg6DuNQEE5y083dErUtqXGmzNpiJP+ctD3f3V6vm5eQJMqYkIlgtEYqeDUc8Pdg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40a4f4b9-7731-4215-04e0-08d8592458ce
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB2946.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 03:06:31.9235
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eIp6/9apEMmvAjiBjiIntrnArnM9x1dhWK5HcSgEriW51OU+CMdrslAetDYpyHFsxUTbbQr9kfDfIihC6mYnQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2979
+References: <1599060933-8092-1-git-send-email-u0084500@gmail.com>
+ <20200902165713.GG56237@roeck-us.net> <CADiBU3_iHk4aoM8o6GcaTmWDZT4ymvb0Ff-XeLLZ0C9dhCnLZQ@mail.gmail.com>
+ <fd2a33fc-2383-66cb-0fd7-d5aa0cc9111f@roeck-us.net> <CADiBU3_vYAmHDCONrExzyM+1CTfqJx_eS1hYG8aHkNWFzTcwfg@mail.gmail.com>
+ <63c7f5e4-eff2-1420-30a5-a0b98a7815e0@roeck-us.net> <CADiBU3-83rVLqhVAqqSGc0qQ66PHsGVVcp_m3sm_4ZS5A+GXKQ@mail.gmail.com>
+In-Reply-To: <CADiBU3-83rVLqhVAqqSGc0qQ66PHsGVVcp_m3sm_4ZS5A+GXKQ@mail.gmail.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Tue, 15 Sep 2020 11:07:18 +0800
+Message-ID: <CADiBU3_c5O-yUac-ytp5WoQQ12edkU+4wn+WNBOVGRGM15NBJA@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: tcpm: Fix if vbus before cc, hard_reset_count
+ not reset issue
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cy_huang <cy_huang@richtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 9:49 PM, Namhyung Kim wrote:
-> On Tue, Sep 15, 2020 at 9:41 AM Henry Burns <henrywolfeburns@gmail.com> wrote:
->>
->> amdzen2/core.json and amdzen/core.json have the occasional trailing
->> comma. Since that goes against the JSON standard, lets remove it.
->>
->> Signed-off-by: Henry Burns <henrywolfeburns@gmail.com>
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+Hi, Guenter:
 
-Acked-by: Kim Phillips <kim.phillips@amd.com>
+ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2020=E5=B9=B49=E6=9C=886=E6=97=
+=A5 =E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=8811:22=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2020=E5=B9=B49=E6=9C=885=E6=
+=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=8811:51=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> >
+> > On 9/4/20 6:24 PM, ChiYuan Huang wrote:
+> > > Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2020=E5=B9=B49=E6=9C=885=
+=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=883:41=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> > >>
+> > >> On 9/3/20 9:21 AM, ChiYuan Huang wrote:
+> > >>> Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2020=E5=B9=B49=E6=9C=
+=883=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8812:57=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> > >>>>
+> > >>>> On Wed, Sep 02, 2020 at 11:35:33PM +0800, cy_huang wrote:
+> > >>>>> From: ChiYuan Huang <cy_huang@richtek.com>
+> > >>>>>
+> > >>>>> Fix: If vbus event is before cc_event trigger, hard_reset_count
+> > >>>>> won't bt reset for some case.
+> > >>>>>
+> > >>>>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > >>>>> ---
+> > >>>>> Below's the flow.
+> > >>>>>
+> > >>>>> _tcpm_pd_vbus_off() -> run_state_machine to change state to SNK_U=
+NATTACHED
+> > >>>>> call tcpm_snk_detach() -> tcpm_snk_detach() -> tcpm_detach()
+> > >>>>> tcpm_port_is_disconnected() will be called.
+> > >>>>> But port->attached is still true and port->cc1=3Dopen and port->c=
+c2=3Dopen
+> > >>>>>
+> > >>>>> It cause tcpm_port_is_disconnected return false, then hard_reset_=
+count won't be reset.
+> > >>>>> After that, tcpm_reset_port() is called.
+> > >>>>> port->attached become false.
+> > >>>>>
+> > >>>>> After that, cc now trigger cc_change event, the hard_reset_count =
+will be kept.
+> > >>>>> Even tcpm_detach will be called, due to port->attached is false, =
+tcpm_detach()
+> > >>>>> will directly return.
+> > >>>>>
+> > >>>>> CC_EVENT will only trigger drp toggling again.
+> > >>>>> ---
+> > >>>>>  drivers/usb/typec/tcpm/tcpm.c | 3 +--
+> > >>>>>  1 file changed, 1 insertion(+), 2 deletions(-)
+> > >>>>>
+> > >>>>> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tc=
+pm/tcpm.c
+> > >>>>> index a48e3f90..5c73e1d 100644
+> > >>>>> --- a/drivers/usb/typec/tcpm/tcpm.c
+> > >>>>> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > >>>>> @@ -2797,8 +2797,7 @@ static void tcpm_detach(struct tcpm_port *p=
+ort)
+> > >>>>>               port->tcpc->set_bist_data(port->tcpc, false);
+> > >>>>>       }
+> > >>>>>
+> > >>>>> -     if (tcpm_port_is_disconnected(port))
+> > >>>>> -             port->hard_reset_count =3D 0;
+> > >>>>> +     port->hard_reset_count =3D 0;
+> > >>>>>
+> > >>>>
+> > >>>> Doesn't that mean that the state machine will never enter
+> > >>>> error recovery ?
+> > >>>>
+> > >>> I think it does't affect the error recovery.
+> > >>> All error recovery seems to check pd_capable flag.
+> > >>>
+> > >>> >From my below case, it's A to C cable only. There is no USBPD cont=
+ract
+> > >>> will be estabilished.
+> > >>>
+> > >>> This case occurred following by the below test condition
+> > >>> Cable -> A to C (default Rp bind to vbus) connected to PC.
+> > >>> 1. first time plugged in the cable with PC
+> > >>> It will make HARD_RESET_COUNT  to be equal 2
+> > >>> 2. And then plug out. At that time HARD_RESET_COUNT is till 2.
+> > >>> 3. next time plugged in again.
+> > >>> Due to hard_reset_count is still 2 , after wait_cap_timeout, the st=
+ate
+> > >>> eventually changed to SNK_READY.
+> > >>> But during the state transition, no hard_reset  be sent.
+> > >>>
+> > >>> Defined in the USBPD policy engine, typec transition to USBPD, all
+> > >>> variables must be reset included hard_reset_count.
+> > >>> So it expected SNK must send hard_reset again.
+> > >>>
+> > >>> The original code defined hard_reset_count must be reset only when
+> > >>> tcpm_port_is_disconnected.
+> > >>>
+> > >>> It doesn't make sense that it only occurred in some scenario.
+> > >>> If tcpm_detach is called, hard_reset count must be reset also.
+> > >>>
+> > >>
+> > >> If a hard reset fails, the state machine may cycle through states
+> > >> HARD_RESET_SEND, HARD_RESET_START, SRC_HARD_RESET_VBUS_OFF,
+> > >> SRC_HARD_RESET_VBUS_ON back to SRC_UNATTACHED. In this state,
+> > >> tcpm_src_detach() and with it tcpm_detach() is called. The hard
+> > >> reset counter is incremented in HARD_RESET_SEND. If tcpm_detach()
+> > >> resets the counter, the state machine will keep cycling through hard
+> > >> resets without ever entering the error recovery state. I am not
+> > >> entirely sure where the counter should be reset, but tcpm_detach()
+> > >> seems to be the wrong place.
+> > >
+> > > This case you specified means locally error occurred.
+> >
+> > It could be a local error (with the local hardware), or with the
+> > remote partner not accepting the reset. We only know that an error
+> > occurred.
+> >
+> > > It intended to re-run the state machine from typec  to USBPD.
+> > >>From my understanding, hard_reset_count to be reset is reasonable.
+> > >
+> > > The normal stare from the state transition you specified is
+> > > HARD_RESET_SEND, HARD_RESET_START -> SRC_HARD_RESET_VBUS_OFF,
+> > > SRC_HARD_RESET_VBUS_ON -> received VBUS_EVENT then go to SRC_STARTUP.
+> > >
+> > The operational word is "normal". Error recovery is expected to handle
+> > situations which are not normal.
+>
+> Following by the USBPD 3.0 revision 1.2, section 8.3.3.24.1
+> The ErrorRecovery state is  used to electronically disconnect Port
+> Partner using the USB Type-C connector.
+> And there's one sentence to be said "The ErrorRecovery staste shall
+> map to USB Type-C Error Recovery state operations".
+> I also read ErrorRecovery state in USB TYPE-C 1.3 spec.
+> Section 4.5.2.2.2.1   ErrorRecovery state requirement listed the below te=
+xt.
+> The port shall not drive VBUS or VCONN, and shall present a
+> high-impedance to ground (above
+> zOPEN) on its CC1 and CC2 pins.
+> Section 4.5.2.2.2.2 Exiting from the error recovery state
+> I read the description. The roughly meaning is to change the state to
+> Unattached(Src or Snk) after tErrorRecovery.
+>
+> Summary the above text.
+> Reset HardResetCounter is ok in tcpm_detach.
+> My patch is just to relax the counter reset conditions during tcpm_detach=
+().
+> If not, it will check tcpm_port_is_disconnected().
+> And only two scenario, the hard reset count will be cleared to 0 at this =
+case.
+> 1) port not attached and cc1=3Dopen and cc2=3Dopen
+> 2) port attached and either (polarity=3Dcc1, cc1=3Dopen) or (polarity=3Dc=
+c2, cc2=3Dopen)
+>
+> I think this judgement is narrow in tcpm_detach case.
+>
+> >
+> > I don't question the need to reset the counter. The only question
+> > is where and when to reset it.
+> >
+> I re-check all tcpm code for hard reset counter about the increment and r=
+eset.
+> They all meets USBPD spec. Only the detach case, I'm wondering why it
+> need to add the check for tcpm_port_is_disconnected().
+>
+Below's the real case log.
+[ 4848.046358] VBUS off
+[ 4848.046384] state change SNK_READY -> SNK_UNATTACHED
+[ 4848.050908] Setting voltage/current limit 0 mV 0 mA
+[ 4848.050936] polarity 0
+[ 4848.052593] Requesting mux state 0, usb-role 0, orientation 0
+[ 4848.053222] Start toggling
+[ 4848.086500] state change SNK_UNATTACHED -> TOGGLING
+[ 4848.089983] CC1: 0 -> 0, CC2: 3 -> 3 [state TOGGLING, polarity 0, connec=
+ted]
+[ 4848.089993] state change TOGGLING -> SNK_ATTACH_WAIT
+[ 4848.090031] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 200 =
+ms
+[ 4848.141162] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_ATTACH_WAIT,
+polarity 0, disconnected]
+[ 4848.141170] state change SNK_ATTACH_WAIT -> SNK_ATTACH_WAIT
+[ 4848.141184] pending state change SNK_ATTACH_WAIT -> SNK_UNATTACHED @ 20 =
+ms
+[ 4848.163156] state change SNK_ATTACH_WAIT -> SNK_UNATTACHED [delayed 20 m=
+s]
+[ 4848.163162] Start toggling
+[ 4848.216918] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connec=
+ted]
+[ 4848.216954] state change TOGGLING -> SNK_ATTACH_WAIT
+[ 4848.217080] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 200 =
+ms
+[ 4848.231771] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_ATTACH_WAIT,
+polarity 0, disconnected]
+[ 4848.231800] state change SNK_ATTACH_WAIT -> SNK_ATTACH_WAIT
+[ 4848.231857] pending state change SNK_ATTACH_WAIT -> SNK_UNATTACHED @ 20 =
+ms
+[ 4848.256022] state change SNK_ATTACH_WAIT -> SNK_UNATTACHED [delayed 20 m=
+s]
+[ 4848.256049] Start toggling
+[ 4848.871148] VBUS on
+[ 4848.885324] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connec=
+ted]
+[ 4848.885372] state change TOGGLING -> SNK_ATTACH_WAIT
+[ 4848.885548] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 200 =
+ms
+[ 4849.088240] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 200 m=
+s]
+[ 4849.088284] state change SNK_DEBOUNCED -> SNK_ATTACHED
+[ 4849.088291] polarity 1
+[ 4849.088769] Requesting mux state 1, usb-role 2, orientation 2
+[ 4849.088895] state change SNK_ATTACHED -> SNK_STARTUP
+[ 4849.088907] state change SNK_STARTUP -> SNK_DISCOVERY
+[ 4849.088915] Setting voltage/current limit 5000 mV 0 mA
+[ 4849.088927] vbus=3D0 charge:=3D1
+[ 4849.090505] state change SNK_DISCOVERY -> SNK_WAIT_CAPABILITIES
+[ 4849.090828] pending state change SNK_WAIT_CAPABILITIES -> SNK_READY @ 24=
+0 ms
+[ 4849.335878] state change SNK_WAIT_CAPABILITIES -> SNK_READY [delayed 240=
+ ms]
 
-Thanks,
+You can see the next type c attach log.
+It directly change state from SNK_WAIT_CAPABILITIES to SNK_READY due
+to not reset hard_reset_count.
 
-Kim
+It's easy to reproduce if you plugout USB Adapater w/i AtoC cable connected=
+.
+
+> > Guenter
