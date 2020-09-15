@@ -2,203 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4427B26A41D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31D726A41C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgIOL1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 07:27:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52981 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726134AbgIOLYJ (ORCPT
+        id S1726183AbgIOLZ4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 07:25:56 -0400
+Received: from wildebeest.demon.nl ([212.238.236.112]:59090 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgIOLYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:24:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600169037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6cVCOQ7d2lGCj+sz7IDzW+p3UDF4b8CRkA73qH7l96E=;
-        b=aqDppz5HApiZFKw3FTkK+pivO8p/LjX8d5cy/vupg/Z+9FcuuXCiR7t49z6uJI/eDar4ej
-        NVUg2mKMAHl31uG5honNbdAf5YXqbJjc4qc7CS48K8lsOSHrX4XzmZcwMVZIR1NED9uQO3
-        SmMJjYDuEhQvA7dO3frylulsoHmuD+A=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-fyKEk54ANqypllDwUDLRSQ-1; Tue, 15 Sep 2020 07:23:54 -0400
-X-MC-Unique: fyKEk54ANqypllDwUDLRSQ-1
-Received: by mail-wr1-f72.google.com with SMTP id r15so1101400wrt.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:23:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=6cVCOQ7d2lGCj+sz7IDzW+p3UDF4b8CRkA73qH7l96E=;
-        b=TOY/U/OKl5oQd1IpI7wuXB2R96vA5hztO8SbUULbXwWgYHP0G05HaSzNpv5+1atEye
-         bwPFKVXXkL9/sLG7ooLYs1nlanP9aLkrFUcLs5jZWqQKUCKJI6y9SYnIIyKODDLjo3A2
-         sb2lQyjXlT3arEfCmjHqXtv3cqmT9fvvXcmAgxFwMw+Lbc1I5VyN0pVnxszITRY1D/no
-         NgTTElVFVGBVxNCcSANIYvVC2HYt/C2Ip/RwILLfX0exem/Uz7cLebS4aeVT+UocZxij
-         jdTuvf6Vm4ZCGRE54A4O8qYA8PXhJlP+XOdA0zQNZNPnhJY1vkOr/sPc4Ac6bX6HiLaz
-         Va+g==
-X-Gm-Message-State: AOAM533AIZqvDQJFE7CYE8GAL+D7+2fvTfcao6QgB/kFd2tJ+pKdpuOn
-        x8hEJhKzpPtlGBpbhCSfWn08CR1gKvHbn3xHqrWFk9vf+iXOSB1Dg15t4+BeD1yVcYz/kACRMsQ
-        u+kSCn1xP2NEAAgQhOJOOLofg
-X-Received: by 2002:a1c:f612:: with SMTP id w18mr4093225wmc.47.1600169032846;
-        Tue, 15 Sep 2020 04:23:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwvGbq4kAy/QGRtY/BOpA+aWnzBDti4E9VI3Ss2yI2nlXdHQaEUP+BzI9wCqgRzAdsZ43LXEQ==
-X-Received: by 2002:a1c:f612:: with SMTP id w18mr4093200wmc.47.1600169032622;
-        Tue, 15 Sep 2020 04:23:52 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id x16sm25662251wrq.62.2020.09.15.04.23.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 04:23:52 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nudasnev@microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH RFC v1 08/18] x86/hyperv: handling hypercall page setup for root
-In-Reply-To: <20200915111657.boa4cneqjqtmcaaq@liuwe-devbox-debian-v2>
-References: <20200914112802.80611-1-wei.liu@kernel.org> <20200914112802.80611-9-wei.liu@kernel.org> <87v9gfjpoi.fsf@vitty.brq.redhat.com> <20200915103710.cqmdvzh5lys4wsqo@liuwe-devbox-debian-v2> <87pn6njob3.fsf@vitty.brq.redhat.com> <20200915111657.boa4cneqjqtmcaaq@liuwe-devbox-debian-v2>
-Date:   Tue, 15 Sep 2020 13:23:50 +0200
-Message-ID: <87h7rzjnax.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Tue, 15 Sep 2020 07:24:25 -0400
+Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id 6D5F830002FC;
+        Tue, 15 Sep 2020 13:24:17 +0200 (CEST)
+Received: by tarox.wildebeest.org (Postfix, from userid 1000)
+        id CE8B440006CE; Tue, 15 Sep 2020 13:24:17 +0200 (CEST)
+Message-ID: <d02d57308d9e8febd569c3fd3757dbcc87b1c4a1.camel@klomp.org>
+Subject: Re: Static call dependency on libelf version?
+From:   Mark Wielaard <mark@klomp.org>
+To:     peterz@infradead.org, Hugh Dickins <hughd@google.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Date:   Tue, 15 Sep 2020 13:24:17 +0200
+In-Reply-To: <20200915093016.GV1362448@hirez.programming.kicks-ass.net>
+References: <alpine.LSU.2.11.2009142337530.1550@eggly.anvils>
+         <20200915093016.GV1362448@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
+Mime-Version: 1.0
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
+H Peter,
 
-> On Tue, Sep 15, 2020 at 01:02:08PM +0200, Vitaly Kuznetsov wrote:
->> Wei Liu <wei.liu@kernel.org> writes:
->> 
->> > On Tue, Sep 15, 2020 at 12:32:29PM +0200, Vitaly Kuznetsov wrote:
->> >> Wei Liu <wei.liu@kernel.org> writes:
->> >> 
->> >> > When Linux is running as the root partition, the hypercall page will
->> >> > have already been setup by Hyper-V. Copy the content over to the
->> >> > allocated page.
->> >> 
->> >> And we can't setup a new hypercall page by writing something different
->> >> to HV_X64_MSR_HYPERCALL, right?
->> >> 
->> >
->> > My understanding is that we can't, but Sunil can maybe correct me.
->> >
->> >> >
->> >> > The suspend, resume and cleanup paths remain untouched because they are
->> >> > not supported in this setup yet.
->> >> >
->> >> > Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
->> >> > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
->> >> > Signed-off-by: Nuno Das Neves <nudasnev@microsoft.com>
->> >> > Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
->> >> > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
->> >> > Co-Developed-by: Nuno Das Neves <nudasnev@microsoft.com>
->> >> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
->> >> > ---
->> >> >  arch/x86/hyperv/hv_init.c | 26 ++++++++++++++++++++++++--
->> >> >  1 file changed, 24 insertions(+), 2 deletions(-)
->> >> >
->> >> > diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
->> >> > index 0eec1ed32023..26233aebc86c 100644
->> >> > --- a/arch/x86/hyperv/hv_init.c
->> >> > +++ b/arch/x86/hyperv/hv_init.c
->> >> > @@ -25,6 +25,7 @@
->> >> >  #include <linux/cpuhotplug.h>
->> >> >  #include <linux/syscore_ops.h>
->> >> >  #include <clocksource/hyperv_timer.h>
->> >> > +#include <linux/highmem.h>
->> >> >  
->> >> >  /* Is Linux running as the root partition? */
->> >> >  bool hv_root_partition;
->> >> > @@ -448,8 +449,29 @@ void __init hyperv_init(void)
->> >> >  
->> >> >  	rdmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
->> >> >  	hypercall_msr.enable = 1;
->> >> > -	hypercall_msr.guest_physical_address = vmalloc_to_pfn(hv_hypercall_pg);
->> >> > -	wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
->> >> > +
->> >> > +	if (hv_root_partition) {
->> >> > +		struct page *pg;
->> >> > +		void *src, *dst;
->> >> > +
->> >> > +		/*
->> >> > +		 * Order is important here. We must enable the hypercall page
->> >> > +		 * so it is populated with code, then copy the code to an
->> >> > +		 * executable page.
->> >> > +		 */
->> >> > +		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
->> >> > +
->> >> > +		pg = vmalloc_to_page(hv_hypercall_pg);
->> >> > +		dst = kmap(pg);
->> >> > +		src = memremap(hypercall_msr.guest_physical_address << PAGE_SHIFT, PAGE_SIZE,
->> >> > +				MEMREMAP_WB);
->> >> 
->> >> memremap() can fail...
->> >
->> > And we don't care here, if it fails, we would rather it panic or oops.
->> >
->> > I was relying on the fact that copying from / to a NULL pointer will
->> > cause the kernel to crash. But of course it wouldn't hurt to explicitly
->> > panic here.
->> >
->> >> 
->> >> > +		memcpy(dst, src, PAGE_SIZE);
->> >> > +		memunmap(src);
->> >> > +		kunmap(pg);
->> >> > +	} else {
->> >> > +		hypercall_msr.guest_physical_address = vmalloc_to_pfn(hv_hypercall_pg);
->> >> > +		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
->> >> > +	}
->> >> 
->> >> Why can't we do wrmsrl() for both cases here?
->> >> 
->> >
->> > Because the hypercall page has already been set up when Linux is the
->> > root.
->> 
->> But you already do wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64)
->> in 'if (hv_root_partition)' case above, that's why I asked.
->> 
->
-> You mean extracting wrmsrl to this point?  The ordering matters. See the
-> comment in the root branch -- we have to enable the page before copying
-> the content.
->
-> What can be done is:
->
->    if (!root) {
->        /* some stuff */
->    }
->
->    wrmsrl(...)
->
->    if (root) {
->        /* some stuff */
->    }
->
-> This is not looking any better than the existing code.
->
+On Tue, 2020-09-15 at 11:30 +0200, peterz@infradead.org wrote:
+> On Tue, Sep 15, 2020 at 12:50:54AM -0700, Hugh Dickins wrote:
+> > CONFIG_HAVE_STATIC_CALL=y
+> > CONFIG_HAVE_STATIC_CALL_INLINE=y
+> > stand out as new in the .config for 5.9-rc5-mm1, and references
+> > to objtool in static_call.h and static_call_types.h took me to
+> > tools/objtool/Makefile, with its use of libelf.
+> > 
+> > I've copied over files of the newer libelf (0.168) to the failing
+> > machines, which are now building the 5.9-rc5-mm1 vmlinux correctly.
+> > 
+> > It looks as if CONFIG_HAVE_STATIC_CALL=y depends on a newer libelf
+> > than I had before (0.155), and should either insist on a minimum
+> > version, or else be adjusted to work with older versions.
+> 
+> Hurmph, I have no idea how this happened; clearly none of my machines
+> have this older libelf :/ (the machines I use most seem to be on
+> 0.180).
+> 
+> I'm also not sure what static_call is doing different from say orc
+> data generation. Both create and fill sections in similar ways.
+> 
+> Mark, do you have any idea?
 
-Oh, I missed the comment indeed. So Hypervisor already picked a page for
-us, however, it didn't enable it and it's not populated? How can we be
-sure that we didn't use it for something else already? Maybe we can
-still give a different known-to-be-empty page?
+0.155 is more than 8 years old. Given that 0.168 (4 years old) works
+fine and this might be an interaction with objtool, which if I remember
+correctly uses ELF_C_RDWR to manipulate an ELF file in place, I suspect
+it might be:
 
--- 
-Vitaly
+commit 88ad5ddb71bd1fa8ed043a840157ebf23c0057b3
+Author: Mark Wielaard <mjw@redhat.com>
+Date:   Tue Nov 5 16:27:32 2013 +0100
 
+    libelf: Write all section headers if elf flags contains ELF_F_DIRTY.
+    
+    When ehdr e_shoff changes, elf flags is set dirty. This indicates that
+    the section header moved because sections were added/removed or changed
+    in size.
+    
+    Reported-by: Jiri Slaby <jslaby@suse.cz>
+    Signed-off-by: Mark Wielaard <mjw@redhat.com>
+
+Which is described as elfutils-0.157-15-g88ad5ddb so was in elfutils
+0.158, but not before. At least the issue seems to mimics the bug
+report a little:
+https://sourceware.org/legacy-ml/elfutils-devel/imported/msg03724.html
+
+But all this is for ancient versions of elfutils libelf. So it is hard
+to say and my memory might be failing. If someone can confirm 0.158
+(which is 6 years old) works fine I would pick that as minimum version,
+otherwise simply go with 0.168 which is 4 years old and should be on
+most systems by now.
+
+Cheers,
+
+Mark
