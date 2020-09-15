@@ -2,184 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB59B269EAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E668269EA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgIOGgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 02:36:50 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:56259 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726077AbgIOGga (ORCPT
+        id S1726120AbgIOGfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 02:35:13 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:20597 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgIOGfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 02:36:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U9.sHE3_1600151785;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9.sHE3_1600151785)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 15 Sep 2020 14:36:25 +0800
-Subject: Re: [PATCH] Documentation: Chinese translation of
- Documentation/arm64/amu.rst
-To:     Bailu Lin <bailu.lin@vivo.com>, Harry Wei <harryxiyou@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com, wangqing@vivo.com
-References: <20200915025822.29885-1-bailu.lin@vivo.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <7c584fe4-5b77-3345-79d3-a48735e36816@linux.alibaba.com>
-Date:   Tue, 15 Sep 2020 14:34:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Tue, 15 Sep 2020 02:35:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600151722; x=1631687722;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2gZtkwsjPzbomViPV+4xJpRUJdNJD5YrSAOxmT45A7M=;
+  b=SYSZJYoiOLlnlTSMFdUkGiMIdMhoiPii8XmDjRfKvias5rBkzNGHl4Wo
+   APNG0wQFdy8iJmjHnX0DbS77Xp6yg8uXM+iuhdqP+LqzXy0FDBOPigOyD
+   BV3fj63cfBjf9/En8bFEezU3YKB5W3F+i0gHPLD2vk99HHP01cx0B7RuR
+   kd71tUQSl+8ABwc7cw7I+oMXSBdr7nBLsfMWaSh3tU9PL6+ZMNMzEZDOC
+   HLZuBggkQ4Rrl4ed7FE1/XTuvfEB2x9iEHfyN7d5o3+EmZjRtpLKSDWMG
+   JebMZsbCPPaqKRaZ6fCea+39Xql3cAYdOa8WfWNseqVvmuKBxtMCTjE7N
+   w==;
+IronPort-SDR: 4A5LV8PJi6nS9brtsQfRitxKrvPIF5OCH+8yMooHpOWj3QgSPchbv+Waa6rRyiQkoz+Q6PFkqy
+ ObR6thP+EH0ju9DjIPFdCUdum8qt0DYFhfAn739202IXaPpwfot7hUGDketaMf8IG2uReFQ1VD
+ /Cf784AdRIm3An3xzLEaPIJE8vsnVvgfPxF5HlyrYu66Y7YV5sSxx3c7bx1mA/8aMcnLq5VFOx
+ INIY9J+NgdtscufyyIZBU93vKnoIvYyiPk8TTsHePZ+tQt0Bctck20+UGpWriipKhY0AkPMuVz
+ EQo=
+X-IronPort-AV: E=Sophos;i="5.76,428,1592841600"; 
+   d="scan'208";a="250714234"
+Received: from mail-bn8nam08lp2043.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.43])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2020 14:35:17 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A6wSUkmYlsvQ4bAh26cpARHJe6UFK0FZZQFU1OQUwACW/qVmMX0uJN3Tu5x6GAO0ggR7wurry+OcDfePGTgqlmRVaN/S+8dN7kX42wHP2QqN0sO0nxh3nsCsvUE/83XZaxVEI28yIxrsshg0GXiisEqt2oGNFxCWKopWzBJnANmhhXQ+fByoveR/84CV3ZPGtVeM+2vNA83Fmw2PGWWQP/R0PcXQSZ6qt5qOi7LfzLZ5gKyyX3U5NIvRAlKXKvFI1tEnQJX1dSK1swGvN2y0+giItBIDssbjpHKA/lVvo5VdQdheNKaXCJxY7NMi5gBT69CcyFG1BSf06jZn4GCy7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2gZtkwsjPzbomViPV+4xJpRUJdNJD5YrSAOxmT45A7M=;
+ b=YrEd0CXJf9YH62avBdVXftYoCnvBU14euA8IDhiI9MhsWriVqWynBLyxJKK2LN4L/NVfFdYpvl398N449FI+6X3qYyhwW7ut4YoG1FuKkFMJz4V48wr34wpucbCMy0EMKUPr0XSD6HQfPtJnqWTVyG2yX4F+Vb4eRgmcqBXr7D8TO3FZ4PdqTAqOyL8I7i8b/iMr5EGrejz7Z7/OUVhmD/9W9LkGu3bKpYcD85w8mcrwuSBJ7k7IA3e4Db/9ztsy01cl95CwKmOpSaegwV3EY+ntitG6gSmY3cG/tmYqchxDwXOMDgNpCRWbntpez3TIRrZV2N8ZZVDlczb65OCquA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2gZtkwsjPzbomViPV+4xJpRUJdNJD5YrSAOxmT45A7M=;
+ b=YOofhCgmdC+LOcdrIxS4F0ycewU9TCPanYaJ+OtEIYAQf4NmGDTSnCPiJkfEdUiedyQTxIUlJ3E+hJS7a9N0CI2sWjoPhRvOs+HqI2llJY9HIUzra9kYZtTH2CWco22QG6iUgbhz5MphEIA2KhITegirzWDwGcJq1egZJXSH0tU=
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
+ by BY5PR04MB6311.namprd04.prod.outlook.com (2603:10b6:a03:1f2::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
+ 2020 06:35:01 +0000
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::2c49:48e2:e9fb:d5a0]) by BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::2c49:48e2:e9fb:d5a0%9]) with mapi id 15.20.3391.011; Tue, 15 Sep 2020
+ 06:35:01 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: RE: [PATCH] scsi: ufs: Fix NOP OUT timeout value
+Thread-Topic: [PATCH] scsi: ufs: Fix NOP OUT timeout value
+Thread-Index: AQHWgNZIpBz3rv5rok2idB7KF6Yd1qlpUtSw
+Date:   Tue, 15 Sep 2020 06:35:01 +0000
+Message-ID: <BY5PR04MB6705EA7473F8971029B8372FFC200@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <CGME20200902025852epcms2p2a2d4ac934f4fc09233d4272c96df9ff1@epcms2p2>
+ <231786897.01599016081767.JavaMail.epsvc@epcpadp2>
+In-Reply-To: <231786897.01599016081767.JavaMail.epsvc@epcpadp2>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2dd0033a-8c60-4ef9-2bc0-08d859417934
+x-ms-traffictypediagnostic: BY5PR04MB6311:
+x-microsoft-antispam-prvs: <BY5PR04MB63117AFC0F829035FBE04261FC200@BY5PR04MB6311.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YelDgpMXvVFRKckSWEyZ7Z4eLU9dlM6nXoMMTVI/CQghBV3uyUyYjKo72yj5R2NeTMNbKLJJlOI3/huDF3kbVXbw0/ZHnYXi4lMKY7MvOoRsTkvUw5z+e7Yu3W7rCobS7UNbMWFkRdVHJ4Aoq5J45ZcVHyWlBYpfafKzp6qR59azoK79YWn/wUw3j30ncPastj9RwP0sOyVSkNCVlwhQxqBAxUXS8wGGf1ksQuitMLDOlfCr18H2RAtm1POWmWwK0HGYClpw23Z0e13gug7KcSIY9bxPbj+5kVmstN4xKoQ3QSzkI+y6YFbKLwHpoNssIuTXrgIK24CFMSQjZ6iWc9L4ZUZ4UvkCZnF5lC61FVM6EdtBHyvv+pldP0h5wt2E
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(346002)(136003)(366004)(26005)(7416002)(4744005)(8936002)(55016002)(71200400001)(7696005)(8676002)(54906003)(2906002)(9686003)(64756008)(66446008)(66946007)(4326008)(110136005)(66556008)(33656002)(66476007)(76116006)(316002)(86362001)(478600001)(186003)(5660300002)(52536014)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: DNhotY9cFqpV/YVpl7S42aMzjI7EDrSvNXGnrNKhnEwU+GoRkghA4AfJVSDRdmEu9UAm20C42fDHlATwEJ9STWEh9eja7QBtwBGocLx06qs4kHMU8q+0HxgXlDqQaw+bhNgsWi+Q2I/Q1pdeMxrQSdO2YMhKxhEzvA1qOOR4rB0nXRT9bz/B9nr0AKk51MG+q0hhkOub1tVGrRc4JLRx61JvclwwwsEO9t5n/RWHPy55Y3gAtz0HTVF6su69KeMW/4GlqihnI4uc/oD/Lcy+DAjMxDIV0lyUZoXnkRjavmSXhzsLC1repka3bpYw+jv25o0Dz0rMnM1hkakJoIDFJjipy/mgnVz3qxsujKeRPT+6MMchUnWAzOismnUsiSz++bpMx19IQUDCuOtT/zxkpiX6OvkSdrkZdht9/d/KgktVH5zgtdA8A3+ejtcbRLw9h9E+FnYZsAQSCFMxH4n9FlOGLJz3WfgNQYSBHfMlIfgLV/k8JeRU9kmzgvV8nZZ+v9LHaSC8vlyr5WvCsSGVPK/zgjlyzKidzJWmOiSVZ37ZmB2VAka9/Cv4YeliYrf37hkEQWB6YECZCMRzVTFpJCpHQfe+kSNg3UIVbbIq8M1Yw5W2/329n9rl/MhpQJ5ie+JBMo3Gl+iUOHZdT8QSJA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20200915025822.29885-1-bailu.lin@vivo.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dd0033a-8c60-4ef9-2bc0-08d859417934
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 06:35:01.3237
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +PU6rwgsfvUIAns8y1zqSNWtoVNHETtClm/+MqncQ+uDkHbW5fmlQkL8NENR8KfxssvqE3mxbS36WfZGZ4N+ZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6311
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bailu,
-
-I can not apply your patch even after manual set 'charset=UTF-8'
-and vim can't figure out the chinese chars. Could you like to check and fix
-it? 
-Also it's better to run 'make htmldocs' and then put the output to website
-to see if everything in your doc appear correctly on website.
-
-Also we use '[PATCH v2]' in subject to show the 2nd version of same patch.
-and reply it on the first version thread could avoid people overlook it.
-
-
-Applying: Documentation: Chinese translation of Documentation/arm64/amu.rst
-error: dev/null: does not exist in index
-Patch failed at 0001 Documentation: Chinese translation of Documentation/arm64/amu.rst
-Use 'git am --show-current-patch' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
-
-在 2020/9/15 上午10:58, Bailu Lin 写道:
-> This is a Chinese translated version of Documentation/arm64/amu.rst
-> 
-> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
-> ---
->  .../translations/zh_CN/arm64/amu.rst          | 102 ++++++++++++++++++
->  1 file changed, 102 insertions(+)
-> 
-> diff --git a/Documentation/translations/zh_CN/arm64/amu.rst b/Documentation/translations/zh_CN/arm64/amu.rst
-> index 000000000000..b02d54b91292
-> --- /dev/null
-> +++ b/Documentation/translations/zh_CN/arm64/amu.rst
-> @@ -0,0 +1,102 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +.. include:: ../disclaimer-zh_CN.rst
-> +
-> +:Original: :ref:`Documentation/arm64/amu.rst`
-> +
-> +---------------------------------------------------------------------
-
-don't need above dashline. and add the 'Translator: xxx' here.
-> +
-> +==================================
-> +AArch64 Linux 中扩展的活动监控单元
-> +==================================
-
-does the '=' number align with chars?
-
-> +
-> +作者: Ionela Voinescu <ionela.voinescu@arm.com>
-> +
-> +日期: 2019-09-10
-> +
-> +本文档简要描述了 AArch64 Linux 支持的活动监控单元的规范。
-> +
-> +
-> +架构总述
-> +--------
-> +
-> +活动监控是 ARMv8.4 CPU 架构引入的一个可选扩展特性。
-> +
-> +活动监控单元(在每个 CPU 中实现)为系统管理提供了性能计数器。既可以通
-> +过系统寄存器的方式访问计数器，同时也支持外部内存映射的方式访问计数器。
-> +
-> +AMUv1 架构实现了一个由4个固定的64位事件计数器组成的计数器组。
-> +
-> +  - CPU 周期计数器：同 CPU 的频率增长
-> +  - 常量计数器：同固定的系统时钟频率增长
-> +  - 淘汰指令计数器: 同每次架构指令执行增长
-> +  - 内存停顿周期计数器：计算由在时钟域内的最后一级缓存中未命中而引起
-> +    的指令调度停顿周期数
-> +
-> +当处于 WFI 或者 WFE 状态时，计数器不会增长。
-> +
-> +AMU 架构提供了一个高达16位的事件计数器空间，未来新的 AMU 版本中可能
-> +用它来实现新增的事件计数器。
-> +
-> +另外，AMUv1 实现了一个多达16个64位辅助事件计数器的计数器组。
-> +
-> +冷复位时所有的计数器会清零。
-> +
-> +
-> +基本支持
-> +--------
-> +
-> +内核可以安全地运行在支持 AMU 和不支持 AMU 的 CPU 组合中。
-> +因此，当配置 CONFIG_ARM64_AMU_EXTN 后我们无条件使能后续(副启动或热插拔)
-
-'secondary cpu' better to translate as '第二个cpu'
-
-Thanks
-Alex
-> +CPU 检测和使用这个特性。
-> +
-> +当在 CPU 上检测到该特性时，我们会标记为特性可用但是不能保证计数器的功能，
-> +仅表明有扩展属性。
-> +
-> +固件(代码运行在高异常级别，例如 arm-tf )需支持以下功能：
-> +
-> + - 提供低异常级别(EL2 和 EL1)访问 AMU 寄存器的能力。
-> + - 使能计数器。如果未使能，它的值应为 0。
-> + - 在从电源关闭状态启动 CPU 前或后保存或者恢复计数器。
-> +
-> +当使用使能了该特性的内核启动但固件损坏时，访问计数器寄存器可能会遭遇
-> +panic 或者死锁。即使未发现这些症状，计数器寄存器返回的数据结果并不一
-> +定能反映真实情况。通常，计数器会返回 0，表明他们未被使能。
-> +
-> +如果固件没有提供适当的支持最好关闭 CONFIG_ARM64_AMU_EXTN。
-> +值得注意的是，出于安全原因，不要绕过 AMUSERRENR_EL0 设置而捕获从
-> +EL0(用户空间) 访问 EL1(内核空间)。 因此，固件应该确保访问 AMU寄存器
-> +不会困在 EL2或EL3。
-> +
-> +AMUv1 的固定计数器可以通过如下系统寄存器访问：
-> +
-> + - SYS_AMEVCNTR0_CORE_EL0
-> + - SYS_AMEVCNTR0_CONST_EL0
-> + - SYS_AMEVCNTR0_INST_RET_EL0
-> + - SYS_AMEVCNTR0_MEM_STALL_EL0
-> +
-> +特定辅助计数器可以通过 SYS_AMEVCNTR1_EL0(n) 访问，其中n介于0到15。
-> +
-> +详细信息定义在目录：arch/arm64/include/asm/sysreg.h。
-> +
-> +
-> +用户空间访问
-> +------------
-> +
-> +由于以下原因，当前禁止从用户空间访问 AMU 的寄存器：
-> +
-> +  - 安全因数：可能会暴露处于安全模式执行的代码信息。
-> +  - 意愿：AMU 是用于系统管理的。
-> +
-> +同样，该功能对用户空间不可见。
-> +
-> +
-> +虚拟化
-> +------
-> +
-> +由于以下原因，当前禁止从 KVM 客户端的用户空间(EL0)和内核空间(EL1)
-> +访问 AMU 的寄存器：
-> +
-> +  - 安全因数：可能会暴露给其他客户端或主机端执行的代码信息。
-> +
-> +任何试图访问 AMU 寄存器的行为都会触发一个注册在客户端的未定义异常。
-> 
+PiANCj4gDQo+IEluIHNvbWUgU2Ftc3VuZyBVRlMgZGV2aWNlcywgdGhlcmUgaXMgc29tZSBib290
+aW5nIGZhaWwgaXNzdWUgd2l0aA0KPiBsb3ctcG93ZXIgVUZTIGRldmljZS4gVGhlIHJlYXNvbiBv
+ZiB0aGlzIGlzc3VlIGlzIHRoZSBVRlMgZGV2aWNlIGhhcyBhDQo+IGxpdHRsZSBiaXQgbG9uZ2Vy
+IGxhdGVuY3kgZm9yIE5PUCBPVVQgcmVzcG9uc2UuIEl0IGNhdXNlcyBib290aW5nIGZhaWwNCj4g
+YmVjYXVzZSBOT1AgT1VUIGNvbW1hbmQgaXMgaXNzdWVkIGR1cmluZyBpbml0aWFsaXphdGlvbiB0
+byBjaGVjayB3aGV0aGVyDQo+IHRoZSBkZXZpY2UgdHJhbnNwb3J0IHByb3RvY29sIGlzIHJlYWR5
+IG9yIG5vdC4gVGhpcyBpc3N1ZSBpcyByZXNvbHZlZCBieQ0KPiByZWxlYXNpbmcgTk9QX09VVF9U
+SU1FT1VUIHZhbHVlLg0KPiANCj4gTk9QX09VVF9USU1FT1VUOiAzMG1zIC0+IDUwbXMNCj4gDQo+
+IFNpZ25lZC1vZmYtYnk6IERhZWp1biBQYXJrIDxkYWVqdW43LnBhcmtAc2Ftc3VuZy5jb20+DQpB
+Y2tlZC1ieTogQXZyaSBBbHRtYW4gPGF2cmkuYWx0bWFuQHdkYy5jb20+DQo=
