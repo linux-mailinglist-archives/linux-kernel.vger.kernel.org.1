@@ -2,119 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C410E26AFF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB21F26AFEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgIOVts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:49:48 -0400
-Received: from mail-eopbgr20108.outbound.protection.outlook.com ([40.107.2.108]:29250
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727982AbgIOVs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:48:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T83+3xw9MbA+/pxS0RObUBrTjOysAY23qsmL2q59y0z8x8W09FOuePhByDaVPk4dUEJVyVz+HRmudyincj5bseZR+5GiUbdJX9VNCRgYA213vGjRUXx6VfDjbsHv3hOtbsPdaqDqAtIfoB10v0rbZS84RlQt9YK3XqiHxQp0jrz/1AzmU5Z+OYx3moJMguCIsfux6ZRRD+vSIVvCOIU00uE3nFftVaMkSDJQFFZS+KBBfb5xK6lFmMBJvyKicQey9uYkTIR2IFtUrG+jcrrlsBHWiDeZUPz+X1sRKXENzIQVO+cEJtgyiapddbxzrgEl/4Z1zpi5ZgID9yaM5Gjqyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kGNOiLXyD/8ixzt5hj5xxJiTfHmoYkBsmIRQmw9Ny9c=;
- b=PsQ4rrL3FtGJhSUhvhLror5rOAk1VylUyTVX8Ty7Cdzkq/1sr7vxRtkZA1hXpFMz5gHHz04Agpjrdu51qzyqL67gKbckAKkUNuG/IUgxxieWNQA3F3IxorXgOjR7oBPiBs1RCa/RzeR5TdfqGbpjRdb8YEREyeJ+deicvSuJcbJfThl7oS28E1LzPBgJMogtEQOeVh1tFyCPl65yF9l0pu+sSi6OQkU0S66hjdOKPsgkcjksmGyRgIZXJprsaA8X+lCwv9MrOUNg9te406uqFmipk4L8CaubaGJMYDHkU/j2y5i/PahNRq2ZY1/H8JgZPQw4DxeCbRwGAua9O1yCwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kGNOiLXyD/8ixzt5hj5xxJiTfHmoYkBsmIRQmw9Ny9c=;
- b=VcEYJsfUTVuU70FZLgEOTJ32gj/jYedlBm3MaYfMDdMSdvn6Ko1lBufkxCUrnW3gm9b6M+S3yGVYpGFTv1iujYspLMqac3sY0KlQ92omgb/2vjG/JskrkUzDaX12qaUc1WqVKFqlgkHalD7DUBQ1/qG5KjLYXbYHqiVQAmt9Fd8=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0505.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:55::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3370.17; Tue, 15 Sep 2020 21:48:36 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 21:48:36 +0000
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: [PATCH] nvmem: core: fix missing of_node_put() in of_nvmem_device_get()
-Date:   Wed, 16 Sep 2020 00:48:22 +0300
-Message-Id: <20200915214822.6756-1-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: AM5PR0601CA0052.eurprd06.prod.outlook.com
- (2603:10a6:206::17) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+        id S1727992AbgIOVvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728115AbgIOVuZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:50:25 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F11EC06178C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:50:10 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id n18so4544928qtw.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:50:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gwAGdDXVM4r4OL55XSo1884lNeDAwaOm7bwctRtLrys=;
+        b=uOWcBox38dGodh/iQrPqVF2GLIJyW9L4Y3ANaEZXp2ypNq6/uKrX+x43BZP8K1yuwB
+         TjBbkfHme3SAZjHyCDwS27BnDVQcAodcI29aOajz9qZKP6YTdfgiHiG7ERgW0xkoMkZc
+         vnnYhnh1hdS2aYSiqfXF918Ttjkg/AZluGilhI1SM4HJ2oSeNm8sbJrtEH/4xheskIPM
+         Fn349hTQnPUj1MoyZwZEIsaKO2GhGt3GRpPEws4hszG3mSahAm4PmzMdhBav2zpg/aGG
+         GkAk3u/IFwWEN8bb5pmjgdXCg+UJyIAZ1cTAk/PMXcWapHOK0hyjAleZE0fB0RVgd8O4
+         IhMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gwAGdDXVM4r4OL55XSo1884lNeDAwaOm7bwctRtLrys=;
+        b=M46u+7wl4NAWMIUu8Bf+dbqATi3564+H0/Q/8zNEwCxRBpI/BeIQReUBh5BPyTMV2o
+         5g/HE5oWvdxfOtwhqXdRMYeATpXsxeYhXkuerSTZMBtXRC1fobWQRbLi1nu9VBmGq3w/
+         MItzn0twlx5AjlQT6g59LOhpg/CNkDXkXW0pgFtcjVxiSObVCNIShHRocIMF5svjP9dX
+         qG3dw+VVNbvAl/pDUQyuE9M0E99ro6yiPvQW3gmy2hkDCsbYtShXt/GLvauUaDWAxxql
+         5zkfgTwZfg/FlFGTXQOaePP/4MWt00J2vgW9CVCHKLIOz7qC2NZJHb0rNUuNJKyLpmCd
+         WAdQ==
+X-Gm-Message-State: AOAM530tV5O+ka4nSCA5xCZBXXjkYj3EIT2E6XPQEClMHOkhrmdgw/Ba
+        4bIHLzpebjx/zM00gwzLD9ztZw==
+X-Google-Smtp-Source: ABdhPJzQh75yII3N5KV/1tjYmS/zxa6QaCbe44anS0rhYQ2i1j9XbUmXAcwDIwvYDSQHA5IH+rQ8SQ==
+X-Received: by 2002:ac8:863:: with SMTP id x32mr7523555qth.27.1600206609589;
+        Tue, 15 Sep 2020 14:50:09 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:124c])
+        by smtp.gmail.com with ESMTPSA id b79sm18586859qkg.10.2020.09.15.14.50.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 14:50:08 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 17:48:45 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     tj@kernel.org, lizefan@huawei.com, corbet@lwn.net,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        rdunlap@infradead.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v5] mm: memcontrol: Add the missing numa_stat interface
+ for cgroup v2
+Message-ID: <20200915214845.GB189808@cmpxchg.org>
+References: <20200915171801.39761-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM5PR0601CA0052.eurprd06.prod.outlook.com (2603:10a6:206::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Tue, 15 Sep 2020 21:48:35 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c2fd0682-acc0-41ab-2a29-08d859c118f6
-X-MS-TrafficTypeDiagnostic: HE1P190MB0505:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0505FA4677C5C786870E81BC95200@HE1P190MB0505.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hkWt3XyppSzFRbzMmLNDr+DTQkhsT/ngRbzjhicHIBeoC1UliIDY8zsJnKuCtA1kkB7KirfhnLyaVMylGkhfB8FgQWkem9/XlWtqHZLzK6lecFdX93qol3x7eirFTxhLX+IT0b5YXVOOOSLDDhhaeQttlqff2YzU3/CJKsurBvQBWAhQdKYBLwQXsJhvMQ634Vab2qJck63CZD8b5FXJ0zo6WtyMojQdMJBAC74RCSp8LIYo3PF8eqTnQ85WzI6nh/Sve0Z8AZB6LCIlqIa2JDBJS045quKT2gGek3AWhi6Vp+ByHuN6+FB6fvTCnl6LGlRKzZE6eSTXXDzNg1Eg3vtnrgMYcYT1HkBt2WTYE7+JfTgxNRZCD0WfOfrBIIS6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(39830400003)(376002)(366004)(6666004)(478600001)(107886003)(52116002)(1076003)(44832011)(4326008)(86362001)(6486002)(83380400001)(66476007)(956004)(2616005)(66556008)(66946007)(8676002)(2906002)(36756003)(5660300002)(110136005)(6506007)(6512007)(186003)(316002)(26005)(16526019)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: s/YQYhDoFaKrqGHv218aSySlwmxCereU9yoATp2CcnauC5/QZM1IvFipInBaDtcpTcmFJoZnCFC1ZOsAcoz/Ax8mPMH553CcO9e5NkI9zRqStzJe1cHwlbTTMH7SALZwD9XNjSThTZIdiFR3I/9CFWxRLoNzlCnZXj6N4cE9hpnSadoYKwQzDmTR5ZTNJpG7GfBoGuTuGeJwZLj/RPnI6C8gGbzAldPVWWC3lG6beShbrwoWBAsESzNLT3iGk4d8/mMrccw/1MuG7OfDbeGM2Vv1H1HUHXcjpOf6XNjppVWx9oNKCvm5BH4/KUOkOrOC+GK153VNa1bGJEHQxvhutbWAPXniIjBJldXGeP8QmLjuqAjv9j9ubC2h8wrGZKWL1XNLruzxDqMgyiKBOCeIBnrDI+5H84CKpYxliz2NpTpr6VPHzhkFjsLVTvEGIYSCeLHlKQWKkgoqBU4O+RJKByAxh4DuQSOvcg6CUb7t7A6aZE/uyKTbKT5IQEP+YAa4upEUuxqPWFL8pXuHyqLv13ZP9455qeztU+GOhO+rkom2Fx0NX/wO6jJuJ6YoUqj/5S3tWkdN0f0mPCan3a/ASJB42unw1bCxN8c8QM2uZwmsRuk6tLc4PwqfYG0qDMAz5WUujKQ6QpbaQe1K0m0PYA==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2fd0682-acc0-41ab-2a29-08d859c118f6
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 21:48:35.9578
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CaZgwcdoOOGAcEcNL+Ot4ouf6oWuG9sk+IKCFNF83N9H2WJPFGsP9ZEBfNtVVw8zF/TBeL1txg8crsWie2U0VJnVR5SSWZogK35DsCTM5gI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0505
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915171801.39761-1-songmuchun@bytedance.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_parse_phandle() returns device_node with incremented ref count
-which needs to be decremented by of_node_put() when device_node
-is not used.
+On Wed, Sep 16, 2020 at 01:18:01AM +0800, Muchun Song wrote:
+> In the cgroup v1, we have a numa_stat interface. This is useful for
+> providing visibility into the numa locality information within an
+> memcg since the pages are allowed to be allocated from any physical
+> node. One of the use cases is evaluating application performance by
+> combining this information with the application's CPU allocation.
+> But the cgroup v2 does not. So this patch adds the missing information.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Suggested-by: Shakeel Butt <shakeelb@google.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
----
- drivers/nvmem/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Yup, that would be useful information to have. Just a few comments on
+the patch below:
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 6cd3edb2eaf6..204a515d8bc5 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -835,6 +835,7 @@ struct nvmem_device *of_nvmem_device_get(struct device_node *np, const char *id)
- {
- 
- 	struct device_node *nvmem_np;
-+	struct nvmem_device *nvmem;
- 	int index = 0;
- 
- 	if (id)
-@@ -844,7 +845,9 @@ struct nvmem_device *of_nvmem_device_get(struct device_node *np, const char *id)
- 	if (!nvmem_np)
- 		return ERR_PTR(-ENOENT);
- 
--	return __nvmem_device_get(nvmem_np, device_match_of_node);
-+	nvmem = __nvmem_device_get(nvmem_np, device_match_of_node);
-+	of_node_put(nvmem_np);
-+	return nvmem;
- }
- EXPORT_SYMBOL_GPL(of_nvmem_device_get);
- #endif
--- 
-2.17.1
+> @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
+>  		collapsing an existing range of pages. This counter is not
+>  		present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
+>  
+> +  memory.numa_stat
+> +	A read-only flat-keyed file which exists on non-root cgroups.
 
+It's a nested key file, not flat.
+
+> +	This breaks down the cgroup's memory footprint into different
+> +	types of memory, type-specific details, and other information
+> +	per node on the state of the memory management system.
+> +
+> +	This is useful for providing visibility into the NUMA locality
+> +	information within an memcg since the pages are allowed to be
+> +	allocated from any physical node. One of the use case is evaluating
+> +	application performance by combining this information with the
+> +	application's CPU allocation.
+> +
+> +	All memory amounts are in bytes.
+> +
+> +	The output format of memory.numa_stat is::
+> +
+> +	  type N0=<bytes in node 0> N1=<bytes in node 1> ...
+> +
+> +	The entries are ordered to be human readable, and new entries
+> +	can show up in the middle. Don't rely on items remaining in a
+> +	fixed position; use the keys to look up specific values!
+> +
+> +	  anon
+> +		Amount of memory per node used in anonymous mappings such
+> +		as brk(), sbrk(), and mmap(MAP_ANONYMOUS).
+> +
+> +	  file
+> +		Amount of memory per node used to cache filesystem data,
+> +		including tmpfs and shared memory.
+> +
+> +	  kernel_stack
+> +		Amount of memory per node allocated to kernel stacks.
+> +
+> +	  shmem
+> +		Amount of cached filesystem data per node that is swap-backed,
+> +		such as tmpfs, shm segments, shared anonymous mmap()s.
+> +
+> +	  file_mapped
+> +		Amount of cached filesystem data per node mapped with mmap().
+> +
+> +	  file_dirty
+> +		Amount of cached filesystem data per node that was modified but
+> +		not yet written back to disk.
+> +
+> +	  file_writeback
+> +		Amount of cached filesystem data per node that was modified and
+> +		is currently being written back to disk.
+> +
+> +	  anon_thp
+> +		Amount of memory per node used in anonymous mappings backed by
+> +		transparent hugepages.
+> +
+> +	  inactive_anon, active_anon, inactive_file, active_file, unevictable
+> +		Amount of memory, swap-backed and filesystem-backed,
+> +		per node on the internal memory management lists used
+> +		by the page reclaim algorithm.
+> +
+> +		As these represent internal list state (e.g. shmem pages are on
+> +		anon memory management lists), inactive_foo + active_foo may not
+> +		be equal to the value for the foo counter, since the foo counter
+> +		is type-based, not list-based.
+> +
+> +	  slab_reclaimable
+> +		Amount of memory per node used for storing in-kernel data
+> +		structures which might be reclaimed, such as dentries and
+> +		inodes.
+> +
+> +	  slab_unreclaimable
+> +		Amount of memory per node used for storing in-kernel data
+> +		structures which cannot be reclaimed on memory pressure.
+> +
+>    memory.swap.current
+>  	A read-only single value file which exists on non-root
+>  	cgroups.
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 75cd1a1e66c8..ff919ef3b57b 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6425,6 +6425,86 @@ static int memory_stat_show(struct seq_file *m, void *v)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_NUMA
+> +struct numa_stat {
+> +	const char *name;
+> +	unsigned int ratio;
+> +	enum node_stat_item idx;
+> +};
+> +
+> +static struct numa_stat numa_stats[] = {
+> +	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> +	{ "file", PAGE_SIZE, NR_FILE_PAGES },
+> +	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> +	{ "shmem", PAGE_SIZE, NR_SHMEM },
+> +	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> +	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> +	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +	/*
+> +	 * The ratio will be initialized in numa_stats_init(). Because
+> +	 * on some architectures, the macro of HPAGE_PMD_SIZE is not
+> +	 * constant(e.g. powerpc).
+> +	 */
+> +	{ "anon_thp", 0, NR_ANON_THPS },
+> +#endif
+> +	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> +	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> +	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> +	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> +	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> +	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> +	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> +};
+
+This is a bit duplicative with memory_stat_format(), and the
+collections will easily go out of sync as we add/change stat items.
+
+Can you please convert memory_stat_format() to use the same shared table?
+
+You may have to add another flag for the MEMCG_* items for which we
+don't have per-node counters.
+
+The same applies to the documentation. Please don't duplicate the list
+of items, but have memory.numa_stat refer to the list for memory.stat.
+You can add (not in memory.numa_stat) or something to percpu and sock.
+
+> +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> +					   unsigned int nid,
+> +					   enum node_stat_item idx)
+> +{
+> +	VM_BUG_ON(nid >= nr_node_ids);
+> +	return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
+> +}
+
+Please drop this wrapper and use lruvec_page_state directly below.
+
+Otherwise, this looks reasonable to me.
