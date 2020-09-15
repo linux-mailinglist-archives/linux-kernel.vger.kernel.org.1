@@ -2,98 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061B326A49D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A0E26A49E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgIOMEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:04:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbgIOLvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:51:40 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F9A620732;
-        Tue, 15 Sep 2020 11:51:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600170682;
-        bh=4AdVvb9OpJlCLAFzmltxBUT5yXR5yQZ90HPJkguTE/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S6Oi9kNO6jEJRVa0oQ7wJE9zm2k9LSZ8fHzXrkc2iG9HPQCC/RL9evS85vQ0UuNqa
-         j0mC1xGz7Qh2AnPRsfQMYXHpoEL0Ai0tYEKoFtleucmMt7+LFODhK4cqpKchawBdTE
-         EkHzNEW5D1KsyGkYeHyF3nW60lzX0wZVECcvkhSw=
-Date:   Tue, 15 Sep 2020 12:50:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 3/3] ASoC: tlv320aic32x4: Enable fast charge
-Message-ID: <20200915115034.GA5576@sirena.org.uk>
-References: <20200911173140.29984-1-miquel.raynal@bootlin.com>
- <20200911173140.29984-4-miquel.raynal@bootlin.com>
- <20200915082602.GH4230@piout.net>
+        id S1726161AbgIOMFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726461AbgIOLyU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 07:54:20 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEC4C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:53:34 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id UBtV2302Q4C55Sk06BtVmK; Tue, 15 Sep 2020 13:53:29 +0200
+Received: from geert (helo=localhost)
+        by ramsan with local-esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kI9Wb-0008H5-Gl; Tue, 15 Sep 2020 13:53:29 +0200
+Date:   Tue, 15 Sep 2020 13:53:29 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+cc:     mchehab+huawei@kernel.org, r.verdejo@samsung.com,
+        nicolas@ndufresne.ca, linux-media@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v10 3/4] media: vidtv: add a bridge driver
+In-Reply-To: <20200821125848.1092958-4-dwlsalmeida@gmail.com>
+Message-ID: <alpine.DEB.2.21.2009151345001.31296@ramsan.of.borg>
+References: <20200821125848.1092958-1-dwlsalmeida@gmail.com> <20200821125848.1092958-4-dwlsalmeida@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
-Content-Disposition: inline
-In-Reply-To: <20200915082602.GH4230@piout.net>
-X-Cookie: Where am I?  Who am I?  Am I?  I
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ 	Hi Daniel,
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 21 Aug 2020, Daniel W. S. Almeida wrote:
+> From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+>
+> Digital TV devices consist of several independent hardware components
+> which are controlled by different drivers.
+> Each media device is controlled by a group of cooperating drivers with the
+> bridge driver as the main driver.
+>
+> This patch adds a bridge driver for the Virtual Digital TV driver [vidtv].
 
-On Tue, Sep 15, 2020 at 10:26:02AM +0200, Alexandre Belloni wrote:
-> On 11/09/2020 19:31:40+0200, Miquel Raynal wrote:
+This is now commit f90cf6079bf67988 ("media: vidtv: add a bridge
+driver") in the media tree.
 
-> > +	/*
-> > +	 * Enable the fast charging feature and ensure the needed 40ms ellaps=
-ed
-> > +	 * before using the analog circuits.
-> > +	 */
-> > +	snd_soc_component_write(component, AIC32X4_REFPOWERUP,
-> > +				AIC32X4_REFPOWERUP_40MS);
-> > +	msleep(40);
-> > +
+noreply@ellerman.id.au reported the following error for an m68k
+allmodconfig build:
 
-> Maybe the actual REFPOWERUP value could be exposed as a control so
-> userspace has a way to set the policy?=20
+     ERROR: modpost: "__udivdi3" [drivers/media/test-drivers/vidtv/dvb-vidtv-bridge.ko] undefined!
 
-We very rarely do this, there's not usially anything=20
+Presumably this fails on other 32-bit platforms, too.
 
-> I'm not sure it make sense to have the delay in probe because it is not
-> enable the analog part of the codec. The delay should probable be after
-> the clocks have been set up because the datasheet says that it is mdac
-> and madc that is starting the analog circuitry.
+> --- /dev/null
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+> +static u32 vidtv_mux_check_mux_rate(struct vidtv_mux *m)
+> +{
+> +	/*
+> +	 * attempt to maintain a constant mux rate, padding with null packets
+> +	 * if needed
+> +	 */
+> +
+> +	u32 nbytes = 0;  /* the number of bytes written by this function */
+> +
+> +	u64 nbytes_expected; /* the number of bytes we should have written */
+> +	u64 nbytes_streamed; /* the number of bytes we actually wrote */
+> +	u32 num_null_pkts; /* number of null packets to bridge the gap */
+> +
+> +	u64 elapsed_time_msecs = jiffies_to_usecs(m->timing.current_jiffies -
+> +						  m->timing.past_jiffies);
+> +
+> +	elapsed_time_msecs = min(elapsed_time_msecs, (u64)VIDTV_MAX_SLEEP_USECS / 1000);
+> +	nbytes_expected = div64_u64(m->mux_rate_kbytes_sec * 1000, MSEC_PER_SEC);
 
-Deferring the delay to a workqueue is the usual thing where there's
-concerns about slowing down boot.
+Seriously?!?
 
---C7zPtVaVf+AK4Oqc
-Content-Type: application/pgp-signature; name="signature.asc"
+You multiply by 1000 first, followed by a division by 1000 using an
+expensive 64-by-64 division?
 
------BEGIN PGP SIGNATURE-----
+> +	nbytes_expected *= elapsed_time_msecs;
+> +
+> +	nbytes_streamed = m->mux_buf_offset;
+> +
+> +	if (nbytes_streamed < nbytes_expected) {
+> +		/* can't write half a packet: roundup to a 188 multiple */
+> +		nbytes_expected  = roundup(nbytes_expected - nbytes_streamed, TS_PACKET_LEN);
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9gqokACgkQJNaLcl1U
-h9BxmAf/UcMuAW76u6rLlk8ONETf/rGaWtTY69AB4XXcR3C5KFDbnlRR+se+WUaZ
-jaaNRa0HzZQIRqTCHz6SaGc2hXvR1Ua6uFT6KEroJkRtfyxVdNS70PEyykyNPe09
-u12QaUYrzpQ3PVGZ3ngEXk3jFnb+8NziK5riqM8S8GqD8bwl9H47rDBReMNDY2Lq
-UKP52Nv0qFYzK0cj7dBtPLYozZSXDNi+Vyve6jxnmE1iRHIc+VZvGZFBNBMb+vfY
-RS9ojAe/BNibV+4sT/2SBQAyIc/AKjYn8crR9m43onChyuuryn0sS9Dn2Qkh1/25
-+RYK+VVmlF/4DjcJSUjfcS9l/H4Q9g==
-=5ecU
------END PGP SIGNATURE-----
+drivers/media/test-drivers/vidtv/vidtv_mux.o: In function `vidtv_mux_tick':
+vidtv_mux.c:(.text+0x788): undefined reference to `__udivdi3'
 
---C7zPtVaVf+AK4Oqc--
+This is a 64-by-32 division, hence it should use a helper from
+<linux/math64.h>.
+
+However, I'm wondering if "nbytes_expected - nbytes_streamed" is
+guaranteed to be a "small" number, hence a 32-by-32 division would be
+sufficient?
+
+> +		num_null_pkts    = nbytes_expected / TS_PACKET_LEN;
+
+Likewise.
+
+> +		nbytes          += vidtv_mux_pad_with_nulls(m, num_null_pkts);
+> +	}
+> +
+> +	return nbytes;
+> +}
+
+> --- /dev/null
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
+> +static void vidtv_s302m_compute_pts(struct vidtv_encoder *e)
+> +{
+> +	u64 count = e->sample_count;
+> +	struct vidtv_access_unit *au = e->access_units;
+> +
+> +	while (au) {
+> +		count += au->num_samples;
+> +
+> +		au->pts = count *
+> +			  CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
+
+drivers/media/test-drivers/vidtv/vidtv_s302m.o: In function `vidtv_s302m_encode':
+vidtv_s302m.c:(.text+0x2ac): undefined reference to `__udivdi3'
+
+Likewise.
+
+> +
+> +		au = au->next;
+> +	}
+> +}
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
