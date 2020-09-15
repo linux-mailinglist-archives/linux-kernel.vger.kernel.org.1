@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE5D269C19
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4E3269C1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgIOCtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 22:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgIOCtY (ORCPT
+        id S1726131AbgIOCtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 22:49:47 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:32990 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgIOCtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 22:49:24 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0508EC06174A;
-        Mon, 14 Sep 2020 19:49:24 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id jw11so987945pjb.0;
-        Mon, 14 Sep 2020 19:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=KwNAiWJRGAv99MLMgUjio/0RK3rO7RqLOWZGiQVH4cs=;
-        b=HQMAsT5Cpi3ZVvE6aUzwNqCmoc+hJimdldWrYhjJnMo9GKThwYcs1ehJDOOYUfEVs+
-         c3uIHv0eSV+/Z0EaTKGSN0/InpbN2a43KUp1UjVs/p7ytQ7/12/TwpUe89rkbOk+ztk2
-         AUq6aYP4vM4W7iGIdlRtk5H29sBPyvTJ75Ftk5ae7rJuwT/W0LfBGl4ZV1Tt8923pp/l
-         HPpe+vFnBMkWjZDyhcV9oiimti8Jj8XBzVm/TyprP09Q10iZ8r/fmMdMT2tJI7f0n/tx
-         yF1uXbmYMJgORI4On7seltzHM8cbKJ3TjFjEKo+7e1XSTCybLnV0SAiFtd/DS4DwiSjq
-         9wAA==
+        Mon, 14 Sep 2020 22:49:40 -0400
+Received: by mail-wr1-f66.google.com with SMTP id m6so1664744wrn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 19:49:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=KwNAiWJRGAv99MLMgUjio/0RK3rO7RqLOWZGiQVH4cs=;
-        b=INlhVHAM0963k+ZIBU+v+yEbrz8Uli+/V7yikwQRe7XHCl58zF7H7SI7TYmBGl+mkS
-         gnTAWoyxaclnpYWaDYnkjYxl0teh+gnZG2fyGYZJvYraUaF1UelzUlQO3t+uWga7G4Yn
-         bqDiYdDR3ZVxqYPkfRWAnbPXm3Jf0VCMUIzpunvUSZcAfMuiUKIH71W74HOnGGk6ED0l
-         Lq2xwrrvO+74n2E1OXJrucU6ic7UsRV5mxqizMrFKZUj8YlxS2FuUDIO/EGRa2t0jpAi
-         V7+LM3H7q0Nt6sedtCkAntQ6d4J/c7QUDs2acBkG2f5YTqS2SI7Pqdubi/alOsCNXYQ3
-         /wxA==
-X-Gm-Message-State: AOAM532HQ2Ab8tBzOM5nZ8QaMkGGPdEoGCtkQM5caGyKk0MHO11DaYoB
-        +HwUnEKuz2cRQcmyZlC59Lg=
-X-Google-Smtp-Source: ABdhPJyTc6EOwxZ5jsKaWPo8x1RkVddn24PJQuDSbAXRaYhCLAyTFVl/PXqlACqvjkAx8OXV2NSCxw==
-X-Received: by 2002:a17:90b:793:: with SMTP id l19mr2206291pjz.154.1600138163637;
-        Mon, 14 Sep 2020 19:49:23 -0700 (PDT)
-Received: from localhost ([203.185.249.227])
-        by smtp.gmail.com with ESMTPSA id a9sm10556060pjm.40.2020.09.14.19.49.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 19:49:23 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 12:49:17 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 3/4] sparc64: remove mm_cpumask clearing to fix
- kthread_use_mm race
-To:     Anatoly Pugachev <matorola@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-arch@vger.kernel.org,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>
-References: <20200914045219.3736466-1-npiggin@gmail.com>
-        <20200914045219.3736466-4-npiggin@gmail.com>
-        <1600066040.vnmz9nxhwt.astroid@bobo.none>
-        <CADxRZqxkB9tzO+nf56vFfvdYBooo1rqEbst=QGZQJA3jWhKLYw@mail.gmail.com>
-In-Reply-To: <CADxRZqxkB9tzO+nf56vFfvdYBooo1rqEbst=QGZQJA3jWhKLYw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SSR0thvhHSP/MxbY+SRaj7rE8lw1VEfUDd63lG7xHc0=;
+        b=ilI+VO6PvqgJmGn3CJ+W38kOv/Qia2Te5ZfA03TODJWdC2dTwPlwIk+Ox0DtrX77HE
+         CzjPtre85E5a9z92jn7u26p05O9/4kCMMUdxYx3WUUgxaUqczzQFvl3NDoG/CuQHU1uz
+         7TZiBNMSEm3PoWSVm1nf0kkv7/eMw953WFSyNfnAMXojW/2t1SF03cBwno5wuxTFa8JF
+         VxZIT3oYeB+/aKLb8Betvw33GeDuZy2ghF0NvukECjP3kCuFht6SuPo0z13KndKmFtCf
+         4K+s/+Y8Ik9RuTX6gByrCmPyY6oVlpqrHJsLF8r717edCxTgHyDZqOKj/AbGr9mCp/xC
+         5rXw==
+X-Gm-Message-State: AOAM532KeSj4nkdNslVcG/xoasmYFhAkUG8zrYcN/CvWss2K+7csAsCB
+        h8vtvlUobTr6l3Zl9fTylTA4Fhrq8Cf64uo+IZU=
+X-Google-Smtp-Source: ABdhPJyMIj+LCOQ7n/PnKbFwUl0PmHYKI/+6D0T98rUhjTou+gL4FwWeSa4oStjZRnYIk/2cKmBEdt72aN9lAzKCpTw=
+X-Received: by 2002:adf:f2d0:: with SMTP id d16mr18058810wrp.332.1600138178639;
+ Mon, 14 Sep 2020 19:49:38 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <1600138100.0flxk0qjzs.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20200912041101.2123-1-henrywolfeburns@gmail.com> <20200915004125.971-1-henrywolfeburns@gmail.com>
+In-Reply-To: <20200915004125.971-1-henrywolfeburns@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 15 Sep 2020 11:49:26 +0900
+Message-ID: <CAM9d7cjnYm8cBFJBVSkbnyfNw2-SApsAkm7xLdNkmnSOhJZOZw@mail.gmail.com>
+Subject: Re: [PATCH v2] perf vendor events amd: remove trailing commas
+To:     Henry Burns <henrywolfeburns@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Vijay Thakkar <vijaythakkar@me.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Anatoly Pugachev's message of September 14, 2020 8:23 pm:
-> On Mon, Sep 14, 2020 at 10:00 AM Nicholas Piggin <npiggin@gmail.com> wrot=
-e:
->>
->> Excerpts from Nicholas Piggin's message of September 14, 2020 2:52 pm:
->>
->> [...]
->>
->> > The basic fix for sparc64 is to remove its mm_cpumask clearing code. T=
-he
->> > optimisation could be effectively restored by sending IPIs to mm_cpuma=
-sk
->> > members and having them remove themselves from mm_cpumask. This is mor=
-e
->> > tricky so I leave it as an exercise for someone with a sparc64 SMP.
->> > powerpc has a (currently similarly broken) example.
->>
->> So this compiles and boots on qemu, but qemu does not support any
->> sparc64 machines with SMP. Attempting some simple hacks doesn't get
->> me far because openbios isn't populating an SMP device tree, which
->> blows up everywhere.
->>
->> The patch is _relatively_ simple, hopefully it shouldn't explode, so
->> it's probably ready for testing on real SMP hardware, if someone has
->> a few cycles.
->=20
-> Nick,
->=20
-> applied this patch to over 'v5.9-rc5' tag , used my test VM (ldom)
-> with 32 vcpus.
-> Machine boot, stress-ng test ( run as
-> "stress-ng --cpu 8 --io 8 --vm 8 --vm-bytes 2G --fork 8 --timeout 15m" )
-> finishes without errors.
->=20
+Hello,
 
-Thank you very much Anatoly.
+On Tue, Sep 15, 2020 at 9:41 AM Henry Burns <henrywolfeburns@gmail.com> wrote:
+>
+> amdzen2/core.json and amdzen/core.json have the occasional trailing
+> comma. Since that goes against the JSON standard, lets remove it.
+>
+> Signed-off-by: Henry Burns <henrywolfeburns@gmail.com>
 
-Thanks,
-Nick
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks
+Namhyung
+
+
+> ---
+>  tools/perf/pmu-events/arch/x86/amdzen1/core.json | 2 +-
+>  tools/perf/pmu-events/arch/x86/amdzen2/core.json | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/pmu-events/arch/x86/amdzen1/core.json b/tools/perf/pmu-events/arch/x86/amdzen1/core.json
+> index 7e1aa8273935..653b11b23399 100644
+> --- a/tools/perf/pmu-events/arch/x86/amdzen1/core.json
+> +++ b/tools/perf/pmu-events/arch/x86/amdzen1/core.json
+> @@ -61,7 +61,7 @@
+>    {
+>      "EventName": "ex_ret_brn_ind_misp",
+>      "EventCode": "0xca",
+> -    "BriefDescription": "Retired Indirect Branch Instructions Mispredicted.",
+> +    "BriefDescription": "Retired Indirect Branch Instructions Mispredicted."
+>    },
+>    {
+>      "EventName": "ex_ret_mmx_fp_instr.sse_instr",
+> diff --git a/tools/perf/pmu-events/arch/x86/amdzen2/core.json b/tools/perf/pmu-events/arch/x86/amdzen2/core.json
+> index de89e5a44ff1..4b75183da94a 100644
+> --- a/tools/perf/pmu-events/arch/x86/amdzen2/core.json
+> +++ b/tools/perf/pmu-events/arch/x86/amdzen2/core.json
+> @@ -125,6 +125,6 @@
+>    {
+>      "EventName": "ex_ret_fus_brnch_inst",
+>      "EventCode": "0x1d0",
+> -    "BriefDescription": "Retired Fused Instructions. The number of fuse-branch instructions retired per cycle. The number of events logged per cycle can vary from 0-8.",
+> +    "BriefDescription": "Retired Fused Instructions. The number of fuse-branch instructions retired per cycle. The number of events logged per cycle can vary from 0-8."
+>    }
+>  ]
+> --
+> 2.25.1
+>
