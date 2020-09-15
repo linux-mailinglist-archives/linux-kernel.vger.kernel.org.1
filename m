@@ -2,54 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CFF26B053
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC9B26B049
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgIOWIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:08:14 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37054 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727993AbgIOUVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:21:20 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kIHRx-00EodC-D4; Tue, 15 Sep 2020 22:21:13 +0200
-Date:   Tue, 15 Sep 2020 22:21:13 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        mkubecek@suse.cz, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/3] ethtool: Add 100base-FX link mode entries
-Message-ID: <20200915202113.GE3526428@lunn.ch>
-References: <20200915181708.25842-1-dmurphy@ti.com>
- <20200915181708.25842-2-dmurphy@ti.com>
+        id S1728030AbgIOWG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:06:58 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:32985 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727977AbgIOUZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:25:32 -0400
+Received: by mail-il1-f194.google.com with SMTP id x2so4327384ilm.0;
+        Tue, 15 Sep 2020 13:25:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hqrDKh/wQTHsjpamDIm7+3eHpp2tofZ94H9jUy28gw0=;
+        b=FJiSYHDrb4G+Kfhvx53ksMNzAWsC3A19koW6Wu1qBxmHGCRgeo9c/kVADzqjUqn3zE
+         SPLrR6parJtY/lpCBeqLvyOLByhnPuuhnXWB5yYfFglcua9gh0lE43TK2Xyh3wv/SBda
+         LUew6SP6RnzYvzcsl6/B51ceEH77g3TeMLte0VdBqywgXLHKJ4xMXlfoKh9yrra6oupw
+         XkzAqxZLCmm+aBuXIeMm2bObrqn8GlkGEwXD2E3HEL1hspTdrFzTnZoLpyIZuMLMC9HE
+         D5ktN0yf1BYRbwSjBFUHzujYQ7PtIXAyMwqLPTIksSYPJ2UuDOiK2QBTmGtP9DjWa0yl
+         63GQ==
+X-Gm-Message-State: AOAM533K+F/4jRQUBaFcB320/LN0GjY7lGKSPEL7pS0BPqBajJLzT1SW
+        cHSeqwzFP5wPWNV8mgAwMwz819prJmq7vVA=
+X-Google-Smtp-Source: ABdhPJzQEujayl0AnjerHGru4325MxbnU2cDr4EIKJMKs2nkbXcqIgtDujwc4j4UUUHjKfQS9RjVAw==
+X-Received: by 2002:a92:b74c:: with SMTP id c12mr18335573ilm.237.1600201513104;
+        Tue, 15 Sep 2020 13:25:13 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id j77sm1847287ili.31.2020.09.15.13.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 13:25:12 -0700 (PDT)
+Received: (nullmailer pid 2449085 invoked by uid 1000);
+        Tue, 15 Sep 2020 20:25:09 -0000
+Date:   Tue, 15 Sep 2020 14:25:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 2/5] dt-bindings: eeprom: at24: Add label property for
+ AT24
+Message-ID: <20200915202509.GA2448287@bogus>
+References: <20200910134239.192030-1-jonathanh@nvidia.com>
+ <20200910134239.192030-3-jonathanh@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915181708.25842-2-dmurphy@ti.com>
+In-Reply-To: <20200910134239.192030-3-jonathanh@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:17:06PM -0500, Dan Murphy wrote:
-> Add entries for the 100base-FX full and half duplex supported modes.
+On Thu, Sep 10, 2020 at 02:42:36PM +0100, Jon Hunter wrote:
+> Add a label property for the AT24 EEPROM to allow a custom name to be
+> used for identifying the EEPROM on a board. This is useful when there
+> is more than one EEPROM present.
 > 
-> $ ethtool eth0
->         Supported ports: [ TP    MII     FIBRE ]
->         Supported link modes:   10baseT/Half 10baseT/Full
->                                 100baseT/Half 100baseT/Full
->                                 100baseFX/Half 100baseFX/Full
->         Supported pause frame use: Symmetric Receive-only
->         Supports auto-negotiation: No
->         Supported FEC modes: Not reported
->         Advertised link modes:  10baseT/Half 10baseT/Full
->                                 100baseT/Half 100baseT/Full
->                                 100baseFX/Half 100baseFX/Full
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  Documentation/devicetree/bindings/eeprom/at24.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documentation/devicetree/bindings/eeprom/at24.yaml
+> index 4cee72d53318..5c00d8a146b0 100644
+> --- a/Documentation/devicetree/bindings/eeprom/at24.yaml
+> +++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
+> @@ -114,6 +114,10 @@ properties:
+>            - const: renesas,r1ex24128
+>            - const: atmel,24c128
+>  
+> +  label:
+> +    description: Descriptive name of the EEPROM.
+> +    maxItems: 1
 
-I thought this PHY could not switch between TP and Fibre. It has a
-strap which decides? So i would expect the supported modes to be
-either BaseT or BaseFX. Not both. Same for Advertised?
+label is always a single string, so drop 'maxItems'.
 
-       Andrew
+> +
+>    reg:
+>      maxItems: 1
+>  
+> -- 
+> 2.25.1
+> 
