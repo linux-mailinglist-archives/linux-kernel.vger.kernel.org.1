@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4327F26B723
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F356626B670
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727259AbgIPASG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:18:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34582 "EHLO mail.kernel.org"
+        id S1727233AbgIPAFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:05:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726886AbgIOOWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:22:47 -0400
+        id S1726981AbgIOO3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:29:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99EFA22276;
-        Tue, 15 Sep 2020 14:17:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03DFD229C7;
+        Tue, 15 Sep 2020 14:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179461;
-        bh=O89Fn4tItlJ7HtW9Wnv3TR96ZERayPNj8C8t8ed4kNs=;
+        s=default; t=1600179671;
+        bh=Cs67b7b8aOKdlSY4NXgpobtUy8yeAmBH6EWwOpUJqEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S0WCa8eCjKr6Wf+e7Gw0cuKAk974jT5DzAaseDzqxH+KJnQxh9wSRhxQHnAqhp12/
-         HpIybTMtTcN/1BW2LcYXPigz6NbQqaR6cI2KQ7y5IFsHeQxl4nIDeSAZQVUWh2Hbxo
-         eaCCNbgTFh5tpYuzEQ/ADZDCFoAZMrC4eAP3Y368=
+        b=Lnjwqv60xRbtDFZhfXvxBkuv17nPkwm2P+tUomiBRv2ufniDz+jxrBUOEerRq/m/I
+         fl10Gv23KCY1oVTGgm49xmq7ZyQ51I83877oNYWYVjVeXwSKM6GANGTddZTc7iKj+I
+         1DRveYrhgUIK81ipRvLeVhuxpdbanEvNSWLgwHPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        James Smart <james.smart@broadcom.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 29/78] nvme-rdma: serialize controller teardown sequences
-Date:   Tue, 15 Sep 2020 16:12:54 +0200
-Message-Id: <20200915140635.042369627@linuxfoundation.org>
+Subject: [PATCH 5.4 073/132] gcov: Disable gcov build with GCC 10
+Date:   Tue, 15 Sep 2020 16:12:55 +0200
+Message-Id: <20200915140647.764617525@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
+References: <20200915140644.037604909@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,82 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 5110f40241d08334375eb0495f174b1d2c07657e ]
+[ Upstream commit cfc905f158eaa099d6258031614d11869e7ef71c ]
 
-In the timeout handler we may need to complete a request because the
-request that timed out may be an I/O that is a part of a serial sequence
-of controller teardown or initialization. In order to complete the
-request, we need to fence any other context that may compete with us
-and complete the request that is timing out.
+GCOV built with GCC 10 doesn't initialize n_function variable.  This
+produces different kernel panics as was seen by Colin in Ubuntu and me
+in FC 32.
 
-In this case, we could have a potential double completion in case
-a hard-irq or a different competing context triggered error recovery
-and is running inflight request cancellation concurrently with the
-timeout handler.
+As a workaround, let's disable GCOV build for broken GCC 10 version.
 
-Protect using a ctrl teardown_lock to serialize contexts that may
-complete a cancelled request due to error recovery or a reset.
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1891288
+Link: https://lore.kernel.org/lkml/20200827133932.3338519-1-leon@kernel.org
+Link: https://lore.kernel.org/lkml/CAHk-=whbijeSdSvx-Xcr0DPMj0BiwhJ+uiNnDSVZcr_h_kg7UA@mail.gmail.com/
+Cc: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/rdma.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/gcov/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index f393a6193252e..7e2cdb17c26d8 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -118,6 +118,7 @@ struct nvme_rdma_ctrl {
- 	struct sockaddr_storage src_addr;
- 
- 	struct nvme_ctrl	ctrl;
-+	struct mutex		teardown_lock;
- 	bool			use_inline_data;
- };
- 
-@@ -880,6 +881,7 @@ out_free_io_queues:
- static void nvme_rdma_teardown_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 		bool remove)
- {
-+	mutex_lock(&ctrl->teardown_lock);
- 	blk_mq_quiesce_queue(ctrl->ctrl.admin_q);
- 	nvme_rdma_stop_queue(&ctrl->queues[0]);
- 	if (ctrl->ctrl.admin_tagset)
-@@ -887,11 +889,13 @@ static void nvme_rdma_teardown_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 			nvme_cancel_request, &ctrl->ctrl);
- 	blk_mq_unquiesce_queue(ctrl->ctrl.admin_q);
- 	nvme_rdma_destroy_admin_queue(ctrl, remove);
-+	mutex_unlock(&ctrl->teardown_lock);
- }
- 
- static void nvme_rdma_teardown_io_queues(struct nvme_rdma_ctrl *ctrl,
- 		bool remove)
- {
-+	mutex_lock(&ctrl->teardown_lock);
- 	if (ctrl->ctrl.queue_count > 1) {
- 		nvme_stop_queues(&ctrl->ctrl);
- 		nvme_rdma_stop_io_queues(ctrl);
-@@ -902,6 +906,7 @@ static void nvme_rdma_teardown_io_queues(struct nvme_rdma_ctrl *ctrl,
- 			nvme_start_queues(&ctrl->ctrl);
- 		nvme_rdma_destroy_io_queues(ctrl, remove);
- 	}
-+	mutex_unlock(&ctrl->teardown_lock);
- }
- 
- static void nvme_rdma_stop_ctrl(struct nvme_ctrl *nctrl)
-@@ -1955,6 +1960,7 @@ static struct nvme_ctrl *nvme_rdma_create_ctrl(struct device *dev,
- 		return ERR_PTR(-ENOMEM);
- 	ctrl->ctrl.opts = opts;
- 	INIT_LIST_HEAD(&ctrl->list);
-+	mutex_init(&ctrl->teardown_lock);
- 
- 	if (opts->mask & NVMF_OPT_TRSVCID)
- 		port = opts->trsvcid;
+diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+index 3941a9c48f833..005d8b851bc18 100644
+--- a/kernel/gcov/Kconfig
++++ b/kernel/gcov/Kconfig
+@@ -4,6 +4,7 @@ menu "GCOV-based kernel profiling"
+ config GCOV_KERNEL
+ 	bool "Enable gcov-based kernel profiling"
+ 	depends on DEBUG_FS
++	depends on !CC_IS_GCC || GCC_VERSION < 100000
+ 	select CONSTRUCTORS if !UML
+ 	default n
+ 	---help---
 -- 
 2.25.1
 
