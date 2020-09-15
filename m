@@ -2,95 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79CB26AC82
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F342726AC77
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbgIOSt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727871AbgIOR1G (ORCPT
+        id S1727685AbgIOSsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:48:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59105 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727586AbgIORaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:27:06 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDDEC061353
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:25:22 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y74so4915906iof.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:25:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+B6SfTmbRLE/LfIRwMpjpXfXUi1jL1qvGc+N8ykkERI=;
-        b=Ok9Da4Vf/W1wPTsr/vAXSayisJPsO041Aeg3Igtr8glIIqRJt13m1NF6tPwRYNSyaZ
-         iiTvf20x/9ZAQtB1M1kujLkF7tqDVbkoDwsZTekDgSXBaDzhW1p2eKHRqCoKdwL2d/7s
-         XzWHl8zJsur5ohdCESQBYpqRdfc+2wwomEbfXvGyIszSa4B45soiTt9SFJgPRi0Q76ED
-         qfAS2TSpEK2sGKvFtM4j6+i3SaAVyBEIN1hXmzFLRQj7Lv1LCcRtDjKnYd3fnDnIRMhS
-         2SZeVMIiISGpuIhWMk3kt/5kprWN4GOxoIy3KXmQ6jYumkll88xi/x6NYBVocXk+CfXN
-         cEMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+B6SfTmbRLE/LfIRwMpjpXfXUi1jL1qvGc+N8ykkERI=;
-        b=L9B+Q83kVm4llznsUSX5WPBl0/nmh0/SJHsmkFPXPyOqxfB1h30mF9ewRmDdSSnVMD
-         OvFc4b8Ob3KIWc3xDH4IUzIdZgDGo9UR6qUFuZ3NwSVBPWVIMbuVOO0CVYQqnpGJ8Y+I
-         64QH5Rq/5v0VQXtCt2zYs7WC5m65fLonXImZcVgFfB4B/BTnJdGCP+iQM2mhMJFT7VZJ
-         APWUviZ3ec40yNX1vl3Gp4OZbD1fhwPldWJ1hFAOJ5xoUmyaYo15adzDuzK72GFjNpF0
-         jYHzujjKYk1tODi6hwGESqxTDVmgLKr4QGX3EKhDrdIKb7Dc+r56bmg7MZaJ+uGWQge+
-         3wAg==
-X-Gm-Message-State: AOAM531nL3T19Wn9ea2mxn/+KLz/dXpYx86Ge6kuYKkHmfNtkhyAWBMw
-        s/PaOtjX7Ca1gYMCet6qzM1KTA==
-X-Google-Smtp-Source: ABdhPJymvc5riRPwnED++gXip8Ks7OVyQSEGj+RzOI/P4r0s4LZBjXreZCcZFsoRDRY5VijDMlIrMw==
-X-Received: by 2002:a6b:6d07:: with SMTP id a7mr15724555iod.82.1600190721636;
-        Tue, 15 Sep 2020 10:25:21 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id t10sm8071240iog.49.2020.09.15.10.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 10:25:20 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kIEhj-006WFS-Fg; Tue, 15 Sep 2020 14:25:19 -0300
-Date:   Tue, 15 Sep 2020 14:25:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/2] selftests/vm: fix incorrect gcc invocation in some
- cases
-Message-ID: <20200915172519.GL1221970@ziepe.ca>
-References: <20200915012901.1655280-1-jhubbard@nvidia.com>
- <20200915012901.1655280-3-jhubbard@nvidia.com>
+        Tue, 15 Sep 2020 13:30:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600191003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=04+TiwbT5jJwo2O4cAAW4KPKyUOr/nEVAtPPLejpYmE=;
+        b=H9nmxONR8CFWbqAqyEiC5fbdng1B993W9Q6egvjj0ZmncQpRJJTHJLDvW2aPPfBLgPFHw8
+        MXLS5BhU7Yp2dzs/zz5p/m9n7Xi5e56Ip3U9JdhzMPgYGPHcWEnM503lfdwAPKcXQOlkmF
+        VUgap0b2aHuidU2Q10+W2dbVH4VDeEs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-55-BwdTzHixPnCJo5xXDuAUbQ-1; Tue, 15 Sep 2020 13:29:59 -0400
+X-MC-Unique: BwdTzHixPnCJo5xXDuAUbQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0D8210BBEC3;
+        Tue, 15 Sep 2020 17:29:54 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CE49A61473;
+        Tue, 15 Sep 2020 17:29:50 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     thaytan@noraisin.net, Vasily Khoruzhick <anarsoul@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC 1/5] drm/i915/dp: Program source OUI on eDP panels
+Date:   Tue, 15 Sep 2020 13:29:35 -0400
+Message-Id: <20200915172939.2810538-2-lyude@redhat.com>
+In-Reply-To: <20200915172939.2810538-1-lyude@redhat.com>
+References: <20200915172939.2810538-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915012901.1655280-3-jhubbard@nvidia.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 06:29:01PM -0700, John Hubbard wrote:
-> Avoid accidental wrong builds, due to built-in rules working just a
-> little bit too well--but not quite as well as required for our situation
-> here.
-> 
-> In other words, "make userfaultfd" (for example) is supposed to fail to
-> build at all, because this Makefile only supports either "make" (all),
-> or "make /full/path". However,  the built-in rules, if not suppressed,
-> will pick up CFLAGS and the initial LDLIBS (but not the target-specific
-> LDLIBS, because those are only set for the full path target!). This
-> causes it to get pretty far into building things despite using incorrect
-> values such as an *occasionally* incomplete LDLIBS value.
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  tools/testing/selftests/vm/Makefile | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+Since we're about to start adding support for Intel's magic HDR
+backlight interface over DPCD, we need to ensure we're properly
+programming this field so that Intel specific sink services are exposed.
+Otherwise, 0x300-0x3ff will just read zeroes.
 
-I hit this too when fiddling with the hmm tests! Would be happy to see
-better errors
+We also take care not to reprogram the source OUI if it already matches
+what we expect. This is just to be careful so that we don't accidentally
+take the panel out of any backlight control modes we found it in.
 
-Jason
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: thaytan@noraisin.net
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+---
+ drivers/gpu/drm/i915/display/intel_dp.c | 32 +++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 4bd10456ad188..b591672ec4eab 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -3428,6 +3428,7 @@ void intel_dp_sink_set_decompression_state(struct intel_dp *intel_dp,
+ void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
+ {
+ 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
++	u8 edp_oui[] = { 0x00, 0xaa, 0x01 };
+ 	int ret, i;
+ 
+ 	/* Should have a valid DPCD by this point */
+@@ -3443,6 +3444,14 @@ void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
+ 	} else {
+ 		struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+ 
++		/* Write the source OUI as early as possible */
++		if (intel_dp_is_edp(intel_dp)) {
++			ret = drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, edp_oui,
++						sizeof(edp_oui));
++			if (ret < 0)
++				drm_err(&i915->drm, "Failed to write eDP source OUI\n");
++		}
++
+ 		/*
+ 		 * When turning on, we need to retry for 1ms to give the sink
+ 		 * time to wake up.
+@@ -4530,6 +4539,23 @@ static void intel_dp_get_dsc_sink_cap(struct intel_dp *intel_dp)
+ 	}
+ }
+ 
++static void
++intel_edp_init_source_oui(struct intel_dp *intel_dp)
++{
++	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
++	u8 oui[] = { 0x00, 0xaa, 0x01 };
++	u8 buf[3] = { 0 };
++
++	if (drm_dp_dpcd_read(&intel_dp->aux, DP_SOURCE_OUI, buf, sizeof(buf)) < 0)
++		drm_err(&i915->drm, "Failed to read source OUI\n");
++
++	if (memcmp(oui, buf, sizeof(oui)) == 0)
++		return;
++
++	if (drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, oui, sizeof(oui)) < 0)
++		drm_err(&i915->drm, "Failed to write source OUI\n");
++}
++
+ static bool
+ intel_edp_init_dpcd(struct intel_dp *intel_dp)
+ {
+@@ -4607,6 +4633,12 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
+ 	if (INTEL_GEN(dev_priv) >= 10 || IS_GEMINILAKE(dev_priv))
+ 		intel_dp_get_dsc_sink_cap(intel_dp);
+ 
++	/*
++	 * Program our source OUI so we can make various Intel-specific AUX
++	 * services available (such as HDR backlight controls)
++	 */
++	intel_edp_init_source_oui(intel_dp);
++
+ 	return true;
+ }
+ 
+-- 
+2.26.2
+
