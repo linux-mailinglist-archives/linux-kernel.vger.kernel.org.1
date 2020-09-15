@@ -2,124 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EEE26A0C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D9726A0BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgIOIZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:25:03 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:18448 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726318AbgIOIP5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:15:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600157723; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=pSgbry1PAaBdRWEhUEVxrVeaHzZFoZPrjHZu+EwHtIw=;
- b=szVodTbrLlD2rnYl2lSuQVub3MhHBdWC0/E3ZDDRsFMqbruq2uyU1QXGnOUESKYzKLzJBGeV
- HwlWH/UdCXO6pO5IKuAxhfrdrdsixbuiLlDxz2ncUaYysL33aF0w96ibnZvivzqN7qsR1gPo
- OrnK8Wo1EeDaRrXaKHcb5h4TZdM=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f6077f8885efaea0a56a88d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 08:14:48
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 101CDC433CA; Tue, 15 Sep 2020 08:14:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726433AbgIOIYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:24:47 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42312 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726303AbgIOIQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:16:03 -0400
+Received: from zn.tnic (p200300ec2f0e42005bd5729a6296255f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:5bd5:729a:6296:255f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: nguyenb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4097EC433C8;
-        Tue, 15 Sep 2020 08:14:47 +0000 (UTC)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4E2721EC058C;
+        Tue, 15 Sep 2020 10:15:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600157716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=yEJCfXwRj3yq0x1l28tMtuPd1vDO0s2J9nk983qf9F0=;
+        b=OoPBYUiCysYxcynou0G8+BD+lVSt+BH4l01auVyJjRXkXNcuz+g9OrEtK3u9E1pH+Wa1NF
+        1rXMIEuOkLoPDF1LdzHmvbOe/QmjpelvDafamvArRTUj0DIzP6l+49cGrIisCTKSGYYnXG
+        wlZkhrnXs+6tyvvnuK00dbdNBw5cUxE=
+Date:   Tue, 15 Sep 2020 10:15:14 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Smita Koralahalli Channabasappa <skoralah@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org,
+        devel@acpica.org, Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v3 1/2] cper, apei, mce: Pass x86 CPER through the MCA
+ handling chain
+Message-ID: <20200915081514.GB14436@zn.tnic>
+References: <20200903234531.162484-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20200903234531.162484-2-Smita.KoralahalliChannabasappa@amd.com>
+ <20200914153024.GC680@zn.tnic>
+ <a28aa613-8353-0052-31f6-34bc733abf59@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Sep 2020 01:14:47 -0700
-From:   nguyenb@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] scsi: dt-bindings: ufs: Add vcc-voltage-level for
- UFS
-In-Reply-To: <20200915044154.GB670377@yoga>
-References: <cover.1598939393.git.nguyenb@codeaurora.org>
- <0a9d395dc38433501f9652a9236856d0ac840b77.1598939393.git.nguyenb@codeaurora.org>
- <20200915044154.GB670377@yoga>
-Message-ID: <748d238a3d9e53834a498c6f37f9f3c9@codeaurora.org>
-X-Sender: nguyenb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a28aa613-8353-0052-31f6-34bc733abf59@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-14 21:41, Bjorn Andersson wrote:
-> On Tue 01 Sep 01:00 CDT 2020, Bao D. Nguyen wrote:
-> 
->> UFS's specifications supports a range of Vcc operating
->> voltage levels. Add documentation for the UFS's Vcc voltage
->> levels setting.
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
->> ---
->>  Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt | 2 ++
->>  1 file changed, 2 insertions(+)
->> 
->> diff --git a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt 
->> b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
->> index 415ccdd..7257b32 100644
->> --- a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
->> +++ b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
->> @@ -23,6 +23,8 @@ Optional properties:
->>                            with "phys" attribute, provides phandle to 
->> UFS PHY node
->>  - vdd-hba-supply        : phandle to UFS host controller supply 
->> regulator node
->>  - vcc-supply            : phandle to VCC supply regulator node
->> +- vcc-voltage-level     : specifies voltage levels for VCC supply.
->> +                          Should be specified in pairs (min, max), 
->> units uV.
-> 
-> What exactly are these pairs representing?
-The pair is the min and max Vcc voltage request to the PMIC chip.
-As a result, the regulator output voltage would only be in this range.
+On Mon, Sep 14, 2020 at 04:16:10PM -0500, Smita Koralahalli Channabasappa wrote:
+> May be something like apei_smca_report_x86_error? Or probably an additional
+> SMCA-specific function call inside this generic APEI and MCA function call?
 
-> 
-> Is this supposed to be 3 pairs of (min,max) for vcc, vcc and vccq2 to 
-> be
-> passed into a regulator_set_voltage() for each regulator?
-Yes, that's right. I should include the other power supplies in this 
-change as well.
-> 
-> Or are these some sort of "operating points" for the vcc-supply?
-> 
-> Regards,
-> Bjorn
-> 
->>  - vccq-supply           : phandle to VCCQ supply regulator node
->>  - vccq2-supply          : phandle to VCCQ2 supply regulator node
->>  - vcc-supply-1p8        : For embedded UFS devices, valid VCC range 
->> is 1.7-1.95V
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+apei_smca_report_x86_error() sounds ok. If there's need for any
+additional MCA handling from BERT, then that can be extended/refactored
+then.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
