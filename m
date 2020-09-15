@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0FE26A288
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E724F26A291
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbgIOJvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:51:13 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:26864 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726095AbgIOJvK (ORCPT
+        id S1726235AbgIOJzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726095AbgIOJzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:51:10 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08F9kQNf018940;
-        Tue, 15 Sep 2020 11:51:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=ZM23mYdiljPD8Fq0s33QKRLiJBFcywHG+JuWV8thfEU=;
- b=IG4pkxyKeSQjUwC7tP8inCIz9ylYcnwe/MI45/t7fmdtcJPEVYqsAkUXpcFjx8E6M+z+
- d5n/1EyZ54ZCrbMRu0cjPXe0v+e/z5t2/HYliWut/TLQvENatXn2mNRgBONlDqn5JcmX
- 0F3Cf43AC4/VIQ/4L1GRFGm3+hfWRbqnfhEF657JMDhyoQnaT6yuLu1L/xHJMcNWttm0
- X81n7mZomgPkhQ+A2IuiNoaBMNH4YxCypp1RoDTTbwFqvPiU00oatPmP6dO+jDGCpGvi
- XWit7vPuH8pzEOUngsR4XuxUN7d4Hp7b1l5Kgs2Em8tX+/h1FAVuBnudWFeVi23X/y+u Sg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33gkf9f8g1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 11:51:05 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9AAAB10002A;
-        Tue, 15 Sep 2020 11:51:04 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2C3132A5C0F;
-        Tue, 15 Sep 2020 11:51:04 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
- 2020 11:51:03 +0200
-Subject: Re: [PATCH v2 0/3] Expose recovery/coredump configuration from sysfs
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
-        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
-References: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <7ad40d80-5ac4-97a5-5e05-c83dc08896a2@st.com>
-Date:   Tue, 15 Sep 2020 11:51:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Sep 2020 05:55:19 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A47C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:55:18 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j2so2598683wrx.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:55:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cJPP3VOUhhMjWg+fdtc10hDSx+5MSLkdMdu69j7VsYk=;
+        b=oql0qcrxZ/7BkQPztc8ldLY4fggx/gEPNqio5VSAk60RK9YMp3j1LsItuUPW6T/Hwj
+         VyKxcG8a3u48jSmd9vvCfYNfAEyU4fOkmTydUOXp4wEhwrwgNthmr75Nt51DK279LrqP
+         w/tEtaXNcjX08510hi0Dc8T4DR1+ph//6c4NYyVyr0+nbXojgyiYIctqErjjnhb+E6TA
+         trHE7CHLJKaCa0oXJHOyq/PEGcYii6yd3rnCGpehapT1gZzBKo0PqO3/s+uGak32kjRe
+         wKH7h4ByLFUuTusx+IGW+jIz/QF7wXGcE7nMDIuG4Q95g2oYyho66F15p5xNzj073q0y
+         aiug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cJPP3VOUhhMjWg+fdtc10hDSx+5MSLkdMdu69j7VsYk=;
+        b=UN3iQ1NqKto1FMp+iLq5qs9elceNrlNnUSTfiXJgyEESEc6UTAz7CfBoOKgpDp+ui7
+         zQ+6BIERtZQ7igwe0eLFl04fchKwVYMHAkrXnMBeKcBYci84AKiL+wL2NhHmVd9Hqfs8
+         /TicIm58oDtsaDlG2Tr3aqPP8B8mSBtZDRR1I3WsfjyqRMlDfJ6gnqne1SK/cMTtZ3nm
+         JHMQFk19ePvYUwv1/w0tlpV5gE0Ca4POXs/039To3zcpTLPQyeohpWB7OcrR7Dlt7iqB
+         fylac+2GXvGlMx27yDssoe0aCCWzKyVlUIJlm7ca4x0Iw9MtDPC9FekDEPASujYqWxUJ
+         VOpA==
+X-Gm-Message-State: AOAM531Hs0yCtNzfL1LDWxMvpea3l0VouVW8nADwq060Ks1FKXOZb1pp
+        ZUcn64jtLzM4NdlWEL7LikM=
+X-Google-Smtp-Source: ABdhPJzhKG/JC+VvrxBavdCbabMiHAvZnjK1S/hwLH5C208sdsY37rEvlbYI3WwQ6gqvvphJMI3p2w==
+X-Received: by 2002:adf:edcc:: with SMTP id v12mr19959327wro.240.1600163717590;
+        Tue, 15 Sep 2020 02:55:17 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id i26sm23903149wmb.17.2020.09.15.02.55.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 02:55:16 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] staging: rtl8192e: fix kconfig dependency warning for RTLLIB_CRYPTO_CCMP
+Date:   Tue, 15 Sep 2020 12:54:09 +0300
+Message-Id: <20200915095408.28092-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_05:2020-09-15,2020-09-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rishabh,
+When RTLLIB_CRYPTO_CCMP is enabled and CRYPTO is disabled, it results in
+the following Kbuild warning:
 
-On 8/27/20 9:48 PM, Rishabh Bhatnagar wrote:
-> From Android R onwards Google has restricted access to debugfs in user
-> and user-debug builds. This restricts access to most of the features
-> exposed through debugfs. This patch series adds a configurable option
-> to move the recovery/coredump interfaces to sysfs. If the feature
-> flag is selected it would move these interfaces to sysfs and remove
-> the equivalent debugfs interface. 'Coredump' and 'Recovery' are critical
-> interfaces that are required for remoteproc to work on Qualcomm Chipsets.
-> Coredump configuration needs to be set to "inline" in debug/test build
-> and "disabled" in production builds. Whereas recovery needs to be
-> "disabled" for debugging purposes and "enabled" on production builds.
+WARNING: unmet direct dependencies detected for CRYPTO_CCM
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_CCMP [=m] && STAGING [=y] && RTLLIB [=m]
 
-The remoteproc_cdev had been created to respond to some sysfs limitations.
-I wonder if this evolution should not also be implemented in the cdev.
-In this case an additional event could be addedd to inform the application
-that a crash occurred and that a core dump is available.
+WARNING: unmet direct dependencies detected for CRYPTO_AES
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_CCMP [=m] && STAGING [=y] && RTLLIB [=m]
 
-Of course it's only a suggestion... As it would be a redesign.
-I let Björn and Mathieu comment.
+The reason is that RTLLIB_CRYPTO_CCMP selects CRYPTO_CCM and CRYPTO_AES
+without depending on or selecting CRYPTO while both CRYPTO_CCM and
+CRYPTO_ARC4 are subordinate to CRYPTO.
 
-Regards,
-Arnaud
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
 
-> 
-> Changelog:
-> 
-> v1 -> v2:
-> - Correct the contact name in the sysfs documentation.
-> - Remove the redundant write documentation for coredump/recovery sysfs
-> - Add a feature flag to make this interface switch configurable.
-> 
-> Rishabh Bhatnagar (3):
->   remoteproc: Expose remoteproc configuration through sysfs
->   remoteproc: Add coredump configuration to sysfs
->   remoteproc: Add recovery configuration to sysfs
-> 
->  Documentation/ABI/testing/sysfs-class-remoteproc |  44 ++++++++
->  drivers/remoteproc/Kconfig                       |  12 +++
->  drivers/remoteproc/remoteproc_debugfs.c          |  10 +-
->  drivers/remoteproc/remoteproc_sysfs.c            | 126 +++++++++++++++++++++++
->  4 files changed, 190 insertions(+), 2 deletions(-)
-> 
+Fixes: e0e3daddad36 ("staging: r8192e: Fix possible error in configuration")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ drivers/staging/rtl8192e/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+index 1007eea6c8fc..4f45a006f901 100644
+--- a/drivers/staging/rtl8192e/Kconfig
++++ b/drivers/staging/rtl8192e/Kconfig
+@@ -14,6 +14,7 @@ if RTLLIB
+ config RTLLIB_CRYPTO_CCMP
+ 	tristate "Support for rtllib CCMP crypto"
+ 	depends on RTLLIB
++	select CRYPTO
+ 	select CRYPTO_AES
+ 	select CRYPTO_CCM
+ 	default y
+-- 
+2.25.1
+
