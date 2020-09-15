@@ -2,151 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6F726A8D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C66126A8FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727431AbgIOPbV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 11:31:21 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:36159 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727208AbgIOOyP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:54:15 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-170-Vmfa8msMO7ujZNhOLACOTA-1; Tue, 15 Sep 2020 15:53:56 +0100
-X-MC-Unique: Vmfa8msMO7ujZNhOLACOTA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 15 Sep 2020 15:53:55 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 15 Sep 2020 15:53:55 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: [PATCH 0/9 next] Changes to code that reads iovec from userspace
-Thread-Topic: [PATCH 0/9 next] Changes to code that reads iovec from userspace
-Thread-Index: AdaLbm9Qca9t5oGhTxOmCTQi7ZvXMg==
-Date:   Tue, 15 Sep 2020 14:53:55 +0000
-Message-ID: <a7d3fd12c89241ebba0310d1e65d2449@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1727428AbgIOPlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:41:25 -0400
+Received: from mga01.intel.com ([192.55.52.88]:24488 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727325AbgIOO7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:59:16 -0400
+IronPort-SDR: nbOR1ctnvZ4nm56lUANcj/SuV+0rVeqOivrz35L7QRCKFwA1mxHMhySKbzoO5ZG7cJfSYFCTBc
+ lrRP12tynyiQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="177337725"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="177337725"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 07:54:01 -0700
+IronPort-SDR: eo7IN6CFfz/JFCHrjjjZxQEzTZHoqM64mPVSXbMki5QyIX+xBlQEMHk4r1NspmFOM1o7wANnUn
+ ird6p+/ltdcQ==
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="507597441"
+Received: from cpchou-mobl.amr.corp.intel.com (HELO [10.209.152.133]) ([10.209.152.133])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 07:53:59 -0700
+Subject: Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap pages of hugetlb
+ page
+To:     Matthew Wilcox <willy@infradead.org>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20200915125947.26204-1-songmuchun@bytedance.com>
+ <20200915143241.GH5449@casper.infradead.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <de59e509-1936-f7fb-b14c-52ef7f642bb2@intel.com>
+Date:   Tue, 15 Sep 2020 07:53:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.003
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200915143241.GH5449@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/15/20 7:32 AM, Matthew Wilcox wrote:
+> On Tue, Sep 15, 2020 at 08:59:23PM +0800, Muchun Song wrote:
+>> This patch series will free some vmemmap pages(struct page structures)
+>> associated with each hugetlbpage when preallocated to save memory.
+> It would be lovely to be able to do this.  Unfortunately, it's completely
+> impossible right now.  Consider, for example, get_user_pages() called
+> on the fifth page of a hugetlb page.
 
-The canonical code to read iov[] from userspace is currently:
-	struct iovec iovstack[UIO_FASTIOV];
-	struct iovec *iov;
-	...
-	iov = iovstack;
-	rc = import_iovec(..., UIO_FASTIOV, &iov, &iter);
-	if (rc < 0)
-		return rc;
-	...
-	kfree(iov);
+Yeah, exactly.
 
-Note that the 'iov' parameter is used for two different things.
-On input it is an iov[] that can be used.
-On output it is an iov[] array that must be freed.
-
-If 'iovstack' is passed, the count is actually always UIO_FASTIOV (8)
-although in some places the array definition is in a different file
-(never mind function) from the constant used.
-
-import_iovec() itself is just a wrapper to rw_copy_check_uvector().
-So everything is passed through to a second function.
-Several items are 'passed by reference' - adding to the code paths.
-
-On success import_iovec() returned the transfer count.
-Only one caller looks at it, the count is also in iter.count.
-
-The new canonical code is:
-	struct iov_cache cache;
-	struct iovec *iov;
-	...
-	iov = iovec_import(..., &cache, &iter);
-	if (IS_ERR(iov))
-		return PTR_ERR(iov);
-	...
-	kfree(iov);
-
-Since 'struct iov_cache' is a fixed size there is no need to pass in
-a length (correct or not!). It can still be NULL (used by the scsi code).
-
-iovec_import() contains the code that used to be in rw_copy_check_uvector()
-and then sets up the iov_iter.
-
-rw_copy_check_uvector() is no more.
-The only other caller was in mm/process_vm_access.c when reading the
-iov[] for the target process addresses when copying from a different process.
-This can extract the iov[] from an extra 'struct iov_iter'.
-
-In passing I noticed an access_ok() call on each fragment.
-I hope this is just there to bail out early!
-It is also skipped in process_vm_rw(). I did a quick look but couldn't
-see an obvious equivalent check.
-
-I've only done minimal changes to fs/io_uring.c
-Once it has been converted to use iovec_import() the import_iovec()
-functions can be deleted.
-
-Patches 1, 2 and 3 need to be applied first.
-Patches 4 to 9 can be applied in any order.
-
-There should be measurable (if small) improvements to the recvmmsg() and
-sendmmsg() system calls.
-
-David Laight (9):
-  1) mm:process_vm_access Call import_iovec() instead of rw_copy_check_uvector()
-  2) fs: Move rw_copy_check_uvector() into lib/iov_iter.c and make static.
-  3) lib/iov_iter: Improved function for importing iovec[] from userpace.
-  4) fs/io_uring Don't use the return value from import_iovec().
-  5) scsi: Use iovec_import() instead of import_iovec().
-  6) security/keys: Use iovec_import() instead of import_iovec().
-  7) mm/process_vm_access: Use iovec_import() instead of import_iovec().
-  8) fs: Use iovec_import() instead of import_iovec().
-  9) net/socket: Use iovec_import() instead of import_iovec().
-
- block/scsi_ioctl.c     |  14 ++-
- drivers/scsi/sg.c      |  14 +--
- fs/aio.c               |  34 +++---
- fs/io_uring.c          |  21 ++--
- fs/read_write.c        | 248 ++++++-----------------------------------
- fs/splice.c            |  22 ++--
- include/linux/compat.h |   6 -
- include/linux/fs.h     |   5 -
- include/linux/socket.h |  15 +--
- include/linux/uio.h    |  14 +++
- include/net/compat.h   |   5 +-
- lib/iov_iter.c         | 200 +++++++++++++++++++++++++++++----
- mm/process_vm_access.c |  82 +++++++-------
- net/compat.c           |  17 ++-
- net/socket.c           |  66 +++++------
- security/keys/compat.c |  11 +-
- security/keys/keyctl.c |  10 +-
- 17 files changed, 386 insertions(+), 398 deletions(-)
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Does this series survive the in-kernel selftests/?  If so, sounds like
+we need to add a new selftest.
