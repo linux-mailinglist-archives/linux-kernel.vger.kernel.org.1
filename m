@@ -2,322 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1337F26AAE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E859D26AAEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgIORmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:42:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727753AbgIORSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:18:39 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33F3520872;
-        Tue, 15 Sep 2020 17:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600190318;
-        bh=Wut+/LKuurJjV6yWdQ0LkAiD7T7c8wwiKIpWcqWDTyQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YeUxScuVHsoRcQepFJGfs1FFAf2e1LA1+mSzjWkJRc8NB4Y0dZ0Yq79Hxs/lrBnxk
-         pVbp2fKt9JCX5uVPX6sH97oaOJOt5ijiHPqC0TWMYPs7q/pJCrcD7UjG64D4R6O2M1
-         qX+5OQ6Q4SltpWyluJLoWn8FICTrQN6EcS6Jp4sg=
-Date:   Tue, 15 Sep 2020 20:18:23 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [PATCH v2] mm/gup: fix gup_fast with dynamic page table folding
-Message-ID: <20200915171823.GJ2142832@kernel.org>
-References: <20200911200511.GC1221970@ziepe.ca>
- <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
+        id S1727971AbgIORml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:42:41 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55402 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727737AbgIORTq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:19:46 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FH8mY0006471;
+        Tue, 15 Sep 2020 10:18:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=C/xZZQ4aWrp6HiXiHjIIXA1zdB2LlmvnQ/MhlZ4JShY=;
+ b=c2ipwib1VlcqN5ySgQLIh+qpMvv7JRNgKyjpGOMjx6FInWLtWqomexdcoMUIENNB1o5U
+ W/2MFU/67gHykgnUK9eW+CzlB+APH7qLMTEy40Z1RYBmmTETAnb7mDKA8wohCLgn6uxi
+ /fy8MuHvjUZjy5dvSo5nkIrFra0B/QaOulU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 33j50e1fyr-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 15 Sep 2020 10:18:59 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 10:18:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DH+WtEQ5dhTDbU1x1HNRvmegE/A1NrQTESkZWMzy7LX3cWrEiRqDILr/yrS5c2PlFyX4hqecMzeix88UL0ysq1Tfpa4tBecsbVBoPzTUFfpRBfKUw5QPDyi2zKC2LzPSDmrIRQgQSXlyFQTi4wmUqvSaQhPZsiW+Nqu/xt3U2K+20O3G2Jnk90rKwhekkqEK4NR0k555aDikj1KfKfnD0nHstTloKqDNuOZ4rh4jsdTtLyrz7rnMMyRfvjhVefGKQp6qNZ6Rtihkw0+PoXPNzjjY2io7NJRbzGKUHyPXVovXsJAGtBDEfZg6WTGJ2wEztx3ZHWFi7XwJ3qLYiBT0Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C/xZZQ4aWrp6HiXiHjIIXA1zdB2LlmvnQ/MhlZ4JShY=;
+ b=EiRS8c8gUvEbcwQzSkYOV7+elRErZ23OlqKH7PrLqrfznfJT0FVvtKWllsPqhN/hyBVuqTPIoNVY/5CTjiE+Tl8ge8auyzUHScP/P8kCuxo91wDdSxLEikih/GfE/B/uo9KkbtxWnH94QyO6MTDabyMd5/gozypOMAxFGo70i1df84QGZ/xkZqeW7SVTRV/VXwqUG9maU/UL39aX8Jrss4myQa70HxXe9AGiGeTymhlcxK1rfYpBN6jgTQHcjacNXP2ZML1x09yID0xXDfApJyOgTufRdp4ea+iNsNIh4/e725XMc3+agezFYRf9LLCDztuM8QQrOx7DZjKaYRTFgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C/xZZQ4aWrp6HiXiHjIIXA1zdB2LlmvnQ/MhlZ4JShY=;
+ b=WZoxSCwKZqpdHNpVdeM81D3l5l86dS9t6vMHn5qzMHO7mnpaGLS0G1VNUy38WnHDe15k4GWN1ziKNxNcEJO6ojlLSf+Z3uNMUSke5Ud9lx96GmIkTYMek7ue0OVtjmzM6rce+RIk3PgQ+vTsyoSMpvzd4dX/AH/lLLqmwyp8TUk=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2197.namprd15.prod.outlook.com (2603:10b6:a02:8e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Tue, 15 Sep
+ 2020 17:18:56 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1400:be2f:8b3d:8f4d]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1400:be2f:8b3d:8f4d%7]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 17:18:56 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Nicolas Rybowski <nicolas.rybowski@tessares.net>
+CC:     Song Liu <song@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Martin Lau" <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2 4/5] bpf: selftests: add MPTCP test base
+Thread-Topic: [PATCH bpf-next v2 4/5] bpf: selftests: add MPTCP test base
+Thread-Index: AQHWiEg5lAOuSkQSgUOwFXGkhtXnPqloc0EAgAF4xICAAAv+gA==
+Date:   Tue, 15 Sep 2020 17:18:56 +0000
+Message-ID: <6BCFCB44-3CF4-47B0-BD59-720F32581E31@fb.com>
+References: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
+ <20200911143022.414783-4-nicolas.rybowski@tessares.net>
+ <CAPhsuW5Gbx2pWgM1XcSYqVsN6L=q+0u3QFNxG7A+Qez=Tziu2A@mail.gmail.com>
+ <CACXrtpRzZuCyZnduYcV+1d2Z3qTK2b7Mcj2gQvcRbnv7+k0VRw@mail.gmail.com>
+In-Reply-To: <CACXrtpRzZuCyZnduYcV+1d2Z3qTK2b7Mcj2gQvcRbnv7+k0VRw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.1)
+authentication-results: tessares.net; dkim=none (message not signed)
+ header.d=none;tessares.net; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:f20e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b2c42a33-d544-457c-8042-08d8599b6daf
+x-ms-traffictypediagnostic: BYAPR15MB2197:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB219754A02A1A2A4837CB30CEB3200@BYAPR15MB2197.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1bPAWGMhZvn7yan5FcMnLaW+iASYJyvaL9ajnzYqrwHRBCuvBsem6ejYn+ouJf9DUmNOINXk3F+LgUAPZ4bx+Kx3tptHOnPSn02HJDs3oUQr+Cu1WCn1zuAKqyezCLicldr5hMVUwkwo/38W79p+IOn0/+GMnstJDTqmppBgzxhfBT0X6zyCEJ6Gzo+Lr2uyPV01mVbDgP++EOEaiJk5tuYSCvy0jP8gabFjoGAcgde71cV/yFKdi5LnD1b92TBOqrpJr0tRIWD/CJey30uXL57Pkn/1/u+O3V7qM0TtiuWNmWptunlEsbJdscklnfhZghTs2wRvJ8gY2pZ7mZXCdg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(39860400002)(396003)(136003)(6512007)(6486002)(186003)(2616005)(316002)(4326008)(86362001)(478600001)(8936002)(33656002)(6916009)(6506007)(8676002)(2906002)(7416002)(36756003)(54906003)(5660300002)(66476007)(66556008)(64756008)(66446008)(53546011)(91956017)(83380400001)(76116006)(66946007)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: HG79JIEEF1eNfjeOYAsUW5nmUCBrcxKBiYlxMeZulPWHtU0Ao6W1w0L95nGaoLKcAPHhVGgvJWpW+kdYZ7v2coyNU3vDJImi2dmz92ADR+b7MFCRbvQurLdeotLwf3XPAKfCNPuppPMntCzdKxZulHSrtOKwpAFgpHRI+46anBrY/CCOKwefWj9gsNLR+WRr9qwLUmlO0/MhINBkgf+cMzQYdDZmVREFvP9FhqsKD3RtHVEFYnyGD1QxCiuXh2di1GFed/hPa6uHT3v6mid/knsQSHMlHCpY6IP4Wb6zglxjSMqZKAzWONhNGOS7J9vcJPUK+WkrQFYmm+597iNJPVi+y3dLkzXAv5W5759oGbcXCwjz0FJCOHYW3Vl9is4jpp+Sjsuj/2CCy+JZ8XUc9bSCg0oroa43OTHN7UzBNLLkkAxS3FFYMc35PVqnPdlC23hgk9kFNfnfPs53DEzdjY5Jma8OS4/EQpfc1eMhxTfu079Wn/Bq/E7uc6Zz9XMgZ4q0PF6GogMKoPfOr3qITWHqWqhnGEtxTUctCUQKnI10rCoeGEhgZFmACCzK6lMlex4/v4EK2KW+pjCz+/cjiIiidSh19qgEeNQLuP9kGPHy1Lu4ZeFvb72bOLuJKFICRH1oNLcHZFmvYJ8y7HwdTG8hr28DEB2lF0Y9d/1RtTMb+ULZD6uod4sH901a1HaN
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3BE0F881EB00B04C84DF90A443A9D9E0@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2c42a33-d544-457c-8042-08d8599b6daf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 17:18:56.6337
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oda95L09On1+cpkYGHa0laGQU4tS4KmfU+EicbXiP6JPjfgz9wEF5wvCBfXEIiJwGOiRFqhIIHbfgG9LeD7t7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2197
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-15_12:2020-09-15,2020-09-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1011 priorityscore=1501 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150138
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 10:36:43PM +0200, Vasily Gorbik wrote:
-> Currently to make sure that every page table entry is read just once
-> gup_fast walks perform READ_ONCE and pass pXd value down to the next
-> gup_pXd_range function by value e.g.:
-> 
-> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
->                          unsigned int flags, struct page **pages, int *nr)
-> ...
->         pudp = pud_offset(&p4d, addr);
-> 
-> This function passes a reference on that local value copy to pXd_offset,
-> and might get the very same pointer in return. This happens when the
-> level is folded (on most arches), and that pointer should not be iterated.
-> 
-> On s390 due to the fact that each task might have different 5,4 or
-> 3-level address translation and hence different levels folded the logic
-> is more complex and non-iteratable pointer to a local copy leads to
-> severe problems.
-> 
-> Here is an example of what happens with gup_fast on s390, for a task
-> with 3-levels paging, crossing a 2 GB pud boundary:
-> 
-> // addr = 0x1007ffff000, end = 0x10080001000
-> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
->                          unsigned int flags, struct page **pages, int *nr)
-> {
->         unsigned long next;
->         pud_t *pudp;
-> 
->         // pud_offset returns &p4d itself (a pointer to a value on stack)
->         pudp = pud_offset(&p4d, addr);
->         do {
->                 // on second iteratation reading "random" stack value
->                 pud_t pud = READ_ONCE(*pudp);
-> 
->                 // next = 0x10080000000, due to PUD_SIZE/MASK != PGDIR_SIZE/MASK on s390
->                 next = pud_addr_end(addr, end);
->                 ...
->         } while (pudp++, addr = next, addr != end); // pudp++ iterating over stack
-> 
->         return 1;
-> }
-> 
-> This happens since s390 moved to common gup code with
-> commit d1874a0c2805 ("s390/mm: make the pxd_offset functions more robust")
-> and commit 1a42010cdc26 ("s390/mm: convert to the generic
-> get_user_pages_fast code"). s390 tried to mimic static level folding by
-> changing pXd_offset primitives to always calculate top level page table
-> offset in pgd_offset and just return the value passed when pXd_offset
-> has to act as folded.
-> 
-> What is crucial for gup_fast and what has been overlooked is
-> that PxD_SIZE/MASK and thus pXd_addr_end should also change
-> correspondingly. And the latter is not possible with dynamic folding.
-> 
-> To fix the issue in addition to pXd values pass original
-> pXdp pointers down to gup_pXd_range functions. And introduce
-> pXd_offset_lockless helpers, which take an additional pXd
-> entry value parameter. This has already been discussed in
-> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
-> 
-> Cc: <stable@vger.kernel.org> # 5.2+
-> Fixes: 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast code")
-> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
-> ---
-> v2: added brackets &pgd -> &(pgd)
-> 
->  arch/s390/include/asm/pgtable.h | 42 +++++++++++++++++++++++----------
->  include/linux/pgtable.h         | 10 ++++++++
->  mm/gup.c                        | 18 +++++++-------
->  3 files changed, 49 insertions(+), 21 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-> index 7eb01a5459cd..b55561cc8786 100644
-> --- a/arch/s390/include/asm/pgtable.h
-> +++ b/arch/s390/include/asm/pgtable.h
-> @@ -1260,26 +1260,44 @@ static inline pgd_t *pgd_offset_raw(pgd_t *pgd, unsigned long address)
->  
->  #define pgd_offset(mm, address) pgd_offset_raw(READ_ONCE((mm)->pgd), address)
->  
-> -static inline p4d_t *p4d_offset(pgd_t *pgd, unsigned long address)
-> +static inline p4d_t *p4d_offset_lockless(pgd_t *pgdp, pgd_t pgd, unsigned long address)
->  {
-> -	if ((pgd_val(*pgd) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R1)
-> -		return (p4d_t *) pgd_deref(*pgd) + p4d_index(address);
-> -	return (p4d_t *) pgd;
-> +	if ((pgd_val(pgd) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R1)
-> +		return (p4d_t *) pgd_deref(pgd) + p4d_index(address);
-> +	return (p4d_t *) pgdp;
->  }
-> +#define p4d_offset_lockless p4d_offset_lockless
->  
-> -static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
-> +static inline p4d_t *p4d_offset(pgd_t *pgdp, unsigned long address)
->  {
-> -	if ((p4d_val(*p4d) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R2)
-> -		return (pud_t *) p4d_deref(*p4d) + pud_index(address);
-> -	return (pud_t *) p4d;
-> +	return p4d_offset_lockless(pgdp, *pgdp, address);
-> +}
-> +
-> +static inline pud_t *pud_offset_lockless(p4d_t *p4dp, p4d_t p4d, unsigned long address)
-> +{
-> +	if ((p4d_val(p4d) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R2)
-> +		return (pud_t *) p4d_deref(p4d) + pud_index(address);
-> +	return (pud_t *) p4dp;
-> +}
-> +#define pud_offset_lockless pud_offset_lockless
-> +
-> +static inline pud_t *pud_offset(p4d_t *p4dp, unsigned long address)
-> +{
-> +	return pud_offset_lockless(p4dp, *p4dp, address);
->  }
->  #define pud_offset pud_offset
->  
-> -static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
-> +static inline pmd_t *pmd_offset_lockless(pud_t *pudp, pud_t pud, unsigned long address)
-> +{
-> +	if ((pud_val(pud) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R3)
-> +		return (pmd_t *) pud_deref(pud) + pmd_index(address);
-> +	return (pmd_t *) pudp;
-> +}
-> +#define pmd_offset_lockless pmd_offset_lockless
-> +
-> +static inline pmd_t *pmd_offset(pud_t *pudp, unsigned long address)
->  {
-> -	if ((pud_val(*pud) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R3)
-> -		return (pmd_t *) pud_deref(*pud) + pmd_index(address);
-> -	return (pmd_t *) pud;
-> +	return pmd_offset_lockless(pudp, *pudp, address);
->  }
->  #define pmd_offset pmd_offset
->  
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index e8cbc2e795d5..90654cb63e9e 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -1427,6 +1427,16 @@ typedef unsigned int pgtbl_mod_mask;
->  #define mm_pmd_folded(mm)	__is_defined(__PAGETABLE_PMD_FOLDED)
->  #endif
->  
-> +#ifndef p4d_offset_lockless
-> +#define p4d_offset_lockless(pgdp, pgd, address) p4d_offset(&(pgd), address)
-> +#endif
-> +#ifndef pud_offset_lockless
-> +#define pud_offset_lockless(p4dp, p4d, address) pud_offset(&(p4d), address)
-> +#endif
-> +#ifndef pmd_offset_lockless
-> +#define pmd_offset_lockless(pudp, pud, address) pmd_offset(&(pud), address)
-> +#endif
-> +
->  /*
->   * p?d_leaf() - true if this entry is a final mapping to a physical address.
->   * This differs from p?d_huge() by the fact that they are always available (if
-> diff --git a/mm/gup.c b/mm/gup.c
-> index e5739a1974d5..578bf5bd8bf8 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -2485,13 +2485,13 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
->  	return 1;
->  }
->  
-> -static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
-> +static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned long end,
->  		unsigned int flags, struct page **pages, int *nr)
->  {
->  	unsigned long next;
->  	pmd_t *pmdp;
->  
-> -	pmdp = pmd_offset(&pud, addr);
-> +	pmdp = pmd_offset_lockless(pudp, pud, addr);
->  	do {
->  		pmd_t pmd = READ_ONCE(*pmdp);
->  
-> @@ -2528,13 +2528,13 @@ static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
->  	return 1;
->  }
->  
-> -static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
-> +static int gup_pud_range(p4d_t *p4dp, p4d_t p4d, unsigned long addr, unsigned long end,
->  			 unsigned int flags, struct page **pages, int *nr)
->  {
->  	unsigned long next;
->  	pud_t *pudp;
->  
-> -	pudp = pud_offset(&p4d, addr);
-> +	pudp = pud_offset_lockless(p4dp, p4d, addr);
->  	do {
->  		pud_t pud = READ_ONCE(*pudp);
->  
-> @@ -2549,20 +2549,20 @@ static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
->  			if (!gup_huge_pd(__hugepd(pud_val(pud)), addr,
->  					 PUD_SHIFT, next, flags, pages, nr))
->  				return 0;
-> -		} else if (!gup_pmd_range(pud, addr, next, flags, pages, nr))
-> +		} else if (!gup_pmd_range(pudp, pud, addr, next, flags, pages, nr))
->  			return 0;
->  	} while (pudp++, addr = next, addr != end);
->  
->  	return 1;
->  }
->  
-> -static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
-> +static int gup_p4d_range(pgd_t *pgdp, pgd_t pgd, unsigned long addr, unsigned long end,
->  			 unsigned int flags, struct page **pages, int *nr)
->  {
->  	unsigned long next;
->  	p4d_t *p4dp;
->  
-> -	p4dp = p4d_offset(&pgd, addr);
-> +	p4dp = p4d_offset_lockless(pgdp, pgd, addr);
->  	do {
->  		p4d_t p4d = READ_ONCE(*p4dp);
->  
-> @@ -2574,7 +2574,7 @@ static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
->  			if (!gup_huge_pd(__hugepd(p4d_val(p4d)), addr,
->  					 P4D_SHIFT, next, flags, pages, nr))
->  				return 0;
-> -		} else if (!gup_pud_range(p4d, addr, next, flags, pages, nr))
-> +		} else if (!gup_pud_range(p4dp, p4d, addr, next, flags, pages, nr))
->  			return 0;
->  	} while (p4dp++, addr = next, addr != end);
->  
-> @@ -2602,7 +2602,7 @@ static void gup_pgd_range(unsigned long addr, unsigned long end,
->  			if (!gup_huge_pd(__hugepd(pgd_val(pgd)), addr,
->  					 PGDIR_SHIFT, next, flags, pages, nr))
->  				return;
-> -		} else if (!gup_p4d_range(pgd, addr, next, flags, pages, nr))
-> +		} else if (!gup_p4d_range(pgdp, pgd, addr, next, flags, pages, nr))
->  			return;
->  	} while (pgdp++, addr = next, addr != end);
->  }
-> -- 
-> ⣿⣿⣿⣿⢋⡀⣀⠹⣿⣿⣿⣿
-> ⣿⣿⣿⣿⠠⣶⡦⠀⣿⣿⣿⣿
-> ⣿⣿⣿⠏⣴⣮⣴⣧⠈⢿⣿⣿
-> ⣿⣿⡏⢰⣿⠖⣠⣿⡆⠈⣿⣿
-> ⣿⢛⣵⣄⠙⣶⣶⡟⣅⣠⠹⣿
-> ⣿⣜⣛⠻⢎⣉⣉⣀⠿⣫⣵⣿
+> On Sep 15, 2020, at 9:35 AM, Nicolas Rybowski <nicolas.rybowski@tessares.=
+net> wrote:
+>=20
+> Hi Song,
+>=20
+> Thanks for the feedback !
+>=20
+> On Mon, Sep 14, 2020 at 8:07 PM Song Liu <song@kernel.org> wrote:
+>>=20
+>> On Fri, Sep 11, 2020 at 8:02 AM Nicolas Rybowski
+>> <nicolas.rybowski@tessares.net> wrote:
+>>>=20
+>>> This patch adds a base for MPTCP specific tests.
+>>>=20
+>>> It is currently limited to the is_mptcp field in case of plain TCP
+>>> connection because for the moment there is no easy way to get the subfl=
+ow
+>>> sk from a msk in userspace. This implies that we cannot lookup the
+>>> sk_storage attached to the subflow sk in the sockops program.
+>>>=20
+>>> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+>>> Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+>>=20
+>> Acked-by: Song Liu <songliubraving@fb.com>
+>>=20
+>> With some nitpicks below.
+>>=20
+>>> ---
+>>>=20
+>>> Notes:
+>>>    v1 -> v2:
+>>>    - new patch: mandatory selftests (Alexei)
+>>>=20
+>> [...]
+>>>                     int timeout_ms);
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/tes=
+ting/selftests/bpf/prog_tests/mptcp.c
+>>> new file mode 100644
+>>> index 000000000000..0e65d64868e9
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+>>> @@ -0,0 +1,119 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +#include <test_progs.h>
+>>> +#include "cgroup_helpers.h"
+>>> +#include "network_helpers.h"
+>>> +
+>>> +struct mptcp_storage {
+>>> +       __u32 invoked;
+>>> +       __u32 is_mptcp;
+>>> +};
+>>> +
+>>> +static int verify_sk(int map_fd, int client_fd, const char *msg, __u32=
+ is_mptcp)
+>>> +{
+>>> +       int err =3D 0, cfd =3D client_fd;
+>>> +       struct mptcp_storage val;
+>>> +
+>>> +       /* Currently there is no easy way to get back the subflow sk fr=
+om the MPTCP
+>>> +        * sk, thus we cannot access here the sk_storage associated to =
+the subflow
+>>> +        * sk. Also, there is no sk_storage associated with the MPTCP s=
+k since it
+>>> +        * does not trigger sockops events.
+>>> +        * We silently pass this situation at the moment.
+>>> +        */
+>>> +       if (is_mptcp =3D=3D 1)
+>>> +               return 0;
+>>> +
+>>> +       if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &cfd, &val) < 0)) {
+>>> +               perror("Failed to read socket storage");
+>>=20
+>> Maybe simplify this with CHECK(), which contains a customized error mess=
+age?
+>> Same for some other calls.
+>>=20
+>=20
+> The whole logic here is strongly inspired from prog_tests/tcp_rtt.c
+> where CHECK_FAIL is used.
+> Also the CHECK macro will print a PASS message on successful map
+> lookup, which is not expected at this point of the tests.
+> I think it would be more interesting to leave it as it is to keep a
+> cohesion between TCP and MPTCP selftests. What do you think?
 
--- 
-Sincerely yours,
-Mike.
+I guess CHECK_FAIL makes sense when we don't need the PASS message.=20
+Let's keep this part as-is then.=20
+
+Thanks,
+Song
+
