@@ -2,84 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E5F26B7BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D76E26B7BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgIOOF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
+        id S1726594AbgIOOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726767AbgIONxi (ORCPT
+        with ESMTP id S1726765AbgIONyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:53:38 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECCCC061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:13 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u3so1738475pjr.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:13 -0700 (PDT)
+        Tue, 15 Sep 2020 09:54:38 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DEDC061352;
+        Tue, 15 Sep 2020 06:52:18 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id l126so1976713pfd.5;
+        Tue, 15 Sep 2020 06:52:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=MeLJEQ5UzKvpRw+f0TuQfsNut0rOub9KBNZ3XbT5R4w=;
-        b=VyzI3l68YaIDGZSJqqVNoBbU0lqcqpmQ6neoGauVB0ydm6bSCbf7jtSUa4s8rToSTJ
-         /z8S4X4jJkwIMTgZfJeey5u122Wby9vkT234yCMTUPuB3aURQZmv02RxTc9VzHahY5rZ
-         lbx0AeZL11QpO4mI9KEvtNJfUg+F33YmToIwo=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/tqrNsraNfTj1stxIyy4mP5043NzxO4IeWGGqxC3I8g=;
+        b=PnuiLmyalDRqdLZYsX9G4bpPjnnydS4iqiZQmmd2O75xWf03979RzNxBy/9YByaaCc
+         Nq9qreedg6fWlu0t50+UUvn5ocn7rGTBHJZd4butU0yS13uopoqLH4uK8JR2ST7CM0m+
+         3urhNOvHemoKFzBL/+dwcE0K6Kw7tG+UMo5Mkynx2zZ129/yvZ8elxYW22+OoqP4JQuC
+         0tdYIKQ7DB5ZC1tJNmaTZkV41LIRUvHxF4I3sFLp3zS/9ft1KU2duYCIWejKY1M+oubj
+         jokv99ijKg9z/ydqRHmEmr85uDGoFeWxcnN2m2KdzSQTXK5pB6dW9F1BMsYOjszODW0b
+         SQTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=MeLJEQ5UzKvpRw+f0TuQfsNut0rOub9KBNZ3XbT5R4w=;
-        b=kiC9tWKURZULE6kr50ooBl40ObO9h/N+ugPeznrVN9ayPloNpCkDBx9fiTc89A+Ulj
-         XQwnb/CKKj+Xg5jkZ4G7WwzJ4iYbkDwcmDzBWLqMUr0Ehr5g1OMwBDIGz+nnZim3Og2s
-         +SwAIX1vKe9JH0NQ8emPrJQUlVXDOnLRODOkbqPqMrKqlfMYit5/iJZI5EqUUKISr44D
-         Dabw6PXDfAg9AarJHm6QEMIoLjxOBbM4JMpjsJfG5RiAdlL/XCzfAj+N5PW/2DhJASnl
-         YnP7716F+B/6nW/AtI+2vPQH9JtZGlX0JMxaTzzCC3Gauk+XqVlDlPCd4X7moMpmVzVS
-         TJPQ==
-X-Gm-Message-State: AOAM531XFgHJTwGesQahTos8IqpPUm75q8ZukDfcAg9suNr6Wxp7dyMk
-        kkdBDUCYClr7LVB5MjmMXm9LPg==
-X-Google-Smtp-Source: ABdhPJxcNnN5vg5uojXyT3K7ps9jzvHo60XPiUNDKPGLzN1OH9DK612rrF6YmNusesVGKbdSWANS/g==
-X-Received: by 2002:a17:90a:c28e:: with SMTP id f14mr4105023pjt.83.1600177572607;
-        Tue, 15 Sep 2020 06:46:12 -0700 (PDT)
-Received: from mannams-OptiPlex-7010.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id jz6sm12471478pjb.22.2020.09.15.06.46.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=/tqrNsraNfTj1stxIyy4mP5043NzxO4IeWGGqxC3I8g=;
+        b=sz3M03R+nPvMmHkw/IW6eFcthScoRVny3JoHfSxRW5/Jcq4i4BPeIbkQP5kUR/zZK3
+         tq4TfJeEJBCMIVm5Jc/TSg8ukjaFRRBbk2SZ+BNsQt0L7El24R6zWf5squNP6/6i6Alg
+         Pxwm42l0JQDMd9oA4F7YXpOZhfw6OMk3uIeZEOcbS12yvwyeseiei2X564E9NCv1nOte
+         Iw9hdYJsg59fy52srI7ZgRz2YFT2CWRZvRpfRnefJOk2rFlWapC1gf1t/OdpxeDxCAn7
+         CJeC8OzOcSOVIE3zw2ThotYr1KqUt5zivumTLtehvPXm5HtvPLTYbjC8dVUsEyo2e7S7
+         /Adw==
+X-Gm-Message-State: AOAM532Spa/credpePT/Dtg+w3w2VVKi7uLrn1mErOr+Trw8G9OrAqyp
+        jLOazJmKbY5sDV2PPPMpK7Q=
+X-Google-Smtp-Source: ABdhPJwZPrOXUBR5K063N+vYrdlvoy2CTXjQYRJQEaf0KsrgKE+YHZgfyAnEkWkrE505ZxZq7a/w7A==
+X-Received: by 2002:a63:c40d:: with SMTP id h13mr14662107pgd.185.1600177938416;
+        Tue, 15 Sep 2020 06:52:18 -0700 (PDT)
+Received: from Gentoo (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id k24sm13873722pfg.148.2020.09.15.06.52.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:46:11 -0700 (PDT)
-From:   Srinath Mannam <srinath.mannam@broadcom.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ray Jui <rjui@broadcom.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Srinath Mannam <srinath.mannam@broadcom.com>
-Subject: [PATCH v2 0/3] PCI: iproc: Add fixes to pcie iproc 
-Date:   Tue, 15 Sep 2020 19:15:38 +0530
-Message-Id: <20200915134541.14711-1-srinath.mannam@broadcom.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 15 Sep 2020 06:52:17 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 19:21:57 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, rdunlap@infradead.org, daniel@ffwll.ch,
+        yuanmingbuaa@gmail.com, w@1wt.eu, nopitydays@gmail.com,
+        zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org
+Subject: Re: [PATCH] docs: fb:  Remove scrollback option
+Message-ID: <20200915135157.GB30746@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, b.zolnierkie@samsung.com,
+        linux-fbdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, corbet@lwn.net, rdunlap@infradead.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org
+References: <20200915132736.5264-1-unixbhaskar@gmail.com>
+ <20200915134127.GA873393@kroah.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="NMuMz9nt05w80d4+"
+Content-Disposition: inline
+In-Reply-To: <20200915134127.GA873393@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series contains fixes and improvements to pcie iproc driver.
 
-This patch set is based on Linux-5.9.0-rc2.
+--NMuMz9nt05w80d4+
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes from v1:
-  - Addressed Bjorn's review comments
-     - pcie_print_link_status is used to print Link information.
-     - Added IARR1/IMAP1 window map definition.
+On 15:41 Tue 15 Sep 2020, Greg KH wrote:
+>On Tue, Sep 15, 2020 at 06:57:36PM +0530, Bhaskar Chowdhury wrote:
+>>=20
+>> This patch remove the scrollback option under boot option.
+>> Plus readjust the numbers for the options in that section.
+>>=20
+>> This is the effect of these commits:
+>>=20
+>> 973c096(vgacon: remove software scrollback support)
+>> 5014547(fbcon: remove soft scrollback code)
+>
+>The kernel documentation file:
+>	https://www.kernel.org/doc/html/latest/process/submitting-patches.html
 
-Bharat Gooty (1):
-  PCI: iproc: fix out of bound array access
+>in section 2, describes how to show git ids within changelog text
+>properly (the number of characters and the rest.)
 
-Roman Bacik (1):
-  PCI: iproc: fix invalidating PAXB address mapping
+Okay, I have only included 7 instead of 12 ... :(=20
+>
+>Can you fix this up and resend?
 
-Srinath Mannam (1):
-  PCI: iproc: Display PCIe Link information
+Certain.
+>
+>And this is a v2 patch, right?  Always document what changed from
+>previous patches below the --- line, as the above link asks for.
 
- drivers/pci/controller/pcie-iproc.c | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+No ...no Greg ..  I shall be sending afresh ...kindly ignore all the previo=
+us and
+this one too..=20
 
--- 
-2.17.1
+>
+>thanks,
+>
+>greg k-h
 
+--NMuMz9nt05w80d4+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl9gxvoACgkQsjqdtxFL
+KRUHAQgArmFJVrc6dwRjlNuO95r92Rk8vcvoeOtfkMN6LQ454PW5VakoCan6j11a
+5WnzD39nqfjtcLNPuX1Bb6WGRUNAPp6THDn42miNC55SbRwqrCLxgjKvI017dytm
+XOVPbDZxfmGU33IWvA7mmyqRHvMTsSZcfK7ShRNY2s6UeIgo9gA5SkY4K4jg4PXC
+OQqntGGrX24whZ8hvKqv6yMDaZqL4dRIkB1i6GVMs0k+h7UetiqrPtJJftqBh4OU
+WE5T/8K0ejag1VKDfjIoOCxa3KAbiz6+MruyhAhrwkvyd/hGvKjkuQoiIHiWUMP4
+2zSGw50aYOi/GkjNsMvEQer0yAL21A==
+=N8Nj
+-----END PGP SIGNATURE-----
+
+--NMuMz9nt05w80d4+--
