@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B1626ADEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EE926ADFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbgIOTqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55806 "EHLO
+        id S1727845AbgIOTsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbgIOTqH (ORCPT
+        with ESMTP id S1727716AbgIOTrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:46:07 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF8AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:46:07 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id i22so6784393eja.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:46:07 -0700 (PDT)
+        Tue, 15 Sep 2020 15:47:09 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3916C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:47:07 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x23so621761wmi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:47:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=p5sSzZShC8ORfwakA39ohe9fpx/z+QIq6SJKz70/TTM=;
-        b=dbghCkE3Hztc+UqWBaVJ5vK3WzRel4RlQnWexaWlRD1F19KQk+fmGvushQq5ZZHhru
-         hJxuM67sWo4kXfUzRYoU0Vxy5nlcYXIQkRW3hwOTG3QsmGnLhR3cYY9LLWC+Wuajfbjt
-         vbc2wmJQMO88nW/e5iX3bwe7kAfREFFuj4dSRxWEdv47EOzamDfAZUhqwpPVOsykOnLH
-         G/pWuseRHRm0In86mQrDE/Tr7Xzy4ZvHWsmHP9opxWLAA+XRCi/zMAWNKg0xppBNUbJa
-         cYSF96dfpjGBTBlm6AMkHrMgv4W370asMd4bShZiydmcRKychtYpWIBsUqiNiCQVwTWs
-         Nmhw==
+        bh=8+w8MCZQVwLOcsa3UrmLYJYKtPwxj8ft1SlgJbNyeA8=;
+        b=JPTHDc7rYypOSzSp9W0qxKhrmv41dRTmrYY14fVmDhwlD3/oajrz9G9KpUZo079VL7
+         44ro9qC0vm+IFhW6kvfynC5gW5sZOVFn62xnR0MW2kRWXOgTXsONiaLKWQw2TvM74oN0
+         bddr5mBHqv6u2Fwi4BxoXGT3pTGY7CZFqETQHqzzqDe0M4sBgKsPKLGUavapLbB/uG0J
+         QscIdNzW1iPSM/Ew+iCZwez5CSOGmDPkc+fFT3SuzOV1wCenDCuzVtofmYTFwvSdX7Fk
+         jEvvloxSTgv5Ggd6z1QPAYR7sjJjpf29BVYSGtfbpECtVKit9tZtJgfIxyD25NoET+HC
+         Klnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=p5sSzZShC8ORfwakA39ohe9fpx/z+QIq6SJKz70/TTM=;
-        b=XtSFZnS7MvuBL+TbUC1n5OwmACYTGMVHYXxqoJUWjZvOh9A1lFeVJo1ydZOeGa89DH
-         Jr7v0L01k4wnWQNgYGMZadAPPxpZN45pY2xOMvRfc269b5DWS7892AwX65TeHAskwEiC
-         xyJhHX3eo95yOHol2a1szO37ewPsszj/7PRraXmhO5NvY2eHiuRAiayPDTW0h63za6jM
-         IZZbLxKBF/XAKzlClCdPdcNzAmkhGsKxCn+gGks3lMUQmTAsO5y39D4Uc+olKb7jjfK9
-         wz7eYJGFYnHbZG2f0UhQUgN5NXNwQx1i6aotR+SbNb3ar4vBdDxw76n/ndtsNHYenGZa
-         I5DA==
-X-Gm-Message-State: AOAM531KD9Orb7I/JJ1r3jIDGIvHWbuzfINsmqpfYLAFw/uHspVbGmd2
-        /7KqoJ68f4+JbcWNGq7I6etFUybIqS0ibE+MNgMrz8csx10=
-X-Google-Smtp-Source: ABdhPJy2LEJ8BwYCymGuaU1iN1I1+zohKpeh+4Eu1QEO9Ok9estRenU6CYefzM0h0DDp5c0zJ4H6XVdhuQFsCHIICqk=
-X-Received: by 2002:a17:906:874f:: with SMTP id hj15mr22844624ejb.539.1600199165966;
- Tue, 15 Sep 2020 12:46:05 -0700 (PDT)
+        bh=8+w8MCZQVwLOcsa3UrmLYJYKtPwxj8ft1SlgJbNyeA8=;
+        b=OHvaBmLsedRbVvCAIgL+4BBkC3iJF8nXX9T1Md9/LbO0GyrqRcOshhsY1deDGbF/ei
+         rYOhJmvih0u7aprMNcT1HVbVLn4AbOHBbhFR4dfikpTEBHwmiq5g4+EXUx2ATqzS6+a0
+         HZ2xjs9kCjuu8Fo4FPUHoO7gL1SWZSSFiWf5vGeg0+nGS4iNyz+6B6852+eosQFmREce
+         QRZ4Jp5Coa5ojSUYttVkR37DNXdU5vtPipT+fC1qaZuB7TqwvSf8hTH311bRo1B3yQ8i
+         iUH+DbBNKPMIGNNQcxEbBCcVTzs7ozhq/1NpYZP9uslAnB2ifJJg59De7eCfWhwj0OZg
+         JcgQ==
+X-Gm-Message-State: AOAM531Dv9IduKoNynUUwxTHzCGOp3PzbgbguvWYggrTccANjojdT8tF
+        z1G4LWTAfPhBfMfpFoneJTZ9NhEfVRXLm2jVni8=
+X-Google-Smtp-Source: ABdhPJx6Ivzd0nNSmmhbl1IKKhrcmi1LfG3GKuvvOAz6Uz7/Pbfr0luVZDBYbgMVE1u+QTxYjK6nyw1fk30RGkoVDDs=
+X-Received: by 2002:a7b:c141:: with SMTP id z1mr953211wmi.79.1600199226000;
+ Tue, 15 Sep 2020 12:47:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200904161654.24141-1-narmstrong@baylibre.com> <20200904161654.24141-3-narmstrong@baylibre.com>
-In-Reply-To: <20200904161654.24141-3-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 15 Sep 2020 21:45:55 +0200
-Message-ID: <CAFBinCBDKuFkdR_mTyS=cYPAwCzs+TYSh1koR29uTnLmAtugPQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND 2/2] soc: amlogic: meson-ee-pwrc: add support for
- the Meson AXG SoCs
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20200910031352.39992-1-yuehaibing@huawei.com> <dcdc327c-c0d1-85cb-28fa-5b7cb5d4e555@amd.com>
+In-Reply-To: <dcdc327c-c0d1-85cb-28fa-5b7cb5d4e555@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 15 Sep 2020 15:46:54 -0400
+Message-ID: <CADnq5_O4zWOoWu5HggTJNhqLCgasX-BerJKzd9UgrL3s09R6nA@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/amd/display: Create trigger_hotplug entry
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Lipski, Mikita" <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
+Applied.  Thanks!
 
-On Fri, Sep 4, 2020 at 6:17 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+Alex
+
+On Thu, Sep 10, 2020 at 11:35 AM Harry Wentland <harry.wentland@amd.com> wrote:
 >
-> The Power Controller in the Amlogic AXG SoCs is similar to the GXL one
-> but with less VPU memory domains to enable and a supplementary Audio
-> memory power domain.
+> On 2020-09-09 11:13 p.m., YueHaibing wrote:
+> > Add trigger_hotplug debugfs entry.
+> >
+> > Fixes: 6f77b2ac6280 ("drm/amd/display: Add connector HPD trigger debugfs entry")
+> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 >
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-I have three small comments below - no show-stoppers though:
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-
-[...]
-> +static struct meson_ee_pwrc_mem_domain axg_pwrc_mem_vpu[] = {
-> +       VPU_MEMPD(HHI_VPU_MEM_PD_REG0),
-> +       VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
-> +};
-> +
-I would put this above the g12a one
-
-[...]
-> +static struct meson_ee_pwrc_domain_desc axg_pwrc_domains[] = {
-> +       [PWRC_AXG_VPU_ID]  = VPU_PD("VPU", &gx_pwrc_vpu, axg_pwrc_mem_vpu,
-> +                                    pwrc_ee_get_power, 5, 2),
-> +       [PWRC_AXG_ETHERNET_MEM_ID] = MEM_PD("ETH", meson_pwrc_mem_eth),
-> +       [PWRC_AXG_AUDIO_ID] = MEM_PD("AUDIO", axg_pwrc_mem_audio),
-> +};
-> +
-same here
-
-[...]
->  static struct meson_ee_pwrc_domain_data meson_ee_gxbb_pwrc_data = {
->         .count = ARRAY_SIZE(gxbb_pwrc_domains),
->         .domains = gxbb_pwrc_domains,
-> @@ -566,6 +588,10 @@ static const struct of_device_id meson_ee_pwrc_match_table[] = {
->                 .compatible = "amlogic,meson-gxbb-pwrc",
->                 .data = &meson_ee_gxbb_pwrc_data,
->         },
-> +       {
-> +               .compatible = "amlogic,meson-axg-pwrc",
-> +               .data = &meson_ee_axg_pwrc_data,
-> +       },
-this one I would put above the GXBB one
-
-
-Best regards,
-Martin
+> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+>
+> Harry
+>
+> > ---
+> >   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> > index 94fcb086154c..83da24aced45 100644
+> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> > @@ -2098,6 +2098,7 @@ static const struct {
+> >       const struct file_operations *fops;
+> >   } dp_debugfs_entries[] = {
+> >               {"link_settings", &dp_link_settings_debugfs_fops},
+> > +             {"trigger_hotplug", &dp_trigger_hotplug_debugfs_fops},
+> >               {"phy_settings", &dp_phy_settings_debugfs_fop},
+> >               {"test_pattern", &dp_phy_test_pattern_fops},
+> >   #ifdef CONFIG_DRM_AMD_DC_HDCP
+> >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
