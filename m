@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB20A26ABAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D69B26ABA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgIOSUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:20:23 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:40998 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727962AbgIOSJ6 (ORCPT
+        id S1727978AbgIOSTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727666AbgIOSL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:09:58 -0400
-X-IronPort-AV: E=Sophos;i="5.76,430,1592838000"; 
-   d="scan'208";a="57129186"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 16 Sep 2020 03:09:57 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id CD8634006DF6;
-        Wed, 16 Sep 2020 03:09:55 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH v2] clk: renesas: rcar-gen3: Update description for RZ/G2
-Date:   Tue, 15 Sep 2020 19:09:53 +0100
-Message-Id: <20200915180953.2019-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 15 Sep 2020 14:11:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6EC3C06178A;
+        Tue, 15 Sep 2020 11:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Skf+RnDeQwakungqw7FkIqPZOV4lMwNMB+kvGSAk4Fo=; b=JTQVrkMe6r+LRHsSnRnH1uq06d
+        qrmUghk3Eb8xpQcwJBTi3Xbo6QjVFHKi7OhAB5WAr5nQAZ9dghtH0p3YFKyEldcO5Vg794DBCOvNJ
+        X1ljG+EOZ6V4NtA3BjAldhyx+r5uZ809aDHz1QDqRPdyuNaXItiD+wk2zbUu1BI5YkL1fXQwabItP
+        oRGrHS9XIQYek8AI1VMMN5oZ+phGZ3wzwKzqn57AwYAtxejKV/FVXOQtyasR20Ih1XfrOn+UerAO4
+        SgLwOzvpU/oTtE4+R4k12VmCUe2q0DXYXOv1WcixKSUq+J2oZH/RT7tlutib7YhxXvkIx9VBrh+tM
+        2sGe7Pjw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIFQB-0003uk-MM; Tue, 15 Sep 2020 18:11:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 408683050F0;
+        Tue, 15 Sep 2020 20:11:12 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DEEC82BB9C564; Tue, 15 Sep 2020 20:11:12 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 20:11:12 +0200
+From:   peterz@infradead.org
+To:     Will Deacon <will@kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Hou Tao <houtao1@huawei.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200915181112.GE2674@hirez.programming.kicks-ass.net>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <20200915161123.GC26745@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915161123.GC26745@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rcar-gen3-cpg driver is also used on Renesas RZ/G2 SoC's, update the
-description for the CLK_RCAR_GEN3_CPG config symbol to reflect this.
+On Tue, Sep 15, 2020 at 05:11:23PM +0100, Will Deacon wrote:
+> On Tue, Sep 15, 2020 at 06:03:44PM +0200, peterz@infradead.org wrote:
+> > On Tue, Sep 15, 2020 at 05:51:50PM +0200, peterz@infradead.org wrote:
+> > 
+> > > Anyway, I'll rewrite the Changelog and stuff it in locking/urgent.
+> > 
+> > How's this?
+> > 
+> > ---
+> > Subject: locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
+> > From: Hou Tao <houtao1@huawei.com>
+> > Date: Tue, 15 Sep 2020 22:07:50 +0800
+> > 
+> > From: Hou Tao <houtao1@huawei.com>
+> > 
+> > The __this_cpu*() accessors are (in general) IRQ-unsafe which, given
+> > that percpu-rwsem is a blocking primitive, should be just fine.
+> > 
+> > However, file_end_write() is used from IRQ context and will cause
+> > load-store issues.
+> 
+> ... on architectures where the per-cpu accessors are not atomic.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v1->v2
-* Updated commit message
-* Included RB from Geert
----
- drivers/clk/renesas/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That's not entirely accurate, on x86 for example the per-cpu ops are not
+atomic, but they are not susceptible to this problem due to them being a
+single instruction from the point of interrupts -- either they wholly
+happen or they don't.
 
-diff --git a/drivers/clk/renesas/Kconfig b/drivers/clk/renesas/Kconfig
-index 28e8730ce263..1277d5f90389 100644
---- a/drivers/clk/renesas/Kconfig
-+++ b/drivers/clk/renesas/Kconfig
-@@ -162,7 +162,7 @@ config CLK_RCAR_GEN2_CPG
- 	select CLK_RENESAS_CPG_MSSR
- 
- config CLK_RCAR_GEN3_CPG
--	bool "R-Car Gen3 CPG clock support" if COMPILE_TEST
-+	bool "R-Car Gen3 and RZ/G2 CPG clock support" if COMPILE_TEST
- 	select CLK_RENESAS_CPG_MSSR
- 
- config CLK_RCAR_USB2_CLOCK_SEL
--- 
-2.17.1
+So I'd reformulate it like: "... on architectures where the per-cpu
+accessors are not natively irq-safe" ?
+
+
 
