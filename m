@@ -2,141 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6D9269FF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50578269FF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgIOHhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:37:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39037 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726087AbgIOHhY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:37:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600155442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=LUihYCOFGsNQqFfjENLSTSa0QkwMpwvtwdi/Mex61+4=;
-        b=BfIKo8HT22j3ND7MoB8GZd+hpDEDMjOrx7yKjQ9NfmmSCBNVj0o4dWHzwC3qVwAtkciEBk
-        dxqMRbX8GQWTuV7MO27nkmVdGGS6WsLMwv0cjEbX1+xif3HQLfigbHmGRTe4liaGv62rfS
-        ZgmHhXeWiJ71ownlKAthWeIT7mKLrTc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-ar7V8RlRNcqnXa2ZYlqxrg-1; Tue, 15 Sep 2020 03:37:17 -0400
-X-MC-Unique: ar7V8RlRNcqnXa2ZYlqxrg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5B3A425CB;
-        Tue, 15 Sep 2020 07:37:14 +0000 (UTC)
-Received: from [10.36.114.89] (ovpn-114-89.ams2.redhat.com [10.36.114.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B9FF17512C;
-        Tue, 15 Sep 2020 07:37:10 +0000 (UTC)
-Subject: Re: [PATCH v2 2/7] kernel/resource: move and rename
- IORESOURCE_MEM_DRIVER_MANAGED
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-s390@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kexec@lists.infradead.org
-References: <20200908201012.44168-1-david@redhat.com>
- <20200908201012.44168-3-david@redhat.com>
- <20200915022023.GD2007@L-31X9LVDL-1304.local>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <b4eced44-00af-fcd2-be0d-d7abf8a2cc99@redhat.com>
-Date:   Tue, 15 Sep 2020 09:37:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726136AbgIOHkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:40:08 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2819 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726087AbgIOHkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:40:04 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id D54C260BE7146B3813A7;
+        Tue, 15 Sep 2020 08:40:00 +0100 (IST)
+Received: from [127.0.0.1] (10.47.11.114) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 15 Sep
+ 2020 08:40:00 +0100
+Subject: Re: [PATCH 10/11] perf test: Free aliases for PMU event map aliases
+ test
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+CC:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+References: <20200915031819.386559-1-namhyung@kernel.org>
+ <20200915031819.386559-11-namhyung@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <d1704e16-0561-8bd7-02bb-dbef0233e395@huawei.com>
+Date:   Tue, 15 Sep 2020 08:37:15 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20200915022023.GD2007@L-31X9LVDL-1304.local>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200915031819.386559-11-namhyung@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Originating-IP: [10.47.11.114]
+X-ClientProxiedBy: lhreml742-chm.china.huawei.com (10.201.108.192) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.09.20 04:20, Wei Yang wrote:
-> On Tue, Sep 08, 2020 at 10:10:07PM +0200, David Hildenbrand wrote:
->> IORESOURCE_MEM_DRIVER_MANAGED currently uses an unused PnP bit, which is
->> always set to 0 by hardware. This is far from beautiful (and confusing),
->> and the bit only applies to SYSRAM. So let's move it out of the
->> bus-specific (PnP) defined bits.
->>
->> We'll add another SYSRAM specific bit soon. If we ever need more bits for
->> other purposes, we can steal some from "desc", or reshuffle/regroup what we
->> have.
+On 15/09/2020 04:18, Namhyung Kim wrote:
+> The aliases were never released causing the following leaks:
 > 
-> I think you make this definition because we use IORESOURCE_SYSRAM_RAM for
-> hotpluged memory? So we make them all in IORESOURCE_SYSRAM_XXX family?
+>    Indirect leak of 1224 byte(s) in 9 object(s) allocated from:
+>      #0 0x7feefb830628 in malloc (/lib/x86_64-linux-gnu/libasan.so.5+0x107628)
+>      #1 0x56332c8f1b62 in __perf_pmu__new_alias util/pmu.c:322
+>      #2 0x56332c8f401f in pmu_add_cpu_aliases_map util/pmu.c:778
+>      #3 0x56332c792ce9 in __test__pmu_event_aliases tests/pmu-events.c:295
+>      #4 0x56332c792ce9 in test_aliases tests/pmu-events.c:367
+>      #5 0x56332c76a09b in run_test tests/builtin-test.c:410
+>      #6 0x56332c76a09b in test_and_print tests/builtin-test.c:440
+>      #7 0x56332c76ce69 in __cmd_test tests/builtin-test.c:695
+>      #8 0x56332c76ce69 in cmd_test tests/builtin-test.c:807
+>      #9 0x56332c7d2214 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
+>      #10 0x56332c6701a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
+>      #11 0x56332c6701a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
+>      #12 0x56332c6701a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
+>      #13 0x7feefb359cc9 in __libc_start_main ../csu/libc-start.c:308
+> 
+> Cc: John Garry <john.garry@huawei.com>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Yeah, to specify based on the extended MEM type SYSRAM. Because it
-really only applies to that.
+Just a minor comment below, either way:
+Reviewed-by: John Garry <john.garry@huawei.com>
 
--- 
-Thanks,
+Thanks
 
-David / dhildenb
+> Fixes: 956a78356c24c ("perf test: Test pmu-events aliases")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>   tools/perf/tests/pmu-events.c | 5 +++++
+>   tools/perf/util/pmu.c         | 2 +-
+>   tools/perf/util/pmu.h         | 1 +
+>   3 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+> index eb19f9a0bc15..d3517a74d95e 100644
+> --- a/tools/perf/tests/pmu-events.c
+> +++ b/tools/perf/tests/pmu-events.c
+> @@ -274,6 +274,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+>   	int res = 0;
+>   	bool use_uncore_table;
+>   	struct pmu_events_map *map = __test_pmu_get_events_map();
+> +	struct perf_pmu_alias *a, *tmp;
+>   
+>   	if (!map)
+>   		return -1;
+> @@ -347,6 +348,10 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+>   			  pmu_name, alias->name);
+>   	}
+>   
+> +	list_for_each_entry_safe(a, tmp, &aliases, list) {
+> +		list_del(&a->list);
+> +		perf_pmu_free_alias(a);
+> +	}
+
+You could also consider putting this in a helper in pmu.c
+
+>   	free(pmu);
+>   	return res;
+>   }
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index f1688e1f6ed7..555cb3524c25 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -274,7 +274,7 @@ static void perf_pmu_update_alias(struct perf_pmu_alias *old,
+>   }
+>   
+>   /* Delete an alias entry. */
+> -static void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
+> +void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
+>   {
+>   	zfree(&newalias->name);
+>   	zfree(&newalias->desc);
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index 44ccbdbb1c37..b63c4c5e335e 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -113,6 +113,7 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
+>   
+>   struct pmu_events_map *perf_pmu__find_map(struct perf_pmu *pmu);
+>   bool pmu_uncore_alias_match(const char *pmu_name, const char *name);
+> +void perf_pmu_free_alias(struct perf_pmu_alias *alias);
+>   
+>   int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
+>   
+> 
 
