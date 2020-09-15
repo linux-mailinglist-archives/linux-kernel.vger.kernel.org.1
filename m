@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864B826AD8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C750E26AD94
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727686AbgIOT1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727713AbgIOT0C (ORCPT
+        id S1727713AbgIOT2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:28:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43355 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727586AbgIOT1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:26:02 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12ACC06178C;
-        Tue, 15 Sep 2020 12:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=3UzI3IjsClMWUJX1nUX65h/Tlg3lK3F1wNRbBid3FZ4=; b=yG5g2Q6MTrlrhesPzS1nGJWY9Q
-        k4fQu3tt1MQidVFriNjN9keacOE2CeL6VcSJBWtHkZsigxv3O8axfhGAuDzkFf2XxrYHGjaSR9VNy
-        SuW+2s2zYERk7kQVDzwOEbXUmGXGq+l5VpONnphH7mN+3jXfWkDJFYgD67DmCWbj3qHJNXEN/HnaG
-        9wFTbr7gFmJenxAcUXhW12BpUabQRdurgPiPpViID7GclV7oqBAY2HZzqWXm6YuG+9hROzgflVAp1
-        PWrmwGFs36dWADf0N0Jo16HgoFXKIZtcOGVCvJNQjsoz1ykLaSKuiRx8zFzqIdF9LG+3h9O+joHJV
-        pRJTE2zg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIGaU-0007Wo-4m; Tue, 15 Sep 2020 19:25:58 +0000
-Subject: Re: [PATCH] media: vidtv: fix build on 32bit architectures
-To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>, mchehab@kernel.org
-Cc:     geert@linux-m68k.org, r.verdejo@samsung.com,
-        linux-media@vger.kernel.org, nicolas@ndufresne.ca,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200915180509.2661572-1-dwlsalmeida@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2280c5d7-7362-6760-fe70-54845c427bc5@infradead.org>
-Date:   Tue, 15 Sep 2020 12:25:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 15 Sep 2020 15:27:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600198032;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n+2lLM2k9R0KoxJS0Yj1YjWZ2tzOL4fA5WnRQ04/Q60=;
+        b=brxUvCMwYEyhDOLxG1vctoXChkUqUX32REEo6STwQjSDhBe0EY9CpEAZ6BL1PjPrHj4hv4
+        QDqnWOltKOC4TvBiqzFJY5SfQTBlxRqwidII6rcJE6urYsQnDAMFrI6VJK6AuVFREoKE8Q
+        4pc8a+hp4CIEHzI8iBGmi6+QQWJ6Cnk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-umcZtNTuM9mjJt5pxoM11g-1; Tue, 15 Sep 2020 15:27:10 -0400
+X-MC-Unique: umcZtNTuM9mjJt5pxoM11g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F7681074653;
+        Tue, 15 Sep 2020 19:27:08 +0000 (UTC)
+Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0455761982;
+        Tue, 15 Sep 2020 19:27:06 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 14:27:05 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] KVM: VMX: Move IRQ invocation to assembly
+ subroutine
+Message-ID: <20200915192705.vadb4he5obu3vdzm@treble>
+References: <20200915191505.10355-1-sean.j.christopherson@intel.com>
+ <20200915191505.10355-2-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200915180509.2661572-1-dwlsalmeida@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200915191505.10355-2-sean.j.christopherson@intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 11:05 AM, Daniel W. S. Almeida wrote:
-> From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+On Tue, Sep 15, 2020 at 12:15:04PM -0700, Sean Christopherson wrote:
+> Move the asm blob that invokes the appropriate IRQ handler after VM-Exit
+> into a proper subroutine.  Unconditionally create a stack frame in the
+> subroutine so that, as objtool sees things, the function has standard
+> stack behavior.  The dynamic stack adjustment makes using unwind hints
+> problematic.
 > 
-> Fix the following error for builds on 32bit architectures:
-> 
-> ERROR: modpost: "__udivdi3"
-> [drivers/media/test-drivers/vidtv/dvb-vidtv-bridge.ko] undefined!
-> 
-> Which is due to 64bit divisions that did not go through the helpers
-> in linux/math64.h
-> 
-> As vidtv_mux_check_mux_rate was not operational in its current form,
-> drop the entire function  while it is not fixed properly.
-> 
-> For now, call vidtv_mux_pad_with_nulls with a constant number of packets
-> to avoid warnings due to unused functions when building this driver.
-> 
-> Fixes: f90cf6079bf67988 ("media: vidtv: add a bridge driver")
-> Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
-> ---
->  drivers/media/test-drivers/vidtv/vidtv_mux.c  | 34 +------------------
->  .../media/test-drivers/vidtv/vidtv_s302m.c    |  4 +--
->  2 files changed, 3 insertions(+), 35 deletions(-)
-> 
+> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Uros Bizjak <ubizjak@gmail.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Works for me.  Thanks.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
 -- 
-~Randy
+Josh
+
