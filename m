@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E9B269CEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E72269D79
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgIOEQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 00:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
+        id S1726219AbgIOE2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 00:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726034AbgIOEQS (ORCPT
+        with ESMTP id S1726019AbgIOE17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 00:16:18 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F54C06174A;
-        Mon, 14 Sep 2020 21:16:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Br8zy4QyYz9sVB;
-        Tue, 15 Sep 2020 14:16:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600143375;
-        bh=1xUEsk5Wj3dbUswPqUAtUgGLbA6i2z5+Jjmrc8Xi6fo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iyD/lMZ9yot+zr9aospjnWEMHvVzlzMN5vPN0c20R0dZxvx2hMo9NttNYSkOpk8F8
-         gpboYJx1qi58JI4D3GTeuOfoibdcA9WPKsKGVWuepRKRLMdHaOsGEyTfTsmXeEB5Gc
-         YkCoY5M69UvsBOxaBp5FHWxiKh9OzHtlRt6axR4Ans2owJ2vtJYepI+FRfAkAH6nVD
-         aFkFIWJXuK7cXlqH8d+1XrKdQu/Afv8M0+S8H2gwYAQWLK+nKEqyfkktBpmAyLch/s
-         kXimZXICpfV6fLM6ckZWb+QTtDl986SslvmuwBq8tM87KvKY2ztjQlcOmRfIXaukMd
-         NyPgYAMOwFSxA==
-Date:   Tue, 15 Sep 2020 14:16:13 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Gow <davidgow@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Patricia Alfonso <trishalfonso@google.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KUnit Development <kunit-dev@googlegroups.com>
-Subject: Re: linux-next: build warning after merge of the akpm-current tree
-Message-ID: <20200915141613.09dba80c@canb.auug.org.au>
-In-Reply-To: <CABVgOSko2FDCgEhCBD4Nm5ExEa9vLQrRiHMh+89nPYjqGjegFw@mail.gmail.com>
-References: <20200914170055.45a02b55@canb.auug.org.au>
-        <CABVgOSko2FDCgEhCBD4Nm5ExEa9vLQrRiHMh+89nPYjqGjegFw@mail.gmail.com>
+        Tue, 15 Sep 2020 00:27:59 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910EDC06174A;
+        Mon, 14 Sep 2020 21:27:59 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id o16so1105185pjr.2;
+        Mon, 14 Sep 2020 21:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l2xAFfZO9faQ850NCjP3QR4K5y7DMG5mMFIU0Ld9H64=;
+        b=nssX0P1bZZxN5KkeWNrkhQuXfHMrZMaKSZzmQAq3h3BZGvfucG2LOki4GDARygm7E+
+         TI87gIJUj+9A6xuzrmtsmFJJdpYDV/zBSYcoe4zSsyjtqMMPeO9oOoU/u2ElxKtgBFv7
+         AvufAnCfnb9QyayJYDuPRt9RIPibDaC6eQkoxumFa0nMUdhdS27BLIweqU/4Agk7beiY
+         /JclK3N03cPjh2j7D769Yaj3CH4CZtq2P0lZf5N6EhmhUIsX1rUF5FL81GEXOBTGaaHU
+         dopk+puW4KU19s79XJEPboEC0JEWQV1FjA4cMmkX9Rnq1D5pTmphY73AjLyZTORQz26i
+         w/3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l2xAFfZO9faQ850NCjP3QR4K5y7DMG5mMFIU0Ld9H64=;
+        b=aWlhnfd9XzGH1df0CSy7pXZpziNvPGRD6R81Bmbf9nvWOjdYUedjAQp3VKJ1hNOa7A
+         vGvMupVtPOJqkNjLiApwSE8cATpWKdvdOFXVF177SfdCkkrpF4QHf9Ip6JDarYd6iR2L
+         nIEB7+XWM/F0D5QQU4ssYxnKebfQPkK+XEJPfUDj19V0RViS9/kuU9CTDu9OyTFQPKdu
+         AF9ffXsbXCZvoh2iKm2HKIG1DO7kyepLG1YOa07VBLXVY/jwpUK/cfjDuk/PXWmXvv7E
+         vuBrF9+Cj00bnmAB5/oMI7HVpTpaFjVCJcLlArvOVAwKVjZ9FVfwrJ//xzWAZVHM8OIT
+         /T2A==
+X-Gm-Message-State: AOAM532TFgqAlW4EvC8acMC5e5+ok9QAQjS/qUMe7UEIIoMqR/wGB8jl
+        PHUPOYRrPG9dmUq4W2t7DTI=
+X-Google-Smtp-Source: ABdhPJyy3XjMKNT25MhUrDfQnFQj6LLYuJ9UbswDx3I0tqWLwdd7VWKSPMhZDScdymEfE7ZGfWiBZg==
+X-Received: by 2002:a17:902:d88c:b029:d1:e5ec:5ef5 with SMTP id b12-20020a170902d88cb02900d1e5ec5ef5mr18857plz.43.1600144079107;
+        Mon, 14 Sep 2020 21:27:59 -0700 (PDT)
+Received: from localhost.localdomain (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id jz6sm10750244pjb.22.2020.09.14.21.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 21:27:58 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] docs : fb :  matroxfb.rst : Remove the stale information lines i.e framebuffer scrollback
+Date:   Tue, 15 Sep 2020 09:49:55 +0530
+Message-Id: <20200915041954.5110-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/z2knM/TUP8H9wxwd02Y46Ya";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/z2knM/TUP8H9wxwd02Y46Ya
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patch remove stale information lines from this file :  matroxfb.rst
 
-Hi David,
+In effect of the the commit hashes : 50145474f6ef4a9c19205b173da6264a644c7489  and
+973c096f6a85e5b5f2a295126ba6928d9a6afd45
 
-On Tue, 15 Sep 2020 12:03:08 +0800 David Gow <davidgow@google.com> wrote:
->
-> > drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c: In function 'common_nfc_set=
-_geometry':
-> > drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c:514:3: warning: initializati=
-on discards 'const' qualifier from pointer target type [-Wdiscarded-qualifi=
-ers]
-> >   514 |   nanddev_get_ecc_requirements(&chip->base);
-> >       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > =20
->=20
-> I was unable to reproduce this warning: it looks unrelated, so I'm
-> assuming it was attributed.
 
-Yeah, sorry, that was included by accident.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Documentation/fb/matroxfb.rst | 2 --
+ 1 file changed, 2 deletions(-)
 
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/Documentation/fb/matroxfb.rst b/Documentation/fb/matroxfb.rst
+index f1859d98606e..6158c49c8571 100644
+--- a/Documentation/fb/matroxfb.rst
++++ b/Documentation/fb/matroxfb.rst
+@@ -317,8 +317,6 @@ Currently there are following known bugs:
+  - interlaced text mode is not supported; it looks like hardware limitation,
+    but I'm not sure.
+  - Gxx0 SGRAM/SDRAM is not autodetected.
+- - If you are using more than one framebuffer device, you must boot kernel
+-   with 'video=scrollback:0'.
+  - maybe more...
+ 
+ And following misfeatures:
+-- 
+2.26.2
 
---Sig_/z2knM/TUP8H9wxwd02Y46Ya
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9gQA0ACgkQAVBC80lX
-0GxqDQf/fGxucLLY3tmR4qE2OIiFf7aAcXMvI5w1rjnvS8yH4ptRBt0+Iln2ov7A
-2GFZ7QcsUTmMZ7a86pjnbu/3fyOcQQc8rTXZlPI04eP0+iRXOZLbRq73vsVKENdl
-6aYcCDdDn092Et5C4C0a41nYiEb4lNi1l4DKS+DBnuBHruhsKUuUrH1Lhk3DgDHt
-VKbnPOgcEHtu8W6uSU3rllre9qQ+OfQ6KRsSDFY5VLH9+yVvElk1e4ZRs0ZdRfVV
-80ZfZDRnou09BMMY9C8Fk1+B/cPuAObvX3rGUoFwiUv0MYribQtrVLaI6gEhjTdF
-UE4QNst1BeyAc7sd1AhkrZrbql9Isg==
-=OB08
------END PGP SIGNATURE-----
-
---Sig_/z2knM/TUP8H9wxwd02Y46Ya--
