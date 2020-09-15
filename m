@@ -2,242 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBE926A0C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5AD26A0D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgIOIZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:25:35 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:48275 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgIOIZO (ORCPT
+        id S1726468AbgIOI0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:26:09 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:5171 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgIOI0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:25:14 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08F8OoFX2028408, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08F8OoFX2028408
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 15 Sep 2020 16:24:51 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 15 Sep 2020 16:24:50 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 15 Sep 2020 16:24:50 +0800
-Received: from RTEXMB01.realtek.com.tw ([fe80::105:9ee:ebb3:4a69]) by
- RTEXMB01.realtek.com.tw ([fe80::105:9ee:ebb3:4a69%13]) with mapi id
- 15.01.2044.006; Tue, 15 Sep 2020 16:24:50 +0800
-From:   =?utf-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "puranjay12@gmail.com" <puranjay12@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "vailbhavgupta40@gmail.com" <vailbhavgupta40@gmail.com>
-Subject: RE: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix driving parameter
-Thread-Topic: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
- driving parameter
-Thread-Index: AQHWhP62uKuuQJQ5k0+R6Z2U1e37UKlezqwAgAES/lCAAC/yAIADBGQA///xQgCABgDAEA==
-Date:   Tue, 15 Sep 2020 08:24:50 +0000
-Message-ID: <4a677365e7a64699b16ae0b25eca1041@realtek.com>
-References: <8405a7d8caeb40b7ac21230361bbcd76@realtek.com>
- <20200911145608.GA867647@bjorn-Precision-5520>
-In-Reply-To: <20200911145608.GA867647@bjorn-Precision-5520>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.88.99]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 15 Sep 2020 04:26:05 -0400
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 57203240008;
+        Tue, 15 Sep 2020 08:26:02 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 10:26:02 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 3/3] ASoC: tlv320aic32x4: Enable fast charge
+Message-ID: <20200915082602.GH4230@piout.net>
+References: <20200911173140.29984-1-miquel.raynal@bootlin.com>
+ <20200911173140.29984-4-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911173140.29984-4-miquel.raynal@bootlin.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCam9ybiBIZWxnYWFzIFttYWls
-dG86aGVsZ2Fhc0BrZXJuZWwub3JnXQ0KPiBTZW50OiBGcmlkYXksIFNlcHRlbWJlciAxMSwgMjAy
-MCAxMDo1NiBQTQ0KPiBUbzog5ZCz5piK5r6EIFJpY2t5DQo+IENjOiBhcm5kQGFybmRiLmRlOyBn
-cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgYmhlbGdhYXNAZ29vZ2xlLmNvbTsNCj4gdWxmLmhh
-bnNzb25AbGluYXJvLm9yZzsgcnVpX2ZlbmdAcmVhbHNpbC5jb20uY247IGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmc7DQo+IHB1cmFuamF5MTJAZ21haWwuY29tOyBsaW51eC1wY2lAdmdlci5r
-ZXJuZWwub3JnOw0KPiB2YWlsYmhhdmd1cHRhNDBAZ2FtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSZTog
-W1BBVENIIHY1IDIvMl0gbWlzYzogcnRzeDogQWRkIHBvd2VyIHNhdmluZyBmdW5jdGlvbnMgYW5k
-IGZpeCBkcml2aW5nDQo+IHBhcmFtZXRlcg0KPiANCj4gT24gRnJpLCBTZXAgMTEsIDIwMjAgYXQg
-MDg6MTg6MjJBTSArMDAwMCwg5ZCz5piK5r6EIFJpY2t5IHdyb3RlOg0KPiA+ID4gLS0tLS1Pcmln
-aW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IEJqb3JuIEhlbGdhYXMgW21haWx0bzpoZWxn
-YWFzQGtlcm5lbC5vcmddDQo+ID4gPiBTZW50OiBUaHVyc2RheSwgU2VwdGVtYmVyIDEwLCAyMDIw
-IDE6NDQgQU0NCj4gPiA+IFRvOiDlkLPmmIrmvoQgUmlja3kNCj4gPiA+IENjOiBhcm5kQGFybmRi
-LmRlOyBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgYmhlbGdhYXNAZ29vZ2xlLmNvbTsNCj4g
-PiA+IHVsZi5oYW5zc29uQGxpbmFyby5vcmc7IHJ1aV9mZW5nQHJlYWxzaWwuY29tLmNuOw0KPiBs
-aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiA+ID4gcHVyYW5qYXkxMkBnbWFpbC5jb207
-IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiB2YWlsYmhhdmd1cHRhNDBAZ2FtYWls
-LmNvbQ0KPiA+ID4gU3ViamVjdDogUmU6IFtQQVRDSCB2NSAyLzJdIG1pc2M6IHJ0c3g6IEFkZCBw
-b3dlciBzYXZpbmcgZnVuY3Rpb25zIGFuZCBmaXgNCj4gZHJpdmluZw0KPiA+ID4gcGFyYW1ldGVy
-DQo+ID4gPg0KPiA+ID4gT24gV2VkLCBTZXAgMDksIDIwMjAgYXQgMDc6MTA6MTlBTSArMDAwMCwg
-5ZCz5piK5r6EIFJpY2t5IHdyb3RlOg0KPiA+ID4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
-LS0tDQo+ID4gPiA+ID4gRnJvbTogQmpvcm4gSGVsZ2FhcyBbbWFpbHRvOmhlbGdhYXNAa2VybmVs
-Lm9yZ10NCj4gPiA+ID4gPiBTZW50OiBXZWRuZXNkYXksIFNlcHRlbWJlciAwOSwgMjAyMCA2OjI5
-IEFNDQo+ID4gPiA+ID4gVG86IOWQs+aYiua+hCBSaWNreQ0KPiA+ID4gPiA+IENjOiBhcm5kQGFy
-bmRiLmRlOyBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsNCj4gYmhlbGdhYXNAZ29vZ2xlLmNv
-bTsNCj4gPiA+ID4gPiB1bGYuaGFuc3NvbkBsaW5hcm8ub3JnOyBydWlfZmVuZ0ByZWFsc2lsLmNv
-bS5jbjsNCj4gPiA+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiA+ID4gcHVy
-YW5qYXkxMkBnbWFpbC5jb207IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiA+ID4g
-dmFpbGJoYXZndXB0YTQwQGdhbWFpbC5jb20NCj4gPiA+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENI
-IHY1IDIvMl0gbWlzYzogcnRzeDogQWRkIHBvd2VyIHNhdmluZyBmdW5jdGlvbnMgYW5kIGZpeA0K
-PiA+ID4gZHJpdmluZw0KPiA+ID4gPiA+IHBhcmFtZXRlcg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4g
-T24gTW9uLCBTZXAgMDcsIDIwMjAgYXQgMDY6MDc6MzFQTSArMDgwMCwgcmlja3lfd3VAcmVhbHRl
-ay5jb20NCj4gd3JvdGU6DQo+ID4gPiA+ID4gPiBGcm9tOiBSaWNreSBXdSA8cmlja3lfd3VAcmVh
-bHRlay5jb20+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gdjQ6DQo+ID4gPiA+ID4gPiBzcGxp
-dCBwb3dlciBkb3duIGZsb3cgYW5kIHBvd2VyIHNhdmluZyBmdW5jdGlvbiB0byB0d28gcGF0Y2gN
-Cj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiB2NToNCj4gPiA+ID4gPiA+IGZpeCB1cCBtb2RpZmll
-ZCBjaGFuZ2UgdW5kZXIgdGhlIC0tLSBsaW5lDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBIZWhlLCB0
-aGlzIGNhbWUgb3V0ICphYm92ZSogdGhlICItLS0iIGxpbmUgOikNCj4gPiA+ID4gPg0KPiA+ID4g
-PiA+ID4gQWRkIHJ0czUyMmEgTDEgc3ViLXN0YXRlIHN1cHBvcnQNCj4gPiA+ID4gPiA+IFNhdmUg
-bW9yZSBwb3dlciBvbiBydHM1MjI3IHJ0czUyNDkgcnRzNTI1YSBydHM1MjYwDQo+ID4gPiA+ID4g
-PiBGaXggcnRzNTI2MCBkcml2aW5nIHBhcmFtZXRlcg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+
-IFNpZ25lZC1vZmYtYnk6IFJpY2t5IFd1IDxyaWNreV93dUByZWFsdGVrLmNvbT4NCj4gPiA+ID4g
-PiA+IC0tLQ0KPiA+ID4gPiA+ID4gIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjcuYyAg
-fCAxMTIgKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+ID4gPiA+ID4gIGRyaXZlcnMvbWlzYy9j
-YXJkcmVhZGVyL3J0czUyNDkuYyAgfCAxNDUNCj4gPiA+ID4gPiArKysrKysrKysrKysrKysrKysr
-KysrKysrKysrLQ0KPiA+ID4gPiA+ID4gIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjAu
-YyAgfCAgMjggKysrLS0tDQo+ID4gPiA+ID4gPiAgZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRz
-eF9wY3IuaCB8ICAxNyArKysrDQo+ID4gPiA+ID4gPiAgNCBmaWxlcyBjaGFuZ2VkLCAyODMgaW5z
-ZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjcuYw0KPiA+ID4gPiA+IGIv
-ZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTIyNy5jDQo+ID4gPiA+ID4gPiBpbmRleCA3NDcz
-OTFlM2ZiNWQuLjg4NTkwMTE2NzJjYiAxMDA2NDQNCj4gPiA+ID4gPiA+IC0tLSBhL2RyaXZlcnMv
-bWlzYy9jYXJkcmVhZGVyL3J0czUyMjcuYw0KPiA+ID4gPiA+ID4gKysrIGIvZHJpdmVycy9taXNj
-L2NhcmRyZWFkZXIvcnRzNTIyNy5jDQo+ID4gPiA+ID4gPiBAQCAtNzIsMTUgKzcyLDgwIEBAIHN0
-YXRpYyB2b2lkDQo+IHJ0czUyMjdfZmV0Y2hfdmVuZG9yX3NldHRpbmdzKHN0cnVjdA0KPiA+ID4g
-PiA+IHJ0c3hfcGNyICpwY3IpDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gIAlwY2lfcmVhZF9j
-b25maWdfZHdvcmQocGRldiwgUENSX1NFVFRJTkdfUkVHMiwgJnJlZyk7DQo+ID4gPiA+ID4gPiAg
-CXBjcl9kYmcocGNyLCAiQ2ZnIDB4JXg6IDB4JXhcbiIsIFBDUl9TRVRUSU5HX1JFRzIsIHJlZyk7
-DQo+ID4gPiA+ID4gPiArCWlmIChydHN4X2NoZWNrX21tY19zdXBwb3J0KHJlZykpDQo+ID4gPiA+
-ID4gPiArCQlwY3ItPmV4dHJhX2NhcHMgfD0gRVhUUkFfQ0FQU19OT19NTUM7DQo+ID4gPiA+ID4g
-PiAgCXBjci0+c2QzMF9kcml2ZV9zZWxfM3YzID0gcnRzeF9yZWdfdG9fc2QzMF9kcml2ZV9zZWxf
-M3YzKHJlZyk7DQo+ID4gPiA+ID4gPiAgCWlmIChydHN4X3JlZ19jaGVja19yZXZlcnNlX3NvY2tl
-dChyZWcpKQ0KPiA+ID4gPiA+ID4gIAkJcGNyLT5mbGFncyB8PSBQQ1JfUkVWRVJTRV9TT0NLRVQ7
-DQo+ID4gPiA+ID4gPiAgfQ0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ICtzdGF0aWMgdm9pZCBy
-dHM1MjI3X2luaXRfZnJvbV9jZmcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQo+ID4gPiA+ID4gPiAr
-ew0KPiA+ID4gPiA+ID4gKwlzdHJ1Y3QgcGNpX2RldiAqcGRldiA9IHBjci0+cGNpOw0KPiA+ID4g
-PiA+ID4gKwlpbnQgbDFzczsNCj4gPiA+ID4gPiA+ICsJdTMyIGx2YWw7DQo+ID4gPiA+ID4gPiAr
-CXN0cnVjdCBydHN4X2NyX29wdGlvbiAqb3B0aW9uID0gJnBjci0+b3B0aW9uOw0KPiA+ID4gPiA+
-ID4gKw0KPiA+ID4gPiA+ID4gKwlsMXNzID0gcGNpX2ZpbmRfZXh0X2NhcGFiaWxpdHkocGRldiwg
-UENJX0VYVF9DQVBfSURfTDFTUyk7DQo+ID4gPiA+ID4gPiArCWlmICghbDFzcykNCj4gPiA+ID4g
-PiA+ICsJCXJldHVybjsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsJcGNpX3JlYWRfY29u
-ZmlnX2R3b3JkKHBkZXYsIGwxc3MgKyBQQ0lfTDFTU19DVEwxLCAmbHZhbCk7DQo+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiBUaGlzIGxvb2tzIGEgbGl0dGxlIHByb2JsZW1hdGljLiAgUENJX0wxU1NfQ1RM
-MSBpcyBhbiBhcmNoaXRlY3RlZA0KPiA+ID4gPiA+IHJlZ2lzdGVyIGluIHRoZSBBU1BNIEwxIFBN
-IFN1YnN0YXRlcyBjYXBhYmlsaXR5LCBhbmQgaXRzIHZhbHVlIG1heQ0KPiA+ID4gPiA+IGNoYW5n
-ZSBhdCBydW50aW1lIGJlY2F1c2UgZHJpdmVycy9wY2kvcGNpZS9hc3BtLmMgbWFuYWdlcyBpdC4N
-Cj4gPiA+ID4gPg0KPiA+ID4gPiA+IEl0IGxvb2tzIGxpa2UgdGhlIGNvZGUgYmVsb3cgZG9lcyBk
-ZXZpY2Utc3BlY2lmaWMgY29uZmlndXJhdGlvbiBiYXNlZA0KPiA+ID4gPiA+IG9uIHRoZSBjdXJy
-ZW50IFBDSV9MMVNTX0NUTDEgdmFsdWUuICBCdXQgd2hhdCBoYXBwZW5zIGlmIGFzcG0uYw0KPiA+
-ID4gPiA+IGNoYW5nZXMgUENJX0wxU1NfQ1RMMSBsYXRlcj8NCj4gPiA+ID4NCj4gPiA+ID4gV2Ug
-YXJlIGdvaW5nIHRvIG1ha2Ugc3VyZSBhbmQgc2V0IHRoZSBiZXN0IGNvbmZpZ3VyYXRpb24gb24g
-dGhlDQo+ID4gPiA+IGN1cnJlbnQgdGltZSwgaWYgaG9zdCBjaGFuZ2UgdGhlIGNhcGFiaWxpdHkg
-bGF0ZXIsIGl0IGRvZXNuJ3QgYWZmZWN0DQo+ID4gPiA+IGZ1bmN0aW9uLCBvbmx5IGFmZmVjdCBh
-IGxpdHRsZSBwb3dlciBzYXZpbmcNCj4gPiA+DQo+ID4gPiBXaHkgZG9uJ3QgeW91IHVuY29uZGl0
-aW9uYWxseSBkbyB0aGUgZm9sbG93aW5nPw0KPiA+ID4NCj4gPiA+ICAgcnRzeF9zZXRfZGV2X2Zs
-YWcocGNyLCBBU1BNX0wxXzFfRU4pOw0KPiA+ID4gICBydHN4X3NldF9kZXZfZmxhZyhwY3IsIEFT
-UE1fTDFfMl9FTik7DQo+ID4gPiAgIHJ0c3hfc2V0X2Rldl9mbGFnKHBjciwgUE1fTDFfMV9FTik7
-DQo+ID4gPiAgIHJ0c3hfc2V0X2Rldl9mbGFnKHBjciwgUE1fTDFfMl9FTik7DQo+ID4NCj4gPiBP
-dXIgcG93ZXIgc2F2aW5nIGZ1bmN0aW9uIGhhdmUgMiBkaWZmZXJlbnQgZmxvdyBMMSBhbmQgTDFz
-dWJzdGF0ZSwNCj4gPiBzbyB3ZSBuZWVkIHRvIGNoZWNrIGl0IGZvciB3aGljaCBmbG93IHdlIGFy
-ZSBnb2luZyB0bw0KPiA+IERldGFpbCB0byBzZWUgYmVsb3cgcmVwbHkNCj4gPg0KPiA+ID4gTGV0
-J3MgYXNzdW1lIHRoZSBnZW5lcmljIGNvZGUgaW4gYXNwbS5jIGhhcyBjbGVhcmVkIGFsbCB0aGVz
-ZSBiaXRzOg0KPiA+ID4NCj4gPiA+ICAgUENJX0wxU1NfQ1RMMV9BU1BNX0wxXzENCj4gPiA+ICAg
-UENJX0wxU1NfQ1RMMV9BU1BNX0wxXzINCj4gPiA+ICAgUENJX0wxU1NfQ1RMMV9QQ0lQTV9MMV8x
-DQo+ID4gPiAgIFBDSV9MMVNTX0NUTDFfUENJUE1fTDFfMg0KPiA+ID4NCj4gPiA+IGluIHRoZSBM
-MSBQTSBTdWJzdGF0ZXMgY2FwYWJpbGl0eS4NCj4gPiA+DQo+ID4gPiBJIHRoaW5rIHlvdSBhcmUg
-c2F5aW5nIHRoYXQgaWYgeW91ICphbHNvKiBjbGVhciBBU1BNX0wxXzFfRU4sDQo+ID4gPiBBU1BN
-X0wxXzJfRU4sIFBNX0wxXzFfRU4sIGFuZCBQTV9MMV8yX0VOIGluIHlvdXIgZGV2aWNlLXNwZWNp
-ZmljDQo+ID4gPiByZWdpc3RlcnMsIGl0IHVzZXMgbGVzcyBwb3dlciB0aGFuIGlmIHlvdSBzZXQg
-dGhvc2UgZGV2aWNlLXNwZWNpZmljDQo+ID4gPiBiaXRzLiAgUmlnaHQ/DQo+ID4gPg0KPiA+ID4g
-QW5kIG1vcmVvdmVyLCBJIHRoaW5rIHlvdSdyZSBzYXlpbmcgdGhhdCBpZiBhc3BtLmMgc3Vic2Vx
-dWVudGx5ICpzZXRzKg0KPiA+ID4gc29tZSBvZiB0aG9zZSBiaXRzIGluIHRoZSBMMSBQTSBTdWJz
-dGF0ZXMgY2FwYWJpbGl0eSwgdGhvc2Ugc3Vic3RhdGVzDQo+ID4gPiAqd29yayogZXZlbiB0aG91
-Z2ggdGhlIGRldmljZS1zcGVjaWZpYyBBU1BNX0wxXzFfRU4sIEFTUE1fTDFfMl9FTiwNCj4gPiA+
-IFBNX0wxXzFfRU4sIGFuZCBQTV9MMV8yX0VOIGJpdHMgYXJlIG5vdCBzZXQuICBSaWdodD8NCj4g
-PiA+DQo+ID4gPiBJIGRvIG5vdCBmZWVsIGdvb2QgYWJvdXQgdGhpcyBhcyBhIGdlbmVyYWwgc3Ry
-YXRlZ3kuICBJIHRoaW5rIHdlDQo+ID4gPiBzaG91bGQgcHJvZ3JhbSB0aGUgZGV2aWNlIHNvIHRo
-ZSBiZWhhdmlvciBpcyBjb21wbGV0ZWx5IHByZWRpY3RhYmxlLA0KPiA+ID4gcmVnYXJkbGVzcyBv
-ZiB0aGUgZ2VuZXJpYyBlbmFibGUgYml0cyBoYXBwZW5lZCB0byBiZSBzZXQgYXQNCj4gPiA+IHBy
-b2JlLXRpbWUuDQo+ID4gPg0KPiA+ID4gVGhlIGN1cnJlbnQgYXBwcm9hY2ggbWVhbnMgdGhhdCBp
-ZiB3ZSBlbmFibGUgTDEgc3Vic3RhdGVzIGFmdGVyIHRoZQ0KPiA+ID4gZHJpdmVyIHByb2JlLCB0
-aGUgZGV2aWNlIGlzIGNvbmZpZ3VyZWQgZGlmZmVyZW50bHkgdGhhbiBpZiB3ZSBlbmFibGVkDQo+
-ID4gPiBMMSBzdWJzdGF0ZXMgYmVmb3JlIHByb2JlLiAgVGhhdCdzIG5vdCBhIHJlbGlhYmxlIHdh
-eSB0byBvcGVyYXRlIGl0Lg0KPiA+DQo+ID4gVGFsayBhYm91dCBvdXIgcG93ZXIgc2F2aW5nIGZ1
-bmN0aW9uDQo+ID4gYSkgYmFzaWMgTDEgcG93ZXIgc2F2aW5nDQo+ID4gYikgYWR2YW5jZSBMMSBw
-b3dlciBzYXZpbmcNCj4gPiBjKSBhZHZhbmNlIEwxIHN1YnN0YXRlIHBvd2VyIHNhdmluZw0KPiAN
-Cj4gSSBoYXZlIG5vIGlkZWEgd2hhdCB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVuICJiYXNpYyBMMSBw
-b3dlciBzYXZpbmciIGFuZA0KPiAiYWR2YW5jZSBMMSBwb3dlciBzYXZpbmciIGlzLCBzbyBJIGFz
-c3VtZSB0aG9zZSBhcmUgZGV2aWNlLXNwZWNpZmljDQo+IHRoaW5ncy4gIElmIG5vdCwgcGxlYXNl
-IHVzZSB0aGUgc2FtZSB0ZXJtaW5vbG9neSBhcyB0aGUgUENJZSBzcGVjLg0KPiANCj4gPiBhdCBp
-bml0aWFsLCB3ZSBjaGVjayBwY2kgcG9ydCBzdXBwb3J0IEwxIHN1YnMgb3Igbm90LCBpZiBub3Qg
-d2UgYXJlDQo+ID4gZ29pbmcgdG8gYikgb3RoZXJ3aXNlIGdvaW5nIHRvIGMpLg0KPiANCj4gWW91
-J3JlIG5vdCBjaGVja2luZyB3aGV0aGVyIHRoZSBwb3J0ICpzdXBwb3J0cyogTDEgc3Vic3RhdGVz
-LiAgWW91DQo+IHdvdWxkIGxvb2sgYXQgUENJX0wxU1NfQ0FQIHRvIGxlYXJuIHRoYXQuICBZb3Un
-cmUgbG9va2luZyBhdA0KPiBQQ0lfTDFTU19DVEwxLCB3aGljaCB0ZWxscyB5b3Ugd2hldGhlciBM
-MSBzdWJzdGF0ZXMgYXJlICplbmFibGVkKi4NCj4gDQo+ID4gQXNzdW1lIGFzcG0uYyBjaGFuZ2Ug
-Yml0IG9mIEwxIFBNIFN1YnN0YXRlcyBjYXBhYmlsaXR5IGFmdGVyIG91cg0KPiA+IGRyaXZlciBw
-cm9iZSwgd2UgYXJlIGdvaW5nIHRvIGEpDQo+ID4NCj4gPiBTbyBmYXIgd2UgZGlkIG5vdCBzZWUg
-YW55IHBsYXRmb3JtIGNoYW5nZSBMMSBQTSBTdWJzdGF0ZXMgY2FwYWJpbGl0eQ0KPiA+IGFmdGVy
-IG91ciBkcml2ZXIgcHJvYmUuDQo+IA0KPiBZb3Ugc2hvdWxkIGV4cGVjdCB0aGF0IGFzcG0uYyB3
-aWxsIGNoYW5nZSBiaXRzIGluIHRoZSBMMSBQTSAqY29udHJvbCoNCj4gcmVnaXN0ZXIgKFBDSV9M
-MVNTX0NUTDEpIGFmdGVyIHByb2JlLg0KPiANCj4gWW91IG1pZ2h0IG5vdCBhY3R1YWxseSBzZWUg
-aXQgY2hhbmdlLCBkZXBlbmRpbmcgb24gaG93IHlvdSB0ZXN0ZWQsIGJ1dA0KPiB5b3UgY2Fubm90
-IHJlbHkgb24gUENJX0wxU1NfQ1RMMSBiZWluZyBjb25zdGFudC4gIEl0IG1heSBjaGFuZ2UgYmFz
-ZWQNCj4gb24gcG93ZXIvcGVyZm9ybWFuY2UgdHJhZGVvZmZzLCBlLmcuLCB3aGV0aGVyIHRoZSBz
-eXN0ZW0gaXMgcGx1Z2dlZA0KPiBpbnRvIEFDIHBvd2VyLCB3aGV0aGVyIGl0J3MgaWRsZSwgZXRj
-Lg0KPiANCg0KT3VyIEFTUE0gZnVuY3Rpb24gaXMgYSBIVyBzb2x1dGlvbiBmb2xsb3cgdGhlIFBD
-SWUgU1BFQy4gZG9u4oCZdCB3b3JyeSBhYm91dCBjcmFzaCB0aGUgc3lzdGVtDQpJZiBIT1NUIGNo
-YW5nZSBvdXIgZGV2aWNlIGNvbmZpZyBzcGFjZSBzZXR0aW5nIGF0IHJ1biB0aW1lIG91ciBIVyB3
-aWxsIGRvIHRoZSBjb3JyZXNwb25kaW5nIHRoaW5ncyB3aGljaCBmb2xsb3dzIHRoZSBTUEVDLg0K
-QXQgaW5pdGlhbCB0aW1lIHdlIHNldCB0aGVzZSBwYXJhbWV0ZXIganVzdCBnb29kIGZvciBtb3Jl
-IHBvd2VyIHNhdmluZw0KDQo+ID4gPiA+ID4gPiArCWlmIChDSEtfUENJX1BJRChwY3IsIDB4NTIy
-QSkpIHsNCj4gPiA+ID4gPiA+ICsJCWlmICgwID09IChsdmFsICYgMHgwRikpDQo+ID4gPiA+ID4g
-PiArCQkJcnRzeF9wY2lfZW5hYmxlX29vYnNfcG9sbGluZyhwY3IpOw0KPiA+ID4gPiA+ID4gKwkJ
-ZWxzZQ0KPiA+ID4gPiA+ID4gKwkJCXJ0c3hfcGNpX2Rpc2FibGVfb29ic19wb2xsaW5nKHBjcik7
-DQo+ID4gPiA+ID4gPiArCX0NCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsJaWYgKGx2YWwg
-JiBQQ0lfTDFTU19DVEwxX0FTUE1fTDFfMSkNCj4gPiA+ID4gPiA+ICsJCXJ0c3hfc2V0X2Rldl9m
-bGFnKHBjciwgQVNQTV9MMV8xX0VOKTsNCj4gPiA+ID4gPiA+ICsJZWxzZQ0KPiA+ID4gPiA+ID4g
-KwkJcnRzeF9jbGVhcl9kZXZfZmxhZyhwY3IsIEFTUE1fTDFfMV9FTik7DQo+ID4gPiA+ID4gPiAr
-DQo+ID4gPiA+ID4gPiArCWlmIChsdmFsICYgUENJX0wxU1NfQ1RMMV9BU1BNX0wxXzIpDQo+ID4g
-PiA+ID4gPiArCQlydHN4X3NldF9kZXZfZmxhZyhwY3IsIEFTUE1fTDFfMl9FTik7DQo+ID4gPiA+
-ID4gPiArCWVsc2UNCj4gPiA+ID4gPiA+ICsJCXJ0c3hfY2xlYXJfZGV2X2ZsYWcocGNyLCBBU1BN
-X0wxXzJfRU4pOw0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gKwlpZiAobHZhbCAmIFBDSV9M
-MVNTX0NUTDFfUENJUE1fTDFfMSkNCj4gPiA+ID4gPiA+ICsJCXJ0c3hfc2V0X2Rldl9mbGFnKHBj
-ciwgUE1fTDFfMV9FTik7DQo+ID4gPiA+ID4gPiArCWVsc2UNCj4gPiA+ID4gPiA+ICsJCXJ0c3hf
-Y2xlYXJfZGV2X2ZsYWcocGNyLCBQTV9MMV8xX0VOKTsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4g
-PiA+ICsJaWYgKGx2YWwgJiBQQ0lfTDFTU19DVEwxX1BDSVBNX0wxXzIpDQo+ID4gPiA+ID4gPiAr
-CQlydHN4X3NldF9kZXZfZmxhZyhwY3IsIFBNX0wxXzJfRU4pOw0KPiA+ID4gPiA+ID4gKwllbHNl
-DQo+ID4gPiA+ID4gPiArCQlydHN4X2NsZWFyX2Rldl9mbGFnKHBjciwgUE1fTDFfMl9FTik7DQo+
-ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArCWlmIChvcHRpb24tPmx0cl9lbikgew0KPiA+ID4g
-PiA+ID4gKwkJdTE2IHZhbDsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsJCXBjaWVfY2Fw
-YWJpbGl0eV9yZWFkX3dvcmQocGNyLT5wY2ksIFBDSV9FWFBfREVWQ1RMMiwNCj4gJnZhbCk7DQo+
-ID4gPiA+ID4NCj4gPiA+ID4gPiBTYW1lIHRoaW5nIGhlcmUuICBJIGRvbid0IHRoaW5rIHRoZSBQ
-Q0kgY29yZSBjdXJyZW50bHkgY2hhbmdlcw0KPiA+ID4gPiA+IFBDSV9FWFBfREVWQ1RMMiBhZnRl
-ciBib290LCBidXQgaXQncyBub3QgYSBnb29kIGlkZWEgdG8gYXNzdW1lIGl0J3MNCj4gPiA+ID4g
-PiBnb2luZyB0byBiZSBjb25zdGFudC4NCj4gPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiBUaGUg
-c2FtZSByZXBseQ0KPiA+ID4gPg0KPiA+ID4gPiA+ID4gKwkJaWYgKHZhbCAmIFBDSV9FWFBfREVW
-Q1RMMl9MVFJfRU4pIHsNCj4gPiA+ID4gPiA+ICsJCQlvcHRpb24tPmx0cl9lbmFibGVkID0gdHJ1
-ZTsNCj4gPiA+ID4gPiA+ICsJCQlvcHRpb24tPmx0cl9hY3RpdmUgPSB0cnVlOw0KPiA+ID4gPiA+
-ID4gKwkJCXJ0c3hfc2V0X2x0cl9sYXRlbmN5KHBjciwgb3B0aW9uLT5sdHJfYWN0aXZlX2xhdGVu
-Y3kpOw0KPiA+ID4gPiA+ID4gKwkJfSBlbHNlIHsNCj4gPiA+ID4gPiA+ICsJCQlvcHRpb24tPmx0
-cl9lbmFibGVkID0gZmFsc2U7DQo+ID4gPiA+ID4gPiArCQl9DQo+ID4gPiA+ID4gPiArCX0NCj4g
-PiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsJaWYgKHJ0c3hfY2hlY2tfZGV2X2ZsYWcocGNyLCBB
-U1BNX0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCj4gPiA+ID4gPiA+ICsJCQkJfCBQTV9MMV8xX0VO
-IHwgUE1fTDFfMl9FTikpDQo+ID4gPiA+ID4gPiArCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0g
-ZmFsc2U7DQo+ID4gPiA+ID4gPiArCWVsc2UNCj4gPiA+ID4gPiA+ICsJCW9wdGlvbi0+Zm9yY2Vf
-Y2xrcmVxXzAgPSB0cnVlOw0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gK30NCj4gPiA+ID4g
-Pg0KPiA+ID4gPiA+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3Jl
-IHByaW50aW5nIHRoaXMgZS1tYWlsLg0K
+Hi,
+
+On 11/09/2020 19:31:40+0200, Miquel Raynal wrote:
+> At power-up the analog circuits may take up to one full second before
+> being charged with the default configuration. Using the analog blocks
+> before they are ready generates a *very* crappy sound.
+> 
+> Enable the fast charge feature, which will require a bit more power
+> than normal charge but will definitely speed up the starting operation
+> by shrinking this delay to up to 40 ms.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  sound/soc/codecs/tlv320aic32x4.c | 8 ++++++++
+>  sound/soc/codecs/tlv320aic32x4.h | 7 +++++++
+>  2 files changed, 15 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+> index 7a1ffbaf48be..5fb8ba109bc9 100644
+> --- a/sound/soc/codecs/tlv320aic32x4.c
+> +++ b/sound/soc/codecs/tlv320aic32x4.c
+> @@ -1009,6 +1009,14 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
+>  				AIC32X4_LADC_EN | AIC32X4_RADC_EN);
+>  	snd_soc_component_write(component, AIC32X4_ADCSETUP, tmp_reg);
+>  
+> +	/*
+> +	 * Enable the fast charging feature and ensure the needed 40ms ellapsed
+> +	 * before using the analog circuits.
+> +	 */
+> +	snd_soc_component_write(component, AIC32X4_REFPOWERUP,
+> +				AIC32X4_REFPOWERUP_40MS);
+> +	msleep(40);
+> +
+
+Maybe the actual REFPOWERUP value could be exposed as a control so
+userspace has a way to set the policy? 
+
+I'm not sure it make sense to have the delay in probe because it is not
+enable the analog part of the codec. The delay should probable be after
+the clocks have been set up because the datasheet says that it is mdac
+and madc that is starting the analog circuitry.
+
+>  	return 0;
+>  }
+>  
+> diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
+> index 38f47704bb75..7550122e9f8a 100644
+> --- a/sound/soc/codecs/tlv320aic32x4.h
+> +++ b/sound/soc/codecs/tlv320aic32x4.h
+> @@ -96,6 +96,7 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
+>  #define AIC32X4_FLOATINGINPUT	AIC32X4_REG(1, 58)
+>  #define AIC32X4_LMICPGAVOL	AIC32X4_REG(1, 59)
+>  #define AIC32X4_RMICPGAVOL	AIC32X4_REG(1, 60)
+> +#define AIC32X4_REFPOWERUP	AIC32X4_REG(1, 123)
+>  
+>  /* Bits, masks, and shifts */
+>  
+> @@ -205,6 +206,12 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
+>  #define AIC32X4_RMICPGANIN_IN1L_10K	0x10
+>  #define AIC32X4_RMICPGANIN_CM1R_10K	0x40
+>  
+> +/* AIC32X4_REFPOWERUP */
+> +#define AIC32X4_REFPOWERUP_SLOW		0x04
+> +#define AIC32X4_REFPOWERUP_40MS		0x05
+> +#define AIC32X4_REFPOWERUP_80MS		0x06
+> +#define AIC32X4_REFPOWERUP_120MS	0x07
+> +
+>  /* Common mask and enable for all of the dividers */
+>  #define AIC32X4_DIVEN           BIT(7)
+>  #define AIC32X4_DIV_MASK        GENMASK(6, 0)
+> -- 
+> 2.20.1
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
