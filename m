@@ -2,135 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98D726A0D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B0C26A0CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgIOI0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726252AbgIOIKU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:10:20 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB07C061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:10:11 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id t138so3418958qka.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=+JVatOz5/Dh/xyAg85UUTlc2Kova9GVo8Ydw6vbee8g=;
-        b=nIyTzeIBrWUervNx+ZYSIQs3H/l6i7vwus2Ha3I8FVsJWME+6Q6zBuLHukcO1Xcij/
-         j5R4e/ZCmOxtNw9oAWHeZq7ZmEeuOE1wVGnjbF/JEFb/h3Gpyr0zY82TI5IU8HJa3iwt
-         wI+5RRixk+oQKYUF3g9xUmcY8v+Lbh/cTzjxMNENwyG+h/fSBMLQK4/VS47P+Igi7oZ1
-         9UckvC1TShzWV6/MknJfpHzSm2rh16Zq6E3B4Oi9mvYBkd/oM5Ats+6fyFmiLQab2Du2
-         7pn/Dd1cLCSugZFKNESH19JPHq/CXBJqNAhX10PcHYs8QaZCnL/QDibmKOhKsKMRnISA
-         U9IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=+JVatOz5/Dh/xyAg85UUTlc2Kova9GVo8Ydw6vbee8g=;
-        b=e5PjZ1NXRLw23e+3ykP0CVi7klVRWwxjXfn2708yq85yGz9pOmsqlYDoBkgLWGYiZS
-         pAmoddPNvTGd0MXuxNZdAchM2v74XYuMG/Fj6bkXn/em4r3aI7jI08Bnxzjou+cSBlTI
-         LX64+XuSySeIft0+tBeAwsv3ILAMMazNlb5rgGQezqw8jl7/y6tsnXQJgUePDR2n4sus
-         37FoNcLuXGhrgWOK89kj5um+ErxGJIhGJP4m2/oPfqlYiI+qrI3q2jOucyfht7izVm3V
-         hxrWwOU1lpTUJn8snIhDFIoYaPdcOyN7Ee8qntZqLHlsLje2Av3tq92stE4X3dZT1RBB
-         glqQ==
-X-Gm-Message-State: AOAM532wR11u9e+VlwhHu9JCVVG4jqMqvz+J8q6hDD8wvWbFEt0PYvPU
-        bd/UvTKWpRa682m5/sCEoXqvSQ==
-X-Google-Smtp-Source: ABdhPJyS7xJTZfyWz8c4kNJtOicW4XfjWeOIR89eyPboMltYWj+TUMAFVzJOuE70LfMxUb5VQs5eUg==
-X-Received: by 2002:a37:a602:: with SMTP id p2mr16652323qke.254.1600157410569;
-        Tue, 15 Sep 2020 01:10:10 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id u4sm15673927qkk.68.2020.09.15.01.10.06
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 15 Sep 2020 01:10:08 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 01:10:05 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] Return head pages from find_*_entry
-In-Reply-To: <20200910183318.20139-1-willy@infradead.org>
-Message-ID: <alpine.LSU.2.11.2009150059310.1550@eggly.anvils>
-References: <20200910183318.20139-1-willy@infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1726463AbgIOIZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:25:55 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52369 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726243AbgIOILh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:11:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600157470; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WlQF3qAxIEc0TwSqSsrXzjj54EedKbjD6p1Mw3jMBh8=;
+ b=bbB5S0ycSYqKH7nvXYIE37OvVHWWaWjqA7BnOG21bNQA0hs6cNQHzIlVts0B8z2xRvIKbN5g
+ KFR4HQzjkmtKDU8YQ4OUJ2X2cts4iz0e+bdBLsYtC4f2QqoN18c9CbChtVem7eoMBQUvQNtz
+ TtxDWjrmE8UTN3sKnXzN4YR1Ndk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f6076eebe06707b34b022cc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 08:10:22
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 54C7EC433FF; Tue, 15 Sep 2020 08:10:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC86FC433F0;
+        Tue, 15 Sep 2020 08:10:20 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 15 Sep 2020 01:10:20 -0700
+From:   nguyenb@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] scsi: dt-bindings: ufs: Add vcc-voltage-level for
+ UFS
+In-Reply-To: <20200914183505.GA357@bogus>
+References: <cover.1598939393.git.nguyenb@codeaurora.org>
+ <0a9d395dc38433501f9652a9236856d0ac840b77.1598939393.git.nguyenb@codeaurora.org>
+ <20200914183505.GA357@bogus>
+Message-ID: <d332e61cea4fef237507f1404efa724a@codeaurora.org>
+X-Sender: nguyenb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020, Matthew Wilcox (Oracle) wrote:
+On 2020-09-14 11:35, Rob Herring wrote:
+> On Mon, Aug 31, 2020 at 11:00:47PM -0700, Bao D. Nguyen wrote:
+>> UFS's specifications supports a range of Vcc operating
+>> voltage levels. Add documentation for the UFS's Vcc voltage
+>> levels setting.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+>> ---
+>>  Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt | 2 ++
+>>  1 file changed, 2 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt 
+>> b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+>> index 415ccdd..7257b32 100644
+>> --- a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+>> +++ b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+>> @@ -23,6 +23,8 @@ Optional properties:
+>>                            with "phys" attribute, provides phandle to 
+>> UFS PHY node
+>>  - vdd-hba-supply        : phandle to UFS host controller supply 
+>> regulator node
+>>  - vcc-supply            : phandle to VCC supply regulator node
+>> +- vcc-voltage-level     : specifies voltage levels for VCC supply.
+>> +                          Should be specified in pairs (min, max), 
+>> units uV.
+> 
+> The expectation is the regulator pointed to by 'vcc-supply' has the
+> voltage constraints. Those constraints are supposed to be the board
+> constraints, not the regulator operating design constraints. If that
+> doesn't work for your case, then it should be addressed in a common way
+> for the regulator binding.
+The UFS regulator has a min_uV and max_uV limits. Currently, the min and 
+max are hardcoded
+to UFS2.1 Spec allowed values of 2.7V and 3.6V respectively.
+With this change, I am trying to fix a couple issues:
+1. The 2.7V min value only applies to UFS2.1 devices. with UFS3.0+ 
+devices, the VCC min should be 2.4V.
+Hardcoding the min_uV to 2.7V does not work for UFS3.0+ devices.
 
-> This patch series started out as part of the THP patch set, but it has
-> some nice effects along the way and it seems worth splitting it out and
-> submitting separately.
-> 
-> Currently find_get_entry() and find_lock_entry() return the page
-> corresponding to the requested index, but the first thing most callers do
-> is find the head page, which we just threw away.  As part of auditing
-> all the callers, I found some misuses of the APIs and some plain
-> inefficiencies that I've fixed.
-> 
-> The diffstat is unflattering, but I added more kernel-doc and a new wrapper.
-> 
-> v2:
->  - Rework how shmem_getpage_gfp() handles getting a head page back from
->    find_lock_entry()
->  - Renamed find_get_swap_page() to find_get_incore_page()
->  - Make sure find_get_incore_page() doesn't return a head page
->  - Fix the missing include of linux/shmem_fs.h
->  - Move find_get_entry and find_lock_entry prototypes to mm/internal.h
->  - Rename thp_valid_index() to thp_contains()
->  - Fix thp_contains() for hugetlbfs and swapcache
->  - Add find_lock_head() wrapper around pagecache_get_page()
-> 
-> Matthew Wilcox (Oracle) (8):
->   mm: Factor find_get_incore_page out of mincore_page
->   mm: Use find_get_incore_page in memcontrol
->   mm: Optimise madvise WILLNEED
->   proc: Optimise smaps for shmem entries
->   i915: Use find_lock_page instead of find_lock_entry
->   mm: Convert find_get_entry to return the head page
->   mm/shmem: Return head page from find_lock_entry
->   mm: Add find_lock_head
-> 
->  drivers/gpu/drm/i915/gem/i915_gem_shmem.c |  4 +--
->  fs/proc/task_mmu.c                        |  8 +----
->  include/linux/pagemap.h                   | 43 +++++++++++++++++-----
->  include/linux/swap.h                      |  7 ++++
->  mm/filemap.c                              | 44 +++++++++++------------
->  mm/internal.h                             |  3 ++
->  mm/madvise.c                              | 21 ++++++-----
->  mm/memcontrol.c                           | 24 ++-----------
->  mm/mincore.c                              | 28 ++-------------
->  mm/shmem.c                                | 20 +++++------
->  mm/swap_state.c                           | 32 +++++++++++++++++
->  11 files changed, 127 insertions(+), 107 deletions(-)
-> 
-> -- 
-> 2.28.0
+2. Allow users to select a different Vcc voltage within the allowed 
+range.
+Using the min value, the UFS device is operating at marginal Vcc 
+voltage.
+In addition the PMIC and the board designs may add some variables 
+especially at extreme
+temperatures. We observe stability issues when using the min Vcc 
+voltage.
 
-I was testing mmotm today (plus the shmem.c and swap_state.c
-fixes that you posted, but I did not try the madvise.c one) -
-my usual tmpfs swapping loads (plus hyperactive khugepaged to
-maximize the THPs).  It behaved well, no problems found.
-
-But I probably won't get to try your series of 12 for a few days.
-
-Hugh
+> 
+> Also, properties with units must have a unit suffix.
+Yes, I agree.
+> 
+> Rob
