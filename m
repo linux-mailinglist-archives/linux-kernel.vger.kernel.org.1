@@ -2,152 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D018826AC75
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3945126AC78
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgIOSrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:47:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30766 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727928AbgIORaH (ORCPT
+        id S1727928AbgIOSsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727927AbgIOR3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:30:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600191004;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zUMyB1rem1rvIb11Y4tpkZb1FY6sahhJeMSo+QpGOGA=;
-        b=WFbqJOi+A4EYLl+yW+RFVmuZtTnSRGQYPycpxX3zhtld/MQG4ER9EmTKUV4JUeA7Cm9B9y
-        U2ENv20abURuFbN7/tXPWHvGUujxUyWPWHe5JyojAvdNguGl8k2FAMAQRSuzEgkX1NUiYE
-        egKvmzPSTYGdgQ88J/T+ENj85XMFk2k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-vv6X4MxnO6iBl3tkWFPEjg-1; Tue, 15 Sep 2020 13:30:00 -0400
-X-MC-Unique: vv6X4MxnO6iBl3tkWFPEjg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1902710BBEC6;
-        Tue, 15 Sep 2020 17:29:58 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 46E025FC3B;
-        Tue, 15 Sep 2020 17:29:56 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     thaytan@noraisin.net, Vasily Khoruzhick <anarsoul@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tue, 15 Sep 2020 13:29:54 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36F4C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:29:53 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id i1so3880701edv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SlyX5qFvMN3KiboyllxLciToK2Eq4o7JzV2O6OwBIsw=;
+        b=jndKH7zPjuT+Yy8CprIBxo1iTRcTUheSW1BJZMKuVBjDMhYq0L3y4DaJALchKU0bWV
+         /DG6HGyrAEcz92/BEzogfoheUq2NoOqWgUDoFeeALWTSjU7t6cmDtPMvcMOFw3IakuWp
+         gTraMfBlRb4r8fMQ5MmQhdTGA8v2635Dv7yTHmUW7c4FifhvFkeow+fmjxnyULOz9cNa
+         h1HY7N4mglhjyAyOCRnfI4Cdt1T65RO98WM5J4PiOI3ffCzhLE0AI3h6weRFWLf3hKMm
+         EKJFo5+5hvJXNo5Y4rFLV8xJX6gMUJcVSH99V+Jsd8X0JKE85PLJ2LMkkl1g2xhe0pJp
+         aGxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SlyX5qFvMN3KiboyllxLciToK2Eq4o7JzV2O6OwBIsw=;
+        b=kTkt59nZQUNJR28+UG8coHuf6k4MinDostFdgSMhqTtxCZpvD6OVaT9/cNQAju8eaK
+         aYKoDNsr4R1Ktb/ndN5WwXHqdQZS1uKlWPnMXl0ttIx5MxQW00mQ2+b8QO4gT3BAUPlv
+         IIeAnGOzI5SxmPYYHHuFZgahk2Ypxhh5fG6pGqqTzFQm1WOJp+5vUiOp3v2Ad7CdIFDA
+         ktQOeGsGxP/VM8LOJTOMx7FZyDb8oVYw2ahc/U6/8ldNkx7rzI5zMArFoWGJ7EHmuUGi
+         1boL3/ZuBFzmzpbVSalVrQy6a7do+0flCtCj8kLX5xcUZDHn/3NkV4GNnuCbhlVPIcZW
+         lWtA==
+X-Gm-Message-State: AOAM533/ky/a9Q4i12b+LwGIwm8gk6gwHTRFXXC9cduUViLrLzc0LCm/
+        8oIDEyjTnNP5QDmNShdYJv/9U6PL+ZWaFZcDmiJ4EQ==
+X-Google-Smtp-Source: ABdhPJyTXQP46Cu/TV0meUS7Ki8Jvai2uP0B7f5/avU/VxUKH5b+mSAJAXEN/96XuLNIG/fdWfb7f8IfAIdjG+sZPvs=
+X-Received: by 2002:a50:e78f:: with SMTP id b15mr23870682edn.104.1600190989874;
+ Tue, 15 Sep 2020 10:29:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200915162049.36434-1-colin.king@canonical.com>
+In-Reply-To: <20200915162049.36434-1-colin.king@canonical.com>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Tue, 15 Sep 2020 10:29:39 -0700
+Message-ID: <CABXOdTcnAzFh81GuJ0Niqu6t2pF5AmwgFoXHf766XcXct_F+5g@mail.gmail.com>
+Subject: Re: [PATCH] drm/rockchip: cdn-dp: fix sign extension on an int
+ multiply for a u64 result
+To:     Colin King <colin.king@canonical.com>
+Cc:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RFC 2/5] drm/i915: Rename pwm_* backlight callbacks to ext_pwm_*
-Date:   Tue, 15 Sep 2020 13:29:36 -0400
-Message-Id: <20200915172939.2810538-3-lyude@redhat.com>
-In-Reply-To: <20200915172939.2810538-1-lyude@redhat.com>
-References: <20200915172939.2810538-1-lyude@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Chris Zhong <zyw@rock-chips.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we're going to need to add a set of lower-level PWM backlight
-control hooks to be shared by normal backlight controls and HDR
-backlight controls in SDR mode, let's add a prefix to the external PWM
-backlight functions so that the difference between them and the high
-level PWM-only backlight functions is a bit more obvious.
+On Tue, Sep 15, 2020 at 9:20 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable bit_per_pix is a u8 and is promoted in the multiplication
+> to an int type and then sign extended to a u64. If the result of the
+> int multiplication is greater than 0x7fffffff then the upper 32 bits will
+> be set to 1 as a result of the sign extension. Avoid this by casting
+> tu_size_reg to u64 to avoid sign extension and also a potential overflow.
+>
+> Addresses-Coverity: ("Unintended sign extension")
+> Fixes: 1a0f7ed3abe2 ("drm/rockchip: cdn-dp: add cdn DP support for rk3399")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-This introduces no functional changes.
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Cc: thaytan@noraisin.net
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
----
- drivers/gpu/drm/i915/display/intel_panel.c | 24 +++++++++++-----------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_panel.c b/drivers/gpu/drm/i915/display/intel_panel.c
-index 9f23bac0d7924..c0e36244bb07d 100644
---- a/drivers/gpu/drm/i915/display/intel_panel.c
-+++ b/drivers/gpu/drm/i915/display/intel_panel.c
-@@ -589,7 +589,7 @@ static u32 bxt_get_backlight(struct intel_connector *connector)
- 			     BXT_BLC_PWM_DUTY(panel->backlight.controller));
- }
- 
--static u32 pwm_get_backlight(struct intel_connector *connector)
-+static u32 ext_pwm_get_backlight(struct intel_connector *connector)
- {
- 	struct intel_panel *panel = &connector->panel;
- 	struct pwm_state state;
-@@ -666,7 +666,7 @@ static void bxt_set_backlight(const struct drm_connector_state *conn_state, u32
- 		       BXT_BLC_PWM_DUTY(panel->backlight.controller), level);
- }
- 
--static void pwm_set_backlight(const struct drm_connector_state *conn_state, u32 level)
-+static void ext_pwm_set_backlight(const struct drm_connector_state *conn_state, u32 level)
- {
- 	struct intel_panel *panel = &to_intel_connector(conn_state->connector)->panel;
- 
-@@ -835,7 +835,7 @@ static void cnp_disable_backlight(const struct drm_connector_state *old_conn_sta
- 		       tmp & ~BXT_BLC_PWM_ENABLE);
- }
- 
--static void pwm_disable_backlight(const struct drm_connector_state *old_conn_state)
-+static void ext_pwm_disable_backlight(const struct drm_connector_state *old_conn_state)
- {
- 	struct intel_connector *connector = to_intel_connector(old_conn_state->connector);
- 	struct intel_panel *panel = &connector->panel;
-@@ -1168,8 +1168,8 @@ static void cnp_enable_backlight(const struct intel_crtc_state *crtc_state,
- 		       pwm_ctl | BXT_BLC_PWM_ENABLE);
- }
- 
--static void pwm_enable_backlight(const struct intel_crtc_state *crtc_state,
--				 const struct drm_connector_state *conn_state)
-+static void ext_pwm_enable_backlight(const struct intel_crtc_state *crtc_state,
-+				     const struct drm_connector_state *conn_state)
- {
- 	struct intel_connector *connector = to_intel_connector(conn_state->connector);
- 	struct intel_panel *panel = &connector->panel;
-@@ -1890,8 +1890,8 @@ cnp_setup_backlight(struct intel_connector *connector, enum pipe unused)
- 	return 0;
- }
- 
--static int pwm_setup_backlight(struct intel_connector *connector,
--			       enum pipe pipe)
-+static int ext_pwm_setup_backlight(struct intel_connector *connector,
-+				   enum pipe pipe)
- {
- 	struct drm_device *dev = connector->base.dev;
- 	struct drm_i915_private *dev_priv = to_i915(dev);
-@@ -2065,11 +2065,11 @@ intel_panel_init_backlight_funcs(struct intel_panel *panel)
- 		panel->backlight.hz_to_pwm = pch_hz_to_pwm;
- 	} else if (IS_VALLEYVIEW(dev_priv) || IS_CHERRYVIEW(dev_priv)) {
- 		if (connector->base.connector_type == DRM_MODE_CONNECTOR_DSI) {
--			panel->backlight.setup = pwm_setup_backlight;
--			panel->backlight.enable = pwm_enable_backlight;
--			panel->backlight.disable = pwm_disable_backlight;
--			panel->backlight.set = pwm_set_backlight;
--			panel->backlight.get = pwm_get_backlight;
-+			panel->backlight.setup = ext_pwm_setup_backlight;
-+			panel->backlight.enable = ext_pwm_enable_backlight;
-+			panel->backlight.disable = ext_pwm_disable_backlight;
-+			panel->backlight.set = ext_pwm_set_backlight;
-+			panel->backlight.get = ext_pwm_get_backlight;
- 		} else {
- 			panel->backlight.setup = vlv_setup_backlight;
- 			panel->backlight.enable = vlv_enable_backlight;
--- 
-2.26.2
-
+> ---
+>  drivers/gpu/drm/rockchip/cdn-dp-reg.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/rockchip/cdn-dp-reg.c b/drivers/gpu/drm/rockchip/cdn-dp-reg.c
+> index 9d2163ef4d6e..33fb4d05c506 100644
+> --- a/drivers/gpu/drm/rockchip/cdn-dp-reg.c
+> +++ b/drivers/gpu/drm/rockchip/cdn-dp-reg.c
+> @@ -658,7 +658,7 @@ int cdn_dp_config_video(struct cdn_dp_device *dp)
+>          */
+>         do {
+>                 tu_size_reg += 2;
+> -               symbol = tu_size_reg * mode->clock * bit_per_pix;
+> +               symbol = (u64)tu_size_reg * mode->clock * bit_per_pix;
+>                 do_div(symbol, dp->max_lanes * link_rate * 8);
+>                 rem = do_div(symbol, 1000);
+>                 if (tu_size_reg > 64) {
+> --
+> 2.27.0
+>
