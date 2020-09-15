@@ -2,123 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4321A26A1DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF68326A1DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbgIOJPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:15:04 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:60802 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726208AbgIOJPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:15:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 22E4748D0;
-        Tue, 15 Sep 2020 11:14:56 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id WAfUJ7UoPqon; Tue, 15 Sep 2020 11:14:56 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id E7B454856; Tue, 15 Sep 2020 11:14:55 +0200 (CEST)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-From:   Alexander Dahl <ada@thorsis.com>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Alexander Dahl <post@lespocky.de>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 1/3] leds: Require valid fwnode pointer for composing name
-Date:   Tue, 15 Sep 2020 11:14:49 +0200
-Message-ID: <2642665.8NmDdnWKvZ@ada>
-In-Reply-To: <6652b897-5044-713b-6f06-83d07be0dba7@gmail.com>
-References: <20200911154004.28354-1-post@lespocky.de> <20200911154004.28354-2-post@lespocky.de> <6652b897-5044-713b-6f06-83d07be0dba7@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+        id S1726387AbgIOJPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726208AbgIOJPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:15:05 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEA3C06174A;
+        Tue, 15 Sep 2020 02:15:05 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0e42006449c187a2f3906a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:6449:c187:a2f3:906a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E63A61EC058B;
+        Tue, 15 Sep 2020 11:15:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600161304;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=FvaJmj45+hZz+9GgbNE3rwJ+H3JIoq7yGSJBBmV2IRo=;
+        b=GkbqEKalSpf/Xzq/JASeaeWNQEP/8z0+XBeu/z41zpb/oajBRyQPsnmV9nPp5Cn3y/yHiq
+        1wgTdXQD4bg9PC43lr17FKwI/WIpxk9jAXzkVJfgBCSaFflk0j7N85rv56YGokZtzHW34f
+        Ol0BJNYiqpqVNIoiJogIv5ktGPF7RGk=
+Date:   Tue, 15 Sep 2020 11:15:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] SVM: nSVM: fix resource leak on error path
+Message-ID: <20200915091502.GE14436@zn.tnic>
+References: <20200914194557.10158-1-alex.dewar90@gmail.com>
+ <922e825c090892f22d40a469fef229d62f40af5e.camel@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <922e825c090892f22d40a469fef229d62f40af5e.camel@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jacek,
+On Tue, Sep 15, 2020 at 12:07:25PM +0300, Maxim Levitsky wrote:
+> I think that this patch is based on unmerged patch, since I don't see
+> any memory allocation in nested_svm_vmrun_msrpm, nor out_free label.
+> in nether kvm/master, kvm/queue nor in upstream/master
 
-thanks for your feedback. See below.
+Paolo and I need to figure out first how to share the SEV-ES enablement
+work and the other patches touching that file and then pile more fixes
+ontop.
 
-Am Freitag, 11. September 2020, 23:26:43 CEST schrieb Jacek Anaszewski:
-> On 9/11/20 5:40 PM, Alexander Dahl wrote:
-> > The function 'led_compose_name()' is called in
-> > 'led_classdev_register_ext(()' only and in its implementation it always
-> > parses the fwnode passed with the init_data struct.  If there's no
-> > fwnode, EINVAL is returned and 'led_classdev_register_ext()' returns
-> > early.
-> >=20
-> > If this is detected early the same fallback mechanism can be used , as
-> > if init_data itself is NULL.  This will allow drivers to pass fully
-> > populated 'init_data' or sparse initialized 'init_data' with a NULL
-> > fwnode in a more elegant way with only one function call.
-> >=20
-> > Fixes: bb4e9af0348d ("leds: core: Add support for composing LED class
-> > device names") Suggested-by: Pavel Machek <pavel@ucw.cz>
-> > Signed-off-by: Alexander Dahl <post@lespocky.de>
-> > ---
-> >=20
-> > Notes:
-> >      v4:
-> >        * added this patch to series (Suggested-by: Pavel Machek)
-> >  =20
-> >   drivers/leds/led-class.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
-> > index cc3929f858b6..3da50c7ecfe7 100644
-> > --- a/drivers/leds/led-class.c
-> > +++ b/drivers/leds/led-class.c
-> > @@ -346,7 +346,7 @@ int led_classdev_register_ext(struct device *parent,
-> >=20
-> >   	const char *proposed_name =3D composed_name;
-> >   	int ret;
-> >=20
-> > -	if (init_data) {
-> > +	if (init_data && init_data->fwnode) {
->=20
-> This does not cover the case when we don't have fwnode but we
-> have init_data->default_label that led_compose_name() can make use of.
->=20
-> >   		if (init_data->devname_mandatory && !init_data->devicename) {
-> >   	=09
-> >   			dev_err(parent, "Mandatory device name is missing");
-> >   			return -EINVAL;
+-- 
+Regards/Gruss,
+    Boris.
 
-You're right, I missed that part in that if/else if construct in=20
-led_compose_name() =E2=80=A6 I looked at the code for some more time now an=
-d could not=20
-come up with an elegant change to the led-core or led-class. :-/
-
-However I also had another look at leds-pwm and for me it seems that it is=
-=20
-used by fwnode (DT, ACPI, ??) based devices only.  I could not find a singl=
-e=20
-user of leds-pwm as a platform driver, which is probably why 141f15c66d94=20
-("leds: pwm: remove header") was possible?
-
-I had a look at the history of the leds-pwm driver and when introduced in 2=
-009=20
-platform based board files where a thing, no dt, of, or fwnode yet, at leas=
-t=20
-for arm, right?  Device tree support for leds-pwm was added in 2012 by Pete=
-r=20
-Ujfalusi.
-
-So if those code paths in leds-pwm are not used anymore, what about droppin=
-g=20
-that platform support in leds-pwm driver?  That would mean we always have=20
-fwnode non-null and would not require a change in led-class at all?
-
-Greets
-Alex
-
-
-
+https://people.kernel.org/tglx/notes-about-netiquette
