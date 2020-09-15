@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854CB26A683
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 15:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943D926A671
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 15:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgIONsh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 09:48:37 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:57535 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgIONpl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:45:41 -0400
-Received: from mail-qt1-f170.google.com ([209.85.160.170]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N1whr-1kTI1d3eQL-012DRo; Tue, 15 Sep 2020 15:32:29 +0200
-Received: by mail-qt1-f170.google.com with SMTP id v54so3115865qtj.7;
-        Tue, 15 Sep 2020 06:32:28 -0700 (PDT)
-X-Gm-Message-State: AOAM530SItU2P7qoSTCT7UVCHRW9byUo0tCmq+/cq66XoTHX6QSgPQ/n
-        e5Z0LKxfxTNHFIbZsXM0+658b2GA2tA7Y+WuAsQ=
-X-Google-Smtp-Source: ABdhPJxxLmMCN4A/oxqNJBXyjnHh2EThJJR2LF/8Sz6ABSTqKRD1ROg//n2YBFK6xkQVViDw3D8KsqM5aPAmkXBsQb0=
-X-Received: by 2002:aed:2ce5:: with SMTP id g92mr5576894qtd.204.1600176747244;
- Tue, 15 Sep 2020 06:32:27 -0700 (PDT)
+        id S1726724AbgIONo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 09:44:26 -0400
+Received: from mga12.intel.com ([192.55.52.136]:44272 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726136AbgIONmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:42:21 -0400
+IronPort-SDR: uuk7rt+Bx5gRn6vhLtoIv0hXsKasV/ilT5Q9LcHstlAKPealUwj6CV3oeAChZowsSIuQvA1my4
+ d8oH0ovxb4vQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="138760631"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="138760631"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 06:33:50 -0700
+IronPort-SDR: j6TeeDyGh39bdU5PkSMdU1urcJOKOPuTNaIj4Pkf8xXLqQVkzQolliJ1Drn9AqnVOPjYEIKWfJ
+ +H33ywpqXyDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="409202130"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2020 06:33:48 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 15 Sep 2020 16:33:47 +0300
+Date:   Tue, 15 Sep 2020 16:33:47 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/14] TCPM support for FRS and AutoDischarge
+ Disconnect
+Message-ID: <20200915133347.GK1139641@kuha.fi.intel.com>
+References: <20200901025927.3596190-1-badhri@google.com>
 MIME-Version: 1.0
-References: <20200910164612.114215-1-mic@digikod.net> <20200910164612.114215-3-mic@digikod.net>
-In-Reply-To: <20200910164612.114215-3-mic@digikod.net>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 15 Sep 2020 15:32:11 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2bhKp8pHYP1nDg__pgPoNssVUkLo3y6bFiGjCKv-c0cA@mail.gmail.com>
-Message-ID: <CAK8P3a2bhKp8pHYP1nDg__pgPoNssVUkLo3y6bFiGjCKv-c0cA@mail.gmail.com>
-Subject: Re: [RFC PATCH v9 2/3] arch: Wire up introspect_access(2)
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Philippe_Tr=C3=A9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:CK476NVovWPJ8+inQF3omOMsQlGdPbubct6+uilUnLxRtV3MCqb
- ivXBFVdJYMUlQt6XhTgFkleJyx6mVTBSEpmlRol2enIZJ3CU+hxZ8TG4yEOXDyADeYdS2cH
- R0sVNOEkDFueSeLd67GLD/YKWpDnnX1KcdkgrFtWRAs3grG8XRZ85E8Fh0390UujdxEk4Ra
- LwsZGdZoRi6H/y20iZ3ng==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XwP+wphoa1w=:PIFFfXMYmjLcKw3c5lsBUn
- 7GYapSOe/3c4HtF+NydsTSX6gqO9sYQGC0LnV60gS+EORzQIWRMBldCUy5xngsI8Xph3Jnslv
- RiuazdbDFmxRMPPDatwtQkJt+R/kX41D8MlOgINrh8NTWAYRDrv0b1sfzYga1lO4MHzCHu4ke
- QHfU0xWsrxqE3575AGJhd1gCzqbY7R1g6pzVOymv8UeCtVl9dGw9rIWZ6ZWi0pt/s/JHAzQHA
- E6V1sc/0wz2jeE0hkqkw9O8XTuPW0JvTSj/FcBEFkreF37S9bXw4aS0QPJXQ7veHdggR6HZDw
- aKnjtPi3IuLoVdaTOyHBxSfNQT+qBAzb5E4mFrztv/DxSzHeJnOVyFV3Kh18VDye+KgtN+iHp
- IV7ZHHLO9onSO6Kt5ghErVjgGmQGl3tvKPbQjUvMyssif7a/1JBYAsh1e7wtXccJ52VIkTvNU
- puqVM5L3IjWZ+dmCk+FB6eW+am5w2gIBpQbEKhyvvN67OOgHFWWcDaxUdtAfBcju1vB9bOhV5
- bPCZA2g61VDWV0Oo+W1UC8jUM71meOh0MNDQ4Z/zQ2gt5BNztRrndJVyEnRRyFGpZ2ozzG0Pr
- 1rDg43iN/X86oGRMyYcokc4YDlhRBN7EsQgxJDwIzBxcunTy9pslr/8izFSeLh/VNjHF61Xmh
- ZzBOnVEXdoTwIeP7xJbNa/VRGQeXhhEJaYyhO/WHZQC4URc8+WO2PUSto1VlDjkTgLtH668lt
- j7AjK77HwW7ZmpIGA5dWswBQbH8s124lYIFOSHbrpyMUXqzwWp6pRm23VITJPPckxhi2JLXlG
- cOSqRPuqS30qLLkl16HCmrlit631wIwqr0xTsAY3Yz10fsW+msANFW+ZlvmXf08H19F0IYZST
- jXhFSeQXHCpzf6n1MKbgpQVESQLsN21ckX/RHkpHQhY52JoYki6nhKguWCzlb8Nkamuis4xqi
- L4lnssYJFnCZw/O3Nec/Z86HNyQo9CjfN0SmL+j4naoXpbdfupqPX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901025927.3596190-1-badhri@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 6:46 PM Mickaël Salaün <mic@digikod.net> wrote:
->
-> From: Mickaël Salaün <mic@linux.microsoft.com>
->
-> Wire up access_interpreted(2) for all architectures.
->
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> Reviewed-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Vincent Strubel <vincent.strubel@ssi.gouv.fr>
-> ---
->
-> Changes since v7:
-> * New patch for the new syscall.
-> * Increase syscall numbers by 2 to leave space for new ones (in
->   linux-next): watch_mount(2) and process_madvise(2).
+On Mon, Aug 31, 2020 at 07:59:13PM -0700, Badhri Jagan Sridharan wrote:
+> First of all apologies for mixing up the patch version as noted by
+> Heikki and Greg. All of them were v1's but since I was manually adding
+> the version numbers I mixed them up. Using the --reroll-count option
+> now. Updating the patch version to v6 (highest version number in the
+> previous patchset + 1) to avoid confusion.
+> 
+> I also rebased on to off of the recent usb-next tip:
+> 5fedf0d295d3 (origin/usb-testing, origin/usb-next) Merge 5.9-rc3 into usb-next
+> Which had the following changes causing merge conflict:
+> 3ed8e1c2ac99 usb: typec: tcpm: Migrate workqueue to RT priority for processing events
+> 6bbe2a90a0bb usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
+> 
+> Addressed comments from Heikki and Randy which have described in the
+> individual commit's change history as well.
 
-I checked that the syscall calling conventions are sane and that
-it is wired up correctly on all architectures in this patch.
+I'll try to study the AutoDischarge a bit before reviewing the last
+patches. They all appeared to be only about AutoDischarge. Sorry, I
+didn't have time for that yet. If Guenter is fine with those, then
+feel free to add my ACK to those patches. But Guenter really should
+review these in any case. Hope he has time.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Br,
 
-I did not look at the system call implementation or its purpose though,
-as that is not my area.
+-- 
+heikki
