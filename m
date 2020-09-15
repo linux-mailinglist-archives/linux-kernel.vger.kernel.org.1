@@ -2,262 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0C426AECA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C1E26AED6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgIOUju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:39:50 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:39786 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727992AbgIOUhj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:37:39 -0400
-Received: by mail-io1-f66.google.com with SMTP id b6so5665456iof.6;
-        Tue, 15 Sep 2020 13:37:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+/W4vuR4uai/c6pO6yPiY6jvboipJQaCmF2xqY/N7/Q=;
-        b=fbKFoUynFmTc+snmiVNX5aM6CdrOEUmhRcFqgbRxjONfKBoT1ayrxO9v42LIdSNH+N
-         HE2jNSda6e1IUT6Xk8iPmY0tmKPSr9q1xD3d0QESbv4HOAI7utSaMqB2ZRKlMJ+801qL
-         dakRNEWIDi5ykoY6EglUkx8ITsU2f3NRCqXVEX33THug9Q0h2+/0GRMQzBCORXEfmz/C
-         9HxKEmCajpIz1cGECIwXN+Q9sswmuL2hPvjILNutQ6EW0X4RvrH1PLk3mGdqlyde9DuU
-         CZIBVCOK8rrRnixpNGuAvM2dkn6QE+Z3fZgBpJQF9xRTyJ+LlJ6WMDRiB8UZbzgizfZF
-         r/6g==
-X-Gm-Message-State: AOAM533ft2skHC7fnR0NF7Y6pCBEWdvSTp9OgmYbVseeZPlkeu94QOHJ
-        ZvibJ2OHiDe2MHr04+kGHQ==
-X-Google-Smtp-Source: ABdhPJz6SJS7WXlrZu4a7Q4b3j0nnvl9jKmUXC+BiWVrq+40lbcTgAcJPKU4QadkJ6sx7KwlyRYUJg==
-X-Received: by 2002:a05:6602:2e81:: with SMTP id m1mr16713867iow.64.1600202258146;
-        Tue, 15 Sep 2020 13:37:38 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id o15sm9304141ilc.41.2020.09.15.13.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 13:37:37 -0700 (PDT)
-Received: (nullmailer pid 2469053 invoked by uid 1000);
-        Tue, 15 Sep 2020 20:37:35 -0000
-Date:   Tue, 15 Sep 2020 14:37:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alexander Dahl <post@lespocky.de>
-Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Alexander Dahl <ada@thorsis.com>
-Subject: Re: [PATCH v4 3/3] dt-bindings: leds: Convert pwm to yaml
-Message-ID: <20200915203735.GB2453633@bogus>
-References: <20200911154004.28354-1-post@lespocky.de>
- <20200911154004.28354-4-post@lespocky.de>
+        id S1727816AbgIOUrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727934AbgIOUie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:38:34 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E009D20771;
+        Tue, 15 Sep 2020 20:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600202313;
+        bh=6OFcjc8AUBZdK+9plPG89k0p2JtR+uS0BbwxGz9pmZ0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=QXXRhIgOj6M/8UA44zC7096rO6fmBPjFGKYGx5rC92qDU9yhVJwOyj7ijajWVAp/C
+         Vn2Xu/NNBm4oJToVKv0TlqBZ2StQJOnD7EzAW9SYRanhY2zfXB5N4xIRuE33tqHK3X
+         d2wSC1qMoX5zFDweF8Qq6/h8k0WKCew4U88uIAHE=
+Date:   Tue, 15 Sep 2020 15:38:31 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Huacai Chen <chenhuacai@gmail.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@openvz.org>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        zhouyanjie <zhouyanjie@wanyeetech.com>, git <git@xen0n.name>
+Subject: Re: [RFC PATCH v3] PCI/portdrv: Only disable Bus Master on kexec
+ reboot and connected PCI devices
+Message-ID: <20200915203831.GA1426995@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200911154004.28354-4-post@lespocky.de>
+In-Reply-To: <CAAhV-H7+jMPab9oM_E1J8cfzq0NYCd3w==1WNV3_Hkt0NL7ZCA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 05:40:04PM +0200, Alexander Dahl wrote:
-> The example was adapted slightly to make use of the 'function' and
-> 'color' properties.  License discussed with the original author.
+On Tue, Sep 15, 2020 at 09:36:13AM +0800, Huacai Chen wrote:
+> Hi, Tiezhu,
 > 
-> Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> Signed-off-by: Alexander Dahl <post@lespocky.de>
-> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
-> 
-> Notes:
->     v3 -> v4:
->       * added Cc to original author of the binding
->     
->     v2 -> v3:
->       * changed license identifier to recommended one
->       * added Acked-by
->     
->     v2:
->       * added this patch to series (Suggested-by: Jacek Anaszewski)
-> 
->  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -----------
->  .../devicetree/bindings/leds/leds-pwm.yaml    | 85 +++++++++++++++++++
->  2 files changed, 85 insertions(+), 50 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.txt
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.txt b/Documentation/devicetree/bindings/leds/leds-pwm.txt
-> deleted file mode 100644
-> index 6c6583c35f2f..000000000000
-> --- a/Documentation/devicetree/bindings/leds/leds-pwm.txt
-> +++ /dev/null
-> @@ -1,50 +0,0 @@
-> -LED connected to PWM
-> -
-> -Required properties:
-> -- compatible : should be "pwm-leds".
-> -
-> -Each LED is represented as a sub-node of the pwm-leds device.  Each
-> -node's name represents the name of the corresponding LED.
-> -
-> -LED sub-node properties:
-> -- pwms : PWM property to point to the PWM device (phandle)/port (id) and to
-> -  specify the period time to be used: <&phandle id period_ns>;
-> -- pwm-names : (optional) Name to be used by the PWM subsystem for the PWM device
-> -  For the pwms and pwm-names property please refer to:
-> -  Documentation/devicetree/bindings/pwm/pwm.txt
-> -- max-brightness : Maximum brightness possible for the LED
-> -- active-low : (optional) For PWMs where the LED is wired to supply
-> -  rather than ground.
-> -- label :  (optional)
-> -  see Documentation/devicetree/bindings/leds/common.txt
-> -- linux,default-trigger :  (optional)
-> -  see Documentation/devicetree/bindings/leds/common.txt
-> -
-> -Example:
-> -
-> -twl_pwm: pwm {
-> -	/* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
-> -	compatible = "ti,twl6030-pwm";
-> -	#pwm-cells = <2>;
-> -};
-> -
-> -twl_pwmled: pwmled {
-> -	/* provides one PWM (id 0 for Charing indicator LED) */
-> -	compatible = "ti,twl6030-pwmled";
-> -	#pwm-cells = <2>;
-> -};
-> -
-> -pwmleds {
-> -	compatible = "pwm-leds";
-> -	kpad {
-> -		label = "omap4::keypad";
-> -		pwms = <&twl_pwm 0 7812500>;
-> -		max-brightness = <127>;
-> -	};
-> -
-> -	charging {
-> -		label = "omap4:green:chrg";
-> -		pwms = <&twl_pwmled 0 7812500>;
-> -		max-brightness = <255>;
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> new file mode 100644
-> index 000000000000..c74867492424
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-pwm.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LEDs connected to PWM
-> +
-> +maintainers:
-> +  - Pavel Machek <pavel@ucw.cz>
-> +
-> +description:
-> +  Each LED is represented as a sub-node of the pwm-leds device.  Each
-> +  node's name represents the name of the corresponding LED.
-> +
-> +properties:
-> +  compatible:
-> +    const: pwm-leds
-> +
-> +patternProperties:
-> +  "^pwm-led-([0-9a-f])$":
+> On Mon, Sep 14, 2020 at 7:25 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+> >
+> > On 09/14/2020 05:46 PM, Huacai Chen wrote:
+> > > Hi, Tiezhu,
+> > >
+> > > On Mon, Sep 14, 2020 at 5:30 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+> > >> On 09/14/2020 04:52 PM, Huacai Chen wrote:
+> > >>> Hi, Tiezhu,
+> > >>>
+> > >>> How do you test kexec? kexec -e or systemctl kexec? Or both?
+> > >> kexec -l vmlinux --append="root=/dev/sda2 console=ttyS0,115200"
+> > >> kexec -e
+> > > So you haven't tested "systemctl kexec"?
+> >
+> > Yes, the distro I used is Loongnix which has not kexec service now.
+> > Is there any problem when use systemctl kexec? If you have more details,
+> > please let me know.
+> If you use systemctl kexec, the first part of kexec is the same as a
+> normal reboot/poweroff. So, there is no reason that reboot/poweroff is
+> bad but kexec is good.
+> Then, Bjorn, what is the best solution now? It seems like my first
+> version is OK (commit messages should be improved, of course).
 
-'^led-([0-9a-f])' would be my preference. A bit more on that below.
+Sorry, there are too many conversations going on for me to keep track
+of what first version you're referring to.  Please include a specific
+lore.kernel.org URL.
 
-What about a single child case?
-
-> +    type: object
-> +
-> +    $ref: common.yaml#
-> +
-> +    properties:
-> +      pwms:
-> +        description:
-> +          "PWM property to point to the PWM device (phandle)/port (id)
-> +          and to specify the period time to be used:
-> +          <&phandle id period_ns>;"
-
-No need to redefine a common property.
-
-What is needed is how many pwms? I'd assume 1 only: 'maxItems: 1'
-
-> +
-> +      pwm-names:
-> +        description:
-> +          "Name to be used by the PWM subsystem for the PWM device For
-> +          the pwms and pwm-names property please refer to:
-> +          Documentation/devicetree/bindings/pwm/pwm.txt"
-
-Same here.
-
-> +
-> +      max-brightness:
-> +        description:
-> +          Maximum brightness possible for the LED
-
-Needs a type $ref.
-
-> +
-> +      active-low:
-> +        description:
-> +          For PWMs where the LED is wired to supply rather than ground.
-
-type: boolean
-
-> +
-> +    required:
-> +      - pwms
-> +      - max-brightness
-
-additionalProperties: false
-
-That will cause errors if child node names were not consistent (no one 
-checked, so they won't be). We could just allow anything, but I prefer 
-to move things to be consistent yet try to capture any existing pattern.
-
-> +
-> +examples:
-> +  - |
-> +
-> +    #include <dt-bindings/leds/common.h>
-> +
-> +    twl_pwm: pwm {
-> +        /* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
-> +        compatible = "ti,twl6030-pwm";
-> +        #pwm-cells = <2>;
-> +    };
-> +
-> +    twl_pwmled: pwmled {
-> +        /* provides one PWM (id 0 for Charing indicator LED) */
-> +        compatible = "ti,twl6030-pwmled";
-> +        #pwm-cells = <2>;
-> +    };
-> +
-> +    pwm_leds {
-> +        compatible = "pwm-leds";
-> +
-> +        pwm-led-1 {
-> +            label = "omap4::keypad";
-> +            pwms = <&twl_pwm 0 7812500>;
-> +            max-brightness = <127>;
-> +        };
-> +
-> +        pwm-led-2 {
-> +            color = <LED_COLOR_ID_GREEN>;
-> +            function = LED_FUNCTION_CHARGING;
-> +            pwms = <&twl_pwmled 0 7812500>;
-> +            max-brightness = <255>;
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.20.1
-> 
+Bjorn
