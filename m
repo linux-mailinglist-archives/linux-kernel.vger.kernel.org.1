@@ -2,57 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10E326AED4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8843F26AEDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgIOUqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728051AbgIOUm5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:42:57 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46F4C06174A;
-        Tue, 15 Sep 2020 13:42:55 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 830BC1368570E;
-        Tue, 15 Sep 2020 13:26:06 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 13:42:52 -0700 (PDT)
-Message-Id: <20200915.134252.1280841239760138359.davem@davemloft.net>
-To:     oded.gabbay@gmail.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        SW_Drivers@habana.ai, gregkh@linuxfoundation.org, kuba@kernel.org,
-        andrew@lunn.ch, f.fainelli@gmail.com
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200915171022.10561-1-oded.gabbay@gmail.com>
-References: <20200915171022.10561-1-oded.gabbay@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Tue, 15 Sep 2020 13:26:07 -0700 (PDT)
+        id S1728091AbgIOUrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:47:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726454AbgIOUqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:46:36 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A4F120809;
+        Tue, 15 Sep 2020 20:46:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600202796;
+        bh=biBRsrW4Fs+Y3FfatFGMejxQwq4kpwq0ahfzBoNIGAM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TcTPD5CjNScvnACas/DuxQfwIjEVgKejo6dLSYhm84AuwpnT25q9TzTumsFBiJbCq
+         0ltWf08wjOzM7tYCAoEJ6QMl1yuBlSB9OZ/ca/xZNMSyB0B3cLS6X5Pil/J2KyoWpB
+         /+pt0YNu3CMzHZHBvVJXIxUlgKqGHqzwXplGgKCU=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH 1/6] scsi: ufs: atomic update for clkgating_enable
+Date:   Tue, 15 Sep 2020 13:45:27 -0700
+Message-Id: <20200915204532.1672300-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oded Gabbay <oded.gabbay@gmail.com>
-Date: Tue, 15 Sep 2020 20:10:08 +0300
+From: Jaegeuk Kim <jaegeuk@google.com>
 
-> This is the second version of the patch-set to upstream the GAUDI NIC code
-> into the habanalabs driver.
-> 
-> The only modification from v2 is in the ethtool patch (patch 12). Details
-> are in that patch's commit message.
-> 
-> Link to v2 cover letter:
-> https://lkml.org/lkml/2020/9/12/201
+When giving a stress test which enables/disables clkgating, we hit device
+timeout sometimes. This patch avoids subtle racy condition to address it.
 
-I agree with Jakub, this driver definitely can't go-in as it is currently
-structured and designed.  And because of the RDMA'ness of it, the RDMA
-folks have to be CC:'d and have a chance to review this.
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 1d157ff58d817..d929c3d1e58cc 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1791,19 +1791,19 @@ static ssize_t ufshcd_clkgate_enable_store(struct device *dev,
+ 		return -EINVAL;
+ 
+ 	value = !!value;
++
++	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	if (value == hba->clk_gating.is_enabled)
+ 		goto out;
+ 
+-	if (value) {
+-		ufshcd_release(hba);
+-	} else {
+-		spin_lock_irqsave(hba->host->host_lock, flags);
++	if (value)
++		hba->clk_gating.active_reqs--;
++	else
+ 		hba->clk_gating.active_reqs++;
+-		spin_unlock_irqrestore(hba->host->host_lock, flags);
+-	}
+ 
+ 	hba->clk_gating.is_enabled = value;
+ out:
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 	return count;
+ }
+ 
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
