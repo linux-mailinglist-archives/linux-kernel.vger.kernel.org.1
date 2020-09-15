@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A28269DF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF62D269DFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgIOFln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58340 "EHLO mail.kernel.org"
+        id S1726185AbgIOFmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:42:49 -0400
+Received: from mout.gmx.net ([212.227.17.22]:44927 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726153AbgIOFli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:41:38 -0400
-Received: from coco.lan (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7378220897;
-        Tue, 15 Sep 2020 05:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600148497;
-        bh=py1Ic3FYAxgFRhk1XbUcw+ZT1cHuHmyt/viWV46qu0E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ESYGSRzt+0NOzR1QGn6zBKUTfxx4NswZco32Tjhe2UAcSZdDi3y/rBDGUmTQDlcja
-         top9++iUrnbpKYGJ4Bos26CgiPvlixi65L3GNyklinByZl1Q0QrT4DbklbuiWeynkg
-         oYgnpjUL47suOYm0wsxe7me3y2VREXQpaYduVmX4=
-Date:   Tue, 15 Sep 2020 07:41:26 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: xconfig is broken again on Qt5
-Message-ID: <20200915074126.36a24f0e@coco.lan>
-In-Reply-To: <CAK7LNAQ6M+9CSwEOb687jGQbtOX6GjKhQ3m45U7XrPs4_CJU0Q@mail.gmail.com>
-References: <e04f1e9372f896d435d972cc6b70d1eb3b0c32a2.camel@redhat.com>
-        <CAK7LNAQ6M+9CSwEOb687jGQbtOX6GjKhQ3m45U7XrPs4_CJU0Q@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726073AbgIOFmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:42:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1600148561;
+        bh=r3Zy9HlAL4mX3fNk1dKMHZdu3L7YVwrK+wA+gsCULAU=;
+        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:To:CC:From;
+        b=cC4W0GCc3Yb9QMdMJ09cedgWewbzFaSKrnbUvugrL5pmVVwRzDQB/I8d/2J1i7BvL
+         lBv+RJ3zhUahX/IAMukCfA3clntSoDGDSprcglRlvYbtWnow2J4khMTZ0QbFwvkcZa
+         oDdlpDl9kjrgxDAHJkdjvS2esOrxsx5J/7PuoJpA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from frank-s9 ([80.208.209.101]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBDj4-1kD9Op2W7C-00CfLB; Tue, 15
+ Sep 2020 07:42:41 +0200
+Date:   Tue, 15 Sep 2020 07:42:38 +0200
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAK7LNARw0aRmKLb+8mxZbzxvB0YQ2_ak5LpcpQy+=3HrtiFA1g@mail.gmail.com>
+References: <trinity-9cd01270-7c54-4bf5-810d-e1b7de352e11-1600106229398@3c-app-gmx-bs03> <CAK7LNARw0aRmKLb+8mxZbzxvB0YQ2_ak5LpcpQy+=3HrtiFA1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [question] KBUILD_OUTPUT and modules install (with INSTALL_MOD_PATH)
+To:     Masahiro Yamada <masahiroy@kernel.org>
+CC:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Frank Wunderlich <frank-w@public-files.de>
+Message-ID: <27B16959-58F6-4190-8A65-88FFD2A49452@public-files.de>
+X-Provags-ID: V03:K1:9aRRb6YdF+92yGClFII+wr0BXl8PGUkGZCa85D7xavt1AuuOVq8
+ WJ2D23uxwi8DsgArZJbUEpkeVE3J3eDjNqtGoTuoGgUGpGHIzPWYxSWaM1+Hsq5ouoz17/B
+ LxWTL9FNADRNFfe+reyUYvEtY2kmxXXSQ8XxwIiCCBom0ZYoJclNX3bURZMO7C9hyIwZ50X
+ ZYHELE+xDVS0gUcN8xstQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2dKy2BiNc+Q=:zQG0Ytb/6w/JmgO+XCWLDe
+ dy/k0EqFfPmmnxHv33hN9w6jC7yk+FiNR8/lu1ndS1QXlqgk6RmXTNULjiBARH2NZz18h/REe
+ LiSHhG8dOilmxmOh8Uy0yY1RcKB1HEH34HocbJDfgPheTzQW9XXr5TBbZFUWJsqgkN/s/ligL
+ V2Z1o/vvDJEOoD0dqSkveau6g32MKnb6ySlm/mwsp+FI9KswtFeL7lO7jSr1Qr6psJ9rJTsbt
+ buKuK4juqeDNJlV4IVXdbiYMKbkWtDjHyH4XC92iDfBngtYMIYCPZpC2zKoTsqINIXHyaJr/z
+ SliM0stwBfXOmuqMuZolEFZ6YDDI5oKVdn42OX0jSNVpOwkKuXLdrgA4vO7rpNej5lB0SM1+d
+ PyTMMNoO8rq87Jv520JnLwiuoB+XrM7B65xVKqEe0lwAciRdsVdRxW1Q0lYI50Qbbi3FJ/LeD
+ LorCaukb6JBSVwsVolXl4bfpJzFVsOtBXuc1ac6pYpKXvgFET0S2XbJLo8bgSqihDV99/rjEp
+ HaBN4w8cbp/o04vCVMKX7gG2kWmVEcfLqigbvIR79AvYP/EWswaipKsjf9qqWcLwf7UaezWOF
+ mUkEtFG3/Q/RVdcsQ/mb3o/+uftmcxNWVDF9plIlxxg6RjbDXNMn2qxtvsbvzpNCJnecOj19G
+ cIUc4V2aZwJkiktlUnCiB/+X7tB5h3j8o4F2q0GpS/RRENT6lAoO0Aq3M0zsaH97OiB67+knb
+ MqiLLr+RQzgF3239ARHGYcZk0eXJX6K0fg97/PlqVV3y16ZGhVDgGziVHL+8Own2WWLXOZ0F4
+ 7kdKYBXJZnAJWmPvYCzkrricpbPXKqI+hzQ9hpw1zIkhbIcwa+H0v0BKzRIpaAYd1jOmYNvKr
+ QE5IilNkYXzXRN/UH949qjAGBksKwhSbSd7SwJj3SDlkRa+ls8Ae4Bj/0jIyKnNsUm03GJBzd
+ ZIy7ohGMKeXpAJYgmSvrS5BVjTlvXVrb3jYUFT37h3NhvttvreS71NwRgGuEs2N/qEmLfPWhv
+ 2KP8wdK4PrQlYDAHmrHRVeQ924JgMuKt/z4hy3/X2IVeoAuIwGlFFFAzeuXj8lbeJ4f8Jo5YM
+ ZaDNB4uVkIb1WW8QHyXFOG3WqEWaSPww0drijfQObhjSk633XDPwA4bul3jtuGZMfwv8cOt3+
+ A8l732lh/ic+XgXwJdeEsY2HB/hwMUEjesewCEC9PdRM+oFeaQonN2Y+h8mMz7OLcQcZFUIrE
+ /YYTGcsG6L7yy2hk1q0ESeZ5nCjMnaQQA0qK6iA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 15 Sep 2020 00:25:07 +0900
-Masahiro Yamada <masahiroy@kernel.org> escreveu:
+Am 15=2E September 2020 04:56:55 MESZ schrieb Masahiro Yamada <masahiroy@ke=
+rnel=2Eorg>:
+>On Tue, Sep 15, 2020 at 2:57 AM Frank Wunderlich
 
-> On Sun, Sep 13, 2020 at 10:21 PM Maxim Levitsky <mlevitsk@redhat.com> wrote:
-> >
-> > I hate to say it, but xconfig got broken again.
-> >
-> > After commit 68fd110b3e7e2 ("kconfig: qconf: remove redundant help in the info view")
-> > help description disappered completely from xconfig (both normal and split mode)
-> >
-> > I reverted this and next commit to get this back.
-> >
-> > I have a feeling that there were several bugs introduced to xconfig recently
-> > due to attempt to support both Qt4 and Qt5. Maybe we should only support one version?  
-> 
-> 
-> xconfig was originally written for Qt3, and
-> got broken in many ways after being converted to Qt5.
-> (commit 8328447af88eaab1d thru b4ff1de3b8381a4)
-> 
-> That is my gut feeling.
-> 
-> So, xconfig carried broken code everywhere
-> for many years.
-> 
-> I think supporting both Qt4 and Qt5
-> is doable, but testing both versions is tedious.
-> I'd like to want to drop Qt4 support in the future but
-> not in this development cycle because there are still
-> some people using Qt4.
+>> i try to use modules_install target after building kernel with
+>KBUILD_OUTPUT set
+>>
+>> KBUILD_OUTPUT: /media/data_nvme/git/kernel/build #kernel source is in
+>/media/data_nvme/git/kernel/BPI-R2-4=2E14
+>>
+>> kernel is build successfully, but i fail on running the make
+>modules_install target
+>>
+>>   ERROR: Kernel configuration is invalid=2E
+>>          include/generated/autoconf=2Eh or include/config/auto=2Econf a=
+re
+>missing=2E
+>>          Run 'make oldconfig && make prepare' on kernel src to fix
+>it=2E
+>>
+>> Makefile:648: include/config/auto=2Econf: No such file or directory
+>> make: *** [Makefile:719: include/config/auto=2Econf] Error 1
+>>
+>> it looks it is ignoring the KBUILD_OUTPUT variable, as both files are
+>present
+>
+>
+>KBUILD_OUTPUT is an environment variable=2E
+>
+>Did you set (export) it
+>before doing 'make modules_install'?
 
-My 2 cents here: I ported Kaffeine from Qt4 to Qt5. When I did that,
-I tried to make it compatible with both, but that was not easy. So,
-it now supports only Qt5. Ok, Kaffeine uses a lot of different APIs.
+Yes i exported it before use at beginning of my script [1] and modules_ins=
+tall used inside install function [2]=2E It works with build-function [3]=
+=2E
+As the script is big i linked the relevant parts=2E=2E=2Ei checked KBUILD_=
+OUTPUT at beginning of install function so i'm sure it was set
 
-It is probably doable to keep xconfig compatible with both Qt4 and
-Qt5, but not sure if it is worth the efforts, as Qt5 was released 
-at the end of 2012. So, I guess that all distros should have Qt5
-packages, even the LTS ones.
+>> $ ls /media/data_nvme/git/kernel/build/include/config/auto=2Econf
+>> /media/data_nvme/git/kernel/build/include/config/auto=2Econf
+>> $ ls /media/data_nvme/git/kernel/build/include/generated/autoconf=2Eh
+>> /media/data_nvme/git/kernel/build/include/generated/autoconf=2Eh
 
-> Recently I changed xconfig a lot because I noticed
-> various bugs, and also needed to simplify the code
-> for better maintainability.
-> 
-> 
-> Sorry for the pain, but we need to change the code
-> to make it stable and maintainable.
-> 
-> For the reported issue,
-> does this work for you?
-> https://patchwork.kernel.org/patch/11774055/
-> 
-> 
-> > I tried gconfig even thinking maybe nobody uses xconfig these days
-> > but gconfig seems to lack search function.  
-> 
-> gconfig is not well maintained either.
-> 
-> I think it should be converted from gtk+2 to gtk+3
-> and I know various bugs that need fixing
-> (but I have not been able to find time to work on it...)
 
-Such conversion can also be painful. I also did two such
-conversions for other media packages (Camorama and ZBar). Also,
-gtk4 is close to be released:
-
-	https://www.phoronix.com/scan.php?page=news_item&px=GTK-3.99.1-Released
-
-Porting from gtk+3 to gtk4 is also painful. I tried to prepare
-Camorama (which currently supports both gtk+2 and gtk+3) for gtk4, 
-but one of the fundamental features needed for it to work was dropped
-(a way to write video images inside a widget). Last time I checked,
-there were no obvious replacement for it (didn't check 3.99 yet).
-
-Maybe the main point here is if we should keep maintaining two
-GUI frontends.
-
-Thanks,
-Mauro
+[1] https://github=2Ecom/frank-w/BPI-R2-4=2E14/blob/5=2E9-rc/build=2Esh#L7=
+5
+[2] https://github=2Ecom/frank-w/BPI-R2-4=2E14/blob/5=2E9-rc/build=2Esh#L3=
+68
+[3] https://github=2Ecom/frank-w/BPI-R2-4=2E14/blob/5=2E9-rc/build=2Esh#L5=
+78
+regards Frank
