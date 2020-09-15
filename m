@@ -2,66 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E327269B3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFA1269B40
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgIOBe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S1726166AbgIOBez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726122AbgIOBeT (ORCPT
+        with ESMTP id S1726034AbgIOBev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:34:19 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EFCC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:34:17 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f18so971343pfa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5cRkQqsd5/nMJvkAtEIwXedLifA/J5I9RA/QsRwT0Po=;
-        b=j8RWSxHVCSsQ5pqbMPqEVtC7X7eF2Q1w5+mbUuzLiRgEr75GCf+uQsRl5dI7Xhxci3
-         vxyXnRMyp36UXCTA2xl5nvwyJDrXlJCd1q1bK+YOSP1RfWbqkJg45GtJMT0NIcUcji0m
-         9lPsXoOMx1r3PXCVwproLMabG54qKCpAxSxOD+R86DXRAnPWKOqNYIxDzpzcRszdCIti
-         1dQa3CKIi8yCk+2sqNBHIcU2Tk41FgkYTWSP1wX7q5eHJfzmswHjMFABq0cCGCEK6Kbb
-         j+2uwygE9QXefQ32j9VvU1X3TouI1yxkwcA43/mqJsFb/A8Vc3Cy5HEbmJPriiihM1ZA
-         ZB/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5cRkQqsd5/nMJvkAtEIwXedLifA/J5I9RA/QsRwT0Po=;
-        b=Ah8rfd6ttbMvlkoHSNyn/io8X5zCbt4wCtHiimaGmJJqZqgwXYoXDyHym2pEN6VzJt
-         eAifkARjklnzNExUYKg1d7ePZUJxrzqXJhGtt2eWl3cXFQzP8BXKSGO1yV06psZtjFyE
-         orxZ/kbfIN8cjZBxdyt9ytyTTtiShnzNjB2KlX9h47612CQm9B6uIVlYwdSCLejsIY4t
-         kGeJOEc+8gXLWt28T3lxVB7YHdBpOVpMnctJLWjDZv5qjqbwd4jE2JA+eo89lHsO3yMJ
-         qNsm0moGLSjqJdKXCGQT7fsGDQekRZwNKM6sxAltT+iS1FN64Fi2pxdj/x7HYuHLyW1k
-         nL3w==
-X-Gm-Message-State: AOAM5311M+QPPaL1BquG0xz0MlEUeWdUH3glt8W/rnWM/z7LP1zeVADU
-        YorkUyOrPQyi1POHOZQROC5IVeCuuQ14cAk/
-X-Google-Smtp-Source: ABdhPJxe6as0KiEIkzbsDttTiaOolP7z3p4kBXo77bQNMz5IrueN1c0m2cjTLDv1Oas4El51uieGgA==
-X-Received: by 2002:aa7:8051:0:b029:13e:d13d:a0f7 with SMTP id y17-20020aa780510000b029013ed13da0f7mr14960610pfm.19.1600133657429;
-        Mon, 14 Sep 2020 18:34:17 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id w195sm11500229pff.74.2020.09.14.18.34.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 18:34:16 -0700 (PDT)
-Subject: Re: [PATCH] tools/io_uring: fix compile breakage
-To:     Douglas Gilbert <dgilbert@interlog.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-block@vger.kernel.org
-References: <20200914213609.141577-1-dgilbert@interlog.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fa89c176-df34-8e96-f273-4dd52882a070@kernel.dk>
-Date:   Mon, 14 Sep 2020 19:34:15 -0600
+        Mon, 14 Sep 2020 21:34:51 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6F9C06174A;
+        Mon, 14 Sep 2020 18:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=5O6R4wFiQE5iCaDQZmXLRcqdjOENLSVdkUPEBgLW0Ho=; b=ioWQ6RfRfJd1Q5jWydaYLCLm5N
+        f4JLcDq4Su61ky7reqlcIAqDo6Fv63/Ed4IDhvOS+A+aBcyen9W/QuD4z+VnN91BFC1hCIAWBVN5Q
+        6sOLPnIMd/ZaqphPCxjMBtMSOTQLRVaSTBo3vMFhJAa0FTvddvIDoK5wc0tPiEki4edGSdw6/rcmI
+        p3Wjo64KL4e4loIeI66t0LHuJpFso6vgLgnKxgSx/VZp1X8nb7Z9L58/Yn7PDS2tqf5+Gxf4EVnUN
+        2st7QUxhLNK7M4bN+1wsj8FOg7fytDYeAatDohvGTPey22vvwRjgZWDtU7mGSelmOfo3vrE5Ylhj7
+        5N2HPNIA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHzrb-00052l-5N; Tue, 15 Sep 2020 01:34:31 +0000
+Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yuan Ming <yuanmingbuaa@gmail.com>, Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        NopNop Nop <nopitydays@gmail.com>,
+        =?UTF-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <git-mailbomb-linux-master-50145474f6ef4a9c19205b173da6264a644c7489@kernel.org>
+ <c9cd22ec-60dc-d761-b488-d3a1392708c0@infradead.org>
+ <20200915012800.GA17809@Gentoo>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ada6aecf-b98e-5249-5e68-7a4eaa947ce3@infradead.org>
+Date:   Mon, 14 Sep 2020 18:34:25 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200914213609.141577-1-dgilbert@interlog.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200915012800.GA17809@Gentoo>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -69,35 +59,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 3:36 PM, Douglas Gilbert wrote:
-> It would seem none of the kernel continuous integration does this:
->     $ cd tools/io_uring
->     $ make
-> 
-> Otherwise it may have noticed:
->    cc -Wall -Wextra -g -D_GNU_SOURCE   -c -o io_uring-bench.o
-> 	 io_uring-bench.c
-> io_uring-bench.c:133:12: error: static declaration of â€˜gettidâ€™
-> 	 follows non-static declaration
->   133 | static int gettid(void)
->       |            ^~~~~~
-> In file included from /usr/include/unistd.h:1170,
->                  from io_uring-bench.c:27:
-> /usr/include/x86_64-linux-gnu/bits/unistd_ext.h:34:16: note:
-> 	 previous declaration of â€˜gettidâ€™ was here
->    34 | extern __pid_t gettid (void) __THROW;
->       |                ^~~~~~
-> make: *** [<builtin>: io_uring-bench.o] Error 1
-> 
-> The problem on Ubuntu 20.04 (with lk 5.9.0-rc5) is that unistd.h
-> already defines gettid(). So prefix the local definition with
-> "lk_".
+On 9/14/20 6:28 PM, Bhaskar Chowdhury wrote:
+> On 18:18 Mon 14 Sep 2020, Randy Dunlap wrote:
+>> HI--
+>>
+>> On 9/14/20 3:48 PM, Linux Kernel Mailing List wrote:
+>>> Commit:     50145474f6ef4a9c19205b173da6264a644c7489
+>>> Parent:     856deb866d16e29bd65952e0289066f6078af773
+>>> Refname:    refs/heads/master
+>>> Web:        https://git.kernel.org/torvalds/c/50145474f6ef4a9c19205b173da6264a644c7489
+>>> Author:     Linus Torvalds <torvalds@linux-foundation.org>
+>>> AuthorDate: Mon Sep 7 11:45:27 2020 -0700
+>>> Committer:  Linus Torvalds <torvalds@linux-foundation.org>
+>>> CommitDate: Mon Sep 14 10:06:15 2020 -0700
+>>>
+>>>     fbcon: remove soft scrollback code
+>>>         This (and the VGA soft scrollback) turns out to have various nasty small
+>>>     special cases that nobody really is willing to fight.  The soft
+>>>     scrollback code was really useful a few decades ago when you typically
+>>>     used the console interactively as the main way to interact with the
+>>>     machine, but that just isn't the case any more.
+>>
+>> and:
+>>
+>>> Commit:     973c096f6a85e5b5f2a295126ba6928d9a6afd45
+>>> Parent:     06a0df4d1b8b13b551668e47b11fd7629033b7df
+>>> Refname:    refs/heads/master
+>>> Web:        https://git.kernel.org/torvalds/c/973c096f6a85e5b5f2a295126ba6928d9a6afd45
+>>> Author:     Linus Torvalds <torvalds@linux-foundation.org>
+>>> AuthorDate: Wed Sep 9 14:53:50 2020 -0700
+>>> Committer:  Linus Torvalds <torvalds@linux-foundation.org>
+>>> CommitDate: Mon Sep 14 10:06:15 2020 -0700
+>>>
+>>>     vgacon: remove software scrollback support
+>>
+>>
+>>
+>> diffstats:
+>>
+>>> ---
+>>>  drivers/video/fbdev/core/fbcon.c | 334 +--------------------------------------
+>>>  1 file changed, 4 insertions(+), 330 deletions(-)
+>>
+>>>  arch/powerpc/configs/pasemi_defconfig |   1 -
+>>>  arch/powerpc/configs/ppc6xx_defconfig |   1 -
+>>>  arch/x86/configs/i386_defconfig       |   1 -
+>>>  arch/x86/configs/x86_64_defconfig     |   1 -
+>>>  drivers/video/console/Kconfig         |  46 -------
+>>>  drivers/video/console/vgacon.c        | 221 +---------------------------------
+>>>  6 files changed, 1 insertion(+), 270 deletions(-)
+>>
+>>
+>>
+>>
+>> Now someone can remove the documentation for scrollback (and "no-scroll")...
+>>
+>>
+> If you wont mind ...let me stab at it ...
 
-Thanks Doug - I haven't really been maintaining the examples in
-the kernel, only in liburing. I'll apply this one, and hopefully
-sync them up for 5.10 in general.
+Sure, go for it.  Thanks.
+
+> 
+> Documentation/admin-guide/kernel-parameters.txt:        no-scroll       [VGA] Disables scrollback.
+> Documentation/fb/fbcon.rst:2. fbcon=scrollback:<value>[k]
+> Documentation/fb/fbcon.rst:     The scrollback buffer is memory that is used to preserve display
+> Documentation/fb/matroxfb.rst:   with 'video=scrollback:0'.
+> Documentation/fb/sstfb.rst:  disable software scrollback, as it can oops badly ...
+> Documentation/fb/vesafb.rst:            * You'll get scrollback (the Shift-PgUp thing),
+> Documentation/fb/vesafb.rst:              the video memory can be used as scrollback buffer
 
 
 -- 
-Jens Axboe
+~Randy
 
