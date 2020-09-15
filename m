@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA2D26A1AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549A626A1AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgIOJIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:08:19 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36291 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726222AbgIOJII (ORCPT
+        id S1726483AbgIOJHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:07:40 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:34765 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726142AbgIOJHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:08:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600160883;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+RaRr1rkKL0I9rBWtqad9Dv8rz6pmc1o4Jibb7XjUX0=;
-        b=CAGnDQquDI0UBYULSkJZ81Na3KZpVh1G/0e26kaAqREp0qm+9z/Jqxm59ETfwTq8fv2cHH
-        LRJrpP0oZBGkRVTxw0QmE4uUXW5harlQO30FA6P8PqT8/TYWuzTIJ7LTvXFzSNt+t4k4WC
-        1BSfYKW2N8xLOb1/WZqLQ+2Vod2JKHs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-45ZhZMqrOEitsyteJeWAGg-1; Tue, 15 Sep 2020 05:08:00 -0400
-X-MC-Unique: 45ZhZMqrOEitsyteJeWAGg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AD6B640B3;
-        Tue, 15 Sep 2020 09:07:57 +0000 (UTC)
-Received: from starship (unknown [10.35.207.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 061AB5DE82;
-        Tue, 15 Sep 2020 09:07:33 +0000 (UTC)
-Message-ID: <922e825c090892f22d40a469fef229d62f40af5e.camel@redhat.com>
-Subject: Re: [PATCH] SVM: nSVM: fix resource leak on error path
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 15 Sep 2020 12:07:25 +0300
-In-Reply-To: <20200914194557.10158-1-alex.dewar90@gmail.com>
-References: <20200914194557.10158-1-alex.dewar90@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Tue, 15 Sep 2020 05:07:37 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id I6vzk9pSoTSPzI6w0kShyV; Tue, 15 Sep 2020 11:07:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1600160853; bh=wwgZWe1k5L04vcWJJRmyzQwwC5HDOt9tNCdtKEKUfM4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=AvyVm+K9CZ3/f55Jz4WhHcI2RSUdCQ5nYp5KCh6Tt3y7V61WW8gCkKn732nfH556B
+         mwmrlfwA1D+Utwa/q9AA386I4uEaQ56k1MP+HCe6e/KEGuZt93TszOY5ziZMq0YHHK
+         n8mjLHY+5tpF9y5AW03c4p7l0avnPA8KwSCRnL4//Q3goMPCrHwbSMOiOHD4BwuruZ
+         BJ/O9mEbCdjGI01IVS6DMJTa1S136jj+6XpBhGFFVbpgBjkratBoVA9JvDLLVxrkA3
+         N8w/X9ZB7RpxbJ3ZsTlkUBxG3oo6R0iXzx/MrzB9S0S+xmRvx2IP4TS/DyddU5SFmC
+         wReH6wsfwVXhw==
+Subject: Re: [PATCH v2] media: rcar-vin: Update crop and compose settings for
+ every s_fmt call
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+References: <20200913182140.32466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <b57b499a-b6d1-dfbb-29bb-5daa3fad5982@xs4all.nl>
+Date:   Tue, 15 Sep 2020 11:07:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200913182140.32466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-CMAE-Envelope: MS4wfL9AmPTSsKXQObvKm86FCv7Isd4OPiVUewhjHs1Gji1DbNPs5Cdk7aH7z8iPeuLuGJ9QRwUtmgoQ+7hIR1zKzZ0PYKWsDHMhp8uNWvPq4FtyfdQ5NLG0
+ uxfMgMGMdgLllC9+C0twdYbRlPcIp465mZ/gh4OPVZ+VxH/yB7V8wafedZXC/g4vTW8IPWvQPBYuz+wciPuERij9DWGbaK+bZYkvJ1VpjDcaVBXBN/T/LoE6
+ B+byNZGRvAt6MFnBmm5DX5IYrU4FYBQ01HGkDTDJ7SN+9zkuWVX+Kgars3VYLVontLMSMfQUP/pbGsbitRO6HZD5Uz/w1kaiHk6+AoG8pZvPzrZBWpBK703v
+ koKXNCPH5XRX/GcyZ0Wu/xogrmL2VsZZzDnl/8mSo1Fb2U+URosdH2yRBQkYCGCwrOUxtU7Qd8WWZdxyl9tZ22Je1Al2eEleZY9ymqppp27sgsZHS89YHAtx
+ ohiyqHMAh8QK/fgF1oVZEhYTONQm3KLiN4cYF2hRV9V7Sof21bxiqwlr/oY+xkS1HrP3YEhZbmEgy0tsUxBekiCEmGp6uSKDAtapkzTJsOUvgeoVj051TN3i
+ oZbyNeXIZgDjv9J04B7sUb/Y7j6fzlBMQ3DjxITVcB8lsy2HFNqL+OLiu0/uNsbCL+dEMcJKKT5w+3TC+H7g5XRX3gVZSWZtT7o8zjo8MKVKZw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-14 at 20:45 +0100, Alex Dewar wrote:
-> In svm_set_nested_state(), if nested_svm_vmrun_msrpm() returns false,
-> then variables save and ctl will leak. Fix this.
+On 13/09/2020 20:21, Lad Prabhakar wrote:
+> The crop and compose settings for VIN in non mc mode werent updated
+> in s_fmt call this resulted in captured images being clipped.
 > 
-> Fixes: 772b81bb2f9b ("SVM: nSVM: setup nested msr permission bitmap on nested state load")
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> With the below sequence on the third capture where size is set to
+> 640x480 resulted in clipped image of size 320x240.
+> 
+> high(640x480) -> low (320x240) -> high (640x480)
+> 
+> This patch makes sure the VIN crop and compose settings are updated.
+
+I'm not sure the original behavior was wrong at all.
+
+When calling S_FMT(320x240) it should force the crop and compose rectangles
+into 320x240, but when calling S_FMT(640x480) the crop and compose rectangles
+do not need to be modified and are kept. It is up to userspace to update those
+crop/compose rectangles.
+
+Calling S_FMT must, however, update the crop/compose bounds/default rectangles
+where applicable.
+
+Note that the crop coordinates are against the video source resolution, *not*
+the format width/height. So this patch is definitely wrong in that respect.
+
+Regards,
+
+	Hans
+
+> 
+> Fixes: 104464f573d ("media: rcar-vin: Do not reset the crop and compose rectangles in s_fmt")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 > ---
->  arch/x86/kvm/svm/nested.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes for v2:
+> * Dropped redundant code mapping crop and compose rects
 > 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 598a769f1961..85f572cbabe4 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -1148,7 +1148,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
->  	nested_prepare_vmcb_control(svm);
+> v1 - https://lkml.org/lkml/2020/7/31/364
+> ---
+>  drivers/media/platform/rcar-vin/rcar-v4l2.c | 15 ++++++---------
+>  1 file changed, 6 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> index 0e066bba747e..1bd59a8453b4 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> @@ -305,7 +305,7 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
+>  			      struct v4l2_format *f)
+>  {
+>  	struct rvin_dev *vin = video_drvdata(file);
+> -	struct v4l2_rect fmt_rect, src_rect;
+> +	struct v4l2_rect src_rect;
+>  	int ret;
 >  
->  	if (!nested_svm_vmrun_msrpm(svm))
-> -		return -EINVAL;
-> +		goto out_free;	/* ret == -EINVAL */
+>  	if (vb2_is_busy(&vin->queue))
+> @@ -317,14 +317,11 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
+>  		return ret;
 >  
->  out_set_gif:
->  	svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
-
-I think that this patch is based on unmerged patch, since I don't see
-any memory allocation in nested_svm_vmrun_msrpm, nor out_free label.
-in nether kvm/master, kvm/queue nor in upstream/master
-
-If I recall correctly that would be something about allocating ctrl/save
-dynamically rather than on stack.
-
-Best regards,
-	Maxim Levitsky
+>  	vin->format = f->fmt.pix;
+> -
+> -	fmt_rect.top = 0;
+> -	fmt_rect.left = 0;
+> -	fmt_rect.width = vin->format.width;
+> -	fmt_rect.height = vin->format.height;
+> -
+> -	v4l2_rect_map_inside(&vin->crop, &src_rect);
+> -	v4l2_rect_map_inside(&vin->compose, &fmt_rect);
+> +	vin->crop.top = 0;
+> +	vin->crop.left = 0;
+> +	vin->crop.width = vin->format.width;
+> +	vin->crop.height = vin->format.height;
+> +	vin->compose = vin->crop;
+>  	vin->src_rect = src_rect;
+>  
+>  	return 0;
+> 
 
