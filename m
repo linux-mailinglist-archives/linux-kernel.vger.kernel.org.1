@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608C726A6BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1122B26A6F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgIOOEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:04:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55686 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726753AbgIONyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:54:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 82716ACF6;
-        Tue, 15 Sep 2020 13:38:07 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 15:37:51 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     zangchunxin@bytedance.com
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH v4] mm/vmscan: add a fatal signals check in drop_slab_node
-Message-ID: <20200915133751.GC3736@dhcp22.suse.cz>
-References: <20200915132741.84869-1-zangchunxin@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915132741.84869-1-zangchunxin@bytedance.com>
+        id S1726375AbgIOOTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726812AbgIOOI2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:08:28 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4C3C0611BC
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:16 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id q4so1791072pjh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=cdgo8gcr3yR5N+Dt3Xu3fyRafdoq6RtuY7MnOM9virM=;
+        b=CnIPnbeegGCLMjvV+Ttrb9jnBV8d4g+3XEzFqqI9X4Aghu8tpkBVcG3p5uMt5R2ZAd
+         u2nkvfVIrw2o1PoO3qi0fQy7d1TFoyU6yodsXUMq5rUBdlEThEiZxkHoI3p1evRL4Tp5
+         jQ2+6DoK9BcWRYZ7Yyk9O2wsiQaBnmlQee96E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=cdgo8gcr3yR5N+Dt3Xu3fyRafdoq6RtuY7MnOM9virM=;
+        b=Jv0gal7r8aea9ngH73UV+zy+APwYogs7aR2X78znTDMN/IX35uKhdwXyedFhpPnVDw
+         TlUbBW0S1F5qd8R5U4+HtR3OTg1LOX336M+w4H+iAOv0Fb1rDFvv8jx6HWmi0ZeQRSAH
+         8iUAcTJ76eThjmd0yD/OPSyxMAd0aVifvoMY0rGqsHvGsRAuWq6jRL0as08KQtov892Z
+         TLqkrRaV3ONMTn5QkTP5xMkZNVxyismJxCkRYyOiCVFXbPI5RdWY7YOMHVbrPPLSgUFt
+         /0rrL3ieV6Erkl7CcM6O9NrEGMGxQrqdXC3+X2/9kMHNivcX7y5qsxz3KAP1XxZAwWHy
+         DZtg==
+X-Gm-Message-State: AOAM5300QMSM9mvaf0qSQS/vvzlBJ2NujbSXFYrxdZAoF0wpTb/ZNGBK
+        Tx5FasDAKASmy/hpRPa8RRRC2w==
+X-Google-Smtp-Source: ABdhPJwmupdPJkXxq/Xvz8pxucXHnT0qli4TU7cgSEMHSMSOmquu4nXVAEisl1KN+Su+p8HYGgitZw==
+X-Received: by 2002:a17:902:d693:b029:d1:bb0f:5f9d with SMTP id v19-20020a170902d693b02900d1bb0f5f9dmr14884498ply.30.1600177575714;
+        Tue, 15 Sep 2020 06:46:15 -0700 (PDT)
+Received: from mannams-OptiPlex-7010.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id jz6sm12471478pjb.22.2020.09.15.06.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 06:46:15 -0700 (PDT)
+From:   Srinath Mannam <srinath.mannam@broadcom.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ray Jui <rjui@broadcom.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bharat Gooty <bharat.gooty@broadcom.com>
+Subject: [PATCH v2 1/3] PCI: iproc: fix out of bound array access
+Date:   Tue, 15 Sep 2020 19:15:39 +0530
+Message-Id: <20200915134541.14711-2-srinath.mannam@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200915134541.14711-1-srinath.mannam@broadcom.com>
+References: <20200915134541.14711-1-srinath.mannam@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15-09-20 21:27:41, zangchunxin@bytedance.com wrote:
-> From: Chunxin Zang <zangchunxin@bytedance.com>
-> 
-> On our server, there are about 10k memcg in one machine. They use memory
-> very frequently. We have observed that drop_caches can take a
-> considerable amount of time, and can't stop it.
-> 
-> There are two reasons:
-> 1. There is somebody constantly generating more objects to reclaim
->    on drop_caches, result the 'freed' always bigger than 10.
-> 2. The process has no chance to process signals.
-> 
-> We can get the following info through 'ps':
-> 
->   root:~# ps -aux | grep drop
->   root  357956 ... R    Aug25 21119854:55 echo 3 > /proc/sys/vm/drop_caches
->   root 1771385 ... R    Aug16 21146421:17 echo 3 > /proc/sys/vm/drop_caches
-> 
-> Add a bail out on the fatal signals in the main loop so that the
-> operation can be terminated by userspace.
-> 
-> Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+From: Bharat Gooty <bharat.gooty@broadcom.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Declare the full size array for all revisions of PAX register sets
+to avoid potentially out of bound access of the register array
+when they are being initialized in the 'iproc_pcie_rev_init'
+function.
 
-> ---
-> 
-> 	changelogs in v4:
-> 	changelogs in v3: 
-> 	1) Fix some descriptive problems pointed out by Michal Hocko.
-> 		v2 named: mm/vmscan: fix infinite loop in drop_slab_node
-> 
-> 	changelogs in v2: 
-> 	1) via check fatal signal break loop.
-> 
->  mm/vmscan.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index b6d84326bdf2..6b2b5d420510 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -704,6 +704,9 @@ void drop_slab_node(int nid)
->  	do {
->  		struct mem_cgroup *memcg = NULL;
->  
-> +		if (signal_pending(current))
-> +			return;
-> +
->  		freed = 0;
->  		memcg = mem_cgroup_iter(NULL, NULL, NULL);
->  		do {
-> -- 
-> 2.11.0
-> 
+Fixes: 06324ede76cdf ("PCI: iproc: Improve core register population")
+Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
+---
+ drivers/pci/controller/pcie-iproc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
+index 905e93808243..d901b9d392b8 100644
+--- a/drivers/pci/controller/pcie-iproc.c
++++ b/drivers/pci/controller/pcie-iproc.c
+@@ -307,7 +307,7 @@ enum iproc_pcie_reg {
+ };
+ 
+ /* iProc PCIe PAXB BCMA registers */
+-static const u16 iproc_pcie_reg_paxb_bcma[] = {
++static const u16 iproc_pcie_reg_paxb_bcma[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -318,7 +318,7 @@ static const u16 iproc_pcie_reg_paxb_bcma[] = {
+ };
+ 
+ /* iProc PCIe PAXB registers */
+-static const u16 iproc_pcie_reg_paxb[] = {
++static const u16 iproc_pcie_reg_paxb[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -334,7 +334,7 @@ static const u16 iproc_pcie_reg_paxb[] = {
+ };
+ 
+ /* iProc PCIe PAXB v2 registers */
+-static const u16 iproc_pcie_reg_paxb_v2[] = {
++static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -363,7 +363,7 @@ static const u16 iproc_pcie_reg_paxb_v2[] = {
+ };
+ 
+ /* iProc PCIe PAXC v1 registers */
+-static const u16 iproc_pcie_reg_paxc[] = {
++static const u16 iproc_pcie_reg_paxc[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x1f0,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x1f4,
+@@ -372,7 +372,7 @@ static const u16 iproc_pcie_reg_paxc[] = {
+ };
+ 
+ /* iProc PCIe PAXC v2 registers */
+-static const u16 iproc_pcie_reg_paxc_v2[] = {
++static const u16 iproc_pcie_reg_paxc_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_MSI_GIC_MODE]	= 0x050,
+ 	[IPROC_PCIE_MSI_BASE_ADDR]	= 0x074,
+ 	[IPROC_PCIE_MSI_WINDOW_SIZE]	= 0x078,
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
