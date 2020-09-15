@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD74D26AC99
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E85226AC7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgIOSww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:52:52 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:43237 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727823AbgIORYO (ORCPT
+        id S1727939AbgIOSsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:48:41 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:42321 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727914AbgIOR2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:24:14 -0400
-Received: by mail-qt1-f196.google.com with SMTP id g3so3765105qtq.10;
-        Tue, 15 Sep 2020 10:24:12 -0700 (PDT)
+        Tue, 15 Sep 2020 13:28:39 -0400
+Received: by mail-qk1-f195.google.com with SMTP id v123so5048804qkd.9;
+        Tue, 15 Sep 2020 10:28:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=IlLyj2saxTTjsywCjSXJt2Rce2uMyGTitfwMxI+v+Kg=;
-        b=bWoNyZ4d0WGjLTVjn6VokQimjGERYkPWQh/McKBdpSP8vAuCg+6aT8Gy/n9qBEhzSR
-         02v+4xWOOKRQlkhQqvtuNPxBZjco5IbNdEHN6y5BiackCbafwOyY9RGWoGq7GYBI4BZX
-         XM9tSvxYT9GpiSLHYqAl10RJ01mQUzLBBaxdvuBEW+5+9DegShUvATrRm9IHMK063ZyK
-         QZQWI/RTB98SPwyaeGi4f6TZXnYDrvib/eRbM05ocZUP6UlJcexJhn8cNOxyLOgukOwm
-         cO4QOrjDB9ar/cbOPF7w8A+7yc2ctnAW4e2aU2c9Mx/qYLxT/R5HkZk3ltZF36/SUUAo
-         3DLQ==
-X-Gm-Message-State: AOAM5328mMEpZrnD/sAEOcs7/TdiAvH7fGx5rqh1AsrkgNHGUzfarJsR
-        Q50U3N7fDxz002uTopvW7ChriKSrqXRPtUY=
-X-Google-Smtp-Source: ABdhPJzvXSvuBSSIbmk0BXjqKM7yXBjjp5/cHX5mDIy0KLIb2rQdnPHckzSsVC1ZOZe2R9OMCrPjoA==
-X-Received: by 2002:a05:6638:14c8:: with SMTP id l8mr18794773jak.136.1600188830508;
-        Tue, 15 Sep 2020 09:53:50 -0700 (PDT)
+        bh=nMAyu9gaeD5KneTR08etfhTbKcQO0tFdgu4T0zizHD4=;
+        b=iTRZC0qWLAaaW+nyYis6BJdsr7irp2bDn6LS9wErrycBDP+bbclP2X3ynOFUEzXaXP
+         o/tVCFMpf0o7irFzkAVR2F/oZntnwnl98K3ACUuDKX74alh8S3Do3s0ietV466QuJzce
+         N6JV4y+hyltoIYTearCQiGorbNg05eYOhglDMIHjlYGI8oQhtk44ojJkdDt8AqdNJpJi
+         G1vH8wMbAlht5xN8gneVXJcTI/P7MmpreLwlpSFzLiwAi4nzoLve+ualHfNhMdd7k96N
+         eTFNqCN6OxvQLnOv1Pu/76LePiDm0T+9FeW7cLm25kNTbcd6k/YNYBBHmx9NBhOexayb
+         e+uQ==
+X-Gm-Message-State: AOAM533v/qhX3G73gcVaNtH0U8Wo7WkiN9N90tF1zQ+OoCvBwiOeUlPx
+        yh2SuGNa7XUH4C5mt3DWOf3igsOX2RTa+H0=
+X-Google-Smtp-Source: ABdhPJyzV6XVR3M4AxQfi/ZcxsetRVymmGU/c0n8YWApO7VeuCS+WfyJbS4pWQ2xgt6zHI79oVsb0Q==
+X-Received: by 2002:a02:9986:: with SMTP id a6mr19164058jal.28.1600188853861;
+        Tue, 15 Sep 2020 09:54:13 -0700 (PDT)
 Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id m8sm7937079ioq.11.2020.09.15.09.53.47
+        by smtp.gmail.com with ESMTPSA id z4sm7618475iol.52.2020.09.15.09.54.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 09:53:49 -0700 (PDT)
-Received: (nullmailer pid 2112732 invoked by uid 1000);
-        Tue, 15 Sep 2020 16:53:46 -0000
-Date:   Tue, 15 Sep 2020 10:53:46 -0600
+        Tue, 15 Sep 2020 09:54:13 -0700 (PDT)
+Received: (nullmailer pid 2113565 invoked by uid 1000);
+        Tue, 15 Sep 2020 16:54:11 -0000
+Date:   Tue, 15 Sep 2020 10:54:11 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-power@fi.rohmeurope.com, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Robert Jones <rjones@gateworks.com>,
-        devicetree@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH] dt-bindings: mfd: Correct interrupt flags in examples
-Message-ID: <20200915165346.GA2112678@bogus>
-References: <20200908145900.4423-1-krzk@kernel.org>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH] dt-bindings: power: Correct interrupt flags in examples
+Message-ID: <20200915165411.GA2113514@bogus>
+References: <20200908145922.4502-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908145900.4423-1-krzk@kernel.org>
+In-Reply-To: <20200908145922.4502-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Sep 2020 16:59:00 +0200, Krzysztof Kozlowski wrote:
+On Tue, 08 Sep 2020 16:59:22 +0200, Krzysztof Kozlowski wrote:
 > GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
 > These are simple defines so they could be used in DTS but they will not
 > have the same meaning:
@@ -69,10 +67,8 @@ On Tue, 08 Sep 2020 16:59:00 +0200, Krzysztof Kozlowski wrote:
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  Documentation/devicetree/bindings/mfd/act8945a.txt          | 2 +-
->  Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml    | 3 ++-
->  Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt | 2 +-
->  3 files changed, 4 insertions(+), 3 deletions(-)
+>  .../devicetree/bindings/power/supply/act8945a-charger.txt       | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Applied, thanks!
