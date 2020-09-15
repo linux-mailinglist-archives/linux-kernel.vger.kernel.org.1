@@ -2,113 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C66126A8FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50B926A8EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbgIOPlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:41:25 -0400
-Received: from mga01.intel.com ([192.55.52.88]:24488 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727325AbgIOO7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:59:16 -0400
-IronPort-SDR: nbOR1ctnvZ4nm56lUANcj/SuV+0rVeqOivrz35L7QRCKFwA1mxHMhySKbzoO5ZG7cJfSYFCTBc
- lrRP12tynyiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="177337725"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="177337725"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 07:54:01 -0700
-IronPort-SDR: eo7IN6CFfz/JFCHrjjjZxQEzTZHoqM64mPVSXbMki5QyIX+xBlQEMHk4r1NspmFOM1o7wANnUn
- ird6p+/ltdcQ==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="507597441"
-Received: from cpchou-mobl.amr.corp.intel.com (HELO [10.209.152.133]) ([10.209.152.133])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 07:53:59 -0700
-Subject: Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap pages of hugetlb
- page
-To:     Matthew Wilcox <willy@infradead.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
- <20200915143241.GH5449@casper.infradead.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <de59e509-1936-f7fb-b14c-52ef7f642bb2@intel.com>
-Date:   Tue, 15 Sep 2020 07:53:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727279AbgIOPhD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 11:37:03 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:43925 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727364AbgIOOzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:55:52 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-212-ouC9VtsePgW0zmxTBHC3SA-1; Tue, 15 Sep 2020 15:55:35 +0100
+X-MC-Unique: ouC9VtsePgW0zmxTBHC3SA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 15 Sep 2020 15:55:34 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 15 Sep 2020 15:55:34 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH 8/9 next] fs: Use iovec_import() instead of import_iovec().
+Thread-Topic: [PATCH 8/9 next] fs: Use iovec_import() instead of
+ import_iovec().
+Thread-Index: AdaLblh1gZNjsQwuQPyq7LxxRCu5GQ==
+Date:   Tue, 15 Sep 2020 14:55:34 +0000
+Message-ID: <d8bd576f70d646219ccdc8bde82fafdd@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20200915143241.GH5449@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.002
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 7:32 AM, Matthew Wilcox wrote:
-> On Tue, Sep 15, 2020 at 08:59:23PM +0800, Muchun Song wrote:
->> This patch series will free some vmemmap pages(struct page structures)
->> associated with each hugetlbpage when preallocated to save memory.
-> It would be lovely to be able to do this.  Unfortunately, it's completely
-> impossible right now.  Consider, for example, get_user_pages() called
-> on the fifth page of a hugetlb page.
 
-Yeah, exactly.
+iovec_import() has a safer calling convention than import_iovec().
 
-Does this series survive the in-kernel selftests/?  If so, sounds like
-we need to add a new selftest.
+Signed-off-by: David Laight <david.laight@aculab.com>
+---
+ fs/aio.c        | 34 ++++++++++++------------
+ fs/read_write.c | 69 ++++++++++++++++++++++++++-----------------------
+ fs/splice.c     | 22 +++++++++-------
+ 3 files changed, 65 insertions(+), 60 deletions(-)
+
+diff --git a/fs/aio.c b/fs/aio.c
+index d5ec30385566..909c03143374 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -1477,24 +1477,20 @@ static int aio_prep_rw(struct kiocb *req, const struct iocb *iocb)
+ 	return 0;
+ }
+ 
+-static ssize_t aio_setup_rw(int rw, const struct iocb *iocb,
+-		struct iovec **iovec, bool vectored, bool compat,
++static struct iovec *aio_setup_rw(int rw, const struct iocb *iocb,
++		struct iovec_cache *cache, bool vectored, bool compat,
+ 		struct iov_iter *iter)
+ {
+ 	void __user *buf = (void __user *)(uintptr_t)iocb->aio_buf;
+ 	size_t len = iocb->aio_nbytes;
+ 
+-	if (!vectored) {
+-		ssize_t ret = import_single_range(rw, buf, len, *iovec, iter);
+-		*iovec = NULL;
+-		return ret;
+-	}
++	if (!vectored)
++		return ERR_PTR(import_single_range(rw, buf, len, cache->iov, iter));
+ #ifdef CONFIG_COMPAT
+ 	if (compat)
+-		return compat_import_iovec(rw, buf, len, UIO_FASTIOV, iovec,
+-				iter);
++		return compat_iovec_import(rw, buf, len, cache, iter);
+ #endif
+-	return import_iovec(rw, buf, len, UIO_FASTIOV, iovec, iter);
++	return iovec_import(rw, buf, len, cache, iter);
+ }
+ 
+ static inline void aio_rw_done(struct kiocb *req, ssize_t ret)
+@@ -1520,8 +1516,9 @@ static inline void aio_rw_done(struct kiocb *req, ssize_t ret)
+ static int aio_read(struct kiocb *req, const struct iocb *iocb,
+ 			bool vectored, bool compat)
+ {
+-	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
++	struct iovec_cache cache;
+ 	struct iov_iter iter;
++	struct iovec *iovec;
+ 	struct file *file;
+ 	int ret;
+ 
+@@ -1535,9 +1532,9 @@ static int aio_read(struct kiocb *req, const struct iocb *iocb,
+ 	if (unlikely(!file->f_op->read_iter))
+ 		return -EINVAL;
+ 
+-	ret = aio_setup_rw(READ, iocb, &iovec, vectored, compat, &iter);
+-	if (ret < 0)
+-		return ret;
++	iovec = aio_setup_rw(READ, iocb, &cache, vectored, compat, &iter);
++	if (IS_ERR(iovec))
++		return PTR_ERR(iovec);
+ 	ret = rw_verify_area(READ, file, &req->ki_pos, iov_iter_count(&iter));
+ 	if (!ret)
+ 		aio_rw_done(req, call_read_iter(file, req, &iter));
+@@ -1548,8 +1545,9 @@ static int aio_read(struct kiocb *req, const struct iocb *iocb,
+ static int aio_write(struct kiocb *req, const struct iocb *iocb,
+ 			 bool vectored, bool compat)
+ {
+-	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
++	struct iovec_cache cache;
+ 	struct iov_iter iter;
++	struct iovec *iovec;
+ 	struct file *file;
+ 	int ret;
+ 
+@@ -1563,9 +1561,9 @@ static int aio_write(struct kiocb *req, const struct iocb *iocb,
+ 	if (unlikely(!file->f_op->write_iter))
+ 		return -EINVAL;
+ 
+-	ret = aio_setup_rw(WRITE, iocb, &iovec, vectored, compat, &iter);
+-	if (ret < 0)
+-		return ret;
++	iovec = aio_setup_rw(WRITE, iocb, &cache, vectored, compat, &iter);
++	if (IS_ERR(iovec))
++		return PTR_ERR(iovec);
+ 	ret = rw_verify_area(WRITE, file, &req->ki_pos, iov_iter_count(&iter));
+ 	if (!ret) {
+ 		/*
+diff --git a/fs/read_write.c b/fs/read_write.c
+index e5e891a88442..6e3d4a646f3c 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -884,35 +884,38 @@ EXPORT_SYMBOL(vfs_iter_write);
+ ssize_t vfs_readv(struct file *file, const struct iovec __user *vec,
+ 		  unsigned long vlen, loff_t *pos, rwf_t flags)
+ {
+-	struct iovec iovstack[UIO_FASTIOV];
+-	struct iovec *iov = iovstack;
++	struct iovec_cache cache;
+ 	struct iov_iter iter;
++	struct iovec *iov;
+ 	ssize_t ret;
+ 
+-	ret = import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack), &iov, &iter);
+-	if (ret >= 0) {
+-		ret = do_iter_read(file, &iter, pos, flags);
+-		kfree(iov);
+-	}
++	iov = iovec_import(READ, vec, vlen, &cache, &iter);
++	if (IS_ERR(iov))
++		return PTR_ERR(iov);
++
++	ret = do_iter_read(file, &iter, pos, flags);
+ 
++	kfree(iov);
+ 	return ret;
+ }
+ 
+ static ssize_t vfs_writev(struct file *file, const struct iovec __user *vec,
+ 		   unsigned long vlen, loff_t *pos, rwf_t flags)
+ {
+-	struct iovec iovstack[UIO_FASTIOV];
+-	struct iovec *iov = iovstack;
++	struct iovec_cache cache;
+ 	struct iov_iter iter;
++	struct iovec *iov;
+ 	ssize_t ret;
+ 
+-	ret = import_iovec(WRITE, vec, vlen, ARRAY_SIZE(iovstack), &iov, &iter);
+-	if (ret >= 0) {
+-		file_start_write(file);
+-		ret = do_iter_write(file, &iter, pos, flags);
+-		file_end_write(file);
+-		kfree(iov);
+-	}
++	iov = iovec_import(WRITE, vec, vlen, &cache, &iter);
++	if (IS_ERR(iov))
++		return PTR_ERR(iov);
++
++	file_start_write(file);
++	ret = do_iter_write(file, &iter, pos, flags);
++	file_end_write(file);
++
++	kfree(iov);
+ 	return ret;
+ }
+ 
+@@ -1073,16 +1076,17 @@ static size_t compat_readv(struct file *file,
+ 			   const struct compat_iovec __user *vec,
+ 			   unsigned long vlen, loff_t *pos, rwf_t flags)
+ {
+-	struct iovec iovstack[UIO_FASTIOV];
+-	struct iovec *iov = iovstack;
++	struct iovec_cache cache;
+ 	struct iov_iter iter;
++	struct iovec *iov;
+ 	ssize_t ret;
+ 
+-	ret = compat_import_iovec(READ, vec, vlen, UIO_FASTIOV, &iov, &iter);
+-	if (ret >= 0) {
+-		ret = do_iter_read(file, &iter, pos, flags);
+-		kfree(iov);
+-	}
++	iov = compat_iovec_import(READ, vec, vlen, &cache, &iter);
++	if (IS_ERR(iov))
++		return PTR_ERR(iov);
++
++	ret = do_iter_read(file, &iter, pos, flags);
++	kfree(iov);
+ 	if (ret > 0)
+ 		add_rchar(current, ret);
+ 	inc_syscr(current);
+@@ -1181,18 +1185,19 @@ static size_t compat_writev(struct file *file,
+ 			    const struct compat_iovec __user *vec,
+ 			    unsigned long vlen, loff_t *pos, rwf_t flags)
+ {
+-	struct iovec iovstack[UIO_FASTIOV];
+-	struct iovec *iov = iovstack;
++	struct iovec_cache cache;
+ 	struct iov_iter iter;
++	struct iovec *iov;
+ 	ssize_t ret;
+ 
+-	ret = compat_import_iovec(WRITE, vec, vlen, UIO_FASTIOV, &iov, &iter);
+-	if (ret >= 0) {
+-		file_start_write(file);
+-		ret = do_iter_write(file, &iter, pos, flags);
+-		file_end_write(file);
+-		kfree(iov);
+-	}
++	iov = compat_iovec_import(WRITE, vec, vlen, &cache, &iter);
++	if (IS_ERR(iov))
++		return PTR_ERR(iov);
++
++	file_start_write(file);
++	ret = do_iter_write(file, &iter, pos, flags);
++	file_end_write(file);
++	kfree(iov);
+ 	if (ret > 0)
+ 		add_wchar(current, ret);
+ 	inc_syscw(current);
+diff --git a/fs/splice.c b/fs/splice.c
+index d7c8a7c4db07..ec1a825525d0 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -1349,9 +1349,9 @@ static long do_vmsplice(struct file *f, struct iov_iter *iter, unsigned int flag
+ SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, uiov,
+ 		unsigned long, nr_segs, unsigned int, flags)
+ {
+-	struct iovec iovstack[UIO_FASTIOV];
+-	struct iovec *iov = iovstack;
++	struct iovec_cache cache;
+ 	struct iov_iter iter;
++	struct iovec *iov;
+ 	ssize_t error;
+ 	struct fd f;
+ 	int type;
+@@ -1361,9 +1361,10 @@ SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, uiov,
+ 	if (error)
+ 		return error;
+ 
+-	error = import_iovec(type, uiov, nr_segs,
+-			     ARRAY_SIZE(iovstack), &iov, &iter);
+-	if (error >= 0) {
++	iov = iovec_import(type, uiov, nr_segs, &cache, &iter);
++	if (IS_ERR(iov)) {
++		error = PTR_ERR(iov);
++	} else {
+ 		error = do_vmsplice(f.file, &iter, flags);
+ 		kfree(iov);
+ 	}
+@@ -1375,9 +1376,9 @@ SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, uiov,
+ COMPAT_SYSCALL_DEFINE4(vmsplice, int, fd, const struct compat_iovec __user *, iov32,
+ 		    unsigned int, nr_segs, unsigned int, flags)
+ {
+-	struct iovec iovstack[UIO_FASTIOV];
+-	struct iovec *iov = iovstack;
++	struct iovec_cache cache;
+ 	struct iov_iter iter;
++	struct iovec *iov;
+ 	ssize_t error;
+ 	struct fd f;
+ 	int type;
+@@ -1387,9 +1388,10 @@ COMPAT_SYSCALL_DEFINE4(vmsplice, int, fd, const struct compat_iovec __user *, io
+ 	if (error)
+ 		return error;
+ 
+-	error = compat_import_iovec(type, iov32, nr_segs,
+-			     ARRAY_SIZE(iovstack), &iov, &iter);
+-	if (error >= 0) {
++	iov = compat_iovec_import(type, iov32, nr_segs, &cache, &iter);
++	if (IS_ERR(iov)) {
++		error = PTR_ERR(iov);
++	} else {
+ 		error = do_vmsplice(f.file, &iter, flags);
+ 		kfree(iov);
+ 	}
+-- 
+2.25.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
