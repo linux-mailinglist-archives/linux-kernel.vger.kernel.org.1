@@ -2,62 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2687269D7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20630269D8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgIOE2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 00:28:17 -0400
-Received: from smtprelay0164.hostedemail.com ([216.40.44.164]:60422 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726019AbgIOE2Q (ORCPT
+        id S1726157AbgIOEmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 00:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgIOEl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 00:28:16 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 2FFA5182CED34;
-        Tue, 15 Sep 2020 04:28:15 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3872:3874:4321:5007:6117:10004:10400:10848:11232:11658:11914:12050:12297:12740:12760:12895:13069:13211:13229:13311:13357:13439:14659:21080:21627:21987:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: edge48_1415aac2710e
-X-Filterd-Recvd-Size: 1630
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 15 Sep 2020 04:28:13 +0000 (UTC)
-Message-ID: <5a9007605dec96c81ec85bc3dcc78faaa9ed06a0.camel@perches.com>
-Subject: Re: [PATCH v5] lib/string.c: implement stpcpy
-From:   Joe Perches <joe@perches.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        stable@vger.kernel.org
-Date:   Mon, 14 Sep 2020 21:28:12 -0700
-In-Reply-To: <20200915042233.GA816510@ubuntu-n2-xlarge-x86>
-References: <20200914160958.889694-1-ndesaulniers@google.com>
-         <20200914161643.938408-1-ndesaulniers@google.com>
-         <20200915042233.GA816510@ubuntu-n2-xlarge-x86>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 15 Sep 2020 00:41:59 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADF8C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 21:41:58 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 60so2017654otw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 21:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I/ZnzMpFblwaWryRS21SJ/GyazzhCSsArSdcbBdV5LQ=;
+        b=ToH3Ovt7Gu16Tk3FQija82rEvQjY97itvmMTSLJvj2ztm8dAoWTTAeQgvY4s2GPy8k
+         3czF78ECJQ4Yb1DPXtMOOYwZchibDTSdlyDtvrRQiGYjtEs1mfbnXOaEm6O81YrY3tz9
+         Ch2tso6Wt+mHTsPcmc8D/Gd+Qdf+2+sh6voSL/Y8vfnevbHb737qHzeBKul0lE/X9DVN
+         U1vToegbxuDVL4xMNZeDzjR4uENEwFa1JaO59bITPBZx62vKbhrmC5OTBv6xx44fsCFs
+         d+gjm5eBuF2erL+0H3ko5zIlLzdBcw22leurTGk+55scHWvrolRzqXgANPg2gHsTE+YW
+         InZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I/ZnzMpFblwaWryRS21SJ/GyazzhCSsArSdcbBdV5LQ=;
+        b=IHR3K2CeVvj1MgpuNfRfJ6Vfso9kVh3T1aUERWYoCQELMLKQ4w2l7v+qpoLE83u0tH
+         i403jv6GmMRkNgPKbk4qRWyG5u1bN2MWam5PL+x9kiBzSROLkDxlDMKUn/UWzKq+Hgub
+         XtJJoVvzowrDxsrZf+FJO+JBHxFv9oUln7/UCKPipDWTGfiix0Vq3rpKZ+6yNIW/5tOR
+         9wr03rLv3CkqqgQB7HecxR+vTJXCZKm06BXcZkiSluZHXGU40F5zEbPIyMTGv2sKqtw1
+         Y+42X8RuqTuzD+6N/975TzjPa0v/2gum6wpEbUW2egE+QNy6WN1z5qIGSprrUbNbGrV7
+         t+iA==
+X-Gm-Message-State: AOAM530cRLUgcDKOjXQ5+dPW6yjOjNkT6qtz5AZAEBjA9GUgdrfOi85E
+        3MM9J/veW7sYL2JGEZDssGz34A==
+X-Google-Smtp-Source: ABdhPJwsjtbia2zRcFgxcthB6iDRW9n/DpQMSzL87iGZhXFNS7DLpTSgAV4OiMmIDfzMCuhg3ZKQyQ==
+X-Received: by 2002:a05:6830:1653:: with SMTP id h19mr10617054otr.147.1600144917697;
+        Mon, 14 Sep 2020 21:41:57 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
+        by smtp.gmail.com with ESMTPSA id i23sm5843654oos.17.2020.09.14.21.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 21:41:56 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 23:41:54 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     "Bao D. Nguyen" <nguyenb@codeaurora.org>
+Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] scsi: dt-bindings: ufs: Add vcc-voltage-level for
+ UFS
+Message-ID: <20200915044154.GB670377@yoga>
+References: <cover.1598939393.git.nguyenb@codeaurora.org>
+ <0a9d395dc38433501f9652a9236856d0ac840b77.1598939393.git.nguyenb@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a9d395dc38433501f9652a9236856d0ac840b77.1598939393.git.nguyenb@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-14 at 21:22 -0700, Nathan Chancellor wrote:
-> It would be nice to get this into mainline sooner rather than later so
-> that it can start filtering into the stable trees. ToT LLVM builds have
-> been broken for a month now.
+On Tue 01 Sep 01:00 CDT 2020, Bao D. Nguyen wrote:
 
-People that build stable trees with new compilers
-unsupported at the time the of the base version
-release are just asking for trouble.
+> UFS's specifications supports a range of Vcc operating
+> voltage levels. Add documentation for the UFS's Vcc voltage
+> levels setting.
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> index 415ccdd..7257b32 100644
+> --- a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> +++ b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> @@ -23,6 +23,8 @@ Optional properties:
+>                            with "phys" attribute, provides phandle to UFS PHY node
+>  - vdd-hba-supply        : phandle to UFS host controller supply regulator node
+>  - vcc-supply            : phandle to VCC supply regulator node
+> +- vcc-voltage-level     : specifies voltage levels for VCC supply.
+> +                          Should be specified in pairs (min, max), units uV.
 
+What exactly are these pairs representing?
 
+Is this supposed to be 3 pairs of (min,max) for vcc, vcc and vccq2 to be
+passed into a regulator_set_voltage() for each regulator?
+
+Or are these some sort of "operating points" for the vcc-supply?
+
+Regards,
+Bjorn
+
+>  - vccq-supply           : phandle to VCCQ supply regulator node
+>  - vccq2-supply          : phandle to VCCQ2 supply regulator node
+>  - vcc-supply-1p8        : For embedded UFS devices, valid VCC range is 1.7-1.95V
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
