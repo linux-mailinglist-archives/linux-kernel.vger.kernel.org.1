@@ -2,226 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550B726A895
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D66E26A89C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727136AbgIOPRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbgIOOpC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:45:02 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2CEC06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:44:47 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id c63so876734vkb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zT4idoY3GXU6AKl9P1KDotBGRD6i9BlOD/Yn8HDxrN8=;
-        b=cZcT/XO2v6Dw0s2Q7AzR/zkwbrn4Ls20hHCTCwjhdEm4E90JV0hcQRXDXeZO0/79hQ
-         aF+uMGX1TJIcuD68ObaYkd9bA7Qdk0HFRWwA/rZBI/5tw6+sCym7qpOxSaA1MKQzKvA+
-         PKT/I2wOPNx697M0Kt0AyARG4MwGHIMriU4Y05nxMvOVLHijn/kzh8bV9Lmyfx5IX6ls
-         rO3tL24NeY+O0sTDx89AZcGI995Ai5XwqYKMrD8Arrvow+1WyE8b+lLmjZzvByom/hw5
-         jE0q04luXWatzViaRyWafy86MVsVozNRTnWLmGTUMkBfAricswHoyVpHKVc9XAVxLIke
-         RGNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zT4idoY3GXU6AKl9P1KDotBGRD6i9BlOD/Yn8HDxrN8=;
-        b=kjrbvXoojf1V24rU1JAjZpwXYt4ssGpTzKP9JadPMVX0rGy+X46n8HZl5Lf1atI2Jn
-         KOPtR7JfoJb2aiIP0kCrFuYNjSNTXyikvd//voOsYulYhP9ne64TDX7ToTB7IPSD/58y
-         VcUSa9qVMmWApjMXIwcaDRDnCPJFiUuHZeCDVMXAQKzR99v9SDvxonYf1wqo91C5GzW2
-         yAhydiDBp/mO+EG0b+9NBJ6wvJbbFl4oROcm1d4XUzZn6WbryHS1kqk8PejuiZwz5GL9
-         9MJ0aIz5HJKsdVU6INAwjJcseWFrrG/CFGdfN5j7wodpruei3nYxodLib56ELTZxUMNL
-         zzuw==
-X-Gm-Message-State: AOAM532EXLTK4ZczRCpfWPCBH0F/nJHX1iZXf7OBerNEW2F6sRe0s0+o
-        gXT2B43GgKvXeVjKWtGI08H4nX0szGR30K94Og3VH8fY5vJBwrmt
-X-Google-Smtp-Source: ABdhPJz9V+xdlRF8ie6wyANpoDEf4gTRpkJcbnRPg71Sjm27NaLv4OKg5H8hiYkDipcT92cxG4GzEtlmJZG5SuY43QQ=
-X-Received: by 2002:a1f:7882:: with SMTP id t124mr1612757vkc.22.1600181085580;
- Tue, 15 Sep 2020 07:44:45 -0700 (PDT)
+        id S1727399AbgIOPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:19:38 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48840 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727318AbgIOOsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:48:19 -0400
+Received: from zn.tnic (p200300ec2f0e4200c97bc9af71f47aca.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:c97b:c9af:71f4:7aca])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1684E1EC026F;
+        Tue, 15 Sep 2020 16:48:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600181297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kzIa3LNAozBKpiuiMtshbaFLPxPLM7rkc586WIRFP0o=;
+        b=oxJmIBKA605d5TRgVFFt2B5x3i5wnVT/SgznoUjCJ73pFAz61cbKgLxjmbAq4JgY/IeQNX
+        YVTnL8A3yr1w88tK47eMuiF9zmAF7hX9evQpo5XsSmETf9212S5Ua0cn3uWcsMFtNPFhQ0
+        ljwofEGMAJkWnbTy04iLaTCqMI9SF40=
+Date:   Tue, 15 Sep 2020 16:48:15 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
+ Control hardware bits
+Message-ID: <20200915144815.GL14436@zn.tnic>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
+ <20200914151816.u6camicid4bd5lgo@treble>
+ <20200914153812.c6uh3spqmcy2ft3d@treble>
+ <20200915095716.GI3612@linux.intel.com>
+ <20200915132725.a2qbdio3jsu7rsqs@treble>
+ <20200915133929.GI14436@zn.tnic>
+ <20200915140250.kf2kgfbgzxfvmoiy@treble>
 MIME-Version: 1.0
-References: <20200915140644.037604909@linuxfoundation.org>
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 15 Sep 2020 20:14:34 +0530
-Message-ID: <CA+G9fYv5hvOYNdfX6F40aZPP9Vr6aEsP_-22gX2P+Q95TrfF-A@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/132] 5.4.66-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200915140250.kf2kgfbgzxfvmoiy@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 19:50, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.66 release.
-> There are 132 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.66-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Tue, Sep 15, 2020 at 09:02:50AM -0500, Josh Poimboeuf wrote:
+> If you getting them (twice?) and vger's not, it sounds like vger is
+> dropping them for some reason.
 
-arm and arm64 build breaks on stable rc 5.4.
+Yes, this has kinda been the case last and this week, for whatever
+reason. From the two v38 submissions, I have only this in my LKML mbox
+and it looks like someone is dropping mail...
 
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm
-CROSS_COMPILE=3Darm-linux-gnueabihf- HOSTCC=3Dgcc CC=3D"sccache
-arm-linux-gnueabihf-gcc" O=3Dbuild zImage
-#
-../kernel/kprobes.c: In function =E2=80=98kill_kprobe=E2=80=99:
-../kernel/kprobes.c:1081:33: warning: statement with no effect [-Wunused-va=
-lue]
- 1081 | #define disarm_kprobe_ftrace(p) (-ENODEV)
-      |                                 ^
-../kernel/kprobes.c:2113:3: note: in expansion of macro =E2=80=98disarm_kpr=
-obe_ftrace=E2=80=99
- 2113 |   disarm_kprobe_ftrace(p);
-      |   ^~~~~~~~~~~~~~~~~~~~
-#
-# make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm
-CROSS_COMPILE=3Darm-linux-gnueabihf- HOSTCC=3Dgcc CC=3D"sccache
-arm-linux-gnueabihf-gcc" O=3Dbuild modules
-#
-../drivers/gpu/drm/msm/adreno/a5xx_preempt.c: In function =E2=80=98preempt_=
-init_ring=E2=80=99:
-../drivers/gpu/drm/msm/adreno/a5xx_preempt.c:235:21: error:
-=E2=80=98MSM_BO_MAP_PRIV=E2=80=99 undeclared (first use in this function)
-  235 |   MSM_BO_UNCACHED | MSM_BO_MAP_PRIV, gpu->aspace, &bo, &iova);
-      |                     ^~~~~~~~~~~~~~~
-../drivers/gpu/drm/msm/adreno/a5xx_preempt.c:235:21: note: each
-undeclared identifier is reported only once for each function it
-appears in
-make[5]: *** [../scripts/Makefile.build:266:
-drivers/gpu/drm/msm/adreno/a5xx_preempt.o] Error 1
-../drivers/gpu/drm/msm/adreno/a6xx_gpu.c: In function =E2=80=98a6xx_hw_init=
-=E2=80=99:
-../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:414:6: error: implicit
-declaration of function =E2=80=98adreno_is_a640=E2=80=99; did you mean
-=E2=80=98adreno_is_a540=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-  414 |  if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu)) {
-      |      ^~~~~~~~~~~~~~
-      |      adreno_is_a540
-../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:414:36: error: implicit
-declaration of function =E2=80=98adreno_is_a650=E2=80=99; did you mean
-=E2=80=98adreno_is_a540=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-  414 |  if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu)) {
-      |                                    ^~~~~~~~~~~~~~
-      |                                    adreno_is_a540
-../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:415:18: error:
-=E2=80=98REG_A6XX_GBIF_QSB_SIDE0=E2=80=99 undeclared (first use in this fun=
-ction)
-  415 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE0, 0x00071620);
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~
-../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:415:18: note: each undeclared
-identifier is reported only once for each function it appears in
-../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:416:18: error:
-=E2=80=98REG_A6XX_GBIF_QSB_SIDE1=E2=80=99 undeclared (first use in this fun=
-ction)
-  416 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE1, 0x00071620);
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~
-../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:417:18: error:
-=E2=80=98REG_A6XX_GBIF_QSB_SIDE2=E2=80=99 undeclared (first use in this fun=
-ction)
-  417 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE2, 0x00071620);
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~
-../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:418:18: error:
-=E2=80=98REG_A6XX_GBIF_QSB_SIDE3=E2=80=99 undeclared (first use in this fun=
-ction)
-  418 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE3, 0x00071620);
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
-make[5]: *** [../scripts/Makefile.build:265:
-drivers/gpu/drm/msm/adreno/a6xx_gpu.o] Error 1
-In file included from ../drivers/gpu/drm/msm/msm_gpu.c:7:
-../drivers/gpu/drm/msm/msm_gpu.c: In function =E2=80=98msm_gpu_init=E2=80=
-=99:
-../drivers/gpu/drm/msm/msm_gpu.h:330:22: error: =E2=80=98MSM_BO_MAP_PRIV=E2=
-=80=99
-undeclared (first use in this function)
-  330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
-      |                      ^~~~~~~~~~~~~~~
-../drivers/gpu/drm/msm/msm_gpu.c:935:3: note: in expansion of macro
-=E2=80=98check_apriv=E2=80=99
-  935 |   check_apriv(gpu, MSM_BO_UNCACHED), gpu->aspace, &gpu->memptrs_bo,
-      |   ^~~~~~~~~~~
-../drivers/gpu/drm/msm/msm_gpu.h:330:22: note: each undeclared
-identifier is reported only once for each function it appears in
-  330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
-      |                      ^~~~~~~~~~~~~~~
-../drivers/gpu/drm/msm/msm_gpu.c:935:3: note: in expansion of macro
-=E2=80=98check_apriv=E2=80=99
-  935 |   check_apriv(gpu, MSM_BO_UNCACHED), gpu->aspace, &gpu->memptrs_bo,
-      |   ^~~~~~~~~~~
-make[5]: *** [../scripts/Makefile.build:266:
-drivers/gpu/drm/msm/msm_gpu.o] Error 1
-In file included from ../drivers/gpu/drm/msm/msm_ringbuffer.c:8:
-../drivers/gpu/drm/msm/msm_ringbuffer.c: In function =E2=80=98msm_ringbuffe=
-r_new=E2=80=99:
-../drivers/gpu/drm/msm/msm_gpu.h:330:22: error: =E2=80=98MSM_BO_MAP_PRIV=E2=
-=80=99
-undeclared (first use in this function)
-  330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
-      |                      ^~~~~~~~~~~~~~~
-../drivers/gpu/drm/msm/msm_ringbuffer.c:30:3: note: in expansion of
-macro =E2=80=98check_apriv=E2=80=99
-   30 |   check_apriv(gpu, MSM_BO_WC | MSM_BO_GPU_READONLY),
-      |   ^~~~~~~~~~~
-../drivers/gpu/drm/msm/msm_gpu.h:330:22: note: each undeclared
-identifier is reported only once for each function it appears in
-  330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
-      |                      ^~~~~~~~~~~~~~~
-../drivers/gpu/drm/msm/msm_ringbuffer.c:30:3: note: in expansion of
-macro =E2=80=98check_apriv=E2=80=99
-   30 |   check_apriv(gpu, MSM_BO_WC | MSM_BO_GPU_READONLY),
-      |   ^~~~~~~~~~~
-make[5]: *** [../scripts/Makefile.build:265:
-drivers/gpu/drm/msm/msm_ringbuffer.o] Error 1
-make[5]: Target '__build' not remade because of errors.
-make[4]: *** [../scripts/Makefile.build:500: drivers/gpu/drm/msm] Error 2
-make[4]: Target '__build' not remade because of errors.
-make[3]: *** [../scripts/Makefile.build:500: drivers/gpu/drm] Error 2
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [../scripts/Makefile.build:500: drivers/gpu] Error 2
-make[2]: Target '__build' not remade because of errors.
-make[1]: *** [/linux/Makefile:1729: drivers] Error 2
-make[1]: Target 'modules' not remade because of errors.
-make: *** [Makefile:179: sub-make] Error 2
-make: Target 'modules' not remade because of errors.
+109127 N C Sep 15           Jarkko Sakkinen ( : 35K|) [PATCH v38 00/24] Intel SGX foundations
+109128 N C Sep 15           Jarkko Sakkinen ( : 14K|) ├─>[PATCH v38 04/24] x86/sgx: Add SGX microarchitectural data structures
+109129 N C Sep 15           Jarkko Sakkinen ( : 10K|) ├─>[PATCH v38 05/24] x86/sgx: Add wrappers for ENCLS leaf functions
+109130 N C Sep 15           Jarkko Sakkinen ( :4.5K|) ├─>[PATCH v38 07/24] x86/cpu/intel: Add nosgx kernel parameter
+109131   C Sep 15           Jarkko Sakkinen ( :  60|) ├─>[PATCH v38 10/24] mm: Add vm_ops->mprotect()
+109132 N C Sep 15           Jarkko Sakkinen ( : 14K|) ├─>[PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+109133 N C Sep 15           Jarkko Sakkinen ( :9.1K|) ├─>[PATCH v38 15/24] x86/sgx: Enable provisioning for remote attestation
+109134 N C Sep 15           Jarkko Sakkinen ( : 15K|) ├─>[PATCH v38 18/24] x86/vdso: Add support for exception fixup in vDSO functions
+109135 N C Sep 15           Jarkko Sakkinen ( :5.4K|) ├─>[PATCH v38 19/24] x86/fault: Add helper function to sanitize error code
+109136 N C Sep 15           Jarkko Sakkinen ( :7.4K|) ├─>[PATCH v38 20/24] x86/traps: Attempt to fixup exceptions in vDSO before signaling
+109137 N C Sep 15           Jarkko Sakkinen ( : 34K|) ├─>[PATCH v38 22/24] selftests/x86: Add a selftest for SGX
+109138 N C Sep 15           Jarkko Sakkinen ( : 12K|) ├─>[PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture and kernel internals
+109139 N C Sep 15           Jarkko Sakkinen ( :4.0K|) └─>[PATCH v38 24/24] x86/sgx: Update MAINTAINERS
 
+109147 N C Sep 15           Jarkko Sakkinen ( :5.8K|) ┬─>[PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver
+109148 N C Sep 15           Jarkko Sakkinen ( :5.4K|) ├─>[PATCH v38 19/24] x86/fault: Add helper function to sanitize error code
+109149 N C Sep 15           Jarkko Sakkinen ( :7.4K|) ├─>[PATCH v38 20/24] x86/traps: Attempt to fixup exceptions in vDSO before signaling
+109150 N C Sep 15           Jarkko Sakkinen ( : 15K|) ├─>[PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX enclave call
+109151 N C Sep 15           Jarkko Sakkinen ( : 12K|) └─>[PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture and kernel internals
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
