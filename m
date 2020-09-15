@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1A8269C72
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EA4269C7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgIODTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:19:31 -0400
-Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:62304
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726091AbgIODS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:18:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tdw+Z9WHXgHy2FqpKHS++XxQqa6qx6hO8YeKJVRisPgpmI8wswp88k0BcMt1+BDM6fRCP03TcsC+OK0W4CUicA3ARmF21LuqtYrq/ZNy4itsvJdCO0g9SjbpqaeSXkU/Q2ifCGKiPg8s2aExquP4QW6EoEgbcD9RCEJmkcW8nwzv7Jd7+5V0F8H3gts/3jpFsFNd/8JBE/fwJVcFpAJpZ8Z35Xx/nfKw7QnmRPtglzHDZU1T7Cxyxpyemm2km5648AGu8krsDd2ZUqQNuZOrZ4hiQ3IDB2Zmt62fI22I5ofQMDGs5fmyWbnEw8osKbnMCZVEmjTh6zg2M5fvFmb6mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CdHKs6HC+0sfe0Rxk870liWnMB41l/3HASoNmBZkBhw=;
- b=XrxW7ZE9XhTeOM68xn7wAYQYbwd2p4zDNMPTuZoIeF2BrVtmackpGNzByGRE7Pq9iOCrl55QY9UkI76gI7zEH8OApYM9mdPX+oXgiBCxN61vRbKqES/M+I2lcUclBY8eDWXrlA3dEOSG8MehBzVk4A0+LYLMn9m2OW5gideQSmmJwQ2rsDbDwr3BZDw7OnQq9qizqkOgNzVUYK7jUkL7FRo+9R+nbXJKTbOqka6B9KmbTN7YVCV0IoVz1wu5acUBzOvFkhyl5EPXNdbo4Sf3yX5j7N3P0DOUQ/TCdKYSRgOpX+Ma9SKSOnav/hYWWhVc7fZWGRmu2VE6ktGjThl+eg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1726120AbgIODYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 23:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbgIODYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 23:24:14 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47614C06174A;
+        Mon, 14 Sep 2020 20:24:13 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bg9so607821plb.2;
+        Mon, 14 Sep 2020 20:24:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CdHKs6HC+0sfe0Rxk870liWnMB41l/3HASoNmBZkBhw=;
- b=EXPOtgDAdTFYoz+i/P6yPYbISW2oE3gnBgRB0a/XWJtTVRa73bEOwC9/jHyOJQ+7vh7gO3doaBQwgLS/7byo0DVuKhxNs/axsj8w8JPGe0KfQwEAQRb53XgYS+XOUtp0c72EpMZJ/yDrZFJpJwfG8UjEu0fWZQqnS0QCo2D3vas=
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BY5PR11MB4228.namprd11.prod.outlook.com (2603:10b6:a03:1bd::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Tue, 15 Sep
- 2020 03:18:24 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 03:18:24 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-CC:     Uladzislau Rezki <urezki@gmail.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: =?gb2312?B?u9i4tDogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnA=?=
-Thread-Topic: RCU: Question on force_qs_rnp
-Thread-Index: AQHWimIP0LPCKhgtykWT7yuEklGOu6loiX8AgAAU1QCAAGeTxQ==
-Date:   Tue, 15 Sep 2020 03:18:23 +0000
-Message-ID: <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
-References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200914194208.GA2579423@google.com>,<20200914205642.GE29330@paulmck-ThinkPad-P72>
-In-Reply-To: <20200914205642.GE29330@paulmck-ThinkPad-P72>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 370f35c7-c0de-4898-8163-08d85926017c
-x-ms-traffictypediagnostic: BY5PR11MB4228:
-x-microsoft-antispam-prvs: <BY5PR11MB42282295E521B25E0AD3177CFF200@BY5PR11MB4228.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: o+cAZC+x9RdhOrHjzo9dmWG9fQ5YkQ0EyXJS7eQ7g7oARHazDV0JYZfl5kwfn4VNoIIE8GvOQhogI7GQ9paehB5rW11e9OAOM07GeNE8w/1w/J+erTwh2ow28R/tqqoZ7a3XJkewa4uWDrtMgca4T141uvJ7htnCXgE43RdeIFU/n3O0ykuQAgZVled6uupL7M0mWeS6Hqh+zQTUtJo0IO+UVT0yd0qZdkzbW06KvnODmUQ3jxznW7L5lrYyNZzlTpeOIEc7l5JGV0ej5ex1GogyX67QkD71hDb7zwFXqNWBIz/fUAXBYU+YVs7lYQRGF/K3jSLKMfLG6GskV0F/fUBAY0+vd2IP2KXGrQ+wds0ejGLLL7Y8OaqTyNx+pFBn
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39850400004)(346002)(396003)(136003)(26005)(478600001)(110136005)(4326008)(9686003)(76116006)(8936002)(91956017)(316002)(66946007)(5660300002)(66476007)(66446008)(55016002)(64756008)(66556008)(186003)(86362001)(7696005)(224303003)(71200400001)(54906003)(33656002)(2906002)(6506007)(52536014)(83380400001)(66574015);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 1mtrmlDFY5X8UrZw8u1igSvlJ14Hun58ss+A1ACnFTABaX2uHr8lRjkBjjtRcDhcV7PX9pog5ICDQv7guglF8yWiG6ggrbkQSsnOnuwVm0pzoxT/hYTY4eNw6lPCqUg6F7Sz2u1VJpt7QqI/AGuVLu5hNlhGBk735jIdcMXcxUEvixUjAx+4RcSGZAmkXvL7mHX2YE7DemJcrxRYxOhVf8ooWgRarNFH7SKDClrxLZP/NunBBv48G3MgD8loqQfHDKDedX9q8BZCazwR02KHbyBzfRckrCLGjGjfxsjr62+bACBd8KYaqDd0zcmSU1yvGdd+iL5QOCOILcxCX4TEAfQ56P+AOhCilUU6PwSa7kOdcnZ2yZPQs1zKq6sfdCN2xhHef5RgsiluWOPdGN5chWDNbZa11R+AmIetO9vsiSAadcyBtocXxNLHRTaHa1PsvGaKydAwu/O9C/uO31bFfj/FlJ7s/nVnR2y6xa/Z/UYuI6VDi1pnfYSTQgArYB+sn025HoQo4XJJZGautdfRaAoxFeJt+0Kfc2WK0baK44ij9dCCqJ87cY7+5PCtmVleuIJ+D/MeRYeV9o4lOSQRGEng79cAw6QbhjbqpQOq/LiiL3pGdcsyGqYNR23YpQXzWu8Mzh5tB2F56sNtum4NfA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=irbkPgnfVyWMQHxRCFB56no1LsWgtr4nyisml0hvN5M=;
+        b=czG0uxgtgmPzrOOxLt4QmLQjK9z2MyB/I3cVw41+bQI4inEF/0imI47qizBZzP9IGA
+         aBeVvkgZgvUlmGO2x8HpojXnjrb/SGdRb+rxGVk5Hi+J75XNmSIBsJm+ELSzvsps7+iM
+         PlzLu7vx2uxw8UhKzIJFQ0gG7dMa+Lrl/iexLy9ADk/w8PHdlJk55PaKztDmo2caxnDM
+         uuAx55TUPcqvnCij2WTA3qURpI03MY7RB1Kd4/9YOpa6Uu6mvRlmkJx4/oWQOQ08OxNN
+         pOQiS+d6LMOl95lawfzdaUZZiaSJmAfMgbX/vN6C0ESuYiXRkUOiP/GTSg15ZiE8vcuZ
+         0mXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=irbkPgnfVyWMQHxRCFB56no1LsWgtr4nyisml0hvN5M=;
+        b=IWOaZ0s227jiKdTjIymmzP23F5Itcmhl41V+M3PuGbBkjU3+VR6WyTxu5YUkqKcBXF
+         NfVkg3/zcH3jQ9kYvnsGE/xF3izg/LuFPeEw5YBn3B3kNpIQ99k0GPIBPaqCnspwipBF
+         vXPwC+0NYJ2TrBlo/OqpQkJr7Trv1nvHlEbwvqXCytuSMXROep9XY+eMe/E2V5COGdjb
+         eUqhOIv4p43z1qn5abqA0/gXS+ugxlEgsBVoavphNSbdAc+DlzwKEutELG8VwZGWoikh
+         QbzBYqFIPOXLtgUF/Z7SZRm7cdncei8JY+e7Zwd0F6+K87wFlOHiHTg2dau0WuhgXvsj
+         RHdw==
+X-Gm-Message-State: AOAM530WcFofn8CuQcNWI5lCX9ypwkUSAHkNyfdx5DpSUFCsZ3Vgno8r
+        6+BoDczhJ9RWG/qfAtWWqSU=
+X-Google-Smtp-Source: ABdhPJySSgYe8lF/6JDS960pKpGJxF72ZmNu6Ie+xgS/tQum+ZxCJr6+X0CzlaFCQ2vkb+wTaG3xAA==
+X-Received: by 2002:a17:90a:6e45:: with SMTP id s5mr2238591pjm.12.1600140252750;
+        Mon, 14 Sep 2020 20:24:12 -0700 (PDT)
+Received: from localhost ([203.185.249.227])
+        by smtp.gmail.com with ESMTPSA id b20sm12442113pfb.198.2020.09.14.20.24.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 20:24:12 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 13:24:07 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 3/4] sparc64: remove mm_cpumask clearing to fix
+ kthread_use_mm race
+To:     David Miller <davem@davemloft.net>
+Cc:     akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+        axboe@kernel.dk, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, peterz@infradead.org,
+        sparclinux@vger.kernel.org
+References: <20200914045219.3736466-1-npiggin@gmail.com>
+        <20200914045219.3736466-4-npiggin@gmail.com>
+        <20200914.125942.5644261129883859.davem@davemloft.net>
+In-Reply-To: <20200914.125942.5644261129883859.davem@davemloft.net>
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 370f35c7-c0de-4898-8163-08d85926017c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 03:18:23.8592
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bF9DXra+KXF66nWckze2ZuRKNpKBJQepL6LSoOwJGdtRxWUGBs3kE3BelZp7mOyjVZa9+7mVgKPsAEtEDREzk2w10OG7bJS7D4ArMS0Fguw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4228
+Message-Id: <1600139445.qwycwjuwdq.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogUGF1bCBF
-LiBNY0tlbm5leSA8cGF1bG1ja0BrZXJuZWwub3JnPgq3osvNyrG85DogMjAyMMTqOdTCMTXI1SA0
-OjU2CsrVvP7IyzogSm9lbCBGZXJuYW5kZXMKs63LzTogWmhhbmcsIFFpYW5nOyBVbGFkemlzbGF1
-IFJlemtpOyBqb3NoQGpvc2h0cmlwbGV0dC5vcmc7IHJvc3RlZHRAZ29vZG1pcy5vcmc7IG1hdGhp
-ZXUuZGVzbm95ZXJzQGVmZmljaW9zLmNvbTsgTGFpIEppYW5nc2hhbjsgcmN1QHZnZXIua2VybmVs
-Lm9yZzsgTEtNTArW98ziOiBSZTogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnAKCk9uIE1v
-biwgU2VwIDE0LCAyMDIwIGF0IDAzOjQyOjA4UE0gLTA0MDAsIEpvZWwgRmVybmFuZGVzIHdyb3Rl
-Ogo+IE9uIE1vbiwgU2VwIDE0LCAyMDIwIGF0IDA3OjU1OjE4QU0gKzAwMDAsIFpoYW5nLCBRaWFu
-ZyB3cm90ZToKPiA+IEhlbGxvIFBhdWwKPiA+Cj4gPiBJIGhhdmUgc29tZSBxdWVzdGlvbnMgZm9y
-IHlvdSAuCj4gPiBpbiBmb3JjZV9xc19ybnAgZnVuYyAsICBpZiAgImYocmRwKSIgZnVuYyByZXR1
-cm4gdHJ1ZSB3ZSB3aWxsIGNhbGwgcmN1X3JlcG9ydF9xc19ybnAgZnVuYwo+ID4gcmVwb3J0IGEg
-cXVpZXNjZW50IHN0YXRlIGZvciB0aGlzIHJucCBub2RlLCBhbmQgY2xlYXIgZ3JwbWFzayBmb3Jt
-IHJucC0+cXNtYXNrLgo+ID4gYWZ0ZXIgdGhhdCAsICBjYW4gd2UgbWFrZSBhIGNoZWNrIGZvciB0
-aGlzIHJucC0+cXNtYXNrLCAgaWYgIHJucC0+cXNtYXNrID09IDAsCj4gPiB3ZSB3aWxsIGNoZWNr
-IGJsb2NrZWQgcmVhZGVycyBpbiB0aGlzIHJucCBub2RlLCAgaW5zdGVhZCBvZiBqdW1waW5nIGRp
-cmVjdGx5IHRvIHRoZSBuZXh0IG5vZGUgLgo+Cj4gQ291bGQgeW91IGNsYXJpZnkgd2hhdCBnb29k
-IGlzIHRoaXMgZ29pbmcgdG8gZG8/IFdoYXQgcHJvYmxlbSBhcmUgeW91IHRyeWluZyB0bwo+IGFk
-ZHJlc3M/Cj4KPiBZb3UgY291bGQgaGF2ZSBhIHRhc2sgdGhhdCBpcyBibG9ja2VkIGluIGFuIFJD
-VSBsZWFmIG5vZGUsIGJ1dCB0aGUKPiBmb3JjZV9xc19ybnAoKSBkZWNpZGVkIHRvIGNhbGwgcmN1
-X3JlcG9ydF9xc19ybnAoKS4gVGhpcyBpcyBwZXJmZWN0bHkgT2suIFRoZQo+IENQVSBjb3VsZCBi
-ZSBkeW50aWNrLWlkbGUgYW5kIGEgcXVpZXNjZW50IHN0YXRlIGlzIHJlcG9ydGVkLiBIb3dldmVy
-LCB0aGUgR1AKPiBtdXN0IG5vdCBlbmQgYW5kIHRoZSByY3UgbGVhZiBub2RlIHNob3VsZCBzdGls
-bCBiZSBwcmVzZW50IGluIGl0cyBwYXJlbnQKPiBpbnRlcm1lZGlhdGUgbm9kZXMgLT5xc21hc2su
-IEluIHRoaXMgY2FzZSwgdGhlIC0+cXNtYXNrID09IDAgZG9lcyBub3QgaGF2ZQo+IGFueSByZWxl
-dmFuY2UuCj4KPiBPciBhbSBJIG1pc3NpbmcgdGhlIHBvaW50IG9mIHRoZSBxdWVzdGlvbj8KCj5I
-ZWxsbywgUWlhbmcsCgo+QW5vdGhlciB3YXkgb2YgbWFraW5nIEpvZWwncyBwb2ludCBpcyB0byBz
-YXkgdGhhdCB0aGUgYWRkaXRpb25hbCBjaGVjawo+eW91IGFyZSBhc2tpbmcgZm9yIGlzIGFscmVh
-ZHkgYmVpbmcgZG9uZSwgYnV0IGJ5IHJjdV9yZXBvcnRfcXNfcm5wKCkuCgo+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUaGFueCwgUGF1bAoK
-SGVsbG8gUHVhbCwgIEpvZWwKCldoYXQgSSB3YW50IHRvIGV4cHJlc3MgaXMgYXMgZm9sbG93cyA6
-CgpkaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9rZXJuZWwvcmN1L3RyZWUuYwppbmRl
-eCA3NjIzMTI4ZDAwMjAuLmJlYjU1NDUzOWYwMSAxMDA2NDQKLS0tIGEva2VybmVsL3JjdS90cmVl
-LmMKKysrIGIva2VybmVsL3JjdS90cmVlLmMKQEAgLTI2MjIsNiArMjYyMiwxMSBAQCBzdGF0aWMg
-dm9pZCBmb3JjZV9xc19ybnAoaW50ICgqZikoc3RydWN0IHJjdV9kYXRhICpyZHApKQogICAgICAg
-ICAgICAgICAgaWYgKG1hc2sgIT0gMCkgewogICAgICAgICAgICAgICAgICAgICAgICAvKiBJZGxl
-L29mZmxpbmUgQ1BVcywgcmVwb3J0IChyZWxlYXNlcyBybnAtPmxvY2spLiAqLwogICAgICAgICAg
-ICAgICAgICAgICAgICByY3VfcmVwb3J0X3FzX3JucChtYXNrLCBybnAsIHJucC0+Z3Bfc2VxLCBm
-bGFncyk7CisgICAgICAgICAgICAgICAgICAgICAgIHJhd19zcGluX2xvY2tfaXJxc2F2ZV9yY3Vf
-bm9kZShybnAsIGZsYWdzKTsKKyAgICAgICAgICAgICAgICAgICAgICAgaWYgKHJucC0+cXNtYXNr
-ID09IDAgJiYgcmN1X3ByZWVtcHRfYmxvY2tlZF9yZWFkZXJzX2NncChybnApKQorICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHJjdV9pbml0aWF0ZV9ib29zdChybnAsIGZsYWdzKTsKKyAg
-ICAgICAgICAgICAgICAgICAgICAgZWxzZQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHJhd19zcGluX3VubG9ja19pcnFyZXN0b3JlX3JjdV9ub2RlKHJucCwgZmxhZ3MpOwogICAgICAg
-ICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgICAgICAgICAgLyogTm90aGluZyB0byBk
-byBoZXJlLCBzbyBqdXN0IGRyb3AgdGhlIGxvY2suICovCiAgICAgICAgICAgICAgICAgICAgICAg
-IHJhd19zcGluX3VubG9ja19pcnFyZXN0b3JlX3JjdV9ub2RlKHJucCwgZmxhZ3MpOwoKClRoYW5r
-cwoKUWlhbmc=
+Excerpts from David Miller's message of September 15, 2020 5:59 am:
+> From: Nicholas Piggin <npiggin@gmail.com>
+> Date: Mon, 14 Sep 2020 14:52:18 +1000
+>=20
+>  ...
+>> The basic fix for sparc64 is to remove its mm_cpumask clearing code. The
+>> optimisation could be effectively restored by sending IPIs to mm_cpumask
+>> members and having them remove themselves from mm_cpumask. This is more
+>> tricky so I leave it as an exercise for someone with a sparc64 SMP.
+>> powerpc has a (currently similarly broken) example.
+>>=20
+>> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+>=20
+> Sad to see this optimization go away, but what can I do:
+>=20
+> Acked-by: David S. Miller <davem@davemloft.net>
+>=20
+
+Thanks Dave, any objection if we merge this via the powerpc tree
+to keep the commits together?
+
+Thanks,
+Nick
