@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C392E269B1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2FD269B22
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726213AbgIOB3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:29:19 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15393 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgIOB3E (ORCPT
+        id S1726245AbgIOB3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbgIOB3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:29:04 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6018d10001>; Mon, 14 Sep 2020 18:28:49 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 14 Sep 2020 18:29:03 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 14 Sep 2020 18:29:03 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
- 2020 01:29:02 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 15 Sep 2020 01:29:02 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.52.22]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f6018de0006>; Mon, 14 Sep 2020 18:29:02 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 2/2] selftests/vm: fix incorrect gcc invocation in some cases
-Date:   Mon, 14 Sep 2020 18:29:01 -0700
-Message-ID: <20200915012901.1655280-3-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915012901.1655280-1-jhubbard@nvidia.com>
-References: <20200915012901.1655280-1-jhubbard@nvidia.com>
+        Mon, 14 Sep 2020 21:29:19 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CD9C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:29:19 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id k13so469552plk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t+LDE3L9Rd8xod+nf/fpSOnkKm7sgObU6S8Jc8pawso=;
+        b=F1z8pHLtsMKTgjLCJwEKW1if7OlBk/BJGXliEkqJtz1XyhXOnJ6eq+idoYzutmORrC
+         MCYok4vVyi2rIjFcZ+cmb/RfEJyO5ApwdANGHg+08822wHnGrMQFMnljHKnIuE1MtpZp
+         +JUPGEicjz4uFX/LVv9vOLH1UhhJB5h9qw1xs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t+LDE3L9Rd8xod+nf/fpSOnkKm7sgObU6S8Jc8pawso=;
+        b=rGBU3y4PwatctaKChPjbfButnU7nAHUQoA+GOfYRSuaNi45dkf0HZGsJPO/FlvDN/K
+         EHgARqV8g96bKJysqUTdCIB+qcYa28Gu19k5Y5v8F+GqNKj4i96o4ya6refv3VPV0K+D
+         B9CWvrz6Uj0oschjELYWFCK3F16JLyx1W7GOnkRRyijIG1AV2AgPGqqEsfr8hB6oRicV
+         wawlSuDM7ej4wP9VrO46XqxkrDm2XL8/T6ViE5im70pjwkcxl0kCN0MZVBRfEhOk2YM7
+         TuJCWfqjS8tdwPYss52m8e08EAjxY5VhCSsqbXO4J2bLXHsl/lhEhjyEFieWkGAxxjIC
+         FV6w==
+X-Gm-Message-State: AOAM5300JtJ64O+aza09HanGIlYV15JbCQ7yfSuHg2SLjpZ/Djxt6mbO
+        tIWSjokydflA4N7jfNd/hE6R0p/QFooR0JKn
+X-Google-Smtp-Source: ABdhPJy+etAFBiDkHJSo/6zbE90jCDLyZuj1RY6mOM/cNh2QN369FMFz48olkXcBWv6vXwIGmu6wrw==
+X-Received: by 2002:a17:90a:ca03:: with SMTP id x3mr1945421pjt.92.1600133358893;
+        Mon, 14 Sep 2020 18:29:18 -0700 (PDT)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
+        by smtp.gmail.com with ESMTPSA id bx18sm10173790pjb.6.2020.09.14.18.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 18:29:18 -0700 (PDT)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH RESEND RESEND] remoteproc: scp: add COMPILE_TEST dependency
+Date:   Tue, 15 Sep 2020 10:29:11 +0900
+Message-Id: <20200915012911.489820-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600133329; bh=YXRQjVHw+ed30bzvLPvyZylzyyOGabivbYbBP0UE7/0=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=bXDgqilpWOGNSEqdqyYdIiMsZpXv3obNwn+Rw762HjUJDJxSG1F296n8/tzUsAj4L
-         NX3DEOL60q70iciUHRrP0zRZki5GOzSSAjQnzS/I5Xu66wxfM5MDPEJXfsw2tvLMJE
-         r2hXKnnoxarCGjE0Mt+XxgbdHvWcPDHf+pkw/5FcAuKYxFKfT0y7Vzsj5+HAD+kkxz
-         uo7bFj9UavV8nxFa3jRVmJ2bOl9uwySW5nuivxlHq9azIgHFVBdbR7NJvp4BSHGHxS
-         v9K4rEz8fOLZRJE5lYLRPWJNeMgKrFbC5LhfnS3tM1e1qYZSB55eoZqwoqkS6YsJmD
-         AujhowxfS8gRQ==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid accidental wrong builds, due to built-in rules working just a
-little bit too well--but not quite as well as required for our situation
-here.
+This will improve this driver's build coverage.
 
-In other words, "make userfaultfd" (for example) is supposed to fail to
-build at all, because this Makefile only supports either "make" (all),
-or "make /full/path". However,  the built-in rules, if not suppressed,
-will pick up CFLAGS and the initial LDLIBS (but not the target-specific
-LDLIBS, because those are only set for the full path target!). This
-causes it to get pretty far into building things despite using incorrect
-values such as an *occasionally* incomplete LDLIBS value.
-
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Reported-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
- tools/testing/selftests/vm/Makefile | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Hi remoteproc maintainers,
 
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/=
-vm/Makefile
-index 9f2625bebf07..30873b19d04b 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -8,6 +8,18 @@ MACHINE ?=3D $(shell echo $(uname_M) | sed -e 's/aarch64.*=
-/arm64/')
- # make invocations:
- .DELETE_ON_ERROR:
-=20
-+# Avoid accidental wrong builds, due to built-in rules working just a litt=
-le
-+# bit too well--but not quite as well as required for our situation here.
-+#
-+# In other words, "make userfaultfd" is supposed to fail to build at all,
-+# because this Makefile only supports either "make" (all), or "make /full/=
-path".
-+# However,  the built-in rules, if not suppressed, will pick up CFLAGS and=
- the
-+# initial LDLIBS (but not the target-specific LDLIBS, because those are on=
-ly
-+# set for the full path target!). This causes it to get pretty far into bu=
-ilding
-+# things despite using incorrect values such as an *occasionally* incomple=
-te
-+# LDLIBS.
-+MAKEFLAGS +=3D --no-builtin-rules
-+
- CFLAGS =3D -Wall -I ../../../../usr/include $(EXTRA_CFLAGS)
- LDLIBS =3D -lrt
- TEST_GEN_FILES =3D compaction_test
---=20
-2.28.0
+Second resend as I got no reaction for almost 1 month on this one-liner.
+Pretty please?
+
+As explained in
+https://www.spinics.net/lists/linux-media/msg175991.html, we need this
+patch in order to merge a driver series in the media tree. If that
+looks ok to you, can we pull it in the media tree along with the series
+that depends on it?
+
+ drivers/remoteproc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+index c6659dfea7c7..d1fcada71017 100644
+--- a/drivers/remoteproc/Kconfig
++++ b/drivers/remoteproc/Kconfig
+@@ -43,7 +43,7 @@ config INGENIC_VPU_RPROC
+ 
+ config MTK_SCP
+ 	tristate "Mediatek SCP support"
+-	depends on ARCH_MEDIATEK
++	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	select RPMSG_MTK_SCP
+ 	help
+ 	  Say y here to support Mediatek's System Companion Processor (SCP) via
+-- 
+2.28.0.526.ge36021eeef-goog
 
