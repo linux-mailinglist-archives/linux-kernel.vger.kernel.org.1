@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1145A26B4DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29C826B4D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbgIOOgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39622 "EHLO mail.kernel.org"
+        id S1727377AbgIOXc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:32:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726945AbgIOO0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:26:50 -0400
+        id S1727074AbgIOOhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:37:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CAE122482;
-        Tue, 15 Sep 2020 14:19:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B45422400;
+        Tue, 15 Sep 2020 14:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179593;
-        bh=9XBYXSgHaUA3Xk5+hmH9M5dr94xh5Pdbs3NK/sG689Y=;
+        s=default; t=1600180012;
+        bh=gUUgEPZqAoLipWidzmgdXudjOM+qFVqVAfA4HqFwDbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AYgAfSi6uSS49OHeACE1Nv3rM4MFKDIJ+E72akwAAgesF67pNUAi8XHv2Zr/jD1fZ
-         HwaRyR/4DlIjD1i2sY70YqvIEEt8AZCuCsuhNm5w7WbWPz4+FnI3ov5hBCmboILlbm
-         p31YrfL2xbbub3UOuMqY1xy8ZzAlHsBFkh3hWkC4=
+        b=S1OFXRJr7Zn6lDbfdoDTRTG4h4yW94OXUXuZsYPtwUO3eIozeOt89YsD/DFwrjiks
+         fwko+OQ/HmOn5hC+AFhHy7tqMZQd6gMuKZ8hQJtMneb6b6SFCZxYDPIn2tgqE8LJh1
+         iVditPnxyvJrXU2mlC60i6voM5L46Tk5pqA/2LLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mohan Kumar <mkumard@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org, Li Bing <libing@winhong.com>,
+        Yi Li <yili@winhong.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 042/132] ALSA: hda: Fix 2 channel swapping for Tegra
+Subject: [PATCH 5.8 073/177] net: hns3: Fix for geneve tx checksum bug
 Date:   Tue, 15 Sep 2020 16:12:24 +0200
-Message-Id: <20200915140646.228585358@linuxfoundation.org>
+Message-Id: <20200915140657.134363844@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-References: <20200915140644.037604909@linuxfoundation.org>
+In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
+References: <20200915140653.610388773@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mohan Kumar <mkumard@nvidia.com>
+From: Yi Li <yili@winhong.com>
 
-[ Upstream commit 216116eae43963c662eb84729507bad95214ca6b ]
+[ Upstream commit a156998fc92d3859c8e820f1583f6d0541d643c3 ]
 
-The Tegra HDA codec HW implementation has an issue related to not
-swapping the 2 channel Audio Sample Packet(ASP) channel mapping.
-Whatever the FL and FR mapping specified the left channel always
-comes out of left speaker and right channel on right speaker. So
-add condition to disallow the swapping of FL,FR during the playback.
+when skb->encapsulation is 0, skb->ip_summed is CHECKSUM_PARTIAL
+and it is udp packet, which has a dest port as the IANA assigned.
+the hardware is expected to do the checksum offload, but the
+hardware will not do the checksum offload when udp dest port is
+6081.
 
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-Acked-by: Sameer Pujar <spujar@nvidia.com>
-Link: https://lore.kernel.org/r/20200825052415.20626-2-mkumard@nvidia.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This patch fixes it by doing the checksum in software.
+
+Reported-by: Li Bing <libing@winhong.com>
+Signed-off-by: Yi Li <yili@winhong.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index a13bad262598d..e4e228c095f03 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -3678,6 +3678,7 @@ static int tegra_hdmi_build_pcms(struct hda_codec *codec)
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 71ed4c54f6d5d..eaadcc7043349 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -20,6 +20,7 @@
+ #include <net/pkt_cls.h>
+ #include <net/tcp.h>
+ #include <net/vxlan.h>
++#include <net/geneve.h>
  
- static int patch_tegra_hdmi(struct hda_codec *codec)
+ #include "hnae3.h"
+ #include "hns3_enet.h"
+@@ -780,7 +781,7 @@ static int hns3_get_l4_protocol(struct sk_buff *skb, u8 *ol4_proto,
+  * and it is udp packet, which has a dest port as the IANA assigned.
+  * the hardware is expected to do the checksum offload, but the
+  * hardware will not do the checksum offload when udp dest port is
+- * 4789.
++ * 4789 or 6081.
+  */
+ static bool hns3_tunnel_csum_bug(struct sk_buff *skb)
  {
-+	struct hdmi_spec *spec;
- 	int err;
+@@ -789,7 +790,8 @@ static bool hns3_tunnel_csum_bug(struct sk_buff *skb)
+ 	l4.hdr = skb_transport_header(skb);
  
- 	err = patch_generic_hdmi(codec);
-@@ -3685,6 +3686,10 @@ static int patch_tegra_hdmi(struct hda_codec *codec)
- 		return err;
+ 	if (!(!skb->encapsulation &&
+-	      l4.udp->dest == htons(IANA_VXLAN_UDP_PORT)))
++	      (l4.udp->dest == htons(IANA_VXLAN_UDP_PORT) ||
++	      l4.udp->dest == htons(GENEVE_UDP_PORT))))
+ 		return false;
  
- 	codec->patch_ops.build_pcms = tegra_hdmi_build_pcms;
-+	spec = codec->spec;
-+	spec->chmap.ops.chmap_cea_alloc_validate_get_type =
-+		nvhdmi_chmap_cea_alloc_validate_get_type;
-+	spec->chmap.ops.chmap_validate = nvhdmi_chmap_validate;
- 
- 	return 0;
- }
+ 	skb_checksum_help(skb);
 -- 
 2.25.1
 
