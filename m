@@ -2,105 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E724F26A291
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1FF26A290
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgIOJzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgIOJzT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:55:19 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A47C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:55:18 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j2so2598683wrx.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cJPP3VOUhhMjWg+fdtc10hDSx+5MSLkdMdu69j7VsYk=;
-        b=oql0qcrxZ/7BkQPztc8ldLY4fggx/gEPNqio5VSAk60RK9YMp3j1LsItuUPW6T/Hwj
-         VyKxcG8a3u48jSmd9vvCfYNfAEyU4fOkmTydUOXp4wEhwrwgNthmr75Nt51DK279LrqP
-         w/tEtaXNcjX08510hi0Dc8T4DR1+ph//6c4NYyVyr0+nbXojgyiYIctqErjjnhb+E6TA
-         trHE7CHLJKaCa0oXJHOyq/PEGcYii6yd3rnCGpehapT1gZzBKo0PqO3/s+uGak32kjRe
-         wKH7h4ByLFUuTusx+IGW+jIz/QF7wXGcE7nMDIuG4Q95g2oYyho66F15p5xNzj073q0y
-         aiug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cJPP3VOUhhMjWg+fdtc10hDSx+5MSLkdMdu69j7VsYk=;
-        b=UN3iQ1NqKto1FMp+iLq5qs9elceNrlNnUSTfiXJgyEESEc6UTAz7CfBoOKgpDp+ui7
-         zQ+6BIERtZQ7igwe0eLFl04fchKwVYMHAkrXnMBeKcBYci84AKiL+wL2NhHmVd9Hqfs8
-         /TicIm58oDtsaDlG2Tr3aqPP8B8mSBtZDRR1I3WsfjyqRMlDfJ6gnqne1SK/cMTtZ3nm
-         JHMQFk19ePvYUwv1/w0tlpV5gE0Ca4POXs/039To3zcpTLPQyeohpWB7OcrR7Dlt7iqB
-         fylac+2GXvGlMx27yDssoe0aCCWzKyVlUIJlm7ca4x0Iw9MtDPC9FekDEPASujYqWxUJ
-         VOpA==
-X-Gm-Message-State: AOAM531Hs0yCtNzfL1LDWxMvpea3l0VouVW8nADwq060Ks1FKXOZb1pp
-        ZUcn64jtLzM4NdlWEL7LikM=
-X-Google-Smtp-Source: ABdhPJzhKG/JC+VvrxBavdCbabMiHAvZnjK1S/hwLH5C208sdsY37rEvlbYI3WwQ6gqvvphJMI3p2w==
-X-Received: by 2002:adf:edcc:: with SMTP id v12mr19959327wro.240.1600163717590;
-        Tue, 15 Sep 2020 02:55:17 -0700 (PDT)
-Received: from localhost.localdomain ([85.153.229.188])
-        by smtp.gmail.com with ESMTPSA id i26sm23903149wmb.17.2020.09.15.02.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 02:55:16 -0700 (PDT)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] staging: rtl8192e: fix kconfig dependency warning for RTLLIB_CRYPTO_CCMP
-Date:   Tue, 15 Sep 2020 12:54:09 +0300
-Message-Id: <20200915095408.28092-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726189AbgIOJzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:55:02 -0400
+Received: from mga05.intel.com ([192.55.52.43]:34257 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726095AbgIOJzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:55:01 -0400
+IronPort-SDR: hHPoaJypTFROMVwntuhF7ruQP4JP0LJinEhwu/xGRFy9lRfFmbl97vV35wNFBC1SBgVOrBqmrg
+ 8i+uoNqDuKVQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="244062205"
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="244062205"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 02:55:00 -0700
+IronPort-SDR: zQJaXsQln+sNppTrVF/B/u1d6N38+rSgtA/O37T/HevUjbnaGzGdsZlQ95uiF9atQTTMQgW3/9
+ hrjUN4WImqpg==
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="482707224"
+Received: from blank-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.62.208])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 02:54:52 -0700
+Date:   Tue, 15 Sep 2020 12:54:50 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+Message-ID: <20200915095450.GH3612@linux.intel.com>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-14-jarkko.sakkinen@linux.intel.com>
+ <op.0qwyftihwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <op.0qwyftihwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When RTLLIB_CRYPTO_CCMP is enabled and CRYPTO is disabled, it results in
-the following Kbuild warning:
+On Sun, Sep 13, 2020 at 09:56:03PM -0500, Haitao Huang wrote:
+> 
+> On Fri, 11 Sep 2020 07:40:08 -0500, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> ...
+> 
+> > +/**
+> > + * sgx_ioc_enclave_add_pages() - The handler for
+> > %SGX_IOC_ENCLAVE_ADD_PAGES
+> > + * @encl:       an enclave pointer
+> > + * @arg:	a user pointer to a struct sgx_enclave_add_pages instance
+> > + *
+> > + * Add one or more pages to an uninitialized enclave, and optionally
+> > extend the
+> > + * measurement with the contents of the page. The SECINFO and
+> > measurement mask
+> > + * are applied to all pages.
+> > + *
+> > + * A SECINFO for a TCS is required to always contain zero permissions
+> > because
+> > + * CPU silently zeros them. Allowing anything else would cause a
+> > mismatch in
+> > + * the measurement.
+> > + *
+> > + * mmap()'s protection bits are capped by the page permissions. For
+> > each page
+> > + * address, the maximum protection bits are computed with the following
+> > + * heuristics:
+> > + *
+> > + * 1. A regular page: PROT_R, PROT_W and PROT_X match the SECINFO
+> > permissions.
+> > + * 2. A TCS page: PROT_R | PROT_W.
+> > + *
+> > + * mmap() is not allowed to surpass the minimum of the maximum
+> > protection bits
+> > + * within the given address range.
+> > + *
+> > + * If ENCLS opcode fails, that effectively means that EPC has been
+> > invalidated.
+> > + * When this happens the enclave is destroyed and -EIO is returned to
+> > the
+> > + * caller.
+> > + *
+> > + * Return:
+> > + *   length of the data processed on success,
+> > + *   -EACCES if an executable source page is located in a noexec
+> > partition,
+> > + *   -EIO if either ENCLS[EADD] or ENCLS[EEXTEND] fails
+> > + *   -errno otherwise
+> > + */
+> > +static long sgx_ioc_enclave_add_pages(struct sgx_encl *encl, void
+> > __user *arg)
+> > +{
+> > +	struct sgx_enclave_add_pages addp;
+> > +	struct sgx_secinfo secinfo;
+> > +	unsigned long c;
+> > +	int ret;
+> > +
+> > +	if ((atomic_read(&encl->flags) & SGX_ENCL_INITIALIZED) ||
+> > +	    !(atomic_read(&encl->flags) & SGX_ENCL_CREATED))
+> > +		return -EINVAL;
+> > +
+> > +	if (copy_from_user(&addp, arg, sizeof(addp)))
+> > +		return -EFAULT;
+> > +
+> > +	if (!IS_ALIGNED(addp.offset, PAGE_SIZE) ||
+> > +	    !IS_ALIGNED(addp.src, PAGE_SIZE))
+> > +		return -EINVAL;
+> > +
+> > +	if (!(access_ok(addp.src, PAGE_SIZE)))
+> > +		return -EFAULT;
+> > +
+> > +	if (addp.length & (PAGE_SIZE - 1))
+> > +		return -EINVAL;
+> > +
+> > +	if (addp.offset + addp.length - PAGE_SIZE >= encl->size)
+> > +		return -EINVAL;
+> > +
+> > +	if (copy_from_user(&secinfo, (void __user *)addp.secinfo,
+> > +			   sizeof(secinfo)))
+> > +		return -EFAULT;
+> > +
+> > +	if (sgx_validate_secinfo(&secinfo))
+> > +		return -EINVAL;
+> > +
+> > +	for (c = 0 ; c < addp.length; c += PAGE_SIZE) {
+> > +		if (c == SGX_MAX_ADD_PAGES_LENGTH || signal_pending(current)) {
+> > +			ret = c;
+> > +			break;
+> > +		}
+> > +
+> > +		if (need_resched())
+> > +			cond_resched();
+> > +
+> > +		ret = sgx_encl_add_page(encl, addp.src + c, addp.offset + c,
+> > +					addp.length - c, &secinfo, addp.flags);
+> 
+> no need passing addp.length - c?
 
-WARNING: unmet direct dependencies detected for CRYPTO_CCM
-  Depends on [n]: CRYPTO [=n]
-  Selected by [m]:
-  - RTLLIB_CRYPTO_CCMP [=m] && STAGING [=y] && RTLLIB [=m]
+True, it is cruft from the past.
 
-WARNING: unmet direct dependencies detected for CRYPTO_AES
-  Depends on [n]: CRYPTO [=n]
-  Selected by [m]:
-  - RTLLIB_CRYPTO_CCMP [=m] && STAGING [=y] && RTLLIB [=m]
+I'll remove.
 
-The reason is that RTLLIB_CRYPTO_CCMP selects CRYPTO_CCM and CRYPTO_AES
-without depending on or selecting CRYPTO while both CRYPTO_CCM and
-CRYPTO_ARC4 are subordinate to CRYPTO.
+> 
+> > +		if (ret)
+> > +			break;
+> 
+> Some error cases here are fatal and should be passed back to user space so
+> that it would not retry.
 
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+I don't comprehend this. 'ret' is passed to the user space.
 
-Fixes: e0e3daddad36 ("staging: r8192e: Fix possible error in configuration")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- drivers/staging/rtl8192e/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+> > +	}
+> > +
+> > +	if (copy_to_user(arg, &addp, sizeof(addp)))
+> > +		return -EFAULT;
+> 
+> This copy no longer needed?
 
-diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
-index 1007eea6c8fc..4f45a006f901 100644
---- a/drivers/staging/rtl8192e/Kconfig
-+++ b/drivers/staging/rtl8192e/Kconfig
-@@ -14,6 +14,7 @@ if RTLLIB
- config RTLLIB_CRYPTO_CCMP
- 	tristate "Support for rtllib CCMP crypto"
- 	depends on RTLLIB
-+	select CRYPTO
- 	select CRYPTO_AES
- 	select CRYPTO_CCM
- 	default y
--- 
-2.25.1
+True, it is cruft from the past.
 
+I'll remove.
+
+> > +	return c;
+> > +}
+> > +
+> 
+> Thanks
+> Haitao
+
+Thanks for the comments.
+
+/Jarkko
