@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EC726A294
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1C926A296
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgIOJ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:57:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:24041 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgIOJ50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:57:26 -0400
-IronPort-SDR: lCRyD7bOQ0J3CeR26hCeTmmEMHroHSFD766P2aTw0O4m34p/v7bwAy2qAl/57G4rvCua1Kwq61
- CdF44IZ67LcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156658545"
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="156658545"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 02:57:26 -0700
-IronPort-SDR: jGa86foVzrLMIwVp+ejUU4B7PdWX+txCBwXiv+iTdJxrFhBGq964BAz2ZxRlz22vb7VghJsRbS
- MN0tERRSfUxA==
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="482708101"
-Received: from blank-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.62.208])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 02:57:19 -0700
-Date:   Tue, 15 Sep 2020 12:57:16 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
- Control hardware bits
-Message-ID: <20200915095716.GI3612@linux.intel.com>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
- <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
- <20200914151816.u6camicid4bd5lgo@treble>
- <20200914153812.c6uh3spqmcy2ft3d@treble>
+        id S1726131AbgIOJ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgIOJ5j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:57:39 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BBCC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:57:38 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id w16so3217666oia.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JzT2ZqDHda+Wc2x3+EDcqLa2oAGwHZvtm9Os6CPbsUs=;
+        b=ASeidofSzke+RM1y8iK2KmSsFkMZALPbPlwBeDnavmNw8bKhCJLNLxuf/1Oxg/nLbq
+         0b5LbPaUNX0HaRGvLSSBT8IN75LljCF8F8o0X2s8ZK9/VZZLMBAtc3T5tB+KzNLXPhcW
+         WdyLEg3Wc0TsGkC3cYz6YGJdGkmZKKax8joVwYaLb00Hkvyx7aZ2+fzVQcXUMbtY7WTa
+         dzXlWtYH4+NaqI7vQzEnVmzdc6DzmBBEkn6YKrGqzqGUMdBspJOwqsZE+7i2X0zRYjqB
+         kMR8BuWktksLJWs5t6b1/qN5sSoH98E0KaBp38EAg5vPWjenM3oyPWLrRgTP0nEPcMap
+         aDdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JzT2ZqDHda+Wc2x3+EDcqLa2oAGwHZvtm9Os6CPbsUs=;
+        b=R5q5CM11/8aEQwTV1J72zW7pephPD0rihTH3XeFLOeDzHS8IF8W05E2+b2mlFgjQOf
+         JlfDrkaqO4013jbIpMBDIYgPXEdQJPT5AZx3YiEiSmWGoId63apeIy21gFTNDfNfxzo8
+         cnmxgdRr0LEB6PzMiuXnjmWRG27lJ+8Ze9MiQka9h7YYoixOkxvQOW41yXDSQBk2tgV4
+         lPcnev8jieZgUDm/0N1AIsvM/wq9lt59D1RRCkab98K12eWSYnye1SunJRaPyZqs1TuN
+         qVa1qnHW7e8U3lv5UTglHO/f2PqASp4CN6gyPdl2ACAcw20sYknUkOsbEbVxUQJP5c3Z
+         q9Gw==
+X-Gm-Message-State: AOAM531JRMs60EIP8VVczfmxqKRkJUj3ru1VwP2YRnAFd5A5WTyHfUal
+        UrhhKVPP9v3YcF+9rQaXjtJr6IqyyGrzwGwZv9XlbA==
+X-Google-Smtp-Source: ABdhPJyXrCCx82T6eecFdecC4oPxfCAOtwrEAJ7AvCL6velpgv728nxCTqYV0n9rvw4frM/wg8z2NxaSjz5NIrh5PT0=
+X-Received: by 2002:a05:6808:20c:: with SMTP id l12mr2813900oie.70.1600163857893;
+ Tue, 15 Sep 2020 02:57:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914153812.c6uh3spqmcy2ft3d@treble>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200914170055.45a02b55@canb.auug.org.au> <CABVgOSko2FDCgEhCBD4Nm5ExEa9vLQrRiHMh+89nPYjqGjegFw@mail.gmail.com>
+In-Reply-To: <CABVgOSko2FDCgEhCBD4Nm5ExEa9vLQrRiHMh+89nPYjqGjegFw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 15 Sep 2020 11:57:26 +0200
+Message-ID: <CANpmjNM0nRdzRfWocwxEoT2x-qM0NBNU5cfgrQ4k3fdjtxot4Q@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the akpm-current tree
+To:     David Gow <davidgow@google.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:38:26AM -0500, Josh Poimboeuf wrote:
-> On Mon, Sep 14, 2020 at 10:18:16AM -0500, Josh Poimboeuf wrote:
-> > Hi Jarko,
-> > 
-> > It looks like some of the patches weren't delivered to the lists.
-> > Patches 0, 1, 8, 9, and 17 seem to be missing.
-> > 
-> > Lore agrees with me:
-> > 
-> >   https://lore.kernel.org/linux-sgx/20200911124019.42178-1-jarkko.sakkinen@linux.intel.com/
-> 
-> And my first email to you bounced, similar to an email I tried sending
-> to Kristen a few weeks ago.  Something weird going on with Intel mail
-> servers?
+On Tue, 15 Sep 2020 at 06:03, 'David Gow' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> [+kasan-dev, +kunit-dev]
+>
+> On Mon, Sep 14, 2020 at 3:01 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > After merging the akpm-current tree, today's linux-next build (x86_64
+> > allmodconfig) produced this warning:
+> >
+> > In file included from lib/test_kasan_module.c:16:
+> > lib/../mm/kasan/kasan.h:232:6: warning: conflicting types for built-in function '__asan_register_globals'; expected 'void(void *, long int)' [-Wbuiltin-declaration-mismatch]
+> >   232 | void __asan_register_globals(struct kasan_global *globals, size_t size);
+> >       |      ^~~~~~~~~~~~~~~~~~~~~~~
+> > lib/../mm/kasan/kasan.h:233:6: warning: conflicting types for built-in function '__asan_unregister_globals'; expected 'void(void *, long int)' [-Wbuiltin-declaration-mismatch]
+> >   233 | void __asan_unregister_globals(struct kasan_global *globals, size_t size);
+> >       |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > lib/../mm/kasan/kasan.h:235:6: warning: conflicting types for built-in function '__asan_alloca_poison'; expected 'void(void *, long int)' [-Wbuiltin-declaration-mismatch]
+> >   235 | void __asan_alloca_poison(unsigned long addr, size_t size);
+> >       |      ^~~~~~~~~~~~~~~~~~~~
+> > lib/../mm/kasan/kasan.h:236:6: warning: conflicting types for built-in function '__asan_allocas_unpoison'; expected 'void(void *, long int)' [-Wbuiltin-declaration-mismatch]
+> >   236 | void __asan_allocas_unpoison(const void *stack_top, const void *stack_bottom);
+> >       |      ^~~~~~~~~~~~~~~~~~~~~~~
+> > lib/../mm/kasan/kasan.h:238:6: warning: conflicting types for built-in function '__asan_load1'; expected 'void(void *)' [-Wbuiltin-declaration-mismatch]
+> >   238 | void __asan_load1(unsigned long addr);
+> >       |      ^~~~~~~~~~~~
+> [...some more similar warnings truncated...]
+>
+> Whoops -- these are an issue with the patch: the test_kasan_module.c
+> file should be built with -fno-builtin. I've out a new version of the
+> series which fixes this:
+> https://lore.kernel.org/linux-mm/20200915035828.570483-1-davidgow@google.com/T/#t
+>
+> Basically, the fix is just:
+>
+> diff --git a/lib/Makefile b/lib/Makefile
+> index 8c94cad26db7..d4af75136c54 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -69,6 +69,7 @@ obj-$(CONFIG_KASAN_KUNIT_TEST) += test_kasan.o
+>  CFLAGS_test_kasan.o += -fno-builtin
+>  CFLAGS_test_kasan.o += $(call cc-disable-warning, vla)
+>  obj-$(CONFIG_TEST_KASAN_MODULE) += test_kasan_module.o
+> +CFLAGS_test_kasan_module.o += -fno-builtin
+>  obj-$(CONFIG_TEST_UBSAN) += test_ubsan.o
+>  CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
+>  UBSAN_SANITIZE_test_ubsan.o := y
 
-Possible. I don't honestly know what is going on.
+That's reasonable, given it's already done for test_kasan.o.
 
-At least now all the patches are out:
+Although the warnings only occur because it's including
+"../mm/kasan/kasan.h", which include declarations for the
+instrumentation functions. AFAIK, those declarations only exist to
+avoid missing-declaration warnings; in which case all of them could
+just be moved above their definitions in generic.c (which would also
+avoid some repetition for the ones defined with macros). But given the
+various other KASAN patches in-flight, to avoid conflicts let's leave
+this as-is, but it's something to improve in case we wanted to get rid
+of the fno-builtin.
 
-https://lore.kernel.org/linux-sgx/
-
-Not sure if a resend would make sense for the full patch set but maybe I
-just do quick iteration and send v38 soon. And just in case use some alt
-smtp server.
-
-/Jarkko
+Thanks,
+-- Marco
