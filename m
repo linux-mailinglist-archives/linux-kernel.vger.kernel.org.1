@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E98F269FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB58269FC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgIOHaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:30:35 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20237 "EHLO m43-7.mailgun.net"
+        id S1726157AbgIOHaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:30:14 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:59792 "EHLO a.mx.secunet.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726120AbgIOHab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:30:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600155030; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=h9sQQzx9HIHqC/nRkCM3I+PxoenAg9ujW/8S7axP2Z8=; b=L5gmuzxe0Ceu+tw9DvArRSfWxvIjJNG6+qr4Uvy/66m8FahdXiGy2shRbA7LAS3sBKnL22XX
- qN8rJXzUXA1J49e4BhUJkQ+kb81exTMggku9Y55YlncPyI/TR4CJueEwqqfMLBoKlmdOOOzq
- f1z47R/Y+3EEP2HjWzsORY0Ltlg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f606d8832925f96e13dc129 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 07:30:16
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 48994C433F1; Tue, 15 Sep 2020 07:30:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.101] (unknown [47.8.144.128])
+        id S1726120AbgIOHaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:30:11 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 7483920482;
+        Tue, 15 Sep 2020 09:30:08 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zv7Y5ak262BW; Tue, 15 Sep 2020 09:30:07 +0200 (CEST)
+Received: from cas-essen-02.secunet.de (202.40.53.10.in-addr.arpa [10.53.40.202])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 757BEC433CA;
-        Tue, 15 Sep 2020 07:30:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 757BEC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH 1/3] spi: spi-geni-qcom: Use the FIFO even more
-To:     Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     swboyd@chromium.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-References: <20200912140730.1.Ie67fa32009b94702d56232c064f1d89065ee8836@changeid>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <8aa6759a-3db9-97b6-7cad-6bd5d6a1c469@codeaurora.org>
-Date:   Tue, 15 Sep 2020 13:00:00 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        by a.mx.secunet.com (Postfix) with ESMTPS id 388E9200AC;
+        Tue, 15 Sep 2020 09:30:07 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 09:30:07 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Tue, 15 Sep
+ 2020 09:30:06 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 6E4F33184337; Tue, 15 Sep 2020 09:30:06 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 09:30:06 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     mtk81216 <lina.wang@mediatek.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH] xfrm:fragmented ipv4 tunnel packets in inner interface
+Message-ID: <20200915073006.GR20687@gauss3.secunet.de>
+References: <20200909062613.18604-1-lina.wang@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20200912140730.1.Ie67fa32009b94702d56232c064f1d89065ee8836@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200909062613.18604-1-lina.wang@mediatek.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 09, 2020 at 02:26:13PM +0800, mtk81216 wrote:
+> In esp's tunnel mode,if inner interface is ipv4,outer is ipv4,one big 
+> packet which travels through tunnel will be fragmented with outer 
+> interface's mtu,peer server will remove tunnelled esp header and assemble
+> them in big packet.After forwarding such packet to next endpoint,it will 
+> be dropped because of exceeding mtu or be returned ICMP(packet-too-big).
 
-On 9/13/2020 2:37 AM, Douglas Anderson wrote:
-> In commit 902481a78ee4 ("spi: spi-geni-qcom: Actually use our FIFO") I
-> explained that the maximum size we could program the FIFO was
-> "mas->tx_fifo_depth - 3" but that I chose "mas->tx_fifo_depth()"
-> because I was worried about decreased bandwidth.
->
-> Since that time:
-> * All the interconnect patches have landed, making things run at the
->    proper speed.
-> * I've done more measurements.
->
-> This lets me confirm that there's really no downside of using the FIFO
-> more.  Specifically I did "flashrom -p ec -r /tmp/foo.bin" on a
-> Chromebook and averaged over several runs.
->
-> Before: It took 6.66 seconds and 59669 interrupts fired.
-> After:  It took 6.66 seconds and 47992 interrupts fired.
+What is the exact case where packets are dropped? Given that the packet
+was fragmented (and reassembled), I'd assume the DF bit was not set. So
+every router along the path is allowed to fragment again if needed.
 
-Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+> When inner interface is ipv4,outer is ipv6,the flag of xfrm state in tunnel
+> mode is af-unspec, thing is different.One big packet through tunnel will be
+> fragmented with outer interface's mtu minus tunneled header, then two or 
+> more less fragmented packets will be tunneled and transmitted in outer 
+> interface,that is what xfrm6_output has done. If peer server receives such
+> packets, it will forward successfully to next because length is valid.
+> 
+> This patch has followed up xfrm6_output's logic,which includes two changes,
+> one is choosing suitable mtu value which considering innner/outer 
+> interface's mtu and dst path, the other is if packet is too big, calling 
+> ip_fragment first,then tunnelling fragmented packets in outer interface and
+> transmitting finally.
+> 
+> Signed-off-by: mtk81216 <lina.wang@mediatek.com>
 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
->
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+Please use your real name to sign off.
 
