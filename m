@@ -2,170 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9A226B253
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4CF26B23B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbgIOWpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727482AbgIOPx7 (ORCPT
+        id S1727574AbgIOWnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:43:49 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:9240 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727440AbgIOPzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:53:59 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C39EC061353
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:53:58 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id l126so2185295pfd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:53:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kU2nEMhjCVWVrMXPlsQXavcJV9QfPkKaCh123WirJUY=;
-        b=fZ2zBCziQ3BDs46gAsEfUI7yxJtBST2rD1IAijko7XSzcOwptW4Ut8cyp/pKulyFN5
-         Ya4+QRLBdUkedXev1V3EdJCBcWw7K2d1vm39dZMITMuBww53C+M6rM4NEoxRfDq+96Yq
-         2hILdPF14cQEnz3v9ybLMFkS5pimkLRnuRTMrfCq5Hqy0KBcOcUjxpRFWbPMDZMUJqMZ
-         JPJbtE/cVWhEHuZd7qbloKU9e+hR+nATFMV8pU+Rx6w1VBa40PqCN6W+dSAz4PQVeQeJ
-         kt8jlvKwp4uuM6KWcCHU8nbzruP+ox0zWXUzIfgBxlatJaEpX6d7VdrCYvQraoKKotZH
-         aM1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kU2nEMhjCVWVrMXPlsQXavcJV9QfPkKaCh123WirJUY=;
-        b=fWQij+Wdj++QSWOyrUQxGVVpUeXYZZtfFvxnDqUm2q+tizc7h7wFnJjDfZeVdDvEtz
-         ruEBxtrIuOX4V2h6LQncQQ5MiH1YE76f1/V6ZaMf14xHnOyemrol8ztRnDY7LvZxycs3
-         eOGdx7eRqjPea8z+6XBCj05QsyD22CPRZXhKpr43Nwd7nrjiUxSh5+8+S/nIFzzR46dX
-         9v0KCHPsjnF+2+HXSuc/JTap/uCUvKiMXxsWe7AWlihB2yMoY9gQDwaO0Vibtwyk3qAt
-         htvfuWaHmDbc+mdbGCTCbSkzfZu90MVkixgAEcJiem0/HQMlJaE1WBTSRnVRPklNdaOk
-         CSWw==
-X-Gm-Message-State: AOAM5320B69kKjLhU8mYQVG6fxsFLpkVG2KtVJi6ztGgcazPTvCk+oxa
-        DZEXcRxGWuxg0WNxdu2x4aKlKQ==
-X-Google-Smtp-Source: ABdhPJwi4fkNDvtVlto8KWYR1aJj5ID6DauHtUvOTVllokb0/rs8ghVhOYd/5I+QLqtz7r8sPEBupg==
-X-Received: by 2002:a62:1bc7:0:b029:13e:d13d:a0f6 with SMTP id b190-20020a621bc70000b029013ed13da0f6mr18184752pfb.18.1600185237926;
-        Tue, 15 Sep 2020 08:53:57 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id b20sm14808636pfb.198.2020.09.15.08.53.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 08:53:57 -0700 (PDT)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        corbet@lwn.net, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     zhouchengming@bytedance.com, luodaowen.backend@bytedance.com,
-        songmuchun@bytedance.com
-Subject: [PATCH] cgroup: Add cgroupstats numbers to cgroup.stat file
-Date:   Tue, 15 Sep 2020 23:53:49 +0800
-Message-Id: <20200915155349.15181-1-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Tue, 15 Sep 2020 11:55:45 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FFhaGC017288;
+        Tue, 15 Sep 2020 17:54:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=xiFhVzR1YyqGzg2OheLi0xZmDY1r+Df1efVdmesMDrs=;
+ b=yXJ1OBpPKdC02sxYdOGPBGVcEih1BjLc1inPNM7UXQ9ma1jBybK/Ur4xgJPHBq6vouiw
+ 24iBFiloH/Kxkr8PR+3STffYTp0lz5qP2qi+ZI6PoUI8JMHbkzFeX+hgu/eePGH8DXDj
+ VbPxpqw3GdBEWb9s1TEJneaRuJ3HRlGrcteJy2YSYnlzwPCcK9gFs2Ybjab4s0w3hgYV
+ YZ5TpypfeI4uXgAmOyptsdQRQIZ26/9Y9cfNIZ/rGwzgziUvIcmQyJP9IXLaVn9TjYNY
+ J7wx6YllWxMX+RilZYB5iGWM+kV92VYLUePQ63MI7mikXiVBR6tnT4EquZ+zDY1waQZG Wg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33gkt0gpac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 17:54:44 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0E08D10002A;
+        Tue, 15 Sep 2020 17:54:41 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 995D02BA2DB;
+        Tue, 15 Sep 2020 17:54:41 +0200 (CEST)
+Received: from SFHDAG6NODE1.st.com (10.75.127.16) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
+ 2020 17:54:41 +0200
+Received: from SFHDAG6NODE1.st.com ([fe80::8d96:4406:44e3:eb27]) by
+ SFHDAG6NODE1.st.com ([fe80::8d96:4406:44e3:eb27%20]) with mapi id
+ 15.00.1473.003; Tue, 15 Sep 2020 17:54:41 +0200
+From:   Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: stm32/crc32 - Avoid lock if hardware is already
+ used
+Thread-Topic: [PATCH] crypto: stm32/crc32 - Avoid lock if hardware is already
+ used
+Thread-Index: AQHWgq4lZ9k8lMJnVkmAkne1J9B/yKliwQwAgAcJHIA=
+Date:   Tue, 15 Sep 2020 15:54:41 +0000
+Message-ID: <28561e25-1140-9a08-1546-4422150b65f7@st.com>
+References: <20200904112527.15677-1-nicolas.toromanoff@st.com>
+ <20200911042816.GA5531@gondor.apana.org.au>
+In-Reply-To: <20200911042816.GA5531@gondor.apana.org.au>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.49]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7BA07147189E834E80D683C23146B657@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-15_11:2020-09-15,2020-09-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the cgroup v1, we can use netlink interface to get cgroupstats for
-a cgroup. But it has been excluded from cgroup v2 interface intentionally
-due to the duplication and inconsistencies with other statistics.
-To make container monitor tool like "cadvisor" continue to work, we add
-these cgroupstats numbers to the cgroup.stat file, and change the
-admin-guide doc accordingly.
-
-Reported-by: Daowen Luo <luodaowen.backend@bytedance.com>
-Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 15 ++++++++++++++
- kernel/cgroup/cgroup.c                  | 36 +++++++++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 6be43781ec7f..9f781edca95a 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -925,6 +925,21 @@ All cgroup core files are prefixed with "cgroup."
- 		A dying cgroup can consume system resources not exceeding
- 		limits, which were active at the moment of cgroup deletion.
- 
-+          nr_running
-+                Number of tasks running.
-+
-+          nr_sleeping
-+                Number of tasks sleeping.
-+
-+          nr_uninterruptible
-+                Number of tasks in uninterruptible state.
-+
-+          nr_stopped
-+                Number of tasks in stopped state.
-+
-+          nr_io_wait
-+                Number of tasks waiting on IO.
-+
-   cgroup.freeze
- 	A read-write single value file which exists on non-root cgroups.
- 	Allowed values are "0" and "1". The default is "0".
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 0e23ae3b1e56..c6ccacaf812d 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -42,6 +42,7 @@
- #include <linux/rcupdate.h>
- #include <linux/sched.h>
- #include <linux/sched/task.h>
-+#include <linux/delayacct.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/percpu-rwsem.h>
-@@ -3499,11 +3500,46 @@ static int cgroup_events_show(struct seq_file *seq, void *v)
- static int cgroup_stat_show(struct seq_file *seq, void *v)
- {
- 	struct cgroup *cgroup = seq_css(seq)->cgroup;
-+	struct css_task_iter it;
-+	struct task_struct *tsk;
-+	u64 nr_running = 0;
-+	u64 nr_sleeping = 0;
-+	u64 nr_uninterruptible = 0;
-+	u64 nr_stopped = 0;
-+	u64 nr_io_wait = 0;
-+
-+	css_task_iter_start(&cgroup->self, 0, &it);
-+	while ((tsk = css_task_iter_next(&it))) {
-+		switch (tsk->state) {
-+		case TASK_RUNNING:
-+			nr_running++;
-+			break;
-+		case TASK_INTERRUPTIBLE:
-+			nr_sleeping++;
-+			break;
-+		case TASK_UNINTERRUPTIBLE:
-+			nr_uninterruptible++;
-+			break;
-+		case TASK_STOPPED:
-+			nr_stopped++;
-+			break;
-+		default:
-+			if (delayacct_is_task_waiting_on_io(tsk))
-+				nr_io_wait++;
-+			break;
-+		}
-+	}
-+	css_task_iter_end(&it);
- 
- 	seq_printf(seq, "nr_descendants %d\n",
- 		   cgroup->nr_descendants);
- 	seq_printf(seq, "nr_dying_descendants %d\n",
- 		   cgroup->nr_dying_descendants);
-+	seq_printf(seq, "nr_running %llu\n", nr_running);
-+	seq_printf(seq, "nr_sleeping %llu\n", nr_sleeping);
-+	seq_printf(seq, "nr_uninterruptible %llu\n", nr_uninterruptible);
-+	seq_printf(seq, "nr_stopped %llu\n", nr_stopped);
-+	seq_printf(seq, "nr_io_wait %llu\n", nr_io_wait);
- 
- 	return 0;
- }
--- 
-2.11.0
-
+SGVsbG8gSGVyYmVydCwNCg0KT24gOS8xMS8yMCA2OjI4IEFNLCBIZXJiZXJ0IFh1IHdyb3RlOg0K
+PiBPbiBGcmksIFNlcCAwNCwgMjAyMCBhdCAwMToyNToyN1BNICswMjAwLCBOaWNvbGFzIFRvcm9t
+YW5vZmYgd3JvdGU6DQo+PiBJZiBTVE0zMiBDUkMgZGV2aWNlIGlzIGFscmVhZHkgaW4gdXNlLCBj
+YWxjdWxhdGUgQ1JDIGJ5IHNvZnR3YXJlLg0KPj4NCj4+IFRoaXMgd2lsbCByZWxlYXNlIENQVSBj
+b25zdHJhaW50IGZvciBhIGNvbmN1cnJlbnQgYWNjZXNzIHRvIHRoZQ0KPj4gaGFyZHdhcmUsIGFu
+ZCBhdm9pZCBtYXNraW5nIGlycXMgZHVyaW5nIHRoZSB3aG9sZSBibG9jayBwcm9jZXNzaW5nLg0K
+Pj4NCj4+IEZpeGVzOiA3Nzk1YzBiYWY1YWMgKCJjcnlwdG86IHN0bTMyL2NyYzMyIC0gcHJvdGVj
+dCBmcm9tIGNvbmN1cnJlbnQgYWNjZXNzZXMiKQ0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IE5pY29s
+YXMgVG9yb21hbm9mZiA8bmljb2xhcy50b3JvbWFub2ZmQHN0LmNvbT4NCj4+IC0tLQ0KPj4gICBk
+cml2ZXJzL2NyeXB0by9zdG0zMi9LY29uZmlnICAgICAgIHwgIDIgKysNCj4+ICAgZHJpdmVycy9j
+cnlwdG8vc3RtMzIvc3RtMzItY3JjMzIuYyB8IDE1ICsrKysrKysrKysrKy0tLQ0KPj4gICAyIGZp
+bGVzIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvY3J5cHRvL3N0bTMyL0tjb25maWcgYi9kcml2ZXJzL2NyeXB0by9z
+dG0zMi9LY29uZmlnDQo+PiBpbmRleCA0ZWYzZWIxMTM2MWMuLjhkNjA1YjA3NTcxZiAxMDA2NDQN
+Cj4+IC0tLSBhL2RyaXZlcnMvY3J5cHRvL3N0bTMyL0tjb25maWcNCj4+ICsrKyBiL2RyaXZlcnMv
+Y3J5cHRvL3N0bTMyL0tjb25maWcNCj4+IEBAIC0zLDYgKzMsOCBAQCBjb25maWcgQ1JZUFRPX0RF
+Vl9TVE0zMl9DUkMNCj4+ICAgCXRyaXN0YXRlICJTdXBwb3J0IGZvciBTVE0zMiBjcmMgYWNjZWxl
+cmF0b3JzIg0KPj4gICAJZGVwZW5kcyBvbiBBUkNIX1NUTTMyDQo+PiAgIAlzZWxlY3QgQ1JZUFRP
+X0hBU0gNCj4+ICsJc2VsZWN0IENSWVBUT19DUkMzMg0KPj4gKwlzZWxlY3QgQ1JZUFRPX0NSQzMy
+Qw0KPiANCj4gU2hvdWxkbid0IHRoaXMgYmUgInNlbGVjdCBDUkMzMiI/DQoNCkNvcnJlY3QgInNl
+bGVjdCBDUkMzMiIgaXMgZW5vdWdoLg0KSSdsbCBzZW5kIGEgdmVyc2lvbiAyIHdpdGggb25seSAi
+c2VsZWN0IENSQzMyIi4NCg0KDQpOaWNvbGFzLg==
