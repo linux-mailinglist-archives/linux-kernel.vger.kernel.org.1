@@ -2,106 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC4226A952
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8D626A94F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgIOQBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727281AbgIOPSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:18:44 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E551C06178B
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:18:41 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id z2so3390504qtv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HppPKgC5RTB1pHQaCQK7PTr1sh6hJlNgeHDMeLxU9Co=;
-        b=hPGZKnEYtz6Fi+Z3jak+pMkNRlyIq329o5LzsaYZCDD3GCdidRik0I5wt6pM71S5ov
-         r5y7KoS4D2DsDP2erYwWKqZT/rdwO6CwzgFZBsVwDjRaRxrGGK+pxq7Z7aDg5CWlM13g
-         cA3SjxpzczmA/D2HH7O1SX7RC76+0bYSbka8HsUpTSs9vS2M0LaBe+jtWg+jsu9hdGSz
-         ZT6mVyklkXrw278Gdgl21Ib1+QcVjjQCYSyJP4GU1s+v4Pca8fl+P9B8SUFfhDGbXZNd
-         Av/Rn/YIG2Ueyc8m4gMEdkVPNLgAd0mxpBFNpFXvV4ZjxJJnptv5KRgQr8s0gec7Bx1v
-         ggCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HppPKgC5RTB1pHQaCQK7PTr1sh6hJlNgeHDMeLxU9Co=;
-        b=ZTELPJgrGpIr3EPbkX9N8z0Ni7uoAqbL329lPNC3o3Xydo1lXmEhj9tRCauXkhLvcg
-         z6TCSrCJ4TflF7SsgWK9sNHmJG3YPehXClz6RxIQZXN9D/NS6YjYiX6SGSgXu4kFU5+z
-         ODpg5AweYWRmbm6imakPTbzYrRe8Coxy4ZFDMDlxim0ml0dZJnBNJICTRDVlbItQpIeM
-         UheCOXvxHox8qGIL5Ik1BBKBTrQ532pBQcAuItLapirO6zVIiZ8idtgOcoXLKyi082qT
-         0NJ86SD2UvHQEu2mr2JsWR9d5c6TKDtjWgjqnwonr/kGwhz97tirtUEynT/aR1zth6It
-         qGIw==
-X-Gm-Message-State: AOAM530roysplCBXU0LX2gptjsmMMrYfFtEP7bwXuJ5V18tAvLlHM0c5
-        eSGn7Na/FlnJm9hbtYYyaTLXGA==
-X-Google-Smtp-Source: ABdhPJwEScs8pyK7BhkglGWQM4EvvVqJqUyNIi8N4BMtIjU88HefmksOthfAZsczpD70V/livF++bg==
-X-Received: by 2002:ac8:3ac4:: with SMTP id x62mr6216721qte.279.1600183119936;
-        Tue, 15 Sep 2020 08:18:39 -0700 (PDT)
-Received: from uller (ec2-34-197-84-77.compute-1.amazonaws.com. [34.197.84.77])
-        by smtp.gmail.com with ESMTPSA id u55sm18409673qtu.42.2020.09.15.08.18.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 08:18:39 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:18:37 +0000
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     mathieu.poirier@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ohad@wizery.com,
-        rishabhb@codeaurora.org
-Subject: Re: [PATCH] remoteproc: Fixup coredump debugfs disable request
-Message-ID: <20200915151837.GC478@uller>
-References: <20200915073416.20864-1-sibis@codeaurora.org>
+        id S1727526AbgIOQHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:07:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727391AbgIOPTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:19:39 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E82B2074B;
+        Tue, 15 Sep 2020 15:19:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600183159;
+        bh=+SQGJDtXngzEixASBW9Ix71E6mn0ETBIHvgUP43qm7g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nTuMjKWR5/yWZF5DdQbq9r6UpctkMQGPzogngUsiIXikU1KbJ+N8/MkBiNk6yuT8/
+         vcRxeJcLCX7RusrzHai/ZgX0Orh1/oBhRMMA37VWMT60eHKayT+nQB7ML9nso+dqJu
+         /cBA8hGkLvXcH83Jt0zAUdH56Q4IX2Ni5jM/uCrE=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kICjl-00C2sC-Hx; Tue, 15 Sep 2020 16:19:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915073416.20864-1-sibis@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 15 Sep 2020 16:19:17 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Cc:     tglx@linutronix.de, jason@lakedaemon.net, s-anna@ti.com,
+        robh+dt@kernel.org, lee.jones@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        david@lechnology.com, praneeth@ti.com,
+        Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH v6 2/5] irqchip/irq-pruss-intc: Add a PRUSS irqchip driver
+ for PRUSS interrupts
+In-Reply-To: <1600167651-20851-3-git-send-email-grzegorz.jaszczyk@linaro.org>
+References: <1600167651-20851-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+ <1600167651-20851-3-git-send-email-grzegorz.jaszczyk@linaro.org>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <ab6858f56cf47e48f167d6893bcd3043@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: grzegorz.jaszczyk@linaro.org, tglx@linutronix.de, jason@lakedaemon.net, s-anna@ti.com, robh+dt@kernel.org, lee.jones@linaro.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, david@lechnology.com, praneeth@ti.com, rogerq@ti.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15 Sep 07:34 UTC 2020, Sibi Sankar wrote:
+[ Dropping afd@ti.com from the Cc list, as this address bounces]
 
-> Currently the coredump debugfs entry takes in "disable" to set the
-> coredump state to "disabled". Let's just accept the expected state
-> instead.
+On 2020-09-15 12:00, Grzegorz Jaszczyk wrote:
+> The Programmable Real-Time Unit Subsystem (PRUSS) contains a local
+> interrupt controller (INTC) that can handle various system input events
+> and post interrupts back to the device-level initiators. The INTC can
+> support upto 64 input events with individual control configuration and
+> hardware prioritization. These events are mapped onto 10 output 
+> interrupt
+> lines through two levels of many-to-one mapping support. Different
+> interrupt lines are routed to the individual PRU cores or to the host
+> CPU, or to other devices on the SoC. Some of these events are sourced
+> from peripherals or other sub-modules within that PRUSS, while a few
+> others are sourced from SoC-level peripherals/devices.
 > 
+> The PRUSS INTC platform driver manages this PRUSS interrupt controller
+> and implements an irqchip driver to provide a Linux standard way for
+> the PRU client users to enable/disable/ack/re-trigger a PRUSS system
+> event. The system events to interrupt channels and output interrupts
+> relies on the mapping configuration provided either through the PRU
+> firmware blob (for interrupts routed to PRU cores) or via the PRU
+> application's device tree node (for interrupt routed to the main CPU).
+> In the first case the mappings will be programmed on PRU remoteproc
+> driver demand (via irq_create_fwspec_mapping) during the boot of a PRU
+> core and cleaned up after the PRU core is stopped.
+> 
+> Reference counting is used to allow multiple system events to share a
+> single channel and to allow multiple channels to share a single host
+> event.
+> 
+> The PRUSS INTC module is reference counted during the interrupt
+> setup phase through the irqchip's irq_request_resources() and
+> irq_release_resources() ops. This restricts the module from being
+> removed as long as there are active interrupt users.
+> 
+> The driver currently supports and can be built for OMAP architecture
+> based AM335x, AM437x and AM57xx SoCs; Keystone2 architecture based
+> 66AK2G SoCs and Davinci architecture based OMAP-L13x/AM18x/DA850 SoCs.
+> All of these SoCs support 64 system events, 10 interrupt channels and
+> 10 output interrupt lines per PRUSS INTC with a few SoC integration
+> differences.
+> 
+> NOTE:
+> Each PRU-ICSS's INTC on AM57xx SoCs is preceded by a Crossbar that
+> enables multiple external events to be routed to a specific number
+> of input interrupt events. Any non-default external interrupt event
+> directed towards PRUSS needs this crossbar to be setup properly.
+> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> Signed-off-by: Andrew F. Davis <afd@ti.com>
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> Signed-off-by: David Lechner <david@lechnology.com>
+> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
 
-I like this patch, but rather than arguing that it should match the name
-of the internal state I think you should either argue that when read you
-get "disabled" back or that "disabled" would make it consistent with the
-recovery.
+Please see the use of the Co-developed-by: tag.
 
-Regards,
-Bjorn
-
-> Fixes: 3afdc59e43904 ("remoteproc: Add coredump debugfs entry")
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
->  drivers/remoteproc/remoteproc_debugfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
-> index 2e3b3e22e1d01..7ca823f6aa638 100644
-> --- a/drivers/remoteproc/remoteproc_debugfs.c
-> +++ b/drivers/remoteproc/remoteproc_debugfs.c
-> @@ -94,7 +94,7 @@ static ssize_t rproc_coredump_write(struct file *filp,
->  		goto out;
->  	}
->  
-> -	if (!strncmp(buf, "disable", count)) {
-> +	if (!strncmp(buf, "disabled", count)) {
->  		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
->  	} else if (!strncmp(buf, "inline", count)) {
->  		rproc->dump_conf = RPROC_COREDUMP_INLINE;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> v5->v6:
+> 1) Address Marc Zyngier comments:
+> - Use unsigned types for variables used to compute masks/shifts (ch,
+>   evt, host).
+> - Move part responsible for enabling global interrupt from
+>   pruss_intc_map to pruss_intc_init.
+> - Improve coding style in pruss_intc_init with regards to variable
+>   assignments.
+> - Align the '=' signs vertically in pruss_irqchip structure.
+> - Change the irq type in xlate handler from IRQ_TYPE_NONE to
+>   IRQ_TYPE_LEVEL_MASK
+
+Gruik? (yes, that's approximately the noise I made reading this)
+
+[...]
+
+> +static void pruss_intc_init(struct pruss_intc *intc)
+> +{
+> +	const struct pruss_intc_match_data *soc_config = intc->soc_config;
+> +	int num_chnl_map_regs, num_host_intr_regs, num_event_type_regs, i;
+> +
+> +	num_chnl_map_regs = DIV_ROUND_UP(soc_config->num_system_events,
+> +					 CMR_EVT_PER_REG);
+> +	num_host_intr_regs = DIV_ROUND_UP(soc_config->num_host_events,
+> +					  HMR_CH_PER_REG);
+> +	num_event_type_regs = DIV_ROUND_UP(soc_config->num_system_events, 
+> 32);
+> +
+> +	/*
+> +	 * configure polarity (SIPR register) to active high and
+> +	 * type (SITR register) to level interrupt for all system events
+> +	 */
+
+So I read this...
+
+[...]
+
+> +static int
+> +pruss_intc_irq_domain_xlate(struct irq_domain *d, struct device_node 
+> *node,
+> +			    const u32 *intspec, unsigned int intsize,
+> +			    unsigned long *out_hwirq, unsigned int *out_type)
+> +{
+> +	struct pruss_intc *intc = d->host_data;
+> +	struct device *dev = intc->dev;
+> +	int ret, sys_event, channel, host;
+> +
+> +	if (intsize < 3)
+> +		return -EINVAL;
+> +
+> +	sys_event = intspec[0];
+> +	if (sys_event < 0 || sys_event >= 
+> intc->soc_config->num_system_events) {
+> +		dev_err(dev, "%d is not valid event number\n", sys_event);
+> +		return -EINVAL;
+> +	}
+> +
+> +	channel = intspec[1];
+> +	if (channel < 0 || channel >= intc->soc_config->num_host_events) {
+> +		dev_err(dev, "%d is not valid channel number", channel);
+> +		return -EINVAL;
+> +	}
+> +
+> +	host = intspec[2];
+> +	if (host < 0 || host >= intc->soc_config->num_host_events) {
+> +		dev_err(dev, "%d is not valid host irq number\n", host);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* check if requested sys_event was already mapped, if so validate it 
+> */
+> +	ret = pruss_intc_validate_mapping(intc, sys_event, channel, host);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*out_hwirq = sys_event;
+> +	*out_type = IRQ_TYPE_LEVEL_MASK;
+
+... and then I see that.
+
+What does IRQ_TYPE_LEVEL_MASK even mean? Can the interrupt be triggered 
+as
+level high and low *at the same time*? (this is a rhetorical question).
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
