@@ -2,61 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308E226A20D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D7326A210
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgIOJVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:21:11 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:57919 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIOJVH (ORCPT
+        id S1726349AbgIOJWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:22:05 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:39633 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgIOJWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:21:07 -0400
-Received: from [78.134.51.148] (port=48280 helo=[192.168.77.62])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1kI796-0001EN-IM; Tue, 15 Sep 2020 11:21:04 +0200
-Subject: Re: [PATCH v2 1/2] media: imx274: remove binning enum
-To:     Eugen Hristev <eugen.hristev@microchip.com>, sakari.ailus@iki.fi,
-        leonl@leopardimaging.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@ifi.fi>
-References: <20200915090442.52322-1-eugen.hristev@microchip.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <bc455c26-d639-7401-b8b5-92a45a628d3a@lucaceresoli.net>
-Date:   Tue, 15 Sep 2020 11:21:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Sep 2020 05:22:01 -0400
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id CD7B8240002;
+        Tue, 15 Sep 2020 09:21:58 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Alessandro Zummo <a.zummo@towertech.it>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Patrice Chotard <patrice.chotard@st.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] rtc: st-lpc: Constify st_rtc_ops
+Date:   Tue, 15 Sep 2020 11:21:58 +0200
+Message-Id: <160016171046.325179.3123778161718568231.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200913122644.35515-1-rikard.falkeborn@gmail.com>
+References: <20200913122644.35515-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200915090442.52322-1-eugen.hristev@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, 13 Sep 2020 14:26:44 +0200, Rikard Falkeborn wrote:
+> The only usage of st_rtc_ops is to assign its address to the ops field
+> in the rtc_device struct. which is a const pointer. Make it const to
+> allow the compiler to put it in read-only memory.
 
-On 15/09/20 11:04, Eugen Hristev wrote:
-> Binning enum is unused. Remove from driver.
-> 
-> Suggested-by: Sakari Ailus <sakari.ailus@ifi.fi>
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Applied, thanks!
 
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+[1/1] rtc: st-lpc: Constify st_rtc_ops
+      commit: d0a3b65052f041852c855ea1135659770ba0bc09
 
+Best regards,
 -- 
-Luca
+Alexandre Belloni <alexandre.belloni@bootlin.com>
