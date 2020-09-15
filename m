@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0DE269C36
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CCF269C32
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgIOC7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 22:59:43 -0400
-Received: from mga11.intel.com ([192.55.52.93]:51420 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726045AbgIOC7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 22:59:42 -0400
-IronPort-SDR: MHxmn/Zlgf3OiJaqGqpuEvYBTsfAl6m/oWGDZLBJ/0vnZiv7ElUS/MlEFrqa0SLn99t+RN2o2C
- 3lot6/FyKKXw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156622308"
-X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
-   d="scan'208";a="156622308"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 19:59:41 -0700
-IronPort-SDR: opEiUrKYdI2KWFuS5toA8jBpI7xsdN4wPSbROCjvfm2AKOfZ+9P4feww3FmY1nFWLvYs2eSXQd
- YpSIGCfgRN6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
-   d="scan'208";a="451120905"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga004.jf.intel.com with ESMTP; 14 Sep 2020 19:59:39 -0700
-Date:   Tue, 15 Sep 2020 10:55:17 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     "Wu, Hao" <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>,
-        yilun.xu@intel.com
-Subject: Re: [PATCH 1/3] fpga: dfl: move dfl_device_id to mod_devicetable.h
-Message-ID: <20200915025516.GB9950@yilunxu-OptiPlex-7050>
-References: <1599544129-17594-1-git-send-email-yilun.xu@intel.com>
- <1599544129-17594-2-git-send-email-yilun.xu@intel.com>
- <aaa2d9a5-f5ae-d026-91c9-730403f04050@redhat.com>
- <20200910084106.GB16318@yilunxu-OptiPlex-7050>
- <ad9ba1cf-e02f-c09e-f639-2df60f080e5f@redhat.com>
- <DM6PR11MB3819E2EA499781899B7384F385240@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20200914213232.GA1040@epycbox.lan>
+        id S1726089AbgIOC5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 22:57:48 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:20677 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgIOC5r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 22:57:47 -0400
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 08F2vWq7020755
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:57:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 08F2vWq7020755
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600138652;
+        bh=Xr7JFdXVt/ll5q4+mjcGj6Ps1QBbwreBkSd+NgA5XrA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XaSuOwF46BEvFEDe0rudvGLTZpKvHIfCYwrM77QrUH49wbW+T2L9D9jpcvlqg8o9d
+         Q43BjY9RScM9U/qf2PQNgg/npJBv/VoyKkllwfLQ7TEh1lEll9Ob8MyE/XueIv9HFo
+         l4HwB2jhht4DbiZVoakP8SS9viI1l6B6f4nwj9d16wcUn85f1E5UK7rKSYqUPf1F2c
+         QL+OoIEbmhbVRH6JfgFIGkzqU8fixg4AVsntRJQwjragiEpPDFyc+9NiGsSPJsKmwn
+         TFHC1RJsmDfhl2cPpD5gd324NQtWOw4Bm9F7h6/y9bkbfwm7/FEqyYpauLzNCDwxXM
+         mY4iYwblETv/g==
+X-Nifty-SrcIP: [209.85.210.172]
+Received: by mail-pf1-f172.google.com with SMTP id d9so1108757pfd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 19:57:32 -0700 (PDT)
+X-Gm-Message-State: AOAM532yoAEQ7m6JHRr8HpJqks3kErlVyfgri0fkkMswikGx4CTFYxi3
+        5JXDCdd7rWuYlrNpVn2XOpmLsmTgq0XxAVHhG5A=
+X-Google-Smtp-Source: ABdhPJwAci5nrPTDQk4x6YanE/cLg7pvckGJhnz36MKR4oId/Qfhoe7LRHaqjlGJklNI43OrNW2b7Wpqp3vQZYkRGec=
+X-Received: by 2002:a62:5b47:: with SMTP id p68mr16069667pfb.153.1600138651681;
+ Mon, 14 Sep 2020 19:57:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914213232.GA1040@epycbox.lan>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <trinity-9cd01270-7c54-4bf5-810d-e1b7de352e11-1600106229398@3c-app-gmx-bs03>
+In-Reply-To: <trinity-9cd01270-7c54-4bf5-810d-e1b7de352e11-1600106229398@3c-app-gmx-bs03>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 15 Sep 2020 11:56:55 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARw0aRmKLb+8mxZbzxvB0YQ2_ak5LpcpQy+=3HrtiFA1g@mail.gmail.com>
+Message-ID: <CAK7LNARw0aRmKLb+8mxZbzxvB0YQ2_ak5LpcpQy+=3HrtiFA1g@mail.gmail.com>
+Subject: Re: [question] KBUILD_OUTPUT and modules install (with INSTALL_MOD_PATH)
+To:     Frank Wunderlich <frank-w@public-files.de>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 02:32:32PM -0700, Moritz Fischer wrote:
-> Hao,
-> 
-> On Fri, Sep 11, 2020 at 06:50:18AM +0000, Wu, Hao wrote:
-> > > On 9/10/20 1:41 AM, Xu Yilun wrote:
-> > > > On Wed, Sep 09, 2020 at 05:55:33AM -0700, Tom Rix wrote:
-> > > >> On 9/7/20 10:48 PM, Xu Yilun wrote:
-> > > >>> In order to support MODULE_DEVICE_TABLE() for dfl device driver, this
-> > > >>> patch moves struct dfl_device_id to mod_devicetable.h
-> > > >>>
-> > > >>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > >>> Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > > >>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > >>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > >>> ---
-> > > >>>  drivers/fpga/dfl.h              | 13 +------------
-> > > >>>  include/linux/mod_devicetable.h | 12 ++++++++++++
-> > > >>>  2 files changed, 13 insertions(+), 12 deletions(-)
-> > > >>>
-> > > >>> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> > > >>> index 5dc758f..d5b0760 100644
-> > > >>> --- a/drivers/fpga/dfl.h
-> > > >>> +++ b/drivers/fpga/dfl.h
-> > > >>> @@ -26,6 +26,7 @@
-> > > >>>  #include <linux/slab.h>
-> > > >>>  #include <linux/uuid.h>
-> > > >>>  #include <linux/fpga/fpga-region.h>
-> > > >>> +#include <linux/mod_devicetable.h>
-> > 
-> > Please fix the order for the new one, other places to good to me.
-> > Acked-by: Wu Hao <hao.wu@intel.com>  for DFL related changes after this fix.
-> 
-> Do you mean the order of the includes, like alphabeticized? If it's
-> minor I can fix it up when applying.
+On Tue, Sep 15, 2020 at 2:57 AM Frank Wunderlich
+<frank-w@public-files.de> wrote:
+>
+> Hi,
+>
+> i try to use modules_install target after building kernel with KBUILD_OUTPUT set
+>
+> KBUILD_OUTPUT: /media/data_nvme/git/kernel/build #kernel source is in /media/data_nvme/git/kernel/BPI-R2-4.14
+>
+> kernel is build successfully, but i fail on running the make modules_install target
+>
+>   ERROR: Kernel configuration is invalid.
+>          include/generated/autoconf.h or include/config/auto.conf are missing.
+>          Run 'make oldconfig && make prepare' on kernel src to fix it.
+>
+> Makefile:648: include/config/auto.conf: No such file or directory
+> make: *** [Makefile:719: include/config/auto.conf] Error 1
+>
+> it looks it is ignoring the KBUILD_OUTPUT variable, as both files are present
 
-I think it is the alphabetic of head files. I could sent v2 patchset for
-this fix as well as other fixes.
 
-Thanks,
-Yilun.
+KBUILD_OUTPUT is an environment variable.
 
-> 
-> Thanks,
-> Moritz
+Did you set (export) it
+before doing 'make modules_install'?
+
+
+
+> $ ls /media/data_nvme/git/kernel/build/include/config/auto.conf
+> /media/data_nvme/git/kernel/build/include/config/auto.conf
+> $ ls /media/data_nvme/git/kernel/build/include/generated/autoconf.h
+> /media/data_nvme/git/kernel/build/include/generated/autoconf.h
+>
+> i also tried adding KERNEL_DIR var, but also without success
+>
+> sudo make ARCH=$ARCH KERNEL_DIR=$KBUILD_OUTPUT INSTALL_MOD_PATH=/media/$USER/BPI-ROOT/ modules_install
+
+
+
+This is no variable like KERNEL_DIR.
+
+"git grep KERNEL_DIR" obviously has no hit
+in the kernel directory.
+
+
+
+
+
+
+> $KBUILD_OUTPUT is definitely set to right directory (checked on beginning of my function)
+>
+> this message seems to be triggered by Makefile in root (here i tried to add the KBUILD_OUTPUT in the test before include without success)
+>
+>  718 include/config/auto.conf:
+>  719     $(Q)test -e include/generated/autoconf.h -a -e $@ || (      \
+>  720     echo >&2;                           \
+>  721     echo >&2 "  ERROR: Kernel configuration is invalid.";       \
+>  722     echo >&2 "         include/generated/autoconf.h or $@ are missing.";\
+>
+> any idea?
+>
+> regards Frank
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
