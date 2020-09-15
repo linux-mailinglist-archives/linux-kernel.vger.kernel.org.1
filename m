@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13AF269A70
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79EA269A99
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgIOAb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgIOAbz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:31:55 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F4EC06174A;
-        Mon, 14 Sep 2020 17:31:55 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHysw-00GEGT-1S; Tue, 15 Sep 2020 00:31:50 +0000
-Date:   Tue, 15 Sep 2020 01:31:50 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     mateusznosek0@gmail.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] fs: micro-optimization remove branches by adjusting
- flag values
-Message-ID: <20200915003150.GJ3421308@ZenIV.linux.org.uk>
-References: <20200914174338.9808-1-mateusznosek0@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914174338.9808-1-mateusznosek0@gmail.com>
+        id S1726183AbgIOAoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:44:02 -0400
+Received: from mga04.intel.com ([192.55.52.120]:45263 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726019AbgIOAn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 20:43:58 -0400
+IronPort-SDR: 1Up+GFju8envoAmLu3FoFsfvzgqvXumtNijq0y3iGibMAnvIiZKf7N2iVQFVg5QQz8Wvz6OZbh
+ sIn+ZS/eW4bQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156573620"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="156573620"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 17:43:55 -0700
+IronPort-SDR: Sqrps9y2ydj609JLDQUfGitBQvgcxizdUXcJzRbozyNTCBtT1qTGIA+afnTIcv8tjcyHAojjK+
+ OQXg9UpjAHtA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="335468562"
+Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
+  by orsmga008.jf.intel.com with ESMTP; 14 Sep 2020 17:43:53 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yan Zhao <yan.y.zhao@intel.com>
+Subject: [PATCH] vfio/type1: fix dirty bitmap calculation in vfio_dma_rw
+Date:   Tue, 15 Sep 2020 08:32:51 +0800
+Message-Id: <20200915003251.14343-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 07:43:38PM +0200, mateusznosek0@gmail.com wrote:
-> From: Mateusz Nosek <mateusznosek0@gmail.com>
-> 
-> When flags A and B have equal values than the following code
-> 
-> if(flags1 & A)
-> 	flags2 |= B;
-> 
-> is equivalent to
-> 
-> flags2 |= (flags1 & A);
-> 
-> The latter code should generate less instructions and be faster as one
-> branch is omitted in it.
-> 
-> Introduced patch changes the value of 'LOOKUP_EMPTY' and makes it equal
-> to the value of 'AT_EMPTY_PATH'. Thanks to that, few branches can be
-> changed in a way showed above which improves both performance and the
-> size of the code.
+the count of dirtied pages is not only determined by count of copied
+pages, but also by the start offset.
 
-No.  AT_EMPTY_PATH is a part of userland ABI; to tie LOOKUP_EMPTY to it
-means that we can't ever modify the sucker.  Worse, it restricts any
-possible reshuffling of the LOOKUP_... bits in the future.
+e.g. if offset = PAGE_SIZE - 1, and *copied=2, the dirty pages count is
+2, instead of 0.
 
-So unless you can show an effect on the real-world profiles, there are
-fairly strong reasons to avoid that headache.
+Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty
+pages tracking")
+
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+---
+ drivers/vfio/vfio_iommu_type1.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 5fbf0c1f7433..d0438388feeb 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -2933,7 +2933,8 @@ static int vfio_iommu_type1_dma_rw_chunk(struct vfio_iommu *iommu,
+ 			 * size
+ 			 */
+ 			bitmap_set(dma->bitmap, offset >> pgshift,
+-				   *copied >> pgshift);
++				   ((offset + *copied - 1) >> pgshift) -
++				   (offset >> pgshift) + 1);
+ 		}
+ 	} else
+ 		*copied = copy_from_user(data, (void __user *)vaddr,
+-- 
+2.17.1
+
