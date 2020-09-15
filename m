@@ -2,284 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DB926B3CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C439826B3DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727410AbgIOXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:10:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44422 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727344AbgIOXKT (ORCPT
+        id S1727416AbgIOXL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727461AbgIOXLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:10:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600211404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uWKYiEAPj6B80xN73l3vGOeVXB3aKVd90dDHnSd2jCM=;
-        b=Vf7/EwvPkXBN22rwy18lDeE/Fg/Xj0I0hnYyFeYYdQtMmBqAGXR46yfAGy4v0CyQKXsVMI
-        FxfMUepmDT9stjUhT4md20YLWyW8d89gdWYR7xnag5+AVaa5rg2nF192h0KgLpp/GTmubH
-        auVdlaW/Yv3eTrPBvtdUu8rxg6T/Jrw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-3dInkon8OGiQEyPC67N2Zg-1; Tue, 15 Sep 2020 19:09:59 -0400
-X-MC-Unique: 3dInkon8OGiQEyPC67N2Zg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC2CB1074648;
-        Tue, 15 Sep 2020 23:09:57 +0000 (UTC)
-Received: from T590 (ovpn-12-18.pek2.redhat.com [10.72.12.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6C10A60E1C;
-        Tue, 15 Sep 2020 23:09:51 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 07:09:41 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-Message-ID: <20200915230941.GA791425@T590>
-References: <20200822143326.GC199705@mit.edu>
- <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
- <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
- <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
- <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
- <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
- <20200904035528.GE558530@mit.edu>
- <20200915044519.GA38283@mit.edu>
- <20200915073303.GA754106@T590>
- <20200915224541.GB38283@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915224541.GB38283@mit.edu>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Tue, 15 Sep 2020 19:11:08 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A649CC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:11:07 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o20so2807791pfp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=ejKAlDLK9UWIbMwInXUY/PDlDWa5qsu2LYQ6i/9HXFM=;
+        b=KHG2vbOWJxMxjnsh+S1sWXh95shYieMHEsjz4iKp3x9QfRdSwjtkT6btpPUbozst14
+         23Uawwh/4BXHMg1qMvi6HIlSl5DGfMed8SZprNwn/GWstVP5ROvbjRgvMDnav5g4p+yf
+         EkuthYVj4yWExMdR4u46ODhjcpfKSnQfoNcSt4B+R7AYAD+5C37bQkHbUJSIXQ4FsPLT
+         zabUTZpZjAt+jm+gSdhKyqpffbV/oT2mkwMOgwTqkmWV7imb1NGv7w6WxKQqJLSDO+4G
+         2dc3azJOMxqMZauZKEoHwXzYBZU1G3KkGxjveqMOorgaFTM24xr5l/XH1FvcW8tNpKwf
+         B01w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=ejKAlDLK9UWIbMwInXUY/PDlDWa5qsu2LYQ6i/9HXFM=;
+        b=Q1Chd9YLUYN8lDCFVdfvEVwnhQH4cFh1g2bNGNYQmJwQMrPeWNtSOKcldypp+2WMIY
+         Bgj0trsvKDWkErZlyNVkWJdSXFYYlOPnieUV6VQ06DccBsi3qPdqf4OOyYtoF2tcng6/
+         G7Sk2cKJlS5ejB2lRsZipldwwOjItOpht9mWtbyp7w5f4qlXlIQS9Sh9twfVg+p0JFBO
+         hxmNFl2cwEL0HTgtgzdNIt/Y69z1VFe6XulmrdPeCLjf+zuihy76bxrKsz4euye34XYW
+         cVjIQvE4Y3Mq7N5HagloaCLv5M6yPQ56F6LA9agoBZzUa7oZd6woYDhhBqUoyJf4FrCY
+         Lpyw==
+X-Gm-Message-State: AOAM530LUDYj9x6f4xktUvlx0mOT8/KMN3lRYFBy0njodpmbncoPKm8d
+        6tgC24/7WeCUVQOwFGs/pov+Ug==
+X-Google-Smtp-Source: ABdhPJwY+B6vjUUrVrR2gqGPeTejtBjJScxtUWVPmWxiI2qktO4A8qsjyaZAmUSKHMAXoLM1sA4/Vw==
+X-Received: by 2002:a63:4a0a:: with SMTP id x10mr11653517pga.21.1600211466725;
+        Tue, 15 Sep 2020 16:11:06 -0700 (PDT)
+Received: from ?IPv6:2600:1010:b025:1a05:79dc:fef9:f308:6141? ([2600:1010:b025:1a05:79dc:fef9:f308:6141])
+        by smtp.gmail.com with ESMTPSA id bb6sm498350pjb.15.2020.09.15.16.11.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 16:11:05 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] x86/smap: Fix the smap_save() asm
+Date:   Tue, 15 Sep 2020 16:11:03 -0700
+Message-Id: <441AA771-A859-4145-9425-E9D041580FE4@amacapital.net>
+References: <CAKwvOdnjHbyamsW71FJ=Cd36YfVppp55ftcE_eSDO_z+KE9zeQ@mail.gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+In-Reply-To: <CAKwvOdnjHbyamsW71FJ=Cd36YfVppp55ftcE_eSDO_z+KE9zeQ@mail.gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+X-Mailer: iPhone Mail (17H35)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 06:45:41PM -0400, Theodore Y. Ts'o wrote:
-> On Tue, Sep 15, 2020 at 03:33:03PM +0800, Ming Lei wrote:
-> > Hi Theodore,
-> > 
-> > On Tue, Sep 15, 2020 at 12:45:19AM -0400, Theodore Y. Ts'o wrote:
-> > > On Thu, Sep 03, 2020 at 11:55:28PM -0400, Theodore Y. Ts'o wrote:
-> > > > Worse, right now, -rc1 and -rc2 is causing random crashes in my
-> > > > gce-xfstests framework.  Sometimes it happens before we've run even a
-> > > > single xfstests; sometimes it happens after we have successfully
-> > > > completed all of the tests, and we're doing a shutdown of the VM under
-> > > > test.  Other times it happens in the middle of a test run.  Given that
-> > > > I'm seeing this at -rc1, which is before my late ext4 pull request to
-> > > > Linus, it's probably not an ext4 related bug.  But it also means that
-> > > > I'm partially blind in terms of my kernel testing at the moment.  So I
-> > > > can't even tell Linus that I've run lots of tests and I'm 100%
-> > > > confident your one-line change is 100% safe.
-> > > 
-> > > I was finally able to bisect it down to the commit:
-> > > 
-> > > 37f4a24c2469: blk-mq: centralise related handling into blk_mq_get_driver_tag
-> > 
-> > 37f4a24c2469 has been reverted in:
-> > 
-> > 	4e2f62e566b5 Revert "blk-mq: put driver tag when this request is completed"
-> > 
-> > And later the patch is committed as the following after being fixed:
-> > 
-> > 	568f27006577 blk-mq: centralise related handling into blk_mq_get_driver_tag
-> > 
-> > So can you reproduce the issue by running kernel of commit 568f27006577?
-> 
-> Yes.  And things work fine if I try 4e2f62e566b5.
-> 
-> > If yes, can the issue be fixed by reverting 568f27006577?
-> 
-> The problem is it's a bit tricky to revert 568f27006577, since there
-> is a merge conflict in blk_kick_flush().  I attempted to do the bisect
-> manually here, but it's clearly not right since the kernel is not
-> booting after the revert:
-> 
-> https://github.com/tytso/ext4/commit/1e67516382a33da2c9d483b860ac4ec2ad390870
-> 
-> branch:
-> 
-> https://github.com/tytso/ext4/tree/manual-revert-of-568f27006577
-> 
-> Can you send me a patch which correctly reverts 568f27006577?  I can
-> try it against -rc1 .. -rc4, whichever is most convenient.
-
-Please test the following revert patch against -rc4.
-
-diff --git a/block/blk-flush.c b/block/blk-flush.c
-index 53abb5c73d99..24c208d21793 100644
---- a/block/blk-flush.c
-+++ b/block/blk-flush.c
-@@ -219,6 +219,7 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 	struct request *rq, *n;
- 	unsigned long flags = 0;
- 	struct blk_flush_queue *fq = blk_get_flush_queue(q, flush_rq->mq_ctx);
-+	struct blk_mq_hw_ctx *hctx;
- 
- 	blk_account_io_flush(flush_rq);
- 
-@@ -234,11 +235,13 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 	if (fq->rq_status != BLK_STS_OK)
- 		error = fq->rq_status;
- 
-+	hctx = flush_rq->mq_hctx;
- 	if (!q->elevator) {
--		flush_rq->tag = BLK_MQ_NO_TAG;
-+		blk_mq_tag_set_rq(hctx, flush_rq->tag, fq->orig_rq);
-+		flush_rq->tag = -1;
- 	} else {
- 		blk_mq_put_driver_tag(flush_rq);
--		flush_rq->internal_tag = BLK_MQ_NO_TAG;
-+		flush_rq->internal_tag = -1;
- 	}
- 
- 	running = &fq->flush_queue[fq->flush_running_idx];
-@@ -309,16 +312,12 @@ static void blk_kick_flush(struct request_queue *q, struct blk_flush_queue *fq,
- 	flush_rq->mq_hctx = first_rq->mq_hctx;
- 
- 	if (!q->elevator) {
-+		fq->orig_rq = first_rq;
- 		flush_rq->tag = first_rq->tag;
--
--		/*
--		 * We borrow data request's driver tag, so have to mark
--		 * this flush request as INFLIGHT for avoiding double
--		 * account of this driver tag
--		 */
--		flush_rq->rq_flags |= RQF_MQ_INFLIGHT;
--	} else
-+		blk_mq_tag_set_rq(flush_rq->mq_hctx, first_rq->tag, flush_rq);
-+	} else {
- 		flush_rq->internal_tag = first_rq->internal_tag;
-+	}
- 
- 	flush_rq->cmd_flags = REQ_OP_FLUSH | REQ_PREFLUSH;
- 	flush_rq->cmd_flags |= (flags & REQ_DRV) | (flags & REQ_FAILFAST_MASK);
-diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
-index b1acac518c4e..3945c7f5b944 100644
---- a/block/blk-mq-tag.h
-+++ b/block/blk-mq-tag.h
-@@ -101,6 +101,18 @@ static inline bool hctx_may_queue(struct blk_mq_hw_ctx *hctx,
- 	return atomic_read(&hctx->nr_active) < depth;
- }
- 
-+/*
-+ * This helper should only be used for flush request to share tag
-+ * with the request cloned from, and both the two requests can't be
-+ * in flight at the same time. The caller has to make sure the tag
-+ * can't be freed.
-+ */
-+static inline void blk_mq_tag_set_rq(struct blk_mq_hw_ctx *hctx,
-+		unsigned int tag, struct request *rq)
-+{
-+	hctx->tags->rqs[tag] = rq;
-+}
-+
- static inline bool blk_mq_tag_is_reserved(struct blk_mq_tags *tags,
- 					  unsigned int tag)
- {
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index b3d2785eefe9..feb3d5c0a1c6 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -277,20 +277,26 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
- {
- 	struct blk_mq_tags *tags = blk_mq_tags_from_data(data);
- 	struct request *rq = tags->static_rqs[tag];
-+	req_flags_t rq_flags = 0;
- 
- 	if (data->q->elevator) {
- 		rq->tag = BLK_MQ_NO_TAG;
- 		rq->internal_tag = tag;
- 	} else {
-+		if (data->hctx->flags & BLK_MQ_F_TAG_SHARED) {
-+			rq_flags = RQF_MQ_INFLIGHT;
-+			atomic_inc(&data->hctx->nr_active);
-+		}
- 		rq->tag = tag;
- 		rq->internal_tag = BLK_MQ_NO_TAG;
-+		data->hctx->tags->rqs[rq->tag] = rq;
- 	}
- 
- 	/* csd/requeue_work/fifo_time is initialized before use */
- 	rq->q = data->q;
- 	rq->mq_ctx = data->ctx;
- 	rq->mq_hctx = data->hctx;
--	rq->rq_flags = 0;
-+	rq->rq_flags = rq_flags;
- 	rq->cmd_flags = data->cmd_flags;
- 	if (data->flags & BLK_MQ_REQ_PREEMPT)
- 		rq->rq_flags |= RQF_PREEMPT;
-@@ -1098,10 +1104,9 @@ static bool __blk_mq_get_driver_tag(struct request *rq)
- {
- 	struct sbitmap_queue *bt = &rq->mq_hctx->tags->bitmap_tags;
- 	unsigned int tag_offset = rq->mq_hctx->tags->nr_reserved_tags;
-+	bool shared = blk_mq_tag_busy(rq->mq_hctx);
- 	int tag;
- 
--	blk_mq_tag_busy(rq->mq_hctx);
--
- 	if (blk_mq_tag_is_reserved(rq->mq_hctx->sched_tags, rq->internal_tag)) {
- 		bt = &rq->mq_hctx->tags->breserved_tags;
- 		tag_offset = 0;
-@@ -1114,23 +1119,19 @@ static bool __blk_mq_get_driver_tag(struct request *rq)
- 		return false;
- 
- 	rq->tag = tag + tag_offset;
-+	if (shared) {
-+		rq->rq_flags |= RQF_MQ_INFLIGHT;
-+		atomic_inc(&rq->mq_hctx->nr_active);
-+	}
-+	rq->mq_hctx->tags->rqs[rq->tag] = rq;
- 	return true;
- }
- 
- static bool blk_mq_get_driver_tag(struct request *rq)
- {
--	struct blk_mq_hw_ctx *hctx = rq->mq_hctx;
--
--	if (rq->tag == BLK_MQ_NO_TAG && !__blk_mq_get_driver_tag(rq))
--		return false;
--
--	if ((hctx->flags & BLK_MQ_F_TAG_SHARED) &&
--			!(rq->rq_flags & RQF_MQ_INFLIGHT)) {
--		rq->rq_flags |= RQF_MQ_INFLIGHT;
--		atomic_inc(&hctx->nr_active);
--	}
--	hctx->tags->rqs[rq->tag] = rq;
--	return true;
-+	if (rq->tag != BLK_MQ_NO_TAG)
-+		return true;
-+	return __blk_mq_get_driver_tag(rq);
- }
- 
- static int blk_mq_dispatch_wake(wait_queue_entry_t *wait, unsigned mode,
-diff --git a/block/blk.h b/block/blk.h
-index 49e2928a1632..5ed35a02bc7f 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -25,6 +25,11 @@ struct blk_flush_queue {
- 	struct list_head	flush_data_in_flight;
- 	struct request		*flush_rq;
- 
-+	/*
-+	 * flush_rq shares tag with this rq, both can't be active
-+	 * at the same time
-+	 */
-+	struct request		*orig_rq;
- 	struct lock_class_key	key;
- 	spinlock_t		mq_flush_lock;
- };
 
 
-thanks, 
-Ming
+> On Sep 15, 2020, at 2:24 PM, Nick Desaulniers <ndesaulniers@google.com> wr=
+ote:
+>=20
+> =EF=BB=BFOn Tue, Sep 15, 2020 at 1:56 PM Andy Lutomirski <luto@kernel.org>=
+ wrote:
+>>=20
+>> The old smap_save() code was:
+>>=20
+>>  pushf
+>>  pop %0
+>>=20
+>> with %0 defined by an "=3Drm" constraint.  This is fine if the
+>> compiler picked the register option, but it was incorrect with an
+>> %rsp-relative memory operand.
+>=20
+> It is incorrect because ... (I think mentioning the point about the
+> red zone would be good, unless there were additional concerns?)
 
+This isn=E2=80=99t a red zone issue =E2=80=94 it=E2=80=99s a just-plain-wron=
+g issue.  The popf is storing the result in the wrong place in memory =E2=80=
+=94 it=E2=80=99s RSP-relative, but RSP is whatever the compiler thinks it sh=
+ould be minus 8, because the compiler doesn=E2=80=99t know that pushfq chang=
+ed RSP.
+
+>=20
+> This is something we should fix.  Bill, James, and I are discussing
+> this internally.  Thank you for filing a bug; I owe you a beer just
+> for that.
+
+I=E2=80=99m looking forward to the day that beers can be exchanged in person=
+ again :)
+
+>=20
+>>=20
+>> Fixes: e74deb11931f ("x86/uaccess: Introduce user_access_{save,restore}()=
+")
+>> Cc: stable@vger.kernel.org
+>> Reported-by: Bill Wendling <morbo@google.com> # I think
+>=20
+> LOL, yes, the comment can be dropped...though I guess someone else may
+> have reported the problem to Bill?
+
+The =E2=80=9CI think=E2=80=9D is because I=E2=80=99m not sure whether Bill r=
+eported this particular issue. But I=E2=80=99m fine with dropping it.=
