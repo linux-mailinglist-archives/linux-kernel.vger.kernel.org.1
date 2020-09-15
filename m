@@ -2,98 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654A926B2C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E7126B2BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727647AbgIOWxL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 18:53:11 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:57891 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727413AbgIOPk5 (ORCPT
+        id S1727451AbgIOWw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:52:29 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:32802 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727427AbgIOPl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:40:57 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-53-W38LQ2b8OBS5NKJlBcK7FA-1; Tue, 15 Sep 2020 16:40:53 +0100
-X-MC-Unique: W38LQ2b8OBS5NKJlBcK7FA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 15 Sep 2020 16:40:52 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 15 Sep 2020 16:40:52 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-CC:     "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        Christoph Hellwig <hch@lst.de>,
-        "Dave Chinner" <dchinner@redhat.com>
-Subject: RE: [PATCH v2 2/9] fs: Introduce i_blocks_per_page
-Thread-Topic: [PATCH v2 2/9] fs: Introduce i_blocks_per_page
-Thread-Index: AQHWh8zSUX5EB+iAm0+PkXaO9U0VzKlp3UwQ
-Date:   Tue, 15 Sep 2020 15:40:52 +0000
-Message-ID: <0c874f14499c4d819f3e8e09f5086d77@AcuMS.aculab.com>
-References: <20200910234707.5504-1-willy@infradead.org>
- <20200910234707.5504-3-willy@infradead.org>
-In-Reply-To: <20200910234707.5504-3-willy@infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 15 Sep 2020 11:41:29 -0400
+Received: by mail-io1-f65.google.com with SMTP id r25so4630851ioj.0;
+        Tue, 15 Sep 2020 08:41:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9td3CHrhD2ePyY61tWqpgj5SUv0on2Qa1ge62urpHGs=;
+        b=GhKTuU0M9iSE3sJ7dv5HT4SbWce3pUpIvdEjxMtGAkHIfjnwWSLhgsMb4MSnHPVZF8
+         D96IM3zYgs2MjCFSIamBOuUmRr2F5cT2KzEMNlpoG3ybcOZ2v2IXGUxTmP2shbjAApYY
+         NH4TgpNNypIA9XtXRg3JYic41Kz55EFkEvCSgnm9Wzvjk7NMxCUcKc4lFFL8SovXR+kj
+         HTgTwd0KFjONaCswVE33Q84DpWmMoIBzkgROgQmFerhRPmJp3ptAlCQwqif71eBB7TOM
+         plrow+ZWDq7H7yB4FBf+a+TNKlihmSnxVydN2gco1S8RsmVIeObTLJ74TOhk5r6zOsJl
+         mmjQ==
+X-Gm-Message-State: AOAM5317EAQAezjS8JmGr0ZLWO8y1R8nYwMM1JaCrLIDtpXiMDzgNIov
+        zowZSinQV826Oo+hbvb5CQ==
+X-Google-Smtp-Source: ABdhPJwNFt8xtG/jVr9dFKGqM4jI/u+N27xrn10aCxWh4fQsBFtbNUAm75Pkj7j/t6t5kOZ/mWI69Q==
+X-Received: by 2002:a6b:c997:: with SMTP id z145mr15671026iof.136.1600184480497;
+        Tue, 15 Sep 2020 08:41:20 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id s2sm9369515ili.49.2020.09.15.08.41.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 08:41:19 -0700 (PDT)
+Received: (nullmailer pid 1999129 invoked by uid 1000);
+        Tue, 15 Sep 2020 15:41:19 -0000
+Date:   Tue, 15 Sep 2020 09:41:19 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     daniel@ffwll.ch, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] dt-bindings: display: add Amlogic MIPI DSI Host
+ Controller bindings
+Message-ID: <20200915154118.GA1988840@bogus>
+References: <20200907081825.1654-1-narmstrong@baylibre.com>
+ <20200907081825.1654-3-narmstrong@baylibre.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.002
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907081825.1654-3-narmstrong@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle)
-> Sent: 11 September 2020 00:47
-> This helper is useful for both THPs and for supporting block size larger
-> than page size.  Convert all users that I could find (we have a few
-> different ways of writing this idiom, and I may have missed some).
+On Mon, Sep 07, 2020 at 10:18:21AM +0200, Neil Armstrong wrote:
+> The Amlogic AXg SoCs embeds a Synopsys DW-MIPI-DSI transceiver (ver 1.21a), with a custom
+> glue managing the IP resets, clock and data input similar to the DW-HDMI Glue on other
+> Amlogic SoCs.
 > 
-...
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index d81a9a86c5aa..330f86b825d7 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -46,7 +46,7 @@ iomap_page_create(struct inode *inode, struct page *page)
->  {
->  	struct iomap_page *iop = to_iomap_page(page);
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../display/amlogic,meson-dw-mipi-dsi.yaml    | 115 ++++++++++++++++++
+>  1 file changed, 115 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml
 > 
-> -	if (iop || i_blocksize(inode) == PAGE_SIZE)
-> +	if (iop || i_blocks_per_page(inode, page) <= 1)
->  		return iop;
-> 
->  	iop = kmalloc(sizeof(*iop), GFP_NOFS | __GFP_NOFAIL);
-> @@ -147,7 +147,7 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
->  	unsigned int i;
-> 
->  	spin_lock_irqsave(&iop->uptodate_lock, flags);
-> -	for (i = 0; i < PAGE_SIZE / i_blocksize(inode); i++) {
-> +	for (i = 0; i < i_blocks_per_page(inode, page); i++) {
+> diff --git a/Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml b/Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml
+> new file mode 100644
+> index 000000000000..6177f45ea1a6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml
+> @@ -0,0 +1,115 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2020 BayLibre, SAS
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/display/amlogic,meson-dw-mipi-dsi.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Amlogic specific extensions to the Synopsys Designware MIPI DSI Host Controller
+> +
+> +maintainers:
+> +  - Neil Armstrong <narmstrong@baylibre.com>
+> +
+> +description: |
+> +  The Amlogic Meson Synopsys Designware Integration is composed of
+> +  - A Synopsys DesignWare MIPI DSI Host Controller IP
+> +  - A TOP control block controlling the Clocks & Resets of the IP
+> +
+> +allOf:
+> +  - $ref: dsi-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - amlogic,meson-axg-dw-mipi-dsi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 2
+> +
+> +  clock-names:
+> +    minItems: 2
+> +    items:
+> +      - const: pclk
+> +      - const: px_clk
+> +      - const: meas_clk
+> +
+> +  resets:
+> +    minItems: 1
+> +
+> +  reset-names:
+> +    items:
+> +      - const: top
+> +
+> +  phys:
+> +    minItems: 1
+> +
+> +  phy-names:
+> +    items:
+> +      - const: dphy
+> +
+> +  ports:
+> +    type: object
+> +
+> +    properties:
+> +      port@0:
+> +        type: object
+> +        description: Input node to receive pixel data.
+> +      port@1:
+> +        type: object
+> +        description: DSI output node to panel.
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - reset-names
+> +  - phys
+> +  - phy-names
+> +  - ports
+> +
+> +additionalProperties: false
 
-You probably don't want to call the helper every time
-around the loop.
+Presumably you may have panel/bridge child nodes, so this needs to be 
+'unevaluatedProperties: false'.
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Rob
