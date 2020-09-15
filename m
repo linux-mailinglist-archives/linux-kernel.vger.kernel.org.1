@@ -2,75 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4566A26AE34
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C907A26AE45
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgIOTzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        id S1727796AbgIOT4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727858AbgIOTxs (ORCPT
+        with ESMTP id S1727829AbgIOTzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:53:48 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA73FC06174A;
-        Tue, 15 Sep 2020 12:53:47 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g4so4291564edk.0;
-        Tue, 15 Sep 2020 12:53:47 -0700 (PDT)
+        Tue, 15 Sep 2020 15:55:06 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0451C06178C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:55:05 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id j7so1900195plk.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:55:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h+Glag7Zdcx+JA5O5eROeVL4B8Ql3yXhj7TU2E4Q+gU=;
-        b=mfMz05Wy0Rzi3mc9FRF90iBbA+HVDHL4eISMtdCcvtfUvBQM8Wh5qiWEAI/6L8k0oh
-         AhFsZPp4OUXp1F8ZdKXdwcQJsuHQ1Zy8naiBndsPu70ZwZQoQpvXgSd54Eyhu79W36Ho
-         Pc/au1ytVTbm4f2LpU9Td2cdox15NHuXZSR/vJwUD2y/hrA1VD5Hppc4XvPlS5chwMqD
-         lznko/lVoIDy4XNuCtmT1zWCCktBAUIBTQsjy+IgPmfQBFjEksf+EX2rVk5+KvSAQyb/
-         GGfRamqsqpooy6xQRI1jsubexprAnEoblMG0wLEzt/5+kbEQ+rUYebyqCA4rEZhMhpaF
-         BgYg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ANJOfSdlpRaHSBBO4TQnqknbM6J+0XuYtQl6sOjOU6g=;
+        b=vbKyE1eGXl1ab37xPuCgN3XERmZgx8c72CmccznAaQT/qdPIFWgEvL2g7tdxHUje1+
+         uH3g5E43P/o9/UJXb7GQiTNIYyMi0BTbo9lWzld48up8d8Dpu5ogNRBAKeUa8TQgWld4
+         mXnM7bosw+BwFaU3OdjM3MkSleUZ0pAHWgLipyCpVaQWGWHMKkgE5EtkjCyhdPbfacRb
+         BF4zvVAEvnt46T2LrUiCt+Ej1O5VNJn4gCUeqdOMVp0NP959/LyLVZ2HbrBpysEqZZ7U
+         /glUHqltfoq9EtlZslQ0cG+F+Ocwp8nEhATulLHJinhygWWgTymGqXK7y09zkav+1GU6
+         8HAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h+Glag7Zdcx+JA5O5eROeVL4B8Ql3yXhj7TU2E4Q+gU=;
-        b=tRivKBzRGs1PMJv9mtwSdub4uIWm213gwgxg7TMAq+fOgMaRTmrbPWQYLZ66WoU/Oo
-         r/2VzF4BQgAJGfzm8Y/hi6k3Nfw/k4mlNmg1TYQ69Ns+uUqSQBU3oVNG8qkz/c3pOhz/
-         IFsrOwyfma+rmjyJdonV8e66vqtICPlkI3vg4zBV9o0KuV80N541P9kCf2wksDU/Y42h
-         OglYIigeZiSGRtApZUY4LT59XqcicJpyOYj3dYbI0q/0WOqlg/4jWwjTuhWqd7z0H7o5
-         sstwcm5fPQvYMIHU77hLiFOdwfza8XvqxBzAsUBxGIYpeps40V/fvg0KFYgqeb6RLUAz
-         D7RA==
-X-Gm-Message-State: AOAM531D/q+ZdWFu+WheRR/xRICI8f2uRZLtY2gYL0/ifNUBTPiGHWpa
-        UjU7zmpdOZ2VuS3g6h8+0b+o3MPW0UWsTtFF40k=
-X-Google-Smtp-Source: ABdhPJxVXkzjJNtB0Y3kNGVBHxg1BFzbFcjYn0XJtJNYLcueZkJd0W0gKFbpcuyRnBJHwu4kAof7yiVtgnwo+VrdTVc=
-X-Received: by 2002:a05:6402:489:: with SMTP id k9mr23671549edv.287.1600199626131;
- Tue, 15 Sep 2020 12:53:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200909160409.8678-1-narmstrong@baylibre.com> <20200909160409.8678-2-narmstrong@baylibre.com>
-In-Reply-To: <20200909160409.8678-2-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 15 Sep 2020 21:53:35 +0200
-Message-ID: <CAFBinCAAv1fUxO+u7NRuXw8rUqa=z5GYEaPMr7CRq+dasQ6oXw@mail.gmail.com>
-Subject: Re: [PATCH 1/5] phy: amlogic: phy-meson-gxl-usb2: keep ID pull-up
- even in Host mode
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com, kishon@ti.com,
-        linux-amlogic@lists.infradead.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ANJOfSdlpRaHSBBO4TQnqknbM6J+0XuYtQl6sOjOU6g=;
+        b=JKwFgYW5hN2re7xFt4L4tYPxscf3Ht6TD65we/WRXOFCWc+O8Jb58jR2cu1CaR0RQN
+         jVy2AZJSWBlIiFEKcEnhdeEJtUrMEuHf6KO5CC3UvS84Io/a85i6uT2Ou4rmNTUtWBsZ
+         B9PkNSFGfNGUAy9JPZygsrvzsRKeFOsEr6+t/YE/YEmKPUS7bUinGnbpom8vuESO4bbq
+         NeFOZAOC8mDsgsLVcDyFbsaX1EKZgvhz+EqI6iZ1sHCCw5O6sBufP5FT6+HAPlnZirKt
+         rv/iEpHQFVXsqtasq+8biGeG+lsKBZyrR3psySrJelhlCJmky/WKbF76W2KKCi9WOpF5
+         Ux2w==
+X-Gm-Message-State: AOAM533Bm19dpkEHyYzGlkMbdYp0n3lYywtsjmYEHLlq41HXUMCpXuUU
+        J1i7+NlJn65PpePtZI/6qHVYqQ==
+X-Google-Smtp-Source: ABdhPJypvLei95eAIfBf9YhOFqqQKZ1C34DJmEf5yt+0uB+ckb9ORNsADCaKLRMdqq9zVPIXlUuLOA==
+X-Received: by 2002:a17:902:9685:b029:d1:e5e7:be1b with SMTP id n5-20020a1709029685b02900d1e5e7be1bmr3266435plp.78.1600199704611;
+        Tue, 15 Sep 2020 12:55:04 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id z4sm14594221pfr.197.2020.09.15.12.55.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 12:55:04 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 13:55:01 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     iommu@lists.linux-foundation.org,
+        Russell King <linux@armlinux.org.uk>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-sh@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devicetree@vger.kernel.org,
+        arnaud.pouliquen@st.com, loic.pallardy.st.com@xps15
+Subject: Re: [PATCH 6/6] dma-mapping: introduce DMA range map, supplanting
+ dma_pfn_offset
+Message-ID: <20200915195501.GA3666944@xps15>
+References: <20200914073343.1579578-1-hch@lst.de>
+ <20200914073343.1579578-7-hch@lst.de>
+ <20200914230147.GA3251212@xps15>
+ <20200915054122.GA18079@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915054122.GA18079@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 6:04 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> In order to keep OTG ID detection even when in Host mode, the ID line of
-> the PHY (if the current phy is an OTG one) pull-up should be kept
-> enable in both modes.
->
-> This fixes OTG switch on GXL, GXM & AXG platforms, otherwise once switched
-> to Host, the ID detection doesn't work anymore to switch back to Device.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Tue, Sep 15, 2020 at 07:41:22AM +0200, Christoph Hellwig wrote:
+> On Mon, Sep 14, 2020 at 05:01:47PM -0600, Mathieu Poirier wrote:
+> 
+> [700 lines of the fullquote deleted..]
+> 
+> > > +	for (r = map; r->size; r++)
+> > > +		num_ranges++;
+> > > +
+> > > +	new_map = kmemdup(map, array_size(num_ranges + 1, sizeof(*map)),
+> > > +			  GFP_KERNEL);
+> > > +	if (!new_map)
+> > > +		return -ENOMEM;
+> > > +	to->dma_range_map = new_map;
+> > > +	return 0;
+> > > +}
+> > > +
+> > 
+> > This patch seemed Ok to me but it broke the stm32 remoteproc implementation.  When
+> > I tested things out function dma_coerce_mask_and_cohenrent() returns -5 and the
+> > rest of the initialisation fails.  I isolated things to function dma_to_pfn()
+> > [2].  In the original implementation __bus_to_pfn() returns 0xfffff and
+> > dev->dma_pfn_offset is equal to 0x38000.  As such the function returns 0x137fff
+> > and dma_supported() a non-zero value[3].
+> > 
+> > With this set function dma_to_pfn() received a face lift.  Function
+> > __bus_to_pfn() still returns 0xfffff but translate_dma_to_phys() returns 0,
+> > which forces dma_supported() to also return 0 and that is where the -5 (-EIO)
+> > comes from.
+> > 
+> > Taking a futher look at translate_dma_to_phy(), @dma_addr never falls within the
+> > bus_dma_region ranges and returns 0.
+> > 
+> > I'm suspecting an initialisation problem and if it occurred here, it will
+> > likely show up elsewhere.
+> 
+> Can you try this incremental patch?
+> 
+> diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
+> index 088c97181ab146..c6b21acba7a459 100644
+> --- a/include/linux/dma-direct.h
+> +++ b/include/linux/dma-direct.h
+> @@ -46,7 +46,7 @@ static inline phys_addr_t translate_dma_to_phys(struct device *dev,
+>  		if (dma_addr >= m->dma_start && dma_addr - m->dma_start < m->size)
+>  			return (phys_addr_t)dma_addr + m->offset;
+>  
+> -	return 0;
+> +	return (phys_addr_t)-1;
+
+That did the trick - the stm32 platform driver's probe() function completes and
+the remote processor is operatinal. 
+
+That being said the value returned by function dma_to_pfn()
+is 0x137fff in the original code and 0xfffff with your patches applied.
+
+Thanks,
+Mathieu
+
+>  }
+>  
+>  #ifdef CONFIG_ARCH_HAS_PHYS_TO_DMA
