@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD32926AF8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C3226AFA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgIOV1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
+        id S1727814AbgIOVem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727928AbgIOV1A (ORCPT
+        with ESMTP id S1727894AbgIOVQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:27:00 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A15C061797;
-        Tue, 15 Sep 2020 14:26:41 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 58747FD8;
-        Tue, 15 Sep 2020 23:26:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1600205196;
-        bh=P+7woXYx0pEjJcdRtQvnqyiYJ5fzHV7TtgZXREC0yT0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tq1BAgiyN4E1yPcSK5kmeMl4lheL/DwGppE1UX3lyFQhN6D3WiVNIrzAH/vjQekJn
-         1S61Gb6jEO6XpX37mCEcWW0gw5GD7boC+WdzpeQdKtrtMDW76FfMwA+2jedNmHJKHK
-         xFXJ0X33Im1ZZ3KLnPCZcHxwIBnrNzJsvkDkmx1k=
-Date:   Wed, 16 Sep 2020 00:26:07 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH] media: Kconfig: Update help description
- VIDEO_RENESAS_FCP config
-Message-ID: <20200915212607.GC3998@pendragon.ideasonboard.com>
-References: <20200911101046.20200-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200911101046.20200-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Tue, 15 Sep 2020 17:16:47 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4208C061351
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:16:38 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id de12so3088105qvb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:16:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=rBEpAT9/SFMGCMSd5Os7EsFNXqLe39zVSJtjGGUatVU=;
+        b=dSJTHqOZiuuDXKvtsDQ8oQ1PqjUxDy7pC2eYouUYa/AFSAuodkr6j/TZ2jO5NgNaAc
+         g7YofzhuPIXWqXGAttfKHdujHDCWUY1lgj8UQWTG+rsmQYy0rl997KUAGV7Dsmnv1SOm
+         rEnBBrKjBEb3+9EL1PxJaDOkTUUwqdUTCY98t15qBwyJqlTJ8qCncGTw29O5PD3gDUMY
+         WaoaiAZLu+iktghDPpg4OCF7suInLAbvgvxlQ5D36dLCsOCKOWCa8mV8FjAOEhEObaNn
+         IOu6FRq2u1BojQwe6vsGpGw10jJ/Diw2orJidd+Bi3EgKSzbpa7fb2iHxoKCAW35Mbvr
+         JYpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=rBEpAT9/SFMGCMSd5Os7EsFNXqLe39zVSJtjGGUatVU=;
+        b=Ph/f7HiLxvToOZaHHR7qiB9uUthdZ3e99nrodn34/lUDRvJutk7AsArOzs45Cr4JIT
+         7luOqxR+xZBiNIWq83wzoZTGQmSkuYw9+Enm66gGvWATygUoTjnDug7MF82+7dAEF9AT
+         Ydb6z+QyWo1z+0XYkXn/KAiC6gODY8ZzaV+bpjJNUTE/oBC7+bK6uzoKToZUF9xRzj61
+         vuQ79CBbIp+m+B8NtnbeVwNkOsyFvyTxvJLn0cGxmJyd+JHxqIldUKON2jABVvW9j9Nv
+         /DI2BpN3OVl75A4R/fsL6vdg0kN7LNbS8+ZWdBAoWGGnafbMtK9+QJy/DckxmkPOE4UQ
+         h+Yg==
+X-Gm-Message-State: AOAM531pIeG/Yn7+JyYnqYiPB5XcJzj+I4Vi2XUd/khHuicgp6WoO3ub
+        ewOdGkmRVklNKcgwAMmab4ZGnGjRfoPRHHxn
+X-Google-Smtp-Source: ABdhPJwVtoNlwGtVWMSadXgwwXxS2o67SZR8HangbbD87rRH9KN5qPngrQJpmzAic4pHTiuGP2p7N8MS0/tYgX6p
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:ad4:58aa:: with SMTP id
+ ea10mr3757654qvb.58.1600204597332; Tue, 15 Sep 2020 14:16:37 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 23:15:48 +0200
+In-Reply-To: <cover.1600204505.git.andreyknvl@google.com>
+Message-Id: <b154864a1b17319c865fddd01a4bca5aaa73aff5.1600204505.git.andreyknvl@google.com>
+Mime-Version: 1.0
+References: <cover.1600204505.git.andreyknvl@google.com>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [PATCH v2 06/37] kasan: only build init.c for software modes
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+This is a preparatory commit for the upcoming addition of a new hardware
+tag-based (MTE-based) KASAN mode.
 
-Thank you for the patch.
+The new mode won't be using shadow memory, so only build init.c that
+contains shadow initialization code for software modes.
 
-On Fri, Sep 11, 2020 at 11:10:46AM +0100, Lad Prabhakar wrote:
-> rcar-fcp driver is also used on Renesas RZ/G2 SoC's, update the same
+No functional changes for software modes.
 
-I'm not sure what you mean by "the same" here. I'd propose
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+---
+Change-Id: I8d68c47345afc1dbedadde738f34a874dcae5080
+---
+ mm/kasan/Makefile | 6 +++---
+ mm/kasan/init.c   | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-The rcar_dw_hdmi driver is also used on Renesas RZ/G2 SoCs. Update the
-Kconfig entry description to reflect this.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-If you're fine with that, there's no need to resubmit the patch.
-
-> to reflect help description for VIDEO_RENESAS_FCP config.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-> ---
->  drivers/media/platform/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> index bbf32086b607..a5716e9f463a 100644
-> --- a/drivers/media/platform/Kconfig
-> +++ b/drivers/media/platform/Kconfig
-> @@ -426,8 +426,8 @@ config VIDEO_RENESAS_FCP
->  	help
->  	  This is a driver for the Renesas Frame Compression Processor (FCP).
->  	  The FCP is a companion module of video processing modules in the
-> -	  Renesas R-Car Gen3 SoCs. It handles memory access for the codec,
-> -	  VSP and FDP modules.
-> +	  Renesas R-Car Gen3 and RZ/G2 SoCs. It handles memory access for
-> +	  the codec, VSP and FDP modules.
->  
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called rcar-fcp.
-
+diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+index 370d970e5ab5..7cf685bb51bd 100644
+--- a/mm/kasan/Makefile
++++ b/mm/kasan/Makefile
+@@ -29,6 +29,6 @@ CFLAGS_report.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_tags_report.o := $(CC_FLAGS_KASAN_RUNTIME)
+ 
+-obj-$(CONFIG_KASAN) := common.o init.o report.o
+-obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
+-obj-$(CONFIG_KASAN_SW_TAGS) += tags.o tags_report.o
++obj-$(CONFIG_KASAN) := common.o report.o
++obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o generic_report.o quarantine.o
++obj-$(CONFIG_KASAN_SW_TAGS) += init.o tags.o tags_report.o
+diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+index 754b641c83c7..20f5e1ab8d95 100644
+--- a/mm/kasan/init.c
++++ b/mm/kasan/init.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * This file contains some kasan initialization code.
++ * This file contains KASAN shadow initialization code.
+  *
+  * Copyright (c) 2015 Samsung Electronics Co., Ltd.
+  * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 -- 
-Regards,
+2.28.0.618.gf4bc123cb7-goog
 
-Laurent Pinchart
