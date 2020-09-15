@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D66E26A89C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E6426A8A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727399AbgIOPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:19:38 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:48840 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727318AbgIOOsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:48:19 -0400
-Received: from zn.tnic (p200300ec2f0e4200c97bc9af71f47aca.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:c97b:c9af:71f4:7aca])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1684E1EC026F;
-        Tue, 15 Sep 2020 16:48:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600181297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kzIa3LNAozBKpiuiMtshbaFLPxPLM7rkc586WIRFP0o=;
-        b=oxJmIBKA605d5TRgVFFt2B5x3i5wnVT/SgznoUjCJ73pFAz61cbKgLxjmbAq4JgY/IeQNX
-        YVTnL8A3yr1w88tK47eMuiF9zmAF7hX9evQpo5XsSmETf9212S5Ua0cn3uWcsMFtNPFhQ0
-        ljwofEGMAJkWnbTy04iLaTCqMI9SF40=
-Date:   Tue, 15 Sep 2020 16:48:15 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
- Control hardware bits
-Message-ID: <20200915144815.GL14436@zn.tnic>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
- <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
- <20200914151816.u6camicid4bd5lgo@treble>
- <20200914153812.c6uh3spqmcy2ft3d@treble>
- <20200915095716.GI3612@linux.intel.com>
- <20200915132725.a2qbdio3jsu7rsqs@treble>
- <20200915133929.GI14436@zn.tnic>
- <20200915140250.kf2kgfbgzxfvmoiy@treble>
+        id S1727410AbgIOPUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:20:00 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:56709 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727180AbgIOOso (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:48:44 -0400
+Received: (qmail 1003957 invoked by uid 1000); 15 Sep 2020 10:48:43 -0400
+Date:   Tue, 15 Sep 2020 10:48:43 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrew_gabbasov@mentor.com,
+        Baxter Jim <jim_baxter@mentor.com>,
+        "Natsume, Wataru \(ADITJ/SWG\)" <wnatsume@jp.adit-jv.com>,
+        "Nishiguchi, Naohiro \(ADITJ/SWG\)" <nnishiguchi@jp.adit-jv.com>,
+        =?utf-8?B?5rWF6YeO5oGt5Y+y?= <yasano@jp.adit-jv.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        yasushi asano <yazzep@gmail.com>,
+        Martin Mueller <Martin.Mueller5@de.bosch.com>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Subject: Re: [PATCH v3] USB: hub.c: decrease the number of attempts of
+ enumeration scheme
+Message-ID: <20200915144843.GB1002979@rowland.harvard.edu>
+References: <CAEt1Rjq+Fz85KU-aKO+boNE5yL7GiwdopmRd3-FxEL+mzEui-g@mail.gmail.com>
+ <20200907155052.2450-1-yazzep@gmail.com>
+ <20200907155052.2450-2-yazzep@gmail.com>
+ <20200908190402.GA797206@rowland.harvard.edu>
+ <CAEt1RjquJZzTctN6dNQSDbUZ9YG2FnEtzTZsoA3a9RtXHxwUmA@mail.gmail.com>
+ <CAEt1RjpGcZ4T70tr83pmcD--PzAMboBkbv55qFcRfMz11ZUggw@mail.gmail.com>
+ <20200911151228.GA883311@rowland.harvard.edu>
+ <20200915094531.GA8046@lxhi-065.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200915140250.kf2kgfbgzxfvmoiy@treble>
+In-Reply-To: <20200915094531.GA8046@lxhi-065.adit-jv.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:02:50AM -0500, Josh Poimboeuf wrote:
-> If you getting them (twice?) and vger's not, it sounds like vger is
-> dropping them for some reason.
+On Tue, Sep 15, 2020 at 11:45:31AM +0200, Eugeniu Rosca wrote:
+> Dear Alan,
+> Dear Greg,
+> 
+> On Fri, Sep 11, 2020 at 11:12:28AM -0400, Alan Stern wrote:
+> 
+> > The thing is, I'm afraid that without these retry loops, some devices
+> > will stop working.  If that happens, we will not be able to keep this
+> > patch in place; we will just have to accept that we fail the PET test.
+> > 
+> > Alan Stern
+> 
+> Does this mean that Linux community leaves no choice but to ship a
+> forked kernel (with no chance of alignment to upstream) for
+> organizations which design embedded devices where USB plays a key
+> role, hence requires passing the USB-IF Compliance Program [*]?
+> 
+> Is there hope to give users a knob (build-time or run-time) which would
+> enable the behavior expected and thoroughly described in compliance
+> docs, particularly chapter "6.7.22 A-UUT Device No Response for
+> connection timeout" of "USB On-The-Go and Embedded Host Automated
+> Compliance Plan" [**]?
 
-Yes, this has kinda been the case last and this week, for whatever
-reason. From the two v38 submissions, I have only this in my LKML mbox
-and it looks like someone is dropping mail...
+It is possible to add a build-time Kconfig option that would control the 
+maximum number of port initialization attempts.  But let's start with 
+testing the patch I sent you.  After all, the first step is to get 
+something that does what you want correctly.
 
-109127 N C Sep 15           Jarkko Sakkinen ( : 35K|) [PATCH v38 00/24] Intel SGX foundations
-109128 N C Sep 15           Jarkko Sakkinen ( : 14K|) ├─>[PATCH v38 04/24] x86/sgx: Add SGX microarchitectural data structures
-109129 N C Sep 15           Jarkko Sakkinen ( : 10K|) ├─>[PATCH v38 05/24] x86/sgx: Add wrappers for ENCLS leaf functions
-109130 N C Sep 15           Jarkko Sakkinen ( :4.5K|) ├─>[PATCH v38 07/24] x86/cpu/intel: Add nosgx kernel parameter
-109131   C Sep 15           Jarkko Sakkinen ( :  60|) ├─>[PATCH v38 10/24] mm: Add vm_ops->mprotect()
-109132 N C Sep 15           Jarkko Sakkinen ( : 14K|) ├─>[PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-109133 N C Sep 15           Jarkko Sakkinen ( :9.1K|) ├─>[PATCH v38 15/24] x86/sgx: Enable provisioning for remote attestation
-109134 N C Sep 15           Jarkko Sakkinen ( : 15K|) ├─>[PATCH v38 18/24] x86/vdso: Add support for exception fixup in vDSO functions
-109135 N C Sep 15           Jarkko Sakkinen ( :5.4K|) ├─>[PATCH v38 19/24] x86/fault: Add helper function to sanitize error code
-109136 N C Sep 15           Jarkko Sakkinen ( :7.4K|) ├─>[PATCH v38 20/24] x86/traps: Attempt to fixup exceptions in vDSO before signaling
-109137 N C Sep 15           Jarkko Sakkinen ( : 34K|) ├─>[PATCH v38 22/24] selftests/x86: Add a selftest for SGX
-109138 N C Sep 15           Jarkko Sakkinen ( : 12K|) ├─>[PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture and kernel internals
-109139 N C Sep 15           Jarkko Sakkinen ( :4.0K|) └─>[PATCH v38 24/24] x86/sgx: Update MAINTAINERS
-
-109147 N C Sep 15           Jarkko Sakkinen ( :5.8K|) ┬─>[PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver
-109148 N C Sep 15           Jarkko Sakkinen ( :5.4K|) ├─>[PATCH v38 19/24] x86/fault: Add helper function to sanitize error code
-109149 N C Sep 15           Jarkko Sakkinen ( :7.4K|) ├─>[PATCH v38 20/24] x86/traps: Attempt to fixup exceptions in vDSO before signaling
-109150 N C Sep 15           Jarkko Sakkinen ( : 15K|) ├─>[PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX enclave call
-109151 N C Sep 15           Jarkko Sakkinen ( : 12K|) └─>[PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture and kernel internals
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Alan Stern
