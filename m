@@ -2,115 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395A026B24A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF1526B1A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbgIOPyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:54:54 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53714 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727390AbgIOPJG (ORCPT
+        id S1727717AbgIOWeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:34:01 -0400
+Received: from mx0a-00273201.pphosted.com ([208.84.65.16]:10666 "EHLO
+        mx0a-00273201.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727539AbgIOQQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:09:06 -0400
-X-UUID: 0a065e74896c4de8b3203126e03023b7-20200915
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=jhf6yLptTYEHUoTCMmm0pLT8bnD4HjopGFob8vx8D34=;
-        b=r0H9WV05fqstPy5tnEhxxDtrkJe9nFEtQMIUMkfWVFxfl+s3E7CnRUaB3INALycochkhKlCEMT23bOrM93yVviQgLtRGtuCjIB84CHyI3anHbSPM2dTmwSeydXqxUbjB08vARaWhiIYlAyllm8tp46K9PpICE1jpvgepI8M8wfk=;
-X-UUID: 0a065e74896c4de8b3203126e03023b7-20200915
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <phil.chang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 943115847; Tue, 15 Sep 2020 23:09:00 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Sep 2020 23:08:59 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Sep 2020 23:08:56 +0800
-From:   Phil Chang <phil.chang@mediatek.com>
-To:     <linux-arm-kernel@lists.infradead.org>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Phil Chang <phil.chang@mediatek.com>,
-        YJ Chiang <yj.chiang@mediatek.com>,
-        Alix Wu <alix.wu@mediatek.com>,
-        Mike Rapoport <rppt@kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] [PATCH] ARM64: Setup DMA32 zone size by bootargs
-Date:   Tue, 15 Sep 2020 23:08:55 +0800
-Message-ID: <20200915150855.24825-1-phil.chang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 15 Sep 2020 12:16:38 -0400
+Received: from pps.filterd (m0108159.ppops.net [127.0.0.1])
+        by mx0a-00273201.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FF7lhN012243;
+        Tue, 15 Sep 2020 08:11:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=juniper.net; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=PPS1017;
+ bh=LDRzk7HMzzwKyNBvHWFAOlGNLQqg6m8IfDYhepVfGGM=;
+ b=J4bI2csYh7Is10auY6YJd+gnOhVTtIAtwenCvqcCou5d9OTElJpDyyEFZcQ5eWv1mQIM
+ lIY6vI6oQh1y4YL3rpiWxfEAIkvLQxqB/92F4xrO08sc5bARyAJ/aYGi1sSVRTie70eK
+ b0uB8giViRKSqPwpv7JbVd+ojdesQ7brjEarM1kQqvGrMELA7yI+CklhEyEa2BdJU/uU
+ sMDPS6/xAmlYzDuvtkwTkZIuoqQ0O+CFzCjJ9xBRK2dYtrpoTVgHuNZFL4KuWNIQVUZu
+ 10t+NOe+T9cbLNAzON9j49KbTyCxM9d3aF+MnMZjO/iRSUGB1+tuyqdXaZmKAma0KKzI jA== 
+Received: from nam02-cy1-obe.outbound.protection.outlook.com (mail-cys01nam02lp2056.outbound.protection.outlook.com [104.47.37.56])
+        by mx0a-00273201.pphosted.com with ESMTP id 33gv9wvvkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 08:11:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nLTXWI/jYKYCVKhH8mO1/Dy6lR1ct194RCjG9aiC1iswKv2FnKHnXxxAZdMfoauJ3uewwp7/2Cx6fJBwXOuCR7rSTZjjv7IC8wMubsd30aC/YvO81ZANAGN0C8MALyEqpp+ZYX7CgqQ74Qichz1wLkZmswODgBtCmYTu4QXx3Aln3Mo0bP6txAxWnHzuHBsoIXuVcEtPb8zY7qBm2LvE3ZoOSeyC8aYCClnBckDH/9A/R/Zrx/2w/HFi0yXtDjpMuC2dQcGotaUBR3j1nr5dCAqZxy3LVF70TjdbgKF2kgT50yUEWRTqFBLaP8PP/H/gJEhk8H9Im9v0Uo+euCCClw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LDRzk7HMzzwKyNBvHWFAOlGNLQqg6m8IfDYhepVfGGM=;
+ b=P3aKzLGgE0WXNFplWKQaF60xe1sK5QtB9LseXrsqHdpPXGIrDxoMPqm0DOqE72XTHUsTwBtpw0a/USN/8Rexo9fvBIIKnuXtjgypYDPH40cr1TZvs+8o6f7VL2EM2vk77/1QUobNveZWpyjxCGFDt9SXpG6x7Gz8l/aeFDdXlnigx57lbuoQ9mBu9tfvTtAeExWS4vjyNMRapGqHjWMYRp6E4SsFfNMc7K8ujc2OuWLdffgzeS7vs4GhABgXc/vSHLhEjAc7jj3YoDxWJFj9D3Tv5hI52vD37W61hIHAbJ/MpXmnyrBaY/BD0Ajy1fvO29dCj4JkeCCKaBP4LrWz2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=juniper.net; dmarc=pass action=none header.from=juniper.net;
+ dkim=pass header.d=juniper.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=juniper.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LDRzk7HMzzwKyNBvHWFAOlGNLQqg6m8IfDYhepVfGGM=;
+ b=Ivk/8u2xnTaU4r02bxim7K0KKTBvI/tyi1eC9RyX5KX9wkR0PpgxAUS0OW0aXPihubm04NZwjyUWKNDD6efQ3axU4y9kj7WZjLAMjtbktHaASO4zg2qzCcr0jg2qshfegDQIiRnjicjsW24hiGVS3lI86wIKLDZ63kx7QkD3neU=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=juniper.net;
+Received: from BYAPR05MB5592.namprd05.prod.outlook.com (2603:10b6:a03:19::16)
+ by BYAPR05MB5589.namprd05.prod.outlook.com (2603:10b6:a03:1e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.9; Tue, 15 Sep
+ 2020 15:11:51 +0000
+Received: from BYAPR05MB5592.namprd05.prod.outlook.com
+ ([fe80::e4a2:9674:56bb:b13f]) by BYAPR05MB5592.namprd05.prod.outlook.com
+ ([fe80::e4a2:9674:56bb:b13f%7]) with mapi id 15.20.3391.009; Tue, 15 Sep 2020
+ 15:11:51 +0000
+From:   Ming Qiao <mqiao@juniper.net>
+To:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ming Qiao <mqiao@juniper.net>, Debjit Ghosh <dghosh@juniper.net>,
+        Santhanakrishnan Balraj <sbalraj@juniper.net>,
+        Rajat Jain <rajatja@google.com>
+Subject: [PATCH 2/3] PCI: Add quirks for Juniper ASICs to set class code
+Date:   Tue, 15 Sep 2020 08:11:02 -0700
+Message-Id: <20200915151103.7086-2-mqiao@juniper.net>
+X-Mailer: git-send-email 2.10.0
+In-Reply-To: <20200915151103.7086-1-mqiao@juniper.net>
+References: <20200915151103.7086-1-mqiao@juniper.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BL0PR02CA0086.namprd02.prod.outlook.com
+ (2603:10b6:208:51::27) To BYAPR05MB5592.namprd05.prod.outlook.com
+ (2603:10b6:a03:19::16)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from qnc-ubm16-mqiao.juniper.net (66.129.224.68) by BL0PR02CA0086.namprd02.prod.outlook.com (2603:10b6:208:51::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 15:11:49 +0000
+X-Mailer: git-send-email 2.10.0
+X-Originating-IP: [66.129.224.68]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3b9ee923-1a3c-462e-2c1d-08d85989ac64
+X-MS-TrafficTypeDiagnostic: BYAPR05MB5589:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR05MB558902E12DCD5AA8EFCBFB39AF200@BYAPR05MB5589.namprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tyRvjjqF4XjmuzW8doQ+38A6ByUzFrM0gKbMGZJY+P8aSgJIn+7GMzJjNzC9K75WmiHUEv1X4H/W0Yw2l8L4P8Q+pdUr+vH/GCQgX6n5EV3HXbuEKhrJmWVJWLnqqtcAJRZ1u5pqHhYqSn3QZN/HmD96khGWHRT+CRxiT6UMb2JTSHs92YXWeex7390b+TYsQkkik3zT7CcZ72IFQRLVwdqAaLPFuytR5O0QIrApow4vyM3dK8lpGryzYYdbBPsw2mFLuGDwBnQ44r8XcAXbrmoZqgJXy54BPg779G3c/rG/GAp627zhdOgmvwUKlC232WjX8ffJJD8xn+D0UayqQ0QC5hDtGBJJl+lq4aKCYuhytUo6uGZ2OA5yIE1Uyhx4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB5592.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(366004)(39860400002)(396003)(83380400001)(52116002)(478600001)(7696005)(54906003)(316002)(6486002)(26005)(186003)(4326008)(2616005)(956004)(16526019)(6666004)(1076003)(86362001)(8676002)(2906002)(36756003)(66556008)(66476007)(66946007)(5660300002)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: OiZUO2KwydCT7LH0MjjwN4OnRN/m6K+o+cHLe7EQ0T8lgd3LNnL78KAWxRwUpn2kWefDt/MnzKRXVi5KdMqBi0BwwxqUy6vGE290+c3aVzdvFiXddR7r2Gq8rSc5ohN3RGGryc+eLWeCw86/ZrNLfJvlU119BpAMGmL8N94NTy8pBgxVZSSd4avR8PhuhLLIrImgcIvOxSyANPZJYC4qPlc4LTjZPhtUdp/ThI7Bd6PwsVyiO5zf5qjfQL7WiDFjM7Ekl0MXfDGarip9ne/zHHHjDGYNh9d/wExiLuKMjvQf0k/0mCd2x6pF0fQSjIV7V1tXHq/mu0uniDpvzgfTuJ9GrAZEjGNYg19+Bl+qkY3IMg+6deQCqf8LvimPAyrXO6tVsn3UbT6NeLoYLm5KI07dLzBwwZBXTpEAJH8kv1cr3tol5diYqXlUZ0MCdISxfzbGSh2tvEDGUZkvRBiT3i+Tls1sSpRqEvqu6Vw+oqAlsz7H/DBTBpZM2cNUt1WQzDNI+bExBZXDCWun/3geHlFmbN1Hqou6kDtcZRFlKAqPfP+M0A5ojfO4OybSQOeWkxvD5m6R2pRGrYbvFVDZ6YB6ubfOaKIZK/GHyEPcVmB0PT5VDL7al8i2CBpGUloWGYJ/UXKL1mxP0Rwv8q1NLg==
+X-OriginatorOrg: juniper.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b9ee923-1a3c-462e-2c1d-08d85989ac64
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB5592.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 15:11:51.2991
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bea78b3c-4cdb-4130-854a-1d193232e5f4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e+zKCbFfVvVByBxBHjLL6wzYI8hNcK7wG0FheJHSYpazKLmiYXHji/Q87txMeqDMptvZVhXWJkuGwtt2AbutoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB5589
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-15_11:2020-09-15,2020-09-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_notspam policy=outbound_spam score=0 mlxscore=0
+ bulkscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 clxscore=1015 mlxlogscore=999
+ adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150127
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWxsb3dpbmcgdGhlIERNQTMyIHpvbmUgYmUgY29uZmlndXJhYmxlIGluIEFSTTY0IGJ1dCBhdCBt
-b3N0IDRHYi4NCg0KU2lnbmVkLW9mZi1ieTogQWxpeCBXdSA8YWxpeC53dUBtZWRpYXRlay5jb20+
-DQpTaWduZWQtb2ZmLWJ5OiBZSiBDaGlhbmcgPHlqLmNoaWFuZ0BtZWRpYXRlay5jb20+DQpTaWdu
-ZWQtb2ZmLWJ5OiBQaGlsIENoYW5nIDxwaGlsLmNoYW5nQG1lZGlhdGVrLmNvbT4NCi0tLQ0KDQog
-Li4uL2FkbWluLWd1aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLnR4dCAgICAgICAgIHwgIDMgKysNCiBh
-cmNoL2FybTY0L2luY2x1ZGUvYXNtL21lbW9yeS5oICAgICAgICAgICAgICAgfCAgMiArDQogYXJj
-aC9hcm02NC9tbS9pbml0LmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMzkgKysrKysrKysr
-KysrKysrKystLQ0KIDMgZmlsZXMgY2hhbmdlZCwgNDEgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlv
-bnMoLSkNCg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUva2VybmVsLXBh
-cmFtZXRlcnMudHh0IGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVy
-cy50eHQNCmluZGV4IGJkYzFmMzNmZDNkMS4uNWJlNjI1OWU5YmE4IDEwMDY0NA0KLS0tIGEvRG9j
-dW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVycy50eHQNCisrKyBiL0RvY3Vt
-ZW50YXRpb24vYWRtaW4tZ3VpZGUva2VybmVsLXBhcmFtZXRlcnMudHh0DQpAQCAtOTgwLDYgKzk4
-MCw5IEBADQogCQkJVGhlIGZpbHRlciBjYW4gYmUgZGlzYWJsZWQgb3IgY2hhbmdlZCB0byBhbm90
-aGVyDQogCQkJZHJpdmVyIGxhdGVyIHVzaW5nIHN5c2ZzLg0KIA0KKwlkbWEzMl9zaXplPW5uW01H
-XSAgW0tOTCxCT09ULEFSTTY0XQ0KKwkJCUZvcmNlcyB0aGUgRE1BMzIgem9uZSBzaXplIG9mIDxu
-bj4gaW4gTUIuDQorDQogCWRyaXZlcl9hc3luY19wcm9iZT0gIFtLTkxdDQogCQkJTGlzdCBvZiBk
-cml2ZXIgbmFtZXMgdG8gYmUgcHJvYmVkIGFzeW5jaHJvbm91c2x5Lg0KIAkJCUZvcm1hdDogPGRy
-aXZlcl9uYW1lMT4sPGRyaXZlcl9uYW1lMj4uLi4NCmRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2lu
-Y2x1ZGUvYXNtL21lbW9yeS5oIGIvYXJjaC9hcm02NC9pbmNsdWRlL2FzbS9tZW1vcnkuaA0KaW5k
-ZXggYWZhNzIyNTA0YmZkLi43MTBkZTA4YWU4YWUgMTAwNjQ0DQotLS0gYS9hcmNoL2FybTY0L2lu
-Y2x1ZGUvYXNtL21lbW9yeS5oDQorKysgYi9hcmNoL2FybTY0L2luY2x1ZGUvYXNtL21lbW9yeS5o
-DQpAQCAtMTc1LDYgKzE3NSw4IEBAIGV4dGVybiB1NjQJCQlraW1hZ2VfdmFkZHI7DQogLyogdGhl
-IG9mZnNldCBiZXR3ZWVuIHRoZSBrZXJuZWwgdmlydHVhbCBhbmQgcGh5c2ljYWwgbWFwcGluZ3Mg
-Ki8NCiBleHRlcm4gdTY0CQkJa2ltYWdlX3ZvZmZzZXQ7DQogDQorZXh0ZXJuIHBoeXNfYWRkcl90
-CQlkbWEzMl96b25lX3NpemU7DQorDQogc3RhdGljIGlubGluZSB1bnNpZ25lZCBsb25nIGthc2xy
-X29mZnNldCh2b2lkKQ0KIHsNCiAJcmV0dXJuIGtpbWFnZV92YWRkciAtIEtJTUFHRV9WQUREUjsN
-CmRpZmYgLS1naXQgYS9hcmNoL2FybTY0L21tL2luaXQuYyBiL2FyY2gvYXJtNjQvbW0vaW5pdC5j
-DQppbmRleCA0ODFkMjJjMzJhMmUuLmM4YWY1MzY4MGQ0NiAxMDA2NDQNCi0tLSBhL2FyY2gvYXJt
-NjQvbW0vaW5pdC5jDQorKysgYi9hcmNoL2FybTY0L21tL2luaXQuYw0KQEAgLTYwLDYgKzYwLDkg
-QEAgRVhQT1JUX1NZTUJPTChwaHlzdmlydF9vZmZzZXQpOw0KIHN0cnVjdCBwYWdlICp2bWVtbWFw
-IF9fcm9fYWZ0ZXJfaW5pdDsNCiBFWFBPUlRfU1lNQk9MKHZtZW1tYXApOw0KIA0KK3BoeXNfYWRk
-cl90IGRtYTMyX3pvbmVfc2l6ZSBfX3JvX2FmdGVyX2luaXQ7DQorRVhQT1JUX1NZTUJPTChkbWEz
-Ml96b25lX3NpemUpOw0KKw0KIC8qDQogICogV2UgY3JlYXRlIGJvdGggWk9ORV9ETUEgYW5kIFpP
-TkVfRE1BMzIuIFpPTkVfRE1BIGNvdmVycyB0aGUgZmlyc3QgMUcgb2YNCiAgKiBtZW1vcnkgYXMg
-c29tZSBkZXZpY2VzLCBuYW1lbHkgdGhlIFJhc3BiZXJyeSBQaSA0LCBoYXZlIHBlcmlwaGVyYWxz
-IHdpdGgNCkBAIC0yNDIsNiArMjQ1LDI5IEBAIHN0YXRpYyBpbnQgX19pbml0IGVhcmx5X21lbShj
-aGFyICpwKQ0KIH0NCiBlYXJseV9wYXJhbSgibWVtIiwgZWFybHlfbWVtKTsNCiANCitzdGF0aWMg
-aW50IF9faW5pdCBzZXR1cF9kbWEzMl96b25lKGNoYXIgKnApDQorew0KKwl1NjQgc2l6ZTsNCisN
-CisJaWYgKCFwKQ0KKwkJcmV0dXJuIC1FSU5WQUw7DQorDQorCWlmIChrc3RydG91bGwocCwgMCwg
-JnNpemUpKQ0KKwkJcmV0dXJuIC1FSU5WQUw7DQorDQorCS8qIERNQTMyIHpvbmUgc2l6ZSBzaG91
-bGQgbmV2ZXIgZ3JhdGVyIHRoYW4gNEcgKi8NCisJaWYgKHNpemUgPiBtYXhfem9uZV9waHlzKDMy
-KSAvIFNaXzFNKQ0KKwkJcmV0dXJuIC1FSU5WQUw7DQorDQorCXByX25vdGljZSgiU2V0dXAgZG1h
-MzIgem9uZSBzaXplIHRvICVsbHUgTWJcbiIsIHNpemUpOw0KKw0KKwlkbWEzMl96b25lX3NpemUg
-PSBzaXplICogU1pfMU07DQorDQorCXJldHVybiAwOw0KK30NCisNCitlYXJseV9wYXJhbSgiZG1h
-MzJfc2l6ZSIsIHNldHVwX2RtYTMyX3pvbmUpOw0KKw0KIHN0YXRpYyBpbnQgX19pbml0IGVhcmx5
-X2luaXRfZHRfc2Nhbl91c2FibGVtZW0odW5zaWduZWQgbG9uZyBub2RlLA0KIAkJY29uc3QgY2hh
-ciAqdW5hbWUsIGludCBkZXB0aCwgdm9pZCAqZGF0YSkNCiB7DQpAQCAtMzkyLDEwICs0MTgsMTcg
-QEAgdm9pZCBfX2luaXQgYXJtNjRfbWVtYmxvY2tfaW5pdCh2b2lkKQ0KIAkJYXJtNjRfZG1hX3Bo
-eXNfbGltaXQgPSBtYXhfem9uZV9waHlzKEFSTTY0X1pPTkVfRE1BX0JJVFMpOw0KIAl9DQogDQot
-CWlmIChJU19FTkFCTEVEKENPTkZJR19aT05FX0RNQTMyKSkNCi0JCWFybTY0X2RtYTMyX3BoeXNf
-bGltaXQgPSBtYXhfem9uZV9waHlzKDMyKTsNCi0JZWxzZQ0KKwlpZiAoSVNfRU5BQkxFRChDT05G
-SUdfWk9ORV9ETUEzMikpIHsNCisJCWlmIChkbWEzMl96b25lX3NpemUpIHsNCisJCQlhcm02NF9k
-bWEzMl9waHlzX2xpbWl0ID0gbWluKG1heF96b25lX3BoeXMoMzIpLA0KKwkJCQlkbWEzMl96b25l
-X3NpemUgKyBtZW1ibG9ja19zdGFydF9vZl9EUkFNKCkpOw0KKwkJfSBlbHNlIHsNCisJCQlhcm02
-NF9kbWEzMl9waHlzX2xpbWl0ID0gbWF4X3pvbmVfcGh5cygzMik7DQorCQkJZG1hMzJfem9uZV9z
-aXplID0gYXJtNjRfZG1hMzJfcGh5c19saW1pdDsNCisJCX0NCisJfSBlbHNlIHsNCiAJCWFybTY0
-X2RtYTMyX3BoeXNfbGltaXQgPSBQSFlTX01BU0sgKyAxOw0KKwl9DQogDQogCXJlc2VydmVfY3Jh
-c2hrZXJuZWwoKTsNCiANCi0tIA0KMi4xOC4wDQo=
+Some of the Juniper ASICs do not report correct PCI class ID, which
+would confuse kernel APIs accessing the specific class of devices.
+Change them to PCI_CLASS_NETWORK_OTHER << 8.
+        
+Signed-off-by: Debjit Ghosh <dghosh@juniper.net>
+Signed-off-by: Santhanakrishnan Balraj <sbalraj@juniper.net>
+Signed-off-by: Rajat Jain <rajatja@google.com>
+Signed-off-by: Ming Qiao <mqiao@juniper.net>
+---
+ drivers/pci/quirks.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 61344d2..04dd490 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -5657,3 +5657,22 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00A8, quirk_jnx_fpga);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00A9, quirk_jnx_fpga);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00AA, quirk_jnx_fpga);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_XILINX, 0x0505, quirk_jnx_fpga);
++
++/*
++ * PCI class reported by some Juniper ASICs is not correct.
++ * Change it to NETWORK.
++ */
++static void quirk_jnx_asic(struct pci_dev *dev)
++{
++	dev->class = PCI_CLASS_NETWORK_OTHER << 8;
++}
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x003C, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x003D, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x003E, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0055, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x005E, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x005F, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x008E, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x008D, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0090, quirk_jnx_asic);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00B2, quirk_jnx_asic);
+-- 
+2.10.0
 
