@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D1726B63E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC6426B777
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727271AbgIPAAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:00:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44146 "EHLO mail.kernel.org"
+        id S1726146AbgIPAYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:24:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726952AbgIOOaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:30:17 -0400
+        id S1726463AbgIOOU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:20:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F02C22266;
-        Tue, 15 Sep 2020 14:21:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF27722242;
+        Tue, 15 Sep 2020 14:16:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179716;
-        bh=o4yFUxW44yI+1ijAx7NWlyNJO2q9xKAmGAsYVSSShjk=;
+        s=default; t=1600179405;
+        bh=zlO04cuBhV3PjPDzXpp2mShiEaTudJ8etpwglLcOXLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lCHGGt3nBz2gnXxN5RhZzLh2YQRr4N9ayjWP4pFG0WWn7J6bsUNVEf+cLgBwJreEW
-         TJJmHx3u5nFPMshbsXxngY+1guO3Lf7vi/xuXt0eyefyZ3h+1HUH/Gpp7I58L6kT5+
-         aVOagrRgtSa5RI8iVdnk+bWHblVz/kE/hiGmGAYs=
+        b=CLnqK2sGoXSidqXWbc+JF90wZLWokOyo1K7q7OhNf5mzSULrlAP8Hn79mlLZW/YBw
+         SeHaF0xGQ/XGgRCTDAiZXifF81TC4ZtR4EXzQSOg80CG29pngsJzyWmo+aCRE7Smu8
+         lIvx0w5IEOZsNgEOjc1jn9wZduxQhUPVLqG0epuI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Stable@vger.kernel.org
-Subject: [PATCH 5.4 089/132] iio:accel:mma8452: Fix timestamp alignment and prevent data leak.
-Date:   Tue, 15 Sep 2020 16:13:11 +0200
-Message-Id: <20200915140648.566058396@linuxfoundation.org>
+Subject: [PATCH 4.19 47/78] iio:adc:ti-adc081c Fix alignment and data leak issues
+Date:   Tue, 15 Sep 2020 16:13:12 +0200
+Message-Id: <20200915140635.936272631@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-References: <20200915140644.037604909@linuxfoundation.org>
+In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
+References: <20200915140633.552502750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,65 +47,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 89226a296d816727405d3fea684ef69e7d388bd8 upstream.
+commit 54f82df2ba86e2a8e9cbf4036d192366e3905c89 upstream.
 
 One of a class of bugs pointed out by Lars in a recent review.
 iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
 to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 16 byte u8 array on the stack.  As Lars also noted
-this anti pattern can involve a leak of data to userspace and that
-indeed can happen here.  We close both issues by moving to
-a suitable structure in the iio_priv() data with alignment
-ensured by use of an explicit c structure.  This data is allocated
-with kzalloc so no data can leak appart from previous readings.
+this driver which uses an array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv().
 
-The additional forcing of the 8 byte alignment of the timestamp
-is not strictly necessary but makes the code less fragile by
-making this explicit.
+This data is allocated with kzalloc so no data can leak apart
+from previous readings.
 
-Fixes: c7eeea93ac60 ("iio: Add Freescale MMA8452Q 3-axis accelerometer driver")
+The eplicit alignment of ts is necessary to ensure correct padding
+on x86_32 where s64 is only aligned to 4 bytes.
+
+Fixes: 08e05d1fce5c ("ti-adc081c: Initial triggered buffer support")
 Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Peter Meerwald <pmeerw@pmeerw.net>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/accel/mma8452.c |   11 ++++++++---
+ drivers/iio/adc/ti-adc081c.c |   11 ++++++++---
  1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/iio/accel/mma8452.c
-+++ b/drivers/iio/accel/mma8452.c
-@@ -110,6 +110,12 @@ struct mma8452_data {
- 	int sleep_val;
- 	struct regulator *vdd_reg;
- 	struct regulator *vddio_reg;
+--- a/drivers/iio/adc/ti-adc081c.c
++++ b/drivers/iio/adc/ti-adc081c.c
+@@ -36,6 +36,12 @@ struct adc081c {
+ 
+ 	/* 8, 10 or 12 */
+ 	int bits;
 +
-+	/* Ensure correct alignment of time stamp when present */
++	/* Ensure natural alignment of buffer elements */
 +	struct {
-+		__be16 channels[3];
++		u16 channel;
 +		s64 ts __aligned(8);
-+	} buffer;
++	} scan;
  };
  
-  /**
-@@ -1091,14 +1097,13 @@ static irqreturn_t mma8452_trigger_handl
+ #define REG_CONV_RES 0x00
+@@ -131,14 +137,13 @@ static irqreturn_t adc081c_trigger_handl
  	struct iio_poll_func *pf = p;
  	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct mma8452_data *data = iio_priv(indio_dev);
--	u8 buffer[16]; /* 3 16-bit channels + padding + ts */
+ 	struct adc081c *data = iio_priv(indio_dev);
+-	u16 buf[8]; /* 2 bytes data + 6 bytes padding + 8 bytes timestamp */
  	int ret;
  
--	ret = mma8452_read(data, (__be16 *)buffer);
-+	ret = mma8452_read(data, data->buffer.channels);
+ 	ret = i2c_smbus_read_word_swapped(data->i2c, REG_CONV_RES);
  	if (ret < 0)
- 		goto done;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
+ 		goto out;
+-	buf[0] = ret;
+-	iio_push_to_buffers_with_timestamp(indio_dev, buf,
++	data->scan.channel = ret;
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
  					   iio_get_time_ns(indio_dev));
- 
- done:
+ out:
+ 	iio_trigger_notify_done(indio_dev->trig);
 
 
