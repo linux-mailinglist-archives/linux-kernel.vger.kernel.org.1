@@ -2,154 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A6D26A354
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0F826A358
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgIOKki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:40:38 -0400
+        id S1726309AbgIOKmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:42:19 -0400
 Received: from m43-7.mailgun.net ([69.72.43.7]:41352 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgIOKkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:40:36 -0400
+        id S1726142AbgIOKmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:42:04 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600166435; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=RGfRESai5R6+4YAD/QGq49W8IJ+1ZKr/4GkZuaDnj2I=; b=nyH/cDk2zPlEeXPTIoPctvFr5NvBPzMLPqxgg8FGP/ZTWl5acpif4PgsVRss8/yrXdqr8V3g
- apQcMwNaR1kyxWUGHDgRIbDBWg7ChcF9Zg5ZIthkGJ9EdfJCbZfGYDndeqUZmNpUJ/iTgbeD
- eiqyglTJc0TbMIdF4LWnwV8SSPQ=
+ s=smtp; t=1600166524; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=Ob6BPX8OJGvCc9gelWpVNll2SiAaKih7QAlz13btB1Q=; b=QtALAyTrElx7idO3UeW+Y68YVkIleTYhMOU0KwoG1VPGaf5ua/r4S6FUsOihmP48gY/NMgid
+ 4F5JWR6BJr4dVsulXQFl4BIRVFccBgtYqK2nHjlVgOwE02kwOmtVCLZJjWe72Zxxjo5kVRS1
+ XVOy0zIvlx2pMFhgJUblPaxsoC8=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f609a18ba408b30ce2846a9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 10:40:24
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f609a6b4f13e63f04de10e9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 10:41:47
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 71AF0C43382; Tue, 15 Sep 2020 10:40:23 +0000 (UTC)
+        id 76A03C43385; Tue, 15 Sep 2020 10:41:46 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.100] (unknown [47.8.151.253])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DE1DAC433C8;
-        Tue, 15 Sep 2020 10:40:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DE1DAC433C8
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5C46BC433CA;
+        Tue, 15 Sep 2020 10:41:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5C46BC433CA
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH 2/3] spi: spi-geni-qcom: Don't program CS_TOGGLE again and
- again
-To:     Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     swboyd@chromium.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-References: <20200912140730.1.Ie67fa32009b94702d56232c064f1d89065ee8836@changeid>
- <20200912140730.2.I33e571179986850b4ec17042e813d0b08fb1b9c1@changeid>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <42d9b988-23fd-7090-341f-95e2ea3265a5@codeaurora.org>
-Date:   Tue, 15 Sep 2020 16:10:07 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingwei@codeaurora.org
+From:   Tingwei Zhang <tingwei@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Kim Phillips <kim.phillips@arm.com>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>, tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v11 00/24] coresight: allow to build coresight as modules
+Date:   Tue, 15 Sep 2020 18:40:52 +0800
+Message-Id: <20200915104116.16789-1-tingwei@codeaurora.org>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-In-Reply-To: <20200912140730.2.I33e571179986850b4ec17042e813d0b08fb1b9c1@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Allow to build coresight as modules. This gives developers the feasibility to
+test their code without reboot.
 
-On 9/13/2020 2:38 AM, Douglas Anderson wrote:
-> We always toggle the chip select manually in spi-geni-qcom so that we
-> can properly implement the Linux API.  There's no reason to program
-> this to the hardware on every transfer.  Program it once at init and
-> be done with it.
->
-> This saves some part of a microsecond of overhead on each transfer.
-> While not really noticeable on any real world benchmarks, we might as
-> well save the time.
+This series is based on below two series.
 
-Yeah this is configuration part, can be moved to one time init function, 
-as per HPG CS_TOGGLE bit of SPI_TRANS_CFG register is used to instruct 
-FW to toggle CS line btw each words. We never came across any 
-usecase/slave who needs this.
+ - "coresight: allow to build components as modules"
+   https://lkml.org/lkml/2018/6/5/989
+ - "coresight: make drivers modular"
+   https://lkml.org/lkml/2020/1/17/468
 
-Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+Change from v10:
+Rebase to latest coresight-next
+Protect etmdrvdata[] by modifying it on relevant CPU for ETM3. (Mathieu and Suzuki)
+ -It's not tested.
+Refine the alignment in coresight makefile. (Mathieu)
+Add reason for cti_remove_conn_xrefs change. (Mathieu)
+Set owner for static funnel driver. (Suzuki)
 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
->   drivers/spi/spi-geni-qcom.c | 12 +++++++-----
->   1 file changed, 7 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-> index 7f0bf0dec466..92d88bf85a90 100644
-> --- a/drivers/spi/spi-geni-qcom.c
-> +++ b/drivers/spi/spi-geni-qcom.c
-> @@ -290,6 +290,7 @@ static int spi_geni_init(struct spi_geni_master *mas)
->   {
->   	struct geni_se *se = &mas->se;
->   	unsigned int proto, major, minor, ver;
-> +	u32 spi_tx_cfg;
->   
->   	pm_runtime_get_sync(mas->dev);
->   
-> @@ -322,6 +323,11 @@ static int spi_geni_init(struct spi_geni_master *mas)
->   
->   	geni_se_select_mode(se, GENI_SE_FIFO);
->   
-> +	/* We always control CS manually */
-> +	spi_tx_cfg = readl(se->base + SE_SPI_TRANS_CFG);
-> +	spi_tx_cfg &= ~CS_TOGGLE;
-> +	writel(spi_tx_cfg, se->base + SE_SPI_TRANS_CFG);
-> +
->   	pm_runtime_put(mas->dev);
->   	return 0;
->   }
-> @@ -331,7 +337,7 @@ static void setup_fifo_xfer(struct spi_transfer *xfer,
->   				u16 mode, struct spi_master *spi)
->   {
->   	u32 m_cmd = 0;
-> -	u32 spi_tx_cfg, len;
-> +	u32 len;
->   	struct geni_se *se = &mas->se;
->   	int ret;
->   
-> @@ -350,7 +356,6 @@ static void setup_fifo_xfer(struct spi_transfer *xfer,
->   	spin_lock_irq(&mas->lock);
->   	spin_unlock_irq(&mas->lock);
->   
-> -	spi_tx_cfg = readl(se->base + SE_SPI_TRANS_CFG);
->   	if (xfer->bits_per_word != mas->cur_bits_per_word) {
->   		spi_setup_word_len(mas, mode, xfer->bits_per_word);
->   		mas->cur_bits_per_word = xfer->bits_per_word;
-> @@ -364,8 +369,6 @@ static void setup_fifo_xfer(struct spi_transfer *xfer,
->   	mas->tx_rem_bytes = 0;
->   	mas->rx_rem_bytes = 0;
->   
-> -	spi_tx_cfg &= ~CS_TOGGLE;
-> -
->   	if (!(mas->cur_bits_per_word % MIN_WORD_LEN))
->   		len = xfer->len * BITS_PER_BYTE / mas->cur_bits_per_word;
->   	else
-> @@ -384,7 +387,6 @@ static void setup_fifo_xfer(struct spi_transfer *xfer,
->   		writel(len, se->base + SE_SPI_RX_TRANS_LEN);
->   		mas->rx_rem_bytes = xfer->len;
->   	}
-> -	writel(spi_tx_cfg, se->base + SE_SPI_TRANS_CFG);
->   
->   	/*
->   	 * Lock around right before we start the transfer since our
+Change from v9:
+Fix warning reported by kernel test robot <lkp@intel.com>
+Rebase to coresight-next
+
+Change from v8:
+Protect etmdrvdata[] by modifying it on relevant CPU  (Mathieu and Suzuki)
+Grab the device before allocating memory for the node (Mathieu)
+Add author of coresight core driver (Mathieu)
+
+Change from v7:
+Depends on below change for ETM hotplug (Sai)
+https://lore.kernel.org/linux-arm-kernel/20200729051310.18436-1-saiprakash.ranjan@codeaurora.org/
+Add mutex lock to protect etmdrvdata[] (Suzuki)
+Add helper function coresight_get_ref()	(Suzuki)
+Reorg replicator and funnel change. Use two patches to support these
+two drivers. (Suzuki)
+Add fix tag to "coresight: etm: perf: Fix warning caused by etm_setup_aux
+failure" (Suzuki)
+Update author of "coresight: cti: Fix bug clearing sysfs links on callback"
+
+Change from v6:
+Correct module description for CATU (Mike)
+Check ect_ret equals 0 and set ect_enabled flag (Mike)
+Add Tested-by and Reviewed-by from Mike
+
+Change from v5:
+Add below CTI clean up change from Mike into series
+ -https://lists.linaro.org/pipermail/coresight/2020-July/004349.html
+Increase module reference count when enabling CTI device (Mike)
+
+Change from v4:
+Fix error handling in coresight_grab_devicei() (Greg)
+Add coresight: cti: Fix remove sysfs link error from Mike
+ -https://lists.linaro.org/pipermail/coresight/2020-July/004275.html
+Move cti_remove_conn_xrefs() into cti_remove() (Mike)
+Align patch subject to coresight: <component>: <description> (Mike)
+
+Change from v3:
+Rebase to coresight-next (Mike and Mathieu)
+Reorder try_get_module() (Suzuki)
+Clean up etmdrvdata[] in device remote path (Mike)
+Move cti_remove_conn_xrefs to cti_remove (Mike)
+
+Change from v2:
+Rebase to 5.8-rc5. Export coresight_add_sysfs_link and
+coresight_remove_sysfs_link
+Fix one cut and paste error on MODULE_DESCRIPTION of CTI
+
+Change from v1:
+Use try_module_get() to avoid module to be unloaded when device is used
+in active trace session. (Mathieu P)
+
+Change from above two series.
+This series adds the support to dynamically remove module when the device in
+that module is enabled and used by some trace path. It disables all trace
+paths with that device and release the trace path.
+
+Kim Phillips (8):
+  coresight: use IS_ENABLED for CONFIGs that may be modules
+  coresight: etm3x: allow etm3x to be built as a module
+  coresight: etm4x: allow etm4x to be built as a module
+  coresight: etb: allow etb to be built as a module
+  coresight: tpiu: allow tpiu to be built as a module
+  coresight: tmc: allow tmc to be built as a module
+  coresight: allow funnel driver to be built as module
+  coresight: allow replicator driver to be built as module
+
+Mian Yousaf Kaukab (2):
+  coresight: export global symbols
+  coresight: tmc-etr: add function to register catu ops
+
+Mike Leach (2):
+  coresight: cti: Fix remove sysfs link error
+  coresight: cti: Fix bug clearing sysfs links on callback
+
+Tingwei Zhang (12):
+  coresight: cpu_debug: add module name in Kconfig
+  coresight: cpu_debug: define MODULE_DEVICE_TABLE
+  coresight: add coresight prefix to barrier_pkt
+  coresight: add try_get_module() in coresight_grab_device()
+  coresight: stm: allow to build coresight-stm as a module
+  coresight: etm: perf: Fix warning caused by etm_setup_aux failure
+  coresight: cti: add function to register cti associate ops
+  coresight: cti: don't disable ect device if it's not enabled
+  coresight: cti: increase reference count when enabling cti
+  coresight: cti: allow cti to be built as a module
+  coresight: catu: allow catu drivers to be built as modules
+  coresight: allow the coresight core driver to be built as a module
+
+ drivers/hwtracing/coresight/Kconfig           |  54 ++++--
+ drivers/hwtracing/coresight/Makefile          |  26 +--
+ drivers/hwtracing/coresight/coresight-catu.c  |  37 ++++-
+ drivers/hwtracing/coresight/coresight-catu.h  |   2 -
+ .../{coresight.c => coresight-core.c}         | 154 +++++++++++++++---
+ .../hwtracing/coresight/coresight-cpu-debug.c |   2 +
+ .../{coresight-cti.c => coresight-cti-core.c} |  67 ++++++--
+ drivers/hwtracing/coresight/coresight-etb10.c |  28 +++-
+ .../hwtracing/coresight/coresight-etm-perf.c  |  13 +-
+ .../hwtracing/coresight/coresight-etm-perf.h  |   5 +-
+ ...resight-etm3x.c => coresight-etm3x-core.c} | 148 +++++++++++++----
+ ...resight-etm4x.c => coresight-etm4x-core.c} |  84 +++++++---
+ .../hwtracing/coresight/coresight-funnel.c    |  65 +++++++-
+ .../hwtracing/coresight/coresight-platform.c  |   1 +
+ drivers/hwtracing/coresight/coresight-priv.h  |  23 ++-
+ .../coresight/coresight-replicator.c          |  65 +++++++-
+ drivers/hwtracing/coresight/coresight-stm.c   |  20 ++-
+ drivers/hwtracing/coresight/coresight-sysfs.c |   2 +
+ .../{coresight-tmc.c => coresight-tmc-core.c} |  25 ++-
+ .../hwtracing/coresight/coresight-tmc-etf.c   |   2 +-
+ .../hwtracing/coresight/coresight-tmc-etr.c   |  21 ++-
+ drivers/hwtracing/coresight/coresight-tmc.h   |   3 +
+ drivers/hwtracing/coresight/coresight-tpiu.c  |  20 ++-
+ include/linux/coresight.h                     |   3 +-
+ 24 files changed, 726 insertions(+), 144 deletions(-)
+ rename drivers/hwtracing/coresight/{coresight.c => coresight-core.c} (92%)
+ rename drivers/hwtracing/coresight/{coresight-cti.c => coresight-cti-core.c} (94%)
+ rename drivers/hwtracing/coresight/{coresight-etm3x.c => coresight-etm3x-core.c} (90%)
+ rename drivers/hwtracing/coresight/{coresight-etm4x.c => coresight-etm4x-core.c} (96%)
+ rename drivers/hwtracing/coresight/{coresight-tmc.c => coresight-tmc-core.c} (95%)
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
