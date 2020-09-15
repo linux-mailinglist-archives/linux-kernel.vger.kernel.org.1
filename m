@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E1E26A24C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FF826A252
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgIOJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:33:54 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:40910 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726208AbgIOJdt (ORCPT
+        id S1726394AbgIOJeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726208AbgIOJeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:33:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U90t1fN_1600162424;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U90t1fN_1600162424)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 15 Sep 2020 17:33:45 +0800
-Date:   Tue, 15 Sep 2020 17:33:44 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-s390@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH v2 1/7] kernel/resource: make
- release_mem_region_adjustable() never fail
-Message-ID: <20200915093344.GA7324@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200908201012.44168-1-david@redhat.com>
- <20200908201012.44168-2-david@redhat.com>
- <20200915021012.GC2007@L-31X9LVDL-1304.local>
- <927904b1-1909-f11f-483e-8012bda8ad0c@redhat.com>
- <20200915090612.GA6936@L-31X9LVDL-1304.local>
- <bc324c26-3638-ffa6-ee01-68a659183adf@redhat.com>
+        Tue, 15 Sep 2020 05:34:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF3EC06174A;
+        Tue, 15 Sep 2020 02:34:15 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600162454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KgTKu24A5oqibjmQi1GmpLg9mnb2+2XExxUNI0RCqJ0=;
+        b=nSClhGdcIDmJgc3+suPKs718oHCY4qNrT0wVvDtRhVAcpvv5YSsP3mxvdZDpb1piqTek6V
+        sYG0UNTsQGYQyasJKFYsIlhDb5ow7zThgXqHPNCeR2LVNseYGNwhaeT4A/HdTjIDqwKjo/
+        OZtyB+skYUGL6uTP1k45C5aFqhhewXbynvoMH2DLUu5c8PFZl3GiFXd+bnIPFsxI6NKQyW
+        YgwuGBQNda3jnFncA9FlCs9g1JB4Y7ojnHalSRmnDgwXaKURpjgOHcprqRAsOdjIUJ1+j1
+        OWbS67UzD9oAPZ39zjcKkT8jJ0fL8OtebxMeUYy4tS4SlXfsZNJUVdsIvuYLmg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600162454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KgTKu24A5oqibjmQi1GmpLg9mnb2+2XExxUNI0RCqJ0=;
+        b=FfYeu1Dcy2FO8bIP/Eu9cbVTM9gEgxEfs7ZgMwarD875636EhnWLk5LVo8ZGF7eZadvJqk
+        R8YPh+zbL/qX5UCw==
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC unconditionally
+In-Reply-To: <20200915070523.GA26629@gondor.apana.org.au>
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com> <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com> <20200915033024.GB25789@gondor.apana.org.au> <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com> <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com> <20200915070523.GA26629@gondor.apana.org.au>
+Date:   Tue, 15 Sep 2020 11:34:14 +0200
+Message-ID: <878sdb5qp5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc324c26-3638-ffa6-ee01-68a659183adf@redhat.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:15:53AM +0200, David Hildenbrand wrote:
->On 15.09.20 11:06, Wei Yang wrote:
->> On Tue, Sep 15, 2020 at 09:35:30AM +0200, David Hildenbrand wrote:
->>>
->>>>> static int __ref try_remove_memory(int nid, u64 start, u64 size)
->>>>> {
->>>>> 	int rc = 0;
->>>>> @@ -1777,7 +1757,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
->>>>> 		memblock_remove(start, size);
->>>>> 	}
->>>>>
->>>>> -	__release_memory_resource(start, size);
->>>>> +	release_mem_region_adjustable(&iomem_resource, start, size);
->>>>>
->>>>
->>>> Seems the only user of release_mem_region_adjustable() is here, can we move
->>>> iomem_resource into the function body? Actually, we don't iterate the resource
->>>> tree from any level. We always start from the root.
->>>
->>> You mean, making iomem_resource implicit? I can spot that something
->>> similar was done for
->>>
->>> #define devm_release_mem_region(dev, start, n) \
->>> 	__devm_release_region(dev, &iomem_resource, (start), (n))
->>>
+On Tue, Sep 15 2020 at 17:05, Herbert Xu wrote:
+> On Mon, Sep 14, 2020 at 11:55:53PM -0700, Linus Torvalds wrote:
+>>
+>> Maybe we could hide it behind a debug option, at least.
 >> 
->> What I prefer is remove iomem_resource from the parameter list. Just use is in
->> the function body.
->> 
->> For the example you listed, __release_region() would have varies of *parent*,
->> which looks reasonable to keep it here.
+>> Or, alterantively, introduce a new "debug_preempt_count" that doesn't
+>> actually disable preemption, but warns about actual sleeping
+>> operations..
 >
->Yeah I got that ("making iomem_resource implicit"), as I said:
+> I'm more worried about existing users of kmap_atomic relying on
+> the preemption disabling semantics.  Short of someone checking
+> on every single instance (and that would include derived cases
+> such as all users of sg miter), I think the safer option is to
+> create something brand new and then migrate the existing users
+> to it.  Something like
 >
+> static inline void *kmap_atomic_ifhigh(struct page *page)
+> {
+> 	if (PageHighMem(page))
+> 		return kmap_atomic(page);
+> 	return page_address(page);
+> }
+>
+> static inline void kunmap_atomic_ifhigh(struct page *page, void *addr)
+> {
+> 	if (PageHighMem(page))
+> 		kunmap_atomic(addr);
+> }
 
-Thanks
+Hmm, that still has the issue that the code between map and unmap must
+not sleep and the conversion must carefully check whether anything in
+this region relies on preemption being disabled by kmap_atomic()
+regardless of highmem or not.
 
->>> I'll send an addon patch for that, ok? - thanks.
->
->-- 
->Thanks,
->
->David / dhildenb
+kmap_atomic() is at least consistent vs. preemption, the above not so
+much.
 
--- 
-Wei Yang
-Help you, Help me
+I'd rather go for a preemptible/sleepable version of highmem mapping
+which is in itself consistent for both highmen and not highmem.
+
+Thanks,
+
+        tglx
+
+
