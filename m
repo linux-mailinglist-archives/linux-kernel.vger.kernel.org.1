@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BDB269EF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126F2269EF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgIOG4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 02:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgIOG4O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 02:56:14 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2195CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:56:13 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id c2so1776923ljj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:56:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RifvNOOLyJbnwbwVWOF+enDD+qjD5Fjm0V/Mfqvmyes=;
-        b=Ok+Gb7RSq0mYYx+0CWHlM3W78iPr+yr7ivPGBVwnLh/BuOKWy90Ma/i2VS7Q/jgtxO
-         oCFqkSrxTfPbvmX64o7DrS7NwjwgR6qJ0V22sjaC6EXlUfruJNf2BmK+Jx03F/RbiG0I
-         nXGxWy47Pu87zH1DeP3m4W32SIPgIILk7JZso=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RifvNOOLyJbnwbwVWOF+enDD+qjD5Fjm0V/Mfqvmyes=;
-        b=Y8uGD24ocRWGSLZxfKjRoUCxHE+UMFCS406qcrgC9DDuic7hHiyY34qYxQXuJxptGC
-         E/p8vSwqTpSwR+8kuArlxUjO/rCbDq+MY2/nFYmiiRHfAWHRXlS+LYVJB+vCRWlesT8n
-         YdFx/kg1eopxWtnWkjBILit2iwa/iPD+7Gdi4vl7YSsYbdfYlGwsKzb52NDhD1XiOCgd
-         2exoRzSpuF895pkp3q+HGyVonJOvQ3kMmyyC5y2cflmcIsHCElyUU7jWFuYf9r+Iiqj6
-         r0GLoKPi1dJMpWXczOO3MKk9hMwOVYFxT1g43b4anFcRy9VJsYPaasazho3Cx+fpwBSL
-         wf/Q==
-X-Gm-Message-State: AOAM532p/wBuVSFX8emjhSF+beV8XhfcDDdTgpddqzZnwPGp48TTxQBW
-        WXACtbsjYdUn2km5vKDNVR6u0oAk0mNddQ==
-X-Google-Smtp-Source: ABdhPJyATuzPRwMqlZdRAj3DYdfp/PzOFzVqFShfg5+WVxHmKLH6XN28kIqGuseLOt/htFJtZ9KDGA==
-X-Received: by 2002:a2e:9784:: with SMTP id y4mr5977088lji.247.1600152971188;
-        Mon, 14 Sep 2020 23:56:11 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id h25sm3806112lfl.273.2020.09.14.23.56.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 23:56:10 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id n25so1827754ljj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:56:10 -0700 (PDT)
-X-Received: by 2002:a2e:7819:: with SMTP id t25mr5956337ljc.371.1600152969778;
- Mon, 14 Sep 2020 23:56:09 -0700 (PDT)
+        id S1726189AbgIOG4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 02:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726089AbgIOG4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 02:56:43 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35F1F214F1;
+        Tue, 15 Sep 2020 06:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600153003;
+        bh=skqr9nmrj5gOWqcf3jzuhwSkFXzOKRagbuQYkkpOPIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h3N8YfhmWeI0UbfFLZChBznYbsE9YX3GRDm7tBI0StsTNg6mT5J0UuvfTqvrq0Lmz
+         E0VoTX5JwvylLVqKbsOePjirUc77QX6xl/KpjbUh7L/RiAiabkebVrPouO04wDN6VM
+         YLgQmyZQjKFqHX0PyAw7DP1xrZGz0OcnLcoCobPE=
+Date:   Tue, 15 Sep 2020 08:56:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>, linux-arm-msm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH] irqchip/qcom-pdc: Allow QCOM_PDC to be loadable as a
+ permanent module
+Message-ID: <20200915065630.GE3622460@kroah.com>
+References: <20200912125148.1271481-7-maz@kernel.org>
+ <20200914210423.67579-1-john.stultz@linaro.org>
 MIME-Version: 1.0
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
- <20200915033024.GB25789@gondor.apana.org.au> <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com>
-In-Reply-To: <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 14 Sep 2020 23:55:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com>
-Message-ID: <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC unconditionally
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914210423.67579-1-john.stultz@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:45 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> I mean, I did find one case that didn't set it (cb710-mmc.c), but
-> pattern-matching to the other mmc cases, that one looks like it
-> _should_ have set the atomic flag like everybody else did.
+On Mon, Sep 14, 2020 at 09:04:23PM +0000, John Stultz wrote:
+> Allows qcom-pdc driver to be loaded as a permanent module.
+> 
+> An earlier version of this patch was merged in a larger patchset
+> but was reverted entirely when issues were found with other
+> drivers, so now that Marc has provided a better solution in his
+> Hybrid probing patch set, I wanted to re-submit this change.
+> 
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Maulik Shah <mkshah@codeaurora.org>
+> Cc: Lina Iyer <ilina@codeaurora.org>
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: Todd Kjos <tkjos@google.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-gpio@vger.kernel.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
 
-Oh, and immediately after sending that out I notice
-nvmet_bdev_execute_rw(), which does seem to make allocations inside
-that sg_miter loop.
-
-So those non-atomic cases do clearly exist.
-
-It does make the case for why kmap_atomic() wants to have the
-debugging code. It will "just work" on 64-bit to do it wrong, because
-the address doesn't become invalid just because you sleep or get
-rescheduled. But then the code that every developer tests (since
-developers tend to run on good hardware) might be completely broken on
-bad old hardware.
-
-Maybe we could hide it behind a debug option, at least.
-
-Or, alterantively, introduce a new "debug_preempt_count" that doesn't
-actually disable preemption, but warns about actual sleeping
-operations..
-
-             Linus
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
