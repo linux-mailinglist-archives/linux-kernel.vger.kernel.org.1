@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3F726B2B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF50E26B30C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbgIOPmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727384AbgIOPHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:07:03 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10E4C06178B
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:07:01 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id cr8so1850638qvb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:07:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JuX459iPFiSF2qCYffrxdDG4JgmCWY9w05aQrmrwrn4=;
-        b=XpwQxxGVDx+xrsemy5ScChUBWXTkrBb5ztt0FlDJ3uymeXh/OO/cNp0IM4TEb3Uyfs
-         IUC/AvvzoY6L8QOMZautES1qOTI27M+ibJlW7puRi80nhlnhx4wgybOKNVZEKcQnuidk
-         zgHvauaW7ZMz44TUy5YVxCCYWpPg0nVG8xyPOfYxEetICmdxoVwvQwR8spNBwr8bv7ax
-         qecAUVJwVwjNgloeErbvc19Wr453Acbo3ApTn/3l9FpXeyPrjl9asz5Lce6Fefo9qLvo
-         EZSnX8fsl2ei0DJQqwGVEptmSviBadbGoVy6cYdX3RMWcSCS3lRNx1NHaJsHrLJBCvEo
-         FgOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JuX459iPFiSF2qCYffrxdDG4JgmCWY9w05aQrmrwrn4=;
-        b=H0BfkPk8WwqWVjU+I3Pi4KN18a8FAHLLb5euut4SdEnyVrpObT1s979BDyncbOm1iG
-         gE240IJaVknNZxl7HsL/qnyFxv9sY2dH3ULdEOaZ/eoXecH7qFObLSCFruOGmvkxXosk
-         zc9lKYkdtde3BapCVraFRfcJyMR7tqx9MgJLQiqIkHRrRPbsQRf0tSsT4cGpKJmyGWa2
-         50BctxeAlAqAOUlbzglnFKn814Dx3udYzYN9qc55sujZovpj5zoMpANv/CbxQN4gpkmZ
-         vWKUwz8FIFT77ZBfR9d4hYVh0FNZk/8YPV6XVVXGz34rMCimp+IpV/AVbi8dZRBAL3jy
-         eSTA==
-X-Gm-Message-State: AOAM531anNz7G2yn2gbr+YjdkBXP+vViu48KWB4FSui4Gs2eK087C9A5
-        /OMGvIspumNjrC9M+s+egiwB3g==
-X-Google-Smtp-Source: ABdhPJzQNEKsjzjvUXu8OdTjWfm9ukfaozEj2Gwqj3nATSffbkC/gWbqDs4+YaOFn/Dt3gNcgp/7Ng==
-X-Received: by 2002:a05:6214:7a1:: with SMTP id v1mr18903517qvz.19.1600182420944;
-        Tue, 15 Sep 2020 08:07:00 -0700 (PDT)
-Received: from uller (ec2-34-197-84-77.compute-1.amazonaws.com. [34.197.84.77])
-        by smtp.gmail.com with ESMTPSA id s18sm16389547qks.44.2020.09.15.08.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 08:07:00 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:06:58 +0000
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Loic Poulain <loic.poulain@linaro.org>
-Subject: Re: [PATCH v1] arm64: dts: qcom: msm8996: Add VFE1_GDSC power domain
- to camss node
-Message-ID: <20200915150658.GA478@uller>
-References: <20200915142316.147208-1-robert.foss@linaro.org>
+        id S1727490AbgIOW71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727426AbgIOPIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:08:16 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0974F20735;
+        Tue, 15 Sep 2020 15:08:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600182485;
+        bh=0xyXwfxoIK/ZtHtyv1UhPApx13+V3AjswVKHmWQ82cw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ygYgM9m/bn66TFThps3RBp45NivF6dFd2IrQJ/yJlDwq+o3zu/o2aXDe6+eKuDFFz
+         PLLsQ5OEiyl8vcGmQlSZWp4uw3iOkasAeQDPaNPVyDxLa52lXu5nBpOszYtGNCwRIM
+         hbR9tQ38wmTvZhW+cfAbHF0TeKDmXRRnJU7erbZk=
+Received: by mail-oi1-f169.google.com with SMTP id w16so4261576oia.2;
+        Tue, 15 Sep 2020 08:08:05 -0700 (PDT)
+X-Gm-Message-State: AOAM531F8ap7J0dJU1XWJGrxggT/aZsMubkyEK7G88FkSdI52fQMwtVC
+        IhP+FTEgkEB01Kq2blNlwyg3KC5Nca4ZU26xqdM=
+X-Google-Smtp-Source: ABdhPJzAG3ESL6xwQvsmKw3etkopo2FiMleIRFHatfSzighPVWG+gBwRKvRcbxo96nRRSLkkjrR7A+yRyZJlrGpN1hs=
+X-Received: by 2002:a54:4517:: with SMTP id l23mr3918280oil.174.1600182484304;
+ Tue, 15 Sep 2020 08:08:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915142316.147208-1-robert.foss@linaro.org>
+References: <20200819143544.155096-1-alex.kluver@hpe.com>
+In-Reply-To: <20200819143544.155096-1-alex.kluver@hpe.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 15 Sep 2020 18:07:53 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXHHJD3cAvHiYbyj_BjVeeF6Oq3Fu92rZng_QE0BMsxOJw@mail.gmail.com>
+Message-ID: <CAMj1kXHHJD3cAvHiYbyj_BjVeeF6Oq3Fu92rZng_QE0BMsxOJw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] UEFI v2.8 Memory Error Record Updates
+To:     Alex Kluver <alex.kluver@hpe.com>
+Cc:     linux-edac@vger.kernel.org, linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mchehab@kernel.org, Borislav Petkov <bp@alien8.de>,
+        russ.anderson@hpe.com, Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        kluveralex@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15 Sep 14:23 UTC 2020, Robert Foss wrote:
-
-> As the MSM8996 has two VFE IP-blocks, and each has a power domain,
-> both of them have to be enabled. Previously only the power domain
-> of VFE0 was enabled, but not the domain for VFE1.
-> 
-> This patch adds the VFE1_GDSC power domain to the camss device tree
-> node of the MSM8996 soc.
-> 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+On Wed, 19 Aug 2020 at 17:36, Alex Kluver <alex.kluver@hpe.com> wrote:
+>
+> The UEFI Specification v2.8, Table 299, Memory Error Record has
+> several changes from previous versions. Bits 18 through 21 have been
+> added to the memory validation bits to include an extended version
+> of row, an option to print bank address and group separately, and chip id.
+> These patches implement bits 18 through 21 into the Memory Error Record.
+>
+> Change reserved field to extended field in cper_sec_mem_err structure
+> and added the extended field to the cper_mem_err_compact structure.
+>
+> Print correct versions of row, bank, and chip ID.
 > ---
->  arch/arm64/boot/dts/qcom/msm8996.dtsi | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> index 9951286db775..df6e1b246a19 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> @@ -1009,7 +1009,8 @@ camss: camss@a00000 {
->  				"ispif",
->  				"vfe0",
->  				"vfe1";
-> -			power-domains = <&mmcc VFE0_GDSC>;
-> +			power-domains = <&mmcc VFE0_GDSC>,
-> +				<&mmcc VFE1_GDSC>;
+> v1 -> v2:
+>    * Add static inline cper_get_mem_extension to make
+>      it more readable, as suggested by Borislav Petkov
+>
+>    * Add second patch for bank field, bank group, and chip id.
+> ---
+> Alex Kluver (2):
+>   edac,ghes,cper: Add Row Extension to Memory Error Record
+>   cper,edac,efi: Memory Error Record: bank group/address and chip id
+>
+>  drivers/edac/ghes_edac.c    | 17 +++++++++++++++--
+>  drivers/firmware/efi/cper.c | 18 ++++++++++++++++--
+>  include/linux/cper.h        | 24 ++++++++++++++++++++++--
+>  3 files changed, 53 insertions(+), 6 deletions(-)
+>
 
-Fixed the indentation and applied this.
+For the series,
 
-Thanks,
-Bjorn
-
->  			clocks = <&mmcc CAMSS_TOP_AHB_CLK>,
->  				<&mmcc CAMSS_ISPIF_AHB_CLK>,
->  				<&mmcc CAMSS_CSI0PHYTIMER_CLK>,
-> -- 
-> 2.25.1
-> 
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
