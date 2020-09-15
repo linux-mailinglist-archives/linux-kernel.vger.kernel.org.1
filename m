@@ -2,94 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FC226B22E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053CD26B230
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727642AbgIOWnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:43:01 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:42010 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727925AbgIOWmj (ORCPT
+        id S1727545AbgIOWnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727517AbgIOWnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 18:42:39 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A4B758EE188;
-        Tue, 15 Sep 2020 15:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1600209755;
-        bh=VEHO4Ug0kD8bPGj3t70lHdvhQIsfuBMa/2qcEUNGuho=;
-        h=Subject:From:To:Cc:Date:From;
-        b=dQKM7Xsw/Ncz9A1FlYdvJIr8nJ0BrSr39xrXUPxqASLoWTj0i2YEpoE6t+XMBFCHU
-         1T+CBMAoyh0RXrw52xdS4CXumb9Q33hBSC8DPjBw0nyWWpDFQbFBgnh1zRnyG2sj/2
-         mtMUV2C7LoIFGp8izh4TE4LTpifkFKozNB6AVthY=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Z0HsipziwS27; Tue, 15 Sep 2020 15:42:35 -0700 (PDT)
-Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 3F5AD8EE107;
-        Tue, 15 Sep 2020 15:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1600209755;
-        bh=VEHO4Ug0kD8bPGj3t70lHdvhQIsfuBMa/2qcEUNGuho=;
-        h=Subject:From:To:Cc:Date:From;
-        b=dQKM7Xsw/Ncz9A1FlYdvJIr8nJ0BrSr39xrXUPxqASLoWTj0i2YEpoE6t+XMBFCHU
-         1T+CBMAoyh0RXrw52xdS4CXumb9Q33hBSC8DPjBw0nyWWpDFQbFBgnh1zRnyG2sj/2
-         mtMUV2C7LoIFGp8izh4TE4LTpifkFKozNB6AVthY=
-Message-ID: <1600209754.5092.24.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.9-rc5
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 15 Sep 2020 15:42:34 -0700
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
+        Tue, 15 Sep 2020 18:43:07 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF3CC06174A;
+        Tue, 15 Sep 2020 15:43:06 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B438D1369E725;
+        Tue, 15 Sep 2020 15:26:16 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 15:43:02 -0700 (PDT)
+Message-Id: <20200915.154302.373083705277550666.davem@davemloft.net>
+To:     vee.khee.wong@intel.com
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com, kuba@kernel.org,
+        Joao.Pinto@synopsys.com, arnd@arndb.de, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boon.leong.ong@intel.com, weifeng.voon@intel.com,
+        sadhishkhanna.vijaya.balan@intel.com, chen.yong.seow@intel.com
+Subject: Re: [PATCH net-next 0/3] net: stmmac: Add ethtool support for
+ get|set channels
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200915012840.31841-1-vee.khee.wong@intel.com>
+References: <20200915012840.31841-1-vee.khee.wong@intel.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
 Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Tue, 15 Sep 2020 15:26:17 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just one fix in libsas for a resource leak in an error path.
+From: Wong Vee Khee <vee.khee.wong@intel.com>
+Date: Tue, 15 Sep 2020 09:28:37 +0800
 
-The patch is available here:
+> This patch set is to add support for user to get or set Tx/Rx channel
+> via ethtool. There are two patches that fixes bug introduced on upstream
+> in order to have the feature work.
+> 
+> Tested on Intel Tigerlake Platform.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-
-The short changelog is:
-
-Dan Carpenter (1):
-      scsi: libsas: Fix error path in sas_notify_lldd_dev_found()
-
-And the diffstat:
-
- drivers/scsi/libsas/sas_discover.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-index daf951b0b3f5..13ad2b3d314e 100644
---- a/drivers/scsi/libsas/sas_discover.c
-+++ b/drivers/scsi/libsas/sas_discover.c
-@@ -182,10 +182,11 @@ int sas_notify_lldd_dev_found(struct domain_device *dev)
- 		pr_warn("driver on host %s cannot handle device %016llx, error:%d\n",
- 			dev_name(sas_ha->dev),
- 			SAS_ADDR(dev->sas_addr), res);
-+		return res;
- 	}
- 	set_bit(SAS_DEV_FOUND, &dev->state);
- 	kref_get(&dev->kref);
--	return res;
-+	return 0;
- }
- 
- 
+Series applied, thank you.
