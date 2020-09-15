@@ -2,128 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9E7269B55
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D873269B8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgIOBlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:41:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12280 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726046AbgIOBlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:41:21 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 622865FBFC3D407F7873;
-        Tue, 15 Sep 2020 09:41:19 +0800 (CST)
-Received: from [10.74.191.121] (10.74.191.121) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 15 Sep 2020 09:41:13 +0800
-Subject: Re: [PATCH net-next 5/6] net: hns3: use writel() to optimize the
- barrier operation
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Huazhong Tan <tanhuazhong@huawei.com>
-CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
-        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>
-References: <1600085217-26245-1-git-send-email-tanhuazhong@huawei.com>
- <1600085217-26245-6-git-send-email-tanhuazhong@huawei.com>
- <20200914144522.02d469a8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <4141ed72-c359-ca49-d4a5-57a810888083@huawei.com>
-Date:   Tue, 15 Sep 2020 09:41:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S1726121AbgIOBrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726034AbgIOBrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 21:47:23 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF28C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:47:21 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kk9so913732pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/9oiy6NhFDTGuIxMwjEr15PaiJFbKdR5/rgyk3WXdXc=;
+        b=DtQVwdE2S9R/KfRwpS6ild8EgzksvCRGPDk9J+V8CdffdQfgowKv8CpUq48KX75Y1P
+         669X8UNtYFor3iEDN0x0oGQoMt/dcse4uetjme/WNloj199sgOCSPdMGd69BZyG/98KT
+         34HvirvPnAlPClPnxlAn/sH/HTAEL1OEJTUhT99X6xUsnAdARcdFKTgwpDARJ3p6GRaJ
+         uFLHKBRC6E2GMc2MGJEDZJ4ckCz0Ba8Lan+3ifA+aA80V6O/IDFgL9cjpmYUcFChqw9a
+         mavI984e7SNomsxxXorHzZN2hHE0qmiQCabw1lyz4nGWxbkz0kKDloKpkLZWcPlnHUnW
+         UBow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/9oiy6NhFDTGuIxMwjEr15PaiJFbKdR5/rgyk3WXdXc=;
+        b=ojqHpxj3JHFES+bp98oFwSWpJcEkESAlXvrAZEntaWXLq9CNXunR/HUo3k3DISaDX6
+         lnNdAlSRPsSFZPEd8ftSCBwV8CeQiSh+mUwU7UN5i+MbTWnrOo6qE3GKvXmyzk1+Jkkk
+         j8M6nuCeiK6aiKI5UPTWEj4pMHE33sHkUc5OutirTIfwjJWn7Wxh+Sn9DmD0nGcycoM3
+         1afKHcbGB1MYRfUXj7r13hgg1DZDXIAgDzbHHpA/ERl5IS+taJMxvaUD6AaUNvTF1ADG
+         z/GsAr418kFbctH/GaZhYRROp0KC8qtUyx5Ru/xF8474/jf5dbh+GSSTQmOCnrS1xoMb
+         pXMw==
+X-Gm-Message-State: AOAM531JAcmqqM9LaYbRG/x2PBiaC0612XZvOuK5grivJxD+MOU9NIZL
+        VCvJOyY4kVN8ChuRYAYqsLlzvA==
+X-Google-Smtp-Source: ABdhPJwxfL5xQuFralaUQ/x0twZ1620o62+Ds6n78hZQcjd0/dYsXAiLBN2tNTGD8o6vdlvinniFJg==
+X-Received: by 2002:a17:90b:1649:: with SMTP id il9mr1940966pjb.94.1600134441347;
+        Mon, 14 Sep 2020 18:47:21 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id h15sm10006345pfo.194.2020.09.14.18.47.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 18:47:20 -0700 (PDT)
+Subject: Re: [PATCH block/for-next] iocost: fix infinite loop bug in
+ adjust_inuse_and_calc_cost()
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200914150513.GC865564@mtj.thefacebook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <e9e616d2-4bba-43b4-e41f-3c73f65371aa@kernel.dk>
+Date:   Mon, 14 Sep 2020 19:47:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200914144522.02d469a8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200914150513.GC865564@mtj.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.191.121]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/15 5:45, Jakub Kicinski wrote:
-> On Mon, 14 Sep 2020 20:06:56 +0800 Huazhong Tan wrote:
->> From: Yunsheng Lin <linyunsheng@huawei.com>
->>
->> writel() can be used to order I/O vs memory by default when
->> writing portable drivers. Use writel() to replace wmb() +
->> writel_relaxed(), and writel() is dma_wmb() + writel_relaxed()
->> for ARM64, so there is an optimization here because dma_wmb()
->> is a lighter barrier than wmb().
+On 9/14/20 9:05 AM, Tejun Heo wrote:
+> adjust_inuse_and_calc_cost() is responsible for reducing the amount of
+> donated weights dynamically in period as the budget runs low. Because we
+> don't want to do full donation calculation in period, we keep latching up
+> inuse by INUSE_ADJ_STEP_PCT of the active weight of the cgroup until the
+> resulting hweight_inuse is satisfactory.
 > 
-> Cool, although lots of drivers will need a change like this now. 
+> Unfortunately, the adj_step calculation was reading the active weight before
+> acquiring ioc->lock. Because the current thread could have lost race to
+> activate the iocg to another thread before entering this function, it may
+> read the active weight as zero before acquiring ioc->lock. When this
+> happens, the adj_step is calculated as zero and the incremental adjustment
+> loop becomes an infinite one.
 > 
-> And looks like memory-barriers.txt is slightly, eh, not coherent there,
-> between the documentation of writeX() and dma_wmb() :S
-> 
-> 	3. A writeX() by a CPU thread to the peripheral will first wait for the
-> 	   completion of all prior writes to memory either issued by, or
+> Fix it by fetching the active weight after acquiring ioc->lock.
 
-"wait for the completion of all prior writes to memory" seems to match the semantics
-of writel() here?
+Applied, thanks.
 
-> 	   propagated to, the same thread. This ensures that writes by the CPU
-> 	   to an outbound DMA buffer allocated by dma_alloc_coherent() will be
+-- 
+Jens Axboe
 
-"outbound DMA buffer" mapped by the streaming API can also be ordered by the
-writel(), Is that what you meant by "not coherent"?
-
-
-> 	   visible to a DMA engine when the CPU writes to its MMIO control
-> 	   register to trigger the transfer.
-> 
-> 
-> 
->  (*) dma_wmb();
->  (*) dma_rmb();
-> 
->      These are for use with consistent memory to guarantee the ordering
->      of writes or reads of shared memory accessible to both the CPU and a
->      DMA capable device.
-> 
->      For example, consider a device driver that shares memory with a device
->      and uses a descriptor status value to indicate if the descriptor belongs
->      to the device or the CPU, and a doorbell to notify it when new
->      descriptors are available:
-> 
-> 	if (desc->status != DEVICE_OWN) {
-> 		/* do not read data until we own descriptor */
-> 		dma_rmb();
-> 
-> 		/* read/modify data */
-> 		read_data = desc->data;
-> 		desc->data = write_data;
-> 
-> 		/* flush modifications before status update */
-> 		dma_wmb();
-> 
-> 		/* assign ownership */
-> 		desc->status = DEVICE_OWN;
-> 
-> 		/* notify device of new descriptors */
-> 		writel(DESC_NOTIFY, doorbell);
-> 	}
-> 
->      The dma_rmb() allows us guarantee the device has released ownership
->      before we read the data from the descriptor, and the dma_wmb() allows
->      us to guarantee the data is written to the descriptor before the device
->      can see it now has ownership.  Note that, when using writel(), a prior
->      wmb() is not needed to guarantee that the cache coherent memory writes
->      have completed before writing to the MMIO region.  The cheaper
->      writel_relaxed() does not provide this guarantee and must not be used
->      here.
-
-I am not sure writel() has any implication here. My interpretation to the above
-doc is that dma_wmb() is more appropriate when only coherent/consistent memory
-need to be ordered.
-
-If writel() is used, then dma_wmb() or wmb() is unnecessary, see:
-
-commit: 5846581e3563 ("locking/memory-barriers.txt: Fix broken DMA vs. MMIO ordering example")
-
-
-> .
-> 
