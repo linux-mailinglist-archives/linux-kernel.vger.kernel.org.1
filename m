@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87D626B54A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940CE26B565
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727456AbgIOXlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:41:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46456 "EHLO mail.kernel.org"
+        id S1727233AbgIOXne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:43:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727111AbgIOOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:34:42 -0400
+        id S1727105AbgIOOd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:33:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D1762220D;
-        Tue, 15 Sep 2020 14:16:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93ECD2220B;
+        Tue, 15 Sep 2020 14:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179361;
-        bh=5xA3ruTQz58UAesQBWiejjrf90ozbETke4kgBCkKt9s=;
+        s=default; t=1600179364;
+        bh=x76QfqFMZg95e1IvXhNz9c04gVwR6koHhP7rr85Thpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F/xZttmxXET5oMEDoFireyXmGWNSJR2La+FvHrE5AWWDIjiH36e928GsmPlBPP/zr
-         CRlnqYuArgDEO0HYLbdl/XhUvB/zdsdTlDiLooUqb8P5FmfAHhdLkPiwz7LRe4kiqe
-         h48uO1Ypk9YPPPqdI3X15nWGEUVIOeucMVk1fMKk=
+        b=Jwxk3gb8hL6XVfirNoIAsedvRhnl3JLrwfHejihaDJ+cBhBqb9OfjGm8sV3mDUG/+
+         fdCYGlfFas2SEUvwL4rHjM3tqodEJP6Z2MyE0/4Jx0nnuypATI1ui7iIjY1jsG/A7P
+         C3tj5SOeBimey/oGLrhacBD2UqXQJFRFSyzNtV9o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+        stable@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 03/78] ARM: dts: socfpga: fix register entry for timer3 on Arria10
-Date:   Tue, 15 Sep 2020 16:12:28 +0200
-Message-Id: <20200915140633.702442684@linuxfoundation.org>
+Subject: [PATCH 4.19 04/78] ARM: dts: ls1021a: fix QuadSPI-memory reg range
+Date:   Tue, 15 Sep 2020 16:12:29 +0200
+Message-Id: <20200915140633.753221988@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
 References: <20200915140633.552502750@linuxfoundation.org>
@@ -43,32 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-[ Upstream commit 0ff5a4812be4ebd4782bbb555d369636eea164f7 ]
+[ Upstream commit 81dbbb417da4d1ac407dca5b434d39d5b6b91ef3 ]
 
-Fixes the register address for the timer3 entry on Arria10.
+According to the Reference Manual, the correct size is 512 MiB.
 
-Fixes: 475dc86d08de4 ("arm: dts: socfpga: Add a base DTSI for Altera's Arria10 SOC")
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Without this fix, probing the QSPI fails:
+
+    fsl-quadspi 1550000.spi: ioremap failed for resource
+        [mem 0x40000000-0x7fffffff]
+    fsl-quadspi 1550000.spi: Freescale QuadSPI probe failed
+    fsl-quadspi: probe of 1550000.spi failed with error -12
+
+Fixes: 85f8ee78ab72 ("ARM: dts: ls1021a: Add support for QSPI with ls1021a SoC")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/socfpga_arria10.dtsi | 2 +-
+ arch/arm/boot/dts/ls1021a.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/socfpga_arria10.dtsi b/arch/arm/boot/dts/socfpga_arria10.dtsi
-index ba5657574d9bb..4b1c8bec2de35 100644
---- a/arch/arm/boot/dts/socfpga_arria10.dtsi
-+++ b/arch/arm/boot/dts/socfpga_arria10.dtsi
-@@ -791,7 +791,7 @@
- 		timer3: timer3@ffd00100 {
- 			compatible = "snps,dw-apb-timer";
- 			interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>;
--			reg = <0xffd01000 0x100>;
-+			reg = <0xffd00100 0x100>;
- 			clocks = <&l4_sys_free_clk>;
- 			clock-names = "timer";
- 		};
+diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
+index d18c043264440..b66b2bd1aa856 100644
+--- a/arch/arm/boot/dts/ls1021a.dtsi
++++ b/arch/arm/boot/dts/ls1021a.dtsi
+@@ -168,7 +168,7 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			reg = <0x0 0x1550000 0x0 0x10000>,
+-			      <0x0 0x40000000 0x0 0x40000000>;
++			      <0x0 0x40000000 0x0 0x20000000>;
+ 			reg-names = "QuadSPI", "QuadSPI-memory";
+ 			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
+ 			clock-names = "qspi_en", "qspi";
 -- 
 2.25.1
 
