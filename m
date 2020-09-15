@@ -2,102 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF1826AC29
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBA526AC9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgIORjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:39:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727876AbgIORPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:15:34 -0400
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B09820936;
-        Tue, 15 Sep 2020 17:12:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600189962;
-        bh=StDm87/zyOd2umJ/sexVghFCRbZDPQt3dL4BEakYh40=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GzcLW9Y77a4vDzQijYHwWGzMS+XnNp0YArQ3N9OD55f1SyTYjZ7GCxlE1fq1cr35O
-         8e1+K+v8r+oMkaCF+f4E7f7MpT80Dlw1UbjGvDhNKM+fSH/WIs0fXqVB2TInUNo109
-         1Qtz+MdBfF2WHY94jZxG7VAMma+cV5xguhDnkLwU=
-Received: by mail-oi1-f176.google.com with SMTP id a3so4734107oib.4;
-        Tue, 15 Sep 2020 10:12:42 -0700 (PDT)
-X-Gm-Message-State: AOAM531p6fe45OCYN3yUJjHAl4qVLe0ZswI9jB7wr7Oc4xWRuMiCeIcO
-        wRtupMzBkBm+5XLLM3cMVOidUqieYvFGp6rMSko=
-X-Google-Smtp-Source: ABdhPJwphFyJiA6ONEAftklqagXUydttPtaS/St/C72DhZIjAxdr6tPs+g71Yc+C35YTfy4TfqaIa+nI1jOWU5h5I1w=
-X-Received: by 2002:aca:d845:: with SMTP id p66mr274454oig.47.1600189961908;
- Tue, 15 Sep 2020 10:12:41 -0700 (PDT)
+        id S1727919AbgIOSyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727771AbgIORXk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:23:40 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BE8C061355
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:14:23 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id r25so4994074ioj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jT9s1JAVx2W5cNkDMrd7bWYf1jbIzkRTHh6c6VRDMuY=;
+        b=gdIp7xtBO/MSpEb9o8jN2IyQr26hmZe4Y1Inos4WGDR9JaBIQIi1PU3JIQChI0g3d7
+         LNCuIXI9NjrLEa4Z7VzoHoYibkJTvYYNe4XMxYvI8Key8Lz+Dn5TOJoG3OirB4lNf/0v
+         CZwnoRL2aTjSfXTMe2vCnRhhGcF5/px2guqwjtyoY+pY4/WqMrRsa3daDkNGpvajy3Os
+         F5adkpgafrtJqtA1mdt1vlIxNc/cvIEHgPvBIGAHbOJRmRqdTTGQSyxSLDdT0bWH+lVs
+         aoX0hyxrh/WWLqV3qXKOZbrIk4oQpUdoGJ5imOxIC9ur6GCE2cmivVAVgws5orQ0743v
+         GgWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jT9s1JAVx2W5cNkDMrd7bWYf1jbIzkRTHh6c6VRDMuY=;
+        b=hoz4ueGfdS9vwf9Um1PzSBvDXNmMMvHDyixCCsjudIsQMwYKC7NZavViIaIh2Jm1VG
+         KwO5XImn2yb2kBpiBbwwlieqniemgBS5OUH/zsKOD9ROsxA9JzedUuCgXZwR/5S0xahz
+         rQlt/QW4Y1lO6rCZnBqSwDweIjEPUNPQ/4fta8Hdx4WFJkeGMkKFvq8DqZN1mAacahrp
+         7odd1LPN8L9uOjTRMJacT3EPAT9eTHRdCxs4HcEDw8076cjgxM06zGxkMNwdR0gsBoBh
+         mgz+q9wyvVjc1gI6MW5x3eojt1Jrn1V9vQnG9dFsPaP67cyJoapQgjgZpv9lHt0rMGUp
+         MOxw==
+X-Gm-Message-State: AOAM533rXIsXeMmnJU+lPkcMtr2BaS4mdXNXwkifNvkEPBRc7lKfmte3
+        FL5xf3V7tS3UahKeZd/Xh/ER1w==
+X-Google-Smtp-Source: ABdhPJzPmldAEg1RI32WpLRYJaop5kMVcEE7x7cIiRQrPffUZq0WsPOosFaK5gGj43Fd4thLTpOr6w==
+X-Received: by 2002:a5e:9916:: with SMTP id t22mr16004622ioj.163.1600190061826;
+        Tue, 15 Sep 2020 10:14:21 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id z2sm4640548ilz.37.2020.09.15.10.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 10:14:21 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kIEX6-006Vzt-2h; Tue, 15 Sep 2020 14:14:20 -0300
+Date:   Tue, 15 Sep 2020 14:14:20 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [PATCH v2] mm/gup: fix gup_fast with dynamic page table folding
+Message-ID: <20200915171420.GK1221970@ziepe.ca>
+References: <20200911200511.GC1221970@ziepe.ca>
+ <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
 MIME-Version: 1.0
-References: <20200819143544.155096-1-alex.kluver@hpe.com> <20200819143544.155096-2-alex.kluver@hpe.com>
- <20200915163312.GO14436@zn.tnic> <CAMj1kXHmVhB88qZc-1mHAD1ovNJQnWRBncmQJTR_4+kV0fXG5w@mail.gmail.com>
-In-Reply-To: <CAMj1kXHmVhB88qZc-1mHAD1ovNJQnWRBncmQJTR_4+kV0fXG5w@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 15 Sep 2020 20:12:31 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXGvfiqZz-j5=LU0Z6yYCkr24pCz6aJS62QL8cBYUP_S=w@mail.gmail.com>
-Message-ID: <CAMj1kXGvfiqZz-j5=LU0Z6yYCkr24pCz6aJS62QL8cBYUP_S=w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] edac,ghes,cper: Add Row Extension to Memory Error Record
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Alex Kluver <alex.kluver@hpe.com>, linux-edac@vger.kernel.org,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mchehab@kernel.org, russ.anderson@hpe.com,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        kluveralex@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 20:07, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Tue, 15 Sep 2020 at 19:33, Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Wed, Aug 19, 2020 at 09:35:43AM -0500, Alex Kluver wrote:
-> > > Memory errors could be printed with incorrect row values since the DIMM
-> > > size has outgrown the 16 bit row field in the CPER structure. UEFI
-> > > Specification Version 2.8 has increased the size of row by allowing it to
-> > > use the first 2 bits from a previously reserved space within the structure.
-> > >
-> > > When needed, add the extension bits to the row value printed.
-> > >
-> > > Based on UEFI 2.8 Table 299. Memory Error Record
-> > >
-> > > Reviewed-by: Kyle Meyer <kyle.meyer@hpe.com>
-> > > Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-> > > Tested-by: Russ Anderson <russ.anderson@hpe.com>
-> > > Signed-off-by: Alex Kluver <alex.kluver@hpe.com>
-> > > ---
-> > >
-> > > v1 -> v2:
-> > >    * Add static inline cper_get_mem_extension() to make it
-> > >     more readable, as suggested by Borislav Petkov.
-> > >
-> > >    * Add second patch for bank field, bank group, and chip id.
-> > >
-> > > ---
-> > >  drivers/edac/ghes_edac.c    |  8 ++++++--
-> > >  drivers/firmware/efi/cper.c |  9 +++++++--
-> > >  include/linux/cper.h        | 16 ++++++++++++++--
-> > >  3 files changed, 27 insertions(+), 6 deletions(-)
-> >
-> > For the EDAC bits:
-> >
-> > Acked-by: Borislav Petkov <bp@suse.de>
-> >
-> > Also, I could take both through the EDAC tree, if people prefer.
-> >
->
-> I'll take this via the EFI tree - I was just preparing the branch for
-> a PR anyways.
+On Fri, Sep 11, 2020 at 10:36:43PM +0200, Vasily Gorbik wrote:
+> Currently to make sure that every page table entry is read just once
+> gup_fast walks perform READ_ONCE and pass pXd value down to the next
+> gup_pXd_range function by value e.g.:
+> 
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                          unsigned int flags, struct page **pages, int *nr)
+> ...
+>         pudp = pud_offset(&p4d, addr);
+> 
+> This function passes a reference on that local value copy to pXd_offset,
+> and might get the very same pointer in return. This happens when the
+> level is folded (on most arches), and that pointer should not be iterated.
+> 
+> On s390 due to the fact that each task might have different 5,4 or
+> 3-level address translation and hence different levels folded the logic
+> is more complex and non-iteratable pointer to a local copy leads to
+> severe problems.
+> 
+> Here is an example of what happens with gup_fast on s390, for a task
+> with 3-levels paging, crossing a 2 GB pud boundary:
+> 
+> // addr = 0x1007ffff000, end = 0x10080001000
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                          unsigned int flags, struct page **pages, int *nr)
+> {
+>         unsigned long next;
+>         pud_t *pudp;
+> 
+>         // pud_offset returns &p4d itself (a pointer to a value on stack)
+>         pudp = pud_offset(&p4d, addr);
+>         do {
+>                 // on second iteratation reading "random" stack value
+>                 pud_t pud = READ_ONCE(*pudp);
+> 
+>                 // next = 0x10080000000, due to PUD_SIZE/MASK != PGDIR_SIZE/MASK on s390
+>                 next = pud_addr_end(addr, end);
+>                 ...
+>         } while (pudp++, addr = next, addr != end); // pudp++ iterating over stack
+> 
+>         return 1;
+> }
+> 
+> This happens since s390 moved to common gup code with
+> commit d1874a0c2805 ("s390/mm: make the pxd_offset functions more robust")
+> and commit 1a42010cdc26 ("s390/mm: convert to the generic
+> get_user_pages_fast code"). s390 tried to mimic static level folding by
+> changing pXd_offset primitives to always calculate top level page table
+> offset in pgd_offset and just return the value passed when pXd_offset
+> has to act as folded.
+> 
+> What is crucial for gup_fast and what has been overlooked is
+> that PxD_SIZE/MASK and thus pXd_addr_end should also change
+> correspondingly. And the latter is not possible with dynamic folding.
+> 
+> To fix the issue in addition to pXd values pass original
+> pXdp pointers down to gup_pXd_range functions. And introduce
+> pXd_offset_lockless helpers, which take an additional pXd
+> entry value parameter. This has already been discussed in
+> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
+> 
+> Cc: <stable@vger.kernel.org> # 5.2+
+> Fixes: 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast code")
+> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> ---
+> v2: added brackets &pgd -> &(pgd)
 
-Alex - these patches do not apply cleanly. Could you please respin
-them on top of the next branch in
-https://git.kernel.org/pub/scm/linux/kernel/git/efi/efi.git?
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Boris - do you anticipate any conflicts? If so, please take these via
-the EDAC tree - the CPER code is mostly self contained so I don't
-expect any conflicts with the EFI tree in that case.
+Regards,
+Jason
