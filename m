@@ -2,96 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E67F26B16C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82AA26B143
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727673AbgIOWa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727629AbgIOQSX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:18:23 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9CCC061A27
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:11:33 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id y1so2224794pgk.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=iQzX7pHdm1qmojr7/SWJT2sN2D1kQylu+CeW1R2tNYE=;
-        b=PL4Er6LGojDEprWyVD9lxCt6Me61crXlbfigmM3gc/1WLspK/FH1KY0GWk0ks33Dz0
-         /j/mSxXUxEbsOoxcwYCJIe9b5onyMLJY+DhcbHyScNanSIQLBv8IxZ5z+N0ZsxE0wbn8
-         gY0jNplI2u6yaq6neZKhBk2erTJRoQi189j5k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=iQzX7pHdm1qmojr7/SWJT2sN2D1kQylu+CeW1R2tNYE=;
-        b=NJYPz9js6tBPm5+1SSNvY7EoFdz4r2yIY9yBzFeOmg5lIG+1y+oA2MIQHU5pY2T1vn
-         4AEQaVkJSp21uEb5r3Ji2m4hWsyP57wsk3PqztB2PpVWIRmbPbUy9aWc09c6dPhfYes/
-         r4jRwlYPFkc9JJzfdAQZPnc60ZJ0VMWxBuZMhPTmriFhybmmFuj6mpGhwjJf2xGoDny/
-         W9Ggua06JUicltLKj6NwvQAlUdwbhjW/9yEbXp5BZLp7XIfARGi6Gf2ITT1OJJNVhDAK
-         P/Onx6L8aKioWDzVrxwhQwAWFhLSHAOeiOCOlFcOH+HaWh6BHCXnVaycKEpFzJMlJJO1
-         ArLA==
-X-Gm-Message-State: AOAM531g9ifyjKsQP1NtgQqQyinGBsOVZdfXZ0Cr5aybwwyLnkkfAeT1
-        9wce9WsCZ/ypLrGXpWTdkQTHGZICJcYa1g==
-X-Google-Smtp-Source: ABdhPJx2GaqfW9giUQnTs+1jNTEgL4HHZxJq8X79PX+FOVxj3N8AYhsu2PfgVx3oYEnRyuwO2liPUg==
-X-Received: by 2002:a63:2f02:: with SMTP id v2mr14969865pgv.369.1600186291210;
-        Tue, 15 Sep 2020 09:11:31 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id t24sm12130990pgo.51.2020.09.15.09.11.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 09:11:30 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1727687AbgIOW1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:27:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727639AbgIOQTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:19:54 -0400
+Received: from kernel.org (unknown [87.71.73.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96A0920936;
+        Tue, 15 Sep 2020 16:18:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600186696;
+        bh=kNS2VFYnEd/KPhRHtnmjYC2U0lgvccEpIWWRdZorjVQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UuLTJKI/2BDlkCzhAdZXdO7Phze+fU6p3ap+8i/sd3vdr/I5Hi5U4yp9o6PB13lH0
+         ZuDFlAbkp3tgU9RFrayVzFqYW4WJCxXIWagM397axnyN9OCpPbLSgg6bdhU9c5PFF/
+         sRar6wzjO68M3MXjSEmVY0h5IDBQ7UJv15+bCkLU=
+Date:   Tue, 15 Sep 2020 19:18:08 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Phil Chang <phil.chang@mediatek.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        YJ Chiang <yj.chiang@mediatek.com>,
+        Alix Wu <alix.wu@mediatek.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] [PATCH] ARM64: Setup DMA32 zone size by bootargs
+Message-ID: <20200915161808.GH2142832@kernel.org>
+References: <20200915150855.24825-1-phil.chang@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <dac7e11cf654fc6d75a6b5ca062ab87b01547810.1600151951.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1600151951.git.saiprakash.ranjan@codeaurora.org> <dac7e11cf654fc6d75a6b5ca062ab87b01547810.1600151951.git.saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCHv5 2/2] soc: qcom: llcc: Support chipsets that can write to llcc
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, <isaacm@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Date:   Tue, 15 Sep 2020 09:11:29 -0700
-Message-ID: <160018628926.4188128.10673029331415872831@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915150855.24825-1-phil.chang@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sai Prakash Ranjan (2020-09-14 23:55:26)
-> From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
->=20
-> Older chipsets may not be allowed to configure certain LLCC registers
-> as that is handled by the secure side software. However, this is not
-> the case for newer chipsets and they must configure these registers
-> according to the contents of the SCT table, while keeping in mind that
-> older targets may not have these capabilities. So add support to allow
-> such configuration of registers to enable capacity based allocation
-> and power collapse retention for capable chipsets.
->=20
-> Reason for choosing capacity based allocation rather than the default
-> way based allocation is because capacity based allocation allows more
-> finer grain partition and provides more flexibility in configuration.
-> As for the retention through power collapse, it has an advantage where
-> the cache hits are more when we wake up from power collapse although
-> it does burn more power but the exact power numbers are not known at
-> the moment.
->=20
-> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> [saiprakash.ranjan@codeaurora.org: use existing config and reword commit =
-msg]
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
+On Tue, Sep 15, 2020 at 11:08:55PM +0800, Phil Chang wrote:
+> Allowing the DMA32 zone be configurable in ARM64 but at most 4Gb.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Please add more details why would you like to limit the DMA32 zone.
+
+> Signed-off-by: Alix Wu <alix.wu@mediatek.com>
+> Signed-off-by: YJ Chiang <yj.chiang@mediatek.com>
+> Signed-off-by: Phil Chang <phil.chang@mediatek.com>
+> ---
+> 
+>  .../admin-guide/kernel-parameters.txt         |  3 ++
+>  arch/arm64/include/asm/memory.h               |  2 +
+>  arch/arm64/mm/init.c                          | 39 +++++++++++++++++--
+>  3 files changed, 41 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index bdc1f33fd3d1..5be6259e9ba8 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -980,6 +980,9 @@
+>  			The filter can be disabled or changed to another
+>  			driver later using sysfs.
+>  
+> +	dma32_size=nn[MG]  [KNL,BOOT,ARM64]
+> +			Forces the DMA32 zone size of <nn> in MB.
+
+Most of the kernel parameters that deal with memory sizes allow either
+of [KMG] suffixes.
+
+> +
+>  	driver_async_probe=  [KNL]
+>  			List of driver names to be probed asynchronously.
+>  			Format: <driver_name1>,<driver_name2>...
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index afa722504bfd..710de08ae8ae 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -175,6 +175,8 @@ extern u64			kimage_vaddr;
+>  /* the offset between the kernel virtual and physical mappings */
+>  extern u64			kimage_voffset;
+>  
+> +extern phys_addr_t		dma32_zone_size;
+> +
+>  static inline unsigned long kaslr_offset(void)
+>  {
+>  	return kimage_vaddr - KIMAGE_VADDR;
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 481d22c32a2e..c8af53680d46 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -60,6 +60,9 @@ EXPORT_SYMBOL(physvirt_offset);
+>  struct page *vmemmap __ro_after_init;
+>  EXPORT_SYMBOL(vmemmap);
+>  
+> +phys_addr_t dma32_zone_size __ro_after_init;
+> +EXPORT_SYMBOL(dma32_zone_size);
+> +
+>  /*
+>   * We create both ZONE_DMA and ZONE_DMA32. ZONE_DMA covers the first 1G of
+>   * memory as some devices, namely the Raspberry Pi 4, have peripherals with
+> @@ -242,6 +245,29 @@ static int __init early_mem(char *p)
+>  }
+>  early_param("mem", early_mem);
+>  
+> +static int __init setup_dma32_zone(char *p)
+> +{
+> +	u64 size;
+> +
+> +	if (!p)
+> +		return -EINVAL;
+> +
+> +	if (kstrtoull(p, 0, &size))
+> +		return -EINVAL;
+
+Better to use memparse() here.
+
+> +
+> +	/* DMA32 zone size should never grater than 4G */
+> +	if (size > max_zone_phys(32) / SZ_1M)
+> +		return -EINVAL;
+> +
+> +	pr_notice("Setup dma32 zone size to %llu Mb\n", size);
+> +
+> +	dma32_zone_size = size * SZ_1M;
+> +
+> +	return 0;
+> +}
+> +
+> +early_param("dma32_size", setup_dma32_zone);
+> +
+>  static int __init early_init_dt_scan_usablemem(unsigned long node,
+>  		const char *uname, int depth, void *data)
+>  {
+> @@ -392,10 +418,17 @@ void __init arm64_memblock_init(void)
+>  		arm64_dma_phys_limit = max_zone_phys(ARM64_ZONE_DMA_BITS);
+>  	}
+>  
+> -	if (IS_ENABLED(CONFIG_ZONE_DMA32))
+> -		arm64_dma32_phys_limit = max_zone_phys(32);
+> -	else
+> +	if (IS_ENABLED(CONFIG_ZONE_DMA32)) {
+> +		if (dma32_zone_size) {
+> +			arm64_dma32_phys_limit = min(max_zone_phys(32),
+> +				dma32_zone_size + memblock_start_of_DRAM());
+> +		} else {
+> +			arm64_dma32_phys_limit = max_zone_phys(32);
+> +			dma32_zone_size = arm64_dma32_phys_limit;
+> +		}
+
+I think this calculations can be hidden in max_zone_phys(), e.g.
+
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 481d22c32a2e..be3fdfb35a56 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -189,7 +189,12 @@ static void __init reserve_elfcorehdr(void)
+ static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
+ {
+ 	phys_addr_t offset = memblock_start_of_DRAM() & GENMASK_ULL(63, zone_bits);
+-	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
++	phys_addr_t zone_size = (1ULL << zone_bits);
++
++	if (IS_ENABLED(CONFIG_ZONE_DMA32) && zone_bits == 32 && dma32_zone_size)
++		zone_bits = min(zone_size,dma32_zone_size);
++
++	return min(offset + zone_size, memblock_end_of_DRAM());
+ }
+ 
+ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+
+> +	} else {
+>  		arm64_dma32_phys_limit = PHYS_MASK + 1;
+> +	}
+>  
+>  	reserve_crashkernel();
+>  
+> -- 
+> 2.18.0
+
+-- 
+Sincerely yours,
+Mike.
