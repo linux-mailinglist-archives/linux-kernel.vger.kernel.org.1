@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2738526A1C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006C326A1C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgIOJM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:12:28 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:7320 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726357AbgIOJLv (ORCPT
+        id S1726412AbgIOJMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgIOJMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:11:51 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08F98V8l023596;
-        Tue, 15 Sep 2020 11:11:42 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=g4kST7SsfaViCNlFfZ08siUj72Yl/Jmwp5npYZfdOOc=;
- b=KscuE9KcDMkqxGs6xutCqIVOYdI42kni92TwIIURoiWVp5BKT7Q0q2QmcRk9JZb7qbwn
- 0IYMs22AIsmRaCNw3Mwu4BuT871ZxF4CL+jXkNZXGnBINA1RuWaCrSElBb/dB10nv7VA
- ID/xEOw0osqoKk07lDbLlGGJjj/Ppt8IPnUgIqFyV3H4A86OUsUrvbweCU1lZX6QnykZ
- 2HRKyzGFxj8I9ZlN6hqncw6aywc2EtirGMDB1TN95gtAQ/i/ePxjfUub+wdXL65V086I
- rHOct/T3DB8SFFjwXnqZiGFOxFgk0P/doRRsTTtgDKZCrrKgPfsduWKNVNn6CJSfldcq oA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33gkf9f1rt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 11:11:42 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3127910002A;
-        Tue, 15 Sep 2020 11:11:42 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1D1732A4483;
-        Tue, 15 Sep 2020 11:11:42 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep 2020 11:11:41
- +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     <wsa@kernel.org>, <pierre-yves.mordret@st.com>
-CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
-        <alain.volmat@st.com>
-Subject: [PATCH 2/2] i2c: stm32: name slave slot to ease maintenance
-Date:   Tue, 15 Sep 2020 11:11:41 +0200
-Message-ID: <1600161101-9941-1-git-send-email-alain.volmat@st.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 15 Sep 2020 05:12:18 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49FBC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:12:17 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id g4so2481869wrs.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:12:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wqDzL5jXjIcU644bGfyRewIDuV/CRiP2hfEuWrticS4=;
+        b=I0LTECfJFeTgfuODSS0m5seGDuAH20STqbD8aY6ZNZJS7bmqsdSKZi3N31yKfxRDMH
+         96pIhM1oDDQqxTdkkVQESCIMwLi69GrhjccK9zFdgkEp3vz3Hy8dMhTjsjqBBtkSx6nE
+         k46o7CSeMT765mmOx0eAYv2GH3HXm3sSBwGuBTvSWd0FgAgdOQujmerXEEi5gDb/8CVI
+         r7mD+Vq9FZNqYHRegBD4xiArasYYCT5wsgSTuYiH3Egs8wfDKO7bVK66fJrDbssFaXBy
+         UkWMCXYsluKl4er7GlA2ui18yE6WWI0X+J4nzgL3D9yNaW4+5MKCJjMnpB75C5FMU2hD
+         BR+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wqDzL5jXjIcU644bGfyRewIDuV/CRiP2hfEuWrticS4=;
+        b=paa0kvUGATpWwIebygrK3Tq4CKqkkuEcHkvI4iTV5kPDaMuFYY5bA8OiUUveOeyS16
+         0h6DPnDoSt5Dxpw2q8TFIp7nriUcBRuPXe96MRA3OiVVY59lIHBmSly5ENZBUy1GzJ6f
+         SUV11l/bULVQohTO/zGRjjrlyFGR4x4N14xxEdYSeZ8O1bshEVgH7w9FRdK9pcGpcKB3
+         4BEl3tidGqlyd6+fW0+/H63WTUNIfJ23u6JV03yYncHoMWKatDmqsfvnr0+0ue/giQJ+
+         H1augmMlIcntwxm846uTbiK07v25r2Jcs06V5HB3c088VGOCQUbhQ0ujtn8o23J0KsHD
+         vJpA==
+X-Gm-Message-State: AOAM533CTsMro7DX21AMbSxELnD1fZFkJGpztEX6AEzvJeSaxy6YaNSK
+        b11uvXMtDZphk+SJOmR+ufG6NdzIo1LhNJBk
+X-Google-Smtp-Source: ABdhPJxp60NPScv+VZoXofu7q1Z93POwdYx27pIbVKWrggjOKTIjLnFYw0DpvmvFvvArULBUijf1xg==
+X-Received: by 2002:a5d:4cc1:: with SMTP id c1mr20260166wrt.122.1600161135955;
+        Tue, 15 Sep 2020 02:12:15 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:ec32:668e:7a20:c1cd])
+        by smtp.gmail.com with ESMTPSA id r15sm23444226wmn.24.2020.09.15.02.12.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 02:12:15 -0700 (PDT)
+Subject: Re: [PATCH][next] mptcp: fix spelling mistake "colesced" ->
+ "coalesced"
+To:     Colin King <colin.king@canonical.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, mptcp@lists.01.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200915084405.7361-1-colin.king@canonical.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Message-ID: <d8a1bff2-4302-f48b-c7c7-5dadd95ab2b3@tessares.net>
+Date:   Tue, 15 Sep 2020 11:12:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG5NODE2.st.com (10.75.127.14) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_05:2020-09-15,2020-09-15 signatures=0
+In-Reply-To: <20200915084405.7361-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Name slave slots in order to ease code maintenance.
+Hi Colin,
 
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
----
- drivers/i2c/busses/i2c-stm32f7.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+On 15/09/2020 10:44, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake a pr_debug message. Fix it.
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index 0880f6a4cd44..a7432ec7d992 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -155,7 +155,12 @@
- 
- #define STM32F7_I2C_MAX_LEN			0xff
- #define STM32F7_I2C_DMA_LEN_MIN			0x16
--#define STM32F7_I2C_MAX_SLAVE			0x3
-+enum {
-+	STM32F7_SLAVE_HOSTNOTIFY,
-+	STM32F7_SLAVE_7_10_BITS_ADDR,
-+	STM32F7_SLAVE_7_BITS_ADDR,
-+	STM32F7_I2C_MAX_SLAVE
-+};
- 
- #define STM32F7_I2C_DNF_DEFAULT			0
- #define STM32F7_I2C_DNF_MAX			16
-@@ -1343,19 +1348,20 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
- 	int i;
- 
- 	/*
--	 * slave[0] support only SMBus Host address (0x8)
--	 * slave[1] supports 7-bit and 10-bit slave address
--	 * slave[2] supports 7-bit slave address only
-+	 * slave[STM32F7_SLAVE_HOSTNOTIFY] support only SMBus Host address (0x8)
-+	 * slave[STM32F7_SLAVE_7_10_BITS_ADDR] supports 7-bit and 10-bit slave address
-+	 * slave[STM32F7_SLAVE_7_BITS_ADDR] supports 7-bit slave address only
- 	 */
- 	if (i2c_dev->smbus_mode && (slave->addr == 0x08)) {
--		if (i2c_dev->slave[0])
-+		if (i2c_dev->slave[STM32F7_SLAVE_HOSTNOTIFY])
- 			goto fail;
--		*id = 0;
-+		*id = STM32F7_SLAVE_HOSTNOTIFY;
- 		return 0;
- 	}
- 
--	for (i = STM32F7_I2C_MAX_SLAVE - 1; i > 0; i--) {
--		if (i == 2 && (slave->flags & I2C_CLIENT_TEN))
-+	for (i = STM32F7_I2C_MAX_SLAVE - 1; i > STM32F7_SLAVE_HOSTNOTIFY; i--) {
-+		if ((i == STM32F7_SLAVE_7_BITS_ADDR) &&
-+		    (slave->flags & I2C_CLIENT_TEN))
- 			continue;
- 		if (!i2c_dev->slave[i]) {
- 			*id = i;
+Thank you for the patch!
+
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+
+Now I don't know if it can be accepted if it was not sent to netdev ML. 
+You might have to re-submit it. If you do, please replace "next" by 
+"net-next" in the subject to avoid confusion.
+
+Cheers,
+Matt
 -- 
-2.7.4
-
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
