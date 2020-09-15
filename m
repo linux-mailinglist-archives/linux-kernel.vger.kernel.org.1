@@ -2,65 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F5726B0FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580DB26B0F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgIOWXB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 18:23:01 -0400
-Received: from mail.nic.cz ([217.31.204.67]:43092 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727672AbgIOQ0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:26:15 -0400
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 95BC91409E0;
-        Tue, 15 Sep 2020 18:24:37 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 18:24:36 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     linux-leds@vger.kernel.org
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH leds + devicetree v2 1/2] leds: trigger: add trigger
- sources validating method and helper functions
-Message-ID: <20200915182436.6e90f9d0@nic.cz>
-In-Reply-To: <20200915152616.20591-2-marek.behun@nic.cz>
-References: <20200915152616.20591-1-marek.behun@nic.cz>
-        <20200915152616.20591-2-marek.behun@nic.cz>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727813AbgIOWWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:22:31 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49633 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727681AbgIOQ0Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:26:25 -0400
+Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kIDlp-0008Gy-Hv; Tue, 15 Sep 2020 16:25:29 +0000
+Date:   Tue, 15 Sep 2020 18:25:28 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christian Brauner <christian@brauner.io>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 14/15] selftests/clone3: Avoid OS-defined clone_args
+Message-ID: <20200915162528.x7admy45pdqsoke4@wittgenstein>
+References: <20200912110820.597135-1-keescook@chromium.org>
+ <20200912110820.597135-15-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200912110820.597135-15-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 17:26:15 +0200
-Marek Behún <marek.behun@nic.cz> wrote:
+On Sat, Sep 12, 2020 at 04:08:19AM -0700, Kees Cook wrote:
+> As the UAPI headers start to appear in distros, we need to avoid
+> outdated versions of struct clone_args to be able to test modern
+> features. Additionally pull in the syscall numbers correctly.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-> +	/*
-> +	 * Check whether LED has defined valid source for this trigger.
-> +	 * If yes, this trigger should be set as default trigger for LED.
-> +	 * This should use of_led_count_trigger_sources and
-> +	 * of_led_get_trigger_source functions.
-> +	 */
-> +	bool		(*has_valid_source)(struct led_classdev *led_cdev);
+Hm, with this patch applied I'm getting:
 
-Hmm, the heartbeat and timer triggers do not need trigger sources. If
-we want to deprecate linux,default-trigger device tree property for
-these triggers also, this method should look to `function` DT property
-for heartbeat and timer triggers.
+gcc -g -I../../../../usr/include/    clone3_set_tid.c /home/brauner/src/git/linux/linux/tools/testing/selftests/kselftest_harness.h /home/brauner/src/git/linux/linux/tools/testing/selftests/kselftest.h -lcap -o /home/brauner/src/git/linux/linux/tools/testing/selftests/clone3/clone3_set_tid
+In file included from clone3_set_tid.c:24:
+clone3_selftests.h:37:8: error: redefinition of ‘struct clone_args’
+   37 | struct clone_args {
+      |        ^~~~~~~~~~
+In file included from clone3_set_tid.c:12:
+/usr/include/linux/sched.h:92:8: note: originally defined here
+   92 | struct clone_args {
+      |        ^~~~~~~~~~
+make: *** [../lib.mk:140: /home/brauner/src/git/linux/linux/tools/testing/selftests/clone3/clone3_set_tid] Error 1
 
-In that case the name should be changed to something like
-of_is_valid_default_for, or something like that.
+One trick to avoid this could be:
 
-Marek
+#ifndef CLONE_ARGS_SIZE_VER0
+#define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
+#endif
+
+#ifndef CLONE_ARGS_SIZE_VER1
+#define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
+#endif
+
+#ifndef CLONE_ARGS_SIZE_VER2
+#define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
+#endif
+
+struct __clone_args {
+	__aligned_u64 flags;
+	__aligned_u64 pidfd;
+	__aligned_u64 child_tid;
+	__aligned_u64 parent_tid;
+	__aligned_u64 exit_signal;
+	__aligned_u64 stack;
+	__aligned_u64 stack_size;
+	__aligned_u64 tls;
+	__aligned_u64 set_tid;
+	__aligned_u64 set_tid_size;
+	__aligned_u64 cgroup;
+};
+
+static pid_t sys_clone3(struct __clone_args *args, size_t size)
+{
+	return syscall(__NR_clone3, args, size);
+}
+
+Christian
