@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF3126A35E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784EB26A36C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIOKnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:43:04 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:61760 "EHLO
+        id S1726353AbgIOKpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:45:17 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:19700 "EHLO
         mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726357AbgIOKm3 (ORCPT
+        by vger.kernel.org with ESMTP id S1726382AbgIOKmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:42:29 -0400
+        Tue, 15 Sep 2020 06:42:46 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600166548; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1600166565; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=okazmhXZpoupNz1FvPJOTzYNXrNAHsOdniGfyvBHuSg=; b=uNTAtLwRcRSxeLIulLCaHaPvZhbT+MVXd14es7wS+ccV2iak6OrU6fksbGz7gjitpWy77HFM
- /D7zyB00G0+a5q02S/6tOiR5EmCc5080V5A5wCbWq9xv+4TTucJhAkm/5alBcdFsrR2wnuZO
- mgy95o65wMSzUqHPmzjjW2TG5ok=
+ Sender; bh=iWgpx93myVfTgVuliFCSUQkhRd6Nl/5GBcbj6CMtLlA=; b=T/fIXDb99XqLUfgowkqkZlHijZEkn+n883pbR32ZFweUYxEvB9xhUUOW9rqx609jfip3fTmY
+ ESPAm9OSjP2u2YiWSyGpq5CNFpj7tKJEOti/sNA1ZM/Z1QuPmePzWbrah2G1eEyxrPAEZUx8
+ muTTzBw5cu1i1u2u7n+27Re376M=
 X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f609a929bdf68cc035a255c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 10:42:26
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f609a97698ee477d157c471 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 10:42:31
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 23A33C433F1; Tue, 15 Sep 2020 10:42:26 +0000 (UTC)
+        id 76997C433FE; Tue, 15 Sep 2020 10:42:31 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +37,9 @@ Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 77B5DC43395;
-        Tue, 15 Sep 2020 10:42:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 77B5DC43395
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D437BC433C8;
+        Tue, 15 Sep 2020 10:42:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D437BC433C8
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingwei@codeaurora.org
 From:   Tingwei Zhang <tingwei@codeaurora.org>
@@ -57,10 +57,11 @@ Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
         Mao Jinlong <jinlmao@codeaurora.org>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v11 06/24] coresight: add try_get_module() in coresight_grab_device()
-Date:   Tue, 15 Sep 2020 18:40:58 +0800
-Message-Id: <20200915104116.16789-7-tingwei@codeaurora.org>
+        linux-kernel@vger.kernel.org,
+        Suzuki K Poulose <Suzuki.Poulose@arm.com>
+Subject: [PATCH v11 07/24] coresight: stm: allow to build coresight-stm as a module
+Date:   Tue, 15 Sep 2020 18:40:59 +0800
+Message-Id: <20200915104116.16789-8-tingwei@codeaurora.org>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20200915104116.16789-1-tingwei@codeaurora.org>
 References: <20200915104116.16789-1-tingwei@codeaurora.org>
@@ -71,134 +72,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When coresight device is in an active session, driver module of
-that device should not be removed. Use try_get_module() in
-coresight_grab_device() to prevent module to be unloaded.
-Use get_device()/put_device() to protect device data
-in the middle of active session.
+- Kconfig becomes a tristate, to allow =m
+- add a stm_remove function, for module unload
+- add a MODULE_DEVICE_TABLE for autoloading on boot
 
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Signed-off-by: Kim Phillips <kim.phillips@arm.com>
 Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
 Tested-by: Mike Leach <mike.leach@linaro.org>
-Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight.c | 60 ++++++++++++++++++++++---
- 1 file changed, 53 insertions(+), 7 deletions(-)
+ drivers/hwtracing/coresight/Kconfig         |  5 ++++-
+ drivers/hwtracing/coresight/coresight-stm.c | 20 +++++++++++++++++++-
+ 2 files changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
-index d1aea3a1e7b6..4faa4aa3964d 100644
---- a/drivers/hwtracing/coresight/coresight.c
-+++ b/drivers/hwtracing/coresight/coresight.c
-@@ -629,13 +629,45 @@ struct coresight_device *coresight_get_sink_by_id(u32 id)
- 	return dev ? to_coresight_device(dev) : NULL;
+diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+index 4663fd1bbffc..6433f835fc97 100644
+--- a/drivers/hwtracing/coresight/Kconfig
++++ b/drivers/hwtracing/coresight/Kconfig
+@@ -86,7 +86,7 @@ config CORESIGHT_SOURCE_ETM4X
+ 	  data tracing may also be available.
+ 
+ config CORESIGHT_STM
+-	bool "CoreSight System Trace Macrocell driver"
++	tristate "CoreSight System Trace Macrocell driver"
+ 	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
+ 	select CORESIGHT_LINKS_AND_SINKS
+ 	select STM
+@@ -96,6 +96,9 @@ config CORESIGHT_STM
+ 	  logging useful software events or data coming from various entities
+ 	  in the system, possibly running different OSs
+ 
++	  To compile this driver as a module, choose M here: the
++	  module will be called coresight-stm.
++
+ config CORESIGHT_CPU_DEBUG
+ 	tristate "CoreSight CPU Debug driver"
+ 	depends on ARM || ARM64
+diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
+index 2ba819a47cf6..b0ad912651a9 100644
+--- a/drivers/hwtracing/coresight/coresight-stm.c
++++ b/drivers/hwtracing/coresight/coresight-stm.c
+@@ -951,6 +951,17 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
+ 	return ret;
  }
  
-+/**
-+ * coresight_get_ref- Helper function to increase reference count to module
-+ * and device.
-+ * Return true in successful case and power up the device.
-+ * Return false when failed to get reference of module.
-+ */
-+static inline bool coresight_get_ref(struct coresight_device *csdev)
++static int __exit stm_remove(struct amba_device *adev)
 +{
-+	struct device *dev = csdev->dev.parent;
++	struct stm_drvdata *drvdata = dev_get_drvdata(&adev->dev);
 +
-+	/* Make sure the driver can't be removed */
-+	if (!try_module_get(dev->driver->owner))
-+		return false;
-+	/* Make sure the device can't go away */
-+	get_device(dev);
-+	pm_runtime_get_sync(dev);
-+	return true;
++	coresight_unregister(drvdata->csdev);
++
++	stm_unregister_device(&drvdata->stm);
++
++	return 0;
 +}
 +
-+/**
-+ * coresight_put_ref- Helper function to decrease reference count to module
-+ * and device. Power off the device.
-+ */
-+static inline void coresight_put_ref(struct coresight_device *csdev)
-+{
-+	struct device *dev = csdev->dev.parent;
-+
-+	pm_runtime_put(dev);
-+	put_device(dev);
-+	module_put(dev->driver->owner);
-+}
-+
- /*
-  * coresight_grab_device - Power up this device and any of the helper
-  * devices connected to it for trace operation. Since the helper devices
-  * don't appear on the trace path, they should be handled along with the
-  * the master device.
-  */
--static void coresight_grab_device(struct coresight_device *csdev)
-+static int coresight_grab_device(struct coresight_device *csdev)
+ #ifdef CONFIG_PM
+ static int stm_runtime_suspend(struct device *dev)
  {
- 	int i;
+@@ -983,6 +994,8 @@ static const struct amba_id stm_ids[] = {
+ 	{ 0, 0},
+ };
  
-@@ -644,9 +676,20 @@ static void coresight_grab_device(struct coresight_device *csdev)
- 
- 		child  = csdev->pdata->conns[i].child_dev;
- 		if (child && child->type == CORESIGHT_DEV_TYPE_HELPER)
--			pm_runtime_get_sync(child->dev.parent);
-+			if (!coresight_get_ref(child))
-+				goto err;
-+	}
-+	if (coresight_get_ref(csdev))
-+		return 0;
-+err:
-+	for (i--; i >= 0; i--) {
-+		struct coresight_device *child;
++MODULE_DEVICE_TABLE(amba, stm_ids);
 +
-+		child  = csdev->pdata->conns[i].child_dev;
-+		if (child && child->type == CORESIGHT_DEV_TYPE_HELPER)
-+			coresight_put_ref(child);
- 	}
--	pm_runtime_get_sync(csdev->dev.parent);
-+	return -ENODEV;
- }
+ static struct amba_driver stm_driver = {
+ 	.drv = {
+ 		.name   = "coresight-stm",
+@@ -991,7 +1004,12 @@ static struct amba_driver stm_driver = {
+ 		.suppress_bind_attrs = true,
+ 	},
+ 	.probe          = stm_probe,
++	.remove         = stm_remove,
+ 	.id_table	= stm_ids,
+ };
  
- /*
-@@ -657,13 +700,13 @@ static void coresight_drop_device(struct coresight_device *csdev)
- {
- 	int i;
- 
--	pm_runtime_put(csdev->dev.parent);
-+	coresight_put_ref(csdev);
- 	for (i = 0; i < csdev->pdata->nr_outport; i++) {
- 		struct coresight_device *child;
- 
- 		child  = csdev->pdata->conns[i].child_dev;
- 		if (child && child->type == CORESIGHT_DEV_TYPE_HELPER)
--			pm_runtime_put(child->dev.parent);
-+			coresight_put_ref(child);
- 	}
- }
- 
-@@ -682,7 +725,7 @@ static int _coresight_build_path(struct coresight_device *csdev,
- 				 struct coresight_device *sink,
- 				 struct list_head *path)
- {
--	int i;
-+	int i, ret;
- 	bool found = false;
- 	struct coresight_node *node;
- 
-@@ -712,11 +755,14 @@ static int _coresight_build_path(struct coresight_device *csdev,
- 	 * is tell the PM runtime core we need this element and add a node
- 	 * for it.
- 	 */
-+	ret = coresight_grab_device(csdev);
-+	if (ret)
-+		return ret;
+-builtin_amba_driver(stm_driver);
++module_amba_driver(stm_driver);
 +
- 	node = kzalloc(sizeof(struct coresight_node), GFP_KERNEL);
- 	if (!node)
- 		return -ENOMEM;
- 
--	coresight_grab_device(csdev);
- 	node->csdev = csdev;
- 	list_add(&node->link, path);
- 
++MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
++MODULE_DESCRIPTION("Arm CoreSight System Trace Macrocell driver");
++MODULE_LICENSE("GPL v2");
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
