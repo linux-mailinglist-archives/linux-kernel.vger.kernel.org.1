@@ -2,109 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643D526A0A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5EC26A0D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgIOIXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:23:15 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32355 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726178AbgIOIWz (ORCPT
+        id S1726389AbgIOI02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:26:28 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:40505 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726469AbgIOI0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:22:55 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-71-5leh59vyMUmzAnr2F172FA-1; Tue, 15 Sep 2020 09:22:50 +0100
-X-MC-Unique: 5leh59vyMUmzAnr2F172FA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 15 Sep 2020 09:22:49 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 15 Sep 2020 09:22:49 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Josh Poimboeuf' <jpoimboe@redhat.com>
-CC:     'Borislav Petkov' <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
+        Tue, 15 Sep 2020 04:26:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600158371; x=1631694371;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aQTSl4A///ZE1wGSlUUw/tX8YAaZYp1WUvSQr1uwZN0=;
+  b=UHuvu5P5BagffhDLk3pVoJOFJVVgQbg7XfDK/FnHBue8BZ+yGAo736uC
+   uHfdPTeWS8ZjcUeejzvUO/KftGw2osQskMft49cDPtsvNMbmdMUI85rb3
+   bEPgKwFvjZp64P3/XEr2BNyVENaK6SFTV1YzYV6AgQ/4GXr3zf+dLuzHL
+   oinOHOu5rvxBOAJB9Cb/OWkY29jG9jnze9dSBQE1XHnHX6plJkVAgwvHq
+   2T6y4VDHfj5/Gkls+E0GgWjSrvFNZrcNZrz8XClOXoxQMJg9L3MzLoEjq
+   W5KRqdApdgTHPUzagFcs2F15tumhWxS19uKe2b/DogcpmfR7wrbppu5pp
+   Q==;
+IronPort-SDR: cr/X9skK1adfXZHgaIfDgGXAkhY+WecYaVm+QsFAKlYQXOM/1pa6mgn6H1FISjnpVPXX3qboIa
+ 7Ds6+MMftalx7lcwhTkiepnizUc91lJPg1IQHDAYhIaU9UA89O6KjGIFTu/LRo/ZhtmqL31hHw
+ 4q2AFcRaYm+AcabVxjy6/QqNTzGtONHEj/wY772HNKdTIpTLmGLAiwlS9UKDgZ9p2Vb2L0+w4w
+ zQwjQBEzKI3JcfXmNUVxykaDKiTmoDeFG3SmcWwV4HmB5HldTpGB2PEBjeyTPJocEWw0cr9vZ1
+ ZHQ=
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="26444438"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2020 01:26:10 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 01:26:09 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 15 Sep 2020 01:26:08 -0700
+Date:   Tue, 15 Sep 2020 08:23:33 +0000
+From:   "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+CC:     "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Waiman Long" <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Mark Rutland" <mark.rutland@arm.com>
-Subject: RE: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Topic: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Index: AQHWisBV61WRef5OMEyULIupnNS1CKloouig///5HACAAMAeUA==
-Date:   Tue, 15 Sep 2020 08:22:49 +0000
-Message-ID: <18cc6ae97e1f4bf5a81167e0c1313935@AcuMS.aculab.com>
-References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
- <20200914175604.GF680@zn.tnic>
- <2e6a4d75b38248f1b8b3b874d36065f1@AcuMS.aculab.com>
- <20200914215104.cjvycgie2wd3omtn@treble>
-In-Reply-To: <20200914215104.cjvycgie2wd3omtn@treble>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH RFC 1/7] net: bridge: extend the process of special frames
+Message-ID: <20200915082333.4afoehj26daih2x7@soft-test08>
+References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
+ <20200904091527.669109-2-henrik.bjoernlund@microchip.com>
+ <8bb3694a731ae574911c0f3ce2d71fadeb8c90cf.camel@nvidia.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <8bb3694a731ae574911c0f3ce2d71fadeb8c90cf.camel@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMTQgU2VwdGVtYmVyIDIwMjAgMjI6NTENCj4g
-DQo+IE9uIE1vbiwgU2VwIDE0LCAyMDIwIGF0IDA5OjIzOjU5UE0gKzAwMDAsIERhdmlkIExhaWdo
-dCB3cm90ZToNCj4gPiBGcm9tOiBCb3Jpc2xhdiBQZXRrb3YNCj4gPiA+IFNlbnQ6IDE0IFNlcHRl
-bWJlciAyMDIwIDE4OjU2DQo+ID4gPg0KPiA+ID4gT24gVGh1LCBTZXAgMTAsIDIwMjAgYXQgMTI6
-MjI6NTNQTSAtMDUwMCwgSm9zaCBQb2ltYm9ldWYgd3JvdGU6DQo+ID4gPiA+ICsvKg0KPiA+ID4g
-PiArICogU2FuaXRpemUgYSB1c2VyIHBvaW50ZXIgc3VjaCB0aGF0IGl0IGJlY29tZXMgTlVMTCBp
-ZiBpdCdzIG5vdCBhIHZhbGlkIHVzZXINCj4gPiA+ID4gKyAqIHBvaW50ZXIuICBUaGlzIHByZXZl
-bnRzIHNwZWN1bGF0aXZlIGRlcmVmZXJlbmNlcyBvZiB1c2VyLWNvbnRyb2xsZWQgcG9pbnRlcnMN
-Cj4gPiA+ID4gKyAqIHRvIGtlcm5lbCBzcGFjZSB3aGVuIGFjY2Vzc19vaygpIHNwZWN1bGF0aXZl
-bHkgcmV0dXJucyB0cnVlLiAgVGhpcyBzaG91bGQgYmUNCj4gPiA+ID4gKyAqIGRvbmUgKmFmdGVy
-KiBhY2Nlc3Nfb2soKSwgdG8gYXZvaWQgYWZmZWN0aW5nIGVycm9yIGhhbmRsaW5nIGJlaGF2aW9y
-Lg0KPiA+ID4NCj4gPiA+IEVyciwgc3R1cGlkIHF1ZXN0aW9uOiBjYW4gdGhpcyBtYWNybyB0aGVu
-IGJlIGZvbGRlZCBpbnRvIGFjY2Vzc19vaygpIHNvDQo+ID4gPiB0aGF0IHlvdSBkb24ndCBoYXZl
-IHRvIHRvdWNoIHNvIG1hbnkgcGxhY2VzIGFuZCB0aGUgY2hlY2sgY2FuIGhhcHBlbg0KPiA+ID4g
-YXV0b21hdGljYWxseT8NCj4gPg0KPiA+IE15IHRob3VnaHRzIGFyZSB0aGF0IGFjY2Vzc19vaygp
-IGNvdWxkIHJldHVybiAwIGZvciBmYWlsIGFuZCB+MHUNCj4gPiBmb3Igc3VjY2Vzcy4NCj4gPiBZ
-b3UgY291bGQgdGhlbiBkbyAod2l0aCBhIGZldyBjYXN0cyk6DQo+ID4gCW1hc2sgPSBhY2Nlc3Nf
-b2socHRyLCBzaXplKTsNCj4gPiAJLyogU3RvcCBnY2MgdHJhY2tpbmcgdGhlIHZhbHVlIG9mIG1h
-c2suICovDQo+ID4gCWFzbSB2b2xhdGlsZSggIiIgOiAiK3IiIChtYXNrKSk7DQo+ID4gCWFkZHIg
-PSBwdHIgJiBtYXNrOw0KPiA+IAlpZiAoIWFkZHIgJiYgcHRyKSAgLy8gTGV0IE5VTEwgdGhyb3Vn
-aD8/DQo+ID4gCQlyZXR1cm4gLUVGQVVMVDsNCj4gPg0KPiA+IEkgdGhpbmsgdGhlcmUgYXJlIG90
-aGVyIGNoYW5nZXMgaW4gdGhlIHBpcGVsaW5lIHRvIHJlbW92ZQ0KPiA+IG1vc3Qgb2YgdGhlIGFj
-Y2Vzc19vaygpIGFwYXJ0IGZyb20gdGhvc2UgaW5zaWRlIHB1dC9nZXRfdXNlcigpDQo+ID4gYW5k
-IGNvcHlfdG8vZnJvbV91c2VyKCkuDQo+ID4gU28gdGhlIGNoYW5nZXMgc2hvdWxkIGJlIG1vcmUg
-bGltaXRlZCB0aGFuIHlvdSBtaWdodCB0aGluay4NCj4gDQo+IE1heWJlLCBidXQgSSBiZWxpZXZl
-IHRoYXQncyBzdGlsbCBnb2luZyB0byBlbmQgdXAgYSB0cmVld2lkZSBjaGFuZ2UuDQo+IA0KPiBB
-bmQsIGlmIHdlJ3JlIGdvaW5nIHRvIHRoZSB0cm91YmxlIG9mIGNoYW5naW5nIHRoZSBhY2Nlc3Nf
-b2soKQ0KPiBpbnRlcmZhY2UsIHdlIHNob3VsZCBjaGFuZ2UgaXQgZW5vdWdoIHRvIG1ha2Ugc3Vy
-ZSB0aGF0IGFjY2lkZW50YWwgdXNlcw0KPiBvZiB0aGUgb2xkIGludGVyZmFjZSAoYWZ0ZXIgeWVh
-cnMgb2YgbXVzY2xlIG1lbW9yeSkgd2lsbCBmYWlsIHRvIGJ1aWxkLg0KPiANCj4gV2UgY291bGQg
-ZWl0aGVyIGFkZCBhIDNyZCBhcmd1bWVudCwgb3IgcmVuYW1lIGl0IHRvIGFjY2Vzc19va19tYXNr
-KCkgb3INCj4gc29tZXRoaW5nLg0KDQpJdCB3b3VsZCB0YWtlIHNvbWUgdGhvdWdodCB0byBnZXQg
-cmlnaHQgKGFuZCBmb29sIHByb29mKSBzbyB3b3VsZCBuZWVkDQpuZXcgbmFtZXMgc28gaXQgY291
-bGQgY28tZXhpc3Qgd2l0aCB0aGUgZXhpc3RpbmcgY29kZSBzbyB0aGF0IHRoZQ0KY2hhbmdlcyBj
-b3VsZCAncmlwcGxlIHRocm91Z2gnIHRoZSBzb3VyY2UgdHJlZSBpbnN0ZWFkIG9mIGFsbCBoYXZp
-bmcgdG8NCmJlIG1hZGUgYXQgb25jZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
-cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
-MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Thanks for your review. I will update in the next version as suggested.
 
+Regards
+Henrik
+
+
+The 09/08/2020 12:12, Nikolay Aleksandrov wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Fri, 2020-09-04 at 09:15 +0000, Henrik Bjoernlund wrote:
+> > This patch extends the processing of frames in the bridge. Currently MRP
+> > frames needs special processing and the current implementation doesn't
+> > allow a nice way to process different frame types. Therefore try to
+> > improve this by adding a list that contains frame types that need
+> > special processing. This list is iterated for each input frame and if
+> > there is a match based on frame type then these functions will be called
+> > and decide what to do with the frame. It can process the frame then the
+> > bridge doesn't need to do anything or don't process so then the bridge
+> > will do normal forwarding.
+> >
+> > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
+> > ---
+> >  net/bridge/br_device.c  |  1 +
+> >  net/bridge/br_input.c   | 31 ++++++++++++++++++++++++++++++-
+> >  net/bridge/br_mrp.c     | 19 +++++++++++++++----
+> >  net/bridge/br_private.h | 18 ++++++++++++------
+> >  4 files changed, 58 insertions(+), 11 deletions(-)
+> >
+> 
+> Hi,
+> First I must say I do like this approach, thanks for generalizing it.
+> You can switch to a hlist so that there's just 1 pointer in the head.
+> I don't think you need list when you're walking only in one direction.
+> A few more minor comments below.
+> 
+> > diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
+> > index 9a2fb4aa1a10..a9232db03108 100644
+> > --- a/net/bridge/br_device.c
+> > +++ b/net/bridge/br_device.c
+> > @@ -473,6 +473,7 @@ void br_dev_setup(struct net_device *dev)
+> >       spin_lock_init(&br->lock);
+> >       INIT_LIST_HEAD(&br->port_list);
+> >       INIT_HLIST_HEAD(&br->fdb_list);
+> > +     INIT_LIST_HEAD(&br->ftype_list);
+> >  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> >       INIT_LIST_HEAD(&br->mrp_list);
+> >  #endif
+> > diff --git a/net/bridge/br_input.c b/net/bridge/br_input.c
+> > index 59a318b9f646..0f475b21094c 100644
+> > --- a/net/bridge/br_input.c
+> > +++ b/net/bridge/br_input.c
+> > @@ -254,6 +254,21 @@ static int nf_hook_bridge_pre(struct sk_buff *skb, struct sk_buff **pskb)
+> >       return RX_HANDLER_CONSUMED;
+> >  }
+> >
+> > +/* Return 0 if the frame was not processed otherwise 1
+> > + * note: already called with rcu_read_lock
+> > + */
+> > +static int br_process_frame_type(struct net_bridge_port *p,
+> > +                              struct sk_buff *skb)
+> > +{
+> > +     struct br_frame_type *tmp;
+> > +
+> > +     list_for_each_entry_rcu(tmp, &p->br->ftype_list, list) {
+> > +             if (unlikely(tmp->type == skb->protocol))
+> > +                     return tmp->func(p, skb);
+> > +     }
+> 
+> Nit: you can drop the {}.
+> 
+> > +     return 0;
+> > +}
+> > +
+> >  /*
+> >   * Return NULL if skb is handled
+> >   * note: already called with rcu_read_lock
+> > @@ -343,7 +358,7 @@ static rx_handler_result_t br_handle_frame(struct sk_buff **pskb)
+> >               }
+> >       }
+> >
+> > -     if (unlikely(br_mrp_process(p, skb)))
+> > +     if (unlikely(br_process_frame_type(p, skb)))
+> >               return RX_HANDLER_PASS;
+> >
+> >  forward:
+> > @@ -380,3 +395,17 @@ rx_handler_func_t *br_get_rx_handler(const struct net_device *dev)
+> >
+> >       return br_handle_frame;
+> >  }
+> > +
+> > +void br_add_frame(struct net_bridge *br, struct br_frame_type *ft)
+> > +{
+> > +     list_add_rcu(&ft->list, &br->ftype_list);
+> > +}
+> > +
+> > +void br_del_frame(struct net_bridge *br, struct br_frame_type *ft)
+> > +{
+> > +     struct br_frame_type *tmp;
+> > +
+> > +     list_for_each_entry(tmp, &br->ftype_list, list)
+> > +             if (ft == tmp)
+> > +                     list_del_rcu(&ft->list);
+> > +}
+> > diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
+> > index b36689e6e7cb..0428e1785041 100644
+> > --- a/net/bridge/br_mrp.c
+> > +++ b/net/bridge/br_mrp.c
+> > @@ -6,6 +6,13 @@
+> >  static const u8 mrp_test_dmac[ETH_ALEN] = { 0x1, 0x15, 0x4e, 0x0, 0x0, 0x1 };
+> >  static const u8 mrp_in_test_dmac[ETH_ALEN] = { 0x1, 0x15, 0x4e, 0x0, 0x0, 0x3 };
+> >
+> > +static int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb);
+> > +
+> > +static struct br_frame_type mrp_frame_type __read_mostly = {
+> > +     .type = cpu_to_be16(ETH_P_MRP),
+> > +     .func = br_mrp_process,
+> > +};
+> > +
+> >  static bool br_mrp_is_ring_port(struct net_bridge_port *p_port,
+> >                               struct net_bridge_port *s_port,
+> >                               struct net_bridge_port *port)
+> > @@ -445,6 +452,9 @@ static void br_mrp_del_impl(struct net_bridge *br, struct br_mrp *mrp)
+> >
+> >       list_del_rcu(&mrp->list);
+> >       kfree_rcu(mrp, rcu);
+> > +
+> > +     if (list_empty(&br->mrp_list))
+> > +             br_del_frame(br, &mrp_frame_type);
+> >  }
+> >
+> >  /* Adds a new MRP instance.
+> > @@ -493,6 +503,9 @@ int br_mrp_add(struct net_bridge *br, struct br_mrp_instance *instance)
+> >       spin_unlock_bh(&br->lock);
+> >       rcu_assign_pointer(mrp->s_port, p);
+> >
+> > +     if (list_empty(&br->mrp_list))
+> > +             br_add_frame(br, &mrp_frame_type);
+> > +
+> >       INIT_DELAYED_WORK(&mrp->test_work, br_mrp_test_work_expired);
+> >       INIT_DELAYED_WORK(&mrp->in_test_work, br_mrp_in_test_work_expired);
+> >       list_add_tail_rcu(&mrp->list, &br->mrp_list);
+> > @@ -1172,15 +1185,13 @@ static int br_mrp_rcv(struct net_bridge_port *p,
+> >   * normal forwarding.
+> >   * note: already called with rcu_read_lock
+> >   */
+> > -int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb)
+> > +static int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb)
+> >  {
+> >       /* If there is no MRP instance do normal forwarding */
+> >       if (likely(!(p->flags & BR_MRP_AWARE)))
+> >               goto out;
+> >
+> > -     if (unlikely(skb->protocol == htons(ETH_P_MRP)))
+> > -             return br_mrp_rcv(p, skb, p->dev);
+> > -
+> > +     return br_mrp_rcv(p, skb, p->dev);
+> >  out:
+> >       return 0;
+> >  }
+> > diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+> > index baa1500f384f..e67c6d9e8bea 100644
+> > --- a/net/bridge/br_private.h
+> > +++ b/net/bridge/br_private.h
+> > @@ -89,6 +89,13 @@ struct bridge_mcast_stats {
+> >  };
+> >  #endif
+> >
+> > +struct br_frame_type {
+> > +     __be16                  type;
+> > +     int                     (*func)(struct net_bridge_port *port,
+> > +                                     struct sk_buff *skb);
+> 
+> Perhaps frame_handler or something similar would be a better name for the
+> callback ?
+> 
+> > +     struct list_head        list;
+> > +};
+> > +
+> >  struct br_vlan_stats {
+> >       u64 rx_bytes;
+> >       u64 rx_packets;
+> > @@ -433,6 +440,8 @@ struct net_bridge {
+> >  #endif
+> >       struct hlist_head               fdb_list;
+> >
+> > +     struct list_head                ftype_list;
+> 
+> Could you please expand this to frame_type_list ?
+> 
+> > +
+> >  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> >       struct list_head                mrp_list;
+> >  #endif
+> > @@ -708,6 +717,9 @@ int nbp_backup_change(struct net_bridge_port *p, struct net_device *backup_dev);
+> >  int br_handle_frame_finish(struct net *net, struct sock *sk, struct sk_buff *skb);
+> >  rx_handler_func_t *br_get_rx_handler(const struct net_device *dev);
+> >
+> > +void br_add_frame(struct net_bridge *br, struct br_frame_type *ft);
+> > +void br_del_frame(struct net_bridge *br, struct br_frame_type *ft);
+> > +
+> >  static inline bool br_rx_handler_check_rcu(const struct net_device *dev)
+> >  {
+> >       return rcu_dereference(dev->rx_handler) == br_get_rx_handler(dev);
+> > @@ -1320,7 +1332,6 @@ extern int (*br_fdb_test_addr_hook)(struct net_device *dev, unsigned char *addr)
+> >  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> >  int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
+> >                struct nlattr *attr, int cmd, struct netlink_ext_ack *extack);
+> > -int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb);
+> >  bool br_mrp_enabled(struct net_bridge *br);
+> >  void br_mrp_port_del(struct net_bridge *br, struct net_bridge_port *p);
+> >  int br_mrp_fill_info(struct sk_buff *skb, struct net_bridge *br);
+> > @@ -1332,11 +1343,6 @@ static inline int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
+> >       return -EOPNOTSUPP;
+> >  }
+> >
+> > -static inline int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb)
+> > -{
+> > -     return 0;
+> > -}
+> > -
+> >  static inline bool br_mrp_enabled(struct net_bridge *br)
+> >  {
+> >       return false;
+> 
+
+-- 
+/Henrik
