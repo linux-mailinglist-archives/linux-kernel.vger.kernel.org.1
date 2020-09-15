@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD74426AEA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32E326AE9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgIOUXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:23:24 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:56822 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727925AbgIOUS0 (ORCPT
+        id S1727860AbgIOUVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:21:12 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44970 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727956AbgIOUS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 16:18:26 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FKAxCT178805;
-        Tue, 15 Sep 2020 20:16:40 GMT
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FK8pvU130516;
+        Tue, 15 Sep 2020 20:16:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=bF3iN2TYMHRMbpwp4Ubg9ibzl7kFpOr9sTVao/DOQ9s=;
- b=yPINnkBcp0mtxY9aV+fNBaaQuGQIjo6vTDcK0mpQo/+zUfvdkIqehdgCOO1mp1rEVq9i
- HGqI8s2G8jlznFL8z3Ad49cQ0Pgje5ki291/AjVNqSciIPPNIVAeEj9Ij6xa5JqX4FpD
- 2s5pTmeixPZ3jTur6a7FG2iKoig+Fv1Mius3nVpbYfSOlF13Qv9rHvZXOFwcfTeRZ5ay
- hI3mA18FMgnTXW79xpgTc1XPkiWQQEeUUiBlY3EcunenPlcRdyq4cFgu0vNQt/xKj23S
- NfrxO0yvQZd4oxXlG8ALpCFfBfaNzg33zLNjsMKDUHeXCG5sPlZQbM/OQ7RJRAepzOEf Uw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33j91dh0yk-1
+ bh=4VJNpmxVNDN5wjzmgpUrkHttEoFQWByhbcWmaEr2E9E=;
+ b=S0rAsk6MkQvpLvqZxDZGDGBVyHZxZ45MQGqC3ZL3NXbg2qmS5IMcTc/Se+gtKsTxfyE3
+ /rIuvO4FzN35VcbZH/Ab9dsGTxvZxw1dHCQnpYdXYoMoRpUKRIj4ZdnCpihOGYgm1Ilx
+ uJgK9qQqzIm3ro5bTAp6Gr0CYefHLoYD2p/32YNTakw7EaQFsFyFroAIBLSfrQOqapDm
+ XdWayKcwS5GLxQNLUsQ9vnHWnXTfcxI0kJNyV8/a6Tl+Jw4fGSWHOw1913q4WmTzHH5g
+ xGfw/opDC3myVjp1H67NfphvwuykmCcxhWpr6i02mcwl9WrQat4HbJTxGKf/RZzgwSpR Kw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 33gp9m7crg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 20:16:40 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FKFRJ3177333;
-        Tue, 15 Sep 2020 20:16:39 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 33h885xmb0-1
+        Tue, 15 Sep 2020 20:16:44 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FKFvZW127285;
+        Tue, 15 Sep 2020 20:16:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 33h7wppqgw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 20:16:39 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FKGckp002993;
-        Tue, 15 Sep 2020 20:16:38 GMT
+        Tue, 15 Sep 2020 20:16:44 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FKGe65006678;
+        Tue, 15 Sep 2020 20:16:42 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 20:16:37 +0000
+        with ESMTP ; Tue, 15 Sep 2020 20:16:40 +0000
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Daniel Wagner <dwagner@suse.de>, linux-scsi@vger.kernel.org
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>, jejb@linux.ibm.com,
+        paulus@samba.org, tyreld@linux.ibm.com
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Arun Easi <aeasi@marvell.com>, Martin Wilck <mwilck@suse.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] qla2xxx: A couple crash fixes
-Date:   Tue, 15 Sep 2020 16:16:23 -0400
-Message-Id: <160020074002.8134.15701828723963808362.b4-ty@oracle.com>
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH] scsi: ibmvfc: Fix error return in ibmvfc_probe()
+Date:   Tue, 15 Sep 2020 16:16:25 -0400
+Message-Id: <160020074003.8134.8833608146338864897.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908081516.8561-1-dwagner@suse.de>
-References: <20200908081516.8561-1-dwagner@suse.de>
+In-Reply-To: <20200907083949.154251-1-jingxiangfeng@huawei.com>
+References: <20200907083949.154251-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150158
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150158
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150157
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009150157
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Sep 2020 10:15:12 +0200, Daniel Wagner wrote:
+On Mon, 7 Sep 2020 16:39:49 +0800, Jing Xiangfeng wrote:
 
-> The first crash we observed is due memory corruption in the srb memory
-> pool. Unforuntatly, I couldn't find the source of the problem but the
-> workaround by resetting the cleanup callbacks 'fixes' this problem
-> (patch #1). I think as intermeditate step this should be merged until
-> the real cause can be identified.
-> 
-> The second crash is due a race condition(?) in the firmware. The sts
-> entries are not updated in time which leads to this crash pattern
-> which several customers have reported:
-> 
-> [...]
+> Fix to return error code PTR_ERR() from the error handling case instead
+> of 0.
 
 Applied to 5.10/scsi-queue, thanks!
 
-[1/4] scsi: qla2xxx: Warn if done() or free() are called on an already freed srb
-      https://git.kernel.org/mkp/scsi/c/c0014f94218e
-[2/4] scsi: qla2xxx: Simplify return value logic in qla2x00_get_sp_from_handle()
-      https://git.kernel.org/mkp/scsi/c/622299f16f33
-[3/4] scsi: qla2xxx: Log calling function name in qla2x00_get_sp_from_handle()
-      https://git.kernel.org/mkp/scsi/c/7d88d5dff95f
-[4/4] scsi: qla2xxx: Handle incorrect entry_type entries
-      https://git.kernel.org/mkp/scsi/c/31a3271ff11b
+[1/1] scsi: ibmvfc: Fix error return in ibmvfc_probe()
+      https://git.kernel.org/mkp/scsi/c/5e48a084f4e8
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
