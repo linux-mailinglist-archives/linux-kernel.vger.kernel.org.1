@@ -2,271 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E3A26B2FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2395226B1AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgIOW5V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 18:57:21 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:6617 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727151AbgIOPVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:21:34 -0400
-Received: from DAG2EX05-BASE.srv.huawei-3com.com ([10.8.0.68])
-        by h3cspam02-ex.h3c.com with ESMTPS id 08FFK7o1080134
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 23:20:07 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 15 Sep 2020 23:20:12 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.1713.004; Tue, 15 Sep 2020 23:20:11 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     "minyard@acm.org" <minyard@acm.org>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] [v2] ipmi: retry to get device id when error
-Thread-Topic: [PATCH] [v2] ipmi: retry to get device id when error
-Thread-Index: AQHWim/ckayNXmMPfkaknRpd9ndbxKlnv4SAgAGgMND//+T7AIAAjHIg
-Date:   Tue, 15 Sep 2020 15:20:11 +0000
-Message-ID: <e390d34db7704e63a112dfca44ab4bc7@h3c.com>
-References: <20200914081313.31450-1-tian.xianting@h3c.com>
- <20200914153937.GL15602@minyard.net>
- <226f9cfc421c49278cad9572bb33ac3a@h3c.com>
- <20200915145230.GB3674@minyard.net>
-In-Reply-To: <20200915145230.GB3674@minyard.net>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727582AbgIOQKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727369AbgIOPUy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:20:54 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9750DC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:20:53 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id d13so2154627pgl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:20:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=eRDwPJef3ElvaaFcUCZV2XCWcz5NA5r/DCuudMkUJtU=;
+        b=VwZzVxiQTUO0FBJ3PAtnb6LwlArqgU8OLU3XDLejHEekcwZIE15hm1UlyUO4Y+DZWT
+         +U+oMC7IxAOkv1nD1+6J9XhH5g7nIK2g3QjvpRvbJpARdEqfSK9SS0o2O4AjtT476fVq
+         4jkO2LDFfV3i1RaCe3RI3sJtZi6Tp1ByFgFLfNU6O7TSJcrjYDHrGkN6iO8OYK9lwfuZ
+         8SpstwBlFr/U2gCeTDZWT7+REBhiGFdkKnmnx2u2+s0rRi/aM68t7CeLipClg2SCq0Qd
+         PsBYvsADDa+0f+UrXWiIWL2hMXUgRjkLGcecEilxzrKOmFV7OCg29udz/6pUbQo6HsYD
+         2/ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=eRDwPJef3ElvaaFcUCZV2XCWcz5NA5r/DCuudMkUJtU=;
+        b=PXEUDIUg2ctB7QO4Yve2fgmgA4/X2q1ulUIdyIT++UiCmQc/k3LhW5uCihIjfaNbIt
+         G6qLHUhilAesXe6ka3ErGOTv2aRTJwb27cAZiqDoizQrT+5bjEaMiEUH49xst1qQcmPD
+         +hGM0Kfe1SLPhQ9/b3WguqHgZSHj6sJ3l+OXZni6pBz+f33GYzCXUF2zvETCZkN1kjrT
+         GtEgt362G7gGo1jkGOWYTReTP6w6vp4XG9bb8vo53iX0/td8uM0IYEm4fspteT07kKPe
+         2gXsLam5p5iJzbex2iPIE4uaPNHhjI1pXBkmg4mru0on/UmDZS4wzBL+sILbZ8QFMnUo
+         SNJw==
+X-Gm-Message-State: AOAM532sDAllQEj74Qpw2ASxwy4RD7q59cWIrQppWtM+2cnUaE3CZptN
+        w05QJ6Axn0QrNG1hgpRNpCA=
+X-Google-Smtp-Source: ABdhPJwGHVbGeNaO05rXg58GJwtSpLMgWm5/0wvvrlpogmqMRh3lFULLczypKRQEQOKGr6+4eMfzQQ==
+X-Received: by 2002:a62:1b4e:0:b029:13e:d13d:a135 with SMTP id b75-20020a621b4e0000b029013ed13da135mr18060882pfb.29.1600183253154;
+        Tue, 15 Sep 2020 08:20:53 -0700 (PDT)
+Received: from iZj6chx1xj0e0buvshuecpZ ([47.75.1.235])
+        by smtp.gmail.com with ESMTPSA id t12sm10321973pfh.73.2020.09.15.08.20.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Sep 2020 08:20:52 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 23:20:48 +0800
+From:   Peng Liu <iwtbavbm@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, valentin.schneider@arm.com, raistlin@linux.it,
+        linux-kernel@vger.kernel.org
+Cc:     iwtbavbm@gmail.com
+Subject: [PATCH] sched/deadline: Fix sched_dl_global_validate()
+Message-ID: <20200915152048.GA25835@iZj6chx1xj0e0buvshuecpZ>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 08FFK7o1080134
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I get it now, thank you Corey :)
-I will send the patch for you review tomorrow.
+When user changes sched_rt_{runtime, period}_us, then
 
------Original Message-----
-From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey Minyard
-Sent: Tuesday, September 15, 2020 10:53 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: arnd@arndb.de; gregkh@linuxfoundation.org; openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] ipmi: retry to get device id when error
+  sched_rt_handler()
+    -->	sched_dl_bandwidth_validate()
+	{
+		new_bw = global_rt_runtime()/global_rt_period();
 
-On Tue, Sep 15, 2020 at 09:40:02AM +0000, Tianxianting wrote:
-> Hi Corey,
-> Thanks for your comments,
-> Please review these two patches, which are based on your guide.
-> 1, [PATCH] ipmi: print current state when error
-> https://lkml.org/lkml/2020/9/15/183
-> 2, [PATCH] [v3] ipmi: retry to get device id when error
-> https://lkml.org/lkml/2020/9/15/156
+		for_each_possible_cpu(cpu) {
+			dl_b = dl_bw_of(cpu);
+			if (new_bw < dl_b->total_bw)
+				ret = -EBUSY;
+		}
+	}
 
-Patches are applied and in my next tree.
+Under CONFIG_SMP, dl_bw is per root domain , but not per CPU,
+dl_b->total_bw is the allocated bandwidth of the whole root domain.
+we should compare dl_b->total_bw against cpus*new_bw, where 'cpus'
+is the number of CPUs of the root domain.
 
-> 
-> As you said "You are having the same issue in the ipmi_si code. It's choosing defaults, but that's not ideal.  You probably need to handle this there, too, in a separate patch."
-> I am not sure whether I grasped what you said, The print ' device id 
-> demangle failed: -22' in commit message, is just triggered by bmc_device_id_handler->ipmi_demangle_device_id, this is the issue we met and is solving.
-> I found try_get_dev_id(in drivers/char/ipmi/ipmi_si_intf.c) also called ipmi_demangle_device_id(), do you mean if this ipmi_demangle_device_id() returned error, we also need to retry?
+Also, below annotation(in kernel/sched/sched.h) implied implementation
+only appeared in SCHED_DEADLINE v2[1], then deadline scheduler kept
+evolving till got merged(v9), but the annotation remains unchanged,
+meaningless and misleading, correct it.
 
-Yes, I think so, retrying in try_get_dev_id() would be a good idea, I think.  You are probably getting sub-optimal performance if you don't do this.
+* With respect to SMP, the bandwidth is given on a per-CPU basis,
+* meaning that:
+*  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
+*  - dl_total_bw array contains, in the i-eth element, the currently
+*    allocated bandwidth on the i-eth CPU.
 
-Thanks,
+[1] https://lkml.org/lkml/2010/2/28/119
 
--corey
+Signed-off-by: Peng Liu <iwtbavbm@gmail.com>
+---
+In fact, I'm not 100% sure that's a bug, since it's too 'obvious' and
+not newly introduced code.
 
-> 
-> Thanks a lot.
-> 
-> -----Original Message-----
-> From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey 
-> Minyard
-> Sent: Monday, September 14, 2020 11:40 PM
-> To: tianxianting (RD) <tian.xianting@h3c.com>
-> Cc: arnd@arndb.de; gregkh@linuxfoundation.org; 
-> openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] [v2] ipmi: retry to get device id when error
-> 
-> On Mon, Sep 14, 2020 at 04:13:13PM +0800, Xianting Tian wrote:
-> > We can't get bmc's device id with low probability when loading ipmi 
-> > driver, it caused bmc device register failed. When this issue 
-> > happened, we got below kernel printks:
-> 
-> This patch is moving in the right direction.  For the final patch(es), I can clean up the english grammar issues, since that's not your native language.  A few comments:
-> 
-> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: IPMI message handler: 
-> > device id demangle failed: -22
-> 
-> You are having the same issue in the ipmi_si code.  It's choosing defaults, but that's not ideal.  You probably need to handle this there, too, in a separate patch.
-> 
-> Can you create a separate patch to add a dev_warn() to the BT code when it returns IPMI_NOT_IN_MY_STATE_ERR, like I asked previously?  And print the current state when it happens.  That way we know where this issue is coming from and possibly fix the state machine.  I'm thinking that the BMC is just not responding, but I'd like to be sure.
-> 
-> Other comments inline...
-> 
-> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: using default values
-> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: req2rsp=5 secs retries=2
-> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: Unable to get the device id: -5
-> > 	[Wed Sep  9 19:52:04 2020] ipmi_si IPI0001:00: Unable to register
-> > device: error -5
-> > 
-> > When this issue happened, we want to manually unload the driver and 
-> > try to load it again, but it can't be unloaded by 'rmmod' as it is already 'in use'.
-> > 
-> > We add below 'printk' in handle_one_recv_msg(), when this issue 
-> > happened, the msg we received is "Recv: 1c 01 d5", which means the 
-> > data_len is 1, data[0] is 0xd5(completion code), which means "bmc cannot execute command.
-> > Command, or request parameter(s), not supported in present state".
-> > 	Debug code:
-> > 	static int handle_one_recv_msg(struct ipmi_smi *intf,
-> >                                struct ipmi_smi_msg *msg) {
-> >         	printk("Recv: %*ph\n", msg->rsp_size, msg->rsp);
-> > 		... ...
-> > 	}
-> > Then in ipmi_demangle_device_id(), it returned '-EINVAL' as 'data_len < 7'
-> > and 'data[0] != 0'.
-> > 
-> > We used this patch to retry to get device id when error happen, we 
-> > reproduced this issue again and the retry succeed on the first 
-> > retry, we finally got the correct msg and then all is ok:
-> > Recv: 1c 01 00 01 81 05 84 02 af db 07 00 01 00 b9 00 10 00
-> > 
-> > So use retry machanism in this patch to give bmc more opportunity to 
-> > correctly response kernel when we received specific completion code.
-> > 
-> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> > ---
-> >  drivers/char/ipmi/ipmi_msghandler.c | 29 +++++++++++++++++++++++++----
-> >  include/uapi/linux/ipmi_msgdefs.h   |  2 ++
-> >  2 files changed, 27 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/char/ipmi/ipmi_msghandler.c
-> > b/drivers/char/ipmi/ipmi_msghandler.c
-> > index 737c0b6b2..07d5be2cd 100644
-> > --- a/drivers/char/ipmi/ipmi_msghandler.c
-> > +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> > @@ -34,6 +34,7 @@
-> >  #include <linux/uuid.h>
-> >  #include <linux/nospec.h>
-> >  #include <linux/vmalloc.h>
-> > +#include <linux/delay.h>
-> >  
-> >  #define IPMI_DRIVER_VERSION "39.2"
-> >  
-> > @@ -60,6 +61,9 @@ enum ipmi_panic_event_op {  #else  #define 
-> > IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_NONE  #endif
-> > +
-> > +#define GET_DEVICE_ID_MAX_RETRY	5
-> > +
-> >  static enum ipmi_panic_event_op ipmi_send_panic_event = 
-> > IPMI_PANIC_DEFAULT;
-> >  
-> >  static int panic_op_write_handler(const char *val, @@ -317,6 +321,7 
-> > @@ struct bmc_device {
-> >  	int                    dyn_guid_set;
-> >  	struct kref	       usecount;
-> >  	struct work_struct     remove_work;
-> > +	char		       cc; /* completion code */
-> >  };
-> >  #define to_bmc_device(x) container_of((x), struct bmc_device,
-> > pdev.dev)
-> >  
-> > @@ -2381,6 +2386,8 @@ static void bmc_device_id_handler(struct ipmi_smi *intf,
-> >  			msg->msg.data, msg->msg.data_len, &intf->bmc->fetch_id);
-> >  	if (rv) {
-> >  		dev_warn(intf->si_dev, "device id demangle failed: %d\n", rv);
-> > +		/* record completion code when error */
-> > +		intf->bmc->cc = msg->msg.data[0];
-> >  		intf->bmc->dyn_id_set = 0;
-> >  	} else {
-> >  		/*
-> > @@ -2426,19 +2433,34 @@ send_get_device_id_cmd(struct ipmi_smi 
-> > *intf) static int __get_device_id(struct ipmi_smi *intf, struct 
-> > bmc_device
-> > *bmc)  {
-> >  	int rv;
-> > -
-> > -	bmc->dyn_id_set = 2;
-> > +	unsigned int retry_count = 0;
-> 
-> You need to initialize bmc->cc to 0 here.
-> 
-> >  
-> >  	intf->null_user_handler = bmc_device_id_handler;
-> >  
-> > +retry:
-> > +	bmc->dyn_id_set = 2;
-> > +
-> >  	rv = send_get_device_id_cmd(intf);
-> >  	if (rv)
-> >  		return rv;
-> >  
-> >  	wait_event(intf->waitq, bmc->dyn_id_set != 2);
-> >  
-> > -	if (!bmc->dyn_id_set)
-> > +	if (!bmc->dyn_id_set) {
-> > +		if ((bmc->cc == IPMI_NOT_IN_MY_STATE_ERR
-> > +		     || bmc->cc == IPMI_NOT_IN_MY_STATE_ERR_1
-> > +		     || bmc->cc == IPMI_NOT_IN_MY_STATE_ERR_2)
-> > +		     && ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
-> > +			msleep(500);
-> > +			dev_warn(intf->si_dev,
-> > +				"retry to get bmc device id as completion code 0x%x\n",
-> > +				bmc->cc);
-> > +			bmc->cc = 0;
-> > +			goto retry;
-> > +		}
-> > +
-> >  		rv = -EIO; /* Something went wrong in the fetch. */
-> > +	}
-> >  
-> >  	/* dyn_id_set makes the id data available. */
-> >  	smp_rmb();
-> > @@ -3245,7 +3267,6 @@ channel_handler(struct ipmi_smi *intf, struct ipmi_recv_msg *msg)
-> >  		/* It's the one we want */
-> >  		if (msg->msg.data[0] != 0) {
-> >  			/* Got an error from the channel, just go on. */
-> > -
-> >  			if (msg->msg.data[0] == IPMI_INVALID_COMMAND_ERR) {
-> >  				/*
-> >  				 * If the MC does not support this diff --git 
-> > a/include/uapi/linux/ipmi_msgdefs.h
-> > b/include/uapi/linux/ipmi_msgdefs.h
-> > index c2b23a9fd..46a0df434 100644
-> > --- a/include/uapi/linux/ipmi_msgdefs.h
-> > +++ b/include/uapi/linux/ipmi_msgdefs.h
-> > @@ -70,6 +70,8 @@
-> >  #define IPMI_REQ_LEN_INVALID_ERR	0xc7
-> >  #define IPMI_REQ_LEN_EXCEEDED_ERR	0xc8
-> >  #define IPMI_NOT_IN_MY_STATE_ERR	0xd5	/* IPMI 2.0 */
-> > +#define IPMI_NOT_IN_MY_STATE_ERR_1	0xd1
-> 
-> For the above name, can you use IPMI_DEVICE_IN_FW_UPDATE_ERR to match the spec?
-> 
-> > +#define IPMI_NOT_IN_MY_STATE_ERR_2	0xd2
-> 
-> For the above name, can you use IPMI_DEVICE_IN_INIT_ERR to match the spec?
-> 
-> Thanks,
-> 
-> -corey
-> 
-> >  #define IPMI_LOST_ARBITRATION_ERR	0x81
-> >  #define IPMI_BUS_ERR			0x82
-> >  #define IPMI_NAK_ON_WRITE_ERR		0x83
-> > --
-> > 2.17.1
-> > 
+Also, the introduced #ifdef...#endif pairs look ugly, I have no idea
+how to eliminate them. Ideas and comments are welcome. Thanks.
+
+ kernel/sched/deadline.c | 48 ++++++++++++++++++++++++++++-------------
+ kernel/sched/sched.h    | 17 +++++----------
+ 2 files changed, 38 insertions(+), 27 deletions(-)
+
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 3862a28cd05d..6524cb31148e 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2511,33 +2511,43 @@ const struct sched_class dl_sched_class
+ 	.update_curr		= update_curr_dl,
+ };
+ 
++#ifdef CONFIG_SMP
++static struct cpumask dl_local_possible_mask;
++#endif /* CONFIG_SMP */
++
+ int sched_dl_global_validate(void)
+ {
+ 	u64 runtime = global_rt_runtime();
+ 	u64 period = global_rt_period();
+ 	u64 new_bw = to_ratio(period, runtime);
+ 	struct dl_bw *dl_b;
+-	int cpu, ret = 0;
++	int cpu, cpus = 1, ret = 0;
+ 	unsigned long flags;
+-
++	cpumask_t *possible_mask = NULL;
++#ifdef CONFIG_SMP
++	cpumask_t *span;
++#endif /* CONFIG_SMP */
+ 	/*
+ 	 * Here we want to check the bandwidth not being set to some
+ 	 * value smaller than the currently allocated bandwidth in
+ 	 * any of the root_domains.
+-	 *
+-	 * FIXME: Cycling on all the CPUs is overdoing, but simpler than
+-	 * cycling on root_domains... Discussion on different/better
+-	 * solutions is welcome!
+ 	 */
+-	for_each_possible_cpu(cpu) {
++#ifdef CONFIG_SMP
++	possible_mask = &dl_local_possible_mask;
++	cpumask_copy(possible_mask, cpu_possible_mask);
++#endif /* CONFIG_SMP */
++	for_each_cpu(cpu, possible_mask) {
+ 		rcu_read_lock_sched();
+ 		dl_b = dl_bw_of(cpu);
+-
++#ifdef CONFIG_SMP
++		span = cpu_rq(cpu)->rd->span;
++		cpus = cpumask_weight(span);
++		cpumask_andnot(possible_mask, possible_mask, span);
++#endif /* CONFIG_SMP */
+ 		raw_spin_lock_irqsave(&dl_b->lock, flags);
+-		if (new_bw < dl_b->total_bw)
++		if (new_bw * cpus < dl_b->total_bw)
+ 			ret = -EBUSY;
+ 		raw_spin_unlock_irqrestore(&dl_b->lock, flags);
+-
+ 		rcu_read_unlock_sched();
+ 
+ 		if (ret)
+@@ -2566,6 +2576,10 @@ void sched_dl_do_global(void)
+ 	struct dl_bw *dl_b;
+ 	int cpu;
+ 	unsigned long flags;
++	cpumask_t *possible_mask = NULL;
++#ifdef CONFIG_SMP
++	cpumask_t *span;
++#endif /* CONFIG_SMP */
+ 
+ 	def_dl_bandwidth.dl_period = global_rt_period();
+ 	def_dl_bandwidth.dl_runtime = global_rt_runtime();
+@@ -2573,17 +2587,21 @@ void sched_dl_do_global(void)
+ 	if (global_rt_runtime() != RUNTIME_INF)
+ 		new_bw = to_ratio(global_rt_period(), global_rt_runtime());
+ 
+-	/*
+-	 * FIXME: As above...
+-	 */
+-	for_each_possible_cpu(cpu) {
++#ifdef CONFIG_SMP
++	possible_mask = &dl_local_possible_mask;
++	cpumask_copy(possible_mask, cpu_possible_mask);
++#endif /* CONFIG_SMP */
++	for_each_cpu(cpu, possible_mask) {
+ 		rcu_read_lock_sched();
+ 		dl_b = dl_bw_of(cpu);
+ 
+ 		raw_spin_lock_irqsave(&dl_b->lock, flags);
+ 		dl_b->bw = new_bw;
+ 		raw_spin_unlock_irqrestore(&dl_b->lock, flags);
+-
++#ifdef CONFIG_SMP
++		span = cpu_rq(cpu)->rd->span;
++		cpumask_andnot(possible_mask, possible_mask, span);
++#endif /* CONFIG_SMP */
+ 		rcu_read_unlock_sched();
+ 		init_dl_rq_bw_ratio(&cpu_rq(cpu)->dl);
+ 	}
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 28709f6b0975..2602544e06ff 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -258,9 +258,9 @@ struct rt_bandwidth {
+ void __dl_clear_params(struct task_struct *p);
+ 
+ /*
+- * To keep the bandwidth of -deadline tasks and groups under control
++ * To keep the bandwidth of -deadline tasks under control
+  * we need some place where:
+- *  - store the maximum -deadline bandwidth of the system (the group);
++ *  - store the maximum -deadline bandwidth of each root domain;
+  *  - cache the fraction of that bandwidth that is currently allocated.
+  *
+  * This is all done in the data structure below. It is similar to the
+@@ -269,17 +269,10 @@ void __dl_clear_params(struct task_struct *p);
+  * do not decrease any runtime while the group "executes", neither we
+  * need a timer to replenish it.
+  *
+- * With respect to SMP, the bandwidth is given on a per-CPU basis,
++ * With respect to SMP, the bandwidth is given on a per root domain basis,
+  * meaning that:
+- *  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
+- *  - dl_total_bw array contains, in the i-eth element, the currently
+- *    allocated bandwidth on the i-eth CPU.
+- * Moreover, groups consume bandwidth on each CPU, while tasks only
+- * consume bandwidth on the CPU they're running on.
+- * Finally, dl_total_bw_cpu is used to cache the index of dl_total_bw
+- * that will be shown the next time the proc or cgroup controls will
+- * be red. It on its turn can be changed by writing on its own
+- * control.
++ *  - bw (< 100%) is the bandwidth of the system on each CPU;
++ *  - total_bw is the currently allocated bandwidth on each root domain.
+  */
+ struct dl_bandwidth {
+ 	raw_spinlock_t		dl_runtime_lock;
+-- 
+2.20.1
+
