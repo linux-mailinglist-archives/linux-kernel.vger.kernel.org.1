@@ -2,101 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4BD26B80B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF3E26B7E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgIPAfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:35:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29622 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726498AbgIONbE (ORCPT
+        id S1726697AbgIPAba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgIONot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:31:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600176604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/cZ5S90LvfH2YJYUGQ9z5j9iiMm9I7jxn7rvlohnMLk=;
-        b=Q4Fq7zow+AfcGQeijopLkolzAT6KEQAh0l9+2Gp4XijKW/HlXoeCKZUYZtaZTP1YXIfRJZ
-        yofb15OXK6cCAc6qcZuzukbLeKxSM8T4nUYAYel805Gokou0tZG8sbUclHE1dEzRj6CnBF
-        ZZTGCfnJ/ze6NBl+bsZISAneCYJUysA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-Zg1z-YgENxyUPmq8b_SO_g-1; Tue, 15 Sep 2020 09:27:47 -0400
-X-MC-Unique: Zg1z-YgENxyUPmq8b_SO_g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9D7E1882FC9;
-        Tue, 15 Sep 2020 13:27:41 +0000 (UTC)
-Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 849BA75144;
-        Tue, 15 Sep 2020 13:27:27 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 08:27:25 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
- Control hardware bits
-Message-ID: <20200915132725.a2qbdio3jsu7rsqs@treble>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
- <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
- <20200914151816.u6camicid4bd5lgo@treble>
- <20200914153812.c6uh3spqmcy2ft3d@treble>
- <20200915095716.GI3612@linux.intel.com>
+        Tue, 15 Sep 2020 09:44:49 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB29DC061223;
+        Tue, 15 Sep 2020 06:32:39 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bg9so1351062plb.2;
+        Tue, 15 Sep 2020 06:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ujXDcUsh4pOosE/dQkInO9T/Bumr5MmUhC/Hryc6hyw=;
+        b=a2+TLwFZRBieQ4kF8d8NqKmakcGel05UdOV21sp8n0omsrQRLmb4wdGxRPAvU+uRSC
+         bO3SKzrnAdS0H5i+k1Y9xT2Sjt/bAUsrB+2u2vgI5BZmwKwZT2GH4xvgUvHnl+ZPIkqX
+         Rdxxfw6b82vVnC8CQ/9y4HNzU9YZ7VpfHSV7QohBrNfeeS3BYVogkjhb8BI6qh6QHt+q
+         11u8UD9qrZl7tVd2X4evkEFMgNEhMdc9mxKFaQftfmsOSkual4HDMIMg12CCwNK5MMtU
+         r/eKz+lPMX5ZAn2T/p0XJh6Hwd/7PDK1Jyaqn1TBQZz+GQxuy0Mv1VEOAwcUtpx/NqGt
+         Plhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ujXDcUsh4pOosE/dQkInO9T/Bumr5MmUhC/Hryc6hyw=;
+        b=YaRvwgdTZV8Wq3odenjBQuuDjF2IJfmk8I7uDnrZCbK8RyPjfI8s/fdYeL8fvSMIul
+         zawL5ZWx2LrtZrJykECf3v6ywDIp5RU+17u8anRdMPUdeC9q4zy5gcj1wntsvhsc9y0Y
+         uPYVZWj75bT8V2pa2ou29IqGnbdHLjMSTFi2JzC7pKOGm1GRUY69nBEP52/u2ATNKa3O
+         uyR+mjOt1B6rBtoHDNEXBwWBTrC+sMNgVTkYGSkt5Lrw0VTpzGV+3VMgLCBnHYid1ZsA
+         sJvAjhtemiT4KmIxWBkQEhyuIWchfXZ+RIz8CzLXBPIFl0FAhXgql7kx8acwPi7GIRgg
+         CQNg==
+X-Gm-Message-State: AOAM532JIUyn9cxM0l8hHo9MHiwIc4+/SXu1oPydqdgJnYYU3Z98rZDi
+        zDnjFJHK//1uuoc0IOigNj4=
+X-Google-Smtp-Source: ABdhPJxElAnP2O0/CYpmJeLhGlwT9dk8xTOOoeBLxlYjPU/u57i+0YVaDDTAByuz6oLcQj1azLuqHA==
+X-Received: by 2002:a17:90a:db05:: with SMTP id g5mr4350446pjv.22.1600176759148;
+        Tue, 15 Sep 2020 06:32:39 -0700 (PDT)
+Received: from localhost.localdomain (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id l14sm12110178pjy.1.2020.09.15.06.32.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 06:32:37 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] docs: fb:  Remove scrollback option
+Date:   Tue, 15 Sep 2020 18:57:36 +0530
+Message-Id: <20200915132736.5264-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915095716.GI3612@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:57:16PM +0300, Jarkko Sakkinen wrote:
-> On Mon, Sep 14, 2020 at 10:38:26AM -0500, Josh Poimboeuf wrote:
-> > On Mon, Sep 14, 2020 at 10:18:16AM -0500, Josh Poimboeuf wrote:
-> > > Hi Jarko,
-> > > 
-> > > It looks like some of the patches weren't delivered to the lists.
-> > > Patches 0, 1, 8, 9, and 17 seem to be missing.
-> > > 
-> > > Lore agrees with me:
-> > > 
-> > >   https://lore.kernel.org/linux-sgx/20200911124019.42178-1-jarkko.sakkinen@linux.intel.com/
-> > 
-> > And my first email to you bounced, similar to an email I tried sending
-> > to Kristen a few weeks ago.  Something weird going on with Intel mail
-> > servers?
-> 
-> Possible. I don't honestly know what is going on.
-> 
-> At least now all the patches are out:
-> 
-> https://lore.kernel.org/linux-sgx/
-> 
-> Not sure if a resend would make sense for the full patch set but maybe I
-> just do quick iteration and send v38 soon. And just in case use some alt
-> smtp server.
 
-I see the v37 missing patches now, but they're not threaded with the
-original thread.  v38 has some missing patches as well.
+This patch remove the scrollback option under boot option.
+Plus readjust the numbers for the options in that section.
 
+This is the effect of these commits:
+
+973c096(vgacon: remove software scrollback support)
+5014547(fbcon: remove soft scrollback code)
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Documentation/fb/fbcon.rst | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
+
+diff --git a/Documentation/fb/fbcon.rst b/Documentation/fb/fbcon.rst
+index e57a3d1d085a..328f6980698c 100644
+--- a/Documentation/fb/fbcon.rst
++++ b/Documentation/fb/fbcon.rst
+@@ -87,15 +87,8 @@ C. Boot options
+ 	Note, not all drivers can handle font with widths not divisible by 8,
+ 	such as vga16fb.
+ 
+-2. fbcon=scrollback:<value>[k]
+ 
+-	The scrollback buffer is memory that is used to preserve display
+-	contents that has already scrolled past your view.  This is accessed
+-	by using the Shift-PageUp key combination.  The value 'value' is any
+-	integer. It defaults to 32KB.  The 'k' suffix is optional, and will
+-	multiply the 'value' by 1024.
+-
+-3. fbcon=map:<0123>
++2. fbcon=map:<0123>
+ 
+ 	This is an interesting option. It tells which driver gets mapped to
+ 	which console. The value '0123' is a sequence that gets repeated until
+@@ -116,7 +109,7 @@ C. Boot options
+ 	Later on, when you want to map the console the to the framebuffer
+ 	device, you can use the con2fbmap utility.
+ 
+-4. fbcon=vc:<n1>-<n2>
++3. fbcon=vc:<n1>-<n2>
+ 
+ 	This option tells fbcon to take over only a range of consoles as
+ 	specified by the values 'n1' and 'n2'. The rest of the consoles
+@@ -127,7 +120,7 @@ C. Boot options
+ 	is typically located on the same video card.  Thus, the consoles that
+ 	are controlled by the VGA console will be garbled.
+ 
+-5. fbcon=rotate:<n>
++4. fbcon=rotate:<n>
+ 
+ 	This option changes the orientation angle of the console display. The
+ 	value 'n' accepts the following:
+@@ -152,21 +145,21 @@ C. Boot options
+ 	Actually, the underlying fb driver is totally ignorant of console
+ 	rotation.
+ 
+-6. fbcon=margin:<color>
++5. fbcon=margin:<color>
+ 
+ 	This option specifies the color of the margins. The margins are the
+ 	leftover area at the right and the bottom of the screen that are not
+ 	used by text. By default, this area will be black. The 'color' value
+ 	is an integer number that depends on the framebuffer driver being used.
+ 
+-7. fbcon=nodefer
++6. fbcon=nodefer
+ 
+ 	If the kernel is compiled with deferred fbcon takeover support, normally
+ 	the framebuffer contents, left in place by the firmware/bootloader, will
+ 	be preserved until there actually is some text is output to the console.
+ 	This option causes fbcon to bind immediately to the fbdev device.
+ 
+-8. fbcon=logo-pos:<location>
++7. fbcon=logo-pos:<location>
+ 
+ 	The only possible 'location' is 'center' (without quotes), and when
+ 	given, the bootup logo is moved from the default top-left corner
+@@ -174,7 +167,7 @@ C. Boot options
+ 	displayed due to multiple CPUs, the collected line of logos is moved
+ 	as a whole.
+ 
+-9. fbcon=logo-count:<n>
++8. fbcon=logo-count:<n>
+ 
+ 	The value 'n' overrides the number of bootup logos. 0 disables the
+ 	logo, and -1 gives the default which is the number of online CPUs.
 -- 
-Josh
+2.26.2
 
