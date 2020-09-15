@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6920126AFF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6CD26B001
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgIOVwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbgIOVvP (ORCPT
+        id S1728091AbgIOVzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:55:25 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:57508 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727758AbgIOVxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:51:15 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6DDC061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:50:58 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id w12so6010185qki.6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zss3uHpc3ttf17gwYIy/82ETb9atEX8U54o98v0HqrI=;
-        b=JMx5zfQ9BbjulbIHdSy28ZcOznZ5f/Xq/6bQkDVISIJi/F6I+QwAqWdwZgSziPAwI4
-         q6qj+407GzYNZpUbx1+GlMj+qTcnd/tJqcvfpDyAi7wX+5/LrauFbagH2upSl0nw+EJM
-         MZCBN2RA3v9kKzKA9BwuNSqT7l4rpEz/IL/7AHpbJPuUsngNsVOHYyY+1EmxEKvQn1sC
-         +f63PjgfPZUyD3/DR0ksbL68deXDnhkoEFQLbDcVbbo2dRUtJ270M0W3SyTSu6UJHYvb
-         B0ettbnl/CEZ7NvWzNTMQHloMSnB1GVPSXnGld9tuAZBKJMpVxRETkfqgptrg5qf1OAM
-         zgXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Zss3uHpc3ttf17gwYIy/82ETb9atEX8U54o98v0HqrI=;
-        b=TZR4cfN2hPOWiTyuwupXRT2zNJWeYi8kADKz261oD993d6er9flo/xLw+G32iihkez
-         NmKVmo6ZUaBmDLKLPlxzG6jn434IbUq9VNGNHllI/QWHt833D9IxP0Q/WXRSaMQgNyhV
-         VeASS39/gJDAz4GGejHyrPUPtxUZIaTtMcxvPCNUFpkOC8H0TX7cGY30eqHCMz7Mfok4
-         alS4tzUgO7tR8hzsDv6p3lt9jZz34A1Eoney+oAKfvs5nOTiubDfLM13tlGiWdWddUZn
-         YIAgv6KT0VqG1BNFMqHtQNExmp97GXZcZ5z+gt7KL5uwF6TiI6DOeVwe5jUrPfevpi42
-         9fgg==
-X-Gm-Message-State: AOAM532Vvz12azJVRGi5av1mOkBV21WPNBvVOg38YlZn0LxONdCtoIKl
-        z7AnuPU9OLLYfmyLt9oqD/s=
-X-Google-Smtp-Source: ABdhPJzYrBdnyxvf9ORk3FEMnVid6O7hmMVUBWDu3Mb28AsA7U+nutHMqdw2PHZU7WHYLQWk0sK4Ug==
-X-Received: by 2002:a05:620a:a45:: with SMTP id j5mr20266791qka.367.1600206656635;
-        Tue, 15 Sep 2020 14:50:56 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m24sm9337458qtn.59.2020.09.15.14.50.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 14:50:56 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 15 Sep 2020 17:50:54 -0400
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Marco Elver <elver@google.com>
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
- e6eb15c9ba3165698488ae5c34920eea20eaa38e
-Message-ID: <20200915215054.GA1104608@rani.riverdale.lan>
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
- <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian>
- <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble>
- <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
- <20200915204912.GA14436@zn.tnic>
+        Tue, 15 Sep 2020 17:53:07 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLo20x027647;
+        Tue, 15 Sep 2020 21:52:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=x2bSJU1P2SEkjA4EGZDCmzJqd0N8KxBZWYGjGGnclXo=;
+ b=WuhiK5si/BDa41rk5TFMD3YW639mKaEbx8mrs8wdIXgLgYYyzaCngz6ta39fzmNj2fvK
+ 1Zu7aUQlFu5NrxIrN+Vm32puilqwhBW0PLTfW7YRR1UhUbxLJPZEBKTFoBzvKmmJK28M
+ 3UiiBF3maifdb/lk17OmGPqLUieaLr+Fyvt/nSAk6oZhfyI86/2RkOrbpnD8aHnESuH+
+ oh0hOYQOg9D175hSMykVrX3/hj9DVorUvU6bth0/9gqV7ZjO3qQrw1P/Oz5scEhn9pVt
+ D0jBNHWLZNw5EM0BhcUT4fSFu8SGvr1+NWzmq7e+jscBxx4X5hU4uhzHS5/K2n7iBvje iA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 33gnrqyt9q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 21:52:56 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLoEhW016486;
+        Tue, 15 Sep 2020 21:52:55 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 33h7wpswvn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 21:52:55 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FLqrwD019606;
+        Tue, 15 Sep 2020 21:52:53 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Sep 2020 21:52:53 +0000
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <hare@suse.de>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] scsi: libfc: Fix passing zero to 'PTR_ERR' warning
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1v9ge4sid.fsf@ca-mkp.ca.oracle.com>
+References: <20200818114235.51052-1-yuehaibing@huawei.com>
+        <20200909135432.36772-1-yuehaibing@huawei.com>
+Date:   Tue, 15 Sep 2020 17:52:51 -0400
+In-Reply-To: <20200909135432.36772-1-yuehaibing@huawei.com>
+        (yuehaibing@huawei.com's message of "Wed, 9 Sep 2020 21:54:32 +0800")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915204912.GA14436@zn.tnic>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=872 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150169
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=1
+ clxscore=1015 mlxlogscore=904 adultscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150169
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:49:12PM +0200, Borislav Petkov wrote:
-> 
-> (Btw, clang doesn't need to add that "xor %eax,%eax" - panic() should not be
->  returning, ever. :-))
-> 
 
-I think this is because panic() is varargs, and clang doesn't support
-gcc's -mskip-rax-setup. The normal ABI requires the caller to set RAX to
-the number of arguments in vector registers.
+YueHaibing,
 
-https://patchwork.ozlabs.org/project/gcc/patch/20141218131150.GA32638@intel.com/
+> drivers/scsi/libfc/fc_disc.c:304
+>  fc_disc_error() warn: passing zero to 'PTR_ERR'
+>
+> fp maybe NULL in fc_disc_error(), use PTR_ERR_OR_ZERO to handle this.
+
+Applied to 5.10/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
