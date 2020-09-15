@@ -2,59 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAFD26AE25
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1941726AE07
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbgIORHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:07:42 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49527 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727658AbgIOQWP (ORCPT
+        id S1727899AbgIOTtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:49:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49140 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727841AbgIORLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:22:15 -0400
-Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kIDYD-0007Hd-J1; Tue, 15 Sep 2020 16:11:25 +0000
-Date:   Tue, 15 Sep 2020 18:11:24 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 11/15] selftests/seccomp: Remove
- SYSCALL_NUM_RET_SHARE_REG in favor of SYSCALL_RET_SET
-Message-ID: <20200915161124.oqgoiegni3jqwtno@wittgenstein>
-References: <20200912110820.597135-1-keescook@chromium.org>
- <20200912110820.597135-12-keescook@chromium.org>
+        Tue, 15 Sep 2020 13:11:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600189823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yPmPv3nS4j+ToD69H4u95r5JbLwmp3gKNTOHEJVtB3U=;
+        b=g1VkcBS2N1zAhWh/Aep31F13wuSx0KehOjZquDJvr6SCFPoH6S4DN1l1PowItB4UfuGX7s
+        HPrBC1g2DujMA6Hj11/duqiBCnO2vBCnKoHf1dP8GBOgHMdOtCDs4IjrNJAaYSgGkk9FGI
+        Wglt4c4KL8Ane8zFDND0AScM91i0FAc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-I4E89CNxMemVJZk38H5rlQ-1; Tue, 15 Sep 2020 12:51:54 -0400
+X-MC-Unique: I4E89CNxMemVJZk38H5rlQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48AEA18C9F57;
+        Tue, 15 Sep 2020 16:51:36 +0000 (UTC)
+Received: from work-vm (ovpn-115-25.ams2.redhat.com [10.36.115.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 758F719D61;
+        Tue, 15 Sep 2020 16:51:34 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 17:51:31 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, Wei Huang <whuang2@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 0/2] KVM: x86: allow for more CPUID entries
+Message-ID: <20200915165131.GC2922@work-vm>
+References: <20200915154306.724953-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200912110820.597135-12-keescook@chromium.org>
+In-Reply-To: <20200915154306.724953-1-vkuznets@redhat.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 04:08:16AM -0700, Kees Cook wrote:
-> Instead of special-casing the specific case of shared registers, create
-> a default SYSCALL_RET_SET() macro (mirroring SYSCALL_NUM_SET()), that
-> writes to the SYSCALL_RET register. For architectures that can't set the
-> return value (for whatever reason), they can define SYSCALL_RET_SET()
-> without an associated SYSCALL_RET() macro. This also paves the way for
-> architectures that need to do special things to set the return value
-> (e.g. powerpc).
+* Vitaly Kuznetsov (vkuznets@redhat.com) wrote:
+> With QEMU and newer AMD CPUs (namely: Epyc 'Rome') the current limit for
+> KVM_MAX_CPUID_ENTRIES(80) is reported to be hit. Last time it was raised
+> from '40' in 2010. We can, of course, just bump it a little bit to fix
+> the immediate issue but the report made me wonder why we need to pre-
+> allocate vcpu->arch.cpuid_entries array instead of sizing it dynamically.
+> This RFC is intended to feed my curiosity.
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
+> Very mildly tested with selftests/kvm-unit-tests and nothing seems to
+> break. I also don't have access to the system where the original issue
+> was reported but chances we're fixing it are very good IMO as just the
+> second patch alone was reported to be sufficient.
+> 
+> Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
 
-Looks good!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Oh nice, I was just going to bump the magic number :-)
+
+Anyway, this seems to work for me, so:
+
+Tested-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+
+> Vitaly Kuznetsov (2):
+>   KVM: x86: allocate vcpu->arch.cpuid_entries dynamically
+>   KVM: x86: bump KVM_MAX_CPUID_ENTRIES
+> 
+>  arch/x86/include/asm/kvm_host.h |  4 +--
+>  arch/x86/kvm/cpuid.c            | 55 ++++++++++++++++++++++++---------
+>  arch/x86/kvm/x86.c              |  1 +
+>  3 files changed, 43 insertions(+), 17 deletions(-)
+> 
+> -- 
+> 2.25.4
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
