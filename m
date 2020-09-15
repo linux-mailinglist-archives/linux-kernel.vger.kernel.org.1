@@ -2,255 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC11269A5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE11A269A66
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgIOAVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:21:10 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:47145 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725994AbgIOAVJ (ORCPT
+        id S1726064AbgIOA1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:27:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:56372 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgIOA1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:21:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600129267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JIxbVL3SsLhU/KOArzoRLZaTcknM6wozcZMj8Pv2cYs=;
-        b=bc2XjpWNOUEtUBBGZ67nVkxGFEBkKRXOMw7TKkF4jNltRUQOeAeTWdW7DfH/4h4GO+j/3Y
-        xIwgmSSWZ82Y4Ss89xS3H1GV/vnlSMYxTnS1WNYZ0BQW3X/+WV9jcL/6I2Vhv8Lbbk1egf
-        Y73iJ2I9iLmJzZQ0uBXzPhR1MD4z7Nw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-QcTzheqtO-y6XW1X_6h32w-1; Mon, 14 Sep 2020 20:21:02 -0400
-X-MC-Unique: QcTzheqtO-y6XW1X_6h32w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9B1D1074642;
-        Tue, 15 Sep 2020 00:21:00 +0000 (UTC)
-Received: from ovpn-113-249.rdu2.redhat.com (ovpn-113-249.rdu2.redhat.com [10.10.113.249])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D135727C2A;
-        Tue, 15 Sep 2020 00:20:53 +0000 (UTC)
-Message-ID: <224bd11b533dd2acff3f6cce51ab4ca676eb4f9f.camel@redhat.com>
-Subject: Re: [PATCH v2 0/5] seqlock: Introduce PREEMPT_RT support
-From:   Qian Cai <cai@redhat.com>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Date:   Mon, 14 Sep 2020 20:20:53 -0400
-In-Reply-To: <20200904153231.11994-1-a.darwish@linutronix.de>
-References: <20200904153231.11994-1-a.darwish@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+        Mon, 14 Sep 2020 20:27:33 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08F0PmqX086919;
+        Tue, 15 Sep 2020 00:26:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=/lp3ssLFIF9grSJMfNvaz6HxSc4T07AGymekTnSNWLo=;
+ b=D/M2X9A5slRKJGp/rXq/kiEFcmcwXxFp2tHp1UdyuCxEDowoaMk+WSsA5KDBiQfu0BbF
+ IxAjf2DV3zJt5aie3at8QvzeCnyGBMvJCcpLlD8eBGkkYEHnszRIv034FamClD4HTlCe
+ GPZjnzW/wx52Di89jiafv788Bm/pGFxTkkFcjKMtds5YKGJv+ppHMR7hXnY4Q4xHaoTo
+ mdw6yK6SZ0RuFlRNmkAa0tjTL4Ra4U+YaUT9/frt3SPn0RMctWTZyvzpuc/5zgLlE9n8
+ QMDjM5ZkbTrfnFMoneGIiAkTa8dq+6KCbiC3LC5LPwqhRaFmI9dIO+dMCtr8RQnVB7G0 yw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 33gp9m1r7j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 00:26:35 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08F09toZ049766;
+        Tue, 15 Sep 2020 00:24:35 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 33h7wn3qga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 00:24:35 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08F0OSfW003043;
+        Tue, 15 Sep 2020 00:24:28 GMT
+Received: from [10.74.107.135] (/10.74.107.135)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Sep 2020 00:24:28 +0000
+Subject: Re: [PATCH v3 01/11] xen/manage: keep track of the on-going suspend
+ mode
+To:     Anchal Agarwal <anchalag@amazon.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, jgross@suse.com, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org, kamatam@amazon.com, sstabellini@kernel.org,
+        konrad.wilk@oracle.com, roger.pau@citrix.com, axboe@kernel.dk,
+        davem@davemloft.net, rjw@rjwysocki.net, len.brown@intel.com,
+        pavel@ucw.cz, peterz@infradead.org, eduval@amazon.com,
+        sblbir@amazon.com, xen-devel@lists.xenproject.org,
+        vkuznets@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dwmw@amazon.co.uk,
+        benh@kernel.crashing.org
+References: <cover.1598042152.git.anchalag@amazon.com>
+ <9b970e12491107afda0c1d4a6f154b52d90346ac.1598042152.git.anchalag@amazon.com>
+ <4b2bbc8b-7817-271a-4ff0-5ee5df956049@oracle.com>
+ <20200914214754.GA19975@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <e9b94104-d20a-b6b2-cbe0-f79b1ed09c98@oracle.com>
+Date:   Mon, 14 Sep 2020 20:24:22 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
+MIME-Version: 1.0
+In-Reply-To: <20200914214754.GA19975@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150000
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009150001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-04 at 17:32 +0200, Ahmed S. Darwish wrote:
-> Hi,
-> 
-> Changelog-v2
-> ============
-> 
->   - Standardize on seqcount_LOCKNAME_t as the canonical reference for
->     sequence counters with associated locks, instead of v1
->     seqcount_LOCKTYPE_t.
-> 
->   - Use unique prefix "seqprop_*" for all seqcount_t/seqcount_LOCKNAME_t
->     property accessors.
-> 
->   - Touch-up the lock-unlock rationale for more clarity. Enforce writer
->     non-preemitiblity using "__seq_enforce_writer_non_preemptibility()".
-> 
-> Cover letter (v1)
-> =================
-> 
-> https://lkml.kernel.org/r/20200828010710.5407-1-a.darwish@linutronix.de
-> 
-> Preemption must be disabled before entering a sequence counter write
-> side critical section.  Otherwise the read side section can preempt the
-> write side section and spin for the entire scheduler tick.  If that
-> reader belongs to a real-time scheduling class, it can spin forever and
-> the kernel will livelock.
-> 
-> Disabling preemption cannot be done for PREEMPT_RT though: it can lead
-> to higher latencies, and the write side sections will not be able to
-> acquire locks which become sleeping locks (e.g. spinlock_t).
-> 
-> To remain preemptible, while avoiding a possible livelock caused by the
-> reader preempting the writer, use a different technique: let the reader
-> detect if a seqcount_LOCKNAME_t writer is in progress. If that's the
-> case, acquire then release the associated LOCKNAME writer serialization
-> lock. This will allow any possibly-preempted writer to make progress
-> until the end of its writer serialization lock critical section.
-> 
-> Implement this lock-unlock technique for all seqcount_LOCKNAME_t with
-> an associated (PREEMPT_RT) sleeping lock, and for seqlock_t.
 
-Reverting this patchset [1] from today's linux-next fixed a splat below. The
-splat looks like a false positive anyway because the existing locking dependency
-chains from the task #1 here:
+On 9/14/20 5:47 PM, Anchal Agarwal wrote:
+> On Sun, Sep 13, 2020 at 11:43:30AM -0400, boris.ostrovsky@oracle.com wrote:
+>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+>>
+>>
+>>
+>> On 8/21/20 6:25 PM, Anchal Agarwal wrote:
+>>> Though, accquirng pm_mutex is still right thing to do, we may
+>>> see deadlock if PM hibernation is interrupted by Xen suspend.
+>>> PM hibernation depends on xenwatch thread to process xenbus state
+>>> transactions, but the thread will sleep to wait pm_mutex which is
+>>> already held by PM hibernation context in the scenario. Xen shutdown
+>>> code may need some changes to avoid the issue.
+>>
+>>
+>> Is it Xen's shutdown or suspend code that needs to address this? (Or I
+>> may not understand what the problem is that you are describing)
+>>
+> Its Xen suspend code I think. If we do not take the system_transition_mutex
+> in do_suspend then if hibernation is triggered in parallel to xen suspend there
+> could be issues. 
 
-&s->seqcount#2 ---> pidmap_lock
 
-[  528.078061][ T7867] -> #1 (pidmap_lock){....}-{2:2}:
-[  528.078078][ T7867]        lock_acquire+0x10c/0x560
-[  528.078089][ T7867]        _raw_spin_lock_irqsave+0x64/0xb0
-[  528.078108][ T7867]        free_pid+0x5c/0x160
-free_pid at kernel/pid.c:131
-[  528.078127][ T7867]        release_task.part.40+0x59c/0x7f0
-__unhash_process at kernel/exit.c:76
-(inlined by) __exit_signal at kernel/exit.c:147
-(inlined by) release_task at kernel/exit.c:198
-[  528.078145][ T7867]        do_exit+0x77c/0xda0
-exit_notify at kernel/exit.c:679
-(inlined by) do_exit at kernel/exit.c:826
-[  528.078163][ T7867]        kthread+0x148/0x1d0
-[  528.078182][ T7867]        ret_from_kernel_thread+0x5c/0x80
+But you *are* taking this mutex to avoid this exact race, aren't you?
 
-It is write_seqlock(&sig->stats_lock) in __exit_signal(), but the &s->seqcount#2 
-in read_mems_allowed_begin() is read_seqcount_begin(&current->mems_allowed_seq), 
-so there should be no deadlock?
 
-[1] git revert --no-edit 0c9794c8b678..1909760f5fc3
+> Now this is still theoretical in my case and I havent been able
+> to reproduce such a race. So the approach the original author took was to take
+> this lock which to me seems right.
+> And its Xen suspend and not Xen Shutdown. So basically if this scenario
+> happens I am of the view one of other will fail to occur then how do we recover
+> or avoid this at all.
+>
+> Does that answer your question?
+>
 
-[  528.077900][ T7867] WARNING: possible circular locking dependency detected
-[  528.077912][ T7867] 5.9.0-rc5-next-20200914 #1 Not tainted
-[  528.077921][ T7867] ------------------------------------------------------
-[  528.077931][ T7867] runc:[1:CHILD]/7867 is trying to acquire lock:
-[  528.077942][ T7867] c000001fce5570c8 (&s->seqcount#2){....}-{0:0}, at: __slab_alloc+0x34/0xf0
-[  528.077972][ T7867] 
-[  528.077972][ T7867] but task is already holding lock:
-[  528.077983][ T7867] c0000000056b0198 (pidmap_lock){....}-{2:2}, at: alloc_pid+0x258/0x590
-[  528.078009][ T7867] 
-[  528.078009][ T7867] which lock already depends on the new lock.
-[  528.078009][ T7867] 
-[  528.078031][ T7867] 
-[  528.078031][ T7867] the existing dependency chain (in reverse order) is:
-[  528.078061][ T7867] 
-[  528.078061][ T7867] -> #1 (pidmap_lock){....}-{2:2}:
-[  528.078078][ T7867]        lock_acquire+0x10c/0x560
-[  528.078089][ T7867]        _raw_spin_lock_irqsave+0x64/0xb0
-[  528.078108][ T7867]        free_pid+0x5c/0x160
-free_pid at kernel/pid.c:131
-[  528.078127][ T7867]        release_task.part.40+0x59c/0x7f0
-__unhash_process at kernel/exit.c:76
-(inlined by) __exit_signal at kernel/exit.c:147
-(inlined by) release_task at kernel/exit.c:198
-[  528.078145][ T7867]        do_exit+0x77c/0xda0
-exit_notify at kernel/exit.c:679
-(inlined by) do_exit at kernel/exit.c:826
-[  528.078163][ T7867]        kthread+0x148/0x1d0
-[  528.078182][ T7867]        ret_from_kernel_thread+0x5c/0x80
-[  528.078208][ T7867] 
-[  528.078208][ T7867] -> #0 (&s->seqcount#2){....}-{0:0}:
-[  528.078241][ T7867]        check_prevs_add+0x1c4/0x1120
-check_prev_add at kernel/locking/lockdep.c:2820
-(inlined by) check_prevs_add at kernel/locking/lockdep.c:2944
-[  528.078260][ T7867]        __lock_acquire+0x176c/0x1c00
-validate_chain at kernel/locking/lockdep.c:3562
-(inlined by) __lock_acquire at kernel/locking/lockdep.c:4796
-[  528.078278][ T7867]        lock_acquire+0x10c/0x560
-[  528.078297][ T7867]        ___slab_alloc+0xa40/0xb40
-seqcount_lockdep_reader_access at include/linux/seqlock.h:103
-(inlined by) read_mems_allowed_begin at include/linux/cpuset.h:135
-(inlined by) get_any_partial at mm/slub.c:2035
-(inlined by) get_partial at mm/slub.c:2078
-(inlined by) new_slab_objects at mm/slub.c:2577
-(inlined by) ___slab_alloc at mm/slub.c:2745
-[  528.078324][ T7867]        __slab_alloc+0x34/0xf0
-[  528.078342][ T7867]        kmem_cache_alloc+0x2d4/0x470
-[  528.078362][ T7867]        create_object+0x74/0x430
-[  528.078381][ T7867]        slab_post_alloc_hook+0xa4/0x670
-[  528.078399][ T7867]        kmem_cache_alloc+0x1b4/0x470
-[  528.078418][ T7867]        radix_tree_node_alloc.constprop.19+0xe4/0x160
-[  528.078438][ T7867]        idr_get_free+0x298/0x360
-[  528.078456][ T7867]        idr_alloc_u32+0x84/0x130
-[  528.078474][ T7867]        idr_alloc_cyclic+0x7c/0x150
-[  528.078493][ T7867]        alloc_pid+0x27c/0x590
-[  528.078511][ T7867]        copy_process+0xc90/0x1930
-copy_process at kernel/fork.c:2104
-[  528.078529][ T7867]        kernel_clone+0x120/0xa10
-[  528.078546][ T7867]        __do_sys_clone+0x88/0xd0
-[  528.078565][ T7867]        system_call_exception+0xf8/0x1d0
-[  528.078592][ T7867]        system_call_common+0xe8/0x218
-[  528.078609][ T7867] 
-[  528.078609][ T7867] other info that might help us debug this:
-[  528.078609][ T7867] 
-[  528.078650][ T7867]  Possible unsafe locking scenario:
-[  528.078650][ T7867] 
-[  528.078670][ T7867]        CPU0                    CPU1
-[  528.078695][ T7867]        ----                    ----
-[  528.078713][ T7867]   lock(pidmap_lock);
-[  528.078730][ T7867]                                lock(&s->seqcount#2);
-[  528.078751][ T7867]                                lock(pidmap_lock);
-[  528.078770][ T7867]   lock(&s->seqcount#2);
-[  528.078788][ T7867] 
-[  528.078788][ T7867]  *** DEADLOCK ***
-[  528.078788][ T7867] 
-[  528.078800][ T7867] 2 locks held by runc:[1:CHILD]/7867:
-[  528.078808][ T7867]  #0: c000001ffea6f4f0 (lock#2){+.+.}-{2:2}, at: __radix_tree_preload+0x8/0x370
-__radix_tree_preload at lib/radix-tree.c:322
-[  528.078844][ T7867]  #1: c0000000056b0198 (pidmap_lock){....}-{2:2}, at: alloc_pid+0x258/0x590
-[  528.078870][ T7867] 
-[  528.078870][ T7867] stack backtrace:
-[  528.078890][ T7867] CPU: 46 PID: 7867 Comm: runc:[1:CHILD] Not tainted 5.9.0-rc5-next-20200914 #1
-[  528.078921][ T7867] Call Trace:
-[  528.078940][ T7867] [c000001ff07eefc0] [c00000000063f8c8] dump_stack+0xec/0x144 (unreliable)
-[  528.078964][ T7867] [c000001ff07ef000] [c00000000013f44c] print_circular_bug.isra.43+0x2dc/0x350
-[  528.078978][ T7867] [c000001ff07ef0a0] [c00000000013f640] check_noncircular+0x180/0x1b0
-[  528.079000][ T7867] [c000001ff07ef170] [c000000000140b84] check_prevs_add+0x1c4/0x1120
-[  528.079022][ T7867] [c000001ff07ef280] [c0000000001446ec] __lock_acquire+0x176c/0x1c00
-[  528.079043][ T7867] [c000001ff07ef3a0] [c00000000014578c] lock_acquire+0x10c/0x560
-[  528.079066][ T7867] [c000001ff07ef490] [c0000000003565f0] ___slab_alloc+0xa40/0xb40
-[  528.079079][ T7867] [c000001ff07ef590] [c000000000356724] __slab_alloc+0x34/0xf0
-[  528.079100][ T7867] [c000001ff07ef5e0] [c000000000356ab4] kmem_cache_alloc+0x2d4/0x470
-[  528.079122][ T7867] [c000001ff07ef670] [c000000000397e14] create_object+0x74/0x430
-[  528.079144][ T7867] [c000001ff07ef720] [c000000000351944] slab_post_alloc_hook+0xa4/0x670
-[  528.079165][ T7867] [c000001ff07ef7e0] [c000000000356994] kmem_cache_alloc+0x1b4/0x470
-[  528.079187][ T7867] [c000001ff07ef870] [c00000000064e004] radix_tree_node_alloc.constprop.19+0xe4/0x160
-radix_tree_node_alloc at lib/radix-tree.c:252
-[  528.079219][ T7867] [c000001ff07ef8e0] [c00000000064f2b8] idr_get_free+0x298/0x360
-idr_get_free at lib/radix-tree.c:1507
-[  528.079249][ T7867] [c000001ff07ef970] [c000000000645db4] idr_alloc_u32+0x84/0x130
-idr_alloc_u32 at lib/idr.c:46 (discriminator 4)
-[  528.079271][ T7867] [c000001ff07ef9e0] [c000000000645f8c] idr_alloc_cyclic+0x7c/0x150
-idr_alloc_cyclic at lib/idr.c:126 (discriminator 1)
-[  528.079301][ T7867] [c000001ff07efa40] [c0000000000e48ac] alloc_pid+0x27c/0x590
-[  528.079342][ T7867] [c000001ff07efb20] [c0000000000acc60] copy_process+0xc90/0x1930
-[  528.079404][ T7867] [c000001ff07efc40] [c0000000000adc00] kernel_clone+0x120/0xa10
-[  528.079499][ T7867] [c000001ff07efd00] [c0000000000ae578] __do_sys_clone+0x88/0xd0
-[  528.079579][ T7867] [c000001ff07efdc0] [c000000000029c48] system_call_exception+0xf8/0x1d0
-[  528.079691][ T7867] [c000001ff07efe20] [c00000000000d0a8] system_call_common+0xe8/0x218
 
-> 
-> 8<--------------
-> 
-> Ahmed S. Darwish (5):
->   seqlock: seqcount_LOCKNAME_t: Standardize naming convention
->   seqlock: Use unique prefix for seqcount_t property accessors
->   seqlock: seqcount_t: Implement all read APIs as statement expressions
->   seqlock: seqcount_LOCKNAME_t: Introduce PREEMPT_RT support
->   seqlock: PREEMPT_RT: Do not starve seqlock_t writers
-> 
->  include/linux/seqlock.h | 281 ++++++++++++++++++++++++----------------
->  1 file changed, 167 insertions(+), 114 deletions(-)
-> 
-> base-commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
-> --
-> 2.28.0
+>>> +
+>>> +static int xen_setup_pm_notifier(void)
+>>> +{
+>>> +     if (!xen_hvm_domain() || xen_initial_domain())
+>>> +             return -ENODEV;
+>>
+>> I don't think this works anymore.
+> What do you mean?
+> The first check is for xen domain types and other is for architecture support. 
+> The reason I put this check here is because I wanted to segregate the two.
+> I do not want to register this notifier at all for !hmv guest and also if its
+> an initial control domain.
+> The arm check only lands in notifier because once hibernate() api is called ->
+> calls pm_notifier_call_chain for PM_HIBERNATION_PREPARE this will fail for
+> aarch64. 
+> Once we have support for aarch64 this notifier can go away altogether. 
+>
+> Is there any other reason I may be missing why we should move this check to
+> notifier?
 
+
+Not registering this notifier is equivalent to having it return NOTIFY_OK.
+
+
+In your earlier versions just returning NOTIFY_OK was not sufficient for
+hibernation to proceed since the notifier would also need to set
+suspend_mode appropriately. But now your notifier essentially filters
+out unsupported configurations. And so if it is not called your
+configuration (e.g. PV domain) will be considered supported.
+
+
+>> In the past your notifier would set suspend_mode (or something) but now
+>> it really doesn't do anything except reports an error in some (ARM) cases.
+>>
+>> So I think you should move this check into the notifier.
+>> (And BTW I still think PM_SUSPEND_PREPARE should return an error too.
+>> The fact that we are using "suspend" in xen routine names is irrelevant)
+>>
+> I may have send "not-updated" version of the notifier's function change.
+>
+> +    switch (pm_event) {
+> +       case PM_HIBERNATION_PREPARE:
+> +        /* Guest hibernation is not supported for aarch64 currently*/
+> +        if (IS_ENABLED(CONFIG_ARM64)) {
+> +             ret = NOTIFY_BAD;                                                                                                                                                                                                                                                    
+> +             break;                                                                                                                                                                                                                                                               
+> +     }               
+> +       case PM_RESTORE_PREPARE:
+> +       case PM_POST_RESTORE:
+> +       case PM_POST_HIBERNATION:
+> +       default:
+> +           ret = NOTIFY_OK;
+> +    }
+
+
+There is no difference on x86 between this code and what you sent
+earlier. In both instances PM_SUSPEND_PREPARE will return NOTIFY_OK.
+
+
+On ARM this code will allow suspend to proceed (which is not what we want).
+
+
+-boris
+
+
+>
+> With the above path PM_SUSPEND_PREPARE will go all together. Does that
+> resolves this issue? I wanted to get rid of all SUSPEND_* as they are not needed
+> here clearly.
+> The only reason I kept it there is if someone tries to trigger hibernation on
+> ARM instances they should get an error. As I am not sure about the current
+> behavior. There may be a better way to not invoke hibernation on ARM DomU's and
+> get rid of this block all together.
+>
+> Again, sorry for sending in the half baked fix. My workspace switch may have
+> caused the error.
+>>
+>>
+>> -boris
+>>
+> Anchal
+>>
+>>> +     return register_pm_notifier(&xen_pm_notifier_block);
+>>> +}
+>>> +
