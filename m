@@ -2,133 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E91526A042
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7E726A045
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgIOHzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726212AbgIOHxj (ORCPT
+        id S1726212AbgIOH4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:56:19 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:30126 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgIOHz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:53:39 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7314DC06174A;
-        Tue, 15 Sep 2020 00:53:38 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id j11so3721231ejk.0;
-        Tue, 15 Sep 2020 00:53:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ks0EcIEGIK3AL4qrGbg0K7L3TxGS5zRG2FJAe08U/nI=;
-        b=ltM9vprMJ7YIEK7/iTKJLI6oQqGgV6KP6ymY+BdP8uNwHVs4BaSWMddqU+sJ29pUjh
-         zHaCNvt1Bg83H7Fpe0X8PFcrA4u24WIClcwJuY+VF2JRAbF4cjpocbuE6aArgDc0IJHs
-         2Xpy2OypBp9Dldtm9+e02YEeUcDL3sITMHnTkyn6TDkmmCdWj3Rg1gqj11LLZ+8WEG6m
-         TK1pC1EOhKCAKpsthRzEHYQsrZ+q8vZu7Sm/aVo82RCcTRKRENQyI/d6KL+VvAzG6TxO
-         GAqB3X49/If0dNao5s5tve6GLM17FACMokLYF7c34xxIMVE2Sai+SBzXIRKv3FeGHqM8
-         px+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ks0EcIEGIK3AL4qrGbg0K7L3TxGS5zRG2FJAe08U/nI=;
-        b=WBtz+nQwHuVPdwH7ldr9zEU1cZvpqI086Qeqcys7oR2xyX/H7HpjG+9uEOdl1HKtNV
-         BLDHXkb9FFLg76+CxwVOf19RuvZ+TnB+wqVT6XYK0pSWLS8awc9N6wCcLKjlILqax4K+
-         CQdfnisEBvPFqluhsHNvHc8S0aaE56f+glbYK39KFkSDvbTSoMHUT0ChrgfmijhGrZJq
-         BQMCx8CoEgc8mV4gVM40F+RFonJt4kQWwoVodL3C30PcntG86YQ1bZjWC2iYjyTfSkZe
-         vxSDB477wzB9Yaa4qm4Xybpi6qa2FSIdLfO5wGGdoqCwpfIBPh3WpLN5JJ8uljOE+KzB
-         OD/g==
-X-Gm-Message-State: AOAM533NHJiClpFQRD55TD0KQxDkQrGqqWzfehekGEt4CvS5nfNGtBHp
-        8UXxLvgkQTn1kgzDuz5wY68=
-X-Google-Smtp-Source: ABdhPJw6qDBCaExBI5AnvnzlDdpEJo0TMuWAcJfhh+lGKXnH+/0Og9/eQTD6EPe1c9KOT29FmaIKWQ==
-X-Received: by 2002:a17:906:a293:: with SMTP id i19mr19146423ejz.428.1600156416855;
-        Tue, 15 Sep 2020 00:53:36 -0700 (PDT)
-Received: from andrea (ip-213-220-210-175.net.upcbroadband.cz. [213.220.210.175])
-        by smtp.gmail.com with ESMTPSA id q1sm5436583ejy.37.2020.09.15.00.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 00:53:36 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 09:53:30 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>
-Subject: Re: [PATCH v7 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
- structure for VMBus hardening
-Message-ID: <20200915075253.GA3235@andrea>
-References: <20200907161920.71460-1-parri.andrea@gmail.com>
- <20200907161920.71460-2-parri.andrea@gmail.com>
- <MW2PR2101MB1052338B4D3B7020A2191EB7D7280@MW2PR2101MB1052.namprd21.prod.outlook.com>
- <20200908075216.GA5638@andrea>
- <MW2PR2101MB1052FD464D63F86B4DD1BE7BD7230@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        Tue, 15 Sep 2020 03:55:26 -0400
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 08F7subX002194
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:54:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 08F7subX002194
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600156497;
+        bh=BhfWwazkZ1UsFBNj+9aaT/huN8kz/KDvrP+OO7+KrWk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ypalhw62Odfca9wEPDZAzBU1805133jvCJAhjJBGqtfVLGtAma/ywpE5MTpcA5ggQ
+         tjOqvYGENXGLo5sr5MqesWDkFet8vq/jhOcMd5RxaqeBv1ZfKymEMETXOVGONR0+Vf
+         I/Wt0oMrzbhPxDhtH6kqG0LbReGm4MJzUyJrcbPOw4hGx/TakAHF5SX1z9JIjECx1s
+         GQ8/g/up8jQdNkXh2vio3GwZ5y/Zzpw/1CAR1n/6G7s2rOZ4efYuTx5yn+3rDyZNfl
+         rVBsQ5F9hb81ANR7bslT7zMdxVwaRuTaLs78aZmQcyN/1xvK94GTXbzJF9XHt7Tv6B
+         ReugZ6U0Dg0GQ==
+X-Nifty-SrcIP: [209.85.214.179]
+Received: by mail-pl1-f179.google.com with SMTP id k13so915742plk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:54:57 -0700 (PDT)
+X-Gm-Message-State: AOAM5301pZ0lBCJPCfW1wJcQ4uDPEpqUUto7nHYhOIfGMtwbXiTadUM7
+        79eWwtuozEVm1gKAPJCzjTp2+l/fJzXWiNKDRgM=
+X-Google-Smtp-Source: ABdhPJznRg6GUsPNSEIniwqHb2obJCKed8uo83LNBqf3Sy+gF9YULaCo8vNBUeIDLkwYU6Q7ToNTB3TMCA97Ya6y22g=
+X-Received: by 2002:a17:90b:208:: with SMTP id fy8mr3069316pjb.153.1600156496355;
+ Tue, 15 Sep 2020 00:54:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB1052FD464D63F86B4DD1BE7BD7230@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <trinity-9cd01270-7c54-4bf5-810d-e1b7de352e11-1600106229398@3c-app-gmx-bs03>
+ <CAK7LNARw0aRmKLb+8mxZbzxvB0YQ2_ak5LpcpQy+=3HrtiFA1g@mail.gmail.com> <27B16959-58F6-4190-8A65-88FFD2A49452@public-files.de>
+In-Reply-To: <27B16959-58F6-4190-8A65-88FFD2A49452@public-files.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 15 Sep 2020 16:54:19 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATk0=gLquyX3W90xcX60O++fhrhjTHJv0k-=vuhGVg5AQ@mail.gmail.com>
+Message-ID: <CAK7LNATk0=gLquyX3W90xcX60O++fhrhjTHJv0k-=vuhGVg5AQ@mail.gmail.com>
+Subject: Re: [question] KBUILD_OUTPUT and modules install (with INSTALL_MOD_PATH)
+To:     Frank Wunderlich <frank-w@public-files.de>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 05:29:11PM +0000, Michael Kelley wrote:
-> From: Andrea Parri <parri.andrea@gmail.com> Sent: Tuesday, September 8, 2020 12:54 AM
-> > 
-> > > > @@ -300,6 +303,22 @@ int hv_ringbuffer_write(struct vmbus_channel *channel,
-> > > >  						     kv_list[i].iov_len);
-> > > >  	}
-> > > >
-> > > > +	/*
-> > > > +	 * Allocate the request ID after the data has been copied into the
-> > > > +	 * ring buffer.  Once this request ID is allocated, the completion
-> > > > +	 * path could find the data and free it.
-> > > > +	 */
-> > > > +
-> > > > +	if (desc->flags == VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED) {
-> > > > +		rqst_id = vmbus_next_request_id(&channel->requestor, requestid);
-> > > > +		if (rqst_id == VMBUS_RQST_ERROR) {
-> > > > +			pr_err("No request id available\n");
-> > > > +			return -EAGAIN;
-> > > > +		}
-> > > > +	}
-> > > > +	desc = hv_get_ring_buffer(outring_info) + old_write;
-> > > > +	desc->trans_id = (rqst_id == VMBUS_NO_RQSTOR) ? requestid : rqst_id;
-> > > > +
-> > >
-> > > This is a nit, but the above would be clearer to me if written like this:
-> > >
-> > > 	flags = desc->flags;
-> > > 	if (flags == VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED) {
-> > > 		rqst_id = vmbus_next_request_id(&channel->requestor, requestid);
-> > > 		if (rqst_id == VMBUS_RQST_ERROR) {
-> > > 			pr_err("No request id available\n");
-> > > 			return -EAGAIN;
-> > > 		}
-> > > 	} else {
-> > > 		rqst_id = requestid;
-> > > 	}
-> > > 	desc = hv_get_ring_buffer(outring_info) + old_write;
-> > > 	desc->trans_id = rqst_id;
-> > >
-> > > The value of the flags field controls what will be used as the value for the
-> > > rqst_id.  Having another test to see which value will be used as the trans_id
-> > > somehow feels a bit redundant.  And then rqst_id doesn't have to be initialized.
-> > 
-> > Agreed, will apply in the next version.
-> > 
-> 
-> In an offline conversation, Andrea has pointed out that my proposed changes
-> don't work.  After a second look, I'll agreed that Andrea's code is the best that
-> can be done, so my comments can be ignored.
+On Tue, Sep 15, 2020 at 2:42 PM Frank Wunderlich
+<frank-w@public-files.de> wrote:
+>
+> Am 15. September 2020 04:56:55 MESZ schrieb Masahiro Yamada <masahiroy@kernel.org>:
+> >On Tue, Sep 15, 2020 at 2:57 AM Frank Wunderlich
+>
+> >> i try to use modules_install target after building kernel with
+> >KBUILD_OUTPUT set
+> >>
+> >> KBUILD_OUTPUT: /media/data_nvme/git/kernel/build #kernel source is in
+> >/media/data_nvme/git/kernel/BPI-R2-4.14
+> >>
+> >> kernel is build successfully, but i fail on running the make
+> >modules_install target
+> >>
+> >>   ERROR: Kernel configuration is invalid.
+> >>          include/generated/autoconf.h or include/config/auto.conf are
+> >missing.
+> >>          Run 'make oldconfig && make prepare' on kernel src to fix
+> >it.
+> >>
+> >> Makefile:648: include/config/auto.conf: No such file or directory
+> >> make: *** [Makefile:719: include/config/auto.conf] Error 1
+> >>
+> >> it looks it is ignoring the KBUILD_OUTPUT variable, as both files are
+> >present
+> >
+> >
+> >KBUILD_OUTPUT is an environment variable.
+> >
+> >Did you set (export) it
+> >before doing 'make modules_install'?
+>
+> Yes i exported it before use at beginning of my script [1] and modules_install used inside install function [2]. It works with build-function [3].
+> As the script is big i linked the relevant parts...i checked KBUILD_OUTPUT at beginning of install function so i'm sure it was set
+>
+> >> $ ls /media/data_nvme/git/kernel/build/include/config/auto.conf
+> >> /media/data_nvme/git/kernel/build/include/config/auto.conf
+> >> $ ls /media/data_nvme/git/kernel/build/include/generated/autoconf.h
+> >> /media/data_nvme/git/kernel/build/include/generated/autoconf.h
+>
+>
+> [1] https://github.com/frank-w/BPI-R2-4.14/blob/5.9-rc/build.sh#L75
+> [2] https://github.com/frank-w/BPI-R2-4.14/blob/5.9-rc/build.sh#L368
+> [3] https://github.com/frank-w/BPI-R2-4.14/blob/5.9-rc/build.sh#L578
+> regards Frank
 
-Thanks for the confirmation, Michael.  So, I plan to keep this patch as
-is for the next submission of the series (to be submitted shortly...).
 
-Thanks,
-  Andrea
+[3] is unrelated since
+"#&& make modules_install 2>&3" is commented out.
+
+
+In [1], you export KBUILD_OUTPUT as a normal user,
+then in [2], you run the commands with 'sudo'.
+
+That is why KBUILD_OUTPUT was not passed.
+
+
+-- 
+Best Regards
+Masahiro Yamada
