@@ -2,65 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BBA26B593
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDC726B55B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbgIOXrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
+        id S1727023AbgIOXmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgIOOdX (ORCPT
+        with ESMTP id S1726864AbgIOOei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:33:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6122AC06174A;
-        Tue, 15 Sep 2020 07:33:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N/RImaBnXFF3qV4mVIQ9BHL7AM45ePKA2LT5MfLcY7k=; b=isoDWDZijETKPcfACECD40iTGj
-        m7dtS99gUE2YIdQKRNawehnEMFycuNrpgVmgOUXa4i3mmp2Cg2XAJvGFO9sj1F9b5LGGrznkLNgp3
-        dfra5s1A6jdc2AcvbDqdrtty9bgFwY2fDoLoon1Te/Znm8tdIgGXGr5VZZOMwZRh0/whuaClyUie+
-        DX3kDpFozwg/jmJHVFaSZ9QR1de+PsLEW6LxzrpjMaJU/9NkKiBbafGAOjQXeZoyR51HXGXQ4mWre
-        ytCoB0y+jPqTEjVZ8jcsclL+LfcnX9bc+6OYQwoWHC2Gj+p0Aax5KQ4ovoyXxrhbNY09DGfXA79YC
-        nAXUeo3w==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIC0f-00065s-HW; Tue, 15 Sep 2020 14:32:42 +0000
-Date:   Tue, 15 Sep 2020 15:32:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap pages of hugetlb
- page
-Message-ID: <20200915143241.GH5449@casper.infradead.org>
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
+        Tue, 15 Sep 2020 10:34:38 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F34C061354
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:33:15 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id j6so2019837vsg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=p/yQGVz5fe7W1l/XMybVgvb/Lq+/vuJm4F2nqOi4Uy0=;
+        b=HuQZl+5yEL80JNR162wBgmVt3OdqHkNn8iHM4g1CYCd+zK3L7jbnkHeA98opEoWYyR
+         r05XsjGUCY7BpN8xWrHItSm25Dy70wSY1/NOnCFsOYEdLzvsAxSA40rL+5pBBVS/6jtb
+         cwmLwhs7wKHEuT87RTxPPT2hJsT2QNfRyIX7w033kFzXHZxTcQ0i5ld0SCByloYQ0iHF
+         ujJDbYFv+9tpjtPlqJOxJM4m1egvh3AoXdWRUM0QBIS/v6XHjj1RzI/iZrWe/EiPRT+2
+         uqYoM/Y7e5qj+I3ivaSC7bG1bSKpICNTzir0zSAjd/ESIvlX+vOsit8Ef5KzCo35diXN
+         aHcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=p/yQGVz5fe7W1l/XMybVgvb/Lq+/vuJm4F2nqOi4Uy0=;
+        b=W3LYdHcFAMMc/OaO/Hz59ZYl57gKyFUtFe2Nqiw4RNovLwoUlD2C/ixLfNrFHZMf9w
+         eYxK9Ch4aeBbdXK9bs4zsQTuqMHPmEQiSkHnq2yN54muhCSyK5INEEEkRV8vVDpcnhmQ
+         cIO+z0sdJZu3juOWDJ5cUbpWQM8JwjOuaOWI2WkoDi3tMjMJ5QqRfBrAo2jY9VlA+uix
+         fu+B0AD4A4rFdMnF2f/cigA0cMGl1qy3jIkOcg582tAZGAmug1soTIONfTtgdAIT+kS/
+         9LIP0i5CY2RTR8+rFH7ieVir/SPD9NpXzIuXG8GOUuKDIYvdS6wq0GMHi9SmXzHeTeGE
+         +Zhw==
+X-Gm-Message-State: AOAM530qK6j+uxdNSXpFaCqS2PfuegIpngrrW9SmFLNquHKlJgN+bdJ/
+        GGokC9ZEbpD80jp9YbeFW5+7mwHpN4KKdae7utQP6iw8XahhjKAd
+X-Google-Smtp-Source: ABdhPJwT5Pd+5fBeOKGtGHzst/KmWtPdm52ldHrwJZIJWHDFzAbHiqFeonOMHfEcqQEDv+llWjhbO3+b/n9EMVQ48Lk=
+X-Received: by 2002:a67:8c48:: with SMTP id o69mr1427354vsd.39.1600180393158;
+ Tue, 15 Sep 2020 07:33:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915125947.26204-1-songmuchun@bytedance.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Sep 2020 20:03:01 +0530
+Message-ID: <CA+G9fYvYEsxjU_cnm6oWFgOrU4x0T1CMoN-L2SHLGeJC6MF54Q@mail.gmail.com>
+Subject: Unable to handle kernel paging request at virtual address dead - __clk_put
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, linux-clk <linux-clk@vger.kernel.org>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:59:23PM +0800, Muchun Song wrote:
-> This patch series will free some vmemmap pages(struct page structures)
-> associated with each hugetlbpage when preallocated to save memory.
+arm64 dragonboard-410c boot failed while running linux next 2020915 due to
+the kernel crash.
 
-It would be lovely to be able to do this.  Unfortunately, it's completely
-impossible right now.  Consider, for example, get_user_pages() called
-on the fifth page of a hugetlb page.
+metadata:
+  git branch: master
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git describe: next-20200915
+  make_kernelversion: 5.9.0-rc5
+  kernel-config:
+https://builds.tuxbuild.com/J5oDTkph2aj855oeGOd45Q/kernel.config
 
-I've spent a lot of time thinking about this, and there's a lot of work
-that needs to happen before we can do this, mostly in device drivers.
-Do you want to help?  It's a multi-year project.
+
+crash log:
+-------------
+[    3.517615] Synopsys Designware Multimedia Card Interface Driver
+[    3.524258] sdhci-pltfm: SDHCI platform and OF driver helper
+[    3.531302] Unable to handle kernel paging request at virtual
+address dead000000000108
+[    3.531396] Mem abort info:
+[    3.531460] sdhci_msm 7864900.sdhci: Got CD GPIO
+[    3.539182]   ESR = 0x96000044
+[    3.541953] ledtrig-cpu: registered to indicate activity on CPUs
+[    3.546692]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    3.546701]   SET = 0, FnV = 0
+[    3.555694] usbcore: registered new interface driver usbhid
+[    3.555703] usbhid: USB HID core driver
+[    3.561638] genirq: irq_chip msmgpio did not update eff. affinity
+mask of irq 75
+[    3.563908]   EA = 0, S1PTW = 0
+[    3.580792] Data abort info:
+[    3.583673]   ISV = 0, ISS = 0x00000044
+[    3.583900] NET: Registered protocol family 10
+[    3.586785]   CM = 0, WnR = 1
+[    3.586794] [dead000000000108] address between user and kernel address ranges
+[    3.586806] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+[    3.591869] Segment Routing with IPv6
+[    3.594829] Modules linked in:
+[    3.594841] CPU: 2 PID: 7 Comm: kworker/u8:0 Not tainted
+5.9.0-rc5-next-20200915 #1
+[    3.594844] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    3.594862] Workqueue: events_unbound async_run_entry_fn
+[    3.597959] NET: Registered protocol family 17
+[    3.604991] pstate: 60000005 (nZCv daif -PAN -UAO BTYPE=--)
+[    3.605000] pc : __clk_put+0x40/0x140
+[    3.605009] lr : __clk_put+0x2c/0x140
+[    3.610613] 9pnet: Installing 9P2000 support
+[    3.614183] sp : ffff80001005bbe0
+[    3.614189] x29: ffff80001005bbe0
+[    3.617233] Key type dns_resolver registered
+[    3.624696] x28: 000000000000002e
+[    3.624701] x27: ffff00003b620a68 x26: ffff800011496568
+[    3.624708] x25: ffff00003fcfe8f8 x24: ffff00003d30c410
+[    3.632518] registered taskstats version 1
+[    3.636931] x23: ffff800011495cf8 x22: ffff00003b620a40
+[    3.636938] x21: ffff00003d30c400 x20: ffff00003b620580
+[    3.636945] x19: ffff00003b64f380 x18: 0000000007824000
+[    3.636951] x17: ffff00003b620a00 x16: ffff00003b6205d0
+[    3.636958] x15: ffff8000119929f8 x14: ffffffffffffffff
+[    3.636965] x13: ffff800012947000 x12: ffff800012947000
+[    3.636975] x11: 0000000000000020
+[    3.641233] Loading compiled-in X.509 certificates
+[    3.646650] x10: 0101010101010101
+[    3.646654] x9 : ffff8000107b4c84 x8 : 7f7f7f7f7f7f7f7f
+[    3.646661] x7 : ffff000009fe5880 x6 : 0000000000000000
+[    3.646668] x5 : 0000000000000000 x4 : ffff000009fe5880
+[    3.646674] x3 : ffff80001250d7a0 x2 : ffff000009fe5880
+[    3.746653] x1 : ffff00003b64f680 x0 : dead000000000100
+[    3.751949] Call trace:
+[    3.757243]  __clk_put+0x40/0x140
+[    3.759413]  clk_put+0x18/0x28
+[    3.762885]  dev_pm_opp_put_clkname+0x30/0x58
+[    3.765837]  sdhci_msm_probe+0x288/0x9a8
+[    3.770265]  platform_drv_probe+0x5c/0xb0
+[    3.774258]  really_probe+0xf0/0x4d8
+[    3.778163]  driver_probe_device+0xfc/0x168
+[    3.781810]  __driver_attach_async_helper+0xbc/0xc8
+[    3.785717]  async_run_entry_fn+0x4c/0x1b0
+[    3.790575]  process_one_work+0x1c8/0x498
+[    3.794741]  worker_thread+0x54/0x428
+[    3.798822]  kthread+0x120/0x158
+[    3.802467]  ret_from_fork+0x10/0x30
+[    3.805771] Code: 35000720 a9438660 f9000020 b4000040 (f9000401)
+[    3.809334] ---[ end trace 1a607a5ea6891b9f ]---
+
+full test log link,
+https://lkft.validation.linaro.org/scheduler/job/1765840#L2014
+https://lkft.validation.linaro.org/scheduler/job/1765842#L1960
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
