@@ -2,130 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A995026A146
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5F426A150
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgIOItg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:49:36 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:34422 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726208AbgIOIt2 (ORCPT
+        id S1726321AbgIOIyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:54:37 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:48609 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIOIye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:49:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600159767; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lgWaE3f5Tk8GQse/S9qKMVFoUNqqNMGU6pVowPuyQYs=;
- b=S117pVnlE0PLUfIaJEdrN5lVafuVCO2rP5B6JChgTCfqeRyJ/3EJmWDFLBCYY7W9zVZfXFpT
- 22JB9dcbcLTGigT9mYLXStOAW5IOtaUfLMtzoj4yzZR5gJQrZfVS4WlM7cop8T20/aPi1nm7
- MkwV2HXVOGT4sRBRf4uk4LK4MAA=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f608016947f606f7ef1a972 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 08:49:26
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D3C55C43387; Tue, 15 Sep 2020 08:49:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nguyenb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4FEEC433C8;
-        Tue, 15 Sep 2020 08:49:24 +0000 (UTC)
+        Tue, 15 Sep 2020 04:54:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600160074; x=1631696074;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Q1K3ZnDAfToNz/8n8qN43CbiTyRRyydMCMCOaNUYtDM=;
+  b=U0u4thy7JRsmb3F0y0S3PgUMBVcE0vs+eF8MDqPW3RQanUBvYl8com8/
+   Imw/uKoOyYe8M/6SCC7LE3YjSqNAse06xFmEYUr03SiFoyxoIsxOKUuRY
+   DSgl8cDN+1tSpXzMpUgeE/QtVA+GQxFTcM0Q/2VWsJhs2z7D/3xxGhaFV
+   CzpcCPZGNgTQGj3JUq9oBbuqOjRTzkoy0BQyLk3Je7J3YyCjM0Jm99f3c
+   sJOY28hYshVXUjyi/3Xir10qgabopEx+2OF/cVbHMgh9niOrR5GPOed/u
+   xGvYYAYWFwU6TVkgvbUPr4UXlrGBX5cTRUfYjcITYYfc0s/lUPyjV7a0v
+   A==;
+IronPort-SDR: W4dS+NKoczb/uFgiJQpnct2/tpr4/ydR+fpvqKV8jvXK+2Ymmmlop6w95BVSPPCYnvtCdFNVgV
+ wpgd9ezuttGbJq4JiPjhqyazOAwlLNuqr0EHSa5oo0hFspVP1oUT6FNCQ9bqJLzTrLRrVJoamB
+ hMTrqWVme0yr0QLJFxnRSgL4x//S0Z/h9KEkt5euUDbx5++Xiv8QD4r2bBMCAB5HeFiyoKEzhf
+ 7M+V4nlnW1xe7zB3GU1ewFvBP8lu0NbDux7ZkrGI9GUYuzfDPO2HLDt2iy+X6HqjMYwI7jaBsJ
+ z7k=
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="91839331"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2020 01:54:14 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 01:54:12 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 15 Sep 2020 01:54:04 -0700
+Date:   Tue, 15 Sep 2020 08:51:37 +0000
+From:   Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
+        <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>,
+        <UNGLinuxDriver@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH RFC 4/7] bridge: cfm: Kernel space implementation of CFM.
+Message-ID: <20200915085137.c7xfmk5bpjzniclp@soft-test08>
+References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
+ <20200904091527.669109-5-henrik.bjoernlund@microchip.com>
+ <20200904080257.6b2a643f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Sep 2020 01:49:24 -0700
-From:   nguyenb@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
-In-Reply-To: <20200915025401.GD471@uller>
-References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
- <20200915025401.GD471@uller>
-Message-ID: <a8c851744fcaee205fc7a58db8f747fa@codeaurora.org>
-X-Sender: nguyenb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200904080257.6b2a643f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-14 19:54, Bjorn Andersson wrote:
-> On Tue 01 Sep 01:19 UTC 2020, Bao D. Nguyen wrote:
+Thanks for the review. Comments below.
+
+The 09/04/2020 08:02, Jakub Kicinski wrote:
 > 
->> UFS version 3.0 and later devices require Vcc and Vccq power supplies
->> with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
->> devices, the Vcc and Vccq2 are required with Vccq being optional.
->> Check the required power supplies used by the device
->> and set the device's supported Icc level properly.
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 5 +++--
->>  1 file changed, 3 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 06e2439..fdd1d3e 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -6845,8 +6845,9 @@ static u32 
->> ufshcd_find_max_sup_active_icc_level(struct ufs_hba *hba,
->>  {
->>  	u32 icc_level = 0;
->> 
->> -	if (!hba->vreg_info.vcc || !hba->vreg_info.vccq ||
->> -						!hba->vreg_info.vccq2) {
->> +	if (!hba->vreg_info.vcc ||
+> On Fri, 4 Sep 2020 09:15:24 +0000 Henrik Bjoernlund wrote:
+> > +     rcu_read_lock();
+> > +     b_port = rcu_dereference(mep->b_port);
+> > +     if (!b_port)
+> > +             return NULL;
+> > +     skb = dev_alloc_skb(CFM_CCM_MAX_FRAME_LENGTH);
+> > +     if (!skb)
+> > +             return NULL;
 > 
-> How did you test this?
-> 
-> devm_regulator_get() never returns NULL, so afaict this conditional 
-> will
-> never be taken with either the old or new version of the code.
-Thanks for your comment. The call flow is as follows:
-ufshcd_pltfrm_init->ufshcd_parse_regulator_info->ufshcd_populate_vreg
-In the ufshcd_populate_vreg() function, it looks for DT entries 
-"%s-supply"
-For UFS3.0+ devices, "vccq2-supply" is optional, so the vendor may 
-choose not to provide vccq2-supply in the DT.
-As a result, a NULL is returned to hba->vreg_info.vccq2.
-Same for UFS2.0 and UFS2.1 devices, a NULL may be returned to 
-hba->vreg_info.vccq if vccq-supply is not provided in the DT.
-The current code only checks for !hba->vreg_info.vccq OR 
-!hba->vreg_info.vccq2. It will skip the setting for icc_level
-if either vccq or vccq2 is not provided in the DT.
-> 
-> Regards,
-> Bjorn
-> 
->> +		(!hba->vreg_info.vccq && hba->dev_info.wspecversion >= 0x300) ||
->> +		(!hba->vreg_info.vccq2 && hba->dev_info.wspecversion < 0x300)) {
->>  		dev_err(hba->dev,
->>  			"%s: Regulator capability was not set, actvIccLevel=%d",
->>  							__func__, icc_level);
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+> net/bridge/br_cfm.c:171:23: warning: context imbalance in 'ccm_frame_build' - different lock contexts for basic block
+
+I will assure that rcu_read_unlock() is called before any return.
+
+-- 
+/Henrik
