@@ -2,117 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B1726A653
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 15:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3EC26A661
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 15:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgIONaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 09:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgIONZn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:25:43 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC7CC061223
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:25:32 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id y6so3822639oie.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RyVHdR8jBIwQ3BNbRllUCCgf0qrcLoJK+x7C0viR1NE=;
-        b=wJ3w9dq4WGkHLAVxY7n5TllVUvXWKHAsTyiAO1zqRGvpG1/0nZAGylkQCAEkc30qw0
-         sdRrx5LKXaDqGtVMa+2D75ZbOI2t2+gIYrfrD+JFMDZXZk+wW33LRqi/N0X7ftX00gHR
-         zu70x//BFqUKOIYBIZcbdJ3p7YDhBXfQIwWM5NSmVOgKEVYm9OBLpso5+qMI2Vltexgx
-         t+qr5+7omoFBf619m7FZRQzPawASQ+AxYaBSngl6IQwlIR94WTkzqGO4YxLl+VoVkBZ4
-         wajpohE424xoFqEvGlfZ1HIQaCRMAqUoep6zE6jZCSXLbApL4P/Q0Bab4L65D/a6NOua
-         i9DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RyVHdR8jBIwQ3BNbRllUCCgf0qrcLoJK+x7C0viR1NE=;
-        b=o+rAOLLIONyP1sfubjT1Hhe0FIaW3gyAKyYVRY8FStgULPLAOy15uFom1AYKeCZWWM
-         QA9ykeLCtDSFwhzbuLuyXFVlNWvpoChJqnBSlgFfZmrwzeA/zHe4WLYgo40eEuuhmlV9
-         0GVes7F5OzCkbk5tvDgIB9ITQRfg5bQaA8NP0ZM6KxHHYsJIcPEb+azd0DpIQtIr7h7o
-         /nnfPBG9VU+JjOGKpCrYdTIZ6BiOoY9jNsHLlrL1tZZb8HYGIouOhxbk8AnGRmFTvXdA
-         qVhz8T0uB2PP/BGZQgNq+ke8pR4a4L3OZChHco0ItJDqWoV5w07QKALfYrsDAidxgR3m
-         T5UQ==
-X-Gm-Message-State: AOAM532lWrHkGga8+TMyiQh3aywsDegPObYsEIs51ibegCe5kXtyBD0f
-        sLg7NJV6YS6zNaw9f7Mfn6BO4V6OM3Uy7QD7
-X-Google-Smtp-Source: ABdhPJyT4YjSfQSBOA7Rk1epa+cHZnD91VxCDph4qsIf8187cA0apiSIFtK2ee4KGS1Y+lHtVJRWIg==
-X-Received: by 2002:a05:6808:aa5:: with SMTP id r5mr3180890oij.90.1600176331905;
-        Tue, 15 Sep 2020 06:25:31 -0700 (PDT)
-Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id l136sm6362088oig.7.2020.09.15.06.25.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 06:25:31 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: fix the bug of child process can't do io task
-To:     Yinyin Zhu <zhuyinyin@bytedance.com>, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200915130245.89585-1-zhuyinyin@bytedance.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e206f1b4-1f22-c3f5-21a6-cec498d9c830@kernel.dk>
-Date:   Tue, 15 Sep 2020 07:25:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726594AbgIONhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 09:37:23 -0400
+Received: from node.akkea.ca ([192.155.83.177]:60636 "EHLO node.akkea.ca"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726663AbgIONbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:31:53 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by node.akkea.ca (Postfix) with ESMTP id EA60B4E201F;
+        Tue, 15 Sep 2020 13:31:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1600176680; bh=gtj/Nyy1vtgEu5K98dpN7qFHnlOiZePDKix5OG62n4U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=G7N5XllA2F0KoXYnkUIWeekxwQZWbcjAbVZ2Pz9by2aBkwVPtMmhPGCvm+JoyAeW7
+         ojfCI+dKYiUfl/XPT7pKaDzyQTEFsN8iX58neF14cGwqz2RCjAMXDd3IG9LLMhIHua
+         qDoBiMFOSm2GErjLDcX0yJmW/+vkvNfm8LI4Qys8=
+X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
+Received: from node.akkea.ca ([127.0.0.1])
+        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UcZR_BcROKHC; Tue, 15 Sep 2020 13:31:19 +0000 (UTC)
+Received: from www.akkea.ca (node.akkea.ca [192.155.83.177])
+        by node.akkea.ca (Postfix) with ESMTPSA id 41C234E200E;
+        Tue, 15 Sep 2020 13:31:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1600176679; bh=gtj/Nyy1vtgEu5K98dpN7qFHnlOiZePDKix5OG62n4U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=IMtXG/QJAiy5UTRY3xSVaQZTEpcnB0yr7fBviRru58vV7DxGdKBwObJl3Gi11KlhT
+         NHFsthA5w6Mt9tft3X0ETH+j2UbzG4I3Wi84zJqqqKUb/A4jXGtd/fSbatDR7sMId5
+         ovN34oXI2jHPSh1w8wIQFTo3dJsRjwjWKRoLOJjs=
 MIME-Version: 1.0
-In-Reply-To: <20200915130245.89585-1-zhuyinyin@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 15 Sep 2020 06:31:19 -0700
+From:   Angus Ainslie <angus@akkea.ca>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     kernel@puri.sm, MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        bryan.odonoghue@linaro.org
+Subject: Re: [PATCH 1/4] extcon: Add USB VBUS properties
+In-Reply-To: <bfa20bf2-e13b-1cd4-52d9-c8fa922d5aac@samsung.com>
+References: <20200914164639.1487650-1-angus@akkea.ca>
+ <CGME20200914165800epcas1p12e04260289513eac00f442388d5ba374@epcas1p1.samsung.com>
+ <20200914164639.1487650-2-angus@akkea.ca>
+ <bfa20bf2-e13b-1cd4-52d9-c8fa922d5aac@samsung.com>
+Message-ID: <23ce56387f39fa097b36380dbe9661a0@akkea.ca>
+X-Sender: angus@akkea.ca
+User-Agent: Roundcube Webmail/1.3.6
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 7:02 AM, Yinyin Zhu wrote:
-> when parent process setup a io_uring_instance, the ctx->sqo_mm was
-> assigned of parent process'mm. Then it fork a child
-> process. So the child process inherits the io_uring_instance fd from
-> parent process. Then the child process submit a io task to the io_uring
-> instance. The kworker will do the io task actually, and use
-> the ctx->sqo_mm as its mm, but this ctx->sqo_mm is parent process's mm,
-> not the child process's mm. so child do the io task unsuccessfully. To
-> fix this bug, when a process submit a io task to the kworker, assign the
-> ctx->sqo_mm with this process's mm.
+Hi,
 
-Hmm, what's the test case for this? There's a 5.9 regression where we
-don't always grab the right context for certain linked cases, below
-is the fix. Does that fix your case?
+On 2020-09-14 18:40, Chanwoo Choi wrote:
+> Hi,
+> 
+> On 9/15/20 1:46 AM, Angus Ainslie wrote:
+>> USB type C, USB BC1.2 and USB power delivery allow different voltages
+>> and currents for VBUS so we need these additional properties.
+>> 
+>> Also USB type C allows separate device and power roles so add a VBUS 
+>> SRC
+>> property.
+>> 
+>> Signed-off-by: Angus Ainslie <angus@akkea.ca>
+>> ---
+>>  include/linux/extcon.h | 17 ++++++++++++++++-
+>>  1 file changed, 16 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/include/linux/extcon.h b/include/linux/extcon.h
+>> index fd183fb9c20f..c4d48f4f74c4 100644
+>> --- a/include/linux/extcon.h
+>> +++ b/include/linux/extcon.h
+>> @@ -117,14 +117,29 @@
+>>   * @type:       integer (intval)
+>>   * @value:      0 (USB/USB2) or 1 (USB3)
+>>   * @default:    0 (USB/USB2)
+>> + * - EXTCON_PROP_USB_VBUS_SRC
+> 
+> Could you explain more correct meaning of both sink and source?
+> 
 
+Sure I can add some comments.
 
-commit 202700e18acbed55970dbb9d4d518ac59b1172c8
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Sat Sep 12 13:18:10 2020 -0600
+>> + * @type:	integer (intval)
+>> + * @value:	0 (sink) or 1 (source)
+>> + * @default:	0 (sink)
+>> + * - EXTCON_PROP_USB_VBUS_VOLTAGE
+>> + * @type:	integer (intval)
+>> + * @value:	negotiated vbus voltage in mV
+>> + * @default:	5000
+> 
+> Could you suggest the data why do you set default value as 5000?
+> 
 
-    io_uring: grab any needed state during defer prep
-    
-    Always grab work environment for deferred links. The assumption that we
-    will be running it always from the task in question is false, as exiting
-    tasks may mean that we're deferring this one to a thread helper. And at
-    that point it's too late to grab the work environment.
-    
-    Fixes: debb85f496c9 ("io_uring: factor out grab_env() from defer_prep()")
-    Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The lowest USB VBUS is 5V so I can add that to the comments.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 175fb647d099..be9d628e7854 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5449,6 +5449,8 @@ static int io_req_defer_prep(struct io_kiocb *req,
- 	if (unlikely(ret))
- 		return ret;
- 
-+	io_prep_async_work(req);
-+
- 	switch (req->opcode) {
- 	case IORING_OP_NOP:
- 		break;
+>> + * - EXTCON_PROP_USB_VBUS_CURRENT
+>> + * @type:	integer (intval)
+>> + * @value:	negotiated vbus current in mA
+>> + * @default:	100
+> 
+> ditto. Why default value is 100?
+> 
 
--- 
-Jens Axboe
+USB spec says that until the current is negotiated the max that anything 
+can draw is 100mA. I can add a comment to that effect.
 
+Thanks
+Angus
+
+>>   *
+>>   */
+>>  #define EXTCON_PROP_USB_VBUS		0
+>>  #define EXTCON_PROP_USB_TYPEC_POLARITY	1
+>>  #define EXTCON_PROP_USB_SS		2
+>> +#define EXTCON_PROP_USB_VBUS_SRC	3
+>> +#define EXTCON_PROP_USB_VBUS_VOLTAGE	4
+>> +#define EXTCON_PROP_USB_VBUS_CURRENT	5
+>> 
+>>  #define EXTCON_PROP_USB_MIN		0
+>> -#define EXTCON_PROP_USB_MAX		2
+>> +#define EXTCON_PROP_USB_MAX		5
+>>  #define EXTCON_PROP_USB_CNT	(EXTCON_PROP_USB_MAX - 
+>> EXTCON_PROP_USB_MIN + 1)
+>> 
+>>  /* Properties of EXTCON_TYPE_CHG. */
+>> 
