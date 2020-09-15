@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D163926B8D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC52C26B8CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgIPAvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        id S1726630AbgIPAug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgIOLkq (ORCPT
+        with ESMTP id S1726393AbgIOLlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:40:46 -0400
+        Tue, 15 Sep 2020 07:41:03 -0400
 Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF50EC061797;
-        Tue, 15 Sep 2020 04:40:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA370C06178A;
+        Tue, 15 Sep 2020 04:41:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
          s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Dw0RXYIryfkngJ4OEuc3gpztJP0jIMz1MlJhMluSPdE=; b=rwNMM2yGWf96Z9H5K7tFNa/44J
-        KMSbuF0mGreAxCwOa3YbNFCd44cR/fEJWPTwqOSejcvVXvUaWXYlHTQgn8oONbv83vlFVWrYQ0bqq
-        UZjss7pPl9qcRrTDXxG3+90tJimd5tbEA00XtnE3GM7hkVCrMTXzU4iS4JK6jchRHfosjkNYt5xR4
-        IRPoTIFfhuvSs9KaZ0Trag2JIu586Enm+b5H1U/M7vJLHLjikRyhSPlwoobmOIh1YjiCO/Vhnljgb
-        kn4SjPl3C1fegpMyTLjOTyEhFwNY39SZMjqSOY18W/kbxh3wJiifDjFnhpSgcCmPLyg/QL8MDXAXk
-        timqRhoA==;
+        bh=Z0z7VU0ZJOglP2ZP2H14DlOIQchhVanxR/WdYj/tOzs=; b=Q9C+Lkg+d140PJwHzmMxB3GPoh
+        cAqivlF5xy8N9eJuKa75TfKd5gXUqSVh1o0mzOLiuAMtJRBfILXQwoON5WhkE05Dcr6eeeQ7GRUos
+        fHZbCv9kQT4c9t/ZUpUEzerB7LrLItAEkXMo/aDq+x68HL1WEojZdLFc7u8rxNHYxEM7T5PL6+pPJ
+        GXnvTffyMXXo0NDsKPEkUpgsX3wuAxJCSJsiUXFU4ucCgGO6DRfVRPpnMrlXNPmYpVAYHo0UDB0Zr
+        hc6eiZghb1FNneaA7XgowKM5+89r/JFX7cgDNWSdpDDow3FqvnaZJzFwyaKHnenH6oFqCqMIj2fUr
+        nDieUA/g==;
 Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
         by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
         (envelope-from <jarkko.sakkinen@linux.intel.com>)
-        id 1kI8m8-0005sg-7I; Tue, 15 Sep 2020 14:05:28 +0300
+        id 1kI8m8-0005t9-MM; Tue, 15 Sep 2020 14:05:28 +0300
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     x86@kernel.org, linux-sgx@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
         Jethro Beekman <jethro@fortanix.com>,
         Darren Kenny <darren.kenny@oracle.com>,
+        Borislav Petkov <bp@suse.de>,
         Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
         josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
         kmoy@google.com, ludloff@google.com, luto@kernel.org,
         nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
         rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v38 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch Control hardware bits
-Date:   Tue, 15 Sep 2020 14:05:00 +0300
-Message-Id: <20200915110522.893152-3-jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH v38 03/24] x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
+Date:   Tue, 15 Sep 2020 14:05:01 +0300
+Message-Id: <20200915110522.893152-4-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
 References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
@@ -66,76 +66,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Add X86_FEATURE_SGX_LC, which informs whether or not the CPU supports SGX
-Launch Control.
+Include SGX bit to the PF error codes and throw SIGSEGV with PF_SGX when
+a #PF with SGX set happens.
 
-Add MSR_IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}, which when combined contain a
-SHA256 hash of a 3072-bit RSA public key. SGX backed software packages, so
-called enclaves, are always signed. All enclaves signed with the public key
-are unconditionally allowed to initialize. [1]
+CPU throws a #PF with the SGX set in the event of Enclave Page Cache Map
+(EPCM) conflict. The EPCM is a CPU-internal table, which describes the
+properties for a enclave page. Enclaves are measured and signed software
+entities, which SGX hosts. [1]
 
-Add FEAT_CTL_SGX_LC_ENABLED, which informs whether the aformentioned MSRs
-are writable or not. If the bit is off, the public key MSRs are read-only
-for the OS.
+Although the primary purpose of the EPCM conflict checks  is to prevent
+malicious accesses to an enclave, an illegit access can happen also for
+legit reasons.
 
-If the MSRs are read-only, the platform must provide a launch enclave (LE).
-LE can create cryptographic tokens for other enclaves that they can pass
-together with their signature to the ENCLS(EINIT) opcode, which is used
-to initialize enclaves.
+All SGX reserved memory, including EPCM is encrypted with a transient key
+that does not survive from the power transition. Throwing a SIGSEGV allows
+user space software to react when this happens (e.g. recreate the enclave,
+which was invalidated).
 
-Linux is unlikely to support the locked configuration because it takes away
-the control of the launch decisions from the kernel.
+[1] Intel SDM: 36.5.1 Enclave Page Cache Map (EPCM)
 
-[1] Intel SDM: 38.1.4 Intel SGX Launch Control Configuration
-
-Reviewed-by: Borislav Petkov <bp@alien8.de>
 Acked-by: Jethro Beekman <jethro@fortanix.com>
 Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Reviewed-by: Borislav Petkov <bp@suse.de>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- arch/x86/include/asm/cpufeatures.h | 1 +
- arch/x86/include/asm/msr-index.h   | 7 +++++++
- 2 files changed, 8 insertions(+)
+ arch/x86/include/asm/traps.h | 14 ++++++++------
+ arch/x86/mm/fault.c          | 13 +++++++++++++
+ 2 files changed, 21 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 159b635159c0..398e4f19c3d7 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -354,6 +354,7 @@
- #define X86_FEATURE_CLDEMOTE		(16*32+25) /* CLDEMOTE instruction */
- #define X86_FEATURE_MOVDIRI		(16*32+27) /* MOVDIRI instruction */
- #define X86_FEATURE_MOVDIR64B		(16*32+28) /* MOVDIR64B instruction */
-+#define X86_FEATURE_SGX_LC		(16*32+30) /* Software Guard Extensions Launch Control */
+diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
+index 714b1a30e7b0..4446f95ad997 100644
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -44,12 +44,13 @@ void __noreturn handle_stack_overflow(const char *message,
+ /*
+  * Page fault error code bits:
+  *
+- *   bit 0 ==	 0: no page found	1: protection fault
+- *   bit 1 ==	 0: read access		1: write access
+- *   bit 2 ==	 0: kernel-mode access	1: user-mode access
+- *   bit 3 ==				1: use of reserved bit detected
+- *   bit 4 ==				1: fault was an instruction fetch
+- *   bit 5 ==				1: protection keys block access
++ *   bit 0  ==	 0: no page found	1: protection fault
++ *   bit 1  ==	 0: read access		1: write access
++ *   bit 2  ==	 0: kernel-mode access	1: user-mode access
++ *   bit 3  ==				1: use of reserved bit detected
++ *   bit 4  ==				1: fault was an instruction fetch
++ *   bit 5  ==				1: protection keys block access
++ *   bit 15 ==				1: inside SGX enclave
+  */
+ enum x86_pf_error_code {
+ 	X86_PF_PROT	=		1 << 0,
+@@ -58,5 +59,6 @@ enum x86_pf_error_code {
+ 	X86_PF_RSVD	=		1 << 3,
+ 	X86_PF_INSTR	=		1 << 4,
+ 	X86_PF_PK	=		1 << 5,
++	X86_PF_SGX	=		1 << 15,
+ };
+ #endif /* _ASM_X86_TRAPS_H */
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 35f1498e9832..1a7cc6d3281a 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1054,6 +1054,19 @@ access_error(unsigned long error_code, struct vm_area_struct *vma)
+ 	if (error_code & X86_PF_PK)
+ 		return 1;
  
- /* AMD-defined CPU features, CPUID level 0x80000007 (EBX), word 17 */
- #define X86_FEATURE_OVERFLOW_RECOV	(17*32+ 0) /* MCA overflow recovery support */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index c0b04f020162..e574b4bb5aad 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -602,6 +602,7 @@
- #define FEAT_CTL_LOCKED				BIT(0)
- #define FEAT_CTL_VMX_ENABLED_INSIDE_SMX		BIT(1)
- #define FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX	BIT(2)
-+#define FEAT_CTL_SGX_LC_ENABLED			BIT(17)
- #define FEAT_CTL_SGX_ENABLED			BIT(18)
- #define FEAT_CTL_LMCE_ENABLED			BIT(20)
- 
-@@ -622,6 +623,12 @@
- #define MSR_IA32_UCODE_WRITE		0x00000079
- #define MSR_IA32_UCODE_REV		0x0000008b
- 
-+/* Intel SGX Launch Enclave Public Key Hash MSRs */
-+#define MSR_IA32_SGXLEPUBKEYHASH0	0x0000008C
-+#define MSR_IA32_SGXLEPUBKEYHASH1	0x0000008D
-+#define MSR_IA32_SGXLEPUBKEYHASH2	0x0000008E
-+#define MSR_IA32_SGXLEPUBKEYHASH3	0x0000008F
++	/*
++	 * Access is blocked by the Enclave Page Cache Map (EPCM), i.e. the
++	 * access is allowed by the PTE but not the EPCM. This usually happens
++	 * when the EPCM is yanked out from under us, e.g. by hardware after a
++	 * suspend/resume cycle. In any case, software, i.e. the kernel, can't
++	 * fix the source of the fault as the EPCM can't be directly modified by
++	 * software. Handle the fault as an access error in order to signal
++	 * userspace so that userspace can rebuild their enclave(s), even though
++	 * userspace may not have actually violated access permissions.
++	 */
++	if (unlikely(error_code & X86_PF_SGX))
++		return 1;
 +
- #define MSR_IA32_SMM_MONITOR_CTL	0x0000009b
- #define MSR_IA32_SMBASE			0x0000009e
- 
+ 	/*
+ 	 * Make sure to check the VMA so that we do not perform
+ 	 * faults just to hit a X86_PF_PK as soon as we fill in a
 -- 
 2.25.1
 
