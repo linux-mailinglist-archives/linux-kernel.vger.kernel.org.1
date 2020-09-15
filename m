@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F55726AF36
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B5926AF2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgIOU1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:27:43 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39598 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727971AbgIOUTl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:19:41 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FKJZpv054060;
-        Tue, 15 Sep 2020 20:19:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=10Z/Dazbhyj4+cY8Xwz/MMNcwg0uB3IZDMh5DCktmK8=;
- b=RHuDkMqTF610Lqaq4swAzjaSbuvc/DgIxwwt7Fr9/ClVACUb9ztyypAY6UMiWI/8d25e
- uUaozpo3y+oWyQGg8tGYFMI38dPA01EaNk5JL8wsSsCy5Zqp18zso8A75kqrIMtZ3eEM
- qoillimo4coRE4wFSpqYW6BT0vHe7Gj9NnSu+pU/R7uADEhSNuehUBOa9Jik/509RzYe
- iVCkqANPUMTt28ZIuCdD7C8uqEkEcRTjTWhmDaPjFL8yoxhwMtAJs9jEjcia+8l/9y4m
- Ntp4k1XoTk++6JmMFu+LSWBvb4UBLNB72GO02O5yiZEShVy9kY/F5gk9JMCc5/kuyayg kA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 33gnrqyefj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 20:19:35 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FKEhbX181308;
-        Tue, 15 Sep 2020 20:19:30 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33h88yybbr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 20:19:29 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FKJSho017289;
-        Tue, 15 Sep 2020 20:19:29 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 20:19:28 +0000
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH V2] scsi: ufs-pci: Add LTR support for Intel controllers
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1363i7q0b.fsf@ca-mkp.ca.oracle.com>
-References: <20200827072030.24655-1-adrian.hunter@intel.com>
-Date:   Tue, 15 Sep 2020 16:19:26 -0400
-In-Reply-To: <20200827072030.24655-1-adrian.hunter@intel.com> (Adrian Hunter's
-        message of "Thu, 27 Aug 2020 10:20:30 +0300")
+        id S1727996AbgIOU3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:29:15 -0400
+Received: from namei.org ([65.99.196.166]:57558 "EHLO namei.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727982AbgIOUWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:22:23 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 08FKLTg6008561;
+        Tue, 15 Sep 2020 20:21:29 GMT
+Date:   Wed, 16 Sep 2020 06:21:29 +1000 (AEST)
+From:   James Morris <jmorris@namei.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [GIT PULL] security: device_cgroup RCU warning fix
+Message-ID: <alpine.LRH.2.21.2009160619400.8445@namei.org>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=1 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150158
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=1
- clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150158
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This was posted a while back and been baking in -next for a while, please 
+consider for 5.9.
 
-Adrian,
 
-> Intel host controllers support the setting of latency tolerance.
-> Accordingly, implement the PM QoS ->set_latency_tolerance() callback. The
-> raw register values are also exposed via debugfs.
+The following changes since commit bcf876870b95592b52519ed4aafcf9d95999bc9c:
 
-Applied to 5.10/scsi-staging. Thanks!
+  Linux 5.8 (2020-08-02 14:21:45 -0700)
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git tags/fixes-v5.9a
+
+for you to fetch changes up to bc62d68e2a0a69fcdcf28aca8edb01abf306b698:
+
+  device_cgroup: Fix RCU list debugging warning (2020-08-20 11:25:03 -0700)
+
+----------------------------------------------------------------
+device_cgroup RCU warning fix from Amol Grover <frextrite@gmail.com>
+
+----------------------------------------------------------------
+
+Amol Grover (1):
+      device_cgroup: Fix RCU list debugging warning
+
+ security/device_cgroup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+
+commit bc62d68e2a0a69fcdcf28aca8edb01abf306b698
+Author: Amol Grover <frextrite@gmail.com>
+Date:   Mon Apr 6 16:29:50 2020 +0530
+
+    device_cgroup: Fix RCU list debugging warning
+    
+    exceptions may be traversed using list_for_each_entry_rcu()
+    outside of an RCU read side critical section BUT under the
+    protection of decgroup_mutex. Hence add the corresponding
+    lockdep expression to fix the following false-positive
+    warning:
+    
+    [    2.304417] =============================
+    [    2.304418] WARNING: suspicious RCU usage
+    [    2.304420] 5.5.4-stable #17 Tainted: G            E
+    [    2.304422] -----------------------------
+    [    2.304424] security/device_cgroup.c:355 RCU-list traversed in non-reader section!!
+    
+    Signed-off-by: Amol Grover <frextrite@gmail.com>
+    Signed-off-by: James Morris <jmorris@namei.org>
+
+diff --git a/security/device_cgroup.c b/security/device_cgroup.c
+index 43ab0ad45c1b..04375df52fc9 100644
+--- a/security/device_cgroup.c
++++ b/security/device_cgroup.c
+@@ -354,7 +354,8 @@ static bool match_exception_partial(struct list_head *exceptions, short type,
+ {
+ 	struct dev_exception_item *ex;
+ 
+-	list_for_each_entry_rcu(ex, exceptions, list) {
++	list_for_each_entry_rcu(ex, exceptions, list,
++				lockdep_is_held(&devcgroup_mutex)) {
+ 		if ((type & DEVCG_DEV_BLOCK) && !(ex->type & DEVCG_DEV_BLOCK))
+ 			continue;
+ 		if ((type & DEVCG_DEV_CHAR) && !(ex->type & DEVCG_DEV_CHAR))
