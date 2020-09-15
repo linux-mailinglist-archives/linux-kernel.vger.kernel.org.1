@@ -2,92 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0637526B2B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0A526B26A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727595AbgIOWv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727438AbgIOPmg (ORCPT
+        id S1727535AbgIOWrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:47:13 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:48738 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727490AbgIOPpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:42:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A512AC06174A;
-        Tue, 15 Sep 2020 08:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WN7EmustK264smc9o/ZcxMc3lY45Oy2Z1WSCl7q0HYI=; b=VfYtjtx1jnJJKJuezTF8Wv7kTN
-        zlCLTChtVQU0w+WsT7rLfh1k2wodLScX6Ty6wgSNfOYM41VlJUAn5E0wT6w3EYNXslThrNba9rThI
-        ZZYlnb/ssedTdlgEOS4zIFENEYo3MPuTBEYzuitMiaUUNlQvI8PPP3i71Jr9swVeUInovnUY1A3+D
-        i9YvQoh3MHM1UQUAFk+8eqrpZNsibhZ1xrESnazNUrJOa5x5raC9ClX8jPIN5jBQoeOsGb2mozEQU
-        UGb6nFqz8/ImJNG8M0JlrYbwuPmWsDtAe9YSvx7PZ4qGn6+rOiJaBJQMTzlI57oPsbsnca2pQWGfN
-        gOlQ+fhg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kID5x-0002Vn-NM; Tue, 15 Sep 2020 15:42:13 +0000
-Date:   Tue, 15 Sep 2020 16:42:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de, almasrymina@google.com,
-        David Rientjes <rientjes@google.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [External] Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap
- pages of hugetlb page
-Message-ID: <20200915154213.GI5449@casper.infradead.org>
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
- <20200915143241.GH5449@casper.infradead.org>
- <CAMZfGtW0PqU6SLihLABA8rU+FuBqm8NksDW=EkLXy1RZfYeDGA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtW0PqU6SLihLABA8rU+FuBqm8NksDW=EkLXy1RZfYeDGA@mail.gmail.com>
+        Tue, 15 Sep 2020 11:45:07 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FFP3ca146660;
+        Tue, 15 Sep 2020 15:44:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=dtTmhZe5n21zVdQpTOTAtBeFkVA42Abq50W1Y+Hydlc=;
+ b=OprU6tm8Pf4j3FOvGuBH51uVcE2dGBc9k0MwnaLrDqBQCLrURlJNlqWziuCTfnbk4Z7F
+ qHn24Yd4VFJjk8SX6+USk320Gh0QowSG/Ybhe/eXGv0E/LjcwhgrsHNulUbwxbh3B028
+ 8YhbegIF1sYOwt9YScVT8Y+ukRsj8mE4XnuHfODlKLRlXSRfJsWt5IzT/BdHjW0Y/BlO
+ 4nlL4AdKVN1as2QX2ae/nXhWTgxLXwDChJwCwWPnCvst5Kvhnje9b3kOHbBfJyIKbQnp
+ cVBi586AVkx4Ij/22PY89PVqyI1pm9PIvwilhHZYY2ITh4S+OxT7ZGIKK87pzf0ZMdaL Rg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 33gp9m5x17-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 15:44:40 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FFJxKU017009;
+        Tue, 15 Sep 2020 15:42:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 33h7wpadr9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 15:42:39 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FFgVH5017794;
+        Tue, 15 Sep 2020 15:42:33 GMT
+Received: from dhcp-10-65-178-159.vpn.oracle.com (/10.65.178.159)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Sep 2020 15:42:30 +0000
+Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v3] certs: Add EFI_CERT_X509_GUID support for dbx entries
+From:   Eric Snowberg <eric.snowberg@oracle.com>
+In-Reply-To: <20200914181227.GF9369@linux.intel.com>
+Date:   Tue, 15 Sep 2020 09:42:27 -0600
+Cc:     dhowells@redhat.com, dwmw2@infradead.org, jmorris@namei.org,
+        serge@hallyn.com, nayna@linux.ibm.com, erichte@linux.ibm.com,
+        mpe@ellerman.id.au, zohar@linux.ibm.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, rdunlap@infradead.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F25F6F0E-7E13-4C9D-A7BA-33CDEF7074F2@oracle.com>
+References: <20200911182230.62266-1-eric.snowberg@oracle.com>
+ <20200914181227.GF9369@linux.intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+X-Mailer: Apple Mail (2.3273)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=3 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009150128
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:28:01PM +0800, Muchun Song wrote:
-> On Tue, Sep 15, 2020 at 10:32 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Tue, Sep 15, 2020 at 08:59:23PM +0800, Muchun Song wrote:
-> > > This patch series will free some vmemmap pages(struct page structures)
-> > > associated with each hugetlbpage when preallocated to save memory.
-> >
-> > It would be lovely to be able to do this.  Unfortunately, it's completely
-> > impossible right now.  Consider, for example, get_user_pages() called
-> > on the fifth page of a hugetlb page.
-> 
-> Can you elaborate on the problem? Thanks so much.
 
-OK, let's say you want to do a 2kB I/O to offset 0x5000 of a 2MB page
-on a 4kB base page system.  Today, that results in a bio_vec containing
-{head+5, 0, 0x800}.  Then we call page_to_phys() on that (head+5) struct
-page to get the physical address of the I/O, and we turn it into a struct
-scatterlist, which similarly has a reference to the page (head+5).
+> On Sep 14, 2020, at 12:12 PM, Jarkko Sakkinen =
+<jarkko.sakkinen@linux.intel.com> wrote:
+>=20
+> On Fri, Sep 11, 2020 at 02:22:30PM -0400, Eric Snowberg wrote:
+>> The Secure Boot Forbidden Signature Database, dbx, contains a list of =
+now
+>> revoked signatures and keys previously approved to boot with UEFI =
+Secure
+>> Boot enabled.  The dbx is capable of containing any number of
+>> EFI_CERT_X509_SHA256_GUID, EFI_CERT_SHA256_GUID, and =
+EFI_CERT_X509_GUID
+>> entries.
+>>=20
+>> Currently when EFI_CERT_X509_GUID are contained in the dbx, the =
+entries are
+>> skipped.
+>>=20
+>> Add support for EFI_CERT_X509_GUID dbx entries. When a =
+EFI_CERT_X509_GUID
+>> is found, it is added as an asymmetrical key to the .blacklist =
+keyring.
+>> Anytime the .platform keyring is used, the keys in the .blacklist =
+keyring
+>> are referenced, if a matching key is found, the key will be rejected.
+>>=20
+>> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+>> ---
+>> v3:
+>> Fixed an issue when CONFIG_PKCS7_MESSAGE_PARSER is not builtin and =
+defined
+>> as a module instead, pointed out by Randy Dunlap
+>>=20
+>> v2:=20
+>> Fixed build issue reported by kernel test robot <lkp@intel.com>
+>> Commit message update (suggested by Jarkko Sakkinen)
+>> ---
+>> certs/blacklist.c                             | 33 =
++++++++++++++++++++
+>> certs/blacklist.h                             | 12 +++++++
+>> certs/system_keyring.c                        |  6 ++++
+>> include/keys/system_keyring.h                 | 11 +++++++
+>> .../platform_certs/keyring_handler.c          | 11 +++++++
+>> 5 files changed, 73 insertions(+)
+>>=20
+>> diff --git a/certs/blacklist.c b/certs/blacklist.c
+>> index 6514f9ebc943..3d1514ba5d47 100644
+>> --- a/certs/blacklist.c
+>> +++ b/certs/blacklist.c
+>> @@ -100,6 +100,39 @@ int mark_hash_blacklisted(const char *hash)
+>> 	return 0;
+>> }
+>>=20
+>> +int mark_key_revocationlisted(const char *data, size_t size)
+>> +{
+>> +	key_ref_t key;
+>> +
+>> +	key =3D key_create_or_update(make_key_ref(blacklist_keyring, =
+true),
+>> +				   "asymmetric",
+>> +				   NULL,
+>> +				   data,
+>> +				   size,
+>> +				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | =
+KEY_USR_VIEW),
+>> +				   KEY_ALLOC_NOT_IN_QUOTA | =
+KEY_ALLOC_BUILT_IN);
+>> +
+>> +	if (IS_ERR(key)) {
+>> +		pr_err("Problem with revocation key (%ld)\n", =
+PTR_ERR(key));
+>> +		return PTR_ERR(key);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int is_key_revocationlisted(struct pkcs7_message *pkcs7)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret =3D validate_trust(pkcs7, blacklist_keyring);
+>> +
+>> +	if (ret =3D=3D 0)
+>> +		return -EKEYREJECTED;
+>> +
+>> +	return -ENOKEY;
+>> +}
+>> +EXPORT_SYMBOL_GPL(is_key_revocationlisted);
+>=20
+> Hmm... ignore my previous comment about this. Export symbol is called
+> only by system keyring code.
+>=20
+> Would be best if the commit message would explicitly reason new =
+exports.
 
-If you're returning page (head+1) from get_user_pages(), all the
-calculations will be wrong and you'll do DMA to the wrong address.
+I don=E2=80=99t see a good reason to keep the export now, I=E2=80=99ll =
+remove it from the
+next version.  Thanks.
 
-What needs to happen is a conversion to get_user_bvecs().  That way we
-can return a bvec which is {head, 0x5000, 0x800} and the calculations
-will work.  So that's going to involve touching a lot of device drivers.
-Christoph has a start on it here:
-http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/gup-bvec
-
-Overlapping with that is a desire to change the biovec so that it
-only stores {phys_addr, length} rather than {page, offset, length}.
-We're also going to have to rework the scatterlist so that it doesn't
-carry a struct page either.
