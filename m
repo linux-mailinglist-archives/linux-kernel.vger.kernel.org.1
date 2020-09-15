@@ -2,187 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AC226B3CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DB926B3CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgIOXK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:10:26 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:33819 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgIOXKK (ORCPT
+        id S1727410AbgIOXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:10:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44422 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727344AbgIOXKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:10:10 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200915231002epoutp026d96d3ab3af2b0b4b9d35a960d8d772c~1F8rKO0C52612826128epoutp02J
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:10:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200915231002epoutp026d96d3ab3af2b0b4b9d35a960d8d772c~1F8rKO0C52612826128epoutp02J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600211402;
-        bh=APPeER/s/8WL5dOxTl9VWQzhh0sGA5A7F8DfUsqgsQ4=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=WMmnthgJDR+aQ8isnh16o3kOPdcL6ETmfYFlZL0HdKxfSqVgIK/eTbH+lVgc0ye2C
-         we6p48Xeoe9b3OBv4KN3DuuCIa8Crkj89R0On3LsRQTsS7xNUEnb5k6BDsdJ1dMYj/
-         ITI2qccEX+5ii1UR3FQn7uAwRCVFv0DFLynFro3w=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p4.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200915231001epcas1p47b083442fbdd481189079a7585c815ef~1F8qtiN752408924089epcas1p4u;
-        Tue, 15 Sep 2020 23:10:01 +0000 (GMT)
-Mime-Version: 1.0
-Subject: RE: [PATCH v11 0/4] scsi: ufs: Add Host Performance Booster Support
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Tue, 15 Sep 2020 19:10:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600211404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uWKYiEAPj6B80xN73l3vGOeVXB3aKVd90dDHnSd2jCM=;
+        b=Vf7/EwvPkXBN22rwy18lDeE/Fg/Xj0I0hnYyFeYYdQtMmBqAGXR46yfAGy4v0CyQKXsVMI
+        FxfMUepmDT9stjUhT4md20YLWyW8d89gdWYR7xnag5+AVaa5rg2nF192h0KgLpp/GTmubH
+        auVdlaW/Yv3eTrPBvtdUu8rxg6T/Jrw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-3dInkon8OGiQEyPC67N2Zg-1; Tue, 15 Sep 2020 19:09:59 -0400
+X-MC-Unique: 3dInkon8OGiQEyPC67N2Zg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC2CB1074648;
+        Tue, 15 Sep 2020 23:09:57 +0000 (UTC)
+Received: from T590 (ovpn-12-18.pek2.redhat.com [10.72.12.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6C10A60E1C;
+        Tue, 15 Sep 2020 23:09:51 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 07:09:41 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-ext4@vger.kernel.org,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <231786897.01599016802080.JavaMail.epsvc@epcpadp1>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01600211401846.JavaMail.epsvc@epcpadp1>
-Date:   Wed, 16 Sep 2020 08:05:17 +0900
-X-CMS-MailID: 20200915230517epcms2p3c32dcc74fe87329ef13df20bd66ad5b6
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200902031713epcms2p664cebf386ba19d3d05895fec89aaf4fe
-References: <231786897.01599016802080.JavaMail.epsvc@epcpadp1>
-        <CGME20200902031713epcms2p664cebf386ba19d3d05895fec89aaf4fe@epcms2p3>
+        linux-block@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
+ into blk_mq_get_driver_tag
+Message-ID: <20200915230941.GA791425@T590>
+References: <20200822143326.GC199705@mit.edu>
+ <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
+ <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
+ <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
+ <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
+ <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
+ <20200904035528.GE558530@mit.edu>
+ <20200915044519.GA38283@mit.edu>
+ <20200915073303.GA754106@T590>
+ <20200915224541.GB38283@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915224541.GB38283@mit.edu>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Tue, Sep 15, 2020 at 06:45:41PM -0400, Theodore Y. Ts'o wrote:
+> On Tue, Sep 15, 2020 at 03:33:03PM +0800, Ming Lei wrote:
+> > Hi Theodore,
+> > 
+> > On Tue, Sep 15, 2020 at 12:45:19AM -0400, Theodore Y. Ts'o wrote:
+> > > On Thu, Sep 03, 2020 at 11:55:28PM -0400, Theodore Y. Ts'o wrote:
+> > > > Worse, right now, -rc1 and -rc2 is causing random crashes in my
+> > > > gce-xfstests framework.  Sometimes it happens before we've run even a
+> > > > single xfstests; sometimes it happens after we have successfully
+> > > > completed all of the tests, and we're doing a shutdown of the VM under
+> > > > test.  Other times it happens in the middle of a test run.  Given that
+> > > > I'm seeing this at -rc1, which is before my late ext4 pull request to
+> > > > Linus, it's probably not an ext4 related bug.  But it also means that
+> > > > I'm partially blind in terms of my kernel testing at the moment.  So I
+> > > > can't even tell Linus that I've run lots of tests and I'm 100%
+> > > > confident your one-line change is 100% safe.
+> > > 
+> > > I was finally able to bisect it down to the commit:
+> > > 
+> > > 37f4a24c2469: blk-mq: centralise related handling into blk_mq_get_driver_tag
+> > 
+> > 37f4a24c2469 has been reverted in:
+> > 
+> > 	4e2f62e566b5 Revert "blk-mq: put driver tag when this request is completed"
+> > 
+> > And later the patch is committed as the following after being fixed:
+> > 
+> > 	568f27006577 blk-mq: centralise related handling into blk_mq_get_driver_tag
+> > 
+> > So can you reproduce the issue by running kernel of commit 568f27006577?
+> 
+> Yes.  And things work fine if I try 4e2f62e566b5.
+> 
+> > If yes, can the issue be fixed by reverting 568f27006577?
+> 
+> The problem is it's a bit tricky to revert 568f27006577, since there
+> is a merge conflict in blk_kick_flush().  I attempted to do the bisect
+> manually here, but it's clearly not right since the kernel is not
+> booting after the revert:
+> 
+> https://github.com/tytso/ext4/commit/1e67516382a33da2c9d483b860ac4ec2ad390870
+> 
+> branch:
+> 
+> https://github.com/tytso/ext4/tree/manual-revert-of-568f27006577
+> 
+> Can you send me a patch which correctly reverts 568f27006577?  I can
+> try it against -rc1 .. -rc4, whichever is most convenient.
 
-I want to know how to improve this patch.
-Could you review this patch?
+Please test the following revert patch against -rc4.
 
-Martin,
+diff --git a/block/blk-flush.c b/block/blk-flush.c
+index 53abb5c73d99..24c208d21793 100644
+--- a/block/blk-flush.c
++++ b/block/blk-flush.c
+@@ -219,6 +219,7 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
+ 	struct request *rq, *n;
+ 	unsigned long flags = 0;
+ 	struct blk_flush_queue *fq = blk_get_flush_queue(q, flush_rq->mq_ctx);
++	struct blk_mq_hw_ctx *hctx;
+ 
+ 	blk_account_io_flush(flush_rq);
+ 
+@@ -234,11 +235,13 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
+ 	if (fq->rq_status != BLK_STS_OK)
+ 		error = fq->rq_status;
+ 
++	hctx = flush_rq->mq_hctx;
+ 	if (!q->elevator) {
+-		flush_rq->tag = BLK_MQ_NO_TAG;
++		blk_mq_tag_set_rq(hctx, flush_rq->tag, fq->orig_rq);
++		flush_rq->tag = -1;
+ 	} else {
+ 		blk_mq_put_driver_tag(flush_rq);
+-		flush_rq->internal_tag = BLK_MQ_NO_TAG;
++		flush_rq->internal_tag = -1;
+ 	}
+ 
+ 	running = &fq->flush_queue[fq->flush_running_idx];
+@@ -309,16 +312,12 @@ static void blk_kick_flush(struct request_queue *q, struct blk_flush_queue *fq,
+ 	flush_rq->mq_hctx = first_rq->mq_hctx;
+ 
+ 	if (!q->elevator) {
++		fq->orig_rq = first_rq;
+ 		flush_rq->tag = first_rq->tag;
+-
+-		/*
+-		 * We borrow data request's driver tag, so have to mark
+-		 * this flush request as INFLIGHT for avoiding double
+-		 * account of this driver tag
+-		 */
+-		flush_rq->rq_flags |= RQF_MQ_INFLIGHT;
+-	} else
++		blk_mq_tag_set_rq(flush_rq->mq_hctx, first_rq->tag, flush_rq);
++	} else {
+ 		flush_rq->internal_tag = first_rq->internal_tag;
++	}
+ 
+ 	flush_rq->cmd_flags = REQ_OP_FLUSH | REQ_PREFLUSH;
+ 	flush_rq->cmd_flags |= (flags & REQ_DRV) | (flags & REQ_FAILFAST_MASK);
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index b1acac518c4e..3945c7f5b944 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -101,6 +101,18 @@ static inline bool hctx_may_queue(struct blk_mq_hw_ctx *hctx,
+ 	return atomic_read(&hctx->nr_active) < depth;
+ }
+ 
++/*
++ * This helper should only be used for flush request to share tag
++ * with the request cloned from, and both the two requests can't be
++ * in flight at the same time. The caller has to make sure the tag
++ * can't be freed.
++ */
++static inline void blk_mq_tag_set_rq(struct blk_mq_hw_ctx *hctx,
++		unsigned int tag, struct request *rq)
++{
++	hctx->tags->rqs[tag] = rq;
++}
++
+ static inline bool blk_mq_tag_is_reserved(struct blk_mq_tags *tags,
+ 					  unsigned int tag)
+ {
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index b3d2785eefe9..feb3d5c0a1c6 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -277,20 +277,26 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
+ {
+ 	struct blk_mq_tags *tags = blk_mq_tags_from_data(data);
+ 	struct request *rq = tags->static_rqs[tag];
++	req_flags_t rq_flags = 0;
+ 
+ 	if (data->q->elevator) {
+ 		rq->tag = BLK_MQ_NO_TAG;
+ 		rq->internal_tag = tag;
+ 	} else {
++		if (data->hctx->flags & BLK_MQ_F_TAG_SHARED) {
++			rq_flags = RQF_MQ_INFLIGHT;
++			atomic_inc(&data->hctx->nr_active);
++		}
+ 		rq->tag = tag;
+ 		rq->internal_tag = BLK_MQ_NO_TAG;
++		data->hctx->tags->rqs[rq->tag] = rq;
+ 	}
+ 
+ 	/* csd/requeue_work/fifo_time is initialized before use */
+ 	rq->q = data->q;
+ 	rq->mq_ctx = data->ctx;
+ 	rq->mq_hctx = data->hctx;
+-	rq->rq_flags = 0;
++	rq->rq_flags = rq_flags;
+ 	rq->cmd_flags = data->cmd_flags;
+ 	if (data->flags & BLK_MQ_REQ_PREEMPT)
+ 		rq->rq_flags |= RQF_PREEMPT;
+@@ -1098,10 +1104,9 @@ static bool __blk_mq_get_driver_tag(struct request *rq)
+ {
+ 	struct sbitmap_queue *bt = &rq->mq_hctx->tags->bitmap_tags;
+ 	unsigned int tag_offset = rq->mq_hctx->tags->nr_reserved_tags;
++	bool shared = blk_mq_tag_busy(rq->mq_hctx);
+ 	int tag;
+ 
+-	blk_mq_tag_busy(rq->mq_hctx);
+-
+ 	if (blk_mq_tag_is_reserved(rq->mq_hctx->sched_tags, rq->internal_tag)) {
+ 		bt = &rq->mq_hctx->tags->breserved_tags;
+ 		tag_offset = 0;
+@@ -1114,23 +1119,19 @@ static bool __blk_mq_get_driver_tag(struct request *rq)
+ 		return false;
+ 
+ 	rq->tag = tag + tag_offset;
++	if (shared) {
++		rq->rq_flags |= RQF_MQ_INFLIGHT;
++		atomic_inc(&rq->mq_hctx->nr_active);
++	}
++	rq->mq_hctx->tags->rqs[rq->tag] = rq;
+ 	return true;
+ }
+ 
+ static bool blk_mq_get_driver_tag(struct request *rq)
+ {
+-	struct blk_mq_hw_ctx *hctx = rq->mq_hctx;
+-
+-	if (rq->tag == BLK_MQ_NO_TAG && !__blk_mq_get_driver_tag(rq))
+-		return false;
+-
+-	if ((hctx->flags & BLK_MQ_F_TAG_SHARED) &&
+-			!(rq->rq_flags & RQF_MQ_INFLIGHT)) {
+-		rq->rq_flags |= RQF_MQ_INFLIGHT;
+-		atomic_inc(&hctx->nr_active);
+-	}
+-	hctx->tags->rqs[rq->tag] = rq;
+-	return true;
++	if (rq->tag != BLK_MQ_NO_TAG)
++		return true;
++	return __blk_mq_get_driver_tag(rq);
+ }
+ 
+ static int blk_mq_dispatch_wake(wait_queue_entry_t *wait, unsigned mode,
+diff --git a/block/blk.h b/block/blk.h
+index 49e2928a1632..5ed35a02bc7f 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -25,6 +25,11 @@ struct blk_flush_queue {
+ 	struct list_head	flush_data_in_flight;
+ 	struct request		*flush_rq;
+ 
++	/*
++	 * flush_rq shares tag with this rq, both can't be active
++	 * at the same time
++	 */
++	struct request		*orig_rq;
+ 	struct lock_class_key	key;
+ 	spinlock_t		mq_flush_lock;
+ };
 
-Can we move forward with this one?
 
-Thanks,
-Daejun
-
-> Changelog:
-> 
-> v10 -> v11
-> Add a newline at end the last line on Kconfig file.
-> 
-> v9 -> v10
-> 1. Fix 64-bit division error
-> 2. Fix problems commentted in Bart's review.
-> 
-> v8 -> v9
-> 1. Change sysfs initialization.
-> 2. Change reading descriptor during HPB initialization
-> 3. Fix problems commentted in Bart's review.
-> 4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
-> 
-> v7 -> v8
-> Remove wrongly added tags.
-> 
-> v6 -> v7
-> 1. Remove UFS feature layer.
-> 2. Cleanup for sparse error.
-> 
-> v5 -> v6
-> Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
-> 
-> v4 -> v5
-> Delete unused macro define.
-> 
-> v3 -> v4
-> 1. Cleanup.
-> 
-> v2 -> v3
-> 1. Add checking input module parameter value.
-> 2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
-> 3. Cleanup for unused variables and label.
-> 
-> v1 -> v2
-> 1. Change the full boilerplate text to SPDX style.
-> 2. Adopt dynamic allocation for sub-region data structure.
-> 3. Cleanup.
-> 
-> NAND flash memory-based storage devices use Flash Translation Layer (FTL)
-> to translate logical addresses of I/O requests to corresponding flash
-> memory addresses. Mobile storage devices typically have RAM with
-> constrained size, thus lack in memory to keep the whole mapping table.
-> Therefore, mapping tables are partially retrieved from NAND flash on
-> demand, causing random-read performance degradation.
-> 
-> To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
-> (Host Performance Booster) which uses host system memory as a cache for the
-> FTL mapping table. By using HPB, FTL data can be read from host memory
-> faster than from NAND flash memory. 
-> 
-> The current version only supports the DCM (device control mode).
-> This patch consists of 3 parts to support HPB feature.
-> 
-> 1) HPB probe and initialization process
-> 2) READ -> HPB READ using cached map information
-> 3) L2P (logical to physical) map management
-> 
-> In the HPB probe and init process, the device information of the UFS is
-> queried. After checking supported features, the data structure for the HPB
-> is initialized according to the device information.
-> 
-> A read I/O in the active sub-region where the map is cached is changed to
-> HPB READ by the HPB.
-> 
-> The HPB manages the L2P map using information received from the
-> device. For active sub-region, the HPB caches through ufshpb_map
-> request. For the in-active region, the HPB discards the L2P map.
-> When a write I/O occurs in an active sub-region area, associated dirty
-> bitmap checked as dirty for preventing stale read.
-> 
-> HPB is shown to have a performance improvement of 58 - 67% for random read
-> workload. [1]
-> 
-> This series patches are based on the 5.9/scsi-queue branch.
-> 
-> [1]:
-> https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
-> 
-> Daejun park (4):
->  scsi: ufs: Add HPB feature related parameters
->  scsi: ufs: Introduce HPB feature
->  scsi: ufs: L2P map management for HPB read
->  scsi: ufs: Prepare HPB read for cached sub-region
->  
->  drivers/scsi/ufs/Kconfig  |   10 +
->  drivers/scsi/ufs/Makefile |    1 +
->  drivers/scsi/ufs/ufs.h    |   47 +
->  drivers/scsi/ufs/ufshcd.c |   60 ++
->  drivers/scsi/ufs/ufshcd.h |   23 +-
->  drivers/scsi/ufs/ufshpb.c | 1845 ++++++++++++++++++++++++++++++++++++++++
->  drivers/scsi/ufs/ufshpb.h |  229 +++++
->  7 files changed, 2214 insertions(+), 1 deletion(-)
->  created mode 100644 drivers/scsi/ufs/ufshpb.c
->  created mode 100644 drivers/scsi/ufs/ufshpb.h
+thanks, 
+Ming
 
