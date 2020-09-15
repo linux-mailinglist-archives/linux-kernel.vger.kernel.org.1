@@ -2,60 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991A526A07E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26A626A0AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIOIRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:17:09 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49168 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726198AbgIOIQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:16:05 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 294B0DFCCA09DDF35E08;
-        Tue, 15 Sep 2020 16:15:58 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 15 Sep 2020
- 16:15:48 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>
-CC:     <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] perf metric: Remove duplicate include
-Date:   Tue, 15 Sep 2020 16:15:41 +0800
-Message-ID: <20200915081541.41004-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1726416AbgIOIX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726320AbgIOIQ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:16:29 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B9AC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:16:04 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id k15so1464219pfc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:16:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CCyQLZIomtOO1i6n72+em9VVg13AQuPSjMf53LDYaqM=;
+        b=auIoq9oCUFxSo4pwN0sve/6Y70uneeWypGCBG5hiKQEvrs5xsnPny5hFer4eYtvobB
+         i1e8/4/NUocwRqRvZU4d3158MMYfZg9uMyBexYuihdiruBMYNWdXKwXZmAO2N378J80N
+         eqkHCtMx81ILLcpD+YrJBxPJuBdMEMfiKoVJ9PCflvPIRPoKR3aLmjbC9JpchjGEgL+2
+         OAAG2s6uGACAX/l/xxBhnVkglCSTQNyHNAdoPoaq3u4mqUNcVpJM4OnR+IYbo/Jgnt2E
+         jYrW4IZZm931VWbRzDf+K2XYOH9XodrcyeKISXf5fabViRfS4vXU4n23bTlmOwPIyfCG
+         FM/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CCyQLZIomtOO1i6n72+em9VVg13AQuPSjMf53LDYaqM=;
+        b=Iayt/Avg56p55j+HFcEUDFp9VJ3ds1Kx3/AiawEnvHd8PuL6Uvs8HC2QKRMcen6kOT
+         u9oXqoHklM0v+Q1RJ/h62UqZ/ct2aUQ/T3EpWfQlou64KvkSqP0bzcw5zuNV2FIGuwEX
+         73H6GJtepQJ5HZ2JDx5caiPitv8N8GWcDzQmos2Xl8ehkRZ+XC7O0Ieh3nq5B965VZ6S
+         H/3qfFvMRnKRCfSaNqhBEGra/oPZgJSPP+vHd9T0J3y7bniKZF77Gu5G5gvWgj/cwPXs
+         og5T3HvwMlUYt43F/851EUu1nZRdWqw7WnaCwAQ99Djxb9EdsrLkD31pkP0fzeJ2+37L
+         jpow==
+X-Gm-Message-State: AOAM531+fjv2WeDLHgB6rBreMm0jYDgbFYaH9b/iCLXO55CJMTzsmXxa
+        5DcIfjeeRql6m0vItEXvPXYhzQ==
+X-Google-Smtp-Source: ABdhPJz/sjjpFc3hiXj9N7JffKpq8GhR5gx1bxMX6eM7XMcT5j1DHbJd+okuEH1Z85Q1f72+EGOhYg==
+X-Received: by 2002:aa7:8249:0:b029:142:2501:39dd with SMTP id e9-20020aa782490000b0290142250139ddmr827130pfn.44.1600157764267;
+        Tue, 15 Sep 2020 01:16:04 -0700 (PDT)
+Received: from localhost.bytedance.net ([103.136.221.71])
+        by smtp.gmail.com with ESMTPSA id x19sm10539429pge.22.2020.09.15.01.16.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Sep 2020 01:16:03 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     axboe@kernel.dk, viro@zeniv.linux.org.uk
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH 0/3] io_uring: Fix async workqueue is not canceled on some corner case
+Date:   Tue, 15 Sep 2020 16:15:48 +0800
+Message-Id: <20200915081551.12140-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicate header which is included twice.
+We should make sure that async workqueue is canceled on exit, but on
+some corner case, we found that the async workqueue is not canceled
+on exit in the linux-5.4. So we started an in-depth investigation.
+Fortunately, we finally found the problem. The commit:
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- tools/perf/tests/parse-metric.c | 2 --
- 1 file changed, 2 deletions(-)
+  1c4404efcf2c ("io_uring: make sure async workqueue is canceled on exit")
 
-diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-index 23db8acc492d..b344decfb91b 100644
---- a/tools/perf/tests/parse-metric.c
-+++ b/tools/perf/tests/parse-metric.c
-@@ -11,8 +11,6 @@
- #include "debug.h"
- #include "expr.h"
- #include "stat.h"
--#include <perf/cpumap.h>
--#include <perf/evlist.h>
- 
- static struct pmu_event pme_test[] = {
- {
+did not completely solve this problem. This patch series to solve this
+problem completely. And there's no upstream variant of this commit, so
+this patch series is just fix the linux-5.4.y stable branch.
+
+Muchun Song (2):
+  io_uring: Fix missing smp_mb() in io_cancel_async_work()
+  io_uring: Fix remove irrelevant req from the task_list
+
+Yinyin Zhu (1):
+  io_uring: Fix resource leaking when kill the process
+
+ fs/io_uring.c | 45 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 29 insertions(+), 16 deletions(-)
+
 -- 
-2.17.1
-
+2.11.0
 
