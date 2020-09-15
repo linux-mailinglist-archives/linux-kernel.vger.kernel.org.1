@@ -2,100 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397F926AE11
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FA526AE09
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbgIOTuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727830AbgIORKu (ORCPT
+        id S1727707AbgIOTto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:49:44 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:34424 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727831AbgIORLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:10:50 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E019C0612F2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:00:32 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id r78so990025vke.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AD44iUMYidPiEvY0GREEGObw8s+cZqGFqFLZt/WuWbY=;
-        b=HXXdpEQu7Pg7iPzOEaa08AqlWK3FNqlZevxpAIv60vMGwoWlBshZDNmw3Sw33p+IJJ
-         O5dG1xbSbC+g24gEX/HVlccbvpQBGBXG18HZA7mwmby4fM1dQJccbJvUHnfV8DIv6qA4
-         qk36l5nqIP8fepYx0Nh2UYAGnOPjOQ8AYkQzw9kp2LZj2UOQWOunLTzXyMeT2CY3CGTT
-         HkrpIOrWybwprMRsiBIaTH0f1nIUqMj/lGT4KtaapT1FRAxIRME1VX0rJCLObHBtHzYR
-         mkO/hS0B2EEqdHG7sLsRQpNs1g9GuSId5vVjiInO5ySX9awBX2fZgdTYY6gYKw4ye8pe
-         c3cg==
+        Tue, 15 Sep 2020 13:11:10 -0400
+Received: by mail-il1-f194.google.com with SMTP id a8so3743929ilk.1;
+        Tue, 15 Sep 2020 10:08:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AD44iUMYidPiEvY0GREEGObw8s+cZqGFqFLZt/WuWbY=;
-        b=qn2Ah3asndoIHSv4v1JNnta67P7LWfBr8cyX5NkvgUcHKfxe3sZJ0JGrXOygJTjlVy
-         I7Dsyra8X/HmOtQKF7Ufjhgddws6d7np2NPSpD/El5/AfWLgOqarB664GWn+CSdo+7UO
-         bDU7GrGXGTAFqASTM+z8tZLoNGu4ZLz0lu1CD1B2vLW3l1DhOtey9Ct/+IJG/1DpobJ9
-         6MV/Lz6AtK0nNvb2dNNBTQtlXeYCWBLvLywSObbxcmy3ztD6ll94/YcEQBa0LDkGLmeC
-         qHXAsdANhmHxveATOHaT3MPXHAy7/HzRaRNqYPfDB2OghcQLaVQu9TPjAZIyLr0RJY3q
-         fhAA==
-X-Gm-Message-State: AOAM532MO6qiUyjOqkaaqfkYb4c5VdvTBHh0GCPOZ9eclZ+xnqdaQE/r
-        4wdh5K4vnp+qUA5AaI0Ay61NtkrGuuFCq9xAieVhzw==
-X-Google-Smtp-Source: ABdhPJxyiyh7xsUQINRaFa+K9y6YtLwuY9B97luN6UU9cNTRgWjfWfKwWmuV2bx1S55GGixSJn7HoJPKCiN/Z0lSV+A=
-X-Received: by 2002:a1f:964c:: with SMTP id y73mr11317771vkd.8.1600189229548;
- Tue, 15 Sep 2020 10:00:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BFviqgFIWRut0eU0K6H+y+f/pPgiXCv3xoSL8tn8HHs=;
+        b=kwkMWCE4+Q+I2TkUrTJmXLoygnJ+0BmJqr0nKQr0SHWQx35SvVNwA6BmkzqyhFFC5I
+         36GZGhbBSfCsm0rSIpa6ZErrsBU4o220BGDoHqUeiYUBLCFt4Or7wigdf1bKkP96gEUG
+         r3V7H0rOSK8TAMD288FQHniqcDUOyMUu0Q1j5jTDV8R8Rvjv+9/3KHp0Wb8l+f906MNc
+         rmKq8BXm6edBgbu1ENW0sZX3MNsIM890WSHKzfxQkjvWkkf4cIy6kSOjCZB//ubdGsVK
+         A2fLhkGRGkMAw7uQQmNu8Zb5ic4MpEma3Eb0eyqlV8yhdp0pGjZ8031GE9XDR5lbIvH1
+         kUcg==
+X-Gm-Message-State: AOAM530X3f6IiPDb73BajVVCykv+LoeuGy9P1eQTiXWpROjEZ+aq7XEY
+        YVfbeVx0jwmOHUAm4b77eFVpb4QRKlkm7Eo=
+X-Google-Smtp-Source: ABdhPJwlOK3415SZU7crEdleYLmA5Xut63SzqKMQt4DXj3NOqdQUDv7Z1Gs9HZKBmjrRx8Wu+CD9eA==
+X-Received: by 2002:a5d:840a:: with SMTP id i10mr15791731ion.4.1600189202340;
+        Tue, 15 Sep 2020 10:00:02 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id r5sm9320455ilc.2.2020.09.15.09.59.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 10:00:01 -0700 (PDT)
+Received: (nullmailer pid 2122994 invoked by uid 1000);
+        Tue, 15 Sep 2020 16:59:58 -0000
+Date:   Tue, 15 Sep 2020 10:59:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Subject: Re: [PATCH v4 2/5] ASoC: dt-bindings: Add dt binding for lpass hdmi
+Message-ID: <20200915165958.GA2118432@bogus>
+References: <1599587037-6742-1-git-send-email-srivasam@codeaurora.org>
+ <010101746ed1d41a-5890a534-9c2c-4203-bce5-46075d7827da-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-References: <20200901025927.3596190-1-badhri@google.com> <20200915133347.GK1139641@kuha.fi.intel.com>
-In-Reply-To: <20200915133347.GK1139641@kuha.fi.intel.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Tue, 15 Sep 2020 09:59:53 -0700
-Message-ID: <CAPTae5LbTO0MH6VasNXzHTR1UkiuR4Qw52V3nVus-7-e6UB4Tw@mail.gmail.com>
-Subject: Re: [PATCH v6 00/14] TCPM support for FRS and AutoDischarge Disconnect
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <010101746ed1d41a-5890a534-9c2c-4203-bce5-46075d7827da-000000@us-west-2.amazonses.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 6:33 AM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Mon, Aug 31, 2020 at 07:59:13PM -0700, Badhri Jagan Sridharan wrote:
-> > First of all apologies for mixing up the patch version as noted by
-> > Heikki and Greg. All of them were v1's but since I was manually adding
-> > the version numbers I mixed them up. Using the --reroll-count option
-> > now. Updating the patch version to v6 (highest version number in the
-> > previous patchset + 1) to avoid confusion.
-> >
-> > I also rebased on to off of the recent usb-next tip:
-> > 5fedf0d295d3 (origin/usb-testing, origin/usb-next) Merge 5.9-rc3 into usb-next
-> > Which had the following changes causing merge conflict:
-> > 3ed8e1c2ac99 usb: typec: tcpm: Migrate workqueue to RT priority for processing events
-> > 6bbe2a90a0bb usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
-> >
-> > Addressed comments from Heikki and Randy which have described in the
-> > individual commit's change history as well.
->
-> I'll try to study the AutoDischarge a bit before reviewing the last
-> patches. They all appeared to be only about AutoDischarge. Sorry, I
-> didn't have time for that yet. If Guenter is fine with those, then
-> feel free to add my ACK to those patches. But Guenter really should
-> review these in any case. Hope he has time.
+On Tue, Sep 08, 2020 at 05:44:39PM +0000, Srinivasa Rao Mandadapu wrote:
+> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+> 
+> Adds bindings for lpass hdmi interface
+> which can support audio path over dp.
+> 
+> Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
+> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 51 ++++++++++++++++++++--
+>  1 file changed, 47 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> index 09c9bd2..7c2ac0c 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> @@ -22,6 +22,7 @@ properties:
+>        - qcom,lpass-cpu
+>        - qcom,apq8016-lpass-cpu
+>        - qcom,sc7180-lpass-cpu
+> +      - qcom,sc7180-lpass-hdmi
+>  
+>    reg:
+>      maxItems: 1
+> @@ -60,10 +61,12 @@ properties:
+>      const: 0
+>  
+>  patternProperties:
+> -  "(^mi2s-[0-9a-f]$|mi2s)":
+> +  "^dai@[0-9a-f]$":
+>      type: object
+> -    description: Required properties for each DAI
+> -
+> +    description: |
+> +      LPASS CPU dai node for each I2S device. Bindings of each node
+> +      depends on the specific driver providing the functionality and
+> +      properties.
+>      properties:
+>        reg:
+>          maxItems: 1
+> @@ -145,6 +148,22 @@ allOf:
+>          - iommus
+>          - power-domains
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,sc7180-lpass-hdmi
+> +    then:
+> +      properties:
+> +        clock-names:
+> +          items:
+> +            - const: pcnoc-sway-clk
+> +            - const: audio-core
+> +            - const: pcnoc-mport-clk
+> +      required:
+> +        - iommus
+> +        - power-domains
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/sound/sc7180-lpass.h>
+> @@ -178,12 +197,36 @@ examples:
+>              #address-cells = <1>;
+>              #size-cells = <0>;
+>              /* Optional to set different MI2S SD lines */
+> -            mi2s-primary@0 {
+> +            dai@mi2s-primary {
 
-Really appreciate you spending time on reviewing the patches. So
-thanks for doing that.
-I quickly went through the comments you have given. Will respond today.
+The unit address should be a number.
 
-Thanks & Regards,
-Badhri
+As this is not failing checks, then you are missing an 
+'additionalProperties: false'.
 
->
-> Br,
->
-> --
-> heikki
+>                  reg = <MI2S_PRIMARY>;
+>                  qcom,playback-sd-lines = <1>;
+>                  qcom,capture-sd-lines = <0>;
+>              };
+>          };
+> +
+> +        lpassh@62d87000 {
+> +            compatible = "qcom,sc7180-lpass-hdmi";
+> +
+> +            reg = <0 0x62d87000 0 0x68000>;
+> +
+> +            iommus = <&apps_smmu 0x1032 0>;
+> +
+> +            power-domains = <&lpass_hm 0>;
+> +
+> +            clocks = <&gcc 131>,
+> +                 <&lpasscc 6>,
+> +                 <&lpasscc 10>;
+> +
+> +            clock-names = "pcnoc-sway-clk", "audio-core",
+> +                          "pcnoc-mport-clk";
+> +
+> +            #sound-dai-cells = <1>;
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            interrupts = <0 268 1>;
+> +        };
+>      };
+>  
+>  ...
+> -- 
+> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
