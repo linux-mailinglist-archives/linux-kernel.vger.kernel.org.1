@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD6926B20D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2148026B20A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727736AbgIOWkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:40:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56564 "EHLO mail.kernel.org"
+        id S1727714AbgIOWkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:40:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727478AbgIOQKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727498AbgIOQKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 12:10:42 -0400
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 960C221D24;
-        Tue, 15 Sep 2020 15:59:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C82522074B;
+        Tue, 15 Sep 2020 16:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600185581;
-        bh=XMkMtk/gI2HuHmv1cq2xXt9eQOED93TjXkjDWF8nQGE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DDgFKprJDshmoolsY9k8iSp+epYJOJfxdUBnQKt14knLRveGNCNQhwA0zdxNeHGvU
-         3Js9zOsm/ZNzTc14ckVE+pVN4u/URgxtjIoz4fyLbng+qMH/7KbKfP0JVxlxCoGXzZ
-         4tXVnHJGIYTGx6c5ngIPBg/uRrICpQjgKcJG98YQ=
-Received: by mail-ej1-f49.google.com with SMTP id z22so5818826ejl.7;
-        Tue, 15 Sep 2020 08:59:41 -0700 (PDT)
-X-Gm-Message-State: AOAM532uZmMLtgaUBDheKOuH2yTc4cBBXOjr2IUlyvWKmzA8UQIyCBvJ
-        EfU2TDKZByhCJ+EKPgPXXD/fbSnwHX/beaDcFq0=
-X-Google-Smtp-Source: ABdhPJwAuDpp+EHX45RgbdNu7uzZmhVTI4s30E6927Vq0pQ/LgKg1zmNpv30kRLFOr25UoY3E6mkjiYpSvqoLHmgkVY=
-X-Received: by 2002:a17:906:af53:: with SMTP id ly19mr20213441ejb.503.1600185580123;
- Tue, 15 Sep 2020 08:59:40 -0700 (PDT)
+        s=default; t=1600185615;
+        bh=HcglYP6i3X/ou3K6aehXVB4kBv5QYxbOuM6aUd5L0tk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pQX3ujv7wFa/f3nVynTuYqqaEGWbi5SRTW5Q6IxlmLmQERlv2kVDYsZG0RqjcRwac
+         CDiJKaQRcDC21gYI7x5rlK6pwVXEq72zpOUdxsraJykwYjg9pIb9DxLaf8nFMddW51
+         r977PG7SW0gEVpEHw8KsdASYmX+YWpSjyAj7c+Zw=
+Date:   Tue, 15 Sep 2020 09:00:13 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Moshe Shemesh <moshe@nvidia.com>
+Cc:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
+ to devlink reload command
+Message-ID: <20200915090013.141163e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <777fd1b8-1262-160e-a711-31e5f6e2c37c@nvidia.com>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+        <1600063682-17313-2-git-send-email-moshe@mellanox.com>
+        <20200914143306.4ab0f4c1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <777fd1b8-1262-160e-a711-31e5f6e2c37c@nvidia.com>
 MIME-Version: 1.0
-References: <1600054147-29997-1-git-send-email-Anson.Huang@nxp.com> <1600054147-29997-4-git-send-email-Anson.Huang@nxp.com>
-In-Reply-To: <1600054147-29997-4-git-send-email-Anson.Huang@nxp.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 15 Sep 2020 17:59:28 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdrFUXabpduVEqwSFv63_ZFJ4D1ecb4YhCe=ESSd438CA@mail.gmail.com>
-Message-ID: <CAJKOXPdrFUXabpduVEqwSFv63_ZFJ4D1ecb4YhCe=ESSd438CA@mail.gmail.com>
-Subject: Re: [PATCH V2 RESEND 4/4] ARM: multi_v7_defconfig: Build in
- CONFIG_GPIO_MXC by default
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, catalin.marinas@arm.com,
-        will@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, oleksandr.suvorov@toradex.com,
-        peng.fan@nxp.com, andreas@kemnade.info, hverkuil-cisco@xs4all.nl,
-        olof@lixom.net, geert+renesas@glider.be,
-        prabhakar.mahadev-lad.rj@bp.renesas.com, aisheng.dong@nxp.com,
-        lkundrak@v3.sk, joel@jms.id.au, bjorn.andersson@linaro.org,
-        leoyang.li@nxp.com, vkoul@kernel.org, michael@walle.cc,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, Linux-imx@nxp.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 at 05:36, Anson Huang <Anson.Huang@nxp.com> wrote:
->
-> i.MX GPIO is NOT default enabled now, so select CONFIG_GPIO_MXC
-> as built-in manually.
->
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+On Tue, 15 Sep 2020 15:56:48 +0300 Moshe Shemesh wrote:
+> On 9/15/2020 12:33 AM, Jakub Kicinski wrote:
+> >> +     if (err)
+> >> +             return err;
+> >> +
+> >> +     WARN_ON(!actions_performed);
+> >> +     msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+> >> +     if (!msg)
+> >> +             return -ENOMEM;
+> >> +
+> >> +     err = devlink_nl_reload_actions_performed_fill(msg, devlink, actions_performed,
+> >> +                                                    DEVLINK_CMD_RELOAD, info->snd_portid,
+> >> +                                                    info->snd_seq, 0);
+> >> +     if (err) {
+> >> +             nlmsg_free(msg);
+> >> +             return err;
+> >> +     }
+> >> +
+> >> +     return genlmsg_reply(msg, info);  
+> > I think generating the reply may break existing users. Only generate
+> > the reply if request contained DEVLINK_ATTR_RELOAD_ACTION (or any other
+> > new attribute which existing users can't pass).  
+> 
+> OK, I can do that. But I update stats and generate devlink notification 
+> anyway, that should fine, right ?
 
+Yes, that should be fine.
 
-The same as on arm64 defconfig - please explain in commit msg why it
-should be enabled.
-
-Best regards,
-Krzysztof
