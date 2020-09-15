@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4241E26B78F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C2226B6A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbgIPAZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
+        id S1727233AbgIPAIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:08:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726341AbgIOORJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:17:09 -0400
+        id S1726967AbgIOO2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:28:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BFCD21D41;
-        Tue, 15 Sep 2020 14:15:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D6B9224DF;
+        Tue, 15 Sep 2020 14:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179315;
-        bh=hy4Cg3Bcba56r9+MqDFiwn1/6C4+ITl2oHpjXOmdoNs=;
+        s=default; t=1600179628;
+        bh=/giQpIgyqB4TuFWd/Ydrev5mAYr4SjoNTNzKmArCby8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Nygd3K4OZySLYiN6FPb3hUaHNiOzaaljukDb/t9hDyYCSQsaus9javX++RVLBNoH
-         TrJ7CIsHSbiYVaeHxb7cHikvlroSvIwSloaFEUG83XAagAcLoRVGugR2BqKWJD5UUJ
-         1C+jK3bbTUADCU0/bonpAFC+SNWCLef+bfG855WM=
+        b=dqe+V587x8X4jupv4nx4N7pAs7LIbPAWjUikD7rBSLVp/xPpRSJI/fcQ67wPQuuyk
+         TTAExMLDT5yOcdV01FwoGQr2cYdtSpO2oxqAd122AKkYUnLuHlLbuQfQ9Yl5RjpraA
+         4Pm8qK1RoSoF2Wg0DOaf7yvZxn5yXxcOtwE86gsg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 12/78] mmc: sdhci-msm: Add retries when all tuning phases are found valid
+Subject: [PATCH 5.4 055/132] nvme-tcp: fix timeout handler
 Date:   Tue, 15 Sep 2020 16:12:37 +0200
-Message-Id: <20200915140634.150306549@linuxfoundation.org>
+Message-Id: <20200915140646.868260169@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
+References: <20200915140644.037604909@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,75 +43,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit 9d5dcefb7b114d610aeb2371f6a6f119af316e43 ]
+[ Upstream commit 236187c4ed195161dfa4237c7beffbba0c5ae45b ]
 
-As the comments in this patch say, if we tune and find all phases are
-valid it's _almost_ as bad as no phases being found valid.  Probably
-all phases are not really reliable but we didn't detect where the
-unreliable place is.  That means we'll essentially be guessing and
-hoping we get a good phase.
+When a request times out in a LIVE state, we simply trigger error
+recovery and let the error recovery handle the request cancellation,
+however when a request times out in a non LIVE state, we make sure to
+complete it immediately as it might block controller setup or teardown
+and prevent forward progress.
 
-This is not just a problem in theory.  It was causing real problems on
-a real board.  On that board, most often phase 10 is found as the only
-invalid phase, though sometimes 10 and 11 are invalid and sometimes
-just 11.  Some percentage of the time, however, all phases are found
-to be valid.  When this happens, the current logic will decide to use
-phase 11.  Since phase 11 is sometimes found to be invalid, this is a
-bad choice.  Sure enough, when phase 11 is picked we often get mmc
-errors later in boot.
+However tearing down the entire set of I/O and admin queues causes
+freeze/unfreeze imbalance (q->mq_freeze_depth) because and is really
+an overkill to what we actually need, which is to just fence controller
+teardown that may be running, stop the queue, and cancel the request if
+it is not already completed.
 
-I have seen cases where all phases were found to be valid 3 times in a
-row, so increase the retry count to 10 just to be extra sure.
+Now that we have the controller teardown_lock, we can safely serialize
+request cancellation. This addresses a hang caused by calling extra
+queue freeze on controller namespaces, causing unfreeze to not complete
+correctly.
 
-Fixes: 415b5a75da43 ("mmc: sdhci-msm: Add platform_execute_tuning implementation")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/20200827075809.1.If179abf5ecb67c963494db79c3bc4247d987419b@changeid
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-msm.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/nvme/host/tcp.c | 56 ++++++++++++++++++++++++++---------------
+ 1 file changed, 36 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index 643fd1a1b88be..4970cd40813b2 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -1060,7 +1060,7 @@ static void sdhci_msm_set_cdr(struct sdhci_host *host, bool enable)
- static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
- {
- 	struct sdhci_host *host = mmc_priv(mmc);
--	int tuning_seq_cnt = 3;
-+	int tuning_seq_cnt = 10;
- 	u8 phase, tuned_phases[16], tuned_phase_cnt = 0;
- 	int rc;
- 	struct mmc_ios ios = host->mmc->ios;
-@@ -1124,6 +1124,22 @@ retry:
- 	} while (++phase < ARRAY_SIZE(tuned_phases));
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index a94c80727de1e..98a045429293e 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -421,6 +421,7 @@ static void nvme_tcp_error_recovery(struct nvme_ctrl *ctrl)
+ 	if (!nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING))
+ 		return;
  
- 	if (tuned_phase_cnt) {
-+		if (tuned_phase_cnt == ARRAY_SIZE(tuned_phases)) {
-+			/*
-+			 * All phases valid is _almost_ as bad as no phases
-+			 * valid.  Probably all phases are not really reliable
-+			 * but we didn't detect where the unreliable place is.
-+			 * That means we'll essentially be guessing and hoping
-+			 * we get a good phase.  Better to try a few times.
-+			 */
-+			dev_dbg(mmc_dev(mmc), "%s: All phases valid; try again\n",
-+				mmc_hostname(mmc));
-+			if (--tuning_seq_cnt) {
-+				tuned_phase_cnt = 0;
-+				goto retry;
-+			}
-+		}
++	dev_warn(ctrl->device, "starting error recovery\n");
+ 	queue_work(nvme_reset_wq, &to_tcp_ctrl(ctrl)->err_work);
+ }
+ 
+@@ -2057,40 +2058,55 @@ static void nvme_tcp_submit_async_event(struct nvme_ctrl *arg)
+ 	nvme_tcp_queue_request(&ctrl->async_req);
+ }
+ 
++static void nvme_tcp_complete_timed_out(struct request *rq)
++{
++	struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
++	struct nvme_ctrl *ctrl = &req->queue->ctrl->ctrl;
 +
- 		rc = msm_find_most_appropriate_phase(host, tuned_phases,
- 						     tuned_phase_cnt);
- 		if (rc < 0)
++	/* fence other contexts that may complete the command */
++	mutex_lock(&to_tcp_ctrl(ctrl)->teardown_lock);
++	nvme_tcp_stop_queue(ctrl, nvme_tcp_queue_id(req->queue));
++	if (!blk_mq_request_completed(rq)) {
++		nvme_req(rq)->status = NVME_SC_HOST_ABORTED_CMD;
++		blk_mq_complete_request(rq);
++	}
++	mutex_unlock(&to_tcp_ctrl(ctrl)->teardown_lock);
++}
++
+ static enum blk_eh_timer_return
+ nvme_tcp_timeout(struct request *rq, bool reserved)
+ {
+ 	struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
+-	struct nvme_tcp_ctrl *ctrl = req->queue->ctrl;
++	struct nvme_ctrl *ctrl = &req->queue->ctrl->ctrl;
+ 	struct nvme_tcp_cmd_pdu *pdu = req->pdu;
+ 
+-	/*
+-	 * Restart the timer if a controller reset is already scheduled. Any
+-	 * timed out commands would be handled before entering the connecting
+-	 * state.
+-	 */
+-	if (ctrl->ctrl.state == NVME_CTRL_RESETTING)
+-		return BLK_EH_RESET_TIMER;
+-
+-	dev_warn(ctrl->ctrl.device,
++	dev_warn(ctrl->device,
+ 		"queue %d: timeout request %#x type %d\n",
+ 		nvme_tcp_queue_id(req->queue), rq->tag, pdu->hdr.type);
+ 
+-	if (ctrl->ctrl.state != NVME_CTRL_LIVE) {
++	if (ctrl->state != NVME_CTRL_LIVE) {
+ 		/*
+-		 * Teardown immediately if controller times out while starting
+-		 * or we are already started error recovery. all outstanding
+-		 * requests are completed on shutdown, so we return BLK_EH_DONE.
++		 * If we are resetting, connecting or deleting we should
++		 * complete immediately because we may block controller
++		 * teardown or setup sequence
++		 * - ctrl disable/shutdown fabrics requests
++		 * - connect requests
++		 * - initialization admin requests
++		 * - I/O requests that entered after unquiescing and
++		 *   the controller stopped responding
++		 *
++		 * All other requests should be cancelled by the error
++		 * recovery work, so it's fine that we fail it here.
+ 		 */
+-		flush_work(&ctrl->err_work);
+-		nvme_tcp_teardown_io_queues(&ctrl->ctrl, false);
+-		nvme_tcp_teardown_admin_queue(&ctrl->ctrl, false);
++		nvme_tcp_complete_timed_out(rq);
+ 		return BLK_EH_DONE;
+ 	}
+ 
+-	dev_warn(ctrl->ctrl.device, "starting error recovery\n");
+-	nvme_tcp_error_recovery(&ctrl->ctrl);
+-
++	/*
++	 * LIVE state should trigger the normal error recovery which will
++	 * handle completing this request.
++	 */
++	nvme_tcp_error_recovery(ctrl);
+ 	return BLK_EH_RESET_TIMER;
+ }
+ 
 -- 
 2.25.1
 
