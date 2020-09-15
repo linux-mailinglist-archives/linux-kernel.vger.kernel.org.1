@@ -2,78 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB1526A2C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE5E26A2C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgIOKIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:08:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIOKIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:08:43 -0400
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20C4821D7B;
-        Tue, 15 Sep 2020 10:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600164523;
-        bh=oVxC3QyxPJ/+tr+5qGi/WrwvDWq87ex4HnrI2z4OGxw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Y7Y5E/pWxtJi7AAp0dXHWHDgJ9RL+9jHFlviwb6EAzCoD4mdktXMpUrPqeQFzhPH7
-         V0IPDX1NtsHEymitwE0magQ/mHoZG72sweCCRmCZs+B6++3CGOCzZsQJwrZNUEG55M
-         T++QYr0pLlc9QKsALbqaoC7fJZHYw42ECKaBwciU=
-Received: by mail-ot1-f44.google.com with SMTP id e23so2683822otk.7;
-        Tue, 15 Sep 2020 03:08:43 -0700 (PDT)
-X-Gm-Message-State: AOAM5338Ev2KkjsAyYKQUJK6OkSXHT2H4jSoCs/hfoWrAkb+aWcwi6lI
-        8tvNVPHPeNrUecRGwwJC60pOLGxdpvQPj3v9/V4=
-X-Google-Smtp-Source: ABdhPJxakfqPU6ysOCwxFi4nwOF5w944Y6bVLgrA2HH0kMZv8d7DO9TRfyqoDSntqVGOaOEcEa5DQ7hJBpEZmpu2kOI=
-X-Received: by 2002:a9d:69c9:: with SMTP id v9mr11619738oto.90.1600164522438;
- Tue, 15 Sep 2020 03:08:42 -0700 (PDT)
+        id S1726322AbgIOKJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIOKJC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:09:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F682C06174A;
+        Tue, 15 Sep 2020 03:09:02 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l126so1654509pfd.5;
+        Tue, 15 Sep 2020 03:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YcPuY/A6rGpRQSeejr+/JqR26XmSZN3uVNRZMwilN14=;
+        b=KPpmOqgB8OeHft5erzFt+Fv+EXrnrmK5sB80U5H6liEy1el+Bp4oNrl5lmrEi5aBZF
+         XojB7h6j/woCLRFfSPulFHKdTOpWIAuyHGE2pMwODQIj6a5TESbhsnosiE92Fqrpahlk
+         EQ4stV4MuRpV4/uhiZWIKP1PHqdFXHJ3KJb/E3yLt3NnwUKCX2ZKQA0UIg+TrWFkM+hQ
+         qHYEzA8OFaOEF6udCq1SKiqyU6B5yyGXixMQXb/5OuNPBJyHMrjwacknTV09EyoX36M3
+         YNBVehnTGDd5tPJawRWEk0Qp523GMiwPZ12RFM67GCE14vksN5NZ8IKeqJ5P0sJ2h0Hq
+         /COQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YcPuY/A6rGpRQSeejr+/JqR26XmSZN3uVNRZMwilN14=;
+        b=pVwK2j2+tRtDsN2YLwIfHD9qqvWMz2AHq2JlLLdDuH6gdTrSzKSLkL/mxBop+nrirj
+         MK9d6AxEs/JBFbVzCJyS8ZzizombpZ9iCf6KEJCCWYFiaYJ0tIt+EesnLjMKKd4EUXtQ
+         FfugDZbvW7UjjPUwiC0SfxDokaXgx5wIueyAKRoAUZHQAeNKb+dUU4vDlDfkYaerX+YV
+         GEVwVw1PPrtmYSCC3eXoirktf8s0pe4OKEyT5DJKRDZt1XVIv6AfFvHpvO+Vxeh4BZA8
+         lDIv8CqHniENUchxEf1DidNrAdjcbSaNZ+Q+jpEdqPw/TD2ykAoW3kF6fcOLP1xFa8I9
+         oyyw==
+X-Gm-Message-State: AOAM531cM+mIoQmhSxR0lYgte0oX2I47UHY3J6JMCuFvC6CTuDAUYwWX
+        6c5oHoiMG81sWmzXouKlZ4HKDM7fS3N1MOy1pcY=
+X-Google-Smtp-Source: ABdhPJwpHuhwAMT8JLbnfZ5ZXjccNMTJ3HfqKk3tZKUhIlsVxnv6fUWes7blhKzoUSuxWFa1eMYo+gNiU9efgttA29k=
+X-Received: by 2002:aa7:81d5:0:b029:142:2501:39fa with SMTP id
+ c21-20020aa781d50000b0290142250139famr1209925pfn.73.1600164542050; Tue, 15
+ Sep 2020 03:09:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
- <20200915033024.GB25789@gondor.apana.org.au> <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com>
- <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com>
- <20200915070523.GA26629@gondor.apana.org.au> <878sdb5qp5.fsf@nanos.tec.linutronix.de>
- <CAMj1kXHsqZzfJ2qmsrUWEU_XWxmR1PhY3zo-yz9Vau90-WphXg@mail.gmail.com> <20200915100506.GA27268@gondor.apana.org.au>
-In-Reply-To: <20200915100506.GA27268@gondor.apana.org.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 15 Sep 2020 13:08:31 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXHAHrCCCTce3aLX0v=TDiWDiiwGaUPZQfqekKAsByMSvg@mail.gmail.com>
-Message-ID: <CAMj1kXHAHrCCCTce3aLX0v=TDiWDiiwGaUPZQfqekKAsByMSvg@mail.gmail.com>
-Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC unconditionally
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+References: <20200909102640.1657622-1-warthog618@gmail.com> <20200909102640.1657622-2-warthog618@gmail.com>
+In-Reply-To: <20200909102640.1657622-2-warthog618@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 15 Sep 2020 13:08:44 +0300
+Message-ID: <CAHp75VcpJx4fSHiWWF=Jvch+Ohk7wDJaCFPj5cOeuxT0npZ0zA@mail.gmail.com>
+Subject: Re: [PATCH v8 01/20] gpiolib: cdev: desc_to_lineinfo should set info offset
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 13:05, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+On Wed, Sep 9, 2020 at 1:28 PM Kent Gibson <warthog618@gmail.com> wrote:
 >
-> On Tue, Sep 15, 2020 at 01:02:10PM +0300, Ard Biesheuvel wrote:
-> >
-> > > I'd rather go for a preemptible/sleepable version of highmem mapping
-> > > which is in itself consistent for both highmen and not highmem.
-> >
-> > I don't think we need to obsess about highmem, although we should
-> > obviously take care not to regress its performance unnecessarily. What
-> > I want to avoid is to burden a brand new subsystem with legacy highmem
-> > baggage simply because we could not agree on how to avoid that.
+> Set the value of the line info offset in desc_to_lineinfo, rather than
+
+desc_to_lineinfo()
+
+> relying on it being passed in the info.  This makes the function behave
+> as you would expect from the name - it generates the line info
+> corresponding to a given GPIO desc.
+
+One nit-pick below.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
 >
-> I think what Thomas is proposing should address your concerns Ard.
-> As long as nobody objects to the slight performance degradation on
-> legacy highmem platforms it should make kmap_atomic just go away on
-> modern platforms.
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> ---
+>
+> There are some instances where this results in the offset being set when
+> it is already set in the info, but this is clearer especially considering
+> that, as part of the replacement of strncpy with strscpy and to ensure
+> kernel stack cannot be leaked to userspace, the info is initially zeroed
+> in a subsequent patch.
+>
+>  drivers/gpio/gpiolib-cdev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> index e6c9b78adfc2..e95e3eab9867 100644
+> --- a/drivers/gpio/gpiolib-cdev.c
+> +++ b/drivers/gpio/gpiolib-cdev.c
+> @@ -752,6 +752,7 @@ static void gpio_desc_to_lineinfo(struct gpio_desc *desc,
+>         bool ok_for_pinctrl;
+>         unsigned long flags;
+>
+> +       info->line_offset = gpio_chip_hwgpio(desc);
+
++ blank line?
+
+>         /*
+>          * This function takes a mutex so we must check this before taking
+>          * the spinlock.
+> @@ -933,7 +934,6 @@ static int lineinfo_changed_notify(struct notifier_block *nb,
+>                 return NOTIFY_DONE;
+>
+>         memset(&chg, 0, sizeof(chg));
+> -       chg.info.line_offset = gpio_chip_hwgpio(desc);
+>         chg.event_type = action;
+>         chg.timestamp = ktime_get_ns();
+>         gpio_desc_to_lineinfo(desc, &chg.info);
+> --
+> 2.28.0
 >
 
-But making atomic kmap preemptible/sleepable creates the exact same
-problem, i.e., that we have no idea which existing callers are
-currently relying on those preemption disabling semantics, so we can't
-just take them away. Or am I missing something?
+
+-- 
+With Best Regards,
+Andy Shevchenko
