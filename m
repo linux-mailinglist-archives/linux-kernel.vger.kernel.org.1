@@ -2,162 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B423C26ACCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295A426ACDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727675AbgIOS75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727950AbgIOS7c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:59:32 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5ABC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:59:32 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id q9so512819wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+9xrdo1hjL5GpIi0BzXnZYRPs7S42P0+bQsrK9rNgIc=;
-        b=cwRNzKAF9VKQAux1bgbvrjmm8+Ps1oqFo6En7uv7FQTTVMddjTobqpAkHrmYFeIbDh
-         drD0P4B3rj5UGLJo2mo+7go4bCGtKkwWxvLQ3LwWQnFKPvedMx+Q9G3BGaLVcGWwM+MD
-         KRBX51XqtmoNQumaGGIFf0YJ5vwuwdbTOQOW5xJmw5At43Skg7iokCs1RnXtJ7AJnMSU
-         3pRcAOONTT7Y82U80CSnmdrSXJJkxX7YQr9YfP9d1QwMhLDGc17MCVhxWFQA4tk+ksyP
-         Cfw5dUKSX6ZhDLtmPgQC3fPiL1HJGy+acieWTSJOuzDch4dONwWTknYZSTvHOnWu+rMB
-         VkZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+9xrdo1hjL5GpIi0BzXnZYRPs7S42P0+bQsrK9rNgIc=;
-        b=ERpH/Oz+R5FEk0DhDqCy9jd8U4z+KW7vEe2BctVSTIQt4U5g94JbV3rYP5BRihPKE6
-         aojgYnLWIQejkOoioIrPvxXL+LeTpvHGuw3mMJD7h4OpJsqvBD7l7yDZOvf7ISgDo3TO
-         nKNl+Z8qynS68wNd6svtfzkMMdvjSmCBez7h9AujIulJ91WNch3xX9u5+An+S5y0I+Y5
-         PBGrbIqPNWMz1TJoSy7YANI7Em9jHUauOPYzgxM54/nbz3A9rH7qQ5L6yOmK4PWafK/0
-         AfdWsDyX+QWndEbDDFtDJ7ZaWBK/wS4ShgqAtJXDr8Bd133mVB2cpyLknbH0yZyRlipD
-         dudQ==
-X-Gm-Message-State: AOAM530QXLU72F+4uNulrYoT6D/49IaMx0xdV9i6SWdkG5B6l0+eYM6r
-        9xEEwA+IxzWanykLEUYKQJZRapmWHa3egIAI/EZWIA==
-X-Google-Smtp-Source: ABdhPJy8Hrlpm5++aw8cCSRCpaSkrZiqRqVZDlYgkV+O9TfixjF90P+tjzrOPoGPWnjC994zWHRlKkJ0Yf7foyeemIU=
-X-Received: by 2002:a1c:f402:: with SMTP id z2mr731875wma.87.1600196370674;
- Tue, 15 Sep 2020 11:59:30 -0700 (PDT)
+        id S1727860AbgIOTCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:02:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727845AbgIORLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:11:42 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 253A92193E;
+        Tue, 15 Sep 2020 17:02:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600189339;
+        bh=IUpCyffZBng6VxFe1zQQa34I+E1YixGJRW8ke5R6BkU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=US2HCjeq5zZ7QUapdgMHz7lBhcKDI8o4/0gc5V48E3u5ZnY7Qry05+cAsbbP6UK8w
+         GL0/27NqNOhjC+Ugi35BkiO5QL1ozuwuULmKDZECcGDyvL4AJpmMGghqBLqUs9bVei
+         zAYnUjwmkJNBd1b/FPKRilsTyAC9MnKfC1Ii/Kkg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E824235226B7; Tue, 15 Sep 2020 10:02:18 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 10:02:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        nikolay@cumulusnetworks.com, davem@davemloft.net,
+        netdev@vger.kernel.org, josh@joshtriplett.org,
+        peterz@infradead.org, christian.brauner@ubuntu.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sfr@canb.auug.org.au, roopa@nvidia.com
+Subject: Re: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from swallowing
+ the condition
+Message-ID: <20200915170218.GN29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200908173624.160024-1-kuba@kernel.org>
+ <5ABC15D5-3709-4CA4-A747-6A7812BB12DD@cumulusnetworks.com>
+ <20200908172751.4da35d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200914202122.GC2579423@google.com>
+ <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200915002011.GJ29330@paulmck-ThinkPad-P72>
+ <20200914173029.60bdfc02@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20200915031819.386559-1-namhyung@kernel.org> <20200915031819.386559-6-namhyung@kernel.org>
- <20200915121912.GF720847@kernel.org>
-In-Reply-To: <20200915121912.GF720847@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 15 Sep 2020 11:59:13 -0700
-Message-ID: <CAP-5=fXwuS_GAjnQgBav=Ugc26OACimUmbhtAHbeThb_BEk0UQ@mail.gmail.com>
-Subject: Re: [PATCH 05/11] perf parse-event: Fix memory leak in evsel->unit
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>, dmalcolm@redhat.com
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914173029.60bdfc02@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 5:19 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Tue, Sep 15, 2020 at 12:18:13PM +0900, Namhyung Kim escreveu:
-> > The evsel->unit borrows a pointer of pmu event or alias instead of
-> > owns a string.  But tool event (duration_time) passes a result of
-> > strdup() caused a leak.
-> >
-> > It was found by ASAN during metric test:
->
-> Thanks, applied.
+On Mon, Sep 14, 2020 at 05:30:29PM -0700, Jakub Kicinski wrote:
+> On Mon, 14 Sep 2020 17:20:11 -0700 Paul E. McKenney wrote:
+> > > Seems like quite a few places depend on the macro disappearing its
+> > > argument. I was concerned that it's going to be had to pick out whether
+> > > !LOCKDEP builds should return true or false from LOCKDEP helpers, but
+> > > perhaps relying on the linker errors even more is not such poor taste?
+> > > 
+> > > Does the patch below look acceptable to you?  
+> > 
+> > The thing to check would be whether all compilers do sufficient
+> > dead-code elimination (it used to be that they did not).  One way to
+> > get a quick sniff test of this would be to make sure that a dead-code
+> > lockdep_is_held() is in common code, and then expose this patch to kbuild
+> > test robot.
+> 
+> I'm pretty sure it's in common code because kbuild bot complaints were
+> the reason I gave up the first time around ;) 
+> 
+> I'll expose this to kbuild bot via my kernel.org tree in case it
+> doesn't consider scissored patches and report back!
 
-Thanks Namhyung and Arnaldo, just to raise a meta point. A lot of the
-parse-events asan failures were caused by a lack of strdup causing
-frees of string literals. It seems we're now adding strdup defensively
-but introducing memory leaks. Could we be doing this in a smarter way?
-For C++ I'd likely use std::string and walk away. For perf code the
-best source of "ownership" I've found is to look at the "delete"
-functions and figure out ownership from what gets freed there - this
-can be burdensome. For strings, the code is also using strbuf and
-asprintf. One possible improvement could be to document ownership next
-to the struct member variable declarations. Another idea would be to
-declare a macro whose usage would look like:
+Sounds good, thank you!
 
-struct evsel {
-...
-  OWNER(char *name, "this");
-...
-  UNOWNED(const char *unit);
-...
-
-Maybe then we could get a static analyzer to complain if a literal
-were assigned to an owned struct variable. Perhaps if a strdup were
-assigned to an UNOWNED struct variable perhaps it could warn too, as
-presumably the memory allocation is a request to own the memory.
-
-There was a talk about GCC's -fanalyzer option doing malloc/free
-checking at Linux plumbers 2 weeks ago:
-https://linuxplumbersconf.org/event/7/contributions/721/attachments/542/961/2020-LPC-analyzer-talk.pdf
-I added David Malcolm, the LPC presenter, as he may have ideas on how
-we could do this in a better way.
-
-Thanks,
-Ian
-
-
-> >   Direct leak of 210 byte(s) in 70 object(s) allocated from:
-> >     #0 0x7fe366fca0b5 in strdup (/lib/x86_64-linux-gnu/libasan.so.5+0x920b5)
-> >     #1 0x559fbbcc6ea3 in add_event_tool util/parse-events.c:414
-> >     #2 0x559fbbcc6ea3 in parse_events_add_tool util/parse-events.c:1414
-> >     #3 0x559fbbd8474d in parse_events_parse util/parse-events.y:439
-> >     #4 0x559fbbcc95da in parse_events__scanner util/parse-events.c:2096
-> >     #5 0x559fbbcc95da in __parse_events util/parse-events.c:2141
-> >     #6 0x559fbbc28555 in check_parse_id tests/pmu-events.c:406
-> >     #7 0x559fbbc28555 in check_parse_id tests/pmu-events.c:393
-> >     #8 0x559fbbc28555 in check_parse_cpu tests/pmu-events.c:415
-> >     #9 0x559fbbc28555 in test_parsing tests/pmu-events.c:498
-> >     #10 0x559fbbc0109b in run_test tests/builtin-test.c:410
-> >     #11 0x559fbbc0109b in test_and_print tests/builtin-test.c:440
-> >     #12 0x559fbbc03e69 in __cmd_test tests/builtin-test.c:695
-> >     #13 0x559fbbc03e69 in cmd_test tests/builtin-test.c:807
-> >     #14 0x559fbbc691f4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
-> >     #15 0x559fbbb071a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
-> >     #16 0x559fbbb071a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
-> >     #17 0x559fbbb071a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
-> >     #18 0x7fe366b68cc9 in __libc_start_main ../csu/libc-start.c:308
-> >
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > Fixes: f0fbb114e3025 ("perf stat: Implement duration_time as a proper event")
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/parse-events.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index b35e4bb1cecb..ece321ccf599 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -416,7 +416,7 @@ static int add_event_tool(struct list_head *list, int *idx,
-> >               return -ENOMEM;
-> >       evsel->tool_event = tool_event;
-> >       if (tool_event == PERF_TOOL_DURATION_TIME)
-> > -             evsel->unit = strdup("ns");
-> > +             evsel->unit = "ns";
-> >       return 0;
-> >  }
-> >
-> > --
-> > 2.28.0.618.gf4bc123cb7-goog
-> >
->
-> --
->
-> - Arnaldo
+							Thanx, Paul
