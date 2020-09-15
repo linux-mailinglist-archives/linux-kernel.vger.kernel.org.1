@@ -2,139 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C5F26A33A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117C026A33C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgIOKfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:35:24 -0400
-Received: from mail-eopbgr10069.outbound.protection.outlook.com ([40.107.1.69]:26216
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726119AbgIOKfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:35:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RUlQxQ25FpE8xkc7fiO7RoLkLTYDRq06RO7VrJkap9eEgR1Gs/yLtvtR74zGlSEwDOmXVSIzXPfJZCbs4J8o+ChF2f9dtG7PN5emBcqmEiDtIm4JqVacJXHQ/nravRKFlM1sC4p32tSOn+8RtAjcYdL5ngKkaItiJmwdsaDNHzvS2pR+dUkGAJumuc+9G5vOGiwb0ERnsTOAoxxBsrdIlPKGz0eDCIgg2mDLJ3b/n778AEyH4bmpZpY1HkGWJSGCG+yPIooVaL3ZGEbQ8KgW0LshijBLWqfS9wuKf05sE8pxPG8gp8t0nRbtWLRjASqM7xz5ui03gB3rQNdKG4p1tA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UjBe/h0c47ERfPziAe+0LWgPJQGA8sCLnk2JNwT+3FQ=;
- b=N5M3nToClo14PZACGymtPqkqj3Z5IOILy0FEQfVu7JU4cA11+q7i7aBhelQAKAoNlUK6iQ64MMBZ+1TwPS7pqrw4thfu5nSGzzcXxUplN9Mou4VKU3GeVQRxRU3EKwY0APDCUYBy2dN4nk1IrcXd8Ym03LzOfvAK7fqtlsa63t99YT7WnFnu0o1d01PgPfbLKYYx0FvgClgSVMYal9fJZeoJ02lNziB8bb5y9SPoYUsF9UwOFAgwl9mhAP2K6h74KAqKdSPrRTTq0W2m35e4mA06amyrGPcU9vu9q7TDZSvVAixg6plgRhDM9tozJ0D6Lg8KY7K3IsLD1tZXhG59xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UjBe/h0c47ERfPziAe+0LWgPJQGA8sCLnk2JNwT+3FQ=;
- b=lapsbywOO3FG5JCqpPr/aQ6Lt8mut2r6itB4v0QUbp+9460DhwQkcqJR52B0K6waQhIIvvv86HgDZQrvcdMQThDZ7SINhM74H11I7rW/9hsgxFh3etbitlPXYj9nz+Yst+dN+vdRQLY9HDEUpUyj7xBHLEfpfk5oPDlheRqiItA=
-Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com (2603:10a6:4:33::14)
- by DB7PR04MB5292.eurprd04.prod.outlook.com (2603:10a6:10:1f::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
- 2020 10:35:12 +0000
-Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com
- ([fe80::c8a:a759:d4ba:181e]) by DB6PR0401MB2438.eurprd04.prod.outlook.com
- ([fe80::c8a:a759:d4ba:181e%7]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 10:35:12 +0000
-From:   Biwen Li <biwen.li@nxp.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
-CC:     Leo Li <leoyang.li@nxp.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiafei Pan <jiafei.pan@nxp.com>
-Subject: RE: [EXT] Re: rtc: fsl-ftm-alarm: add shutdown interface
-Thread-Topic: [EXT] Re: rtc: fsl-ftm-alarm: add shutdown interface
-Thread-Index: AQHWBo7q7oogBWYJ/0Ch/nk6xakViKhhV7UAgQkxBoCAAAFUcA==
-Date:   Tue, 15 Sep 2020 10:35:12 +0000
-Message-ID: <DB6PR0401MB24385907880BAA626E5909528F200@DB6PR0401MB2438.eurprd04.prod.outlook.com>
-References: <20200330122616.24044-1-biwen.li@oss.nxp.com>
- <20200330164400.GE846876@piout.net> <20200915102817.GL4230@piout.net>
-In-Reply-To: <20200915102817.GL4230@piout.net>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: bootlin.com; dkim=none (message not signed)
- header.d=none;bootlin.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 168cd5df-874f-4afc-a9da-08d8596306d8
-x-ms-traffictypediagnostic: DB7PR04MB5292:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB5292E5BA38EB04BDDB8734F78F200@DB7PR04MB5292.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IfK6AtZ6+R+/9xYKdYTKIGDpTTuFs7Kh5ZLUVHk8qqn6wZ1X/lk0to+suc2IpcVcouUWayxcJfs6jBNWNlNPP+SbYepi1QqCd0yQBT+ylzbY6t2vB2ZqQhr1uqW3VHiQkewlfiNPqJSQfoxQwYOXLvCQ9gQg9ZTozmed6C1y3XRRpzOKN8JhfE0mZ1Gb79OXPTvBZdyyfAeEa7Y0TzCF99yDGPjMz1h+fiPLNWRRGUsCtcQgQsYqPAAhxem4ze6WOcgTvcn8+cgI0aSxWOKHeOJ6vAQrPj4muF9nsA9dfwtD3gW+FCUWdL5vqhKbC1/42vqAg44M6fUOb5VJtAY4q3ObJNVKvPSTbdpifWnX5x0SPruHvu2uUStPBMhYt+Gl1J+xrhYpSDDi3UPy0EeyBA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(366004)(396003)(376002)(55016002)(186003)(66446008)(110136005)(66476007)(66946007)(66556008)(26005)(64756008)(76116006)(478600001)(52536014)(7696005)(54906003)(6506007)(8936002)(8676002)(4326008)(2906002)(33656002)(44832011)(45080400002)(5660300002)(86362001)(71200400001)(9686003)(316002)(83080400001)(966005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 9+bxqMz2GssKhYTFlSyOdex3IaEt859i76pjtXZNkKdB1CUF/xP2/kZ3g/zrSU4IWhbLiBn1XY1Umf9sMvADZxxGtsPfsoxoJQ4HZ68zj/IGg1aNR9UaRX8YxCwxK38Ogc8zVuAXmqSzGtQz43VcujuMjIXZxlQn4iEwmSGZQzzJziR3W7VWNHsDMXkDF5s0xmvIAx2kqYHHCIfWbYgdjqW6rE4wTDfQGdFsU0DemG0P9Cl1N4WlpUsXPKu48J1i5XvcKP6f8p3TzI8oWz40up8X6QGHqG/Bmc8Hn+0bxc2WAee8XKMZKMuMBAo86EmJKygH2t20oPsO86ixVgCamDK3FbrwOcSgLqEhLdROg7lViOptrIl5qglo8zUaAihLB8WLafUAGqzc7CV5gTi3Wf1Kpik/DSijoG7LTgaAgcksCoYLTEk/b1sbPDOAl1k0Hoe3SWjpTvSeBN5b3VBSX7FViBDFWHucJVbFhiKn20OrcIlBSQnu6Yo9c0S7tum3thwY3sgxXkAhYQoUY5Umzkv2scITphevBIoS85Iaffo2qm8ZGzeROeDZPLkiEgBQ9eqXAI7Az+R4MLtKy7vVGygOfc5jidm1kOF4aUiOEE2qDvVq+aL75dMi2/PMMEl81+uD2y6asPlyOZmBmI117Q==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726279AbgIOKfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:35:40 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:48863 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726119AbgIOKfh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:35:37 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kI8J7-000hVo-1S; Tue, 15 Sep 2020 12:35:29 +0200
+Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
+          by inpost2.zedat.fu-berlin.de (Exim 4.93)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kI8J6-003WLG-SW; Tue, 15 Sep 2020 12:35:28 +0200
+Subject: Re: [PATCH] sh: fix syscall tracing
+To:     Rich Felker <dalias@libc.org>, Rob Landley <rob@landley.net>
+Cc:     linux-sh@vger.kernel.org,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        linux-kernel@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20200903054803.GX3265@brightrain.aerifal.cx>
+ <e456a455-62cd-4f76-a69a-84d1e5b4d153@physik.fu-berlin.de>
+ <20200903161639.GE3265@brightrain.aerifal.cx>
+ <1a3f0f7e-f6e6-db4e-06ad-9c7d560a6265@physik.fu-berlin.de>
+ <20200907174436.GK3265@brightrain.aerifal.cx>
+ <3b8d5e6a-38d6-6eca-a49a-69e06680ec1c@physik.fu-berlin.de>
+ <c0685f0b-e997-39e9-8ae9-ee22c8e74a01@landley.net>
+ <20200910133751.GE3265@brightrain.aerifal.cx>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <d641f6a0-0c2d-d7ea-c5e6-b02506200bb5@physik.fu-berlin.de>
+Date:   Tue, 15 Sep 2020 12:35:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2438.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 168cd5df-874f-4afc-a9da-08d8596306d8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 10:35:12.3092
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xplV1hBWvij1QQ4ppFPxSz9e2AWTVzRHMp1F/sTn3w7s4W7K9EhEEkEA1ClW/HkPr4IlCkRSdGSmxzC7TWaTpA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5292
+In-Reply-To: <20200910133751.GE3265@brightrain.aerifal.cx>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 160.45.32.140
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Hi,
->=20
-> On 30/03/2020 18:44:01+0200, Alexandre Belloni wrote:
-> > On 30/03/2020 20:26:16+0800, Biwen Li wrote:
-> > > From: Biwen Li <biwen.li@nxp.com>
-> > >
-> > > Add shutdown interface
-> > >
-> > > Signed-off-by: Biwen Li <biwen.li@nxp.com>
-> > > ---
-> > >  drivers/rtc/rtc-fsl-ftm-alarm.c | 10 ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > >
-> > > diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c
-> > > b/drivers/rtc/rtc-fsl-ftm-alarm.c index d7fa6c16f47b..118a775e8316
-> > > 100644
-> > > --- a/drivers/rtc/rtc-fsl-ftm-alarm.c
-> > > +++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
-> > > @@ -307,6 +307,15 @@ static int ftm_rtc_probe(struct platform_device
-> *pdev)
-> > >     return 0;
-> > >  }
-> > >
-> > > +static void ftm_rtc_shutdown(struct platform_device *pdev) {
-> > > +   struct ftm_rtc *rtc =3D platform_get_drvdata(pdev);
-> > > +
-> > > +   ftm_irq_acknowledge(rtc);
-> > > +   ftm_irq_disable(rtc);
-> > > +   ftm_clean_alarm(rtc);
-> >
-> > If the alarm is able to start the platform, then you probably don't
-> > want to disable the alarm on shutdown.
-> >
->=20
-> I realise you never replied to that question. Is that patch still of inte=
-rest?
-Hi Alex, you can drop it. Thanks.
-Best Regards,
-Biwen Li
->=20
-> --
-> Alexandre Belloni, Bootlin
-> Embedded Linux and Kernel engineering
-> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fbootl=
-in.c
-> om%2F&amp;data=3D02%7C01%7Cbiwen.li%40nxp.com%7Cd688030894714bca7
-> 5c708d8596210ec%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63
-> 7357625013809281&amp;sdata=3DpOBMmsxi7DVlywuLZ2LOLVgK4r4GtvW1PYq1
-> p9JVv74%3D&amp;reserved=3D0
+Hi Rich!
+
+On 9/10/20 3:37 PM, Rich Felker wrote:
+>> Which I reported to Rich on the 2nd and he had me test a one line patch fixing
+>> it (adding an extra #include) on the 3rd, but I just did a fresh pull and the
+>> j2_defconfig build still broke a week later.
+> 
+> Yes, that's presently the other regression fix I have queued for the
+> second pull request.
+
+Any news on this? Seems like Linus just tagged -rc5 this week.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
