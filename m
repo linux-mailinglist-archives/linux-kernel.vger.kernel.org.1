@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480DB26B2F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3BA26B2E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgIOW4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:56:09 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:36338 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727401AbgIOPYm (ORCPT
+        id S1727518AbgIOWzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727304AbgIOP1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:24:42 -0400
-Received: by mail-io1-f66.google.com with SMTP id d190so4523138iof.3;
-        Tue, 15 Sep 2020 08:24:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TQwbsrSpPsblvvewNTAvygU6LX9JkoPG3XT5duFS2B8=;
-        b=pMa5QV6rMAf2UdR/IH7HVyXxjxlV9j/Ul8p4ApSo4Kx8qYkfv1XQ8mo3567ojZEszO
-         5ozjTyPxqBj5MSdOqddKPzohM6EW0AEiPY5yWuUG0K30hx9hGSixEpmZEsqk/Jgjsp11
-         5Amn2G9hyTLVcbf0jCq5nFFEE6eN4PNB+rgD0vfRV+evLEV6OeR+I/ywK8lGeoRsSoD8
-         dM5tAXYfC35vmXY7eXaqSD1qp9ZMe95bsyUNJXa6MHrCoMYuos5R1/BOnsb1rsXl50/1
-         UA7MASY7RDgFcjKXo6BRHTN1OitNgM6/MwbfEJPIe6sltOOYpLmE6jIbTWp/1lhvDJT9
-         jXbA==
-X-Gm-Message-State: AOAM5332WGfC6JA3bWEU4g8v9YIudeuQQxFSYiM0NVDlF0f6bsKsjb+R
-        9eTmsaaKRVDkfdhOIjNnQA==
-X-Google-Smtp-Source: ABdhPJyqKFyTIVHyJqHIrEsdIMGqq15HhgpOa6nWJTDsqIgRo7dmwPY2ATDZsR/bup7/2N61XSAUZw==
-X-Received: by 2002:a05:6602:2c4d:: with SMTP id x13mr10837671iov.94.1600183478508;
-        Tue, 15 Sep 2020 08:24:38 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id i9sm4609484ils.34.2020.09.15.08.24.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 08:24:37 -0700 (PDT)
-Received: (nullmailer pid 1973925 invoked by uid 1000);
-        Tue, 15 Sep 2020 15:24:35 -0000
-Date:   Tue, 15 Sep 2020 09:24:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Yash Shah <yash.shah@sifive.com>
-Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com, bp@alien8.de,
-        mchehab@kernel.org, tony.luck@intel.com, aou@eecs.berkeley.edu,
-        james.morse@arm.com, rrichter@marvell.com,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        sachin.ghadi@sifive.com
-Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: Add DT documentation for DDR
- Controller in SiFive SoCs
-Message-ID: <20200915152435.GB1940827@bogus>
-References: <1599457679-8947-1-git-send-email-yash.shah@sifive.com>
- <1599457679-8947-2-git-send-email-yash.shah@sifive.com>
+        Tue, 15 Sep 2020 11:27:22 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E4AC061351;
+        Tue, 15 Sep 2020 08:26:27 -0700 (PDT)
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTP id 0ABB9140A47;
+        Tue, 15 Sep 2020 17:26:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1600183583; bh=dv65+eYU8SaWgkfiQtVpIM3HXhYU67+hTnWMa0Ts9NI=;
+        h=From:To:Date;
+        b=SWjmxoV4EYZG3f5jRX9ldVCv4wr+nX/2ntXxCUE7/fY4HEcJCD4cXaKFCHYTZKAF6
+         6+IZobur0QfblPQr2RVm2O9Ldn5McHTiw0AUqAlm1YHHCGnYiyp6kCTxjeuL1I0BHd
+         OE5FEjh7OakE+d7S9eoWLDTgSMIpvspIjCuwuRJc=
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+To:     linux-leds@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+Subject: [PATCH leds + devicetree v2 0/2] Parse DT property `trigger-sources` for netdev LED trigger
+Date:   Tue, 15 Sep 2020 17:26:14 +0200
+Message-Id: <20200915152616.20591-1-marek.behun@nic.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599457679-8947-2-git-send-email-yash.shah@sifive.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Spam-Status: No, score=0.00
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 11:17:57AM +0530, Yash Shah wrote:
-> Add device tree bindings for SiFive FU540 DDR controller driver
-> 
-> Signed-off-by: Yash Shah <yash.shah@sifive.com>
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> ---
->  .../devicetree/bindings/riscv/sifive-ddr.yaml      | 41 ++++++++++++++++++++++
+Hi,
 
-Bindings are organized by function, not vendor/arch generally. This goes 
-in bindings/memory-controllers/.
+this is v2.
 
->  1 file changed, 41 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml b/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
-> new file mode 100644
-> index 0000000..0288119
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
-> @@ -0,0 +1,41 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/riscv/sifive-ddr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SiFive DDR memory controller binding
-> +
-> +description: |
-> +  The Sifive DDR controller driver is used to manage the Cadence DDR
-> +  controller present in SiFive FU540-C000 SoC. Currently the driver is
-> +  used to manage EDAC feature of the DDR controller.
+Changes since v1:
+- fixed problems with v1 reported by kernel test robot
+- created helper functions of_led_count_trigger_sources and
+  of_led_get_trigger_source
 
-Bindings describe h/w not drivers. What a driver supports is irrelevant.
+Below is description from v1:
 
-> +
-> +maintainers:
-> +  - Yash Shah <yash.shah@sifive.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sifive,fu540-c000-ddr
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    memory-controller@100b0000 {
-> +        compatible = "sifive,fu540-c000-ddr";
-> +        reg = <0x100b0000 0x4000>;
-> +        interrupts = <31>;
-> +    };
-> -- 
-> 2.7.4
-> 
+The `trigger-sources` LED DT property is currently only implemented
+for ledtrig-usbport.
+
+Lets implement it for the netdev LED trigger.
+
+In this proposal the specific netdev LED trigger mode is determined
+from the `function` LED DT property.
+
+Example:
+  eth0: ethernet@30000 {
+    compatible = "xyz";
+    #trigger-source-cells = <0>;
+  };
+
+  led {
+    color = <LED_COLOR_ID_GREEN>;
+    function = LED_FUNCTION_LINK;
+    trigger-sources = <&eth0>;
+  };
+
+When led is registered, the netdev trigger is automatically activated
+and set to light the LED on if eth0 is linked.
+
+Please let me know if this binding is OK, or if the binding should
+instead of the `function` property determine the trigger settings from
+arguments of the `trigger-sources` property :
+  led {
+    color = <LED_COLOR_ID_GREEN>;
+    trigger-sources = <&eth0 (NETDEV_ATTR_LINK | NETDEV_ATTR_RX)>;
+  };
+
+I prefer the first binding, since we already have the `function`
+property. Multiple modes can be achieved by string array, but this is
+not yet implemented:
+  led {
+    color = <LED_COLOR_ID_GREEN>;
+    function = LED_FUNCTION_LINK, LED_FUNCTION_ACTIVITY;
+    trigger-sources = <&eth0>;
+  };
+
+Marek
+
+Marek Behún (2):
+  leds: trigger: add trigger sources validating method and helper
+    functions
+  leds: trigger: netdev: parse `trigger-sources` from device tree
+
+ drivers/leds/led-triggers.c           | 68 ++++++++++++++++++++---
+ drivers/leds/trigger/ledtrig-netdev.c | 80 ++++++++++++++++++++++++++-
+ include/dt-bindings/leds/common.h     |  1 +
+ include/linux/leds.h                  | 25 +++++++++
+ 4 files changed, 165 insertions(+), 9 deletions(-)
+
+-- 
+2.26.2
+
