@@ -2,243 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267B026A272
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3865626A276
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgIOJmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:42:09 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42112 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIOJmE (ORCPT
+        id S1726402AbgIOJoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIOJoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:42:04 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08F9WDs9156758;
-        Tue, 15 Sep 2020 05:41:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=zw6gJ56bbYnwdf3cWDWF60gfH1acPA/z8lAQb/Z9wpY=;
- b=F7lXfOCYXKkpcNvaehVh+FRinkNWZPRH1dnzwxqViUG8ILJE3hjhFOU7Mk4JKiVLOzn7
- Kzkv5VT3AS/scbh9gfz083ipaevtAacSs5NnxtsgzDfWsjlmZp4haqmLVpC8dE2nSa39
- cwhrYbSPKta8wWJNNIPZZouF2yxUloGMyBlO20PrfWO5PtWDMl2utSMTwRZaqipE3oUe
- Afn5p9FMg2Nt4EZh6S/kI8yzt2e4MMxSD+yNQT1/gGNnMVFhAz8pisocyKKN1/tnseIH
- 8L5IPd8pkV3zDNrfy3v9a0XCaq62srsMBu/EdO8hyzgRNal9yViqMi9k7Ymz231Jbv9g Lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33jtbjhq04-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 05:41:52 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08F9XcBB160716;
-        Tue, 15 Sep 2020 05:41:52 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33jtbjhpy9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 05:41:51 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08F9YFrj026539;
-        Tue, 15 Sep 2020 09:41:49 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 33h2r9aw1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 09:41:49 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08F9eCeI28443092
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 09:40:12 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B0DD9A4040;
-        Tue, 15 Sep 2020 09:41:46 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36DC9A405D;
-        Tue, 15 Sep 2020 09:41:46 +0000 (GMT)
-Received: from pomme.tlslab.ibm.com (unknown [9.145.72.89])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Sep 2020 09:41:46 +0000 (GMT)
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-To:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>, mhocko@suse.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH v3 3/3] mm: don't panic when links can't be created in sysfs
-Date:   Tue, 15 Sep 2020 11:41:43 +0200
-Message-Id: <20200915094143.79181-4-ldufour@linux.ibm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915094143.79181-1-ldufour@linux.ibm.com>
-References: <20200915094143.79181-1-ldufour@linux.ibm.com>
+        Tue, 15 Sep 2020 05:44:03 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7355EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:44:02 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l9so2745070wme.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1MZenw7ivkEO7G0cqGbvnXeO0j0tykvYhq7DAb7ri5A=;
+        b=QwexKL3/mXpdmI3QfPiic+6kNLVREkv+eBUeY4gzTMZ8JLvTMGXQ+UJfjm8NR4A6U3
+         PBaE8ktM9/9QPojYJV2pUXFfq2+cvOWDW0fkHuVx3+eijz0f2kp2B//5Ojk7QRWT5ly6
+         RJ/90ybEy9tCcIpZLXFLlMO+tJxqseWAaG2hvGq/0vP4TJOJEmzBpHP74xDUqkGC+sCn
+         rJ5ggnlVajI03rpZ4muu3MuMO7isGf214UcggMGQMCHppH6D6B3aviMaUX95eUPguYdZ
+         mEqADPUX96pHo2IaZGs2Pr4ykzAnAtGAAQ9mZoWW5KQGg4w/ArQjwwHk+7lVIRGQ1kKB
+         C5FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1MZenw7ivkEO7G0cqGbvnXeO0j0tykvYhq7DAb7ri5A=;
+        b=D1yz/bBQb8Hk28drl9N36l8Cd8DqqIlKBRbeM0/LSbMV330e2UI/RLH+LZ0j5+WLei
+         trv6hJi0a3ar5UpEhpqPzi4oA3TZw9pWRJxZwGx6RH2bpnitiJBW7WTx0boUOQzazBy/
+         IXOlk86A2bSjEQnU3DCkUzdX46Zmm3xb4S8VFVCtKUo9IjqnmYeSNwoygE2MjP7RfrDo
+         VCf2G6baankWIZLB9A7JT50g6P87Sbybhkim5T6JDp0jKn30QbIiS9gineQhLIBhWwzL
+         Ewe/aTsHhPkaiRN3ZcuwNhTzY8gSbvdIjPzv8fsvjDTXDVYqp8xWxYVJG43qdIyH9Wqc
+         RSrw==
+X-Gm-Message-State: AOAM5300/hrqm9SkKYv1HnjCCGrE2UTDBSBKJum+VDPyabMvkGIqAnPf
+        XwggxXW1kIRCoMdlkKABI04=
+X-Google-Smtp-Source: ABdhPJz5jdPwQfUSVTZM76f+2wCqMeIIFzkbMvMWQ4M2CCmdbqpMG6URc2VFaUjtSpl2wwdscUAX7w==
+X-Received: by 2002:a05:600c:2054:: with SMTP id p20mr3701532wmg.173.1600163040073;
+        Tue, 15 Sep 2020 02:44:00 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id 91sm28149156wrq.9.2020.09.15.02.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 02:43:59 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] staging: rtl8192e: fix kconfig dependency warning for RTLLIB_CRYPTO_WEP
+Date:   Tue, 15 Sep 2020 12:42:10 +0300
+Message-Id: <20200915094209.22664-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_05:2020-09-15,2020-09-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- bulkscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999 phishscore=0
- clxscore=1015 suspectscore=0 adultscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At boot time, or when doing memory hot-add operations, if the links in
-sysfs can't be created, the system is still able to run, so just report the
-error in the kernel log rather than BUG_ON and potentially make system
-unusable because the callpath can be called with locks held.
+When RTLLIB_CRYPTO_WEP is enabled and CRYPTO is disabled, it results in
+the following Kbuild warning:
 
-Since the number of memory blocks managed could be high, the messages are
-rate limited.
+WARNING: unmet direct dependencies detected for CRYPTO_ARC4
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
 
-As a consequence, link_mem_sections() has no status to report anymore.
+The reason is that RTLLIB_CRYPTO_WEP selects CRYPTO_ARC4 without depending
+on or selecting CRYPTO while CRYPTO_ARC4 is subordinate to CRYPTO.
 
-Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: David Hildenbrand <david@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+
+Fixes: e0e3daddad36 ("staging: r8192e: Fix possible error in configuration")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 ---
- drivers/base/node.c  | 33 +++++++++++++++++++++------------
- include/linux/node.h | 16 +++++++---------
- mm/memory_hotplug.c  |  5 ++---
- 3 files changed, 30 insertions(+), 24 deletions(-)
+ drivers/staging/rtl8192e/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 50af16e68d98..9426b0f1f660 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -761,8 +761,8 @@ static int __ref get_nid_for_pfn(unsigned long pfn)
- 	return pfn_to_nid(pfn);
- }
+diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+index 1007eea6c8fc..5ac06061cfce 100644
+--- a/drivers/staging/rtl8192e/Kconfig
++++ b/drivers/staging/rtl8192e/Kconfig
+@@ -35,6 +35,7 @@ config RTLLIB_CRYPTO_TKIP
  
--static int do_register_memory_block_under_node(int nid,
--					       struct memory_block *mem_blk)
-+static void do_register_memory_block_under_node(int nid,
-+						struct memory_block *mem_blk)
- {
- 	int ret;
- 
-@@ -775,12 +775,19 @@ static int do_register_memory_block_under_node(int nid,
- 	ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
- 				       &mem_blk->dev.kobj,
- 				       kobject_name(&mem_blk->dev.kobj));
--	if (ret)
--		return ret;
-+	if (ret && ret != -EEXIST)
-+		dev_err_ratelimited(&node_devices[nid]->dev,
-+				    "can't create link to %s in sysfs (%d)\n",
-+				    kobject_name(&mem_blk->dev.kobj), ret);
- 
--	return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
-+	ret = sysfs_create_link_nowarn(&mem_blk->dev.kobj,
- 				&node_devices[nid]->dev.kobj,
- 				kobject_name(&node_devices[nid]->dev.kobj));
-+	if (ret && ret != -EEXIST)
-+		dev_err_ratelimited(&mem_blk->dev,
-+				    "can't create link to %s in sysfs (%d)\n",
-+				    kobject_name(&node_devices[nid]->dev.kobj),
-+				    ret);
- }
- 
- /* register memory section under specified node if it spans that node */
-@@ -816,7 +823,8 @@ static int register_mem_block_under_node_early(struct memory_block *mem_blk,
- 		if (page_nid != nid)
- 			continue;
- 
--		return do_register_memory_block_under_node(nid, mem_blk);
-+		do_register_memory_block_under_node(nid, mem_blk);
-+		return 0;
- 	}
- 	/* mem section does not span the specified node */
- 	return 0;
-@@ -831,7 +839,8 @@ static int register_mem_block_under_node_hotplug(struct memory_block *mem_blk,
- {
- 	int nid = *(int *)arg;
- 
--	return do_register_memory_block_under_node(nid, mem_blk);
-+	do_register_memory_block_under_node(nid, mem_blk);
-+	return 0;
- }
- 
- /*
-@@ -849,8 +858,8 @@ void unregister_memory_block_under_nodes(struct memory_block *mem_blk)
- 			  kobject_name(&node_devices[mem_blk->nid]->dev.kobj));
- }
- 
--int link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
--		      enum meminit_context context)
-+void link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
-+		       enum meminit_context context)
- {
- 	walk_memory_blocks_func_t func;
- 
-@@ -859,9 +868,9 @@ int link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
- 	else
- 		func = register_mem_block_under_node_early;
- 
--	return walk_memory_blocks(PFN_PHYS(start_pfn),
--				  PFN_PHYS(end_pfn - start_pfn), (void *)&nid,
--				  func);
-+	walk_memory_blocks(PFN_PHYS(start_pfn), PFN_PHYS(end_pfn - start_pfn),
-+			   (void *)&nid, func);
-+	return;
- }
- 
- #ifdef CONFIG_HUGETLBFS
-diff --git a/include/linux/node.h b/include/linux/node.h
-index 014ba3ab2efd..8e5a29897936 100644
---- a/include/linux/node.h
-+++ b/include/linux/node.h
-@@ -99,15 +99,14 @@ extern struct node *node_devices[];
- typedef  void (*node_registration_func_t)(struct node *);
- 
- #if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_NUMA)
--int link_mem_sections(int nid, unsigned long start_pfn,
--		      unsigned long end_pfn,
--		      enum meminit_context context);
-+void link_mem_sections(int nid, unsigned long start_pfn,
-+		       unsigned long end_pfn,
-+		       enum meminit_context context);
- #else
--static inline int link_mem_sections(int nid, unsigned long start_pfn,
--				    unsigned long end_pfn,
--				    enum meminit_context context)
-+static inline void link_mem_sections(int nid, unsigned long start_pfn,
-+				     unsigned long end_pfn,
-+				     enum meminit_context context)
- {
--	return 0;
- }
- #endif
- 
-@@ -130,8 +129,7 @@ static inline int register_one_node(int nid)
- 		if (error)
- 			return error;
- 		/* link memory sections under this node */
--		error = link_mem_sections(nid, start_pfn, end_pfn,
--					  MEMINIT_EARLY);
-+		link_mem_sections(nid, start_pfn, end_pfn, MEMINIT_EARLY);
- 	}
- 
- 	return error;
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 03df20078827..01e01a530d38 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1080,9 +1080,8 @@ int __ref add_memory_resource(int nid, struct resource *res)
- 	}
- 
- 	/* link memory sections under this node.*/
--	ret = link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1),
--				MEMINIT_HOTPLUG);
--	BUG_ON(ret);
-+	link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1),
-+			  MEMINIT_HOTPLUG);
- 
- 	/* create new memmap entry */
- 	if (!strcmp(res->name, "System RAM"))
+ config RTLLIB_CRYPTO_WEP
+ 	tristate "Support for rtllib WEP crypto"
++	select CRYPTO
+ 	select CRYPTO_ARC4
+ 	depends on RTLLIB
+ 	default y
 -- 
-2.28.0
+2.25.1
 
