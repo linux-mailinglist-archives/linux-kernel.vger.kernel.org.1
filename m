@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240E126A2BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB1526A2C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgIOKHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:07:46 -0400
-Received: from crapouillou.net ([89.234.176.41]:50084 "EHLO crapouillou.net"
+        id S1726290AbgIOKIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:08:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIOKHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:07:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1600164455; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i0x55otxMpUkdJhAxtRyRNzid5yrQkcNryvNuSbY120=;
-        b=JjKJkr554CtSU+QnzXW0ch7pQ3bS3gqTytqZwc4VR1umrd3soq7NGPIdyiFbjMUS+Nhzhz
-        k6c4fs+MIO2EP24+rEt3Vh8+gJwbbEQ2e5qmiZFukSa0WIG94cUJWezD2ITO7GQ/XBZ2Ps
-        k0nygKqOTATm1rLY76iZ1Zc4KXNyyLs=
-Date:   Tue, 15 Sep 2020 12:07:24 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 3/3] i2c: jz4780: Remove of_match_ptr()
-To:     Rob Herring <robh@kernel.org>
-Cc:     od@zcrc.me, linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <CS2PGQ.I4UMQBYTB15I2@crapouillou.net>
-In-Reply-To: <20200914221230.GA349829@bogus>
-References: <20200904131152.17390-1-paul@crapouillou.net>
-        <20200904131152.17390-3-paul@crapouillou.net>
-        <20200914221230.GA349829@bogus>
+        id S1726119AbgIOKIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:08:43 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20C4821D7B;
+        Tue, 15 Sep 2020 10:08:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600164523;
+        bh=oVxC3QyxPJ/+tr+5qGi/WrwvDWq87ex4HnrI2z4OGxw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Y7Y5E/pWxtJi7AAp0dXHWHDgJ9RL+9jHFlviwb6EAzCoD4mdktXMpUrPqeQFzhPH7
+         V0IPDX1NtsHEymitwE0magQ/mHoZG72sweCCRmCZs+B6++3CGOCzZsQJwrZNUEG55M
+         T++QYr0pLlc9QKsALbqaoC7fJZHYw42ECKaBwciU=
+Received: by mail-ot1-f44.google.com with SMTP id e23so2683822otk.7;
+        Tue, 15 Sep 2020 03:08:43 -0700 (PDT)
+X-Gm-Message-State: AOAM5338Ev2KkjsAyYKQUJK6OkSXHT2H4jSoCs/hfoWrAkb+aWcwi6lI
+        8tvNVPHPeNrUecRGwwJC60pOLGxdpvQPj3v9/V4=
+X-Google-Smtp-Source: ABdhPJxakfqPU6ysOCwxFi4nwOF5w944Y6bVLgrA2HH0kMZv8d7DO9TRfyqoDSntqVGOaOEcEa5DQ7hJBpEZmpu2kOI=
+X-Received: by 2002:a9d:69c9:: with SMTP id v9mr11619738oto.90.1600164522438;
+ Tue, 15 Sep 2020 03:08:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+References: <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+ <20200915033024.GB25789@gondor.apana.org.au> <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com>
+ <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com>
+ <20200915070523.GA26629@gondor.apana.org.au> <878sdb5qp5.fsf@nanos.tec.linutronix.de>
+ <CAMj1kXHsqZzfJ2qmsrUWEU_XWxmR1PhY3zo-yz9Vau90-WphXg@mail.gmail.com> <20200915100506.GA27268@gondor.apana.org.au>
+In-Reply-To: <20200915100506.GA27268@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 15 Sep 2020 13:08:31 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXHAHrCCCTce3aLX0v=TDiWDiiwGaUPZQfqekKAsByMSvg@mail.gmail.com>
+Message-ID: <CAMj1kXHAHrCCCTce3aLX0v=TDiWDiiwGaUPZQfqekKAsByMSvg@mail.gmail.com>
+Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC unconditionally
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Tue, 15 Sep 2020 at 13:05, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Tue, Sep 15, 2020 at 01:02:10PM +0300, Ard Biesheuvel wrote:
+> >
+> > > I'd rather go for a preemptible/sleepable version of highmem mapping
+> > > which is in itself consistent for both highmen and not highmem.
+> >
+> > I don't think we need to obsess about highmem, although we should
+> > obviously take care not to regress its performance unnecessarily. What
+> > I want to avoid is to burden a brand new subsystem with legacy highmem
+> > baggage simply because we could not agree on how to avoid that.
+>
+> I think what Thomas is proposing should address your concerns Ard.
+> As long as nobody objects to the slight performance degradation on
+> legacy highmem platforms it should make kmap_atomic just go away on
+> modern platforms.
+>
 
-Le lun. 14 sept. 2020 =E0 16:12, Rob Herring <robh@kernel.org> a =E9crit :
-> On Fri, Sep 04, 2020 at 03:11:52PM +0200, Paul Cercueil wrote:
->>  CONFIG_OF is selected by CONFIG_MACH_INGENIC, therefore we don't=20
->> need to
->>  handle the case where Device Tree is not supported.
->=20
-> What about COMPILE_TEST? If not supported, why not?
-
-What about it? It will still compile fine with COMPILE_TEST.
-
--Paul
-
->>=20
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/i2c/busses/i2c-jz4780.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->>  diff --git a/drivers/i2c/busses/i2c-jz4780.c=20
->> b/drivers/i2c/busses/i2c-jz4780.c
->>  index ed2ec86f6f1a..cb4a25ebb890 100644
->>  --- a/drivers/i2c/busses/i2c-jz4780.c
->>  +++ b/drivers/i2c/busses/i2c-jz4780.c
->>  @@ -857,7 +857,7 @@ static struct platform_driver jz4780_i2c_driver=20
->> =3D {
->>   	.remove		=3D jz4780_i2c_remove,
->>   	.driver		=3D {
->>   		.name	=3D "jz4780-i2c",
->>  -		.of_match_table =3D of_match_ptr(jz4780_i2c_of_matches),
->>  +		.of_match_table =3D jz4780_i2c_of_matches,
->>   	},
->>   };
->>=20
->>  --
->>  2.28.0
->>=20
-
-
+But making atomic kmap preemptible/sleepable creates the exact same
+problem, i.e., that we have no idea which existing callers are
+currently relying on those preemption disabling semantics, so we can't
+just take them away. Or am I missing something?
