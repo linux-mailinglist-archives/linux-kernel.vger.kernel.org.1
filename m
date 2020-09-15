@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CEF26B73A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDCF26B726
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgIPATt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38170 "EHLO mail.kernel.org"
+        id S1727345AbgIPASN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:18:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726884AbgIOOWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:22:17 -0400
+        id S1726885AbgIOOWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:22:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 885FE22272;
-        Tue, 15 Sep 2020 14:17:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EC4A22275;
+        Tue, 15 Sep 2020 14:17:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179456;
-        bh=Hw1X4RE33CTzK4sAiopuEovNVhAN4Phqjl630csa/VU=;
+        s=default; t=1600179458;
+        bh=WrnlAqu4pYVCGlc1rGq/4Sm+z4IbESJor4R40Xlh220=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uOSXVAXhAX5LaGy4jaSrXVypvXpoyaChxKkNy/0IB6UREcpIEByprdIBk/oFdFVl+
-         LghERBl7lQdV+sFODIoHJA1HpucjE/BFzMmiLrI5O0vjWQuZlmirwCjdOB9vKFAbqR
-         36aS24UyXLo4CkBTulEmzqocHan+8jpmueV3HAxk=
+        b=Z2IPMIHUrSa14G7F4u/NK0PR2/MWSpSoRM/Dd5ebu0qvebfKsTwad7Sm+8SPE3tjh
+         hJqlhYurbI0su8r+DhnJFpWPuh5qWMO4njXy/BM6B4umIMEspazF8GP4AB27nIeRHh
+         GT8AZtR/RCdmCGCyV8HBwWTywwpWTi6BD0DdmfUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sandeep Raghuraman <sandy.8925@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 37/78] drm/amdgpu: Fix bug in reporting voltage for CIK
-Date:   Tue, 15 Sep 2020 16:13:02 +0200
-Message-Id: <20200915140635.439028153@linuxfoundation.org>
+Subject: [PATCH 4.19 38/78] iommu/amd: Do not use IOMMUv2 functionality when SME is active
+Date:   Tue, 15 Sep 2020 16:13:03 +0200
+Message-Id: <20200915140635.495652007@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
 References: <20200915140633.552502750@linuxfoundation.org>
@@ -44,41 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandeep Raghuraman <sandy.8925@gmail.com>
+From: Joerg Roedel <jroedel@suse.de>
 
-[ Upstream commit d98299885c9ea140c1108545186593deba36c4ac ]
+[ Upstream commit 2822e582501b65707089b097e773e6fd70774841 ]
 
-On my R9 390, the voltage was reported as a constant 1000 mV.
-This was due to a bug in smu7_hwmgr.c, in the smu7_read_sensor()
-function, where some magic constants were used in a condition,
-to determine whether the voltage should be read from PLANE2_VID
-or PLANE1_VID. The VDDC mask was incorrectly used, instead of
-the VDDGFX mask.
+When memory encryption is active the device is likely not in a direct
+mapped domain. Forbid using IOMMUv2 functionality for now until finer
+grained checks for this have been implemented.
 
-This patch changes the code to use the correct defined constants
-(and apply the correct bitshift), thus resulting in correct voltage reporting.
-
-Signed-off-by: Sandeep Raghuraman <sandy.8925@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Link: https://lore.kernel.org/r/20200824105415.21000-3-joro@8bytes.org
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/iommu/amd_iommu_v2.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-index 219440bebd052..72c0a2ae2dd4f 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-@@ -3566,7 +3566,8 @@ static int smu7_read_sensor(struct pp_hwmgr *hwmgr, int idx,
- 	case AMDGPU_PP_SENSOR_GPU_POWER:
- 		return smu7_get_gpu_power(hwmgr, (uint32_t *)value);
- 	case AMDGPU_PP_SENSOR_VDDGFX:
--		if ((data->vr_config & 0xff) == 0x2)
-+		if ((data->vr_config & VRCONF_VDDGFX_MASK) ==
-+		    (VR_SVI2_PLANE_2 << VRCONF_VDDGFX_SHIFT))
- 			val_vid = PHM_READ_INDIRECT_FIELD(hwmgr->device,
- 					CGS_IND_REG__SMC, PWR_SVI2_STATUS, PLANE2_VID);
- 		else
+diff --git a/drivers/iommu/amd_iommu_v2.c b/drivers/iommu/amd_iommu_v2.c
+index 58da65df03f5e..7a59a8ebac108 100644
+--- a/drivers/iommu/amd_iommu_v2.c
++++ b/drivers/iommu/amd_iommu_v2.c
+@@ -776,6 +776,13 @@ int amd_iommu_init_device(struct pci_dev *pdev, int pasids)
+ 
+ 	might_sleep();
+ 
++	/*
++	 * When memory encryption is active the device is likely not in a
++	 * direct-mapped domain. Forbid using IOMMUv2 functionality for now.
++	 */
++	if (mem_encrypt_active())
++		return -ENODEV;
++
+ 	if (!amd_iommu_v2_supported())
+ 		return -ENODEV;
+ 
 -- 
 2.25.1
 
