@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FC426AEB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C43F26AEB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgIOUbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:31:04 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:37013 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727916AbgIOUYl (ORCPT
+        id S1727974AbgIOUbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:31:42 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16935 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728044AbgIOU3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:24:41 -0400
-Received: by mail-io1-f68.google.com with SMTP id y13so5639558iow.4;
-        Tue, 15 Sep 2020 13:24:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k8g/clW7IPHG1LbRVHMEnaiVeLkzzxw5Wen9ULU36ns=;
-        b=CHM/qGMjDqVbsE0mo3Aw3YJMEuMzDA9cvd0yl8Zl/5+CnuU1zf733X3u96MWoNHumh
-         XCC8FYkdYihVCeDcjTYrxgZnsyAUp4JRF0iXUqi6uQj6M0n34JUW/qN66l4Va/ynxbm6
-         ASf/APLt1FwS/ySGyhenPd7DP2tTh73fi4MiZiziUzeSplxIaEhCypNk8gsnX749Hnw8
-         yOO7er6/rVDCxrdL0LaxGqc1saJ5DhzUO4bXFQTJ6lK+jSKOOxc2JxXii7ZezQICumqq
-         pJOaGyTdKGdg71o1p53W0MjBlExLMrFF2zpLecQbuJeXrXPqySTNI0hOhX3UArNSOB95
-         Xotg==
-X-Gm-Message-State: AOAM530dnE58USy2gpqe50urtfv7XlBvOTyqkubHgyJ1IgphXqNm1FAc
-        kNjA0kNEzbnATGQhf/dw3A==
-X-Google-Smtp-Source: ABdhPJy2mL/IlfHwqDOlJmg6GztMT0Y5BZaayRHvuBr8GnCGguHN/BrCKaUKyrH49aML4FbYZNQWxw==
-X-Received: by 2002:a05:6602:2e89:: with SMTP id m9mr16868980iow.77.1600201475599;
-        Tue, 15 Sep 2020 13:24:35 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v20sm9357819ile.42.2020.09.15.13.24.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 13:24:34 -0700 (PDT)
-Received: (nullmailer pid 2448015 invoked by uid 1000);
-        Tue, 15 Sep 2020 20:24:32 -0000
-Date:   Tue, 15 Sep 2020 14:24:32 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        devicetree@vger.kernel.org, Rob Clark <robdclark@chromium.org>
-Subject: Re: [PATCH v3 01/10] dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy
- information
-Message-ID: <20200915202432.GA2435458@bogus>
-References: <20200910004902.2252694-1-swboyd@chromium.org>
- <20200910004902.2252694-2-swboyd@chromium.org>
- <159972050159.2295844.14715100754744266014@swboyd.mtv.corp.google.com>
+        Tue, 15 Sep 2020 16:29:21 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6123d90003>; Tue, 15 Sep 2020 13:28:09 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 15 Sep 2020 13:28:57 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 15 Sep 2020 13:28:57 -0700
+Received: from [10.21.180.184] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
+ 2020 20:28:48 +0000
+Subject: Re: [PATCH net-next RFC v4 10/15] net/mlx5: Add support for devlink
+ reload action fw activate
+To:     Jiri Pirko <jiri@resnulli.us>
+CC:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-11-git-send-email-moshe@mellanox.com>
+ <20200914135442.GJ2236@nanopsycho.orion>
+ <565e63b3-2a01-4eba-42d3-f5abc6794ee8@nvidia.com>
+ <20200915133705.GR2236@nanopsycho.orion>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <5c5689d9-c2ba-7656-10f3-1d5f33fc6a2e@nvidia.com>
+Date:   Tue, 15 Sep 2020 23:28:44 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159972050159.2295844.14715100754744266014@swboyd.mtv.corp.google.com>
+In-Reply-To: <20200915133705.GR2236@nanopsycho.orion>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600201690; bh=04mquwvw+nsnJ9vxBd1TQjzQY+onGs1HBC0MTcuyVQE=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:
+         Content-Transfer-Encoding:Content-Language:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=YULuzCP7FivE9eQRhiWC/QCJW5DpcfZV+gsC3rforTg8OnzTKIqYbG+HV2YKlxfCz
+         URpZSKUpScYtSkynsc57iJzLbOf3RAYG0EPLYIafio1t/LqK31HArD3NVqdGA5q4E8
+         s6Qqg9yQ1BdsYYlM0+aa8xO8X7qdS4+/3A60LFDuZ8Nj59oTf2cuQP/IWawWEF2llQ
+         hkqi9BWKemsAv4yJOImDYPcV8HBPOUmhSV+1Oc56x9M26++N3pjQx+TDv/yqQAwAjk
+         kgAKxdfkyKC6Vlt62Y8jxPCn7zPMky2r4OYTaMEyZso6+gyDtCDV8ND7v/XM+I+rBk
+         L6ezSbVR/jypQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 11:48:21PM -0700, Stephen Boyd wrote:
-> Quoting Stephen Boyd (2020-09-09 17:48:53)
-> > This binding only describes the USB phy inside the USB3 + DP "combo"
-> > phy. Add information for the DP phy and describe the sub-nodes that
-> > represent the DP and USB3 phys that exist inside the combo wrapper.
-> > Remove reg-names from required properties because it isn't required nor
-> > used by the kernel driver.
-> > 
-> > Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
-> > Cc: Chandan Uddaraju <chandanu@codeaurora.org>
-> > Cc: Vara Reddy <varar@codeaurora.org>
-> > Cc: Tanmay Shah <tanmay@codeaurora.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Manu Gautam <mgautam@codeaurora.org>
-> > Cc: Sandeep Maheswaram <sanm@codeaurora.org>
-> > Cc: Douglas Anderson <dianders@chromium.org>
-> > Cc: Sean Paul <seanpaul@chromium.org>
-> > Cc: Jonathan Marek <jonathan@marek.ca>
-> > Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > Cc: <devicetree@vger.kernel.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Rob Clark <robdclark@chromium.org>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > ---
-> >  .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml    | 91 +++++++++++++++++--
-> >  1 file changed, 81 insertions(+), 10 deletions(-)
-> 
-> I noticed that I didn't document the new compatible string I'm using,
-> qcom,sc7180-qmp-usb3-dp-phy, ugh.
-> 
-> Should I copy the whole file over and make a new document for the new
-> compatible string? That feels like the better solution vs. making this
-> binding have min/max stuff where it fails to enforce the DP part of the
-> phy. We can delete this binding once the kernel tree isn't using it,
-> right?
 
-It generally depends on how much if/then schema you have (or should 
-have) vs. how much is common, but it's a judgement call. It looks 
-like you are just extending the binding for the most part. If there's 
-dtb warnings until the existing stuff gets updated, that's fine.
+On 9/15/2020 4:37 PM, Jiri Pirko wrote:
+> Tue, Sep 15, 2020 at 02:44:02PM CEST, moshe@nvidia.com wrote:
+>> On 9/14/2020 4:54 PM, Jiri Pirko wrote:
+>>> Mon, Sep 14, 2020 at 08:07:57AM CEST, moshe@mellanox.com wrote:
+>>>
+>>> [..]
+>>>
+>>>> +static void mlx5_fw_reset_complete_reload(struct mlx5_core_dev *dev)
+>>>> +{
+>>>> +	struct mlx5_fw_reset *fw_reset =3D dev->priv.fw_reset;
+>>>> +
+>>>> +	/* if this is the driver that initiated the fw reset, devlink comple=
+ted the reload */
+>>>> +	if (test_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flag=
+s)) {
+>>>> +		complete(&fw_reset->done);
+>>>> +	} else {
+>>>> +		mlx5_load_one(dev, false);
+>>>> +		devlink_reload_implicit_actions_performed(priv_to_devlink(dev),
+>>>> +							  DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE,
+>>>> +							  BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
+>>>> +							  BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE));
+>>> Hmm, who originated the reset? Devlink_reload of the same devlink
+>>> instance?
+>>
+>> Not the same devlink instance for sure. I defer it by the flag above
+>> MLX5_FW_RESET_FLAG_PENDING_COMP. If the flag set, I set complete to the
+>> reload_down() waiting for it.
+> Hmm, thinking about the stats, as
+> devlink_reload_implicit_actions_performed() is called only in case
+> another instance does the reload, shouldn't it be a separate set of
+> stats? I think that the user would like to distinguish local and remote
+> reload, don't you think?
+>
 
-Rob
+Possible, it will double the counters, but it will give more info.
+
+So actually, if devlink_reload is not supported by driver, I should hold=20
+and show only the remote stats or all stats always ?
+
+How such remote counter should look like ? something like=20
+remote_fw_activate=C2=A0 while the local is just fw_activate ?
+
+>>
+>>> [..]
