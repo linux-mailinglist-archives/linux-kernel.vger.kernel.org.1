@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AB526AD2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062DD26AD31
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgIOTLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:11:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:42242 "EHLO foss.arm.com"
+        id S1727937AbgIOTLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:11:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:42260 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727961AbgIOTFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:05:01 -0400
+        id S1727967AbgIOTFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 15:05:07 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BF3311D4;
-        Tue, 15 Sep 2020 12:04:59 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6369A12FC;
+        Tue, 15 Sep 2020 12:05:07 -0700 (PDT)
 Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 457223F718;
-        Tue, 15 Sep 2020 12:04:58 -0700 (PDT)
-References: <20200914100340.17608-1-vincent.guittot@linaro.org> <20200914100340.17608-5-vincent.guittot@linaro.org>
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D2C53F718;
+        Tue, 15 Sep 2020 12:05:06 -0700 (PDT)
+References: <20200914100340.17608-1-vincent.guittot@linaro.org>
 User-agent: mu4e 0.9.17; emacs 26.3
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     Vincent Guittot <vincent.guittot@linaro.org>
 Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
         mgorman@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] sched/fair: reduce busy load balance interval
-In-reply-to: <20200914100340.17608-5-vincent.guittot@linaro.org>
-Date:   Tue, 15 Sep 2020 20:04:56 +0100
-Message-ID: <jhjft7i6euf.mognet@arm.com>
+Subject: Re: [PATCH 0/4] sched/fair: Improve fairness between cfs tasks
+In-reply-to: <20200914100340.17608-1-vincent.guittot@linaro.org>
+Date:   Tue, 15 Sep 2020 20:05:03 +0100
+Message-ID: <jhjeen26eu8.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -36,36 +36,60 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi Vincent,
+
 On 14/09/20 11:03, Vincent Guittot wrote:
-> The busy_factor, which increases load balance interval when a cpu is busy,
-> is set to 32 by default. This value generates some huge LB interval on
-> large system like the THX2 made of 2 node x 28 cores x 4 threads.
-> For such system, the interval increases from 112ms to 3584ms at MC level.
-> And from 228ms to 7168ms at NUMA level.
+> When the system doesn't have enough cycles for all tasks, the scheduler
+> must ensure a fair split of those CPUs cycles between CFS tasks. The
+> fairness of some use cases can't be solved with a static distribution of
+> the tasks on the system and requires a periodic rebalancing of the system
+> but this dynamic behavior is not always optimal and the fair distribution
+> of the CPU's time is not always ensured.
 >
-> Even on smaller system, a lower busy factor has shown improvement on the
-> fair distribution of the running time so let reduce it for all.
+> The patchset improves the fairness by decreasing  the constraint for
+> selecting migratable tasks with the number of failed load balance. This
+> change enables then to decrease the imbalance threshold because 1st LB
+> will try to migrate tasks that fully match the imbalance.
+>
+> Some tests results:
+>
+> - small 2 x 4 cores arm64 system
+>
+> hackbench -l (256000/#grp) -g #grp
+>
+> grp    tip/sched/core         +patchset             improvement
+> 1      1.420(+/- 11.72 %)     1.382(+/-10.50 %)     2.72 %
+> 4      1.295(+/-  2.72 %)     1.218(+/- 2.97 %)     0.76 %
+> 8      1.220(+/-  2.17 %)     1.218(+/- 1.60 %)     0.17 %
+> 16     1.258(+/-  1.88 %)     1.250(+/- 1,78 %)     0.58 %
+>
+>
+> fairness tests: run always running rt-app threads
+> monitor the ratio between min/max work done by threads
+>
+>                   v5.9-rc1             w/ patchset
+> 9 threads  avg     78.3% (+/- 6.60%)   91.20% (+/- 2.44%)
+>            worst   68.6%               85.67%
+>
+> 11 threads avg     65.91% (+/- 8.26%)  91.34% (+/- 1.87%)
+>            worst   53.52%              87.26%
+>
+> - large 2 nodes x 28 cores x 4 threads arm64 system
+>
+> The hackbench tests that I usually run as well as the sp.C.x and lu.C.x
+> tests with 224 threads have not shown any difference with a mix of less
+> than 0.5% of improvements or regressions.
 >
 
-ISTR you mentioned taking this one step further and making
-(interval * busy_factor) scale logarithmically with the number of CPUs to
-avoid reaching outrageous numbers. Did you experiment with that already?
+Few nitpicks from my end, but no major objections - this looks mostly
+sane to me.
 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/topology.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Vincent Guittot (4):
+>   sched/fair: relax constraint on task's load during load balance
+>   sched/fair: reduce minimal imbalance threshold
+>   sched/fair: minimize concurrent LBs between domain level
+>   sched/fair: reduce busy load balance interval
 >
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 1a84b778755d..a8477c9e8569 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1336,7 +1336,7 @@ sd_init(struct sched_domain_topology_level *tl,
->       *sd = (struct sched_domain){
->               .min_interval		= sd_weight,
->               .max_interval		= 2*sd_weight,
-> -		.busy_factor		= 32,
-> +		.busy_factor		= 16,
->               .imbalance_pct		= 117,
->
->               .cache_nice_tries	= 0,
+>  kernel/sched/fair.c     | 7 +++++--
+>  kernel/sched/topology.c | 4 ++--
+>  2 files changed, 7 insertions(+), 4 deletions(-)
