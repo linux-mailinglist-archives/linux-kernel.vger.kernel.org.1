@@ -2,110 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FD8269C66
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D42269C6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgIODRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
+        id S1726144AbgIODSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 23:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgIODRT (ORCPT
+        with ESMTP id S1726019AbgIODS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:17:19 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D901AC06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:17:17 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id g10so1856844otq.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:17:17 -0700 (PDT)
+        Mon, 14 Sep 2020 23:18:27 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697C8C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:18:27 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l191so1235499pgd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/qWVDCASGrupwV9JyWG9rVOnOXEyxffQY/mwb2teeCs=;
-        b=BkDvLW7nAAL4GOlIYSYdl2x/5Qq28C/sTVEIPMBw26Rrbkvpt/Xb7lX5rpYZbODXBV
-         aU94PH/Fu+cXV91D+Kiz0xT7RXFt5FXn4tVycuXCbyFArNvqP7lahl9DsDXz1cK3ZcFX
-         QuOdnku7vWl4kAaGpxoclI8+BkG12hoyJfQfaEue9veJs+YiJ6nZYXG1I9runEiURDQM
-         F47nnsIZqtvAt/xagjHNybWagPhUaz9tzKrsJTS+TNXk2ZsfZZ8nZo2Bpo2NCJvuN10d
-         ILvdGoJ5MKTbeGGDDk2524IBboHEnvMkQQcAQr6fstWwN7km1oz5JGfce2AOXRYp7YIi
-         9tJQ==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8eWJlS23lXDdfOxnmIsaJG6z5c4e92Yg34rdxNx93sw=;
+        b=ZZTQXFhwLLCZ/7ymRjJfYMR+sl/fuyF3PaQASfHVg0CiZylM4cscLcxwATvB8QZ+yz
+         ae5Y7+7pQ4yrjBa3sHpRTauDTu7zcA/+zOSW37cv3+ci9gQa9E7V1wQOqseURoAiy5T/
+         /OxiB00XJgzddDHFhHFsDwVxehjt0UB2RIM1XZdAY5EU2t3TipWfIJLIpkXdNU+VMAHs
+         /QyNJTgxIt7FJ/xMwMnHe3zr9YHEu3pNraQGzYHTGJziTCGG88aZom+jsr92MEG+1LPX
+         EkSIMfbIQNAT4aEnm3C28zH1LAKVq8P7rD9GFVxpbqX61HiOvhb8MNfYnF/a5kjwDlXW
+         l06w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/qWVDCASGrupwV9JyWG9rVOnOXEyxffQY/mwb2teeCs=;
-        b=TIrDRVaxCYJg4CP6fl3edufNdc7mxSrzSmmy8cW/l7uKqlmTu+OwpMagVRCNt51YR8
-         7IiWPOTDDfoowFqr7ARaYvHw2xI78SGvyWb9h5AdIY6HzjrIeyjj22xNfclL/xno1mjR
-         oO7/9f1drHjmznpjVz/PhNMdK6wI4KvfAtIcyzXqTHhEpMPnSLfkYL1osTCj1LSpAApS
-         ouoX0UcjphAqsxg8SkdPUMr8ajy+/1LLhqEqBYlkaTx3+Kespx4KsFX5U2iGW1cUPCOu
-         XgW1cVFt2gqC2zPdDe6UbsdJIaxTdeMtgC2mhkPtBLo+KaA+nZ6VAo+418TiRBo1YpxD
-         +Nug==
-X-Gm-Message-State: AOAM532ZGcbMN1LaqU8uK9rDWJJ1GoJ0NDUCqh1aM6rjlQDgrmA6ubc2
-        Hh+AzRPUnDJlEe8c0Gja0zsXXA==
-X-Google-Smtp-Source: ABdhPJxBKiKJdxNtWNtq+f2bA/z02TwJEliskpuCyFZRXsHFO/Z9F1FHqBPOVxb6uI6t341ojQlFGA==
-X-Received: by 2002:a05:6830:144f:: with SMTP id w15mr10880048otp.62.1600139836899;
-        Mon, 14 Sep 2020 20:17:16 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id l23sm4525960otk.79.2020.09.14.20.17.15
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=8eWJlS23lXDdfOxnmIsaJG6z5c4e92Yg34rdxNx93sw=;
+        b=c8RGNmyYKMO+dF6tCLVQva7WQCj9eteAxoRqT+6MKi3bx1CJoF0YyLDbN3rhvpTEDR
+         c7kGZFhDL0jBeKxZjT+IElExqJJmldaLfsqbhjYciDXFQ+u40dFxnvnxsAbQG+Y0QQdv
+         veMB4FMwwFb4l92VYEtORjv18rs5aWOnm3gLV8tyZzTK9x0Snq7RgYAHRXzZk8uDnr/z
+         G0kfkFV694aTMVWYhghSW/lodRMj12g3i3IbYsbgCKGKtI/GlB4VBb6yduouTECDNreD
+         02QTP8LmZKlJI9iVWRtnkCZNyy9/Rp5KcDQ6c5ICRGN3edqi1T/qpOIltPTdc+s60Z90
+         6G9A==
+X-Gm-Message-State: AOAM531+4qIB6W/eoqkh6gL89+DKQfmpRJPgJh0E1lGxws+EWY95XziS
+        NaTh9+hSeqcNuhBv62oG6zc=
+X-Google-Smtp-Source: ABdhPJy13NZVS5g+bs4u3ayAseXDHnaGn8fhN1VzEPuA/1CU++hPOmfl4A1G31lRZs+2TvbnPvXpVw==
+X-Received: by 2002:a63:8e4a:: with SMTP id k71mr12896843pge.326.1600139906149;
+        Mon, 14 Sep 2020 20:18:26 -0700 (PDT)
+Received: from balhae.roam.corp.google.com ([101.235.31.111])
+        by smtp.gmail.com with ESMTPSA id a24sm10584582pju.25.2020.09.14.20.18.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 20:17:16 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 22:17:14 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Niklas Cassel <nks@flawful.org>, Andy Gross <agross@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] power: avs: qcom-cpr: simplify the return
- expression of cpr_disable()
-Message-ID: <20200915031714.GA670377@yoga>
-References: <20200915032629.1772569-1-liushixin2@huawei.com>
+        Mon, 14 Sep 2020 20:18:25 -0700 (PDT)
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCHSET v2 00/11] perf tools: Fix various memory leaks
+Date:   Tue, 15 Sep 2020 12:18:08 +0900
+Message-Id: <20200915031819.386559-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915032629.1772569-1-liushixin2@huawei.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14 Sep 22:26 CDT 2020, Liu Shixin wrote:
+Hello,
 
-> Simplify the return expression.
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+I've found and fixed a bunch of memory leaks during perf pmu and
+metric tests with address sanitizer.  Before this, the tests were
+mostly failed due to the leaks since ASAN makes it return non-zero.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Now I'm seeing no error with ASAN like below:
 
-> ---
->  drivers/power/avs/qcom-cpr.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/drivers/power/avs/qcom-cpr.c b/drivers/power/avs/qcom-cpr.c
-> index bd7c3e48b386..b24cc77d1889 100644
-> --- a/drivers/power/avs/qcom-cpr.c
-> +++ b/drivers/power/avs/qcom-cpr.c
-> @@ -665,8 +665,6 @@ static int cpr_enable(struct cpr_drv *drv)
->  
->  static int cpr_disable(struct cpr_drv *drv)
->  {
-> -	int ret;
-> -
->  	mutex_lock(&drv->lock);
->  
->  	if (cpr_is_allowed(drv)) {
-> @@ -676,11 +674,7 @@ static int cpr_disable(struct cpr_drv *drv)
->  
->  	mutex_unlock(&drv->lock);
->  
-> -	ret = regulator_disable(drv->vdd_apc);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return 0;
-> +	return regulator_disable(drv->vdd_apc);
->  }
->  
->  static int cpr_config(struct cpr_drv *drv)
-> -- 
-> 2.25.1
-> 
+  $ ./perf test pmu metric
+   9: Parse perf pmu format                                 : Ok
+  10: PMU events                                            :
+  10.1: PMU event table sanity                              : Ok
+  10.2: PMU event map aliases                               : Ok
+  10.3: Parsing of PMU event table metrics                  : Skip (some metrics failed)
+  10.4: Parsing of PMU event table metrics with fake PMUs   : Ok
+  67: Parse and process metrics                             : Ok
+
+The failure in 10.3 seems due to parse errors like below:
+
+  Multiple errors dropping message: unknown term 'filter_opc' for pmu 'uncore_cbox_0'
+  (valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
+                branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
+		nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size)
+
+
+  Parse event failed metric 'DRAM_Parallel_Reads' id 'arb/event=0x80,umask=0x2,thresh=1/'
+    expr 'arb@event\=0x80\,umask\=0x2@ / arb@event\=0x80\,umask\=0x2\,thresh\=1@'
+  Error string 'unknown term 'thresh' for pmu 'uncore_arb'' help
+    'valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
+                  branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
+		  nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size'
+
+
+* Changes from v1:
+ - Add 'Acked-by: Jiri'
+
+
+The patches are also available at 'perf/metric-fix-v2' branch on
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks
+Namhyung
+
+
+Namhyung Kim (11):
+  perf metric: Fix some memory leaks
+  perf metric: Fix some memory leaks - part 2
+  perf evlist: Fix cpu/thread map leak
+  perf parse-event: Fix cpu map leaks
+  perf parse-event: Fix memory leak in evsel->unit
+  perf test: Fix memory leaks in parse-metric test
+  perf metric: Release expr_parse_ctx after testing
+  perf metric: Free metric when it failed to resolve
+  perf metric: Do not free metric when failed to resolve
+  perf test: Free aliases for PMU event map aliases test
+  perf test: Free formats for perf pmu parse test
+
+ tools/perf/tests/parse-metric.c | 14 ++++++++-----
+ tools/perf/tests/pmu-events.c   |  5 +++++
+ tools/perf/tests/pmu.c          |  1 +
+ tools/perf/util/evlist.c        | 11 ++++++++---
+ tools/perf/util/metricgroup.c   | 35 +++++++++++++++++++++++----------
+ tools/perf/util/parse-events.c  |  9 +++++++--
+ tools/perf/util/pmu.c           | 13 +++++++++++-
+ tools/perf/util/pmu.h           |  2 ++
+ tools/perf/util/stat-shadow.c   |  8 +++++---
+ 9 files changed, 74 insertions(+), 24 deletions(-)
+
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
