@@ -2,416 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934C326B71A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACC426B716
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbgIPARF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgIOOW6 (ORCPT
+        id S1727343AbgIPAQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:16:35 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:35540 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgIOOXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:22:58 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2E0C0611C1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:21:30 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g4so3553246wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:21:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k+cVukl4tya2DjuLEpOgBg4zNG49MfEZgMGjfR4kTzg=;
-        b=WKqVKobHY1jHH8tkNtkhYLlP7ATqAAzDVvqNZUm+Br7u6ul67dLVjsY/vt6EfYmzIf
-         4P/EXiI2nw/Ml9fNKIZfdtji++GNNWwX5fP3AhdDiWk5vxuSUgclfsEOe7qgrUVkBJZ4
-         wwlTW2Mc4t1ZdOT0aslC1JzbLuk0iaYF9jbmzU9HfECeaUPUY3mMJscNkdvheAaEnCRN
-         xZmQvLXmrqYcEMC3wjNP6vVM/S1/bxmxFwLY+flxpu4dZrTVfoA/BRBSPCLU2WNEo/13
-         4OqIET1xWV8m5yR/dPAsQpXcmq8qemuveeA021GpgwdQGSa6UIuaJKX5Aqhw+RjMiMoi
-         BCPg==
+        Tue, 15 Sep 2020 10:23:18 -0400
+Received: by mail-il1-f194.google.com with SMTP id y9so3185967ilq.2;
+        Tue, 15 Sep 2020 07:21:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k+cVukl4tya2DjuLEpOgBg4zNG49MfEZgMGjfR4kTzg=;
-        b=kLOlUaL48zJzCme7goBbincPQAh5BiNTwfH5HvdynctiIGy87rCDN/CFsJLgQAL2FC
-         bE4um80F2LEurmITmm6F81ENaP4Htx0oE5uQVYguyfoHwi5sDsL7W7hGBvy1VyMbQ9vC
-         d1h0YMUANCqUWE5JjfBi9tdC++JrlFuBmq2tb37AfxCE/NIRpW2yPExPupcn6M3hzwkl
-         KoHhDsKbm7//pkUsQ+h3jVtCr2ldc58Ev3ok5EZPWxw6FegT+bKzdQ6r71sHK+tIYP7s
-         cl2uiFS8eAm87a39kw41kGcEpxsw8OhTlt8xjHft8pARTLl+McfOZhljtldfB2iou29o
-         mUYQ==
-X-Gm-Message-State: AOAM533eiDztsFbDF8QNqCv876eDBdAN2rvtjL/7vhyOYa2koDUY12Ag
-        P7Zd0MVqnebp245zBv4NUzJvbA==
-X-Google-Smtp-Source: ABdhPJysY9eaFewh/ggXi7rv2lyBPvOm1bGaZDKsKz/BySSLn1nY0UmvqnRhwZbP1w6qN4uRgbIkcg==
-X-Received: by 2002:a5d:4a4a:: with SMTP id v10mr17652811wrs.72.1600179688723;
-        Tue, 15 Sep 2020 07:21:28 -0700 (PDT)
-Received: from starbuck.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id d2sm27821482wro.34.2020.09.15.07.21.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oibcEZaus/KsE9Tzx8ei6QcB5cjiNKskz7YSAoeajEU=;
+        b=VUL0UUDL1tN2ZbWB7++YaOqMpVNu19aNMDXf2tcDFp63gnbNWnb41Ag+8+nLkYQ2O5
+         GICDmqlLV+89s+oObukZSUd7HnIIAJv74xbMsr3jGi6KZDHQ08i5GCTQwqRjYvFysYcS
+         orlnyHkr7KoJjfaCjTqV17AwcOB7YG1t9jqhJf/QHWT5dJgxMfHSgMxxMbqLwkCEV8My
+         xi2kz7ZO0HaQ2QYfWMle8hycYJCm5BhrtIrCWzSdjd+85k+WScLQrzCVBUaQ9AgXDa+z
+         gmJ+wvPVBav1gZ9/MOqAL9kusBfHqQCZyfNYmF5AbD9BCah3Q/3/XEuRKVy4wDKLht+n
+         yWiA==
+X-Gm-Message-State: AOAM531avnZsmncym+mrXHWCJVOsiOVa+/FtYA58MweHnz3Yi8AvMSB8
+        l5QywPYxhPr3vu8tgcaOSw==
+X-Google-Smtp-Source: ABdhPJzt8yV1vKiC8DPNIwCsSdd5HBuc1l0C2uul6JJjtgEd9/PutB30hWIdnJ86bLqeEaT6LV9bZA==
+X-Received: by 2002:a92:9146:: with SMTP id t67mr16054340ild.297.1600179707146;
+        Tue, 15 Sep 2020 07:21:47 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id p17sm8912639ilj.81.2020.09.15.07.21.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 07:21:28 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: meson: initial support for aml-s905x-cc v2
-Date:   Tue, 15 Sep 2020 16:19:21 +0200
-Message-Id: <20200915141921.57258-3-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200915141921.57258-1-jbrunet@baylibre.com>
-References: <20200915141921.57258-1-jbrunet@baylibre.com>
+        Tue, 15 Sep 2020 07:21:46 -0700 (PDT)
+Received: (nullmailer pid 1873185 invoked by uid 1000);
+        Tue, 15 Sep 2020 14:21:45 -0000
+Date:   Tue, 15 Sep 2020 08:21:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        linux-usb@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: usb: Add binding for onboard USB hubs
+Message-ID: <20200915142145.GA1861636@bogus>
+References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for the libretech aml-s905x-cc (Le Potato) v2
+On Mon, Sep 14, 2020 at 11:27:48AM -0700, Matthias Kaehlcke wrote:
+> Onboard USB hubs need to be powered and may require initiaization of
+> other resources (like GPIOs or clocks) to work properly. This adds
+> a device tree binding for these hubs.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../meson-gxl-s905x-libretech-cc-v2.dts       | 318 ++++++++++++++++++
- 2 files changed, 319 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts
+We already have bindings for these. 2 in fact as I2C controlled hubs are 
+often described under the I2C bus.
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index 4e2239ffcaa5..be5277b7fbf4 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -24,6 +24,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s805x-libretech-ac.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905x-hwacom-amazetv.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905x-khadas-vim.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905x-libretech-cc.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905x-libretech-cc-v2.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905x-nexbox-a95x.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905x-p212.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905d-p230.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts
-new file mode 100644
-index 000000000000..675eaa87963e
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts
-@@ -0,0 +1,318 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2020 BayLibre, SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/sound/meson-aiu.h>
-+
-+#include "meson-gxl-s905x.dtsi"
-+
-+/ {
-+	compatible = "libretech,aml-s905x-cc-v2", "amlogic,s905x",
-+		     "amlogic,meson-gxl";
-+	model = "Libre Computer AML-S905X-CC V2";
-+
-+	aliases {
-+		serial0 = &uart_AO;
-+		ethernet0 = &ethmac;
-+		spi0 = &spifc;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	emmc_pwrseq: emmc-pwrseq {
-+		compatible = "mmc-pwrseq-emmc";
-+		reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	hdmi-connector {
-+		compatible = "hdmi-connector";
-+		type = "a";
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi_tx_tmds_out>;
-+			};
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-blue {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio GPIODV_24 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+			panic-indicator;
-+		};
-+
-+		led-green {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_DISK_ACTIVITY;
-+			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "disk-activity";
-+		};
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x80000000>;
-+	};
-+
-+	ao_5v: regulator-ao_5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "AO_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&dc_in>;
-+		regulator-always-on;
-+	};
-+
-+	dc_in: regulator-dc_in {
-+		compatible = "regulator-fixed";
-+		regulator-name = "DC_IN";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+
-+	vcck: regulator-vcck {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCCK";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&ao_5v>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_card: regulator-vcc_card {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_CARD";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vddio_ao3v3>;
-+
-+		gpio = <&gpio GPIOCLK_1 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	vcc5v: regulator-vcc5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&ao_5v>;
-+
-+		gpio = <&gpio GPIOH_3 GPIO_OPEN_DRAIN>;
-+	};
-+
-+	vddio_ao3v3: regulator-vddio_ao3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_AO3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&ao_5v>;
-+		regulator-always-on;
-+	};
-+
-+
-+	vddio_card: regulator-vddio-card {
-+		compatible = "regulator-gpio";
-+		regulator-name = "VDDIO_CARD";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		gpios = <&gpio_ao GPIOAO_3 GPIO_ACTIVE_HIGH>;
-+		gpios-states = <0>;
-+
-+		states = <3300000 0>,
-+			 <1800000 1>;
-+
-+		regulator-settling-time-up-us = <200>;
-+		regulator-settling-time-down-us = <50000>;
-+	};
-+
-+	vddio_ao18: regulator-vddio_ao18 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_AO18";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vddio_ao3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_1v8: regulator-vcc_1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC 1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vddio_ao3v3>;
-+		regulator-always-on;
-+	};
-+
-+	sound {
-+		compatible = "amlogic,gx-sound-card";
-+		model = "GXL-LIBRETECH-S905X-CC-V2";
-+		assigned-clocks = <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>,
-+				  <&clkc CLKID_MPLL2>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+		status = "okay";
-+
-+		dai-link-0 {
-+			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
-+			dai-format = "i2s";
-+			mclk-fs = <256>;
-+
-+			codec-0 {
-+				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
-+			};
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
-+
-+			codec-0 {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+};
-+
-+
-+&aiu {
-+	status = "okay";
-+};
-+
-+&cec_AO {
-+	status = "okay";
-+	pinctrl-0 = <&ao_cec_pins>;
-+	pinctrl-names = "default";
-+	hdmi-phandle = <&hdmi_tx>;
-+};
-+
-+
-+&ethmac {
-+	status = "okay";
-+};
-+
-+&internal_phy {
-+	pinctrl-0 = <&eth_link_led_pins>, <&eth_act_led_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&ir {
-+	status = "okay";
-+	pinctrl-0 = <&remote_input_ao_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&hdmi_tx {
-+	status = "okay";
-+	pinctrl-0 = <&hdmi_hpd_pins>, <&hdmi_i2c_pins>;
-+	hdmi-supply = <&vcc5v>;
-+	pinctrl-names = "default";
-+};
-+
-+&hdmi_tx_tmds_port {
-+	hdmi_tx_tmds_out: endpoint {
-+		remote-endpoint = <&hdmi_connector_in>;
-+	};
-+};
-+
-+&saradc {
-+	status = "okay";
-+	vref-supply = <&vddio_ao18>;
-+};
-+
-+/* SD card */
-+&sd_emmc_b {
-+	pinctrl-0 = <&sdcard_pins>;
-+	pinctrl-1 = <&sdcard_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	sd-uhs-sdr12;
-+	sd-uhs-sdr25;
-+	sd-uhs-sdr50;
-+	sd-uhs-ddr50;
-+	max-frequency = <100000000>;
-+	disable-wp;
-+
-+	cd-gpios = <&gpio CARD_6 GPIO_ACTIVE_LOW>;
-+
-+	vmmc-supply = <&vcc_card>;
-+	vqmmc-supply = <&vddio_card>;
-+
-+	status = "okay";
-+};
-+
-+/* eMMC */
-+&sd_emmc_c {
-+	pinctrl-0 = <&emmc_pins>;
-+	pinctrl-1 = <&emmc_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <8>;
-+	cap-mmc-highspeed;
-+	mmc-hs200-1_8v;
-+	max-frequency = <200000000>;
-+	disable-wp;
-+
-+	mmc-pwrseq = <&emmc_pwrseq>;
-+	vmmc-supply = <&vddio_ao3v3>;
-+	vqmmc-supply = <&vcc_1v8>;
-+
-+	status = "okay";
-+};
-+
-+&spifc {
-+	status = "okay";
-+	pinctrl-0 = <&nor_pins>;
-+	pinctrl-names = "default";
-+
-+	nor_4u1: spi-flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <3000000>;
-+	};
-+};
-+
-+&uart_AO {
-+	status = "okay";
-+	pinctrl-0 = <&uart_ao_a_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&usb {
-+	status = "okay";
-+	dr_mode = "host";
-+};
-+
-+&usb2_phy0 {
-+	pinctrl-names = "default";
-+	phy-supply = <&vcc5v>;
-+};
-+
-+&usb2_phy1 {
-+	phy-supply = <&vcc5v>;
-+};
--- 
-2.25.4
+> 
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+> 
+>  .../bindings/usb/onboard_usb_hub.yaml         | 70 +++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
+> new file mode 100644
+> index 000000000000..f82d8f459eed
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
+> @@ -0,0 +1,70 @@
+> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/onboard_usb_hub.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Binding for onboard USB hubs
+> +
+> +maintainers:
+> +  - Matthias Kaehlcke <mka@chromium.org>
+> +
+> +allOf:
+> +  - $ref: /schemas/usb/onboard_usb_hub.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - onboard-usb-hub
+> +      - realtek,rts5411
+> +
+> +  power-off-in-suspend:
+> +    description:
+> +      The hub should be powered off during system suspend. When the
+> +      "wakeup-source" property is also provided the hub is only powered
+> +      off during suspend when no wakeup capable descendants are connected.
+> +    type: boolean
+> +
+> +  vdd-supply:
+> +    description:
+> +      phandle to the regulator that provides power to the hub.
+> +
+> +  wakeup-source:
+> +    description:
+> +      Wakeup capable USB devices connected to this hub can be used as
+> +      wakeup source.
+> +    type: boolean
+> +
+> +required:
+> +  - compatible
+> +  - vdd-supply
+> +
+> +examples:
+> +  - |
+> +    usb_hub: usb-hub {
+> +        compatible = "realtek,rts5411", "onboard-usb-hub";
+> +        vdd-supply = <&pp3300_hub>;
+> +        power-off-in-suspend;
+> +        wakeup-source;
 
+This is the hub device?
+
+> +    };
+> +
+> +    &usb_1_dwc3 {
+> +	dr_mode = "host";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	/* 2.0 hub on port 1 */
+> +	hub@1 {
+> +		compatible = "usbbda,5411";
+> +		reg = <1>;
+> +		hub = <&usb_hub>;
+
+Or this node is?
+
+> +	};
+> +
+> +	/* 3.0 hub on port 2 */
+> +	hub@2 {
+> +		compatible = "usbbda,411";
+> +		reg = <2>;
+> +		hub = <&usb_hub>;
+
+Or this node is?
+
+The hub node belongs here.
+
+If you really have it connected to 2 upstream ports, then just do 
+one node with 'reg = <1 2>;'.
+
+Rob
+
+> +	};
+> +
+> +...
+> -- 
+> 2.28.0.618.gf4bc123cb7-goog
+> 
