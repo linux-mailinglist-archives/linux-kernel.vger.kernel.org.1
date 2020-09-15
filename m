@@ -2,106 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7332026A165
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8CC26A169
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgIOI7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgIOI7R (ORCPT
+        id S1726343AbgIOI7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:59:35 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:34685 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726216AbgIOI7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:59:17 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693E8C06178B
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:59:16 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s13so2547824wmh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:59:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I+pbT1inBl3n0lqbrLVg66bp8zNdCDEV4y1lVPSy6l0=;
-        b=BZKOuerOrNiKoqZ4oLXn8qN+SN/oZGF43V56o7NN+7e+Q+Xz+iW5tEV0tm6hazl6xD
-         3+P4KW8GSm0NLpiXBb+TaOEAo6bhgVyQ5ehL54Bm+r/au+qo/dksX56pSHTPx2u0Bu8j
-         POe9WXbghsUq4kWKhGDX4/VlK9uL5kYzosWSWsQuD3HBtfq5O0gBqMsscJRF+9gTNlA+
-         QNFpNobaM/JSRpve3hNx4NNjNZbigQgR5KzmGILri1ef/uxLK8gRBm8EORZt2aWFDFrb
-         KwaLL98M3WxNDlGyEbjfjZBErbKWVEhhoE+HI5PKTvLyfuPHWJLlSjwJjVWtAHkUaRNw
-         YFUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I+pbT1inBl3n0lqbrLVg66bp8zNdCDEV4y1lVPSy6l0=;
-        b=lFVoHw17aOiomW3LDsO0S4vuDf3Z8ZPNE0daKod61gGtGUyxgxiH5XF+JVQw3qJS3W
-         URQKR7h8yHuAGTtyg8jvHlf6cKBzhZAspJUDnBAAIqztdSZ7ncJ5eATVsz4NJjk5J6GH
-         9XwNOe2aQNl8Rnb6MhddS0YUv7ebX47402OOVHxf7xLDgUfnl0HuqukhudSsnN9JZj/P
-         wKiB4oYiqiosnOGhqlEmnB8ChaOmVAY/Y4Fz8RuUp80ZJc+HXksRSUPf5uNGNf0OC7VA
-         b/nz6v8yn7aIHbCzYQomOKa8QK6EdtnZW079j7GUYDrQpgynG+5g/oj34fhVZWahqFqE
-         P54Q==
-X-Gm-Message-State: AOAM531EnPmnAqsPc/1NvgkN6EyLTQG7kFIPt0btmWNlOPZg2d6eUokq
-        Re83smLRQ8o/fEUdAXgD8m3JBw==
-X-Google-Smtp-Source: ABdhPJxwl+AR0veGFI3LbaOBK0x/v70KjIHfeeKzmk5Q9nYP362xI37wxMCUtVU9pFmj4dxpOO+BLA==
-X-Received: by 2002:a7b:c404:: with SMTP id k4mr3575686wmi.168.1600160353652;
-        Tue, 15 Sep 2020 01:59:13 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a402:e7fb:d494:d130? ([2a01:e34:ed2f:f020:a402:e7fb:d494:d130])
-        by smtp.googlemail.com with ESMTPSA id n11sm25365785wrx.91.2020.09.15.01.59.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 01:59:13 -0700 (PDT)
-Subject: Re: [PATCH v2] dt-bindings: timer: renesas,cmt: Document r8a7742 CMT
- support
-To:     Rob Herring <robh@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-References: <20200902091927.32211-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200914201503.GA164883@bogus>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <657f4e13-7d5e-0885-a8ba-c692e97e3cb4@linaro.org>
-Date:   Tue, 15 Sep 2020 10:59:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Sep 2020 04:59:32 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U90bzfv_1600160366;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U90bzfv_1600160366)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 15 Sep 2020 16:59:26 +0800
+Date:   Tue, 15 Sep 2020 16:59:26 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     tj@kernel.org, baolin.wang7@gmail.com, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Some improvements for blk-throttle
+Message-ID: <20200915085926.GA122937@VM20190228-100.tbsite.net>
+Reply-To: Baolin Wang <baolin.wang@linux.alibaba.com>
+References: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
+ <822998a7-4cc7-88ee-8b3f-e8e7660a5b0a@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200914201503.GA164883@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <822998a7-4cc7-88ee-8b3f-e8e7660a5b0a@kernel.dk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2020 22:15, Rob Herring wrote:
-> On Wed, 02 Sep 2020 10:19:27 +0100, Lad Prabhakar wrote:
->> Document SoC specific compatible strings for r8a7742. No driver change
->> is needed as the fallback strings will activate the right code.
->>
->> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
->> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->> ---
->> v1->v2
->> * Reabsed the patch on top YAML conversion
->> * Restored the Acks
->> ---
->>  Documentation/devicetree/bindings/timer/renesas,cmt.yaml | 2 ++
->>  1 file changed, 2 insertions(+)
->>
+Hi Jens,
+
+On Mon, Sep 14, 2020 at 07:37:53PM -0600, Jens Axboe wrote:
+> On 9/7/20 2:10 AM, Baolin Wang wrote:
+> > Hi All,
+> > 
+> > This patch set did some clean-ups, as well as removing some unnecessary
+> > bps/iops limitation calculation when checking if can dispatch a bio or
+> > not for a tg. Please help to review. Thanks.
+> > 
+> > Baolin Wang (5):
+> >   blk-throttle: Fix some comments' typos
+> >   blk-throttle: Use readable READ/WRITE macros
+> >   blk-throttle: Define readable macros instead of static variables
+> >   blk-throttle: Avoid calculating bps/iops limitation repeatedly
+> >   blk-throttle: Avoid checking bps/iops limitation if bps or iops is    
+> >     unlimited
+> > 
+> >  block/blk-throttle.c | 59 ++++++++++++++++++++++++++++++++--------------------
+> >  1 file changed, 36 insertions(+), 23 deletions(-)
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
+> Looks reasonable to me, I've applied it.
 
-Applied, thanks
+Thanks.
 
+> 
+> Out of curiosity, are you using blk-throttle in production, or are these
+> just fixes/cleanups that you came across?
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Yes, we're using it in some old products, and I am trying to do some
+cleanups and optimizaiton when testing it.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
