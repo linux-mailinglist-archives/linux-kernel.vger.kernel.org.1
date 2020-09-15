@@ -2,250 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAC426A9A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6500826A9B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727555AbgIOQWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726500AbgIOP2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:28:14 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1661E20731;
-        Tue, 15 Sep 2020 15:28:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600183693;
-        bh=cOjc0BpQPkQ73HeS+RZJ5skgebhu1THccarIr00qFPI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=AkFBr9qbpjh35YapJNXKIU7orVSj2SHx0hZcTHt5EC7TLFskkeBdZozI4nsTbW+j1
-         qXd3tWYSgCJ/m5NCyOEKDqPwVjY0c5Vh+QeZgf9kQno+WUc52O471hGpFbC2uekbua
-         fUvFYDNyI7JLQetmmtSkJjZVtQd/x+tDbQKea2SU=
-Date:   Tue, 15 Sep 2020 10:28:11 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "puranjay12@gmail.com" <puranjay12@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "vailbhavgupta40@gmail.com" <vailbhavgupta40@gmail.com>
-Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
- driving parameter
-Message-ID: <20200915152811.GA1383952@bjorn-Precision-5520>
+        id S1727543AbgIOQ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:26:38 -0400
+Received: from mail.efficios.com ([167.114.26.124]:59376 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727403AbgIOPkV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:40:21 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 614C829C581;
+        Tue, 15 Sep 2020 11:39:48 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Ml2W45TkLYr8; Tue, 15 Sep 2020 11:39:47 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D3DE529C50B;
+        Tue, 15 Sep 2020 11:39:47 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D3DE529C50B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1600184387;
+        bh=qDTO28HunFyVjFWL6x+EVTg+Tl6g4hTKpsIz9y4Vr6Q=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=koiMR+G7yOeqLjUFLJH+p306FUWEzInqGdmBHLNsokfIZ4K80iJQv1eAg46trOZFp
+         gTzxrYihRkKqLgbOsSPcf1wGtfvs625mS7ANBHVSdhtmdAezmCckSF0rlpZewD6k6G
+         OmLhJSeejjPBe/0n1Yd02wbsWq9McuDmSlMk+ExJPf93HNuP7MgXb3aXwdcS1LFpYy
+         sAXRRS3c0nnNHOAtzzhQKWjIZtKWjw3qt44Chv59FZvVhQx8TTHABjiTTArjKG3hfT
+         UL7gamtFy39OvHYBTs+Ofhrp5pSkSMUM8I2eeS1ZEvpAe0gt7HEtYyKptreDyAN3Y4
+         KxFlkXDAJhtgA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id B9fVMRJnEwXN; Tue, 15 Sep 2020 11:39:47 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id B918529C3AF;
+        Tue, 15 Sep 2020 11:39:47 -0400 (EDT)
+Date:   Tue, 15 Sep 2020 11:39:47 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Peter Oskolkov <posk@google.com>, paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>
+Message-ID: <1071966201.11729.1600184387644.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CAFTs51WPjmEk2nQaxPAgOLN+3E7rfCVQ_=Q6PwD7dS2wyAKu5w@mail.gmail.com>
+References: <20200831225810.2287294-1-posk@google.com> <CAFTs51WPjmEk2nQaxPAgOLN+3E7rfCVQ_=Q6PwD7dS2wyAKu5w@mail.gmail.com>
+Subject: Re: [PATCH 1/2 v6] rseq/membarrier: add
+ MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4a677365e7a64699b16ae0b25eca1041@realtek.com>
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
+Thread-Topic: rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
+Thread-Index: lcEn8j0646tNX8azIBD9pm2+RugSRg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:24:50AM +0000, 吳昊澄 Ricky wrote:
-> > -----Original Message-----
-> > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
-> > Sent: Friday, September 11, 2020 10:56 PM
-> > To: 吳昊澄 Ricky
-> > Cc: arnd@arndb.de; gregkh@linuxfoundation.org; bhelgaas@google.com;
-> > ulf.hansson@linaro.org; rui_feng@realsil.com.cn; linux-kernel@vger.kernel.org;
-> > puranjay12@gmail.com; linux-pci@vger.kernel.org;
-> > vailbhavgupta40@gamail.com
-> > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix driving
-> > parameter
-> > 
-> > On Fri, Sep 11, 2020 at 08:18:22AM +0000, 吳昊澄 Ricky wrote:
-> > > > -----Original Message-----
-> > > > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
-> > > > Sent: Thursday, September 10, 2020 1:44 AM
-> > > > To: 吳昊澄 Ricky
-> > > > Cc: arnd@arndb.de; gregkh@linuxfoundation.org; bhelgaas@google.com;
-> > > > ulf.hansson@linaro.org; rui_feng@realsil.com.cn;
-> > linux-kernel@vger.kernel.org;
-> > > > puranjay12@gmail.com; linux-pci@vger.kernel.org;
-> > > > vailbhavgupta40@gamail.com
-> > > > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
-> > driving
-> > > > parameter
-> > > >
-> > > > On Wed, Sep 09, 2020 at 07:10:19AM +0000, 吳昊澄 Ricky wrote:
-> > > > > > -----Original Message-----
-> > > > > > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
-> > > > > > Sent: Wednesday, September 09, 2020 6:29 AM
-> > > > > > To: 吳昊澄 Ricky
-> > > > > > Cc: arnd@arndb.de; gregkh@linuxfoundation.org;
-> > bhelgaas@google.com;
-> > > > > > ulf.hansson@linaro.org; rui_feng@realsil.com.cn;
-> > > > linux-kernel@vger.kernel.org;
-> > > > > > puranjay12@gmail.com; linux-pci@vger.kernel.org;
-> > > > > > vailbhavgupta40@gamail.com
-> > > > > > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
-> > > > driving
-> > > > > > parameter
-> > > > > >
-> > > > > > On Mon, Sep 07, 2020 at 06:07:31PM +0800, ricky_wu@realtek.com
-> > wrote:
-> > > > > > > From: Ricky Wu <ricky_wu@realtek.com>
-> > > > > > >
-> > > > > > > v4:
-> > > > > > > split power down flow and power saving function to two patch
-> > > > > > >
-> > > > > > > v5:
-> > > > > > > fix up modified change under the --- line
-> > > > > >
-> > > > > > Hehe, this came out *above* the "---" line :)
-> > > > > >
-> > > > > > > Add rts522a L1 sub-state support
-> > > > > > > Save more power on rts5227 rts5249 rts525a rts5260
-> > > > > > > Fix rts5260 driving parameter
-> > > > > > >
-> > > > > > > Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> > > > > > > ---
-> > > > > > >  drivers/misc/cardreader/rts5227.c  | 112 +++++++++++++++++++++-
-> > > > > > >  drivers/misc/cardreader/rts5249.c  | 145
-> > > > > > ++++++++++++++++++++++++++++-
-> > > > > > >  drivers/misc/cardreader/rts5260.c  |  28 +++---
-> > > > > > >  drivers/misc/cardreader/rtsx_pcr.h |  17 ++++
-> > > > > > >  4 files changed, 283 insertions(+), 19 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/misc/cardreader/rts5227.c
-> > > > > > b/drivers/misc/cardreader/rts5227.c
-> > > > > > > index 747391e3fb5d..8859011672cb 100644
-> > > > > > > --- a/drivers/misc/cardreader/rts5227.c
-> > > > > > > +++ b/drivers/misc/cardreader/rts5227.c
-> > > > > > > @@ -72,15 +72,80 @@ static void
-> > rts5227_fetch_vendor_settings(struct
-> > > > > > rtsx_pcr *pcr)
-> > > > > > >
-> > > > > > >  	pci_read_config_dword(pdev, PCR_SETTING_REG2, &reg);
-> > > > > > >  	pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", PCR_SETTING_REG2, reg);
-> > > > > > > +	if (rtsx_check_mmc_support(reg))
-> > > > > > > +		pcr->extra_caps |= EXTRA_CAPS_NO_MMC;
-> > > > > > >  	pcr->sd30_drive_sel_3v3 = rtsx_reg_to_sd30_drive_sel_3v3(reg);
-> > > > > > >  	if (rtsx_reg_check_reverse_socket(reg))
-> > > > > > >  		pcr->flags |= PCR_REVERSE_SOCKET;
-> > > > > > >  }
-> > > > > > >
-> > > > > > > +static void rts5227_init_from_cfg(struct rtsx_pcr *pcr)
-> > > > > > > +{
-> > > > > > > +	struct pci_dev *pdev = pcr->pci;
-> > > > > > > +	int l1ss;
-> > > > > > > +	u32 lval;
-> > > > > > > +	struct rtsx_cr_option *option = &pcr->option;
-> > > > > > > +
-> > > > > > > +	l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
-> > > > > > > +	if (!l1ss)
-> > > > > > > +		return;
-> > > > > > > +
-> > > > > > > +	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, &lval);
-> > > > > >
-> > > > > > This looks a little problematic.  PCI_L1SS_CTL1 is an architected
-> > > > > > register in the ASPM L1 PM Substates capability, and its value may
-> > > > > > change at runtime because drivers/pci/pcie/aspm.c manages it.
-> > > > > >
-> > > > > > It looks like the code below does device-specific configuration based
-> > > > > > on the current PCI_L1SS_CTL1 value.  But what happens if aspm.c
-> > > > > > changes PCI_L1SS_CTL1 later?
-> > > > >
-> > > > > We are going to make sure and set the best configuration on the
-> > > > > current time, if host change the capability later, it doesn't affect
-> > > > > function, only affect a little power saving
-> > > >
-> > > > Why don't you unconditionally do the following?
-> > > >
-> > > >   rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
-> > > >   rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
-> > > >   rtsx_set_dev_flag(pcr, PM_L1_1_EN);
-> > > >   rtsx_set_dev_flag(pcr, PM_L1_2_EN);
-> > >
-> > > Our power saving function have 2 different flow L1 and L1substate,
-> > > so we need to check it for which flow we are going to
-> > > Detail to see below reply
-> > >
-> > > > Let's assume the generic code in aspm.c has cleared all these bits:
-> > > >
-> > > >   PCI_L1SS_CTL1_ASPM_L1_1
-> > > >   PCI_L1SS_CTL1_ASPM_L1_2
-> > > >   PCI_L1SS_CTL1_PCIPM_L1_1
-> > > >   PCI_L1SS_CTL1_PCIPM_L1_2
-> > > >
-> > > > in the L1 PM Substates capability.
-> > > >
-> > > > I think you are saying that if you *also* clear ASPM_L1_1_EN,
-> > > > ASPM_L1_2_EN, PM_L1_1_EN, and PM_L1_2_EN in your device-specific
-> > > > registers, it uses less power than if you set those device-specific
-> > > > bits.  Right?
-> > > >
-> > > > And moreover, I think you're saying that if aspm.c subsequently *sets*
-> > > > some of those bits in the L1 PM Substates capability, those substates
-> > > > *work* even though the device-specific ASPM_L1_1_EN, ASPM_L1_2_EN,
-> > > > PM_L1_1_EN, and PM_L1_2_EN bits are not set.  Right?
-> > > >
-> > > > I do not feel good about this as a general strategy.  I think we
-> > > > should program the device so the behavior is completely predictable,
-> > > > regardless of the generic enable bits happened to be set at
-> > > > probe-time.
-> > > >
-> > > > The current approach means that if we enable L1 substates after the
-> > > > driver probe, the device is configured differently than if we enabled
-> > > > L1 substates before probe.  That's not a reliable way to operate it.
-> > >
-> > > Talk about our power saving function
-> > > a) basic L1 power saving
-> > > b) advance L1 power saving
-> > > c) advance L1 substate power saving
-> > 
-> > I have no idea what the difference between "basic L1 power saving" and
-> > "advance L1 power saving" is, so I assume those are device-specific
-> > things.  If not, please use the same terminology as the PCIe spec.
-> > 
-> > > at initial, we check pci port support L1 subs or not, if not we are
-> > > going to b) otherwise going to c).
-> > 
-> > You're not checking whether the port *supports* L1 substates.  You
-> > would look at PCI_L1SS_CAP to learn that.  You're looking at
-> > PCI_L1SS_CTL1, which tells you whether L1 substates are *enabled*.
-> > 
-> > > Assume aspm.c change bit of L1 PM Substates capability after our
-> > > driver probe, we are going to a)
-> > >
-> > > So far we did not see any platform change L1 PM Substates capability
-> > > after our driver probe.
-> > 
-> > You should expect that aspm.c will change bits in the L1 PM *control*
-> > register (PCI_L1SS_CTL1) after probe.
-> > 
-> > You might not actually see it change, depending on how you tested, but
-> > you cannot rely on PCI_L1SS_CTL1 being constant.  It may change based
-> > on power/performance tradeoffs, e.g., whether the system is plugged
-> > into AC power, whether it's idle, etc.
-> > 
-> 
-> Our ASPM function is a HW solution follow the PCIe SPEC. don’t worry
-> about crash the system If HOST change our device config space
-> setting at run time our HW will do the corresponding things which
-> follows the SPEC.  At initial time we set these parameter just good
-> for more power saving
+----- On Sep 15, 2020, at 2:12 AM, Peter Oskolkov posk@posk.io wrote:
 
-OK.  It would be better if your hardware would notice the
-PCI_L1SS_CTL1 change and set its own device-specific power-saving
-parameters.  The drivers would be simpler, and the device behavior
-would be more consistent.
+> Any comments here? Should I change anything?
 
-Drivers *writing* to standard PCI config things (64-byte config header
-or Capabilities like PCIe, PM, ASPM, L1 Substates) is a definite
-problem because the PCI core owns those and writes from drivers need
-to be mediated somehow.  AFAICT your drivers don't write to these
-things.
+See below,
 
-Drivers *reading* these things (as your drivers do) shouldn't cause
-problems, but it does violate the interface abstractions that the PCI
-core should provide.
+>> diff --git a/include/uapi/linux/membarrier.h b/include/uapi/linux/membarrier.h
+>> index 5891d7614c8c..98c2b0e7c0d8 100644
+>> --- a/include/uapi/linux/membarrier.h
+>> +++ b/include/uapi/linux/membarrier.h
+>> @@ -114,6 +114,29 @@
+>>   *                          If this command is not implemented by an
+>>   *                          architecture, -EINVAL is returned.
+>>   *                          Returns 0 on success.
+>> + * @MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
+>> + *                          In addition to provide memory ordering
+>> + *                          guarantees described in
+>> + *                          MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE,
 
-Bjorn
+^ is the above still true ? I see from the code that the rseq membarrier
+only issues rseq_preempt, not any (documented) explicit core serialization nor
+memory barrier.
+
+>> + *                          ensure the caller thread, upon return from
+>> + *                          system call, that all its running thread
+>> + *                          siblings have any currently running rseq
+>> + *                          critical sections restarted if @flags
+>> + *                          parameter is 0; if @flags parameter is
+>> + *                          MEMBARRIER_CMD_FLAG_CPU,
+>> + *                          then this operation is performed only
+>> + *                          on CPU indicated by @cpu_id. If this command is
+>> + *                          not implemented by an architecture, -EINVAL
+>> + *                          is returned. A process needs to register its
+>> + *                          intent to use the private expedited rseq
+>> + *                          command prior to using it, otherwise
+>> + *                          this command returns -EPERM.
+>> + * @MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ:
+>> + *                          Register the process intent to use
+>> + *                          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ.
+>> + *                          If this command is not implemented by an
+>> + *                          architecture, -EINVAL is returned.
+>> + *                          Returns 0 on success.
+>>   * @MEMBARRIER_CMD_SHARED:
+>>   *                          Alias to MEMBARRIER_CMD_GLOBAL. Provided for
+>>   *                          header backward compatibility.
+>> @@ -131,9 +154,15 @@ enum membarrier_cmd {
+>>         MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED               = (1 << 4),
+>>         MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE              = (1 << 5),
+>>         MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE     = (1 << 6),
+>> +       MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ                   = (1 << 7),
+>> +       MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ          = (1 << 8),
+>>
+>>         /* Alias for header backward compatibility. */
+>>         MEMBARRIER_CMD_SHARED                   = MEMBARRIER_CMD_GLOBAL,
+>>  };
+>>
+>> +enum membarrier_cmd_flag {
+>> +       MEMBARRIER_CMD_FLAG_CPU         = (1 << 0),
+>> +};
+>> +
+>>  #endif /* _UAPI_LINUX_MEMBARRIER_H */
+>> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+>> index 168479a7d61b..e32e9476ccf3 100644
+>> --- a/kernel/sched/membarrier.c
+>> +++ b/kernel/sched/membarrier.c
+>> @@ -18,6 +18,14 @@
+>>  #define MEMBARRIER_PRIVATE_EXPEDITED_SYNC_CORE_BITMASK 0
+>>  #endif
+>>
+>> +#ifdef CONFIG_RSEQ
+>> +#define MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ_BITMASK          \
+>> +       (MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ                  \
+>> +       | MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ_BITMASK)
+>> +#else
+>> +#define MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ_BITMASK  0
+>> +#endif
+>> +
+>>  #define MEMBARRIER_CMD_BITMASK                                         \
+>>         (MEMBARRIER_CMD_GLOBAL | MEMBARRIER_CMD_GLOBAL_EXPEDITED        \
+>>         | MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED                      \
+>> @@ -30,6 +38,13 @@ static void ipi_mb(void *info)
+>>         smp_mb();       /* IPIs should be serializing but paranoid. */
+>>  }
+>>
+>> +#ifdef CONFIG_RSEQ
+>> +static void ipi_rseq(void *info)
+>> +{
+>> +       rseq_preempt(current);
+>> +}
+>> +#endif
+>> +
+>>  static void ipi_sync_rq_state(void *info)
+>>  {
+>>         struct mm_struct *mm = (struct mm_struct *) info;
+>> @@ -129,19 +144,29 @@ static int membarrier_global_expedited(void)
+>>         return 0;
+>>  }
+>>
+>> -static int membarrier_private_expedited(int flags)
+>> +static int membarrier_private_expedited(int flags, int cpu_id)
+>>  {
+>> -       int cpu;
+>>         cpumask_var_t tmpmask;
+>>         struct mm_struct *mm = current->mm;
+>> +       smp_call_func_t ipi_func = ipi_mb;
+>>
+>> -       if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
+>> +       if (flags == MEMBARRIER_FLAG_SYNC_CORE) {
+>>                 if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+>>                         return -EINVAL;
+>>                 if (!(atomic_read(&mm->membarrier_state) &
+>>                       MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
+>>                         return -EPERM;
+>> +       } else if (flags == MEMBARRIER_FLAG_RSEQ) {
+>> +#ifdef CONFIG_RSEQ
+>> +               if (!(atomic_read(&mm->membarrier_state) &
+>> +                     MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY))
+>> +                       return -EPERM;
+>> +               ipi_func = ipi_rseq;
+>> +#else
+>> +               return -EINVAL;
+>> +#endif
+
+I'm allergic to mixing code logic and preprocessor logic. Anything against
+the following changes ?
+
+(above)
+
+static void ipi_rseq(void *info)
+{
+    rseq_preempt(current);
+}
+
+^ without the #ifdef CONFIG_RSEQ (rseq_preempt is already defined as a no-op when
+CONFIG_RSEQ=n)
+
+and within membarrier_private_expedited:
+
+if (!IS_ENABLED(CONFIG_RSEQ))
+  return -EINVAL;
+if (!(atomic_read(&mm->membarrier_state) &
+    MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY))
+  return -EPERM;
+ipi_func = ipi_rseq;
+
+[...]
+
+>> @@ -310,8 +368,15 @@ static int membarrier_register_private_expedited(int flags)
+>>
+>>  /**
+>>   * sys_membarrier - issue memory barriers on a set of threads
+>> - * @cmd:   Takes command values defined in enum membarrier_cmd.
+>> - * @flags: Currently needs to be 0. For future extensions.
+>> + * @cmd:    Takes command values defined in enum membarrier_cmd.
+>> + * @flags:  Currently needs to be 0 for all commands other than
+>> + *          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ: in the latter
+>> + *          case it can be MEMBARRIER_CMD_FLAG_CPU, indicating that @cpu_id
+>> + *          contains the CPU on which to interrupt (= restart)
+>> + *          the RSEQ critical section.
+>> + * @cpu_id: if @flags == MEMBARRIER_CMD_FLAG_CPU, indicates the cpu on which
+>> + *          RSEQ CS should be interrupted (@cmd must be
+>> + *          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ).
+>>   *
+>>   * If this system call is not implemented, -ENOSYS is returned. If the
+>>   * command specified does not exist, not available on the running
+>> @@ -337,10 +402,21 @@ static int membarrier_register_private_expedited(int
+>> flags)
+>>   *        smp_mb()           X           O            O
+>>   *        sys_membarrier()   O           O            O
+>>   */
+>> -SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+>> +SYSCALL_DEFINE3(membarrier, int, cmd, int, flags, int, cpu_id)
+
+Now that we have the first use of "flags", it would be a good time to change
+"int flags" to "unsigned int flags", which is a preferred way to express system
+call flags parameters.
+
+Thanks,
+
+Mathieu
+
+>>  {
+>> -       if (unlikely(flags))
+>> -               return -EINVAL;
+>> +       switch (cmd) {
+>> +       case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
+>> +               if (unlikely(flags && flags != MEMBARRIER_CMD_FLAG_CPU))
+>> +                       return -EINVAL;
+>> +               break;
+>> +       default:
+>> +               if (unlikely(flags))
+>> +                       return -EINVAL;
+>> +       }
+>> +
+>> +       if (!(flags & MEMBARRIER_CMD_FLAG_CPU))
+>> +               cpu_id = -1;
+>> +
+>>         switch (cmd) {
+>>         case MEMBARRIER_CMD_QUERY:
+>>         {
+>> @@ -362,13 +438,17 @@ SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+>>         case MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
+>>                 return membarrier_register_global_expedited();
+>>         case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
+>> -               return membarrier_private_expedited(0);
+>> +               return membarrier_private_expedited(0, cpu_id);
+>>         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
+>>                 return membarrier_register_private_expedited(0);
+>>         case MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
+>> -               return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
+>> +               return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE,
+>> cpu_id);
+>>         case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
+>>                 return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
+>> +       case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
+>> +               return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ,
+>> cpu_id);
+>> +       case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ:
+>> +               return
+>> membarrier_register_private_expedited(MEMBARRIER_FLAG_RSEQ);
+>>         default:
+>>                 return -EINVAL;
+>>         }
+>> --
+>> 2.28.0.402.g5ffc5be6b7-goog
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
