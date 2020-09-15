@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21CE26B18D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD9526B18A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727532AbgIOWbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727503AbgIOQRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:17:19 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D468E21D24;
-        Tue, 15 Sep 2020 16:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600186288;
-        bh=OqNo4S1pwXf0y+OZFi5cbHnZ01UaP3lAlNY279lhRwE=;
+        id S1727760AbgIOWby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727542AbgIOQRS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:17:18 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166F6C061A2E;
+        Tue, 15 Sep 2020 09:17:10 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3BCE3276;
+        Tue, 15 Sep 2020 18:12:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1600186327;
+        bh=yWcHzfZaIL+JJoYu6WgRXH1lmt2hAIodJaLy5+l5lQ0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1SbAjFtsROiRCnu7dWyqN1sIRZoFtHLH0MUJUYOlqDz9sybYMVk7vMa97tuhN/eXb
-         2X+dts4/sCSWx68z5lSHzmqQDfHvyzZxYUgNpCa4RxG/Ut4m70Zks3irGDXZRCVYTp
-         oAQBm5qwIMsvFOtlPHV50y+STKCjMdNmVH4jbBoc=
-Date:   Tue, 15 Sep 2020 17:11:23 +0100
-From:   Will Deacon <will@kernel.org>
-To:     peterz@infradead.org
-Cc:     Oleg Nesterov <oleg@redhat.com>, Hou Tao <houtao1@huawei.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200915161123.GC26745@willie-the-truck>
-References: <20200915140750.137881-1-houtao1@huawei.com>
- <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+        b=WixtAFmwupVy7MRyDTZqdZRI02yRepxuWJ4yPMNnxeJtBh+AktZupVFYDc6j/uPZv
+         l1VpY8FBzuH0HnIh/pcPbkaK060agSmlL6VBG9R3sca6dF87vJkU+nP2QN7Zg3Jrhk
+         Z6YpX097SeLzHq2RkY1wMphh7PvJZUGsMYtNd14U=
+Date:   Tue, 15 Sep 2020 19:11:38 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH 1/3] MAINTAINERS: Add Fabrizio Castro to Renesas DRIF
+Message-ID: <20200915161138.GB26029@pendragon.ideasonboard.com>
+References: <20200915131216.21137-1-fabrizio.castro.jz@renesas.com>
+ <20200915131216.21137-2-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200915160344.GH35926@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200915131216.21137-2-fabrizio.castro.jz@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 06:03:44PM +0200, peterz@infradead.org wrote:
-> On Tue, Sep 15, 2020 at 05:51:50PM +0200, peterz@infradead.org wrote:
+Hi Fabrizio,
+
+Thank you for the patch.
+
+On Tue, Sep 15, 2020 at 02:12:14PM +0100, Fabrizio Castro wrote:
+> Renesas are expanding their DRIF support and offering,
+> I'll be the internal maintainer for DRIF.
 > 
-> > Anyway, I'll rewrite the Changelog and stuff it in locking/urgent.
-> 
-> How's this?
-> 
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+
+Thank you for volunteering :-)
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
 > ---
-> Subject: locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
-> From: Hou Tao <houtao1@huawei.com>
-> Date: Tue, 15 Sep 2020 22:07:50 +0800
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> The __this_cpu*() accessors are (in general) IRQ-unsafe which, given
-> that percpu-rwsem is a blocking primitive, should be just fine.
-> 
-> However, file_end_write() is used from IRQ context and will cause
-> load-store issues.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 26af84f97353..9f49e5ac90d8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10898,6 +10898,7 @@ F:	include/media/drv-intf/renesas-ceu.h
+>  
+>  MEDIA DRIVERS FOR RENESAS - DRIF
+>  M:	Ramesh Shanmugasundaram <rashanmu@gmail.com>
+> +M:	Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+>  L:	linux-media@vger.kernel.org
+>  L:	linux-renesas-soc@vger.kernel.org
+>  S:	Supported
 
-... on architectures where the per-cpu accessors are not atomic.
+-- 
+Regards,
 
-> 
-> Fixing it by using the IRQ-safe this_cpu_*() for operations on
-
-Fixing => Fix ?
-
-> read_count. This will generate more expensive code on a number of
-> platforms, which might cause a performance regression for some of the
-> other percpu-rwsem users.
-> 
-> If any such is reported, we can consider alternative solutions.
-> 
-> Fixes: 70fe2f48152e ("aio: fix freeze protection of aio writes")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Link: https://lkml.kernel.org/r/20200915140750.137881-1-houtao1@huawei.com
-> ---
->  include/linux/percpu-rwsem.h  |    8 ++++----
->  kernel/locking/percpu-rwsem.c |    4 ++--
->  2 files changed, 6 insertions(+), 6 deletions(-)
-
-For the patch:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
+Laurent Pinchart
