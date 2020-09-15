@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307A4269A93
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3254C269A97
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726172AbgIOAm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:42:58 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:38473 "EHLO
+        id S1726166AbgIOAnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:43:52 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:34782 "EHLO
         mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbgIOAmv (ORCPT
+        with ESMTP id S1726019AbgIOAnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:42:51 -0400
-Received: by mail-il1-f195.google.com with SMTP id t18so1393645ilp.5;
-        Mon, 14 Sep 2020 17:42:50 -0700 (PDT)
+        Mon, 14 Sep 2020 20:43:46 -0400
+Received: by mail-il1-f195.google.com with SMTP id a8so1422032ilk.1;
+        Mon, 14 Sep 2020 17:43:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ljTivD9aPg+KhnR32N2OLptR9gt/0CpuWiMcqWyJCeo=;
-        b=nEmetuU+yJkUC5DOd9/dIK/cd462oA0l6mQ5aTpHekYQKvpgLjZjxKUSCiOFDpMQbh
-         2hhdV0l+QQVkesfBClXcjh3dSNRMlPdpGf7Hjwft5i6wntG/XJo5uvEy2U9K84KwVmZL
-         u04epcJ4w82xsNhaLJxCPi7NapEl2skq43iuovegox6sPNlS37HirjPCNuOCLf3T16X1
-         HAsYLazyP1g7QCRAdvhorFL0tHZUW5YRXTb9e3FYUfIsLXR0hvGVW0c4KABxyYr95/oJ
-         gHFlKgKBKEYlj+tsT5yFbTWmouOvQhAAgJOOhUs76uu+65/TJdG7cUCfG6yZKwwHPkm+
-         4cVg==
-X-Gm-Message-State: AOAM530NkSnlqG1IJjkbMiSaku+Q9tLW+hD2ai1Kp8rc0ONofiVn2EfV
-        JWjA8UhSq9LFdAzDHsVMzg==
-X-Google-Smtp-Source: ABdhPJzUShX3XEFb2+9+p9Q90jl6hIT+CV75GSpVkzUUmQNVd40GkohHW2eQma8HdTG14EAHPUGGzg==
-X-Received: by 2002:a05:6e02:eac:: with SMTP id u12mr9654359ilj.285.1600130570492;
-        Mon, 14 Sep 2020 17:42:50 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UNo7mnvbrxfEkc0MpSN1laoGb3kvFf+1FihcAh2kuwA=;
+        b=czHw3kjO2bsqlXToKgdCZvxcClIlBc6OUWDEi/UCyq4pbqUmdjD0BwQ/SdAO8lk/8R
+         PGS6kcvPPooj8p+IUJrFMYR7SQr4MH0DXPQ8SjzEXnLPnFB9o6KbrfoT8Za4utaHqg4C
+         NpQnG7qBINZrX3sGvIJ5cwIVGIac9Folk1aUpHmolmZg1n3SFwpd28ESvYpdmkRrxq7+
+         i4vIAtm/mMCVGB+EgCWnkx7P5yvcZroDnKlfYhbAsgN9lK/dw1tbjQhKiZdC4r0e+r4P
+         m7Oxa1FBj9Z8zbhzvmgd7RjEsfSLjgK7ypY+clhMHHkcxwlC1YbTWVgd0q+eC5899OEp
+         JrqQ==
+X-Gm-Message-State: AOAM53386ZvXI1MEIRx86j21TyvWdJRzWZQC+C/YT7NImr1LRuFxnZmR
+        /9fFji/5/3epQFESbG76HMkRHkI+KIRE
+X-Google-Smtp-Source: ABdhPJxzFLfpkXRw4xeAxrjp/JRY1XR9O5cts0wBuIhefTxqHs0fAUX8/qOZkEySJsYxiU3gLAuz7g==
+X-Received: by 2002:a92:7711:: with SMTP id s17mr6292866ilc.236.1600130625930;
+        Mon, 14 Sep 2020 17:43:45 -0700 (PDT)
 Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id m15sm6693979iow.9.2020.09.14.17.42.46
+        by smtp.gmail.com with ESMTPSA id w15sm7796085ilq.46.2020.09.14.17.43.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 17:42:49 -0700 (PDT)
-Received: (nullmailer pid 591961 invoked by uid 1000);
-        Tue, 15 Sep 2020 00:42:45 -0000
-Date:   Mon, 14 Sep 2020 18:42:45 -0600
+        Mon, 14 Sep 2020 17:43:45 -0700 (PDT)
+Received: (nullmailer pid 593532 invoked by uid 1000);
+        Tue, 15 Sep 2020 00:43:40 -0000
+Date:   Mon, 14 Sep 2020 18:43:40 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, Tomasz Figa <tfiga@google.com>,
-        srv_heupstream@mediatek.com, devicetree@vger.kernel.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Evan Green <evgreen@chromium.org>,
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-rtc@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, allen <allen.chen@ite.com.tw>,
         Rob Herring <robh+dt@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, chao.hao@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-kernel@vger.kernel.org, anan.sun@mediatek.com,
-        ming-fan.chen@mediatek.com, youlin.pei@mediatek.com
-Subject: Re: [PATCH v2 06/23] dt-bindings: mediatek: Add binding for mt8192
- IOMMU and SMI
-Message-ID: <20200915004245.GA591931@bogus>
-References: <20200905080920.13396-1-yong.wu@mediatek.com>
- <20200905080920.13396-7-yong.wu@mediatek.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Mark Brown <broonie@kernel.org>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-arm-kernel@lists.infradead.org,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        linux-pwm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH v2 01/10] dt-bindings: Add vendor prefix for Netronix,
+ Inc.
+Message-ID: <20200915004340.GA593474@bogus>
+References: <20200905133230.1014581-1-j.neuschaefer@gmx.net>
+ <20200905133230.1014581-2-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200905080920.13396-7-yong.wu@mediatek.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200905133230.1014581-2-j.neuschaefer@gmx.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Sep 2020 16:09:03 +0800, Yong Wu wrote:
-> This patch adds decriptions for mt8192 IOMMU and SMI.
+On Sat, 05 Sep 2020 15:32:21 +0200, Jonathan Neuschäfer wrote:
+> Netronix, Inc. (http://www.netronixinc.com/) makes ebook reader board
+> designs, which are for example used in Kobo and Tolino devices.
 > 
-> mt8192 also is MTK IOMMU gen2 which uses ARM Short-Descriptor translation
-> table format. The M4U-SMI HW diagram is as below:
+> An alternative prefix for Netronix would be "ntx", which is already used
+> in code released by Netronix. It is shorter, but perhaps less clear.
 > 
->                           EMI
->                            |
->                           M4U
->                            |
->                       ------------
->                        SMI Common
->                       ------------
->                            |
->   +-------+------+------+----------------------+-------+
->   |       |      |      |       ......         |       |
->   |       |      |      |                      |       |
-> larb0   larb1  larb2  larb4     ......      larb19   larb20
-> disp0   disp1   mdp    vdec                   IPE      IPE
-> 
-> All the connections are HW fixed, SW can NOT adjust it.
-> 
-> mt8192 M4U support 0~16GB iova range. we preassign different engines
-> into different iova ranges:
-> 
-> domain-id  module     iova-range                  larbs
->    0       disp        0 ~ 4G                      larb0/1
->    1       vcodec      4G ~ 8G                     larb4/5/7
->    2       cam/mdp     8G ~ 12G             larb2/9/11/13/14/16/17/18/19/20
->    3       CCU0    0x4000_0000 ~ 0x43ff_ffff     larb13: port 9/10
->    4       CCU1    0x4400_0000 ~ 0x47ff_ffff     larb14: port 4/5
-> 
-> The iova range for CCU0/1(camera control unit) is HW requirement.
-> 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 > ---
->  .../bindings/iommu/mediatek,iommu.yaml        |   9 +-
->  .../mediatek,smi-common.yaml                  |   5 +-
->  .../memory-controllers/mediatek,smi-larb.yaml |   3 +-
->  include/dt-bindings/memory/mt8192-larb-port.h | 239 ++++++++++++++++++
->  4 files changed, 251 insertions(+), 5 deletions(-)
->  create mode 100644 include/dt-bindings/memory/mt8192-larb-port.h
+> v2:
+> - No changes
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
