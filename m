@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC3426B651
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1767726B640
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbgIPACd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:02:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43014 "EHLO mail.kernel.org"
+        id S1726148AbgIPAAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:00:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727008AbgIOOaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:30:15 -0400
+        id S1727010AbgIOOaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:30:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1BB022265;
-        Tue, 15 Sep 2020 14:21:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B55522AAC;
+        Tue, 15 Sep 2020 14:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179714;
-        bh=9pI4uv6hUNb9UQV7Vr10WMD6bP0LD4MqoWwF067Lm8Y=;
+        s=default; t=1600179722;
+        bh=aL8L4JPV6nAQVF+hiDzhbM35OeSZuT8Epx32RXWWXkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G1krATw0PGkDRyeJosnoaVMTksF6k1YtfxR2p/jSJLh1l9iAdaw6BKT2TSejDBqlm
-         Uh6Opjdrnct6yKkfahbtYveQurkb22l5Wg9AG7SnYrVElVUQEu6saceIEgwhGFcCS3
-         Od1qgS+E7+zwsygpDxpmv5514urwlCM9WAt9PrYI=
+        b=DqlF6ins0yKYDAF9m42Imfq8pc29FZUHAqG4pNjrZVZ3Yyf6H1kFiorIpeZQUUT1a
+         8maXMddsCFJrS4NpSoPRqvQGRC+3uP13ahmEUwWyuIV1eUzOWoT/ccKxeUfnnQ/4fJ
+         78+vlnBpQK2NUN58TAcUZUsop3oKzI1bAsOY+6N4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Miell <nmiell@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 062/132] HID: microsoft: Add rumble support for the 8bitdo SN30 Pro+ controller
-Date:   Tue, 15 Sep 2020 16:12:44 +0200
-Message-Id: <20200915140647.206951160@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 063/132] drivers/net/wan/hdlc_cisco: Add hard_header_len
+Date:   Tue, 15 Sep 2020 16:12:45 +0200
+Message-Id: <20200915140647.259377863@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
 References: <20200915140644.037604909@linuxfoundation.org>
@@ -43,50 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Miell <nmiell@gmail.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 724a419ea28f7514a391e80040230f69cf626707 ]
+[ Upstream commit 1a545ebe380bf4c1433e3c136e35a77764fda5ad ]
 
-When operating in XInput mode, the 8bitdo SN30 Pro+ requires the same
-quirk as the official Xbox One Bluetooth controllers for rumble to
-function.
+This driver didn't set hard_header_len. This patch sets hard_header_len
+for it according to its header_ops->create function.
 
-Other controllers like the N30 Pro 2, SF30 Pro, SN30 Pro, etc. probably
-also need this quirk, but I do not have the hardware to test.
+This driver's header_ops->create function (cisco_hard_header) creates
+a header of (struct hdlc_header), so hard_header_len should be set to
+sizeof(struct hdlc_header).
 
-Signed-off-by: Nicholas Miell <nmiell@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h       | 1 +
- drivers/hid/hid-microsoft.c | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/net/wan/hdlc_cisco.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 076c20a7a6540..e03a4d794240c 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -846,6 +846,7 @@
- #define USB_DEVICE_ID_MS_POWER_COVER     0x07da
- #define USB_DEVICE_ID_MS_XBOX_ONE_S_CONTROLLER	0x02fd
- #define USB_DEVICE_ID_MS_PIXART_MOUSE    0x00cb
-+#define USB_DEVICE_ID_8BITDO_SN30_PRO_PLUS      0x02e0
- 
- #define USB_VENDOR_ID_MOJO		0x8282
- #define USB_DEVICE_ID_RETRO_ADAPTER	0x3201
-diff --git a/drivers/hid/hid-microsoft.c b/drivers/hid/hid-microsoft.c
-index 2d8b589201a4e..8cb1ca1936e42 100644
---- a/drivers/hid/hid-microsoft.c
-+++ b/drivers/hid/hid-microsoft.c
-@@ -451,6 +451,8 @@ static const struct hid_device_id ms_devices[] = {
- 		.driver_data = MS_SURFACE_DIAL },
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_XBOX_ONE_S_CONTROLLER),
- 		.driver_data = MS_QUIRK_FF },
-+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_8BITDO_SN30_PRO_PLUS),
-+		.driver_data = MS_QUIRK_FF },
- 	{ }
- };
- MODULE_DEVICE_TABLE(hid, ms_devices);
+diff --git a/drivers/net/wan/hdlc_cisco.c b/drivers/net/wan/hdlc_cisco.c
+index a030f5aa6b951..cc33441af4691 100644
+--- a/drivers/net/wan/hdlc_cisco.c
++++ b/drivers/net/wan/hdlc_cisco.c
+@@ -370,6 +370,7 @@ static int cisco_ioctl(struct net_device *dev, struct ifreq *ifr)
+ 		memcpy(&state(hdlc)->settings, &new_settings, size);
+ 		spin_lock_init(&state(hdlc)->lock);
+ 		dev->header_ops = &cisco_header_ops;
++		dev->hard_header_len = sizeof(struct hdlc_header);
+ 		dev->type = ARPHRD_CISCO;
+ 		call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE, dev);
+ 		netif_dormant_on(dev);
 -- 
 2.25.1
 
