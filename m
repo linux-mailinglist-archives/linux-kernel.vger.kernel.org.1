@@ -2,104 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCB026A031
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D8926A014
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgIOHwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:52:50 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:65082 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726134AbgIOHwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:52:42 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTPS id 08F7pZd1007266
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 15:51:35 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 15 Sep 2020 15:51:38 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <minyard@acm.org>, <arnd@arndb.de>, <gregkh@linuxfoundation.org>
-CC:     <openipmi-developer@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] ipmi: print current state when error
-Date:   Tue, 15 Sep 2020 15:44:41 +0800
-Message-ID: <20200915074441.4090-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726235AbgIOHrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:47:00 -0400
+Received: from mail-bn8nam12on2089.outbound.protection.outlook.com ([40.107.237.89]:38899
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726133AbgIOHpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:45:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FMxP3xHThyYih+JEkHY7lm6Aek1H9XNz8vNu3lAoTkGkCwaQmN+/pLCbos9GIQD+ObxJIi+X7vwNDXOrrZjquPgNthjb09CR3sMDs+jEYCJsajXVSjiNtyenpl4lkoxk+GZk77PSQNO9PQutUylJe7UYXQRcpuQIf/r+chwomugPTIlMRuLoNY2Nizsvax1RMp0kugKj1kujEWzP8wCG4nyxNQ0cSNsRFDuy6Py7JXbbWPIUQuztJmUvafw6dY8H/v5dLa66BEhx1UQfKYHc1wIm+sObVwvcwEV6luu638SUYTM6TeU3iL8jjPQla/PIs4oG9lpUWVV1qi5iteBU9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jlu3MYAxLZRbnSIlY9TUCnNJzRZRwMkxWn0MWiAJ6rA=;
+ b=R5O4DRQFrnY5XsYpWOlgQHjyeu9oVVFjnsl8JodCXfDYwvMxkv3/sAh0tAYDbQaGRQLO1QQnx373RWc1aI5AMRouXHAo1OVj+AJ9EWYDzVhUC5DdN98ERcQO4dqBQH0GXDC1bmfmwPn5Pvg3UwG9YGnQdSuwi8LM5izBS9Fcs5rtxDBC7WebGxZUp9Xt64zm6YSOqIel6NHRsbsw23H8+iRk3stzU9JCmrSTl1kQDSyCwzRkRdmx5T4SfkbtV9LifTfXRMGSFaPo/i4HJ2R2Rst2KiZVwfQZmY1K8oB1IeG7QMWkjhY47Pps+zerDEYS0jkW4QcEJV+O6UU5ftFWrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jlu3MYAxLZRbnSIlY9TUCnNJzRZRwMkxWn0MWiAJ6rA=;
+ b=G36rhGttbsvd648DtmyIxwcT8GL9M9FalwE9QaEsODkIzAdnLCm5bAgYt8gkEEvsJsnHPfFSsdD+Ust5DHkkOzgKqNV4jXpF25IXdSGfVe+3FX1hPD22dkNidMocu7hGGEFRoX0obEsfTGHeHAayGS0XN57nwfisIle5cGphA38=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4206.namprd12.prod.outlook.com (2603:10b6:208:1d5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
+ 2020 07:45:22 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 07:45:21 +0000
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH_v1=c2=a0=5d_drm/amd/pm=3a_Removed_fixed_cl?=
+ =?UTF-8?Q?ock_in_auto_mode_DPM?=
+To:     Sudheesh Mavila <sudheesh.mavila@amd.com>, evan.quan@amd.com,
+        alexander.deucher@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        nicholas.kazlauskas@amd.com, zhengbin13@huawei.com,
+        yanaijie@huawei.com, tom.stdenis@amd.com,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20200915071820.76620-1-sudheesh.mavila@amd.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <888285ed-62e9-53d7-7fde-e40ac64bc5a4@amd.com>
+Date:   Tue, 15 Sep 2020 09:45:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200915071820.76620-1-sudheesh.mavila@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM3PR03CA0053.eurprd03.prod.outlook.com
+ (2603:10a6:207:5::11) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 08F7pZd1007266
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM3PR03CA0053.eurprd03.prod.outlook.com (2603:10a6:207:5::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 07:45:19 +0000
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7f015d51-0b42-4aef-4677-08d8594b4c7e
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4206:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4206A93EFD805B06038C004E83200@MN2PR12MB4206.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TgVXGieshJnxCuJdu0yhPhM6K2WotW8K6ih+Ma9WvPqDX+ijB+b9ktCHvFcX0uz4GW3xPiMUVHnwGzQUELcSfUvpX1PsLtBR5RIZrzhqCHHvGJMFM0tfhL9vR64EcK0rvXEc1JKN3FgAD/bgGWtGGGH7E5pkVh96YMyD8/pHQRM+kHPGbkmbv+WKDRc5tbWpGK11wgY3UiG8cT2E5fPb2oRw5SgCnvVYkePa51JiJUy2Tsnbj0foR9jhFEjWnBh8OcZga1OZcSyf0zWox1q6zEeDLnDn/MUBeTW8Jcycwl6KtU4ZdC4b4clAzBl/nT9ZNbTb9U7yt+pAgi9OVU3kmOFpZBxXqd76L9FKM/xn6l+AHJ6CfCSXVPODB+cfVX8+eZvU0IogysIqaknrmBXJpg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(136003)(346002)(376002)(16526019)(186003)(2616005)(316002)(6486002)(66946007)(5660300002)(52116002)(36756003)(66476007)(66556008)(31686004)(31696002)(83380400001)(86362001)(8936002)(2906002)(6666004)(478600001)(921003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: KjWcky5If4Q7SnH1hGE63gvdgpG44IDDvvv0r4PBD1UZUlvycuKARq/cbdci4zigH2pX0bqwKi3e9t+BbGiDzcvHrFFERcZK4zQ1VyGgw/gAqejfOL9sEMes4mOtH7WdgPDv+gzxH49+TCAwQxriuOV/emA2P97BvttStk7eQbpAKh5K0LEQds1ERY1btpYaacpudJP9JWZpWYV5nuXgWPs+AoksRhpWQXT7c2XHxBrkFBm7TNDi2K1cGvJnwzxEbjrzrsorp1aslNaAbJY3du1lFcT5oD9foxyocJ8NLgrKZRt0RQZSwkDVt0LFJHvMTv7dAMCPP8KGn6l7NiIYzRzpLLhvO2CpObCHUiLM28TKl0lijM/C9SAilBu9odPaXPFyi4Kz4ABCF3ULUWjl3iMeYfaCXyepLwa5Gr5HKMv3AbECeQoRN/D3L1ZLa8OeZHYFx5/9dReFRwptwAE3mf+gvWyrGk+LyRiZ3O78SXwvroTSU5SLiLXlYIV9Q5MmILDPhP+svMBCtorxhXKmW8izlHs8oTHRoVFNzEPTs6WPtmo/YzNLCOeC/PMEnGEDotN6VIOOQj0nfY/XheZTIHjN6ho6m2NjF35T6YuKnTdWqVnMhDoekDhLuHCrpUsfXjZzCrzxr4NyGvXAQU1pSc4spGJxwpfltC5uxffj1B7QUG2eS1BJ8H0k/S/l50SX7phN2f+XDENqVZIue9TeDQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f015d51-0b42-4aef-4677-08d8594b4c7e
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 07:45:21.8205
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KnSrsc+bR/WJ62aDqfuA5BqRHku6j/m5qHD0/QazfBxun6smF4Gn/8EoPFM7sXhq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4206
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print current state before returning IPMI_NOT_IN_MY_STATE_ERR,
-we can know where this issue is coming from and possibly fix
-the state machine.
+Am 15.09.20 um 09:18 schrieb Sudheesh Mavila:
+>      SMU10_UMD_PSTATE_PEAK_FCLK value should not be used to set the DPM.
+>
+>      Change  suggested by Evan.Quan@amd.com
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- drivers/char/ipmi/ipmi_bt_sm.c   | 4 +++-
- drivers/char/ipmi/ipmi_kcs_sm.c  | 4 +++-
- drivers/char/ipmi/ipmi_smic_sm.c | 4 +++-
- 3 files changed, 9 insertions(+), 3 deletions(-)
+Can't say much about the change itself, but the Commit message is 
+indented and the indentation in the code doesn't look consistent either.
 
-diff --git a/drivers/char/ipmi/ipmi_bt_sm.c b/drivers/char/ipmi/ipmi_bt_sm.c
-index f3f216cdf..2de0c6c30 100644
---- a/drivers/char/ipmi/ipmi_bt_sm.c
-+++ b/drivers/char/ipmi/ipmi_bt_sm.c
-@@ -213,8 +213,10 @@ static int bt_start_transaction(struct si_sm_data *bt,
- 	if (bt->state == BT_STATE_LONG_BUSY)
- 		return IPMI_NODE_BUSY_ERR;
- 
--	if (bt->state != BT_STATE_IDLE)
-+	if (bt->state != BT_STATE_IDLE) {
-+		dev_warn(bt->io->dev, "BT is now in the state %d\n", bt->state);
- 		return IPMI_NOT_IN_MY_STATE_ERR;
-+	}
- 
- 	if (bt_debug & BT_DEBUG_MSG) {
- 		dev_dbg(bt->io->dev, "+++++++++++++++++ New command\n");
-diff --git a/drivers/char/ipmi/ipmi_kcs_sm.c b/drivers/char/ipmi/ipmi_kcs_sm.c
-index 2e7cda08b..49ece4ba3 100644
---- a/drivers/char/ipmi/ipmi_kcs_sm.c
-+++ b/drivers/char/ipmi/ipmi_kcs_sm.c
-@@ -268,8 +268,10 @@ static int start_kcs_transaction(struct si_sm_data *kcs, unsigned char *data,
- 	if (size > MAX_KCS_WRITE_SIZE)
- 		return IPMI_REQ_LEN_EXCEEDED_ERR;
- 
--	if ((kcs->state != KCS_IDLE) && (kcs->state != KCS_HOSED))
-+	if ((kcs->state != KCS_IDLE) && (kcs->state != KCS_HOSED)) {
-+		printk(KERN_WARNING, "KCS is now in the state %d\n", kcs->state);
- 		return IPMI_NOT_IN_MY_STATE_ERR;
-+	}
- 
- 	if (kcs_debug & KCS_DEBUG_MSG) {
- 		printk(KERN_DEBUG "start_kcs_transaction -");
-diff --git a/drivers/char/ipmi/ipmi_smic_sm.c b/drivers/char/ipmi/ipmi_smic_sm.c
-index b6225bba2..690d4f53e 100644
---- a/drivers/char/ipmi/ipmi_smic_sm.c
-+++ b/drivers/char/ipmi/ipmi_smic_sm.c
-@@ -126,8 +126,10 @@ static int start_smic_transaction(struct si_sm_data *smic,
- 	if (size > MAX_SMIC_WRITE_SIZE)
- 		return IPMI_REQ_LEN_EXCEEDED_ERR;
- 
--	if ((smic->state != SMIC_IDLE) && (smic->state != SMIC_HOSED))
-+	if ((smic->state != SMIC_IDLE) && (smic->state != SMIC_HOSED)) {
-+		printk(KERN_WARNING, "SMIC is now in the state %d\n", smic->state);
- 		return IPMI_NOT_IN_MY_STATE_ERR;
-+	}
- 
- 	if (smic_debug & SMIC_DEBUG_MSG) {
- 		printk(KERN_DEBUG "start_smic_transaction -");
--- 
-2.17.1
+Christian.
+
+>
+> Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+> ---
+>   drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+> index c9cfe90a2947..081cb9b1b7c8 100644
+> --- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+> +++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+> @@ -566,6 +566,8 @@ static int smu10_dpm_force_dpm_level(struct pp_hwmgr *hwmgr,
+>   	struct smu10_hwmgr *data = hwmgr->backend;
+>   	uint32_t min_sclk = hwmgr->display_config->min_core_set_clock;
+>   	uint32_t min_mclk = hwmgr->display_config->min_mem_set_clock/100;
+> +	uint32_t index_fclk = data->clock_vol_info.vdd_dep_on_fclk->count - 1;
+> +	uint32_t index_socclk = data->clock_vol_info.vdd_dep_on_socclk->count - 1;
+>   
+>   	if (hwmgr->smu_version < 0x1E3700) {
+>   		pr_info("smu firmware version too old, can not set dpm level\n");
+> @@ -679,13 +681,13 @@ static int smu10_dpm_force_dpm_level(struct pp_hwmgr *hwmgr,
+>   		smum_send_msg_to_smc_with_parameter(hwmgr,
+>   						PPSMC_MSG_SetHardMinFclkByFreq,
+>   						hwmgr->display_config->num_display > 3 ?
+> -						SMU10_UMD_PSTATE_PEAK_FCLK :
+> +					data->clock_vol_info.vdd_dep_on_fclk->entries[0].clk :
+>   						min_mclk,
+>   						NULL);
+>   
+>   		smum_send_msg_to_smc_with_parameter(hwmgr,
+>   						PPSMC_MSG_SetHardMinSocclkByFreq,
+> -						SMU10_UMD_PSTATE_MIN_SOCCLK,
+> +					data->clock_vol_info.vdd_dep_on_socclk->entries[0].clk,
+>   						NULL);
+>   		smum_send_msg_to_smc_with_parameter(hwmgr,
+>   						PPSMC_MSG_SetHardMinVcn,
+> @@ -698,11 +700,11 @@ static int smu10_dpm_force_dpm_level(struct pp_hwmgr *hwmgr,
+>   						NULL);
+>   		smum_send_msg_to_smc_with_parameter(hwmgr,
+>   						PPSMC_MSG_SetSoftMaxFclkByFreq,
+> -						SMU10_UMD_PSTATE_PEAK_FCLK,
+> +				data->clock_vol_info.vdd_dep_on_fclk->entries[index_fclk].clk,
+>   						NULL);
+>   		smum_send_msg_to_smc_with_parameter(hwmgr,
+>   						PPSMC_MSG_SetSoftMaxSocclkByFreq,
+> -						SMU10_UMD_PSTATE_PEAK_SOCCLK,
+> +				data->clock_vol_info.vdd_dep_on_socclk->entries[index_socclk].clk,
+>   						NULL);
+>   		smum_send_msg_to_smc_with_parameter(hwmgr,
+>   						PPSMC_MSG_SetSoftMaxVcn,
 
