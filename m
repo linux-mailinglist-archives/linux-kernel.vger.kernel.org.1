@@ -2,128 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2713D269F11
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF77269F13
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgIOHEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:04:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25740 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726136AbgIOHEk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726114AbgIOHFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:05:16 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:36512 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726134AbgIOHEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 03:04:40 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08F739vl026205;
-        Tue, 15 Sep 2020 03:04:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=za4Qe3x+/BmxDnJ/NLg1lNOhQIrTXfpSemO5MbDshxA=;
- b=gZkpYRoKjGLTRvWzQJamZDQV3JjFfb9twFpF7iImEcrlQnnhKbhIyrRsQTthYCmT8xaq
- fLlsIOesCVDDoymhL/whQ4vwx+D2ZeoUfx8ZxNBAdHPRAhq8WSkb6TdYwizRk55UCkXa
- xKq+oQBAweaIz2UjPNAsW/6fDPQNePEmIQYFGiLNLYy0e69pjx57B1RoyQyQNhBX23UK
- +VAtoUrM39UMf0faERIGsg8rI6T69ti+d9m39cMY4c/kJYFfaQpTsGn3zdpUhOgCG8ZI
- FbYFptwRYV7Df8FcAOE0cOovtmhThmb+mEq8st/MZXfwMActXrc7YOGhRrnf6Z0iDKfN kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33jret0pqh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 03:04:24 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08F73Ou6027269;
-        Tue, 15 Sep 2020 03:04:23 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33jret0pk8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 03:04:23 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08F71KTq029709;
-        Tue, 15 Sep 2020 07:04:14 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 33h2r9ar4f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 07:04:13 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08F74BkS27197936
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 07:04:11 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 11D6F52050;
-        Tue, 15 Sep 2020 07:04:11 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.72.89])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 9A9CC52052;
-        Tue, 15 Sep 2020 07:04:10 +0000 (GMT)
-Subject: Re: [PATCH v2 1/3] mm: replace memmap_context by memplug_context
-To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        Oscar Salvador <osalvador@suse.de>, mhocko@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20200914165042.96218-1-ldufour@linux.ibm.com>
- <20200914165042.96218-2-ldufour@linux.ibm.com>
- <d6ade681-2fb1-a1df-5673-bceacd1dfc55@redhat.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <bac8037f-70f6-e7e5-7982-cbfcfef45e01@linux.ibm.com>
-Date:   Tue, 15 Sep 2020 09:04:10 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 394AD1C3D1EE78AF187E;
+        Tue, 15 Sep 2020 15:04:22 +0800 (CST)
+Received: from [10.74.191.121] (10.74.191.121) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 15 Sep 2020 15:04:14 +0800
+Subject: Re: [PATCH net-next 6/6] net: hns3: use napi_consume_skb() when
+ cleaning tx desc
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        "tanhuazhong@huawei.com" <tanhuazhong@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>
+CC:     "yisen.zhuang@huawei.com" <yisen.zhuang@huawei.com>,
+        "salil.mehta@huawei.com" <salil.mehta@huawei.com>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>
+References: <1600085217-26245-1-git-send-email-tanhuazhong@huawei.com>
+ <1600085217-26245-7-git-send-email-tanhuazhong@huawei.com>
+ <e615366cb2b260bf1b77fdaa0692957ab750a9a4.camel@nvidia.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <2b1219b6-a7dd-38a3-bfb7-1cb49330df90@huawei.com>
+Date:   Tue, 15 Sep 2020 15:04:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <d6ade681-2fb1-a1df-5673-bceacd1dfc55@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <e615366cb2b260bf1b77fdaa0692957ab750a9a4.camel@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_04:2020-09-15,2020-09-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0
- clxscore=1015 bulkscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150063
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 14/09/2020 à 19:10, David Hildenbrand a écrit :
-> On 14.09.20 18:50, Laurent Dufour wrote:
->> The memmap_context is used to detect whether a memory operation is due to a
->> hot-add operation or happening at boot time.
+On 2020/9/15 13:09, Saeed Mahameed wrote:
+> On Mon, 2020-09-14 at 20:06 +0800, Huazhong Tan wrote:
+>> From: Yunsheng Lin <linyunsheng@huawei.com>
 >>
->> Make it general to the hotplug operation and rename it at memplug_context.
+>> Use napi_consume_skb() to batch consuming skb when cleaning
+>> tx desc in NAPI polling.
 >>
->> There is no functional change introduced by this patch
->>
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 >> ---
->>   arch/ia64/mm/init.c    |  6 +++---
->>   include/linux/mm.h     |  2 +-
->>   include/linux/mmzone.h | 11 ++++++++---
->>   mm/memory_hotplug.c    |  2 +-
->>   mm/page_alloc.c        | 10 +++++-----
->>   5 files changed, 18 insertions(+), 13 deletions(-)
+>>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 27 +++++++++++-
+>> ----------
+>>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  2 +-
+>>  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  4 ++--
+>>  3 files changed, 17 insertions(+), 16 deletions(-)
 >>
->> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
->> index 0b3fb4c7af29..b5054b5e77c8 100644
->> --- a/arch/ia64/mm/init.c
->> +++ b/arch/ia64/mm/init.c
->> @@ -538,7 +538,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
->>   	if (map_start < map_end)
->>   		memmap_init_zone((unsigned long)(map_end - map_start),
->>   				 args->nid, args->zone, page_to_pfn(map_start),
->> -				 MEMMAP_EARLY, NULL);
->> +				 MEMPLUG_EARLY, NULL);
+>> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+>> b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+>> index 4a49a76..feeaf75 100644
+>> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+>> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+>> @@ -2333,10 +2333,10 @@ static int hns3_alloc_buffer(struct
+>> hns3_enet_ring *ring,
+>>  }
+>>  
+>>  static void hns3_free_buffer(struct hns3_enet_ring *ring,
+>> -			     struct hns3_desc_cb *cb)
+>> +			     struct hns3_desc_cb *cb, int budget)
+>>  {
+>>  	if (cb->type == DESC_TYPE_SKB)
+>> -		dev_kfree_skb_any((struct sk_buff *)cb->priv);
+>> +		napi_consume_skb(cb->priv, budget);
 > 
-> I am pretty sure that won't compile (MEMINIT_EARLY).
+> This code can be reached from hns3_lb_clear_tx_ring() below which is
+> your loopback test and called with non-zero budget, I am not sure you
+> are allowed to call napi_consume_skb() with non-zero budget outside
+> napi context, perhaps the cb->type for loopback test is different in lb
+> test case ? Idk.. , please double check other code paths.
+
+Yes, loopback test may call napi_consume_skb() with non-zero budget outside
+napi context. Thanks for pointing out this case.
+
+How about add the below WARN_ONCE() in napi_consume_skb() to catch this
+kind of error?
+
+WARN_ONCE(!in_serving_softirq(), "napi_consume_skb() is called with non-zero budget outside napi context");
+
 > 
-> (same at other places)
-
-Ouch I can't understand what I did at sending time, I did check compile on ia64 
-w and w/o memory hotplug.
-
-Sorry for the noise.
-
-
+> [...]
+> 
+>>  static void hns3_lb_clear_tx_ring(struct hns3_nic_priv *priv, u32
+>> start_ringid,
+>> -				  u32 end_ringid, u32 budget)
+>> +				  u32 end_ringid, int budget)
+>>  {
+>>  	u32 i;
+>>  
+>>  	for (i = start_ringid; i <= end_ringid; i++) {
+>>  		struct hns3_enet_ring *ring = &priv->ring[i];
+>>  
+>> -		hns3_clean_tx_ring(ring);
+>> +		hns3_clean_tx_ring(ring, budget);
+>>  	}
+>>  }
+>>  
