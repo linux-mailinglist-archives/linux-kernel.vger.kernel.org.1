@@ -2,287 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EF626AB58
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1337F26AAE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgIORlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727803AbgIORST (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:18:19 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDC3C06121C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:18:17 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id jw11so134064pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:18:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ebq9sJqx9UJfmyOfsvRZlBUi0Qw5FSlq2i9Oj0M7RmI=;
-        b=JFmmJqAVabMeTcUBUWN6RX+HbyA9sYDZ9qn8tZT6RcHuObbQlE6QO9G3cMBvIkWhJX
-         AlEGQMF7askN6OXy3BA/YK4qC6WsPdBYvMdgE+FMqy8KmZT99k6DaiboSw/YVWkNfEIH
-         0FBUz3PRQj+gW/3hexhkEskZO1crML8glUQObahiAwGIaUzoroy2EheK0Iip4b+3bsMH
-         OXDsTYshIE86YKl8SM1erM6EedDtTH7KRimm+rq7bhOpUHoA0IF/tjSmw6zrtlOiss0W
-         YhW2/M7telw1H8Zu+H91wgKSdkH5Az4C1Lu7ictO2MyHYSm8JorAuoOG0jViRUNNWgC3
-         dRJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ebq9sJqx9UJfmyOfsvRZlBUi0Qw5FSlq2i9Oj0M7RmI=;
-        b=gOtrX8jdyLaMbIh24CoGap3UCAj/eIV9R0MeSK1WKV7KHXzMW5k5UZA36+K1SWSEMT
-         vFVcAdg1FvD2M3HGuYQ02NBx2jeyrikoPk7xb0tUXXP5+qWACVSTE+FrmUCtjsat2DxG
-         p1S27dEsDiyZdeshL5E3BEhVIlhuuzlSkGX/GaFK5ZCgYWw4H8jNYVMrMd1vvaDrHFbm
-         ZBhQrspbALba/Tcih7fPCOeQ8J8ZM9Aa/u/GMsyOQowNy0OXwiyp9F6yusC73igaHSek
-         Z4b9YJAL92E1/EDJbob8jdHksU9b+lE6TkVcgjrLWw3LrSLbauco0EB57zYfstfxOQdQ
-         MLxg==
-X-Gm-Message-State: AOAM532mbIxAihRftE5bK8xnE+p86vSQy0bnwnCAAVN2qv2nVv+i5/4z
-        jQPSwEdRxInPfGs2kI/RICvuMw==
-X-Google-Smtp-Source: ABdhPJwHQ5urJIBe7RR9E3kUyb++A2iLD/ExYs4YJBipu9rFJkl9lnCLKBxHHnefI0F9dXcyO2x2DQ==
-X-Received: by 2002:a17:90b:50e:: with SMTP id r14mr344616pjz.230.1600190297236;
-        Tue, 15 Sep 2020 10:18:17 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.220.66])
-        by smtp.gmail.com with ESMTPSA id x4sm14288294pfm.86.2020.09.15.10.18.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 10:18:16 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        corbet@lwn.net, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        rdunlap@infradead.org
-Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v5] mm: memcontrol: Add the missing numa_stat interface for cgroup v2
-Date:   Wed, 16 Sep 2020 01:18:01 +0800
-Message-Id: <20200915171801.39761-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1727969AbgIORmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:42:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727753AbgIORSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:18:39 -0400
+Received: from kernel.org (unknown [87.71.73.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33F3520872;
+        Tue, 15 Sep 2020 17:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600190318;
+        bh=Wut+/LKuurJjV6yWdQ0LkAiD7T7c8wwiKIpWcqWDTyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YeUxScuVHsoRcQepFJGfs1FFAf2e1LA1+mSzjWkJRc8NB4Y0dZ0Yq79Hxs/lrBnxk
+         pVbp2fKt9JCX5uVPX6sH97oaOJOt5ijiHPqC0TWMYPs7q/pJCrcD7UjG64D4R6O2M1
+         qX+5OQ6Q4SltpWyluJLoWn8FICTrQN6EcS6Jp4sg=
+Date:   Tue, 15 Sep 2020 20:18:23 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [PATCH v2] mm/gup: fix gup_fast with dynamic page table folding
+Message-ID: <20200915171823.GJ2142832@kernel.org>
+References: <20200911200511.GC1221970@ziepe.ca>
+ <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the cgroup v1, we have a numa_stat interface. This is useful for
-providing visibility into the numa locality information within an
-memcg since the pages are allowed to be allocated from any physical
-node. One of the use cases is evaluating application performance by
-combining this information with the application's CPU allocation.
-But the cgroup v2 does not. So this patch adds the missing information.
+On Fri, Sep 11, 2020 at 10:36:43PM +0200, Vasily Gorbik wrote:
+> Currently to make sure that every page table entry is read just once
+> gup_fast walks perform READ_ONCE and pass pXd value down to the next
+> gup_pXd_range function by value e.g.:
+> 
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                          unsigned int flags, struct page **pages, int *nr)
+> ...
+>         pudp = pud_offset(&p4d, addr);
+> 
+> This function passes a reference on that local value copy to pXd_offset,
+> and might get the very same pointer in return. This happens when the
+> level is folded (on most arches), and that pointer should not be iterated.
+> 
+> On s390 due to the fact that each task might have different 5,4 or
+> 3-level address translation and hence different levels folded the logic
+> is more complex and non-iteratable pointer to a local copy leads to
+> severe problems.
+> 
+> Here is an example of what happens with gup_fast on s390, for a task
+> with 3-levels paging, crossing a 2 GB pud boundary:
+> 
+> // addr = 0x1007ffff000, end = 0x10080001000
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                          unsigned int flags, struct page **pages, int *nr)
+> {
+>         unsigned long next;
+>         pud_t *pudp;
+> 
+>         // pud_offset returns &p4d itself (a pointer to a value on stack)
+>         pudp = pud_offset(&p4d, addr);
+>         do {
+>                 // on second iteratation reading "random" stack value
+>                 pud_t pud = READ_ONCE(*pudp);
+> 
+>                 // next = 0x10080000000, due to PUD_SIZE/MASK != PGDIR_SIZE/MASK on s390
+>                 next = pud_addr_end(addr, end);
+>                 ...
+>         } while (pudp++, addr = next, addr != end); // pudp++ iterating over stack
+> 
+>         return 1;
+> }
+> 
+> This happens since s390 moved to common gup code with
+> commit d1874a0c2805 ("s390/mm: make the pxd_offset functions more robust")
+> and commit 1a42010cdc26 ("s390/mm: convert to the generic
+> get_user_pages_fast code"). s390 tried to mimic static level folding by
+> changing pXd_offset primitives to always calculate top level page table
+> offset in pgd_offset and just return the value passed when pXd_offset
+> has to act as folded.
+> 
+> What is crucial for gup_fast and what has been overlooked is
+> that PxD_SIZE/MASK and thus pXd_addr_end should also change
+> correspondingly. And the latter is not possible with dynamic folding.
+> 
+> To fix the issue in addition to pXd values pass original
+> pXdp pointers down to gup_pXd_range functions. And introduce
+> pXd_offset_lockless helpers, which take an additional pXd
+> entry value parameter. This has already been discussed in
+> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
+> 
+> Cc: <stable@vger.kernel.org> # 5.2+
+> Fixes: 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast code")
+> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Suggested-by: Shakeel Butt <shakeelb@google.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
----
- changelog in v5:
- 1. Fix small nits pointed out by Shakeel Butt
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
- changelog in v4:
- 1. Fix some document problems pointed out by Randy Dunlap.
- 2. Remove memory_numa_stat_format() suggested by Shakeel Butt.
+> ---
+> v2: added brackets &pgd -> &(pgd)
+> 
+>  arch/s390/include/asm/pgtable.h | 42 +++++++++++++++++++++++----------
+>  include/linux/pgtable.h         | 10 ++++++++
+>  mm/gup.c                        | 18 +++++++-------
+>  3 files changed, 49 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index 7eb01a5459cd..b55561cc8786 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -1260,26 +1260,44 @@ static inline pgd_t *pgd_offset_raw(pgd_t *pgd, unsigned long address)
+>  
+>  #define pgd_offset(mm, address) pgd_offset_raw(READ_ONCE((mm)->pgd), address)
+>  
+> -static inline p4d_t *p4d_offset(pgd_t *pgd, unsigned long address)
+> +static inline p4d_t *p4d_offset_lockless(pgd_t *pgdp, pgd_t pgd, unsigned long address)
+>  {
+> -	if ((pgd_val(*pgd) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R1)
+> -		return (p4d_t *) pgd_deref(*pgd) + p4d_index(address);
+> -	return (p4d_t *) pgd;
+> +	if ((pgd_val(pgd) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R1)
+> +		return (p4d_t *) pgd_deref(pgd) + p4d_index(address);
+> +	return (p4d_t *) pgdp;
+>  }
+> +#define p4d_offset_lockless p4d_offset_lockless
+>  
+> -static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
+> +static inline p4d_t *p4d_offset(pgd_t *pgdp, unsigned long address)
+>  {
+> -	if ((p4d_val(*p4d) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R2)
+> -		return (pud_t *) p4d_deref(*p4d) + pud_index(address);
+> -	return (pud_t *) p4d;
+> +	return p4d_offset_lockless(pgdp, *pgdp, address);
+> +}
+> +
+> +static inline pud_t *pud_offset_lockless(p4d_t *p4dp, p4d_t p4d, unsigned long address)
+> +{
+> +	if ((p4d_val(p4d) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R2)
+> +		return (pud_t *) p4d_deref(p4d) + pud_index(address);
+> +	return (pud_t *) p4dp;
+> +}
+> +#define pud_offset_lockless pud_offset_lockless
+> +
+> +static inline pud_t *pud_offset(p4d_t *p4dp, unsigned long address)
+> +{
+> +	return pud_offset_lockless(p4dp, *p4dp, address);
+>  }
+>  #define pud_offset pud_offset
+>  
+> -static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
+> +static inline pmd_t *pmd_offset_lockless(pud_t *pudp, pud_t pud, unsigned long address)
+> +{
+> +	if ((pud_val(pud) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R3)
+> +		return (pmd_t *) pud_deref(pud) + pmd_index(address);
+> +	return (pmd_t *) pudp;
+> +}
+> +#define pmd_offset_lockless pmd_offset_lockless
+> +
+> +static inline pmd_t *pmd_offset(pud_t *pudp, unsigned long address)
+>  {
+> -	if ((pud_val(*pud) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R3)
+> -		return (pmd_t *) pud_deref(*pud) + pmd_index(address);
+> -	return (pmd_t *) pud;
+> +	return pmd_offset_lockless(pudp, *pudp, address);
+>  }
+>  #define pmd_offset pmd_offset
+>  
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index e8cbc2e795d5..90654cb63e9e 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1427,6 +1427,16 @@ typedef unsigned int pgtbl_mod_mask;
+>  #define mm_pmd_folded(mm)	__is_defined(__PAGETABLE_PMD_FOLDED)
+>  #endif
+>  
+> +#ifndef p4d_offset_lockless
+> +#define p4d_offset_lockless(pgdp, pgd, address) p4d_offset(&(pgd), address)
+> +#endif
+> +#ifndef pud_offset_lockless
+> +#define pud_offset_lockless(p4dp, p4d, address) pud_offset(&(p4d), address)
+> +#endif
+> +#ifndef pmd_offset_lockless
+> +#define pmd_offset_lockless(pudp, pud, address) pmd_offset(&(pud), address)
+> +#endif
+> +
+>  /*
+>   * p?d_leaf() - true if this entry is a final mapping to a physical address.
+>   * This differs from p?d_huge() by the fact that they are always available (if
+> diff --git a/mm/gup.c b/mm/gup.c
+> index e5739a1974d5..578bf5bd8bf8 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2485,13 +2485,13 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
+>  	return 1;
+>  }
+>  
+> -static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
+> +static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned long end,
+>  		unsigned int flags, struct page **pages, int *nr)
+>  {
+>  	unsigned long next;
+>  	pmd_t *pmdp;
+>  
+> -	pmdp = pmd_offset(&pud, addr);
+> +	pmdp = pmd_offset_lockless(pudp, pud, addr);
+>  	do {
+>  		pmd_t pmd = READ_ONCE(*pmdp);
+>  
+> @@ -2528,13 +2528,13 @@ static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
+>  	return 1;
+>  }
+>  
+> -static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+> +static int gup_pud_range(p4d_t *p4dp, p4d_t p4d, unsigned long addr, unsigned long end,
+>  			 unsigned int flags, struct page **pages, int *nr)
+>  {
+>  	unsigned long next;
+>  	pud_t *pudp;
+>  
+> -	pudp = pud_offset(&p4d, addr);
+> +	pudp = pud_offset_lockless(p4dp, p4d, addr);
+>  	do {
+>  		pud_t pud = READ_ONCE(*pudp);
+>  
+> @@ -2549,20 +2549,20 @@ static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>  			if (!gup_huge_pd(__hugepd(pud_val(pud)), addr,
+>  					 PUD_SHIFT, next, flags, pages, nr))
+>  				return 0;
+> -		} else if (!gup_pmd_range(pud, addr, next, flags, pages, nr))
+> +		} else if (!gup_pmd_range(pudp, pud, addr, next, flags, pages, nr))
+>  			return 0;
+>  	} while (pudp++, addr = next, addr != end);
+>  
+>  	return 1;
+>  }
+>  
+> -static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
+> +static int gup_p4d_range(pgd_t *pgdp, pgd_t pgd, unsigned long addr, unsigned long end,
+>  			 unsigned int flags, struct page **pages, int *nr)
+>  {
+>  	unsigned long next;
+>  	p4d_t *p4dp;
+>  
+> -	p4dp = p4d_offset(&pgd, addr);
+> +	p4dp = p4d_offset_lockless(pgdp, pgd, addr);
+>  	do {
+>  		p4d_t p4d = READ_ONCE(*p4dp);
+>  
+> @@ -2574,7 +2574,7 @@ static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
+>  			if (!gup_huge_pd(__hugepd(p4d_val(p4d)), addr,
+>  					 P4D_SHIFT, next, flags, pages, nr))
+>  				return 0;
+> -		} else if (!gup_pud_range(p4d, addr, next, flags, pages, nr))
+> +		} else if (!gup_pud_range(p4dp, p4d, addr, next, flags, pages, nr))
+>  			return 0;
+>  	} while (p4dp++, addr = next, addr != end);
+>  
+> @@ -2602,7 +2602,7 @@ static void gup_pgd_range(unsigned long addr, unsigned long end,
+>  			if (!gup_huge_pd(__hugepd(pgd_val(pgd)), addr,
+>  					 PGDIR_SHIFT, next, flags, pages, nr))
+>  				return;
+> -		} else if (!gup_p4d_range(pgd, addr, next, flags, pages, nr))
+> +		} else if (!gup_p4d_range(pgdp, pgd, addr, next, flags, pages, nr))
+>  			return;
+>  	} while (pgdp++, addr = next, addr != end);
+>  }
+> -- 
+> ⣿⣿⣿⣿⢋⡀⣀⠹⣿⣿⣿⣿
+> ⣿⣿⣿⣿⠠⣶⡦⠀⣿⣿⣿⣿
+> ⣿⣿⣿⠏⣴⣮⣴⣧⠈⢿⣿⣿
+> ⣿⣿⡏⢰⣿⠖⣠⣿⡆⠈⣿⣿
+> ⣿⢛⣵⣄⠙⣶⣶⡟⣅⣠⠹⣿
+> ⣿⣜⣛⠻⢎⣉⣉⣀⠿⣫⣵⣿
 
- changelog in v3:
- 1. Fix compiler error on powerpc architecture reported by kernel test robot.
- 2. Fix a typo from "anno" to "anon".
-
- changelog in v2:
- 1. Add memory.numa_stat interface in cgroup v2.
-
- Documentation/admin-guide/cgroup-v2.rst | 72 +++++++++++++++++++++
- mm/memcontrol.c                         | 86 +++++++++++++++++++++++++
- 2 files changed, 158 insertions(+)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 6be43781ec7f..48bb12fc7622 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
- 		collapsing an existing range of pages. This counter is not
- 		present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
- 
-+  memory.numa_stat
-+	A read-only flat-keyed file which exists on non-root cgroups.
-+
-+	This breaks down the cgroup's memory footprint into different
-+	types of memory, type-specific details, and other information
-+	per node on the state of the memory management system.
-+
-+	This is useful for providing visibility into the NUMA locality
-+	information within an memcg since the pages are allowed to be
-+	allocated from any physical node. One of the use case is evaluating
-+	application performance by combining this information with the
-+	application's CPU allocation.
-+
-+	All memory amounts are in bytes.
-+
-+	The output format of memory.numa_stat is::
-+
-+	  type N0=<bytes in node 0> N1=<bytes in node 1> ...
-+
-+	The entries are ordered to be human readable, and new entries
-+	can show up in the middle. Don't rely on items remaining in a
-+	fixed position; use the keys to look up specific values!
-+
-+	  anon
-+		Amount of memory per node used in anonymous mappings such
-+		as brk(), sbrk(), and mmap(MAP_ANONYMOUS).
-+
-+	  file
-+		Amount of memory per node used to cache filesystem data,
-+		including tmpfs and shared memory.
-+
-+	  kernel_stack
-+		Amount of memory per node allocated to kernel stacks.
-+
-+	  shmem
-+		Amount of cached filesystem data per node that is swap-backed,
-+		such as tmpfs, shm segments, shared anonymous mmap()s.
-+
-+	  file_mapped
-+		Amount of cached filesystem data per node mapped with mmap().
-+
-+	  file_dirty
-+		Amount of cached filesystem data per node that was modified but
-+		not yet written back to disk.
-+
-+	  file_writeback
-+		Amount of cached filesystem data per node that was modified and
-+		is currently being written back to disk.
-+
-+	  anon_thp
-+		Amount of memory per node used in anonymous mappings backed by
-+		transparent hugepages.
-+
-+	  inactive_anon, active_anon, inactive_file, active_file, unevictable
-+		Amount of memory, swap-backed and filesystem-backed,
-+		per node on the internal memory management lists used
-+		by the page reclaim algorithm.
-+
-+		As these represent internal list state (e.g. shmem pages are on
-+		anon memory management lists), inactive_foo + active_foo may not
-+		be equal to the value for the foo counter, since the foo counter
-+		is type-based, not list-based.
-+
-+	  slab_reclaimable
-+		Amount of memory per node used for storing in-kernel data
-+		structures which might be reclaimed, such as dentries and
-+		inodes.
-+
-+	  slab_unreclaimable
-+		Amount of memory per node used for storing in-kernel data
-+		structures which cannot be reclaimed on memory pressure.
-+
-   memory.swap.current
- 	A read-only single value file which exists on non-root
- 	cgroups.
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 75cd1a1e66c8..ff919ef3b57b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6425,6 +6425,86 @@ static int memory_stat_show(struct seq_file *m, void *v)
- 	return 0;
- }
- 
-+#ifdef CONFIG_NUMA
-+struct numa_stat {
-+	const char *name;
-+	unsigned int ratio;
-+	enum node_stat_item idx;
-+};
-+
-+static struct numa_stat numa_stats[] = {
-+	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
-+	{ "file", PAGE_SIZE, NR_FILE_PAGES },
-+	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
-+	{ "shmem", PAGE_SIZE, NR_SHMEM },
-+	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
-+	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
-+	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	/*
-+	 * The ratio will be initialized in numa_stats_init(). Because
-+	 * on some architectures, the macro of HPAGE_PMD_SIZE is not
-+	 * constant(e.g. powerpc).
-+	 */
-+	{ "anon_thp", 0, NR_ANON_THPS },
-+#endif
-+	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
-+	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
-+	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
-+	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
-+	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
-+	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
-+	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-+};
-+
-+static int __init numa_stats_init(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+		if (numa_stats[i].idx == NR_ANON_THPS)
-+			numa_stats[i].ratio = HPAGE_PMD_SIZE;
-+#endif
-+	}
-+
-+	return 0;
-+}
-+pure_initcall(numa_stats_init);
-+
-+static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
-+					   unsigned int nid,
-+					   enum node_stat_item idx)
-+{
-+	VM_BUG_ON(nid >= nr_node_ids);
-+	return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
-+}
-+
-+static int memory_numa_stat_show(struct seq_file *m, void *v)
-+{
-+	int i;
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
-+		int nid;
-+
-+		seq_printf(m, "%s", numa_stats[i].name);
-+		for_each_node_state(nid, N_MEMORY) {
-+			u64 size;
-+
-+			size = memcg_node_page_state(memcg, nid,
-+						     numa_stats[i].idx);
-+			VM_WARN_ON_ONCE(!numa_stats[i].ratio);
-+			size *= numa_stats[i].ratio;
-+			seq_printf(m, " N%d=%llu", nid, size);
-+		}
-+		seq_putc(m, '\n');
-+	}
-+
-+	return 0;
-+}
-+#endif
-+
- static int memory_oom_group_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-@@ -6502,6 +6582,12 @@ static struct cftype memory_files[] = {
- 		.name = "stat",
- 		.seq_show = memory_stat_show,
- 	},
-+#ifdef CONFIG_NUMA
-+	{
-+		.name = "numa_stat",
-+		.seq_show = memory_numa_stat_show,
-+	},
-+#endif
- 	{
- 		.name = "oom.group",
- 		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
 -- 
-2.20.1
-
+Sincerely yours,
+Mike.
