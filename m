@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDD026B4C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CAF26B4C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgIOXbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:31:08 -0400
-Received: from mga09.intel.com ([134.134.136.24]:39780 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726818AbgIOX3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:29:13 -0400
-IronPort-SDR: 1ho4d7MImUHCoKcIFh9Z7dDVeeZMfVkwrdpOsaVUQ+Ac+q5tcoC68SL1UAiJnX1DkB4asPfD/Z
- 8nANsTxNbE2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="160300249"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="160300249"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:29:12 -0700
-IronPort-SDR: k0U9QmM+u6hubZU49zqqGjcsOs5mlYLD6h9iOBwGCj30m+NZRwHRy5OAncHd1aTqWcjta4dYYv
- 1MLSN0h8fZVQ==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="343691342"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:29:11 -0700
-Subject: [PATCH v3 14/18] dmaengine: idxd: add new wq state for mdev
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
-        bhelgaas@google.com, tglx@linutronix.de,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        jgg@mellanox.com, rafael@kernel.org, netanelg@mellanox.com,
-        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
-        pbonzini@redhat.com, samuel.ortiz@intel.com, mona.hossain@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Date:   Tue, 15 Sep 2020 16:29:11 -0700
-Message-ID: <160021255105.67751.1103109119558046722.stgit@djiang5-desk3.ch.intel.com>
-In-Reply-To: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/unknown-version
+        id S1727468AbgIOXbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727458AbgIOX3S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 19:29:18 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A52BC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:29:16 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id a3so5945580oib.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qbOUuv1gUD+qXXkj5YWutXFkg4WLBN2ngc3Iyk5DDAs=;
+        b=BlbJ7ncCQzp+upzh5WZtzcI/GRPLRHBv+YtzJu3J44nOv3QlIKEDkuiJRdsmYFJdvl
+         q/6VZELF4b2ltbzpMVaXpLK+GzT4Nix7fuJdFpDQhZfQJLbPLdCMdOrZafZ2/ubqXN+9
+         9rWlzx77n4KJQnwlbi8ZHAUqvr3EkmXGUccgA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qbOUuv1gUD+qXXkj5YWutXFkg4WLBN2ngc3Iyk5DDAs=;
+        b=sBDbhIPT4zGLQdirMqWFkvCfL+BFDrt3Wj3GBafnqgO0nQPLxyveH839ONqNwDoL7U
+         EvSeNu7EhkyXyYqhX5RpbEl0Cq+uLmzc0hGKVDAwJptI4+93oR+0+NjkUUu74O8CM5aX
+         LJECPI/tliEktCTFziCUvpW7qbV5203s8pSKER93dD3l+kTVNVI2ysQH3603g0I+sSRM
+         7ukX4upPAmRHFjFsKCpTPqezrTRE54qFK+2Vgjd2CCrMWiijz/xlSBbVIuoXf1fu2J5Z
+         sJ7zaHxzf53ZHEmFASFRGtXf2Xp8RwmhFCarfNmUzLS3Z7yRl67UpWl/itixe5bTC18X
+         v6jQ==
+X-Gm-Message-State: AOAM531op5DoHLHZ3QkLHQVV1EMWXJmq/LLC/O+aXv20GrGORZgL+c+Q
+        NUeslEZaGfpeKKFCjsUtpOxCJA==
+X-Google-Smtp-Source: ABdhPJwxHv8Z8lb1erUw3ImFC9R2ImDiSNZK+V5IExxSAAwGZBukNJpnngQR2z+/IKUI/YDKWvLCTA==
+X-Received: by 2002:aca:52ca:: with SMTP id g193mr1243613oib.126.1600212555958;
+        Tue, 15 Sep 2020 16:29:15 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n37sm6816316ota.20.2020.09.15.16.29.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 16:29:15 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/130] 5.4.66-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200915164455.372746145@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <44c0fb9a-2510-c9e7-0bdf-52f1e19698e1@linuxfoundation.org>
+Date:   Tue, 15 Sep 2020 17:29:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200915164455.372746145@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a dedicated wq is enabled as mdev, we must disable the wq on the
-device in order to program the pasid to the wq. Introduce a wq state
-IDXD_WQ_LOCKED that is software state only in order to prevent the user
-from modifying the configuration while mdev wq is in this state. While
-in this state, the wq is not in DISABLED state and will prevent any
-modifications to the configuration. It is also not in the ENABLED state
-and therefore prevents any actions allowed in the ENABLED state.
+On 9/15/20 10:45 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.66 release.
+> There are 130 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 17 Sep 2020 16:44:19 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.66-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
- drivers/dma/idxd/idxd.h  |    1 +
- drivers/dma/idxd/mdev.c  |    4 +++-
- drivers/dma/idxd/sysfs.c |    2 ++
- 3 files changed, 6 insertions(+), 1 deletion(-)
+Compiled and booted on my test system. No dmesg regressions.
 
-diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-index 23287f8fd19a..f67c0036f968 100644
---- a/drivers/dma/idxd/idxd.h
-+++ b/drivers/dma/idxd/idxd.h
-@@ -55,6 +55,7 @@ struct idxd_group {
- enum idxd_wq_state {
- 	IDXD_WQ_DISABLED = 0,
- 	IDXD_WQ_ENABLED,
-+	IDXD_WQ_LOCKED,
- };
- 
- enum idxd_wq_flag {
-diff --git a/drivers/dma/idxd/mdev.c b/drivers/dma/idxd/mdev.c
-index 2d3ff1a50d39..ea07e7c1ba31 100644
---- a/drivers/dma/idxd/mdev.c
-+++ b/drivers/dma/idxd/mdev.c
-@@ -72,8 +72,10 @@ static void idxd_vdcm_init(struct vdcm_idxd *vidxd)
- 
- 	vidxd_mmio_init(vidxd);
- 
--	if (wq_dedicated(wq) && wq->state == IDXD_WQ_ENABLED)
-+	if (wq_dedicated(wq) && wq->state == IDXD_WQ_ENABLED) {
- 		idxd_wq_disable(wq, NULL);
-+		wq->state = IDXD_WQ_LOCKED;
-+	}
- }
- 
- static void idxd_vdcm_release(struct mdev_device *mdev)
-diff --git a/drivers/dma/idxd/sysfs.c b/drivers/dma/idxd/sysfs.c
-index 6eb67f744c8e..4cc05392130c 100644
---- a/drivers/dma/idxd/sysfs.c
-+++ b/drivers/dma/idxd/sysfs.c
-@@ -797,6 +797,8 @@ static ssize_t wq_state_show(struct device *dev,
- 		return sprintf(buf, "disabled\n");
- 	case IDXD_WQ_ENABLED:
- 		return sprintf(buf, "enabled\n");
-+	case IDXD_WQ_LOCKED:
-+		return sprintf(buf, "locked\n");
- 	}
- 
- 	return sprintf(buf, "unknown\n");
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
