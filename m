@@ -2,190 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB34269DB2
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF26269DB1
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgIOFKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:10:10 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:23363 "EHLO m43-7.mailgun.net"
+        id S1726119AbgIOFKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:10:05 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:11980 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726066AbgIOFKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:10:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600146605; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=B6VMcUMbely6FiLPgQT06jsV/DKFK3KvFB4W6h9BsJI=; b=p6Nc1wFSBYEiD0ps0JuaIgBPR1LnG2EMKJd8C5w3JaaaKWhG1OmypEtX4S7qLF22Pfun9niU
- blrnHH5Sr4XAXf1zklauki3cqeNZ2ShWT1021/CzfqbkMkcGM1P6ofQiZ00f5PiXPwPavXGX
- QDXtE+qhV8zan3CZ6waW3hJLo+M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f604c39885efaea0a119d8b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 05:08:09
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C6618C433CA; Tue, 15 Sep 2020 05:08:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.4] (unknown [171.49.233.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: gkohli)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8CD70C433C8;
-        Tue, 15 Sep 2020 05:08:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8CD70C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
-Subject: Re: [PATCH] trace: Fix race in trace_open and buffer resize call
-From:   Gaurav Kohli <gkohli@codeaurora.org>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
- <d4691a90-9a47-b946-f2cd-bb1fce3981b0@codeaurora.org>
-Message-ID: <2fe2a843-e2b5-acf8-22e4-7231d24a9382@codeaurora.org>
-Date:   Tue, 15 Sep 2020 10:38:03 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <d4691a90-9a47-b946-f2cd-bb1fce3981b0@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726061AbgIOFKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:10:03 -0400
+Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f604ca80000>; Tue, 15 Sep 2020 13:10:00 +0800
+Received: from HKMAIL101.nvidia.com ([10.18.16.10])
+  by hkpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 14 Sep 2020 22:10:00 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate101.nvidia.com on Mon, 14 Sep 2020 22:10:00 -0700
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
+ 2020 05:09:57 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 15 Sep 2020 05:09:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GEiyJQoENdPdfuaMNjqenimg/iSI9QPIQ7DBV/hZzOnSX368dZ+6igGs+8+qa33KGyatRjPq+F2RwSWPMLpLieHa/CMLBAV9JkyFIyd7ELQXIgLaFJ8RmxL32OqYxIcQrVuXPi833pTOiApFPO7rfRpIKQuUl7ZxHWf8+EP09DEyEluDOfJdLJJcBQYQ9Du3Bamud69vgOH54K6g2FlreApksb8s9PSc0XZY1eSHhQZHkI9VX2iOYhvfHTov8WJCwPXMqcLroq/MqB9rm0vS8mYrB0HNrINtBvkdqt/ekeHdm9mXwXfsTS4NF3Q9OakTvy08C4Dz0FnZUf1n/7k21w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gJJUIzIVx0UTuysqsYuNUJq1zvgW7ydxQrboxygTpvU=;
+ b=QCsZmY6iRycwcVYQx/N3BLYsBN+KgCHcdPvt055Qfvkx4S/cfL6mgmaqUogdnSL7JzDOlXWkjtLwJBobqF6ymDzYb9yBIv9ory8rAEnpGPyQCo7mkhCNOwrldX4cTV6hva91V9KsQ7D4XrFNxr2LMhakiFlVNYH8pCsEe2QuSyadwF9EyLLVzZ6wsHcNCvMLZLJEvtvE7BQs0FkkPYkcePaWmSWjcdryNg8NCaOXaV56lxQX42iYmBkHH8m6US37bfekj68PDyzeVjFf0duUW/Bo2WwOZckRt6e9QOw9LcvFEIjvVvjvmKNhUC+4sbjy+l7rsMZkL+dK+VfpzC2wEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by BY5PR12MB4019.namprd12.prod.outlook.com (2603:10b6:a03:1a8::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Tue, 15 Sep
+ 2020 05:09:55 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::90a0:8549:2aeb:566]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::90a0:8549:2aeb:566%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 05:09:55 +0000
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     "tanhuazhong@huawei.com" <tanhuazhong@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>
+CC:     "yisen.zhuang@huawei.com" <yisen.zhuang@huawei.com>,
+        "salil.mehta@huawei.com" <salil.mehta@huawei.com>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linyunsheng@huawei.com" <linyunsheng@huawei.com>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Subject: Re: [PATCH net-next 6/6] net: hns3: use napi_consume_skb() when
+ cleaning tx desc
+Thread-Topic: [PATCH net-next 6/6] net: hns3: use napi_consume_skb() when
+ cleaning tx desc
+Thread-Index: AQHWir2H3yf9It5/Nkq7TwBJZtpCxalpJ2kA
+Date:   Tue, 15 Sep 2020 05:09:55 +0000
+Message-ID: <e615366cb2b260bf1b77fdaa0692957ab750a9a4.camel@nvidia.com>
+References: <1600085217-26245-1-git-send-email-tanhuazhong@huawei.com>
+         <1600085217-26245-7-git-send-email-tanhuazhong@huawei.com>
+In-Reply-To: <1600085217-26245-7-git-send-email-tanhuazhong@huawei.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [24.6.56.119]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bf316dbb-af1f-4faf-4c45-08d859359607
+x-ms-traffictypediagnostic: BY5PR12MB4019:
+x-microsoft-antispam-prvs: <BY5PR12MB4019913FA121EF217718C60AB3200@BY5PR12MB4019.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Vai29TXPIUdacPYlgdTdDvbHApAKmzli95yY2p4qeqdqoL149U4n9gjKw2Y684whAoczMszbNmSgD3MKnp++RRDMcOqb7BWpF1ogUBPuWPgxbiA1HK1mQNuJG0aekCSYL/7PTegN3IBUmWkfYwOMZQbDce5YU3QeO87F6vVLM4hUB61PgUKqS6zvbUh/lqMlIbJmTPxhN9H2e8CO1nqbTfUW6hMvJyWuENigvYOeiT/hkf7iQ2NNjeqxNDx3NbstGPF8UPjsUZfo6bNA0Yt95O4IZ5QqaD0Q1n9nnK3gZEh3zD4Mc4lV2eX+Ni8+7QXt4AMr21hx5UXWT7PnyPlCxFvAG58V7MG9pTt1Re4bYMP6x7EEJcp58KsQvbm32UoM
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(39860400002)(346002)(136003)(8936002)(76116006)(66556008)(2616005)(66446008)(64756008)(6512007)(71200400001)(66946007)(66476007)(6486002)(4326008)(6506007)(26005)(5660300002)(83380400001)(186003)(8676002)(316002)(2906002)(478600001)(86362001)(36756003)(54906003)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 3oGrI9/JO0hjtq3hGswiiCTacM+sgzpwznz3eiUrBnDzhSYMFuSFwRbeJVI+uda0K8F4+Ivb/F2MrGUp2F4u6MbZqzuvBzY80Hrj6lPLUEjlWlj7EUsAcsRAJ/ibT2wnhMpczGS1LrM1lfQGpGCp5J4p51OArzzvk5plXWwfDMRce8TraOmUplPIWDlsuiFu6W+bA1/jRi4gFlkSsIv68bkE5yLdpKfuyOnjAOuNnqlPGTPZWX5q0a0Y6asv/WaBqrjpAWZkLoVMs+cAceyBMD46cchYtPB5v/euHNHifzStjHIc6MbGH8IxgcmEIWynfYq9ZxYDZA2qfh1RDIV9TLzOHrtV8EooxFI8nuqO1MYlPPi4SXiDvQw4e1QrEBU6bZJrngM+nWPEVXhhSluq/REjI0LKqkDOgEx4APucVjI2m1SFcVKnoF1rQd7wl46WXfTxlMAYP0aOx2WRoj7BucL2XoVs2XNK7b+K5YG/UrTbfEuO9vyKXjWUVMfsrUChsfz18OzOLShdlQP+CawgR5bjQy+hOm8bJSsEHEyZzXCUP5HWFbYDlMBQpQOHHDPH6YgU83NHao6kkghf1AN1uzE6RuPOb3FbRTB4WhV2I7jmEnRB/AMh+XLjWnEYtCX15+DXaQwpCkJh2G24ukdnzQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C83526DDD8582F469BDF75DC8BAF18E2@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf316dbb-af1f-4faf-4c45-08d859359607
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 05:09:55.6790
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MY9/vfXH6Yvmr579qGtjvED1UAVLha6QKiT5FoK9GxtOF2uAkEcKlDic+H++X3dpyn6zIECk/3Y10iNOZOcAfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4019
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600146600; bh=gJJUIzIVx0UTuysqsYuNUJq1zvgW7ydxQrboxygTpvU=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:From:To:CC:Subject:Thread-Topic:
+         Thread-Index:Date:Message-ID:References:In-Reply-To:
+         Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+         x-ms-traffictypediagnostic:x-microsoft-antispam-prvs:
+         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
+         x-microsoft-antispam:x-microsoft-antispam-message-info:
+         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
+         x-ms-exchange-transport-forked:Content-Type:Content-ID:
+         Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=T7MP5eZjjwTaYH1JGY2R2aF6DbE2SlCVjXfg/eQDR3l/DMZcH3mHy5QfbZxSWlmXh
+         74jsxwTjFLiyKxnEtWDoS5qdiOejBXb+Z1l2uC9BMAi1fk3myRMU7f7TTTDxYc15E+
+         DW0vOQS2xvHdvgZxdTagM6iz6LG1dgTG+Tak0vwlhnxqh1zCXEqAIsr7TpAOv4trO+
+         1Ondr9DLQYReG2Bbdsmquq0Y+QRy7XfT6MG77loktqlXPF1NucJCOc0PCKxhRe2uhg
+         rbhjipT/tpYMap0AxFzLAiAbj4YM3/m5wVyPdlX41Ii9JKtB3s6lFcEIqJUuQ2kMgM
+         AA5vsGvor04jA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Hi Steven,
-thanks for reply.
-
-On 9/14/2020 9:49 PM, Steven Rostedt wrote:
- > On Mon, 14 Sep 2020 10:00:50 +0530
- > Gaurav Kohli <gkohli@codeaurora.org> wrote:
- >
- >> Hi Steven,
- >>
- >> Please let us know, if below change looks good.
- >> Or let us know some other way to solve this.
- >>
- >> Thanks,
- >> Gaurav
- >>
- >>
- >
- > Hmm, for some reason, I don't see this in my INBOX, but it shows up in my
- > LKML folder. :-/
- >
- >
-
-
- >>> +void ring_buffer_mutex_release(struct trace_buffer *buffer)
- >>> +{
- >>> +    mutex_unlock(&buffer->mutex);
- >>> +}
- >>> +EXPORT_SYMBOL_GPL(ring_buffer_mutex_release);
- >
- > I really do not like to export these.
- >
-
-Actually available reader lock is not helping 
-here(&cpu_buffer->reader_lock), So i took ring buffer mutex lock to 
-resolve this(this came on 4.19/5.4), in latest tip it is trace buffer 
-lock. Due to this i have exported api.
- >>> +/**
- >>>     * ring_buffer_record_off - stop all writes into the buffer
- >>>     * @buffer: The ring buffer to stop writes to.
- >>>     *
- >>> @@ -4918,6 +4937,8 @@ void ring_buffer_reset(struct trace_buffer 
-*buffer)
- >>>        struct ring_buffer_per_cpu *cpu_buffer;
- >>>        int cpu;
- >>>    +    /* prevent another thread from changing buffer sizes */
- >>> +    mutex_lock(&buffer->mutex);
- >>>        for_each_buffer_cpu(buffer, cpu) {
- >>>            cpu_buffer = buffer->buffers[cpu];
- >>>    @@ -4936,6 +4957,7 @@ void ring_buffer_reset(struct trace_buffer 
-*buffer)
- >>>            atomic_dec(&cpu_buffer->record_disabled);
- >>>            atomic_dec(&cpu_buffer->resize_disabled);
- >>>        }
- >>> +    mutex_unlock(&buffer->mutex);
- >>>    }
- >>>    EXPORT_SYMBOL_GPL(ring_buffer_reset);
- >>>    diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
- >>> index f40d850..392e9aa 100644
- >>> --- a/kernel/trace/trace.c
- >>> +++ b/kernel/trace/trace.c
- >>> @@ -2006,6 +2006,8 @@ void tracing_reset_online_cpus(struct 
-array_buffer *buf)
- >>>        if (!buffer)
- >>>            return;
- >>>    +    ring_buffer_mutex_acquire(buffer);
- >>> +
- >>>        ring_buffer_record_disable(buffer);
- >
- > Hmm, why do we disable here as it gets disabled again in the call to
- > ring_buffer_reset_online_cpus()? Perhaps we don't need to disable the
-You mean cpu_buffer->reader_lock in reset_disabled_cpu_buffer?
-Actually reader lock is already there but this is not helping if 
-tracing_open and ring_buffer_resize are running parallel on different cpus.
-
-We are seeing below race mainly during removal of extra pages:
-
-                                             ring_buffer_resize
-                                            //Below portion of code
-                                            //not under any lock
-                                             nr_pages_to_update < 0
-                                            init_list_head(new_pages)
-                                            rb_update_pages
-
-
-ring_buffer_resize
-tracing_open
-tracing_reset_online_cpus
-ring_buffer_reset_cpu
-                                           cpu_buffer_reset done
-                                           //now lock started
-
-                                           warning(nr_removed)
-
-We are seeing cases like cpu buffer got reset due to tracing open in 
-other call, and then seeing issue in  rb_remove_pages.
-
-Similar case can come during rb_insert_pages as well:
-
-rb_insert_pages(struct ring_buffer_per_cpu *cpu_buffer)
-{
-         struct list_head *pages = &cpu_buffer->new_pages;
-         int retries, success;
-//before lock cpu buffer may get reset in another cpu, due to which we 
-are seeing infinite loop cases as new_pages pointer got reset in 
-rb_reset_cpu.
-
-         raw_spin_lock_irq(&cpu_buffer->reader_lock);
-
- > buffer here. The only difference is that we have:
- >
- >   buf->time_start = buffer_ftrace_now(buf, buf->cpu);
- >
- > And that the above disables the entire buffer, whereas the reset only
- > resets individual ones.
- >
- > But I don't think that will make any difference.
- >
- > -- Steve
- >
-
-
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+T24gTW9uLCAyMDIwLTA5LTE0IGF0IDIwOjA2ICswODAwLCBIdWF6aG9uZyBUYW4gd3JvdGU6DQo+
+IEZyb206IFl1bnNoZW5nIExpbiA8bGlueXVuc2hlbmdAaHVhd2VpLmNvbT4NCj4gDQo+IFVzZSBu
+YXBpX2NvbnN1bWVfc2tiKCkgdG8gYmF0Y2ggY29uc3VtaW5nIHNrYiB3aGVuIGNsZWFuaW5nDQo+
+IHR4IGRlc2MgaW4gTkFQSSBwb2xsaW5nLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWXVuc2hlbmcg
+TGluIDxsaW55dW5zaGVuZ0BodWF3ZWkuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBIdWF6aG9uZyBU
+YW4gPHRhbmh1YXpob25nQGh1YXdlaS5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvaGlzaWxpY29uL2huczMvaG5zM19lbmV0LmMgICAgfCAyNyArKysrKysrKysrKy0NCj4gLS0t
+LS0tLS0tLQ0KPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvaGlzaWxpY29uL2huczMvaG5zM19lbmV0
+LmggICAgfCAgMiArLQ0KPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvaGlzaWxpY29uL2huczMvaG5z
+M19ldGh0b29sLmMgfCAgNCArKy0tDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDE3IGluc2VydGlvbnMo
+KyksIDE2IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVy
+bmV0L2hpc2lsaWNvbi9obnMzL2huczNfZW5ldC5jDQo+IGIvZHJpdmVycy9uZXQvZXRoZXJuZXQv
+aGlzaWxpY29uL2huczMvaG5zM19lbmV0LmMNCj4gaW5kZXggNGE0OWE3Ni4uZmVlYWY3NSAxMDA2
+NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvaGlzaWxpY29uL2huczMvaG5zM19lbmV0
+LmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvaGlzaWxpY29uL2huczMvaG5zM19lbmV0
+LmMNCj4gQEAgLTIzMzMsMTAgKzIzMzMsMTAgQEAgc3RhdGljIGludCBobnMzX2FsbG9jX2J1ZmZl
+cihzdHJ1Y3QNCj4gaG5zM19lbmV0X3JpbmcgKnJpbmcsDQo+ICB9DQo+ICANCj4gIHN0YXRpYyB2
+b2lkIGhuczNfZnJlZV9idWZmZXIoc3RydWN0IGhuczNfZW5ldF9yaW5nICpyaW5nLA0KPiAtCQkJ
+ICAgICBzdHJ1Y3QgaG5zM19kZXNjX2NiICpjYikNCj4gKwkJCSAgICAgc3RydWN0IGhuczNfZGVz
+Y19jYiAqY2IsIGludCBidWRnZXQpDQo+ICB7DQo+ICAJaWYgKGNiLT50eXBlID09IERFU0NfVFlQ
+RV9TS0IpDQo+IC0JCWRldl9rZnJlZV9za2JfYW55KChzdHJ1Y3Qgc2tfYnVmZiAqKWNiLT5wcml2
+KTsNCj4gKwkJbmFwaV9jb25zdW1lX3NrYihjYi0+cHJpdiwgYnVkZ2V0KTsNCg0KVGhpcyBjb2Rl
+IGNhbiBiZSByZWFjaGVkIGZyb20gaG5zM19sYl9jbGVhcl90eF9yaW5nKCkgYmVsb3cgd2hpY2gg
+aXMNCnlvdXIgbG9vcGJhY2sgdGVzdCBhbmQgY2FsbGVkIHdpdGggbm9uLXplcm8gYnVkZ2V0LCBJ
+IGFtIG5vdCBzdXJlIHlvdQ0KYXJlIGFsbG93ZWQgdG8gY2FsbCBuYXBpX2NvbnN1bWVfc2tiKCkg
+d2l0aCBub24temVybyBidWRnZXQgb3V0c2lkZQ0KbmFwaSBjb250ZXh0LCBwZXJoYXBzIHRoZSBj
+Yi0+dHlwZSBmb3IgbG9vcGJhY2sgdGVzdCBpcyBkaWZmZXJlbnQgaW4gbGINCnRlc3QgY2FzZSA/
+IElkay4uICwgcGxlYXNlIGRvdWJsZSBjaGVjayBvdGhlciBjb2RlIHBhdGhzLg0KDQpbLi4uXQ0K
+DQo+ICBzdGF0aWMgdm9pZCBobnMzX2xiX2NsZWFyX3R4X3Jpbmcoc3RydWN0IGhuczNfbmljX3By
+aXYgKnByaXYsIHUzMg0KPiBzdGFydF9yaW5naWQsDQo+IC0JCQkJICB1MzIgZW5kX3JpbmdpZCwg
+dTMyIGJ1ZGdldCkNCj4gKwkJCQkgIHUzMiBlbmRfcmluZ2lkLCBpbnQgYnVkZ2V0KQ0KPiAgew0K
+PiAgCXUzMiBpOw0KPiAgDQo+ICAJZm9yIChpID0gc3RhcnRfcmluZ2lkOyBpIDw9IGVuZF9yaW5n
+aWQ7IGkrKykgew0KPiAgCQlzdHJ1Y3QgaG5zM19lbmV0X3JpbmcgKnJpbmcgPSAmcHJpdi0+cmlu
+Z1tpXTsNCj4gIA0KPiAtCQlobnMzX2NsZWFuX3R4X3JpbmcocmluZyk7DQo+ICsJCWhuczNfY2xl
+YW5fdHhfcmluZyhyaW5nLCBidWRnZXQpOw0KPiAgCX0NCj4gIH0NCj4gIA0K
