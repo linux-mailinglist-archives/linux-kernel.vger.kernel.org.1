@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C686C26B21D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB9726B2BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgIOWlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727511AbgIOP5x (ORCPT
+        id S1727458AbgIOWwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:52:42 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45516 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727424AbgIOPl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:57:53 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D4EC06178C;
-        Tue, 15 Sep 2020 08:29:41 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bh1so1527051plb.12;
-        Tue, 15 Sep 2020 08:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bk8FHoNYavjQaDMXukfCSYNC7rOp0MBvdAbTSFJ9/og=;
-        b=LM3vKSgY2UgkNKUQYWyLUW3BKLsSq+62daDFWAUjlul9vZzWf4dzoBZ90heTZum4QG
-         MghPqoe0FtuJFRhPz0Xc3khKfOsoGWKeHTX/T4fTeVCe16wj/R0bgzOcluhVJDyx2Jzq
-         5CS4QyXxh4BwcJ5mmGUmlU2z2Tr/0N1MdeQLGcDIksOcKxsIyMp0s9dYEqVbtoCzXCRP
-         TymqMryLPlGrEOQuD5YbuYMP9xtaKuO0nkiBODXXKDA4BR1d49aGFVJ8SrN2qQamDtT0
-         2QdE+lo3mfc0XEHYv6HTeEKVvW4OqQjVd6r6dzxD4eHFs32rzrNKiNT50+1DLG9JEWV7
-         1hgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bk8FHoNYavjQaDMXukfCSYNC7rOp0MBvdAbTSFJ9/og=;
-        b=IdXvRi6ALTqw9kccGpE9tOOUYz1RktAsifSwKRG2ATJKxW99QioZz1Dz7HjTMWRjJZ
-         uqBqmv7VhWf9jjFUx02XtNsGAQAD76+G+vn7VgARRxDpxamSfm09PeFhmZiqAFWhFaR6
-         OY6vzCF8gsZN5eO1B/5ssD8W3dmSvEnFlYNWQBLogkLgpWQVSj/vkoG4KkIqa7nfTQvv
-         UpDFqWbV9JjCxAV6I187XhiQkhtSYRZLuziVWmPPaFU42DxRbzg5xPX+LEzXBvfAV2SX
-         M24uag9D2bdfhZOrZZo7LXHoE+w29ZZmhjJ6E9P+vhwoaOXQnkzrfPEngoVuGOKcsr+k
-         qVjA==
-X-Gm-Message-State: AOAM531+PL/d5UmtfTcO9uu9ohUBTs5F32E0XQyg70JWzEq66SGIuidR
-        Hvz0k41l1EDtDKmBRhWk/8XUzohd3VOVz5UFxCx3lHJKh7N6OQ==
-X-Google-Smtp-Source: ABdhPJxKjhiVblnEJ+XgcD+hNUOkCKuxtSDTmDTGsfu64NbYz0Yrj+ANymccEQG44AElxPbr0SwISTERfqm9I8z5NKc=
-X-Received: by 2002:a17:902:b7c7:b029:d1:cc21:9c38 with SMTP id
- v7-20020a170902b7c7b02900d1cc219c38mr8557505plz.21.1600183780761; Tue, 15 Sep
- 2020 08:29:40 -0700 (PDT)
+        Tue, 15 Sep 2020 11:41:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600184476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RqHEMu+/F04jCZWSSn74ZbgvenbyaRZICGZsnEHkLjI=;
+        b=GInidHRpou2TJai+wAp1lptZmVZLhp+EPmamMcEZCCJp4rcWcv5oNbAM0tArnkdsDGuK6U
+        x4fqsKPMVgLY6ORfceMS9ywxMSKVjIxTIBawRlPXjP+NF9AGp0D7Ir0oiSGEvrZiWoi3nU
+        n4CBi6ZEA+KOu2/mj58XHBnvhH1XTfo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-yolI7o9WMJuNa5I1wC5obw-1; Tue, 15 Sep 2020 11:33:05 -0400
+X-MC-Unique: yolI7o9WMJuNa5I1wC5obw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02B058C2FA5;
+        Tue, 15 Sep 2020 15:31:18 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.186])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B23EB75138;
+        Tue, 15 Sep 2020 15:31:15 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 15 Sep 2020 17:31:17 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 17:31:14 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     peterz@infradead.org
+Cc:     Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200915153113.GA6881@redhat.com>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200909102640.1657622-1-warthog618@gmail.com> <20200909102640.1657622-8-warthog618@gmail.com>
-In-Reply-To: <20200909102640.1657622-8-warthog618@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 15 Sep 2020 18:29:23 +0300
-Message-ID: <CAHp75VcJjPverHO9JxTBPfTn+L8rZnc2u=bhjJh63ZKbO1MPCA@mail.gmail.com>
-Subject: Re: [PATCH v8 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 1:35 PM Kent Gibson <warthog618@gmail.com> wrote:
+On 09/15, Peter Zijlstra wrote:
 >
-> Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
-> returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
+> On Tue, Sep 15, 2020 at 10:07:50PM +0800, Hou Tao wrote:
+> > Under aarch64, __this_cpu_inc() is neither IRQ-safe nor atomic, so
+> > when percpu_up_read() is invoked under IRQ-context (e.g. aio completion),
+> > and it interrupts the process on the same CPU which is invoking
+> > percpu_down_read(), the decreasement on read_count may lost and
+> > the final value of read_count on the CPU will be unexpected
+> > as shown below:
 >
-> The struct linereq implementation is based on the v1 struct linehandle
-> implementation.
+> > Fixing it by using the IRQ-safe helper this_cpu_inc|dec() for
+> > operations on read_count.
+> >
+> > Another plausible fix is to state that percpu-rwsem can NOT be
+> > used under IRQ context and convert all users which may
+> > use it under IRQ context.
+>
+> *groan*...
+>
+> So yeah, fs/super totally abuses percpu_rwsem, and yes, using it from
+> IRQ context is totally out of spec. That said, we've (grudgingly)
+> accomodated them before.
 
-Seems I have reviewed v7 of this. According to the changelog most of
-the comments are still applicable I think.
+Yes, I didn't expect percpu_up_ can be called from IRQ :/
 
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> ---
+> This seems to be a fairly long standing issue, and certainly not unique
+> to ARM64 either (Power, and anyone else using asm-gemeric/percpu.h,
+> should be similarly affected I think). The issue seems to stem from
+> Oleg's original rewrite:
 >
-> The linereq_ioctl() is a simple wrapper around linereq_get_values() here,
-> but will be extended with other ioctls in subsequent patches.
->
-> Similarly, the struct line only contains the desc here, but will receive
-> the edge detector and debouncer fields in subsequent patches.
->
-> Changed for v8:
->  - fix BUILD_BUG_ON conditions and relocate them before the return in
->    gpiolib_cdev_register()
+>   a1fd3e24d8a4 ("percpu_rw_semaphore: reimplement to not block the readers unnecessarily")
 
+Not really... I think it was 70fe2f48152e ("aio: fix freeze protection of aio writes").
+And iiuc io_uring does the same.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> and is certainly an understandable mistake.
+>
+> I'm torn on what to do, using this_cpu over __this_cpu is going to
+> adversely affect code-gen (and possibly performance) for all the
+> percpu-rwsem users that are not quite so 'creative'.
+
+Yes, but what else can we do?
+
+Oleg.
+
