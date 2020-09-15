@@ -2,133 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C73F269B10
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B654A269B15
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbgIOB1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:27:54 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:42192 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726019AbgIOB1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:27:51 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C077638B7FC8035A70EF;
-        Tue, 15 Sep 2020 09:27:49 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 15 Sep 2020
- 09:27:43 +0800
-Subject: Re: [PATCH v2 0/9] clocksource: sp804: add support for Hisilicon
- sp804 timer
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Jianguo Chen <chenjianguo3@huawei.com>
-References: <20200912114536.2910-1-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <b6bc2ed2-cf83-cca4-d599-ad4f20438349@huawei.com>
-Date:   Tue, 15 Sep 2020 09:27:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726153AbgIOB20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgIOB2R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 21:28:17 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138D7C06174A;
+        Mon, 14 Sep 2020 18:28:17 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id e4so469176pln.10;
+        Mon, 14 Sep 2020 18:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nPAic55gNV1BGLuiljEZld/a/aSvryfxDczEePnb6II=;
+        b=AAMfKea33UzA6uRvODrBSb62VDo1TzykDiq7BdA2Tlb4LvqB0Xop5Q2O7V8ILPtasQ
+         FIhzqcMZi1suibRLmuS9WsIQ7B0rdDG7sbrhAzYIpfRJyeEY5qZCAniOzNLaoC1UzcI5
+         kVlAO4PEGO0UjGLzqlZI3uhpsLNOwvQDLc09E6M+jOQElrXB4h3fSvoJD7IMS47lZi8K
+         rUzGuVKaeFF3pde/Ft6K8dKZ6ypHTxB14kqfxUpXmG/FSeb+kh/DzAEcd6XoKzudJuXP
+         L/iUZT8a4XyuHVphIwj46i+hxBhO2kQBk6CzxBg7tAl/GuegEWPLMfUB16H/MOFunnjJ
+         ioZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=nPAic55gNV1BGLuiljEZld/a/aSvryfxDczEePnb6II=;
+        b=TDj2SPACMbi68r9men1d0G0zfl0OIKxEJvUC29tiVeQy2olVaD2kysqaeG71EU7TgF
+         q+JBjCcv365ciaP68ggq1OxyGFUPHM1QOslMtiYgh9WyTX91K4wamOL8JwrX8z2utPd0
+         RQD74lwdJZ5cB9bK/1aTPQm6PWXdAaqs92VU1IOoRyQJcq/I6u2f6B4BfueBGuwAufgH
+         pC45Ohejtz16FJtiQBbQ/yNthvTJFhL5fFldg5lIeHwyzGjLWokov23635DvCDlgCByx
+         j9T1yTes9D052wkYa0vzSAIOa0OEyPgv3cgVfEyz+3o1a+Wt+pWDHxCMyA0TKdoHJQwm
+         T5YQ==
+X-Gm-Message-State: AOAM532Wcu9Ud9Hj0A7mvAizxu4CQgvzxhbSl/dfK2bRC4baBtAiM+z/
+        d5/84hCgpj1pfkw4cPHyrPI=
+X-Google-Smtp-Source: ABdhPJwBqVH4CsmkwrGzBF83sUzIzqoBTHdj1c5i9y4vBgdr99Rs8tzpJx83T39G5WFGKVHmTCOKwQ==
+X-Received: by 2002:a17:902:6b49:b029:d0:a5f8:5991 with SMTP id g9-20020a1709026b49b02900d0a5f85991mr17049034plt.7.1600133296566;
+        Mon, 14 Sep 2020 18:28:16 -0700 (PDT)
+Received: from Gentoo (sau-ff5be-or.servercontrol.com.au. [43.250.207.3])
+        by smtp.gmail.com with ESMTPSA id z7sm11642182pfj.75.2020.09.14.18.28.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 18:28:15 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 06:58:00 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yuan Ming <yuanmingbuaa@gmail.com>, Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        NopNop Nop <nopitydays@gmail.com>,
+        =?utf-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
+Message-ID: <20200915012800.GA17809@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Yuan Ming <yuanmingbuaa@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        NopNop Nop <nopitydays@gmail.com>,
+        =?utf-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <git-mailbomb-linux-master-50145474f6ef4a9c19205b173da6264a644c7489@kernel.org>
+ <c9cd22ec-60dc-d761-b488-d3a1392708c0@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200912114536.2910-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
+Content-Disposition: inline
+In-Reply-To: <c9cd22ec-60dc-d761-b488-d3a1392708c0@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Daniel Lezcano, Thomas Gleixner:
-  Do you have time to review these patches?
 
-On 2020/9/12 19:45, Zhen Lei wrote:
-> v1 --> v2:
-> 1. Split the Patch 3 of v1 into three patches: Patch 3-5
-> 2. Change compatible "hisi,sp804" to "hisilicon,sp804" in Patch 7.
-> 3. Add dt-binding description of "hisilicon,sp804", Patch 9
-> 
-> Other patches are not changed.
-> 
-> 
-> v1:
-> The ARM SP804 supports a maximum of 32-bit counter, but Hisilicon extends
-> it to 64-bit. That means, the registers: TimerXload, TimerXValue and
-> TimerXBGLoad are 64bits, all other registers are the same as those in the
-> SP804. The driver code can be completely reused except that the register
-> offset is different
-> 
-> The register offset differences between ARM-SP804 and HISI-SP804 are as follows:
-> 
-> 	ARM-SP804			HISI-SP804
-> TIMER_LOAD      0x00		HISI_TIMER_LOAD         0x00
-> 				HISI_TIMER_LOAD_H       0x04
-> TIMER_VALUE     0x04		HISI_TIMER_VALUE        0x08
-> 				HISI_TIMER_VALUE_H      0x0c
-> TIMER_CTRL      0x08		HISI_TIMER_CTRL         0x10
-> TIMER_INTCLR    0x0c		HISI_TIMER_INTCLR       0x14
-> TIMER_RIS       0x10		HISI_TIMER_RIS          0x18
-> TIMER_MIS       0x14		HISI_TIMER_MIS          0x1c
-> TIMER_BGLOAD    0x18		HISI_TIMER_BGLOAD       0x20
-> 				HISI_TIMER_BGLOAD_H     0x24
-> TIMER_2_BASE    0x20		HISI_TIMER_2_BASE       0x40
-> ----------------
-> 
-> In order to make the timer-sp804 driver support both ARM-SP804 and HISI-SP804.
-> Create a new structure "sp804_clkevt" to record the calculated registers
-> address in advance, avoid judging and calculating the register address every
-> place that is used.
-> 
-> For example:
-> 	struct sp804_timer arm_sp804_timer = {
-> 		.ctrl	= TIMER_CTRL,
-> 	};
-> 
-> 	struct sp804_timer hisi_sp804_timer = {
-> 		.ctrl	= HISI_TIMER_CTRL,
-> 	};
-> 
-> 	struct sp804_clkevt clkevt;
-> 
-> In the initialization phase:
-> 	if (hisi_sp804)
-> 		clkevt.ctrl = base + hisi_sp804_timer.ctrl;
-> 	else if (arm_sp804)
-> 		clkevt.ctrl = base + arm_sp804_timer.ctrl;
-> 
-> After initialization:
-> -	writel(0, base + TIMER_CTRL);
-> +	writel(0, clkevt.ctrl);
-> ----------------
-> 
-> Additional information:
-> These patch series are the V2 of https://lore.kernel.org/patchwork/cover/681876/
-> And many of the main ideas in https://lore.kernel.org/patchwork/patch/681875/ have been considered.
-> Thanks for Daniel Lezcano's review comments.
-> 
-> Kefeng Wang (1):
->   clocksource: sp804: cleanup clk_get_sys()
-> 
-> Zhen Lei (8):
->   clocksource: sp804: remove unused sp804_timer_disable() and
->     timer-sp804.h
->   clocksource: sp804: delete the leading "__" of some functions
->   clocksource: sp804: remove a mismatched comment
->   clocksource: sp804: prepare for support non-standard register offset
->   clocksource: sp804: support non-standard register offset
->   clocksource: sp804: add support for Hisilicon sp804 timer
->   clocksource: sp804: enable Hisilicon sp804 timer 64bit mode
->   dt-bindings: sp804: add support for Hisilicon sp804 timer
-> 
->  .../devicetree/bindings/timer/arm,sp804.txt   |   2 +
->  drivers/clocksource/timer-sp.h                |  47 +++++
->  drivers/clocksource/timer-sp804.c             | 195 ++++++++++++------
->  include/clocksource/timer-sp804.h             |  29 ---
->  4 files changed, 181 insertions(+), 92 deletions(-)
->  delete mode 100644 include/clocksource/timer-sp804.h
-> 
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On 18:18 Mon 14 Sep 2020, Randy Dunlap wrote:
+>HI--
+>
+>On 9/14/20 3:48 PM, Linux Kernel Mailing List wrote:
+>> Commit:     50145474f6ef4a9c19205b173da6264a644c7489
+>> Parent:     856deb866d16e29bd65952e0289066f6078af773
+>> Refname:    refs/heads/master
+>> Web:        https://git.kernel.org/torvalds/c/50145474f6ef4a9c19205b173d=
+a6264a644c7489
+>> Author:     Linus Torvalds <torvalds@linux-foundation.org>
+>> AuthorDate: Mon Sep 7 11:45:27 2020 -0700
+>> Committer:  Linus Torvalds <torvalds@linux-foundation.org>
+>> CommitDate: Mon Sep 14 10:06:15 2020 -0700
+>>=20
+>>     fbcon: remove soft scrollback code
+>>    =20
+>>     This (and the VGA soft scrollback) turns out to have various nasty s=
+mall
+>>     special cases that nobody really is willing to fight.  The soft
+>>     scrollback code was really useful a few decades ago when you typical=
+ly
+>>     used the console interactively as the main way to interact with the
+>>     machine, but that just isn't the case any more.
+>
+>and:
+>
+>> Commit:     973c096f6a85e5b5f2a295126ba6928d9a6afd45
+>> Parent:     06a0df4d1b8b13b551668e47b11fd7629033b7df
+>> Refname:    refs/heads/master
+>> Web:        https://git.kernel.org/torvalds/c/973c096f6a85e5b5f2a295126b=
+a6928d9a6afd45
+>> Author:     Linus Torvalds <torvalds@linux-foundation.org>
+>> AuthorDate: Wed Sep 9 14:53:50 2020 -0700
+>> Committer:  Linus Torvalds <torvalds@linux-foundation.org>
+>> CommitDate: Mon Sep 14 10:06:15 2020 -0700
+>>=20
+>>     vgacon: remove software scrollback support
+>
+>
+>
+>diffstats:
+>
+>> ---
+>>  drivers/video/fbdev/core/fbcon.c | 334 +-------------------------------=
+-------
+>>  1 file changed, 4 insertions(+), 330 deletions(-)
+>
+>>  arch/powerpc/configs/pasemi_defconfig |   1 -
+>>  arch/powerpc/configs/ppc6xx_defconfig |   1 -
+>>  arch/x86/configs/i386_defconfig       |   1 -
+>>  arch/x86/configs/x86_64_defconfig     |   1 -
+>>  drivers/video/console/Kconfig         |  46 -------
+>>  drivers/video/console/vgacon.c        | 221 +--------------------------=
+-------
+>>  6 files changed, 1 insertion(+), 270 deletions(-)
+>
+>
+>
+>
+>Now someone can remove the documentation for scrollback (and "no-scroll").=
+=2E.
+>
+>
+If you wont mind ...let me stab at it ...
+
+Documentation/admin-guide/kernel-parameters.txt:        no-scroll       [VG=
+A] Disables scrollback.
+Documentation/fb/fbcon.rst:2. fbcon=3Dscrollback:<value>[k]
+Documentation/fb/fbcon.rst:     The scrollback buffer is memory that is use=
+d to preserve display
+Documentation/fb/matroxfb.rst:   with 'video=3Dscrollback:0'.
+Documentation/fb/sstfb.rst:  disable software scrollback, as it can oops ba=
+dly ...
+Documentation/fb/vesafb.rst:            * You'll get scrollback (the Shift-=
+PgUp thing),
+Documentation/fb/vesafb.rst:              the video memory can be used as s=
+crollback buffer
+
+
+~Bhaskar
+>--=20
+>~Randy
+>
+
+--UlVJffcvxoiEqYs2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl9gGJ0ACgkQsjqdtxFL
+KRUEdQgAhnWb6T+ZbTLIvspMNo8l6hojODLn587MDgOxq5Bh9ml2v87x/07eGebq
+08gV+HUqyMPcKKS/n/zmhFGYoA17Ik49Gl5U6YWkA6ZFfcLgBCAR/oFo89proSdF
+XDN4Ko01tXOri8CaYt4CQ/MQAcnJ7omSJMDimA9haECkcq9pbEf+1ycwcPeAxNRE
+Sas3qrTZNINkaS9iWbsBWvupwJJKg0gMtkjNBUuNUQyemXV/KXXZXOCqo8CYwRVg
+AvrLSgU3jkji4OOFMIk/393DZPhdDgKAnbsWLnCKQvmbrINqJl/N+C22wot1nDhL
+ihJqyPNCBpa1WmkrJLmz8Sm0lDuOvA==
+=XyrY
+-----END PGP SIGNATURE-----
+
+--UlVJffcvxoiEqYs2--
