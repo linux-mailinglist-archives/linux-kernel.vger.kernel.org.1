@@ -2,175 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBA526AC9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CFC26AC85
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgIOSyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        id S1727833AbgIOStt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727771AbgIORXk (ORCPT
+        with ESMTP id S1727812AbgIORZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:23:40 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BE8C061355
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:14:23 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id r25so4994074ioj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jT9s1JAVx2W5cNkDMrd7bWYf1jbIzkRTHh6c6VRDMuY=;
-        b=gdIp7xtBO/MSpEb9o8jN2IyQr26hmZe4Y1Inos4WGDR9JaBIQIi1PU3JIQChI0g3d7
-         LNCuIXI9NjrLEa4Z7VzoHoYibkJTvYYNe4XMxYvI8Key8Lz+Dn5TOJoG3OirB4lNf/0v
-         CZwnoRL2aTjSfXTMe2vCnRhhGcF5/px2guqwjtyoY+pY4/WqMrRsa3daDkNGpvajy3Os
-         F5adkpgafrtJqtA1mdt1vlIxNc/cvIEHgPvBIGAHbOJRmRqdTTGQSyxSLDdT0bWH+lVs
-         aoX0hyxrh/WWLqV3qXKOZbrIk4oQpUdoGJ5imOxIC9ur6GCE2cmivVAVgws5orQ0743v
-         GgWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jT9s1JAVx2W5cNkDMrd7bWYf1jbIzkRTHh6c6VRDMuY=;
-        b=hoz4ueGfdS9vwf9Um1PzSBvDXNmMMvHDyixCCsjudIsQMwYKC7NZavViIaIh2Jm1VG
-         KwO5XImn2yb2kBpiBbwwlieqniemgBS5OUH/zsKOD9ROsxA9JzedUuCgXZwR/5S0xahz
-         rQlt/QW4Y1lO6rCZnBqSwDweIjEPUNPQ/4fta8Hdx4WFJkeGMkKFvq8DqZN1mAacahrp
-         7odd1LPN8L9uOjTRMJacT3EPAT9eTHRdCxs4HcEDw8076cjgxM06zGxkMNwdR0gsBoBh
-         mgz+q9wyvVjc1gI6MW5x3eojt1Jrn1V9vQnG9dFsPaP67cyJoapQgjgZpv9lHt0rMGUp
-         MOxw==
-X-Gm-Message-State: AOAM533rXIsXeMmnJU+lPkcMtr2BaS4mdXNXwkifNvkEPBRc7lKfmte3
-        FL5xf3V7tS3UahKeZd/Xh/ER1w==
-X-Google-Smtp-Source: ABdhPJzPmldAEg1RI32WpLRYJaop5kMVcEE7x7cIiRQrPffUZq0WsPOosFaK5gGj43Fd4thLTpOr6w==
-X-Received: by 2002:a5e:9916:: with SMTP id t22mr16004622ioj.163.1600190061826;
-        Tue, 15 Sep 2020 10:14:21 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id z2sm4640548ilz.37.2020.09.15.10.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 10:14:21 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kIEX6-006Vzt-2h; Tue, 15 Sep 2020 14:14:20 -0300
-Date:   Tue, 15 Sep 2020 14:14:20 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [PATCH v2] mm/gup: fix gup_fast with dynamic page table folding
-Message-ID: <20200915171420.GK1221970@ziepe.ca>
-References: <20200911200511.GC1221970@ziepe.ca>
- <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
+        Tue, 15 Sep 2020 13:25:14 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C22C06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:22:55 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0e42006096e946d741c4e4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:6096:e946:d741:c4e4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6CD321EC0268;
+        Tue, 15 Sep 2020 19:21:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600190513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=JO/BJln6+VhiNncCauMkRlCcTkl9Kn6f84sTOpoazpg=;
+        b=YcyLUqDxMPbtOgMA9A5nqkYPUS1MKbmMrWICT8LAHBhA7+QWojjLGDb9ZoGixwS6bSVb1q
+        2dJqfHErHJBosB3C5tF89YkTnIJoWdITggy3bcKuiCarola0d4ApkBtLdF0bfFqeIpCCLi
+        wK0HysijJfK6c8qhW627xg8wVycblwE=
+Date:   Tue, 15 Sep 2020 19:21:52 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
+ e6eb15c9ba3165698488ae5c34920eea20eaa38e
+Message-ID: <20200915172152.GR14436@zn.tnic>
+References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
+ <20200915135519.GJ14436@zn.tnic>
+ <20200915141816.GC28738@shao2-debian>
+ <20200915160554.GN14436@zn.tnic>
+ <20200915170248.gcv54pvyckteyhk3@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
+In-Reply-To: <20200915170248.gcv54pvyckteyhk3@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 10:36:43PM +0200, Vasily Gorbik wrote:
-> Currently to make sure that every page table entry is read just once
-> gup_fast walks perform READ_ONCE and pass pXd value down to the next
-> gup_pXd_range function by value e.g.:
-> 
-> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
->                          unsigned int flags, struct page **pages, int *nr)
-> ...
->         pudp = pud_offset(&p4d, addr);
-> 
-> This function passes a reference on that local value copy to pXd_offset,
-> and might get the very same pointer in return. This happens when the
-> level is folded (on most arches), and that pointer should not be iterated.
-> 
-> On s390 due to the fact that each task might have different 5,4 or
-> 3-level address translation and hence different levels folded the logic
-> is more complex and non-iteratable pointer to a local copy leads to
-> severe problems.
-> 
-> Here is an example of what happens with gup_fast on s390, for a task
-> with 3-levels paging, crossing a 2 GB pud boundary:
-> 
-> // addr = 0x1007ffff000, end = 0x10080001000
-> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
->                          unsigned int flags, struct page **pages, int *nr)
-> {
->         unsigned long next;
->         pud_t *pudp;
-> 
->         // pud_offset returns &p4d itself (a pointer to a value on stack)
->         pudp = pud_offset(&p4d, addr);
->         do {
->                 // on second iteratation reading "random" stack value
->                 pud_t pud = READ_ONCE(*pudp);
-> 
->                 // next = 0x10080000000, due to PUD_SIZE/MASK != PGDIR_SIZE/MASK on s390
->                 next = pud_addr_end(addr, end);
->                 ...
->         } while (pudp++, addr = next, addr != end); // pudp++ iterating over stack
-> 
->         return 1;
-> }
-> 
-> This happens since s390 moved to common gup code with
-> commit d1874a0c2805 ("s390/mm: make the pxd_offset functions more robust")
-> and commit 1a42010cdc26 ("s390/mm: convert to the generic
-> get_user_pages_fast code"). s390 tried to mimic static level folding by
-> changing pXd_offset primitives to always calculate top level page table
-> offset in pgd_offset and just return the value passed when pXd_offset
-> has to act as folded.
-> 
-> What is crucial for gup_fast and what has been overlooked is
-> that PxD_SIZE/MASK and thus pXd_addr_end should also change
-> correspondingly. And the latter is not possible with dynamic folding.
-> 
-> To fix the issue in addition to pXd values pass original
-> pXdp pointers down to gup_pXd_range functions. And introduce
-> pXd_offset_lockless helpers, which take an additional pXd
-> entry value parameter. This has already been discussed in
-> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
-> 
-> Cc: <stable@vger.kernel.org> # 5.2+
-> Fixes: 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast code")
-> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-> ---
-> v2: added brackets &pgd -> &(pgd)
+On Tue, Sep 15, 2020 at 12:02:48PM -0500, Josh Poimboeuf wrote:
+> If somebody can share the .o file, I can take a look.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+If only I could reproduce...
 
-Regards,
-Jason
+So I built:
+
+/home/share/src/llvm/tc-build/install/bin/clang-12 --version
+ClangBuiltLinux clang version 12.0.0 (https://github.com/llvm/llvm-project 74a9c6d7e1c49cd0e3a8e8072b8aa03f7a84caff)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /home/share/src/llvm/tc-build/install/bin
+
+and I don't trigger that warning even with that compiler.
+
+What I do get is a lot of those pairs:
+
+init/calibrate.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+init/calibrate.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+init/version.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+init/version.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+certs/system_keyring.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+certs/system_keyring.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+...
+
+and a link fail at the end.
+
+ld: arch/x86/events/core.o: in function `events_sysfs_show':
+core.c:(.text+0x469b): undefined reference to `stpcpy'
+ld: arch/x86/events/core.o: in function `events_ht_sysfs_show':
+core.c:(.text+0x46f7): undefined reference to `stpcpy'
+ld: drivers/tty/tty_io.o: in function `alloc_tty_struct':
+tty_io.c:(.text+0x2da5): undefined reference to `stpcpy'
+ld: drivers/tty/tty_io.o: in function `tty_register_device_attr':
+tty_io.c:(.text+0x6a09): undefined reference to `stpcpy'
+ld: drivers/tty/tty_io.o: in function `show_cons_active':
+tty_io.c:(.text+0xa819): undefined reference to `stpcpy'
+ld: drivers/scsi/scsi_transport_sas.o:scsi_transport_sas.c:(.text+0x6139): more undefined references to `stpcpy' follow
+make: *** [Makefile:1166: vmlinux] Error 1
+
+
+I'm thinking clang12 is too unstable to take it seriously...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
