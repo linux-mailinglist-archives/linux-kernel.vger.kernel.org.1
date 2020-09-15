@@ -2,166 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0A426AB81
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2BA26ABB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgIOSIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbgIOSFY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:05:24 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC879C06178A;
-        Tue, 15 Sep 2020 11:05:23 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id q63so5230962qkf.3;
-        Tue, 15 Sep 2020 11:05:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZLmSNoQM7+jjlnQIow8a+BqWm7XXJW35Z9CfcXxfl/4=;
-        b=hav9Nr1QbVJ3BlehRb/RqjACjFYrsIPLG1+I2UOClKfAp5+7ngG3IJmvKwICB5lzdq
-         WGV93nHyISl5cDRkAVdXhbwRwGpn0BDD6iIE1RISAzntc0zLsJhLKhSGksmHGxQxM0Nq
-         a7JAAzV0h50v//u8XuyeHoX0jmJ1pcffrlRm4cyLKojSIGPU8TrMQvCVT+9MIrzCWzdC
-         LaqUwVU6TF9DYqE1qTtH1/PMOSPjsMueBhLyxdfL5muRWfGnTfCN9j4Vf+Pd0vcdCBm9
-         vikEFqlZLseCYyLftc/+1VK3YrI36DtDcSwHB5DelgZyFAU2ssYsKOIMeff/y6H+0BUV
-         q2pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZLmSNoQM7+jjlnQIow8a+BqWm7XXJW35Z9CfcXxfl/4=;
-        b=ct04N1e4vHl9nnvjy1h0wCgV1Ep1dMExenl3ycqxtlE31je7TMN1Cz4rF8UiuD4cet
-         LxXkeMeXb3sY3vREQGmLIbzCmKDonQ+HjHRRC4MrI9I5qfGj325VqyGKWu5cPPOFAYVA
-         d2Uqz/+ay1Zw5dKU00p5YquwNB+cZjUPj/v96rvEQe0NUW2j8LctuemKj30BDtp9CbQ0
-         5H89Bq6x69/9nDIKYTsi64h5iYKbc2rY8mjRCRzS9mRMjhqa6VVzC3wrAuuml1rv5huU
-         vhwFwsx3Mb20Yf4oYceRCEfOIfKqjJrLKm4dCv1yAIApkmskdzZ83JYjfhVpSmRadhxl
-         xSKw==
-X-Gm-Message-State: AOAM5309NwS0QPo7OhGWgg/Tao2ycDz8piF0m6a+dfzxPFL092lrm3+e
-        C7h55pBaM62/ADXQdcAgYFY=
-X-Google-Smtp-Source: ABdhPJwwaZSFKtq7HxhR0p4tMkY/hLtYbTyG5VeqvlQKvebKtBQ2ObXdgMNFu+CfVTX9eKpx83hzUw==
-X-Received: by 2002:a05:620a:2225:: with SMTP id n5mr18523930qkh.171.1600193122843;
-        Tue, 15 Sep 2020 11:05:22 -0700 (PDT)
-Received: from localhost.localdomain ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
-        by smtp.gmail.com with ESMTPSA id u66sm18969306qka.136.2020.09.15.11.05.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 11:05:22 -0700 (PDT)
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-X-Google-Original-From: Daniel W. S. Almeida
-To:     mchehab@kernel.org
-Cc:     "Daniel W . S . Almeida" <dwlsalmeida@gmail.com>,
-        geert@linux-m68k.org, r.verdejo@samsung.com,
-        linux-media@vger.kernel.org, nicolas@ndufresne.ca,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: [PATCH] media: vidtv: fix build on 32bit architectures
-Date:   Tue, 15 Sep 2020 15:05:09 -0300
-Message-Id: <20200915180509.2661572-1-dwlsalmeida@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728030AbgIOSVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:21:36 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:19854 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727985AbgIOSQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 14:16:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600193794; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+V/gihI6IVhCmq8oIHKoVVe0UjgnCXljzyAeHnZMja4=; b=O3SyMAPTAn5FUJq8TjG+IhM8M/vMKk1k2GNn+O2B+bAqZm7VLNXGkavXqK2H+j7MDkiW7wTP
+ qf7rBV53iasgYeWIQ238zVJZGVkugSjQcXAOz4cybRAYEd0Ca5hwO9I+oDlNwqTe8zIuS0e/
+ plHdUfKs2lAOF/zSUKdcP3A5pjA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f610266885efaea0ac14e5d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 18:05:26
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 534D7C433C8; Tue, 15 Sep 2020 18:05:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.4] (unknown [122.175.29.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gkohli)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3FC4EC433F1;
+        Tue, 15 Sep 2020 18:05:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3FC4EC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
+Subject: Re: [PATCH] trace: Fix race in trace_open and buffer resize call
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
+ <d4691a90-9a47-b946-f2cd-bb1fce3981b0@codeaurora.org>
+ <2fe2a843-e2b5-acf8-22e4-7231d24a9382@codeaurora.org>
+ <20200915092353.5b805468@gandalf.local.home>
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+Message-ID: <cc65142f-3896-588e-b0bd-52c0329d6175@codeaurora.org>
+Date:   Tue, 15 Sep 2020 23:35:13 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200915092353.5b805468@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+Sorry for spam, saw some failure so sending mail again.
 
-Fix the following error for builds on 32bit architectures:
+On 9/15/2020 6:53 PM, Steven Rostedt wrote:
+ > On Tue, 15 Sep 2020 10:38:03 +0530
+ > Gaurav Kohli <gkohli@codeaurora.org> wrote:
+ >
+ >>
+ >>   >>> +void ring_buffer_mutex_release(struct trace_buffer *buffer)
+ >>   >>> +{
+ >>   >>> +    mutex_unlock(&buffer->mutex);
+ >>   >>> +}
+ >>   >>> +EXPORT_SYMBOL_GPL(ring_buffer_mutex_release);
+ >>   >
+ >>   > I really do not like to export these.
+ >>   >
+ >>
+ >> Actually available reader lock is not helping
+ >> here(&cpu_buffer->reader_lock), So i took ring buffer mutex lock to
+ >> resolve this(this came on 4.19/5.4), in latest tip it is trace buffer
+ >> lock. Due to this i have exported api.
+ >
+ > I'm saying, why don't you take the buffer->mutex in the
+ > ring_buffer_reset_online_cpus() function? And remove all the 
+protection in
+ > tracing_reset_online_cpus()?
 
-ERROR: modpost: "__udivdi3"
-[drivers/media/test-drivers/vidtv/dvb-vidtv-bridge.ko] undefined!
+Yes, got your point. then we can avoid export. Actually we are seeing 
+issue in older kernel like 4.19/4.14/5.4 and there below patch is not 
+present in stable branches:
 
-Which is due to 64bit divisions that did not go through the helpers
-in linux/math64.h
+ommit b23d7a5f4a07 ("ring-buffer: speed up buffer resets by
+ > avoiding synchronize_rcu for each CPU")
 
-As vidtv_mux_check_mux_rate was not operational in its current form,
-drop the entire function  while it is not fixed properly.
+Actually i have also thought to take mutex lock in ring_buffer_reset_cpu
+while doing individual cpu reset, but this could cause another problem:
 
-For now, call vidtv_mux_pad_with_nulls with a constant number of packets
-to avoid warnings due to unused functions when building this driver.
+Different cpu buffer may have different state, so i have taken lock in 
+tracing_reset_online_cpus.
+ >
+ > void tracing_reset_online_cpus(struct array_buffer *buf)
+ > {
+ >     struct trace_buffer *buffer = buf->buffer;
+ >
+ >     if (!buffer)
+ >         return;
+ >
+ >     buf->time_start = buffer_ftrace_now(buf, buf->cpu);
+ >
+ >     ring_buffer_reset_online_cpus(buffer);
+ > }
+ >
+ > The reset_online_cpus() is already doing the synchronization, we 
+don't need
+ > to do it twice.
+ >
+ > I believe commit b23d7a5f4a07 ("ring-buffer: speed up buffer resets by
+ > avoiding synchronize_rcu for each CPU") made the synchronization in
+ > tracing_reset_online_cpus() obsolete.
+ >
+ > -- Steve
+ >
 
-Fixes: f90cf6079bf67988 ("media: vidtv: add a bridge driver")
-Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
----
- drivers/media/test-drivers/vidtv/vidtv_mux.c  | 34 +------------------
- .../media/test-drivers/vidtv/vidtv_s302m.c    |  4 +--
- 2 files changed, 3 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.c b/drivers/media/test-drivers/vidtv/vidtv_mux.c
-index 5d1a275d504b..6e402a880fdc 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_mux.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
-@@ -336,38 +336,6 @@ static u32 vidtv_mux_pad_with_nulls(struct vidtv_mux *m, u32 npkts)
- 	return nbytes;
- }
- 
--static u32 vidtv_mux_check_mux_rate(struct vidtv_mux *m)
--{
--	/*
--	 * attempt to maintain a constant mux rate, padding with null packets
--	 * if needed
--	 */
--
--	u32 nbytes = 0;  /* the number of bytes written by this function */
--
--	u64 nbytes_expected; /* the number of bytes we should have written */
--	u64 nbytes_streamed; /* the number of bytes we actually wrote */
--	u32 num_null_pkts; /* number of null packets to bridge the gap */
--
--	u64 elapsed_time_msecs = jiffies_to_usecs(m->timing.current_jiffies -
--						  m->timing.past_jiffies);
--
--	elapsed_time_msecs = min(elapsed_time_msecs, (u64)VIDTV_MAX_SLEEP_USECS / 1000);
--	nbytes_expected = div64_u64(m->mux_rate_kbytes_sec * 1000, MSEC_PER_SEC);
--	nbytes_expected *= elapsed_time_msecs;
--
--	nbytes_streamed = m->mux_buf_offset;
--
--	if (nbytes_streamed < nbytes_expected) {
--		/* can't write half a packet: roundup to a 188 multiple */
--		nbytes_expected  = roundup(nbytes_expected - nbytes_streamed, TS_PACKET_LEN);
--		num_null_pkts    = nbytes_expected / TS_PACKET_LEN;
--		nbytes          += vidtv_mux_pad_with_nulls(m, num_null_pkts);
--	}
--
--	return nbytes;
--}
--
- static void vidtv_mux_clear(struct vidtv_mux *m)
- {
- 	/* clear the packets currently in the mux */
-@@ -397,7 +365,7 @@ static void vidtv_mux_tick(struct work_struct *work)
- 			nbytes += vidtv_mux_push_si(m);
- 
- 		nbytes += vidtv_mux_poll_encoders(m);
--		nbytes += vidtv_mux_check_mux_rate(m);
-+		nbytes += vidtv_mux_pad_with_nulls(m, 256);
- 
- 		npkts = nbytes / TS_PACKET_LEN;
- 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_s302m.c b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-index f8049cdf564a..e3290facf57b 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-@@ -285,12 +285,12 @@ static void vidtv_s302m_compute_pts(struct vidtv_encoder *e)
- {
- 	u64 count = e->sample_count;
- 	struct vidtv_access_unit *au = e->access_units;
-+	u32 duration = CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
- 
- 	while (au) {
- 		count += au->num_samples;
- 
--		au->pts = count *
--			  CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
-+		au->pts = count * duration;
- 
- 		au = au->next;
- 	}
+Yes, with above patch no need to take lock in tracing_reset_online_cpus.
 -- 
-2.28.0
-
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
