@@ -2,184 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C754426AE0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B50226AE14
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbgIOTuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
+        id S1727729AbgIOTve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727871AbgIOTto (ORCPT
+        with ESMTP id S1727796AbgIOTu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:49:44 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB59C06178A;
-        Tue, 15 Sep 2020 12:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=2f/FQQsVUE+ceJvZjFwrqZDE7+h9xmxrnKqETPyRkZE=; b=m8PoPwHNuUBO8GElPGKAh0H/CV
-        /PGxRFJbO1gjJYHNDIhMbIQ2WNTPxDrR9sA9/fejksdKaaw97RXTyP8/gpoS6b4BAg92K+lMIyRRi
-        WZxOwlId/9knHxBB/h6DKaxKRWjMYhs0PtxUrru842kZv9kd9zjYuclGP/AigB6YzIvU=;
-Received: from p200300ccff0cb3001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0c:b300:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1kIGxJ-0000nE-OP; Tue, 15 Sep 2020 21:49:34 +0200
-Date:   Tue, 15 Sep 2020 21:49:30 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Rob Herring <robh@kernel.org>
-Cc:     lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, b.galvani@gmail.com, stefan@agner.ch
-Subject: Re: [PATCH] dt-bindings: mfd: Convert rn5t618 to json-schema
-Message-ID: <20200915214930.48eaff87@aktux>
-In-Reply-To: <20200915171152.GA2124960@bogus>
-References: <20200908201303.17271-1-andreas@kemnade.info>
-        <20200915171152.GA2124960@bogus>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 15 Sep 2020 15:50:59 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512BFC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:50:58 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id t16so4245625edw.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wGypR57e44lnrn/T3MrhnXSKZVtdZe8Et+2S99K2mho=;
+        b=cxGAzRO0fXvk44Yp1ZSLcjtw7DvQRdbzcoFUQHSRSG8x/SNcJjgp2DTlAK4kA38ssl
+         9pRExJ0CY6jQ/o2RuHT5w3f0vwmyO6B7/bNk6qnOU0hI/CseNYJC962F3PdUuP/m37dw
+         vkqpM5Bs6ut5quo5WXzwdacP13xa86SDd+XgrA2KqO0yV1P9HPfyqYpiHIBfQujsk36R
+         a7lZVbk4c07FN4deSbfivRYppXrNCCsBp0Eci0WXzNzUrypUY2jGmKdkNsOVjflQZ/DB
+         wrYglXbfhGzeWTCXYbGVNVc7T4yd93IWG3gnYEhY7SP9CxH0FijTLI/JVyGEkb7zE9Lc
+         Vg+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wGypR57e44lnrn/T3MrhnXSKZVtdZe8Et+2S99K2mho=;
+        b=GtzSj74wyAT8vw425+O78PzfVARkpkrhv3nD4eWaxhS3oHfTWHcyldjnL6clRne3d6
+         ULsdRffprLUD55fTJu+WcWT81xlDkMu/S6OCkSOu6BWbHdqsSCs5/dk3TXRxTp/+54Yv
+         Y/K0YpGNRyC+fjsTeM9giu3/TESlSnLJ/vdukhDXO//uwIZ13a8plxPsO8IBRhMD7Jzb
+         bgvBUTeOaClP/FSbouBHpWTCZh3JIkCvExpLk+n5YZK5Wgz4kS6tx3BW0Upydi1xAgZg
+         bxR4rCsw7K1ZbirAbrNu/85mHhAtqGcDRnPp0hGIKr/f5RRsNxB/y0NUMIZsO3UygVNp
+         D+AA==
+X-Gm-Message-State: AOAM5314YuCk2ktWHTJQlA5D4Y+8FrYdSJXcGp4hkzwbq+GJRzOl9AXy
+        JMYId7JFouBEH2r232+1BTtQbCMy/S6DQb1LMGI=
+X-Google-Smtp-Source: ABdhPJzzRC2QC1wIF17cEAtKLsbw4RuhNY4uEwxeqac8HFjP8QzYvGhHRSXvbnqkYFgOISrNFHzQZPtg+Ao/rliAHfc=
+X-Received: by 2002:aa7:c0d3:: with SMTP id j19mr24908441edp.40.1600199457020;
+ Tue, 15 Sep 2020 12:50:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
+References: <20200907083300.14412-1-narmstrong@baylibre.com> <20200907083300.14412-2-narmstrong@baylibre.com>
+In-Reply-To: <20200907083300.14412-2-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 15 Sep 2020 21:50:46 +0200
+Message-ID: <CAFBinCBz_wR7_PcNN7LYxz-Vw+p2HZWBPqQg6z_w5nN+v+tU=Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] arm64: dts: meson-axg: add VPU and PWRC nodes
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 11:11:52 -0600
-Rob Herring <robh@kernel.org> wrote:
+Hi Neil,
 
-> On Tue, Sep 08, 2020 at 10:13:03PM +0200, Andreas Kemnade wrote:
-> > Convert the RN5T618 binding to DT schema format. Also
-> > clearly state which regulators are available.
-> > 
-> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > ---
-> > I have noted myself here as maintainer because I wrote most of the
-> > code of the several subdevices, although not of the .txt-binding.
-> > Due to its .txt-format history BSD license was not added.
-> > I happily ignored the "does MAINTAINERS need updating" thing
-> > from checkpatch.pl, I do not know whether that PMIC should
-> > have a separate entry there.
-> > 
-> >  .../bindings/mfd/ricoh,rn5t618.yaml           | 113 ++++++++++++++++++
-> >  .../devicetree/bindings/mfd/rn5t618.txt       |  52 --------
-> >  2 files changed, 113 insertions(+), 52 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/mfd/rn5t618.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-> > new file mode 100644
-> > index 000000000000..9596dde7a69a
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-> > @@ -0,0 +1,113 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mfd/ricoh,rn5t618.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Ricoh RN5T567/RN5T618/RC5T619 PMIC
-> > +
-> > +maintainers:
-> > +  - Andreas Kemnade <andreas@kemnade.info>
-> > +
-> > +description: |
-> > +  Ricoh RN5T567/RN5T618/RC5T619 is a power management IC family which
-> > +  integrates 3 to 5 step-down DCDC converters, 7 to 10 low-dropout regulators,
-> > +  GPIOs, and a watchdog timer. It can be controlled through an I2C interface.
-> > +  The RN5T618/RC5T619 provides additionally a Li-ion battery charger,
-> > +  fuel gauge, and an ADC.
-> > +  The RC5T619 additionnally includes USB charger detection and an RTC.
-> > +
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: ricoh,rn5t567
-> > +    then:
-> > +      properties:
-> > +        regulators:
-> > +          patternProperties:
-> > +            "^(DCDC[1-4]|LDO[1-5]|LDORTC[12])$":
-> > +              $ref: ../regulator/regulator.yaml
-> > +          additionalProperties: false
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: ricoh,rn5t618
-> > +    then:
-> > +      properties:
-> > +        regulators:
-> > +          patternProperties:
-> > +            "^(DCDC[1-3]|LDO[1-5]|LDORTC[12])$":
-> > +              $ref: ../regulator/regulator.yaml
-> > +          additionalProperties: false
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: ricoh,rc5t619
-> > +    then:
-> > +      properties:
-> > +        regulators:
-> > +          patternProperties:
-> > +            "^(DCDC[1-5]|LDO[1-9]|LDO10|LDORTC[12])$":
-> > +              $ref: ../regulator/regulator.yaml
-> > +          additionalProperties: false  
-> 
-> I prefer under 'regulators' below, you have all possible regulator 
-> names:
-> 
-> patternProperties:
->   "^(DCDC[1-5]|LDO[1-9]|LDO10|LDORTC[12])$":
->      $ref: ../regulator/regulator.yaml
-> 
-> and then above you just need to restrict the possible names:
-> 
-> regulators:
->   propertyNames:
->     pattern: "^(DCDC[1-3]|LDO[1-5]|LDORTC[12])$"
-> 
-> (propertyNames schema is applied to all an object's properties and you 
-> don't need additionalProperties here.)
-> 
-hmm, dt_binding_check refuses to digest things like this:
+On Mon, Sep 7, 2020 at 10:33 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> This add the display VPU node and the power controller PWRC node.
+s/add/adds/
 
-allOf:
-  - if:
-      properties:
-        compatible:
-          contains:
-            const: ricoh,rn5t567
-    then:
-      properties:
-        regulators:
-          propertyNames:
-            pattern: "^(DCDC[1-4]|LDO[1-5]|LDORTC[12])$"
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-I get:
-andi@aktux:~/kernel$ DT_SCHEMA_FILES=Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml makearm dt_binding_check
-  CHKDT   Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-/home/andi/kernel/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml: allOf:0:then:properties:regulators: Additional properties are not allowed ('propertyNames' was unexpected)
-/home/andi/kernel/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml: allOf:0:then:properties:regulators: 'propertyNames' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'type', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+[...]
+> +               vpu: vpu@ff900000 {
+> +                       compatible = "amlogic,meson-axg-vpu";
+> +                       reg = <0x0 0xff900000 0x0 0x100000>,
+> +                             <0x0 0xff63c000 0x0 0x1000>;
+my plan is to replace the "hhi" binding with a reference to the HHI
+syscon - but at the same time I'm not sure if it's a good idea (or
+whether for example CVBS support should be split off into a sub-driver
+which is then part of the HHI MFD syscon).
+maybe we can align at some point about the next steps with the the DRM
+driver (as I want to add support for the older gen SoCs still)
+that's nothing for this patch though
 
-andi@aktux:~/kernel/Documentation$ grep -R propertyNames *
-devicetree/bindings/mfd/ricoh,rn5t618.yaml:          propertyNames:
-devicetree/bindings/mfd/ricoh,rn5t618.yaml:          propertyNames:
-devicetree/bindings/mfd/ricoh,rn5t618.yaml:          propertyNames:
 
-... and I am the only user, it is not documented.
-and yes I have updated my tools
-andi@aktux:~/kernel$ dt-validate --version
-2020.8.1
-
-Regards,
-Andreas
-
+Best regards,
+Martin
