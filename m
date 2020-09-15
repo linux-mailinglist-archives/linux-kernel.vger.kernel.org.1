@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB2626B406
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D012A26B413
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbgIOXPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:15:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48814 "EHLO mail.kernel.org"
+        id S1727459AbgIOXQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:16:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727263AbgIOOkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:40:33 -0400
+        id S1727226AbgIOOj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:39:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1DE52224C;
-        Tue, 15 Sep 2020 14:17:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C8352247F;
+        Tue, 15 Sep 2020 14:29:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179423;
-        bh=DQKTvY85kRjuDG/Pu3Jqdcae3VkG3Mf156Mh2y2vZdE=;
+        s=default; t=1600180148;
+        bh=3tVEL9LVItzvKwZldSDlQxl6dlxncELWiN11WrGvPpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VTzxHPpzeQSHw/znLoHTFzJr2uMi+Fljw0ZYM7pK0xczLadVha0ahqR21htgk7XcW
-         Q00mfXFgpnDtHdOg3R23BSKcbuxvaiD3v9VFTuGcHraip5jG7lpaNcocWICka4U4L2
-         Z83r+UkQL9Um4qh4F32yR4g1dBXY9v5RW38d6+54=
+        b=nPRmkghBKbH9Wgl4ZdoA3mgh90125zGYD4FcvvhPH1uJOdQ3liRxV68BmVs5gY8WZ
+         rCtkOn1CO+Z/4cAC0TuC4nkT2mnn7c1YUgEKJaYAlrMSW+f7l8gXCN1R2jKp2D5ydS
+         PkcbHeamqQ7wauI1iUctt/CeLMxGuE75E2VTQ7OM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.19 53/78] iio:accel:mma8452: Fix timestamp alignment and prevent data leak.
-Date:   Tue, 15 Sep 2020 16:13:18 +0200
-Message-Id: <20200915140636.237342018@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.8 128/177] btrfs: free data reloc tree on failed mount
+Date:   Tue, 15 Sep 2020 16:13:19 +0200
+Message-Id: <20200915140659.783409162@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
+References: <20200915140653.610388773@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,67 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 89226a296d816727405d3fea684ef69e7d388bd8 upstream.
+commit 9e3aa8054453d23d9f477f0cdae70a6a1ea6ec8a upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 16 byte u8 array on the stack.  As Lars also noted
-this anti pattern can involve a leak of data to userspace and that
-indeed can happen here.  We close both issues by moving to
-a suitable structure in the iio_priv() data with alignment
-ensured by use of an explicit c structure.  This data is allocated
-with kzalloc so no data can leak appart from previous readings.
+While testing a weird problem with -o degraded, I noticed I was getting
+leaked root errors
 
-The additional forcing of the 8 byte alignment of the timestamp
-is not strictly necessary but makes the code less fragile by
-making this explicit.
+  BTRFS warning (device loop0): writable mount is not allowed due to too many missing devices
+  BTRFS error (device loop0): open_ctree failed
+  BTRFS error (device loop0): leaked root -9-0 refcount 1
 
-Fixes: c7eeea93ac60 ("iio: Add Freescale MMA8452Q 3-axis accelerometer driver")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Peter Meerwald <pmeerw@pmeerw.net>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
+This is the DATA_RELOC root, which gets read before the other fs roots,
+but is included in the fs roots radix tree.  Handle this by adding a
+btrfs_drop_and_free_fs_root() on the data reloc root if it exists.  This
+is ok to do here if we fail further up because we will only drop the ref
+if we delete the root from the radix tree, and all other cleanup won't
+be duplicated.
+
+CC: stable@vger.kernel.org # 5.8+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/accel/mma8452.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ fs/btrfs/disk-io.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/iio/accel/mma8452.c
-+++ b/drivers/iio/accel/mma8452.c
-@@ -107,6 +107,12 @@ struct mma8452_data {
- 	u8 data_cfg;
- 	const struct mma_chip_info *chip_info;
- 	int sleep_val;
-+
-+	/* Ensure correct alignment of time stamp when present */
-+	struct {
-+		__be16 channels[3];
-+		s64 ts __aligned(8);
-+	} buffer;
- };
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3446,6 +3446,8 @@ fail_block_groups:
+ 	btrfs_put_block_group_cache(fs_info);
  
-  /**
-@@ -1088,14 +1094,13 @@ static irqreturn_t mma8452_trigger_handl
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct mma8452_data *data = iio_priv(indio_dev);
--	u8 buffer[16]; /* 3 16-bit channels + padding + ts */
- 	int ret;
+ fail_tree_roots:
++	if (fs_info->data_reloc_root)
++		btrfs_drop_and_free_fs_root(fs_info, fs_info->data_reloc_root);
+ 	free_root_pointers(fs_info, true);
+ 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
  
--	ret = mma8452_read(data, (__be16 *)buffer);
-+	ret = mma8452_read(data, data->buffer.channels);
- 	if (ret < 0)
- 		goto done;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
- 					   iio_get_time_ns(indio_dev));
- 
- done:
 
 
