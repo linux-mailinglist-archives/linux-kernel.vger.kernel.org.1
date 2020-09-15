@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6239D26AE29
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4566A26AE34
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgIOTxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        id S1727840AbgIOTzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbgIOTwZ (ORCPT
+        with ESMTP id S1727858AbgIOTxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:52:25 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5EAC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:52:00 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id m15so1893099pls.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:52:00 -0700 (PDT)
+        Tue, 15 Sep 2020 15:53:48 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA73FC06174A;
+        Tue, 15 Sep 2020 12:53:47 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id g4so4291564edk.0;
+        Tue, 15 Sep 2020 12:53:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=googlemail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TI2xLec+fHn8OciSaj91CFEPuyI3CYj5LnJd/mX8Q9c=;
-        b=CSaEWUa8LALEjbgWipzCz97uFtgtyhT3hXJSCT31PyfocmLJFaso6qNrkfOjRrWVeq
-         KZqwnYR6fH0mtweTbAb6DldweWs3wtZTzfU0+OxFajMgAsK2p/u/ZUuI3kpz5VFMhGZR
-         +SxUnsj75UMcYx77YumZz52dOIeKGtU9Rj+/ppDjfxBteqbiy/oSGtSQbKQeKDW4Kr9k
-         D3nitebGoAGkNoAud3IY1sZNSW+HSQ4xF/th2dGpb9YGwYsMCLWVW+v/ZVbxkC6I2jOL
-         9d2tnZAIvdKy2PRBzIV8Hh5rsJs+a9ekkfApDSMjYROTLpFJCoEccYbpeKjWemqRvqGa
-         mrJw==
+        bh=h+Glag7Zdcx+JA5O5eROeVL4B8Ql3yXhj7TU2E4Q+gU=;
+        b=mfMz05Wy0Rzi3mc9FRF90iBbA+HVDHL4eISMtdCcvtfUvBQM8Wh5qiWEAI/6L8k0oh
+         AhFsZPp4OUXp1F8ZdKXdwcQJsuHQ1Zy8naiBndsPu70ZwZQoQpvXgSd54Eyhu79W36Ho
+         Pc/au1ytVTbm4f2LpU9Td2cdox15NHuXZSR/vJwUD2y/hrA1VD5Hppc4XvPlS5chwMqD
+         lznko/lVoIDy4XNuCtmT1zWCCktBAUIBTQsjy+IgPmfQBFjEksf+EX2rVk5+KvSAQyb/
+         GGfRamqsqpooy6xQRI1jsubexprAnEoblMG0wLEzt/5+kbEQ+rUYebyqCA4rEZhMhpaF
+         BgYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TI2xLec+fHn8OciSaj91CFEPuyI3CYj5LnJd/mX8Q9c=;
-        b=lMFvkM4u0IxVwC6+fCJfnRMmCG5ShqgYTsWjRFyFQiZX31Fcqqlyc9xXC8TdNKxP99
-         +oMaypMd5BabDQIfBQ4iu6pbqxNTKpmIIM32i1aQfuaEYuBT3jVaVjDDSMClrOmzpGLs
-         6+0AGql5WtxjBVNKqzKbBV3mBTXJTENOt0AziRUb0rk+CBWfTy2yN4aYdpTt7+2QFa56
-         RO0vMrlYMGMJmPMNJYir3lrhgSqYTYSv+MewzT9ctdtib65IVorA/xQaB/fAUFTqTbH5
-         EST8RS2bHx+M9Mg20lyO6M/3KwoJ+5IDy8laK2ROdGkkPXAmSIn6li04He3Ap7BQjpwR
-         +7Mg==
-X-Gm-Message-State: AOAM531ltMSwhxKFcFqS/bomAUYz4n3MIGJnoM+x0n/ZqnhM8hnN3od/
-        PjPV62ojAoolwd0KTJpC5CpF1oEVt8+byVwMOkRoOw==
-X-Google-Smtp-Source: ABdhPJwfkIrGn0JOmTLbg7jGpiqZH9I7JEnSZAE9TuQEuAAV+13NJLuBvlt5+L2Qa0akcupsVX5eMn8WStg7f9QmNbQ=
-X-Received: by 2002:a17:90b:698:: with SMTP id m24mr883485pjz.32.1600199519432;
- Tue, 15 Sep 2020 12:51:59 -0700 (PDT)
+        bh=h+Glag7Zdcx+JA5O5eROeVL4B8Ql3yXhj7TU2E4Q+gU=;
+        b=tRivKBzRGs1PMJv9mtwSdub4uIWm213gwgxg7TMAq+fOgMaRTmrbPWQYLZ66WoU/Oo
+         r/2VzF4BQgAJGfzm8Y/hi6k3Nfw/k4mlNmg1TYQ69Ns+uUqSQBU3oVNG8qkz/c3pOhz/
+         IFsrOwyfma+rmjyJdonV8e66vqtICPlkI3vg4zBV9o0KuV80N541P9kCf2wksDU/Y42h
+         OglYIigeZiSGRtApZUY4LT59XqcicJpyOYj3dYbI0q/0WOqlg/4jWwjTuhWqd7z0H7o5
+         sstwcm5fPQvYMIHU77hLiFOdwfza8XvqxBzAsUBxGIYpeps40V/fvg0KFYgqeb6RLUAz
+         D7RA==
+X-Gm-Message-State: AOAM531D/q+ZdWFu+WheRR/xRICI8f2uRZLtY2gYL0/ifNUBTPiGHWpa
+        UjU7zmpdOZ2VuS3g6h8+0b+o3MPW0UWsTtFF40k=
+X-Google-Smtp-Source: ABdhPJxVXkzjJNtB0Y3kNGVBHxg1BFzbFcjYn0XJtJNYLcueZkJd0W0gKFbpcuyRnBJHwu4kAof7yiVtgnwo+VrdTVc=
+X-Received: by 2002:a05:6402:489:: with SMTP id k9mr23671549edv.287.1600199626131;
+ Tue, 15 Sep 2020 12:53:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200915172658.1432732-1-rkir@google.com> <20200915174643.GT14436@zn.tnic>
- <CAKwvOdm9bQmL=gZypkosH0MG=S28=jJ6wZiTMCNP6=Z+NfN1AA@mail.gmail.com> <20200915182530.GV14436@zn.tnic>
-In-Reply-To: <20200915182530.GV14436@zn.tnic>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 15 Sep 2020 12:51:47 -0700
-Message-ID: <CAKwvOdkKk1KuAFDoWNLnMUi3_JnV7atDFnvS7CdkgNXnNg0p1g@mail.gmail.com>
-Subject: Re: [PATCH] arch: x86: power: cpu: init %gs before
- __restore_processor_state (clang)
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Roman Kiryanov <rkir@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-pm@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        Alistair Delva <adelva@google.com>,
-        Haitao Shan <hshan@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        =?UTF-8?Q?Martin_Li=C5=A1ka?= <mliska@suse.cz>
+References: <20200909160409.8678-1-narmstrong@baylibre.com> <20200909160409.8678-2-narmstrong@baylibre.com>
+In-Reply-To: <20200909160409.8678-2-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 15 Sep 2020 21:53:35 +0200
+Message-ID: <CAFBinCAAv1fUxO+u7NRuXw8rUqa=z5GYEaPMr7CRq+dasQ6oXw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] phy: amlogic: phy-meson-gxl-usb2: keep ID pull-up
+ even in Host mode
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com, kishon@ti.com,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:25 AM Borislav Petkov <bp@alien8.de> wrote:
+On Wed, Sep 9, 2020 at 6:04 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
 >
-> On Tue, Sep 15, 2020 at 11:00:30AM -0700, Nick Desaulniers wrote:
-> > This is exactly the same code from __restore_processor_state.
+> In order to keep OTG ID detection even when in Host mode, the ID line of
+> the PHY (if the current phy is an OTG one) pull-up should be kept
+> enable in both modes.
 >
-> No, this patch is adding
+> This fixes OTG switch on GXL, GXM & AXG platforms, otherwise once switched
+> to Host, the ID detection doesn't work anymore to switch back to Device.
 >
-> #ifdef __clang__
->
-> and I don't like the sprinkling around of those compiler-specific
-> workarounds which we have to carry forward forever or at least until
-> that compiler version is deprecated. We already carry fixes for broken
-> hardware, broken BIOSes, broken peripherals,... can you follow the
-> progression? :)
-
-I agree; I also would not have sent the patch though.  Until LTO has
-landed upstream, this is definitely somewhat self inflicted.  This was
-only debugged last week; even with a compiler fix in hand today, it
-still takes time to ship that compiler and qualify it; for other folks
-on tighter timelines, I can understand why the patch was sent, and do
-genuinely appreciate the effort to participate more upstream which I'm
-trying to encourage more of throughout the company (we're in a lot of
-technical debt kernel-wise; and I'm not referring to Android...a story
-over beers perhaps, or ask Greg).  It's just that this isn't really
-appropriate since it works around a bug in a non-upstream feature, and
-will go away once we fix the toolchain.
-
->
-> So your argument about testing unreleased compilers in the other thread
-> makes a lot of sense so that stuff like that can be fixed in time, and
-> in the compiler, where it belongs (that is, *if* it belongs there).
-
-It would be much nicer if we had the flexibility to disable stack
-protectors per function, rather than per translation unit.  I'm going
-to encourage you to encourage your favorite compile vendor ("write to
-your senator") to support the function attribute
-__attribute__((no_stack_protector)) so that one day, we can use that
-to stop shipping crap like a9a3ed1eff360 ("x86: Fix early boot crash
-on gcc-10, third try").  Having had that, we could have used a nicer
-workaround until the toolchain was fixed (and one day revert
-a9a3ed1eff360, and d0a8d9378d16, and probably more hacks in the
-kernel).  And the case that's causing the compiler bug in question is
-something all compiler vendors will need to consider in their
-implementations.
--- 
-Thanks,
-~Nick Desaulniers
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
