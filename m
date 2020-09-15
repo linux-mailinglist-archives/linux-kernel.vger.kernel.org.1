@@ -2,129 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FA226AFD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A2C26AFCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgIOVo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:44:58 -0400
-Received: from mail-dm3gcc02on2104.outbound.protection.outlook.com ([40.107.91.104]:22176
-        "EHLO GCC02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727845AbgIOVnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:43:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gP59+M9kP3ZEQtpnFruwMJTxipkpx5mXy/SAn2tLXN3JL4qzMJ1ovTpHbiAiF/nRgN+JWCDnMI8WCCcRMUXjnFduBiNpgILfXKaDFIuooiqrtNQxzbDEq+ZXqd/6dyBNj6iD6CmIZdrBoo6eEZJhIR2gVWzt1Zu1x2I8WkY2+RjJDlgZrfvNwRcw/4U3TdF97r5ksdewF0BlNby6ZExrsumudCVvW+WO8hM/di5362QOMxgKtlaqtFHQX4/sqqgAZs6qXS1WZMpGBjKNYO3kZhTdRl0X06MFZ2UnBUMt/P9Vh4IpyS3dUHF9DQWGbOXmF9OR97gJSP4UYP6Vo+NIvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5XTZZ/aS36tpTnR5M4LBDQk4eW6LhdJERW6/8ZQBdjg=;
- b=AEMkmqRUg3UZV5ehyVTDA4QkihRZ0LrGTYP4+eEdl+HOkLUjAoN3uBVLLoJlH2fPtc1OtuPBOe6RA6OE3dr3FKkRGBU86TJAfPr8Mr8nkNHkKcK2wXE2uMFPinGFNIq8DVH2P5c8qKxMSe/e48ddMFm/cKT/T6YCQHAtxWOBQSrZM9Gm3Dci1Vc6xbAceeaIrV7uqIAt+aSmcu7+HnZT3PDT1IsxxgdT5xexteAv8RKROzjmpwlzYCMuMeLNN2zV7TMVCaqZUkMQEe6MjAsvnvQ4erXTZ1441TMna1uCIsttHHrkV3rb9UABF9g5P5ffrbNzUXeKwEMYjUjUFq6SXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starlab.io; dmarc=pass action=none header.from=starlab.io;
- dkim=pass header.d=starlab.io; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=starlab.io;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5XTZZ/aS36tpTnR5M4LBDQk4eW6LhdJERW6/8ZQBdjg=;
- b=aJuHPsEZcvYEP98mtq2JKo/LbYpT9T2mpgQahKfEPFXnrB3ajaaj7edTDPFd88SsdHU/wC7pVNVj0g8Ybc9hBn483uen/K+fV2fNe2IiND7jJO/8+jusNVQEVcBbNcaGNFA1idd4Us3/7XC9AqnJ7uKjYcLlkpDC5MooQ2ALKLA=
-Authentication-Results: starlab.io; dkim=none (message not signed)
- header.d=none;starlab.io; dmarc=none action=none header.from=starlab.io;
-Received: from SA9PR09MB5246.namprd09.prod.outlook.com (2603:10b6:806:4b::9)
- by SA9PR09MB5376.namprd09.prod.outlook.com (2603:10b6:806:44::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
- 2020 21:43:23 +0000
-Received: from SA9PR09MB5246.namprd09.prod.outlook.com
- ([fe80::e90f:c1b7:2964:d2ac]) by SA9PR09MB5246.namprd09.prod.outlook.com
- ([fe80::e90f:c1b7:2964:d2ac%7]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 21:43:23 +0000
-From:   Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J . Bruce Fields" <bfields@fieldses.org>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-Subject: [PATCH v2] nfs: Fix security label length not being reset
-Date:   Tue, 15 Sep 2020 16:42:52 -0500
-Message-Id: <20200915214252.262881-1-jeffrey.mitchell@starlab.io>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200914154958.55451-1-jeffrey.mitchell@starlab.io>
-References: <20200914154958.55451-1-jeffrey.mitchell@starlab.io>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SN4PR0701CA0023.namprd07.prod.outlook.com
- (2603:10b6:803:28::33) To SA9PR09MB5246.namprd09.prod.outlook.com
- (2603:10b6:806:4b::9)
+        id S1727861AbgIOVoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728115AbgIOVnp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:43:45 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1BCC06178A;
+        Tue, 15 Sep 2020 14:43:30 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id n2so5659815oij.1;
+        Tue, 15 Sep 2020 14:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d+l2jldbeQ9UXxV/6usRwMcYxfxEm+h+QQLu9/KPPfo=;
+        b=iK1rkcFqenCb0YI9hHcWBT5bnl0tpUlBg3OhGqjkK/LUVctJtHJRofUza5v6GakDkd
+         xe6igqSoXGel6K5zG+QwFaVC9kVeYm2uzMQe+tHDQwZ3LOYfkBNq6i5xTz1gkZRPtRn1
+         Z4dw/2MgoAVJj4GiOuFUZnfE+JgU0aVhSnERoMBgxrVADRRbGb5luYCnaD61TFWg3JJ1
+         IJa0SXtkjVgjp+FlCJNY/W9oYzKpvOgBcKKv98quUMGOQgT7vHvknJw49bmwelKx8sro
+         K8MqAxPe8yle7BQIAaF1KJliT1cTDDfW9tHvXjG4RB2aFm4Q48jJmew0TieE3OSMNu1e
+         rvzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d+l2jldbeQ9UXxV/6usRwMcYxfxEm+h+QQLu9/KPPfo=;
+        b=MVBKfmIBZYMo5pU2nU1qrOlrYXIDAwhAo8aNIa74cCLjCL14QqWLq/ALTZu/XymHM8
+         8360Bg+rEwaD/433LMtvUoz1x5u24CAZFA5bDHlzwRt5pBPrBTmMu2STelaoelKnpDTM
+         0ur7HbZL+RrdEjOSPcDVpenq+zwu+eJ5RBg8CFpamA9Yq/PyWQX5quaiyDqkj6V/v433
+         HuB7F5V11I3JKsqO7511ZfqTVy7uJMarzuv+3MJTokjWlPoyK50vwS1BGjSv9YUcAtyF
+         Oz4nNjSWTzlOYN2y2y8eU0ruj3k0g5/lXdkZ819/xJyJsvDdVMuv7LbQ+6jOWZqsMjLd
+         GY2A==
+X-Gm-Message-State: AOAM533oKep1KpcurRo+ukZjEb8jJd9oFd8kkIghRO5QmeecX13nC1tN
+        oCuXKWUiXPwLFT5mmpvLgdGck5JpSKcoZziTmRU=
+X-Google-Smtp-Source: ABdhPJyrHaeqSL0v1QSP8L8v5HbkpkYYnnsPbdY4KZ5PNcPMMGgDjSfjcXKVtVTtZUja+czo40D5iXcgA6azK+JJqb4=
+X-Received: by 2002:aca:c758:: with SMTP id x85mr1076236oif.102.1600206210356;
+ Tue, 15 Sep 2020 14:43:30 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from jeffrey-work-20 (75.1.70.238) by SN4PR0701CA0023.namprd07.prod.outlook.com (2603:10b6:803:28::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 21:43:22 +0000
-X-Mailer: git-send-email 2.25.1
-X-Originating-IP: [75.1.70.238]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f6b6cbb7-73d3-494f-9182-08d859c05e6a
-X-MS-TrafficTypeDiagnostic: SA9PR09MB5376:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA9PR09MB537678871DE105834C46ED4BF8200@SA9PR09MB5376.namprd09.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ve0rVm2dgAEEJAHk636eMFSzbaG54N1EjudpqWLYW0DylXWpm1XPdYOKGIJ7OQAUpYFiKRVvvCCHJyBpHbHzGKC4nG5t9P4JC8cVt7aPrOwpeaPSxWzUaFp0k9bOYDPZUOJ8XLYLs7IY1pk2rtYoLLTdDcfG5Kzzo2J3bIaePbV3MKzQ0UsODbgcJZlEpmQscx6xeqDlu+uG1mYjrtw5UiZLSQAD5lbkudMm2EmmZLEYqmYHzwFZpOujih7ONUEwBPmwH3cgEdqhdth5H9fRA5RelGwfRwMIn7uLA+/xqi7XnIvhkfvfdF/IyPz3eBCA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA9PR09MB5246.namprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39830400003)(346002)(136003)(376002)(366004)(16526019)(186003)(107886003)(4326008)(8676002)(8936002)(36756003)(6496006)(66946007)(2906002)(15650500001)(52116002)(66556008)(66476007)(316002)(6666004)(86362001)(26005)(5660300002)(1076003)(44832011)(83380400001)(478600001)(2616005)(110136005)(956004)(6486002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: q4wBhvrjMzSF6Plz5Ht6sf9Uu69ig8LJutAd8jEyaoRDqKTewYyNQQYzV/bQE3XEV4LlM1hb3ypXtn2UD9kZ/IWTmgpl/Y1MFe+L1ElTHVh//V3w7gSJ81b08ickMgWfthsYiUVGueTLp5bDY8dzcUXctkSBIycLijlMk9+jcS/InJxM/w8oiMk/mNtfX7EFuhtrsvQyWRN5ixKH/jgHOhkH7+r8SK5ywKJUxitBRQHXKyBbJ9wi7nEbTIzYCW4WKtrnhYoNWNvKgjBUWA0LPrhxeO1sXAk5oq+Vuw0Oo4uzI4RtN84ucfhZCYEh5tbZXN7/hZ7VucAojcwKizYByZwF9Y7Tms+Qu6o+0mYEg8rv3674tDIbW55gvLpoClnMmUgAKEzNg3gEgaTkoYgW2ASPlIsKNy1rO+ukeMT7BSsbPQRBapQYtCSIs/TsmQcBp2XuuNqtXEhKJNwc+yV3tT3/D7hfCg9JfhdCwpS03f5o4OZPzwW+O0EF3E4KpZkQ81iTRmt6v5H+6f57VRofr6IckSvmbX+Mwbis7sXKBegIgGp8/a87r847npRq68Rao6ZDV+Z7R7M5FYP/bzJZOIWJmmn8EIoY/0as0nZmCFPxewig4O+RKwxixWqNxIYAEZZWR96si8n53nHTsMOJHQ==
-X-OriginatorOrg: starlab.io
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6b6cbb7-73d3-494f-9182-08d859c05e6a
-X-MS-Exchange-CrossTenant-AuthSource: SA9PR09MB5246.namprd09.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 21:43:22.8388
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e611933-986f-4838-a403-4acb432ce224
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: chYVMMkYAvfiR0om1oU7hkRD1vHWk8vWKpUFgxhDUxbYALnkAu4ki99P8nO5pZmG5IsEx33nXgcNyg9tcTPVyxPI/upgYllWlX/Q0iCwT6Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA9PR09MB5376
+References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com> <20200915213735.GG3526428@lunn.ch>
+In-Reply-To: <20200915213735.GG3526428@lunn.ch>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Wed, 16 Sep 2020 00:43:00 +0300
+Message-ID: <CAFCwf13RHWmpAXpWLRtsxjvKPK=7ZChDPD9E6KEgbamLbg09OA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nfs_readdir_page_filler() iterates over entries in a directory, reusing
-the same security label buffer, but does not reset the buffer's length.
-This causes decode_attr_security_label() to return -ERANGE if an entry's
-security label is longer than the previous one's. This error, in
-nfs4_decode_dirent(), only gets passed up as -EAGAIN, which causes another
-failed attempt to copy into the buffer. The second error is ignored and
-the remaining entries do not show up in ls, specifically the getdents64()
-syscall.
+On Wed, Sep 16, 2020 at 12:37 AM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > I completely understand but you didn't answer my question. How come
+> > there are drivers which create netdev objects, and specifically sgi-xp
+> > in misc (but I also saw it in usb drivers) that live outside
+> > drivers/net ? Why doesn't your request apply to them as well ?
+> > When we wrote the code, we saw those examples and therefore assumed it was fine.
+>
+> commit 45d9ca492e4bd1522d1b5bd125c2908f1cee3d4a
+> Author: Dean Nelson <dcn@sgi.com>
+> Date:   Tue Apr 22 14:46:56 2008 -0500
+>
+>     [IA64] move XP and XPC to drivers/misc/sgi-xp
+>
+>     Move XPC and XPNET from arch/ia64/sn/kernel to drivers/misc/sgi-xp.
+>
+>     Signed-off-by: Dean Nelson <dcn@sgi.com>
+>     Signed-off-by: Tony Luck <tony.luck@intel.com>
+>
+> It has been there a long time, and no networking person was involved
+> in its move.
+>
+> drivers/usb/gadget/function/f_ncm.c
+> commit 00a2430ff07d4e0e0e7e24e02fd8adede333b797
+> Author: Andrzej Pietrasiewicz <andrzej.p@samsung.com>
+> Date:   Tue Jul 15 13:09:46 2014 +0200
+>
+>     usb: gadget: Gadget directory cleanup - group usb functions
+>
+>     The drivers/usb/gadget directory contains many files.
+>     Files which are related can be distributed into separate directories.
+>     This patch moves the USB functions implementations into a separate directory.
+>
+>     Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@samsung.com>
+>     Signed-off-by: Felipe Balbi <balbi@ti.com>
+>
+> Again, old.
+>
+> Can you find an example of a network driver added in the last couple
+> of years outside of drivers/met?
+I honestly don't know and I admit we didn't look at the dates of when
+these drivers were introduced.
+Oded
 
-Reproduce by creating multiple files in NFS and giving one of the later
-files a longer security label. ls will not see that file nor any that are
-added afterwards, though they will exist on the backend.
-
-In nfs_readdir_page_filler(), reset security label buffer length before
-every reuse
-
-Signed-off-by: Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
----
-v2: Added explanation from cover letter as requested by J. Bruce Fields
-    <bfields@fieldses.org>
-
- fs/nfs/dir.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index e732580fe47b..cb52db9a0cfb 100644
---- a/fs/nfs/dir.c
-+++ b/fs/nfs/dir.c
-@@ -579,6 +579,9 @@ int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct nfs_entry *en
- 	xdr_set_scratch_buffer(&stream, page_address(scratch), PAGE_SIZE);
- 
- 	do {
-+		if (entry->label)
-+			entry->label->len = NFS4_MAXLABELLEN;
-+
- 		status = xdr_decode(desc, entry, &stream);
- 		if (status != 0) {
- 			if (status == -EAGAIN)
--- 
-2.25.1
-
+>
+> > > > > Please make sure to CC linux-rdma. You clearly stated that the device
+> > > > > does RDMA-like transfers.
+> > > >
+> > > > We don't use the RDMA infrastructure in the kernel and we can't
+> > > > connect to it due to the lack of H/W support we have so I don't see
+> > > > why we need to CC linux-rdma.
+> > >
+> > > You have it backward. You don't get to pick and choose which parts of
+> > > the infrastructure you use, and therefore who reviews your drivers.
+> > > The device uses RDMA under the hood so Linux RDMA experts must very
+> > > much be okay with it getting merged. That's how we ensure Linux
+> > > interfaces are consistent and good quality.
+> >
+> > I understand your point of view but If my H/W doesn't support the
+> > basic requirements of the RDMA infrastructure and interfaces, then
+> > really there is nothing I can do about it. I can't use them.
+>
+> It is up to the RDMA people to say that. They might see how the RDMA
+> core can be made to work for your hardware.
+>
+>      Andrew
