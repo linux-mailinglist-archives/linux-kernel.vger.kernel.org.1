@@ -2,127 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFA526B382
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCFE26B391
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbgIOXES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
+        id S1727309AbgIOXFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727443AbgIOXDr (ORCPT
+        with ESMTP id S1727394AbgIOXFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:03:47 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917A9C06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:03:47 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id r19so2128497pls.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 16:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Szj4HEGLJCAo0focZEdIAz4HSdQqUNWGrF8lTpz41tg=;
-        b=Al/ywHXkCLn66C3fB4LS0wK1RSE8K1XgfVUSsuH9bvAtw0RLdo2wBFXwerM1pAgULA
-         /VBg8L6Xm1vtYDF0bYsOMv2/j+akKykQ4U9gd6R66+jRn7mUdHj7ddSOoJ7JnzEd7qsH
-         ladfCPczQpkBnRc+aFmReIhIhDepPYqdxSZO4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Szj4HEGLJCAo0focZEdIAz4HSdQqUNWGrF8lTpz41tg=;
-        b=YPBjzipAJfVoe2z2A8l7C5KfyGqxE5IRY7WxS7vzunPzDJwXkGxJMmcDpu7WtYXyF7
-         0rwcZ2Fo1GSebtpc+3j1tWna9Gfpzyg9guLFanWgi1jbq7vAdfeTXy7ien+ghw6+XYyO
-         twjIE/wjkDb9sgsGJ0e1um1IilvnirA92T0U60T4YjPB6C7RBdKhRsB8Rw0zMzHLa0da
-         c7sztdD1kv/nMO2w/71TeumlfU649MM8tHUA90WTC7/bprF7kR/fmHv6p++N0lqWjnkf
-         7q1CqSXjk45lVht0K9ZCxGK3fnnp+5xBEXgnPZCagmMm0em6kNTXX9YatvU08gwkpNJI
-         dJKw==
-X-Gm-Message-State: AOAM5305cmPuLCVQXQvJ2sq/LeuX24Ppw8p0o+BLGnkClTPF28kVx3d0
-        Q2LK1HemoCWDiaePeRlGwfPWQQ==
-X-Google-Smtp-Source: ABdhPJyN0uXuwQlv65uva/TdZOuxlc4iCI9S6l1Qqb7sv1C+xG4CJpZX6gyS9Wkm+edENuYvypjqmQ==
-X-Received: by 2002:a17:90a:b702:: with SMTP id l2mr1476282pjr.82.1600211027113;
-        Tue, 15 Sep 2020 16:03:47 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id a20sm14251840pfa.59.2020.09.15.16.03.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 16:03:46 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 16:03:45 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 2/2] USB: misc: Add onboard_usb_hub driver
-Message-ID: <20200915230345.GF2771744@google.com>
-References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200914112716.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <20200915025426.GA17450@b29397-desktop>
- <20200915050207.GF2022397@google.com>
- <AM7PR04MB715735A8A102F3EC9041EA328B200@AM7PR04MB7157.eurprd04.prod.outlook.com>
+        Tue, 15 Sep 2020 19:05:00 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B695AC06174A;
+        Tue, 15 Sep 2020 16:04:59 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Brf2D0nqvz9sTN;
+        Wed, 16 Sep 2020 09:04:51 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600211092;
+        bh=2cPl+pITWd+vDIZL5DnD4Pvu9CM8FqL9TgUwktcR0DA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tYaqG76DA0F1y8CcJ2W5gkv2Y9ZOGkI5BRZ4uQm8YhMHmqvIgCt0oWOfbYaO1xALM
+         EBpXHZ2MUnwxLT+ta16ZQhMO23kNL9oRjHipb1xhZThQTH95Ho6jMEEwvyN4dHkZ7O
+         54WZQvd7vVKGM5/mqifYFhbxCtr39vUaicDCPdybaSL9BNNTjB75lBel7omjVnPaa5
+         jb8oZX/cORmCk+IUMuOwf4iyRqqbhzN84oeOgljMe8YofiT+RYQzV21QSng8mi17kS
+         ck+I/UUkwjaiGSDce8AhtURxC9afWA/Lxyi2wTYnxRKYladj6Q5e7MnVBWqYcyUcPl
+         mtcGGr5It7thw==
+Date:   Wed, 16 Sep 2020 09:04:51 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the net-next tree
+Message-ID: <20200916090451.41e7a174@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <AM7PR04MB715735A8A102F3EC9041EA328B200@AM7PR04MB7157.eurprd04.prod.outlook.com>
+Content-Type: multipart/signed; boundary="Sig_/iQstRI/L.BDLUj2VHUkCoVw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+--Sig_/iQstRI/L.BDLUj2VHUkCoVw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 15, 2020 at 07:05:38AM +0000, Peter Chen wrote:
->   
-> > > > +	hub->cfg.power_off_in_suspend =
-> > of_property_read_bool(dev->of_node, "power-off-in-suspend");
-> > > > +	hub->cfg.wakeup_source = of_property_read_bool(dev->of_node,
-> > > > +"wakeup-source");
-> > >
-> > > Do you really need these two properties? If the device (and its
-> > > children if existed) has wakeup enabled, you keep power in suspend,
-> > > otherwise, you could close it, any exceptions?
-> > 
-> > That would work for my use case, but I'm not sure it's a universally good
-> > configuration.
-> > 
-> > I don't have a specific USB device in mind, but you could have a device that
-> > shouldn't lose it's context during suspend or keep operating autonomously (e.g.
-> > a sensor with a large buffer collecting samples). Not sure if something like this
-> > exists in the real though.
-> > 
-> > I'm not an expert, but it seems there are USB controllers with wakeup support
-> > which is always enabled. A board with such a controller then couldn't have a
-> > policy to power down the hub regardless of wakeup capable devices being
-> > connected.
-> > 
-> 
-> Whether or not it is a wakeup_source, it could get through its or its children's
-> /sys/../power/wakeup value, you have already used usb_wakeup_enabled_descendants
-> to know it.
+Hi all,
 
-I conceptually agree, but in practice there are some conflicting details:
+In commit
 
-wakeup for the hubs on my system is by default disabled, yet USB wakeup works
-regardless, so the flag doesn't really provide useful information. I guess we
-could still use it if there is no better way, but it doesn't seem ideal.
+  9f19306d1666 ("net: stmmac: use netif_tx_start|stop_all_queues() function=
+")
 
-Similar for udev->bus->controller, according to sysfs it doesn't even have wakeup
-support. Please let me know if there is a reliable way to check if wakeup is
-enabled on the controller of a device.
+Fixes tag
 
-> If the onboard HUB needs to reflect wakeup signal, it should not power off its regulator.
-> 
-> For another property power-off-in-suspend, I think it is also a user option,
-> but not a hardware feature.
+  Fixes: c22a3f48 net: stmmac: adding multiple napi mechanism
 
-Ok, I think you are suggesting a sysfs attribute instead of a DT property, that
-sounds good to me.
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+Also, please keep the commit message tags all together at the end of
+the commit message and just use
+
+git log -1 --format=3D'Fixes: %h ("%s")' <SHA1>
+
+to generate Fixes tag lines.
+
+Since Dave does not rebase his tree, this is just for future reference.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/iQstRI/L.BDLUj2VHUkCoVw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9hSJMACgkQAVBC80lX
+0GwffwgAoBxnbvEa4e+9EC19EERC6ylvIIY/zaWzZuQ7S/vFc9UwcM/DAtzSrSk/
+CB3E0NuGrVOKDG5l3Mw2mREiuaWccHRGqPvkwjndQAQUWvufc2rCeGhEILcLdsAs
+Ia8diC58IVQWTagu/1/DrWSeBLRsPzV8kupFcMM5Oz9urwhS5fSHYgVja6DBCRKr
+5+Yg1e6M2m/o2wkGnwcvbwv8JjSLjafHvzI+7/2gLLhm+rRFazdyo1k3WR3mSLWQ
+SdJe0Ip3CQfAUzNCsCnFwzGyTcuERXMH8hbaOB8MkMc9EpBNJYoqyG9/trIgz5wL
+ltkE1Syfu1IG2AKdOCWAoaPR/tmDGg==
+=jD7h
+-----END PGP SIGNATURE-----
+
+--Sig_/iQstRI/L.BDLUj2VHUkCoVw--
