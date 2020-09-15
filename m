@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2050426B824
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFF426B825
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726910AbgIPAhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:37:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbgIONY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727273AbgIPAhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:37:06 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:26353 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726556AbgIONY7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 09:24:59 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600176251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DgU4TZhvG3KpN9lJZj8ZqRXmFgzWt5CrSbPFJksfUsw=;
+        b=DDMdT3NDQINVfoCbVcIGES4A+8vUj+xJit8mRZ0pjnh1XoMKHJ07jrIqAnGtsEtHAfMn5s
+        Hrgqfy2JIt/Obmd3DkfjuY+YUUhNuK83qjWSevQQWwY3AL/qdQRohWj2RD0loH/NA2z/Uw
+        Ho1bcXuoBo9XlSLpIGmyAo7EAqjnLbk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-Q3X7or1cPDKRDui_raGheg-1; Tue, 15 Sep 2020 09:24:09 -0400
+X-MC-Unique: Q3X7or1cPDKRDui_raGheg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E37020684;
-        Tue, 15 Sep 2020 13:23:54 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 09:23:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Gaurav Kohli <gkohli@codeaurora.org>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] trace: Fix race in trace_open and buffer resize call
-Message-ID: <20200915092353.5b805468@gandalf.local.home>
-In-Reply-To: <2fe2a843-e2b5-acf8-22e4-7231d24a9382@codeaurora.org>
-References: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
-        <d4691a90-9a47-b946-f2cd-bb1fce3981b0@codeaurora.org>
-        <2fe2a843-e2b5-acf8-22e4-7231d24a9382@codeaurora.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6792E1084D64;
+        Tue, 15 Sep 2020 13:24:07 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3913960BE2;
+        Tue, 15 Sep 2020 13:24:07 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08FDO6xQ009380;
+        Tue, 15 Sep 2020 09:24:06 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08FDO6nw009376;
+        Tue, 15 Sep 2020 09:24:06 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Tue, 15 Sep 2020 09:24:06 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
+        <rajesh.tadakamadla@hpe.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org
+Subject: Re: [RFC] nvfs: a filesystem for persistent memory
+In-Reply-To: <20200915130012.GC5449@casper.infradead.org>
+Message-ID: <alpine.LRH.2.02.2009150911570.8228@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com> <20200915130012.GC5449@casper.infradead.org>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 10:38:03 +0530
-Gaurav Kohli <gkohli@codeaurora.org> wrote:
 
+
+On Tue, 15 Sep 2020, Matthew Wilcox wrote:
+
+> On Tue, Sep 15, 2020 at 08:34:41AM -0400, Mikulas Patocka wrote:
+> > - when the fsck.nvfs tool mmaps the device /dev/pmem0, the kernel uses 
+> > buffer cache for the mapping. The buffer cache slows does fsck by a factor 
+> > of 5 to 10. Could it be possible to change the kernel so that it maps DAX 
+> > based block devices directly?
 > 
->  >>> +void ring_buffer_mutex_release(struct trace_buffer *buffer)
->  >>> +{
->  >>> +    mutex_unlock(&buffer->mutex);
->  >>> +}
->  >>> +EXPORT_SYMBOL_GPL(ring_buffer_mutex_release);  
->  >
->  > I really do not like to export these.
->  >  
+> Oh, because fs/block_dev.c has:
+>         .mmap           = generic_file_mmap,
 > 
-> Actually available reader lock is not helping 
-> here(&cpu_buffer->reader_lock), So i took ring buffer mutex lock to 
-> resolve this(this came on 4.19/5.4), in latest tip it is trace buffer 
-> lock. Due to this i have exported api.
+> I don't see why we shouldn't have a blkdev_mmap modelled after
+> ext2_file_mmap() with the corresponding blkdev_dax_vm_ops.
 
-I'm saying, why don't you take the buffer->mutex in the
-ring_buffer_reset_online_cpus() function? And remove all the protection in
-tracing_reset_online_cpus()?
+Yes, that's possible - and we whould also have to rewrite methods 
+read_iter and write_iter on DAX block devices, so that they are coherent 
+with mmap.
 
-void tracing_reset_online_cpus(struct array_buffer *buf)
-{
-	struct trace_buffer *buffer = buf->buffer;
-
-	if (!buffer)
-		return;
-
-	buf->time_start = buffer_ftrace_now(buf, buf->cpu);
-
-	ring_buffer_reset_online_cpus(buffer);
-}
-
-The reset_online_cpus() is already doing the synchronization, we don't need
-to do it twice.
-
-I believe commit b23d7a5f4a07 ("ring-buffer: speed up buffer resets by
-avoiding synchronize_rcu for each CPU") made the synchronization in
-tracing_reset_online_cpus() obsolete.
-
--- Steve
+Mikulas
 
