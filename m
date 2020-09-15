@@ -2,81 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5D526A20A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308E226A20D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgIOJUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:20:42 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:50809 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIOJUh (ORCPT
+        id S1726451AbgIOJVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:21:11 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:57919 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726130AbgIOJVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:20:37 -0400
-X-Originating-IP: 90.65.88.165
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 3647860005;
-        Tue, 15 Sep 2020 09:20:35 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Alessandro Zummo <a.zummo@towertech.it>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v3 00/14] rtc: rx8010: use regmap instead of i2c smbus API
-Date:   Tue, 15 Sep 2020 11:20:34 +0200
-Message-Id: <160016161356.324769.2613609111429529281.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200914154601.32245-1-brgl@bgdev.pl>
-References: <20200914154601.32245-1-brgl@bgdev.pl>
+        Tue, 15 Sep 2020 05:21:07 -0400
+Received: from [78.134.51.148] (port=48280 helo=[192.168.77.62])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kI796-0001EN-IM; Tue, 15 Sep 2020 11:21:04 +0200
+Subject: Re: [PATCH v2 1/2] media: imx274: remove binning enum
+To:     Eugen Hristev <eugen.hristev@microchip.com>, sakari.ailus@iki.fi,
+        leonl@leopardimaging.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@ifi.fi>
+References: <20200915090442.52322-1-eugen.hristev@microchip.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <bc455c26-d639-7401-b8b5-92a45a628d3a@lucaceresoli.net>
+Date:   Tue, 15 Sep 2020 11:21:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200915090442.52322-1-eugen.hristev@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 17:45:47 +0200, Bartosz Golaszewski wrote:
-> This series gets bigger and bigger but I noticed a problem with this
-> driver that looks like stable material so I fixed it as the first patch
-> in the series to make backporting easy.
+Hi,
+
+On 15/09/20 11:04, Eugen Hristev wrote:
+> Binning enum is unused. Remove from driver.
 > 
-> Other than that, there are new refactoring patches and I removed the
-> unnecessary error messages.
-> 
-> [...]
+> Suggested-by: Sakari Ailus <sakari.ailus@ifi.fi>
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 
-Applied, thanks!
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
-[01/14] rtc: rx8010: don't modify the global rtc ops
-        commit: d3b14296da69adb7825022f3224ac6137eb30abf
-[02/14] rtc: rx8010: remove a stray newline
-        commit: 2e0ce569102ccb1ca9bacc499c8411fb8fa53069
-[03/14] rtc: rx8010: remove unnecessary brackets
-        commit: 28c86f30c979f9d4460dd7680610c3470b4d009b
-[04/14] rtc: rx8010: consolidate local variables of the same type
-        commit: 75677971991940581e76bcd5176ea40d0baf8fcd
-[05/14] rtc: rx8010: use tabs instead of spaces for code formatting
-        commit: e9e4c2dae4313b88c62ee9df9d177a71c23121b2
-[06/14] rtc: rx8010: rename ret to err in rx8010_set_time()
-        commit: 13952c9e35384fd7f63a5ce8261108695491bb56
-[07/14] rtc: rx8010: don't use magic values for time buffer length
-        commit: f702699c67d315e4a232c64801b2de9af87fd9f4
-[08/14] rtc: rx8010: drop unnecessary initialization
-        commit: b3ff7fd68d925de2159a5312f28dcd178d0d3715
-[09/14] rtc: rx8010: use a helper variable for client->dev in probe()
-        commit: 955a123c14906e3adc43d43281f8fde91f631f7f
-[10/14] rtc: rx8010: prefer sizeof(*val) over sizeof(struct type_of_val)
-        commit: 666f21413b881e159efaf862f119d4d058fa2c4a
-[11/14] rtc: rx8010: switch to using the preferred RTC API
-        commit: 0ce627785afa730d8f6568eb8738d1700cbc4569
-[12/14] rtc: rx8010: switch to using the preferred i2c API
-        commit: cee015d90d96495d8376871af0f1a33027303d5e
-[13/14] rtc: rx8010: convert to using regmap
-        commit: 9868bc1ce272dc0387488e779c585e7a12cf7a1b
-[14/14] rtc: rx8010: use range checking provided by core RTC code
-        commit: 2fc1af3095af5cbcd8fc406610dc196b62e3ed21
-
-Best regards,
 -- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+Luca
