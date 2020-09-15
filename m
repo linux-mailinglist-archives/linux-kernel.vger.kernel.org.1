@@ -2,66 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0473426B21F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654A926B2C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727578AbgIOWmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:42:01 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47965 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727506AbgIOP5x (ORCPT
+        id S1727647AbgIOWxL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 18:53:11 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:57891 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727413AbgIOPk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:57:53 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kID05-0004Cu-2K; Tue, 15 Sep 2020 15:36:09 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: rc: fix check on dev->min_timeout for LIRC_GET_MIN_TIMEOUT ioctl
-Date:   Tue, 15 Sep 2020 16:36:08 +0100
-Message-Id: <20200915153608.35154-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 15 Sep 2020 11:40:57 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-53-W38LQ2b8OBS5NKJlBcK7FA-1; Tue, 15 Sep 2020 16:40:53 +0100
+X-MC-Unique: W38LQ2b8OBS5NKJlBcK7FA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 15 Sep 2020 16:40:52 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 15 Sep 2020 16:40:52 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+CC:     "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        "jfs-discussion@lists.sourceforge.net" 
+        <jfs-discussion@lists.sourceforge.net>,
+        Christoph Hellwig <hch@lst.de>,
+        "Dave Chinner" <dchinner@redhat.com>
+Subject: RE: [PATCH v2 2/9] fs: Introduce i_blocks_per_page
+Thread-Topic: [PATCH v2 2/9] fs: Introduce i_blocks_per_page
+Thread-Index: AQHWh8zSUX5EB+iAm0+PkXaO9U0VzKlp3UwQ
+Date:   Tue, 15 Sep 2020 15:40:52 +0000
+Message-ID: <0c874f14499c4d819f3e8e09f5086d77@AcuMS.aculab.com>
+References: <20200910234707.5504-1-willy@infradead.org>
+ <20200910234707.5504-3-willy@infradead.org>
+In-Reply-To: <20200910234707.5504-3-willy@infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.002
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Matthew Wilcox (Oracle)
+> Sent: 11 September 2020 00:47
+> This helper is useful for both THPs and for supporting block size larger
+> than page size.  Convert all users that I could find (we have a few
+> different ways of writing this idiom, and I may have missed some).
+> 
+...
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index d81a9a86c5aa..330f86b825d7 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -46,7 +46,7 @@ iomap_page_create(struct inode *inode, struct page *page)
+>  {
+>  	struct iomap_page *iop = to_iomap_page(page);
+> 
+> -	if (iop || i_blocksize(inode) == PAGE_SIZE)
+> +	if (iop || i_blocks_per_page(inode, page) <= 1)
+>  		return iop;
+> 
+>  	iop = kmalloc(sizeof(*iop), GFP_NOFS | __GFP_NOFAIL);
+> @@ -147,7 +147,7 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
+>  	unsigned int i;
+> 
+>  	spin_lock_irqsave(&iop->uptodate_lock, flags);
+> -	for (i = 0; i < PAGE_SIZE / i_blocksize(inode); i++) {
+> +	for (i = 0; i < i_blocks_per_page(inode, page); i++) {
 
-Currently the LIRC_GET_MIN_TIMEOUT is checking for a null dev->max_timeout
-and then accessing dev->min_timeout, hence we may have a potential null
-pointer dereference issue.  This looks like a cut-n-paste typo, fix it
-by checking on dev->min_timeout before accessing it.
+You probably don't want to call the helper every time
+around the loop.
 
-Addresses-Coverity: ("Copy-paste error")
-Fixes: e589333f346b ("V4L/DVB: IR: extend interfaces to support more device settings")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/rc/lirc_dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	David
 
-diff --git a/drivers/media/rc/lirc_dev.c b/drivers/media/rc/lirc_dev.c
-index 220363b9a868..d230c21e1d31 100644
---- a/drivers/media/rc/lirc_dev.c
-+++ b/drivers/media/rc/lirc_dev.c
-@@ -533,7 +533,7 @@ static long lirc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 
- 	/* Generic timeout support */
- 	case LIRC_GET_MIN_TIMEOUT:
--		if (!dev->max_timeout)
-+		if (!dev->min_timeout)
- 			ret = -ENOTTY;
- 		else
- 			val = dev->min_timeout;
--- 
-2.27.0
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
