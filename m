@@ -2,149 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E876269BDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842CF269BE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgIOCUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 22:20:40 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:21875 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726019AbgIOCUj (ORCPT
+        id S1726067AbgIOCaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 22:30:08 -0400
+Received: from smtprelay0039.hostedemail.com ([216.40.44.39]:59580 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726019AbgIOCaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 22:20:39 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U9-sPIq_1600136424;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U9-sPIq_1600136424)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 15 Sep 2020 10:20:24 +0800
-Date:   Tue, 15 Sep 2020 10:20:23 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-s390@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH v2 2/7] kernel/resource: move and rename
- IORESOURCE_MEM_DRIVER_MANAGED
-Message-ID: <20200915022023.GD2007@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200908201012.44168-1-david@redhat.com>
- <20200908201012.44168-3-david@redhat.com>
+        Mon, 14 Sep 2020 22:30:06 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A2F8618029122;
+        Tue, 15 Sep 2020 02:30:04 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:968:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3873:3874:4321:5007:7903:8603:10004:10400:10848:11026:11232:11658:11914:12296:12297:12740:12760:12895:13069:13071:13161:13229:13255:13311:13357:13439:14180:14659:14721:21080:21433:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:18,LUA_SUMMARY:none
+X-HE-Tag: coil86_0f0b38c2710d
+X-Filterd-Recvd-Size: 1720
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 15 Sep 2020 02:30:03 +0000 (UTC)
+Message-ID: <00e6faaceed28ceb81777a63caffc512885a6efb.camel@perches.com>
+Subject: Re: [PATCH 3/3] staging: rtl8723bs: os_dep: fixed spacing around
+ operators issue
+From:   Joe Perches <joe@perches.com>
+To:     Ross Schmidt <ross.schm.dev@gmail.com>, gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Mon, 14 Sep 2020 19:30:02 -0700
+In-Reply-To: <20200915001731.28986-3-ross.schm.dev@gmail.com>
+References: <20200915001731.28986-1-ross.schm.dev@gmail.com>
+         <20200915001731.28986-3-ross.schm.dev@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908201012.44168-3-david@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 10:10:07PM +0200, David Hildenbrand wrote:
->IORESOURCE_MEM_DRIVER_MANAGED currently uses an unused PnP bit, which is
->always set to 0 by hardware. This is far from beautiful (and confusing),
->and the bit only applies to SYSRAM. So let's move it out of the
->bus-specific (PnP) defined bits.
->
->We'll add another SYSRAM specific bit soon. If we ever need more bits for
->other purposes, we can steal some from "desc", or reshuffle/regroup what we
->have.
+On Mon, 2020-09-14 at 19:17 -0500, Ross Schmidt wrote:
+> Fixed a coding style issue by adding spaces around operators in
+> sdio_ops_linux.c to fix checkpatch checks.
 
-I think you make this definition because we use IORESOURCE_SYSRAM_RAM for
-hotpluged memory? So we make them all in IORESOURCE_SYSRAM_XXX family?
+Hello Ross.
 
->
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Michal Hocko <mhocko@suse.com>
->Cc: Dan Williams <dan.j.williams@intel.com>
->Cc: Jason Gunthorpe <jgg@ziepe.ca>
->Cc: Kees Cook <keescook@chromium.org>
->Cc: Ard Biesheuvel <ardb@kernel.org>
->Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->Cc: Baoquan He <bhe@redhat.com>
->Cc: Wei Yang <richardw.yang@linux.intel.com>
->Cc: Eric Biederman <ebiederm@xmission.com>
->Cc: Thomas Gleixner <tglx@linutronix.de>
->Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->Cc: kexec@lists.infradead.org
->Signed-off-by: David Hildenbrand <david@redhat.com>
->---
-> include/linux/ioport.h | 4 +++-
-> kernel/kexec_file.c    | 2 +-
-> mm/memory_hotplug.c    | 4 ++--
-> 3 files changed, 6 insertions(+), 4 deletions(-)
->
->diff --git a/include/linux/ioport.h b/include/linux/ioport.h
->index 52a91f5fa1a36..d7620d7c941a0 100644
->--- a/include/linux/ioport.h
->+++ b/include/linux/ioport.h
->@@ -58,6 +58,9 @@ struct resource {
-> #define IORESOURCE_EXT_TYPE_BITS 0x01000000	/* Resource extended types */
-> #define IORESOURCE_SYSRAM	0x01000000	/* System RAM (modifier) */
-> 
->+/* IORESOURCE_SYSRAM specific bits. */
->+#define IORESOURCE_SYSRAM_DRIVER_MANAGED	0x02000000 /* Always detected via a driver. */
->+
-> #define IORESOURCE_EXCLUSIVE	0x08000000	/* Userland may not map this resource */
-> 
-> #define IORESOURCE_DISABLED	0x10000000
->@@ -103,7 +106,6 @@ struct resource {
-> #define IORESOURCE_MEM_32BIT		(3<<3)
-> #define IORESOURCE_MEM_SHADOWABLE	(1<<5)	/* dup: IORESOURCE_SHADOWABLE */
-> #define IORESOURCE_MEM_EXPANSIONROM	(1<<6)
->-#define IORESOURCE_MEM_DRIVER_MANAGED	(1<<7)
-> 
-> /* PnP I/O specific bits (IORESOURCE_BITS) */
-> #define IORESOURCE_IO_16BIT_ADDR	(1<<0)
->diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
->index ca40bef75a616..dfeeed1aed084 100644
->--- a/kernel/kexec_file.c
->+++ b/kernel/kexec_file.c
->@@ -520,7 +520,7 @@ static int locate_mem_hole_callback(struct resource *res, void *arg)
-> 	/* Returning 0 will take to next memory range */
-> 
-> 	/* Don't use memory that will be detected and handled by a driver. */
->-	if (res->flags & IORESOURCE_MEM_DRIVER_MANAGED)
->+	if (res->flags & IORESOURCE_SYSRAM_DRIVER_MANAGED)
-> 		return 0;
-> 
-> 	if (sz < kbuf->memsz)
->diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
->index 4c47b68a9f4b5..8e1cd18b5cf14 100644
->--- a/mm/memory_hotplug.c
->+++ b/mm/memory_hotplug.c
->@@ -105,7 +105,7 @@ static struct resource *register_memory_resource(u64 start, u64 size,
-> 	unsigned long flags =  IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
-> 
-> 	if (strcmp(resource_name, "System RAM"))
->-		flags |= IORESOURCE_MEM_DRIVER_MANAGED;
->+		flags |= IORESOURCE_SYSRAM_DRIVER_MANAGED;
-> 
-> 	/*
-> 	 * Make sure value parsed from 'mem=' only restricts memory adding
->@@ -1160,7 +1160,7 @@ EXPORT_SYMBOL_GPL(add_memory);
->  *
->  * For this memory, no entries in /sys/firmware/memmap ("raw firmware-provided
->  * memory map") are created. Also, the created memory resource is flagged
->- * with IORESOURCE_MEM_DRIVER_MANAGED, so in-kernel users can special-case
->+ * with IORESOURCE_SYSRAM_DRIVER_MANAGED, so in-kernel users can special-case
->  * this memory as well (esp., not place kexec images onto it).
->  *
->  * The resource_name (visible via /proc/iomem) has to have the format
->-- 
->2.26.2
+If you want to do more than fix whitespace,
+please look at the #define for DBG_871X.
 
--- 
-Wei Yang
-Help you, Help me
+All the uses with a KERN_<LEVEL> are broken
+and should be modified as _dbgdump is just
+printk and DRIVER_PREFIX is "RTL8723BS: "
+so the KERN_<LEVEL> after the DRIVER_PREFIX.
+
+That's just broken.
+
+	#define DBG_871X(...)     do {\
+		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
+	} while (0)
+
+Realistically, the DBG_871X macro family should just
+use pr_debug and all the KERN_<LEVEL> uses should be
+removed.
+
+The define and uses of RT_TRACE should also just be
+converted to use pr_debug or some other function
+to perhaps reduce overall object size
+
+
