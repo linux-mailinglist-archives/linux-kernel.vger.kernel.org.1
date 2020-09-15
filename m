@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C99826B021
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804DE26B028
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgIOWBm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 18:01:42 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:47330 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbgIOV5q (ORCPT
+        id S1728141AbgIOWDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:03:11 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44502 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728136AbgIOV7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:57:46 -0400
-X-Greylist: delayed 383 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Sep 2020 17:57:42 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 37A1D6074029;
-        Tue, 15 Sep 2020 23:50:54 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id FJeDlkGzqKO8; Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id C0322607403C;
-        Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 173xIe-uMIop; Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 93E5F6074029;
-        Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 23:50:53 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     horia geanta <horia.geanta@nxp.com>
-Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        davem <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-imx <linux-imx@nxp.com>, david <david@sigma-star.at>
-Message-ID: <881550786.93213.1600206653402.JavaMail.zimbra@nod.at>
-In-Reply-To: <ffc5254a-cecb-20b8-fca3-d2cd8486362d@nxp.com>
-References: <1594591536-531-1-git-send-email-iuliana.prodan@nxp.com> <1594591536-531-3-git-send-email-iuliana.prodan@nxp.com> <CAFLxGvy0T-E-YecWbGZsDVPajuYVc8L-Uf8UCST_61+t+nfhrA@mail.gmail.com> <CAFLxGvw4zvL0N5+wChKq3=_xLuuCYLKDOyKKnKFy3UiWMUwf-g@mail.gmail.com> <ffc5254a-cecb-20b8-fca3-d2cd8486362d@nxp.com>
-Subject: Re: [PATCH 2/2] crypto: caam - support tagged keys for skcipher
- algorithms
+        Tue, 15 Sep 2020 17:59:12 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLsnVp131707;
+        Tue, 15 Sep 2020 21:59:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=rvk8xO+mQh0jQZr0VqiB0z2LcMoxC8WXLOxEK+duu5s=;
+ b=v6BaN6n9hN19OkcRHjj0yyS/z288vMFjwzHhKcsHAlvHx7ShBOS+FldYfPrjtoqQnLBS
+ t9+7yb07s3nxbZYCLVg5D6gmVMNypTrt6jA+1eSWiR/6KQQpF6Bash9U1dbo9IKKBG5B
+ aMMl1zFlBcRuFT4EF2rsbm96w/jn5GdA7Z0l4erzePLcj9sA/BkTdmOkTkAh3AQNPYPY
+ XTPPmCWZcP8GVnFfuNPNETdlQ7fowGMVWstx8nPSnfHEqSAYh/lfVTohhdVP9U9UPEMV
+ FhA5DXDFa8XUV60dSIm5agv374ijEP+d8GOkeJ9YI5TJ/Helje3PLJTc5QT2YgOkcAGE 0Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33gp9m7sac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 21:59:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FLsgTn085621;
+        Tue, 15 Sep 2020 21:58:59 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 33h8903rrf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 21:58:59 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FLwwQG007777;
+        Tue, 15 Sep 2020 21:58:58 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Sep 2020 21:58:58 +0000
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] scsi: aic94xx: Remove unused inline function
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1pn6m4s86.fsf@ca-mkp.ca.oracle.com>
+References: <20200909135711.35728-1-yuehaibing@huawei.com>
+Date:   Tue, 15 Sep 2020 17:58:56 -0400
+In-Reply-To: <20200909135711.35728-1-yuehaibing@huawei.com>
+        (yuehaibing@huawei.com's message of "Wed, 9 Sep 2020 21:57:11 +0800")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: crypto: caam - support tagged keys for skcipher algorithms
-Thread-Index: SwVP6sBZjOv2Q9WeUVK81sHWwzKQnQ==
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ suspectscore=1 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009150170
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009150170
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "horia geanta" <horia.geanta@nxp.com>
->>> How to use it with cryptsetup?
->>> I'm asking because it is not clear to me why you are not implementing
->>> a new kernel key type (KEYS subsystem)
->>> to utilize tagged keys.
->>> Many tools already support the keyctl userspace interface (cryptsetup,
->>> fscrypt, ...).
->> 
->> *friendly ping*
->> 
-> We didn't include the key management part in this series,
-> just the crypto API support for algorithms with protected keys,
-> to get early feedback.
-> 
-> Wrt. key management:
-> The NXP vendor / downstream kernel (to be included in i.MX BSP Q3 release)
-> will have support for protected keys generation.
-> Besides this, a dedicated ioctl-based interface will allow userspace to
-> generate and export these keys. After this, user can use standard keyctl
-> to add a key (as user / logon type) in the keyring, such that it would be
-> available to dm-crypt.
-> 
-> We know that adding new ioctls is frowned upon, so before trying to upstream
-> the ioctl-based solution the plan is checking the feasibility of
-> extending keyctl as David Howells suggested:
-> https://lore.kernel.org/lkml/8060.1533226481@warthog.procyon.org.uk
-> (Note the difference b/w adding new key type - which was rejected -
-> and a key "subtype extension".)
 
-We have also a keyctl based patch series which should go upstream.
-Since we also added a new keytype, it got rejected so far.
+YueHaibing,
 
-Do you have git repo with the WIP patches available?
-Not that we do the work twice. :-)
-Our patch series also supports DCP beside of CAAM.
+> There is no caller in tree, so can remove it.
 
-Thanks,
-//richard
+Applied to 5.10/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
