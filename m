@@ -2,153 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A430C26A299
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930BB26A29E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgIOJ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:58:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30101 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIOJ6S (ORCPT
+        id S1726214AbgIOKBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:01:52 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:27523 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIOKBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:58:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600163897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EaqzeCSiFYpnrPbjV8HOVWxBr3ZpqgtNxUf3qRub4/I=;
-        b=P6VvC6g36wy/qBQWHNLKFAsnNKIieblJhyMPov6vgHYHuzW0CIwi+UUeR9Yz4w79i+o9f7
-        uegXzS67N8fVXNrAsaDZC+fHo5gauedmDTe6OiMctZ3xZueJUff7PbGaBt1yjhfcg+ixIX
-        fFKJ29dvUCOr/BMJqsvJ695vr2QXdzI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-178-RPb1n06cNySajK6IDqouJw-1; Tue, 15 Sep 2020 05:58:10 -0400
-X-MC-Unique: RPb1n06cNySajK6IDqouJw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAE5D1084D73;
-        Tue, 15 Sep 2020 09:58:08 +0000 (UTC)
-Received: from starship (unknown [10.35.207.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2504B2C31E;
-        Tue, 15 Sep 2020 09:57:55 +0000 (UTC)
-Message-ID: <01a04948e9a2b1cf1b3d85e615d76197cf3d45d5.camel@redhat.com>
-Subject: Re: xconfig is broken again on Qt5
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Tue, 15 Sep 2020 12:57:49 +0300
-In-Reply-To: <fba403b3-75b5-5e97-a2d5-784fd7f10f1f@infradead.org>
-References: <e04f1e9372f896d435d972cc6b70d1eb3b0c32a2.camel@redhat.com>
-         <CAK7LNAQ6M+9CSwEOb687jGQbtOX6GjKhQ3m45U7XrPs4_CJU0Q@mail.gmail.com>
-         <20200915074126.36a24f0e@coco.lan>
-         <fba403b3-75b5-5e97-a2d5-784fd7f10f1f@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Tue, 15 Sep 2020 06:01:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600164108; x=1631700108;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=s5bZRjPzdlzTq6DB3HuyGw96oDsYWdYDydWdR7TC0Qo=;
+  b=x+mxXWSkOjX4wK/ncEapaTVvUzMbVRWTX/j9VH/iIlxrCT4Zjpa+sAM/
+   H22K3iHp7w8VA+0gF3cWCbEaoouM1syd53XxNEIlhBehWSZj/pVqxwjBE
+   37zIumUaEYGqnSZ/kBdrQ+hZbgM7ygtonhEwhwP+hWFNdrxKg1lahJwFs
+   ARV9AFCXyLPUcvnJMcQMbhJDQoTnjn3xy8/4mpUVzedyrYyivzOvm+AMZ
+   5jn3gBf6gM1tZ23FEp/6AYCJ3IomDToD4+LOmmeGmu3i1yEkQieZLq56b
+   VCsBPmvubU1datgP5IJjsPPbeCzP/zrIEQ6YRlwM3VqSCk4g4acK7ExWF
+   A==;
+IronPort-SDR: B99CJSOQxAJWY1nVFk8QlWavyoa8/8we6oZrYndyMh4N01MF78nizj+m5eesTDt0CrIapeUuxH
+ VFbJJYAWL0NR3sam4J+7Dk15Pa6ntTJ5Cbr0at8AbSg4hJkzqTdUCBBS1h0XoLSI3D/NEBPSAQ
+ SrqDT372O9T3Dh5SGoSabRTExP6/qU3oyoLX49qGsyF8rYl3Ax2aYnSh9n8AgYGLB9cKS8doGv
+ osCKEO8EUd8SlH/akAAvgSI8TfRJu8U1JVJzAhacEV+VtFM4p/xiuKR7urQDW2O+LtE/37y4VI
+ nXI=
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="89124144"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2020 03:01:48 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 03:01:46 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 15 Sep 2020 03:01:46 -0700
+Date:   Tue, 15 Sep 2020 09:59:11 +0000
+From:   "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+CC:     "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH RFC 6/7] bridge: cfm: Netlink Notifications.
+Message-ID: <20200915095911.yq47xtboc5bn2b3i@soft-test08>
+References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
+ <20200904091527.669109-7-henrik.bjoernlund@microchip.com>
+ <cbb516e37457ef1875f99001ec72624c49ab51ed.camel@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <cbb516e37457ef1875f99001ec72624c49ab51ed.camel@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-14 at 22:56 -0700, Randy Dunlap wrote:
-> On 9/14/20 10:41 PM, Mauro Carvalho Chehab wrote:
-> > Em Tue, 15 Sep 2020 00:25:07 +0900
-> > Masahiro Yamada <masahiroy@kernel.org> escreveu:
-> > 
-> > > On Sun, Sep 13, 2020 at 10:21 PM Maxim Levitsky <mlevitsk@redhat.com> wrote:
-> > > > I hate to say it, but xconfig got broken again.
-> > > > 
-> > > > After commit 68fd110b3e7e2 ("kconfig: qconf: remove redundant help in the info view")
-> > > > help description disappered completely from xconfig (both normal and split mode)
-> > > > 
-> > > > I reverted this and next commit to get this back.
-> > > > 
-> > > > I have a feeling that there were several bugs introduced to xconfig recently
-> > > > due to attempt to support both Qt4 and Qt5. Maybe we should only support one version?  
-> > > 
-> > > xconfig was originally written for Qt3, and
-> > > got broken in many ways after being converted to Qt5.
-> > > (commit 8328447af88eaab1d thru b4ff1de3b8381a4)
-> > > 
-> > > That is my gut feeling.
-> > > 
-> > > So, xconfig carried broken code everywhere
-> > > for many years.
-> > > 
-> > > I think supporting both Qt4 and Qt5
-> > > is doable, but testing both versions is tedious.
-> > > I'd like to want to drop Qt4 support in the future but
-> > > not in this development cycle because there are still
-> > > some people using Qt4.
-> > 
-> > My 2 cents here: I ported Kaffeine from Qt4 to Qt5. When I did that,
-> > I tried to make it compatible with both, but that was not easy. So,
-> > it now supports only Qt5. Ok, Kaffeine uses a lot of different APIs.
-> > 
-> > It is probably doable to keep xconfig compatible with both Qt4 and
-> > Qt5, but not sure if it is worth the efforts, as Qt5 was released 
-> > at the end of 2012. So, I guess that all distros should have Qt5
-> > packages, even the LTS ones.
-> > 
-> > > Recently I changed xconfig a lot because I noticed
-> > > various bugs, and also needed to simplify the code
-> > > for better maintainability.
-> > > 
-> > > 
-> > > Sorry for the pain, but we need to change the code
-> > > to make it stable and maintainable.
-> > > 
-> > > For the reported issue,
-> > > does this work for you?
-> > > https://patchwork.kernel.org/patch/11774055/
-> > > 
-> > > 
-> > > > I tried gconfig even thinking maybe nobody uses xconfig these days
-> > > > but gconfig seems to lack search function.  
-> > > 
-> > > gconfig is not well maintained either.
-> > > 
-> > > I think it should be converted from gtk+2 to gtk+3
-> > > and I know various bugs that need fixing
-> > > (but I have not been able to find time to work on it...)
-> > 
-> > Such conversion can also be painful. I also did two such
-> > conversions for other media packages (Camorama and ZBar). Also,
-> > gtk4 is close to be released:
-> > 
-> > 	https://www.phoronix.com/scan.php?page=news_item&px=GTK-3.99.1-Released
-> > 
-> > Porting from gtk+3 to gtk4 is also painful. I tried to prepare
-> > Camorama (which currently supports both gtk+2 and gtk+3) for gtk4, 
-> > but one of the fundamental features needed for it to work was dropped
-> > (a way to write video images inside a widget). Last time I checked,
-> > there were no obvious replacement for it (didn't check 3.99 yet).
-> > 
-> > Maybe the main point here is if we should keep maintaining two
-> > GUI frontends.
+Thanks for the review. Comments below.
+
+The 09/08/2020 13:54, Nikolay Aleksandrov wrote:
 > 
-> I can't recall (m)any gconfig users.
-> And it is missing some critical features IMO, like Search.
+> On Fri, 2020-09-04 at 09:15 +0000, Henrik Bjoernlund wrote:
+> > This is the implementation of Netlink notifications out of CFM.
+> >
+> > Notifications are initiated whenever a state change happens in CFM.
+> >
+> [snip]
+> > @@ -445,6 +458,7 @@ static int br_cfm_frame_rx(struct net_bridge_port *port, struct sk_buff *skb)
+> >                       peer_mep->cc_status.ccm_defect = false;
+> >
+> >                       /* Change in CCM defect status - notify */
+> > +                     br_cfm_notify(RTM_NEWLINK, port);
+> >
+> >                       /* Start CCM RX timer */
+> >                       ccm_rx_timer_start(peer_mep);
+> > @@ -874,6 +888,35 @@ int br_cfm_cc_counters_clear(struct net_bridge *br, const u32 instance,
+> >       return 0;
+> >  }
+> >
+> > +int br_cfm_mep_count(struct net_bridge *br, u32 *count)
+> > +{
+> > +     struct br_cfm_mep *mep;
 > 
+> Leave a blank line between local variable definitions and code.
 > 
-Thank you very much. The patch works.
+I will change that as suggested.
 
-I wish I could myself fix the issues that I find in xconfig to avoid bothering
-you with that, so I am thinking maybe you can write a short piece of documentation
-on how the things are connected in xconfig? Through my life I deciphered
-a lot of code, but I kind of tried to understand xconfig, and while I do
-have some rough Qt knoweldge (like that I know what slot/signals are),
-but still I wasn't able to wrap my head around it yet.
+> > +     *count = 0;
+> > +
+> > +     rcu_read_lock();
+> > +     list_for_each_entry_rcu(mep, &br->mep_list, head)
+> > +             * count += 1;
+> 
+> please remove the extra space
+> 
+I will change that as suggested.
 
-Best regards,
-	Maxim Levitsky
+> > +     rcu_read_unlock();
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +int br_cfm_peer_mep_count(struct net_bridge *br, u32 *count)
+> > +{
+> > +     struct br_cfm_peer_mep *peer_mep;
+> > +     struct br_cfm_mep *mep;
+> 
+> Leave a blank line between local variable definitions and code.
+> 
+I will change that as suggested.
 
+> > +     *count = 0;
+> > +
+> > +     rcu_read_lock();
+> > +     list_for_each_entry_rcu(mep, &br->mep_list, head) {
+> > +             list_for_each_entry_rcu(peer_mep, &mep->peer_mep_list, head)
+> > +                     * count += 1;
+> 
+> please remove the extra space
+> 
+I will change that as suggested.
 
+> > +     }
+> > +     rcu_read_unlock();
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  bool br_cfm_created(struct net_bridge *br)
+> >  {
+> >       return !list_empty(&br->mep_list);
+> > diff --git a/net/bridge/br_cfm_netlink.c b/net/bridge/br_cfm_netlink.c
+> > index 4e39aab1cd0b..13664ac8608a 100644
+> > --- a/net/bridge/br_cfm_netlink.c
+> > +++ b/net/bridge/br_cfm_netlink.c
+> > @@ -582,7 +582,9 @@ int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge *br)
+> >       return -EMSGSIZE;
+> >  }
+> >
+> > -int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
+> > +int br_cfm_status_fill_info(struct sk_buff *skb,
+> > +                         struct net_bridge *br,
+> > +                         bool getlink)
+> >  {
+> >       struct nlattr *tb, *cfm_tb;
+> >       struct br_cfm_mep *mep;
+> > @@ -613,10 +615,12 @@ int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
+> >                               mep->status.rx_level_low_seen))
+> >                       goto nla_put_failure;
+> >
+> > -             /* Clear all 'seen' indications */
+> > -             mep->status.opcode_unexp_seen = false;
+> > -             mep->status.version_unexp_seen = false;
+> > -             mep->status.rx_level_low_seen = false;
+> > +             if (getlink) { /* Only clear if this is a GETLINK */
+> > +                     /* Clear all 'seen' indications */
+> > +                     mep->status.opcode_unexp_seen = false;
+> > +                     mep->status.version_unexp_seen = false;
+> > +                     mep->status.rx_level_low_seen = false;
+> > +             }
+> >
+> >               nla_nest_end(skb, tb);
+> >
+> > @@ -662,10 +666,12 @@ int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
+> >                                       peer_mep->cc_status.seq_unexp_seen))
+> >                               goto nla_put_failure;
+> >
+> > -                     /* Clear all 'seen' indications */
+> > -                     peer_mep->cc_status.seen = false;
+> > -                     peer_mep->cc_status.tlv_seen = false;
+> > -                     peer_mep->cc_status.seq_unexp_seen = false;
+> > +                     if (getlink) { /* Only clear if this is a GETLINK */
+> > +                             /* Clear all 'seen' indications */
+> > +                             peer_mep->cc_status.seen = false;
+> > +                             peer_mep->cc_status.tlv_seen = false;
+> > +                             peer_mep->cc_status.seq_unexp_seen = false;
+> 
+> Why clear these on GETLINK? This sounds like it should be a set op.
+> 
+The idea is that when getting the CFM status any '_seen' indications are
+cleared so that they are giving information about what was seen since
+last get.
+I assume this is a get/clear atomic operations as rcu is held.
+If you think this must be changed to a seperate clear_set operation I
+will ofc do it.
+
+> > +                     }
+> >
+> >                       nla_nest_end(skb, tb);
+> >               }
+> > diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+> > index 6de5cb1295f6..f2e885521f4f 100644
+> > --- a/net/bridge/br_netlink.c
+> > +++ b/net/bridge/br_netlink.c
+> > @@ -94,9 +94,11 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
+> >  {
+> >       struct net_bridge_vlan_group *vg = NULL;
+> >       struct net_bridge_port *p = NULL;
+> > -     struct net_bridge *br;
+> > -     int num_vlan_infos;
+> > +     struct net_bridge *br = NULL;
+> > +     u32 num_cfm_peer_mep_infos;
+> > +     u32 num_cfm_mep_infos;
+> >       size_t vinfo_sz = 0;
+> > +     int num_vlan_infos;
+> >
+> >       rcu_read_lock();
+> >       if (netif_is_bridge_port(dev)) {
+> > @@ -115,6 +117,52 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
+> >       /* Each VLAN is returned in bridge_vlan_info along with flags */
+> >       vinfo_sz += num_vlan_infos * nla_total_size(sizeof(struct bridge_vlan_info));
+> >
+> > +     if (!(filter_mask & RTEXT_FILTER_CFM_STATUS))
+> > +             return vinfo_sz;
+> > +
+> > +     if (!br)
+> > +             return vinfo_sz;
+> > +
+> > +     /* CFM status info must be added */
+> > +     if (br_cfm_mep_count(br, &num_cfm_mep_infos))
+> > +             return vinfo_sz;
+> > +
+> > +     if (br_cfm_peer_mep_count(br, &num_cfm_peer_mep_infos))
+> > +             return vinfo_sz;
+> > +
+> 
+> Can these return non-0 at all?
+> 
+I have removed check of return value.
+
+> > +     vinfo_sz += nla_total_size(0);  /* IFLA_BRIDGE_CFM */
+> > +     /* For each status struct the MEP instance (u32) is added */
+> > +     /* MEP instance (u32) + br_cfm_mep_status */
+> > +     vinfo_sz += num_cfm_mep_infos *
+> > +                  /*IFLA_BRIDGE_CFM_MEP_STATUS_INSTANCE */
+> > +                 (nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_MEP_STATUS_OPCODE_UNEXP_SEEN */
+> > +                  + nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_MEP_STATUS_VERSION_UNEXP_SEEN */
+> > +                  + nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_MEP_STATUS_RX_LEVEL_LOW_SEEN */
+> > +                  + nla_total_size(sizeof(u32)));
+> > +     /* MEP instance (u32) + br_cfm_cc_peer_status */
+> > +     vinfo_sz += num_cfm_peer_mep_infos *
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_INSTANCE */
+> > +                 (nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_PEER_MEPID */
+> > +                  + nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_CCM_DEFECT */
+> > +                  + nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_RDI */
+> > +                  + nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_PORT_TLV_VALUE */
+> > +                  + nla_total_size(sizeof(u8))
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_IF_TLV_VALUE */
+> > +                  + nla_total_size(sizeof(u8))
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_SEEN */
+> > +                  + nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_TLV_SEEN */
+> > +                  + nla_total_size(sizeof(u32))
+> > +                  /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_SEQ_UNEXP_SEEN */
+> > +                  + nla_total_size(sizeof(u32)));
+> > +
+> >       return vinfo_sz;
+> >  }
+> >
+> > @@ -378,7 +426,8 @@ static int br_fill_ifvlaninfo(struct sk_buff *skb,
+> >  static int br_fill_ifinfo(struct sk_buff *skb,
+> >                         const struct net_bridge_port *port,
+> >                         u32 pid, u32 seq, int event, unsigned int flags,
+> > -                       u32 filter_mask, const struct net_device *dev)
+> > +                       u32 filter_mask, const struct net_device *dev,
+> > +                       bool getlink)
+> >  {
+> >       u8 operstate = netif_running(dev) ? dev->operstate : IF_OPER_DOWN;
+> >       struct net_bridge *br;
+> > @@ -515,7 +564,7 @@ static int br_fill_ifinfo(struct sk_buff *skb,
+> >                       goto nla_put_failure;
+> >
+> >               rcu_read_lock();
+> > -             err = br_cfm_status_fill_info(skb, br);
+> > +             err = br_cfm_status_fill_info(skb, br, getlink);
+> >               rcu_read_unlock();
+> >
+> >               if (err)
+> > @@ -533,11 +582,9 @@ static int br_fill_ifinfo(struct sk_buff *skb,
+> >       return -EMSGSIZE;
+> >  }
+> >
+> > -/* Notify listeners of a change in bridge or port information */
+> > -void br_ifinfo_notify(int event, const struct net_bridge *br,
+> > -                   const struct net_bridge_port *port)
+> > +void br_info_notify(int event, const struct net_bridge *br,
+> > +                 const struct net_bridge_port *port, u32 filter)
+> >  {
+> > -     u32 filter = RTEXT_FILTER_BRVLAN_COMPRESSED;
+> >       struct net_device *dev;
+> >       struct sk_buff *skb;
+> >       int err = -ENOBUFS;
+> > @@ -562,7 +609,7 @@ void br_ifinfo_notify(int event, const struct net_bridge *br,
+> >       if (skb == NULL)
+> >               goto errout;
+> >
+> > -     err = br_fill_ifinfo(skb, port, 0, 0, event, 0, filter, dev);
+> > +     err = br_fill_ifinfo(skb, port, 0, 0, event, 0, filter, dev, false);
+> >       if (err < 0) {
+> >               /* -EMSGSIZE implies BUG in br_nlmsg_size() */
+> >               WARN_ON(err == -EMSGSIZE);
+> > @@ -575,6 +622,15 @@ void br_ifinfo_notify(int event, const struct net_bridge *br,
+> >       rtnl_set_sk_err(net, RTNLGRP_LINK, err);
+> >  }
+> >
+> > +/* Notify listeners of a change in bridge or port information */
+> > +void br_ifinfo_notify(int event, const struct net_bridge *br,
+> > +                   const struct net_bridge_port *port)
+> > +{
+> > +     u32 filter = RTEXT_FILTER_BRVLAN_COMPRESSED;
+> > +
+> > +     return br_info_notify(event, br, port, filter);
+> > +}
+> > +
+> >  /*
+> >   * Dump information about all ports, in response to GETLINK
+> >   */
+> > @@ -591,7 +647,7 @@ int br_getlink(struct sk_buff *skb, u32 pid, u32 seq,
+> >               return 0;
+> >
+> >       return br_fill_ifinfo(skb, port, pid, seq, RTM_NEWLINK, nlflags,
+> > -                           filter_mask, dev);
+> > +                           filter_mask, dev, true);
+> >  }
+> >
+> >  static int br_vlan_info(struct net_bridge *br, struct net_bridge_port *p,
+> > diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+> > index fe36592f7525..53bcbdd21f34 100644
+> > --- a/net/bridge/br_private.h
+> > +++ b/net/bridge/br_private.h
+> > @@ -1370,7 +1370,11 @@ int br_cfm_parse(struct net_bridge *br, struct net_bridge_port *p,
+> >  int br_cfm_rx_frame_process(struct net_bridge_port *p, struct sk_buff *skb);
+> >  bool br_cfm_created(struct net_bridge *br);
+> >  int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge *br);
+> > -int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br);
+> > +int br_cfm_status_fill_info(struct sk_buff *skb,
+> > +                         struct net_bridge *br,
+> > +                         bool getlink);
+> > +int br_cfm_mep_count(struct net_bridge *br, u32 *count);
+> > +int br_cfm_peer_mep_count(struct net_bridge *br, u32 *count);
+> >  #else
+> >  static inline int br_cfm_parse(struct net_bridge *br, struct net_bridge_port *p,
+> >                              struct nlattr *attr, int cmd,
+> > @@ -1394,7 +1398,19 @@ static inline int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge
+> >       return -EOPNOTSUPP;
+> >  }
+> >
+> > -static inline int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
+> > +static inline int br_cfm_status_fill_info(struct sk_buff *skb,
+> > +                                       struct net_bridge *br,
+> > +                                       bool getlink)
+> > +{
+> > +     return -EOPNOTSUPP;
+> > +}
+> > +
+> > +static inline int br_cfm_mep_count(struct net_bridge *br, u32 *count)
+> > +{
+> > +     return -EOPNOTSUPP;
+> > +}
+> > +
+> > +static inline int br_cfm_peer_mep_count(struct net_bridge *br, u32 *count)
+> >  {
+> >       return -EOPNOTSUPP;
+> >  }
+> > @@ -1406,6 +1422,8 @@ int br_netlink_init(void);
+> >  void br_netlink_fini(void);
+> >  void br_ifinfo_notify(int event, const struct net_bridge *br,
+> >                     const struct net_bridge_port *port);
+> > +void br_info_notify(int event, const struct net_bridge *br,
+> > +                 const struct net_bridge_port *port, u32 filter);
+> >  int br_setlink(struct net_device *dev, struct nlmsghdr *nlmsg, u16 flags,
+> >              struct netlink_ext_ack *extack);
+> >  int br_dellink(struct net_device *dev, struct nlmsghdr *nlmsg, u16 flags);
+> 
+
+-- 
+/Henrik
