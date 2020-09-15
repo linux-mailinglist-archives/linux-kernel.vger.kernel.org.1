@@ -2,182 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB77269FAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D45F269F83
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgIOH0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:26:23 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:39773 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726157AbgIOH0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:26:07 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 08F7P7VZ060077
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 15:25:07 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 15 Sep 2020 15:25:10 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <minyard@acm.org>, <arnd@arndb.de>, <gregkh@linuxfoundation.org>
-CC:     <openipmi-developer@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] [v3] ipmi: retry to get device id when error
-Date:   Tue, 15 Sep 2020 15:18:17 +0800
-Message-ID: <20200915071817.4484-1-tian.xianting@h3c.com>
+        id S1726123AbgIOHTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:19:12 -0400
+Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:41952
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726048AbgIOHTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:19:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jRdGd3EWR3TpHnZF7eDWO+6xpySPkBzcUT17lE996/HEXdmw1RZqnXEXHi1wRQW5oGAgKV9PaokoMCCdEYYmqr53I+fPk9+Cv7LOYPakBRYe6JKIFp433webN6PaQ1QfWx+nOoHpYlz3DHVk/ILxXUZX5+gPx+JkohF5n/IF16j5l4czBdZJ7eUbgq8EkgO1efFpOXtv/RpznPgiMlCxguWV0MQRhuhyXw0D9W6a5mYPESgDUeXF6axGXjcRhYByapUMStfrDRFd8LT5L+rEwvAI0eglTCQkqybhFovy6qYCQqsVLxt7mqFYC9dJmFvCYA9VH2iJVbmK4ltutnVzaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MN0h4db/wY5OVp9uE290/zx+FNKxz/12u3RtAXaYHCo=;
+ b=dqkcpnLZkVzBLcU+/zmDP41pWJ9lKJLZ0FyMiKDWN/rbAZsHTzxr55WrHxHJUXhnHNbVZwTZOgppxwe812hsPtEbzf/6cL8JiIpQWOsKyzVij0rTD2zZr67ZRjY6TBZTwMhKKFiAZyjY0KD++wpVvyMA8XpwgfGI5O6kVUheIsOb1ShlpELUsU5Hv2piGAaYX68ThZfmzYh+5XeZHei+hv6hWk5/Rbd+5CNllMR3gnj3BQMdQL/0MVXvRTspV4rIaNT1olci3xDLHykd5tsqQUaFUbPa7RyQIvpe+lBubClEfdyqVUzcplzZkAnOCMY7PHB83CE/HBpmXTuFx2qsBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MN0h4db/wY5OVp9uE290/zx+FNKxz/12u3RtAXaYHCo=;
+ b=gpL3vbRx3rKcGDwx+UQJy1gQGHlIaCuhHyLS3hC9fj17hmWSip4AnJwF9K2zCXMmxubz8mB+RErO6plVkpUX/O7Bxaj14+2tzS4kAGlqSMIAfaP0Xu97HhbTYmzySURcibfMF9VdVcAXgXSywYn6DS7AVSe+tZ6NWwHIt4ZoQGE=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3196.namprd12.prod.outlook.com (2603:10b6:5:187::27)
+ by DM6PR12MB4073.namprd12.prod.outlook.com (2603:10b6:5:217::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
+ 2020 07:19:04 +0000
+Received: from DM6PR12MB3196.namprd12.prod.outlook.com
+ ([fe80::1457:9fc7:8208:a58d]) by DM6PR12MB3196.namprd12.prod.outlook.com
+ ([fe80::1457:9fc7:8208:a58d%3]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 07:19:04 +0000
+From:   Sudheesh Mavila <sudheesh.mavila@amd.com>
+To:     sudheesh.mavila@amd.com, evan.quan@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, nicholas.kazlauskas@amd.com,
+        zhengbin13@huawei.com, yanaijie@huawei.com, tom.stdenis@amd.com,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: =?UTF-8?q?=5BPATCH=20v1=C2=A0=5D=20drm/amd/pm=3A=20Removed=20fixed=20clock=20in=20auto=20mode=20DPM?=
+Date:   Tue, 15 Sep 2020 12:48:20 +0530
+Message-Id: <20200915071820.76620-1-sudheesh.mavila@amd.com>
 X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MAXPR0101CA0030.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:d::16) To DM6PR12MB3196.namprd12.prod.outlook.com
+ (2603:10b6:5:187::27)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 08F7P7VZ060077
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yocto-build.amd.com (165.204.156.251) by MAXPR0101CA0030.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Tue, 15 Sep 2020 07:19:01 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [165.204.156.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 27bb21b2-fd68-4d6d-61f1-08d85947a0a1
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4073:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB407351E97BD845BDCBF0FAC7FC200@DM6PR12MB4073.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SVuIcD2bJA4MZgGRTzW+169QGMt6/R+KdVef7YMgG2nIoiZVZ/iwBbuWs1ZQIWSIPkE5S7b74EPWkWd62uDMaU8UsH9Pn+wHshaNCok501/5VsA7CVH5tYhdxAjVPf5f7JWRtM0kHkGsZ/1GET+i82/ZW28rkrn0VS9rgZKujNHUmjIXKo8zmevFLmZJrPmCvhWXqUbhSVQGzCHzKFCbDTj/BO4ssHtYr6MBlWTLCqFS3w9SJUb63IeRTZqx/aNDkuNHOz5Maa/2rin1q7j9ORJ4KbYZ6YRZuP8O2nS7xhukg5UNGDIG4FJS6l1M9ZfkihMTbfDNQS/xylQaEOxKETBYRcA0dz6AD3a3UNok6jA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3196.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(346002)(366004)(39860400002)(5660300002)(6486002)(186003)(44832011)(956004)(36756003)(2616005)(86362001)(2906002)(316002)(1076003)(66946007)(66556008)(66476007)(26005)(16526019)(83380400001)(478600001)(8936002)(6666004)(52116002)(7696005)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: wQPb+jGoWxwQ42eP2RpZM9iKHsx4WET+tSgy7gK+j65852D/s1iWCsUU/vl92sFXFEB/fmYdU4gVvN73utRmCP5WHtUtU4mqmcqpXya27GSiP4LMQXrysNkPcXhy6blGcTBdBsQ7EWII2mb2mVgWO35xq4GyzmnBYpq+EkwH+dhPC19oh4zjaSkR1Ehlq4A5QEGXYW+p/eiZ0SPwH+t5rVAUwFlkovhEWsVbUmNNCqCN4vrAwAXuUVq9OhUE8ty8yrOUbbpgOvdxBqfDzeCr5r/InNXDKi6eUk4N/UVVxY2kzgmCAkeupKl5WuagPaMLk8EZdX/VSMlntywdFeuCr/TuYEu5jk/uBOJT/8KnV2KLr3FUHCm13ztibXasPBoiIjfqnuVwaxqtZsFogrHiSq3pseN5UpNqsb6l0WUM3qL97B2zsScVxle3GTX1f+qXdsMTU6NLiSatwaU2hAlYaxrJurRyQzhwx9oXsN3Zl9Mm40Ddazx4acedORxZHWsGYvDyc+aA6UOMxLacOM1hG2Qb4rDCMQwxgb5soCM6M6N0NBMxgKnQztG9YlXOnL/PTLL1BOrbMaXKUNqb4niwE5ZZMwzT9SJr82d8qNur7mWYN1l31Ki78OE19kqubdRqihCz1sh7X+SrWxlm7ioXRw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27bb21b2-fd68-4d6d-61f1-08d85947a0a1
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3196.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 07:19:04.7455
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GHfEpPzW7CkoY4uc8I/XdQt0RkaesKJHrd9YGuDkY7j0/Mbzd9otpRqv2Lq7fG7W
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4073
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can't get bmc's device id with low probability when loading ipmi driver,
-it caused bmc device register failed. When this issue happened, we got
-below kernel prints:
-	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: IPMI message handler: device id demangle failed: -22
-	[Wed Sep  9 19:52:03 2020] IPMI BT: using default values
-	[Wed Sep  9 19:52:03 2020] IPMI BT: req2rsp=5 secs retries=2
-	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: Unable to get the device id: -5
-	[Wed Sep  9 19:52:04 2020] ipmi_si IPI0001:00: Unable to register device: error -5
+    SMU10_UMD_PSTATE_PEAK_FCLK value should not be used to set the DPM.
 
-When this issue happened, we want to manually unload the driver and try to
-load it again, but it can't be unloaded by 'rmmod' as it is already 'in use'.
+    Change  suggested by Evan.Quan@amd.com
 
-We add below 'printk' in handle_one_recv_msg(), when this issue happened,
-the msg we received is "Recv: 1c 01 d5", which means the data_len is 1,
-data[0] is 0xd5(completion code), which means "bmc cannot execute command.
-Command, or request parameter(s), not supported in present state".
-	Debug code:
-	static int handle_one_recv_msg(struct ipmi_smi *intf,
-                               struct ipmi_smi_msg *msg) {
-        	printk("Recv: %*ph\n", msg->rsp_size, msg->rsp);
-		... ...
-	}
-Then in ipmi_demangle_device_id(), it returned '-EINVAL' as 'data_len < 7'
-and 'data[0] != 0'.
-
-We used this patch to retry to get device id when error happen, we
-reproduced this issue again and the retry succeed on the first retry, we
-finally got the correct msg and then all is ok:
-Recv: 1c 01 00 01 81 05 84 02 af db 07 00 01 00 b9 00 10 00
-
-So use retry machanism in this patch to give bmc more opportunity to
-correctly response kernel when we received specific completion codes.
-
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
 ---
- drivers/char/ipmi/ipmi_msghandler.c | 29 +++++++++++++++++++++++++----
- include/uapi/linux/ipmi_msgdefs.h   |  2 ++
- 2 files changed, 27 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 737c0b6b2..b9685093e 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -34,6 +34,7 @@
- #include <linux/uuid.h>
- #include <linux/nospec.h>
- #include <linux/vmalloc.h>
-+#include <linux/delay.h>
+diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+index c9cfe90a2947..081cb9b1b7c8 100644
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+@@ -566,6 +566,8 @@ static int smu10_dpm_force_dpm_level(struct pp_hwmgr *hwmgr,
+ 	struct smu10_hwmgr *data = hwmgr->backend;
+ 	uint32_t min_sclk = hwmgr->display_config->min_core_set_clock;
+ 	uint32_t min_mclk = hwmgr->display_config->min_mem_set_clock/100;
++	uint32_t index_fclk = data->clock_vol_info.vdd_dep_on_fclk->count - 1;
++	uint32_t index_socclk = data->clock_vol_info.vdd_dep_on_socclk->count - 1;
  
- #define IPMI_DRIVER_VERSION "39.2"
+ 	if (hwmgr->smu_version < 0x1E3700) {
+ 		pr_info("smu firmware version too old, can not set dpm level\n");
+@@ -679,13 +681,13 @@ static int smu10_dpm_force_dpm_level(struct pp_hwmgr *hwmgr,
+ 		smum_send_msg_to_smc_with_parameter(hwmgr,
+ 						PPSMC_MSG_SetHardMinFclkByFreq,
+ 						hwmgr->display_config->num_display > 3 ?
+-						SMU10_UMD_PSTATE_PEAK_FCLK :
++					data->clock_vol_info.vdd_dep_on_fclk->entries[0].clk :
+ 						min_mclk,
+ 						NULL);
  
-@@ -60,6 +61,9 @@ enum ipmi_panic_event_op {
- #else
- #define IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_NONE
- #endif
-+
-+#define GET_DEVICE_ID_MAX_RETRY	5
-+
- static enum ipmi_panic_event_op ipmi_send_panic_event = IPMI_PANIC_DEFAULT;
- 
- static int panic_op_write_handler(const char *val,
-@@ -317,6 +321,7 @@ struct bmc_device {
- 	int                    dyn_guid_set;
- 	struct kref	       usecount;
- 	struct work_struct     remove_work;
-+	char		       cc; /* completion code */
- };
- #define to_bmc_device(x) container_of((x), struct bmc_device, pdev.dev)
- 
-@@ -2381,6 +2386,8 @@ static void bmc_device_id_handler(struct ipmi_smi *intf,
- 			msg->msg.data, msg->msg.data_len, &intf->bmc->fetch_id);
- 	if (rv) {
- 		dev_warn(intf->si_dev, "device id demangle failed: %d\n", rv);
-+		/* record completion code when error */
-+		intf->bmc->cc = msg->msg.data[0];
- 		intf->bmc->dyn_id_set = 0;
- 	} else {
- 		/*
-@@ -2426,19 +2433,34 @@ send_get_device_id_cmd(struct ipmi_smi *intf)
- static int __get_device_id(struct ipmi_smi *intf, struct bmc_device *bmc)
- {
- 	int rv;
--
--	bmc->dyn_id_set = 2;
-+	unsigned int retry_count = 0;
- 
- 	intf->null_user_handler = bmc_device_id_handler;
- 
-+retry:
-+	bmc->cc = 0;
-+	bmc->dyn_id_set = 2;
-+
- 	rv = send_get_device_id_cmd(intf);
- 	if (rv)
- 		return rv;
- 
- 	wait_event(intf->waitq, bmc->dyn_id_set != 2);
- 
--	if (!bmc->dyn_id_set)
-+	if (!bmc->dyn_id_set) {
-+		if ((bmc->cc == IPMI_DEVICE_IN_FW_UPDATE_ERR
-+		     || bmc->cc ==  IPMI_DEVICE_IN_INIT_ERR
-+		     || bmc->cc ==  IPMI_NOT_IN_MY_STATE_ERR)
-+		     && ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
-+			msleep(500);
-+			dev_warn(intf->si_dev,
-+				"retry to get bmc device id as completion code 0x%x\n",
-+				bmc->cc);
-+			goto retry;
-+		}
-+
- 		rv = -EIO; /* Something went wrong in the fetch. */
-+	}
- 
- 	/* dyn_id_set makes the id data available. */
- 	smp_rmb();
-@@ -3245,7 +3267,6 @@ channel_handler(struct ipmi_smi *intf, struct ipmi_recv_msg *msg)
- 		/* It's the one we want */
- 		if (msg->msg.data[0] != 0) {
- 			/* Got an error from the channel, just go on. */
--
- 			if (msg->msg.data[0] == IPMI_INVALID_COMMAND_ERR) {
- 				/*
- 				 * If the MC does not support this
-diff --git a/include/uapi/linux/ipmi_msgdefs.h b/include/uapi/linux/ipmi_msgdefs.h
-index c2b23a9fd..0934af3b8 100644
---- a/include/uapi/linux/ipmi_msgdefs.h
-+++ b/include/uapi/linux/ipmi_msgdefs.h
-@@ -69,6 +69,8 @@
- #define IPMI_ERR_MSG_TRUNCATED		0xc6
- #define IPMI_REQ_LEN_INVALID_ERR	0xc7
- #define IPMI_REQ_LEN_EXCEEDED_ERR	0xc8
-+#define IPMI_DEVICE_IN_FW_UPDATE_ERR	0xd1
-+#define IPMI_DEVICE_IN_INIT_ERR		0xd2
- #define IPMI_NOT_IN_MY_STATE_ERR	0xd5	/* IPMI 2.0 */
- #define IPMI_LOST_ARBITRATION_ERR	0x81
- #define IPMI_BUS_ERR			0x82
+ 		smum_send_msg_to_smc_with_parameter(hwmgr,
+ 						PPSMC_MSG_SetHardMinSocclkByFreq,
+-						SMU10_UMD_PSTATE_MIN_SOCCLK,
++					data->clock_vol_info.vdd_dep_on_socclk->entries[0].clk,
+ 						NULL);
+ 		smum_send_msg_to_smc_with_parameter(hwmgr,
+ 						PPSMC_MSG_SetHardMinVcn,
+@@ -698,11 +700,11 @@ static int smu10_dpm_force_dpm_level(struct pp_hwmgr *hwmgr,
+ 						NULL);
+ 		smum_send_msg_to_smc_with_parameter(hwmgr,
+ 						PPSMC_MSG_SetSoftMaxFclkByFreq,
+-						SMU10_UMD_PSTATE_PEAK_FCLK,
++				data->clock_vol_info.vdd_dep_on_fclk->entries[index_fclk].clk,
+ 						NULL);
+ 		smum_send_msg_to_smc_with_parameter(hwmgr,
+ 						PPSMC_MSG_SetSoftMaxSocclkByFreq,
+-						SMU10_UMD_PSTATE_PEAK_SOCCLK,
++				data->clock_vol_info.vdd_dep_on_socclk->entries[index_socclk].clk,
+ 						NULL);
+ 		smum_send_msg_to_smc_with_parameter(hwmgr,
+ 						PPSMC_MSG_SetSoftMaxVcn,
 -- 
 2.17.1
 
