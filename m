@@ -2,171 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FA526AE09
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2B926AE21
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727707AbgIOTto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:49:44 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:34424 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbgIORLK (ORCPT
+        id S1727812AbgIOTww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727827AbgIORHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:11:10 -0400
-Received: by mail-il1-f194.google.com with SMTP id a8so3743929ilk.1;
-        Tue, 15 Sep 2020 10:08:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BFviqgFIWRut0eU0K6H+y+f/pPgiXCv3xoSL8tn8HHs=;
-        b=kwkMWCE4+Q+I2TkUrTJmXLoygnJ+0BmJqr0nKQr0SHWQx35SvVNwA6BmkzqyhFFC5I
-         36GZGhbBSfCsm0rSIpa6ZErrsBU4o220BGDoHqUeiYUBLCFt4Or7wigdf1bKkP96gEUG
-         r3V7H0rOSK8TAMD288FQHniqcDUOyMUu0Q1j5jTDV8R8Rvjv+9/3KHp0Wb8l+f906MNc
-         rmKq8BXm6edBgbu1ENW0sZX3MNsIM890WSHKzfxQkjvWkkf4cIy6kSOjCZB//ubdGsVK
-         A2fLhkGRGkMAw7uQQmNu8Zb5ic4MpEma3Eb0eyqlV8yhdp0pGjZ8031GE9XDR5lbIvH1
-         kUcg==
-X-Gm-Message-State: AOAM530X3f6IiPDb73BajVVCykv+LoeuGy9P1eQTiXWpROjEZ+aq7XEY
-        YVfbeVx0jwmOHUAm4b77eFVpb4QRKlkm7Eo=
-X-Google-Smtp-Source: ABdhPJwlOK3415SZU7crEdleYLmA5Xut63SzqKMQt4DXj3NOqdQUDv7Z1Gs9HZKBmjrRx8Wu+CD9eA==
-X-Received: by 2002:a5d:840a:: with SMTP id i10mr15791731ion.4.1600189202340;
-        Tue, 15 Sep 2020 10:00:02 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id r5sm9320455ilc.2.2020.09.15.09.59.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 10:00:01 -0700 (PDT)
-Received: (nullmailer pid 2122994 invoked by uid 1000);
-        Tue, 15 Sep 2020 16:59:58 -0000
-Date:   Tue, 15 Sep 2020 10:59:58 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: Re: [PATCH v4 2/5] ASoC: dt-bindings: Add dt binding for lpass hdmi
-Message-ID: <20200915165958.GA2118432@bogus>
-References: <1599587037-6742-1-git-send-email-srivasam@codeaurora.org>
- <010101746ed1d41a-5890a534-9c2c-4203-bce5-46075d7827da-000000@us-west-2.amazonses.com>
+        Tue, 15 Sep 2020 13:07:55 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D525AC06121C;
+        Tue, 15 Sep 2020 10:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=+jWJSJfIQz6E28jxk5SjJ1O4Do640g9wF9++nJ8QJbg=; b=oBvuEWmSMaP//CD+lK6BSucaOk
+        X5NA+PnSUua3gdMPV+nLEjGcUObTtayoysR+P7fS1oKAMfYgx4S4o8vKH6kVXO8f8hP9xH16mdoj3
+        94IiRKRC7ym6tbSK9OjCL9UO7g3XXTcersFR1fHZuupjM3zcIylxNoMUqQeSy+WLq0xQ/jDjSrVOQ
+        PZ7tGuRdtjG99mqE7Nqx6wPOTLglGArwMCqQQrqA+2/BAMMoP6u5ymytCMdXtf4XILlX82m3dtl0x
+        cKUpKzGtBCyhNmrsem6v77I5ZQeXBaNI8DE6Fo8mNSu3NdWLKISuUlbt6qGIE2hzCKRSbrKMnNuYu
+        3eQrA3QA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIEJi-0007bp-Pq; Tue, 15 Sep 2020 17:00:31 +0000
+Subject: Re: [BUG] slab: double free detected in cache 'kmalloc-128', objp
+ daff5780
+To:     Peter Geis <pgwipeout@gmail.com>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <CAMdYzYoRFBOA0b8tZgZpvbWkrtNrcyDXt9zHCF7yqtm2heYSXQ@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6be9a256-697d-b991-294e-95282a53f10a@infradead.org>
+Date:   Tue, 15 Sep 2020 10:00:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <010101746ed1d41a-5890a534-9c2c-4203-bce5-46075d7827da-000000@us-west-2.amazonses.com>
+In-Reply-To: <CAMdYzYoRFBOA0b8tZgZpvbWkrtNrcyDXt9zHCF7yqtm2heYSXQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 05:44:39PM +0000, Srinivasa Rao Mandadapu wrote:
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> 
-> Adds bindings for lpass hdmi interface
-> which can support audio path over dp.
-> 
-> Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 51 ++++++++++++++++++++--
->  1 file changed, 47 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-> index 09c9bd2..7c2ac0c 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-> @@ -22,6 +22,7 @@ properties:
->        - qcom,lpass-cpu
->        - qcom,apq8016-lpass-cpu
->        - qcom,sc7180-lpass-cpu
-> +      - qcom,sc7180-lpass-hdmi
->  
->    reg:
->      maxItems: 1
-> @@ -60,10 +61,12 @@ properties:
->      const: 0
->  
->  patternProperties:
-> -  "(^mi2s-[0-9a-f]$|mi2s)":
-> +  "^dai@[0-9a-f]$":
->      type: object
-> -    description: Required properties for each DAI
-> -
-> +    description: |
-> +      LPASS CPU dai node for each I2S device. Bindings of each node
-> +      depends on the specific driver providing the functionality and
-> +      properties.
->      properties:
->        reg:
->          maxItems: 1
-> @@ -145,6 +148,22 @@ allOf:
->          - iommus
->          - power-domains
->  
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: qcom,sc7180-lpass-hdmi
-> +    then:
-> +      properties:
-> +        clock-names:
-> +          items:
-> +            - const: pcnoc-sway-clk
-> +            - const: audio-core
-> +            - const: pcnoc-mport-clk
-> +      required:
-> +        - iommus
-> +        - power-domains
-> +
->  examples:
->    - |
->      #include <dt-bindings/sound/sc7180-lpass.h>
-> @@ -178,12 +197,36 @@ examples:
->              #address-cells = <1>;
->              #size-cells = <0>;
->              /* Optional to set different MI2S SD lines */
-> -            mi2s-primary@0 {
-> +            dai@mi2s-primary {
+On 9/15/20 4:41 AM, Peter Geis wrote:
+> [33633.566567] [<c0111a6c>] (unwind_backtrace) from [<c010b95c>]
+> (show_stack+0x10/0x14)
 
-The unit address should be a number.
+Hi Peter,
 
-As this is not failing checks, then you are missing an 
-'additionalProperties: false'.
+In the future, could you prevent long lines from being line-wrapped?
+E.g., the 2 lines above should all be on one line.
+It is much harder to read as it was posted.
 
->                  reg = <MI2S_PRIMARY>;
->                  qcom,playback-sd-lines = <1>;
->                  qcom,capture-sd-lines = <0>;
->              };
->          };
-> +
-> +        lpassh@62d87000 {
-> +            compatible = "qcom,sc7180-lpass-hdmi";
-> +
-> +            reg = <0 0x62d87000 0 0x68000>;
-> +
-> +            iommus = <&apps_smmu 0x1032 0>;
-> +
-> +            power-domains = <&lpass_hm 0>;
-> +
-> +            clocks = <&gcc 131>,
-> +                 <&lpasscc 6>,
-> +                 <&lpasscc 10>;
-> +
-> +            clock-names = "pcnoc-sway-clk", "audio-core",
-> +                          "pcnoc-mport-clk";
-> +
-> +            #sound-dai-cells = <1>;
-> +
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            interrupts = <0 268 1>;
-> +        };
->      };
->  
->  ...
-> -- 
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> 
+thanks.
+-- 
+~Randy
+
