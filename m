@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CACF26AF20
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7BD126AF2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgIOVE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:04:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727816AbgIOVEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:04:43 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CC2720732;
-        Tue, 15 Sep 2020 21:04:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600203861;
-        bh=juX7apZ1AwwxlXqaRlp4XCoAqy31Vj6ful3pNCaYqy0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WLIfCUjtdhxDSazrDuQlCrruDRnzfyHwgyk9AHjKQDEptGaT89l/E0S4aenUbNZXE
-         p4qScTvhduz5jpPHtOcX2095R3q1Lp9iCDd/C7o/cV8HQ5Ybzm9selOO00iDX9GtcD
-         xIn4yMJcLH1iOpudXoTxXHDgT5ydH46AbZeuIBV8=
-Date:   Tue, 15 Sep 2020 14:04:18 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
-References: <20200915171022.10561-1-oded.gabbay@gmail.com>
-        <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+        id S1727836AbgIOVHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728023AbgIOVGR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:06:17 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DCBC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:06:16 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id m7so5573968oie.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KcpSM7PS7PsvIaDBC6wC/2fRLEAM7h6XtduMyEup08A=;
+        b=SmESRUV/vjDH3aGyqxFESW8tMhQ/WVwKedSfeQ4gzz0yApBKny/LpXh3LHgo9N6nZn
+         DpfgvTFlqNAZP9bh2hIOBIqapYxs8uLqnca0k4PF2D84twFwlznQj5mIRAuyb4NiAmTu
+         RtCHGrVtZqLcaLvKqIQ8VDIoz2kM08zM9MxT0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KcpSM7PS7PsvIaDBC6wC/2fRLEAM7h6XtduMyEup08A=;
+        b=LiWLoJBVO/h0AFLE5M0oyk7hBThKn+vDTibRFmCX4gps1E/mSAAJTAQuticQYZGfIJ
+         /OOiVbXTsvPOgMYtydKuZ/7Zaw9AWQBuKEb9QlRTPkbS1+08W4xQoXuEXbtwnl3M5AlK
+         +IiizIkeuKTAb5UI5kqjsI2ahC8wukUqI3rIAjN4RRdD7KaS1WbNBmNAdTSrwLy4NjzG
+         /upC6SceBYBanp1VtzuInPDXOwd0Au66hyQZb2W7EXxzGQe42YB6piSnGOskcw9K6Rlm
+         JNFQ2owsGYqxtFUqRXbieyKD4q6SYVipmAH+4VsvfbHZxbcLfexTMuiZGtJKdjjmhzON
+         BacQ==
+X-Gm-Message-State: AOAM5321aX4xbO61xSMtukKhIFbiIMuRkWJcYr0JtxpKppmkoJ96l9OB
+        ElmDpVRxyZvu/MMYE0v07AhUjA==
+X-Google-Smtp-Source: ABdhPJwGhiao15MvmOslBePDNbz8gaYFGBb/X0Etx0vmLG/fr0rwly57smkVtd+UgPoe9WuDN1ZhYQ==
+X-Received: by 2002:aca:5f89:: with SMTP id t131mr987228oib.32.1600203975819;
+        Tue, 15 Sep 2020 14:06:15 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h135sm7403746oib.50.2020.09.15.14.06.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 14:06:15 -0700 (PDT)
+Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200915140653.610388773@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <b94c29b3-ef68-897b-25a8-e6fcc181a22a@linuxfoundation.org>
+Date:   Tue, 15 Sep 2020 15:06:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 23:46:58 +0300 Oded Gabbay wrote:
-> On Tue, Sep 15, 2020 at 11:35 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Tue, 15 Sep 2020 20:10:08 +0300 Oded Gabbay wrote:  
-> > > Hello,
-> > >
-> > > This is the second version of the patch-set to upstream the GAUDI NIC code
-> > > into the habanalabs driver.
-> > >
-> > > The only modification from v2 is in the ethtool patch (patch 12). Details
-> > > are in that patch's commit message.  
-> >
-> > You keep reposting this, yet this SDK shim^W^W driver is still living in
-> > drivers/misc. If you want to make it look like a NIC, the code belongs
-> > where NIC drivers are.
-> >
-> > Then again, is it a NIC? Why do you have those custom IOCTLs? That's far
-> > from normal.  
+On 9/15/20 8:11 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.10 release.
+> There are 177 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I'm sorry but from your question it seems as if you didn't read my
-> cover letter at all, as I took great lengths in explaining exactly
-> what our device is and why we use custom IOCTLs.
-> TL;DR
-> We have an accelerator for deep learning (GAUDI) which uses RDMA as
-> infrastructure for communication between multiple accelerators. Same
-> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
-> The RDMA implementation we did does NOT support some basic RDMA
-> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
-> library or to connect to the rdma infrastructure in the kernel. We
-> wanted to do it but when we analyzed it, we saw we wouldn't be able to
-> support basic stuff and therefore we had to revert to our IOCTLs.
-> To sum it up, because our NIC is used for intra-communication, we
-> don't expose nor intend users to use it as a NIC per-se. However, to
-> be able to get statistics and manage them in a standard way, and
-> support control plane over Ethernet, we do register each port to the
-> net subsystem (i.e. create netdev per port).
+> Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
+> Anything received after that time might be too late.
 > 
-> I hope this short summary explains this better.
-
-I read your cover letter. Networking drivers don't get to define random
-IOCTLs as they please. You have to take that part out of the "NIC"
-driver.
-
-> As per your request that this code lives in the net subsystem, I think
-> that will make it only more complicated and hard to upstream and
-> maintain.
-> I see there are other examples (e.g. sgi-xp) that contain networking
-> driver code in misc so I don't understand this objection.
-
-The maintenance structure and CI systems for the kernel depend on the
-directory layout. If you don't understand that I don't know how to help
-you.
-
-> > Please make sure to CC linux-rdma. You clearly stated that the device
-> > does RDMA-like transfers.  
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> and the diffstat can be found below.
 > 
-> We don't use the RDMA infrastructure in the kernel and we can't
-> connect to it due to the lack of H/W support we have so I don't see
-> why we need to CC linux-rdma.
+> thanks,
+> 
+> greg k-h
+> 
 
-You have it backward. You don't get to pick and choose which parts of
-the infrastructure you use, and therefore who reviews your drivers.
-The device uses RDMA under the hood so Linux RDMA experts must very
-much be okay with it getting merged. That's how we ensure Linux
-interfaces are consistent and good quality.
+Compiled and booted fine. wifi died:
+
+ath10k_pci 0000:02:00.0: could not init core (-110)
+ath10k_pci 0000:02:00.0: could not probe fw (-110)
+
+This is regression from 5.8.9 and 5.9-rc5 works just fine.
+
+I will try to bisect later this evening to see if I can isolate the
+commit.
+
+thanks,
+-- Shuah
