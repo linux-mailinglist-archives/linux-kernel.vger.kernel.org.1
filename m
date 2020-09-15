@@ -2,819 +2,469 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2D426A407
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C92426A3E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgIOLSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 07:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgIOLMz (ORCPT
+        id S1726079AbgIOLMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 07:12:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39206 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726128AbgIOLJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:12:55 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64A7C061351
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:01:21 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y11so2625751lfl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VtDPypusfMd8UBl3Rrt2YpAR/fmPnphWUSgU/MjvQA4=;
-        b=EMSmQhyiD58+7JLYDXCvU9XWrm1E1NgTyoMKi9eiqHtM9U5c8f8qA5LcufBuSPnM1M
-         pSPadjYRZ5RNF9vGETavEuutoAVkf/bQLOnrYn3Nm2GRnSLAQjXPw0LBvkwIpt0pYfYG
-         wYJkGhaova3rPRGODyNZwU/eihh4JQKjdiTwSARHSGao/Vf2RBnA5vW4xQWBvSpFhTnR
-         2B4o9k6pFLDl793/zu1etgFNtz9re3Bir1Ojo6qzMD9UEk858ZYFXJRSiJaB7UJGdjL1
-         mMW/Z+3SvfRUi1mSImleZRwLmFa0c/ppojhmLDlI5O1383g0AuTED5k248fv3k8l2AJK
-         0WUg==
+        Tue, 15 Sep 2020 07:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600168153;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=guiS9knUyp96zieB7cvAHcyvDidqbqv5BAVHFJQmDkg=;
+        b=bndapW7vjR49TGm/iVA0kRWZayOnyoenAuivxlS6scsW780KGd3gJcgg3Vr8n+ySWXEzjP
+        VA4saFu1+XWTJhb0y3F25EaPYmy8LrjA/gjDjqPzRXIEezJT7sym8Uh/SF9BFGMzpzBg/t
+        hMi7V2z8YQTgMxWu4C70R4vkmfyfdKI=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-7vUr9G1WN3iPSZUevI5f_w-1; Tue, 15 Sep 2020 07:00:59 -0400
+X-MC-Unique: 7vUr9G1WN3iPSZUevI5f_w-1
+Received: by mail-wr1-f70.google.com with SMTP id i10so1084878wrq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:00:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VtDPypusfMd8UBl3Rrt2YpAR/fmPnphWUSgU/MjvQA4=;
-        b=uLko8yEEXz0tGgfhVPhYXfavM8An18oshCBo6URkHP/+GrPFCbkSYKgoWmt+OV9BqV
-         0CIoXDyexruC+BDL3+q50JgpL3J7NxoU3c6DPLd/ILj3mVCzPOv4q5cK86EqX4Q1vGy8
-         NoZFOUg2pZRtYetXT7zON9Nrk/VdleLDV3HL7FPHTqFyff6gN2vSSo2Ru+MHD/gGVsHp
-         f048Aa97AZxLMxHM3frLQU3TSIgOPAquRd24yUMNzGRN4P5qHBeiGaPe9QvWXIYR90ZS
-         t87rUuLaPR+reMDD78UYczRQprbz9ajKmW5VdgEuRw+231bfg4mtf4l7KbxMUvynCO+Y
-         358g==
-X-Gm-Message-State: AOAM532K5yxPxOeCCHq72UGbgCcJV+hQScUvGxq/7NUeDGy7wBUV9eng
-        0yjckbCey99/fvLn6V/7A/CUOQ==
-X-Google-Smtp-Source: ABdhPJxqWupOn8HC+tz6xG9tPqTgcXNZKk95xRBk84R8AkqK2gHHipfimjVuxi7nwEwT/xpI3A2KHQ==
-X-Received: by 2002:a19:8ac3:: with SMTP id m186mr5217144lfd.478.1600167680096;
-        Tue, 15 Sep 2020 04:01:20 -0700 (PDT)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id n3sm4588916ljj.59.2020.09.15.04.01.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 04:01:19 -0700 (PDT)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
-        s-anna@ti.com
-Cc:     grzegorz.jaszczyk@linaro.org, robh+dt@kernel.org,
-        lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, david@lechnology.com,
-        praneeth@ti.com, "Andrew F . Davis" <afd@ti.com>,
-        Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v6 2/5] irqchip/irq-pruss-intc: Add a PRUSS irqchip driver for PRUSS interrupts
-Date:   Tue, 15 Sep 2020 13:00:48 +0200
-Message-Id: <1600167651-20851-3-git-send-email-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600167651-20851-1-git-send-email-grzegorz.jaszczyk@linaro.org>
-References: <1600167651-20851-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=guiS9knUyp96zieB7cvAHcyvDidqbqv5BAVHFJQmDkg=;
+        b=TmfHgsJ32wa3L/4a+vrVn8Cr5euPTqhnuCR/zX86NAFaOT/aVKlpr6Tkgu8pjSo77L
+         xEoXdO2rwwhBnARkVFSDwzTdRRkzh/QhI1kX6LRGcIrt36QTSzCvc++y1lfFZH1prxrT
+         LkJ1rRSDNxyiAH4BHIkDkwyVyVVhsHtAJqVERAhNUdpll4MJmpyJc2zbMQXdigF+4g0b
+         qZkh7FrURWahIkz2SeMqftj+IhbXSUCmdawmTgAdRL4N1osueBdv/ramR4x9zLrKRDfV
+         UUKh6Lana6epnG/yFPKw7SvlGmKsuwm1cAVj0hb6LHcZv+/slXcEYRyIHS8qNHQf7H1S
+         mjrA==
+X-Gm-Message-State: AOAM531cjH1HjRpD4RSAu28esQansdYhvXpohgH9ATeHrD0NckigxEMq
+        dNYKMQ1HBm7GOJOMU5VNCwKkipX/cscC+qlJj0Jf1LePLNfohyXjEJPs5e5zWxRk9/lCzLobZ4Y
+        NsXmKtSaYySMbuD2dWuPeonoJ
+X-Received: by 2002:a5d:630a:: with SMTP id i10mr20201583wru.137.1600167657527;
+        Tue, 15 Sep 2020 04:00:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCkmaofZgQSVXb+OS8Si/lFoB6TPt66RmLSK2FDOqjVL1SWHCcz8BvjMum4MfFHmsxG9nOFQ==
+X-Received: by 2002:a5d:630a:: with SMTP id i10mr20201518wru.137.1600167656991;
+        Tue, 15 Sep 2020 04:00:56 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id b76sm25426505wme.45.2020.09.15.04.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 04:00:56 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nudasnev@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        "open list\:GENERIC INCLUDE\/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH RFC v1 09/18] x86/hyperv: provide a bunch of helper functions
+In-Reply-To: <20200914115928.83184-1-wei.liu@kernel.org>
+References: <20200914112802.80611-1-wei.liu@kernel.org> <20200914115928.83184-1-wei.liu@kernel.org>
+Date:   Tue, 15 Sep 2020 13:00:55 +0200
+Message-ID: <87sgbjjod4.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Programmable Real-Time Unit Subsystem (PRUSS) contains a local
-interrupt controller (INTC) that can handle various system input events
-and post interrupts back to the device-level initiators. The INTC can
-support upto 64 input events with individual control configuration and
-hardware prioritization. These events are mapped onto 10 output interrupt
-lines through two levels of many-to-one mapping support. Different
-interrupt lines are routed to the individual PRU cores or to the host
-CPU, or to other devices on the SoC. Some of these events are sourced
-from peripherals or other sub-modules within that PRUSS, while a few
-others are sourced from SoC-level peripherals/devices.
+Wei Liu <wei.liu@kernel.org> writes:
 
-The PRUSS INTC platform driver manages this PRUSS interrupt controller
-and implements an irqchip driver to provide a Linux standard way for
-the PRU client users to enable/disable/ack/re-trigger a PRUSS system
-event. The system events to interrupt channels and output interrupts
-relies on the mapping configuration provided either through the PRU
-firmware blob (for interrupts routed to PRU cores) or via the PRU
-application's device tree node (for interrupt routed to the main CPU).
-In the first case the mappings will be programmed on PRU remoteproc
-driver demand (via irq_create_fwspec_mapping) during the boot of a PRU
-core and cleaned up after the PRU core is stopped.
+> They are used to deposit pages into Microsoft Hypervisor and bring up
+> logical and virtual processors.
+>
+> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Signed-off-by: Nuno Das Neves <nudasnev@microsoft.com>
+> Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Co-Developed-by: Nuno Das Neves <nudasnev@microsoft.com>
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+>  arch/x86/hyperv/Makefile          |   2 +-
+>  arch/x86/hyperv/hv_proc.c         | 209 ++++++++++++++++++++++++++++++
+>  arch/x86/include/asm/mshyperv.h   |   4 +
+>  include/asm-generic/hyperv-tlfs.h |  56 ++++++++
+>  4 files changed, 270 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/x86/hyperv/hv_proc.c
+>
+> diff --git a/arch/x86/hyperv/Makefile b/arch/x86/hyperv/Makefile
+> index 89b1f74d3225..565358020921 100644
+> --- a/arch/x86/hyperv/Makefile
+> +++ b/arch/x86/hyperv/Makefile
+> @@ -1,6 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  obj-y			:= hv_init.o mmu.o nested.o
+> -obj-$(CONFIG_X86_64)	+= hv_apic.o
+> +obj-$(CONFIG_X86_64)	+= hv_apic.o hv_proc.o
+>  
+>  ifdef CONFIG_X86_64
+>  obj-$(CONFIG_PARAVIRT_SPINLOCKS)	+= hv_spinlock.o
+> diff --git a/arch/x86/hyperv/hv_proc.c b/arch/x86/hyperv/hv_proc.c
+> new file mode 100644
+> index 000000000000..847c72465d0e
+> --- /dev/null
+> +++ b/arch/x86/hyperv/hv_proc.c
+> @@ -0,0 +1,209 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/types.h>
+> +#include <linux/version.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/mm.h>
+> +#include <linux/clockchips.h>
+> +#include <linux/acpi.h>
+> +#include <linux/hyperv.h>
+> +#include <linux/slab.h>
+> +#include <linux/cpuhotplug.h>
+> +#include <asm/hypervisor.h>
+> +#include <asm/mshyperv.h>
+> +#include <asm/apic.h>
+> +
+> +#include <asm/trace/hyperv.h>
+> +
+> +#define HV_DEPOSIT_MAX_ORDER (8)
+> +#define HV_DEPOSIT_MAX (1 << HV_DEPOSIT_MAX_ORDER)
+> +
+> +#define MAX(a, b) ((a) > (b) ? (a) : (b))
+> +#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-Reference counting is used to allow multiple system events to share a
-single channel and to allow multiple channels to share a single host
-event.
+Nit: include/linux/kernel.h defines min() and max() macros with type
+checking.
 
-The PRUSS INTC module is reference counted during the interrupt
-setup phase through the irqchip's irq_request_resources() and
-irq_release_resources() ops. This restricts the module from being
-removed as long as there are active interrupt users.
+> +
+> +/*
+> + * Deposits exact number of pages
+> + * Must be called with interrupts enabled
+> + * Max 256 pages
+> + */
+> +int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages)
+> +{
+> +	struct page **pages;
+> +	int *counts;
+> +	int num_allocations;
+> +	int i, j, page_count;
+> +	int order;
+> +	int desired_order;
+> +	int status;
+> +	int ret;
+> +	u64 base_pfn;
+> +	struct hv_deposit_memory *input_page;
+> +	unsigned long flags;
+> +
+> +	if (num_pages > HV_DEPOSIT_MAX)
+> +		return -EINVAL;
+> +	if (!num_pages)
+> +		return 0;
+> +
+> +	ret = -ENOMEM;
+> +
+> +	/* One buffer for page pointers and counts */
+> +	pages = page_address(alloc_page(GFP_KERNEL));
+> +	if (!pages)
+> +		goto free_buf;
 
-The driver currently supports and can be built for OMAP architecture
-based AM335x, AM437x and AM57xx SoCs; Keystone2 architecture based
-66AK2G SoCs and Davinci architecture based OMAP-L13x/AM18x/DA850 SoCs.
-All of these SoCs support 64 system events, 10 interrupt channels and
-10 output interrupt lines per PRUSS INTC with a few SoC integration
-differences.
+There is nothing to free, just do 'return -ENOMEM' here;
 
-NOTE:
-Each PRU-ICSS's INTC on AM57xx SoCs is preceded by a Crossbar that
-enables multiple external events to be routed to a specific number
-of input interrupt events. Any non-default external interrupt event
-directed towards PRUSS needs this crossbar to be setup properly.
+> +	counts = (int *)&pages[256];
+> +
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Signed-off-by: Andrew F. Davis <afd@ti.com>
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Signed-off-by: David Lechner <david@lechnology.com>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
----
-v5->v6:
-1) Address Marc Zyngier comments:
-- Use unsigned types for variables used to compute masks/shifts (ch,
-  evt, host).
-- Move part responsible for enabling global interrupt from
-  pruss_intc_map to pruss_intc_init.
-- Improve coding style in pruss_intc_init with regards to variable
-  assignments.
-- Align the '=' signs vertically in pruss_irqchip structure.
-- Change the irq type in xlate handler from IRQ_TYPE_NONE to
-  IRQ_TYPE_LEVEL_MASK
-- Reorganize variable definitions in pruss_intc_irq_handler.
-- Move the static date (irq_names) out of the probe function.
-- The host_data was unnecessary defined as array, rework it to
-  pruss_host_irq_data pointer.
-2) Other:
-- Fix Kconfig help indentation suggested by Randy Dunlap.
-- Add myself to the authors list.
-v4->v5:
-- Use more meaningful define and variable names.
-- Drop redundant error messages.
-- Fix error handling in case of irq == 0.
-- Improve @lock description.
-- Add David Lechner copyright and sign-off.
-v3->v4:
-- Introduce new structure for host_irq data and associate it to the
-  chained interrupt handler.
-- Improve pruss_intc_irq_handler: get use of new host_irq data
-  structure; improve while loop to use one register read; convert
-  WARN_ON to WARN_ON_ONCE.
-- Convert irq_linear_revmap into irq_find_mapping.
-- Clarify information about PRU system events type (edge vs level) by
-  introducing proper updates to the driver description.
-- Squash generic part of "irqchip/irq-pruss-intc: Add support for ICSSG
-  INTC on K3 SoCs" patch into this one - it allows to reduce entire
-  patchset diff.
-- Drop reviewed-by due to introduced changes.
-- Extend module authors list.
-- Squash patch #6 of previous patchset "irqchip/irq-pruss-intc: Add
-  event mapping support" into this one and introduce below changes:
-  - Get rid of the two distinct code paths in the xlate function and allow
-    to proceed only with 3 parameters description
-    (system_event/channel/host_irq).
-  - Improve error messages and introduce code simplification.
-  - Add extra logic to xlate function which allows to validate existing
-    interrupt routing violation.
-  - Relax map/unmap validation due to introduced changes in xlate
-    function.
-  - Update commit log description.
-v2->v3:
-- use single irqchip description instead of separately allocating it for
-  each pruss_intc
-- get rid of unused mutex
-- improve error handling
-v1->v2:
-- https://patchwork.kernel.org/patch/11069771/
----
- drivers/irqchip/Kconfig          |  10 +
- drivers/irqchip/Makefile         |   1 +
- drivers/irqchip/irq-pruss-intc.c | 596 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 607 insertions(+)
- create mode 100644 drivers/irqchip/irq-pruss-intc.c
+Oh this is weird. So 'pages' is an array of 512 'struct page *' items
+and we use its second half (pages[256]) for an array of signed(!)
+integers(!). Can we use a locally defined struct or something better for
+that?
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index bfc9719..733e59f 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -493,6 +493,16 @@ config TI_SCI_INTA_IRQCHIP
- 	  If you wish to use interrupt aggregator irq resources managed by the
- 	  TI System Controller, say Y here. Otherwise, say N.
- 
-+config TI_PRUSS_INTC
-+	tristate "TI PRU-ICSS Interrupt Controller"
-+	depends on ARCH_DAVINCI || SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE
-+	select IRQ_DOMAIN
-+	help
-+	  This enables support for the PRU-ICSS Local Interrupt Controller
-+	  present within a PRU-ICSS subsystem present on various TI SoCs.
-+	  The PRUSS INTC enables various interrupts to be routed to multiple
-+	  different processors within the SoC.
-+
- config RISCV_INTC
- 	bool "RISC-V Local Interrupt Controller"
- 	depends on RISCV
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 133f9c4..990a106 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -106,6 +106,7 @@ obj-$(CONFIG_MADERA_IRQ)		+= irq-madera.o
- obj-$(CONFIG_LS1X_IRQ)			+= irq-ls1x.o
- obj-$(CONFIG_TI_SCI_INTR_IRQCHIP)	+= irq-ti-sci-intr.o
- obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
-+obj-$(CONFIG_TI_PRUSS_INTC)		+= irq-pruss-intc.o
- obj-$(CONFIG_LOONGSON_LIOINTC)		+= irq-loongson-liointc.o
- obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
- obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
-diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
-new file mode 100644
-index 0000000..319e431
---- /dev/null
-+++ b/drivers/irqchip/irq-pruss-intc.c
-@@ -0,0 +1,596 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * PRU-ICSS INTC IRQChip driver for various TI SoCs
-+ *
-+ * Copyright (C) 2016-2020 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * Author(s):
-+ *	Andrew F. Davis <afd@ti.com>
-+ *	Suman Anna <s-anna@ti.com>
-+ *	Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org> for Texas Instruments
-+ *
-+ * Copyright (C) 2019 David Lechner <david@lechnology.com>
-+ */
-+
-+#include <linux/irq.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+
-+/*
-+ * Number of host interrupts reaching the main MPU sub-system. Note that this
-+ * is not the same as the total number of host interrupts supported by the PRUSS
-+ * INTC instance
-+ */
-+#define MAX_NUM_HOST_IRQS	8
-+
-+/* minimum starting host interrupt number for MPU */
-+#define FIRST_PRU_HOST_INT	2
-+
-+/* PRU_ICSS_INTC registers */
-+#define PRU_INTC_REVID		0x0000
-+#define PRU_INTC_CR		0x0004
-+#define PRU_INTC_GER		0x0010
-+#define PRU_INTC_GNLR		0x001c
-+#define PRU_INTC_SISR		0x0020
-+#define PRU_INTC_SICR		0x0024
-+#define PRU_INTC_EISR		0x0028
-+#define PRU_INTC_EICR		0x002c
-+#define PRU_INTC_HIEISR		0x0034
-+#define PRU_INTC_HIDISR		0x0038
-+#define PRU_INTC_GPIR		0x0080
-+#define PRU_INTC_SRSR(x)	(0x0200 + (x) * 4)
-+#define PRU_INTC_SECR(x)	(0x0280 + (x) * 4)
-+#define PRU_INTC_ESR(x)		(0x0300 + (x) * 4)
-+#define PRU_INTC_ECR(x)		(0x0380 + (x) * 4)
-+#define PRU_INTC_CMR(x)		(0x0400 + (x) * 4)
-+#define PRU_INTC_HMR(x)		(0x0800 + (x) * 4)
-+#define PRU_INTC_HIPIR(x)	(0x0900 + (x) * 4)
-+#define PRU_INTC_SIPR(x)	(0x0d00 + (x) * 4)
-+#define PRU_INTC_SITR(x)	(0x0d80 + (x) * 4)
-+#define PRU_INTC_HINLR(x)	(0x1100 + (x) * 4)
-+#define PRU_INTC_HIER		0x1500
-+
-+/* CMR register bit-field macros */
-+#define CMR_EVT_MAP_MASK	0xf
-+#define CMR_EVT_MAP_BITS	8
-+#define CMR_EVT_PER_REG		4
-+
-+/* HMR register bit-field macros */
-+#define HMR_CH_MAP_MASK		0xf
-+#define HMR_CH_MAP_BITS		8
-+#define HMR_CH_PER_REG		4
-+
-+/* HIPIR register bit-fields */
-+#define INTC_HIPIR_NONE_HINT	0x80000000
-+
-+#define MAX_PRU_SYS_EVENTS 160
-+#define MAX_PRU_CHANNELS 20
-+
-+/**
-+ * struct pruss_intc_map_record - keeps track of actual mapping state
-+ * @value: The currently mapped value (channel or host)
-+ * @ref_count: Keeps track of number of current users of this resource
-+ */
-+struct pruss_intc_map_record {
-+	u8 value;
-+	u8 ref_count;
-+};
-+
-+/**
-+ * struct pruss_intc_match_data - match data to handle SoC variations
-+ * @num_system_events: number of input system events handled by the PRUSS INTC
-+ * @num_host_events: number of host events (which is equal to number of
-+ *		     channels) supported by the PRUSS INTC
-+ */
-+struct pruss_intc_match_data {
-+	u8 num_system_events;
-+	u8 num_host_events;
-+};
-+
-+/**
-+ * struct pruss_intc - PRUSS interrupt controller structure
-+ * @event_channel: current state of system event to channel mappings
-+ * @channel_host: current state of channel to host mappings
-+ * @irqs: kernel irq numbers corresponding to PRUSS host interrupts
-+ * @base: base virtual address of INTC register space
-+ * @domain: irq domain for this interrupt controller
-+ * @soc_config: cached PRUSS INTC IP configuration data
-+ * @dev: PRUSS INTC device pointer
-+ * @lock: mutex to serialize interrupts mapping
-+ */
-+struct pruss_intc {
-+	struct pruss_intc_map_record event_channel[MAX_PRU_SYS_EVENTS];
-+	struct pruss_intc_map_record channel_host[MAX_PRU_CHANNELS];
-+	unsigned int irqs[MAX_NUM_HOST_IRQS];
-+	void __iomem *base;
-+	struct irq_domain *domain;
-+	const struct pruss_intc_match_data *soc_config;
-+	struct device *dev;
-+	struct mutex lock; /* PRUSS INTC lock */
-+};
-+
-+/**
-+ * struct pruss_host_irq_data - PRUSS host irq data structure
-+ * @intc: PRUSS interrupt controller pointer
-+ * @host_irq: host irq number
-+ */
-+struct pruss_host_irq_data {
-+	struct pruss_intc *intc;
-+	u8 host_irq;
-+};
-+
-+static inline u32 pruss_intc_read_reg(struct pruss_intc *intc, unsigned int reg)
-+{
-+	return readl_relaxed(intc->base + reg);
-+}
-+
-+static inline void pruss_intc_write_reg(struct pruss_intc *intc,
-+					unsigned int reg, u32 val)
-+{
-+	writel_relaxed(val, intc->base + reg);
-+}
-+
-+static void pruss_intc_update_cmr(struct pruss_intc *intc, unsigned int evt,
-+				  u8 ch)
-+{
-+	u32 idx, offset, val;
-+
-+	idx = evt / CMR_EVT_PER_REG;
-+	offset = (evt % CMR_EVT_PER_REG) * CMR_EVT_MAP_BITS;
-+
-+	val = pruss_intc_read_reg(intc, PRU_INTC_CMR(idx));
-+	val &= ~(CMR_EVT_MAP_MASK << offset);
-+	val |= ch << offset;
-+	pruss_intc_write_reg(intc, PRU_INTC_CMR(idx), val);
-+
-+	dev_dbg(intc->dev, "SYSEV%u -> CH%d (CMR%d 0x%08x)\n", evt, ch,
-+		idx, pruss_intc_read_reg(intc, PRU_INTC_CMR(idx)));
-+}
-+
-+static void pruss_intc_update_hmr(struct pruss_intc *intc, u8 ch, u8 host)
-+{
-+	u32 idx, offset, val;
-+
-+	idx = ch / HMR_CH_PER_REG;
-+	offset = (ch % HMR_CH_PER_REG) * HMR_CH_MAP_BITS;
-+
-+	val = pruss_intc_read_reg(intc, PRU_INTC_HMR(idx));
-+	val &= ~(HMR_CH_MAP_MASK << offset);
-+	val |= host << offset;
-+	pruss_intc_write_reg(intc, PRU_INTC_HMR(idx), val);
-+
-+	dev_dbg(intc->dev, "CH%d -> HOST%d (HMR%d 0x%08x)\n", ch, host, idx,
-+		pruss_intc_read_reg(intc, PRU_INTC_HMR(idx)));
-+}
-+
-+/**
-+ * pruss_intc_map() - configure the PRUSS INTC
-+ * @intc: PRUSS interrupt controller pointer
-+ * @hwirq: the system event number
-+ *
-+ * Configures the PRUSS INTC with the provided configuration from the one parsed
-+ * in the xlate function.
-+ */
-+static void pruss_intc_map(struct pruss_intc *intc, unsigned long hwirq)
-+{
-+	struct device *dev = intc->dev;
-+	u8 ch, host, reg_idx;
-+	u32 val;
-+
-+	mutex_lock(&intc->lock);
-+
-+	intc->event_channel[hwirq].ref_count++;
-+
-+	ch = intc->event_channel[hwirq].value;
-+	host = intc->channel_host[ch].value;
-+
-+	pruss_intc_update_cmr(intc, hwirq, ch);
-+
-+	reg_idx = hwirq / 32;
-+	val = BIT(hwirq  % 32);
-+
-+	/* clear and enable system event */
-+	pruss_intc_write_reg(intc, PRU_INTC_ESR(reg_idx), val);
-+	pruss_intc_write_reg(intc, PRU_INTC_SECR(reg_idx), val);
-+
-+	if (++intc->channel_host[ch].ref_count == 1) {
-+		pruss_intc_update_hmr(intc, ch, host);
-+
-+		/* enable host interrupts */
-+		pruss_intc_write_reg(intc, PRU_INTC_HIEISR, host);
-+	}
-+
-+	dev_dbg(dev, "mapped system_event = %lu channel = %d host = %d",
-+		hwirq, ch, host);
-+
-+	mutex_unlock(&intc->lock);
-+}
-+
-+/**
-+ * pruss_intc_unmap() - unconfigure the PRUSS INTC
-+ * @intc: PRUSS interrupt controller pointer
-+ * @hwirq: the system event number
-+ *
-+ * Undo whatever was done in pruss_intc_map() for a PRU core.
-+ * Mappings are reference counted, so resources are only disabled when there
-+ * are no longer any users.
-+ */
-+static void pruss_intc_unmap(struct pruss_intc *intc, unsigned long hwirq)
-+{
-+	u8 ch, host, reg_idx;
-+	u32 val;
-+
-+	mutex_lock(&intc->lock);
-+
-+	ch = intc->event_channel[hwirq].value;
-+	host = intc->channel_host[ch].value;
-+
-+	if (--intc->channel_host[ch].ref_count == 0) {
-+		/* disable host interrupts */
-+		pruss_intc_write_reg(intc, PRU_INTC_HIDISR, host);
-+
-+		/* clear the map using reset value 0 */
-+		pruss_intc_update_hmr(intc, ch, 0);
-+	}
-+
-+	intc->event_channel[hwirq].ref_count--;
-+	reg_idx = hwirq / 32;
-+	val = BIT(hwirq  % 32);
-+
-+	/* disable system events */
-+	pruss_intc_write_reg(intc, PRU_INTC_ECR(reg_idx), val);
-+	/* clear any pending status */
-+	pruss_intc_write_reg(intc, PRU_INTC_SECR(reg_idx), val);
-+
-+	/* clear the map using reset value 0 */
-+	pruss_intc_update_cmr(intc, hwirq, 0);
-+
-+	dev_dbg(intc->dev, "unmapped system_event = %lu channel = %d host = %d\n",
-+		hwirq, ch, host);
-+
-+	mutex_unlock(&intc->lock);
-+}
-+
-+static void pruss_intc_init(struct pruss_intc *intc)
-+{
-+	const struct pruss_intc_match_data *soc_config = intc->soc_config;
-+	int num_chnl_map_regs, num_host_intr_regs, num_event_type_regs, i;
-+
-+	num_chnl_map_regs = DIV_ROUND_UP(soc_config->num_system_events,
-+					 CMR_EVT_PER_REG);
-+	num_host_intr_regs = DIV_ROUND_UP(soc_config->num_host_events,
-+					  HMR_CH_PER_REG);
-+	num_event_type_regs = DIV_ROUND_UP(soc_config->num_system_events, 32);
-+
-+	/*
-+	 * configure polarity (SIPR register) to active high and
-+	 * type (SITR register) to level interrupt for all system events
-+	 */
-+	for (i = 0; i < num_event_type_regs; i++) {
-+		pruss_intc_write_reg(intc, PRU_INTC_SIPR(i), 0xffffffff);
-+		pruss_intc_write_reg(intc, PRU_INTC_SITR(i), 0);
-+	}
-+
-+	/* clear all interrupt channel map registers, 4 events per register */
-+	for (i = 0; i < num_chnl_map_regs; i++)
-+		pruss_intc_write_reg(intc, PRU_INTC_CMR(i), 0);
-+
-+	/* clear all host interrupt map registers, 4 channels per register */
-+	for (i = 0; i < num_host_intr_regs; i++)
-+		pruss_intc_write_reg(intc, PRU_INTC_HMR(i), 0);
-+
-+	/* global interrupt enable */
-+	pruss_intc_write_reg(intc, PRU_INTC_GER, 1);
-+}
-+
-+static void pruss_intc_irq_ack(struct irq_data *data)
-+{
-+	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
-+	unsigned int hwirq = data->hwirq;
-+
-+	pruss_intc_write_reg(intc, PRU_INTC_SICR, hwirq);
-+}
-+
-+static void pruss_intc_irq_mask(struct irq_data *data)
-+{
-+	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
-+	unsigned int hwirq = data->hwirq;
-+
-+	pruss_intc_write_reg(intc, PRU_INTC_EICR, hwirq);
-+}
-+
-+static void pruss_intc_irq_unmask(struct irq_data *data)
-+{
-+	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
-+	unsigned int hwirq = data->hwirq;
-+
-+	pruss_intc_write_reg(intc, PRU_INTC_EISR, hwirq);
-+}
-+
-+static int pruss_intc_irq_reqres(struct irq_data *data)
-+{
-+	if (!try_module_get(THIS_MODULE))
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static void pruss_intc_irq_relres(struct irq_data *data)
-+{
-+	module_put(THIS_MODULE);
-+}
-+
-+static struct irq_chip pruss_irqchip = {
-+	.name			= "pruss-intc",
-+	.irq_ack		= pruss_intc_irq_ack,
-+	.irq_mask		= pruss_intc_irq_mask,
-+	.irq_unmask		= pruss_intc_irq_unmask,
-+	.irq_request_resources	= pruss_intc_irq_reqres,
-+	.irq_release_resources	= pruss_intc_irq_relres,
-+};
-+
-+static int pruss_intc_validate_mapping(struct pruss_intc *intc, int event,
-+				       int channel, int host)
-+{
-+	struct device *dev = intc->dev;
-+	int ret = 0;
-+
-+	mutex_lock(&intc->lock);
-+
-+	/* check if sysevent already assigned */
-+	if (intc->event_channel[event].ref_count > 0 &&
-+	    intc->event_channel[event].value != channel) {
-+		dev_err(dev, "event %d (req. ch %d) already assigned to channel %d\n",
-+			event, channel, intc->event_channel[event].value);
-+		ret = -EBUSY;
-+		goto unlock;
-+	}
-+
-+	/* check if channel already assigned */
-+	if (intc->channel_host[channel].ref_count > 0 &&
-+	    intc->channel_host[channel].value != host) {
-+		dev_err(dev, "channel %d (req. host %d) already assigned to host %d\n",
-+			channel, host, intc->channel_host[channel].value);
-+		ret = -EBUSY;
-+		goto unlock;
-+	}
-+
-+	intc->event_channel[event].value = channel;
-+	intc->channel_host[channel].value = host;
-+
-+unlock:
-+	mutex_unlock(&intc->lock);
-+	return ret;
-+}
-+
-+static int
-+pruss_intc_irq_domain_xlate(struct irq_domain *d, struct device_node *node,
-+			    const u32 *intspec, unsigned int intsize,
-+			    unsigned long *out_hwirq, unsigned int *out_type)
-+{
-+	struct pruss_intc *intc = d->host_data;
-+	struct device *dev = intc->dev;
-+	int ret, sys_event, channel, host;
-+
-+	if (intsize < 3)
-+		return -EINVAL;
-+
-+	sys_event = intspec[0];
-+	if (sys_event < 0 || sys_event >= intc->soc_config->num_system_events) {
-+		dev_err(dev, "%d is not valid event number\n", sys_event);
-+		return -EINVAL;
-+	}
-+
-+	channel = intspec[1];
-+	if (channel < 0 || channel >= intc->soc_config->num_host_events) {
-+		dev_err(dev, "%d is not valid channel number", channel);
-+		return -EINVAL;
-+	}
-+
-+	host = intspec[2];
-+	if (host < 0 || host >= intc->soc_config->num_host_events) {
-+		dev_err(dev, "%d is not valid host irq number\n", host);
-+		return -EINVAL;
-+	}
-+
-+	/* check if requested sys_event was already mapped, if so validate it */
-+	ret = pruss_intc_validate_mapping(intc, sys_event, channel, host);
-+	if (ret)
-+		return ret;
-+
-+	*out_hwirq = sys_event;
-+	*out_type = IRQ_TYPE_LEVEL_MASK;
-+
-+	return 0;
-+}
-+
-+static int pruss_intc_irq_domain_map(struct irq_domain *d, unsigned int virq,
-+				     irq_hw_number_t hw)
-+{
-+	struct pruss_intc *intc = d->host_data;
-+
-+	pruss_intc_map(intc, hw);
-+
-+	irq_set_chip_data(virq, intc);
-+	irq_set_chip_and_handler(virq, &pruss_irqchip, handle_level_irq);
-+
-+	return 0;
-+}
-+
-+static void pruss_intc_irq_domain_unmap(struct irq_domain *d, unsigned int virq)
-+{
-+	struct pruss_intc *intc = d->host_data;
-+	unsigned long hwirq = irqd_to_hwirq(irq_get_irq_data(virq));
-+
-+	irq_set_chip_and_handler(virq, NULL, NULL);
-+	irq_set_chip_data(virq, NULL);
-+	pruss_intc_unmap(intc, hwirq);
-+}
-+
-+static const struct irq_domain_ops pruss_intc_irq_domain_ops = {
-+	.xlate	= pruss_intc_irq_domain_xlate,
-+	.map	= pruss_intc_irq_domain_map,
-+	.unmap	= pruss_intc_irq_domain_unmap,
-+};
-+
-+static void pruss_intc_irq_handler(struct irq_desc *desc)
-+{
-+	unsigned int irq = irq_desc_get_irq(desc);
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	struct pruss_host_irq_data *host_irq_data = irq_get_handler_data(irq);
-+	struct pruss_intc *intc = host_irq_data->intc;
-+	u8 host_irq = host_irq_data->host_irq + FIRST_PRU_HOST_INT;
-+
-+	chained_irq_enter(chip, desc);
-+
-+	while (true) {
-+		u32 hipir;
-+		unsigned int virq;
-+		int hwirq;
-+
-+		/* get highest priority pending PRUSS system event */
-+		hipir = pruss_intc_read_reg(intc, PRU_INTC_HIPIR(host_irq));
-+		if (hipir & INTC_HIPIR_NONE_HINT)
-+			break;
-+
-+		hwirq = hipir & GENMASK(9, 0);
-+		virq = irq_find_mapping(intc->domain, hwirq);
-+
-+		/*
-+		 * NOTE: manually ACK any system events that do not have a
-+		 * handler mapped yet
-+		 */
-+		if (WARN_ON_ONCE(!virq))
-+			pruss_intc_write_reg(intc, PRU_INTC_SICR, hwirq);
-+		else
-+			generic_handle_irq(virq);
-+	}
-+
-+	chained_irq_exit(chip, desc);
-+}
-+
-+static const char * const irq_names[MAX_NUM_HOST_IRQS] = {
-+	"host_intr0", "host_intr1", "host_intr2", "host_intr3",
-+	"host_intr4", "host_intr5", "host_intr6", "host_intr7",
-+};
-+
-+static int pruss_intc_probe(struct platform_device *pdev)
-+{
-+	const struct pruss_intc_match_data *data;
-+	struct device *dev = &pdev->dev;
-+	struct pruss_intc *intc;
-+	struct pruss_host_irq_data *host_data;
-+	int i, irq, ret;
-+	u8 max_system_events;
-+
-+	data = of_device_get_match_data(dev);
-+	if (!data)
-+		return -ENODEV;
-+
-+	max_system_events = data->num_system_events;
-+
-+	intc = devm_kzalloc(dev, sizeof(*intc), GFP_KERNEL);
-+	if (!intc)
-+		return -ENOMEM;
-+
-+	intc->soc_config = data;
-+	intc->dev = dev;
-+	platform_set_drvdata(pdev, intc);
-+
-+	intc->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(intc->base))
-+		return PTR_ERR(intc->base);
-+
-+	pruss_intc_init(intc);
-+
-+	mutex_init(&intc->lock);
-+
-+	intc->domain = irq_domain_add_linear(dev->of_node, max_system_events,
-+					     &pruss_intc_irq_domain_ops, intc);
-+	if (!intc->domain)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < MAX_NUM_HOST_IRQS; i++) {
-+		irq = platform_get_irq_byname(pdev, irq_names[i]);
-+		if (irq <= 0) {
-+			ret = (irq == 0) ? -EINVAL : irq;
-+			goto fail_irq;
-+		}
-+
-+		intc->irqs[i] = irq;
-+
-+		host_data = devm_kzalloc(dev, sizeof(*host_data), GFP_KERNEL);
-+		if (!host_data) {
-+			ret = -ENOMEM;
-+			goto fail_irq;
-+		}
-+
-+		host_data->intc = intc;
-+		host_data->host_irq = i;
-+
-+		irq_set_handler_data(irq, host_data);
-+		irq_set_chained_handler(irq, pruss_intc_irq_handler);
-+	}
-+
-+	return 0;
-+
-+fail_irq:
-+	while (--i >= 0)
-+		irq_set_chained_handler_and_data(intc->irqs[i], NULL, NULL);
-+
-+	irq_domain_remove(intc->domain);
-+
-+	return ret;
-+}
-+
-+static int pruss_intc_remove(struct platform_device *pdev)
-+{
-+	struct pruss_intc *intc = platform_get_drvdata(pdev);
-+	u8 max_system_events = intc->soc_config->num_system_events;
-+	unsigned int hwirq;
-+	int i;
-+
-+	for (i = 0; i < MAX_NUM_HOST_IRQS; i++)
-+		irq_set_chained_handler_and_data(intc->irqs[i], NULL, NULL);
-+
-+	for (hwirq = 0; hwirq < max_system_events; hwirq++)
-+		irq_dispose_mapping(irq_find_mapping(intc->domain, hwirq));
-+
-+	irq_domain_remove(intc->domain);
-+
-+	return 0;
-+}
-+
-+static const struct pruss_intc_match_data pruss_intc_data = {
-+	.num_system_events = 64,
-+	.num_host_events = 10,
-+};
-+
-+static const struct of_device_id pruss_intc_of_match[] = {
-+	{
-+		.compatible = "ti,pruss-intc",
-+		.data = &pruss_intc_data,
-+	},
-+	{ /* sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, pruss_intc_of_match);
-+
-+static struct platform_driver pruss_intc_driver = {
-+	.driver = {
-+		.name = "pruss-intc",
-+		.of_match_table = pruss_intc_of_match,
-+		.suppress_bind_attrs = true,
-+	},
-+	.probe  = pruss_intc_probe,
-+	.remove = pruss_intc_remove,
-+};
-+module_platform_driver(pruss_intc_driver);
-+
-+MODULE_AUTHOR("Andrew F. Davis <afd@ti.com>");
-+MODULE_AUTHOR("Suman Anna <s-anna@ti.com>");
-+MODULE_AUTHOR("Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>");
-+MODULE_DESCRIPTION("TI PRU-ICSS INTC Driver");
-+MODULE_LICENSE("GPL v2");
+> +	/* Allocate all the pages before disabling interrupts */
+> +	num_allocations = 0;
+> +	i = 0;
+> +	order = HV_DEPOSIT_MAX_ORDER;
+> +
+> +	while (num_pages) {
+> +		/* Find highest order we can actually allocate */
+> +		desired_order = 31 - __builtin_clz(num_pages);
+> +		order = MIN(desired_order, order);
+> +		do {
+> +			pages[i] = alloc_pages_node(node, GFP_KERNEL, order);
+> +			if (!pages[i]) {
+> +				if (!order) {
+> +					goto err_free_allocations;
+> +				}
+> +				--order;
+> +			}
+> +		} while (!pages[i]);
+> +
+> +		split_page(pages[i], order);
+> +		counts[i] = 1 << order;
+> +		num_pages -= counts[i];
+> +		i++;
+
+So here we believe we will never overrun the 2048 bytes we 'allocated'
+for 'counts' above. While 'if (num_pages > HV_DEPOSIT_MAX)' presumably
+guarantees that, this is not really obvious.
+
+> +		num_allocations++;
+> +	}
+> +
+> +	local_irq_save(flags);
+> +
+> +	input_page = *this_cpu_ptr(hyperv_pcpu_input_arg);
+> +
+> +	input_page->partition_id = partition_id;
+> +
+> +	/* Populate gpa_page_list - these will fit on the input page */
+> +	for (i = 0, page_count = 0; i < num_allocations; ++i) {
+> +		base_pfn = page_to_pfn(pages[i]);
+> +		for (j = 0; j < counts[i]; ++j, ++page_count)
+> +			input_page->gpa_page_list[page_count] = base_pfn + j;
+> +	}
+> +	status = hv_do_rep_hypercall(HVCALL_DEPOSIT_MEMORY,
+> +				     page_count, 0, input_page,
+> +				     NULL) & HV_HYPERCALL_RESULT_MASK;
+> +	local_irq_restore(flags);
+> +
+> +	if (status != HV_STATUS_SUCCESS) {
+
+Nit: same like in one ov the previous patches, status can be 'u16'.
+
+> +		pr_err("Failed to deposit pages: %d\n", status);
+> +		ret = status;
+> +		goto err_free_allocations;
+> +	}
+> +
+> +	ret = 0;
+> +	goto free_buf;
+> +
+> +err_free_allocations:
+> +	for (i = 0; i < num_allocations; ++i) {
+> +		base_pfn = page_to_pfn(pages[i]);
+> +		for (j = 0; j < counts[i]; ++j)
+> +			__free_page(pfn_to_page(base_pfn + j));
+> +	}
+> +
+> +free_buf:
+> +	free_page((unsigned long)pages);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(hv_call_deposit_pages);
+> +
+> +int hv_call_add_logical_proc(int node, u32 lp_index, u32 apic_id)
+> +{
+> +	struct hv_add_logical_processor_in *input;
+> +	struct hv_add_logical_processor_out *output;
+> +	int status;
+> +	unsigned long flags;
+> +	int ret = 0;
+> +
+> +	do {
+> +		local_irq_save(flags);
+> +
+> +		input = *this_cpu_ptr(hyperv_pcpu_input_arg);
+> +		/* We don't do anything with the output right now */
+> +		output = *this_cpu_ptr(hyperv_pcpu_output_arg);
+> +
+> +		input->lp_index = lp_index;
+> +		input->apic_id = apic_id;
+> +		input->flags = 0;
+> +		input->proximity_domain_info.domain_id = node_to_pxm(node);
+> +		input->proximity_domain_info.flags.reserved = 0;
+> +		input->proximity_domain_info.flags.proximity_info_valid = 1;
+> +		input->proximity_domain_info.flags.proximity_preferred = 1;
+> +		status = hv_do_hypercall(HVCALL_ADD_LOGICAL_PROCESSOR,
+> +					 input, output);
+> +		local_irq_restore(flags);
+> +
+> +		if (status != HV_STATUS_INSUFFICIENT_MEMORY) {
+> +			if (status != HV_STATUS_SUCCESS) {
+> +				pr_err("%s: cpu %u apic ID %u, %d\n", __func__,
+> +				       lp_index, apic_id, status);
+> +				ret = status;
+> +			}
+> +			break;
+
+So if status == HV_STATUS_SUCCESS we break and avoid
+hv_call_deposit_pages() below?
+
+> +		}
+> +		ret = hv_call_deposit_pages(node, hv_current_partition_id, 1);
+> +
+> +	} while (!ret);
+
+And if hv_call_deposit_pages() returns '0' we keep doing something? Sorry
+but I'm probably missing something important in the 'depositing'
+process, could you please add a comment explaining what's going on here?
+
+> +
+> +	return ret;
+> +}
+> +
+> +int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags)
+> +{
+> +	struct hv_create_vp *input;
+> +	int status;
+> +	unsigned long irq_flags;
+> +	int ret = 0;
+> +
+> +	/* Root VPs don't seem to need pages deposited */
+> +	if (partition_id != hv_current_partition_id) {
+> +		ret = hv_call_deposit_pages(node, partition_id, 90);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	do {
+> +		local_irq_save(irq_flags);
+> +
+> +		input = *this_cpu_ptr(hyperv_pcpu_input_arg);
+> +
+> +		input->partition_id = partition_id;
+> +		input->vp_index = vp_index;
+> +		input->flags = flags;
+> +		if (node != NUMA_NO_NODE) {
+> +			input->proximity_domain_info.domain_id = node_to_pxm(node);
+> +			input->proximity_domain_info.flags.reserved = 0;
+> +			input->proximity_domain_info.flags.proximity_info_valid = 1;
+> +			input->proximity_domain_info.flags.proximity_preferred = 1;
+> +		} else {
+> +			input->proximity_domain_info.as_uint64 = 0;
+> +		}
+> +		status = hv_do_hypercall(HVCALL_CREATE_VP, input, NULL);
+> +		local_irq_restore(irq_flags);
+> +
+> +		if (status != HV_STATUS_INSUFFICIENT_MEMORY) {
+> +			if (status != HV_STATUS_SUCCESS) {
+> +				pr_err("%s: vcpu %u, lp %u, %d\n", __func__,
+> +				       vp_index, flags, status);
+> +				ret = status;
+> +			}
+> +			break;
+> +		}
+> +		ret = hv_call_deposit_pages(node, partition_id, 1);
+> +
+> +	} while (!ret);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(hv_call_create_vp);
+> +
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index 4039302e0ae9..60afc3e417d0 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -67,6 +67,10 @@ extern void  __percpu  **hyperv_pcpu_output_arg;
+>  
+>  extern u64 hv_current_partition_id;
+>  
+> +int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages);
+> +int hv_call_add_logical_proc(int node, u32 lp_index, u32 acpi_id);
+> +int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags);
+> +
+>  static inline u64 hv_do_hypercall(u64 control, void *input, void *output)
+>  {
+>  	u64 input_address = input ? virt_to_phys(input) : 0;
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index 87b1a79b19eb..2b05bed712c0 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -142,6 +142,8 @@ struct ms_hyperv_tsc_page {
+>  #define HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX	0x0014
+>  #define HVCALL_SEND_IPI_EX			0x0015
+>  #define HVCALL_GET_PARTITION_ID			0x0046
+> +#define HVCALL_DEPOSIT_MEMORY			0x0048
+> +#define HVCALL_CREATE_VP			0x004e
+>  #define HVCALL_GET_VP_REGISTERS			0x0050
+>  #define HVCALL_SET_VP_REGISTERS			0x0051
+>  #define HVCALL_POST_MESSAGE			0x005c
+> @@ -149,6 +151,7 @@ struct ms_hyperv_tsc_page {
+>  #define HVCALL_POST_DEBUG_DATA			0x0069
+>  #define HVCALL_RETRIEVE_DEBUG_DATA		0x006a
+>  #define HVCALL_RESET_DEBUG_SESSION		0x006b
+> +#define HVCALL_ADD_LOGICAL_PROCESSOR		0x0076
+>  #define HVCALL_RETARGET_INTERRUPT		0x007e
+>  #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE 0x00af
+>  #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST 0x00b0
+> @@ -413,6 +416,59 @@ struct hv_get_partition_id {
+>  	u64 partition_id;
+>  } __packed;
+>  
+> +/* HvDepositMemory hypercall */
+> +struct hv_deposit_memory {
+> +	u64 partition_id;
+> +	u64 gpa_page_list[];
+> +};
+
+Other structures above have '__packed' and I remember there were
+different opinions if it is needed or not (for properly padded
+structures). I'd suggest we stay consitent and keep adding it unless we
+decide to get rid of them (but you've added it to the newly introduced
+hv_get_partition_id above).
+> +
+> +
+> +struct hv_proximity_domain_flags {
+> +	u32 proximity_preferred : 1;
+> +	u32 reserved : 30;
+> +	u32 proximity_info_valid : 1;
+> +};
+> +
+> +/* Not a union in windows but useful for zeroing */
+> +union hv_proximity_domain_info {
+> +	struct {
+> +		u32 domain_id;
+> +		struct hv_proximity_domain_flags flags;
+> +	};
+> +	u64 as_uint64;
+> +};
+> +
+> +struct hv_lp_startup_status {
+> +	u64 hv_status;
+> +	u64 substatus1;
+> +	u64 substatus2;
+> +	u64 substatus3;
+> +	u64 substatus4;
+> +	u64 substatus5;
+> +	u64 substatus6;
+> +};
+> +
+> +/* HvAddLogicalProcessor hypercalls */
+
+s/hypercalls/hypercall/
+
+> +struct hv_add_logical_processor_in {
+> +	u32 lp_index;
+> +	u32 apic_id;
+> +	union hv_proximity_domain_info proximity_domain_info;
+> +	u64 flags;
+> +};
+> +
+> +struct hv_add_logical_processor_out {
+> +	struct hv_lp_startup_status startup_status;
+> +};
+> +
+> +/* HvCreateVp hypercall */
+> +struct hv_create_vp {
+> +	u64 partition_id;
+> +	u32 vp_index;
+> +	u32 padding;
+> +	union hv_proximity_domain_info proximity_domain_info;
+> +	u64 flags;
+> +};
+> +
+>  /* HvRetargetDeviceInterrupt hypercall */
+>  union hv_msi_entry {
+>  	u64 as_uint64;
+
 -- 
-2.7.4
+Vitaly
 
