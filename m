@@ -2,565 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF190269B27
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BAB269B19
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgIOBaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:30:35 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:38508 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgIOBad (ORCPT
+        id S1726186AbgIOB25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:28:57 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:21654 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgIOB22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:30:33 -0400
-Received: by mail-io1-f68.google.com with SMTP id h4so2297656ioe.5;
-        Mon, 14 Sep 2020 18:30:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eHXVshEfAL6AyRFt7xSU/3kJiHLIn+w2Axi1RBiOh7g=;
-        b=ZgxPL4mQA5t0jUGFFs7kj2TvgJ7ikEUndZ868P0dIAsePaS9r9/mZNjXkEopjARptw
-         r+LJ31qsEHUzj4ll85FUqqfeQIOnRtQtG4LIDsY32MFMR88gU9kIKBn1rkKTozjvgBJ0
-         lvaBz+sKu02vLcjtYDDw2JsI36GVrFpows22WMYW1Xyuyp3abZ7zjiAAN+SAKLNc6ayP
-         sK9caPbRpEGjZkiWgnk5jsZJaaqOw5pWU4QSan/9hoCoZuYYzbRpQDvU807hQm1b+nqw
-         tyRVloFu0Oz1ij/gGpmFtBRuith/XyBl2FEIKGDzKQ/EXVtmLUEKp9Wy8ZXUBYMEFQvt
-         EqHw==
-X-Gm-Message-State: AOAM533+pZk7Gwh5VbMZf+zVXng9LRlVpfbOnW8xbZAJMvYnwx2FtjON
-        qVWO5vXZNOIxVbQJOYYnmxAoRL+Y2+yW
-X-Google-Smtp-Source: ABdhPJwuNCo6pgRyHbjOZeCd6CR7YqNHKpv6OMo+rmnS50sygQehBSppwko29dOUOCNO89GEoS6BGA==
-X-Received: by 2002:a6b:6d07:: with SMTP id a7mr13089251iod.82.1600133432387;
-        Mon, 14 Sep 2020 18:30:32 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v24sm6871096ioh.21.2020.09.14.18.30.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 18:30:31 -0700 (PDT)
-Received: (nullmailer pid 667196 invoked by uid 1000);
-        Tue, 15 Sep 2020 01:30:28 -0000
-Date:   Mon, 14 Sep 2020 19:30:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bhelgaas@google.com,
-        shawnguo@kernel.org, leoyang.li@nxp.com, lorenzo.pieralisi@arm.com,
-        gustavo.pimentel@synopsys.com, minghuan.Lian@nxp.com,
-        mingkai.hu@nxp.com, roy.zang@nxp.com
-Subject: Re: [PATCH 7/7] PCI: layerscape: Add power management support
-Message-ID: <20200915013028.GC640859@bogus>
-References: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
- <20200907053801.22149-8-Zhiqiang.Hou@nxp.com>
+        Mon, 14 Sep 2020 21:28:28 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200915012825epoutp01fe6e3adfc9f952a03db0c9d909193889~00MODlKtx1305413054epoutp01t
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:28:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200915012825epoutp01fe6e3adfc9f952a03db0c9d909193889~00MODlKtx1305413054epoutp01t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600133305;
+        bh=egT0OFD0weQH82AwocHfqlMU5Wad88C4WNlaSbzwML8=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=lL+c57sgrydLN/GcSitgj73kJq0gJKdZ7Ht32cjGSOxM3S6a/VK0U8NaeNHn2Qe6J
+         LU/rq9t59sWQY2XaacIDoxIrzubfp7u1U0f28XgpnAvJuNFMp/g3ueQKnHraJ1v6Sy
+         ljexY7PRG0bSH2xPlDS1L7Cf8kHJBJG0rsctGx54=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200915012825epcas1p33d8e767c5ef086dd2a6f4f99ff00c64c~00MNjwT8j2738627386epcas1p3R;
+        Tue, 15 Sep 2020 01:28:25 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Br5GG40GnzMqYkX; Tue, 15 Sep
+        2020 01:28:22 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BA.A4.19033.3B8106F5; Tue, 15 Sep 2020 10:28:19 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200915012818epcas1p2f9557f24f8fb9d48253fcfa034a4cd8c~00MHhaQOc0624206242epcas1p2I;
+        Tue, 15 Sep 2020 01:28:18 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200915012818epsmtrp14e34024d346c1c1f55b2cb6daa022990~00MHgqsdg2243622436epsmtrp1V;
+        Tue, 15 Sep 2020 01:28:18 +0000 (GMT)
+X-AuditID: b6c32a36-16fff70000004a59-82-5f6018b3d149
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DB.78.08382.2B8106F5; Tue, 15 Sep 2020 10:28:18 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200915012818epsmtip2928f047c277e54e4640ee610a8a0d9f0~00MHOlKma2594225942epsmtip2Q;
+        Tue, 15 Sep 2020 01:28:18 +0000 (GMT)
+Subject: Re: [PATCH 1/4] extcon: Add USB VBUS properties
+To:     Angus Ainslie <angus@akkea.ca>, kernel@puri.sm
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        bryan.odonoghue@linaro.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <bfa20bf2-e13b-1cd4-52d9-c8fa922d5aac@samsung.com>
+Date:   Tue, 15 Sep 2020 10:40:28 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907053801.22149-8-Zhiqiang.Hou@nxp.com>
+In-Reply-To: <20200914164639.1487650-2-angus@akkea.ca>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sf0xbVRjNbcvrY13ZpZRxJcGVp4tCwo8Ha/cgQDbBpQTiqi7ETJP2jT6B
+        0F/2tdNBIjS6whoVoZPMhg7jgAzYMgcVgbiUlP1qdLEOqKadAg6XScJYtzAH29S2b4v8d+53
+        zved79x7cb6kD0vHGwwWxmygdQS2RTA2nZWXM4o06vzVla3UzfkwoPqWL/Ooj06dwyjH8ISA
+        6rWfEFAzkz0Y9fXAUT4Vtp3G9uDKLxyngfJG8HtMedL/utLrPiNU/jEeAsrPPENAeX/keZXw
+        YGNJPUNrGbOMMdQatQ2GulKi6k11uVquyCdzyCJqNyEz0HqmlKioVuXsa9BFlyJkh2mdNVpS
+        0SxL5JWVmI1WCyOrN7KWUoIxaXWmIlMuS+tZq6Eut9aoLybz8wvkUaGmsX7Id01oWkj64Hy4
+        G7SCn0QOkIgjuAu5v4kAB9iCS+A4QE9+HgExQgLvATTR1sQRDwBq7RjAnnXMtAf4HHEBoPFb
+        YQF3WAXo345ZYUyVAil0vT8c7cBxKSxA83NMTMOHywANnL0e12AwG3lv/xqfug1mormHN+PW
+        YliGHs8u8mJYAHei3sBUHKfCGuQf+/ipJhn5v1wSxOYnQgWyBzWxMh+modBSL4/DO9B3Kz3x
+        RRH04CgwMiiM6RGsQH8uvs2FSUHLVzxCDqejvzrsT3EzGvRfxLjedoA83kACRxQib7+TF5vD
+        h1no3GQeV85EE4/cgPNNQnfWPkngrMSo3S7hJC+gmYXfeBx+Dp1qO4Z9DgjXpjCuTQlcmxK4
+        /jf7CgiGwHbGxOrrGJY0FWx+6xEQ/67ZinHQtXI31wd4OPABhPMJqXjKplZLxFr6SBNjNqrN
+        Vh3D+oA8er2d/PTUWmP0vxssalJeUFhYSO0iFXKSJNLEiyGZWgLraAvTyDAmxvysj4cnprfy
+        Ks/XWidvrDXPTeOV3wI8lSdAb7zznuhe49p657v9NWeNEV3NkbYLlZQt4RV5eEfRse5XpaPh
+        lIwSNly99cTDYnxj4bXykO3FxfDFsduS5a5A5eWN8gxvzYT05ZaS0AM7SBZXN5giU6J+eFTa
+        0VKmF1vVVxV3r6aRj5+ssyp04PCtDc3u/QdhVl/LpcjvP1oPfdpaYRO99M+BiD1x3v+h+H2f
+        TePY99Y25/39Te5LeVXuOx5wMrikdbUUO51JFpET9Fwz7/VKu0YBG2zOyNwb6p5TDTc3rQ6u
+        TicTg53Tx5Eu6e/t3UHN8BXxoaGqCseZX9Z3/lC9R0YmhB7NEgK2niaz+WaW/g/VXxGMNwQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAIsWRmVeSWpSXmKPExsWy7bCSvO4miYR4gx8HVC0e37/NaLHk1TEm
+        i+bF69ksulbvZLGY3zaDxeLyrjlsFouWtTJb3G5cwebA4TG1awWjx51re9g85p0M9Ng/dw27
+        x6Mdtxg9+rasYvT4vEkugD2KyyYlNSezLLVI3y6BK2PVobPsBQ/4KjbensbYwHieu4uRk0NC
+        wETicscF5i5GLg4hgd2MEicPT2CFSEhKTLt4FCjBAWQLSxw+XAxR85ZRouvvOWaQGmEBC4lL
+        S2+zgdSICBhJ3L+aClLDLPCGUWLbpVtMEA1bGSVmLfsN1sAmoCWx/8UNNhCbX0BR4uqPx4wg
+        Nq+AncSfKw+ZQGwWAVWJ+RcOgNmiAmESO5c8ZoKoEZQ4OfMJC8gyTgEzibZrCSBhZgF1iT/z
+        LjFD2OISt57MZ4Kw5SW2v53DPIFReBaS7llIWmYhaZmFpGUBI8sqRsnUguLc9NxiwwLDvNRy
+        veLE3OLSvHS95PzcTYzgSNPS3MG4fdUHvUOMTByMhxglOJiVRHgPNMbHC/GmJFZWpRblxxeV
+        5qQWH2KU5mBREue9UbgwTkggPbEkNTs1tSC1CCbLxMEp1cCk7b9vj9DROVdCjrZsif2/7yeX
+        8Kkkl5iZ94LZbYXCkyK2/wic+mbdosYQud6N4jbZ14PshdbyC3PfmHpmcfpKcdeZ91Imfq1Z
+        5MT6R3f1ucjfFmssDQ02qQcpXLsou6rJztqkKObCLt+SDvWkxxP2Zvjf8apj2y0blLT5XvC+
+        6gmPlaczGt//KWDiyBV9/9+XKku/i9fMt1Rcqer8zPIiT/T3E7eLJY37BCY/1j74Z2HnjuYL
+        XswVcfMj55ckbpDQWHRv4zr5eRwnLu+uVYpSNpZQPMQqe9Hr/yUPyY6+nQt+9sy/xpVQ89mi
+        Uv2m5Npb884e6eFxlny8eM3WLxXyN1fynd+8RZ5bmudMrPAUJZbijERDLeai4kQA8Pl61yMD
+        AAA=
+X-CMS-MailID: 20200915012818epcas1p2f9557f24f8fb9d48253fcfa034a4cd8c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200914165800epcas1p12e04260289513eac00f442388d5ba374
+References: <20200914164639.1487650-1-angus@akkea.ca>
+        <CGME20200914165800epcas1p12e04260289513eac00f442388d5ba374@epcas1p1.samsung.com>
+        <20200914164639.1487650-2-angus@akkea.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 01:38:01PM +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Hi,
+
+On 9/15/20 1:46 AM, Angus Ainslie wrote:
+> USB type C, USB BC1.2 and USB power delivery allow different voltages
+> and currents for VBUS so we need these additional properties.
 > 
-> Add PME_Turn_Off/PME_TO_Ack handshake sequence, and finally
-> put the PCIe controller into D3 state after the L2/L3 ready
-> state transition process completion.
+> Also USB type C allows separate device and power roles so add a VBUS SRC
+> property.
 > 
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Signed-off-by: Angus Ainslie <angus@akkea.ca>
 > ---
->  drivers/pci/controller/dwc/pci-layerscape.c  | 384 ++++++++++++++++++-
->  drivers/pci/controller/dwc/pcie-designware.h |   1 +
->  2 files changed, 383 insertions(+), 2 deletions(-)
+>  include/linux/extcon.h | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> index be404c16bcbe..ca9ea07f77c1 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> @@ -3,13 +3,16 @@
->   * PCIe host controller driver for Freescale Layerscape SoCs
+> diff --git a/include/linux/extcon.h b/include/linux/extcon.h
+> index fd183fb9c20f..c4d48f4f74c4 100644
+> --- a/include/linux/extcon.h
+> +++ b/include/linux/extcon.h
+> @@ -117,14 +117,29 @@
+>   * @type:       integer (intval)
+>   * @value:      0 (USB/USB2) or 1 (USB3)
+>   * @default:    0 (USB/USB2)
+> + * - EXTCON_PROP_USB_VBUS_SRC
+
+Could you explain more correct meaning of both sink and source?
+
+> + * @type:	integer (intval)
+> + * @value:	0 (sink) or 1 (source)
+> + * @default:	0 (sink)
+> + * - EXTCON_PROP_USB_VBUS_VOLTAGE
+> + * @type:	integer (intval)
+> + * @value:	negotiated vbus voltage in mV
+> + * @default:	5000
+
+Could you suggest the data why do you set default value as 5000?
+
+> + * - EXTCON_PROP_USB_VBUS_CURRENT
+> + * @type:	integer (intval)
+> + * @value:	negotiated vbus current in mA
+> + * @default:	100
+
+ditto. Why default value is 100?
+
 >   *
->   * Copyright (C) 2014 Freescale Semiconductor.
-> + * Copyright 2020 NXP
->   *
->   * Author: Minghuan Lian <Minghuan.Lian@freescale.com>
 >   */
+>  #define EXTCON_PROP_USB_VBUS		0
+>  #define EXTCON_PROP_USB_TYPEC_POLARITY	1
+>  #define EXTCON_PROP_USB_SS		2
+> +#define EXTCON_PROP_USB_VBUS_SRC	3
+> +#define EXTCON_PROP_USB_VBUS_VOLTAGE	4
+> +#define EXTCON_PROP_USB_VBUS_CURRENT	5
 >  
-> +#include <linux/delay.h>
->  #include <linux/kernel.h>
->  #include <linux/interrupt.h>
->  #include <linux/init.h>
-> +#include <linux/iopoll.h>
->  #include <linux/of_pci.h>
->  #include <linux/of_platform.h>
->  #include <linux/of_irq.h>
-> @@ -27,17 +30,66 @@
->  #define PCIE_ABSERR		0x8d0 /* Bridge Slave Error Response Register */
->  #define PCIE_ABSERR_SETTING	0x9401 /* Forward error of non-posted request */
+>  #define EXTCON_PROP_USB_MIN		0
+> -#define EXTCON_PROP_USB_MAX		2
+> +#define EXTCON_PROP_USB_MAX		5
+>  #define EXTCON_PROP_USB_CNT	(EXTCON_PROP_USB_MAX - EXTCON_PROP_USB_MIN + 1)
 >  
-> +#define PCIE_PM_SCR		0x44
-> +#define PCIE_PM_SCR_PMEPS_D0	0x0
-> +#define PCIE_PM_SCR_PMEPS_D3	0x3
-> +
-> +#define PCIE_LNKCTL		0x80  /* PCIe link ctrl Register */
-
-Use the common defines.
-
-
-> +
-> +/* PF Message Command Register */
-> +#define LS_PCIE_PF_MCR		0x2c
-> +#define PF_MCR_PTOMR		BIT(0)
-> +#define PF_MCR_EXL2S		BIT(1)
-> +
-> +/* LS1021A PEXn PM Write Control Register */
-> +#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
-> +#define PMXMTTURNOFF		BIT(31)
-> +#define SCFG_PEXSFTRSTCR	0x190
-> +#define PEXSR(idx)		BIT(idx)
-> +
-> +/* LS1043A PEX PME control register */
-> +#define SCFG_PEXPMECR		0x144
-> +#define PEXPME(idx)		BIT(31 - (idx) * 4)
-> +
-> +/* LS1043A PEX LUT debug register */
-> +#define LS_PCIE_LDBG	0x7fc
-> +#define LDBG_SR		BIT(30)
-> +#define LDBG_WE		BIT(31)
-> +
->  #define PCIE_IATU_NUM		6
->  
-> +#define LS_PCIE_IS_L2(v)	\
-> +	(((v) & PORT_LOGIC_LTSSM_STATE_MASK) == PORT_LOGIC_LTSSM_STATE_L2)
-> +
-> +struct ls_pcie;
-> +
-> +struct ls_pcie_host_pm_ops {
-> +	int (*pm_init)(struct ls_pcie *pcie);
-> +	void (*send_turn_off_message)(struct ls_pcie *pcie);
-> +	void (*exit_from_l2)(struct ls_pcie *pcie);
-> +};
-> +
->  struct ls_pcie_drvdata {
-> +	const u32 pf_off;
-> +	const u32 lut_off;
->  	const struct dw_pcie_host_ops *ops;
-> +	const struct ls_pcie_host_pm_ops *pm_ops;
->  };
->  
->  struct ls_pcie {
->  	struct dw_pcie *pci;
->  	const struct ls_pcie_drvdata *drvdata;
-> +	void __iomem *pf_base;
-> +	void __iomem *lut_base;
-> +	bool big_endian;
-> +	bool ep_presence;
-> +	bool pm_support;
-> +	struct regmap *scfg;
-> +	int index;
->  };
->  
-> +#define ls_pcie_lut_readl_addr(addr)	ls_pcie_lut_readl(pcie, addr)
-> +#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
->  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
->  
->  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
-> @@ -86,6 +138,208 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
->  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
->  }
->  
-> +static u32 ls_pcie_lut_readl(struct ls_pcie *pcie, u32 off)
-> +{
-> +	if (pcie->big_endian)
-> +		return ioread32be(pcie->lut_base + off);
-> +
-> +	return ioread32(pcie->lut_base + off);
-> +}
-> +
-> +static void ls_pcie_lut_writel(struct ls_pcie *pcie, u32 off, u32 val)
-> +{
-> +	if (pcie->big_endian)
-> +		return iowrite32be(val, pcie->lut_base + off);
-> +
-> +	return iowrite32(val, pcie->lut_base + off);
-> +
-> +}
-> +
-> +static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
-> +{
-> +	if (pcie->big_endian)
-> +		return ioread32be(pcie->pf_base + off);
-> +
-> +	return ioread32(pcie->pf_base + off);
-> +}
-> +
-> +static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
-> +{
-> +	if (pcie->big_endian)
-> +		return iowrite32be(val, pcie->pf_base + off);
-> +
-> +	return iowrite32(val, pcie->pf_base + off);
-> +
-> +}
-> +
-> +static void ls_pcie_send_turnoff_msg(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +	int ret;
-> +
-> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val |= PF_MCR_PTOMR;
-> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +
-> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +				 val, !(val & PF_MCR_PTOMR), 100, 10000);
-> +	if (ret)
-> +		dev_info(pcie->pci->dev, "poll turn off message timeout\n");
-> +}
-> +
-> +static void ls1021a_pcie_send_turnoff_msg(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +
-> +	if (!pcie->scfg) {
-> +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
-> +		return;
-> +	}
-> +
-> +	/* Send Turn_off message */
-> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> +	val |= PMXMTTURNOFF;
-> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> +
-> +	mdelay(10);
-> +
-> +	/* Clear Turn_off message */
-> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> +	val &= ~PMXMTTURNOFF;
-> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> +}
-> +
-> +static void ls1043a_pcie_send_turnoff_msg(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +
-> +	if (!pcie->scfg) {
-> +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
-> +		return;
-> +	}
-> +
-> +	/* Send Turn_off message */
-> +	regmap_read(pcie->scfg, SCFG_PEXPMECR, &val);
-> +	val |= PEXPME(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXPMECR, val);
-> +
-> +	mdelay(10);
-> +
-> +	/* Clear Turn_off message */
-> +	regmap_read(pcie->scfg, SCFG_PEXPMECR, &val);
-> +	val &= ~PEXPME(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXPMECR, val);
-> +}
-> +
-> +static void ls_pcie_exit_from_l2(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +	int ret;
-> +
-> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val |= PF_MCR_EXL2S;
-> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +
-> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +				 val, !(val & PF_MCR_EXL2S), 100, 10000);
-> +	if (ret)
-> +		dev_info(pcie->pci->dev, "poll exit L2 state timeout\n");
-> +}
-> +
-> +static void ls_pcie_retrain_link(struct ls_pcie *pcie)
-> +{
-> +	struct dw_pcie *pci = pcie->pci;
-> +	u32 val;
-> +
-> +	val = dw_pcie_readw_dbi(pci, PCIE_LNKCTL);
-> +	val |= PCI_EXP_LNKCTL_RL;
-> +	dw_pcie_writew_dbi(pci, PCIE_LNKCTL, val);
-> +}
-> +
-> +static void ls1021a_pcie_exit_from_l2(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +
-> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> +	val |= PEXSR(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> +
-> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> +	val &= ~PEXSR(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> +
-> +	mdelay(1);
-> +
-> +	ls_pcie_retrain_link(pcie);
-> +}
-> +static void ls1043a_pcie_exit_from_l2(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +
-> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
-> +	val |= LDBG_WE;
-> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
-> +
-> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
-> +	val |= LDBG_SR;
-> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
-> +
-> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
-> +	val &= ~LDBG_SR;
-> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
-> +
-> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
-> +	val &= ~LDBG_WE;
-> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
-> +
-> +	mdelay(1);
-> +
-> +	ls_pcie_retrain_link(pcie);
-> +}
-> +
-> +static int ls1021a_pcie_pm_init(struct ls_pcie *pcie)
-> +{
-> +	struct device *dev = pcie->pci->dev;
-> +	u32 index[2];
-> +	int ret;
-> +
-> +	pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +						     "fsl,pcie-scfg");
-> +	if (IS_ERR(pcie->scfg)) {
-> +		ret = PTR_ERR(pcie->scfg);
-> +		dev_err(dev, "No syscfg phandle specified\n");
-> +		pcie->scfg = NULL;
-> +		return ret;
-> +	}
-> +
-> +	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg",
-> +					 index, 2);
-> +	if (ret) {
-> +		pcie->scfg = NULL;
-> +		return ret;
-> +	}
-> +
-> +	pcie->index = index[1];
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls_pcie_pm_init(struct ls_pcie *pcie)
-> +{
-> +	return 0;
-> +}
-> +
-> +static void ls_pcie_set_dstate(struct ls_pcie *pcie, u32 dstate)
-> +{
-> +	struct dw_pcie *pci = pcie->pci;
-> +	u32 val;
-> +
-> +	val = dw_pcie_readw_dbi(pci, PCIE_PM_SCR);
-> +	val &= ~PCI_PM_CTRL_STATE_MASK;
-> +	val |= dstate;
-> +	dw_pcie_writew_dbi(pci, PCIE_PM_SCR, val);
-> +}
-> +
->  static int ls_pcie_host_init(struct pcie_port *pp)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> @@ -133,20 +387,52 @@ static int ls_pcie_msi_host_init(struct pcie_port *pp)
->  	return 0;
->  }
->  
-> +static struct ls_pcie_host_pm_ops ls1021a_pcie_host_pm_ops = {
-> +	.pm_init = &ls1021a_pcie_pm_init,
-> +	.send_turn_off_message = &ls1021a_pcie_send_turnoff_msg,
-> +	.exit_from_l2 = &ls1021a_pcie_exit_from_l2,
-> +};
-> +
-> +static struct ls_pcie_host_pm_ops ls1043a_pcie_host_pm_ops = {
-> +	.pm_init = &ls1021a_pcie_pm_init,
-> +	.send_turn_off_message = &ls1043a_pcie_send_turnoff_msg,
-> +	.exit_from_l2 = &ls1043a_pcie_exit_from_l2,
-> +};
-> +
-> +static struct ls_pcie_host_pm_ops ls_pcie_host_pm_ops = {
-> +	.pm_init = &ls_pcie_pm_init,
-> +	.send_turn_off_message = &ls_pcie_send_turnoff_msg,
-> +	.exit_from_l2 = &ls_pcie_exit_from_l2,
-> +};
-> +
->  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
->  	.host_init = ls_pcie_host_init,
->  	.msi_host_init = ls_pcie_msi_host_init,
->  };
->  
-> +static const struct ls_pcie_drvdata ls1021a_drvdata = {
-> +	.ops = &ls_pcie_host_ops,
-> +	.pm_ops = &ls1021a_pcie_host_pm_ops,
-> +};
-> +
-> +static const struct ls_pcie_drvdata ls1043a_drvdata = {
-> +	.ops = &ls_pcie_host_ops,
-> +	.lut_off = 0x10000,
-> +	.pm_ops = &ls1043a_pcie_host_pm_ops,
-> +};
-> +
->  static const struct ls_pcie_drvdata layerscape_drvdata = {
->  	.ops = &ls_pcie_host_ops,
-> +	.lut_off = 0x80000,
-> +	.pf_off = 0xc0000,
-> +	.pm_ops = &ls_pcie_host_pm_ops,
->  };
->  
->  static const struct of_device_id ls_pcie_of_match[] = {
->  	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
-> -	{ .compatible = "fsl,ls1021a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
->  	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
-> -	{ .compatible = "fsl,ls1043a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1043a_drvdata },
->  	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
->  	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
->  	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
-> @@ -170,6 +456,15 @@ static int __init ls_add_pcie_port(struct ls_pcie *pcie)
->  		return ret;
->  	}
->  
-> +	if (dw_pcie_link_up(pci)) {
-> +		dev_dbg(pci->dev, "Endpoint is present\n");
-> +		pcie->ep_presence = true;
-> +	}
-> +
-> +	if (pcie->drvdata->pm_ops && pcie->drvdata->pm_ops->pm_init &&
-> +	    !pcie->drvdata->pm_ops->pm_init(pcie))
-> +		pcie->pm_support = true;
-> +
->  	return 0;
->  }
->  
-> @@ -200,6 +495,14 @@ static int __init ls_pcie_probe(struct platform_device *pdev)
->  	if (IS_ERR(pci->dbi_base))
->  		return PTR_ERR(pci->dbi_base);
->  
-> +	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
-> +
-> +	if (pcie->drvdata->lut_off)
-> +		pcie->lut_base = pci->dbi_base + pcie->drvdata->lut_off;
-> +
-> +	if (pcie->drvdata->pf_off)
-> +		pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
-> +
->  	if (!ls_pcie_is_bridge(pcie))
->  		return -ENODEV;
->  
-> @@ -212,11 +515,88 @@ static int __init ls_pcie_probe(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static bool ls_pcie_pm_check(struct ls_pcie *pcie)
-> +{
-> +	if (!pcie->ep_presence) {
-> +		dev_dbg(pcie->pci->dev, "Endpoint isn't present\n");
-> +		return false;
-> +	}
-> +
-> +	if (!pcie->pm_support)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int ls_pcie_suspend_noirq(struct device *dev)
-
-Why is noirq variant needed? Most drivers don't need this.
-
-> +{
-> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> +	struct dw_pcie *pci = pcie->pci;
-> +	u32 val;
-> +	int ret;
-> +
-> +	if (!ls_pcie_pm_check(pcie))
-> +		return 0;
-> +
-> +	pcie->drvdata->pm_ops->send_turn_off_message(pcie);
-> +
-> +	/* 10ms timeout to check L2 ready */
-> +	ret = readl_poll_timeout(pci->dbi_base + PCIE_PORT_DEBUG0,
-> +				 val, LS_PCIE_IS_L2(val), 100, 10000);
-> +	if (ret) {
-> +		dev_err(dev, "PCIe link enter L2 timeout! ltssm = 0x%x\n", val);
-> +		return ret;
-> +	}
-> +
-> +	ls_pcie_set_dstate(pcie, PCIE_PM_SCR_PMEPS_D3);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls_pcie_resume_noirq(struct device *dev)
-> +{
-> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> +	struct dw_pcie *pci = pcie->pci;
-> +	int ret;
-> +
-> +	if (!ls_pcie_pm_check(pcie))
-> +		return 0;
-> +
-> +	ls_pcie_set_dstate(pcie, PCIE_PM_SCR_PMEPS_D0);
-> +
-> +	pcie->drvdata->pm_ops->exit_from_l2(pcie);
-> +
-> +	/* delay 10ms to access EP */
-> +	mdelay(10);
-> +
-> +	ret = ls_pcie_host_init(&pci->pp);
-> +	if (ret) {
-> +		dev_err(dev, "ls_pcie_host_init failed! ret = 0x%x\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = dw_pcie_wait_for_link(pci);
-> +	if (ret) {
-> +		dev_err(dev, "wait link up timeout! ret = 0x%x\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +#endif /* CONFIG_PM_SLEEP */
-> +
-> +static const struct dev_pm_ops ls_pcie_pm_ops = {
-> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(ls_pcie_suspend_noirq,
-> +				      ls_pcie_resume_noirq)
-> +};
-> +
->  static struct platform_driver ls_pcie_driver = {
->  	.driver = {
->  		.name = "layerscape-pcie",
->  		.of_match_table = ls_pcie_of_match,
->  		.suppress_bind_attrs = true,
-> +		.pm = &ls_pcie_pm_ops,
->  	},
->  };
->  builtin_platform_driver_probe(ls_pcie_driver, ls_pcie_probe);
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index f911760dcc69..1f2fd03d1eba 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -46,6 +46,7 @@
->  #define PCIE_PORT_DEBUG0		0x728
->  #define PORT_LOGIC_LTSSM_STATE_MASK	0x1f
->  #define PORT_LOGIC_LTSSM_STATE_L0	0x11
-> +#define PORT_LOGIC_LTSSM_STATE_L2	0x15
->  #define PCIE_PORT_DEBUG1		0x72C
->  #define PCIE_PORT_DEBUG1_LINK_UP		BIT(4)
->  #define PCIE_PORT_DEBUG1_LINK_IN_TRAINING	BIT(29)
-> -- 
-> 2.17.1
+>  /* Properties of EXTCON_TYPE_CHG. */
 > 
+
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
