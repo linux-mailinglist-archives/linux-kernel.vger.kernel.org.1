@@ -2,154 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D9726B77B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2766726B71D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727529AbgIPAYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:24:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12274 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726734AbgIOOUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:20:24 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 7D46D5D0ED035B7F8EAF;
-        Tue, 15 Sep 2020 22:01:02 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Tue, 15 Sep 2020
- 22:00:55 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, Will Deacon <will@kernel.org>
-CC:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        "Christoph Lameter" <cl@linux.com>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <houtao1@huawei.com>
-Subject: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for read_count
-Date:   Tue, 15 Sep 2020 22:07:50 +0800
-Message-ID: <20200915140750.137881-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.25.0.4.g0ad7144999
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+        id S1726930AbgIPAR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:17:28 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:34626 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726438AbgIOOW6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:22:58 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 9BF068EE188;
+        Tue, 15 Sep 2020 07:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1600179008;
+        bh=+R+IKAKZQYkLR7KIiLxpuuPm5bZnjzeal3GKWrEShUo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ZDUvluzGV6yKCC/nF9wrKzitsx/6M3Qz4Dv0CFUEt0vmhscavKWlYegA3t3D9AtoS
+         cgl18SKCLQ6g+fOWhOlSE1rajdI6kKqsO/3XSzI9vcO6roMQjXQ+sBvii1pDKecG7Q
+         7/nP62+cOOfIkefYX7rGreL2C+Tu2bzmyrkPw+GQ=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id o2D0dkS7cauB; Tue, 15 Sep 2020 07:10:08 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 329868EE107;
+        Tue, 15 Sep 2020 07:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1600179008;
+        bh=+R+IKAKZQYkLR7KIiLxpuuPm5bZnjzeal3GKWrEShUo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ZDUvluzGV6yKCC/nF9wrKzitsx/6M3Qz4Dv0CFUEt0vmhscavKWlYegA3t3D9AtoS
+         cgl18SKCLQ6g+fOWhOlSE1rajdI6kKqsO/3XSzI9vcO6roMQjXQ+sBvii1pDKecG7Q
+         7/nP62+cOOfIkefYX7rGreL2C+Tu2bzmyrkPw+GQ=
+Message-ID: <1600179006.5092.6.camel@HansenPartnership.com>
+Subject: Re: [PATCH 07/17] 53c700: improve non-coherent DMA handling
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org
+Date:   Tue, 15 Sep 2020 07:10:06 -0700
+In-Reply-To: <20200915062738.GA19113@lst.de>
+References: <20200914144433.1622958-1-hch@lst.de>
+         <20200914144433.1622958-8-hch@lst.de>
+         <1600096818.4061.7.camel@HansenPartnership.com>
+         <20200915062738.GA19113@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Under aarch64, __this_cpu_inc() is neither IRQ-safe nor atomic, so
-when percpu_up_read() is invoked under IRQ-context (e.g. aio completion),
-and it interrupts the process on the same CPU which is invoking
-percpu_down_read(), the decreasement on read_count may lost and
-the final value of read_count on the CPU will be unexpected
-as shown below:
+On Tue, 2020-09-15 at 08:27 +0200, Christoph Hellwig wrote:
+> On Mon, Sep 14, 2020 at 08:20:18AM -0700, James Bottomley wrote:
+> > If you're going to change the macros from taking a device to taking
+> > a hostdata structure then the descriptive argument name needs to
+> > change ... it can't be dev anymore.  I'm happy with it simply
+> > becoming 'h' if hostdata is too long.
+> > 
+> > I already asked for this on the first go around:
+> 
+> And I did rename them, those hunks just accidentally slipped into
+> patch 12 instead of this one.  Fixed for the next versions.
 
-  CPU 0          CPU 0
+Ah, yes, found it ... thanks for doing that!
 
-  io_submit_one
-  __sb_start_write
-  percpu_down_read
-  __this_cpu_inc
-  // there is already an inflight IO, so
-  // reading *raw_cpu_ptr(&pcp) returns 1
-  // half complete, then being interrupted
-  *raw_cpu_ptr(&pcp)) += 1
-
-  		nvme_irq
-  		nvme_complete_cqes
-  		blk_mq_complete_request
-  		nvme_pci_complete_rq
-  		nvme_complete_rq
-  		blk_mq_end_request
-  		blk_update_request
-  		bio_endio
-  		dio_bio_end_aio
-  		aio_complete_rw
-  		__sb_end_write
-  		percpu_up_read
-  		*raw_cpu_ptr(&pcp)) -= 1
-  		// *raw_cpu_ptr(&pcp) is 0
-
-  // the decreasement is overwritten by the increasement
-  *raw_cpu_ptr(&pcp)) += 1
-  // the final value is 1 + 1 = 2 instead of 1
-
-Fixing it by using the IRQ-safe helper this_cpu_inc|dec() for
-operations on read_count.
-
-Another plausible fix is to state that percpu-rwsem can NOT be
-used under IRQ context and convert all users which may
-use it under IRQ context.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- include/linux/percpu-rwsem.h  | 8 ++++----
- kernel/locking/percpu-rwsem.c | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/percpu-rwsem.h b/include/linux/percpu-rwsem.h
-index 5e033fe1ff4e9..5fda40f97fe91 100644
---- a/include/linux/percpu-rwsem.h
-+++ b/include/linux/percpu-rwsem.h
-@@ -60,7 +60,7 @@ static inline void percpu_down_read(struct percpu_rw_semaphore *sem)
- 	 * anything we did within this RCU-sched read-size critical section.
- 	 */
- 	if (likely(rcu_sync_is_idle(&sem->rss)))
--		__this_cpu_inc(*sem->read_count);
-+		this_cpu_inc(*sem->read_count);
- 	else
- 		__percpu_down_read(sem, false); /* Unconditional memory barrier */
- 	/*
-@@ -79,7 +79,7 @@ static inline bool percpu_down_read_trylock(struct percpu_rw_semaphore *sem)
- 	 * Same as in percpu_down_read().
- 	 */
- 	if (likely(rcu_sync_is_idle(&sem->rss)))
--		__this_cpu_inc(*sem->read_count);
-+		this_cpu_inc(*sem->read_count);
- 	else
- 		ret = __percpu_down_read(sem, true); /* Unconditional memory barrier */
- 	preempt_enable();
-@@ -103,7 +103,7 @@ static inline void percpu_up_read(struct percpu_rw_semaphore *sem)
- 	 * Same as in percpu_down_read().
- 	 */
- 	if (likely(rcu_sync_is_idle(&sem->rss))) {
--		__this_cpu_dec(*sem->read_count);
-+		this_cpu_dec(*sem->read_count);
- 	} else {
- 		/*
- 		 * slowpath; reader will only ever wake a single blocked
-@@ -115,7 +115,7 @@ static inline void percpu_up_read(struct percpu_rw_semaphore *sem)
- 		 * aggregate zero, as that is the only time it matters) they
- 		 * will also see our critical section.
- 		 */
--		__this_cpu_dec(*sem->read_count);
-+		this_cpu_dec(*sem->read_count);
- 		rcuwait_wake_up(&sem->writer);
- 	}
- 	preempt_enable();
-diff --git a/kernel/locking/percpu-rwsem.c b/kernel/locking/percpu-rwsem.c
-index 8bbafe3e5203d..70a32a576f3f2 100644
---- a/kernel/locking/percpu-rwsem.c
-+++ b/kernel/locking/percpu-rwsem.c
-@@ -45,7 +45,7 @@ EXPORT_SYMBOL_GPL(percpu_free_rwsem);
- 
- static bool __percpu_down_read_trylock(struct percpu_rw_semaphore *sem)
- {
--	__this_cpu_inc(*sem->read_count);
-+	this_cpu_inc(*sem->read_count);
- 
- 	/*
- 	 * Due to having preemption disabled the decrement happens on
-@@ -71,7 +71,7 @@ static bool __percpu_down_read_trylock(struct percpu_rw_semaphore *sem)
- 	if (likely(!atomic_read_acquire(&sem->block)))
- 		return true;
- 
--	__this_cpu_dec(*sem->read_count);
-+	this_cpu_dec(*sem->read_count);
- 
- 	/* Prod writer to re-evaluate readers_active_check() */
- 	rcuwait_wake_up(&sem->writer);
--- 
-2.25.0.4.g0ad7144999
+James
 
