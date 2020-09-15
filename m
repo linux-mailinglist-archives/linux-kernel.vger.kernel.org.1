@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E472269D99
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A332269D9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgIOEvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 00:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726034AbgIOEvF (ORCPT
+        id S1726132AbgIOEzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 00:55:54 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:37690 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726034AbgIOEzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 00:51:05 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E03C06174A;
-        Mon, 14 Sep 2020 21:51:02 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id y1so1320779pgk.8;
-        Mon, 14 Sep 2020 21:51:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NLNWemVfKcv6NwHlI6ZoWHdmTBf8Q4rdL3Qvy2WNH/Y=;
-        b=nGtBR4XhL/Ozw8iKcung7tuEF3T43aB+0BlsGjjxvw4UfbyFJ6CRH3LQOeQzEVT7ez
-         iPbw7Abjylep5NMPG3gcfWZhQl9g2hCj3Bn1YsYmLcz1POE03fPcFxw2yzuyRXLyxtqE
-         6efilpU6rGCKrrHuDAGW25KCHbCjHeZ1wuFbcGSQCJXxmmqRoFClnGDU/HgCeJMVl1hh
-         02gpJokpkLi82sMdMv76nvMvJ8zRmrQ+RM2/mSmOBdW3X4+AypRE4kJGTBRGpHW9Vs0u
-         ULlg3OEetUKR4HYzJ+i4Mui1hYFox0ZHd9d6dgWwh6xsPDQNAzPnYn7uFtUkrEWd7eB/
-         UFEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NLNWemVfKcv6NwHlI6ZoWHdmTBf8Q4rdL3Qvy2WNH/Y=;
-        b=ru/Qn1XDfgHP16IwV7SOuoPuqDvTQb+m++CLJ1lg2vs6LsD7yHaALvn0DT600if3Yo
-         re2Y4BRxKRiadXFkpyUS41NfiLT7Kyf3cLN4Btn/moJ66IMcZe6FLwCmwiUzKW30lsBw
-         nT4FiwUcX92aLjMiy1Uydmfy0L4qHkJ4m8ivrPumuRggHur1FyfgEggncWOidOD9sN8j
-         kQgBLD3rE/jf0mtMhnaOYa87IlGAnj9lIpDiPGe8X2cvBTvq8yAu6ObnBcVEiwGcohmE
-         ucmelt/kkUq5Wno9xZisNyJRFxnaJxSEcjWbpcdiKhVJXoZDO44wiEH0Jq9ixU02fTS9
-         egaQ==
-X-Gm-Message-State: AOAM532dI/M2nqZ+cRYhlQS8AjOaNVIAGnxcw8j+ZUFZa2gS1MiC40Ff
-        mGLoKtNE0KLLlV0KcjtQsJc=
-X-Google-Smtp-Source: ABdhPJxp6I6ygJtMSULDn8mFYabF+zMDu7LjbrBlK0biLBmUMTpGE/n5zq1GIHoTMSOZJwdSzlEJWA==
-X-Received: by 2002:a63:d918:: with SMTP id r24mr13002162pgg.158.1600145462056;
-        Mon, 14 Sep 2020 21:51:02 -0700 (PDT)
-Received: from localhost.localdomain (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
-        by smtp.gmail.com with ESMTPSA id j20sm11816794pfh.146.2020.09.14.21.50.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 21:51:01 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
-        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
-        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
-        torvalds@linux-foundation.org,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] docs : fb: sstfb.rst : Remove the scrollback related stanza
-Date:   Tue, 15 Sep 2020 10:18:17 +0530
-Message-Id: <20200915044817.29172-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 15 Sep 2020 00:55:52 -0400
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2B7B7209F325;
+        Mon, 14 Sep 2020 21:55:52 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2B7B7209F325
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600145752;
+        bh=Ywtr357/PxAYIicMt86wE4sG51M8kFX9o9Bks8Pdzrs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VofK15xsFToJVZo5nz6jJlrpsg7b23rszIEcSeoFO2rS00tpY2GnZih5fCjD+uKMN
+         tXRMyyFX39KsxqnAf4dgI5gAX6SJZZHIiZKpCeQpF2n5PT+SuOpqejkLCZDhxzdHYn
+         fCd8CveMIecD9tecdRKodcjyq2d/PUCXCShEULFU=
+From:   Vijay Balakrishna <vijayb@linux.microsoft.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vijay Balakrishna <vijayb@linux.microsoft.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Allen Pais <apais@microsoft.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [v1] mm: khugepaged: avoid overriding min_free_kbytes set by user
+Date:   Mon, 14 Sep 2020 21:55:48 -0700
+Message-Id: <1600145748-26518-1-git-send-email-vijayb@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch remove the stanza related to framebuffer scrollback effect.
+set_recommended_min_free_kbytes need to honor min_free_kbytes set by the
+user.  Post start-of-day THP enable or memory hotplug operations can
+lose user specified min_free_kbytes, in particular when it is higher than
+calculated recommended value.
 
-It is the the effect of commit hashes : 50145474f6ef4a9c19205b173da6264a644c7489 
-and 973c096f6a85e5b5f2a295126ba6928d9a6afd45
-
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc: stable@vger.kernel.org
 ---
- Documentation/fb/sstfb.rst | 3 ---
- 1 file changed, 3 deletions(-)
+ mm/khugepaged.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/fb/sstfb.rst b/Documentation/fb/sstfb.rst
-index 8e8c1b940359..42466ff49c58 100644
---- a/Documentation/fb/sstfb.rst
-+++ b/Documentation/fb/sstfb.rst
-@@ -185,9 +185,6 @@ Bugs
-   contact me.
- - The 24/32 is not likely to work anytime soon, knowing that the
-   hardware does ... unusual things in 24/32 bpp.
--- When used with another video board, current limitations of the linux
--  console subsystem can cause some troubles, specifically, you should
--  disable software scrollback, as it can oops badly ...
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 4f7107476a6f..b4b753ba411a 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -2253,7 +2253,7 @@ static void set_recommended_min_free_kbytes(void)
+ {
+ 	struct zone *zone;
+ 	int nr_zones = 0;
+-	unsigned long recommended_min;
++	int recommended_min;
  
- Todo
- ====
+ 	for_each_populated_zone(zone) {
+ 		/*
+@@ -2280,12 +2280,12 @@ static void set_recommended_min_free_kbytes(void)
+ 
+ 	/* don't ever allow to reserve more than 5% of the lowmem */
+ 	recommended_min = min(recommended_min,
+-			      (unsigned long) nr_free_buffer_pages() / 20);
++			      (int) nr_free_buffer_pages() / 20);
+ 	recommended_min <<= (PAGE_SHIFT-10);
+ 
+-	if (recommended_min > min_free_kbytes) {
++	if (recommended_min > user_min_free_kbytes) {
+ 		if (user_min_free_kbytes >= 0)
+-			pr_info("raising min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
++			pr_info("raising min_free_kbytes from %d to %d to help transparent hugepage allocations\n",
+ 				min_free_kbytes, recommended_min);
+ 
+ 		min_free_kbytes = recommended_min;
 -- 
-2.26.2
+2.28.0
 
