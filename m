@@ -2,85 +2,560 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528D426B4C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152D626B4C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727288AbgIOXbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727193AbgIOXbP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:31:15 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A716C06174A;
-        Tue, 15 Sep 2020 16:31:15 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id k13so2158812plk.3;
-        Tue, 15 Sep 2020 16:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7Z09eYaCc/CIae1Sq3zxvtZJUX+ossSY9hwOHisjfq0=;
-        b=Ho4tJJkk1ZBSfesk8sKYG7kdl5fqQN0s5A4sA17HhEa4zl2s75EImMpbu/8CqHA9N5
-         omJ/GKrzdKezLV+kW1/tD0k3kG/vYA4OE5pIpjd3m4nGhxRJfkIPY1JiwNBNhL/8455W
-         g2lKMcKVRlV2dDq7R8Ui5q5Fge1D3xZxv26/nPgbWb36284ji9tEs/x+7FCynADn9kDU
-         zz1a7NpgsbbnH7jTjVX4bnJYeVjjnMvqHr7c8JrlPWUkEQG41Karwh0lSKTHdL1wSc4q
-         48kzZu4E5lF/A+gIWBbclUMlVvaKBIPJ9l8KSk4GVHc7JdrOK+yKyFS4MPaMo5iCTALy
-         MyCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7Z09eYaCc/CIae1Sq3zxvtZJUX+ossSY9hwOHisjfq0=;
-        b=tiLWmOs7dFBIrefNrinjM58LnOgfE8ZIzL07qMAls9aKmDazOGuoXuQf8i6AC6VKhq
-         qdamBnhauhUWg8Gv6IRBEXVWgwLxmeusMoWZ1KNMMWuJFdShjZEl6jXVtdC71FzH6Eue
-         SgSftUqemK8okcveHC1Yr6/x02NEmKTPQxre71lafKzKTgMks2lzEKHBtT+xDHO/+D3E
-         d+PF/1IMbjS0tT6UrXAxw8DaKEw/+hRR4JKNBXaZavDTPNqOMLEa4miZsMjgQ5pnT1DF
-         5UAPItDUEjABfU/khkV1MTQJC8tBH/W4Xu8cUXj579AzzZbRMaJWyX/sWHDb0gNvGJSP
-         S61Q==
-X-Gm-Message-State: AOAM533WV/Bz3WrYaL7s5MjV6jVXwLFh4R8w60+NnnaRj+SZedBM+bn7
-        rP0S166/2mg7wxXet3mSUkFKtc6YmY0=
-X-Google-Smtp-Source: ABdhPJy5kLuSYa3gGuc4HA+hssYOfBHuBtsj+etWZNl/2+BfPEs1LsU5pvdz3mKM9/GoybtUoR307g==
-X-Received: by 2002:a17:90a:f010:: with SMTP id bt16mr1421238pjb.143.1600212674400;
-        Tue, 15 Sep 2020 16:31:14 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id gq14sm501795pjb.44.2020.09.15.16.31.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 16:31:14 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, krzk@kernel.org
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jonathanh@nvidia.com
-Subject: [PATCH] memory: tegra: Correct num_tlb_lines for tegra210
-Date:   Tue, 15 Sep 2020 16:28:03 -0700
-Message-Id: <20200915232803.26163-1-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727496AbgIOXbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:31:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50340 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727045AbgIOX2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 19:28:53 -0400
+IronPort-SDR: yTS8nwSqjrzd/Fyu4vQm6k5renZxOTeTD7LUpKURV+tL7WC1skWhOAYndFpqPPjyb85UuC0Qqw
+ hpd+Mjir8ing==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="147056571"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="147056571"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:28:46 -0700
+IronPort-SDR: QVl+VYDQ3TqVexTybzwRcZRmTi9hYwmMS6VOuElneLsq+tEOt7UieYywF8xXQ4eEqgi3FbuXy0
+ K/QOkXKGxsiQ==
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="451619583"
+Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:28:45 -0700
+Subject: [PATCH v3 10/18] dmaengine: idxd: virtual device commands emulation
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
+        bhelgaas@google.com, tglx@linutronix.de,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
+        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
+        jgg@mellanox.com, rafael@kernel.org, netanelg@mellanox.com,
+        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
+        pbonzini@redhat.com, samuel.ortiz@intel.com, mona.hossain@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
+Date:   Tue, 15 Sep 2020 16:28:45 -0700
+Message-ID: <160021252504.67751.15983528921860572465.stgit@djiang5-desk3.ch.intel.com>
+In-Reply-To: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+User-Agent: StGit/unknown-version
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Tegra210 TRM, the default value of TLB_ACTIVE_LINES
-field of register MC_SMMU_TLB_CONFIG_0 is 0x30. So num_tlb_lines
-should be 48 (0x30) rather than 32 (0x20).
+Add all the helper functions that supports the emulation of the commands
+that are submitted to the device command register.
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
 ---
- drivers/memory/tegra/tegra210.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/idxd/registers.h |   15 +-
+ drivers/dma/idxd/vdev.c      |  410 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 420 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/memory/tegra/tegra210.c b/drivers/memory/tegra/tegra210.c
-index 51b537cfa5a7..4fbf8cbc6666 100644
---- a/drivers/memory/tegra/tegra210.c
-+++ b/drivers/memory/tegra/tegra210.c
-@@ -1074,7 +1074,7 @@ static const struct tegra_smmu_soc tegra210_smmu_soc = {
- 	.num_groups = ARRAY_SIZE(tegra210_groups),
- 	.supports_round_robin_arbitration = true,
- 	.supports_request_limit = true,
--	.num_tlb_lines = 32,
-+	.num_tlb_lines = 48,
- 	.num_asids = 128,
+diff --git a/drivers/dma/idxd/registers.h b/drivers/dma/idxd/registers.h
+index 97acd0aaecbe..6531a40fad2e 100644
+--- a/drivers/dma/idxd/registers.h
++++ b/drivers/dma/idxd/registers.h
+@@ -115,7 +115,8 @@ union gencfg_reg {
+ union genctrl_reg {
+ 	struct {
+ 		u32 softerr_int_en:1;
+-		u32 rsvd:31;
++		u32 halt_state_int_en:1;
++		u32 rsvd:30;
+ 	};
+ 	u32 bits;
+ } __packed;
+@@ -137,6 +138,8 @@ enum idxd_device_status_state {
+ 	IDXD_DEVICE_STATE_HALT,
  };
  
--- 
-2.17.1
++#define IDXD_GENSTATS_MASK		0x03
++
+ enum idxd_device_reset_type {
+ 	IDXD_DEVICE_RESET_SOFTWARE = 0,
+ 	IDXD_DEVICE_RESET_FLR,
+@@ -149,6 +152,7 @@ enum idxd_device_reset_type {
+ #define IDXD_INTC_CMD			0x02
+ #define IDXD_INTC_OCCUPY			0x04
+ #define IDXD_INTC_PERFMON_OVFL		0x08
++#define IDXD_INTC_HALT_STATE		0x10
+ 
+ #define IDXD_CMD_OFFSET			0xa0
+ union idxd_command_reg {
+@@ -160,6 +164,7 @@ union idxd_command_reg {
+ 	};
+ 	u32 bits;
+ } __packed;
++#define IDXD_CMD_INT_MASK		0x80000000
+ 
+ enum idxd_cmd {
+ 	IDXD_CMD_ENABLE_DEVICE = 1,
+@@ -217,7 +222,7 @@ enum idxd_cmdsts_err {
+ 	/* disable device errors */
+ 	IDXD_CMDSTS_ERR_DIS_DEV_EN = 0x31,
+ 	/* disable WQ, drain WQ, abort WQ, reset WQ */
+-	IDXD_CMDSTS_ERR_DEV_NOT_EN,
++	IDXD_CMDSTS_ERR_WQ_NOT_EN,
+ 	/* request interrupt handle */
+ 	IDXD_CMDSTS_ERR_INVAL_INT_IDX = 0x41,
+ 	IDXD_CMDSTS_ERR_NO_HANDLE,
+@@ -354,4 +359,10 @@ union wqcfg {
+ 					(n) * sizeof(union wqcfg) +\
+ 					sizeof(u32) * (ofs))
+ 
++enum idxd_wq_hw_state {
++	IDXD_WQ_DEV_DISABLED = 0,
++	IDXD_WQ_DEV_ENABLED,
++	IDXD_WQ_DEV_BUSY,
++};
++
+ #endif
+diff --git a/drivers/dma/idxd/vdev.c b/drivers/dma/idxd/vdev.c
+index 2357d4c596d5..efdfb67ae51a 100644
+--- a/drivers/dma/idxd/vdev.c
++++ b/drivers/dma/idxd/vdev.c
+@@ -81,6 +81,30 @@ static void vidxd_report_error(struct vdcm_idxd *vidxd, unsigned int error)
+ 	}
+ }
+ 
++static int idxd_get_mdev_pasid(struct mdev_device *mdev)
++{
++	struct iommu_domain *domain;
++	struct device *dev = mdev_dev(mdev);
++	struct device *iommu_device;
++	struct device *(*fn)(struct device *dev);
++
++	fn = symbol_get(mdev_get_iommu_device);
++	if (fn) {
++		iommu_device = fn(dev);
++		symbol_put(mdev_get_iommu_device);
++	} else {
++		return -ENODEV;
++	}
++
++	iommu_device = mdev_get_iommu_device(dev);
++
++	domain = iommu_get_domain_for_dev(dev);
++	if (!domain)
++		return -EINVAL;
++
++	return iommu_aux_get_pasid(domain, iommu_device);
++}
++
+ int vidxd_mmio_write(struct vdcm_idxd *vidxd, u64 pos, void *buf, unsigned int size)
+ {
+ 	u32 offset = pos & (vidxd->bar_size[0] - 1);
+@@ -470,12 +494,347 @@ void vidxd_mmio_init(struct vdcm_idxd *vidxd)
+ 
+ static void idxd_complete_command(struct vdcm_idxd *vidxd, enum idxd_cmdsts_err val)
+ {
+-	/* PLACEHOLDER */
++	u8 *bar0 = vidxd->bar0;
++	u32 *cmd = (u32 *)(bar0 + IDXD_CMD_OFFSET);
++	u32 *cmdsts = (u32 *)(bar0 + IDXD_CMDSTS_OFFSET);
++	u32 *intcause = (u32 *)(bar0 + IDXD_INTCAUSE_OFFSET);
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++
++	*cmdsts = val;
++	dev_dbg(dev, "%s: cmd: %#x  status: %#x\n", __func__, *cmd, val);
++
++	if (*cmd & IDXD_CMD_INT_MASK) {
++		*intcause |= IDXD_INTC_CMD;
++		vidxd_send_interrupt(vidxd, 0);
++	}
++}
++
++static void vidxd_enable(struct vdcm_idxd *vidxd)
++{
++	u8 *bar0 = vidxd->bar0;
++	union gensts_reg *gensts = (union gensts_reg *)(bar0 + IDXD_GENSTATS_OFFSET);
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++
++	dev_dbg(dev, "%s\n", __func__);
++	if (gensts->state == IDXD_DEVICE_STATE_ENABLED)
++		return idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_DEV_ENABLED);
++
++	/* Check PCI configuration */
++	if (!(vidxd->cfg[PCI_COMMAND] & PCI_COMMAND_MASTER))
++		return idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_BUSMASTER_EN);
++
++	gensts->state = IDXD_DEVICE_STATE_ENABLED;
++
++	return idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
++}
++
++static void vidxd_disable(struct vdcm_idxd *vidxd)
++{
++	struct idxd_wq *wq;
++	union wqcfg *wqcfg;
++	u8 *bar0 = vidxd->bar0;
++	union gensts_reg *gensts = (union gensts_reg *)(bar0 + IDXD_GENSTATS_OFFSET);
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	u32 status;
++
++	dev_dbg(dev, "%s\n", __func__);
++	if (gensts->state == IDXD_DEVICE_STATE_DISABLED) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_DIS_DEV_EN);
++		return;
++	}
++
++	wqcfg = (union wqcfg *)(bar0 + VIDXD_WQCFG_OFFSET);
++	wq = vidxd->wq;
++
++	/* If it is a DWQ, need to disable the DWQ as well */
++	if (wq_dedicated(wq)) {
++		idxd_wq_disable(wq, &status);
++		if (status) {
++			dev_warn(dev, "vidxd disable (wq disable) failed: %#x\n", status);
++			idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_DIS_DEV_EN);
++			return;
++		}
++	} else {
++		idxd_wq_drain(wq, &status);
++		if (status)
++			dev_warn(dev, "vidxd disable (wq drain) failed: %#x\n", status);
++	}
++
++	wqcfg->wq_state = 0;
++	gensts->state = IDXD_DEVICE_STATE_DISABLED;
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
++}
++
++static void vidxd_drain_all(struct vdcm_idxd *vidxd)
++{
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	struct idxd_wq *wq = vidxd->wq;
++
++	dev_dbg(dev, "%s\n", __func__);
++
++	idxd_wq_drain(wq, NULL);
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
++}
++
++static void vidxd_wq_drain(struct vdcm_idxd *vidxd, int val)
++{
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	u8 *bar0 = vidxd->bar0;
++	union wqcfg *wqcfg = (union wqcfg *)(bar0 + VIDXD_WQCFG_OFFSET);
++	struct idxd_wq *wq = vidxd->wq;
++	u32 status;
++
++	dev_dbg(dev, "%s\n", __func__);
++	if (wqcfg->wq_state != IDXD_WQ_DEV_ENABLED) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_WQ_NOT_EN);
++		return;
++	}
++
++	idxd_wq_drain(wq, &status);
++	if (status) {
++		dev_dbg(dev, "wq drain failed: %#x\n", status);
++		idxd_complete_command(vidxd, status);
++		return;
++	}
++
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
++}
++
++static void vidxd_abort_all(struct vdcm_idxd *vidxd)
++{
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	struct idxd_wq *wq = vidxd->wq;
++
++	dev_dbg(dev, "%s\n", __func__);
++	idxd_wq_abort(wq, NULL);
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
++}
++
++static void vidxd_wq_abort(struct vdcm_idxd *vidxd, int val)
++{
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	u8 *bar0 = vidxd->bar0;
++	union wqcfg *wqcfg = (union wqcfg *)(bar0 + VIDXD_WQCFG_OFFSET);
++	struct idxd_wq *wq = vidxd->wq;
++	u32 status;
++
++	dev_dbg(dev, "%s\n", __func__);
++	if (wqcfg->wq_state != IDXD_WQ_DEV_ENABLED) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_WQ_NOT_EN);
++		return;
++	}
++
++	idxd_wq_abort(wq, &status);
++	if (status) {
++		dev_dbg(dev, "wq abort failed: %#x\n", status);
++		idxd_complete_command(vidxd, status);
++		return;
++	}
++
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
+ }
+ 
+ void vidxd_reset(struct vdcm_idxd *vidxd)
+ {
+-	/* PLACEHOLDER */
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	u8 *bar0 = vidxd->bar0;
++	union gensts_reg *gensts = (union gensts_reg *)(bar0 + IDXD_GENSTATS_OFFSET);
++	struct idxd_wq *wq;
++
++	dev_dbg(dev, "%s\n", __func__);
++	gensts->state = IDXD_DEVICE_STATE_DRAIN;
++	wq = vidxd->wq;
++
++	if (wq->state == IDXD_WQ_ENABLED) {
++		idxd_wq_abort(wq, NULL);
++		idxd_wq_disable(wq, NULL);
++	}
++
++	vidxd_mmio_init(vidxd);
++	gensts->state = IDXD_DEVICE_STATE_DISABLED;
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
++}
++
++static void vidxd_wq_reset(struct vdcm_idxd *vidxd, int wq_id_mask)
++{
++	struct idxd_wq *wq;
++	u8 *bar0 = vidxd->bar0;
++	union wqcfg *wqcfg = (union wqcfg *)(bar0 + VIDXD_WQCFG_OFFSET);
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	u32 status;
++
++	wq = vidxd->wq;
++	dev_dbg(dev, "vidxd reset wq %u:%u\n", 0, wq->id);
++
++	if (wqcfg->wq_state != IDXD_WQ_DEV_ENABLED) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_WQ_NOT_EN);
++		return;
++	}
++
++	idxd_wq_abort(wq, &status);
++	if (status) {
++		dev_dbg(dev, "vidxd reset wq failed to abort: %#x\n", status);
++		idxd_complete_command(vidxd, status);
++		return;
++	}
++
++	idxd_wq_disable(wq, &status);
++	if (status) {
++		dev_dbg(dev, "vidxd reset wq failed to disable: %#x\n", status);
++		idxd_complete_command(vidxd, status);
++		return;
++	}
++
++	wqcfg->wq_state = IDXD_WQ_DEV_DISABLED;
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
++}
++
++static void vidxd_alloc_int_handle(struct vdcm_idxd *vidxd, int vidx)
++{
++	bool ims = (vidx >> 16) & 1;
++	u32 cmdsts;
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++
++	vidx = vidx & 0xffff;
++
++	dev_dbg(dev, "allocating int handle for %x\n", vidx);
++
++	if (vidx != 1) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_INVAL_INT_IDX);
++		return;
++	}
++
++	if (ims) {
++		dev_warn(dev, "IMS allocation is not implemented yet\n");
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_NO_HANDLE);
++	} else {
++		vidx--; /* MSIX idx 0 is a slow path interrupt */
++		cmdsts = vidxd->ims_index[vidx] << 8;
++		dev_dbg(dev, "int handle %d:%lld\n", vidx, vidxd->ims_index[vidx]);
++		idxd_complete_command(vidxd, cmdsts);
++	}
++}
++
++static void vidxd_wq_enable(struct vdcm_idxd *vidxd, int wq_id)
++{
++	struct idxd_wq *wq;
++	u8 *bar0 = vidxd->bar0;
++	union wq_cap_reg *wqcap;
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	struct idxd_device *idxd;
++	union wqcfg *vwqcfg, *wqcfg;
++	unsigned long flags;
++	int wq_pasid;
++	u32 status;
++	int priv;
++
++	if (wq_id >= VIDXD_MAX_WQS) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_INVAL_WQIDX);
++		return;
++	}
++
++	idxd = vidxd->idxd;
++	wq = vidxd->wq;
++
++	dev_dbg(dev, "%s: wq %u:%u\n", __func__, wq_id, wq->id);
++
++	vwqcfg = (union wqcfg *)(bar0 + VIDXD_WQCFG_OFFSET + wq_id * 32);
++	wqcap = (union wq_cap_reg *)(bar0 + IDXD_WQCAP_OFFSET);
++	wqcfg = &wq->wqcfg;
++
++	if (vidxd_state(vidxd) != IDXD_DEVICE_STATE_ENABLED) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_DEV_NOTEN);
++		return;
++	}
++
++	if (vwqcfg->wq_state != IDXD_WQ_DEV_DISABLED) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_WQ_ENABLED);
++		return;
++	}
++
++	if (wq_dedicated(wq) && wqcap->dedicated_mode == 0) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_WQ_MODE);
++		return;
++	}
++
++	wq_pasid = idxd_get_mdev_pasid(mdev);
++	priv = 1;
++
++	if (wq_pasid >= 0) {
++		wqcfg->bits[2] &= ~0x3fffff00;
++		wqcfg->priv = priv;
++		wqcfg->pasid_en = 1;
++		wqcfg->pasid = wq_pasid;
++		dev_dbg(dev, "program pasid %d in wq %d\n", wq_pasid, wq->id);
++		spin_lock_irqsave(&idxd->dev_lock, flags);
++		idxd_wq_setup_pasid(wq, wq_pasid);
++		idxd_wq_setup_priv(wq, priv);
++		spin_unlock_irqrestore(&idxd->dev_lock, flags);
++		idxd_wq_enable(wq, &status);
++		if (status) {
++			dev_err(dev, "vidxd enable wq %d failed\n", wq->id);
++			idxd_complete_command(vidxd, status);
++			return;
++		}
++	} else {
++		dev_err(dev, "idxd pasid setup failed wq %d wq_pasid %d\n", wq->id, wq_pasid);
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_PASID_EN);
++		return;
++	}
++
++	vwqcfg->wq_state = IDXD_WQ_DEV_ENABLED;
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
++}
++
++static void vidxd_wq_disable(struct vdcm_idxd *vidxd, int wq_id_mask)
++{
++	struct idxd_wq *wq;
++	union wqcfg *wqcfg;
++	u8 *bar0 = vidxd->bar0;
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++	u32 status;
++
++	wq = vidxd->wq;
++
++	dev_dbg(dev, "vidxd disable wq %u:%u\n", 0, wq->id);
++
++	wqcfg = (union wqcfg *)(bar0 + VIDXD_WQCFG_OFFSET);
++	if (wqcfg->wq_state != IDXD_WQ_DEV_ENABLED) {
++		idxd_complete_command(vidxd, IDXD_CMDSTS_ERR_WQ_NOT_EN);
++		return;
++	}
++
++	/* If it is a DWQ, need to disable the DWQ as well */
++	if (wq_dedicated(wq)) {
++		idxd_wq_disable(wq, &status);
++		if (status) {
++			dev_warn(dev, "vidxd disable wq failed: %#x\n", status);
++			idxd_complete_command(vidxd, status);
++			return;
++		}
++	} else {
++		idxd_wq_drain(wq, &status);
++		if (status) {
++			dev_warn(dev, "vidxd disable drain wq failed: %#x\n", status);
++			idxd_complete_command(vidxd, status);
++			return;
++		}
++	}
++
++	wqcfg->wq_state = IDXD_WQ_DEV_DISABLED;
++	idxd_complete_command(vidxd, IDXD_CMDSTS_SUCCESS);
+ }
+ 
+ void vidxd_free_ims_entries(struct vdcm_idxd *vidxd)
+@@ -491,5 +850,50 @@ int vidxd_setup_ims_entries(struct vdcm_idxd *vidxd)
+ 
+ void vidxd_do_command(struct vdcm_idxd *vidxd, u32 val)
+ {
+-	/* PLACEHOLDER */
++	union idxd_command_reg *reg = (union idxd_command_reg *)(vidxd->bar0 + IDXD_CMD_OFFSET);
++	struct mdev_device *mdev = vidxd->vdev.mdev;
++	struct device *dev = mdev_dev(mdev);
++
++	reg->bits = val;
++
++	dev_dbg(dev, "%s: cmd code: %u reg: %x\n", __func__, reg->cmd, reg->bits);
++
++	switch (reg->cmd) {
++	case IDXD_CMD_ENABLE_DEVICE:
++		vidxd_enable(vidxd);
++		break;
++	case IDXD_CMD_DISABLE_DEVICE:
++		vidxd_disable(vidxd);
++		break;
++	case IDXD_CMD_DRAIN_ALL:
++		vidxd_drain_all(vidxd);
++		break;
++	case IDXD_CMD_ABORT_ALL:
++		vidxd_abort_all(vidxd);
++		break;
++	case IDXD_CMD_RESET_DEVICE:
++		vidxd_reset(vidxd);
++		break;
++	case IDXD_CMD_ENABLE_WQ:
++		vidxd_wq_enable(vidxd, reg->operand);
++		break;
++	case IDXD_CMD_DISABLE_WQ:
++		vidxd_wq_disable(vidxd, reg->operand);
++		break;
++	case IDXD_CMD_DRAIN_WQ:
++		vidxd_wq_drain(vidxd, reg->operand);
++		break;
++	case IDXD_CMD_ABORT_WQ:
++		vidxd_wq_abort(vidxd, reg->operand);
++		break;
++	case IDXD_CMD_RESET_WQ:
++		vidxd_wq_reset(vidxd, reg->operand);
++		break;
++	case IDXD_CMD_REQUEST_INT_HANDLE:
++		vidxd_alloc_int_handle(vidxd, reg->operand);
++		break;
++	default:
++		idxd_complete_command(vidxd, IDXD_CMDSTS_INVAL_CMD);
++		break;
++	}
+ }
 
