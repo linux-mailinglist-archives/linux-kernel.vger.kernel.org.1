@@ -2,92 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1941726AE07
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D848026AE18
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgIOTtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:49:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49140 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727841AbgIORLS (ORCPT
+        id S1727826AbgIOTvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727832AbgIORKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:11:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600189823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yPmPv3nS4j+ToD69H4u95r5JbLwmp3gKNTOHEJVtB3U=;
-        b=g1VkcBS2N1zAhWh/Aep31F13wuSx0KehOjZquDJvr6SCFPoH6S4DN1l1PowItB4UfuGX7s
-        HPrBC1g2DujMA6Hj11/duqiBCnO2vBCnKoHf1dP8GBOgHMdOtCDs4IjrNJAaYSgGkk9FGI
-        Wglt4c4KL8Ane8zFDND0AScM91i0FAc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-I4E89CNxMemVJZk38H5rlQ-1; Tue, 15 Sep 2020 12:51:54 -0400
-X-MC-Unique: I4E89CNxMemVJZk38H5rlQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48AEA18C9F57;
-        Tue, 15 Sep 2020 16:51:36 +0000 (UTC)
-Received: from work-vm (ovpn-115-25.ams2.redhat.com [10.36.115.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 758F719D61;
-        Tue, 15 Sep 2020 16:51:34 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 17:51:31 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, Wei Huang <whuang2@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/2] KVM: x86: allow for more CPUID entries
-Message-ID: <20200915165131.GC2922@work-vm>
-References: <20200915154306.724953-1-vkuznets@redhat.com>
+        Tue, 15 Sep 2020 13:10:50 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0486C061352
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:58:23 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id j6so2307526vsg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VOZJDXmk4I7sBQkBNkbqiC999QN+5QxW+u+FQGNFV0A=;
+        b=e63A8UNiaTNJGTTvmfggSIGCDE9Qr29ZZD6JllO168qvrxrxA3DUc1Nc0Aj64EKijO
+         Txj7oJYWDhWJsEevrKKrmbyk5rdsc34U+SxKZ5QUiont8CyFcs3xM360KOTJ8ULfk9OY
+         YEz49gC2k6VoBo85MxV1gabmZfVlicl5IiEV4VD6hFQOpw8BTV8zcn5j3akI0pQ9z30i
+         BZWkl8m6eDs47dLDELpUGMKc+pKg3BL8DjV62J8OW6zpRnEzMT891r2wzsXZgvekwgbe
+         VIdQ8pgY6bgxwrEU6dhpJJxf+mjUd5WpZdwwKWjuyQ3AIqQsBeVwjKEkpKm6wnlhTvx/
+         Z9/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VOZJDXmk4I7sBQkBNkbqiC999QN+5QxW+u+FQGNFV0A=;
+        b=jhFZ5fw3VMOKX5e9R1EnSdhHjWchCypAR8cjoJ57nsg5A6gS6v0Vrcb6gQ6WOCTBj7
+         fTRtFkiGjEmh5OKtNxh//VgFIPBMAAA08L9Q7z2KxJfqmv/8bvmpUJX2rYmuG76Ugh3X
+         jAZHq7PCI7vSyZCqEcuXkTcI385hUEmWbv97alVzztuZOBSaaWzqAIeSHjVVmS9za/hM
+         P+SmApGpLiprg0fPZJWTTYPEhXEcTwexUipk6eeMLuVlZ6jETlQXsuFqiRdx/hBG6DFB
+         ZNJsCnrsBXmiD+GJGhuBcbSmPyMy0F4PVI4Xtppfk0Jp0ehHCXQr6UYcIXHI44Wub9IV
+         Uxmw==
+X-Gm-Message-State: AOAM530PRG/4XDFc7kVAiWMhWS4tgrMPzpe+eaU/yvwVI9ejGXZbTo/D
+        h9s5Y27XNkZw+02gSa0iiZJdFg7hX1vW0yCaDLq09w==
+X-Google-Smtp-Source: ABdhPJysYGKFNHZgqc12O3FvnUz67CSwz/ASv1bmn+v0ghVePdGTd1m+Au6nssZDFksIeluLQWCCUm7G4yZU6Dv7DF0=
+X-Received: by 2002:a67:ee1a:: with SMTP id f26mr2206910vsp.48.1600189102861;
+ Tue, 15 Sep 2020 09:58:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915154306.724953-1-vkuznets@redhat.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20200901025927.3596190-1-badhri@google.com> <20200915120927.GA1139641@kuha.fi.intel.com>
+In-Reply-To: <20200915120927.GA1139641@kuha.fi.intel.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Tue, 15 Sep 2020 09:57:46 -0700
+Message-ID: <CAPTae5KUMmSGJLj8K8UbGwAwyZyK6YCEYQotOKW24sxRwUrSTg@mail.gmail.com>
+Subject: Re: [PATCH v6 00/14] TCPM support for FRS and AutoDischarge Disconnect
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Vitaly Kuznetsov (vkuznets@redhat.com) wrote:
-> With QEMU and newer AMD CPUs (namely: Epyc 'Rome') the current limit for
-> KVM_MAX_CPUID_ENTRIES(80) is reported to be hit. Last time it was raised
-> from '40' in 2010. We can, of course, just bump it a little bit to fix
-> the immediate issue but the report made me wonder why we need to pre-
-> allocate vcpu->arch.cpuid_entries array instead of sizing it dynamically.
-> This RFC is intended to feed my curiosity.
-> 
-> Very mildly tested with selftests/kvm-unit-tests and nothing seems to
-> break. I also don't have access to the system where the original issue
-> was reported but chances we're fixing it are very good IMO as just the
-> second patch alone was reported to be sufficient.
-> 
-> Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+On Tue, Sep 15, 2020 at 5:09 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Mon, Aug 31, 2020 at 07:59:13PM -0700, Badhri Jagan Sridharan wrote:
+> > First of all apologies for mixing up the patch version as noted by
+> > Heikki and Greg. All of them were v1's but since I was manually adding
+> > the version numbers I mixed them up. Using the --reroll-count option
+> > now. Updating the patch version to v6 (highest version number in the
+> > previous patchset + 1) to avoid confusion.
+>
+> If this is v6, then where are v2 - v5? And what changed? Why didn't
+> you just make this v2?
 
-Oh nice, I was just going to bump the magic number :-)
+Frankly, I did not know how to fix the version numbers that I messed
+up in the original
+patchset. I had, by mistake, versioned the patch5 in the series v5 in
+the original patchset.
+So I thought I will consistently call them V6 and update all the patches
+to version v6 to avoid confusion. To confirm there is no v2-v5 for most of them.
+I have also mentioned the actual code changes and versioning changes in the
+change history for each patch. Hopefully that mitigates the confusion.
+Again apologies for messing up the versioning in the original patchset !
+I have started to double check the patch version numbers before sending.
 
-Anyway, this seems to work for me, so:
+Thanks,
+Badhri
 
-Tested-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-
-> Vitaly Kuznetsov (2):
->   KVM: x86: allocate vcpu->arch.cpuid_entries dynamically
->   KVM: x86: bump KVM_MAX_CPUID_ENTRIES
-> 
->  arch/x86/include/asm/kvm_host.h |  4 +--
->  arch/x86/kvm/cpuid.c            | 55 ++++++++++++++++++++++++---------
->  arch/x86/kvm/x86.c              |  1 +
->  3 files changed, 43 insertions(+), 17 deletions(-)
-> 
-> -- 
-> 2.25.4
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+>
+>
+> > I also rebased on to off of the recent usb-next tip:
+> > 5fedf0d295d3 (origin/usb-testing, origin/usb-next) Merge 5.9-rc3 into usb-next
+> > Which had the following changes causing merge conflict:
+> > 3ed8e1c2ac99 usb: typec: tcpm: Migrate workqueue to RT priority for processing events
+> > 6bbe2a90a0bb usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
+> >
+> > Addressed comments from Heikki and Randy which have described in the
+> > individual commit's change history as well.
+> >
+> > Badhri Jagan Sridharan (14):
+> >   usb: typec: tcpci: Add register definitions to tcpci
+> >   usb: typec: tcpci: Add support when hidden tx registers are
+> >     inaccessible
+> >   usb: typec: tcpci: update ROLE_CONTROL for DRP
+> >   usb: typec: tcpci: Add a getter method to retrieve tcpm_port reference
+> >   usb: typec: tcpci: Add set_vbus tcpci callback
+> >   dt-bindings: usb: Maxim type-c controller device tree binding document
+> >   usb: typec: tcpci_maxim: Chip level TCPC driver
+> >   dt-bindings: connector: Add property to set initial current cap for
+> >     FRS
+> >   usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)
+> >   usb: typec: tcpci: Implement callbacks for FRS
+> >   usb: typec: tcpci_maxim: Add support for Sink FRS
+> >   usb: typec: tcpm: Implement enabling Auto Discharge disconnect support
+> >   usb: typec: tcpci: Implement Auto discharge disconnect callbacks
+> >   usb: typec: tcpci_maxim: Implemnent set_auto_vbus_discharge_threshold
+> >
+> >  .../bindings/connector/usb-connector.txt      | 128 ++++
+> >  .../devicetree/bindings/usb/maxim,tcpci.txt   |  44 ++
+> >  drivers/usb/typec/tcpm/Kconfig                |   5 +
+> >  drivers/usb/typec/tcpm/Makefile               |  13 +-
+> >  drivers/usb/typec/tcpm/tcpci.c                | 146 ++++-
+> >  drivers/usb/typec/tcpm/tcpci.h                |  43 ++
+> >  drivers/usb/typec/tcpm/tcpci_maxim.c          | 564 ++++++++++++++++++
+> >  drivers/usb/typec/tcpm/tcpm.c                 | 291 ++++++++-
+> >  include/dt-bindings/usb/pd.h                  |  10 +
+> >  include/linux/usb/pd.h                        |  19 +-
+> >  include/linux/usb/tcpm.h                      |  24 +-
+> >  include/linux/usb/typec.h                     |  13 +
+> >  12 files changed, 1266 insertions(+), 34 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/connector/usb-connector.txt
+> >  create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.txt
+> >  create mode 100644 drivers/usb/typec/tcpm/tcpci_maxim.c
+> >
+> >
+> > base-commit: 5fedf0d295d3ef69fd85fdee4cb68fd3756b54c2
+> > --
+> > 2.28.0.402.g5ffc5be6b7-goog
+>
+> --
+> heikki
