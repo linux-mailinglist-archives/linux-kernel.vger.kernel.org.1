@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A506C26B161
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB9D26B081
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgIOW3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51240 "EHLO
+        id S1727524AbgIOQmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727632AbgIOQTx (ORCPT
+        with ESMTP id S1727501AbgIOP5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:19:53 -0400
+        Tue, 15 Sep 2020 11:57:53 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B24C061354;
-        Tue, 15 Sep 2020 08:33:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8E1C061788;
+        Tue, 15 Sep 2020 08:47:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=huSs9qw2inwsNt5ve2+SoDXSweZxKtrgL1ml0rolyNE=; b=UvWHbrpwXjSyXAw3Qq56MFLLh6
-        E84oL9sbAQBMT2Kj1+t2tpNCWMZUqGwdnYKFAj5RQbC3o1y4DqVLuXGg35Uq50O7rJHGpV7ngt+Ah
-        drWitRmifPmJHY+4HDKBvD2HqvWug5ygDsBHdVzJhhCn2/PLT1KWF6clJC5moedvWIWLeZb/Rk2iw
-        SzIRfqVkKgUJhJCNrWopHMa5an6JysjOC9F+VkGS99CMAeBceFFdIlzh3uDKWpMnO0otQ9prXF4br
-        SmUtC/fSom6LxyRlxjwjb+Z0tIhURsL4N9ULL6tDBeZZvK7Fet7Z9JlFcJz88sD9V9Fpv+aLQJEMb
-        myWh+aGQ==;
+        bh=u+PjVn2iYv8vGBp3/U/FpUBxU+1ybYDlmuDi1nd7xKA=; b=AOe5obOuKb42rxAHU0QIHLXO+M
+        B+yvvdR630CDcTRAMzyOtj5AZ4J4J76yA78HlqT0RfDxzHzkigIvUDigf4ZsHOHBfMsgSDtg+i1v1
+        RkcAFzt7V/6Ueh/4tkkNM7Rn3k4OnzDTTMLHR/yV1JDlpimjS68tMR02nXOQx6MaAtfm04Rve036y
+        3gpt8If62eCLEywi+5r9F3nypWqMGz93UFfiPGr+I9kW4QGbhG7QB14fHEH55wQrsYPwKIzWY2ajV
+        +Dw584z0qMAeGzAMDC+Z0RRNa7VuKR8ra3aHpb8PL09A4D0y/8tSXV4arzNlu4tmbgyD7GUjDtKPP
+        cIakDnYQ==;
 Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kICxq-0001qR-5r; Tue, 15 Sep 2020 15:33:50 +0000
+        id 1kIDAW-0002nn-JP; Tue, 15 Sep 2020 15:46:56 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
@@ -40,9 +40,9 @@ Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
         linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         cgroups@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 06/12] block: lift setting the readahead size into the block layer
-Date:   Tue, 15 Sep 2020 17:18:23 +0200
-Message-Id: <20200915151829.1767176-7-hch@lst.de>
+Subject: [PATCH 12/12] bdi: replace BDI_CAP_NO_{WRITEBACK,ACCT_DIRTY} with a single flag
+Date:   Tue, 15 Sep 2020 17:18:29 +0200
+Message-Id: <20200915151829.1767176-13-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915151829.1767176-1-hch@lst.de>
 References: <20200915151829.1767176-1-hch@lst.de>
@@ -54,268 +54,302 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers shouldn't really mess with the readahead size, as that is a VM
-concept.  Instead set it based on the optimal I/O size by lifting the
-algorithm from the md driver when registering the disk.  Also set
-bdi->io_pages there as well by applying the same scheme based on
-max_sectors.
+Replace the two negative flags that are always used together with a
+single positive flag that indicates the writeback capability instead
+of two related non-capabilities.  Also remove the pointless wrappers
+to just check the flag.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- block/blk-settings.c         |  5 ++---
- block/blk-sysfs.c            | 10 +++++++++-
- block/genhd.c                |  5 +++--
- drivers/block/aoe/aoeblk.c   |  2 --
- drivers/block/drbd/drbd_nl.c | 12 +-----------
- drivers/md/bcache/super.c    |  4 ----
- drivers/md/raid0.c           | 16 ----------------
- drivers/md/raid10.c          | 24 +-----------------------
- drivers/md/raid5.c           | 13 +------------
- 9 files changed, 17 insertions(+), 74 deletions(-)
+ fs/9p/vfs_file.c            |  2 +-
+ fs/fs-writeback.c           |  7 +++---
+ include/linux/backing-dev.h | 48 ++++++++-----------------------------
+ mm/backing-dev.c            |  6 ++---
+ mm/filemap.c                |  4 ++--
+ mm/memcontrol.c             |  2 +-
+ mm/memory-failure.c         |  2 +-
+ mm/migrate.c                |  2 +-
+ mm/mmap.c                   |  2 +-
+ mm/page-writeback.c         | 12 +++++-----
+ 10 files changed, 29 insertions(+), 58 deletions(-)
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index 76a7e03bcd6cac..01049e9b998f1d 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -452,6 +452,8 @@ EXPORT_SYMBOL(blk_limits_io_opt);
- void blk_queue_io_opt(struct request_queue *q, unsigned int opt)
- {
- 	blk_limits_io_opt(&q->limits, opt);
-+	q->backing_dev_info->ra_pages =
-+		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
- }
- EXPORT_SYMBOL(blk_queue_io_opt);
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index 3576123d82990e..6ecf863bfa2f4b 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -625,7 +625,7 @@ static void v9fs_mmap_vm_close(struct vm_area_struct *vma)
  
-@@ -628,9 +630,6 @@ void disk_stack_limits(struct gendisk *disk, struct block_device *bdev,
- 		printk(KERN_NOTICE "%s: Warning: Device %s is misaligned\n",
- 		       top, bottom);
- 	}
+ 	inode = file_inode(vma->vm_file);
+ 
+-	if (!mapping_cap_writeback_dirty(inode->i_mapping))
++	if (!mapping_can_writeback(inode->i_mapping))
+ 		wbc.nr_to_write = 0;
+ 
+ 	might_sleep();
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 149227160ff0b0..d4f84a2fe0878e 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -2321,7 +2321,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+ 
+ 			wb = locked_inode_to_wb_and_lock_list(inode);
+ 
+-			WARN(bdi_cap_writeback_dirty(wb->bdi) &&
++			WARN((wb->bdi->capabilities & BDI_CAP_WRITEBACK) &&
+ 			     !test_bit(WB_registered, &wb->state),
+ 			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
+ 
+@@ -2346,7 +2346,8 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+ 			 * to make sure background write-back happens
+ 			 * later.
+ 			 */
+-			if (bdi_cap_writeback_dirty(wb->bdi) && wakeup_bdi)
++			if (wakeup_bdi &&
++			    (wb->bdi->capabilities & BDI_CAP_WRITEBACK))
+ 				wb_wakeup_delayed(wb);
+ 			return;
+ 		}
+@@ -2581,7 +2582,7 @@ int write_inode_now(struct inode *inode, int sync)
+ 		.range_end = LLONG_MAX,
+ 	};
+ 
+-	if (!mapping_cap_writeback_dirty(inode->i_mapping))
++	if (!mapping_can_writeback(inode->i_mapping))
+ 		wbc.nr_to_write = 0;
+ 
+ 	might_sleep();
+diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+index b217344a2c63be..44df4fcef65c1e 100644
+--- a/include/linux/backing-dev.h
++++ b/include/linux/backing-dev.h
+@@ -110,27 +110,14 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+ /*
+  * Flags in backing_dev_info::capability
+  *
+- * The first three flags control whether dirty pages will contribute to the
+- * VM's accounting and whether writepages() should be called for dirty pages
+- * (something that would not, for example, be appropriate for ramfs)
+- *
+- * WARNING: these flags are closely related and should not normally be
+- * used separately.  The BDI_CAP_NO_ACCT_AND_WRITEBACK combines these
+- * three flags into a single convenience macro.
+- *
+- * BDI_CAP_NO_ACCT_DIRTY:  Dirty pages shouldn't contribute to accounting
+- * BDI_CAP_NO_WRITEBACK:   Don't write pages back
+- * BDI_CAP_WRITEBACK_ACCT: Automatically account writeback pages
+- * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
++ * BDI_CAP_WRITEBACK:		Supports dirty page writeback, and dirty pages
++ *				should contribute to accounting
++ * BDI_CAP_WRITEBACK_ACCT:	Automatically account writeback pages
++ * BDI_CAP_STRICTLIMIT:		Keep number of dirty pages below bdi threshold
+  */
+-#define BDI_CAP_NO_ACCT_DIRTY	0x00000001
+-#define BDI_CAP_NO_WRITEBACK	0x00000002
+-#define BDI_CAP_WRITEBACK_ACCT	0x00000004
+-#define BDI_CAP_STRICTLIMIT	0x00000010
+-#define BDI_CAP_CGROUP_WRITEBACK 0x00000020
 -
--	t->backing_dev_info->io_pages =
--		t->limits.max_sectors >> (PAGE_SHIFT - 9);
- }
- EXPORT_SYMBOL(disk_stack_limits);
+-#define BDI_CAP_NO_ACCT_AND_WRITEBACK \
+-	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY)
++#define BDI_CAP_WRITEBACK		(1 << 0)
++#define BDI_CAP_WRITEBACK_ACCT		(1 << 1)
++#define BDI_CAP_STRICTLIMIT		(1 << 2)
  
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index 81722cdcf0cb21..95eb35324e1a61 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -245,7 +245,6 @@ queue_max_sectors_store(struct request_queue *q, const char *page, size_t count)
+ extern struct backing_dev_info noop_backing_dev_info;
  
- 	spin_lock_irq(&q->queue_lock);
- 	q->limits.max_sectors = max_sectors_kb << 1;
--	q->backing_dev_info->io_pages = max_sectors_kb >> (PAGE_SHIFT - 10);
- 	spin_unlock_irq(&q->queue_lock);
+@@ -169,24 +156,9 @@ static inline int wb_congested(struct bdi_writeback *wb, int cong_bits)
+ long congestion_wait(int sync, long timeout);
+ long wait_iff_congested(int sync, long timeout);
  
- 	return ret;
-@@ -854,6 +853,15 @@ int blk_register_queue(struct gendisk *disk)
- 		percpu_ref_switch_to_percpu(&q->q_usage_counter);
- 	}
- 
-+	/*
-+	 * For read-ahead of large files to be effective, we need to read ahead
-+	 * at least twice the optimal I/O size.
-+	 */
-+	q->backing_dev_info->ra_pages =
-+		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
-+	q->backing_dev_info->io_pages =
-+		queue_max_sectors(q) >> (PAGE_SHIFT - 9);
-+
- 	ret = blk_trace_init_sysfs(dev);
- 	if (ret)
- 		return ret;
-diff --git a/block/genhd.c b/block/genhd.c
-index 9d060e79eb31d8..ed0b976644faac 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -772,6 +772,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
- 			      const struct attribute_group **groups,
- 			      bool register_queue)
+-static inline bool bdi_cap_writeback_dirty(struct backing_dev_info *bdi)
+-{
+-	return !(bdi->capabilities & BDI_CAP_NO_WRITEBACK);
+-}
+-
+-static inline bool bdi_cap_account_dirty(struct backing_dev_info *bdi)
+-{
+-	return !(bdi->capabilities & BDI_CAP_NO_ACCT_DIRTY);
+-}
+-
+-static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
+-{
+-	return bdi_cap_writeback_dirty(inode_to_bdi(mapping->host));
+-}
+-
+-static inline bool mapping_cap_account_dirty(struct address_space *mapping)
++static inline bool mapping_can_writeback(struct address_space *mapping)
  {
-+	struct request_queue *q = disk->queue;
- 	dev_t devt;
- 	int retval;
+-	return bdi_cap_account_dirty(inode_to_bdi(mapping->host));
++	return inode_to_bdi(mapping->host)->capabilities & BDI_CAP_WRITEBACK;
+ }
  
-@@ -782,7 +783,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
- 	 * registration.
+ static inline int bdi_sched_wait(void *word)
+@@ -223,7 +195,7 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
+ 
+ 	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
+ 		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
+-		bdi_cap_account_dirty(bdi) &&
++		(bdi->capabilities & BDI_CAP_WRITEBACK) &&
+ 		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
+ }
+ 
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index ab0415dde5c66c..5d0991e75ca337 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -14,9 +14,7 @@
+ #include <linux/device.h>
+ #include <trace/events/writeback.h>
+ 
+-struct backing_dev_info noop_backing_dev_info = {
+-	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
+-};
++struct backing_dev_info noop_backing_dev_info;
+ EXPORT_SYMBOL_GPL(noop_backing_dev_info);
+ 
+ static struct class *bdi_class;
+@@ -744,7 +742,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
+ 		kfree(bdi);
+ 		return NULL;
+ 	}
+-	bdi->capabilities = BDI_CAP_WRITEBACK_ACCT;
++	bdi->capabilities = BDI_CAP_WRITEBACK | BDI_CAP_WRITEBACK_ACCT;
+ 	bdi->ra_pages = VM_READAHEAD_PAGES;
+ 	bdi->io_pages = VM_READAHEAD_PAGES;
+ 	return bdi;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 1aaea26556cc7e..6c2a0139e22fa3 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -414,7 +414,7 @@ int __filemap_fdatawrite_range(struct address_space *mapping, loff_t start,
+ 		.range_end = end,
+ 	};
+ 
+-	if (!mapping_cap_writeback_dirty(mapping) ||
++	if (!mapping_can_writeback(mapping) ||
+ 	    !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
+ 		return 0;
+ 
+@@ -1702,7 +1702,7 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
+ no_page:
+ 	if (!page && (fgp_flags & FGP_CREAT)) {
+ 		int err;
+-		if ((fgp_flags & FGP_WRITE) && mapping_cap_account_dirty(mapping))
++		if ((fgp_flags & FGP_WRITE) && mapping_can_writeback(mapping))
+ 			gfp_mask |= __GFP_WRITE;
+ 		if (fgp_flags & FGP_NOFS)
+ 			gfp_mask &= ~__GFP_FS;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b807952b4d431b..d2352f76d6519f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5643,7 +5643,7 @@ static int mem_cgroup_move_account(struct page *page,
+ 		if (PageDirty(page)) {
+ 			struct address_space *mapping = page_mapping(page);
+ 
+-			if (mapping_cap_account_dirty(mapping)) {
++			if (mapping_can_writeback(mapping)) {
+ 				__mod_lruvec_state(from_vec, NR_FILE_DIRTY,
+ 						   -nr_pages);
+ 				__mod_lruvec_state(to_vec, NR_FILE_DIRTY,
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index f1aa6433f40416..a1e73943445e77 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1006,7 +1006,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
  	 */
- 	if (register_queue)
--		elevator_init_mq(disk->queue);
-+		elevator_init_mq(q);
+ 	mapping = page_mapping(hpage);
+ 	if (!(flags & MF_MUST_KILL) && !PageDirty(hpage) && mapping &&
+-	    mapping_cap_writeback_dirty(mapping)) {
++	    mapping_can_writeback(mapping)) {
+ 		if (page_mkclean(hpage)) {
+ 			SetPageDirty(hpage);
+ 		} else {
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 34a842a8eb6a7b..9d2f42a3a16294 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -503,7 +503,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
+ 			__dec_lruvec_state(old_lruvec, NR_SHMEM);
+ 			__inc_lruvec_state(new_lruvec, NR_SHMEM);
+ 		}
+-		if (dirty && mapping_cap_account_dirty(mapping)) {
++		if (dirty && mapping_can_writeback(mapping)) {
+ 			__dec_node_state(oldzone->zone_pgdat, NR_FILE_DIRTY);
+ 			__dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
+ 			__inc_node_state(newzone->zone_pgdat, NR_FILE_DIRTY);
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 40248d84ad5fbd..1fc0e92be4ba9b 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1666,7 +1666,7 @@ int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
  
- 	/* minors == 0 indicates to use ext devt from part0 and should
- 	 * be accompanied with EXT_DEVT flag.  Make sure all
-@@ -812,7 +813,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
- 		disk->flags |= GENHD_FL_SUPPRESS_PARTITION_INFO;
- 		disk->flags |= GENHD_FL_NO_PART_SCAN;
- 	} else {
--		struct backing_dev_info *bdi = disk->queue->backing_dev_info;
-+		struct backing_dev_info *bdi = q->backing_dev_info;
- 		struct device *dev = disk_to_dev(disk);
- 		int ret;
- 
-diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
-index 5ca7216e9e01f3..89b33b402b4e52 100644
---- a/drivers/block/aoe/aoeblk.c
-+++ b/drivers/block/aoe/aoeblk.c
-@@ -347,7 +347,6 @@ aoeblk_gdalloc(void *vp)
- 	mempool_t *mp;
- 	struct request_queue *q;
- 	struct blk_mq_tag_set *set;
--	enum { KB = 1024, MB = KB * KB, READ_AHEAD = 2 * MB, };
- 	ulong flags;
- 	int late = 0;
- 	int err;
-@@ -407,7 +406,6 @@ aoeblk_gdalloc(void *vp)
- 	WARN_ON(d->gd);
- 	WARN_ON(d->flags & DEVFL_UP);
- 	blk_queue_max_hw_sectors(q, BLK_DEF_MAX_SECTORS);
--	q->backing_dev_info->ra_pages = READ_AHEAD / PAGE_SIZE;
- 	d->bufpool = mp;
- 	d->blkq = gd->queue = q;
- 	q->queuedata = d;
-diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-index aaff5bde391506..f8fb1c9b1bb6c1 100644
---- a/drivers/block/drbd/drbd_nl.c
-+++ b/drivers/block/drbd/drbd_nl.c
-@@ -1360,18 +1360,8 @@ static void drbd_setup_queue_param(struct drbd_device *device, struct drbd_backi
- 	decide_on_discard_support(device, q, b, discard_zeroes_if_aligned);
- 	decide_on_write_same_support(device, q, b, o, disable_write_same);
- 
--	if (b) {
-+	if (b)
- 		blk_stack_limits(&q->limits, &b->limits, 0);
--
--		if (q->backing_dev_info->ra_pages !=
--		    b->backing_dev_info->ra_pages) {
--			drbd_info(device, "Adjusting my ra_pages to backing device's (%lu -> %lu)\n",
--				 q->backing_dev_info->ra_pages,
--				 b->backing_dev_info->ra_pages);
--			q->backing_dev_info->ra_pages =
--						b->backing_dev_info->ra_pages;
--		}
--	}
- 	fixup_discard_if_not_supported(q);
- 	fixup_write_zeroes(device, q);
- }
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 1bbdc410ee3c51..ff2101d56cd7f1 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1427,10 +1427,6 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
- 	if (ret)
- 		return ret;
- 
--	dc->disk.disk->queue->backing_dev_info->ra_pages =
--		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
--		    q->backing_dev_info->ra_pages);
--
- 	atomic_set(&dc->io_errors, 0);
- 	dc->io_disable = false;
- 	dc->error_limit = DEFAULT_CACHED_DEV_ERROR_LIMIT;
-diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
-index f54a449f97aa79..aa2d7279176880 100644
---- a/drivers/md/raid0.c
-+++ b/drivers/md/raid0.c
-@@ -410,22 +410,6 @@ static int raid0_run(struct mddev *mddev)
- 		 mdname(mddev),
- 		 (unsigned long long)mddev->array_sectors);
- 
--	if (mddev->queue) {
--		/* calculate the max read-ahead size.
--		 * For read-ahead of large files to be effective, we need to
--		 * readahead at least twice a whole stripe. i.e. number of devices
--		 * multiplied by chunk size times 2.
--		 * If an individual device has an ra_pages greater than the
--		 * chunk size, then we will not drive that device as hard as it
--		 * wants.  We consider this a configuration error: a larger
--		 * chunksize should be used in that case.
--		 */
--		int stripe = mddev->raid_disks *
--			(mddev->chunk_sectors << 9) / PAGE_SIZE;
--		if (mddev->queue->backing_dev_info->ra_pages < 2* stripe)
--			mddev->queue->backing_dev_info->ra_pages = 2* stripe;
--	}
--
- 	dump_zones(mddev);
- 
- 	ret = md_integrity_register(mddev);
-diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 9956a04ac13bd6..5d1bdee313ec33 100644
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -3873,19 +3873,6 @@ static int raid10_run(struct mddev *mddev)
- 	mddev->resync_max_sectors = size;
- 	set_bit(MD_FAILFAST_SUPPORTED, &mddev->flags);
- 
--	if (mddev->queue) {
--		int stripe = conf->geo.raid_disks *
--			((mddev->chunk_sectors << 9) / PAGE_SIZE);
--
--		/* Calculate max read-ahead size.
--		 * We need to readahead at least twice a whole stripe....
--		 * maybe...
--		 */
--		stripe /= conf->geo.near_copies;
--		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
--			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
--	}
--
- 	if (md_integrity_register(mddev))
- 		goto out_free_conf;
- 
-@@ -4723,17 +4710,8 @@ static void end_reshape(struct r10conf *conf)
- 	conf->reshape_safe = MaxSector;
- 	spin_unlock_irq(&conf->device_lock);
- 
--	/* read-ahead size must cover two whole stripes, which is
--	 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
--	 */
--	if (conf->mddev->queue) {
--		int stripe = conf->geo.raid_disks *
--			((conf->mddev->chunk_sectors << 9) / PAGE_SIZE);
--		stripe /= conf->geo.near_copies;
--		if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
--			conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-+	if (conf->mddev->queue)
- 		raid10_set_io_opt(conf);
--	}
- 	conf->fullsync = 0;
+ 	/* Can the mapping track the dirty pages? */
+ 	return vma->vm_file && vma->vm_file->f_mapping &&
+-		mapping_cap_account_dirty(vma->vm_file->f_mapping);
++		mapping_can_writeback(vma->vm_file->f_mapping);
  }
  
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 9a7d1250894ef1..7ace1f76b14736 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -7522,8 +7522,6 @@ static int raid5_run(struct mddev *mddev)
- 		int data_disks = conf->previous_raid_disks - conf->max_degraded;
- 		int stripe = data_disks *
- 			((mddev->chunk_sectors << 9) / PAGE_SIZE);
--		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
--			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
+ /*
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 0139f9622a92da..358d6f28c627b7 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -1882,7 +1882,7 @@ void balance_dirty_pages_ratelimited(struct address_space *mapping)
+ 	int ratelimit;
+ 	int *p;
  
- 		chunk_size = mddev->chunk_sectors << 9;
- 		blk_queue_io_min(mddev->queue, chunk_size);
-@@ -8111,17 +8109,8 @@ static void end_reshape(struct r5conf *conf)
- 		spin_unlock_irq(&conf->device_lock);
- 		wake_up(&conf->wait_for_overlap);
+-	if (!bdi_cap_account_dirty(bdi))
++	if (!(bdi->capabilities & BDI_CAP_WRITEBACK))
+ 		return;
  
--		/* read-ahead size must cover two whole stripes, which is
--		 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
--		 */
--		if (conf->mddev->queue) {
--			int data_disks = conf->raid_disks - conf->max_degraded;
--			int stripe = data_disks * ((conf->chunk_sectors << 9)
--						   / PAGE_SIZE);
--			if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
--				conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-+		if (conf->mddev->queue)
- 			raid5_set_io_opt(conf);
--		}
- 	}
- }
+ 	if (inode_cgwb_enabled(inode))
+@@ -2423,7 +2423,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
  
+ 	trace_writeback_dirty_page(page, mapping);
+ 
+-	if (mapping_cap_account_dirty(mapping)) {
++	if (mapping_can_writeback(mapping)) {
+ 		struct bdi_writeback *wb;
+ 
+ 		inode_attach_wb(inode, page);
+@@ -2450,7 +2450,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
+ void account_page_cleaned(struct page *page, struct address_space *mapping,
+ 			  struct bdi_writeback *wb)
+ {
+-	if (mapping_cap_account_dirty(mapping)) {
++	if (mapping_can_writeback(mapping)) {
+ 		dec_lruvec_page_state(page, NR_FILE_DIRTY);
+ 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
+ 		dec_wb_stat(wb, WB_RECLAIMABLE);
+@@ -2513,7 +2513,7 @@ void account_page_redirty(struct page *page)
+ {
+ 	struct address_space *mapping = page->mapping;
+ 
+-	if (mapping && mapping_cap_account_dirty(mapping)) {
++	if (mapping && mapping_can_writeback(mapping)) {
+ 		struct inode *inode = mapping->host;
+ 		struct bdi_writeback *wb;
+ 		struct wb_lock_cookie cookie = {};
+@@ -2625,7 +2625,7 @@ void __cancel_dirty_page(struct page *page)
+ {
+ 	struct address_space *mapping = page_mapping(page);
+ 
+-	if (mapping_cap_account_dirty(mapping)) {
++	if (mapping_can_writeback(mapping)) {
+ 		struct inode *inode = mapping->host;
+ 		struct bdi_writeback *wb;
+ 		struct wb_lock_cookie cookie = {};
+@@ -2665,7 +2665,7 @@ int clear_page_dirty_for_io(struct page *page)
+ 
+ 	VM_BUG_ON_PAGE(!PageLocked(page), page);
+ 
+-	if (mapping && mapping_cap_account_dirty(mapping)) {
++	if (mapping && mapping_can_writeback(mapping)) {
+ 		struct inode *inode = mapping->host;
+ 		struct bdi_writeback *wb;
+ 		struct wb_lock_cookie cookie = {};
 -- 
 2.28.0
 
