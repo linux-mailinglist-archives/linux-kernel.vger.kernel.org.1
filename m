@@ -2,122 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E36E26AC60
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBE026AC5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgIOSo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
+        id S1727937AbgIOSnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727682AbgIORdK (ORCPT
+        with ESMTP id S1727921AbgIORfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:33:10 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A14C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:32:42 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id r4so963796ooq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:32:42 -0700 (PDT)
+        Tue, 15 Sep 2020 13:35:42 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245E4C06178C;
+        Tue, 15 Sep 2020 10:35:41 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id x8so3268717ybm.3;
+        Tue, 15 Sep 2020 10:35:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PAtDVfuEJhlt1elf5/lgoBo+0AnWtv6A1Q7VC77Ff04=;
-        b=d0JaJ9en3sRyhoZPnW1QJJsxEdsVuPco3gIwh9SOrfnk19I2FwZ7GOdGlPhvQTrY1k
-         txY0wp2cgnvWub0vDpMs/MJk8Pu0yM9YHo71bPPgXGTmrj9nzguJi8qtik3HijV58bFt
-         d2O3luG/WR9UWz1jRPucM/caqSWmjD+RDDJXnr1xoFcys3qOaGdlWvq4ZmxcVwZrx/uI
-         ozBsIng1hGBF00/o2vwNEvqKXH5n+W0odVBB5j6WYIu+mwKz8DADLNADAd9ic1lxeC/z
-         G1T+PpfVFVmx/i24SgJG/1ndRmiiK8yYYYDVKwOqn1uak0gt53v94/41Wg3i8R6SJtn0
-         JVNw==
+         :cc:content-transfer-encoding;
+        bh=e4l4Gu0YubhtqyPTz0YqYdvl2UWuebWDaX1GoYBvuVY=;
+        b=s3991qMFgKnJiHGMLkgRXGTVIosBIKMjKgP2cApUduRofJ2fLM80m236qLv4aII3Qg
+         nt3r80JgJFw/Cfmz5k0yoOezjdFlRp8NFi+wga93eDohqg6N96jAC/ioY13TDGSZL8Lu
+         gBuIEdXLF47KgKzhd8RxiWmSEPP3NfmPFVpmrYZDG4G7FJFwkVSOcUlw6EDpWCrBItPP
+         Iwr9O7oST/QnIovk7OsO93BYtGQyDKDgbirPFoP7kZ8nC1fgoXp0VE6MB1O0R5aOJLOc
+         HrildwovvGW+5ewT5crQ0gOnZTL0RhEFCnTzJRqgZtvue9pF1HkT23XvOsAMOdri18s9
+         tvPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PAtDVfuEJhlt1elf5/lgoBo+0AnWtv6A1Q7VC77Ff04=;
-        b=KOLyouXiENe86fvIwI5xH4gOBBpOLSrdgjUc5zuX4NuDgUXiIAo5llvoJDW382tWoJ
-         bGwIur7rDB9WrOPNAS8mKMJERcUxf9zJkREiRQTyvQPDicrCF9CWTxk1mXm5FahFXeOp
-         FhNjIhOxL4ztboWWUEmKExf9h4uUZcfCoGUsfOC0a+5fl4bNenU3Gxk29dt/zpwxRGFd
-         x52qXypj65omE6u2+0ITcRiI7A+330WUfbhFkRdobohib4q3yEaQo/YUYM7hbnSeGXBy
-         PlOwlAP+kBvUBKPexOAW7g/Xp371QM84WDCiKGg6a+HAARLRkWGJkxyC6Cpt3pzeIRKa
-         hOzA==
-X-Gm-Message-State: AOAM530VKl6h52fAqcWuLIg0IaxjhQMAQEEpFszK7hf2WrFLb+1JswhJ
-        rPFciD5DibuRquyeaMoAOIyKnsgL9T5J6VeXmt1dlQ==
-X-Google-Smtp-Source: ABdhPJyCzInxRpJlSmxXfBdbgreenCQjI8gKUscz7zGArVGzNAylhuh/sQNja0PJx+ORauOO7/zkeU7+nZkaJKmgHdU=
-X-Received: by 2002:a4a:751a:: with SMTP id j26mr14993283ooc.14.1600191160831;
- Tue, 15 Sep 2020 10:32:40 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e4l4Gu0YubhtqyPTz0YqYdvl2UWuebWDaX1GoYBvuVY=;
+        b=U0jLyLwx4gp/+eaJI8BWSDNLKpmVhrAycvJldiSLOzrYbSxBpo4adGAOb2fZoL5JU8
+         cRiDABJ56azYPUVac/4keR6XtAIQ8wIIMuPe5V+Rrtdo/pGzyk6a6YBCNjwlK/k45fTr
+         iUa3PagrcbsQtOVp4wJaPdY2TTFSXwUlF+xHNcEsN8qMpAbZx1Vf/G7s0tC60qaNpIzE
+         fC6fNHt4RTgrfhOp3XsGucifxe7FyY6fNh5R+iDKWe0NKeDX7JHT/GZYF4knRqcZ1lQH
+         2PFWh20L3b/iCTMmgW1m2Rzx1ydTx2HJJOampzpm0j+I1zGTe/Q6jqkEjcXmuaCGo4o9
+         TA5Q==
+X-Gm-Message-State: AOAM53114kq/si6ZjzZK89LPjUe6vBx3XhdKpj8F8cFrr1o9WN9kdvII
+        7ON8cnrnKaVo6z4cvY+parhymx0yTt4rXAZuXaw=
+X-Google-Smtp-Source: ABdhPJw6tpYaholT5KV37O0sqp4OEp1G/6u0Q0dc8JfRBlBz9hnumE7BZjDkKrSySZWR+nxT2MMvT9pMN17IM/pobok=
+X-Received: by 2002:a25:6f89:: with SMTP id k131mr18040987ybc.214.1600191340100;
+ Tue, 15 Sep 2020 10:35:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200914172750.852684-1-georgepope@google.com>
- <20200914172750.852684-7-georgepope@google.com> <202009141509.CDDC8C8@keescook>
- <20200915102458.GA1650630@google.com> <CANpmjNOTcS_vvZ1swh1iHYaRbTvGKnPAe4Q2DpR1MGhk_oZDeA@mail.gmail.com>
- <20200915120105.GA2294884@google.com>
-In-Reply-To: <20200915120105.GA2294884@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 15 Sep 2020 19:32:28 +0200
-Message-ID: <CANpmjNPpq7LfTHYesz2wTVw6Pqv0FQ2gc-vmSB6Mdov+XWPZiw@mail.gmail.com>
-Subject: Re: [PATCH 06/14] Fix CFLAGS for UBSAN_BOUNDS on Clang
-To:     George Popescu <georgepope@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, maz@kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        David Brazdil <dbrazdil@google.com>, broonie@kernel.org,
-        Fangrui Song <maskray@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>
+References: <20200915155544.826-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <TYBPR01MB5309602C74A7AA57B6FB6AF886200@TYBPR01MB5309.jpnprd01.prod.outlook.com>
+In-Reply-To: <TYBPR01MB5309602C74A7AA57B6FB6AF886200@TYBPR01MB5309.jpnprd01.prod.outlook.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 15 Sep 2020 18:35:13 +0100
+Message-ID: <CA+V-a8s5xZnMexZzrGwb-Y9uyJPWSLcUHE_7KAOE_q4j5XWGVw@mail.gmail.com>
+Subject: Re: [PATCH] media: v4l2-fwnode: Return -EINVAL for invalid bus-type
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 14:01, George Popescu <georgepope@google.com> wrote:
+Hi Biju,
+
+Thank you for the review.
+
+On Tue, Sep 15, 2020 at 5:01 PM Biju Das <biju.das.jz@bp.renesas.com> wrote=
+:
 >
-> On Tue, Sep 15, 2020 at 01:18:11PM +0200, Marco Elver wrote:
-> > On Tue, 15 Sep 2020 at 12:25, George Popescu <georgepope@google.com> wrote:
-> > > On Mon, Sep 14, 2020 at 03:13:14PM -0700, Kees Cook wrote:
-> > > > On Mon, Sep 14, 2020 at 05:27:42PM +0000, George-Aurelian Popescu wrote:
-> > > > > From: George Popescu <georgepope@google.com>
-> > > > >
-> > > > > When the kernel is compiled with Clang, UBSAN_BOUNDS inserts a brk after
-> > > > > the handler call, preventing it from printing any information processed
-> > > > > inside the buffer.
-> > > > > For Clang -fsanitize=bounds expands to -fsanitize=array-bounds and
-> > > > > -fsanitize=local-bounds, and the latter adds a brk after the handler
-> > > > > call
-> > > >
-> > > This would mean losing the local-bounds coverage. I tried to  test it without
-> > > local-bounds and with a locally defined array on the stack and it works fine
-> > > (the handler is called and the error reported). For me it feels like
-> > > --array-bounds and --local-bounds are triggered for the same type of
-> > > undefined_behaviours but they are handling them different.
+> Hi Prabhakar,
+>
+> Thanks for the patch.
+>
+> > Subject: [PATCH] media: v4l2-fwnode: Return -EINVAL for invalid bus-typ=
+e
 > >
-> > Does -fno-sanitize-trap=bounds help?>
+> > With the current implementation if invalid bus-type is passed via DT
+> > v4l2_fwnode_endpoint_parse() defaulted the mus-type to
 >
-> I tried replacing it with:
->       ifdef CONFIG_CC_IS_CLANG
->             CFLAGS_UBSAN += $(call cc-option, -fno-sanitize-trap=bounds)
->             CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
->       else
->             CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
->       endif
+> Typo mus-type??
 >
-> The code traps.
+> > V4L2_MBUS_PARALLEL instead of returning error.
+> >
+> > This Patch adds V4L2_MBUS_INVALID entry to v4l2_mbus_type enum and
+>
+> This patch ??
+>
+Argh my bad, will fix that and post a v2.
 
-What's your config? Do you have CONFIG_UBSAN_TRAP=y? If so, you have 2
-options: honor UBSAN_TRAP and crash the kernel, or have a
-'CFLAGS_REMOVE_... = -fsanitize-undefined-trap-on-error' for the files
-where you can't deal with traps.
+Cheers,
+Prabhakar
 
-Thanks,
--- Marco
+> > when invalid bus-type is detected in v4l2_fwnode_endpoint_parse() it
+> > returns -EINVAL to the caller.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  drivers/media/v4l2-core/v4l2-fwnode.c | 6 +++++-
+> >  include/media/v4l2-mediabus.h         | 2 ++
+> >  2 files changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2=
+-
+> > core/v4l2-fwnode.c
+> > index a4c3c77c1894..a6f3549eadd3 100644
+> > --- a/drivers/media/v4l2-core/v4l2-fwnode.c
+> > +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
+> > @@ -93,7 +93,7 @@ v4l2_fwnode_bus_type_to_mbus(enum
+> > v4l2_fwnode_bus_type type)
+> >  const struct v4l2_fwnode_bus_conv *conv =3D
+> >  get_v4l2_fwnode_bus_conv_by_fwnode_bus(type);
+> >
+> > -return conv ? conv->mbus_type : V4L2_MBUS_UNKNOWN;
+> > +return conv ? conv->mbus_type : V4L2_MBUS_INVALID;
+> >  }
+> >
+> >  static const char *
+> > @@ -436,6 +436,10 @@ static int __v4l2_fwnode_endpoint_parse(struct
+> > fwnode_handle *fwnode,
+> >   v4l2_fwnode_mbus_type_to_string(vep->bus_type),
+> >   vep->bus_type);
+> >  mbus_type =3D v4l2_fwnode_bus_type_to_mbus(bus_type);
+> > +if (mbus_type =3D=3D V4L2_MBUS_INVALID) {
+> > +pr_debug("unsupported bus type %u\n", bus_type);
+> > +return -EINVAL;
+> > +}
+> >
+> >  if (vep->bus_type !=3D V4L2_MBUS_UNKNOWN) {
+> >  if (mbus_type !=3D V4L2_MBUS_UNKNOWN && diff --git
+> > a/include/media/v4l2-mediabus.h b/include/media/v4l2-mediabus.h index
+> > 45f88f0248c4..b4f630783cb7 100644
+> > --- a/include/media/v4l2-mediabus.h
+> > +++ b/include/media/v4l2-mediabus.h
+> > @@ -78,6 +78,7 @@
+> >   * @V4L2_MBUS_CCP2:CCP2 (Compact Camera Port 2)
+> >   * @V4L2_MBUS_CSI2_DPHY: MIPI CSI-2 serial interface, with D-PHY
+> >   * @V4L2_MBUS_CSI2_CPHY: MIPI CSI-2 serial interface, with C-PHY
+> > + * @V4L2_MBUS_INVALID:invalid bus type (keep it last for sanity)
+> >   */
+> >  enum v4l2_mbus_type {
+> >  V4L2_MBUS_UNKNOWN,
+> > @@ -87,6 +88,7 @@ enum v4l2_mbus_type {
+> >  V4L2_MBUS_CCP2,
+> >  V4L2_MBUS_CSI2_DPHY,
+> >  V4L2_MBUS_CSI2_CPHY,
+> > +V4L2_MBUS_INVALID,
+> >  };
+> >
+> >  /**
+> > --
+> > 2.17.1
+>
+>
+>
+> Renesas Electronics Europe GmbH, Geschaeftsfuehrer/President: Carsten Jau=
+ch, Sitz der Gesellschaft/Registered office: Duesseldorf, Arcadiastrasse 10=
+, 40472 Duesseldorf, Germany, Handelsregister/Commercial Register: Duesseld=
+orf, HRB 3708 USt-IDNr./Tax identification no.: DE 119353406 WEEE-Reg.-Nr./=
+WEEE reg. no.: DE 14978647
