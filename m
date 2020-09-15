@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B5826A182
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0198226A191
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgIOJGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:06:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49716 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726269AbgIOJGL (ORCPT
+        id S1726467AbgIOJGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:06:47 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:56036 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726142AbgIOJGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:06:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600160770;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8NlAUI/3E3zNTeerG9TOujk5Z1icGeVixAzsrryh2bA=;
-        b=bl5u+On+KIdQedEhb3/axbVgaT6ZYeBBvfAg7ICw5IvrD4E2sBNnxutTfHGLrECyChgPIr
-        kjM4Xj/EUfEN37wAxAAVlg89DTaRJyQikTwmUos0EB7RxKKVYwO7pHOzF+4ltVlfQEijcf
-        Ny7Zd2GSWJq1J3gRHERLE8sPWg8bNWA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-XK6CCgT9MTCQygJyT8g_ZQ-1; Tue, 15 Sep 2020 05:06:08 -0400
-X-MC-Unique: XK6CCgT9MTCQygJyT8g_ZQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88EA364080;
-        Tue, 15 Sep 2020 09:06:07 +0000 (UTC)
-Received: from gondolin (ovpn-113-4.ams2.redhat.com [10.36.113.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE40F61462;
-        Tue, 15 Sep 2020 09:06:03 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 11:06:01 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     alex.williamson@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio: fix a missed vfio group put in vfio_pin_pages
-Message-ID: <20200915110601.5adb7129.cohuck@redhat.com>
-In-Reply-To: <20200915002835.14213-1-yan.y.zhao@intel.com>
-References: <20200915002835.14213-1-yan.y.zhao@intel.com>
-Organization: Red Hat GmbH
+        Tue, 15 Sep 2020 05:06:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U90pcMF_1600160772;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U90pcMF_1600160772)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 15 Sep 2020 17:06:12 +0800
+Date:   Tue, 15 Sep 2020 17:06:12 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH v2 1/7] kernel/resource: make
+ release_mem_region_adjustable() never fail
+Message-ID: <20200915090612.GA6936@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200908201012.44168-1-david@redhat.com>
+ <20200908201012.44168-2-david@redhat.com>
+ <20200915021012.GC2007@L-31X9LVDL-1304.local>
+ <927904b1-1909-f11f-483e-8012bda8ad0c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <927904b1-1909-f11f-483e-8012bda8ad0c@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 08:28:35 +0800
-Yan Zhao <yan.y.zhao@intel.com> wrote:
+On Tue, Sep 15, 2020 at 09:35:30AM +0200, David Hildenbrand wrote:
+>
+>>> static int __ref try_remove_memory(int nid, u64 start, u64 size)
+>>> {
+>>> 	int rc = 0;
+>>> @@ -1777,7 +1757,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+>>> 		memblock_remove(start, size);
+>>> 	}
+>>>
+>>> -	__release_memory_resource(start, size);
+>>> +	release_mem_region_adjustable(&iomem_resource, start, size);
+>>>
+>> 
+>> Seems the only user of release_mem_region_adjustable() is here, can we move
+>> iomem_resource into the function body? Actually, we don't iterate the resource
+>> tree from any level. We always start from the root.
+>
+>You mean, making iomem_resource implicit? I can spot that something
+>similar was done for
+>
+>#define devm_release_mem_region(dev, start, n) \
+>	__devm_release_region(dev, &iomem_resource, (start), (n))
+>
 
-> when error occurs, need to put vfio group after a successful get.
-> 
-> Fixes: 95fc87b44104 (vfio: Selective dirty page tracking if IOMMU backed
-> device pins pages)
+What I prefer is remove iomem_resource from the parameter list. Just use is in
+the function body.
 
-The format of the Fixes: line should be
+For the example you listed, __release_region() would have varies of *parent*,
+which looks reasonable to keep it here.
 
-Fixes: 95fc87b44104 ("vfio: Selective dirty page tracking if IOMMU backed device pins pages")
+>I'll send an addon patch for that, ok? - thanks.
+>
+>-- 
+>Thanks,
+>
+>David / dhildenb
 
-> 
-> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-> ---
->  drivers/vfio/vfio.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-
+-- 
+Wei Yang
+Help you, Help me
