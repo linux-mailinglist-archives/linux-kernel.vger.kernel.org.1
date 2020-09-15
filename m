@@ -2,122 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C011226ABD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B565426ABE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbgIOS2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        id S1727957AbgIOS3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbgIOS2P (ORCPT
+        with ESMTP id S1727431AbgIOS3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:28:15 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EF2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:28:11 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id o8so6440032ejb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:28:11 -0700 (PDT)
+        Tue, 15 Sep 2020 14:29:36 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B7AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:29:36 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id j2so5197669ioj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a5yi80kDIlG+xC/7XTwq910FSClVkKBKeTr0UXgGZ+0=;
-        b=YmFlarJ9oRwLXcNbELoAFxAwVoC7NgP9ryRrDh/LZni6oveziBc+ox9f2SBO4m3yhj
-         rRix7hD9Fet8AhU43X2g1J0Ftj5ulQTGWBaRKouyE+6bHXH4FYTomTxPBTfCHFPaZ2Ay
-         mG5YuoUyZPhlZ+BdHkfqaZAfyP+0YABaHxT5sXKGQwmNwnnicV5lYEkddRonVQgu5hFQ
-         T8IxFBKA6ZboUzQA2jDZh0mIjxzjn39eRNBuYvDFfN17tZhFBJnFYVmyFXvtJ4UBBH3w
-         EAXCLdb7G7ZW/09ZhRJhk77p8jC7ThQHtXs5TWBXcveuWZ+FPiCZ44de1sRQxktuFMWd
-         Xq+g==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QH0oevRAXAfKjkr8xwGWq7ufd7Zmd6cGXZiCflHDesA=;
+        b=a5D8w8T9XU1Z5Sg3El875tpdfLEgvabG4sAGeB37Wr1WfMICFJ1rqI8EuyKuvKFyqh
+         ctfGnliM0miH9CluA8q6wGyqcv8uoRUwKJv4avYtqpZD4YJzJvlGvHh7shIPeYLjqfgE
+         YWl+Ati9kVlc7YjQcKkn5lzOIe8Uj0vt1ho1m5QvYhc2Zg+nCk6WumnncLPwfApQaP1F
+         yG2TXV8o1w0tAlJFQs0tVe0boOSeXBXHzCsx258y4QSFvQAYGV8CAz/85XFxMjNvjqXu
+         Xw8I17Y/orn+PMg2qFeslypqX86SNsS23BXpBGNhN7R1tKvT2A/i8kTfmSrXRM2T9Nyb
+         U5og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a5yi80kDIlG+xC/7XTwq910FSClVkKBKeTr0UXgGZ+0=;
-        b=MXoPbLdNL28C5DhV0n1vPGQPUX7YJBWxgpM4QSQF02M9nCSjW632XhgOgRJHLoplND
-         vrlNlfCgc9u8aaiMH7Qr/95ybSmXIhfvYm7UUW2JUcAm+UB4i8TXlQWLFvxOQT7jagd8
-         HGRNYFAECpidQjF2E0hTxPPkaBd4T+zOEfRKHpSFnoe5QOVZuXJhD96agQxZSTWXFAUr
-         08cWdeIcQIDqAe1+9E9vbwX6NnTMgpOV9TrNwzJ9vgHtJ8P75CTQQXjkTJ3Piv1Xo1Jf
-         +jFRsbVpVJ/EILPnAo+F6P1pKrxIPWBHPzynzG7dDUEi2hQGliqWttZmxNAgsn3V/bU6
-         J7GQ==
-X-Gm-Message-State: AOAM532Er+feYlhL8S3odXfuai1BVb6b0Oz/AVellm98zQc9XT7B9eIU
-        +Pl08K0cmddMD8fAByHars27sQmXrCKiuofi3aNOOA==
-X-Google-Smtp-Source: ABdhPJyUBRBt8bBZ5p9/xJ79IzKoHzofLxRRFybaihfzMqJOzTXj2b8jfsVQ+4z5vuQFWZlehODpbQ+JO6019bDjGfs=
-X-Received: by 2002:a17:906:7116:: with SMTP id x22mr22211371ejj.426.1600194489854;
- Tue, 15 Sep 2020 11:28:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <1600145748-26518-1-git-send-email-vijayb@linux.microsoft.com>
-In-Reply-To: <1600145748-26518-1-git-send-email-vijayb@linux.microsoft.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 15 Sep 2020 14:27:34 -0400
-Message-ID: <CA+CK2bDH-BGAWhCYLpsxwhS1+eHibqmjLiXAhyr0i94YJspYuA@mail.gmail.com>
-Subject: Re: [v1] mm: khugepaged: avoid overriding min_free_kbytes set by user
-To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QH0oevRAXAfKjkr8xwGWq7ufd7Zmd6cGXZiCflHDesA=;
+        b=lQswLdshwSNkrdAjWmzVE2Cf7ytCCQFwVKm6yopCK8eDzQK2jdllC/ZDb2qiRrZ3Rk
+         flfNO2vmt8hDWKRl0MZ5mccplSFOG1iRxnLp+WhE0UeTeGkXYmjyYnDBHtWXuTruIO2z
+         mhJ20p71JoFJa1262wvtH61SFefnpe+K9/jule885GZglkuf8ybHdzcj0pA4MBR3u45O
+         o/qh0SLJxqrNI11ORnC9CI/YHvbcikRd7PAcFf0yzCE8i22eVkIf5f75jwpc33JRMxbd
+         lD2fYp+1jeusYuAqqhgZYP8tLBcrqhRSBUMHnocpLrBkUAYt9ZSIDvrqkrzMM3p9EDMg
+         3pCw==
+X-Gm-Message-State: AOAM530Rz34pa+H1X+8f35cUWVXhmELo3+DqITDsTe/uTDPrpc3kCzOa
+        N7AYa3mmEUzmLpWuqgKfrVI6UQ==
+X-Google-Smtp-Source: ABdhPJwmx/LUpglx7XpAipNeMR+kHJPe2QCViaCkWocmK98vW3k5whvbv4Z0KH1re3/hxdhjxsU/yw==
+X-Received: by 2002:a05:6638:24c1:: with SMTP id y1mr18589650jat.119.1600194575776;
+        Tue, 15 Sep 2020 11:29:35 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id p17sm9234963ilj.81.2020.09.15.11.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 11:29:34 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kIFht-006eMK-OT; Tue, 15 Sep 2020 15:29:33 -0300
+Date:   Tue, 15 Sep 2020 15:29:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Allen Pais <apais@microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200915182933.GM1221970@ziepe.ca>
+References: <20200821234958.7896-2-peterx@redhat.com>
+ <20200914143829.GA1424636@nvidia.com>
+ <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
+ <20200914183436.GD30881@xz-x1>
+ <20200914211515.GA5901@xz-x1>
+ <20200914225542.GO904879@nvidia.com>
+ <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
+ <20200914232851.GH1221970@ziepe.ca>
+ <20200915145040.GA2949@xz-x1>
+ <20200915160553.GJ1221970@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915160553.GJ1221970@ziepe.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:55 AM Vijay Balakrishna
-<vijayb@linux.microsoft.com> wrote:
->
-> set_recommended_min_free_kbytes need to honor min_free_kbytes set by the
-> user.  Post start-of-day THP enable or memory hotplug operations can
-> lose user specified min_free_kbytes, in particular when it is higher than
-> calculated recommended value.
->
-> Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
-> Cc: stable@vger.kernel.org
-> ---
->  mm/khugepaged.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 4f7107476a6f..b4b753ba411a 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -2253,7 +2253,7 @@ static void set_recommended_min_free_kbytes(void)
->  {
->         struct zone *zone;
->         int nr_zones = 0;
-> -       unsigned long recommended_min;
-> +       int recommended_min;
+On Tue, Sep 15, 2020 at 01:05:53PM -0300, Jason Gunthorpe wrote:
+> On Tue, Sep 15, 2020 at 10:50:40AM -0400, Peter Xu wrote:
+> > On Mon, Sep 14, 2020 at 08:28:51PM -0300, Jason Gunthorpe wrote:
+> > > Yes, this stuff does pin_user_pages_fast() and MADV_DONTFORK
+> > > together. It sets FOLL_FORCE and FOLL_WRITE to get an exclusive copy
+> > > of the page and MADV_DONTFORK was needed to ensure that a future fork
+> > > doesn't establish a COW that would break the DMA by moving the
+> > > physical page over to the fork. DMA should stay with the process that
+> > > called pin_user_pages_fast() (Is MADV_DONTFORK still needed with
+> > > recent years work to GUP/etc? It is a pretty terrible ancient thing)
+> > 
+> > ... Now I'm more confused on what has happened.
+> 
+> I'm going to try to confirm that the MADV_DONTFORK is actually being
+> done by userspace properly, more later.
 
-Hi Vijay,
+It turns out the test is broken and does not call MADV_DONTFORK when
+doing forks - it is an opt-in it didn't do.
 
-Please explain in log the type change. user_min_free_kbytes is  of
-"int" type and is initialized to -1, so comparing to unsigned leads to
-undesired effect.
+It looks to me like this patch makes it much more likely that the COW
+break after page pinning will end up moving the pinned physical page
+to the fork while before it was not very common. Does that make sense?
 
+Given that the tests are wrong it seems like broken userspace,
+however, it also worked reliably for a fairly long time.
 
->
->         for_each_populated_zone(zone) {
->                 /*
-> @@ -2280,12 +2280,12 @@ static void set_recommended_min_free_kbytes(void)
->
->         /* don't ever allow to reserve more than 5% of the lowmem */
->         recommended_min = min(recommended_min,
-> -                             (unsigned long) nr_free_buffer_pages() / 20);
-> +                             (int) nr_free_buffer_pages() / 20);
->         recommended_min <<= (PAGE_SHIFT-10);
->
-> -       if (recommended_min > min_free_kbytes) {
-> +       if (recommended_min > user_min_free_kbytes) {
+I'm waiting for confirmation that adding the missing MADV_DONTFORKS
+restores all tests to success even with this patch.
 
-Took me a while to understand, but this change is correct. It is the
-same logic that is done in init_per_zone_wmark_min().
-
-Please join the two patches you have in one patch series.
-Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-
-Thank you,
-Pasha
+Regards,
+Jason
