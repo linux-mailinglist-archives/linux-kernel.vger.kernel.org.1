@@ -2,145 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A0B26A583
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C4026A586
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgIOMsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:48:00 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:57563 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726435AbgIOMjf (ORCPT
+        id S1726468AbgIOMsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:48:50 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52834 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgIOMkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:39:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600173574; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=q83tXlqY1YChLzPyWawlyehR7bL/8FKHR0ivbfmuZug=; b=jdyT1mdikY1bNCY4vvSxAaH20230rbpu3lQSKYN+kkjIvGB8qrMG5Sf2ZghUXqiKWJQcBpI5
- fh2Okcn04MDtk2neMIsXxzIRKNmwNjbEG8a4UVSC0vNM8znlzSjlsxZZ7vo326hlb98e+vmg
- hD7vZoL19a6G67hnBMTjTl18o8I=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f60b5f9252c522440b1afb5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 12:39:21
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 00CB2C433FE; Tue, 15 Sep 2020 12:39:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.43.98] (unknown [47.8.185.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4B44C433CA;
-        Tue, 15 Sep 2020 12:39:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4B44C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH V4] serial: qcom_geni_serial: To correct QUP Version
- detection logic
-To:     Paras Sharma <parashar@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1600067957-8216-1-git-send-email-parashar@codeaurora.org>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <6662d92f-5b68-527a-cfb1-9c407c338953@codeaurora.org>
-Date:   Tue, 15 Sep 2020 18:09:06 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 15 Sep 2020 08:40:52 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FCedfi023944;
+        Tue, 15 Sep 2020 07:40:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600173639;
+        bh=kc5gJD2XSbkrOt0ijEQID10sxdvJzpVItuajwHffg7A=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ex0NylpPryQPVESepbqo+s1HDCrxbpL4YlHf2wry/Sz0uBlN35FAvomGlWB/oA0uh
+         YonDgxUKmx1ULJ7O/Uoo14dD4YWyvg18a93+Yuqt5sjMokl5P3od3f136NFTtseT/v
+         sr6Gr+QSS82uERIr6mxG6/l3evtHrfrvW/LWCYRA=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FCece0002865
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 07:40:39 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
+ Sep 2020 07:40:38 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 15 Sep 2020 07:40:38 -0500
+Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FCeZxX020487;
+        Tue, 15 Sep 2020 07:40:36 -0500
+Subject: Re: [PATCH v2 0/2] Add DT to get PCIe working in J721E SoC
+To:     Nishanth Menon <nm@ti.com>
+CC:     Tero Kristo <t-kristo@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200914152115.1788-1-kishon@ti.com>
+ <20200914161016.bil575y3ig5oz5dn@akan>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <96fcf62a-b528-0611-d683-000d8d5d165f@ti.com>
+Date:   Tue, 15 Sep 2020 18:10:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1600067957-8216-1-git-send-email-parashar@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200914161016.bil575y3ig5oz5dn@akan>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paras,
-
-On 9/14/2020 12:49 PM, Paras Sharma wrote:
-> The current implementation reduces the sampling rate by half
-> if qup HW version is  greater is than 2.5 by checking if the
-> geni SE major version is greater than 2 and geni SE minor version
-> is greater than 5.This implementation fails when the version is
-> greater than or equal to 3.
->
-> Hence, a new macro QUP_SE_VERSION_2_5 is defined having value
-> for major number 2 and minor number 5 as 0x20050000.Hence,if
-> ver is greater than this value,sampling rate is halved.
-> This logic would work for any future qup version.
-
-Can we rewrite commit message something like below:
-
-For QUP IP versions 2.5 and above the oversampling rate is halved from 
-32 to 16.
-
-Commit ce734600545f ("tty: serial: qcom_geni_serial: Update the 
-oversampling rate") is pushed to handle this scenario.
-
-But the existing logic is failing to classify QUP 3.0 to correct group ( 
-2.5 and above).
-
-As result SE clocks are not configured properly for baud rate and 
-garbage data is sampled to FIFOs from the line.
 
 
-So, fix the logic to detect QUP with versions 2.5 and above.
+On 14/09/20 9:40 pm, Nishanth Menon wrote:
+> On 20:51-20200914, Kishon Vijay Abraham I wrote:
+>> Now that J721E PCIe support is merged (including the YAML bindings),
+>> add PCIe device tree nodes to get PCIe working in J721E SoC both in
+>> RC mode and EP mode.
+>>
+>> Series has been rebased to:
+>> git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux ti-k3-dts-next 
+>>
+>> Changes from v1:
+>> 1) Renamed all syscon dt-nodes to "syscon" instead of pcieX-ctrl.
+>> 2) Add TI specific compatible for "syscon" DT nodes
+>> 3) Add information about appending "ranges" property to access all PCIe
+>>    instances in commit log.
+>>
+>> Kishon Vijay Abraham I (2):
+>>   arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes
+>>   arm64: dts: ti: k3-j721e-common-proc-board: Configure the PCIe
+>>     instances
+>>
+>>  .../dts/ti/k3-j721e-common-proc-board.dts     |  80 ++++++
+>>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 232 +++++++++++++++++-
+>>  arch/arm64/boot/dts/ti/k3-j721e.dtsi          |   5 +-
+>>  3 files changed, 315 insertions(+), 2 deletions(-)
+>>
+>> -- 
+>> 2.17.1
+>>
+> 
+> Thanks, yeah - the series is clean. If no one adds a tag in the next
+> couple of days or so, I can pick it up.
+> 
 
->
-> Fixes: ce734600545f ("tty: serial: qcom_geni_serial: Update the oversampling rate")
-> Signed-off-by: Paras Sharma <parashar@codeaurora.org>
-> ---
-> Changes in V4:
-> Created a new macro QUP_SE_VERSION_2_5 for Qup se version 2.5
+Thanks Nishanth!
 
-You can mention changes in V3 and V2 here.
-
->
->   drivers/tty/serial/qcom_geni_serial.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-> index f0b1b47..9b74b1e 100644
-> --- a/drivers/tty/serial/qcom_geni_serial.c
-> +++ b/drivers/tty/serial/qcom_geni_serial.c
-> @@ -106,6 +106,9 @@
->   /* We always configure 4 bytes per FIFO word */
->   #define BYTES_PER_FIFO_WORD		4
->   
-> +/* QUP SE VERSION value for major number 2 and minor number 5 */
-> +#define QUP_SE_VERSION_2_5                  0x20050000
-> +
-
-How about moving this Macro to common header, qcom-geni-se.h so that if 
-needed other QUP driver also can use it.
-
-Regards,
-
-Akash
-
->   struct qcom_geni_private_data {
->   	/* NOTE: earlycon port will have NULL here */
->   	struct uart_driver *drv;
-> @@ -1000,7 +1003,7 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
->   	sampling_rate = UART_OVERSAMPLING;
->   	/* Sampling rate is halved for IP versions >= 2.5 */
->   	ver = geni_se_get_qup_hw_version(&port->se);
-> -	if (GENI_SE_VERSION_MAJOR(ver) >= 2 && GENI_SE_VERSION_MINOR(ver) >= 5)
-> +	if (ver >= QUP_SE_VERSION_2_5)
->   		sampling_rate /= 2;
->   
->   	clk_rate = get_clk_div_rate(baud, sampling_rate, &clk_div);
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
-
+Regards
+Kishon
