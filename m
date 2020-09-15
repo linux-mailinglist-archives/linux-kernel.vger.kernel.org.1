@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC9E26A062
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E9326A053
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbgIOIHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:07:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23123 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726119AbgIOHxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:53:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600156412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=61XyTnabdR3NqmCYghXPRu0a00uOW6F2LZTRRBnM3so=;
-        b=CrlT+YOWJkHuLLgl7wqQ64ZPqfwsOLuH15bTdEuFYHz5xMukxSBuGjyBXstkM9Dru+00PD
-        iL8Go8k/dS8l2HYOkyBmouhxY6ZTAkCVGq3dBLZdY9CMXck4Ug3hvEEN5jcKGAwFqPjRHU
-        hsv6TOVV89QiwJpPnyUgFZbMAKSwCgQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-UVEn26AuOJ6ZglRQ48EI1A-1; Tue, 15 Sep 2020 03:53:30 -0400
-X-MC-Unique: UVEn26AuOJ6ZglRQ48EI1A-1
-Received: by mail-wr1-f71.google.com with SMTP id y3so887755wrl.21
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:53:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=61XyTnabdR3NqmCYghXPRu0a00uOW6F2LZTRRBnM3so=;
-        b=mGurItTiPdh8hXPKCR0BDyl8u3RT1l8Cyvw7hgauor6v9SqeJy5RZLvOFZ6OAXnfeT
-         A05WYMiqWCnoh6E7L9lLShnMP1ZCqBnwzpyi3da6ts4Q3a1CcSZwDcWy+UfA5O+8WV9T
-         3NoD1QY9t7W+vWXNyuspy+nW2YbbBuicg+jZ9lYshCNr8EvsM18rpPIi3c3r9A1r5vYO
-         4jCaAvVmMv2xFy5MvIlwz972HOr1tymojXPpgTq+L0ZpgGuz+nK52bv6VcRiktf7037k
-         opjVuoFv1s8e5UDL6Biwbz6Ibm8FrT4IFI6a4KVJB4zna7sNQCtGQJSUgyKkj+wCMfhH
-         wOhg==
-X-Gm-Message-State: AOAM530rhBEVkM/3XqUYfHde+xRg1AWLbcPHQo3t38h9kXDxriFJbOrv
-        IhmIiV2SlEj9oueAo0z4c5mw0YCjg0Ro/yvKIwDtmehCki7qF89FEtq/pZpouVM+lbDdrypfd9b
-        ALrBRh4svHp8Q7gmCX+RmZfD/
-X-Received: by 2002:a1c:f214:: with SMTP id s20mr3264076wmc.84.1600156409098;
-        Tue, 15 Sep 2020 00:53:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxkAV4ygJHEBfx/E27MJKpvpu9bhuqLwU6gUHpd0uLVhw1GCrwFd2UquUQYFkwwu+Z+57dJqQ==
-X-Received: by 2002:a1c:f214:: with SMTP id s20mr3264064wmc.84.1600156408935;
-        Tue, 15 Sep 2020 00:53:28 -0700 (PDT)
-Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id t16sm25301572wrm.57.2020.09.15.00.53.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 00:53:28 -0700 (PDT)
-From:   Julien Thierry <jthierry@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
-        Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH 0/3] objtool: Miscellaneous cleanup/fixes
-Date:   Tue, 15 Sep 2020 08:53:15 +0100
-Message-Id: <20200915075318.7336-1-jthierry@redhat.com>
-X-Mailer: git-send-email 2.21.3
+        id S1726145AbgIOIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:01:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45986 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726328AbgIOH7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:59:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3FFFFAC7D;
+        Tue, 15 Sep 2020 07:59:21 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 86CDDDA7C7; Tue, 15 Sep 2020 09:57:54 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 09:57:54 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     syzbot <syzbot+738cca7d7d9754493513@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Subject: Re: INFO: task hung in vfs_setxattr (3)
+Message-ID: <20200915075754.GE1791@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        syzbot <syzbot+738cca7d7d9754493513@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+References: <0000000000008a633505af53038f@google.com>
+ <c268d760-2230-ec66-01d4-d3cd725ea522@suse.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c268d760-2230-ec66-01d4-d3cd725ea522@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 15, 2020 at 10:26:26AM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 15.09.20 г. 7:59 ч., syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    7fe10096 Merge branch 'linus' of git://git.kernel.org/pub/..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=140b0853900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=738cca7d7d9754493513
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=108d45a5900000
+> > 
+> > The issue was bisected to:
+> > 
+> > commit 6a3c7f5c87854e948c3c234e5f5e745c7c553722
+> > Author: Nikolay Borisov <nborisov@suse.com>
+> > Date:   Thu May 28 08:05:13 2020 +0000
+> > 
+> >     btrfs: don't balance btree inode pages from buffered write path
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14884d21900000
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=16884d21900000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=12884d21900000
+> 
+> 
+> Unlikely, that patch does change the performance characteristics because
+> now we don't balance metadata when doing buffered writes but I don't see
+> how it can lead to a hang.
 
-These patches provide some simple cleanup or lift small limitations
-found while working on the arm64 port.
+Yeah, this patch once got pointed to by syzbot bisection supposedly
+causing bug in a completely unrelated subsystem, but it's more likely
+that it's making the bisection unreliable.
 
-They should apply on current tip/objtool/core branch
-
-Cheers,
-
-Julien
-
--->
-
-Julien Thierry (3):
-  objtool: check: Remove useless tests
-  objtool: check: Ignore unreachable fake jumps
-  objtool: check: Handle calling non-function symbols in other sections
-
- tools/objtool/check.c | 29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
-
---
-2.21.3
-
+https://lore.kernel.org/lkml/20200811065013.GI2026@twin.jikos.cz/
