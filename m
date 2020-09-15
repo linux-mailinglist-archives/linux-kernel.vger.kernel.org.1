@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BC126B293
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538CE26B2B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727757AbgIOWt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:49:56 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20289 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727460AbgIOPns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:43:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600184615; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4+/7PZHVKulEoyXiC4dXX+dMmnRUKoZCYv7DqvmWz8o=;
- b=LYTNGdcdHI/SV298Dp7jGLXbzc7dgKLS13HbiryaM3UijXQnoptPLu9svCS6P28L8fku1q3G
- R7h5Wn1Y5kEBTeDAXTFkIaMujNd5f3ycrHbup3vA7pvAnCBKfSGf2nzDySOrnViyPejYhHcH
- Hy+lxnOS1lSDOlPUuJ/jrT8QSk0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f60de90947f606f7ee5257e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 15:32:32
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BEF92C433C8; Tue, 15 Sep 2020 15:32:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 07F77C433CA;
-        Tue, 15 Sep 2020 15:32:30 +0000 (UTC)
+        id S1727623AbgIOWwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:52:18 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:39244 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726995AbgIOPmE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:42:04 -0400
+Received: by mail-pg1-f195.google.com with SMTP id d13so2186938pgl.6;
+        Tue, 15 Sep 2020 08:41:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1fyZNgMatRtDRm5F6K1pH9IP38hhZV0WXalrPxYTXEE=;
+        b=gRH5GNj4jis9UwagTheFb7FS9mBgVZvQG5S7DlMdrl31EGyorrn5zRvtRsCUgE9uFX
+         WnB21tzeP721uhtVrTyy7MJsFg5n3pZi6ZoE6CxOlPkX9rznkVPc9AyVZP88JQiuIvsp
+         /XU3al9FKzUwe9B9YshGaI+7CTSgIACJ5Ky5Z1f9JcZQCKn5eNCX7DQUHutVz6U/9F66
+         tXb7h+QJvrKdo5b8RggIud9mIdbOORX60KsygWaJL/wcGTdMUnQAE8KcMzD71aCbLtTE
+         RQn+UtIJFknY1CAvFfWMlksTii9eHOpuMYBfJ5RAHSvTsIj7EWdk4DnfLfz2q7feMep0
+         r0OA==
+X-Gm-Message-State: AOAM530Zt/91J8F4s4RuoSDczaAzkGLf2SWriE8pQdKPCTvCOu6icjCI
+        Nt9bRSED4Jc72zwMJ1rTOx8o66f1MR1udZw=
+X-Google-Smtp-Source: ABdhPJxblB60qGKbpa/uRK4I1ZRiB+vOa9NARrpUQLiQeXrWQ1UDd3ksQ1EdqPx06vtV1foov4egLg==
+X-Received: by 2002:a92:8509:: with SMTP id f9mr14662065ilh.253.1600184054677;
+        Tue, 15 Sep 2020 08:34:14 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m87sm9266352ilb.58.2020.09.15.08.34.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 08:34:13 -0700 (PDT)
+Received: (nullmailer pid 1988443 invoked by uid 1000);
+        Tue, 15 Sep 2020 15:34:13 -0000
+Date:   Tue, 15 Sep 2020 09:34:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     daniel@ffwll.ch, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] dt-bindings: display: amlogic,meson-vpu: add
+ bindings for VPU found in AXG SoCs
+Message-ID: <20200915153413.GA1982161@bogus>
+References: <20200907081825.1654-1-narmstrong@baylibre.com>
+ <20200907081825.1654-2-narmstrong@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Sep 2020 21:02:30 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     mathieu.poirier@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ohad@wizery.com,
-        rishabhb@codeaurora.org
-Subject: Re: [PATCH] remoteproc: Fixup coredump debugfs disable request
-In-Reply-To: <20200915151837.GC478@uller>
-References: <20200915073416.20864-1-sibis@codeaurora.org>
- <20200915151837.GC478@uller>
-Message-ID: <e9709b3ceb5d4136ecac77d5416edde8@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907081825.1654-2-narmstrong@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Bjorn,
-Thanks for taking time to review the
-patch.
-
-On 2020-09-15 20:48, Bjorn Andersson wrote:
-> On Tue 15 Sep 07:34 UTC 2020, Sibi Sankar wrote:
+On Mon, Sep 07, 2020 at 10:18:20AM +0200, Neil Armstrong wrote:
+> The Amlogic AXG SoC family has a downgraded VPU supporting only MIPI-DSI output
+> after it's ENCL DPI encoder output.
 > 
->> Currently the coredump debugfs entry takes in "disable" to set the
->> coredump state to "disabled". Let's just accept the expected state
->> instead.
->> 
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../bindings/display/amlogic,meson-vpu.yaml   | 36 +++++++++++++++++--
+>  1 file changed, 33 insertions(+), 3 deletions(-)
 > 
-> I like this patch, but rather than arguing that it should match the 
-> name
-> of the internal state I think you should either argue that when read 
-> you
-> get "disabled" back or that "disabled" would make it consistent with 
-> the
-> recovery.
+> diff --git a/Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml b/Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml
+> index a8d202c9d004..e2e7d99d8ace 100644
+> --- a/Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml
+> +++ b/Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml
+> @@ -31,8 +31,10 @@ description: |
+>  
+>    The Video Input Unit is in charge of the pixel scanout from the DDR memory.
+>    It fetches the frames addresses, stride and parameters from the "Canvas" memory.
+> +  On the AXG family, the Video Input Unit direclty reads from DDR memory.
+>    This part is also in charge of the CSC (Colorspace Conversion).
+>    It can handle 2 OSD Planes and 2 Video Planes.
+> +  On the AXG family, only a single OSD plane without scalins is supported.
 
-Sure, I'll re-word the commit message.
-I probably choose the read back argument
-because that's what was odd about it in
-the first place.
+s/scalins/scaling/ ?
 
-> 
-> Regards,
-> Bjorn
-> 
->> Fixes: 3afdc59e43904 ("remoteproc: Add coredump debugfs entry")
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->>  drivers/remoteproc/remoteproc_debugfs.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/drivers/remoteproc/remoteproc_debugfs.c 
->> b/drivers/remoteproc/remoteproc_debugfs.c
->> index 2e3b3e22e1d01..7ca823f6aa638 100644
->> --- a/drivers/remoteproc/remoteproc_debugfs.c
->> +++ b/drivers/remoteproc/remoteproc_debugfs.c
->> @@ -94,7 +94,7 @@ static ssize_t rproc_coredump_write(struct file 
->> *filp,
->>  		goto out;
->>  	}
->> 
->> -	if (!strncmp(buf, "disable", count)) {
->> +	if (!strncmp(buf, "disabled", count)) {
->>  		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
->>  	} else if (!strncmp(buf, "inline", count)) {
->>  		rproc->dump_conf = RPROC_COREDUMP_INLINE;
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+Otherwise,
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Reviewed-by: Rob Herring <robh@kernel.org>
