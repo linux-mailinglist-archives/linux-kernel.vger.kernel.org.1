@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EEB26A16F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8479626A179
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgIOJBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgIOJBV (ORCPT
+        id S1726347AbgIOJFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:05:12 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:41797 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726208AbgIOJFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:01:21 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2132C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:01:20 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o68so1574945pfg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gYA3MtqAg2ctkfQ9eBGT89oH24A1NgpAEYYz4X8+KIM=;
-        b=NMtSMoy3zXP/UcZ4uZfHN9b+BPNf4GhtA4BMDvHfkWN3cY8Bv1gZyGKfB935ZbJXmr
-         KxNVmjSDQraXlj+eDsXBMNh63XMzy5VAVMzJU9u4A7q7Kg/OvlbGFFlqI9Ctq5y6wHVV
-         BkOEfpWB7XK6vvoaTt/FMVH5bjbl3PlhIOCbQqzb+XDKDIkraojgXTUZAVXGwNUKgGzl
-         vsAdM2Ffd2S4LdpHybkvcAnNVHKFG9v/D3sRT8RMQbPcgRF7WGw0xDUIjRHUIqU2LeeF
-         g4vhpsHuMu5//m1YIcmC1+5Jh7O/01FH5KN/HV64+K6JwxIkLNOCsuH0Z4FGbRhZheQH
-         M/sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gYA3MtqAg2ctkfQ9eBGT89oH24A1NgpAEYYz4X8+KIM=;
-        b=KvKaAW6P0VKcIjh32CWpJLfArmohylyJJf1NKGkbEBCCxqjB30k6FeBQxzx0Jd9uWl
-         Ekn2h9ANB7xphScMJOMEf8hXX5JyFji4PKjLK6Op+Y986U6QUtEOPLuDHUU5Muzm7fLo
-         GjaQeooyaZCDzg1vdf3g4556jNlJr87qD48PWCt7lzkNpiTA7UtTqrT4UweXGD1jzmrv
-         vo5l4UnbiouUZxYrxMQ/8BoTDd+yVLNlgQGU/Si9gzswmmAhh/nNGEyLfaxFgC4dZMHA
-         Qw/Gk6f1UEgzUZIkPqVaBgZwY2opxD9z91Q3uJNDRdF+8D2h8j0EI1T2u5Wsxi0rA0Tw
-         wIOg==
-X-Gm-Message-State: AOAM531GIQ1s/0yywbEARLlvoKJOgikXZxQXPv8xAQxbXpo1imXG+7i7
-        qEnbHNleg2Kj5JxItz7a2nQ=
-X-Google-Smtp-Source: ABdhPJx+Gawtwl0w/yHwVIqfHZrFR1dpr0t2SP8sF44aQ1Xw0SZXmCCselk9l27gK8Zd2+0rFphiGQ==
-X-Received: by 2002:a63:df42:: with SMTP id h2mr10335807pgj.239.1600160480491;
-        Tue, 15 Sep 2020 02:01:20 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id y126sm13023967pfy.138.2020.09.15.02.01.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 02:01:19 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 18:01:17 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] perf kvm: add kvm-stat for arm64
-Message-ID: <20200915090117.GA616@jagdpanzerIV.localdomain>
-References: <20200914091713.1485250-1-sergey.senozhatsky@gmail.com>
+        Tue, 15 Sep 2020 05:05:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600160708; x=1631696708;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=DH9KRJzkxhuMNPBchnQyI12kl0tRUGhcYDUgZ1rYYe0=;
+  b=A+F2K0kfvY0Jar6j+x50euNwZH6B75E2ESxf+g2JoG/HGqAk5ociO3la
+   /JR1My8OIzWm1iNP2iCLWGjjO/zG10VUYDcV5HEH8e39fvZ/uwC9MvmPw
+   XsFlzjFBSXBSzqk2hZ42YrKikzVnZ/y1obzfdZuIJCobn2S5U+7c/DECl
+   YIqB1mKlpAh7pChTgn9toel3e1CB9F0VAdETaQdXP0qgrut0a/JEXesbf
+   R8isoWhKCrJ69x5EoDcXkgsdbLtlfKPT7sH0M5Gie8uhimyY2QfQv9AlD
+   y9w5GZjH+zYnx2qNYt8QIzWDJ7QVu6wzeEsZn7SGk5KYsjr2Csc0yh122
+   Q==;
+IronPort-SDR: 8H0qUWzygEg56JrtTL6VVtOIxnCOFNR/q4aaB3MpoPKvsArAcqDjOIwrd4ccDl2RikxUl/ONvx
+ qaxKWbJQudxV2/3WlUVbWFgNGD0c+uWB+t8XISD4ZhkDlc3M9xBUYdVaWv0ysNIzq8m4uBjvMH
+ VkrE610alwoofUkyZiOjZJ6/OMFXQKeYcIog6/TzUeq5mMG9b6YbtR4sESO2+wMIQ7ILY2YjX/
+ 8H1eiAn+JvAcFXzvM7itIl9M17yz4rIS6XwDKuHIvbUDy31StTy19c/wmAwsjGtKLZylRYduR4
+ UiI=
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="86900386"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2020 02:05:03 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 02:05:02 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 15 Sep 2020 02:04:39 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <sakari.ailus@iki.fi>, <luca@lucaceresoli.net>,
+        <leonl@leopardimaging.com>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Eugen Hristev" <eugen.hristev@microchip.com>,
+        Sakari Ailus <sakari.ailus@ifi.fi>
+Subject: [PATCH v2 1/2] media: imx274: remove binning enum
+Date:   Tue, 15 Sep 2020 12:04:41 +0300
+Message-ID: <20200915090442.52322-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914091713.1485250-1-sergey.senozhatsky@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/09/14 18:17), Sergey Senozhatsky wrote:
-> Add initial support for perf kvm stat on arm64 platform.
-> 
-> Example:
->  # perf kvm stat report
->  Analyze events for all VMs, all VCPUs:
-> 
->    VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
-> 
->        IRQ      44110    79.55%     0.51%      0.93us   8364.85us     10.16us ( +-   8.66% )
->       TRAP      11337    20.45%    99.49%      1.31us 3999985.95us   7761.21us ( +-  13.23% )
-> 
->  Total Samples:55447, Total events handled time:88437041.52us.
+Binning enum is unused. Remove from driver.
 
-I will submit v2 shortly.
+Suggested-by: Sakari Ailus <sakari.ailus@ifi.fi>
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+---
+Changes in v2:
+- new patch
 
-	-ss
+ drivers/media/i2c/imx274.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+index e6aa9f32b6a8..69221c2c192c 100644
+--- a/drivers/media/i2c/imx274.c
++++ b/drivers/media/i2c/imx274.c
+@@ -65,7 +65,6 @@
+  */
+ #define IMX274_MIN_EXPOSURE_TIME		(4 * 260 / 72)
+ 
+-#define IMX274_DEFAULT_BINNING			IMX274_BINNING_OFF
+ #define IMX274_MAX_WIDTH			(3840)
+ #define IMX274_MAX_HEIGHT			(2160)
+ #define IMX274_MAX_FRAME_RATE			(120)
+@@ -145,12 +144,6 @@ static const struct regmap_config imx274_regmap_config = {
+ 	.cache_type = REGCACHE_RBTREE,
+ };
+ 
+-enum imx274_binning {
+-	IMX274_BINNING_OFF,
+-	IMX274_BINNING_2_1,
+-	IMX274_BINNING_3_1,
+-};
+-
+ /*
+  * Parameters for each imx274 readout mode.
+  *
+@@ -1837,7 +1830,7 @@ static int imx274_probe(struct i2c_client *client)
+ 	mutex_init(&imx274->lock);
+ 
+ 	/* initialize format */
+-	imx274->mode = &imx274_modes[IMX274_DEFAULT_BINNING];
++	imx274->mode = &imx274_modes[0];
+ 	imx274->crop.width = IMX274_MAX_WIDTH;
+ 	imx274->crop.height = IMX274_MAX_HEIGHT;
+ 	imx274->format.width = imx274->crop.width / imx274->mode->bin_ratio;
+-- 
+2.25.1
+
