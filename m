@@ -2,117 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3F7269C00
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854EA269C04
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726114AbgIOCll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 22:41:41 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:42866 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgIOCll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 22:41:41 -0400
-Received: by mail-pl1-f193.google.com with SMTP id y6so561939plt.9;
-        Mon, 14 Sep 2020 19:41:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YHjOcLugsS1SRAv7GbtgkiQstwhlZjOU+yVJ6z7LPrk=;
-        b=cNbyrhSF/E05VKNcdW+jWgS5VM/W4boIHGa6Inp33POOhAgcas4IdMVqwYxZPG2zU4
-         Ecz0qIhgX+DUHesZ2oQGpOCyE2rmbc3tmo5qCvkOxKfSPEKvUHGNyWqAoaP5k+oqEODf
-         bZhbUjiGxjtftY5wjC23fV++CCt7cg+bBEP3vaoqvYhdwBJDXn9pcKFPGfmRascjdcxh
-         KeqXH/i7n4PzEuDsiAvxxisKxZJOGeim6TpXzx9pSXH/urze7tavMfCGm8PrTeKBQhsT
-         arnglWghEUST0PAlKJSpmm7M+p7AhWMR3Z7GgL3C4YbUfNRHgv5gZqbCDrvBSxOgvoms
-         BGyQ==
-X-Gm-Message-State: AOAM532tBSyRhIF5z9k59tsvbT2uaaoN2SQMoEL68WaL8pXfCUzLBnMQ
-        Qf7kBMJtTOBDq8pGffKUJc0=
-X-Google-Smtp-Source: ABdhPJwdgoc08BybLtLJFzoD06lY58Wrp6GZp929awbXLqXQozQi4x60y4DETIU7MAnPPU/gucFUSQ==
-X-Received: by 2002:a17:90a:bf8c:: with SMTP id d12mr2174814pjs.157.1600137699394;
-        Mon, 14 Sep 2020 19:41:39 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id d8sm9411332pgt.19.2020.09.14.19.41.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 19:41:38 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 19:41:38 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, mturquette@baylibre.com,
-        Stephen Boyd <sboyd@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>
-Subject: Re: [PATCH v2 0/6] clk: axi-clk-gen: misc updates to the driver
-Message-ID: <20200915024138.GA1827@epycbox.lan>
-References: <20200810134252.68614-1-alexandru.ardelean@analog.com>
- <20200810134252.68614-8-alexandru.ardelean@analog.com>
- <CA+U=Dsr41kKGXmgE1KjdTzAso3rwtNXAEoSy+Li=uym7G=D=Jw@mail.gmail.com>
+        id S1726123AbgIOCmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 22:42:04 -0400
+Received: from mga02.intel.com ([134.134.136.20]:58954 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726035AbgIOCmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 22:42:02 -0400
+IronPort-SDR: AB/2b5g1mhnqbDWad7WIFULemAnflptnRXCzhImn/kBPFYa1zl5ZEB5Sj9gvdHUgZrRmVp2sG9
+ GRj0JqTciCoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="146879518"
+X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
+   d="scan'208";a="146879518"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 19:42:02 -0700
+IronPort-SDR: BmrQGyB+8l574LwXi+Sq9NLBI0yRDeieQgipDhcbe6Xk0rr16sfhjEsOw1tzOMjx/ct/hoZSqz
+ h14tUu38B/9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
+   d="scan'208";a="343330939"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Sep 2020 19:42:01 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id B4C26301C59; Mon, 14 Sep 2020 19:42:01 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 19:42:01 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>
+Subject: Re: [PATCH 1/2] KVM: VMX: Move IRQ invocation to assembly subroutine
+Message-ID: <20200915024201.GA13818@tassilo.jf.intel.com>
+References: <20200914195634.12881-1-sean.j.christopherson@intel.com>
+ <20200914195634.12881-2-sean.j.christopherson@intel.com>
+ <20200914204024.w3rpjon64d3fesys@treble>
+ <20200914210719.GB7084@sjchrist-ice>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+U=Dsr41kKGXmgE1KjdTzAso3rwtNXAEoSy+Li=uym7G=D=Jw@mail.gmail.com>
+In-Reply-To: <20200914210719.GB7084@sjchrist-ice>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:11:05AM +0300, Alexandru Ardelean wrote:
-> On Mon, Aug 10, 2020 at 4:41 PM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
-> >
-> > These patches synchronize the driver with the current state in the
-> > Analog Devices Linux tree:
-> >   https://github.com/analogdevicesinc/linux/
-> >
-> > They have been in the tree for about 2-3, so they did receive some
-> > testing.
-> 
-> Ping on this series.
-> Do I need to do a re-send?
+On Mon, Sep 14, 2020 at 02:07:19PM -0700, Sean Christopherson wrote:
+> 16-byte aligned to correctly mimic CPU behavior when vectoring an IRQ/NMI.
+> When not changing stack, the CPU aligns RSP before pushing the frame.
 
-I've applied the FPGA one, the other ones should go through the clock
-tree I think?
+16 byte alignment is not needed for the internal kernel ABI because it doesn't use
+SSE.
+
+-Andi
 
 > 
-> >
-> > Highlights are:
-> > * Add support for fractional dividers (Lars-Peter Clausen)
-> > * Enable support for ZynqMP (UltraScale) (Dragos Bogdan)
-> > * Support frequency limits for ZynqMP (Mathias Tausen)
-> >   - And continued by Mircea Caprioru, to read them from the IP cores
-> >
-> > Changelog v1 -> v2:
-> > - in patch 'include: fpga: adi-axi-common.h: add definitions for supported FPGAs'
-> >   * converted enums to #define
-> >   * added Intel FPGA definitions
-> >   * added Device-Package definitions
-> >   * added INTEL / XILINX in the define names
-> >  definitions according to:
-> >  https://github.com/analogdevicesinc/hdl/blob/4e438261aa319b1dda4c593c155218a93b1d869b/library/scripts/adi_intel_device_info_enc.tcl
-> >  https://github.com/analogdevicesinc/hdl/blob/4e438261aa319b1dda4c593c155218a93b1d869b/library/scripts/adi_xilinx_device_info_enc.tcl
-> >
-> > Dragos Bogdan (1):
-> >   clk: axi-clkgen: add support for ZynqMP (UltraScale)
-> >
-> > Lars-Peter Clausen (2):
-> >   clk: axi-clkgen: Add support for fractional dividers
-> >   clk: axi-clkgen: Set power bits for fractional mode
-> >
-> > Mathias Tausen (1):
-> >   clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency limits
-> >
-> > Mircea Caprioru (2):
-> >   include: fpga: adi-axi-common.h: add definitions for supported FPGAs
-> >   clk: axi-clkgen: Add support for FPGA info
-> >
-> >  drivers/clk/Kconfig                 |   2 +-
-> >  drivers/clk/clk-axi-clkgen.c        | 253 ++++++++++++++++++++++------
-> >  include/linux/fpga/adi-axi-common.h | 103 +++++++++++
-> >  3 files changed, 302 insertions(+), 56 deletions(-)
-> >
-> > --
-> > 2.17.1
-> >
-
-Thanks,
-Moritz
+> The above shenanigans work because the x86-64 ABI also requires RSP to be
+> 16-byte aligned prior to CALL.  RSP is thus 8-byte aligned due to CALL
+> pushing the return IP, and so creating the stack frame by pushing RBP makes
+> it 16-byte aliagned again.
+> 
+> > > +
+> > > +#ifdef CONFIG_X86_64
+> > > +	push $__KERNEL_DS
+> > > +	push %_ASM_BP
+> > > +#endif
+> > > +	pushf
+> > > +	push $__KERNEL_CS
+> > > +	CALL_NOSPEC _ASM_ARG1
+> > > +
+> > > +	/*
+> > > +	 * "Restore" RSP from RBP, even though IRET has already unwound RSP to
+> > > +	 * the correct value.  objtool doesn't know the target will IRET and so
+> > > +	 * thinks the stack is getting walloped (without the explicit restore).
+> > > +	 */
+> > > +	mov %_ASM_BP, %rsp
+> > > +	pop %_ASM_BP
+> > > +	ret
+> > 
+> > BTW, there *is* actually an unwind hint for this situation:
+> > UNWIND_HINT_RET_OFFSET.
+> 
+> I played with that one, but for the life of me couldn't figure out how to
+> satisfy both the "stack size" and "cfa.offset" checks.  In the code below,
+> cfa.offset will be 8, stack_size will be 40 and initial_func_cfi.cfa.offset
+> will be 8.  But rereading this, I assume I missed something that would allow
+> maniuplating cfa.offset?  Or maybe I botched my debugging?
+> 
+> static bool has_modified_stack_frame(struct instruction *insn, struct insn_state *state)
+> {
+> 	...
+> 
+>         if (cfi->cfa.offset != initial_func_cfi.cfa.offset + ret_offset)
+>                 return true;
+> 
+>         if (cfi->stack_size != initial_func_cfi.cfa.offset + ret_offset)
+>                 return true;
+> 
+> 	...
+> }
+>  
+> > So you might be able to do something like the following (depending on
+> > what your alignment requirements actually are):
+> > 
+> > SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
+> > #ifdef CONFIG_X86_64
+> > 	push $__KERNEL_DS
+> > 	push %_ASM_BP
+> > #endif
+> > 	pushf
+> > 	push $__KERNEL_CS
+> > 	CALL_NOSPEC _ASM_ARG1
+> > 
+> > 	/* The call popped the pushes */
+> > 	UNWIND_HINT_RET_OFFSET sp_offset=32
+> > 
+> > 	ret
+> > SYM_FUNC_END(vmx_do_interrupt_nmi_irqoff)
+> > 
+> > -- 
+> > Josh
+> > 
