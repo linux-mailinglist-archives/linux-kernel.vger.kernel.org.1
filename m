@@ -2,115 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FAF26B8DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2415426B8D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgIPAvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
+        id S1726860AbgIPAvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726376AbgIOLg3 (ORCPT
+        with ESMTP id S1726381AbgIOLk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:36:29 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D355C061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:36:28 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id o8so2901568otl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:36:28 -0700 (PDT)
+        Tue, 15 Sep 2020 07:40:27 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D45CC06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:40:24 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id l126so1779525pfd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:40:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6BTH4hYV4B4dr8UvozyKIS6RwtFNWec8KfhyM0AE6Qc=;
-        b=hOwgrJB4oFdOSRj3vyxBUqBo2w70rKKrtDqGxTxuPUHxBSRKqAfaYTSiTsTVjL3QWg
-         +SxuVlbaeUK01wBEpy1a7Mv4cN/GW8ibCuDmTv+5/5LSlEakqyfLwzpHQLv2/DYJYekt
-         7V9H3bomGcTmIHdO+0J+J20rUugFpv7WctV0SQ/HQ32ceAPS4qf5WU64e35bvSM3A8eD
-         zQ6tpOg1hcaoSLhevNSvjWxGwHosppuhr52e9hUxVt0sZcvvi/bsjRSN/1Q5mngOfIlz
-         sj7gq0+zdDflbqY7ImsDJxRW2UTMjZpMvSdV7JpSnoWFITXXb/GQgFvqISagP6yoJkS2
-         OQHA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UZTeZgS/HRogQFGvFWOGASfxBZXKDJCSTQPpZUgR/Es=;
+        b=vxnijL8mD9fvf864vGCOCOtWI6+tMeoadJgLcONMkLvgHCNOX7kdC9XC/M93DzSeaH
+         QGPzRRlkpg27B6cazJeQWQcukneWZzkX3TsmMEKNulhclV6UHsbzVnsPK/v0pmwaQ9PS
+         6kv02KQB0aYp44SStbAb+j15rXzKYFiZ7+H+6hZ+xyyepznt5H0/uDGGQt1c6hlgIHlU
+         3LU18HP4i4iP29wIDm8jOpJUNZbfzovYBwpQfdofgF8EwvrZGxBy6edMzo0oZIlWN0IF
+         PZlGnm0Af0AhMKADYufJz8mXCJ4ak48VmgKSfTH+aKg8OZneNx4RDA7tedMxIyRjfPEE
+         JELw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6BTH4hYV4B4dr8UvozyKIS6RwtFNWec8KfhyM0AE6Qc=;
-        b=nfCEorowKtyxgf3B8IFOzduIsX+/Pe4U0QB/n1cKsqn5ocinOIQ+E9RwZ1Xs07bs0p
-         VKQkVyC7shcuaWk5AJ8OCwITFFEWA6B9f8Ij2d3T0iKUlwUSKzs2n4M3+x/xe24vy/gz
-         /r9vaZX9XX0d+c1xwHfvseVOKO1f6BEgf8aDnrqnGf9PcckmRnnBem+dWu+DJHF8kjyD
-         5lUQ/YOVo54tRY5xqw1UUt8T9JmM0SqgIlkCdPFGcmdEZmh5IoQxvYKyW48dE4JQRpRk
-         Ix89rhjoNYKwYTFUbLG7iW7TJ+Va6fSt8EuZM1Nr19Y6Ymoh/XdiUmA+bH+UBUblWfNC
-         lIuw==
-X-Gm-Message-State: AOAM530tBHUBlKRBFda9G/JpgQ/6zLUd5KDLbbU+5wpjMRyE78wbDBWD
-        fcevi88CLlFYXkzkST7TfabSng0OAPTr943O0F4=
-X-Google-Smtp-Source: ABdhPJz8e6ND+g18CYru0/1P/vFxdNofaG3uFX6lMhnfzByDW1SMix/YcWhLiyovyHoTtx2bQTYB+qTVAJa/j+740Tw=
-X-Received: by 2002:a9d:758c:: with SMTP id s12mr11873480otk.237.1600169787933;
- Tue, 15 Sep 2020 04:36:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UZTeZgS/HRogQFGvFWOGASfxBZXKDJCSTQPpZUgR/Es=;
+        b=nMmYZro8NGa4XwNzpiGiy0Y7lVlOi8ZhQKiPj8wuqY0sPECR00tMBZZ7oHc2A3pnC7
+         +eaYJNNnCIscSD5tfv+Pe3xHCXKDNt1BBx74YleCGrIbUEy4UjT/JNxBgCIybR/QFqJU
+         KKs3yhcLJMnScDwFqYlyaQSa3uJmR12y71T1eQ0I50NNiFkrCa3CByaFCFPp+UTkJptM
+         OI/Iv3phD26/+oYLhKPgvbYV6ORGKP2NBw27SLYT2Oxrbj9hPIR5HrgksbtH8lijrQzJ
+         tKlbKpg0OIPZGs0u6cIs75FlDh9YCHJUAJCGmno0GIh35uabazFG9GDn1focCRApj6jN
+         0I0A==
+X-Gm-Message-State: AOAM53385ZTqENzLtPolU8UofM0n9Xt/ZLOav5NrJLznHCabELSVy+/Z
+        biYvpeFxMhG8XfvZyHllrC/9bw==
+X-Google-Smtp-Source: ABdhPJy1tf/Lc997XhgJ4gLpnYAYfclS51OkwLLYh8aJRd2O+CupL1BAPxlxg7PUeTNuwm2T+8BB8A==
+X-Received: by 2002:a63:5d07:: with SMTP id r7mr1494562pgb.440.1600170023688;
+        Tue, 15 Sep 2020 04:40:23 -0700 (PDT)
+Received: from Zs-MacBook-Pro.local.net ([103.136.220.73])
+        by smtp.gmail.com with ESMTPSA id u14sm13494204pfm.80.2020.09.15.04.40.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Sep 2020 04:40:23 -0700 (PDT)
+From:   zangchunxin@bytedance.com
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Chunxin Zang <zangchunxin@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v3] mm/vmscan: add a fatal signals check in drop_slab_node
+Date:   Tue, 15 Sep 2020 19:40:01 +0800
+Message-Id: <20200915114001.79950-1-zangchunxin@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-References: <20200914100340.17608-1-vincent.guittot@linaro.org>
- <20200914100340.17608-5-vincent.guittot@linaro.org> <CAPJCdBmNK2ZbvsOkzx=6TnzSD=EN28MjD=4ZsmnWjb907MC41g@mail.gmail.com>
- <CAKfTPtC1Z7bAN6WpgdjzpToExR63NL7rGCUpFzT3O6fM1OECkQ@mail.gmail.com>
-In-Reply-To: <CAKfTPtC1Z7bAN6WpgdjzpToExR63NL7rGCUpFzT3O6fM1OECkQ@mail.gmail.com>
-From:   Jiang Biao <benbjiang@gmail.com>
-Date:   Tue, 15 Sep 2020 19:36:16 +0800
-Message-ID: <CAPJCdBni3MG2qO-JENao3G0r+q6JjkP3UrX3gxYT0QqRg-bMuw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] sched/fair: reduce busy load balance interval
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Vincent
+From: Chunxin Zang <zangchunxin@bytedance.com>
 
-On Tue, 15 Sep 2020 at 17:28, Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Tue, 15 Sep 2020 at 11:11, Jiang Biao <benbjiang@gmail.com> wrote:
-> >
-> > Hi, Vincent
-> >
-> > On Mon, 14 Sep 2020 at 18:07, Vincent Guittot
-> > <vincent.guittot@linaro.org> wrote:
-> > >
-> > > The busy_factor, which increases load balance interval when a cpu is busy,
-> > > is set to 32 by default. This value generates some huge LB interval on
-> > > large system like the THX2 made of 2 node x 28 cores x 4 threads.
-> > > For such system, the interval increases from 112ms to 3584ms at MC level.
-> > > And from 228ms to 7168ms at NUMA level.
-> > Agreed that the interval is too big for that case.
-> > But would it be too small for an AMD environment(like ROME) with 8cpu
-> > at MC level(CCX), if we reduce busy_factor?
->
-> Are you sure that this is too small ? As mentioned in the commit
-> message below, I tested it on small system (2x4 cores Arm64) and i
-> have seen some improvements
-Not so sure. :)
-Small interval means more frequent balances and more cost consumed for
-balancing, especially for pinned vm cases.
-For our case, we have AMD ROME servers made of 2node x 48cores x
-2thread, and 8c at MC level(within a CCX). The 256ms interval seems a
-little too big for us, compared to Intel Cascadlake CPU with 48c at MC
-level, whose balance interval is 1536ms. 128ms seems a little more
-waste. :)
-I guess more balance costs may hurt the throughput of sysbench like
-benchmark.. Just a guess.
+On our server, there are about 10k memcg in one machine. They use memory
+very frequently. We have observed that drop_caches can take a
+considerable amount of time, and can't stop it.
 
->
-> > For that case, the interval could be reduced from 256ms to 128ms.
-> > Or should we define an MIN_INTERVAL for MC level to avoid too small interval?
->
-> What would be a too small interval ?
-That's hard to say. :)
-My guess is just for large server system cases.
+There are two reasons:
+1. There is somebody constantly generating more objects to reclaim
+   on drop_caches, result the 'freed' always bigger than 10.
+2. The process has no chance to process signals.
 
-Thanks.
-Regards,
-Jiang
+We can get the following info through 'ps':
+
+  root:~# ps -aux | grep drop
+  root  357956 ... R    Aug25 21119854:55 echo 3 > /proc/sys/vm/drop_caches
+  root 1771385 ... R    Aug16 21146421:17 echo 3 > /proc/sys/vm/drop_caches
+  root 1986319 ... R    18:56 117:27 echo 3 > /proc/sys/vm/drop_caches
+  root 2002148 ... R    Aug24 5720:39 echo 3 > /proc/sys/vm/drop_caches
+  root 2564666 ... R    18:59 113:58 echo 3 > /proc/sys/vm/drop_caches
+  root 2639347 ... R    Sep03 2383:39 echo 3 > /proc/sys/vm/drop_caches
+  root 3904747 ... R    03:35 993:31 echo 3 > /proc/sys/vm/drop_caches
+  root 4016780 ... R    Aug21 7882:18 echo 3 > /proc/sys/vm/drop_caches
+
+Use bpftrace follow 'freed' value in drop_slab_node:
+
+  root:~# bpftrace -e 'kprobe:drop_slab_node+70 {@ret=hist(reg("bp")); }'
+  Attaching 1 probe...
+  ^B^C
+
+  @ret:
+  [64, 128)        1 |                                                    |
+  [128, 256)      28 |                                                    |
+  [256, 512)     107 |@                                                   |
+  [512, 1K)      298 |@@@                                                 |
+  [1K, 2K)       613 |@@@@@@@                                             |
+  [2K, 4K)      4435 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+  [4K, 8K)       442 |@@@@@                                               |
+  [8K, 16K)      299 |@@@                                                 |
+  [16K, 32K)     100 |@                                                   |
+  [32K, 64K)     139 |@                                                   |
+  [64K, 128K)     56 |                                                    |
+  [128K, 256K)    26 |                                                    |
+  [256K, 512K)     2 |                                                    |
+
+We need one path to stop the process.
+
+Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+
+	changelogs in v3: 
+	1) update the description of the patch.
+		v2 named: mm/vmscan: fix infinite loop in drop_slab_node
+
+	changelogs in v2: 
+	1) via check fatal signal break loop.
+
+ mm/vmscan.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index b6d84326bdf2..6b2b5d420510 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -704,6 +704,9 @@ void drop_slab_node(int nid)
+ 	do {
+ 		struct mem_cgroup *memcg = NULL;
+ 
++		if (signal_pending(current))
++			return;
++
+ 		freed = 0;
+ 		memcg = mem_cgroup_iter(NULL, NULL, NULL);
+ 		do {
+-- 
+2.11.0
+
