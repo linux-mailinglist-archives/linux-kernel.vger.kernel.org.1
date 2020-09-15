@@ -2,180 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7B026A249
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E1E26A24C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgIOJdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:33:45 -0400
-Received: from gofer.mess.org ([88.97.38.141]:56753 "EHLO gofer.mess.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726208AbgIOJdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:33:44 -0400
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 08B51C6366; Tue, 15 Sep 2020 10:33:42 +0100 (BST)
-Date:   Tue, 15 Sep 2020 10:33:42 +0100
-From:   Sean Young <sean@mess.org>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
- system
-Message-ID: <20200915093342.GA24139@gofer.mess.org>
-References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
+        id S1726480AbgIOJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:33:54 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:40910 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726208AbgIOJdt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:33:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U90t1fN_1600162424;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U90t1fN_1600162424)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 15 Sep 2020 17:33:45 +0800
+Date:   Tue, 15 Sep 2020 17:33:44 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH v2 1/7] kernel/resource: make
+ release_mem_region_adjustable() never fail
+Message-ID: <20200915093344.GA7324@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200908201012.44168-1-david@redhat.com>
+ <20200908201012.44168-2-david@redhat.com>
+ <20200915021012.GC2007@L-31X9LVDL-1304.local>
+ <927904b1-1909-f11f-483e-8012bda8ad0c@redhat.com>
+ <20200915090612.GA6936@L-31X9LVDL-1304.local>
+ <bc324c26-3638-ffa6-ee01-68a659183adf@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <bc324c26-3638-ffa6-ee01-68a659183adf@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 15, 2020 at 11:15:53AM +0200, David Hildenbrand wrote:
+>On 15.09.20 11:06, Wei Yang wrote:
+>> On Tue, Sep 15, 2020 at 09:35:30AM +0200, David Hildenbrand wrote:
+>>>
+>>>>> static int __ref try_remove_memory(int nid, u64 start, u64 size)
+>>>>> {
+>>>>> 	int rc = 0;
+>>>>> @@ -1777,7 +1757,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+>>>>> 		memblock_remove(start, size);
+>>>>> 	}
+>>>>>
+>>>>> -	__release_memory_resource(start, size);
+>>>>> +	release_mem_region_adjustable(&iomem_resource, start, size);
+>>>>>
+>>>>
+>>>> Seems the only user of release_mem_region_adjustable() is here, can we move
+>>>> iomem_resource into the function body? Actually, we don't iterate the resource
+>>>> tree from any level. We always start from the root.
+>>>
+>>> You mean, making iomem_resource implicit? I can spot that something
+>>> similar was done for
+>>>
+>>> #define devm_release_mem_region(dev, start, n) \
+>>> 	__devm_release_region(dev, &iomem_resource, (start), (n))
+>>>
+>> 
+>> What I prefer is remove iomem_resource from the parameter list. Just use is in
+>> the function body.
+>> 
+>> For the example you listed, __release_region() would have varies of *parent*,
+>> which looks reasonable to keep it here.
+>
+>Yeah I got that ("making iomem_resource implicit"), as I said:
+>
 
-Hi Joakim,
+Thanks
 
-Thanks for your patch, I think it looks good in principle but needs a
-few small fixes.
+>>> I'll send an addon patch for that, ok? - thanks.
+>
+>-- 
+>Thanks,
+>
+>David / dhildenb
 
-On Tue, Sep 15, 2020 at 11:02:02PM +0800, Joakim Zhang wrote:
-> GPIO IR receive is much rely on interrupt response, uneven interrupt
-> latency will lead to incorrect timing, so the decoder fails to decode
-> it. The issue is particularly acute on systems which supports
-> cpuidle, dynamically disable and enable cpuidle can solve this problem
-> to a great extent.
-
-This is the first soc to be affected by this problem, and gpio-ir-recv
-has been used on my systems. For example, the raspberry pi has cpu idle
-enabled and does not suffer from this problem. There are many more; this
-driver has been used on many arm devices, which will have cpuidle enabled.
-
-> 
-> However, there is a downside to this approach, the measurement of header
-> on the first frame may incorrect. Test on i.MX8M serials, when enable
-> cpuidle, interrupt latency could be about 500us.
-> 
-> With this patch:
-> 1. has no side effect on non-cpuidle system.
-> 2. latency is still much longer for the first gpio interrupt on cpuidle
-> system, so the first frame may not be decoded. Generally, RC would transmit
-> multiple frames at once press, we can sacrifice the first frame.
-> 
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  drivers/media/rc/gpio-ir-recv.c | 49 ++++++++++++++++++++++++++++++++-
->  1 file changed, 48 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/rc/gpio-ir-recv.c b/drivers/media/rc/gpio-ir-recv.c
-> index a20413008c3c..42c942ce98cd 100644
-> --- a/drivers/media/rc/gpio-ir-recv.c
-> +++ b/drivers/media/rc/gpio-ir-recv.c
-> @@ -11,6 +11,8 @@
->  #include <linux/of.h>
->  #include <linux/of_gpio.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/pm_qos.h>
->  #include <linux/irq.h>
->  #include <media/rc-core.h>
->  
-> @@ -20,17 +22,36 @@ struct gpio_rc_dev {
->  	struct rc_dev *rcdev;
->  	struct gpio_desc *gpiod;
->  	int irq;
-> +	struct pm_qos_request qos;
->  };
->  
->  static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)
->  {
-> -	int val;
-> +	int ret, val;
->  	struct gpio_rc_dev *gpio_dev = dev_id;
-> +	struct device *dev = gpio_dev->rcdev->dev.parent;
-> +
-> +	/*
-> +	 * For cpuidle system:
-
-For some cpuidle systems, not all. This is why this feature needs a
-device tree option for enabling. Otherwise, it will negatively affect
-power usage on e.g. raspberry pi.
-
-> +	 * Respond to interrupt taking more latency when cpu in idle.
-> +	 * Invoke asynchronous pm runtime get from interrupt context,
-> +	 * this may introduce a millisecond delay to call resume callback,
-> +	 * where to disable cpuilde.
-> +	 *
-> +	 * Two issues lead to fail to decode first frame, one is latency to
-> +	 * respond interupt, another is delay introduced by async api.
-> +	 */
-> +	ret = pm_runtime_get(dev);
-> +	if (ret < 0)
-> +		return IRQ_NONE;
-
-If we end up here, we also abandon sending the IR to rc-core (below). I
-don't think it should do that. It should call ir_raw_event_store_edge()
-always even if it can't do the pm things.
-
->  
->  	val = gpiod_get_value(gpio_dev->gpiod);
->  	if (val >= 0)
->  		ir_raw_event_store_edge(gpio_dev->rcdev, val == 1);
->  
-> +	pm_runtime_mark_last_busy(dev);
-> +	pm_runtime_put_autosuspend(dev);
-> +
->  	return IRQ_HANDLED;
->  }
->  
-> @@ -92,6 +113,12 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, gpio_dev);
->  
-> +
-> +	pm_runtime_set_autosuspend_delay(dev, (rcdev->timeout / 1000 / 1000));
-
-rcdev->timeout is in microseconds (since very recently), so this is wrong.
-Also, the timeout can be changed using the LIRC_SET_REC_TIMEOUT ioctl
-(using ir-ctl -t in userspace). The autosuspend delay should be updated
-when this happens. This can be done by implementing the s_timeout rcdev
-function.
-
-> +	pm_runtime_use_autosuspend(dev);
-> +	pm_runtime_set_suspended(dev);
-> +	pm_runtime_enable(dev);
-> +
->  	return devm_request_irq(dev, gpio_dev->irq, gpio_ir_recv_irq,
->  				IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
->  				"gpio-ir-recv-irq", gpio_dev);
-> @@ -122,9 +149,29 @@ static int gpio_ir_recv_resume(struct device *dev)
->  	return 0;
->  }
->  
-> +static int gpio_ir_recv_runtime_suspend(struct device *dev)
-> +{
-> +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
-> +
-> +	cpu_latency_qos_remove_request(&gpio_dev->qos);
-> +
-> +	return 0;
-> +}
-> +
-> +static int gpio_ir_recv_runtime_resume(struct device *dev)
-> +{
-> +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
-> +
-> +	cpu_latency_qos_add_request(&gpio_dev->qos, 0);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct dev_pm_ops gpio_ir_recv_pm_ops = {
->  	.suspend        = gpio_ir_recv_suspend,
->  	.resume         = gpio_ir_recv_resume,
-> +	.runtime_suspend = gpio_ir_recv_runtime_suspend,
-> +	.runtime_resume  = gpio_ir_recv_runtime_resume,
->  };
->  #endif
->  
-> -- 
-> 2.17.1
+-- 
+Wei Yang
+Help you, Help me
