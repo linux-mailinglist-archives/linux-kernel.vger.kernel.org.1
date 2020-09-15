@@ -2,158 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8113D26B27C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E3A26B2FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727747AbgIOWsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727486AbgIOPox (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:44:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB112C06178B;
-        Tue, 15 Sep 2020 08:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=OuuyUbl6fRpyPuVA1h48uJIc/QfDHGM8Hj5cvHozx6E=; b=nWyXGSDHZdAP1YdTj9zwyd0An3
-        MlMyHu4EDE7/jPKWVYoR4f3clD4hD7rNBWZsPW6grmE89shWB506PIGrbQrJxLCW559zwrIu/R78o
-        CqR2JnObX2DO6f1pGA8X1IEkYGkbDjYrUq4at0c9bffQ3I7A2NyG4UXAyIhEY9JEDNNKdxrR8J6Is
-        bqrbID/SSL25EpVj8LoJXQcl31wEfR0gi5DIahn3m1JJy+w0gB5eQBPPLNYsjQa7naDGwYWcbPgAl
-        x03Ia1RtPhUSY1FHGhsoihUMlDW77O0vznKUCI3oPbR/jcyIgV7IIxqSKu2p0UQcMLjuOMp8CUIMX
-        b3uHkfyQ==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kID8P-0002cx-H9; Tue, 15 Sep 2020 15:44:45 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 11/12] bdi: invert BDI_CAP_NO_ACCT_WB
-Date:   Tue, 15 Sep 2020 17:18:28 +0200
-Message-Id: <20200915151829.1767176-12-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915151829.1767176-1-hch@lst.de>
-References: <20200915151829.1767176-1-hch@lst.de>
+        id S1726392AbgIOW5V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 18:57:21 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:6617 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727151AbgIOPVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:21:34 -0400
+Received: from DAG2EX05-BASE.srv.huawei-3com.com ([10.8.0.68])
+        by h3cspam02-ex.h3c.com with ESMTPS id 08FFK7o1080134
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 23:20:07 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 15 Sep 2020 23:20:12 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Tue, 15 Sep 2020 23:20:11 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     "minyard@acm.org" <minyard@acm.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] [v2] ipmi: retry to get device id when error
+Thread-Topic: [PATCH] [v2] ipmi: retry to get device id when error
+Thread-Index: AQHWim/ckayNXmMPfkaknRpd9ndbxKlnv4SAgAGgMND//+T7AIAAjHIg
+Date:   Tue, 15 Sep 2020 15:20:11 +0000
+Message-ID: <e390d34db7704e63a112dfca44ab4bc7@h3c.com>
+References: <20200914081313.31450-1-tian.xianting@h3c.com>
+ <20200914153937.GL15602@minyard.net>
+ <226f9cfc421c49278cad9572bb33ac3a@h3c.com>
+ <20200915145230.GB3674@minyard.net>
+In-Reply-To: <20200915145230.GB3674@minyard.net>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 08FFK7o1080134
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace BDI_CAP_NO_ACCT_WB with a positive BDI_CAP_WRITEBACK_ACCT to
-make the checks more obvious.  Also remove the pointless
-bdi_cap_account_writeback wrapper that just obsfucates the check.
+I get it now, thank you Corey :)
+I will send the patch for you review tomorrow.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/fuse/inode.c             |  3 ++-
- include/linux/backing-dev.h | 13 +++----------
- mm/backing-dev.c            |  1 +
- mm/page-writeback.c         |  4 ++--
- 4 files changed, 8 insertions(+), 13 deletions(-)
+-----Original Message-----
+From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey Minyard
+Sent: Tuesday, September 15, 2020 10:53 PM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: arnd@arndb.de; gregkh@linuxfoundation.org; openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] ipmi: retry to get device id when error
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 17b00670fb539e..581329203d6860 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1050,7 +1050,8 @@ static int fuse_bdi_init(struct fuse_conn *fc, struct super_block *sb)
- 		return err;
- 
- 	/* fuse does it's own writeback accounting */
--	sb->s_bdi->capabilities = BDI_CAP_NO_ACCT_WB | BDI_CAP_STRICTLIMIT;
-+	sb->s_bdi->capabilities &= ~BDI_CAP_WRITEBACK_ACCT;
-+	sb->s_bdi->capabilities |= BDI_CAP_STRICTLIMIT;
- 
- 	/*
- 	 * For a single fuse filesystem use max 1% of dirty +
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 5da4ea3dd0cc5c..b217344a2c63be 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -120,17 +120,17 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
-  *
-  * BDI_CAP_NO_ACCT_DIRTY:  Dirty pages shouldn't contribute to accounting
-  * BDI_CAP_NO_WRITEBACK:   Don't write pages back
-- * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
-+ * BDI_CAP_WRITEBACK_ACCT: Automatically account writeback pages
-  * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
-  */
- #define BDI_CAP_NO_ACCT_DIRTY	0x00000001
- #define BDI_CAP_NO_WRITEBACK	0x00000002
--#define BDI_CAP_NO_ACCT_WB	0x00000004
-+#define BDI_CAP_WRITEBACK_ACCT	0x00000004
- #define BDI_CAP_STRICTLIMIT	0x00000010
- #define BDI_CAP_CGROUP_WRITEBACK 0x00000020
- 
- #define BDI_CAP_NO_ACCT_AND_WRITEBACK \
--	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_ACCT_WB)
-+	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY)
- 
- extern struct backing_dev_info noop_backing_dev_info;
- 
-@@ -179,13 +179,6 @@ static inline bool bdi_cap_account_dirty(struct backing_dev_info *bdi)
- 	return !(bdi->capabilities & BDI_CAP_NO_ACCT_DIRTY);
- }
- 
--static inline bool bdi_cap_account_writeback(struct backing_dev_info *bdi)
--{
--	/* Paranoia: BDI_CAP_NO_WRITEBACK implies BDI_CAP_NO_ACCT_WB */
--	return !(bdi->capabilities & (BDI_CAP_NO_ACCT_WB |
--				      BDI_CAP_NO_WRITEBACK));
--}
--
- static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
- {
- 	return bdi_cap_writeback_dirty(inode_to_bdi(mapping->host));
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index f9a2842bd81c3d..ab0415dde5c66c 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -744,6 +744,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
- 		kfree(bdi);
- 		return NULL;
- 	}
-+	bdi->capabilities = BDI_CAP_WRITEBACK_ACCT;
- 	bdi->ra_pages = VM_READAHEAD_PAGES;
- 	bdi->io_pages = VM_READAHEAD_PAGES;
- 	return bdi;
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index e9c36521461aaa..0139f9622a92da 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2738,7 +2738,7 @@ int test_clear_page_writeback(struct page *page)
- 		if (ret) {
- 			__xa_clear_mark(&mapping->i_pages, page_index(page),
- 						PAGECACHE_TAG_WRITEBACK);
--			if (bdi_cap_account_writeback(bdi)) {
-+			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
- 				struct bdi_writeback *wb = inode_to_wb(inode);
- 
- 				dec_wb_stat(wb, WB_WRITEBACK);
-@@ -2791,7 +2791,7 @@ int __test_set_page_writeback(struct page *page, bool keep_write)
- 						   PAGECACHE_TAG_WRITEBACK);
- 
- 			xas_set_mark(&xas, PAGECACHE_TAG_WRITEBACK);
--			if (bdi_cap_account_writeback(bdi))
-+			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT)
- 				inc_wb_stat(inode_to_wb(inode), WB_WRITEBACK);
- 
- 			/*
--- 
-2.28.0
+On Tue, Sep 15, 2020 at 09:40:02AM +0000, Tianxianting wrote:
+> Hi Corey,
+> Thanks for your comments,
+> Please review these two patches, which are based on your guide.
+> 1, [PATCH] ipmi: print current state when error
+> https://lkml.org/lkml/2020/9/15/183
+> 2, [PATCH] [v3] ipmi: retry to get device id when error
+> https://lkml.org/lkml/2020/9/15/156
 
+Patches are applied and in my next tree.
+
+> 
+> As you said "You are having the same issue in the ipmi_si code. It's choosing defaults, but that's not ideal.  You probably need to handle this there, too, in a separate patch."
+> I am not sure whether I grasped what you said, The print ' device id 
+> demangle failed: -22' in commit message, is just triggered by bmc_device_id_handler->ipmi_demangle_device_id, this is the issue we met and is solving.
+> I found try_get_dev_id(in drivers/char/ipmi/ipmi_si_intf.c) also called ipmi_demangle_device_id(), do you mean if this ipmi_demangle_device_id() returned error, we also need to retry?
+
+Yes, I think so, retrying in try_get_dev_id() would be a good idea, I think.  You are probably getting sub-optimal performance if you don't do this.
+
+Thanks,
+
+-corey
+
+> 
+> Thanks a lot.
+> 
+> -----Original Message-----
+> From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey 
+> Minyard
+> Sent: Monday, September 14, 2020 11:40 PM
+> To: tianxianting (RD) <tian.xianting@h3c.com>
+> Cc: arnd@arndb.de; gregkh@linuxfoundation.org; 
+> openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] [v2] ipmi: retry to get device id when error
+> 
+> On Mon, Sep 14, 2020 at 04:13:13PM +0800, Xianting Tian wrote:
+> > We can't get bmc's device id with low probability when loading ipmi 
+> > driver, it caused bmc device register failed. When this issue 
+> > happened, we got below kernel printks:
+> 
+> This patch is moving in the right direction.  For the final patch(es), I can clean up the english grammar issues, since that's not your native language.  A few comments:
+> 
+> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: IPMI message handler: 
+> > device id demangle failed: -22
+> 
+> You are having the same issue in the ipmi_si code.  It's choosing defaults, but that's not ideal.  You probably need to handle this there, too, in a separate patch.
+> 
+> Can you create a separate patch to add a dev_warn() to the BT code when it returns IPMI_NOT_IN_MY_STATE_ERR, like I asked previously?  And print the current state when it happens.  That way we know where this issue is coming from and possibly fix the state machine.  I'm thinking that the BMC is just not responding, but I'd like to be sure.
+> 
+> Other comments inline...
+> 
+> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: using default values
+> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: req2rsp=5 secs retries=2
+> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: Unable to get the device id: -5
+> > 	[Wed Sep  9 19:52:04 2020] ipmi_si IPI0001:00: Unable to register
+> > device: error -5
+> > 
+> > When this issue happened, we want to manually unload the driver and 
+> > try to load it again, but it can't be unloaded by 'rmmod' as it is already 'in use'.
+> > 
+> > We add below 'printk' in handle_one_recv_msg(), when this issue 
+> > happened, the msg we received is "Recv: 1c 01 d5", which means the 
+> > data_len is 1, data[0] is 0xd5(completion code), which means "bmc cannot execute command.
+> > Command, or request parameter(s), not supported in present state".
+> > 	Debug code:
+> > 	static int handle_one_recv_msg(struct ipmi_smi *intf,
+> >                                struct ipmi_smi_msg *msg) {
+> >         	printk("Recv: %*ph\n", msg->rsp_size, msg->rsp);
+> > 		... ...
+> > 	}
+> > Then in ipmi_demangle_device_id(), it returned '-EINVAL' as 'data_len < 7'
+> > and 'data[0] != 0'.
+> > 
+> > We used this patch to retry to get device id when error happen, we 
+> > reproduced this issue again and the retry succeed on the first 
+> > retry, we finally got the correct msg and then all is ok:
+> > Recv: 1c 01 00 01 81 05 84 02 af db 07 00 01 00 b9 00 10 00
+> > 
+> > So use retry machanism in this patch to give bmc more opportunity to 
+> > correctly response kernel when we received specific completion code.
+> > 
+> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> > ---
+> >  drivers/char/ipmi/ipmi_msghandler.c | 29 +++++++++++++++++++++++++----
+> >  include/uapi/linux/ipmi_msgdefs.h   |  2 ++
+> >  2 files changed, 27 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/char/ipmi/ipmi_msghandler.c
+> > b/drivers/char/ipmi/ipmi_msghandler.c
+> > index 737c0b6b2..07d5be2cd 100644
+> > --- a/drivers/char/ipmi/ipmi_msghandler.c
+> > +++ b/drivers/char/ipmi/ipmi_msghandler.c
+> > @@ -34,6 +34,7 @@
+> >  #include <linux/uuid.h>
+> >  #include <linux/nospec.h>
+> >  #include <linux/vmalloc.h>
+> > +#include <linux/delay.h>
+> >  
+> >  #define IPMI_DRIVER_VERSION "39.2"
+> >  
+> > @@ -60,6 +61,9 @@ enum ipmi_panic_event_op {  #else  #define 
+> > IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_NONE  #endif
+> > +
+> > +#define GET_DEVICE_ID_MAX_RETRY	5
+> > +
+> >  static enum ipmi_panic_event_op ipmi_send_panic_event = 
+> > IPMI_PANIC_DEFAULT;
+> >  
+> >  static int panic_op_write_handler(const char *val, @@ -317,6 +321,7 
+> > @@ struct bmc_device {
+> >  	int                    dyn_guid_set;
+> >  	struct kref	       usecount;
+> >  	struct work_struct     remove_work;
+> > +	char		       cc; /* completion code */
+> >  };
+> >  #define to_bmc_device(x) container_of((x), struct bmc_device,
+> > pdev.dev)
+> >  
+> > @@ -2381,6 +2386,8 @@ static void bmc_device_id_handler(struct ipmi_smi *intf,
+> >  			msg->msg.data, msg->msg.data_len, &intf->bmc->fetch_id);
+> >  	if (rv) {
+> >  		dev_warn(intf->si_dev, "device id demangle failed: %d\n", rv);
+> > +		/* record completion code when error */
+> > +		intf->bmc->cc = msg->msg.data[0];
+> >  		intf->bmc->dyn_id_set = 0;
+> >  	} else {
+> >  		/*
+> > @@ -2426,19 +2433,34 @@ send_get_device_id_cmd(struct ipmi_smi 
+> > *intf) static int __get_device_id(struct ipmi_smi *intf, struct 
+> > bmc_device
+> > *bmc)  {
+> >  	int rv;
+> > -
+> > -	bmc->dyn_id_set = 2;
+> > +	unsigned int retry_count = 0;
+> 
+> You need to initialize bmc->cc to 0 here.
+> 
+> >  
+> >  	intf->null_user_handler = bmc_device_id_handler;
+> >  
+> > +retry:
+> > +	bmc->dyn_id_set = 2;
+> > +
+> >  	rv = send_get_device_id_cmd(intf);
+> >  	if (rv)
+> >  		return rv;
+> >  
+> >  	wait_event(intf->waitq, bmc->dyn_id_set != 2);
+> >  
+> > -	if (!bmc->dyn_id_set)
+> > +	if (!bmc->dyn_id_set) {
+> > +		if ((bmc->cc == IPMI_NOT_IN_MY_STATE_ERR
+> > +		     || bmc->cc == IPMI_NOT_IN_MY_STATE_ERR_1
+> > +		     || bmc->cc == IPMI_NOT_IN_MY_STATE_ERR_2)
+> > +		     && ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
+> > +			msleep(500);
+> > +			dev_warn(intf->si_dev,
+> > +				"retry to get bmc device id as completion code 0x%x\n",
+> > +				bmc->cc);
+> > +			bmc->cc = 0;
+> > +			goto retry;
+> > +		}
+> > +
+> >  		rv = -EIO; /* Something went wrong in the fetch. */
+> > +	}
+> >  
+> >  	/* dyn_id_set makes the id data available. */
+> >  	smp_rmb();
+> > @@ -3245,7 +3267,6 @@ channel_handler(struct ipmi_smi *intf, struct ipmi_recv_msg *msg)
+> >  		/* It's the one we want */
+> >  		if (msg->msg.data[0] != 0) {
+> >  			/* Got an error from the channel, just go on. */
+> > -
+> >  			if (msg->msg.data[0] == IPMI_INVALID_COMMAND_ERR) {
+> >  				/*
+> >  				 * If the MC does not support this diff --git 
+> > a/include/uapi/linux/ipmi_msgdefs.h
+> > b/include/uapi/linux/ipmi_msgdefs.h
+> > index c2b23a9fd..46a0df434 100644
+> > --- a/include/uapi/linux/ipmi_msgdefs.h
+> > +++ b/include/uapi/linux/ipmi_msgdefs.h
+> > @@ -70,6 +70,8 @@
+> >  #define IPMI_REQ_LEN_INVALID_ERR	0xc7
+> >  #define IPMI_REQ_LEN_EXCEEDED_ERR	0xc8
+> >  #define IPMI_NOT_IN_MY_STATE_ERR	0xd5	/* IPMI 2.0 */
+> > +#define IPMI_NOT_IN_MY_STATE_ERR_1	0xd1
+> 
+> For the above name, can you use IPMI_DEVICE_IN_FW_UPDATE_ERR to match the spec?
+> 
+> > +#define IPMI_NOT_IN_MY_STATE_ERR_2	0xd2
+> 
+> For the above name, can you use IPMI_DEVICE_IN_INIT_ERR to match the spec?
+> 
+> Thanks,
+> 
+> -corey
+> 
+> >  #define IPMI_LOST_ARBITRATION_ERR	0x81
+> >  #define IPMI_BUS_ERR			0x82
+> >  #define IPMI_NAK_ON_WRITE_ERR		0x83
+> > --
+> > 2.17.1
+> > 
