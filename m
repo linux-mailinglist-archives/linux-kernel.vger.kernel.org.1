@@ -2,111 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C314326B3A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F20B26B46E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgIOXHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727160AbgIOOr7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:47:59 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673E4C061220
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:54:39 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id lo4so5177273ejb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8j+lblg1sV2zcZbQlE+z8kJXho9SmxIjdqx8+vh4bbk=;
-        b=zs+wxazNDlzCncy6nDFpBVAZ1RQDAAaDIp4sgRNsL1wLq+A775Sonp1E73R0J25AVP
-         wy+SnCoRFJgQhHKHZxHVMgMyOAfT7swYrS/2Rkpjo9PLimRa4BF4VyHBmitwaNFAfcbz
-         PkB8vA6NoDvNsOx1u/zLDI1sXyOsnQ5gSnY6qSzqhMoaisXFVrFuMrFvjpWZULthxOZL
-         yBYcG7YdLvAu7bvVsIqNSivaWKPF3tEQyn6nXD0JOghQw6y+WAMp7D/93G/lWsu9zjwy
-         c9O1KIyEwffdY/suauSk9oektYPK33FRkuqorQX/7ozLl40NPRjHfLGr3LLDJQMrwpek
-         Fhyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8j+lblg1sV2zcZbQlE+z8kJXho9SmxIjdqx8+vh4bbk=;
-        b=ci4Mfn38hT+JipxAEdpYYXVAAQdeY5h9TmfINuUj7+emY+qkypUWyFVvhGOvQcGZ0C
-         abHWQ0GdqL6qVd/DLrKf4AfobROmqApCYUSdA223FrIlPTdm9ze7pwrr+rLH6YCrM2yE
-         ZKBiS5G/u65aMNlqO/HW0jbgJ1ISPNkQeqUo/bZYm9UksFzyj6KRyKlUhU4ZvvmZ9vuk
-         1ycx9ZE37z3nRuK1s7ywjpLf37K4xM3Ob8YyHw6Q+PTf6XTt40tNwRMMg4hxjM+C4ff8
-         JVXR/GUE3Osr40dDe8YKfz3SLnS2eQp//I/q6YET4rQhqdWX1N1NkK60RHM3ZcTwKVRP
-         2Xlg==
-X-Gm-Message-State: AOAM531Xiq6uTXOY1y3JHvfxQrgV2KlSMh/Nd8WvSElrFBfAhNK/2K7s
-        f1bKGPdsvmf38fHA+apR2YyuaQ==
-X-Google-Smtp-Source: ABdhPJzqkOj32ZaO+3P5Qf1khy2XosqxXmtjomHSAQuuF7ae+SHvA1glksbWQzSbDtjFWs0zPPHdnw==
-X-Received: by 2002:a17:907:417c:: with SMTP id oe20mr19627489ejb.322.1600178078059;
-        Tue, 15 Sep 2020 06:54:38 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id ef3sm7912845ejb.114.2020.09.15.06.54.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:54:37 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:54:19 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jiri Olsa <jolsa@kernel.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200915135419.GB1748187@myrica>
-References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
- <20200915131102.GA26439@willie-the-truck>
+        id S1727385AbgIOXYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:24:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727177AbgIOOiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:38:00 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DFCB22453;
+        Tue, 15 Sep 2020 14:27:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600180060;
+        bh=mCsVZeFmGfOlFW5jIKoW5RqqaJMHXJ4bKtdS9vWUi4Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ekc6VEebuq+0JvFgbZd0GiiZZnJFfPQD7+d+vSwmlVsf+kR4EPiJiSjkGkDikjxJE
+         GhGjWzRmYzEPV+fodh4Gzweupi0aapkNAWDTTmkQdxnv7icMMRabDFbhFjhaDBams/
+         ojhz0AgwM45scHIwqKj59POoTlaXvaIlo2/FPI+M=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 053/177] RDMA/rtrs-srv: Set .release function for rtrs srv device during device init
+Date:   Tue, 15 Sep 2020 16:12:04 +0200
+Message-Id: <20200915140656.174313908@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
+References: <20200915140653.610388773@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915131102.GA26439@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:11:03PM +0100, Will Deacon wrote:
-> >  		ret = build_insn(insn, ctx, extra_pass);
-> >  		if (ret > 0) {
-> >  			i++;
-> >  			if (ctx->image == NULL)
-> > -				ctx->offset[i] = ctx->idx;
-> > +				ctx->offset[i] = ctx->offset[i - 1];
-> 
-> Does it matter that we set the offset for both halves of a 16-byte BPF
-> instruction? I think that's a change in behaviour here.
+From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 
-After testing this patch a bit, I think setting only the first slot should
-be sufficient, and we can drop these two lines. It does make a minor
-difference, because although the BPF verifier normally rejects a program
-that jumps into the middle of a 16-byte instruction, it can validate it in
-some cases: 
+[ Upstream commit 39c2d639ca183a400ba3259fa0825714cbb09c53 ]
 
-        BPF_LD_IMM64(BPF_REG_0, 2)		// 16-byte immediate load
-        BPF_JMP_IMM(BPF_JLE, BPF_REG_0, 1, -2)	// If r0 <= 1, branch to
-        BPF_EXIT_INSN()				//  the middle of the insn
+The device .release function was not being set during the device
+initialization. This was leading to the below warning, in error cases when
+put_srv was called before device_add was called.
 
-The verifier detects that the condition is always false and doesn't follow
-the branch, hands the program to the JIT. So if we don't set the second
-slot, then we generate an invalid branch offset. But that doesn't really
-matter as the branch is never taken.
+Warning:
 
-Thanks,
-Jean
+Device '(null)' does not have a release() function, it is broken and must
+be fixed. See Documentation/kobject.txt.
+
+So, set the device .release function during device initialization in the
+__alloc_srv() function.
+
+Fixes: baa5b28b7a47 ("RDMA/rtrs-srv: Replace device_register with device_initialize and device_add")
+Link: https://lore.kernel.org/r/20200907102216.104041-1-haris.iqbal@cloud.ionos.com
+Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 8 --------
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 8 ++++++++
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+index 2f981ae970767..cf6a2be61695d 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+@@ -152,13 +152,6 @@ static struct attribute_group rtrs_srv_stats_attr_group = {
+ 	.attrs = rtrs_srv_stats_attrs,
+ };
+ 
+-static void rtrs_srv_dev_release(struct device *dev)
+-{
+-	struct rtrs_srv *srv = container_of(dev, struct rtrs_srv, dev);
+-
+-	kfree(srv);
+-}
+-
+ static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
+ {
+ 	struct rtrs_srv *srv = sess->srv;
+@@ -172,7 +165,6 @@ static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
+ 		goto unlock;
+ 	}
+ 	srv->dev.class = rtrs_dev_class;
+-	srv->dev.release = rtrs_srv_dev_release;
+ 	err = dev_set_name(&srv->dev, "%s", sess->s.sessname);
+ 	if (err)
+ 		goto unlock;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index b61a18e57aeba..28f6414dfa3dc 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1319,6 +1319,13 @@ static int rtrs_srv_get_next_cq_vector(struct rtrs_srv_sess *sess)
+ 	return sess->cur_cq_vector;
+ }
+ 
++static void rtrs_srv_dev_release(struct device *dev)
++{
++	struct rtrs_srv *srv = container_of(dev, struct rtrs_srv, dev);
++
++	kfree(srv);
++}
++
+ static struct rtrs_srv *__alloc_srv(struct rtrs_srv_ctx *ctx,
+ 				     const uuid_t *paths_uuid)
+ {
+@@ -1337,6 +1344,7 @@ static struct rtrs_srv *__alloc_srv(struct rtrs_srv_ctx *ctx,
+ 	srv->queue_depth = sess_queue_depth;
+ 	srv->ctx = ctx;
+ 	device_initialize(&srv->dev);
++	srv->dev.release = rtrs_srv_dev_release;
+ 
+ 	srv->chunks = kcalloc(srv->queue_depth, sizeof(*srv->chunks),
+ 			      GFP_KERNEL);
+-- 
+2.25.1
+
+
+
