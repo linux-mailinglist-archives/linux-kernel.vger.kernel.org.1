@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3938B26B65E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A3126B66A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbgIPADl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:03:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41390 "EHLO mail.kernel.org"
+        id S1726996AbgIPAEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:04:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726978AbgIOO3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:29:02 -0400
+        id S1726975AbgIOO3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:29:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FE97229CA;
-        Tue, 15 Sep 2020 14:21:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5C12229EF;
+        Tue, 15 Sep 2020 14:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179676;
-        bh=jNSqYVuOU/2FPWL0QJ9mzlgxzOuyOi0ordTUICspYz8=;
+        s=default; t=1600179679;
+        bh=lUSrtxYjJUxOVUSQgeAUqJGiNIU5YCTf8mKLkrJaroE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2A0kmAT+tlizQKBnk3IthbZoJX4HBHODt5esbyUl1odNiJVLNQizkCq25qOdSx4nQ
-         fyorW9eHCcelm/GwgeRwY0Zxc+u/mUduY/ciHYeiSDoW/nZ+fzeWuHJBvOCm4PsfgW
-         k1ipWxdPR0MxEQyxYGTwOTUI/X6dNdnuErLpngLA=
+        b=L05fT0n9tAgSWrSN6RL2dvRiFVkuzZ7tzqtogbIMBt6hik3SCu99LtviXIXabfe63
+         ipI7lwFW0COZHhByVIswf/FL9QTeE8lB/S1Djb68nJbpjPKgcmEsMIiE1TwrrpcEef
+         41CBf1Ucq/X6VJW/QBHPwsxjHHSAydWuNj0NQ2kE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Kochetkov <fido_max@inbox.ru>,
-        Maxim Kiselev <bigunclemax@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 075/132] iio: adc: ti-ads1015: fix conversion when CONFIG_PM is not set
-Date:   Tue, 15 Sep 2020 16:12:57 +0200
-Message-Id: <20200915140647.861620933@linuxfoundation.org>
+Subject: [PATCH 5.4 076/132] iio: cros_ec: Set Gyroscope default frequency to 25Hz
+Date:   Tue, 15 Sep 2020 16:12:58 +0200
+Message-Id: <20200915140647.909531729@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
 References: <20200915140644.037604909@linuxfoundation.org>
@@ -46,57 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kochetkov <fido_max@inbox.ru>
+From: Gwendal Grignou <gwendal@chromium.org>
 
-commit e71e6dbe96ac80ac2aebe71a6a942e7bd60e7596 upstream.
+commit 336306790b2bbf7ce837625fa3b24ba724d05838 upstream.
 
-To stop conversion ads1015_set_power_state() function call unimplemented
-function __pm_runtime_suspend() from pm_runtime_put_autosuspend()
-if CONFIG_PM is not set.
-In case of CONFIG_PM is not set: __pm_runtime_suspend() returns -ENOSYS,
-so ads1015_read_raw() failed because ads1015_set_power_state() returns an
-error.
+BMI160 Minimium gyroscope frequency in normal mode is 25Hz.
+When older EC firmware do not report their sensors frequencies,
+use 25Hz as the minimum for gyroscope to be sure it works on BMI160.
 
-If CONFIG_PM is disabled, there is no need to start/stop conversion.
-Fix it by adding return 0 function variant if CONFIG_PM is not set.
-
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
-Fixes: ecc24e72f437 ("iio: adc: Add TI ADS1015 ADC driver support")
-Tested-by: Maxim Kiselev <bigunclemax@gmail.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: ae7b02ad2f32d ("iio: common: cros_ec_sensors: Expose cros_ec_sensors frequency range via iio sysfs")
+Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/ti-ads1015.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/adc/ti-ads1015.c
-+++ b/drivers/iio/adc/ti-ads1015.c
-@@ -309,6 +309,7 @@ static const struct iio_chan_spec ads111
- 	IIO_CHAN_SOFT_TIMESTAMP(ADS1015_TIMESTAMP),
- };
- 
-+#ifdef CONFIG_PM
- static int ads1015_set_power_state(struct ads1015_data *data, bool on)
+--- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
++++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+@@ -57,10 +57,13 @@ static void get_default_min_max_freq(enu
  {
- 	int ret;
-@@ -326,6 +327,15 @@ static int ads1015_set_power_state(struc
- 	return ret < 0 ? ret : 0;
- }
- 
-+#else /* !CONFIG_PM */
-+
-+static int ads1015_set_power_state(struct ads1015_data *data, bool on)
-+{
-+	return 0;
-+}
-+
-+#endif /* !CONFIG_PM */
-+
- static
- int ads1015_get_adc_result(struct ads1015_data *data, int chan, int *val)
- {
+ 	switch (type) {
+ 	case MOTIONSENSE_TYPE_ACCEL:
+-	case MOTIONSENSE_TYPE_GYRO:
+ 		*min_freq = 12500;
+ 		*max_freq = 100000;
+ 		break;
++	case MOTIONSENSE_TYPE_GYRO:
++		*min_freq = 25000;
++		*max_freq = 100000;
++		break;
+ 	case MOTIONSENSE_TYPE_MAG:
+ 		*min_freq = 5000;
+ 		*max_freq = 25000;
 
 
