@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8585126A964
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4C926A96A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgIOQMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:12:51 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:38778 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727302AbgIOPW1 (ORCPT
+        id S1727536AbgIOQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:14:27 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36101 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727354AbgIOPWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:22:27 -0400
-Received: by mail-il1-f195.google.com with SMTP id t18so3369795ilp.5;
-        Tue, 15 Sep 2020 08:22:05 -0700 (PDT)
+        Tue, 15 Sep 2020 11:22:30 -0400
+Received: by mail-oi1-f195.google.com with SMTP id x19so4308177oix.3;
+        Tue, 15 Sep 2020 08:22:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2dmfNBb0or2XBWPH7M/N/gQr8odxPSG4GRXc89xeEQs=;
-        b=kI+tqO4rnfSfUIXlyg7ib6CIseb2RIx2ut26vxkA3hKLpa2S2hypmrDqM6XHFDUMRE
-         O2sDvQ1jDsXRbOrXhk5l0jQpk4m4jFB/6x97e5VafkeHtQ7DY89eM165n3YljzLGLvOa
-         zO5lVLmojGf17VAFi9QAoPX0EmEgrlWZoW5oOqecyZWtKoXR0BBqmiPs5gAFlZVeNDg7
-         kPQMD6T0b3/yvJczBIYz2WGagjRdIqieFzldPVE7sdkKdYETLhavLwOy7NEUy1Gil8YP
-         /kHqofIleSisEZ4OZccuA2jMmV1nJ0kQS0D58QzFkOBjas38ovaNbZfhnh8qpLAWkOS7
-         BCOQ==
-X-Gm-Message-State: AOAM531YScRqoiH/5jwLgssje2SnUvdgtQoVzGZ+fzGFs6NSEUbBrLu+
-        croyctrNGgen3bkFdRZpog==
-X-Google-Smtp-Source: ABdhPJzarGxOa8101phpgLhMEl8zzSnfyDc9QvxX1EgyRjavIVLGiApIp7im8HIM665ERMPXyFrw8A==
-X-Received: by 2002:a92:9f53:: with SMTP id u80mr16938322ili.42.1600183325322;
-        Tue, 15 Sep 2020 08:22:05 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id b8sm7756889ioa.33.2020.09.15.08.22.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 08:22:04 -0700 (PDT)
-Received: (nullmailer pid 1970179 invoked by uid 1000);
-        Tue, 15 Sep 2020 15:22:01 -0000
-Date:   Tue, 15 Sep 2020 09:22:01 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Yash Shah <yash.shah@sifive.com>
-Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com, bp@alien8.de,
-        mchehab@kernel.org, tony.luck@intel.com, aou@eecs.berkeley.edu,
-        james.morse@arm.com, rrichter@marvell.com,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        sachin.ghadi@sifive.com
-Subject: Re: [PATCH v2 0/3] SiFive DDR controller and EDAC support
-Message-ID: <20200915152201.GA1940827@bogus>
-References: <1599457679-8947-1-git-send-email-yash.shah@sifive.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ROuA6JYgT1yUVQHR4W9t/eQ9FLznlFdEs+Zytwjrg1U=;
+        b=ajvfXp2a4TDwgiph0q/bqjab0HTFgU1WR5jSlZ2uPpBjytXJc797dn1L59SmIIM+a2
+         G8VTcOC9Dt4i4NVUfgHoMHMNK+/qYBbaWbZvRwjWqRmE7mjLVqUNrDTUjuNaV93W1BJ2
+         QJQFL7zzpBeYZ4yj7EXu1rCBmMs/l6Sw3Y1mvMq4rEVJS7jE8Hk+O3MvegUY+oGUYQFy
+         oyk4RFSsN2R0pWrJSDxmpqlNnrvHCEJy+4z8i6OUQfvDAHtkQ5PuYTvacAqBp5HJ2JGp
+         iLX5iwgIyJb8nDCAVPTcPSAauQZUt54IpuiFrjfFm+Cm4FUJwLWO3yA9GUtSWatio8nn
+         c4xw==
+X-Gm-Message-State: AOAM5308W9Yk3ymW0RnrcEwKHtI6z/viKtoeQG9Cr4M3+sSLKCMjOxMf
+        8LYzzpPLhSKlml3TkpIUH3Ozv6Bo9Dxpkjj7cF4=
+X-Google-Smtp-Source: ABdhPJy2I/56jMzl7zYEoOktmV7EiZA/gk3FplPKxql7nRs7S0omJfV+RLO2GKlV7CWyeVHcLw03Lk6Z4MuNEP0rNnc=
+X-Received: by 2002:aca:3bc3:: with SMTP id i186mr3593580oia.148.1600183349438;
+ Tue, 15 Sep 2020 08:22:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599457679-8947-1-git-send-email-yash.shah@sifive.com>
+References: <20200915140110.11268-1-yuehaibing@huawei.com>
+In-Reply-To: <20200915140110.11268-1-yuehaibing@huawei.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Sep 2020 17:22:17 +0200
+Message-ID: <CAMuHMdXnuHnML3Gop4o3k_K9nYBRsc7w1cUgGcMrAso5oOKc5Q@mail.gmail.com>
+Subject: Re: [PATCH -next] soc: renesas: r8a779a0-sysc: Make
+ r8a779a0_sysc_info static
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 11:17:56AM +0530, Yash Shah wrote:
-> The series add supports for SiFive DDR controller driver. This driver
-> is use to manage the Cadence DDR controller present in SiFive SoCs.
-> Currently it manages only the EDAC feature of the DDR controller.
-> The series also adds Memory controller EDAC support for SiFive platform.
-> It register for notifier event from SiFive DDR controller driver.
+Hi Yue,
 
-This is an odd split and notifiers aren't a great interface. Why not 
-just combine these? Is there some other DDR controller functionality 
-planned for the driver? 
+On Tue, Sep 15, 2020 at 4:58 PM YueHaibing <yuehaibing@huawei.com> wrote:
+> Fix sparse warning:
+>
+> drivers/soc/renesas/r8a779a0-sysc.c:99:33: warning: symbol 'r8a779a0_sysc_info' was not declared. Should it be static?
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-FYI, highbank_mc_edac.c is also a Cadence controller. IIRC, the register 
-layout changes for every customer/design.
+Thanks for your patch!
 
-Rob
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+As commit 7f29315cf4211316 ("soc: renesas: r8a779a0-sysc: Add r8a779a0
+support") hasn't been merged into arm-soc yet, is it OK for you if I
+just fold your fix into the original commit?
+
+Thanks again!
+
+> --- a/drivers/soc/renesas/r8a779a0-sysc.c
+> +++ b/drivers/soc/renesas/r8a779a0-sysc.c
+> @@ -96,7 +96,7 @@ static struct r8a779a0_sysc_area r8a779a0_areas[] __initdata = {
+>         { "a1dsp1",     R8A779A0_PD_A1DSP1, R8A779A0_PD_A2CN1 },
+>  };
+>
+> -const struct r8a779a0_sysc_info r8a779a0_sysc_info __initconst = {
+> +static const struct r8a779a0_sysc_info r8a779a0_sysc_info __initconst = {
+>         .areas = r8a779a0_areas,
+>         .num_areas = ARRAY_SIZE(r8a779a0_areas),
+>  };
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
