@@ -2,91 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4C926A96A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B4326A98D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 18:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbgIOQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 12:14:27 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:36101 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727354AbgIOPWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:22:30 -0400
-Received: by mail-oi1-f195.google.com with SMTP id x19so4308177oix.3;
-        Tue, 15 Sep 2020 08:22:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ROuA6JYgT1yUVQHR4W9t/eQ9FLznlFdEs+Zytwjrg1U=;
-        b=ajvfXp2a4TDwgiph0q/bqjab0HTFgU1WR5jSlZ2uPpBjytXJc797dn1L59SmIIM+a2
-         G8VTcOC9Dt4i4NVUfgHoMHMNK+/qYBbaWbZvRwjWqRmE7mjLVqUNrDTUjuNaV93W1BJ2
-         QJQFL7zzpBeYZ4yj7EXu1rCBmMs/l6Sw3Y1mvMq4rEVJS7jE8Hk+O3MvegUY+oGUYQFy
-         oyk4RFSsN2R0pWrJSDxmpqlNnrvHCEJy+4z8i6OUQfvDAHtkQ5PuYTvacAqBp5HJ2JGp
-         iLX5iwgIyJb8nDCAVPTcPSAauQZUt54IpuiFrjfFm+Cm4FUJwLWO3yA9GUtSWatio8nn
-         c4xw==
-X-Gm-Message-State: AOAM5308W9Yk3ymW0RnrcEwKHtI6z/viKtoeQG9Cr4M3+sSLKCMjOxMf
-        8LYzzpPLhSKlml3TkpIUH3Ozv6Bo9Dxpkjj7cF4=
-X-Google-Smtp-Source: ABdhPJy2I/56jMzl7zYEoOktmV7EiZA/gk3FplPKxql7nRs7S0omJfV+RLO2GKlV7CWyeVHcLw03Lk6Z4MuNEP0rNnc=
-X-Received: by 2002:aca:3bc3:: with SMTP id i186mr3593580oia.148.1600183349438;
- Tue, 15 Sep 2020 08:22:29 -0700 (PDT)
+        id S1727610AbgIOQRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 12:17:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36412 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727451AbgIOPZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:25:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 969EDAC1D;
+        Tue, 15 Sep 2020 15:25:15 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 17:24:41 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] printk: ringbuffer: fix setting state in desc_read()
+Message-ID: <20200915152441.GB11813@alley>
+References: <20200914094803.27365-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-References: <20200915140110.11268-1-yuehaibing@huawei.com>
-In-Reply-To: <20200915140110.11268-1-yuehaibing@huawei.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Sep 2020 17:22:17 +0200
-Message-ID: <CAMuHMdXnuHnML3Gop4o3k_K9nYBRsc7w1cUgGcMrAso5oOKc5Q@mail.gmail.com>
-Subject: Re: [PATCH -next] soc: renesas: r8a779a0-sysc: Make
- r8a779a0_sysc_info static
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914094803.27365-1-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yue,
+On Mon 2020-09-14 11:54:02, John Ogness wrote:
+> It is expected that desc_read() will always set at least the
+> @state_var field. However, if the descriptor is in an inconsistent
+> state, no fields are set.
+> 
+> Also, the second load of @state_var is not stored in @desc_out and
+> so might not match the state value that is returned.
+> 
+> Always set the last loaded @state_var into @desc_out, regardless of
+> the descriptor consistency.
+> 
+> Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-On Tue, Sep 15, 2020 at 4:58 PM YueHaibing <yuehaibing@huawei.com> wrote:
-> Fix sparse warning:
->
-> drivers/soc/renesas/r8a779a0-sysc.c:99:33: warning: symbol 'r8a779a0_sysc_info' was not declared. Should it be static?
->
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Both patches are committed into printk/linux.git, branch printk-rework.
 
-Thanks for your patch!
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-As commit 7f29315cf4211316 ("soc: renesas: r8a779a0-sysc: Add r8a779a0
-support") hasn't been merged into arm-soc yet, is it OK for you if I
-just fold your fix into the original commit?
-
-Thanks again!
-
-> --- a/drivers/soc/renesas/r8a779a0-sysc.c
-> +++ b/drivers/soc/renesas/r8a779a0-sysc.c
-> @@ -96,7 +96,7 @@ static struct r8a779a0_sysc_area r8a779a0_areas[] __initdata = {
->         { "a1dsp1",     R8A779A0_PD_A1DSP1, R8A779A0_PD_A2CN1 },
->  };
->
-> -const struct r8a779a0_sysc_info r8a779a0_sysc_info __initconst = {
-> +static const struct r8a779a0_sysc_info r8a779a0_sysc_info __initconst = {
->         .areas = r8a779a0_areas,
->         .num_areas = ARRAY_SIZE(r8a779a0_areas),
->  };
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best Regards,
+Petr
