@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E72D26B799
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1A926B6D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgIPA0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:26:34 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58550 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgIOOMg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:12:36 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FE8qmv187090;
-        Tue, 15 Sep 2020 14:11:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=o5BZWz9vRhtIAktJp49EpkK+zy4zUK2pibMnUrf2Mns=;
- b=nOBe57CBEUTcNmIJtHHfCILHlFVj6V5Awsxahsz2IqjX/KL1CCtydwCulpy44bF5sZVf
- iBjtvH6EscDmGwBIFET+hPOhiObANn6A6bNzW/OEjCi+2BELj12CYIYUdeAgSuOYn2+U
- SvYM7sL0BUImRYsYdHenTX3e4l6F5/hSxdmLNCubumHmUrsCGpi+lVYEtUBn4rpQk4pc
- SSAp63frc4Cti75NVsDen+h8VLUCBLf2sUNM//dhqI+C31ICll662XCByQv4tBuMeQb0
- JSNJUN2HKp6tCPq+Acs75ZmaXjOS0mvu24j3GAH7fVSXsvGZ/t7FvbT28ys3w76xAxXs Qg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33gp9m592s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 14:11:54 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FE9qdF054985;
-        Tue, 15 Sep 2020 14:11:54 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33hm30k4sx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 14:11:54 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FEBpVa026881;
-        Tue, 15 Sep 2020 14:11:51 GMT
-Received: from [10.39.253.102] (/10.39.253.102)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 14:11:50 +0000
-Subject: Re: [PATCH] dma-direct: Fix potential NULL pointer dereference
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     konrad.wilk@oracle.com, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <1600178594-22801-1-git-send-email-thomas.tai@oracle.com>
- <20200915140719.GA14831@lst.de>
-From:   Thomas Tai <thomas.tai@oracle.com>
-Message-ID: <f5cba632-421a-f375-3697-51a182a53a32@oracle.com>
-Date:   Tue, 15 Sep 2020 10:11:51 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727052AbgIPAMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:12:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726938AbgIOO0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:26:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD2AD2245F;
+        Tue, 15 Sep 2020 14:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600179570;
+        bh=IJGbvK/EOOaibm70TZ2Guw+wM3bImoQ0GafNoiRZ7LY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=2iQl1GyR8twbpUmlaLFt+F/6ts3yMJQoJtn0Mguwb6xqGLOBSrlMvJ2HKk5Kzjnaa
+         mRzB5q0fpoe4YeFYu+rZyQt3lZd97/4X/akzJbfkyMmTtuxiP/jp2Dp0fEkYRbQt08
+         C66IdxTVMmInYYuir3S7JuhbLWX3ktJ6qnMLEndw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Anson Huang <Anson.Huang@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 009/132] ARM: dts: imx7ulp: Correct gpio ranges
+Date:   Tue, 15 Sep 2020 16:11:51 +0200
+Message-Id: <20200915140644.538491455@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
+References: <20200915140644.037604909@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <20200915140719.GA14831@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150118
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Anson Huang <Anson.Huang@nxp.com>
+
+[ Upstream commit deb6323b739c54e1a1e83cd3a2bae4901e3eebf6 ]
+
+Correct gpio ranges according to i.MX7ULP pinctrl driver:
+
+gpio_ptc: ONLY pin 0~19 are available;
+gpio_ptd: ONLY pin 0~11 are available;
+gpio_pte: ONLY pin 0~15 are available;
+gpio_ptf: ONLY pin 0~19 are available;
+
+Fixes: 20434dc92c05 ("ARM: dts: imx: add common imx7ulp dtsi support")
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/boot/dts/imx7ulp.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx7ulp.dtsi b/arch/arm/boot/dts/imx7ulp.dtsi
+index 3dac6898cdc57..0108b63df77d3 100644
+--- a/arch/arm/boot/dts/imx7ulp.dtsi
++++ b/arch/arm/boot/dts/imx7ulp.dtsi
+@@ -397,7 +397,7 @@
+ 			clocks = <&pcc2 IMX7ULP_CLK_RGPIO2P1>,
+ 				 <&pcc3 IMX7ULP_CLK_PCTLC>;
+ 			clock-names = "gpio", "port";
+-			gpio-ranges = <&iomuxc1 0 0 32>;
++			gpio-ranges = <&iomuxc1 0 0 20>;
+ 		};
+ 
+ 		gpio_ptd: gpio@40af0000 {
+@@ -411,7 +411,7 @@
+ 			clocks = <&pcc2 IMX7ULP_CLK_RGPIO2P1>,
+ 				 <&pcc3 IMX7ULP_CLK_PCTLD>;
+ 			clock-names = "gpio", "port";
+-			gpio-ranges = <&iomuxc1 0 32 32>;
++			gpio-ranges = <&iomuxc1 0 32 12>;
+ 		};
+ 
+ 		gpio_pte: gpio@40b00000 {
+@@ -425,7 +425,7 @@
+ 			clocks = <&pcc2 IMX7ULP_CLK_RGPIO2P1>,
+ 				 <&pcc3 IMX7ULP_CLK_PCTLE>;
+ 			clock-names = "gpio", "port";
+-			gpio-ranges = <&iomuxc1 0 64 32>;
++			gpio-ranges = <&iomuxc1 0 64 16>;
+ 		};
+ 
+ 		gpio_ptf: gpio@40b10000 {
+@@ -439,7 +439,7 @@
+ 			clocks = <&pcc2 IMX7ULP_CLK_RGPIO2P1>,
+ 				 <&pcc3 IMX7ULP_CLK_PCTLF>;
+ 			clock-names = "gpio", "port";
+-			gpio-ranges = <&iomuxc1 0 96 32>;
++			gpio-ranges = <&iomuxc1 0 96 20>;
+ 		};
+ 	};
+ 
+-- 
+2.25.1
 
 
-On 2020-09-15 10:07 a.m., Christoph Hellwig wrote:
-> On Tue, Sep 15, 2020 at 08:03:14AM -0600, Thomas Tai wrote:
->> When booting the kernel v5.9-rc4 on a VM, the kernel would panic when
->> printing a warning message in swiotlb_map(). It is because dev->dma_mask
->> can potentially be a null pointer. Using the dma_get_mask() macro can
->> avoid the NULL pointer dereference.
-> 
-> dma_mask must not be zero.  This means drm is calling DMA API functions
-> on something weird.  This needs to be fixed in the caller.
-> 
 
-Thanks, Christoph for your comment. The caller already fixed the null 
-pointer in the latest v5.9-rc5. I am thinking that if we had used the 
-dma_get_mask(), the kernel couldn't panic and could properly print out 
-the warning message.
-
-Thomas
