@@ -2,272 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B224826AC46
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF1826AC29
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbgIORgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:36:46 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:40445 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727729AbgIORL4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:11:56 -0400
-Received: by mail-io1-f65.google.com with SMTP id j2so4911736ioj.7;
-        Tue, 15 Sep 2020 10:11:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HdyUkHyfoHz+Ydj+0d+phApcyEz0Lhr0b+TrGpjjawY=;
-        b=Ni53oMyTgbr2a3dnjc7n3WrXICN9T7qywdjhTq1hHmlL7a8dRJxdSD5naYwr1Settk
-         iuD4O3mCXZNbWXf8L7umt99iIYshK2tWufQribvxVthGN7Tll0zeFzxt2uHbaral2+/p
-         emr4qnqtlOH3jdHxCemqR3MIDfwFM5Q2K5uYX5ZzOzRpCrJrKa2KXkeZgfiSoUaPFwQT
-         /NNTTdN2h7GFqXvjbSsLv1dIb9DAw/cGnSNSqibaJgb7H7u0U58MkOKdqFWwASrG9qKg
-         cDvsa7v+swWSUyf+JOgD1TZefQBR9swnGFfAJ5hxlR6zGxt/kdvSivOkKx5ungDHkWWB
-         GxWA==
-X-Gm-Message-State: AOAM531yZg1GUDygjzaSno/r1tmky7XhIrlRVmUXV5u6PdaH2PlRKPH4
-        zs2eynTeVLnZR0ZC9PPHEw==
-X-Google-Smtp-Source: ABdhPJyhjo1RhwrGJbaXNiqPxI2C3d+uVWxSg7tHYmnR/Uil5xXJNVenlZdKE7T+Qd3PCJ3pPAqnKQ==
-X-Received: by 2002:a05:6638:cdc:: with SMTP id e28mr18804594jak.100.1600189914607;
-        Tue, 15 Sep 2020 10:11:54 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id w13sm7796046iox.10.2020.09.15.10.11.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 10:11:54 -0700 (PDT)
-Received: (nullmailer pid 2141847 invoked by uid 1000);
-        Tue, 15 Sep 2020 17:11:52 -0000
-Date:   Tue, 15 Sep 2020 11:11:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, b.galvani@gmail.com, stefan@agner.ch
-Subject: Re: [PATCH] dt-bindings: mfd: Convert rn5t618 to json-schema
-Message-ID: <20200915171152.GA2124960@bogus>
-References: <20200908201303.17271-1-andreas@kemnade.info>
+        id S1727890AbgIORjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:39:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727876AbgIORPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:15:34 -0400
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B09820936;
+        Tue, 15 Sep 2020 17:12:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600189962;
+        bh=StDm87/zyOd2umJ/sexVghFCRbZDPQt3dL4BEakYh40=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GzcLW9Y77a4vDzQijYHwWGzMS+XnNp0YArQ3N9OD55f1SyTYjZ7GCxlE1fq1cr35O
+         8e1+K+v8r+oMkaCF+f4E7f7MpT80Dlw1UbjGvDhNKM+fSH/WIs0fXqVB2TInUNo109
+         1Qtz+MdBfF2WHY94jZxG7VAMma+cV5xguhDnkLwU=
+Received: by mail-oi1-f176.google.com with SMTP id a3so4734107oib.4;
+        Tue, 15 Sep 2020 10:12:42 -0700 (PDT)
+X-Gm-Message-State: AOAM531p6fe45OCYN3yUJjHAl4qVLe0ZswI9jB7wr7Oc4xWRuMiCeIcO
+        wRtupMzBkBm+5XLLM3cMVOidUqieYvFGp6rMSko=
+X-Google-Smtp-Source: ABdhPJwphFyJiA6ONEAftklqagXUydttPtaS/St/C72DhZIjAxdr6tPs+g71Yc+C35YTfy4TfqaIa+nI1jOWU5h5I1w=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr274454oig.47.1600189961908;
+ Tue, 15 Sep 2020 10:12:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908201303.17271-1-andreas@kemnade.info>
+References: <20200819143544.155096-1-alex.kluver@hpe.com> <20200819143544.155096-2-alex.kluver@hpe.com>
+ <20200915163312.GO14436@zn.tnic> <CAMj1kXHmVhB88qZc-1mHAD1ovNJQnWRBncmQJTR_4+kV0fXG5w@mail.gmail.com>
+In-Reply-To: <CAMj1kXHmVhB88qZc-1mHAD1ovNJQnWRBncmQJTR_4+kV0fXG5w@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 15 Sep 2020 20:12:31 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXGvfiqZz-j5=LU0Z6yYCkr24pCz6aJS62QL8cBYUP_S=w@mail.gmail.com>
+Message-ID: <CAMj1kXGvfiqZz-j5=LU0Z6yYCkr24pCz6aJS62QL8cBYUP_S=w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] edac,ghes,cper: Add Row Extension to Memory Error Record
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Alex Kluver <alex.kluver@hpe.com>, linux-edac@vger.kernel.org,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mchehab@kernel.org, russ.anderson@hpe.com,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        kluveralex@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 10:13:03PM +0200, Andreas Kemnade wrote:
-> Convert the RN5T618 binding to DT schema format. Also
-> clearly state which regulators are available.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
-> I have noted myself here as maintainer because I wrote most of the
-> code of the several subdevices, although not of the .txt-binding.
-> Due to its .txt-format history BSD license was not added.
-> I happily ignored the "does MAINTAINERS need updating" thing
-> from checkpatch.pl, I do not know whether that PMIC should
-> have a separate entry there.
-> 
->  .../bindings/mfd/ricoh,rn5t618.yaml           | 113 ++++++++++++++++++
->  .../devicetree/bindings/mfd/rn5t618.txt       |  52 --------
->  2 files changed, 113 insertions(+), 52 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
->  delete mode 100644 Documentation/devicetree/bindings/mfd/rn5t618.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-> new file mode 100644
-> index 000000000000..9596dde7a69a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-> @@ -0,0 +1,113 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/ricoh,rn5t618.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Ricoh RN5T567/RN5T618/RC5T619 PMIC
-> +
-> +maintainers:
-> +  - Andreas Kemnade <andreas@kemnade.info>
-> +
-> +description: |
-> +  Ricoh RN5T567/RN5T618/RC5T619 is a power management IC family which
-> +  integrates 3 to 5 step-down DCDC converters, 7 to 10 low-dropout regulators,
-> +  GPIOs, and a watchdog timer. It can be controlled through an I2C interface.
-> +  The RN5T618/RC5T619 provides additionally a Li-ion battery charger,
-> +  fuel gauge, and an ADC.
-> +  The RC5T619 additionnally includes USB charger detection and an RTC.
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: ricoh,rn5t567
-> +    then:
-> +      properties:
-> +        regulators:
-> +          patternProperties:
-> +            "^(DCDC[1-4]|LDO[1-5]|LDORTC[12])$":
-> +              $ref: ../regulator/regulator.yaml
-> +          additionalProperties: false
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: ricoh,rn5t618
-> +    then:
-> +      properties:
-> +        regulators:
-> +          patternProperties:
-> +            "^(DCDC[1-3]|LDO[1-5]|LDORTC[12])$":
-> +              $ref: ../regulator/regulator.yaml
-> +          additionalProperties: false
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: ricoh,rc5t619
-> +    then:
-> +      properties:
-> +        regulators:
-> +          patternProperties:
-> +            "^(DCDC[1-5]|LDO[1-9]|LDO10|LDORTC[12])$":
-> +              $ref: ../regulator/regulator.yaml
-> +          additionalProperties: false
+On Tue, 15 Sep 2020 at 20:07, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Tue, 15 Sep 2020 at 19:33, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Wed, Aug 19, 2020 at 09:35:43AM -0500, Alex Kluver wrote:
+> > > Memory errors could be printed with incorrect row values since the DIMM
+> > > size has outgrown the 16 bit row field in the CPER structure. UEFI
+> > > Specification Version 2.8 has increased the size of row by allowing it to
+> > > use the first 2 bits from a previously reserved space within the structure.
+> > >
+> > > When needed, add the extension bits to the row value printed.
+> > >
+> > > Based on UEFI 2.8 Table 299. Memory Error Record
+> > >
+> > > Reviewed-by: Kyle Meyer <kyle.meyer@hpe.com>
+> > > Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+> > > Tested-by: Russ Anderson <russ.anderson@hpe.com>
+> > > Signed-off-by: Alex Kluver <alex.kluver@hpe.com>
+> > > ---
+> > >
+> > > v1 -> v2:
+> > >    * Add static inline cper_get_mem_extension() to make it
+> > >     more readable, as suggested by Borislav Petkov.
+> > >
+> > >    * Add second patch for bank field, bank group, and chip id.
+> > >
+> > > ---
+> > >  drivers/edac/ghes_edac.c    |  8 ++++++--
+> > >  drivers/firmware/efi/cper.c |  9 +++++++--
+> > >  include/linux/cper.h        | 16 ++++++++++++++--
+> > >  3 files changed, 27 insertions(+), 6 deletions(-)
+> >
+> > For the EDAC bits:
+> >
+> > Acked-by: Borislav Petkov <bp@suse.de>
+> >
+> > Also, I could take both through the EDAC tree, if people prefer.
+> >
+>
+> I'll take this via the EFI tree - I was just preparing the branch for
+> a PR anyways.
 
-I prefer under 'regulators' below, you have all possible regulator 
-names:
+Alex - these patches do not apply cleanly. Could you please respin
+them on top of the next branch in
+https://git.kernel.org/pub/scm/linux/kernel/git/efi/efi.git?
 
-patternProperties:
-  "^(DCDC[1-5]|LDO[1-9]|LDO10|LDORTC[12])$":
-     $ref: ../regulator/regulator.yaml
-
-and then above you just need to restrict the possible names:
-
-regulators:
-  propertyNames:
-    pattern: "^(DCDC[1-3]|LDO[1-5]|LDORTC[12])$"
-
-(propertyNames schema is applied to all an object's properties and you 
-don't need additionalProperties here.)
-
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ricoh,rn5t567
-> +      - ricoh,rn5t618
-> +      - ricoh,rc5t619
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: |
-> +      See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-
-Drop the description.
-
-> +
-> +  system-power-controller:
-> +    type: boolean
-> +    description: |
-> +      See Documentation/devicetree/bindings/power/power-controller.txt
-> +
-> +  regulators:
-> +    type: object
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      pmic@32 {
-> +        compatible = "ricoh,rn5t618";
-> +        reg = <0x32>;
-> +        interrupt-parent = <&gpio5>;
-> +        interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
-> +        system-power-controller;
-> +
-> +        regulators {
-> +          DCDC1 {
-> +            regulator-min-microvolt = <1050000>;
-> +            regulator-max-microvolt = <1050000>;
-> +          };
-> +
-> +          DCDC2 {
-> +            regulator-min-microvolt = <1175000>;
-> +            regulator-max-microvolt = <1175000>;
-> +          };
-> +        };
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/mfd/rn5t618.txt b/Documentation/devicetree/bindings/mfd/rn5t618.txt
-> deleted file mode 100644
-> index 16778ea00dbc..000000000000
-> --- a/Documentation/devicetree/bindings/mfd/rn5t618.txt
-> +++ /dev/null
-> @@ -1,52 +0,0 @@
-> -* Ricoh RN5T567/RN5T618 PMIC
-> -
-> -Ricoh RN5T567/RN5T618/RC5T619 is a power management IC family which
-> -integrates 3 to 5 step-down DCDC converters, 7 to 10 low-dropout regulators,
-> -GPIOs, and a watchdog timer. It can be controlled through an I2C interface.
-> -The RN5T618/RC5T619 provides additionally a Li-ion battery charger,
-> -fuel gauge, and an ADC.
-> -The RC5T619 additionnally includes USB charger detection and an RTC.
-> -
-> -Required properties:
-> - - compatible: must be one of
-> -		"ricoh,rn5t567"
-> -		"ricoh,rn5t618"
-> -		"ricoh,rc5t619"
-> - - reg: the I2C slave address of the device
-> -
-> -Optional properties:
-> - - interrupts: interrupt mapping for IRQ
-> -   See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-> - - system-power-controller:
-> -   See Documentation/devicetree/bindings/power/power-controller.txt
-> -
-> -Sub-nodes:
-> - - regulators: the node is required if the regulator functionality is
-> -   needed. The valid regulator names are: DCDC1, DCDC2, DCDC3, DCDC4
-> -   (RN5T567/RC5T619), LDO1, LDO2, LDO3, LDO4, LDO5, LDO6, LDO7, LDO8,
-> -   LDO9, LDO10, LDORTC1 and LDORTC2.
-> -   LDO7-10 are specific to RC5T619.
-> -   The common bindings for each individual regulator can be found in:
-> -   Documentation/devicetree/bindings/regulator/regulator.txt
-> -
-> -Example:
-> -
-> -	pmic@32 {
-> -		compatible = "ricoh,rn5t618";
-> -		reg = <0x32>;
-> -		interrupt-parent = <&gpio5>;
-> -		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
-> -		system-power-controller;
-> -
-> -		regulators {
-> -			DCDC1 {
-> -				regulator-min-microvolt = <1050000>;
-> -				regulator-max-microvolt = <1050000>;
-> -			};
-> -
-> -			DCDC2 {
-> -				regulator-min-microvolt = <1175000>;
-> -				regulator-max-microvolt = <1175000>;
-> -			};
-> -		};
-> -	};
-> -- 
-> 2.20.1
-> 
+Boris - do you anticipate any conflicts? If so, please take these via
+the EDAC tree - the CPER code is mostly self contained so I don't
+expect any conflicts with the EFI tree in that case.
