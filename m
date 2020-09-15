@@ -2,157 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEB326AD75
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A69826AD78
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgIOTYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgIOTXT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:23:19 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21925C06178C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:23:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z4so4519254wrr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xaKrPrgrBMlaZS38zpubG0Tl9ZPTk+y0W+Heq7aSri0=;
-        b=dcHWqN2/DpwqyJ5fhRCM5yW2IHn71hLOeS3/sZnQGLwIyf/rqUBIs0mMrs37jxjGsC
-         aUJPjhHhH75YzNfcKKDhzSjWS9NroOCtTtDg4X86Jdcuck8eVhjYWVlC0uS2SijhVdZO
-         kahp3K3RrtKDUAh9WJkNTOzneOz52ZNngoHCmWXhntdLPXlZwlqDA8OAHn2cnnSh/hws
-         w0Lf8GyYxPBH8J6PlskI0Z6tLrR5zn1xFYiorSc6rvW6bz3mYY6Wi2qE3gfeAYdHRqhD
-         vlpB94CQ7b3NmNoKWtNZh9+aho9deElmGArcuxe7Fpz3pwxNBwtEfQ9brq8TybDjSeE2
-         wQmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xaKrPrgrBMlaZS38zpubG0Tl9ZPTk+y0W+Heq7aSri0=;
-        b=r6oQIb+p0WHEQ7/1aXd7HQeo+fEARHycwvbK2HnFeQBmdgRuUlXUQJwEEUPqFVjeqx
-         SRN+/kCO08twTk0sn9s8DGg4lP0Uyqt/bjdlbiY0dZRmcZoZyEaJdJp0ASfwFT+FcYwq
-         34l3oAXCURDFOEiRSrG5iKR7jm2KNA9P2svzWYHmkVdGaeua04BqT1ixWwTIg5+oSeYh
-         VdpXxhBEdKL+Y2HG8QALuGhr30uabtAluJfyXk2YBUK7iZULn1kCCw0kuqiU+1v5KD3u
-         zUvT/LS7A48lJ3y9D/cQ4nTj4KArmfOQ4S+Zf6FWk2TiBcgkw8jUql1lmj0AnYzUGAdR
-         ac6Q==
-X-Gm-Message-State: AOAM5333K9y0k52AxepfJyJIXS5pI4G6LFQuAp2o7XD732AZ8q4CitE0
-        TweN8LSV+4w3W4J1I4fnkwwncw==
-X-Google-Smtp-Source: ABdhPJxWQXdJLEG5oDeGFEeYUF/vrSRY9Tqwlwma5wZ2kLJYvIlIAvVSVcHO77MmmESpE8oFcvfKMA==
-X-Received: by 2002:a5d:6283:: with SMTP id k3mr23754401wru.191.1600197795717;
-        Tue, 15 Sep 2020 12:23:15 -0700 (PDT)
-Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
-        by smtp.gmail.com with ESMTPSA id f23sm1651722wmc.3.2020.09.15.12.23.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 12:23:15 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 22:23:11 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jiri Olsa <jolsa@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200915192311.GA124360@apalos.home>
-References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
- <20200915131102.GA26439@willie-the-truck>
- <20200915135344.GA113966@apalos.home>
- <20200915141707.GB26439@willie-the-truck>
+        id S1727919AbgIOTYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:24:51 -0400
+Received: from mga09.intel.com ([134.134.136.24]:18061 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727906AbgIOTYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 15:24:24 -0400
+IronPort-SDR: zD6DdWRxU8D7eI6JNHze0qPRrBVrzinBJ86ohx3YgCpWwabO+rfLVyOXF521egHDVaLgvwz1p7
+ OjzGlFOZuzlw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="160266363"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="160266363"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 12:24:15 -0700
+IronPort-SDR: 26Gv+iAQgHmFQQ8MaRi4JU7mqsJrkmrOQAamIo8aXo/XGbvTKGnFDaTXkC1qtrT7K90MH69ka1
+ 6c8+NrAoJsFQ==
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="506872285"
+Received: from rlvaughn-mobl1.amr.corp.intel.com (HELO [10.212.164.89]) ([10.212.164.89])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 12:24:11 -0700
+Subject: Re: [NEEDS-REVIEW] Re: [PATCH v11 25/25] x86/cet/shstk: Add
+ arch_prctl functions for shadow stack
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Dave Martin <Dave.Martin@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
+ <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
+ <20200901102758.GY6642@arm.com>
+ <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
+ <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
+ <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
+ <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
+ <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
+ <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
+ <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
+ <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
+ <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com>
+ <a881837d-c844-30e8-a614-8b92be814ef6@intel.com>
+ <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com>
+ <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
+ <a1efc4330a3beff10671949eddbba96f8cde96da.camel@intel.com>
+ <41aa5e8f-ad88-2934-6d10-6a78fcbe019b@intel.com>
+ <bf2ab309-f8c4-83da-1c0a-5684e5bc5c82@intel.com>
+ <2f137667122486a0cea3b0dbfa99d02f74870673.camel@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <6a04252c-da02-0217-270b-650bd3d852c7@intel.com>
+Date:   Tue, 15 Sep 2020 12:24:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915141707.GB26439@willie-the-truck>
+In-Reply-To: <2f137667122486a0cea3b0dbfa99d02f74870673.camel@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will, 
-
-On Tue, Sep 15, 2020 at 03:17:08PM +0100, Will Deacon wrote:
-> On Tue, Sep 15, 2020 at 04:53:44PM +0300, Ilias Apalodimas wrote:
-> > On Tue, Sep 15, 2020 at 02:11:03PM +0100, Will Deacon wrote:
-> > > Hi Ilias,
-> > > 
-> > > On Mon, Sep 14, 2020 at 07:03:55PM +0300, Ilias Apalodimas wrote:
-> > > > Running the eBPF test_verifier leads to random errors looking like this:
-> > > > 
-> > > > [ 6525.735488] Unexpected kernel BRK exception at EL1
-> > > > [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
-> > > 
-> > > Does this happen because we poison the BPF memory with BRK instructions?
-> > > Maybe we should look at using a special immediate so we can detect this,
-> > > rather than end up in the ptrace handler.
-> > 
-> > As discussed offline this is what aarch64_insn_gen_branch_imm() will return for
-> > offsets > 128M and yes replacing the handler with a more suitable message would 
-> > be good.
+On 9/15/20 12:08 PM, Yu-cheng Yu wrote:
+> On Mon, 2020-09-14 at 17:12 -0700, Yu, Yu-cheng wrote:
+>> On 9/14/2020 7:50 AM, Dave Hansen wrote:
+>>> On 9/11/20 3:59 PM, Yu-cheng Yu wrote:
+>>> ...
+>>>> Here are the changes if we take the mprotect(PROT_SHSTK) approach.
+>>>> Any comments/suggestions?
+>>> I still don't like it. :)
+>>>
+>>> I'll also be much happier when there's a proper changelog to accompany
+>>> this which also spells out the alternatives any why they suck so much.
+> [...]
 > 
-> Can you give the diff below a shot, please? Hopefully printing a more useful
-> message will mean these things get triaged/debugged better in future.
+> I revised it.  If this turns out needing more work/discussion, we can split it
+> out from the shadow stack series.
 
-[...]
-
-The error print is going to be helpful imho. At least it will help
-people notice something is wrong a lot faster than the previous one.
-
-
-[  575.273203] BPF JIT generated an invalid instruction at bpf_prog_64e6f4ba80861823_F+0x2e4/0x9a4!
-[  575.281996] Unexpected kernel BRK exception at EL1
-[  575.286786] Internal error: BRK handler: f2000100 [#5] PREEMPT SMP
-[  575.292965] Modules linked in: crct10dif_ce drm ip_tables x_tables ipv6 btrfs blake2b_generic libcrc32c xor xor_neon zstd_compress raid6_pq nvme nvme_core realtek
-[  575.307516] CPU: 21 PID: 11760 Comm: test_verifier Tainted: G      D W         5.9.0-rc3-01410-ged6d9b022813-dirty #1
-[  575.318125] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
-[  575.326825] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-[  575.332396] pc : bpf_prog_64e6f4ba80861823_F+0x2e4/0x9a4
-[  575.337705] lr : bpf_prog_d3e125b76c96daac+0x40/0xdec
-[  575.342752] sp : ffff8000144e3ba0
-[  575.346061] x29: ffff8000144e3bd0 x28: 0000000000000000
-[  575.351371] x27: 00000085f19dc08d x26: 0000000000000000
-[  575.356681] x25: ffff8000144e3ba0 x24: ffff800011fdf038
-[  575.361991] x23: ffff8000144e3d20 x22: 0000000000000001
-[  575.367301] x21: ffff800011fdf000 x20: ffff0009609d4740
-[  575.372611] x19: 0000000000000000 x18: 0000000000000000
-[  575.377921] x17: 0000000000000000 x16: 0000000000000000
-[  575.383231] x15: 0000000000000000 x14: 0000000000000000
-[  575.388540] x13: 0000000000000000 x12: 0000000000000000
-[  575.393850] x11: 0000000000000000 x10: ffff8000000bc65c
-[  575.399160] x9 : 0000000000000000 x8 : ffff8000144e3c58
-[  575.404469] x7 : 0000000000000000 x6 : 0000000dd7ae967a
-[  575.409779] x5 : 00ffffffffffffff x4 : 0007fabd6992cf96
-[  575.415088] x3 : 0000000000000018 x2 : ffff8000000ba214
-[  575.420398] x1 : 000000000000000a x0 : 0000000000000009
-[  575.425708] Call trace:
-[  575.428152]  bpf_prog_64e6f4ba80861823_F+0x2e4/0x9a4
-[  575.433114]  bpf_prog_d3e125b76c96daac+0x40/0xdec
-[  575.437822]  bpf_dispatcher_xdp_func+0x10/0x1c
-[  575.442265]  bpf_test_run+0x80/0x240
-[  575.445838]  bpf_prog_test_run_xdp+0xe8/0x190
-[  575.450196]  __do_sys_bpf+0x8e8/0x1b00
-[  575.453943]  __arm64_sys_bpf+0x24/0x510
-[  575.457780]  el0_svc_common.constprop.0+0x6c/0x170
-[  575.462570]  do_el0_svc+0x24/0x90
-[  575.465883]  el0_sync_handler+0x90/0x19c
-[  575.469802]  el0_sync+0x158/0x180
-[  575.473118] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
-[  575.479211] ---[ end trace 8cd54c7d5c0ffda4 ]---
-
-Cheers
-/Ilias
+Where does that leave things?  You only get shadow stacks for
+single-threaded apps which have the ELF bits set?
