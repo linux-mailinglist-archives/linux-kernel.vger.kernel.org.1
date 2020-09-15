@@ -2,137 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D3D269E44
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E29269E55
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgIOGNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 02:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42182 "EHLO
+        id S1726085AbgIOGSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 02:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgIOGNR (ORCPT
+        with ESMTP id S1726031AbgIOGSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 02:13:17 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A93C06174A;
-        Mon, 14 Sep 2020 23:13:17 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s65so1451257pgb.0;
-        Mon, 14 Sep 2020 23:13:17 -0700 (PDT)
+        Tue, 15 Sep 2020 02:18:48 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FFFC061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:18:47 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id i1so1865255edv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:18:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SVLoXQ1ycHMawjtvv2t7w4+CFgDyZyB3tKz9C+ILDsg=;
-        b=Ek1AX7Ay1jdgLkyiFhVeniDo+G6q07WEB36d9ux+38vU2vAwZ0gyHiCFZyvSZA8Xyq
-         j1viIijzD5WXHLGSxFp6uk1aDdrqlGu/PozPlO7iQoPnm1jKHZvE2JYVOQ9OaTWiY/Og
-         wi5ovBGEG/+y/ICGZdEaq0vLaakb1Uh+0AOk8MdF2FHHvRboI9GFFCOqxjWUEv7yPqU+
-         6MWvCMeoNBxgrhhqWYU6aKpxxC1jVj40o/WWhBh6q3Ms3aCBxwX9isOw8RXMO9ahGblR
-         1Qjk0Ji+/Cd6ampSWy2/VPFIcL0349VoOVNhGwWz8BzAS+qWPGHAfajGTWDmmoTugAjh
-         UXlw==
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9am9YLQ12i+k6cN6RIp9GxfKB8+xvQlyP4sg2rnKSZw=;
+        b=qhCa3eWd5M9dMGkBFiu7uOJh6zgpigFNEIHSG99UMkqd6ZWKMJqHHfeSu/J7uZZZWq
+         jlAZ21H+lr0ZhcU5zxu21KF5FIo4uhlq89KNwg1Yh415hPW9beuXs5KZomv52rqi/ixj
+         yhbBzE8A4EnzlnY49LEb8qZwCNDSohbZs/P6Oyz2ZLtF9yAVjds0CsnzdhDSNXSjmk/H
+         JVNssND4QaP7utjwKFmL2MNhJDrO5ujEzi+F/8k2UHlw+zqcb8dG+mxpvOYPaNWrndCO
+         rooG5jVJodO0iKcV0Mp1DoPesfFkgJTxpVevPLGMkwXc1NXe2nZzmF7wajdewxjtWq2o
+         7u6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=SVLoXQ1ycHMawjtvv2t7w4+CFgDyZyB3tKz9C+ILDsg=;
-        b=sYAe9VtEDlhscHlbiY2FmInTia6yreT887refcmPFIty6o8SJ83zkNovdcDmjpjUrV
-         XmtW+uixMxyss5tVAPFmSRInlO/SNefbdPvizGSGcupl1m+6yZP1hZy3iT1nHqZU+yNy
-         Y2e0k+uYrY4N2pikKWlrmvnxcwPgOu+7EzAbTEAllbRhpZEJhdrd+/wiuhh6UqMmgGfp
-         31h8/dfoopfthVm6QU+9/A5qHaGzsumHcGyJXfZVYkrjHJVOajSj6BxdHuwQtJr0pTI6
-         L4NdFuwJrSXEunISmyB0gWKcd9PgQXUqpL8RlLEiyuTppTbBfz7CGwMPa2juJ+eWtN6L
-         1UKQ==
-X-Gm-Message-State: AOAM530wqPLAHl5lexh7Wvq9f3wLhmjIKvKOoA05XG2eLaGAG9UnnTlz
-        gNJtpWatX2QDKdx2xPUFgnY=
-X-Google-Smtp-Source: ABdhPJyJe8prFf/LBNbGur9P1EfTKWxqiU1AaAemUElUP4y3b7ko9EduCy2kUNZ/VeZz3pCqqYcA2Q==
-X-Received: by 2002:a63:cb0a:: with SMTP id p10mr13938034pgg.314.1600150396813;
-        Mon, 14 Sep 2020 23:13:16 -0700 (PDT)
-Received: from Gentoo (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
-        by smtp.gmail.com with ESMTPSA id fz23sm11110921pjb.36.2020.09.14.23.13.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9am9YLQ12i+k6cN6RIp9GxfKB8+xvQlyP4sg2rnKSZw=;
+        b=DYIqkSepLVLslmvLgVwjCb0uHuf9Lmv7AD7IBawJErmmumqSmxiOejyMaL5EF5EFOE
+         tRYCGbDFD1U7wpgorrohtNKlTqqeoEnJuSpMjkHFxio5YdBYulfNVB6G5lzwBx24CBXS
+         AVZMd5TH/NBmFx5V0H5OyxfMicglb+UMmPC2yF5ic4kd+eV1tOe/MW84cqlAVLhkBS8n
+         Fg2GGhfyDa4Z+tPW0Wkj6gGvNjtTth1+F6zvQ1TaIxJI66WPrD2LOWXa69BsS+it1vU3
+         fLnvJXx/7JpnKjt8s9lbHlT+hpPtxziJt/o8Up+YPnYaxCfKYp0DYzqv6OHqts7tYabA
+         1krg==
+X-Gm-Message-State: AOAM533TCkfRaLipOtspPeJEFYJ/3jV2o+9myyQAYR1mZVdE9D/UQDiz
+        OM68uMhEai3LdfhYGx019wwedw==
+X-Google-Smtp-Source: ABdhPJwBttQPHuQ44HQDxVWlox/ktiSn5DU2y5o5i6WoVEmGzW4k5TF900avkpIDiox1QTZwF6S92w==
+X-Received: by 2002:a50:d942:: with SMTP id u2mr21466383edj.0.1600150725984;
+        Mon, 14 Sep 2020 23:18:45 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id u23sm9300369ejc.108.2020.09.14.23.18.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 23:13:15 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 11:42:59 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, rdunlap@infradead.org, daniel@ffwll.ch,
-        yuanmingbuaa@gmail.com, w@1wt.eu, nopitydays@gmail.com,
-        zhangyunhai@nsfocus.com, luto@amacapital.net,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH v2] docs: fb: Remove scrollback related lines
-Message-ID: <20200915061259.GB25365@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, b.zolnierkie@samsung.com,
-        linux-fbdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, corbet@lwn.net, rdunlap@infradead.org,
-        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
-        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
-        torvalds@linux-foundation.org
-References: <20200915055712.968-1-unixbhaskar@gmail.com>
- <20200915060437.GA16383@kroah.com>
+        Mon, 14 Sep 2020 23:18:45 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 08:18:44 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Michael Chan <michael.chan@broadcom.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
+ to devlink reload command
+Message-ID: <20200915061844.GL2236@nanopsycho.orion>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-2-git-send-email-moshe@mellanox.com>
+ <CAACQVJochmfmUgKSvSTe4McFvG6=ffBbkfXsrOJjiCDwQVvaRw@mail.gmail.com>
+ <20200914093234.GB2236@nanopsycho.orion>
+ <CAACQVJqVV_YLfV002wxU2s1WJUa3_AvqwMMVr8KLAtTa0d9iOw@mail.gmail.com>
+ <20200914112829.GC2236@nanopsycho.orion>
+ <20200914143100.06a4641d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CACKFLinODtbqezEeYdiEwcgkTdCa66D3D5_Xx+OjT23qsLi4Og@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="MfFXiAuoTsnnDAfZ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915060437.GA16383@kroah.com>
+In-Reply-To: <CACKFLinODtbqezEeYdiEwcgkTdCa66D3D5_Xx+OjT23qsLi4Og@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---MfFXiAuoTsnnDAfZ
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 08:04 Tue 15 Sep 2020, Greg KH wrote:
->On Tue, Sep 15, 2020 at 11:27:12AM +0530, Bhaskar Chowdhury wrote:
->> This patch removed the framebuffer scrollback related lines.
->>=20
->> This is the effect of this commmit  50145474f6ef ("fbcon: remove soft sc=
-rollback code")
+Tue, Sep 15, 2020 at 12:06:19AM CEST, michael.chan@broadcom.com wrote:
+>On Mon, Sep 14, 2020 at 2:31 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>>
+>> On Mon, 14 Sep 2020 13:28:29 +0200 Jiri Pirko wrote:
+>> > >> Instead, why don't you block in reload_up() until the reset is complete?
+>> > >
+>> > >Though user initiate "devlink dev reload" event on a single interface,
+>> > >all driver entities undergo reset and all entities recover
+>> > >independently. I don't think we can block the reload_up() on the
+>> > >interface(that user initiated the command), until whole reset is
+>> > >complete.
+>> >
+>> > Why not? mlxsw reset takes up to like 10 seconds for example.
+>>
+>> +1, why?
 >
->Why the extra ' '?
-I hope you are pointing at subject line space, Greg?? I was looking at it o=
-n the
-docs:
+>Yes, we should be able to block until the reset sequence is complete.
+>I don't see any problem.  I will work with Vasundhara on this.
 
-Subject: [PATCH v2 1/2] USB: at91: fix the number of endpoint parameter
+Could you please also remove fw_reset as it is apparently misuse of
+devlink health mechanism?
 
-
->
->And you can line-wrap things here :)
->
-
-My bad...I will fix it.
-
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->> Following Greg's suggestions,fix the subject line and include the commit=
- Subject
->
->Same thing for all of your patches you sent...
->
-
-Suspected that :) by looking at my mistakes ...thanks,man ..V2's are on the=
- way...
->thanks,
->
->greg k-h
-
---MfFXiAuoTsnnDAfZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl9gW2cACgkQsjqdtxFL
-KRWsUggAr0PSxxzslM5iA3j0EaXmgX8XPJBTAlsdURT3dflZeE5enzw70hVuIc9z
-fdDgaSnAospS4j4XpAQzwl3bbidr/rBCu3slcMWgxJx8i03htWby21Czg1YNV3e3
-a590QDGsIXXT/V10yJueKA9SUIO4HL2KbeF6SqefcfSWvsCYaLcrhJLrkDqdIdGd
-W2G11xWdPHRCiMToBAnuT/nfmb2I3gkwWr/eVu+qzxvOXT7nCEG8y3UHoIDTDaTd
-DU7bTrYUQr1kMMp2du6vKovV4F+ij7h+3xwVyuEoyv0YEaQW/v6/YTDDJfURVX9z
-MnRZPsJ+J2E4F1EUVvHPZ7IIeAAgeQ==
-=S0ks
------END PGP SIGNATURE-----
-
---MfFXiAuoTsnnDAfZ--
+Thanks!
