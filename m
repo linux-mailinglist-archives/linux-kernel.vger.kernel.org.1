@@ -2,91 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4121A26B7C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB4126B7C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727213AbgIPA3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:29:07 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38354 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726546AbgIOOFs (ORCPT
+        id S1726986AbgIPA2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:28:43 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51518 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbgIOOFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:05:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600178716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iWIPRlc8ySpXnZbb3ABJNrp/CQr1HLxNQWDbTLw9BhU=;
-        b=jNMMNjpmtel+UfrVHb7G1mog8yAnGmDB52T3t7oEIa1cDlSgmXTZ7qINbQqAAbSAQCon/4
-        nFnSC61yIpAJhVXhiZy/kx4wgEdnfG/V+lk0ZKK0FqP+bGcqq9G2iMUWjs1HE5GimZPMYt
-        o2J5YSQXoVKSgqZ1Ha6lbJHB/lP/mHA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-C3Xi5FdHMEKiu4tVmFa7xg-1; Tue, 15 Sep 2020 10:03:08 -0400
-X-MC-Unique: C3Xi5FdHMEKiu4tVmFa7xg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0629D10BBEE6;
-        Tue, 15 Sep 2020 14:03:05 +0000 (UTC)
-Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3DBFE5DE47;
-        Tue, 15 Sep 2020 14:02:51 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 09:02:50 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
- Control hardware bits
-Message-ID: <20200915140250.kf2kgfbgzxfvmoiy@treble>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
- <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
- <20200914151816.u6camicid4bd5lgo@treble>
- <20200914153812.c6uh3spqmcy2ft3d@treble>
- <20200915095716.GI3612@linux.intel.com>
- <20200915132725.a2qbdio3jsu7rsqs@treble>
- <20200915133929.GI14436@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915133929.GI14436@zn.tnic>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Tue, 15 Sep 2020 10:05:50 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FDsng9156976;
+        Tue, 15 Sep 2020 14:05:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=9c0AXOcTWsVHzDzUN3KwIxGxdoDyDkNUwPGWxuGjmd0=;
+ b=dhWwml113FRzQdGqLkIbc6s7Kz1Mskng7mEYQgO5don0ihgl3NFdyy9oZRf7wsgSY+ch
+ QyGbau0ZNX4KvbMfybFK2sdblFn/2wj4HrXFL6cW4is5QCpN/U8k97avmL4kJrCgrOVv
+ uXsx0Prew9O7aa654VnrEFewzbZcjoz4uHjgSsy4dmQ5w1SzZ1bj/3uFL5f5ju+5R5mI
+ 5I6tuXuyS/u8z2Rx+vFHQRY/gT1g4OkT+IIdPd0Br72uM62lejCiYpJH8Ygjt+2se70C
+ uIdn2Nl2FgTufYrmoBoXCdvDiOILIBpa05NpsEbqey/75GeRtjv9aaEwZsg6SetmXyre rg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33gp9m57nd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 14:05:16 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FDshBU072893;
+        Tue, 15 Sep 2020 14:03:15 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 33h88yb5cx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 14:03:15 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08FDt460076562;
+        Tue, 15 Sep 2020 14:03:15 GMT
+Received: from brm-x32-13.us.oracle.com (brm-x32-13.us.oracle.com [10.80.150.47])
+        by userp3030.oracle.com with ESMTP id 33h88yb5c4-1;
+        Tue, 15 Sep 2020 14:03:15 +0000
+From:   Thomas Tai <thomas.tai@oracle.com>
+To:     konrad.wilk@oracle.com, m.szyprowski@samsung.com, hch@lst.de,
+        robin.murphy@arm.com
+Cc:     thomas.tai@oracle.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dma-direct: Fix potential NULL pointer dereference
+Date:   Tue, 15 Sep 2020 08:03:14 -0600
+Message-Id: <1600178594-22801-1-git-send-email-thomas.tai@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009150117
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 03:39:29PM +0200, Borislav Petkov wrote:
-> On Tue, Sep 15, 2020 at 08:27:25AM -0500, Josh Poimboeuf wrote:
-> > I see the v37 missing patches now, but they're not threaded with the
-> > original thread.
-> 
-> Probably because he bounced only the ones you didn't get, separately.
-> 
-> > v38 has some missing patches as well.
-> 
-> And I got them twice. Can we please stop the spamming?
-> 
-> And yeah, use another mail service - all those companies switching the
-> o365 and mimecast, means time to move kernel development off of company
-> mail because company mail simply can't handle it.
+When booting the kernel v5.9-rc4 on a VM, the kernel would panic when
+printing a warning message in swiotlb_map(). It is because dev->dma_mask
+can potentially be a null pointer. Using the dma_get_mask() macro can
+avoid the NULL pointer dereference.
 
-If you getting them (twice?) and vger's not, it sounds like vger is
-dropping them for some reason.
+Fixes: d323bb44e4d2 ("drm/virtio: Call the right shmem helpers")
 
+[drm] Initialized virtio_gpu 0.1.0 0 for virtio0 on minor 0
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] SMP PTI
+ CPU: 1 PID: 331 Comm: systemd-udevd Not tainted 5.9.0-rc4 #1
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+ BIOS 1.13.0-1ubuntu1 04/01/2014
+ RIP: 0010:swiotlb_map+0x1ac/0x200
+ Code: e8 d9 fc ff ff 80 3d 92 ee 4c 01 00 75 51 49 8b 84 24 48 02 00 00
+ 4d 8b 6c 24 50 c6 05 7c ee 4c 01 01 4d 8b bc 24 58 02 00 00 <4c> 8b 30
+ 4d 85 ed 75 04 4d 8b 2c 24 4c 89 e7 e8 10 6b 4f 00 4d 89
+ RSP: 0018:ffff9f96801af6f8 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: 0000000000001000 RCX: 0000000000000080
+ RDX: 000000000000007f RSI: 0000000000000202 RDI: 0000000000000202
+ RBP: ffff9f96801af748 R08: ffffffffffffffff R09: 0000000000000020
+ R10: 0000000000000000 R11: ffff8fabfffa3000 R12: ffff8faad02c7810
+ R13: 0000000000000000 R14: 0000000000000020 R15: 0000000000000000
+ FS:  00007fabc63588c0(0000) GS:ffff8fabf7c80000(0000)
+ knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000000 CR3: 0000000151496005 CR4: 0000000000370ee0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  dma_direct_map_sg+0x124/0x210
+  dma_map_sg_attrs+0x32/0x50
+  drm_gem_shmem_get_pages_sgt+0x6a/0x90 [drm]
+  virtio_gpu_object_create+0x140/0x2f0 [virtio_gpu]
+  ? ww_mutex_unlock+0x26/0x30
+  virtio_gpu_mode_dumb_create+0xab/0x160 [virtio_gpu]
+  drm_mode_create_dumb+0x82/0x90 [drm]
+  drm_client_framebuffer_create+0xaa/0x200 [drm]
+  drm_fb_helper_generic_probe+0x59/0x150 [drm_kms_helper]
+  drm_fb_helper_single_fb_probe+0x29e/0x3e0 [drm_kms_helper]
+  __drm_fb_helper_initial_config_and_unlock+0x41/0xd0 [drm_kms_helper]
+  drm_fbdev_client_hotplug+0xe6/0x1a0 [drm_kms_helper]
+  drm_fbdev_generic_setup+0xaf/0x170 [drm_kms_helper]
+  virtio_gpu_probe+0xea/0x100 [virtio_gpu]
+  virtio_dev_probe+0x14b/0x1e0 [virtio]
+  really_probe+0x1db/0x440
+  driver_probe_device+0xe9/0x160
+  device_driver_attach+0x5d/0x70
+  __driver_attach+0x8f/0x150
+  ? device_driver_attach+0x70/0x70
+  bus_for_each_dev+0x7e/0xc0
+  driver_attach+0x1e/0x20
+  bus_add_driver+0x152/0x1f0
+  driver_register+0x74/0xd0
+  ? 0xffffffffc0529000
+  register_virtio_driver+0x20/0x30 [virtio]
+  virtio_gpu_driver_init+0x15/0x1000 [virtio_gpu]
+  do_one_initcall+0x4a/0x1fa
+  ? _cond_resched+0x19/0x30
+  ? kmem_cache_alloc_trace+0x16b/0x2e0
+  do_init_module+0x62/0x240
+  load_module+0xe0e/0x1100
+  ? security_kernel_post_read_file+0x5c/0x70
+  __do_sys_finit_module+0xbe/0x120
+  ? __do_sys_finit_module+0xbe/0x120
+  __x64_sys_finit_module+0x1a/0x20
+  do_syscall_64+0x38/0x50
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Signed-off-by: Thomas Tai <thomas.tai@oracle.com>
+---
+ include/linux/dma-direct.h | 2 +-
+ kernel/dma/swiotlb.c       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
+index 6e87225..7556067 100644
+--- a/include/linux/dma-direct.h
++++ b/include/linux/dma-direct.h
+@@ -168,7 +168,7 @@ static inline dma_addr_t dma_direct_map_page(struct device *dev,
+ 
+ 		dev_WARN_ONCE(dev, 1,
+ 			     "DMA addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
+-			     &dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);
++			     &dma_addr, size, dma_get_mask(dev), dev->bus_dma_limit);
+ 		return DMA_MAPPING_ERROR;
+ 	}
+ 
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index c19379fa..aa7727b 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -682,7 +682,7 @@ dma_addr_t swiotlb_map(struct device *dev, phys_addr_t paddr, size_t size,
+ 			attrs | DMA_ATTR_SKIP_CPU_SYNC);
+ 		dev_WARN_ONCE(dev, 1,
+ 			"swiotlb addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
+-			&dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);
++			&dma_addr, size, dma_get_mask(dev), dev->bus_dma_limit);
+ 		return DMA_MAPPING_ERROR;
+ 	}
+ 
 -- 
-Josh
+1.8.3.1
 
