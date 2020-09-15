@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C3726A316
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096A326A30F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgIOK1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:27:15 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:16638 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIOK1L (ORCPT
+        id S1726219AbgIOKZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIOKZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:27:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1600165631; x=1631701631;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6pj42hcpmKOUyMQ9MhDbUOl6HOtbIojY8r2/GLfcYBk=;
-  b=cAI6zxY48uUIZKfOkoAgTqTHMvUJuLOZgJIoeviH6e5s1RlOZ+L6TCaB
-   eZlYrjHwsPb720R1E6Ha9XWnb6oxKOttBh4Mx4T18KzcBNJDkHH4knOIB
-   ITEG/QIyHyl7gctWlLh1Z1LTT8BB/0uUlwpAIVvZUecu9bQCR72fWJsyV
-   nNabZHNMLXfgkCQrt8Yv8IEMwq3oh4/mvfjPY41eDbxdptSnlE8dLijgB
-   VePo863cuP1jg3TySt1IrTVCOLJ7P5m7wxMAUTycTQ9tQJljI5t1Zoj0Q
-   1k89KohnB1+WhGlMP35nXn06LZNPx8woPgkqXzRy9/40T9B77AKgnEt6j
-   g==;
-IronPort-SDR: SeG2nD/GORJgPmYvGhclPsw+G8TXL3rsyaBt8PW20lW/8KhOAwcwu7c0eGtJj72zuL7UlA7vic
- ySqqbTGvBfI2fKz8lGViZBn4kK5p9XyK4r2BIii3Iz2GtNniC3dZSytzS9Vcjjgo/S7wMsI2e4
- FO7vUlsYEQNxoRf0xi0VOFr1dcb1zwL+IgMfbPMxZdkKVZ0J+U3caEcyKBBghp2SaOjNDAmV9O
- KxljA5ep7WrE3dRTvSEPUUcQByQQqZ00iKc0dcKAliua+/ybuR9seP2ngf/8cs+CmLDVuYurI8
- R7g=
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="95789163"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2020 03:26:58 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Sep 2020 03:26:48 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 15 Sep 2020 03:26:48 -0700
-Date:   Tue, 15 Sep 2020 10:24:22 +0000
-From:   "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>
-CC:     "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH RFC 6/7] bridge: cfm: Netlink Notifications.
-Message-ID: <20200915102422.ronvnumdu4lk3l4b@soft-test08>
-References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
- <20200904091527.669109-7-henrik.bjoernlund@microchip.com>
- <cbb516e37457ef1875f99001ec72624c49ab51ed.camel@nvidia.com>
+        Tue, 15 Sep 2020 06:25:03 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839D3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:25:02 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d4so2798666wmd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nCObEKoOnmpHrzYJFBm9pkBKEq9SNCMkpHaxOskN+KQ=;
+        b=vbBJy4kwOuP8fps7ENGxPva5zUYL7ASA78U0Ik7uGtyQwbCdxLIDc5R+Lkce3LiyG9
+         tLhWib3rO23PtT7aBoJi1Wh5s5YnYthzHConFQ9L9lfT5mJzO+PvYFbCpNkD3Y3Y5pV7
+         ccjX2TexQXkFDZFRXCF4Vu7sGsVYCi2n6CfR+ga+FrmT/CM19VfdHrlV+uoAyQb7Wnux
+         Ua6jN3ov5SDmM4C4t32H7+HFTozTlN8q3kPzjcNZy74cI/nUj7maUu2W1Xv0iRcsns8V
+         7sMEIca6qA/KcCQnNsC8rCvlnSY3mxClh6VbPDZTXsnqTmoM6xWaK0XxddnzL4J3SJO6
+         b+3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nCObEKoOnmpHrzYJFBm9pkBKEq9SNCMkpHaxOskN+KQ=;
+        b=PeeopoQAlekOqLOE0E5lm7VHUkm9NYexnrhBgQdt00tFf0UEOoPxfxHOjZwjpEIkZT
+         xqLl/0tGl0Zva1PTgjwHz7v8sWwIVgS4PlF607PfKIyKwJHB4380wmO1QrFeTh398b7C
+         L8pD3y1zMZsqvveIaty/uaUhkOLrXmRAQ9QxXM9Tn5gM0HgXfuV/78oUk8/LgJ7L6nSf
+         tdwvb4HiDAtsmIqUKz22bywZjWZxTu87iy23XcdVi52xTJu0stxpLP3vNc0f/c0yQXl7
+         r0GJQWan4FmCPDMotyG/p5EcHvhT8r9MY2/iJldOOoLMNxFtGGDyQprTMZpjjEWTDVSM
+         yE6g==
+X-Gm-Message-State: AOAM530GSmw1QKW0E2ght80ZDPXlrUk71yBLvlEYQr6GQZrsXVXNEzEs
+        Mrgcl9BK4RvSsUqaZzc8HxFu7w==
+X-Google-Smtp-Source: ABdhPJyLkeeoM2ZZcrGWaota2zFMVO2kAkBf28Jt84EjulN5M4ljnumj2SEmrORUfgsijOJP5ZWZqg==
+X-Received: by 2002:a1c:2e08:: with SMTP id u8mr4155025wmu.156.1600165500941;
+        Tue, 15 Sep 2020 03:25:00 -0700 (PDT)
+Received: from google.com (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
+        by smtp.gmail.com with ESMTPSA id w15sm27651716wro.46.2020.09.15.03.25.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 03:25:00 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 10:24:58 +0000
+From:   George Popescu <georgepope@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        masahiroy@kernel.org, michal.lkml@markovi.net,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        dbrazdil@google.com, broonie@kernel.org, maskray@google.com,
+        ascull@google.com, akpm@linux-foundation.org, dvyukov@google.com,
+        elver@google.com, tglx@linutronix.de, arnd@arndb.de
+Subject: Re: [PATCH 06/14] Fix CFLAGS for UBSAN_BOUNDS on Clang
+Message-ID: <20200915102458.GA1650630@google.com>
+References: <20200914172750.852684-1-georgepope@google.com>
+ <20200914172750.852684-7-georgepope@google.com>
+ <202009141509.CDDC8C8@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cbb516e37457ef1875f99001ec72624c49ab51ed.camel@nvidia.com>
+In-Reply-To: <202009141509.CDDC8C8@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review. Comments below.
+On Mon, Sep 14, 2020 at 03:13:14PM -0700, Kees Cook wrote:
+> On Mon, Sep 14, 2020 at 05:27:42PM +0000, George-Aurelian Popescu wrote:
+> > From: George Popescu <georgepope@google.com>
+> > 
+> > When the kernel is compiled with Clang, UBSAN_BOUNDS inserts a brk after
+> > the handler call, preventing it from printing any information processed
+> > inside the buffer.
+> > For Clang -fsanitize=bounds expands to -fsanitize=array-bounds and
+> > -fsanitize=local-bounds, and the latter adds a brk after the handler
+> > call
+> 
+> That sounds like a compiler bug?
+Actually in clang 12 documentation is written that -fsanitize=bounds
+expands to that. GCC  doesn't have those two options, only the
+-fsanitize=bounds which looks similar to -fsanitize=array-bounds from
+clang. So I don't see it as a compiler bug, just a misuse of flags.
 
-The 09/08/2020 13:54, Nikolay Aleksandrov wrote:
+> > Signed-off-by: George Popescu <georgepope@google.com>
+> > ---
+> >  scripts/Makefile.ubsan | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+> > index 27348029b2b8..3d15ac346c97 100644
+> > --- a/scripts/Makefile.ubsan
+> > +++ b/scripts/Makefile.ubsan
+> > @@ -4,7 +4,14 @@ ifdef CONFIG_UBSAN_ALIGNMENT
+> >  endif
+> >  
+> >  ifdef CONFIG_UBSAN_BOUNDS
+> > -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+> > +      # For Clang -fsanitize=bounds translates to -fsanitize=array-bounds and
+> > +      # -fsanitize=local-bounds; the latter adds a brk right after the
+> > +      # handler is called.
+> > +      ifdef CONFIG_CC_IS_CLANG
+> > +            CFLAGS_UBSAN += $(call cc-option, -fsanitize=array-bounds)
 > 
-> On Fri, 2020-09-04 at 09:15 +0000, Henrik Bjoernlund wrote:
-> > This is the implementation of Netlink notifications out of CFM.
-> >
-> > Notifications are initiated whenever a state change happens in CFM.
-> >
-> [snip]
-> > +     *count = 0;
-> > +
-> > +     rcu_read_lock();
-> > +     list_for_each_entry_rcu(mep, &br->mep_list, head)
-> > +             * count += 1;
-> 
-> please remove the extra space
-> 
-I have removed the extra space.
-This space was added to satify checkpatch as without this space it gives
-this error:
-CHECK: spaces preferred around that '*' (ctx:ExV)
-#136: FILE: net/bridge/br_cfm.c:883:
-+               *count += 1;
-                ^
+> This would mean losing the local-bounds coverage? Isn't that for locally
+> defined arrays on the stack?
+This would mean losing the local-bounds coverage. I tried to  test it without
+local-bounds and with a locally defined array on the stack and it works fine
+(the handler is called and the error reported). For me it feels like
+--array-bounds and --local-bounds are triggered for the same type of
+undefined_behaviours but they are handling them different.
 
-> > +     rcu_read_unlock();
-> > +
-> > +     return 0;
-> > +}
-> > +
+> > +      else
+> > +            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+> > +      endif
+> >  endif
+> >  
+> >  ifdef CONFIG_UBSAN_MISC
+> > -- 
+> > 2.28.0.618.gf4bc123cb7-goog
+> > 
 > 
-> 
-
--- 
-/Henrik
+> --
+Thanks,
+George
