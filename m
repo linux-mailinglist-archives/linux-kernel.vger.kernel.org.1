@@ -2,154 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB32026A315
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00EC26A31B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgIOK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:26:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgIOK0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:26:37 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3F1621D7F;
-        Tue, 15 Sep 2020 10:26:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600165596;
-        bh=SH8Dp+QzQCSHxgh8TqHJRZNVk1Eg9GOmjGHakRH8ces=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OFeYcIQs7EGv7ICNQRWVRDJjrifVDO8N32/Fi7OWiUzCGK5zHYW7IYxrPLoxco2QW
-         fC39wZuVgGByy0mGQekhjB1UCQRbSITsK4q0uJBXGZUVqni7GtEY+1ci4rZZ9xYhv7
-         zvTmKQjoOcYplaYSFMxFrwzcM49Nhq3FDmcXtRRA=
-Received: by mail-ot1-f42.google.com with SMTP id g10so2705668otq.9;
-        Tue, 15 Sep 2020 03:26:36 -0700 (PDT)
-X-Gm-Message-State: AOAM532VVNqEDt4KhuSPNok0vpsKEJjRD72D8beE2IDzl5kMAAzIBVk4
-        /sg7fyT0TTuNa6nc2QfzXHIKexUoVXjiPQt+ICE=
-X-Google-Smtp-Source: ABdhPJyrlF4uKoitENlyz1TmjztqK3EItAtSzPMu7QRe3q1Fy0bUJNeHjAite9Lli1Ck0TUnM2ymjA4GQ90bQk2xlyU=
-X-Received: by 2002:a9d:6193:: with SMTP id g19mr12010747otk.108.1600165595917;
- Tue, 15 Sep 2020 03:26:35 -0700 (PDT)
+        id S1726335AbgIOK1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:27:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49511 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726201AbgIOK10 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:27:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600165644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fkoLRj4CpMUCFaAU/c0cpXEpa6XQZl3hQi3pkjeuyww=;
+        b=Q/OuQeQHlw+zgxQethY2Tz6hS7jZZaAAFMdIAK6rGxV2hxk1BD0Qqqv87mPSARJOLbztaA
+        UUZircXcWWFU8tE2frFBcbhUFeeuzYTbH6VJtxZCPAMkrbEDLnbUz+FlZKcBDf1rpc2b62
+        E9LoTwUpHbpvFZRrQrIhMkUsAjWJUo8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-FEVhin7mPWyNUOswJedzXw-1; Tue, 15 Sep 2020 06:27:22 -0400
+X-MC-Unique: FEVhin7mPWyNUOswJedzXw-1
+Received: by mail-wm1-f70.google.com with SMTP id s19so1008086wme.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:27:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=fkoLRj4CpMUCFaAU/c0cpXEpa6XQZl3hQi3pkjeuyww=;
+        b=R1CJorspXQE5Id1SahcHZKrhMmYrPO+lihSdAYOSND5AsrGRrWrInlcRBmsTIPD243
+         BXAiHUBFxhqOmUIil67bgiO9nsJRLRRzu/BeJkWV67Nolzrv+ljaGKSPpHlBkP4Vbumb
+         e/qw9sArBVC1u3GRnLHrbJK2tmB4GodTwrRJ0f81HzVgXT0IyMz90rSEdMFeWSH7bNKg
+         jlHp3/wzKbVaphUNycT8xY+L2UXgIl0Nz2h/ffkKX8NO8CpyP+s9fjDihAVRA5IKg7BF
+         Wg5dm3f7o+3FqTmTIOmseqqshmTw/hifjVWfaMBMIFknz2cK2zeSa69C1+u8n9vGRVpj
+         8Gmg==
+X-Gm-Message-State: AOAM532d5Yi3LuU0iblCnz1cHkY09TOtdMXRFQ/aMz4GGPPwAQma5ghn
+        DxFtRPMK//B4/NxhV8x91scNnmHYV2BQ6h9YIOmp+UotXJfRt5OJKmweuuX9A3TSofbz/ddb0qZ
+        +2vYgNb7gIlVuMCQIJaE3KlTf
+X-Received: by 2002:a1c:7c1a:: with SMTP id x26mr4181807wmc.112.1600165638453;
+        Tue, 15 Sep 2020 03:27:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwV7+MNnmdJ7LoABeyhT5kZ24BSMQZtr2CvPEQVPzv2SqkmoR19M8GCrVTONoAPOxgeK7xVNw==
+X-Received: by 2002:a1c:7c1a:: with SMTP id x26mr4181777wmc.112.1600165638158;
+        Tue, 15 Sep 2020 03:27:18 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id z15sm25217526wrv.94.2020.09.15.03.27.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 03:27:17 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nudasnev@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        "open list\:GENERIC INCLUDE\/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH RFC v1 07/18] x86/hyperv: extract partition ID from Microsoft Hypervisor if necessary
+In-Reply-To: <20200914112802.80611-8-wei.liu@kernel.org>
+References: <20200914112802.80611-1-wei.liu@kernel.org> <20200914112802.80611-8-wei.liu@kernel.org>
+Date:   Tue, 15 Sep 2020 12:27:16 +0200
+Message-ID: <87y2lbjpx7.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
- <20200806163551.14395-2-andrei.botila@oss.nxp.com> <20200821034651.GA25442@gondor.apana.org.au>
- <c360d691-8253-bd99-af92-83d9f8e86a2d@nxp.com> <20200908221019.GA23497@gondor.apana.org.au>
- <67159207-1082-48be-d085-971a84b525e0@nxp.com> <CAMj1kXGg7bSh57kwE57mKRocNRPZCeXifwjF53-3Jb6LYsfZTg@mail.gmail.com>
- <38f9904b-5bf7-ea99-ed8a-27cb49f405bd@nxp.com> <CAMj1kXH0jOQms9y1MywORywoKjxQ2p8ttv+Xf9KTOkfORX5XWw@mail.gmail.com>
- <4393bf96-30fd-0d1c-73fe-f5ef7c967f76@nxp.com>
-In-Reply-To: <4393bf96-30fd-0d1c-73fe-f5ef7c967f76@nxp.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 15 Sep 2020 13:26:25 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXFeZP7_TQ73yLq0dfb=3wMS0VxqbKKUCGny0xHW1xL+5g@mail.gmail.com>
-Message-ID: <CAMj1kXFeZP7_TQ73yLq0dfb=3wMS0VxqbKKUCGny0xHW1xL+5g@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
- more than 8B IV
-To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 13:02, Horia Geant=C4=83 <horia.geanta@nxp.com> wrot=
-e:
->
-> On 9/14/2020 9:20 PM, Ard Biesheuvel wrote:
-> > On Mon, 14 Sep 2020 at 20:12, Horia Geant=C4=83 <horia.geanta@nxp.com> =
-wrote:
-> >>
-> >> On 9/14/2020 7:28 PM, Ard Biesheuvel wrote:
-> >>> On Mon, 14 Sep 2020 at 19:24, Horia Geant=C4=83 <horia.geanta@nxp.com=
-> wrote:
-> >>>>
-> >>>> On 9/9/2020 1:10 AM, Herbert Xu wrote:
-> >>>>> On Tue, Sep 08, 2020 at 01:35:04PM +0300, Horia Geant=C4=83 wrote:
-> >>>>>>
-> >>>>>>> Just go with the get_unaligned unconditionally.
-> >>>>>>
-> >>>>>> Won't this lead to sub-optimal code for ARMv7
-> >>>>>> in case the IV is aligned?
-> >>>>>
-> >>>>> If this should be optimised in ARMv7 then that should be done
-> >>>>> in get_unaligned itself and not open-coded.
-> >>>>>
-> >>>> I am not sure what's wrong with avoiding using the unaligned accesso=
-rs
-> >>>> in case data is aligned.
-> >>>>
-> >>>> Documentation/core-api/unaligned-memory-access.rst clearly states:
-> >>>> These macros work for memory accesses of any length (not just 32 bit=
-s as
-> >>>> in the examples above). Be aware that when compared to standard acce=
-ss of
-> >>>> aligned memory, using these macros to access unaligned memory can be=
- costly in
-> >>>> terms of performance.
-> >>>>
-> >>>> So IMO it makes sense to use get_unaligned() only when needed.
-> >>>> There are several cases of users doing this, e.g. siphash.
-> >>>>
-> >>>
-> >>> For ARMv7 code, using the unaligned accessors unconditionally is fine=
-,
-> >>> and it will not affect performance.
-> >>>
-> >>> In general, when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is defined,
-> >>> you can use the unaligned accessors. If it is not, it helps to have
-> >>> different code paths.
-> >>>
-> >> arch/arm/include/asm/unaligned.h doesn't make use of
-> >> linux/unaligned/access_ok.h, even if CONFIG_HAVE_EFFICIENT_UNALIGNED_A=
-CCESS
-> >> is set.
-> >>
-> >> I understand the comment in the file, however using get_unaligned()
-> >> unconditionally takes away the opportunity to generate optimized code
-> >> (using ldrd/ldm) when data is aligned.
-> >>
-> >
-> > But the minimal optimization that is possible here (one ldrd/ldm
-> > instruction vs two ldr instructions) is defeated by the fact that you
-> > are using a conditional branch to select between the two. And this is
-> > not even a hot path to begin with,
-> >
-> This is actually on the hot path (encrypt/decrypt callbacks),
-> but you're probably right that the conditional branching is going to offs=
-et
-> the optimized code.
->
+Wei Liu <wei.liu@kernel.org> writes:
 
-This is called once per XTS request, right? And you are saying the
-extra cycle makes a difference?
-
-> To avoid branching, code could be rewritten as:
+> We will need the partition ID for executing some hypercalls later.
 >
-> #ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->         size =3D *(u64 *)(req->iv + (ivsize / 2));
-> #else
->         size =3D get_unaligned((u64 *)(req->iv + (ivsize / 2)));
-> #endif
+> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+>  arch/x86/hyperv/hv_init.c         | 26 ++++++++++++++++++++++++++
+>  arch/x86/include/asm/mshyperv.h   |  2 ++
+>  include/asm-generic/hyperv-tlfs.h |  6 ++++++
+>  3 files changed, 34 insertions(+)
 >
-> however in this case ARMv7 would suffer since
-> CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=3Dy and
-> ldrd/ldm for accesses not word-aligned are inefficient - lead to traps.
->
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index ebba4be4185d..0eec1ed32023 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -30,6 +30,9 @@
+>  bool hv_root_partition;
+>  EXPORT_SYMBOL_GPL(hv_root_partition);
+>  
+> +u64 hv_current_partition_id;
+> +EXPORT_SYMBOL_GPL(hv_current_partition_id);
+> +
+>  void *hv_hypercall_pg;
+>  EXPORT_SYMBOL_GPL(hv_hypercall_pg);
+>  
+> @@ -345,6 +348,26 @@ static struct syscore_ops hv_syscore_ops = {
+>  	.resume		= hv_resume,
+>  };
+>  
+> +void __init hv_get_partition_id(void)
+> +{
+> +	struct hv_get_partition_id *output_page;
+> +	int status;
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +	output_page = *this_cpu_ptr(hyperv_pcpu_output_arg);
+> +	status = hv_do_hypercall(HVCALL_GET_PARTITION_ID, NULL, output_page) &
+> +		HV_HYPERCALL_RESULT_MASK;
 
-CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS means 'just use the unaligned
-accessors as they are basically free'. Casting a potentially
-misaligned u8* to a u64* is not permitted by the C standard.
+Nit: in this case status is 'u16', we can define it as such (instead of
+signed int).
 
-> Would it be ok to use:
-> #if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) && !defined(CONFIG_AR=
-M)
-> to workaround the ARMv7 inconsistency?
->
+> +	if (status != HV_STATUS_SUCCESS)
+> +		pr_err("Failed to get partition ID: %d\n", status);
+> +	else
+> +		hv_current_partition_id = output_page->partition_id;
+> +	local_irq_restore(flags);
+> +
+> +	/* No point in proceeding if this failed */
+> +	BUG_ON(status != HV_STATUS_SUCCESS);
+> +}
+> +
+>  /*
+>   * This function is to be invoked early in the boot sequence after the
+>   * hypervisor has been detected.
+> @@ -440,6 +463,9 @@ void __init hyperv_init(void)
+>  
+>  	register_syscore_ops(&hv_syscore_ops);
+>  
+> +	if (hv_root_partition)
+> +		hv_get_partition_id();
 
-No, please just use the get_unaligned() accessor.
+According to TLFS, partition ID is available when AccessPartitionId
+privilege is granted. I'd suggest we check that instead of
+hv_root_partition (and we can set hv_current_partition_id to something
+like U64_MAX so we know it wasn't acuired). So the BUG_ON condition will
+move here:
+
+        hv_get_partition_id();
+        BUG_ON(hv_root_partition && hv_current_partition_id == U64_MAX);
+
+> +
+>  	return;
+>  
+>  remove_cpuhp_state:
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index f5c62140f28d..4039302e0ae9 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -65,6 +65,8 @@ extern void *hv_hypercall_pg;
+>  extern void  __percpu  **hyperv_pcpu_input_arg;
+>  extern void  __percpu  **hyperv_pcpu_output_arg;
+>  
+> +extern u64 hv_current_partition_id;
+> +
+>  static inline u64 hv_do_hypercall(u64 control, void *input, void *output)
+>  {
+>  	u64 input_address = input ? virt_to_phys(input) : 0;
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index e6903589a82a..87b1a79b19eb 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -141,6 +141,7 @@ struct ms_hyperv_tsc_page {
+>  #define HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX	0x0013
+>  #define HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX	0x0014
+>  #define HVCALL_SEND_IPI_EX			0x0015
+> +#define HVCALL_GET_PARTITION_ID			0x0046
+>  #define HVCALL_GET_VP_REGISTERS			0x0050
+>  #define HVCALL_SET_VP_REGISTERS			0x0051
+>  #define HVCALL_POST_MESSAGE			0x005c
+> @@ -407,6 +408,11 @@ struct hv_tlb_flush_ex {
+>  	u64 gva_list[];
+>  } __packed;
+>  
+> +/* HvGetPartitionId hypercall (output only) */
+> +struct hv_get_partition_id {
+> +	u64 partition_id;
+> +} __packed;
+> +
+>  /* HvRetargetDeviceInterrupt hypercall */
+>  union hv_msi_entry {
+>  	u64 as_uint64;
+
+-- 
+Vitaly
+
