@@ -2,155 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC5526AD30
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6126426AD26
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgIOTKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:10:46 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61928 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727976AbgIOTFg (ORCPT
+        id S1728032AbgIOTKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:10:19 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:36654 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727941AbgIOTGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:05:36 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FIXi1v032846;
-        Tue, 15 Sep 2020 15:05:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=sjt/S6np6D4/53bKdF+p/e8fPp0Y4PQPdKkW3dJL2fs=;
- b=eaCGTvAIdJpMsxQ+XhIMCwXW1jv2Sd71kMNcypHrjbp2gvUi7L9KolDJikOUsr+Uv4th
- 6dF2RqqMNtrEsvCb4i60wQpheGTUujSp2LDYFm0W5K8o0I2iLaU7D44Am0Qx7zHvszgg
- niwfDqZDaEGhgjuwcpT7xrqsHLW/FLG8xPhDkUzxLVKumBBS/mqluUVbIUX0yeyStXJg
- 1tyOJvaeeCbORKwJaXWmYluONZNoRy01QhKsK9mlzzkUEc13f2tZCTTQvC3q93qi3LSs
- p5fImLLwrdaFB8RlYF03jFnSqSquRjfguXkjntnf2rlnXzapbuItIKT1LGcXByVvIx4M Yw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33k2q8s9en-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 15:05:25 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08FIXwlG033569;
-        Tue, 15 Sep 2020 15:05:25 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33k2q8s9e9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 15:05:25 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08FIuZcp022125;
-        Tue, 15 Sep 2020 19:05:24 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03dal.us.ibm.com with ESMTP id 33gny9g1y4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 19:05:24 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08FJ5NfO63898042
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 19:05:23 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3074F7805C;
-        Tue, 15 Sep 2020 19:05:23 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A0027805F;
-        Tue, 15 Sep 2020 19:05:22 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.163.85.51])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Sep 2020 19:05:22 +0000 (GMT)
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-To:     alex.williamson@redhat.com, cohuck@redhat.com
-Cc:     pmorel@linux.ibm.com, schnelle@linux.ibm.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] vfio iommu: Add dma available capability
-Date:   Tue, 15 Sep 2020 15:05:18 -0400
-Message-Id: <1600196718-23238-2-git-send-email-mjrosato@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1600196718-23238-1-git-send-email-mjrosato@linux.ibm.com>
-References: <1600196718-23238-1-git-send-email-mjrosato@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_12:2020-09-15,2020-09-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- malwarescore=0 suspectscore=0 phishscore=0 clxscore=1015 spamscore=0
- bulkscore=0 adultscore=0 mlxlogscore=739 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150147
+        Tue, 15 Sep 2020 15:06:18 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ5pRn058642;
+        Tue, 15 Sep 2020 14:05:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600196751;
+        bh=FwOp1+5tY+FzI+nWDtzQ/kM21d7eLdPx/kZA6dPG+Rk=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=VcqG6mYy7tqwIB8G28svBpcMM2FbvJFBSCBgmQLAi4Hi5IbNgT6FHWGI3FFZJ2eo8
+         Mq64x9ulrjuMzFQrFmo1X82smEKecxdpzfTu0AgQnh81mWfE4k15mzNWqPtIfoFMBk
+         uRNr5ioCDWXky4tFxBNC6UznhMvLgQ3cEFtdg1MM=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ5pnO038065;
+        Tue, 15 Sep 2020 14:05:51 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
+ Sep 2020 14:05:51 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 15 Sep 2020 14:05:51 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ5okH006371;
+        Tue, 15 Sep 2020 14:05:50 -0500
+Subject: Re: [PATCH v2 2/3] ASoC: tlv320adcx140: Add support for configuring
+ GPIO pin
+From:   Dan Murphy <dmurphy@ti.com>
+To:     Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Camel Guo <camelg@axis.com>
+References: <20200911080753.30342-1-camel.guo@axis.com>
+ <20200911080753.30342-2-camel.guo@axis.com>
+ <da35edb3-bc41-967c-d530-4df4363ddddf@ti.com>
+Message-ID: <6833eff3-39d3-f707-d0e6-c0db9f86157c@ti.com>
+Date:   Tue, 15 Sep 2020 14:05:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <da35edb3-bc41-967c-d530-4df4363ddddf@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container")
-added the ability to limit the number of memory backed DMA mappings.
-However on s390x, when lazy mapping is in use, we use a very large
-number of concurrent mappings.  Let's provide the current allowable
-number of DMA mappings to userspace via the IOMMU info chain so that
-userspace can take appropriate mitigation.
+Camel
 
-Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
----
- drivers/vfio/vfio_iommu_type1.c | 17 +++++++++++++++++
- include/uapi/linux/vfio.h       | 15 +++++++++++++++
- 2 files changed, 32 insertions(+)
+On 9/15/20 1:41 PM, Dan Murphy wrote:
+> Camel
+>
+> On 9/11/20 3:07 AM, Camel Guo wrote:
+>> From: Camel Guo <camelg@axis.com>
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 5fbf0c1..15e21db 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -2609,6 +2609,20 @@ static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
- 	return vfio_info_add_capability(caps, &cap_mig.header, sizeof(cap_mig));
- }
- 
-+static int vfio_iommu_dma_avail_build_caps(struct vfio_iommu *iommu,
-+					   struct vfio_info_cap *caps)
-+{
-+	struct vfio_iommu_type1_info_dma_avail cap_dma_avail;
-+
-+	cap_dma_avail.header.id = VFIO_IOMMU_TYPE1_INFO_DMA_AVAIL;
-+	cap_dma_avail.header.version = 1;
-+
-+	cap_dma_avail.avail = iommu->dma_avail;
-+
-+	return vfio_info_add_capability(caps, &cap_dma_avail.header,
-+					sizeof(cap_dma_avail));
-+}
-+
- static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
- 				     unsigned long arg)
- {
-@@ -2642,6 +2656,9 @@ static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
- 	ret = vfio_iommu_migration_build_caps(iommu, &caps);
- 
- 	if (!ret)
-+		ret = vfio_iommu_dma_avail_build_caps(iommu, &caps);
-+
-+	if (!ret)
- 		ret = vfio_iommu_iova_build_caps(iommu, &caps);
- 
- 	mutex_unlock(&iommu->lock);
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index 9204705..3891e03 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -1039,6 +1039,21 @@ struct vfio_iommu_type1_info_cap_migration {
- 	__u64	max_dirty_bitmap_size;		/* in bytes */
- };
- 
-+/*
-+ * The DMA available capability allows to report the current number of
-+ * simultaneously outstanding DMA mappings that are allowed.
-+ *
-+ * The structure below defines version 1 of this capability.
-+ *
-+ * avail: specifies the current number of outstanding DMA mappings allowed.
-+ */
-+#define VFIO_IOMMU_TYPE1_INFO_DMA_AVAIL 3
-+
-+struct vfio_iommu_type1_info_dma_avail {
-+	struct	vfio_info_cap_header header;
-+	__u32	avail;
-+};
-+
- #define VFIO_IOMMU_GET_INFO _IO(VFIO_TYPE, VFIO_BASE + 12)
- 
- /**
--- 
-1.8.3.1
+
+One other thing for the device tree you need to add Rob Herring and 
+devicetree@vger.kernel.org
 
