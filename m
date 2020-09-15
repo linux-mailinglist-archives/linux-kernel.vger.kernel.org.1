@@ -2,133 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F93269A0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DB3269A14
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726145AbgIOADq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42126 "EHLO
+        id S1726149AbgIOAEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgIOADm (ORCPT
+        with ESMTP id S1725997AbgIOAEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:03:42 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A02EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:03:42 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l15so6889044wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:03:41 -0700 (PDT)
+        Mon, 14 Sep 2020 20:04:31 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C55C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:04:30 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n25so1213256ljj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:04:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mDviW9jeDSA5yR4HqgWgtYvMOTzX28ml1rMx9G8r0d4=;
-        b=lAqLJfaTGK0xCxaMvadkZ/+PbQeB69nE5weXHYfOxBt0vyojVWqgTyrALcJcsVScEu
-         ZW1PEwVC3MnwQFYYBwssvtHWBtgq3+kyIbKVyUDjwF7rO2SHeq3OXglCjITNqQi7nNe9
-         awq3Cts9cU7ENgj7+595yvQ/RB6Pp+eE/wnsTgPqXFV0D50japatf23hlZ6pbhYBttyi
-         +tk4lw2EnMpymw0Er0hTjrkU7f0+wdgi6rlazxpY4Mc7RnSKNaZM90AoDDSiOqeIGu6p
-         eJyzLl0WzkiEfXQfRzFqAe/GiAXxNyT/YAEbs0rsNIqoBLrf03QE4JfQMYjo5FulOwvY
-         6ONw==
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=jgCGWOK0Qefy5Fhi4KKTahno9HKUpTYwmUl0eHwt2L4=;
+        b=gSjbKBzMm+N312I84x+Yj8GcAMzjKnYipMN8Z/bEgnQrQsTs+OmwU4b3LVEPLwC6aK
+         ocIMM+heLgZ3vEwHp0OOlrn+cAx5nyV2M5teZHYHfh3fUcu5feP6Luzod1oRkx8I3457
+         71eZxcygUILlB5ftrtFttXWHouoHT6IlUuBmrFxSyn7h36CJ7rMgXqThgCKjCltPJO7/
+         5dXJ7pcibiBU8q64WFIsHQjS0tmzWulQO9EAq4FIaXKpCbBfpP37anhWWRP5pdiKqNz3
+         xaBkajrABn+SP7BCmkJwqx9zX2i0hh8HFQA0JsfgSSzT2EJGkd7gM9X3l3qsyjxyPBjY
+         QpGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mDviW9jeDSA5yR4HqgWgtYvMOTzX28ml1rMx9G8r0d4=;
-        b=cPSaNRiKWHZM1X14nHOU1HC26K2iHOlJW+CzLEETdI8kuJRJMyCp0KbZDg9p1/oraz
-         JeHESCRV1O4sJgwi3EDebGgQb7qqmSMRPq2Zy0qZoONKvRD6wFbkdhPwOZRNcIQaysbe
-         G8jSUfywH/gmnKECgIncV65kt0NM1iYtS0ouurmZ0yCEvTaP3BLuj1JCNXJISwnSEVAD
-         85Q5/aOhD0t325MrucQQbntBKPN2pp8SWoiBfcDOC7Ijy1y0Tmtbdg0Uqk9xVhQ7WTUU
-         pnlP2ZGpjHQuWP2jralie+RpiquF7S6RepyqU0xHzOHVBF8vK8ZZhrgDkDAfeSz7dL8I
-         b8hA==
-X-Gm-Message-State: AOAM531VkO6JZN7fv4t5uJCs19Y1TzIAgMvyUZCSvVogWYHCe2W3cS+C
-        bqn2ZPpXzC/0QkVh/ugQ3JK9Tnqwic8I8Ih4yyI9lQ==
-X-Google-Smtp-Source: ABdhPJxR5i1u89efvYIEt5Dr4ppP3zu1ZQSrKr9RV/ih3A7oMbpNiINOyEC1zrgcvkRpNrzgMhSMow02fyKsQWJPUxk=
-X-Received: by 2002:a1c:f402:: with SMTP id z2mr1652654wma.87.1600128220443;
- Mon, 14 Sep 2020 17:03:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jgCGWOK0Qefy5Fhi4KKTahno9HKUpTYwmUl0eHwt2L4=;
+        b=H2KO76YByMYo8XqnMpHfiTH5eetsMu2HKkkjhDMWIN99khMif/8bOixxmSkc+ZQQPz
+         Rx4ZG81eZ8IZV6CMqEQuugM9SGUzxblJEmelkAm3kNVJX3HngYxkUR1DTlABj6Fxoupq
+         DzIctSkTLhxZyQ1sBZ8JfUDado+GKj/FksOKtMPec+UOrLs+4v2yDYnXCRaG97vZHfXt
+         wub3LFt54+XHe0nRAqfw+FyeORW1TRsDNlw6GJnXfD4lQd991qWSVSuYZZAHjvIk1Xxm
+         TMpDaNZf2n0ELTRTxAEhxdgHF74OACOhECs+vTcLCOFxAjuSvYfmf8MSt9t4R1APbwvH
+         w6Jg==
+X-Gm-Message-State: AOAM533tKIYBtyaiT/eEXZDrOy9VfwK5r8U98AJurQWzLWBOJusUs8q8
+        7rKzV6NKEM7Ww1mvpcc07mjaOA==
+X-Google-Smtp-Source: ABdhPJzoz6S0ZlL4vXr8oV8PcsKi+cx6YzmVIaJoGSB90g6XRePDfA1/s4dIcen7byBgEvfkByEpvg==
+X-Received: by 2002:a2e:7a04:: with SMTP id v4mr6189916ljc.128.1600128269031;
+        Mon, 14 Sep 2020 17:04:29 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id 69sm4007618lfm.83.2020.09.14.17.04.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 17:04:28 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 02:04:28 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v2] media: rcar-vin: Update crop and compose settings for
+ every s_fmt call
+Message-ID: <20200915000428.GA1695481@oden.dyn.berto.se>
+References: <20200913182140.32466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-3-jolsa@kernel.org>
- <CABPqkBTk+SwTAxXDa6HL8TqvEmUunfMZxpAtx6CebNbd+3hEHw@mail.gmail.com>
- <20200914090811.GM1362448@hirez.programming.kicks-ass.net> <CABPqkBSKpZFbYWrQueS9cFDkGJPb3NdA1HTPh0+XN_+qvLpdLw@mail.gmail.com>
-In-Reply-To: <CABPqkBSKpZFbYWrQueS9cFDkGJPb3NdA1HTPh0+XN_+qvLpdLw@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 14 Sep 2020 17:03:25 -0700
-Message-ID: <CAP-5=fXrhjv8obOPKpXThsrOKjb5kKFTpoTRO3tDk5MoJyhdjw@mail.gmail.com>
-Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200913182140.32466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:26 AM Stephane Eranian <eranian@google.com> wrote:
->
-> On Mon, Sep 14, 2020 at 2:08 AM <peterz@infradead.org> wrote:
-> >
-> > On Sun, Sep 13, 2020 at 11:41:00PM -0700, Stephane Eranian wrote:
-> > > On Sun, Sep 13, 2020 at 2:03 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > what happens if I set mmap3 and mmap2?
-> > >
-> > > I think using mmap3 for every mmap may be overkill as you add useless
-> > > 20 bytes to an mmap record.
-> > > I am not sure if your code handles the case where mmap3 is not needed
-> > > because there is no buildid, e.g, anonymous memory.
-> > > It seems to me you've written the patch in such a way that if the user
-> > > tool supports mmap3, then it supersedes mmap2, and thus
-> > > you need all the fields of mmap2. But if could be more interesting to
-> > > return either MMAP2 or MMAP3 depending on tool support
-> > > and type of mmap, that would certainly save 20 bytes on any anon mmap.
-> > > But maybe that logic is already in your patch and I missed it.
-> >
-> > That, and what if you don't want any of that buildid nonsense at all? I
-> > always kill that because it makes perf pointlessly slow and has
-> > absolutely no upsides for me.
-> >
-> I have seen situations where the perf tool takes a visibly significant
-> amount of time (many seconds) to inject the buildids at the end of the
-> collection
-> of perf record (same if using perf inject -b). That is because it
-> needs to go through all the records in the perf.data to find MMAP
-> records and then read
-> the buildids from the filesystem. This has caused some problems in our
-> environment. Having the kernel add the buildid to *relevant* mmaps
-> would avoid
-> a lot of that penalty, by avoiding having to parse the perf.data file
-> and leveraging the fact that the buildid may be in memory already.
-> Although my concern on
-> this has to do with large pages and the impact they have on alignment
-> of sections in memory.  I think Ian can comment better on this.
+Hi Lad,
 
-I believe this is a problem we have and that is going away. For
-context, we map huge pages and move executable code to them, not from
-a file, but using anonymous memory or other sources of huge pages. By
-definition we will fail to find build ids for such anonymous memory,
-but we may also break the non file backed hugepage case if the
-alignment is such that the ELF header is on the hugepage and for some
-reason not in the page cache. File backed huge pages solve this
-problem.
+Thanks for your work.
 
-Thanks,
-Ian
+On 2020-09-13 19:21:40 +0100, Lad Prabhakar wrote:
+> The crop and compose settings for VIN in non mc mode werent updated
+> in s_fmt call this resulted in captured images being clipped.
+> 
+> With the below sequence on the third capture where size is set to
+> 640x480 resulted in clipped image of size 320x240.
+> 
+> high(640x480) -> low (320x240) -> high (640x480)
+> 
+> This patch makes sure the VIN crop and compose settings are updated.
 
-> I think this patch series is useful if it can demonstrate a speedup
-> during recording (perf record or perf record | perf inject -b). But it
-> needs to be
-> optimized to minimize the volume of useless info returned. And Jiri
-> needs to decide if MMAP3 is a replacement of MMAP2, or a different
-> kind of record
-> targeted at ELF images only in which case some of the fields may be
-> removed. My tendency would be to go for the latter.
+With this change I get failures with v4l2-compliance I don't have 
+before. I think we need to align this the other way around, copy the 
+non-MC behavior to the MC S_FTM implementation.
+
+# v4l2-compliance -d /dev/video28
+v4l2-compliance SHA: c7f03287bbd64c168975e7ff3192e6fd3b507686, 32 bits, 32-bit time_t
+
+Compliance test for rcar_vin device /dev/video28:
+
+Driver Info:
+	Driver name      : rcar_vin
+	Card type        : R_Car_VIN
+	Bus info         : platform:e6ef1000.video
+	Driver version   : 5.9.0
+	Capabilities     : 0x85200001
+		Video Capture
+		Read/Write
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x05200001
+		Video Capture
+		Read/Write
+		Streaming
+		Extended Pix Format
+
+Required ioctls:
+	test VIDIOC_QUERYCAP: OK
+
+Allow for multiple opens:
+	test second /dev/video28 open: OK
+	test VIDIOC_QUERYCAP: OK
+	test VIDIOC_G/S_PRIORITY: OK
+	test for unlimited opens: OK
+
+	test invalid ioctls: OK
+Debug ioctls:
+	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+	test VIDIOC_LOG_STATUS: OK
+
+Input ioctls:
+	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+	test VIDIOC_G/S/ENUMINPUT: OK
+	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+	Inputs: 1 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+	Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+	test VIDIOC_ENUM/G/S/QUERY_STD: OK
+	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+	test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls (Input 0):
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+	test VIDIOC_QUERYCTRL: OK
+	test VIDIOC_G/S_CTRL: OK
+	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+	Standard Controls: 6 Private Controls: 1
+
+Format ioctls (Input 0):
+	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+	test VIDIOC_G/S_PARM: OK
+	test VIDIOC_G_FBUF: OK (Not Supported)
+	test VIDIOC_G_FMT: OK
+	test VIDIOC_TRY_FMT: OK
+	test VIDIOC_S_FMT: OK
+	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+		fail: v4l2-test-formats.cpp(1544): !rect_is_inside(&sel_crop.r, &sel_bounds.r)
+		fail: v4l2-test-formats.cpp(1649): testBasicCrop(node, V4L2_BUF_TYPE_VIDEO_CAPTURE)
+	test Cropping: FAIL
+	test Composing: OK
+	test Scaling: OK
+
+Codec ioctls (Input 0):
+	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls (Input 0):
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+	test Requests: OK (Not Supported)
+
+Total for rcar_vin device /dev/video28: 45, Succeeded: 44, Failed: 1, Warnings: 0
+
+Without this patch all test pass.
+
+> 
+> Fixes: 104464f573d ("media: rcar-vin: Do not reset the crop and compose rectangles in s_fmt")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+> Changes for v2:
+> * Dropped redundant code mapping crop and compose rects
+> 
+> v1 - https://lkml.org/lkml/2020/7/31/364
+> ---
+>  drivers/media/platform/rcar-vin/rcar-v4l2.c | 15 ++++++---------
+>  1 file changed, 6 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> index 0e066bba747e..1bd59a8453b4 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> @@ -305,7 +305,7 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
+>  			      struct v4l2_format *f)
+>  {
+>  	struct rvin_dev *vin = video_drvdata(file);
+> -	struct v4l2_rect fmt_rect, src_rect;
+> +	struct v4l2_rect src_rect;
+>  	int ret;
+>  
+>  	if (vb2_is_busy(&vin->queue))
+> @@ -317,14 +317,11 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
+>  		return ret;
+>  
+>  	vin->format = f->fmt.pix;
+> -
+> -	fmt_rect.top = 0;
+> -	fmt_rect.left = 0;
+> -	fmt_rect.width = vin->format.width;
+> -	fmt_rect.height = vin->format.height;
+> -
+> -	v4l2_rect_map_inside(&vin->crop, &src_rect);
+> -	v4l2_rect_map_inside(&vin->compose, &fmt_rect);
+> +	vin->crop.top = 0;
+> +	vin->crop.left = 0;
+> +	vin->crop.width = vin->format.width;
+> +	vin->crop.height = vin->format.height;
+> +	vin->compose = vin->crop;
+>  	vin->src_rect = src_rect;
+>  
+>  	return 0;
+> -- 
+> 2.17.1
+> 
+
+-- 
+Regards,
+Niklas Söderlund
