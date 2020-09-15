@@ -2,150 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CE926AEC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D3B26AED0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgIOUgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:36:51 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17870 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727835AbgIOUdm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:33:42 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6124f60002>; Tue, 15 Sep 2020 13:32:54 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 15 Sep 2020 13:33:42 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 15 Sep 2020 13:33:42 -0700
-Received: from [10.21.180.184] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
- 2020 20:33:33 +0000
-Subject: Re: [PATCH net-next RFC v4 04/15] devlink: Add reload actions stats
- to dev get
-To:     Jiri Pirko <jiri@resnulli.us>
-CC:     Ido Schimmel <idosch@idosch.org>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-5-git-send-email-moshe@mellanox.com>
- <20200914134500.GH2236@nanopsycho.orion> <20200915064519.GA5390@shredder>
- <20200915074402.GM2236@nanopsycho.orion>
- <0d6cb0da-761b-b122-f5b1-b82320cfd5c4@nvidia.com>
- <20200915133406.GQ2236@nanopsycho.orion>
-From:   Moshe Shemesh <moshe@nvidia.com>
-Message-ID: <bcd28773-0027-11f5-1fd9-0a793f0a3c3a@nvidia.com>
-Date:   Tue, 15 Sep 2020 23:33:30 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728055AbgIOUif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:38:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727873AbgIOUgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:36:46 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBDFA20809;
+        Tue, 15 Sep 2020 20:36:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600202205;
+        bh=hR+9QjiQFWyN2W2Y/im5/MlPYRdRGdyGzHGLrBYVxBg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=JE3/C4Chwu15czXYlspesWnGolV8kaWR0831erUbBU6KMwFGI9HEcSxwrT2fEchX/
+         aH7DsB03ZoxxNTB6AFhAicVG8k2Qq+3lSHOjCNiowrOwZSFwpCSePmmJqh7CqYm/GG
+         QNRk344P7vVfAx95w7iafmfFd66O5gfB5yqe2rV0=
+Date:   Tue, 15 Sep 2020 15:36:43 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ming Qiao <mqiao@juniper.net>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Debjit Ghosh <dghosh@juniper.net>,
+        Santhanakrishnan Balraj <sbalraj@juniper.net>,
+        Rajat Jain <rajatja@google.com>
+Subject: Re: [PATCH 1/3] PCI: Add quirks for Juniper FPGAs to set class code
+Message-ID: <20200915203643.GA1426328@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20200915133406.GQ2236@nanopsycho.orion>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600201974; bh=9UrYNAuwQKcNag9dW5Ply9EIO8Nad/nvK5+/xjza9a4=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:
-         Content-Transfer-Encoding:Content-Language:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=SPiN9yIJoeNijWWwLop+VnoRYo3R4agX+WpOULBR7Ct9zZmDfmW6nzr+p1uFRurjc
-         kNeZ8rhNQEadfADyWn0I5gJGEqXyVMyJ+Z6Xyx0813Pc/+yiv+s+TtBnAuf0c/ujDa
-         +UKFplnGCxW339r38FKFuK43xVJHfaMXjfv08Qxnw792bN+18QbUlrTXi9LE8pgzy9
-         O6R8pvSSH/RyaYnPfCVvVV1N010z/ShyvYNMadPu1TGy+GNbK7A/hLWzEp342VYyBM
-         K2rv0EZXK1cFWgRLcFWbIhz80rkObRhoEPQxaStlzI+kWH2TXWbssfLPBmRYNqXBdi
-         HhugGEt7no4ZA==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200915151103.7086-1-mqiao@juniper.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 15, 2020 at 08:11:01AM -0700, Ming Qiao wrote:
+> Some of the Juniper FPGAs do not report correct PCI class ID, which
+> would confuse kernel APIs accessing the specific class of devices.
+> Change them to PCI_CLASS_SYSTEM_OTHER << 8.
 
-On 9/15/2020 4:34 PM, Jiri Pirko wrote:
-> Tue, Sep 15, 2020 at 02:31:38PM CEST, moshe@nvidia.com wrote:
->> On 9/15/2020 10:44 AM, Jiri Pirko wrote:
->>> Tue, Sep 15, 2020 at 08:45:19AM CEST, idosch@idosch.org wrote:
->>>> On Mon, Sep 14, 2020 at 03:45:00PM +0200, Jiri Pirko wrote:
->>>>> Mon, Sep 14, 2020 at 08:07:51AM CEST, moshe@mellanox.com wrote:
->>>>>> Expose devlink reload actions stats to the user through devlink dev
->>>>>> get command.
->>>>>>
->>>>>> Examples:
->>>>>> $ devlink dev show
->>>>>> pci/0000:82:00.0:
->>>>>>    reload_action_stats:
->>>>>>      driver_reinit 2
->>>>>>      fw_activate 1
->>>>>>      driver_reinit_no_reset 0
->>>>>>      fw_activate_no_reset 0
->>>>>> pci/0000:82:00.1:
->>>>>>    reload_action_stats:
->>>>>>      driver_reinit 1
->>>>>>      fw_activate 1
->>>>>>      driver_reinit_no_reset 0
->>>>>>      fw_activate_no_reset 0
->>>>> I would rather have something like:
->>>>>      stats:
->>>>>        reload_action:
->>>>>          driver_reinit 1
->>>>>          fw_activate 1
->>>>>          driver_reinit_no_reset 0
->>>>>          fw_activate_no_reset 0
->>>>>
->>>>> Then we can easily extend and add other stats in the tree.
->>
->> Sure, I will add it.
-> Could you please checkout the metrics patchset and figure out how to
-> merge that with your usecase?
->
+Please include a note about the consequence of the incorrect class ID,
+i.e., what happens without this quirk?  Does the system panic?  Does
+some device not work correctly?  If so, which, and what does the
+problem look like to a user?
 
-I will check, I will discuss with Ido how it will fit.
+"Confusing kernel APIs" is pretty general and won't help a user who is
+seeing a problem to find this patch.
 
->>>>> Also, I wonder if these stats could be somehow merged with Ido's metrics
->>>>> work:
->>>>> https://github.com/idosch/linux/commits/submit/devlink_metric_rfc_v1
->>>>>
->>>>> Ido, would it make sense?
->>>> I guess. My original idea for devlink-metric was to expose
->>>> design-specific metrics to user space where the entity registering the
->>>> metrics is the device driver. In this case the entity would be devlink
->>>> itself and it would be auto-registered for each device.
->>> Yeah, the usecase is different, but it is still stats, right.
->>>
->>>
->>>>>> $ devlink dev show -jp
->>>>>> {
->>>>>>      "dev": {
->>>>>>          "pci/0000:82:00.0": {
->>>>>>              "reload_action_stats": [ {
->>>>>>                      "driver_reinit": 2
->>>>>>                  },{
->>>>>>                      "fw_activate": 1
->>>>>>                  },{
->>>>>>                      "driver_reinit_no_reset": 0
->>>>>>                  },{
->>>>>>                      "fw_activate_no_reset": 0
->>>>>>                  } ]
->>>>>>          },
->>>>>>          "pci/0000:82:00.1": {
->>>>>>              "reload_action_stats": [ {
->>>>>>                      "driver_reinit": 1
->>>>>>                  },{
->>>>>>                      "fw_activate": 1
->>>>>>                  },{
->>>>>>                      "driver_reinit_no_reset": 0
->>>>>>                  },{
->>>>>>                      "fw_activate_no_reset": 0
->>>>>>                  } ]
->>>>>>          }
->>>>>>      }
->>>>>> }
->>>>>>
->>>>> [..]
+> Also introduce Juniper vendor ID to be used in the quirks.
+>     
+> Signed-off-by: Debjit Ghosh <dghosh@juniper.net>
+> Signed-off-by: Santhanakrishnan Balraj <sbalraj@juniper.net>
+> Signed-off-by: Rajat Jain <rajatja@google.com>
+> Signed-off-by: Ming Qiao <mqiao@juniper.net>
+> ---
+>  drivers/pci/quirks.c    | 25 +++++++++++++++++++++++++
+>  include/linux/pci_ids.h |  2 ++
+>  2 files changed, 27 insertions(+)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 2a589b6..61344d2 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -5632,3 +5632,28 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
+>  }
+>  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
+>  			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
+> +
+> +/*
+> + * PCI class reported by some Juniper FPGAs is not correct.
+> + * Change it to SYSTEM.
+> + */
+> +static void quirk_jnx_fpga(struct pci_dev *dev)
+> +{
+> +	if (!dmi_match(DMI_BOARD_VENDOR, "Juniper Networks Inc."))
+> +		return;
+
+Why is the DMI_BOARD_VENDOR relevant to this quirk?  This check seems
+to mean that the class code is programmable by the BIOS, and all
+BIOSes program it correctly *except* the Juniper BIOS.
+
+If this is just a silicon defect in the chips, you shouldn't need to
+check the DMI_BOARD_VENDOR.
+
+> +	dev->class = PCI_CLASS_SYSTEM_OTHER << 8;
+> +}
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0004, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x006A, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x006B, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x006C, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x006E, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0079, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0083, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0071, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00A7, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00A8, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00A9, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00AA, quirk_jnx_fpga);
+> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_XILINX, 0x0505, quirk_jnx_fpga);
+> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> index 1ab1e24..bfbf8f1 100644
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -1859,6 +1859,8 @@
+>  #define PCI_VENDOR_ID_ESDGMBH		0x12fe
+>  #define PCI_DEVICE_ID_ESDGMBH_CPCIASIO4 0x0111
+>  
+> +#define PCI_VENDOR_ID_JUNIPER		0X1304
+
+Please use "0x1304" (lower-case 'x') like the rest of the file.
+
+>  #define PCI_VENDOR_ID_CB		0x1307	/* Measurement Computing */
+>  
+>  #define PCI_VENDOR_ID_SIIG		0x131f
+> -- 
+> 2.10.0
+> 
