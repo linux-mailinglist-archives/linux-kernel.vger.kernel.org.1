@@ -2,241 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C466226AC93
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6154626AC94
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbgIOSwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:52:18 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:34812 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727653AbgIOSvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:51:06 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FIoi17054725;
-        Tue, 15 Sep 2020 13:50:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600195844;
-        bh=U7y1gyIYfA8SLhBBcfOATA30DSJsB0eQ4gaq8DUsJQ0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=UR/kWVPwQz2OakR+tiqx2L2ede9cGCXqmltv0iaX7ChhHpYvW7y3Vr1ff0MBLdtuw
-         FsSmSbuDIiVN0Ztiinl2Q/L1plR5YCsupKTuP1tyjgElChW5oJblGGK/BnLiFOThUm
-         ebxgdAppxp0Q01G95jF7Iid4iI9ronHV8XmMfd9g=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FIoid7038918
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 13:50:44 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 13:50:43 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 13:50:43 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FIohDY111585;
-        Tue, 15 Sep 2020 13:50:43 -0500
-Subject: Re: [PATCH v2 3/3] ASoC: tlv320adcx140: Add proper support for master
- mode
-To:     Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>, Camel Guo <camelg@axis.com>
-References: <20200911080753.30342-1-camel.guo@axis.com>
- <20200911080753.30342-3-camel.guo@axis.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <c2fb617e-fa61-e9d1-449f-7d8806168b9a@ti.com>
-Date:   Tue, 15 Sep 2020 13:50:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727861AbgIOSwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:52:39 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:57524 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727729AbgIOSwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 14:52:19 -0400
+Received: from zn.tnic (p200300ec2f0e42009474dca2b756bdd4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:9474:dca2:b756:bdd4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 460DC1EC00F4;
+        Tue, 15 Sep 2020 20:52:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600195936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=cKYB52P8O6386b7hXIPyVtrVyn81imJhI74svwiZIl0=;
+        b=RSy11l4ReWGZA+4hyM6z75EeGcglgNjRATmOcpgFHQ1ChMBtfSiIHPLtokKTom54+W5hku
+        p70V3gwFqLNKIzTzQ+2Cw2mKOEtweNedhnnQBqdO7I0fJFwcyA37AzboylBtxT5yv2oBHE
+        LpzQV6KsoU7oe/MSv05T1uwENZyROcA=
+Date:   Tue, 15 Sep 2020 20:52:10 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Roman Kiryanov <rkir@google.com>
+Cc:     rjw@rjwysocki.net, pavel@ucw.cz,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        x86@kernel.org, linux-pm@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alistair Delva <adelva@google.com>,
+        Haitao Shan <hshan@google.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arch: x86: power: cpu: init %gs before
+ __restore_processor_state (clang)
+Message-ID: <20200915185210.GY14436@zn.tnic>
+References: <20200915172658.1432732-1-rkir@google.com>
+ <20200915174643.GT14436@zn.tnic>
+ <CAOGAQepp_1QXrNAAXbLpW8qrujfdszfU2rMoh804wKK-Ja66Yw@mail.gmail.com>
+ <20200915182730.GW14436@zn.tnic>
+ <CAOGAQeqhKS48Kd8W4y13ATT3m+nJSksF_U1SJ=SBrOZFrDq9Nw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200911080753.30342-3-camel.guo@axis.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAOGAQeqhKS48Kd8W4y13ATT3m+nJSksF_U1SJ=SBrOZFrDq9Nw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Camel
+On Tue, Sep 15, 2020 at 11:36:13AM -0700, Roman Kiryanov wrote:
+> This is fair. Unfortunately I am not an x86 asm expert. I expect the proper
+> fix should land into arch/x86/kernel/acpi/wakeup_64.S to init %gs
+> (maybe some more registers) before "jmp restore_processor_state".
 
-On 9/11/20 3:07 AM, Camel Guo wrote:
-> From: Camel Guo <camelg@axis.com>
->
-> Add setup of bclk-to-ws ratio and sample rate when in master mode,
-> as well as MCLK input pin setup.
->
-> Signed-off-by: Camel Guo <camelg@axis.com>
-> ---
->   v2:
->    - Move GPIO setting into devicetree
->    - Move master config register setting into a new function
->
->   sound/soc/codecs/tlv320adcx140.c | 139 ++++++++++++++++++++++++++++++-
->   sound/soc/codecs/tlv320adcx140.h |  27 ++++++
->   2 files changed, 162 insertions(+), 4 deletions(-)
->
-> diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-> index 97f16fbba441..685f5fd8b537 100644
-> --- a/sound/soc/codecs/tlv320adcx140.c
-> +++ b/sound/soc/codecs/tlv320adcx140.c
-> @@ -35,6 +35,7 @@ struct adcx140_priv {
->   	unsigned int dai_fmt;
->   	unsigned int tdm_delay;
->   	unsigned int slot_width;
-> +	bool master;
->   };
->   
->   static const char * const gpo_config_names[] = {
-> @@ -651,11 +652,136 @@ static int adcx140_reset(struct adcx140_priv *adcx140)
->   	return ret;
->   }
->   
-> +static int adcx140_fs_bclk_ratio(unsigned int bclk_ratio)
-> +{
-> +	switch (bclk_ratio) {
-> +	case 16:
-> +		return ADCX140_RATIO_16;
-> +	case 24:
-> +		return ADCX140_RATIO_24;
-> +	case 32:
-> +		return ADCX140_RATIO_32;
-> +	case 48:
-> +		return ADCX140_RATIO_48;
-> +	case 64:
-> +		return ADCX140_RATIO_64;
-> +	case 96:
-> +		return ADCX140_RATIO_96;
-> +	case 128:
-> +		return ADCX140_RATIO_128;
-> +	case 192:
-> +		return ADCX140_RATIO_192;
-> +	case 256:
-> +		return ADCX140_RATIO_256;
-> +	case 384:
-> +		return ADCX140_RATIO_384;
-> +	case 512:
-> +		return ADCX140_RATIO_512;
-> +	case 1024:
-> +		return ADCX140_RATIO_1024;
-> +	case 2048:
-> +		return ADCX140_RATIO_2048;
-> +	default:
-> +		break;
-> +	}
-> +	return -EINVAL;
-> +}
-> +
-> +static int adcx140_fs_rate(unsigned int rate)
-> +{
-> +	switch (rate) {
-> +	case 7350:
-> +	case 8000:
-> +		return ADCX140_8_OR_7_35KHZ;
-> +	case 14700:
-> +	case 16000:
-> +		return ADCX140_16_OR_14_7KHZ;
-> +	case 22050:
-> +	case 24000:
-> +		return ADCX140_24_OR_22_05KHZ;
-> +	case 29400:
-> +	case 32000:
-> +		return ADCX140_32_OR_29_4KHZ;
-> +	case 44100:
-> +	case 48000:
-> +		return ADCX140_48_OR_44_1KHZ;
-> +	case 88200:
-> +	case 96000:
-> +		return ADCX140_96_OR_88_2KHZ;
-> +	case 176400:
-> +	case 192000:
-> +		return ADCX140_192_OR_176_4KHZ;
-> +	case 352800:
-> +	case 384000:
-> +		return ADCX140_384_OR_352_8KHZ;
-> +	case 705600:
-> +	case 768000:
-> +		return ADCX140_768_OR_705_6KHZ;
-> +	default:
-> +		break;
-> +	}
-> +	return -EINVAL;
-> +}
-> +
-> +static int adcx140_setup_master_config(struct snd_soc_component *component,
-> +				       struct snd_pcm_hw_params *params)
-> +{
-> +	int ret = 0;
-> +	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
-> +
-> +	if (adcx140->master) {
+... because "LLVM appears to be inlining functions with stack protectors
+into functions compiled with -fno-stack-protector" and now the *kernel*
+needs to init %gs?
 
-Move this out to hw_params.  No reason to jump here just to jump back.
+How about LLVM stops doing those wrong inlining decisions?
 
-Check for master and if master then configure
+-- 
+Regards/Gruss,
+    Boris.
 
-This will eliminate the mixed code and variable declaration below which 
-is what I wanted to avoid in v1.
-
-This will also allow you to remove some of the variable initialization.
-
-> +		u8 mst_cfg1 = 0;
-> +		u8 mst_cfg0 = 0;
-This can be init to mst_cfg0 = ADCX140_BCLK_FSYNC_MASTER no reason to 
-set it here and then change it immediately.
-> +		unsigned int bclk_ratio;
-> +
-> +		mst_cfg0 = ADCX140_BCLK_FSYNC_MASTER;
-> +		if (params_rate(params) % 1000)
-> +			mst_cfg0 |= ADCX140_FSYNCINV_BIT; /* 44.1 kHz et al */
-> +
-> +		ret = adcx140_fs_rate(params_rate(params));
-> +		if (ret < 0) {
-> +			dev_err(adcx140->dev, "%s: Unsupported rate %d\n",
-> +					__func__, params_rate(params));
-> +			return ret;
-> +		}
-> +		mst_cfg1 |= ret;
-Why the | here?  This is initialized to 0 so mst_cfg1 = ret. And why 
-even use ret just return into mst_cfg1 and check that variable
-> +
-> +		/* In slave mode when using automatic clock configuration,
-> +		 * the codec figures out the BCLK to FSYNC ratio itself. But
-> +		 * here in master mode, we need to tell it.
-> +		 */
-> +
-> +		bclk_ratio = snd_soc_params_to_frame_size(params);
-> +		ret = adcx140_fs_bclk_ratio(bclk_ratio);
-> +		if (ret < 0) {
-> +			dev_err(adcx140->dev, "%s: Unsupported bclk_ratio %d\n",
-> +					__func__, bclk_ratio);
-> +			return ret;
-> +		}
-> +		mst_cfg1 |= ret;
-> +
-> +		snd_soc_component_update_bits(component, ADCX140_MST_CFG1,
-> +				ADCX140_FS_RATE_MSK |
-> +				ADCX140_RATIO_MSK,
-> +				mst_cfg1);
-
-I don't understand the update_bits since you have calcualted both the 
-Ratio and rate you can just write the register with the 
-snd_soc_component_write.
-
-> +
-> +		snd_soc_component_update_bits(component, ADCX140_MST_CFG0,
-> +				ADCX140_FSYNCINV_BIT |
-> +				ADCX140_BCLK_FSYNC_MASTER,
-> +				mst_cfg0);
-> +
-
-But this is ok.  I actually have other changes I am posting which move 
-this to the set_dai_format.  So I am not sure if this will be needed 
-after that patch is applied.
-
-I will CC you on those patches.
-
-Dan
+https://people.kernel.org/tglx/notes-about-netiquette
