@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9F926A866
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C0726A85E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727164AbgIOPIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:08:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50280 "EHLO mail.kernel.org"
+        id S1727415AbgIOPIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:08:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727299AbgIOOlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727281AbgIOOlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 10:41:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FB9122264;
-        Tue, 15 Sep 2020 14:31:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BDBF22A83;
+        Tue, 15 Sep 2020 14:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600180290;
-        bh=gNYG3l4Uosa98MY3NbW9h8s52BgNzrxNf1xRR/0kgrU=;
+        s=default; t=1600180242;
+        bh=3DeDof8zH8ebgLROJLAJWdreYRB88ogNi4I2Oja4Bdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GkrH2SFFX+lKgJOjjP6YJgS3b3l5GUmwc0ab0TJivqDmtaYoItXlDeIxWdQ1DWynS
-         Pyul2H8IYi9CkkBU0IVd+XbEWE73guv3IpHJTUjjBFqZfQXvHsTfaa2/Gt/SvOkl74
-         7u2X9goWziohxGJdQ9nPcHPKaJ6KJVcgLr8pBHhM=
+        b=Cmx5pXK9bw01kThu4efkiC9euacE/3pf0jGgtKqAgrq1SDUySe+AG5qIVs6Rak5V1
+         8drzANeq12DESgt0g3oJLk5ze2FUSPuSbzSwRIHGKIk5Lu9TtFQcKSgZPQhzdec2lK
+         oJk4k/jEnjqMzNLkzotIa3H+Fn9dKHuuXbkZbqDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.8 157/177] kvm x86/mmu: use KVM_REQ_MMU_SYNC to sync when needed
-Date:   Tue, 15 Sep 2020 16:13:48 +0200
-Message-Id: <20200915140701.215952201@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Subject: [PATCH 5.8 165/177] staging: greybus: audio: fix uninitialized value issue
+Date:   Tue, 15 Sep 2020 16:13:56 +0200
+Message-Id: <20200915140701.606608402@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
 References: <20200915140653.610388773@linuxfoundation.org>
@@ -46,48 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+From: Vaibhav Agarwal <vaibhav.sr@gmail.com>
 
-commit f6f6195b888c28a0b59ceb0562daff92a2be86c3 upstream.
+commit 1dffeb8b8b4c261c45416d53c75ea51e6ece1770 upstream.
 
-When kvm_mmu_get_page() gets a page with unsynced children, the spt
-pagetable is unsynchronized with the guest pagetable. But the
-guest might not issue a "flush" operation on it when the pagetable
-entry is changed from zero or other cases. The hypervisor has the
-responsibility to synchronize the pagetables.
+The current implementation for gbcodec_mixer_dapm_ctl_put() uses
+uninitialized gbvalue for comparison with updated value. This was found
+using static analysis with coverity.
 
-KVM behaved as above for many years, But commit 8c8560b83390
-("KVM: x86/mmu: Use KVM_REQ_TLB_FLUSH_CURRENT for MMU specific flushes")
-inadvertently included a line of code to change it without giving any
-reason in the changelog. It is clear that the commit's intention was to
-change KVM_REQ_TLB_FLUSH -> KVM_REQ_TLB_FLUSH_CURRENT, so we don't
-needlessly flush other contexts; however, one of the hunks changed
-a nearby KVM_REQ_MMU_SYNC instead.  This patch changes it back.
+Uninitialized scalar variable (UNINIT)
+11. uninit_use: Using uninitialized value
+gbvalue.value.integer_value[0].
+460        if (gbvalue.value.integer_value[0] != val) {
 
-Link: https://lore.kernel.org/lkml/20200320212833.3507-26-sean.j.christopherson@intel.com/
-Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-Message-Id: <20200902135421.31158-1-jiangshanlai@gmail.com>
-fixes: 8c8560b83390 ("KVM: x86/mmu: Use KVM_REQ_TLB_FLUSH_CURRENT for MMU specific flushes")
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+This patch fixes the issue with fetching the gbvalue before using it for
+    comparision.
+
+Fixes: 6339d2322c47 ("greybus: audio: Add topology parser for GB codec")
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/bc4f29eb502ccf93cd2ffd98db0e319fa7d0f247.1597408126.git.vaibhav.sr@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/mmu/mmu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/greybus/audio_topology.c |   29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2521,7 +2521,7 @@ static struct kvm_mmu_page *kvm_mmu_get_
- 		}
+--- a/drivers/staging/greybus/audio_topology.c
++++ b/drivers/staging/greybus/audio_topology.c
+@@ -460,6 +460,15 @@ static int gbcodec_mixer_dapm_ctl_put(st
+ 	val = ucontrol->value.integer.value[0] & mask;
+ 	connect = !!val;
  
- 		if (sp->unsync_children)
--			kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
-+			kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
++	ret = gb_pm_runtime_get_sync(bundle);
++	if (ret)
++		return ret;
++
++	ret = gb_audio_gb_get_control(module->mgmt_connection, data->ctl_id,
++				      GB_AUDIO_INVALID_INDEX, &gbvalue);
++	if (ret)
++		goto exit;
++
+ 	/* update ucontrol */
+ 	if (gbvalue.value.integer_value[0] != val) {
+ 		for (wi = 0; wi < wlist->num_widgets; wi++) {
+@@ -473,25 +482,17 @@ static int gbcodec_mixer_dapm_ctl_put(st
+ 		gbvalue.value.integer_value[0] =
+ 			cpu_to_le32(ucontrol->value.integer.value[0]);
  
- 		__clear_sp_write_flooding_count(sp);
- 		trace_kvm_mmu_get_page(sp, false);
+-		ret = gb_pm_runtime_get_sync(bundle);
+-		if (ret)
+-			return ret;
+-
+ 		ret = gb_audio_gb_set_control(module->mgmt_connection,
+ 					      data->ctl_id,
+ 					      GB_AUDIO_INVALID_INDEX, &gbvalue);
+-
+-		gb_pm_runtime_put_autosuspend(bundle);
+-
+-		if (ret) {
+-			dev_err_ratelimited(codec->dev,
+-					    "%d:Error in %s for %s\n", ret,
+-					    __func__, kcontrol->id.name);
+-			return ret;
+-		}
+ 	}
+ 
+-	return 0;
++exit:
++	gb_pm_runtime_put_autosuspend(bundle);
++	if (ret)
++		dev_err_ratelimited(codec_dev, "%d:Error in %s for %s\n", ret,
++				    __func__, kcontrol->id.name);
++	return ret;
+ }
+ 
+ #define SOC_DAPM_MIXER_GB(xname, kcount, data) \
 
 
