@@ -2,121 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E3526B4E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0886726B5D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbgIOXdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:33:16 -0400
-Received: from mail-eopbgr700048.outbound.protection.outlook.com ([40.107.70.48]:20249
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727059AbgIOOgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:36:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I0BD1bv0e3hq4jy2ggZs+HiswKXnFfez8u9bqdj1ICQPGwpUlydgxipmHV2XM+Vh/kdtSKqxgt/lCUIENpkns+gQffCpJUxk4ompRBpjr3Xdr1AGm6IuhD7nw5aD4SSRUcwtmWeu2YMirqWi0/zjQNHdD/+TPf9RQLi7pKlxqgJ5JVKe/j64iMvN3XgTBDFfSrVUIzmycIJX4CpH0Wq3yVQDxaDSQhDCY98LhXHBkVU51RUO5RCTN9CM0fB1FnwGyAR8nXS9gXvBAGd7geJoqQGQ9t/StYa7G/PJc4iLNO6FAH4ZRGJyY/MYcrLQ152UBIt/tp72y3Y0xd0bgsBupg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wCMVhSiz/lELuX+gidZX0lDVOw0FwBqVaNCw5LdoK4E=;
- b=cbXE4r3/nrMdGRCfVps6I5luxYSxMF3Jsn7ELKS/A4JRot5m+NZAY9ngmqJ+E0RHcX0uX9u4BYOuH4EnBg4PoatkzyKwn26Ya20RepJTObA6MzOPm4brup13vy6sg/8mwTBZSYbdQlchQVxtgqXlpn9xMav3RB95wtU3IHqsQyLG2wPsxW5HSVgajM8BHmREj4RzU7WfFdKSty8AFNQoFb89E3ggwnac2c+M8e41jXgJVLgavzHZf1iavU+DxZW9Rt5uflwzSidEghjh+YL7Z3nvBOivozmjCSfdR0AZz/JPJWri/qBqYT47c1guaCj8vDbbbKg4qQFBtkbmgjPBcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wCMVhSiz/lELuX+gidZX0lDVOw0FwBqVaNCw5LdoK4E=;
- b=ZW57NUE4UOfXbmzkTK2/Pf9omYpoEAXlo7Jz4PqrTjR07rulMXCb7sO+8dlxmU/WkeEbT3NghJWgQWOyM5xjGjXMDwf8+xpnXwxluXaeLPv2sVwK5IcxKNjKcieqb6rQxwO8efr5FktZHW+KAMTEmw7n/5R9Y96HoGrmR1ftZE4=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
- by CY4PR1201MB0214.namprd12.prod.outlook.com (2603:10b6:910:25::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
- 2020 14:19:49 +0000
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::989b:b1b2:464c:443]) by CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::989b:b1b2:464c:443%10]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 14:19:49 +0000
-Subject: Re: [RFC PATCH 25/35] KVM: x86: Update __get_sregs() / __set_sregs()
- to support SEV-ES
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <e08f56496a52a3a974310fbe05bb19100fd6c1d8.1600114548.git.thomas.lendacky@amd.com>
- <20200914213708.GC7192@sjchrist-ice>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <7fa6b074-6a62-3f8e-f047-c63851ebf7c9@amd.com>
-Date:   Tue, 15 Sep 2020 09:19:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200914213708.GC7192@sjchrist-ice>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR06CA0036.namprd06.prod.outlook.com
- (2603:10b6:5:120::49) To CY4PR12MB1352.namprd12.prod.outlook.com
- (2603:10b6:903:3a::13)
+        id S1726480AbgIOXwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:52:09 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:37064 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727076AbgIOOcC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:32:02 -0400
+Received: by mail-pf1-f194.google.com with SMTP id w7so2057978pfi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:32:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mv7dyR4sjl+BVQ9RdeFPf0paoZFTYPDkq70MlZEfWDQ=;
+        b=kV8jyka23dTpYYftksQCvCk7JkQN9H5R+yAhOX1McL7G4WXIjsSTRUursLQOlQRvib
+         IhCcGEnLXTLNxEQOjILBWxwg5ljsGCdgCp5Wt5c3uuAydPp3zNQz/dhNqW8pYTzSCouG
+         MmMq3hVYBLu+UIwcAPWRjsyDBLHTg9de7XXz3IrGHAmhw2swCZZO9es7iQyttyfcF0dt
+         QlnWomN65ajrguYlqp4WYQvYMyqiZJsXWCdOxcYhwr1ngAETNsu9taJL+Js77+yvRfpM
+         ASwVb5QFi8dz3LCQ4u+iyNU/c1p8F+E0ePuGQk5ikgEBVhMWpKGrKpo33o8wT+YtcOJ1
+         R0uQ==
+X-Gm-Message-State: AOAM530UdoOMMWKy6Iwuu+sYsoUCZattpzKBIdDG65OmQx82gaIUib9R
+        C2AWSXNwG7adaTdxbhSa0JEm+ecyas6RTds=
+X-Google-Smtp-Source: ABdhPJyyM19BYSpWbpH3kwRqswRw9fK5YfGImOr7xdoFoH6gheQZQGCGUsYKmRyVAw4pJCa4LotBRQ==
+X-Received: by 2002:a92:4f:: with SMTP id 76mr15938072ila.11.1600179715629;
+        Tue, 15 Sep 2020 07:21:55 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m19sm9007665ila.40.2020.09.15.07.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 07:21:54 -0700 (PDT)
+Received: (nullmailer pid 1873453 invoked by uid 1000);
+        Tue, 15 Sep 2020 14:21:53 -0000
+Date:   Tue, 15 Sep 2020 08:21:53 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Peter Chen <peter.chen@nxp.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/2] dt-bindings: usb: Add binding for onboard USB hubs
+Message-ID: <20200915142153.GB1861636@bogus>
+References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by DM6PR06CA0036.namprd06.prod.outlook.com (2603:10b6:5:120::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 14:19:47 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 253ffa66-89a1-4431-ab4a-08d859826752
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB0214:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB021458A181470E3977E2FD81EC200@CY4PR1201MB0214.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: avKFysuLcqjtgM3CMGFzfjoGJUSHpqdL9Qt6J9zl4otfkcL4fG9DJXLZdqQ02ugEVXBMaRF++DwBwl4aBF3jRPX5jszLqqUgU4FegG+H/l6bzUc0q9BPbLwEDazpUZVmhu2cXaKTC0WlKa3lUM4pXoJF+myVluafai7jJikpxxPAqN+Ju9TCDZm0oiZ0NzPgQFk53Seao84TVzuTk3MBJo/CdKTnvNaOqFrNz9Q+EoPvnf2Ja/k//kTxRHqUoRzfZ3MdZtrjo9i3CP5/OCi947qS5qn8CRVmSNS+j1sGjxiQHZSmAoW4hO0xHZmMbeDn0DS+Y2Xy+PXnE8A3wXDPnVq7TwC8irofZFWB3Dhu2gpedAYrFdqb08+yvLNVGPNs
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(366004)(39860400002)(2906002)(53546011)(8936002)(478600001)(316002)(8676002)(186003)(26005)(6486002)(4326008)(52116002)(16526019)(31686004)(54906003)(31696002)(86362001)(6916009)(66946007)(66556008)(2616005)(16576012)(956004)(66476007)(36756003)(5660300002)(7416002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: PkrvL2Vud22hTnrawOsn1H/NOowdKBzeqZXs29ZpKzZ85oGk5K1XaqYDRUy+mQQIBlgc6hcSafCmw2V26Ukx6ctBermpo/6S7M9PuExYlbmviYevfBO/V51ucMS+4efXwhZ2ZVLVNirANEMdsXEEryBlLMlBt+ubW24ebZjijBHVdhQw+RpPu3noGZCN11hm8rtqXvsZXg1B1kvPmGW3JpnzMeLdyG/G51Ol23l88HrxEhA7RP3jqbMvJ9cOsbKflhwD2ZKnhskrmx2lL6vAiMecBts+Duko5oJ14mGewZTf6dw/JPoMgkOUpBvwBUjsPQ45n45C+fVYVWFuDXh78U7oWKKVfF7HSoC5SnoKlzrVmK5YkPR6CRAyrioCovH8IY2vQiYbPtONbKyCXHmrYVQhhyKkxIFJ2tzkl4a60Hoz85uePRqEKVBX/2wgFrB7vpLMFocagOyWCFXywBn4xeqZzeZFJTwnWy/Vm8VJajS+xcpPKPbAYYcVLzyfl+Jt3pXlrVHT9Ur1A8zqhFsc6iTKS2sYMT4SOuIe+I0jgsODw3ZhSSLhKg8FpFCJbqI5ZU0TtqePgIxtgXSqoVXT1ThYJSB5j3ZvWLPpEHE3e8jAZyit39svf8Bvs4A7xZ8vjBPVVwWXxkq5MUcRAzwXqg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 253ffa66-89a1-4431-ab4a-08d859826752
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 14:19:48.9375
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GnTtaQyv/kg9boLeDO6oJjOOZtfW0Wr0jxHz4HpaqWmIiL2dGhpbVnHB+6mPGaCMtHKoF2Mc61kqNfX8N1NyTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0214
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 4:37 PM, Sean Christopherson wrote:
-> On Mon, Sep 14, 2020 at 03:15:39PM -0500, Tom Lendacky wrote:
->> From: Tom Lendacky <thomas.lendacky@amd.com>
->>
->> Since many of the registers used by the SEV-ES are encrypted and cannot
->> be read or written, adjust the __get_sregs() / __set_sregs() to only get
->> or set the registers being tracked (efer, cr0, cr4 and cr8) once the VMSA
->> is encrypted.
+On Mon, 14 Sep 2020 11:27:48 -0700, Matthias Kaehlcke wrote:
+> Onboard USB hubs need to be powered and may require initiaization of
+> other resources (like GPIOs or clocks) to work properly. This adds
+> a device tree binding for these hubs.
 > 
-> Is there an actual use case for writing said registers after the VMSA is
-> encrypted?  Assuming there's a separate "debug mode" and live migration has
-> special logic, can KVM simply reject the ioctl() if guest state is protected?
-
-Yeah, I originally had it that way but one of the folks looking at live
-migration for SEV-ES thought it would be easier given the way Qemu does
-things. But I think it's easy enough to batch the tracking registers into
-the VMSA state that is being transferred during live migration. Let me
-check that out and likely the SET ioctl() could just skip all the regs.
-
-Thanks,
-Tom
-
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
 > 
+>  .../bindings/usb/onboard_usb_hub.yaml         | 70 +++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
+> 
+
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning a block scalar
+  in "<unicode string>", line 43, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 52, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:18: Documentation/devicetree/bindings/usb/onboard_usb_hub.example.dts] Error 1
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/onboard_usb_hub.example.dts'
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml:  while scanning a block scalar
+  in "<unicode string>", line 43, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 52, column 1
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
+make: *** [Makefile:1366: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1363875
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
