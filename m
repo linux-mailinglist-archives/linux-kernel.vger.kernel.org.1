@@ -2,183 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868CD269F0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2713D269F11
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgIOHEp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 03:04:45 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:44197 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbgIOHEA (ORCPT
+        id S1726174AbgIOHEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:04:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25740 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726136AbgIOHEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:04:00 -0400
-Received: by mail-ot1-f65.google.com with SMTP id a2so2223802otr.11;
-        Tue, 15 Sep 2020 00:03:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vflTutZSW3rf5XePZzn3lm59cY0zbyV93+qA4WDI2wc=;
-        b=k49nFDQrbhjNs1ifmQuB1zLjzkdSVrqF7QBlTaeyd+CGK26htxUepiYctxBKiZDym1
-         qXr3CsnXnQRFAVrRjQhhDkK0pIPRApf2t1G0thGWwvi+lUaw6cTdMbXniX8R71Sq5E3S
-         uKAiHnGLNwcMI/WkuQX8WCvR7EzFAIYEI0azmc9P9O46nN9KlYTNPnEbhcYMRaztYwpd
-         Ki84a3pFBN7JWzttc2I1Ect+crieewkeR9h2rGYauf5o6YUQykEyuAEKmj9e+0xN5W1g
-         sFXdXzCTM48aEptRGKHNeE6DxzuSRVrsd4lWeowZlM+pzq/uAMsGz99yW5YkNFps7san
-         UqKA==
-X-Gm-Message-State: AOAM532QEL6pATWtlb0yiP+b6K7ZdEzns0M0NyurPP8K5dbGaiD2RJnt
-        SFoZGxdMhhMwsQmQLpL+ICGbLcoHcWn5NoVYXaA=
-X-Google-Smtp-Source: ABdhPJzDFx3eWG/x7GEl0MLs0+n+OdjyF6YDkSUcQMt2sPD1lvnAL+nantcsMAy0jYZffAJwXNjvGuS5GrXjaDfYZr8=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr12178418otb.250.1600153437035;
- Tue, 15 Sep 2020 00:03:57 -0700 (PDT)
+        Tue, 15 Sep 2020 03:04:40 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08F739vl026205;
+        Tue, 15 Sep 2020 03:04:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=za4Qe3x+/BmxDnJ/NLg1lNOhQIrTXfpSemO5MbDshxA=;
+ b=gZkpYRoKjGLTRvWzQJamZDQV3JjFfb9twFpF7iImEcrlQnnhKbhIyrRsQTthYCmT8xaq
+ fLlsIOesCVDDoymhL/whQ4vwx+D2ZeoUfx8ZxNBAdHPRAhq8WSkb6TdYwizRk55UCkXa
+ xKq+oQBAweaIz2UjPNAsW/6fDPQNePEmIQYFGiLNLYy0e69pjx57B1RoyQyQNhBX23UK
+ +VAtoUrM39UMf0faERIGsg8rI6T69ti+d9m39cMY4c/kJYFfaQpTsGn3zdpUhOgCG8ZI
+ FbYFptwRYV7Df8FcAOE0cOovtmhThmb+mEq8st/MZXfwMActXrc7YOGhRrnf6Z0iDKfN kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33jret0pqh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 03:04:24 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08F73Ou6027269;
+        Tue, 15 Sep 2020 03:04:23 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33jret0pk8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 03:04:23 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08F71KTq029709;
+        Tue, 15 Sep 2020 07:04:14 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 33h2r9ar4f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 07:04:13 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08F74BkS27197936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 07:04:11 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 11D6F52050;
+        Tue, 15 Sep 2020 07:04:11 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.72.89])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 9A9CC52052;
+        Tue, 15 Sep 2020 07:04:10 +0000 (GMT)
+Subject: Re: [PATCH v2 1/3] mm: replace memmap_context by memplug_context
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        Oscar Salvador <osalvador@suse.de>, mhocko@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200914165042.96218-1-ldufour@linux.ibm.com>
+ <20200914165042.96218-2-ldufour@linux.ibm.com>
+ <d6ade681-2fb1-a1df-5673-bceacd1dfc55@redhat.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <bac8037f-70f6-e7e5-7982-cbfcfef45e01@linux.ibm.com>
+Date:   Tue, 15 Sep 2020 09:04:10 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200913182850.32660-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdWjnQGKt12_=Z1Lc4fE2hecC6V7ELYpGW6FP2zm8mBp=w@mail.gmail.com>
- <20200914232756.GA1669406@oden.dyn.berto.se> <20200914234000.GG15543@pendragon.ideasonboard.com>
-In-Reply-To: <20200914234000.GG15543@pendragon.ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Sep 2020 09:03:45 +0200
-Message-ID: <CAMuHMdXdDkPX447AibYNjUwGHkYxC3sE-18G2DNVQR2T-jxX2w@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: sh-pfc: r8a7790: Add VIN1-B and VIN2-G pins,
- groups and functions
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <d6ade681-2fb1-a1df-5673-bceacd1dfc55@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-15_04:2020-09-15,2020-09-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ clxscore=1015 bulkscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150063
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+Le 14/09/2020 à 19:10, David Hildenbrand a écrit :
+> On 14.09.20 18:50, Laurent Dufour wrote:
+>> The memmap_context is used to detect whether a memory operation is due to a
+>> hot-add operation or happening at boot time.
+>>
+>> Make it general to the hotplug operation and rename it at memplug_context.
+>>
+>> There is no functional change introduced by this patch
+>>
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>> ---
+>>   arch/ia64/mm/init.c    |  6 +++---
+>>   include/linux/mm.h     |  2 +-
+>>   include/linux/mmzone.h | 11 ++++++++---
+>>   mm/memory_hotplug.c    |  2 +-
+>>   mm/page_alloc.c        | 10 +++++-----
+>>   5 files changed, 18 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
+>> index 0b3fb4c7af29..b5054b5e77c8 100644
+>> --- a/arch/ia64/mm/init.c
+>> +++ b/arch/ia64/mm/init.c
+>> @@ -538,7 +538,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
+>>   	if (map_start < map_end)
+>>   		memmap_init_zone((unsigned long)(map_end - map_start),
+>>   				 args->nid, args->zone, page_to_pfn(map_start),
+>> -				 MEMMAP_EARLY, NULL);
+>> +				 MEMPLUG_EARLY, NULL);
+> 
+> I am pretty sure that won't compile (MEMINIT_EARLY).
+> 
+> (same at other places)
 
-On Tue, Sep 15, 2020 at 1:40 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Tue, Sep 15, 2020 at 01:27:56AM +0200, Niklas Söderlund wrote:
-> > On 2020-09-14 16:47:27 +0200, Geert Uytterhoeven wrote:
-> > > On Sun, Sep 13, 2020 at 8:29 PM Lad Prabhakar wrote:
-> > > > Add pins, groups and functions for the VIN1-B [data/clk/sync] and VIN2-G [data].
-> > > >
-> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > > ---
-> > > > Changes for v2:
-> > > > * Added complete list of VIN1-B pins
-> > > > * Renamed vin2_data8_g to vin2_data8g
-> > > > * Sorted vin1_sync_b pins
-> > > >
-> > > > v1 - https://patchwork.kernel.org/patch/11761191/
+Ouch I can't understand what I did at sending time, I did check compile on ia64 
+w and w/o memory hotplug.
 
-> > > > @@ -3959,6 +4039,18 @@ static const unsigned int vin2_data18_mux[] = {
-> > > >         VI2_R4_MARK, VI2_R5_MARK,
-> > > >         VI2_R6_MARK, VI2_R7_MARK,
-> > > >  };
-> > > > +static const unsigned int vin2_data8g_pins[] = {
-> > > > +       RCAR_GP_PIN(0, 27), RCAR_GP_PIN(0, 28),
-> > > > +       RCAR_GP_PIN(0, 29), RCAR_GP_PIN(1, 10),
-> > > > +       RCAR_GP_PIN(1, 4), RCAR_GP_PIN(1, 5),
-> > > > +       RCAR_GP_PIN(1, 6), RCAR_GP_PIN(1, 7),
-> > > > +};
-> > > > +static const unsigned int vin2_data8g_mux[] = {
-> > > > +       VI2_G0_MARK, VI2_G1_MARK,
-> > > > +       VI2_G2_MARK, VI2_G3_MARK,
-> > > > +       VI2_G4_MARK, VI2_G5_MARK,
-> > > > +       VI2_G6_MARK, VI2_G7_MARK,
-> > > > +};
-> > >
-> > > Laurent, Niklas: are you happy with the name "vin2_data8g", or do
-> > > you have a better suggestion?
-> >
-> > I learnt recently that traditionally for single 8-bit RAW inputs are
-> > named R8 (fist in RGB). But as this really is the G pins and they are
-> > labeled as such I'm OK with the name, but I would like to hear Laurent's
-> > view as well.
->
-> I think we should match the pin names from the datasheet, so a R suffix
-> isn't a good option. I have a feeling we will suffer with this though,
-> as here 'g' refers to the VIN green data pins (g[7:0], a.k.a.
-> data[15:8]), while below 'b' refers to the second set of VIN data pins,
-> not the blue data pins. One option would be to use "vin2_data8_shift8",
-> but I'm not sure I'm very fond of that either. I also wonder whether we
-> shouldn't call this "vin2_g8" instead of "vin2_data8g" as the pins are
-> named VIN_G[7:0], not VIN_DATAG[7:0].
+Sorry for the noise.
 
-On R-Car H2 and RZ/G1H they're indeed named VIx_G[7:0].
 
-However, looking at other R-Car Gen2 and Gen3 variants, there are
-many possibilities, from all-RGB:
-  1. R[7:0], G[7:0], B[7:0],
-over:
-  2. R[7:0], G[7:0], DATA[7:0]_B[7:0],
-  3. D[23:16]_R[7:0], D[15:8]_G[7:0]_Y[7:0], D[7:0]_B[7:0]_C[7:0],
-to all-DATA:
-  4. DATA[11:0],
-  5. DATA[23:0].
-
-Following 1, 24-bit should be called "rgb24", and 18-bit "rgb18"
-(I believe this is the only format using discontiguous pins?).
-The in-betweens make sense, as YCbCr[7:0] data goes over the 8-bit DATA
-or 16-bit D pins, but that sense is lost when considering other formats
-that accept 10/12/16/20-bit input.
-I guess that's why R-Car Gen3 settled at option 5, which is actually
-what we've been doing in the pin control drivers from the beginning.
-
-Nevertheless, I agree "vinX_g8" seems like the best name for this group,
-as it's quite obvious from the name what it means, and isn't easily
-confused with an alternate set of pins.
-Note that the BSP (for R-Car Gen3, no idea about Gen2) uses
-"vinX_data8_sft8" (which I never really liked), which Niklas is now
-trying to upstream in "[PATCH 0/4] pinctrl: sh-pfc: Add VIN stf8 pins"
-(https://lore.kernel.org/linux-renesas-soc/20200914233744.468175-1-niklas.soderlund+renesas@ragnatech.se).
-Expect more bikeshedding soon ;-)
-
-> > > >  static const unsigned int vin2_sync_pins[] = {
-> > > >         RCAR_GP_PIN(1, 16), /* HSYNC */
-> > > >         RCAR_GP_PIN(1, 21), /* VSYNC */
-> > >
-> > > > @@ -4310,15 +4402,25 @@ static const struct {
-> > > >                 VIN_DATA_PIN_GROUP(vin1_data, 10),
-> > > >                 VIN_DATA_PIN_GROUP(vin1_data, 8),
-> > > >                 VIN_DATA_PIN_GROUP(vin1_data, 4),
-> > > > +               VIN_DATA_PIN_GROUP(vin1_data, 24, _b),
-> > > > +               VIN_DATA_PIN_GROUP(vin1_data, 20, _b),
-> > > > +               SH_PFC_PIN_GROUP(vin1_data18_b),
-> > > > +               VIN_DATA_PIN_GROUP(vin1_data, 16, _b),
-> > > > +               VIN_DATA_PIN_GROUP(vin1_data, 12, _b),
-> > > > +               VIN_DATA_PIN_GROUP(vin1_data, 10, _b),
-> > > > +               VIN_DATA_PIN_GROUP(vin1_data, 8, _b),
-> > >
-> > > Missing vin1_data4_b.
-> > >
-> > > >                 SH_PFC_PIN_GROUP(vin1_sync),
-> > > > +               SH_PFC_PIN_GROUP(vin1_sync_b),
-> > > >                 SH_PFC_PIN_GROUP(vin1_field),
-> > > >                 SH_PFC_PIN_GROUP(vin1_clkenb),
-> > > >                 SH_PFC_PIN_GROUP(vin1_clk),
-> > > > +               SH_PFC_PIN_GROUP(vin1_clk_b),
-> > > >                 VIN_DATA_PIN_GROUP(vin2_data, 24),
-> > > >                 SH_PFC_PIN_GROUP(vin2_data18),
-> > > >                 VIN_DATA_PIN_GROUP(vin2_data, 16),
-> > > >                 VIN_DATA_PIN_GROUP(vin2_data, 8),
-> > > >                 VIN_DATA_PIN_GROUP(vin2_data, 4),
-> > > > +               SH_PFC_PIN_GROUP(vin2_data8g),
-> > > >                 SH_PFC_PIN_GROUP(vin2_sync),
-> > > >                 SH_PFC_PIN_GROUP(vin2_field),
-> > > >                 SH_PFC_PIN_GROUP(vin2_clkenb),
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
