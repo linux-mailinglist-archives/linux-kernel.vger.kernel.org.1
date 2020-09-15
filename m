@@ -2,135 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A4026A564
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903F426A546
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgIOMlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbgIOLm1 (ORCPT
+        id S1726459AbgIOMfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:35:12 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36026 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726387AbgIOLqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:42:27 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD353C061356;
-        Tue, 15 Sep 2020 04:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=KNaeZ0++0+eI/t4oPbp7MTW/KkSMPaG3lcfgaHbPxbw=; b=Z/zwGRkce8iHL0vJnwk1xtxKB8
-        WyGOMyYVRKGqIkXsGcrSjxwqtAndel2Pn50At1IQEuQIAAvtcIG3twYtfafyRlGFUyVSxb7/dgbbW
-        RIf8yMIatmqPoWWPnVmhBexjv3eVn+LhZm0BUwkcw38G1RMSUEAAOBU9S5599ZpNfnltUocQW/OV8
-        iGh0O9+Km5DO1W0FowaPzUc69jcCG4eEoaNNw+bGuNw7vD9qj9+QaqHGeDHVRC3GpvIPEIeACW70Q
-        gV2QJaFLUgH6PGvfrOv5tXhCdUONVrFfavubCqZH1Uk5CMbqBH0z2df9wuH6Wk7LJVkzllClaoTv8
-        Qa73rT/Q==;
-Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <jarkko.sakkinen@linux.intel.com>)
-        id 1kI8mG-0005z3-5z; Tue, 15 Sep 2020 14:05:36 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v38 19/24] x86/fault: Add helper function to sanitize error code
-Date:   Tue, 15 Sep 2020 14:05:17 +0300
-Message-Id: <20200915110522.893152-20-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
-References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
+        Tue, 15 Sep 2020 07:46:22 -0400
+Received: by mail-wm1-f68.google.com with SMTP id z9so3134715wmk.1;
+        Tue, 15 Sep 2020 04:45:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=cjiBUhwXZk/V7w+hbRQc3+HINg0WkRcBhDhYopfJfBw=;
+        b=Q55CffxSulb+lQbIXPIaJBjM9UenhHMt9F+X5vx8xYLEnX6M4iCvoOEZu0xgiFetVs
+         glTrBXaQFPAyWmBjbrwJAimNgDPTx5ONCM3ARc4cLb8H2PASdHqCW+DhlaJfQGuHvb8c
+         vAUTTCv90XZsgiB7o4n1fJOq6dMl6m/aG5tNoIfLQ801MD2CQDrFrOJ7vj7cm0UvFo9O
+         UhFE5s8FCayQE0C9yniv0rGqv3pYlQqn6eRY3xZgUaF/QW/hlI+Y53aDKvrhK0aSTNDZ
+         uZ8E0FXUlKSoxDXx/WL09bOa4p5YvNebVUgWeb8B0XIl/NwEbl+CNJTHwhbYhCwdu0f1
+         nO7g==
+X-Gm-Message-State: AOAM532JS81VF1fq52WznJv7k7NUegqJOyIg5B00EaTEYMcSJM/sPRMO
+        DzXlNNdvJgwkYzYjErG4AhMHezUiCjw=
+X-Google-Smtp-Source: ABdhPJzppTWi5yEHalB+rNJMPVioAq9SccBMvdYsdX8FNTLGzo/GrS/HIHUkNFmTeqRx8Q+0/RbkgQ==
+X-Received: by 2002:a1c:6a14:: with SMTP id f20mr4181957wmc.81.1600170299495;
+        Tue, 15 Sep 2020 04:44:59 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id b18sm26970403wrn.21.2020.09.15.04.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 04:44:59 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 11:44:57 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Hyper-V fixes for 5.9-rc6
+Message-ID: <20200915114457.tozhtbxojblcnyow@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 83.245.197.237
-X-SA-Exim-Mail-From: jarkko.sakkinen@linux.intel.com
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+Hi Linus
 
-Add helper function to sanitize error code to prepare for vDSO exception
-fixup, which will expose the error code to userspace and runs before
-set_signal_archinfo(), i.e. suppresses the signal when fixup is successful.
+Please pull the following changes since commit b46b4a8a57c377b72a98c7930a9f6969d2d4784e:
 
-Acked-by: Jethro Beekman <jethro@fortanix.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- arch/x86/mm/fault.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+  hv_utils: drain the timesync packets on onchannelcallback (2020-08-24 14:49:04 +0000)
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 1a7cc6d3281a..9e5ec861aba0 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -555,6 +555,18 @@ pgtable_bad(struct pt_regs *regs, unsigned long error_code,
- 	oops_end(flags, regs, sig);
- }
- 
-+static void sanitize_error_code(unsigned long address,
-+				unsigned long *error_code)
-+{
-+	/*
-+	 * To avoid leaking information about the kernel page
-+	 * table layout, pretend that user-mode accesses to
-+	 * kernel addresses are always protection faults.
-+	 */
-+	if (address >= TASK_SIZE_MAX)
-+		*error_code |= X86_PF_PROT;
-+}
-+
- static void set_signal_archinfo(unsigned long address,
- 				unsigned long error_code)
- {
-@@ -611,6 +623,8 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 		 * faulting through the emulate_vsyscall() logic.
- 		 */
- 		if (current->thread.sig_on_uaccess_err && signal) {
-+			sanitize_error_code(address, &error_code);
-+
- 			set_signal_archinfo(address, error_code);
- 
- 			/* XXX: hwpoison faults will set the wrong code. */
-@@ -759,13 +773,7 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
- 		if (is_errata100(regs, address))
- 			return;
- 
--		/*
--		 * To avoid leaking information about the kernel page table
--		 * layout, pretend that user-mode accesses to kernel addresses
--		 * are always protection faults.
--		 */
--		if (address >= TASK_SIZE_MAX)
--			error_code |= X86_PF_PROT;
-+		sanitize_error_code(address, &error_code);
- 
- 		if (likely(show_unhandled_signals))
- 			show_signal_msg(regs, error_code, address, tsk);
-@@ -884,6 +892,8 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
- 	if (is_prefetch(regs, error_code, address))
- 		return;
- 
-+	sanitize_error_code(address, &error_code);
-+
- 	set_signal_archinfo(address, error_code);
- 
- #ifdef CONFIG_MEMORY_FAILURE
--- 
-2.25.1
+are available in the Git repository at:
 
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
+
+for you to fetch changes up to 911e1987efc8f3e6445955fbae7f54b428b92bd3:
+
+  Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload (2020-09-14 11:42:33 +0000)
+
+----------------------------------------------------------------
+hyperv-fixes for 5.9-rc6
+
+  - Two patches from Michael and Dexuan to fix vmbus hanging issues
+
+----------------------------------------------------------------
+Dexuan Cui (1):
+      Drivers: hv: vmbus: hibernation: do not hang forever in vmbus_bus_resume()
+
+Michael Kelley (1):
+      Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload
+
+ drivers/hv/channel_mgmt.c | 7 +++++--
+ drivers/hv/vmbus_drv.c    | 9 +++++++--
+ 2 files changed, 12 insertions(+), 4 deletions(-)
