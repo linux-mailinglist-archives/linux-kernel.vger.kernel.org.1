@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F057F26AF44
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A506626AF46
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727591AbgIOVOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:14:16 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:48202 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727928AbgIOVLD (ORCPT
+        id S1728023AbgIOVPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:15:39 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:35050 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727998AbgIOVOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:11:03 -0400
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7BBC620A115B;
-        Tue, 15 Sep 2020 14:11:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7BBC620A115B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1600204262;
-        bh=7xajAEpRfasIvIA9qX7Nw/+zwdXKydGaiUOrgh4P5wo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=adZiRDEA3132WzypO//6vmLB/t2g1KuZTJvpfaWOrPVwCWEcJfnt+lBmOwJ76yZt6
-         QQPBDIEbGprHvAVudVndd8a2sg4vp+WOSsUd0aMjTQ6a6piwJzopk/eY84aeh7uGVN
-         URbEjN848tTQOUzEnZYLcJeBnt3apSqQShtozDN8=
-From:   Vijay Balakrishna <vijayb@linux.microsoft.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vijay Balakrishna <vijayb@linux.microsoft.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Allen Pais <apais@microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [v2 2/2] mm: khugepaged: avoid overriding min_free_kbytes set by user
-Date:   Tue, 15 Sep 2020 14:10:58 -0700
-Message-Id: <1600204258-13683-2-git-send-email-vijayb@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1600204258-13683-1-git-send-email-vijayb@linux.microsoft.com>
-References: <1600204258-13683-1-git-send-email-vijayb@linux.microsoft.com>
+        Tue, 15 Sep 2020 17:14:04 -0400
+Received: by mail-io1-f65.google.com with SMTP id r9so5801964ioa.2;
+        Tue, 15 Sep 2020 14:13:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UlDLGNDfNIX30vo6TOptdsoHKv0FtXHPExY3lDotPuo=;
+        b=J8985iCyJ7DACYAYXHjhxQPobqPMDQk5NG6+FzrH/Fa6lX+UEJKLT5GPWcm6pEctaK
+         gMks02pNuA4Tr48aSMxTFwRiQ0f8b1VloWBibaIhQcLYWZoDY/mlkYLuDnGOrJ7ZSNzo
+         IaJBDc1JHBd4OSW8Kz/orzGx43JlyBOYklx1EMMw5Ox9BxK3k1SSQgx44sm06k4Wjq9E
+         wu8XC2k6VbkaiPPRgN2bJtYu5KNKDtkccEG0J/pE7hR5M8YNBATtP1QVcbVMLMIoJJ3U
+         fY6g6dLrRPCvcSzfPgiTaTzgVeAUJkAeiBTFdefTWUOiriCuaIBbg8xMAbuwpKiq+T6z
+         47qg==
+X-Gm-Message-State: AOAM532Ctdt8wcreRzKPu94MOSfKVvBVDqUCfO5xm7NeeQGBD5dishx/
+        dCJSvXW9aWIsU+zl98Lt1A==
+X-Google-Smtp-Source: ABdhPJyVWPTPAOglxQF9NhMcWNJpbFKNXF1PJ0wdUxFZLDRkQNimmK+jCC+29w1IjGTMhIWd2g0+Og==
+X-Received: by 2002:a05:6602:2003:: with SMTP id y3mr16652469iod.203.1600204436919;
+        Tue, 15 Sep 2020 14:13:56 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m15sm9304692ild.8.2020.09.15.14.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 14:13:56 -0700 (PDT)
+Received: (nullmailer pid 2518777 invoked by uid 1000);
+        Tue, 15 Sep 2020 21:13:54 -0000
+Date:   Tue, 15 Sep 2020 15:13:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Frank Wunderlich <linux@fw-web.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com
+Subject: Re: [PATCH 0/6] irqchip: Hybrid probing
+Message-ID: <20200915211354.GA2469362@bogus>
+References: <20200912125148.1271481-1-maz@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200912125148.1271481-1-maz@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_recommended_min_free_kbytes need to honor min_free_kbytes set by the
-user.  Post start-of-day THP enable or memory hotplug operations can
-lose user specified min_free_kbytes, in particular when it is higher than
-calculated recommended value.  Also modifying "recommended_min" variable
-type to "int" from "unsigned long" to avoid undesired result noticed
-during testing.  It is due to comparing "unsigned long" with "int" type.
+On Sat, Sep 12, 2020 at 01:51:42PM +0100, Marc Zyngier wrote:
+> A recent attempt at converting a couple of interrupt controllers from
+> early probing to standard platform drivers have badly failed, as it
+> became evident that although an interrupt controller can easily probe
+> late, device drivers for the endpoints connected to it are rarely
+> equipped to deal with probe deferral. Changes were swiftly reverted.
+>
+> However, there is some value in *optionally* enabling this, if only
+> for development purposes, as there is otherwise a "chicken and egg"
+> problem, and a few people (cc'd) are working on a potential solution.
+> 
+> This short series enables the infrastructure for modular building
+> whilst retaining the usual early probing for monolithic build, and
+> introduces it to the three drivers that were previously made to probe
+> as platform drivers.
 
-Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
----
- mm/khugepaged.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I hardly expected more OF_DECLARE macros when I opened this up. Given 
+desires to get rid of them, I don't think adding to it is the way 
+forward. That wrapping a platform driver around OF_DECLARE looks pretty 
+horrible IMO. 
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 4f7107476a6f..b4b753ba411a 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -2253,7 +2253,7 @@ static void set_recommended_min_free_kbytes(void)
- {
- 	struct zone *zone;
- 	int nr_zones = 0;
--	unsigned long recommended_min;
-+	int recommended_min;
- 
- 	for_each_populated_zone(zone) {
- 		/*
-@@ -2280,12 +2280,12 @@ static void set_recommended_min_free_kbytes(void)
- 
- 	/* don't ever allow to reserve more than 5% of the lowmem */
- 	recommended_min = min(recommended_min,
--			      (unsigned long) nr_free_buffer_pages() / 20);
-+			      (int) nr_free_buffer_pages() / 20);
- 	recommended_min <<= (PAGE_SHIFT-10);
- 
--	if (recommended_min > min_free_kbytes) {
-+	if (recommended_min > user_min_free_kbytes) {
- 		if (user_min_free_kbytes >= 0)
--			pr_info("raising min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
-+			pr_info("raising min_free_kbytes from %d to %d to help transparent hugepage allocations\n",
- 				min_free_kbytes, recommended_min);
- 
- 		min_free_kbytes = recommended_min;
--- 
-2.28.0
+I browsed some of the discussion around this. It didn't seem like it's 
+a large number of drivers that have to be fixed to defer probe 
+correctly. Am I missing something?
 
+I'd rather keep the pressure on getting fw_devlink on by default.
+
+Rob
