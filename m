@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FCC269AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6650F269AD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgIOBDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgIOBDb (ORCPT
+        id S1726085AbgIOBFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:05:16 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9259 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgIOBFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:03:31 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D936C06174A;
-        Mon, 14 Sep 2020 18:03:29 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id a22so1237784ljp.13;
-        Mon, 14 Sep 2020 18:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=E1q14rQlgrSLatoty0jVapm3PrkVuxqei5oD9yAnTYA=;
-        b=TQ0tAo4Lk8BmjNMpUM7B2v2eJgGqHIHTW2E4/JxHYLBPYEbL2GOEXa3hYcB88YPV+D
-         rsXL6SY9r8ASAgE8jpvkJDHh7GmJRqXRkxR6+qr8+tk9bxXzavjg3CwjSUtf9LgQObtW
-         Z+EHPWbFuFvC2eCxhz4QYvrSwCiSTExOiHWEXRxGeQE6M2sHxISOTWmc4reYPsdTqqTf
-         FdUJ/4a9+XPrM3y0O/QWI4f2oR7SR4EtfK7OXk6DnUduKU/fV/k6zykUVgrBbLdSMGcs
-         OguZcbCFAGKIoxi3jOmgPotq4ZsnC5XQS4jk6GvHyMXC+pkQkfjwBclCIyq+G4XyQTD1
-         eiWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=E1q14rQlgrSLatoty0jVapm3PrkVuxqei5oD9yAnTYA=;
-        b=Bw3FiwWrJAyIB8lDrbNRHplDrziMjmHy1U/+ccJljGtSS+IPGkJ06br5IKDM7pMlrd
-         HagumRy6edKOPcPt1RA5fKKl2D/msfsvgD4zhGI+HWIGG0sGeI9P6OuqRwk2co8Fm8ll
-         0ZqhgV6CtU3k9l2KP6bnT8YEdG04Pzdqpa/r/+rA0HNH7axR7Uocs6NdgLKl1kotrMMA
-         qdyR9YHlyXjqCVfzLb8mI+R5AZHWBZfRjcue7iPMqnsADqwxq9sbxPNSI1Qrj9iNzC4/
-         Qx9ctbzXewsEWOaPphGDqOHQyYONuzZVxoTCSO9pmvus9OOoZFU04Cga3j+3FshF5F/k
-         mKwg==
-X-Gm-Message-State: AOAM531JoDVe9vynewwWkILloEDuGPOxz3T4GnRtSKga16hyq3glW8RB
-        6ZefVUswhTnZad+mGmI391bCf2kj0asfKRlmVFs=
-X-Google-Smtp-Source: ABdhPJw9ifkbVP+uEe2SD7R2hIj95UXfSck4Zwdz+D0V/9bCy7pHGJ86/66K1wgr6YE3PVf6c5+qVxJJUbQVva9yrXk=
-X-Received: by 2002:a2e:9955:: with SMTP id r21mr1824267ljj.119.1600131807796;
- Mon, 14 Sep 2020 18:03:27 -0700 (PDT)
+        Mon, 14 Sep 2020 21:05:14 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6012be0000>; Mon, 14 Sep 2020 18:02:54 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 14 Sep 2020 18:05:14 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 14 Sep 2020 18:05:14 -0700
+Received: from nvdebian.localnet (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
+ 2020 01:05:12 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <linux-mm@kvack.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Jonathan Corbet <corbet@lwn.net>,
+        "Ralph Campbell" <rcampbell@nvidia.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        =?ISO-8859-1?Q?J=E9r=F4me?= Glisse <jglisse@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mm/doc: add usage description for migrate_vma_*()
+Date:   Tue, 15 Sep 2020 11:05:10 +1000
+Message-ID: <2077765.OaWJzLOgzI@nvdebian>
+In-Reply-To: <20200910172514.GN87483@ziepe.ca>
+References: <20200909212956.20104-1-rcampbell@nvidia.com> <20200910105657.6007c5ca@lwn.net> <20200910172514.GN87483@ziepe.ca>
 MIME-Version: 1.0
-References: <1598928042-22115-1-git-send-email-u0084500@gmail.com>
- <1598928042-22115-2-git-send-email-u0084500@gmail.com> <20200914182916.GA4193162@bogus>
-In-Reply-To: <20200914182916.GA4193162@bogus>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Tue, 15 Sep 2020 09:03:15 +0800
-Message-ID: <CADiBU3-Rn9wPNh_17U9yiDmhHSRcxb5L3nqtg+qigbmiYBjrbA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] usb typec: mt6360: Add MT6360 Type-C DT binding documentation
-To:     Rob Herring <robh@kernel.org>
-Cc:     cy_huang <cy_huang@richtek.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, gene_chen@richtek.com,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        matthias.bgg@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600131774; bh=swLcarL+SErbGe4glwQXQ2j09SBuEg2MIzY+X2J3l/E=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Transfer-Encoding:Content-Type:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=omD2/CikmXtQsewRW5Xcm6oLfynqUJws+0m9UxbArOKZ0GcmdQre2epYqgYYw8iY1
+         1x9LjsDoKmZRL9kIaukuFDfwbS6Km5frbBRyNf9YV0fjqIjsrcWvGFsxJ59HXFf0h1
+         jToV31axdAx0lqMhhQ6XL2SNOas1CrCe1MroFFMgJtg3bsZ52RlDfJCeIIiM47vvXU
+         XGYPrk+OgKNVYE+wNkYb/3T9iUL5KFvqaQMa+GG0nBGgvDf1vwHUsOTv2m3qRv2SPM
+         mD4H8N1RDdROB9zI0eUB4hRzp8LU86Dhmtmv/p8ECXlAsDvwmP+KNpTiEcm5Zuucsq
+         x4VpKil5RbPIQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring <robh@kernel.org> =E6=96=BC 2020=E5=B9=B49=E6=9C=8815=E6=97=A5 =
-=E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=882:29=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, 01 Sep 2020 10:40:42 +0800, cy_huang wrote:
-> > From: ChiYuan Huang <cy_huang@richtek.com>
-> >
-> > Add a devicetree binding documentation for the MT6360 Type-C driver.
-> >
-> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > ---
-> >  .../bindings/usb/mediatek,mt6360-tcpc.yaml         | 95 ++++++++++++++=
-++++++++
-> >  1 file changed, 95 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/usb/mediatek,mt63=
-60-tcpc.yaml
-> >
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
-Thx.
+On Friday, 11 September 2020 3:25:14 AM AEST Jason Gunthorpe wrote:
+> On Thu, Sep 10, 2020 at 10:56:57AM -0600, Jonathan Corbet wrote:
+> > On Wed, 9 Sep 2020 14:29:56 -0700
+> > 
+> > Ralph Campbell <rcampbell@nvidia.com> wrote:
+> > > The migrate_vma_setup(), migrate_vma_pages(), and migrate_vma_finalize()
+> > > API usage by device drivers is not well documented.
+> > > Add a description for how device drivers are expected to use it.
+> > > 
+> > > Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> > > 
+> > > There shouldn't be any merge conflict with my previous patch which
+> > > touched hmm.rst but since Jonathan Corbet took my last patch, perhaps he
+> > > would like to take this one through his tree too.
+> > 
+> > I'm happy to take it, but it certainly needs an ack from somebody who
+> > understands HMM better than I do.
+> 
+> Ralph wrote all the in kernel tests for this API, so I think he is
+> well positioned to write the documentation :)
+
+I have recently read through most of the code to get back up to date with 
+recent HMM developments and the documentation here didn't conflict with my 
+understanding based on the code. The description of pgmap_owner is good as 
+it's usage wasn't immediately clear on the first code read through. So feel 
+free to add:
+
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
+ 
+> Jason
+
+
+
+
