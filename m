@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA17269E19
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ECA269E21
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgIOF4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        id S1726200AbgIOF7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIOF4c (ORCPT
+        with ESMTP id S1726085AbgIOF7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:56:32 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44142C06174A;
-        Mon, 14 Sep 2020 22:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=XopghBkiIkALc4F4StyEg2dPR762PyTYGTf5QcJJ0QE=; b=qdzo6so6ksSv1X3NiYDaAvOkB+
-        EpbEp9+7kwUvgLgeQr/n26llOYEYiZAAAmFzcE0gOQZv9W3ZF6yYEz8fZeiE7U+LrT/uxn/rDkMvT
-        zP9rkg6pQ78HMrxYm7pwP+8iM0/8lPf+cp96q5xSyFEo8O6dX+HEQJk6Oq8hkWCc/fYw0zso5VDRY
-        Zl3zK0wKEJnPH9ZZ28B/3YbY97ncOLoZVPQ3BTLWZ+Bg60qw7VDqS1bXs1QK1nmLQic6yfbxIW8P1
-        cEmEkUJRWLbJ979wj3XJYc4S6Mos/roy/DGQu4D2+/VWMK8A3I5drhLD4jSFLtlrQ4Vh7nrGzX7OB
-        0zRHYS1w==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kI3x6-0004ND-4f; Tue, 15 Sep 2020 05:56:28 +0000
-Subject: Re: xconfig is broken again on Qt5
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <e04f1e9372f896d435d972cc6b70d1eb3b0c32a2.camel@redhat.com>
- <CAK7LNAQ6M+9CSwEOb687jGQbtOX6GjKhQ3m45U7XrPs4_CJU0Q@mail.gmail.com>
- <20200915074126.36a24f0e@coco.lan>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fba403b3-75b5-5e97-a2d5-784fd7f10f1f@infradead.org>
-Date:   Mon, 14 Sep 2020 22:56:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 15 Sep 2020 01:59:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF187C06174A;
+        Mon, 14 Sep 2020 22:59:42 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id r19so766856pls.1;
+        Mon, 14 Sep 2020 22:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=80dyWmvHWuITVoGd0/hpzmpaiUjUGGpcwY0W1M3yBhY=;
+        b=SaPKVsHGkl90RbD8Xpi4LaeE3f+V9MdkOjX1jJIbPZkuAOp5X+GaTkh/hdanEv3vPC
+         Q8073tP0s2zXDeSD/4k0HO9OhlhrfmPQew77q6XHu5y/aBBCRLPFycCS9HXAxKlTuxOs
+         0Ws/8LZw/PBs9cQFNwfXz3Rar2uuP1V2H4+4/l4kv48Zso4nwYnGUdRqIigkISVGhfcy
+         GcNTDg2u/VKxQzJImwi4QOIYbBlhp8+X/5jtg19DXmtD6SqrsfJAUDMUlraKaV0BtiMi
+         ilfMNxiWJrdl2PYoc4lOGJP2fwBai0pi0I6zAl5ppmLRvl4wB/XYr21ajhIc9/KMmKGL
+         LDrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=80dyWmvHWuITVoGd0/hpzmpaiUjUGGpcwY0W1M3yBhY=;
+        b=ilVeSuBFW1WsJSMlfnlntBu3AJ6tT2bygCGyxxc13dYmxEb+8K6+m2yZofMJURrQ78
+         6trOL1zb614cQFFCGoUiI6eA64gJ+SDvYYLpfoYAXV2AXNIhoCtpLusvIYB66OwA/Wm9
+         jGjuOFtsB1EZ9rJ8kIwfNHIUu5ged1dFZ/qVTqv6t4noAh6n2J6+ISCvNWOsF9AiGeVr
+         6LbhKhrMhD4r/8EglOgU3tuqyTZj7saNE1MnwwvVuM/HBDAEgAIImvtKzvGowI31wzok
+         XO7de2Y8pAoij8VcAr8psyfCW0FLWYq0qH/xyhLfipm8We9A2GVuB+7MHRqBHgPKcc9s
+         LU+Q==
+X-Gm-Message-State: AOAM531fdf78i461g4rrZeMtY/SFwGB0iYYAiq5bHX7y0zjbYi/rBk7B
+        p//SVN1TCDlvZQenjHBBvXI=
+X-Google-Smtp-Source: ABdhPJyXnOG0Io0DbezHggbJP4mcuxEPE0swZzKbWGyV6QDS3mvG4xnjS7f1w3qozxpkPWAaCixmHw==
+X-Received: by 2002:a17:90b:a51:: with SMTP id gw17mr2807489pjb.118.1600149582546;
+        Mon, 14 Sep 2020 22:59:42 -0700 (PDT)
+Received: from localhost.localdomain (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id q18sm12230143pfg.158.2020.09.14.22.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 22:59:41 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH v2] docs: fb: Remove scrollback related lines
+Date:   Tue, 15 Sep 2020 11:27:12 +0530
+Message-Id: <20200915055712.968-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200915074126.36a24f0e@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 10:41 PM, Mauro Carvalho Chehab wrote:
-> Em Tue, 15 Sep 2020 00:25:07 +0900
-> Masahiro Yamada <masahiroy@kernel.org> escreveu:
-> 
->> On Sun, Sep 13, 2020 at 10:21 PM Maxim Levitsky <mlevitsk@redhat.com> wrote:
->>>
->>> I hate to say it, but xconfig got broken again.
->>>
->>> After commit 68fd110b3e7e2 ("kconfig: qconf: remove redundant help in the info view")
->>> help description disappered completely from xconfig (both normal and split mode)
->>>
->>> I reverted this and next commit to get this back.
->>>
->>> I have a feeling that there were several bugs introduced to xconfig recently
->>> due to attempt to support both Qt4 and Qt5. Maybe we should only support one version?  
->>
->>
->> xconfig was originally written for Qt3, and
->> got broken in many ways after being converted to Qt5.
->> (commit 8328447af88eaab1d thru b4ff1de3b8381a4)
->>
->> That is my gut feeling.
->>
->> So, xconfig carried broken code everywhere
->> for many years.
->>
->> I think supporting both Qt4 and Qt5
->> is doable, but testing both versions is tedious.
->> I'd like to want to drop Qt4 support in the future but
->> not in this development cycle because there are still
->> some people using Qt4.
-> 
-> My 2 cents here: I ported Kaffeine from Qt4 to Qt5. When I did that,
-> I tried to make it compatible with both, but that was not easy. So,
-> it now supports only Qt5. Ok, Kaffeine uses a lot of different APIs.
-> 
-> It is probably doable to keep xconfig compatible with both Qt4 and
-> Qt5, but not sure if it is worth the efforts, as Qt5 was released 
-> at the end of 2012. So, I guess that all distros should have Qt5
-> packages, even the LTS ones.
-> 
->> Recently I changed xconfig a lot because I noticed
->> various bugs, and also needed to simplify the code
->> for better maintainability.
->>
->>
->> Sorry for the pain, but we need to change the code
->> to make it stable and maintainable.
->>
->> For the reported issue,
->> does this work for you?
->> https://patchwork.kernel.org/patch/11774055/
->>
->>
->>> I tried gconfig even thinking maybe nobody uses xconfig these days
->>> but gconfig seems to lack search function.  
->>
->> gconfig is not well maintained either.
->>
->> I think it should be converted from gtk+2 to gtk+3
->> and I know various bugs that need fixing
->> (but I have not been able to find time to work on it...)
-> 
-> Such conversion can also be painful. I also did two such
-> conversions for other media packages (Camorama and ZBar). Also,
-> gtk4 is close to be released:
-> 
-> 	https://www.phoronix.com/scan.php?page=news_item&px=GTK-3.99.1-Released
-> 
-> Porting from gtk+3 to gtk4 is also painful. I tried to prepare
-> Camorama (which currently supports both gtk+2 and gtk+3) for gtk4, 
-> but one of the fundamental features needed for it to work was dropped
-> (a way to write video images inside a widget). Last time I checked,
-> there were no obvious replacement for it (didn't check 3.99 yet).
-> 
-> Maybe the main point here is if we should keep maintaining two
-> GUI frontends.
+This patch removed the framebuffer scrollback related lines.
 
+This is the effect of this commmit  50145474f6ef ("fbcon: remove soft scrollback code")
 
-I can't recall (m)any gconfig users.
-And it is missing some critical features IMO, like Search.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+Following Greg's suggestions,fix the subject line and include the commit Subject
 
+ Documentation/fb/vesafb.rst | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/Documentation/fb/vesafb.rst b/Documentation/fb/vesafb.rst
+index 6821c87b7893..f890a4f5623b 100644
+--- a/Documentation/fb/vesafb.rst
++++ b/Documentation/fb/vesafb.rst
+@@ -135,8 +135,6 @@ ypan	  enable display panning using the VESA protected mode
+ 
+                 * scrolling (fullscreen) is fast, because there is
+ 		  no need to copy around data.
+-		* You'll get scrollback (the Shift-PgUp thing),
+-		  the video memory can be used as scrollback buffer
+ 
+           kontra:
+ 
 -- 
-~Randy
+2.26.2
 
