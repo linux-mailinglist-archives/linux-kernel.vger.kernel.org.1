@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D3B26AED0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5FA26AEC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728055AbgIOUif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:38:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727873AbgIOUgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:36:46 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBDFA20809;
-        Tue, 15 Sep 2020 20:36:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600202205;
-        bh=hR+9QjiQFWyN2W2Y/im5/MlPYRdRGdyGzHGLrBYVxBg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=JE3/C4Chwu15czXYlspesWnGolV8kaWR0831erUbBU6KMwFGI9HEcSxwrT2fEchX/
-         aH7DsB03ZoxxNTB6AFhAicVG8k2Qq+3lSHOjCNiowrOwZSFwpCSePmmJqh7CqYm/GG
-         QNRk344P7vVfAx95w7iafmfFd66O5gfB5yqe2rV0=
-Date:   Tue, 15 Sep 2020 15:36:43 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ming Qiao <mqiao@juniper.net>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Debjit Ghosh <dghosh@juniper.net>,
-        Santhanakrishnan Balraj <sbalraj@juniper.net>,
-        Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH 1/3] PCI: Add quirks for Juniper FPGAs to set class code
-Message-ID: <20200915203643.GA1426328@bjorn-Precision-5520>
+        id S1727841AbgIOUlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:41:20 -0400
+Received: from mail-dm6nam12on2072.outbound.protection.outlook.com ([40.107.243.72]:31384
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727916AbgIOUh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:37:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YjNQnwotzlchT8zNZxigSClDXhnqRW1llUYWEExrDV92vi/LGGb1s9ziEVP/gtAK3Oj5qk7rtc60S3Dk8cdsci3avJy6vewmEDp73BQLKeTA+dxsWTDkbnt2+IPTFRILNJPkEDmWNIGwWObZV8+gjvW1L5rdZFkqx4k+ukzYLZIoR5vjZMxP+mujgzB8XmUH6Sojcbjio6LqUkEBfm/rUWf0BGJdwHlax8CrJ6JG3KqFGtBp5Ut2JKN909IBVao9VrrnXKsam94+1taYL8WDBOeAqFLdPoUl/CC4GWIxev/Z5oBT4bcYCdOhdWWlnyJREMjcqpvYx1BB0lLn7qxxdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ssN8tz6VbdtX43N4iyuWtD8BcHM9A97bVtk9Q61hXzE=;
+ b=oAVoSGiSxJ15NTJY32UVpNACX6QGIyC8Gmd8EWk+yMfqhUVj99oF9SOsubHEoO+LoCx2eo2MbUA8NtJwjhqVOTmFkmR1AmWrFqNcHwIzGWVHRFJ5RhapB14qj+L6+PCgbvhNyG4/zjwjaWMsSZEyzbZVFIMv1y+/9krLh3tsR/3AG7E2q8XqVBcngksVqGHGtAI+KeXfxWtc9X1m7A6fCBWUXoERE7thkqQj/iK4V4C9gFaMzcbTHAt6e1jhOzRCkp96N5jHD+iUB6QLx5wFF2ZOuUM7EQiPyXzQOSTzfR22RhM5vctjZfThdN7CYm5huFs1/J6szub9oG+lxGQcaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ssN8tz6VbdtX43N4iyuWtD8BcHM9A97bVtk9Q61hXzE=;
+ b=hgw+xBF3UjOZ/vfGyZuMkujHipjeCAZYynd3rJAVKDmK8VAls/ek7bPQY/Ufm7Vz4P+B8RekG0hRFyNQSBAE9KbQaIHKterIQSk8i0kJS0UX9kDb0w9QtV6xXZhD42er+DRgNEF3Iioe6fCwFvYDosHHOeLYGdYiHIFvZSq/UjU=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
+ by CY4PR12MB1542.namprd12.prod.outlook.com (2603:10b6:910:8::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Tue, 15 Sep
+ 2020 20:37:23 +0000
+Received: from CY4PR12MB1352.namprd12.prod.outlook.com
+ ([fe80::989b:b1b2:464c:443]) by CY4PR12MB1352.namprd12.prod.outlook.com
+ ([fe80::989b:b1b2:464c:443%10]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 20:37:23 +0000
+Subject: Re: [RFC PATCH 25/35] KVM: x86: Update __get_sregs() / __set_sregs()
+ to support SEV-ES
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <e08f56496a52a3a974310fbe05bb19100fd6c1d8.1600114548.git.thomas.lendacky@amd.com>
+ <20200914213708.GC7192@sjchrist-ice>
+ <7fa6b074-6a62-3f8e-f047-c63851ebf7c9@amd.com>
+ <20200915163342.GC8420@sjchrist-ice>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <6486b1f3-35e2-bcb0-9860-1df56017c85f@amd.com>
+Date:   Tue, 15 Sep 2020 15:37:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200915163342.GC8420@sjchrist-ice>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM5PR07CA0140.namprd07.prod.outlook.com
+ (2603:10b6:3:13e::30) To CY4PR12MB1352.namprd12.prod.outlook.com
+ (2603:10b6:903:3a::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200915151103.7086-1-mqiao@juniper.net>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by DM5PR07CA0140.namprd07.prod.outlook.com (2603:10b6:3:13e::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Tue, 15 Sep 2020 20:37:22 +0000
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 6992c2e1-b516-4b77-42bc-08d859b72668
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1542:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR12MB1542D869EB04F0858ED0FCA1EC200@CY4PR12MB1542.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KIvoTT/QqhqEl1+UQ3EnsUJaN9VQNoMRIwbwAfDqxJcnwJ3XQXc6Ahwm8Ns6/OV7dknRnbIQz+MwC3u9VD466nGk3WKG1xZ/6M4lwpRLzkZTyNz/mUFs0GblS0SjdfwnrWKwRhBiymtM/4vb+NGRzeZ0qbyaHs3Ao/XbvAjrji1qFGX8KA/N2WZNBx3Eq+xRYrrgDv+ozzN+yJ8rFyA16zCjAamKSGVtggsQXwDFFDX1s09SzWmUYiduLB2tNa9FtiuCljWum4FPMjtBcEDYVJrRvvruJm9FpAkiaMrEos9Fg15ygIE023V8Tg84nAkKePAoyfD8ML2oHyorhcYU92erkN6FIwuPBe7SXDNv7iISJKyhFL+2mrXqaVSyOJ8Tz5JZrhQeLusVkQmOi4Ejf8+RdHQH84u9GDCV0QDsZ/UdUv9XJdSm26MLflV+jfoN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(366004)(8936002)(6916009)(16526019)(83380400001)(54906003)(2906002)(26005)(186003)(956004)(36756003)(31686004)(7416002)(2616005)(52116002)(5660300002)(66946007)(478600001)(6486002)(316002)(53546011)(66556008)(15650500001)(16576012)(31696002)(86362001)(66476007)(4326008)(8676002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: G/U47ZXThqqSgL8RLNa7zLP0Vsx+Uon/ySO8vYqkCWZYdiiutRpa5wyZ2/xzCeRIyk0vxL+gMBTSftiJQXdBNZ2fxydaDiIoQLT8umMdhw3eVd/wk9xn8YkK573eKJZJcqnD2xtNs1pTJnruCHKv8H7rj+odujTPTyPJ4tl4eN+iDP7QKN97XyU3OY8sbJ4cwNTCh09W6ekj3j+SQPOSu5iZK7Dbv15kpIAF83NB7fYTUJ84WrcwHS1LLPzjBgN6G7zPY4bCWOxzHOO1FI03pIXhP2Nv+TfAFEhqRAoxHXCLsSktvwNbjN6TbzGQnoy0oxeaZ37VnQhCq61S4MjkCzCgsrGFlw1r5mEg/h4+OLN/wV43USn69oZxXIE8aEVAkZ291TVsZGUnhA6dUXBz9XyTAEg0H2Oh+yZazZk9Mv7kmiJ6Wf0wzZtKcbPk8bhgY8MPwPtSXT+VCSzl+NX5DfgeiZTBJnWrOd2W/3enBUtq+W5LXk10MqrDSjnPsC51XfOTq4O7D63ivaPy87QABq/t9b5wGmqPGBDbm7AX2LPwPe1ZOb6t3/rpkSXt/54Q9FrpTeLJCzEBImk1YMrwxdTiXdXo/pw3E6GTjxNuElUDj2tKsilVdrLbBmRbvt4Vqb6pPZYlxPgcqBGOYHw9HQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6992c2e1-b516-4b77-42bc-08d859b72668
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 20:37:23.3038
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6JK/H4g5xdqvw1inLby+IjPitvpLCCIwOMs52zvX36euVtbxV4G2vDDCpX0/ZHp0UhxxmADVC6sM3PCxl6+DPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1542
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:11:01AM -0700, Ming Qiao wrote:
-> Some of the Juniper FPGAs do not report correct PCI class ID, which
-> would confuse kernel APIs accessing the specific class of devices.
-> Change them to PCI_CLASS_SYSTEM_OTHER << 8.
-
-Please include a note about the consequence of the incorrect class ID,
-i.e., what happens without this quirk?  Does the system panic?  Does
-some device not work correctly?  If so, which, and what does the
-problem look like to a user?
-
-"Confusing kernel APIs" is pretty general and won't help a user who is
-seeing a problem to find this patch.
-
-> Also introduce Juniper vendor ID to be used in the quirks.
->     
-> Signed-off-by: Debjit Ghosh <dghosh@juniper.net>
-> Signed-off-by: Santhanakrishnan Balraj <sbalraj@juniper.net>
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> Signed-off-by: Ming Qiao <mqiao@juniper.net>
-> ---
->  drivers/pci/quirks.c    | 25 +++++++++++++++++++++++++
->  include/linux/pci_ids.h |  2 ++
->  2 files changed, 27 insertions(+)
+On 9/15/20 11:33 AM, Sean Christopherson wrote:
+> On Tue, Sep 15, 2020 at 09:19:46AM -0500, Tom Lendacky wrote:
+>> On 9/14/20 4:37 PM, Sean Christopherson wrote:
+>>> On Mon, Sep 14, 2020 at 03:15:39PM -0500, Tom Lendacky wrote:
+>>>> From: Tom Lendacky <thomas.lendacky@amd.com>
+>>>>
+>>>> Since many of the registers used by the SEV-ES are encrypted and cannot
+>>>> be read or written, adjust the __get_sregs() / __set_sregs() to only get
+>>>> or set the registers being tracked (efer, cr0, cr4 and cr8) once the VMSA
+>>>> is encrypted.
+>>>
+>>> Is there an actual use case for writing said registers after the VMSA is
+>>> encrypted?  Assuming there's a separate "debug mode" and live migration has
+>>> special logic, can KVM simply reject the ioctl() if guest state is protected?
+>>
+>> Yeah, I originally had it that way but one of the folks looking at live
+>> migration for SEV-ES thought it would be easier given the way Qemu does
+>> things. But I think it's easy enough to batch the tracking registers into
+>> the VMSA state that is being transferred during live migration. Let me
+>> check that out and likely the SET ioctl() could just skip all the regs.
 > 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 2a589b6..61344d2 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -5632,3 +5632,28 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
->  }
->  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
->  			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-> +
-> +/*
-> + * PCI class reported by some Juniper FPGAs is not correct.
-> + * Change it to SYSTEM.
-> + */
-> +static void quirk_jnx_fpga(struct pci_dev *dev)
-> +{
-> +	if (!dmi_match(DMI_BOARD_VENDOR, "Juniper Networks Inc."))
-> +		return;
-
-Why is the DMI_BOARD_VENDOR relevant to this quirk?  This check seems
-to mean that the class code is programmable by the BIOS, and all
-BIOSes program it correctly *except* the Juniper BIOS.
-
-If this is just a silicon defect in the chips, you shouldn't need to
-check the DMI_BOARD_VENDOR.
-
-> +	dev->class = PCI_CLASS_SYSTEM_OTHER << 8;
-> +}
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0004, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x006A, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x006B, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x006C, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x006E, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0079, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0083, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x0071, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00A7, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00A8, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00A9, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_JUNIPER, 0x00AA, quirk_jnx_fpga);
-> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_XILINX, 0x0505, quirk_jnx_fpga);
-> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-> index 1ab1e24..bfbf8f1 100644
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -1859,6 +1859,8 @@
->  #define PCI_VENDOR_ID_ESDGMBH		0x12fe
->  #define PCI_DEVICE_ID_ESDGMBH_CPCIASIO4 0x0111
->  
-> +#define PCI_VENDOR_ID_JUNIPER		0X1304
-
-Please use "0x1304" (lower-case 'x') like the rest of the file.
-
->  #define PCI_VENDOR_ID_CB		0x1307	/* Measurement Computing */
->  
->  #define PCI_VENDOR_ID_SIIG		0x131f
-> -- 
-> 2.10.0
+> Hmm, that would be ideal.  How are the tracked registers validated when they're
+> loaded at the destination?  It seems odd/dangerous that KVM would have full
+> control over efer/cr0/cr4/cr8.  I.e. why is KVM even responsibile for migrating
+> that information, e.g. as opposed to migrating an opaque blob that contains
+> encrypted versions of those registers?
 > 
+
+KVM doesn't have control of them. They are part of the guest's encrypted
+state and that is what the guest uses. KVM can't alter the value that the
+guest is using for them once the VMSA is encrypted. However, KVM makes
+some decisions based on the values it thinks it knows.  For example, early
+on I remember the async PF support failing because the CR0 that KVM
+thought the guest had didn't have the PE bit set, even though the guest
+was in protected mode. So KVM didn't include the error code in the
+exception it injected (is_protmode() was false) and things failed. Without
+syncing these values after live migration, things also fail (probably for
+the same reason). So the idea is to just keep KVM apprised of the values
+that the guest has.
+
+Thanks,
+Tom
