@@ -2,149 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D259D269C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1A8269C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgIODTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726208AbgIODTM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:19:12 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB6DC06178C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:19:10 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 34so1193637pgo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:19:10 -0700 (PDT)
+        id S1726239AbgIODTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 23:19:31 -0400
+Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:62304
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726091AbgIODS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 23:18:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tdw+Z9WHXgHy2FqpKHS++XxQqa6qx6hO8YeKJVRisPgpmI8wswp88k0BcMt1+BDM6fRCP03TcsC+OK0W4CUicA3ARmF21LuqtYrq/ZNy4itsvJdCO0g9SjbpqaeSXkU/Q2ifCGKiPg8s2aExquP4QW6EoEgbcD9RCEJmkcW8nwzv7Jd7+5V0F8H3gts/3jpFsFNd/8JBE/fwJVcFpAJpZ8Z35Xx/nfKw7QnmRPtglzHDZU1T7Cxyxpyemm2km5648AGu8krsDd2ZUqQNuZOrZ4hiQ3IDB2Zmt62fI22I5ofQMDGs5fmyWbnEw8osKbnMCZVEmjTh6zg2M5fvFmb6mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CdHKs6HC+0sfe0Rxk870liWnMB41l/3HASoNmBZkBhw=;
+ b=XrxW7ZE9XhTeOM68xn7wAYQYbwd2p4zDNMPTuZoIeF2BrVtmackpGNzByGRE7Pq9iOCrl55QY9UkI76gI7zEH8OApYM9mdPX+oXgiBCxN61vRbKqES/M+I2lcUclBY8eDWXrlA3dEOSG8MehBzVk4A0+LYLMn9m2OW5gideQSmmJwQ2rsDbDwr3BZDw7OnQq9qizqkOgNzVUYK7jUkL7FRo+9R+nbXJKTbOqka6B9KmbTN7YVCV0IoVz1wu5acUBzOvFkhyl5EPXNdbo4Sf3yX5j7N3P0DOUQ/TCdKYSRgOpX+Ma9SKSOnav/hYWWhVc7fZWGRmu2VE6ktGjThl+eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rmLOsl9fiKPr6PXFbWJUDNjvS63BrA/4vSubxExPeuU=;
-        b=NJ1X7WBSX8XTFUwbW019tuAMbtXcebyxL6m/xSNML/EM/HpP5kENeIxUg49RYTQr9k
-         NBO4WimVAkn8QgNuv2Bh4B18va/9GAW7g+a5jC3pVi/HXGXvZTR9rIROvTTEb1s2hMM3
-         Cekn/BjqwFpSCKxFwxTvL/IhYTFTi+VszXLr4CbvoFBb1fPOwGM2ckmhO0m9CiKmJtwe
-         QJKc75x9aILNO9fi1P3ylRuRHoa7JsABpdCrvohNMRKVqX5LNQVsjNzHGXzX0/kAOJKM
-         lJ8mKpnXl3TxcRcEZOkrVgL3SJ0UMy9cPSCXhJ3vkTAwpT+mNytG6hyCFkWav1wRVDqn
-         T0wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=rmLOsl9fiKPr6PXFbWJUDNjvS63BrA/4vSubxExPeuU=;
-        b=KjVh3jsU0en9vaLlk1FxAK6Ig462FHkdzyST/MM9o534qt6CwCCiWiXluUg+8trcvE
-         MmQnwOeNsaRRK4jf7S8NG9n93oGa6KFOEBhD2YxJ/PmbhgG1A83UMvkTXMJS5eUNgRTH
-         vSu+hi+M2CioMQTMmk2WOlqQTE9b6VgRc1cWbQOkbHYvXasUFW3HhBxmb9acuoiKlK8F
-         RJxEA/hoN0m5lTJREIA684whg4sAQDwdCuHTKXptieFXgPEn4Bw8mCP/LnMxv8H9Ht8H
-         SmlidynmtEbeOBK42SGj9YwiQaodXuzgfvLabbPnIneWNbkUYESIUNmI3B/MrcUdifl9
-         K0PA==
-X-Gm-Message-State: AOAM533v1ymkQnY1SDWC4cW5QXK2XYIuFI5Qbo03gDtamJoveZb/tzwK
-        wWRi/9kWcGwq3r7LypeFmTk=
-X-Google-Smtp-Source: ABdhPJzOjiBkhW2fMXK8ljVP2t6ECQ/nKqM7pRS9UyrfoUXE/nmcuvoAAjJ2s/s5IHdYHol7r0rxTg==
-X-Received: by 2002:a63:f104:: with SMTP id f4mr13609702pgi.365.1600139950175;
-        Mon, 14 Sep 2020 20:19:10 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id a24sm10584582pju.25.2020.09.14.20.19.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 20:19:09 -0700 (PDT)
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 11/11] perf test: Free formats for perf pmu parse test
-Date:   Tue, 15 Sep 2020 12:18:19 +0900
-Message-Id: <20200915031819.386559-12-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-In-Reply-To: <20200915031819.386559-1-namhyung@kernel.org>
-References: <20200915031819.386559-1-namhyung@kernel.org>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CdHKs6HC+0sfe0Rxk870liWnMB41l/3HASoNmBZkBhw=;
+ b=EXPOtgDAdTFYoz+i/P6yPYbISW2oE3gnBgRB0a/XWJtTVRa73bEOwC9/jHyOJQ+7vh7gO3doaBQwgLS/7byo0DVuKhxNs/axsj8w8JPGe0KfQwEAQRb53XgYS+XOUtp0c72EpMZJ/yDrZFJpJwfG8UjEu0fWZQqnS0QCo2D3vas=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4228.namprd11.prod.outlook.com (2603:10b6:a03:1bd::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Tue, 15 Sep
+ 2020 03:18:24 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 03:18:24 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+CC:     Uladzislau Rezki <urezki@gmail.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnA=?=
+Thread-Topic: RCU: Question on force_qs_rnp
+Thread-Index: AQHWimIP0LPCKhgtykWT7yuEklGOu6loiX8AgAAU1QCAAGeTxQ==
+Date:   Tue, 15 Sep 2020 03:18:23 +0000
+Message-ID: <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200914194208.GA2579423@google.com>,<20200914205642.GE29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200914205642.GE29330@paulmck-ThinkPad-P72>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 370f35c7-c0de-4898-8163-08d85926017c
+x-ms-traffictypediagnostic: BY5PR11MB4228:
+x-microsoft-antispam-prvs: <BY5PR11MB42282295E521B25E0AD3177CFF200@BY5PR11MB4228.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: o+cAZC+x9RdhOrHjzo9dmWG9fQ5YkQ0EyXJS7eQ7g7oARHazDV0JYZfl5kwfn4VNoIIE8GvOQhogI7GQ9paehB5rW11e9OAOM07GeNE8w/1w/J+erTwh2ow28R/tqqoZ7a3XJkewa4uWDrtMgca4T141uvJ7htnCXgE43RdeIFU/n3O0ykuQAgZVled6uupL7M0mWeS6Hqh+zQTUtJo0IO+UVT0yd0qZdkzbW06KvnODmUQ3jxznW7L5lrYyNZzlTpeOIEc7l5JGV0ej5ex1GogyX67QkD71hDb7zwFXqNWBIz/fUAXBYU+YVs7lYQRGF/K3jSLKMfLG6GskV0F/fUBAY0+vd2IP2KXGrQ+wds0ejGLLL7Y8OaqTyNx+pFBn
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39850400004)(346002)(396003)(136003)(26005)(478600001)(110136005)(4326008)(9686003)(76116006)(8936002)(91956017)(316002)(66946007)(5660300002)(66476007)(66446008)(55016002)(64756008)(66556008)(186003)(86362001)(7696005)(224303003)(71200400001)(54906003)(33656002)(2906002)(6506007)(52536014)(83380400001)(66574015);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 1mtrmlDFY5X8UrZw8u1igSvlJ14Hun58ss+A1ACnFTABaX2uHr8lRjkBjjtRcDhcV7PX9pog5ICDQv7guglF8yWiG6ggrbkQSsnOnuwVm0pzoxT/hYTY4eNw6lPCqUg6F7Sz2u1VJpt7QqI/AGuVLu5hNlhGBk735jIdcMXcxUEvixUjAx+4RcSGZAmkXvL7mHX2YE7DemJcrxRYxOhVf8ooWgRarNFH7SKDClrxLZP/NunBBv48G3MgD8loqQfHDKDedX9q8BZCazwR02KHbyBzfRckrCLGjGjfxsjr62+bACBd8KYaqDd0zcmSU1yvGdd+iL5QOCOILcxCX4TEAfQ56P+AOhCilUU6PwSa7kOdcnZ2yZPQs1zKq6sfdCN2xhHef5RgsiluWOPdGN5chWDNbZa11R+AmIetO9vsiSAadcyBtocXxNLHRTaHa1PsvGaKydAwu/O9C/uO31bFfj/FlJ7s/nVnR2y6xa/Z/UYuI6VDi1pnfYSTQgArYB+sn025HoQo4XJJZGautdfRaAoxFeJt+0Kfc2WK0baK44ij9dCCqJ87cY7+5PCtmVleuIJ+D/MeRYeV9o4lOSQRGEng79cAw6QbhjbqpQOq/LiiL3pGdcsyGqYNR23YpQXzWu8Mzh5tB2F56sNtum4NfA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 370f35c7-c0de-4898-8163-08d85926017c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 03:18:23.8592
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bF9DXra+KXF66nWckze2ZuRKNpKBJQepL6LSoOwJGdtRxWUGBs3kE3BelZp7mOyjVZa9+7mVgKPsAEtEDREzk2w10OG7bJS7D4ArMS0Fguw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4228
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following leaks were detected by ASAN:
-
-  Indirect leak of 360 byte(s) in 9 object(s) allocated from:
-    #0 0x7fecc305180e in calloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10780e)
-    #1 0x560578f6dce5 in perf_pmu__new_format util/pmu.c:1333
-    #2 0x560578f752fc in perf_pmu_parse util/pmu.y:59
-    #3 0x560578f6a8b7 in perf_pmu__format_parse util/pmu.c:73
-    #4 0x560578e07045 in test__pmu tests/pmu.c:155
-    #5 0x560578de109b in run_test tests/builtin-test.c:410
-    #6 0x560578de109b in test_and_print tests/builtin-test.c:440
-    #7 0x560578de401a in __cmd_test tests/builtin-test.c:661
-    #8 0x560578de401a in cmd_test tests/builtin-test.c:807
-    #9 0x560578e49354 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
-    #10 0x560578ce71a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
-    #11 0x560578ce71a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
-    #12 0x560578ce71a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
-    #13 0x7fecc2b7acc9 in __libc_start_main ../csu/libc-start.c:308
-
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Fixes: cff7f956ec4a1 ("perf tests: Move pmu tests into separate object")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/pmu.c |  1 +
- tools/perf/util/pmu.c  | 11 +++++++++++
- tools/perf/util/pmu.h  |  1 +
- 3 files changed, 13 insertions(+)
-
-diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
-index 5c11fe2b3040..714e6830a758 100644
---- a/tools/perf/tests/pmu.c
-+++ b/tools/perf/tests/pmu.c
-@@ -173,6 +173,7 @@ int test__pmu(struct test *test __maybe_unused, int subtest __maybe_unused)
- 		ret = 0;
- 	} while (0);
- 
-+	perf_pmu__del_formats(&formats);
- 	test_format_dir_put(format);
- 	return ret;
- }
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 555cb3524c25..d41caeb35cf6 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1354,6 +1354,17 @@ void perf_pmu__set_format(unsigned long *bits, long from, long to)
- 		set_bit(b, bits);
- }
- 
-+void perf_pmu__del_formats(struct list_head *formats)
-+{
-+	struct perf_pmu_format *fmt, *tmp;
-+
-+	list_for_each_entry_safe(fmt, tmp, formats, list) {
-+		list_del(&fmt->list);
-+		free(fmt->name);
-+		free(fmt);
-+	}
-+}
-+
- static int sub_non_neg(int a, int b)
- {
- 	if (b > a)
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index b63c4c5e335e..a64e9c9ce731 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -94,6 +94,7 @@ int perf_pmu__new_format(struct list_head *list, char *name,
- 			 int config, unsigned long *bits);
- void perf_pmu__set_format(unsigned long *bits, long from, long to);
- int perf_pmu__format_parse(char *dir, struct list_head *head);
-+void perf_pmu__del_formats(struct list_head *formats);
- 
- struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu);
- 
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogUGF1bCBF
+LiBNY0tlbm5leSA8cGF1bG1ja0BrZXJuZWwub3JnPgq3osvNyrG85DogMjAyMMTqOdTCMTXI1SA0
+OjU2CsrVvP7IyzogSm9lbCBGZXJuYW5kZXMKs63LzTogWmhhbmcsIFFpYW5nOyBVbGFkemlzbGF1
+IFJlemtpOyBqb3NoQGpvc2h0cmlwbGV0dC5vcmc7IHJvc3RlZHRAZ29vZG1pcy5vcmc7IG1hdGhp
+ZXUuZGVzbm95ZXJzQGVmZmljaW9zLmNvbTsgTGFpIEppYW5nc2hhbjsgcmN1QHZnZXIua2VybmVs
+Lm9yZzsgTEtNTArW98ziOiBSZTogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnAKCk9uIE1v
+biwgU2VwIDE0LCAyMDIwIGF0IDAzOjQyOjA4UE0gLTA0MDAsIEpvZWwgRmVybmFuZGVzIHdyb3Rl
+Ogo+IE9uIE1vbiwgU2VwIDE0LCAyMDIwIGF0IDA3OjU1OjE4QU0gKzAwMDAsIFpoYW5nLCBRaWFu
+ZyB3cm90ZToKPiA+IEhlbGxvIFBhdWwKPiA+Cj4gPiBJIGhhdmUgc29tZSBxdWVzdGlvbnMgZm9y
+IHlvdSAuCj4gPiBpbiBmb3JjZV9xc19ybnAgZnVuYyAsICBpZiAgImYocmRwKSIgZnVuYyByZXR1
+cm4gdHJ1ZSB3ZSB3aWxsIGNhbGwgcmN1X3JlcG9ydF9xc19ybnAgZnVuYwo+ID4gcmVwb3J0IGEg
+cXVpZXNjZW50IHN0YXRlIGZvciB0aGlzIHJucCBub2RlLCBhbmQgY2xlYXIgZ3JwbWFzayBmb3Jt
+IHJucC0+cXNtYXNrLgo+ID4gYWZ0ZXIgdGhhdCAsICBjYW4gd2UgbWFrZSBhIGNoZWNrIGZvciB0
+aGlzIHJucC0+cXNtYXNrLCAgaWYgIHJucC0+cXNtYXNrID09IDAsCj4gPiB3ZSB3aWxsIGNoZWNr
+IGJsb2NrZWQgcmVhZGVycyBpbiB0aGlzIHJucCBub2RlLCAgaW5zdGVhZCBvZiBqdW1waW5nIGRp
+cmVjdGx5IHRvIHRoZSBuZXh0IG5vZGUgLgo+Cj4gQ291bGQgeW91IGNsYXJpZnkgd2hhdCBnb29k
+IGlzIHRoaXMgZ29pbmcgdG8gZG8/IFdoYXQgcHJvYmxlbSBhcmUgeW91IHRyeWluZyB0bwo+IGFk
+ZHJlc3M/Cj4KPiBZb3UgY291bGQgaGF2ZSBhIHRhc2sgdGhhdCBpcyBibG9ja2VkIGluIGFuIFJD
+VSBsZWFmIG5vZGUsIGJ1dCB0aGUKPiBmb3JjZV9xc19ybnAoKSBkZWNpZGVkIHRvIGNhbGwgcmN1
+X3JlcG9ydF9xc19ybnAoKS4gVGhpcyBpcyBwZXJmZWN0bHkgT2suIFRoZQo+IENQVSBjb3VsZCBi
+ZSBkeW50aWNrLWlkbGUgYW5kIGEgcXVpZXNjZW50IHN0YXRlIGlzIHJlcG9ydGVkLiBIb3dldmVy
+LCB0aGUgR1AKPiBtdXN0IG5vdCBlbmQgYW5kIHRoZSByY3UgbGVhZiBub2RlIHNob3VsZCBzdGls
+bCBiZSBwcmVzZW50IGluIGl0cyBwYXJlbnQKPiBpbnRlcm1lZGlhdGUgbm9kZXMgLT5xc21hc2su
+IEluIHRoaXMgY2FzZSwgdGhlIC0+cXNtYXNrID09IDAgZG9lcyBub3QgaGF2ZQo+IGFueSByZWxl
+dmFuY2UuCj4KPiBPciBhbSBJIG1pc3NpbmcgdGhlIHBvaW50IG9mIHRoZSBxdWVzdGlvbj8KCj5I
+ZWxsbywgUWlhbmcsCgo+QW5vdGhlciB3YXkgb2YgbWFraW5nIEpvZWwncyBwb2ludCBpcyB0byBz
+YXkgdGhhdCB0aGUgYWRkaXRpb25hbCBjaGVjawo+eW91IGFyZSBhc2tpbmcgZm9yIGlzIGFscmVh
+ZHkgYmVpbmcgZG9uZSwgYnV0IGJ5IHJjdV9yZXBvcnRfcXNfcm5wKCkuCgo+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUaGFueCwgUGF1bAoK
+SGVsbG8gUHVhbCwgIEpvZWwKCldoYXQgSSB3YW50IHRvIGV4cHJlc3MgaXMgYXMgZm9sbG93cyA6
+CgpkaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9rZXJuZWwvcmN1L3RyZWUuYwppbmRl
+eCA3NjIzMTI4ZDAwMjAuLmJlYjU1NDUzOWYwMSAxMDA2NDQKLS0tIGEva2VybmVsL3JjdS90cmVl
+LmMKKysrIGIva2VybmVsL3JjdS90cmVlLmMKQEAgLTI2MjIsNiArMjYyMiwxMSBAQCBzdGF0aWMg
+dm9pZCBmb3JjZV9xc19ybnAoaW50ICgqZikoc3RydWN0IHJjdV9kYXRhICpyZHApKQogICAgICAg
+ICAgICAgICAgaWYgKG1hc2sgIT0gMCkgewogICAgICAgICAgICAgICAgICAgICAgICAvKiBJZGxl
+L29mZmxpbmUgQ1BVcywgcmVwb3J0IChyZWxlYXNlcyBybnAtPmxvY2spLiAqLwogICAgICAgICAg
+ICAgICAgICAgICAgICByY3VfcmVwb3J0X3FzX3JucChtYXNrLCBybnAsIHJucC0+Z3Bfc2VxLCBm
+bGFncyk7CisgICAgICAgICAgICAgICAgICAgICAgIHJhd19zcGluX2xvY2tfaXJxc2F2ZV9yY3Vf
+bm9kZShybnAsIGZsYWdzKTsKKyAgICAgICAgICAgICAgICAgICAgICAgaWYgKHJucC0+cXNtYXNr
+ID09IDAgJiYgcmN1X3ByZWVtcHRfYmxvY2tlZF9yZWFkZXJzX2NncChybnApKQorICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHJjdV9pbml0aWF0ZV9ib29zdChybnAsIGZsYWdzKTsKKyAg
+ICAgICAgICAgICAgICAgICAgICAgZWxzZQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHJhd19zcGluX3VubG9ja19pcnFyZXN0b3JlX3JjdV9ub2RlKHJucCwgZmxhZ3MpOwogICAgICAg
+ICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgICAgICAgICAgLyogTm90aGluZyB0byBk
+byBoZXJlLCBzbyBqdXN0IGRyb3AgdGhlIGxvY2suICovCiAgICAgICAgICAgICAgICAgICAgICAg
+IHJhd19zcGluX3VubG9ja19pcnFyZXN0b3JlX3JjdV9ub2RlKHJucCwgZmxhZ3MpOwoKClRoYW5r
+cwoKUWlhbmc=
