@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE4D26B04E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E745326B0B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgIOWHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:07:36 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60918 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbgIOWG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 18:06:59 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FM4liv007862;
-        Tue, 15 Sep 2020 22:06:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=bME8sByLBwNLbJudnSNj1nVjUvDsDQdQqcKom0FlSRU=;
- b=UddL6Nf2SGObJgM1ltSAQP4mmCOnhSztzmrrycS6VZb59UaxuT3GDEb9yWOFagzKYvEK
- +k47QxtHY6JKMnF9VKHHUruMzfpT83dYu4p3/B7V4SNFe0Hq+CfV4lm331WRKEe/XMuQ
- XL7ihvNT9i2A3TyoPPGsqhV58ONZLjpOR3MNH+voqTPZjLakdCZhamCQIrcsNtxP3+qa
- 94o6ySUp3QBIpk8B7nvZR4r51bboSHU+YoaqVlXLqIc7FB6aF7Xw07TUFwewlx29rGbR
- H7cxtHg8HPNNFh30MKeZrj9ScZ66a64gMOV31cebAT/LLgVAmwkc9wEQhiKeXOxIA76E Vw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33j91dhenn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 22:06:35 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FM1okB041321;
-        Tue, 15 Sep 2020 22:06:35 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33hm31brbb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 22:06:35 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FM6WIK026369;
-        Tue, 15 Sep 2020 22:06:32 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 22:06:31 +0000
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     <martin.petersen@oracle.com>, <bvanassche@acm.org>,
-        <michael.christie@oracle.com>, <mlombard@redhat.com>,
-        <sudhakar.panneerselvam@oracle.com>, <ddiss@suse.de>,
-        <gustavoars@kernel.org>, <linux-scsi@vger.kernel.org>,
-        <target-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: target: remove redundant assignment to variable
- 'ret'
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1een24rvk.fsf@ca-mkp.ca.oracle.com>
-References: <20200914023207.113792-1-jingxiangfeng@huawei.com>
-Date:   Tue, 15 Sep 2020 18:06:28 -0400
-In-Reply-To: <20200914023207.113792-1-jingxiangfeng@huawei.com> (Jing
-        Xiangfeng's message of "Mon, 14 Sep 2020 10:32:07 +0800")
+        id S1727527AbgIOWRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:17:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728001AbgIOWRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 18:17:32 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01AC420732;
+        Tue, 15 Sep 2020 22:17:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600208243;
+        bh=TiL/JMlMqT49tuRdge+1NxOAcYMYi4Y5lNoE7DePQAo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=NU3iPv9OYHXounV/bCT5Jp7m75pCoNe7psbtLwsC5bY0zE0OKc+28Dvruz40Znyws
+         w7q+VWk1b0g6rYA9qjdunlqvjX9ykSDdx5/QyRX9neT37sHck45XVpUM/tNjaVZwH6
+         ve1JnB5oCpMi8gSNJuNat3hHV+kgjbcoMsgIwAkE=
+Date:   Tue, 15 Sep 2020 17:17:21 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com
+Subject: Re: [PATCH v8 1/5] PCI: Conditionally initialize host bridge
+ native_* members
+Message-ID: <20200915221721.GA1437311@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150171
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=1 mlxlogscore=999
- clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150171
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8e9c26fb-97e9-4bda-e374-7c6bea9077eb@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 13, 2020 at 01:49:26PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> On 9/10/20 2:00 PM, Kuppuswamy, Sathyanarayanan wrote:
+> > On 9/10/20 12:49 PM, Bjorn Helgaas wrote:
+> > > On Fri, Jul 24, 2020 at 08:58:52PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+> > > > From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > > > 
+> > > > If CONFIG_PCIEPORTBUS is not enabled in kernel then initialing
+> > > > struct pci_host_bridge PCIe specific native_* members to "1" is
+> > > > incorrect. So protect the PCIe specific member initialization
+> > > > with CONFIG_PCIEPORTBUS.
+> > > 
+> > > s/initialing/initializing/
+> > will fix it in next version.
+> > > 
+> > > > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > > > ---
+> > > >   drivers/pci/probe.c | 4 +++-
+> > > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> > > > index 2f66988cea25..a94b97564ceb 100644
+> > > > --- a/drivers/pci/probe.c
+> > > > +++ b/drivers/pci/probe.c
+> > > > @@ -588,12 +588,14 @@ static void pci_init_host_bridge(struct pci_host_bridge *bridge)
+> > > >        * may implement its own AER handling and use _OSC to prevent the
+> > > >        * OS from interfering.
+> > > >        */
+> > > > +#ifdef CONFIG_PCIEPORTBUS
+> > > >       bridge->native_aer = 1;
+> > > >       bridge->native_pcie_hotplug = 1;
+> > > > -    bridge->native_shpc_hotplug = 1;
+> > > >       bridge->native_pme = 1;
+> > > >       bridge->native_ltr = 1;
+> > > 
+> > > native_ltr isn't dependent on PCIEPORTBUS either, is it?  It's only
+> > > used for ASPM.
+> > Agreed. I was confused due to a comment in include/linux/pci.h
+> > 
+> >   unsigned int    native_ltr:1;           /* OS may use PCIe LTR */
 
-Jing,
+> Currently there is no code dependency between LTR and CONFIG_PCIEPORTBUS.
+> 
+> But I am wondering whether its correct to move LTR code under
+> CONFIG_PCIEPORTBUS?. As per PCIe spec v5.0 sec 7.8.2, LTR is a
+> optional PCIe extended capability. So why is not moved under
+> drivers/pci/pcie/*. What is the criteria for code to be placed under
+> drivers/pci/pcie/*
 
-> The variable ret has been initialized with a value '0'. The assignment
-> in switch-case is redundant. So remove it.
+Some folks think drivers/pci/pcie/ should not exist, and I tend to
+agree, but it's a fair bit of churn to remove it.  We do have quite a
+bit of PCIe extended capability support in drivers/pci -- ats.c,
+iov.c, vc.c.
 
-Applied to 5.10/scsi-staging, thanks!
+There's no need to move LTR under CONFIG_PCIEPORTBUS because
+CONFIG_PCIEPORTBUS enables portdrv, and AFAIK there's nothing
+LTR-related that relies on portdrv.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+The stuff currently in drivers/pci/pcie is mostly just portdrv and
+services that depend on it.  aspm.c and ptm.c are exceptions and
+really should be in drivers/pci.
+
+> > > >       bridge->native_dpc = 1;
+> > > > +#endif
+> > > > +    bridge->native_shpc_hotplug = 1;
+> > > >       device_initialize(&bridge->dev);
+> > > >   }
+> > > > -- 
+> > > > 2.17.1
+> > > > 
+> > 
+> 
+> -- 
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
