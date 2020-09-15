@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C51026A125
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2823926A12E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgIOInl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:43:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12263 "EHLO huawei.com"
+        id S1726419AbgIOIns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:43:48 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56584 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726087AbgIOInh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:43:37 -0400
+        id S1726087AbgIOInm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:43:42 -0400
 Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 45AAE387E0E933AA5B0E;
-        Tue, 15 Sep 2020 16:43:35 +0800 (CST)
+        by Forcepoint Email with ESMTP id 70B9E5729C63E5573513;
+        Tue, 15 Sep 2020 16:43:40 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.253) by
  DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
  14.3.487.0; Tue, 15 Sep 2020 16:43:30 +0800
@@ -30,10 +30,12 @@ CC:     Zhen Lei <thunder.leizhen@huawei.com>,
         Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>,
         "Jianguo Chen" <chenjianguo3@huawei.com>
-Subject: [PATCH v4 0/4] irqchip: dw-apb-ictl: support hierarchy irq domain
-Date:   Tue, 15 Sep 2020 16:43:01 +0800
-Message-ID: <20200915084305.3085-1-thunder.leizhen@huawei.com>
+Subject: [PATCH v4 1/4] genirq: define an empty function set_handle_irq() if !GENERIC_IRQ_MULTI_HANDLER
+Date:   Tue, 15 Sep 2020 16:43:02 +0800
+Message-ID: <20200915084305.3085-2-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
+In-Reply-To: <20200915084305.3085-1-thunder.leizhen@huawei.com>
+References: <20200915084305.3085-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -44,55 +46,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v3 --> v4:
-1. remove "gc->chip_types[0].chip.irq_eoi = irq_gc_noop;", the "chip.irq_eoi" hook
-   is not needed by handle_level_irq(). Thanks for Marc Zyngier's review.
-2. Add a new patch: define an empty function set_handle_irq() if !GENERIC_IRQ_MULTI_HANDLER
-   to avoid compilation error on arch/arc system.
+To avoid compilation error if an irqchip driver references the function
+set_handle_irq() but may not select GENERIC_IRQ_MULTI_HANDLER on some
+systems.
 
-v2 --> v3:
-1. change (1 << hwirq) to BIT(hwirq).
-2. change __exception_irq_entry to __irq_entry, so we can "#include <linux/interrupt.h>"
-   instead of "#include <asm/exception.h>". Ohterwise, an compilation error will be
-   reported on arch/csky.
-   drivers/irqchip/irq-dw-apb-ictl.c:20:10: fatal error: asm/exception.h: No such file or directory
-3. use "if (!parent || (np == parent))" to determine whether it is primary interrupt controller.
-4. make the primary interrupt controller case also use function handle_level_irq(), I used 
-   handle_fasteoi_irq() as flow_handler before.
-5. Other minor changes are not detailed.
+For example, the Synopsys DesignWare APB interrupt controller
+(dw_apb_ictl) is used as the secondary interrupt controller on arc, csky,
+arm64, and most arm32 SoCs, and it's also used as the primary interrupt
+controller on Hisilicon SD5203 (an arm32 SoC). The latter need to use
+set_handle_irq() to register the top-level IRQ handler, but this multi
+irq handler registration mechanism is not implemented on arc system.
 
-v1 --> v2:
-According to Marc Zyngier's suggestion, discard adding an independent SD5203-VIC
-driver, but make the dw-apb-ictl irqchip driver to support hierarchy irq domain.
-It was originally available only for secondary interrupt controller, now it can
-also be used as primary interrupt controller. The related dt-bindings is updated
-appropriately.
+The input parameter "handle_irq" maybe defined as static and only
+set_handle_irq() references it. This will trigger "defined but not used"
+warning. So add "(void)handle_irq" to suppress it.
 
-Add "Suggested-by: Marc Zyngier <maz@kernel.org>".
-Add "Tested-by: Haoyu Lv <lvhaoyu@huawei.com>".
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ include/linux/irq.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
-v1:
-The interrupt controller of SD5203 SoC is VIC(vector interrupt controller), it's
-based on Synopsys DesignWare APB interrupt controller (dw_apb_ictl) IP, but it
-can not directly use dw_apb_ictl driver. The main reason is that VIC is used as
-primary interrupt controller and dw_apb_ictl driver worked for secondary
-interrupt controller. So add a new driver: "hisilicon,sd5203-vic".
-
-
-Zhen Lei (4):
-  genirq: define an empty function set_handle_irq() if
-    !GENERIC_IRQ_MULTI_HANDLER
-  irqchip: dw-apb-ictl: prepare for support hierarchy irq domain
-  irqchip: dw-apb-ictl: support hierarchy irq domain
-  dt-bindings: dw-apb-ictl: support hierarchy irq domain
-
- .../interrupt-controller/snps,dw-apb-ictl.txt      | 14 +++-
- drivers/irqchip/Kconfig                            |  2 +-
- drivers/irqchip/irq-dw-apb-ictl.c                  | 83 ++++++++++++++++++----
- include/linux/irq.h                                |  2 +
- 4 files changed, 87 insertions(+), 14 deletions(-)
-
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 1b7f4dfee35b397..0848a2aaa9b40b1 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -1252,6 +1252,8 @@ void irq_matrix_free(struct irq_matrix *m, unsigned int cpu,
+  * top-level IRQ handler.
+  */
+ extern void (*handle_arch_irq)(struct pt_regs *) __ro_after_init;
++#else
++#define set_handle_irq(handle_irq)	do { (void)handle_irq; } while (0)
+ #endif
+ 
+ #endif /* _LINUX_IRQ_H */
 -- 
 1.8.3
 
