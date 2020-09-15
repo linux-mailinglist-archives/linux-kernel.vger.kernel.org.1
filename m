@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C3426A1A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA2D26A1AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgIOJHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgIOJHB (ORCPT
+        id S1726409AbgIOJIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:08:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36291 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726222AbgIOJII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:07:01 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A482C061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:07:00 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z4so2465933wrr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=iopdDFEV2kcDalmETaYONWkweONCMxEbTqjAdtlggGQ=;
-        b=Ex9+iyZF0nSnE98P6XxFSFn2Qr6RKGJT9NJVVFLYJISLvYD24STWt1cwuyIrEv7AGy
-         sP0WuC46a03FvkRZLXVx5xE6pcQFtFgoC3LiwIcVRycJy8bbR5X+rHYiSdyxwtHYpl7s
-         eyT/zR0w0k1wv8sgIiLzta/7OwIjVAAZslhmceTEKnBoiZ7/YIAXK+vuOIIW8EffumyS
-         jOttUI28vi4VZtxK6ul2JlMEDBKk7/iGBCui1RTxCYJKIyCAuI2iL/asT66Fv1iX5Smc
-         pU4PfNElcNEVScpeZTP4Jih92ddhoBRA9DOtk50geGMJi31Te0vCFCiEX9aizLxR1EWE
-         6WfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iopdDFEV2kcDalmETaYONWkweONCMxEbTqjAdtlggGQ=;
-        b=N6dpU5VB88sV5x/wcgvCaedx90BFI5oNrsvTP7HfBTgXQir2kWumaKglsyX5SCAh0p
-         djEte9n14jw2X0a6dO1oeixp+LHaoDgxCursPUphLeWYifGigJapcR8MOL+ooIQR3tNa
-         +buvLxi8etZoJxzZZUPdUW/uNFUh1+TmOq7kZMS8ezIcLkin7Hd4kHLa0RgG/YEp1OkV
-         veBC1+B+3fIwRWU5DA1xwFMv2xDfD8imgvK6NvB9HfEJgdfs7wkkwDZbOacA0MDR8cKQ
-         1bfP2xh5DxmDgfzJ/q/ldhHg0YaACJN/Awqhv8CAC2/IBsT5970EYHhy/M55CJDYPM9n
-         Ym1A==
-X-Gm-Message-State: AOAM533a7DxoB6LyCTOBdlftkzAdo32gd33KM6yUh0lLuDHpv3/Y/AKI
-        2OpmGfvh55FI6g8kfrQCf+B/ZQ==
-X-Google-Smtp-Source: ABdhPJx2bfrpPqM9pdtBgNL8nxLLX0feu+7+qjnCb6gt9yRhwnwDkDEVna9PRLFtFA/C5I0AO+N9Uw==
-X-Received: by 2002:adf:dd44:: with SMTP id u4mr19467349wrm.22.1600160818971;
-        Tue, 15 Sep 2020 02:06:58 -0700 (PDT)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id y6sm25430501wrt.80.2020.09.15.02.06.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 02:06:58 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 10:06:55 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Tue, 15 Sep 2020 05:08:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600160883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+RaRr1rkKL0I9rBWtqad9Dv8rz6pmc1o4Jibb7XjUX0=;
+        b=CAGnDQquDI0UBYULSkJZ81Na3KZpVh1G/0e26kaAqREp0qm+9z/Jqxm59ETfwTq8fv2cHH
+        LRJrpP0oZBGkRVTxw0QmE4uUXW5harlQO30FA6P8PqT8/TYWuzTIJ7LTvXFzSNt+t4k4WC
+        1BSfYKW2N8xLOb1/WZqLQ+2Vod2JKHs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-45ZhZMqrOEitsyteJeWAGg-1; Tue, 15 Sep 2020 05:08:00 -0400
+X-MC-Unique: 45ZhZMqrOEitsyteJeWAGg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AD6B640B3;
+        Tue, 15 Sep 2020 09:07:57 +0000 (UTC)
+Received: from starship (unknown [10.35.207.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 061AB5DE82;
+        Tue, 15 Sep 2020 09:07:33 +0000 (UTC)
+Message-ID: <922e825c090892f22d40a469fef229d62f40af5e.camel@redhat.com>
+Subject: Re: [PATCH] SVM: nSVM: fix resource leak on error path
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v10 06/13] pwm: add support for sl28cpld PWM controller
-Message-ID: <20200915090655.GA4678@dell>
-References: <20200914214341.14268-1-michael@walle.cc>
- <20200914214341.14268-7-michael@walle.cc>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 15 Sep 2020 12:07:25 +0300
+In-Reply-To: <20200914194557.10158-1-alex.dewar90@gmail.com>
+References: <20200914194557.10158-1-alex.dewar90@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200914214341.14268-7-michael@walle.cc>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020, Michael Walle wrote:
-
-> Add support for the PWM controller of the sl28cpld board management
-> controller. This is part of a multi-function device driver.
+On Mon, 2020-09-14 at 20:45 +0100, Alex Dewar wrote:
+> In svm_set_nested_state(), if nested_svm_vmrun_msrpm() returns false,
+> then variables save and ctl will leak. Fix this.
 > 
-> The controller has one PWM channel and can just generate four distinct
-> frequencies.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Acked-by: Thierry Reding <thierry.reding@gmail.com>
+> Fixes: 772b81bb2f9b ("SVM: nSVM: setup nested msr permission bitmap on nested state load")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 > ---
-> Changes since v9:
->  - fixed double whitespace in Kconfig
->  - improved comment about division
+>  arch/x86/kvm/svm/nested.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 598a769f1961..85f572cbabe4 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -1148,7 +1148,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>  	nested_prepare_vmcb_control(svm);
+>  
+>  	if (!nested_svm_vmrun_msrpm(svm))
+> -		return -EINVAL;
+> +		goto out_free;	/* ret == -EINVAL */
+>  
+>  out_set_gif:
+>  	svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
 
-Uwe, are you happy with this now?
+I think that this patch is based on unmerged patch, since I don't see
+any memory allocation in nested_svm_vmrun_msrpm, nor out_free label.
+in nether kvm/master, kvm/queue nor in upstream/master
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+If I recall correctly that would be something about allocating ctrl/save
+dynamically rather than on stack.
+
+Best regards,
+	Maxim Levitsky
+
