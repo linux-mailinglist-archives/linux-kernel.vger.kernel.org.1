@@ -2,160 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B5026B7EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0598426B7E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgIPAcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbgIONoG (ORCPT
+        id S1726742AbgIPAbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:31:55 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:34833 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726670AbgIONot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:44:06 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37564C0611C3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:34:09 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l9so3493581wme.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2ko20fCI5B7yynbCHaELcyL95KT/Cjn6cdhfTKOxg+w=;
-        b=WFtnZskhHfIidflh3b2fV37hTNbG3leHUk5iaDtD++SpGGekMH9LjZYtYQCDkLg4iD
-         ogg/r+QA0jG1avvTAamJ+i+nuFtmkohyPgErkAf4h6d9awX3shb+3gdPWQ/HJyNxd7tK
-         X1HYsQCF2N+xVbmpSw2df6EJ7ObfGIEe2mdAHhZ5nVeizccV3hrf2oC/B5PfiKC5IZmF
-         qFzd68q9CIXF/PBx3+U633JgIZzsxaBlu8eGyV43dYKxMKWrEtSKzPASoEFfsKOhHf95
-         9wyduOprp86tP4UvQh1ekFK/BojHIPjvqn2kF5GNoPPIF9DRjkG9S0UETl1Nf4JIt0NM
-         CMKw==
+        Tue, 15 Sep 2020 09:44:49 -0400
+Received: by mail-oi1-f196.google.com with SMTP id w16so3924781oia.2;
+        Tue, 15 Sep 2020 06:44:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2ko20fCI5B7yynbCHaELcyL95KT/Cjn6cdhfTKOxg+w=;
-        b=U8sT0vDTrpSpF6ePCM9euhpYNvDg2j1eqT2Z93R7SC6xxGN/K3aeXdNbIw6TKXArxn
-         Yg0B7pCCDkAcb5a3MLOSdOlBBb54HvKbNF1yLYl9sR74sJRbJsvmgK1zXYz/hBOxL8xL
-         btoSjEPOWKN4pqtWsAefbJX5e9tdg4J80+0BMV6cLHD10QkoJHxWlrCFtMwkTnJrPOuo
-         rEkVMU5t0skLTZSHdJDIkpKSEsHribmLTfUej8cpkHrbNFn54m04BRBZ4TwYuK9i5rTn
-         d8/7HXVhyVXLjyYirJZXjTKtI9Zb2UZ4f0dn+ED3JwvrajgVxacmFv6nBjzoj3AJi3E+
-         5kdg==
-X-Gm-Message-State: AOAM530ZAc0FG9SAwdETFnGpxrjwXWRX5ujITm8fQnTW/J7Y1HeZiCN2
-        YYyra3FQfrA7bUoo8ua3xMyu/g==
-X-Google-Smtp-Source: ABdhPJx0/zHAvXNWb5HpZZ3ZVdFw3GPx8gsCgorj9lNjYlMftepwyLWkfVfHYNjSI+EIOrFZdY5Dag==
-X-Received: by 2002:a1c:20ce:: with SMTP id g197mr2188405wmg.72.1600176847887;
-        Tue, 15 Sep 2020 06:34:07 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id u66sm25275316wmg.44.2020.09.15.06.34.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:34:07 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:34:06 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Moshe Shemesh <moshe@nvidia.com>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4 04/15] devlink: Add reload actions stats
- to dev get
-Message-ID: <20200915133406.GQ2236@nanopsycho.orion>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-5-git-send-email-moshe@mellanox.com>
- <20200914134500.GH2236@nanopsycho.orion>
- <20200915064519.GA5390@shredder>
- <20200915074402.GM2236@nanopsycho.orion>
- <0d6cb0da-761b-b122-f5b1-b82320cfd5c4@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nhx4zaRbvHv02wDkLtCiRzQ+T/cexy7Wy6YPEzIW6L4=;
+        b=l8ocUXUSNwjluy8zzXAOmh7DlAc3Y8KxQQpc0EpewkGcHsYHv/RBLobUuMCTMDRv5n
+         ZFdghksHYNyamFYX2siYsPb+4Op04iaKIvHcWoSuZnX5oxGUDVlIAoCBe8Ldalthr77z
+         7fvxbdORFvmo30iCtr3nKqjC64SpyTHB1RmCyrH9y13bZyDXzrhoGeuXvI0mW5d6mcmL
+         hX2AEq7Kl2rEac65beTg/kJcar/otm3CFGsgd+92KGArbyfF+chYZu9K8qP0hRP5ahDS
+         KgdgVhfvf1R0FJSwPNc0Hy4cCNBnZKqjwm7YVwgqELJ7r08gwnrNRqwsqFqFbJ+NZ0Zo
+         RBmA==
+X-Gm-Message-State: AOAM532K3/GOSYZE5CZ5X16veR4txdht6FzQHVL9aQGvOJ5mPs3z8Vlf
+        SLarfpJjQFDH6yGh6pDHYGlvSE81/P2ZHvrjE4jXHWGZ
+X-Google-Smtp-Source: ABdhPJxjE7IZ1One9Nuag6nu0xEcQ8hWElbOe5QqICw2V/z+/yMb27HXjCabVPJXPjj9Z11F/OFVwDPyo408IPTG/6I=
+X-Received: by 2002:aca:4441:: with SMTP id r62mr3178255oia.153.1600176911589;
+ Tue, 15 Sep 2020 06:35:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d6cb0da-761b-b122-f5b1-b82320cfd5c4@nvidia.com>
+References: <alpine.DEB.2.21.2009151345001.31296@ramsan.of.borg> <EA89ED5D-E477-4464-B523-D729796CE0D0@getmailspring.com>
+In-Reply-To: <EA89ED5D-E477-4464-B523-D729796CE0D0@getmailspring.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Sep 2020 15:35:00 +0200
+Message-ID: <CAMuHMdVfoQ-vW3VeO8vDVALNREBV1afaSnwnc0jnkoXmvw6xhQ@mail.gmail.com>
+Subject: Re: [v10 3/4] media: vidtv: add a bridge driver
+To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Cc:     "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
+        "r.verdejo@samsung.com" <r.verdejo@samsung.com>,
+        "nicolas@ndufresne.ca" <nicolas@ndufresne.ca>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "skhan@linuxfoundation.org" <skhan@linuxfoundation.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Sep 15, 2020 at 02:31:38PM CEST, moshe@nvidia.com wrote:
->
->On 9/15/2020 10:44 AM, Jiri Pirko wrote:
->> Tue, Sep 15, 2020 at 08:45:19AM CEST, idosch@idosch.org wrote:
->> > On Mon, Sep 14, 2020 at 03:45:00PM +0200, Jiri Pirko wrote:
->> > > Mon, Sep 14, 2020 at 08:07:51AM CEST, moshe@mellanox.com wrote:
->> > > > Expose devlink reload actions stats to the user through devlink dev
->> > > > get command.
->> > > > 
->> > > > Examples:
->> > > > $ devlink dev show
->> > > > pci/0000:82:00.0:
->> > > >   reload_action_stats:
->> > > >     driver_reinit 2
->> > > >     fw_activate 1
->> > > >     driver_reinit_no_reset 0
->> > > >     fw_activate_no_reset 0
->> > > > pci/0000:82:00.1:
->> > > >   reload_action_stats:
->> > > >     driver_reinit 1
->> > > >     fw_activate 1
->> > > >     driver_reinit_no_reset 0
->> > > >     fw_activate_no_reset 0
->> > > I would rather have something like:
->> > >     stats:
->> > >       reload_action:
->> > >         driver_reinit 1
->> > >         fw_activate 1
->> > >         driver_reinit_no_reset 0
->> > >         fw_activate_no_reset 0
->> > > 
->> > > Then we can easily extend and add other stats in the tree.
->
->
->Sure, I will add it.
+Hi Daniel,
 
-Could you please checkout the metrics patchset and figure out how to
-merge that with your usecase?
-
-
+On Tue, Sep 15, 2020 at 3:26 PM Daniel W. S. Almeida
+<dwlsalmeida@gmail.com> wrote:
+> >> +    u32 nbytes = 0;  /* the number of bytes written by this function */
+> >> +
+> >> +    u64 nbytes_expected; /* the number of bytes we should have written */
+> >> +    u64 nbytes_streamed; /* the number of bytes we actually wrote */
+> >> +    u32 num_null_pkts; /* number of null packets to bridge the gap */
+> >> +
+> >> +    u64 elapsed_time_msecs = jiffies_to_usecs(m->timing.current_jiffies -
+> >> +                                              m->timing.past_jiffies);
+> >> +
+> >> +    elapsed_time_msecs = min(elapsed_time_msecs,
+> >> (u64)VIDTV_MAX_SLEEP_USECS / 1000);
+> >> +    nbytes_expected = div64_u64(m->mux_rate_kbytes_sec * 1000, MSEC_PER_SEC);
+> >
+> > Seriously?!?
+> >
+> > You multiply by 1000 first, followed by a division by 1000 using an
+> > expensive 64-by-64 division?
 >
->> > > 
->> > > Also, I wonder if these stats could be somehow merged with Ido's metrics
->> > > work:
->> > > https://github.com/idosch/linux/commits/submit/devlink_metric_rfc_v1
->> > > 
->> > > Ido, would it make sense?
->> > I guess. My original idea for devlink-metric was to expose
->> > design-specific metrics to user space where the entity registering the
->> > metrics is the device driver. In this case the entity would be devlink
->> > itself and it would be auto-registered for each device.
->> Yeah, the usecase is different, but it is still stats, right.
->> 
->> 
->> > > 
->> > > > $ devlink dev show -jp
->> > > > {
->> > > >     "dev": {
->> > > >         "pci/0000:82:00.0": {
->> > > >             "reload_action_stats": [ {
->> > > >                     "driver_reinit": 2
->> > > >                 },{
->> > > >                     "fw_activate": 1
->> > > >                 },{
->> > > >                     "driver_reinit_no_reset": 0
->> > > >                 },{
->> > > >                     "fw_activate_no_reset": 0
->> > > >                 } ]
->> > > >         },
->> > > >         "pci/0000:82:00.1": {
->> > > >             "reload_action_stats": [ {
->> > > >                     "driver_reinit": 1
->> > > >                 },{
->> > > >                     "fw_activate": 1
->> > > >                 },{
->> > > >                     "driver_reinit_no_reset": 0
->> > > >                 },{
->> > > >                     "fw_activate_no_reset": 0
->> > > >                 } ]
->> > > >         }
->> > > >     }
->> > > > }
->> > > > 
->> > > [..]
+> This entire function is broken and needs a do-over :)
+>
+> > using an expensive 64-by-64 division?
+>
+> I am new to kernel development. I wasn't even aware that this was
+> expensive, to be honest.
+
+All divisions involving 64-bit data are expensive, especially on 32-bit
+platforms.  That's why we have the helpers in <linux/math.h>.  Most
+of them implement simplified variants, which are less expensive.
+
+> >> +    if (nbytes_streamed < nbytes_expected) {
+> >> +            /* can't write half a packet: roundup to a 188 multiple */
+> >> +            nbytes_expected  = roundup(nbytes_expected - nbytes_streamed, TS_PACKET_LEN);
+> >
+> > drivers/media/test-drivers/vidtv/vidtv_mux.o: In function `vidtv_mux_tick':
+> > vidtv_mux.c:(.text+0x788): undefined reference to `__udivdi3'
+> >
+> > This is a 64-by-32 division, hence it should use a helper from
+> > <linux/math64.h>.
+> >
+> > However, I'm wondering if "nbytes_expected - nbytes_streamed" is
+> > guaranteed to be a "small" number, hence a 32-by-32 division would be
+> > sufficient?
+>
+> I think so.
+>
+> I will send a patch to address the things you pointed out in this email.
+
+Thanks, looking forward to it!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
