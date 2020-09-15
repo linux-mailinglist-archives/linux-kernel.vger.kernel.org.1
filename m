@@ -2,158 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FDF26A541
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342DB26A536
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgIOMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:01:42 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45588 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgIOLqq (ORCPT
+        id S1726321AbgIOMap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:30:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57136 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726459AbgIOMBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:46:46 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FBjtqr009346;
-        Tue, 15 Sep 2020 06:45:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600170355;
-        bh=3APtkbHYrt+xP2S/hKgF189ShFm5BX6uKlppIWy5V58=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=qdfqgzoLlIfknsIFP6Wbhr9fPKk3BkikrD9cAjjTkpORW1njh7m2s/kSpv6gzCfPe
-         h9vVgHeFSikbCPvROXjraDy3vm5ld2vM6J/Njh1Q+hFzUYcI+l4PgoxeeZDnQdI5kj
-         x5B/Ls84qLCjlZv3V8zs90+M2URbKHknZTBOk2eA=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FBjt7f055540
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 06:45:55 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 06:45:55 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 06:45:55 -0500
-Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FBjin9091853;
-        Tue, 15 Sep 2020 06:45:53 -0500
-From:   Roger Quadros <rogerq@ti.com>
-To:     <balbi@kernel.org>
-CC:     <pawell@cadence.com>, <kurahul@cadence.com>, <nsekhar@ti.com>,
-        <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v3 3/3] usb: cdns3: Enable workaround for USB2.0 PHY Rx compliance test PHY lockup
-Date:   Tue, 15 Sep 2020 14:45:43 +0300
-Message-ID: <20200915114543.2599-4-rogerq@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200915114543.2599-1-rogerq@ti.com>
-References: <20200915114543.2599-1-rogerq@ti.com>
+        Tue, 15 Sep 2020 08:01:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600171261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iRKZxnfmXT6xHa0W2Qaoc/OtvN5Snga93SmINoltYeM=;
+        b=Hq3VryK5+vKOmtXxhLfkYV+t54OBg7nmsdsdT9/eLhJAno5DdrR16S9gJ9RncBKJr2wV2D
+        EfOk4xGF4STB0diVQZf0sJgNAUPZR7GrjCkKp9bSYyVQQ8pzvBKvXQWEznwjJsnwBBQnxw
+        CuksPvySA96djK/v0xv74bK8o8DA1hk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-MTpbt8lGPiuhSS14uL2xMA-1; Tue, 15 Sep 2020 07:58:06 -0400
+X-MC-Unique: MTpbt8lGPiuhSS14uL2xMA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DB4F801ADF;
+        Tue, 15 Sep 2020 11:58:04 +0000 (UTC)
+Received: from [10.40.193.20] (unknown [10.40.193.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D2977B7B2;
+        Tue, 15 Sep 2020 11:58:01 +0000 (UTC)
+Subject: Re: [PATCH] scsi: target: remove redundant assignment to variable
+ 'ret'
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        martin.petersen@oracle.com, bvanassche@acm.org,
+        michael.christie@oracle.com, sudhakar.panneerselvam@oracle.com,
+        ddiss@suse.de, gustavoars@kernel.org
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200914023207.113792-1-jingxiangfeng@huawei.com>
+From:   Maurizio Lombardi <mlombard@redhat.com>
+Message-ID: <2410adca-9e8c-d16e-8097-9c6eb8103362@redhat.com>
+Date:   Tue, 15 Sep 2020 13:58:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200914023207.113792-1-jingxiangfeng@huawei.com>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pawel Laszczak <pawell@cadence.com>
 
-USB2.0 PHY hangs in Rx Compliance test when the incoming packet
-amplitude is varied below and above the Squelch Level of
-Receiver during the active packet multiple times.
 
-Version 1 of the controller allows PHY to be reset when RX fail condition
-is detected to work around the above issue. This feature is
-disabled by default and needs to be enabled using a bit from
-the newly added PHYRST_CFG register. This patch enables the workaround.
+Dne 14. 09. 20 v 4:32 Jing Xiangfeng napsal(a):
+> The variable ret has been initialized with a value '0'. The assignment
+> in switch-case is redundant. So remove it.
+> 
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+>  drivers/target/iscsi/iscsi_target.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
+> index cd045dc75a58..f5272ac18b16 100644
+> --- a/drivers/target/iscsi/iscsi_target.c
+> +++ b/drivers/target/iscsi/iscsi_target.c
+> @@ -4516,7 +4516,6 @@ int iscsit_logout_post_handler(
+>  			iscsit_logout_post_handler_closesession(conn);
+>  			break;
+>  		}
+> -		ret = 0;
+>  		break;
+>  	case ISCSI_LOGOUT_REASON_CLOSE_CONNECTION:
+>  		if (conn->cid == cmd->logout_cid) {
+> @@ -4527,7 +4526,6 @@ int iscsit_logout_post_handler(
+>  				iscsit_logout_post_handler_samecid(conn);
+>  				break;
+>  			}
+> -			ret = 0;
+>  		} else {
+>  			switch (cmd->logout_response) {
+>  			case ISCSI_LOGOUT_SUCCESS:
+> 
 
-There is no way to know controller version before device controller
-is started and the workaround needs to be applied for both host and
-device modes, so we rely on a DT property do decide when to
-apply the workaround.
+Looks ok to me.
 
-Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- drivers/usb/cdns3/core.c |  2 ++
- drivers/usb/cdns3/core.h |  1 +
- drivers/usb/cdns3/drd.c  | 12 ++++++++++++
- drivers/usb/cdns3/drd.h  |  5 ++++-
- 4 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-index 5c1586ec7824..34b36487682b 100644
---- a/drivers/usb/cdns3/core.c
-+++ b/drivers/usb/cdns3/core.c
-@@ -443,6 +443,8 @@ static int cdns3_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
- 
-+	cdns->phyrst_a_enable = device_property_read_bool(dev, "cdns,phyrst-a-enable");
-+
- 	cdns->otg_res = *res;
- 
- 	mutex_init(&cdns->mutex);
-diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
-index 1ad1f1fe61e9..24cf0f1b5726 100644
---- a/drivers/usb/cdns3/core.h
-+++ b/drivers/usb/cdns3/core.h
-@@ -76,6 +76,7 @@ struct cdns3 {
- #define CDNS3_CONTROLLER_V0	0
- #define CDNS3_CONTROLLER_V1	1
- 	u32				version;
-+	bool				phyrst_a_enable;
- 
- 	int				otg_irq;
- 	int				dev_irq;
-diff --git a/drivers/usb/cdns3/drd.c b/drivers/usb/cdns3/drd.c
-index 6234bcd6158a..b74803e9703d 100644
---- a/drivers/usb/cdns3/drd.c
-+++ b/drivers/usb/cdns3/drd.c
-@@ -42,6 +42,18 @@ int cdns3_set_mode(struct cdns3 *cdns, enum usb_dr_mode mode)
- 			reg = readl(&cdns->otg_v1_regs->override);
- 			reg |= OVERRIDE_IDPULLUP;
- 			writel(reg, &cdns->otg_v1_regs->override);
-+
-+			/*
-+			 * Enable work around feature built into the
-+			 * controller to address issue with RX Sensitivity
-+			 * est (EL_17) for USB2 PHY. The issue only occures
-+			 * for 0x0002450D controller version.
-+			 */
-+			if (cdns->phyrst_a_enable) {
-+				reg = readl(&cdns->otg_v1_regs->phyrst_cfg);
-+				reg |= PHYRST_CFG_PHYRST_A_ENABLE;
-+				writel(reg, &cdns->otg_v1_regs->phyrst_cfg);
-+			}
- 		} else {
- 			reg = readl(&cdns->otg_v0_regs->ctrl1);
- 			reg |= OVERRIDE_IDPULLUP_V0;
-diff --git a/drivers/usb/cdns3/drd.h b/drivers/usb/cdns3/drd.h
-index 7e7cf7fa2dd3..f1ccae285a16 100644
---- a/drivers/usb/cdns3/drd.h
-+++ b/drivers/usb/cdns3/drd.h
-@@ -31,7 +31,7 @@ struct cdns3_otg_regs {
- 	__le32 simulate;
- 	__le32 override;
- 	__le32 susp_ctrl;
--	__le32 reserved4;
-+	__le32 phyrst_cfg;
- 	__le32 anasts;
- 	__le32 adp_ramp_time;
- 	__le32 ctrl1;
-@@ -153,6 +153,9 @@ struct cdns3_otg_common_regs {
- /* Only for CDNS3_CONTROLLER_V0 version */
- #define OVERRIDE_IDPULLUP_V0		BIT(24)
- 
-+/* PHYRST_CFG - bitmasks */
-+#define PHYRST_CFG_PHYRST_A_ENABLE     BIT(0)
-+
- #define CDNS3_ID_PERIPHERAL		1
- #define CDNS3_ID_HOST			0
- 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Reviewed-by: Maurizio Lombardi <mlombard@redhat.com>
 
