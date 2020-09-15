@@ -2,101 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD9326AFB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313F326AFBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 23:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbgIOVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 17:40:04 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37286 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728109AbgIOVhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:37:55 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kIIdr-00EpFF-Qz; Tue, 15 Sep 2020 23:37:35 +0200
-Date:   Tue, 15 Sep 2020 23:37:35 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200915213735.GG3526428@lunn.ch>
-References: <20200915171022.10561-1-oded.gabbay@gmail.com>
- <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
- <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com>
+        id S1727982AbgIOVlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 17:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728057AbgIOVkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:40:46 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65326C061797
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:40:26 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id j185so2805913vsc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Odc+dz8lFAW14dZfz5AFMwOnSiDQKXWw1NmIQbo2M64=;
+        b=wAFA9gFD6p9wC/BryAbO1WBNIfKR7Xj7UksGJv3wvSIB+Iv3EpI9vrrggDZ7mvQZxd
+         x8G5/kqhmgtd+JKV2BFtL38u26LfLqJn5LzGFB345A8RHumxjIEzgVtasUdj3/0GSUPE
+         I4A1wPTTrdf8Rw750dtLO13pY93ks3+ZZnKS+doGI4tKbSNpPcMIhhDcYqF7ow1cXcxI
+         wETjSnnQv8aVS+bXeiCtT3WPxXJFZF5YRzDjtKVyufSc7zl0HiU/iGxLYRWjTrTHEE6P
+         qOReE/29M/nT6jJLg2YmKNupzNuW8mgXAtA8Kk9b45GOF75a36UK0RjmCm+0BdV6MzK1
+         RkkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Odc+dz8lFAW14dZfz5AFMwOnSiDQKXWw1NmIQbo2M64=;
+        b=aq8+u/yqWlt8y++dDWpnYuJSy+Tqq3mZc455L+Zl8has1SJM/uhxKoR4fiEivtEOfu
+         rWLE+eWcpqVzEbKEUuN8oQjFpfrYK64fukvOcpIQEfte5teNfzHuTKVFqLFkKjX1Btxp
+         gxZdXRoV6rrmS2CCFqEF9eEk85Y75YTXKV8V1Ww1erQaf8dN/gn2d3ehh6PC+uuvgfWP
+         XHHe566CNbvjnMku4zbx4tDoDZX39/HkYIXC4uqz0ClsLE8jvzMAIs0n2lxbJXWlmVF+
+         obDSe9x+JmXvGuUgVlr2b5a1MULpeufUMXWcE5nx9THY7GhnJxVJg9OJIvWMBKEwgjjJ
+         wmnw==
+X-Gm-Message-State: AOAM530kikOZElBiqrudQLksekH61x3yLwxBQJBHH6tgnlGoLlH2egKo
+        YcmzSd7iWMNn7uGOZjx5VN3DuxIYFHBH4zdbKNJMbA==
+X-Google-Smtp-Source: ABdhPJwVkTFLnJI6TBRIoFIKaO0yXllxB3NB36NQ+glNVdef/q9WAsNxIuNPrjBnfZD75rffLQEig5FQTJQUQ5Dqf3Y=
+X-Received: by 2002:a67:3009:: with SMTP id w9mr816780vsw.19.1600206025349;
+ Tue, 15 Sep 2020 14:40:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com>
+References: <CA+G9fYvYEsxjU_cnm6oWFgOrU4x0T1CMoN-L2SHLGeJC6MF54Q@mail.gmail.com>
+In-Reply-To: <CA+G9fYvYEsxjU_cnm6oWFgOrU4x0T1CMoN-L2SHLGeJC6MF54Q@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 15 Sep 2020 23:39:48 +0200
+Message-ID: <CAPDyKFqVB_hgDghaYU1B1BbWUuL6GHhWMbZEYM-cXDQ8T8ThfQ@mail.gmail.com>
+Subject: Re: Unable to handle kernel paging request at virtual address dead - __clk_put
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I completely understand but you didn't answer my question. How come
-> there are drivers which create netdev objects, and specifically sgi-xp
-> in misc (but I also saw it in usb drivers) that live outside
-> drivers/net ? Why doesn't your request apply to them as well ?
-> When we wrote the code, we saw those examples and therefore assumed it was fine.
+On Tue, 15 Sep 2020 at 16:33, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> arm64 dragonboard-410c boot failed while running linux next 2020915 due to
+> the kernel crash.
+>
+> metadata:
+>   git branch: master
+>   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+>   git describe: next-20200915
+>   make_kernelversion: 5.9.0-rc5
+>   kernel-config:
+> https://builds.tuxbuild.com/J5oDTkph2aj855oeGOd45Q/kernel.config
+>
+>
+> crash log:
+> -------------
+> [    3.517615] Synopsys Designware Multimedia Card Interface Driver
+> [    3.524258] sdhci-pltfm: SDHCI platform and OF driver helper
+> [    3.531302] Unable to handle kernel paging request at virtual
+> address dead000000000108
+> [    3.531396] Mem abort info:
+> [    3.531460] sdhci_msm 7864900.sdhci: Got CD GPIO
+> [    3.539182]   ESR = 0x96000044
+> [    3.541953] ledtrig-cpu: registered to indicate activity on CPUs
+> [    3.546692]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    3.546701]   SET = 0, FnV = 0
+> [    3.555694] usbcore: registered new interface driver usbhid
+> [    3.555703] usbhid: USB HID core driver
+> [    3.561638] genirq: irq_chip msmgpio did not update eff. affinity
+> mask of irq 75
+> [    3.563908]   EA = 0, S1PTW = 0
+> [    3.580792] Data abort info:
+> [    3.583673]   ISV = 0, ISS = 0x00000044
+> [    3.583900] NET: Registered protocol family 10
+> [    3.586785]   CM = 0, WnR = 1
+> [    3.586794] [dead000000000108] address between user and kernel address ranges
+> [    3.586806] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+> [    3.591869] Segment Routing with IPv6
+> [    3.594829] Modules linked in:
+> [    3.594841] CPU: 2 PID: 7 Comm: kworker/u8:0 Not tainted
+> 5.9.0-rc5-next-20200915 #1
+> [    3.594844] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> [    3.594862] Workqueue: events_unbound async_run_entry_fn
+> [    3.597959] NET: Registered protocol family 17
+> [    3.604991] pstate: 60000005 (nZCv daif -PAN -UAO BTYPE=--)
+> [    3.605000] pc : __clk_put+0x40/0x140
+> [    3.605009] lr : __clk_put+0x2c/0x140
+> [    3.610613] 9pnet: Installing 9P2000 support
+> [    3.614183] sp : ffff80001005bbe0
+> [    3.614189] x29: ffff80001005bbe0
+> [    3.617233] Key type dns_resolver registered
+> [    3.624696] x28: 000000000000002e
+> [    3.624701] x27: ffff00003b620a68 x26: ffff800011496568
+> [    3.624708] x25: ffff00003fcfe8f8 x24: ffff00003d30c410
+> [    3.632518] registered taskstats version 1
+> [    3.636931] x23: ffff800011495cf8 x22: ffff00003b620a40
+> [    3.636938] x21: ffff00003d30c400 x20: ffff00003b620580
+> [    3.636945] x19: ffff00003b64f380 x18: 0000000007824000
+> [    3.636951] x17: ffff00003b620a00 x16: ffff00003b6205d0
+> [    3.636958] x15: ffff8000119929f8 x14: ffffffffffffffff
+> [    3.636965] x13: ffff800012947000 x12: ffff800012947000
+> [    3.636975] x11: 0000000000000020
+> [    3.641233] Loading compiled-in X.509 certificates
+> [    3.646650] x10: 0101010101010101
+> [    3.646654] x9 : ffff8000107b4c84 x8 : 7f7f7f7f7f7f7f7f
+> [    3.646661] x7 : ffff000009fe5880 x6 : 0000000000000000
+> [    3.646668] x5 : 0000000000000000 x4 : ffff000009fe5880
+> [    3.646674] x3 : ffff80001250d7a0 x2 : ffff000009fe5880
+> [    3.746653] x1 : ffff00003b64f680 x0 : dead000000000100
+> [    3.751949] Call trace:
+> [    3.757243]  __clk_put+0x40/0x140
+> [    3.759413]  clk_put+0x18/0x28
+> [    3.762885]  dev_pm_opp_put_clkname+0x30/0x58
+> [    3.765837]  sdhci_msm_probe+0x288/0x9a8
+> [    3.770265]  platform_drv_probe+0x5c/0xb0
+> [    3.774258]  really_probe+0xf0/0x4d8
+> [    3.778163]  driver_probe_device+0xfc/0x168
+> [    3.781810]  __driver_attach_async_helper+0xbc/0xc8
+> [    3.785717]  async_run_entry_fn+0x4c/0x1b0
+> [    3.790575]  process_one_work+0x1c8/0x498
+> [    3.794741]  worker_thread+0x54/0x428
+> [    3.798822]  kthread+0x120/0x158
+> [    3.802467]  ret_from_fork+0x10/0x30
+> [    3.805771] Code: 35000720 a9438660 f9000020 b4000040 (f9000401)
+> [    3.809334] ---[ end trace 1a607a5ea6891b9f ]---
+>
+> full test log link,
+> https://lkft.validation.linaro.org/scheduler/job/1765840#L2014
+> https://lkft.validation.linaro.org/scheduler/job/1765842#L1960
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
 
-commit 45d9ca492e4bd1522d1b5bd125c2908f1cee3d4a
-Author: Dean Nelson <dcn@sgi.com>
-Date:   Tue Apr 22 14:46:56 2008 -0500
+Naresh, thanks for reporting!
 
-    [IA64] move XP and XPC to drivers/misc/sgi-xp
-    
-    Move XPC and XPNET from arch/ia64/sn/kernel to drivers/misc/sgi-xp.
-    
-    Signed-off-by: Dean Nelson <dcn@sgi.com>
-    Signed-off-by: Tony Luck <tony.luck@intel.com>
+There have been regressions related to the opp library this cycle, so
+I am wondering if Viresh may have any ideas, before going into more
+details.
 
-It has been there a long time, and no networking person was involved
-in its move.
+One thing that also changed from the sdhci-msm point of view, is that
+we enabled async probe [1]. This could be the thing that triggers an
+untested error path of the probe?
 
-drivers/usb/gadget/function/f_ncm.c
-commit 00a2430ff07d4e0e0e7e24e02fd8adede333b797
-Author: Andrzej Pietrasiewicz <andrzej.p@samsung.com>
-Date:   Tue Jul 15 13:09:46 2014 +0200
+Otherwise we can always try to revert "mmc: sdhci-msm: Unconditionally
+call dev_pm_opp_of_remove_table()", which I recently applied again
+after the earlier errors.
 
-    usb: gadget: Gadget directory cleanup - group usb functions
-    
-    The drivers/usb/gadget directory contains many files.
-    Files which are related can be distributed into separate directories.
-    This patch moves the USB functions implementations into a separate directory.
-    
-    Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@samsung.com>
-    Signed-off-by: Felipe Balbi <balbi@ti.com>
+Kind regards
+Uffe
 
-Again, old.
-
-Can you find an example of a network driver added in the last couple
-of years outside of drivers/met?
-
-> > > > Please make sure to CC linux-rdma. You clearly stated that the device
-> > > > does RDMA-like transfers.
-> > >
-> > > We don't use the RDMA infrastructure in the kernel and we can't
-> > > connect to it due to the lack of H/W support we have so I don't see
-> > > why we need to CC linux-rdma.
-> >
-> > You have it backward. You don't get to pick and choose which parts of
-> > the infrastructure you use, and therefore who reviews your drivers.
-> > The device uses RDMA under the hood so Linux RDMA experts must very
-> > much be okay with it getting merged. That's how we ensure Linux
-> > interfaces are consistent and good quality.
-> 
-> I understand your point of view but If my H/W doesn't support the
-> basic requirements of the RDMA infrastructure and interfaces, then
-> really there is nothing I can do about it. I can't use them.
-
-It is up to the RDMA people to say that. They might see how the RDMA
-core can be made to work for your hardware.
-
-     Andrew
+[1]
+"mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()"
+https://patchwork.kernel.org/patch/11752095/
