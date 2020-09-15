@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1122B26A6F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C57826A6C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgIOOTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
+        id S1726783AbgIOOHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726812AbgIOOI2 (ORCPT
+        with ESMTP id S1726477AbgIONxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:08:28 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4C3C0611BC
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:16 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id q4so1791072pjh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:16 -0700 (PDT)
+        Tue, 15 Sep 2020 09:53:36 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99198C0611BD
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:19 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id v14so1732111pjd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=cdgo8gcr3yR5N+Dt3Xu3fyRafdoq6RtuY7MnOM9virM=;
-        b=CnIPnbeegGCLMjvV+Ttrb9jnBV8d4g+3XEzFqqI9X4Aghu8tpkBVcG3p5uMt5R2ZAd
-         u2nkvfVIrw2o1PoO3qi0fQy7d1TFoyU6yodsXUMq5rUBdlEThEiZxkHoI3p1evRL4Tp5
-         jQ2+6DoK9BcWRYZ7Yyk9O2wsiQaBnmlQee96E=
+        bh=PL538uCf4O1rvxMafK+xno0ava7nNmchjlBFnDOvCxs=;
+        b=TkOrTnS/RYGwioOfQxWLY+brMGn5tlgGufygSBn6z37VCQDSeDaqtHZkRl2tGlQc4Y
+         bvLUXPpnZNP069g52vrzZIRyMQXhWhES3Yw7x16m/yn2ABkt5aguMt6zvAqrqecXM9gC
+         CB1MoJOeqv1+VyBIo3HNSBivadVQh8hg/UsQw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=cdgo8gcr3yR5N+Dt3Xu3fyRafdoq6RtuY7MnOM9virM=;
-        b=Jv0gal7r8aea9ngH73UV+zy+APwYogs7aR2X78znTDMN/IX35uKhdwXyedFhpPnVDw
-         TlUbBW0S1F5qd8R5U4+HtR3OTg1LOX336M+w4H+iAOv0Fb1rDFvv8jx6HWmi0ZeQRSAH
-         8iUAcTJ76eThjmd0yD/OPSyxMAd0aVifvoMY0rGqsHvGsRAuWq6jRL0as08KQtov892Z
-         TLqkrRaV3ONMTn5QkTP5xMkZNVxyismJxCkRYyOiCVFXbPI5RdWY7YOMHVbrPPLSgUFt
-         /0rrL3ieV6Erkl7CcM6O9NrEGMGxQrqdXC3+X2/9kMHNivcX7y5qsxz3KAP1XxZAwWHy
-         DZtg==
-X-Gm-Message-State: AOAM5300QMSM9mvaf0qSQS/vvzlBJ2NujbSXFYrxdZAoF0wpTb/ZNGBK
-        Tx5FasDAKASmy/hpRPa8RRRC2w==
-X-Google-Smtp-Source: ABdhPJwmupdPJkXxq/Xvz8pxucXHnT0qli4TU7cgSEMHSMSOmquu4nXVAEisl1KN+Su+p8HYGgitZw==
-X-Received: by 2002:a17:902:d693:b029:d1:bb0f:5f9d with SMTP id v19-20020a170902d693b02900d1bb0f5f9dmr14884498ply.30.1600177575714;
-        Tue, 15 Sep 2020 06:46:15 -0700 (PDT)
+        bh=PL538uCf4O1rvxMafK+xno0ava7nNmchjlBFnDOvCxs=;
+        b=aSSOnN2Mfwd7qL1eAuoL4FGJTjasFIysDPVibRByXMtlSaubygGrCBE376vdRyX53h
+         le96jg6yk92s06O44LPn4iHkvAQmGS2mJ4d6s0SQ6kCWT/2UxtvXghIDLZXOlsz5BXIS
+         k5tA7074jGpOu0YXZh7PccA/HAbUE0wef5uZlDxbO2IvDdg4Jh1rki516V466tvjq3g+
+         laJx4wq664ypjTmDzm5h/G6kKG9YrBPMUFrZ0rFbvoHCGfDJdG1dP1i5OPYJD6Sl5iMa
+         uKmLrJXtZqFCTVbj8VAs2iyL8lsfa9bgcrpX+VSNnaXxPZ++iQ7zcZwkP58XAFHkb9bF
+         XfHA==
+X-Gm-Message-State: AOAM533WfAsTtW/AAoZs2ARIA+j0VSqWhQN6j7b536bLzMpU7TfdDFbV
+        Ef2QPw8+7nedLgSRHQ168ZM1jA==
+X-Google-Smtp-Source: ABdhPJwNbBXknbEj3cP0la5qIjQxFssxA2A+fWq8qa9gVHPn4tU4U1Cile235ZEU6vSs0aZbOU/Yog==
+X-Received: by 2002:a17:902:9308:b029:d1:9bd3:6775 with SMTP id bc8-20020a1709029308b02900d19bd36775mr18753679plb.26.1600177579026;
+        Tue, 15 Sep 2020 06:46:19 -0700 (PDT)
 Received: from mannams-OptiPlex-7010.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id jz6sm12471478pjb.22.2020.09.15.06.46.12
+        by smtp.gmail.com with ESMTPSA id jz6sm12471478pjb.22.2020.09.15.06.46.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:46:15 -0700 (PDT)
+        Tue, 15 Sep 2020 06:46:18 -0700 (PDT)
 From:   Srinath Mannam <srinath.mannam@broadcom.com>
 To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Ray Jui <rjui@broadcom.com>
 Cc:     bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Bharat Gooty <bharat.gooty@broadcom.com>
-Subject: [PATCH v2 1/3] PCI: iproc: fix out of bound array access
-Date:   Tue, 15 Sep 2020 19:15:39 +0530
-Message-Id: <20200915134541.14711-2-srinath.mannam@broadcom.com>
+        Roman Bacik <roman.bacik@broadcom.com>,
+        Srinath Mannam <srinath.mannam@broadcom.com>
+Subject: [PATCH v2 2/3] PCI: iproc: fix invalidating PAXB address mapping
+Date:   Tue, 15 Sep 2020 19:15:40 +0530
+Message-Id: <20200915134541.14711-3-srinath.mannam@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200915134541.14711-1-srinath.mannam@broadcom.com>
 References: <20200915134541.14711-1-srinath.mannam@broadcom.com>
@@ -62,68 +63,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bharat Gooty <bharat.gooty@broadcom.com>
+From: Roman Bacik <roman.bacik@broadcom.com>
 
-Declare the full size array for all revisions of PAX register sets
-to avoid potentially out of bound access of the register array
-when they are being initialized in the 'iproc_pcie_rev_init'
-function.
+Second stage bootloader prior to Linux boot may use all inbound windows
+including IARR1/IMAP1. We need to ensure all previous configuration of
+inbound windows are invalidated during the initialization stage of the
+Linux iProc PCIe driver. Add fix to define and invalidate IARR1/IMAP1
+because it was missed in previous patch.
 
-Fixes: 06324ede76cdf ("PCI: iproc: Improve core register population")
-Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
+Fixes: 9415743e4c8a ("PCI: iproc: Invalidate PAXB address mapping")
+Signed-off-by: Roman Bacik <roman.bacik@broadcom.com>
+Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
 ---
- drivers/pci/controller/pcie-iproc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/pci/controller/pcie-iproc.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
-index 905e93808243..d901b9d392b8 100644
+index d901b9d392b8..cc5b7823edeb 100644
 --- a/drivers/pci/controller/pcie-iproc.c
 +++ b/drivers/pci/controller/pcie-iproc.c
-@@ -307,7 +307,7 @@ enum iproc_pcie_reg {
- };
- 
- /* iProc PCIe PAXB BCMA registers */
--static const u16 iproc_pcie_reg_paxb_bcma[] = {
-+static const u16 iproc_pcie_reg_paxb_bcma[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
- 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
- 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
-@@ -318,7 +318,7 @@ static const u16 iproc_pcie_reg_paxb_bcma[] = {
- };
- 
- /* iProc PCIe PAXB registers */
--static const u16 iproc_pcie_reg_paxb[] = {
-+static const u16 iproc_pcie_reg_paxb[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
- 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
- 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
-@@ -334,7 +334,7 @@ static const u16 iproc_pcie_reg_paxb[] = {
- };
- 
- /* iProc PCIe PAXB v2 registers */
--static const u16 iproc_pcie_reg_paxb_v2[] = {
-+static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
- 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
- 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
-@@ -363,7 +363,7 @@ static const u16 iproc_pcie_reg_paxb_v2[] = {
- };
- 
- /* iProc PCIe PAXC v1 registers */
--static const u16 iproc_pcie_reg_paxc[] = {
-+static const u16 iproc_pcie_reg_paxc[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
- 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x1f0,
- 	[IPROC_PCIE_CFG_IND_DATA]	= 0x1f4,
-@@ -372,7 +372,7 @@ static const u16 iproc_pcie_reg_paxc[] = {
- };
- 
- /* iProc PCIe PAXC v2 registers */
--static const u16 iproc_pcie_reg_paxc_v2[] = {
-+static const u16 iproc_pcie_reg_paxc_v2[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_MSI_GIC_MODE]	= 0x050,
- 	[IPROC_PCIE_MSI_BASE_ADDR]	= 0x074,
- 	[IPROC_PCIE_MSI_WINDOW_SIZE]	= 0x078,
+@@ -192,8 +192,15 @@ static const struct iproc_pcie_ib_map paxb_v2_ib_map[] = {
+ 		.imap_window_offset = 0x4,
+ 	},
+ 	{
+-		/* IARR1/IMAP1 (currently unused) */
+-		.type = IPROC_PCIE_IB_MAP_INVALID,
++		/* IARR1/IMAP1 */
++		.type = IPROC_PCIE_IB_MAP_MEM,
++		.size_unit = SZ_1M,
++		.region_sizes = { 8 },
++		.nr_sizes = 1,
++		.nr_windows = 8,
++		.imap_addr_offset = 0x4,
++		.imap_window_offset = 0x8,
++
+ 	},
+ 	{
+ 		/* IARR2/IMAP2 */
+@@ -351,6 +358,8 @@ static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_OMAP3]		= 0xdf8,
+ 	[IPROC_PCIE_IARR0]		= 0xd00,
+ 	[IPROC_PCIE_IMAP0]		= 0xc00,
++	[IPROC_PCIE_IARR1]		= 0xd08,
++	[IPROC_PCIE_IMAP1]		= 0xd70,
+ 	[IPROC_PCIE_IARR2]		= 0xd10,
+ 	[IPROC_PCIE_IMAP2]		= 0xcc0,
+ 	[IPROC_PCIE_IARR3]		= 0xe00,
 -- 
 2.17.1
 
