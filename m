@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFCA26A71E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28ACD26A779
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgIOObl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:31:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37093 "EHLO mail.kernel.org"
+        id S1727154AbgIOOqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:46:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726843AbgIOOVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:21:36 -0400
+        id S1727036AbgIOOba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:31:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34E3422266;
-        Tue, 15 Sep 2020 14:17:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A60822B48;
+        Tue, 15 Sep 2020 14:22:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179443;
-        bh=ndK5F6mXR0HjMYzKKtEvyxSPehzUsemUtX5v+GyJJnM=;
+        s=default; t=1600179770;
+        bh=+/4Gi/warB2s9shqbQ2i8K/l2a79KsNB7gX8hhBj9Xs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ikDXZoI3p6edHiTxf2LS3ngtNKYZQsnG7o50x+Qs7povhM+FVA7jNOZ35Ttt4ubkE
-         vuOy5lT83cmFzuFwgqdcvUXX+RXtrTQWyhtFbC2F9XhZs/Sd7LiKey0M00Oa+OH1m+
-         T+SsUhhHL52xK9L95h/FyCPPb1Tsn8xDTkDBXOhs=
+        b=HQ1fc8kuy6FsTAWS9mL5J1FIvsB0gdq9LukXB6VlR1KRL1WT0UGW1KAN046R5JjhN
+         jn/ydk25hQgjs2HMc07/+vUptg8tlNz/Gahz4M34s+qx3u2GBxCq+jV0nHJMjz5kcN
+         rahUcVh6VVugkrgmz+EOLcxTdgfjzPnqwcFRlLQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Hou Pu <houpu@bytedance.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.19 60/78] scsi: target: iscsi: Fix hang in iscsit_access_np() when getting tpg->np_login_sem
-Date:   Tue, 15 Sep 2020 16:13:25 +0200
-Message-Id: <20200915140636.580547547@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Bloch <markb@mellanox.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.4 111/132] RDMA/mlx4: Read pkey table length instead of hardcoded value
+Date:   Tue, 15 Sep 2020 16:13:33 +0200
+Message-Id: <20200915140649.682609222@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
+References: <20200915140644.037604909@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,117 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Pu <houpu@bytedance.com>
+From: Mark Bloch <markb@mellanox.com>
 
-commit ed43ffea78dcc97db3f561da834f1a49c8961e33 upstream.
+commit ec78b3bd66bc9a015505df0ef0eb153d9e64b03b upstream.
 
-The iSCSI target login thread might get stuck with the following stack:
+If the pkey_table is not available (which is the case when RoCE is not
+supported), the cited commit caused a regression where mlx4_devices
+without RoCE are not created.
 
-cat /proc/`pidof iscsi_np`/stack
-[<0>] down_interruptible+0x42/0x50
-[<0>] iscsit_access_np+0xe3/0x167
-[<0>] iscsi_target_locate_portal+0x695/0x8ac
-[<0>] __iscsi_target_login_thread+0x855/0xb82
-[<0>] iscsi_target_login_thread+0x2f/0x5a
-[<0>] kthread+0xfa/0x130
-[<0>] ret_from_fork+0x1f/0x30
+Fix this by returning a pkey table length of zero in procedure
+eth_link_query_port() if the pkey-table length reported by the device is
+zero.
 
-This can be reproduced via the following steps:
-
-1. Initiator A tries to log in to iqn1-tpg1 on port 3260. After finishing
-   PDU exchange in the login thread and before the negotiation is finished
-   the the network link goes down. At this point A has not finished login
-   and tpg->np_login_sem is held.
-
-2. Initiator B tries to log in to iqn2-tpg1 on port 3260. After finishing
-   PDU exchange in the login thread the target expects to process remaining
-   login PDUs in workqueue context.
-
-3. Initiator A' tries to log in to iqn1-tpg1 on port 3260 from a new
-   socket. A' will wait for tpg->np_login_sem with np->np_login_timer
-   loaded to wait for at most 15 seconds. The lock is held by A so A'
-   eventually times out.
-
-4. Before A' got timeout initiator B gets negotiation failed and calls
-   iscsi_target_login_drop()->iscsi_target_login_sess_out().  The
-   np->np_login_timer is canceled and initiator A' will hang forever.
-   Because A' is now in the login thread, no new login requests can be
-   serviced.
-
-Fix this by moving iscsi_stop_login_thread_timer() out of
-iscsi_target_login_sess_out(). Also remove iscsi_np parameter from
-iscsi_target_login_sess_out().
-
-Link: https://lore.kernel.org/r/20200729130343.24976-1-houpu@bytedance.com
-Cc: stable@vger.kernel.org
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Hou Pu <houpu@bytedance.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20200824110229.1094376-1-leon@kernel.org
+Cc: <stable@vger.kernel.org>
+Fixes: 1901b91f9982 ("IB/core: Fix potential NULL pointer dereference in pkey cache")
+Fixes: fa417f7b520e ("IB/mlx4: Add support for IBoE")
+Signed-off-by: Mark Bloch <markb@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/target/iscsi/iscsi_target_login.c |    6 +++---
- drivers/target/iscsi/iscsi_target_login.h |    3 +--
- drivers/target/iscsi/iscsi_target_nego.c  |    3 +--
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/mlx4/main.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/target/iscsi/iscsi_target_login.c
-+++ b/drivers/target/iscsi/iscsi_target_login.c
-@@ -1183,7 +1183,7 @@ void iscsit_free_conn(struct iscsi_conn
- }
- 
- void iscsi_target_login_sess_out(struct iscsi_conn *conn,
--		struct iscsi_np *np, bool zero_tsih, bool new_sess)
-+				 bool zero_tsih, bool new_sess)
- {
- 	if (!new_sess)
- 		goto old_sess_out;
-@@ -1201,7 +1201,6 @@ void iscsi_target_login_sess_out(struct
- 	conn->sess = NULL;
- 
- old_sess_out:
--	iscsi_stop_login_thread_timer(np);
- 	/*
- 	 * If login negotiation fails check if the Time2Retain timer
- 	 * needs to be restarted.
-@@ -1441,8 +1440,9 @@ static int __iscsi_target_login_thread(s
- new_sess_out:
- 	new_sess = true;
- old_sess_out:
-+	iscsi_stop_login_thread_timer(np);
- 	tpg_np = conn->tpg_np;
--	iscsi_target_login_sess_out(conn, np, zero_tsih, new_sess);
-+	iscsi_target_login_sess_out(conn, zero_tsih, new_sess);
- 	new_sess = false;
- 
- 	if (tpg) {
---- a/drivers/target/iscsi/iscsi_target_login.h
-+++ b/drivers/target/iscsi/iscsi_target_login.h
-@@ -22,8 +22,7 @@ extern int iscsit_put_login_tx(struct is
- extern void iscsit_free_conn(struct iscsi_conn *);
- extern int iscsit_start_kthreads(struct iscsi_conn *);
- extern void iscsi_post_login_handler(struct iscsi_np *, struct iscsi_conn *, u8);
--extern void iscsi_target_login_sess_out(struct iscsi_conn *, struct iscsi_np *,
--				bool, bool);
-+extern void iscsi_target_login_sess_out(struct iscsi_conn *, bool, bool);
- extern int iscsi_target_login_thread(void *);
- extern void iscsi_handle_login_thread_timeout(struct timer_list *t);
- 
---- a/drivers/target/iscsi/iscsi_target_nego.c
-+++ b/drivers/target/iscsi/iscsi_target_nego.c
-@@ -554,12 +554,11 @@ static bool iscsi_target_sk_check_and_cl
- 
- static void iscsi_target_login_drop(struct iscsi_conn *conn, struct iscsi_login *login)
- {
--	struct iscsi_np *np = login->np;
- 	bool zero_tsih = login->zero_tsih;
- 
- 	iscsi_remove_failed_auth_entry(conn);
- 	iscsi_target_nego_release(conn);
--	iscsi_target_login_sess_out(conn, np, zero_tsih, true);
-+	iscsi_target_login_sess_out(conn, zero_tsih, true);
- }
- 
- struct conn_timeout {
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -781,7 +781,8 @@ static int eth_link_query_port(struct ib
+ 	props->ip_gids = true;
+ 	props->gid_tbl_len	= mdev->dev->caps.gid_table_len[port];
+ 	props->max_msg_sz	= mdev->dev->caps.max_msg_sz;
+-	props->pkey_tbl_len	= 1;
++	if (mdev->dev->caps.pkey_table_len[port])
++		props->pkey_tbl_len = 1;
+ 	props->max_mtu		= IB_MTU_4096;
+ 	props->max_vl_num	= 2;
+ 	props->state		= IB_PORT_DOWN;
 
 
