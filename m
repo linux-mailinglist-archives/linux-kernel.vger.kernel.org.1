@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7F626B6AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C9E26B78A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbgIPAJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:09:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41654 "EHLO mail.kernel.org"
+        id S1727451AbgIPAZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:25:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726957AbgIOO2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:28:36 -0400
+        id S1726852AbgIOORJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:17:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3843F224D4;
-        Tue, 15 Sep 2020 14:20:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0589021D43;
+        Tue, 15 Sep 2020 14:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179623;
-        bh=P45/0EaNUF83BlGTUaQi96IDjocnkhSRuAevDSIPAAM=;
+        s=default; t=1600179313;
+        bh=Yt0b4gJDcQu0ta/aIo+Zh5yuVYciFiPTALHJWdllOX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m/j2XVLr/etVmiF3Do5PYnUk0ABIPOIEGuEOeOHBmU55nPIIxnzq/A1QYpwoxHL2A
-         POhz+yfkEWE9ZGg067+qs8QQQhd+YVR5OXNKO4fZeeHJmmuK9DQeyEGGmmaBD/fj4G
-         b93MhzsIELkLsyELO95zkGH1aLfTJhdbXsWmB8jw=
+        b=fLPI2MSWHHBxWF9TuG2L1CLpaXe39lJzcATAqhv+vVBNxB09ybIlw4Q9UZRBHZ0uW
+         omdWbvqQ5NwWkCX8BEm9etqzBYFig9M8ryhPkBBFGTl50GW+sxqj+Qfz8IF2E3Y01E
+         mweRtJ30SHrRgVJmWEkv6Avc9a9jyZARDrzpARiM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 053/132] nvme: have nvme_wait_freeze_timeout return if it timed out
-Date:   Tue, 15 Sep 2020 16:12:35 +0200
-Message-Id: <20200915140646.773144362@linuxfoundation.org>
+Subject: [PATCH 4.19 11/78] RDMA/core: Fix reported speed and width
+Date:   Tue, 15 Sep 2020 16:12:36 +0200
+Message-Id: <20200915140634.107587688@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-References: <20200915140644.037604909@linuxfoundation.org>
+In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
+References: <20200915140633.552502750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-[ Upstream commit 7cf0d7c0f3c3b0203aaf81c1bc884924d8fdb9bd ]
+[ Upstream commit 28b0865714b315e318ac45c4fc9156f3d4649646 ]
 
-Users can detect if the wait has completed or not and take appropriate
-actions based on this information (e.g. weather to continue
-initialization or rather fail and schedule another initialization
-attempt).
+When the returned speed from __ethtool_get_link_ksettings() is
+SPEED_UNKNOWN this will lead to reporting a wrong speed and width for
+providers that uses ib_get_eth_speed(), fix that by defaulting the
+netdev_speed to SPEED_1000 in case the returned value from
+__ethtool_get_link_ksettings() is SPEED_UNKNOWN.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Fixes: d41861942fc5 ("IB/core: Add generic function to extract IB speed from netdev")
+Link: https://lore.kernel.org/r/20200902124304.170912-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 3 ++-
- drivers/nvme/host/nvme.h | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 3cb017fa3a790..2d2673d360ff2 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -4148,7 +4148,7 @@ void nvme_unfreeze(struct nvme_ctrl *ctrl)
- }
- EXPORT_SYMBOL_GPL(nvme_unfreeze);
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index e8432876cc860..e1ecd4682c096 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1711,7 +1711,7 @@ int ib_get_eth_speed(struct ib_device *dev, u8 port_num, u8 *speed, u8 *width)
  
--void nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout)
-+int nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout)
- {
- 	struct nvme_ns *ns;
+ 	dev_put(netdev);
  
-@@ -4159,6 +4159,7 @@ void nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout)
- 			break;
- 	}
- 	up_read(&ctrl->namespaces_rwsem);
-+	return timeout;
- }
- EXPORT_SYMBOL_GPL(nvme_wait_freeze_timeout);
- 
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 056953bd8bd81..2bd9f7c3084f2 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -485,7 +485,7 @@ void nvme_kill_queues(struct nvme_ctrl *ctrl);
- void nvme_sync_queues(struct nvme_ctrl *ctrl);
- void nvme_unfreeze(struct nvme_ctrl *ctrl);
- void nvme_wait_freeze(struct nvme_ctrl *ctrl);
--void nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout);
-+int nvme_wait_freeze_timeout(struct nvme_ctrl *ctrl, long timeout);
- void nvme_start_freeze(struct nvme_ctrl *ctrl);
- 
- #define NVME_QID_ANY -1
+-	if (!rc) {
++	if (!rc && lksettings.base.speed != (u32)SPEED_UNKNOWN) {
+ 		netdev_speed = lksettings.base.speed;
+ 	} else {
+ 		netdev_speed = SPEED_1000;
 -- 
 2.25.1
 
