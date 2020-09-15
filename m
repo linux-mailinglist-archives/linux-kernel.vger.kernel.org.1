@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C913F26B1CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C71426B1E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727563AbgIOWgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727589AbgIOWgK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 18:36:10 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36822C061788;
-        Tue, 15 Sep 2020 15:36:10 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A81F713757C20;
-        Tue, 15 Sep 2020 15:19:22 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:36:09 -0700 (PDT)
-Message-Id: <20200915.153609.180837989360811070.davem@davemloft.net>
-To:     andrew@lunn.ch
-Cc:     oded.gabbay@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        SW_Drivers@habana.ai, gregkh@linuxfoundation.org,
-        f.fainelli@gmail.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200915213735.GG3526428@lunn.ch>
-References: <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com>
-        <20200915213735.GG3526428@lunn.ch>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Tue, 15 Sep 2020 15:19:23 -0700 (PDT)
+        id S1727692AbgIOWh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:37:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:55540 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727523AbgIOWhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 18:37:10 -0400
+IronPort-SDR: H6iVlHaIwoCczI9bp99IJhUVZbYPh0k9oqgw+9UguwjxD9xf3pv9siRy6BVy25o3NF0xkp75Lw
+ xSBK4NZ1bQiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="147112835"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="147112835"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 15:37:07 -0700
+IronPort-SDR: NJYyqeCrAUCFY3EejBDrbgMu0QOJ9FBm3a0Vpp3JOZzQsLYA1VtP0YGJeEf+W79CVKO6nvUhU2
+ Wm59Dmc3AtHA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="306813333"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga006.jf.intel.com with ESMTP; 15 Sep 2020 15:37:07 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: thermal: int340x: New notifications for INT340X thermal
+Date:   Tue, 15 Sep 2020 15:36:47 -0700
+Message-Id: <20200915223650.406046-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Lunn <andrew@lunn.ch>
-Date: Tue, 15 Sep 2020 23:37:35 +0200
+This series contains notifications to user space using currently
+used mechanism in these drivers. 
 
->> I understand your point of view but If my H/W doesn't support the
->> basic requirements of the RDMA infrastructure and interfaces, then
->> really there is nothing I can do about it. I can't use them.
-> 
-> It is up to the RDMA people to say that. They might see how the RDMA
-> core can be made to work for your hardware.
+Srinivas Pandruvada (3):
+  thermal: int340x: Provide notification for OEM variable change
+  thermal: core: Add new event for sending keep alive notifications
+  thermal: int340x: Add keep alive response method
 
-+1
+ .../intel/int340x_thermal/int3400_thermal.c   | 51 +++++++++++++++----
+ include/linux/thermal.h                       |  1 +
+ 2 files changed, 41 insertions(+), 11 deletions(-)
+
+-- 
+2.25.4
+
