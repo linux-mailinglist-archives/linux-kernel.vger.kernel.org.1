@@ -2,235 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893B026B05D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB03D26B04C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgIOWJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727985AbgIOUUJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:20:09 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66A8C06174A;
-        Tue, 15 Sep 2020 13:19:50 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id C992CC63FE; Tue, 15 Sep 2020 21:19:47 +0100 (BST)
-Date:   Tue, 15 Sep 2020 21:19:47 +0100
-From:   Sean Young <sean@mess.org>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
- system
-Message-ID: <20200915201947.GA4019@gofer.mess.org>
-References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
- <20200915093342.GA24139@gofer.mess.org>
- <DB8PR04MB67951DE19DD876721093AED4E6200@DB8PR04MB6795.eurprd04.prod.outlook.com>
+        id S1728092AbgIOWHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:07:08 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42914 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727994AbgIOUVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:21:21 -0400
+Received: from zn.tnic (p200300ec2f0e42002ec71013b50744b4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:2ec7:1013:b507:44b4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A46AB1EC02B9;
+        Tue, 15 Sep 2020 22:20:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600201240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=m1zeLlW+IDog00PQVGph/rOz8zmBb7aC18qc50BuwbI=;
+        b=KTtC5vZ7VLJvpMSdFhpGdy+qzsvIIE4abCCCEfXxgdbMRVmjGvteIOw0ic7X72Eq0CPbBI
+        V+40Ui/aq4WvZ4cEu5KmgmlHUPtISYwqIDEj7dvFstGPbR7YFnA9S7Hbxx8i0uEjDNdcz3
+        VTCmIFLK3LKpddDHeNNYyZSievhJXGE=
+Date:   Tue, 15 Sep 2020 22:20:34 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
+Cc:     Roman Kiryanov <rkir@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-pm@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Alistair Delva <adelva@google.com>,
+        Haitao Shan <hshan@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
+Subject: Re: [PATCH] arch: x86: power: cpu: init %gs before
+ __restore_processor_state (clang)
+Message-ID: <20200915202034.GZ14436@zn.tnic>
+References: <20200915172658.1432732-1-rkir@google.com>
+ <20200915174643.GT14436@zn.tnic>
+ <CAKwvOdm9bQmL=gZypkosH0MG=S28=jJ6wZiTMCNP6=Z+NfN1AA@mail.gmail.com>
+ <20200915182530.GV14436@zn.tnic>
+ <CAKwvOdkKk1KuAFDoWNLnMUi3_JnV7atDFnvS7CdkgNXnNg0p1g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DB8PR04MB67951DE19DD876721093AED4E6200@DB8PR04MB6795.eurprd04.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAKwvOdkKk1KuAFDoWNLnMUi3_JnV7atDFnvS7CdkgNXnNg0p1g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joakim,
+On Tue, Sep 15, 2020 at 12:51:47PM -0700, Nick Desaulniers wrote:
+> I agree; I also would not have sent the patch though.
 
-On Tue, Sep 15, 2020 at 10:55:17AM +0000, Joakim Zhang wrote:
-> 
-> Hi Sean,
-> 
-> Thanks a lot for your review.
-> 
-> > -----Original Message-----
-> > From: Sean Young <sean@mess.org>
-> > Sent: 2020年9月15日 17:34
-> > To: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > Cc: mchehab@kernel.org; linux-media@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
-> > Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
-> > system
-> > 
-> > 
-> > Hi Joakim,
-> > 
-> > Thanks for your patch, I think it looks good in principle but needs a few small
-> > fixes.
-> > 
-> > On Tue, Sep 15, 2020 at 11:02:02PM +0800, Joakim Zhang wrote:
-> > > GPIO IR receive is much rely on interrupt response, uneven interrupt
-> > > latency will lead to incorrect timing, so the decoder fails to decode
-> > > it. The issue is particularly acute on systems which supports cpuidle,
-> > > dynamically disable and enable cpuidle can solve this problem to a
-> > > great extent.
-> > 
-> > This is the first soc to be affected by this problem, and gpio-ir-recv has been
-> > used on my systems. For example, the raspberry pi has cpu idle enabled and
-> > does not suffer from this problem. There are many more; this driver has been
-> > used on many arm devices, which will have cpuidle enabled.
-> I have not noticed raspberry pi enabled cpu idle in Linux, could you point me where it is? Then I can have a look, whether it implements multiple idle or not, to see why it makes difference.
+Maybe google folks should run stuff by you before sending it up... :-)
 
-I just noticed that it not enabled on raspbian kernel, but it is enabled
-on fedora:
+> Until LTO has landed upstream, this is definitely somewhat self
+> inflicted. This was only debugged last week; even with a compiler fix
+> in hand today, it still takes time to ship that compiler and qualify
+> it; for other folks on tighter timelines, I can understand why the
+> patch was sent,
 
-https://src.fedoraproject.org/rpms/kernel/blob/master/f/kernel-armv7hl-fedora.config
+... because they have the requirement that a patch which gets backported
+to a kernel used at google needs to be upstream? Because I'm willing to
+bet a lot of cash that no one runs bleeding egde 5.9-rcX in production
+over there right now :-)
 
-When I use gpio-ir-recv with my own kernel and fedora kernel, there no
-problems with gpio-ir-recv on this kernel.
+> and do genuinely appreciate the effort to participate more upstream
+> which I'm trying to encourage more of throughout the company (we're
+> in a lot of technical debt kernel-wise; and I'm not referring to
+> Android...a story over beers perhaps, or ask Greg).
 
-> > > However, there is a downside to this approach, the measurement of
-> > > header on the first frame may incorrect. Test on i.MX8M serials, when
-> > > enable cpuidle, interrupt latency could be about 500us.
-> > >
-> > > With this patch:
-> > > 1. has no side effect on non-cpuidle system.
-> > > 2. latency is still much longer for the first gpio interrupt on
-> > > cpuidle system, so the first frame may not be decoded. Generally, RC
-> > > would transmit multiple frames at once press, we can sacrifice the first
-> > frame.
-> > >
-> > > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > > ---
-> > >  drivers/media/rc/gpio-ir-recv.c | 49
-> > > ++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 48 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/media/rc/gpio-ir-recv.c
-> > > b/drivers/media/rc/gpio-ir-recv.c index a20413008c3c..42c942ce98cd
-> > > 100644
-> > > --- a/drivers/media/rc/gpio-ir-recv.c
-> > > +++ b/drivers/media/rc/gpio-ir-recv.c
-> > > @@ -11,6 +11,8 @@
-> > >  #include <linux/of.h>
-> > >  #include <linux/of_gpio.h>
-> > >  #include <linux/platform_device.h>
-> > > +#include <linux/pm_runtime.h>
-> > > +#include <linux/pm_qos.h>
-> > >  #include <linux/irq.h>
-> > >  #include <media/rc-core.h>
-> > >
-> > > @@ -20,17 +22,36 @@ struct gpio_rc_dev {
-> > >  	struct rc_dev *rcdev;
-> > >  	struct gpio_desc *gpiod;
-> > >  	int irq;
-> > > +	struct pm_qos_request qos;
-> > >  };
-> > >
-> > >  static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)  {
-> > > -	int val;
-> > > +	int ret, val;
-> > >  	struct gpio_rc_dev *gpio_dev = dev_id;
-> > > +	struct device *dev = gpio_dev->rcdev->dev.parent;
-> > > +
-> > > +	/*
-> > > +	 * For cpuidle system:
-> > 
-> > For some cpuidle systems, not all. This is why this feature needs a device tree
-> > option for enabling. Otherwise, it will negatively affect power usage on e.g.
-> > raspberry pi.
-> Yes, you are right. As you said, some cpu idle systems may not suffer such case, I will add a device tree property.
-> 
-> 
-> > > +	 * Respond to interrupt taking more latency when cpu in idle.
-> > > +	 * Invoke asynchronous pm runtime get from interrupt context,
-> > > +	 * this may introduce a millisecond delay to call resume callback,
-> > > +	 * where to disable cpuilde.
-> > > +	 *
-> > > +	 * Two issues lead to fail to decode first frame, one is latency to
-> > > +	 * respond interupt, another is delay introduced by async api.
-> > > +	 */
-> > > +	ret = pm_runtime_get(dev);
-> > > +	if (ret < 0)
-> > > +		return IRQ_NONE;
-> > 
-> > If we end up here, we also abandon sending the IR to rc-core (below). I don't
-> > think it should do that. It should call ir_raw_event_store_edge() always even if
-> > it can't do the pm things.
-> Make sense, I will remove this error check.
-> 
-> 
-> > >
-> > >  	val = gpiod_get_value(gpio_dev->gpiod);
-> > >  	if (val >= 0)
-> > >  		ir_raw_event_store_edge(gpio_dev->rcdev, val == 1);
-> > >
-> > > +	pm_runtime_mark_last_busy(dev);
-> > > +	pm_runtime_put_autosuspend(dev);
-> > > +
-> > >  	return IRQ_HANDLED;
-> > >  }
-> > >
-> > > @@ -92,6 +113,12 @@ static int gpio_ir_recv_probe(struct
-> > > platform_device *pdev)
-> > >
-> > >  	platform_set_drvdata(pdev, gpio_dev);
-> > >
-> > > +
-> > > +	pm_runtime_set_autosuspend_delay(dev, (rcdev->timeout / 1000 /
-> > > +1000));
-> > 
-> > rcdev->timeout is in microseconds (since very recently), so this is wrong.
-> What this meaning, is that rcdev->timeout woud change the unit, to be microseconds, not nanoseconds any more ?
+Beers? Always. But I can imagine the reasons: people working on projects
+and then those projects getting done and no one cares about upstreaming
+stuff after the fact or no one has time ... or policy ... but let's keep
+that for beers. :-)
 
-See:
+> It's just that this isn't really appropriate since it works around
+> a bug in a non-upstream feature, and will go away once we fix the
+> toolchain.
 
-https://git.linuxtv.org/media_tree.git/commit/?id=528222d853f9283110f0118dd71d9f0ad686d586
+Hohumm.
 
-> > Also, the timeout can be changed using the LIRC_SET_REC_TIMEOUT ioctl
-> > (using ir-ctl -t in userspace). The autosuspend delay should be updated when
-> > this happens. This can be done by implementing the s_timeout rcdev function.
-> Make sense, could you point me where s_timeout funcition has implemented? So that I can refer to it, I am not familiar with this.
+> It would be much nicer if we had the flexibility to disable stack
+> protectors per function, rather than per translation unit.  I'm going
+> to encourage you to encourage your favorite compile vendor ("write to
+> your senator") to support the function attribute
+> __attribute__((no_stack_protector)) so that one day,
 
-See:
+I already forgot why gcc doesn't do that... Martin, do you know?
 
-https://git.linuxtv.org/media_tree.git/tree/drivers/media/rc/redrat3.c?id=528222d853f9283110f0118dd71d9f0ad686d586#n952
+> we can use that to stop shipping crap like a9a3ed1eff360 ("x86: Fix
+> early boot crash on gcc-10, third try"). Having had that, we could
+> have used a nicer workaround until the toolchain was fixed (and one
+> day revert a9a3ed1eff360, and d0a8d9378d16, and probably more hacks in
+> the kernel).
 
+Yap, agreed. I guess with those new compiler features it is always a
+couple of releases - both kernel, i.e., the user of that feature, and
+compiler, i.e., the provider of the feature, to both figure out what
+the proper use cases are, to experiment a bit and then to adjust stuff,
+change here and there and then cast in stone. Oh well.
 
-> 
-> 
-> BRs,
-> Joakim
-> > > +	pm_runtime_use_autosuspend(dev);
-> > > +	pm_runtime_set_suspended(dev);
-> > > +	pm_runtime_enable(dev);
-> > > +
-> > >  	return devm_request_irq(dev, gpio_dev->irq, gpio_ir_recv_irq,
-> > >  				IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
-> > >  				"gpio-ir-recv-irq", gpio_dev);
-> > > @@ -122,9 +149,29 @@ static int gpio_ir_recv_resume(struct device *dev)
-> > >  	return 0;
-> > >  }
-> > >
-> > > +static int gpio_ir_recv_runtime_suspend(struct device *dev) {
-> > > +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
-> > > +
-> > > +	cpu_latency_qos_remove_request(&gpio_dev->qos);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int gpio_ir_recv_runtime_resume(struct device *dev) {
-> > > +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
-> > > +
-> > > +	cpu_latency_qos_add_request(&gpio_dev->qos, 0);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > >  static const struct dev_pm_ops gpio_ir_recv_pm_ops = {
-> > >  	.suspend        = gpio_ir_recv_suspend,
-> > >  	.resume         = gpio_ir_recv_resume,
-> > > +	.runtime_suspend = gpio_ir_recv_runtime_suspend,
-> > > +	.runtime_resume  = gpio_ir_recv_runtime_resume,
-> > >  };
-> > >  #endif
-> > >
-> > > --
-> > > 2.17.1
+> And the case that's causing the compiler bug in question is something
+> all compiler vendors will need to consider in their implementations.
+
+Are you talking to gcc folks about it already so that they DTRT too?
+
+Btw, if it is any consolation, talking to compiler folks is like a charm
+in comparison to talking to hardware vendors and trying to get them
+to agree on something because they seem to think that the kernel is
+software and sure, can be changed to do whatever. But that's another
+story for the beers... :-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
