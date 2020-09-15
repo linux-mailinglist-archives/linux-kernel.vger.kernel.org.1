@@ -2,74 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11A026AC05
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90D326AC0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727934AbgIOSdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
+        id S1727801AbgIOSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727903AbgIOSdO (ORCPT
+        with ESMTP id S1727997AbgIOSdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:33:14 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC14C06174A;
-        Tue, 15 Sep 2020 11:33:11 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 769F2425E; Tue, 15 Sep 2020 14:33:10 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 769F2425E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1600194790;
-        bh=Gzs0g7lW696ivl7ubWpdXh2/Wk4Ipx8dGRXKZd2l9RE=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=bW7m9iDz5Y4O1XoA29QxZDV1G6WuqJ1223x3/+QIHuVEkUK+HjpDUvjRsEeWAx5pF
-         +ntKDBlKmaugVxJWU67WddvR3cPAZkbWrOvEK693RrimM9VtDtBEVyz08tfX1lJDDd
-         /xaJAq3zWanpZFfuujis97ADehMctwrs5amDpNxw=
-Date:   Tue, 15 Sep 2020 14:33:10 -0400
-To:     Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nfs: Fix security label length not being reset
-Message-ID: <20200915183310.GB32632@fieldses.org>
-References: <20200914154958.55451-1-jeffrey.mitchell@starlab.io>
+        Tue, 15 Sep 2020 14:33:51 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C787AC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:33:50 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id n10so4005863qtv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+6blGfo45ddZLHqhdwQdwxW8NrcsjKKHRRn1ZBFXZLs=;
+        b=AiloNFxh5Cghl768jry20e5NlAprC5q+qXPjhNzSb/KwOQgDxHmLc9ijue0h3gEQTF
+         MIZnq7foK9H9nRgI2dh8JhQ8zTHaEc32/iGt+J4bdwCjnAMIpfc3xU/b2kN3dLLRqL9Y
+         Zq8Z4wwSsoSTMzRUqX4v+s3yey83bsIAVQwDnPdkff/f5Y7ReN/VcE9wz5HhRgn4T+UH
+         vgGKklp3Og6USdpBP/9SPua7hVtevCOnwf0/QM3PKs1Y1XKppuMRM0/Z2XhJO2wShq7c
+         z1GCh7w+BD7ha7y0v2YLHb/We7eErm7KoVQ0CUzWyLuX2zg9kNxpMx/OpTlaFtgptxsH
+         51Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+6blGfo45ddZLHqhdwQdwxW8NrcsjKKHRRn1ZBFXZLs=;
+        b=Ar/J09BiQqY/Ect8VfFpfvTuwXbPNTDiwn5LJ+Nu+o8DZYBsRkXWsAVYca+zxSAues
+         R7+CgE4FN0ynDgOs+AlsRQ89BQpv89gMm/hteYCKxEezzWD9+Cm8smGPNSiENI42A/3a
+         XQC7/dhiJ8pJWagH3oiAMc0tiEsmNjbqxD+8WlnqK+dNEOxzDzrLtfzuwUyKLih9WBph
+         x/lTubtHHSi5pAQdfIJl+EY2eviE6g9+lk0uAHuep3i/sGnwH0QVLhTssKHOjJ+vMK0t
+         NYmrWVC61pqh2bWQFTsEd+m7LRAlCPCqHU/4DFA+0iJmNdhaEnIuaxiYc3mxgnZhdYEN
+         1DMg==
+X-Gm-Message-State: AOAM533mGZ+A/yBtm8CRBOGXpxyqn0h0sjsoci4dpE7a5gy1fQ1gUEBx
+        CwxgR/xBdRNa70ztrSMCPkNctV5CHR2CJQ==
+X-Google-Smtp-Source: ABdhPJz7sRn6Y1bEqWrjwHnF2W6Cm8ePoVdwzD3htSQpX6zknE/6OuWM79mb5tJYrZj8Ag5B/NZBUg==
+X-Received: by 2002:ac8:4f44:: with SMTP id i4mr19663393qtw.189.1600194829229;
+        Tue, 15 Sep 2020 11:33:49 -0700 (PDT)
+Received: from uller (ec2-34-197-84-77.compute-1.amazonaws.com. [34.197.84.77])
+        by smtp.gmail.com with ESMTPSA id 29sm17519013qkr.114.2020.09.15.11.33.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 11:33:48 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 18:33:47 +0000
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ohad@wizery.com, evgreen@chromium.org, swboyd@chromium.org
+Subject: Re: [PATCH] remoteproc: qcom_q6v5: Assign mpss region to Q6 before
+ MBA cold boot
+Message-ID: <20200915183347.GJ478@uller>
+References: <20200915173713.28098-1-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914154958.55451-1-jeffrey.mitchell@starlab.io>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+In-Reply-To: <20200915173713.28098-1-sibis@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:49:57AM -0500, Jeffrey Mitchell wrote:
-> nfs_readdir_page_filler() iterates over entries in a directory, reusing
-> the same security label buffer, but does not reset the buffer's length.
-> This causes decode_attr_security_label() to return -ERANGE if an entry's
-> security label is longer than the previous one's. This error, in
-> nfs4_decode_dirent(), only gets passed up as -EAGAIN, which causes another
-> failed attempt to copy into the buffer. The second error is ignored and
-> the remaining entries do not show up in ls, specifically the getdents64()
-> syscall.
-> 
-> Reproduce by creating multiple files in NFS and giving one of the later
-> files a longer security label. ls will not see that file nor any that are
-> added afterwards, though they will exist on the backend.
+On Tue 15 Sep 17:37 UTC 2020, Sibi Sankar wrote:
 
-Please include these paragraphs in the changelog.
+> On secure devices which support warm reset, the modem subsystem requires
+> access to the mpss region to clear them out. Hence assign the mpss region
+> to Q6 before MBA cold boot. This will be a nop during a modem SSR.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+> 
+> I didn't want to add any new flags for warm reset support because
+> calling xfer for mpss to q6 shouldn't have any side effects on
+> platforms that don't support warm resets.
+> 
 
---b.
+As discussed offline, I don't see a problem with unconditionally handing
+over the ownership of the region during this time frame. So let's just
+generalize the comment below a little bit and I'm happy with this
+change.
 
+Thanks,
+Bjorn
+
+>  drivers/remoteproc/qcom_q6v5_mss.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> - Jeffrey
-> 
-> Jeffrey Mitchell (1):
->   nfs: Fix security label length not being reset
-> 
->  fs/nfs/dir.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+> index c401bcc263fa5..cc5b7edc02c73 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -931,6 +931,18 @@ static int q6v5_mba_load(struct q6v5 *qproc)
+>  		goto assert_reset;
+>  	}
+>  
+> +	/**
+> +	 * On secure devices which support warm reboot, the modem subsystem's cold boot is similar
+> +	 * to an SSR sequence i.e the mba requires access to the modem memory to clear it out during
+> +	 * Q6 cold boot. For modem SSR it will be a nop.
+> +	 */
+> +	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, false, true,
+> +				      qproc->mpss_phys, qproc->mpss_size);
+> +	if (ret) {
+> +		dev_err(qproc->dev, "assigning Q6 access to mpss memory failed: %d\n", ret);
+> +		goto disable_active_clks;
+> +	}
+> +
+>  	/* Assign MBA image access in DDR to q6 */
+>  	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mba_perm, false, true,
+>  				      qproc->mba_phys, qproc->mba_size);
 > -- 
-> 2.25.1
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
