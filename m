@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8829326B2EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480DB26B2F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727458AbgIOW4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727386AbgIOPY6 (ORCPT
+        id S1727776AbgIOW4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:56:09 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:36338 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727401AbgIOPYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:24:58 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17258C06178C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:24:45 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e16so3819653wrm.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0gZ+YMPLfBO/R15jPy3oPKv0zNd05fNly8pHsr8U99U=;
-        b=EGfeOw4+SDurso+Dyhq4JgPvPuNCfXkoF5QnHUhW0zyRByT6ESUh5yY24EgAkddZdp
-         ES16D3aQqRdc2MR/AqU7vO6lq8TLl5CjS5pwYe4hFUvSaLFlxUiXGwpdMWcWrq4YKdQV
-         8AkXGya0oC9dU1Hauzc7FDsgnC0zBI/no3zw/bu3XuH67AqWq5GuvR9pB4KjEKQf3Tqq
-         S7oZZWQObIDARVrO8yUtmY/ptW6eBpVB+10wRoP42V3ICpu/mvdJ6fi9OPJjZuz4wiGZ
-         wS7KZttndJL2wNMk7is2HT2ijtSNAdw4Gbo8NBNceVfx5cBHEHLX+oEiUraI6Q+zWCJk
-         sEuA==
+        Tue, 15 Sep 2020 11:24:42 -0400
+Received: by mail-io1-f66.google.com with SMTP id d190so4523138iof.3;
+        Tue, 15 Sep 2020 08:24:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0gZ+YMPLfBO/R15jPy3oPKv0zNd05fNly8pHsr8U99U=;
-        b=MWE56hfVD5cTc0hiMxsTHbqtQuegmR8BUwwc+LXXaTlusHjJQG8/UOEagIxtGiywXm
-         1zB0A6up0Hn7enqLamS7U3pEGJw7mTsT6qQvcbE++9BniAQrQM2Da4pPF7wO+8tYWqJB
-         MsR7mMH7IeIg6tNUJudzJnHSz2YOzfh6knOJwq7c0+eDJtwDtzpuT/X7wueULv1UE4wo
-         zDxfHkRAQblvcKr5zIQ7ywK2ciugAB1U4Gdwgk7NKFp4pBtf+m+KGruBPUlEyHqyn6qg
-         VAQekjwwZItCBWPS33p3rL3S8iFvWh3igifaVOJMmt5+nGaksScZLjM0ID/QSOlG/PqV
-         Epvw==
-X-Gm-Message-State: AOAM532wYNbPvgVe4PNEIpU0tX2i9XNRsveQUvd9tP5sYyqYgFnkl5x4
-        HuYRHPPkCFsfOoPv98QckfKUPA==
-X-Google-Smtp-Source: ABdhPJw8JXVzziE+/esCJy0ADiwegrvSaUzt3GxV73kE8tnHfqeExlt4rZyZ4kAU6JSUYWyoT/DCJw==
-X-Received: by 2002:adf:f843:: with SMTP id d3mr23628823wrq.226.1600183483547;
-        Tue, 15 Sep 2020 08:24:43 -0700 (PDT)
-Received: from bender.baylibre.local (home.beaume.starnux.net. [82.236.8.43])
-        by smtp.gmail.com with ESMTPSA id 189sm25984960wmb.3.2020.09.15.08.24.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TQwbsrSpPsblvvewNTAvygU6LX9JkoPG3XT5duFS2B8=;
+        b=pMa5QV6rMAf2UdR/IH7HVyXxjxlV9j/Ul8p4ApSo4Kx8qYkfv1XQ8mo3567ojZEszO
+         5ozjTyPxqBj5MSdOqddKPzohM6EW0AEiPY5yWuUG0K30hx9hGSixEpmZEsqk/Jgjsp11
+         5Amn2G9hyTLVcbf0jCq5nFFEE6eN4PNB+rgD0vfRV+evLEV6OeR+I/ywK8lGeoRsSoD8
+         dM5tAXYfC35vmXY7eXaqSD1qp9ZMe95bsyUNJXa6MHrCoMYuos5R1/BOnsb1rsXl50/1
+         UA7MASY7RDgFcjKXo6BRHTN1OitNgM6/MwbfEJPIe6sltOOYpLmE6jIbTWp/1lhvDJT9
+         jXbA==
+X-Gm-Message-State: AOAM5332WGfC6JA3bWEU4g8v9YIudeuQQxFSYiM0NVDlF0f6bsKsjb+R
+        9eTmsaaKRVDkfdhOIjNnQA==
+X-Google-Smtp-Source: ABdhPJyqKFyTIVHyJqHIrEsdIMGqq15HhgpOa6nWJTDsqIgRo7dmwPY2ATDZsR/bup7/2N61XSAUZw==
+X-Received: by 2002:a05:6602:2c4d:: with SMTP id x13mr10837671iov.94.1600183478508;
+        Tue, 15 Sep 2020 08:24:38 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id i9sm4609484ils.34.2020.09.15.08.24.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 08:24:42 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        tobetter@hardkernel.com, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v2 3/3] arm64: dts: meson: add support for the ODROID-N2+
-Date:   Tue, 15 Sep 2020 17:24:32 +0200
-Message-Id: <20200915152432.30616-4-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200915152432.30616-1-narmstrong@baylibre.com>
-References: <20200915152432.30616-1-narmstrong@baylibre.com>
+        Tue, 15 Sep 2020 08:24:37 -0700 (PDT)
+Received: (nullmailer pid 1973925 invoked by uid 1000);
+        Tue, 15 Sep 2020 15:24:35 -0000
+Date:   Tue, 15 Sep 2020 09:24:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yash Shah <yash.shah@sifive.com>
+Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com, bp@alien8.de,
+        mchehab@kernel.org, tony.luck@intel.com, aou@eecs.berkeley.edu,
+        james.morse@arm.com, rrichter@marvell.com,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        sachin.ghadi@sifive.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: Add DT documentation for DDR
+ Controller in SiFive SoCs
+Message-ID: <20200915152435.GB1940827@bogus>
+References: <1599457679-8947-1-git-send-email-yash.shah@sifive.com>
+ <1599457679-8947-2-git-send-email-yash.shah@sifive.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599457679-8947-2-git-send-email-yash.shah@sifive.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Hewitt <christianshewitt@gmail.com>
+On Mon, Sep 07, 2020 at 11:17:57AM +0530, Yash Shah wrote:
+> Add device tree bindings for SiFive FU540 DDR controller driver
+> 
+> Signed-off-by: Yash Shah <yash.shah@sifive.com>
+> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>  .../devicetree/bindings/riscv/sifive-ddr.yaml      | 41 ++++++++++++++++++++++
 
-HardKernel ODROID-N2+ uses an Amlogic S922X rev. C chip capable of higher
-clock speeds than the original ODROID-N2.
+Bindings are organized by function, not vendor/arch generally. This goes 
+in bindings/memory-controllers/.
 
-The rev. C support a slighly higher VDDCPU_A & VDDCPU_B voltages and supports
-the same OPPs as the Amlogic A311D SoC from the same G12B family.
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml b/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
+> new file mode 100644
+> index 0000000..0288119
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/riscv/sifive-ddr.yaml
+> @@ -0,0 +1,41 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/riscv/sifive-ddr.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SiFive DDR memory controller binding
+> +
+> +description: |
+> +  The Sifive DDR controller driver is used to manage the Cadence DDR
+> +  controller present in SiFive FU540-C000 SoC. Currently the driver is
+> +  used to manage EDAC feature of the DDR controller.
 
-Suggested-by: Dongjin Kim <tobetter@hardkernel.com>
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/Makefile          |  1 +
- .../dts/amlogic/meson-g12b-odroid-n2-plus.dts | 31 +++++++++++++++++++
- 2 files changed, 32 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
+Bindings describe h/w not drivers. What a driver supports is irrelevant.
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index 4e2239ffcaa5..b0b3d6791499 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-s922x-khadas-vim3.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2-plus.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-ugoos-am6.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-kii-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxbb-nanopi-k2.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-new file mode 100644
-index 000000000000..5de2815ba99d
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2019 BayLibre, SAS
-+ * Author: Neil Armstrong <narmstrong@baylibre.com>
-+ */
-+
-+/dts-v1/;
-+
-+/* The Amlogic S922X Rev. C supports the same OPPs as the A311D variant */
-+#include "meson-g12b-a311d.dtsi"
-+#include "meson-g12b-odroid-n2.dtsi"
-+
-+/ {
-+	compatible = "hardkernel,odroid-n2-plus", "amlogic,s922x", "amlogic,g12b";
-+	model = "Hardkernel ODROID-N2Plus";
-+};
-+
-+&vddcpu_a {
-+	regulator-min-microvolt = <680000>;
-+	regulator-max-microvolt = <1040000>;
-+
-+	pwms = <&pwm_AO_cd 1 1500 0>;
-+};
-+
-+&vddcpu_b {
-+	regulator-min-microvolt = <680000>;
-+	regulator-max-microvolt = <1040000>;
-+
-+	pwms = <&pwm_AO_cd 1 1500 0>;
-+};
-+
--- 
-2.22.0
-
+> +
+> +maintainers:
+> +  - Yash Shah <yash.shah@sifive.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sifive,fu540-c000-ddr
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    memory-controller@100b0000 {
+> +        compatible = "sifive,fu540-c000-ddr";
+> +        reg = <0x100b0000 0x4000>;
+> +        interrupts = <31>;
+> +    };
+> -- 
+> 2.7.4
+> 
