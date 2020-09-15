@@ -2,326 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1577226A4F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CC626A502
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbgIOMUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:20:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59094 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726212AbgIOMTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:19:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8F427AF8D;
-        Tue, 15 Sep 2020 12:19:21 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 14:19:05 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] mm: don't rely on system state to detect hot-plug
- operations
-Message-ID: <20200915121905.GE4649@dhcp22.suse.cz>
-References: <20200915094143.79181-1-ldufour@linux.ibm.com>
- <20200915094143.79181-3-ldufour@linux.ibm.com>
+        id S1726520AbgIOMWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726444AbgIOMTS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 08:19:18 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E443FC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 05:19:17 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l15so7974560wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 05:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l7j+GFEPl0J4mVX0J38jo856GeX7L/pIGsyfYoimqNU=;
+        b=d5I5Am+iX/ZTlLBaMLVhIOLDVSNJtj0O2dwF8Ftj0bg09cKrSTyi9V8g45XOxGznvn
+         vAwfpzCkmcX+e1qI3igNUjzoFxbWxUYP7C4mcWoPmPepGPyX3vZDdWrB3x6LIKL1NZyP
+         Z4tS+WrUE+6Don7+EdPT8qRc+DL5uaYKhCpYyJ8BBeJSJTC4GhNop2Ca4EhuXoLw+Mkt
+         H6L5xg53j4yjOdnP4iS1uQi/yt/yG7gfuHgM1wWAW3JqNrGcuKzy0vZEihmq4HTfTI8g
+         qqpataXcDG82Cb05rb1emLdp8ao1EYm7pWbgIGGdC4AT8MEEXW4c4hjEnEO7u9ZsVQ1M
+         DtAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l7j+GFEPl0J4mVX0J38jo856GeX7L/pIGsyfYoimqNU=;
+        b=cfNr7lZI9oL3UjmQig+pRPP1lNBEqOwCyZMCkW20r9aJbT/SAPr0CgOBd9VwuLlPal
+         18b7TpypS8XZGFjFnuQpIv0KnS2xeTG6ClXCw+rgYPqg5i2tDdeYMELHJ9cJ9sLH0o1m
+         3B9QlZNqJkkJDPASjNtjA3l3l9VzXQM1i33x/teDDOSJRc9396jdyWFezGPnv1TlXlFt
+         YLWafYrI2GAnknXFjI1fMv9crlhJXcKvAOZ1opnX0bsyRhyjzFBO1h8G+8gwIxMuW02u
+         +3oLPut5+lqhVc9t8YjCSim2H1shd5B0hEEv8ZvJEsf2KbpfCsszlLddZTdVyJ0anCXd
+         ZzyA==
+X-Gm-Message-State: AOAM533xEjgsvETPYqjPhCBVgda8Wjn8aJND7P1zfrurMnORLNsVusBA
+        HYJ/q6DtMmBCMlp0/oFDcHOcJg==
+X-Google-Smtp-Source: ABdhPJx+fzoFxjgYAof+zD34bBVjkkA+EoKo8hnXGiQSj5VtzW/TKrSu3SuFbMpSSfocHxWxCJTiHg==
+X-Received: by 2002:a7b:c255:: with SMTP id b21mr4330660wmj.17.1600172356440;
+        Tue, 15 Sep 2020 05:19:16 -0700 (PDT)
+Received: from bender.baylibre.local (home.beaume.starnux.net. [82.236.8.43])
+        by smtp.gmail.com with ESMTPSA id 2sm18271411wmf.25.2020.09.15.05.19.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 05:19:15 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org
+Cc:     dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v4 0/4] drm: panel: add support for TDO tl070wsh30 panel
+Date:   Tue, 15 Sep 2020 14:19:08 +0200
+Message-Id: <20200915121912.4347-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200915094143.79181-3-ldufour@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15-09-20 11:41:42, Laurent Dufour wrote:
-> In register_mem_sect_under_node() the system_state’s value is checked to
-> detect whether the call is made during boot time or during an hot-plug
-> operation. Unfortunately, that check against SYSTEM_BOOTING is wrong
-> because regular memory is registered at SYSTEM_SCHEDULING state. In
-> addition, memory hot-plug operation can be triggered at this system state
-> by the ACPI [1]. So checking against the system state is not enough.
-> 
-> The consequence is that on system with interleaved node's ranges like this:
->  Early memory node ranges
->    node   1: [mem 0x0000000000000000-0x000000011fffffff]
->    node   2: [mem 0x0000000120000000-0x000000014fffffff]
->    node   1: [mem 0x0000000150000000-0x00000001ffffffff]
->    node   0: [mem 0x0000000200000000-0x000000048fffffff]
->    node   2: [mem 0x0000000490000000-0x00000007ffffffff]
-> 
-> This can be seen on PowerPC LPAR after multiple memory hot-plug and
-> hot-unplug operations are done. At the next reboot the node's memory ranges
-> can be interleaved and since the call to link_mem_sections() is made in
-> topology_init() while the system is in the SYSTEM_SCHEDULING state, the
-> node's id is not checked, and the sections registered to multiple nodes:
-> 
-> $ ls -l /sys/devices/system/memory/memory21/node*
-> total 0
-> lrwxrwxrwx 1 root root     0 Aug 24 05:27 node1 -> ../../node/node1
-> lrwxrwxrwx 1 root root     0 Aug 24 05:27 node2 -> ../../node/node2
-> 
-> In that case, the system is able to boot but if later one of theses memory
-> blocks is hot-unplugged and then hot-plugged, the sysfs inconsistency is
-> detected and this is triggering a BUG_ON():
-> 
-> ------------[ cut here ]------------
-> kernel BUG at /Users/laurent/src/linux-ppc/mm/memory_hotplug.c:1084!
-> Oops: Exception in kernel mode, sig: 5 [#1]
-> LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-> Modules linked in: rpadlpar_io rpaphp pseries_rng rng_core vmx_crypto gf128mul binfmt_misc ip_tables x_tables xfs libcrc32c crc32c_vpmsum autofs4
-> CPU: 8 PID: 10256 Comm: drmgr Not tainted 5.9.0-rc1+ #25
-> NIP:  c000000000403f34 LR: c000000000403f2c CTR: 0000000000000000
-> REGS: c0000004876e3660 TRAP: 0700   Not tainted  (5.9.0-rc1+)
-> MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24000448  XER: 20040000
-> CFAR: c000000000846d20 IRQMASK: 0
-> GPR00: c000000000403f2c c0000004876e38f0 c0000000012f6f00 ffffffffffffffef
-> GPR04: 0000000000000227 c0000004805ae680 0000000000000000 00000004886f0000
-> GPR08: 0000000000000226 0000000000000003 0000000000000002 fffffffffffffffd
-> GPR12: 0000000088000484 c00000001ec96280 0000000000000000 0000000000000000
-> GPR16: 0000000000000000 0000000000000000 0000000000000004 0000000000000003
-> GPR20: c00000047814ffe0 c0000007ffff7c08 0000000000000010 c0000000013332c8
-> GPR24: 0000000000000000 c0000000011f6cc0 0000000000000000 0000000000000000
-> GPR28: ffffffffffffffef 0000000000000001 0000000150000000 0000000010000000
-> NIP [c000000000403f34] add_memory_resource+0x244/0x340
-> LR [c000000000403f2c] add_memory_resource+0x23c/0x340
-> Call Trace:
-> [c0000004876e38f0] [c000000000403f2c] add_memory_resource+0x23c/0x340 (unreliable)
-> [c0000004876e39c0] [c00000000040408c] __add_memory+0x5c/0xf0
-> [c0000004876e39f0] [c0000000000e2b94] dlpar_add_lmb+0x1b4/0x500
-> [c0000004876e3ad0] [c0000000000e3888] dlpar_memory+0x1f8/0xb80
-> [c0000004876e3b60] [c0000000000dc0d0] handle_dlpar_errorlog+0xc0/0x190
-> [c0000004876e3bd0] [c0000000000dc398] dlpar_store+0x198/0x4a0
-> [c0000004876e3c90] [c00000000072e630] kobj_attr_store+0x30/0x50
-> [c0000004876e3cb0] [c00000000051f954] sysfs_kf_write+0x64/0x90
-> [c0000004876e3cd0] [c00000000051ee40] kernfs_fop_write+0x1b0/0x290
-> [c0000004876e3d20] [c000000000438dd8] vfs_write+0xe8/0x290
-> [c0000004876e3d70] [c0000000004391ac] ksys_write+0xdc/0x130
-> [c0000004876e3dc0] [c000000000034e40] system_call_exception+0x160/0x270
-> [c0000004876e3e20] [c00000000000d740] system_call_common+0xf0/0x27c
-> Instruction dump:
-> 48442e35 60000000 0b030000 3cbe0001 7fa3eb78 7bc48402 38a5fffe 7ca5fa14
-> 78a58402 48442db1 60000000 7c7c1b78 <0b030000> 7f23cb78 4bda371d 60000000
-> ---[ end trace 562fd6c109cd0fb2 ]---
-> 
-> This patch addresses the root cause by not relying on the system_state
-> value to detect whether the call is due to a hot-plug operation. An extra
-> parameter is added to link_mem_sections() detailing whether the operation
-> is due to a hot-plug operation.
-> 
-> [1] According to Oscar Salvador, using this qemu command line, ACPI memory
-> hotplug operations are raised at SYSTEM_SCHEDULING state:
-> 
-> $QEMU -enable-kvm -machine pc -smp 4,sockets=4,cores=1,threads=1 -cpu host -monitor pty \
->         -m size=$MEM,slots=255,maxmem=4294967296k  \
->         -numa node,nodeid=0,cpus=0-3,mem=512 -numa node,nodeid=1,mem=512 \
->         -object memory-backend-ram,id=memdimm0,size=134217728 -device pc-dimm,node=0,memdev=memdimm0,id=dimm0,slot=0 \
->         -object memory-backend-ram,id=memdimm1,size=134217728 -device pc-dimm,node=0,memdev=memdimm1,id=dimm1,slot=1 \
->         -object memory-backend-ram,id=memdimm2,size=134217728 -device pc-dimm,node=0,memdev=memdimm2,id=dimm2,slot=2 \
->         -object memory-backend-ram,id=memdimm3,size=134217728 -device pc-dimm,node=0,memdev=memdimm3,id=dimm3,slot=3 \
->         -object memory-backend-ram,id=memdimm4,size=134217728 -device pc-dimm,node=1,memdev=memdimm4,id=dimm4,slot=4 \
->         -object memory-backend-ram,id=memdimm5,size=134217728 -device pc-dimm,node=1,memdev=memdimm5,id=dimm5,slot=5 \
->         -object memory-backend-ram,id=memdimm6,size=134217728 -device pc-dimm,node=1,memdev=memdimm6,id=dimm6,slot=6 \
-> 
-> Fixes: 4fbce633910e ("mm/memory_hotplug.c: make register_mem_sect_under_node() a callback of walk_memory_range()")
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Cc: stable@vger.kernel.org
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
+This adds support bindings and support for the TDO TL070WSH30 TFT-LCD panel
+module shipped with the Amlogic S400 Development Kit.
+The panel has a 1024×600 resolution and uses 24 bit RGB per pixel.
+It provides a MIPI DSI interface to the host, a built-in LED backlight
+and touch controller.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Changes since v3 at [3]:
+- reordered tdo vendor prefix
 
-> ---
->  drivers/base/node.c  | 85 ++++++++++++++++++++++++++++----------------
->  include/linux/node.h | 11 +++---
->  mm/memory_hotplug.c  |  3 +-
->  3 files changed, 64 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 508b80f6329b..50af16e68d98 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -761,14 +761,36 @@ static int __ref get_nid_for_pfn(unsigned long pfn)
->  	return pfn_to_nid(pfn);
->  }
->  
-> +static int do_register_memory_block_under_node(int nid,
-> +					       struct memory_block *mem_blk)
-> +{
-> +	int ret;
-> +
-> +	/*
-> +	 * If this memory block spans multiple nodes, we only indicate
-> +	 * the last processed node.
-> +	 */
-> +	mem_blk->nid = nid;
-> +
-> +	ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
-> +				       &mem_blk->dev.kobj,
-> +				       kobject_name(&mem_blk->dev.kobj));
-> +	if (ret)
-> +		return ret;
-> +
-> +	return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
-> +				&node_devices[nid]->dev.kobj,
-> +				kobject_name(&node_devices[nid]->dev.kobj));
-> +}
-> +
->  /* register memory section under specified node if it spans that node */
-> -static int register_mem_sect_under_node(struct memory_block *mem_blk,
-> -					 void *arg)
-> +static int register_mem_block_under_node_early(struct memory_block *mem_blk,
-> +					       void *arg)
->  {
->  	unsigned long memory_block_pfns = memory_block_size_bytes() / PAGE_SIZE;
->  	unsigned long start_pfn = section_nr_to_pfn(mem_blk->start_section_nr);
->  	unsigned long end_pfn = start_pfn + memory_block_pfns - 1;
-> -	int ret, nid = *(int *)arg;
-> +	int nid = *(int *)arg;
->  	unsigned long pfn;
->  
->  	for (pfn = start_pfn; pfn <= end_pfn; pfn++) {
-> @@ -785,38 +807,33 @@ static int register_mem_sect_under_node(struct memory_block *mem_blk,
->  		}
->  
->  		/*
-> -		 * We need to check if page belongs to nid only for the boot
-> -		 * case, during hotplug we know that all pages in the memory
-> -		 * block belong to the same node.
-> -		 */
-> -		if (system_state == SYSTEM_BOOTING) {
-> -			page_nid = get_nid_for_pfn(pfn);
-> -			if (page_nid < 0)
-> -				continue;
-> -			if (page_nid != nid)
-> -				continue;
-> -		}
-> -
-> -		/*
-> -		 * If this memory block spans multiple nodes, we only indicate
-> -		 * the last processed node.
-> +		 * We need to check if page belongs to nid only at the boot
-> +		 * case because node's ranges can be interleaved.
->  		 */
-> -		mem_blk->nid = nid;
-> -
-> -		ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
-> -					&mem_blk->dev.kobj,
-> -					kobject_name(&mem_blk->dev.kobj));
-> -		if (ret)
-> -			return ret;
-> +		page_nid = get_nid_for_pfn(pfn);
-> +		if (page_nid < 0)
-> +			continue;
-> +		if (page_nid != nid)
-> +			continue;
->  
-> -		return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
-> -				&node_devices[nid]->dev.kobj,
-> -				kobject_name(&node_devices[nid]->dev.kobj));
-> +		return do_register_memory_block_under_node(nid, mem_blk);
->  	}
->  	/* mem section does not span the specified node */
->  	return 0;
->  }
->  
-> +/*
-> + * During hotplug we know that all pages in the memory block belong to the same
-> + * node.
-> + */
-> +static int register_mem_block_under_node_hotplug(struct memory_block *mem_blk,
-> +						 void *arg)
-> +{
-> +	int nid = *(int *)arg;
-> +
-> +	return do_register_memory_block_under_node(nid, mem_blk);
-> +}
-> +
->  /*
->   * Unregister a memory block device under the node it spans. Memory blocks
->   * with multiple nodes cannot be offlined and therefore also never be removed.
-> @@ -832,11 +849,19 @@ void unregister_memory_block_under_nodes(struct memory_block *mem_blk)
->  			  kobject_name(&node_devices[mem_blk->nid]->dev.kobj));
->  }
->  
-> -int link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn)
-> +int link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
-> +		      enum meminit_context context)
->  {
-> +	walk_memory_blocks_func_t func;
-> +
-> +	if (context == MEMINIT_HOTPLUG)
-> +		func = register_mem_block_under_node_hotplug;
-> +	else
-> +		func = register_mem_block_under_node_early;
-> +
->  	return walk_memory_blocks(PFN_PHYS(start_pfn),
->  				  PFN_PHYS(end_pfn - start_pfn), (void *)&nid,
-> -				  register_mem_sect_under_node);
-> +				  func);
->  }
->  
->  #ifdef CONFIG_HUGETLBFS
-> diff --git a/include/linux/node.h b/include/linux/node.h
-> index 4866f32a02d8..014ba3ab2efd 100644
-> --- a/include/linux/node.h
-> +++ b/include/linux/node.h
-> @@ -99,11 +99,13 @@ extern struct node *node_devices[];
->  typedef  void (*node_registration_func_t)(struct node *);
->  
->  #if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_NUMA)
-> -extern int link_mem_sections(int nid, unsigned long start_pfn,
-> -			     unsigned long end_pfn);
-> +int link_mem_sections(int nid, unsigned long start_pfn,
-> +		      unsigned long end_pfn,
-> +		      enum meminit_context context);
->  #else
->  static inline int link_mem_sections(int nid, unsigned long start_pfn,
-> -				    unsigned long end_pfn)
-> +				    unsigned long end_pfn,
-> +				    enum meminit_context context)
->  {
->  	return 0;
->  }
-> @@ -128,7 +130,8 @@ static inline int register_one_node(int nid)
->  		if (error)
->  			return error;
->  		/* link memory sections under this node */
-> -		error = link_mem_sections(nid, start_pfn, end_pfn);
-> +		error = link_mem_sections(nid, start_pfn, end_pfn,
-> +					  MEMINIT_EARLY);
->  	}
->  
->  	return error;
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index fc25886ad719..03df20078827 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1080,7 +1080,8 @@ int __ref add_memory_resource(int nid, struct resource *res)
->  	}
->  
->  	/* link memory sections under this node.*/
-> -	ret = link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1));
-> +	ret = link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1),
-> +				MEMINIT_HOTPLUG);
->  	BUG_ON(ret);
->  
->  	/* create new memmap entry */
-> -- 
-> 2.28.0
-> 
+Changes since v2 at [2]:
+- added reset gpio to panel-simple-dsi bindings
+- moved bindings to panel-simple
+- re-ordered prepare/unprepare
+- added back refresh print
+- moved regulator/reset handling in prepare/unprepare
+- aligned remove/shutdown with panel-simple
+- added sentinel comment into dt match table
+
+Changes since v1 at [1]:
+- added missing vendor-prefixes patch
+- removed vrefresh
+- fixed warning on add_panel return
+- removed DRM logging
+
+[1] https://patchwork.freedesktop.org/series/81376/#rev1
+[2] https://patchwork.freedesktop.org/series/81376/#rev2
+[3] https://patchwork.freedesktop.org/series/81376/#rev3
+
+Neil Armstrong (4):
+  dt-bindings: vendor-prefixes: Add Shanghai Top Display
+    Optolelectronics vendor prefix
+  dt-bindings: display: panel-simple-dsi: add optional reset gpio
+  dt-bindings: display: panel-simple-dsi: add TDO TL070WSH30 DSI panel
+    bindings
+  drm: panel: add TDO tl070wsh30 panel driver
+
+ .../display/panel/panel-simple-dsi.yaml       |   3 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/gpu/drm/panel/Kconfig                 |  11 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ drivers/gpu/drm/panel/panel-tdo-tl070wsh30.c  | 250 ++++++++++++++++++
+ 5 files changed, 267 insertions(+)
+ create mode 100644 drivers/gpu/drm/panel/panel-tdo-tl070wsh30.c
 
 -- 
-Michal Hocko
-SUSE Labs
+2.22.0
+
