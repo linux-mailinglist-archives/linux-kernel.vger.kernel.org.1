@@ -2,113 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D3D26ADEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A9026ADEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727871AbgIOTpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbgIOToY (ORCPT
+        id S1727859AbgIOTq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:46:29 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:37658 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727866AbgIOTor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:44:24 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C6FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:44:23 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so4527819wrm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:44:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cc84912ps9QzBUrSER3j4GRi1EEaiC0ms1w3qlDFryQ=;
-        b=aEQyiLWSOdLI4o7RIrCD77KLfP9RTLKwjeaNeEcI7p0ufgj6Cwg0oD/xgFdaGhYEeK
-         teKZXHaAOcOo3CTdOaCNr4PUxQplO9fazQEU/d617gbFnAU7lVzHq9wnWNtakwC2b9G4
-         CaBh6qEHyRCvuew+3cabF3oISRn4cepWn/+gmlYYwGHDPdSijPs45RdJs43GbthH7EHF
-         J5Ez3dnqQcrxn79ysb3lfe4qGZQUM80N6Hfy0rbbJvOH1IyOkDx59k3tJrSTJNJ59BRE
-         R3ExEmZ6iiRzrZ0jNdn3idP7zl/u3JbFLZUkMJfjzl9xZbh/+8328HvAJhp2+U9/JRep
-         SYBQ==
+        Tue, 15 Sep 2020 15:44:47 -0400
+Received: by mail-il1-f193.google.com with SMTP id q4so4192232ils.4;
+        Tue, 15 Sep 2020 12:44:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cc84912ps9QzBUrSER3j4GRi1EEaiC0ms1w3qlDFryQ=;
-        b=kAj/r3vuvwnEJrGgqCuPQBNkj9lU5I5W9csHHwP8G7M2hb24CrlYatjtN/CkphGwEk
-         P+1EVap6vrDMUjJyNeO8HbnCb17OycCETcNHnr1fXrTs+g8tHtn4zXTUwvBDkiP4ZV/C
-         mvS/dHDKhVOJDedn8QkMyrElojT1LpXr6UhVQasbEYt6aGIzU3RhL2ZJ3HEmY1x+v3JL
-         6UpJIpK6Jp0hj9zu9Oh4e0sEQbTT/wTinM/EwsxDwppfw3ZUJoa9lCmlR2PEi4m76yXZ
-         rt5HOd/ahZ9sbwj6MaP+yjYy8w+8zXwiYiOYrs7v0MtObOo+HF82Hxg+AMMJA0qo8zGa
-         xunQ==
-X-Gm-Message-State: AOAM532M7Y8IrKg2eBg29pTsdIDNmuuKUF0A5yeYdFYuemmW00it52RX
-        pIQ31hhQXY9MdEVu+wDgGRbcuG50lQHQkBrpkDg=
-X-Google-Smtp-Source: ABdhPJzOePrptUE3RAcwh0Ybv8+dGJ8Y7Ir6h24d+B4f9X84uHxDb5x1cF2UQnnahPWpshF4Qeh6SmHVUxzfyYLHFhk=
-X-Received: by 2002:adf:dd82:: with SMTP id x2mr24399319wrl.419.1600199062537;
- Tue, 15 Sep 2020 12:44:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ER4i4P91JA8XeWAZ4N8ZnfRej/QPtcJHPmb1yet97nE=;
+        b=Rzlt7slUI+3rF6r/X0uyHdNzX4boWeO4IkzpL5Bg5sjD3ZSaMkdekgPM5hT7USoMWr
+         8+bMvcpcPBks7502iXX+g+0SSiQcCYYvrArgBxrWu2fE6pmfkH6ZDWiB59PoyLhRxeA/
+         duSldmnvRS3/bRQQ7MwoNRrkBGBn377h9w4AiAak/VkoD805fhzmTroUGNA8AD0S+TJ0
+         kvpLm+gQmdUv/I67YjvJrJt/5whYHvVNUq8WtZYVyt/mhVS7VnvHRn7whptQV+q85UUN
+         FF60usxH/08BetwFlldeRt6aE7BR5oF8p0zVKnG7JVraRVq8VEeRkV/adBKu+6iMkMa4
+         eRpA==
+X-Gm-Message-State: AOAM531ZtaAH9g7A7G+tOYhoHddrhoUNYFKjFfQYObWPZKtbwTVrS+HA
+        Dt5MQ4AO9mkeSbLtk0yYy+jHYfPu8ifDAl0=
+X-Google-Smtp-Source: ABdhPJyz1iDGc/LKq9EZm/77LVcAekloomVZDNQC7+Rkm16+Rgx6gE+pqZY0OLcy1zlIyWdkpCIrPA==
+X-Received: by 2002:a05:6e02:e07:: with SMTP id a7mr16855667ilk.277.1600199086466;
+        Tue, 15 Sep 2020 12:44:46 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a23sm7874806ioc.54.2020.09.15.12.44.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 12:44:45 -0700 (PDT)
+Received: (nullmailer pid 2384233 invoked by uid 1000);
+        Tue, 15 Sep 2020 19:44:44 -0000
+Date:   Tue, 15 Sep 2020 13:44:44 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Kukjin Kim <kgene@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-iio@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: exynos-adc: require second
+ interrupt with touch screen
+Message-ID: <20200915194444.GA2384148@bogus>
+References: <20200910161933.9156-1-krzk@kernel.org>
 MIME-Version: 1.0
-References: <20200910032636.27296-1-yuehaibing@huawei.com> <62c4312b-9e92-23bb-0823-7f1aca125c0f@amd.com>
-In-Reply-To: <62c4312b-9e92-23bb-0823-7f1aca125c0f@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 15 Sep 2020 15:44:11 -0400
-Message-ID: <CADnq5_OTqZFZ9urP+aUK+KNuvSpkNSM2m0E4=DZYn4d+uaTS2w@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/amd/display: Fix possible memleak in dp_trigger_hotplug()
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     YueHaibing <yuehaibing@huawei.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Lipski, Mikita" <mikita.lipski@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910161933.9156-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks,
+On Thu, 10 Sep 2020 18:19:32 +0200, Krzysztof Kozlowski wrote:
+> The ADC in S3C/S5P/Exynos SoCs can be used also for handling touch
+> screen.  In such case the second interrupt is required.  This second
+> interrupt can be anyway provided, even without touch screens.  This
+> fixes dtbs_check warnings like:
+> 
+>   arch/arm/boot/dts/s5pv210-aquila.dt.yaml: adc@e1700000: interrupts: [[23], [24]] is too long
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huwei.com>
+> 
+> ---
+> 
+> Changes since v1:
+> 1. Fix if:has-touchscreen, as pointed by Rob.
+> 2. Add Ack.
+> ---
+>  .../bindings/iio/adc/samsung,exynos-adc.yaml       | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
 
-Alex
-
-On Thu, Sep 10, 2020 at 11:34 AM Harry Wentland <harry.wentland@amd.com> wrote:
->
-> On 2020-09-09 11:26 p.m., YueHaibing wrote:
-> > If parse_write_buffer_into_params() fails, we should free
-> > wr_buf before return.
-> >
-> > Fixes: 6f77b2ac6280 ("drm/amd/display: Add connector HPD trigger debugfs entry")
-> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->
-> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
->
-> Harry
->
-> > ---
-> >   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> > index 83da24aced45..11e16fbe484d 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> > @@ -1089,8 +1089,10 @@ static ssize_t dp_trigger_hotplug(struct file *f, const char __user *buf,
-> >       if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
-> >                                               (long *)param, buf,
-> >                                               max_param_num,
-> > -                                             &param_nums))
-> > +                                             &param_nums)) {
-> > +             kfree(wr_buf);
-> >               return -EINVAL;
-> > +     }
-> >
-> >       if (param_nums <= 0) {
-> >               DRM_DEBUG_DRIVER("user data not be read\n");
-> >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Reviewed-by: Rob Herring <robh@kernel.org>
