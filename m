@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B49E26AA35
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A823326AA45
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgIORF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbgIOQUD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:20:03 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF67C0611BC;
-        Tue, 15 Sep 2020 09:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=gtbrt8dJvKGHqvO+xWVhJDadXOXm7TXL2RE8ocfRdrU=; b=YqV8EnuDoph6ku6oHt9bx4qUwH
-        KCZuDIAfFZknOwjfV+X/HK/ns4hKfz+uJoTC0Dg/MiUtHBr/U3QjAmuqYuF0IriwVx9ktkYnJtyWe
-        q0U+yndgpPFNawlhOeefRJi7NmEX3tz1to/MpP8mBy6agxzAxzN5gpuwMEolreI1xu3kZICFJZ03M
-        Rsz9WpOpYypQrogf3aEzzzzp4SvhUCMYp4g2YkdJn5w6Cj8mj6HjVdDZTzoVuC0AeyBFktr5xDn6v
-        t/0m1BM8miYt+1+xl5yDYv5nAsskVRWIpiWdx00+BuANy7G7O6bQtgsIfTg+sXt9mpH/B/f1PEKHc
-        EaY3jqbA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIDgS-0000iB-7x; Tue, 15 Sep 2020 16:19:56 +0000
-Subject: Re: [External] Re: [PATCH v4] mm: memcontrol: Add the missing
- numa_stat interface for cgroup v2
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <20200915055825.5279-1-songmuchun@bytedance.com>
- <a3e2a7bf-ae5a-9ca8-74f9-57af795f0380@infradead.org>
- <CAMZfGtVQtsFmU_5DVSZ1mFCnqZrPHrJFKT81Zg8TXDM7c74TDQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f2ec1c19-b86b-887e-186a-3a8c3014857d@infradead.org>
-Date:   Tue, 15 Sep 2020 09:19:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727777AbgIORNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:13:34 -0400
+Received: from verein.lst.de ([213.95.11.211]:48397 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727666AbgIOQXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:23:43 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id ABD1568AFE; Tue, 15 Sep 2020 18:23:39 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 18:23:39 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 3/4] lib/scatterlist: Add support in
+ dynamic allocation of SG table from pages
+Message-ID: <20200915162339.GC24320@lst.de>
+References: <20200910134259.1304543-1-leon@kernel.org> <20200910134259.1304543-4-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtVQtsFmU_5DVSZ1mFCnqZrPHrJFKT81Zg8TXDM7c74TDQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200910134259.1304543-4-leon@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 9:01 AM, Muchun Song wrote:
-> On Tue, Sep 15, 2020 at 11:45 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
+> +#ifndef CONFIG_ARCH_NO_SG_CHAIN
+> +struct scatterlist *sg_alloc_table_append(
+> +	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
+> +	unsigned int offset, unsigned long size, unsigned int max_segment,
+> +	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages);
+> +#endif
 
->>> +static int __init numa_stats_init(void)
->>> +{
->>> +     int i;
->>> +
->>> +     for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
->>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>> +             if (numa_stats[i].idx == NR_ANON_THPS)
->>> +                     numa_stats[i].ratio = HPAGE_PMD_SIZE;
->>> +#endif
->>> +     }
->>
->> Although the loop may be needed sometime in the future due to
->> other changes.. why couldn't it be like this for now?
-> 
-> The compiler is so smart, so there is nothing difference between
-> them. I disassemble the numa_stats_init when
-> !CONFIG_TRANSPARENT_HUGEPAGE.
-> 
-> Dump of assembler code for function numa_stats_init:
->    0xffffffff8273b061 <+0>: callq  0xffffffff81057490 <__fentry__>
->    0xffffffff8273b066 <+5>: xor    %eax,%eax
->    0xffffffff8273b068 <+7>: retq
-> 
+Odd indentation here, we either do two tabs (my preference) or aligned
+to the opening brace (what you seem to be doing elsewhere in the series).
 
-Of course!  Thanks.
+> +	/* Check if last entry should be keeped for chainning */
+> +	next_sg = sg_next(prv);
+> +	if (!sg_is_last(next_sg) || left_npages == 1)
+> +		return next_sg;
+> +
+> +	ret = sg_alloc_next(table, next_sg,
+> +			    min_t(unsigned long, left_npages,
+> +				  SG_MAX_SINGLE_ALLOC),
+> +			    SG_MAX_SINGLE_ALLOC, gfp_mask);
 
->>
->>
->>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>> +     for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
->>> +             if (numa_stats[i].idx == NR_ANON_THPS)
->>> +                     numa_stats[i].ratio = HPAGE_PMD_SIZE;
->>> +     }
->>> +#endif
->>
->>
->>> +
->>> +     return 0;
->>> +}
->>> +pure_initcall(numa_stats_init);
+Do we even need the sg_alloc_next helper added in the last patch,
+given that this fairly simple function is the only caller?
 
+> +static struct scatterlist *alloc_from_pages_common(
+> +	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
+> +	unsigned int offset, unsigned long size, unsigned int max_segment,
+> +	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages)
 
--- 
-~Randy
+Same strange one tab indent as above.
 
+> +#ifndef CONFIG_ARCH_NO_SG_CHAIN
+> +/**
+> + * sg_alloc_table_append - Allocate and initialize an sg table from
+> + *                         an array of pages
+> + * @sgt:	 The sg table header to use
+> + * @pages:	 Pointer to an array of page pointers
+> + * @n_pages:	 Number of pages in the pages array
+> + * @offset:      Offset from start of the first page to the start of a buffer
+> + * @size:        Number of valid bytes in the buffer (after offset)
+> + * @max_segment: Maximum size of a scatterlist node in bytes (page aligned)
+> + * @gfp_mask:	 GFP allocation mask
+> + * @prv:	 Last populated sge in sgt
+> + * @left_pages:  Left pages caller have to set after this call
+> + *
+> + *  Description:
+> + *    If @prv is NULL, it allocates and initialize an sg table from a list of
+> + *    pages. Contiguous ranges of the pages are squashed into a single
+> + *    scatterlist node up to the maximum size specified in @max_segment. A user
+> + *    may provide an offset at a start and a size of valid data in a buffer
+> + *    specified by the page array. A user may provide @append to chain pages
+> + *    to last entry in sgt. The returned sg table is released by sg_free_table.
+> + *
+> + * Returns:
+> + *   Last SGE in sgt on success, negative error on failure.
+> + *
+> + * Notes:
+> + *   If this function returns non-0 (eg failure), the caller must call
+> + *   sg_free_table() to cleanup any leftover allocations.
+> + */
+> +struct scatterlist *sg_alloc_table_append(
+> +	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
+> +	unsigned int offset, unsigned long size, unsigned int max_segment,
+> +	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages)
+
+One-tab indent again.
+
+> +{
+> +	return alloc_from_pages_common(sgt, pages, n_pages, offset, size,
+> +				       max_segment, gfp_mask, prv, left_pages);
+> +}
+> +EXPORT_SYMBOL_GPL(sg_alloc_table_append);
+> +#endif
+
+So there reason I suggested to not provide sg_alloc_table_append
+if CONFIG_ARCH_NO_SG_CHAIN was set was to avoid the extra
+alloc_from_pages_common helper.  It might be better to move to your
+run-time check and just make it conditіtional on a non-NULL prv pointer,
+which would allow us to merge alloc_from_pages_common into
+sg_alloc_table_append.  Sorry for leading you down this path.
