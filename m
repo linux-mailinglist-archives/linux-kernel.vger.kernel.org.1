@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31EA26B6C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A5626B686
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbgIPAKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:10:33 -0400
-Received: from verein.lst.de ([213.95.11.211]:47944 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726395AbgIOO0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:26:50 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9107768BFE; Tue, 15 Sep 2020 16:26:25 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 16:26:24 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Thomas Tai <thomas.tai@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, konrad.wilk@oracle.com,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dma-direct: Fix potential NULL pointer dereference
-Message-ID: <20200915142624.GA16005@lst.de>
-References: <1600178594-22801-1-git-send-email-thomas.tai@oracle.com> <20200915140719.GA14831@lst.de> <f5cba632-421a-f375-3697-51a182a53a32@oracle.com>
+        id S1727068AbgIPAGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:06:52 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:21867 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbgIOO2h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:28:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600180117; x=1631716117;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=i/LZXWaJ7nuQEk6+7RdDEQBLAnsXNpBBc/8bshAm45Q=;
+  b=Ht2+qVZZIv6P5RxaVJK7MiOPjIuAp/TMXaJ44A4eYJiEhQqg5EE9y3vP
+   L5ECbV45okDQMAfzFHxS1ZzcF7EA4hylxxvkzcYR08NIshNYGzdB9vmjP
+   HXUoYrwx2eppnudfqbhg1LzaY0PsFeb6gffz+YKVvktMKLQvh/XH1AuR+
+   8=;
+X-IronPort-AV: E=Sophos;i="5.76,430,1592870400"; 
+   d="scan'208";a="54074202"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 15 Sep 2020 14:27:11 +0000
+Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id AE2F9A1DEB;
+        Tue, 15 Sep 2020 14:26:59 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.35) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 15 Sep 2020 14:26:46 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Marco Elver <elver@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>, <mark.rutland@arm.com>,
+        <linux-doc@vger.kernel.org>, <peterz@infradead.org>,
+        <catalin.marinas@arm.com>, <dave.hansen@linux.intel.com>,
+        <linux-mm@kvack.org>, <edumazet@google.com>, <glider@google.com>,
+        <hpa@zytor.com>, <cl@linux.com>, <will@kernel.org>,
+        <corbet@lwn.net>, <x86@kernel.org>, <kasan-dev@googlegroups.com>,
+        <mingo@redhat.com>, <dvyukov@google.com>, <rientjes@google.com>,
+        <aryabinin@virtuozzo.com>, <keescook@chromium.org>,
+        <paulmck@kernel.org>, <jannh@google.com>, <andreyknvl@google.com>,
+        <cai@lca.pw>, <luto@kernel.org>, <tglx@linutronix.de>,
+        <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <penberg@kernel.org>, <bp@alien8.de>, <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
+Date:   Tue, 15 Sep 2020 16:26:31 +0200
+Message-ID: <20200915142631.31234-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200915141449.GA3367763@elver.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5cba632-421a-f375-3697-51a182a53a32@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.35]
+X-ClientProxiedBy: EX13D34UWC003.ant.amazon.com (10.43.162.66) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:11:51AM -0400, Thomas Tai wrote:
->
->
-> On 2020-09-15 10:07 a.m., Christoph Hellwig wrote:
->> On Tue, Sep 15, 2020 at 08:03:14AM -0600, Thomas Tai wrote:
->>> When booting the kernel v5.9-rc4 on a VM, the kernel would panic when
->>> printing a warning message in swiotlb_map(). It is because dev->dma_mask
->>> can potentially be a null pointer. Using the dma_get_mask() macro can
->>> avoid the NULL pointer dereference.
->>
->> dma_mask must not be zero.  This means drm is calling DMA API functions
->> on something weird.  This needs to be fixed in the caller.
->>
->
-> Thanks, Christoph for your comment. The caller already fixed the null 
-> pointer in the latest v5.9-rc5. I am thinking that if we had used the 
-> dma_get_mask(), the kernel couldn't panic and could properly print out the 
-> warning message.
+On Tue, 15 Sep 2020 16:14:49 +0200 Marco Elver <elver@google.com> wrote:
 
-If we want to solve this something like this patch is probably the
-right way:
+> On Tue, Sep 15, 2020 at 03:57PM +0200, SeongJae Park wrote:
+> [...]
+> > 
+> > So interesting feature!  I left some tirvial comments below.
+> 
+> Thank you!
+[...]
+> > > +
+> > > +	/* Only call with a pointer into kfence_metadata. */
+> > > +	if (KFENCE_WARN_ON(meta < kfence_metadata ||
+> > > +			   meta >= kfence_metadata + ARRAY_SIZE(kfence_metadata)))
+> > 
+> > Is there a reason to use ARRAY_SIZE(kfence_metadata) instead of
+> > CONFIG_KFENCE_NUM_OBJECTS?
+> 
+> They're equivalent. We can switch it. (Although I don't see one being
+> superior to the other.. maybe we save on compile-time?)
+
+I prefer CONFIG_KFENCE_NUM_OBJECTS here just because it's more widely used in
+the code.  Also, I personally think it's more easy to read.
+
+[...]
+> > > +	pr_info("initialized - using %zu bytes for %d objects", KFENCE_POOL_SIZE,
+> > > +		CONFIG_KFENCE_NUM_OBJECTS);
+> > > +	if (IS_ENABLED(CONFIG_DEBUG_KERNEL))
+> > > +		pr_cont(" at 0x%px-0x%px\n", (void *)__kfence_pool,
+> > > +			(void *)(__kfence_pool + KFENCE_POOL_SIZE));
+> > 
+> > Why don't you use PTR_FMT that defined in 'kfence.h'?
+> 
+> It's unnecessary, since all this is conditional on
+> IS_ENABLED(CONFIG_DEBUG_KERNEL)) and we can just avoid the indirection
+> through PTR_FMT.
+
+Ok, agreed.
+
+[...]
+> > > +	for (skipnr = 0; skipnr < num_entries; skipnr++) {
+> > > +		int len = scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skipnr]);
+> > > +
+> > > +		/* Depending on error type, find different stack entries. */
+> > > +		switch (type) {
+> > > +		case KFENCE_ERROR_UAF:
+> > > +		case KFENCE_ERROR_OOB:
+> > > +		case KFENCE_ERROR_INVALID:
+> > > +			if (!strncmp(buf, KFENCE_SKIP_ARCH_FAULT_HANDLER, len))
+> > 
+> > Seems KFENCE_SKIP_ARCH_FAULT_HANDLER not defined yet?
+> 
+> Correct, it'll be defined in <asm/kfence.h> in the x86 and arm64
+> patches. Leaving this is fine, since no architecture has selected
+> HAVE_ARCH_KFENCE in this patch yet; as a result, we also can't break the
+> build even if this is undefined.
+
+Ah, got it.  Thank you for the kind explanation.
 
 
+Thanks,
+SeongJae Park
 
-diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-index 6e87225600ae35..064870844f06c1 100644
---- a/include/linux/dma-direct.h
-+++ b/include/linux/dma-direct.h
-@@ -62,9 +62,6 @@ static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size,
- {
- 	dma_addr_t end = addr + size - 1;
- 
--	if (!dev->dma_mask)
--		return false;
--
- 	if (is_ram && !IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT) &&
- 	    min(addr, end) < phys_to_dma(dev, PFN_PHYS(min_low_pfn)))
- 		return false;
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index 0d129421e75fc8..2b01d8f7baf160 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -144,6 +144,10 @@ dma_addr_t dma_map_page_attrs(struct device *dev, struct page *page,
- 	dma_addr_t addr;
- 
- 	BUG_ON(!valid_dma_direction(dir));
-+
-+	if (WARN_ON_ONCE(!dev->dma_mask))
-+		return DMA_MAPPING_ERROR;
-+
- 	if (dma_map_direct(dev, ops))
- 		addr = dma_direct_map_page(dev, page, offset, size, dir, attrs);
- 	else
-@@ -179,6 +183,10 @@ int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
- 	int ents;
- 
- 	BUG_ON(!valid_dma_direction(dir));
-+
-+	if (WARN_ON_ONCE(!dev->dma_mask))
-+		return 0;
-+
- 	if (dma_map_direct(dev, ops))
- 		ents = dma_direct_map_sg(dev, sg, nents, dir, attrs);
- 	else
-@@ -217,6 +225,9 @@ dma_addr_t dma_map_resource(struct device *dev, phys_addr_t phys_addr,
- 	if (WARN_ON_ONCE(pfn_valid(PHYS_PFN(phys_addr))))
- 		return DMA_MAPPING_ERROR;
- 
-+	if (WARN_ON_ONCE(!dev->dma_mask))
-+		return DMA_MAPPING_ERROR;
-+
- 	if (dma_map_direct(dev, ops))
- 		addr = dma_direct_map_resource(dev, phys_addr, size, dir, attrs);
- 	else if (ops->map_resource)
+> 
+> Thanks,
+> -- Marco
