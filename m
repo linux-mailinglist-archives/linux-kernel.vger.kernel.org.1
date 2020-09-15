@@ -2,69 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E50826ADE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F4226ADE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgIOTpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727924AbgIOTnf (ORCPT
+        id S1727637AbgIOTpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:45:00 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:36266 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727917AbgIOTnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 15:43:35 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B88C06178B;
-        Tue, 15 Sep 2020 12:43:30 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id j2so4196703eds.9;
-        Tue, 15 Sep 2020 12:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wcSO66tZ1+449n/ove9k/zl/ZApYu1cOtIa7l/SoDz4=;
-        b=J2hKvjCgngd5ccVeeKAhzqduSNgyZjcUl4Z9d+mXzTCN4siCjHc6qQgQFmuhJiZE1B
-         LbICe2Bc8o7RJNMKKwBmcNLjTMbFz2XTyK+ZRmeOz2Rt1rMA6Hw6iMqFbXqbhn6RCmig
-         6gi8M1Y2n0PQ9kE9WgCXl3Ohq6ai1dXRupaw33L07F2D+BNA9thfaK1RNU+7GVSZDW/U
-         qf8P60DBli6UxYR53+O7EjEuEdY+ubNAXoUlok7uQWEK5ALOiU1OchBpG6pmunsEKzzw
-         7cF4VXegLKExCx1yYGk+wzAslxFuGxT8uX6e+3lvRqxohdWYJqPgEfDJDo6acs0e0ch9
-         tjTQ==
+Received: by mail-io1-f67.google.com with SMTP id d190so5491148iof.3;
+        Tue, 15 Sep 2020 12:43:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wcSO66tZ1+449n/ove9k/zl/ZApYu1cOtIa7l/SoDz4=;
-        b=H1zJ0jqvAhoNhr30eha8cVr895Sfo9u7md6AE9YbDsRJhOr7h207oKEAymKH8GWjBu
-         CJrS4PDrryyIQlHGZiYge6874V8qqRgWnZ+fgMCWarA+0EQdH/N4dtLUfnX2wJIGa2dU
-         WyWzJGLpueh5p/d8eJIZHe6+kRlNySURnZtlaJn3jq0sUl63iCVOdnaCuSesQCzAWYKc
-         uajlamsxSOuon+gsLjMq4DYAAE3+VpcI5t8pxY49f50ABEKN0wJ6WvGvZAviSWLfr8Qw
-         AC8zuMJcUlRHuI99IFN/UUmzU77syhKv3Q9fqE++RqxCvqva998BP5uskX9Co2Qq4/8S
-         PRXQ==
-X-Gm-Message-State: AOAM531uIPgJE7obIKWnPX5GucrhE+7hk3cJWGoufhH3itsJTt0nabvC
-        +NbjAGHQ99FRg/+P8iIwSC2jZvtiWcrGrdtkc65icpxLzb8=
-X-Google-Smtp-Source: ABdhPJxrRIfLMWTyAPVPBm1cJsmzAyW4ujVnPid9dKUNUoxBOMKBx1oz+uRocPLFv5HVc3Ukz/w/DdLDfKDIfquMcEw=
-X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr23632046edb.143.1600199009281;
- Tue, 15 Sep 2020 12:43:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eRZQhzTMmUeiuKlmoGBp2VVdP4CJK3/kYrIG+y2NeFo=;
+        b=FndszHdbYrZQNqsIosY+6r7P27hHS3zIteobKpRLAgbLBm1LfZsUS/3bT3leDHF258
+         bc+lSdyJ9f/xzo90Wv5IrQkuRxZSsdceqf1M3CLMWZl/VdrT2nMIzwZLNulnxX9LlEsd
+         f/QHhFv9EQXK214jl1FS0zCr7CbZ8//z/kCi9grbFDz/odfwltokEm5oPMCWCyZEiJvK
+         4tb0ylNqJltPAc6pFbxvCoIVTQGog2ps4vFFhJKsinDD0KVMtMcWtJN8uCLV1bf35LB9
+         pVyqH97OboEyonATKZGBtuCC09N9tFhIHHy+WW7U5SvF/H/7an7pWuJPJShu9hEW4h+L
+         Emeg==
+X-Gm-Message-State: AOAM531x3Qc+JwfFx8LHiisVMwsflab2cE8KJUxWymNZIMhR8NMdAXil
+        BLS/4luLWAOuiF39eYK7Fg==
+X-Google-Smtp-Source: ABdhPJxnXWTYKNffPmeuhGOFEm7G5Yf/fEtWzDxYMOeM7FZMNDfZGxx3N8Ni10M0QTyXrE9I8ZxqQA==
+X-Received: by 2002:a6b:700f:: with SMTP id l15mr16331604ioc.168.1600199006137;
+        Tue, 15 Sep 2020 12:43:26 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id n68sm9704118ila.43.2020.09.15.12.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 12:43:25 -0700 (PDT)
+Received: (nullmailer pid 2381919 invoked by uid 1000);
+        Tue, 15 Sep 2020 19:43:24 -0000
+Date:   Tue, 15 Sep 2020 13:43:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Wolfram Sang <wolfram@the-dreams.de>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] dt-bindings: i2c: imx: Add properties and use
+ unevaluatedProperties
+Message-ID: <20200915194324.GA2379924@bogus>
+References: <20200910182244.5815-1-krzk@kernel.org>
+ <20200910182244.5815-3-krzk@kernel.org>
 MIME-Version: 1.0
-References: <20200904161654.24141-1-narmstrong@baylibre.com> <20200904161654.24141-2-narmstrong@baylibre.com>
-In-Reply-To: <20200904161654.24141-2-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 15 Sep 2020 21:43:18 +0200
-Message-ID: <CAFBinCC4gy5zksKPrs4t0yu3U+4rFGy90BHRduQ4wyUOv2x_Nw@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/2] dt-bindings: power: amlogic, meson-ee-pwrc:
- add Amlogic AXG power controller bindings
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com, devicetree@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910182244.5815-3-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 6:17 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> This adds the bindings of the Power Controller found in the Amlogic AXG SoCs.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Thu, Sep 10, 2020 at 08:22:43PM +0200, Krzysztof Kozlowski wrote:
+> Additional properties actually might appear (e.g. power-domains) so
+> describe all typical properties, reference generic i2c schema and use
+> unevaluatedProperties to fix dtbs_check warnings like:
+> 
+>   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: i2c@30a20000:
+>     '#address-cells', '#size-cells', 'pmic@25' do not match any of the regexes: 'pinctrl-[0-9]+'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> ---
+> 
+> Changes since v2:
+> 1. None
+> 
+> Changes since v1:
+> 1. Add more properties and include /schemas/i2c/i2c-controller.yaml#
+> ---
+>  Documentation/devicetree/bindings/i2c/i2c-imx.yaml | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx.yaml b/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
+> index 810536953177..19c9daba6e9f 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
+> @@ -9,6 +9,9 @@ title: Freescale Inter IC (I2C) and High Speed Inter IC (HS-I2C) for i.MX
+>  maintainers:
+>    - Wolfram Sang <wolfram@the-dreams.de>
+>  
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +
+>  properties:
+>    compatible:
+>      oneOf:
+> @@ -38,6 +41,9 @@ properties:
+>                - fsl,imx8mp-i2c
+>            - const: fsl,imx21-i2c
+>  
+> +  '#address-cells': true
+> +  '#size-cells': true
+
+Drop these.
+
+> +
+>    reg:
+>      maxItems: 1
+>  
+> @@ -75,7 +81,7 @@ required:
+>    - interrupts
+>    - clocks
+>  
+> -additionalProperties: false
+> +unevaluatedProperties: false
+>  
+>  examples:
+>    - |
+> -- 
+> 2.17.1
+> 
