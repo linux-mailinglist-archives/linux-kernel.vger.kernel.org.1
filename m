@@ -2,192 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42CA26B038
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CACB26B027
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbgIOWEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
+        id S1727334AbgIOWCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgIOVN1 (ORCPT
+        with ESMTP id S1728046AbgIOVQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 17:13:27 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986CEC06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:13:14 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id l71so163309pge.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:13:14 -0700 (PDT)
+        Tue, 15 Sep 2020 17:16:24 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1D9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:16:23 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id p20so3107740qvl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 14:16:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QNSeN+6ns4NcR6aRqapmefDb08KgJSUKumeh/J+1Z+Y=;
-        b=g5wkGJvCJEDe1SMhGpVw9GDV0A0nY5JoA7VASZT1Z3qoRtyPab0IkCh7lIrCK2dQdf
-         xEmk0BDhCCmuYKOpWJZet9cLL2kbqB+c/N+HyKetfeYJuuwf/M0iPN1WYuRPxqmj5/8W
-         yvCL+E8mbbdYjX4hMSEtTSSG7WXoW8Qv46KvfMn8mkPQonQgjWorME0OLHBiN/d2qvSH
-         EkSETVry79QJ90oQtRhKLahgQtaj6PyzZduSEYPWKY2JNw8NhF4M0eRBmH9F8Hda1X3j
-         /+YNTiR8AmHj53pD40uo4eQebOtTJxaSCbrvw8hM+MTtOpaQUMteAmbxEh/YYailcmV5
-         9IIw==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=mLPMK4MCVaMfW1ExHIuH+/iSqevGe2FtNCbwS1lUn8o=;
+        b=VNWaSIVTN/hY29M+g6/mna6fCs6sSWl/V8UrBXz7qIpv2xqAsiPQD19JZ4fj/JijVg
+         y7wUNQn2Ql1W1x3o+x7zX5fYmrPshnVGFIMDWQP4ZJ7vpvKQseuGbRUnmiEg+jLqfQfC
+         9YkSHJPuwfo0lmO5PnjOInliFUiWhfcQklVv4QHZEf9q7NnRshSKFzBFXG0dqtZ682sz
+         nDedvZ5dNaYQO7d2STY5rB5dUMdazXCZZmNou338XujSDiCCPSf65lWucf6vwhzGy46d
+         YBcycyYubrMgcsG6rLuFtUXELOrxEl01SgZ0xnZUEllm3v+BbKkClip8JhLFDpIMBLry
+         jIOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QNSeN+6ns4NcR6aRqapmefDb08KgJSUKumeh/J+1Z+Y=;
-        b=dGM/BeMPJNUAUAw5KYk2rFPNpy1X4KoQvhw7LMB1UKXG7dTQiJpB+K89qZHyIw2QuE
-         MbsghMWLiAbK4o1ICh6i4yx8HeqQTdvDxlZQ1nj/HJX3tiS4zKAuJpemGu3B8ZEO38O1
-         1bmVFZ0o46PI8aVfWk+Y7aeeU5wrulbypqkFftCpds01D0gwFwnxStDiYNO8gf7aKuhy
-         VyyN15qqdBq1KtSTjWBv4uEWGcX4UpasF0W9GBj8VxqgfyAuvUqyKkHuWUInaWdvVfKQ
-         SE22ntdvsVizLupR3MavJbsPI7qIj1lay6ifec6aqQLir+amH06ih7k6Oiwt6tvZ3xwp
-         paWQ==
-X-Gm-Message-State: AOAM532xWN647g9loTvbXqDL9XSaQWsvfG1Zbk+hiwENRyBv4MNiBKIW
-        oH8LiI79ivJWI6C9fvV/HLPQ52P8Y+OITbPN5vGK/A==
-X-Google-Smtp-Source: ABdhPJyfLuK3tcUMJiaFaerq9akmwQeVVIhJt3PZJvdUYoOc12LgUt09WfrbQCVp/n8ciG8+dutvTDYnuJ/+YYes4LY=
-X-Received: by 2002:aa7:99c2:0:b029:142:440b:fa28 with SMTP id
- v2-20020aa799c20000b0290142440bfa28mr327604pfi.30.1600204393819; Tue, 15 Sep
- 2020 14:13:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble> <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 15 Sep 2020 14:13:01 -0700
-Message-ID: <CAKwvOdmNzapwEo26m0soAR2OLFxOoERPKbKgvQ0bfoqjNkEVCg@mail.gmail.com>
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, Marco Elver <elver@google.com>
-Cc:     Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@arndb.de>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=mLPMK4MCVaMfW1ExHIuH+/iSqevGe2FtNCbwS1lUn8o=;
+        b=qHjSLB8fiIGFZUQIwMBwkT/UD1JZucSpm8jfVV4MnspudNNC+PG5XJDOAaKm5EZZsU
+         2BmR2xY1auxYiaYKE9T+eb+1mHad9e3Vfm6YnSUkTstokOV/wpTCWo9JycpbEzxpPMKA
+         T75QKJKEVT3tHHZpW+KtARsCLG/XRlyfS5KfrW2/igJGNwkF6vm9mugaowXNrPXQtLS9
+         VTjFwkZM3pfvcwhfhsvZt1uoIM+al6oUf4oZ3tjlQftHO+zjKlsT9yu9ITRwxwUnx+bO
+         ePaiR0/npsCzYT7WEdaytQdOOMkWKNqlOj1aLw/qWi3M6b4I8iFI7doJjJojFLnaI9cO
+         cNDQ==
+X-Gm-Message-State: AOAM532oSiPEB8EWQWPiL5+ft9ex2BIECekIx62fgTRKO6g8uJLmVhRo
+        YBGXR6YN2qyu8v+xfssNjF32tqtkvdTJBVts
+X-Google-Smtp-Source: ABdhPJyO9xM7CLluykFhwuM9eiIGVOlzaxETMk0Z6eu0LBMdYfeUTKPUVtqZ7FrFrVljPK3QFg3cjE4ndWeAi5Me
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a0c:9cc6:: with SMTP id
+ j6mr3771581qvf.60.1600204582782; Tue, 15 Sep 2020 14:16:22 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 23:15:42 +0200
+Message-Id: <cover.1600204505.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [PATCH v2 00/37] kasan: add hardware tag-based mode for arm64
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 1:12 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Tue, Sep 15, 2020 at 10:02 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Tue, Sep 15, 2020 at 06:05:54PM +0200, Borislav Petkov wrote:
-> > > On Tue, Sep 15, 2020 at 10:18:16PM +0800, Rong Chen wrote:
-> > > > On Tue, Sep 15, 2020 at 03:55:19PM +0200, Borislav Petkov wrote:
-> > > > > On Tue, Sep 15, 2020 at 09:42:56PM +0800, kernel test robot wrote:
-> > > > > > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  x86/seves
-> > > > > > branch HEAD: e6eb15c9ba3165698488ae5c34920eea20eaa38e  KVM: nSVM: Avoid freeing uninitialized pointers in svm_set_nested_state()
-> > > > > >
-> > > > > > Warning in current branch:
-> > > > > >
-> > > > > > arch/x86/kernel/sev-es.o: warning: objtool: ist_exc_vmm_communication()+0x12: unreachable instruction
-> > > > > >
-> > > > > > Warning ids grouped by kconfigs:
-> > > > > >
-> > > > > > clang_recent_errors
-> > > > > > `-- x86_64-randconfig-r001-20200913
-> > > > > >     `-- arch-x86-kernel-sev-es.o:warning:objtool:ist_exc_vmm_communication():unreachable-instruction
-> > >
-> > > Ok, I can't trigger this with gcc-9, gcc-10 and clang-10.
-> > >
-> > > .config below says clang-12 so it could be some experimental
-> > > bug^Wfeature :)
-> > >
-> > > peterz says this has been fixed by:
-> > >
-> > > 318af7b80b6a ("Revert "kbuild: use -flive-patching when CONFIG_LIVEPATCH is enabled"")
-> > >
-> > > but that was reportedly for gcc.
-> > >
-> > > Lemme Cc the people of interest and leave the rest in here for
-> > > reference. Note that CONFIG_LIVEPATCH is enabled in that .config.
-> >
-> > If somebody can share the .o file, I can take a look.
->
-> Taking a look at the latest report of unreachable instruction from
-> objtool from 0day bot:
-> https://groups.google.com/g/clang-built-linux/c/IbF96FeMT8g
->
-> $ cd /tmp
-> $ git clone --depth=1
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git --branch
-> x86/seves
-> $ cd tip
-> $ gunzip <attached config.gz>
-> $ cp config .config
-> $ make LLVM=1 -j71 2> log.txt
-> $ grep warning: log.txt | cut -d ' ' -f 2- | sort | uniq -c
->    3737 warning: objtool: asan.module_ctor()+0xc: call without frame
-> pointer save/setup
->    3737 warning: objtool: asan.module_dtor()+0xc: call without frame
-> pointer save/setup
->       1 warning: objtool: early_alloc()+0x6b: unreachable instruction
->       1 warning: objtool: ist_exc_vmm_communication()+0x12:
-> unreachable instruction
->       1 warning: objtool: kmem_cache_create_usercopy()+0x286:
-> unreachable instruction
->       1 warning: objtool: oops_end()+0xc1: unreachable instruction
->       1 warning: objtool: __register_nosave_region()+0x87: unreachable
-> instruction
-> $ ag ist_exc_vmm_communication
-> arch/x86/kernel/sev-es.c
-> 1351:           ist_exc_vmm_communication(regs, error_code);
-> $ gzip -9 arch/x86/kernel/sev-es.o
-> <attached>
->
-> If I remove CONFIG_KASAN=y, I actually get way more unreachable
-> instruction failures!  Let me play with
-> tools/testing/ktest/config-bisect.pl and see if I can narrow down the
-> set of configs from the randconfig.  Also, it's possible that there's
-> more than one bug here.
+This patchset adds a new hardware tag-based mode to KASAN [1]. The new mode
+is similar to the existing software tag-based KASAN, but relies on arm64
+Memory Tagging Extension (MTE) [2] to perform memory and pointer tagging
+(instead of shadow memory and compiler instrumentation).
 
-tools/testing/ktest/config-bisect.pl narrowed this down to:
+This patchset is co-developed by
+Vincenzo Frascino <vincenzo.frascino@arm.com>.
 
-%%%%%%%% FAILED TO FIND SINGLE BAD CONFIG %%%%%%%%
-Hmm, can't make any more changes without making good == bad?
-Difference between good (+) and bad (-)
- UBSAN_TRAP n -> y
-+UBSAN_ALIGNMENT=n
-See good and bad configs for details:
-good: /tmp/x86/tip/good.config.tmp
-bad:  /tmp/x86/tip/bad.config.tmp
-%%%%%%%% FAILED TO FIND SINGLE BAD CONFIG %%%%%%%%
+This patchset is available here:
 
-(Though confirming this, I only need defconfig+CONFIG_UBSAN to repro)
+https://github.com/xairy/linux/tree/up-kasan-mte-v2
 
-For folks that know how to run tools/testing/ktest/config-bisect.pl,
-skip this next section, more so notes to future self and others on our
-mailing list to learn how to run this. Arnd Bergmann taught me about
-this.
-$ cp config_from_0day bad.config
-$ make LLVM=1 -j71 defconfig
-$ cp .config good.config
-$ ./tools/testing/ktest/config-bisect.pl good.config bad.config
-1: $ make LLVM=1 -j71 clean bzImage 2> log.txt
-2: $ grep warning: log2.txt | cut -d ' ' -f 2- | sort | uniq -c | grep
-"unreachable instruction"
-if !$ == 0:
-tools/testing/ktest/config-bisect.pl good.config bad.config good
-else:
-tools/testing/ktest/config-bisect.pl good.config bad.config bad
-if not finished:
-  goto 1
+and has also been uploaded to the Linux kernel Gerrit instance:
 
-Triple checking what I wrote above; it looks like the randconfig had
-BOTH CONFIG_KASAN=y and CONFIG_UBSAN=y enabled.  Aren't the sanitizers
-supposed to be mutually exclusive?  If so, we should ensure that via
-kconfig these can't be selected together via randconfig.
+https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/2700
 
-Another peculiarity I noticed was that it seems that enabling
-CONFIG_UBSAN_TRAP=y doesn't allow me to select
-CONFIG_UBSAN_ALIGNMENT=y.  Is that intentional? (Looks like it
-lib/Kconfig.ubsan:74).
+This patchset is based on the v10 of the user MTE patchset [3].
 
-There was actually another thread about CONFIG_UBSAN_TRAP and Clang
-today, related to arm64 virtualization extensions.
-https://lore.kernel.org/linux-arm-kernel/CANpmjNPpq7LfTHYesz2wTVw6Pqv0FQ2gc-vmSB6Mdov+XWPZiw@mail.gmail.com/T/#u
+This patchset essentially consists of four parts:
+
+1. Rework KASAN code to allow easier integration of the hardware tag-based
+   mode.
+2. Introduce config option for the new mode.
+3. Introduce core in-kernel MTE routines.
+4. Combine the previous parts together to implement the new mode.
+
+For testing in QEMU hardware tag-based KASAN requires:
+
+1. QEMU built from master [4] (use "-machine virt,mte=on -cpu max" arguments
+   to run).
+2. GCC version 10.
+
+[1] https://www.kernel.org/doc/html/latest/dev-tools/kasan.html
+[2] https://community.arm.com/developer/ip-products/processors/b/processors-ip-blog/posts/enhancing-memory-safety
+[3] git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux for-next/mte
+[4] https://github.com/qemu/qemu
+
+====== Overview
+
+The underlying ideas of the approach used by hardware tag-based KASAN are:
+
+1. By relying on the Top Byte Ignore (TBI) arm64 CPU feature, pointer tags
+   are stored in the top byte of each kernel pointer.
+
+2. With the Memory Tagging Extension (MTE) arm64 CPU feature, memory tags
+   for kernel memory allocations are stored in a dedicated memory not
+   accessible via normal instuctions.
+
+3. On each memory allocation, a random tag is generated, embedded it into
+   the returned pointer, and the corresponding memory is tagged with the
+   same tag value.
+
+4. With MTE the CPU performs a check on each memory access to make sure
+   that the pointer tag matches the memory tag.
+
+5. On a tag mismatch the CPU generates a tag fault, and a KASAN report is
+   printed.
+
+Same as other KASAN modes, hardware tag-based KASAN is intended as a
+debugging feature at this point.
+
+====== Rationale
+
+There are two main reasons for this new hardware tag-based mode:
+
+1. Previously implemented software tag-based KASAN is being successfully
+   used on dogfood testing devices due to its low memory overhead (as
+   initially planned). The new hardware mode keeps the same low memory
+   overhead, and is expected to have significantly lower performance
+   impact, due to the tag checks being performed by the hardware.
+   Therefore the new mode can be used as a better alternative in dogfood
+   testing for hardware that supports MTE.
+
+2. The new mode lays the groundwork for the planned in-kernel MTE-based
+   memory corruption mitigation to be used in production.
+
+====== Technical details
+
+From the implementation perspective, hardware tag-based KASAN is almost
+identical to the software mode. The key difference is using MTE for
+assigning and checking tags.
+
+Compared to the software mode, the hardware mode uses 4 bits per tag, as
+dictated by MTE. Pointer tags are stored in bits [56:60), the top 4 bits
+have the normal value 0xF. Having less distict tags increases the
+probablity of false negatives (from ~1/256 to ~1/16) in certain cases.
+
+Only synchronous exceptions are set up and used by hardware tag-based KASAN.
+
+====== Benchmarks
+
+Note: all measurements have been performed with software emulation of Memory
+Tagging Extension, performance numbers for hardware tag-based KASAN on the
+actual hardware are expected to be better.
+
+Boot time [1]:
+* 2.8 sec for clean kernel
+* 5.7 sec for hardware tag-based KASAN
+* 11.8 sec for software tag-based KASAN
+* 11.6 sec for generic KASAN
+
+Slab memory usage after boot [2]:
+* 7.0 kb for clean kernel
+* 9.7 kb for hardware tag-based KASAN
+* 9.7 kb for software tag-based KASAN
+* 41.3 kb for generic KASAN
+
+Measurements have been performed with:
+* defconfig-based configs
+* Manually built QEMU master
+* QEMU arguments: -machine virt,mte=on -cpu max
+* CONFIG_KASAN_STACK_ENABLE disabled
+* CONFIG_KASAN_INLINE enabled
+* clang-10 as the compiler and gcc-10 as the assembler
+    
+[1] Time before the ext4 driver is initialized.
+[2] Measured as `cat /proc/meminfo | grep Slab`.
+
+====== Notes
+
+The cover letter for software tag-based KASAN patchset can be found here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0116523cfffa62aeb5aa3b85ce7419f3dae0c1b8
+
+====== History
+
+Changes v1->v2:
+- Rebase onto v10 of the user MTE patchset.
+- Only enable in-kernel MTE when KASAN_HW_TAGS is enabled.
+- Add a layer of arch-level indirection, so KASAN doesn't call MTE helpers
+  directly (this will be useful in case more architectures will add support
+  for HW_TAGS).
+- Don't do arm64_skip_faulting_instruction() on MTE fault, disable MTE
+  instead.
+- Don't allow software tags with MTE via arch/arm64/Kconfig instead of
+  lib/Kconfig.kasan.
+- Rename mm/kasan/tags.c to tags_sw.c and mte.c to tags_hw.c, and do the
+  same for report_*.c files.
+- Reword HW_TAGS Kconfig help text to make it less MTE specific.
+- Reword and clarify Documentation.
+- Drop unnecessary is_el1_mte_sync_tag_check_fault().
+- Change report_tag_fault() to only call kasan_report() once HW_TAGS is
+  introduced.
+- Rename arch/arm64/include/asm/mte_asm.h to mte-helpers.h and move all
+  MTE-related defines and some helper functions there.
+- Change mm/kasan/kasan.h to include mte-def.h instead of mte.h.
+- Add WARN_ON() on unaligned size to mte_set_mem_tag_range().
+- Implement ldg/irg MTE routines as inline assembly.
+- Remove smp_wmb() from mte_set_mem_tag_range().
+- Drop __must_check from mte_set_mem_tag_range() as KASAN has no use for
+  the return value.
+- Drop zero size check from mte_assign_mem_tag_range().
+- Drop unnecessary include <asm/kasan.h> from low-level arm64 code.
+- Move enabling TBI1 into __cpu_setup().
+- Drop stale comment about callee-saved register from
+  arch/arm64/kernel/entry.S.
+- Mark gcr_kernel_excl as __ro_after_init.
+- Use GENMASK() in mte_init_tags().
+
+Andrey Konovalov (31):
+  kasan: KASAN_VMALLOC depends on KASAN_GENERIC
+  kasan: group vmalloc code
+  kasan: shadow declarations only for software modes
+  kasan: rename (un)poison_shadow to (un)poison_memory
+  kasan: rename KASAN_SHADOW_* to KASAN_GRANULE_*
+  kasan: only build init.c for software modes
+  kasan: split out shadow.c from common.c
+  kasan: rename generic/tags_report.c files
+  kasan: don't duplicate config dependencies
+  kasan: hide invalid free check implementation
+  kasan: decode stack frame only with KASAN_STACK_ENABLE
+  kasan, arm64: only init shadow for software modes
+  kasan, arm64: only use kasan_depth for software modes
+  kasan: rename addr_has_shadow to addr_has_metadata
+  kasan: rename print_shadow_for_address to print_memory_metadata
+  kasan: kasan_non_canonical_hook only for software modes
+  kasan: rename SHADOW layout macros to META
+  kasan: separate metadata_fetch_row for each mode
+  kasan: don't allow SW_TAGS with ARM64_MTE
+  kasan: rename tags.c to tags_sw.c
+  kasan: introduce CONFIG_KASAN_HW_TAGS
+  arm64: kasan: Add arch layer for memory tagging helpers
+  arm64: kasan: Align allocations for HW_TAGS
+  kasan: define KASAN_GRANULE_SIZE for HW_TAGS
+  kasan, x86, s390: update undef CONFIG_KASAN
+  kasan, arm64: expand CONFIG_KASAN checks
+  kasan, arm64: implement HW_TAGS runtime
+  kasan, arm64: print report from tag fault handler
+  kasan, slub: reset tags when accessing metadata
+  kasan, arm64: enable CONFIG_KASAN_HW_TAGS
+  kasan: add documentation for hardware tag-based mode
+
+Vincenzo Frascino (6):
+  arm64: mte: Add in-kernel MTE helpers
+  arm64: mte: Add in-kernel tag fault handler
+  arm64: kasan: Enable in-kernel MTE
+  arm64: mte: Convert gcr_user into an exclude mask
+  arm64: mte: Switch GCR_EL1 in kernel entry and exit
+  arm64: kasan: Enable TBI EL1
+
+ Documentation/dev-tools/kasan.rst            |  80 ++-
+ arch/arm64/Kconfig                           |   5 +-
+ arch/arm64/Makefile                          |   2 +-
+ arch/arm64/include/asm/assembler.h           |   2 +-
+ arch/arm64/include/asm/cache.h               |   3 +
+ arch/arm64/include/asm/esr.h                 |   1 +
+ arch/arm64/include/asm/kasan.h               |   8 +-
+ arch/arm64/include/asm/memory.h              |  14 +-
+ arch/arm64/include/asm/mte-helpers.h         |  54 ++
+ arch/arm64/include/asm/mte.h                 |  19 +-
+ arch/arm64/include/asm/processor.h           |   2 +-
+ arch/arm64/include/asm/string.h              |   5 +-
+ arch/arm64/kernel/asm-offsets.c              |   3 +
+ arch/arm64/kernel/cpufeature.c               |  10 +
+ arch/arm64/kernel/entry.S                    |  26 +
+ arch/arm64/kernel/head.S                     |   2 +-
+ arch/arm64/kernel/image-vars.h               |   2 +-
+ arch/arm64/kernel/mte.c                      |  90 ++-
+ arch/arm64/kernel/setup.c                    |   1 -
+ arch/arm64/lib/mte.S                         |  17 +
+ arch/arm64/mm/dump.c                         |   6 +-
+ arch/arm64/mm/fault.c                        |  43 +-
+ arch/arm64/mm/kasan_init.c                   |  22 +-
+ arch/arm64/mm/proc.S                         |  26 +-
+ arch/s390/boot/string.c                      |   1 +
+ arch/x86/boot/compressed/misc.h              |   1 +
+ include/linux/kasan-checks.h                 |   2 +-
+ include/linux/kasan.h                        | 110 ++--
+ include/linux/mm.h                           |   2 +-
+ include/linux/moduleloader.h                 |   3 +-
+ include/linux/page-flags-layout.h            |   2 +-
+ include/linux/sched.h                        |   2 +-
+ include/linux/string.h                       |   2 +-
+ init/init_task.c                             |   2 +-
+ kernel/fork.c                                |   4 +-
+ lib/Kconfig.kasan                            |  69 ++-
+ lib/test_kasan.c                             |   2 +-
+ mm/kasan/Makefile                            |  25 +-
+ mm/kasan/common.c                            | 554 +------------------
+ mm/kasan/generic.c                           |  33 +-
+ mm/kasan/generic_report.c                    | 165 ------
+ mm/kasan/init.c                              |  10 +-
+ mm/kasan/kasan.h                             |  64 ++-
+ mm/kasan/report.c                            | 254 ++-------
+ mm/kasan/report_generic.c                    | 331 +++++++++++
+ mm/kasan/report_tags_hw.c                    |  47 ++
+ mm/kasan/{tags_report.c => report_tags_sw.c} |   9 +-
+ mm/kasan/shadow.c                            | 509 +++++++++++++++++
+ mm/kasan/tags_hw.c                           |  78 +++
+ mm/kasan/{tags.c => tags_sw.c}               |  16 +-
+ mm/page_poison.c                             |   2 +-
+ mm/ptdump.c                                  |  13 +-
+ mm/slab_common.c                             |   2 +-
+ mm/slub.c                                    |  25 +-
+ scripts/Makefile.lib                         |   2 +
+ 55 files changed, 1689 insertions(+), 1095 deletions(-)
+ create mode 100644 arch/arm64/include/asm/mte-helpers.h
+ delete mode 100644 mm/kasan/generic_report.c
+ create mode 100644 mm/kasan/report_generic.c
+ create mode 100644 mm/kasan/report_tags_hw.c
+ rename mm/kasan/{tags_report.c => report_tags_sw.c} (91%)
+ create mode 100644 mm/kasan/shadow.c
+ create mode 100644 mm/kasan/tags_hw.c
+ rename mm/kasan/{tags.c => tags_sw.c} (93%)
+
 -- 
-Thanks,
-~Nick Desaulniers
+2.28.0.618.gf4bc123cb7-goog
+
