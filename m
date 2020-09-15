@@ -2,121 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B6726B839
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E91D26B83B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgIPAjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:39:40 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:58599 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgIONHG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:07:06 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200915130637euoutp012f08d4577daeee2af30343732b0eacc3~09t0V7PKC1336513365euoutp01J
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 13:06:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200915130637euoutp012f08d4577daeee2af30343732b0eacc3~09t0V7PKC1336513365euoutp01J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600175197;
-        bh=l/fTqpZOZP8Z3Q9+i1hJ7n94rjLLsExK52fNSenqmaI=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ltRv6CNK5HGwQBUN3yZDXKRiKEQJarbyO1mR/v27LQmcK2RJ+pRbQVA0KLXUEFOzj
-         pOjejLpL3oEOuePIXg90654F5tBIS85VCrLMmZF1UnGZYlcEJu5fvLfcuxsHpcCbe8
-         aEGG7dxSE1OGKO3IR6tIqMwXpQETh1/1HziGdL+c=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200915130636eucas1p2c37b61d95221fdd43f485aa283ef97ff~09tzw8wh-1697016970eucas1p2u;
-        Tue, 15 Sep 2020 13:06:36 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 72.4C.05997.C5CB06F5; Tue, 15
-        Sep 2020 14:06:36 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200915130635eucas1p25bae1edd92e5af4b160cf0022a0e20bc~09tzRGPdm1702817028eucas1p2c;
-        Tue, 15 Sep 2020 13:06:35 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200915130635eusmtrp121431724a8dc4a9c5e200f783b7ee8bb~09tzQVcxA2320123201eusmtrp1f;
-        Tue, 15 Sep 2020 13:06:35 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-60-5f60bc5c0251
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id D6.4B.06017.B5CB06F5; Tue, 15
-        Sep 2020 14:06:35 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200915130634eusmtip1c284351c688df26b7cf031625c45af02~09tyaR4660704907049eusmtip1Y;
-        Tue, 15 Sep 2020 13:06:34 +0000 (GMT)
-Subject: Re: [PATCH 1/3] clk: samsung: Add clk ID definitions for the CPU
- parent clocks
-To:     linux-clk@vger.kernel.org
-Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <93b6c6ce-7f13-d4a9-4b7e-aaae657cfd49@samsung.com>
-Date:   Tue, 15 Sep 2020 15:06:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200826171529.23618-1-s.nawrocki@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRju2zln52w4+Zzm3qyMhkGm3SMOKXaVBmkX+pWVbulBJWe2efdH
-        RiipS8UkbQle6ObM1FmmKyXEJiVqV6uZic7QNAtTKi9pbkfJf8/7vM/L8zwfH0NIX1FuTGR0
-        LKeJVkXJhWKyzjzZsfHUE2XIlqd6GVtTWEWx7ycGKba4pYNic6wjBNvZWU2zRmsXxY7pPlPs
-        G1ORkC3sbBKwlS09NPvqhT+b1thCs7NdNSRrMM2gPY6KHx/SaEWDvodWGA0ZQkXtzQuK7AcG
-        pBg3uh8VBol9w7ioyHhOs9lPKY7ovVhBxGQQibmVRjoVPRVkIhEDeAdYa8x0JhIzUnwXwd+K
-        IQE/TCC4NtGzsBlH8K3jD1o8uT+WRtqwFN9B0JARzIvGEFQPF9oXzvgE5GS8sx+44NVgMU8K
-        bSICmwnoKS+1mwvxVrjyLNsukmA/aLJ0z9sxDInXQaUlwUYvx8FgftFP8hIneH59wI5F2Bem
-        brUTNkxgGVgGigU8XgOPRosImxfgMRrezjWSfOoDMFQ+SvHYGYZbH9A8XgVtV3Ukf3AJge5x
-        N80PuQh6W0sWOvvAp44poS0dgT2hyrSZp/dC3txHZKMBO8KHUSc+hCPk1RUQPC2By+lSXu0B
-        04aChXd3g6yBOTIXyfVLqumX1NEvqaP/71uCSAOScXFadTin3RbNJWzSqtTauOjwTaHn1EY0
-        /9HaZlsn6pFp5kwzwgySO0iUCSEhUkoVr01SNyNgCLmLZF97W7BUEqZKSuY050I0cVGcthmt
-        ZEi5TLK97OtpKQ5XxXJnOS6G0yxuBYzILRVxxKmuZSMC79Avs90BRzxNQStw4O/EdF2q3/7g
-        hl0RyrJqp9snx7PyU/Pzn6W4VslxoOjs9O5fxd/XvnQtnfZw8/7ZNxX7ujFZ0R9ZcL5WVnjP
-        32/94ePWungfkXtmu2XftiAvSrwlfVByxTUlIPHGw7VzDlGH+tT+XgePOdXvNKbISW2EausG
-        QqNV/QPuO4hPZAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMIsWRmVeSWpSXmKPExsVy+t/xu7rRexLiDRYsNLbYOGM9q8X1L89Z
-        LeYfOcdq0f/4NbPF+fMb2C02Pb7GavGx5x6rxeVdc9gsZpzfx2Sx9shddouLp1wtWvceYbf4
-        d20ji8WqXX8YHfg83t9oZffYOesuu8emVZ1sHpuX1Hv0bVnF6PF5k1wAW5SeTVF+aUmqQkZ+
-        cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexv3G1cwFncwVE9ZuYm9g
-        PMDUxcjJISFgIrHuYytLFyMXh5DAUkaJSU9Os3cxcgAlpCTmtyhB1AhL/LnWxQZR855R4sbT
-        u+wgCWGBSIn+zquMILaIgKzErWM/wYqYBY4xS+yccgpqaj+jxIFPy9hAqtgEDCV6j/aBdfAK
-        2Ensu3UbbBuLgKrE2lvlIGFRgTiJMz0v2CBKBCVOznzCAmJzCthI/Fp6lhnEZhZQl/gz7xKU
-        LS5x68l8JghbXmL72znMExiFZiFpn4WkZRaSlllIWhYwsqxiFEktLc5Nzy020itOzC0uzUvX
-        S87P3cQIjOBtx35u2cHY9S74EKMAB6MSD29CeXy8EGtiWXFl7iFGCQ5mJRFep7On44R4UxIr
-        q1KL8uOLSnNSiw8xmgL9NpFZSjQ5H5hc8kriDU0NzS0sDc2NzY3NLJTEeTsEDsYICaQnlqRm
-        p6YWpBbB9DFxcEo1MIr3fHxnl7RMbyXj2RU6CdfK/10yiuuqX+0pPNU/9EHaieOH2+O2swY5
-        FCrda+iZ6/fgHqPqad1p5fsUWqP+6nnorjvhc3mDW2H+nUyFJR9eKjpEnGaXCPCamlypWvnw
-        KJM8Y8LFdae3bt0pMHuyN/uab+9U/k27s/Bpz65vinP488W3tt+/NkeJpTgj0VCLuag4EQC4
-        DQ5T9gIAAA==
-X-CMS-MailID: 20200915130635eucas1p25bae1edd92e5af4b160cf0022a0e20bc
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200826171539eucas1p2e999972d3e7dd6dd701e312548933e87
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200826171539eucas1p2e999972d3e7dd6dd701e312548933e87
-References: <CGME20200826171539eucas1p2e999972d3e7dd6dd701e312548933e87@eucas1p2.samsung.com>
-        <20200826171529.23618-1-s.nawrocki@samsung.com>
+        id S1726622AbgIPAji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:39:38 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:33712 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726506AbgIONIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:08:38 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxSMSsvGBfsXoVAA--.162S2;
+        Tue, 15 Sep 2020 21:07:57 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Youling Tang <tangyouling@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] MIPS: Loongson64: Add kexec/kdump support
+Date:   Tue, 15 Sep 2020 21:07:43 +0800
+Message-Id: <1600175263-7872-1-git-send-email-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxSMSsvGBfsXoVAA--.162S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3XrWDKr43Kw4kurW8ury7trb_yoW7XFWfpa
+        1UC3WDKr4rAr47trn3XrWDZ345ua95JFy7JF4aka95Wa4DKryUZFyrWF1fXFZ7Ar45KF47
+        XFyFvr18WF43J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xr4l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUcSdkUUUUU=
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.08.2020 19:15, Sylwester Nawrocki wrote:
-> Add clock ID definitions for the CPU parent clocks for SoCs
-> which don't have such definitions yet. This will allow us to
-> reference the parent clocks directly by cached struct clk_hw
-> pointers in the clock provider, rather than doing clk lookup
-> by name.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Add loongson_kexec_prepare(), loongson_kexec_shutdown() and
+loongson_kexec_crashdown() for passing the parameters of kexec_args.
 
-Applied.
+To start loongson64, CPU0 needs 3 parameters:
+fw_arg0: the number of cmd.
+fw_arg1: cmd structure which seems strange, the cmd array[index]'s
+         value is cmd string's address, index >= 1.
+fw_arg2: environment.
+
+Secondary CPUs do not need parameter at once. They query their
+mailbox to get PC, SP and GP in a loop before CPU0 brings them up
+and passes these parameters via mailbox.
+
+loongson_kexec_prepare(): Alloc new memory to save cmd for kexec.
+Combine the kexec append option string as cmd structure, and the cmd
+struct will be parsed in fw_init_cmdline() of arch/mips/fw/lib/cmdline.c.
+image->control_code_page need pointing to a safe memory page. In order to
+maintain compatibility for the old firmware the low 2MB is reserverd
+and safe for Loongson. So let it points here.
+
+loongson_kexec_shutdown(): Wake up all present CPUs and let them go
+to reboot_code_buffer. Pass the kexec parameters to kexec_args.
+
+loongson_crash_shutdown(): Pass the kdump parameters to kexec_args.
+
+The assembly part provide a way like BIOS doing to keep secondary
+CPUs in a querying loop.
+
+This patch referenced [1][2][3].
+
+[1] arch/mips/cavium-octeon/setup.c
+[2] https://patchwork.kernel.org/patch/10799217/
+[3] https://gitee.com/loongsonlab/qemu/blob/master/hw/mips/loongson3a_rom.h
+
+Co-developed-by: Youling Tang <tangyouling@loongson.cn>
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+---
+ arch/mips/kernel/relocate_kernel.S | 19 ++++++++
+ arch/mips/loongson64/reset.c       | 88 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 107 insertions(+)
+
+diff --git a/arch/mips/kernel/relocate_kernel.S b/arch/mips/kernel/relocate_kernel.S
+index ac87089..061cbfb 100644
+--- a/arch/mips/kernel/relocate_kernel.S
++++ b/arch/mips/kernel/relocate_kernel.S
+@@ -133,6 +133,25 @@ LEAF(kexec_smp_wait)
+ #else
+ 	sync
+ #endif
++
++#ifdef CONFIG_CPU_LOONGSON64
++#define MAILBOX_BASE 0x900000003ff01000
++	mfc0  t1, CP0_EBASE
++	andi  t1, MIPS_EBASE_CPUNUM
++	dli   t0, MAILBOX_BASE
++	andi  t3, t1, 0x3
++	sll   t3, 8
++	or    t0, t0, t3	/* insert core id */
++	andi  t2, t1, 0xc
++	dsll  t2, 42
++	or    t0, t0, t2	/* insert node id */
++1:	ld    s1, 0x20(t0)	/* get PC via mailbox0 */
++	beqz  s1, 1b
++	ld    sp, 0x28(t0)	/* get SP via mailbox1 */
++	ld    gp, 0x30(t0)	/* get GP via mailbox2 */
++	ld    a1, 0x38(t0)
++	jr    s1
++#endif
+ 	j		s1
+ 	END(kexec_smp_wait)
+ #endif
+diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+index 3bb8a1e..322c326 100644
+--- a/arch/mips/loongson64/reset.c
++++ b/arch/mips/loongson64/reset.c
+@@ -47,12 +47,100 @@ static void loongson_halt(void)
+ 	}
+ }
+ 
++#ifdef CONFIG_KEXEC
++#include <linux/cpu.h>
++#include <linux/kexec.h>
++
++#include <asm/bootinfo.h>
++
++#define CONTROL_CODE_PAGE    0xFFFFFFFF80000000UL
++static int kexec_argc;
++static int kdump_argc;
++static void *kexec_argv;
++static void *kdump_argv;
++
++static int loongson_kexec_prepare(struct kimage *image)
++{
++	int i, offt, argc = 0;
++	int *argv;
++	char *str, *ptr, *bootloader = "kexec";
++
++	argv = kmalloc(COMMAND_LINE_SIZE, GFP_KERNEL);
++	if (!argv)
++		return -ENOMEM;
++
++	for (i = 0; i < image->nr_segments; i++) {
++		if (!strncmp(bootloader, (char *)image->segment[i].buf,
++				strlen(bootloader))) {
++			argv[argc++] = fw_arg1 + COMMAND_LINE_SIZE/2;
++			str = (char *)argv + COMMAND_LINE_SIZE/2;
++			memcpy(str, image->segment[i].buf, COMMAND_LINE_SIZE/2);
++			ptr = strchr(str, ' ');
++			while (ptr) {
++				*ptr = '\0';
++				if (ptr[1] != ' ') {
++					offt = (int)(ptr - str + 1);
++					argv[argc++] = fw_arg1 + COMMAND_LINE_SIZE/2 + offt;
++				}
++				ptr = strchr(ptr + 1, ' ');
++			}
++			break;
++		}
++	}
++
++	/* Kexec/kdump needs a safe page to save reboot_code_buffer. */
++	image->control_code_page = virt_to_page((void *)CONTROL_CODE_PAGE);
++
++	if (image->type == KEXEC_TYPE_CRASH) {
++		kfree(kdump_argv);
++		kdump_argc = argc;
++		kdump_argv = argv;
++	} else {
++		kfree(kexec_argv);
++		kexec_argc = argc;
++		kexec_argv = argv;
++	}
++
++	return 0;
++}
++
++static void loongson_kexec_shutdown(void)
++{
++#ifdef CONFIG_SMP
++	bringup_nonboot_cpus(loongson_sysconf.nr_cpus);
++#endif
++	fw_arg0 = kexec_argc;
++	memcpy((void *)fw_arg1, kexec_argv, COMMAND_LINE_SIZE);
++
++	kexec_args[0] = fw_arg0;
++	kexec_args[1] = fw_arg1;
++	kexec_args[2] = fw_arg2;
++}
++
++static void loongson_crash_shutdown(struct pt_regs *regs)
++{
++	default_machine_crash_shutdown(regs);
++	fw_arg0 = kdump_argc;
++	memcpy((void *)fw_arg1, kdump_argv, COMMAND_LINE_SIZE);
++
++	kexec_args[0] = fw_arg0;
++	kexec_args[1] = fw_arg1;
++	kexec_args[2] = fw_arg2;
++}
++#endif
++
+ static int __init mips_reboot_setup(void)
+ {
+ 	_machine_restart = loongson_restart;
+ 	_machine_halt = loongson_halt;
+ 	pm_power_off = loongson_poweroff;
+ 
++#ifdef CONFIG_KEXEC
++	_machine_kexec_prepare = loongson_kexec_prepare;
++	_machine_kexec_shutdown = loongson_kexec_shutdown;
++	_machine_crash_shutdown = loongson_crash_shutdown;
++#endif
++
+ 	return 0;
+ }
+ 
+-- 
+2.1.0
+
