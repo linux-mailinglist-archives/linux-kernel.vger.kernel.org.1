@@ -2,203 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB88C26B919
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF2426B916
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgIPA5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:57:07 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:37872 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgIOLRD (ORCPT
+        id S1726600AbgIPA44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:56:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50151 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726234AbgIOLRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:17:03 -0400
-Received: by mail-wm1-f65.google.com with SMTP id a9so3051504wmm.2;
-        Tue, 15 Sep 2020 04:17:00 -0700 (PDT)
+        Tue, 15 Sep 2020 07:17:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600168624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=woQDJzqYhg7fywcaDyz/edYf2Kcu8mkUs5XrNK4Tz2w=;
+        b=QCmGfzH//GpsDhvv4Oy36yKkzJJ0+fH9rLyILNe0wq3pItmcP2GfEalEvOR7gNKpZwc05T
+        PRBR979h9RWBYEnBAGAEtPdXjuU3yjVmFkQGXmBADRlId5TDcuPwkyPzms/wSjN0FHBqYu
+        QDElLGexgdi/mmxt80fIe+Xj8jUMEdM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168-t_Q7-aKdNG6hINjAzpoBAA-1; Tue, 15 Sep 2020 07:17:02 -0400
+X-MC-Unique: t_Q7-aKdNG6hINjAzpoBAA-1
+Received: by mail-wr1-f72.google.com with SMTP id v12so1101054wrm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:17:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hOrViQ9/e7YRFhxWzh4oAfdg10S4Mh+sHS2iw3u+aPQ=;
-        b=Sn+90mqdrU3QNPs9sCDrTwjeYVTmKMofrzI+RIKaz9eiHrHnwJjsyFasSSQRILRK8B
-         ioB8n6jXQ/fGWzwJO74JCQOJhzsINgdI1H6vcrnLdsxnXGbmf3xIOYhZOPWEHcotn9Aw
-         l1hBP9H4JVN/nHUJNMkedTM+S/bfHbpdSC3YCaov+BTcBhpo3FP/fxYgHIWa12dtDm9w
-         xQ5O353iJwEjbSi1dBkH5M+6cP+j76NaksOoUI8VDR9aKpTgAzJfBtzR3ThsxhFGAUej
-         rCMfn7ssa2vPWIbgru3cqexlrUx7yu863vNwEc59tweqh3nZ9WVNoNQPp53ZS4g04pOv
-         l3WQ==
-X-Gm-Message-State: AOAM5326B+RyJffM6299jZjAIm9oI8mo6GJ8p/QRChDMyip18eTDfTOl
-        vLdgqBY7KZN237VrEQ4xzLo=
-X-Google-Smtp-Source: ABdhPJy1VFDORM4UB6MEbKPiZ2llP2YFkYLjd3Qs0Ww2nBtbDj7mZyIoMjLtJ6m0v1k2oL4yvXavKw==
-X-Received: by 2002:a7b:cc88:: with SMTP id p8mr4221626wma.150.1600168619567;
-        Tue, 15 Sep 2020 04:16:59 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id 197sm25213904wme.10.2020.09.15.04.16.58
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=woQDJzqYhg7fywcaDyz/edYf2Kcu8mkUs5XrNK4Tz2w=;
+        b=m/wQ8K7/CrjSM3ts63j4dwsk0CTQ8OO1TWVeoF23DaZc6oUZIOjmrF5oK/Ka5Ni8Xx
+         XwlMGXMDJJ/fpSbxom5kbYDozXlrQyQP9/I/xR2/klxl07PKHFRCDbJfkOImKIlyD+8w
+         zQhTIL52cJxVOWcBzRyPxVDBsAlgiky6XAeeT6dW3Y3RYSJgOISErdGuSdgEIHFdcjkT
+         3t605wha5hWA89b9j/VBoYRHmMijKkelkBUtMCYlGPy3ANyq6xFBaN40YSo5sO/Yx21E
+         B64XHujvBdqbecvFRwll0nFByloxyegi1ty3wZHP5ynB8wc4P/yEcmUAjMscpTM5pLvv
+         lchw==
+X-Gm-Message-State: AOAM532jufIA3M/CzuWXBzN71ROQlJHVM1yKl7Rc0Om4dzC4zUxjabBy
+        MUdzZQTElOBtXV3/Ii0YujNbMN3DUopMfF82EPGPT2QMwv3DVzD09G2q64bL0P/EztffWfgSV/I
+        4HkkWXfYgJHGOg/Bnt5BvVlLd
+X-Received: by 2002:adf:e58b:: with SMTP id l11mr22315905wrm.210.1600168621432;
+        Tue, 15 Sep 2020 04:17:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy1+xzFGs26g7aJCk9FSSsiFCpkMroz/Chp7v9K3IdFtvipyWWejeB5dTWSLfG+tS8/srkFkQ==
+X-Received: by 2002:adf:e58b:: with SMTP id l11mr22315875wrm.210.1600168621197;
+        Tue, 15 Sep 2020 04:17:01 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id w21sm25728597wmk.34.2020.09.15.04.17.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 04:16:59 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 11:16:57 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
+        Tue, 15 Sep 2020 04:17:00 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
         Linux Kernel List <linux-kernel@vger.kernel.org>,
         Michael Kelley <mikelley@microsoft.com>,
         Vineeth Pillai <viremana@linux.microsoft.com>,
         Sunil Muthuswamy <sunilmut@microsoft.com>,
         Nuno Das Neves <nudasnev@microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
         "K. Y. Srinivasan" <kys@microsoft.com>,
         Haiyang Zhang <haiyangz@microsoft.com>,
         Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH RFC v1 08/18] x86/hyperv: handling hypercall page setup
- for root
-Message-ID: <20200915111657.boa4cneqjqtmcaaq@liuwe-devbox-debian-v2>
-References: <20200914112802.80611-1-wei.liu@kernel.org>
- <20200914112802.80611-9-wei.liu@kernel.org>
- <87v9gfjpoi.fsf@vitty.brq.redhat.com>
- <20200915103710.cqmdvzh5lys4wsqo@liuwe-devbox-debian-v2>
- <87pn6njob3.fsf@vitty.brq.redhat.com>
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list\:GENERIC INCLUDE\/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH RFC v1 13/18] asm-generic/hyperv: introduce hv_device_id and auxiliary structures
+In-Reply-To: <20200914115928.83184-5-wei.liu@kernel.org>
+References: <20200914112802.80611-1-wei.liu@kernel.org> <20200914115928.83184-5-wei.liu@kernel.org>
+Date:   Tue, 15 Sep 2020 13:16:59 +0200
+Message-ID: <87k0wvjnmc.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pn6njob3.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:02:08PM +0200, Vitaly Kuznetsov wrote:
-> Wei Liu <wei.liu@kernel.org> writes:
-> 
-> > On Tue, Sep 15, 2020 at 12:32:29PM +0200, Vitaly Kuznetsov wrote:
-> >> Wei Liu <wei.liu@kernel.org> writes:
-> >> 
-> >> > When Linux is running as the root partition, the hypercall page will
-> >> > have already been setup by Hyper-V. Copy the content over to the
-> >> > allocated page.
-> >> 
-> >> And we can't setup a new hypercall page by writing something different
-> >> to HV_X64_MSR_HYPERCALL, right?
-> >> 
-> >
-> > My understanding is that we can't, but Sunil can maybe correct me.
-> >
-> >> >
-> >> > The suspend, resume and cleanup paths remain untouched because they are
-> >> > not supported in this setup yet.
-> >> >
-> >> > Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> >> > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> >> > Signed-off-by: Nuno Das Neves <nudasnev@microsoft.com>
-> >> > Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> >> > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> >> > Co-Developed-by: Nuno Das Neves <nudasnev@microsoft.com>
-> >> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> >> > ---
-> >> >  arch/x86/hyperv/hv_init.c | 26 ++++++++++++++++++++++++--
-> >> >  1 file changed, 24 insertions(+), 2 deletions(-)
-> >> >
-> >> > diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> >> > index 0eec1ed32023..26233aebc86c 100644
-> >> > --- a/arch/x86/hyperv/hv_init.c
-> >> > +++ b/arch/x86/hyperv/hv_init.c
-> >> > @@ -25,6 +25,7 @@
-> >> >  #include <linux/cpuhotplug.h>
-> >> >  #include <linux/syscore_ops.h>
-> >> >  #include <clocksource/hyperv_timer.h>
-> >> > +#include <linux/highmem.h>
-> >> >  
-> >> >  /* Is Linux running as the root partition? */
-> >> >  bool hv_root_partition;
-> >> > @@ -448,8 +449,29 @@ void __init hyperv_init(void)
-> >> >  
-> >> >  	rdmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> >> >  	hypercall_msr.enable = 1;
-> >> > -	hypercall_msr.guest_physical_address = vmalloc_to_pfn(hv_hypercall_pg);
-> >> > -	wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> >> > +
-> >> > +	if (hv_root_partition) {
-> >> > +		struct page *pg;
-> >> > +		void *src, *dst;
-> >> > +
-> >> > +		/*
-> >> > +		 * Order is important here. We must enable the hypercall page
-> >> > +		 * so it is populated with code, then copy the code to an
-> >> > +		 * executable page.
-> >> > +		 */
-> >> > +		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> >> > +
-> >> > +		pg = vmalloc_to_page(hv_hypercall_pg);
-> >> > +		dst = kmap(pg);
-> >> > +		src = memremap(hypercall_msr.guest_physical_address << PAGE_SHIFT, PAGE_SIZE,
-> >> > +				MEMREMAP_WB);
-> >> 
-> >> memremap() can fail...
-> >
-> > And we don't care here, if it fails, we would rather it panic or oops.
-> >
-> > I was relying on the fact that copying from / to a NULL pointer will
-> > cause the kernel to crash. But of course it wouldn't hurt to explicitly
-> > panic here.
-> >
-> >> 
-> >> > +		memcpy(dst, src, PAGE_SIZE);
-> >> > +		memunmap(src);
-> >> > +		kunmap(pg);
-> >> > +	} else {
-> >> > +		hypercall_msr.guest_physical_address = vmalloc_to_pfn(hv_hypercall_pg);
-> >> > +		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> >> > +	}
-> >> 
-> >> Why can't we do wrmsrl() for both cases here?
-> >> 
-> >
-> > Because the hypercall page has already been set up when Linux is the
-> > root.
-> 
-> But you already do wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64)
-> in 'if (hv_root_partition)' case above, that's why I asked.
-> 
+Wei Liu <wei.liu@kernel.org> writes:
 
-You mean extracting wrmsrl to this point?  The ordering matters. See the
-comment in the root branch -- we have to enable the page before copying
-the content.
+> We will need to identify the device we want Microsoft Hypervisor to
+> manipulate.  Introduce the data structures for that purpose.
+>
+> They will be used in a later patch.
+>
+> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+>  include/asm-generic/hyperv-tlfs.h | 79 +++++++++++++++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index 83945ada5a50..faf892ce152d 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -612,4 +612,83 @@ struct hv_set_vp_registers_input {
+>  	} element[];
+>  } __packed;
+>  
+> +enum hv_device_type {
+> +	HV_DEVICE_TYPE_LOGICAL = 0,
+> +	HV_DEVICE_TYPE_PCI = 1,
+> +	HV_DEVICE_TYPE_IOAPIC = 2,
+> +	HV_DEVICE_TYPE_ACPI = 3,
+> +};
+> +
+> +typedef u16 hv_pci_rid;
+> +typedef u16 hv_pci_segment;
+> +typedef u64 hv_logical_device_id;
+> +union hv_pci_bdf {
+> +	u16 as_uint16;
+> +
+> +	struct {
+> +		u8 function:3;
+> +		u8 device:5;
+> +		u8 bus;
+> +	};
+> +} __packed;
+> +
+> +union hv_pci_bus_range {
+> +	u16 as_uint16;
+> +
+> +	struct {
+> +		u8 subordinate_bus;
+> +		u8 secondary_bus;
+> +	};
+> +} __packed;
+> +
+> +union hv_device_id {
+> +	u64 as_uint64;
+> +
+> +	struct {
+> +		u64 :62;
+> +		u64 device_type:2;
+> +	};
+> +
+> +	// HV_DEVICE_TYPE_LOGICAL
 
-What can be done is:
+Nit: please no '//' comments.
 
-   if (!root) {
-       /* some stuff */
-   }
+> +	struct {
+> +		u64 id:62;
+> +		u64 device_type:2;
+> +	} logical;
+> +
+> +	// HV_DEVICE_TYPE_PCI
+> +	struct {
+> +		union {
+> +			hv_pci_rid rid;
+> +			union hv_pci_bdf bdf;
+> +		};
+> +
+> +		hv_pci_segment segment;
+> +		union hv_pci_bus_range shadow_bus_range;
+> +
+> +		u16 phantom_function_bits:2;
+> +		u16 source_shadow:1;
+> +
+> +		u16 rsvdz0:11;
+> +		u16 device_type:2;
+> +	} pci;
+> +
+> +	// HV_DEVICE_TYPE_IOAPIC
+> +	struct {
+> +		u8 ioapic_id;
+> +		u8 rsvdz0;
+> +		u16 rsvdz1;
+> +		u16 rsvdz2;
+> +
+> +		u16 rsvdz3:14;
+> +		u16 device_type:2;
+> +	} ioapic;
+> +
+> +	// HV_DEVICE_TYPE_ACPI
+> +	struct {
+> +		u32 input_mapping_base;
+> +		u32 input_mapping_count:30;
+> +		u32 device_type:2;
+> +	} acpi;
+> +} __packed;
+> +
+>  #endif
 
-   wrmsrl(...)
+-- 
+Vitaly
 
-   if (root) {
-       /* some stuff */
-   }
-
-This is not looking any better than the existing code.
-
-Wei.
-
-> >
-> > I could've tried writing to the MSR again, but because the behaviour
-> > here is not documented and subject to change so I didn't bother trying.
-> >
-> > Wei.
-> >
-> >> >  
-> >> >  	/*
-> >> >  	 * Ignore any errors in setting up stimer clockevents
-> >> 
-> >> -- 
-> >> Vitaly
-> >> 
-> >
-> 
-> -- 
-> Vitaly
-> 
