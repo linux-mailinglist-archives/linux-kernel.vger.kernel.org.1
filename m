@@ -2,172 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8FD26B8DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FAF26B8DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgIPAvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35526 "EHLO
+        id S1726564AbgIPAvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726372AbgIOLg1 (ORCPT
+        with ESMTP id S1726376AbgIOLg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:36:27 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F83CC06174A;
-        Tue, 15 Sep 2020 04:36:26 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id h126so2400922ybg.4;
-        Tue, 15 Sep 2020 04:36:26 -0700 (PDT)
+        Tue, 15 Sep 2020 07:36:29 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D355C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:36:28 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id o8so2901568otl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 04:36:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=c6lrQum/YNNoSxqGKjvurQ5FEF5XBILOnwetukN/PvQ=;
-        b=sPo9UQMCIBw3H9vOAmE1e+7qDEKQ9flriE11OOE4+rkN1Z3vT5ga9qNoYl25slSSK8
-         KIO6vpFMNddPLLBVwXA9XI5Stpo6Z7Ui8fIlTCEZ6iOhOXd9AmuTDMDWyJknS88ywHId
-         cpKMn6/fxLQAjpaZ4kMVZY7aakPCr/cu0ID278yGTNHwM6gQ3u9KJnR48XAxHzdVMFJ8
-         vi96v/hgggOik/ByqjwVF6GXB7wdLQny27J5Vh9hd5J2KfsVf8fCuncci5P0d9NeWhSN
-         Ky1837Pn7J7M7VyCekB6pgF9JFVIeqs2IajdBn07enq+q5GBqOPooSLoMt7eYPfvf4Tx
-         gODA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6BTH4hYV4B4dr8UvozyKIS6RwtFNWec8KfhyM0AE6Qc=;
+        b=hOwgrJB4oFdOSRj3vyxBUqBo2w70rKKrtDqGxTxuPUHxBSRKqAfaYTSiTsTVjL3QWg
+         +SxuVlbaeUK01wBEpy1a7Mv4cN/GW8ibCuDmTv+5/5LSlEakqyfLwzpHQLv2/DYJYekt
+         7V9H3bomGcTmIHdO+0J+J20rUugFpv7WctV0SQ/HQ32ceAPS4qf5WU64e35bvSM3A8eD
+         zQ6tpOg1hcaoSLhevNSvjWxGwHosppuhr52e9hUxVt0sZcvvi/bsjRSN/1Q5mngOfIlz
+         sj7gq0+zdDflbqY7ImsDJxRW2UTMjZpMvSdV7JpSnoWFITXXb/GQgFvqISagP6yoJkS2
+         OQHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=c6lrQum/YNNoSxqGKjvurQ5FEF5XBILOnwetukN/PvQ=;
-        b=UX17vU0hIbv1U06s07Fzh5+3/kO3VpJbF5/iEPUDiiZOFncxzjcx/+2mY52ftCoxnk
-         dbPPOOzpNnJdwCGDxhQYqTQ9+nDFPg0aRIyhuYY2L96gbpaNPXFBqjb8+YRsT0nt9ucA
-         QhFr+fVy7fOQRV2XDlZqKt6GKR30AXucwL4kSBwbcPgAaZgGQXdUvmCE83+PKnsGJ8yf
-         zsS7/IUdPt1osaMIgaLhu9V57LA/U5Lg6dAyAUg9nUuthbGGpW2cFJsm6scK+eE777bz
-         CT9YcJGz77tkpDjeDOJ/GJNypxF7Cqdzn9b+yP293Waq8xIQmZHWAGwZHW167WQi/5ww
-         9aiA==
-X-Gm-Message-State: AOAM532XPl2TCXIQMzxMl4+OMSGpbNCsO0TH15CM6zoAm0pFAQH2jGkG
-        K8C5ZAgUkOG6GWNoh6coKw69N7etUVFuu5tR1/iE3lTeXP7PVQ==
-X-Google-Smtp-Source: ABdhPJyG8sytYHx2zrzd2up0ST/yvSOCnll9sht0DR5BdjS1XfP1FYX52ngt1Lo+1UinEQ6nh4MFIv0l0/rp0gUT7QQ=
-X-Received: by 2002:a25:d10d:: with SMTP id i13mr29402334ybg.476.1600169785417;
- Tue, 15 Sep 2020 04:36:25 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=6BTH4hYV4B4dr8UvozyKIS6RwtFNWec8KfhyM0AE6Qc=;
+        b=nfCEorowKtyxgf3B8IFOzduIsX+/Pe4U0QB/n1cKsqn5ocinOIQ+E9RwZ1Xs07bs0p
+         VKQkVyC7shcuaWk5AJ8OCwITFFEWA6B9f8Ij2d3T0iKUlwUSKzs2n4M3+x/xe24vy/gz
+         /r9vaZX9XX0d+c1xwHfvseVOKO1f6BEgf8aDnrqnGf9PcckmRnnBem+dWu+DJHF8kjyD
+         5lUQ/YOVo54tRY5xqw1UUt8T9JmM0SqgIlkCdPFGcmdEZmh5IoQxvYKyW48dE4JQRpRk
+         Ix89rhjoNYKwYTFUbLG7iW7TJ+Va6fSt8EuZM1Nr19Y6Ymoh/XdiUmA+bH+UBUblWfNC
+         lIuw==
+X-Gm-Message-State: AOAM530tBHUBlKRBFda9G/JpgQ/6zLUd5KDLbbU+5wpjMRyE78wbDBWD
+        fcevi88CLlFYXkzkST7TfabSng0OAPTr943O0F4=
+X-Google-Smtp-Source: ABdhPJz8e6ND+g18CYru0/1P/vFxdNofaG3uFX6lMhnfzByDW1SMix/YcWhLiyovyHoTtx2bQTYB+qTVAJa/j+740Tw=
+X-Received: by 2002:a9d:758c:: with SMTP id s12mr11873480otk.237.1600169787933;
+ Tue, 15 Sep 2020 04:36:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200710111104.29616-1-benchuanggli@gmail.com>
- <9ab64a9d-cd78-785c-b48f-561048cfe2ed@intel.com> <20200914064001.GA2743583@laputa>
- <a0000661-a0e1-8813-0672-c0eb73184079@intel.com> <20200915060306.GA2860208@laputa>
-In-Reply-To: <20200915060306.GA2860208@laputa>
-From:   Ben Chuang <benchuanggli@gmail.com>
-Date:   Tue, 15 Sep 2020 19:36:14 +0800
-Message-ID: <CACT4zj-sZaKxyPGL=wm28Bdwq5G7R8-XfDnd=U7=vrNXnXAQVA@mail.gmail.com>
-Subject: Re: [RFC PATCH V3 13/21] mmc: sdhci: UHS-II support, skip signal_voltage_switch()
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw
+References: <20200914100340.17608-1-vincent.guittot@linaro.org>
+ <20200914100340.17608-5-vincent.guittot@linaro.org> <CAPJCdBmNK2ZbvsOkzx=6TnzSD=EN28MjD=4ZsmnWjb907MC41g@mail.gmail.com>
+ <CAKfTPtC1Z7bAN6WpgdjzpToExR63NL7rGCUpFzT3O6fM1OECkQ@mail.gmail.com>
+In-Reply-To: <CAKfTPtC1Z7bAN6WpgdjzpToExR63NL7rGCUpFzT3O6fM1OECkQ@mail.gmail.com>
+From:   Jiang Biao <benbjiang@gmail.com>
+Date:   Tue, 15 Sep 2020 19:36:16 +0800
+Message-ID: <CAPJCdBni3MG2qO-JENao3G0r+q6JjkP3UrX3gxYT0QqRg-bMuw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] sched/fair: reduce busy load balance interval
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takahiro,
+Hi, Vincent
 
-On Tue, Sep 15, 2020 at 2:03 PM AKASHI Takahiro
-<takahiro.akashi@linaro.org> wrote:
+On Tue, 15 Sep 2020 at 17:28, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
 >
-> Ben, Adrian,
->
-> On Mon, Sep 14, 2020 at 11:08:14AM +0300, Adrian Hunter wrote:
-> > On 14/09/20 9:40 am, AKASHI Takahiro wrote:
-> > > Adrian,
+> On Tue, 15 Sep 2020 at 11:11, Jiang Biao <benbjiang@gmail.com> wrote:
+> >
+> > Hi, Vincent
+> >
+> > On Mon, 14 Sep 2020 at 18:07, Vincent Guittot
+> > <vincent.guittot@linaro.org> wrote:
 > > >
-> > > On Fri, Aug 21, 2020 at 05:09:01PM +0300, Adrian Hunter wrote:
-> > >> On 10/07/20 2:11 pm, Ben Chuang wrote:
-> > >>> From: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > >>>
-> > >>> sdhci_start_signal_voltage_switch() should be called only in UHS-I mode,
-> > >>> and not for UHS-II mode.
-> > >>>
-> > >>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > >>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > >>> ---
-> > >>>  drivers/mmc/host/sdhci.c | 7 ++++++-
-> > >>>  1 file changed, 6 insertions(+), 1 deletion(-)
-> > >>>
-> > >>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > >>> index 5511649946b9..7f2537648a08 100644
-> > >>> --- a/drivers/mmc/host/sdhci.c
-> > >>> +++ b/drivers/mmc/host/sdhci.c
-> > >>> @@ -2623,8 +2623,13 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
-> > >>>   /*
-> > >>>    * Signal Voltage Switching is only applicable for Host Controllers
-> > >>>    * v3.00 and above.
-> > >>> +  * But for UHS2, the signal voltage is supplied by vdd2 which is
-> > >>> +  * already 1.8v so no voltage switch required.
+> > > The busy_factor, which increases load balance interval when a cpu is busy,
+> > > is set to 32 by default. This value generates some huge LB interval on
+> > > large system like the THX2 made of 2 node x 28 cores x 4 threads.
+> > > For such system, the interval increases from 112ms to 3584ms at MC level.
+> > > And from 228ms to 7168ms at NUMA level.
+> > Agreed that the interval is too big for that case.
+> > But would it be too small for an AMD environment(like ROME) with 8cpu
+> > at MC level(CCX), if we reduce busy_factor?
 >
-> I have been confused with this comment.
-> (I know it came from the original Intel code, not from Ben.)
->
-> If this comment is true,
->
-> > >>>    */
-> > >>> - if (host->version < SDHCI_SPEC_300)
-> > >>> + if (host->version < SDHCI_SPEC_300 ||
-> > >>> +     (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > >>> +      host->version >= SDHCI_SPEC_400 &&
-> > >>> +      host->mmc->flags & MMC_UHS2_SUPPORT))
->
-> the condition above must be wrong since 'flags & MMC_UHS2_SUPPORT'
-> is one of capabilities for a host controller, not a card
-> while the selection of voltage depends on a card type.
-
-The flag MMC_UHS2_SUPPORT is set at the beginning of mmc_uhs2_rescan_try_freq().
-In UHS-II flow, it stays set.
-If the attempt to UHS-II fails finally, it will be unset.
+> Are you sure that this is too small ? As mentioned in the commit
+> message below, I tested it on small system (2x4 cores Arm64) and i
+> have seen some improvements
+Not so sure. :)
+Small interval means more frequent balances and more cost consumed for
+balancing, especially for pinned vm cases.
+For our case, we have AMD ROME servers made of 2node x 48cores x
+2thread, and 8c at MC level(within a CCX). The 256ms interval seems a
+little too big for us, compared to Intel Cascadlake CPU with 48c at MC
+level, whose balance interval is 1536ms. 128ms seems a little more
+waste. :)
+I guess more balance costs may hurt the throughput of sysbench like
+benchmark.. Just a guess.
 
 >
-> So I wonder why this code still works.
-> I guess that it is because set_signal_voltage(), or other variant functions,
-> will never be called for UHS-II cards under the current implementation.
+> > For that case, the interval could be reduced from 256ms to 128ms.
+> > Or should we define an MIN_INTERVAL for MC level to avoid too small interval?
 >
-> Looking at mmc_sd_init_card(), we have added some hack:
-> mmc_sd_init_card()
-> {
->         ...
->         /* For UHS2, skip the UHS-I initialization. */
->         if ((host->flags & MMC_UHS2_SUPPORT) &&
->             (host->flags & MMC_UHS2_INITIALIZED))
->                 goto done;
->         ...
->                 if (mmc_sd_card_using_v18(card)) {
->                         if (mmc_host_set_uhs_voltage(host) ||
->                             mmc_sd_init_uhs_card(card)) {
->                 ...
-> }
->
-> Ben, can you confirm this?
-> (There is another callsite of mmc_host_set_uhs_voltage() though.)
+> What would be a too small interval ?
+That's hard to say. :)
+My guess is just for large server system cases.
 
-UHS-II cards use differential signals and don't need to signal voltage switch.
-But the main task is to set the parameters of UHS-II card interface.
-
->
-> > >> Please look at hooking ->start_signal_voltage_switch() instead
-> > >
-> > > Do you mean that you want every platform driver who wants to support UHS-II
-> > > to set NULL to start_signal_voltage_switch hook even if this hack is
-> > > platform agnostic?
-> >
-> > No, I see UHS-II as a separate layer i.e.
-> >
-> >  UHS-II host controller driver
-> >   |   |
-> >   |   v
-> >   |   sdhci-uhs2 e.g. sdhci_uhs2_start_signal_voltage_switch
-> >   |   |
-> >   v   v
-> >   sdhci e.g. sdhci_start_signal_voltage_switch
-> >
-> > Most things should go through sdhci-uhs2 but not nessarily everything.
->
-> What I meant by my previous comment is that we don't have to
-> call any function, sdhci_uhs2_start_signal_voltage_switch in above example,
-> for UHS-II cards in any case since it is always simply empty.
->
-> -Takahiro Akashi
+Thanks.
+Regards,
+Jiang
