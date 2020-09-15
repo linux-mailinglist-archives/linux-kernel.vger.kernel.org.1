@@ -2,119 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5DB26AD0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BC026ACF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgIOTI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:08:56 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:49788 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbgIOTHU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:07:20 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6eHA013579;
-        Tue, 15 Sep 2020 14:06:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600196800;
-        bh=Y+ES+bpigo4uYOpFKr6Eobr2JA9TuVYc/K8vex49fgQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=CaZ8BHHg5fh7g1LwFUFPuh0jHpzmbLUbDdece9KOox+R6O7nEmoR0WhqU6pW2ayxe
-         +fQS8rIvyXj56bb2+WsEq4/ICRrzkvGtVDb9hX9dDf1gqJnvoDEGaOZbbUsZcNUw8H
-         1yUYhVAD8YJLUZd6dGifiwTijLQpMVZ6S7LOknmw=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FJ6ewi074083
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 14:06:40 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 14:06:39 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 14:06:39 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FJ6dtZ086050;
-        Tue, 15 Sep 2020 14:06:39 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
-        <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <camel.guo@axis.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 6/6] ASoC: tlv320adcx140: Add channel slot programming
-Date:   Tue, 15 Sep 2020 14:06:06 -0500
-Message-ID: <20200915190606.1744-6-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200915190606.1744-1-dmurphy@ti.com>
-References: <20200915190606.1744-1-dmurphy@ti.com>
+        id S1727956AbgIOTEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:04:34 -0400
+Received: from mga04.intel.com ([192.55.52.120]:25358 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727865AbgIOTE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 15:04:26 -0400
+IronPort-SDR: ZwA8agPH0rk1apOJrovga+xbuu8wR0TKj9LOPd/olg6PQOdfVMwpVzBCtJ3oIhhH4mDNm3osyw
+ P9POVQWYfn9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="156716843"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="156716843"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 12:04:21 -0700
+IronPort-SDR: 5FIuHz+wpLv9I75nZJ44QarO2AkAvPpiEwMKJxB3GdpIO+9q33aKJU4yAYPTJKV72heBpqvf3S
+ lKrm/b9XNIrA==
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="345964726"
+Received: from rdvivi-losangeles.jf.intel.com (HELO intel.com) ([10.165.21.201])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 12:04:21 -0700
+Date:   Tue, 15 Sep 2020 15:06:39 -0400
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        thaytan@noraisin.net, David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
+        <jose.souza@intel.com>, Manasi Navare <manasi.d.navare@intel.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>
+Subject: Re: [RFC 1/5] drm/i915/dp: Program source OUI on eDP panels
+Message-ID: <20200915190639.GC503362@intel.com>
+References: <20200915172939.2810538-1-lyude@redhat.com>
+ <20200915172939.2810538-2-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915172939.2810538-2-lyude@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each channel can be assigned a specific slot to transmit data. This
-assignment is done in the device tree.
+On Tue, Sep 15, 2020 at 01:29:35PM -0400, Lyude Paul wrote:
+> Since we're about to start adding support for Intel's magic HDR
+> backlight interface over DPCD, we need to ensure we're properly
+> programming this field so that Intel specific sink services are exposed.
+> Otherwise, 0x300-0x3ff will just read zeroes.
+> 
+> We also take care not to reprogram the source OUI if it already matches
+> what we expect. This is just to be careful so that we don't accidentally
+> take the panel out of any backlight control modes we found it in.
+> 
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Cc: thaytan@noraisin.net
+> Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+> ---
+>  drivers/gpu/drm/i915/display/intel_dp.c | 32 +++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index 4bd10456ad188..b591672ec4eab 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -3428,6 +3428,7 @@ void intel_dp_sink_set_decompression_state(struct intel_dp *intel_dp,
+>  void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
+>  {
+>  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> +	u8 edp_oui[] = { 0x00, 0xaa, 0x01 };
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- sound/soc/codecs/tlv320adcx140.c | 17 +++++++++++++++++
- sound/soc/codecs/tlv320adcx140.h |  3 +++
- 2 files changed, 20 insertions(+)
+what are these values?
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 7fa5c8682c51..666b8f3091d0 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -837,6 +837,8 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 	int gpi_count;
- 	u32 gpi_inputs[ADCX140_NUM_GPI_PINS];
- 	u32 gpi_input_val = 0;
-+	int slot_count;
-+	u32 slot_assignment[ADCX140_NUM_CH];
- 	int i;
- 	int ret;
- 	bool tx_high_z;
-@@ -941,6 +943,21 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 		}
- 	}
- 
-+	slot_count = device_property_count_u32(adcx140->dev, "ti,slot-mapping");
-+	if ((slot_count <= ADCX140_NUM_CH) && (slot_count > 0)) {
-+		ret = device_property_read_u32_array(adcx140->dev, "ti,slot-mapping",
-+						     slot_assignment, slot_count);
-+		if (ret)
-+			return ret;
-+
-+		for (i = 0; i < slot_count; i++) {
-+			ret = regmap_update_bits(adcx140->regmap, ADCX140_ASI_CH1 + i,
-+						 ADCX140_SLOT_MSK, slot_assignment[i]);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
- 	adcx140_pwr_ctrl(adcx140, true);
- out:
- 	return ret;
-diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
-index 107bd7927d9c..5eb27b94aa0a 100644
---- a/sound/soc/codecs/tlv320adcx140.h
-+++ b/sound/soc/codecs/tlv320adcx140.h
-@@ -147,5 +147,8 @@
- #define ADCX140_GPO_DRV_MAX		5
- 
- #define ADCX140_TX_FILL    BIT(0)
-+#define ADCX140_NUM_CH        8
-+
-+#define ADCX140_SLOT_MSK	GENMASK(5, 0)
- 
- #endif /* _TLV320ADCX140_ */
--- 
-2.28.0
+>  	int ret, i;
+>  
+>  	/* Should have a valid DPCD by this point */
+> @@ -3443,6 +3444,14 @@ void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
+>  	} else {
+>  		struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+>  
+> +		/* Write the source OUI as early as possible */
+> +		if (intel_dp_is_edp(intel_dp)) {
+> +			ret = drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, edp_oui,
+> +						sizeof(edp_oui));
+> +			if (ret < 0)
+> +				drm_err(&i915->drm, "Failed to write eDP source OUI\n");
+> +		}
+> +
+>  		/*
+>  		 * When turning on, we need to retry for 1ms to give the sink
+>  		 * time to wake up.
+> @@ -4530,6 +4539,23 @@ static void intel_dp_get_dsc_sink_cap(struct intel_dp *intel_dp)
+>  	}
+>  }
+>  
+> +static void
+> +intel_edp_init_source_oui(struct intel_dp *intel_dp)
+> +{
+> +	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> +	u8 oui[] = { 0x00, 0xaa, 0x01 };
+> +	u8 buf[3] = { 0 };
+> +
+> +	if (drm_dp_dpcd_read(&intel_dp->aux, DP_SOURCE_OUI, buf, sizeof(buf)) < 0)
+> +		drm_err(&i915->drm, "Failed to read source OUI\n");
+> +
+> +	if (memcmp(oui, buf, sizeof(oui)) == 0)
+> +		return;
+> +
+> +	if (drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, oui, sizeof(oui)) < 0)
+> +		drm_err(&i915->drm, "Failed to write source OUI\n");
+> +}
+> +
+>  static bool
+>  intel_edp_init_dpcd(struct intel_dp *intel_dp)
+>  {
+> @@ -4607,6 +4633,12 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
+>  	if (INTEL_GEN(dev_priv) >= 10 || IS_GEMINILAKE(dev_priv))
+>  		intel_dp_get_dsc_sink_cap(intel_dp);
+>  
+> +	/*
+> +	 * Program our source OUI so we can make various Intel-specific AUX
+> +	 * services available (such as HDR backlight controls)
+> +	 */
+> +	intel_edp_init_source_oui(intel_dp);
 
+I believe we should restrict this to the supported platforms: cfl, whl, cml, icl, tgl
+no?
+
+> +
+>  	return true;
+>  }
+>  
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
