@@ -2,140 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E6E26A6E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A217A26A6D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgIOOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgIOOI2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:08:28 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D32C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:42 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id y6so3902848oie.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7kQUdTgGYoCzTCj4OvU1jcQHb8SMV5JA5QYW5I7lhYw=;
-        b=sJrSnw+PU8y1m737k6muECCwVG5aj4zCJA2nLnV95+Q1NrWEFemy2GnFFwvFp+vosO
-         zyqHSSGRMAINWReGkldACua7QAlbCXoVCFO5WW6rLZsUyG71XPbkg2PyIiLXmz6ImkdN
-         DD8jTHi8r937YTN1Ua0KQiCUwE7QXk8LQspbh6u2CA9fR901gglFSjlGI1vQ5VBr24aY
-         nMuVwV+51LDYhNPbUxGk6/yx+fMQlYaBXXDyz578KMjTlHWbU8I1slivhujHiMvcCixS
-         VQ9auC2zX3qdM5qigSF1QFk5EUv4z9wDVxyVkAKvsCt4Uym7U7oYgJhOYy60K6gLsa68
-         L4OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7kQUdTgGYoCzTCj4OvU1jcQHb8SMV5JA5QYW5I7lhYw=;
-        b=uNtEHXeeRrTaRfwJce5F4XyIwBWFH8jfpPvIhFE2BP37fmScn35aGtphJjs2twscBv
-         Yh/CBWV9JTtwzxvzJWyuF9/S65vB0NQalww3zJzs1l2Zy/r5FrUIidFMOhDHO07HGCje
-         YUwaEo8ZnkPJ3dSK4kpZbt8Y8T/8UZlI7GkaRga1j/manmvEvv4+AkViAtlxI+HZ197i
-         10foMRxQdv6XCmd11zp5hdQ3Xk+mHwWjwoR0IyvYi9LFXVZ5r++yKpLWNPuZ2DXh64PG
-         wEfwQ7kB4eYpr7Q7/HtlN5sBXS8Q/X8SsQmUkhfGqsj+hjwo0HQd2ERgfs/8xr1m6jkr
-         7JIg==
-X-Gm-Message-State: AOAM5327QQkdqAhx87ujNqE8OpeQtVzV+F7QqYwXonYcx8Z2uIGm4p/M
-        cxrStbC4Re2MFCHb6d7FkSI3qg==
-X-Google-Smtp-Source: ABdhPJw7g1BDuEzE354nYgiFc4YO4/ESWG6hPfxm0Tj+jq7CWgKof2GUPNmm3oo7KeiklL2zo5zgDg==
-X-Received: by 2002:aca:5b45:: with SMTP id p66mr3566531oib.39.1600177602112;
-        Tue, 15 Sep 2020 06:46:42 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id d1sm5588353otb.80.2020.09.15.06.46.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:46:41 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 08:46:38 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     "Bao D. Nguyen" <nguyenb@codeaurora.org>
-Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] scsi: ufs: Support reading UFS's Vcc voltage from
- device tree
-Message-ID: <20200915134638.GF670377@yoga>
-References: <cover.1598939393.git.nguyenb@codeaurora.org>
- <69db325a09d5c3fa7fc260db031b1e498b601c25.1598939393.git.nguyenb@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <69db325a09d5c3fa7fc260db031b1e498b601c25.1598939393.git.nguyenb@codeaurora.org>
+        id S1726524AbgIOOIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:08:34 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:37752 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726703AbgIOOFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:05:48 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BD1B51A0933;
+        Tue, 15 Sep 2020 16:03:48 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E0A821A0948;
+        Tue, 15 Sep 2020 16:03:44 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EDC1C402BF;
+        Tue, 15 Sep 2020 16:03:39 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v3 2/2] ASoC: ak4458: Add DSD support for ak4458 and ak4497
+Date:   Tue, 15 Sep 2020 21:57:00 +0800
+Message-Id: <1600178220-28973-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600178220-28973-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1600178220-28973-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01 Sep 01:00 CDT 2020, Bao D. Nguyen wrote:
+Ak4458 can't support DSD512 format, but ak4497 can, so add
+a new enum variable (enum ak4458_type) in ak4458_drvdata to
+distinguish these two platforms.
 
-> The UFS specifications supports a range of Vcc operating voltage
-> from 2.4-3.6V depending on the device and manufacturers.
-> Allows selecting the UFS Vcc voltage level by setting the
-> UFS's entry vcc-voltage-level in the device tree. If UFS's
-> vcc-voltage-level setting is not found in the device tree,
-> use default values provided by the driver.
-> 
+Ak4497 has two kinds of DSD input pin, it can be selected by
+the dsd-path property from DT.
 
-As stated in the reply to patch 1, this is not the right approach.  As
-long as you have static min/max values requested by the driver you
-should rely on the board's constraints for the regulator levels and
-instead remove the min_uV/max_uV code from the driver.
+In hw_params(), bit clock is calculated according to different
+DSD format (DSD64, DSD128, DSD256, DSD512), then registers
+are configured.
 
-Thanks,
-Bjorn
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v3
+- remove kcontrol
+- add dsd-path property for selecting DSD input pin.
 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd-pltfrm.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> index 3db0af6..48f429c 100644
-> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> @@ -104,10 +104,11 @@ static int ufshcd_parse_clock_info(struct ufs_hba *hba)
->  static int ufshcd_populate_vreg(struct device *dev, const char *name,
->  		struct ufs_vreg **out_vreg)
->  {
-> -	int ret = 0;
-> +	int len, ret = 0;
->  	char prop_name[MAX_PROP_SIZE];
->  	struct ufs_vreg *vreg = NULL;
->  	struct device_node *np = dev->of_node;
-> +	const __be32 *prop;
->  
->  	if (!np) {
->  		dev_err(dev, "%s: non DT initialization\n", __func__);
-> @@ -138,8 +139,16 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
->  			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
->  			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
->  		} else {
-> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
-> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-> +			prop = of_get_property(np, "vcc-voltage-level", &len);
-> +			if (!prop || (len != (2 * sizeof(__be32)))) {
-> +				dev_warn(dev, "%s vcc-voltage-level property.\n",
-> +					prop ? "invalid format" : "no");
-> +				vreg->min_uV = UFS_VREG_VCC_MIN_UV;
-> +				vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-> +			} else {
-> +				vreg->min_uV = be32_to_cpup(&prop[0]);
-> +				vreg->max_uV = be32_to_cpup(&prop[1]);
-> +			}
->  		}
->  	} else if (!strcmp(name, "vccq")) {
->  		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+changes in v2
+- add more commit description
+
+ sound/soc/codecs/ak4458.c | 89 ++++++++++++++++++++++++++++++++++++---
+ sound/soc/codecs/ak4458.h |  5 ++-
+ 2 files changed, 86 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
+index 763e6839428f..1010c9ee2e83 100644
+--- a/sound/soc/codecs/ak4458.c
++++ b/sound/soc/codecs/ak4458.c
+@@ -28,14 +28,21 @@ static const char *ak4458_supply_names[AK4458_NUM_SUPPLIES] = {
+ 	"AVDD",
+ };
+ 
++enum ak4458_type {
++	AK4458 = 0,
++	AK4497 = 1,
++};
++
+ struct ak4458_drvdata {
+ 	struct snd_soc_dai_driver *dai_drv;
+ 	const struct snd_soc_component_driver *comp_drv;
++	enum ak4458_type type;
+ };
+ 
+ /* AK4458 Codec Private Data */
+ struct ak4458_priv {
+ 	struct regulator_bulk_data supplies[AK4458_NUM_SUPPLIES];
++	const struct ak4458_drvdata *drvdata;
+ 	struct device *dev;
+ 	struct regmap *regmap;
+ 	struct gpio_desc *reset_gpiod;
+@@ -45,6 +52,7 @@ struct ak4458_priv {
+ 	int fmt;
+ 	int slots;
+ 	int slot_width;
++	u32 dsd_path;    /* For ak4497 */
+ };
+ 
+ static const struct reg_default ak4458_reg_defaults[] = {
+@@ -325,12 +333,54 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
+ 	int pcm_width = max(params_physical_width(params), ak4458->slot_width);
+-	int nfs1;
+-	u8 format;
++	u8 format, dsdsel0, dsdsel1;
++	int nfs1, dsd_bclk;
+ 
+ 	nfs1 = params_rate(params);
+ 	ak4458->fs = nfs1;
+ 
++	/* calculate bit clock */
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_DSD_U8:
++	case SNDRV_PCM_FORMAT_DSD_U16_LE:
++	case SNDRV_PCM_FORMAT_DSD_U16_BE:
++	case SNDRV_PCM_FORMAT_DSD_U32_LE:
++	case SNDRV_PCM_FORMAT_DSD_U32_BE:
++		dsd_bclk = nfs1 * params_physical_width(params);
++		switch (dsd_bclk) {
++		case 2822400:
++			dsdsel0 = 0;
++			dsdsel1 = 0;
++			break;
++		case 5644800:
++			dsdsel0 = 1;
++			dsdsel1 = 0;
++			break;
++		case 11289600:
++			dsdsel0 = 0;
++			dsdsel1 = 1;
++			break;
++		case 22579200:
++			if (ak4458->drvdata->type == AK4497) {
++				dsdsel0 = 1;
++				dsdsel1 = 1;
++			} else {
++				dev_err(dai->dev, "DSD512 not supported.\n");
++				return -EINVAL;
++			}
++			break;
++		default:
++			dev_err(dai->dev, "Unsupported dsd bclk.\n");
++			return -EINVAL;
++		}
++
++		snd_soc_component_update_bits(component, AK4458_06_DSD1,
++					      AK4458_DSDSEL_MASK, dsdsel0);
++		snd_soc_component_update_bits(component, AK4458_09_DSD2,
++					      AK4458_DSDSEL_MASK, dsdsel1);
++		break;
++	}
++
+ 	/* Master Clock Frequency Auto Setting Mode Enable */
+ 	snd_soc_component_update_bits(component, AK4458_00_CONTROL1, 0x80, 0x80);
+ 
+@@ -355,6 +405,9 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
+ 		case SND_SOC_DAIFMT_DSP_B:
+ 			format = AK4458_DIF_32BIT_MSB;
+ 			break;
++		case SND_SOC_DAIFMT_PDM:
++			format = AK4458_DIF_32BIT_MSB;
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -393,6 +446,7 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 	case SND_SOC_DAIFMT_DSP_B:
++	case SND_SOC_DAIFMT_PDM:
+ 		ak4458->fmt = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 		break;
+ 	default:
+@@ -401,6 +455,12 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
++	/* DSD mode */
++	snd_soc_component_update_bits(component, AK4458_02_CONTROL3,
++				      AK4458_DP_MASK,
++				      ak4458->fmt == SND_SOC_DAIFMT_PDM ?
++				      AK4458_DP_MASK : 0);
++
+ 	ak4458_rstn_control(component, 0);
+ 	ak4458_rstn_control(component, 1);
+ 
+@@ -472,7 +532,10 @@ static int ak4458_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 
+ #define AK4458_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE |\
+ 			 SNDRV_PCM_FMTBIT_S24_LE |\
+-			 SNDRV_PCM_FMTBIT_S32_LE)
++			 SNDRV_PCM_FMTBIT_S32_LE |\
++			 SNDRV_PCM_FMTBIT_DSD_U8 |\
++			 SNDRV_PCM_FMTBIT_DSD_U16_LE |\
++			 SNDRV_PCM_FMTBIT_DSD_U32_LE)
+ 
+ static const unsigned int ak4458_rates[] = {
+ 	8000, 11025,  16000, 22050,
+@@ -564,6 +627,13 @@ static int ak4458_init(struct snd_soc_component *component)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	if (ak4458->drvdata->type == AK4497) {
++		ret = snd_soc_component_update_bits(component, AK4458_09_DSD2,
++						    0x4, (ak4458->dsd_path << 2));
++		if (ret < 0)
++			return ret;
++	}
++
+ 	return ak4458_rstn_control(component, 1);
+ }
+ 
+@@ -668,11 +738,13 @@ static const struct regmap_config ak4458_regmap = {
+ static const struct ak4458_drvdata ak4458_drvdata = {
+ 	.dai_drv = &ak4458_dai,
+ 	.comp_drv = &soc_codec_dev_ak4458,
++	.type = AK4458,
+ };
+ 
+ static const struct ak4458_drvdata ak4497_drvdata = {
+ 	.dai_drv = &ak4497_dai,
+ 	.comp_drv = &soc_codec_dev_ak4497,
++	.type = AK4497,
+ };
+ 
+ static const struct dev_pm_ops ak4458_pm = {
+@@ -684,7 +756,6 @@ static const struct dev_pm_ops ak4458_pm = {
+ static int ak4458_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct ak4458_priv *ak4458;
+-	const struct ak4458_drvdata *drvdata;
+ 	int ret, i;
+ 
+ 	ak4458 = devm_kzalloc(&i2c->dev, sizeof(*ak4458), GFP_KERNEL);
+@@ -698,7 +769,7 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
+ 	i2c_set_clientdata(i2c, ak4458);
+ 	ak4458->dev = &i2c->dev;
+ 
+-	drvdata = of_device_get_match_data(&i2c->dev);
++	ak4458->drvdata = of_device_get_match_data(&i2c->dev);
+ 
+ 	ak4458->reset_gpiod = devm_gpiod_get_optional(ak4458->dev, "reset",
+ 						      GPIOD_OUT_LOW);
+@@ -710,6 +781,9 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
+ 	if (IS_ERR(ak4458->mute_gpiod))
+ 		return PTR_ERR(ak4458->mute_gpiod);
+ 
++	/* Optional property for ak4497 */
++	of_property_read_u32(i2c->dev.of_node, "dsd-path", &ak4458->dsd_path);
++
+ 	for (i = 0; i < ARRAY_SIZE(ak4458->supplies); i++)
+ 		ak4458->supplies[i].supply = ak4458_supply_names[i];
+ 
+@@ -720,8 +794,9 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
+ 		return ret;
+ 	}
+ 
+-	ret = devm_snd_soc_register_component(ak4458->dev, drvdata->comp_drv,
+-					      drvdata->dai_drv, 1);
++	ret = devm_snd_soc_register_component(ak4458->dev,
++					      ak4458->drvdata->comp_drv,
++					      ak4458->drvdata->dai_drv, 1);
+ 	if (ret < 0) {
+ 		dev_err(ak4458->dev, "Failed to register CODEC: %d\n", ret);
+ 		return ret;
+diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
+index f906215f7e4e..9548c5d78621 100644
+--- a/sound/soc/codecs/ak4458.h
++++ b/sound/soc/codecs/ak4458.h
+@@ -83,4 +83,7 @@
+ #define AK4458_ATS_SHIFT	6
+ #define AK4458_ATS_MASK		GENMASK(7, 6)
+ 
+-#endif /* _AK4458_H */
++#define AK4458_DSDSEL_MASK		(0x1 << 0)
++#define AK4458_DP_MASK			(0x1 << 7)
++
++#endif
+-- 
+2.27.0
+
