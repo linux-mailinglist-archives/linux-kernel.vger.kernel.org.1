@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36D526A880
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B89A26A876
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgIOPNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:13:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
+        id S1727323AbgIOPLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727307AbgIOOln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:41:43 -0400
+        id S1727311AbgIOOlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:41:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 397ED222EA;
-        Tue, 15 Sep 2020 14:18:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFE5D223B0;
+        Tue, 15 Sep 2020 14:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179508;
-        bh=pGj7zHXG2F0d1nb/ZFnThlg4trSeFGXl4LPh38Vv14s=;
+        s=default; t=1600179511;
+        bh=bU+R6JmFXa9LtvyWd4YQfPKALOaQMNUxCNAqlhTY21A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ruSKDZq/A3WT4sSZCgLlBiYFqRfyxKxmPU719b3AnP8N/t3pt3bLugE+/NB4U/wDb
-         /AKn9/pPBTeG9Bph77UcngOw2V3Ixb09EAINQp0ksSoZrHL4GACiTnpTX7IttNleFF
-         ZUNwlpBzpaIVKEJGb5wqkpGiY3iLVMQx3CXBiUBU=
+        b=i7Dctg7i/Fk2dTWs6FKmSto2782zDPXGnF3y1lHTNpms2clCPkH+yHiPL0VNEtk5R
+         mWtIUuHNA5GcOG86zb83uJRec/gSc2MyHufIBxSqbRGROwp1vYdxrjmcrv0bOLLnkH
+         sZsz0V6m8NqiWWJjLKBzdbYYkT5c1++1yVxfJdcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 001/132] ARM: dts: logicpd-torpedo-baseboard: Fix broken audio
-Date:   Tue, 15 Sep 2020 16:11:43 +0200
-Message-Id: <20200915140644.114100621@linuxfoundation.org>
+Subject: [PATCH 5.4 010/132] RDMA/rxe: Fix memleak in rxe_mem_init_user
+Date:   Tue, 15 Sep 2020 16:11:52 +0200
+Message-Id: <20200915140644.587245881@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
 References: <20200915140644.037604909@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,44 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Ford <aford173@gmail.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit d7dfee67688ac7f2dfd4c3bc70c053ee990c40b5 ]
+[ Upstream commit e3ddd6067ee62f6e76ebcf61ff08b2c729ae412b ]
 
-Older versions of U-Boot would pinmux the whole board, but as
-the bootloader got updated, it started to only pinmux the pins
-it needed, and expected Linux to configure what it needed.
+When page_address() fails, umem should be freed just like when
+rxe_mem_alloc() fails.
 
-Unfortunately this caused an issue with the audio, because the
-mcbsp2 pins were configured in the device tree, they were never
-referenced by the driver. When U-Boot stopped muxing the audio
-pins, the audio died.
-
-This patch adds the references to the associate the pin controller
-with the mcbsp2 driver which makes audio operate again.
-
-Fixes: 739f85bba5ab ("ARM: dts: Move most of logicpd-torpedo-37xx-devkit to logicpd-torpedo-baseboard")
-
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20200819075632.22285-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi b/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
-index 449cc7616da63..e7a8f8addb6e0 100644
---- a/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
-+++ b/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
-@@ -80,6 +80,8 @@
- };
- 
- &mcbsp2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcbsp2_pins>;
- 	status = "okay";
- };
- 
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index ea6a819b71675..ffbc50341a55a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -207,6 +207,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
+ 			vaddr = page_address(sg_page_iter_page(&sg_iter));
+ 			if (!vaddr) {
+ 				pr_warn("null vaddr\n");
++				ib_umem_release(umem);
+ 				err = -ENOMEM;
+ 				goto err1;
+ 			}
 -- 
 2.25.1
 
