@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4E7269FA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5243A269F97
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbgIOHZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgIOHY5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:24:57 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E618C061356
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:24:57 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z19so1405016pfn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=oBilyFEf2/Z1J1tQYW2nP7ZczzAuGj9cFol63jX5QX4=;
-        b=c4p1+4NV8NlRzHFAx/uaoR2of/ipTcrRTAY9oJ5/Unn+O8Y3rY9sp4v8IGjx++3I4r
-         SQE/jrzc3GvToZgsexffViU0bU4gxhB4jn8e7r8Wgj6WZONFg9rHG7/EWTiD5LSQL1cN
-         sx7kAdf6ra1WKzU3T+FAT1AIJ/Gvb9jto+75QuGdepiFVzW7cxVS9a/m00DapVflZYfZ
-         pGXwNmTCmgzVEdYWTrQRc9ATICYARqOHfNurbxl7hAMXgD7EXjDO/M1pime+K5lzNEjQ
-         MsU2Whc+HCUIO9vMhpGT+tyPqd1m0tPAr9Jh985YurvzyyIr5rfD426v1/6+jMW+TeXp
-         QSBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=oBilyFEf2/Z1J1tQYW2nP7ZczzAuGj9cFol63jX5QX4=;
-        b=dStrHJtISWlBf+5bB3hjUanf+NpYAAnoTB/L+AaBQ5WOy7N8e0J+0tcwdUotPe2QVs
-         FntZrru/zlm7q/AmgHqdYe+yMsg8ARvcMKpko8sRbDbnRqIAH6WgR0nNPLBbKK8OgbVk
-         jnYKEDCy6sc6PiAOrB5ZPzjW8+ExCmC8sTm3KFDSQo692TWL9aqskklXjYpYXGP65p+u
-         WQIdKy9x+oh0luWkncEWZkOfRLvEdVMl4JAK2Pl/wLOAJcet6epHOcL4+n8wSdTdo4nt
-         f/rxl4BwNMKG7sflfR6ZymZY2hZK0Hmil7MfBbflf4L/yYUMTcyWNOlNwV3Dnq6M4VBZ
-         ZtAg==
-X-Gm-Message-State: AOAM533S0/6CiyVg2sWI54j86VzEVOiDx4KcWuNoQcWoMfqt7A5Sp7oT
-        ZHO6lMxCVDJQFOrbCSxXLo5m
-X-Google-Smtp-Source: ABdhPJzKMwHn18/aJgA+m+x05Z3G9Ii3hfInh23MjGpnxaaAD9SIavHD2LgB0dnAdxapI9FuMenKoA==
-X-Received: by 2002:a62:4e8a:0:b029:13c:1611:653b with SMTP id c132-20020a624e8a0000b029013c1611653bmr16134936pfb.13.1600154696590;
-        Tue, 15 Sep 2020 00:24:56 -0700 (PDT)
-Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id m24sm10701501pgn.44.2020.09.15.00.24.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 00:24:56 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     amitk@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
-        tdas@codeaurora.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 5/5] cpufreq: qcom-hw: Add cpufreq support for SM8250 SoC
-Date:   Tue, 15 Sep 2020 12:54:23 +0530
-Message-Id: <20200915072423.18437-6-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200915072423.18437-1-manivannan.sadhasivam@linaro.org>
-References: <20200915072423.18437-1-manivannan.sadhasivam@linaro.org>
+        id S1726189AbgIOHYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:24:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726085AbgIOHY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:24:29 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF02C2080C;
+        Tue, 15 Sep 2020 07:24:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600154669;
+        bh=lmjngYh7GkGxScGYSERfmVDd4/xBELC3JZvwsqs9C3Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PkKnTTTv3w9GFzkaUDzMcdHecq7ssNK9tMwzIJ9YPrOyQ6z6tgVXECEHXc3wYJV8+
+         e9ctxR3+/LMeC1mTVWRiCq8Q7wvc5Vy8SzZ4E6tDLs0yALhEUnHpFLCVIUOSl7Rplw
+         PoTFS+WkAR9P7eCCtad3p9CfolnnDndEz1YJ0Owc=
+Date:   Tue, 15 Sep 2020 16:24:24 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     <rostedt@goodmis.org>, <linux-kernel@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] bootconfig: init: make xbc_namebuf static
+Message-Id: <20200915162424.a947b5d51695f726db2af2a9@kernel.org>
+In-Reply-To: <20200915070324.2239473-1-yanaijie@huawei.com>
+References: <20200915070324.2239473-1-yanaijie@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SM8250 SoC uses EPSS block for carrying out the cpufreq duties. Hence, add
-support for it in the driver with relevant dev data.
+On Tue, 15 Sep 2020 15:03:24 +0800
+Jason Yan <yanaijie@huawei.com> wrote:
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Amit Kucheria <amitk@kernel.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/cpufreq/qcom-cpufreq-hw.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> This eliminates the following sparse warning:
+> 
+> init/main.c:306:6: warning: symbol 'xbc_namebuf' was not declared.
+> Should it be static?
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index e3c46984a037..c485be839172 100644
---- a/drivers/cpufreq/qcom-cpufreq-hw.c
-+++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -256,8 +256,17 @@ static const struct qcom_cpufreq_soc_data qcom_soc_data = {
- 	.lut_row_size = 32,
- };
- 
-+static const struct qcom_cpufreq_soc_data epss_soc_data = {
-+	.reg_enable = 0x0,
-+	.reg_freq_lut = 0x100,
-+	.reg_volt_lut = 0x200,
-+	.reg_perf_state = 0x320,
-+	.lut_row_size = 4,
-+};
-+
- static const struct of_device_id qcom_cpufreq_hw_match[] = {
- 	{ .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
-+	{ .compatible = "qcom,cpufreq-epss", .data = &epss_soc_data },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
+
+Yes, this looks good to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>  init/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/init/main.c b/init/main.c
+> index 92773a5daf8d..5ac07eb4a300 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -303,7 +303,7 @@ static void * __init get_boot_config_from_initrd(u32 *_size, u32 *_csum)
+>  
+>  #ifdef CONFIG_BOOT_CONFIG
+>  
+> -char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
+> +static char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
+>  
+>  #define rest(dst, end) ((end) > (dst) ? (end) - (dst) : 0)
+>  
+> -- 
+> 2.25.4
+> 
+
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
