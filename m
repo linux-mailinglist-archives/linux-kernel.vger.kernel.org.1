@@ -2,429 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DB626AA31
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E022026AA57
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgIORCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51238 "EHLO
+        id S1727697AbgIORSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727631AbgIOQSX (ORCPT
+        with ESMTP id S1727689AbgIOQ3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:18:23 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EC8C0611BD
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:09:22 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id f2so2245929pgd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:09:22 -0700 (PDT)
+        Tue, 15 Sep 2020 12:29:15 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40953C061A30
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:18:29 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id z22so5909371ejl.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wjhqFyCWOT33QC2Pg59px5MF1aIBBbM4prMwgUfNSdg=;
-        b=e1LhnYGFe4C/n4Gd0p8r8pat9lj+xzRWYdCQHjydVxGv5R8pAJgOpCeB5/U33bZoOr
-         LlaveisNmwAGBUOVpquxQ7j3006zorELJjtM2Z2J6kQykXHtBFyaJdOmxjCMr06bGWa2
-         OigzVgkOsQVpui/goHXn9B37O/wy6iM5Z9UoIpg3+r85t8wnPX/Cvh1hJh/FZIlkR1lq
-         Ya0KCcBe4KCv9f/TlJKWhgNYp9lR+ugpmvV2WuHmRwSMPuHq29x9tmul0uNBALJw/X+G
-         H21Wv2QTrkS6holulAdC5mrDGZrZjotEebdIxHTa967n51cSr8mLZ3gUrhQ1NsJqsewo
-         d0oQ==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K0mv4M4l2nXHs6Svit7zs9nE44kkP6iF2KX8026tPck=;
+        b=aEbKay3bCmBiTfuAaJd77hIEi9+Kw0g3PDChuYJcgXHJf2oC5kT/zW4He15ru2Owe4
+         SJIcPq3qkUhWkIqt2My6LyuEeJ8U1imOmecNuI6dmaF6Ti5zaBU25uFfzGle/ggCrnF7
+         4W47fIWC79MHWglkkozI1z/gLawMzs+TJZvz4k6Zpxvn1BAMkr7YQ2PLmD9ctvc+7Wh5
+         HkW2WHVD44SXjvvIK/Mu08ybxUgNdiRomdqxc2AQbfvJODIOf73myAfL1QDoinH2Sxm/
+         GPBm5HAZzBRGEY/Dxp7BjKT0Ti1wB4NC5dUPUU0R+oQbv1hV6jfnbOWPhibT6xkES2/B
+         TfWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wjhqFyCWOT33QC2Pg59px5MF1aIBBbM4prMwgUfNSdg=;
-        b=OacVNXrqT/ezodp9GYNjXv9et2qI+HwtD4z8vvwjROsAuofnnk1JlD3R2L8jyHQHZL
-         a3VrozQ3Cp/bgUHn2fuIzANXVu4OwzYHfYTkPLZWahOAqHJCRwMfG4lAnAizkQ5CZBqm
-         phUsrzJCfa3eGKSAMLldt823nJvw7Y9xC+8vxTesJcsAzyTX+AA8iMRNFona8+9KzKBg
-         MA8gk9qBxqq+bwvwsIcU3ZRY5KJ5UnPbgkYFj5hNgva2XZMk1MUgcHFxyaIggadl3WjR
-         o2lm54EOgHp88EZzDOlx/dlnb/DYrIHsKoPZml0INwG445w81XD/ovVVM952iUTYiXkC
-         Z/MA==
-X-Gm-Message-State: AOAM533J2q1nAjBqnvhYBlxzhCMMMrg3eonupvNa1frh+dfn/iAZfPmq
-        /V8xiTpGC8HYu76xm/uUtHvl6g==
-X-Google-Smtp-Source: ABdhPJy3l2UNZNYHQ1i0Y8KYjUnpaVq9OMGTgGBWBX7y/gy79eQ2Mw8NiufEMEl7Mncv/GNfjdc63A==
-X-Received: by 2002:a62:ed06:0:b029:142:2501:35de with SMTP id u6-20020a62ed060000b0290142250135demr2640159pfh.62.1600186161629;
-        Tue, 15 Sep 2020 09:09:21 -0700 (PDT)
-Received: from [192.168.1.102] (c-24-20-148-49.hsd1.or.comcast.net. [24.20.148.49])
-        by smtp.gmail.com with ESMTPSA id y4sm14022623pfq.215.2020.09.15.09.09.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 09:09:20 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, Jonathan.Cameron@huawei.com,
-        rjw@rjwysocki.net, sathyanarayanan.kuppuswamy@linux.intel.com,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/10] PCI/RCEC: Add pcie_walk_rcec() to walk
- associated RCiEPs
-Date:   Tue, 15 Sep 2020 09:09:20 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <5BC1F7E6-64B8-4564-97A3-49C914CA926D@intel.com>
-In-Reply-To: <7B04CA9A-7332-4001-963B-E56642044F5D@intel.com>
-References: <20200912005013.GA912147@bjorn-Precision-5520>
- <7B04CA9A-7332-4001-963B-E56642044F5D@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K0mv4M4l2nXHs6Svit7zs9nE44kkP6iF2KX8026tPck=;
+        b=YrgT6TyOcKNdrtbK2MHp+NguRdWcDoeEWvVqhPHISm01t+SCEtq0B6E1HwrRELHgyU
+         6m/4tZTlBZRbMm4dQGx34T5nya0Rp5gNYjFbXwJdD6C0Wt378rJg6gZy+UjO83sj4Apt
+         2UPyUBAVfiOwc7aqInOy47tzfhl4cAFxsPSth4uXiR/f4wNR+dxld2s2zreahNwa+4nL
+         Nf4cyXYaubpkn/w5d+9cDagcDkfGE5z/DJCSDXi90ImboePVoHhKVqTKfcVIhSebiI8P
+         EELRhikH6dtx0SQ5x5BcUxxbxuLY59Z2ypN3MNp+VgjS9BoF2E+altAIPlwlvX7tTa5S
+         lkOw==
+X-Gm-Message-State: AOAM532gX84ikmThAMOZV+6qReGJR7vlt0Ph0LySIgxb3yoThkjYOIVP
+        Ji22ARECPibvvHg9mnQqeziCEtVFovzM36Z09Orq
+X-Google-Smtp-Source: ABdhPJxny13HvsaUqVxMWx5bF/rrnCtepSvA1uRTJTMmx/17hKcUCAJC1b3PEJgPQ8cwJP2qYXjcNKeS/f0LDK1p2XA=
+X-Received: by 2002:a17:906:2301:: with SMTP id l1mr4248389eja.488.1600186706771;
+ Tue, 15 Sep 2020 09:18:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <35f2b8c69b4b9abbc076dd55a6f0f52cf20abad7.1599687447.git.rgb@redhat.com>
+In-Reply-To: <35f2b8c69b4b9abbc076dd55a6f0f52cf20abad7.1599687447.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 15 Sep 2020 12:18:15 -0400
+Message-ID: <CAHC9VhRN33KcW2dL1KJZZJC_Sg4JEdBJdnecRz6SB+PQ0BSg9A@mail.gmail.com>
+Subject: Re: [[PATCH V4]] audit: trigger accompanying records when no rules present
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Eric Paris <eparis@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14 Sep 2020, at 9:55, Sean V Kelley wrote:
+On Thu, Sep 10, 2020 at 11:03 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> When there are no audit rules registered, mandatory records (config,
+> etc.) are missing their accompanying records (syscall, proctitle, etc.).
+>
+> This is due to audit context dummy set on syscall entry based on absence
+> of rules that signals that no other records are to be printed.
+>
+> Clear the dummy bit if any record is generated.
+>
+> The proctitle context and dummy checks are pointless since the
+> proctitle record will not be printed if no syscall records are printed.
+>
+> The fds array is reset to -1 after the first syscall to indicate it
+> isn't valid any more, but was never set to -1 when the context was
+> allocated to indicate it wasn't yet valid.
+>
+> The audit_inode* functions can be called without going through
+> getname_flags() or getname_kernel() that sets audit_names and cwd, so
+> set the cwd if it has not already been done so due to audit_names being
+> valid.
+>
+> The LSM dump_common_audit_data() LSM_AUDIT_DATA_NET:AF_UNIX case was
+> missed with the ghak96 patch, so add that case here.
+>
+> Thanks to bauen1 <j2468h@googlemail.com> for reporting LSM situations in
+> which context->cwd is not valid, inadvertantly fixed by the ghak96 patch.
+>
+> Please see upstream github issue
+> https://github.com/linux-audit/audit-kernel/issues/120
+> This is also related to upstream github issue
+> https://github.com/linux-audit/audit-kernel/issues/96
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> ---
+> Passes audit-testsuite.
+>
+> Chagelog:
+> v4:
+> - rebase on audit/next v5.9-rc1
+> - squash v2+v3fix
+> - add pwd NULL check in audit_log_name()
+> - resubmit after revert
+>
+> v3:
+> - initialize fds[0] to -1
+> - init cwd for ghak96 LSM_AUDIT_DATA_NET:AF_UNIX case
+> - init cwd for audit_inode{,_child}
+>
+> v2:
+> - unconditionally clear dummy
+> - create audit_clear_dummy accessor function
+> - remove proctitle context and dummy checks
+>
+>  kernel/audit.c       |  1 +
+>  kernel/audit.h       |  8 ++++++++
+>  kernel/auditsc.c     | 11 +++++++----
+>  security/lsm_audit.c |  1 +
+>  4 files changed, 17 insertions(+), 4 deletions(-)
 
-> On 11 Sep 2020, at 17:50, Bjorn Helgaas wrote:
->
->> On Fri, Sep 11, 2020 at 04:16:03PM -0700, Sean V Kelley wrote:
->>> On 4 Sep 2020, at 19:23, Bjorn Helgaas wrote:
->>>> On Fri, Sep 04, 2020 at 10:18:30PM +0000, Kelley, Sean V wrote:
->>>>> Hi Bjorn,
->>>>>
->>>>> Quick question below...
->>>>>
->>>>> On Wed, 2020-09-02 at 14:55 -0700, Sean V Kelley wrote:
->>>>>> Hi Bjorn,
->>>>>>
->>>>>> On Wed, 2020-09-02 at 14:00 -0500, Bjorn Helgaas wrote:
->>>>>>> On Wed, Aug 12, 2020 at 09:46:53AM -0700, Sean V Kelley wrote:
->>>>>>>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>>>>>>>
->>>>>>>> When an RCEC device signals error(s) to a CPU core, the CPU 
->>>>>>>> core
->>>>>>>> needs to walk all the RCiEPs associated with that RCEC to check
->>>>>>>> errors. So add the function pcie_walk_rcec() to walk all RCiEPs
->>>>>>>> associated with the RCEC device.
->>>>>>>>
->>>>>>>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
->>>>>>>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
->>>>>>>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>>>>>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->>>>>>>> ---
->>>>>>>>  drivers/pci/pci.h       |  4 +++
->>>>>>>>  drivers/pci/pcie/rcec.c | 76
->>>>>>>> +++++++++++++++++++++++++++++++++++++++++
->>>>>>>>  2 files changed, 80 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
->>>>>>>> index bd25e6047b54..8bd7528d6977 100644
->>>>>>>> --- a/drivers/pci/pci.h
->>>>>>>> +++ b/drivers/pci/pci.h
->>>>>>>> @@ -473,9 +473,13 @@ static inline void pci_dpc_init(struct
->>>>>>>> pci_dev
->>>>>>>> *pdev) {}
->>>>>>>>  #ifdef CONFIG_PCIEPORTBUS
->>>>>>>>  void pci_rcec_init(struct pci_dev *dev);
->>>>>>>>  void pci_rcec_exit(struct pci_dev *dev);
->>>>>>>> +void pcie_walk_rcec(struct pci_dev *rcec, int (*cb)(struct
->>>>>>>> pci_dev
->>>>>>>> *, void *),
->>>>>>>> +		    void *userdata);
->>>>>>>>  #else
->>>>>>>>  static inline void pci_rcec_init(struct pci_dev *dev) {}
->>>>>>>>  static inline void pci_rcec_exit(struct pci_dev *dev) {}
->>>>>>>> +static inline void pcie_walk_rcec(struct pci_dev *rcec, int
->>>>>>>> (*cb)(struct pci_dev *, void *),
->>>>>>>> +				  void *userdata) {}
->>>>>>>>  #endif
->>>>>>>>
->>>>>>>>  #ifdef CONFIG_PCI_ATS
->>>>>>>> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
->>>>>>>> index 519ae086ff41..405f92fcdf7f 100644
->>>>>>>> --- a/drivers/pci/pcie/rcec.c
->>>>>>>> +++ b/drivers/pci/pcie/rcec.c
->>>>>>>> @@ -17,6 +17,82 @@
->>>>>>>>
->>>>>>>>  #include "../pci.h"
->>>>>>>>
->>>>>>>> +static int pcie_walk_rciep_devfn(struct pci_bus *bus, int
->>>>>>>> (*cb)(struct pci_dev *, void *),
->>>>>>>> +				 void *userdata, const unsigned long
->>>>>>>> bitmap)
->>>>>>>> +{
->>>>>>>> +	unsigned int devn, fn;
->>>>>>>> +	struct pci_dev *dev;
->>>>>>>> +	int retval;
->>>>>>>> +
->>>>>>>> +	for_each_set_bit(devn, &bitmap, 32) {
->>>>>>>> +		for (fn = 0; fn < 8; fn++) {
->>>>>>>> +			dev = pci_get_slot(bus, PCI_DEVFN(devn, fn));
->>>>>>>
->>>>>>> Wow, this is a lot of churning to call pci_get_slot() 256 times 
->>>>>>> per
->>>>>>> bus for the "associated bus numbers" case where we pass a bitmap 
->>>>>>> of
->>>>>>> 0xffffffff.  They didn't really make it easy for software when 
->>>>>>> they
->>>>>>> added the next/last bus number thing.
->>>>>>>
->>>>>>> Just thinking out loud here.  What if we could set dev->rcec 
->>>>>>> during
->>>>>>> enumeration, and then use that to build pcie_walk_rcec()?
->>>>>>
->>>>>> I think follow what you are doing.
->>>>>>
->>>>>> As we enumerate an RCEC, use the time to discover RCiEPs and
->>>>>> associate
->>>>>> each RCiEP's dev->rcec. Although BIOS already set the bitmap for
->>>>>> this
->>>>>> specific RCEC, it's more efficient to simply discover the devices
->>>>>> through the bus walk and verify each one found against the 
->>>>>> bitmap.
->>>>>>
->>>>>> Further, while we can be certain that an RCiEP found with a 
->>>>>> matching
->>>>>> device no. in a bitmap for an associated RCEC is correct, we 
->>>>>> cannot
->>>>>> be
->>>>>> certain that any RCiEP found on another bus range is correct 
->>>>>> unless
->>>>>> we
->>>>>> verify the bus is within that next/last bus range.
->>>>>>
->>>>>> Finally, that's where find_rcec() callback for rcec_assoc_rciep()
->>>>>> does
->>>>>> double duty by also checking on the "on-a-separate-bus" case
->>>>>> captured
->>>>>> potentially by find_rcec() during an RCiEP's bus walk.
->>>>>>
->>>>>>
->>>>>>>   bool rcec_assoc_rciep(rcec, rciep)
->>>>>>>   {
->>>>>>>     if (rcec->bus == rciep->bus)
->>>>>>>       return (rcec->bitmap contains rciep->devfn);
->>>>>>>
->>>>>>>     return (rcec->next/last contains rciep->bus);
->>>>>>>   }
->>>>>>>
->>>>>>>   link_rcec(dev, data)
->>>>>>>   {
->>>>>>>     struct pci_dev *rcec = data;
->>>>>>>
->>>>>>>     if ((dev is RCiEP) && rcec_assoc_rciep(rcec, dev))
->>>>>>>       dev->rcec = rcec;
->>>>>>>   }
->>>>>>>
->>>>>>>   find_rcec(dev, data)
->>>>>>>   {
->>>>>>>     struct pci_dev *rciep = data;
->>>>>>>
->>>>>>>     if ((dev is RCEC) && rcec_assoc_rciep(dev, rciep))
->>>>>>>       rciep->rcec = dev;
->>>>>>>   }
->>>>>>>
->>>>>>>   pci_setup_device
->>>>>>>     ...
->>>>>
->>>>> I just noticed your use of pci_setup_device(). Are you suggesting
->>>>> moving the call to pci_rcec_init() out of pci_init_capabilities() 
->>>>> and
->>>>> move it into pci_setup_device()?  If so, would pci_rcec_exit() 
->>>>> still
->>>>> remain in pci_release_capabilities()?
->>>>>
->>>>> I'm just wondering if it could just remain in
->>>>> pci_init_capabilities().
->>>>
->>>> Yeah, I didn't mean in pci_setup_device() specifically, just 
->>>> somewhere
->>>> in the callchain of pci_setup_device().  But you're right, it 
->>>> probably
->>>> would make more sense in pci_init_capabilities(), so I *should* 
->>>> have
->>>> said pci_scan_single_device() to be a little less specific.
->>>
->>> I’ve done some experimenting with this approach, and I think there 
->>> may be a
->>> problem of just walking the busses during enumeration
->>> pci_init_capabilities(). One problem is where one has an RCEC on a 
->>> root bus:
->>> 6a(00.4) and an RCiEP on another root bus: 6b(00.0).  They will 
->>> never find
->>> each other in this approach through a normal pci_bus_walk() call 
->>> using their
->>> respective root_bus.
->>>
->>>>  +-[0000:6b]-+-00.0
->>>>  |           +-00.1
->>>>  |           +-00.2
->>>>  |           \-00.3
->>>>  +-[0000:6a]-+-00.0
->>>>  |           +-00.1
->>>>  |           +-00.2
->>>>  |           \-00.4
->>
->> Wow, is that even allowed?
->>
->> There's no bridge from 0000:6a to 0000:6b, so we will not scan 
->> 0000:6b
->> unless we find a host bridge with _CRS where 6b is the first bus
->> number below the bridge.  I think that means this would have to be
->> described in ACPI as two separate root bridges:
->>
->>   ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 6a])
->>   ACPI: PCI Root Bridge [PCI1] (domain 0000 [bus 6b])
->
-> Otherwise, the RCEC Associated Endpoint Extended Capabilities would 
-> have to have explicitly mentioned a bridge?
->
->>
->> I *guess* maybe it's allowed by the PCIe spec to have an RCEC and
->> associated RCiEPs on separate root buses?  It seems awfully strange
->> and not in character for PCIe, but I guess I can't point to language
->> that prohibits it.
->
-> Yes, it should be possible.
->
->>
->>> While having a lot of slot calls per bus is unfortunate, unless 
->>> I’m mistaken
->>> you would have to walk every peer root_bus with your RCiEP in this 
->>> example
->>> until you hit on the right RCEC, unless of course you have a bitmap
->>> associated RCEC on dev->bus.
->>
->> I really despise pci_find_bus(), pci_get_slot(), and related
->> functions, but maybe they can't be avoided.
->>
->> I briefly hoped we could forget about connecting them at
->> enumeration-time and just build a list of RCECs in the host bridge.
->> Then when we handle an event for an RCiEP, we could search the list 
->> to
->> find the right RCEC (and potentially cache it then).  But I don't
->> think that would work either, because in the example above, they will
->> be under different host bridges.  I guess we could maybe have a 
->> global
->> (or maybe per-domain) list of RCECs.
->
-> Right, we could just have a list and only need to search the list when 
-> we need to handle an event.
->
->>
->>> Conversely, if you are enumerating the above RCEC at 6a(00.4) and 
->>> you
->>> attempt to link_rcec() through calls to pci_walk_bus(), the walk 
->>> will still
->>> be limited to 6a and below; never encountering 6b(00.0).  So you 
->>> would then
->>> need an additional walk for each of the associated bus ranges, 
->>> excluding the
->>> same bus as the RCEC.
->>>
->>> pci_init_capabilities()
->>> …
->>> pci_init_rcec() // Cached
->>>
->>> if (RCEC)
->>>  Walk the dev->bus for bitmap associated RCiEP
->>>  Walk all associated bus ranges for RCiEP
->>>
->>> else if (RCiEP)
->>>  Walk the dev->bus for bitmap associated RCEC
->>>  Walk all peer root_bus for RCEC, confirm if own dev->bus falls 
->>> within
->>> discovered RCEC associated ranges
->>>
->>> The other problem here is temporal. I’m wondering if we may be 
->>> trying to
->>> find associated devices at the pci_init_capabilities() stage prior 
->>> to them
->>> being fully enumerated, i.e., RCEC has not been cached but we are 
->>> searching
->>> with a future associated RCiEP.  So one could encounter a race 
->>> condition
->>> where one is checking on an RCiEP whose associated RCEC has not been
->>> enumerated yet.
->>
->> Maybe I'm misunderstanding this problem, but I think my idea would
->> handle this: If we find the RCEC first, we cache its info and do
->> nothing else.  When we subsequently discover an RCiEP, we walk the
->> tree, find the RCEC, and connect them.
->>
->> If we find an RCiEP first, we do nothing.  When we subsequently
->> discover an RCEC, we walk the tree, find any associated RCiEPs, and
->> connect them.
->
->
-> Your approach makes sense. In retrospect, I don’t think there can be 
-> a race condition here because of the fallback from one RCEC to the 
-> other when they enumerate. You have two chances of finding the 
-> relationship.
->
->>
->> The discovery can happen in different orders based on the
->> bus/device/function numbers, but it's not really a race because
->> enumeration is single-threaded.  But if we're talking about two
->> separate host bridges (PNP0A03 devices), we *should* allow them to be
->> enumerated in parallel, even though we don't do that today.
->>
->> I think this RCEC association design is really kind of problematic.
->>
->> We don't really *need* the association until some RCiEP event (PME,
->> error, etc) occurs, so it's reasonable to defer making the RCEC
->> connection until then.  But it seems like things should be designed 
->> so
->> we're guaranteed to enumerate the RCEC before the RCiEPs.  Otherwise,
->> we don't really know when we can enable RCiEP events.  If we discover
->> an RCiEP first, enable error reporting, and an error occurs before we
->> find the RCEC, we're in a bit of a pickle.
->
-> So we could have a global list (RCiEP or RCEC) in which we wait to 
-> identify the associations only when we need to respond to events. Or 
-> in your original suggestion we could walk the RCEC bus ranges in 
-> addition to its root_bus.
->
-> i.e., We bus walk an enumerating RCEC with link_rcec() callback for 
-> not only the root_bus but each bus number in the associated ranges if 
-> the extended cap exists.
->
-> RCiEPs will simply continue to invoke their callback via find_rcec() 
-> and only check on their own bus for the encountered RCEC’s 
-> associated bitmap case.
+Comments below, but can you elaborate on if any testing was done
+beyond the audit-testsuite?
 
-Walking the bus with an RCEC as it is probed in the portdrv_pci.c can be 
-done with both its own bus (bitmap) and with supported associated bus 
-ranges.  In that walk I’m able to find all the associated endpoints 
-via both bitmap on own bus and the bus ranges. No pci_get_slot() is 
-needed as per your original suggestion.
+> diff --git a/kernel/audit.h b/kernel/audit.h
+> index 3b9c0945225a..abcfef58435b 100644
+> --- a/kernel/audit.h
+> +++ b/kernel/audit.h
+> @@ -290,6 +290,13 @@ extern int audit_signal_info_syscall(struct task_struct *t);
+>  extern void audit_filter_inodes(struct task_struct *tsk,
+>                                 struct audit_context *ctx);
+>  extern struct list_head *audit_killed_trees(void);
+> +
+> +static inline void audit_clear_dummy(struct audit_context *ctx)
+> +{
+> +       if (ctx)
+> +               ctx->dummy = 0;
+> +}
 
-The suggsted approach to the rcec_helper() seems to imply that we either 
-walk it again or have cached all the associated RCiEP.  When we do the 
-walk above, we are merely, finding the RCiEPs and linking them to the 
-RCEC’s structure. There is no caching done of a list of RCiEPs per 
-RCEC.
+With the only caller being audit_log_start(), should this be moved to
+kernel/audit.c?  I'm just not sure this is something we would ever
+need (or want) to call from elsewhere, thoughts?
 
-i.e., in aer.c : set_downstream_devices_error_reporting() wants to 
-enable each associated RCiEP via pcie_walk_rcec().
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 8dba8f0983b5..9d2de93f40b3 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -1367,7 +1368,10 @@ static void audit_log_name(struct audit_context *context, struct audit_names *n,
+>                         /* name was specified as a relative path and the
+>                          * directory component is the cwd
+>                          */
+> -                       audit_log_d_path(ab, " name=", &context->pwd);
+> +                       if (&context->pwd)
 
-Looking into changes to the pice_walk_rcec()
+Hmm, I don't think this is going to work the way you are intending; I
+believe this will always evaluate to true regardless of the state of
+context->pwd.  If you look elsewhere in kernel/auditsc.c you will see
+some examples of checking to see if context->pwd is valid (e.g.
+_audit_getcwd() and audit_log_exit()).
 
-Sean
+> +                               audit_log_d_path(ab, " name=", &context->pwd);
+> +                       else
+> +                               audit_log_format(ab, " name=(null)");
+>                         break;
+>                 default:
+>                         /* log the name's directory component */...
 
+> @@ -2079,6 +2080,7 @@ void __audit_inode(struct filename *name, const struct dentry *dentry,
+>         }
+>         handle_path(dentry);
+>         audit_copy_inode(n, dentry, inode, flags & AUDIT_INODE_NOEVAL);
+> +       _audit_getcwd(context);
+>  }
 >
+>  void __audit_file(const struct file *file)
+> @@ -2197,6 +2199,7 @@ void __audit_inode_child(struct inode *parent,
+>                 audit_copy_inode(found_child, dentry, inode, 0);
+>         else
+>                 found_child->ino = AUDIT_INO_UNSET;
+> +       _audit_getcwd(context);
+>  }
+>  EXPORT_SYMBOL_GPL(__audit_inode_child);
 >
-> Sean
->
->>
->>> So let’s say one throws out RCiEP entirely and just relies upon 
->>> RCEC to find
->>> the associations because one knows that an encountered RCEC (in
->>> pci_init_capabilities()) has already been cached. In that case you 
->>> end up
->>> with the original implementation being done with this patch 
->>> series…
->>>
->>> if (RCEC)
->>>  Walk the dev->bus for bitmap associated RCiEP
->>>  Walk all associated bus ranges for RCiEP
->>>
->>> Perhaps I’ve muddled some things here but it doesn’t look like 
->>> the twain
->>> will meet unless I cover multiple peer root_bus and even then you 
->>> may have
->>> an issue because the devices don’t yet fully exist from the 
->>> perspective of
->>> the OS.
->>>
->>> Thanks,
->>>
->>> Sean
+> diff --git a/security/lsm_audit.c b/security/lsm_audit.c
+> index 53d0d183db8f..e93077612246 100644
+> --- a/security/lsm_audit.c
+> +++ b/security/lsm_audit.c
+> @@ -369,6 +369,7 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+>                                         audit_log_untrustedstring(ab, p);
+>                                 else
+>                                         audit_log_n_hex(ab, p, len);
+> +                               audit_getcwd();
+>                                 break;
+>                         }
+>                 }
+
+I'm starting to wonder if audit is doing this wrong (it is audit after
+all) ... why not just fetch the cwd in audit_log_exit() if there are
+entries in the context->names_list?  The only time we care about
+logging the working dir is when we actually have PATH records, right?
+My initial thinking is that we can simplify a lot of code if we just
+add a audit_getcwd() call in audit_log_exit() if the
+context->names_list is not empty.  We should even be safe in the task
+exit case as the fs info appears to get cleaned up *after*
+audit_log_exit() is called.
+
+Assuming we go this route, we can probably get rid of all the
+audit_getcwd() calls outside of the audit code (e.g. the lsm_audit.c
+code).  I guess we would need to make sure things still behave the
+same for chdir(2), getcwd(2), etc. but even if we have to insert one
+or two audit_getcwd() calls in that case we should still come out on
+top (although I suspect the necessary calls are already being made).
+
+-- 
+paul moore
+www.paul-moore.com
