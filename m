@@ -2,221 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D1C26AA80
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6996826AA76
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgIORYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:24:30 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51368 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727580AbgIOQdm (ORCPT
+        id S1727728AbgIORXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727403AbgIOQdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:33:42 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FGUxkp137274;
-        Tue, 15 Sep 2020 16:33:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=EySSFs/mkWAdsBkj1u/J5ie8Sv/9oH6sVII8xbItpCw=;
- b=p5iQS7y18Ip+5cIDhWFg1wnPX0miaN9TSUk18AqKYQnOWi9sblfvEOreraAEaPnPs9Gi
- GJpmffca68bOdAGLz7c6GDNVE1LSAZHyExlQEWpkSsiDQ+padABKXNo/rkQ5RyklpaB6
- xv8bwcdCYXMLX//tElU1CFQqEqvjaME4Gwvie+mfI4hVcMIAdCJlsodG6cKH+qLo+EPJ
- fbjPDMktxCS2JUDcuKNWlyFF/xQK69MkjQW9l649+ZEVCDfRa1c0j3qraTdJdBb8ugWX
- GXlEbtCJUJAHs3z/sF62QySDF2awj7iFUNqB3I4s/Y2MOHkbODYmjDDkZC/RhCmgHoTY TA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33j91dfu6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 16:33:07 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FGTwFn120010;
-        Tue, 15 Sep 2020 16:31:07 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33h7wpd5gb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 16:31:07 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08FGV4nB012357;
-        Tue, 15 Sep 2020 16:31:05 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 16:31:04 +0000
-Date:   Tue, 15 Sep 2020 09:31:04 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
-        qi.fuli@fujitsu.com, y-goto@fujitsu.com
-Subject: Re: [RFC PATCH 2/4] pagemap: introduce ->memory_failure()
-Message-ID: <20200915163104.GG7964@magnolia>
-References: <20200915101311.144269-1-ruansy.fnst@cn.fujitsu.com>
- <20200915101311.144269-3-ruansy.fnst@cn.fujitsu.com>
+        Tue, 15 Sep 2020 12:33:53 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A05C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:33:53 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id fa1so78829pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yQJJ5fmnUBk4QSqJ30BNJdZU/GsrsfsOL40Q6mFk9oY=;
+        b=eyGMQUPsLE6QyjA/capur6QRDfCMT6VUycp01vtPwanFo9SmwhVNY/jBBQQVu3ffnA
+         goXlTn+CmavCdTJfpCN5cGNQCMPw2MPClbYI5lY0vI2/LEX9DZnDc2perOTT3KpgI0eH
+         SvlPrN1V4Mr6fBDPEHEpHwiIbiBxmp50z6bHvkfeAc+YEz3ceSv3yuc1D/NXGq8eUbYR
+         XsJifyLnz0A83LqBrm8mqEtHtT0KhyowpCLIWad9KZ4cthOHzxGepjbA8QhkidSNF2Jf
+         oHjfflb2aI0Khws0ZUj8jR9HwOXn7ITEKrdCIOeNfFaVM5UgheBOV242z6k6Ry8e7zlt
+         5Ypg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=yQJJ5fmnUBk4QSqJ30BNJdZU/GsrsfsOL40Q6mFk9oY=;
+        b=QanV7HCcR56aUkejd6IFEWud8B4+C9vm/mv2bSu+/wIGOR4sL85jpXWr7fIP6zgAgY
+         YmqbR53Enb0ecRrvwe7/AqQPVDFqH8iNT3GhhfwdtlKjSL0qLWiJLtH8LUH2pd989PCL
+         SUHFWe5P8AtXOqDiopsGfW4CRw8GBFJ/i/sBfuSF4w6amnb92W5pLXyP3pWP5LkjFL4c
+         Q+yn9nBMPBapXWbmmOUaSQFowoMsqzfCLelPc0Lm7pPZhao6OSn1RttTivqtvEwOEhhb
+         RWqlf1qgVHkk4Ndaoz0/REGlihOkgKTkvzZsEF6f8b2t0ASh6RyW7yAGGTXIp5pOL+IR
+         7Spw==
+X-Gm-Message-State: AOAM532ItJKgcZVLTlNbbiKYhmtaXtbb4OSj60+XX+nqKR5os54GtFCA
+        wmmJ2dcqtQnr3TMpG0GuujE=
+X-Google-Smtp-Source: ABdhPJzxkgbzNgEI1pL2mjfZze8hPz9vaJ1pKh4S7QTvN92qSkUofQdvlKXn5SZSvQtRAF6eU7krjA==
+X-Received: by 2002:a17:902:d897:b029:d1:e5f8:d263 with SMTP id b23-20020a170902d897b02900d1e5f8d263mr2298695plz.64.1600187632426;
+        Tue, 15 Sep 2020 09:33:52 -0700 (PDT)
+Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id a18sm11778769pgw.50.2020.09.15.09.33.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 09:33:51 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 09:33:49 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     syzbot <syzbot+ecf80462cb7d5d552bc7@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@google.com,
+        hannes@cmpxchg.org, khalid.aziz@oracle.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        rppt@linux.ibm.com, syzkaller-bugs@googlegroups.com,
+        torvalds@linux-foundation.org,
+        "Kirill A. Shutemov" <kirill@shutemov.name>
+Subject: Re: general protection fault in madvise_cold_or_pageout_pte_range
+Message-ID: <20200915163349.GA2868856@google.com>
+References: <00000000000002a86f05af42ab27@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915101311.144269-3-ruansy.fnst@cn.fujitsu.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150134
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=1 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150134
+In-Reply-To: <00000000000002a86f05af42ab27@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 06:13:09PM +0800, Shiyang Ruan wrote:
-> When memory-failure occurs, we call this function which is implemented
-> by each devices.  For fsdax, pmem device implements it.  Pmem device
-> will find out the block device where the error page located in, gets the
-> filesystem on this block device, and finally call ->storage_lost() to
-> handle the error in filesystem layer.
+On Mon, Sep 14, 2020 at 02:29:15AM -0700, syzbot wrote:
+> Hello,
 > 
-> Normally, a pmem device may contain one or more partitions, each
-> partition contains a block device, each block device contains a
-> filesystem.  So we are able to find out the filesystem by one offset on
-> this pmem device.  However, in other cases, such as mapped device, I
-> didn't find a way to obtain the filesystem laying on it.  It is a
-> problem need to be fixed.
+> syzbot found the following issue on:
 > 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-> ---
->  block/genhd.c            | 12 ++++++++++++
->  drivers/nvdimm/pmem.c    | 31 +++++++++++++++++++++++++++++++
->  include/linux/genhd.h    |  2 ++
->  include/linux/memremap.h |  3 +++
->  4 files changed, 48 insertions(+)
+> HEAD commit:    729e3d09 Merge tag 'ceph-for-5.9-rc5' of git://github.com/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1482b99e900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8f5c353182ed6199
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ecf80462cb7d5d552bc7
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e2a255900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164afdb3900000
 > 
-> diff --git a/block/genhd.c b/block/genhd.c
-> index 99c64641c314..e7442b60683e 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -1063,6 +1063,18 @@ struct block_device *bdget_disk(struct gendisk *disk, int partno)
->  }
->  EXPORT_SYMBOL(bdget_disk);
->  
-> +struct block_device *bdget_disk_sector(struct gendisk *disk, sector_t sector)
-> +{
-> +	struct block_device *bdev = NULL;
-> +	struct hd_struct *part = disk_map_sector_rcu(disk, sector);
-> +
-> +	if (part)
-> +		bdev = bdget(part_devt(part));
-> +
-> +	return bdev;
-> +}
-> +EXPORT_SYMBOL(bdget_disk_sector);
-> +
->  /*
->   * print a full list of all partitions - intended for places where the root
->   * filesystem can't be mounted and thus to give the victim some idea of what
-> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-> index fab29b514372..3ed96486c883 100644
-> --- a/drivers/nvdimm/pmem.c
-> +++ b/drivers/nvdimm/pmem.c
-> @@ -364,9 +364,40 @@ static void pmem_release_disk(void *__pmem)
->  	put_disk(pmem->disk);
->  }
->  
-> +static int pmem_pagemap_memory_failure(struct dev_pagemap *pgmap,
-> +		struct mf_recover_controller *mfrc)
-> +{
-> +	struct pmem_device *pdev;
-> +	struct block_device *bdev;
-> +	sector_t disk_sector;
-> +	loff_t bdev_offset;
-> +
-> +	pdev = container_of(pgmap, struct pmem_device, pgmap);
-> +	if (!pdev->disk)
-> +		return -ENXIO;
-> +
-> +	disk_sector = (PFN_PHYS(mfrc->pfn) - pdev->phys_addr) >> SECTOR_SHIFT;
-
-Ah, I see, looking at the current x86 MCE code, the MCE handler gets a
-physical address, which is then rounded down to a PFN, which is then
-blown back up into a byte address(?) and then rounded down to sectors.
-That is then blown back up into a byte address and passed on to XFS,
-which rounds it down to fs blocksize.
-
-/me wishes that wasn't so convoluted, but reforming the whole mm poison
-system to have smaller blast radii isn't the purpose of this patch. :)
-
-> +	bdev = bdget_disk_sector(pdev->disk, disk_sector);
-> +	if (!bdev)
-> +		return -ENXIO;
-> +
-> +	// TODO what if block device contains a mapped device
-
-Find its dev_pagemap_ops and invoke its memory_failure function? ;)
-
-> +	if (!bdev->bd_super)
-> +		goto out;
-> +
-> +	bdev_offset = ((disk_sector - get_start_sect(bdev)) << SECTOR_SHIFT) -
-> +			pdev->data_offset;
-> +	bdev->bd_super->s_op->storage_lost(bdev->bd_super, bdev_offset, mfrc);
-
-->storage_lost is required for all filesystems?
-
---D
-
-> +
-> +out:
-> +	bdput(bdev);
-> +	return 0;
-> +}
-> +
->  static const struct dev_pagemap_ops fsdax_pagemap_ops = {
->  	.kill			= pmem_pagemap_kill,
->  	.cleanup		= pmem_pagemap_cleanup,
-> +	.memory_failure		= pmem_pagemap_memory_failure,
->  };
->  
->  static int pmem_attach_disk(struct device *dev,
-> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-> index 4ab853461dff..16e9e13e0841 100644
-> --- a/include/linux/genhd.h
-> +++ b/include/linux/genhd.h
-> @@ -303,6 +303,8 @@ static inline void add_disk_no_queue_reg(struct gendisk *disk)
->  extern void del_gendisk(struct gendisk *gp);
->  extern struct gendisk *get_gendisk(dev_t dev, int *partno);
->  extern struct block_device *bdget_disk(struct gendisk *disk, int partno);
-> +extern struct block_device *bdget_disk_sector(struct gendisk *disk,
-> +			sector_t sector);
->  
->  extern void set_device_ro(struct block_device *bdev, int flag);
->  extern void set_disk_ro(struct gendisk *disk, int flag);
-> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-> index 5f5b2df06e61..efebefa70d00 100644
-> --- a/include/linux/memremap.h
-> +++ b/include/linux/memremap.h
-> @@ -6,6 +6,7 @@
->  
->  struct resource;
->  struct device;
-> +struct mf_recover_controller;
->  
->  /**
->   * struct vmem_altmap - pre-allocated storage for vmemmap_populate
-> @@ -87,6 +88,8 @@ struct dev_pagemap_ops {
->  	 * the page back to a CPU accessible page.
->  	 */
->  	vm_fault_t (*migrate_to_ram)(struct vm_fault *vmf);
-> +	int (*memory_failure)(struct dev_pagemap *pgmap,
-> +			      struct mf_recover_controller *mfrc);
->  };
->  
->  #define PGMAP_ALTMAP_VALID	(1 << 0)
-> -- 
-> 2.28.0
+> The issue was bisected to:
 > 
+> commit 1a4e58cce84ee88129d5d49c064bd2852b481357
+> Author: Minchan Kim <minchan@kernel.org>
+> Date:   Wed Sep 25 23:49:15 2019 +0000
 > 
+>     mm: introduce MADV_PAGEOUT
 > 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127f973e900000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=117f973e900000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=167f973e900000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ecf80462cb7d5d552bc7@syzkaller.appspotmail.com
+> Fixes: 1a4e58cce84e ("mm: introduce MADV_PAGEOUT")
+> 
+> general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+> CPU: 1 PID: 6826 Comm: syz-executor142 Not tainted 5.9.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:__lock_acquire+0x84/0x2ae0 kernel/locking/lockdep.c:4296
+> Code: ff df 8a 04 30 84 c0 0f 85 e3 16 00 00 83 3d 56 58 35 08 00 0f 84 0e 17 00 00 83 3d 25 c7 f5 07 00 74 2c 4c 89 e8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ef e8 3e d1 5a 00 48 be 00 00 00 00 00 fc
+> RSP: 0018:ffffc90004b9f850 EFLAGS: 00010006
+> RAX: 0000000000000003 RBX: 0000000000000001 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000000018
+> RBP: ffffc90004b9f9a8 R08: 0000000000000001 R09: 0000000000000000
+> R10: fffffbfff131e2e6 R11: 0000000000000000 R12: ffff8880937161c0
+> R13: 0000000000000018 R14: 0000000000000000 R15: 0000000000000000
+> FS:  0000000002638880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000002100003f CR3: 00000000a49a2000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  lock_acquire+0x140/0x6f0 kernel/locking/lockdep.c:5006
+>  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+>  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+>  spin_lock include/linux/spinlock.h:354 [inline]
+>  madvise_cold_or_pageout_pte_range+0x52f/0x25c0 mm/madvise.c:389
+>  walk_pmd_range mm/pagewalk.c:89 [inline]
+>  walk_pud_range mm/pagewalk.c:160 [inline]
+>  walk_p4d_range mm/pagewalk.c:193 [inline]
+>  walk_pgd_range mm/pagewalk.c:229 [inline]
+>  __walk_page_range+0xe7b/0x1da0 mm/pagewalk.c:331
+>  walk_page_range+0x2c3/0x5c0 mm/pagewalk.c:427
+>  madvise_pageout_page_range mm/madvise.c:521 [inline]
+>  madvise_pageout mm/madvise.c:557 [inline]
+>  madvise_vma mm/madvise.c:946 [inline]
+>  do_madvise+0x12d0/0x2090 mm/madvise.c:1145
+>  __do_sys_madvise mm/madvise.c:1171 [inline]
+>  __se_sys_madvise mm/madvise.c:1169 [inline]
+>  __x64_sys_madvise+0x76/0x80 mm/madvise.c:1169
+>  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x4440e9
+> Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007ffed62d6668 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+> RAX: ffffffffffffffda RBX: 00000000004002e0 RCX: 00000000004440e9
+> RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+> RBP: 00000000006ce018 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000401d50
+> R13: 0000000000401de0 R14: 0000000000000000 R15: 0000000000000000
+> Modules linked in:
+> ---[ end trace 0453ba4a30f03f10 ]---
+> RIP: 0010:__lock_acquire+0x84/0x2ae0 kernel/locking/lockdep.c:4296
+> Code: ff df 8a 04 30 84 c0 0f 85 e3 16 00 00 83 3d 56 58 35 08 00 0f 84 0e 17 00 00 83 3d 25 c7 f5 07 00 74 2c 4c 89 e8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ef e8 3e d1 5a 00 48 be 00 00 00 00 00 fc
+> RSP: 0018:ffffc90004b9f850 EFLAGS: 00010006
+> RAX: 0000000000000003 RBX: 0000000000000001 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000000018
+> RBP: ffffc90004b9f9a8 R08: 0000000000000001 R09: 0000000000000000
+> R10: fffffbfff131e2e6 R11: 0000000000000000 R12: ffff8880937161c0
+> R13: 0000000000000018 R14: 0000000000000000 R15: 0000000000000000
+> FS:  0000000002638880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000002100003f CR3: 00000000a49a2000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+
+
+The backing vma was shmem. When I see the implemenation of __split_huge_pmd,
+it looks like pmd zapping if vma is not vma_is_anonymous unlike anon vma
+whereremapping pmd page to ptes.
+
+commit d21b9e57c74c (HEAD)
+Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Date:   Tue Jul 26 15:25:37 2016 -0700
+
+    thp: handle file pages in split_huge_pmd()
+
+    Splitting THP PMD is simple: just unmap it as in DAX case.  This way we
+    can avoid memory overhead on page table allocation to deposit.
+
+    It's probably a good idea to try to allocation page table with
+    GFP_ATOMIC in __split_huge_pmd_locked() to avoid refaulting the area,
+    but clearing pmd should be good enough for now.
+
+    Unlike DAX, we also remove the page from rmap and drop reference.
+    pmd_young() is transfered to PageReferenced().
+
+If so, we need to check the pmd validation after splitting.
+Ccing to Kirill for double check.
+
+From 26e804a0723f92862aa1ee9cc2c9e5d4691cb11d Mon Sep 17 00:00:00 2001
+From: Minchan Kim <minchan@kernel.org>
+Date: Mon, 14 Sep 2020 23:32:15 -0700
+Subject: [PATCH] mm: validate pmd after splitting
+
+syzbot reported following.
+
+general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+CPU: 1 PID: 6826 Comm: syz-executor142 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__lock_acquire+0x84/0x2ae0 kernel/locking/lockdep.c:4296
+Code: ff df 8a 04 30 84 c0 0f 85 e3 16 00 00 83 3d 56 58 35 08 00 0f 84 0e 17 00 00 83 3d 25 c7 f5 07 00 74 2c 4c 89 e8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ef e8 3e d1 5a 00 48 be 00 00 00 00 00 fc
+RSP: 0018:ffffc90004b9f850 EFLAGS: 00010006
+RAX: 0000000000000003 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000000018
+RBP: ffffc90004b9f9a8 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff131e2e6 R11: 0000000000000000 R12: ffff8880937161c0
+R13: 0000000000000018 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002638880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002100003f CR3: 00000000a49a2000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ lock_acquire+0x140/0x6f0 kernel/locking/lockdep.c:5006
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ madvise_cold_or_pageout_pte_range+0x52f/0x25c0 mm/madvise.c:389
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xe7b/0x1da0 mm/pagewalk.c:331
+ walk_page_range+0x2c3/0x5c0 mm/pagewalk.c:427
+ madvise_pageout_page_range mm/madvise.c:521 [inline]
+ madvise_pageout mm/madvise.c:557 [inline]
+ madvise_vma mm/madvise.c:946 [inline]
+ do_madvise+0x12d0/0x2090 mm/madvise.c:1145
+ __do_sys_madvise mm/madvise.c:1171 [inline]
+ __se_sys_madvise mm/madvise.c:1169 [inline]
+ __x64_sys_madvise+0x76/0x80 mm/madvise.c:1169
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+In case of split page of file-backed THP, it zaps the pmd instead of
+remapping of sub-pages so need to check pmd validity after split.
+
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reported-by: syzbot+ecf80462cb7d5d552bc7@syzkaller.appspotmail.com
+Fixes: 1a4e58cce84e ("mm: introduce MADV_PAGEOUT")
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ mm/madvise.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/madvise.c b/mm/madvise.c
+index d4aa5f776543..0e0d61003fc6 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -381,9 +381,9 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		return 0;
+ 	}
+ 
++regular_page:
+ 	if (pmd_trans_unstable(pmd))
+ 		return 0;
+-regular_page:
+ #endif
+ 	tlb_change_page_size(tlb, PAGE_SIZE);
+ 	orig_pte = pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
