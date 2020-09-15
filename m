@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E85226AC7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 942A726ACC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbgIOSsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:48:41 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:42321 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727914AbgIOR2j (ORCPT
+        id S1727540AbgIOS7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:59:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39432 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727855AbgIORLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:28:39 -0400
-Received: by mail-qk1-f195.google.com with SMTP id v123so5048804qkd.9;
-        Tue, 15 Sep 2020 10:28:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nMAyu9gaeD5KneTR08etfhTbKcQO0tFdgu4T0zizHD4=;
-        b=iTRZC0qWLAaaW+nyYis6BJdsr7irp2bDn6LS9wErrycBDP+bbclP2X3ynOFUEzXaXP
-         o/tVCFMpf0o7irFzkAVR2F/oZntnwnl98K3ACUuDKX74alh8S3Do3s0ietV466QuJzce
-         N6JV4y+hyltoIYTearCQiGorbNg05eYOhglDMIHjlYGI8oQhtk44ojJkdDt8AqdNJpJi
-         G1vH8wMbAlht5xN8gneVXJcTI/P7MmpreLwlpSFzLiwAi4nzoLve+ualHfNhMdd7k96N
-         eTFNqCN6OxvQLnOv1Pu/76LePiDm0T+9FeW7cLm25kNTbcd6k/YNYBBHmx9NBhOexayb
-         e+uQ==
-X-Gm-Message-State: AOAM533v/qhX3G73gcVaNtH0U8Wo7WkiN9N90tF1zQ+OoCvBwiOeUlPx
-        yh2SuGNa7XUH4C5mt3DWOf3igsOX2RTa+H0=
-X-Google-Smtp-Source: ABdhPJyzV6XVR3M4AxQfi/ZcxsetRVymmGU/c0n8YWApO7VeuCS+WfyJbS4pWQ2xgt6zHI79oVsb0Q==
-X-Received: by 2002:a02:9986:: with SMTP id a6mr19164058jal.28.1600188853861;
-        Tue, 15 Sep 2020 09:54:13 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id z4sm7618475iol.52.2020.09.15.09.54.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 09:54:13 -0700 (PDT)
-Received: (nullmailer pid 2113565 invoked by uid 1000);
-        Tue, 15 Sep 2020 16:54:11 -0000
-Date:   Tue, 15 Sep 2020 10:54:11 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt-bindings: power: Correct interrupt flags in examples
-Message-ID: <20200915165411.GA2113514@bogus>
-References: <20200908145922.4502-1-krzk@kernel.org>
+        Tue, 15 Sep 2020 13:11:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600189870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jdllYgXcaMq/QIGUvVdpzimMac8rDoBkoTtaWK/I/Ck=;
+        b=OAObzZfdH0uyHKn/ShnfHiwyzEML5FiZvBX86fNLRzjSvnpH0RuQ9ckyFB6Cfyoh6Tdp62
+        ydm+fOmAmKg8K2YD/2yYV0rLi0FEyhSNtVwC3jS++tIBmMgqAN+9Y7zvchL05MDs/b4IMa
+        9iPKaVOZJ8AF73XC4dX+zgykrxwnWhI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-v9q4-WVeNcmFMAdkJ8IO9g-1; Tue, 15 Sep 2020 13:02:53 -0400
+X-MC-Unique: v9q4-WVeNcmFMAdkJ8IO9g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E538B427FE;
+        Tue, 15 Sep 2020 17:02:51 +0000 (UTC)
+Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E05E319930;
+        Tue, 15 Sep 2020 17:02:50 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 12:02:48 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
+ e6eb15c9ba3165698488ae5c34920eea20eaa38e
+Message-ID: <20200915170248.gcv54pvyckteyhk3@treble>
+References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
+ <20200915135519.GJ14436@zn.tnic>
+ <20200915141816.GC28738@shao2-debian>
+ <20200915160554.GN14436@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200908145922.4502-1-krzk@kernel.org>
+In-Reply-To: <20200915160554.GN14436@zn.tnic>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Sep 2020 16:59:22 +0200, Krzysztof Kozlowski wrote:
-> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> These are simple defines so they could be used in DTS but they will not
-> have the same meaning:
-> 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-> 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
+On Tue, Sep 15, 2020 at 06:05:54PM +0200, Borislav Petkov wrote:
+> On Tue, Sep 15, 2020 at 10:18:16PM +0800, Rong Chen wrote:
+> > On Tue, Sep 15, 2020 at 03:55:19PM +0200, Borislav Petkov wrote:
+> > > On Tue, Sep 15, 2020 at 09:42:56PM +0800, kernel test robot wrote:
+> > > > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  x86/seves
+> > > > branch HEAD: e6eb15c9ba3165698488ae5c34920eea20eaa38e  KVM: nSVM: Avoid freeing uninitialized pointers in svm_set_nested_state()
+> > > > 
+> > > > Warning in current branch:
+> > > > 
+> > > > arch/x86/kernel/sev-es.o: warning: objtool: ist_exc_vmm_communication()+0x12: unreachable instruction
+> > > > 
+> > > > Warning ids grouped by kconfigs:
+> > > > 
+> > > > clang_recent_errors
+> > > > `-- x86_64-randconfig-r001-20200913
+> > > >     `-- arch-x86-kernel-sev-es.o:warning:objtool:ist_exc_vmm_communication():unreachable-instruction
 > 
-> Correct the interrupt flags, assuming the author of the code wanted some
-> logical behavior behind the name "ACTIVE_xxx", this is:
->   ACTIVE_LOW => IRQ_TYPE_LEVEL_LOW
+> Ok, I can't trigger this with gcc-9, gcc-10 and clang-10.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  .../devicetree/bindings/power/supply/act8945a-charger.txt       | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> .config below says clang-12 so it could be some experimental
+> bug^Wfeature :)
 > 
+> peterz says this has been fixed by:
+> 
+> 318af7b80b6a ("Revert "kbuild: use -flive-patching when CONFIG_LIVEPATCH is enabled"")
+> 
+> but that was reportedly for gcc.
+> 
+> Lemme Cc the people of interest and leave the rest in here for
+> reference. Note that CONFIG_LIVEPATCH is enabled in that .config.
 
-Applied, thanks!
+If somebody can share the .o file, I can take a look.
+
+-- 
+Josh
+
