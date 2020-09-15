@@ -2,170 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0897A26A13E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A995026A146
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgIOIri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIOIrg (ORCPT
+        id S1726198AbgIOItg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:49:36 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:34422 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726208AbgIOIt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:47:36 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610B8C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:47:36 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id o8so2509898otl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:47:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5Yfa8IaRytirvlZdPRBnAFZNzJIo2nBRnzRDZx5BGS4=;
-        b=TwA1XU4bV1+wP4rAOCGZrkptnqD41aw+j/rN4qv+d7zunxk7GHEsadfabKGPJX7xNg
-         Bq9VGeMytYxBAYgCnHu1cMPlz5y/4mwb+QbKpyn/CTTWS/sCmy4LHeezzFmqCWmtmjpb
-         NcxzCLHkOP7BaVKwrWVjE1ZMzXcfA3VKNwZecqgHLKgh9t7zxADMUJYxHlgmHPgf8JTd
-         TW4PX+2PbgEomIMsXb/Wk/AySbAvwQ9j3ameNuJKvY0KtSMPuriXUcVNIPhQuywO3LN0
-         ALQi2ihbXYgjXgbBtNm6HzzNwbGE8RkPhfZnBtI8nK0aO8bDa6oclJ7/PnEYpEFCuj5n
-         fCag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Yfa8IaRytirvlZdPRBnAFZNzJIo2nBRnzRDZx5BGS4=;
-        b=fXd8Y9uM+rAh0qSX5JeEPKAAfKNtj5iAKcqjJeXa92lI6nw2QD11cnJEopc7aZL3cF
-         oVMCVFUZ5a/WARWsrC/QIwZ/IVZ5lSFHKE5XVw9ictizuAi0fLJAe1BHyxNH5bpkaWyv
-         nV/lqxQlyc7oSnXcm5+MMx6ICKvXKF6giko3Vz9Wbtv+N6zF3a8hfH5FtRpusOIfYc9s
-         V9yWQ/9vYXXmjtoVvutZvMt29aSOrsTSxD8Ofdlz/WHg35UtCg8iLmgIQq9rGUgXWN0I
-         v2YDxeYnvk+By2V91Q/vngc/N8oX+uTZ6p29R7OCE3CzkNGOkUSSdskiq3ati1lOUbjS
-         vVJg==
-X-Gm-Message-State: AOAM5320YB7NUV8CuoyHFlVQxYb9SiM9bfapCd0rZHj+sL5nziLKtYY9
-        mVQfDzjNw/++rmyVVeMlZ7HlQKbd1EFJf3mvgclegPIrHkA=
-X-Google-Smtp-Source: ABdhPJxVllvpF+GQ6K+vp8ubxonn2ftxW/eArkKLweXZFKcj0q8mDYYWZrUHrzb0WdBDGmrFMV1TZRlpPDxz5fj6w1g=
-X-Received: by 2002:a9d:758c:: with SMTP id s12mr11474340otk.237.1600159655792;
- Tue, 15 Sep 2020 01:47:35 -0700 (PDT)
+        Tue, 15 Sep 2020 04:49:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600159767; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=lgWaE3f5Tk8GQse/S9qKMVFoUNqqNMGU6pVowPuyQYs=;
+ b=S117pVnlE0PLUfIaJEdrN5lVafuVCO2rP5B6JChgTCfqeRyJ/3EJmWDFLBCYY7W9zVZfXFpT
+ 22JB9dcbcLTGigT9mYLXStOAW5IOtaUfLMtzoj4yzZR5gJQrZfVS4WlM7cop8T20/aPi1nm7
+ MkwV2HXVOGT4sRBRf4uk4LK4MAA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f608016947f606f7ef1a972 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 08:49:26
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D3C55C43387; Tue, 15 Sep 2020 08:49:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4FEEC433C8;
+        Tue, 15 Sep 2020 08:49:24 +0000 (UTC)
 MIME-Version: 1.0
-References: <20200910054203.525420-1-aubrey.li@intel.com> <20200910054203.525420-2-aubrey.li@intel.com>
- <CAPJCdBm+eyvY3ZUU0sz8WxRhdKquCApTCb1rv8DBDCnG8kS0PA@mail.gmail.com> <CAKfTPtBXxFC_FJHbnRafN3-6Fs=kJxMvGaStiKtp8T06p5Xr4A@mail.gmail.com>
-In-Reply-To: <CAKfTPtBXxFC_FJHbnRafN3-6Fs=kJxMvGaStiKtp8T06p5Xr4A@mail.gmail.com>
-From:   Jiang Biao <benbjiang@gmail.com>
-Date:   Tue, 15 Sep 2020 16:47:24 +0800
-Message-ID: <CAPJCdBn8GPM5ur6i90Lo1T95BPNAvCPASQdSTpOn_kjUxEi3LA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
- in sched domain
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Aubrey Li <aubrey.li@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 15 Sep 2020 01:49:24 -0700
+From:   nguyenb@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
+In-Reply-To: <20200915025401.GD471@uller>
+References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
+ <20200915025401.GD471@uller>
+Message-ID: <a8c851744fcaee205fc7a58db8f747fa@codeaurora.org>
+X-Sender: nguyenb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Vincent
-
-On Mon, 14 Sep 2020 at 20:26, Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Sun, 13 Sep 2020 at 05:59, Jiang Biao <benbjiang@gmail.com> wrote:
-> >
-> > Hi, Aubrey
-> >
-> > On Fri, 11 Sep 2020 at 23:48, Aubrey Li <aubrey.li@intel.com> wrote:
-> > >
-> > > Added idle cpumask to track idle cpus in sched domain. When a CPU
-> > > enters idle, its corresponding bit in the idle cpumask will be set,
-> > > and when the CPU exits idle, its bit will be cleared.
-> > >
-> > > When a task wakes up to select an idle cpu, scanning idle cpumask
-> > > has low cost than scanning all the cpus in last level cache domain,
-> > > especially when the system is heavily loaded.
-> > >
-> > > Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> > > ---
-> > >  include/linux/sched/topology.h | 13 +++++++++++++
-> > >  kernel/sched/fair.c            |  4 +++-
-> > >  kernel/sched/topology.c        |  2 +-
-> > >  3 files changed, 17 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> > > index fb11091129b3..43a641d26154 100644
-> > > --- a/include/linux/sched/topology.h
-> > > +++ b/include/linux/sched/topology.h
-> > > @@ -65,8 +65,21 @@ struct sched_domain_shared {
-> > >         atomic_t        ref;
-> > >         atomic_t        nr_busy_cpus;
-> > >         int             has_idle_cores;
-> > > +       /*
-> > > +        * Span of all idle CPUs in this domain.
-> > > +        *
-> > > +        * NOTE: this field is variable length. (Allocated dynamically
-> > > +        * by attaching extra space to the end of the structure,
-> > > +        * depending on how many CPUs the kernel has booted up with)
-> > > +        */
-> > > +       unsigned long   idle_cpus_span[];
-> > >  };
-> > >
-> > > +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
-> > > +{
-> > > +       return to_cpumask(sds->idle_cpus_span);
-> > > +}
-> > > +
-> > >  struct sched_domain {
-> > >         /* These fields must be setup */
-> > >         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index 6b3b59cc51d6..3b6f8a3589be 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -6136,7 +6136,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
-> > >
-> > >         time = cpu_clock(this);
-> > >
-> > > -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> > > +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
-> > Is the sds_idle_cpus() always empty if nohz=off?
->
-> Good point
->
-> > Do we need to initialize the idle_cpus_span with sched_domain_span(sd)?
-> >
-> > >
-> > >         for_each_cpu_wrap(cpu, cpus, target) {
-> > >                 if (!--nr)
-> > > @@ -10182,6 +10182,7 @@ static void set_cpu_sd_state_busy(int cpu)
-> > >         sd->nohz_idle = 0;
-> > >
-> > >         atomic_inc(&sd->shared->nr_busy_cpus);
-> > > +       cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
-> > >  unlock:
-> > >         rcu_read_unlock();
-> > >  }
-> > > @@ -10212,6 +10213,7 @@ static void set_cpu_sd_state_idle(int cpu)
-> > >         sd->nohz_idle = 1;
-> > >
-> > >         atomic_dec(&sd->shared->nr_busy_cpus);
-> > > +       cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
-> > This only works when entering/exiting tickless mode? :)
-> > Why not update idle_cpus_span during tick_nohz_idle_enter()/exit()?
->
-> set_cpu_sd_state_busy is only called during a tick in order to limit
-> the rate of the update to once per tick per cpu at most and prevents
-> any kind of storm of update if short running tasks wake/sleep all the
-> time. We don't want to update a cpumask at each and every enter/leave
-> idle.
->
-Agree. But set_cpu_sd_state_busy seems not being reached when
-nohz=off, which means it will not work for that case? :)
-
-Thx.
-Regards,
-Jiang
+On 2020-09-14 19:54, Bjorn Andersson wrote:
+> On Tue 01 Sep 01:19 UTC 2020, Bao D. Nguyen wrote:
+> 
+>> UFS version 3.0 and later devices require Vcc and Vccq power supplies
+>> with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
+>> devices, the Vcc and Vccq2 are required with Vccq being optional.
+>> Check the required power supplies used by the device
+>> and set the device's supported Icc level properly.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 06e2439..fdd1d3e 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -6845,8 +6845,9 @@ static u32 
+>> ufshcd_find_max_sup_active_icc_level(struct ufs_hba *hba,
+>>  {
+>>  	u32 icc_level = 0;
+>> 
+>> -	if (!hba->vreg_info.vcc || !hba->vreg_info.vccq ||
+>> -						!hba->vreg_info.vccq2) {
+>> +	if (!hba->vreg_info.vcc ||
+> 
+> How did you test this?
+> 
+> devm_regulator_get() never returns NULL, so afaict this conditional 
+> will
+> never be taken with either the old or new version of the code.
+Thanks for your comment. The call flow is as follows:
+ufshcd_pltfrm_init->ufshcd_parse_regulator_info->ufshcd_populate_vreg
+In the ufshcd_populate_vreg() function, it looks for DT entries 
+"%s-supply"
+For UFS3.0+ devices, "vccq2-supply" is optional, so the vendor may 
+choose not to provide vccq2-supply in the DT.
+As a result, a NULL is returned to hba->vreg_info.vccq2.
+Same for UFS2.0 and UFS2.1 devices, a NULL may be returned to 
+hba->vreg_info.vccq if vccq-supply is not provided in the DT.
+The current code only checks for !hba->vreg_info.vccq OR 
+!hba->vreg_info.vccq2. It will skip the setting for icc_level
+if either vccq or vccq2 is not provided in the DT.
+> 
+> Regards,
+> Bjorn
+> 
+>> +		(!hba->vreg_info.vccq && hba->dev_info.wspecversion >= 0x300) ||
+>> +		(!hba->vreg_info.vccq2 && hba->dev_info.wspecversion < 0x300)) {
+>>  		dev_err(hba->dev,
+>>  			"%s: Regulator capability was not set, actvIccLevel=%d",
+>>  							__func__, icc_level);
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
