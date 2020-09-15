@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B942526ABBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2504626ABC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbgIOSXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:23:54 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42972 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727683AbgIOSR4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:17:56 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FIHUmx119199;
-        Tue, 15 Sep 2020 13:17:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600193850;
-        bh=9O1VHv+tQ8CeuoeX59nCI2lzZxErqiar7lWemFEzsE0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=mVb7bLo4kf6CG7xewsdoFINJY0ppfqGe5j4qeuhs3G9MxmPfzGB8p8hbWqVmMYYKA
-         2DvV1ymyHOtAWJlFNMrbrnbDVluc6kQww2wknO5AOMu4TD9FxU3Rx7DiNQSFV000Gs
-         d5YpaCRnZyKkGGzsiyTrYdyHPQ/FOYgKJmLNc+kc=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FIHUw5123020
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 13:17:30 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 13:17:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 13:17:30 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FIHUqu130526;
-        Tue, 15 Sep 2020 13:17:30 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>
-CC:     <mkubecek@suse.cz>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH net-next 3/3] net: phy: dp83822: Update the fiber advertisement for speed
-Date:   Tue, 15 Sep 2020 13:17:08 -0500
-Message-ID: <20200915181708.25842-4-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200915181708.25842-1-dmurphy@ti.com>
-References: <20200915181708.25842-1-dmurphy@ti.com>
+        id S1727861AbgIOSZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:25:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727955AbgIOSRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 14:17:55 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A464D206A4;
+        Tue, 15 Sep 2020 18:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600193873;
+        bh=SOf5GPk0ofBAZic38qIw0rzSxyoNY+paZdgL59LQdS4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=2dyWR6CL2IFk0fQVtX4jPy+tyazQgO0d/tZUT6oV24BvEPHvfH2I6t0UcvVcV+hKI
+         gw1UxbFwNGdOkjv9licKDUny6aw9JB5BA5ec0yp52bdoi6R0SR/i3ZL3iSSzLZapNP
+         FCctIhZrz2oS6TNlZqc2fODXjjkn76NzZA4/N92k=
+Date:   Tue, 15 Sep 2020 13:17:51 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Shiju Jose <shiju.jose@huawei.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>, Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v15 0/2] ACPI / APEI: Add support to notify the vendor
+ specific HW errors
+Message-ID: <20200915181751.GA1408867@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0goduHVhXdOjDu6WBnD8eBYzRWAD1PO8KjabpyiHuJ1qw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the fiber advertisement for speed and duplex modes with the
-100base-FX full and half linkmode entries.
+On Tue, Sep 15, 2020 at 07:31:50PM +0200, Rafael J. Wysocki wrote:
+> On Mon, Sep 14, 2020 at 2:34 PM Shiju Jose <shiju.jose@huawei.com> wrote:
+> >
+> > Hello,
+> >
+> > Can you help to merge this series?
+> 
+> Do you want this series to go in through the ACPI tree?
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/net/phy/dp83822.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+It crosses ACPI and vendor-specific PCI, but the bulk of the changes
+are in PCI.  I gave some comments on the design and acked the PCI part
+from my point of view.  I envisioned Lorenzo merging it since he takes
+care of drivers/pci/controller/*, but either that (given your ack for
+the ACPI part) or ACPI would be OK with me.
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index 732c8bec7452..c162c9551bd1 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -110,9 +110,8 @@
- #define DP83822_RX_ER_SHIFT	8
- 
- #define MII_DP83822_FIBER_ADVERTISE    (ADVERTISED_TP | ADVERTISED_MII | \
--					ADVERTISED_FIBRE | ADVERTISED_BNC |  \
--					ADVERTISED_Pause | ADVERTISED_Asym_Pause | \
--					ADVERTISED_100baseT_Full)
-+					ADVERTISED_FIBRE | \
-+					ADVERTISED_Pause | ADVERTISED_Asym_Pause)
- 
- struct dp83822_private {
- 	bool fx_signal_det_low;
-@@ -406,6 +405,14 @@ static int dp83822_config_init(struct phy_device *phydev)
- 				 phydev->supported);
- 		linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT,
- 				 phydev->advertising);
-+		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseFX_Full_BIT,
-+				 phydev->supported);
-+		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseFX_Half_BIT,
-+				 phydev->supported);
-+		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseFX_Full_BIT,
-+				 phydev->advertising);
-+		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseFX_Half_BIT,
-+				 phydev->advertising);
- 
- 		/* Auto neg is not supported in fiber mode */
- 		bmcr = phy_read(phydev, MII_BMCR);
--- 
-2.28.0
-
+> > > drivers/acpi/apei/ghes.c                 |  63 +++++
+> > > drivers/pci/controller/Kconfig           |   7 +
+> > > drivers/pci/controller/Makefile          |   1 +
+> > > drivers/pci/controller/pcie-hisi-error.c | 327 +++++++++++++++++++++++
+> > > include/acpi/ghes.h                      |  18 ++
+> > > 5 files changed, 416 insertions(+)
+> > > create mode 100644 drivers/pci/controller/pcie-hisi-error.c
