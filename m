@@ -2,315 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24FB26A1D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2738526A1C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgIOJNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgIOJNE (ORCPT
+        id S1726421AbgIOJM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:12:28 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:7320 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726357AbgIOJLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:13:04 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB015C061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:13:03 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id jw11so1414611pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nRL3UrQCKuctVwTlbKPEVm1rLoza9CgJKje5PauV44s=;
-        b=OxfT0tedl3ISQTEgp4oNlhejiFnU8vJnPqJBIlbT0xBvaEeqYpUuxLlz8bvmUFwFbS
-         6zUpwHW6f85zCjPoo8ooE+oqQwgKUukCDhdnRE/Mr0jmoCL55bG+n+AYdU+IJJkKyrfe
-         FO8iN3BZFakW0ju6fPpnzcVEppDXkmOjROK9hjRbxgnmsmn7+WOv3SKOilPs8zVHTrNq
-         7VdldaE0PtOu+myj/wIm1Nodr7sP4bBzxaLApnbdEh0yg0GmPE+Ojmfmd8b/n95oCMg6
-         VGNUsUEWp+9ltGV+bm5I/sWZe3psyANjgKLWuAS1avzmgUGxDAeicmP2i5omYH20cKuM
-         qXqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nRL3UrQCKuctVwTlbKPEVm1rLoza9CgJKje5PauV44s=;
-        b=fbgloFmpdNau46ye2Y8Qkb+zv6/LuEo/r/YRdjgbB/V76GKAZnbXrqeQcCYrePgNrx
-         8NO7rPIjn+bAGQJXuPeSNXKGH4j9aajx41l83BgyZmYqf7VHt3dGDY2kmbs+5LwbcqXm
-         ueCtycdJgXyThomXBfwBlqHF85jrM8Had/kZydEOoYr9tGxIDrjv/0o110aE/XBqqY7c
-         xG6iHDh4h/fwmGBdj715ySSwR9tpV5SryZbGBJH0VQNQDXQ+CIo53H+1iOeZeoVP97Sz
-         UdQfFAR2NsOBwHfOqkE5HU+dKxftl/uTNqkX1BpYYuVhB++2ug+Ap15kqqJzAFX+g0eD
-         nAYw==
-X-Gm-Message-State: AOAM531d8TWral36JrcKVt3lLHaLwBkT94ERdd+/q4+wGRUsUvls3LZS
-        LEggAlSwnf3t0x7tlraKi0I=
-X-Google-Smtp-Source: ABdhPJwlFM37PAOJfkS8wPJvZYxbbCzQ6B/59OKraownx4jub3tjSLmylRxGKA+9eWte1jfcND8/Og==
-X-Received: by 2002:a17:902:b70c:b029:d1:9b2d:1132 with SMTP id d12-20020a170902b70cb02900d19b2d1132mr17998216pls.36.1600161183246;
-        Tue, 15 Sep 2020 02:13:03 -0700 (PDT)
-Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id bb6sm11375639pjb.15.2020.09.15.02.12.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 02:13:02 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Cc:     John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [PATCHv2] perf kvm: add kvm-stat for arm64
-Date:   Tue, 15 Sep 2020 18:11:40 +0900
-Message-Id: <20200915091140.152775-1-sergey.senozhatsky@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Tue, 15 Sep 2020 05:11:51 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08F98V8l023596;
+        Tue, 15 Sep 2020 11:11:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=g4kST7SsfaViCNlFfZ08siUj72Yl/Jmwp5npYZfdOOc=;
+ b=KscuE9KcDMkqxGs6xutCqIVOYdI42kni92TwIIURoiWVp5BKT7Q0q2QmcRk9JZb7qbwn
+ 0IYMs22AIsmRaCNw3Mwu4BuT871ZxF4CL+jXkNZXGnBINA1RuWaCrSElBb/dB10nv7VA
+ ID/xEOw0osqoKk07lDbLlGGJjj/Ppt8IPnUgIqFyV3H4A86OUsUrvbweCU1lZX6QnykZ
+ 2HRKyzGFxj8I9ZlN6hqncw6aywc2EtirGMDB1TN95gtAQ/i/ePxjfUub+wdXL65V086I
+ rHOct/T3DB8SFFjwXnqZiGFOxFgk0P/doRRsTTtgDKZCrrKgPfsduWKNVNn6CJSfldcq oA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33gkf9f1rt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 11:11:42 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3127910002A;
+        Tue, 15 Sep 2020 11:11:42 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1D1732A4483;
+        Tue, 15 Sep 2020 11:11:42 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep 2020 11:11:41
+ +0200
+From:   Alain Volmat <alain.volmat@st.com>
+To:     <wsa@kernel.org>, <pierre-yves.mordret@st.com>
+CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
+        <alain.volmat@st.com>
+Subject: [PATCH 2/2] i2c: stm32: name slave slot to ease maintenance
+Date:   Tue, 15 Sep 2020 11:11:41 +0200
+Message-ID: <1600161101-9941-1-git-send-email-alain.volmat@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG5NODE2.st.com (10.75.127.14) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-15_05:2020-09-15,2020-09-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for perf kvm stat on arm64 platform.
+Name slave slots in order to ease code maintenance.
 
-Example:
- # perf kvm stat report
-
-Analyze events for all VMs, all VCPUs:
-
-    VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
-
-   DABT_LOW     661867    98.91%    40.45%      2.19us   3364.65us      6.24us ( +-   0.34% )
-        IRQ       4598     0.69%    57.44%      2.89us   3397.59us   1276.27us ( +-   1.61% )
-        WFx       1475     0.22%     1.71%      2.22us   3388.63us    118.31us ( +-   8.69% )
-   IABT_LOW       1018     0.15%     0.38%      2.22us   2742.07us     38.29us ( +-  12.55% )
-      SYS64        180     0.03%     0.01%      2.07us    112.91us      6.57us ( +-  14.95% )
-      HVC64         17     0.00%     0.01%      2.19us    322.35us     42.95us ( +-  58.98% )
-
-Total Samples:669155, Total events handled time:10216387.86us.
-
-Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Alain Volmat <alain.volmat@st.com>
 ---
- tools/perf/arch/arm64/Makefile                |  1 +
- tools/perf/arch/arm64/util/Build              |  1 +
- .../arch/arm64/util/arm64_exception_types.h   | 91 +++++++++++++++++++
- tools/perf/arch/arm64/util/kvm-stat.c         | 87 ++++++++++++++++++
- 4 files changed, 180 insertions(+)
- create mode 100644 tools/perf/arch/arm64/util/arm64_exception_types.h
- create mode 100644 tools/perf/arch/arm64/util/kvm-stat.c
+ drivers/i2c/busses/i2c-stm32f7.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/tools/perf/arch/arm64/Makefile b/tools/perf/arch/arm64/Makefile
-index dbef716a1913..fab3095fb5d0 100644
---- a/tools/perf/arch/arm64/Makefile
-+++ b/tools/perf/arch/arm64/Makefile
-@@ -4,6 +4,7 @@ PERF_HAVE_DWARF_REGS := 1
- endif
- PERF_HAVE_JITDUMP := 1
- PERF_HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET := 1
-+HAVE_KVM_STAT_SUPPORT := 1
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index 0880f6a4cd44..a7432ec7d992 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -155,7 +155,12 @@
  
- #
- # Syscall table generation for perf
-diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-index 5c13438c7bd4..4cba12f4b741 100644
---- a/tools/perf/arch/arm64/util/Build
-+++ b/tools/perf/arch/arm64/util/Build
-@@ -1,6 +1,7 @@
- perf-y += header.o
- perf-y += machine.o
- perf-y += perf_regs.o
-+perf-y += kvm-stat.o
- perf-$(CONFIG_DWARF)     += dwarf-regs.o
- perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
- perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
-diff --git a/tools/perf/arch/arm64/util/arm64_exception_types.h b/tools/perf/arch/arm64/util/arm64_exception_types.h
-new file mode 100644
-index 000000000000..21a7bbd0ddcc
---- /dev/null
-+++ b/tools/perf/arch/arm64/util/arm64_exception_types.h
-@@ -0,0 +1,91 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#ifndef ARCH_PERF_ARM64_EXCEPTION_TYPES_H
-+#define ARCH_PERF_ARM64_EXCEPTION_TYPES_H
-+
-+/* Per asm/virt.h */
-+#define HVC_STUB_ERR		  0xbadca11
-+
-+/* Per asm/kvm_asm.h */
-+#define ARM_EXCEPTION_IRQ		0
-+#define ARM_EXCEPTION_EL1_SERROR	1
-+#define ARM_EXCEPTION_TRAP		2
-+#define ARM_EXCEPTION_IL		3
-+/* The hyp-stub will return this for any kvm_call_hyp() call */
-+#define ARM_EXCEPTION_HYP_GONE		HVC_STUB_ERR
-+
-+#define kvm_arm_exception_type					\
-+	{ARM_EXCEPTION_IRQ,		"IRQ"		},	\
-+	{ARM_EXCEPTION_EL1_SERROR,	"SERROR"	},	\
-+	{ARM_EXCEPTION_TRAP,		"TRAP"		},	\
-+	{ARM_EXCEPTION_HYP_GONE,	"HYP_GONE"	}
-+
-+/* Per asm/esr.h */
-+#define ESR_ELx_EC_UNKNOWN	(0x00)
-+#define ESR_ELx_EC_WFx		(0x01)
-+/* Unallocated EC: 0x02 */
-+#define ESR_ELx_EC_CP15_32	(0x03)
-+#define ESR_ELx_EC_CP15_64	(0x04)
-+#define ESR_ELx_EC_CP14_MR	(0x05)
-+#define ESR_ELx_EC_CP14_LS	(0x06)
-+#define ESR_ELx_EC_FP_ASIMD	(0x07)
-+#define ESR_ELx_EC_CP10_ID	(0x08)	/* EL2 only */
-+#define ESR_ELx_EC_PAC		(0x09)	/* EL2 and above */
-+/* Unallocated EC: 0x0A - 0x0B */
-+#define ESR_ELx_EC_CP14_64	(0x0C)
-+/* Unallocated EC: 0x0d */
-+#define ESR_ELx_EC_ILL		(0x0E)
-+/* Unallocated EC: 0x0F - 0x10 */
-+#define ESR_ELx_EC_SVC32	(0x11)
-+#define ESR_ELx_EC_HVC32	(0x12)	/* EL2 only */
-+#define ESR_ELx_EC_SMC32	(0x13)	/* EL2 and above */
-+/* Unallocated EC: 0x14 */
-+#define ESR_ELx_EC_SVC64	(0x15)
-+#define ESR_ELx_EC_HVC64	(0x16)	/* EL2 and above */
-+#define ESR_ELx_EC_SMC64	(0x17)	/* EL2 and above */
-+#define ESR_ELx_EC_SYS64	(0x18)
-+#define ESR_ELx_EC_SVE		(0x19)
-+#define ESR_ELx_EC_ERET		(0x1a)	/* EL2 only */
-+/* Unallocated EC: 0x1b - 0x1E */
-+#define ESR_ELx_EC_IMP_DEF	(0x1f)	/* EL3 only */
-+#define ESR_ELx_EC_IABT_LOW	(0x20)
-+#define ESR_ELx_EC_IABT_CUR	(0x21)
-+#define ESR_ELx_EC_PC_ALIGN	(0x22)
-+/* Unallocated EC: 0x23 */
-+#define ESR_ELx_EC_DABT_LOW	(0x24)
-+#define ESR_ELx_EC_DABT_CUR	(0x25)
-+#define ESR_ELx_EC_SP_ALIGN	(0x26)
-+/* Unallocated EC: 0x27 */
-+#define ESR_ELx_EC_FP_EXC32	(0x28)
-+/* Unallocated EC: 0x29 - 0x2B */
-+#define ESR_ELx_EC_FP_EXC64	(0x2C)
-+/* Unallocated EC: 0x2D - 0x2E */
-+#define ESR_ELx_EC_SERROR	(0x2F)
-+#define ESR_ELx_EC_BREAKPT_LOW	(0x30)
-+#define ESR_ELx_EC_BREAKPT_CUR	(0x31)
-+#define ESR_ELx_EC_SOFTSTP_LOW	(0x32)
-+#define ESR_ELx_EC_SOFTSTP_CUR	(0x33)
-+#define ESR_ELx_EC_WATCHPT_LOW	(0x34)
-+#define ESR_ELx_EC_WATCHPT_CUR	(0x35)
-+/* Unallocated EC: 0x36 - 0x37 */
-+#define ESR_ELx_EC_BKPT32	(0x38)
-+/* Unallocated EC: 0x39 */
-+#define ESR_ELx_EC_VECTOR32	(0x3A)	/* EL2 only */
-+/* Unallocated EC: 0x3B */
-+#define ESR_ELx_EC_BRK64	(0x3C)
-+/* Unallocated EC: 0x3D - 0x3F */
-+#define ESR_ELx_EC_MAX		(0x3F)
-+
-+#define ECN(x) { ESR_ELx_EC_##x, #x }
-+
-+#define kvm_arm_exception_class \
-+	ECN(UNKNOWN), ECN(WFx), ECN(CP15_32), ECN(CP15_64), ECN(CP14_MR), \
-+	ECN(CP14_LS), ECN(FP_ASIMD), ECN(CP10_ID), ECN(PAC), ECN(CP14_64), \
-+	ECN(SVC64), ECN(HVC64), ECN(SMC64), ECN(SYS64), ECN(SVE), \
-+	ECN(IMP_DEF), ECN(IABT_LOW), ECN(IABT_CUR), \
-+	ECN(PC_ALIGN), ECN(DABT_LOW), ECN(DABT_CUR), \
-+	ECN(SP_ALIGN), ECN(FP_EXC32), ECN(FP_EXC64), ECN(SERROR), \
-+	ECN(BREAKPT_LOW), ECN(BREAKPT_CUR), ECN(SOFTSTP_LOW), \
-+	ECN(SOFTSTP_CUR), ECN(WATCHPT_LOW), ECN(WATCHPT_CUR), \
-+	ECN(BKPT32), ECN(VECTOR32), ECN(BRK64)
-+
-+#endif /* ARCH_PERF_ARM64_EXCEPTION_TYPES_H */
-diff --git a/tools/perf/arch/arm64/util/kvm-stat.c b/tools/perf/arch/arm64/util/kvm-stat.c
-new file mode 100644
-index 000000000000..ba32f42b2c96
---- /dev/null
-+++ b/tools/perf/arch/arm64/util/kvm-stat.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <errno.h>
-+#include <memory.h>
-+#include "../../util/evsel.h"
-+#include "../../util/kvm-stat.h"
-+#include "arm64_exception_types.h"
-+#include "debug.h"
-+
-+define_exit_reasons_table(arm64_exit_reasons, kvm_arm_exception_type);
-+define_exit_reasons_table(arm64_trap_exit_reasons, kvm_arm_exception_class);
-+
-+const char *kvm_trap_exit_reason = "esr_ec";
-+const char *vcpu_id_str = "id";
-+const int decode_str_len = 20;
-+const char *kvm_exit_reason = "ret";
-+const char *kvm_entry_trace = "kvm:kvm_entry";
-+const char *kvm_exit_trace = "kvm:kvm_exit";
-+
-+const char *kvm_events_tp[] = {
-+	"kvm:kvm_entry",
-+	"kvm:kvm_exit",
-+	NULL,
+ #define STM32F7_I2C_MAX_LEN			0xff
+ #define STM32F7_I2C_DMA_LEN_MIN			0x16
+-#define STM32F7_I2C_MAX_SLAVE			0x3
++enum {
++	STM32F7_SLAVE_HOSTNOTIFY,
++	STM32F7_SLAVE_7_10_BITS_ADDR,
++	STM32F7_SLAVE_7_BITS_ADDR,
++	STM32F7_I2C_MAX_SLAVE
 +};
-+
-+static void event_get_key(struct evsel *evsel,
-+			  struct perf_sample *sample,
-+			  struct event_key *key)
-+{
-+	key->info = 0;
-+	key->key = perf_evsel__intval(evsel, sample, kvm_exit_reason);
-+	key->exit_reasons = arm64_exit_reasons;
-+
-+	/*
-+	 * TRAP exceptions carry exception class info in esr_ec field
-+	 * and, hence, we need to use a different exit_reasons table to
-+	 * properly decode event's est_ec.
-+	 */
-+	if (key->key == ARM_EXCEPTION_TRAP) {
-+		key->key = perf_evsel__intval(evsel, sample,
-+					      kvm_trap_exit_reason);
-+		key->exit_reasons = arm64_trap_exit_reasons;
-+	}
-+}
-+
-+static bool event_begin(struct evsel *evsel,
-+			struct perf_sample *sample __maybe_unused,
-+			struct event_key *key __maybe_unused)
-+{
-+	return !strcmp(evsel->name, kvm_entry_trace);
-+}
-+
-+static bool event_end(struct evsel *evsel,
-+		      struct perf_sample *sample,
-+		      struct event_key *key)
-+{
-+	if (!strcmp(evsel->name, kvm_exit_trace)) {
-+		event_get_key(evsel, sample, key);
-+		return true;
-+	}
-+	return false;
-+}
-+
-+static struct kvm_events_ops exit_events = {
-+	.is_begin_event = event_begin,
-+	.is_end_event	= event_end,
-+	.decode_key	= exit_event_decode_key,
-+	.name		= "VM-EXIT"
-+};
-+
-+struct kvm_reg_events_ops kvm_reg_events_ops[] = {
-+	{
-+		.name	= "vmexit",
-+		.ops	= &exit_events,
-+	},
-+	{ NULL },
-+};
-+
-+const char * const kvm_skip_events[] = {
-+	NULL,
-+};
-+
-+int cpu_isa_init(struct perf_kvm_stat *kvm, const char *cpuid __maybe_unused)
-+{
-+	kvm->exit_reasons = arm64_exit_reasons;
-+	kvm->exit_reasons_isa = "arm64";
-+	return 0;
-+}
+ 
+ #define STM32F7_I2C_DNF_DEFAULT			0
+ #define STM32F7_I2C_DNF_MAX			16
+@@ -1343,19 +1348,20 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
+ 	int i;
+ 
+ 	/*
+-	 * slave[0] support only SMBus Host address (0x8)
+-	 * slave[1] supports 7-bit and 10-bit slave address
+-	 * slave[2] supports 7-bit slave address only
++	 * slave[STM32F7_SLAVE_HOSTNOTIFY] support only SMBus Host address (0x8)
++	 * slave[STM32F7_SLAVE_7_10_BITS_ADDR] supports 7-bit and 10-bit slave address
++	 * slave[STM32F7_SLAVE_7_BITS_ADDR] supports 7-bit slave address only
+ 	 */
+ 	if (i2c_dev->smbus_mode && (slave->addr == 0x08)) {
+-		if (i2c_dev->slave[0])
++		if (i2c_dev->slave[STM32F7_SLAVE_HOSTNOTIFY])
+ 			goto fail;
+-		*id = 0;
++		*id = STM32F7_SLAVE_HOSTNOTIFY;
+ 		return 0;
+ 	}
+ 
+-	for (i = STM32F7_I2C_MAX_SLAVE - 1; i > 0; i--) {
+-		if (i == 2 && (slave->flags & I2C_CLIENT_TEN))
++	for (i = STM32F7_I2C_MAX_SLAVE - 1; i > STM32F7_SLAVE_HOSTNOTIFY; i--) {
++		if ((i == STM32F7_SLAVE_7_BITS_ADDR) &&
++		    (slave->flags & I2C_CLIENT_TEN))
+ 			continue;
+ 		if (!i2c_dev->slave[i]) {
+ 			*id = i;
 -- 
-2.28.0
+2.7.4
 
