@@ -2,86 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C1126AC80
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7176E26AC86
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgIOStR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727889AbgIOR1G (ORCPT
+        id S1727892AbgIOSty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:49:54 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:36716 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727794AbgIORZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:27:06 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2B5C061220
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:24:46 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id v23so3575128ljd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:24:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TlLASjtOWZl97ccS56UuppG/O1DcME2TKl7d1jzvYzM=;
-        b=ZQ4GHeUyUTLfgc95eXulgPvEP8C1iC3CepnrK9c7pfKYqS19IJUGCmeEpx5/qKZ02M
-         zzlDzATp4hfO861tzoWuNixpFbmNPSR7fXNK9Pyas2eKtrBsZmkJKLUIKMnfkIZRLHXC
-         WbAoAlOxBDEO1ElAIYEY4Jq81yKgIiBKzhNdo=
+        Tue, 15 Sep 2020 13:25:14 -0400
+Received: by mail-il1-f193.google.com with SMTP id t12so3779522ilh.3;
+        Tue, 15 Sep 2020 10:25:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TlLASjtOWZl97ccS56UuppG/O1DcME2TKl7d1jzvYzM=;
-        b=D3KYbiPupNn2UL3qZiMEH2iNc2+XNg5mjwJbKfqWG6fiN6lcyMqEt+mUPgbxzcsSKw
-         7JhyFF/kCJwdE7wB1miuYLzkszW+pVv6GKMR0sUxsK77t96IH4MOv/mFX8qTDteVS/Hq
-         m99gOOpja0FbqyglOh0820ix/fytrm/rdCxY72abt0Ze66l+DGHY8+WJaPI05j3AgckX
-         bd5An9kbC9eZRZB5bHuvguRRDED9ZN/DLccAbBLNuqAu2d3mnStkOrlqqREajE9D9inN
-         z5t2MOHiC9Vc0Xz9SZOSDK3v+XgSs/towfiFsUGTMScuAetcwPMzUVLHLgWJcxI9OrF3
-         cPIg==
-X-Gm-Message-State: AOAM5308n5Iko8e6xtHX5CG9vAyUTmtNcjCDocEYOfXezuekbNR29WG0
-        xlbZIpP3U31OUuk8h9YX8+t1Ksw7fiRElw==
-X-Google-Smtp-Source: ABdhPJyIYUQ19QTt3UFVJuuKX4qkdEuX77xRM/S3CnhDJESC0LZCCktvUOiPb+EUWwLqMsEtC6NFtQ==
-X-Received: by 2002:a2e:8e30:: with SMTP id r16mr7783238ljk.304.1600190684056;
-        Tue, 15 Sep 2020 10:24:44 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id b14sm4032580lfp.176.2020.09.15.10.24.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 10:24:43 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id b19so3503572lji.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:24:42 -0700 (PDT)
-X-Received: by 2002:a2e:91cd:: with SMTP id u13mr6495156ljg.421.1600190682261;
- Tue, 15 Sep 2020 10:24:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ul2LXTL5GXddTr4Xc/xs2FtVJnvszmoffCmKpJlo9Ic=;
+        b=UsvAiHoiY3WYFDiR8IiG3t7IQmCHLjQWtJNU82KdnKBejQ+br/wgB/baFpVsSKeODg
+         TLDOiTeEv72Q0VmfxIMzyQNhKpfW09q9CvDOu9WoHPRgk0tdkxbMsdcs9SFwrSVkES/1
+         XUN7XllNuyXybi9cVidtm4udJ9f545AAg/8d//S0L6b1i2UbqVAm+vdyrBMuyWgCIBNk
+         ULEVsnaVVYHjXBSLohjxJHXg+jGbKkDL3pNbfAJDa0Er7xZUYGKCMb1m9qxgQyxxL+0a
+         g8bxYSyI22zVxlz6SmVLtEf2wG9ltHhPgWQHSzn1UeKywXD0RXcfLvRicuQO1mI5apxT
+         Rbxw==
+X-Gm-Message-State: AOAM53267W+9SDe5N6E2+GTZZ46iuCltRWujgkflG6DwbNXl5eZJSQC2
+        fBcQ2zxq5WIGZRuZSl6MVbMO1dtpW6jAxlE=
+X-Google-Smtp-Source: ABdhPJyISWkF+R7pw4ebaFKvuvf67D5TILLOAU6Wc/MtGZsidYExPVK3Q2KtISQkKKySYa2VtJjUUg==
+X-Received: by 2002:a92:9ec3:: with SMTP id s64mr17294072ilk.294.1600190703172;
+        Tue, 15 Sep 2020 10:25:03 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id t4sm7987748iob.48.2020.09.15.10.25.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 10:25:02 -0700 (PDT)
+Received: (nullmailer pid 2162809 invoked by uid 1000);
+        Tue, 15 Sep 2020 17:25:01 -0000
+Date:   Tue, 15 Sep 2020 11:25:01 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hongtao Wu <wuht06@gmail.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hongtao Wu <billows.wu@unisoc.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: PCI: sprd: Document Unisoc PCIe RC
+ host controller
+Message-ID: <20200915172501.GA2146778@bogus>
+References: <1599644912-29245-1-git-send-email-wuht06@gmail.com>
+ <1599644912-29245-2-git-send-email-wuht06@gmail.com>
 MIME-Version: 1.0
-References: <20200915140653.610388773@linuxfoundation.org> <20200915140658.820608455@linuxfoundation.org>
-In-Reply-To: <20200915140658.820608455@linuxfoundation.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Sep 2020 10:24:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiBNqZm2E89SiTmtSPQr+pbdswwdPY6oH_wF1rvAeJnAQ@mail.gmail.com>
-Message-ID: <CAHk-=wiBNqZm2E89SiTmtSPQr+pbdswwdPY6oH_wF1rvAeJnAQ@mail.gmail.com>
-Subject: Re: [PATCH 5.8 108/177] gcov: Disable gcov build with GCC 10
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599644912-29245-2-git-send-email-wuht06@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 7:28 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> GCOV built with GCC 10 doesn't initialize n_function variable.  This
-> produces different kernel panics as was seen by Colin in Ubuntu and me
-> in FC 32.
->
-> As a workaround, let's disable GCOV build for broken GCC 10 version.
+On Wed, Sep 09, 2020 at 05:48:31PM +0800, Hongtao Wu wrote:
+> From: Hongtao Wu <billows.wu@unisoc.com>
+> 
+> This series adds PCIe bindings for Unisoc SoCs.
+> This controller is based on DesignWare PCIe IP.
+> 
+> Signed-off-by: Hongtao Wu <billows.wu@unisoc.com>
+> ---
+>  .../devicetree/bindings/pci/sprd-pcie.yaml         | 101 +++++++++++++++++++++
+>  1 file changed, 101 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/sprd-pcie.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/sprd-pcie.yaml b/Documentation/devicetree/bindings/pci/sprd-pcie.yaml
+> new file mode 100644
+> index 0000000..c52edfb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/sprd-pcie.yaml
+> @@ -0,0 +1,101 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/sprd-pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SoC PCIe Host Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Hongtao Wu <billows.wu@unisoc.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: sprd,pcie-rc
+> +
+> +  reg:
+> +    minItems: 2
+> +    items:
+> +      - description: Controller control and status registers.
+> +      - description: PCIe configuration registers.
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dbi
+> +      - const: config
+> +
+> +  ranges:
+> +    maxItems: 2
+> +
+> +  num-lanes:
+> +    maximum: 1
+> +    description: Number of lanes to use for this port.
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    description: Builtin MSI controller and PCIe host controller.
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: msi
+> +
+> +  sprd-pcie-poweron-syscons:
 
-Oh, Peter Oberparleiter actually figured out what was wrong, and we
-have commit 40249c696207 ("gcov: add support for GCC 10.1") upstream
-that enables it again with the fix for the changed semantics in
-gcc-10.
+Doesn't match the example.
 
-                          Linus
+> +    minItems: 1
+> +    description: Global register.
+> +      The first value is the phandle to the global registers required to
+> +      confige PCIe phy, clock and so on.
+> +      The second value is the global register type which indicates whether it
+> +      is a set/clear register or not.
+> +      The third value is the time to delay after the global register is set or
+> +      cleared.
+> +      The fourth value is the global register address.
+> +      The fifth value is the the mask value that the global register must
+> +      be operate.
+> +      The sixth value is the value that will be set to the global register.
+> +      Note that Some Unisoc global registers have not been upstreamed.
+> +      The global register and its mask can't be found in linux kernel,
+> +      so we use an offset address and a number to instead them.
+
+From the example, it looks like you set/clear 2 bits for power on/off. 
+What's the worst case you expect here? What do the 2 bits do? If they 
+are for clocks, resets, or power domains, then we have bindings for 
+those which should be used. This use of phandles to syscons should be 
+avoided whenever possible.
+
+If we wanted a language for specifying sequences of register accesses in 
+DT, we would have defined that a long time ago.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - num-lanes
+> +  - ranges
+> +  - interrupts
+> +  - interrupt-names
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    ipa {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        pcie0: pcie@2b100000 {
+> +            compatible = "sprd,pcie-rc";
+> +            reg = <0x0 0x2b100000 0x0 0x2000>,
+> +                  <0x2 0x00000000 0x0 0x2000>;
+> +            reg-names = "dbi", "config";
+> +            #address-cells = <3>;
+> +            #size-cells = <2>;
+> +            device_type = "pci";
+> +            ranges = <0x01000000 0x0 0x00000000 0x2 0x00002000 0x0 0x00010000>,
+> +                     <0x03000000 0x0 0x10000000 0x2 0x10000000 0x1 0xefffffff>;
+> +            num-lanes = <1>;
+> +            interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>;
+> +            interrupt-names = "msi";
+> +
+> +            sprd,pcie-poweron-syscons =
+> +                <&ap_ipa_ahb_regs 0 0 0x0000 0x40 0x40>,
+> +                <&ap_ipa_ahb_regs 0 0 0x0000 0x20 0x20>;
+> +            sprd,pcie-poweroff-syscons =
+
+Not documented.
+
+> +                <&ap_ipa_ahb_regs 0 0 0x0000 0x20 0x0>,
+> +                <&ap_ipa_ahb_regs 0 0 0x0000 0x40 0x0>;
+> +        };
+> +    };
+> --
+> 2.7.4
+> 
