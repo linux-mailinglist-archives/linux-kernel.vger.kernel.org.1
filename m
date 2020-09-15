@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E180226B905
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DD926B8FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgIPAzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
+        id S1726650AbgIPAyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgIOLbo (ORCPT
+        with ESMTP id S1726330AbgIOLbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 07:31:44 -0400
 Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12898C061355;
-        Tue, 15 Sep 2020 04:28:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA367C0612F2;
+        Tue, 15 Sep 2020 04:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
          s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=VQfxU9etoAX9NoRDjTZJvNO+0WR8I6R02xxEqCNX2jQ=; b=Jih0OG3zGRqxdCBiwpPSf+ji/v
-        25lRnKusbP6riEgza2rirVzSvutxdjFx21+YxvvrhlanmPAyubO8RRfc2lHEmMHbsvXP1nMONPd4Z
-        EbgM4EgIndc/j3bH2CySH+nFhhFYFaTSoK9zoUQw3j+ABctwX5pYfwhRngu7H3lqxG9qcTskahyjd
-        abCxdAiS+Z0gM0HeV+OnjkZNGH/Fl8KT3qfC8AGvxyiafCXVU8ayQiajUT8sz2ed1F0BS2rd8zFXE
-        sOfF9jmHxkKODAIK4cvzZIY9efJ+7t4JlEYvhqJBanJCWFAltBY8G7gcWqJ1I9ppKqkY5WOL1nHhp
-        U/ITxCJg==;
+        bh=MfOGRytcH2FHakhj47oIMso8mjtUF700XLSJEE9DUHg=; b=D6Njy2w5GBx2AZNi0hg8uJomZA
+        ktTNispwAzhgG8ycM1T5BuNQmd8oEFXtNjjv+mCr/Q85kaidk1sxRJb4dHQPa1yIlqC4oDY1b1bqu
+        3bTsuqBnGQNW2dlS3wJzlm4NdOwI0BlA+t5UbP9E/D+F7NlhwN0IcOQeErPVhTPzI+VUNpwPZRmHB
+        MOKYktqCQ/65yLxJbebdrQ8T+IBKjuJ1A2QHbj1w6U6CvbF3CNvlnrb+w/A4lz4+SJqlQ0TJ/Z515
+        alJTPGzJLhBlc00eNzI2oKdY7XBYZRjUSq0jNMhHcJx6Ra0u/XPh+Xojwg5ggsujd+/JpqM9fkBhB
+        6bDj9x2Q==;
 Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
         by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
         (envelope-from <jjs@kapsi.fi>)
-        id 1kI98j-0000iz-He; Tue, 15 Sep 2020 14:28:49 +0300
+        id 1kI98k-0000ja-1X; Tue, 15 Sep 2020 14:28:50 +0300
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     x86@kernel.org, linux-sgx@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
         Jethro Beekman <jethro@fortanix.com>,
         Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
         josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
         kmoy@google.com, ludloff@google.com, luto@kernel.org,
         nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
         rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v38 09/24] x86/sgx: Add __sgx_alloc_epc_page() and sgx_free_epc_page()
-Date:   Tue, 15 Sep 2020 14:28:27 +0300
-Message-Id: <20200915112842.897265-10-jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Date:   Tue, 15 Sep 2020 14:28:28 +0300
+Message-Id: <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
 References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
@@ -63,107 +65,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add __sgx_alloc_epc_page(), which iterates through EPC sections and borrows
-a page structure that is not used by anyone else. When a page is no longer
-needed it must be released with sgx_free_epc_page(). This function
-implicitly calls ENCLS[EREMOVE], which will return the page to the
-uninitialized state (i.e. not required from caller part).
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
+Add vm_ops()->mprotect() for additional constraints for a VMA.
+
+Intel Software Guard eXtensions (SGX) will use this callback to add two
+constraints:
+
+1. Verify that the address range does not have holes: each page address
+   must be filled with an enclave page.
+2. Verify that VMA permissions won't surpass the permissions of any enclave
+   page within the address range. Enclave cryptographically sealed
+   permissions for each page address that set the upper limit for possible
+   VMA permissions. Not respecting this can cause #GP's to be emitted.
+
+Cc: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>
 Acked-by: Jethro Beekman <jethro@fortanix.com>
 Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- arch/x86/kernel/cpu/sgx/main.c | 62 ++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/sgx.h  |  3 ++
- 2 files changed, 65 insertions(+)
+ include/linux/mm.h | 3 +++
+ mm/mprotect.c      | 5 ++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index c5831e3db14a..97c6895fb6c9 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -83,6 +83,68 @@ static bool __init sgx_page_reclaimer_init(void)
- 	return true;
- }
- 
-+static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_section *section)
-+{
-+	struct sgx_epc_page *page;
-+
-+	if (list_empty(&section->page_list))
-+		return NULL;
-+
-+	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
-+	list_del_init(&page->list);
-+
-+	return page;
-+}
-+
-+/**
-+ * __sgx_alloc_epc_page() - Allocate an EPC page
-+ *
-+ * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-+ * page is no longer needed it must be released with sgx_free_epc_page().
-+ *
-+ * Return:
-+ *   an EPC page,
-+ *   -errno on error
-+ */
-+struct sgx_epc_page *__sgx_alloc_epc_page(void)
-+{
-+	struct sgx_epc_section *section;
-+	struct sgx_epc_page *page;
-+	int i;
-+
-+	for (i = 0; i < sgx_nr_epc_sections; i++) {
-+		section = &sgx_epc_sections[i];
-+		spin_lock(&section->lock);
-+		page = __sgx_alloc_epc_page_from_section(section);
-+		spin_unlock(&section->lock);
-+
-+		if (page)
-+			return page;
-+	}
-+
-+	return ERR_PTR(-ENOMEM);
-+}
-+
-+/**
-+ * sgx_free_epc_page() - Free an EPC page
-+ * @page:	an EPC page
-+ *
-+ * Call EREMOVE for an EPC page and insert it back to the list of free pages.
-+ */
-+void sgx_free_epc_page(struct sgx_epc_page *page)
-+{
-+	struct sgx_epc_section *section = sgx_get_epc_section(page);
-+	int ret;
-+
-+	ret = __eremove(sgx_get_epc_addr(page));
-+	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
-+		return;
-+
-+	spin_lock(&section->lock);
-+	list_add_tail(&page->list, &section->page_list);
-+	spin_unlock(&section->lock);
-+}
-+
- static void __init sgx_free_epc_section(struct sgx_epc_section *section)
- {
- 	struct sgx_epc_page *page;
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index dff4f5f16d09..fce756c3434b 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -49,4 +49,7 @@ static inline void *sgx_get_epc_addr(struct sgx_epc_page *page)
- 	return section->va + (page->desc & PAGE_MASK) - section->pa;
- }
- 
-+struct sgx_epc_page *__sgx_alloc_epc_page(void);
-+void sgx_free_epc_page(struct sgx_epc_page *page);
-+
- #endif /* _X86_SGX_H */
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 97c83773b6f0..717726fcace6 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -547,6 +547,9 @@ struct vm_operations_struct {
+ 	void (*close)(struct vm_area_struct * area);
+ 	int (*split)(struct vm_area_struct * area, unsigned long addr);
+ 	int (*mremap)(struct vm_area_struct * area);
++	int (*mprotect)(struct vm_area_struct *vma,
++			struct vm_area_struct **pprev, unsigned long start,
++			unsigned long end, unsigned long newflags);
+ 	vm_fault_t (*fault)(struct vm_fault *vmf);
+ 	vm_fault_t (*huge_fault)(struct vm_fault *vmf,
+ 			enum page_entry_size pe_size);
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index ce8b8a5eacbb..f170f3da8a4f 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -610,7 +610,10 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
+ 		tmp = vma->vm_end;
+ 		if (tmp > end)
+ 			tmp = end;
+-		error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
++		if (vma->vm_ops && vma->vm_ops->mprotect)
++			error = vma->vm_ops->mprotect(vma, &prev, nstart, tmp, newflags);
++		else
++			error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
+ 		if (error)
+ 			goto out;
+ 		nstart = tmp;
 -- 
 2.25.1
 
