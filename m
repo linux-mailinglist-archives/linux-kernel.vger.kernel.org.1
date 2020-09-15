@@ -2,237 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF2D26B0E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1A726B0CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727692AbgIOWVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727698AbgIOQ3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:29:15 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA73C06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:28:12 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id c18so3981641wrm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 09:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d8d2IYH9CqvPPznwu6X5Y/hj/8U0caseE3XMH7pxcs0=;
-        b=FVbvVtDC2Rj6TSvG8BruGF1q6aGGulZFRHybVlCPCTPISPF9nFrgp30KUpgTnoO+qs
-         LCQto2MwApned4rAVGOoJflprTCB8NF4y1sa55CyCnMfx24wreIGRDwpzInnx1PUG8/n
-         g2nmkDV8Bxrci6XhBcU7imxmzL2odleHGF4LRuUEqpyFm8gTkcx7vwGEGUdC4uNFslGB
-         V9KvIZSHijqQdrNCz8w3FOsN0oN+dFPRZKAvrv5zNy6XapKdrPblgTfBUg5W7x2Bs5cP
-         qwE3gPdu+izVm9ohV6tArtOQm2IOq5OarN3CkrvoEcL/fxgeFMACFSpSTNSrfthnJjQ7
-         58XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=d8d2IYH9CqvPPznwu6X5Y/hj/8U0caseE3XMH7pxcs0=;
-        b=LYIVe5vLO9zjOB0Gpa2tOZgESNjWYsF3PeTpftZJLhje8f6OM/MUwFfjQHiWPWVowK
-         TlShDenWAfyXjMZb9OIjY8r4iBbiMltQ95KyM4KNQqjojHP+2LEzzAR1khhE7ptmNlJW
-         bFuozc+lhzCkylcymH1e4LQ1l9HB+RtWiuUBu9TH17YzlPNb8cqmjbZPbsQ1vRr0biJN
-         R4BrK1tMKBk92sgCewdfu+KGKvlG5U9fCJ4fFpc3vQoy9lv3O8DNernktnhwdMttqqGB
-         wUi+kemRguEJccboGfuowqO/uBr0HzNVSEyWldNrai8v1mb0TuVjL5SwW2kT7CLFf/Hw
-         ge2w==
-X-Gm-Message-State: AOAM533tYFA02KYbpNJJ4ADB6C6aWX0hETwyD4fnGgIXs5S1P42Pax2x
-        a6ze0dQ9bn+oHMqx+yH0IEVIbE6TR+WgAED1
-X-Google-Smtp-Source: ABdhPJwaw5nIrOwqUALglrydIq/WdVmeh5e6rd1OYIptXlWAC4+/C4Ed7EE/MEcOsWALUyjMsyTgvQ==
-X-Received: by 2002:adf:dd51:: with SMTP id u17mr22117352wrm.355.1600187290168;
-        Tue, 15 Sep 2020 09:28:10 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac? ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
-        by smtp.gmail.com with ESMTPSA id d124sm122769wmd.47.2020.09.15.09.28.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 09:28:09 -0700 (PDT)
-Subject: Re: [PATCH 2/6] dt-bindings: display: add Amlogic MIPI DSI Host
- Controller bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     daniel@ffwll.ch, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200907081825.1654-1-narmstrong@baylibre.com>
- <20200907081825.1654-3-narmstrong@baylibre.com>
- <20200915154118.GA1988840@bogus>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <de9ffeb8-eef0-f757-428f-376e80517e34@baylibre.com>
-Date:   Tue, 15 Sep 2020 18:28:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727911AbgIOWTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:19:48 -0400
+Received: from mga09.intel.com ([134.134.136.24]:63987 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727699AbgIOQ3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:29:45 -0400
+IronPort-SDR: 8mF6ouKV9hUzyp1Iq1vmJaJsDYQj7WAdYm+BzRur/4557EAx8CKAHa7apmX+spCOnZeqSAKbBw
+ 1Ryw9GJtIfRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="160233022"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="160233022"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 09:28:39 -0700
+IronPort-SDR: jhEI87l6+toBT3WeaitOl5cWTBPVuhw+9DaJ9DgksUoPIT6mJKLJLifxToZk5mICDJackTEutA
+ TwoGKt2H8hxA==
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="482889995"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 09:28:38 -0700
+Date:   Tue, 15 Sep 2020 09:28:37 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 05/35] KVM: SVM: Add initial support for SEV-ES GHCB
+ access to KVM
+Message-ID: <20200915162836.GA8420@sjchrist-ice>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <9e52807342691ff0d4b116af6e147021c61a2d71.1600114548.git.thomas.lendacky@amd.com>
+ <20200914205801.GA7084@sjchrist-ice>
+ <ba417215-530d-98df-5ceb-35b10ee09243@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20200915154118.GA1988840@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba417215-530d-98df-5ceb-35b10ee09243@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2020 17:41, Rob Herring wrote:
-> On Mon, Sep 07, 2020 at 10:18:21AM +0200, Neil Armstrong wrote:
->> The Amlogic AXg SoCs embeds a Synopsys DW-MIPI-DSI transceiver (ver 1.21a), with a custom
->> glue managing the IP resets, clock and data input similar to the DW-HDMI Glue on other
->> Amlogic SoCs.
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>  .../display/amlogic,meson-dw-mipi-dsi.yaml    | 115 ++++++++++++++++++
->>  1 file changed, 115 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml b/Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml
->> new file mode 100644
->> index 000000000000..6177f45ea1a6
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml
->> @@ -0,0 +1,115 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +# Copyright 2020 BayLibre, SAS
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/display/amlogic,meson-dw-mipi-dsi.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: Amlogic specific extensions to the Synopsys Designware MIPI DSI Host Controller
->> +
->> +maintainers:
->> +  - Neil Armstrong <narmstrong@baylibre.com>
->> +
->> +description: |
->> +  The Amlogic Meson Synopsys Designware Integration is composed of
->> +  - A Synopsys DesignWare MIPI DSI Host Controller IP
->> +  - A TOP control block controlling the Clocks & Resets of the IP
->> +
->> +allOf:
->> +  - $ref: dsi-controller.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - amlogic,meson-axg-dw-mipi-dsi
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    minItems: 2
->> +
->> +  clock-names:
->> +    minItems: 2
->> +    items:
->> +      - const: pclk
->> +      - const: px_clk
->> +      - const: meas_clk
->> +
->> +  resets:
->> +    minItems: 1
->> +
->> +  reset-names:
->> +    items:
->> +      - const: top
->> +
->> +  phys:
->> +    minItems: 1
->> +
->> +  phy-names:
->> +    items:
->> +      - const: dphy
->> +
->> +  ports:
->> +    type: object
->> +
->> +    properties:
->> +      port@0:
->> +        type: object
->> +        description: Input node to receive pixel data.
->> +      port@1:
->> +        type: object
->> +        description: DSI output node to panel.
->> +
->> +    required:
->> +      - port@0
->> +      - port@1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +  - clock-names
->> +  - resets
->> +  - reset-names
->> +  - phys
->> +  - phy-names
->> +  - ports
->> +
->> +additionalProperties: false
+On Tue, Sep 15, 2020 at 08:24:22AM -0500, Tom Lendacky wrote:
+> On 9/14/20 3:58 PM, Sean Christopherson wrote:
+> >> @@ -79,6 +88,9 @@ static inline void kvm_register_write(struct kvm_vcpu *vcpu, int reg,
+> >>  	if (WARN_ON_ONCE((unsigned int)reg >= NR_VCPU_REGS))
+> >>  		return;
+> >>  
+> >> +	if (kvm_x86_ops.reg_write_override)
+> >> +		kvm_x86_ops.reg_write_override(vcpu, reg, val);
+> > 
+> > 
+> > There has to be a more optimal approach for propagating registers between
+> > vcpu->arch.regs and the VMSA than adding a per-GPR hook.  Why not simply
+> > copy the entire set of registers to/from the VMSA on every exit and entry?
+> > AFAICT, valid_bits is only used in the read path, and KVM doesn't do anything
+> > sophistated when it hits a !valid_bits reads.
 > 
-> Presumably you may have panel/bridge child nodes, so this needs to be 
-> 'unevaluatedProperties: false'.
-
-OK,
-
-Thanks.
-
-Neil
-
-
+> That would probably be ok. And actually, the code might be able to just
+> check the GHCB valid bitmap for valid regs on exit, copy them and then
+> clear the bitmap. The write code could check if vmsa_encrypted is set and
+> then set a "valid" bit for the reg that could be used to set regs on entry.
 > 
-> Rob
-> 
+> I'm not sure if turning kvm_vcpu_arch.regs into a struct and adding a
+> valid bit would be overkill or not.
 
+KVM already has space in regs_avail and regs_dirty for GPRs, they're just not
+used by the get/set helpers because they're always loaded/stored for both SVM
+and VMX.
+
+I assume nothing will break if KVM "writes" random GPRs in the VMSA?  I can't
+see how the guest would achieve any level of security if it wantonly consumes
+GPRs, i.e. it's the guest's responsibility to consume only the relevant GPRs.
+
+If that holds true, than avoiding the copying isn't functionally necessary, and
+is really just a performance optimization.  One potentially crazy idea would be
+to change vcpu->arch.regs to be a pointer (defaults a __regs array), and then
+have SEV-ES switch it to point directly at the VMSA array (I think the layout
+is identical for x86-64?).
+
+> >> @@ -4012,6 +4052,99 @@ static bool svm_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
+> >>  		   (svm->vmcb->control.intercept & (1ULL << INTERCEPT_INIT));
+> >>  }
+> >>  
+> >> +/*
+> >> + * These return values represent the offset in quad words within the VM save
+> >> + * area. This allows them to be accessed by casting the save area to a u64
+> >> + * array.
+> >> + */
+> >> +#define VMSA_REG_ENTRY(_field)	 (offsetof(struct vmcb_save_area, _field) / sizeof(u64))
+> >> +#define VMSA_REG_UNDEF		 VMSA_REG_ENTRY(valid_bitmap)
+> >> +static inline unsigned int vcpu_to_vmsa_entry(enum kvm_reg reg)
+> >> +{
+> >> +	switch (reg) {
+> >> +	case VCPU_REGS_RAX:	return VMSA_REG_ENTRY(rax);
+> >> +	case VCPU_REGS_RBX:	return VMSA_REG_ENTRY(rbx);
+> >> +	case VCPU_REGS_RCX:	return VMSA_REG_ENTRY(rcx);
+> >> +	case VCPU_REGS_RDX:	return VMSA_REG_ENTRY(rdx);
+> >> +	case VCPU_REGS_RSP:	return VMSA_REG_ENTRY(rsp);
+> >> +	case VCPU_REGS_RBP:	return VMSA_REG_ENTRY(rbp);
+> >> +	case VCPU_REGS_RSI:	return VMSA_REG_ENTRY(rsi);
+> >> +	case VCPU_REGS_RDI:	return VMSA_REG_ENTRY(rdi);
+> >> +#ifdef CONFIG_X86_64
+
+Is KVM SEV-ES going to support 32-bit builds?
+
+> >> +	case VCPU_REGS_R8:	return VMSA_REG_ENTRY(r8);
+> >> +	case VCPU_REGS_R9:	return VMSA_REG_ENTRY(r9);
+> >> +	case VCPU_REGS_R10:	return VMSA_REG_ENTRY(r10);
+> >> +	case VCPU_REGS_R11:	return VMSA_REG_ENTRY(r11);
+> >> +	case VCPU_REGS_R12:	return VMSA_REG_ENTRY(r12);
+> >> +	case VCPU_REGS_R13:	return VMSA_REG_ENTRY(r13);
+> >> +	case VCPU_REGS_R14:	return VMSA_REG_ENTRY(r14);
+> >> +	case VCPU_REGS_R15:	return VMSA_REG_ENTRY(r15);
+> >> +#endif
+> >> +	case VCPU_REGS_RIP:	return VMSA_REG_ENTRY(rip);
+> >> +	default:
+> >> +		WARN_ONCE(1, "unsupported VCPU to VMSA register conversion\n");
+> >> +		return VMSA_REG_UNDEF;
+> >> +	}
+> >> +}
+> >> +
+> >> +/* For SEV-ES guests, populate the vCPU register from the appropriate VMSA/GHCB */
+> >> +static void svm_reg_read_override(struct kvm_vcpu *vcpu, enum kvm_reg reg)
+> >> +{
+> >> +	struct vmcb_save_area *vmsa;
+> >> +	struct vcpu_svm *svm;
+> >> +	unsigned int entry;
+> >> +	unsigned long val;
+> >> +	u64 *vmsa_reg;
+> >> +
+> >> +	if (!sev_es_guest(vcpu->kvm))
+> >> +		return;
+> >> +
+> >> +	entry = vcpu_to_vmsa_entry(reg);
+> >> +	if (entry == VMSA_REG_UNDEF)
+> >> +		return;
+> >> +
+> >> +	svm = to_svm(vcpu);
+> >> +	vmsa = get_vmsa(svm);
+> >> +	vmsa_reg = (u64 *)vmsa;
+> >> +	val = (unsigned long)vmsa_reg[entry];
+> >> +
+> >> +	/* If a GHCB is mapped, check the bitmap of valid entries */
+> >> +	if (svm->ghcb) {
+> >> +		if (!test_bit(entry, (unsigned long *)vmsa->valid_bitmap))
+> >> +			val = 0;
+> > 
+> > Is KVM relying on this being 0?  Would it make sense to stuff something like
+> > 0xaaaa... or 0xdeadbeefdeadbeef so that consumption of bogus data is more
+> > noticeable?
+> 
+> No, KVM isn't relying on this being 0. I thought about using something
+> other than 0 here, but settled on just using 0. I'm open to changing that,
+> though. I'm not sure if there's an easy way to short-circuit the intercept
+> and respond back with an error at this point, that would be optimal.
+
+Ya, responding with an error would be ideal.  At this point, we're taking the
+same lazy approach for TDX and effectively consuming garbage if the guest
+requests emulation but doesn't expose the necessary GPRs.  That being said,
+TDX's guest/host ABI is quite rigid, so all the "is this register valid"
+checks could be hardcoded into the higher level "emulation" flows.
+
+Would that also be an option for SEV-ES?
