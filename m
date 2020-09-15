@@ -2,241 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C8826A53A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745B526A53E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgIOMcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:32:16 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1512 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgIOMag (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:30:36 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f60b35d0002>; Tue, 15 Sep 2020 05:28:13 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 15 Sep 2020 05:30:34 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 15 Sep 2020 05:30:34 -0700
-Received: from [10.21.180.139] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
- 2020 12:30:23 +0000
-Subject: Re: [PATCH net-next RFC v4 03/15] devlink: Add reload action stats
-To:     Jiri Pirko <jiri@resnulli.us>, Moshe Shemesh <moshe@mellanox.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-4-git-send-email-moshe@mellanox.com>
- <20200914133939.GG2236@nanopsycho.orion>
-From:   Moshe Shemesh <moshe@nvidia.com>
-Message-ID: <a5b7cbd5-ef55-1d74-a21e-5fb962307773@nvidia.com>
-Date:   Tue, 15 Sep 2020 15:30:19 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200914133939.GG2236@nanopsycho.orion>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S1726082AbgIOMdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:33:12 -0400
+Received: from mail-co1nam11on2087.outbound.protection.outlook.com ([40.107.220.87]:59872
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726326AbgIOMat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 08:30:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YSrd3V2WU5FtKWxQin4XgeoIh0p96YaJGeftzH0v0vk22UEthfp1zqQ+D204ENbqjlkImGJ1Bjqhp9WLh1ynquZx5sJJTn6CbLsy1+30Jm2loPZne1EPvbqSbrfZKK27OETOa8EUgBPKjQWAVD2yeNQrqo9iFyDHxgcWqqSLfSrs6OAYPNWuJqW7heoo96Jy+AjHRu/1CJqlup/KAwMiRJREzvYrW2NmnkH8GIVOKcXDYLGpHRAzu88PFr7Ik3EBD598j1P8/RmZQ0xa8qCrP0PhxhfXnAtPwJEsFp1lKKkyZHw5TVroOLC8k64kCFjaN7Pgl+iRvsWzHanlR+wrrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GPdytxBffdiv8r9DXyTfJK09sMmLbzQISuPSE0oJLGo=;
+ b=Jkjfel7YktE83ODNJ7JdmuttOXCvqc4TrdUl94ed41yGf2ch255cnqhrI5RhT7ZCbnmv0GS4OXjS2Bu4fN5lpqvf0EEUl1PHhag57q3JOJl05JkVmNL8I9iAWygZ0jLVE0pQSGVJtuqbBCEALwECX5B7FTM8wTBfI8kckv8yaC2PrL7R+eRJinos76d2Qwnxm6YE05PobIW6bmyuy9Jys8svCVuJ20n0es/C6NBkGKAYuvGYaYy5NVF0Yhd98eKOnihZBkb1Qse0Ewa4P4E3ZEC/CYr78pHQ/OJU3G1adzFDB9eMXaUNJ93pt59Rb+REaZfjIvKjJ0JwV93G9BSWbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GPdytxBffdiv8r9DXyTfJK09sMmLbzQISuPSE0oJLGo=;
+ b=a9bPpIzJcVapFaZ430qPK5qJbW1tsJxswvmVMaTIquWNCUZmda1qC+78Sz8PZkOtejSbNykmrYYs9maUf6viHNXBWeNTrNTCG8ICR4rkGloXm2bPCpzKugeJYheMZ6dRJp+PWdOB26ZqFMCpmE35Ci9UbvOyT2kjSJdx7H8CYGI=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
+ DM6PR12MB4433.namprd12.prod.outlook.com (2603:10b6:5:2a1::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3370.17; Tue, 15 Sep 2020 12:30:47 +0000
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 12:30:47 +0000
+Subject: Re: [PATCH] iommu/amd: fix interrupt remapping for avic
+To:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Grimm, Jon" <jon.grimm@amd.com>
+References: <20200913124211.6419-1-mlevitsk@redhat.com>
+ <60856c61-062b-8d92-e565-38bd00855228@amd.com>
+ <04a8ab5cb1f6662f72bcad856da3415d6d9b2593.camel@redhat.com>
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Message-ID: <dd0b9a98-149a-286c-2793-8ea0e8b60e2e@amd.com>
+Date:   Tue, 15 Sep 2020 19:30:38 +0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+In-Reply-To: <04a8ab5cb1f6662f72bcad856da3415d6d9b2593.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600172893; bh=wIvW7UIrQndM0XlXBjjsCH83SPYyOAeA0mMRVWlGWX0=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:
-         Content-Transfer-Encoding:Content-Language:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=qjkcrXr/2VudSoYDoMJIHIOZ02vb9k3/Zg4sYkeQ46c7oFm2P45FTJId2GlpsNrgp
-         rrET2G06Ml4edtq457swxzffSvKyzMOQVhfKfif4NY+rEgElFV5HTllR6kGv+0Lim+
-         ZUgaQtSiZAzhVp4666AiV0gKl9jO407iUo//3IshWjq+t4pHhsW4HAypZaUkaM7oqs
-         ZMyZZOxOYAp1JpfLDV2azI6FfZMohBYpP2Zzj2O8Yvhp5wmce9Z56JgOQeIOLz5r6q
-         r59M/9UR2RNqBrzEMmqclrcjSoEL9pdZeDwgzcFG4w/MySaYkwubLLzxXhEbQFV9P9
-         tAlr9HQPdbJbg==
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR0302CA0017.apcprd03.prod.outlook.com
+ (2603:1096:3:2::27) To DM5PR12MB1163.namprd12.prod.outlook.com
+ (2603:10b6:3:7a::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Suravees-MacBook-Pro.local (110.169.70.5) by SG2PR0302CA0017.apcprd03.prod.outlook.com (2603:1096:3:2::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.5 via Frontend Transport; Tue, 15 Sep 2020 12:30:44 +0000
+X-Originating-IP: [110.169.70.5]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 86a6f92c-a739-46fe-48ad-08d859732bff
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4433:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4433D4CCF0C0FEE02E9261C8F3200@DM6PR12MB4433.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: foxILmYQBX77+QcEY/nfAWEn5rtFOKPMYjscCxoxLtvcg9SAte9i/AvWrR7JzZ/X9Eqbz1xoG8+ReJGi+G9nreSzQjL+G0ZDs7hH9+OFNVfHSD60DUyyG8gQQ+EF9NNNTnIZA8GFIT0JmqrUJvuCpueVAVmrlZB2XJ4M/xWW+uoTLGArpHh6cv2viwxg4HiL1QaO6coLO8jTvssiXGu8LAmeOXlJeJXwoPZGlXciZKP1+//a+3GciAQRbaPNR79Yv56yeuzbPdJ3Sz2f50tOL5fhU4OJlJTp5t+3y3zRNuGm3bU8vizh7gzp+T/TbeNDiLCTKmq5wB7Uy/fvA3umYR/dEeMC6Rf+Dzo8p/M3cWgl3z8pOqIzkSauMEhoYYf5/jZBwkSuxB8iutYNeMx6WtE+jHLudC9gZJwweOs9B1gNsuMfP0RYCSiwqLd9iznJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(366004)(36756003)(52116002)(66556008)(66476007)(26005)(6486002)(66946007)(16526019)(186003)(6506007)(86362001)(53546011)(83380400001)(2906002)(31696002)(4326008)(31686004)(478600001)(316002)(8936002)(54906003)(44832011)(8676002)(2616005)(956004)(6512007)(5660300002)(6666004)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: EuXDzseU8UqxQLhC2aBSPvgamjwIreRLToraX+SrEy1GRTEM8EpT4kM3GP6jjOaM1qaS1b1kgTD0f4cXWl240IdaFnjgni+pqEcIN5exkwZXUacU62/CFyqeH8IP1Qux3uBLQlAynn5LyDurYGxxHBqQw02S28RGZ6RNJipzoT89JKbYYfHBpsGFZVMPdvhkEWoUoNrfac8g+IGlbsm1zZ4/hyaMvImIV5tmjjMMyvGaphghlnJYNPhRzPjVgHtklFmT4w0xPxa6T/s9NUWBxRmlx+u6ky4Vso3x4RgJBBPlKAYen8x75fb3tfDvFbg67ejQwZ7iN5rbQw49b5w4ciH/Yjf0ad9oxrNacAnoDIJPNVNiesuigFVMnm/5ymjxmTZpF31ZWKpXRtjzCaA1kray7Ch8HoLbcju66XRcPCnZIXoy8Q6fXpfJWKFOxhRuWQA5CFjDfPdMqqgUxvfXovGvDAFDTbSDFB7L1OKh8/IipCLeBiMoRXzD2apYKqEkV3oK1vE/3cItJ2keY/pQjMpGub5h+BIKOGa40VO8ybPQNTVcIKQfOfEnOCYB2P7j6GHFAgI8OEhFAWrXptmX7sE/R4PBmkpz2yEbHALdEbPVVJ8pNHjWHiXeyCrk7Y4IepWrcT4R6Nak6qM0rSsVjw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86a6f92c-a739-46fe-48ad-08d859732bff
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 12:30:46.9460
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t+hqZi+QExl2OeNHUX2eV9SpHuzpHsXuMdNvU/ayO8zz3xy1+hKpVk+GhpKWVD5lY49bXBupFOgO7nCipD4OLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4433
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/14/2020 4:39 PM, Jiri Pirko wrote:
-> Mon, Sep 14, 2020 at 08:07:50AM CEST, moshe@mellanox.com wrote:
->> Add reload action stats to hold the history per reload action type and
->> limit level.
-> Empty line missing.
->
 
-Ack.
-
->> For example, the number of times fw_activate has been performed on this
->> device since the driver module was added or if the firmware activation
->> was performed with or without reset.
->> Add devlink notification on stats update.
+On 9/15/20 6:25 PM, Maxim Levitsky wrote:
+> On Mon, 2020-09-14 at 21:48 +0700, Suravee Suthikulpanit wrote:
+>> Maxim,
 >>
->> The function devlink_reload_actions_implicit_actions_performed() is
->> exported to enable also drivers update on reload actions performed,
->> for example in case firmware activation with reset finished
->> successfully but was initiated by remote host.
+>> On 9/13/2020 7:42 PM, Maxim Levitsky wrote:
+>>> Commit e52d58d54a32 ("iommu/amd: Use cmpxchg_double() when updating 128-bit IRTE")
+>>> accidentally removed an assumption that modify_irte_ga always set the valid bit
+>>> and amd_iommu_activate_guest_mode relied on that.
+>>>
+>>> Side effect of this is that on my machine, VFIO based VMs with AVIC enabled
+>>> would eventually crash and show IOMMU errors like that:
+>>>
+>>> AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0055 address=0xfffffffdf8000000 flags=0x0008]
+>>>
+>>> Fixes: e52d58d54a321 ("iommu/amd: Use cmpxchg_double() when updating 128-bit IRTE")
+>>> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+>>> ---
+>>>    drivers/iommu/amd/iommu.c | 1 +
+>>>    1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+>>> index 07ae8b93887e5..aff4cc1869356 100644
+>>> --- a/drivers/iommu/amd/iommu.c
+>>> +++ b/drivers/iommu/amd/iommu.c
+>>> @@ -3853,6 +3853,7 @@ int amd_iommu_activate_guest_mode(void *data)
+>>>    	entry->hi.fields.ga_root_ptr       = ir_data->ga_root_ptr;
+>>>    	entry->hi.fields.vector            = ir_data->ga_vector;
+>>>    	entry->lo.fields_vapic.ga_tag      = ir_data->ga_tag;
+>>> +	entry->lo.fields_remap.valid = 1;
+>>>    
+>>>    	return modify_irte_ga(ir_data->irq_2_irte.devid,
+>>>    			      ir_data->irq_2_irte.index, entry, ir_data);
+>>>
 >>
->> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
->> ---
->> v3 -> v4:
->> - Renamed reload_actions_cnts to reload_action_stats
->> - Add devlink notifications on stats update
->> - Renamed devlink_reload_actions_implicit_actions_performed() and add
->>   function comment in code
->> v2 -> v3:
->> - New patch
->> ---
->> include/net/devlink.h |  7 ++++++
->> net/core/devlink.c    | 58 ++++++++++++++++++++++++++++++++++++++++---
->> 2 files changed, 62 insertions(+), 3 deletions(-)
+>> Could you please try with the following patch instead?
 >>
->> diff --git a/include/net/devlink.h b/include/net/devlink.h
->> index dddd9ee5b8a9..b4feb92e0269 100644
->> --- a/include/net/devlink.h
->> +++ b/include/net/devlink.h
->> @@ -20,6 +20,9 @@
->> #include <uapi/linux/devlink.h>
->> #include <linux/xarray.h>
+>> --- a/drivers/iommu/amd/iommu.c
+>> +++ b/drivers/iommu/amd/iommu.c
+>> @@ -3840,14 +3840,18 @@ int amd_iommu_activate_guest_mode(void *data)
+>>    {
+>>           struct amd_ir_data *ir_data = (struct amd_ir_data *)data;
+>>           struct irte_ga *entry = (struct irte_ga *) ir_data->entry;
+>> +       u64 valid;
 >>
->> +#define DEVLINK_RELOAD_ACTION_STATS_ARRAY_SIZE \
->> +	(__DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX * __DEVLINK_RELOAD_ACTION_MAX)
+>>           if (!AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) ||
+>>               !entry || entry->lo.fields_vapic.guest_mode)
+>>                   return 0;
+>>
+>> +       valid = entry->lo.fields_vapic.valid;
 >> +
->> struct devlink_ops;
+>>           entry->lo.val = 0;
+>>           entry->hi.val = 0;
 >>
->> struct devlink {
->> @@ -38,6 +41,7 @@ struct devlink {
->> 	struct list_head trap_policer_list;
->> 	const struct devlink_ops *ops;
->> 	struct xarray snapshot_ids;
->> +	u32 reload_action_stats[DEVLINK_RELOAD_ACTION_STATS_ARRAY_SIZE];
->> 	struct device *dev;
->> 	possible_net_t _net;
->> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
->> @@ -1397,6 +1401,9 @@ void
->> devlink_health_reporter_recovery_done(struct devlink_health_reporter *reporter);
+>> +       entry->lo.fields_vapic.valid       = valid;
+>>           entry->lo.fields_vapic.guest_mode  = 1;
+>>           entry->lo.fields_vapic.ga_log_intr = 1;
+>>           entry->hi.fields.ga_root_ptr       = ir_data->ga_root_ptr;
+>> @@ -3864,12 +3868,14 @@ int amd_iommu_deactivate_guest_mode(void *data)
+>>           struct amd_ir_data *ir_data = (struct amd_ir_data *)data;
+>>           struct irte_ga *entry = (struct irte_ga *) ir_data->entry;
+>>           struct irq_cfg *cfg = ir_data->cfg;
+>> -       u64 valid = entry->lo.fields_remap.valid;
+>> +       u64 valid;
 >>
->> bool devlink_is_reload_failed(const struct devlink *devlink);
->> +void devlink_reload_implicit_actions_performed(struct devlink *devlink,
->> +					       enum devlink_reload_action_limit_level limit_level,
->> +					       unsigned long actions_performed);
+>>           if (!AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) ||
+>>               !entry || !entry->lo.fields_vapic.guest_mode)
+>>                   return 0;
 >>
->> void devlink_flash_update_begin_notify(struct devlink *devlink);
->> void devlink_flash_update_end_notify(struct devlink *devlink);
->> diff --git a/net/core/devlink.c b/net/core/devlink.c
->> index 60aa0c4a3726..cbf746966913 100644
->> --- a/net/core/devlink.c
->> +++ b/net/core/devlink.c
->> @@ -2981,11 +2981,58 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
->> }
->> EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
->>
->> +static void
->> +devlink_reload_action_stats_update(struct devlink *devlink,
->> +				   enum devlink_reload_action_limit_level limit_level,
->> +				   unsigned long actions_performed)
->> +{
->> +	int stat_idx;
->> +	int action;
+>> +       valid = entry->lo.fields_remap.valid;
 >> +
->> +	if (!actions_performed)
->> +		return;
->> +
->> +	if (WARN_ON(limit_level > DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX))
->> +		return;
->> +	for (action = 0; action <= DEVLINK_RELOAD_ACTION_MAX; action++) {
->> +		if (!test_bit(action, &actions_performed))
->> +			continue;
->> +		stat_idx = limit_level * __DEVLINK_RELOAD_ACTION_MAX + action;
->> +		devlink->reload_action_stats[stat_idx]++;
->> +	}
->> +	devlink_notify(devlink, DEVLINK_CMD_NEW);
->> +}
->> +
->> +/**
->> + *	devlink_reload_implicit_actions_performed - Update devlink on reload actions
->> + *	  performed which are not a direct result of devlink reload call.
->> + *
->> + *	This should be called by a driver after performing reload actions in case it was not
->> + *	a result of devlink reload call. For example fw_activate was performed as a result
->> + *	of devlink reload triggered fw_activate on another host.
->> + *	The motivation for this function is to keep data on reload actions performed on this
->> + *	function whether it was done due to direct devlink reload call or not.
->> + *
->> + *	@devlink: devlink
->> + *	@limit_level: reload action limit level
->> + *	@actions_performed: bitmask of actions performed
->> + */
->> +void devlink_reload_implicit_actions_performed(struct devlink *devlink,
->> +					       enum devlink_reload_action_limit_level limit_level,
->> +					       unsigned long actions_performed)
-> What I'm a bit scarred of that the driver would call this from withing
-> reload_down()/up() ops. Perheps this could be WARN_ON'ed here (or in
-> devlink_reload())?
->
+>>           entry->lo.val = 0;
+>>           entry->hi.val = 0;
+> I see. I based my approach on the fact that valid bit was
+> set always to true anyway before, plus that amd_iommu_activate_guest_mode
+> should be really only called when someone activates a valid interrupt remapping
+> entry, but IMHO the approach of preserving the valid bit is safer anyway.
+> 
+> It works on my system (I applied the patch manually, since either your or my email client,
+> seems to mangle the patch)
+> 
+> Thanks,
+> Best regards,
+> 	Maxim Levitsky
+> 
+> 
 
-Not sure how I know if it was called from devlink_reload_down()/up() ? 
-Maybe mutex ? So the warn will be actually mutex deadlock ?
+Sorry for the mangled patch. I'll submit the patch w/ your information. Thanks for your help reporting, debugging, and 
+testing the patch.
 
->> +{
->> +	if (!devlink_reload_supported(devlink))
-> Hmm. I think that the driver does not have to support the reload and can
-> still be reloaded by another instance and update the stats here. Why
-> not?
->
+Sincerely,
 
-But I show counters only for supported reload actions and levels, 
-otherwise we will have these counters on devlink dev show output for 
-other drivers that don't have support for devlink reload and didn't 
-implement any of these including this function and these drivers may do 
-some actions like fw_activate in another way and don't update the stats 
-and so that will make these stats misleading. They will show history 
-"stats" but they don't update them as they didn't apply anything related 
-to devlink reload.
-
->> +		return;
->> +	devlink_reload_action_stats_update(devlink, limit_level, actions_performed);
->> +}
->> +EXPORT_SYMBOL_GPL(devlink_reload_implicit_actions_performed);
->> +
->> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
->> 			  enum devlink_reload_action action,
->> 			  enum devlink_reload_action_limit_level limit_level,
->> -			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
->> +			  struct netlink_ext_ack *extack, unsigned long *actions_performed_out)
->> {
->> +	unsigned long actions_performed;
->> 	int err;
+Suravee
+>> --
+> 
 >>
->> 	if (!devlink->reload_enabled)
->> @@ -2998,9 +3045,14 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
->> 	if (dest_net && !net_eq(dest_net, devlink_net(devlink)))
->> 		devlink_reload_netns_change(devlink, dest_net);
+>> Thanks,
+>> Suravee
 >>
->> -	err = devlink->ops->reload_up(devlink, action, limit_level, extack, actions_performed);
->> +	err = devlink->ops->reload_up(devlink, action, limit_level, extack, &actions_performed);
->> 	devlink_reload_failed_set(devlink, !!err);
->> -	return err;
->> +	if (err)
->> +		return err;
->> +	devlink_reload_action_stats_update(devlink, limit_level, actions_performed);
->> +	if (actions_performed_out)
-> Just make the caller to provide valid pointer, as I suggested in the
-> other patch review.
-
-
-Ack.
-
->
->> +		*actions_performed_out = actions_performed;
->> +	return 0;
->> }
->>
->> static int
->> -- 
->> 2.17.1
->>
+> 
+> 
