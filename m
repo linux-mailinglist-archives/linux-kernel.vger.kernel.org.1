@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242D526AB56
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A56526AB5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgIOR7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727697AbgIORpR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:45:17 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD684C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:45:02 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id z17so2379333pgc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:45:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QWmHefW8oD5UwOaVyeB2keHFNLfqq9QyBDTK4aqQw9Q=;
-        b=rOS4fWQ/eec36pGAL6KIEjm3xWtdeCgnbHlHrpZywpEQBxD9hdIlvInVF1rOCkaTq2
-         eMzIvqp9EVyb81nk/Cu3qsrhdpRxHHx9aKXxwZdUcXuPQlhwI2b7vpM6FIDllzKfmw+0
-         virnGLvfUKyt4LihFHHxeJesSMP3TRXTkjZxknhakftdZRDVkNgr4VnMUJGxSnSYtDWI
-         QmP46XIC81oYOKPN7Ayml/Ogf5sXwpAzLV0lbHVBjpn2jRabHQLTsfXN4SeM9qWpQbsD
-         nEW8GdYYg4BAcTrgyiwOef+Mpn80IFtDw6ICPUqZR5BGkXT2Wje6KXrdu7JOUyFQp/P4
-         Yy3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QWmHefW8oD5UwOaVyeB2keHFNLfqq9QyBDTK4aqQw9Q=;
-        b=CXitikzCcKzz57Ya/DDJwzqpVn+cxeZ4gggutzKCRS7drN3xWfZKoWwRUWJBrl3U/N
-         F1M99G+Ip99CV8C+6NBEzARCgJg+ggbYDU+zlYidTYNR66xw41xZL6eD/VMTWi+eDOJR
-         O0ycR2Si6AGrtuxYEuvEy7dbHwQyQDyK0uRrVywzHz4cWlVRanbIRnGlTp47W5+3dJM2
-         EhVW5LxPctaRxyRi3QcJpC3gReE3mCHiDeWW448tiPP/0uL2bW7Pl6R8qx3xAbkia7Wo
-         YDjI76lQrSysmRc6cm1W02SKnjbOi8iIq1TXUWpDXAPJe00SK87e5wEK34DKLr/irket
-         iXjw==
-X-Gm-Message-State: AOAM532hIbdXb9cWzcOGRqC1t0ZZhTD/c7C9Gi0kS+Cm5NMio3Q7Mtu7
-        fkP/JCLbCymWxMwdF4nfhE9bUsKR0LtO1CePKx3hcw==
-X-Google-Smtp-Source: ABdhPJywnVW1CX64Bi7b/2ui9se1TF2vMRktkPYJkAzl5RcChgeC11Uysbwoaat0prX78ZBBuYgquuwOXs0KG041b2c=
-X-Received: by 2002:a65:5a4c:: with SMTP id z12mr15329368pgs.10.1600191902079;
- Tue, 15 Sep 2020 10:45:02 -0700 (PDT)
+        id S1727918AbgIORk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:40:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727882AbgIORP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:15:58 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FDA820809;
+        Tue, 15 Sep 2020 16:52:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600188731;
+        bh=TRdtoop1VJmdXleby80Gzo52XfpAZXVmNoC3tYdvNEk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UEoss78KVLFCCMnEiRW2BWiTvow+cEu9uR6dA8kY8bW26flU8Nx8jv3cjnvMSkYJr
+         SoaptaQCJGLi5ipiRysT6+J/RlKcbRlBE9rbKIzHez7Z28nZZYYBBzxu+QJF5b41tf
+         aCVW8JrYquK+8/Eva8gLP8p+ybaIlhh3gK0vudPU=
+Received: by mail-oi1-f171.google.com with SMTP id x69so4621255oia.8;
+        Tue, 15 Sep 2020 09:52:11 -0700 (PDT)
+X-Gm-Message-State: AOAM530Roorq8LjTyuV4KbIpdxygzT287QXR97lf8MwXXnreu0hi2cc0
+        vFOG8aaFk21w90mSd1zBGVd6QY3G/h0QeJJC+g==
+X-Google-Smtp-Source: ABdhPJzLHNlZNoyuZ6Z1PYnZ+IZasQnM2nHLrBajhxJ04YUuo20bpQujO5UgpocSo/Akl/Bzud6CQRQ2IWm7hW5n7x8=
+X-Received: by 2002:aca:fc07:: with SMTP id a7mr249688oii.106.1600188730814;
+ Tue, 15 Sep 2020 09:52:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic> <20200915170248.gcv54pvyckteyhk3@treble>
-In-Reply-To: <20200915170248.gcv54pvyckteyhk3@treble>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 15 Sep 2020 10:44:51 -0700
-Message-ID: <CAKwvOdncdq4nMN1dXv_+3rC84wGEJtmgiyNTHNhCQi+ouqaB7A@mail.gmail.com>
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <cover.1599214329.git.mchehab+huawei@kernel.org>
+ <58d6b31d0134448a35c47e822c887e994164228b.1599214329.git.mchehab+huawei@kernel.org>
+ <CAL_Jsq+e44-_AFqKEkUAKKWapMB7wHCPDCtuWrPvn__NMpNxOw@mail.gmail.com> <20200910073738.0d472fde@coco.lan>
+In-Reply-To: <20200910073738.0d472fde@coco.lan>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 15 Sep 2020 10:51:59 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK35cNgibV6ajQABCAMsPe+BvL1nOU51XPW-sdfVMgqDA@mail.gmail.com>
+Message-ID: <CAL_JsqK35cNgibV6ajQABCAMsPe+BvL1nOU51XPW-sdfVMgqDA@mail.gmail.com>
+Subject: Re: [RFC 03/10] phy: hisilicon: phy-hi3670-usb3: use a consistent namespace
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Yu Chen <chenyu56@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:02 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Wed, Sep 9, 2020 at 11:37 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 >
-> On Tue, Sep 15, 2020 at 06:05:54PM +0200, Borislav Petkov wrote:
-> > On Tue, Sep 15, 2020 at 10:18:16PM +0800, Rong Chen wrote:
-> > > On Tue, Sep 15, 2020 at 03:55:19PM +0200, Borislav Petkov wrote:
-> > > > On Tue, Sep 15, 2020 at 09:42:56PM +0800, kernel test robot wrote:
-> > > > > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  x86/seves
-> > > > > branch HEAD: e6eb15c9ba3165698488ae5c34920eea20eaa38e  KVM: nSVM: Avoid freeing uninitialized pointers in svm_set_nested_state()
-> > > > >
-> > > > > Warning in current branch:
-> > > > >
-> > > > > arch/x86/kernel/sev-es.o: warning: objtool: ist_exc_vmm_communication()+0x12: unreachable instruction
-> > > > >
-> > > > > Warning ids grouped by kconfigs:
-> > > > >
-> > > > > clang_recent_errors
-> > > > > `-- x86_64-randconfig-r001-20200913
-> > > > >     `-- arch-x86-kernel-sev-es.o:warning:objtool:ist_exc_vmm_communication():unreachable-instruction
-> >
-> > Ok, I can't trigger this with gcc-9, gcc-10 and clang-10.
-> >
-> > .config below says clang-12 so it could be some experimental
-> > bug^Wfeature :)
-> >
-> > peterz says this has been fixed by:
-> >
-> > 318af7b80b6a ("Revert "kbuild: use -flive-patching when CONFIG_LIVEPATCH is enabled"")
-> >
-> > but that was reportedly for gcc.
-> >
-> > Lemme Cc the people of interest and leave the rest in here for
-> > reference. Note that CONFIG_LIVEPATCH is enabled in that .config.
+> Em Wed, 9 Sep 2020 14:15:59 -0600
+> Rob Herring <robh+dt@kernel.org> escreveu:
 >
-> If somebody can share the .o file, I can take a look.
+> > On Fri, Sep 4, 2020 at 4:23 AM Mauro Carvalho Chehab
+> > <mchehab+huawei@kernel.org> wrote:
+> > >
+> > > Rename hikey970 to hi3670, in order to use a namespace
+> > > similar to hi3660 driver.
+> > >
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > ---
+> > >  .../bindings/phy/phy-hi3670-usb3.txt          |  4 +-
+> >
+> > Bindings should be a separate patch.
+>
+> Ok. I'll split it.
+>
+> >
+> > >  drivers/phy/hisilicon/phy-hi3670-usb3.c       | 98 +++++++++----------
+> > >  2 files changed, 51 insertions(+), 51 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+> > > index 4cb02612ff23..2fb27cb8beaf 100644
+> > > --- a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+> > > +++ b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+> > > @@ -2,7 +2,7 @@ Hisilicon Kirin970 usb PHY
+> > >  -----------------------
+> > >
+> > >  Required properties:
+> > > -- compatible: should be "hisilicon,kirin970-usb-phy"
+> > > +- compatible: should be "hisilicon,hi3670-usb-phy"
+> >
+> > Unless this is unused, we can't just change it. It's an ABI.
+>
+> From upstream PoV, this binding is for a new driver that will be added
+> via this patchset.
 
-I'm cc'ed on and read every report from 0day bot from builds with
-Clang.  I started noticing a few randconfigs getting this report from
-objtool.  I had filed a bug to follow up on this:
-https://github.com/ClangBuiltLinux/linux/issues/1148.  They all seem
-to be coming from randconfigs.  I've not yet had the time to bisect
-configs to isolate which config this is coming from, but I wouldn't be
-surprised if it was UBSAN.
+Please squash this change then.
 
--- 
-Thanks,
-~Nick Desaulniers
+Rob
