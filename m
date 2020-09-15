@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC0B26AC3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB1026AC10
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgIOSjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:39:47 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:49648 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727906AbgIORin (ORCPT
+        id S1728033AbgIOSfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:35:02 -0400
+Received: from relay-b02.edpnet.be ([212.71.1.222]:36210 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727964AbgIOSMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:38:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600191497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RxByhYJNtAoO/ydyFRO1RXTNjxPYd9rIcotBMI+uGJE=;
-        b=FzVGkyTKzzmMbHR03oemCHSiyGD5h5Fk8NFhSzOyrSOBa7lFQ1RD7kh0VvPvW5H6ZWcgEy
-        sGhD7T2pCMNls0SnxXccqZGSMP7MyFrN3FkSlpy/+ceJF+KIUcKs8KeMUOyRJxTn+EfSz3
-        GW0oOoRoWnJfy4cw7mc3NPNOT0UD1iA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-IsF8JrMIPgSPuKStpjnk1A-1; Tue, 15 Sep 2020 13:38:13 -0400
-X-MC-Unique: IsF8JrMIPgSPuKStpjnk1A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06D56AF206;
-        Tue, 15 Sep 2020 17:38:11 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CAAA65C3E0;
-        Tue, 15 Sep 2020 17:38:10 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08FHcAsU004160;
-        Tue, 15 Sep 2020 13:38:10 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08FHcAxo004156;
-        Tue, 15 Sep 2020 13:38:10 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Tue, 15 Sep 2020 13:38:09 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Dan Williams <dan.j.williams@intel.com>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
-        <rajesh.tadakamadla@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: [RFC] nvfs: a filesystem for persistent memory
-In-Reply-To: <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
-Message-ID: <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com> <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Tue, 15 Sep 2020 14:12:06 -0400
+X-ASG-Debug-ID: 1600192728-0a7b8d13bddaa020001-xx1T2L
+Received: from zotac.vandijck-laurijssen.be (77.109.119.65.adsl.dyn.edpnet.net [77.109.119.65]) by relay-b02.edpnet.be with ESMTP id 6i2hAFXrAxjdwBwA; Tue, 15 Sep 2020 19:58:48 +0200 (CEST)
+X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
+X-Barracuda-Effective-Source-IP: 77.109.119.65.adsl.dyn.edpnet.net[77.109.119.65]
+X-Barracuda-Apparent-Source-IP: 77.109.119.65
+Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
+        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 1037A1038192;
+        Tue, 15 Sep 2020 19:58:48 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 19:58:38 +0200
+From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org,
+        linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, o.rempel@pengutronix.de
+Subject: Re: [PATCH 0/6] Add support for MCP25XXFD SPI-CAN Network driver
+Message-ID: <20200915175838.GA12860@x1.vandijck-laurijssen.be>
+X-ASG-Orig-Subj: Re: [PATCH 0/6] Add support for MCP25XXFD SPI-CAN Network driver
+Mail-Followup-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org,
+        linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, o.rempel@pengutronix.de
+References: <20200910133806.25077-1-manivannan.sadhasivam@linaro.org>
+ <20200915161925.GA5660@linux>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200915161925.GA5660@linux>
+User-Agent: Mutt/1.5.22 (2013-10-16)
+X-Barracuda-Connect: 77.109.119.65.adsl.dyn.edpnet.net[77.109.119.65]
+X-Barracuda-Start-Time: 1600192728
+X-Barracuda-URL: https://212.71.1.222:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 1141
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: SPAM GLOBAL 0.9731 1.0000 4.0333
+X-Barracuda-Spam-Score: 4.03
+X-Barracuda-Spam-Status: No, SCORE=4.03 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.84649
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 15 Sep 2020, Mikulas Patocka wrote:
-
-> > > - __copy_from_user_inatomic_nocache doesn't flush cache for leading and
-> > > trailing bytes.
-> > 
-> > You want copy_user_flushcache(). See how fs/dax.c arranges for
-> > dax_copy_from_iter() to route to pmem_copy_from_iter().
+On di, 15 sep 2020 21:49:25 +0530, Manivannan Sadhasivam wrote:
+> Hi,
 > 
-> Is it something new for the kernel 5.10? I see only __copy_user_flushcache 
-> that is implemented just for x86 and arm64.
+> On Thu, Sep 10, 2020 at 07:08:00PM +0530, Manivannan Sadhasivam wrote:
+> > Hello,
 > 
-> There is __copy_from_user_flushcache implemented for x86, arm64 and power. 
-> It is used in lib/iov_iter.c under
-> #ifdef CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE - so should I use this?
-> 
-> Mikulas
+> Just a quick question: I don't see any activity on this specific driver for
+> sometime (back in Martin days itself). Is it due to lack of reviewers or
+> it is due to the patch size (lines of code) so that nobody is interested
+> in reviewing?
 
-... and __copy_user_flushcache is not exported for modules. So, I am stuck 
-with __copy_from_user_inatomic_nocache.
+If you look around, there are currently several versions of mcp251x
+driver around, shipped by hardware vendors who glue the chip on there
+SOM etc.
+Until something more-or-less clean becomes mainline, the effort remains
+spread.
 
-Mikulas
+A problem to import a complete driver is that ... its complete.
+There was an suggestion to split into several patches, but that does not
+really affect the review work.
 
+The original driver failed to initialize under a loaded CAN bus, on my
+desk. The current driver is more cleanly written than the original
+and it seems to survive more than 1 use case (although I have a MAB overflow
+report pending to investigate).
+So, this is a good candidate for mainline.
+
+Kind regards,
+Kurt
