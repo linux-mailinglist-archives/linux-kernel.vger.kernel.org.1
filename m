@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580DC269E0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A66269E0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726153AbgIOFsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgIOFsv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:48:51 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B40C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:48:51 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id l126so1291794pfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ajoQueMBujUuw1C0JmEIu2PRwKxBFaE7by2u7sZoZh8=;
-        b=lhwF0mVEGZ9J3xNUDzGy1qYVGT40a/VHeqrvRc0rB+l4kY17O5nWvmZ3KwXPwgYMoO
-         +6HM2/5N/2OZUYKxr3mGw91wwiSlX5s+aNMBp3VtiHZO2jbVDTjA9IfBHKBAEWodac8z
-         oe6uDZK42z6+D+5MJefG+sNmpqgWbe5D19vrI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ajoQueMBujUuw1C0JmEIu2PRwKxBFaE7by2u7sZoZh8=;
-        b=aeiIChTHOdBZ2vUkcWROViEQ1sy7EioOVmMJn3FlEUhGcqZ9quwyTP7P4cJjN9YMaF
-         JS4GXZp9deNUwUa2ppUsWVB/vW1YRghwfUNRVWNYM+ywk90duA+FXwb7N20uPFGu28ZK
-         bYXNrEMbEEKb00AkQ18NNK9/sLNsqBD3hjQdLsWSdFRtpVkPlakySpXndPk7u6KOVkwj
-         YyZL8n6mySreTOg8RsDMxdb40+2AfMsA8AtdAnj73NRpJQm+Ip8qTnY1VTipf3S/BIwW
-         GVAEQNfQSU33WI3zL+fOHEYJSzq//b9zir8hRZ/YrU84uy3vylvo1OKCSclhFmLldGlw
-         JQdQ==
-X-Gm-Message-State: AOAM533nrff0wLWqxDK/+4iA42xEkGU9wBmCWv20u2r1Udgm+j6mfyXX
-        pgB1dZoAeudlhhV8o2/NbM95ow==
-X-Google-Smtp-Source: ABdhPJx0DAS8oOMzQIF5bJW2RhKW9+TgJutsnK0EusfXFCToH4RzyIAADhtvDYQNvLhwg1sFyQ8kyQ==
-X-Received: by 2002:a63:5d07:: with SMTP id r7mr620189pgb.440.1600148930542;
-        Mon, 14 Sep 2020 22:48:50 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
-        by smtp.gmail.com with ESMTPSA id gn24sm11034935pjb.8.2020.09.14.22.48.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 22:48:50 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     linux-serial@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Changqi Hu <changqi.hu@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Eddie Huang <eddie.huang@mediatek.com>
-Subject: [PATCH v2 2/2] tty: serial: 8250_mtk: set regshift for mmio32
-Date:   Tue, 15 Sep 2020 13:48:27 +0800
-Message-Id: <20200915054825.3289105-2-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-In-Reply-To: <20200915054825.3289105-1-hsinyi@chromium.org>
-References: <20200915054825.3289105-1-hsinyi@chromium.org>
+        id S1726191AbgIOFtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:49:41 -0400
+Received: from mga02.intel.com ([134.134.136.20]:10196 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbgIOFtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:49:35 -0400
+IronPort-SDR: FMmh3hXMH02WTI6GC/JPJhz+mMvdRwd7rkvEm/zSuIkpMAMauZfi0OUPbTt05Ni7Id2qQSe5I6
+ NOJobwSsU8Xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="146893247"
+X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
+   d="scan'208";a="146893247"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 22:49:34 -0700
+IronPort-SDR: p+EnYA4KlU1hWz7+QafnMHrfrwcXQ61z4IARgKN9YujCIRlm2sYdvYTqsEflyInul5/7bqePYA
+ to7rrXaQCMlQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
+   d="scan'208";a="287862174"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
+  by fmsmga008.fm.intel.com with ESMTP; 14 Sep 2020 22:49:30 -0700
+Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
+To:     Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-3-jolsa@kernel.org>
+ <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
+ <20200914152841.GC160517@kernel.org>
+ <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
+ <CAP-5=fUansxK_as61teHsLyRQu3Zu5UE-+SDqWVYGhSz36uCzQ@mail.gmail.com>
+ <20200914200711.GS1714160@krava>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <b4950d21-0f70-7d8a-90c6-031a19707e9d@intel.com>
+Date:   Tue, 15 Sep 2020 08:49:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200914200711.GS1714160@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To use mmio32, we also need to set regshift.
+On 14/09/20 11:07 pm, Jiri Olsa wrote:
+> On Mon, Sep 14, 2020 at 10:08:01AM -0700, Ian Rogers wrote:
+> 
+> SNIP
+> 
+>>>
+>>> Using one of the MISC bits to resolve the union. Might actually bring
+>>> benefit to everyone. Us normal people get to have a smaller MMAP record,
+>>> while the buildid folks can have it too.
+>>>
+>>> Even more extreme would be using 2 MISC bits and allowing the union to
+>>> be 0 sized for anon.
+>>>
+>>> That said; I have the nagging feeling there were unresolved issues with
+>>> mmap2, but I can't seem to find any relevant emails on it :/ My
+>>> google-fu is weak today.
+>>
+>> Firstly, thanks Jiri for this really useful patch set for our
+>> use-cases! Some thoughts:
+>>
+>> One issue with mmap2 events at the moment is that they happen "after"
+>> the mmap is performed. This allows the mapped address to be known but
+>> has the unfortunate problem of causing mmap events to get "extended"
+>> due to adjacent vmas being merged. There are some workarounds like
+>> commit c8f6ae1fb28d (perf inject jit: Remove //anon mmap events).
+>> Perhaps these events can switch to reporting the length the mmap
+>> requested rather than the length of the vma?
+> 
+> seems like separate feature, perhaps we could use another MISC bit for that?
+> 
+>>
+>> I could imagine that changes here could be interesting to folks doing
+>> CHERI or hypervisors, for example, they may want more address bits.
+>>
+>> BPF has stack traces with elements of buildid + offset. Using these in
+>> perf samples would avoid the need for mmap events, synthesis, etc. but
+>> at the cost of larger and possibly slower stack traces. Perhaps we
+>> should just remove the idea of mmap events altogether?
+> 
+> hm, we also need mmap events to resolve PERF_SAMPLE_IP, right?
+> also not sure how would we do that for dwarf unwind, and perhaps
+> there are some other places.. c2c data address resolving?
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-Change:
-v1->v2: none
----
- drivers/tty/serial/8250/8250_mtk.c | 1 +
- 1 file changed, 1 insertion(+)
+Not to mention Intel PT and any other hw trace that puts ip's into the AUX area.
 
-diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
-index 7b0dec14c8b80..41f4120abdf29 100644
---- a/drivers/tty/serial/8250/8250_mtk.c
-+++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -669,6 +669,7 @@ static int __init early_mtk8250_setup(struct earlycon_device *device,
- 		return -ENODEV;
- 
- 	device->port.iotype = UPIO_MEM32;
-+	device->port.regshift = 2;
- 
- 	return early_serial8250_setup(device, NULL);
- }
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+And branch stacks, call chains.
