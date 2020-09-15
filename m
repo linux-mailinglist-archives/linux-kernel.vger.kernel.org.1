@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B102426B31F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F5126B328
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727310AbgIOXAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:00:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20601 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727397AbgIOPDG (ORCPT
+        id S1727463AbgIOXBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:01:13 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42504 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727402AbgIOXA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:03:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600182159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eX9ca3sOdwxPUqHEtXbarZcOrumB4Y8vbWJAomFihUM=;
-        b=SL4qA0r3E/QI6ANCK1Td4N6cWoqyT0o3K3JUB5xLF0NbfzaXWtKOiqD6OjHPThlMvsg0Bp
-        rR2UdaWv28Gjw8WBGOeQ4potAb1WSHESK1FKi91Lt8o6YHdyJhRtvsmTsU5hl40jXjI4/w
-        HPGwtU+WFGOoeM5B0a38YlM5/2gxEq8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-UDNZK_bYMJ6UegRhUYyrug-1; Tue, 15 Sep 2020 11:02:33 -0400
-X-MC-Unique: UDNZK_bYMJ6UegRhUYyrug-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C38828014D9;
-        Tue, 15 Sep 2020 15:02:31 +0000 (UTC)
-Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FA5B1992F;
-        Tue, 15 Sep 2020 15:02:30 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 10:02:29 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Wielaard <mark@klomp.org>
-Cc:     peterz@infradead.org, Hugh Dickins <hughd@google.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: Static call dependency on libelf version?
-Message-ID: <20200915150229.75ilnm32a5fnjbja@treble>
-References: <alpine.LSU.2.11.2009142337530.1550@eggly.anvils>
- <20200915093016.GV1362448@hirez.programming.kicks-ass.net>
- <d02d57308d9e8febd569c3fd3757dbcc87b1c4a1.camel@klomp.org>
- <20200915141701.j5fnir63trpwqbfp@treble>
- <38388294c6ad7bf4abdb1b9a0bac9af5224c8fa6.camel@klomp.org>
+        Tue, 15 Sep 2020 19:00:59 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D5E83FD8;
+        Wed, 16 Sep 2020 01:00:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1600210852;
+        bh=R2YPgFaI54/XyuJxozYLFqOHh3iMAzSHqn5Bq5WoLt0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hOdgP9nfKYcs63UINbFv/M+atakst3oC6zev0iCddBB183gSN4m0W5wssZALUhMWh
+         8qrl5G0DRu1cD6Spinwd4arURY9idCLn05QhGQHW44SIWRRJyW3lz50A6u3volGD7v
+         unW1BC2HAjcF83nbendjFE/mGugnIpVW6TbNkrmc=
+Date:   Wed, 16 Sep 2020 02:00:22 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Swapnil Jakhade <sjakhade@cadence.com>
+Cc:     vkoul@kernel.org, kishon@ti.com, linux-kernel@vger.kernel.org,
+        maxime@cerno.tech, mparab@cadence.com, yamonkar@cadence.com,
+        nsekhar@ti.com, tomi.valkeinen@ti.com, jsarha@ti.com,
+        praneeth@ti.com
+Subject: Re: [PATCH v6 1/2] phy: Add new PHY attribute max_link_rate
+Message-ID: <20200915230022.GB14954@pendragon.ideasonboard.com>
+References: <1599805114-22063-1-git-send-email-sjakhade@cadence.com>
+ <1599805114-22063-2-git-send-email-sjakhade@cadence.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <38388294c6ad7bf4abdb1b9a0bac9af5224c8fa6.camel@klomp.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <1599805114-22063-2-git-send-email-sjakhade@cadence.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 04:38:02PM +0200, Mark Wielaard wrote:
-> Hi Josh,
+Hi Swapnil,
+
+Thank you for the patch.
+
+On Fri, Sep 11, 2020 at 08:18:33AM +0200, Swapnil Jakhade wrote:
+> Add new PHY attribute max_link_rate to struct phy_attrs. This indicates
+> maximum link rate supported by PHY (in Mbps).
 > 
-> On Tue, 2020-09-15 at 09:17 -0500, Josh Poimboeuf wrote:
-> > On Tue, Sep 15, 2020 at 01:24:17PM +0200, Mark Wielaard wrote:
-> > > But all this is for ancient versions of elfutils libelf. So it is hard
-> > > to say and my memory might be failing. If someone can confirm 0.158
-> > > (which is 6 years old) works fine I would pick that as minimum version,
-> > > otherwise simply go with 0.168 which is 4 years old and should be on
-> > > most systems by now.
-> > 
-> > I just discovered elf_version(), I assume that would allow us to check
-> > and enforce the libelf version?
+> Signed-off-by: Yuti Amonkar <yamonkar@cadence.com>
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  include/linux/phy/phy.h | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> No, sorry. That is for the ELF file format version, which is and has
-> always been  version 1 (and I suspect it will be for the next 20
-> years).
-
-Oh, right :-)
-
-> There is /usr/include/elfutils/version.h which provides a
-> _ELFUTILS_PREREQ(major, minor) macro if you need something during
-> compile time.
-
-Nice, I'll try that.
-
-> Note that in theory libelf is a generic library (there are variants for
-> Solaris and BSD with which we try to be [source] compatible), but the
-> only actively maintained version is the elfutils one.
-
-Yeah, we've occasionally had users using another variant of the library
-which is 10+ years old.  Not surprisingly it didn't work well.
+> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> index bcee8eba62b3..e435bdb0bab3 100644
+> --- a/include/linux/phy/phy.h
+> +++ b/include/linux/phy/phy.h
+> @@ -115,10 +115,12 @@ struct phy_ops {
+>  /**
+>   * struct phy_attrs - represents phy attributes
+>   * @bus_width: Data path width implemented by PHY
+> + * @max_link_rate: Maximum link rate supported by PHY (in Mbps)
+>   * @mode: PHY mode
+>   */
+>  struct phy_attrs {
+>  	u32			bus_width;
+> +	u32			max_link_rate;
+>  	enum phy_mode		mode;
+>  };
+>  
 
 -- 
-Josh
+Regards,
 
+Laurent Pinchart
