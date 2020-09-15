@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8B526B533
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA39226B548
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727273AbgIOXjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:39:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46444 "EHLO mail.kernel.org"
+        id S1727418AbgIOXlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:41:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727129AbgIOOfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:35:22 -0400
+        id S1727112AbgIOOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:34:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFAF92222A;
-        Tue, 15 Sep 2020 14:16:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6550E2222B;
+        Tue, 15 Sep 2020 14:16:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179384;
-        bh=DB22npBu2O2pKFMcZz+E5GS8OgI6vRWAiz5SdllNUYo=;
+        s=default; t=1600179386;
+        bh=Dz3z0d97SlQA4zKA/Bynm64n63535f8ww6CFV3dTdAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mg7QqEvQTONpWvXze2xsW7LRPSkNv2q8mG1Q5Q+FAoxAne8AQ5WY1ZtanwxSRu1b/
-         G41ueP2/u9Gdo9m+wVDYIas9yL9OohifuYH6q0JUwoAhe4KxOxF00ky417auvBYz9g
-         ajsxNHepXXPuAeSF2HDxUEbtJeduOf8bCiiuR0d4=
+        b=cD4f/N/68sJwTLIbwA+fks+ERMJSHD5JN+PwHD3BSeaGC+/pNK3NfI0xYQI+gTdNI
+         uTkwUkzx5ws3wLXyexsYxgaZFmAhWxOpANNrjPc14M8BefVElFl6aoce1KHhTjHsEQ
+         nTDq3M45QwZKKgUOioO18cCm3qtnPmztDCitHVlA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 39/78] gcov: Disable gcov build with GCC 10
-Date:   Tue, 15 Sep 2020 16:13:04 +0200
-Message-Id: <20200915140635.544588956@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Angelo Compagnucci <angelo.compagnucci@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 40/78] iio: adc: mcp3422: fix locking scope
+Date:   Tue, 15 Sep 2020 16:13:05 +0200
+Message-Id: <20200915140635.594299228@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
 References: <20200915140633.552502750@linuxfoundation.org>
@@ -45,41 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Angelo Compagnucci <angelo.compagnucci@gmail.com>
 
-[ Upstream commit cfc905f158eaa099d6258031614d11869e7ef71c ]
+commit 3f1093d83d7164e4705e4232ccf76da54adfda85 upstream.
 
-GCOV built with GCC 10 doesn't initialize n_function variable.  This
-produces different kernel panics as was seen by Colin in Ubuntu and me
-in FC 32.
+Locking should be held for the entire reading sequence involving setting
+the channel, waiting for the channel switch and reading from the
+channel.
+If not, reading from a channel can result mixing with the reading from
+another channel.
 
-As a workaround, let's disable GCOV build for broken GCC 10 version.
+Fixes: 07914c84ba30 ("iio: adc: Add driver for Microchip MCP3422/3/4 high resolution ADC")
+Signed-off-by: Angelo Compagnucci <angelo.compagnucci@gmail.com>
+Link: https://lore.kernel.org/r/20200819075525.1395248-1-angelo.compagnucci@gmail.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1891288
-Link: https://lore.kernel.org/lkml/20200827133932.3338519-1-leon@kernel.org
-Link: https://lore.kernel.org/lkml/CAHk-=whbijeSdSvx-Xcr0DPMj0BiwhJ+uiNnDSVZcr_h_kg7UA@mail.gmail.com/
-Cc: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/gcov/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/adc/mcp3422.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 1e3823fa799b2..bfb6579a19d07 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -3,6 +3,7 @@ menu "GCOV-based kernel profiling"
- config GCOV_KERNEL
- 	bool "Enable gcov-based kernel profiling"
- 	depends on DEBUG_FS
-+	depends on !CC_IS_GCC || GCC_VERSION < 100000
- 	select CONSTRUCTORS if !UML
- 	default n
- 	---help---
--- 
-2.25.1
-
+--- a/drivers/iio/adc/mcp3422.c
++++ b/drivers/iio/adc/mcp3422.c
+@@ -99,16 +99,12 @@ static int mcp3422_update_config(struct
+ {
+ 	int ret;
+ 
+-	mutex_lock(&adc->lock);
+-
+ 	ret = i2c_master_send(adc->i2c, &newconfig, 1);
+ 	if (ret > 0) {
+ 		adc->config = newconfig;
+ 		ret = 0;
+ 	}
+ 
+-	mutex_unlock(&adc->lock);
+-
+ 	return ret;
+ }
+ 
+@@ -141,6 +137,8 @@ static int mcp3422_read_channel(struct m
+ 	u8 config;
+ 	u8 req_channel = channel->channel;
+ 
++	mutex_lock(&adc->lock);
++
+ 	if (req_channel != MCP3422_CHANNEL(adc->config)) {
+ 		config = adc->config;
+ 		config &= ~MCP3422_CHANNEL_MASK;
+@@ -155,7 +153,11 @@ static int mcp3422_read_channel(struct m
+ 		msleep(mcp3422_read_times[MCP3422_SAMPLE_RATE(adc->config)]);
+ 	}
+ 
+-	return mcp3422_read(adc, value, &config);
++	ret = mcp3422_read(adc, value, &config);
++
++	mutex_unlock(&adc->lock);
++
++	return ret;
+ }
+ 
+ static int mcp3422_read_raw(struct iio_dev *iio,
 
 
