@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAA926ADFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE5226AE10
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgIOTst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:48:49 -0400
-Received: from mga14.intel.com ([192.55.52.115]:46132 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727784AbgIOTsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:48:36 -0400
-IronPort-SDR: C/e1Hfk4jzRM/jGk8W2bMbyqozhi6Ixo8mBSEzOXVczAoA8KyIsUN4YjeZ2ujKK6HzqQRfGPc2
- D85Kw4XoNM5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="158618135"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="158618135"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 12:48:34 -0700
-IronPort-SDR: FIhC517Di0zanHT6Hk8KEBh4TNgslsT16pfnEFFShxKkVRGbHayXjjENOLmjHJsiaw6ctLN3/Z
- 21Y9791qKVMQ==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="286943167"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 12:48:31 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 0E96220628; Tue, 15 Sep 2020 22:48:29 +0300 (EEST)
-Date:   Tue, 15 Sep 2020 22:48:29 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH] media: v4l2-fwnode: Return -EINVAL for invalid bus-type
-Message-ID: <20200915194828.GP26842@paasikivi.fi.intel.com>
-References: <20200915155544.826-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1727917AbgIOTuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727753AbgIOTs7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 15:48:59 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3061CC06174A;
+        Tue, 15 Sep 2020 12:48:59 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id h4so5495432ioe.5;
+        Tue, 15 Sep 2020 12:48:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7fGhed9mPU3AlLJtziogWkkqXl0cMPf/jKBqBlDhHMI=;
+        b=DmwYLllf5OvNfoEaZJoc5KqqkrAQ5j1Bio57xsxMGb/UsQosPFQqVMzOnWsXZJ/2rD
+         qvB2iJCxyEvdC5fy+QrgQXs6g8DOARjUH/pFBw4haAs5MZhOjr5LDTnIZhLEKx23cSoD
+         Hds5eZ/XvCFHMTQdY/jpemwt+uXWr5CoDQvwDX8pydG//jFaLD5eErLoe4vrzVh8X3Hb
+         JLJRaaSDrTjhZbRjbxIXvPRvNxZ1ur5nT3eEWrwgmKJbqi/u/I7gKXOG9Rj3cFtXkE6V
+         ZLV7xDNVhIlGzC9Qgque/b7jvo1doWRq+Rs2JL3SzIaSuHaCOKjdKYcfNhZ79v0qdCSy
+         uxmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7fGhed9mPU3AlLJtziogWkkqXl0cMPf/jKBqBlDhHMI=;
+        b=gpeFhoofPNcSDgPwBD44NJQVUHNn/RamBNxc38bVcEKicYC9zItGAo/TnyTStIelai
+         MPsgn1Tggx8xl4tYDdlN82wtkzPp6b28iKHY1/JeKF+UXfeOqDM6hPS0j8pW5mckfLAR
+         /x/lvV3CIrSDaOe1ihNHCc+i7nO9P8vpOo6C4zivnl3fO1GYarHlolyozWg0NiT0wTjz
+         yeHn1ptGiyy8soT7gI8Y4q0GwNN6lE5zq/WvcSNDp2Kh4ROMjJS4lP0fFVokrMR9mOyE
+         X7MphaEJP4rEU47yh9CBQpBHTeeK6mk1NzFncfQf0VpPk06dRMxFIJlTWVwgTAxBWWEJ
+         dQpg==
+X-Gm-Message-State: AOAM531eAjNBAlby2PWAPUQ0h6xM7H7lcNtmjvFhXkk8w8dUyqXNMFHa
+        iubCjcFSkELOxRAxILd804BAwz4TlAAn8XiSQwQ=
+X-Google-Smtp-Source: ABdhPJxJAoQkU96DjsousCZdQWkXFEiW8H2qRmO+OChvtyeOFoOWPDOSDTjTuGQWaGOQXdjeXDo0xEK1rH2WmkdHUp4=
+X-Received: by 2002:a6b:be44:: with SMTP id o65mr7609979iof.53.1600199338320;
+ Tue, 15 Sep 2020 12:48:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915155544.826-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <7f50b23d157a97242c79bd8f2ab649a9272b9b59.1599731645.git.viresh.kumar@linaro.org>
+ <20200915193510.GA2362311@bogus>
+In-Reply-To: <20200915193510.GA2362311@bogus>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Tue, 15 Sep 2020 14:48:47 -0500
+Message-ID: <CABb+yY1yZrtzA=1uVnX7tvWrMM6UYkFkoDb_38XksOXhVRzO+g@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] dt-bindings: mailbox : arm,mhu: Convert to Json-schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-
-On Tue, Sep 15, 2020 at 04:55:44PM +0100, Lad Prabhakar wrote:
-> With the current implementation if invalid bus-type is passed via DT
-> v4l2_fwnode_endpoint_parse() defaulted the mus-type to V4L2_MBUS_PARALLEL
-> instead of returning error.
-
-The default is dug from the rest of the properties, it could be different
-from parallel. You could simply not mention the actual result, just that it
-should have been an error.
-
-> 
-> This Patch adds V4L2_MBUS_INVALID entry to v4l2_mbus_type enum and when
-> invalid bus-type is detected in v4l2_fwnode_endpoint_parse() it returns
-> -EINVAL to the caller.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/media/v4l2-core/v4l2-fwnode.c | 6 +++++-
->  include/media/v4l2-mediabus.h         | 2 ++
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-> index a4c3c77c1894..a6f3549eadd3 100644
-> --- a/drivers/media/v4l2-core/v4l2-fwnode.c
-> +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
-> @@ -93,7 +93,7 @@ v4l2_fwnode_bus_type_to_mbus(enum v4l2_fwnode_bus_type type)
->  	const struct v4l2_fwnode_bus_conv *conv =
->  		get_v4l2_fwnode_bus_conv_by_fwnode_bus(type);
->  
-> -	return conv ? conv->mbus_type : V4L2_MBUS_UNKNOWN;
-> +	return conv ? conv->mbus_type : V4L2_MBUS_INVALID;
->  }
->  
->  static const char *
-> @@ -436,6 +436,10 @@ static int __v4l2_fwnode_endpoint_parse(struct fwnode_handle *fwnode,
->  		 v4l2_fwnode_mbus_type_to_string(vep->bus_type),
->  		 vep->bus_type);
->  	mbus_type = v4l2_fwnode_bus_type_to_mbus(bus_type);
-> +	if (mbus_type == V4L2_MBUS_INVALID) {
-> +		pr_debug("unsupported bus type %u\n", bus_type);
-> +		return -EINVAL;
-> +	}
->  
->  	if (vep->bus_type != V4L2_MBUS_UNKNOWN) {
->  		if (mbus_type != V4L2_MBUS_UNKNOWN &&
-> diff --git a/include/media/v4l2-mediabus.h b/include/media/v4l2-mediabus.h
-> index 45f88f0248c4..b4f630783cb7 100644
-> --- a/include/media/v4l2-mediabus.h
-> +++ b/include/media/v4l2-mediabus.h
-> @@ -78,6 +78,7 @@
->   * @V4L2_MBUS_CCP2:	CCP2 (Compact Camera Port 2)
->   * @V4L2_MBUS_CSI2_DPHY: MIPI CSI-2 serial interface, with D-PHY
->   * @V4L2_MBUS_CSI2_CPHY: MIPI CSI-2 serial interface, with C-PHY
-> + * @V4L2_MBUS_INVALID:	invalid bus type (keep it last for sanity)
-
-s/it last for sanity/as last/
-
->   */
->  enum v4l2_mbus_type {
->  	V4L2_MBUS_UNKNOWN,
-> @@ -87,6 +88,7 @@ enum v4l2_mbus_type {
->  	V4L2_MBUS_CCP2,
->  	V4L2_MBUS_CSI2_DPHY,
->  	V4L2_MBUS_CSI2_CPHY,
-> +	V4L2_MBUS_INVALID,
->  };
->  
->  /**
-
--- 
-Regards,
-
-Sakari Ailus
+On Tue, Sep 15, 2020 at 2:35 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Sep 10, 2020 at 03:25:18PM +0530, Viresh Kumar wrote:
+> > Convert the DT binding over to Json-schema.
+> >
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> > V3: New patch.
+> >
+> >  .../devicetree/bindings/mailbox/arm,mhu.yaml  | 86 +++++++++++++++++++
+> >  .../devicetree/bindings/mailbox/arm-mhu.txt   | 43 ----------
+> >  2 files changed, 86 insertions(+), 43 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/mailbox/arm-mhu.txt
+> >
+> > diff --git a/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+> > new file mode 100644
+> > index 000000000000..4e840cedb2e4
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+> > @@ -0,0 +1,86 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mailbox/arm,mhu.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: ARM MHU Mailbox Controller
+> > +
+> > +maintainers:
+> > +  - Jassi Brar <jaswinder.singh@linaro.org>
+>
+> Ideally, this should be someone familiar with the h/w, not the subsystem
+> maintainer. Sudeep or you in this case?
+>
+If you are ok with the content of this file, maybe I am not as
+unfamiliar with MHU as you think :D   I wrote the original doc/binding
+that this yaml is translated from.
+Maybe Viresh/Sudeep should be the maintainer of the mhu doorbell bindings ?
