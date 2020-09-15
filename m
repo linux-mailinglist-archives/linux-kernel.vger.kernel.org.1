@@ -2,188 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E1226ACA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C466226AC93
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgIOSzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727817AbgIOSyi (ORCPT
+        id S1727737AbgIOSwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:52:18 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:34812 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727653AbgIOSvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:54:38 -0400
-X-Greylist: delayed 451 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Sep 2020 11:54:38 PDT
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F496C061788;
-        Tue, 15 Sep 2020 11:54:37 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 0C4B3806F7;
-        Tue, 15 Sep 2020 11:47:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 thorn.bewilderbeest.net 0C4B3806F7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1600195621;
-        bh=FJZOAN5p863bC4FM+I+qvDnKOPec7IEYDsPnpusvWKU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IshQ+GArRiw/dXPoWZQdc4tiy1LTt+uLkEQtzhFjgCKnZ0MD88YHEgo7DlosaSYWL
-         efk5DOCxDBtnSPOPxgv8LC8rhx+6sVJxOiWwDcbqrVLsp2xaKJu+JkNup+D8Wdtk+y
-         Ur8dkOjEgjj+VCI5ESwH8o8I0hvWXA/xjKTFys0k=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Zev Weiss <zev@bewilderbeest.net>
-Subject: [PATCH] i2c: aspeed: disable additional device addresses on ast2[56]xx
-Date:   Tue, 15 Sep 2020 13:45:25 -0500
-Message-Id: <20200915184525.29665-1-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.28.0
+        Tue, 15 Sep 2020 14:51:06 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FIoi17054725;
+        Tue, 15 Sep 2020 13:50:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600195844;
+        bh=U7y1gyIYfA8SLhBBcfOATA30DSJsB0eQ4gaq8DUsJQ0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=UR/kWVPwQz2OakR+tiqx2L2ede9cGCXqmltv0iaX7ChhHpYvW7y3Vr1ff0MBLdtuw
+         FsSmSbuDIiVN0Ztiinl2Q/L1plR5YCsupKTuP1tyjgElChW5oJblGGK/BnLiFOThUm
+         ebxgdAppxp0Q01G95jF7Iid4iI9ronHV8XmMfd9g=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FIoid7038918
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Sep 2020 13:50:44 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
+ Sep 2020 13:50:43 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 15 Sep 2020 13:50:43 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FIohDY111585;
+        Tue, 15 Sep 2020 13:50:43 -0500
+Subject: Re: [PATCH v2 3/3] ASoC: tlv320adcx140: Add proper support for master
+ mode
+To:     Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Camel Guo <camelg@axis.com>
+References: <20200911080753.30342-1-camel.guo@axis.com>
+ <20200911080753.30342-3-camel.guo@axis.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <c2fb617e-fa61-e9d1-449f-7d8806168b9a@ti.com>
+Date:   Tue, 15 Sep 2020 13:50:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200911080753.30342-3-camel.guo@axis.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ast25xx and ast26xx have, respectively, two and three configurable
-slave device addresses to the ast24xx's one.  We only support using
-one at a time, but the others may come up in an indeterminate state
-depending on hardware/bootloader behavior, so we need to make sure we
-disable them so as to avoid ending up with phantom devices on the bus.
+Camel
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
- drivers/i2c/busses/i2c-aspeed.c | 50 +++++++++++++++++++++++++++------
- 1 file changed, 41 insertions(+), 9 deletions(-)
+On 9/11/20 3:07 AM, Camel Guo wrote:
+> From: Camel Guo <camelg@axis.com>
+>
+> Add setup of bclk-to-ws ratio and sample rate when in master mode,
+> as well as MCLK input pin setup.
+>
+> Signed-off-by: Camel Guo <camelg@axis.com>
+> ---
+>   v2:
+>    - Move GPIO setting into devicetree
+>    - Move master config register setting into a new function
+>
+>   sound/soc/codecs/tlv320adcx140.c | 139 ++++++++++++++++++++++++++++++-
+>   sound/soc/codecs/tlv320adcx140.h |  27 ++++++
+>   2 files changed, 162 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+> index 97f16fbba441..685f5fd8b537 100644
+> --- a/sound/soc/codecs/tlv320adcx140.c
+> +++ b/sound/soc/codecs/tlv320adcx140.c
+> @@ -35,6 +35,7 @@ struct adcx140_priv {
+>   	unsigned int dai_fmt;
+>   	unsigned int tdm_delay;
+>   	unsigned int slot_width;
+> +	bool master;
+>   };
+>   
+>   static const char * const gpo_config_names[] = {
+> @@ -651,11 +652,136 @@ static int adcx140_reset(struct adcx140_priv *adcx140)
+>   	return ret;
+>   }
+>   
+> +static int adcx140_fs_bclk_ratio(unsigned int bclk_ratio)
+> +{
+> +	switch (bclk_ratio) {
+> +	case 16:
+> +		return ADCX140_RATIO_16;
+> +	case 24:
+> +		return ADCX140_RATIO_24;
+> +	case 32:
+> +		return ADCX140_RATIO_32;
+> +	case 48:
+> +		return ADCX140_RATIO_48;
+> +	case 64:
+> +		return ADCX140_RATIO_64;
+> +	case 96:
+> +		return ADCX140_RATIO_96;
+> +	case 128:
+> +		return ADCX140_RATIO_128;
+> +	case 192:
+> +		return ADCX140_RATIO_192;
+> +	case 256:
+> +		return ADCX140_RATIO_256;
+> +	case 384:
+> +		return ADCX140_RATIO_384;
+> +	case 512:
+> +		return ADCX140_RATIO_512;
+> +	case 1024:
+> +		return ADCX140_RATIO_1024;
+> +	case 2048:
+> +		return ADCX140_RATIO_2048;
+> +	default:
+> +		break;
+> +	}
+> +	return -EINVAL;
+> +}
+> +
+> +static int adcx140_fs_rate(unsigned int rate)
+> +{
+> +	switch (rate) {
+> +	case 7350:
+> +	case 8000:
+> +		return ADCX140_8_OR_7_35KHZ;
+> +	case 14700:
+> +	case 16000:
+> +		return ADCX140_16_OR_14_7KHZ;
+> +	case 22050:
+> +	case 24000:
+> +		return ADCX140_24_OR_22_05KHZ;
+> +	case 29400:
+> +	case 32000:
+> +		return ADCX140_32_OR_29_4KHZ;
+> +	case 44100:
+> +	case 48000:
+> +		return ADCX140_48_OR_44_1KHZ;
+> +	case 88200:
+> +	case 96000:
+> +		return ADCX140_96_OR_88_2KHZ;
+> +	case 176400:
+> +	case 192000:
+> +		return ADCX140_192_OR_176_4KHZ;
+> +	case 352800:
+> +	case 384000:
+> +		return ADCX140_384_OR_352_8KHZ;
+> +	case 705600:
+> +	case 768000:
+> +		return ADCX140_768_OR_705_6KHZ;
+> +	default:
+> +		break;
+> +	}
+> +	return -EINVAL;
+> +}
+> +
+> +static int adcx140_setup_master_config(struct snd_soc_component *component,
+> +				       struct snd_pcm_hw_params *params)
+> +{
+> +	int ret = 0;
+> +	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
+> +
+> +	if (adcx140->master) {
 
-diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-index a7be6f24450b..20028a7a9f67 100644
---- a/drivers/i2c/busses/i2c-aspeed.c
-+++ b/drivers/i2c/busses/i2c-aspeed.c
-@@ -117,6 +117,8 @@
- 
- /* 0x18 : I2CD Slave Device Address Register   */
- #define ASPEED_I2CD_DEV_ADDR_MASK			GENMASK(6, 0)
-+#define ASPEED_I2CD_DEV_ADDR2_ENABLE			BIT(15)
-+#define ASPEED_I2CD_DEV_ADDR3_ENABLE			BIT(23)
- 
- enum aspeed_i2c_master_state {
- 	ASPEED_I2C_MASTER_INACTIVE,
-@@ -139,6 +141,16 @@ enum aspeed_i2c_slave_state {
- 	ASPEED_I2C_SLAVE_STOP,
- };
- 
-+struct aspeed_i2c_model {
-+	u32 (*get_clk_reg_val)(struct device *dev, u32 divisor);
-+
-+	/*
-+	 * Some models support multiple device addresses -- we only support
-+	 * using one, but we need to disable the others if they're present.
-+	 */
-+	unsigned int num_device_addrs;
-+};
-+
- struct aspeed_i2c_bus {
- 	struct i2c_adapter		adap;
- 	struct device			*dev;
-@@ -147,8 +159,7 @@ struct aspeed_i2c_bus {
- 	/* Synchronizes I/O mem access to base. */
- 	spinlock_t			lock;
- 	struct completion		cmd_complete;
--	u32				(*get_clk_reg_val)(struct device *dev,
--							   u32 divisor);
-+	const struct aspeed_i2c_model	*model;
- 	unsigned long			parent_clk_frequency;
- 	u32				bus_frequency;
- 	/* Transaction state. */
-@@ -726,6 +737,13 @@ static void __aspeed_i2c_reg_slave(struct aspeed_i2c_bus *bus, u16 slave_addr)
- 	addr_reg_val = readl(bus->base + ASPEED_I2C_DEV_ADDR_REG);
- 	addr_reg_val &= ~ASPEED_I2CD_DEV_ADDR_MASK;
- 	addr_reg_val |= slave_addr & ASPEED_I2CD_DEV_ADDR_MASK;
-+
-+	/* Disable additional addresses on hardware that has them. */
-+	if (bus->model->num_device_addrs > 1)
-+		addr_reg_val &= ~ASPEED_I2CD_DEV_ADDR2_ENABLE;
-+	if (bus->model->num_device_addrs > 2)
-+		addr_reg_val &= ~ASPEED_I2CD_DEV_ADDR3_ENABLE;
-+
- 	writel(addr_reg_val, bus->base + ASPEED_I2C_DEV_ADDR_REG);
- 
- 	/* Turn on slave mode. */
-@@ -863,6 +881,11 @@ static u32 aspeed_i2c_24xx_get_clk_reg_val(struct device *dev, u32 divisor)
- 	return aspeed_i2c_get_clk_reg_val(dev, GENMASK(2, 0), divisor);
- }
- 
-+static const struct aspeed_i2c_model aspeed_i2c_24xx_bus = {
-+	.get_clk_reg_val = aspeed_i2c_24xx_get_clk_reg_val,
-+	.num_device_addrs = 1,
-+};
-+
- static u32 aspeed_i2c_25xx_get_clk_reg_val(struct device *dev, u32 divisor)
- {
- 	/*
-@@ -872,6 +895,16 @@ static u32 aspeed_i2c_25xx_get_clk_reg_val(struct device *dev, u32 divisor)
- 	return aspeed_i2c_get_clk_reg_val(dev, GENMASK(3, 0), divisor);
- }
- 
-+static const struct aspeed_i2c_model aspeed_i2c_25xx_bus = {
-+	.get_clk_reg_val = aspeed_i2c_25xx_get_clk_reg_val,
-+	.num_device_addrs = 2,
-+};
-+
-+static const struct aspeed_i2c_model aspeed_i2c_26xx_bus = {
-+	.get_clk_reg_val = aspeed_i2c_25xx_get_clk_reg_val,
-+	.num_device_addrs = 3,
-+};
-+
- /* precondition: bus.lock has been acquired. */
- static int aspeed_i2c_init_clk(struct aspeed_i2c_bus *bus)
- {
-@@ -882,7 +915,7 @@ static int aspeed_i2c_init_clk(struct aspeed_i2c_bus *bus)
- 	clk_reg_val &= (ASPEED_I2CD_TIME_TBUF_MASK |
- 			ASPEED_I2CD_TIME_THDSTA_MASK |
- 			ASPEED_I2CD_TIME_TACST_MASK);
--	clk_reg_val |= bus->get_clk_reg_val(bus->dev, divisor);
-+	clk_reg_val |= bus->model->get_clk_reg_val(bus->dev, divisor);
- 	writel(clk_reg_val, bus->base + ASPEED_I2C_AC_TIMING_REG1);
- 	writel(ASPEED_NO_TIMEOUT_CTRL, bus->base + ASPEED_I2C_AC_TIMING_REG2);
- 
-@@ -946,15 +979,15 @@ static int aspeed_i2c_reset(struct aspeed_i2c_bus *bus)
- static const struct of_device_id aspeed_i2c_bus_of_table[] = {
- 	{
- 		.compatible = "aspeed,ast2400-i2c-bus",
--		.data = aspeed_i2c_24xx_get_clk_reg_val,
-+		.data = &aspeed_i2c_24xx_bus,
- 	},
- 	{
- 		.compatible = "aspeed,ast2500-i2c-bus",
--		.data = aspeed_i2c_25xx_get_clk_reg_val,
-+		.data = &aspeed_i2c_25xx_bus,
- 	},
- 	{
- 		.compatible = "aspeed,ast2600-i2c-bus",
--		.data = aspeed_i2c_25xx_get_clk_reg_val,
-+		.data = &aspeed_i2c_26xx_bus,
- 	},
- 	{ },
- };
-@@ -1002,10 +1035,9 @@ static int aspeed_i2c_probe_bus(struct platform_device *pdev)
- 
- 	match = of_match_node(aspeed_i2c_bus_of_table, pdev->dev.of_node);
- 	if (!match)
--		bus->get_clk_reg_val = aspeed_i2c_24xx_get_clk_reg_val;
-+		bus->model = &aspeed_i2c_24xx_bus;
- 	else
--		bus->get_clk_reg_val = (u32 (*)(struct device *, u32))
--				match->data;
-+		bus->model = match->data;
- 
- 	/* Initialize the I2C adapter */
- 	spin_lock_init(&bus->lock);
--- 
-2.28.0
+Move this out to hw_params.  No reason to jump here just to jump back.
 
+Check for master and if master then configure
+
+This will eliminate the mixed code and variable declaration below which 
+is what I wanted to avoid in v1.
+
+This will also allow you to remove some of the variable initialization.
+
+> +		u8 mst_cfg1 = 0;
+> +		u8 mst_cfg0 = 0;
+This can be init to mst_cfg0 = ADCX140_BCLK_FSYNC_MASTER no reason to 
+set it here and then change it immediately.
+> +		unsigned int bclk_ratio;
+> +
+> +		mst_cfg0 = ADCX140_BCLK_FSYNC_MASTER;
+> +		if (params_rate(params) % 1000)
+> +			mst_cfg0 |= ADCX140_FSYNCINV_BIT; /* 44.1 kHz et al */
+> +
+> +		ret = adcx140_fs_rate(params_rate(params));
+> +		if (ret < 0) {
+> +			dev_err(adcx140->dev, "%s: Unsupported rate %d\n",
+> +					__func__, params_rate(params));
+> +			return ret;
+> +		}
+> +		mst_cfg1 |= ret;
+Why the | here?  This is initialized to 0 so mst_cfg1 = ret. And why 
+even use ret just return into mst_cfg1 and check that variable
+> +
+> +		/* In slave mode when using automatic clock configuration,
+> +		 * the codec figures out the BCLK to FSYNC ratio itself. But
+> +		 * here in master mode, we need to tell it.
+> +		 */
+> +
+> +		bclk_ratio = snd_soc_params_to_frame_size(params);
+> +		ret = adcx140_fs_bclk_ratio(bclk_ratio);
+> +		if (ret < 0) {
+> +			dev_err(adcx140->dev, "%s: Unsupported bclk_ratio %d\n",
+> +					__func__, bclk_ratio);
+> +			return ret;
+> +		}
+> +		mst_cfg1 |= ret;
+> +
+> +		snd_soc_component_update_bits(component, ADCX140_MST_CFG1,
+> +				ADCX140_FS_RATE_MSK |
+> +				ADCX140_RATIO_MSK,
+> +				mst_cfg1);
+
+I don't understand the update_bits since you have calcualted both the 
+Ratio and rate you can just write the register with the 
+snd_soc_component_write.
+
+> +
+> +		snd_soc_component_update_bits(component, ADCX140_MST_CFG0,
+> +				ADCX140_FSYNCINV_BIT |
+> +				ADCX140_BCLK_FSYNC_MASTER,
+> +				mst_cfg0);
+> +
+
+But this is ok.  I actually have other changes I am posting which move 
+this to the set_dai_format.  So I am not sure if this will be needed 
+after that patch is applied.
+
+I will CC you on those patches.
+
+Dan
