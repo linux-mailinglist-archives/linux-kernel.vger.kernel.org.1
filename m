@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AD426A886
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF5126A872
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgIOPOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:14:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50280 "EHLO mail.kernel.org"
+        id S1727136AbgIOPLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:11:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727305AbgIOOlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:41:42 -0400
+        id S1727313AbgIOOlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:41:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D572222C8;
-        Tue, 15 Sep 2020 14:18:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88438222C4;
+        Tue, 15 Sep 2020 14:18:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179498;
-        bh=g86pF/25NpGm1mtWcaNZILPae/tBhjShysjZpXKOlkM=;
+        s=default; t=1600179501;
+        bh=092x1AY9sFPqFDWF5HvyIY0yBDR20OqPiqh55KgKms0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iguYI5mXjJo8SxCvGo1Ct50mrlQGJqHVzVRGxjzdYPlIkB34s1RozsI2cMWzBZhjB
-         vnJt32dyFBScAKDnuDoTYNN3hxSTnWAkE7o61ITtX+j2RDDip1/9yXi+Ry68Um3WxW
-         bUIXFDbFC8on6BUDEcgM4MYTvxr0VtdBkzockd+g=
+        b=hod/n5VYJGxlZvbyxKtkA3x02ujBUHMa1+hoDn03YEiV/NAZqSSSodbMCrzqxKo/f
+         pHR1bTcgq/VHGlPkN9XSWsm25SnLvKCsuK7IrQk7McEOVVVj8bkm+poc/alUaaaT3H
+         SAcoHowcqPgM8L2R167N5dvKY43zCo1N8ILzkSPY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.19 68/78] KVM: VMX: Dont freeze guest when event delivery causes an APIC-access exit
-Date:   Tue, 15 Sep 2020 16:13:33 +0200
-Message-Id: <20200915140637.001545832@linuxfoundation.org>
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Chris Healy <cphealy@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 4.19 69/78] ARM: dts: vfxxx: Add syscon compatible with OCOTP
+Date:   Tue, 15 Sep 2020 16:13:34 +0200
+Message-Id: <20200915140637.043736203@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
 References: <20200915140633.552502750@linuxfoundation.org>
@@ -43,34 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+From: Chris Healy <cphealy@gmail.com>
 
-commit 99b82a1437cb31340dbb2c437a2923b9814a7b15 upstream.
+commit 2a6838d54128952ace6f0ca166dd8706abe46649 upstream.
 
-According to SDM 27.2.4, Event delivery causes an APIC-access VM exit.
-Don't report internal error and freeze guest when event delivery causes
-an APIC-access exit, it is handleable and the event will be re-injected
-during the next vmentry.
+Add syscon compatibility with Vybrid OCOTP node. This is required to
+access the UID.
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-Message-Id: <1597827327-25055-2-git-send-email-wanpengli@tencent.com>
+Fixes: fa8d20c8dbb77 ("ARM: dts: vfxxx: Add node corresponding to OCOTP")
 Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Reviewed-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Chris Healy <cphealy@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/vfxxx.dtsi |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/vmx.c
-+++ b/arch/x86/kvm/vmx.c
-@@ -10128,6 +10128,7 @@ static int vmx_handle_exit(struct kvm_vc
- 			(exit_reason != EXIT_REASON_EXCEPTION_NMI &&
- 			exit_reason != EXIT_REASON_EPT_VIOLATION &&
- 			exit_reason != EXIT_REASON_PML_FULL &&
-+			exit_reason != EXIT_REASON_APIC_ACCESS &&
- 			exit_reason != EXIT_REASON_TASK_SWITCH)) {
- 		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
- 		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_DELIVERY_EV;
+--- a/arch/arm/boot/dts/vfxxx.dtsi
++++ b/arch/arm/boot/dts/vfxxx.dtsi
+@@ -532,7 +532,7 @@
+ 			};
+ 
+ 			ocotp: ocotp@400a5000 {
+-				compatible = "fsl,vf610-ocotp";
++				compatible = "fsl,vf610-ocotp", "syscon";
+ 				reg = <0x400a5000 0x1000>;
+ 				clocks = <&clks VF610_CLK_OCOTP>;
+ 			};
 
 
