@@ -2,75 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2148026B20A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0590C26B1A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgIOWkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:40:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56570 "EHLO mail.kernel.org"
+        id S1727354AbgIOWdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:33:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:20507 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727498AbgIOQKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:10:42 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727611AbgIOQQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:16:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600186570; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=0qN1Sgj+bNV/uDUyhzcgaVge84nZ0HoJPvNbxWKPUnM=; b=fCsPSA5vDon5P0EzQP6wMuveILQnET/uMBV7cuHUGjDT4alEWwyfDtRVWXUMGyXFUCJ7daNW
+ pUY+aelCHNZisDoItscXTDKflUso7Po9Mzh7fVFDA1O9xrmq/vJQ1vsvJXIi3cAxTKjMavvH
+ oXVzYbM6CvUk/VuuTQWo5JN48bs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f60e5cd4f13e63f04c21142 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 16:03:25
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7E868C433C8; Tue, 15 Sep 2020 16:03:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C82522074B;
-        Tue, 15 Sep 2020 16:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600185615;
-        bh=HcglYP6i3X/ou3K6aehXVB4kBv5QYxbOuM6aUd5L0tk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pQX3ujv7wFa/f3nVynTuYqqaEGWbi5SRTW5Q6IxlmLmQERlv2kVDYsZG0RqjcRwac
-         CDiJKaQRcDC21gYI7x5rlK6pwVXEq72zpOUdxsraJykwYjg9pIb9DxLaf8nFMddW51
-         r977PG7SW0gEVpEHw8KsdASYmX+YWpSjyAj7c+Zw=
-Date:   Tue, 15 Sep 2020 09:00:13 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Moshe Shemesh <moshe@nvidia.com>
-Cc:     Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
- to devlink reload command
-Message-ID: <20200915090013.141163e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <777fd1b8-1262-160e-a711-31e5f6e2c37c@nvidia.com>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
-        <1600063682-17313-2-git-send-email-moshe@mellanox.com>
-        <20200914143306.4ab0f4c1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <777fd1b8-1262-160e-a711-31e5f6e2c37c@nvidia.com>
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B571FC43387;
+        Tue, 15 Sep 2020 16:03:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B571FC43387
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Tue, 15 Sep 2020 10:03:19 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.4 131/132] drm/msm: Enable expanded apriv support for
+ a650
+Message-ID: <20200915160319.GB22371@jcrouse1-lnx.qualcomm.com>
+References: <20200915140644.037604909@linuxfoundation.org>
+ <20200915140650.665454992@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915140650.665454992@linuxfoundation.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 15:56:48 +0300 Moshe Shemesh wrote:
-> On 9/15/2020 12:33 AM, Jakub Kicinski wrote:
-> >> +     if (err)
-> >> +             return err;
-> >> +
-> >> +     WARN_ON(!actions_performed);
-> >> +     msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
-> >> +     if (!msg)
-> >> +             return -ENOMEM;
-> >> +
-> >> +     err = devlink_nl_reload_actions_performed_fill(msg, devlink, actions_performed,
-> >> +                                                    DEVLINK_CMD_RELOAD, info->snd_portid,
-> >> +                                                    info->snd_seq, 0);
-> >> +     if (err) {
-> >> +             nlmsg_free(msg);
-> >> +             return err;
-> >> +     }
-> >> +
-> >> +     return genlmsg_reply(msg, info);  
-> > I think generating the reply may break existing users. Only generate
-> > the reply if request contained DEVLINK_ATTR_RELOAD_ACTION (or any other
-> > new attribute which existing users can't pass).  
+On Tue, Sep 15, 2020 at 04:13:53PM +0200, Greg Kroah-Hartman wrote:
+> From: Jordan Crouse <jcrouse@codeaurora.org>
 > 
-> OK, I can do that. But I update stats and generate devlink notification 
-> anyway, that should fine, right ?
+> [ Upstream commit 604234f33658cdd72f686be405a99646b397d0b3 ]
+> 
+> a650 supports expanded apriv support that allows us to map critical buffers
+> (ringbuffer and memstore) as as privileged to protect them from corruption.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Yes, that should be fine.
+Hi. A bug was reported in this patch with a fix just posted to the list [1].
+Since the RPTR shadow is being disabled universally by f6828e0c4045 ("drm/msm:
+Disable the RPTR shadow") that will address the security concern and we won't
+need the extra protection from this patch. I suggest that you drop it for the
+stable trees and we can merge the fix into 5.9 to re-enable APRIV for newer
+kernels.
 
+Jordan
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c |  6 +++++-
+>  drivers/gpu/drm/msm/msm_gpu.c         |  2 +-
+>  drivers/gpu/drm/msm/msm_gpu.h         | 11 +++++++++++
+>  drivers/gpu/drm/msm/msm_ringbuffer.c  |  4 ++--
+>  4 files changed, 19 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index c3a81594f4fb7..ea073cd9d248e 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -533,7 +533,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+>  			A6XX_PROTECT_RDONLY(0x980, 0x4));
+>  	gpu_write(gpu, REG_A6XX_CP_PROTECT(25), A6XX_PROTECT_RW(0xa630, 0x0));
+>  
+> -	if (adreno_is_a650(adreno_gpu)) {
+> +	/* Enable expanded apriv for targets that support it */
+> +	if (gpu->hw_apriv) {
+>  		gpu_write(gpu, REG_A6XX_CP_APRIV_CNTL,
+>  			(1 << 6) | (1 << 5) | (1 << 3) | (1 << 2) | (1 << 1));
+>  	}
+> @@ -908,6 +909,9 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+>  	adreno_gpu->registers = NULL;
+>  	adreno_gpu->reg_offsets = a6xx_register_offsets;
+>  
+> +	if (adreno_is_a650(adreno_gpu))
+> +		adreno_gpu->base.hw_apriv = true;
+> +
+>  	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
+>  	if (ret) {
+>  		a6xx_destroy(&(a6xx_gpu->base.base));
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+> index edd45f434ccd6..8653a2f7ae1c9 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+> @@ -932,7 +932,7 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>  
+>  	memptrs = msm_gem_kernel_new(drm,
+>  		sizeof(struct msm_rbmemptrs) * nr_rings,
+> -		MSM_BO_UNCACHED, gpu->aspace, &gpu->memptrs_bo,
+> +		check_apriv(gpu, MSM_BO_UNCACHED), gpu->aspace, &gpu->memptrs_bo,
+>  		&memptrs_iova);
+>  
+>  	if (IS_ERR(memptrs)) {
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index ab8f0f9c9dc88..15254239e5ec6 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -14,6 +14,7 @@
+>  #include "msm_drv.h"
+>  #include "msm_fence.h"
+>  #include "msm_ringbuffer.h"
+> +#include "msm_gem.h"
+>  
+>  struct msm_gem_submit;
+>  struct msm_gpu_perfcntr;
+> @@ -131,6 +132,8 @@ struct msm_gpu {
+>  	} devfreq;
+>  
+>  	struct msm_gpu_state *crashstate;
+> +	/* True if the hardware supports expanded apriv (a650 and newer) */
+> +	bool hw_apriv;
+>  };
+>  
+>  /* It turns out that all targets use the same ringbuffer size */
+> @@ -319,4 +322,12 @@ static inline void msm_gpu_crashstate_put(struct msm_gpu *gpu)
+>  	mutex_unlock(&gpu->dev->struct_mutex);
+>  }
+>  
+> +/*
+> + * Simple macro to semi-cleanly add the MAP_PRIV flag for targets that can
+> + * support expanded privileges
+> + */
+> +#define check_apriv(gpu, flags) \
+> +	(((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+> +
+> +
+>  #endif /* __MSM_GPU_H__ */
+> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
+> index 39ecb5a18431e..935bf9b1d9418 100644
+> --- a/drivers/gpu/drm/msm/msm_ringbuffer.c
+> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
+> @@ -27,8 +27,8 @@ struct msm_ringbuffer *msm_ringbuffer_new(struct msm_gpu *gpu, int id,
+>  	ring->id = id;
+>  
+>  	ring->start = msm_gem_kernel_new(gpu->dev, MSM_GPU_RINGBUFFER_SZ,
+> -		MSM_BO_WC | MSM_BO_GPU_READONLY, gpu->aspace, &ring->bo,
+> -		&ring->iova);
+> +		check_apriv(gpu, MSM_BO_WC | MSM_BO_GPU_READONLY),
+> +		gpu->aspace, &ring->bo, &ring->iova);
+>  
+>  	if (IS_ERR(ring->start)) {
+>  		ret = PTR_ERR(ring->start);
+> -- 
+> 2.25.1
+> 
+> 
+> 
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
