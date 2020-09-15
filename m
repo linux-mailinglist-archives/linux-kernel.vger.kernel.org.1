@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214A326A7A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E340A26A78F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbgIOO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:57:28 -0400
+        id S1727266AbgIOOwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:52:16 -0400
 Received: from mail.kernel.org ([198.145.29.99]:48028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727104AbgIOOhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:37:38 -0400
+        id S1726245AbgIOOfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:35:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2D9A23C3F;
-        Tue, 15 Sep 2020 14:27:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47F58221E8;
+        Tue, 15 Sep 2020 14:15:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600180030;
-        bh=gcI9M0cKFhQZxep1ek1FT+mVnZX+a0Y8DyH3bsT0iBw=;
+        s=default; t=1600179348;
+        bh=OYWucVYP7dD+UA/1BSwGw/P5H+lgPztv1OB0A580bek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WSSZVl8+QYh25IShnfizRfR4EZwNNZMZdHtx/V2pecgC4BFUWj5SUpoHmFMy6r56S
-         ODYC4Ld/FcBHrrU3VzAimofh67S9LylmpO6ta4Q3fNtBMdPtUqUU+U56Pk9w4EYQno
-         jhiFUX7grLJOCTddBssJD68wcSe/om4rTPkaY5/s=
+        b=eGWELl1Mk0wRi1r4uq71REMWT5zbSMSheZcSG76W5Knb0Jm338Tr/QWqrAlcUjBXY
+         6L7UKGQGKHdi8eQ04SIXfAHrWCSLxE68uZJ4qB5Bkjx13lwt8JN+oc0EhXdGdYmGIb
+         3hDzqeiNLKo+WzmGOXZn+yNo2WSVuRRd1X0lT+I4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
+        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 080/177] ARC: show_regs: fix r12 printing and simplify
-Date:   Tue, 15 Sep 2020 16:12:31 +0200
-Message-Id: <20200915140657.476262699@linuxfoundation.org>
+Subject: [PATCH 4.19 24/78] drivers/net/wan/lapbether: Set network_header before transmitting
+Date:   Tue, 15 Sep 2020 16:12:49 +0200
+Message-Id: <20200915140634.763971119@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
-References: <20200915140653.610388773@linuxfoundation.org>
+In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
+References: <20200915140633.552502750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,137 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit e5c388b4b967037a0e00b60194b0dbcf94881a9b ]
+[ Upstream commit 91244d108441013b7367b3b4dcc6869998676473 ]
 
-when working on ARC64, spotted an issue in ARCv2 reg file printing.
-print_reg_file() assumes contiguous reg-file whereas in ARCv2 they are
-not: r12 comes before r0-r11 due to hardware auto-save. Apparently this
-issue has been present since v2 port submission.
+Set the skb's network_header before it is passed to the underlying
+Ethernet device for transmission.
 
-To avoid bolting hacks for this discontinuity while looping through
-pt_regs, just ditching the loop and print pt_regs directly.
+This patch fixes the following issue:
 
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+When we use this driver with AF_PACKET sockets, there would be error
+messages of:
+   protocol 0805 is buggy, dev (Ethernet interface name)
+printed in the system "dmesg" log.
+
+This is because skbs passed down to the Ethernet device for transmission
+don't have their network_header properly set, and the dev_queue_xmit_nit
+function in net/core/dev.c complains about this.
+
+Reason of setting the network_header to this place (at the end of the
+Ethernet header, and at the beginning of the Ethernet payload):
+
+Because when this driver receives an skb from the Ethernet device, the
+network_header is also set at this place.
+
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/kernel/troubleshoot.c | 77 +++++++++++++---------------------
- 1 file changed, 30 insertions(+), 47 deletions(-)
+ drivers/net/wan/lapbether.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arc/kernel/troubleshoot.c b/arch/arc/kernel/troubleshoot.c
-index 28e8bf04b253f..a331bb5d8319f 100644
---- a/arch/arc/kernel/troubleshoot.c
-+++ b/arch/arc/kernel/troubleshoot.c
-@@ -18,44 +18,37 @@
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index 6b2553e893aca..15177a54b17d7 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -213,6 +213,8 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
  
- #define ARC_PATH_MAX	256
+ 	skb->dev = dev = lapbeth->ethdev;
  
--/*
-- * Common routine to print scratch regs (r0-r12) or callee regs (r13-r25)
-- *   -Prints 3 regs per line and a CR.
-- *   -To continue, callee regs right after scratch, special handling of CR
-- */
--static noinline void print_reg_file(long *reg_rev, int start_num)
-+static noinline void print_regs_scratch(struct pt_regs *regs)
- {
--	unsigned int i;
--	char buf[512];
--	int n = 0, len = sizeof(buf);
--
--	for (i = start_num; i < start_num + 13; i++) {
--		n += scnprintf(buf + n, len - n, "r%02u: 0x%08lx\t",
--			       i, (unsigned long)*reg_rev);
--
--		if (((i + 1) % 3) == 0)
--			n += scnprintf(buf + n, len - n, "\n");
--
--		/* because pt_regs has regs reversed: r12..r0, r25..r13 */
--		if (is_isa_arcv2() && start_num == 0)
--			reg_rev++;
--		else
--			reg_rev--;
--	}
--
--	if (start_num != 0)
--		n += scnprintf(buf + n, len - n, "\n\n");
-+	pr_cont("BTA: 0x%08lx\n SP: 0x%08lx  FP: 0x%08lx BLK: %pS\n",
-+		regs->bta, regs->sp, regs->fp, (void *)regs->blink);
-+	pr_cont("LPS: 0x%08lx\tLPE: 0x%08lx\tLPC: 0x%08lx\n",
-+		regs->lp_start, regs->lp_end, regs->lp_count);
++	skb_reset_network_header(skb);
++
+ 	dev_hard_header(skb, dev, ETH_P_DEC, bcast_addr, NULL, 0);
  
--	/* To continue printing callee regs on same line as scratch regs */
--	if (start_num == 0)
--		pr_info("%s", buf);
--	else
--		pr_cont("%s\n", buf);
-+	pr_info("r00: 0x%08lx\tr01: 0x%08lx\tr02: 0x%08lx\n"	\
-+		"r03: 0x%08lx\tr04: 0x%08lx\tr05: 0x%08lx\n"	\
-+		"r06: 0x%08lx\tr07: 0x%08lx\tr08: 0x%08lx\n"	\
-+		"r09: 0x%08lx\tr10: 0x%08lx\tr11: 0x%08lx\n"	\
-+		"r12: 0x%08lx\t",
-+		regs->r0, regs->r1, regs->r2,
-+		regs->r3, regs->r4, regs->r5,
-+		regs->r6, regs->r7, regs->r8,
-+		regs->r9, regs->r10, regs->r11,
-+		regs->r12);
- }
- 
--static void show_callee_regs(struct callee_regs *cregs)
-+static void print_regs_callee(struct callee_regs *regs)
- {
--	print_reg_file(&(cregs->r13), 13);
-+	pr_cont("r13: 0x%08lx\tr14: 0x%08lx\n"			\
-+		"r15: 0x%08lx\tr16: 0x%08lx\tr17: 0x%08lx\n"	\
-+		"r18: 0x%08lx\tr19: 0x%08lx\tr20: 0x%08lx\n"	\
-+		"r21: 0x%08lx\tr22: 0x%08lx\tr23: 0x%08lx\n"	\
-+		"r24: 0x%08lx\tr25: 0x%08lx\n",
-+		regs->r13, regs->r14,
-+		regs->r15, regs->r16, regs->r17,
-+		regs->r18, regs->r19, regs->r20,
-+		regs->r21, regs->r22, regs->r23,
-+		regs->r24, regs->r25);
- }
- 
- static void print_task_path_n_nm(struct task_struct *tsk)
-@@ -175,7 +168,7 @@ static void show_ecr_verbose(struct pt_regs *regs)
- void show_regs(struct pt_regs *regs)
- {
- 	struct task_struct *tsk = current;
--	struct callee_regs *cregs;
-+	struct callee_regs *cregs = (struct callee_regs *)tsk->thread.callee_reg;
- 
- 	/*
- 	 * generic code calls us with preemption disabled, but some calls
-@@ -204,25 +197,15 @@ void show_regs(struct pt_regs *regs)
- 			STS_BIT(regs, A2), STS_BIT(regs, A1),
- 			STS_BIT(regs, E2), STS_BIT(regs, E1));
- #else
--	pr_cont(" [%2s%2s%2s%2s]",
-+	pr_cont(" [%2s%2s%2s%2s]   ",
- 			STS_BIT(regs, IE),
- 			(regs->status32 & STATUS_U_MASK) ? "U " : "K ",
- 			STS_BIT(regs, DE), STS_BIT(regs, AE));
- #endif
--	pr_cont("  BTA: 0x%08lx\n  SP: 0x%08lx  FP: 0x%08lx BLK: %pS\n",
--		regs->bta, regs->sp, regs->fp, (void *)regs->blink);
--	pr_info("LPS: 0x%08lx\tLPE: 0x%08lx\tLPC: 0x%08lx\n",
--		regs->lp_start, regs->lp_end, regs->lp_count);
--
--	/* print regs->r0 thru regs->r12
--	 * Sequential printing was generating horrible code
--	 */
--	print_reg_file(&(regs->r0), 0);
- 
--	/* If Callee regs were saved, display them too */
--	cregs = (struct callee_regs *)current->thread.callee_reg;
-+	print_regs_scratch(regs);
- 	if (cregs)
--		show_callee_regs(cregs);
-+		print_regs_callee(cregs);
- 
- 	preempt_disable();
- }
+ 	dev_queue_xmit(skb);
 -- 
 2.25.1
 
