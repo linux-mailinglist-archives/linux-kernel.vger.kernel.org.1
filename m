@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0092A26ABEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C2226ABC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgIOSaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:30:09 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:59206 "EHLO
+        id S1728037AbgIOSZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:25:20 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:59210 "EHLO
         lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbgIOSRc (ORCPT
+        with ESMTP id S1728005AbgIOSRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 14:17:32 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FIHEeI046506;
-        Tue, 15 Sep 2020 13:17:14 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08FIHKh2046524;
+        Tue, 15 Sep 2020 13:17:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600193834;
-        bh=wu5/xFr9pwu8Zq42Eov+lY3Ln3yttnvMD6OI37WhqmA=;
-        h=From:To:CC:Subject:Date;
-        b=x5liqt0F8Q39uFnYRjTy+xwM687ntDHUR5xdEAoNcBadgbHT8vVpsBNoWc/zv4TTA
-         QODs5066XmPE4L23iW8GEbgZ2WLxmml2QWIU+UFd3FQwZsqlOPsiD6wGefuYqykfRr
-         UG98LQLAESELJdmbj3ysFQhD2k83vWobCWTsDj1A=
+        s=ti-com-17Q1; t=1600193840;
+        bh=r3ke1zZm81K0BubUdM3clirtSu1378acPCeuBxm0VC8=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=M6yeDLwDx5do7+QZ07F+KcW6c+5boU3OQLY2EtLIK54E8J2KavQe/mlxkzL5BHatm
+         pNv3G5REl1uUNLKPBJhlWG3AQ2lNYuDJIk6v3J+Atpxbdvcczt3CQDNWw9I07P9C9D
+         0jmWd2KEXIebVm7sHeE7ZVt4hla+ANvbBu/b5yAc=
 Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FIHE7v024757
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08FIHK4c002712
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 13:17:14 -0500
+        Tue, 15 Sep 2020 13:17:20 -0500
 Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
  (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Sep 2020 13:17:14 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
+ Sep 2020 13:17:19 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
  (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Sep 2020 13:17:14 -0500
+ Frontend Transport; Tue, 15 Sep 2020 13:17:19 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FIHET1112551;
-        Tue, 15 Sep 2020 13:17:14 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08FIHJXx015960;
+        Tue, 15 Sep 2020 13:17:19 -0500
 From:   Dan Murphy <dmurphy@ti.com>
 To:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
         <hkallweit1@gmail.com>
 CC:     <mkubecek@suse.cz>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH net-next 0/3] 100base Fx link modes
-Date:   Tue, 15 Sep 2020 13:17:05 -0500
-Message-ID: <20200915181708.25842-1-dmurphy@ti.com>
+Subject: [PATCH net-next 1/3] ethtool: Add 100base-FX link mode entries
+Date:   Tue, 15 Sep 2020 13:17:06 -0500
+Message-ID: <20200915181708.25842-2-dmurphy@ti.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200915181708.25842-1-dmurphy@ti.com>
+References: <20200915181708.25842-1-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -55,31 +57,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+Add entries for the 100base-FX full and half duplex supported modes.
 
-As per patch https://lore.kernel.org/patchwork/patch/1300241/ the link
-modes for 100base FX full and half duplex modes did not exist.  Adding these
-link modes to the core and ethtool allow devices like the DP83822, DP83869 and
-Broadcomm PHYs to properly advertise the correct mode for Fiber 100Mbps.
+$ ethtool eth0
+        Supported ports: [ TP    MII     FIBRE ]
+        Supported link modes:   10baseT/Half 10baseT/Full
+                                100baseT/Half 100baseT/Full
+                                100baseFX/Half 100baseFX/Full
+        Supported pause frame use: Symmetric Receive-only
+        Supports auto-negotiation: No
+        Supported FEC modes: Not reported
+        Advertised link modes:  10baseT/Half 10baseT/Full
+                                100baseT/Half 100baseT/Full
+                                100baseFX/Half 100baseFX/Full
+        Advertised pause frame use: No
+        Advertised auto-negotiation: No
+        Advertised FEC modes: Not reported
+        Speed: 100Mb/s
+        Duplex: Full
+        Auto-negotiation: off
+        Port: MII
+        PHYAD: 1
+        Transceiver: external
+        Supports Wake-on: gs
+        Wake-on: d
+        SecureOn password: 00:00:00:00:00:00
+        Current message level: 0x00000000 (0)
 
-Corresponding user land ethtool patches are available but rely on these patches
-to be applied first.
+        Link detected: yes
 
-Dan
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ drivers/net/phy/phy-core.c   | 4 +++-
+ include/uapi/linux/ethtool.h | 2 ++
+ net/ethtool/common.c         | 2 ++
+ net/ethtool/linkmodes.c      | 2 ++
+ 4 files changed, 9 insertions(+), 1 deletion(-)
 
-Dan Murphy (3):
-  ethtool: Add 100base-FX link mode entries
-  net: dp83869: Add ability to advertise Fiber connection
-  net: phy: dp83822: Update the fiber advertisement for speed
-
- drivers/net/phy/dp83822.c    | 13 +++++--
- drivers/net/phy/dp83869.c    | 73 ++++++++++++++++++++++++++++++++++++
- drivers/net/phy/phy-core.c   |  4 +-
- include/uapi/linux/ethtool.h |  2 +
- net/ethtool/common.c         |  2 +
- net/ethtool/linkmodes.c      |  2 +
- 6 files changed, 92 insertions(+), 4 deletions(-)
-
+diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
+index ff8e14b01eeb..de5b869139d7 100644
+--- a/drivers/net/phy/phy-core.c
++++ b/drivers/net/phy/phy-core.c
+@@ -8,7 +8,7 @@
+ 
+ const char *phy_speed_to_str(int speed)
+ {
+-	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 90,
++	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 92,
+ 		"Enum ethtool_link_mode_bit_indices and phylib are out of sync. "
+ 		"If a speed or mode has been added please update phy_speed_to_str "
+ 		"and the PHY settings array.\n");
+@@ -160,6 +160,8 @@ static const struct phy_setting settings[] = {
+ 	PHY_SETTING(    100, FULL,    100baseT_Full		),
+ 	PHY_SETTING(    100, FULL,    100baseT1_Full		),
+ 	PHY_SETTING(    100, HALF,    100baseT_Half		),
++	PHY_SETTING(    100, HALF,    100baseFX_Half		),
++	PHY_SETTING(    100, FULL,    100baseFX_Full		),
+ 	/* 10M */
+ 	PHY_SETTING(     10, FULL,     10baseT_Full		),
+ 	PHY_SETTING(     10, HALF,     10baseT_Half		),
+diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+index b4f2d134e713..9ca87bc73c44 100644
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -1617,6 +1617,8 @@ enum ethtool_link_mode_bit_indices {
+ 	ETHTOOL_LINK_MODE_400000baseLR4_ER4_FR4_Full_BIT = 87,
+ 	ETHTOOL_LINK_MODE_400000baseDR4_Full_BIT	 = 88,
+ 	ETHTOOL_LINK_MODE_400000baseCR4_Full_BIT	 = 89,
++	ETHTOOL_LINK_MODE_100baseFX_Half_BIT		 = 90,
++	ETHTOOL_LINK_MODE_100baseFX_Full_BIT		 = 91,
+ 	/* must be last entry */
+ 	__ETHTOOL_LINK_MODE_MASK_NBITS
+ };
+diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+index ed19573fccd7..24036e3055a1 100644
+--- a/net/ethtool/common.c
++++ b/net/ethtool/common.c
+@@ -192,6 +192,8 @@ const char link_mode_names[][ETH_GSTRING_LEN] = {
+ 	__DEFINE_LINK_MODE_NAME(400000, LR4_ER4_FR4, Full),
+ 	__DEFINE_LINK_MODE_NAME(400000, DR4, Full),
+ 	__DEFINE_LINK_MODE_NAME(400000, CR4, Full),
++	__DEFINE_LINK_MODE_NAME(100, FX, Half),
++	__DEFINE_LINK_MODE_NAME(100, FX, Full),
+ };
+ static_assert(ARRAY_SIZE(link_mode_names) == __ETHTOOL_LINK_MODE_MASK_NBITS);
+ 
+diff --git a/net/ethtool/linkmodes.c b/net/ethtool/linkmodes.c
+index 7044a2853886..29dcd675b65a 100644
+--- a/net/ethtool/linkmodes.c
++++ b/net/ethtool/linkmodes.c
+@@ -272,6 +272,8 @@ static const struct link_mode_info link_mode_params[] = {
+ 	__DEFINE_LINK_MODE_PARAMS(400000, LR4_ER4_FR4, Full),
+ 	__DEFINE_LINK_MODE_PARAMS(400000, DR4, Full),
+ 	__DEFINE_LINK_MODE_PARAMS(400000, CR4, Full),
++	__DEFINE_LINK_MODE_PARAMS(100, FX, Half),
++	__DEFINE_LINK_MODE_PARAMS(100, FX, Full),
+ };
+ 
+ static const struct nla_policy
 -- 
 2.28.0
 
