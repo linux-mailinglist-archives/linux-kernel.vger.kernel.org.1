@@ -2,219 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAF126B5A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B7726B57C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgIOXs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:48:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727086AbgIOOcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:32:43 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AB5822BEA;
-        Tue, 15 Sep 2020 14:24:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179841;
-        bh=z3VuaGv082dQfs8ogrfrrT40VnM19ZaA0lgMHalf3BE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ka537YzWeYFFrN563G19OZS/E6rM1V4l5Q0M1tu+P07fE7q+VRlqChnAsuY+mqKTc
-         ZQ3zSjGeZ+RxBdU1FAqf/P5HvIyPjZ+bHWzlSruT2GFlePJ/vaW6Q+1OccJRGdXhFj
-         J24oHMaV8WVvtIcenMBy7pf7Y+Wz1sqe7qFc9/VM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 132/132] drm/msm: Disable the RPTR shadow
-Date:   Tue, 15 Sep 2020 16:13:54 +0200
-Message-Id: <20200915140650.714378261@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-References: <20200915140644.037604909@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1727020AbgIOXpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726974AbgIOOdX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:33:23 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB61C061224
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:15:28 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id u21so5339216eja.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 07:15:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=ww8/ONqWs5a3GRV4ALcLJTsdbuaLl21VV0p1JdUiSFA=;
+        b=M5NLjlt72Gnlqh/UKAJfYSYGzJSJ+Ma3WRrLa49WdcpJzMvk+dph3R+Nz2coj/ZM9C
+         GykWpdKyeE2gAD4LoDGrA9oWAZuv4D33x6TGIdx/pTe/+qsnUMohfuPIQiWv66bmHSA6
+         EmXJQ2mfahIKFDVDI561yoybUUCPJ+9GLcP2upq7F200Vqchj7gAHn0Aeys0oy2OCWTB
+         YFlsR7VvL1L9gFlqBjbpT+FSLAfSICOOzD3PRN5BmwsxKLaPetKcCFR2k9Dos2tCkI1/
+         y/8NrJyfmrQOC/aDg3/6vn8s2uxhCJAODI1ttqX9ZhLgufLXYaIkuFog8xAg2uroLpQV
+         aaQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=ww8/ONqWs5a3GRV4ALcLJTsdbuaLl21VV0p1JdUiSFA=;
+        b=ICImOgRpVhUGFqR0STLmqw+dEcCgifqF7u3RDkA/HAX4zpCoqPeHmGOvl2Q+BTu3da
+         NBa2hNOPVzkP4yhuv9jxEiBDC9cBQ9mfnyyRuVqgWyhzMRkdu/7IzYMQXCFaLzpfnDBp
+         sAF3yMJeLEp0KM+9YKNPCW9VpTeOmdYgovGrzb+o28nH5NGZIUFSpfa2y2YEd3O7GQ7a
+         uh0YHboI/WwJNnxQCIpHNLjN6afJF8JB7V2M3s344voqlueK1/Gs9dlzXH3puoatJtU5
+         ODqYJ7x2rMpEXGw9uQDLPzbANODDP1n2IziHBkhwJK3JruSR+98c416AIIsuZcA1z3Uo
+         4S8w==
+X-Gm-Message-State: AOAM533irJcRv82wvt1VrkJE9qUYUJ4jgG7FMw1DiEKwNqfvLQxSdfQJ
+        s/Cui5RfzzHEORHolcC/londbQb46Q+yq08dIWDrnA==
+X-Google-Smtp-Source: ABdhPJzt408YHsl5kc64YTOpkTthCjeTJ7JAOdMMIyvD5XH/ajssiqH6PIs8tK+4QRvQe3j/jZfXnVVmfL93CUeyI3o=
+X-Received: by 2002:a17:906:cd0d:: with SMTP id oz13mr20073233ejb.212.1600179327500;
+ Tue, 15 Sep 2020 07:15:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Tue, 15 Sep 2020 16:15:15 +0200
+Message-ID: <CAMGffEmrP21e_sgE8C49och1QEABTK4Fh8aVgH8qsyT9t8EJ4w@mail.gmail.com>
+Subject: [RFC] pcie hotplug doesn't work with kernel 4.19
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jordan Crouse <jcrouse@codeaurora.org>
+Hi folks,
 
-[ Upstream commit f6828e0c4045f03f9cf2df6c2a768102641183f4 ]
+We are testing PCIe nvme SSD hotplug, it works out of box with kernel 5.4.6=
+2,
+dmesg during the hotplug:
 
-Disable the RPTR shadow across all targets. It will be selectively
-re-enabled later for targets that need it.
+[  605.734513] pcieport 0000:16:00.0: pciehp: Slot(0-3): Link Down
+[  605.734516] pcieport 0000:16:00.0: pciehp: Slot(0-3): Card not present
+[  605.842634] blk_update_request: I/O error, dev nvme0n1, sector
+205976576 op 0x1:(WRITE) flags 0x0 phys_seg 112 prio class 0
+[  608.908764] pcieport 0000:16:00.0: pciehp: Timeout on hotplug
+command 0x15e1 (issued 3030 msec ago)
+[  609.988759] pcieport 0000:16:00.0: pciehp: Timeout on hotplug
+command 0x15e1 (issued 4110 msec ago)
+[  683.218554] pcieport 0000:16:00.0: pciehp: Slot(0-3): Card present
+[  683.218555] pcieport 0000:16:00.0: pciehp: Slot(0-3): Link Up
+[  683.271702] pcieport 0000:16:00.0: pciehp: Timeout on hotplug
+command 0x17e1 (issued 73280 msec ago)
+[  686.301874] pcieport 0000:16:00.0: pciehp: Timeout on hotplug
+command 0x13e1 (issued 3030 msec ago)
+[  686.361894] pcieport 0000:16:00.0: pciehp: Timeout on hotplug
+command 0x13e1 (issued 3090 msec ago)
+[  686.521911] pci 0000:17:00.0: [1b96:2400] type 00 class 0x010802
+[  686.521924] pci 0000:17:00.0: reg 0x10: [mem 0x00000000-0x00007fff 64bit=
+]
+[  686.521934] pci 0000:17:00.0: reg 0x20: [mem 0x00000000-0x00000fff
+64bit pref]
+[  686.521937] pci 0000:17:00.0: reg 0x30: [mem 0x00000000-0x0001ffff pref]
+[  686.521941] pci 0000:17:00.0: enabling Extended Tags
+[  686.522045] pci 0000:17:00.0: BAR 6: assigned [mem
+0xc5e00000-0xc5e1ffff pref]
+[  686.522046] pci 0000:17:00.0: BAR 0: assigned [mem
+0xc5e20000-0xc5e27fff 64bit]
+[  686.522051] pci 0000:17:00.0: BAR 4: assigned [mem
+0x387ffff00000-0x387ffff00fff 64bit pref]
+[  686.522055] pcieport 0000:16:00.0: PCI bridge to [bus 17]
+[  686.522057] pcieport 0000:16:00.0:   bridge window [io  0x4000-0x4fff]
+[  686.522059] pcieport 0000:16:00.0:   bridge window [mem
+0xc5e00000-0xc5efffff]
+[  686.522060] pcieport 0000:16:00.0:   bridge window [mem
+0x387ffff00000-0x387fffffffff 64bit pref]
+[  686.522302] nvme nvme2: pci function 0000:17:00.0
+[  686.522355] nvme 0000:17:00.0: enabling device (0100 -> 0102)
+[  689.072008] pcieport 0000:16:00.0: pciehp: Timeout on hotplug
+command 0x12e1 (issued 2710 msec ago)
+[  690.373707] nvme nvme2: 40/0/0 default/read/poll queues
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/msm/adreno/a2xx_gpu.c   |  5 +++++
- drivers/gpu/drm/msm/adreno/a3xx_gpu.c   | 10 +++++++++
- drivers/gpu/drm/msm/adreno/a4xx_gpu.c   | 10 +++++++++
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c   | 11 ++++++++--
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c   |  7 +++++++
- drivers/gpu/drm/msm/adreno/adreno_gpu.c | 27 ++-----------------------
- 6 files changed, 43 insertions(+), 27 deletions(-)
+But with kernel 4.19.133, pcieport core doesn't print anything, is
+there known problem with kernel 4.19 support for pcie hotplug, do we
+need to backport some fixes from newer kernel to make it work?
 
-diff --git a/drivers/gpu/drm/msm/adreno/a2xx_gpu.c b/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-index 1f83bc18d5008..80f3b1da9fc26 100644
---- a/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-@@ -164,6 +164,11 @@ static int a2xx_hw_init(struct msm_gpu *gpu)
- 	if (ret)
- 		return ret;
- 
-+	gpu_write(gpu, REG_AXXX_CP_RB_CNTL,
-+		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
-+
-+	gpu_write(gpu, REG_AXXX_CP_RB_BASE, lower_32_bits(gpu->rb[0]->iova));
-+
- 	/* NOTE: PM4/micro-engine firmware registers look to be the same
- 	 * for a2xx and a3xx.. we could possibly push that part down to
- 	 * adreno_gpu base class.  Or push both PM4 and PFP but
-diff --git a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-index 5f7e98028eaf4..eeba2deeca1e8 100644
---- a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-@@ -215,6 +215,16 @@ static int a3xx_hw_init(struct msm_gpu *gpu)
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * Use the default ringbuffer size and block size but disable the RPTR
-+	 * shadow
-+	 */
-+	gpu_write(gpu, REG_AXXX_CP_RB_CNTL,
-+		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
-+
-+	/* Set the ringbuffer address */
-+	gpu_write(gpu, REG_AXXX_CP_RB_BASE, lower_32_bits(gpu->rb[0]->iova));
-+
- 	/* setup access protection: */
- 	gpu_write(gpu, REG_A3XX_CP_PROTECT_CTRL, 0x00000007);
- 
-diff --git a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-index ab2b752566d81..05cfa81d4c540 100644
---- a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-@@ -265,6 +265,16 @@ static int a4xx_hw_init(struct msm_gpu *gpu)
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * Use the default ringbuffer size and block size but disable the RPTR
-+	 * shadow
-+	 */
-+	gpu_write(gpu, REG_A4XX_CP_RB_CNTL,
-+		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
-+
-+	/* Set the ringbuffer address */
-+	gpu_write(gpu, REG_A4XX_CP_RB_BASE, lower_32_bits(gpu->rb[0]->iova));
-+
- 	/* Load PM4: */
- 	ptr = (uint32_t *)(adreno_gpu->fw[ADRENO_FW_PM4]->data);
- 	len = adreno_gpu->fw[ADRENO_FW_PM4]->size / 4;
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index 4a484b06319ff..24b55103bfe00 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -677,14 +677,21 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
- 	if (ret)
- 		return ret;
- 
--	a5xx_preempt_hw_init(gpu);
--
- 	a5xx_gpmu_ucode_init(gpu);
- 
- 	ret = a5xx_ucode_init(gpu);
- 	if (ret)
- 		return ret;
- 
-+	/* Set the ringbuffer address */
-+	gpu_write64(gpu, REG_A5XX_CP_RB_BASE, REG_A5XX_CP_RB_BASE_HI,
-+		gpu->rb[0]->iova);
-+
-+	gpu_write(gpu, REG_A5XX_CP_RB_CNTL,
-+		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
-+
-+	a5xx_preempt_hw_init(gpu);
-+
- 	/* Disable the interrupts through the initial bringup stage */
- 	gpu_write(gpu, REG_A5XX_RBBM_INT_0_MASK, A5XX_INT_MASK);
- 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index ea073cd9d248e..dae32c6ac2120 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -550,6 +550,13 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
- 	if (ret)
- 		goto out;
- 
-+	/* Set the ringbuffer address */
-+	gpu_write64(gpu, REG_A6XX_CP_RB_BASE, REG_A6XX_CP_RB_BASE_HI,
-+		gpu->rb[0]->iova);
-+
-+	gpu_write(gpu, REG_A6XX_CP_RB_CNTL,
-+		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
-+
- 	/* Always come up on rb 0 */
- 	a6xx_gpu->cur_ring = gpu->rb[0];
- 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index 053da39da1cc0..3802ad38c519c 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -354,26 +354,6 @@ int adreno_hw_init(struct msm_gpu *gpu)
- 		ring->memptrs->rptr = 0;
- 	}
- 
--	/*
--	 * Setup REG_CP_RB_CNTL.  The same value is used across targets (with
--	 * the excpetion of A430 that disables the RPTR shadow) - the cacluation
--	 * for the ringbuffer size and block size is moved to msm_gpu.h for the
--	 * pre-processor to deal with and the A430 variant is ORed in here
--	 */
--	adreno_gpu_write(adreno_gpu, REG_ADRENO_CP_RB_CNTL,
--		MSM_GPU_RB_CNTL_DEFAULT |
--		(adreno_is_a430(adreno_gpu) ? AXXX_CP_RB_CNTL_NO_UPDATE : 0));
--
--	/* Setup ringbuffer address - use ringbuffer[0] for GPU init */
--	adreno_gpu_write64(adreno_gpu, REG_ADRENO_CP_RB_BASE,
--		REG_ADRENO_CP_RB_BASE_HI, gpu->rb[0]->iova);
--
--	if (!adreno_is_a430(adreno_gpu)) {
--		adreno_gpu_write64(adreno_gpu, REG_ADRENO_CP_RB_RPTR_ADDR,
--			REG_ADRENO_CP_RB_RPTR_ADDR_HI,
--			rbmemptr(gpu->rb[0], rptr));
--	}
--
- 	return 0;
- }
- 
-@@ -381,11 +361,8 @@ int adreno_hw_init(struct msm_gpu *gpu)
- static uint32_t get_rptr(struct adreno_gpu *adreno_gpu,
- 		struct msm_ringbuffer *ring)
- {
--	if (adreno_is_a430(adreno_gpu))
--		return ring->memptrs->rptr = adreno_gpu_read(
--			adreno_gpu, REG_ADRENO_CP_RB_RPTR);
--	else
--		return ring->memptrs->rptr;
-+	return ring->memptrs->rptr = adreno_gpu_read(
-+		adreno_gpu, REG_ADRENO_CP_RB_RPTR);
- }
- 
- struct msm_ringbuffer *adreno_active_ring(struct msm_gpu *gpu)
--- 
-2.25.1
+In both kernel 4.19.133 and kernel 5.4.62 following configs are enabled.
+
+CONFIG_HOTPLUG_PCI=3Dy
+CONFIG_HOTPLUG_PCI_ACPI=3Dy
+CONFIG_HOTPLUG_PCI_ACPI_IBM=3Dm
+CONFIG_HOTPLUG_PCI_CPCI=3Dy
+CONFIG_HOTPLUG_PCI_CPCI_ZT5550=3Dm
+CONFIG_HOTPLUG_PCI_CPCI_GENERIC=3Dm
+CONFIG_HOTPLUG_PCI_SHPC=3Dy
+CONFIG_HOTPLUG_PCI_PCIE=3Dy
+
+Thanks in advance!
+--=20
+Jinpu Wang
+Linux Kernel Developer
+
+Application Support (IONOS Cloud)
+
+1&1 IONOS SE | Greifswalder Str. 207 | 10405 Berlin | Germany
+Phone:
+E-mail: jinpu.wang@cloud.ionos.com | Web: www.ionos.de
+
+Hauptsitz Montabaur, Amtsgericht Montabaur, HRB 24498
+
+Vorstand: Dr. Christian B=C3=B6ing, H=C3=BCseyin Dogan, Dr. Martin Endre=C3=
+=9F,
+Hans-Henning Kettler, Arthur Mai, Matthias Steinberg, Achim Wei=C3=9F
+Aufsichtsratsvorsitzender: Markus Kadelke
 
 
+Member of United Internet
 
+Diese E-Mail kann vertrauliche und/oder gesetzlich gesch=C3=BCtzte
+Informationen enthalten. Wenn Sie nicht der bestimmungsgem=C3=A4=C3=9Fe Adr=
+essat
+sind oder diese E-Mail irrt=C3=BCmlich erhalten haben, unterrichten Sie
+bitte den Absender und vernichten Sie diese E-Mail. Anderen als dem
+bestimmungsgem=C3=A4=C3=9Fen Adressaten ist untersagt, diese E-Mail zu
+speichern, weiterzuleiten oder ihren Inhalt auf welche Weise auch
+immer zu verwenden.
+
+This e-mail may contain confidential and/or privileged information. If
+you are not the intended recipient of this e-mail, you are hereby
+notified that saving, distribution or use of the content of this
+e-mail in any way is prohibited. If you have received this e-mail in
+error, please notify the sender and delete the e-mail.
