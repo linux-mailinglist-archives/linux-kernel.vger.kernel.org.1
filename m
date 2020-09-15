@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5CF269F47
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55500269F24
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgIOHIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:08:39 -0400
-Received: from verein.lst.de ([213.95.11.211]:46699 "EHLO verein.lst.de"
+        id S1726062AbgIOHHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:07:14 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:44894 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726073AbgIOHGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:06:14 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9B14E68AFE; Tue, 15 Sep 2020 09:05:22 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 09:05:22 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, martin.petersen@oracle.com,
-        Hans de Goede <hdegoede@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, drbd-dev@tron.linbit.com,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 06/14] block: lift setting the readahead size into the
- block layer
-Message-ID: <20200915070522.GA19974@lst.de>
-References: <20200726150333.305527-1-hch@lst.de> <20200726150333.305527-7-hch@lst.de> <20200826220737.GA25613@redhat.com> <20200902151144.GA1738@lst.de> <20200902162007.GB5513@redhat.com> <20200910092813.GA27229@lst.de> <20200910171541.GB21919@redhat.com>
+        id S1726185AbgIOHGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 03:06:13 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kI51n-0008KX-UH; Tue, 15 Sep 2020 17:05:25 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 15 Sep 2020 17:05:23 +1000
+Date:   Tue, 15 Sep 2020 17:05:23 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC
+ unconditionally
+Message-ID: <20200915070523.GA26629@gondor.apana.org.au>
+References: <20200914204209.256266093@linutronix.de>
+ <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+ <20200915033024.GB25789@gondor.apana.org.au>
+ <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com>
+ <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910171541.GB21919@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 01:15:41PM -0400, Mike Snitzer wrote:
-> > I'll move it to blk_register_queue, which should work just fine.
+On Mon, Sep 14, 2020 at 11:55:53PM -0700, Linus Torvalds wrote:
+>
+> Maybe we could hide it behind a debug option, at least.
 > 
-> That'll work for initial DM table load as part of DM device creation
-> (dm_setup_md_queue).  But it won't account for DM table reloads that
-> might change underlying devices on a live DM device (done using
-> __bind).
-> 
-> Both dm_setup_md_queue() and __bind() call dm_table_set_restrictions()
-> to set/update queue_limits.  It feels like __bind() will need to call a
-> new block helper to set/update parts of queue_limits (e.g. ra_pages and
-> io_pages).
-> 
-> Any chance you're open to factoring out that block function as an
-> exported symbol for use by blk_register_queue() and code like DM's
-> __bind()?
+> Or, alterantively, introduce a new "debug_preempt_count" that doesn't
+> actually disable preemption, but warns about actual sleeping
+> operations..
 
-I agree with the problem statement.  OTOH adding an exported helper
-for two trivial assignments seems a little silly..
+I'm more worried about existing users of kmap_atomic relying on
+the preemption disabling semantics.  Short of someone checking
+on every single instance (and that would include derived cases
+such as all users of sg miter), I think the safer option is to
+create something brand new and then migrate the existing users
+to it.  Something like
 
-For now I'll just keep the open coded ->io_pages assignment in
-dm.  Note that dm doesn't currently update the ->ra_pages value
-based on the underlying devices, so an incremental patch to do that
-might be useful as well.
+static inline void *kmap_atomic_ifhigh(struct page *page)
+{
+	if (PageHighMem(page))
+		return kmap_atomic(page);
+	return page_address(page);
+}
+
+static inline void kunmap_atomic_ifhigh(struct page *page, void *addr)
+{
+	if (PageHighMem(page))
+		kunmap_atomic(addr);
+}
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
