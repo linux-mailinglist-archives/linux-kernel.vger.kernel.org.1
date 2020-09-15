@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A68269A72
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAD2269AAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgIOAdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:33:10 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:45995 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgIOAdG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:33:06 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200915003303epoutp0170fc1b0295c6ba339c7555be743b6641~0zb3-ee9W2684126841epoutp01H
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 00:33:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200915003303epoutp0170fc1b0295c6ba339c7555be743b6641~0zb3-ee9W2684126841epoutp01H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600129983;
-        bh=OD7RIDQdWwiTVt0yA9b6QOr6d9BgSQVF2k12nd063cw=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=GtRZmf1zgOzQO8zQlt1xvJqgbuXhAsNtlD8Vl/aGL54HN9FXcv+WNQjZElybDKc3v
-         mbN6k+6OwlHRffhv09gpNDuYA8CSr8rGNum1RmF4F1/duSiyycCLaNdhRBMMulqyPH
-         JRQ/D7VGgdzSGrxFVi+sa3+/q5psnJSKCzBh5Z2w=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p3.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200915003303epcas1p32fc0b2dce423db17d89c1e9a7a72316f~0zb3kgkh12332023320epcas1p3K;
-        Tue, 15 Sep 2020 00:33:03 +0000 (GMT)
-Mime-Version: 1.0
-Subject: RE: [PATCH] scsi: ufs: Fix NOP OUT timeout value
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "avri.altman" <avri.altman@wdc.com>, jejb <jejb@linux.ibm.com>,
-        "martin.petersen" <martin.petersen@oracle.com>,
-        asutoshd <asutoshd@codeaurora.org>, beanhuo <beanhuo@micron.com>,
-        "stanley.chu" <stanley.chu@mediatek.com>,
-        cang <cang@codeaurora.org>, bvanassche <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <963815509.21600129983068.JavaMail.epsvc@epcpadp2>
-Date:   Tue, 15 Sep 2020 09:11:54 +0900
-X-CMS-MailID: 20200915001154epcms2p877997a80b59356b19d17eee0c100c74e
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200915001154epcms2p877997a80b59356b19d17eee0c100c74e
-References: <CGME20200915001154epcms2p877997a80b59356b19d17eee0c100c74e@epcms2p8>
+        id S1726067AbgIOAtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:49:46 -0400
+Received: from mga01.intel.com ([192.55.52.88]:10400 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726024AbgIOAtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 20:49:43 -0400
+IronPort-SDR: FgxZiRVI0Oq4RloF2GSFUVi7G7oUjbjf9k03uRElGor7x8v/FTOa1Zl2Sqyeq11laBx1gmMV13
+ 2rZS4O+PpOwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="177247509"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="177247509"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 17:49:43 -0700
+IronPort-SDR: /fkne7Pfn08NMotXs+5OLleNTbxIsHOEIAl1ai4D+qVgvt1HhV17ywU2d7E8QUJHp//QZb+KHr
+ Rb5UjavQTjTw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="335469854"
+Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
+  by orsmga008.jf.intel.com with ESMTP; 14 Sep 2020 17:49:41 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yan Zhao <yan.y.zhao@intel.com>
+Subject: [PATCH] vfio: fix a missed vfio group put in vfio_pin_pages
+Date:   Tue, 15 Sep 2020 08:28:35 +0800
+Message-Id: <20200915002835.14213-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> In some Samsung UFS devices, there is some booting fail issue with
-> low-power UFS device. The reason of this issue is the UFS device has a
-> little bit longer latency for NOP OUT response. It causes booting fail
-> because NOP OUT command is issued during initialization to check whether
-> the device transport protocol is ready or not. This issue is resolved by
-> releasing NOP_OUT_TIMEOUT value.
-> 
-> NOP_OUT_TIMEOUT: 30ms -> 50ms
-> 
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 06e2439d523c..5cbd0e9e4ef8 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -36,8 +36,8 @@
->  
->  /* NOP OUT retries waiting for NOP IN response */
->  #define NOP_OUT_RETRIES    10
-> -/* Timeout after 30 msecs if NOP OUT hangs without response */
-> -#define NOP_OUT_TIMEOUT    30 /* msecs */
-> +/* Timeout after 50 msecs if NOP OUT hangs without response */
-> +#define NOP_OUT_TIMEOUT    50 /* msecs */
->  
->  /* Query request retries */
->  #define QUERY_REQ_RETRIES 3
-> -- 
-> 2.17.1
+when error occurs, need to put vfio group after a successful get.
 
-Hello,
+Fixes: 95fc87b44104 (vfio: Selective dirty page tracking if IOMMU backed
+device pins pages)
 
-Just a gentle reminder that I'd like some feedback.
-Any suggestions here?
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+---
+ drivers/vfio/vfio.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thanks,
-Daejun
+diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+index 262ab0efd06c..5e6e0511b5aa 100644
+--- a/drivers/vfio/vfio.c
++++ b/drivers/vfio/vfio.c
+@@ -1949,8 +1949,10 @@ int vfio_pin_pages(struct device *dev, unsigned long *user_pfn, int npage,
+ 	if (!group)
+ 		return -ENODEV;
+ 
+-	if (group->dev_counter > 1)
+-		return -EINVAL;
++	if (group->dev_counter > 1) {
++		ret = -EINVAL;
++		goto err_pin_pages;
++	}
+ 
+ 	ret = vfio_group_add_container_user(group);
+ 	if (ret)
+-- 
+2.17.1
+
