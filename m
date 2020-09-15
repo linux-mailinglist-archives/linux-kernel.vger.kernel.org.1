@@ -2,165 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E730269DCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96BA269DCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgIOF04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:26:56 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51439 "EHLO m43-7.mailgun.net"
+        id S1726155AbgIOF0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:26:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbgIOF0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:26:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600147611; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=np2dnezmZHhxT4DTIcpNxjZcB5lu0W3t10CJRHd1FoI=;
- b=TRzmUzBk0PBq1N+sTRaRcprmhQTA7WLrbwfK5tcCARD7DCg6DnkzZ38bpupDkhC2q4XenXhq
- gEB8vabBVoRQsU+B1k/IKfgfmSjqbraVgLOQFq3+Frx+1NEhBUsfAzw4s8hDG7Wfy3Ed+3Zv
- fSyv0pLU48fNEySwgjtQWV/ZkWo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f60504a25e1ee7586f7b95a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 05:25:30
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 39DCEC433F1; Tue, 15 Sep 2020 05:25:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726057AbgIOF0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:26:45 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B9366C433F0;
-        Tue, 15 Sep 2020 05:25:29 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Sep 2020 10:55:29 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 4320C20756;
+        Tue, 15 Sep 2020 05:26:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600147604;
+        bh=3YRNdYIm4sAf3BLgQjBz79qzM15AHtoJPCq5PN9ukyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zuMEpouuEr8pt08h+xo1UWS3YJw43raWeTOxfgZvC72zPFpYl70NRSDSuToU2Aecw
+         X/ofVOJe662gdkbA2w8+rjyoemD2RHFUoyKTjYBbwCPVC2NiX9BqjTCM09AI7r4xkk
+         JZUwj2AgpmKt4RTu/lraKqhKBfczLVvVeZcWYQYI=
+Date:   Mon, 14 Sep 2020 22:26:42 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Anmol Karn <anmol.karan123@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com,
+        Eric Dumazet <eric.dumazet@gmail.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCHv4 1/2] soc: qcom: llcc: Move attribute config to its own
- function
-In-Reply-To: <160010909573.4188128.171199552773965552@swboyd.mtv.corp.google.com>
-References: <cover.1599974998.git.saiprakash.ranjan@codeaurora.org>
- <343db8a7b0e85ae6e29b9e79b68b98c22fcbcdce.1599974998.git.saiprakash.ranjan@codeaurora.org>
- <160010909573.4188128.171199552773965552@swboyd.mtv.corp.google.com>
-Message-ID: <edf5677e4363b42184a47a7483ce8ec6@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Necip Fazil Yildiran <necip@google.com>
+Subject: Re: [PATCH] idr: remove WARN_ON_ONCE() when trying to check id
+Message-ID: <20200915052642.GO899@sol.localdomain>
+References: <20200914071724.202365-1-anmol.karan123@gmail.com>
+ <20200914110803.GL6583@casper.infradead.org>
+ <20200914184755.GB213347@Thinkpad>
+ <20200914192655.GW6583@casper.infradead.org>
+ <20200915051331.GA7980@Thinkpad>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915051331.GA7980@Thinkpad>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-15 00:14, Stephen Boyd wrote:
-> Quoting Sai Prakash Ranjan (2020-09-14 04:12:59)
->> Cleanup qcom_llcc_cfg_program() by moving llcc attribute
->> configuration to a separate function of its own. Also
->> correct misspelled 'instance' caught by checkpatch.
->> 
->> Suggested-by: Stephen Boyd <swboyd@chromium.org>
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>  drivers/soc/qcom/llcc-qcom.c | 75 
->> ++++++++++++++++++++----------------
->>  1 file changed, 41 insertions(+), 34 deletions(-)
->> 
->> diff --git a/drivers/soc/qcom/llcc-qcom.c 
->> b/drivers/soc/qcom/llcc-qcom.c
->> index 429b5a60a1ba..60ee31842dea 100644
->> --- a/drivers/soc/qcom/llcc-qcom.c
->> +++ b/drivers/soc/qcom/llcc-qcom.c
->> @@ -318,14 +318,50 @@ size_t llcc_get_slice_size(struct 
->> llcc_slice_desc *desc)
->>  }
->>  EXPORT_SYMBOL_GPL(llcc_get_slice_size);
->> 
->> -static int qcom_llcc_cfg_program(struct platform_device *pdev)
->> +static int qcom_llcc_attr_cfg(const struct llcc_slice_config *table)
+On Tue, Sep 15, 2020 at 10:43:31AM +0530, Anmol Karn wrote:
+> On Mon, Sep 14, 2020 at 08:26:55PM +0100, Matthew Wilcox wrote:
+> > On Tue, Sep 15, 2020 at 12:17:55AM +0530, Anmol Karn wrote:
+> > > On Mon, Sep 14, 2020 at 12:08:03PM +0100, Matthew Wilcox wrote:
+> > > > On Mon, Sep 14, 2020 at 12:47:24PM +0530, Anmol Karn wrote:
+> > > > > idr_get_next() gives WARN_ON_ONCE() when it gets (id > INT_MAX) true
+> > > > > and this happens when syzbot does fuzzing, and that warning is
+> > > > > expected, but WARN_ON_ONCE() is not required here and, cecking
+> > > > > the condition and returning NULL value would be suffice.
+> > > > > 
+> > > > > Reference: commit b9959c7a347 ("filldir[64]: remove WARN_ON_ONCE() for bad directory entries")
+> > > > > Reported-and-tested-by: syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com
+> > > > > Link: https://syzkaller.appspot.com/bug?extid=f7204dcf3df4bb4ce42c 
+> > > > > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> > > > 
+> > > > https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
+> > > 
+> > > Hello sir,
+> > > 
+> > > I have looked into the patch, and it seems the problem is fixed to the root cause
+> > > in this patch, but not yet merged due to some backport issues, so, please ignore 
+> > > this patch(sent by me), and please let me know if i can contribute to fixing this 
+> > > bug's root cause.
+> > 
+> > The root cause is that the network maintainers believe I have a far
+> > greater interest in the qrtr code than I actually do, and the maintainer
+> > of the qrtr code is not doing anything.
 > 
-> Call it config? It's certainly not a table.
+> Hello sir,
 > 
+> I hope the patch will get merged soon.
 
-Yes, will do.
+No need to "hope"; you could split up Matthew's patch yourself, and test and
+send the resulting patches.  From the above thread, it looks like the networking
+developers want one patch to fix the improper use of GFP_ATOMIC (which is the
+bug reported by syzbot), and a separate patch to convert qrtr to use the XArray.
 
->>  {
->> -       int i;
->>         u32 attr1_cfg;
->>         u32 attr0_cfg;
->>         u32 attr1_val;
->>         u32 attr0_val;
->>         u32 max_cap_cacheline;
->> +       int ret;
->> +
->> +       attr1_cfg = LLCC_TRP_ATTR1_CFGn(table->slice_id);
->> +       attr0_cfg = LLCC_TRP_ATTR0_CFGn(table->slice_id);
+> also, i have tried a patch for this bug
 > 
-> Can this move down to near where it is used?
+> Link: https://syzkaller.appspot.com/bug?extid=3b14b2ed9b3d06dcaa07
 > 
+> can you please guide me little how should i proceede with it, and 
+> also syzbot tested it.  
 
-Sure.
+Looks like something timer-related.  You'll need to investigate more, write and
+test a fix, and send it to the appropriate kernel mailing lists and developers
+(which will probably be different from the ones receiving this current thread).
 
->> +
->> +       attr1_val = table->cache_mode;
->> +       attr1_val |= table->probe_target_ways << 
->> ATTR1_PROBE_TARGET_WAYS_SHIFT;
->> +       attr1_val |= table->fixed_size << ATTR1_FIXED_SIZE_SHIFT;
->> +       attr1_val |= table->priority << ATTR1_PRIORITY_SHIFT;
->> +
->> +       max_cap_cacheline = MAX_CAP_TO_BYTES(table->max_cap);
->> +
->> +       /* LLCC instances can vary for each target.
-> 
-> The /* should be on a line by itself.
-> 
-
-This was there before I moved this hunk but I will fix it.
-
->> +        * The SW writes to broadcast register which gets propagated
->> +        * to each llcc instance (llcc0,.. llccN).
->> +        * Since the size of the memory is divided equally amongst the
->> +        * llcc instances, we need to configure the max cap 
->> accordingly.
->> +        */
->> +       max_cap_cacheline = max_cap_cacheline / drv_data->num_banks;
->> +       max_cap_cacheline >>= CACHE_LINE_SIZE_SHIFT;
->> +       attr1_val |= max_cap_cacheline << ATTR1_MAX_CAP_SHIFT;
->> +
->> +       attr0_val = table->res_ways & ATTR0_RES_WAYS_MASK;
->> +       attr0_val |= table->bonus_ways << ATTR0_BONUS_WAYS_SHIFT;
->> +
->> +       ret = regmap_write(drv_data->bcast_regmap, attr1_cfg, 
->> attr1_val);
->> +       if (ret)
->> +               return ret;
->> +
->> +       ret = regmap_write(drv_data->bcast_regmap, attr0_cfg, 
->> attr0_val);
->> +
->> +       return ret;
-> 
-> return regmap_write(...)
-> 
-
-Ok done.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+- Eric
