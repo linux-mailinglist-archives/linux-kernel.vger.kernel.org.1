@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A1B26B0B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C2626B0B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727806AbgIOWSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:18:41 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35804 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727722AbgIOQdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:33:22 -0400
-Received: from zn.tnic (p200300ec2f0e42006096e946d741c4e4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:6096:e946:d741:c4e4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7EFAC1EC0328;
-        Tue, 15 Sep 2020 18:33:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600187598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ZWwBzofbLwaO1lqUGe+0uSmnKjSrhBMl5LKNuGBjotY=;
-        b=WOwquMcUbe2yULVzAwTw4t0gqRs3C/n65jZqTEGlEt3lWGoWQjEpgrEGKOHANYtlGitY2Q
-        uIEqQxxaWIIMWBFVsBepzL1mqEJueMCtafqZjhy0etuDR+dO110j5sEfGtoKu5ltzQ0Iv+
-        UoQAgaZEi2b8SVyjillCNHouaQQ95og=
-Date:   Tue, 15 Sep 2020 18:33:12 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alex Kluver <alex.kluver@hpe.com>
-Cc:     linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, mchehab@kernel.org,
-        russ.anderson@hpe.com, dimitri.sivanich@hpe.com,
-        kluveralex@gmail.com
-Subject: Re: [PATCH v2 1/2] edac,ghes,cper: Add Row Extension to Memory Error
- Record
-Message-ID: <20200915163312.GO14436@zn.tnic>
-References: <20200819143544.155096-1-alex.kluver@hpe.com>
- <20200819143544.155096-2-alex.kluver@hpe.com>
+        id S1727586AbgIOWSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727446AbgIOQdY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:33:24 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5AAC06178B;
+        Tue, 15 Sep 2020 09:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=DRZPq16Nwbe7wkPR64aqrha3z0JvuZxrmSCMnTXQmXs=; b=Ar6dKiwnflCK0BKblP1LY5tJ4j
+        Osni+05bRKhLaXD5gtdPeP6w/f5cnoRAYa6+O+w/YzZzyA3Z02yaQ4sNmcovoRm7Kslc265LBntnx
+        eidt6fqPkQeco0ytjkTUmbc0/JloJtZamyFf7gFWcqV1ipuW09w+cjkni6a8tmahXcTba8UQ4ib76
+        RznZwfsQ/MeGWxQAOYAfPrKpVcc/uzLVxY/r/yd3+ZAdlOEVnyUmTh3Y9NToRGkYGQwcHAI8bK3+u
+        acDDs8N4Xh1UcHu3vb+7NIGUBm6Yg7QZJuu2CrvhjXnwVfiowtSO0QRs4qLPBUUJSEalJADkl152J
+        0e+u+42Q==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIDtO-0004Ri-My; Tue, 15 Sep 2020 16:33:19 +0000
+Subject: Re: linux-next: Tree for Sep 15 (drivers/media/test-drivers/vidtv/)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+References: <20200915174932.3aa7d103@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <55ef0376-7809-c875-5dcc-5bb46d6204df@infradead.org>
+Date:   Tue, 15 Sep 2020 09:33:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20200915174932.3aa7d103@canb.auug.org.au>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200819143544.155096-2-alex.kluver@hpe.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 09:35:43AM -0500, Alex Kluver wrote:
-> Memory errors could be printed with incorrect row values since the DIMM
-> size has outgrown the 16 bit row field in the CPER structure. UEFI
-> Specification Version 2.8 has increased the size of row by allowing it to
-> use the first 2 bits from a previously reserved space within the structure.
+On 9/15/20 12:49 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> When needed, add the extension bits to the row value printed.
+> Changes since 20200914:
 > 
-> Based on UEFI 2.8 Table 299. Memory Error Record
+> The v4l-dvb tree lost its build failure.
 > 
-> Reviewed-by: Kyle Meyer <kyle.meyer@hpe.com>
-> Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-> Tested-by: Russ Anderson <russ.anderson@hpe.com>
-> Signed-off-by: Alex Kluver <alex.kluver@hpe.com>
-> ---
-> 
-> v1 -> v2:
->    * Add static inline cper_get_mem_extension() to make it 
->     more readable, as suggested by Borislav Petkov.
-> 
->    * Add second patch for bank field, bank group, and chip id.
-> 
-> ---
->  drivers/edac/ghes_edac.c    |  8 ++++++--
->  drivers/firmware/efi/cper.c |  9 +++++++--
->  include/linux/cper.h        | 16 ++++++++++++++--
->  3 files changed, 27 insertions(+), 6 deletions(-)
 
-For the EDAC bits:
+media driver build problems on i386:
+gcc (SUSE Linux) 7.5.0
 
-Acked-by: Borislav Petkov <bp@suse.de>
+build#1:
 
-Also, I could take both through the EDAC tree, if people prefer.
+ERROR: modpost: "__udivdi3" [drivers/media/test-drivers/vidtv/dvb-vidtv-bridge.ko] undefined!
 
+build#2:
+
+ld: drivers/media/test-drivers/vidtv/vidtv_s302m.o: in function `vidtv_s302m_encode':
+vidtv_s302m.c:(.text+0x1f3): undefined reference to `__udivdi3'
+ld: drivers/media/test-drivers/vidtv/vidtv_mux.o: in function `vidtv_mux_tick':
+vidtv_mux.c:(.text+0x3ee): undefined reference to `__udivdi3'
+ld: vidtv_mux.c:(.text+0x40b): undefined reference to `__udivdi3'
+
+
+
+randconfig files are available if anyone wants them.
+
+thanks.
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
