@@ -2,374 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3521126AB12
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7692C26AB0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgIORrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:47:53 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35869 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727732AbgIORbD (ORCPT
+        id S1728005AbgIORrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727887AbgIORaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:31:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600191028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YSSluK8yuAJutLkgMqPmfdCISUlx/kFM0c7VDjZgcEA=;
-        b=eGNl3Pv951HTaH6CH04rf5Wrnp/G3aVR+y7jJcBj+dRsZERFLvYN2ujZ/C9Nrd/MLcpX7e
-        ACKEh9yx1sg+Y5YJ5DPrJDK3kbT0XJ93bWnBnRBI4q3fmEmKn5JdFy9cHd69HeJ1/8N5Pq
-        18WiLJ1w6bsSuF9Zjy4H4pVKLNWmmpI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-aKpktXnYOT-lGmYyz3q91g-1; Tue, 15 Sep 2020 13:30:25 -0400
-X-MC-Unique: aKpktXnYOT-lGmYyz3q91g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DFBFAD68A;
-        Tue, 15 Sep 2020 17:30:21 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 318625FC2A;
-        Tue, 15 Sep 2020 17:30:19 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     thaytan@noraisin.net, Vasily Khoruzhick <anarsoul@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        Tue, 15 Sep 2020 13:30:12 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340D4C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:30:11 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b22so3918781lfs.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xSVHWYbzu3UQ8PBlLDNLl6dehpYO4ZB4CwIyD75ZWAE=;
+        b=HrsWxAPBdchRgJHFmShgtgLo+DYOxZ4XfJAXkzfzzcfRKd+SalkgHXOKOAhxqlhHgQ
+         V1SM0m5nq2pQBoktRVl1X3TADwVGw68gQTnxbkgl/4Ys1lUtjCYE6YOc6zJjNuYpT6Oi
+         cumGXilNIqaAVXq/H8sUmOpuXNhTWtrjfr3qo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xSVHWYbzu3UQ8PBlLDNLl6dehpYO4ZB4CwIyD75ZWAE=;
+        b=lOs3lZuXYh2yslWPQI5VurlgrIhewEMVmCUNDRVLNKamUiUETZAjcC9tBNVALfG2PL
+         +jCFLFwoObnsl4eAKzi4A6am8kVuxcjiqCix8kL8UTk62OYxeTRI/BAqTrcALy9936u7
+         8bGwBqN6eUFQATI3cucavrxUd5miciV7UFhmphp0HGT6k+SG5GKCicUZ8Zpe2zJiIH5M
+         ADZkDbMVfXLlypjbqK5RQ2WIzYAlmOOCnOMx24wXTY3sMTQ6D7Ot+rYseY62A5gR2HS8
+         PTgyNSyjr+cXEoOZuvKTTxk7kGZKLdiE1i5Xi8LwssF+dpYpjLfca4lnPlhmRAfhoZkY
+         luOA==
+X-Gm-Message-State: AOAM533l5zNoyypmmUQxigbYQU/hXfwsGt2TzdZYOzzr8tEHqV2/B+Nd
+        brW2sMMexlVyQLFSPKii/SleiCwQNaqJXg==
+X-Google-Smtp-Source: ABdhPJx4hoFGxBbhjGjJgkUcaNrK/zaYB2hP/9BF0mliqh9KQjOuINEXZv8SbDi+E+g2dBXuZW0i+g==
+X-Received: by 2002:ac2:4154:: with SMTP id c20mr2570403lfi.236.1600191009297;
+        Tue, 15 Sep 2020 10:30:09 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id y21sm4025543lff.155.2020.09.15.10.30.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 10:30:07 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id y17so3959631lfa.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:30:06 -0700 (PDT)
+X-Received: by 2002:a19:521a:: with SMTP id m26mr7168489lfb.133.1600191006488;
+ Tue, 15 Sep 2020 10:30:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+ <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
+ <20200915062253.GA26275@gondor.apana.org.au> <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
+ <87een35woz.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87een35woz.fsf@nanos.tec.linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 15 Sep 2020 10:29:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg_koVS=8bYurGCZ8zs=zDH5cOKVzFdoj4AkUWEW9mKjA@mail.gmail.com>
+Message-ID: <CAHk-=wg_koVS=8bYurGCZ8zs=zDH5cOKVzFdoj4AkUWEW9mKjA@mail.gmail.com>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
         Jani Nikula <jani.nikula@linux.intel.com>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RFC 5/5] drm/dp: Revert "drm/dp: Introduce EDID-based quirks"
-Date:   Tue, 15 Sep 2020 13:29:39 -0400
-Message-Id: <20200915172939.2810538-6-lyude@redhat.com>
-In-Reply-To: <20200915172939.2810538-1-lyude@redhat.com>
-References: <20200915172939.2810538-1-lyude@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 0883ce8146ed6074c76399f4e70dbed788582e12. Originally
-these quirks were added because of the issues with using the eDP
-backlight interfaces on certain laptop panels, which made it impossible
-to properly probe for DPCD backlight support without having a whitelist
-for panels that we know have working VESA backlight control interfaces
-over DPCD. As well, it should be noted it was impossible to use the
-normal sink OUI for recognizing these panels as none of them actually
-filled out their OUIs, hence needing to resort to checking EDIDs.
+On Tue, Sep 15, 2020 at 12:24 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Alternatively we just make highmem a bit more expensive by making these
+> maps preemptible. RT is doing this for a long time and it's not that
+> horrible.
 
-At the time we weren't really sure why certain panels had issues with
-DPCD backlight controls, but we eventually figured out that there was a
-second interface that these problematic laptop panels actually did work
-with and advertise properly: Intel's proprietary backlight interface for
-HDR panels. So far the testing we've done hasn't brought any panels to
-light that advertise this interface and don't support it properly, which
-means we finally have a real solution to this problem.
+Ack.
 
-As a result, we now have no need for the force DPCD backlight quirk, and
-furthermore this also removes the need for any kind of EDID quirk
-checking in DRM. So, let's just revert it for now since we were the only
-driver using this.
+In fact, I've wanted to start just removing kmap support entirely. At
+some point it's not so much about "I have an old machine that wants
+HIGHMEM" but about "I have an old CPU, and I'll just run an old
+kernel".
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Cc: thaytan@noraisin.net
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
----
- drivers/gpu/drm/drm_dp_helper.c               | 82 +------------------
- drivers/gpu/drm/drm_dp_mst_topology.c         |  3 +-
- .../drm/i915/display/intel_display_types.h    |  1 -
- drivers/gpu/drm/i915/display/intel_dp.c       | 12 +--
- drivers/gpu/drm/i915/display/intel_dp_mst.c   |  3 +-
- drivers/gpu/drm/i915/display/intel_psr.c      |  2 +-
- include/drm/drm_dp_helper.h                   | 21 +----
- 7 files changed, 11 insertions(+), 113 deletions(-)
+It's not that 32-bit is irrelevant, it's that 32-bit with large
+amounts of memory is irrelevant.
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 1e7c638873c82..7138655bfc9d0 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -823,7 +823,7 @@ bool drm_dp_read_sink_count_cap(struct drm_connector *connector,
- 	return connector->connector_type != DRM_MODE_CONNECTOR_eDP &&
- 		dpcd[DP_DPCD_REV] >= DP_DPCD_REV_11 &&
- 		dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DWN_STRM_PORT_PRESENT &&
--		!drm_dp_has_quirk(desc, 0, DP_DPCD_QUIRK_NO_SINK_COUNT);
-+		!drm_dp_has_quirk(desc, DP_DPCD_QUIRK_NO_SINK_COUNT);
- }
- EXPORT_SYMBOL(drm_dp_read_sink_count_cap);
- 
-@@ -1544,86 +1544,6 @@ drm_dp_get_quirks(const struct drm_dp_dpcd_ident *ident, bool is_branch)
- #undef DEVICE_ID_ANY
- #undef DEVICE_ID
- 
--struct edid_quirk {
--	u8 mfg_id[2];
--	u8 prod_id[2];
--	u32 quirks;
--};
--
--#define MFG(first, second) { (first), (second) }
--#define PROD_ID(first, second) { (first), (second) }
--
--/*
-- * Some devices have unreliable OUIDs where they don't set the device ID
-- * correctly, and as a result we need to use the EDID for finding additional
-- * DP quirks in such cases.
-- */
--static const struct edid_quirk edid_quirk_list[] = {
--	/* Optional 4K AMOLED panel in the ThinkPad X1 Extreme 2nd Generation
--	 * only supports DPCD backlight controls
--	 */
--	{ MFG(0x4c, 0x83), PROD_ID(0x41, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	/*
--	 * Some Dell CML 2020 systems have panels support both AUX and PWM
--	 * backlight control, and some only support AUX backlight control. All
--	 * said panels start up in AUX mode by default, and we don't have any
--	 * support for disabling HDR mode on these panels which would be
--	 * required to switch to PWM backlight control mode (plus, I'm not
--	 * even sure we want PWM backlight controls over DPCD backlight
--	 * controls anyway...). Until we have a better way of detecting these,
--	 * force DPCD backlight mode on all of them.
--	 */
--	{ MFG(0x06, 0xaf), PROD_ID(0x9b, 0x32), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x06, 0xaf), PROD_ID(0xeb, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x4d, 0x10), PROD_ID(0xc7, 0x14), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x4d, 0x10), PROD_ID(0xe6, 0x14), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x4c, 0x83), PROD_ID(0x47, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--};
--
--#undef MFG
--#undef PROD_ID
--
--/**
-- * drm_dp_get_edid_quirks() - Check the EDID of a DP device to find additional
-- * DP-specific quirks
-- * @edid: The EDID to check
-- *
-- * While OUIDs are meant to be used to recognize a DisplayPort device, a lot
-- * of manufacturers don't seem to like following standards and neglect to fill
-- * the dev-ID in, making it impossible to only use OUIDs for determining
-- * quirks in some cases. This function can be used to check the EDID and look
-- * up any additional DP quirks. The bits returned by this function correspond
-- * to the quirk bits in &drm_dp_quirk.
-- *
-- * Returns: a bitmask of quirks, if any. The driver can check this using
-- * drm_dp_has_quirk().
-- */
--u32 drm_dp_get_edid_quirks(const struct edid *edid)
--{
--	const struct edid_quirk *quirk;
--	u32 quirks = 0;
--	int i;
--
--	if (!edid)
--		return 0;
--
--	for (i = 0; i < ARRAY_SIZE(edid_quirk_list); i++) {
--		quirk = &edid_quirk_list[i];
--		if (memcmp(quirk->mfg_id, edid->mfg_id,
--			   sizeof(edid->mfg_id)) == 0 &&
--		    memcmp(quirk->prod_id, edid->prod_code,
--			   sizeof(edid->prod_code)) == 0)
--			quirks |= quirk->quirks;
--	}
--
--	DRM_DEBUG_KMS("DP sink: EDID mfg %*phD prod-ID %*phD quirks: 0x%04x\n",
--		      (int)sizeof(edid->mfg_id), edid->mfg_id,
--		      (int)sizeof(edid->prod_code), edid->prod_code, quirks);
--
--	return quirks;
--}
--EXPORT_SYMBOL(drm_dp_get_edid_quirks);
--
- /**
-  * drm_dp_read_desc - read sink/branch descriptor from DPCD
-  * @aux: DisplayPort AUX channel
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index e875425336406..f21516142dd50 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -5824,8 +5824,7 @@ struct drm_dp_aux *drm_dp_mst_dsc_aux_for_port(struct drm_dp_mst_port *port)
- 	if (drm_dp_read_desc(port->mgr->aux, &desc, true))
- 		return NULL;
- 
--	if (drm_dp_has_quirk(&desc, 0,
--			     DP_DPCD_QUIRK_DSC_WITHOUT_VIRTUAL_DPCD) &&
-+	if (drm_dp_has_quirk(&desc, DP_DPCD_QUIRK_DSC_WITHOUT_VIRTUAL_DPCD) &&
- 	    port->mgr->dpcd[DP_DPCD_REV] >= DP_DPCD_REV_14 &&
- 	    port->parent == port->mgr->mst_primary) {
- 		u8 downstreamport;
-diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
-index 9d540368bac89..0bf378903644c 100644
---- a/drivers/gpu/drm/i915/display/intel_display_types.h
-+++ b/drivers/gpu/drm/i915/display/intel_display_types.h
-@@ -1322,7 +1322,6 @@ struct intel_dp {
- 	int max_link_rate;
- 	/* sink or branch descriptor */
- 	struct drm_dp_desc desc;
--	u32 edid_quirks;
- 	struct drm_dp_aux aux;
- 	u32 aux_busy_last_status;
- 	u8 train_set[4];
-diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-index b591672ec4eab..27436a60bc328 100644
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -162,8 +162,7 @@ static void intel_dp_set_sink_rates(struct intel_dp *intel_dp)
- 	};
- 	int i, max_rate;
- 
--	if (drm_dp_has_quirk(&intel_dp->desc, 0,
--			     DP_DPCD_QUIRK_CAN_DO_MAX_LINK_RATE_3_24_GBPS)) {
-+	if (drm_dp_has_quirk(&intel_dp->desc, DP_DPCD_QUIRK_CAN_DO_MAX_LINK_RATE_3_24_GBPS)) {
- 		/* Needed, e.g., for Apple MBP 2017, 15 inch eDP Retina panel */
- 		static const int quirk_rates[] = { 162000, 270000, 324000 };
- 
-@@ -2630,8 +2629,7 @@ intel_dp_compute_config(struct intel_encoder *encoder,
- 	struct intel_connector *intel_connector = intel_dp->attached_connector;
- 	struct intel_digital_connector_state *intel_conn_state =
- 		to_intel_digital_connector_state(conn_state);
--	bool constant_n = drm_dp_has_quirk(&intel_dp->desc, 0,
--					   DP_DPCD_QUIRK_CONSTANT_N);
-+	bool constant_n = drm_dp_has_quirk(&intel_dp->desc, DP_DPCD_QUIRK_CONSTANT_N);
- 	int ret = 0, output_bpp;
- 
- 	if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv) && port != PORT_A)
-@@ -6103,7 +6101,6 @@ intel_dp_set_edid(struct intel_dp *intel_dp)
- 
- 	intel_dp->has_audio = drm_detect_monitor_audio(edid);
- 	drm_dp_cec_set_edid(&intel_dp->aux, edid);
--	intel_dp->edid_quirks = drm_dp_get_edid_quirks(edid);
- }
- 
- static void
-@@ -6116,7 +6113,6 @@ intel_dp_unset_edid(struct intel_dp *intel_dp)
- 	intel_connector->detect_edid = NULL;
- 
- 	intel_dp->has_audio = false;
--	intel_dp->edid_quirks = 0;
- }
- 
- static int
-@@ -7467,8 +7463,8 @@ static bool intel_edp_init_connector(struct intel_dp *intel_dp,
- 	edid = drm_get_edid(connector, &intel_dp->aux.ddc);
- 	if (edid) {
- 		if (drm_add_edid_modes(connector, edid)) {
--			drm_connector_update_edid_property(connector, edid);
--			intel_dp->edid_quirks = drm_dp_get_edid_quirks(edid);
-+			drm_connector_update_edid_property(connector,
-+								edid);
- 		} else {
- 			kfree(edid);
- 			edid = ERR_PTR(-EINVAL);
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-index 64d885539e94a..c8b9ffa388cf5 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-@@ -52,8 +52,7 @@ static int intel_dp_mst_compute_link_config(struct intel_encoder *encoder,
- 	struct drm_i915_private *i915 = to_i915(connector->base.dev);
- 	const struct drm_display_mode *adjusted_mode =
- 		&crtc_state->hw.adjusted_mode;
--	bool constant_n = drm_dp_has_quirk(&intel_dp->desc, 0,
--					   DP_DPCD_QUIRK_CONSTANT_N);
-+	bool constant_n = drm_dp_has_quirk(&intel_dp->desc, DP_DPCD_QUIRK_CONSTANT_N);
- 	int bpp, slots = -EINVAL;
- 
- 	crtc_state->lane_count = limits->max_lane_count;
-diff --git a/drivers/gpu/drm/i915/display/intel_psr.c b/drivers/gpu/drm/i915/display/intel_psr.c
-index 8a9d0bdde1bfb..c7403406e2783 100644
---- a/drivers/gpu/drm/i915/display/intel_psr.c
-+++ b/drivers/gpu/drm/i915/display/intel_psr.c
-@@ -310,7 +310,7 @@ void intel_psr_init_dpcd(struct intel_dp *intel_dp)
- 	drm_dbg_kms(&dev_priv->drm, "eDP panel supports PSR version %x\n",
- 		    intel_dp->psr_dpcd[0]);
- 
--	if (drm_dp_has_quirk(&intel_dp->desc, 0, DP_DPCD_QUIRK_NO_PSR)) {
-+	if (drm_dp_has_quirk(&intel_dp->desc, DP_DPCD_QUIRK_NO_PSR)) {
- 		drm_dbg_kms(&dev_priv->drm,
- 			    "PSR support not currently available for this panel\n");
- 		return;
-diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-index 5c45195ced321..09dd81007dba4 100644
---- a/include/drm/drm_dp_helper.h
-+++ b/include/drm/drm_dp_helper.h
-@@ -1671,16 +1671,13 @@ struct drm_dp_desc {
- 
- int drm_dp_read_desc(struct drm_dp_aux *aux, struct drm_dp_desc *desc,
- 		     bool is_branch);
--u32 drm_dp_get_edid_quirks(const struct edid *edid);
- 
- /**
-  * enum drm_dp_quirk - Display Port sink/branch device specific quirks
-  *
-  * Display Port sink and branch devices in the wild have a variety of bugs, try
-  * to collect them here. The quirks are shared, but it's up to the drivers to
-- * implement workarounds for them. Note that because some devices have
-- * unreliable OUIDs, the EDID of sinks should also be checked for quirks using
-- * drm_dp_get_edid_quirks().
-+ * implement workarounds for them.
-  */
- enum drm_dp_quirk {
- 	/**
-@@ -1712,16 +1709,6 @@ enum drm_dp_quirk {
- 	 * The DSC caps can be read from the physical aux instead.
- 	 */
- 	DP_DPCD_QUIRK_DSC_WITHOUT_VIRTUAL_DPCD,
--	/**
--	 * @DP_QUIRK_FORCE_DPCD_BACKLIGHT:
--	 *
--	 * The device is telling the truth when it says that it uses DPCD
--	 * backlight controls, even if the system's firmware disagrees. This
--	 * quirk should be checked against both the ident and panel EDID.
--	 * When present, the driver should honor the DPCD backlight
--	 * capabilities advertised.
--	 */
--	DP_QUIRK_FORCE_DPCD_BACKLIGHT,
- 	/**
- 	 * @DP_DPCD_QUIRK_CAN_DO_MAX_LINK_RATE_3_24_GBPS:
- 	 *
-@@ -1734,16 +1721,14 @@ enum drm_dp_quirk {
- /**
-  * drm_dp_has_quirk() - does the DP device have a specific quirk
-  * @desc: Device descriptor filled by drm_dp_read_desc()
-- * @edid_quirks: Optional quirk bitmask filled by drm_dp_get_edid_quirks()
-  * @quirk: Quirk to query for
-  *
-  * Return true if DP device identified by @desc has @quirk.
-  */
- static inline bool
--drm_dp_has_quirk(const struct drm_dp_desc *desc, u32 edid_quirks,
--		 enum drm_dp_quirk quirk)
-+drm_dp_has_quirk(const struct drm_dp_desc *desc, enum drm_dp_quirk quirk)
- {
--	return (desc->quirks | edid_quirks) & BIT(quirk);
-+	return desc->quirks & BIT(quirk);
- }
- 
- #ifdef CONFIG_DRM_DP_CEC
--- 
-2.26.2
+Last time this was discussed, iirc the main issue was some
+questionable old ARM chips that were still very common in embedded
+environments, even with large memory.
 
+But we could definitely start de-emphasizing HIGHMEM.
+
+                     Linus
