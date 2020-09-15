@@ -2,118 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3BA26B2E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CBB26B2E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgIOWzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727304AbgIOP1W (ORCPT
+        id S1727406AbgIOWzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:55:02 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:36754 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727408AbgIOP1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:27:22 -0400
-Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E4AC061351;
-        Tue, 15 Sep 2020 08:26:27 -0700 (PDT)
-Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
-        by mail.nic.cz (Postfix) with ESMTP id 0ABB9140A47;
-        Tue, 15 Sep 2020 17:26:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1600183583; bh=dv65+eYU8SaWgkfiQtVpIM3HXhYU67+hTnWMa0Ts9NI=;
-        h=From:To:Date;
-        b=SWjmxoV4EYZG3f5jRX9ldVCv4wr+nX/2ntXxCUE7/fY4HEcJCD4cXaKFCHYTZKAF6
-         6+IZobur0QfblPQr2RVm2O9Ldn5McHTiw0AUqAlm1YHHCGnYiyp6kCTxjeuL1I0BHd
-         OE5FEjh7OakE+d7S9eoWLDTgSMIpvspIjCuwuRJc=
-From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
-To:     linux-leds@vger.kernel.org
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
-Subject: [PATCH leds + devicetree v2 0/2] Parse DT property `trigger-sources` for netdev LED trigger
-Date:   Tue, 15 Sep 2020 17:26:14 +0200
-Message-Id: <20200915152616.20591-1-marek.behun@nic.cz>
-X-Mailer: git-send-email 2.26.2
+        Tue, 15 Sep 2020 11:27:23 -0400
+Received: by mail-io1-f68.google.com with SMTP id d190so4533880iof.3;
+        Tue, 15 Sep 2020 08:27:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dPYwHeQQ7IP3X54VVPhQeqc8s7HY2r7mj5Uv/WrGFAY=;
+        b=oRnHO+Mib9baloxWE6jo2kgWWdJTnJatKHAshKFTpsT+M5rVHg9FpJWwT7DOv2h4V6
+         kfA1ZLdiMx0G2iui6CK2rq4COgZ5N42PzcpDKIgiUev30CRdNHKkPLZ3bLjpDqZKqOIv
+         oKX09IViIRaNoT0hHooJGrRrDHaNv6n0/N3wVI5gaWfpRCAFgo4CC28zHgjOxxgCAw/0
+         FgQSl0+m/5/CyaEbAAZ1+c0xiYzEPRJj7QHamnVGhAqn59XHWKkN8Q0oYtlvL6Yv3irZ
+         WTR4to70xwpXdskawUF1HjZ7wwCUxzeEUp2syOTY2QRoLcAa5nryDQoh557dwCwaq6QK
+         qblw==
+X-Gm-Message-State: AOAM531HS/g5AbhEe3/iNVCkxuam0MgPL8sLvsmxPaV0LKZIoyUMONG2
+        NYd3PeeKrGLpgXuTM86BTg==
+X-Google-Smtp-Source: ABdhPJxDjUOE6+zDP2a0Ae0W9UtEpGt1+7MYgRW/yuvD1nijynqc1rDIB9fdJf9BCdcuWC3RKcVucA==
+X-Received: by 2002:a05:6602:22cf:: with SMTP id e15mr15463385ioe.114.1600183642802;
+        Tue, 15 Sep 2020 08:27:22 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id c85sm9033041ilg.10.2020.09.15.08.27.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 08:27:22 -0700 (PDT)
+Received: (nullmailer pid 1978036 invoked by uid 1000);
+        Tue, 15 Sep 2020 15:27:20 -0000
+Date:   Tue, 15 Sep 2020 09:27:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     kishon@ti.com, devicetree@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: phy: add Amlogic AXG MIPI D-PHY bindings
+Message-ID: <20200915152720.GA1975674@bogus>
+References: <20200907072708.26043-1-narmstrong@baylibre.com>
+ <20200907072708.26043-2-narmstrong@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Spam-Status: No, score=0.00
-X-Spamd-Bar: /
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907072708.26043-2-narmstrong@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Sep 07, 2020 at 09:27:07AM +0200, Neil Armstrong wrote:
+> The Amlogic AXg SoCs embeds a MIPI D-PHY to communicate with DSI
+> panels, this adds the bindings.
+> 
+> This D-PHY depends on a separate analog PHY.
+> 
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../bindings/phy/amlogic,axg-mipi-dphy.yaml   | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml b/Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml
+> new file mode 100644
+> index 000000000000..f7ae1135288b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2020 BayLibre, SAS
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/phy/amlogic,axg-mipi-dphy.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Amlogic AXG MIPI D-PHY
+> +
+> +maintainers:
+> +  - Neil Armstrong <narmstrong@baylibre.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - amlogic,axg-mipi-dphy
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pclk
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    items:
+> +      - const: phy
+> +
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +  phys:
+> +    maxItems: 1
+> +
+> +  phy-names:
+> +    items:
+> +      - const: analog
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - reset-names
+> +  - phys
+> +  - phy-names
+> +  - "#phy-cells"
 
-this is v2.
+additionalProperties: false
 
-Changes since v1:
-- fixed problems with v1 reported by kernel test robot
-- created helper functions of_led_count_trigger_sources and
-  of_led_get_trigger_source
+With that,
 
-Below is description from v1:
-
-The `trigger-sources` LED DT property is currently only implemented
-for ledtrig-usbport.
-
-Lets implement it for the netdev LED trigger.
-
-In this proposal the specific netdev LED trigger mode is determined
-from the `function` LED DT property.
-
-Example:
-  eth0: ethernet@30000 {
-    compatible = "xyz";
-    #trigger-source-cells = <0>;
-  };
-
-  led {
-    color = <LED_COLOR_ID_GREEN>;
-    function = LED_FUNCTION_LINK;
-    trigger-sources = <&eth0>;
-  };
-
-When led is registered, the netdev trigger is automatically activated
-and set to light the LED on if eth0 is linked.
-
-Please let me know if this binding is OK, or if the binding should
-instead of the `function` property determine the trigger settings from
-arguments of the `trigger-sources` property :
-  led {
-    color = <LED_COLOR_ID_GREEN>;
-    trigger-sources = <&eth0 (NETDEV_ATTR_LINK | NETDEV_ATTR_RX)>;
-  };
-
-I prefer the first binding, since we already have the `function`
-property. Multiple modes can be achieved by string array, but this is
-not yet implemented:
-  led {
-    color = <LED_COLOR_ID_GREEN>;
-    function = LED_FUNCTION_LINK, LED_FUNCTION_ACTIVITY;
-    trigger-sources = <&eth0>;
-  };
-
-Marek
-
-Marek Behún (2):
-  leds: trigger: add trigger sources validating method and helper
-    functions
-  leds: trigger: netdev: parse `trigger-sources` from device tree
-
- drivers/leds/led-triggers.c           | 68 ++++++++++++++++++++---
- drivers/leds/trigger/ledtrig-netdev.c | 80 ++++++++++++++++++++++++++-
- include/dt-bindings/leds/common.h     |  1 +
- include/linux/leds.h                  | 25 +++++++++
- 4 files changed, 165 insertions(+), 9 deletions(-)
-
--- 
-2.26.2
-
+Reviewed-by: Rob Herring <robh@kernel.org>
