@@ -2,112 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C43F26AEB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CE926AEC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbgIOUbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:31:42 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16935 "EHLO
+        id S1727841AbgIOUgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:36:51 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17870 "EHLO
         hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728044AbgIOU3V (ORCPT
+        with ESMTP id S1727835AbgIOUdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:29:21 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6123d90003>; Tue, 15 Sep 2020 13:28:09 -0700
+        Tue, 15 Sep 2020 16:33:42 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6124f60002>; Tue, 15 Sep 2020 13:32:54 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 15 Sep 2020 13:28:57 -0700
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 15 Sep 2020 13:33:42 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 15 Sep 2020 13:28:57 -0700
+        by hqpgpgate101.nvidia.com on Tue, 15 Sep 2020 13:33:42 -0700
 Received: from [10.21.180.184] (10.124.1.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
- 2020 20:28:48 +0000
-Subject: Re: [PATCH net-next RFC v4 10/15] net/mlx5: Add support for devlink
- reload action fw activate
+ 2020 20:33:33 +0000
+Subject: Re: [PATCH net-next RFC v4 04/15] devlink: Add reload actions stats
+ to dev get
 To:     Jiri Pirko <jiri@resnulli.us>
-CC:     Moshe Shemesh <moshe@mellanox.com>,
+CC:     Ido Schimmel <idosch@idosch.org>,
+        Moshe Shemesh <moshe@mellanox.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-11-git-send-email-moshe@mellanox.com>
- <20200914135442.GJ2236@nanopsycho.orion>
- <565e63b3-2a01-4eba-42d3-f5abc6794ee8@nvidia.com>
- <20200915133705.GR2236@nanopsycho.orion>
+ <1600063682-17313-5-git-send-email-moshe@mellanox.com>
+ <20200914134500.GH2236@nanopsycho.orion> <20200915064519.GA5390@shredder>
+ <20200915074402.GM2236@nanopsycho.orion>
+ <0d6cb0da-761b-b122-f5b1-b82320cfd5c4@nvidia.com>
+ <20200915133406.GQ2236@nanopsycho.orion>
 From:   Moshe Shemesh <moshe@nvidia.com>
-Message-ID: <5c5689d9-c2ba-7656-10f3-1d5f33fc6a2e@nvidia.com>
-Date:   Tue, 15 Sep 2020 23:28:44 +0300
+Message-ID: <bcd28773-0027-11f5-1fd9-0a793f0a3c3a@nvidia.com>
+Date:   Tue, 15 Sep 2020 23:33:30 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200915133705.GR2236@nanopsycho.orion>
+In-Reply-To: <20200915133406.GQ2236@nanopsycho.orion>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-Originating-IP: [10.124.1.5]
 X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
  HQMAIL107.nvidia.com (172.20.187.13)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600201690; bh=04mquwvw+nsnJ9vxBd1TQjzQY+onGs1HBC0MTcuyVQE=;
+        t=1600201974; bh=9UrYNAuwQKcNag9dW5Ply9EIO8Nad/nvK5+/xjza9a4=;
         h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
          User-Agent:MIME-Version:In-Reply-To:Content-Type:
          Content-Transfer-Encoding:Content-Language:X-Originating-IP:
          X-ClientProxiedBy;
-        b=YULuzCP7FivE9eQRhiWC/QCJW5DpcfZV+gsC3rforTg8OnzTKIqYbG+HV2YKlxfCz
-         URpZSKUpScYtSkynsc57iJzLbOf3RAYG0EPLYIafio1t/LqK31HArD3NVqdGA5q4E8
-         s6Qqg9yQ1BdsYYlM0+aa8xO8X7qdS4+/3A60LFDuZ8Nj59oTf2cuQP/IWawWEF2llQ
-         hkqi9BWKemsAv4yJOImDYPcV8HBPOUmhSV+1Oc56x9M26++N3pjQx+TDv/yqQAwAjk
-         kgAKxdfkyKC6Vlt62Y8jxPCn7zPMky2r4OYTaMEyZso6+gyDtCDV8ND7v/XM+I+rBk
-         L6ezSbVR/jypQ==
+        b=SPiN9yIJoeNijWWwLop+VnoRYo3R4agX+WpOULBR7Ct9zZmDfmW6nzr+p1uFRurjc
+         kNeZ8rhNQEadfADyWn0I5gJGEqXyVMyJ+Z6Xyx0813Pc/+yiv+s+TtBnAuf0c/ujDa
+         +UKFplnGCxW339r38FKFuK43xVJHfaMXjfv08Qxnw792bN+18QbUlrTXi9LE8pgzy9
+         O6R8pvSSH/RyaYnPfCVvVV1N010z/ShyvYNMadPu1TGy+GNbK7A/hLWzEp342VYyBM
+         K2rv0EZXK1cFWgRLcFWbIhz80rkObRhoEPQxaStlzI+kWH2TXWbssfLPBmRYNqXBdi
+         HhugGEt7no4ZA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/15/2020 4:37 PM, Jiri Pirko wrote:
-> Tue, Sep 15, 2020 at 02:44:02PM CEST, moshe@nvidia.com wrote:
->> On 9/14/2020 4:54 PM, Jiri Pirko wrote:
->>> Mon, Sep 14, 2020 at 08:07:57AM CEST, moshe@mellanox.com wrote:
->>>
->>> [..]
->>>
->>>> +static void mlx5_fw_reset_complete_reload(struct mlx5_core_dev *dev)
->>>> +{
->>>> +	struct mlx5_fw_reset *fw_reset =3D dev->priv.fw_reset;
->>>> +
->>>> +	/* if this is the driver that initiated the fw reset, devlink comple=
-ted the reload */
->>>> +	if (test_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flag=
-s)) {
->>>> +		complete(&fw_reset->done);
->>>> +	} else {
->>>> +		mlx5_load_one(dev, false);
->>>> +		devlink_reload_implicit_actions_performed(priv_to_devlink(dev),
->>>> +							  DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE,
->>>> +							  BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
->>>> +							  BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE));
->>> Hmm, who originated the reset? Devlink_reload of the same devlink
->>> instance?
+On 9/15/2020 4:34 PM, Jiri Pirko wrote:
+> Tue, Sep 15, 2020 at 02:31:38PM CEST, moshe@nvidia.com wrote:
+>> On 9/15/2020 10:44 AM, Jiri Pirko wrote:
+>>> Tue, Sep 15, 2020 at 08:45:19AM CEST, idosch@idosch.org wrote:
+>>>> On Mon, Sep 14, 2020 at 03:45:00PM +0200, Jiri Pirko wrote:
+>>>>> Mon, Sep 14, 2020 at 08:07:51AM CEST, moshe@mellanox.com wrote:
+>>>>>> Expose devlink reload actions stats to the user through devlink dev
+>>>>>> get command.
+>>>>>>
+>>>>>> Examples:
+>>>>>> $ devlink dev show
+>>>>>> pci/0000:82:00.0:
+>>>>>>    reload_action_stats:
+>>>>>>      driver_reinit 2
+>>>>>>      fw_activate 1
+>>>>>>      driver_reinit_no_reset 0
+>>>>>>      fw_activate_no_reset 0
+>>>>>> pci/0000:82:00.1:
+>>>>>>    reload_action_stats:
+>>>>>>      driver_reinit 1
+>>>>>>      fw_activate 1
+>>>>>>      driver_reinit_no_reset 0
+>>>>>>      fw_activate_no_reset 0
+>>>>> I would rather have something like:
+>>>>>      stats:
+>>>>>        reload_action:
+>>>>>          driver_reinit 1
+>>>>>          fw_activate 1
+>>>>>          driver_reinit_no_reset 0
+>>>>>          fw_activate_no_reset 0
+>>>>>
+>>>>> Then we can easily extend and add other stats in the tree.
 >>
->> Not the same devlink instance for sure. I defer it by the flag above
->> MLX5_FW_RESET_FLAG_PENDING_COMP. If the flag set, I set complete to the
->> reload_down() waiting for it.
-> Hmm, thinking about the stats, as
-> devlink_reload_implicit_actions_performed() is called only in case
-> another instance does the reload, shouldn't it be a separate set of
-> stats? I think that the user would like to distinguish local and remote
-> reload, don't you think?
+>> Sure, I will add it.
+> Could you please checkout the metrics patchset and figure out how to
+> merge that with your usecase?
 >
 
-Possible, it will double the counters, but it will give more info.
+I will check, I will discuss with Ido how it will fit.
 
-So actually, if devlink_reload is not supported by driver, I should hold=20
-and show only the remote stats or all stats always ?
-
-How such remote counter should look like ? something like=20
-remote_fw_activate=C2=A0 while the local is just fw_activate ?
-
->>
->>> [..]
+>>>>> Also, I wonder if these stats could be somehow merged with Ido's metrics
+>>>>> work:
+>>>>> https://github.com/idosch/linux/commits/submit/devlink_metric_rfc_v1
+>>>>>
+>>>>> Ido, would it make sense?
+>>>> I guess. My original idea for devlink-metric was to expose
+>>>> design-specific metrics to user space where the entity registering the
+>>>> metrics is the device driver. In this case the entity would be devlink
+>>>> itself and it would be auto-registered for each device.
+>>> Yeah, the usecase is different, but it is still stats, right.
+>>>
+>>>
+>>>>>> $ devlink dev show -jp
+>>>>>> {
+>>>>>>      "dev": {
+>>>>>>          "pci/0000:82:00.0": {
+>>>>>>              "reload_action_stats": [ {
+>>>>>>                      "driver_reinit": 2
+>>>>>>                  },{
+>>>>>>                      "fw_activate": 1
+>>>>>>                  },{
+>>>>>>                      "driver_reinit_no_reset": 0
+>>>>>>                  },{
+>>>>>>                      "fw_activate_no_reset": 0
+>>>>>>                  } ]
+>>>>>>          },
+>>>>>>          "pci/0000:82:00.1": {
+>>>>>>              "reload_action_stats": [ {
+>>>>>>                      "driver_reinit": 1
+>>>>>>                  },{
+>>>>>>                      "fw_activate": 1
+>>>>>>                  },{
+>>>>>>                      "driver_reinit_no_reset": 0
+>>>>>>                  },{
+>>>>>>                      "fw_activate_no_reset": 0
+>>>>>>                  } ]
+>>>>>>          }
+>>>>>>      }
+>>>>>> }
+>>>>>>
+>>>>> [..]
