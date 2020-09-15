@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A5F26B692
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4241E26B78F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727390AbgIPAHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:07:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43006 "EHLO mail.kernel.org"
+        id S1727416AbgIPAZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:25:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726964AbgIOO2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:28:37 -0400
+        id S1726341AbgIOORJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:17:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EB2D224DE;
-        Tue, 15 Sep 2020 14:20:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BFCD21D41;
+        Tue, 15 Sep 2020 14:15:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179626;
-        bh=i7L02jWbdrrJ44cD2iixZ98rASUHpzgH9xnh3G5IAsE=;
+        s=default; t=1600179315;
+        bh=hy4Cg3Bcba56r9+MqDFiwn1/6C4+ITl2oHpjXOmdoNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A0xtiEeTPIp3YYLNQoUEzzYbPzlyVIXikFNuVWmjIwsyzDz5nIWXFbpxIUhfqnDG0
-         lUmsrcc6Lk3luvwzC4YTHjlDr2kod3z/EmdKMei7zODdLO/ucqvJiSYh54V1HAWqsp
-         XjqcBs/704gYOwxodvjhu1A6CfK1/sxO42/zz9rc=
+        b=1Nygd3K4OZySLYiN6FPb3hUaHNiOzaaljukDb/t9hDyYCSQsaus9javX++RVLBNoH
+         TrJ7CIsHSbiYVaeHxb7cHikvlroSvIwSloaFEUG83XAagAcLoRVGugR2BqKWJD5UUJ
+         1C+jK3bbTUADCU0/bonpAFC+SNWCLef+bfG855WM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 054/132] nvme-tcp: serialize controller teardown sequences
-Date:   Tue, 15 Sep 2020 16:12:36 +0200
-Message-Id: <20200915140646.825900915@linuxfoundation.org>
+Subject: [PATCH 4.19 12/78] mmc: sdhci-msm: Add retries when all tuning phases are found valid
+Date:   Tue, 15 Sep 2020 16:12:37 +0200
+Message-Id: <20200915140634.150306549@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
-References: <20200915140644.037604909@linuxfoundation.org>
+In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
+References: <20200915140633.552502750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,93 +46,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit d4d61470ae48838f49e668503e840e1520b97162 ]
+[ Upstream commit 9d5dcefb7b114d610aeb2371f6a6f119af316e43 ]
 
-In the timeout handler we may need to complete a request because the
-request that timed out may be an I/O that is a part of a serial sequence
-of controller teardown or initialization. In order to complete the
-request, we need to fence any other context that may compete with us
-and complete the request that is timing out.
+As the comments in this patch say, if we tune and find all phases are
+valid it's _almost_ as bad as no phases being found valid.  Probably
+all phases are not really reliable but we didn't detect where the
+unreliable place is.  That means we'll essentially be guessing and
+hoping we get a good phase.
 
-In this case, we could have a potential double completion in case
-a hard-irq or a different competing context triggered error recovery
-and is running inflight request cancellation concurrently with the
-timeout handler.
+This is not just a problem in theory.  It was causing real problems on
+a real board.  On that board, most often phase 10 is found as the only
+invalid phase, though sometimes 10 and 11 are invalid and sometimes
+just 11.  Some percentage of the time, however, all phases are found
+to be valid.  When this happens, the current logic will decide to use
+phase 11.  Since phase 11 is sometimes found to be invalid, this is a
+bad choice.  Sure enough, when phase 11 is picked we often get mmc
+errors later in boot.
 
-Protect using a ctrl teardown_lock to serialize contexts that may
-complete a cancelled request due to error recovery or a reset.
+I have seen cases where all phases were found to be valid 3 times in a
+row, so increase the retry count to 10 just to be extra sure.
 
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Fixes: 415b5a75da43 ("mmc: sdhci-msm: Add platform_execute_tuning implementation")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20200827075809.1.If179abf5ecb67c963494db79c3bc4247d987419b@changeid
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/tcp.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci-msm.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 0166ff0e4738e..a94c80727de1e 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -110,6 +110,7 @@ struct nvme_tcp_ctrl {
- 	struct sockaddr_storage src_addr;
- 	struct nvme_ctrl	ctrl;
- 
-+	struct mutex		teardown_lock;
- 	struct work_struct	err_work;
- 	struct delayed_work	connect_work;
- 	struct nvme_tcp_request async_req;
-@@ -1438,7 +1439,6 @@ static void nvme_tcp_stop_queue(struct nvme_ctrl *nctrl, int qid)
- 
- 	if (!test_and_clear_bit(NVME_TCP_Q_LIVE, &queue->flags))
- 		return;
--
- 	__nvme_tcp_stop_queue(queue);
- }
- 
-@@ -1785,6 +1785,7 @@ out_free_queue:
- static void nvme_tcp_teardown_admin_queue(struct nvme_ctrl *ctrl,
- 		bool remove)
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index 643fd1a1b88be..4970cd40813b2 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -1060,7 +1060,7 @@ static void sdhci_msm_set_cdr(struct sdhci_host *host, bool enable)
+ static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
  {
-+	mutex_lock(&to_tcp_ctrl(ctrl)->teardown_lock);
- 	blk_mq_quiesce_queue(ctrl->admin_q);
- 	nvme_tcp_stop_queue(ctrl, 0);
- 	if (ctrl->admin_tagset) {
-@@ -1795,13 +1796,16 @@ static void nvme_tcp_teardown_admin_queue(struct nvme_ctrl *ctrl,
- 	if (remove)
- 		blk_mq_unquiesce_queue(ctrl->admin_q);
- 	nvme_tcp_destroy_admin_queue(ctrl, remove);
-+	mutex_unlock(&to_tcp_ctrl(ctrl)->teardown_lock);
- }
+ 	struct sdhci_host *host = mmc_priv(mmc);
+-	int tuning_seq_cnt = 3;
++	int tuning_seq_cnt = 10;
+ 	u8 phase, tuned_phases[16], tuned_phase_cnt = 0;
+ 	int rc;
+ 	struct mmc_ios ios = host->mmc->ios;
+@@ -1124,6 +1124,22 @@ retry:
+ 	} while (++phase < ARRAY_SIZE(tuned_phases));
  
- static void nvme_tcp_teardown_io_queues(struct nvme_ctrl *ctrl,
- 		bool remove)
- {
-+	mutex_lock(&to_tcp_ctrl(ctrl)->teardown_lock);
- 	if (ctrl->queue_count <= 1)
--		return;
-+		goto out;
-+	blk_mq_quiesce_queue(ctrl->admin_q);
- 	nvme_start_freeze(ctrl);
- 	nvme_stop_queues(ctrl);
- 	nvme_tcp_stop_io_queues(ctrl);
-@@ -1813,6 +1817,8 @@ static void nvme_tcp_teardown_io_queues(struct nvme_ctrl *ctrl,
- 	if (remove)
- 		nvme_start_queues(ctrl);
- 	nvme_tcp_destroy_io_queues(ctrl, remove);
-+out:
-+	mutex_unlock(&to_tcp_ctrl(ctrl)->teardown_lock);
- }
- 
- static void nvme_tcp_reconnect_or_remove(struct nvme_ctrl *ctrl)
-@@ -2311,6 +2317,7 @@ static struct nvme_ctrl *nvme_tcp_create_ctrl(struct device *dev,
- 			nvme_tcp_reconnect_ctrl_work);
- 	INIT_WORK(&ctrl->err_work, nvme_tcp_error_recovery_work);
- 	INIT_WORK(&ctrl->ctrl.reset_work, nvme_reset_ctrl_work);
-+	mutex_init(&ctrl->teardown_lock);
- 
- 	if (!(opts->mask & NVMF_OPT_TRSVCID)) {
- 		opts->trsvcid =
+ 	if (tuned_phase_cnt) {
++		if (tuned_phase_cnt == ARRAY_SIZE(tuned_phases)) {
++			/*
++			 * All phases valid is _almost_ as bad as no phases
++			 * valid.  Probably all phases are not really reliable
++			 * but we didn't detect where the unreliable place is.
++			 * That means we'll essentially be guessing and hoping
++			 * we get a good phase.  Better to try a few times.
++			 */
++			dev_dbg(mmc_dev(mmc), "%s: All phases valid; try again\n",
++				mmc_hostname(mmc));
++			if (--tuning_seq_cnt) {
++				tuned_phase_cnt = 0;
++				goto retry;
++			}
++		}
++
+ 		rc = msm_find_most_appropriate_phase(host, tuned_phases,
+ 						     tuned_phase_cnt);
+ 		if (rc < 0)
 -- 
 2.25.1
 
