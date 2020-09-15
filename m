@@ -2,127 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBA826A6EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4914926A6FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgIOOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:18:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12273 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726807AbgIOOI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:08:28 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 688A3C371012733F450F;
-        Tue, 15 Sep 2020 21:19:37 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 15 Sep 2020 21:19:29 +0800
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-To:     <maz@kernel.org>, <james.morse@arm.com>,
-        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Xiaofei Tan <tanxiaofei@huawei.com>
-Subject: [PATCH] KVM: arm64: fix doc warnings in mmu code
-Date:   Tue, 15 Sep 2020 21:18:10 +0800
-Message-ID: <1600175890-7435-1-git-send-email-tanxiaofei@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726375AbgIOOYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:24:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42410 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726815AbgIOOOD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:14:03 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FCwapS143128;
+        Tue, 15 Sep 2020 09:22:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=lbjYXLezcfX0TD+v0MomMJVwhn27P9pwl9E0ixp99d4=;
+ b=OEpnKORJXtDo8nWg3yXyT11N8FWlA9F8xpuqdd4nOnSU2HuqKL+jOIARkBiHlK18RIyQ
+ vre/nWR9r+OCGfJdUz9r7UIXOKdUwhEVttsw8jQ3wqzzv+T26R7pUpwCd+/S3p33m1mP
+ mYPJMeHFFTLyhizIaDaA8jGXMfWw6IYwX4Ol0v69YAHQ0qrkiooAS42Pt4PG/GxWJrZT
+ xok9q2U4afCt55r028UD1E1ajz/aFG5UUBwnDqiyssvEDZaPq6ewnAozJvo6R37g6OZt
+ AfYGr6QDs5DkrBVkXm4wJhTXBGcxjd9fvO0wRK/2tiahWixUYsAxJrWjKpYVkYORymdH pg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33jwnhhqwa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 09:22:17 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08FCwgv1143561;
+        Tue, 15 Sep 2020 09:22:17 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33jwnhhqvt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 09:22:17 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08FDMECX024631;
+        Tue, 15 Sep 2020 13:22:16 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma01dal.us.ibm.com with ESMTP id 33gny95k9v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Sep 2020 13:22:16 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08FDMARe48955792
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Sep 2020 13:22:10 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4CB65136061;
+        Tue, 15 Sep 2020 13:22:14 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9CCAB13605D;
+        Tue, 15 Sep 2020 13:22:13 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.163.85.51])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Sep 2020 13:22:13 +0000 (GMT)
+Subject: Re: [PATCH v2] vfio iommu: Add dma available capability
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     alex.williamson@redhat.com, pmorel@linux.ibm.com,
+        schnelle@linux.ibm.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1600122331-12181-1-git-send-email-mjrosato@linux.ibm.com>
+ <1600122331-12181-2-git-send-email-mjrosato@linux.ibm.com>
+ <20200915114401.4db5e009.cohuck@redhat.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+Message-ID: <1e4ff5b6-f2de-228c-3cfb-5dee833000aa@linux.ibm.com>
+Date:   Tue, 15 Sep 2020 09:22:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200915114401.4db5e009.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-15_08:2020-09-15,2020-09-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ clxscore=1015 phishscore=0 mlxlogscore=894 adultscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following warnings caused by mismatch bewteen function parameters
-and comments.
-arch/arm64/kvm/mmu.c:119: warning: Function parameter or member 'pudp'not described in 'stage2_dissolve_pud'
-arch/arm64/kvm/mmu.c:119: warning: Excess function parameter 'pud' description in 'stage2_dissolve_pud'
-arch/arm64/kvm/mmu.c:348: warning: Function parameter or member 'mmu' not described in '__unmap_stage2_range'
-arch/arm64/kvm/mmu.c:348: warning: Function parameter or member 'may_block' not described in '__unmap_stage2_range'
-arch/arm64/kvm/mmu.c:348: warning: Excess function parameter 'kvm' description in '__unmap_stage2_range'
-arch/arm64/kvm/mmu.c:1474: warning: Function parameter or member 'writable' not described in 'kvm_phys_addr_ioremap'
-arch/arm64/kvm/mmu.c:1536: warning: Function parameter or member 'mmu' not described in 'stage2_wp_pmds'
-arch/arm64/kvm/mmu.c:1564: warning: Function parameter or member 'mmu' not described in 'stage2_wp_puds'
-arch/arm64/kvm/mmu.c:1591: warning: Function parameter or member 'mmu' not described in 'stage2_wp_p4ds'
-arch/arm64/kvm/mmu.c:1611: warning: Function parameter or member 'mmu' not described in 'stage2_wp_range'
-arch/arm64/kvm/mmu.c:1611: warning: Excess function parameter 'kvm' description in 'stage2_wp_range'
+On 9/15/20 5:44 AM, Cornelia Huck wrote:
+> On Mon, 14 Sep 2020 18:25:31 -0400
+> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> 
+>> Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container")
+>> added the ability to limit the number of memory backed DMA mappings.
+>> However on s390x, when lazy mapping is in use, we use a very large
+>> number of concurrent mappings.  Let's provide the current allowable
+>> number of DMA mappings to userspace via the IOMMU info chain so that
+>> userspace can take appropriate mitigation.
+>>
+>> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+>> ---
+>>   drivers/vfio/vfio_iommu_type1.c | 17 +++++++++++++++++
+>>   include/uapi/linux/vfio.h       | 16 ++++++++++++++++
+>>   2 files changed, 33 insertions(+)
+> 
+> (...)
+> 
+>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+>> index 9204705..a8cc4a5 100644
+>> --- a/include/uapi/linux/vfio.h
+>> +++ b/include/uapi/linux/vfio.h
+>> @@ -1039,6 +1039,22 @@ struct vfio_iommu_type1_info_cap_migration {
+>>   	__u64	max_dirty_bitmap_size;		/* in bytes */
+>>   };
+>>   
+>> +/*
+>> + * The DMA available capability allows to report the current number of
+>> + * simultaneously outstanding DMA mappings that are allowed.
+>> + *
+>> + * The structures below define version 1 of this capability.
+> 
+> "The structure below defines..." ?
+> 
 
-Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
----
- arch/arm64/kvm/mmu.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+OK
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index ba00bcc..c76add7 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -111,7 +111,7 @@ static void stage2_dissolve_pmd(struct kvm_s2_mmu *mmu, phys_addr_t addr, pmd_t
-  * stage2_dissolve_pud() - clear and flush huge PUD entry
-  * @mmu:	pointer to mmu structure to operate on
-  * @addr:	IPA
-- * @pud:	pud pointer for IPA
-+ * @pudp:	pud pointer for IPA
-  *
-  * Function clears a PUD entry, flushes addr 1st and 2nd stage TLBs.
-  */
-@@ -334,9 +334,10 @@ static void unmap_stage2_p4ds(struct kvm_s2_mmu *mmu, pgd_t *pgd,
- 
- /**
-  * unmap_stage2_range -- Clear stage2 page table entries to unmap a range
-- * @kvm:   The VM pointer
-+ * @mmu:   pointer to mmu structure to operate on
-  * @start: The intermediate physical base address of the range to unmap
-  * @size:  The size of the area to unmap
-+ * @may_block: The flag that if block is allowed here
-  *
-  * Clear a range of stage-2 mappings, lowering the various ref-counts.  Must
-  * be called while holding mmu_lock (unless for freeing the stage2 pgd before
-@@ -1468,6 +1469,7 @@ static int stage2_pudp_test_and_clear_young(pud_t *pud)
-  * @guest_ipa:	The IPA at which to insert the mapping
-  * @pa:		The physical address of the device
-  * @size:	The size of the mapping
-+ * @writable:   If it is writable here
-  */
- int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
- 			  phys_addr_t pa, unsigned long size, bool writable)
-@@ -1526,7 +1528,7 @@ static void stage2_wp_ptes(pmd_t *pmd, phys_addr_t addr, phys_addr_t end)
- 
- /**
-  * stage2_wp_pmds - write protect PUD range
-- * kvm:		kvm instance for the VM
-+ * @mmu:        pointer to mmu structure to operate on
-  * @pud:	pointer to pud entry
-  * @addr:	range start address
-  * @end:	range end address
-@@ -1555,6 +1557,7 @@ static void stage2_wp_pmds(struct kvm_s2_mmu *mmu, pud_t *pud,
- 
- /**
-  * stage2_wp_puds - write protect P4D range
-+ * @mmu:        pointer to mmu structure to operate on
-  * @p4d:	pointer to p4d entry
-  * @addr:	range start address
-  * @end:	range end address
-@@ -1582,6 +1585,7 @@ static void  stage2_wp_puds(struct kvm_s2_mmu *mmu, p4d_t *p4d,
- 
- /**
-  * stage2_wp_p4ds - write protect PGD range
-+ * @mmu:        pointer to mmu structure to operate on
-  * @pgd:	pointer to pgd entry
-  * @addr:	range start address
-  * @end:	range end address
-@@ -1603,7 +1607,7 @@ static void  stage2_wp_p4ds(struct kvm_s2_mmu *mmu, pgd_t *pgd,
- 
- /**
-  * stage2_wp_range() - write protect stage2 memory region range
-- * @kvm:	The KVM pointer
-+ * @mmu:        pointer to mmu structure to operate on
-  * @addr:	Start address of range
-  * @end:	End address of range
-  */
--- 
-2.8.1
+>> + *
+>> + * max: specifies the maximum number of outstanding DMA mappings allowed.
+> 
+> I think you forgot to tweak that one:
+> 
+> "avail: specifies the current number of outstanding DMA mappings allowed."
+> 
+> ?
+
+Yep, that's a leftover from v1 :(
+
+> 
+>> + */
+>> +#define VFIO_IOMMU_TYPE1_INFO_DMA_AVAIL 3
+>> +
+>> +struct vfio_iommu_type1_info_dma_avail {
+>> +	struct	vfio_info_cap_header header;
+>> +	__u32	avail;
+>> +};
+>> +
+>> +
+>>   #define VFIO_IOMMU_GET_INFO _IO(VFIO_TYPE, VFIO_BASE + 12)
+>>   
+>>   /**
+> 
 
