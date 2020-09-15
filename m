@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2504626ABC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8FD26ABE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgIOSZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:25:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727955AbgIOSRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:17:55 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A464D206A4;
-        Tue, 15 Sep 2020 18:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600193873;
-        bh=SOf5GPk0ofBAZic38qIw0rzSxyoNY+paZdgL59LQdS4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=2dyWR6CL2IFk0fQVtX4jPy+tyazQgO0d/tZUT6oV24BvEPHvfH2I6t0UcvVcV+hKI
-         gw1UxbFwNGdOkjv9licKDUny6aw9JB5BA5ec0yp52bdoi6R0SR/i3ZL3iSSzLZapNP
-         FCctIhZrz2oS6TNlZqc2fODXjjkn76NzZA4/N92k=
-Date:   Tue, 15 Sep 2020 13:17:51 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Shiju Jose <shiju.jose@huawei.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>, Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v15 0/2] ACPI / APEI: Add support to notify the vendor
- specific HW errors
-Message-ID: <20200915181751.GA1408867@bjorn-Precision-5520>
+        id S1728041AbgIOS33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:29:29 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:22065 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727992AbgIOSUd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 14:20:33 -0400
+X-IronPort-AV: E=Sophos;i="5.76,430,1592838000"; 
+   d="scan'208";a="57347034"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 16 Sep 2020 03:20:31 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 13B07400755E;
+        Wed, 16 Sep 2020 03:20:29 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: [PATCH v2 0/2] media: rcar-vin: Kconfig: Update Kconfig
+Date:   Tue, 15 Sep 2020 19:20:25 +0100
+Message-Id: <20200915182027.2787-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0goduHVhXdOjDu6WBnD8eBYzRWAD1PO8KjabpyiHuJ1qw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 07:31:50PM +0200, Rafael J. Wysocki wrote:
-> On Mon, Sep 14, 2020 at 2:34 PM Shiju Jose <shiju.jose@huawei.com> wrote:
-> >
-> > Hello,
-> >
-> > Can you help to merge this series?
-> 
-> Do you want this series to go in through the ACPI tree?
+Hi All,
 
-It crosses ACPI and vendor-specific PCI, but the bulk of the changes
-are in PCI.  I gave some comments on the design and acked the PCI part
-from my point of view.  I envisioned Lorenzo merging it since he takes
-care of drivers/pci/controller/*, but either that (given your ack for
-the ACPI part) or ACPI would be OK with me.
+This is trivial patch series updating the rcar-vin Kconfig to
+include Renesas RZ/Gx SoC's
 
-> > > drivers/acpi/apei/ghes.c                 |  63 +++++
-> > > drivers/pci/controller/Kconfig           |   7 +
-> > > drivers/pci/controller/Makefile          |   1 +
-> > > drivers/pci/controller/pcie-hisi-error.c | 327 +++++++++++++++++++++++
-> > > include/acpi/ghes.h                      |  18 ++
-> > > 5 files changed, 416 insertions(+)
-> > > create mode 100644 drivers/pci/controller/pcie-hisi-error.c
+Cheers,
+Prabhakar
+
+v1->v2
+* Updated commit description
+* included RB from Niklas
+
+Lad Prabhakar (2):
+  media: rcar-vin: Kconfig: Update help description for VIDEO_RCAR_CSI2
+    config
+  media: rcar-vin: Kconfig: Update help description for VIDEO_RCAR_VIN
+    config
+
+ drivers/media/platform/rcar-vin/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
+
