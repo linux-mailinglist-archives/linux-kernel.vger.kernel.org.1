@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0257626A320
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D6626A324
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgIOK2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:28:24 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:59625 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgIOK2U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:28:20 -0400
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id D872910000A;
-        Tue, 15 Sep 2020 10:28:17 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 12:28:17 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Biwen Li <biwen.li@oss.nxp.com>
-Cc:     leoyang.li@nxp.com, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        Biwen Li <biwen.li@nxp.com>
-Subject: Re: rtc: fsl-ftm-alarm: add shutdown interface
-Message-ID: <20200915102817.GL4230@piout.net>
-References: <20200330122616.24044-1-biwen.li@oss.nxp.com>
- <20200330164400.GE846876@piout.net>
+        id S1726301AbgIOK3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:29:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54730 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726142AbgIOK24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:28:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9641BAC46;
+        Tue, 15 Sep 2020 10:29:09 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 12:28:51 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        mhocko@suse.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] mm: replace memmap_context by memplug_context
+Message-ID: <20200915102845.GA30015@linux>
+References: <20200915094143.79181-1-ldufour@linux.ibm.com>
+ <20200915094143.79181-2-ldufour@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200330164400.GE846876@piout.net>
+In-Reply-To: <20200915094143.79181-2-ldufour@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 30/03/2020 18:44:01+0200, Alexandre Belloni wrote:
-> On 30/03/2020 20:26:16+0800, Biwen Li wrote:
-> > From: Biwen Li <biwen.li@nxp.com>
-> > 
-> > Add shutdown interface
-> > 
-> > Signed-off-by: Biwen Li <biwen.li@nxp.com>
-> > ---
-> >  drivers/rtc/rtc-fsl-ftm-alarm.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c b/drivers/rtc/rtc-fsl-ftm-alarm.c
-> > index d7fa6c16f47b..118a775e8316 100644
-> > --- a/drivers/rtc/rtc-fsl-ftm-alarm.c
-> > +++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
-> > @@ -307,6 +307,15 @@ static int ftm_rtc_probe(struct platform_device *pdev)
-> >  	return 0;
-> >  }
-> >  
-> > +static void ftm_rtc_shutdown(struct platform_device *pdev)
-> > +{
-> > +	struct ftm_rtc *rtc = platform_get_drvdata(pdev);
-> > +
-> > +	ftm_irq_acknowledge(rtc);
-> > +	ftm_irq_disable(rtc);
-> > +	ftm_clean_alarm(rtc);
+On Tue, Sep 15, 2020 at 11:41:41AM +0200, Laurent Dufour wrote:
+> The memmap_context is used to detect whether a memory operation is due to a
+> hot-add operation or happening at boot time.
 > 
-> If the alarm is able to start the platform, then you probably don't want
-> to disable the alarm on shutdown.
+> Make it general to the hotplug operation and rename it at memplug_context.
 > 
+> There is no functional change introduced by this patch
+> 
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
 
-I realise you never replied to that question. Is that patch still of
-interest?
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Oscar Salvador
+SUSE L3
