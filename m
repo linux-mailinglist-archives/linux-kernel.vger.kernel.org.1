@@ -2,86 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0478C26A4A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C984626A4B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgIOMGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:06:55 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:32882 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726371AbgIOL7U (ORCPT
+        id S1726198AbgIOMI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgIOMBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:59:20 -0400
-Received: by mail-wm1-f66.google.com with SMTP id e11so10944251wme.0;
-        Tue, 15 Sep 2020 04:59:05 -0700 (PDT)
+        Tue, 15 Sep 2020 08:01:42 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B833EC061351
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 05:01:08 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id x14so2971665wrl.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 05:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D1RHl8ABdhn5KjoXJVQFbK3lZzim3prS8WaJzdIy+Zo=;
+        b=Zb9L1jobJQn7TM+/5qKmWs5QBd2EXGxISO/ZkcumPM8Vro0Vr55MmlKUwUifKoKJg+
+         zl/iDbZ2w5XqrlxmJkjZgmmZP5NI1934atyy561Ay2MXa+FnuuynbncFOlg6j1nAM8ei
+         nQJq5CvBO8QomgfteMuJPONS1P+ZZCvCiP3bLKVjNIYXIcqQgdzXgAjr3TShuD/NTpLq
+         WK/qwY8X5PijIrR+U2tADWCc41LFvUI6wRrhWcMVNdBvt24fQOuGsuHn/kO9UmXlrJl9
+         lA14MFwIiIxLtPEKAUDzC+4CdfxeTGre++QHrUGZAZncOeGJWO14UVlnAnY/vdGLIltr
+         bPKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8IT9TYa324z97FaDa7D5p2wa9NqPdqT/+VgBeB+G8GM=;
-        b=ugsCZBOZzZ8gcfuBVbdqrP30xu8+BHfoOQjW7Ov3u2Jy+2Q/SAxMdQQKax8zYzcgim
-         EFQIs5Huc5uJVRc49ZpB2wInIIbdvOK1xHOPtolGhC2QStPonyB6mp6bIDYT28g9U+tz
-         dmNOyZcKsnWCivWWhKQjvHtRq/LfAJAXM4qb2LGnelQIcZm4MJPukEwjNTkaSVBZobNb
-         zO9uxN9HcDBPL/aXgXC8Z77cTq0QZOe6C1c4+vx3yIgNdsRxZN21K26au83m6NumZJR8
-         1QTeYtXtN+RoyOgIlTGuxgPAg0q5ox31hDJayR2xFG1z4xtT+BLv449hWhDjjzIXXNGC
-         diZw==
-X-Gm-Message-State: AOAM531ASuxKSfJZhZQxn6hych2ySarCOywL8EDLpVmpgj2uPwT174QO
-        JD6LWPYEdtaQMCbY1lf75rk=
-X-Google-Smtp-Source: ABdhPJz4L2F5DwXsSda6AFOngVUweOzE+YXEMob/UWofIdHjvM/6tHBywH2/ZJTKWafEAzT1do1GNw==
-X-Received: by 2002:a1c:9ecb:: with SMTP id h194mr4248660wme.140.1600171145065;
-        Tue, 15 Sep 2020 04:59:05 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id a17sm27983502wra.24.2020.09.15.04.59.04
+         :mime-version:content-disposition:in-reply-to;
+        bh=D1RHl8ABdhn5KjoXJVQFbK3lZzim3prS8WaJzdIy+Zo=;
+        b=qD1ADhZXIsKNiQyLeO5ZybpRQF7y5C9Gk2YdKAsSpePKMkpax6RaZ/heERnLJT6afC
+         Hpw4Ma9bU5EaOU9lh5FfWhVhQKecv9xJwwiNlRxTXYwPl9EvLbwK5ltE4sjVBsIMex4O
+         956DFlEk1XnzqedAqds+vVDhj7VZkm+y/eKB4GLQLVKZTMuWM3XyxNJNnnNNXmw9N+ZJ
+         nI1v+rwk/DJtU2Tj3CGGP0b1xGgjPu0XHUG50/4elRW2rNoxm0yS2l4+JSyWCqgN3TEC
+         DhP0c9jLAQRfadXGIXPQFA9Q8V09cdjYKJKWfgZf49s4jTKU6BVyXLkLAifyLWEPF838
+         1DXA==
+X-Gm-Message-State: AOAM530EsKDMvu4mag+/F+yMcJwqa3DKpUa1xlGSgg7IChi9peWdNDOq
+        ubpts0RoN+rtYBIFT0/6MKjVZg==
+X-Google-Smtp-Source: ABdhPJw9xzBTkm1ex/SpXs3gzQoe/wJz8pjYJNPqDjhDGb9ai+C4+hJhDspqERQLDE8pW/IN0QMg9Q==
+X-Received: by 2002:adf:91c2:: with SMTP id 60mr22458843wri.292.1600171267204;
+        Tue, 15 Sep 2020 05:01:07 -0700 (PDT)
+Received: from google.com (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
+        by smtp.gmail.com with ESMTPSA id s124sm25145526wme.29.2020.09.15.05.01.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 04:59:04 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 11:59:03 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nudasnev@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH RFC v1 13/18] asm-generic/hyperv: introduce hv_device_id
- and auxiliary structures
-Message-ID: <20200915115903.yxrj6ay4pvcn42vz@liuwe-devbox-debian-v2>
-References: <20200914112802.80611-1-wei.liu@kernel.org>
- <20200914115928.83184-5-wei.liu@kernel.org>
- <87k0wvjnmc.fsf@vitty.brq.redhat.com>
+        Tue, 15 Sep 2020 05:01:06 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 12:01:05 +0000
+From:   George Popescu <georgepope@google.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, maz@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        dbrazdil@google.com, broonie@kernel.org, maskray@google.com,
+        ascull@google.com, Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 06/14] Fix CFLAGS for UBSAN_BOUNDS on Clang
+Message-ID: <20200915120105.GA2294884@google.com>
+References: <20200914172750.852684-1-georgepope@google.com>
+ <20200914172750.852684-7-georgepope@google.com>
+ <202009141509.CDDC8C8@keescook>
+ <20200915102458.GA1650630@google.com>
+ <CANpmjNOTcS_vvZ1swh1iHYaRbTvGKnPAe4Q2DpR1MGhk_oZDeA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0wvjnmc.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <CANpmjNOTcS_vvZ1swh1iHYaRbTvGKnPAe4Q2DpR1MGhk_oZDeA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:16:59PM +0200, Vitaly Kuznetsov wrote:
-[...]
-> > +union hv_device_id {
-> > +	u64 as_uint64;
-> > +
-> > +	struct {
-> > +		u64 :62;
-> > +		u64 device_type:2;
-> > +	};
-> > +
-> > +	// HV_DEVICE_TYPE_LOGICAL
+On Tue, Sep 15, 2020 at 01:18:11PM +0200, Marco Elver wrote:
+> On Tue, 15 Sep 2020 at 12:25, George Popescu <georgepope@google.com> wrote:
+> > On Mon, Sep 14, 2020 at 03:13:14PM -0700, Kees Cook wrote:
+> > > On Mon, Sep 14, 2020 at 05:27:42PM +0000, George-Aurelian Popescu wrote:
+> > > > From: George Popescu <georgepope@google.com>
+> > > >
+> > > > When the kernel is compiled with Clang, UBSAN_BOUNDS inserts a brk after
+> > > > the handler call, preventing it from printing any information processed
+> > > > inside the buffer.
+> > > > For Clang -fsanitize=bounds expands to -fsanitize=array-bounds and
+> > > > -fsanitize=local-bounds, and the latter adds a brk after the handler
+> > > > call
+> > >
+> > This would mean losing the local-bounds coverage. I tried to  test it without
+> > local-bounds and with a locally defined array on the stack and it works fine
+> > (the handler is called and the error reported). For me it feels like
+> > --array-bounds and --local-bounds are triggered for the same type of
+> > undefined_behaviours but they are handling them different.
 > 
-> Nit: please no '//' comments.
-> 
+> Does -fno-sanitize-trap=bounds help?>
 
-Fixed. Thanks.
+I tried replacing it with:
+      ifdef CONFIG_CC_IS_CLANG
+            CFLAGS_UBSAN += $(call cc-option, -fno-sanitize-trap=bounds)
+            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+      else
+            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+      endif
 
-Wei.
+The code traps.
+
+Thanks,
+George
