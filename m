@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A9E269B0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BA9269B21
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgIOB1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:27:08 -0400
-Received: from mga17.intel.com ([192.55.52.151]:19913 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgIOB1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:27:04 -0400
-IronPort-SDR: EWjanF5wLKklF24WYHB/xiPndjDfV3Z9r8gIqZd7O1UteisGP96w+IzE5nSUa+9+y7fCmWUD+0
- LkN9gmwH7axQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="139195474"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="139195474"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 18:27:03 -0700
-IronPort-SDR: tZVelu4X/niBIzR5mobsMcwKMUVbm7vWUpqZa86Y1XfGcpPU/xI+T1FnV+fdQchIMN39qtLbNF
- 3By/B/C53Z1Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="345632631"
-Received: from glass.png.intel.com ([172.30.181.92])
-  by orsmga007.jf.intel.com with ESMTP; 14 Sep 2020 18:26:59 -0700
-From:   Wong Vee Khee <vee.khee.wong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rusell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Vijaya Balan Sadhishkhanna 
-        <sadhishkhanna.vijaya.balan@intel.com>,
-        Seow Chen Yong <chen.yong.seow@intel.com>
-Subject: [PATCH net-next 2/3] net: stmmac: Fix incorrect location to set real_num_rx|tx_queues
-Date:   Tue, 15 Sep 2020 09:28:39 +0800
-Message-Id: <20200915012840.31841-3-vee.khee.wong@intel.com>
-X-Mailer: git-send-email 2.17.0
-In-Reply-To: <20200915012840.31841-1-vee.khee.wong@intel.com>
-References: <20200915012840.31841-1-vee.khee.wong@intel.com>
+        id S1726235AbgIOB30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:29:26 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10927 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgIOB3D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 21:29:03 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6018520001>; Mon, 14 Sep 2020 18:26:42 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 14 Sep 2020 18:29:03 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 14 Sep 2020 18:29:03 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
+ 2020 01:29:02 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 15 Sep 2020 01:29:02 +0000
+Received: from sandstorm.nvidia.com (Not Verified[10.2.52.22]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f6018de0004>; Mon, 14 Sep 2020 18:29:02 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH 0/2] selftests/vm: fix some minor aggravating factors in the Makefile
+Date:   Mon, 14 Sep 2020 18:28:59 -0700
+Message-ID: <20200915012901.1655280-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600133202; bh=0djzV/LDjmQc0EmERcsWRX2BdMhvHYwhbZYf6UboQaU=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=mtdtXYcEh9CMQkeKkVZq4XA41wpSDBcY3Z827QcXQumR8D/AqUL6PHSPJgvcc7fIH
+         2j/wUnEvAlvHN7Pp5UoLGKmm0FT8gBTt2d1jJ0S8hScn7AfxXHiOPJLmh+4zKa6Pq3
+         VOkaWFC24RjCCZ1NrMbMByPbav7MofKO6Y3jxt4oDvsw3e3fDF7qJlCdbqQXR+KzUU
+         YF9/+VRnfV4rpiWrZz7E0ljfXSLebhiXtTdHfwGAxvhEj8mKB8OB8jyMoaeXTh1TDh
+         uZm+5Jv0cSWsz/4G4AjF4hJCthkLILW9YInzmYAMImioVifKKD8k38i/6Xsd961h47
+         B6cEArXKhsyyA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aashish Verma <aashishx.verma@intel.com>
+Hi,
 
-netif_set_real_num_tx_queues() & netif_set_real_num_rx_queues() should be
-used to inform network stack about the real Tx & Rx queue (active) number
-in both stmmac_open() and stmmac_resume(), therefore, we move the code
-from stmmac_dvr_probe() to stmmac_hw_setup().
+This fixes a couple of minor aggravating factors that I ran across while
+trying to do some changes in selftests/vm. These are simple things, but
+like most things with GNU Make, it's rarely obvious what's wrong until
+you understand *the entire Makefile and all of its includes*.
 
-Fixes: c02b7a914551 net: stmmac: use netif_set_real_num_{rx,tx}_queues
+So while there is, of course, joy in learning those details, I thought I'd
+fix these little things, so as to allow others to skip out on the Joy if
+they so choose. :)
 
-Signed-off-by: Aashish Verma <aashishx.verma@intel.com>
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+First of all, if you have an item (let's choose userfaultfd for an
+example) that fails to build, you might do this:
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 9302d8012a10..fea3b77892ab 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2733,6 +2733,10 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
- 		stmmac_enable_tbs(priv, priv->ioaddr, enable, chan);
- 	}
- 
-+	/* Configure real RX and TX queues */
-+	netif_set_real_num_rx_queues(dev, priv->plat->rx_queues_to_use);
-+	netif_set_real_num_tx_queues(dev, priv->plat->tx_queues_to_use);
-+
- 	/* Start the ball rolling... */
- 	stmmac_start_all_dma(priv);
- 
-@@ -4883,10 +4887,6 @@ int stmmac_dvr_probe(struct device *device,
- 
- 	stmmac_check_ether_addr(priv);
- 
--	/* Configure real RX and TX queues */
--	netif_set_real_num_rx_queues(ndev, priv->plat->rx_queues_to_use);
--	netif_set_real_num_tx_queues(ndev, priv->plat->tx_queues_to_use);
--
- 	ndev->netdev_ops = &stmmac_netdev_ops;
- 
- 	ndev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
--- 
-2.17.0
+$ make -j32
+
+    # ...you observe a failed item in the threaded output
+
+# OK, let's get a closer look
+
+$ make
+    # ...but now the build quietly "succeeds".
+
+That's what Patch 0001 fixes.
+
+Second, if you instead attempt this approach for your closer look (a casual
+mistake, as it's not supported):
+
+$ make userfaultfd
+
+    # ...userfaultfd fails to link, due to incomplete LDLIBS
+
+That's what Patch 0002 fixes.
+
+John Hubbard (2):
+  selftests/vm: fix false build success on the second and later attempts
+  selftests/vm: fix incorrect gcc invocation in some cases
+
+ tools/testing/selftests/vm/Makefile | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+--=20
+2.28.0
 
