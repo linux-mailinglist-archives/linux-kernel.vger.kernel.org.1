@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B577326A453
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A695726A45B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgIOLni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 07:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
+        id S1726150AbgIOLqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 07:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbgIOLcc (ORCPT
+        with ESMTP id S1726343AbgIOLdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:32:32 -0400
+        Tue, 15 Sep 2020 07:33:03 -0400
+X-Greylist: delayed 1402 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Sep 2020 04:29:06 PDT
 Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860CFC061222;
-        Tue, 15 Sep 2020 04:28:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75423C061226;
+        Tue, 15 Sep 2020 04:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References
+        :In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ZlJ9xoMyG5lWAdTzHhTzZdshYUDqCJLRsY6Rk+VgAbs=; b=wIdUhl9UBtl/pAGsmUAfEqSXXg
-        +1Xdj5WvDmLiJ1bdDzLOZuA94Dw666hTbFldwHiZwbc/NkRqXyT20cY06JXTPs9ekE7ifg9tSjrjL
-        0q92OV55ARa313okQRZbkQMIyxbNpl/MR1B4PV7bFHUfyk72JpB98xLb8pDZznklOf8A+P49PxZmA
-        sF8O8dKGrxWB/vrwIoes60T5UwBu6kMWiz/GqM4m9GDwTHT2ykpZTvzNGhOEir9fZ2Q6a8mGsUEvd
-        6pl3WxTloveauhu+r11hIzafr7QXYJ9iT+OUWi/1iTpDAc/uS9K22VrmqbCyBDXbdsdXoFzwDk1TH
-        yMDo4/bw==;
+        bh=EHCcbWW/9NZLs7B7FT6bJY/uakWPooVxDA/Ahw92K7Y=; b=0mPRQ9KAKW6kzZOMjeRhLrgJlO
+        Muumr1QkSx/X42PuPJ5SagN3GbX8V4j0EFCWss9tNXU7gZuMWT/no6VP6fhCUDHvFhhPgcu6hE1kL
+        Gx1oC7afJmv9E3zbL6RGL3huG75Ih9hUqLxQyJ0NEAn7AXcQWb+Fz+T3FuaoCejjI8Ug+Y+irxcMS
+        nERsSOQt/qeBGGOUpAIF8DGbaTbRzluENTIC/BwYQc+D1uG5vRYW6LwBK2O6tF2c6P76roScWJGSf
+        qM2ZtrKuf7OczQuarSUT/M9AAGpQLw8QB57OiVo1+DRhOWd4X27Kg5e2VH0f+AK9dEVS7fDUPxLDX
+        9X9edqQA==;
 Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
         by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
         (envelope-from <jjs@kapsi.fi>)
-        id 1kI98p-0000nQ-9m; Tue, 15 Sep 2020 14:28:55 +0300
+        id 1kI98q-0000oE-Bc; Tue, 15 Sep 2020 14:28:56 +0300
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     x86@kernel.org, linux-sgx@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>,
         Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
         akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
         josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
         kmoy@google.com, ludloff@google.com, luto@kernel.org,
         nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
         rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX enclave call
-Date:   Tue, 15 Sep 2020 14:28:39 +0300
-Message-Id: <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture and kernel internals
+Date:   Tue, 15 Sep 2020 14:28:41 +0300
+Message-Id: <20200915112842.897265-24-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
 References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=a
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 83.245.197.237
 X-SA-Exim-Mail-From: jjs@kapsi.fi
@@ -64,381 +64,235 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+Document the Intel SGX kernel architecture. The fine-grained micro
+architecture details can be looked up from Intel SDM Volume 3D.
 
-An SGX runtime must be aware of the exceptions, which happen inside an
-enclave. Introduce a vDSO call that wraps EENTER/ERESUME cycle and returns
-the CPU exception back to the caller exactly when it happens.
-
-Kernel fixups the exception information to RDI, RSI and RDX. The SGX call
-vDSO handler fills this information to the user provided buffer or
-alternatively trigger user provided callback at the time of the exception.
-
-The calling convention is custom and does not follow System V x86-64 ABI.
-
-Suggested-by: Andy Lutomirski <luto@amacapital.net>
-Acked-by: Jethro Beekman <jethro@fortanix.com>
-Tested-by: Jethro Beekman <jethro@fortanix.com>
+Cc: linux-doc@vger.kernel.org
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Co-developed-by: Cedric Xing <cedric.xing@intel.com>
-Signed-off-by: Cedric Xing <cedric.xing@intel.com>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- arch/x86/entry/vdso/Makefile             |   2 +
- arch/x86/entry/vdso/vdso.lds.S           |   1 +
- arch/x86/entry/vdso/vsgx_enter_enclave.S | 157 +++++++++++++++++++++++
- arch/x86/include/asm/enclu.h             |   8 ++
- arch/x86/include/uapi/asm/sgx.h          | 128 ++++++++++++++++++
- 5 files changed, 296 insertions(+)
- create mode 100644 arch/x86/entry/vdso/vsgx_enter_enclave.S
- create mode 100644 arch/x86/include/asm/enclu.h
+ Documentation/x86/index.rst |   1 +
+ Documentation/x86/sgx.rst   | 200 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 201 insertions(+)
+ create mode 100644 Documentation/x86/sgx.rst
 
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 3f183d0b8826..416f9432269d 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -29,6 +29,7 @@ VDSO32-$(CONFIG_IA32_EMULATION)	:= y
- vobjs-y := vdso-note.o vclock_gettime.o vgetcpu.o
- vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
- vobjs32-y += vdso32/vclock_gettime.o
-+vobjs-$(VDSO64-y)		+= vsgx_enter_enclave.o
- 
- # files to link into kernel
- obj-y				+= vma.o extable.o
-@@ -100,6 +101,7 @@ $(vobjs): KBUILD_CFLAGS := $(filter-out $(GCC_PLUGINS_CFLAGS) $(RETPOLINE_CFLAGS
- CFLAGS_REMOVE_vclock_gettime.o = -pg
- CFLAGS_REMOVE_vdso32/vclock_gettime.o = -pg
- CFLAGS_REMOVE_vgetcpu.o = -pg
-+CFLAGS_REMOVE_vsgx_enter_enclave.o = -pg
- 
- #
- # X32 processes use x32 vDSO to access 64bit kernel data.
-diff --git a/arch/x86/entry/vdso/vdso.lds.S b/arch/x86/entry/vdso/vdso.lds.S
-index 36b644e16272..4bf48462fca7 100644
---- a/arch/x86/entry/vdso/vdso.lds.S
-+++ b/arch/x86/entry/vdso/vdso.lds.S
-@@ -27,6 +27,7 @@ VERSION {
- 		__vdso_time;
- 		clock_getres;
- 		__vdso_clock_getres;
-+		__vdso_sgx_enter_enclave;
- 	local: *;
- 	};
- }
-diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
+index 265d9e9a093b..807290bf357c 100644
+--- a/Documentation/x86/index.rst
++++ b/Documentation/x86/index.rst
+@@ -30,3 +30,4 @@ x86-specific Documentation
+    usb-legacy-support
+    i386/index
+    x86_64/index
++   sgx
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
 new file mode 100644
-index 000000000000..adbd59d41517
+index 000000000000..706a846ae353
 --- /dev/null
-+++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-@@ -0,0 +1,157 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++++ b/Documentation/x86/sgx.rst
+@@ -0,0 +1,200 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+#include <linux/linkage.h>
-+#include <asm/export.h>
-+#include <asm/errno.h>
-+#include <asm/enclu.h>
++============
++Architecture
++============
 +
-+#include "extable.h"
++*Software Guard eXtensions (SGX)* is a set of instructions that enable ring-3
++applications to set aside private regions of code and data. These regions are
++called enclaves. An enclave can be entered to a fixed set of entry points. Only
++a CPU running inside the enclave can access its code and data.
 +
-+/* Offset of 'struct sgx_enclave_run' relative to %rbp. */
-+#define SGX_ENCLAVE_RUN_PTR	2*8
++The support can be determined by
 +
-+/* Offsets into 'struct sgx_enclave_run'. */
-+#define SGX_ENCLAVE_RUN_TSC		0*8
-+#define SGX_ENCLAVE_RUN_FLAGS		1*8
-+#define SGX_ENCLAVE_RUN_EXIT_REASON	1*8 + 4
-+#define SGX_ENCLAVE_RUN_USER_HANDLER	2*8
-+/* #define SGX_ENCLAVE_RUN_USER_DATA	3*8 */
-+#define SGX_ENCLAVE_RUN_EXCEPTION	4*8
++	``grep sgx /proc/cpuinfo``
 +
-+#define SGX_SYNCHRONOUS_EXIT		0
-+#define SGX_EXCEPTION_EXIT		1
++Enclave Page Cache
++==================
 +
-+/* Offsets into sgx_enter_enclave.exception. */
-+#define SGX_EX_LEAF			0*8
-+#define SGX_EX_TRAPNR			0*8+4
-+#define SGX_EX_ERROR_CODE		0*8+6
-+#define SGX_EX_ADDRESS			1*8
++SGX utilizes an *Enclave Page Cache (EPC)* to store pages that are associated
++with an enclave. It is contained in a BIOS reserved region of physical memory.
++Unlike pages used for regular memory, pages can only be accessed outside the
++enclave for different purposes with the instructions **ENCLS**, **ENCLV** and
++**ENCLU**.
 +
-+.code64
-+.section .text, "ax"
++Direct memory accesses to an enclave can be only done by a CPU executing inside
++the enclave. An enclave can be entered with **ENCLU[EENTER]** to a fixed set of
++entry points. However, a CPU executing inside the enclave can do outside memory
++accesses.
 +
-+SYM_FUNC_START(__vdso_sgx_enter_enclave)
-+	/* Prolog */
-+	.cfi_startproc
-+	push	%rbp
-+	.cfi_adjust_cfa_offset	8
-+	.cfi_rel_offset		%rbp, 0
-+	mov	%rsp, %rbp
-+	.cfi_def_cfa_register	%rbp
-+	push	%rbx
-+	.cfi_rel_offset		%rbx, -8
++Page Types
++----------
 +
-+	mov	%ecx, %eax
-+.Lenter_enclave:
-+	/* EENTER <= leaf <= ERESUME */
-+	cmp	$EENTER, %eax
-+	jb	.Linvalid_input
-+	cmp	$ERESUME, %eax
-+	ja	.Linvalid_input
++**SGX Enclave Control Structure (SECS)**
++   Enclave's address range, attributes and other global data are defined
++   by this structure.
 +
-+	mov	SGX_ENCLAVE_RUN_PTR(%rbp), %rcx
++**Regular (REG)**
++   Regular EPC pages contain the code and data of an enclave.
 +
-+	/* No flags are currently defined/supported. */
-+	cmpl	$0, SGX_ENCLAVE_RUN_FLAGS(%rcx)
-+	jne	.Linvalid_input
++**Thread Control Structure (TCS)**
++   Thread Control Structure pages define the entry points to an enclave and
++   track the execution state of an enclave thread.
 +
-+	/* Load TCS and AEP */
-+	mov	SGX_ENCLAVE_RUN_TSC(%rcx), %rbx
-+	lea	.Lasync_exit_pointer(%rip), %rcx
++**Version Array (VA)**
++   Version Array pages contain 512 slots, each of which can contain a version
++   number for a page evicted from the EPC.
 +
-+	/* Single ENCLU serving as both EENTER and AEP (ERESUME) */
-+.Lasync_exit_pointer:
-+.Lenclu_eenter_eresume:
-+	enclu
++Enclave Page Cache Map
++----------------------
 +
-+	/* EEXIT jumps here unless the enclave is doing something fancy. */
-+	mov	SGX_ENCLAVE_RUN_PTR(%rbp), %rbx
++The processor tracks EPC pages via the *Enclave Page Cache Map (EPCM)*.  EPCM
++contains an entry for each EPC page, which describes the owning enclave, access
++rights and page type among the other things.
 +
-+	/* Set exit_reason. */
-+	movl	$SGX_SYNCHRONOUS_EXIT, SGX_ENCLAVE_RUN_EXIT_REASON(%rbx)
++The permissions from EPCM is consulted if and only if walking the kernel page
++tables succeeds. The total permissions are thus a conjunction between page table
++and EPCM permissions.
 +
-+	/* Invoke userspace's exit handler if one was provided. */
-+.Lhandle_exit:
-+	cmpq	$0, SGX_ENCLAVE_RUN_USER_HANDLER(%rbx)
-+	jne	.Linvoke_userspace_handler
++For all intents and purposes the SGX architecture allows the processor to
++invalidate all EPCM entries at will, i.e. requires that software be prepared to
++handle an EPCM fault at any time. The contents of EPC are encrypted with an
++ephemeral key, which is lost on power transitions.
 +
-+	/* Success, in the sense that ENCLU was attempted. */
-+	xor	%eax, %eax
++EPC management
++==============
 +
-+.Lout:
-+	pop	%rbx
-+	leave
-+	.cfi_def_cfa		%rsp, 8
-+	ret
++EPC pages do not have ``struct page`` instances. They are IO memory from kernel
++perspective. The consequence is that they are always mapped as shared memory.
++Kernel defines ``/dev/sgx/enclave`` that can be mapped as ``MAP_SHARED`` to
++define the address range for an enclave.
 +
-+	/* The out-of-line code runs with the pre-leave stack frame. */
-+	.cfi_def_cfa		%rbp, 16
++EPC Over-subscription
++=====================
 +
-+.Linvalid_input:
-+	mov	$(-EINVAL), %eax
-+	jmp	.Lout
++When the amount of free EPC pages goes below a low watermark the swapping thread
++starts reclaiming pages. The pages that do not have the **A** bit set are
++selected as victim pages.
 +
-+.Lhandle_exception:
-+	mov	SGX_ENCLAVE_RUN_PTR(%rbp), %rbx
++Launch Control
++==============
 +
-+	/* Set the exit_reason and exception info. */
-+	movl	$SGX_EXCEPTION_EXIT, SGX_ENCLAVE_RUN_EXIT_REASON(%rbx)
++SGX provides a launch control mechanism. After all enclave pages have been
++copied, kernel executes **ENCLS[EINIT]**, which initializes the enclave. Only
++after this the CPU can execute inside the enclave.
 +
-+	mov	%eax, (SGX_ENCLAVE_RUN_EXCEPTION + SGX_EX_LEAF)(%rbx)
-+	mov	%di,  (SGX_ENCLAVE_RUN_EXCEPTION + SGX_EX_TRAPNR)(%rbx)
-+	mov	%si,  (SGX_ENCLAVE_RUN_EXCEPTION + SGX_EX_ERROR_CODE)(%rbx)
-+	mov	%rdx, (SGX_ENCLAVE_RUN_EXCEPTION + SGX_EX_ADDRESS)(%rbx)
-+	jmp	.Lhandle_exit
++This leaf function takes an RSA-3072 signature of the enclave measurement and an
++optional cryptographic token. Linux does not take advantage of launch tokens.
++The instruction checks that the signature is signed with the key defined in
++**IA32_SGXLEPUBKEYHASH?** MSRs and the measurement is correct. If so, the
++enclave is allowed to be executed.
 +
-+.Linvoke_userspace_handler:
-+	/* Pass the untrusted RSP (at exit) to the callback via %rcx. */
-+	mov	%rsp, %rcx
++MSRs can be configured by the BIOS to be either readable or writable. Linux
++supports only writable configuration in order to give full control to the kernel
++on launch control policy. Readable configuration requires the use of previously
++mentioned launch tokens.
 +
-+	/* Save @e, %rbx is about to be clobbered. */
-+	mov	%rbx, %rax
++The current kernel implementation supports only writable MSRs. The launch is
++performed by setting the MSRs to the hash of the enclave signer's public key.
++The alternative would be to have *a launch enclave* that would be signed with
++the key set into MSRs, which would then generate launch tokens for other
++enclaves. This would only make sense with read-only MSRs, and thus the option
++has been discarded.
 +
-+	/* Save the untrusted RSP offset in %rbx (non-volatile register). */
-+	mov	%rsp, %rbx
-+	and	$0xf, %rbx
++Attestation
++===========
 +
-+	/*
-+	 * Align stack per x86_64 ABI. Note, %rsp needs to be 16-byte aligned
-+	 * _after_ pushing the parameters on the stack, hence the bonus push.
-+	 */
-+	and	$-0x10, %rsp
-+	push	%rax
++Local Attestation
++-----------------
 +
-+	/* Push @e as a param to the callback. */
-+	push	%rax
++In local attestation an enclave creates a **REPORT** data structure with
++**ENCLS[EREPORT]**, which describes the origin of an enclave. In particular, it
++contains a AES-CMAC of the enclave contents signed with a report key unique to
++each processor. All enclaves have access to this key.
 +
-+	/* Clear RFLAGS.DF per x86_64 ABI */
-+	cld
++This mechanism can also be used in addition as a communication channel as the
++**REPORT** data structure includes a 64-byte field for variable information.
 +
-+	/* Load the callback pointer to %rax and invoke it via retpoline. */
-+	mov	SGX_ENCLAVE_RUN_USER_HANDLER(%rax), %rax
-+	call	.Lretpoline
++Remote Attestation
++------------------
 +
-+	/* Undo the post-exit %rsp adjustment. */
-+	lea	0x10(%rsp, %rbx), %rsp
++Provisioning Certification Enclave (PCE), the root of trust for other enclaves,
++generates a signing key from a fused key called Provisioning Certification Key.
++PCE can then use this key to certify an attestation key of a Quoting Enclave
++(QE), e.g. we get the chain of trust down to the hardware if the Intel signed
++PCE is used.
 +
-+	/*
-+	 * If the return from callback is zero or negative, return immediately,
-+	 * else re-execute ENCLU with the postive return value interpreted as
-+	 * the requested ENCLU leaf.
-+	 */
-+	cmp	$0, %eax
-+	jle	.Lout
-+	jmp	.Lenter_enclave
++To use the needed keys, ATTRIBUTE.PROVISIONKEY is required but should be only
++allowed for those who actually need it so that only the trusted parties can
++certify QE's.
 +
-+.Lretpoline:
-+	call	2f
-+1:	pause
-+	lfence
-+	jmp	1b
-+2:	mov	%rax, (%rsp)
-+	ret
-+	.cfi_endproc
++A device file called /dev/sgx/provision exists to provide file descriptors that
++act as privilege tokens for building provisioning enclaves. These can be
++associated with enclaves with the ioctl SGX_IOC_ENCLAVE_SET_ATTRIBUTE.
 +
-+_ASM_VDSO_EXTABLE_HANDLE(.Lenclu_eenter_eresume, .Lhandle_exception)
++Encryption engines
++==================
 +
-+SYM_FUNC_END(__vdso_sgx_enter_enclave)
-diff --git a/arch/x86/include/asm/enclu.h b/arch/x86/include/asm/enclu.h
-new file mode 100644
-index 000000000000..06157b3e9ede
---- /dev/null
-+++ b/arch/x86/include/asm/enclu.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_ENCLU_H
-+#define _ASM_X86_ENCLU_H
++In order to conceal the enclave data while it is out of the CPU package,
++memory controller has to be extended with an encryption engine. MC can then
++route incoming requests coming from CPU cores running in enclave mode to the
++encryption engine.
 +
-+#define EENTER	0x02
-+#define ERESUME	0x03
++In CPUs prior to Icelake, Memory Encryption Engine (MEE) is used to
++encrypt pages leaving the CPU caches. MEE uses a n-ary Merkle tree with root in
++SRAM to maintain integrity of the encrypted data. This provides integrity and
++anti-replay protection but does not scale to large memory sizes because the time
++required to update the Merkle tree grows logarithmically in relation to the
++memory size.
 +
-+#endif /* _ASM_X86_ENCLU_H */
-diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-index d0916fb9629e..1564d7f88597 100644
---- a/arch/x86/include/uapi/asm/sgx.h
-+++ b/arch/x86/include/uapi/asm/sgx.h
-@@ -72,4 +72,132 @@ struct sgx_enclave_provision {
- 	__u64 attribute_fd;
- };
- 
-+#define SGX_SYNCHRONOUS_EXIT	0
-+#define SGX_EXCEPTION_EXIT	1
++CPUs starting from Icelake use Total Memory Encryption (TME) in the place of
++MEE. SGX using TME does not have an integrity Merkle tree, which means losing HW
++protections from integrity and replay-attacks, but includes additional changes
++to prevent cipher text from being return and SW memory aliases from being
++created. DMA remains blocked by the PRMRR to the EPC memory even systems that
++use TME (SDM section 41.10).
 +
-+struct sgx_enclave_run;
++Backing storage
++===============
 +
-+/**
-+ * typedef sgx_enclave_exit_handler_t - Exit handler function accepted by
-+ *					__vdso_sgx_enter_enclave()
-+ *
-+ * @rdi:	RDI at the time of enclave exit
-+ * @rsi:	RSI at the time of enclave exit
-+ * @rdx:	RDX at the time of enclave exit
-+ * @ursp:	RSP at the time of enclave exit (untrusted stack)
-+ * @r8:		R8 at the time of enclave exit
-+ * @r9:		R9 at the time of enclave exit
-+ * @r:		Pointer to struct sgx_enclave_run (as provided by caller)
-+ *
-+ * Return:
-+ *  0 or negative to exit vDSO
-+ *  positive to re-enter enclave (must be EENTER or ERESUME leaf)
-+ */
-+typedef int (*sgx_enclave_exit_handler_t)(long rdi, long rsi, long rdx,
-+					  long ursp, long r8, long r9,
-+					  struct sgx_enclave_run *r);
++Backing storage is shared and not accounted. It is implemented as a private
++shmem file. Providing a backing storage in some form from user space is not
++possible - accounting would go to invalid state as reclaimed pages would get
++accounted to the processes of which behalf the kernel happened to be acting on.
 +
-+/**
-+ * struct sgx_enclave_exception - structure to report exceptions encountered in
-+ *				  __vdso_sgx_enter_enclave()
-+ *
-+ * @leaf:	ENCLU leaf from \%eax at time of exception
-+ * @trapnr:	exception trap number, a.k.a. fault vector
-+ * @error_code:	exception error code
-+ * @address:	exception address, e.g. CR2 on a #PF
-+ */
-+struct sgx_enclave_exception {
-+	__u32 leaf;
-+	__u16 trapnr;
-+	__u16 error_code;
-+	__u64 address;
-+};
++Access control
++==============
 +
-+/**
-+ * struct sgx_enclave_run - Control structure for __vdso_sgx_enter_enclave()
-+ *
-+ * @tcs:		Thread Control Structure used to enter enclave
-+ * @flags:		Control flags
-+ * @exit_reason:	Cause of exit from enclave, e.g. EEXIT vs. exception
-+ * @user_handler:	User provided exit handler (optional)
-+ * @user_data:		User provided opaque value (optional)
-+ * @exception:		Valid on exit due to exception
-+ */
-+struct sgx_enclave_run {
-+	__u64 tcs;
-+	__u32 flags;
-+	__u32 exit_reason;
++`mmap()` permissions are capped by the enclave permissions. A direct
++consequence of this is that all the pages for an address range must be added
++before `mmap()` can be applied. Effectively an enclave page with minimum
++permissions in the address range sets the permission cap for the mapping
++operation.
 +
-+	union {
-+		sgx_enclave_exit_handler_t user_handler;
-+		__u64 __user_handler;
-+	};
-+	__u64 user_data;
++Usage Models
++============
 +
-+	union {
-+		struct sgx_enclave_exception exception;
++Shared Library
++--------------
 +
-+		/* Pad the entire struct to 256 bytes. */
-+		__u8 pad[256 - 32];
-+	};
-+};
++Sensitive data and the code that acts on it is partitioned from the application
++into a separate library. The library is then linked as a DSO which can be loaded
++into an enclave. The application can then make individual function calls into
++the enclave through special SGX instructions. A run-time within the enclave is
++configured to marshal function parameters into and out of the enclave and to
++call the correct library function.
 +
-+/**
-+ * typedef vdso_sgx_enter_enclave_t - Prototype for __vdso_sgx_enter_enclave(),
-+ *				      a vDSO function to enter an SGX enclave.
-+ *
-+ * @rdi:	Pass-through value for RDI
-+ * @rsi:	Pass-through value for RSI
-+ * @rdx:	Pass-through value for RDX
-+ * @leaf:	ENCLU leaf, must be EENTER or ERESUME
-+ * @r8:		Pass-through value for R8
-+ * @r9:		Pass-through value for R9
-+ * @r:		struct sgx_enclave_run, must be non-NULL
-+ *
-+ * NOTE: __vdso_sgx_enter_enclave() does not ensure full compliance with the
-+ * x86-64 ABI, e.g. doesn't handle XSAVE state.  Except for non-volatile
-+ * general purpose registers, EFLAGS.DF, and RSP alignment, preserving/setting
-+ * state in accordance with the x86-64 ABI is the responsibility of the enclave
-+ * and its runtime, i.e. __vdso_sgx_enter_enclave() cannot be called from C
-+ * code without careful consideration by both the enclave and its runtime.
-+ *
-+ * All general purpose registers except RAX, RBX and RCX are passed as-is to
-+ * the enclave.  RAX, RBX and RCX are consumed by EENTER and ERESUME and are
-+ * loaded with @leaf, asynchronous exit pointer, and @tcs respectively.
-+ *
-+ * RBP and the stack are used to anchor __vdso_sgx_enter_enclave() to the
-+ * pre-enclave state, e.g. to retrieve @e and @handler after an enclave exit.
-+ * All other registers are available for use by the enclave and its runtime,
-+ * e.g. an enclave can push additional data onto the stack (and modify RSP) to
-+ * pass information to the optional exit handler (see below).
-+ *
-+ * Most exceptions reported on ENCLU, including those that occur within the
-+ * enclave, are fixed up and reported synchronously instead of being delivered
-+ * via a standard signal. Debug Exceptions (#DB) and Breakpoints (#BP) are
-+ * never fixed up and are always delivered via standard signals. On synchrously
-+ * reported exceptions, -EFAULT is returned and details about the exception are
-+ * recorded in @e, the optional sgx_enclave_exception struct.
-+ *
-+ * If an exit handler is provided, the handler will be invoked on synchronous
-+ * exits from the enclave and for all synchronously reported exceptions. In
-+ * latter case, @e is filled prior to invoking the handler.
-+ *
-+ * The exit handler's return value is interpreted as follows:
-+ *  >0:		continue, restart __vdso_sgx_enter_enclave() with @ret as @leaf
-+ *   0:		success, return @ret to the caller
-+ *  <0:		error, return @ret to the caller
-+ *
-+ * The exit handler may transfer control, e.g. via longjmp() or C++ exception,
-+ * without returning to __vdso_sgx_enter_enclave().
-+ *
-+ * Return:
-+ *  0 on success (ENCLU reached),
-+ *  -EINVAL if ENCLU leaf is not allowed,
-+ *  -errno for all other negative values returned by the userspace exit handler
-+ */
-+typedef int (*vdso_sgx_enter_enclave_t)(unsigned long rdi, unsigned long rsi,
-+					unsigned long rdx, unsigned int leaf,
-+					unsigned long r8,  unsigned long r9,
-+					struct sgx_enclave_run *r);
++Application Container
++---------------------
 +
- #endif /* _UAPI_ASM_X86_SGX_H */
++An application may be loaded into a container enclave which is specially
++configured with a library OS and run-time which permits the application to run.
++The enclave run-time and library OS work together to execute the application
++when a thread enters the enclave.
++
++References
++==========
++
++"Supporting Third Party Attestation for Intel® SGX with Intel® Data Center
++Attestation Primitives"
++   https://software.intel.com/sites/default/files/managed/f1/b8/intel-sgx-support-for-third-party-attestation.pdf
 -- 
 2.25.1
 
