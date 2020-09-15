@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4A926B388
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DEA26B468
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgIOOxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:53:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47652 "EHLO mail.kernel.org"
+        id S1727321AbgIOXXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:23:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727047AbgIOOfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:35:23 -0400
+        id S1727196AbgIOOiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:38:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E036B221F0;
-        Tue, 15 Sep 2020 14:15:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 132AD22472;
+        Tue, 15 Sep 2020 14:28:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179356;
-        bh=/RTeKqlM4eEKvHgTozSYnhVsgFdlsZhU8zbzBPsVOYU=;
+        s=default; t=1600180081;
+        bh=SgnVAJ2tctueNtS5Hn3ra1RvzhPd87/9XY+E3nifzMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HPB5yjWx4f0JHUeEgfY8drybgLDaZB5PHjuf41V6U2cK3P+3v5gYL8H32iYjGwBYL
-         YxddPa4Xmk8d/Z+huFnYJSvlVw+F0ykDB1zhPnJPNcMcdxX0Vq8AAP+GYRXK1FtnkB
-         XuaNF/SH3x7rEe2ut52h/avy0o5aUJoOx7hPfs9o=
+        b=Wxlyg3AohbBmm6G/VYALCoTqJTk9NHG7W+elezg4w9Kuy3Yp5cdKO01L74eYYuUgq
+         6H/dgcREwsDYQFdPIQ4oIGuTRlMoxBwKZ0BYhMoLl+KNM8485B0RuqZiyTn3+pAIa1
+         AWJxEUZ3nNbLQVRaN/bjOh7deJ95JvnO553vYhxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/78] nvme-fabrics: dont check state NVME_CTRL_NEW for request acceptance
-Date:   Tue, 15 Sep 2020 16:12:52 +0200
-Message-Id: <20200915140634.935645366@linuxfoundation.org>
+        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 102/177] ALSA: hda: fix a runtime pm issue in SOF when integrated GPU is disabled
+Date:   Tue, 15 Sep 2020 16:12:53 +0200
+Message-Id: <20200915140658.537629470@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
-References: <20200915140633.552502750@linuxfoundation.org>
+In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
+References: <20200915140653.610388773@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +48,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Rander Wang <rander.wang@intel.com>
 
-[ Upstream commit d7144f5c4cf4de95fdc3422943cf51c06aeaf7a7 ]
+[ Upstream commit 13774d81f38538c5fa2924bdcdfa509155480fa6 ]
 
-NVME_CTRL_NEW should never see any I/O, because in order to start
-initialization it has to transition to NVME_CTRL_CONNECTING and from
-there it will never return to this state.
+In snd_hdac_device_init pm_runtime_set_active is called to
+increase child_count in parent device. But when it is failed
+to build connection with GPU for one case that integrated
+graphic gpu is disabled, snd_hdac_ext_bus_device_exit will be
+invoked to clean up a HD-audio extended codec base device. At
+this time the child_count of parent is not decreased, which
+makes parent device can't get suspended.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+This patch calls pm_runtime_set_suspended to decrease child_count
+in parent device in snd_hdac_device_exit to match with
+snd_hdac_device_init. pm_runtime_set_suspended can make sure that
+it will not decrease child_count if the device is already suspended.
+
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20200902154218.1440441-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/fabrics.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/hda/hdac_device.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/nvme/host/fabrics.c b/drivers/nvme/host/fabrics.c
-index bcd09d3a44dad..05dd46f984414 100644
---- a/drivers/nvme/host/fabrics.c
-+++ b/drivers/nvme/host/fabrics.c
-@@ -577,7 +577,6 @@ bool __nvmf_check_ready(struct nvme_ctrl *ctrl, struct request *rq,
- 	 * which is require to set the queue live in the appropinquate states.
- 	 */
- 	switch (ctrl->state) {
--	case NVME_CTRL_NEW:
- 	case NVME_CTRL_CONNECTING:
- 		if (req->cmd->common.opcode == nvme_fabrics_command &&
- 		    req->cmd->fabrics.fctype == nvme_fabrics_type_connect)
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index 333220f0f8afc..3e9e9ac804f62 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -127,6 +127,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
+ void snd_hdac_device_exit(struct hdac_device *codec)
+ {
+ 	pm_runtime_put_noidle(&codec->dev);
++	/* keep balance of runtime PM child_count in parent device */
++	pm_runtime_set_suspended(&codec->dev);
+ 	snd_hdac_bus_remove_device(codec->bus, codec);
+ 	kfree(codec->vendor_name);
+ 	kfree(codec->chip_name);
 -- 
 2.25.1
 
