@@ -2,127 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6ED26AB44
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8416926AB4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgIOR45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
+        id S1727846AbgIOR5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727952AbgIORkg (ORCPT
+        with ESMTP id S1727804AbgIORlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:40:36 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFFDC06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:40:32 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gf14so150530pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:40:32 -0700 (PDT)
+        Tue, 15 Sep 2020 13:41:35 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D10C06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:41:35 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id o20so2344682pfp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PPSpjHBCelnP8UAXZSapN435KbhWggIRrKC2Ye8r8Z0=;
-        b=MOD+7WcNAr3pjvDJPRGmwJqfPrZF/f34m/WYC8EMYYfzqG659uWpw24ujOQVUim6Nc
-         aqeLCq5fi/3QEqq8gXZ87GacMQOoS/BuSqa+uWSGEY5tcEG0aWTHJPfut5hwumeCRXcE
-         wjmCtyhd57XgvqsvmcbcvFVZaIl2fDNbN1le4LlrSbwvfD7GgsiFT++ZSp08a4O064Nd
-         Q6ett0+tjRer4jerjLxMfGx00PSUeRRhidjd747FBkQ5RarwqPfspO/V9bkb6NuoFyK1
-         5uKFAWlpesIx5EBhmryss+otr2pvAE3DRtfdP7lo/i8s5s1XPwZFG/NKRHyVqoCpfVop
-         xLnw==
+        bh=z1YjZCsp4omtvOs8Zgwj8r9+riXW9+60BrD6+tQYvl0=;
+        b=VxVrm1ZlNEgDHjFoTQjcb8wBZsTP2AMGTFBYiEonhdpBs+qdY8flCLSmhVkSnJFeS6
+         zFuF6BA7OajVnTBCJOH970BXWyojQ1Bjwe3LHXsqht0DmZu+y7oHdDBQgRYHjWlsCHfy
+         PqD0MeO09BRgPRMpDclA1eglK/Jn7wk7hljJ3QTTsKz0NWkG4WqIY81FqexKKLHu5Vp7
+         Hs8Phtdy9AqirSa2aCg4xlNf3o50BeBILWLvDwf7grvxFXc3wS0tzbqbW0Zn0SJOjKZ3
+         6cBroJHjb6LL4CSirdFKNdhOdXWkI6c4pmPwEo5hmDnFBTQ2nvJKoPuVYicOAN4RaRoE
+         Pt8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PPSpjHBCelnP8UAXZSapN435KbhWggIRrKC2Ye8r8Z0=;
-        b=H41a/Uv37PL1LuI4V1y7w3TE/TZRoLfAlvzz3lR9iX0VzDPwFsJg3pGvi856EY8Bx0
-         GC6/+5lmr9ibkA8NBwEuIlajYbhS3rVH6d0BlYUkNgHGTFsmtoMr/UYVFPPp1qhvSWuK
-         9CMW4Yy+NXIau9mr5pFn/sWfWuI2+zjiK+jt86n5ySFIVHh4ot9iyTBEIi8yGo+Tg8RU
-         PFcj0JUsVGT7GCFDMnkn6iTCrI7x07eeM4ewNWl0BeIblWFhaOspNJ7wryplyC8IwjBE
-         YQG1H83hjZgCqKHCj15fTA3PErxk4ShsS/YMcd8BAFWzmQfh6zemLOSMxTRrDxiRTTa1
-         v5cg==
-X-Gm-Message-State: AOAM533B5i9i19h26FYkR7f5891keMY5A630U09l76mxzY/UVcxQxHSH
-        WlGJttaTLfiFWUMrImJ7bSbQdjr6THdtphfBo79SQA==
-X-Google-Smtp-Source: ABdhPJwrYmlIYo3+eADiFNnZB0LjGNjunepDbkYLwHFbLSiMOmbX6wZbo2F1a6nwzeV1ZfPtHK16uHEktxgTrbwlEes=
-X-Received: by 2002:a17:902:7295:b029:d1:e3bd:48cc with SMTP id
- d21-20020a1709027295b02900d1e3bd48ccmr4255700pll.10.1600191631819; Tue, 15
- Sep 2020 10:40:31 -0700 (PDT)
+        bh=z1YjZCsp4omtvOs8Zgwj8r9+riXW9+60BrD6+tQYvl0=;
+        b=PPiCEaldzD1SDsxOTxCD3UyiB5p8jrJ0tFLuRIj7pTrcZVdZ3jGzFj8KEi5NzCI1yW
+         eRhxu1choHRc9k1nqIIz75R1P+GUFsCVn7hAV+vzp5BC0+N+68cKvFJb6nSnOvqNIgJo
+         sWmu53QguxCqz3RDyJQ29QJTLCUTNeUAdZUgtJrNe7fvFAqbdWyCwdTo4MDSW1yZA9ZY
+         KLO4A/wB3x+66tDOt7T08EpxaOwqZ9n6NI4Mn1NXn+sUuCZo+oSPZfQk3CWDtW+fvmC2
+         YJHwWi9eBlbxyfe0TiV8x0jbDfcqiUIREddoD7yHmnmQQVIJaFPZni2v/bqDpaoIRoYc
+         NAuA==
+X-Gm-Message-State: AOAM532c4XaAUIjLZfMirC8rSTwJM/nOM7cEL7i8RXwjt2M0TWKyB0R2
+        jwZKOjwgMzArkJvRFQ0BUfwuWO1syd8KGh0fX5MMCQ==
+X-Google-Smtp-Source: ABdhPJwmjnDgUJ3GpsyMpMDlACF72yh7O7IgOZKzCY9p6Q1/S7zc8eA7UoTICBeeVlm7z50c7YH95LJJT/37eCHtlEM=
+X-Received: by 2002:a62:1c4a:0:b029:13e:d13d:a136 with SMTP id
+ c71-20020a621c4a0000b029013ed13da136mr19038520pfc.30.1600191694743; Tue, 15
+ Sep 2020 10:41:34 -0700 (PDT)
 MIME-Version: 1.0
 References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
  <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble> <20200915172152.GR14436@zn.tnic>
-In-Reply-To: <20200915172152.GR14436@zn.tnic>
+ <20200915170248.gcv54pvyckteyhk3@treble> <20200915172152.GR14436@zn.tnic> <20200915173430.GS14436@zn.tnic>
+In-Reply-To: <20200915173430.GS14436@zn.tnic>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 15 Sep 2020 10:40:19 -0700
-Message-ID: <CAKwvOdkh=bZE6uY8zk_QePq5B3fY1ue9VjEguJ_cQi4CtZ4xgw@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 10:41:24 -0700
+Message-ID: <CAKwvOdnqJJ8Ot6sRvVUTyuwA_zhRQXOnMU9KS6aVcTqRGb3JmA@mail.gmail.com>
 Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
 To:     Borislav Petkov <bp@alien8.de>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        "Li, Philip" <philip.li@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        kernel test robot <lkp@intel.com>, x86-ml <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        kernel-dynamic-tools <kernel-dynamic-tools@google.com>,
-        Marco Elver <elver@google.com>
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:21 AM Borislav Petkov <bp@alien8.de> wrote:
+On Tue, Sep 15, 2020 at 10:34 AM Borislav Petkov <bp@alien8.de> wrote:
 >
-> On Tue, Sep 15, 2020 at 12:02:48PM -0500, Josh Poimboeuf wrote:
-> > If somebody can share the .o file, I can take a look.
+> On Tue, Sep 15, 2020 at 07:21:52PM +0200, Borislav Petkov wrote:
+> > I'm thinking clang12 is too unstable to take it seriously...
 >
-> If only I could reproduce...
+> Yeah, I'm being told v12 is not even close to getting released. So why
+> are you 0day guys testing with it and reporting issues? Are you testing
+> unreleased compilers and reporting bugs against the kernel?
 >
-> So I built:
->
-> /home/share/src/llvm/tc-build/install/bin/clang-12 --version
-> ClangBuiltLinux clang version 12.0.0 (https://github.com/llvm/llvm-project 74a9c6d7e1c49cd0e3a8e8072b8aa03f7a84caff)
-> Target: x86_64-unknown-linux-gnu
-> Thread model: posix
-> InstalledDir: /home/share/src/llvm/tc-build/install/bin
->
-> and I don't trigger that warning even with that compiler.
->
-> What I do get is a lot of those pairs:
->
-> init/calibrate.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-> init/calibrate.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
-> init/version.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-> init/version.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
-> certs/system_keyring.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-> certs/system_keyring.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> What's up?!
 
-+ Kernel-dynamic-tools
-
-> ...
->
-> and a link fail at the end.
->
-> ld: arch/x86/events/core.o: in function `events_sysfs_show':
-> core.c:(.text+0x469b): undefined reference to `stpcpy'
-> ld: arch/x86/events/core.o: in function `events_ht_sysfs_show':
-> core.c:(.text+0x46f7): undefined reference to `stpcpy'
-> ld: drivers/tty/tty_io.o: in function `alloc_tty_struct':
-> tty_io.c:(.text+0x2da5): undefined reference to `stpcpy'
-> ld: drivers/tty/tty_io.o: in function `tty_register_device_attr':
-> tty_io.c:(.text+0x6a09): undefined reference to `stpcpy'
-> ld: drivers/tty/tty_io.o: in function `show_cons_active':
-> tty_io.c:(.text+0xa819): undefined reference to `stpcpy'
-> ld: drivers/scsi/scsi_transport_sas.o:scsi_transport_sas.c:(.text+0x6139): more undefined references to `stpcpy' follow
-> make: *** [Makefile:1166: vmlinux] Error 1
-
-b4 am https://lore.kernel.org/lkml/20200914161643.938408-1-ndesaulniers@google.com/
--o | git am
-
->
->
-> I'm thinking clang12 is too unstable to take it seriously...
+We want them finding bugs in unreleased versions of the compiler,
+before those bugs in ship in release.  This is a good thing.
 
 -- 
 Thanks,
