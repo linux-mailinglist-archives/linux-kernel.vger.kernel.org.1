@@ -2,99 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE88326AA8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F6A26AA92
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgIOR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:27:45 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15003 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727758AbgIOQkD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:40:03 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f60ee470004>; Tue, 15 Sep 2020 09:39:35 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 15 Sep 2020 09:39:48 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 15 Sep 2020 09:39:48 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep
- 2020 16:39:47 +0000
-Subject: Re: [PATCH] mm: remove extra ZONE_DEVICE struct page refcount
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200914224509.17699-1-rcampbell@nvidia.com>
- <CAPcyv4gVJuWsOtejrKvWgByq=c1niwQOZ0HHYaSo4h6vc-Xw+Q@mail.gmail.com>
- <10b4b85c-f1e9-b6b5-74cd-6190ee0aca5d@nvidia.com>
- <20200915162956.GA21990@infradead.org>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <6dff5231-26d5-1aec-0c05-6880cf747642@nvidia.com>
-Date:   Tue, 15 Sep 2020 09:39:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1727907AbgIOR1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727756AbgIOQkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:40:04 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5C65206BE;
+        Tue, 15 Sep 2020 16:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600187984;
+        bh=hOJ/X6IlY6zvowC02+em2HyjQAPJfpL+zBzL89NhQXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z/aEqQ3CK8xus7tv48u5o6vZ0BpoPlUe+0Pyuniv3KGdvf2YuEEb0OPkClZ/qu4Sa
+         /mctumMZPvEU4JWYowXd5ZXWteD2SrTOub8hq3LNxmtPsGmzr7lkkRKMBmrdYIue5u
+         IjgU60FekTpiI7oJo+Jv7DxZcQlbS+v4//IkkSug=
+Date:   Tue, 15 Sep 2020 18:40:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH 5.4 000/132] 5.4.66-rc1 review
+Message-ID: <20200915164020.GA43543@kroah.com>
+References: <20200915140644.037604909@linuxfoundation.org>
+ <CA+G9fYv5hvOYNdfX6F40aZPP9Vr6aEsP_-22gX2P+Q95TrfF-A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200915162956.GA21990@infradead.org>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600187975; bh=C1s92L4x7f4rIF6lqQWyaq+r/2kk7tSSBG+aULp1tK0=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=MjyrTGfIene7vVu5hucCl8X7jJJtGy4gEfp8s9S8BvUOqlyhVR/Jr/cF4kdzJc0Sy
-         LCNccr/EB6s9AbvrN0g1vzjM0eTf5Ecb0AFIePVFELVPA01dU+slLbzDLM67GL26Ek
-         hRD/99TeqMFmNTw8ILvsCZqgAHPunVc0BJXMZXgbWMvQ3LinUrL1J2/FZJuuGPurhp
-         l2c3JDfB5skX8McyhBI3hpbKwAXU/D1yYeLTxWXKEYDXLR2Cc+bMRYvFmtgboy2agT
-         8cLHw3JEIT9+4E0SQHnvIvwomdfJGbjdgwupYbPF07ykO5rH/LOpLA8eYXXUPqITk7
-         Je7vqmrwPefZQ==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYv5hvOYNdfX6F40aZPP9Vr6aEsP_-22gX2P+Q95TrfF-A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/15/20 9:29 AM, Christoph Hellwig wrote:
-> On Mon, Sep 14, 2020 at 04:53:25PM -0700, Ralph Campbell wrote:
->> Since set_page_refcounted() is defined in mm_interal.h I would have to
->> move the definition to someplace like page_ref.h or have the drivers
->> cal init_page_count() or set_page_count() since get_page() calls
->> VM_BUG_ON_PAGE() if refcount == 0.
->> I'll move set_page_refcounted() since that is what the page allocator
->> uses and seems named for the purpose.
+On Tue, Sep 15, 2020 at 08:14:34PM +0530, Naresh Kamboju wrote:
+> On Tue, 15 Sep 2020 at 19:50, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.4.66 release.
+> > There are 132 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.66-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> >
 > 
-> I don't think any of the three ->page_free instances even cares about
-> the page refcount.
+> arm and arm64 build breaks on stable rc 5.4.
 > 
-Not true. The page_free() callback records the page is free by setting
-a bit or putting the page on a free list but when it allocates a free
-device private struct page to be used with migrate_vma_setup(), it needs to
-increment the refcount.
+> make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arm
+> CROSS_COMPILE=arm-linux-gnueabihf- HOSTCC=gcc CC="sccache
+> arm-linux-gnueabihf-gcc" O=build zImage
+> #
+> ../kernel/kprobes.c: In function ‘kill_kprobe’:
+> ../kernel/kprobes.c:1081:33: warning: statement with no effect [-Wunused-value]
+>  1081 | #define disarm_kprobe_ftrace(p) (-ENODEV)
+>       |                                 ^
+> ../kernel/kprobes.c:2113:3: note: in expansion of macro ‘disarm_kprobe_ftrace’
+>  2113 |   disarm_kprobe_ftrace(p);
+>       |   ^~~~~~~~~~~~~~~~~~~~
+> #
+> # make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arm
+> CROSS_COMPILE=arm-linux-gnueabihf- HOSTCC=gcc CC="sccache
+> arm-linux-gnueabihf-gcc" O=build modules
+> #
+> ../drivers/gpu/drm/msm/adreno/a5xx_preempt.c: In function ‘preempt_init_ring’:
+> ../drivers/gpu/drm/msm/adreno/a5xx_preempt.c:235:21: error:
+> ‘MSM_BO_MAP_PRIV’ undeclared (first use in this function)
+>   235 |   MSM_BO_UNCACHED | MSM_BO_MAP_PRIV, gpu->aspace, &bo, &iova);
+>       |                     ^~~~~~~~~~~~~~~
+> ../drivers/gpu/drm/msm/adreno/a5xx_preempt.c:235:21: note: each
+> undeclared identifier is reported only once for each function it
+> appears in
+> make[5]: *** [../scripts/Makefile.build:266:
+> drivers/gpu/drm/msm/adreno/a5xx_preempt.o] Error 1
+> ../drivers/gpu/drm/msm/adreno/a6xx_gpu.c: In function ‘a6xx_hw_init’:
+> ../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:414:6: error: implicit
+> declaration of function ‘adreno_is_a640’; did you mean
+> ‘adreno_is_a540’? [-Werror=implicit-function-declaration]
+>   414 |  if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu)) {
+>       |      ^~~~~~~~~~~~~~
+>       |      adreno_is_a540
+> ../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:414:36: error: implicit
+> declaration of function ‘adreno_is_a650’; did you mean
+> ‘adreno_is_a540’? [-Werror=implicit-function-declaration]
+>   414 |  if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu)) {
+>       |                                    ^~~~~~~~~~~~~~
+>       |                                    adreno_is_a540
+> ../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:415:18: error:
+> ‘REG_A6XX_GBIF_QSB_SIDE0’ undeclared (first use in this function)
+>   415 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE0, 0x00071620);
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~
+> ../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:415:18: note: each undeclared
+> identifier is reported only once for each function it appears in
+> ../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:416:18: error:
+> ‘REG_A6XX_GBIF_QSB_SIDE1’ undeclared (first use in this function)
+>   416 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE1, 0x00071620);
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~
+> ../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:417:18: error:
+> ‘REG_A6XX_GBIF_QSB_SIDE2’ undeclared (first use in this function)
+>   417 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE2, 0x00071620);
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~
+> ../drivers/gpu/drm/msm/adreno/a6xx_gpu.c:418:18: error:
+> ‘REG_A6XX_GBIF_QSB_SIDE3’ undeclared (first use in this function)
+>   418 |   gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE3, 0x00071620);
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~
+> cc1: some warnings being treated as errors
+> make[5]: *** [../scripts/Makefile.build:265:
+> drivers/gpu/drm/msm/adreno/a6xx_gpu.o] Error 1
+> In file included from ../drivers/gpu/drm/msm/msm_gpu.c:7:
+> ../drivers/gpu/drm/msm/msm_gpu.c: In function ‘msm_gpu_init’:
+> ../drivers/gpu/drm/msm/msm_gpu.h:330:22: error: ‘MSM_BO_MAP_PRIV’
+> undeclared (first use in this function)
+>   330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+>       |                      ^~~~~~~~~~~~~~~
+> ../drivers/gpu/drm/msm/msm_gpu.c:935:3: note: in expansion of macro
+> ‘check_apriv’
+>   935 |   check_apriv(gpu, MSM_BO_UNCACHED), gpu->aspace, &gpu->memptrs_bo,
+>       |   ^~~~~~~~~~~
+> ../drivers/gpu/drm/msm/msm_gpu.h:330:22: note: each undeclared
+> identifier is reported only once for each function it appears in
+>   330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+>       |                      ^~~~~~~~~~~~~~~
+> ../drivers/gpu/drm/msm/msm_gpu.c:935:3: note: in expansion of macro
+> ‘check_apriv’
+>   935 |   check_apriv(gpu, MSM_BO_UNCACHED), gpu->aspace, &gpu->memptrs_bo,
+>       |   ^~~~~~~~~~~
+> make[5]: *** [../scripts/Makefile.build:266:
+> drivers/gpu/drm/msm/msm_gpu.o] Error 1
+> In file included from ../drivers/gpu/drm/msm/msm_ringbuffer.c:8:
+> ../drivers/gpu/drm/msm/msm_ringbuffer.c: In function ‘msm_ringbuffer_new’:
+> ../drivers/gpu/drm/msm/msm_gpu.h:330:22: error: ‘MSM_BO_MAP_PRIV’
+> undeclared (first use in this function)
+>   330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+>       |                      ^~~~~~~~~~~~~~~
+> ../drivers/gpu/drm/msm/msm_ringbuffer.c:30:3: note: in expansion of
+> macro ‘check_apriv’
+>    30 |   check_apriv(gpu, MSM_BO_WC | MSM_BO_GPU_READONLY),
+>       |   ^~~~~~~~~~~
+> ../drivers/gpu/drm/msm/msm_gpu.h:330:22: note: each undeclared
+> identifier is reported only once for each function it appears in
+>   330 |  (((gpu)->hw_apriv ? MSM_BO_MAP_PRIV : 0) | (flags))
+>       |                      ^~~~~~~~~~~~~~~
+> ../drivers/gpu/drm/msm/msm_ringbuffer.c:30:3: note: in expansion of
+> macro ‘check_apriv’
+>    30 |   check_apriv(gpu, MSM_BO_WC | MSM_BO_GPU_READONLY),
+>       |   ^~~~~~~~~~~
+> make[5]: *** [../scripts/Makefile.build:265:
+> drivers/gpu/drm/msm/msm_ringbuffer.o] Error 1
+> make[5]: Target '__build' not remade because of errors.
+> make[4]: *** [../scripts/Makefile.build:500: drivers/gpu/drm/msm] Error 2
+> make[4]: Target '__build' not remade because of errors.
+> make[3]: *** [../scripts/Makefile.build:500: drivers/gpu/drm] Error 2
+> make[3]: Target '__build' not remade because of errors.
+> make[2]: *** [../scripts/Makefile.build:500: drivers/gpu] Error 2
+> make[2]: Target '__build' not remade because of errors.
+> make[1]: *** [/linux/Makefile:1729: drivers] Error 2
+> make[1]: Target 'modules' not remade because of errors.
+> make: *** [Makefile:179: sub-make] Error 2
+> make: Target 'modules' not remade because of errors.
 
-For the ZONE_DEVICE MEMORY_DEVICE_GENERIC and MEMORY_DEVICE_PCI_P2PDMA
-struct pages, I think you are correct because they don't define page_free()
-and from what I can see, don't decrement the page refcount to zero.
+Ah, will go drop that patch, thanks!
+
+greg k-h
