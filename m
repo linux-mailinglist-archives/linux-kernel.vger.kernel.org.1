@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5F426A38F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5C626A3AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgIOKrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:47:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41174 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgIOKqx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:46:53 -0400
-Date:   Tue, 15 Sep 2020 12:46:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600166809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xh3EHrRe5z7maxUqybrrB3If+k26a9+UUQ5dxMca94k=;
-        b=CN1wSm7whjXDxrCrkgRSy4T34f7EI1hIvTT9Dk2zS4d/x4wuLx7Fj/WpcTaWAhGMCIsHRG
-        2HeWLcIVqM6FrJbrLQqV0MB9vnyqTyOVefFe/rtOpCzP4CHnlvi6meQJ8psOz47r6Vh7Mj
-        zKjsWZ+NOM1DzZF6zfTg8wmEI8ZQAw/PnGkJtnqVsVBOXsKW/Ih9fyULQe7A3eL4xXKKIg
-        02LyS0ZBQSu7W1AV9cLXBpcUxbZG9aP0gpxIRyUvUh1+kzZayOS203QxZsq3me0Ajq4Vgj
-        QsF69nPTkUKMFIgs/eO1BkBcaAJmweHtTCjv9lhKmQZgXTEfDROt+hTrLgYVcw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600166809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xh3EHrRe5z7maxUqybrrB3If+k26a9+UUQ5dxMca94k=;
-        b=XGo40s2BG8WK3B0vXVpyuGVChnuLnuJavmH0tkBUCwvO9Xi7FvC6gKQsXGWpDnRubcMLsC
-        RWjKFJpRlK3iMaAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] tracing: Make the space reserved for the pid wider
-Message-ID: <20200915104648.hac2ljgzrqc7z244@linutronix.de>
-References: <20200904082331.dcdkrr3bkn3e4qlg@linutronix.de>
+        id S1726370AbgIOKxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:53:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:60712 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726317AbgIOKxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:53:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69EEE1FB;
+        Tue, 15 Sep 2020 03:53:32 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E2933F718;
+        Tue, 15 Sep 2020 03:53:31 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 11:53:26 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the pci tree
+Message-ID: <20200915105326.GA3351@e121166-lin.cambridge.arm.com>
+References: <20200909123710.50b16d37@canb.auug.org.au>
+ <CAL_Jsq+tH+zAjdoC807Z7-89P5e6BUHVXd4Udbcp21a3XPx=VQ@mail.gmail.com>
+ <20200915134721.45396e42@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200904082331.dcdkrr3bkn3e4qlg@linutronix.de>
+In-Reply-To: <20200915134721.45396e42@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-04 10:23:31 [+0200], To linux-kernel@vger.kernel.org wrote:
-> For 64bit CONFIG_BASE_SMALL=0 systems PID_MAX_LIMIT is set by default to
-> 4194304. During boot the kernel sets a new value based on number of CPUs
-> but no lower than 32768. It is 1024 per CPU so with 128 CPUs the default
-> becomes 131072 which needs six digits. 
-> This value can be increased during run time but must not exceed the
-> initial upper limit.
+On Tue, Sep 15, 2020 at 01:47:21PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Systemd sometime after v241 sets it to the upper limit during boot. The
-> result is that when the pid exceeds five digits, the trace output is a
-> little hard to read because it is no longer properly padded (same like
-> on big iron with 98+ CPUs).
+> On Wed, 9 Sep 2020 10:06:20 -0600 Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, Sep 8, 2020 at 8:37 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > After merging the pci tree, today's linux-next build (arm
+> > > multi_v7_defconfig) produced this warning:  
+> > 
+> > Uggg. I guess 0-day just doesn't do arm32 builds anymore as it caught
+> > more obscure build issues, but not this one (and some others I've had
+> > recently).
+> > 
+> > > drivers/pci/controller/dwc/pci-dra7xx.c: In function 'dra7xx_pcie_establish_link':
+> > > drivers/pci/controller/dwc/pci-dra7xx.c:142:6: warning: unused variable 'exp_cap_off' [-Wunused-variable]
+> > >   142 |  u32 exp_cap_off = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> > >       |      ^~~~~~~~~~~
+> > >
+> > > Introduced by commit
+> > >
+> > >   3af45d34d30c ("PCI: dwc: Centralize link gen setting")
 > 
-> Increase the pid padding to seven digits.
+> I am still getting this warning.
 
-ping
+I have pushed out a fix-up on my pci/dwc branch, the warning should
+disappear as soon as Bjorn pulls it.
 
-Sebastian
+Thanks,
+Lorenzo
