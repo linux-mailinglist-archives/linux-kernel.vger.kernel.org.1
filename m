@@ -2,80 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D109E26A220
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB65626A225
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgIOJ0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:26:39 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:46193 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgIOJ0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:26:36 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BrHt20QKwz9sVB;
-        Tue, 15 Sep 2020 19:26:33 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600161994;
-        bh=bcm070YqNE6/zFk/HFV7pW3UsnPcEG4e6gQC2h6/8Vk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kXuZeuY4aoU9cmuzoKd0v+u7pgJH3sLFL30Lm8SvpCpDwYKtA+/7AiSQRSfmPYSNW
-         Jwnq+4qSFF16o+bAXYqxc3taYwLMZVy/K7I6lBp0BEWW7GdAT5g6Bwg6mWnVaP9rCi
-         00N5KKY+vo5QTX7cnainhBft40RGBkRA/jC/QaaYmzM8VEXZ9scVEcnvfwi3GctShI
-         Y8VrdpZSFMzWvAKmtbHtw4NDrVFCL8g8cSfaAniesKg7922TI4fxQRBsfu5TgiHCdO
-         vHNYsLp0XxgqKbUFYNmLcS5EiFnAgMBaafvbBEJUFNmXHBZwL+ko+vumJKp+++btC6
-         QCDaCvIfVh4mQ==
-Date:   Tue, 15 Sep 2020 19:26:32 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the zonefs tree
-Message-ID: <20200915192632.4bc91c9c@canb.auug.org.au>
+        id S1726317AbgIOJ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIOJ24 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:28:56 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6ED1C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:28:55 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b19so2144298lji.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:28:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8sKtwXaKgtYXFz9sToAq2eVmecZM3m/5P7rW2zQ29hs=;
+        b=r8/HtN8AkZhnybxMQ2vFb2hL9+b2Rnr1sAYhqd95uaYMSTdASEaRC8H2hmVccGISo/
+         IkQehKWH1yQJHYaaEkIoSUp14NZPHNT2ewtmNx615j5CFmtaMV6HMS4d4xGRmyeBsEe8
+         UUnZ2YOFDUMKbr6EK2GNIz4U6M5oCzGYnxA1xnlGz3F+g+bN4LW+FNNVwzh8uz99zaTO
+         3qcRFbjXA4XkB2eUsk/cRz6e9McTTG3Mix4NHwBCxPmUwKxI9S6VGh4a9nsZkFHMVPeo
+         v94saBvNq/BuX/LBur0d5ZCwusIrlzo/2Uc8/EqQib7e/E2Lb2G8VTHx31IpCJlyZRTr
+         a1Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8sKtwXaKgtYXFz9sToAq2eVmecZM3m/5P7rW2zQ29hs=;
+        b=l7/biglAXFOOWkXmxZbVhOD5uhC88Fh3zR4JaaLO0sq+SYPmCg9C/tjIrZr5NniCNP
+         ydMMFK4FFCIGN6TueDer9osijlMf3Vp369br0dCs5X/eQWvq+0sw0e+MkbNpenf9VM7Y
+         CiuEcRiTXyr7EN8/I5o4kRW3hr9eV1IiW7tlkMOQKbvFdmy3NY/gmSl90m4JasFMvNMv
+         B3hgJqzCBQR+A72yN1N4D4cTLwUw7fLLNarJ2Cpqs1QIAAFfoBAAMeOiJOkGmm3Xzluq
+         r5GH8rVEkiFEBkcc04PIbWJdNJ3Xb8oeEEJDj9AWkdxCmWNhDmpoxo/DxmpInuZCwJ/O
+         bn4w==
+X-Gm-Message-State: AOAM532EaMfXG8IEnJ4ba3e+mfPC7rNzoNblMjAu1BB93+jyHv+WkyGD
+        Bxcm7E8GoC1kEyF21F66WU/fezXNSMsLrUaO6HHRbg==
+X-Google-Smtp-Source: ABdhPJyUjnLpOXcDVwEfROkATt5m5l2uzI9Uj4CpydcixBQmqRWVYofOeke4wSbBhnn4fIZrLemvB3rwI/jCNj/ME8E=
+X-Received: by 2002:a2e:81d7:: with SMTP id s23mr6971931ljg.69.1600162132403;
+ Tue, 15 Sep 2020 02:28:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/63u6g+h8FodwEx1d/IFig2X";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200914100340.17608-1-vincent.guittot@linaro.org>
+ <20200914100340.17608-5-vincent.guittot@linaro.org> <CAPJCdBmNK2ZbvsOkzx=6TnzSD=EN28MjD=4ZsmnWjb907MC41g@mail.gmail.com>
+In-Reply-To: <CAPJCdBmNK2ZbvsOkzx=6TnzSD=EN28MjD=4ZsmnWjb907MC41g@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 15 Sep 2020 11:28:41 +0200
+Message-ID: <CAKfTPtC1Z7bAN6WpgdjzpToExR63NL7rGCUpFzT3O6fM1OECkQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] sched/fair: reduce busy load balance interval
+To:     Jiang Biao <benbjiang@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/63u6g+h8FodwEx1d/IFig2X
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 15 Sep 2020 at 11:11, Jiang Biao <benbjiang@gmail.com> wrote:
+>
+> Hi, Vincent
+>
+> On Mon, 14 Sep 2020 at 18:07, Vincent Guittot
+> <vincent.guittot@linaro.org> wrote:
+> >
+> > The busy_factor, which increases load balance interval when a cpu is busy,
+> > is set to 32 by default. This value generates some huge LB interval on
+> > large system like the THX2 made of 2 node x 28 cores x 4 threads.
+> > For such system, the interval increases from 112ms to 3584ms at MC level.
+> > And from 228ms to 7168ms at NUMA level.
+> Agreed that the interval is too big for that case.
+> But would it be too small for an AMD environment(like ROME) with 8cpu
+> at MC level(CCX), if we reduce busy_factor?
 
-Hi all,
+Are you sure that this is too small ? As mentioned in the commit
+message below, I tested it on small system (2x4 cores Arm64) and i
+have seen some improvements
 
-Commits
+> For that case, the interval could be reduced from 256ms to 128ms.
+> Or should we define an MIN_INTERVAL for MC level to avoid too small interval?
 
-  7de0d8dc5dea ("zonefs: document the explicit-open mount option")
-  7e7dda2cb1b6 ("zonefs: open/close zone on file open/close")
-  c282d13f6ceb ("zonefs: provide zonefs_io_error variant that can be called=
- with i_truncate_mutex held")
-  16ef4f7638ac ("zonefs: introduce helper for zone management")
+What would be a too small interval ?
 
-are missing a Signed-off-by from their committer.
+Before this patch we have for a level with 8 cores:
+when idle, the interval is 8ms and increase to 256ms when busy
+After the patch, we have
+When idle the interval is still 8ms and increase to 128ms when busy
 
---=20
-Cheers,
-Stephen Rothwell
+Regards,
+Vincent
 
---Sig_/63u6g+h8FodwEx1d/IFig2X
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9giMgACgkQAVBC80lX
-0GzWXQf/WEcv7d1uzG5M45qg7iS8prFL+ag+d1iYPYRbhL0V/+SrR4rRXnvJPk2W
-EcMEcr53Isl0IhQRZJ+gTLgPZOSmtAAT4mqHsgnwgPv4UrRRddGW1NqXdxa+0REu
-ORWuyY+ivaFU73xkExTDK20Q/baQCplf7NyMAFZ7y0szyy7BOzveOO+wTynnmFJC
-LPd3RYhB2lbxqfll8K2jjkHoU1JYqTtDOv6TILGkaWf89VZNROOkX8m5bqAePsUE
-C+WXMDtPVyAI9KcFYd6ZtC45oMiX3gxinmOAGYzwUMlN8Gb0dGxWo7RIncwtA+d+
-En2FpmbhDpb9XH5rCuSeg9ccqUTCCA==
-=ZsCb
------END PGP SIGNATURE-----
-
---Sig_/63u6g+h8FodwEx1d/IFig2X--
+>
+> Thx.
+> Regards,
+> Jiang
+>
+> >
+> > Even on smaller system, a lower busy factor has shown improvement on the
+> > fair distribution of the running time so let reduce it for all.
+> >
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  kernel/sched/topology.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > index 1a84b778755d..a8477c9e8569 100644
+> > --- a/kernel/sched/topology.c
+> > +++ b/kernel/sched/topology.c
+> > @@ -1336,7 +1336,7 @@ sd_init(struct sched_domain_topology_level *tl,
+> >         *sd = (struct sched_domain){
+> >                 .min_interval           = sd_weight,
+> >                 .max_interval           = 2*sd_weight,
+> > -               .busy_factor            = 32,
+> > +               .busy_factor            = 16,
+> >                 .imbalance_pct          = 117,
+> >
+> >                 .cache_nice_tries       = 0,
+> > --
+> > 2.17.1
+> >
