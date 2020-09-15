@@ -2,131 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1062F26AC6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E1226ACA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727686AbgIOSqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:46:43 -0400
-Received: from mout.gmx.net ([212.227.17.20]:52619 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727872AbgIOSpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:45:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600195470;
-        bh=B31pD7D2sccJgZjLSpQrpxyG+i1b3lP7zRQ7GgeJ0Ig=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=EsuZ9KONYBvLuz1orfuvnb/zRCqBqa/mXqJIWVfBiMWs0Jk0xokvTM2/RzzN+mdiy
-         l/hztbBJckUE5aZK3raUkSJ7ZucSYhvlt707gaN+no6MwVKEpkxYWWL5QKtoe8SL74
-         FDrftWHjo348TLOzXJ7Ztow/mOWgXJQZNbZTjX6o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGNC-1k2NVz2rpe-00JJl0; Tue, 15
- Sep 2020 20:44:29 +0200
-Date:   Tue, 15 Sep 2020 20:44:19 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Subject: Re: [RFC PATCH 5/6] security/fbfam: Detect a fork brute force attack
-Message-ID: <20200915175831.GB2900@ubuntu>
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <20200910202107.3799376-6-keescook@chromium.org>
- <CAG48ez1gbu+eBA_PthLemcVVR+AU7Xa1zzbJ8tLMLBDCe_a+fQ@mail.gmail.com>
- <20200913172415.GA2880@ubuntu>
- <CAG48ez0BcSY0is2LzdkizcOQYkaOJwfa=5ZSwjKb+faRwG9QCA@mail.gmail.com>
+        id S1727850AbgIOSzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727817AbgIOSyi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 14:54:38 -0400
+X-Greylist: delayed 451 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Sep 2020 11:54:38 PDT
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F496C061788;
+        Tue, 15 Sep 2020 11:54:37 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 0C4B3806F7;
+        Tue, 15 Sep 2020 11:47:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 thorn.bewilderbeest.net 0C4B3806F7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1600195621;
+        bh=FJZOAN5p863bC4FM+I+qvDnKOPec7IEYDsPnpusvWKU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IshQ+GArRiw/dXPoWZQdc4tiy1LTt+uLkEQtzhFjgCKnZ0MD88YHEgo7DlosaSYWL
+         efk5DOCxDBtnSPOPxgv8LC8rhx+6sVJxOiWwDcbqrVLsp2xaKJu+JkNup+D8Wdtk+y
+         Ur8dkOjEgjj+VCI5ESwH8o8I0hvWXA/xjKTFys0k=
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Zev Weiss <zev@bewilderbeest.net>
+Subject: [PATCH] i2c: aspeed: disable additional device addresses on ast2[56]xx
+Date:   Tue, 15 Sep 2020 13:45:25 -0500
+Message-Id: <20200915184525.29665-1-zev@bewilderbeest.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez0BcSY0is2LzdkizcOQYkaOJwfa=5ZSwjKb+faRwG9QCA@mail.gmail.com>
-X-Provags-ID: V03:K1:HFDnSb2MWhINTQ+V1WFfxA497qE6aAUEa/2kIVw6n9wfon3ph1l
- 1qX2pXf4G8fZlf1vXI5CUUJ0xAowRC3vdgBEc2p6hocs7C1ts73hYxVw1HwXQxFef+GxdK8
- zqMWid9SgMcrL+CYGopt594fxmc+sEKZYRTg4JNnf71Kf1Ob6hpSAxueSdYfR+sOjZQPrms
- edQ8vMbuZcbovLlFEvsyQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xx2DZ+0hWyI=:nvyTRQBte31zC0s60s8C+M
- kOGSY2G49n+xtijXKjcz/mq3JhxmKX0l3Z8m4go9IvN5zXRHrY0nlqpzQLCVHRTcfxIFjYw/G
- JwVTyeHsRwnIwyYeY8j8WTHGisSariEVK/UcNGio5yD6cUfqEioz+S0WOGfE4Klh+0Szf3wqv
- +IH8doSThUkx7Fd97LddLDl+KO7uZ6o4mMwOwbcOOr9oA2HXGv7UEPvob8SSf8XiG9y9HCWOr
- 4L+ecdZU95mq21cIZ8CUVbUpxVN3x2gHVOIk2GwjtqEJct2XZNDtMmnqrZoDJyiMAgjS3d0b/
- gF9vsPAz7MGQXwmIB/6F5d/pK9zhiTKwrrHsaj2aN0dVQ+7k3j4eTNoMUMMomIAVxzRZrFdW4
- 3RtJHMTItTuQ+q+ME0hmpy07hTHbo74C7OJqkuPctK8Qu2BfGT2cVTZ5X4IkJpLiKDQPxZtwh
- S0wJBasnev76pI6n6dSh1rw15g+PGdvMXhWs+07UFOrDlT5s8KVhyI2xEAKOq3oaGvm/VYcoF
- twHcwUHfTeBwHNdz0CkqPSm0fFs2ploxanxppsXMHZvHU0Ktjvu6krX6+ctZxxK1a5b0gqv6k
- fm5bNISVkH36XSelod+TA+S4Ir8ebVm8zI7+04BXpIWIpHC3d985CVAndn3WJLg/2eiP8WjnR
- k9EqGZCT/lIq1zyEE/8SOU0xrJyUExgWqnhC4i1zWkm9kKpvdzXdDcCMwLZ1ewXC7oAFFj80V
- r4hY+cl3mRdHAlAy4JgkEIZoQVulOc5eqMLf/0mSnM5Qgd+7DL64vAg2xcqBZQzlXuJ89M1Qg
- 6aV5gGH9YLeHMW82/F4d443Vx43f5bQung3/I0hUfV+bRg2Me50xt2AH3uC7Bnsv58+nMSuPG
- yN1YtjDYsCwO4enn+wLzGjQbHHQ7eWYFtKPD0jSoQnM9fAnCSWzLcolztviAnaRBiEXIFA0ZS
- K1VJ2DenRCbTHJ0nTi0FGy4TLXkUcKoIDcAPud3eqcbDkW9X5OcudSoACAqfYz9nthbwMBwGw
- a5kaGMAGxoeNm1xFuZULgnM/yjddeYmH1kVZZES8UziLJXIWstV4z4MgEcPJ0v96YEdI46go+
- V5XBeBXn1IYQS/lE1ZMfj99NqbqGMv0g7beOt3mHy2Ulyq06VPPB3QZn2GJUSsjAl7Y0/4CrB
- 2qxAUhOLpobD5nwrQYVzYcQmUM8Vh2kSPQrqezetYanOKsBLqD5unw7gxvcEA017Zo/iErihG
- B3bwnEwSe/MFCUXchIhdJgKStou1HNct+WoL6FQ==
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:42:37PM +0200, Jann Horn wrote:
-> On Sun, Sep 13, 2020 at 7:55 PM John Wood <john.wood@gmx.com> wrote:
-> > On Thu, Sep 10, 2020 at 11:10:38PM +0200, Jann Horn wrote:
-> > > > +       delta_jiffies =3D get_jiffies_64() - stats->jiffies;
-> > > > +       delta_time =3D jiffies64_to_msecs(delta_jiffies);
-> > > > +       crashing_rate =3D delta_time / (u64)stats->faults;
-> > >
-> > > Do I see this correctly, is this computing the total runtime of this
-> > > process hierarchy divided by the total number of faults seen in this
-> > > process hierarchy? If so, you may want to reconsider whether that's
-> > > really the behavior you want. For example, if I configure the minimu=
-m
-> > > period between crashes to be 30s (as is the default in the sysctl
-> > > patch), and I try to attack a server that has been running without a=
-ny
-> > > crashes for a month, I'd instantly be able to crash around
-> > > 30*24*60*60/30 =3D 86400 times before the detection kicks in. That s=
-eems
-> > > suboptimal.
-> >
-> > You are right. This is not the behaviour we want. So, for the next
-> > version it would be better to compute the crashing period as the time
-> > between two faults, or the time between the execve call and the first
-> > fault (first fault case).
-> >
-> > However, I am afraid of a premature detection if a child process fails
-> > twice in a short period.
-> >
-> > So, I think it would be a good idea add a new sysctl to setup a
-> > minimum number of faults before the time between faults starts to be
-> > computed. And so, the attack detection only will be triggered if the
-> > application crashes quickly but after a number of crashes.
-> >
-> > What do you think?
->
-> You could keep a list of the timestamps of the last five crashes or
-> so, and then take action if the last five crashes happened within
-> (5-1)*crash_period_limit time.
+The ast25xx and ast26xx have, respectively, two and three configurable
+slave device addresses to the ast24xx's one.  We only support using
+one at a time, but the others may come up in an indeterminate state
+depending on hardware/bootloader behavior, so we need to make sure we
+disable them so as to avoid ending up with phantom devices on the bus.
 
-Ok, your proposed solution seems a more clever one. Anyway I think that a
-new sysctl for fine tuning the number of timestamps would be needed.
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+---
+ drivers/i2c/busses/i2c-aspeed.c | 50 +++++++++++++++++++++++++++------
+ 1 file changed, 41 insertions(+), 9 deletions(-)
 
-Thanks,
-John Wood
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+index a7be6f24450b..20028a7a9f67 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -117,6 +117,8 @@
+ 
+ /* 0x18 : I2CD Slave Device Address Register   */
+ #define ASPEED_I2CD_DEV_ADDR_MASK			GENMASK(6, 0)
++#define ASPEED_I2CD_DEV_ADDR2_ENABLE			BIT(15)
++#define ASPEED_I2CD_DEV_ADDR3_ENABLE			BIT(23)
+ 
+ enum aspeed_i2c_master_state {
+ 	ASPEED_I2C_MASTER_INACTIVE,
+@@ -139,6 +141,16 @@ enum aspeed_i2c_slave_state {
+ 	ASPEED_I2C_SLAVE_STOP,
+ };
+ 
++struct aspeed_i2c_model {
++	u32 (*get_clk_reg_val)(struct device *dev, u32 divisor);
++
++	/*
++	 * Some models support multiple device addresses -- we only support
++	 * using one, but we need to disable the others if they're present.
++	 */
++	unsigned int num_device_addrs;
++};
++
+ struct aspeed_i2c_bus {
+ 	struct i2c_adapter		adap;
+ 	struct device			*dev;
+@@ -147,8 +159,7 @@ struct aspeed_i2c_bus {
+ 	/* Synchronizes I/O mem access to base. */
+ 	spinlock_t			lock;
+ 	struct completion		cmd_complete;
+-	u32				(*get_clk_reg_val)(struct device *dev,
+-							   u32 divisor);
++	const struct aspeed_i2c_model	*model;
+ 	unsigned long			parent_clk_frequency;
+ 	u32				bus_frequency;
+ 	/* Transaction state. */
+@@ -726,6 +737,13 @@ static void __aspeed_i2c_reg_slave(struct aspeed_i2c_bus *bus, u16 slave_addr)
+ 	addr_reg_val = readl(bus->base + ASPEED_I2C_DEV_ADDR_REG);
+ 	addr_reg_val &= ~ASPEED_I2CD_DEV_ADDR_MASK;
+ 	addr_reg_val |= slave_addr & ASPEED_I2CD_DEV_ADDR_MASK;
++
++	/* Disable additional addresses on hardware that has them. */
++	if (bus->model->num_device_addrs > 1)
++		addr_reg_val &= ~ASPEED_I2CD_DEV_ADDR2_ENABLE;
++	if (bus->model->num_device_addrs > 2)
++		addr_reg_val &= ~ASPEED_I2CD_DEV_ADDR3_ENABLE;
++
+ 	writel(addr_reg_val, bus->base + ASPEED_I2C_DEV_ADDR_REG);
+ 
+ 	/* Turn on slave mode. */
+@@ -863,6 +881,11 @@ static u32 aspeed_i2c_24xx_get_clk_reg_val(struct device *dev, u32 divisor)
+ 	return aspeed_i2c_get_clk_reg_val(dev, GENMASK(2, 0), divisor);
+ }
+ 
++static const struct aspeed_i2c_model aspeed_i2c_24xx_bus = {
++	.get_clk_reg_val = aspeed_i2c_24xx_get_clk_reg_val,
++	.num_device_addrs = 1,
++};
++
+ static u32 aspeed_i2c_25xx_get_clk_reg_val(struct device *dev, u32 divisor)
+ {
+ 	/*
+@@ -872,6 +895,16 @@ static u32 aspeed_i2c_25xx_get_clk_reg_val(struct device *dev, u32 divisor)
+ 	return aspeed_i2c_get_clk_reg_val(dev, GENMASK(3, 0), divisor);
+ }
+ 
++static const struct aspeed_i2c_model aspeed_i2c_25xx_bus = {
++	.get_clk_reg_val = aspeed_i2c_25xx_get_clk_reg_val,
++	.num_device_addrs = 2,
++};
++
++static const struct aspeed_i2c_model aspeed_i2c_26xx_bus = {
++	.get_clk_reg_val = aspeed_i2c_25xx_get_clk_reg_val,
++	.num_device_addrs = 3,
++};
++
+ /* precondition: bus.lock has been acquired. */
+ static int aspeed_i2c_init_clk(struct aspeed_i2c_bus *bus)
+ {
+@@ -882,7 +915,7 @@ static int aspeed_i2c_init_clk(struct aspeed_i2c_bus *bus)
+ 	clk_reg_val &= (ASPEED_I2CD_TIME_TBUF_MASK |
+ 			ASPEED_I2CD_TIME_THDSTA_MASK |
+ 			ASPEED_I2CD_TIME_TACST_MASK);
+-	clk_reg_val |= bus->get_clk_reg_val(bus->dev, divisor);
++	clk_reg_val |= bus->model->get_clk_reg_val(bus->dev, divisor);
+ 	writel(clk_reg_val, bus->base + ASPEED_I2C_AC_TIMING_REG1);
+ 	writel(ASPEED_NO_TIMEOUT_CTRL, bus->base + ASPEED_I2C_AC_TIMING_REG2);
+ 
+@@ -946,15 +979,15 @@ static int aspeed_i2c_reset(struct aspeed_i2c_bus *bus)
+ static const struct of_device_id aspeed_i2c_bus_of_table[] = {
+ 	{
+ 		.compatible = "aspeed,ast2400-i2c-bus",
+-		.data = aspeed_i2c_24xx_get_clk_reg_val,
++		.data = &aspeed_i2c_24xx_bus,
+ 	},
+ 	{
+ 		.compatible = "aspeed,ast2500-i2c-bus",
+-		.data = aspeed_i2c_25xx_get_clk_reg_val,
++		.data = &aspeed_i2c_25xx_bus,
+ 	},
+ 	{
+ 		.compatible = "aspeed,ast2600-i2c-bus",
+-		.data = aspeed_i2c_25xx_get_clk_reg_val,
++		.data = &aspeed_i2c_26xx_bus,
+ 	},
+ 	{ },
+ };
+@@ -1002,10 +1035,9 @@ static int aspeed_i2c_probe_bus(struct platform_device *pdev)
+ 
+ 	match = of_match_node(aspeed_i2c_bus_of_table, pdev->dev.of_node);
+ 	if (!match)
+-		bus->get_clk_reg_val = aspeed_i2c_24xx_get_clk_reg_val;
++		bus->model = &aspeed_i2c_24xx_bus;
+ 	else
+-		bus->get_clk_reg_val = (u32 (*)(struct device *, u32))
+-				match->data;
++		bus->model = match->data;
+ 
+ 	/* Initialize the I2C adapter */
+ 	spin_lock_init(&bus->lock);
+-- 
+2.28.0
 
