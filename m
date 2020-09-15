@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C16269C3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCC3269C40
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgIODD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:03:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40018 "EHLO huawei.com"
+        id S1726161AbgIODEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 23:04:14 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:41340 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726057AbgIODDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:03:55 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 029D0528DAA3FAEC8488;
-        Tue, 15 Sep 2020 11:03:54 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Tue, 15 Sep 2020
+        id S1726089AbgIODD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 23:03:59 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 895B6863343CCAEE14C4;
+        Tue, 15 Sep 2020 11:03:56 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 15 Sep 2020
  11:03:48 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] firmware: arm_sdei: simplify the return expression of sdei_device_freeze()
-Date:   Tue, 15 Sep 2020 11:26:25 +0800
-Message-ID: <20200915032625.1772413-1-liushixin2@huawei.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] Input: da9034-ts - simplify the return expression of da9034_touch_probe()
+Date:   Tue, 15 Sep 2020 11:26:26 +0800
+Message-ID: <20200915032626.1772465-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,31 +39,34 @@ Simplify the return expression.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/firmware/arm_sdei.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/input/touchscreen/da9034-ts.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
-index b4b9ce97f415..5b4c8c51cb20 100644
---- a/drivers/firmware/arm_sdei.c
-+++ b/drivers/firmware/arm_sdei.c
-@@ -798,16 +798,10 @@ static int sdei_device_resume(struct device *dev)
-  */
- static int sdei_device_freeze(struct device *dev)
- {
--	int err;
--
- 	/* unregister private events */
- 	cpuhp_remove_state(CPUHP_AP_ARM_SDEI_STARTING);
+diff --git a/drivers/input/touchscreen/da9034-ts.c b/drivers/input/touchscreen/da9034-ts.c
+index 2943f6a58388..dfb2604381d2 100644
+--- a/drivers/input/touchscreen/da9034-ts.c
++++ b/drivers/input/touchscreen/da9034-ts.c
+@@ -298,7 +298,6 @@ static int da9034_touch_probe(struct platform_device *pdev)
+ 	struct da9034_touch_pdata *pdata = dev_get_platdata(&pdev->dev);
+ 	struct da9034_touch *touch;
+ 	struct input_dev *input_dev;
+-	int error;
  
--	err = sdei_unregister_shared();
--	if (err)
--		return err;
+ 	touch = devm_kzalloc(&pdev->dev, sizeof(struct da9034_touch),
+ 			     GFP_KERNEL);
+@@ -344,11 +343,7 @@ static int da9034_touch_probe(struct platform_device *pdev)
+ 	touch->input_dev = input_dev;
+ 	input_set_drvdata(input_dev, touch);
+ 
+-	error = input_register_device(input_dev);
+-	if (error)
+-		return error;
 -
 -	return 0;
-+	return sdei_unregister_shared();
++	return input_register_device(input_dev);
  }
  
- static int sdei_device_thaw(struct device *dev)
+ static struct platform_driver da9034_touch_driver = {
 -- 
 2.25.1
 
