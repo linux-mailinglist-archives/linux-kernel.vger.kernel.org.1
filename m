@@ -2,353 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C9A26A0B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBE926A0C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgIOIYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:24:31 -0400
-Received: from mga17.intel.com ([192.55.52.151]:56094 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726312AbgIOIX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:23:58 -0400
-IronPort-SDR: Dn6tO3VhZfuAG0qIFTw0UDNc1DrtZ9RTr7i0MjcGWP8MXs8uYuI/vhBlrXXCARgnVptEdFluA6
- nr6DXSbu8qzA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="139230399"
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="139230399"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 01:23:56 -0700
-IronPort-SDR: NYS0jeBXDbZDaZyl1qHWmKN/eXoGwJym/+A7Gix5jkytntiC2ulT7KuxIBkk6v7k8jQeVA9g2Q
- KXJABtyJPKHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="286732993"
-Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Sep 2020 01:23:53 -0700
-From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
-To:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-        lee.jones@linaro.org
-Cc:     thierry.reding@gmail.com, p.zabel@pengutronix.de,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
-        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
-        rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Subject: [PATCH v13 2/2] Add PWM fan controller driver for LGM SoC
-Date:   Tue, 15 Sep 2020 16:23:37 +0800
-Message-Id: <befa655d8beb326fc8aa405a25a8b3e62b7e6a4a.1600158087.git.rahul.tanwar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
-References: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
-In-Reply-To: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
-References: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
+        id S1726413AbgIOIZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:25:35 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:48275 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgIOIZO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:25:14 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08F8OoFX2028408, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08F8OoFX2028408
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 15 Sep 2020 16:24:51 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Tue, 15 Sep 2020 16:24:50 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Tue, 15 Sep 2020 16:24:50 +0800
+Received: from RTEXMB01.realtek.com.tw ([fe80::105:9ee:ebb3:4a69]) by
+ RTEXMB01.realtek.com.tw ([fe80::105:9ee:ebb3:4a69%13]) with mapi id
+ 15.01.2044.006; Tue, 15 Sep 2020 16:24:50 +0800
+From:   =?utf-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "puranjay12@gmail.com" <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "vailbhavgupta40@gmail.com" <vailbhavgupta40@gmail.com>
+Subject: RE: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix driving parameter
+Thread-Topic: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
+ driving parameter
+Thread-Index: AQHWhP62uKuuQJQ5k0+R6Z2U1e37UKlezqwAgAES/lCAAC/yAIADBGQA///xQgCABgDAEA==
+Date:   Tue, 15 Sep 2020 08:24:50 +0000
+Message-ID: <4a677365e7a64699b16ae0b25eca1041@realtek.com>
+References: <8405a7d8caeb40b7ac21230361bbcd76@realtek.com>
+ <20200911145608.GA867647@bjorn-Precision-5520>
+In-Reply-To: <20200911145608.GA867647@bjorn-Precision-5520>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.88.99]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
-This PWM controller does not have any other consumer, it is a
-dedicated PWM controller for fan attached to the system. Add
-driver for this PWM fan controller.
-
-Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
----
- drivers/pwm/Kconfig         |  11 ++
- drivers/pwm/Makefile        |   1 +
- drivers/pwm/pwm-intel-lgm.c | 246 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 258 insertions(+)
- create mode 100644 drivers/pwm/pwm-intel-lgm.c
-
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 7dbcf6973d33..4949c51fe90b 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -232,6 +232,17 @@ config PWM_IMX_TPM
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-imx-tpm.
- 
-+config PWM_INTEL_LGM
-+	tristate "Intel LGM PWM support"
-+	depends on HAS_IOMEM
-+	depends on (OF && X86) || COMPILE_TEST
-+	select REGMAP_MMIO
-+	help
-+	  Generic PWM fan controller driver for LGM SoC.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called pwm-intel-lgm.
-+
- config PWM_IQS620A
- 	tristate "Azoteq IQS620A PWM support"
- 	depends on MFD_IQS62X || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index 2c2ba0a03557..e9431b151694 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -20,6 +20,7 @@ obj-$(CONFIG_PWM_IMG)		+= pwm-img.o
- obj-$(CONFIG_PWM_IMX1)		+= pwm-imx1.o
- obj-$(CONFIG_PWM_IMX27)		+= pwm-imx27.o
- obj-$(CONFIG_PWM_IMX_TPM)	+= pwm-imx-tpm.o
-+obj-$(CONFIG_PWM_INTEL_LGM)	+= pwm-intel-lgm.o
- obj-$(CONFIG_PWM_IQS620A)	+= pwm-iqs620a.o
- obj-$(CONFIG_PWM_JZ4740)	+= pwm-jz4740.o
- obj-$(CONFIG_PWM_LP3943)	+= pwm-lp3943.o
-diff --git a/drivers/pwm/pwm-intel-lgm.c b/drivers/pwm/pwm-intel-lgm.c
-new file mode 100644
-index 000000000000..ea3df75a5971
---- /dev/null
-+++ b/drivers/pwm/pwm-intel-lgm.c
-@@ -0,0 +1,246 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Intel Corporation.
-+ *
-+ * Limitations:
-+ * - The hardware supports fixed period which is dependent on 2/3 or 4
-+ *   wire fan mode.
-+ * - Supports normal polarity. Does not support changing polarity.
-+ * - When PWM is disabled, output of PWM will become 0(inactive). It doesn't
-+ *   keep track of running period.
-+ * - When duty cycle is changed, PWM output may be a mix of previous setting
-+ *   and new setting for the first period. From second period, the output is
-+ *   based on new setting.
-+ * - It is a dedicated PWM fan controller. There are no other consumers for
-+ *   this PWM controller.
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/pwm.h>
-+#include <linux/regmap.h>
-+#include <linux/reset.h>
-+
-+#define LGM_PWM_FAN_CON0		0x0
-+#define LGM_PWM_FAN_EN_EN		BIT(0)
-+#define LGM_PWM_FAN_EN_DIS		0x0
-+#define LGM_PWM_FAN_EN_MSK		BIT(0)
-+#define LGM_PWM_FAN_MODE_2WIRE		0x0
-+#define LGM_PWM_FAN_MODE_MSK		BIT(1)
-+#define LGM_PWM_FAN_DC_MSK		GENMASK(23, 16)
-+
-+#define LGM_PWM_FAN_CON1		0x4
-+#define LGM_PWM_FAN_MAX_RPM_MSK		GENMASK(15, 0)
-+
-+#define LGM_PWM_MAX_RPM			(BIT(16) - 1)
-+#define LGM_PWM_DEFAULT_RPM		4000
-+#define LGM_PWM_MAX_DUTY_CYCLE		(BIT(8) - 1)
-+
-+#define LGM_PWM_DC_BITS			8
-+
-+#define LGM_PWM_PERIOD_2WIRE_NS		(40 * NSEC_PER_MSEC)
-+
-+struct lgm_pwm_chip {
-+	struct pwm_chip chip;
-+	struct regmap *regmap;
-+	struct clk *clk;
-+	struct reset_control *rst;
-+	u32 period;
-+};
-+
-+static inline struct lgm_pwm_chip *to_lgm_pwm_chip(struct pwm_chip *chip)
-+{
-+	return container_of(chip, struct lgm_pwm_chip, chip);
-+}
-+
-+static int lgm_pwm_enable(struct pwm_chip *chip, bool enable)
-+{
-+	struct lgm_pwm_chip *pc = to_lgm_pwm_chip(chip);
-+	struct regmap *regmap = pc->regmap;
-+
-+	return regmap_update_bits(regmap, LGM_PWM_FAN_CON0, LGM_PWM_FAN_EN_MSK,
-+				  enable ? LGM_PWM_FAN_EN_EN : LGM_PWM_FAN_EN_DIS);
-+}
-+
-+static int lgm_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+			 const struct pwm_state *state)
-+{
-+	struct lgm_pwm_chip *pc = to_lgm_pwm_chip(chip);
-+	u32 duty_cycle, val;
-+	int ret;
-+
-+	/* The hardware only supports normal polarity and fixed period. */
-+	if (state->polarity != PWM_POLARITY_NORMAL || state->period < pc->period)
-+		return -EINVAL;
-+
-+	if (!state->enabled)
-+		return lgm_pwm_enable(chip, 0);
-+
-+	duty_cycle = min_t(u64, state->duty_cycle, pc->period);
-+	val = duty_cycle * LGM_PWM_MAX_DUTY_CYCLE / pc->period;
-+
-+	ret = regmap_update_bits(pc->regmap, LGM_PWM_FAN_CON0, LGM_PWM_FAN_DC_MSK,
-+				 FIELD_PREP(LGM_PWM_FAN_DC_MSK, val));
-+	if (ret)
-+		return ret;
-+
-+	return lgm_pwm_enable(chip, 1);
-+}
-+
-+static void lgm_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-+			      struct pwm_state *state)
-+{
-+	struct lgm_pwm_chip *pc = to_lgm_pwm_chip(chip);
-+	u32 duty, val;
-+
-+	state->enabled = regmap_test_bits(pc->regmap, LGM_PWM_FAN_CON0,
-+					  LGM_PWM_FAN_EN_EN);
-+	state->polarity = PWM_POLARITY_NORMAL;
-+	state->period = pc->period; /* fixed period */
-+
-+	regmap_read(pc->regmap, LGM_PWM_FAN_CON0, &val);
-+	duty = FIELD_GET(LGM_PWM_FAN_DC_MSK, val);
-+	state->duty_cycle = DIV_ROUND_UP(duty * pc->period, LGM_PWM_MAX_DUTY_CYCLE);
-+}
-+
-+static const struct pwm_ops lgm_pwm_ops = {
-+	.get_state = lgm_pwm_get_state,
-+	.apply = lgm_pwm_apply,
-+	.owner = THIS_MODULE,
-+};
-+
-+static void lgm_pwm_init(struct lgm_pwm_chip *pc)
-+{
-+	struct regmap *regmap = pc->regmap;
-+	u32 con0_val;
-+
-+	con0_val = FIELD_PREP(LGM_PWM_FAN_MODE_MSK, LGM_PWM_FAN_MODE_2WIRE);
-+	pc->period = LGM_PWM_PERIOD_2WIRE_NS;
-+	regmap_update_bits(regmap, LGM_PWM_FAN_CON1, LGM_PWM_FAN_MAX_RPM_MSK,
-+			   LGM_PWM_DEFAULT_RPM);
-+	regmap_update_bits(regmap, LGM_PWM_FAN_CON0, LGM_PWM_FAN_MODE_MSK,
-+			   con0_val);
-+}
-+
-+static const struct regmap_config lgm_pwm_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+};
-+
-+static void lgm_clk_disable(void *data)
-+{
-+	struct lgm_pwm_chip *pc = data;
-+
-+	clk_disable_unprepare(pc->clk);
-+}
-+
-+static int lgm_clk_enable(struct device *dev, struct lgm_pwm_chip *pc)
-+{
-+	int ret;
-+
-+	ret = clk_prepare_enable(pc->clk);
-+	if (ret)
-+		return ret;
-+
-+	return devm_add_action_or_reset(dev, lgm_clk_disable, pc);
-+}
-+
-+static void lgm_reset_control_assert(void *data)
-+{
-+	struct lgm_pwm_chip *pc = data;
-+
-+	reset_control_assert(pc->rst);
-+}
-+
-+static int lgm_reset_control_deassert(struct device *dev, struct lgm_pwm_chip *pc)
-+{
-+	int ret;
-+
-+	ret = reset_control_deassert(pc->rst);
-+	if (ret)
-+		return ret;
-+
-+	return devm_add_action_or_reset(dev, lgm_reset_control_assert, pc);
-+}
-+
-+static int lgm_pwm_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct lgm_pwm_chip *pc;
-+	void __iomem *io_base;
-+	int ret;
-+
-+	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
-+	if (!pc)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, pc);
-+
-+	io_base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
-+
-+	pc->regmap = devm_regmap_init_mmio(dev, io_base, &lgm_pwm_regmap_config);
-+	if (IS_ERR(pc->regmap))
-+		return dev_err_probe(dev, PTR_ERR(pc->regmap),
-+				     "failed to init register map\n");
-+
-+	pc->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(pc->clk))
-+		return dev_err_probe(dev, PTR_ERR(pc->clk), "failed to get clock\n");
-+
-+	ret = lgm_clk_enable(dev, pc);
-+	if (ret) {
-+		dev_err(dev, "failed to enable clock\n");
-+		return ret;
-+	}
-+
-+	pc->rst = devm_reset_control_get_exclusive(dev, NULL);
-+	if (IS_ERR(pc->rst))
-+		return dev_err_probe(dev, PTR_ERR(pc->rst),
-+				     "failed to get reset control\n");
-+
-+	ret = lgm_reset_control_deassert(dev, pc);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "cannot deassert reset control\n");
-+
-+	pc->chip.dev = dev;
-+	pc->chip.ops = &lgm_pwm_ops;
-+	pc->chip.npwm = 1;
-+
-+	lgm_pwm_init(pc);
-+
-+	ret = pwmchip_add(&pc->chip);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to add PWM chip: %pe\n", ERR_PTR(ret));
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int lgm_pwm_remove(struct platform_device *pdev)
-+{
-+	struct lgm_pwm_chip *pc = platform_get_drvdata(pdev);
-+
-+	return pwmchip_remove(&pc->chip);
-+}
-+
-+static const struct of_device_id lgm_pwm_of_match[] = {
-+	{ .compatible = "intel,lgm-pwm" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, lgm_pwm_of_match);
-+
-+static struct platform_driver lgm_pwm_driver = {
-+	.driver = {
-+		.name = "intel-pwm",
-+		.of_match_table = lgm_pwm_of_match,
-+	},
-+	.probe = lgm_pwm_probe,
-+	.remove = lgm_pwm_remove,
-+};
-+module_platform_driver(lgm_pwm_driver);
--- 
-2.11.0
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCam9ybiBIZWxnYWFzIFttYWls
+dG86aGVsZ2Fhc0BrZXJuZWwub3JnXQ0KPiBTZW50OiBGcmlkYXksIFNlcHRlbWJlciAxMSwgMjAy
+MCAxMDo1NiBQTQ0KPiBUbzog5ZCz5piK5r6EIFJpY2t5DQo+IENjOiBhcm5kQGFybmRiLmRlOyBn
+cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgYmhlbGdhYXNAZ29vZ2xlLmNvbTsNCj4gdWxmLmhh
+bnNzb25AbGluYXJvLm9yZzsgcnVpX2ZlbmdAcmVhbHNpbC5jb20uY247IGxpbnV4LWtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmc7DQo+IHB1cmFuamF5MTJAZ21haWwuY29tOyBsaW51eC1wY2lAdmdlci5r
+ZXJuZWwub3JnOw0KPiB2YWlsYmhhdmd1cHRhNDBAZ2FtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSZTog
+W1BBVENIIHY1IDIvMl0gbWlzYzogcnRzeDogQWRkIHBvd2VyIHNhdmluZyBmdW5jdGlvbnMgYW5k
+IGZpeCBkcml2aW5nDQo+IHBhcmFtZXRlcg0KPiANCj4gT24gRnJpLCBTZXAgMTEsIDIwMjAgYXQg
+MDg6MTg6MjJBTSArMDAwMCwg5ZCz5piK5r6EIFJpY2t5IHdyb3RlOg0KPiA+ID4gLS0tLS1Pcmln
+aW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IEJqb3JuIEhlbGdhYXMgW21haWx0bzpoZWxn
+YWFzQGtlcm5lbC5vcmddDQo+ID4gPiBTZW50OiBUaHVyc2RheSwgU2VwdGVtYmVyIDEwLCAyMDIw
+IDE6NDQgQU0NCj4gPiA+IFRvOiDlkLPmmIrmvoQgUmlja3kNCj4gPiA+IENjOiBhcm5kQGFybmRi
+LmRlOyBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgYmhlbGdhYXNAZ29vZ2xlLmNvbTsNCj4g
+PiA+IHVsZi5oYW5zc29uQGxpbmFyby5vcmc7IHJ1aV9mZW5nQHJlYWxzaWwuY29tLmNuOw0KPiBs
+aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiA+ID4gcHVyYW5qYXkxMkBnbWFpbC5jb207
+IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiB2YWlsYmhhdmd1cHRhNDBAZ2FtYWls
+LmNvbQ0KPiA+ID4gU3ViamVjdDogUmU6IFtQQVRDSCB2NSAyLzJdIG1pc2M6IHJ0c3g6IEFkZCBw
+b3dlciBzYXZpbmcgZnVuY3Rpb25zIGFuZCBmaXgNCj4gZHJpdmluZw0KPiA+ID4gcGFyYW1ldGVy
+DQo+ID4gPg0KPiA+ID4gT24gV2VkLCBTZXAgMDksIDIwMjAgYXQgMDc6MTA6MTlBTSArMDAwMCwg
+5ZCz5piK5r6EIFJpY2t5IHdyb3RlOg0KPiA+ID4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
+LS0tDQo+ID4gPiA+ID4gRnJvbTogQmpvcm4gSGVsZ2FhcyBbbWFpbHRvOmhlbGdhYXNAa2VybmVs
+Lm9yZ10NCj4gPiA+ID4gPiBTZW50OiBXZWRuZXNkYXksIFNlcHRlbWJlciAwOSwgMjAyMCA2OjI5
+IEFNDQo+ID4gPiA+ID4gVG86IOWQs+aYiua+hCBSaWNreQ0KPiA+ID4gPiA+IENjOiBhcm5kQGFy
+bmRiLmRlOyBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsNCj4gYmhlbGdhYXNAZ29vZ2xlLmNv
+bTsNCj4gPiA+ID4gPiB1bGYuaGFuc3NvbkBsaW5hcm8ub3JnOyBydWlfZmVuZ0ByZWFsc2lsLmNv
+bS5jbjsNCj4gPiA+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiA+ID4gcHVy
+YW5qYXkxMkBnbWFpbC5jb207IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiA+ID4g
+dmFpbGJoYXZndXB0YTQwQGdhbWFpbC5jb20NCj4gPiA+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENI
+IHY1IDIvMl0gbWlzYzogcnRzeDogQWRkIHBvd2VyIHNhdmluZyBmdW5jdGlvbnMgYW5kIGZpeA0K
+PiA+ID4gZHJpdmluZw0KPiA+ID4gPiA+IHBhcmFtZXRlcg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4g
+T24gTW9uLCBTZXAgMDcsIDIwMjAgYXQgMDY6MDc6MzFQTSArMDgwMCwgcmlja3lfd3VAcmVhbHRl
+ay5jb20NCj4gd3JvdGU6DQo+ID4gPiA+ID4gPiBGcm9tOiBSaWNreSBXdSA8cmlja3lfd3VAcmVh
+bHRlay5jb20+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gdjQ6DQo+ID4gPiA+ID4gPiBzcGxp
+dCBwb3dlciBkb3duIGZsb3cgYW5kIHBvd2VyIHNhdmluZyBmdW5jdGlvbiB0byB0d28gcGF0Y2gN
+Cj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiB2NToNCj4gPiA+ID4gPiA+IGZpeCB1cCBtb2RpZmll
+ZCBjaGFuZ2UgdW5kZXIgdGhlIC0tLSBsaW5lDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBIZWhlLCB0
+aGlzIGNhbWUgb3V0ICphYm92ZSogdGhlICItLS0iIGxpbmUgOikNCj4gPiA+ID4gPg0KPiA+ID4g
+PiA+ID4gQWRkIHJ0czUyMmEgTDEgc3ViLXN0YXRlIHN1cHBvcnQNCj4gPiA+ID4gPiA+IFNhdmUg
+bW9yZSBwb3dlciBvbiBydHM1MjI3IHJ0czUyNDkgcnRzNTI1YSBydHM1MjYwDQo+ID4gPiA+ID4g
+PiBGaXggcnRzNTI2MCBkcml2aW5nIHBhcmFtZXRlcg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+
+IFNpZ25lZC1vZmYtYnk6IFJpY2t5IFd1IDxyaWNreV93dUByZWFsdGVrLmNvbT4NCj4gPiA+ID4g
+PiA+IC0tLQ0KPiA+ID4gPiA+ID4gIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjcuYyAg
+fCAxMTIgKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+ID4gPiA+ID4gIGRyaXZlcnMvbWlzYy9j
+YXJkcmVhZGVyL3J0czUyNDkuYyAgfCAxNDUNCj4gPiA+ID4gPiArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrLQ0KPiA+ID4gPiA+ID4gIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjAu
+YyAgfCAgMjggKysrLS0tDQo+ID4gPiA+ID4gPiAgZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRz
+eF9wY3IuaCB8ICAxNyArKysrDQo+ID4gPiA+ID4gPiAgNCBmaWxlcyBjaGFuZ2VkLCAyODMgaW5z
+ZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjcuYw0KPiA+ID4gPiA+IGIv
+ZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTIyNy5jDQo+ID4gPiA+ID4gPiBpbmRleCA3NDcz
+OTFlM2ZiNWQuLjg4NTkwMTE2NzJjYiAxMDA2NDQNCj4gPiA+ID4gPiA+IC0tLSBhL2RyaXZlcnMv
+bWlzYy9jYXJkcmVhZGVyL3J0czUyMjcuYw0KPiA+ID4gPiA+ID4gKysrIGIvZHJpdmVycy9taXNj
+L2NhcmRyZWFkZXIvcnRzNTIyNy5jDQo+ID4gPiA+ID4gPiBAQCAtNzIsMTUgKzcyLDgwIEBAIHN0
+YXRpYyB2b2lkDQo+IHJ0czUyMjdfZmV0Y2hfdmVuZG9yX3NldHRpbmdzKHN0cnVjdA0KPiA+ID4g
+PiA+IHJ0c3hfcGNyICpwY3IpDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gIAlwY2lfcmVhZF9j
+b25maWdfZHdvcmQocGRldiwgUENSX1NFVFRJTkdfUkVHMiwgJnJlZyk7DQo+ID4gPiA+ID4gPiAg
+CXBjcl9kYmcocGNyLCAiQ2ZnIDB4JXg6IDB4JXhcbiIsIFBDUl9TRVRUSU5HX1JFRzIsIHJlZyk7
+DQo+ID4gPiA+ID4gPiArCWlmIChydHN4X2NoZWNrX21tY19zdXBwb3J0KHJlZykpDQo+ID4gPiA+
+ID4gPiArCQlwY3ItPmV4dHJhX2NhcHMgfD0gRVhUUkFfQ0FQU19OT19NTUM7DQo+ID4gPiA+ID4g
+PiAgCXBjci0+c2QzMF9kcml2ZV9zZWxfM3YzID0gcnRzeF9yZWdfdG9fc2QzMF9kcml2ZV9zZWxf
+M3YzKHJlZyk7DQo+ID4gPiA+ID4gPiAgCWlmIChydHN4X3JlZ19jaGVja19yZXZlcnNlX3NvY2tl
+dChyZWcpKQ0KPiA+ID4gPiA+ID4gIAkJcGNyLT5mbGFncyB8PSBQQ1JfUkVWRVJTRV9TT0NLRVQ7
+DQo+ID4gPiA+ID4gPiAgfQ0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ICtzdGF0aWMgdm9pZCBy
+dHM1MjI3X2luaXRfZnJvbV9jZmcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQo+ID4gPiA+ID4gPiAr
+ew0KPiA+ID4gPiA+ID4gKwlzdHJ1Y3QgcGNpX2RldiAqcGRldiA9IHBjci0+cGNpOw0KPiA+ID4g
+PiA+ID4gKwlpbnQgbDFzczsNCj4gPiA+ID4gPiA+ICsJdTMyIGx2YWw7DQo+ID4gPiA+ID4gPiAr
+CXN0cnVjdCBydHN4X2NyX29wdGlvbiAqb3B0aW9uID0gJnBjci0+b3B0aW9uOw0KPiA+ID4gPiA+
+ID4gKw0KPiA+ID4gPiA+ID4gKwlsMXNzID0gcGNpX2ZpbmRfZXh0X2NhcGFiaWxpdHkocGRldiwg
+UENJX0VYVF9DQVBfSURfTDFTUyk7DQo+ID4gPiA+ID4gPiArCWlmICghbDFzcykNCj4gPiA+ID4g
+PiA+ICsJCXJldHVybjsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsJcGNpX3JlYWRfY29u
+ZmlnX2R3b3JkKHBkZXYsIGwxc3MgKyBQQ0lfTDFTU19DVEwxLCAmbHZhbCk7DQo+ID4gPiA+ID4N
+Cj4gPiA+ID4gPiBUaGlzIGxvb2tzIGEgbGl0dGxlIHByb2JsZW1hdGljLiAgUENJX0wxU1NfQ1RM
+MSBpcyBhbiBhcmNoaXRlY3RlZA0KPiA+ID4gPiA+IHJlZ2lzdGVyIGluIHRoZSBBU1BNIEwxIFBN
+IFN1YnN0YXRlcyBjYXBhYmlsaXR5LCBhbmQgaXRzIHZhbHVlIG1heQ0KPiA+ID4gPiA+IGNoYW5n
+ZSBhdCBydW50aW1lIGJlY2F1c2UgZHJpdmVycy9wY2kvcGNpZS9hc3BtLmMgbWFuYWdlcyBpdC4N
+Cj4gPiA+ID4gPg0KPiA+ID4gPiA+IEl0IGxvb2tzIGxpa2UgdGhlIGNvZGUgYmVsb3cgZG9lcyBk
+ZXZpY2Utc3BlY2lmaWMgY29uZmlndXJhdGlvbiBiYXNlZA0KPiA+ID4gPiA+IG9uIHRoZSBjdXJy
+ZW50IFBDSV9MMVNTX0NUTDEgdmFsdWUuICBCdXQgd2hhdCBoYXBwZW5zIGlmIGFzcG0uYw0KPiA+
+ID4gPiA+IGNoYW5nZXMgUENJX0wxU1NfQ1RMMSBsYXRlcj8NCj4gPiA+ID4NCj4gPiA+ID4gV2Ug
+YXJlIGdvaW5nIHRvIG1ha2Ugc3VyZSBhbmQgc2V0IHRoZSBiZXN0IGNvbmZpZ3VyYXRpb24gb24g
+dGhlDQo+ID4gPiA+IGN1cnJlbnQgdGltZSwgaWYgaG9zdCBjaGFuZ2UgdGhlIGNhcGFiaWxpdHkg
+bGF0ZXIsIGl0IGRvZXNuJ3QgYWZmZWN0DQo+ID4gPiA+IGZ1bmN0aW9uLCBvbmx5IGFmZmVjdCBh
+IGxpdHRsZSBwb3dlciBzYXZpbmcNCj4gPiA+DQo+ID4gPiBXaHkgZG9uJ3QgeW91IHVuY29uZGl0
+aW9uYWxseSBkbyB0aGUgZm9sbG93aW5nPw0KPiA+ID4NCj4gPiA+ICAgcnRzeF9zZXRfZGV2X2Zs
+YWcocGNyLCBBU1BNX0wxXzFfRU4pOw0KPiA+ID4gICBydHN4X3NldF9kZXZfZmxhZyhwY3IsIEFT
+UE1fTDFfMl9FTik7DQo+ID4gPiAgIHJ0c3hfc2V0X2Rldl9mbGFnKHBjciwgUE1fTDFfMV9FTik7
+DQo+ID4gPiAgIHJ0c3hfc2V0X2Rldl9mbGFnKHBjciwgUE1fTDFfMl9FTik7DQo+ID4NCj4gPiBP
+dXIgcG93ZXIgc2F2aW5nIGZ1bmN0aW9uIGhhdmUgMiBkaWZmZXJlbnQgZmxvdyBMMSBhbmQgTDFz
+dWJzdGF0ZSwNCj4gPiBzbyB3ZSBuZWVkIHRvIGNoZWNrIGl0IGZvciB3aGljaCBmbG93IHdlIGFy
+ZSBnb2luZyB0bw0KPiA+IERldGFpbCB0byBzZWUgYmVsb3cgcmVwbHkNCj4gPg0KPiA+ID4gTGV0
+J3MgYXNzdW1lIHRoZSBnZW5lcmljIGNvZGUgaW4gYXNwbS5jIGhhcyBjbGVhcmVkIGFsbCB0aGVz
+ZSBiaXRzOg0KPiA+ID4NCj4gPiA+ICAgUENJX0wxU1NfQ1RMMV9BU1BNX0wxXzENCj4gPiA+ICAg
+UENJX0wxU1NfQ1RMMV9BU1BNX0wxXzINCj4gPiA+ICAgUENJX0wxU1NfQ1RMMV9QQ0lQTV9MMV8x
+DQo+ID4gPiAgIFBDSV9MMVNTX0NUTDFfUENJUE1fTDFfMg0KPiA+ID4NCj4gPiA+IGluIHRoZSBM
+MSBQTSBTdWJzdGF0ZXMgY2FwYWJpbGl0eS4NCj4gPiA+DQo+ID4gPiBJIHRoaW5rIHlvdSBhcmUg
+c2F5aW5nIHRoYXQgaWYgeW91ICphbHNvKiBjbGVhciBBU1BNX0wxXzFfRU4sDQo+ID4gPiBBU1BN
+X0wxXzJfRU4sIFBNX0wxXzFfRU4sIGFuZCBQTV9MMV8yX0VOIGluIHlvdXIgZGV2aWNlLXNwZWNp
+ZmljDQo+ID4gPiByZWdpc3RlcnMsIGl0IHVzZXMgbGVzcyBwb3dlciB0aGFuIGlmIHlvdSBzZXQg
+dGhvc2UgZGV2aWNlLXNwZWNpZmljDQo+ID4gPiBiaXRzLiAgUmlnaHQ/DQo+ID4gPg0KPiA+ID4g
+QW5kIG1vcmVvdmVyLCBJIHRoaW5rIHlvdSdyZSBzYXlpbmcgdGhhdCBpZiBhc3BtLmMgc3Vic2Vx
+dWVudGx5ICpzZXRzKg0KPiA+ID4gc29tZSBvZiB0aG9zZSBiaXRzIGluIHRoZSBMMSBQTSBTdWJz
+dGF0ZXMgY2FwYWJpbGl0eSwgdGhvc2Ugc3Vic3RhdGVzDQo+ID4gPiAqd29yayogZXZlbiB0aG91
+Z2ggdGhlIGRldmljZS1zcGVjaWZpYyBBU1BNX0wxXzFfRU4sIEFTUE1fTDFfMl9FTiwNCj4gPiA+
+IFBNX0wxXzFfRU4sIGFuZCBQTV9MMV8yX0VOIGJpdHMgYXJlIG5vdCBzZXQuICBSaWdodD8NCj4g
+PiA+DQo+ID4gPiBJIGRvIG5vdCBmZWVsIGdvb2QgYWJvdXQgdGhpcyBhcyBhIGdlbmVyYWwgc3Ry
+YXRlZ3kuICBJIHRoaW5rIHdlDQo+ID4gPiBzaG91bGQgcHJvZ3JhbSB0aGUgZGV2aWNlIHNvIHRo
+ZSBiZWhhdmlvciBpcyBjb21wbGV0ZWx5IHByZWRpY3RhYmxlLA0KPiA+ID4gcmVnYXJkbGVzcyBv
+ZiB0aGUgZ2VuZXJpYyBlbmFibGUgYml0cyBoYXBwZW5lZCB0byBiZSBzZXQgYXQNCj4gPiA+IHBy
+b2JlLXRpbWUuDQo+ID4gPg0KPiA+ID4gVGhlIGN1cnJlbnQgYXBwcm9hY2ggbWVhbnMgdGhhdCBp
+ZiB3ZSBlbmFibGUgTDEgc3Vic3RhdGVzIGFmdGVyIHRoZQ0KPiA+ID4gZHJpdmVyIHByb2JlLCB0
+aGUgZGV2aWNlIGlzIGNvbmZpZ3VyZWQgZGlmZmVyZW50bHkgdGhhbiBpZiB3ZSBlbmFibGVkDQo+
+ID4gPiBMMSBzdWJzdGF0ZXMgYmVmb3JlIHByb2JlLiAgVGhhdCdzIG5vdCBhIHJlbGlhYmxlIHdh
+eSB0byBvcGVyYXRlIGl0Lg0KPiA+DQo+ID4gVGFsayBhYm91dCBvdXIgcG93ZXIgc2F2aW5nIGZ1
+bmN0aW9uDQo+ID4gYSkgYmFzaWMgTDEgcG93ZXIgc2F2aW5nDQo+ID4gYikgYWR2YW5jZSBMMSBw
+b3dlciBzYXZpbmcNCj4gPiBjKSBhZHZhbmNlIEwxIHN1YnN0YXRlIHBvd2VyIHNhdmluZw0KPiAN
+Cj4gSSBoYXZlIG5vIGlkZWEgd2hhdCB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVuICJiYXNpYyBMMSBw
+b3dlciBzYXZpbmciIGFuZA0KPiAiYWR2YW5jZSBMMSBwb3dlciBzYXZpbmciIGlzLCBzbyBJIGFz
+c3VtZSB0aG9zZSBhcmUgZGV2aWNlLXNwZWNpZmljDQo+IHRoaW5ncy4gIElmIG5vdCwgcGxlYXNl
+IHVzZSB0aGUgc2FtZSB0ZXJtaW5vbG9neSBhcyB0aGUgUENJZSBzcGVjLg0KPiANCj4gPiBhdCBp
+bml0aWFsLCB3ZSBjaGVjayBwY2kgcG9ydCBzdXBwb3J0IEwxIHN1YnMgb3Igbm90LCBpZiBub3Qg
+d2UgYXJlDQo+ID4gZ29pbmcgdG8gYikgb3RoZXJ3aXNlIGdvaW5nIHRvIGMpLg0KPiANCj4gWW91
+J3JlIG5vdCBjaGVja2luZyB3aGV0aGVyIHRoZSBwb3J0ICpzdXBwb3J0cyogTDEgc3Vic3RhdGVz
+LiAgWW91DQo+IHdvdWxkIGxvb2sgYXQgUENJX0wxU1NfQ0FQIHRvIGxlYXJuIHRoYXQuICBZb3Un
+cmUgbG9va2luZyBhdA0KPiBQQ0lfTDFTU19DVEwxLCB3aGljaCB0ZWxscyB5b3Ugd2hldGhlciBM
+MSBzdWJzdGF0ZXMgYXJlICplbmFibGVkKi4NCj4gDQo+ID4gQXNzdW1lIGFzcG0uYyBjaGFuZ2Ug
+Yml0IG9mIEwxIFBNIFN1YnN0YXRlcyBjYXBhYmlsaXR5IGFmdGVyIG91cg0KPiA+IGRyaXZlciBw
+cm9iZSwgd2UgYXJlIGdvaW5nIHRvIGEpDQo+ID4NCj4gPiBTbyBmYXIgd2UgZGlkIG5vdCBzZWUg
+YW55IHBsYXRmb3JtIGNoYW5nZSBMMSBQTSBTdWJzdGF0ZXMgY2FwYWJpbGl0eQ0KPiA+IGFmdGVy
+IG91ciBkcml2ZXIgcHJvYmUuDQo+IA0KPiBZb3Ugc2hvdWxkIGV4cGVjdCB0aGF0IGFzcG0uYyB3
+aWxsIGNoYW5nZSBiaXRzIGluIHRoZSBMMSBQTSAqY29udHJvbCoNCj4gcmVnaXN0ZXIgKFBDSV9M
+MVNTX0NUTDEpIGFmdGVyIHByb2JlLg0KPiANCj4gWW91IG1pZ2h0IG5vdCBhY3R1YWxseSBzZWUg
+aXQgY2hhbmdlLCBkZXBlbmRpbmcgb24gaG93IHlvdSB0ZXN0ZWQsIGJ1dA0KPiB5b3UgY2Fubm90
+IHJlbHkgb24gUENJX0wxU1NfQ1RMMSBiZWluZyBjb25zdGFudC4gIEl0IG1heSBjaGFuZ2UgYmFz
+ZWQNCj4gb24gcG93ZXIvcGVyZm9ybWFuY2UgdHJhZGVvZmZzLCBlLmcuLCB3aGV0aGVyIHRoZSBz
+eXN0ZW0gaXMgcGx1Z2dlZA0KPiBpbnRvIEFDIHBvd2VyLCB3aGV0aGVyIGl0J3MgaWRsZSwgZXRj
+Lg0KPiANCg0KT3VyIEFTUE0gZnVuY3Rpb24gaXMgYSBIVyBzb2x1dGlvbiBmb2xsb3cgdGhlIFBD
+SWUgU1BFQy4gZG9u4oCZdCB3b3JyeSBhYm91dCBjcmFzaCB0aGUgc3lzdGVtDQpJZiBIT1NUIGNo
+YW5nZSBvdXIgZGV2aWNlIGNvbmZpZyBzcGFjZSBzZXR0aW5nIGF0IHJ1biB0aW1lIG91ciBIVyB3
+aWxsIGRvIHRoZSBjb3JyZXNwb25kaW5nIHRoaW5ncyB3aGljaCBmb2xsb3dzIHRoZSBTUEVDLg0K
+QXQgaW5pdGlhbCB0aW1lIHdlIHNldCB0aGVzZSBwYXJhbWV0ZXIganVzdCBnb29kIGZvciBtb3Jl
+IHBvd2VyIHNhdmluZw0KDQo+ID4gPiA+ID4gPiArCWlmIChDSEtfUENJX1BJRChwY3IsIDB4NTIy
+QSkpIHsNCj4gPiA+ID4gPiA+ICsJCWlmICgwID09IChsdmFsICYgMHgwRikpDQo+ID4gPiA+ID4g
+PiArCQkJcnRzeF9wY2lfZW5hYmxlX29vYnNfcG9sbGluZyhwY3IpOw0KPiA+ID4gPiA+ID4gKwkJ
+ZWxzZQ0KPiA+ID4gPiA+ID4gKwkJCXJ0c3hfcGNpX2Rpc2FibGVfb29ic19wb2xsaW5nKHBjcik7
+DQo+ID4gPiA+ID4gPiArCX0NCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsJaWYgKGx2YWwg
+JiBQQ0lfTDFTU19DVEwxX0FTUE1fTDFfMSkNCj4gPiA+ID4gPiA+ICsJCXJ0c3hfc2V0X2Rldl9m
+bGFnKHBjciwgQVNQTV9MMV8xX0VOKTsNCj4gPiA+ID4gPiA+ICsJZWxzZQ0KPiA+ID4gPiA+ID4g
+KwkJcnRzeF9jbGVhcl9kZXZfZmxhZyhwY3IsIEFTUE1fTDFfMV9FTik7DQo+ID4gPiA+ID4gPiAr
+DQo+ID4gPiA+ID4gPiArCWlmIChsdmFsICYgUENJX0wxU1NfQ1RMMV9BU1BNX0wxXzIpDQo+ID4g
+PiA+ID4gPiArCQlydHN4X3NldF9kZXZfZmxhZyhwY3IsIEFTUE1fTDFfMl9FTik7DQo+ID4gPiA+
+ID4gPiArCWVsc2UNCj4gPiA+ID4gPiA+ICsJCXJ0c3hfY2xlYXJfZGV2X2ZsYWcocGNyLCBBU1BN
+X0wxXzJfRU4pOw0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gKwlpZiAobHZhbCAmIFBDSV9M
+MVNTX0NUTDFfUENJUE1fTDFfMSkNCj4gPiA+ID4gPiA+ICsJCXJ0c3hfc2V0X2Rldl9mbGFnKHBj
+ciwgUE1fTDFfMV9FTik7DQo+ID4gPiA+ID4gPiArCWVsc2UNCj4gPiA+ID4gPiA+ICsJCXJ0c3hf
+Y2xlYXJfZGV2X2ZsYWcocGNyLCBQTV9MMV8xX0VOKTsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4g
+PiA+ICsJaWYgKGx2YWwgJiBQQ0lfTDFTU19DVEwxX1BDSVBNX0wxXzIpDQo+ID4gPiA+ID4gPiAr
+CQlydHN4X3NldF9kZXZfZmxhZyhwY3IsIFBNX0wxXzJfRU4pOw0KPiA+ID4gPiA+ID4gKwllbHNl
+DQo+ID4gPiA+ID4gPiArCQlydHN4X2NsZWFyX2Rldl9mbGFnKHBjciwgUE1fTDFfMl9FTik7DQo+
+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArCWlmIChvcHRpb24tPmx0cl9lbikgew0KPiA+ID4g
+PiA+ID4gKwkJdTE2IHZhbDsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsJCXBjaWVfY2Fw
+YWJpbGl0eV9yZWFkX3dvcmQocGNyLT5wY2ksIFBDSV9FWFBfREVWQ1RMMiwNCj4gJnZhbCk7DQo+
+ID4gPiA+ID4NCj4gPiA+ID4gPiBTYW1lIHRoaW5nIGhlcmUuICBJIGRvbid0IHRoaW5rIHRoZSBQ
+Q0kgY29yZSBjdXJyZW50bHkgY2hhbmdlcw0KPiA+ID4gPiA+IFBDSV9FWFBfREVWQ1RMMiBhZnRl
+ciBib290LCBidXQgaXQncyBub3QgYSBnb29kIGlkZWEgdG8gYXNzdW1lIGl0J3MNCj4gPiA+ID4g
+PiBnb2luZyB0byBiZSBjb25zdGFudC4NCj4gPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiBUaGUg
+c2FtZSByZXBseQ0KPiA+ID4gPg0KPiA+ID4gPiA+ID4gKwkJaWYgKHZhbCAmIFBDSV9FWFBfREVW
+Q1RMMl9MVFJfRU4pIHsNCj4gPiA+ID4gPiA+ICsJCQlvcHRpb24tPmx0cl9lbmFibGVkID0gdHJ1
+ZTsNCj4gPiA+ID4gPiA+ICsJCQlvcHRpb24tPmx0cl9hY3RpdmUgPSB0cnVlOw0KPiA+ID4gPiA+
+ID4gKwkJCXJ0c3hfc2V0X2x0cl9sYXRlbmN5KHBjciwgb3B0aW9uLT5sdHJfYWN0aXZlX2xhdGVu
+Y3kpOw0KPiA+ID4gPiA+ID4gKwkJfSBlbHNlIHsNCj4gPiA+ID4gPiA+ICsJCQlvcHRpb24tPmx0
+cl9lbmFibGVkID0gZmFsc2U7DQo+ID4gPiA+ID4gPiArCQl9DQo+ID4gPiA+ID4gPiArCX0NCj4g
+PiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsJaWYgKHJ0c3hfY2hlY2tfZGV2X2ZsYWcocGNyLCBB
+U1BNX0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCj4gPiA+ID4gPiA+ICsJCQkJfCBQTV9MMV8xX0VO
+IHwgUE1fTDFfMl9FTikpDQo+ID4gPiA+ID4gPiArCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0g
+ZmFsc2U7DQo+ID4gPiA+ID4gPiArCWVsc2UNCj4gPiA+ID4gPiA+ICsJCW9wdGlvbi0+Zm9yY2Vf
+Y2xrcmVxXzAgPSB0cnVlOw0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gK30NCj4gPiA+ID4g
+Pg0KPiA+ID4gPiA+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3Jl
+IHByaW50aW5nIHRoaXMgZS1tYWlsLg0K
