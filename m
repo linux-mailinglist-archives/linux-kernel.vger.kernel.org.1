@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32E326AE9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A135926AEA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgIOUVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:21:12 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:44970 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727956AbgIOUS0 (ORCPT
+        id S1728009AbgIOUZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:25:16 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57040 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727946AbgIOUSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:18:26 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FK8pvU130516;
-        Tue, 15 Sep 2020 20:16:44 GMT
+        Tue, 15 Sep 2020 16:18:42 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FKApmH178727;
+        Tue, 15 Sep 2020 20:16:48 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=4VJNpmxVNDN5wjzmgpUrkHttEoFQWByhbcWmaEr2E9E=;
- b=S0rAsk6MkQvpLvqZxDZGDGBVyHZxZ45MQGqC3ZL3NXbg2qmS5IMcTc/Se+gtKsTxfyE3
- /rIuvO4FzN35VcbZH/Ab9dsGTxvZxw1dHCQnpYdXYoMoRpUKRIj4ZdnCpihOGYgm1Ilx
- uJgK9qQqzIm3ro5bTAp6Gr0CYefHLoYD2p/32YNTakw7EaQFsFyFroAIBLSfrQOqapDm
- XdWayKcwS5GLxQNLUsQ9vnHWnXTfcxI0kJNyV8/a6Tl+Jw4fGSWHOw1913q4WmTzHH5g
- xGfw/opDC3myVjp1H67NfphvwuykmCcxhWpr6i02mcwl9WrQat4HbJTxGKf/RZzgwSpR Kw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33gp9m7crg-1
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=xlGgE+xgKVH5MYRF5RiIp0Sd3bdxAx8PeATXeLm7Jp0=;
+ b=MvarrubcPB6fTB8zTJxIyN8Tx1JCErDSJ3Sw4K/W7h22S0Iy/5u6V7Xr4vo+v5VSO2le
+ WWB+3g3gdCZVVt6BS7z3c9Z0MvOaB5KH2G/f0FumJDjR59TcLP6tpU3PutixMjgwAZN+
+ pZtEDemIzKyim5WYzj+kCzEMjdW/bFwJhcO3KRKf8DlFKq/NUgk1lH1xhbveQTWumCc+
+ DQvP08WyZ4Y4SIRNaBDT3iQ9K0TiJPp1t6az5/WA+J++nFU7Dj/fUkfVu4tTvR9CY964
+ /nBASWyf4W3aJeRuc6/ncxpgMuJC9CAfNOrfLwNBLSGFZSYDCLCs55X5TW4vcaGEgWPN PQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33j91dh103-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Sep 2020 20:16:44 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FKFvZW127285;
-        Tue, 15 Sep 2020 20:16:44 GMT
+        Tue, 15 Sep 2020 20:16:48 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08FKFREv177269;
+        Tue, 15 Sep 2020 20:16:47 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 33h7wppqgw-1
+        by aserp3020.oracle.com with ESMTP id 33h885xmny-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 20:16:44 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FKGe65006678;
+        Tue, 15 Sep 2020 20:16:47 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08FKGgu9006688;
         Tue, 15 Sep 2020 20:16:42 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Sep 2020 20:16:40 +0000
+        with ESMTP ; Tue, 15 Sep 2020 20:16:42 +0000
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>, jejb@linux.ibm.com,
-        paulus@samba.org, tyreld@linux.ibm.com
+To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@protonmail.com>, Jonathan Corbet <corbet@lwn.net>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrealmeid@collabora.com, lkcamp@lists.libreplanetbr.org,
+        Randy Dunlap <rdunlap@infradead.org>,
         linux-scsi@vger.kernel.org
-Subject: Re: [PATCH] scsi: ibmvfc: Fix error return in ibmvfc_probe()
-Date:   Tue, 15 Sep 2020 16:16:25 -0400
-Message-Id: <160020074003.8134.8833608146338864897.b4-ty@oracle.com>
+Subject: Re: [PATCH] scsi: docs: Remove obsolete scsi typedef text from scsi_mid_low_api
+Date:   Tue, 15 Sep 2020 16:16:27 -0400
+Message-Id: <160020074002.8134.4034144362404151675.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200907083949.154251-1-jingxiangfeng@huawei.com>
-References: <20200907083949.154251-1-jingxiangfeng@huawei.com>
+In-Reply-To: <20200905210211.2286172-1-nfraprado@protonmail.com>
+References: <20200905210211.2286172-1-nfraprado@protonmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150158
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009150157
+ definitions=main-2009150158
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150157
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Sep 2020 16:39:49 +0800, Jing Xiangfeng wrote:
+On Sat, 05 Sep 2020 21:03:00 +0000, Nícolas F. R. A. Prado wrote:
 
-> Fix to return error code PTR_ERR() from the error handling case instead
-> of 0.
+> Commit 91ebc1facd77 ("scsi: core: remove Scsi_Cmnd typedef") removed
+> the Scsi_cmnd typedef but it was still mentioned in a paragraph in the
+> "SCSI mid_level - lower_level driver interface" documentation page.
+> Remove this obsolete paragraph.
 
 Applied to 5.10/scsi-queue, thanks!
 
-[1/1] scsi: ibmvfc: Fix error return in ibmvfc_probe()
-      https://git.kernel.org/mkp/scsi/c/5e48a084f4e8
+[1/1] scsi: docs: Remove obsolete scsi typedef text from scsi_mid_low_api
+      https://git.kernel.org/mkp/scsi/c/5476b7f5ae7b
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
