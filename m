@@ -2,165 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D4326B067
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893B026B05D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgIOWJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
+        id S1727788AbgIOWJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727937AbgIOUSZ (ORCPT
+        with ESMTP id S1727985AbgIOUUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:18:25 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B96C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 13:18:01 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id e16so4671188wrm.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 13:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+9d3ORlPeAR882gC4oV6nUcXhz3M650ABYnqtiBLMu0=;
-        b=WqHVyu8Q4sCmq7ey1374ySo4PZvSixntEN2TVDdIGP80nkMc7yXnThenwrqFEMYGMN
-         s6LIoDUM9wclPNVdRY4pRC2AadwzbG9sKSTgi9hN1h4dsOVYrgvbsGkGdZvLCb0/g3+z
-         yjyli8DxrqD6H/VQ5AhWb0IPMwxq90o++ApITC9AUUnioUOFVFQi//lEPIOnnxmDaVMb
-         fWtWILKN5R3jgRlGZSHJIbWPwwQr5X/DkLamrBCLb+pJMyhmZDuaT1IKZE/E5YyQUjWz
-         60XKoJif5fdF+Nw425RlG5c+Dk6iFmZXjiH5LZbzOOAJz8dMvouaffXFK3cRSHS99DI6
-         zBdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+9d3ORlPeAR882gC4oV6nUcXhz3M650ABYnqtiBLMu0=;
-        b=FnDvPFaWJAuwIlP3iZiFrHVAJIAF4czo5achwoNeUIpbKyg0vpslLmR2TcV711j2L8
-         IFonWquPS6JAErwHKU5YA7Ev5NhQRpXjFowT2fvg1giOM9nHyUP8O7lGpXm5zqkTvYtC
-         qSG98YlWXvTW6nYdwLUiM+iV6TO6Umw26akmhezmd0eaUxCFyfkL9gGuAmbDXFwlFq1z
-         GoxjpOhL24oQONy/w4Psf4SsT/JmdMZWMGpy6m6+BzaCp0cJDdmbmcL9Tcdqtw+nHl3n
-         YXn9RA/oMCDX3HGJ6Gy+elVgqW3HVQMq32BzbxUB05AkQaoUpPEyvq5OcdKaMWMe/0hI
-         5h3g==
-X-Gm-Message-State: AOAM533qaPy5MStQuOj+sfi+FjtWhdMOaIAcew9vJ0SX8rql7z5V5AUu
-        ZRhZn3cmVQ+P9OkQrwk2eXADT5lSiL3GQpR0Fawe7Q==
-X-Google-Smtp-Source: ABdhPJxCVdxIEJHt9gwnRqxYwPAHWP+m2PiMpXjey/peGqtYZDZo2d/CSDygnX5ibHpXD0QszjCE1PCYJpLoiPY/bPw=
-X-Received: by 2002:a5d:5583:: with SMTP id i3mr22372673wrv.119.1600201080279;
- Tue, 15 Sep 2020 13:18:00 -0700 (PDT)
+        Tue, 15 Sep 2020 16:20:09 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66A8C06174A;
+        Tue, 15 Sep 2020 13:19:50 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id C992CC63FE; Tue, 15 Sep 2020 21:19:47 +0100 (BST)
+Date:   Tue, 15 Sep 2020 21:19:47 +0100
+From:   Sean Young <sean@mess.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+ system
+Message-ID: <20200915201947.GA4019@gofer.mess.org>
+References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
+ <20200915093342.GA24139@gofer.mess.org>
+ <DB8PR04MB67951DE19DD876721093AED4E6200@DB8PR04MB6795.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-17-jolsa@kernel.org>
- <20200914160758.GK160517@kernel.org>
-In-Reply-To: <20200914160758.GK160517@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 15 Sep 2020 13:17:44 -0700
-Message-ID: <CAP-5=fV4Agxe3UMpkbWkh9CuG1tYho413w7xehy0SiMX+tPv1Q@mail.gmail.com>
-Subject: Re: [PATCH 16/26] perf tools: Synthesize modules with mmap3
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DB8PR04MB67951DE19DD876721093AED4E6200@DB8PR04MB6795.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 9:08 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Sun, Sep 13, 2020 at 11:03:03PM +0200, Jiri Olsa escreveu:
-> > Synthesizing modules with mmap3 events so we can
-> > get build id data for module's maps as well.
->
-> Ditto as for 15/26
->
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/perf/util/synthetic-events.c | 37 +++++++++++++++++++-----------
-> >  1 file changed, 24 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> > index bd6e7b84283d..6bd2423ce2f3 100644
-> > --- a/tools/perf/util/synthetic-events.c
-> > +++ b/tools/perf/util/synthetic-events.c
-> > @@ -605,7 +605,7 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
-> >       int rc = 0;
-> >       struct map *pos;
-> >       struct maps *maps = machine__kernel_maps(machine);
-> > -     union perf_event *event = zalloc((sizeof(event->mmap) +
-> > +     union perf_event *event = zalloc((sizeof(event->mmap3) +
-> >                                         machine->id_hdr_size));
-> >       if (event == NULL) {
-> >               pr_debug("Not enough memory synthesizing mmap event "
-> > @@ -613,8 +613,6 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
-> >               return -1;
-> >       }
-> >
-> > -     event->header.type = PERF_RECORD_MMAP;
-> > -
-> >       /*
-> >        * kernel uses 0 for user space maps, see kernel/perf_event.c
-> >        * __perf_event_mmap
-> > @@ -631,17 +629,30 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
-> >                       continue;
-> >
-> >               size = PERF_ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
-> > -             event->mmap.header.type = PERF_RECORD_MMAP;
-> > -             event->mmap.header.size = (sizeof(event->mmap) -
-> > -                                     (sizeof(event->mmap.filename) - size));
-> > -             memset(event->mmap.filename + size, 0, machine->id_hdr_size);
-> > -             event->mmap.header.size += machine->id_hdr_size;
-> > -             event->mmap.start = pos->start;
-> > -             event->mmap.len   = pos->end - pos->start;
-> > -             event->mmap.pid   = machine->pid;
-> > -
-> > -             memcpy(event->mmap.filename, pos->dso->long_name,
-> > +             event->mmap3.header.type = PERF_RECORD_MMAP3;
-> > +             event->mmap3.header.size = (sizeof(event->mmap3) -
-> > +                                        (sizeof(event->mmap3.filename) - size));
-> > +             memset(event->mmap3.filename + size, 0, machine->id_hdr_size);
-> > +             event->mmap3.header.size += machine->id_hdr_size;
-> > +             event->mmap3.start = pos->start;
-> > +             event->mmap3.len   = pos->end - pos->start;
-> > +             event->mmap3.pid   = machine->pid;
-> > +
-> > +             memcpy(event->mmap3.filename, pos->dso->long_name,
-> >                      pos->dso->long_name_len + 1);
-> > +
-> > +             rc = filename__read_build_id(event->mmap3.filename, event->mmap3.buildid,
-> > +                                          BUILD_ID_SIZE);
-> > +             if (rc != BUILD_ID_SIZE) {
+Hi Joakim,
 
-IIRC BUILD_ID_SIZE is 20 bytes which is the correct size for SHA-1. A
-build ID may be 128-bits (16 bytes) if md5 or uuid hashes are used.
-Should this test just be "> 0" ?
+On Tue, Sep 15, 2020 at 10:55:17AM +0000, Joakim Zhang wrote:
+> 
+> Hi Sean,
+> 
+> Thanks a lot for your review.
+> 
+> > -----Original Message-----
+> > From: Sean Young <sean@mess.org>
+> > Sent: 2020年9月15日 17:34
+> > To: Joakim Zhang <qiangqing.zhang@nxp.com>
+> > Cc: mchehab@kernel.org; linux-media@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
+> > Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+> > system
+> > 
+> > 
+> > Hi Joakim,
+> > 
+> > Thanks for your patch, I think it looks good in principle but needs a few small
+> > fixes.
+> > 
+> > On Tue, Sep 15, 2020 at 11:02:02PM +0800, Joakim Zhang wrote:
+> > > GPIO IR receive is much rely on interrupt response, uneven interrupt
+> > > latency will lead to incorrect timing, so the decoder fails to decode
+> > > it. The issue is particularly acute on systems which supports cpuidle,
+> > > dynamically disable and enable cpuidle can solve this problem to a
+> > > great extent.
+> > 
+> > This is the first soc to be affected by this problem, and gpio-ir-recv has been
+> > used on my systems. For example, the raspberry pi has cpu idle enabled and
+> > does not suffer from this problem. There are many more; this driver has been
+> > used on many arm devices, which will have cpuidle enabled.
+> I have not noticed raspberry pi enabled cpu idle in Linux, could you point me where it is? Then I can have a look, whether it implements multiple idle or not, to see why it makes difference.
 
-Thanks,
-Ian
+I just noticed that it not enabled on raspbian kernel, but it is enabled
+on fedora:
 
-> > +                     if (event->mmap3.filename[0] == '/') {
-> > +                             pr_debug2("Failed to read build ID for %s\n",
-> > +                                       event->mmap3.filename);
-> > +                     }
-> > +                     memset(event->mmap3.buildid, 0x0, sizeof(event->mmap3.buildid));
-> > +             }
-> > +
-> > +             rc = 0;
-> > +
-> >               if (perf_tool__process_synth_event(tool, event, machine, process) != 0) {
-> >                       rc = -1;
-> >                       break;
-> > --
-> > 2.26.2
-> >
->
-> --
->
-> - Arnaldo
+https://src.fedoraproject.org/rpms/kernel/blob/master/f/kernel-armv7hl-fedora.config
+
+When I use gpio-ir-recv with my own kernel and fedora kernel, there no
+problems with gpio-ir-recv on this kernel.
+
+> > > However, there is a downside to this approach, the measurement of
+> > > header on the first frame may incorrect. Test on i.MX8M serials, when
+> > > enable cpuidle, interrupt latency could be about 500us.
+> > >
+> > > With this patch:
+> > > 1. has no side effect on non-cpuidle system.
+> > > 2. latency is still much longer for the first gpio interrupt on
+> > > cpuidle system, so the first frame may not be decoded. Generally, RC
+> > > would transmit multiple frames at once press, we can sacrifice the first
+> > frame.
+> > >
+> > > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> > > ---
+> > >  drivers/media/rc/gpio-ir-recv.c | 49
+> > > ++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 48 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/media/rc/gpio-ir-recv.c
+> > > b/drivers/media/rc/gpio-ir-recv.c index a20413008c3c..42c942ce98cd
+> > > 100644
+> > > --- a/drivers/media/rc/gpio-ir-recv.c
+> > > +++ b/drivers/media/rc/gpio-ir-recv.c
+> > > @@ -11,6 +11,8 @@
+> > >  #include <linux/of.h>
+> > >  #include <linux/of_gpio.h>
+> > >  #include <linux/platform_device.h>
+> > > +#include <linux/pm_runtime.h>
+> > > +#include <linux/pm_qos.h>
+> > >  #include <linux/irq.h>
+> > >  #include <media/rc-core.h>
+> > >
+> > > @@ -20,17 +22,36 @@ struct gpio_rc_dev {
+> > >  	struct rc_dev *rcdev;
+> > >  	struct gpio_desc *gpiod;
+> > >  	int irq;
+> > > +	struct pm_qos_request qos;
+> > >  };
+> > >
+> > >  static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)  {
+> > > -	int val;
+> > > +	int ret, val;
+> > >  	struct gpio_rc_dev *gpio_dev = dev_id;
+> > > +	struct device *dev = gpio_dev->rcdev->dev.parent;
+> > > +
+> > > +	/*
+> > > +	 * For cpuidle system:
+> > 
+> > For some cpuidle systems, not all. This is why this feature needs a device tree
+> > option for enabling. Otherwise, it will negatively affect power usage on e.g.
+> > raspberry pi.
+> Yes, you are right. As you said, some cpu idle systems may not suffer such case, I will add a device tree property.
+> 
+> 
+> > > +	 * Respond to interrupt taking more latency when cpu in idle.
+> > > +	 * Invoke asynchronous pm runtime get from interrupt context,
+> > > +	 * this may introduce a millisecond delay to call resume callback,
+> > > +	 * where to disable cpuilde.
+> > > +	 *
+> > > +	 * Two issues lead to fail to decode first frame, one is latency to
+> > > +	 * respond interupt, another is delay introduced by async api.
+> > > +	 */
+> > > +	ret = pm_runtime_get(dev);
+> > > +	if (ret < 0)
+> > > +		return IRQ_NONE;
+> > 
+> > If we end up here, we also abandon sending the IR to rc-core (below). I don't
+> > think it should do that. It should call ir_raw_event_store_edge() always even if
+> > it can't do the pm things.
+> Make sense, I will remove this error check.
+> 
+> 
+> > >
+> > >  	val = gpiod_get_value(gpio_dev->gpiod);
+> > >  	if (val >= 0)
+> > >  		ir_raw_event_store_edge(gpio_dev->rcdev, val == 1);
+> > >
+> > > +	pm_runtime_mark_last_busy(dev);
+> > > +	pm_runtime_put_autosuspend(dev);
+> > > +
+> > >  	return IRQ_HANDLED;
+> > >  }
+> > >
+> > > @@ -92,6 +113,12 @@ static int gpio_ir_recv_probe(struct
+> > > platform_device *pdev)
+> > >
+> > >  	platform_set_drvdata(pdev, gpio_dev);
+> > >
+> > > +
+> > > +	pm_runtime_set_autosuspend_delay(dev, (rcdev->timeout / 1000 /
+> > > +1000));
+> > 
+> > rcdev->timeout is in microseconds (since very recently), so this is wrong.
+> What this meaning, is that rcdev->timeout woud change the unit, to be microseconds, not nanoseconds any more ?
+
+See:
+
+https://git.linuxtv.org/media_tree.git/commit/?id=528222d853f9283110f0118dd71d9f0ad686d586
+
+> > Also, the timeout can be changed using the LIRC_SET_REC_TIMEOUT ioctl
+> > (using ir-ctl -t in userspace). The autosuspend delay should be updated when
+> > this happens. This can be done by implementing the s_timeout rcdev function.
+> Make sense, could you point me where s_timeout funcition has implemented? So that I can refer to it, I am not familiar with this.
+
+See:
+
+https://git.linuxtv.org/media_tree.git/tree/drivers/media/rc/redrat3.c?id=528222d853f9283110f0118dd71d9f0ad686d586#n952
+
+
+> 
+> 
+> BRs,
+> Joakim
+> > > +	pm_runtime_use_autosuspend(dev);
+> > > +	pm_runtime_set_suspended(dev);
+> > > +	pm_runtime_enable(dev);
+> > > +
+> > >  	return devm_request_irq(dev, gpio_dev->irq, gpio_ir_recv_irq,
+> > >  				IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
+> > >  				"gpio-ir-recv-irq", gpio_dev);
+> > > @@ -122,9 +149,29 @@ static int gpio_ir_recv_resume(struct device *dev)
+> > >  	return 0;
+> > >  }
+> > >
+> > > +static int gpio_ir_recv_runtime_suspend(struct device *dev) {
+> > > +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
+> > > +
+> > > +	cpu_latency_qos_remove_request(&gpio_dev->qos);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int gpio_ir_recv_runtime_resume(struct device *dev) {
+> > > +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
+> > > +
+> > > +	cpu_latency_qos_add_request(&gpio_dev->qos, 0);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > >  static const struct dev_pm_ops gpio_ir_recv_pm_ops = {
+> > >  	.suspend        = gpio_ir_recv_suspend,
+> > >  	.resume         = gpio_ir_recv_resume,
+> > > +	.runtime_suspend = gpio_ir_recv_runtime_suspend,
+> > > +	.runtime_resume  = gpio_ir_recv_runtime_resume,
+> > >  };
+> > >  #endif
+> > >
+> > > --
+> > > 2.17.1
