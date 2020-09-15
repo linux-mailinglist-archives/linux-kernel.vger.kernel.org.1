@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58C926AEF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B423526AEEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgIOUxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:53:47 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:46964 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726485AbgIOUt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:49:27 -0400
-Received: from zn.tnic (p200300ec2f0e42002ec71013b50744b4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:2ec7:1013:b507:44b4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C1D641EC0268;
-        Tue, 15 Sep 2020 22:49:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600202960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=vH46LhzdOZ1oCzajIbFfe30UVDSp308nP3FSPhHESeg=;
-        b=DENOFQtQn88IXm7pPSvRYkvJK83BCfFBVVLbL8p63mlqbG5uJBoglLOaHYvbqHHiYAIPOs
-        HMcCu4cVuiDb9gRKzxWrtWswW1/8XmFcuzV1AmY1DltbxrYRsyIjPdW14khiQMWh+4g+mA
-        0RFQ+R6DpzaWvwMcaAAxmoA8k9t4rTw=
-Date:   Tue, 15 Sep 2020 22:49:12 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Marco Elver <elver@google.com>
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
- e6eb15c9ba3165698488ae5c34920eea20eaa38e
-Message-ID: <20200915204912.GA14436@zn.tnic>
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
- <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian>
- <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble>
- <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
+        id S1727821AbgIOUwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727707AbgIOUtu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:49:50 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D2BC06174A;
+        Tue, 15 Sep 2020 13:49:42 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id k13so1125692oor.2;
+        Tue, 15 Sep 2020 13:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=npbAlOQH4fp/qA72XjZiB29LRy6oKwDgsRkYJHjairY=;
+        b=r4OgvBkDGe0LFJcimKQuTJVk7vZkikBjSnue/GC/q4TgxNS9RPkIFhENcOWYWhtIzv
+         8n5in08IPIZVzgzOZo1gMtmMGGp74iceRsMkdgGGpLPpQkV6xndBc/P7DDpGRPj3jXCj
+         zJI2x79/XGHOfCHk5DPNq6e0taLOJGDX1Sx6aeTB3l9IQ0Psbs3Yir5yXcVAtwwwA+nG
+         wS0dG3LEyuz/QJu/k9CGWtVhWK3aDvfMn8rEbM1nuQCJGxNvUNSBlWnvT/tvUVGQOMh/
+         T0tKcMF8k+ffYuA0pP/3pgEsuToGd24Wzm9efa3RWLNYkd3GD9HmGZkINmkfVCOGYgVJ
+         JEZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=npbAlOQH4fp/qA72XjZiB29LRy6oKwDgsRkYJHjairY=;
+        b=aX0VGD9nhaOKnubQreBTHiiowqBt0Sxor3TgRbqjMAb8pHtrmi+2E5/wB3XNetnoUU
+         qzQ8ZCMKXBUl8t+7rIFMXkLnrVxMJ177YQFFVFRpljCC8QwNOqpxpWF31UGFXTytNXQ0
+         hYuh+fL40ETl/rCBmQjQebuqa0+2H2Eex5V4q0mzRf2vuQnZuuxYfPVxs1Vgl9jTXHB1
+         zG5KBdsT/3jaA/dbvVB0/8DrZWy6sjj4a77vffmpSAyqoQEtl+I0+uzDNokgdGEf1Y8/
+         /g9oIS0cgRti1VIwRfS6sehYFslQIz06skg4ZsLXwHMd6l2P7xlNd6u3OePG1rJX9nfA
+         pwxA==
+X-Gm-Message-State: AOAM532lAHPtDDJTsgPc54pUConD6Ws1w7wItcMa8LH08BggZVDjn7gs
+        IxZ0/TnkUl6g7UKrblcOfh4zTWvK4d8NgNaR+P8=
+X-Google-Smtp-Source: ABdhPJzWhuyZzcHauiMX4CaJks2BuzudJklG0MrZObs9vp+FG9p1LGFXDn9JamG8q3al1rKxC4s+Lo+SP/k7yrH2bnU=
+X-Received: by 2002:a4a:d509:: with SMTP id m9mr15693308oos.77.1600202981428;
+ Tue, 15 Sep 2020 13:49:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915.134252.1280841239760138359.davem@davemloft.net>
+In-Reply-To: <20200915.134252.1280841239760138359.davem@davemloft.net>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Tue, 15 Sep 2020 23:49:12 +0300
+Message-ID: <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     David Miller <davem@davemloft.net>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:12:24PM -0700, Nick Desaulniers wrote:
->       1 warning: objtool: ist_exc_vmm_communication()+0x12: unreachable instruction
+On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
+>
+> From: Oded Gabbay <oded.gabbay@gmail.com>
+> Date: Tue, 15 Sep 2020 20:10:08 +0300
+>
+> > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > into the habanalabs driver.
+> >
+> > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > are in that patch's commit message.
+> >
+> > Link to v2 cover letter:
+> > https://lkml.org/lkml/2020/9/12/201
+>
+> I agree with Jakub, this driver definitely can't go-in as it is currently
+> structured and designed.
+Why is that ?
+Can you please point to the things that bother you or not working correctly?
+I can't really fix the driver if I don't know what's wrong.
 
-That looks interesting. So your .o has:
+In addition, please read my reply to Jakub with the explanation of why
+we designed this driver as is.
 
-00000000000004c0 <ist_exc_vmm_communication>:
- 4c0:   55                      push   %rbp
- 4c1:   48 89 e5                mov    %rsp,%rbp
- 4c4:   48 c7 c7 00 00 00 00    mov    $0x0,%rdi
- 4cb:   31 c0                   xor    %eax,%eax
- 4cd:   e8 00 00 00 00          callq  4d2 <ist_exc_vmm_communication+0x12>
- 4d2:   0f 0b                   ud2    
- 4d4:   66 66 2e 0f 1f 84 00    data16 nopw %cs:0x0(%rax,%rax,1)
- 4db:   00 00 00 00 
- 4df:   90                      nop
+And because of the RDMA'ness of it, the RDMA
+> folks have to be CC:'d and have a chance to review this.
+As I said to Jakub, the driver doesn't use the RDMA infrastructure in
+the kernel and we can't connect to it due to the lack of H/W support
+we have
+Therefore, I don't see why we need to CC linux-rdma.
+I understood why Greg asked me to CC you because we do connect to the
+netdev and standard eth infrastructure, but regarding the RDMA, it's
+not really the same.
 
- And the unreachable insn is at 0x4d2. The version I got when building with
- clang12 built from git of today is:
-
-00000000000003e0 <ist_exc_vmm_communication>:
- 3e0:   55                      push   %rbp
- 3e1:   48 89 e5                mov    %rsp,%rbp
- 3e4:   48 c7 c7 00 00 00 00    mov    $0x0,%rdi
- 3eb:   31 c0                   xor    %eax,%eax
- 3ed:   e8 00 00 00 00          callq  3f2 <ist_exc_vmm_communication+0x12>
- 3f2:   66 66 2e 0f 1f 84 00    data16 nopw %cs:0x0(%rax,%rax,1)
- 3f9:   00 00 00 00 
- 3fd:   0f 1f 00                nopl   (%rax)
-
-and that version is calling a bunch of NOPs.
-
-gcc produces:
-
-00000000000002aa <ist_exc_vmm_communication>:
- 2aa:   55                      push   %rbp
- 2ab:   48 c7 c7 00 00 00 00    mov    $0x0,%rdi
- 2b2:   48 89 e5                mov    %rsp,%rbp
- 2b5:   e8 00 00 00 00          callq  2ba <ist_exc_vmm_communication+0x10>
- 2ba:   66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
-
-(Btw, clang doesn't need to add that "xor %eax,%eax" - panic() should not be
- returning, ever. :-))
-
-So what that call actually is, is:
-
-# arch/x86/kernel/sev-es.c:1342:        panic("Can't handle #VC exception from unsupported context\n");
-        call    panic   #
-
-and the address of panic() gets fixed up by the linker into:
-
-ffffffff83066dca <ist_exc_vmm_communication>:
-ffffffff83066dca:       55                      push   %rbp
-ffffffff83066dcb:       48 c7 c7 08 4f e2 83    mov    $0xffffffff83e24f08,%rdi
-ffffffff83066dd2:       48 89 e5                mov    %rsp,%rbp
-ffffffff83066dd5:       e8 52 23 ff ff          callq  ffffffff8305912c <panic>
-ffffffff83066dda:       66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
-
-But your compiler generates a call to UD2.
-
-Interesting.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Oded
