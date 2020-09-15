@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B4826A841
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D664226A83D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgIOPDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:03:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48768 "EHLO mail.kernel.org"
+        id S1726876AbgIOPC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:02:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727222AbgIOOic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:38:32 -0400
+        id S1727193AbgIOOiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:38:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFCD623CD1;
-        Tue, 15 Sep 2020 14:28:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 340A122470;
+        Tue, 15 Sep 2020 14:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600180138;
-        bh=s/VLEdes0wbiMZGXyUfMgWJ9+MejCfODHBmKBnvB8ws=;
+        s=default; t=1600180076;
+        bh=Zzfnlcjx2zYJ0tiWlm3weofgZXW5EGMPZ6lwrOZW6qg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fXBCyoA3X8XgbpcRRHHy9AiMb2W9+Fm2Ri2kKjPkf/V593dX3bmXBwMSpLOge9Yr8
-         bqbF/iPWmoKknz3aPFXKOIvnlcLctaso1fN8VXmj1NZn1kgVzEbLMUDlUg6FbFtjwN
-         1YmNGS0tDZXkIzgdypCJhSPsLXj6wiVlDA3uyDI8=
+        b=ZFHi91hpcedEHvIXej3aL6geaIIZArpFoez7mRWhjx+0Mgv2S61w5kByjn1y/lKvX
+         RwnxfLnw3SuA9z5Bk50gKWIlQng8Sv5t/sf2RHSWqmo84dUPNj3VvA4CWUU52YTTlz
+         l1YcGSZKRLPb7UbB60LnkU+ZU8Xb5sad25ie8Ido=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Miell <nmiell@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 094/177] HID: microsoft: Add rumble support for the 8bitdo SN30 Pro+ controller
-Date:   Tue, 15 Sep 2020 16:12:45 +0200
-Message-Id: <20200915140658.147467372@linuxfoundation.org>
+        stable@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 100/177] arm64/module: set trampoline section flags regardless of CONFIG_DYNAMIC_FTRACE
+Date:   Tue, 15 Sep 2020 16:12:51 +0200
+Message-Id: <20200915140658.438775418@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
 References: <20200915140653.610388773@linuxfoundation.org>
@@ -43,50 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Miell <nmiell@gmail.com>
+From: Jessica Yu <jeyu@kernel.org>
 
-[ Upstream commit 724a419ea28f7514a391e80040230f69cf626707 ]
+[ Upstream commit e0328feda79d9681b3e3245e6e180295550c8ee9 ]
 
-When operating in XInput mode, the 8bitdo SN30 Pro+ requires the same
-quirk as the official Xbox One Bluetooth controllers for rumble to
-function.
+In the arm64 module linker script, the section .text.ftrace_trampoline
+is specified unconditionally regardless of whether CONFIG_DYNAMIC_FTRACE
+is enabled (this is simply due to the limitation that module linker
+scripts are not preprocessed like the vmlinux one).
 
-Other controllers like the N30 Pro 2, SF30 Pro, SN30 Pro, etc. probably
-also need this quirk, but I do not have the hardware to test.
+Normally, for .plt and .text.ftrace_trampoline, the section flags
+present in the module binary wouldn't matter since module_frob_arch_sections()
+would assign them manually anyway. However, the arm64 module loader only
+sets the section flags for .text.ftrace_trampoline when CONFIG_DYNAMIC_FTRACE=y.
+That's only become problematic recently due to a recent change in
+binutils-2.35, where the .text.ftrace_trampoline section (along with the
+.plt section) is now marked writable and executable (WAX).
 
-Signed-off-by: Nicholas Miell <nmiell@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+We no longer allow writable and executable sections to be loaded due to
+commit 5c3a7db0c7ec ("module: Harden STRICT_MODULE_RWX"), so this is
+causing all modules linked with binutils-2.35 to be rejected under arm64.
+Drop the IS_ENABLED(CONFIG_DYNAMIC_FTRACE) check in module_frob_arch_sections()
+so that the section flags for .text.ftrace_trampoline get properly set to
+SHF_EXECINSTR|SHF_ALLOC, without SHF_WRITE.
+
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Link: http://lore.kernel.org/r/20200831094651.GA16385@linux-8ccs
+Link: https://lore.kernel.org/r/20200901160016.3646-1-jeyu@kernel.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h       | 1 +
- drivers/hid/hid-microsoft.c | 2 ++
- 2 files changed, 3 insertions(+)
+ arch/arm64/kernel/module-plts.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 8fa034b3b7073..b49ec7dde6457 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -849,6 +849,7 @@
- #define USB_DEVICE_ID_MS_POWER_COVER     0x07da
- #define USB_DEVICE_ID_MS_XBOX_ONE_S_CONTROLLER	0x02fd
- #define USB_DEVICE_ID_MS_PIXART_MOUSE    0x00cb
-+#define USB_DEVICE_ID_8BITDO_SN30_PRO_PLUS      0x02e0
- 
- #define USB_VENDOR_ID_MOJO		0x8282
- #define USB_DEVICE_ID_RETRO_ADAPTER	0x3201
-diff --git a/drivers/hid/hid-microsoft.c b/drivers/hid/hid-microsoft.c
-index 2d8b589201a4e..8cb1ca1936e42 100644
---- a/drivers/hid/hid-microsoft.c
-+++ b/drivers/hid/hid-microsoft.c
-@@ -451,6 +451,8 @@ static const struct hid_device_id ms_devices[] = {
- 		.driver_data = MS_SURFACE_DIAL },
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_XBOX_ONE_S_CONTROLLER),
- 		.driver_data = MS_QUIRK_FF },
-+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_8BITDO_SN30_PRO_PLUS),
-+		.driver_data = MS_QUIRK_FF },
- 	{ }
- };
- MODULE_DEVICE_TABLE(hid, ms_devices);
+diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
+index 65b08a74aec65..37c0b51a7b7b5 100644
+--- a/arch/arm64/kernel/module-plts.c
++++ b/arch/arm64/kernel/module-plts.c
+@@ -271,8 +271,7 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
+ 			mod->arch.core.plt_shndx = i;
+ 		else if (!strcmp(secstrings + sechdrs[i].sh_name, ".init.plt"))
+ 			mod->arch.init.plt_shndx = i;
+-		else if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE) &&
+-			 !strcmp(secstrings + sechdrs[i].sh_name,
++		else if (!strcmp(secstrings + sechdrs[i].sh_name,
+ 				 ".text.ftrace_trampoline"))
+ 			tramp = sechdrs + i;
+ 		else if (sechdrs[i].sh_type == SHT_SYMTAB)
 -- 
 2.25.1
 
