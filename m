@@ -2,297 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A695726A45B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67A826A461
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgIOLqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 07:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgIOLdD (ORCPT
+        id S1726451AbgIOLsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 07:48:15 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:49868 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIOLes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:33:03 -0400
-X-Greylist: delayed 1402 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Sep 2020 04:29:06 PDT
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75423C061226;
-        Tue, 15 Sep 2020 04:28:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References
-        :In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=EHCcbWW/9NZLs7B7FT6bJY/uakWPooVxDA/Ahw92K7Y=; b=0mPRQ9KAKW6kzZOMjeRhLrgJlO
-        Muumr1QkSx/X42PuPJ5SagN3GbX8V4j0EFCWss9tNXU7gZuMWT/no6VP6fhCUDHvFhhPgcu6hE1kL
-        Gx1oC7afJmv9E3zbL6RGL3huG75Ih9hUqLxQyJ0NEAn7AXcQWb+Fz+T3FuaoCejjI8Ug+Y+irxcMS
-        nERsSOQt/qeBGGOUpAIF8DGbaTbRzluENTIC/BwYQc+D1uG5vRYW6LwBK2O6tF2c6P76roScWJGSf
-        qM2ZtrKuf7OczQuarSUT/M9AAGpQLw8QB57OiVo1+DRhOWd4X27Kg5e2VH0f+AK9dEVS7fDUPxLDX
-        9X9edqQA==;
-Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <jjs@kapsi.fi>)
-        id 1kI98q-0000oE-Bc; Tue, 15 Sep 2020 14:28:56 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture and kernel internals
-Date:   Tue, 15 Sep 2020 14:28:41 +0300
-Message-Id: <20200915112842.897265-24-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+        Tue, 15 Sep 2020 07:34:48 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200915113427euoutp02fe53cd8f75f64bcbdd58f4dbcf97861b~08dWMeAcN3049530495euoutp02S
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:34:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200915113427euoutp02fe53cd8f75f64bcbdd58f4dbcf97861b~08dWMeAcN3049530495euoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600169667;
+        bh=4J9mAIGkWCA1iUY60Uc0okRdlJsBdXs932NxjIHX2UM=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=AX0wx8x7qNAa7IH7Ec4T+5d5NsC4REGT4JvlmlvK1IOvfk6gR2sNfgXk7kUpm3zpI
+         DqwtU0KlkQ+eHldWi4tZ6n9vVYUWiOP7ZSAjq8TNMxGBcmQ/+b4dME5vdkJNKT80u0
+         EsLRyPb5XsEgVc8UVlQ00sJNhZzC1eoKRlFvtfgc=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200915113426eucas1p2fa91a99c80c62880366254b0f622ca53~08dV8vQnu1150611506eucas1p2h;
+        Tue, 15 Sep 2020 11:34:26 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 34.3C.05997.2C6A06F5; Tue, 15
+        Sep 2020 12:34:26 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200915113426eucas1p1761f07b2bd25b5f31a6840b2b5046838~08dVXd_RU0665806658eucas1p1X;
+        Tue, 15 Sep 2020 11:34:26 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200915113426eusmtrp209aef5c48bc076dedf5081df36b4b384~08dVQ_iPl1124011240eusmtrp2o;
+        Tue, 15 Sep 2020 11:34:26 +0000 (GMT)
+X-AuditID: cbfec7f4-65dff7000000176d-7c-5f60a6c26788
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id D8.4D.06314.2C6A06F5; Tue, 15
+        Sep 2020 12:34:26 +0100 (BST)
+Received: from [106.210.123.115] (unknown [106.210.123.115]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200915113425eusmtip2c0eec9c762bf9fd235a50a708adb1bd3~08dUoWe4d2553525535eusmtip2Y;
+        Tue, 15 Sep 2020 11:34:25 +0000 (GMT)
+Subject: Re: [PATCH v3] clk: samsung: Prevent potential endless loop in the
+ PLL set_rate ops
+To:     Chanwoo Choi <cw00.choi@samsung.com>, tomasz.figa@gmail.com
+Cc:     linux-clk@vger.kernel.org, sboyd@kernel.org,
+        mturquette@baylibre.com, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, b.zolnierkie@samsung.com,
+        m.szyprowski@samsung.com
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <c3c40d62-f5bb-6b13-0af9-ce774718eaa6@samsung.com>
+Date:   Tue, 15 Sep 2020 13:34:24 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=a
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 83.245.197.237
-X-SA-Exim-Mail-From: jjs@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+In-Reply-To: <28cd3eeb-816d-b369-11a9-16cd2c1af87c@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMKsWRmVeSWpSXmKPExsWy7djP87qHliXEG9w+pGOxccZ6VovrX56z
+        WnzsucdqcXnXHDaLGef3MVmsPXKX3eLiKVeLf9c2slis2vWH0YHT4/2NVnaPnbPusntsWtXJ
+        5tG3ZRWjx+dNcgGsUVw2Kak5mWWpRfp2CVwZh/fMYiq4wVnx+oFLA+MH9i5GTg4JAROJTUcu
+        snUxcnEICaxglNhz5gALSEJI4AujxKTpwRCJz4wSb3dNhOvYc+A5E0RiOaPE5a3rmCGcj4wS
+        79YeYAWpEhaIk1g+Yy0TiC0iYC+x4dh/VpAiZoGDjBLTWnrBEmwChhK9R/sYQWxeATuJ/p3f
+        mUFsFgFViamv/4HdIQo06NipRywQNYISJ2c+AbM5gYY+fj6TDcRmFhCXuPVkPhOELS+x/e0c
+        sIskBA6xSzyb1s8KcbeLxIEle5kgbGGJV8e3QP0jI/F/53wmiIZmRome3bfZIZwJjBL3jy9g
+        hKiylrhz7hfQOg6gFZoS63fpg5gSAo4SX58yQph8EjfeCkLcwCcxadt0Zogwr0RHmxDEDBWJ
+        36umQ10gJdH95D/LBEalWUg+m4Xkm1lIvpmFsHYBI8sqRvHU0uLc9NRio7zUcr3ixNzi0rx0
+        veT83E2MwKR0+t/xLzsYd/1JOsQowMGoxMObUB4fL8SaWFZcmXuIUYKDWUmE1+ns6Tgh3pTE
+        yqrUovz4otKc1OJDjNIcLErivMaLXsYKCaQnlqRmp6YWpBbBZJk4OKUaGHWf6CgsiTlRxC3b
+        utC4zLlOdq7vcmbnnFoXq40zkzOFIsTFWMV7nTmPvpXPvfC5mLFn6Vr22hnPG9ZMELa8b/7I
+        bh7HyvuiTn/Obt5Xv/Fj5dkXT+pfLM669tW6Z0lm8j2PlX+YOnpX7Fq+5G/wzvlJxfsOHdjD
+        b79rT5VFgmVgWEH4EfEbDEosxRmJhlrMRcWJAO4zWs9GAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsVy+t/xe7qHliXEGzw/wmKxccZ6VovrX56z
+        WnzsucdqcXnXHDaLGef3MVmsPXKX3eLiKVeLf9c2slis2vWH0YHT4/2NVnaPnbPusntsWtXJ
+        5tG3ZRWjx+dNcgGsUXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5
+        mWWpRfp2CXoZh/fMYiq4wVnx+oFLA+MH9i5GTg4JAROJPQeeM3UxcnEICSxllJh66AaQwwGU
+        kJKY36IEUSMs8edaFxtEzXtGif/rPzOBJIQF4iSWz1gLZosI2EtsOPafFaSIWeAgo8Sy02eZ
+        IToOM0ocf9TIDFLFJmAo0Xu0jxHE5hWwk+jf+R0sziKgKjH19T8WEFsUaOqZnhdsEDWCEidn
+        PgGLcwJtePx8JlicWUBd4s+8S8wQtrjErSfzmSBseYntb+cwT2AUmoWkfRaSlllIWmYhaVnA
+        yLKKUSS1tDg3PbfYUK84Mbe4NC9dLzk/dxMjMA63Hfu5eQfjpY3BhxgFOBiVeHgTyuPjhVgT
+        y4orcw8xSnAwK4nwOp09HSfEm5JYWZValB9fVJqTWnyI0RTouYnMUqLJ+cAUkVcSb2hqaG5h
+        aWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgTHIMNKe9cyC+Xf1u+6kly5yUlq0
+        vv9C5gmdAF+JhLNfjCbaLLF48+PDsa8eWlMY/tuqL560633GorSuK/ZT5hx+89naOSiytj16
+        xxHPXqeNNwvOp74rzNe4sXHX99ApS8LEPq7JVKusFJj8ZjO/gEOvcsrSdYzlMsx9Pyo2PrU3
+        WMG+2VO9jk2JpTgj0VCLuag4EQDkFb8e2QIAAA==
+X-CMS-MailID: 20200915113426eucas1p1761f07b2bd25b5f31a6840b2b5046838
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200813095520eucas1p209432599420d62e0e54a5545334c329c
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200813095520eucas1p209432599420d62e0e54a5545334c329c
+References: <CGME20200813095520eucas1p209432599420d62e0e54a5545334c329c@eucas1p2.samsung.com>
+        <20200813095508.7563-1-s.nawrocki@samsung.com>
+        <28cd3eeb-816d-b369-11a9-16cd2c1af87c@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Intel SGX kernel architecture. The fine-grained micro
-architecture details can be looked up from Intel SDM Volume 3D.
+On 14.08.2020 02:46, Chanwoo Choi wrote:
+> On 8/13/20 6:55 PM, Sylwester Nawrocki wrote:
+>> In the .set_rate callback for some PLLs there is a loop polling state
+>> of the PLL lock bit and it may become an endless loop when something
+>> goes wrong with the PLL. For some PLLs there is already code for polling
+>> with a timeout but it uses the ktime API, which doesn't work in some
+>> conditions when the set_rate op is called, in particular during
+>> initialization of the clk provider before the clocksource initialization
+>> has completed. Hence the ktime API cannot be used to reliably detect
+>> the PLL locking timeout.
+>>
+>> This patch adds a common helper function for busy waiting on the PLL lock
+>> bit with timeout detection.
 
-Cc: linux-doc@vger.kernel.org
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- Documentation/x86/index.rst |   1 +
- Documentation/x86/sgx.rst   | 200 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 201 insertions(+)
- create mode 100644 Documentation/x86/sgx.rst
+>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>> ---
+>> Changes for v3:
+>>  - use busy-loop with udelay() instead of ktime API
+>> Changes for v2:
+>>  - use common readl_relaxed_poll_timeout_atomic() macro
+>> ---
+>>  drivers/clk/samsung/clk-pll.c | 94 ++++++++++++++++---------------------------
+>>  1 file changed, 34 insertions(+), 60 deletions(-)
 
-diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
-index 265d9e9a093b..807290bf357c 100644
---- a/Documentation/x86/index.rst
-+++ b/Documentation/x86/index.rst
-@@ -30,3 +30,4 @@ x86-specific Documentation
-    usb-legacy-support
-    i386/index
-    x86_64/index
-+   sgx
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-new file mode 100644
-index 000000000000..706a846ae353
---- /dev/null
-+++ b/Documentation/x86/sgx.rst
-@@ -0,0 +1,200 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+============
-+Architecture
-+============
-+
-+*Software Guard eXtensions (SGX)* is a set of instructions that enable ring-3
-+applications to set aside private regions of code and data. These regions are
-+called enclaves. An enclave can be entered to a fixed set of entry points. Only
-+a CPU running inside the enclave can access its code and data.
-+
-+The support can be determined by
-+
-+	``grep sgx /proc/cpuinfo``
-+
-+Enclave Page Cache
-+==================
-+
-+SGX utilizes an *Enclave Page Cache (EPC)* to store pages that are associated
-+with an enclave. It is contained in a BIOS reserved region of physical memory.
-+Unlike pages used for regular memory, pages can only be accessed outside the
-+enclave for different purposes with the instructions **ENCLS**, **ENCLV** and
-+**ENCLU**.
-+
-+Direct memory accesses to an enclave can be only done by a CPU executing inside
-+the enclave. An enclave can be entered with **ENCLU[EENTER]** to a fixed set of
-+entry points. However, a CPU executing inside the enclave can do outside memory
-+accesses.
-+
-+Page Types
-+----------
-+
-+**SGX Enclave Control Structure (SECS)**
-+   Enclave's address range, attributes and other global data are defined
-+   by this structure.
-+
-+**Regular (REG)**
-+   Regular EPC pages contain the code and data of an enclave.
-+
-+**Thread Control Structure (TCS)**
-+   Thread Control Structure pages define the entry points to an enclave and
-+   track the execution state of an enclave thread.
-+
-+**Version Array (VA)**
-+   Version Array pages contain 512 slots, each of which can contain a version
-+   number for a page evicted from the EPC.
-+
-+Enclave Page Cache Map
-+----------------------
-+
-+The processor tracks EPC pages via the *Enclave Page Cache Map (EPCM)*.  EPCM
-+contains an entry for each EPC page, which describes the owning enclave, access
-+rights and page type among the other things.
-+
-+The permissions from EPCM is consulted if and only if walking the kernel page
-+tables succeeds. The total permissions are thus a conjunction between page table
-+and EPCM permissions.
-+
-+For all intents and purposes the SGX architecture allows the processor to
-+invalidate all EPCM entries at will, i.e. requires that software be prepared to
-+handle an EPCM fault at any time. The contents of EPC are encrypted with an
-+ephemeral key, which is lost on power transitions.
-+
-+EPC management
-+==============
-+
-+EPC pages do not have ``struct page`` instances. They are IO memory from kernel
-+perspective. The consequence is that they are always mapped as shared memory.
-+Kernel defines ``/dev/sgx/enclave`` that can be mapped as ``MAP_SHARED`` to
-+define the address range for an enclave.
-+
-+EPC Over-subscription
-+=====================
-+
-+When the amount of free EPC pages goes below a low watermark the swapping thread
-+starts reclaiming pages. The pages that do not have the **A** bit set are
-+selected as victim pages.
-+
-+Launch Control
-+==============
-+
-+SGX provides a launch control mechanism. After all enclave pages have been
-+copied, kernel executes **ENCLS[EINIT]**, which initializes the enclave. Only
-+after this the CPU can execute inside the enclave.
-+
-+This leaf function takes an RSA-3072 signature of the enclave measurement and an
-+optional cryptographic token. Linux does not take advantage of launch tokens.
-+The instruction checks that the signature is signed with the key defined in
-+**IA32_SGXLEPUBKEYHASH?** MSRs and the measurement is correct. If so, the
-+enclave is allowed to be executed.
-+
-+MSRs can be configured by the BIOS to be either readable or writable. Linux
-+supports only writable configuration in order to give full control to the kernel
-+on launch control policy. Readable configuration requires the use of previously
-+mentioned launch tokens.
-+
-+The current kernel implementation supports only writable MSRs. The launch is
-+performed by setting the MSRs to the hash of the enclave signer's public key.
-+The alternative would be to have *a launch enclave* that would be signed with
-+the key set into MSRs, which would then generate launch tokens for other
-+enclaves. This would only make sense with read-only MSRs, and thus the option
-+has been discarded.
-+
-+Attestation
-+===========
-+
-+Local Attestation
-+-----------------
-+
-+In local attestation an enclave creates a **REPORT** data structure with
-+**ENCLS[EREPORT]**, which describes the origin of an enclave. In particular, it
-+contains a AES-CMAC of the enclave contents signed with a report key unique to
-+each processor. All enclaves have access to this key.
-+
-+This mechanism can also be used in addition as a communication channel as the
-+**REPORT** data structure includes a 64-byte field for variable information.
-+
-+Remote Attestation
-+------------------
-+
-+Provisioning Certification Enclave (PCE), the root of trust for other enclaves,
-+generates a signing key from a fused key called Provisioning Certification Key.
-+PCE can then use this key to certify an attestation key of a Quoting Enclave
-+(QE), e.g. we get the chain of trust down to the hardware if the Intel signed
-+PCE is used.
-+
-+To use the needed keys, ATTRIBUTE.PROVISIONKEY is required but should be only
-+allowed for those who actually need it so that only the trusted parties can
-+certify QE's.
-+
-+A device file called /dev/sgx/provision exists to provide file descriptors that
-+act as privilege tokens for building provisioning enclaves. These can be
-+associated with enclaves with the ioctl SGX_IOC_ENCLAVE_SET_ATTRIBUTE.
-+
-+Encryption engines
-+==================
-+
-+In order to conceal the enclave data while it is out of the CPU package,
-+memory controller has to be extended with an encryption engine. MC can then
-+route incoming requests coming from CPU cores running in enclave mode to the
-+encryption engine.
-+
-+In CPUs prior to Icelake, Memory Encryption Engine (MEE) is used to
-+encrypt pages leaving the CPU caches. MEE uses a n-ary Merkle tree with root in
-+SRAM to maintain integrity of the encrypted data. This provides integrity and
-+anti-replay protection but does not scale to large memory sizes because the time
-+required to update the Merkle tree grows logarithmically in relation to the
-+memory size.
-+
-+CPUs starting from Icelake use Total Memory Encryption (TME) in the place of
-+MEE. SGX using TME does not have an integrity Merkle tree, which means losing HW
-+protections from integrity and replay-attacks, but includes additional changes
-+to prevent cipher text from being return and SW memory aliases from being
-+created. DMA remains blocked by the PRMRR to the EPC memory even systems that
-+use TME (SDM section 41.10).
-+
-+Backing storage
-+===============
-+
-+Backing storage is shared and not accounted. It is implemented as a private
-+shmem file. Providing a backing storage in some form from user space is not
-+possible - accounting would go to invalid state as reclaimed pages would get
-+accounted to the processes of which behalf the kernel happened to be acting on.
-+
-+Access control
-+==============
-+
-+`mmap()` permissions are capped by the enclave permissions. A direct
-+consequence of this is that all the pages for an address range must be added
-+before `mmap()` can be applied. Effectively an enclave page with minimum
-+permissions in the address range sets the permission cap for the mapping
-+operation.
-+
-+Usage Models
-+============
-+
-+Shared Library
-+--------------
-+
-+Sensitive data and the code that acts on it is partitioned from the application
-+into a separate library. The library is then linked as a DSO which can be loaded
-+into an enclave. The application can then make individual function calls into
-+the enclave through special SGX instructions. A run-time within the enclave is
-+configured to marshal function parameters into and out of the enclave and to
-+call the correct library function.
-+
-+Application Container
-+---------------------
-+
-+An application may be loaded into a container enclave which is specially
-+configured with a library OS and run-time which permits the application to run.
-+The enclave run-time and library OS work together to execute the application
-+when a thread enters the enclave.
-+
-+References
-+==========
-+
-+"Supporting Third Party Attestation for Intel® SGX with Intel® Data Center
-+Attestation Primitives"
-+   https://software.intel.com/sites/default/files/managed/f1/b8/intel-sgx-support-for-third-party-attestation.pdf
--- 
-2.25.1
-
+> Thanks.
+> 
+> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+ 
+Patch applied, thank you for your comments.
