@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526E526A850
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A08726A88A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 17:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgIOPGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 11:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48808 "EHLO mail.kernel.org"
+        id S1727083AbgIOPPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 11:15:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727254AbgIOOkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:40:33 -0400
+        id S1727306AbgIOOlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:41:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9845722260;
-        Tue, 15 Sep 2020 14:17:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09EEC222BA;
+        Tue, 15 Sep 2020 14:18:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179431;
-        bh=XySaO+9SBMQlAUUpHfYhtUGpy4r03tg3zGOjd/d/cNI=;
+        s=default; t=1600179493;
+        bh=uaLRnY7Edfv21uYVDZYQ//xKF1mn90N/M+5Oj7H69R4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1/WaIM0jAvvY6E7U/dl8TXlbOkDSPzi4qh/MZqbxIfsNsPA9s3MG198P7iKkUwIPD
-         ig744wtvHJFzZKSVEpxdgXotEW6Jh2qQNXoQ6HcYY492C4Hix04T6CnxBA2v1DVUtE
-         Rm5B1TlmC0LFkoH9CNEtWQenotZrh0iHyksz35oI=
+        b=pc+iD8t3jOYGWX+iFPTcTWtA3lcOodmcuoGUtT+X1eWfAvM/5HgCMYBSxsulKoBiZ
+         A6DKQJV8BoNUL3OjalcAlzWaem88TBbvuAlxc+zl9JFoDk1XFxjcpELwYHVYaUOCY/
+         VUi/agA7AfbIYfpaQpioirRXhe18kfrUgbIAOnEo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 56/78] btrfs: fix lockdep splat in add_missing_dev
-Date:   Tue, 15 Sep 2020 16:13:21 +0200
-Message-Id: <20200915140636.377816311@linuxfoundation.org>
+        stable@vger.kernel.org, Yuan Ming <yuanmingbuaa@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 66/78] fbcon: remove soft scrollback code
+Date:   Tue, 15 Sep 2020 16:13:31 +0200
+Message-Id: <20200915140636.861676717@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
 References: <20200915140633.552502750@linuxfoundation.org>
@@ -45,185 +46,526 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit fccc0007b8dc952c6bc0805cdf842eb8ea06a639 upstream.
+commit 50145474f6ef4a9c19205b173da6264a644c7489 upstream.
 
-Nikolay reported a lockdep splat in generic/476 that I could reproduce
-with btrfs/187.
+This (and the VGA soft scrollback) turns out to have various nasty small
+special cases that nobody really is willing to fight.  The soft
+scrollback code was really useful a few decades ago when you typically
+used the console interactively as the main way to interact with the
+machine, but that just isn't the case any more.
 
-  ======================================================
-  WARNING: possible circular locking dependency detected
-  5.9.0-rc2+ #1 Tainted: G        W
-  ------------------------------------------------------
-  kswapd0/100 is trying to acquire lock:
-  ffff9e8ef38b6268 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node.part.0+0x3f/0x330
+So it's not worth dragging along.
 
-  but task is already holding lock:
-  ffffffffa9d74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
-
-  which lock already depends on the new lock.
-
-  the existing dependency chain (in reverse order) is:
-
-  -> #2 (fs_reclaim){+.+.}-{0:0}:
-	 fs_reclaim_acquire+0x65/0x80
-	 slab_pre_alloc_hook.constprop.0+0x20/0x200
-	 kmem_cache_alloc_trace+0x3a/0x1a0
-	 btrfs_alloc_device+0x43/0x210
-	 add_missing_dev+0x20/0x90
-	 read_one_chunk+0x301/0x430
-	 btrfs_read_sys_array+0x17b/0x1b0
-	 open_ctree+0xa62/0x1896
-	 btrfs_mount_root.cold+0x12/0xea
-	 legacy_get_tree+0x30/0x50
-	 vfs_get_tree+0x28/0xc0
-	 vfs_kern_mount.part.0+0x71/0xb0
-	 btrfs_mount+0x10d/0x379
-	 legacy_get_tree+0x30/0x50
-	 vfs_get_tree+0x28/0xc0
-	 path_mount+0x434/0xc00
-	 __x64_sys_mount+0xe3/0x120
-	 do_syscall_64+0x33/0x40
-	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-  -> #1 (&fs_info->chunk_mutex){+.+.}-{3:3}:
-	 __mutex_lock+0x7e/0x7e0
-	 btrfs_chunk_alloc+0x125/0x3a0
-	 find_free_extent+0xdf6/0x1210
-	 btrfs_reserve_extent+0xb3/0x1b0
-	 btrfs_alloc_tree_block+0xb0/0x310
-	 alloc_tree_block_no_bg_flush+0x4a/0x60
-	 __btrfs_cow_block+0x11a/0x530
-	 btrfs_cow_block+0x104/0x220
-	 btrfs_search_slot+0x52e/0x9d0
-	 btrfs_lookup_inode+0x2a/0x8f
-	 __btrfs_update_delayed_inode+0x80/0x240
-	 btrfs_commit_inode_delayed_inode+0x119/0x120
-	 btrfs_evict_inode+0x357/0x500
-	 evict+0xcf/0x1f0
-	 vfs_rmdir.part.0+0x149/0x160
-	 do_rmdir+0x136/0x1a0
-	 do_syscall_64+0x33/0x40
-	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-  -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
-	 __lock_acquire+0x1184/0x1fa0
-	 lock_acquire+0xa4/0x3d0
-	 __mutex_lock+0x7e/0x7e0
-	 __btrfs_release_delayed_node.part.0+0x3f/0x330
-	 btrfs_evict_inode+0x24c/0x500
-	 evict+0xcf/0x1f0
-	 dispose_list+0x48/0x70
-	 prune_icache_sb+0x44/0x50
-	 super_cache_scan+0x161/0x1e0
-	 do_shrink_slab+0x178/0x3c0
-	 shrink_slab+0x17c/0x290
-	 shrink_node+0x2b2/0x6d0
-	 balance_pgdat+0x30a/0x670
-	 kswapd+0x213/0x4c0
-	 kthread+0x138/0x160
-	 ret_from_fork+0x1f/0x30
-
-  other info that might help us debug this:
-
-  Chain exists of:
-    &delayed_node->mutex --> &fs_info->chunk_mutex --> fs_reclaim
-
-   Possible unsafe locking scenario:
-
-	 CPU0                    CPU1
-	 ----                    ----
-    lock(fs_reclaim);
-				 lock(&fs_info->chunk_mutex);
-				 lock(fs_reclaim);
-    lock(&delayed_node->mutex);
-
-   *** DEADLOCK ***
-
-  3 locks held by kswapd0/100:
-   #0: ffffffffa9d74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
-   #1: ffffffffa9d65c50 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x115/0x290
-   #2: ffff9e8e9da260e0 (&type->s_umount_key#48){++++}-{3:3}, at: super_cache_scan+0x38/0x1e0
-
-  stack backtrace:
-  CPU: 1 PID: 100 Comm: kswapd0 Tainted: G        W         5.9.0-rc2+ #1
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  Call Trace:
-   dump_stack+0x92/0xc8
-   check_noncircular+0x12d/0x150
-   __lock_acquire+0x1184/0x1fa0
-   lock_acquire+0xa4/0x3d0
-   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
-   __mutex_lock+0x7e/0x7e0
-   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
-   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
-   ? lock_acquire+0xa4/0x3d0
-   ? btrfs_evict_inode+0x11e/0x500
-   ? find_held_lock+0x2b/0x80
-   __btrfs_release_delayed_node.part.0+0x3f/0x330
-   btrfs_evict_inode+0x24c/0x500
-   evict+0xcf/0x1f0
-   dispose_list+0x48/0x70
-   prune_icache_sb+0x44/0x50
-   super_cache_scan+0x161/0x1e0
-   do_shrink_slab+0x178/0x3c0
-   shrink_slab+0x17c/0x290
-   shrink_node+0x2b2/0x6d0
-   balance_pgdat+0x30a/0x670
-   kswapd+0x213/0x4c0
-   ? _raw_spin_unlock_irqrestore+0x46/0x60
-   ? add_wait_queue_exclusive+0x70/0x70
-   ? balance_pgdat+0x670/0x670
-   kthread+0x138/0x160
-   ? kthread_create_worker_on_cpu+0x40/0x40
-   ret_from_fork+0x1f/0x30
-
-This is because we are holding the chunk_mutex when we call
-btrfs_alloc_device, which does a GFP_KERNEL allocation.  We don't want
-to switch that to a GFP_NOFS lock because this is the only place where
-it matters.  So instead use memalloc_nofs_save() around the allocation
-in order to avoid the lockdep splat.
-
-Reported-by: Nikolay Borisov <nborisov@suse.com>
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Tested-by: Yuan Ming <yuanmingbuaa@gmail.com>
+Tested-by: Willy Tarreau <w@1wt.eu>
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/volumes.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/video/fbdev/core/fbcon.c |  334 ---------------------------------------
+ 1 file changed, 4 insertions(+), 330 deletions(-)
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4,6 +4,7 @@
-  */
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -102,12 +102,6 @@ static int logo_lines;
+ /* logo_shown is an index to vc_cons when >= 0; otherwise follows FBCON_LOGO
+    enums.  */
+ static int logo_shown = FBCON_LOGO_CANSHOW;
+-/* Software scrollback */
+-static int fbcon_softback_size = 32768;
+-static unsigned long softback_buf, softback_curr;
+-static unsigned long softback_in;
+-static unsigned long softback_top, softback_end;
+-static int softback_lines;
+ /* console mappings */
+ static int first_fb_vc;
+ static int last_fb_vc = MAX_NR_CONSOLES - 1;
+@@ -148,8 +142,6 @@ static int margin_color;
  
- #include <linux/sched.h>
-+#include <linux/sched/mm.h>
- #include <linux/bio.h>
- #include <linux/slab.h>
- #include <linux/buffer_head.h>
-@@ -6292,8 +6293,17 @@ static struct btrfs_device *add_missing_
- 					    u64 devid, u8 *dev_uuid)
+ static const struct consw fb_con;
+ 
+-#define CM_SOFTBACK	(8)
+-
+ #define advance_row(p, delta) (unsigned short *)((unsigned long)(p) + (delta) * vc->vc_size_row)
+ 
+ static int fbcon_set_origin(struct vc_data *);
+@@ -355,18 +347,6 @@ static int get_color(struct vc_data *vc,
+ 	return color;
+ }
+ 
+-static void fbcon_update_softback(struct vc_data *vc)
+-{
+-	int l = fbcon_softback_size / vc->vc_size_row;
+-
+-	if (l > 5)
+-		softback_end = softback_buf + l * vc->vc_size_row;
+-	else
+-		/* Smaller scrollback makes no sense, and 0 would screw
+-		   the operation totally */
+-		softback_top = 0;
+-}
+-
+ static void fb_flashcursor(struct work_struct *work)
  {
- 	struct btrfs_device *device;
-+	unsigned int nofs_flag;
+ 	struct fb_info *info = container_of(work, struct fb_info, queue);
+@@ -396,7 +376,7 @@ static void fb_flashcursor(struct work_s
+ 	c = scr_readw((u16 *) vc->vc_pos);
+ 	mode = (!ops->cursor_flash || ops->cursor_state.enable) ?
+ 		CM_ERASE : CM_DRAW;
+-	ops->cursor(vc, info, mode, softback_lines, get_color(vc, info, c, 1),
++	ops->cursor(vc, info, mode, 0, get_color(vc, info, c, 1),
+ 		    get_color(vc, info, c, 0));
+ 	console_unlock();
+ }
+@@ -453,13 +433,7 @@ static int __init fb_console_setup(char
+ 		}
+ 		
+ 		if (!strncmp(options, "scrollback:", 11)) {
+-			options += 11;
+-			if (*options) {
+-				fbcon_softback_size = simple_strtoul(options, &options, 0);
+-				if (*options == 'k' || *options == 'K') {
+-					fbcon_softback_size *= 1024;
+-				}
+-			}
++			pr_warn("Ignoring scrollback size option\n");
+ 			continue;
+ 		}
+ 		
+@@ -988,31 +962,6 @@ static const char *fbcon_startup(void)
  
-+	/*
-+	 * We call this under the chunk_mutex, so we want to use NOFS for this
-+	 * allocation, however we don't want to change btrfs_alloc_device() to
-+	 * always do NOFS because we use it in a lot of other GFP_KERNEL safe
-+	 * places.
-+	 */
-+	nofs_flag = memalloc_nofs_save();
- 	device = btrfs_alloc_device(NULL, &devid, dev_uuid);
-+	memalloc_nofs_restore(nofs_flag);
- 	if (IS_ERR(device))
- 		return device;
+ 	set_blitting_type(vc, info);
+ 
+-	if (info->fix.type != FB_TYPE_TEXT) {
+-		if (fbcon_softback_size) {
+-			if (!softback_buf) {
+-				softback_buf =
+-				    (unsigned long)
+-				    kmalloc(fbcon_softback_size,
+-					    GFP_KERNEL);
+-				if (!softback_buf) {
+-					fbcon_softback_size = 0;
+-					softback_top = 0;
+-				}
+-			}
+-		} else {
+-			if (softback_buf) {
+-				kfree((void *) softback_buf);
+-				softback_buf = 0;
+-				softback_top = 0;
+-			}
+-		}
+-		if (softback_buf)
+-			softback_in = softback_top = softback_curr =
+-			    softback_buf;
+-		softback_lines = 0;
+-	}
+-
+ 	/* Setup default font */
+ 	if (!p->fontdata && !vc->vc_font.data) {
+ 		if (!fontname[0] || !(font = find_font(fontname)))
+@@ -1181,9 +1130,6 @@ static void fbcon_init(struct vc_data *v
+ 	if (logo)
+ 		fbcon_prepare_logo(vc, info, cols, rows, new_cols, new_rows);
+ 
+-	if (vc == svc && softback_buf)
+-		fbcon_update_softback(vc);
+-
+ 	if (ops->rotate_font && ops->rotate_font(info, vc)) {
+ 		ops->rotate = FB_ROTATE_UR;
+ 		set_blitting_type(vc, info);
+@@ -1346,7 +1292,6 @@ static void fbcon_cursor(struct vc_data
+ {
+ 	struct fb_info *info = registered_fb[con2fb_map[vc->vc_num]];
+ 	struct fbcon_ops *ops = info->fbcon_par;
+-	int y;
+  	int c = scr_readw((u16 *) vc->vc_pos);
+ 
+ 	ops->cur_blink_jiffies = msecs_to_jiffies(vc->vc_cur_blink_ms);
+@@ -1360,16 +1305,8 @@ static void fbcon_cursor(struct vc_data
+ 		fbcon_add_cursor_timer(info);
+ 
+ 	ops->cursor_flash = (mode == CM_ERASE) ? 0 : 1;
+-	if (mode & CM_SOFTBACK) {
+-		mode &= ~CM_SOFTBACK;
+-		y = softback_lines;
+-	} else {
+-		if (softback_lines)
+-			fbcon_set_origin(vc);
+-		y = 0;
+-	}
+ 
+-	ops->cursor(vc, info, mode, y, get_color(vc, info, c, 1),
++	ops->cursor(vc, info, mode, 0, get_color(vc, info, c, 1),
+ 		    get_color(vc, info, c, 0));
+ }
+ 
+@@ -1440,8 +1377,6 @@ static void fbcon_set_disp(struct fb_inf
+ 
+ 	if (con_is_visible(vc)) {
+ 		update_screen(vc);
+-		if (softback_buf)
+-			fbcon_update_softback(vc);
+ 	}
+ }
+ 
+@@ -1579,99 +1514,6 @@ static __inline__ void ypan_down_redraw(
+ 	scrollback_current = 0;
+ }
+ 
+-static void fbcon_redraw_softback(struct vc_data *vc, struct display *p,
+-				  long delta)
+-{
+-	int count = vc->vc_rows;
+-	unsigned short *d, *s;
+-	unsigned long n;
+-	int line = 0;
+-
+-	d = (u16 *) softback_curr;
+-	if (d == (u16 *) softback_in)
+-		d = (u16 *) vc->vc_origin;
+-	n = softback_curr + delta * vc->vc_size_row;
+-	softback_lines -= delta;
+-	if (delta < 0) {
+-		if (softback_curr < softback_top && n < softback_buf) {
+-			n += softback_end - softback_buf;
+-			if (n < softback_top) {
+-				softback_lines -=
+-				    (softback_top - n) / vc->vc_size_row;
+-				n = softback_top;
+-			}
+-		} else if (softback_curr >= softback_top
+-			   && n < softback_top) {
+-			softback_lines -=
+-			    (softback_top - n) / vc->vc_size_row;
+-			n = softback_top;
+-		}
+-	} else {
+-		if (softback_curr > softback_in && n >= softback_end) {
+-			n += softback_buf - softback_end;
+-			if (n > softback_in) {
+-				n = softback_in;
+-				softback_lines = 0;
+-			}
+-		} else if (softback_curr <= softback_in && n > softback_in) {
+-			n = softback_in;
+-			softback_lines = 0;
+-		}
+-	}
+-	if (n == softback_curr)
+-		return;
+-	softback_curr = n;
+-	s = (u16 *) softback_curr;
+-	if (s == (u16 *) softback_in)
+-		s = (u16 *) vc->vc_origin;
+-	while (count--) {
+-		unsigned short *start;
+-		unsigned short *le;
+-		unsigned short c;
+-		int x = 0;
+-		unsigned short attr = 1;
+-
+-		start = s;
+-		le = advance_row(s, 1);
+-		do {
+-			c = scr_readw(s);
+-			if (attr != (c & 0xff00)) {
+-				attr = c & 0xff00;
+-				if (s > start) {
+-					fbcon_putcs(vc, start, s - start,
+-						    line, x);
+-					x += s - start;
+-					start = s;
+-				}
+-			}
+-			if (c == scr_readw(d)) {
+-				if (s > start) {
+-					fbcon_putcs(vc, start, s - start,
+-						    line, x);
+-					x += s - start + 1;
+-					start = s + 1;
+-				} else {
+-					x++;
+-					start++;
+-				}
+-			}
+-			s++;
+-			d++;
+-		} while (s < le);
+-		if (s > start)
+-			fbcon_putcs(vc, start, s - start, line, x);
+-		line++;
+-		if (d == (u16 *) softback_end)
+-			d = (u16 *) softback_buf;
+-		if (d == (u16 *) softback_in)
+-			d = (u16 *) vc->vc_origin;
+-		if (s == (u16 *) softback_end)
+-			s = (u16 *) softback_buf;
+-		if (s == (u16 *) softback_in)
+-			s = (u16 *) vc->vc_origin;
+-	}
+-}
+-
+ static void fbcon_redraw_move(struct vc_data *vc, struct display *p,
+ 			      int line, int count, int dy)
+ {
+@@ -1811,31 +1653,6 @@ static void fbcon_redraw(struct vc_data
+ 	}
+ }
+ 
+-static inline void fbcon_softback_note(struct vc_data *vc, int t,
+-				       int count)
+-{
+-	unsigned short *p;
+-
+-	if (vc->vc_num != fg_console)
+-		return;
+-	p = (unsigned short *) (vc->vc_origin + t * vc->vc_size_row);
+-
+-	while (count) {
+-		scr_memcpyw((u16 *) softback_in, p, vc->vc_size_row);
+-		count--;
+-		p = advance_row(p, 1);
+-		softback_in += vc->vc_size_row;
+-		if (softback_in == softback_end)
+-			softback_in = softback_buf;
+-		if (softback_in == softback_top) {
+-			softback_top += vc->vc_size_row;
+-			if (softback_top == softback_end)
+-				softback_top = softback_buf;
+-		}
+-	}
+-	softback_curr = softback_in;
+-}
+-
+ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 		enum con_scroll dir, unsigned int count)
+ {
+@@ -1858,8 +1675,6 @@ static bool fbcon_scroll(struct vc_data
+ 	case SM_UP:
+ 		if (count > vc->vc_rows)	/* Maximum realistic size */
+ 			count = vc->vc_rows;
+-		if (softback_top)
+-			fbcon_softback_note(vc, t, count);
+ 		if (logo_shown >= 0)
+ 			goto redraw_up;
+ 		switch (p->scrollmode) {
+@@ -2230,14 +2045,6 @@ static int fbcon_switch(struct vc_data *
+ 	info = registered_fb[con2fb_map[vc->vc_num]];
+ 	ops = info->fbcon_par;
+ 
+-	if (softback_top) {
+-		if (softback_lines)
+-			fbcon_set_origin(vc);
+-		softback_top = softback_curr = softback_in = softback_buf;
+-		softback_lines = 0;
+-		fbcon_update_softback(vc);
+-	}
+-
+ 	if (logo_shown >= 0) {
+ 		struct vc_data *conp2 = vc_cons[logo_shown].d;
+ 
+@@ -2571,9 +2378,6 @@ static int fbcon_do_set_font(struct vc_d
+ 	int cnt;
+ 	char *old_data = NULL;
+ 
+-	if (con_is_visible(vc) && softback_lines)
+-		fbcon_set_origin(vc);
+-
+ 	resize = (w != vc->vc_font.width) || (h != vc->vc_font.height);
+ 	if (p->userfont)
+ 		old_data = vc->vc_font.data;
+@@ -2599,8 +2403,6 @@ static int fbcon_do_set_font(struct vc_d
+ 		cols /= w;
+ 		rows /= h;
+ 		vc_resize(vc, cols, rows);
+-		if (con_is_visible(vc) && softback_buf)
+-			fbcon_update_softback(vc);
+ 	} else if (con_is_visible(vc)
+ 		   && vc->vc_mode == KD_TEXT) {
+ 		fbcon_clear_margins(vc, 0);
+@@ -2759,19 +2561,7 @@ static void fbcon_set_palette(struct vc_
+ 
+ static u16 *fbcon_screen_pos(struct vc_data *vc, int offset)
+ {
+-	unsigned long p;
+-	int line;
+-	
+-	if (vc->vc_num != fg_console || !softback_lines)
+-		return (u16 *) (vc->vc_origin + offset);
+-	line = offset / vc->vc_size_row;
+-	if (line >= softback_lines)
+-		return (u16 *) (vc->vc_origin + offset -
+-				softback_lines * vc->vc_size_row);
+-	p = softback_curr + offset;
+-	if (p >= softback_end)
+-		p += softback_buf - softback_end;
+-	return (u16 *) p;
++	return (u16 *) (vc->vc_origin + offset);
+ }
+ 
+ static unsigned long fbcon_getxy(struct vc_data *vc, unsigned long pos,
+@@ -2785,22 +2575,7 @@ static unsigned long fbcon_getxy(struct
+ 
+ 		x = offset % vc->vc_cols;
+ 		y = offset / vc->vc_cols;
+-		if (vc->vc_num == fg_console)
+-			y += softback_lines;
+ 		ret = pos + (vc->vc_cols - x) * 2;
+-	} else if (vc->vc_num == fg_console && softback_lines) {
+-		unsigned long offset = pos - softback_curr;
+-
+-		if (pos < softback_curr)
+-			offset += softback_end - softback_buf;
+-		offset /= 2;
+-		x = offset % vc->vc_cols;
+-		y = offset / vc->vc_cols;
+-		ret = pos + (vc->vc_cols - x) * 2;
+-		if (ret == softback_end)
+-			ret = softback_buf;
+-		if (ret == softback_in)
+-			ret = vc->vc_origin;
+ 	} else {
+ 		/* Should not happen */
+ 		x = y = 0;
+@@ -2828,106 +2603,11 @@ static void fbcon_invert_region(struct v
+ 			a = ((a) & 0x88ff) | (((a) & 0x7000) >> 4) |
+ 			    (((a) & 0x0700) << 4);
+ 		scr_writew(a, p++);
+-		if (p == (u16 *) softback_end)
+-			p = (u16 *) softback_buf;
+-		if (p == (u16 *) softback_in)
+-			p = (u16 *) vc->vc_origin;
+ 	}
+ }
+ 
+-static void fbcon_scrolldelta(struct vc_data *vc, int lines)
+-{
+-	struct fb_info *info = registered_fb[con2fb_map[fg_console]];
+-	struct fbcon_ops *ops = info->fbcon_par;
+-	struct display *disp = &fb_display[fg_console];
+-	int offset, limit, scrollback_old;
+-
+-	if (softback_top) {
+-		if (vc->vc_num != fg_console)
+-			return;
+-		if (vc->vc_mode != KD_TEXT || !lines)
+-			return;
+-		if (logo_shown >= 0) {
+-			struct vc_data *conp2 = vc_cons[logo_shown].d;
+-
+-			if (conp2->vc_top == logo_lines
+-			    && conp2->vc_bottom == conp2->vc_rows)
+-				conp2->vc_top = 0;
+-			if (logo_shown == vc->vc_num) {
+-				unsigned long p, q;
+-				int i;
+-
+-				p = softback_in;
+-				q = vc->vc_origin +
+-				    logo_lines * vc->vc_size_row;
+-				for (i = 0; i < logo_lines; i++) {
+-					if (p == softback_top)
+-						break;
+-					if (p == softback_buf)
+-						p = softback_end;
+-					p -= vc->vc_size_row;
+-					q -= vc->vc_size_row;
+-					scr_memcpyw((u16 *) q, (u16 *) p,
+-						    vc->vc_size_row);
+-				}
+-				softback_in = softback_curr = p;
+-				update_region(vc, vc->vc_origin,
+-					      logo_lines * vc->vc_cols);
+-			}
+-			logo_shown = FBCON_LOGO_CANSHOW;
+-		}
+-		fbcon_cursor(vc, CM_ERASE | CM_SOFTBACK);
+-		fbcon_redraw_softback(vc, disp, lines);
+-		fbcon_cursor(vc, CM_DRAW | CM_SOFTBACK);
+-		return;
+-	}
+-
+-	if (!scrollback_phys_max)
+-		return;
+-
+-	scrollback_old = scrollback_current;
+-	scrollback_current -= lines;
+-	if (scrollback_current < 0)
+-		scrollback_current = 0;
+-	else if (scrollback_current > scrollback_max)
+-		scrollback_current = scrollback_max;
+-	if (scrollback_current == scrollback_old)
+-		return;
+-
+-	if (fbcon_is_inactive(vc, info))
+-		return;
+-
+-	fbcon_cursor(vc, CM_ERASE);
+-
+-	offset = disp->yscroll - scrollback_current;
+-	limit = disp->vrows;
+-	switch (disp->scrollmode) {
+-	case SCROLL_WRAP_MOVE:
+-		info->var.vmode |= FB_VMODE_YWRAP;
+-		break;
+-	case SCROLL_PAN_MOVE:
+-	case SCROLL_PAN_REDRAW:
+-		limit -= vc->vc_rows;
+-		info->var.vmode &= ~FB_VMODE_YWRAP;
+-		break;
+-	}
+-	if (offset < 0)
+-		offset += limit;
+-	else if (offset >= limit)
+-		offset -= limit;
+-
+-	ops->var.xoffset = 0;
+-	ops->var.yoffset = offset * vc->vc_font.height;
+-	ops->update_start(info);
+-
+-	if (!scrollback_current)
+-		fbcon_cursor(vc, CM_DRAW);
+-}
+-
+ static int fbcon_set_origin(struct vc_data *vc)
+ {
+-	if (softback_lines)
+-		fbcon_scrolldelta(vc, softback_lines);
+ 	return 0;
+ }
+ 
+@@ -2991,8 +2671,6 @@ static void fbcon_modechanged(struct fb_
+ 
+ 		fbcon_set_palette(vc, color_table);
+ 		update_screen(vc);
+-		if (softback_buf)
+-			fbcon_update_softback(vc);
+ 	}
+ }
+ 
+@@ -3434,7 +3112,6 @@ static const struct consw fb_con = {
+ 	.con_font_default	= fbcon_set_def_font,
+ 	.con_font_copy 		= fbcon_copy_font,
+ 	.con_set_palette 	= fbcon_set_palette,
+-	.con_scrolldelta 	= fbcon_scrolldelta,
+ 	.con_set_origin 	= fbcon_set_origin,
+ 	.con_invert_region 	= fbcon_invert_region,
+ 	.con_screen_pos 	= fbcon_screen_pos,
+@@ -3691,9 +3368,6 @@ static void fbcon_exit(void)
+ 	}
+ #endif
+ 
+-	kfree((void *)softback_buf);
+-	softback_buf = 0UL;
+-
+ 	for_each_registered_fb(i) {
+ 		int pending = 0;
  
 
 
