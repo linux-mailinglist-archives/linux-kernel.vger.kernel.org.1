@@ -2,134 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67A826A461
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 13:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AA526A4D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgIOLsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 07:48:15 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:49868 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgIOLes (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:34:48 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200915113427euoutp02fe53cd8f75f64bcbdd58f4dbcf97861b~08dWMeAcN3049530495euoutp02S
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:34:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200915113427euoutp02fe53cd8f75f64bcbdd58f4dbcf97861b~08dWMeAcN3049530495euoutp02S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600169667;
-        bh=4J9mAIGkWCA1iUY60Uc0okRdlJsBdXs932NxjIHX2UM=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=AX0wx8x7qNAa7IH7Ec4T+5d5NsC4REGT4JvlmlvK1IOvfk6gR2sNfgXk7kUpm3zpI
-         DqwtU0KlkQ+eHldWi4tZ6n9vVYUWiOP7ZSAjq8TNMxGBcmQ/+b4dME5vdkJNKT80u0
-         EsLRyPb5XsEgVc8UVlQ00sJNhZzC1eoKRlFvtfgc=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200915113426eucas1p2fa91a99c80c62880366254b0f622ca53~08dV8vQnu1150611506eucas1p2h;
-        Tue, 15 Sep 2020 11:34:26 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 34.3C.05997.2C6A06F5; Tue, 15
-        Sep 2020 12:34:26 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200915113426eucas1p1761f07b2bd25b5f31a6840b2b5046838~08dVXd_RU0665806658eucas1p1X;
-        Tue, 15 Sep 2020 11:34:26 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200915113426eusmtrp209aef5c48bc076dedf5081df36b4b384~08dVQ_iPl1124011240eusmtrp2o;
-        Tue, 15 Sep 2020 11:34:26 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-7c-5f60a6c26788
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id D8.4D.06314.2C6A06F5; Tue, 15
-        Sep 2020 12:34:26 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200915113425eusmtip2c0eec9c762bf9fd235a50a708adb1bd3~08dUoWe4d2553525535eusmtip2Y;
-        Tue, 15 Sep 2020 11:34:25 +0000 (GMT)
-Subject: Re: [PATCH v3] clk: samsung: Prevent potential endless loop in the
- PLL set_rate ops
-To:     Chanwoo Choi <cw00.choi@samsung.com>, tomasz.figa@gmail.com
-Cc:     linux-clk@vger.kernel.org, sboyd@kernel.org,
-        mturquette@baylibre.com, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, b.zolnierkie@samsung.com,
-        m.szyprowski@samsung.com
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <c3c40d62-f5bb-6b13-0af9-ce774718eaa6@samsung.com>
-Date:   Tue, 15 Sep 2020 13:34:24 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        id S1726495AbgIOMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:15:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:34372 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726189AbgIOMPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 08:15:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 221E31FB;
+        Tue, 15 Sep 2020 04:20:57 -0700 (PDT)
+Received: from [10.57.48.219] (unknown [10.57.48.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C150D3F718;
+        Tue, 15 Sep 2020 04:20:53 -0700 (PDT)
+Subject: Re: [PATCH v11 15/24] coresight: allow replicator driver to be built
+ as module
+To:     tingwei@codeaurora.org, mathieu.poirier@linaro.org,
+        alexander.shishkin@linux.intel.com, mike.leach@linaro.org
+Cc:     kim.phillips@arm.com, gregkh@linuxfoundation.org,
+        leo.yan@linaro.org, rdunlap@infradead.org, linux@armlinux.org.uk,
+        ykaukab@suse.de, tsoni@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, jinlmao@codeaurora.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20200915104116.16789-1-tingwei@codeaurora.org>
+ <20200915104116.16789-16-tingwei@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <ce175d6c-f3b3-0393-ecaa-b8f72c5eef12@arm.com>
+Date:   Tue, 15 Sep 2020 12:25:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-In-Reply-To: <28cd3eeb-816d-b369-11a9-16cd2c1af87c@samsung.com>
+In-Reply-To: <20200915104116.16789-16-tingwei@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMKsWRmVeSWpSXmKPExsWy7djP87qHliXEG9w+pGOxccZ6VovrX56z
-        WnzsucdqcXnXHDaLGef3MVmsPXKX3eLiKVeLf9c2slis2vWH0YHT4/2NVnaPnbPusntsWtXJ
-        5tG3ZRWjx+dNcgGsUVw2Kak5mWWpRfp2CVwZh/fMYiq4wVnx+oFLA+MH9i5GTg4JAROJTUcu
-        snUxcnEICaxglNhz5gALSEJI4AujxKTpwRCJz4wSb3dNhOvYc+A5E0RiOaPE5a3rmCGcj4wS
-        79YeYAWpEhaIk1g+Yy0TiC0iYC+x4dh/VpAiZoGDjBLTWnrBEmwChhK9R/sYQWxeATuJ/p3f
-        mUFsFgFViamv/4HdIQo06NipRywQNYISJ2c+AbM5gYY+fj6TDcRmFhCXuPVkPhOELS+x/e0c
-        sIskBA6xSzyb1s8KcbeLxIEle5kgbGGJV8e3QP0jI/F/53wmiIZmRome3bfZIZwJjBL3jy9g
-        hKiylrhz7hfQOg6gFZoS63fpg5gSAo4SX58yQph8EjfeCkLcwCcxadt0Zogwr0RHmxDEDBWJ
-        36umQ10gJdH95D/LBEalWUg+m4Xkm1lIvpmFsHYBI8sqRvHU0uLc9NRio7zUcr3ixNzi0rx0
-        veT83E2MwKR0+t/xLzsYd/1JOsQowMGoxMObUB4fL8SaWFZcmXuIUYKDWUmE1+ns6Tgh3pTE
-        yqrUovz4otKc1OJDjNIcLErivMaLXsYKCaQnlqRmp6YWpBbBZJk4OKUaGHWf6CgsiTlRxC3b
-        utC4zLlOdq7vcmbnnFoXq40zkzOFIsTFWMV7nTmPvpXPvfC5mLFn6Vr22hnPG9ZMELa8b/7I
-        bh7HyvuiTn/Obt5Xv/Fj5dkXT+pfLM669tW6Z0lm8j2PlX+YOnpX7Fq+5G/wzvlJxfsOHdjD
-        b79rT5VFgmVgWEH4EfEbDEosxRmJhlrMRcWJAO4zWs9GAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsVy+t/xe7qHliXEGzw/wmKxccZ6VovrX56z
-        WnzsucdqcXnXHDaLGef3MVmsPXKX3eLiKVeLf9c2slis2vWH0YHT4/2NVnaPnbPusntsWtXJ
-        5tG3ZRWjx+dNcgGsUXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5
-        mWWpRfp2CXoZh/fMYiq4wVnx+oFLA+MH9i5GTg4JAROJPQeeM3UxcnEICSxllJh66AaQwwGU
-        kJKY36IEUSMs8edaFxtEzXtGif/rPzOBJIQF4iSWz1gLZosI2EtsOPafFaSIWeAgo8Sy02eZ
-        IToOM0ocf9TIDFLFJmAo0Xu0jxHE5hWwk+jf+R0sziKgKjH19T8WEFsUaOqZnhdsEDWCEidn
-        PgGLcwJtePx8JlicWUBd4s+8S8wQtrjErSfzmSBseYntb+cwT2AUmoWkfRaSlllIWmYhaVnA
-        yLKKUSS1tDg3PbfYUK84Mbe4NC9dLzk/dxMjMA63Hfu5eQfjpY3BhxgFOBiVeHgTyuPjhVgT
-        y4orcw8xSnAwK4nwOp09HSfEm5JYWZValB9fVJqTWnyI0RTouYnMUqLJ+cAUkVcSb2hqaG5h
-        aWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgTHIMNKe9cyC+Xf1u+6kly5yUlq0
-        vv9C5gmdAF+JhLNfjCbaLLF48+PDsa8eWlMY/tuqL560633GorSuK/ZT5hx+89naOSiytj16
-        xxHPXqeNNwvOp74rzNe4sXHX99ApS8LEPq7JVKusFJj8ZjO/gEOvcsrSdYzlMsx9Pyo2PrU3
-        WMG+2VO9jk2JpTgj0VCLuag4EQDkFb8e2QIAAA==
-X-CMS-MailID: 20200915113426eucas1p1761f07b2bd25b5f31a6840b2b5046838
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200813095520eucas1p209432599420d62e0e54a5545334c329c
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200813095520eucas1p209432599420d62e0e54a5545334c329c
-References: <CGME20200813095520eucas1p209432599420d62e0e54a5545334c329c@eucas1p2.samsung.com>
-        <20200813095508.7563-1-s.nawrocki@samsung.com>
-        <28cd3eeb-816d-b369-11a9-16cd2c1af87c@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.08.2020 02:46, Chanwoo Choi wrote:
-> On 8/13/20 6:55 PM, Sylwester Nawrocki wrote:
->> In the .set_rate callback for some PLLs there is a loop polling state
->> of the PLL lock bit and it may become an endless loop when something
->> goes wrong with the PLL. For some PLLs there is already code for polling
->> with a timeout but it uses the ktime API, which doesn't work in some
->> conditions when the set_rate op is called, in particular during
->> initialization of the clk provider before the clocksource initialization
->> has completed. Hence the ktime API cannot be used to reliably detect
->> the PLL locking timeout.
->>
->> This patch adds a common helper function for busy waiting on the PLL lock
->> bit with timeout detection.
-
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->> ---
->> Changes for v3:
->>  - use busy-loop with udelay() instead of ktime API
->> Changes for v2:
->>  - use common readl_relaxed_poll_timeout_atomic() macro
->> ---
->>  drivers/clk/samsung/clk-pll.c | 94 ++++++++++++++++---------------------------
->>  1 file changed, 34 insertions(+), 60 deletions(-)
-
-> Thanks.
+On 09/15/2020 11:41 AM, Tingwei Zhang wrote:
+> From: Kim Phillips <kim.phillips@arm.com>
 > 
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
- 
-Patch applied, thank you for your comments.
+> Allow to build coresight-replicator as modules, for ease of development.
+> 
+> - Kconfig becomes a tristate, to allow =m
+> - combine static and dynamic replicator init into single
+>    module_init/exit call
+> - add replicator_remove functions, for module unload
+> - add a MODULE_DEVICE_TABLE for autoloading on boot
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Co-developed-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+> Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+> Signed-off-by: Kim Phillips <kim.phillips@arm.com>
+> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> Tested-by: Mike Leach <mike.leach@linaro.org>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
