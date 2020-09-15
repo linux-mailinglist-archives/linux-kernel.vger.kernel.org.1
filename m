@@ -2,142 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5FA26AEC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0C426AECA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 22:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgIOUlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 16:41:20 -0400
-Received: from mail-dm6nam12on2072.outbound.protection.outlook.com ([40.107.243.72]:31384
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727916AbgIOUh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 16:37:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YjNQnwotzlchT8zNZxigSClDXhnqRW1llUYWEExrDV92vi/LGGb1s9ziEVP/gtAK3Oj5qk7rtc60S3Dk8cdsci3avJy6vewmEDp73BQLKeTA+dxsWTDkbnt2+IPTFRILNJPkEDmWNIGwWObZV8+gjvW1L5rdZFkqx4k+ukzYLZIoR5vjZMxP+mujgzB8XmUH6Sojcbjio6LqUkEBfm/rUWf0BGJdwHlax8CrJ6JG3KqFGtBp5Ut2JKN909IBVao9VrrnXKsam94+1taYL8WDBOeAqFLdPoUl/CC4GWIxev/Z5oBT4bcYCdOhdWWlnyJREMjcqpvYx1BB0lLn7qxxdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ssN8tz6VbdtX43N4iyuWtD8BcHM9A97bVtk9Q61hXzE=;
- b=oAVoSGiSxJ15NTJY32UVpNACX6QGIyC8Gmd8EWk+yMfqhUVj99oF9SOsubHEoO+LoCx2eo2MbUA8NtJwjhqVOTmFkmR1AmWrFqNcHwIzGWVHRFJ5RhapB14qj+L6+PCgbvhNyG4/zjwjaWMsSZEyzbZVFIMv1y+/9krLh3tsR/3AG7E2q8XqVBcngksVqGHGtAI+KeXfxWtc9X1m7A6fCBWUXoERE7thkqQj/iK4V4C9gFaMzcbTHAt6e1jhOzRCkp96N5jHD+iUB6QLx5wFF2ZOuUM7EQiPyXzQOSTzfR22RhM5vctjZfThdN7CYm5huFs1/J6szub9oG+lxGQcaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ssN8tz6VbdtX43N4iyuWtD8BcHM9A97bVtk9Q61hXzE=;
- b=hgw+xBF3UjOZ/vfGyZuMkujHipjeCAZYynd3rJAVKDmK8VAls/ek7bPQY/Ufm7Vz4P+B8RekG0hRFyNQSBAE9KbQaIHKterIQSk8i0kJS0UX9kDb0w9QtV6xXZhD42er+DRgNEF3Iioe6fCwFvYDosHHOeLYGdYiHIFvZSq/UjU=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
- by CY4PR12MB1542.namprd12.prod.outlook.com (2603:10b6:910:8::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Tue, 15 Sep
- 2020 20:37:23 +0000
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::989b:b1b2:464c:443]) by CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::989b:b1b2:464c:443%10]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 20:37:23 +0000
-Subject: Re: [RFC PATCH 25/35] KVM: x86: Update __get_sregs() / __set_sregs()
- to support SEV-ES
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <e08f56496a52a3a974310fbe05bb19100fd6c1d8.1600114548.git.thomas.lendacky@amd.com>
- <20200914213708.GC7192@sjchrist-ice>
- <7fa6b074-6a62-3f8e-f047-c63851ebf7c9@amd.com>
- <20200915163342.GC8420@sjchrist-ice>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <6486b1f3-35e2-bcb0-9860-1df56017c85f@amd.com>
-Date:   Tue, 15 Sep 2020 15:37:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200915163342.GC8420@sjchrist-ice>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM5PR07CA0140.namprd07.prod.outlook.com
- (2603:10b6:3:13e::30) To CY4PR12MB1352.namprd12.prod.outlook.com
- (2603:10b6:903:3a::13)
+        id S1728045AbgIOUju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 16:39:50 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:39786 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727992AbgIOUhj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 16:37:39 -0400
+Received: by mail-io1-f66.google.com with SMTP id b6so5665456iof.6;
+        Tue, 15 Sep 2020 13:37:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+/W4vuR4uai/c6pO6yPiY6jvboipJQaCmF2xqY/N7/Q=;
+        b=fbKFoUynFmTc+snmiVNX5aM6CdrOEUmhRcFqgbRxjONfKBoT1ayrxO9v42LIdSNH+N
+         HE2jNSda6e1IUT6Xk8iPmY0tmKPSr9q1xD3d0QESbv4HOAI7utSaMqB2ZRKlMJ+801qL
+         dakRNEWIDi5ykoY6EglUkx8ITsU2f3NRCqXVEX33THug9Q0h2+/0GRMQzBCORXEfmz/C
+         9HxKEmCajpIz1cGECIwXN+Q9sswmuL2hPvjILNutQ6EW0X4RvrH1PLk3mGdqlyde9DuU
+         CZIBVCOK8rrRnixpNGuAvM2dkn6QE+Z3fZgBpJQF9xRTyJ+LlJ6WMDRiB8UZbzgizfZF
+         r/6g==
+X-Gm-Message-State: AOAM533ft2skHC7fnR0NF7Y6pCBEWdvSTp9OgmYbVseeZPlkeu94QOHJ
+        ZvibJ2OHiDe2MHr04+kGHQ==
+X-Google-Smtp-Source: ABdhPJz6SJS7WXlrZu4a7Q4b3j0nnvl9jKmUXC+BiWVrq+40lbcTgAcJPKU4QadkJ6sx7KwlyRYUJg==
+X-Received: by 2002:a05:6602:2e81:: with SMTP id m1mr16713867iow.64.1600202258146;
+        Tue, 15 Sep 2020 13:37:38 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id o15sm9304141ilc.41.2020.09.15.13.37.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 13:37:37 -0700 (PDT)
+Received: (nullmailer pid 2469053 invoked by uid 1000);
+        Tue, 15 Sep 2020 20:37:35 -0000
+Date:   Tue, 15 Sep 2020 14:37:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alexander Dahl <post@lespocky.de>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Alexander Dahl <ada@thorsis.com>
+Subject: Re: [PATCH v4 3/3] dt-bindings: leds: Convert pwm to yaml
+Message-ID: <20200915203735.GB2453633@bogus>
+References: <20200911154004.28354-1-post@lespocky.de>
+ <20200911154004.28354-4-post@lespocky.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by DM5PR07CA0140.namprd07.prod.outlook.com (2603:10b6:3:13e::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Tue, 15 Sep 2020 20:37:22 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6992c2e1-b516-4b77-42bc-08d859b72668
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1542:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1542D869EB04F0858ED0FCA1EC200@CY4PR12MB1542.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KIvoTT/QqhqEl1+UQ3EnsUJaN9VQNoMRIwbwAfDqxJcnwJ3XQXc6Ahwm8Ns6/OV7dknRnbIQz+MwC3u9VD466nGk3WKG1xZ/6M4lwpRLzkZTyNz/mUFs0GblS0SjdfwnrWKwRhBiymtM/4vb+NGRzeZ0qbyaHs3Ao/XbvAjrji1qFGX8KA/N2WZNBx3Eq+xRYrrgDv+ozzN+yJ8rFyA16zCjAamKSGVtggsQXwDFFDX1s09SzWmUYiduLB2tNa9FtiuCljWum4FPMjtBcEDYVJrRvvruJm9FpAkiaMrEos9Fg15ygIE023V8Tg84nAkKePAoyfD8ML2oHyorhcYU92erkN6FIwuPBe7SXDNv7iISJKyhFL+2mrXqaVSyOJ8Tz5JZrhQeLusVkQmOi4Ejf8+RdHQH84u9GDCV0QDsZ/UdUv9XJdSm26MLflV+jfoN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(366004)(8936002)(6916009)(16526019)(83380400001)(54906003)(2906002)(26005)(186003)(956004)(36756003)(31686004)(7416002)(2616005)(52116002)(5660300002)(66946007)(478600001)(6486002)(316002)(53546011)(66556008)(15650500001)(16576012)(31696002)(86362001)(66476007)(4326008)(8676002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: G/U47ZXThqqSgL8RLNa7zLP0Vsx+Uon/ySO8vYqkCWZYdiiutRpa5wyZ2/xzCeRIyk0vxL+gMBTSftiJQXdBNZ2fxydaDiIoQLT8umMdhw3eVd/wk9xn8YkK573eKJZJcqnD2xtNs1pTJnruCHKv8H7rj+odujTPTyPJ4tl4eN+iDP7QKN97XyU3OY8sbJ4cwNTCh09W6ekj3j+SQPOSu5iZK7Dbv15kpIAF83NB7fYTUJ84WrcwHS1LLPzjBgN6G7zPY4bCWOxzHOO1FI03pIXhP2Nv+TfAFEhqRAoxHXCLsSktvwNbjN6TbzGQnoy0oxeaZ37VnQhCq61S4MjkCzCgsrGFlw1r5mEg/h4+OLN/wV43USn69oZxXIE8aEVAkZ291TVsZGUnhA6dUXBz9XyTAEg0H2Oh+yZazZk9Mv7kmiJ6Wf0wzZtKcbPk8bhgY8MPwPtSXT+VCSzl+NX5DfgeiZTBJnWrOd2W/3enBUtq+W5LXk10MqrDSjnPsC51XfOTq4O7D63ivaPy87QABq/t9b5wGmqPGBDbm7AX2LPwPe1ZOb6t3/rpkSXt/54Q9FrpTeLJCzEBImk1YMrwxdTiXdXo/pw3E6GTjxNuElUDj2tKsilVdrLbBmRbvt4Vqb6pPZYlxPgcqBGOYHw9HQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6992c2e1-b516-4b77-42bc-08d859b72668
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 20:37:23.3038
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6JK/H4g5xdqvw1inLby+IjPitvpLCCIwOMs52zvX36euVtbxV4G2vDDCpX0/ZHp0UhxxmADVC6sM3PCxl6+DPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1542
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911154004.28354-4-post@lespocky.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 11:33 AM, Sean Christopherson wrote:
-> On Tue, Sep 15, 2020 at 09:19:46AM -0500, Tom Lendacky wrote:
->> On 9/14/20 4:37 PM, Sean Christopherson wrote:
->>> On Mon, Sep 14, 2020 at 03:15:39PM -0500, Tom Lendacky wrote:
->>>> From: Tom Lendacky <thomas.lendacky@amd.com>
->>>>
->>>> Since many of the registers used by the SEV-ES are encrypted and cannot
->>>> be read or written, adjust the __get_sregs() / __set_sregs() to only get
->>>> or set the registers being tracked (efer, cr0, cr4 and cr8) once the VMSA
->>>> is encrypted.
->>>
->>> Is there an actual use case for writing said registers after the VMSA is
->>> encrypted?  Assuming there's a separate "debug mode" and live migration has
->>> special logic, can KVM simply reject the ioctl() if guest state is protected?
->>
->> Yeah, I originally had it that way but one of the folks looking at live
->> migration for SEV-ES thought it would be easier given the way Qemu does
->> things. But I think it's easy enough to batch the tracking registers into
->> the VMSA state that is being transferred during live migration. Let me
->> check that out and likely the SET ioctl() could just skip all the regs.
+On Fri, Sep 11, 2020 at 05:40:04PM +0200, Alexander Dahl wrote:
+> The example was adapted slightly to make use of the 'function' and
+> 'color' properties.  License discussed with the original author.
 > 
-> Hmm, that would be ideal.  How are the tracked registers validated when they're
-> loaded at the destination?  It seems odd/dangerous that KVM would have full
-> control over efer/cr0/cr4/cr8.  I.e. why is KVM even responsibile for migrating
-> that information, e.g. as opposed to migrating an opaque blob that contains
-> encrypted versions of those registers?
+> Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
 > 
+> Notes:
+>     v3 -> v4:
+>       * added Cc to original author of the binding
+>     
+>     v2 -> v3:
+>       * changed license identifier to recommended one
+>       * added Acked-by
+>     
+>     v2:
+>       * added this patch to series (Suggested-by: Jacek Anaszewski)
+> 
+>  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -----------
+>  .../devicetree/bindings/leds/leds-pwm.yaml    | 85 +++++++++++++++++++
+>  2 files changed, 85 insertions(+), 50 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.txt
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.txt b/Documentation/devicetree/bindings/leds/leds-pwm.txt
+> deleted file mode 100644
+> index 6c6583c35f2f..000000000000
+> --- a/Documentation/devicetree/bindings/leds/leds-pwm.txt
+> +++ /dev/null
+> @@ -1,50 +0,0 @@
+> -LED connected to PWM
+> -
+> -Required properties:
+> -- compatible : should be "pwm-leds".
+> -
+> -Each LED is represented as a sub-node of the pwm-leds device.  Each
+> -node's name represents the name of the corresponding LED.
+> -
+> -LED sub-node properties:
+> -- pwms : PWM property to point to the PWM device (phandle)/port (id) and to
+> -  specify the period time to be used: <&phandle id period_ns>;
+> -- pwm-names : (optional) Name to be used by the PWM subsystem for the PWM device
+> -  For the pwms and pwm-names property please refer to:
+> -  Documentation/devicetree/bindings/pwm/pwm.txt
+> -- max-brightness : Maximum brightness possible for the LED
+> -- active-low : (optional) For PWMs where the LED is wired to supply
+> -  rather than ground.
+> -- label :  (optional)
+> -  see Documentation/devicetree/bindings/leds/common.txt
+> -- linux,default-trigger :  (optional)
+> -  see Documentation/devicetree/bindings/leds/common.txt
+> -
+> -Example:
+> -
+> -twl_pwm: pwm {
+> -	/* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
+> -	compatible = "ti,twl6030-pwm";
+> -	#pwm-cells = <2>;
+> -};
+> -
+> -twl_pwmled: pwmled {
+> -	/* provides one PWM (id 0 for Charing indicator LED) */
+> -	compatible = "ti,twl6030-pwmled";
+> -	#pwm-cells = <2>;
+> -};
+> -
+> -pwmleds {
+> -	compatible = "pwm-leds";
+> -	kpad {
+> -		label = "omap4::keypad";
+> -		pwms = <&twl_pwm 0 7812500>;
+> -		max-brightness = <127>;
+> -	};
+> -
+> -	charging {
+> -		label = "omap4:green:chrg";
+> -		pwms = <&twl_pwmled 0 7812500>;
+> -		max-brightness = <255>;
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> new file mode 100644
+> index 000000000000..c74867492424
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> @@ -0,0 +1,85 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-pwm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LEDs connected to PWM
+> +
+> +maintainers:
+> +  - Pavel Machek <pavel@ucw.cz>
+> +
+> +description:
+> +  Each LED is represented as a sub-node of the pwm-leds device.  Each
+> +  node's name represents the name of the corresponding LED.
+> +
+> +properties:
+> +  compatible:
+> +    const: pwm-leds
+> +
+> +patternProperties:
+> +  "^pwm-led-([0-9a-f])$":
 
-KVM doesn't have control of them. They are part of the guest's encrypted
-state and that is what the guest uses. KVM can't alter the value that the
-guest is using for them once the VMSA is encrypted. However, KVM makes
-some decisions based on the values it thinks it knows.  For example, early
-on I remember the async PF support failing because the CR0 that KVM
-thought the guest had didn't have the PE bit set, even though the guest
-was in protected mode. So KVM didn't include the error code in the
-exception it injected (is_protmode() was false) and things failed. Without
-syncing these values after live migration, things also fail (probably for
-the same reason). So the idea is to just keep KVM apprised of the values
-that the guest has.
+'^led-([0-9a-f])' would be my preference. A bit more on that below.
 
-Thanks,
-Tom
+What about a single child case?
+
+> +    type: object
+> +
+> +    $ref: common.yaml#
+> +
+> +    properties:
+> +      pwms:
+> +        description:
+> +          "PWM property to point to the PWM device (phandle)/port (id)
+> +          and to specify the period time to be used:
+> +          <&phandle id period_ns>;"
+
+No need to redefine a common property.
+
+What is needed is how many pwms? I'd assume 1 only: 'maxItems: 1'
+
+> +
+> +      pwm-names:
+> +        description:
+> +          "Name to be used by the PWM subsystem for the PWM device For
+> +          the pwms and pwm-names property please refer to:
+> +          Documentation/devicetree/bindings/pwm/pwm.txt"
+
+Same here.
+
+> +
+> +      max-brightness:
+> +        description:
+> +          Maximum brightness possible for the LED
+
+Needs a type $ref.
+
+> +
+> +      active-low:
+> +        description:
+> +          For PWMs where the LED is wired to supply rather than ground.
+
+type: boolean
+
+> +
+> +    required:
+> +      - pwms
+> +      - max-brightness
+
+additionalProperties: false
+
+That will cause errors if child node names were not consistent (no one 
+checked, so they won't be). We could just allow anything, but I prefer 
+to move things to be consistent yet try to capture any existing pattern.
+
+> +
+> +examples:
+> +  - |
+> +
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    twl_pwm: pwm {
+> +        /* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
+> +        compatible = "ti,twl6030-pwm";
+> +        #pwm-cells = <2>;
+> +    };
+> +
+> +    twl_pwmled: pwmled {
+> +        /* provides one PWM (id 0 for Charing indicator LED) */
+> +        compatible = "ti,twl6030-pwmled";
+> +        #pwm-cells = <2>;
+> +    };
+> +
+> +    pwm_leds {
+> +        compatible = "pwm-leds";
+> +
+> +        pwm-led-1 {
+> +            label = "omap4::keypad";
+> +            pwms = <&twl_pwm 0 7812500>;
+> +            max-brightness = <127>;
+> +        };
+> +
+> +        pwm-led-2 {
+> +            color = <LED_COLOR_ID_GREEN>;
+> +            function = LED_FUNCTION_CHARGING;
+> +            pwms = <&twl_pwmled 0 7812500>;
+> +            max-brightness = <255>;
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.20.1
+> 
