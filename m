@@ -2,88 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F252A269CD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE08269CD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 06:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgIOD7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:59:48 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:33030 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726034AbgIOD7r (ORCPT
+        id S1726091AbgIOED1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 00:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726034AbgIOEDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:59:47 -0400
-Received: by mail-pj1-f67.google.com with SMTP id md22so6055850pjb.0;
-        Mon, 14 Sep 2020 20:59:46 -0700 (PDT)
+        Tue, 15 Sep 2020 00:03:22 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95F0C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 21:03:21 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l9so1968409wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 21:03:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IdWyBJyS0oKhGVRiD+UrbYCxAhuM82RyBR7Rd+xcd8M=;
+        b=hahHnwMl5tDjgeiwqIfxSVa4NhrpgF88zGK0AneZ4a/mNpNIMZoHBSsgM8RxI/Jff+
+         3dRX6e9D6llaSDJMzaSosHZQpVXS465byBBtGRAMUMhCDUZ04SdRcw8XduyQHPPXl5i1
+         okEv0pQdTPYWTNOwjthyGUWrildF0hMjodSvcSEzms71NtuuJR7JpUuiUbwJSm9vsZkW
+         /xDeq1xv/zfbKny0yIgrpONvzzeeKxfvqQ+O55x5Zc1D2r6vSBh+Jn2f23DXITEQgSWm
+         kBZfJm4LXHY9rnyBjHOSNKVvV58Tn0fO9k/zegWigCO07UZKFe5XucnNNq3iejBOBAUf
+         XosQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Kd64SOC74tP/NkN9zKlLUKoWiM2w+CddqcIQVYSvUh0=;
-        b=ryKa+9ddDaTpAMk8boyYnZORGhV5E609RDxE9zllYWKS0Lpx+weyEoNMvB+xFoPUOV
-         Y7PYbb+gTbg6+58AMJ3qnbbzbBB6OZhl9cZEm7sco9qfhofO2TdMsijPDvJTTMUYq5jQ
-         s99yyBVle3DeVsypeLLcbGh0VxGTtr7ScveRK5aIt9LIaL/tsuq0U2Rr/vkZ+/OWGfqV
-         A/p028FbdDGIVfqOZGs9CFEU6SSeCveoGRn8naf+JKGYTI5RNlbDkvXoDXk3MWTCLvjZ
-         9wxwdOqS1mdnJMiPESTGxccf2QfQcGvSC8UxaUyHwc6tAbOKyWb3EcrMsxYnzPsxmUK9
-         +8qg==
-X-Gm-Message-State: AOAM533+66b98Mpt0zfeHrXAlrlROxEQtDCpfIQmqkqpRE8Qe/qXmRQP
-        WtqozWFZG+wm6jEJ5x+vL+k=
-X-Google-Smtp-Source: ABdhPJwwE/ozFjpRoQc7ES3d5BMTmNkZjpvLc2mEFgFTgXfcyxW5Xg88SPtTytGT5svrcINUFtkltQ==
-X-Received: by 2002:a17:90a:62c4:: with SMTP id k4mr2323816pjs.174.1600142386607;
-        Mon, 14 Sep 2020 20:59:46 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id z18sm11668396pfn.186.2020.09.14.20.59.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 20:59:46 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 20:59:45 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, masahiroy@kernel.org,
-        trix@redhat.com, lgoncalv@redhat.com
-Subject: Re: [PATCH v2 3/4] fpga: dfl: fix the comments of type & feature_id
- fields
-Message-ID: <20200915035945.GC2217@epycbox.lan>
-References: <1600140473-12351-1-git-send-email-yilun.xu@intel.com>
- <1600140473-12351-4-git-send-email-yilun.xu@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IdWyBJyS0oKhGVRiD+UrbYCxAhuM82RyBR7Rd+xcd8M=;
+        b=N9TfsJehAlSZ5ZI6KJ0pFrWY9JU6eMbwA2lRSe6zNqVodW03bGQd/VDJQ0zrRSHqRY
+         bqlzeEcPveYM7ArNCGMzCBSGM76ctofR8VrQ5ylEM69SLcUjhtJEOzVchjhmhBtBxgh1
+         JzViPjV+pqs0wqh2+m5Oxy7BKU6bZZN9OmHZsj7xMGldI3bJAElRsjCXF11lCyPXtHQ2
+         PIN+jTOTWzm5dHMF4/8jtv+0O2yvOtNk3KxH7erYdmAGdfj0IDtjqE/nqVnRY+fkwoFT
+         9cxjttEN0vZat4jN2jwNNRW877qz2eW/LFRas0n/e/ZP3upnlwtljaRH2bnfbjskJf6S
+         CdvQ==
+X-Gm-Message-State: AOAM531IxKA37VMkIxc1pipGmGPfbiR5TkCEBuHQ7/2f9kgPy8N4Z3iE
+        2m36MH9s8T3BK+cLvbzZgNZPmIl0FXSc7vOe3WjT2w==
+X-Google-Smtp-Source: ABdhPJzyLV2ghRAL4Ywx8K4f2sh2aLPSnD+wTg8+mayOuSlHjdJEpRnXn0msMlnpsDLB9KgEDtlahtuCGvZNnP/Qoc0=
+X-Received: by 2002:a7b:c2aa:: with SMTP id c10mr2445837wmk.86.1600142600065;
+ Mon, 14 Sep 2020 21:03:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600140473-12351-4-git-send-email-yilun.xu@intel.com>
+References: <20200914170055.45a02b55@canb.auug.org.au>
+In-Reply-To: <20200914170055.45a02b55@canb.auug.org.au>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 15 Sep 2020 12:03:08 +0800
+Message-ID: <CABVgOSko2FDCgEhCBD4Nm5ExEa9vLQrRiHMh+89nPYjqGjegFw@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the akpm-current tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        KUnit Development <kunit-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:27:52AM +0800, Xu Yilun wrote:
-> The description of feature_id in struct dfl_device is not accurate. In
-> DFL specification the feature_id is the 12 bits field. The description
-> in struct dfl_device_id is more clear so we make them aligned. We also
-> made the similar fix for the type field.
-> 
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> ---
->  drivers/fpga/dfl.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> index 3c69596..d5e050a 100644
-> --- a/drivers/fpga/dfl.h
-> +++ b/drivers/fpga/dfl.h
-> @@ -531,8 +531,8 @@ enum dfl_id_type {
->   *
->   * @dev: generic device interface.
->   * @id: id of the dfl device.
-> - * @type: type of DFL FIU of the device. See enum dfl_id_type.
-> - * @feature_id: 16 bits feature identifier local to its DFL FIU type.
-> + * @type: contains 4 bits DFL FIU type of the device. See enum dfl_id_type.
-> + * @feature_id: contains 12 bits feature identifier local to its DFL FIU type.
->   * @mmio_res: mmio resource of this dfl device.
->   * @irqs: list of Linux IRQ numbers of this dfl device.
->   * @num_irqs: number of IRQs supported by this dfl device.
-> -- 
-> 2.7.4
-> 
+[+kasan-dev, +kunit-dev]
 
-Applied to for-next,
+On Mon, Sep 14, 2020 at 3:01 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the akpm-current tree, today's linux-next build (x86_64
+> allmodconfig) produced this warning:
+>
+> In file included from lib/test_kasan_module.c:16:
+> lib/../mm/kasan/kasan.h:232:6: warning: conflicting types for built-in function '__asan_register_globals'; expected 'void(void *, long int)' [-Wbuiltin-declaration-mismatch]
+>   232 | void __asan_register_globals(struct kasan_global *globals, size_t size);
+>       |      ^~~~~~~~~~~~~~~~~~~~~~~
+> lib/../mm/kasan/kasan.h:233:6: warning: conflicting types for built-in function '__asan_unregister_globals'; expected 'void(void *, long int)' [-Wbuiltin-declaration-mismatch]
+>   233 | void __asan_unregister_globals(struct kasan_global *globals, size_t size);
+>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> lib/../mm/kasan/kasan.h:235:6: warning: conflicting types for built-in function '__asan_alloca_poison'; expected 'void(void *, long int)' [-Wbuiltin-declaration-mismatch]
+>   235 | void __asan_alloca_poison(unsigned long addr, size_t size);
+>       |      ^~~~~~~~~~~~~~~~~~~~
+> lib/../mm/kasan/kasan.h:236:6: warning: conflicting types for built-in function '__asan_allocas_unpoison'; expected 'void(void *, long int)' [-Wbuiltin-declaration-mismatch]
+>   236 | void __asan_allocas_unpoison(const void *stack_top, const void *stack_bottom);
+>       |      ^~~~~~~~~~~~~~~~~~~~~~~
+> lib/../mm/kasan/kasan.h:238:6: warning: conflicting types for built-in function '__asan_load1'; expected 'void(void *)' [-Wbuiltin-declaration-mismatch]
+>   238 | void __asan_load1(unsigned long addr);
+>       |      ^~~~~~~~~~~~
+[...some more similar warnings truncated...]
 
-Thanks
+Whoops -- these are an issue with the patch: the test_kasan_module.c
+file should be built with -fno-builtin. I've out a new version of the
+series which fixes this:
+https://lore.kernel.org/linux-mm/20200915035828.570483-1-davidgow@google.com/T/#t
+
+Basically, the fix is just:
+
+diff --git a/lib/Makefile b/lib/Makefile
+index 8c94cad26db7..d4af75136c54 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -69,6 +69,7 @@ obj-$(CONFIG_KASAN_KUNIT_TEST) += test_kasan.o
+ CFLAGS_test_kasan.o += -fno-builtin
+ CFLAGS_test_kasan.o += $(call cc-disable-warning, vla)
+ obj-$(CONFIG_TEST_KASAN_MODULE) += test_kasan_module.o
++CFLAGS_test_kasan_module.o += -fno-builtin
+ obj-$(CONFIG_TEST_UBSAN) += test_ubsan.o
+ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
+ UBSAN_SANITIZE_test_ubsan.o := y
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
+
+> drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c: In function 'common_nfc_set_geometry':
+> drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c:514:3: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>   514 |   nanddev_get_ecc_requirements(&chip->base);
+>       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+
+I was unable to reproduce this warning: it looks unrelated, so I'm
+assuming it was attributed.
+
+> Introduced by commit
+>
+>   77e7d1c8c356 ("KASAN: Port KASAN Tests to KUnit")
+>
+> --
+> Cheers,
+> Stephen Rothwell
+
+Sorry for the mess,
+-- David
