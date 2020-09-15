@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9B526A2B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF7326A2B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIOKFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:05:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726134AbgIOKFo (ORCPT
+        id S1726331AbgIOKGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIOKGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:05:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600164343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1iUpStHY3x02TGj1Ffq3/OwunO57+bHgrb4tvzzSsB8=;
-        b=ZSjoWw4knndKJp1iG6X4vHILAnySwsvVl7/gWYRUbTeuelqFBUlFnYfaB1sg5tmZ4tOw+6
-        DRc1RjFwXxlTupnDsZ7PhO/iwaX5uUVy87kplj99tFxmJRiXk6El9BjJYKmEH7gxPvMAPb
-        rwWI7dtVdfk1dMHGAmgxGg3STr/0LO4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-sH5Mui7pOTee0cijc9oYEw-1; Tue, 15 Sep 2020 06:05:40 -0400
-X-MC-Unique: sH5Mui7pOTee0cijc9oYEw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7248A1017DC1;
-        Tue, 15 Sep 2020 10:05:37 +0000 (UTC)
-Received: from krava (unknown [10.40.192.180])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CA75960C0F;
-        Tue, 15 Sep 2020 10:05:34 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 12:05:33 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 3/3] perf inject: Do not load map/dso when injecting
- build-id
-Message-ID: <20200915100533.GC2171499@krava>
-References: <20200914141859.332459-1-namhyung@kernel.org>
- <20200914141859.332459-3-namhyung@kernel.org>
+        Tue, 15 Sep 2020 06:06:32 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457FBC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:06:31 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id t16so2417517edw.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 03:06:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YGES+GMaY9UbFbiZ3qdnVlJVdv/k3iehrDRv/+9sIW8=;
+        b=2D4/nOv6XQ1abSLXeiLPf1ppV3vEgXLegfUhDjyPU6f9rkZUI6Zc0uZVhVbiuZXYsu
+         tjWvAtuMvNEdeVQSnVjtTPWo5IkEyhhlhB7z9xZTRcYL1eo9QIqBvTRuTOa5MFKk7DOp
+         aWZN5x2gSymrO688VHXUnbkEvwZRfKHP38kFSmky1l5G+Jw67zvVj/vBMy8lSdIvB4G9
+         r4adVUvc0wM3nKGjVP+5JfSz+rvMwj1vl9FFg2lInns4RboBmOys9w7iw6GveofTEo79
+         8B2C4LD+xcAj9NEzlEFyxXvapUI+Iy3fZYp15s1wFt4/AEWv2q0EZk5iPj75I8WYOqbn
+         vopA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YGES+GMaY9UbFbiZ3qdnVlJVdv/k3iehrDRv/+9sIW8=;
+        b=t7sagtZUDKjKWhaL+ZjTA6zqPcP8L/CY/O2OHbsENMOlzSnlHhX+vSS3H2+nO4YWi7
+         Jmcmx3UCsrxmeCcUNgVTEKnNxmQVS6AjcbNJiZ7XgqVrlSzBWnFOVYMBEWwkE0e8nXn6
+         AO7yxiklOMkuZ0lXXDb4VB/KcjGUnJYRpZnXpnl2orz1N1cYYuP687ubCQXaRneZYZ34
+         vF7QSlVbnFvowzIw/vXn7K7+HtUZjoUFjGVJ/Ir+w8vaqDqs8HorF8i+/752gOv78/eA
+         28eVezHSVrxcKIE53R+8fI9SpG3A7JWozitTKi+xkmgM5n7jwu0O2R42A8kd5EFGDkm3
+         kb/A==
+X-Gm-Message-State: AOAM531jENBtWYF7Z86oHrOigPgiNKCO82JJk66lGhUynmKFVIqQ2Df9
+        GohUUn1lAZkM/NCpKejARY1JZA==
+X-Google-Smtp-Source: ABdhPJy8A6ovoJZ+STs9AZCcBRWSF6zvWwyStMf9J+qIP+TpO/xvTFLH8WpxEGhamk0caBIkzTWjaQ==
+X-Received: by 2002:a05:6402:1151:: with SMTP id g17mr21988047edw.227.1600164390299;
+        Tue, 15 Sep 2020 03:06:30 -0700 (PDT)
+Received: from localhost.localdomain (dh207-97-22.xnet.hr. [88.207.97.22])
+        by smtp.googlemail.com with ESMTPSA id z18sm9942300ejb.92.2020.09.15.03.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 03:06:29 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: [PATCH] mtd: spi-nor: macronix: Add SECT_4K to mx25l12805d
+Date:   Tue, 15 Sep 2020 12:06:23 +0200
+Message-Id: <20200915100623.708736-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914141859.332459-3-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:18:59PM +0900, Namhyung Kim wrote:
-> No need to load symbols in a DSO when injecting build-id.  I guess the
-> reason was to check the DSO is a special file like anon files.  Use
-> some helper functions in map.c to check them before reading build-id.
-> Also pass sample event's cpumode to a new build-id event.
-> 
-> Original-patch-by: Stephane Eranian <eranian@google.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/builtin-inject.c | 30 ++++++++++--------------------
->  tools/perf/util/map.c       | 17 +----------------
->  tools/perf/util/map.h       | 14 ++++++++++++++
->  3 files changed, 25 insertions(+), 36 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index a2804d906d2a..6d4e6833efed 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -436,21 +436,22 @@ static int dso__read_build_id(struct dso *dso)
->  }
->  
->  static int dso__inject_build_id(struct dso *dso, struct perf_tool *tool,
-> -				struct machine *machine)
-> +				struct machine *machine, u8 cpumode)
->  {
-> -	u16 misc = PERF_RECORD_MISC_USER;
->  	int err;
->  
-> +	if (is_anon_memory(dso->long_name))
-> +		return 0;
-> +	if (is_no_dso_memory(dso->long_name))
-> +		return 0;
+According to the mx25l12805d datasheet it supports using 4K or 64K sectors.
+So lets add the SECT_4K to enable 4K sector usage.
 
-should we check for vdso as well? I don't think it has build id
+Datasheet: https://www.mxic.com.tw/Lists/Datasheet/Attachments/7321/MX25L12805D,%203V,%20128Mb,%20v1.2.pdf
 
-> +
->  	if (dso__read_build_id(dso) < 0) {
->  		pr_debug("no build_id found for %s\n", dso->long_name);
->  		return -1;
->  	}
->  
-> -	if (dso->kernel)
-> -		misc = PERF_RECORD_MISC_KERNEL;
-> -
-> -	err = perf_event__synthesize_build_id(tool, dso, misc, perf_event__repipe,
-> -					      machine);
-> +	err = perf_event__synthesize_build_id(tool, dso, cpumode,
-> +					      perf_event__repipe, machine);
->  	if (err) {
->  		pr_err("Can't synthesize build_id event for %s\n", dso->long_name);
->  		return -1;
-> @@ -478,19 +479,8 @@ static int perf_event__inject_buildid(struct perf_tool *tool,
->  	if (thread__find_map(thread, sample->cpumode, sample->ip, &al)) {
->  		if (!al.map->dso->hit) {
->  			al.map->dso->hit = 1;
-> -			if (map__load(al.map) >= 0) {
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+---
+ drivers/mtd/spi-nor/macronix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-nice, that might do some nice speedup, did you see any?
-
-jirka
-
-> -				dso__inject_build_id(al.map->dso, tool, machine);
-> -				/*
-> -				 * If this fails, too bad, let the other side
-> -				 * account this as unresolved.
-> -				 */
-> -			} else {
-> -#ifdef HAVE_LIBELF_SUPPORT
-> -				pr_warning("no symbols found in %s, maybe "
-> -					   "install a debug package?\n",
-> -					   al.map->dso->long_name);
-> -#endif
-> -			}
-> +			dso__inject_build_id(al.map->dso, tool, machine,
-> +					     sample->cpumode);
->  		}
-
-SNIP
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index f97f3d127575..9203abaac229 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -50,7 +50,7 @@ static const struct flash_info macronix_parts[] = {
+ 	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
+ 	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
+-	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
++	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, SECT_4K) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25r1635f",  INFO(0xc22815, 0, 64 * 1024,  32,
+ 			      SECT_4K | SPI_NOR_DUAL_READ |
+-- 
+2.26.2
 
