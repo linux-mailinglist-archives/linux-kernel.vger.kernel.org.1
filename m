@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F084426B888
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BEC26B887
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgIPApL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
+        id S1726694AbgIPApP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgIONAv (ORCPT
+        with ESMTP id S1726523AbgIONAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 09:00:51 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECECEC061354
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:00:38 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t14so1932345pgl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:00:38 -0700 (PDT)
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE74C06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:00:48 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id jw11so1687540pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:00:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IKZjA2WR/MuI4xnBSdt7iJDqwitKA94z026RIC3Xp+k=;
-        b=TPZHG4d9thnMIaeHQMiw11eDPphSU9QQLKK161nNllaQuX7diistYPpLf5nXLM474H
-         dcvgWwtXeY7lLIcB2GIZMFyvZBSaheAlDnFLWsTq6LDwMEziKoiqBiWsxQcJ2NTSmUdN
-         b//8QI1aA2VOfpnCItZ3RCHeMR61GcQ62VXf6H+1ShMG4qMYxz+6TdXxN3xrmupVXOdO
-         KObrLikmjbeUN3lxbQ09j25BtM3g3Fjs7PIdnV/9xYQGJcwiqO8TLLXi4jGBdBwww1Pe
-         U1ixG1aXNbnmG7ln03iol/QRKEkZJFO6/xtH0RWCuzSW9V5Wz4NLkvkO6vyHvw5IqTYJ
-         Yrcg==
+        bh=Ph9Npx9Sc9T0289Sa+bHIQdTtsrfAT1jO6vE3p2NbQA=;
+        b=KJWEmRh74MpS+BiJEmcfSUmams10jgYpmHOWHONrwDWFrjooYDHDyiRYhnMnOh+VvH
+         Ty93H0BLab/qOFPkqwZAtkalYiEKAswo3uakzsrS4kepjFgxSQ7RsNb+5LEwpn8pOIlN
+         8WcE6SBqdZ+KTgt/ZnU7xAqtXD29FYuKipqzPasecDeZxF2J000H2LHOEUoixY8onUxu
+         xyW8ouRBL6mMCL9OCt2RVqaWSXtWesOFCJr0BX/OD1P83WlHpuvpzIBMSm3WVbYbesrO
+         2qFxvf8ijooHQImhd2dzz/2SA1y0avrE1ON/+PxTnAASjGYoGYzX2ETddAO+mnNasE+B
+         /zsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IKZjA2WR/MuI4xnBSdt7iJDqwitKA94z026RIC3Xp+k=;
-        b=DqlhJ6U9XnPafopWz1scq19wr9tP/VWLPKFM/HO3EUjOhzVkJz/br2UM/ZZwzEYipu
-         cMHtrqRCzjOVSx1XtZNmReKzn/58qf+Ssz4FLqe1bFoiIpjyTbVFJ0xkAMOIEJ8d2aZb
-         8ayldEmmtoCyvqi/Zt565EtTmtuiiHbRPgOR7hVTNRF7L+Eh8dfFei0rwegWwRL9UY5k
-         Pc9JOCiJxXR7hcsJRQJPqhLcOWNUDxzwX++metHQMe1cnynihMXeb5QcUsAXn6J1+VI9
-         ge9pKpispGO4sQ3y5y4nkUHjhp50RcXMqE6JtNLWhg+YIDXHCWV8mTcf/sHrDm2Q/NPK
-         VWkA==
-X-Gm-Message-State: AOAM532bTqmDkfuFq/s5JUlVI2pVkOl6SXMzO+EySSbr5FJXJ1YYSz+p
-        Zk8Fbfwo5gis1VKSXfRpStPEZw==
-X-Google-Smtp-Source: ABdhPJxZZ9ygdTPbozDf1+EUar6et0CWIkjxwPo6KIduNnqBdi+TNOPMzVwjrdBNCWrgb7wYvkHqvQ==
-X-Received: by 2002:a62:178d:0:b029:13e:d13d:a0f8 with SMTP id 135-20020a62178d0000b029013ed13da0f8mr18083078pfx.20.1600174838496;
-        Tue, 15 Sep 2020 06:00:38 -0700 (PDT)
+        bh=Ph9Npx9Sc9T0289Sa+bHIQdTtsrfAT1jO6vE3p2NbQA=;
+        b=m1QkKKloCky4vU60/ku6tQ/uayBgeM+FoSrTmhpjdPYCmXVzzrqDVQjw9gpmpgvUV4
+         fn8uitAU2aTXQCdcOr1EGN6qXC8P//mUfOVrjY+7cjdHeuuACq3nHgFINL4kdF07Rhdd
+         OJo8flCNMwuU75k79WlsZWOtUByxadonmEgTD9lciMi5AiQ+pgB0yCm5fCDN6ZM4dLQj
+         R7AW0xkx+FTdYIaVq5MXTvAZv+cmzMduwKboLsRlzdmQASTeznQ/5wy5W1eMH1++Yklj
+         hasZgyWSOU8NKtJzGL+0/NQlNYHjECrM4cBjwy63sYuAjpaAvw8lXeArgB9yciE7fMzg
+         yn8w==
+X-Gm-Message-State: AOAM532AhXztqJmm4NvtlSoZG2sYeT9FM3JqjFM+jnlXOmsF9J3C1Zay
+        807j45uxLTG2bMLl1EZIMin4Dw==
+X-Google-Smtp-Source: ABdhPJwLaJ+aIVCorogq2CdD6Jk2kg3Rfgolvi723baFH8rkm/8wVxPlvYY+XFAEuzspsZb0g54KWg==
+X-Received: by 2002:a17:90a:1548:: with SMTP id y8mr3968874pja.113.1600174848501;
+        Tue, 15 Sep 2020 06:00:48 -0700 (PDT)
 Received: from localhost.bytedance.net ([103.136.220.66])
-        by smtp.gmail.com with ESMTPSA id w185sm14269855pfc.36.2020.09.15.06.00.30
+        by smtp.gmail.com with ESMTPSA id w185sm14269855pfc.36.2020.09.15.06.00.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 06:00:38 -0700 (PDT)
+        Tue, 15 Sep 2020 06:00:47 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
         mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
@@ -60,9 +60,9 @@ To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [RFC PATCH 03/24] mm/hugetlb: Introduce a new config HUGETLB_PAGE_FREE_VMEMMAP
-Date:   Tue, 15 Sep 2020 20:59:26 +0800
-Message-Id: <20200915125947.26204-4-songmuchun@bytedance.com>
+Subject: [RFC PATCH 04/24] mm/hugetlb: Register bootmem info when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+Date:   Tue, 15 Sep 2020 20:59:27 +0800
+Message-Id: <20200915125947.26204-5-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20200915125947.26204-1-songmuchun@bytedance.com>
 References: <20200915125947.26204-1-songmuchun@bytedance.com>
@@ -73,41 +73,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
-whether to enable the feature of freeing unused vmemmap associated
-with HugeTLB pages.
+We use put_page_bootmem() to free the unused vmemmap pages associated with
+each hugetlb page, so we need register bootmem info in advance, even if
+!CONFIG_NUMA.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- fs/Kconfig | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ arch/x86/mm/init_64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/Kconfig b/fs/Kconfig
-index 976e8b9033c4..61e9c08096ca 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -245,6 +245,21 @@ config HUGETLBFS
- config HUGETLB_PAGE
- 	def_bool HUGETLBFS
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index 0a45f062826e..0435bee2e172 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
  
-+config HUGETLB_PAGE_FREE_VMEMMAP
-+	bool "Free unused vmemmap associated with HugeTLB pages"
-+	default n
-+	depends on HUGETLB_PAGE
-+	depends on SPARSEMEM_VMEMMAP
-+	depends on HAVE_BOOTMEM_INFO_NODE
-+	help
-+	  There are many struct page structure associated with each HugeTLB
-+	  page. But we only use a few struct page structure. In this case,
-+	  it waste some memory. It is better to free the unused struct page
-+	  structures to buddy system which can save some memory. For
-+	  architectures that support it, say Y here.
-+
-+	  If unsure, say N.
-+
- config MEMFD_CREATE
- 	def_bool TMPFS || HUGETLBFS
+ static void __init register_page_bootmem_info(void)
+ {
+-#ifdef CONFIG_NUMA
++#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
+ 	int i;
  
+ 	for_each_online_node(i)
 -- 
 2.20.1
 
