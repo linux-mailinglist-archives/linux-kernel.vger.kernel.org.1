@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCE926AC63
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7446926AC62
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgIOSpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:45:04 -0400
-Received: from mga05.intel.com ([192.55.52.43]:16833 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727591AbgIORcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:32:05 -0400
-IronPort-SDR: j945rw/tZiMtIyu6Z9xqc+7CBpVgbn1BVFWf3+1ywxljSlC/7qIZ9eXDKYpFtckHzlizZxN6Zy
- DnKA9XSfe9qw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="244143766"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="244143766"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 10:32:04 -0700
-IronPort-SDR: LkpV4y0gFkMjvYwMOvoxzfhIAthofs96RLIv/8OgJIa19pS4IFZdHKr7mNwuANYbIpTyHHf1W+
- kohW3ssHGbcg==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="451509688"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 10:32:04 -0700
-Date:   Tue, 15 Sep 2020 10:32:02 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 00/35] SEV-ES hypervisor support
-Message-ID: <20200915173202.GF8420@sjchrist-ice>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <20200914225951.GM7192@sjchrist-ice>
- <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
+        id S1727944AbgIOSox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:44:53 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:33858 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727689AbgIORcT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:32:19 -0400
+Received: by mail-il1-f194.google.com with SMTP id a8so3820710ilk.1;
+        Tue, 15 Sep 2020 10:32:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=frFFMJ3Z3B3UaKwbid0/RrGkT/BahZj6LxQeVuYq3XQ=;
+        b=LSWHa0O7r2Wup4kJHu/2+HJdO8s5eELckJ2fpBzZzQpfjCcpta/Za8Uft+buAy/g7Z
+         DRFpirUzF89lrN0J4WQjNDJRz+JxsioIsq7H4cTqdu4UkWKN7/e1m4kyGg6nNX+By6cJ
+         gdL0NkIn1GI6gptQLLJtM2n/aJnbFgTFhs4vLKaFgkhkpJqt9JUJoioXYOrIz9d17qni
+         gJNHg7nXemqbP+eI63QQwqZuT1QfD77Z+M/Bf821fXIdvxxEgAO4SwrfR+IqiNJ0ODUd
+         GvwggIuolPW6UEORYxyccnIwGBNFt7SOo92t3QKa0QEMPmq3BpnLA+HiHhRvemYUei1f
+         Xb+Q==
+X-Gm-Message-State: AOAM530q7pQFuOOqw7SdT6vEI3/ZH2mpHlqJ+LNsGmSayL0c5fFMeb92
+        QJba3klbje/ilA/ifWvF8w==
+X-Google-Smtp-Source: ABdhPJxXbXGTnaORsXEdhvEv5PnM9NDeew6jEv7xOkE2izK1Ih7By9AaUvcVt6EleEiLs0p/dp5qYA==
+X-Received: by 2002:a92:8501:: with SMTP id f1mr13864759ilh.54.1600191138903;
+        Tue, 15 Sep 2020 10:32:18 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id w8sm9412336ilc.85.2020.09.15.10.32.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 10:32:18 -0700 (PDT)
+Received: (nullmailer pid 2174489 invoked by uid 1000);
+        Tue, 15 Sep 2020 17:32:17 -0000
+Date:   Tue, 15 Sep 2020 11:32:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: arm: fsl: Add binding for Variscite
+ Symphony board with VAR-SOM-MX8MN
+Message-ID: <20200915173217.GA2174436@bogus>
+References: <20200909152434.18643-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200909152434.18643-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:22:05PM -0500, Tom Lendacky wrote:
-> On 9/14/20 5:59 PM, Sean Christopherson wrote:
-> > On Mon, Sep 14, 2020 at 03:15:14PM -0500, Tom Lendacky wrote:
-> >> From: Tom Lendacky <thomas.lendacky@amd.com>
-> >>
-> >> This patch series provides support for running SEV-ES guests under KVM.
-> > 
-> > From the x86/VMX side of things, the GPR hooks are the only changes that I
-> > strongly dislike.
-> > 
-> > For the vmsa_encrypted flag and related things like allow_debug(), I'd
-> > really like to aim for a common implementation between SEV-ES and TDX[*] from
-> > the get go, within reason obviously.  From a code perspective, I don't think
-> > it will be too onerous as the basic tenets are quite similar, e.g. guest
-> > state is off limits, FPU state is autoswitched, etc..., but I suspect (or
-> > maybe worry?) that there are enough minor differences that we'll want a more
-> > generic way of marking ioctls() as disallowed to avoid having one-off checks
-> > all over the place.
-> > 
-> > That being said, it may also be that there are some ioctls() that should be
-> > disallowed under SEV-ES, but aren't in this series.  E.g. I assume
-> > kvm_vcpu_ioctl_smi() should be rejected as KVM can't do the necessary
-> > emulation (I assume this applies to vanilla SEV as well?).
+On Wed, 09 Sep 2020 17:24:32 +0200, Krzysztof Kozlowski wrote:
+> Add a binding for the Variscite Symphony evaluation kit board with
+> VAR-SOM-MX8MN System on Module.
 > 
-> Right, SMM isn't currently supported under SEV-ES. SEV does support SMM,
-> though, since the register state can be altered to change over to the SMM
-> register state. So the SMI ioctl() is ok for SEV.
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-But isn't guest memory inaccessible for SEV?  E.g. how does KVM emulate the
-save/restore to/from SMRAM?
+Reviewed-by: Rob Herring <robh@kernel.org>
