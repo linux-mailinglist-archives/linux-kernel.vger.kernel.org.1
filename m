@@ -2,74 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D032D26AA5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C5D26AA61
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgIORSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgIOQaH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:30:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A2AC06178A;
-        Tue, 15 Sep 2020 09:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=h6yEPMjFBbOeI1nHQxJaBbzOjrvp/dwKRkVIewBPplw=; b=FhtjCj8afEHB9EsdL/O1b5MO2/
-        OK+N3R3WT5KgfOVCwmnc4a/n2dIKiQ+/ejDpcIeJqi74/LSP+Gxn40SlUAvdZt7qDk0x/I7C7w7Ju
-        AU9ZCb42uRy0emXWZNFN8nicvRtWmp8LJ+9zQOZ9IigttQPMYeLnHrp3vIkvVEL3Ef4v5NWOC5D9U
-        stSRHSZTECQC2/tBVGL+C81bj3RqCLcB51xuge5sg1Dz7j2rGWv96p2WryvB9TkexpZTDrTeU8aGE
-        QoY/NV7HTkDRAwMNETwcmEuHQsF+nv10JLN9MO8biw9/i7BcL7QTtszMrTYStLcdfTttoZH/dX9Re
-        pb+bIffw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIDq8-0005vd-4q; Tue, 15 Sep 2020 16:29:56 +0000
-Date:   Tue, 15 Sep 2020 17:29:56 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>, kvm-ppc@vger.kernel.org,
-        nouveau@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm: remove extra ZONE_DEVICE struct page refcount
-Message-ID: <20200915162956.GA21990@infradead.org>
-References: <20200914224509.17699-1-rcampbell@nvidia.com>
- <CAPcyv4gVJuWsOtejrKvWgByq=c1niwQOZ0HHYaSo4h6vc-Xw+Q@mail.gmail.com>
- <10b4b85c-f1e9-b6b5-74cd-6190ee0aca5d@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <10b4b85c-f1e9-b6b5-74cd-6190ee0aca5d@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S1727771AbgIORUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:20:23 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36040 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727637AbgIOQar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:30:47 -0400
+IronPort-SDR: Dn86oh8PuPkxL0ZA/fHMaapbl5Vbyh4XrRq3+CadHogvO4Yengt35yMv39aAyy1qfZ6l+z0k4j
+ IkwT6C8K7t9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="177365786"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="177365786"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 09:30:18 -0700
+IronPort-SDR: JRIr5y4dbpXVKb1+imYwnCi0xFG2mDi348P96gAUmTOGpdlnPY47TI9dWBxfco/cloGuo+aHkO
+ GwCM8zc7qzOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="345909876"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by orsmga007.jf.intel.com with ESMTP; 15 Sep 2020 09:30:17 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
+        "H Peter Anvin" <hpa@zytor.com>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "David Woodhouse" <dwmw2@infradead.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Ashok Raj" <ashok.raj@intel.com>,
+        "Jacob Jun Pan" <jacob.jun.pan@intel.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Sohil Mehta" <sohil.mehta@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "x86" <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH v8 2/9] iommu/vt-d: Change flags type to unsigned int in binding mm
+Date:   Tue, 15 Sep 2020 09:30:06 -0700
+Message-Id: <1600187413-163670-3-git-send-email-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.5.0
+In-Reply-To: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
+References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 04:53:25PM -0700, Ralph Campbell wrote:
-> Since set_page_refcounted() is defined in mm_interal.h I would have to
-> move the definition to someplace like page_ref.h or have the drivers
-> cal init_page_count() or set_page_count() since get_page() calls
-> VM_BUG_ON_PAGE() if refcount == 0.
-> I'll move set_page_refcounted() since that is what the page allocator
-> uses and seems named for the purpose.
+"flags" passed to intel_svm_bind_mm() is a bit mask and should be
+defined as "unsigned int" instead of "int".
 
-I don't think any of the three ->page_free instances even cares about
-the page refcount.
+Change its type to "unsigned int".
+
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+v5:
+- Reviewed by Lu Baolu
+
+v2:
+- Add this new patch per Thomas' comment.
+
+ drivers/iommu/intel/svm.c   | 7 ++++---
+ include/linux/intel-iommu.h | 2 +-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index e78a74a9c1cf..fc90a079e228 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -446,7 +446,8 @@ int intel_svm_unbind_gpasid(struct device *dev, u32 pasid)
+ 
+ /* Caller must hold pasid_mutex, mm reference */
+ static int
+-intel_svm_bind_mm(struct device *dev, int flags, struct svm_dev_ops *ops,
++intel_svm_bind_mm(struct device *dev, unsigned int flags,
++		  struct svm_dev_ops *ops,
+ 		  struct mm_struct *mm, struct intel_svm_dev **sd)
+ {
+ 	struct intel_iommu *iommu = device_to_iommu(dev, NULL, NULL);
+@@ -1033,7 +1034,7 @@ intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
+ {
+ 	struct iommu_sva *sva = ERR_PTR(-EINVAL);
+ 	struct intel_svm_dev *sdev = NULL;
+-	int flags = 0;
++	unsigned int flags = 0;
+ 	int ret;
+ 
+ 	/*
+@@ -1042,7 +1043,7 @@ intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
+ 	 * and intel_svm etc.
+ 	 */
+ 	if (drvdata)
+-		flags = *(int *)drvdata;
++		flags = *(unsigned int *)drvdata;
+ 	mutex_lock(&pasid_mutex);
+ 	ret = intel_svm_bind_mm(dev, flags, NULL, mm, &sdev);
+ 	if (ret)
+diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+index 7322073f62d0..9c3e8337442a 100644
+--- a/include/linux/intel-iommu.h
++++ b/include/linux/intel-iommu.h
+@@ -765,7 +765,7 @@ struct intel_svm {
+ 	struct mm_struct *mm;
+ 
+ 	struct intel_iommu *iommu;
+-	int flags;
++	unsigned int flags;
+ 	u32 pasid;
+ 	int gpasid; /* In case that guest PASID is different from host PASID */
+ 	struct list_head devs;
+-- 
+2.19.1
+
