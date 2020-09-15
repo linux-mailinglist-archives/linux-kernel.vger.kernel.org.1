@@ -2,114 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E2F269BB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7754269BB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 04:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgIOCCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 22:02:18 -0400
-Received: from mga04.intel.com ([192.55.52.120]:57935 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgIOCCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 22:02:17 -0400
-IronPort-SDR: mtWpU4FbjHtKRRTOIFmLcYysRCsfg5yo7FFY59XklTmAxPHr8Fnd5mk05iZsu/YOyrA0eiRs86
- DxLJyeN83HbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156580196"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="156580196"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 19:02:16 -0700
-IronPort-SDR: N/Yz5aGcM6gsT2R3Poqs+0dJtTuuU+23RLSREefvakHjlB+NAFAaosxh7IeD8BOoc4ThbYgQNg
- 42zOt3Ujv1Dg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="330979588"
-Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Sep 2020 19:02:14 -0700
-Date:   Tue, 15 Sep 2020 02:02:14 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH v7 3/9] docs: x86: Add documentation for SVA (Shared
- Virtual Addressing)
-Message-ID: <20200915020214.GA437862@otcwcpicx6.sc.intel.com>
-References: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
- <1598540794-132666-4-git-send-email-fenghua.yu@intel.com>
- <626fe21c-1f82-f4f8-e37b-32d91e7d557a@infradead.org>
+        id S1726117AbgIOCDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 22:03:03 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12258 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726019AbgIOCDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 22:03:02 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 13E2EA2A064A615D3F29;
+        Tue, 15 Sep 2020 10:03:01 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 15 Sep 2020 10:02:50 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <m@bues.ch>
+CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH] ssb: Remove meaningless jump label to simplify the code
+Date:   Tue, 15 Sep 2020 10:03:30 +0800
+Message-ID: <20200915020330.96067-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <626fe21c-1f82-f4f8-e37b-32d91e7d557a@infradead.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Randy,
+The out jump label has nothing to do. So remove it to simplify the code.
 
-On Sat, Sep 05, 2020 at 10:54:59AM -0700, Randy Dunlap wrote:
-> Hi,
-> 
-> I'll add a few edits other than those that Borislav made.
-> (nice review job, BP)
-> 
-> 
-> On 8/27/20 8:06 AM, Fenghua Yu wrote:
-> > From: Ashok Raj <ashok.raj@intel.com>
-> > 
-> > ENQCMD and Data Streaming Accelerator (DSA) and all of their associated
-> > features are a complicated stack with lots of interconnected pieces.
-> > This documentation provides a big picture overview for all of the
-> > features.
-> > 
-> > Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-> > Co-developed-by: Fenghua Yu <fenghua.yu@intel.com>
-> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> > Reviewed-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> > diff --git a/Documentation/x86/sva.rst b/Documentation/x86/sva.rst
-> > new file mode 100644
-> > index 000000000000..6e7ac565e127
-> > --- /dev/null
-> > +++ b/Documentation/x86/sva.rst
-> > @@ -0,0 +1,254 @@
-> > +MMIO. This doesn't scale as the number of threads becomes quite large. The
-> > +hardware also manages the queue depth for Shared Work Queues (SWQ), and
-> > +consumers don't need to track queue depth. If there is no space to accept
-> > +a command, the device will return an error indicating retry. Also
-> > +submitting a command to an MMIO address that can't accept ENQCMD will
-> > +return retry in response. In the new DMWr PCIe terminology, devices need to
-> 
-> so how does a submitter know whether a return of "retry" means no_space or
-> invalid_for_this_device?
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/ssb/pci.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-I will add "A user should check Deferrable Memory Write (DMWr) capability on
-the device and only submits ENQCMD when the device supports it."
+diff --git a/drivers/ssb/pci.c b/drivers/ssb/pci.c
+index 7c3ae52f2b15..dac54041ad8d 100644
+--- a/drivers/ssb/pci.c
++++ b/drivers/ssb/pci.c
+@@ -1164,17 +1164,12 @@ void ssb_pci_exit(struct ssb_bus *bus)
+ int ssb_pci_init(struct ssb_bus *bus)
+ {
+ 	struct pci_dev *pdev;
+-	int err;
+ 
+ 	if (bus->bustype != SSB_BUSTYPE_PCI)
+ 		return 0;
+ 
+ 	pdev = bus->host_pci;
+ 	mutex_init(&bus->sprom_mutex);
+-	err = device_create_file(&pdev->dev, &dev_attr_ssb_sprom);
+-	if (err)
+-		goto out;
+ 
+-out:
+-	return err;
++	return device_create_file(&pdev->dev, &dev_attr_ssb_sprom);
+ }
+-- 
+2.17.1
 
-So the user doesn't need to distinguish "no space" and "invalid for this device"
-errors.
-
-All of your other comments will be addressed in the next version.
-
-Thank you very much for your comments!
-
--Fenghua
