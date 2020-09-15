@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E57D269FD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41512269FDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 09:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbgIOHdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 03:33:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55364 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726087AbgIOHdU (ORCPT
+        id S1726171AbgIOHfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 03:35:05 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:35469 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726134AbgIOHe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:33:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600155199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NuL3Yd8/YXcGgFrD3H7Mh6oQlLO0y8IzzOlQqEaeDeQ=;
-        b=C4ShjBX400DPbZKxq0py5yRgJQGzJBuMxiY4XmJE9OV/2U+1DAIseprCtemna6tUhC7eK1
-        3ilO1pF6QhdjDmbBKCz4zxpr+yWxkvmCaH7S7tslVZfbFcaMSVp7GgtuDGRxQ2lH+Ug8SC
-        IFj+hun0caYkBqkVUYPlG0TtZJ43R2A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-9MikSqX5MaGF-B7lPqIxig-1; Tue, 15 Sep 2020 03:33:17 -0400
-X-MC-Unique: 9MikSqX5MaGF-B7lPqIxig-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 15 Sep 2020 03:34:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600155295; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=zO7YxpF1G5S5zr+mYWbXoKnIjONI35AREKEkXVlkqO0=; b=oAycvt20sE5XViiF7UZ4bRUlkCF8K6uuY3/ZCMz8EGbr8fGiXh5dHPdwclEe9O8OypJgKJ4g
+ sFMfRZ7BRJmyXVYfvBBlNUiJZ0wtgsInW3wqe5k0eVZuWCL0w3pFVa8pIzvpWb4h9ENHxywM
+ SLqe5iVbVtKh/MrDH+11eiQb5xM=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f606e8432925f96e13f2b19 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 07:34:28
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 79FC5C433FE; Tue, 15 Sep 2020 07:34:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C4CB10199AA;
-        Tue, 15 Sep 2020 07:33:15 +0000 (UTC)
-Received: from T590 (ovpn-12-38.pek2.redhat.com [10.72.12.38])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9675060E1C;
-        Tue, 15 Sep 2020 07:33:08 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 15:33:03 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-Message-ID: <20200915073303.GA754106@T590>
-References: <990cc101-d4a1-f346-fe78-0fb5b963b406@kernel.dk>
- <20c844c8-b649-3250-ff5b-b7420f72ff38@kernel.dk>
- <20200822143326.GC199705@mit.edu>
- <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
- <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
- <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
- <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
- <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
- <20200904035528.GE558530@mit.edu>
- <20200915044519.GA38283@mit.edu>
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2166DC433CA;
+        Tue, 15 Sep 2020 07:34:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2166DC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ohad@wizery.com, rishabhb@codeaurora.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH] remoteproc: Fixup coredump debugfs disable request
+Date:   Tue, 15 Sep 2020 13:04:16 +0530
+Message-Id: <20200915073416.20864-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915044519.GA38283@mit.edu>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Theodore,
+Currently the coredump debugfs entry takes in "disable" to set the
+coredump state to "disabled". Let's just accept the expected state
+instead.
 
-On Tue, Sep 15, 2020 at 12:45:19AM -0400, Theodore Y. Ts'o wrote:
-> On Thu, Sep 03, 2020 at 11:55:28PM -0400, Theodore Y. Ts'o wrote:
-> > Worse, right now, -rc1 and -rc2 is causing random crashes in my
-> > gce-xfstests framework.  Sometimes it happens before we've run even a
-> > single xfstests; sometimes it happens after we have successfully
-> > completed all of the tests, and we're doing a shutdown of the VM under
-> > test.  Other times it happens in the middle of a test run.  Given that
-> > I'm seeing this at -rc1, which is before my late ext4 pull request to
-> > Linus, it's probably not an ext4 related bug.  But it also means that
-> > I'm partially blind in terms of my kernel testing at the moment.  So I
-> > can't even tell Linus that I've run lots of tests and I'm 100%
-> > confident your one-line change is 100% safe.
-> 
-> I was finally able to bisect it down to the commit:
-> 
-> 37f4a24c2469: blk-mq: centralise related handling into blk_mq_get_driver_tag
+Fixes: 3afdc59e43904 ("remoteproc: Add coredump debugfs entry")
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+---
+ drivers/remoteproc/remoteproc_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-37f4a24c2469 has been reverted in:
-
-	4e2f62e566b5 Revert "blk-mq: put driver tag when this request is completed"
-
-And later the patch is committed as the following after being fixed:
-
-	568f27006577 blk-mq: centralise related handling into blk_mq_get_driver_tag
-
-So can you reproduce the issue by running kernel of commit 568f27006577?
-If yes, can the issue be fixed by reverting 568f27006577?
-
-> 
-> (See below for [1] Bisect log.)
-> 
-> The previous commit allows the tests to run to completion.  With
-> commit 37f4a24c2469 and later all 11 test scenarios (4k blocks, 1k
-> blocks, ext3 compat, ext4 w/ fscrypt, nojournal mode, data=journal,
-> bigalloc, etc.) the VM will get stuck.
-
-Can you share the exact mount command line for setup the environment?
-and the exact xfstest item?
-
-
-
-Thanks,
-Ming
+diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
+index 2e3b3e22e1d01..7ca823f6aa638 100644
+--- a/drivers/remoteproc/remoteproc_debugfs.c
++++ b/drivers/remoteproc/remoteproc_debugfs.c
+@@ -94,7 +94,7 @@ static ssize_t rproc_coredump_write(struct file *filp,
+ 		goto out;
+ 	}
+ 
+-	if (!strncmp(buf, "disable", count)) {
++	if (!strncmp(buf, "disabled", count)) {
+ 		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
+ 	} else if (!strncmp(buf, "inline", count)) {
+ 		rproc->dump_conf = RPROC_COREDUMP_INLINE;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
