@@ -2,177 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6AE269AA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A161269AA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 02:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgIOApR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 20:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbgIOApO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:45:14 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA441212CC;
-        Tue, 15 Sep 2020 00:45:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600130713;
-        bh=pKdQVJjnWdHPks2U7fV5zrwIH3JNHsSVYFB3BBYhmLc=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Uzamz8KnA4jUuOvHuRW4DNtTFoAFkGIgDB1dijjt4w7BuITnoGME8UDWm8nr0rYdy
-         JwQcMq7kMpEFoZ2lu7YPYCcyeVJbp1tDKU8V9DXgjQ0zaaDegMc7SFKcYIknlZqX8i
-         75z43TNjN7LSl07uaYX33tH/STjkYNI/GXz6ljvc=
-Content-Type: text/plain; charset="utf-8"
+        id S1726128AbgIOAqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 20:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgIOAp6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 20:45:58 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A608C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:45:57 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id q13so416147vkd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 17:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=dV85Eacc1roIo+vHD48suvcriSw+9fgCYtp8+g0r3Mw=;
+        b=dAMvoWOtgEPXKSBKyqewg9cq8up9VQcD/Ew8s0A+uDIcs9bgSOS8jq1teYtFyzRuRI
+         EqRuo3R7BCmfpMHxrwcUtcfEtQajPdTniDGXcpGfw+MJxpAwv4TkaPCX9JXzQEjgeC6E
+         e2V48o+hvAWIOLA6zTcVApW8poXgFLexOE4mUNFyoZDsZEkc9xo/PdBdH2WbWRF8r7fd
+         jQAB+us7BTrOtmpFjOVNlNs1FsHl7pOFMn6qZaMIbPuglLLB05Vo58xpSkkLlIT9cxDP
+         8vrgy7uo7P16TaqBPAGPWMOQckYOyKsWLM/GBYIPBa0AVNIg+D0T1gVwh5xdyHNaLSxl
+         yyXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=dV85Eacc1roIo+vHD48suvcriSw+9fgCYtp8+g0r3Mw=;
+        b=BlDDqp7wxoBw1Nl2aIhtUFtsWnO8cJNdtEQ1c0YYfX2/qAuwzZn0TOB3gXkYhSbEEA
+         blX4RQm+yTbHjJpnP+BKouvITzlLC+wAl5AwTNpmdbRt6rmSnENrbhznG6yRx9WrtCSh
+         htm6nnnl9QxXvk6GCLNJ3g/jxTscHJ0io6x03RRc9u3rUgRqkr+zmIfm5Yf/BMEOAvId
+         WidpQw561CqhdhPpxfNlGeo/IW1wgnY03Ebvt8AKiLhU6LJk+hOWNb5nYfP/DG0mAydC
+         GaoqsLMQsFq9iO6TpyafJxkpPrMf/yIntSqpVixnuR5+AJRn31yoD0SsV1/lBnJWA8Fh
+         4KmA==
+X-Gm-Message-State: AOAM532dZt+91YYaXsdhhxCJwEqMf3nAV/XG5756xt8tlskQrR/T5kss
+        O07anFnvCC5Vwj3hBWi9S3DXhCk4f7ImZtVLX8dbHg==
+X-Google-Smtp-Source: ABdhPJwur+ZPMEXzGEBYaFZfUgKfnExHnoeiaZe2G4sGEagBISoIY642qWB3YQBsgez2XNI2Qc7OCEGgdk1dolWAUIk=
+X-Received: by 2002:a1f:26cd:: with SMTP id m196mr8849886vkm.7.1600130755541;
+ Mon, 14 Sep 2020 17:45:55 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
+In-Reply-To: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 14 Sep 2020 17:45:44 -0700
+Message-ID: <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
+Subject: Re: [RFC]: userspace memory reaping
+To:     linux-api@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200831161436.134186-1-jagan@amarulasolutions.com>
-References: <20200831161436.134186-1-jagan@amarulasolutions.com>
-Subject: Re: [PATCH] clk: rockchip: Fix overflow rate during fractional approximation
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Finley Xiao <finley.xiao@rock-chips.com>
-To:     Heiko Stuebner <heiko@sntech.de>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Michael Turquette <mturquette@baylibre.com>
-Date:   Mon, 14 Sep 2020 17:45:11 -0700
-Message-ID: <160013071168.4188128.10518912964578839607@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jagan Teki (2020-08-31 09:14:36)
-> The current rockchip fractional approximation overflow the desired
-> rate if parent rate is lower than the (rate * 20) for few clocks like
-> dclk_vopb_frac.
->=20
-> The overflow condition has observed in px30 for dclk_vopb_frac
-> clock with an input rate of 71.1MHz and parent rate of 24MHz is,
->=20
-> [    2.543280] rockchip-drm display-subsystem: bound ff460000.vop (ops vo=
-p_component_ops)
++ linux-kernel@vger.kernel.org
 
-Can you remove timestamps?
-
-> [    2.557313] rockchip-drm display-subsystem: bound ff470000.vop (ops vo=
-p_component_ops)
-> [    2.566356] rockchip-drm display-subsystem: bound ff140000.syscon:lvds=
- (ops rockchip_lvds_component_ops)
-> [    2.576999] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
-> [    2.592177] Unexpected kernel BRK exception at EL1
-> [    2.597551] Internal error: ptrace BRK handler: f20003e8 [#1] PREEMPT =
-SMP
-> [    2.605143] Modules linked in:
-> [    2.608566] CPU: 1 PID: 31 Comm: kworker/1:1 Tainted: G     U         =
-   5.8.0-rc1-15632-g97edd822b844 #30
-> [    2.619363] Hardware name: Engicam PX30.Core C.TOUCH 2.0 10.1" Open Fr=
-ame (DT)
-> [    2.627460] Workqueue: events deferred_probe_work_func
-> [    2.633209] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=3D--)
-> [    2.639445] pc : rational_best_approximation+0xc4/0xd0
-> [    2.645194] lr : rockchip_fractional_approximation+0xa8/0xe0
-> [    2.651520] sp : ffff800011ea31c0
-> [    2.655222] x29: ffff800011ea31c0 x28: ffff00007a4ecd50
-> [    2.661162] x27: ffff00007d042600 x26: 000000000439fca3
-> [    2.667102] x25: 0000000000000000 x24: ffff800011ac9948
-> [    2.673033] x23: ffff800011ea3308 x22: ffff00007d042418
-> [    2.678973] x21: ffff800011ea3240 x20: ffff800011ea3238
-> [    2.684904] x19: ea47000000000000 x18: 0000000000000000
-> [    2.690836] x17: 0000000000000500 x16: 0000000000000001
-> [    2.696775] x15: ffffffffffffffff x14: 0000000000000000
-> [    2.702707] x13: 0000000000000000 x12: 0000003c00000000
-> [    2.708647] x11: 0000000000000030 x10: 0101010101010101
-> [    2.714586] x9 : 0000032000000320 x8 : 7f7f7f7f7f7f7f7f
-> [    2.720517] x7 : 000000a3c59050d3 x6 : 0000000000000030
-> [    2.726457] x5 : ffff800011ea3240 x4 : ffff800011ea3238
-> [    2.732397] x3 : 000000000000ffff x2 : 000000000000ffff
-> [    2.738329] x1 : 00000000016e3600 x0 : 0000000001497e00
-> [    2.744269] Call trace:
-> [    2.747005]  rational_best_approximation+0xc4/0xd0
-> [    2.752365]  clk_fd_round_rate+0x8c/0x110
-> [    2.756846]  clk_composite_round_rate+0x30/0x40
-> [    2.761917]  clk_core_determine_round_nolock.part.30+0x44/0x80
-> [    2.768442]  clk_core_round_rate_nolock+0x78/0x80
-> [    2.773701]  clk_mux_determine_rate_flags+0xd8/0x200
-> [    2.779253]  clk_mux_determine_rate+0x10/0x20
-> [    2.784124]  clk_core_determine_round_nolock.part.30+0x1c/0x80
-> [    2.790639]  clk_core_round_rate_nolock+0x78/0x80
-> [    2.795900]  clk_core_round_rate_nolock+0x5c/0x80
-> [    2.801159]  clk_round_rate+0x64/0xf0
-> [    2.805254]  vop_crtc_mode_fixup+0x2c/0x60
-> [    2.809828]  drm_atomic_helper_check_modeset+0x95c/0xae0
-> [    2.815767]  drm_atomic_helper_check+0x1c/0xa0
-> [    2.820738]  drm_atomic_check_only+0x43c/0x760
-> [    2.825705]  drm_atomic_commit+0x18/0x60
-> [    2.830095]  drm_client_modeset_commit_atomic.isra.16+0x17c/0x250
-> [    2.836911]  drm_client_modeset_commit_locked+0x58/0x1a0
-> [    2.842851]  drm_client_modeset_commit+0x2c/0x50
-> [    2.848014]  drm_fb_helper_restore_fbdev_mode_unlocked+0x70/0xd0
-> [    2.854730]  drm_fb_helper_set_par+0x2c/0x60
-> [    2.859497]  fbcon_init+0x3c0/0x540
-> [    2.863400]  visual_init+0xac/0x100
-> [    2.867298]  do_bind_con_driver+0x1e4/0x3a0
-> [    2.871973]  do_take_over_console+0x140/0x200
-> [    2.876843]  do_fbcon_takeover+0x6c/0xe0
-> [    2.881228]  fbcon_fb_registered+0x10c/0x120
-> [    2.886005]  register_framebuffer+0x1f0/0x340
-> [    2.890878]  __drm_fb_helper_initial_config_and_unlock+0x318/0x4a0
-> [    2.897790]  drm_fb_helper_initial_config+0x3c/0x50
-> [    2.903244]  rockchip_drm_fbdev_init+0x5c/0xf0
-> [    2.908202]  rockchip_drm_bind+0x194/0x1e0
-> [    2.912785]  try_to_bring_up_master+0x164/0x1d0
-> [    2.917851]  component_master_add_with_match+0xac/0xf0
-> [    2.923597]  rockchip_drm_platform_probe+0x238/0x2e0
-> [    2.929150]  platform_drv_probe+0x50/0xa0
-> [    2.933631]  really_probe+0xd4/0x330
-> [    2.937628]  driver_probe_device+0x54/0xb0
-> [    2.942207]  __device_attach_driver+0x80/0xc0
-> [    2.947078]  bus_for_each_drv+0x78/0xd0
-> [    2.951365]  __device_attach+0xd4/0x130
-> [    2.955652]  device_initial_probe+0x10/0x20
-> [    2.960328]  bus_probe_device+0x90/0xa0
-> [    2.964616]  deferred_probe_work_func+0x6c/0xa0
-> [    2.969685]  process_one_work+0x1e4/0x360
-> [    2.974166]  worker_thread+0x208/0x480
-> [    2.978358]  kthread+0x150/0x160
-> [    2.981968]  ret_from_fork+0x10/0x18
-
-Wow this stack is huge.
-
-> [    2.985970] Code: d65f03c0 d2800008 d2800027 17ffffe8 (d4207d00)
->=20
-> This happened because the fractional divider does not apply if parent_rate
-> is lower than (rate * 20).
->=20
-> So, this patch is trying to fix that overflow clock and switch to half-div
-> instead computing fractioanl approximation.
->=20
-> Some part of the patch is referenced from below BSP commit:
->=20
-> commit <88a5404a2277> ("clk: rockchip: fix up the
-> rockchip_fractional_approximation")
->=20
-> commit <4186a0e4239b> ("clk: rockchip: Add supprot to limit input rate
-> for fractional divider")
-
-Not sure what these are. Do we need random commit hashes in the log that
-reference not-upstream patches? Seems like it could be left below the
-triple dash and anyone can reference the mailing list if they really
-care.
-
->=20
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> Signed-off-by: Finley Xiao <finley.xiao@rock-chips.com>
-> ---
-
-Any Fixes tag?
-
->  drivers/clk/rockchip/clk-px30.c | 12 ++++++------
->  drivers/clk/rockchip/clk.c      |  9 +++++++++
->  2 files changed, 15 insertions(+), 6 deletions(-)
+On Mon, Sep 14, 2020 at 5:43 PM Suren Baghdasaryan <surenb@google.com> wrot=
+e:
 >
+> Last year I sent an RFC about using oom-reaper while killing a
+> process: https://patchwork.kernel.org/cover/10894999. During LSFMM2019
+> discussion https://lwn.net/Articles/787217 a couple of alternative
+> options were discussed with the most promising one (outlined in the
+> last paragraph of https://lwn.net/Articles/787217) suggesting to use a
+> remote version of madvise(MADV_DONTNEED) operation to force memory
+> reclaim of a killed process. With process_madvise() making its way
+> through reviews (https://patchwork.kernel.org/patch/11747133/), I
+> would like to revive this discussion and get feedback on several
+> possible options, their pros and cons.
+>
+> The need is similar to why oom-reaper was introduced - when a process
+> is being killed to free memory we want to make sure memory is freed
+> even if the victim is in uninterruptible sleep or is busy and reaction
+> to SIGKILL is delayed by an unpredictable amount of time. I
+> experimented with enabling process_madvise(MADV_DONTNEED) operation
+> and using it to force memory reclaim of the target process after
+> sending SIGKILL. Unfortunately this approach requires the caller to
+> read proc/pid/maps to extract the list of VMAs to pass as an input to
+> process_madvise(). This is a time consuming operation. I measured
+> times similar to what Minchan indicated in
+> https://lore.kernel.org/linux-mm/20190528032632.GF6879@google.com/ and
+> the reason reading proc/pid/maps consumes that much time is the number
+> of read syscalls required to read this file. proc/pid/maps file, being
+> a seq_file, can be read in chunks of up to 4096 bytes (1 page). Even
+> if userspace provides bigger buffer, only up to 4096 bytes will be
+> read with one syscall. Measured on Qualcomm=C2=AE Snapdragon 855=E2=84=A2=
+ using its
+> Big core of 2.84GHz a single read syscall takes between 50 and 200us
+> (in case there was no contention on mmap_sem or some other lock during
+> the syscall). Taking one typical example from my tests, a 219232 bytes
+> long proc/pid/maps file describing 1623 VMAs required 55 read
+> syscalls. With mmap_sem contention proc/pid/maps read can take even
+> longer. In my tests I measured typical delays of 3-7ms with occasional
+> delays of up to 20ms when a read syscall was blocked and the process
+> got into uninterruptible sleep.
+>
+> While the objective is to guarantee forward progress even when the
+> victim cannot terminate, we still want this mechanism to be efficient
+> because we perform these operations to relieve memory pressure before
+> it affects user experience.
+>
+> Alternative options I would like your feedback are:
+> 1. Introduce a dedicated process_madvise(MADV_DONTNEED_MM)
+> specifically for this case to indicate that the whole mm can be freed.
+> 2. A new syscall to efficiently obtain a vector of VMAs (start,
+> length, flags) of the process instead of reading /proc/pid/maps. The
+> size of the vector is still limited by UIO_MAXIOV (1024), so several
+> calls might be needed to query larger number of VMAs, however it will
+> still be an order of magnitude more efficient than reading
+> /proc/pid/maps file in 4K or smaller chunks.
+> 3. Use process_madvise() flags parameter to indicate a bulk operation
+> which ignores input vectors. Sample usage: process_madvise(pidfd,
+> MADV_DONTNEED, vector=3DNULL, vlen=3D0, flags=3DPMADV_FLAG_FILE |
+> PMADV_FLAG_ANON);
+> 4. madvise()/process_madvise() handle gaps between VMAs, so we could
+> provide one vector element spanning the entire address space. There
+> are technical issues with this approach (process_madvise return value
+> can't handle such a large number of bytes and there is MAX_RW_COUNT
+> limit on max number of bytes one process_madvise call can handle) but
+> I would still like to hear opinions about it. If this option is
+> preferable maybe we can deal with these limitations.
+>
+> We can also go back to reclaiming victim's memory asynchronously but
+> synchronous method has the following advantages:
+> - reaping will be performed in the caller's context and therefore with
+> caller's priority, CPU affinity, CPU bandwidth, reaping workload will
+> be charged to the caller and accounted for.
+> - reaping is a blocking/synchronous operation for the caller, so when
+> it's finished, the caller can be sure mm is freed (or almost freed
+> considering lazy freeing and batching mechanisms) and it can reassess
+> the memory conditions right away.
+> - for very large MMs (not really my case) caller could split the VMA
+> vector and perform reaping from multiple threads to make it faster.
+> This would not be possible with options (1) and (3).
+>
+> Would really appreciate your feedback on these options for future develop=
+ment.
+> Thanks,
+> Suren.
