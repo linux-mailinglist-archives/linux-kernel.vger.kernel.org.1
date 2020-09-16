@@ -2,185 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF26726BFB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D0526BFB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgIPIsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
+        id S1726649AbgIPIsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPIs1 (ORCPT
+        with ESMTP id S1726634AbgIPIse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:48:27 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8705DC06174A;
-        Wed, 16 Sep 2020 01:48:27 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id n61so5926749ota.10;
-        Wed, 16 Sep 2020 01:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9WmfdGG11fZlXHtIWtmEZpI64NmbJvrHDfdVUWJJ26I=;
-        b=WTBZsz3I1yt7dHuR/zcAGYSfhZgF/fh/i7uG0aE1q0wmhrwqhH5mV72hu1CWBEfP0x
-         NhoVDmEdXyNoGeiuHRFcfj8uRKdJerbF8uPZVcuZdgonfm1ix+F63SZTVXv/Sj58OElV
-         m04+wAMYuOKYa9THDLTCPWbO5KowcMYGFoXRhyGy0Bh5wKzeXLYpSxpd0R+GQnY3X+Lw
-         lZECnH8kD1fyLyXpHk4bTRtyBOxG5sR0IqtdXkB9EwBouBo1pwRENRcESlkdQWtLqk25
-         JUeBKq5UQcKfv/65Cft1+edkDTBMNLL6dpKpEP+p1V5jOaVsSJ5ySBHE0RZfukFa6ndF
-         dzXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9WmfdGG11fZlXHtIWtmEZpI64NmbJvrHDfdVUWJJ26I=;
-        b=Qc8FeC65hR6CyJUyWhmWwTE8VsG0ohf5/k+mgNY9nvwsgy52DBo9wnLE0ombHNglUf
-         DYMD7SHn8P0BMBPsI9sy/lHe3ZfdSM0iG0riXNmhr8DZS/pDVV//wDYuPJTPnIqxJVwe
-         csdPlT91FNppt2TJiefO6EUoa3xriWmIKO7t+5xgtxThwhxJ7n4SuYWcY+O+q8rpEach
-         xn8I6aqDmyojept3D4k+lIlG5KT2dj3M/3L2sR6oaou1aVfn3p4IOXCMRsB0xA9IVhQA
-         472vCyz36tOFPwB5kvZexC164/KS34mTaoifnjjA13oc1jXMfdr/CknfkyK7dV/F2fM1
-         j/sg==
-X-Gm-Message-State: AOAM530XJVXsZF8Y9XZ4YsdyVMdxcXvtQCXKVQRha1penSfTYlq1X76L
-        uMVVMAxGkfGPSBTZ/Yyo93M530YJDicv15mLbqk=
-X-Google-Smtp-Source: ABdhPJwISwR0m1rtGDZALu5HLELsrHJCDuhuDRh2Wv0WsYeZ5yobjBKDu6QZDuf+CQPmlYwZlkuTGmR3YslmwW7D8Ow=
-X-Received: by 2002:a9d:6d95:: with SMTP id x21mr16350478otp.339.1600246106782;
- Wed, 16 Sep 2020 01:48:26 -0700 (PDT)
+        Wed, 16 Sep 2020 04:48:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04A8C061788;
+        Wed, 16 Sep 2020 01:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zkDLxhq3ExbTfk+r0z7F7YPIpcLsGT2h6q/f53LrBqs=; b=VjiIW+S5mYOvePRcTHr4e0bMdB
+        OLQbwGWcZtEdJnipfq7KzYukg8H9VIOSqJOzfugbyS0+zSsfVWbugK2CLBiWgsmC2eb4CdDjRdP0H
+        qMvKcY3Ux9RDoB5mcDoTghSETFAa4XSGEQBsqeKY3nNBnbGrhvS2I9hAG7ixso0JLWasO4LTZ9vyj
+        eZIr8JXKaiKifRCpYTOGMwPRbNnhyiPTvAYFd+nw/Om5lfitGBODfDQfCongaJYE82F0gWXbxIBm+
+        x/vFfRA8jXtyjYexrp4cIpmwzL0igff2VQxwnT+3HuMg+RiHtmwozUfnR36iGMQawK2hicLsxqPSy
+        0M/u3qjQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIT77-0008Ib-JM; Wed, 16 Sep 2020 08:48:29 +0000
+Date:   Wed, 16 Sep 2020 09:48:29 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
+Subject: Re: [PATCH 1/9] lib: zstd: Add zstd compatibility wrapper
+Message-ID: <20200916084829.GA31608@infradead.org>
+References: <20200916034307.2092020-1-nickrterrell@gmail.com>
+ <20200916034307.2092020-2-nickrterrell@gmail.com>
 MIME-Version: 1.0
-References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915.134252.1280841239760138359.davem@davemloft.net>
- <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
- <20200916062614.GF142621@kroah.com> <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
- <20200916074217.GB189144@kroah.com> <CAFCwf10zLR9v65sgGGdkcf+JzZaw_WORAbQvEw-hbbfj=dy2Xg@mail.gmail.com>
- <20200916082226.GA509119@kroah.com>
-In-Reply-To: <20200916082226.GA509119@kroah.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Wed, 16 Sep 2020 11:47:58 +0300
-Message-ID: <CAFCwf1366_GoTj1gpneJBSqVxJ1mOnsdZiC+DJLG85GHGfZrzw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     David Miller <davem@davemloft.net>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916034307.2092020-2-nickrterrell@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:21 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Sep 16, 2020 at 11:02:39AM +0300, Oded Gabbay wrote:
-> > On Wed, Sep 16, 2020 at 10:41 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
-> > > > On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
-> > > > > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
-> > > > > > >
-> > > > > > > From: Oded Gabbay <oded.gabbay@gmail.com>
-> > > > > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
-> > > > > > >
-> > > > > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
-> > > > > > > > into the habanalabs driver.
-> > > > > > > >
-> > > > > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
-> > > > > > > > are in that patch's commit message.
-> > > > > > > >
-> > > > > > > > Link to v2 cover letter:
-> > > > > > > > https://lkml.org/lkml/2020/9/12/201
-> > > > > > >
-> > > > > > > I agree with Jakub, this driver definitely can't go-in as it is currently
-> > > > > > > structured and designed.
-> > > > > > Why is that ?
-> > > > > > Can you please point to the things that bother you or not working correctly?
-> > > > > > I can't really fix the driver if I don't know what's wrong.
-> > > > > >
-> > > > > > In addition, please read my reply to Jakub with the explanation of why
-> > > > > > we designed this driver as is.
-> > > > > >
-> > > > > > And because of the RDMA'ness of it, the RDMA
-> > > > > > > folks have to be CC:'d and have a chance to review this.
-> > > > > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
-> > > > > > the kernel and we can't connect to it due to the lack of H/W support
-> > > > > > we have
-> > > > > > Therefore, I don't see why we need to CC linux-rdma.
-> > > > > > I understood why Greg asked me to CC you because we do connect to the
-> > > > > > netdev and standard eth infrastructure, but regarding the RDMA, it's
-> > > > > > not really the same.
-> > > > >
-> > > > > Ok, to do this "right" it needs to be split up into separate drivers,
-> > > > > hopefully using the "virtual bus" code that some day Intel will resubmit
-> > > > > again that will solve this issue.
-> > > > Hi Greg,
-> > > > Can I suggest an alternative for the short/medium term ?
-> > > >
-> > > > In an earlier email, Jakub said:
-> > > > "Is it not possible to move the files and still build them into a single
-> > > > module?"
-> > > >
-> > > > I thought maybe that's a good way to progress here ?
-> > >
-> > > Cross-directory builds of a single module are crazy.  Yes, they work,
-> > > but really, that's a mess, and would never suggest doing that.
-> > >
-> > > > First, split the content to Ethernet and RDMA.
-> > > > Then move the Ethernet part to drivers/net but build it as part of
-> > > > habanalabs.ko.
-> > > > Regarding the RDMA code, upstream/review it in a different patch-set
-> > > > (maybe they will want me to put the files elsewhere).
-> > > >
-> > > > What do you think ?
-> > >
-> > > I think you are asking for more work there than just splitting out into
-> > > separate modules :)
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> > Hi Greg,
-> >
-> > If cross-directory building is out of the question, what about
-> > splitting into separate modules ? And use cross-module notifiers/calls
-> > ? I did that with amdkfd and amdgpu/radeon a couple of years back. It
-> > worked (that's the best thing I can say about it).
->
-> That's fine with me.
->
-> > The main problem with this "virtual bus" thing is that I'm not
-> > familiar with it at all and from my experience I imagine it would take
-> > a considerable time and effort to upstream this infrastructure work.
->
-> It shouldn't be taking that long, but for some unknown reason, the
-> original author of that code is sitting on it and not resending it.  Go
-> poke them through internal Intel channels to find out what the problem
-> is, as I have no clue why a 200-300 line bus module is taking so long to
-> get "right" :(
->
-> I'm _ALMOST_ at the point where I would just do that work myself, but
-> due to my current status with Intel, I'll let them do it as I have
-> enough other things on my plate...
->
-> > This could delay the NIC code for a couple of years, which by then
-> > this won't be relevant at all.
->
-> Why wouldn't this code be relevant in a year?  It's going to be 2+ years
-> before any of this shows up in an "enterprise distro" based on their
-> release cycles anyway :)
->
-> thanks,
->
-> greg k-h
+On Tue, Sep 15, 2020 at 08:42:54PM -0700, Nick Terrell wrote:
+> From: Nick Terrell <terrelln@fb.com>
+> 
+> Adds zstd_compat.h which provides the necessary functions from the
+> current zstd.h API. It is only active for zstd versions 1.4.6 and newer.
+> That means it is disabled currently, but will become active when a later
+> patch in this series updates the zstd library in the kernel to 1.4.6.
+> 
+> This header allows the zstd upgrade to 1.4.6 without changing any
+> callers, since they all include zstd through the compatibility wrapper.
+> Later patches in this series transition each caller away from the
+> compatibility wrapper. After all the callers have been transitioned away
+> from the compatibility wrapper, the final patch in this series deletes
+> it.
 
-Hi Greg,
-ok, I'll take a look. Do you happen to have the name of the patch-set / author ?
-
-Regarding the RDMA stuff, I'll do some work internally to separate it
-from the Ethernet code and then will send that code only to RDMA
-people with more detailed explanations.
-
-Thanks,
-Oded
+Please just add wrappes to the main header instead of causing all
+this churn.
