@@ -2,70 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAA226C657
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2608826C68B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbgIPRqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:46:39 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35921 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727297AbgIPRmX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:42:23 -0400
-Received: by mail-wr1-f67.google.com with SMTP id z1so7816258wrt.3;
-        Wed, 16 Sep 2020 10:42:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mZM+DPpEcfwHy6w47m49YsAp4ppTWvN4oVK5Trply5g=;
-        b=iRcuxEzQgB8dgm7yMOhc4w1BhwvEIoRat6t47aB6E+n2kgERaqKg2qs9LH9scR/zBs
-         PqFc3iiBsFxHiIPnzELU2OB+JXaDhEawHB6nMZw4xxv6mc6I424ZoGpHsT+0XxIrPQiJ
-         lRqUh9wI1QnaS4VCuVmCLTRNpRDT0Q+xwUslnWBwpqJjSX5Bjp4Q2CZc8PkIXceodbe+
-         EYCiTsdwM5Fnoq3PpSXJAmXcpAaR3Dp0+bEM1ZgN2QuwayFXYaK8fVOr98RknC6exsKr
-         hG639S0ZcDL+BoeGm1WSDSVf4+ZCLzMjsAylgNVNOqWJF4uy/HVrGfppH7TK4lYohQ/o
-         Bdrw==
-X-Gm-Message-State: AOAM532ByHabZUnys4CsUKTh7wq8gEHWkEYsINs+KklNFcWY6/+u21HE
-        oo6TfTy5OjqCN2MGtgU4sY/0XGSo6Q7+wYDw
-X-Google-Smtp-Source: ABdhPJxqTflk58WRHyVtD9XbqL9Q118Cqj3AUT87A43/ZCuGySbyxf6K/9H38Cgpf4SCgzC076Bv/g==
-X-Received: by 2002:a5d:634d:: with SMTP id b13mr28939753wrw.324.1600278141285;
-        Wed, 16 Sep 2020 10:42:21 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.191])
-        by smtp.googlemail.com with ESMTPSA id f6sm34757724wro.5.2020.09.16.10.42.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 10:42:20 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 19:42:18 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memory: omap-gpmc: Fix compile test on SPARC
-Message-ID: <20200916174218.GA23084@kozik-lap>
-References: <20200911143251.399-1-krzk@kernel.org>
+        id S1727669AbgIPRyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:54:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727294AbgIPRwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:52:36 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DA05206F7;
+        Wed, 16 Sep 2020 17:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600278755;
+        bh=qtv1VH/lpDHNP4K1hT8rAdmDRzl6jlj/EIejRq6sqbM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JrVlBOLxNcilm6sLhM9bAJJOwFcJcdsVCk8k8N5S1f2dOztgBjoFniBlVcxNGf07N
+         ikMhBD9w4QtsOnVMbBvdBylxMa6WEdZ6zney8xAm8/+iu+wtHo0f4vHzypodHRsz9Y
+         O8b76NNvKUPPw+pgOy5YlKh+MBvOVrP/lU5aPFnM=
+Date:   Wed, 16 Sep 2020 18:52:30 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Fabrice Gasnier <fabrice.gasnier@st.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@st.com>, <olivier.moysan@st.com>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Subject: Re: [PATCH v2] iio: stm32-dac: Replace indio_dev->mlock with own
+ device lock
+Message-ID: <20200916185230.45c0b7d4@archlinux>
+In-Reply-To: <b8d5cbb5-f393-6a5f-19cd-afa983b9f10a@st.com>
+References: <20200826063850.47625-1-alexandru.ardelean@analog.com>
+        <20200916092349.75647-1-alexandru.ardelean@analog.com>
+        <b8d5cbb5-f393-6a5f-19cd-afa983b9f10a@st.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200911143251.399-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 04:32:51PM +0200, Krzysztof Kozlowski wrote:
-> SPARC comes without CONFIG_OF_ADDRESS thus compile testing fails on
-> linking:
-> 
->   /usr/bin/sparc64-linux-gnu-ld: drivers/memory/omap-gpmc.o: in function `gpmc_probe_generic_child':
->   omap-gpmc.c:(.text.unlikely+0x14ec): undefined reference to `of_platform_device_create'
-> 
-> Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/memory/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+On Wed, 16 Sep 2020 12:18:02 +0200
+Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
 
-Applied.
+> On 9/16/20 11:23 AM, Alexandru Ardelean wrote:
+> > From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> > 
+> > As part of the general cleanup of indio_dev->mlock, this change replaces
+> > it with a local lock. The lock protects against potential races when
+> > reading the CR reg and then updating, so that the state of pm_runtime
+> > is consistent between the two operations.
+> > 
+> > This is part of a bigger cleanup.
+> > Link: https://lore.kernel.org/linux-iio/CA+U=Dsoo6YABe5ODLp+eFNPGFDjk5ZeQEceGkqjxXcVEhLWubw@mail.gmail.com/
+> > 
+> > Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/iio/dac/stm32-dac.c | 13 +++++++++----
+> >  1 file changed, 9 insertions(+), 4 deletions(-)  
+> 
+> Hi Alexandru,
+> 
+> Many thanks for this updated patch,
+> 
+> Reviewed-by: Fabrice Gasnier <fabrice.gasnier@st.com>
 
-Best regards,
-Krzysztof
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to poke at it.
+
+Thanks,
+
+Jonathan
+
+> 
+> Best regards,
+> Fabrice
+> 
+> > 
+> > diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
+> > index 092c796fa3d9..12dec68c16f7 100644
+> > --- a/drivers/iio/dac/stm32-dac.c
+> > +++ b/drivers/iio/dac/stm32-dac.c
+> > @@ -26,9 +26,12 @@
+> >  /**
+> >   * struct stm32_dac - private data of DAC driver
+> >   * @common:		reference to DAC common data
+> > + * @lock:		lock to protect against potential races when reading
+> > + *			and update CR, to keep it in sync with pm_runtime
+> >   */
+> >  struct stm32_dac {
+> >  	struct stm32_dac_common *common;
+> > +	struct mutex		lock;
+> >  };
+> >  
+> >  static int stm32_dac_is_enabled(struct iio_dev *indio_dev, int channel)
+> > @@ -58,10 +61,10 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+> >  	int ret;
+> >  
+> >  	/* already enabled / disabled ? */
+> > -	mutex_lock(&indio_dev->mlock);
+> > +	mutex_lock(&dac->lock);
+> >  	ret = stm32_dac_is_enabled(indio_dev, ch);
+> >  	if (ret < 0 || enable == !!ret) {
+> > -		mutex_unlock(&indio_dev->mlock);
+> > +		mutex_unlock(&dac->lock);
+> >  		return ret < 0 ? ret : 0;
+> >  	}
+> >  
+> > @@ -69,13 +72,13 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+> >  		ret = pm_runtime_get_sync(dev);
+> >  		if (ret < 0) {
+> >  			pm_runtime_put_noidle(dev);
+> > -			mutex_unlock(&indio_dev->mlock);
+> > +			mutex_unlock(&dac->lock);
+> >  			return ret;
+> >  		}
+> >  	}
+> >  
+> >  	ret = regmap_update_bits(dac->common->regmap, STM32_DAC_CR, msk, en);
+> > -	mutex_unlock(&indio_dev->mlock);
+> > +	mutex_unlock(&dac->lock);
+> >  	if (ret < 0) {
+> >  		dev_err(&indio_dev->dev, "%s failed\n", en ?
+> >  			"Enable" : "Disable");
+> > @@ -327,6 +330,8 @@ static int stm32_dac_probe(struct platform_device *pdev)
+> >  	indio_dev->info = &stm32_dac_iio_info;
+> >  	indio_dev->modes = INDIO_DIRECT_MODE;
+> >  
+> > +	mutex_init(&dac->lock);
+> > +
+> >  	ret = stm32_dac_chan_of_init(indio_dev);
+> >  	if (ret < 0)
+> >  		return ret;
+> >   
 
