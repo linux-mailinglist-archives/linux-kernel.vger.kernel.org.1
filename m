@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E4026C905
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6F926C912
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgIPTC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
+        id S1728339AbgIPTDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727511AbgIPRsr (ORCPT
+        with ESMTP id S1727279AbgIPRsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:47 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11386C0698C9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:24:55 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b79so2588539wmb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:24:54 -0700 (PDT)
+        Wed, 16 Sep 2020 13:48:35 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55826C0698CA;
+        Wed, 16 Sep 2020 04:25:21 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id r7so9770983ejs.11;
+        Wed, 16 Sep 2020 04:25:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dzlEMFrfJPNBczBcEKPI0Pi7LHr93uDvegVnUkyAZww=;
-        b=BW86NJLHAUE4C0+h1pek8uu7ahlAiaZycOIfyDhh9dQEfVJTvulYHFbzKJLhCg46Vy
-         7ZJ7gZ9Or2puEMbn5aqUH9L5jd225tFSR6HNPOaH5+XS88oVC8CgZiI1Nr/bZMnJ2HFj
-         Vlf6ixLKrzC1K2oYsLn9S3hbjcLRFWXaA6cPE=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+mqCE1Gph5m1yXF7bV6laGDpK9C2HQ1xfAV3LJcGXyk=;
+        b=V0xugFUwP2zKWQ3C6C6Oo6ZRSdKDI6SRacL8HgfrX8iw1MKIHqeTIofH/h6gvBbrOi
+         42G03NGAZdP94ZPBIcGONaBen5QoZ2w/rfCdfJCYNoys0kJx388ZNycBRMGPiRlr67sG
+         KW8lI3PO88QDhLDuY3OJ90X6NJv2GgJ9r6C9CaNvVXnTTDKlcbAdivt5TrcK2tezpxce
+         7/B+rW0/2DkYw6Tsnilr4rxufuCPPL5ntODuTgY3U+jCJJ6JpWVhwkPzWj8tjAw75gFd
+         5CscWNzYtswiu78RmMUw8fEBQ/ez4V/wTNGtwdj/cENKEwLIoINUnat3vAqAqkp3MbdC
+         +QHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dzlEMFrfJPNBczBcEKPI0Pi7LHr93uDvegVnUkyAZww=;
-        b=HQ1byKU7HQCvGEEaTJDN3/TkSmHQ04j62yORJmbYKHeYidXiNVhgDJu0Ur2vcIDjv9
-         DWNk8iYs+n5/U/8sVlp/xGsq4LYn8xbSriqms7uGATq5VDZLUrnZpFRozpTkADkA0ila
-         pCF62QBLljW844CIifusjEe+9x7XIxTkqoi+Bxi+eHP+BX4gR9qvPW40C3pFqY6IzmC2
-         FKO0BZitnpY6pbO1Lk+4RzXovlnIPlL9BFDjCLWlH16fPhfyjPD0HlH3LtLwYPTJn6d+
-         L1wPsUt4XgrKa3s/12EOzZkpbv61km3OWiHoVQFeMY7ThWBgK6Kif3n6s/xhfA9fh9Yc
-         UemA==
-X-Gm-Message-State: AOAM531u2MwgsWwEqH67C8DKUFGIW70ng3qAF2YlWcy6QwuJAarIwGUQ
-        NBGdf6Vq4MD3CLo9nxXJj9FkjQ==
-X-Google-Smtp-Source: ABdhPJxDS25ARMjRBo/UsC9dsAEMPUX6NsZNUAwjZFJ4gujR+XMjOxBBLtzjuVcFwtx2qVH2IqmnMA==
-X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr4372215wmh.71.1600255493476;
-        Wed, 16 Sep 2020 04:24:53 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id y6sm32793151wrn.41.2020.09.16.04.24.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 04:24:53 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 12:24:52 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     zangchunxin@bytedance.com
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH v5] mm/vmscan: add a fatal signals check in drop_slab_node
-Message-ID: <20200916112452.GA85476@chrisdown.name>
-References: <20200916025359.70203-1-zangchunxin@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+mqCE1Gph5m1yXF7bV6laGDpK9C2HQ1xfAV3LJcGXyk=;
+        b=SGHZd6BlsZtGC/nZi3V/zXOEDM89+WavqKWVBJXvR2cbsF8lJ5jJ6AwfBO0p2UdshG
+         zCoWBTSp9MRg84YI3ZdL+SEF+Mo9cbfCRLC/lngOjLE0JKtrJkPNMQDZJN7q9kQ1J5J0
+         qhpNWBu+6n55+Qio91Y/5JMqH0kF1VUQFm54aOtD6OC3EJ/4W3n6U8vTugVkHZ8jROt3
+         aCAre/m6p9qKC6Ziyt7GvbdWlTXkNCwHUETeyveRIzBCRwODaFiWVVBHL5axtqEulgvy
+         RDMip6cUkL/rAU4A+huFxnb4fZHRu22OdYbacsCKfA9boR76zowiW266UJXgQrNa5CTN
+         ub8A==
+X-Gm-Message-State: AOAM532CjqNgaBurz1kS8q8SjaBOOzhYHjrE2S/9cvhklNtNVngfU5KM
+        UkS0mw6cKZTS5sSolR4SEomV9LEIfR7fvavfKg==
+X-Google-Smtp-Source: ABdhPJyixyYti8m5yiACM/A3dKdas+hh45AAS4bMeCuzp5+OiXXkuFr73Ln3baDPyaTPw4glCszAn/R857RwhcaCsng=
+X-Received: by 2002:a17:906:aecb:: with SMTP id me11mr25984406ejb.217.1600255520046;
+ Wed, 16 Sep 2020 04:25:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200916025359.70203-1-zangchunxin@bytedance.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <20200916090342.748452-1-vkuznets@redhat.com> <6c2204ad-590b-025d-f728-0e6e67bf24ba@gmail.com>
+ <87een2htis.fsf@vitty.brq.redhat.com>
+In-Reply-To: <87een2htis.fsf@vitty.brq.redhat.com>
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+Date:   Wed, 16 Sep 2020 19:25:08 +0800
+Message-ID: <CAB5KdObJ4_0oJf+rwGXWNk6MsKm1j0dqrcGQkzQ63ek1LY=zMQ@mail.gmail.com>
+Subject: Re: [PATCH] Revert "KVM: Check the allocation of pv cpu mask"
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Haiwei Li <lihaiwei@tencent.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zangchunxin@bytedance.com writes:
->From: Chunxin Zang <zangchunxin@bytedance.com>
+Vitaly Kuznetsov <vkuznets@redhat.com> =E4=BA=8E2020=E5=B9=B49=E6=9C=8816=
+=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=887:04=E5=86=99=E9=81=93=EF=BC=
+=9A
 >
->On our server, there are about 10k memcg in one machine. They use memory
->very frequently. We have observed that drop_caches can take a
->considerable amount of time, and can't stop it.
+> Haiwei Li <lihaiwei.kernel@gmail.com> writes:
 >
->There are two reasons:
->1. There is somebody constantly generating more objects to reclaim
->  on drop_caches, result the 'freed' always bigger than 10.
->2. The process has no chance to process signals.
+> > On 20/9/16 17:03, Vitaly Kuznetsov wrote:
+> >> The commit 0f990222108d ("KVM: Check the allocation of pv cpu mask") w=
+e
+> >> have in 5.9-rc5 has two issue:
+> >> 1) Compilation fails for !CONFIG_SMP, see:
+> >>     https://bugzilla.kernel.org/show_bug.cgi?id=3D209285
+> >>
+> >> 2) This commit completely disables PV TLB flush, see
+> >>     https://lore.kernel.org/kvm/87y2lrnnyf.fsf@vitty.brq.redhat.com/
+> >>
+> >> The allocation problem is likely a theoretical one, if we don't
+> >> have memory that early in boot process we're likely doomed anyway.
+> >> Let's solve it properly later.
+> >
+> > Hi, i have sent a patchset to fix this commit.
+> >
+> > https://lore.kernel.org/kvm/20200914091148.95654-1-lihaiwei.kernel@gmai=
+l.com/T/#m6c27184012ee5438e5d91c09b1ba1b6a3ee30ee4
+> >
+> > What do you think?
 >
->We can get the following info through 'ps':
+> Saw it, looks good to me. We are, however, already very, very late in 5.9
+> release cycle and the original issue you were addressing (allocation
+> failure) is likely a theoretical only I suggest we just revert it before
+> 5.9 is released. For 5.9 we can certainly take your PATCH2 merged with
+> 0f99022210.
 >
-> root:~# ps -aux | grep drop
-> root  357956 ... R    Aug25 21119854:55 echo 3 > /proc/sys/vm/drop_caches
-> root 1771385 ... R    Aug16 21146421:17 echo 3 > /proc/sys/vm/drop_caches
->
->Add a bail out on the fatal signals in the main loop so that the
->operation can be terminated by userspace.
->
->Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
->Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> This Paolo's call anyway)
 
-Acked-by: Chris Down <chris@chrisdown.name>
+I see.  Thank you.
+
+Haiwei Li
