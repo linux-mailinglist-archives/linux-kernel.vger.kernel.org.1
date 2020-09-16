@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A01326C6CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4CC26C6D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727778AbgIPSE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:04:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727614AbgIPSDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:03:30 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CDC32137B;
-        Wed, 16 Sep 2020 18:03:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600279409;
-        bh=wekwBAIKPu1Rz5oUbsaznCNgfQb4fGuy2YA7PTMymvk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SVFaNdjRvlX2xA5CJGz4fdD1CDDM/wAVxm3wfv9vsDjqVmFBZqoj/HoT/8KZEifIP
-         V0C+2baqHooYe68TrshZU7HmpYZ745fbWOYXd66Lcj3vt1sMRGimbCHk2Uwu9xFxzt
-         gn7DIsychTc3yYLT6scbS7MrQ0q0Y11qrN0qwTMo=
-Date:   Wed, 16 Sep 2020 19:03:26 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Rob Herring <robh@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Kukjin Kim <kgene@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: exynos-adc: require
- second interrupt with touch screen
-Message-ID: <20200916190326.3095e945@archlinux>
-In-Reply-To: <20200916061747.GB5719@kozik-lap>
-References: <20200910161933.9156-1-krzk@kernel.org>
-        <20200915194444.GA2384148@bogus>
-        <20200916061747.GB5719@kozik-lap>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727733AbgIPSF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727743AbgIPSDl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:03:41 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DB1C06174A;
+        Wed, 16 Sep 2020 11:03:39 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id b124so4403497pfg.13;
+        Wed, 16 Sep 2020 11:03:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jtd+v1r7yFCDwGBOouA+wJLSIZj7EYucgtKvBQ472aI=;
+        b=cTa6gKMf5MByKmHhZnSkM165n0VLREb/jbRMq8LQhka3+P4oYALaD9q/ao3GBhxdPH
+         jMQtMEyj++4c4PcPHf2tNjhuDehBXfWdJa/PVgAie/cEkbei5QezHTpWA8XDwOhDoGxO
+         PKMZqwBZYVXbHW1wP5ArC6O8PbTAGrIF1Ksrc15a9JKmdWSZH0Y4HPUrDWuzeSPt481X
+         PA+m20QNakZcTsNdFxTU4HQSxHKLcpQ50e97YngIQsBoKvV/aCGh30orHF+vk43INisd
+         J5kXpp3EkwpI2KXVDtEk52iYJ+jS3gTH6yb/oqI5D0rjKQ4PoOXcJBfj1f5Paqtcjxm/
+         dKGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jtd+v1r7yFCDwGBOouA+wJLSIZj7EYucgtKvBQ472aI=;
+        b=eGzVsxdpN4L2SiRQN3zZI3EfPqi0XYib8tK4TmWiCBve93bwY3mBOyiUikFLzxQjJ5
+         amW5FrPUm+gIQW1kMXOApwuZC1gu6Oh5tflZ+b4xDR6Le3YM10XIwr/aWhWJMPtpr2mH
+         uAEY7HWYOwfIhzKYyzZyMH/I3POanA63RPJLks3xB4wj56SGouHNuZpRxrg92Rq05ABf
+         sl6BlybBrvjUZ3aQr24cSKZaEXo+mo1g+w98Qu6stUCGHojWPz2Ake3gGVhuII3glccn
+         r9TrYhQ4Nbx27m57aeYJCpQ+ZJUImQAtGnnGNhfrPtH6CNxHydTdCE5jcZaTuXoC9Diq
+         yqaA==
+X-Gm-Message-State: AOAM530HV8MQFSzd+Y8/PmoX3vxndpXo03JTuZVsq8+3NBHgSRcudx/r
+        x3maPMGxW77x4SuymYjOB+U=
+X-Google-Smtp-Source: ABdhPJzuB1Va430uunETuDeXzaGyqFT1vMNiu49dAXULQmwVIvgIvYQAP7lQURIkJDjMsJggSKN96w==
+X-Received: by 2002:a65:66c6:: with SMTP id c6mr19860991pgw.206.1600279418834;
+        Wed, 16 Sep 2020 11:03:38 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id v5sm17634372pfv.199.2020.09.16.11.03.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 11:03:38 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 11:03:35 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        Harry Cutts <hcutts@chromium.org>,
+        Johnny Chuang <johnny.chuang@emc.com.tw>,
+        James Chen <james.chen@emc.com.tw>,
+        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
+        Paul Liang <paul.liang@emc.com.tw>,
+        Jeff Chuang <jeff.chuang@emc.com.tw>
+Subject: Re: [PATCH] Input: elants_i2c - fix typo for an attribute to show
+ calibration count
+Message-ID: <20200916180335.GL1681290@dtor-ws>
+References: <1600238783-32303-1-git-send-email-johnny.chuang.emc@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600238783-32303-1-git-send-email-johnny.chuang.emc@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 08:17:47 +0200
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
-
-> On Tue, Sep 15, 2020 at 01:44:44PM -0600, Rob Herring wrote:
-> > On Thu, 10 Sep 2020 18:19:32 +0200, Krzysztof Kozlowski wrote:  
-> > > The ADC in S3C/S5P/Exynos SoCs can be used also for handling touch
-> > > screen.  In such case the second interrupt is required.  This second
-> > > interrupt can be anyway provided, even without touch screens.  This
-> > > fixes dtbs_check warnings like:
-> > > 
-> > >   arch/arm/boot/dts/s5pv210-aquila.dt.yaml: adc@e1700000: interrupts: [[23], [24]] is too long
-> > > 
-> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > Acked-by: Jonathan Cameron <Jonathan.Cameron@huwei.com>
-> > > 
-> > > ---
-> > > 
-> > > Changes since v1:
-> > > 1. Fix if:has-touchscreen, as pointed by Rob.
-> > > 2. Add Ack.
-> > > ---
-> > >  .../bindings/iio/adc/samsung,exynos-adc.yaml       | 14 +++++++++++++-
-> > >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > >   
-> > 
-> > Reviewed-by: Rob Herring <robh@kernel.org>  
+On Wed, Sep 16, 2020 at 02:46:23PM +0800, Johnny Chuang wrote:
+> Fixed typo for command from 0xE0 to 0xD0.
 > 
-> Jonathan,
+> commit cf520c643012 ("Input: elants_i2c - provide an attribute
+> to show calibration count")
 > 
-> Could you pick up these two?
-Done.  Applied to the togreg branch of iio.git and pushed out
-as testing for the autobuilders to possibly poke them.
-
-Thanks,
-
-Jonathan
-
+> There is an non-touch case by non-calibration after update firmware.
+> Elan could know calibrate or not by calibration count.
+> The value of '0xffff' means we didn't calibrate after update firmware.
+> If calibrate success, it will plus one and change to '0x0000'.
 > 
-> Best regards,
-> Krzysztof
-> 
+> Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
 
+Applied, thank you.
+
+-- 
+Dmitry
