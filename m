@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB9626C9A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E487726C9A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbgIPRiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgIPRfW (ORCPT
+        id S1727379AbgIPTPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:15:18 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35949 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727254AbgIPRip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:35:22 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9518EC061353
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:34:52 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so7751494wrm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:34:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ki62FqIiIgJ8yaBZSKIYHGl1mRsUtoqotQFZS0p5Has=;
-        b=kuz0lgsVij7wLKItfIOGcuCmtvwNys1htJnrFzCNRHaLjnVgElf4udXEubZns0dGAz
-         NqFkPkuvm9TbHN4J5VCtVm7UDYsIf+4wGcbWnp5r2GIAd9r+/SBADS9HcvFM14SFeAoq
-         P2YaGqpnPwU/jtKoPyr2enlSJh9RNiWe4T5dguCXaWfc0N0jpNjqUEXj8iL+3zzKLce5
-         gQOmsMW24e8arpUJ3wc5JQTLKSJiijZpRkX/RtKzwFR8HA3+DbxQCE5+3Z9HI+eiTgxx
-         FbB0gtfKqTpG/ce9J6iO28HJ/sQI4vk6jtZNWmtWmSFxB01rO8VQFJ/ro1Fry1BHESOm
-         8VGQ==
+        Wed, 16 Sep 2020 13:38:45 -0400
+Received: by mail-ot1-f68.google.com with SMTP id 60so7493945otw.3;
+        Wed, 16 Sep 2020 10:38:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ki62FqIiIgJ8yaBZSKIYHGl1mRsUtoqotQFZS0p5Has=;
-        b=EwHtJ8Rb4Mi9sd288hky2PoBdJA8xlVbMZsIBbspjtS9RFsmuLzGT1d0IsKB30C7ns
-         GPRwkR1CylJvAAI5g2PHUqEsGyBQpVGxQPHN8hEI+WGcH7WEr/pc4aIRcdriHEwqOrQM
-         T/XJvzxcPtImFYzNaYozp1WnZxO0/nLBZPufTNIj7L+stoEKPc3wFwY8ZiNFkIk7azp9
-         x8alFR1bbc68G0oyx/I1tGnPscmAAW3WI2eee14e6MZwq4U4j8qBaTuJ2dK9wo4oXywK
-         AUMBz76Mq8anLM6BTLsKHKRvELs6PJmw8tHk9nLGh/aE1MqZxcmSdREuwOsfHRaAKPnR
-         Uv+w==
-X-Gm-Message-State: AOAM532DCm4vyk7rE8xGZahvjHvTQAoHCKdd90LWadU5V6+oG5htL/O0
-        mvVoulvqYv5zoSLD2qE/XXmKjw==
-X-Google-Smtp-Source: ABdhPJzQzJxXIxJM0jRA7b3rUmMwdVhHQPWJyctJSUBa7YGa64yNP8fcblWJOLLn4QkX3rVzCKMVDg==
-X-Received: by 2002:a05:6000:1184:: with SMTP id g4mr27622757wrx.20.1600277691141;
-        Wed, 16 Sep 2020 10:34:51 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
-        by smtp.gmail.com with ESMTPSA id o16sm32123548wrp.52.2020.09.16.10.34.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 10:34:50 -0700 (PDT)
-From:   David Brazdil <dbrazdil@google.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v3 03/11] kvm: arm64: Only define __kvm_ex_table for CONFIG_KVM
-Date:   Wed, 16 Sep 2020 18:34:31 +0100
-Message-Id: <20200916173439.32265-4-dbrazdil@google.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916173439.32265-1-dbrazdil@google.com>
-References: <20200916173439.32265-1-dbrazdil@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3JDB+lU39ICq4aZ4kuFhJ9S4Knnwc0sZGJgPF5oVb6A=;
+        b=TpkEnf6LfwMpqw7wvrW9ZzmIIvL1bshMvnGzzN32cGOkk1QyRrRb9/zoirG469CeyU
+         ps06zreneQu6ySdAvWWgdB6MlHvGbkjCMa5r2lvZwqI0Lp5flWfoOV/TvfhjizyBw4H0
+         fcKQE5yi5pcdS+RgqrTdW50Ut2dnC3V9zWHQpg3AxIH+4ZMIpmsjR7d/VaauYvSrLACm
+         aC0meroUJKdAMuQUW0zGBG8oloC2+EVd83DFUsK1yk6UyTQTld44nnPjv5LHnuG+czgm
+         AmtdVdDA4YoS76o+RrVjeI2zxSVAcfCD48Y5n9+GSSGlvPbMXwPAod6Aowek1cX8dEGY
+         idjQ==
+X-Gm-Message-State: AOAM530ebULNRY9ms1ewXk7fmFN3Df57ydPxDm5S5/is+gbJr+u9qF95
+        J3RJjvo1fdOANeQK/FcOClSIhGcgCCi5ndJ6BzA=
+X-Google-Smtp-Source: ABdhPJxXEqAa3xrm8VkiFZHBv5NvR2k7vtEw0BUNQO3Uy5RDg2tS6HrUyrTx22BrGUCOQuYdQq7k76PRnK+AsrbFRGY=
+X-Received: by 2002:a9d:6010:: with SMTP id h16mr17331423otj.262.1600277907620;
+ Wed, 16 Sep 2020 10:38:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200915103157.345404192@infradead.org> <20200915103806.280265587@infradead.org>
+ <CAJZ5v0jD-Lv5WAKHd9KN8sPozN4DeA-sQ4pXZTHNSZ4XS=as3A@mail.gmail.com> <20200916154212.GE1362448@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200916154212.GE1362448@hirez.programming.kicks-ass.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 16 Sep 2020 19:38:16 +0200
+Message-ID: <CAJZ5v0ipLfTA47d+qXUNLO+LAHpOmdEvfLyz=goF_rPh1nVJXw@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/4] acpi: Use CPUIDLE_FLAG_TIMER_STOP
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor cleanup that only creates __kvm_ex_table ELF section and
-related symbols if CONFIG_KVM is enabled.
+On Wed, Sep 16, 2020 at 5:42 PM <peterz@infradead.org> wrote:
+>
+> On Tue, Sep 15, 2020 at 06:26:52PM +0200, Rafael J. Wysocki wrote:
+> > On Tue, Sep 15, 2020 at 12:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > Make acpi_processor_idle use the common broadcast code, there's no
+> > > reason not to. This also removes some RCU usage after
+> > > rcu_idle_enter().
+> > >
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> >
+> > The whole series looks good to me, so please feel free to add
+> >
+> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > to all of the four patches.
+> >
+> > Alternatively, please let me know if you want me to take the patches.
+>
+> Feel free to take them. All the prerequisite borkage is in linus' tree
+> already.
 
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/kernel/vmlinux.lds.S | 4 ++++
- 1 file changed, 4 insertions(+)
+OK
 
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 7cba7623fcec..0d543570e811 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -21,11 +21,15 @@ ENTRY(_text)
- jiffies = jiffies_64;
- 
- 
-+#ifdef CONFIG_KVM
- #define HYPERVISOR_EXTABLE					\
- 	. = ALIGN(SZ_8);					\
- 	__start___kvm_ex_table = .;				\
- 	*(__kvm_ex_table)					\
- 	__stop___kvm_ex_table = .;
-+#else /* CONFIG_KVM */
-+#define HYPERVISOR_EXTABLE
-+#endif
- 
- #define HYPERVISOR_TEXT					\
- 	/*						\
--- 
-2.28.0.618.gf4bc123cb7-goog
+All applied (with some minor edits in the subjects) for 5.9-rc6.
 
+Thanks!
