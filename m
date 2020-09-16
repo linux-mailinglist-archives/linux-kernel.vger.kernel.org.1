@@ -2,255 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3AD26B676
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DCE26B6E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbgIPAFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:05:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26095 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727090AbgIPAFO (ORCPT
+        id S1727484AbgIPANo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:13:44 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:34374 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727464AbgIPAM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:05:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600214710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VjZa40MjlMQHEg6VysBK1I3Rn/FQZQF1fQa44n3WO6k=;
-        b=WsERhkWc3AbE9uMLsIb19Jw+W4CY9104PbTBjEZGawF9P84uBJrwOG7Qw5y2FmDyO9WHQR
-        YCzWO2dbVZAb2JJSwbsD/eYetfQ4uR5iWh7QVWA1I/P9Bl8wHjpA93LWNyjqE2P0dUErCF
-        WR7K5F0JCricL+oTwKrLqR1y6Jh7aLs=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-3Oe0lXmtOlGhAEEdvkklHw-1; Tue, 15 Sep 2020 20:05:04 -0400
-X-MC-Unique: 3Oe0lXmtOlGhAEEdvkklHw-1
-Received: by mail-qk1-f199.google.com with SMTP id 139so4506304qkl.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 17:05:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=VjZa40MjlMQHEg6VysBK1I3Rn/FQZQF1fQa44n3WO6k=;
-        b=ZkkqyPi7d0gIuUU/Nxx6rWmAnE60zniLSgimzfHPR3hnoj/BVGKfzjov3+W/kSMhN8
-         WwvgjdDxzj6w34dalQK6f/ofVlEX4OUZ5zJbtsG87XC1KeWABlitinjwBuoPv6hNvzmC
-         nbDYBsceCpZ+bZWWOI1ECxsS+ogfcegoChCg7/YFLMYgCTgoWQ55FR6UaNHcd1mHdpOR
-         llCAXbmmtQQWjFV4Y0IwYBsjJfrTzihD4zVeelFWK22Jol/abg4Q91HV1oWAjBuFclVL
-         1NCp8zvkQQvmQHDGnXEX6kC5H+VRv9L3i3nTzu69KtDaf2LYP4rkVrrzACxY+C2YURSC
-         rMFA==
-X-Gm-Message-State: AOAM533CLfCbmO4au4qVwwmzQ1AKQOyABHVZYExlF7lrC8qV9VqwCFtL
-        auQYoGe/Hzu3hnOxPUG84PocN/yTYC5HucEBVwPcPwbZXzLJ7l5P9CToFdeqIo/o6W+JPvDNbd9
-        saHDaoJBog6jRmmYp2QgBz18e
-X-Received: by 2002:ac8:4e81:: with SMTP id 1mr21705676qtp.62.1600214704313;
-        Tue, 15 Sep 2020 17:05:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyODPABpreP655peyCUe7notNMLlNOaVBru1ukZ/HwVrAukGlTgX9PPDDwkE5P37N1uXnJlew==
-X-Received: by 2002:ac8:4e81:: with SMTP id 1mr21705661qtp.62.1600214704041;
-        Tue, 15 Sep 2020 17:05:04 -0700 (PDT)
-Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id o35sm6208974qte.23.2020.09.15.17.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 17:05:03 -0700 (PDT)
-Message-ID: <7a86180ed7013a0a52d71cf38a4bc371c7ffd4ab.camel@redhat.com>
-Subject: Re: [RFC 1/5] drm/i915/dp: Program source OUI on eDP panels
-From:   Lyude Paul <lyude@redhat.com>
-To:     "Navare, Manasi" <manasi.d.navare@intel.com>
-Cc:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        thaytan@noraisin.net, David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        =?ISO-8859-1?Q?Jos=E9?= Roberto de Souza 
-        <jose.souza@intel.com>, Wambui Karuga <wambui.karugax@gmail.com>
-Date:   Tue, 15 Sep 2020 20:05:04 -0400
-In-Reply-To: <20200915223841.GA14183@labuser-Z97X-UD5H>
-References: <20200915172939.2810538-1-lyude@redhat.com>
-         <20200915172939.2810538-2-lyude@redhat.com>
-         <20200915190639.GC503362@intel.com>
-         <b1b77b7022f9e388808bc3835f8fc88cda0718bc.camel@redhat.com>
-         <20200915223841.GA14183@labuser-Z97X-UD5H>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Tue, 15 Sep 2020 20:12:59 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G0AYZN024263;
+        Wed, 16 Sep 2020 00:12:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=e1CZMmxxOxk5Somji13MpI0sJgU05tCxqG++5ZRhyYw=;
+ b=Yn1NsFHf6rmXXCSR80ZGl6Gqn5PvrQRR2HeGCODn2wcXZoOYiGzfuiZKhH5CET9Y8NWa
+ wAUo+txVYpgOsC4zZmtsy4WSu4IFs2TmSy1o8KvjM+oNUMq3nunAIJpHRgXIAwJIyGvv
+ DmU8dClLBcqVxmL7upk0v8xKGj9eTXTBk3WMdZok0sFx/1qCO5QcIggD+opOHBQA9Stm
+ 0w9kmagAg6kEgh1GmBZohMatgdXqk9X7RqWUObGrUdsy/xiDpb+6jjVzQjLhIxxVG0Uu
+ QgvEDeo5bBTJ0+ld5TXFoea5GGBgKX/GnytHdc8wXplHSNwld2eLb+Jum+ispnLkApLI 3A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33j91dhrk5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 00:12:45 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G0BRPt074325;
+        Wed, 16 Sep 2020 00:12:45 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 33h886ep2p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 00:12:45 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08G0ChVr015693;
+        Wed, 16 Sep 2020 00:12:43 GMT
+Received: from localhost (/10.159.137.169)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 00:12:43 +0000
+Date:   Tue, 15 Sep 2020 17:12:42 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, willy@infradead.org,
+        minlei@redhat.com
+Subject: Re: [PATCH] iomap: Fix the write_count in iomap_add_to_ioend().
+Message-ID: <20200916001242.GE7955@magnolia>
+References: <20200819102841.481461-1-anju@linux.vnet.ibm.com>
+ <20200820231140.GE7941@dread.disaster.area>
+ <20200821044533.BBFD1A405F@d06av23.portsmouth.uk.ibm.com>
+ <20200821215358.GG7941@dread.disaster.area>
+ <20200822131312.GA17997@infradead.org>
+ <20200824142823.GA295033@bfoster>
+ <20200824150417.GA12258@infradead.org>
+ <20200824154841.GB295033@bfoster>
+ <20200825004203.GJ12131@dread.disaster.area>
+ <20200825144917.GA321765@bfoster>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825144917.GA321765@bfoster>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=1 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160000
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=1 mlxlogscore=999
+ clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150192
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-15 at 15:38 -0700, Navare, Manasi wrote:
-> On Tue, Sep 15, 2020 at 03:47:01PM -0400, Lyude Paul wrote:
-> > On Tue, 2020-09-15 at 15:06 -0400, Rodrigo Vivi wrote:
-> > > On Tue, Sep 15, 2020 at 01:29:35PM -0400, Lyude Paul wrote:
-> > > > Since we're about to start adding support for Intel's magic HDR
-> > > > backlight interface over DPCD, we need to ensure we're properly
-> > > > programming this field so that Intel specific sink services are
-> > > > exposed.
-> > > > Otherwise, 0x300-0x3ff will just read zeroes.
-> > > > 
-> > > > We also take care not to reprogram the source OUI if it already
-> > > > matches
-> > > > what we expect. This is just to be careful so that we don't
-> > > > accidentally
-> > > > take the panel out of any backlight control modes we found it in.
-> > > > 
-> > > > Signed-off-by: Lyude Paul <lyude@redhat.com>
-> > > > Cc: thaytan@noraisin.net
-> > > > Cc: Vasily Khoruzhick <anarsoul@gmail.com>
-> > > > ---
-> > > >  drivers/gpu/drm/i915/display/intel_dp.c | 32
-> > > > +++++++++++++++++++++++++
-> > > >  1 file changed, 32 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/i915/display/intel_dp.c
-> > > > b/drivers/gpu/drm/i915/display/intel_dp.c
-> > > > index 4bd10456ad188..b591672ec4eab 100644
-> > > > --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> > > > +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> > > > @@ -3428,6 +3428,7 @@ void
-> > > > intel_dp_sink_set_decompression_state(struct
-> > > > intel_dp *intel_dp,
-> > > >  void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
-> > > >  {
-> > > >  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> > > > +	u8 edp_oui[] = { 0x00, 0xaa, 0x01 };
-> > > 
-> > > what are these values?
+On Tue, Aug 25, 2020 at 10:49:17AM -0400, Brian Foster wrote:
+> cc Ming
 > 
-> We in i915 typically use the OUI number for adding any eDP specific
-> quirks. I have seen these getting spit out in the dmesg log at thebeginning.
-> AFAIK It is some kind of OEM identification number for a display panel.
-
-Are you sure you're not confusing this with the sink OUI btw? We're setting
-the source OUI (so, identifying ourselves to the display panel instead of the
-other way around) here to tell the panel to expose the Intel specific
-backlight controls. My assumption is the { 0x00, 0xaa, 0x01 } is some Intel
-driver OUI, it's just I'm not really sure where it comes from other then the
-patch I linked to down below
-
-> 
-> Manasi
-> > I wish I knew, my assumption is this is the OUI that Intel's GPU driver
-> > uses on
-> > other platforms, but I don't have any documentation mentioning this (in
-> > fact,
-> > the few documents I do have on this backlight interface don't seem to make
-> > any
-> > mention of it). I only managed to find this when looking through the last
-> > attempt someone did at adding support for this backlight interface:
-> > 
-> > https://patchwork.freedesktop.org/patch/334989/
-> > 
-> > I think it should be fairly safe to write, as I know nouveau always
-> > programs a
-> > source OUI (we don't do it from our driver, but nvidia hardware seems to
-> > do it
-> > automatically) and I don't believe I've seen it ever change any behavior
-> > besides
-> > making things appear in the 0x300-0x3ff register range.
-> > 
-> > AFAICT though, the backlight interface won't advertise itself without this
-> > being
-> > set early on. If you could find anyone from Intel who knows more about it
-> > though
-> > I'd definitely appreciate it (and just in general for the rest of the
-> > patch
-> > series as well)
-> > 
-> > > >  	int ret, i;
-> > > >  
-> > > >  	/* Should have a valid DPCD by this point */
-> > > > @@ -3443,6 +3444,14 @@ void intel_dp_sink_dpms(struct intel_dp
-> > > > *intel_dp,
-> > > > int mode)
-> > > >  	} else {
-> > > >  		struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
-> > > >  
-> > > > +		/* Write the source OUI as early as possible */
-> > > > +		if (intel_dp_is_edp(intel_dp)) {
-> > > > +			ret = drm_dp_dpcd_write(&intel_dp->aux,
-> > > > DP_SOURCE_OUI,
-> > > > edp_oui,
-> > > > +						sizeof(edp_oui));
-> > > > +			if (ret < 0)
-> > > > +				drm_err(&i915->drm, "Failed to write
-> > > > eDP source
-> > > > OUI\n");
-> > > > +		}
-> > > > +
-> > > >  		/*
-> > > >  		 * When turning on, we need to retry for 1ms to give
-> > > > the sink
-> > > >  		 * time to wake up.
-> > > > @@ -4530,6 +4539,23 @@ static void intel_dp_get_dsc_sink_cap(struct
-> > > > intel_dp
-> > > > *intel_dp)
-> > > >  	}
-> > > >  }
-> > > >  
-> > > > +static void
-> > > > +intel_edp_init_source_oui(struct intel_dp *intel_dp)
-> > > > +{
-> > > > +	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> > > > +	u8 oui[] = { 0x00, 0xaa, 0x01 };
-> > > > +	u8 buf[3] = { 0 };
-> > > > +
-> > > > +	if (drm_dp_dpcd_read(&intel_dp->aux, DP_SOURCE_OUI, buf,
-> > > > sizeof(buf)) <
-> > > > 0)
-> > > > +		drm_err(&i915->drm, "Failed to read source OUI\n");
-> > > > +
-> > > > +	if (memcmp(oui, buf, sizeof(oui)) == 0)
-> > > > +		return;
-> > > > +
-> > > > +	if (drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, oui,
-> > > > sizeof(oui)) <
-> > > > 0)
-> > > > +		drm_err(&i915->drm, "Failed to write source OUI\n");
-> > > > +}
-> > > > +
-> > > >  static bool
-> > > >  intel_edp_init_dpcd(struct intel_dp *intel_dp)
-> > > >  {
-> > > > @@ -4607,6 +4633,12 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
-> > > >  	if (INTEL_GEN(dev_priv) >= 10 || IS_GEMINILAKE(dev_priv))
-> > > >  		intel_dp_get_dsc_sink_cap(intel_dp);
-> > > >  
-> > > > +	/*
-> > > > +	 * Program our source OUI so we can make various Intel-
-> > > > specific AUX
-> > > > +	 * services available (such as HDR backlight controls)
-> > > > +	 */
-> > > > +	intel_edp_init_source_oui(intel_dp);
-> > > 
-> > > I believe we should restrict this to the supported platforms: cfl, whl,
-> > > cml,
-> > > icl, tgl
-> > > no?
-> > > 
-> > > > +
-> > > >  	return true;
-> > > >  }
-> > > >  
-> > > > -- 
-> > > > 2.26.2
+> On Tue, Aug 25, 2020 at 10:42:03AM +1000, Dave Chinner wrote:
+> > On Mon, Aug 24, 2020 at 11:48:41AM -0400, Brian Foster wrote:
+> > > On Mon, Aug 24, 2020 at 04:04:17PM +0100, Christoph Hellwig wrote:
+> > > > On Mon, Aug 24, 2020 at 10:28:23AM -0400, Brian Foster wrote:
+> > > > > Do I understand the current code (__bio_try_merge_page() ->
+> > > > > page_is_mergeable()) correctly in that we're checking for physical page
+> > > > > contiguity and not necessarily requiring a new bio_vec per physical
+> > > > > page?
 > > > > 
-> > > > _______________________________________________
-> > > > dri-devel mailing list
-> > > > dri-devel@lists.freedesktop.org
-> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > -- 
-> > Sincerely,
-> >       Lyude Paul (she/her)
-> >       Software Engineer at Red Hat
+> > > > 
+> > > > Yes.
+> > > > 
+> > > 
+> > > Ok. I also realize now that this occurs on a kernel without commit
+> > > 07173c3ec276 ("block: enable multipage bvecs"). That is probably a
+> > > contributing factor, but it's not clear to me whether it's feasible to
+> > > backport whatever supporting infrastructure is required for that
+> > > mechanism to work (I suspect not).
+> > > 
+> > > > > With regard to Dave's earlier point around seeing excessively sized bio
+> > > > > chains.. If I set up a large memory box with high dirty mem ratios and
+> > > > > do contiguous buffered overwrites over a 32GB range followed by fsync, I
+> > > > > can see upwards of 1GB per bio and thus chains on the order of 32+ bios
+> > > > > for the entire write. If I play games with how the buffered overwrite is
+> > > > > submitted (i.e., in reverse) however, then I can occasionally reproduce
+> > > > > a ~32GB chain of ~32k bios, which I think is what leads to problems in
+> > > > > I/O completion on some systems. Granted, I don't reproduce soft lockup
+> > > > > issues on my system with that behavior, so perhaps there's more to that
+> > > > > particular issue.
+> > > > > 
+> > > > > Regardless, it seems reasonable to me to at least have a conservative
+> > > > > limit on the length of an ioend bio chain. Would anybody object to
+> > > > > iomap_ioend growing a chain counter and perhaps forcing into a new ioend
+> > > > > if we chain something like more than 1k bios at once?
+> > > > 
+> > > > So what exactly is the problem of processing a long chain in the
+> > > > workqueue vs multiple small chains?  Maybe we need a cond_resched()
+> > > > here and there, but I don't see how we'd substantially change behavior.
+> > > > 
+> > > 
+> > > The immediate problem is a watchdog lockup detection in bio completion:
+> > > 
+> > >   NMI watchdog: Watchdog detected hard LOCKUP on cpu 25
+> > > 
+> > > This effectively lands at the following segment of iomap_finish_ioend():
+> > > 
+> > > 		...
+> > >                /* walk each page on bio, ending page IO on them */
+> > >                 bio_for_each_segment_all(bv, bio, iter_all)
+> > >                         iomap_finish_page_writeback(inode, bv->bv_page, error);
+> > > 
+> > > I suppose we could add a cond_resched(), but is that safe directly
+> > > inside of a ->bi_end_io() handler? Another option could be to dump large
+> > > chains into the completion workqueue, but we may still need to track the
+> > > length to do that. Thoughts?
 > > 
--- 
-Cheers,
-	Lyude Paul (she/her)
-	Software Engineer at Red Hat
+> > We have ioend completion merging that will run the compeltion once
+> > for all the pending ioend completions on that inode. IOWs, we do not
+> > need to build huge chains at submission time to batch up completions
+> > efficiently. However, huge bio chains at submission time do cause
+> > issues with writeback fairness, pinning GBs of ram as unreclaimable
+> > for seconds because they are queued for completion while we are
+> > still submitting the bio chain and submission is being throttled by
+> > the block layer writeback throttle, etc. Not to mention the latency
+> > of stable pages in a situation like this - a mmap() write fault
+> > could stall for many seconds waiting for a huge bio chain to finish
+> > submission and run completion processing even when the IO for the
+> > given page we faulted on was completed before the page fault
+> > occurred...
+> > 
+> > Hence I think we really do need to cap the length of the bio
+> > chains here so that we start completing and ending page writeback on
+> > large writeback ranges long before the writeback code finishes
+> > submitting the range it was asked to write back.
+> > 
+> 
+> Ming pointed out separately that limiting the bio chain itself might not
+> be enough because with multipage bvecs, we can effectively capture the
+> same number of pages in much fewer bios. Given that, what do you think
+> about something like the patch below to limit ioend size? This
+> effectively limits the number of pages per ioend regardless of whether
+> in-core state results in a small chain of dense bios or a large chain of
+> smaller bios, without requiring any new explicit page count tracking.
+> 
+> Brian
 
+Dave was asking on IRC if I was going to pull this patch in.  I'm unsure
+of its status (other than it hasn't been sent as a proper [PATCH]) so I
+wonder, is this necessary, and if so, can it be cleaned up and
+submitted?
+
+--D
+
+> --- 8< ---
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 6ae98d3cb157..4aa96705ffd7 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -1301,7 +1301,7 @@ iomap_chain_bio(struct bio *prev)
+>  
+>  static bool
+>  iomap_can_add_to_ioend(struct iomap_writepage_ctx *wpc, loff_t offset,
+> -		sector_t sector)
+> +		unsigned len, sector_t sector)
+>  {
+>  	if ((wpc->iomap.flags & IOMAP_F_SHARED) !=
+>  	    (wpc->ioend->io_flags & IOMAP_F_SHARED))
+> @@ -1312,6 +1312,8 @@ iomap_can_add_to_ioend(struct iomap_writepage_ctx *wpc, loff_t offset,
+>  		return false;
+>  	if (sector != bio_end_sector(wpc->ioend->io_bio))
+>  		return false;
+> +	if (wpc->ioend->io_size + len > IOEND_MAX_IOSIZE)
+> +		return false;
+>  	return true;
+>  }
+>  
+> @@ -1329,7 +1331,7 @@ iomap_add_to_ioend(struct inode *inode, loff_t offset, struct page *page,
+>  	unsigned poff = offset & (PAGE_SIZE - 1);
+>  	bool merged, same_page = false;
+>  
+> -	if (!wpc->ioend || !iomap_can_add_to_ioend(wpc, offset, sector)) {
+> +	if (!wpc->ioend || !iomap_can_add_to_ioend(wpc, offset, len, sector)) {
+>  		if (wpc->ioend)
+>  			list_add(&wpc->ioend->io_list, iolist);
+>  		wpc->ioend = iomap_alloc_ioend(inode, wpc, offset, sector, wbc);
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index 4d1d3c3469e9..5d1b1a08ec96 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -200,6 +200,8 @@ struct iomap_ioend {
+>  	struct bio		io_inline_bio;	/* MUST BE LAST! */
+>  };
+>  
+> +#define IOEND_MAX_IOSIZE	(262144 << PAGE_SHIFT)
+> +
+>  struct iomap_writeback_ops {
+>  	/*
+>  	 * Required, maps the blocks so that writeback can be performed on
+> 
