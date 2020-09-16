@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D3926C57D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0556526C5F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgIPRAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:00:40 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:56564 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgIPQyL (ORCPT
+        id S1726999AbgIPR0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:26:16 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:58446 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726881AbgIPRZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:54:11 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiVBW073693;
-        Wed, 16 Sep 2020 07:44:31 -0500
+        Wed, 16 Sep 2020 13:25:30 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiwg2042791;
+        Wed, 16 Sep 2020 07:44:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600260271;
-        bh=7yLvwu2MAxF5LKrNrXaI5zS4oSoxKLc/kllxfRx8vMY=;
+        s=ti-com-17Q1; t=1600260298;
+        bh=gxuAx0BuQR0ZpOXB5qXMenIgG3U+J4rXn0pxen/9h4M=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=lDO9dSZDhDkwss8KPz61CFQktgcTWoxwKfWzCO4cbvOlyG26ynvKYnBVb7hk4kVhh
-         hLflwwF3ibjZA2DkR/0Dwg9tGkwkmW9/hVTZILPOQnnXtO2uKCJLVB44vgixgItxVQ
-         ajZHzJrcXlQ8gwCnekBhm34xda1Sb3am83iB10Jg=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCiVEE069545
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 07:44:31 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+        b=T6psRdSvidJFTNS8JUWeMbt0XZ5TCi4QVgtQh/I/Wl+jMMOYnm1W/CNyZjHqkLAda
+         yXoL3PJv8yYWd0JF4mzNOAHY16IZfAwWIjSfJU8avIugD/RtLERVh/TEm5IT0uU1wn
+         DEGCizo+luyd8jnHSV4BhtWIaSIoHzXPU1eju/5Y=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiwNX018108;
+        Wed, 16 Sep 2020 07:44:58 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:44:31 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 07:44:58 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:44:31 -0500
+ Frontend Transport; Wed, 16 Sep 2020 07:44:58 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpX125391;
-        Wed, 16 Sep 2020 07:44:28 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpg125391;
+        Wed, 16 Sep 2020 07:44:56 -0500
 From:   Pratyush Yadav <p.yadav@ti.com>
 To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -45,9 +44,9 @@ To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
         <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
         Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v13 03/15] mtd: spi-nor: core: add spi_nor_controller_ops_erase helper
-Date:   Wed, 16 Sep 2020 18:14:06 +0530
-Message-ID: <20200916124418.833-4-p.yadav@ti.com>
+Subject: [PATCH v13 12/15] mtd: spi-nor: core: disable Octal DTR mode on suspend.
+Date:   Wed, 16 Sep 2020 18:14:15 +0530
+Message-ID: <20200916124418.833-13-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
 References: <20200916124418.833-1-p.yadav@ti.com>
@@ -60,4 +59,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On resume, the init procedure will be run that will re-enable it.
+
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ drivers/mtd/spi-nor/core.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 853dfa02f0de..d5c92c9c7307 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3212,6 +3212,23 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+ 	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
+ }
+ 
++/* mtd suspend handler */
++static int spi_nor_suspend(struct mtd_info *mtd)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	struct device *dev = nor->dev;
++	int ret;
++
++	/* Disable octal DTR mode if we enabled it. */
++	ret = spi_nor_octal_dtr_enable(nor, false);
++	if (ret) {
++		dev_err(dev, "suspend() failed\n");
++		return ret;
++	}
++
++	return 0;
++}
++
+ /* mtd resume handler */
+ static void spi_nor_resume(struct mtd_info *mtd)
+ {
+@@ -3406,6 +3423,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	mtd->size = nor->params->size;
+ 	mtd->_erase = spi_nor_erase;
+ 	mtd->_read = spi_nor_read;
++	mtd->_suspend = spi_nor_suspend;
+ 	mtd->_resume = spi_nor_resume;
+ 
+ 	if (nor->params->locking_ops) {
+-- 
+2.28.0
 
