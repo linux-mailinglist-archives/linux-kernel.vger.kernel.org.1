@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A833E26C565
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B62B26C545
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgIPQy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 12:54:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726423AbgIPQd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:33:28 -0400
-Received: from localhost.localdomain (unknown [117.89.211.136])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E0EE222EA;
-        Wed, 16 Sep 2020 14:06:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600265192;
-        bh=GwEG5JAQu1nqxOmIoloCzGY63Zh2Vov4E+GWDy/ADE4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PFqwM0gq4Zhl0SbDFWlzadJHoOohdmF9fx0z1xVZRP3rJ2uQVw+PWiOqn10w6r97H
-         faV7ZlpUiJ5/kCEL39IjJTT4rh4t2U/MWlXSxYcnpDIScbQIJ9Q9owTVtFwVUK3gM0
-         U9RAbQV3xXYr9rPPxU3gFj/HffhroLXHPouWqgMs=
-From:   Chao Yu <chao@kernel.org>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     hsiangkao@redhat.com, linux-kernel@vger.kernel.org,
-        chao@kernel.org, Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] erofs: remove unneeded parameter
-Date:   Wed, 16 Sep 2020 22:06:04 +0800
-Message-Id: <20200916140604.3799-1-chao@kernel.org>
-X-Mailer: git-send-email 2.22.0
+        id S1726547AbgIPQpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 12:45:00 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4140 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgIPQeO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:34:14 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f621e260000>; Wed, 16 Sep 2020 07:16:06 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 16 Sep 2020 07:16:49 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 07:16:49 -0700
+Received: from [10.26.74.242] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
+ 2020 14:16:37 +0000
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Marc Zyngier <maz@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Sumit Garg <sumit.garg@linaro.org>, <kernel-team@android.com>,
+        "Florian Fainelli" <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "'Linux Samsung SOC'" <linux-samsung-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+Date:   Wed, 16 Sep 2020 15:16:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600265766; bh=pV8Al2EsECbYDuX4UchdWHAopEeJoNVCwOOj35gvWvM=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=h4M5AySzWoSIHgOXxW6Cn6jFLbFFw8EwZnKcPIVJxTt3lSUrVD8nJr9GNzVJRZw5V
+         mImZhD/RoS7WwjvahDfKgHkYaIXfp+ftoL0pqJHgDB+z5tAdDFpFx9bA/x6JlhfK07
+         SLOGZitVugJy7yKYTZsjbw1FujpcWOlBOZraOptc4MQLn05uQ3SocrToJ8Savf0KM4
+         SnNPc4LrFohTkfjRPSVWjsWMZh0carNG4uAOHRtzY/JiNFmLJdERbfdH1kEdnhq6Cv
+         tBNxAb5MW8py5l5lQvAPjoT6utASZ4p7GrGoOsMgMNbtZa/YXT9RYgS2d2jEzajJb+
+         5CnyNusDsNCYg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+Hi Marc,
 
-In below call path, no page will be cached into @pagepool list
-or grabbed from @pagepool list:
-- z_erofs_readpage
- - z_erofs_do_read_page
-  - preload_compressed_pages
-  - erofs_allocpage
+On 14/09/2020 14:06, Marek Szyprowski wrote:
+> Hi Marc,
+> 
+> On 01.09.2020 16:43, Marc Zyngier wrote:
+>> Change the way we deal with GIC SGIs by turning them into proper
+>> IRQs, and calling into the arch code to register the interrupt range
+>> instead of a callback.
+>>
+>> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> This patch landed in linux next-20200914 as commit ac063232d4b0 
+> ("irqchip/gic: Configure SGIs as standard interrupts"). Sadly it breaks 
+> booting of all Samsung Exynos 4210/4412 based boards (dual/quad ARM 
+> Cortex A9 based). Here are the last lines from the bootlog:
 
-Let's get rid of this unneeded parameter.
+I am observing the same thing on several Tegra boards (both arm and
+arm64). Bisect is pointing to this commit. Reverting this alone does not
+appear to be enough to fix the issue.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/erofs/utils.c |  2 +-
- fs/erofs/zdata.c | 14 ++++++--------
- 2 files changed, 7 insertions(+), 9 deletions(-)
+Cheers
+Jon
 
-diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
-index de9986d2f82f..7a6e5456b0b8 100644
---- a/fs/erofs/utils.c
-+++ b/fs/erofs/utils.c
-@@ -11,7 +11,7 @@ struct page *erofs_allocpage(struct list_head *pool, gfp_t gfp)
- {
- 	struct page *page;
- 
--	if (!list_empty(pool)) {
-+	if (pool && !list_empty(pool)) {
- 		page = lru_to_page(pool);
- 		DBG_BUGON(page_ref_count(page) != 1);
- 		list_del(&page->lru);
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index 6c939def00f9..f218f58f4159 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -153,8 +153,7 @@ static DEFINE_MUTEX(z_pagemap_global_lock);
- 
- static void preload_compressed_pages(struct z_erofs_collector *clt,
- 				     struct address_space *mc,
--				     enum z_erofs_cache_alloctype type,
--				     struct list_head *pagepool)
-+				     enum z_erofs_cache_alloctype type)
- {
- 	const struct z_erofs_pcluster *pcl = clt->pcl;
- 	const unsigned int clusterpages = BIT(pcl->clusterbits);
-@@ -562,8 +561,7 @@ static bool should_alloc_managed_pages(struct z_erofs_decompress_frontend *fe,
- }
- 
- static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
--				struct page *page,
--				struct list_head *pagepool)
-+				struct page *page)
- {
- 	struct inode *const inode = fe->inode;
- 	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
-@@ -621,7 +619,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 		cache_strategy = DONTALLOC;
- 
- 	preload_compressed_pages(clt, MNGD_MAPPING(sbi),
--				 cache_strategy, pagepool);
-+				 cache_strategy);
- 
- hitted:
- 	/*
-@@ -653,7 +651,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 	/* should allocate an additional staging page for pagevec */
- 	if (err == -EAGAIN) {
- 		struct page *const newpage =
--			erofs_allocpage(pagepool, GFP_NOFS | __GFP_NOFAIL);
-+			erofs_allocpage(NULL, GFP_NOFS | __GFP_NOFAIL);
- 
- 		newpage->mapping = Z_EROFS_MAPPING_STAGING;
- 		err = z_erofs_attach_page(clt, newpage,
-@@ -1282,7 +1280,7 @@ static int z_erofs_readpage(struct file *file, struct page *page)
- 
- 	f.headoffset = (erofs_off_t)page->index << PAGE_SHIFT;
- 
--	err = z_erofs_do_read_page(&f, page, &pagepool);
-+	err = z_erofs_do_read_page(&f, page);
- 	(void)z_erofs_collector_end(&f.clt);
- 
- 	/* if some compressed cluster ready, need submit them anyway */
-@@ -1341,7 +1339,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
- 		/* traversal in reverse order */
- 		head = (void *)page_private(page);
- 
--		err = z_erofs_do_read_page(&f, page, &pagepool);
-+		err = z_erofs_do_read_page(&f, page);
- 		if (err)
- 			erofs_err(inode->i_sb,
- 				  "readahead error at page %lu @ nid %llu",
 -- 
-2.22.0
-
+nvpublic
