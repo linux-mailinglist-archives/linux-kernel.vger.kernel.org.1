@@ -2,94 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C4D26BA3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AABA26BA3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgIPCag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:30:36 -0400
-Received: from mga07.intel.com ([134.134.136.100]:25382 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726334AbgIPCaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:30:35 -0400
-IronPort-SDR: EByuVlpv9TVeVrK29xIQDDCNQ3iKw4pJDaPnAiIQSV21iaoay9UCtHmRhb61OZG/dzaEjrffBh
- XPqpvwLY6gaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="223570704"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="223570704"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 19:30:31 -0700
-IronPort-SDR: BaG7cLyG1T1AMzKbSctEQkLrk668E+MXCHvYGBVJhdWIPZJY39IsAHwNjPW6rHN9lO13VWwCkU
- HaZDwmrPGIww==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="451663401"
-Received: from gschatz-mobl2.amr.corp.intel.com (HELO [10.254.127.209]) ([10.254.127.209])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 19:30:31 -0700
-Subject: Re: [PATCH v8 1/5] PCI: Conditionally initialize host bridge native_*
- members
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com
-References: <20200915221721.GA1437311@bjorn-Precision-5520>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <388c59f7-4c47-ddea-b37e-9ca001c43723@linux.intel.com>
-Date:   Tue, 15 Sep 2020 19:30:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726281AbgIPCcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:32:19 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:11678 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726128AbgIPCcR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:32:17 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200916023215epoutp03e18920faca9c8fbf07e0cc0291fb45e6~1ItO2CzyO3081030810epoutp03q
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:32:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200916023215epoutp03e18920faca9c8fbf07e0cc0291fb45e6~1ItO2CzyO3081030810epoutp03q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600223535;
+        bh=Yfl4dFFxDqDZxjerfzfkoY+8akViH1weFET+b6zYsDg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=iXKCe03fZXxPnKsjs1JIUCYHR4GvDXdvM6wprv8L07JhSRFbn33ARCdXD8u2t8WQs
+         3MZwxAX0I6FV9gK49eUo1M73Sh3Ehsx5VSPppsfWTCSrlFeUruQwGWD4tKfzmGIsEq
+         rL5LNgCAaQIelGg/i8GTF4/2EFlbdTY0MMWeT2wc=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200916023214epcas1p27986168474714ba5878d2fe6fd527a39~1ItOIPur32185321853epcas1p2f;
+        Wed, 16 Sep 2020 02:32:14 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4BrkdT6qCKzMqYkp; Wed, 16 Sep
+        2020 02:32:13 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B3.40.18978.D29716F5; Wed, 16 Sep 2020 11:32:13 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200916023213epcas1p1c82e74099554114d1e14ec4b15ca3ed0~1ItM33tT01610016100epcas1p1P;
+        Wed, 16 Sep 2020 02:32:13 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200916023213epsmtrp1c73641e21923df2e4df9e28c944a04ad~1ItM3PsJ_2982129821epsmtrp1g;
+        Wed, 16 Sep 2020 02:32:13 +0000 (GMT)
+X-AuditID: b6c32a35-b8298a8000004a22-1e-5f61792d1982
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A5.4A.08382.D29716F5; Wed, 16 Sep 2020 11:32:13 +0900 (KST)
+Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200916023212epsmtip1e17c7d5d06a7500a4ddbac7b6a5dc245~1ItMseg6D0762807628epsmtip1p;
+        Wed, 16 Sep 2020 02:32:12 +0000 (GMT)
+From:   "Sungjong Seo" <sj1557.seo@samsung.com>
+To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
+Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
+        <mori.takahiro@ab.mitsubishielectric.co.jp>,
+        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
+        "'Namjae Jeon'" <namjae.jeon@samsung.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200911044506.13912-1-kohada.t2@gmail.com>
+Subject: RE: [PATCH 2/3] exfat: remove useless check in exfat_move_file()
+Date:   Wed, 16 Sep 2020 11:32:12 +0900
+Message-ID: <015f01d68bd1$95ace4d0$c106ae70$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20200915221721.GA1437311@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQGgZsB+KXs97exselB5tzyGrN5ddgLZy8s5qcAEzwA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmvq5uZWK8wctH+hY/5t5msXhzciqL
+        xZ69J1ksLu+aw2Zx+f8nFotlXyazWPyYXu/A7vFlznF2j7bJ/9g9mo+tZPPYOesuu0ffllWM
+        Hp83yQWwReXYZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl
+        5gCdoqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMDQo0CtOzC0uzUvXS87PtTI0
+        MDAyBapMyMnY8foxe0ELZ8X7Bv8GxrnsXYwcHBICJhLN0+q6GLk4hAR2MEo8+ryZCcL5xCjR
+        tL+HEcL5xihxums+SxcjJ1jH9tfH2SASexkl1rb/ZoFwXjJKTFvyixWkik1AV+LJjZ/MILaI
+        gJ7EyZPX2UBsZoFGJokTL7NBbE4BS4lrXbsZQWxhAU+Jxi9rwDawCKhKrNm3BczmBaq58WgS
+        lC0ocXLmExaIOfIS29/OYYa4SEFi96ejrBC7rCTOzP/DDlEjIjG7s40Z5DgJgZkcEpOOXWeE
+        eNpF4t10RYheYYlXx7ewQ9hSEi/726Dseon/89eyQ/S2MEo8/LSNCaLXXuL9JQsQk1lAU2L9
+        Ln2IckWJnb/nMkKs5ZN497WHFaKaV6KjTQiiREXi+4edLDCbrvy4yjSBUWkWksdmIXlsFpIH
+        ZiEsW8DIsopRLLWgODc9tdiwwBA5qjcxghOplukOxolvP+gdYmTiYDzEKMHBrCTCe6AxPl6I
+        NyWxsiq1KD++qDQntfgQoykwqCcyS4km5wNTeV5JvKGpkbGxsYWJmbmZqbGSOO/DWwrxQgLp
+        iSWp2ampBalFMH1MHJxSDUxu/qy/G2bfV+hujPOP+VZRX3iSc2XCYaXmH0om2QvjIo5vjqs/
+        rFpwYcdJ8470FamTNn1edGLf5ZqmYxqSXzhVnKRfhQof/fjk+wn7T0eT+983ssVnSs4/drrh
+        r4uo6hajzqBPalouli2XeFP15WvP/vgeFfH0jXO0TrXuha4zKXdqtl9SVdTY/t81I/u1+/KD
+        z9vaF3lv76hs/MMyxb3ju1y4qtavMNZephtl0i/nzHMOqPy0KexKp/17A4nysvakY4zHdwdz
+        6zWua189o656+aF43e/Bvg8mHbFWNimWnJMbI776I0/WiRtVl2tLuU2M5r2ZcC9AeOfaW+U9
+        dlWrzh0WKAssWMC15s+RYiWW4oxEQy3mouJEAKc13VgtBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpikeLIzCtJLcpLzFFi42LZdlhJTle3MjHeYO11Fosfc2+zWLw5OZXF
+        Ys/ekywWl3fNYbO4/P8Ti8WyL5OBstPrHdg9vsw5zu7RNvkfu0fzsZVsHjtn3WX36NuyitHj
+        8ya5ALYoLpuU1JzMstQifbsErowdrx+zF7RwVrxv8G9gnMvexcjJISFgIrH99XE2EFtIYDej
+        RNPu6C5GDqC4lMTBfZoQprDE4cPFEBXPGSUeb3YFsdkEdCWe3PjJDGKLCOhJnDx5HWgKFwez
+        QDOTROuXZiYQR0igi1FiRcNCJpAqTgFLiWtduxlBbGEBT4nGL2tYQGwWAVWJNfu2gNm8QDU3
+        Hk2CsgUlTs58wgJyBDPQhraNYK3MAvIS29/OYYY4X0Fi96ejrBBHWEmcmf+HHaJGRGJ2Zxvz
+        BEbhWUgmzUKYNAvJpFlIOhYwsqxilEwtKM5Nzy02LDDMSy3XK07MLS7NS9dLzs/dxAiOJi3N
+        HYzbV33QO8TIxMF4iFGCg1lJhPdAY3y8EG9KYmVValF+fFFpTmrxIUZpDhYlcd4bhQvjhATS
+        E0tSs1NTC1KLYLJMHJxSDUzBd7fGqi+MP/P1svbEGSvv5phs1pFSSK5gmbP3gfkWVZ4dCmyd
+        E/7EP/eOffI9bJrtXxF9WyO90gcba8yVfD/E1C3Z5SO29pn3ZQfNGRLanEHSdya6Lz8e4n9v
+        mi1XQ86VZrYnUbPCw7jrPz288FbjaJJi1naDE/8CFQTdbXvzFCsvVy7R46t+fNFMT6D7qeGP
+        ndfn3v+itDVyeobB9mPT9kmdmh7YGz2tyf/T/HP+wSezCmeI1vm9PXrv8Y2/PYJttw7c6BM4
+        ZDbrx/4IppYX5uGc8bs1fqfm7BCwqEyO+X/oxbKLU0V60y9PXnv9yJ6uBXm1Bu9Eiz+fmR70
+        eELsk3D5+ouqBwMOsTC5+XorsRRnJBpqMRcVJwIAYs7dKRUDAAA=
+X-CMS-MailID: 20200916023213epcas1p1c82e74099554114d1e14ec4b15ca3ed0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200911044511epcas1p4d62863352e65c534cd6080dd38d54b26
+References: <CGME20200911044511epcas1p4d62863352e65c534cd6080dd38d54b26@epcas1p4.samsung.com>
+        <20200911044506.13912-1-kohada.t2@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/15/20 3:17 PM, Bjorn Helgaas wrote:
-> On Sun, Sep 13, 2020 at 01:49:26PM -0700, Kuppuswamy, Sathyanarayanan wrote:
->> On 9/10/20 2:00 PM, Kuppuswamy, Sathyanarayanan wrote:
->>> On 9/10/20 12:49 PM, Bjorn Helgaas wrote:
->>>> On Fri, Jul 24, 2020 at 08:58:52PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
->>>>> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->>>>>
-
->>
->> But I am wondering whether its correct to move LTR code under
->> CONFIG_PCIEPORTBUS?. As per PCIe spec v5.0 sec 7.8.2, LTR is a
->> optional PCIe extended capability. So why is not moved under
->> drivers/pci/pcie/*. What is the criteria for code to be placed under
->> drivers/pci/pcie/*
+> In exfat_move_file(), the identity of source and target directory has been
+> checked by the caller.
+> Also, it gets stream.start_clu from file dir-entry, which is an invalid
+> determination.
 > 
-> Some folks think drivers/pci/pcie/ should not exist, and I tend to
-> agree, but it's a fair bit of churn to remove it.  We do have quite a
-> bit of PCIe extended capability support in drivers/pci -- ats.c,
-> iov.c, vc.c.
+> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
+> ---
+>  fs/exfat/namei.c | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
-> There's no need to move LTR under CONFIG_PCIEPORTBUS because
-> CONFIG_PCIEPORTBUS enables portdrv, and AFAIK there's nothing
-> LTR-related that relies on portdrv.
+> diff --git a/fs/exfat/namei.c b/fs/exfat/namei.c index
+> 803748946ddb..1c433491f771 100644
+> --- a/fs/exfat/namei.c
+> +++ b/fs/exfat/namei.c
+> @@ -1095,11 +1095,6 @@ static int exfat_move_file(struct inode *inode,
+> struct exfat_chain *p_olddir,
+>  	if (!epmov)
+>  		return -EIO;
 > 
-> The stuff currently in drivers/pci/pcie is mostly just portdrv and
-> services that depend on it.  aspm.c and ptm.c are exceptions and
-> really should be in drivers/pci.
-Thanks for the clarification. I will remove the CONFIG_PCIEPORTBUS
-dependency.
-> 
+> -	/* check if the source and target directory is the same */
+> -	if (exfat_get_entry_type(epmov) == TYPE_DIR &&
+> -	    le32_to_cpu(epmov->dentry.stream.start_clu) == p_newdir->dir)
+> -		return -EINVAL;
+> -
 
->>>>> -- 
->>>>> 2.17.1
->>>>>
->>>
->>
->> -- 
->> Sathyanarayanan Kuppuswamy
->> Linux Kernel Developer
+It might check if the cluster numbers are same between source entry and
+target directory.
+Could you let me know what code you mentioned?
+Or do you mean the codes on vfs?
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+>  	num_old_entries = exfat_count_ext_entries(sb, p_olddir, oldentry,
+>  		epmov);
+>  	if (num_old_entries < 0)
+> --
+> 2.25.1
+
+
