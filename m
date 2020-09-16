@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4CC26C6D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA9226C6E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727733AbgIPSF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727743AbgIPSDl (ORCPT
+        id S1727736AbgIPSHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:07:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41229 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727660AbgIPSGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:03:41 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DB1C06174A;
-        Wed, 16 Sep 2020 11:03:39 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b124so4403497pfg.13;
-        Wed, 16 Sep 2020 11:03:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jtd+v1r7yFCDwGBOouA+wJLSIZj7EYucgtKvBQ472aI=;
-        b=cTa6gKMf5MByKmHhZnSkM165n0VLREb/jbRMq8LQhka3+P4oYALaD9q/ao3GBhxdPH
-         jMQtMEyj++4c4PcPHf2tNjhuDehBXfWdJa/PVgAie/cEkbei5QezHTpWA8XDwOhDoGxO
-         PKMZqwBZYVXbHW1wP5ArC6O8PbTAGrIF1Ksrc15a9JKmdWSZH0Y4HPUrDWuzeSPt481X
-         PA+m20QNakZcTsNdFxTU4HQSxHKLcpQ50e97YngIQsBoKvV/aCGh30orHF+vk43INisd
-         J5kXpp3EkwpI2KXVDtEk52iYJ+jS3gTH6yb/oqI5D0rjKQ4PoOXcJBfj1f5Paqtcjxm/
-         dKGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jtd+v1r7yFCDwGBOouA+wJLSIZj7EYucgtKvBQ472aI=;
-        b=eGzVsxdpN4L2SiRQN3zZI3EfPqi0XYib8tK4TmWiCBve93bwY3mBOyiUikFLzxQjJ5
-         amW5FrPUm+gIQW1kMXOApwuZC1gu6Oh5tflZ+b4xDR6Le3YM10XIwr/aWhWJMPtpr2mH
-         uAEY7HWYOwfIhzKYyzZyMH/I3POanA63RPJLks3xB4wj56SGouHNuZpRxrg92Rq05ABf
-         sl6BlybBrvjUZ3aQr24cSKZaEXo+mo1g+w98Qu6stUCGHojWPz2Ake3gGVhuII3glccn
-         r9TrYhQ4Nbx27m57aeYJCpQ+ZJUImQAtGnnGNhfrPtH6CNxHydTdCE5jcZaTuXoC9Diq
-         yqaA==
-X-Gm-Message-State: AOAM530HV8MQFSzd+Y8/PmoX3vxndpXo03JTuZVsq8+3NBHgSRcudx/r
-        x3maPMGxW77x4SuymYjOB+U=
-X-Google-Smtp-Source: ABdhPJzuB1Va430uunETuDeXzaGyqFT1vMNiu49dAXULQmwVIvgIvYQAP7lQURIkJDjMsJggSKN96w==
-X-Received: by 2002:a65:66c6:: with SMTP id c6mr19860991pgw.206.1600279418834;
-        Wed, 16 Sep 2020 11:03:38 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id v5sm17634372pfv.199.2020.09.16.11.03.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 11:03:38 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 11:03:35 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Harry Cutts <hcutts@chromium.org>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        James Chen <james.chen@emc.com.tw>,
-        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
-        Paul Liang <paul.liang@emc.com.tw>,
-        Jeff Chuang <jeff.chuang@emc.com.tw>
-Subject: Re: [PATCH] Input: elants_i2c - fix typo for an attribute to show
- calibration count
-Message-ID: <20200916180335.GL1681290@dtor-ws>
-References: <1600238783-32303-1-git-send-email-johnny.chuang.emc@gmail.com>
+        Wed, 16 Sep 2020 14:06:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600279600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XOZJZdrt+409MPzx7FHPcsrccxwoUMGEk7L/i2mTWJY=;
+        b=FAf9lPnGqe1uXE8lZFqlnpGPGr26db3V3EvaMqLEJrkqTdtrjK0AduF8nRnNEZ/Fx1svHv
+        uuqQS/HOTtW+h2lRicFv0n/qWtPkVT+ApnKiBncdP5oq6A8sZDWf3krFD8+6MpOYazvxJU
+        BaUmC7W2W0VuQexww1ZoWdRRfFleFuw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-190-HsoummUsO9qRP3CaGZBICA-1; Wed, 16 Sep 2020 14:06:36 -0400
+X-MC-Unique: HsoummUsO9qRP3CaGZBICA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C56D80734C;
+        Wed, 16 Sep 2020 18:06:34 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C468F709BB;
+        Wed, 16 Sep 2020 18:06:32 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08GI6Wlw021462;
+        Wed, 16 Sep 2020 14:06:32 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08GI6VJK021458;
+        Wed, 16 Sep 2020 14:06:31 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 16 Sep 2020 14:06:31 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Dan Williams <dan.j.williams@intel.com>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
+        <rajesh.tadakamadla@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: Re: [PATCH] pmem: export the symbols __copy_user_flushcache and
+ __copy_from_user_flushcache
+In-Reply-To: <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
+Message-ID: <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com> <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
+ <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600238783-32303-1-git-send-email-johnny.chuang.emc@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 02:46:23PM +0800, Johnny Chuang wrote:
-> Fixed typo for command from 0xE0 to 0xD0.
-> 
-> commit cf520c643012 ("Input: elants_i2c - provide an attribute
-> to show calibration count")
-> 
-> There is an non-touch case by non-calibration after update firmware.
-> Elan could know calibrate or not by calibration count.
-> The value of '0xffff' means we didn't calibrate after update firmware.
-> If calibrate success, it will plus one and change to '0x0000'.
-> 
-> Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
 
-Applied, thank you.
 
--- 
-Dmitry
+On Wed, 16 Sep 2020, Dan Williams wrote:
+
+> On Wed, Sep 16, 2020 at 10:24 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
+> >
+> > > My first question about nvfs is how it compares to a daxfs with
+> > > executables and other binaries configured to use page cache with the
+> > > new per-file dax facility?
+> >
+> > nvfs is faster than dax-based filesystems on metadata-heavy operations
+> > because it doesn't have the overhead of the buffer cache and bios. See
+> > this: http://people.redhat.com/~mpatocka/nvfs/BENCHMARKS
+> 
+> ...and that metadata problem is intractable upstream? Christoph poked
+> at bypassing the block layer for xfs metadata operations [1], I just
+> have not had time to carry that further.
+> 
+> [1]: "xfs: use dax_direct_access for log writes", although it seems
+> he's dropped that branch from his xfs.git
+
+XFS is very big. I wanted to create something small.
+
+Mikulas
+
