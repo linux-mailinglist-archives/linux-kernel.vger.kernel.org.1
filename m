@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2DA26CA0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553EA26CA14
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgIPTnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727965AbgIPTnH (ORCPT
+        id S1728197AbgIPTqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:46:12 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:63532 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727837AbgIPTpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 15:43:07 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DA3C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:42:50 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id j7so3749312plk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:42:50 -0700 (PDT)
+        Wed, 16 Sep 2020 15:45:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=uI2M1b5CJmiot/6Hd8YrKzzoCzUgOR4d8982RGbGjD8=;
-        b=mdqEeSdYH5tz+BxLF4boEJJhntqAmdYlAI6RJyaLW8zNxInQKWsMvG5jjeXIsjftb0
-         WdtN41v/JR3azTNc97XwywJ+LpJfFCvgdrs0j5Z+ZRkFSW8Y46I7SAcZ7+Ry+1Qi3Sk3
-         vA4gXc8kWMF9jk1hykVzXWlj046Zhvz8rCXbs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=uI2M1b5CJmiot/6Hd8YrKzzoCzUgOR4d8982RGbGjD8=;
-        b=m5+m0TtIgKY1pmg41U07jfnyTMOOgfwFPNyCitlI4dv/nosxr1ZRtXM/ItOnTaEKaw
-         7CEliuIv5MhLk8YQrdE8E+DVeguaf6iYCuuHd3laIYEXDKzXj0fOSFlnRlqXGI4s5LYz
-         f5VCPPgZ9jD2KPfTWXCYOxxhBC3x75PCxErm7GqHjmUyJwYSiFvvKYAAQVd+KOBaFqdT
-         w0jRsJ5pleBWmtXh/CKDZ0VasPUyrQkVbvqK6B7o80WSSzmxV9d9K4oBso6mhH+dR7S+
-         rXtyJe+gX/b7lzmIMy8QtsjmrL+apV8wVCJeL5HOiAuZJHJAFncMWSBSkPvr6Gh/IWyC
-         qvSA==
-X-Gm-Message-State: AOAM531MmAquVxHvVxKL2edpOd9xq2ScMqQjAYCM52gMlNBYpBW0+14v
-        PPeI6ZYR61+uudC10ajyXM3/sQ==
-X-Google-Smtp-Source: ABdhPJykmzdZLk88uv+LmjEE31cyv5pE9gp7ym7Z31sba/goptxv5DmuVBCotn6wnasSvqYZ3LdHQw==
-X-Received: by 2002:a17:90a:bf8c:: with SMTP id d12mr5450291pjs.157.1600285369764;
-        Wed, 16 Sep 2020 12:42:49 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id y6sm3468330pji.1.2020.09.16.12.42.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 12:42:48 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600285524; x=1631821524;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=bPL9ALhcpi5BrsWWkKTPd1toAEPb6RfwgA0Kgzn99Wk=;
+  b=L2Vwa+aOA0VgfMTtmzTTIeqRHpg4JPxNY4+dDNWmJpU2Kcj59xeVOz9/
+   v/7arpXVrs1B7aEy3pvwH2xcpIulo15A+AjLf6rhM2gEHoZ6FlVDV+47E
+   dZ9EWjCjdqe0WoOdM+LE0k2h0MxnVDwkGQuJJMvIrq5n5WMO+V0u7CYt6
+   k=;
+X-IronPort-AV: E=Sophos;i="5.76,434,1592870400"; 
+   d="scan'208";a="68651091"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 16 Sep 2020 19:44:14 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id 5ACA0A1859;
+        Wed, 16 Sep 2020 19:44:10 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 16 Sep 2020 19:44:09 +0000
+Received: from freeip.amazon.com (10.43.161.146) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 16 Sep 2020 19:44:06 +0000
+Subject: Re: [PATCH v6 5/7] KVM: x86: VMX: Prevent MSR passthrough when MSR
+ access is denied
+To:     Aaron Lewis <aaronlewis@google.com>
+CC:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        kvm list <kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200902125935.20646-1-graf@amazon.com>
+ <20200902125935.20646-6-graf@amazon.com>
+ <CAAAPnDH2D6fANhZzy3fAL2XKO4ROrvbOoqPme2Ww6q5XcVJfog@mail.gmail.com>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <c90a705d-8768-efd1-e744-b56cd6ab3c0f@amazon.com>
+Date:   Wed, 16 Sep 2020 21:44:03 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200915202432.GA2435458@bogus>
-References: <20200910004902.2252694-1-swboyd@chromium.org> <20200910004902.2252694-2-swboyd@chromium.org> <159972050159.2295844.14715100754744266014@swboyd.mtv.corp.google.com> <20200915202432.GA2435458@bogus>
-Subject: Re: [PATCH v3 01/10] dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy information
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        devicetree@vger.kernel.org, Rob Clark <robdclark@chromium.org>
-To:     Rob Herring <robh@kernel.org>
-Date:   Wed, 16 Sep 2020 12:42:46 -0700
-Message-ID: <160028536666.4188128.14311541474912461984@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <CAAAPnDH2D6fANhZzy3fAL2XKO4ROrvbOoqPme2Ww6q5XcVJfog@mail.gmail.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.146]
+X-ClientProxiedBy: EX13D49UWC004.ant.amazon.com (10.43.162.106) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rob Herring (2020-09-15 13:24:32)
-> On Wed, Sep 09, 2020 at 11:48:21PM -0700, Stephen Boyd wrote:
-> > Quoting Stephen Boyd (2020-09-09 17:48:53)
-> > > This binding only describes the USB phy inside the USB3 + DP "combo"
-> > > phy. Add information for the DP phy and describe the sub-nodes that
-> > > represent the DP and USB3 phys that exist inside the combo wrapper.
-> > > Remove reg-names from required properties because it isn't required n=
-or
-> > > used by the kernel driver.
-> > >=20
-> > > Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
-> > > Cc: Chandan Uddaraju <chandanu@codeaurora.org>
-> > > Cc: Vara Reddy <varar@codeaurora.org>
-> > > Cc: Tanmay Shah <tanmay@codeaurora.org>
-> > > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > Cc: Manu Gautam <mgautam@codeaurora.org>
-> > > Cc: Sandeep Maheswaram <sanm@codeaurora.org>
-> > > Cc: Douglas Anderson <dianders@chromium.org>
-> > > Cc: Sean Paul <seanpaul@chromium.org>
-> > > Cc: Jonathan Marek <jonathan@marek.ca>
-> > > Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > Cc: <devicetree@vger.kernel.org>
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > Cc: Rob Clark <robdclark@chromium.org>
-> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > > ---
-> > >  .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml    | 91 +++++++++++++++++=
---
-> > >  1 file changed, 81 insertions(+), 10 deletions(-)
-> >=20
-> > I noticed that I didn't document the new compatible string I'm using,
-> > qcom,sc7180-qmp-usb3-dp-phy, ugh.
-> >=20
-> > Should I copy the whole file over and make a new document for the new
-> > compatible string? That feels like the better solution vs. making this
-> > binding have min/max stuff where it fails to enforce the DP part of the
-> > phy. We can delete this binding once the kernel tree isn't using it,
-> > right?
->=20
-> It generally depends on how much if/then schema you have (or should=20
-> have) vs. how much is common, but it's a judgement call. It looks=20
-> like you are just extending the binding for the most part. If there's=20
-> dtb warnings until the existing stuff gets updated, that's fine.
->=20
+CgpPbiAwNC4wOS4yMCAwNDoxOCwgQWFyb24gTGV3aXMgd3JvdGU6Cj4gCj4+ICsvKgo+PiArICog
+TGlzdCBvZiBNU1JzIHRoYXQgY2FuIGJlIGRpcmVjdGx5IHBhc3NlZCB0byB0aGUgZ3Vlc3QuCj4+
+ICsgKiBJbiBhZGRpdGlvbiB0byB0aGVzZSB4MmFwaWMgYW5kIFBUIE1TUnMgYXJlIGhhbmRsZWQg
+c3BlY2lhbGx5Lgo+PiArICovCj4+ICtzdGF0aWMgdTMyIHZteF9wb3NzaWJsZV9wYXNzdGhyb3Vn
+aF9tc3JzW01BWF9QT1NTSUJMRV9QQVNTR0hST1VHSF9NU1JTXSA9IHsKPiAKPiBNQVhfUE9TU0lC
+TEVfUEFTU0dIUk9VR0hfTVNSUyBzaG91bGQgYmUgTUFYX1BPU1NJQkxFX1BBU1NUSFJPVUdIX01T
+UlMKCk91Y2guIFRoYW5rcyA6KS4KCj4gCj4+ICsgICAgICAgTVNSX0lBMzJfU1BFQ19DVFJMLAo+
+PiArICAgICAgIE1TUl9JQTMyX1BSRURfQ01ELAo+PiArICAgICAgIE1TUl9JQTMyX1RTQywKPj4g
+KyAgICAgICBNU1JfRlNfQkFTRSwKPj4gKyAgICAgICBNU1JfR1NfQkFTRSwKPj4gKyAgICAgICBN
+U1JfS0VSTkVMX0dTX0JBU0UsCj4+ICsgICAgICAgTVNSX0lBMzJfU1lTRU5URVJfQ1MsCj4+ICsg
+ICAgICAgTVNSX0lBMzJfU1lTRU5URVJfRVNQLAo+PiArICAgICAgIE1TUl9JQTMyX1NZU0VOVEVS
+X0VJUCwKPj4gKyAgICAgICBNU1JfQ09SRV9DMV9SRVMsCj4+ICsgICAgICAgTVNSX0NPUkVfQzNf
+UkVTSURFTkNZLAo+PiArICAgICAgIE1TUl9DT1JFX0M2X1JFU0lERU5DWSwKPj4gKyAgICAgICBN
+U1JfQ09SRV9DN19SRVNJREVOQ1ksCj4+ICt9Owo+IAo+IElzIHRoZXJlIGFueSByZWFzb24gbm90
+IHRvIGNvbnN0cnVjdCB0aGlzIGxpc3Qgb24gdGhlIGZseT8gIFRoYXQgY291bGQKPiBoZWxwIHBy
+ZXZlbnQgdGhlIGxpc3QgZnJvbSBiZWNvbWluZyBzdGFsZSBvdmVyIHRpbWUgaWYgdGhpcyBpcyBt
+aXNzZWQKPiB3aGVuIGNhbGxzIHRvIHZteF9kaXNhYmxlX2ludGVyY2VwdF9mb3JfbXNyKCkgYXJl
+IGFkZGVkLgoKVGhlIHByb2JsZW0gaXMgdGhhdCB3ZSBoYXZlIGFuIHVwcGVyIGJvdW5kIG9mIGVs
+ZW1lbnRzIHRoYXQgd2UgY2FuIHN0b3JlIAppbiB0aGUgYml0bWFwLiBXZSBjYW4gZWl0aGVyIG1h
+a2UgdGhhdCBudW1iZXIgYXJiaXRyYXJ5IGFuZCB0aGVuIGhhdmUgCnJlYWxseSBhd2t3YXJkIGZh
+aWx1cmUgbW9kZXMgb3IgYmUgaW5jcmVkaWJseSBwaWNreSBpbnN0ZWFkLgoKSSB3ZW50IGZvciBp
+bmNyZWRpYmx5IHBpY2t5LiBJZiBhbnl0aGluZyBnb2VzIG91dCBvZiBzeW5jLCBsaWtlIHdoZW4g
+CnNvbWVvbmUgYWRkcyBhbiBNU1IgdG8gdGhlIGxpc3Qgd2l0aG91dCBjaGFuZ2luZyAKTUFYX1BP
+U1NJQkxFX1BBU1NUSFJPVUdIX01TUlMsIGEgY2FsbCB0byAKdm14X3tlbixkaXN9YWJsZV9pbnRl
+cmNlcHRfZm9yX21zcigpIGlzIGRvbmUgb24gYW4gTVNSIHRoYXQgaXMgbm90IHBhcnQgCm9mIHRo
+ZSBsaXN0LCB3ZSB3aWxsIGFib3J0IGVhcmx5IGFuZCBpbiB0aGUgZm9ybWVyIGNhc2UgYWxyZWFk
+eSB0aHJvdWdoIAp0aGUgY29tcGlsZXIuCgpJZiB5b3UgY2FuIHRoaW5rIG9mIGEgZ29vZCB3YXkg
+dG8gY29uc3RydWN0IHRoZSBsaXN0IGR5bmFtaWNhbGx5IGFuZCAKc3RpbGwgaGF2ZSBhIHdvcmtp
+bmcgYml0bWFwIG9mICJkZXNpcmVkIiBwYXNzdGhyb3VnaCBzdGF0ZXMsIEknbSBhbGwgCmVhcnMg
+OikuCgo+IAo+PiArCj4+ICAgLyoKPj4gICAgKiBUaGVzZSAyIHBhcmFtZXRlcnMgYXJlIHVzZWQg
+dG8gY29uZmlnIHRoZSBjb250cm9scyBmb3IgUGF1c2UtTG9vcCBFeGl0aW5nOgo+PiAgICAqIHBs
+ZV9nYXA6ICAgIHVwcGVyIGJvdW5kIG9uIHRoZSBhbW91bnQgb2YgdGltZSBiZXR3ZWVuIHR3byBz
+dWNjZXNzaXZlCj4+IEBAIC02MjIsNiArNjQyLDQxIEBAIHN0YXRpYyBpbmxpbmUgYm9vbCByZXBv
+cnRfZmxleHByaW9yaXR5KHZvaWQpCj4+ICAgICAgICAgIHJldHVybiBmbGV4cHJpb3JpdHlfZW5h
+YmxlZDsKPj4gICB9Cj4gCj4gT25lIHRoaW5nIHRoYXQgc2VlbXMgdG8gYmUgbWlzc2luZyBpcyBy
+ZW1vdmluZyBNU1JzIGZyb20gdGhlCj4gcGVybWlzc2lvbiBiaXRtYXAgb3IgcmVzZXR0aW5nIHRo
+ZSBwZXJtaXNzaW9uIGJpdG1hcCB0byBpdHMgb3JpZ2luYWwKPiBzdGF0ZSBiZWZvcmUgYWRkaW5n
+IGNoYW5nZXMgb24gdG9wIG9mIGl0LiAgVGhpcyB3b3VsZCBiZSBuZWVkZWQgb24KPiBzdWJzZXF1
+ZW50IGNhbGxzIHRvIGt2bV92bV9pb2N0bF9zZXRfbXNyX2ZpbHRlcigpLiAgV2hlbiB0aGF0IGhh
+cHBlbnMKPiB0aGUgb3JpZ2luYWwgY2hhbmdlcyBtYWRlIGJ5IEtWTV9SRVFfTVNSX0ZJTFRFUl9D
+SEFOR0VEIG5lZWQgdG8gYmUKPiBiYWNrZWQgb3V0IGJlZm9yZSBhcHBseWluZyB0aGUgbmV3IHNl
+dC4KCkknbSBub3Qgc3VyZSBJIGZvbGxvdy4gU3Vic2VxdWVudCBjYWxscyB0byBzZXRfbXNyX2Zp
+bHRlcigpIHdpbGwgaW52b2tlIAp0aGUgInBsZWFzZSByZXNldCB0aGUgd2hvbGUgTVNSIHBhc3N0
+aHJvdWdoIGJpdG1hcCB0byBhIGNvbnNpc3RlbnQgCnN0YXRlIiB3aGljaCB3aWxsIHRoZW4gcmVh
+cHBseSB0aGUgaW4ta3ZtIGRlc2lyZWQgc3RhdGUgdGhyb3VnaCB0aGUgCmJpdG1hcCBhbmQgZmls
+dGVyIHN0YXRlIG9uIHRvcCBvbiBlYWNoIG9mIHRob3NlLgoKCkFsZXgKCgoKCkFtYXpvbiBEZXZl
+bG9wbWVudCBDZW50ZXIgR2VybWFueSBHbWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpH
+ZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVp
+bmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMg
+QgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkgMjM3IDg3OQoKCg==
 
-Ok. I'll just add in the extra compatible and then we can drop the older
-ones at some point.
