@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2124B26CB7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CEC26CB4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgIPU2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:28:40 -0400
-Received: from mga06.intel.com ([134.134.136.31]:15713 "EHLO mga06.intel.com"
+        id S1726998AbgIPR1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:27:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726985AbgIPRYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:24:17 -0400
-IronPort-SDR: lDQtUxIFNjuogwTTrnwCLSMGnQ6wKRi6fPMKYDC/yfEJwO4g7e0b2yfYCm6jNCyI/MXB8L0LEh
- 72SDh5bX8mXQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="221058448"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="221058448"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:12:13 -0700
-IronPort-SDR: 2vjGeqnxUxN7atVeLloPGSsd1S4TArm4bw6REZOyt7KtQJYUyTucIlnIWqoeBQxkOksVlh6aBQ
- kGb9t07g4M8A==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="451916049"
-Received: from scusackx-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.87])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:12:10 -0700
-Date:   Wed, 16 Sep 2020 19:12:08 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com, dwmw2@infradead.org, jmorris@namei.org,
-        serge@hallyn.com, nayna@linux.ibm.com, erichte@linux.ibm.com,
-        mpe@ellerman.id.au, zohar@linux.ibm.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH v3] certs: Add EFI_CERT_X509_GUID support for dbx entries
-Message-ID: <20200916161208.GE21026@linux.intel.com>
-References: <20200911182230.62266-1-eric.snowberg@oracle.com>
- <20200914181227.GF9369@linux.intel.com>
- <F25F6F0E-7E13-4C9D-A7BA-33CDEF7074F2@oracle.com>
+        id S1727021AbgIPRZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:25:38 -0400
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94C452222E;
+        Wed, 16 Sep 2020 16:15:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600272952;
+        bh=27sYm41mDiVDnZrWbm0QPVBaPRpD52EfmzkcCrZV80c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pqNRMaP0X9Blp3xQCD3Zk+PlqjNSI+5urM1u/88kqjNllpJCcNBf7qN2LPn3/BTT2
+         dRyX2kVPw+lPv64et2CISd3l4nVeoM+yFS2ajeTC1WSNblvCbW7Trl4WMuBEPkg7hD
+         k/UqtCkwJCii1ROu6m15flANY9Y6NmenSXuaxsbw=
+Received: by mail-ej1-f47.google.com with SMTP id p9so11151659ejf.6;
+        Wed, 16 Sep 2020 09:15:52 -0700 (PDT)
+X-Gm-Message-State: AOAM531YawbGDMzodTmV2YlokpruOKg3Bsvon+RzTPVkEgssTkV2K/pB
+        B3dthBoKPV9FGnQvzp0vCAB/kz4sD6yR0KJo3N0=
+X-Google-Smtp-Source: ABdhPJxEK6ZjXsdxLcZySzuz0z9lSyaAmd9P0gRxYMJTfHrR5KxRYZH+Asvudz0vhNq7zAjPO6GX+HHY/5crRL//S3M=
+X-Received: by 2002:a17:906:8401:: with SMTP id n1mr25499511ejx.215.1600272951032;
+ Wed, 16 Sep 2020 09:15:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <F25F6F0E-7E13-4C9D-A7BA-33CDEF7074F2@oracle.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200902150348.14465-1-krzk@kernel.org> <20200902163558.GA4137028@piout.net>
+ <20200911153441.GA18190@kozik-lap> <160012811662.4188128.10109140799333292326@swboyd.mtv.corp.google.com>
+In-Reply-To: <160012811662.4188128.10109140799333292326@swboyd.mtv.corp.google.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 16 Sep 2020 18:15:39 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdjyETBwDqC+C75giz2bD0Gie-G4Yd_svpc-vYccywy_Q@mail.gmail.com>
+Message-ID: <CAJKOXPdjyETBwDqC+C75giz2bD0Gie-G4Yd_svpc-vYccywy_Q@mail.gmail.com>
+Subject: Re: [PATCH 01/10] clk: at91: Drop unused at91sam9g45_pcr_layout
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        David Lechner <david@lechnology.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:42:27AM -0600, Eric Snowberg wrote:
-> 
-> > On Sep 14, 2020, at 12:12 PM, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-> > 
-> > On Fri, Sep 11, 2020 at 02:22:30PM -0400, Eric Snowberg wrote:
-> >> The Secure Boot Forbidden Signature Database, dbx, contains a list of now
-> >> revoked signatures and keys previously approved to boot with UEFI Secure
-> >> Boot enabled.  The dbx is capable of containing any number of
-> >> EFI_CERT_X509_SHA256_GUID, EFI_CERT_SHA256_GUID, and EFI_CERT_X509_GUID
-> >> entries.
-> >> 
-> >> Currently when EFI_CERT_X509_GUID are contained in the dbx, the entries are
-> >> skipped.
-> >> 
-> >> Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_GUID
-> >> is found, it is added as an asymmetrical key to the .blacklist keyring.
-> >> Anytime the .platform keyring is used, the keys in the .blacklist keyring
-> >> are referenced, if a matching key is found, the key will be rejected.
-> >> 
-> >> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> >> ---
-> >> v3:
-> >> Fixed an issue when CONFIG_PKCS7_MESSAGE_PARSER is not builtin and defined
-> >> as a module instead, pointed out by Randy Dunlap
-> >> 
-> >> v2: 
-> >> Fixed build issue reported by kernel test robot <lkp@intel.com>
-> >> Commit message update (suggested by Jarkko Sakkinen)
-> >> ---
-> >> certs/blacklist.c                             | 33 +++++++++++++++++++
-> >> certs/blacklist.h                             | 12 +++++++
-> >> certs/system_keyring.c                        |  6 ++++
-> >> include/keys/system_keyring.h                 | 11 +++++++
-> >> .../platform_certs/keyring_handler.c          | 11 +++++++
-> >> 5 files changed, 73 insertions(+)
-> >> 
-> >> diff --git a/certs/blacklist.c b/certs/blacklist.c
-> >> index 6514f9ebc943..3d1514ba5d47 100644
-> >> --- a/certs/blacklist.c
-> >> +++ b/certs/blacklist.c
-> >> @@ -100,6 +100,39 @@ int mark_hash_blacklisted(const char *hash)
-> >> 	return 0;
-> >> }
-> >> 
-> >> +int mark_key_revocationlisted(const char *data, size_t size)
-> >> +{
-> >> +	key_ref_t key;
-> >> +
-> >> +	key = key_create_or_update(make_key_ref(blacklist_keyring, true),
-> >> +				   "asymmetric",
-> >> +				   NULL,
-> >> +				   data,
-> >> +				   size,
-> >> +				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW),
-> >> +				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN);
-> >> +
-> >> +	if (IS_ERR(key)) {
-> >> +		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
-> >> +		return PTR_ERR(key);
-> >> +	}
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +int is_key_revocationlisted(struct pkcs7_message *pkcs7)
-> >> +{
-> >> +	int ret;
-> >> +
-> >> +	ret = validate_trust(pkcs7, blacklist_keyring);
-> >> +
-> >> +	if (ret == 0)
-> >> +		return -EKEYREJECTED;
-> >> +
-> >> +	return -ENOKEY;
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(is_key_revocationlisted);
-> > 
-> > Hmm... ignore my previous comment about this. Export symbol is called
-> > only by system keyring code.
-> > 
-> > Would be best if the commit message would explicitly reason new exports.
-> 
-> I don’t see a good reason to keep the export now, I’ll remove it from the
-> next version.  Thanks.
+On Tue, 15 Sep 2020 at 02:01, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Krzysztof Kozlowski (2020-09-11 08:34:41)
+> > On Wed, Sep 02, 2020 at 06:35:58PM +0200, Alexandre Belloni wrote:
+> > > On 02/09/2020 17:03:39+0200, Krzysztof Kozlowski wrote:
+> > > > The at91sam9g45_pcr_layout is not used so drop it to fix build warning:
+> > > >
+> > > >   drivers/clk/at91/at91sam9g45.c:49:36: warning:
+> > > >     'at91sam9g45_pcr_layout' defined but not used [-Wunused-const-variable=]
+> > > >
+> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > >
+> > > > ---
+> > > >  drivers/clk/at91/at91sam9g45.c | 7 -------
+> > > >  1 file changed, 7 deletions(-)
+> > > >
+> >
+> > Hi Stephen,
+> >
+> > If the dev_err_probe() waits/skips/goes to /dev/null, then how about the
+> > fixes in the series? This patch and few other?
+>
+> Yes if dev_err_probe() is superseded by Rob's work then the fixes should
+> be fine to pick up. Can you resend the fixes?
 
-OK, great, thanks.
+Sure, I will send the fixes only.
 
-Was somewhat puzzled with this for a while :-)
-
-/Jarkko
+Best regards,
+Krzysztof
