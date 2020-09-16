@@ -2,104 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99BF26CA92
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA9D26CA88
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgIPUIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:08:24 -0400
-Received: from mga07.intel.com ([134.134.136.100]:43751 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727037AbgIPReW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:34:22 -0400
-IronPort-SDR: wJvEjC+BjzhFI8uWUyngRvUsZ/dLjEp244qng/Ngxn0O1Jz89Cquei7UC5Wey+wFm8PSus9LHB
- BP0P0p9mr/5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="223711134"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="223711134"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 10:34:17 -0700
-IronPort-SDR: Q+U/SATVDiLIBJs3zIb4Ef+MRh0rDH2zZzmKDKEebVhRIscqceOFOXY4n1YErS49/cyV/tFoPO
- dCMhoJ6y1G3w==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="451946401"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 10:34:17 -0700
-Date:   Wed, 16 Sep 2020 10:34:16 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH] KVM: x86: Add kvm_x86_ops hook to short circuit emulation
-Message-ID: <20200916173416.GF10227@sjchrist-ice>
-References: <20200915232702.15945-1-sean.j.christopherson@intel.com>
- <CANRm+Cx85NBnL76VoFV+DNrShp_2o+c4dgQCwNARzrAcmX1KAw@mail.gmail.com>
+        id S1727752AbgIPUGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgIPRfS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:35:18 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F764C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:34:46 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so7803394wrr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:34:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7mFDfLRc/4coa4w4PmVZiF39D3EbfTO0poh1JSaf3tg=;
+        b=vGAU2kWRhekFoBDT7sUBYbd7AQ/0NP8rSF7wCZ5cc1mqJHfnkU2LjdxpqgvLSzC8C6
+         HgK02bdPHtLbqtZn4q0RnS1+zmNXG6b9m/TES+lyBYb2TqNi/8kRzN7/jf0y7NjX7EpS
+         pt6qAOuPo6oyK//jwyuGbT6kcxGnovcDDEppAUOdKxofvqiqaZmpGbz73Jb0jc5ytCne
+         Elp8PtK3xec2AV24MDV0HI1V2eP53YwAN77CLySTA5Lm1UefJnEEepbtf3Ad6NktHs8V
+         rKpZjaC58ODG5D60rOWatOiXUAirqTD58E++PKgCBvPwbwpXA3sRP3PQRGW3dcAiasL/
+         Fqgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7mFDfLRc/4coa4w4PmVZiF39D3EbfTO0poh1JSaf3tg=;
+        b=c8+q7T4KqdRpIEYZYBUaGGQK/UhZiOoYcoBbFT0CzHGB1+0b/RdKHs6lvD2TbKOMf+
+         ym+Mp8iKcphaOZqbAkTljID1JqsrRAWB1gtV5s/qzvk68a9Yg4wVxDDxdrVXh4EAlQV/
+         GXYle02v5oaug5QPdo1ZZAa2iaL3LY0nDh5RtJcduC+e1z40QMoYc7+yiKCpFuO64j7o
+         IyHWkQhfRCUre9GduMHLHJnhZnzhAjlgdR3mzNT4TnWj0BF0sww+TbJ7noQymc/Uu+Xa
+         +1LO4AuJUC+g0PP7Q3vx6OfyPnNRKdxTqiRIP0u5Jo8fy14YxGT66HBhH/DG6bEYpphd
+         AZ1Q==
+X-Gm-Message-State: AOAM533ei/dG+XlD1nah/wPE3547SNwmt+VWSS4rxuN6m7PDCM7h1X2q
+        amC6RFMcIHrZzPurI24PoARvwg==
+X-Google-Smtp-Source: ABdhPJzmjFCynjgBuUkJ+b5Puz0KOw8KtSCoG1vuE4eR8lKjcBVC8JI8uRWOwLM4nzTsOVZRlwYx+A==
+X-Received: by 2002:adf:d845:: with SMTP id k5mr26012928wrl.285.1600277685420;
+        Wed, 16 Sep 2020 10:34:45 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
+        by smtp.gmail.com with ESMTPSA id a5sm246603wrp.37.2020.09.16.10.34.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Sep 2020 10:34:44 -0700 (PDT)
+From:   David Brazdil <dbrazdil@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v3 00/10] Independent per-CPU data section for nVHE
+Date:   Wed, 16 Sep 2020 18:34:28 +0100
+Message-Id: <20200916173439.32265-1-dbrazdil@google.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANRm+Cx85NBnL76VoFV+DNrShp_2o+c4dgQCwNARzrAcmX1KAw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:31:22AM +0800, Wanpeng Li wrote:
-> On Wed, 16 Sep 2020 at 07:29, Sean Christopherson
-> <sean.j.christopherson@intel.com> wrote:
-> >
-> > Replace the existing kvm_x86_ops.need_emulation_on_page_fault() with a
-> > more generic is_emulatable(), and unconditionally call the new function
-> > in x86_emulate_instruction().
-> >
-> > KVM will use the generic hook to support multiple security related
-> > technologies that prevent emulation in one way or another.  Similar to
-> > the existing AMD #NPF case where emulation of the current instruction is
-> > not possible due to lack of information, AMD's SEV-ES and Intel's SGX
-> > and TDX will introduce scenarios where emulation is impossible due to
-> > the guest's register state being inaccessible.  And again similar to the
-> > existing #NPF case, emulation can be initiated by kvm_mmu_page_fault(),
-> > i.e. outside of the control of vendor-specific code.
-> >
-> > While the cause and architecturally visible behavior of the various
-> > cases are different, e.g. SGX will inject a #UD, AMD #NPF is a clean
-> > resume or complete shutdown, and SEV-ES and TDX "return" an error, the
-> > impact on the common emulation code is identical: KVM must stop
-> > emulation immediately and resume the guest.
-> >
-> > Query is_emulatable() in handle_ud() as well so that the
-> > force_emulation_prefix code doesn't incorrectly modify RIP before
-> > calling emulate_instruction() in the absurdly unlikely scenario that
-> > KVM encounters forced emulation in conjunction with "do not emulate".
+Introduce '.hyp.data..percpu' as part of ongoing effort to make nVHE
+hyp code self-contained and independent of the rest of the kernel.
 
-...
+Main benefits:
+ * independent nVHE per-CPU data section that can be unmapped from host,
+ * more robust linking of nVHE hyp code,
+ * no need for hyp-specific macros to access per-CPU variables.
 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 539ea1cd6020..5208217049d9 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -5707,6 +5707,9 @@ int handle_ud(struct kvm_vcpu *vcpu)
-> >         char sig[5]; /* ud2; .ascii "kvm" */
-> >         struct x86_exception e;
-> >
-> > +       if (unlikely(!kvm_x86_ops.is_emulatable(vcpu, NULL, 0)))
-> > +               return 1;
-> > +
-> 
-> Both VMX and SVM scenarios always fail this check.
+The series is structured as follows:
 
-Ah, right.  This patch was extracted from my SGX series, in which case there
-would be a follow-up patch to add a VMX scenario where is_emulated() could
-return false.
+ - patch 1: Improve existing hyp build rules. This could be sent and merged
+    independently of per-CPU but this series builds on it.
 
-The intent of posting the patch standalone is so that SGX, SEV-ES, and/or TDX
-have "ready to go" support in upstream, i.e. can change only the VMX/SVM
-implementation of is_emulated().  I'm a-ok dropping the handle_ud() change,
-or even the whole patch, until one of the above three is actually ready for
-inclusion.
+ - patches 2-3: Minor cleanups.
+
+ - patches 4-5: Replace hyp helpers for accessing per-CPU variables
+     with common helpers modified to work correctly in hyp. Per-CPU
+     variables can now be accessed with one API anywhere.
+
+ - patches 6-8: Where VHE and nVHE use per-CPU variables defined in
+     kernel proper, move their definitions to hyp/ where they are
+     duplicated and owned by VHE/nVHE, respectively. Non-VHE hyp code
+     now refers only to per-CPU variables defined in its source files.
+     Helpers are added so that kernel proper can continue to access
+     nVHE hyp variables, same way as it does with other nVHE symbols.
+
+ - patches 9-11: Introduce '.hyp.data..percpu' ELF section and allocate
+     memory for every CPU core during KVM init. All nVHE per-CPU state
+     is now grouped together in ELF and in memory. Introducing a new
+     per-CPU variable does not require adding new memory mappings any
+     more. nVHE hyp code cannot accidentally refer to kernel-proper
+     per-CPU data as it only has the pointer to its own per-CPU memory.
+
+Patches are rebased on v5.9-rc5 and available in branch 'topic/percpu-v3' at:
+    https://android-kvm.googlesource.com/linux
+
+For maintainers: In case of interest, there are patches that remove the need
+for redefining macros under DEBUG_PREEMPT available at the same repo, branch
+'topic/percpu-v3-debug-preempt'. Since they are non-trivial, I am not going
+to post them here so late in the 5.10 window. I plan to post them for 5.11
+when they will also be useful for other patches.
+
+Changes v2 -> v3:
+ * Use PERCPU_INPUT in hyp.ld instead of modifying PERCPU_SECTION
+ * Only pass linker script once to LD (fix error message)
+ * Renamed '.hyp.o' to '.nvhe.o'
+ * Use __KVM_VHE_HYPERVISOR__ to select TPIDR_EL2 instead of alternatives
+ * Move all prefixing-related macros to hyp_image.h
+
+Changes v1 -> v2:
+ * partially link hyp code, add linker script
+
+David Brazdil (11):
+  kvm: arm64: Partially link nVHE hyp code, simplify HYPCOPY
+  kvm: arm64: Move nVHE hyp namespace macros to hyp_image.h
+  kvm: arm64: Only define __kvm_ex_table for CONFIG_KVM
+  kvm: arm64: Remove __hyp_this_cpu_read
+  kvm: arm64: Remove hyp_adr/ldr_this_cpu
+  kvm: arm64: Add helpers for accessing nVHE hyp per-cpu vars
+  kvm: arm64: Duplicate arm64_ssbd_callback_required for nVHE hyp
+  kvm: arm64: Create separate instances of kvm_host_data for VHE/nVHE
+  kvm: arm64: Mark hyp stack pages reserved
+  kvm: arm64: Set up hyp percpu data for nVHE
+  kvm: arm64: Remove unnecessary hyp mappings
+
+ arch/arm64/include/asm/assembler.h        |  27 ++++--
+ arch/arm64/include/asm/hyp_image.h        |  36 +++++++
+ arch/arm64/include/asm/kvm_asm.h          |  82 ++++++++--------
+ arch/arm64/include/asm/kvm_host.h         |   2 +-
+ arch/arm64/include/asm/kvm_mmu.h          |  19 ++--
+ arch/arm64/include/asm/percpu.h           |  33 ++++++-
+ arch/arm64/include/asm/sections.h         |   1 +
+ arch/arm64/kernel/image-vars.h            |   4 -
+ arch/arm64/kernel/vmlinux.lds.S           |  13 +++
+ arch/arm64/kvm/arm.c                      | 109 +++++++++++++++++++---
+ arch/arm64/kvm/hyp/hyp-entry.S            |   2 +-
+ arch/arm64/kvm/hyp/include/hyp/debug-sr.h |   4 +-
+ arch/arm64/kvm/hyp/include/hyp/switch.h   |   8 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile          |  60 ++++++------
+ arch/arm64/kvm/hyp/nvhe/hyp.lds.S         |  19 ++++
+ arch/arm64/kvm/hyp/nvhe/switch.c          |   8 +-
+ arch/arm64/kvm/hyp/vhe/switch.c           |   5 +-
+ arch/arm64/kvm/hyp/vhe/sysreg-sr.c        |   4 +-
+ arch/arm64/kvm/pmu.c                      |  13 ++-
+ 19 files changed, 320 insertions(+), 129 deletions(-)
+ create mode 100644 arch/arm64/include/asm/hyp_image.h
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/hyp.lds.S
+
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
