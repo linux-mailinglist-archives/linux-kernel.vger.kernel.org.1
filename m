@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8917726C49E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501B226C4C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgIPPyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 11:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45184 "EHLO mail.kernel.org"
+        id S1726393AbgIPP7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 11:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726298AbgIPP3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:29:43 -0400
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726306AbgIPPzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 11:55:32 -0400
+Received: from localhost (unknown [122.172.186.249])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 740AC2220A;
-        Wed, 16 Sep 2020 11:56:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4262C22211;
+        Wed, 16 Sep 2020 12:12:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600257375;
-        bh=eoaV9szsjFgk7Uijv0L7H5VhZbtE8Hl/Zr7ID+M87nY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S41QI6QNEwoTFUhPFQbHwcgGYxGkiNeZjlx89US+9eB0ouV5jXDQVbtws8fAeszyA
-         TWRVI4D+K+DO/dgAew8K1QnwoRJeTj50wecYRg73J365TMWFBcia/zuujHwFodwzD5
-         KMrWVjsw7IXSR27cjO9eEqGuHJvOZG/V81fMmavs=
-Received: by mail-ej1-f54.google.com with SMTP id i26so9889834ejb.12;
-        Wed, 16 Sep 2020 04:56:15 -0700 (PDT)
-X-Gm-Message-State: AOAM533T5gAR4yTs5Gl3wGOvLbiwjUxuAR+L38xQO6EpKxLOV9v8mqit
-        JZZaoVGCMJ16MBsHumn9mfzqySS8nVm68D+jsH8=
-X-Google-Smtp-Source: ABdhPJxVC4NLF4LipwZPQbtgcVYYzgMLywjdrV+ZxmsIZAFCCtHHjAh+3P/NtChDS4r5OJpcCax05AMA1bTlcwSk55Y=
-X-Received: by 2002:a17:906:4a51:: with SMTP id a17mr24651233ejv.381.1600257374080;
- Wed, 16 Sep 2020 04:56:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200904151139.18715-1-krzk@kernel.org> <CACRpkdbGTQTFAWoQtxrODYdADyUJ0JohL-63oCv9aWj53H_0Xw@mail.gmail.com>
-In-Reply-To: <CACRpkdbGTQTFAWoQtxrODYdADyUJ0JohL-63oCv9aWj53H_0Xw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 16 Sep 2020 13:56:02 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPeSVEU-O_vgkJpCq-zt_DzP5b-1+GvqshvGyK2ChBuyTA@mail.gmail.com>
-Message-ID: <CAJKOXPeSVEU-O_vgkJpCq-zt_DzP5b-1+GvqshvGyK2ChBuyTA@mail.gmail.com>
-Subject: Re: [GIT PULL] dt-bindings: gpio: fsl-imx-gpio: Cleanup for v5.10
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+        s=default; t=1600258341;
+        bh=kkMD2cqZ8fttnTyQxIw3Z6fU1nZFyyqMqzMlQsH3GOA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xPq9zi5888aBFYajlDJls8BsbIZwjrro6fxEWjAVKOJRkrBL/ps1RDgtg9CNJmZfd
+         b341ygXmYaT6ZHA7wVgXTDvAYgRTXo5v8wNW3PuZ6rdhvhsuuIs6reF9lqrvq0w3cN
+         /l3LkBgFjl4TM0dJf6GA1SZaYDxIEqmt5gLUxNy4=
+Date:   Wed, 16 Sep 2020 17:42:13 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>
+Cc:     "kishon@ti.com" <kishon@ti.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Yuti Suresh Amonkar <yamonkar@cadence.com>,
+        "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>,
+        "jsarha@ti.com" <jsarha@ti.com>, "nsekhar@ti.com" <nsekhar@ti.com>
+Subject: Re: [PATCH v2 0/7] PHY: Prepare Cadence Torrent PHY driver to
+ support multilink configurations
+Message-ID: <20200916121213.GH2968@vkoul-mobl>
+References: <1598534932-18693-1-git-send-email-sjakhade@cadence.com>
+ <20200908050533.GB77521@vkoul-mobl>
+ <DM6PR07MB61543BF71CE5CAE3611A7A31C5290@DM6PR07MB6154.namprd07.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR07MB61543BF71CE5CAE3611A7A31C5290@DM6PR07MB6154.namprd07.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Sep 2020 at 11:40, Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Fri, Sep 4, 2020 at 5:11 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> > These were on the list for some time. They got review from Rob so I guess they
-> > are good to go via subsystem tree.
->
-> Pulled in to my devel branch, thanks!
->
-> Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-> looks very, very good.
->
-> One thing I was thinking of was to abstract out
-> gpio-common.yaml from these bindings as a start, since
-> you made the effort to even parse hogs properly.
-> That way others could benefit from the work.
->
-> Do you want to do it or should I take a stab?
+Hi Swapnil,
 
-Hi Linus,
+On 08-09-20, 13:57, Swapnil Kashinath Jakhade wrote:
+> > On 27-08-20, 15:28, Swapnil Jakhade wrote:
+> > > Cadence Torrent PHY is a multiprotocol PHY supporting different
+> > > multilink PHY configurations including DisplayPort, PCIe, USB, SGMII,
+> > QSGMII etc.
+> > > Existing Torrent PHY driver supports only DisplayPort. This patch
+> > > series prepares Torrent PHY driver so that different multilink
+> > > configurations can be supported. It also updates DT bindings
+> > > accordingly. This doesn't affect ABI as Torrent PHY driver has never
+> > > been functional, and therefore do not exist in any active use case.
+> > >
+> > > Support for different multilink configurations with register sequences
+> > > for protocols above will be added in a separate patch series.
+> > 
+> > Series looks good to me.
+> > 
+> > > This patch series is dependent on PHY attributes patch series [1].
+> > 
+> > I did not see any obvious depends in the series, if it is not maybe good to
+> > rebase and send without dependency
+> > 
+> 
+> Sure. I will resend the series removing dependency.
 
-I can prepare common bindings.
+I have applied the PHY attributes patch series, but dt patch has some
+comments, please fix that and repost
 
-Best regards,
-Krzysztof
+-- 
+~Vinod
