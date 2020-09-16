@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E91526CB44
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F169026CB4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbgIPUYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:24:53 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:30310 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgIPR1q (ORCPT
+        id S1727149AbgIPUZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727066AbgIPR1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:27:46 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 16 Sep 2020 10:26:21 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Sep 2020 10:26:19 -0700
-Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Sep 2020 22:56:14 +0530
-Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
-        id 9140521D3D; Wed, 16 Sep 2020 22:56:12 +0530 (IST)
-From:   Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: [PATCH v2 4/4] venus: put dummy vote on video-mem path after last session release
-Date:   Wed, 16 Sep 2020 22:55:57 +0530
-Message-Id: <1600277157-24327-5-git-send-email-mansur@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600277157-24327-1-git-send-email-mansur@codeaurora.org>
-References: <1600277157-24327-1-git-send-email-mansur@codeaurora.org>
+        Wed, 16 Sep 2020 13:27:38 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC803C061A31;
+        Wed, 16 Sep 2020 10:27:15 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w7so4391897pfi.4;
+        Wed, 16 Sep 2020 10:27:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bO4fdTifCbsbsP2IhleoA3vXtN6f7O4IH+1Jq/pjP2k=;
+        b=mO3hFUu0GImd1goVrECVXRGIa0A8Nm7b9YstEMyUy8lPWHap5IhmPgzQdgHDmKtbN+
+         QHsTFedtEIZGDZjqTUgKubnI1I2KfPECFPWoaEMQNE/lbDf2AMyaEbqmTeUS6i0Z/6sX
+         oq0KJ5zBXXuKr4u7PE48vB+5DyAvA6MExJuy5wZgqzFpvIeP9K5iRUM+Frq8ThmToIpq
+         eD1pYVlgnptoaIslvMaWfGHaLUDvVokcjwvyGUBJoOBWeJHbHRNblVXVmRLkcEf4ZRrf
+         qqZ9fuRkK6kRhglgrUp9jB0BZ0p0lm/mhSl8JWxGW9sDlJwJktME3bKWZQfVW+ZQBLhQ
+         fbqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bO4fdTifCbsbsP2IhleoA3vXtN6f7O4IH+1Jq/pjP2k=;
+        b=ZHQN1q6cGrxRCllzwweBFQt2x09SfaiPODivx/EBdzczwue9tRgGs3k7/gz/QIeeck
+         nAA8pj6z0j2Gh7DuEqaGrYTYADV/nvD/+j/ioRFJol/X5UMRUGZTvS4Ei7m1dRnsrRhq
+         bghbYfC+APCUX0YTDhPtETaUKoyV7UrvapwNHpS8cq8760FPR3PxyOt5SqrfgsANOxlX
+         ynNLH3LtMK4RFxWh62EDP2AQQBAQEIs0KMcH+nuaEG6hr55EQ+JTYeX0sZDjAe4EpKzi
+         nFozUnln0h73/sXW+v+075RtIEnV9FEqP6PvqsPkz0W463OV81UJfB1eTK784DfMcWUE
+         WqEQ==
+X-Gm-Message-State: AOAM5321uTAKKy/uAJ5So0nx9pdcMDPJXi/8UvaFtfkoitfUmlgmy9Hx
+        c9r+LGMHiX+KR393HlNmoXLWE8BKA21oL9H6AKs=
+X-Google-Smtp-Source: ABdhPJyTOQigECECSyGp9bnw5Ai8y2TsU/ceVs5PMCCP/LIJ3wf9n8JCo7zbCa78DwkerSAMOsFtSmCXxvdlMB0zy74=
+X-Received: by 2002:a63:ec4c:: with SMTP id r12mr18735528pgj.74.1600277235025;
+ Wed, 16 Sep 2020 10:27:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200910211520.1490626-1-luzmaximilian@gmail.com> <EMZQgUl1xLN4o0hV9ZkCD563O85SuOYB5kNFZ5_hlxLQXbJCXpQfrM2afyFIr28h31tXMxD1mxE4DkA5Wy60A0Z2mDnstwF17tEdnX4IRas=@protonmail.com>
+In-Reply-To: <EMZQgUl1xLN4o0hV9ZkCD563O85SuOYB5kNFZ5_hlxLQXbJCXpQfrM2afyFIr28h31tXMxD1mxE4DkA5Wy60A0Z2mDnstwF17tEdnX4IRas=@protonmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 16 Sep 2020 20:26:56 +0300
+Message-ID: <CAHp75Ve8jaYsecsQjuojrihyoVsYr7G011drmXN7q9yzt_tMnQ@mail.gmail.com>
+Subject: Re: [PATCH v2] platform/x86: Add Driver to set up lid GPEs on MS
+ Surface device
+To:     =?UTF-8?B?QmFybmFiw6FzIFDFkWN6ZQ==?= <pobrn@protonmail.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per current implementation, we are unvoting "videom-mem" path
-for last video session during vdec_session_release().
-While video playback when we try to suspend device, we see video clock
-warnings since votes are already removed during vdec_session_release().
+On Wed, Sep 16, 2020 at 2:58 AM Barnab=C3=A1s P=C5=91cze <pobrn@protonmail.=
+com> wrote:
 
-corrected this by putting dummy vote on "video-mem" after last video
-session release and unvoting it during suspend.
+...
 
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
----
- drivers/media/platform/qcom/venus/pm_helpers.c | 3 +++
- 1 file changed, 3 insertions(+)
+> > +             dev_err(dev, "failed to set GPE wake mask: %d\n", status)=
+;
+>
+> I'm not sure if it's technically safe to print acpi_status with the %d fo=
+rmat
+> specifier since 'acpi_status' is defined as 'u32' at the moment.
+>  func("%lu", (unsigned long) status)
+> would be safer.
 
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index 57877ea..c0a3524 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -212,6 +212,9 @@ static int load_scale_bw(struct venus_core *core)
- 	}
- 	mutex_unlock(&core->lock);
- 
-+	if (!total_avg && !total_peak)
-+		total_avg = kbps_to_icc(1000);
-+
- 	dev_dbg(core->dev, VDBGL "total: avg_bw: %u, peak_bw: %u\n",
- 		total_avg, total_peak);
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+Please, no explicit castings for printf(). In 99% cases it means that
+something is not being used correctly.
 
+
+
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
