@@ -2,185 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBB226BA81
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2914726BA84
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgIPDH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:07:57 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:56287 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726023AbgIPDHv (ORCPT
+        id S1726253AbgIPDJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726100AbgIPDJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:07:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U94yIkx_1600225667;
-Received: from IT-C02W23QPG8WN.local(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0U94yIkx_1600225667)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 16 Sep 2020 11:07:48 +0800
-From:   Wen Yang <wenyang@linux.alibaba.com>
-Subject: Re: [PATCH] net: core: explicitly call linkwatch_fire_event to speed
- up the startup of network services
-To:     David Miller <davem@davemloft.net>
-Cc:     kuba@kernel.org, andrew@lunn.ch, edumazet@google.com,
-        jiri@mellanox.com, leon@kernel.org, jwi@linux.ibm.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200801085845.20153-1-wenyang@linux.alibaba.com>
- <20200804.155831.644663742975051162.davem@davemloft.net>
- <41107812-01ba-169e-2f18-69cecec94d8d@linux.alibaba.com>
-Message-ID: <21bd2d87-c784-06dd-6e1e-25569ebef040@linux.alibaba.com>
-Date:   Wed, 16 Sep 2020 11:07:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.1.0
+        Tue, 15 Sep 2020 23:09:21 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8021C06174A;
+        Tue, 15 Sep 2020 20:09:20 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id y5so5342583otg.5;
+        Tue, 15 Sep 2020 20:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rDIxqPOPy/jwE1fyBLQdvVBwmDeqK+FPS+2DQFsR9wU=;
+        b=u8JR+SKL2EY/e96H8DkCrV0RnTLxg9b8MC4p8V/xSYbuq5+T/lLzN3yH3v+LhXkRWV
+         FgfTEnolpKtJkyrCGEtSqkJkvEOtF1Vm16Fg/64SuQqlZZ+0HwfS91xVbZWTs8mraJpV
+         0iQCAeQcGgL8YSE95HrHvwuHOHjzEX2gvwH5G9+DlJ4yfLxThAhielf4SAU0ZmxotYsU
+         X5cACbER/eozqTSTM5pBgTTeBti1CDbGypTKakDbSWT1tdlLtqwAcPNXsxh2EWMyo8wQ
+         +hgA7WHp75ePveuBOVvR8k+Hb2P4HzdiFRwbiZ4Mpp/nBXhqYEHyvrM9NR+OxYXsmCwJ
+         XjaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rDIxqPOPy/jwE1fyBLQdvVBwmDeqK+FPS+2DQFsR9wU=;
+        b=TLI90oTscic5zL/y+c08rqWQpcnTaxPuF21vVAQlGm9FlaSwsay1qIRWvjgH6WlHJE
+         gxnfhkBycRyHpnu5orLSdoxEFcqktbPzsHhz/HGU+E+rcXmVsxeWOyta27Ob1AiBo989
+         /IMbtdgxUvyWsfzZdoxpH/42n7zgBLRsYUUU2ohJAdYPL5zj23/Estua0WN6Rd6UB4yv
+         g+Nta0xFADOtqmeXupMILhOQAR1jPW73T9ufOmgPsWIIWxAL+5WI+5yX2D2iNTneT/P9
+         t1iRj2GrTGv3msYcUgr6PzGxqi6vlwALG+oojhta2E3OaGkrc/PYSgab32K7V9SKmnex
+         5VUw==
+X-Gm-Message-State: AOAM532o8tM3YP37vAB3gNdUm0QMD8vX2u4oRq6wxbxrXB2of3aMTTWq
+        GBuA54eakPNXfSIwdDIQrGA=
+X-Google-Smtp-Source: ABdhPJz5uPpzIQEzLcXZ6Eh8mUguD2ePQE/oB9E4x0Q3rDsyMpN+hukO68DmRFZsJXjsV6tX4QwmEQ==
+X-Received: by 2002:a05:6830:2096:: with SMTP id y22mr15186350otq.158.1600225759608;
+        Tue, 15 Sep 2020 20:09:19 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e18sm8109649oiy.52.2020.09.15.20.09.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Sep 2020 20:09:19 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 20:09:18 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chu Lin <linchuyuan@google.com>
+Cc:     jdelvare@suse.com, belgaied@google.com, jasonling@google.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhongqil@google.com
+Subject: Re: [PATCH v3] hwmon: adm1272: Enable temperature sampling for
+ adm1272 adm1278
+Message-ID: <20200916030918.GA250417@roeck-us.net>
+References: <20200721034900.2055889-1-linchuyuan@google.com>
 MIME-Version: 1.0
-In-Reply-To: <41107812-01ba-169e-2f18-69cecec94d8d@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721034900.2055889-1-linchuyuan@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 21, 2020 at 03:49:00AM +0000, Chu Lin wrote:
+> Problem:
+> 	adm1272 and adm1278 supports temperature sampling. The
+> current way of enabling it requires the user manually unbind the device
+> from the driver, flip the temperature sampling control bit and then bind
+> the device back to the driver. It would be nice if we can control this in a
+> better way by reading the dt.
+> 
+> Solution:
+> 	Introducing device tree binding analog,temp1-enable. If the
+> flag is set, flip the temp1_en control bit on probing.
+> 
+> Testing:
+> 1). iotools smbus_write16 35 0x10 0xd4 0x0037 // disable the temp1_en
+> 2). recompile the dt to have  analog,temp1-enable set
+> 3). Probe the driver and make sure tempX shows up in hwmon
+> 
+> Signed-off-by: Chu Lin <linchuyuan@google.com>
 
-on 2020/8/6 PM5:09, Wen Yang wrote:
->
->
-> 在 2020/8/5 上午6:58, David Miller 写道:
->> From: Wen Yang <wenyang@linux.alibaba.com>
->> Date: Sat,  1 Aug 2020 16:58:45 +0800
->>
->>> diff --git a/net/core/link_watch.c b/net/core/link_watch.c
->>> index 75431ca..6b9d44b 100644
->>> --- a/net/core/link_watch.c
->>> +++ b/net/core/link_watch.c
->>> @@ -98,6 +98,9 @@ static bool linkwatch_urgent_event(struct 
->>> net_device *dev)
->>>       if (netif_is_lag_port(dev) || netif_is_lag_master(dev))
->>>           return true;
->>>   +    if ((dev->flags & IFF_UP) && dev->operstate == IF_OPER_DOWN)
->>> +        return true;
->>> +
->>>       return netif_carrier_ok(dev) && qdisc_tx_changing(dev);
->>>   }
->>
->> You're bypassing explicitly the logic here:
->>
->>     /*
->>      * Limit the number of linkwatch events to one
->>      * per second so that a runaway driver does not
->>      * cause a storm of messages on the netlink
->>      * socket.  This limit does not apply to up events
->>      * while the device qdisc is down.
->>      */
->>     if (!urgent_only)
->>         linkwatch_nextevent = jiffies + HZ;
->>     /* Limit wrap-around effect on delay. */
->>     else if (time_after(linkwatch_nextevent, jiffies + HZ))
->>         linkwatch_nextevent = jiffies;
->>
->> Something about this isn't right.  We need to analyze what you are 
->> seeing,
->> what device you are using, and what systemd is doing to figure out what
->> the right place for the fix.
->>
->> Thank you.
->>
->
-> Thank you very much for your comments.
-> We are using virtio_net and the environment is a microvm similar to 
-> firecracker.
->
-> Let's briefly explain.
-> net_device->operstate is assigned through linkwatch_event, and the 
-> call stack is as follows:
-> process_one_work
-> -> linkwatch_event
->  -> __linkwatch_run_queue
->   -> linkwatch_do_dev
->    -> rfc2863_policy
->     -> default_operstate
->
-> During the machine startup process, net_device->operstate has the 
-> following two-step state changes:
->
-> STEP A: virtnet_probe detects the network card and triggers the 
-> execution of linkwatch_fire_event.
-> Since linkwatch_nextevent is initialized to 0, linkwatch_work will run.
-> And since net_device->state is 6 (__LINK_STATE_PRESENT | 
-> __LINK_STATE_NOCARRIER), net_device->operstate will be changed from 
-> IF_OPER_UNKNOWN to IF_OPER_DOWN:
-> eth0 operstate:0 (IF_OPER_UNKNOWN) -> operstate:2 (IF_OPER_DOWN)
->
-> virtnet_probe then executes netif_carrier_on to update 
-> net_device->state, it will be changed from ‘__LINK_STATE_PRESENT | 
-> __LINK_STATE_NOCARRIER’ to __LINK_STATE_PRESENT:
-> eth0 state: 6 (__LINK_STATE_PRESENT | __LINK_STATE_NOCARRIER) -> 2 
-> (__LINK_STATE_PRESENT)
->
-> STEP B: One second later (because linkwatch_nextevent = jiffies + HZ), 
-> linkwatch_work is executed again.
-> At this time, since net_device->state is __LINK_STATE_PRESENT, so the 
-> net_device->operstate will be changed from IF_OPER_DOWN to IF_OPER_UP:
-> eth0 operstate:2 (IF_OPER_DOWN) -> operstate:6 (IF_OPER_UP)
->
->
-> The above state change can be completed within 2 seconds.
-> Generally, the machine will load the initramfs first, and do some 
-> initialization in the initramfs, which takes some time; then 
-> switch_root to the system disk and continue the initialization, which 
-> will also take some time, and finally start the systemd-networkd 
-> service, bringing link, etc.,
-> In this way, the linkwatch_work work queue has enough time to run 
-> twice, and the state of net_device->operstate is already IF_OPER_UP,
-> So bringing link up quickly returns the following information:
-> Aug 06 16:35:55.966121 iZuf6h1kfgutxc3el68z2lZ systemd-networkd[580]: 
-> eth0: bringing link up
-> ...
-> Aug 06 16:35:55.990461 iZuf6h1kfgutxc3el68z2lZ systemd-networkd[580]: 
-> eth0: flags change: +UP +LOWER_UP +RUNNING
->
-> But we are now using MicroVM, which requires extreme speed to start, 
-> bypassing the initramfs and directly booting the trimmed system on the 
-> disk.
-> systemd-networkd starts in less than 1 second after booting. the STEP 
-> B has not been run yet, so it will wait for several hundred 
-> milliseconds here, as follows:
-> Jul 20 22:00:47.432552 systemd-networkd[210]: eth0: bringing link up
-> ...
-> Jul 20 22:00:47.446108 systemd-networkd[210]: eth0: flags change: +UP 
-> +LOWER_UP
-> ...
-> Jul 20 22:00:47.781463 systemd-networkd[210]: eth0: flags change: 
-> +RUNNING
->
->
-> Note: dhcp pays attention to IFF_RUNNING status, we may refer to:
-> https://www.kernel.org/doc/Documentation/networking/operstates.txt
->
-> A routing daemon or dhcp client just needs to care for IFF_RUNNING or
-> waiting for operstate to go IF_OPER_UP/IF_OPER_UNKNOWN before
-> considering the interface / querying a DHCP address.
->
-> Finally, the STEP B above only updates the value of operstate based on 
-> the known state (operstate/state) on the net_device, without any 
-> hardware interaction involved, so it is not very reasonable to wait 
-> for 1 second there.
->
-> By adding:
-> +    if ((dev->flags & IFF_UP) && dev->operstate == IF_OPER_DOWN)
-> +        return true;
+For my reference:
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+We'll need to wait for DT review before I can apply the patch.
+
+Thanks,
+Guenter
+
+> ---
+> ChangeLog v1->v2:
+>  - Rename adm1272-adm1278-temp1-en to analog-temperature1-enable
+> 
+> ChangeLog v2->v3:
+>  - Rename analog-temperature1-enable analog,temp1-enable
+> 
+>  drivers/hwmon/pmbus/adm1275.c | 36 +++++++++++++++++++++--------------
+>  1 file changed, 22 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
+> index 19317575d1c6..0482670281bd 100644
+> --- a/drivers/hwmon/pmbus/adm1275.c
+> +++ b/drivers/hwmon/pmbus/adm1275.c
+> @@ -475,6 +475,7 @@ static int adm1275_probe(struct i2c_client *client,
+>  	const struct coefficients *coefficients;
+>  	int vindex = -1, voindex = -1, cindex = -1, pindex = -1;
+>  	int tindex = -1;
+> +	bool temp1_en;
+>  	u32 shunt;
+>  
+>  	if (!i2c_check_functionality(client->adapter,
+> @@ -536,6 +537,9 @@ static int adm1275_probe(struct i2c_client *client,
+>  	if (shunt == 0)
+>  		return -EINVAL;
+>  
+> +	temp1_en = of_property_read_bool(client->dev.of_node, "analog,temp1-enable") &&
+> +		(mid->driver_data == adm1272 || mid->driver_data == adm1278);
 > +
-> We hope to improve the linkwatch_urgent_event function a bit.
->
-> Hope to get more of your advice and guidance.
->
-> Best wishes,
-> Wen
-
-hi, this issue is worth continuing discussion.
-In the microVM scenario, it is valuable to increase the startup speed by 
-a few hundred milliseconds.
-
-Best wishes,
-Wen
-
-
-
+>  	data->id = mid->driver_data;
+>  
+>  	info = &data->info;
+> @@ -614,16 +618,18 @@ static int adm1275_probe(struct i2c_client *client,
+>  		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
+>  			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
+>  
+> +		ret = config;
+> +		/* Enable temp if it is instructed by dt (it is disabled by default) */
+> +		if (temp1_en && !(config & ADM1278_TEMP1_EN))
+> +			config |= ADM1278_TEMP1_EN;
+>  		/* Enable VOUT if not enabled (it is disabled by default) */
+> -		if (!(config & ADM1278_VOUT_EN)) {
+> +		if (!(config & ADM1278_VOUT_EN))
+>  			config |= ADM1278_VOUT_EN;
+> -			ret = i2c_smbus_write_byte_data(client,
+> -							ADM1275_PMON_CONFIG,
+> -							config);
+> +		if (ret != config) {
+> +			ret = i2c_smbus_write_word_data(client, ADM1275_PMON_CONFIG, config);
+>  			if (ret < 0) {
+> -				dev_err(&client->dev,
+> -					"Failed to enable VOUT monitoring\n");
+> -				return -ENODEV;
+> +				dev_err(&client->dev, "Failed to enable config control bits");
+> +				return ret;
+>  			}
+>  		}
+>  
+> @@ -685,16 +691,18 @@ static int adm1275_probe(struct i2c_client *client,
+>  		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
+>  			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
+>  
+> +		ret = config;
+> +		/* Enable temp if it is instructed by dt (it is disabled by default) */
+> +		if (temp1_en && !(config & ADM1278_TEMP1_EN))
+> +			config |= ADM1278_TEMP1_EN;
+>  		/* Enable VOUT if not enabled (it is disabled by default) */
+> -		if (!(config & ADM1278_VOUT_EN)) {
+> +		if (!(config & ADM1278_VOUT_EN))
+>  			config |= ADM1278_VOUT_EN;
+> -			ret = i2c_smbus_write_byte_data(client,
+> -							ADM1275_PMON_CONFIG,
+> -							config);
+> +		if (ret != config) {
+> +			ret = i2c_smbus_write_word_data(client, ADM1275_PMON_CONFIG, config);
+>  			if (ret < 0) {
+> -				dev_err(&client->dev,
+> -					"Failed to enable VOUT monitoring\n");
+> -				return -ENODEV;
+> +				dev_err(&client->dev, "Failed to enable config control bits");
+> +				return ret;
+>  			}
+>  		}
+>  
