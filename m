@@ -2,156 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C327F26C6BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C6526C755
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727735AbgIPSBi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Sep 2020 14:01:38 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:27464 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727452AbgIPR7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:59:55 -0400
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam02-ex.h3c.com with ESMTP id 08GFBGCH072837
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:11:16 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
-        by h3cspam02-ex.h3c.com with ESMTPS id 08GF7RNE071408
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 23:07:27 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 16 Sep 2020 23:07:31 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.1713.004; Wed, 16 Sep 2020 23:07:29 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     "minyard@acm.org" <minyard@acm.org>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ipmi: add retry in try_get_dev_id()
-Thread-Topic: [PATCH] ipmi: add retry in try_get_dev_id()
-Thread-Index: AQHWi/KUv4PaYKMu7k+putdjlQvGRKlqxboAgACX95A=
-Date:   Wed, 16 Sep 2020 15:07:29 +0000
-Message-ID: <39fc1fea8847405298e0ce750c3c3569@h3c.com>
-References: <20200916062129.26129-1-tian.xianting@h3c.com>
- <20200916140126.GE3674@minyard.net>
-In-Reply-To: <20200916140126.GE3674@minyard.net>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727700AbgIPSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727621AbgIPSW5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:22:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2E6C0F26F8;
+        Wed, 16 Sep 2020 08:17:03 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:12:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600269123;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GSo59h33dc6nySITp/u2Bwt0XDmW5EprP2r1+syfYJA=;
+        b=01s8GI3iTpFL5Lfh6ZBu8UUgas1L0+WiiU9NDtKs5cDKqjr7jg11BMpSyz997gasohm7w0
+        KQxjZqnWO3DlXNP/wEnVuDJSlnyNsaEf6Ul4J7ev+RUUHIv5MHbuwgNmD65Y4jt+XybPFR
+        kIBymK4o6QC46CqrQ2zZg+4ygaQGQ6fVYuaiiC6JIOwHXyKs7uM+wOwUV3fvdBhPZVtVVh
+        0vV5Nu0H5dr1/5yfueWIFDFAy1eGIwjtcb9urSxKBNbd5kZ3dz5fK31hgNgrSUiX8Kkz1G
+        RP6llRSeds1F+dOkztl6iCklLCYElPy9vSGFcywfUkAYV8QQ1TvXVFpqYvDDeg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600269123;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GSo59h33dc6nySITp/u2Bwt0XDmW5EprP2r1+syfYJA=;
+        b=3QJnQyTf+EnIjjHjk8czebNaEA6txAt0d74o5K9mU91+ngR3ZZirOpKDrASJfMo9e6RQ5h
+        46rBnLhnsMsqF8CA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/irq] iommu/amd: Remove domain search for PCI/MSI
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200826112334.400700807@linutronix.de>
+References: <20200826112334.400700807@linutronix.de>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 08GF7RNE071408
+Message-ID: <160026912234.15536.14622372477221633420.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks you Corey for your kindly guides to me for these three patches :)
+The following commit has been merged into the x86/irq branch of tip:
 
------Original Message-----
-From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey Minyard
-Sent: Wednesday, September 16, 2020 10:01 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: arnd@arndb.de; gregkh@linuxfoundation.org; openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipmi: add retry in try_get_dev_id()
+Commit-ID:     bc95fd0d7c4273034b9486aaf369777eaaa00cb7
+Gitweb:        https://git.kernel.org/tip/bc95fd0d7c4273034b9486aaf369777eaaa00cb7
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 26 Aug 2020 13:17:06 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 16 Sep 2020 16:52:38 +02:00
 
-On Wed, Sep 16, 2020 at 02:21:29PM +0800, Xianting Tian wrote:
-> Use retry machanism to give device more opportunitys to correctly 
-> response kernel when we received specific completion codes.
-> 
-> This is similar to what we done in __get_device_id().
+iommu/amd: Remove domain search for PCI/MSI
 
-Thanks.  I moved GET_DEVICE_ID_MAX_RETRY to include/linux/ipmi.h since uapi is for things exported to userspace.  But this is good, it's in my next tree.
+Now that the domain can be retrieved through device::msi_domain the domain
+search for PCI_MSI[X] is not longer required. Remove it.
 
--corey
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20200826112334.400700807@linutronix.de
+---
+ drivers/iommu/amd/iommu.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> 
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->  drivers/char/ipmi/ipmi_msghandler.c |  2 --
->  drivers/char/ipmi/ipmi_si_intf.c    | 17 +++++++++++++++++
->  include/uapi/linux/ipmi.h           |  2 ++
->  3 files changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_msghandler.c 
-> b/drivers/char/ipmi/ipmi_msghandler.c
-> index b9685093e..75cb7e062 100644
-> --- a/drivers/char/ipmi/ipmi_msghandler.c
-> +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> @@ -62,8 +62,6 @@ enum ipmi_panic_event_op {  #define 
-> IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_NONE  #endif
->  
-> -#define GET_DEVICE_ID_MAX_RETRY	5
-> -
->  static enum ipmi_panic_event_op ipmi_send_panic_event = 
-> IPMI_PANIC_DEFAULT;
->  
->  static int panic_op_write_handler(const char *val, diff --git 
-> a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-> index 77b8d551a..beeb705f1 100644
-> --- a/drivers/char/ipmi/ipmi_si_intf.c
-> +++ b/drivers/char/ipmi/ipmi_si_intf.c
-> @@ -1316,6 +1316,7 @@ static int try_get_dev_id(struct smi_info *smi_info)
->  	unsigned char         *resp;
->  	unsigned long         resp_len;
->  	int                   rv = 0;
-> +	unsigned int          retry_count = 0;
->  
->  	resp = kmalloc(IPMI_MAX_MSG_LENGTH, GFP_KERNEL);
->  	if (!resp)
-> @@ -1327,6 +1328,8 @@ static int try_get_dev_id(struct smi_info *smi_info)
->  	 */
->  	msg[0] = IPMI_NETFN_APP_REQUEST << 2;
->  	msg[1] = IPMI_GET_DEVICE_ID_CMD;
-> +
-> +retry:
->  	smi_info->handlers->start_transaction(smi_info->si_sm, msg, 2);
->  
->  	rv = wait_for_msg_done(smi_info);
-> @@ -1339,6 +1342,20 @@ static int try_get_dev_id(struct smi_info *smi_info)
->  	/* Check and record info from the get device id, in case we need it. */
->  	rv = ipmi_demangle_device_id(resp[0] >> 2, resp[1],
->  			resp + 2, resp_len - 2, &smi_info->device_id);
-> +	if (rv) {
-> +		/* record completion code */
-> +		char cc = *(resp + 2);
-> +
-> +		if ((cc == IPMI_DEVICE_IN_FW_UPDATE_ERR
-> +		    || cc == IPMI_DEVICE_IN_INIT_ERR
-> +		    || cc == IPMI_NOT_IN_MY_STATE_ERR)
-> +		    && ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
-> +			dev_warn(smi_info->io.dev,
-> +				"retry to get device id as completion code 0x%x\n",
-> +				 cc);
-> +			goto retry;
-> +		}
-> +	}
->  
->  out:
->  	kfree(resp);
-> diff --git a/include/uapi/linux/ipmi.h b/include/uapi/linux/ipmi.h 
-> index 32d148309..bc57f07e3 100644
-> --- a/include/uapi/linux/ipmi.h
-> +++ b/include/uapi/linux/ipmi.h
-> @@ -426,4 +426,6 @@ struct ipmi_timing_parms {
->  #define IPMICTL_GET_MAINTENANCE_MODE_CMD	_IOR(IPMI_IOC_MAGIC, 30, int)
->  #define IPMICTL_SET_MAINTENANCE_MODE_CMD	_IOW(IPMI_IOC_MAGIC, 31, int)
->  
-> +#define GET_DEVICE_ID_MAX_RETRY		5
-> +
->  #endif /* _UAPI__LINUX_IPMI_H */
-> --
-> 2.17.1
-> 
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index a9d8b32..ef64e01 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -3562,9 +3562,6 @@ static struct irq_domain *get_irq_domain_for_devid(struct irq_alloc_info *info,
+ 	case X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT:
+ 	case X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT:
+ 		return iommu->ir_domain;
+-	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
+-	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
+-		return iommu->msi_domain;
+ 	default:
+ 		WARN_ON_ONCE(1);
+ 		return NULL;
