@@ -2,107 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4855426C439
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B06F26C47C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgIPPbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 11:31:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24396 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726305AbgIPP3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:29:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600270079; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=dDGHebymEtnWtj+KEzXL3GxkzGbLGkG+sDA+wM+k1Ts=; b=QKqDbLt5XRu6z44XD9nSRoCIdw1lsMtvdvxkuYbdC0vnkjibRL3HU+LTz2SzbAwPskgeARSa
- tiK8FVadpXV0x9nvtTyR46767kCoT9BjDyJIaCT+WD1SPBcZ8BBseD9FCWDYc0rdtci1Y+7h
- yokH0mgwQ1qHurDVHO26YVPI7jk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f6226e632925f96e1cef48c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 14:53:26
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D468AC433FE; Wed, 16 Sep 2020 14:53:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5C76CC433F0;
-        Wed, 16 Sep 2020 14:53:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5C76CC433F0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ohad@wizery.com, evgreen@chromium.org, swboyd@chromium.org,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v2] remoteproc: qcom_q6v5: Assign mpss region to Q6 before MBA boot
-Date:   Wed, 16 Sep 2020 20:22:52 +0530
-Message-Id: <20200916145252.16024-1-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1726334AbgIPPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 11:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgIPPaW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 11:30:22 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77FAC0D941C;
+        Wed, 16 Sep 2020 07:57:17 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id u21so10821342eja.2;
+        Wed, 16 Sep 2020 07:57:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BavzM8dqao5JCiPkWFEijbjqferuuSqIJ7QT/mKoTAQ=;
+        b=nQn4NukiiRCo18F4AEpFB+HOHN7WOI+rKirSQpjyRP4nmmO3697PAVTWv092GNG/k8
+         kp3TKYaL+GKVqBfEzVKELXgdIhndqS+7gDH5LIOf2Awcr9rvxKba0usL6+NprjZo59y+
+         WPWNlD8cFafBUra2EOCbqnFw5K8p4HazPUNbBx+UU7RTWsr2sOYeaViwGv3XqS3yoQ9Y
+         wHAtetcNTyjbmz+LG2Dz6SNBVd2uvIpFilSf7/A4ZgdNIWZil1NME8GVqVzLN4LBnn49
+         7HxREZ2eCGJCkwRIWfMDIZftQX42C8n5ywKYWOEo6MLVN2Me+zduyJ0lBaAdPEgYMMHZ
+         fi0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BavzM8dqao5JCiPkWFEijbjqferuuSqIJ7QT/mKoTAQ=;
+        b=TXub0/Tn8OvBj2iPPdr9MNdkiIiTNOGQkzps7I/i3kMaUDA1/oe4uNHdUipIaIeeal
+         ec9TNUhi6jmOwXuX4hFUheVZH9iplzl3/uONhaDhbzwPAZyGvbP13ZAIaNOIvnqemrRi
+         TKg+ZK+OEP96tzSkeFY6Kt5hpPswk9vwidNcoL/+hpMOqR4zp9ZeG23gX30HXi+p3N39
+         /MVUKN6aSb2Y730brJywTwW16+o6fjDBR0+l6TuZOe1Lke9whhjQhuY/qdJpQLPYvULb
+         5dagtYNl34bPB0O6oRc9/+LMZqcHFAi182Sfk1Zh4d9bgLBo061uuTxh4E2AUIHel+Or
+         Es2A==
+X-Gm-Message-State: AOAM531uCLbaL21YydSXQ72P2U9HPWvMSgfM2OQ3PJW032bkKg5/LekS
+        OnAgRWHhQyTNWVBLr8f+wTIFSr/Ykg29Tckp/ZU=
+X-Google-Smtp-Source: ABdhPJx9FNTjCittOjxhqVQ8Y3/Ji00bVrlyO0GKfHoEdHIMHs+TI34YOUrZdyDTCMX0SDNkYsvmR37O4kEsPhGUX2M=
+X-Received: by 2002:a17:906:c1c6:: with SMTP id bw6mr26850175ejb.374.1600268236393;
+ Wed, 16 Sep 2020 07:57:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200916122247.534374-1-pgwipeout@gmail.com> <20200916122247.534374-2-pgwipeout@gmail.com>
+ <3cdcb877-e4c7-aab8-b7f9-0c88f2247d03@gmail.com>
+In-Reply-To: <3cdcb877-e4c7-aab8-b7f9-0c88f2247d03@gmail.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Wed, 16 Sep 2020 10:57:04 -0400
+Message-ID: <CAMdYzYrKHBrh47PMrj=TP_FPttFOkRO2J_wrDr7oEyBNnyexAA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ARM: tegra: Add device-tree for Ouya
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On secure devices which support warm reset, the MBA firmware requires
-access to the modem region to clear them out. Hence provide Q6 access
-to this region before MBA boot. This will be a nop during a modem SSR.
+On Wed, Sep 16, 2020 at 10:17 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 16.09.2020 15:22, Peter Geis =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > The Ouya was the sole device produced by Ouya Inc in 2013.
+> > It was a game console originally running Android 5 on top of Linux 3.1.=
+10.
+> >
+> > This patch adds the device tree supporting the Ouya.
+> > It has been tested on the original variant with Samsung ram.
+> >
+> > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> > ---
+> >  arch/arm/boot/dts/Makefile         |    3 +-
+> >  arch/arm/boot/dts/tegra30-ouya.dts | 4498 ++++++++++++++++++++++++++++
+> >  2 files changed, 4500 insertions(+), 1 deletion(-)
+> >  create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
+>
+> Hello, Peter! Very nice work!
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
+Thanks!
 
-V2:
- * Fixup comments as suggested by Bjorn. 
+>
+> Could you please clarify how many variants of the board exist?
 
- drivers/remoteproc/qcom_q6v5_mss.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+It is unknown how many exist in reality.
+At least three RAM variants are supported in the downstream kernel,
+Samsung, Hynix M, and Hynix A.
+Two variants in storage capacity, the original had 8GB eMMC while the
+new variant had 16GB eMMC.
 
-diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index c401bcc263fa..f989ca81d374 100644
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -931,6 +931,16 @@ static int q6v5_mba_load(struct q6v5 *qproc)
- 		goto assert_reset;
- 	}
- 
-+	/* Some versions of the MBA firmware will upon boot wipe the MPSS region as well, so provide
-+	 * the Q6 access to this region.
-+	 */
-+	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, false, true,
-+				      qproc->mpss_phys, qproc->mpss_size);
-+	if (ret) {
-+		dev_err(qproc->dev, "assigning Q6 access to mpss memory failed: %d\n", ret);
-+		goto disable_active_clks;
-+	}
-+
- 	/* Assign MBA image access in DDR to q6 */
- 	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mba_perm, false, true,
- 				      qproc->mba_phys, qproc->mba_size);
-@@ -1137,8 +1147,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
- 
- 	/**
- 	 * In case of a modem subsystem restart on secure devices, the modem
--	 * memory can be reclaimed only after MBA is loaded. For modem cold
--	 * boot this will be a nop
-+	 * memory can be reclaimed only after MBA is loaded.
- 	 */
- 	q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, true, false,
- 				qproc->mpss_phys, qproc->mpss_size);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+>
+> What are the differences between the variants?
 
+Aside from the RAM and storage changes there should be no functional
+differences.
+It is unknown at which point the RAM changes were cut in with the eMMC chan=
+ge.
+
+>
+> Is this device-tree suitable for all variants?
+
+This device tree should support all variants, but I haven't been able
+to locate anyone with the newer variants who can test it yet.
+
+>
+> How user could determine the board's variant?
+
+On upstream:
+The tegra emc driver will output the RAM code detected in the kernel log:
+tegra30-emc 7000f400.memory-controller: got 6 timings for RAM code 0
+(min 25MHz max 800MHz)
+The mmc-core will output the storage capacity in the kernel log:
+mmcblk1: mmc1:0001 MMC08G 7.19 GiB
+
+On downstream:
+The ram variant is output in the kernel log:
+DDR Strap Pin AD4: 0
+DDR Strap Pin AD5: 0
+Init DFS table for Samsung DDR
+The mmc-core outputs the storage capacity in the kernel log:
+mmcblk0: mmc0:0001 MMC08G 7.18 GiB
