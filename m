@@ -2,136 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C0D26CE07
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F7826CDE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIPVIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgIPQDj (ORCPT
+        id S1728658AbgIPVHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:07:04 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38540 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726449AbgIPQOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:03:39 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDDBC02C2A2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:24:17 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id y5so7073591otg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8V25O9GYxPP08UjsTrSAXuZaUN2B3+YItzTAVwD6sSg=;
-        b=esGUjUoGlLjSkji8zHSk6CikzTaVw9WkEHVQsTXY8XGY5G0ETObzGADcSR1/+09WH0
-         hF6/mPOLMGiLYfQETJ/ZudzDM17jV3+nhUaIO8GKCyhVG1PeNxTpmeh7CIIK8iLV7hTP
-         v5VNVp+D32yvBdNdVY15b50wKe6sKtHVPV0ZI=
+        Wed, 16 Sep 2020 12:14:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600272841;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3/efu16wz2bAmmly2Sbi/vrfR4bsazT4NhD8SO/s8aY=;
+        b=U2vJKg92Xs0h512JpLmitlC5Nkc4r7f6vA9ZHK5YUvVCGXEjJURLX6XcFyWPAx1cyF9q+W
+        85opKF4sGIDJb+9dGSZL5NI7PkIGXgBioibEeyxBAB4gD1z6PhWD+DL6pR19Jko8nul6XT
+        Ayorxe6vo5WswDsE8bYq6uH1kUHLCjw=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-571-huD82Za1P6WTOwaOOM1E_Q-1; Wed, 16 Sep 2020 11:32:33 -0400
+X-MC-Unique: huD82Za1P6WTOwaOOM1E_Q-1
+Received: by mail-qv1-f70.google.com with SMTP id p20so4871953qvl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:32:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8V25O9GYxPP08UjsTrSAXuZaUN2B3+YItzTAVwD6sSg=;
-        b=BQtzhLkCKK+PRRO+cS7V+X5V5kTrFEnmGKZpnipU4E2JBcUf+/CJZADfHxMWWnRvRK
-         VLTg39M+9UKZ6EK9hRl6qe3eFpzrLvxGr8t6/dVeq1Gzf+7tBeFlpFQYKLUKM9VKuYgz
-         JiT8Dl5dWrG2x2rPVDYMzXM/0ATEcjosKHBQyEZag9VH9sPpi/8RW9wd3rcnZFTitsGV
-         TOVx9kA6Xs6MfM1A14pxn7992mNi3eGv0cBKC12Ofux2fsCYkam48aHmr1PE7Vv9jKW3
-         A+EDIu8Nm7wB5/VAY7uJKR2d9ksTVbI8d+tI+a7YBF+msFPB0VNC477BHxE/TGSNM+qu
-         cTqA==
-X-Gm-Message-State: AOAM5339FxVupvAbmXs7tt2/cMpLPpWO7/KbF8ShsFfy3ctkbuOaEl3Z
-        7uskZmp4o5KlzI8MGiuFSz5gTwP1qlWEvducrTSlC0ws1jPuyg==
-X-Google-Smtp-Source: ABdhPJzFIEzlayJbc8puDrgbDGaqrIK0mzqobwQtMVJQV/1fuTdhXaLAYKepB1sf6n0KyI9HMzUVHL2sC9vrHl1co8M=
-X-Received: by 2002:a9d:4b99:: with SMTP id k25mr17762932otf.281.1600269857273;
- Wed, 16 Sep 2020 08:24:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200914132920.59183-1-christian.koenig@amd.com>
- <40cd26ae-b855-4627-5a13-4dcea5d622f6@gmail.com> <20200914140632.GD1221970@ziepe.ca>
- <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com> <20200916095359.GD438822@phenom.ffwll.local>
- <20200916140710.GA8409@ziepe.ca> <8db2474f-ecb7-0e17-5f5b-145708fe44d5@amd.com>
-In-Reply-To: <8db2474f-ecb7-0e17-5f5b-145708fe44d5@amd.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 16 Sep 2020 17:24:06 +0200
-Message-ID: <CAKMK7uFdwrT3HACPh3ADAKvhXJ-Hf3dExZmgJVAQ1KKjSai_0w@mail.gmail.com>
-Subject: Re: Changing vma->vm_file in dma_buf_mmap()
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=3/efu16wz2bAmmly2Sbi/vrfR4bsazT4NhD8SO/s8aY=;
+        b=aoDcvOW+Vtf6nyaVm62v6HqqemaS+pn5ymPgwKWcxhnm+XglSSXqeN9QVPDsH1gPBf
+         8/ZazvIqrI4rsYwRghzwxDaIPUddvJ57+QhhjyMqsdwhAdNCX11l16GbkbzroOXlBehZ
+         D7QAhiAjakTvNt4/RwCk3GUJJ3Hfn7E//FKK6VcWi86c9KfhFHPJCdWUngqDtHM3NXje
+         PRSzKLGz8EQEUSsbqJsLXwyN3cXMaa1uY5+W5gfBelmCO4tyeSU95pasuPp8a8SjB0n0
+         Wi1e96TPdxIddRvD/syg3Tu2xdYp7IlUD3JI8bCD5x/mycbnyjH4fT6McuHRZCmZDHYp
+         O9gQ==
+X-Gm-Message-State: AOAM533lteAbzddPjBnwSwFnCOzrcUNvwEAgIcGnKvA7+gsPjBQtMc5/
+        kcpIBiuoiLMb+RXlQAgFMj22zr/MUJGIPFGxiCI7hOveoqQhKD20pdri55BSrv9X61gvNloNQdU
+        tVXGNPRQ6yT+e/Rzubaf6Qabz
+X-Received: by 2002:a37:990:: with SMTP id 138mr23112358qkj.53.1600270352158;
+        Wed, 16 Sep 2020 08:32:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwklSE00+B71ao1DI+TFBaPxvUWeVVqcFDwZEZx4oZR70imhVCYMHO7ieRanYzzJ4TNVdGqhg==
+X-Received: by 2002:a37:990:: with SMTP id 138mr23112334qkj.53.1600270351881;
+        Wed, 16 Sep 2020 08:32:31 -0700 (PDT)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id n144sm20153331qkn.69.2020.09.16.08.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 08:32:31 -0700 (PDT)
+Message-ID: <1a13028b0080bc050ab6ad172d05de06a78d73b1.camel@redhat.com>
+Subject: Re: [Intel-gfx] [RFC 1/5] drm/i915/dp: Program source OUI on eDP
+ panels
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     David Airlie <airlied@linux.ie>, intel-gfx@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>
+Date:   Wed, 16 Sep 2020 11:32:29 -0400
+In-Reply-To: <87mu1qw4ig.fsf@intel.com>
+References: <20200915172939.2810538-1-lyude@redhat.com>
+         <20200915172939.2810538-2-lyude@redhat.com>
+         <20200915190639.GC503362@intel.com> <87mu1qw4ig.fsf@intel.com>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 4:14 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 16.09.20 um 16:07 schrieb Jason Gunthorpe:
-> > On Wed, Sep 16, 2020 at 11:53:59AM +0200, Daniel Vetter wrote:
-> >
-> >> But within the driver, we generally need thousands of these, and that
-> >> tends to bring fd exhaustion problems with it. That's why all the priv=
-ate
-> >> buffer objects which aren't shared with other process or other drivers=
- are
-> >> handles only valid for a specific fd instance of the drm chardev (each
-> >> open gets their own namespace), and only for ioctls done on that chard=
-ev.
-> >> And for mmap we assign fake (but unique across all open fd on it) offs=
-ets
-> >> within the overall chardev. Hence all the pgoff mangling and re-mangli=
-ng.
-> > Are they still unique struct files? Just without a fdno?
->
-> Yes, exactly.
+On Wed, 2020-09-16 at 10:43 +0300, Jani Nikula wrote:
+> On Tue, 15 Sep 2020, Rodrigo Vivi <rodrigo.vivi@intel.com> wrote:
+> > On Tue, Sep 15, 2020 at 01:29:35PM -0400, Lyude Paul wrote:
+> > > Since we're about to start adding support for Intel's magic HDR
+> > > backlight interface over DPCD, we need to ensure we're properly
+> > > programming this field so that Intel specific sink services are exposed.
+> > > Otherwise, 0x300-0x3ff will just read zeroes.
+> > > 
+> > > We also take care not to reprogram the source OUI if it already matches
+> > > what we expect. This is just to be careful so that we don't accidentally
+> > > take the panel out of any backlight control modes we found it in.
+> 
+> (For whatever reason I didn't receive the original message.)
+> 
+> > > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > > Cc: thaytan@noraisin.net
+> > > Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+> > > ---
+> > >  drivers/gpu/drm/i915/display/intel_dp.c | 32 +++++++++++++++++++++++++
+> > >  1 file changed, 32 insertions(+)
+> > > 
+> > > diff --git a/drivers/gpu/drm/i915/display/intel_dp.c
+> > > b/drivers/gpu/drm/i915/display/intel_dp.c
+> > > index 4bd10456ad188..b591672ec4eab 100644
+> > > --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> > > +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> > > @@ -3428,6 +3428,7 @@ void intel_dp_sink_set_decompression_state(struct
+> > > intel_dp *intel_dp,
+> > >  void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
+> > >  {
+> > >  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> > > +	u8 edp_oui[] = { 0x00, 0xaa, 0x01 };
+> > 
+> > what are these values?
+> 
+> An OUI lookup confirms these are Intel OUI.
 
-Not entirely, since dma-buf happened after drm chardev, so for that
-historical reason the underlying struct file is shared, since it's the
-drm chardev. But since that's per-device we don't have a problem in
-practice with different vm_ops, since those are also per-device. But
-yeah we could fish out some entirely hidden per-object struct file if
-that's required for some mm internal reasons.
--Daniel
+Thanks for the confirmation!
 
-> >> Hence why we'd like to be able to forward aliasing mappings and adjust=
- the
-> >> file and pgoff, while hopefully everything keeps working. I thought th=
-is
-> >> would work, but Christian noticed it doesn't really.
-> > It seems reasonable to me that the dma buf should be the owner of the
-> > VMA, otherwise like you say, there is a big mess attaching the custom
-> > vma ops and what not to the proper dma buf.
-> >
-> > I don't see anything obviously against this in mmap_region() - why did
-> > Chritian notice it doesn't really work?
->
-> To clarify I think this might work.
->
-> I just had the same "Is that legal?", "What about security?", etc..
-> questions you raised as well.
->
-> It seems like a source of trouble so I thought better ask somebody more
-> familiar with that.
->
-> Christian.
->
-> >
-> > Jason
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> > >  	int ret, i;
+> > >  
+> > >  	/* Should have a valid DPCD by this point */
+> > > @@ -3443,6 +3444,14 @@ void intel_dp_sink_dpms(struct intel_dp *intel_dp,
+> > > int mode)
+> > >  	} else {
+> > >  		struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+> > >  
+> > > +		/* Write the source OUI as early as possible */
+> > > +		if (intel_dp_is_edp(intel_dp)) {
+> > > +			ret = drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI,
+> > > edp_oui,
+> > > +						sizeof(edp_oui));
+> > > +			if (ret < 0)
+> > > +				drm_err(&i915->drm, "Failed to write eDP source
+> > > OUI\n");
+> > > +		}
+> > > +
+> > >  		/*
+> > >  		 * When turning on, we need to retry for 1ms to give the sink
+> > >  		 * time to wake up.
+> > > @@ -4530,6 +4539,23 @@ static void intel_dp_get_dsc_sink_cap(struct
+> > > intel_dp *intel_dp)
+> > >  	}
+> > >  }
+> > >  
+> > > +static void
+> > > +intel_edp_init_source_oui(struct intel_dp *intel_dp)
+> > > +{
+> > > +	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> > > +	u8 oui[] = { 0x00, 0xaa, 0x01 };
+> > > +	u8 buf[3] = { 0 };
+> > > +
+> > > +	if (drm_dp_dpcd_read(&intel_dp->aux, DP_SOURCE_OUI, buf, sizeof(buf)) <
+> > > 0)
+> > > +		drm_err(&i915->drm, "Failed to read source OUI\n");
+> > > +
+> > > +	if (memcmp(oui, buf, sizeof(oui)) == 0)
+> > > +		return;
+> > > +
+> > > +	if (drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, oui, sizeof(oui)) <
+> > > 0)
+> > > +		drm_err(&i915->drm, "Failed to write source OUI\n");
+> > > +}
+> 
+> Maybe add this function with a parameter to force write or write only if
+> necessary, and call from both places that set source OUI?
+> 
+> > > +
+> > >  static bool
+> > >  intel_edp_init_dpcd(struct intel_dp *intel_dp)
+> > >  {
+> > > @@ -4607,6 +4633,12 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
+> > >  	if (INTEL_GEN(dev_priv) >= 10 || IS_GEMINILAKE(dev_priv))
+> > >  		intel_dp_get_dsc_sink_cap(intel_dp);
+> > >  
+> > > +	/*
+> > > +	 * Program our source OUI so we can make various Intel-specific AUX
+> > > +	 * services available (such as HDR backlight controls)
+> > > +	 */
+> > > +	intel_edp_init_source_oui(intel_dp);
+> > 
+> > I believe we should restrict this to the supported platforms: cfl, whl, cml,
+> > icl, tgl
+> > no?
+> 
+> Mmh, this just exposes sink behaviour that I think can be supported by
+> any platform. I don't understand the notion of "supported platforms"
+> here.
 
+Probably because the spec sheets that we have on this seem to suggest that this
+is new for particular platforms, and Intel seems to also additionally move a bit
+away from some of the interfaces exposed here onto actual VESA standards
+starting with icl and tgl.
 
+I would be fine with adding this, but I'm not really sure it's needed here
+either unless we want to stop using Intel backlight control interfaces for later
+hardware generations at some point in the future.
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> 
+> > > +
+> > >  	return true;
+> > >  }
+> > >  
+> > > -- 
+> > > 2.26.2
+> > > 
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > _______________________________________________
+> > Intel-gfx mailing list
+> > Intel-gfx@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+-- 
+Sincerely,
+      Lyude Paul (she/her)
+      Software Engineer at Red Hat
+
