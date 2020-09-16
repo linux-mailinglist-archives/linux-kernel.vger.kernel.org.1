@@ -2,98 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEF126BA12
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D81326BA37
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgIPC0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:26:38 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:41852 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726200AbgIPC0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:26:37 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 08G2Pq0t013475;
-        Wed, 16 Sep 2020 04:25:52 +0200
-Date:   Wed, 16 Sep 2020 04:25:52 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
-        daniel@ffwll.ch, yuanmingbuaa@gmail.com, nopitydays@gmail.com,
-        zhangyunhai@nsfocus.com, luto@amacapital.net,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH] docs: fb: Remove framebuffer scrollback option for boot
-Message-ID: <20200916022552.GB13409@1wt.eu>
-References: <20200915222511.17140-1-unixbhaskar@gmail.com>
+        id S1726576AbgIPC3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726402AbgIPC3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:29:10 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2687CC06174A;
+        Tue, 15 Sep 2020 19:29:09 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id m5so5250868lfp.7;
+        Tue, 15 Sep 2020 19:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=GK9+C1oomDz6uVnNOODHcK5n0hkREpa5d365nxARSlQ=;
+        b=ivXcT/BSWD9eHKF5fmu1LVGsfELyKmXRv1tgY3c1gUJxIT4s77oCje6K/STc1JilzO
+         g0/HhFcMPovrz3+RIBb1UNIkIC0/QRlpica+HugQMxFwZOqAmrd0xd5ZnbPGSZd6VTBi
+         Cwsuvr3v3olxvxA7FwJx8mr39VEuSR/kuOC7Qnk9tXAflMeYa2rBHRriGu7ioVCuzyID
+         jlEEwb+zn9IEa3vpb9zasSWufVHjC45YZlP5Ye1EaFw60S8XhjWVMNoU2xTnIiaI7gs4
+         kqVO8LmdfKlpOhxYKsHEZO2TUXkbmoYsUge7/02BZVBmOudRO+1wmsN4amtJvTd9MY2o
+         NXQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=GK9+C1oomDz6uVnNOODHcK5n0hkREpa5d365nxARSlQ=;
+        b=V3aCmOPN9H3qJUkaYDpYWzhGWPiDh/vsQelQGo81OsQnQb05VHHHXSSxWSvbQ0YiO4
+         jqvllCemh+lr+uQXmvGvOCWP/V6l22yyVz1F//TPk68eqHr6o3NwC3BobnTN/Rrqy0hr
+         4NwHh8h4A2EsEZhdZBg56RyW7SNhAmqnvC9jwOv7Sf/Gdz62f58ZwNakc0W6+yLd8A+f
+         gkC/42jtWui1/HeSYmlfJUD6bpFzH4c4Ehq3xFWH5DXaG7g7L9+mwsRktQMqJYoZZreK
+         Wzur6RQn410U4DPkfYKSPWwhx0lj8/90wn6YlvY14vQzxM7Le8BxW57n2J7Z2NMr1yBn
+         R1EQ==
+X-Gm-Message-State: AOAM530LLRgLCYgrctPngeKKvUybTnB8iw5+TBPKxK8PzunCyQR0daBR
+        iWjv0Ul+ePcKi4n13CO7YIa5XqBEAqdObpTvCNQ=
+X-Google-Smtp-Source: ABdhPJz3mJdWwByW2nnR8gVQDANHxxrdl0PgQIGP9uf/PCLvjp6cJ31H81PHZZUnHib8dRcNGmVl6SVajTnc8v6EZq4=
+X-Received: by 2002:a19:e602:: with SMTP id d2mr6618353lfh.536.1600223346217;
+ Tue, 15 Sep 2020 19:29:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915222511.17140-1-unixbhaskar@gmail.com>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+References: <20200912102558.656-1-zhenzhong.duan@gmail.com> <20200914162010.GB15060@jcrouse1-lnx.qualcomm.com>
+In-Reply-To: <20200914162010.GB15060@jcrouse1-lnx.qualcomm.com>
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Date:   Wed, 16 Sep 2020 10:28:54 +0800
+Message-ID: <CAFH1YnM1O6bE2bYbCjaWHfvo47TkHjh999yeESy81UMxMW_KYg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/a6xx: fix a potential overflow issue
+To:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, robdclark@gmail.com,
+        sean@poorly.run, airlied@linux.ie, Daniel Vetter <daniel@ffwll.ch>,
+        smasetty@codeaurora.org, Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bhaskar,
+On Tue, Sep 15, 2020 at 12:20 AM Jordan Crouse <jcrouse@codeaurora.org> wrote:
+>
+> On Sat, Sep 12, 2020 at 06:25:58PM +0800, Zhenzhong Duan wrote:
+> > It's allocating an array of a6xx_gpu_state_obj structure rathor than
+> > its pointers.
+> >
+> > This patch fix it.
+> >
+> > Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+>
+> LGTM but should have a Fixes: tag for the stable trees
+>
+> Fixes: d6852b4b2d01 ("drm/msm/a6xx: Track and manage a6xx state memory")
+> Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-your patches still all use very similar subjects and commit messages
-which are pretty confusing as they only differ by words unrelated to
-their real differences. It is important that the commit messages help
-the reader guess what is being touched, so if you're splitting your
-work into multiple patches, you need to indicate the difference in
-each message. What I can propose to make things clearer:
-
-    docs: fb: Remove framebuffer scrollback boot option
-    docs: fb: Remove matroxfb scrollback boot option
-    docs: fb: Remove sstfb scrollback boot option
-    docs: fb: Remove vesafb scrollback boot option
-
-Alternately they can all be merged into the first one under the same
-name, but then the detailed commit message should specifically list
-them.
-
-In addition below:
-
-On Wed, Sep 16, 2020 at 03:55:11AM +0530, Bhaskar Chowdhury wrote:
-> This patch remove the scrollback option under boot options.
-> Plus readjust the numbers for the options in that section.
-> 
-> Commit 973c096f6a85(vgacon: remove software scrollback support)
-> Commit 50145474f6ef(fbcon: remove soft scrollback code)
-
-This is still not clear. The message should indicate the "why" more
-than the "what" which can be figured from the patch. In addition,
-only the fbcon commit is a cause for these changes. Last, Greg
-mentioned that the format is 'commit xxx ("subject")'.
-
-What about this:
-
-  The "scrollback" boot option was removed by commit 50145474f6ef
-  ("fbcon: remove soft scrollback code"), but the doc for fbcon was
-  not updated.  This patch updates the fbcon doc and renumbers the
-  sections.
-
-If you merge all your patches together, you can have this:
-
-  The "scrollback" boot option was removed by commit 50145474f6ef
-  ("fbcon: remove soft scrollback code"), but the fb docs were not
-  updated.  This patch removes reference to this option in the fbcon,
-  matroxfb, sstfb and vesafb docs and renumbers the sections as needed.
-
-And please increase your version so that it's more obvious that this
-replaces previous series. Call it v3 or v4 or whatever higher than
-the highest you've ever sent so that it's easier for your readers to
-ignore the older ones. Ideally after your signed-off-by you should
-add a "---" line with a quick changelog indicating what changed from
-the previous ones (just for reviewers, this will not be merged), for
-example:
-
-   Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-   ---
-   v3: clarify message description, update all fb drivers in the same patch
-   v2: reword commit message
-
-Hoping this helps,
-Willy
+I had sent a v2 version with same change as you suggested on Sep 14,
+could you help review it? Thanks
+https://lkml.org/lkml/2020/9/13/311
