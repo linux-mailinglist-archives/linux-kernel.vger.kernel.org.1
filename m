@@ -2,87 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6950226B7B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DB526B7CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgIPA2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgIPA1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:27:21 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1C1C06174A;
-        Tue, 15 Sep 2020 17:27:03 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w7so2938185pfi.4;
-        Tue, 15 Sep 2020 17:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=urfxkx3OR1ztSEhIX65Ge5+NGsQrAveOSK0sp6kZKXA=;
-        b=dgWQy05zNJUnJvdQqHziPnzCh1nOaOEkOIssdUMkSvRCWew96H4adTWK60g/pm4qZQ
-         NYiKNAzKZABBY0/LzblOnFVWhWQ2vmDzS4VCTOqJNj8szJmfa4ByQDh8KUsvGXTmb/YY
-         UMAsrscS3qmBifIWXzTBrLvGRWSqqS7jdaxn7vcJFriKvPSTt/qAbbTxm9LULoDDX7CG
-         ezHNrTiQHjWfecw0wEMmmXoFDz6OK3ZmnEBs56AgWQVmoVrJ+keEMt7BYEDeL4XXD1sN
-         HUdw1Z3Md6aehMprn8wdEctTiLn6ci3yK0NSztkSNn4LUD6EJe81JGkRTYKkwM14wual
-         jBGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=urfxkx3OR1ztSEhIX65Ge5+NGsQrAveOSK0sp6kZKXA=;
-        b=dC4OrSVvRSnAoFCwVzLonNWlTL0r3B1/Ycg5O0fstkB+sYHXfjkeKJjbwgLJAYobqa
-         N9u44bv0bKUEEzABSOdVPBjYb4T+98obFZBSUeC5J6eiynUuhgYlmoLwzHX4DtKgoTp5
-         Am5JB3bV0GwJRqoyeWGsTmvZckMBv+v6gMLTBY6EGTIBeKWK09jpIUpNoRztDcgjWq06
-         YrmE0UdSzHf2Chr8T/wTg2q0A1Fg5y6UGrmemhzsT0swltPRmSMjF2ufWTv883lx9EHr
-         TJZwdzEkdFFMAXwYd7FeoY99uy/QXfpS6IBScXGLJtf3TlBlePn1cq97Hj9oHHWiN7Nr
-         nJxA==
-X-Gm-Message-State: AOAM532j+aigN7b4sRxF63J2kdw6wqjxEm56CfobLM6053oZtVQEj2so
-        34N6LOniazVs5GkQPOJ6Glk=
-X-Google-Smtp-Source: ABdhPJxqZUpJ2KjMHLyoOyJyyeAlMxBIRQdOJAjBKieBwezCDHtwFX49SqsG8HhjDN98jhf4PbJ5ag==
-X-Received: by 2002:a05:6a00:1507:b029:13e:d13d:a13c with SMTP id q7-20020a056a001507b029013ed13da13cmr20277411pfu.36.1600216022778;
-        Tue, 15 Sep 2020 17:27:02 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id s66sm14876761pfc.159.2020.09.15.17.27.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 17:27:02 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     joro@8bytes.org, thierry.reding@gmail.com
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
-        vdumpa@nvidia.com
-Subject: [PATCH] iommu/tegra-smmu: Fix tlb_mask
-Date:   Tue, 15 Sep 2020 17:23:59 -0700
-Message-Id: <20200916002359.10823-1-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726136AbgIPA3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:29:35 -0400
+Received: from mga18.intel.com ([134.134.136.126]:64608 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726780AbgIPA3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 20:29:25 -0400
+IronPort-SDR: mMLr+s1a5HGdwbkck8gd8nD2MLd6LwhsXtD8tF8FxhHLeNrgo4+BpxOi3L+PUQdUwWDOTBmeD6
+ mrsIqwZehUQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="147127009"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="147127009"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 17:29:24 -0700
+IronPort-SDR: isOkeQWRIriQfz2XHlRw4RgNA0C5U/TrxLMuEgAX/XMAX+Z4RkAWoEXYMfjSnGqHvvfrJTQoj/
+ P6+k6358ZsLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="507795288"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Sep 2020 17:29:22 -0700
+Date:   Wed, 16 Sep 2020 08:24:59 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     "Wu, Hao" <hao.wu@intel.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+Subject: Re: [PATCH v2 2/4] dfl: add dfl bus support to MODULE_DEVICE_TABLE()
+Message-ID: <20200916002458.GA30711@yilunxu-OptiPlex-7050>
+References: <1600140473-12351-1-git-send-email-yilun.xu@intel.com>
+ <1600140473-12351-3-git-send-email-yilun.xu@intel.com>
+ <20200915035927.GB2217@epycbox.lan>
+ <DM6PR11MB381970CD3C77534AA3E4C76385200@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <20200915051933.GA13516@yilunxu-OptiPlex-7050>
+ <DM6PR11MB3819106F9D50E39F7CC7837D85200@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <20200915180755.GA11862@epycbox.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915180755.GA11862@epycbox.lan>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "num_tlb_lines" might not be a power-of-2 value, being 48 on
-Tegra210 for example. So the current way of calculating tlb_mask
-using the num_tlb_lines is not correct: tlb_mask=0x5f in case of
-num_tlb_lines=48, which will trim a setting of 0x30 (48) to 0x10.
+On Tue, Sep 15, 2020 at 11:07:55AM -0700, Moritz Fischer wrote:
+> Hi Hao, Xu,
+> 
+> On Tue, Sep 15, 2020 at 05:58:46AM +0000, Wu, Hao wrote:
+> > > On Tue, Sep 15, 2020 at 12:08:38PM +0800, Wu, Hao wrote:
+> > > > > On Tue, Sep 15, 2020 at 11:27:51AM +0800, Xu Yilun wrote:
+> > > > > > Device Feature List (DFL) is a linked list of feature headers within the
+> > > > > > device MMIO space. It is used by FPGA to enumerate multiple sub
+> > > features
+> > > > > > within it. Each feature can be uniquely identified by DFL type and
+> > > > > > feature id, which can be read out from feature headers.
+> > > > > >
+> > > > > > A dfl bus helps DFL framework modularize DFL device drivers for
+> > > different
+> > > > > > sub features. The dfl bus matches its devices and drivers by DFL type
+> > > and
+> > > > > > feature id.
+> > > > > >
+> > > > > > This patch add dfl bus support to MODULE_DEVICE_TABLE() by adding
+> > > info
+> > > > > > about struct dfl_device_id in devicetable-offsets.c and add a dfl entry
+> > > > > > point in file2alias.c.
+> > > > > >
+> > > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > > > Signed-off-by: Wu Hao <hao.wu@intel.com>
+> > > > > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > > > > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > > > > > Acked-by: Wu Hao <hao.wu@intel.com>
+> > > >
+> > > > Yilun,
+> > > >
+> > > > I haven't acked-by this patch as it doesn't modify any dfl files, ideally you
+> > > 
+> > > Sorry, I misunderstood your comments "Acked-by: xxx for DFL related
+> > > changes after this fix".
+> 
+> Yeah it wasn't entirely clear to me either :)
+> > 
+> > Because the first patch contains changes to non-dfl files as well. : )
+> > 
+> > Hao
+> > 
+> > > 
+> > > > need acked-by from real maintainer of scripts/mod code, right?
+> > > 
+> > > Ideally yes. From the MAINTAINERS it is Masahiro Yamada, I added him on
+> > > the "to"
+> > > list. But I see some other patches (also for devtable entries) in kernel
+> > > don't have his acked-by.
+> 
+> Yeah, I've looked at that and most patches for those files seem to be
+> from subsystem maintainers. So I *think* it should be fine?
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- drivers/iommu/tegra-smmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I see you have applied the patch. I'm very fine. :)
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 84fdee473873..0becdbfea306 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -1120,7 +1120,7 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 		BIT_MASK(mc->soc->num_address_bits - SMMU_PTE_SHIFT) - 1;
- 	dev_dbg(dev, "address bits: %u, PFN mask: %#lx\n",
- 		mc->soc->num_address_bits, smmu->pfn_mask);
--	smmu->tlb_mask = (smmu->soc->num_tlb_lines << 1) - 1;
-+	smmu->tlb_mask = (1 << fls(smmu->soc->num_tlb_lines)) - 1;
- 	dev_dbg(dev, "TLB lines: %u, mask: %#lx\n", smmu->soc->num_tlb_lines,
- 		smmu->tlb_mask);
- 
--- 
-2.17.1
-
+> 
+> > > 
+> > > Hi Moritz:
+> > > 
+> > > Do you have any ideas on that?
+> > > 
+> > > Thanks,
+> > > Yilun.
+> > > 
+> > > >
+> > > > Thanks
+> > > > Hao
+> > > >
+> > > > > > ---
+> > > > > > v2: add comments for the format of modalias
+> > > > > > ---
+> > > > > >  scripts/mod/devicetable-offsets.c |  4 ++++
+> > > > > >  scripts/mod/file2alias.c          | 17 +++++++++++++++++
+> > > > > >  2 files changed, 21 insertions(+)
+> > > > > >
+> > > > > > diff --git a/scripts/mod/devicetable-offsets.c
+> > > b/scripts/mod/devicetable-
+> > > > > offsets.c
+> > > > > > index 27007c1..d8350ee 100644
+> > > > > > --- a/scripts/mod/devicetable-offsets.c
+> > > > > > +++ b/scripts/mod/devicetable-offsets.c
+> > > > > > @@ -243,5 +243,9 @@ int main(void)
+> > > > > >  DEVID(mhi_device_id);
+> > > > > >  DEVID_FIELD(mhi_device_id, chan);
+> > > > > >
+> > > > > > +DEVID(dfl_device_id);
+> > > > > > +DEVID_FIELD(dfl_device_id, type);
+> > > > > > +DEVID_FIELD(dfl_device_id, feature_id);
+> > > > > > +
+> > > > > >  return 0;
+> > > > > >  }
+> > > > > > diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+> > > > > > index 2417dd1..9fd2e60 100644
+> > > > > > --- a/scripts/mod/file2alias.c
+> > > > > > +++ b/scripts/mod/file2alias.c
+> > > > > > @@ -1368,6 +1368,22 @@ static int do_mhi_entry(const char
+> > > *filename,
+> > > > > void *symval, char *alias)
+> > > > > >  return 1;
+> > > > > >  }
+> > > > > >
+> > > > > > +/* Looks like: dfl:tNfN */
+> > > > > > +static int do_dfl_entry(const char *filename, void *symval, char *alias)
+> > > > > > +{
+> > > > > > +DEF_FIELD(symval, dfl_device_id, type);
+> > > > > > +DEF_FIELD(symval, dfl_device_id, feature_id);
+> > > > > > +
+> > > > > > +/*
+> > > > > > + * type contains 4 valid bits and feature_id contains 12 valid bits
+> > > > > > + * according to DFL specification.
+> > > > > > + */
+> > > > > > +sprintf(alias, "dfl:t%01Xf%03X", type, feature_id);
+> > > > > > +
+> > > > > > +add_wildcard(alias);
+> > > > > > +return 1;
+> > > > > > +}
+> > > > > > +
+> > > > > >  /* Does namelen bytes of name exactly match the symbol? */
+> > > > > >  static bool sym_is(const char *name, unsigned namelen, const char
+> > > > > *symbol)
+> > > > > >  {
+> > > > > > @@ -1442,6 +1458,7 @@ static const struct devtable devtable[] = {
+> > > > > >  {"tee", SIZE_tee_client_device_id, do_tee_entry},
+> > > > > >  {"wmi", SIZE_wmi_device_id, do_wmi_entry},
+> > > > > >  {"mhi", SIZE_mhi_device_id, do_mhi_entry},
+> > > > > > +{"dfl", SIZE_dfl_device_id, do_dfl_entry},
+> > > > > >  };
+> > > > > >
+> > > > > >  /* Create MODULE_ALIAS() statements.
+> > > > > > --
+> > > > > > 2.7.4
+> > > > > >
+> > > > > Applied to for-next,
+> > > > >
+> > > > > Thanks
+> 
+> Cheers,
+> Moritz
