@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5EA26C675
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15F226C62B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727590AbgIPRvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:51:19 -0400
-Received: from mga09.intel.com ([134.134.136.24]:10142 "EHLO mga09.intel.com"
+        id S1727113AbgIPRfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:35:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36654 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727555AbgIPRtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:49:53 -0400
-IronPort-SDR: gJC9KQrGz7PNLfiRC6j6+O5xRPn2eAsOz2+Ubns7jvVjezTjWDXLx4gYMVSKDI6BDw+u3be1Vj
- FxG6LtUuZoGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="160395369"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="160395369"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 07:09:23 -0700
-IronPort-SDR: f6lEK6rr61QfJLrKixbHM2tY184hPKA3gqXtKYIaZE5f5CnutmwPYL/Q6k3e7bQNOdG3KM3B+e
- IkN1W1Swyaug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="331700580"
-Received: from mylly.fi.intel.com (HELO [10.237.72.153]) ([10.237.72.153])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Sep 2020 07:09:19 -0700
-Subject: Re: [PATCH v3] i2c: Squash of SMBus block read patchset to save power
-To:     Sultan Alsawaf <sultan@kerneltoast.com>
-Cc:     aaron.ma@canonical.com, admin@kryma.net,
-        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
-        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
-        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
-        wsa@kernel.org
-References: <b3b751fc-668d-91e2-220b-0d7edd231e01@linux.intel.com>
- <20200914001523.3878-1-sultan@kerneltoast.com>
- <bcf9cd02-13d1-8f87-8ef9-2f05f0b54808@linux.intel.com>
- <20200915174844.GA16807@sultan-box.localdomain>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <796a23d2-cb98-c431-3494-b59044189468@linux.intel.com>
-Date:   Wed, 16 Sep 2020 17:09:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727196AbgIPRdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:33:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9F2A8B1E5;
+        Wed, 16 Sep 2020 14:09:48 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 16:09:30 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Aristeu Rozanski <aris@ruivo.org>
+Cc:     naoya.horiguchi@nec.com, akpm@linux-foundation.org,
+        mhocko@kernel.org, tony.luck@intel.com, cai@lca.pw,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 0/5] HWpoison: further fixes and cleanups
+Message-ID: <20200916140921.GA17949@linux>
+References: <20200914101559.17103-1-osalvador@suse.de>
+ <20200915212222.GA18315@cathedrallabs.org>
+ <20200916072658.GA10692@linux>
+ <20200916135358.GB17169@cathedrallabs.org>
 MIME-Version: 1.0
-In-Reply-To: <20200915174844.GA16807@sultan-box.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916135358.GB17169@cathedrallabs.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 8:48 PM, Sultan Alsawaf wrote:
-> On Tue, Sep 15, 2020 at 02:55:48PM +0300, Jarkko Nikula wrote:
->> I tested this on top of fc4f28bb3daf ("Merge tag 'for-5.9-rc5-tag' of
->> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux") and seems to be
->> working fine. What was the key change compared to previous version that was
->> regressing for me?
-> 
-> This change fixed your issue (and my issue with 5.8):
-> --- a/drivers/i2c/busses/i2c-designware-master.c
-> +++ b/drivers/i2c/busses/i2c-designware-master.c
-> @@ -395,8 +395,9 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
->   	 * Adjust the buffer length and mask the flag
->   	 * after receiving the first byte.
->   	 */
-> -	len += (flags & I2C_CLIENT_PEC) ? 2 : 1;
-> -	dev->tx_buf_len = len - min_t(u8, len, dev->rx_outstanding);
-> +	if (flags & I2C_CLIENT_PEC)
-> +		len++;
-> +	dev->tx_buf_len = len - min_t(u8, len - 1, dev->rx_outstanding);
->   	msgs[dev->msg_read_idx].len = len;
->   	msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
-> 
-> I've attributed this change with the following commit message:
-> "i2c: designware: Ensure tx_buf_len is nonzero for SMBus block reads
-> 
-> The point of adding a byte to len in i2c_dw_recv_len() is to make sure
-> that tx_buf_len is nonzero, so that i2c_dw_xfer_msg() can let the i2c
-> controller know that the i2c transaction can end. Otherwise, the i2c
-> controller will think that the transaction can never end for block
-> reads, which results in the stop-detection bit never being set and thus
-> the transaction timing out.
-> 
-> Adding a byte to len is not a reliable way to do this though; sometimes
-> it lets tx_buf_len become zero, which results in the scenario described
-> above. Therefore, just directly ensure tx_buf_len cannot be zero to fix
-> the issue."
-> 
-Ok, nice that you found it.
+On Wed, Sep 16, 2020 at 09:53:58AM -0400, Aristeu Rozanski wrote:
+> Hi Oscar,
 
-> Does the patch series look good to submit?
-> 
-Yes, go ahead.
+Thanks Aristeu,
 
-Jarkko
+> 
+> On Wed, Sep 16, 2020 at 09:27:02AM +0200, Oscar Salvador wrote:
+> > Could you please re-run the tests with the below patch applied, and
+> > attached then the logs here?
+> 
+> here it is:
+> (removed previous dump_page() calls for other pages that didn't fail)
+> 
+> [  109.709342] Soft offlining pfn 0x3fb526 at process virtual address 0x7ffc7a180000
+> [  109.716969] page:00000000f367dde5 refcount:1 mapcount:0 mapping:0000000000000000 index:0x7ffc7a18 pfn:0x3fb526
+> [  109.716978] anon flags: 0x3ffff80008000e(referenced|uptodate|dirty|swapbacked)
+> [  109.716988] raw: 003ffff80008000e 5deadbeef0000100 5deadbeef0000122 c000003fcd56d839
+> [  109.716997] raw: 000000007ffc7a18 0000000000000000 00000001ffffffff c000003fd42f5000
+> [  109.717005] page dumped because: page_handle_poison
+> [  109.717011] page->mem_cgroup:c000003fd42f5000
+> [  109.725882] page_handle_poison: hugepage_or_freepage failed
+> [  109.725885] __soft_offline_page: page_handle_poison -EBUSY
+> [  109.725898] page:00000000f367dde5 refcount:3 mapcount:0 mapping:00000000b43d73e6 index:0x58 pfn:0x3fb526
+> [  109.725951] aops:xfs_address_space_operations [xfs] ino:49f9c5f dentry name:"messages"
+> [  109.725958] flags: 0x3ffff800002008(dirty|private)
+> [  109.725963] raw: 003ffff800002008 5deadbeef0000100 5deadbeef0000122 c000003fb8b7eea8
+> [  109.725969] raw: 0000000000000058 c000003fdd94eb20 00000003ffffffff c000003fd3c42000
+> [  109.725975] page dumped because: __soft_offline_page after migrate
+> [  109.725980] page->mem_cgroup:c000003fd3c42000
+
+Can you try the other patch I posted in response to Naoya?
+
+thanks
+
+-- 
+Oscar Salvador
+SUSE L3
