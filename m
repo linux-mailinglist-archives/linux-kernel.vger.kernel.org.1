@@ -2,140 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2D026C1E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 12:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F84126C1FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 13:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIPKxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 06:53:54 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:46050 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgIPKeh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 06:34:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1600252476; x=1631788476;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=ZqDxoyi2CE5TDuUki9vFnONxwFNUPXF9QfdulSaviFk=;
-  b=s0JIkBJGPjc2Wn/tlPMfAacQrJA48ObpLumF0+RX1rfbXuI7UHgEKKfw
-   Cblvhy2wA6QnVfKVkZacz4YXiSiBloftcPu6wuPOcIPH+YprSYcng5q9c
-   omYQmfbnkPiyK+t/kgOyMQVFpAYPZoZQaVZX7DNxx7DclbPOViBKqVNFo
-   Wo/hD6oWouyn/REfo0RbYly+4YkJPwKcafbbXX50A+yi0abdZyNF6r0Fs
-   cfDLr7TOQ2Sc+jsS6zEzfPXTiwrTax7eVaRsYGCbyCbrWZdBa2INn8REs
-   YKY1WaiPmdsZ2EXzg6o81gTE33RbCNumiv6abv10qHpFVUYUeKhb560WP
-   Q==;
-IronPort-SDR: lInEfgqVFhVhCrsozkw7GnsZayjG4zpQWA7SLyAAtaaujk+03OK9MTrW/kV0fymv2waLfTMpX6
- c4yyaHDIFLEWGuo3DkdSnbHE3x7dgBYSDXIb9VzN8Z3zWeV/tDKZoNM0r64fimDB2YcrRiJiOZ
- zAQiaYaU7ERRUlW0qjaHc3kDwY5lla3FfXQ+rdDwDXzb9lbp1kNuQqy6v2auewaLw/42yueTvO
- BG7xLSQrI77A7uI7aQ8bLpSO3i34ddset5tkzso2TDy5jx8JfK27OA09Q/AdE5M/xQaKLy92Cx
- Q1Y=
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="26592826"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Sep 2020 03:33:28 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 16 Sep 2020 03:33:25 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Wed, 16 Sep 2020 03:33:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YK83lAI2M60mEGve9mIZeklNvTeISmhAqB8+Urk4DIH8NnJNCIOuCx06GbO1z277YbHE/Gy3ZOBWoNpyGH9ls4QNc1XXpMHgoI5Cl2FyceFhtBJ4M9zHAH6S2cfrpzsNVTn/DihTvTnQ4U6dP4iZbAU2kTHxY9XoO/sRzWnRuaZw39KrVO3yg40IfuBP3b9Ecw+EXUCvoxvcgtyEA9w/yQjR+dXTvXnyymB7vccMcN6Wy6EK4QyNRkYgSqPJuVNdpekG7lBky2FyzKy9Jh0ziPRGuJda/HomeejiyQ2byQxHPANG/k9uXvf4uD7XVR5IJ+NuP4TuxefHxcdyu4uK9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZqDxoyi2CE5TDuUki9vFnONxwFNUPXF9QfdulSaviFk=;
- b=lLTUPF/+XcK0pJsyYc/Y7h6sqonhBVl72oo254Glc4xvzzAOG70nig8esWwNlb4rVXD9kn90C8V+womD3GOW7LLjine5bcfvY7ClVbURs6VVIkWkqlR1sQpwQlQBUqU88sB3fSrs0zTuzGvbRy4zcoxridG/8HAM+H00J6oN3WgfkGVC98OON1swzNkSGCcAS3EZMDqmRcFjpU4+dMTT4E/U/2JHdvQQtA9X6/d92UKJjGFJ2bIuGMaiI9s8wG+dWHIxEN8lVE/yrVW/HFgUP/pvvmy9HNGluRQNxr+RE+da6OuPcAzT7snJV3X24RgcL2FSQnp9f6FtM/n5t1PA+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZqDxoyi2CE5TDuUki9vFnONxwFNUPXF9QfdulSaviFk=;
- b=hr6wBUlkDqWY9ktg6wp54Dq89dSTw/RtPfTY0p2tq2IBdMkYxyEvrUtIgwBjgCb6V/NJT6cSat7Mk92x8jW86qZUl0Pq//YeQ0w+JBDO0jqe0mNW8MzYphJeZCrCTMDfZhGs5+igCtJmGiyQSP3mLvCM+ze3Y2CieyXcM2MK7O4=
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com (10.173.188.150) by
- CY4PR11MB0070.namprd11.prod.outlook.com (10.171.254.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3348.19; Wed, 16 Sep 2020 10:33:19 +0000
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::908:a628:69ca:d62e]) by CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::908:a628:69ca:d62e%7]) with mapi id 15.20.3391.014; Wed, 16 Sep 2020
- 10:33:19 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <matthias.schiffer@ew.tq-group.com>, <Woojung.Huh@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <andrew@lunn.ch>,
-        <vivien.didelot@gmail.com>, <f.fainelli@gmail.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: dsa: microchip: ksz8795: really set the correct
- number of ports
-Thread-Topic: [PATCH net] net: dsa: microchip: ksz8795: really set the correct
- number of ports
-Thread-Index: AQHWjBFmjW4HSyny6kSUPuJoqVs5JalrEXIA
-Date:   Wed, 16 Sep 2020 10:33:19 +0000
-Message-ID: <832ce428-961b-62d6-1930-dc106b3202aa@microchip.com>
-References: <20200916100839.843-1-matthias.schiffer@ew.tq-group.com>
-In-Reply-To: <20200916100839.843-1-matthias.schiffer@ew.tq-group.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: ew.tq-group.com; dkim=none (message not signed)
- header.d=none;ew.tq-group.com; dmarc=none action=none
- header.from=microchip.com;
-x-originating-ip: [2a02:2f0a:c803:a00:5546:80a7:ca6:707e]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4d946a64-49fc-487c-b425-08d85a2bedcb
-x-ms-traffictypediagnostic: CY4PR11MB0070:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR11MB00705B8BBA855AAC368FB6CEE7210@CY4PR11MB0070.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5+XH7/6Lbj4JhmlMSgmbQACduJTpud2hGl1jHe0kkGgFlZoyCpQiXIPmjIaa5P/68OvaVxpQMdRYU5M9AJRaFWmgkq2fcHHp7eBJOq4qvuvLmcoyWs/ROMgL8vQA//RMNLHzqMhulLbMmdn4C2okREV3UQhBKzEusdx2kDKf3BKdRaNbRJJIno+HPPeNWaMV6q9NZA/xuTRhhUSnrghiyXRnkoCPRAOt4z3Xv+ecFmKNzN1YZIIOm46nmzUFrOGKjIB8C0w4D+O6pzUkoXnCV9HTqhXPuLnJnDM6xmcj3MzMtIM+vSGmFgNRXBaS0IKNanC8M5Evwl3122Ktnxptrj1z4Qx8Yf+epLX3MTDiSZ0yQDd7Zy2ydqh1aXauwoW8LYT238wJUEyhJLaLuzo/DceZpVmsiI/xydzt/69CY303ixsocE0yGFeYglNP+bum
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2341.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39850400004)(366004)(396003)(376002)(136003)(66946007)(66476007)(66556008)(53546011)(71200400001)(83380400001)(5660300002)(478600001)(6506007)(76116006)(186003)(6486002)(31686004)(4744005)(6512007)(316002)(110136005)(2906002)(2616005)(8936002)(4326008)(66446008)(54906003)(64756008)(36756003)(8676002)(31696002)(91956017)(86362001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: y9I8I9UOlEVvHw6anCd419Gs9FxLdEPgnLImgQIq882aNxnkxCxBS5H64Gljg8ITP0syVOZlIdRU/VdOE5o3Z3DUb5PmCJrwIpzTRuZ2v1XHlZgCCEEyokEM+jOE8XKvBi0LNzLHqAV3sH9mTG/mx6vWPYfGDo1WQluHzh6NYZnUjvB/ug5Kj5XRUxZ0MRSqst0rEGBArbChJAIW1RI5KsSXCSGwYhJloRb7ZZYwB6M2LYrOeHx/I3gWU3qhG3ulEuMOPJTdtsDUbmwZZOusQhCnKVFyMa1VuRLISWLYFxReBWU8qWqm45ZAdy8qNHwIPLkf+ZliUfdf47V26VaM+OnhGXLANTYfhwXlBBpRW+zOk8qaz3vKVRD/S/r1PtajmAV8qSfSZ9jvZC7R5uQpYsEhcBkqNUQwnhfPfkwsMYu0NFQfTIR/0pycwuMmd76+onkCwHotY2MH5EcvINzS1OaRX2hl3z4o2j601Vu0uH1isEbYsjlHN4uBH3rRZw06xmbjJvNYKa4OJ6NBOWuJvpiVz6W3mYXR9mxY4o8dLY/VEoUkXozZBmNmobAAJ9PQn6ij66L4dGIPGLnJNjbbisI77/bV+kwkIg27WJyA1cexL0Kj08tqu9/ITkSwh2Q8vmDkOozk26Ch0iyycZJ78xMQWgXxe+4rZieq01XddC4fOg9yHA3pAEhwej9+zhGV+OAcFjOHxVkiVoAttyMX/Q==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <183B390177E4E64F9790E0FDFEBC0EF9@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2341.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d946a64-49fc-487c-b425-08d85a2bedcb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 10:33:19.1539
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /UPkTw41G+74RMcQjrAsR8Maa9IfQXNeu+zXLP/bHE6i+XjdJ4ZRZlNFlEO4IlgaAxnMydoUZJdkDDkKZqfta5RfklW5uiJRJHhiDFa3mMY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB0070
+        id S1726869AbgIPLPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 07:15:09 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:34344 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726873AbgIPKed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 06:34:33 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5F9511A002B;
+        Wed, 16 Sep 2020 12:23:28 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AEA611A0028;
+        Wed, 16 Sep 2020 12:23:23 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C13C7402A5;
+        Wed, 16 Sep 2020 12:23:17 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] ASoC: fsl_sai: Add new added registers and new bit definition
+Date:   Wed, 16 Sep 2020 18:16:25 +0800
+Message-Id: <1600251387-1863-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600251387-1863-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1600251387-1863-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTYuMDkuMjAyMCAxMzowOCwgTWF0dGhpYXMgU2NoaWZmZXIgd3JvdGU6DQo+IEVYVEVSTkFM
-IEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91
-IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gVGhlIEtTWjk0NzcgYW5kIEtTWjg3OTUg
-dXNlIHRoZSBwb3J0X2NudCBmaWVsZCBkaWZmZXJlbnRseTogRm9yIHRoZQ0KPiBLU1o5NDc3LCBp
-dCBpbmNsdWRlcyB0aGUgQ1BVIHBvcnQocyksIHdoaWxlIGZvciB0aGUgS1NaODc5NSwgaXQgZG9l
-c24ndC4NCj4gDQo+IEl0IHdvdWxkIGJlIGEgZ29vZCBjbGVhbnVwIHRvIG1ha2UgdGhlIGhhbmRs
-aW5nIG9mIGJvdGggZHJpdmVycyBtYXRjaCwNCj4gYnV0IGFzIGEgZmlyc3Qgc3RlcCwgZml4IHRo
-ZSByZWNlbnRseSBicm9rZW4gYXNzaWdubWVudCBvZiBudW1fcG9ydHMgaW4NCj4gdGhlIEtTWjg3
-OTUgZHJpdmVyICh3aGljaCBjb21wbGV0ZWx5IGJyb2tlIHByb2JpbmcsIGFzIHRoZSBDUFUgcG9y
-dA0KPiBpbmRleCB3YXMgYWx3YXlzIGZhaWxpbmcgdGhlIG51bV9wb3J0cyBjaGVjaykuDQo+IA0K
-PiBGaXhlczogYWYxOTlhMWE5Y2IwICgibmV0OiBkc2E6IG1pY3JvY2hpcDogc2V0IHRoZSBjb3Jy
-ZWN0IG51bWJlciBvZg0KPiBwb3J0cyIpDQo+IFNpZ25lZC1vZmYtYnk6IE1hdHRoaWFzIFNjaGlm
-ZmVyIDxtYXR0aGlhcy5zY2hpZmZlckBldy50cS1ncm91cC5jb20+DQo+IC0tLQ0KDQpTb3JyeSBh
-Ym91dCB0aGlzLiBJIGFzc3VtZWQgY29uc2lzdGVuY3kgYmV0d2VlbiB0aGUgdHdvIGRyaXZlcnMu
-DQoNClJldmlld2VkLWJ5OiBDb2RyaW4gQ2l1Ym90YXJpdSA8Y29kcmluLmNpdWJvdGFyaXVAbWlj
-cm9jaGlwLmNvbT4NCg==
+On i.MX850/i.MX815/i.MX845 platform, the sai IP is upgraded.
+There are some new registers and new bit definition. This
+patch is to complete the register list.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 23 ++++++++++++++++
+ sound/soc/fsl/fsl_sai.h | 59 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 82 insertions(+)
+
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index b2d65e53dbc4..24ca528ca2be 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -796,6 +796,8 @@ static struct reg_default fsl_sai_reg_defaults_ofs8[] = {
+ 	{FSL_SAI_RCR4(8), 0},
+ 	{FSL_SAI_RCR5(8), 0},
+ 	{FSL_SAI_RMR, 0},
++	{FSL_SAI_MCTL, 0},
++	{FSL_SAI_MDIV, 0},
+ };
+ 
+ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
+@@ -836,6 +838,18 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
+ 	case FSL_SAI_RFR6:
+ 	case FSL_SAI_RFR7:
+ 	case FSL_SAI_RMR:
++	case FSL_SAI_MCTL:
++	case FSL_SAI_MDIV:
++	case FSL_SAI_VERID:
++	case FSL_SAI_PARAM:
++	case FSL_SAI_TTCTN:
++	case FSL_SAI_RTCTN:
++	case FSL_SAI_TTCTL:
++	case FSL_SAI_TBCTN:
++	case FSL_SAI_TTCAP:
++	case FSL_SAI_RTCTL:
++	case FSL_SAI_RBCTN:
++	case FSL_SAI_RTCAP:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -850,6 +864,10 @@ static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
+ 	if (reg == FSL_SAI_TCSR(ofs) || reg == FSL_SAI_RCSR(ofs))
+ 		return true;
+ 
++	/* Set VERID and PARAM be volatile for reading value in probe */
++	if (ofs == 8 && (reg == FSL_SAI_VERID || reg == FSL_SAI_PARAM))
++		return true;
++
+ 	switch (reg) {
+ 	case FSL_SAI_TFR0:
+ 	case FSL_SAI_TFR1:
+@@ -903,6 +921,10 @@ static bool fsl_sai_writeable_reg(struct device *dev, unsigned int reg)
+ 	case FSL_SAI_TDR7:
+ 	case FSL_SAI_TMR:
+ 	case FSL_SAI_RMR:
++	case FSL_SAI_MCTL:
++	case FSL_SAI_MDIV:
++	case FSL_SAI_TTCTL:
++	case FSL_SAI_RTCTL:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -951,6 +973,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 
+ 	if (sai->soc_data->reg_offset == 8) {
+ 		fsl_sai_regmap_config.reg_defaults = fsl_sai_reg_defaults_ofs8;
++		fsl_sai_regmap_config.max_register = FSL_SAI_MDIV;
+ 		fsl_sai_regmap_config.num_reg_defaults =
+ 			ARRAY_SIZE(fsl_sai_reg_defaults_ofs8);
+ 	}
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 736a437450c8..d16fc4241f41 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -14,6 +14,8 @@
+ 			 SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ /* SAI Register Map Register */
++#define FSL_SAI_VERID	0x00 /* SAI Version ID Register */
++#define FSL_SAI_PARAM	0x04 /* SAI Parameter Register */
+ #define FSL_SAI_TCSR(ofs)	(0x00 + ofs) /* SAI Transmit Control */
+ #define FSL_SAI_TCR1(ofs)	(0x04 + ofs) /* SAI Transmit Configuration 1 */
+ #define FSL_SAI_TCR2(ofs)	(0x08 + ofs) /* SAI Transmit Configuration 2 */
+@@ -37,6 +39,10 @@
+ #define FSL_SAI_TFR6	0x58 /* SAI Transmit FIFO 6 */
+ #define FSL_SAI_TFR7	0x5C /* SAI Transmit FIFO 7 */
+ #define FSL_SAI_TMR	0x60 /* SAI Transmit Mask */
++#define FSL_SAI_TTCTL	0x70 /* SAI Transmit Timestamp Control Register */
++#define FSL_SAI_TTCTN	0x74 /* SAI Transmit Timestamp Counter Register */
++#define FSL_SAI_TBCTN	0x78 /* SAI Transmit Bit Counter Register */
++#define FSL_SAI_TTCAP	0x7C /* SAI Transmit Timestamp Capture */
+ #define FSL_SAI_RCSR(ofs)	(0x80 + ofs) /* SAI Receive Control */
+ #define FSL_SAI_RCR1(ofs)	(0x84 + ofs)/* SAI Receive Configuration 1 */
+ #define FSL_SAI_RCR2(ofs)	(0x88 + ofs) /* SAI Receive Configuration 2 */
+@@ -60,6 +66,13 @@
+ #define FSL_SAI_RFR6	0xd8 /* SAI Receive FIFO 6 */
+ #define FSL_SAI_RFR7	0xdc /* SAI Receive FIFO 7 */
+ #define FSL_SAI_RMR	0xe0 /* SAI Receive Mask */
++#define FSL_SAI_RTCTL	0xf0 /* SAI Receive Timestamp Control Register */
++#define FSL_SAI_RTCTN	0xf4 /* SAI Receive Timestamp Counter Register */
++#define FSL_SAI_RBCTN	0xf8 /* SAI Receive Bit Counter Register */
++#define FSL_SAI_RTCAP	0xfc /* SAI Receive Timestamp Capture */
++
++#define FSL_SAI_MCTL	0x100 /* SAI MCLK Control Register */
++#define FSL_SAI_MDIV	0x104 /* SAI MCLK Divide Register */
+ 
+ #define FSL_SAI_xCSR(tx, ofs)	(tx ? FSL_SAI_TCSR(ofs) : FSL_SAI_RCSR(ofs))
+ #define FSL_SAI_xCR1(tx, ofs)	(tx ? FSL_SAI_TCR1(ofs) : FSL_SAI_RCR1(ofs))
+@@ -73,6 +86,7 @@
+ 
+ /* SAI Transmit/Receive Control Register */
+ #define FSL_SAI_CSR_TERE	BIT(31)
++#define FSL_SAI_CSR_SE		BIT(30)
+ #define FSL_SAI_CSR_FR		BIT(25)
+ #define FSL_SAI_CSR_SR		BIT(24)
+ #define FSL_SAI_CSR_xF_SHIFT	16
+@@ -106,6 +120,7 @@
+ #define FSL_SAI_CR2_MSEL(ID)	((ID) << 26)
+ #define FSL_SAI_CR2_BCP		BIT(25)
+ #define FSL_SAI_CR2_BCD_MSTR	BIT(24)
++#define FSL_SAI_CR2_BYP		BIT(23) /* BCLK bypass */
+ #define FSL_SAI_CR2_DIV_MASK	0xff
+ 
+ /* SAI Transmit and Receive Configuration 3 Register */
+@@ -115,6 +130,13 @@
+ #define FSL_SAI_CR3_WDFL_MASK	0x1f
+ 
+ /* SAI Transmit and Receive Configuration 4 Register */
++
++#define FSL_SAI_CR4_FCONT	BIT(28)
++#define FSL_SAI_CR4_FCOMB_SHIFT BIT(26)
++#define FSL_SAI_CR4_FCOMB_SOFT  BIT(27)
++#define FSL_SAI_CR4_FCOMB_MASK  (0x3 << 26)
++#define FSL_SAI_CR4_FPACK_8     (0x2 << 24)
++#define FSL_SAI_CR4_FPACK_16    (0x3 << 24)
+ #define FSL_SAI_CR4_FRSZ(x)	(((x) - 1) << 16)
+ #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
+ #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
+@@ -134,6 +156,43 @@
+ #define FSL_SAI_CR5_FBT(x)	((x) << 8)
+ #define FSL_SAI_CR5_FBT_MASK	(0x1f << 8)
+ 
++/* SAI MCLK Control Register */
++#define FSL_SAI_MCTL_MCLK_EN	BIT(30)	/* MCLK Enable */
++#define FSL_SAI_MCTL_MSEL_MASK	(0x3 << 24)
++#define FSL_SAI_MCTL_MSEL(ID)   ((ID) << 24)
++#define FSL_SAI_MCTL_MSEL_BUS	0
++#define FSL_SAI_MCTL_MSEL_MCLK1	BIT(24)
++#define FSL_SAI_MCTL_MSEL_MCLK2	BIT(25)
++#define FSL_SAI_MCTL_MSEL_MCLK3	(BIT(24) | BIT(25))
++#define FSL_SAI_MCTL_DIV_EN	BIT(23)
++#define FSL_SAI_MCTL_DIV_MASK	0xFF
++
++/* SAI VERID Register */
++#define FSL_SAI_VERID_MAJOR_SHIFT   24
++#define FSL_SAI_VERID_MAJOR_MASK    GENMASK(31, 24)
++#define FSL_SAI_VERID_MINOR_SHIFT   16
++#define FSL_SAI_VERID_MINOR_MASK    GENMASK(23, 16)
++#define FSL_SAI_VERID_FEATURE_SHIFT 0
++#define FSL_SAI_VERID_FEATURE_MASK  GENMASK(15, 0)
++#define FSL_SAI_VERID_EFIFO_EN	    BIT(0)
++#define FSL_SAI_VERID_TSTMP_EN	    BIT(1)
++
++/* SAI PARAM Register */
++#define FSL_SAI_PARAM_SPF_SHIFT	    16
++#define FSL_SAI_PARAM_SPF_MASK	    GENMASK(19, 16)
++#define FSL_SAI_PARAM_WPF_SHIFT	    8
++#define FSL_SAI_PARAM_WPF_MASK	    GENMASK(11, 8)
++#define FSL_SAI_PARAM_DLN_MASK	    GENMASK(3, 0)
++
++/* SAI MCLK Divide Register */
++#define FSL_SAI_MDIV_MASK	    0xFFFFF
++
++/* SAI timestamp and bitcounter */
++#define FSL_SAI_xTCTL_TSEN         BIT(0)
++#define FSL_SAI_xTCTL_TSINC        BIT(1)
++#define FSL_SAI_xTCTL_RTSC         BIT(8)
++#define FSL_SAI_xTCTL_RBC          BIT(9)
++
+ /* SAI type */
+ #define FSL_SAI_DMA		BIT(0)
+ #define FSL_SAI_USE_AC97	BIT(1)
+-- 
+2.27.0
+
