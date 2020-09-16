@@ -2,185 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521A226C1FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 13:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52DF26C1EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 13:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgIPLM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 07:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
+        id S1726885AbgIPLCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 07:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726879AbgIPKeg (ORCPT
+        with ESMTP id S1726878AbgIPKeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 06:34:36 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9461C061221
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 03:33:09 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id e5so1606972vkm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 03:33:09 -0700 (PDT)
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491E4C061797;
+        Wed, 16 Sep 2020 03:34:26 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o8so9580121ejb.10;
+        Wed, 16 Sep 2020 03:34:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IdwPR/fAtGHVUXwUACzu3D7oPcwbftl8nlxw5CpXeeg=;
-        b=Rk1zENdievy3OPj0w4Ah0mWQLQ/hSxlmZx6Cl2denpI7VcHeRSZJDR4m4wGImXLtEv
-         gWrSxx2/F837Ptdyypa3WFMIIUM+xj9t/wPxyJ84vfIqNT93WGa1obcYjOjTw4FJjRUC
-         nCW9xwmw7sNsB05IVuHYYCUUP8dK7fbs58JpL2G0yffhi/XOMueAodHy/Tv75lNzT/Tb
-         JkIgkGQ7FpPIVSYCVBlNh7yJ4434eWCuHmvLSHklTbHQsuEaQJ4BDya64rRUCjHvGpzG
-         /dggkfJQfD1MZ5jTPYxaAzwFYM6C/Y4DgK2zxNp7HVXFocfPa34t68rG3IMxuP3rlOjG
-         53gw==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5frHr5GaHOWTlO1WZeDNHTiXmR3D2Lj1pukjlnONUdQ=;
+        b=ZF998Rh92pZaLx0yq3SFfj6Wv8CwwAaADizquqRJgU3jPJkxOnQ9Bpn4ZzMyM2Qmdk
+         ZB9mHTbgKbPBVdtfaOBzExDfksf3SIg4Rck7plmMRh1qhICZ0beYDd4BqorWRwQE0LDF
+         E/wY3ol2z3sv69HCDLZrxs8kF7RgKApFYIRkLytzfEOKOMPYedgbHTZfIdi3xBJkv0BN
+         TjdnDZTUnTRecfZ89bbysSNp34lYcSINk6c46g7iApAcGgkuIBoy+uRilJByrhkNLMKz
+         WL9jlusijA1vNX/oWxFPrHKURiGJTyRN4K+QES0aIWu5f7v0Un2t1ATCyoFPI7BuFuVZ
+         6iVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IdwPR/fAtGHVUXwUACzu3D7oPcwbftl8nlxw5CpXeeg=;
-        b=XbWsKPoD1KXusoik8UzZvayQzg2c/UiFYInQqtHsSEBJ7STAoaU62+u3BlXiIJUC+3
-         ABNEzGmTvQvXly585oF5uOto6G0ROYOZx3SOAidYOJIHB3eGWN00Hsy+ElxNz3izm/t/
-         gGFxXgk7+5A21mcfu54qkHi4Bb0bJ8751yDazFLNXGY9h/5QG3aOAHAJ46Mzvl1UmATr
-         CtsshhY2P9rh+immbb1tF16jQXPB75WPJpdQEsB9qMH0F23OdKIf41cndr7Ht/eknwWb
-         /PZD2haTtIEpJ4nB4fpEHi9oB3ivc1RrVFKCAc5d5gVVIesv+SsZmqWyXHjm2DaLLsmo
-         iRzQ==
-X-Gm-Message-State: AOAM5338zhSh4LtdxRVgLn2rZlBpfWIC/7rEMHvTcmXLORYGLz6tVESH
-        wJlBdtdnaxi85+QChK9gqNI/DUXMZTU3K8Cqkm9zwg==
-X-Google-Smtp-Source: ABdhPJx0nXi7W8VyrI2mBWrJMc3OCZURS+LjHCKbM+5zAs4NqnASZaKJZVEz00bgLG0l3VQpM/1A+6WrCk5Dzb6F85c=
-X-Received: by 2002:ac5:ccd3:: with SMTP id j19mr13192651vkn.8.1600252388703;
- Wed, 16 Sep 2020 03:33:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200915140653.610388773@linuxfoundation.org>
-In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 16 Sep 2020 16:02:57 +0530
-Message-ID: <CA+G9fYtQ6w-J46aRY9i5CAfOq0jMAxpxYv-JXibeXf-tnDLDzQ@mail.gmail.com>
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5frHr5GaHOWTlO1WZeDNHTiXmR3D2Lj1pukjlnONUdQ=;
+        b=jljFYdL1/4MQmA35Z88cUO+/bBV4ZrI3pqjRHYlb7PAVRXAX1GqmyZwbSmn9Rvl1PI
+         zrZtCfPjO56LxsWWR1Z3ngc7V4PuETit9EtgI7nXTy4EEOQqCh45t95C4icjPTwDwRHG
+         JWFRCiFSwCmpR/IClt3u1TEzkTBwoW3yHdbD9023AVTn/neAyKipyB1cyQ95M926Rwu0
+         ZQbk+UZhs7epnAXJTh3Qgt9YoyhYaZeG9oWZHLWiCK4fOsDk8U/MzDt26R22fqodR8D5
+         dsrnUMdAhGpXCw03cd4N9IOjHR61rDexXbIfyfaRTs3ur1uo3Kn+jOoY0SRwqPkR1JFF
+         SRCw==
+X-Gm-Message-State: AOAM533F4w8zV5fi+tMzXjesSo154AyXyUsJLq3JVcN7+0ouKvaXe3DW
+        p7bNUKuTxRZWjmx/bigPxQc=
+X-Google-Smtp-Source: ABdhPJwjA2TsI0J+RUHNzfcNYiECiHgKCfxYsCNWlrOtld1vPZldVDeBtAuOu+S2NQ0O1nO4UoqmXw==
+X-Received: by 2002:a17:906:c113:: with SMTP id do19mr24032408ejc.219.1600252464932;
+        Wed, 16 Sep 2020 03:34:24 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:b890:270b:75d6:3bdd:1167:483e])
+        by smtp.googlemail.com with ESMTPSA id t10sm13858135edw.86.2020.09.16.03.34.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Sep 2020 03:34:24 -0700 (PDT)
+Message-ID: <bdc48d03dae86abef158aa33468f6c2f8e669ce8.camel@gmail.com>
+Subject: Re: [PATCH 5/6] scsi: ufs: show ufs part info in error case
+From:   Bean Huo <huobean@gmail.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Can Guo <cang@codeaurora.org>
+Cc:     Jaegeuk Kim <jaegeuk@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Date:   Wed, 16 Sep 2020 12:34:23 +0200
+In-Reply-To: <20200915204532.1672300-5-jaegeuk@kernel.org>
+References: <20200915204532.1672300-1-jaegeuk@kernel.org>
+         <20200915204532.1672300-5-jaegeuk@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 19:55, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.8.10 release.
-> There are 177 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.8.10-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.8.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Tue, 2020-09-15 at 13:45 -0700, Jaegeuk Kim wrote:
+> Cc: Avri Altman <avri.altman@wdc.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index bdc82cc3824aa..b81c116b976ff 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -500,6 +500,14 @@ static void ufshcd_print_tmrs(struct ufs_hba
+> *hba, unsigned long bitmap)
+>  static void ufshcd_print_host_state(struct ufs_hba *hba)
+>  {
+>         dev_err(hba->dev, "UFS Host state=%d\n", hba->ufshcd_state);
+> +       if (hba->sdev_ufs_device) {
+> +               dev_err(hba->dev, " vendor = %.8s\n",
+> +                                       hba->sdev_ufs_device-
+> >vendor);
+> +               dev_err(hba->dev, " model = %.16s\n",
+> +                                       hba->sdev_ufs_device->model);
+> +               dev_err(hba->dev, " rev = %.4s\n",
+> +                                       hba->sdev_ufs_device->rev);
+> +       }
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Hi Jaegeuk
+these prints have been added since this change:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+commit 3f8af6044713 ("scsi: ufs: Add some debug information to
+ufshcd_print_host_state()")                
 
-Summary
-------------------------------------------------------------------------
+https://patchwork.kernel.org/patch/11694371/
 
-kernel: 5.8.10-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.8.y
-git commit: 337aafeeb4cdb1868fff6b6689b715ff376249a2
-git describe: v5.8.9-178-g337aafeeb4cd
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.8.=
-y/build/v5.8.9-178-g337aafeeb4cd
+Thanks,
+Bean
 
-No regressions (compared to build v5.8.9)
-
-
-No fixes (compared to build v5.8.9)
-
-Ran 37876 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-ipc-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* network-basic-tests
-* ltp-cve-tests
-* ltp-open-posix-tests
-* ltp-syscalls-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
