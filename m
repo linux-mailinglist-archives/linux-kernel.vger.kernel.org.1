@@ -2,67 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D78D26C7AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB94126C890
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgIPScW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:32:22 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36498 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727989AbgIPSaN (ORCPT
+        id S1728153AbgIPSwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727777AbgIPSJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:30:13 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCHxrx021539;
-        Wed, 16 Sep 2020 07:17:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600258679;
-        bh=+1DhbG8Idme2HwVduZLQbbMrlIUjr/zU9AX0qPhimO0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=w8EFoSz7mXr4kbhXwZ1EyRXVTYx/ShT25/Hoy0NDZhH+VRDZ8ADBetb3Cn8xiFdEP
-         GWu7OoqMy1Eyc5KsgPJ3ZUzxsO/HcAAhL2n8ODAeOM+CCBatuo3AV7L5i8HoLQ1KXQ
-         jH7qBXfwBsrU9m3WIrw1Zd8lruH8f4VQGJ8QIt5s=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCHxFV058206
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 07:17:59 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:17:59 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:17:59 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCHtUQ101755;
-        Wed, 16 Sep 2020 07:17:55 -0500
-Subject: Re: [PATCH v10 1/3] dt-bindings: drm/bridge: Document Cadence
- MHDP8546 bridge bindings
-To:     Swapnil Jakhade <sjakhade@cadence.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <Laurent.pinchart@ideasonboard.com>,
-        <robh+dt@kernel.org>, <a.hajda@samsung.com>,
-        <narmstrong@baylibre.com>, <jonas@kwiboo.se>,
-        <jernej.skrabec@siol.net>, <dri-devel@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <yamonkar@cadence.com>, <jsarha@ti.com>,
-        <nsekhar@ti.com>, <praneeth@ti.com>, <nikhil.nd@ti.com>
-References: <1600087715-15729-1-git-send-email-sjakhade@cadence.com>
- <1600087715-15729-2-git-send-email-sjakhade@cadence.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <37aacded-72e3-eaa9-f97e-488733da98ba@ti.com>
-Date:   Wed, 16 Sep 2020 15:17:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Sep 2020 14:09:11 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA9EC02526C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:20:46 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id z46so2110875uac.13
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=/mmyXwgKk0v94wDR5wziYxYkecNHTpk6pOU5axrJVv8=;
+        b=IaCPdRABMD+D9OJ14XC6hu6h0zPzssklKhz8NgsTkmOwj7NZrylAheg2gsWR8PYGdQ
+         CDHnsyv9rlpZToNF8uA/xSu7bQb6kfQEcGipyGMEDBVOHMkZ/8Werbeyym7YFFru2STJ
+         3dajgIzTLtl9SEzAmlArh2UvJQcqUkKmmAmiSxR2N9qJOYJ3CG+KsXmkFnJovKeCk0Mk
+         Ld8UVjf1zEcjtQe9nnx/BbnrM5mfMmkAKY5DymHINsN2zH+1w5aTJ6qlb7cEuU0mZQUc
+         QUCp+Bti2y83cyJ0HnHdtOJEW1AUCC+BxMyitOAsH4peXpUCRk6k+GlbxbrZas6qYFhm
+         DLtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=/mmyXwgKk0v94wDR5wziYxYkecNHTpk6pOU5axrJVv8=;
+        b=Pb8kDi6uOcPr6bUIB+QHANp5i8vM0TXyqNniLU9KO2bOQQRJT3e5v72i6Bv8vSbPz6
+         ujJpZyrDYEyJMglu1naTUvLZjGqKyaC2HvWLsrnijJI7YgNDOpGMwX1FELnNaucAAwLU
+         sCLMuvcpluvncLM0VwlQv+ew7TAXrRfZyiYsvkgYs1+fd62e4BO+F+0nlSDAPEbLWqd2
+         CmEd1iPhFa5qyLA+h+HCOdgw47oX6So5x7E60Q4WkF8DjfLdXsVtFLoIlGzd7fr/N56E
+         x0KujPJXGGf7wKnJpmrtmL2iwdESmj4bHMNJ2IvuAEriSG8pwEMM92tmTbmqDWzOmsbH
+         iw9g==
+X-Gm-Message-State: AOAM532OaFCTHTdkNodqM/wzVqW5XJwrJ3kIh5FmtLkumRvVrw5ehmY3
+        JM9WOomFyiuHJASuShO6Gi1zDKZDMEIJ2ls6ykFueg==
+X-Google-Smtp-Source: ABdhPJzga6i0E1Il8boIzaPNvfTb4mKEsRnw2K/8gqZFu0jDG1Hh8IhL3Abx/XRt/I5j/dV5SS1UsX7miMG+bx+hlA8=
+X-Received: by 2002:ab0:2c1a:: with SMTP id l26mr13094715uar.6.1600258845405;
+ Wed, 16 Sep 2020 05:20:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1600087715-15729-2-git-send-email-sjakhade@cadence.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 16 Sep 2020 17:50:34 +0530
+Message-ID: <CA+G9fYtz4=fO++JsL4McMWecFnFGWzm7kJvKKmfHOspjvMU9yQ@mail.gmail.com>
+Subject: [Firmware Bug]: Kernel image misaligned at boot, please fix your bootloader
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Cc:     lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>, rppt@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+arm64 boot failed on linux next 20200916.
 
+[    0.000000] Linux version 5.9.0-rc5-next-20200916
+(TuxBuild@3aa8232c0e38) (aarch64-linux-gnu-gcc (Debian 9.3.0-8) 9.3.0,
+GNU ld (GNU Binutils for Debian) 2.34) #1 SMP PREEMPT Wed Sep 16
+10:13:15 UTC 2020
+[    0.000000] Machine model: Freescale Layerscape 2088A RDB Board
+[    0.000000] earlycon: uart8250 at MMIO 0x00000000021c0600 (options '')
+[    0.000000] printk: bootconsole [uart8250] enabled
+[    0.000000] efi: UEFI not found.
+[    0.000000] [Firmware Bug]: Kernel image misaligned at boot, please
+fix your bootloader!
+[    0.000000] Unable to handle kernel paging request at virtual
+address ffff0082ffffff70
+[    0.000000] Mem abort info:
+[    0.000000]   ESR = 0x96000044
+[    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    0.000000]   SET = 0, FnV = 0
+[    0.000000]   EA = 0, S1PTW = 0
+[    0.000000] Data abort info:
+[    0.000000]   ISV = 0, ISS = 0x00000044
+[    0.000000]   CM = 0, WnR = 1
+[    0.000000] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000827f9000
+[    0.000000] [ffff0082ffffff70] pgd=0000000000000000, p4d=0000000000000000
+[    0.000000] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+[    0.000000] Modules linked in:
+[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
+5.9.0-rc5-next-20200916 #1
+[    0.000000] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+[    0.000000] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+[    0.000000] pc : __memset+0x148/0x188
+[    0.000000] lr : memblock_alloc_try_nid+0xc4/0xdc
+[    0.000000] sp : ffffc305b2393cd0
+[    0.000000] x29: ffffc305b2393cd0 x28: 000000008116237c
+[    0.000000] x27: 0000000080000000 x26: ffffc305b1b51000
+[    0.000000] x25: 0000008380000000 x24: ffffc305b18014f8
+[    0.000000] x23: ffffc305b27a0f30 x22: 0000000000000000
+[    0.000000] x21: 00000000ffffffff x20: ffff0082ffffff70
+[    0.000000] x19: 0000000000000090 x18: 0000000000000010
+[    0.000000] x17: 0000000000001400 x16: 0000000000001c00
+[    0.000000] x15: ffffc305b23a48c0 x14: ffffc305b23a48c0
+[    0.000000] x13: fffffdfffe600000 x12: ffffc305b2393e44
+[    0.000000] x11: 0000000000004aa8 x10: ffffc305b2393df4
+[    0.000000] x9 : 0000000000000000 x8 : ffff0082ffffff70
+[    0.000000] x7 : 0000000000000000 x6 : 000000000000003f
+[    0.000000] x5 : 0000000000000040 x4 : 0000000000000010
+[    0.000000] x3 : 0000000000000080 x2 : 0000000000000080
+[    0.000000] x1 : 0000000000000000 x0 : ffff0082ffffff70
+[    0.000000] Call trace:
+[    0.000000]  __memset+0x148/0x188
+[    0.000000]  cma_init_reserved_mem+0x9c/0x15c
+[    0.000000]  cma_declare_contiguous_nid+0x288/0x308
+[    0.000000]  dma_contiguous_reserve_area+0x50/0x80
+[    0.000000]  dma_contiguous_reserve+0xfc/0x114
+[    0.000000]  arm64_memblock_init+0x42c/0x464
+[    0.000000]  setup_arch+0x27c/0x64c
+[    0.000000]  start_kernel+0xa0/0x56c
+[    0.000000] Code: f101007f fa45a068 54fffc0b aa0303e2 (a9001d07)
+[    0.000000] random: get_random_bytes called from
+print_oops_end_marker+0x34/0x78 with crng_init=0
+[    0.000000] ---[ end trace 0000000000000000 ]---
+[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+[    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill
+the idle task! ]---
+
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
