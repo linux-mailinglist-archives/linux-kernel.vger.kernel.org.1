@@ -2,181 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2914726BA84
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D653426BA8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbgIPDJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgIPDJV (ORCPT
+        id S1726305AbgIPDLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:11:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51080 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726303AbgIPDLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:09:21 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8021C06174A;
-        Tue, 15 Sep 2020 20:09:20 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id y5so5342583otg.5;
-        Tue, 15 Sep 2020 20:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rDIxqPOPy/jwE1fyBLQdvVBwmDeqK+FPS+2DQFsR9wU=;
-        b=u8JR+SKL2EY/e96H8DkCrV0RnTLxg9b8MC4p8V/xSYbuq5+T/lLzN3yH3v+LhXkRWV
-         FgfTEnolpKtJkyrCGEtSqkJkvEOtF1Vm16Fg/64SuQqlZZ+0HwfS91xVbZWTs8mraJpV
-         0iQCAeQcGgL8YSE95HrHvwuHOHjzEX2gvwH5G9+DlJ4yfLxThAhielf4SAU0ZmxotYsU
-         X5cACbER/eozqTSTM5pBgTTeBti1CDbGypTKakDbSWT1tdlLtqwAcPNXsxh2EWMyo8wQ
-         +hgA7WHp75ePveuBOVvR8k+Hb2P4HzdiFRwbiZ4Mpp/nBXhqYEHyvrM9NR+OxYXsmCwJ
-         XjaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rDIxqPOPy/jwE1fyBLQdvVBwmDeqK+FPS+2DQFsR9wU=;
-        b=TLI90oTscic5zL/y+c08rqWQpcnTaxPuF21vVAQlGm9FlaSwsay1qIRWvjgH6WlHJE
-         gxnfhkBycRyHpnu5orLSdoxEFcqktbPzsHhz/HGU+E+rcXmVsxeWOyta27Ob1AiBo989
-         /IMbtdgxUvyWsfzZdoxpH/42n7zgBLRsYUUU2ohJAdYPL5zj23/Estua0WN6Rd6UB4yv
-         g+Nta0xFADOtqmeXupMILhOQAR1jPW73T9ufOmgPsWIIWxAL+5WI+5yX2D2iNTneT/P9
-         t1iRj2GrTGv3msYcUgr6PzGxqi6vlwALG+oojhta2E3OaGkrc/PYSgab32K7V9SKmnex
-         5VUw==
-X-Gm-Message-State: AOAM532o8tM3YP37vAB3gNdUm0QMD8vX2u4oRq6wxbxrXB2of3aMTTWq
-        GBuA54eakPNXfSIwdDIQrGA=
-X-Google-Smtp-Source: ABdhPJz5uPpzIQEzLcXZ6Eh8mUguD2ePQE/oB9E4x0Q3rDsyMpN+hukO68DmRFZsJXjsV6tX4QwmEQ==
-X-Received: by 2002:a05:6830:2096:: with SMTP id y22mr15186350otq.158.1600225759608;
-        Tue, 15 Sep 2020 20:09:19 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e18sm8109649oiy.52.2020.09.15.20.09.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Sep 2020 20:09:19 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 20:09:18 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Chu Lin <linchuyuan@google.com>
-Cc:     jdelvare@suse.com, belgaied@google.com, jasonling@google.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhongqil@google.com
-Subject: Re: [PATCH v3] hwmon: adm1272: Enable temperature sampling for
- adm1272 adm1278
-Message-ID: <20200916030918.GA250417@roeck-us.net>
-References: <20200721034900.2055889-1-linchuyuan@google.com>
+        Tue, 15 Sep 2020 23:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600225873;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pUfKtm728JV5HfEPBrNg85FNcQ7Ve2VTddaezZoQ5WY=;
+        b=NTFSBk7Q6S1IZx0LmnarbI8s37XwMNfgF0a242IrTudlhcOSk14kbtTCywzcvbSJwBZBYR
+        t4seOcvTOk5QymsgfLuUugvvFzzysPVOpv4Td5laoqwll9gebSqRQz6sfc5cOmxZdBQMhp
+        Ts1C/me0eJmH75uxkTyJkdvCi5ezGrg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-J5rmrvsYOhil88kP7owOHQ-1; Tue, 15 Sep 2020 23:11:09 -0400
+X-MC-Unique: J5rmrvsYOhil88kP7owOHQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EC658015FD;
+        Wed, 16 Sep 2020 03:11:06 +0000 (UTC)
+Received: from [10.72.13.186] (ovpn-13-186.pek2.redhat.com [10.72.13.186])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C29ED75124;
+        Wed, 16 Sep 2020 03:10:52 +0000 (UTC)
+Subject: Re: [RFC PATCH 00/22] Enhance VHOST to enable SoC-to-SoC
+ communication
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-ntb@googlegroups.com,
+        linux-pci@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+References: <20200702082143.25259-1-kishon@ti.com>
+ <20200702055026-mutt-send-email-mst@kernel.org>
+ <603970f5-3289-cd53-82a9-aa62b292c552@redhat.com>
+ <14c6cad7-9361-7fa4-e1c6-715ccc7e5f6b@ti.com>
+ <59fd6a0b-8566-44b7-3dae-bb52b468219b@redhat.com>
+ <ce9eb6a5-cd3a-a390-5684-525827b30f64@ti.com>
+ <da2b671c-b05d-a57f-7bdf-8b1043a41240@redhat.com>
+ <fee8a0fb-f862-03bd-5ede-8f105b6af529@ti.com>
+ <b2178e1d-2f5c-e8a3-72fb-70f2f8d6aa45@redhat.com>
+ <45a8a97c-2061-13ee-5da8-9877a4a3b8aa@ti.com>
+ <c8739d7f-e12e-f6a2-7018-9eeaf6feb054@redhat.com>
+ <20200828123409.4cd2a812.cohuck@redhat.com>
+ <ac8f7e4f-9f46-919a-f5c2-89b07794f0ab@ti.com>
+ <9cd58cd1-0041-3d98-baf7-6e5bc2e7e317@redhat.com>
+ <edf25301-93c0-4ba6-aa85-5f04137d0906@ti.com>
+ <5733dbfc-76c1-45dc-6dce-ef5449eacc73@redhat.com>
+ <181ae83d-edeb-9406-27cc-1195fe29ae95@ti.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <ee0aa81d-064b-d7a7-86bb-79a3f4d3dd11@redhat.com>
+Date:   Wed, 16 Sep 2020 11:10:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721034900.2055889-1-linchuyuan@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <181ae83d-edeb-9406-27cc-1195fe29ae95@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 03:49:00AM +0000, Chu Lin wrote:
-> Problem:
-> 	adm1272 and adm1278 supports temperature sampling. The
-> current way of enabling it requires the user manually unbind the device
-> from the driver, flip the temperature sampling control bit and then bind
-> the device back to the driver. It would be nice if we can control this in a
-> better way by reading the dt.
-> 
-> Solution:
-> 	Introducing device tree binding analog,temp1-enable. If the
-> flag is set, flip the temp1_en control bit on probing.
-> 
-> Testing:
-> 1). iotools smbus_write16 35 0x10 0xd4 0x0037 // disable the temp1_en
-> 2). recompile the dt to have  analog,temp1-enable set
-> 3). Probe the driver and make sure tempX shows up in hwmon
-> 
-> Signed-off-by: Chu Lin <linchuyuan@google.com>
 
-For my reference:
+On 2020/9/15 下午11:47, Kishon Vijay Abraham I wrote:
+> Hi Jason,
+>
+> On 15/09/20 1:48 pm, Jason Wang wrote:
+>> Hi Kishon:
+>>
+>> On 2020/9/14 下午3:23, Kishon Vijay Abraham I wrote:
+>>>> Then you need something that is functional equivalent to virtio PCI
+>>>> which is actually the concept of vDPA (e.g vDPA provides alternatives if
+>>>> the queue_sel is hard in the EP implementation).
+>>> Okay, I just tried to compare the 'struct vdpa_config_ops' and 'struct
+>>> vhost_config_ops' ( introduced in [RFC PATCH 03/22] vhost: Add ops for
+>>> the VHOST driver to configure VHOST device).
+>>>
+>>> struct vdpa_config_ops {
+>>>      /* Virtqueue ops */
+>>>      int (*set_vq_address)(struct vdpa_device *vdev,
+>>>                    u16 idx, u64 desc_area, u64 driver_area,
+>>>                    u64 device_area);
+>>>      void (*set_vq_num)(struct vdpa_device *vdev, u16 idx, u32 num);
+>>>      void (*kick_vq)(struct vdpa_device *vdev, u16 idx);
+>>>      void (*set_vq_cb)(struct vdpa_device *vdev, u16 idx,
+>>>                struct vdpa_callback *cb);
+>>>      void (*set_vq_ready)(struct vdpa_device *vdev, u16 idx, bool ready);
+>>>      bool (*get_vq_ready)(struct vdpa_device *vdev, u16 idx);
+>>>      int (*set_vq_state)(struct vdpa_device *vdev, u16 idx,
+>>>                  const struct vdpa_vq_state *state);
+>>>      int (*get_vq_state)(struct vdpa_device *vdev, u16 idx,
+>>>                  struct vdpa_vq_state *state);
+>>>      struct vdpa_notification_area
+>>>      (*get_vq_notification)(struct vdpa_device *vdev, u16 idx);
+>>>      /* vq irq is not expected to be changed once DRIVER_OK is set */
+>>>      int (*get_vq_irq)(struct vdpa_device *vdv, u16 idx);
+>>>
+>>>      /* Device ops */
+>>>      u32 (*get_vq_align)(struct vdpa_device *vdev);
+>>>      u64 (*get_features)(struct vdpa_device *vdev);
+>>>      int (*set_features)(struct vdpa_device *vdev, u64 features);
+>>>      void (*set_config_cb)(struct vdpa_device *vdev,
+>>>                    struct vdpa_callback *cb);
+>>>      u16 (*get_vq_num_max)(struct vdpa_device *vdev);
+>>>      u32 (*get_device_id)(struct vdpa_device *vdev);
+>>>      u32 (*get_vendor_id)(struct vdpa_device *vdev);
+>>>      u8 (*get_status)(struct vdpa_device *vdev);
+>>>      void (*set_status)(struct vdpa_device *vdev, u8 status);
+>>>      void (*get_config)(struct vdpa_device *vdev, unsigned int offset,
+>>>                 void *buf, unsigned int len);
+>>>      void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
+>>>                 const void *buf, unsigned int len);
+>>>      u32 (*get_generation)(struct vdpa_device *vdev);
+>>>
+>>>      /* DMA ops */
+>>>      int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
+>>>      int (*dma_map)(struct vdpa_device *vdev, u64 iova, u64 size,
+>>>                 u64 pa, u32 perm);
+>>>      int (*dma_unmap)(struct vdpa_device *vdev, u64 iova, u64 size);
+>>>
+>>>      /* Free device resources */
+>>>      void (*free)(struct vdpa_device *vdev);
+>>> };
+>>>
+>>> +struct vhost_config_ops {
+>>> +    int (*create_vqs)(struct vhost_dev *vdev, unsigned int nvqs,
+>>> +              unsigned int num_bufs, struct vhost_virtqueue *vqs[],
+>>> +              vhost_vq_callback_t *callbacks[],
+>>> +              const char * const names[]);
+>>> +    void (*del_vqs)(struct vhost_dev *vdev);
+>>> +    int (*write)(struct vhost_dev *vdev, u64 vhost_dst, void *src,
+>>> int len);
+>>> +    int (*read)(struct vhost_dev *vdev, void *dst, u64 vhost_src, int
+>>> len);
+>>> +    int (*set_features)(struct vhost_dev *vdev, u64 device_features);
+>>> +    int (*set_status)(struct vhost_dev *vdev, u8 status);
+>>> +    u8 (*get_status)(struct vhost_dev *vdev);
+>>> +};
+>>> +
+>>> struct virtio_config_ops
+>>> I think there's some overlap here and some of the ops tries to do the
+>>> same thing.
+>>>
+>>> I think it differs in (*set_vq_address)() and (*create_vqs)().
+>>> [create_vqs() introduced in struct vhost_config_ops provides
+>>> complimentary functionality to (*find_vqs)() in struct
+>>> virtio_config_ops. It seemingly encapsulates the functionality of
+>>> (*set_vq_address)(), (*set_vq_num)(), (*set_vq_cb)(),..].
+>>>
+>>> Back to the difference between (*set_vq_address)() and (*create_vqs)(),
+>>> set_vq_address() directly provides the virtqueue address to the vdpa
+>>> device but create_vqs() only provides the parameters of the virtqueue
+>>> (like the number of virtqueues, number of buffers) but does not directly
+>>> provide the address. IMO the backend client drivers (like net or vhost)
+>>> shouldn't/cannot by itself know how to access the vring created on
+>>> virtio front-end. The vdpa device/vhost device should have logic for
+>>> that. That will help the client drivers to work with different types of
+>>> vdpa device/vhost device and can access the vring created by virtio
+>>> irrespective of whether the vring can be accessed via mmio or kernel
+>>> space or user space.
+>>>
+>>> I think vdpa always works with client drivers in userspace and providing
+>>> userspace address for vring.
+>>
+>> Sorry for being unclear. What I meant is not replacing vDPA with the
+>> vhost(bus) you proposed but the possibility of replacing virtio-pci-epf
+>> with vDPA in:
+> Okay, so the virtio back-end still use vhost and front end should use
+> vDPA. I see. So the host side PCI driver for EPF should populate
+> vdpa_config_ops and invoke vdpa_register_device().
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-We'll need to wait for DT review before I can apply the patch.
+Yes.
 
-Thanks,
-Guenter
 
-> ---
-> ChangeLog v1->v2:
->  - Rename adm1272-adm1278-temp1-en to analog-temperature1-enable
-> 
-> ChangeLog v2->v3:
->  - Rename analog-temperature1-enable analog,temp1-enable
-> 
->  drivers/hwmon/pmbus/adm1275.c | 36 +++++++++++++++++++++--------------
->  1 file changed, 22 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
-> index 19317575d1c6..0482670281bd 100644
-> --- a/drivers/hwmon/pmbus/adm1275.c
-> +++ b/drivers/hwmon/pmbus/adm1275.c
-> @@ -475,6 +475,7 @@ static int adm1275_probe(struct i2c_client *client,
->  	const struct coefficients *coefficients;
->  	int vindex = -1, voindex = -1, cindex = -1, pindex = -1;
->  	int tindex = -1;
-> +	bool temp1_en;
->  	u32 shunt;
->  
->  	if (!i2c_check_functionality(client->adapter,
-> @@ -536,6 +537,9 @@ static int adm1275_probe(struct i2c_client *client,
->  	if (shunt == 0)
->  		return -EINVAL;
->  
-> +	temp1_en = of_property_read_bool(client->dev.of_node, "analog,temp1-enable") &&
-> +		(mid->driver_data == adm1272 || mid->driver_data == adm1278);
-> +
->  	data->id = mid->driver_data;
->  
->  	info = &data->info;
-> @@ -614,16 +618,18 @@ static int adm1275_probe(struct i2c_client *client,
->  		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
->  			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
->  
-> +		ret = config;
-> +		/* Enable temp if it is instructed by dt (it is disabled by default) */
-> +		if (temp1_en && !(config & ADM1278_TEMP1_EN))
-> +			config |= ADM1278_TEMP1_EN;
->  		/* Enable VOUT if not enabled (it is disabled by default) */
-> -		if (!(config & ADM1278_VOUT_EN)) {
-> +		if (!(config & ADM1278_VOUT_EN))
->  			config |= ADM1278_VOUT_EN;
-> -			ret = i2c_smbus_write_byte_data(client,
-> -							ADM1275_PMON_CONFIG,
-> -							config);
-> +		if (ret != config) {
-> +			ret = i2c_smbus_write_word_data(client, ADM1275_PMON_CONFIG, config);
->  			if (ret < 0) {
-> -				dev_err(&client->dev,
-> -					"Failed to enable VOUT monitoring\n");
-> -				return -ENODEV;
-> +				dev_err(&client->dev, "Failed to enable config control bits");
-> +				return ret;
->  			}
->  		}
->  
-> @@ -685,16 +691,18 @@ static int adm1275_probe(struct i2c_client *client,
->  		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
->  			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
->  
-> +		ret = config;
-> +		/* Enable temp if it is instructed by dt (it is disabled by default) */
-> +		if (temp1_en && !(config & ADM1278_TEMP1_EN))
-> +			config |= ADM1278_TEMP1_EN;
->  		/* Enable VOUT if not enabled (it is disabled by default) */
-> -		if (!(config & ADM1278_VOUT_EN)) {
-> +		if (!(config & ADM1278_VOUT_EN))
->  			config |= ADM1278_VOUT_EN;
-> -			ret = i2c_smbus_write_byte_data(client,
-> -							ADM1275_PMON_CONFIG,
-> -							config);
-> +		if (ret != config) {
-> +			ret = i2c_smbus_write_word_data(client, ADM1275_PMON_CONFIG, config);
->  			if (ret < 0) {
-> -				dev_err(&client->dev,
-> -					"Failed to enable VOUT monitoring\n");
-> -				return -ENODEV;
-> +				dev_err(&client->dev, "Failed to enable config control bits");
-> +				return ret;
->  			}
->  		}
->  
+>> My question is basically for the part of virtio_pci_epf_send_command(),
+>> so it looks to me you have a vendor specific API to replace the
+>> virtio-pci layout of the BAR:
+> Even when we use vDPA, we have to use some sort of
+> virtio_pci_epf_send_command() to communicate with virtio backend right?
+
+
+Right.
+
+
+>
+> Right, the layout is slightly different from the standard layout.
+>
+> This is the layout
+> struct epf_vhost_reg_queue {
+>          u8 cmd;
+>          u8 cmd_status;
+>          u16 status;
+>          u16 num_buffers;
+>          u16 msix_vector;
+>          u64 queue_addr;
+
+
+What's the meaning of queue_addr here?
+
+Does not mean the device expects a contiguous memory for avail/desc/used 
+ring?
+
+
+> } __packed;
+>
+> struct epf_vhost_reg {
+>          u64 host_features;
+>          u64 guest_features;
+>          u16 msix_config;
+>          u16 num_queues;
+>          u8 device_status;
+>          u8 config_generation;
+>          u32 isr;
+>          u8 cmd;
+>          u8 cmd_status;
+>          struct epf_vhost_reg_queue vq[MAX_VQS];
+> } __packed;
+>>
+>> +static int virtio_pci_epf_send_command(struct virtio_pci_device *vp_dev,
+>> +                       u32 command)
+>> +{
+>> +    struct virtio_pci_epf *pci_epf;
+>> +    void __iomem *ioaddr;
+>> +    ktime_t timeout;
+>> +    bool timedout;
+>> +    int ret = 0;
+>> +    u8 status;
+>> +
+>> +    pci_epf = to_virtio_pci_epf(vp_dev);
+>> +    ioaddr = vp_dev->ioaddr;
+>> +
+>> +    mutex_lock(&pci_epf->lock);
+>> +    writeb(command, ioaddr + HOST_CMD);
+>> +    timeout = ktime_add_ms(ktime_get(), COMMAND_TIMEOUT);
+>> +    while (1) {
+>> +        timedout = ktime_after(ktime_get(), timeout);
+>> +        status = readb(ioaddr + HOST_CMD_STATUS);
+>> +
+>>
+>> Several questions:
+>>
+>> - It's not clear to me how the synchronization is done between the RC
+>> and EP. E.g how and when the value of HOST_CMD_STATUS can be changed.
+> The HOST_CMD (commands sent to the EP) is serialized by using mutex.
+> Once the EP reads the command, it resets the value in HOST_CMD. So
+> HOST_CMD is less likely an issue.
+
+
+Here's my understanding of the protocol:
+
+1) RC write to HOST_CMD
+2) RC wait for HOST_CMD_STATUS to be HOST_CMD_STATUS_OKAY
+
+It looks to me what EP should do is
+
+1) EP reset HOST_CMD after reading new command
+
+And it looks to me EP should also reset HOST_CMD_STATUS here?
+
+(I thought there should be patch to handle stuffs like this but I didn't 
+find it in this series)
+
+
+>
+> A sufficiently large time is given for the EP to complete it's operation
+> (1 Sec) where the EP provides the status in HOST_CMD_STATUS. After it
+> expires, HOST_CMD_STATUS_NONE is written to HOST_CMD_STATUS. There could
+> be case where EP updates HOST_CMD_STATUS after RC writes
+> HOST_CMD_STATUS_NONE, but by then HOST has already detected this as
+> failure and error-ed out.
+>   
+>> If you still want to introduce a new transport, a virtio spec patch
+>> would be helpful for us to understand the device API.
+> Okay, that should be on https://github.com/oasis-tcs/virtio-spec.git?
+
+
+Yes.
+
+
+>> - You have you vendor specific layout (according to
+>> virtio_pci_epb_table()), so I guess you it's better to have a vendor
+>> specific vDPA driver instead
+> Okay, with vDPA, we are free to define our own layouts.
+
+
+Right, but vDPA have other requirements. E.g it requires the device have 
+the ability to save/restore the state (e.g the last_avail_idx).
+
+So it actually depends on what you want. If you don't care about 
+userspace drivers and want to have a standard transport, you can still 
+go virtio.
+
+
+>> - The advantage of vendor specific vDPA driver is that it can 1) have
+>> less codes 2) support userspace drivers through vhost-vDPA (instead of
+>> inventing new APIs since we can't use vfio-pci here).
+> I see there's an additional level of indirection from virtio to vDPA and
+> probably no need for spec update but don't exactly see how it'll reduce
+> code.
+
+
+AFAIK you don't need to implement your own setup_vq and del_vq.
+
+
+>
+> For 2, Isn't vhost-vdpa supposed to run on virtio backend?
+
+
+Not currently, vDPA is a superset of virtio (e.g it support virtqueue 
+state save/restore). This it should be possible in the future probably.
+
+
+>
+>  From a high level, I think I should be able to use vDPA for
+> virtio_pci_epf.c. Would you also suggest using vDPA for ntb_virtio.c?
+> ([RFC PATCH 20/22] NTB: Add a new NTB client driver to implement VIRTIO
+> functionality).
+
+
+I think it's your call. If you want
+
+1) a well-defined standard virtio transport
+2) willing to finalize d and maintain the spec
+3) doesn't care about userspace drivers
+
+You can go with virtio, otherwise vDPA.
+
+Thanks
+
+
+>
+> Thanks
+> Kishon
+>
+
