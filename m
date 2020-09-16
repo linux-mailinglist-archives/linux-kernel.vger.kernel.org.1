@@ -2,149 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9F326BA4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6154126BA62
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgIPCpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgIPCpl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:45:41 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F22DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 19:45:41 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id v14so764458pjd.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 19:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MjF3+x9EzhdvpwkfgHNm6fCxJhsYfijrbsp5nTW4btk=;
-        b=TFqZS2R0m222F1PpstUQjgnssD8KBxBq2UnQoK3XNMEmgo0GqrqYy3UNc2QomqCL9Q
-         Rjq/gjGSG4To7GIWcl0a2bVvh9mfyPtGSbVCIhOhQtD7UcCj5bFs1QwTUi91XMCGn0ot
-         XzIM3CObSqg+igz1rE6hW7FGStNFpCaJ95bvJsBc0BVGPusEXNuPKZPE1HQcpsJ4W4kV
-         b1ZhDwshZNkc33IR9x+8x2ofAPlhCCpraHAybRO0zIULfY95TxBEeIMexHPn2sg8s8Kb
-         oGmo4RnB9ACv51S04r6v+rrx1nHJO2xn496ATeQGorVZKphQgOUu4i8FMsSmOvot/8dF
-         QoBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MjF3+x9EzhdvpwkfgHNm6fCxJhsYfijrbsp5nTW4btk=;
-        b=j/wBch+VfxFGJOmOdoP1M8tme+HSb4zfdWZ2Ya/mU/GN47zlUoGr1ei/ljpAaGFQPg
-         WpCLMC5vNtXGM+pwNzzWToN4Z0YAcv7WTrBoEQQF2MFitr4la5a6H2zh1Kcyl5JQQLNp
-         25h69FGcRLg2XHxfsiA9bcn4wggcK3OlYCqe9irf6xh8RYrwgpB5ox074pbsPU5DrrTf
-         FwJDGDjzf3yHKguTtR5bnOddXjTO3asJOcL+Wt0dV7aMkXZsIlW15yPgqAikfU1lpkJd
-         BYN59NIX1uJk5Tq/v45m4F+5HxPZZLnXiLpZpc4Zf/C4/m6+Osu+o2kUhCrbSJaurZrX
-         0yvA==
-X-Gm-Message-State: AOAM532IyHov5YeFcEE9WDrsafKL5ZyU77VuvT5XV9loTrYOBn6QyPKB
-        4QK3s1xjslmrtspAvqNo65KT5kkYv6Whnz7LiWRv6A==
-X-Google-Smtp-Source: ABdhPJwQUmoHrkkKHxHWVxGeTnBYi6Mtj+lxHnZr+5S36ywWnha+P6KyFwM7kKSQXksZzvU9GeSjckV2Af7XxXPxkl0=
-X-Received: by 2002:a17:902:aa4b:b029:d0:cbe1:e739 with SMTP id
- c11-20020a170902aa4bb02900d0cbe1e739mr22798393plr.20.1600224339980; Tue, 15
- Sep 2020 19:45:39 -0700 (PDT)
+        id S1726336AbgIPCzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:55:38 -0400
+Received: from mail-db8eur05on2057.outbound.protection.outlook.com ([40.107.20.57]:22847
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726156AbgIPCzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:55:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X93YJQ6pT6eXGOqRW5VMkxNwOQ3f7Peu6zMopTHSKY4opLfeZ/37A8fhG/I7Pm2QUHFlDoZgM8rHqrao3MPkfTAzg36pNrl6DNm3jSa9pdHHw89uZUkOHXMZGezvLLmLN7A08VLly9UOEJZ3bAm224XFWNxUjP8hx3Rz6dqpCzGEn7mhsGpbqGsmZcYemqMDmlws8DEixFeVEwtl6sipRlU7gUqdDQk72sglqav/vla3fAA9ZO+h4ai0WkuC/xKYRcPLS3902nZKcvqOGJ0M58yR/Xj160+73Iy25txMiM3CiAppSw9rVaysqD8VE23CK6YZLhc17Fpsw1tIAPzR6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nmqOc4d4r54+yy0rkWlK/XcI9KrH7Z0UqvaQod+2ZN8=;
+ b=Coxd5ZjgfE/gwku58CcEIEz8FEHKu6GgH4n3ETMUo/AU6UzxdIoYnTKJHOED5nSgPtCG1K6I7stFmX7loZctv3PwrAGirapFwpnH8tCr47gq0wDOuSiPRJsdzIzTaFxl8nfScYt97fzW7irSRU7px4DWFiSLBF2M/6wTW9nkGtPrahBR2bY3jFN0tdSZbvjnZjd1LBeToiqIopQ5jOYht+Cf+VE0MYG9j80VvRUv1srOCBO3wWtruzHP1v11IrsibPDWbCBvtroGaDW5wZfDOchpDTdWvwK0kiDK/SoRdrDMydq7MLfs6g1afLK/SI8QQo56ufU9Hbq7pogHtdjYzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nmqOc4d4r54+yy0rkWlK/XcI9KrH7Z0UqvaQod+2ZN8=;
+ b=Z8L7ezqEnPO4pkoW5Fvt3/biqOyB20Aw36FHtqva2nUJ4wHxBijuz0RkJ9WjIwal7OC8yGafbGME32UokpSqqcuyLNbFrsTGx52cMdsCI/ACvJ7zlfNGaq8nNrL6Ljz4vc5lJ3xpZVPiZfjpZv5yrcKTx6VHnyZM0UZ/muKhuGI=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB8PR04MB7177.eurprd04.prod.outlook.com (2603:10a6:10:127::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Wed, 16 Sep
+ 2020 02:55:32 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::39ff:13b4:4f28:1413]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::39ff:13b4:4f28:1413%10]) with mapi id 15.20.3370.019; Wed, 16 Sep
+ 2020 02:55:32 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        abel.vesa@nxp.com, robh+dt@kernel.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, Anson.Huang@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aisheng.dong@nxp.com, devicetree@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V2 0/4] imx: support i.MX7ULP HSRUN mode
+Date:   Wed, 16 Sep 2020 10:48:33 +0800
+Message-Id: <1600224517-31465-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0165.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::21) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
- <20200915143241.GH5449@casper.infradead.org> <CAMZfGtW0PqU6SLihLABA8rU+FuBqm8NksDW=EkLXy1RZfYeDGA@mail.gmail.com>
- <20200915154213.GI5449@casper.infradead.org> <CAMZfGtVTjopGgFv4xCDcF1+iGeRva_ypH4EQWcDUFBdsfqhQbA@mail.gmail.com>
- <20200915173948.GK5449@casper.infradead.org> <CAMZfGtW3S8kGJwff6oH14QWPXKTuQEAGdYwcLRUZxuJ7q8s7sA@mail.gmail.com>
- <20200915181530.GL5449@casper.infradead.org>
-In-Reply-To: <20200915181530.GL5449@casper.infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 16 Sep 2020 10:45:04 +0800
-Message-ID: <CAMZfGtX1T6K5d=z6vPXtwnsDE70uEVRi9a3rADiXrdHr8_ri9Q@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap
- pages of hugetlb page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de, almasrymina@google.com,
-        David Rientjes <rientjes@google.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 10.192.242.69 (119.31.174.67) by SG2PR01CA0165.apcprd01.prod.exchangelabs.com (2603:1096:4:28::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3391.11 via Frontend Transport; Wed, 16 Sep 2020 02:55:27 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.67]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b48cbcaa-1594-47b9-6406-08d859ebfa15
+X-MS-TrafficTypeDiagnostic: DB8PR04MB7177:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB7177640918E2362E2527FD7A88210@DB8PR04MB7177.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:324;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: COfy/ErDLT7TEtJtHM3mssyqW+IYfXonSjcUUxr+gGDCD/ZkGRWQjIJS+ScwvHfh0QS0FXa9qycWbHsUQHaHE3kiksM1CsqOcRAABaIxSt0ehvvmKllAIoNUt36ijYdLJlRwpAL/bFVkbn+5lfoFvIriNTFKqfu5rpsguX/NCGm/w+JskyVSiTozEgobbAHaXH0wn7+rHizlww+8jGVUL7+EtglzuqtXwcIExzgxrbnQurlrRsF6B5dI13d49DJWV7Iv4e68IzrllQLXqC4i5ZGIkOEnzxsQ0JXnF2sPUU8kGnTNd6od5LifoBtpGC58Nf+ePxXf/fJETwpBG3cqp6J6KmEnCE35Vkt5aHTLeiIl4c0RyXg/PAVxVb85zwSk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(346002)(136003)(39860400002)(4326008)(8676002)(66946007)(36756003)(16576012)(316002)(86362001)(8936002)(9686003)(16526019)(186003)(5660300002)(6666004)(26005)(66476007)(66556008)(478600001)(52116002)(6486002)(2906002)(83380400001)(956004)(4744005)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: oTPH+fRx4jFO1nnvyMqzUxll55RcyZUVLOXAnW2giyBp2rwZECX75qDY16tZIrq/atXJdaUhjEYQEo/KZsMT3vVFiQIPiCIrnqxnaeq9heY9bNpPHI4nfF5vmkbpMxcG9t2AiGg6srALQovFK3Gl3XVHAPa63iNdmwcpjCzWHzLT2m336t42hn2lJEWYML9BMpELGkZHDUn8i8pMb4AdaUQvLqqzCh1hXz1KQhvZmMkspUEyROKacBgm28iZR7svGmvqEx1rWYcnn+PUAJdLFochGSheybhUjfAzzsQN++Iaq/xUNxWlABEXpIMKHl151lW5AgCnlMSMxr/57kYAYj+fie5eDYhxsXHAMpe7utwu0qI4IuDg9Nipq5ngz3JGLVR5v4ggTpPJByucaVZI0fyueJUCSONcxgry9shtc5gaeThB/5yE4mtH3sD9K5VjI/odfGU0W70GN44Vlm2HxL/vG/f6AmvjuRhHMNiIp4o50249Ww+2d4LzId1gcr/N18PM5zWGGmgwR5IBaKyh1fyXSpoeD2JMAaujFLKQoOV5rsfha0Zhkq7axTzGdbLC5FWlB1oFCgmGXq5UYfDDStv6kKDeA/AXX/r7vfKV8y5pZLPorbyLdN6MqbNQX/MiEtWmkLsFT/yP1uAp5qTI4g==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b48cbcaa-1594-47b9-6406-08d859ebfa15
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 02:55:32.4855
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wXGvWfLfrMJMmJ+ONlKBO3rsaY5rby7SGIu0ibCX9nmYCU0NCrGXUQiyvUfN0rzLqaC4SLYaE+w96suzSaUmkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7177
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 2:15 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Sep 16, 2020 at 02:03:15AM +0800, Muchun Song wrote:
-> > On Wed, Sep 16, 2020 at 1:39 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Wed, Sep 16, 2020 at 01:32:46AM +0800, Muchun Song wrote:
-> > > > On Tue, Sep 15, 2020 at 11:42 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > > >
-> > > > > On Tue, Sep 15, 2020 at 11:28:01PM +0800, Muchun Song wrote:
-> > > > > > On Tue, Sep 15, 2020 at 10:32 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > > > > >
-> > > > > > > On Tue, Sep 15, 2020 at 08:59:23PM +0800, Muchun Song wrote:
-> > > > > > > > This patch series will free some vmemmap pages(struct page structures)
-> > > > > > > > associated with each hugetlbpage when preallocated to save memory.
-> > > > > > >
-> > > > > > > It would be lovely to be able to do this.  Unfortunately, it's completely
-> > > > > > > impossible right now.  Consider, for example, get_user_pages() called
-> > > > > > > on the fifth page of a hugetlb page.
-> > > > > >
-> > > > > > Can you elaborate on the problem? Thanks so much.
-> > > > >
-> > > > > OK, let's say you want to do a 2kB I/O to offset 0x5000 of a 2MB page
-> > > > > on a 4kB base page system.  Today, that results in a bio_vec containing
-> > > > > {head+5, 0, 0x800}.  Then we call page_to_phys() on that (head+5) struct
-> > > > > page to get the physical address of the I/O, and we turn it into a struct
-> > > > > scatterlist, which similarly has a reference to the page (head+5).
-> > > >
-> > > > As I know, in this case, the get_user_pages() will get a reference
-> > > > to the head page (head+0) before returning such that the hugetlb
-> > > > page can not be freed. Although get_user_pages() returns the
-> > > > page (head+5) and the scatterlist has a reference to the page
-> > > > (head+5), this patch series can handle this situation. I can not
-> > > > figure out where the problem is. What I missed? Thanks.
-> > >
-> > > You freed pages 4-511 from the vmemmap so they could be used for
-> > > something else.  Page 5 isn't there any more.  So if you return head+5,
-> > > then when we complete the I/O, we'll look for the compound_head() of
-> > > head+5 and we won't find head.
-> >
-> > We do not free pages 4-511 from the vmemmap. Actually, we only
-> > free pages 128-511 from the vmemmap.
-> >
-> > The 512 struct pages occupy 8 pages of physical memory. We only
-> > free 6 physical page frames to the buddy. But we will create a new
-> > mapping just like below. The virtual address of the freed pages will
-> > remap to the second page frame. So the second page frame is
-> > reused.
->
-> Oh!  I get what you're doing now.
->
-> For the vmemmap case, you free the last N-2 physical pages but map the
-> second physical page multiple times.  So for the 512 pages case, we
-> see pages:
->
-> abcdefgh | ijklmnop | ijklmnop | ijklmnop | ijklmnop | ijklmnop | ijklmnop ...
+From: Peng Fan <peng.fan@nxp.com>
 
-Yeah, great. You are right.
+V2:
+ Update to use pmc0/pmc1 following hardware naming
 
->
-> Huh.  I think that might work, except for PageHWPoison.  I'll go back
-> to your patch series and look at that some more.
->
+This patchset is to add HSRUN mode support.
+Patch 1,2 is to add binding doc and dts node
+Patch 3 is to support HSRUN mode
+Patch 4 is to use wait mode when HSRUN working per hardware state machine requirement.
 
-The PageHWPoison also is considered in the patch series. Looking
-forward to your suggestions. Thanks.
+Peng Fan (4):
+  dt-bindings: fsl: add i.MX7ULP PMC
+  ARM: dts: imx7ulp: add pmc node
+  ARM: imx: imx7ulp: support HSRUN mode
+  ARM: imx: cpuidle-imx7ulp: Stop mode disallowed when HSRUN
 
+ .../arm/freescale/fsl,imx7ulp-pm.yaml         |  6 ++++-
+ arch/arm/boot/dts/imx7ulp.dtsi                | 10 ++++++++
+ arch/arm/mach-imx/common.h                    |  1 +
+ arch/arm/mach-imx/cpuidle-imx7ulp.c           | 14 ++++++++---
+ arch/arm/mach-imx/pm-imx7ulp.c                | 25 +++++++++++++++++++
+ 5 files changed, 52 insertions(+), 4 deletions(-)
 
 -- 
-Yours,
-Muchun
+2.28.0
+
