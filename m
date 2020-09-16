@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13D326BB53
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F3D26BB7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgIPEYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 00:24:08 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33504 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgIPEYF (ORCPT
+        id S1726179AbgIPE05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 00:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726079AbgIPE04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 00:24:05 -0400
-Received: by mail-io1-f70.google.com with SMTP id l22so4152889iol.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 21:24:04 -0700 (PDT)
+        Wed, 16 Sep 2020 00:26:56 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50F5C06174A;
+        Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id g96so5404176otb.12;
+        Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BjCFbGmPmsk7PjTa4PqyTGBZejxzGNrHohCt8u93HL0=;
+        b=Rt2LpIbxECIIT5r72IgzJlUWFN/DiqiKJfmOc7EFuBihxuYMIeiU7ZRS4Qr2t5Qb+O
+         hjJkiLBms7/rjA2i0o35xAUWE6tLaHPrToLirTEMP4pC2jpvsog3c/uk9McMnaZybDoP
+         U+zGR44vxisksgcner/C2JHvIV1eO+4Ja+sPy2nNiTDMDrNR6nm/SXzoeSAk9rbZ2EWT
+         6i5wh/oWq0xR4Q+zPkyNwHHnhPs+Ajn4ZqTLYfuHFlv4F47vpKQqEVkr2kH5FWdJtg0Y
+         vB6fnlTukD/f/BfvJ40vIg5/l5Oss09QcNDKPEUxF3hakvYV1JvmxzLa/oF7NegdR+RO
+         5SXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=FsJrosBct6HeioQ4vw4Oed6LnUjZATq80ngatZYph80=;
-        b=YyPeHfkiMZ3lLs/dzSU7BQtOwkkzYoXlo87oKlZdh5+Jyd9fmj/syNJ54HnPii+z7d
-         GVzRPw/dFwU5d1o1yH0AYH4s7rKIFROseMuIJFS/j/kgcXAXOyB+6haHExzrh7R5fZs9
-         SeXAhUZQ2ueVmkBO3yHqwLJOjtq40bsGPXQGNyqYD5JFUl8YeIK12rhdpQblrUFNdrCK
-         FrcNIgvgQI0cwl6xiGZUU6SAVtjl1b5alzZSrnAUp9XcYMVsz/+lLWgLtyGnvjD29vmg
-         0k9Z4w57FMHfDiRubdViFushadd92xS1jLIFoPTxFV/oZLJf5bofwUSOttCxj/uyUJs5
-         XYVg==
-X-Gm-Message-State: AOAM530iEbyLjwxiBJ2QbpSX+PBBXKcp1CZNDNxf4Dad3VcaZYwsDnPe
-        K0LJqpc0LOQEB9CZ85T+adNIcjJ0CKDi0flrmiZy79G6m1O9
-X-Google-Smtp-Source: ABdhPJyxgDO3mPSpRdj5PWJk7ZMhK47LdqSQD3jL4Pz3xEHr/Rn8rGqvBi1/Xxn1kJa9LMQ3bYnN/Cc641Hk5M0N8rf3t7Gsn/ui
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BjCFbGmPmsk7PjTa4PqyTGBZejxzGNrHohCt8u93HL0=;
+        b=nYgTwJanxsCRcCUtJ2ovhy7Ep9eryTKul1S97unmVRfEdE+vEFxO5v6TGjTaEGKQVi
+         SFMd6m1X42kzOl81wBJa9HqxSiPibknIyrPviGL2c8qEyyTyPrDp1ZoNBtDt1etngHNC
+         VzH772gegEoK5bpNnx4mMakyhegkt2e26I7ASB92yXNiT0OeCypfSIbnHRds0/TcscXB
+         hC3hnJg6fYc8gURrPubQe/javTBT99lWSFZJzIMS4c6TjC4wwpBQxFcGrYUgf7699FIw
+         HLBWdAXJGqH1H4A5bRV/YbQTVrsigx2URXxeAh8Zp0RIy7IYbt0mByHDEHitfVBU6FW4
+         PqAg==
+X-Gm-Message-State: AOAM530FcDWj/xapO3L0msTJ+ka2rYD2eHRwoq87Z93CmQnBaAzYUk1o
+        ukALoCIOzw1E81G9oPeLUojdIE0Iv4AL3SgprZ5eezlni+yioQ==
+X-Google-Smtp-Source: ABdhPJx6Reu4lQxpEQCi6cm/jKU0KJZ1o/chXk6/dcA7ql4ztI76CFS66ybppJIiP6EdnWWUSOkrIPElxCHgo2u0M6w=
+X-Received: by 2002:a9d:5a92:: with SMTP id w18mr14967737oth.145.1600230414131;
+ Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:6e0b:: with SMTP id d11mr17800564ioh.155.1600230244424;
- Tue, 15 Sep 2020 21:24:04 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 21:24:04 -0700
-In-Reply-To: <b542932c58eb464992529069cf58beaf@huawei.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047239b05af66a31c@google.com>
-Subject: Re: general protection fault in unlink_file_vma
-From:   syzbot <syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, hdanton@sina.com, linmiaohe@huawei.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com
+References: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com> <20200915.153449.1384323730053933155.davem@davemloft.net>
+In-Reply-To: <20200915.153449.1384323730053933155.davem@davemloft.net>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Wed, 16 Sep 2020 07:26:26 +0300
+Message-ID: <CAFCwf10fa7Hq=hMeg9mrfnaFXi9gtJU82BiShE4TpBOg8yuHgQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     David Miller <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 16, 2020 at 1:34 AM David Miller <davem@davemloft.net> wrote:
+>
+> From: Oded Gabbay <oded.gabbay@gmail.com>
+> Date: Wed, 16 Sep 2020 00:20:12 +0300
+>
+> > I completely understand but you didn't answer my question. How come
+> > there are drivers which create netdev objects, and specifically sgi-xp
+> > in misc (but I also saw it in usb drivers) that live outside
+> > drivers/net ? Why doesn't your request apply to them as well ?
+>
+> Don't use examples of drivers doing the wrong thing as an excuse for
+> you to repeat the mistake.
+>
+> Ok?
+Well, it's not like there is a big red warning near those drivers
+saying "this is wrong"...
+How could I have known that in advance ?
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-kernel panic: Fatal exception
+>
+> That kind of argument doesn't work here.
+I know that, I just didn't know those drivers did "the wrong thing"
 
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffd30630720 R11: 0000000000000000 R12: 000000000118d940
-R13: 000000000118d940 R14: ffffffffffffffff R15: 000000000118cfec
-FS:  0000000001b47940(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000001590004 CR3: 0000000021097000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Kernel panic - not syncing: Fatal exception
-Kernel Offset: disabled
-
-
-Tested on:
-
-commit:         8f79400b fix vma_merge gpf
-git tree:       https://github.com/Linmiaohe/linux vma_merge_fix
-console output: https://syzkaller.appspot.com/x/log.txt?x=153b1d43900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
-dashboard link: https://syzkaller.appspot.com/bug?extid=c5d5a51dcbb558ca0cb5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
+Oded
