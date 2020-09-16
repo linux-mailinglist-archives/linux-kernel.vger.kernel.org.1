@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2359626CFA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C7426CF5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgIPX3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 19:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgIPX3l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 19:29:41 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E4CC06174A;
-        Wed, 16 Sep 2020 16:29:40 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id v196so33911pfc.1;
-        Wed, 16 Sep 2020 16:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VOYtEk8KZWrcvtZ12wbyiXgSHJ3z1+Q3xen139w9qgI=;
-        b=eDzevpvUUV9bEk0cwG0ugKmwO4ounBKbrfuwPGHApNmNVoZ01y0p5LlDHKxm3SDUBD
-         CdfVk5xlKwro9dEUSneOJMpyQ1uL92YA82BwA3rOJQF0XmZDvJqrJ99zdD/KCesNEeW1
-         6zdajBngeO/tFvI7E1M/9FOoParvQpPcZIaVveq3RAcq8Gbied9xmjaVVd4Nhfdtfcwh
-         ybI2LzlPz5sE8YS/D9wPCN9bY1OwyUDnRy2ln0udYkLmyJ0AckuHvL11knQUE1EtqWDq
-         hPI8j8CSJRG+3SMSGSsqb8lDmRHM65BK8XLJahcBwVmJyX1TaQXvks7bZQxOEFKGboGh
-         22HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VOYtEk8KZWrcvtZ12wbyiXgSHJ3z1+Q3xen139w9qgI=;
-        b=Pbu7fyReidox7JJWF2W1tapDpt5rBsl3B0z8OkHfDsIQaEGlHqxmIqqUpaT/tNMXFQ
-         OLbkoZ/+W4IU46VSoouICfx+J+UtIUFD5QfSK2PvhDpZXGsYAkVCPEaSnhP2nyFWuOZx
-         jeYFZtz/EanGTCm9PlCQ+uGuxW+VhL5y+Vc5zUDsUpMMWCPzVvTsogno5jD3HWaW5qWx
-         n2St1c5En8FjIpPSk4i1jHiIZ6GCkNL4AfHlGBaCi9FLatJY4ilKhVe9BQvl/CLp09Eu
-         qNVpYRjIJ2a1tBX0mRxI8B9QxkZmnazFFicB8Uug0qq+oGu5WJ2Tn//8wTT6esHqnjCm
-         Kf4g==
-X-Gm-Message-State: AOAM530u6XCH5fA9a8KVSNhGXRulahEAg/eLkw0PlSUbRoIrgFqAJ5Bv
-        Jc8t8c6Cczj/6s9kcpGsdX8=
-X-Google-Smtp-Source: ABdhPJwa+2NAh4mm3To4oBtqglSVETowI3JwufWM839p7L74VFz6f98xoG3dt76WbkwZjmZiYC3eig==
-X-Received: by 2002:a63:5d07:: with SMTP id r7mr7505957pgb.440.1600298980041;
-        Wed, 16 Sep 2020 16:29:40 -0700 (PDT)
-Received: from localhost.localdomain (sau-ff5be-or.servercontrol.com.au. [43.250.207.3])
-        by smtp.gmail.com with ESMTPSA id u14sm18366213pfm.80.2020.09.16.16.29.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 16:29:39 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
-        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
-        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
-        torvalds@linux-foundation.org,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH v3] docs: fb: Remove matroxfb scrollback boot option
-Date:   Thu, 17 Sep 2020 04:43:01 +0530
-Message-Id: <20200916231301.32066-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726906AbgIPXPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 19:15:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726338AbgIPXPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 19:15:06 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E401E22205;
+        Wed, 16 Sep 2020 23:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600298105;
+        bh=c8yswup9fEqdroo+11JlgMNYrPAHpEYaACRkVanOMxA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=K5arknn+W3p4QHaOFNFrKDrCDyTQ2SA4ZLp/RMgps4EL4VTtxYr5oUgW+2TvwKflH
+         9wjNv7bl0/9ttYmXzjuQb4SNeuEzOpCb69z/eSQGzfyNkL/pCsDyH9PuFU5/Ab1Z0C
+         IDySUd6ZGJDeojza4aCUuvhC1NtbJWB4/vbkvIXk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 988913522BA0; Wed, 16 Sep 2020 16:15:05 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 16:15:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, joel@joelfernandes.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, josh@joshtriplett.org, peterz@infradead.org,
+        christian.brauner@ubuntu.com
+Subject: Re: [PATCH net-next 0/7] rcu: prevent RCU_LOCKDEP_WARN() from
+ swallowing  the condition
+Message-ID: <20200916231505.GH29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200916184528.498184-1-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916184528.498184-1-kuba@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 16, 2020 at 11:45:21AM -0700, Jakub Kicinski wrote:
+> Hi!
+> 
+> So I unfolded the RFC patch into smaller chunks and fixed an issue
+> in SRCU pointed out by build bot. Build bot has been quiet for
+> a day but I'm not 100% sure it's scanning my tree, so let's
+> give these patches some ML exposure.
+> 
+> The motivation here is that we run into a unused variable
+> warning in networking code because RCU_LOCKDEP_WARN() makes
+> its argument disappear with !LOCKDEP / !PROVE_RCU. We marked
+> the variable as __maybe_unused, but that's ugly IMHO.
+> 
+> This set makes the relevant function declarations visible to
+> the compiler and uses (0 && (condition)) to make the compiler
+> remove those calls before linker realizes they are never defined.
+> 
+> I'm tentatively marking these for net-next, but if anyone (Paul?)
+> wants to take them into their tree - even better.
 
-This patch remove the reference of scrollback option from this file. This
-is related to the below commits.
+I have pulled these into -rcu for review and further testing, thank you!
+I of course could not resist editing the commit logs, so please check
+to make sure that I did not mess anything up.  Just so you know, unless
+this is urgent, it is in my v5.11 pile, that is, for the merge window
+after next.
 
-Commit 973c096f6a85(vgacon: remove software scrollback support)
-Commit 50145474f6ef(fbcon: remove soft scrollback code)
+If someone else wants to take them, please feel free to add my
+Acked-by to the RCU pieces.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-Correcting the previous versions errors. Proper changelog, subject text.
-Trying to incorporate Willy's and Greg's suggestions.
+							Thanx, Paul
 
- Documentation/fb/matroxfb.rst | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/Documentation/fb/matroxfb.rst b/Documentation/fb/matroxfb.rst
-index f1859d98606e..6158c49c8571 100644
---- a/Documentation/fb/matroxfb.rst
-+++ b/Documentation/fb/matroxfb.rst
-@@ -317,8 +317,6 @@ Currently there are following known bugs:
-  - interlaced text mode is not supported; it looks like hardware limitation,
-    but I'm not sure.
-  - Gxx0 SGRAM/SDRAM is not autodetected.
-- - If you are using more than one framebuffer device, you must boot kernel
--   with 'video=scrollback:0'.
-  - maybe more...
- 
- And following misfeatures:
--- 
-2.28.0
-
+> Jakub Kicinski (7):
+>   sched: un-hide lockdep_tasklist_lock_is_held() for !LOCKDEP
+>   rcu: un-hide lockdep maps for !LOCKDEP
+>   net: un-hide lockdep_sock_is_held() for !LOCKDEP
+>   net: sched: remove broken definitions and un-hide for !LOCKDEP
+>   srcu: use a more appropriate lockdep helper
+>   lockdep: provide dummy forward declaration of *_is_held() helpers
+>   rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
+> 
+>  include/linux/lockdep.h        |  6 ++++++
+>  include/linux/rcupdate.h       | 11 ++++++-----
+>  include/linux/rcupdate_trace.h |  4 ++--
+>  include/linux/sched/task.h     |  2 --
+>  include/net/sch_generic.h      | 12 ------------
+>  include/net/sock.h             |  2 --
+>  kernel/rcu/srcutree.c          |  2 +-
+>  7 files changed, 15 insertions(+), 24 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
