@@ -2,108 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD4326B659
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3AD26B676
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727406AbgIPADN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727353AbgIPADF (ORCPT
+        id S1727217AbgIPAFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:05:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26095 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727090AbgIPAFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:03:05 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED93C06174A;
-        Tue, 15 Sep 2020 17:03:05 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d19so2190481pld.0;
-        Tue, 15 Sep 2020 17:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/9YC3jzxgXrgHNvLV2DgKLu9vRPOEeUndPKkcJPjDSI=;
-        b=jf9mDfg00fVj/EphFCM3fHgNMnH5rlkZ88FTfEbdsiXbD3jHObKr2feFEkpxgSqHgM
-         w8xtcPHIrz5QxSdbj68FYVkzfR6KXWRiXFiu3RqGA4lkgv8z+iENnMEf5h2UPCdcbY41
-         de6Urh5A4PvZ9ztobefpx8bA0PsGBQ4Yl+JMjPiJblHEEsBSq2CLiRzEURv0W5jXdMes
-         gDmvm5JB+JRMI1bFPWDQ7Q9TdJ9U7fF2WPm6Z3rCPM+IaPBFqxWMjgBUnkWLclRI8z7O
-         Kx40EhJyj6I7q9wINksgDQIIuUz8aXeiSY9riKg+FKD+c1Ul1Cl/u7lwNYnG0uJamBoy
-         xagw==
+        Tue, 15 Sep 2020 20:05:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600214710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VjZa40MjlMQHEg6VysBK1I3Rn/FQZQF1fQa44n3WO6k=;
+        b=WsERhkWc3AbE9uMLsIb19Jw+W4CY9104PbTBjEZGawF9P84uBJrwOG7Qw5y2FmDyO9WHQR
+        YCzWO2dbVZAb2JJSwbsD/eYetfQ4uR5iWh7QVWA1I/P9Bl8wHjpA93LWNyjqE2P0dUErCF
+        WR7K5F0JCricL+oTwKrLqR1y6Jh7aLs=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-3Oe0lXmtOlGhAEEdvkklHw-1; Tue, 15 Sep 2020 20:05:04 -0400
+X-MC-Unique: 3Oe0lXmtOlGhAEEdvkklHw-1
+Received: by mail-qk1-f199.google.com with SMTP id 139so4506304qkl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 17:05:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
          :content-transfer-encoding;
-        bh=/9YC3jzxgXrgHNvLV2DgKLu9vRPOEeUndPKkcJPjDSI=;
-        b=QOIrdmnAt7pUxFLsR+wLFXpeyKpRX5A7NTzFnjN6F+Ibx4ALEebXhiKpctyCDfx3iy
-         1ZKZzQ0Nvr/3GnnT5uC0+PU94Ru0xa5F+rbMCgSMhb2X/p35528kVe8gDZ6/BdFZMJhm
-         VuTo+J5gYkp6Gnr/twhGnExRtFHtqaUrj37l/LNPOT1PDb3ohlhsJygq9VdfLw0fKuh4
-         fXq1GUUNwv56/lcsaTQxLcDkbfPeMMv3M50E0y2u91rcmPOA9ZwUszlrxpTxBw+w7P5b
-         wPv+B2xmQKTJk1jHmHTCb/op9OJTX0TqnfOVDqzfrKcPZqiDToJ/MqSL/uKPd+oaBqeo
-         jQKg==
-X-Gm-Message-State: AOAM533MPKiWx0EG8v38nfiXRXFjLBcJBoUYpq5Qpr1xhlOVeO4t8PYL
-        e5L0Cu89F/wiCGEFk+uc1lM=
-X-Google-Smtp-Source: ABdhPJwXZLREEPePNQ09vlrQA/w6bnVK1+xr2DoofOoKKiFD/yJFWzHp7fSEVmNoHeMMrfNyXMrCgw==
-X-Received: by 2002:a17:90a:db0f:: with SMTP id g15mr1569754pjv.145.1600214584632;
-        Tue, 15 Sep 2020 17:03:04 -0700 (PDT)
-Received: from [10.230.28.120] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o17sm12100848pgb.46.2020.09.15.17.02.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 17:03:03 -0700 (PDT)
-Subject: Re: [PATCH net-next 0/3] net: stmmac: Add ethtool support for get|set
- channels
-To:     "Wong, Vee Khee" <vee.khee.wong@intel.com>,
-        David Miller <davem@davemloft.net>
-Cc:     "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
-        "alexandre.torgue@st.com" <alexandre.torgue@st.com>,
-        "joabreu@synopsys.com" <joabreu@synopsys.com>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Joao.Pinto@synopsys.com" <Joao.Pinto@synopsys.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        "Voon, Weifeng" <weifeng.voon@intel.com>,
-        "Vijaya Balan, Sadhishkhanna" <sadhishkhanna.vijaya.balan@intel.com>,
-        "Seow, Chen Yong" <chen.yong.seow@intel.com>
-References: <20200915012840.31841-1-vee.khee.wong@intel.com>
- <20200915.154302.373083705277550666.davem@davemloft.net>
- <b945fcc5-e287-73e2-8e37-bd78559944ab@gmail.com>
- <BYAPR11MB287046044CA144193135B0E7AB200@BYAPR11MB2870.namprd11.prod.outlook.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <16a0dc9e-4e08-6d71-6be4-13c2fc8c53dd@gmail.com>
-Date:   Tue, 15 Sep 2020 17:02:54 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.2.2
+        bh=VjZa40MjlMQHEg6VysBK1I3Rn/FQZQF1fQa44n3WO6k=;
+        b=ZkkqyPi7d0gIuUU/Nxx6rWmAnE60zniLSgimzfHPR3hnoj/BVGKfzjov3+W/kSMhN8
+         WwvgjdDxzj6w34dalQK6f/ofVlEX4OUZ5zJbtsG87XC1KeWABlitinjwBuoPv6hNvzmC
+         nbDYBsceCpZ+bZWWOI1ECxsS+ogfcegoChCg7/YFLMYgCTgoWQ55FR6UaNHcd1mHdpOR
+         llCAXbmmtQQWjFV4Y0IwYBsjJfrTzihD4zVeelFWK22Jol/abg4Q91HV1oWAjBuFclVL
+         1NCp8zvkQQvmQHDGnXEX6kC5H+VRv9L3i3nTzu69KtDaf2LYP4rkVrrzACxY+C2YURSC
+         rMFA==
+X-Gm-Message-State: AOAM533CLfCbmO4au4qVwwmzQ1AKQOyABHVZYExlF7lrC8qV9VqwCFtL
+        auQYoGe/Hzu3hnOxPUG84PocN/yTYC5HucEBVwPcPwbZXzLJ7l5P9CToFdeqIo/o6W+JPvDNbd9
+        saHDaoJBog6jRmmYp2QgBz18e
+X-Received: by 2002:ac8:4e81:: with SMTP id 1mr21705676qtp.62.1600214704313;
+        Tue, 15 Sep 2020 17:05:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyODPABpreP655peyCUe7notNMLlNOaVBru1ukZ/HwVrAukGlTgX9PPDDwkE5P37N1uXnJlew==
+X-Received: by 2002:ac8:4e81:: with SMTP id 1mr21705661qtp.62.1600214704041;
+        Tue, 15 Sep 2020 17:05:04 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id o35sm6208974qte.23.2020.09.15.17.05.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 17:05:03 -0700 (PDT)
+Message-ID: <7a86180ed7013a0a52d71cf38a4bc371c7ffd4ab.camel@redhat.com>
+Subject: Re: [RFC 1/5] drm/i915/dp: Program source OUI on eDP panels
+From:   Lyude Paul <lyude@redhat.com>
+To:     "Navare, Manasi" <manasi.d.navare@intel.com>
+Cc:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        thaytan@noraisin.net, David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        =?ISO-8859-1?Q?Jos=E9?= Roberto de Souza 
+        <jose.souza@intel.com>, Wambui Karuga <wambui.karugax@gmail.com>
+Date:   Tue, 15 Sep 2020 20:05:04 -0400
+In-Reply-To: <20200915223841.GA14183@labuser-Z97X-UD5H>
+References: <20200915172939.2810538-1-lyude@redhat.com>
+         <20200915172939.2810538-2-lyude@redhat.com>
+         <20200915190639.GC503362@intel.com>
+         <b1b77b7022f9e388808bc3835f8fc88cda0718bc.camel@redhat.com>
+         <20200915223841.GA14183@labuser-Z97X-UD5H>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <BYAPR11MB287046044CA144193135B0E7AB200@BYAPR11MB2870.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/15/2020 4:59 PM, Wong, Vee Khee wrote:
-> My bad...
+On Tue, 2020-09-15 at 15:38 -0700, Navare, Manasi wrote:
+> On Tue, Sep 15, 2020 at 03:47:01PM -0400, Lyude Paul wrote:
+> > On Tue, 2020-09-15 at 15:06 -0400, Rodrigo Vivi wrote:
+> > > On Tue, Sep 15, 2020 at 01:29:35PM -0400, Lyude Paul wrote:
+> > > > Since we're about to start adding support for Intel's magic HDR
+> > > > backlight interface over DPCD, we need to ensure we're properly
+> > > > programming this field so that Intel specific sink services are
+> > > > exposed.
+> > > > Otherwise, 0x300-0x3ff will just read zeroes.
+> > > > 
+> > > > We also take care not to reprogram the source OUI if it already
+> > > > matches
+> > > > what we expect. This is just to be careful so that we don't
+> > > > accidentally
+> > > > take the panel out of any backlight control modes we found it in.
+> > > > 
+> > > > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > > > Cc: thaytan@noraisin.net
+> > > > Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+> > > > ---
+> > > >  drivers/gpu/drm/i915/display/intel_dp.c | 32
+> > > > +++++++++++++++++++++++++
+> > > >  1 file changed, 32 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/i915/display/intel_dp.c
+> > > > b/drivers/gpu/drm/i915/display/intel_dp.c
+> > > > index 4bd10456ad188..b591672ec4eab 100644
+> > > > --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> > > > +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> > > > @@ -3428,6 +3428,7 @@ void
+> > > > intel_dp_sink_set_decompression_state(struct
+> > > > intel_dp *intel_dp,
+> > > >  void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
+> > > >  {
+> > > >  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> > > > +	u8 edp_oui[] = { 0x00, 0xaa, 0x01 };
+> > > 
+> > > what are these values?
 > 
-> Hi David Miller,
+> We in i915 typically use the OUI number for adding any eDP specific
+> quirks. I have seen these getting spit out in the dmesg log at thebeginning.
+> AFAIK It is some kind of OEM identification number for a display panel.
 
-(please don't top post)
+Are you sure you're not confusing this with the sink OUI btw? We're setting
+the source OUI (so, identifying ourselves to the display panel instead of the
+other way around) here to tell the panel to expose the Intel specific
+backlight controls. My assumption is the { 0x00, 0xaa, 0x01 } is some Intel
+driver OUI, it's just I'm not really sure where it comes from other then the
+patch I linked to down below
 
 > 
-> Can you help with the commit message fix or do you want to to send a new patch with the fix since the patches are applied on net-next?
-
-It has already been applied, so this is too late, just telling you so 
-you can avoid it next time. And it should be part of David's CI while 
-applying patching, too.
+> Manasi
+> > I wish I knew, my assumption is this is the OUI that Intel's GPU driver
+> > uses on
+> > other platforms, but I don't have any documentation mentioning this (in
+> > fact,
+> > the few documents I do have on this backlight interface don't seem to make
+> > any
+> > mention of it). I only managed to find this when looking through the last
+> > attempt someone did at adding support for this backlight interface:
+> > 
+> > https://patchwork.freedesktop.org/patch/334989/
+> > 
+> > I think it should be fairly safe to write, as I know nouveau always
+> > programs a
+> > source OUI (we don't do it from our driver, but nvidia hardware seems to
+> > do it
+> > automatically) and I don't believe I've seen it ever change any behavior
+> > besides
+> > making things appear in the 0x300-0x3ff register range.
+> > 
+> > AFAICT though, the backlight interface won't advertise itself without this
+> > being
+> > set early on. If you could find anyone from Intel who knows more about it
+> > though
+> > I'd definitely appreciate it (and just in general for the rest of the
+> > patch
+> > series as well)
+> > 
+> > > >  	int ret, i;
+> > > >  
+> > > >  	/* Should have a valid DPCD by this point */
+> > > > @@ -3443,6 +3444,14 @@ void intel_dp_sink_dpms(struct intel_dp
+> > > > *intel_dp,
+> > > > int mode)
+> > > >  	} else {
+> > > >  		struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+> > > >  
+> > > > +		/* Write the source OUI as early as possible */
+> > > > +		if (intel_dp_is_edp(intel_dp)) {
+> > > > +			ret = drm_dp_dpcd_write(&intel_dp->aux,
+> > > > DP_SOURCE_OUI,
+> > > > edp_oui,
+> > > > +						sizeof(edp_oui));
+> > > > +			if (ret < 0)
+> > > > +				drm_err(&i915->drm, "Failed to write
+> > > > eDP source
+> > > > OUI\n");
+> > > > +		}
+> > > > +
+> > > >  		/*
+> > > >  		 * When turning on, we need to retry for 1ms to give
+> > > > the sink
+> > > >  		 * time to wake up.
+> > > > @@ -4530,6 +4539,23 @@ static void intel_dp_get_dsc_sink_cap(struct
+> > > > intel_dp
+> > > > *intel_dp)
+> > > >  	}
+> > > >  }
+> > > >  
+> > > > +static void
+> > > > +intel_edp_init_source_oui(struct intel_dp *intel_dp)
+> > > > +{
+> > > > +	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> > > > +	u8 oui[] = { 0x00, 0xaa, 0x01 };
+> > > > +	u8 buf[3] = { 0 };
+> > > > +
+> > > > +	if (drm_dp_dpcd_read(&intel_dp->aux, DP_SOURCE_OUI, buf,
+> > > > sizeof(buf)) <
+> > > > 0)
+> > > > +		drm_err(&i915->drm, "Failed to read source OUI\n");
+> > > > +
+> > > > +	if (memcmp(oui, buf, sizeof(oui)) == 0)
+> > > > +		return;
+> > > > +
+> > > > +	if (drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, oui,
+> > > > sizeof(oui)) <
+> > > > 0)
+> > > > +		drm_err(&i915->drm, "Failed to write source OUI\n");
+> > > > +}
+> > > > +
+> > > >  static bool
+> > > >  intel_edp_init_dpcd(struct intel_dp *intel_dp)
+> > > >  {
+> > > > @@ -4607,6 +4633,12 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
+> > > >  	if (INTEL_GEN(dev_priv) >= 10 || IS_GEMINILAKE(dev_priv))
+> > > >  		intel_dp_get_dsc_sink_cap(intel_dp);
+> > > >  
+> > > > +	/*
+> > > > +	 * Program our source OUI so we can make various Intel-
+> > > > specific AUX
+> > > > +	 * services available (such as HDR backlight controls)
+> > > > +	 */
+> > > > +	intel_edp_init_source_oui(intel_dp);
+> > > 
+> > > I believe we should restrict this to the supported platforms: cfl, whl,
+> > > cml,
+> > > icl, tgl
+> > > no?
+> > > 
+> > > > +
+> > > >  	return true;
+> > > >  }
+> > > >  
+> > > > -- 
+> > > > 2.26.2
+> > > > 
+> > > > _______________________________________________
+> > > > dri-devel mailing list
+> > > > dri-devel@lists.freedesktop.org
+> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > -- 
+> > Sincerely,
+> >       Lyude Paul (she/her)
+> >       Software Engineer at Red Hat
+> > 
 -- 
-Florian
+Cheers,
+	Lyude Paul (she/her)
+	Software Engineer at Red Hat
+
