@@ -2,111 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E47026C4B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DB126C4A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgIPP6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 11:58:18 -0400
-Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:5217
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726338AbgIPPz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:55:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X5da7cNISfxChe0KkcXmjqHno29CSqeCU21shADvfKyyvM++byi1y9k4Q+EXRN57FzqNta0+J+e6P3hY93LkLsBKZFJqoL/eIGlnQkly/BVejOQzxkES1PEkFQcRMrvIYoPzEIIrEFwYRcrdgYT4TKadjT4Q98oD41SdUXtFFXKavoShPEw0zO0pzu3iXpggSjsR/JFeJovcaHxy9Q/l9HyZjzApu9rmNVv8OfHR50bjoDJquk/+RVNtGjOo1Sj5yNm+9cyTVKy9GBaopLmV7SOfUGJRow5lYgzIdBfXCJ1p9UX6yndPpqoyhgB2pFUOkADzwaS/RgF6LoTce588yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=djf7fjP+Vm9HzJ6fkqPzKMJSSUTbtpKj+TRNn8LmcaQ=;
- b=fynnWMKvstlWO8DJF8IXnSVDeteRLPnrCyqEicdbyWozIFHixUoK0RVQ+y2bCj9/pM4I046QigceTl2sm5+VXwSehrDc9vzHhrOW/nufDnSSUzeSFix17YP8cI4ryOgvu4dTlkKmWvMNUY2EQTAR7BYWHsBKI41TM8DGVo8AzfUzbMowYOfmBCgY1xwb7F2B6zCOmP47BMnOwVfbncu0lt8upx87M1yYWjGD1boVYjAgTY/Tckn7eyNFq3XD0bckVltDbv6RX2aBREYIFbquwWsQJiJo3TKZX6ng5+lNXh6Omysno1k89blfeBMNpmM+75G8QNAqxg3Iw96jT0WY4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=djf7fjP+Vm9HzJ6fkqPzKMJSSUTbtpKj+TRNn8LmcaQ=;
- b=R9J68+9gCy4FpKrjcLaKMXfHxavonn31Z36bgA5lGGZocqisoBl9Bw08gHIi+A7i3gyZR3qpGHEtNEX6Ob+nYC5J1NLFdgyFLF69qscs/OUrL8IU0Sr66OoutvzmmWn4ViTimMWuwNnWX6Sxnz6C5cjvA4GfK/Z10zLPGdXDiXc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com (10.168.240.18) by
- DM5PR1201MB0123.namprd12.prod.outlook.com (10.174.104.22) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3391.11; Wed, 16 Sep 2020 13:53:05 +0000
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
- 13:53:05 +0000
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     joro@8bytes.org, Jon.Grimm@amd.com, brijesh.singh@amd.com,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH 0/3] amd : iommu : Initial IOMMU support for SNP
-Date:   Wed, 16 Sep 2020 13:55:46 +0000
-Message-Id: <20200916135549.146468-1-suravee.suthikulpanit@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SA9PR10CA0011.namprd10.prod.outlook.com
- (2603:10b6:806:a7::16) To DM5PR12MB1163.namprd12.prod.outlook.com
- (2603:10b6:3:7a::18)
+        id S1726316AbgIPPzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 11:55:00 -0400
+Received: from condef-01.nifty.com ([202.248.20.66]:46660 "EHLO
+        condef-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgIPP3a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 11:29:30 -0400
+Received: from conssluserg-04.nifty.com ([10.126.8.83])by condef-01.nifty.com with ESMTP id 08GEYf7r021718
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:34:41 +0900
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 08GESsgK002359
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:28:55 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 08GESsgK002359
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600266535;
+        bh=l/3HnRo/Gec7hqA9r+lhHIdPD22CJtChWt84JhWvbWs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DkgIgw+CJCWfK1+3msBMTP0928Z3dFGMphoh4u4/1AwvSsdk38tmKNiscTq8i4x6Z
+         hZNIezFtba+cdctltTnOfgrVDNrQvOl+a4M3lcJ3DiOzGsMKbD8vU28b5z57AzjmbG
+         VlNIityf5YxS7YB5SdZkQVBTj6qs97ANXxRQBHjYJ6qwWEZWEmfoUXsLtjzEnZYcdk
+         WwGdmyKMqZ3U22CaUEozpfbN2mVvkSa28kNS14fwa9QofG2aZRogBNIRV4hAMmZa7z
+         di1t+gGRxSEodOXbIAg7XaV1RKxn6z7pryik7BlEn7d+5/ElPpixb9G87WQ8n9WIuj
+         SDgCM1vzCtp6A==
+X-Nifty-SrcIP: [209.85.216.52]
+Received: by mail-pj1-f52.google.com with SMTP id u3so1626882pjr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:28:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531KmFbbe4qY+nrG2dxLFqE+IusZktQW1mHFXEhGGv8uZeS9fnDP
+        aJfVPyclwHoT0mczUXLtxkjc9qMLaABHcGGT8a8=
+X-Google-Smtp-Source: ABdhPJz07Ti3xlNz2VVnJ5B3pTKp2CBT5Ah0O2kIJIYzqnqXeaAfRw/PjYJvr/dn0fW8/ns+XRZenY1JlGuD+KtWlC8=
+X-Received: by 2002:a17:902:34f:b029:d1:e5e7:bdcf with SMTP id
+ 73-20020a170902034fb02900d1e5e7bdcfmr6734757pld.47.1600266534034; Wed, 16 Sep
+ 2020 07:28:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by SA9PR10CA0011.namprd10.prod.outlook.com (2603:10b6:806:a7::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 16 Sep 2020 13:53:04 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [165.204.78.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2de8678c-a855-44fe-6c28-08d85a47d60d
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0123:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB0123C56A39CDAD416F257159F3210@DM5PR1201MB0123.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hto+kK8xTW4p1HpX5gSb4IFfj0uArq+tjd4PyTFhZi3GgQTImC0CVQXxvV0eho5kPgp/lzuBexR63RuLIy6DhSHvIMHeTXCCCxJFVRxYPyqxjU4jVXQ6/GnjKJrLcig3OS60k757Yf+uhxcYfOigtDcCXJKshsP+Ah6LrUxkR+cyJ3c6CbStdhkLZu9IQpGdN1ZwtmOSRDdqvLc7wPmfPQcJbk/7ldUftL2o9izeY2QDb1aVkItbZcHMmCMzzTfkGmOCCAYdqE5JI8BrgtO5aGcBJ1Eu3DrZxoInDpRcHmiRtlYndWH+nOImeejMXQVxdz2/1iP4PSJRUNpkvOwkV7emhrjtKXvz7WRYucPQbUiPEoIzTWc9sPe2Iwb0dvIBPJb8rgtou4f0k8s3W+/G7Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(186003)(956004)(2616005)(478600001)(44832011)(83380400001)(26005)(16526019)(6666004)(4326008)(8936002)(6486002)(316002)(966005)(86362001)(66946007)(52116002)(5660300002)(66476007)(66556008)(7696005)(36756003)(2906002)(8676002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ndaFP1Mxj60vYKDv9P9VHmHEnpjgY4aVY+0FOwYzpTwVmrOHgSUeKPTzgtKEdlMy98B4yH4Hg7vPni26hfsPFD8h888ijDCnLtm1ue2jKCggYDKAUtxDxTgylbEf9i2TB8R2E5uqJVPnsSqkRzW4Z7G4FBLsixTZUDKaI8vBkLR1zqhcgzYjFmjDZXvmDK6cxlF7kBOEuU/TXDyWKuoPtyu2wr5lg5D6ELbsr1qP4wgUrwobyrGRqmwz9YsGs677HM8yKMSHiokr859Rkf2RkDecLUWUNBg0uz5DIi59C4Pig6phCS+5LEMqqEfbkV652EYbwD5kL7YT4kPqqikKtIaq51P8uOfzJtJgZAAkcPpnl85XNBQyOuDEqjppvo50VquZZIx3JeT7PAQf3JHMRhjwhZQaNdJ5a0MveGU9pv9hvqFZc6rz3GXJUjSnwZE3xxLEJyVWsxaf201Zz2R+SSSj8/XHtTewfUGBGZpshFBFzt7RhDQRtOvY6UJXpVkYAjepMqJFqBOEjY3OpA0YBZwJodF8aRIi7/Ougi9v87bL82aVTNhf3KrQ+vPWNoQqwFbnpBHl9NGUgdUPRcEnlecbGpFsgwd9y2e3RUaLca51Q4xazgHn/aJPr+5pmfSL4RKJULiVMSbNB38nTdcf5A==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2de8678c-a855-44fe-6c28-08d85a47d60d
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 13:53:05.8179
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q7OoAHpr7n4LfUmGToTQCKclV3QKJCFFBLmrfeXxXQ6FiUise5YCBV/99HuSu+6BqejTYEvnMBcjyhuoJcbNaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0123
+References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
+ <CAK7LNARE6NpCYAd7=--m-oO8_LweBWhP2aWfSRdTz=TX8dM5rw@mail.gmail.com>
+ <CA+ASDXOuK=iCdzWbtc+aRhBy=8xy860XqxwJg+wFuQaXKfg3UQ@mail.gmail.com> <f3ce9b3e-d3c1-a96b-e14b-a8d3c4600b09@rasmusvillemoes.dk>
+In-Reply-To: <f3ce9b3e-d3c1-a96b-e14b-a8d3c4600b09@rasmusvillemoes.dk>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 16 Sep 2020 23:28:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATJ2seAuYpi-WPdLNFn2C9Vwm494nk-SWvgBJB3CmCJrw@mail.gmail.com>
+Message-ID: <CAK7LNATJ2seAuYpi-WPdLNFn2C9Vwm494nk-SWvgBJB3CmCJrw@mail.gmail.com>
+Subject: Re: [PATCH] scripts/setlocalversion: make git describe output more reliable
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introducing support for AMD Secure Nested Paging (SNP) with IOMMU,
-which mainly affects the use of IOMMU Exclusion Base and Range Limit
-registers. Note that these registers are no longer used by Linux IOMMU
-driver. Patch 2 and 3 are SNP-specific, and discuss detail of
-the implementation.
+On Fri, Sep 11, 2020 at 5:28 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> On 10/09/2020 21.05, Brian Norris wrote:
+> > On Thu, Sep 10, 2020 at 7:35 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >> On Thu, Sep 10, 2020 at 8:57 PM Rasmus Villemoes
+> >> <linux@rasmusvillemoes.dk> wrote:
+> >>> So in order to avoid `uname -a` output relying on such random details
+> >>> of the build environment which are rather hard to ensure are
+> >>> consistent between developers and buildbots, use an explicit
+> >>> --abbrev=15 option (and for consistency, also use rev-parse --short=15
+> >>> for the unlikely case of no signed tags being usable).
+> >
+> > For the patch:
+> >
+> > Reviewed-by: Brian Norris <briannorris@chromium.org>
+> >
+> >> I agree that any randomness should be avoided.
+> >>
+> >> My question is, do we need 15-digits?
+> > ...
+> >> So, I think the conflict happens
+> >> only when we have two commits that start with the same 7-digits
+> >> in the _same_ release. Is this correct?
+>
+> No.
+>
+> > For git-describe (the case where we have a tag to base off):
+> > "use <n> digits, or as many digits as needed to form a unique object name"
+>
+> Yes, the abbreviated hash that `git describe` produces is unique among
+> all objects (and objects are more than just commits) in the current
+> repo, so what matters for probability-of-collision is the total number
+> of objects - linus.git itself probably grows ~60000 objects per release.
+>
+> As for "do we need 15 digits", well, in theory the next time I merge the
+> next rt-stable tag into our kernel I could end up with a commit that
+> matches some existing object in the first 33 hex chars at which point I
+> should have chosen 34 - but of course that's so unlikely that it's
+> irrelevant.
+>
+> But the upshot of that is that there really is no objective answer to
+> "how many digits do we need", so it becomes a tradeoff between "low
+> enough probability that anyone anywhere in the next few years would have
+> needed more than X when building their own kernel" and readability of
+> `uname -r` etc. So I decided somewhat arbitrarily that each time one
+> rolls a new release, there should be less than 1e-9 probability that
+> HEAD collides with some other object when abbreviated to X hexchars.
+> X=12 doesn't pass that criteria even when the repo has only 10M objects
+> (and, current linus.git already has objects that need 12 to be unique,
+> so such collisions do happen in practice, though of course very rarely).
+> 13 and 14 are just weird numbers, so I ended with 15, which also allows
+> many many more objects in the repo before the probability crosses that
+> 1e-9 threshold.
+>
+> Rasmus
+>
+> Side note 1: Note that there really isn't any such thing as "last
+> tag/previous tag" in a DAG; I think what git does is a best-effort
+> search for the eligible tag that minimizes #({objects reachable from
+> commit-to-be-described} - {objects reachable from tag}), where eligible
+> tag means at least reachable from commit-to-be-described (so that set
+> difference is a proper one), but there can be additional constraints
+> (e.g. --match=...).
+>
+> Side note 2: Linus or Greg releases are actually not interesting here
+> (see the logic in setlocalversion that stops early if we're exactly at
+> an annotated tag) - the whole raison d'etre for setlocalversion is that
+> people do maintain and build non-mainline kernels, and it's extremely
+> useful for `uname -a` to accurately tell just which commit is running on
+> the target.
 
-In order to support SNP, the current Completion Wait Write-back logic
-is modified (patch 1/4). This change is independent from SNP.
 
-Please see the following white paper for more info on SNP:
-  https://www.amd.com/system/files/TechDocs/SEV-SNP-strengthening-vm-isolation-with-integrity-protection-and-more.pdf 
 
-Thank you,
-Suravee
+This is because you use the output from git as-is.
 
-Suravee Suthikulpanit (3):
-  iommu: amd: Use 4K page for completion wait write-back semaphore
-  iommu: amd: Add support for RMP_PAGE_FAULT and RMP_HW_ERR
-  iommu: amd: Re-purpose Exclusion range registers to support SNP CWWB
+Why are you still trying to rely on such obscure behavior of git?
 
- drivers/iommu/amd/amd_iommu_types.h |  6 ++-
- drivers/iommu/amd/init.c            | 44 +++++++++++++++
- drivers/iommu/amd/iommu.c           | 84 ++++++++++++++++++++++++-----
- 3 files changed, 121 insertions(+), 13 deletions(-)
+
+It is pretty easy to get the fixed number of digits reliably.
+
+For example,
+git rev-parse --verify HEAD 2>/dev/null | cut -c1-7
+
+
+It always returns a 7-digits hash,
+and two different people will get the same result for sure.
+
+Your solution, --short=15, means "at least 15",
+which still contains ambiguity.
+
+
+
+As I already noted, the kernelrelease string is
+constructed in this format:
+
+<kernel-version>-<number-of-commits-on-top>-<abbreviated-commit-hash>
+
+
+For example, if I enable CONFIG_LOCALVERSION_AUTO=y
+in today's Linus tree, I got this:
+
+5.9.0-rc5-00005-gfc4f28bb3daf
+
+
+What if the number of digits were 7?
+
+5.9.0-rc5-00005-gfc4f28b
+
+I see no problem here.
+
+Even if we have another object that starts with "fc4f28b",
+the kernelrelease string is still unique thanks to the
+<kernel-version>-<number-of-commits-on-top> prefix.
+
+Why do we care about the uniqueness of the abbreviated
+hash in the whole git history?
+
+
+
+Note:
+We prepend $(KERNELVERSION) to the result
+of setlocalversion. [1]
+
+[1] https://github.com/torvalds/linux/blob/v5.9-rc4/Makefile#L1175
+
 
 -- 
-2.17.1
-
+Best Regards
+Masahiro Yamada
