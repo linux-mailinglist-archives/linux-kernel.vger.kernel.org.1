@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E8626C022
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD2626C02D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbgIPJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:07:29 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:43446 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726481AbgIPJH0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:07:26 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1FCAE1C0B7D; Wed, 16 Sep 2020 11:07:24 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 11:07:23 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Pavel Machek <pavel@denx.de>, jikos@suse.cz, vojtech@suse.cz,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yuan Ming <yuanmingbuaa@gmail.com>, Willy Tarreau <w@1wt.eu>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 4.19 66/78] fbcon: remove soft scrollback code
-Message-ID: <20200916090723.GA4151@duo.ucw.cz>
-References: <20200915140633.552502750@linuxfoundation.org>
- <20200915140636.861676717@linuxfoundation.org>
- <20200916075759.GC32537@duo.ucw.cz>
- <20200916082510.GB509119@kroah.com>
+        id S1726619AbgIPJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:09:13 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12304 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726129AbgIPJJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 05:09:10 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 787E2330D12FE261413A;
+        Wed, 16 Sep 2020 17:09:00 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 17:08:51 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm: mmap: Fix general protection fault in unlink_file_vma()
+Date:   Wed, 16 Sep 2020 05:07:33 -0400
+Message-ID: <20200916090733.31427-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="lrZ03NoBR/3+SXJZ"
-Content-Disposition: inline
-In-Reply-To: <20200916082510.GB509119@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The syzbot reported the below general protection fault:
 
---lrZ03NoBR/3+SXJZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+general protection fault, probably for non-canonical address
+0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range
+[0x00777770000001d8-0x00777770000001df]
+CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 5.9.0-rc3-syzkaller #0
+RIP: 0010:unlink_file_vma+0x57/0xb0 mm/mmap.c:164
+Code: 4c 8b a5 a0 00 00 00 4d 85 e4 74 4e e8 92 d7 cd ff 49 8d bc 24
+d8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c
+02 00 75 3d 4d 8b b4 24 d8 01 00 00 4d 8d 6e 78 4c 89 ef e8
+RSP: 0018:ffffc9000ac0f9b0 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff88800010ceb0 RCX: ffffffff81592421
+RDX: 000eeeee0000003b RSI: ffffffff81a6736e RDI: 00777770000001d8
+RBP: ffff88800010ceb0 R08: 0000000000000001 R09: ffff88801291a50f
+R10: ffffed10025234a1 R11: 0000000000000001 R12: 0077777000000000
+R13: 00007f1eea0da000 R14: 00007f1eea0d9000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1eea11a9d0 CR3: 000000000007e000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ free_pgtables+0x1b3/0x2f0 mm/memory.c:415
+ exit_mmap+0x2c0/0x530 mm/mmap.c:3184
+ __mmput+0x122/0x470 kernel/fork.c:1076
+ mmput+0x53/0x60 kernel/fork.c:1097
+ exit_mm kernel/exit.c:483 [inline]
+ do_exit+0xa8b/0x29f0 kernel/exit.c:793
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
+ exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:167
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:242
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Hi!
+It's because the ->mmap() callback can change vma->vm_file and fput the
+original file. But the commit d70cec898324 ("mm: mmap: merge vma after
+call_mmap() if possible") failed to catch this case and always fput() the
+original file, hence add an extra fput().
 
-> > > From: Linus Torvalds <torvalds@linux-foundation.org>
-> > >=20
-> > > commit 50145474f6ef4a9c19205b173da6264a644c7489 upstream.
-> > >=20
-> > > This (and the VGA soft scrollback) turns out to have various nasty sm=
-all
-> > > special cases that nobody really is willing to fight.  The soft
-> > > scrollback code was really useful a few decades ago when you typically
-> > > used the console interactively as the main way to interact with the
-> > > machine, but that just isn't the case any more.
-> > >=20
-> > > So it's not worth dragging along.
-> >=20
-> > It is still useful.
-> >=20
-> > In particular, kernel is now very verbose, so important messages
-> > during bootup scroll away. It is way bigger deal when you can no
-> > longer get to them using shift-pageup.
-> >=20
-> > fsck is rather verbose, too, and there's no easy way to run that under
-> > X terminal... and yes, that makes scrollback very useful, too.
-> >=20
-> > So, I believe we'll need to fix this. I guess I could do it. I also
-> > guess I'll not have to, because SuSE or RedHat will want to fix it.
-> >=20
-> > Anyway, this really should not be merged into stable.
->=20
-> It's merged into the stable trees that _I_ have to maintain.  If you
-> want to revert it for trees you maintain and wish to keep secure, that's
-> up to you.  But it's something that I _STRONGLY_ do not advise doing.
+[ Thanks Hillf for pointing this extra fput() out. ]
 
-I believe it will need to be reverted in Linus' tree, too. In fact,
-the patch seems to be a way for Linus to find a maintainer for the
-code, and I already stated I can do it. Patch is so new it was not
-even in -rc released by Linus.
+Fixes: d70cec898324 ("mm: mmap: merge vma after call_mmap() if possible")
+Reported-by: syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ mm/mmap.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-> See the email recently on oss-devel for one such reason why this was
-> removed...
+diff --git a/mm/mmap.c b/mm/mmap.c
+index e3a1c1b48909..37c985850dc6 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1815,7 +1815,11 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+ 			merge = vma_merge(mm, prev, vma->vm_start, vma->vm_end, vma->vm_flags,
+ 				NULL, vma->vm_file, vma->vm_pgoff, NULL, NULL_VM_UFFD_CTX);
+ 			if (merge) {
+-				fput(file);
++				/* ->mmap() can change vma->vm_file and fput the original file. So
++				 * fput the vma->vm_file here or we would add an extra fput for file
++				 * and cause general protection fault ultimately.
++				 */
++				fput(vma->vm_file);
+ 				vm_area_free(vma);
+ 				vma = merge;
+ 				/* Update vm_flags and possible addr to pick up the change. We don't
+-- 
+2.19.1
 
-Would you have a link for that?
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---lrZ03NoBR/3+SXJZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2HVywAKCRAw5/Bqldv6
-8n8IAJ9Ckk/Dt5yz2ZN03hdemFeg5cZhXACeIV86DHYDXC4IqpvDCyi6XVH55NI=
-=T25L
------END PGP SIGNATURE-----
-
---lrZ03NoBR/3+SXJZ--
