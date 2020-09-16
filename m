@@ -2,71 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6385326CE83
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D602726CE82
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIPWSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
+        id S1726336AbgIPWR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIPWR4 (ORCPT
+        with ESMTP id S1726375AbgIPWR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 18:17:56 -0400
-X-Greylist: delayed 345 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 16 Sep 2020 14:41:24 PDT
-Received: from pasta.tip.net.au (pasta.tip.net.au [IPv6:2401:fc00:0:129::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944C7C0611BC;
-        Wed, 16 Sep 2020 14:41:24 -0700 (PDT)
-Received: from canb.auug.org.au (203-206-41-51.dyn.iinet.net.au [203.206.41.51])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by pasta.tip.net.au (Postfix) with ESMTPSA id 4BsD7Q46SRz9BVX;
-        Thu, 17 Sep 2020 07:41:22 +1000 (AEST)
-Date:   Thu, 17 Sep 2020 07:41:21 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the irqchip tree
-Message-ID: <20200917074121.2af9e668@canb.auug.org.au>
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88353C0611BD
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 14:42:04 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id z19so8579796lfr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 14:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VncGTmlGJZTO0vP8zn5c6pmOsTrbLikm9gWDwOKiU5w=;
+        b=W95oKDiEQYylk5s66d1puFpGBg+lWGmOEyQtPeK7ynxG6fiy+7Yg2mgZQok1qNO+2W
+         elKrf5apWMTlsZXUPl10huJeY45Wi6z2QVn+LrHPz2IBJUHJoCh+94+bdX7aNTAVhu/5
+         mECw6mtcwly98gZTucnhMCXGAUkIXNxg7oG6NujzL3ZnlNiGVZNp4G3tjH89qQQsLUn6
+         i04d7AYaFpvORxRdb6+q/j3UMg3ywfa833DUP2ZCZvcWuKbAlHwMKhNmwRHeyHm99H9O
+         UCuoXZO61UZsnx9cg5FHYR8Igy+Pt9V5R/BJDXD9l+QWm0sM8dgdX4bXFci1HD8msLH+
+         +xlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VncGTmlGJZTO0vP8zn5c6pmOsTrbLikm9gWDwOKiU5w=;
+        b=G24/kSN8KS+IQnmpfKBwpich+ecrXA6DDM68harA5ah0VSqgpzpZ4KD+ronYr9k/7f
+         oKWOEc3YPou1Qt+m9PgJzG8Rlv81wh/5xtWb8xEpmnLUWQwBCY4h+R70egQfd5GpM9iC
+         8hUuxJ3lATNV4HN8j/zoeL+s9i2S7/nJySYooieyXutysyZrROhhv5gEAcJ/GiaMsv6d
+         Z52n/HFo+o39eLq+cvnQorY+Upkv5knF/xk1MsbFCFg7rQcKgj4sCqq5k7w9cUb7bxdb
+         DbGEJbohfWvuX6gkX2yieaPE5koMffx7nKfkzxEgUgPLyUriH6gEMBj2LZVrFQJsXgoy
+         2jVA==
+X-Gm-Message-State: AOAM532MzB9Jiw5MMMp51PNBxZre176r+BqacYwBev+50+518jyvzkya
+        LSwpckKoLLqchQzOix6KaQp+ej/MsxBXCg==
+X-Google-Smtp-Source: ABdhPJze3q2Ag0unqydwFw8KUefGFJFfPSxcdeTGFTTJbQq8KAAvyNZ40vJEFBE2yrq6jPDYkYgyLA==
+X-Received: by 2002:ac2:495a:: with SMTP id o26mr9320500lfi.94.1600292523014;
+        Wed, 16 Sep 2020 14:42:03 -0700 (PDT)
+Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
+        by smtp.gmail.com with ESMTPSA id j28sm5153293lfk.97.2020.09.16.14.42.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 14:42:02 -0700 (PDT)
+From:   mateusznosek0@gmail.com
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, akpm@linux-foundation.org
+Subject: [PATCH] mm/page_alloc.c: fix early params garbage value accesses
+Date:   Wed, 16 Sep 2020 23:41:25 +0200
+Message-Id: <20200916214125.28271-1-mateusznosek0@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RqNR1VWtnxK_CcJr1T23cTW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RqNR1VWtnxK_CcJr1T23cTW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Mateusz Nosek <mateusznosek0@gmail.com>
 
-Hi all,
+Previously in '__init early_init_on_alloc' and '__init early_init_on_free'
+the return values from 'kstrtobool' were not handled properly. That caused
+potential garbage value read from variable 'bool_result'. Introduced patch
+fixes error handling.
 
-Commit
+Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
+---
+ mm/page_alloc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-  0502fd082b11 ("fixup! irqchip/gic: Handle non-standard SGI deactivation o=
-n Samsung's Franken-GIC")
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 6b699d273d6e..112e5a63f9ca 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -155,16 +155,16 @@ static int __init early_init_on_alloc(char *buf)
+ 	int ret;
+ 	bool bool_result;
+ 
+-	if (!buf)
+-		return -EINVAL;
+ 	ret = kstrtobool(buf, &bool_result);
++	if (ret)
++		return ret;
+ 	if (bool_result && page_poisoning_enabled())
+ 		pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, will take precedence over init_on_alloc\n");
+ 	if (bool_result)
+ 		static_branch_enable(&init_on_alloc);
+ 	else
+ 		static_branch_disable(&init_on_alloc);
+-	return ret;
++	return 0;
+ }
+ early_param("init_on_alloc", early_init_on_alloc);
+ 
+@@ -173,16 +173,16 @@ static int __init early_init_on_free(char *buf)
+ 	int ret;
+ 	bool bool_result;
+ 
+-	if (!buf)
+-		return -EINVAL;
+ 	ret = kstrtobool(buf, &bool_result);
++	if (ret)
++		return ret;
+ 	if (bool_result && page_poisoning_enabled())
+ 		pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, will take precedence over init_on_free\n");
+ 	if (bool_result)
+ 		static_branch_enable(&init_on_free);
+ 	else
+ 		static_branch_disable(&init_on_free);
+-	return ret;
++	return 0;
+ }
+ early_param("init_on_free", early_init_on_free);
+ 
+-- 
+2.20.1
 
-is missing a Signed-off-by from its author and committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/RqNR1VWtnxK_CcJr1T23cTW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ihoEACgkQAVBC80lX
-0GzcLQf8CE943EKN59HmWtzQKL2AXdfSITR7JBDBnjkskpJ2S5lIZ3vpKAL+OBii
-VfKRGeISfaijXKKJrMhlyFhJ3e9G0pH6f6lyUX/z90hHQQmQFa06iJDJzFMY6dsJ
-l5MY0I3biBHPpVlqrxdPN9wmbTey/mkMGRZXTiveGX2/jx+ThCjFoMwURZKNGi5+
-ojUL4PWWWKBHhXv++bWnVOIcal2u6ohOq9RMOUf1HJ6PciKsoLNNPH1dhEpq5EIL
-PTO/HoyX9ZqvMWR5sTRef0M7IzuVj5tpf7ENuXHmomQQz78Oi4KoBZ8QW2qhdl4t
-IT1iKeb3PmdY1a0vabCsOcK7tCXBgQ==
-=EGvw
------END PGP SIGNATURE-----
-
---Sig_/RqNR1VWtnxK_CcJr1T23cTW--
