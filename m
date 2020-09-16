@@ -2,139 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C149A26BAE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779B626BB25
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgIPDtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:49:15 -0400
-Received: from mail-eopbgr700085.outbound.protection.outlook.com ([40.107.70.85]:21633
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726486AbgIPDtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:49:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nnz8h2XonpjJwQ+91YXLmhi5B5HkqFrJTLjCA3qQdcyvSwCaUPYN6cebgxMJCM8CFh6a+0K5t1tAIXRrMUFbOuczqxE9f9HePTrcd52xBTOZOY6sQBGtqNG3czyvUVNLgwCmWZisq41IaMsp/u2MB9S9mnh559Njv7CLSaoQER1F4GuUx5sRKReNOKA+ZV6faAJr123yDtjiGzqjtcbGmG7BhXlX4ChLbj9KVxbYpNSkX3bM67+xIQdBd4GGrnAwMzW4P5anJKw490cB4jVrn0DMC/T1jjunmZdUe5j0ymitfeiupUa6OyFYgzD2aZK5jOKd2u4/RJzOaXL5PlELsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WZ/D+Q/kmxLiYd4w8gULC0EeonEBJFusdeCRLhEqmXk=;
- b=F29z9NyNSpDtEN0bkYMdeRew8/xSGeX2InDkDWnVirMX6YA5jDOSvmMOEl3XxWwgUr6+sDwWJetk27lydVI6poauE8G+MZKbgYq9SXIB4biCBQPmllffQMguG6nTObUpryWUeudAS3/GanPBU5WH8/E4ufzsy584sOtCmsh742X8Gk21IzNlVFTP1VNWwvE2w717x09+8VD9HWWKXCGtCMI+Kb4+j7eJpdkyv/cqnfGsbdQfm5FwVW8QVqMM3MFIkmYKw0aFXa0DQm8uSdaeTSH6EudNIsuo4FjLdMgw0n+WnuA2xe2r1gnA7mFexXO4pNP1NApV7rvk69FS+Zr8bg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1726155AbgIPDyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbgIPDyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 23:54:07 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A967C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 20:54:07 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e23so5404312otk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 20:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WZ/D+Q/kmxLiYd4w8gULC0EeonEBJFusdeCRLhEqmXk=;
- b=OqZ/dV7fOcsbxjo5j8/bcmy4pUw8cXqgNuiUUZclafszmCndf62GJzsoE4h4hYp9DP2asrkBkg3BPoRAt/p2SHhTiVC2yFIS2VcpdwSr1eoShIKMpYSAaYFIZIjujVRBcJuiTP56QL3LPiqnCA5wi9sSL15fOZZ3vQT9cWWoaHk=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
- by CY4PR1201MB0215.namprd12.prod.outlook.com (2603:10b6:910:1d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
- 2020 03:49:08 +0000
-Received: from CY4PR12MB1494.namprd12.prod.outlook.com
- ([fe80::9067:e60d:5698:51d8]) by CY4PR12MB1494.namprd12.prod.outlook.com
- ([fe80::9067:e60d:5698:51d8%12]) with mapi id 15.20.3391.011; Wed, 16 Sep
- 2020 03:49:08 +0000
-Date:   Tue, 15 Sep 2020 22:49:05 -0500
-From:   Wei Huang <wei.huang2@amd.com>
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, Wei Huang <whuang2@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/2] KVM: x86: allow for more CPUID entries
-Message-ID: <20200916034905.GA508748@weilap>
-References: <20200915154306.724953-1-vkuznets@redhat.com>
- <20200915165131.GC2922@work-vm>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915165131.GC2922@work-vm>
-X-ClientProxiedBy: MN2PR01CA0008.prod.exchangelabs.com (2603:10b6:208:10c::21)
- To CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
-Importance: high
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ewL7YiyUTu91D6uwYAgYAQEEe0RdVJXS9Py9EiB4OJY=;
+        b=khkMPzqBl2YoARJNUZ1/oqNsz5wOstgp6fnfN7pZHuaEofGslZ0sZGCos39bhH5/YL
+         Qy1zMpLNquwbqdmaxj7DL3oYRpJ2WjWG4Nn5qDNMDomJM+bOcwC2ysScgUaPPtmgUkxH
+         3diZARKyf+CT0jJjtBWCXYXCFKOh+7GTAw2uObWgdtHfBW7iWynCZuaEUaNvkHv2+z/8
+         6EkMTVBO0ZCI1jI1PxdASY0JxevqkvY+XH8baxFsr99K1Wt48tjuycWJVq49xFInWUQW
+         Nrc7qBbTGWrq8RevKoNLjNcjGl+13nAea9YNfpUNxfQ/JHP5lC6QTxRc6CMapBNaj5hq
+         RbcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ewL7YiyUTu91D6uwYAgYAQEEe0RdVJXS9Py9EiB4OJY=;
+        b=DYJ+drf0Nkn30md4w9uZbhRspROSALl04Ich6dhT3XsDo6qb0UQYl+9IyzG2wVxzeq
+         hoDvyGaAWrXwxG0TyHJ+bPfTe+GE1o0ui8a8OwwR9zTtnBi2S9cJDLVe2/Iq/vsWKh1V
+         Bh7WCNMZMwgSQ1IDBSTU70syhZk+nXpkweAxF0YgyaSJnvLn5tDC+2gDyg0iCNcaEpl3
+         SEuecMYykHSHH/gIml7kes8XHQPYoH188wuKmAA2pnd+SUFbZZmo4LtFK4Js+oXln10c
+         gYkZHV9KbC9puD1uSw7A3CNDVv8PDcmgM8K5iaSzVvp93hr4IwexaMLgaEMXwzyxDibu
+         NgHQ==
+X-Gm-Message-State: AOAM5333oFxkKCrpLGym+zjwsBBbg5p/QK9Z5Hl8liI46ZA2igMaVzq6
+        4sbIe1b2cj8aERupOk7FA3g0wTX8kIkQbwRMCs/lKg==
+X-Google-Smtp-Source: ABdhPJxZd0RR0PZLGpqVoV4CPOA7BB6SF3WnFq1dvEd8jWtopskPWWySU9JLig0FPuPZYaGh3cZgxFsx/Iqs3zVQKi0=
+X-Received: by 2002:a05:6830:10c4:: with SMTP id z4mr14475449oto.263.1600228446425;
+ Tue, 15 Sep 2020 20:54:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (24.55.15.93) by MN2PR01CA0008.prod.exchangelabs.com (2603:10b6:208:10c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Wed, 16 Sep 2020 03:49:07 +0000
-X-Priority: 1 (Highest)
-X-MSMail-Priority: High
-X-Originating-IP: [24.55.15.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3cd52300-2c18-488c-d81d-08d859f376e5
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB0215:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB0215BFD0762A668FE2562808CF210@CY4PR1201MB0215.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nA+gc7Tsuiz3vv5+wFVjSXjDyuZSZ4+wVtiGNF+Xe5vgXZ2QjpZepA3CGVqJi2/BPZawafWhuBJnNlJA1NXwDTgx9S8ZG3l5bnHsamW2oSzp69TRIV1cv8vRJUHnT7purFou1N5tlEVV4yFM8D3DtK3xyw3lzEV3XuxfPXtHN6ZyLYM6oa4srswHWna/LX+tac2gwxZtOMuYQBTMde3r4fruvejRvYNpHTKpW7BpJ1e5vGt954WRn3XRHYF1R96NJqjiSnSVTuqC3AGHVSEmzks+J9Kt9nKc+6vNBeUa+pgB1zHj6/roTeHFEOq0c9WhDiLDE+rVeh26fG1peAUZMCb5UR9n0K8+xGH6tKNcu8kdzF9lKIYnyfDmHAeQZiWh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(39860400002)(366004)(396003)(376002)(346002)(136003)(83380400001)(6486002)(16526019)(186003)(66946007)(478600001)(66476007)(66556008)(26005)(52116002)(54906003)(6496006)(33716001)(8676002)(8936002)(4326008)(6916009)(956004)(9686003)(33656002)(2906002)(86362001)(5660300002)(1076003)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: DduOcOfHhAHGl+yT6reauo6b4Nmq1EYHIpwW2URmjcB/nYvENHtoS+UzGPA1L3Pec/FK1cBDXMjc4RPUyeTfdOkIEAXvKLdeeYEIOW998/SiRZFJWbdDB2YeCuN8QTeGAoi5gHRwxIX4zBpkjaU88ct3zhNC4Go053vZzX5Gz+XiG3ROdM6Lnr1cllZdwC5osafkiTwzgrcigusRzbAqVQaTntHStVuJbaE0ETa0JvsFcpLSWpY0AK2K+dnFC3U/Yef2RPViSwaDQE4vnIpkl80NST+MH+Ku1SilWJSN7Zp2/B0EdKxLMJ9eSpir1j5ylBFVG7Yca6zWD+ba1EQE3wVkKvw2Qf4J+DYc55OrtkdZDz7Ov7mkgaT6HQMWpbs4xbSEoNE33dCvF8Wol4iMHcmM82H6ECeQst1qajMejResr+KcMfFWpZe4HVoGGpnvI6lfCINYUNFAkWxha+jbIrggZkjoG4b9lbe1qk90fsRkYsAknnQ8SQcuKGtIoIDwEoMrFyGwsgR3DFjAfKwR47O7/AQtWc2plojxRoYmOPLbWJgDdcFOdbSeUoVwXXl09Ei2gqvHJF+k1sQ2XNHvblV84WvJu4i+bTX5zC81NHVUXSEW0hm4MM9ySVBl+KVa00b07DtoUX8gPqRhH8x80Q==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3cd52300-2c18-488c-d81d-08d859f376e5
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 03:49:08.2053
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Lv6nzlFY2ijUfWwDOhnZhoyAOc67bMpzufQzJYakoeiiX4wt2P+CvU2QAH2+Z2sT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0215
+References: <20200915130245.89585-1-zhuyinyin@bytedance.com>
+ <e206f1b4-1f22-c3f5-21a6-cec498d9c830@kernel.dk> <0d66eabc-3b8b-2f84-05b7-981c2b6fe5dd@kernel.dk>
+In-Reply-To: <0d66eabc-3b8b-2f84-05b7-981c2b6fe5dd@kernel.dk>
+From:   =?UTF-8?B?5pyx5a+F5a+F?= <zhuyinyin@bytedance.com>
+Date:   Wed, 16 Sep 2020 11:53:55 +0800
+Message-ID: <CAMwFJjVrY+eygYbgQWeCyeavx_nyzc2nmJw8qah-Go2KNHHELw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] io_uring: fix the bug of child process
+ can't do io task
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?5a6L54mn5pil?= <songmuchun@bytedance.com>,
+        duanxiongchun <duanxiongchun@bytedance.com>,
+        =?UTF-8?B?5pyx5a+F5a+F?= <zhuyinyin@bytedance.com>
+Content-Type: multipart/mixed; boundary="0000000000001c10f105af66384a"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/15 05:51, Dr. David Alan Gilbert wrote:
-> * Vitaly Kuznetsov (vkuznets@redhat.com) wrote:
-> > With QEMU and newer AMD CPUs (namely: Epyc 'Rome') the current limit for
+--0000000000001c10f105af66384a
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Could you elaborate on this limit? On Rome, I counted ~35 CPUID functions which
-include Fn0000_xxxx, Fn4000_xxxx and Fn8000_xxxx.
+Dear Jens Axboe:
 
-> > KVM_MAX_CPUID_ENTRIES(80) is reported to be hit. Last time it was raised
-> > from '40' in 2010. We can, of course, just bump it a little bit to fix
-> > the immediate issue but the report made me wonder why we need to pre-
-> > allocate vcpu->arch.cpuid_entries array instead of sizing it dynamically.
-> > This RFC is intended to feed my curiosity.
-> > 
-> > Very mildly tested with selftests/kvm-unit-tests and nothing seems to
-> > break. I also don't have access to the system where the original issue
-> > was reported but chances we're fixing it are very good IMO as just the
-> > second patch alone was reported to be sufficient.
-> > 
-> > Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-> 
-> Oh nice, I was just going to bump the magic number :-)
-> 
-> Anyway, this seems to work for me, so:
-> 
-> Tested-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-> 
+  Thanks for your reply.  Yeah=EF=BC=8CMy approach indeed has a problem as =
+you
+said. Yours is obviously better than mine.
+But I think your approach is not perfect , still has a problem. Think
+that same case I mentioned before, when parent
+process Setup an io_uring instance with the flag of
+IORING_SETUP_SQPOLL, means the sqo_thread is created,
+and ctx->sqo_mm is assigned to the parent process's mm. Then the
+parent process forks a child process. Of course ,
+the child process inherits the fd of io_uring instance.
 
-I tested on two platforms and the patches worked fine. So no objection on the
-design.
+  Then the child process submits  an io task without ever context
+switching into kernel. So the sqo_thead even doesn't
+know whether the parent process has submit the io task or the child
+one,  it just use the ctx->sqo_mm as its mm,
+but ctx->sqo_mm is the parent process's, not child process's,  so the
+problem occurred again.
 
-Tested-by: Wei Huang <wei.huang2@amd.com>
+Two more things=EF=BC=9A
+  1=E3=80=81I think 5.9 also has this problem  -- "sqo_thread doesn't know =
+who
+has submit the io task, it will use wrong mm"
 
-> > Vitaly Kuznetsov (2):
-> >   KVM: x86: allocate vcpu->arch.cpuid_entries dynamically
-> >   KVM: x86: bump KVM_MAX_CPUID_ENTRIES
-> > 
-> >  arch/x86/include/asm/kvm_host.h |  4 +--
-> >  arch/x86/kvm/cpuid.c            | 55 ++++++++++++++++++++++++---------
-> >  arch/x86/kvm/x86.c              |  1 +
-> >  3 files changed, 43 insertions(+), 17 deletions(-)
-> > 
-> > -- 
-> > 2.25.4
-> > 
-> -- 
-> Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-> 
+  2=E3=80=81Attachment of this mail is the test application. If the child
+process exits quickly, the problem is occured.
+
+
+On Tue, Sep 15, 2020 at 9:36 PM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On 9/15/20 7:25 AM, Jens Axboe wrote:
+> > On 9/15/20 7:02 AM, Yinyin Zhu wrote:
+> >> when parent process setup a io_uring_instance, the ctx->sqo_mm was
+> >> assigned of parent process'mm. Then it fork a child
+> >> process. So the child process inherits the io_uring_instance fd from
+> >> parent process. Then the child process submit a io task to the io_urin=
+g
+> >> instance. The kworker will do the io task actually, and use
+> >> the ctx->sqo_mm as its mm, but this ctx->sqo_mm is parent process's mm=
+,
+> >> not the child process's mm. so child do the io task unsuccessfully. To
+> >> fix this bug, when a process submit a io task to the kworker, assign t=
+he
+> >> ctx->sqo_mm with this process's mm.
+> >
+> > Hmm, what's the test case for this? There's a 5.9 regression where we
+> > don't always grab the right context for certain linked cases, below
+> > is the fix. Does that fix your case?
+>
+> Ah hang on, you're on the 5.4 code base... I think this is a better
+> approach. Any chance you can test it?
+>
+> The problem with yours is that you can have multiple pending async
+> ones, and you can't just re-assign ctx->sqo_mm. That one should only
+> be used by the SQPOLL thread.
+>
+>
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 2a539b794f3b..e8a4b4ae7006 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -514,7 +514,7 @@ static inline void io_queue_async_work(struct io_ring=
+_ctx *ctx,
+>                 }
+>         }
+>
+> -       req->task =3D current;
+> +       req->task =3D get_task_struct(current);
+>
+>         spin_lock_irqsave(&ctx->task_lock, flags);
+>         list_add(&req->task_list, &ctx->task_list);
+> @@ -1832,6 +1832,7 @@ static void io_poll_complete_work(struct work_struc=
+t *work)
+>         spin_unlock_irq(&ctx->completion_lock);
+>
+>         io_cqring_ev_posted(ctx);
+> +       put_task_struct(req->task);
+>         io_put_req(req);
+>  out:
+>         revert_creds(old_cred);
+> @@ -2234,11 +2235,11 @@ static void io_sq_wq_submit_work(struct work_stru=
+ct *work)
+>
+>                 ret =3D 0;
+>                 if (io_req_needs_user(req) && !cur_mm) {
+> -                       if (!mmget_not_zero(ctx->sqo_mm)) {
+> +                       if (!mmget_not_zero(req->task->mm)) {
+>                                 ret =3D -EFAULT;
+>                                 goto end_req;
+>                         } else {
+> -                               cur_mm =3D ctx->sqo_mm;
+> +                               cur_mm =3D req->task->mm;
+>                                 use_mm(cur_mm);
+>                                 old_fs =3D get_fs();
+>                                 set_fs(USER_DS);
+> @@ -2275,6 +2276,7 @@ static void io_sq_wq_submit_work(struct work_struct=
+ *work)
+>                 }
+>
+>                 /* drop submission reference */
+> +               put_task_struct(req->task);
+>                 io_put_req(req);
+>
+>                 if (ret) {
+>
+> --
+> Jens Axboe
+>
+
+--0000000000001c10f105af66384a
+Content-Type: text/plain; charset="US-ASCII"; name="test_fork.txt"
+Content-Disposition: attachment; filename="test_fork.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kf4ulgtv0>
+X-Attachment-Id: f_kf4ulgtv0
+
+LyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IE1JVCAqLwovKgogKiBTaW1wbGUgdGVzdCBjYXNl
+IHNob3dpbmcgdXNpbmcgc2VuZG1zZyBhbmQgcmVjdm1zZyB0aHJvdWdoIGlvX3VyaW5nCiAqLwoj
+aW5jbHVkZSA8c3RkaW8uaD4KI2luY2x1ZGUgPHN0ZGxpYi5oPgojaW5jbHVkZSA8c3RyaW5nLmg+
+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPGVycm5vLmg+CiNpbmNsdWRlIDxhcnBhL2lu
+ZXQuaD4KI2luY2x1ZGUgPHN5cy90eXBlcy5oPgojaW5jbHVkZSA8c3lzL3NvY2tldC5oPgojaW5j
+bHVkZSA8cHRocmVhZC5oPgojaW5jbHVkZSAibGlidXJpbmcuaCIKc3RhdGljIGNvbnN0IGNoYXIg
+KnN0ciA9ICJUaGlzIGlzIGEgdGVzdCBvZiBzZW5kbXNnIGFuZCByZWN2bXNnIG92ZXIgaW9fdXJp
+bmchIjsKI2RlZmluZSBNQVhfTVNHIDEyOAojZGVmaW5lIFBPUlQgICAgMTAyMDAKI2RlZmluZSBI
+T1NUICAgICIxMjcuMC4wLjEiCgoKc3RhdGljIGludCByZWN2X3ByZXAoc3RydWN0IGlvX3VyaW5n
+ICpyaW5nLCBzdHJ1Y3QgaW92ZWMgKmlvdikKewogICAgc3RydWN0IHNvY2thZGRyX2luIHNhZGRy
+OwogICAgc3RydWN0IG1zZ2hkciBtc2c7CiAgICBzdHJ1Y3QgaW9fdXJpbmdfc3FlICpzcWUgPSBO
+VUxMOwogICAgaW50IHNvY2tmZCwgcmV0OwogICAgaW50IHZhbCA9IDE7CiAgICBtZW1zZXQoJnNh
+ZGRyLCAwLCBzaXplb2Yoc2FkZHIpKTsKICAgIHNhZGRyLnNpbl9mYW1pbHkgPSBBRl9JTkVUOwog
+ICAgc2FkZHIuc2luX2FkZHIuc19hZGRyID0gaHRvbmwoSU5BRERSX0FOWSk7CiAgICBzYWRkci5z
+aW5fcG9ydCA9IGh0b25zKFBPUlQpOwogICAgc29ja2ZkID0gc29ja2V0KEFGX0lORVQsIFNPQ0tf
+REdSQU0sIDApOwogICAgaWYgKHNvY2tmZCA8IDApIHsKICAgICAgICBwZXJyb3IoInNvY2tldCIp
+OwogICAgICAgIHJldHVybiAxOwogICAgfQogICAgdmFsID0gMTsKICAgIHNldHNvY2tvcHQoc29j
+a2ZkLCBTT0xfU09DS0VULCBTT19SRVVTRVBPUlQsICZ2YWwsIHNpemVvZih2YWwpKTsKICAgIHNl
+dHNvY2tvcHQoc29ja2ZkLCBTT0xfU09DS0VULCBTT19SRVVTRUFERFIsICZ2YWwsIHNpemVvZih2
+YWwpKTsKICAgIHJldCA9IGJpbmQoc29ja2ZkLCAoc3RydWN0IHNvY2thZGRyICopJnNhZGRyLCBz
+aXplb2Yoc2FkZHIpKTsKICAgIGlmIChyZXQgPCAwKSB7CiAgICAgICAgcGVycm9yKCJiaW5kIik7
+CiAgICAgICAgZ290byBlcnI7CiAgICB9CiAgICBtZW1zZXQoJm1zZywgMCwgc2l6ZW9mKG1zZykp
+OwogICAgICAgIG1zZy5tc2dfbmFtZWxlbiA9IHNpemVvZihzdHJ1Y3Qgc29ja2FkZHJfaW4pOwog
+ICAgbXNnLm1zZ19pb3YgPSBpb3Y7CiAgICBtc2cubXNnX2lvdmxlbiA9IDE7CiAgICBzcWUgPSBp
+b191cmluZ19nZXRfc3FlKHJpbmcpOwogICAgaWYgKCFzcWUpCgkgICAgcHJpbnRmKCJzcWUgaXMg
+bnVsbCBcclxuIik7CiAgICBpb191cmluZ19wcmVwX3JlY3Ztc2coc3FlLCBzb2NrZmQsICZtc2cs
+IDApOwoKICAgIHJldCA9IGlvX3VyaW5nX3N1Ym1pdF9hbmRfd2FpdChyaW5nLCAxKTsKICAgIGlm
+IChyZXQgPD0gMCkgewogICAgICAgIHByaW50Zigic3VibWl0IGZhaWxlZDogJWRcbiIsIHJldCk7
+CiAgICAgICAgZ290byBlcnI7CiAgICB9CiAgICBwcmludGYoInJldCBpcyAlZFxyXG4iLCByZXQp
+OwogICAgY2xvc2Uoc29ja2ZkKTsKICAgIHJldHVybiAwOwplcnI6CiAgICBjbG9zZShzb2NrZmQp
+OwogICAgcmV0dXJuIDE7Cn0KCmludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCnsKICAg
+IHBpZF90IHA7CiAgICBjaGFyIGJ1ZltNQVhfTVNHICsgMV07CiAgICBzdHJ1Y3QgaW92ZWMgaW92
+ID0gewogICAgICAgIC5pb3ZfYmFzZSA9IGJ1ZiwKICAgICAgICAuaW92X2xlbiA9IHNpemVvZihi
+dWYpIC0gMSwKICAgIH07CiAgICBzdHJ1Y3QgaW9fdXJpbmdfc3FlICpzcWU7CiAgICBzdHJ1Y3Qg
+aW9fdXJpbmdfY3FlICpjcWU7CiAgICBzdHJ1Y3QgaW9fdXJpbmcgcmluZzsKICAgIGludCByZXQ7
+CiAgICByZXQgPSBpb191cmluZ19xdWV1ZV9pbml0KDEsICZyaW5nLCAwKTsKICAgIGlmIChyZXQp
+IHsKICAgICAgICBwcmludGYoInF1ZXVlIGluaXQgZmFpbGVkOiAlZFxuIiwgcmV0KTsKICAgICAg
+ICByZXR1cm4gMDsKICAgIH0KCiAgICBwID0gZm9yaygpOwogICAgc3dpdGNoIChwKSB7CiAgICBj
+YXNlIC0xOgogICAgICAgIHBlcnJvcigiZm9yayIpOwogICAgICAgIGV4aXQoMik7CiAgICBjYXNl
+IDA6IHsvL2NoaWxkCiAgICAgICAgcmVjdl9wcmVwKCZyaW5nLCAmaW92KTsKICAgICAgICAvL3Ns
+ZWVwKDUwMDAwMCk7CglicmVhazsKICAgICAgICB9CiAgICBkZWZhdWx0OgoJcHJpbnRmKCJwaWQ6
+ICVkXG4iLCBwKTsKCS8vcmVjdl9wcmVwKCZyaW5nLCAmaW92KTsKICAgICAgICBzbGVlcCg1MDAw
+MCk7CiAgICAgICAgcmV0dXJuIDA7CgogICAgfQp9Cg==
+--0000000000001c10f105af66384a--
