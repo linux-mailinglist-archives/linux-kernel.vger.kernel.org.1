@@ -2,207 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE7226BFA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C00126BFA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIPIqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:46:42 -0400
-Received: from mga11.intel.com ([192.55.52.93]:20004 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgIPIqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:46:40 -0400
-IronPort-SDR: uX/Gee+UP5pCO+yzjmeAgMyIumQzrqrJOYK9pUwBj31mL84B7VsmGW0gn61YD4aWeyLR6VRaLJ
- 2xJIFqT6v1jw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="156835735"
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="156835735"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 01:46:40 -0700
-IronPort-SDR: x1Kb3+pCkKLuTJHZu4s9JgvNMpHiut9sXRkmv6enea3P3C6+xp9WDokcsDl+4HbVfN5/PWk0vh
- JsId+mfoikBw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="331588621"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.164])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Sep 2020 01:46:37 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     peterz@infradead.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC] autonuma: Migrate on fault among multiple bound nodes
-References: <20200916005936.232788-1-ying.huang@intel.com>
-        <20200916081052.GI2674@hirez.programming.kicks-ass.net>
-Date:   Wed, 16 Sep 2020 16:46:37 +0800
-In-Reply-To: <20200916081052.GI2674@hirez.programming.kicks-ass.net>
-        (peterz@infradead.org's message of "Wed, 16 Sep 2020 10:10:52 +0200")
-Message-ID: <87pn6mrtw2.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1726619AbgIPIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgIPIqy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:46:54 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24DFC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:46:53 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id g10so5932374otq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mFHlsqUTp6bF1BGPzUjg3LJj5CvZI8A5XHbHTxJpfjI=;
+        b=s3aJCgj3o2+HOyPW2y5oQ6FHm99qHE3quyCn9AiqVXCY29lH7v25P4pV3RaBzYr6tI
+         TXsfCsViS30UfmXp9txl1r1XYHoJgUKcr2i0ukFwUOgdjpL8t96JsBVxl1rMyQ7G7TZL
+         tz5nog7zbQMP0vGP2MFs1KLVoqnyTD3Qc5KXgpr9B9GZFSRwIDLz3ATpV344qAa5G9u7
+         K41LFww87ee6HgxlRrG87o8HJCTj/uJhboUgZozUgkj1oTAyrTJ6hdFoTmTX/QyIvJhi
+         t1kUldhN7ncNvR9yn63zkry9G6szzV1kc+pC7ZvAYdJZbhGo8Ta3Lkq8iHsP1qBCUxr+
+         MKWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mFHlsqUTp6bF1BGPzUjg3LJj5CvZI8A5XHbHTxJpfjI=;
+        b=I8yNlo6buy1W7wtoD6SWZBpoCM/gb0TTnFPD+yecv6Br5SsKgwmy3NAOjJTAyqqFOy
+         cMz0Hc5tXSunVK+/RppcKpMTEnszT8efzdPVy25I9ZKXMO/htKOS1lwWkaK8gIngEIcf
+         ub3RI2Fj+gS5IUOD4I32Dktz/zWwTMALIsm5NtP6n3v6bqoyayjPAXzbglbz8R1RwVL2
+         Xf1CDQpci4mDD3b1jeetJXS2mAkHIrx+DKEzj57SqZXgzEb/c1dUeACM8/tsGo+pWerN
+         Yi1C+ovkYTxvIdqdPuu0CZDZcNB4NQl8Uil/SNaFkNIOQ4J6itLORzuPTrVlItMEU3K6
+         ruKA==
+X-Gm-Message-State: AOAM531KHQd+q+AyGr4Qv5T+xFA28wJumMsUXo8B50eSsdG2tS9vedka
+        IjW4NmUlvu/QTpYOBg1qJwiwELYm1j/tfXWtb+Uhcw==
+X-Google-Smtp-Source: ABdhPJxtpLioQG/Z3NDJwdR4UBTH2EAWi1MSqQgFDS5qx+9E3jTvri8hk9NLITZf4bPTuyioP0r1Q9SVhKuxiHLkINg=
+X-Received: by 2002:a9d:66a:: with SMTP id 97mr2793069otn.233.1600246013074;
+ Wed, 16 Sep 2020 01:46:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
+ <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic>
+ <20200915170248.gcv54pvyckteyhk3@treble> <20200915172152.GR14436@zn.tnic>
+ <CAKwvOdkh=bZE6uY8zk_QePq5B3fY1ue9VjEguJ_cQi4CtZ4xgw@mail.gmail.com>
+ <CANpmjNPWOus2WnMLSAXnzaXC5U5RDM3TTeV8vFDtvuZvrkoWtA@mail.gmail.com> <20200916083032.GL2674@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200916083032.GL2674@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 16 Sep 2020 10:46:41 +0200
+Message-ID: <CANpmjNOBUp0kRTODJMuSLteE=-woFZ2nUzk1=H8wqcusvi+T_g@mail.gmail.com>
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Peter,
-
-Thanks for comments!
-
-peterz@infradead.org writes:
-
-> On Wed, Sep 16, 2020 at 08:59:36AM +0800, Huang Ying wrote:
+On Wed, 16 Sep 2020 at 10:30, <peterz@infradead.org> wrote:
+> On Tue, Sep 15, 2020 at 08:09:16PM +0200, Marco Elver wrote:
+> > On Tue, 15 Sep 2020 at 19:40, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > On Tue, Sep 15, 2020 at 10:21 AM Borislav Petkov <bp@alien8.de> wrote:
 >
->> So in this patch, if MPOL_BIND is used to bind the memory of the
->> application to multiple nodes, and in the hint page fault handler both
->> the faulting page node and the accessing node are in the policy
->> nodemask, the page will be tried to be migrated to the accessing node
->> to reduce the cross-node accessing.
+> > > > init/calibrate.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > init/calibrate.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > > init/version.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > init/version.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > > certs/system_keyring.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > certs/system_keyring.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> >
+> > This one also appears with Clang 11. This is new I think because we
+> > started emitting ASAN ctors for globals redzone initialization.
+> >
+> > I think we really do not care about precise stack frames in these
+> > compiler-generated functions. So, would it be reasonable to make
+> > objtool ignore all *san.module_ctor and *san.module_dtor functions (we
+> > have them for ASAN, TSAN, MSAN)?
 >
-> Seems fair enough..
+> The thing is, if objtool cannot follow, it cannot generate ORC data and
+> our unwinder cannot unwind through the instrumentation, and that is a
+> fail.
 >
->> Questions:
->> 
->> Sysctl knob kernel.numa_balancing can enable/disable AutoNUMA
->> optimizing globally.  And now, it appears that the explicit NUMA
->> memory policy specifying (e.g. via numactl, mbind(), etc.) acts like
->> an implicit per-thread/VMA knob to enable/disable the AutoNUMA
->> optimizing for the thread/VMA.  Although this looks like a side effect
->> instead of an API, from commit fc3147245d19 ("mm: numa: Limit NUMA
->> scanning to migrate-on-fault VMAs"), this is used by some users?  So
->> the question is, do we need an explicit per-thread/VMA knob to
->> enable/disable AutoNUMA optimizing for the thread/VMA?  Or just use
->> the global knob, either optimize all thread/VMAs as long as the
->> explicitly specified memory policies are respected, or don't optimize
->> at all.
->
-> I don't understand the question; that commit is not about disabling numa
-> balancing, it's about avoiding pointless work and overhead. What's the
-> point of scanning memory if you're not going to be allowed to move it
-> anyway.
+> Or am I missing something here?
 
-Because we are going to enable the moving, this makes scanning not
-pointless, but may also introduce overhead.
+They aren't about the actual instrumentation. The warnings are about
+module_ctor/module_dtor functions which are compiler-generated, and
+these are only called on initialization/destruction (dtors only for
+modules I guess).
 
->> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Mel Gorman <mgorman@suse.de>
->> Cc: Rik van Riel <riel@redhat.com>
->> Cc: Johannes Weiner <hannes@cmpxchg.org>
->> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
->> Cc: Dave Hansen <dave.hansen@intel.com>
->> Cc: Andi Kleen <ak@linux.intel.com>
->> Cc: Michal Hocko <mhocko@suse.com>
->> Cc: David Rientjes <rientjes@google.com>
->> ---
->>  mm/mempolicy.c | 43 +++++++++++++++++++++++++++++++------------
->>  1 file changed, 31 insertions(+), 12 deletions(-)
->> 
->> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
->> index eddbe4e56c73..a941eab2de24 100644
->> --- a/mm/mempolicy.c
->> +++ b/mm/mempolicy.c
->> @@ -1827,6 +1827,13 @@ static struct mempolicy *get_vma_policy(struct vm_area_struct *vma,
->>  	return pol;
->>  }
->>  
->> +static bool mpol_may_mof(struct mempolicy *pol)
->> +{
->> +	/* May migrate among bound nodes for MPOL_BIND */
->> +	return pol->flags & MPOL_F_MOF ||
->> +		(pol->mode == MPOL_BIND && nodes_weight(pol->v.nodes) > 1);
->> +}
->
-> This is weird, why not just set F_MOF on the policy?
->
-> In fact, why wouldn't something like:
->
->   mbind(.mode=MPOL_BIND, .flags=MPOL_MF_LAZY);
->
-> work today? Afaict MF_LAZY will unconditionally result in M_MOF.
+E.g. for KASAN it's the calls to __asan_register_globals that are
+called from asan.module_ctor. For KCSAN the tsan.module_ctor is
+effectively a noop (because __tsan_init() is a noop), so it really
+doesn't matter much.
 
-There are some subtle difference.
+Is my assumption correct that the only effect would be if something
+called by them fails, we just don't see the full stack trace? I think
+we can live with that, there are only few central places that deal
+with ctors/dtors (do_ctors(), ...?).
 
-- LAZY appears unnecessary for the per-task memory policy via
-  set_mempolicy().  While migrating among multiple bound nodes appears
-  reasonable as a per-task memory policy.
+The "real" fix would be to teach the compilers about "frame pointer
+save/setup" for generated functions, but I don't think that's
+realistic.
 
-- LAZY also means move the pages not on the bound nodes to the bound
-  nodes if the memory is available.  Some users may want to do that only
-  if should_numa_migrate_memory() returns true.
-
->> @@ -2494,20 +2503,30 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->>  		break;
->>  
->>  	case MPOL_BIND:
->>  		/*
->> +		 * Allows binding to multiple nodes.  If both current and
->> +		 * accessing nodes are in policy nodemask, migrate to
->> +		 * accessing node to optimize page placement. Otherwise,
->> +		 * use current page if in policy nodemask or MPOL_F_MOF not
->> +		 * set, else select nearest allowed node, if any.  If no
->> +		 * allowed nodes, use current [!misplaced].
->>  		 */
->> +		if (node_isset(curnid, pol->v.nodes)) {
->> +			if (node_isset(thisnid, pol->v.nodes)) {
->> +				moron = true;
->> +				polnid = thisnid;
->> +			} else {
->> +				goto out;
->> +			}
->> +		} else if (!(pol->flags & MPOL_F_MOF)) {
->>  			goto out;
->> +		} else {
->> +			z = first_zones_zonelist(
->>  				node_zonelist(numa_node_id(), GFP_HIGHUSER),
->>  				gfp_zone(GFP_HIGHUSER),
->>  				&pol->v.nodes);
->> +			polnid = zone_to_nid(z->zone);
->> +		}
->>  		break;
->>  
->>  	default:
->
-> Did that want to be this instead? I don't think I follow the other
-> changes.
->
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index eddbe4e56c73..2a64913f9ac6 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2501,8 +2501,11 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->  		 * else select nearest allowed node, if any.
->  		 * If no allowed nodes, use current [!misplaced].
->  		 */
-> -		if (node_isset(curnid, pol->v.nodes))
-> +		if (node_isset(curnid, pol->v.nodes)) {
-> +			if (node_isset(thisnod, pol->v.nodes))
-> +				goto moron;
->  			goto out;
-> +		}
->  		z = first_zones_zonelist(
->  				node_zonelist(numa_node_id(), GFP_HIGHUSER),
->  				gfp_zone(GFP_HIGHUSER),
-> @@ -2516,6 +2519,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->  
->  	/* Migrate the page towards the node whose CPU is referencing it */
->  	if (pol->flags & MPOL_F_MORON) {
-> +moron:
->  		polnid = thisnid;
->  
->  		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
-
-Yes.  This looks better if we can just use F_MOF.
-
-Best Regards,
-Huang, Ying
+Thanks,
+-- Marco
