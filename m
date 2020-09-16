@@ -2,85 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0375926CCB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F2926CD51
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728563AbgIPUsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:48:16 -0400
-Received: from mga14.intel.com ([192.55.52.115]:33041 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726669AbgIPRBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:01:14 -0400
-IronPort-SDR: jKvmMRsbXpN7sZlnSB6ivgwpj7SiQxo79MSBd+Pk3uxHs71THSfZfIfHGPsgNkfrYN1oX6IvIF
- RCWsokkpCqxg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="158754290"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="158754290"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 07:32:47 -0700
-IronPort-SDR: NqTeR4wIj1OCxUIlK2a2Me8rV1JTj9i1KRs4rY8sa8onkkOG/Lo1Fpop9ZWNw465PdC1OlCfYo
- Bo+day95h8xg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="336043207"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 16 Sep 2020 07:32:44 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kIYUD-00H6OZ-0J; Wed, 16 Sep 2020 17:32:41 +0300
-Date:   Wed, 16 Sep 2020 17:32:41 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dan Scally <djrscally@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        kieran.bingham@ideasonboard.com, jorhand@linux.microsoft.com,
-        kitakar@gmail.com
-Subject: Re: [PATCH v2] software_node: Add support for fwnode_graph*() family
- of functions
-Message-ID: <20200916143241.GL3956970@smile.fi.intel.com>
-References: <20200915232827.3416-1-djrscally@gmail.com>
- <20200916091707.GL834@valkosipuli.retiisi.org.uk>
- <7b81d743-736d-62d1-7072-d08759a0d5d7@gmail.com>
+        id S1728526AbgIPU5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:57:54 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42975 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726380AbgIPQwV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:52:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600275085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f48/ra56w9B62BBt1KxgQmjI18k2gbv7FH5W25ynCbY=;
+        b=Jxejz/39hX8Etd2wKUwmvzfvHhM3k2eRMjkAYUxRnVrnzuinZb+0l6vrCE9ZEEQAOxnbfN
+        1UKfXDSMiaSuCvC6j+91wYuPlG+xzZo1O9PQ39ZMCt4C8s5xVaNSavQCrqnNfgjmKB5JpT
+        1HvFPmrLDpoUKhmbHeYijZXlHkH6I9Y=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-t2RRroz9NXW14a84qgs8pQ-1; Wed, 16 Sep 2020 10:33:16 -0400
+X-MC-Unique: t2RRroz9NXW14a84qgs8pQ-1
+Received: by mail-pl1-f199.google.com with SMTP id p24so3366331plq.23
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:33:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=f48/ra56w9B62BBt1KxgQmjI18k2gbv7FH5W25ynCbY=;
+        b=NNMJn0xzymioYXhqjv8KueQseHiSadaYqa7ItzcLxdz8ljHR1GysW91j2oNhokALRE
+         sIQRzYx1XnXJ4edcRNy13taGeyxzcUOKufr1nIXr3e7Zb6KxPuYiJ5ZsnZAFIAwuajpm
+         zqfB4cX9TZ9AZ06gVI/MfyAJ5fEaB9Q2MtIJ2SEN4RqtEBuCPDpDnAWVwGwSwRQZaEY0
+         kZp7e5rf6Sok8iZYusP0pkl2Z3l1X7y6zfoadeu/HYZ8e6vYJ9pVbgxCPHTM9QUpyJ0V
+         wWQsDn3YIcdwXRv1txaOwoo5I2o2IqLYH8iUC7Rjhp91ja72nH/pGXetsr3quFZn6QwW
+         40JA==
+X-Gm-Message-State: AOAM531B4knvgUbDhfQSwYbRZ9DRUkYTxa4/xTOEq5aDxXi6N6vMCH+c
+        odCiDBh39mQmOox7t/MSXZlbt6CT46lrgwqLLnc3576XYtUcNIPzLmMHRj+HPx6m7H0fFGu6cHg
+        qczT0YwFczI9y+gaeCmw8b5rd
+X-Received: by 2002:a17:90b:3c7:: with SMTP id go7mr4171138pjb.97.1600266794908;
+        Wed, 16 Sep 2020 07:33:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHH2Cu+A6m25LC2Er3YghzATjk7FFDZK//oX57Fg5jRTz7kqdKqb5euQfouEwGEccpx5K+FQ==
+X-Received: by 2002:a17:90b:3c7:: with SMTP id go7mr4171115pjb.97.1600266794661;
+        Wed, 16 Sep 2020 07:33:14 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id c22sm14544442pgb.52.2020.09.16.07.33.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 07:33:14 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 22:33:04 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>
+Subject: Re: [PATCH] erofs: remove unneeded parameter
+Message-ID: <20200916143304.GA23176@xiangao.remote.csb>
+References: <20200916140604.3799-1-chao@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7b81d743-736d-62d1-7072-d08759a0d5d7@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200916140604.3799-1-chao@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 02:22:10PM +0100, Dan Scally wrote:
-> On 16/09/2020 10:17, Sakari Ailus wrote:
-> > On Wed, Sep 16, 2020 at 12:28:27AM +0100, Daniel Scally wrote:
+Hi Chao,
 
-...
+On Wed, Sep 16, 2020 at 10:06:04PM +0800, Chao Yu wrote:
+> From: Chao Yu <yuchao0@huawei.com>
+> 
+> In below call path, no page will be cached into @pagepool list
+> or grabbed from @pagepool list:
+> - z_erofs_readpage
+>  - z_erofs_do_read_page
+>   - preload_compressed_pages
+>   - erofs_allocpage
+> 
+> Let's get rid of this unneeded parameter.
 
-> >> @@ -450,7 +455,7 @@ software_node_get_next_child(const struct fwnode_handle *fwnode,
-> >>  		c = list_next_entry(c, entry);
-> >>  	else
-> >>  		c = list_first_entry(&p->children, struct swnode, entry);
-> >> -	return &c->fwnode;
-> >> +	return software_node_get(&c->fwnode);
-> > This looks like a bugfix that probably should or could be backported. Could
-> > you make it a separate patch, with a Fixes: tag?
-> Yes, sure. That does change how some of the other code would need to
-> work though if this patch were applied but not the separated one. Sorry;
-> not sure what's the best way to proceed in that case. Should I just note
-> that this patch depends on the prior application of the separated one?
+That would be unneeded after .readahead() is introduced recently
+(so add_to_page_cache_lru() is also moved to mm code), so I agree
+with you on it.
 
-It's easy to achieve. You may create a series of two, where the second one
-dependant on the first one and first one has a Fixes tag and subject to
-backport. I guess that's what Sakari meant.
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  fs/erofs/utils.c |  2 +-
+>  fs/erofs/zdata.c | 14 ++++++--------
+>  2 files changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
+> index de9986d2f82f..7a6e5456b0b8 100644
+> --- a/fs/erofs/utils.c
+> +++ b/fs/erofs/utils.c
+> @@ -11,7 +11,7 @@ struct page *erofs_allocpage(struct list_head *pool, gfp_t gfp)
+>  {
+>  	struct page *page;
+>  
+> -	if (!list_empty(pool)) {
+> +	if (pool && !list_empty(pool)) {
+>  		page = lru_to_page(pool);
+>  		DBG_BUGON(page_ref_count(page) != 1);
+>  		list_del(&page->lru);
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index 6c939def00f9..f218f58f4159 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -153,8 +153,7 @@ static DEFINE_MUTEX(z_pagemap_global_lock);
+>  
+>  static void preload_compressed_pages(struct z_erofs_collector *clt,
+>  				     struct address_space *mc,
+> -				     enum z_erofs_cache_alloctype type,
+> -				     struct list_head *pagepool)
+> +				     enum z_erofs_cache_alloctype type)
+>  {
+>  	const struct z_erofs_pcluster *pcl = clt->pcl;
+>  	const unsigned int clusterpages = BIT(pcl->clusterbits);
+> @@ -562,8 +561,7 @@ static bool should_alloc_managed_pages(struct z_erofs_decompress_frontend *fe,
+>  }
+>  
+>  static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+> -				struct page *page,
+> -				struct list_head *pagepool)
+> +				struct page *page)
+>  {
+>  	struct inode *const inode = fe->inode;
+>  	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
+> @@ -621,7 +619,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+>  		cache_strategy = DONTALLOC;
+>  
+>  	preload_compressed_pages(clt, MNGD_MAPPING(sbi),
+> -				 cache_strategy, pagepool);
+> +				 cache_strategy);
+>  
+>  hitted:
+>  	/*
+> @@ -653,7 +651,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+>  	/* should allocate an additional staging page for pagevec */
+>  	if (err == -EAGAIN) {
+>  		struct page *const newpage =
+> -			erofs_allocpage(pagepool, GFP_NOFS | __GFP_NOFAIL);
+> +			erofs_allocpage(NULL, GFP_NOFS | __GFP_NOFAIL);
 
-> >>  }
+Could we use allocpage instead, so erofs_allocpage modification is unneeded as well :)
 
--- 
-With Best Regards,
-Andy Shevchenko
-
+Thanks,
+Gao Xiang
 
