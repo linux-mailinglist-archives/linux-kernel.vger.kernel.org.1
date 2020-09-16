@@ -2,114 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EE226BC49
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F30226BC44
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgIPGMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:12:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43836 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726068AbgIPGMP (ORCPT
+        id S1726128AbgIPGLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:11:36 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:13750 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726133AbgIPGLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:12:15 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G62ZqJ100274;
-        Wed, 16 Sep 2020 02:11:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=zpQLGYprIJVoDk6lF9ZtdIAdspfOziYDgtS7miJMIT4=;
- b=dyBFUMw5lP1zdE0clQOl05X3BpZkOdRQLQhoeeXPXyy/zSVgPXvVlrKw0CSI3BjQGUUI
- vUOwEYG8Va0Yzep6PHwiIN+rnP9xCUIN4a58EyjiobVeKzomgsmqbkfPgJ6tN1PQ1fbI
- PeZJDIMHAPTAV/Tj3J9Z/plb6hE1rzzOJGJXzyjZR4FaCyI/D34RDw+kOxqJ6IREp5Xe
- NBJbPVr7PTrEvF/mxAQWsnzNsTq67QLwK83QlUDsP7GWfsGTxt+f2rUxJmyDG+QoUs0s
- /0z3irpknbcas8soy3nN64KDvlNDGZGt0UcipbKglLFkYvtXfas2tZ9H33n9EJXNKu6a Wg== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33kaf4v0p0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 02:11:57 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08G5qt0J012875;
-        Wed, 16 Sep 2020 06:11:55 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 33k64s85gf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 06:11:54 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08G6BqJg20709678
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 06:11:52 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 874CAA405C;
-        Wed, 16 Sep 2020 06:11:52 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6578FA4066;
-        Wed, 16 Sep 2020 06:11:50 +0000 (GMT)
-Received: from satheesh.ibmuc.com (unknown [9.85.113.207])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Sep 2020 06:11:50 +0000 (GMT)
-From:   sathnaga@linux.vnet.ibm.com
-To:     linux-doc@vger.kernel.org
-Cc:     Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH] Doc: admin-guide: Add entry for kvm_cma_resv_ratio kernel param
-Date:   Wed, 16 Sep 2020 11:41:30 +0530
-Message-Id: <20200916061130.723411-1-sathnaga@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 16 Sep 2020 02:11:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600236692; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=30Wxt5LINfxOWQh4oSmMSj1uCTms/++Sl9cbHSypEuQ=;
+ b=AIozxk0Ob3r5DwI3Tn9u7kYtVoG4ttopdEbI6G+5N2Sq5inGMnJ1vLlWt6+leioEl/L+9U2J
+ QY7bwVsbvH1fhS62+0WneNnBwcDu6oDyfC3QOAgDraeCqwFdHME7L9NuqybMZt8+uhmmoXZh
+ bsJqa/C8P4h8VCmnM8hs65GKZl0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f61ac94698ee477d1bda452 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 06:11:32
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E9DBFC433C8; Wed, 16 Sep 2020 06:11:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 518ABC433CA;
+        Wed, 16 Sep 2020 06:11:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 518ABC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_02:2020-09-15,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- clxscore=1011 lowpriorityscore=0 mlxlogscore=999 impostorscore=0
- mlxscore=0 malwarescore=0 suspectscore=3 spamscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160043
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH -next 1/3] rtlwifi: rtl8188ee: fix comparison pointer to
+ bool
+ warning in phy.c
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200910135917.143723-2-zhengbin13@huawei.com>
+References: <20200910135917.143723-2-zhengbin13@huawei.com>
+To:     Zheng Bin <zhengbin13@huawei.com>
+Cc:     <pkshih@realtek.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <zhengbin13@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200916061131.E9DBFC433C8@smtp.codeaurora.org>
+Date:   Wed, 16 Sep 2020 06:11:31 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Zheng Bin <zhengbin13@huawei.com> wrote:
 
-Add document entry for kvm_cma_resv_ratio kernel param which
-is used to alter the KVM contiguous memory allocation percentage
-for hash pagetable allocation used by hash mode PowerPC KVM guests.
+> Fixes coccicheck warning:
+> 
+> drivers/net/wireless/realtek/rtlwifi/rtl8188ee/phy.c:1584:14-18: WARNING: Comparison to bool
+> 
+> Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
 
-Cc: linux-kernel@vger.kernel.org
-Cc: kvm-ppc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Jonathan Corbet <corbet@lwn.net>  
-Signed-off-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 9 +++++++++
- 1 file changed, 9 insertions(+)
+3 patches applied to wireless-drivers-next.git, thanks.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1068742a6df..9cb126573c71 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -599,6 +599,15 @@
- 			altogether. For more information, see
- 			include/linux/dma-contiguous.h
- 
-+        kvm_cma_resv_ratio=n
-+                        [PPC]
-+                        Reserves given percentage from system memory area for
-+                        contiguous memory allocation for KVM hash pagetable
-+                        allocation.
-+                        Bydefault it reserves 5% of total system memory.
-+                        Format: <integer>
-+                        Default: 5
-+
- 	cmo_free_hint=	[PPC] Format: { yes | no }
- 			Specify whether pages are marked as being inactive
- 			when they are freed.  This is used in CMO environments
+6996e70f1fe4 rtlwifi: rtl8188ee: fix comparison pointer to bool warning in phy.c
+f40adfd07418 rtlwifi: rtl8188ee: fix comparison pointer to bool warning in trx.c
+916c3b969d21 rtlwifi: rtl8188ee: fix comparison pointer to bool warning in hw.c
+
 -- 
-2.26.2
+https://patchwork.kernel.org/patch/11769245/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
