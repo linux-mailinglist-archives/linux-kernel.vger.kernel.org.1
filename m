@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6896B26BDA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3D826BDA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgIPHD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbgIPHDc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:03:32 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4A0C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:03:29 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id u8so5824850lff.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M12YDuTVvt+O6a6j14Ji1m8Yc8t57W8FWhVTEPcXPko=;
-        b=X+UdvNV0gLviBsZVNU1eTnJvgyzJ3C/83NeiTvlFv7udajGxKr0hO38zMqHa83b64m
-         +oqgNGtTVLDFVtMqM05F6psBG2lNed5ulXOAFTkKbXmc+0Vb0UN4/kJLUkPw1iZJyN+I
-         4r4ckgPVogthrYw3zFLSdRpthF2O7GthuKTet7GVJzNAN6ZEw9srTNt1axssCUmpPh1J
-         KJ3X2dNHUBnb1Xdv1OPPkYNYJD2256LYz3imAauX7ZeUM099TolyNv7yjHIQXIEdEbCI
-         i3wldrXjsxExWSoH2Utwyok6GKvlg+l+LFav+40Zs4nQ8jQ6Zfcqm2j6ZStK4Hs9lVq7
-         vpbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M12YDuTVvt+O6a6j14Ji1m8Yc8t57W8FWhVTEPcXPko=;
-        b=AqeFEey/UgS/EAcmQBxi7/x/wfFfLBkphMR2wYXt+Mbaq/ptTP7sEaJS5vHqFMSHRu
-         2XMFkPFPf88Xp4YEqk6etRTxuegxT62AFvgU0ahznOpQykDRYb89Xhb9yVf0mz7VmNAY
-         Y8XaucNXCQPDhOT05oivLIdk1V7YPzQZ+TtLOoRuvJFEi5kNHY4awF3acm3AnJAs+iuV
-         C0BqSA3UPyOQT4r1OlOZnFfcISDFizuyadysX0Ktl4BbrRy3r4AHf6rdavhpLuZ5eGF1
-         rWSRe/ivUxDwxpOJ6kW7SRMaOk6t1P9bllsRR3Rtsj0EjrxxvSf5Y6mQw3SO/+c9WUkI
-         BetA==
-X-Gm-Message-State: AOAM532FZmbhTHhGfC92+QaxkXZMEY9IRMG6y0R80G1ATBHw+TSZe6mi
-        QwyzwaXdGYq8RfpiO62Hmf9AHejUXD8tzfM1a8A=
-X-Google-Smtp-Source: ABdhPJzUy8QTD5LyU08DmUIRFAn8urrEgdi9G0nwiMU+5bZNnYnwgAe4yY9rBxaXbB9r+FlHjBf9UqTfoq1dlQutaqU=
-X-Received: by 2002:a19:189:: with SMTP id 131mr6663801lfb.331.1600239808160;
- Wed, 16 Sep 2020 00:03:28 -0700 (PDT)
+        id S1726132AbgIPHEo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Sep 2020 03:04:44 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3605 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726234AbgIPHEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:04:35 -0400
+Received: from dggemi402-hub.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id 56F863036FD63F611675;
+        Wed, 16 Sep 2020 15:04:31 +0800 (CST)
+Received: from DGGEMI424-HUB.china.huawei.com (10.1.199.153) by
+ dggemi402-hub.china.huawei.com (10.3.17.135) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Wed, 16 Sep 2020 15:04:30 +0800
+Received: from DGGEMI522-MBS.china.huawei.com ([169.254.8.78]) by
+ DGGEMI424-HUB.china.huawei.com ([10.1.199.153]) with mapi id 14.03.0487.000;
+ Wed, 16 Sep 2020 15:04:24 +0800
+From:   lushenming <lushenming@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
+        yuzenghui <yuzenghui@huawei.com>
+Subject: RE: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll
+ on the GICR_VPENDBASER.Dirty bit
+Thread-Topic: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll
+ on the GICR_VPENDBASER.Dirty bit
+Thread-Index: AdaLYvuHeQKSQv5lQ9G9IAytgjmwLv//klKA//55OFA=
+Date:   Wed, 16 Sep 2020 07:04:24 +0000
+Message-ID: <343E0E168479F04FACCB176989D12DE7EE3206@dggemi522-mbs.china.huawei.com>
+References: <343E0E168479F04FACCB176989D12DE7EE1D2D@dggemi522-mbs.china.huawei.com>
+ <a87d26bc52b25247dd23e5cb1cd56bad@kernel.org>
+In-Reply-To: <a87d26bc52b25247dd23e5cb1cd56bad@kernel.org>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.184.59]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble> <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
- <20200915204912.GA14436@zn.tnic> <20200915210231.ysaibtkeibdm4zps@treble> <CAKwvOdmptEpi8fiOyWUo=AiZJiX+Z+VHJOM2buLPrWsMTwLnyw@mail.gmail.com>
-In-Reply-To: <CAKwvOdmptEpi8fiOyWUo=AiZJiX+Z+VHJOM2buLPrWsMTwLnyw@mail.gmail.com>
-From:   Ilie Halip <ilie.halip@gmail.com>
-Date:   Wed, 16 Sep 2020 10:03:16 +0300
-Message-ID: <CAHFW8PS0WYdfO01XwmLa+3w2W-z_FF_a5eeF8Z-YfuCMQ15ccw@mail.gmail.com>
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Marco Elver <elver@google.com>, Borislav Petkov <bp@alien8.de>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Should objtool be made aware of the config option and then not check
-> traps after no-returns?
->
-> I suspect the latter, but I'm not sure how feasible it is to
-> implement.  Josh, Marco, do you have thoughts on the above?
+Hi,
 
-This seems to do the trick.
+Our team just discussed this issue again and consulted our GIC hardware 
+design team. They think the RD can afford busy waiting. So we still think 
+maybe 0 is better, at least for our hardware.
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e034a8f24f46..9224e6565ba2 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2612,9 +2612,10 @@ static bool is_ubsan_insn(struct instruction *insn)
-                        "__ubsan_handle_builtin_unreachable"));
- }
+In addition, if not 0, as I said before, in our measurement, it takes only 
+hundreds of nanoseconds, or 1~2 microseconds, to finish parsing the VPT 
+in most cases. So maybe 1 microseconds, or smaller, is more appropriate. 
+Anyway, 10 microseconds is too much.
 
--static bool ignore_unreachable_insn(struct instruction *insn)
-+static bool ignore_unreachable_insn(struct objtool_file *file, struct
-instruction *insn)
- {
-        int i;
-+       struct instruction *prev_insn;
+But it has to be said that it does depend on the hardware implementation.
 
-        if (insn->ignore || insn->type == INSN_NOP)
-                return true;
-@@ -2640,7 +2641,8 @@ static bool ignore_unreachable_insn(struct
-instruction *insn)
-         * the UD2, which causes GCC's undefined trap logic to emit another UD2
-         * (or occasionally a JMP to UD2).
-         */
--       if (list_prev_entry(insn, list)->dead_end &&
-+       prev_insn = list_prev_entry(insn, list);
-+       if ((prev_insn->dead_end || dead_end_function(file,
-prev_insn->call_dest)) &&
-            (insn->type == INSN_BUG ||
-             (insn->type == INSN_JUMP_UNCONDITIONAL &&
-              insn->jump_dest && insn->jump_dest->type == INSN_BUG)))
-@@ -2767,7 +2769,7 @@ static int
-validate_reachable_instructions(struct objtool_file *file)
-                return 0;
+Besides, I'm not sure where are the start and end point of the total scheduling 
+latency of a vcpu you said, which includes many events. Is the parse time of 
+the VPT not clear enough?
 
-        for_each_insn(file, insn) {
--               if (insn->visited || ignore_unreachable_insn(insn))
-+               if (insn->visited || ignore_unreachable_insn(file, insn))
-                        continue;
+-----Original Message-----
+From: Marc Zyngier [mailto:maz@kernel.org] 
+Sent: 2020-09-15 22:48
+To: lushenming <lushenming@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>; Jason Cooper <jason@lakedaemon.net>; linux-kernel@vger.kernel.org; Wanghaibin (D) <wanghaibin.wang@huawei.com>; yuzenghui <yuzenghui@huawei.com>
+Subject: Re: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll on the GICR_VPENDBASER.Dirty bit
 
-                WARN_FUNC("unreachable instruction", insn->sec, insn->offset);
+On 2020-09-15 15:04, lushenming wrote:
+> Thanks for your quick response.
+> 
+> Okay, I agree that busy-waiting may add more overhead at the RD level.
+> But I think that the delay time can be adjusted. In our latest 
+> hardware implementation, we optimize the search of the VPT, now even 
+> the VPT full of interrupts (56k) can be parsed within 2 microseconds.
+
+It's not so much when the VPT is full that it is bad. It is when the pending interrupts are not cached, and that you don't know *where* to look for them in the VPT.
+
+> It is true that the parse speeds of various hardware are different, 
+> but does directly waiting for 10 microseconds make the optimization of 
+> those fast hardware be completely masked? Maybe we can set the delay 
+> time smaller, like 1 microseconds?
+
+That certainly would be more acceptable. But I still question the impact of such a change compared to the cost of a vcpu entry. I suggest you come up with measurements that actually show that polling this register more often significantly reduces the entry latency. Only then can we make an educated decision.
+
+Thanks,
+
+         M.
+--
+Jazz is not dead. It just smells funny...
