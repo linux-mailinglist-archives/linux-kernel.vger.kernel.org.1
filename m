@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0D926BC1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BA226BC1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgIPGEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:04:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39288 "EHLO mail.kernel.org"
+        id S1726210AbgIPGEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:04:48 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58342 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726093AbgIPGEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:04:04 -0400
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726201AbgIPGEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:04:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600236280; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=VgFebId3auB33K7tE5xP4EvXL7YZHYz+oP3jsKum9Vg=;
+ b=nv+GvzegU47nHamcY8AjcQsg4/mGtcfdUwNP4FfsVFYw6iW4oRUefcJfdesEYJVEUm+yF1qW
+ EhdMiVR5i8YuyFmuQMw1lXt44o5NFsAWZZxBJARbL+LoVZH7Gy7wUEZAtukqJauvVdK8wog2
+ IqLKwpMwstwLUrmm19MBxoLjG9A=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f61aaca238e1efa370a7c18 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 06:03:54
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 089B8C433CA; Wed, 16 Sep 2020 06:03:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 257AB2220E;
-        Wed, 16 Sep 2020 06:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600236243;
-        bh=MGLUFXU7bgEiOq2QwCLtokuXU6KQpofMXm9tQrG1+AA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xu9fAoLMxR+Sbne3nolGsptpoYBDPw5I5CfHKOMDdMWT0Fz/JyJVq6/ylx7FJzdOf
-         x4/Kf10phhEzTQnup4DRMwW21ZWts2uITWbwa7Gj4pcZZB3kCEofefRTFqVTvzCZgB
-         L02kMFOYEVDi3qDPM8ksi9I9Ys65VVf7t7YZO/r4=
-Received: by mail-ed1-f46.google.com with SMTP id n22so5050347edt.4;
-        Tue, 15 Sep 2020 23:04:03 -0700 (PDT)
-X-Gm-Message-State: AOAM531B78Ia81StDogJYBq46fGvzRYnpYrPLmsX+50GHNX/zSGjj7B+
-        wr+pSELRIO6KagrAHVA9NlNUC7EjbXLCuF8D80Q=
-X-Google-Smtp-Source: ABdhPJzf7bf8D+dhy3zqQalV6k7pR+DsnqPe6uDFJBoNyVs7vkIF4YE5WM1N/PIcrsuSHlEipJiegQiLr568kZELN94=
-X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr25423402edb.143.1600236241549;
- Tue, 15 Sep 2020 23:04:01 -0700 (PDT)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B8DF7C433CA;
+        Wed, 16 Sep 2020 06:03:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B8DF7C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <1600054147-29997-1-git-send-email-Anson.Huang@nxp.com>
- <1600054147-29997-2-git-send-email-Anson.Huang@nxp.com> <CAJKOXPfuz=vf9tCn8ZJ9dz2iAG_p61VvPWc9P=kp7nMy7tb6xw@mail.gmail.com>
- <DB3PR0402MB39168692AC262B7BFA21D0C0F5210@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB39168692AC262B7BFA21D0C0F5210@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 16 Sep 2020 08:03:49 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPd-VZAOcezOS5-18te6OQZ53BU24su3WmAf+=Gtt8aBtw@mail.gmail.com>
-Message-ID: <CAJKOXPd-VZAOcezOS5-18te6OQZ53BU24su3WmAf+=Gtt8aBtw@mail.gmail.com>
-Subject: Re: [PATCH V2 RESEND 2/4] arm64: defconfig: Build in CONFIG_GPIO_MXC
- by default
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        "andreas@kemnade.info" <andreas@kemnade.info>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        "prabhakar.mahadev-lad.rj@bp.renesas.com" 
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "lkundrak@v3.sk" <lkundrak@v3.sk>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "michael@walle.cc" <michael@walle.cc>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] brcmsmac: phy_lcn: Remove unused variable
+ lcnphy_rx_iqcomp_table_rev0
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200910035600.21736-1-yuehaibing@huawei.com>
+References: <20200910035600.21736-1-yuehaibing@huawei.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
+        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
+        <wright.feng@cypress.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <lee.jones@linaro.org>,
+        <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200916060354.089B8C433CA@smtp.codeaurora.org>
+Date:   Wed, 16 Sep 2020 06:03:54 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 at 03:59, Anson Huang <anson.huang@nxp.com> wrote:
->
-> Hi, Krzysztof
->
-> > Subject: Re: [PATCH V2 RESEND 2/4] arm64: defconfig: Build in
-> > CONFIG_GPIO_MXC by default
-> >
-> > On Mon, 14 Sep 2020 at 05:36, Anson Huang <Anson.Huang@nxp.com>
-> > wrote:
-> > >
-> > > i.MX GPIO is NOT default enabled now, so select CONFIG_GPIO_MXC as
-> > > built-in manually.
-> >
-> > Maybe it should stay not enabled? Please explain in commit msg why it should
-> > be enabled.
->
-> The CONFIG_GPIO_MXC is necessary for all the i.MX SoCs, as it provides the basic
-> function of GPIO pin operations and IRQ operations, it is enabled by default previously
-> with " def_bool y " in Kconfig, now it is changed to tristate, so it should be explicitly
-> enabled in defconfig to make sure it does NOT break any existing functions, that is
-> why I list " i.MX GPIO is NOT default enabled now, so select CONFIG_GPIO_MXC as
-> built-in manually " in commit msg, it aims to NOT change any previous behaviors.
+YueHaibing <yuehaibing@huawei.com> wrote:
 
-Sure, I was just saying that all this should be in commit msg. The
-commit should explain why it is there in the Linux kernel.
+> drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c:361:25: warning: ‘lcnphy_rx_iqcomp_table_rev0’ defined but not used [-Wunused-const-variable=]
+>  struct lcnphy_rx_iqcomp lcnphy_rx_iqcomp_table_rev0[] = {
+>                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> commit 38c95e0258a0 ("brcmsmac: phy_lcn: Remove a bunch of unused variables")
+> left behind this, remove it.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Best regards,
-Krzysztof
+Already fixed by Lee
+
+Patch set to Rejected.
+
+-- 
+https://patchwork.kernel.org/patch/11766483/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
