@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2ED26C920
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913C026C977
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728361AbgIPTDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727472AbgIPRsR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:17 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B41EC0086B9;
-        Wed, 16 Sep 2020 06:43:48 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id o16so8116595qkj.10;
-        Wed, 16 Sep 2020 06:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding:content-disposition;
-        bh=i+kt8NbkJcxlxgcLxVS6CeOWPHcc3xF+IDhB44RR268=;
-        b=K+ltZlIe+PijHm11DJWUqDWOGK2CdfuB9iqjxvoegeouGbkxeLuGjgXq8AfRPqyc83
-         5BHzN7xmpjLoZdpzmrN8ETQ1hUjyyZZKVHQpiXj/S5ufWgFvtFmGrrQY2Xbds/0CWUxa
-         gs3PLHuK9TjcK6GhGS7+T4bc5U802IRNgTkWD9hkDuzsvjatOhilPYNN78lpKbZ1diRt
-         e+azuXZ6VvKEU+qC3SInjzTlG17ZqHbogJEvggkUFdJodfY8cDjE9zaWR8RYUcp1v64/
-         fUikdKP51cMfrylKb6jB/4YcOSCuSuVolzOLl0jovm/fs32vnYF7G+dEGjYT4agmpI0C
-         sG6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding
-         :content-disposition;
-        bh=i+kt8NbkJcxlxgcLxVS6CeOWPHcc3xF+IDhB44RR268=;
-        b=Fv1dM/0BnCmDfadhi/q2uokbKxGKOiRu3183MDeuBrh2vOnz8wSBVhxCfhQJT+nVIk
-         CgmK1mE1JPSXTR91THX4TKY9DsM2Ed/GKavfC3bWd4+wXXlAFt3jhARNnfEbGyrlnYcQ
-         DzdSzmOEK2OJJ8gVjZ71bSGKAyYw5RRIyQNCwSKStqH2qojOYccfBldkRrErpjdLJh9x
-         SQ/tWl0M0Ab7qr2yUiCBPjRvonx4utRPZBMsADdjpW6A24Avm8IirI7z9G4OBMPCJXra
-         1dXXtzb9JKv3YWj+1yf9NRGHtTjKFYGvMcegJjK4TrnBlwhO4Nezx/ljSRBs6MDGR8Mp
-         n7VQ==
-X-Gm-Message-State: AOAM533P51JQwKs1UrWsFEIrMK9+ML7qxf0hw1vpvXdS7O5l5CSGmNPW
-        3jJ6exeI4wxaYt5eNkoXkBhzGrKk2Tr0FQ==
-X-Google-Smtp-Source: ABdhPJwQ2ByIHypHf9G8Fq55SO7s2+ErkosiVaEblPF4LX6tR/hvnvJnDSyT3oXWCruYXXL3omPuVw==
-X-Received: by 2002:a37:9f4e:: with SMTP id i75mr21405479qke.180.1600263827681;
-        Wed, 16 Sep 2020 06:43:47 -0700 (PDT)
-Received: from dwls-dell ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
-        by smtp.gmail.com with ESMTPSA id w6sm18891846qti.63.2020.09.16.06.43.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Sep 2020 06:43:46 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 10:43:42 -0300
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "=?utf-8?Q?r.verdejo=40samsung.com?=" <r.verdejo@samsung.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "=?utf-8?Q?nicolas=40ndufresne.ca?=" <nicolas@ndufresne.ca>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "=?utf-8?Q?linux-kernel-mentees=40lists.linuxfoundation.org?=" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <BAE73C66-D2B7-44A5-8CD9-72D0430BEED7@getmailspring.com>
-In-Reply-To: <CAMuHMdXjA7q-v-mYY9DChC0XQbv9vfW6c3Vfn07-H-FgBr+izA@mail.gmail.com>
-References: <CAMuHMdXjA7q-v-mYY9DChC0XQbv9vfW6c3Vfn07-H-FgBr+izA@mail.gmail.com>
-Subject: Re: [PATCH] media: vidtv: fix build on 32bit architectures
-X-Mailer: Mailspring
+        id S1727435AbgIPTJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:09:44 -0400
+Received: from lobo.ruivo.org ([173.14.175.98]:34502 "EHLO lobo.ruivo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727304AbgIPRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:43:53 -0400
+Received: by lobo.ruivo.org (Postfix, from userid 1011)
+        id E3B61531B1; Wed, 16 Sep 2020 09:54:18 -0400 (EDT)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on tate.lan.ruivo
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=3.5 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from jake.ruivo.org (bob.qemu.ruivo [192.168.72.19])
+        by lobo.ruivo.org (Postfix) with ESMTPA id 27AA352ACB;
+        Wed, 16 Sep 2020 09:53:59 -0400 (EDT)
+Received: by jake.ruivo.org (Postfix, from userid 1000)
+        id 04ED01A1A61; Wed, 16 Sep 2020 09:53:59 -0400 (EDT)
+Date:   Wed, 16 Sep 2020 09:53:58 -0400
+From:   Aristeu Rozanski <aris@ruivo.org>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     naoya.horiguchi@nec.com, akpm@linux-foundation.org,
+        mhocko@kernel.org, tony.luck@intel.com, cai@lca.pw,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 0/5] HWpoison: further fixes and cleanups
+Message-ID: <20200916135358.GB17169@cathedrallabs.org>
+References: <20200914101559.17103-1-osalvador@suse.de>
+ <20200915212222.GA18315@cathedrallabs.org>
+ <20200916072658.GA10692@linux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200916072658.GA10692@linux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro, Geert,
+Hi Oscar,
 
-> That doesn't seem to be the right thing to do here.
->
-> Assuming that sampling rate is 48 kHz, you'll
-> have duration = 1.875, which would be rounded to 1.
->
-> In other words, the above is identical to:
->
-> au->pts = count
->
-> Now, I don't know from where that CLOCK_UNIT_90KHZ came from.
->
+On Wed, Sep 16, 2020 at 09:27:02AM +0200, Oscar Salvador wrote:
+> Could you please re-run the tests with the below patch applied, and
+> attached then the logs here?
 
-Mauro, here's my current understanding:
+here it is:
+(removed previous dump_page() calls for other pages that didn't fail)
 
-The values for PTS have to be defined in terms of a 90khz clock. 
+[  109.709342] Soft offlining pfn 0x3fb526 at process virtual address 0x7ffc7a180000
+[  109.716969] page:00000000f367dde5 refcount:1 mapcount:0 mapping:0000000000000000 index:0x7ffc7a18 pfn:0x3fb526
+[  109.716978] anon flags: 0x3ffff80008000e(referenced|uptodate|dirty|swapbacked)
+[  109.716988] raw: 003ffff80008000e 5deadbeef0000100 5deadbeef0000122 c000003fcd56d839
+[  109.716997] raw: 000000007ffc7a18 0000000000000000 00000001ffffffff c000003fd42f5000
+[  109.717005] page dumped because: page_handle_poison
+[  109.717011] page->mem_cgroup:c000003fd42f5000
+[  109.725882] page_handle_poison: hugepage_or_freepage failed
+[  109.725885] __soft_offline_page: page_handle_poison -EBUSY
+[  109.725898] page:00000000f367dde5 refcount:3 mapcount:0 mapping:00000000b43d73e6 index:0x58 pfn:0x3fb526
+[  109.725951] aops:xfs_address_space_operations [xfs] ino:49f9c5f dentry name:"messages"
+[  109.725958] flags: 0x3ffff800002008(dirty|private)
+[  109.725963] raw: 003ffff800002008 5deadbeef0000100 5deadbeef0000122 c000003fb8b7eea8
+[  109.725969] raw: 0000000000000058 c000003fdd94eb20 00000003ffffffff c000003fd3c42000
+[  109.725975] page dumped because: __soft_offline_page after migrate
+[  109.725980] page->mem_cgroup:c000003fd3c42000
 
-So for 30fps video, the values for PTS per frame would be:
-
-frame_num/30 * 90000
-
-so 0, 3000, 6000, 9000...etc
-
-The same math is being used here for audio, but instead we have the
-total audio sample count and a 48000 samples/sec
-
-
-I did miss this rounding error though, I'm sorry.
-
-
+-- 
+Aristeu
 
