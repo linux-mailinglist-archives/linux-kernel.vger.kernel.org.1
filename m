@@ -2,114 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F43C26CF19
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5B026CF1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgIPWu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:50:26 -0400
-Received: from mga03.intel.com ([134.134.136.65]:54656 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726280AbgIPWuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:50:19 -0400
-IronPort-SDR: th8Eg01hoTrJhw/58i4gwNIpkBPOB8Yp5+ieRBXJmFQI2sM6/UH6+QK8A6ixY3wvgmudRVgvt1
- +mjFgyeffh1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="159631868"
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="159631868"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 15:50:18 -0700
-IronPort-SDR: Wucms044M2dJy6yu4PwISQysgWFV9TvAzVd3c/iminns7GJTmeX8fH37PW8oLYqE84RcoDX9pf
- kV+strBvDXkw==
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="508169587"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 15:50:17 -0700
-Date:   Wed, 16 Sep 2020 15:50:16 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 08/35] KVM: SVM: Prevent debugging under SEV-ES
-Message-ID: <20200916225015.GB12355@sjchrist-ice>
-References: <58093c542b5b442b88941828595fb2548706f1bf.1600114548.git.thomas.lendacky@amd.com>
- <20200914212601.GA7192@sjchrist-ice>
- <fd790047-4107-b28a-262e-03ed5bc4c421@amd.com>
- <20200915163010.GB8420@sjchrist-ice>
- <aff46d8d-07ff-7d14-3e7f-ffe60f2bd779@amd.com>
- <5e816811-450f-b732-76f7-6130479642e0@amd.com>
- <20200916160210.GA10227@sjchrist-ice>
- <b62e055a-000e-ff7b-00e4-41b5b39b55d5@amd.com>
- <20200916164923.GC10227@sjchrist-ice>
- <9988f485-ce78-4df4-b294-32cc7743b6b2@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9988f485-ce78-4df4-b294-32cc7743b6b2@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726550AbgIPWwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:52:02 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35042 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726187AbgIPWwB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 18:52:01 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GMWFka096278;
+        Wed, 16 Sep 2020 18:51:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=mD5J2m9mVxfbwRwuig36H0SZbVnvMzPmhArUub6MZiY=;
+ b=W7uHI0jPQgJHeOZg/zw7uyIeUFVMIhMMkERp7XmYUE4gkdrZa4jMRIpcb2bV/cc414QO
+ tUhHgAM63GM6hxvusOR85tAqXzuiIuF4LPw38xMey7eLAHIkahFpNKyB2dfSUG974mbr
+ 4c9hGsl5GiNOktc66BbKbiANMYLY9TNW/c+zHfu1/HI1a+WHbn35QUzwZGLv+sY3mOz9
+ 6b1pHFbl4VlH56jQtp/7Ox6lq+h2MoBDTnJF/mU9aKWyZOV0NDhbzImPZ/XrIylH6JkG
+ zBXQ2Ce2YaUCHLNAdTySdsEbks+DK78KRSiL/u0QIg3nxCWPXZccknykfgu69O9/ZtNs BQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33kt9ba7b6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 18:51:57 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08GMpuNL019444;
+        Wed, 16 Sep 2020 18:51:56 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33kt9ba7aq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 18:51:56 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08GMmeu0031548;
+        Wed, 16 Sep 2020 22:51:54 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 33k6esh45k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 22:51:54 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08GMppkZ19464486
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 22:51:52 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DEC0942045;
+        Wed, 16 Sep 2020 22:51:51 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 100CD42042;
+        Wed, 16 Sep 2020 22:51:50 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.98.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Sep 2020 22:51:49 +0000 (GMT)
+Message-ID: <1e1177862e4465cadbb65ee3ad0adfae3f4ec92e.camel@linux.ibm.com>
+Subject: Re: [PATCH v3] ima: Fix NULL pointer dereference in ima_file_hash
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Florent Revest <revest@chromium.org>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Jann Horn <jannh@google.com>
+Date:   Wed, 16 Sep 2020 18:51:49 -0400
+In-Reply-To: <20200916180242.430668-1-kpsingh@chromium.org>
+References: <20200916180242.430668-1-kpsingh@chromium.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-16_13:2020-09-16,2020-09-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 clxscore=1015
+ mlxlogscore=866 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 03:27:13PM -0500, Tom Lendacky wrote:
-> On 9/16/20 11:49 AM, Sean Christopherson wrote:
-> > On Wed, Sep 16, 2020 at 11:38:38AM -0500, Tom Lendacky wrote:
-> >>
-> >>
-> >> On 9/16/20 11:02 AM, Sean Christopherson wrote:
-> >>> On Wed, Sep 16, 2020 at 10:11:10AM -0500, Tom Lendacky wrote:
-> >>>> On 9/15/20 3:13 PM, Tom Lendacky wrote:
-> >>>>> On 9/15/20 11:30 AM, Sean Christopherson wrote:
-> >>>>>> I don't quite follow the "doesn't mean debugging can't be done in the future".
-> >>>>>> Does that imply that debugging could be supported for SEV-ES guests, even if
-> >>>>>> they have an encrypted VMSA?
-> >>>>>
-> >>>>> Almost anything can be done with software. It would require a lot of
-> >>>>> hypervisor and guest code and changes to the GHCB spec, etc. So given
-> >>>>> that, probably just the check for arch.guest_state_protected is enough for
-> >>>>> now. I'll just need to be sure none of the debugging paths can be taken
-> >>>>> before the VMSA is encrypted.
-> >>>>
-> >>>> So I don't think there's any guarantee that the KVM_SET_GUEST_DEBUG ioctl
-> >>>> couldn't be called before the VMSA is encrypted, meaning I can't check the
-> >>>> arch.guest_state_protected bit for that call. So if we really want to get
-> >>>> rid of the allow_debug() op, I'd need some other way to indicate that this
-> >>>> is an SEV-ES / protected state guest.
-> >>>
-> >>> Would anything break if KVM "speculatively" set guest_state_protected before
-> >>> LAUNCH_UPDATE_VMSA?  E.g. does KVM need to emulate before LAUNCH_UPDATE_VMSA?
-> >>
-> >> Yes, the way the code is set up, the guest state (VMSA) is initialized in
-> >> the same way it is today (mostly) and that state is encrypted by the
-> >> LAUNCH_UPDATE_VMSA call. I check the guest_state_protected bit to decide
-> >> on whether to direct the updates to the real VMSA (before it's encrypted)
-> >> or the GHCB (that's the get_vmsa() function from patch #5).
-> > 
-> > Ah, gotcha.  Would it work to set guest_state_protected[*] from time zero,
-> > and move vmsa_encrypted to struct vcpu_svm?  I.e. keep vmsa_encrypted, but
-> > use it only for guiding get_vmsa() and related behavior.
+On Wed, 2020-09-16 at 18:02 +0000, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
 > 
-> It is mainly __set_sregs() that needs to know when to allow the register
-> writes and when not to. During guest initialization, __set_sregs is how
-> some of the VMSA is initialized by Qemu.
+> ima_file_hash can be called when there is no iint->ima_hash available
+> even though the inode exists in the integrity cache. It is fairly
+> common for a file to not have a hash. (e.g. an mknodat, prior to the
+> file being closed).
+> 
+> Another example where this can happen (suggested by Jann Horn):
+> 
+> Process A does:
+> 
+> 	while(1) {
+> 		unlink("/tmp/imafoo");
+> 		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
+> 		if (fd == -1) {
+> 			perror("open");
+> 			continue;
+> 		}
+> 		write(fd, "A", 1);
+> 		close(fd);
+> 	}
+> 
+> and Process B does:
+> 
+> 	while (1) {
+> 		int fd = open("/tmp/imafoo", O_RDONLY);
+> 		if (fd == -1)
+> 			continue;
+>     		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
+> 			 	     MAP_PRIVATE, fd, 0);
+> 		if (mapping != MAP_FAILED)
+> 			munmap(mapping, 0x1000);
+> 		close(fd);
+>   	}
+> 
+> Due to the race to get the iint->mutex between ima_file_hash and
+> process_measurement iint->ima_hash could still be NULL.
+> 
+> Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> Reviewed-by: Florent Revest <revest@chromium.org>
 
-Hmm.  I assume that also means KVM_SET_REGS and KVM_GET_XCRS are also legal
-before the VMSA is encrypted?  If so, then the current behavior of setting
-vmsa_encrypted "late" make sense.  KVM_SET_FPU/XSAVE can be handled by not
-allocating guest_fpu, i.e. they can be disallowed from time zero without
-adding an SEV-ES specific check.
+Thanks, the patch is queued in next-integrity-testing.
 
-Which brings us back to KVM_SET_GUEST_DEBUG.  What would happen if that were
-allowed prior to VMSA encryption?  If LAUNCH_UPDATE_VMSA acts as a sort of
-reset, one thought would be to allow KVM_SET_GUEST_DEBUG and then sanitize
-KVM's state during LAUNCH_UPDATE_VMSA.  Or perhaps even better, disallow
-LAUNCH_UPDATE_VMSA if vcpu->guest_debug!=0.  That would allow using debug
-capabilities up until LAUNCH_UPDATE_VMSA without adding much burden to KVM.
+Mimi
+
