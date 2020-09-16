@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D8026CCC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AA526CD37
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgIPUtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgIPRAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:00:52 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DDCC0D941A;
-        Wed, 16 Sep 2020 09:49:22 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id l191so4239605pgd.5;
-        Wed, 16 Sep 2020 09:49:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E24YwumgMfA6aEIrvJQfADpO1/yrnjk3KqOQV8pyq0Q=;
-        b=EQzwIEAJ+8hZF+WaJzjUgSO3hpHvsTXojm00pKZ+pv/Kx9i59Xx+4QdEcLm5EKDWh+
-         bxYHuGwi+fUEsRbZZAS30kfzWk0HwYp9MhUBlksfgfxQNpviPGRv9yBFXASftTcS8MFw
-         hFtikLwGV9DhOOjzI4na4zl0fm0gERmLPkOKTypfejdxch1J3tOB0zFRk3jW0sX2QqSf
-         Ruyv3kMO7Ak8cr9ebuodeB6dyFcIXqf8umuAz1tHD8NP2c5gXWO9Yxf/punazKcRbU1g
-         eBIM06azndQleSrfQcIFsUf87ykbo3iH/4roRft3gZC/hPPrlCbhcTRnufgVHHCnKZsH
-         U2Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E24YwumgMfA6aEIrvJQfADpO1/yrnjk3KqOQV8pyq0Q=;
-        b=jlMWyr/eAUUjLntsAWgGKv5T3eX8NllfAi/2GAClunY7wXWfWTl27kBoG02CDntvcZ
-         Eo/Nb3s4tfsq4LlFRnvQdOWIQh+LrVBoQCNHczzfnRjEQ4trS8u9cTtfcnGWIdRvfWgQ
-         LytgsEdpvIBSRq5u5LyflsxCuQzH5JWKcz+E4QnaEzmT9spdccKKUD4r7K51U2DWAnur
-         PuC+kLJms9yTM8h2b6aHEvpA0KJkQl98f1HhDWjKH0XwH6O6ihLtu007K9WhcwCiHFJS
-         sg2/g7oF30YtpaAh3U1mF8kSxuyd1UtVsDXtuBLFZsGhX+cWQh5rUtRUcso00Ksk9rLK
-         wgPA==
-X-Gm-Message-State: AOAM530pERGJnv0izzFKZj3fbLc234FROynZiZIPYkZa4lBiwLCDpH01
-        qHLx5sGAXnWOaPaEmBNPSRM=
-X-Google-Smtp-Source: ABdhPJw+eKytvMFnT3cEur1zIgvXJyxzQn4xPHL5/BlOqiSf0xX7WO5dxj6nSo7l+bOLb9Mj0u9w1A==
-X-Received: by 2002:aa7:8397:0:b029:13e:d13d:a07c with SMTP id u23-20020aa783970000b029013ed13da07cmr23289758pfm.19.1600274962073;
-        Wed, 16 Sep 2020 09:49:22 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:29a5:9632:a091:4adb])
-        by smtp.gmail.com with ESMTPSA id e1sm18799080pfl.162.2020.09.16.09.49.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 09:49:21 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>, Martin Schiller <ms@dev.tdt.de>
-Subject: [PATCH net] drivers/net/wan/lapbether: Make skb->protocol consistent with the header
-Date:   Wed, 16 Sep 2020 09:49:18 -0700
-Message-Id: <20200916164918.450933-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726533AbgIPU4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:56:18 -0400
+Received: from mga12.intel.com ([192.55.52.136]:51996 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726255AbgIPQww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:52:52 -0400
+IronPort-SDR: gWixcFHN3jAoJ6gFiDZSr7Ro9EuMOUod1GmMM5zhwcoPNfmbrpWhFohWWYwAfD/cOy/eOKS7sE
+ FRNdkuXsirmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="139024811"
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="139024811"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:49:25 -0700
+IronPort-SDR: 9XPDFBcq2CYfeTnmvu0XQg2wz09WgX6OsPOZPKgeySGJ/G5i9vFKH+uih3kTRLcOlE6xtadwXz
+ BKL5zDVguypQ==
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="307109500"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:49:24 -0700
+Date:   Wed, 16 Sep 2020 09:49:23 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 08/35] KVM: SVM: Prevent debugging under SEV-ES
+Message-ID: <20200916164923.GC10227@sjchrist-ice>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <58093c542b5b442b88941828595fb2548706f1bf.1600114548.git.thomas.lendacky@amd.com>
+ <20200914212601.GA7192@sjchrist-ice>
+ <fd790047-4107-b28a-262e-03ed5bc4c421@amd.com>
+ <20200915163010.GB8420@sjchrist-ice>
+ <aff46d8d-07ff-7d14-3e7f-ffe60f2bd779@amd.com>
+ <5e816811-450f-b732-76f7-6130479642e0@amd.com>
+ <20200916160210.GA10227@sjchrist-ice>
+ <b62e055a-000e-ff7b-00e4-41b5b39b55d5@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b62e055a-000e-ff7b-00e4-41b5b39b55d5@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is a virtual driver stacked on top of Ethernet interfaces.
+On Wed, Sep 16, 2020 at 11:38:38AM -0500, Tom Lendacky wrote:
+> 
+> 
+> On 9/16/20 11:02 AM, Sean Christopherson wrote:
+> > On Wed, Sep 16, 2020 at 10:11:10AM -0500, Tom Lendacky wrote:
+> >> On 9/15/20 3:13 PM, Tom Lendacky wrote:
+> >>> On 9/15/20 11:30 AM, Sean Christopherson wrote:
+> >>>> I don't quite follow the "doesn't mean debugging can't be done in the future".
+> >>>> Does that imply that debugging could be supported for SEV-ES guests, even if
+> >>>> they have an encrypted VMSA?
+> >>>
+> >>> Almost anything can be done with software. It would require a lot of
+> >>> hypervisor and guest code and changes to the GHCB spec, etc. So given
+> >>> that, probably just the check for arch.guest_state_protected is enough for
+> >>> now. I'll just need to be sure none of the debugging paths can be taken
+> >>> before the VMSA is encrypted.
+> >>
+> >> So I don't think there's any guarantee that the KVM_SET_GUEST_DEBUG ioctl
+> >> couldn't be called before the VMSA is encrypted, meaning I can't check the
+> >> arch.guest_state_protected bit for that call. So if we really want to get
+> >> rid of the allow_debug() op, I'd need some other way to indicate that this
+> >> is an SEV-ES / protected state guest.
+> > 
+> > Would anything break if KVM "speculatively" set guest_state_protected before
+> > LAUNCH_UPDATE_VMSA?  E.g. does KVM need to emulate before LAUNCH_UPDATE_VMSA?
+> 
+> Yes, the way the code is set up, the guest state (VMSA) is initialized in
+> the same way it is today (mostly) and that state is encrypted by the
+> LAUNCH_UPDATE_VMSA call. I check the guest_state_protected bit to decide
+> on whether to direct the updates to the real VMSA (before it's encrypted)
+> or the GHCB (that's the get_vmsa() function from patch #5).
 
-When this driver transmits data on the Ethernet device, the skb->protocol
-setting is inconsistent with the Ethernet header prepended to the skb.
-
-This causes a user listening on the Ethernet interface with an AF_PACKET
-socket, to see different sll_protocol values for incoming and outgoing
-frames, because incoming frames would have this value set by parsing the
-Ethernet header.
-
-This patch changes the skb->protocol value for outgoing Ethernet frames,
-making it consistent with the Ethernet header prepended. This makes a
-user listening on the Ethernet device with an AF_PACKET socket, to see
-the same sll_protocol value for incoming and outgoing frames.
-
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/lapbether.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-index 732a6c1851f5..b6be2454b8bd 100644
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -198,8 +198,6 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
- 	struct net_device *dev;
- 	int size = skb->len;
- 
--	skb->protocol = htons(ETH_P_X25);
--
- 	ptr = skb_push(skb, 2);
- 
- 	*ptr++ = size % 256;
-@@ -210,6 +208,8 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
- 
- 	skb->dev = dev = lapbeth->ethdev;
- 
-+	skb->protocol = htons(ETH_P_DEC);
-+
- 	skb_reset_network_header(skb);
- 
- 	dev_hard_header(skb, dev, ETH_P_DEC, bcast_addr, NULL, 0);
--- 
-2.25.1
-
+Ah, gotcha.  Would it work to set guest_state_protected[*] from time zero,
+and move vmsa_encrypted to struct vcpu_svm?  I.e. keep vmsa_encrypted, but
+use it only for guiding get_vmsa() and related behavior.
