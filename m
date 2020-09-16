@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB2F26CE56
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D54A26CE62
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgIPWIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgIPWH6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:07:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B13C0698CE;
-        Wed, 16 Sep 2020 14:52:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=WXS+ff+b5bMlOip+NKUbf0Z9b6R6EpWN0difBpMRFZs=; b=P50r4tzkwmXp8h4nAvjTnJw/v7
-        kPbHSxNAst66A4F4n8LTtKjaowXthHcYZkR+2ZXVtua9qRpZPYUjRbYoEQ32DBDizBkJgDy3wEeNm
-        iBdTZAzAJGvbtdHpbLUE3woMTHE9p++LmeCvs9WGlGEBemg+VPLVUeKgriDTarI38RhVSGxw5dKEs
-        YAelkJXRv6tLNIHHPnxwDtTRSI2ypj6uuyecMw8AnHF7AYN5OkbA8/UPAQCFB76XEqk6zxqkeVXjh
-        fPhwCG6Pw1VIDt8npyntlIQKLPgozok5L46mzxqbzl+kjqXKXGfn0G+XmVJMsjM+cSICMv2EQMTxu
-        edQEL8bw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIfLy-0005SU-Te; Wed, 16 Sep 2020 21:52:39 +0000
-Subject: Re: [PATCH v6 4/4] bus: mhi: Add userspace client interface driver
-To:     Hemant Kumar <hemantk@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org
-References: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
- <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <73ab1853-a07d-599f-9d4c-c346376aa6fc@infradead.org>
-Date:   Wed, 16 Sep 2020 14:52:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726348AbgIPWKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:10:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbgIPWKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 18:10:30 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E0FF2220A;
+        Wed, 16 Sep 2020 21:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600293314;
+        bh=5Fpi6OQa8IxjUT2FP7sUxhyFcgPeG9M+tTW+C8SdAFk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=1FkSmcTykCL/zqkaPTTTtxzFybHV52zt+7fV2sexve+QjzmljN4s5sh4dV+pzUf9x
+         bvmPikerzuBmKwnWF/aVNQnfnHV1SbcHUZoDhCpydjrkcSC7vDyPsj0D89+RjyeeL0
+         m6l774wtQbVbK+auQSubJ8TeH6i/4GTAHSu8PYRQ=
+Date:   Wed, 16 Sep 2020 16:55:13 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     alex.williamson@redhat.com, bhelgaas@google.com,
+        schnelle@linux.ibm.com, pmorel@linux.ibm.com, mpe@ellerman.id.au,
+        oohall@gmail.com, cohuck@redhat.com, kevin.tian@intel.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] PCI/IOV: Mark VFs as not implementing
+ PCI_COMMAND_MEMORY
+Message-ID: <20200916215513.GA1588138@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599749997-30489-2-git-send-email-mjrosato@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 12:56 PM, Hemant Kumar wrote:
-> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
-> index 6a217ff..8aebe8b 100644
-> --- a/drivers/bus/mhi/Kconfig
-> +++ b/drivers/bus/mhi/Kconfig
-> @@ -20,3 +20,16 @@ config MHI_BUS_DEBUG
->  	 Enable debugfs support for use with the MHI transport. Allows
->  	 reading and/or modifying some values within the MHI controller
->  	 for debug and test purposes.
+On Thu, Sep 10, 2020 at 10:59:55AM -0400, Matthew Rosato wrote:
+> For VFs, the Memory Space Enable bit in the Command Register is
+> hard-wired to 0.
+> 
+> Add a new bit to signify devices where the Command Register Memory
+> Space Enable bit does not control the device's response to MMIO
+> accesses.
+> 
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
 
-Hi,
-Please indent Kconfig keywords with one tab only, and indent
-help text with one tab + 2 spaces, as documented in
-Documentation/process/coding-style.rst:
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-"""
-For all of the Kconfig* configuration files throughout the source tree,
-the indentation is somewhat different.  Lines under a ``config`` definition
-are indented with one tab, while help text is indented an additional two
-spaces.
-"""
-
-> +
-> +config MHI_UCI
-> +       tristate "MHI UCI"
-> +       depends on MHI_BUS
-> +       help
-> +	 MHI based userspace client interface driver is used for transferring
-> +	 raw data between host and device using standard file operations from
-> +	 userspace. Open, read, write, and close operations are supported
-> +	 by this driver. Please check mhi_uci_match_table for all supported
-> +	 channels that are exposed to userspace.
-> +
-> +	 To compile this driver as a module, choose M here: the module will be
-> +	 called mhi_uci.
-
-thanks.
--- 
-~Randy
-
+> ---
+>  drivers/pci/iov.c   | 1 +
+>  include/linux/pci.h | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> index b37e08c..4afd4ee 100644
+> --- a/drivers/pci/iov.c
+> +++ b/drivers/pci/iov.c
+> @@ -180,6 +180,7 @@ int pci_iov_add_virtfn(struct pci_dev *dev, int id)
+>  	virtfn->device = iov->vf_device;
+>  	virtfn->is_virtfn = 1;
+>  	virtfn->physfn = pci_dev_get(dev);
+> +	virtfn->no_command_memory = 1;
+>  
+>  	if (id == 0)
+>  		pci_read_vf_config_common(virtfn);
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 8355306..3ff72312 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -445,6 +445,7 @@ struct pci_dev {
+>  	unsigned int	is_probed:1;		/* Device probing in progress */
+>  	unsigned int	link_active_reporting:1;/* Device capable of reporting link active */
+>  	unsigned int	no_vf_scan:1;		/* Don't scan for VFs after IOV enablement */
+> +	unsigned int	no_command_memory:1;	/* No PCI_COMMAND_MEMORY */
+>  	pci_dev_flags_t dev_flags;
+>  	atomic_t	enable_cnt;	/* pci_enable_device has been called */
+>  
+> -- 
+> 1.8.3.1
+> 
