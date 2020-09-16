@@ -2,155 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920DB26CE04
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA4726CDEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgIPVIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S1728660AbgIPVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgIPQDj (ORCPT
+        with ESMTP id S1726397AbgIPQOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:03:39 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1F1C02C29D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:34:54 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id w16so8623960oia.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bn/b7DitSxPa7qojIW+IRKAvNf93uFCgw3TeR0PcuhE=;
-        b=a0I/LOtf/xpEdDiSnn8zCu9v7skCbVnYJFyuoGEezngtYD8fOISpvedEU5MOlB2n/3
-         3dJ4D2TN1BGd54259tKu2NEHR0+/YIKVCQ2M+2gHBYEdSInieEjWe2JwXMbeLvqA9t86
-         Rf+Hm0STnqgT14ruXjuphY3E2t30RmLPeG0OI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bn/b7DitSxPa7qojIW+IRKAvNf93uFCgw3TeR0PcuhE=;
-        b=Wtkgs5ssSDiuHPS7krVtTJJ6dhkUWcW2KLScn7JDpgj1upD86IdD0U8AQzS81ITPHV
-         aEcqe/YDyWXIzJAm9AF8PJgnMvSgpP98apaUJWXkgI+cG8xK4Jd+zB9ztHgFpQnu+/9h
-         JM21yNAjObnv4AbYfV33A9AH0zWanp3MsBy3fzrlMxelI+qjyxmxmrBCkW9GUEe8F+/s
-         16jNpO4BUmUsWgLJbWikLgXh74OpVpO0LvJPUzH5fXfyBgQ1Hn7fk8aU3cLe41IYL8Yh
-         eWy3rg0R0ospgJwAPbeA9oGpB75uoIGaen0QTw+qXdYra7PdyCHMsLwmDaNNZtgdZXqx
-         DtZg==
-X-Gm-Message-State: AOAM533RJTBZhhwRN75sq0rDv0Zpgjkt457MV6E6KOMi3I35vVT/LjDP
-        f/0izLJBCiHGYp0iQTqGvXJaSw==
-X-Google-Smtp-Source: ABdhPJzi9b8ou5PwzDkh/RfAV0JtV7R4FQm7z9G5zWWd0+VVWwMAPvuJBO7SC/maEnEFuE+UBzgAQA==
-X-Received: by 2002:a05:6808:3ac:: with SMTP id n12mr3349512oie.73.1600270493953;
-        Wed, 16 Sep 2020 08:34:53 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g7sm2152188otl.59.2020.09.16.08.34.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 08:34:53 -0700 (PDT)
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Prateek Sood <prsood@codeaurora.org>, Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200915140653.610388773@linuxfoundation.org>
- <b94c29b3-ef68-897b-25a8-e6fcc181a22a@linuxfoundation.org>
- <8277900f-d300-79fa-eac7-096686a6fbc3@linuxfoundation.org>
- <20200916062958.GH142621@kroah.com>
- <69e7c908-4332-91fd-bdb2-6be19fcbf126@linuxfoundation.org>
- <20200916152629.GD3018065@kroah.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <09de87b0-8055-26ef-cc31-0c63e63e5d2a@linuxfoundation.org>
-Date:   Wed, 16 Sep 2020 09:34:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Sep 2020 12:14:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9A3C02C2B1;
+        Wed, 16 Sep 2020 08:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CwFFF72PkRXOfn/Nz6ud0X1OPtJVEVOQmrEtxSDPsHI=; b=Zo0GEMiB5cgG3KX5mFc9Jv6DYI
+        mtnIJgJ+tQupUj2w/gxjNzLZtGrUy8/YPiqFdXDbUU6ipl10lHkmkRnLKU1OBAf+yYzD0qlIHzBsa
+        n2fckjiG5Nk28qW81ODeFw7mECxTk8WzhR1KPiO2/yiP787/6cZ0petv2kxqprPQKouDu5GY3Gm/o
+        AtCZd6foovLBIxHFOUEYloxMQMpybn//uSuD8BpwNHeQJVFoTe3rL1KaQNJg/goddC3itz/tWc+en
+        YLPOMp6P7kTLI5RClDCQ3rkjy5KQo3p6b38sM/h7+9wB1C2z57FBECj52XYMJQe2Qp2A2mX85Jlrq
+        JDRkx/Dg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIZZV-0008Gk-6q; Wed, 16 Sep 2020 15:42:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9305F3019CE;
+        Wed, 16 Sep 2020 17:42:12 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7B8642B76FF92; Wed, 16 Sep 2020 17:42:12 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 17:42:12 +0200
+From:   peterz@infradead.org
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [RFC][PATCH 1/4] acpi: Use CPUIDLE_FLAG_TIMER_STOP
+Message-ID: <20200916154212.GE1362448@hirez.programming.kicks-ass.net>
+References: <20200915103157.345404192@infradead.org>
+ <20200915103806.280265587@infradead.org>
+ <CAJZ5v0jD-Lv5WAKHd9KN8sPozN4DeA-sQ4pXZTHNSZ4XS=as3A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200916152629.GD3018065@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jD-Lv5WAKHd9KN8sPozN4DeA-sQ4pXZTHNSZ4XS=as3A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 9:26 AM, Greg Kroah-Hartman wrote:
-> On Wed, Sep 16, 2020 at 08:26:48AM -0600, Shuah Khan wrote:
->> On 9/16/20 12:29 AM, Greg Kroah-Hartman wrote:
->>> On Tue, Sep 15, 2020 at 08:54:24PM -0600, Shuah Khan wrote:
->>>> On 9/15/20 3:06 PM, Shuah Khan wrote:
->>>>> On 9/15/20 8:11 AM, Greg Kroah-Hartman wrote:
->>>>>> This is the start of the stable review cycle for the 5.8.10 release.
->>>>>> There are 177 patches in this series, all will be posted as a response
->>>>>> to this one.  If anyone has any issues with these being applied, please
->>>>>> let me know.
->>>>>>
->>>>>> Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
->>>>>> Anything received after that time might be too late.
->>>>>>
->>>>>> The whole patch series can be found in one patch at:
->>>>>>       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
->>>>>>
->>>>>> or in the git tree and branch at:
->>>>>>       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->>>>>> linux-5.8.y
->>>>>> and the diffstat can be found below.
->>>>>>
->>>>>> thanks,
->>>>>>
->>>>>> greg k-h
->>>>>>
->>>>>
->>>>> Compiled and booted fine. wifi died:
->>>>>
->>>>> ath10k_pci 0000:02:00.0: could not init core (-110)
->>>>> ath10k_pci 0000:02:00.0: could not probe fw (-110)
->>>>>
->>>>> This is regression from 5.8.9 and 5.9-rc5 works just fine.
->>>>>
->>>>> I will try to bisect later this evening to see if I can isolate the
->>>>> commit.
->>>>>
->>>>
->>>> The following commit is what caused ath10k_pci driver problem
->>>> that killed wifi.
->>>>
->>>> Prateek Sood <prsood@codeaurora.org>
->>>>       firmware_loader: fix memory leak for paged buffer
->>>>
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.8.y&id=ec0a59266c9c9f46037efd3dcc0323973e102271
->>>
->>> Ugh, that's not good, is this also a problem in 5.9-rc5 as well?  For
->>> reference, this is commit 4965b8cd1bc1 ("firmware_loader: fix memory
->>> leak for paged buffer") in Linus's tree.
->>>
->>
->> I am not seeing this on Linux 5.9-rc5 for sure.
->>
->>> And it should be showing up in 5.4.y at the moment too, as this patch is
->>> in that tree right now...
->>>
->>
->> I don't see this patch in  4.19.146-rc1
+On Tue, Sep 15, 2020 at 06:26:52PM +0200, Rafael J. Wysocki wrote:
+> On Tue, Sep 15, 2020 at 12:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > Make acpi_processor_idle use the common broadcast code, there's no
+> > reason not to. This also removes some RCU usage after
+> > rcu_idle_enter().
+> >
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > 
-> It's not there, it's in 5.4.66-rc1, which worked for you somehow, right?
+> The whole series looks good to me, so please feel free to add
 > 
->> Linus's tree works for with this patch in. I compared the two files
->> for differences in commit between Linus's tree and 5.8.10-rc1
->>
->> Couldn't find anything obvious.
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Again, really odd...
+> to all of the four patches.
 > 
-> I don't have a problem dropping it, but I should drop it from both 5.4.y
-> and 5.8.y, right?
-> 
+> Alternatively, please let me know if you want me to take the patches.
 
-Sorry. Yes. Dropping from 5.8 and 5.4 would be great until we figure out
-why this patch causes problems.
-
-I will continue debugging and let you know what I find.
-
-thanks,
--- Shuah
+Feel free to take them. All the prerequisite borkage is in linus' tree
+already.
