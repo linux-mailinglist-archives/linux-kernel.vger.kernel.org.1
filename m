@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718F526B979
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0519326B97B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgIPBoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 21:44:09 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36200 "EHLO huawei.com"
+        id S1726312AbgIPBpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 21:45:24 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12277 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726023AbgIPBoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 21:44:08 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E14206F8034D24EA6691;
-        Wed, 16 Sep 2020 09:44:05 +0800 (CST)
+        id S1726023AbgIPBpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 21:45:24 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id BBF4DC145AD14191E557;
+        Wed, 16 Sep 2020 09:45:21 +0800 (CST)
 Received: from [10.57.101.250] (10.57.101.250) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 16 Sep 2020 09:44:03 +0800
-Subject: Re: [PATCH v3 1/6] ARM: dts: hisilicon: Fix SP804 users
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 16 Sep 2020 09:45:20 +0800
+Subject: Re: [PATCH v3 4/6] arm64: dts: hisilicon: Fix SP805 clocks
 To:     Andre Przywara <andre.przywara@arm.com>, <soc@kernel.org>
 References: <20200907121831.242281-1-andre.przywara@arm.com>
- <20200907121831.242281-2-andre.przywara@arm.com>
+ <20200907121831.242281-5-andre.przywara@arm.com>
 CC:     Rob Herring <robh@kernel.org>, <devicetree@vger.kernel.org>,
         Chanho Min <chanho.min@lge.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
 From:   Wei Xu <xuwei5@hisilicon.com>
-Message-ID: <5F616DE3.7080801@hisilicon.com>
-Date:   Wed, 16 Sep 2020 09:44:03 +0800
+Message-ID: <5F616E30.3090705@hisilicon.com>
+Date:   Wed, 16 Sep 2020 09:45:20 +0800
 User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
  Thunderbird/38.2.0
 MIME-Version: 1.0
-In-Reply-To: <20200907121831.242281-2-andre.przywara@arm.com>
+In-Reply-To: <20200907121831.242281-5-andre.przywara@arm.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.57.101.250]
@@ -44,113 +44,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Andre,
 
 On 2020/9/7 20:18, Andre Przywara wrote:
-> The SP804 binding only specifies one or three clocks, but does not allow
-> just two clocks.
-> The HiSi 3620 .dtsi specified two clocks for the two timers, plus gave
-> one "apb_pclk" clock-name to appease the primecell bus driver.
+> The SP805 DT binding requires two clocks to be specified, but
+> Hisilicon platform DTs currently only specify one clock.
 > 
-> Extend the clocks by duplicating the first clock to the end of the clock
-> list, and add two dummy clock-names to make the primecell driver happy.
+> In practice, Linux would pick a clock named "apb_pclk" for the bus
+> clock, and the Linux and U-Boot SP805 driver would use the first clock
+> to derive the actual watchdog counter frequency.
 > 
-> I don't know what the real APB clock for the IP is, but with the current
-> DT the first timer clock was used for that, so this change keeps the
-> current status.
+> Since currently both are the very same clock, we can just double the
+> clock reference, and add the correct clock-names, to match the binding.
 > 
 > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
 Thanks!
-Applied to the hisilicon arm32 dt tree.
+Applied to the hisilicon arm64 dt tree.
 
 Best Regards,
 Wei
 
 > ---
->  arch/arm/boot/dts/hi3620.dtsi | 30 ++++++++++++++++++++----------
->  arch/arm/boot/dts/hip04.dtsi  |  4 ++--
->  2 files changed, 22 insertions(+), 12 deletions(-)
+>  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 10 ++++++----
+>  arch/arm64/boot/dts/hisilicon/hi6220.dtsi |  5 +++--
+>  2 files changed, 9 insertions(+), 6 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/hi3620.dtsi b/arch/arm/boot/dts/hi3620.dtsi
-> index f0af1bf2b4d8..355175b25fd6 100644
-> --- a/arch/arm/boot/dts/hi3620.dtsi
-> +++ b/arch/arm/boot/dts/hi3620.dtsi
-> @@ -111,8 +111,10 @@
->  			reg = <0x800000 0x1000>;
->  			/* timer00 & timer01 */
->  			interrupts = <0 0 4>, <0 1 4>;
-> -			clocks = <&clock HI3620_TIMER0_MUX>, <&clock HI3620_TIMER1_MUX>;
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> index d25aac5e0bf8..994140fbc916 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> @@ -1089,16 +1089,18 @@
+>  			compatible = "arm,sp805-wdt", "arm,primecell";
+>  			reg = <0x0 0xe8a06000 0x0 0x1000>;
+>  			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks = <&crg_ctrl HI3660_OSC32K>;
 > -			clock-names = "apb_pclk";
-> +			clocks = <&clock HI3620_TIMER0_MUX>,
-> +				 <&clock HI3620_TIMER1_MUX>,
-> +				 <&clock HI3620_TIMER0_MUX>;
-> +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
->  			status = "disabled";
+> +			clocks = <&crg_ctrl HI3660_OSC32K>,
+> +				 <&crg_ctrl HI3660_OSC32K>;
+> +			clock-names = "wdog_clk", "apb_pclk";
 >  		};
 >  
-> @@ -121,8 +123,10 @@
->  			reg = <0x801000 0x1000>;
->  			/* timer10 & timer11 */
->  			interrupts = <0 2 4>, <0 3 4>;
-> -			clocks = <&clock HI3620_TIMER2_MUX>, <&clock HI3620_TIMER3_MUX>;
+>  		watchdog1: watchdog@e8a07000 {
+>  			compatible = "arm,sp805-wdt", "arm,primecell";
+>  			reg = <0x0 0xe8a07000 0x0 0x1000>;
+>  			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks = <&crg_ctrl HI3660_OSC32K>;
 > -			clock-names = "apb_pclk";
-> +			clocks = <&clock HI3620_TIMER2_MUX>,
-> +				 <&clock HI3620_TIMER3_MUX>,
-> +				 <&clock HI3620_TIMER2_MUX>;
-> +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
->  			status = "disabled";
+> +			clocks = <&crg_ctrl HI3660_OSC32K>,
+> +				 <&crg_ctrl HI3660_OSC32K>;
+> +			clock-names = "wdog_clk", "apb_pclk";
 >  		};
 >  
-> @@ -131,8 +135,10 @@
->  			reg = <0xa01000 0x1000>;
->  			/* timer20 & timer21 */
->  			interrupts = <0 4 4>, <0 5 4>;
-> -			clocks = <&clock HI3620_TIMER4_MUX>, <&clock HI3620_TIMER5_MUX>;
+>  		tsensor: tsensor@fff30000 {
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
+> index 3d189d9f0d24..6578f8191d71 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
+> @@ -843,8 +843,9 @@
+>  			compatible = "arm,sp805-wdt", "arm,primecell";
+>  			reg = <0x0 0xf8005000 0x0 0x1000>;
+>  			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks = <&ao_ctrl HI6220_WDT0_PCLK>;
 > -			clock-names = "apb_pclk";
-> +			clocks = <&clock HI3620_TIMER4_MUX>,
-> +				 <&clock HI3620_TIMER5_MUX>,
-> +				 <&clock HI3620_TIMER4_MUX>;
-> +			clock-names = "timer0lck", "timer1clk", "apb_pclk";
->  			status = "disabled";
+> +			clocks = <&ao_ctrl HI6220_WDT0_PCLK>,
+> +				 <&ao_ctrl HI6220_WDT0_PCLK>;
+> +			clock-names = "wdog_clk", "apb_pclk";
 >  		};
 >  
-> @@ -141,8 +147,10 @@
->  			reg = <0xa02000 0x1000>;
->  			/* timer30 & timer31 */
->  			interrupts = <0 6 4>, <0 7 4>;
-> -			clocks = <&clock HI3620_TIMER6_MUX>, <&clock HI3620_TIMER7_MUX>;
-> -			clock-names = "apb_pclk";
-> +			clocks = <&clock HI3620_TIMER6_MUX>,
-> +				 <&clock HI3620_TIMER7_MUX>,
-> +				 <&clock HI3620_TIMER6_MUX>;
-> +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
->  			status = "disabled";
->  		};
->  
-> @@ -151,8 +159,10 @@
->  			reg = <0xa03000 0x1000>;
->  			/* timer40 & timer41 */
->  			interrupts = <0 96 4>, <0 97 4>;
-> -			clocks = <&clock HI3620_TIMER8_MUX>, <&clock HI3620_TIMER9_MUX>;
-> -			clock-names = "apb_pclk";
-> +			clocks = <&clock HI3620_TIMER8_MUX>,
-> +				 <&clock HI3620_TIMER9_MUX>,
-> +				 <&clock HI3620_TIMER8_MUX>;
-> +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
->  			status = "disabled";
->  		};
->  
-> diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
-> index 4263a9339c2e..f5871b1d1ec4 100644
-> --- a/arch/arm/boot/dts/hip04.dtsi
-> +++ b/arch/arm/boot/dts/hip04.dtsi
-> @@ -226,8 +226,8 @@
->  			compatible = "arm,sp804", "arm,primecell";
->  			reg = <0x3000000 0x1000>;
->  			interrupts = <0 224 4>;
-> -			clocks = <&clk_50m>, <&clk_50m>;
-> -			clock-names = "apb_pclk";
-> +			clocks = <&clk_50m>, <&clk_50m>, <&clk_50m>;
-> +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
->  		};
->  
->  		arm-pmu {
+>  		tsensor: tsensor@0,f7030700 {
 > 
