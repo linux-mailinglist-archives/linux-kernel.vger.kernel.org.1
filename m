@@ -2,80 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0FA26CE06
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E756B26CE03
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgIPVIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
+        id S1726610AbgIPVIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbgIPQDk (ORCPT
+        with ESMTP id S1726458AbgIPQDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 12:03:40 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC00C0D941D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:57:22 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 7so4020375pgm.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:57:22 -0700 (PDT)
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CD0C0D941F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:57:27 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id r19so3330571pls.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:57:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=vE8yxj1p3ggt7avK835gkOOhWnhEzEtwr7gS8/XWrO4=;
-        b=WEYj497EzbY64LNl9h1JIng9iIB6SSah2KvnhCItYLQwHu3KZUi2fDmp6ziUk7BgQZ
-         W6DXay3FwwGhmHR56ri+aj1CWWiT+VG5GQKzMI5meB1rHXHx4mkRfUddMbuKhm7EsSjM
-         m2xnVj/18PeA1RYq18B5pmJRxtFRWN1x5BDuo=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=vCLuem/Ivj5M+tnBanSeVQAGo/ue6YtdElMdOuANinA=;
+        b=B8qIcMQ7LwFs/IFQB2VO+kkE39DOtVUf9GtV98PzmhWRMMaOHIERgsyYCXKaSZ+qg/
+         heuUsdJ38iK8kueADvLJ9ELoghvNmEXPkcBVVeAR+dIElTayTPwr0vsdlJYZ1UZrs+QZ
+         rJHVhxl/NezI7OW45U0Qa7hUK1qS7ySf5koPw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vE8yxj1p3ggt7avK835gkOOhWnhEzEtwr7gS8/XWrO4=;
-        b=kWQEG51tyRlV4u5OJJx1TLkg4ddzm+ue8FiFiu1CferlAvP14YiHF3xupIDvrIX/oh
-         JNCy0QKwotqrMF3qj/jmm/zWAigG0jeiQwmjqRQ2/dc6t9JSGNJKyTN2pABfGM22gPvC
-         2uXypH7LWk7A0ZZGbktR4KQpzbUUWZ7tKyl1xfXhKYld+DZUSXtv+q3PoRSxkHaM0AYg
-         JOXhqo3FPLqGJkL9QIcnLQy66+jakfQ2CyQzoncg0U9FePv4TeJ5KNBfYMb70iBfEucp
-         if3VQY8lPkn4aWteWSCMBluwoS//DwflVzVolREekI2ij+UenOeRTK92TByCgcdS/97o
-         le2Q==
-X-Gm-Message-State: AOAM533pVjzUZQtSU74sxcDYA8xb/90N1fkHuNVAOOdKHCjmZcpfMjP2
-        rJEvESJLlV0iQxIRBMcvnvE50Q==
-X-Google-Smtp-Source: ABdhPJzVoJCA0kVsCeGDrnF32JOO8S9adPAMD2CdwD6daoENwUYMRsPia2ORxJKTMiS6juXzlgGb/w==
-X-Received: by 2002:a63:de0a:: with SMTP id f10mr18568738pgg.88.1600268242007;
-        Wed, 16 Sep 2020 07:57:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=vCLuem/Ivj5M+tnBanSeVQAGo/ue6YtdElMdOuANinA=;
+        b=ZLfCTSRbDl5eXikPtSwNuqXT9uZXYbUWHfe007QEbSPNI0dhEN6S/q0/ZaV0hQoqQN
+         uNyhcK9RsgLWGzlOkVm+snop6/RtpJYmD5ad2SE/inpoXNe12XEjyKy6+T+lHYVsi8JH
+         36cfgjHiDftZm7mHneRaPQo2XnRZfTmggnLdZYCeIshGo2tl/M9xIILbt4QQmVpz4MI3
+         DHX3nTV+c+bTlar2cZYmaeJjFL4dWu5CmMieDWh36qZ0dBwgrwllQdmpcHBFL/9iFMJ8
+         QcvEduePdive9kCyI4HOkZXKjJeqTxYSXaXITcDxIL5KWgVcfot0/G2i+qLwbWfXz8gj
+         5eow==
+X-Gm-Message-State: AOAM533BowNKi+gaQTXUmEeHOsCZJyH8jGi1SX8Ym/um+8/cyP9hTUL4
+        AIszwzdGzswvkWfnvDTMopC+oA==
+X-Google-Smtp-Source: ABdhPJxPdcFIJf7Y7r7V+T6n57+3CMecgJqMly75nRv6uxltu3DUIVK67DoStHARIsYQ7H1Y9yQx+g==
+X-Received: by 2002:a17:902:7844:b029:d0:cbe1:e704 with SMTP id e4-20020a1709027844b02900d0cbe1e704mr24389033pln.18.1600268246713;
+        Wed, 16 Sep 2020 07:57:26 -0700 (PDT)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id 82sm15070257pgd.6.2020.09.16.07.57.18
+        by smtp.gmail.com with ESMTPSA id 82sm15070257pgd.6.2020.09.16.07.57.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 07:57:21 -0700 (PDT)
+        Wed, 16 Sep 2020 07:57:26 -0700 (PDT)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
         james.quinlan@broadcom.com
-Cc:     linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 0/1] PCI: pcie_bus_config can be set at build time
-Date:   Wed, 16 Sep 2020 10:57:05 -0400
-Message-Id: <20200916145707.33313-1-james.quinlan@broadcom.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/1] PCI: pcie_bus_config can be set at build time
+Date:   Wed, 16 Sep 2020 10:57:06 -0400
+Message-Id: <20200916145707.33313-2-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200916145707.33313-1-james.quinlan@broadcom.com>
+References: <20200916145707.33313-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000025474b05af6f7c86"
+        boundary="0000000000006c179805af6f7cf9"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000025474b05af6f7c86
+--0000000000006c179805af6f7cf9
 
-v2: Add more description text in the new Kconfig settings (Bjorn).
+The Kconfig is modified so that the pcie_bus_config setting can be done at
+build time in the same manner as the CONFIG_PCIEASPM_XXXX choice.  The
+pci_bus_config setting may still be overridden by the bootline param.
 
-v1: Original
-
-Jim Quinlan (1):
-  PCI: pcie_bus_config can be set at build time
-
+Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+---
  drivers/pci/Kconfig | 56 +++++++++++++++++++++++++++++++++++++++++++++
  drivers/pci/pci.c   | 12 ++++++++++
  2 files changed, 68 insertions(+)
 
+diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+index 4bef5c2bae9f..15ce948858fb 100644
+--- a/drivers/pci/Kconfig
++++ b/drivers/pci/Kconfig
+@@ -187,6 +187,62 @@ config PCI_HYPERV
+ 	  The PCI device frontend driver allows the kernel to import arbitrary
+ 	  PCI devices from a PCI backend to support PCI driver domains.
+ 
++choice
++	prompt "PCIE default bus config setting"
++	default PCIE_BUS_DEFAULT
++	depends on PCI
++	help
++	  One of the following choices will set the pci_bus_config at
++	  compile time.  The choices offered are the same as those offered
++	  for the bootline parameter 'pci'; i.e. 'pci=pcie_bus_tune_off',
++	  'pci=pcie_bus_safe', 'pci=pcie_bus_perf', and 'pci=pcie_bus_peer2peer'.
++	  This is a compile-time setting and is still be overridden by the
++	  above bootline parameters, if present.  If unsure, chose PCIE_BUS_DEFAULT.
++
++config PCIE_BUS_TUNE_OFF
++	bool "Tune Off"
++	depends on PCI
++	help
++	  Use the BIOS defaults; doesn't touch MPS at all.  This is the same
++	  as booting with 'pci=pcie_bus_tune_off'.
++
++config PCIE_BUS_DEFAULT
++	bool "Default"
++	depends on PCI
++	help
++	  Default choice; ensures that the MPS matches upstream bridge.
++
++config PCIE_BUS_SAFE
++	bool "Safe"
++	depends on PCI
++	help
++	  Use largest MPS that boot-time devices support.  If you have a
++	  closed system with no possibility of adding new devices,
++	  this will use the largest MPS that's supported by all devices.
++	  This is the same as booting with 'pci=pcie_bus_safe'.
++
++config PCIE_BUS_PERFORMANCE
++	bool "Performance"
++	depends on PCI
++	help
++	  Use MPS and MRRS for best performance.  This setting ensures
++	  that a given device's MPS is no larger than its parent MPS,
++	  which allows us to keep all switches/bridges to the max MPS supported
++	  by their parent and eventually the PHB.  This is the same as
++	  booting with 'pci=pcie_bus_perf'.
++
++config PCIE_BUS_PEER2PEER
++	bool "Peer2peer"
++	depends on PCI
++	help
++	  Set MPS = 128 for all devices.  MPS configuration effected by
++	  the other options could cause the MPS on one root port to be
++	  different than that of the MPS on another.  Simply making the system
++	  wide MPS be set to the smallest possible value (128B) solves
++	  this issue.  This is the same as booting with 'pci=pcie_bus_peer2peer'.
++
++endchoice
++
+ source "drivers/pci/hotplug/Kconfig"
+ source "drivers/pci/controller/Kconfig"
+ source "drivers/pci/endpoint/Kconfig"
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index e39c5499770f..dfb52ed4a931 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -101,7 +101,19 @@ unsigned long pci_hotplug_mmio_pref_size = DEFAULT_HOTPLUG_MMIO_PREF_SIZE;
+ #define DEFAULT_HOTPLUG_BUS_SIZE	1
+ unsigned long pci_hotplug_bus_size = DEFAULT_HOTPLUG_BUS_SIZE;
+ 
++
++/* PCIE bus config, can be overridden by bootline param */
++#ifdef CONFIG_PCIE_BUS_TUNE_OFF
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_TUNE_OFF;
++#elif defined CONFIG_PCIE_BUS_SAFE
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_SAFE;
++#elif defined CONFIG_PCIE_BUS_PERFORMANCE
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PERFORMANCE;
++#elif defined CONFIG_PCIE_BUS_PEER2PEER
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PEER2PEER;
++#else
+ enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_DEFAULT;
++#endif
+ 
+ /*
+  * The default CLS is used if arch didn't set CLS explicitly and not
 -- 
 2.17.1
 
 
---00000000000025474b05af6f7c86
+--0000000000006c179805af6f7cf9
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -145,14 +239,14 @@ V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
 lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
 5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEbVJ6ES+J5E
-P6A59/JWBpTs201Z7DZw/fRaoXY+STGxMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMDkxNjE0NTcyMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFveeto9zs+u
+nCMsgI6cw/k3ns3WNFQ4huev144CfGRxMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMDkxNjE0NTcyN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBRDV6GNvxO2va+VP70F7C7WK229Vxq
-63VshfzyleaX+w+afusCctYf10s884FAujE/lyf9yhM5h0dpSwGuB/qrX0ZWlbY0PmdyHiDPtr8v
-Hc12tV/KAJOvZP5FUHCgMYRsXLmmug/x9PMatc7E0IKkcMFakqdBikquBDna95hlzxufmlim//E4
-sKBEurw1P2L/r9iEW8GY0PO5EmbsFuimRcfufRVtMSPnhbl9ZHCpmffD9YACn3mrhnsrB3LfGIRt
-r23VHPFf8fL3wfYdVuDm9XdNwAXud/V1wtcT4UCj1GVoFvWMMFx+yB1c86P1emoU+P4YV/Qy7eue
-zcPMrN68
---00000000000025474b05af6f7c86--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBqIcrT50QMlW895RGfSiKe0hGqsJSE
+kzdLqRCMNXuyH5SNvbkj5PGCvEx43JwxcgHk2FfOjqmd0XG9lKLGB/D8s8RambMXASlKzo2gmUKb
+9KKHsE0NmAcLkL8MAZy3mMaLiuQgNaXi1oniPdW6kz1TZC1W6QMtYhjjHQGeOgD+DcyOUqrmjbW4
+i+fVqtFZGCxL02qyGaWS7ZhlI1D4XJGIGbAYktyWVC849Z3gY0735PVF7a4ZX3AShfn6jDATdcG+
+QeawHo/D2CWVJadahrFqQ53OFchynK/wqhbxbrEo4Z58v2exQmKOQk0SoEfB2ywpF0aHf8JQRb5w
+jQ475Jv/
+--0000000000006c179805af6f7cf9--
