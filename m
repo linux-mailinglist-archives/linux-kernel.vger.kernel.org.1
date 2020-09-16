@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6441326BFBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDF126BFBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgIPItU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:49:20 -0400
-Received: from m176151.mail.qiye.163.com ([59.111.176.151]:60445 "EHLO
-        m176151.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgIPItP (ORCPT
+        id S1726666AbgIPItN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726377AbgIPItL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:49:15 -0400
-Received: from vivo.com (wm-11.qy.internal [127.0.0.1])
-        by m176151.mail.qiye.163.com (Hmail) with ESMTP id 92D9148448C;
-        Wed, 16 Sep 2020 16:49:09 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ABoAqQDVDSunbaCnreBd5qp4.3.1600246149566.Hmail.bailu.lin@vivo.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wangqing@vivo.com
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gZG9jOiB6aF9DTjogaW5kZXggZmlsZXMgaW4gYXJtNjQgc3ViZGlyZWN0b3J5?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
-In-Reply-To: <20200916084030.GE27496@willie-the-truck>
+        Wed, 16 Sep 2020 04:49:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BA7C06174A;
+        Wed, 16 Sep 2020 01:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yFjrMsePDJlQkzG4d2Vn8z/692IKzJ049uA8PvEMcO4=; b=Ncdb8mKIyo2jzNf/4eaE4LnpE4
+        vFj38ShjIXOy8kyLU7yoLOGb+kFF78Rsm0VwpmpGVyTX3s306CGrpGaxuvnR2qMJRP/c+7onbjD2o
+        xlf88CQo90s+kNfDXNdGx9DpBk2YXjtyBEKR057ZhUmbPSKKoohMzOxPdp7lOD776J/L8ar5x3vPr
+        tCur5rOtVXOE1W9N7ysn155eEtqs8hrBxog4BoZUqAD++P78ZzqZzJWUKHLBbQ7CHtoPIBSnVqexZ
+        2weYDIUQokHvqdlyaP1xT/gi4Ao0WZ/BebOnYeahK2Pb4/KNNOKj97cffPeG/WKbGYSFx+5AdAQky
+        jzrMrnIw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIT7l-0008Lu-46; Wed, 16 Sep 2020 08:49:09 +0000
+Date:   Wed, 16 Sep 2020 09:49:09 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
+Subject: Re: [PATCH 4/9] crypto: zstd: Switch to zstd-1.4.6 API
+Message-ID: <20200916084909.GB31608@infradead.org>
+References: <20200916034307.2092020-1-nickrterrell@gmail.com>
+ <20200916034307.2092020-5-nickrterrell@gmail.com>
 MIME-Version: 1.0
-Received: from bailu.lin@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 16 Sep 2020 16:49:09 +0800 (GMT+08:00)
-From:   =?UTF-8?B?5p6X55m96bmt?= <bailu.lin@vivo.com>
-Date:   Wed, 16 Sep 2020 16:49:09 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSU8fSxoaGhpJHhodVkpNS0tJT01KT0JNSEtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VKS0tZBg++
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU5DTU9NQktDSExDN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6ORQ6Cio*LT8oDhUZGjgVCR45H04KC09VSFVKTUtLSU9NSk5KS01NVTMWGhIXVRkaEhcOVRcS
-        FTsNEg0UVRgUFkVZV1kSC1lBWU5DVUlOSlVMT1VJSU1ZV1kIAVlBSElPSDcG
-X-HM-Tid: 0a74961a71e893b5kuws92d9148448c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916034307.2092020-5-nickrterrell@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U29ycnksIHNob3VkIGJlIGFybTY0LiBJJ2xsIGZpeCBpdC4KClRoYW5rcwpCYWlsdQoKRnJvbTog
-V2lsbCBEZWFjb24gPHdpbGxAa2VybmVsLm9yZz4KRGF0ZTogMjAyMC0wOS0xNiAxNjo0MDozMQpU
-bzogIEJhaWx1IExpbiA8YmFpbHUubGluQHZpdm8uY29tPgpDYzogIENhdGFsaW4gTWFyaW5hcyA8
-Y2F0YWxpbi5tYXJpbmFzQGFybS5jb20+LEpvbmF0aGFuIENvcmJldCA8Y29yYmV0QGx3bi5uZXQ+
-LEhhcnJ5IFdlaSA8aGFycnl4aXlvdUBnbWFpbC5jb20+LEFsZXggU2hpIDxhbGV4LnNoaUBsaW51
-eC5hbGliYWJhLmNvbT4sbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnLGxpbnV4
-LWRvY0B2Z2VyLmtlcm5lbC5vcmcsbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyx3YW5ncWlu
-Z0B2aXZvLmNvbQpTdWJqZWN0OiBSZTogW1BBVENIXSBkb2M6IHpoX0NOOiBpbmRleCBmaWxlcyBp
-biBhcm02NCBzdWJkaXJlY3Rvcnk+T24gVHVlLCBTZXAgMTUsIDIwMjAgYXQgMDk6NTc6MDFQTSAt
-MDcwMCwgQmFpbHUgTGluIHdyb3RlOgo+PiBBZGQgZmlsZXN5c3RlbXMgc3ViZGlyZWN0b3J5IGlu
-dG8gdGhlIHRhYmxlIG9mIENvbnRlbnRzIGZvciB6aF9DTiwKPj4gYWxsIHRyYW5zbGF0aW9ucyBy
-ZXNpZGluZyBvbiBpdCB3b3VsZCBiZSBpbmRleGVkIGNvbnZlbmllbnRseS4KPgo+U29ycnksIEkg
-ZG9uJ3QgdW5kZXJzdGFuZCB0aGUgcmVmZXJlbmNlIHRvICJmaWxlc3lzdGVtcyIgaGVyZS4gSXMg
-dGhpcwo+YSBjb3B5LXBhc3RlIG9mIGEgZGlmZmVyZW50IGNvbW1pdCBtZXNzYWdlLCBvciBhbSBJ
-IGp1c3QgZmFpbGluZyB0byByZWFkCj5pdCBwcm9wZXJseT8KPgo+V2lsbAoNCg0K
+> +	const size_t wksp_size = ZSTD_estimateCCtxSize(ZSTD_DEF_LEVEL);
+> +
+> +	if (ZSTD_isError(wksp_size)) {
+> +		ret = -EINVAL;
+> +		goto out_free;
+> +	}
+
+Pleas switch to properly named functions when you touch this.
+
+The API names here look like a cat threw up on the keyboard.
