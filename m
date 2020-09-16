@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913C026C977
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500CC26C96D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727435AbgIPTJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:09:44 -0400
-Received: from lobo.ruivo.org ([173.14.175.98]:34502 "EHLO lobo.ruivo.org"
+        id S1727711AbgIPTJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:09:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43308 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727304AbgIPRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:43:53 -0400
-Received: by lobo.ruivo.org (Postfix, from userid 1011)
-        id E3B61531B1; Wed, 16 Sep 2020 09:54:18 -0400 (EDT)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on tate.lan.ruivo
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=3.5 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from jake.ruivo.org (bob.qemu.ruivo [192.168.72.19])
-        by lobo.ruivo.org (Postfix) with ESMTPA id 27AA352ACB;
-        Wed, 16 Sep 2020 09:53:59 -0400 (EDT)
-Received: by jake.ruivo.org (Postfix, from userid 1000)
-        id 04ED01A1A61; Wed, 16 Sep 2020 09:53:59 -0400 (EDT)
-Date:   Wed, 16 Sep 2020 09:53:58 -0400
-From:   Aristeu Rozanski <aris@ruivo.org>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     naoya.horiguchi@nec.com, akpm@linux-foundation.org,
-        mhocko@kernel.org, tony.luck@intel.com, cai@lca.pw,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 0/5] HWpoison: further fixes and cleanups
-Message-ID: <20200916135358.GB17169@cathedrallabs.org>
-References: <20200914101559.17103-1-osalvador@suse.de>
- <20200915212222.GA18315@cathedrallabs.org>
- <20200916072658.GA10692@linux>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916072658.GA10692@linux>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727393AbgIPRod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:44:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9CB05ADCD;
+        Wed, 16 Sep 2020 13:55:01 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ralf Baechle <ralf@linux-mips.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: SNI: Fix spurious interrupts
+Date:   Wed, 16 Sep 2020 15:54:37 +0200
+Message-Id: <20200916135437.60572-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oscar,
+On A20R machines the interrupt pending bits in cause register need to be
+updated by requesting the chipset to do it. This needs to be done to
+find the interrupt cause and after interrupt service. In
+commit 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions") the
+function to do after service update got lost, which caused spurious
+interrupts.
 
-On Wed, Sep 16, 2020 at 09:27:02AM +0200, Oscar Salvador wrote:
-> Could you please re-run the tests with the below patch applied, and
-> attached then the logs here?
+Fixes: 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions")
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/sni/a20r.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-here it is:
-(removed previous dump_page() calls for other pages that didn't fail)
-
-[  109.709342] Soft offlining pfn 0x3fb526 at process virtual address 0x7ffc7a180000
-[  109.716969] page:00000000f367dde5 refcount:1 mapcount:0 mapping:0000000000000000 index:0x7ffc7a18 pfn:0x3fb526
-[  109.716978] anon flags: 0x3ffff80008000e(referenced|uptodate|dirty|swapbacked)
-[  109.716988] raw: 003ffff80008000e 5deadbeef0000100 5deadbeef0000122 c000003fcd56d839
-[  109.716997] raw: 000000007ffc7a18 0000000000000000 00000001ffffffff c000003fd42f5000
-[  109.717005] page dumped because: page_handle_poison
-[  109.717011] page->mem_cgroup:c000003fd42f5000
-[  109.725882] page_handle_poison: hugepage_or_freepage failed
-[  109.725885] __soft_offline_page: page_handle_poison -EBUSY
-[  109.725898] page:00000000f367dde5 refcount:3 mapcount:0 mapping:00000000b43d73e6 index:0x58 pfn:0x3fb526
-[  109.725951] aops:xfs_address_space_operations [xfs] ino:49f9c5f dentry name:"messages"
-[  109.725958] flags: 0x3ffff800002008(dirty|private)
-[  109.725963] raw: 003ffff800002008 5deadbeef0000100 5deadbeef0000122 c000003fb8b7eea8
-[  109.725969] raw: 0000000000000058 c000003fdd94eb20 00000003ffffffff c000003fd3c42000
-[  109.725975] page dumped because: __soft_offline_page after migrate
-[  109.725980] page->mem_cgroup:c000003fd3c42000
-
+diff --git a/arch/mips/sni/a20r.c b/arch/mips/sni/a20r.c
+index b09dc844985a..eeeec18c420a 100644
+--- a/arch/mips/sni/a20r.c
++++ b/arch/mips/sni/a20r.c
+@@ -143,7 +143,10 @@ static struct platform_device sc26xx_pdev = {
+ 	},
+ };
+ 
+-static u32 a20r_ack_hwint(void)
++/*
++ * Trigger chipset to update CPU's CAUSE IP field
++ */
++static u32 a20r_update_cause_ip(void)
+ {
+ 	u32 status = read_c0_status();
+ 
+@@ -205,12 +208,14 @@ static void a20r_hwint(void)
+ 	int irq;
+ 
+ 	clear_c0_status(IE_IRQ0);
+-	status = a20r_ack_hwint();
++	status = a20r_update_cause_ip();
+ 	cause = read_c0_cause();
+ 
+ 	irq = ffs(((cause & status) >> 8) & 0xf8);
+ 	if (likely(irq > 0))
+ 		do_IRQ(SNI_A20R_IRQ_BASE + irq - 1);
++
++	a20r_update_cause_ip();
+ 	set_c0_status(IE_IRQ0);
+ }
+ 
 -- 
-Aristeu
+2.16.4
 
