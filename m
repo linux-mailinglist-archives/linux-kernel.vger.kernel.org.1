@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D81326BA37
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EAE26BA1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgIPC3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgIPC3K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:29:10 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2687CC06174A;
-        Tue, 15 Sep 2020 19:29:09 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id m5so5250868lfp.7;
-        Tue, 15 Sep 2020 19:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=GK9+C1oomDz6uVnNOODHcK5n0hkREpa5d365nxARSlQ=;
-        b=ivXcT/BSWD9eHKF5fmu1LVGsfELyKmXRv1tgY3c1gUJxIT4s77oCje6K/STc1JilzO
-         g0/HhFcMPovrz3+RIBb1UNIkIC0/QRlpica+HugQMxFwZOqAmrd0xd5ZnbPGSZd6VTBi
-         Cwsuvr3v3olxvxA7FwJx8mr39VEuSR/kuOC7Qnk9tXAflMeYa2rBHRriGu7ioVCuzyID
-         jlEEwb+zn9IEa3vpb9zasSWufVHjC45YZlP5Ye1EaFw60S8XhjWVMNoU2xTnIiaI7gs4
-         kqVO8LmdfKlpOhxYKsHEZO2TUXkbmoYsUge7/02BZVBmOudRO+1wmsN4amtJvTd9MY2o
-         NXQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=GK9+C1oomDz6uVnNOODHcK5n0hkREpa5d365nxARSlQ=;
-        b=V3aCmOPN9H3qJUkaYDpYWzhGWPiDh/vsQelQGo81OsQnQb05VHHHXSSxWSvbQ0YiO4
-         jqvllCemh+lr+uQXmvGvOCWP/V6l22yyVz1F//TPk68eqHr6o3NwC3BobnTN/Rrqy0hr
-         4NwHh8h4A2EsEZhdZBg56RyW7SNhAmqnvC9jwOv7Sf/Gdz62f58ZwNakc0W6+yLd8A+f
-         gkC/42jtWui1/HeSYmlfJUD6bpFzH4c4Ehq3xFWH5DXaG7g7L9+mwsRktQMqJYoZZreK
-         Wzur6RQn410U4DPkfYKSPWwhx0lj8/90wn6YlvY14vQzxM7Le8BxW57n2J7Z2NMr1yBn
-         R1EQ==
-X-Gm-Message-State: AOAM530LLRgLCYgrctPngeKKvUybTnB8iw5+TBPKxK8PzunCyQR0daBR
-        iWjv0Ul+ePcKi4n13CO7YIa5XqBEAqdObpTvCNQ=
-X-Google-Smtp-Source: ABdhPJz3mJdWwByW2nnR8gVQDANHxxrdl0PgQIGP9uf/PCLvjp6cJ31H81PHZZUnHib8dRcNGmVl6SVajTnc8v6EZq4=
-X-Received: by 2002:a19:e602:: with SMTP id d2mr6618353lfh.536.1600223346217;
- Tue, 15 Sep 2020 19:29:06 -0700 (PDT)
+        id S1726420AbgIPC2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:28:09 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12715 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726269AbgIPC1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:27:51 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 18E7FC10482E2933FAB9;
+        Wed, 16 Sep 2020 10:27:49 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 10:27:40 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] ath5k: convert to use DEFINE_SEQ_ATTRIBUTE macro
+Date:   Wed, 16 Sep 2020 10:50:15 +0800
+Message-ID: <20200916025015.3992315-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200912102558.656-1-zhenzhong.duan@gmail.com> <20200914162010.GB15060@jcrouse1-lnx.qualcomm.com>
-In-Reply-To: <20200914162010.GB15060@jcrouse1-lnx.qualcomm.com>
-From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Date:   Wed, 16 Sep 2020 10:28:54 +0800
-Message-ID: <CAFH1YnM1O6bE2bYbCjaWHfvo47TkHjh999yeESy81UMxMW_KYg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/a6xx: fix a potential overflow issue
-To:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, Daniel Vetter <daniel@ffwll.ch>,
-        smasetty@codeaurora.org, Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:20 AM Jordan Crouse <jcrouse@codeaurora.org> wrote:
->
-> On Sat, Sep 12, 2020 at 06:25:58PM +0800, Zhenzhong Duan wrote:
-> > It's allocating an array of a6xx_gpu_state_obj structure rathor than
-> > its pointers.
-> >
-> > This patch fix it.
-> >
-> > Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
->
-> LGTM but should have a Fixes: tag for the stable trees
->
-> Fixes: d6852b4b2d01 ("drm/msm/a6xx: Track and manage a6xx state memory")
-> Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
 
-I had sent a v2 version with same change as you suggested on Sep 14,
-could you help review it? Thanks
-https://lkml.org/lkml/2020/9/13/311
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ drivers/net/wireless/ath/ath5k/debug.c | 25 +++----------------------
+ 1 file changed, 3 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath5k/debug.c b/drivers/net/wireless/ath/ath5k/debug.c
+index 2eaba1ccab20..4b41160e5d38 100644
+--- a/drivers/net/wireless/ath/ath5k/debug.c
++++ b/drivers/net/wireless/ath/ath5k/debug.c
+@@ -161,33 +161,14 @@ static int reg_show(struct seq_file *seq, void *p)
+ 	return 0;
+ }
+ 
+-static const struct seq_operations register_seq_ops = {
++static const struct seq_operations registers_sops = {
+ 	.start = reg_start,
+ 	.next  = reg_next,
+ 	.stop  = reg_stop,
+ 	.show  = reg_show
+ };
+ 
+-static int open_file_registers(struct inode *inode, struct file *file)
+-{
+-	struct seq_file *s;
+-	int res;
+-	res = seq_open(file, &register_seq_ops);
+-	if (res == 0) {
+-		s = file->private_data;
+-		s->private = inode->i_private;
+-	}
+-	return res;
+-}
+-
+-static const struct file_operations fops_registers = {
+-	.open = open_file_registers,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release,
+-	.owner = THIS_MODULE,
+-};
+-
++DEFINE_SEQ_ATTRIBUTE(registers);
+ 
+ /* debugfs: beacons */
+ 
+@@ -1005,7 +986,7 @@ ath5k_debug_init_device(struct ath5k_hw *ah)
+ 		return;
+ 
+ 	debugfs_create_file("debug", 0600, phydir, ah, &fops_debug);
+-	debugfs_create_file("registers", 0400, phydir, ah, &fops_registers);
++	debugfs_create_file("registers", 0400, phydir, ah, &registers_fops);
+ 	debugfs_create_file("beacon", 0600, phydir, ah, &fops_beacon);
+ 	debugfs_create_file("reset", 0200, phydir, ah, &fops_reset);
+ 	debugfs_create_file("antenna", 0600, phydir, ah, &fops_antenna);
+-- 
+2.25.1
+
