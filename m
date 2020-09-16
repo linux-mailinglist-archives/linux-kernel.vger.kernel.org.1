@@ -2,115 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0A926C9C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A71526C9C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbgIPTWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727287AbgIPTTf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 15:19:35 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABF7C06121E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:17:58 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k15so4523668pfc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:17:58 -0700 (PDT)
+        id S1728101AbgIPTX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:23:26 -0400
+Received: from mail-bn8nam11on2056.outbound.protection.outlook.com ([40.107.236.56]:10942
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727384AbgIPTWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 15:22:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TZFSTJcrUaEDi+Lgw2NFFdDAd8+xBoXsT8ubfPcaOdnQ8bsu3VbGbncOFn8R7x5f2Z+As9kexHkCgR6VPT7xdRjkWKYNPXvphOzw+4pGf+ykUAB3WwXoqEbhN1MOjFn3f7rKuuCLuZFtQpJ/FmhPW0Gy7H4XIYunpI6zcugAKeK4vQ4eFORCod+YZIZlrvRWBfecbSkGDPX4O3o38OXRQ1EcTxgZEOhFH9Av59uhSyRt74ye+FtBK8h/KAZTjfcrsDGJzKbbxeBePk1ixlCJAx4ZJcHdUG5xFMZgooKRicDWQ8x6Qm1T/ADR7IjR05cEDW0boLDfx1CgKEh936LcZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zEZni2IPxBY7jDkdqDKG0TpFH4qJYhwowLrM+ncNqKM=;
+ b=g+PFjS4zViVMWGU8d+XjUouksUWiKLKK9stauq82twaZYxv1b9EkTnJXuGLYUbTZcKwwA9jiJQ+76FxPb54YUPWDnv78umYbMxWRGPFHv0DG8ClyK0D4pOy/a4WOZP7gdYk1X+Dp02YXOElsub6oRNOrXPxAdAk6dgU+aaWEk4nfbdkcTRUGxBfReXKbMOy4SnOE8cFLa2YvSo6pDOkyL7z38VvJnfXQrYW2h6Ff8neZQYV5ePcaW8LtFqXeG/kgaBRWBT8H7JYnubrqOXp3Rp2xJjn+Uj+WoVOILDkjJHHWqg7pSMfoVmMz0LS5w5Vr0hysF8CRl6aOStkraR+nLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Oe49LMKwv41Q/rKpDAMKCy8PmysOJZGeIA2wNQPMFDo=;
-        b=k1qCnGcV5ydKrYSZmb7z6t2rf8NDhB199Q+CTrqhlDFZH1YPgkXkqdcpHFUUMmFZB2
-         nhHFszfE//oADI2Sw4apMJE43ezjbPXDFOSqMKV1tVsDWi21ugWht5ff3u12bcaMI+6/
-         gKwT/4ikJcrErNs8nJDnc/0BGa1jVMx5GqFC5UCkfiMj/OTRXgkyY0erUNFP2t6Ful5I
-         G46dXB435jwkzFyT7iIb/wnTkDJHrtgI3kNHCmCl8lgAplNoM+u4lgjCX7WrMk8LgJYp
-         CSkJ3xoPSXG5ph1DGvftMQa6B/pQ4TFw5+sxZz/tDOGsJ89AT1CbFS3M1cGBoWJez54+
-         iqSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Oe49LMKwv41Q/rKpDAMKCy8PmysOJZGeIA2wNQPMFDo=;
-        b=fLt5hdMr8OwtWLKqiRdM/dZIcikAdv4xT7q4HjDvhL8jPjOZhkbw1534CspY7Nyhc3
-         tPHpS2V/0lPXYtNKHVsRREMtCuUcRBTzqbPrVPA/Dga4W0wsU+iYAGRU25R6MNNTKP1p
-         YzWKB1rVADPjpIpBO0izYy+ZTZ7y7Xm5ouYJHViYzEjsKIARqy6bVhleO/FGy+tIPsai
-         AC6LQcT+FqARfEZBa4FDtxX8WP6An4X2kwzGGk6hB1xgee6EuX52RNwwr9/0Owx+BoFl
-         i06ysye807z3oDaRt6ELp9WCGAQ0oZ9mNk5MwpagnsHT23evkcQtVWF3c58yiR+aAWmO
-         4oGw==
-X-Gm-Message-State: AOAM531pvJ5HljuJsmBHulOybRBEa0B9tx5j5qRgH2dxw1xm69Gpi3A+
-        yNe7E7xf5sjF9+l6RV3fvW9Mpqrj100i8Q==
-X-Google-Smtp-Source: ABdhPJz4/2EA/zzbsQeVkyxz0UVvQIol29EhFlEroXCYa/7jZJoZG06NJLqej/NQ51x9sw2Vhfh2Ig==
-X-Received: by 2002:a63:3643:: with SMTP id d64mr2586988pga.207.1600283875709;
-        Wed, 16 Sep 2020 12:17:55 -0700 (PDT)
-Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id b2sm11373688pfp.3.2020.09.16.12.17.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 12:17:55 -0700 (PDT)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 15/16] coresight: etm4x: Fix mis-usage of nr_resource in sysfs interface
-Date:   Wed, 16 Sep 2020 13:17:36 -0600
-Message-Id: <20200916191737.4001561-16-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200916191737.4001561-1-mathieu.poirier@linaro.org>
-References: <20200916191737.4001561-1-mathieu.poirier@linaro.org>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zEZni2IPxBY7jDkdqDKG0TpFH4qJYhwowLrM+ncNqKM=;
+ b=3YcYb8cMuSB12pQgo6Tx9yPu3LViVh5xWcq/txKiLwtcKdU5dV7xzpDpNCqnYyyu6thJe6aF3I9NhN+P8/OQua57Gp0C0aZ429AY2elgfuVhQ1scQE3YZ1cv9Y9CxmO3MYh/CDU2vurEiyjKY4ggpk+c3bqM5ISOetTR2k7lJcc=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
+ by CY4PR12MB1925.namprd12.prod.outlook.com (2603:10b6:903:120::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
+ 2020 19:22:40 +0000
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::9067:e60d:5698:51d8]) by CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::9067:e60d:5698:51d8%12]) with mapi id 15.20.3391.011; Wed, 16 Sep
+ 2020 19:22:40 +0000
+Date:   Wed, 16 Sep 2020 14:22:36 -0500
+From:   Wei Huang <wei.huang2@amd.com>
+To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, Wei Huang <whuang2@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 0/2] KVM: x86: allow for more CPUID entries
+Message-ID: <20200916192236.GA623906@weilap>
+References: <20200915154306.724953-1-vkuznets@redhat.com>
+ <20200915165131.GC2922@work-vm>
+ <20200916034905.GA508748@weilap>
+ <20200916083351.GA2833@work-vm>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916083351.GA2833@work-vm>
+X-ClientProxiedBy: BL0PR01CA0024.prod.exchangelabs.com (2603:10b6:208:71::37)
+ To CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
+Importance: high
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (24.55.15.93) by BL0PR01CA0024.prod.exchangelabs.com (2603:10b6:208:71::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend Transport; Wed, 16 Sep 2020 19:22:39 +0000
+X-Priority: 1 (Highest)
+X-MSMail-Priority: High
+X-Originating-IP: [24.55.15.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c142b2e8-9e00-4aaf-c49c-08d85a75e0b6
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1925:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR12MB1925CDB14B82D5D6A30DEBABCF210@CY4PR12MB1925.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AFMQVTw7SyB8KcaAxGwWyGyxKoOdKmWzpwOSOErGqQUdQBB+AYxJLNIqaMt58RLUctVC+96fionxmKlkp3HGgSLb+edvnF+907LRLWueA1crt5SpD/11TRxC/86xIaUuQzYD3JbDRgMj0n0KXAx+QfI01e1IvfEUsBQxX5AuR96t3Cx9HYVvG+F4H3J8Ku6PQD7tNuGYQh0xXcvTXb1orcPz3VNiRAESIcDRlx7D2ez9Q+FCp9QXBcbp5ieE0WnSW7bk2YENZAZS/IxurWQKlTwwbs/HYqTijJl2LOyKJ8eqxAs0xEbWoAwbGkVbq7JioXx8IoTj4GtqKjk+cgYd/g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(396003)(366004)(346002)(376002)(39860400002)(16526019)(5660300002)(6496006)(2906002)(8936002)(186003)(83380400001)(33656002)(66476007)(8676002)(86362001)(54906003)(6916009)(6666004)(66556008)(66946007)(52116002)(316002)(33716001)(4326008)(478600001)(956004)(26005)(9686003)(6486002)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: GSik7Z01MMOA4QkghMVs7B0L0bS43du6Lk/TIQsPX7TjI5oX1l/6++/PCDVjUvYgbuoKsPSDuMobxelxWCQQqasUv8sLjFNa/LV+iNtxPY5VA/GcbH92UEOfeJlfNISr/sCa2vju2KGZZQHipvPU8V7VYjVA9vHGhFFkP6YPSTxiUwaeGm6Mk+7sM/RO33p7woqRLNjwBJBD6fhyjGgX3gk27nBs4lCMiX+XHwowo5ii8n3QC4dcHcaS3krd7SKkiUbukgmFR4OiGMrhnDmt9FewX3xUh0A2V/OGTsKKOl1DUlqreMsM85IYbW3mBQ1TajyMlB00zgtUTlGQmQ9iFMHOYiKTEZfLYLkH18n13VsBM9zr9JzrvPeWBiKV9kn1JQWB2Ahdej3fPE01gYQ/U7d+MGmLWzWj8+VQT7kA80U8IutG8PcLuLyO4lLwspXz/QEGuaHeSWGsE+KjXGycZCm7Ln7uwq3aLD1HdPq2VYVsRCkVJpjpormeHSExZZomUskJTCjn8J4tOBB4sFezPH6hKj3G9hxaY/aZTW4kO8YAWt7grsbg7s6LO9AbGlaWhdo+jeSjot9jLURklrBmbcQvVFT7zSqV5Gx1nrqejOf+mLMZVTsX5cPLHVzAx9RtVupRRt8Hko5Cl6hF4kPuYQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c142b2e8-9e00-4aaf-c49c-08d85a75e0b6
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 19:22:40.5160
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5tvCRj19Y0kGe3Itfrjk64X+0cVmRgTA1GAW89i1SfTJjapzAnjPCumdhZLb1gmM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1925
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Zhou <jonathan.zhouwen@huawei.com>
+On 09/16 09:33, Dr. David Alan Gilbert wrote:
+> * Wei Huang (wei.huang2@amd.com) wrote:
+> > On 09/15 05:51, Dr. David Alan Gilbert wrote:
+> > > * Vitaly Kuznetsov (vkuznets@redhat.com) wrote:
+> > > > With QEMU and newer AMD CPUs (namely: Epyc 'Rome') the current limit for
+> > 
+> > Could you elaborate on this limit? On Rome, I counted ~35 CPUID functions which
+> > include Fn0000_xxxx, Fn4000_xxxx and Fn8000_xxxx.
+> 
+> On my 7302P the output of:
+>     cpuid -1 -r | wc -l
+> 
+> is 61, there is one line of header in there.
+> 
+> However in a guest I see more; and I think that's because KVM  tends to
+> list the CPUID entries for a lot of disabled Intel features, even on
+> AMD, e.g. 0x11-0x1f which AMD doesn't have, are listed in a KVM guest.
+> Then you add the KVM CPUIDs at 4...0 and 4....1.
+>
 
-The member @nr_resource represents how many resource selector pairs,
-and the pair 0 is always implemented and reserved.
-So let's multiply by 2 when resetting the selector configuration.
-And also update the validation of the input @idx.
+It is indeed a mixing bag. Some are added even though AMD CPU doesn't define
+them. BTW I also believe that cpuid command lists more CPUIDs than the real
+value of cpuid->nent in kvm_vcpu_ioctl_set_cpuid(2).
 
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc: lizixian@hisilicon.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
-[Fixed typographical error in changelog, added stable]
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- drivers/hwtracing/coresight/coresight-etm4x-sysfs.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Anyway I don't have objection to this patchset.
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-index a588cd6de01c..989ce7b8ade7 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-@@ -236,7 +236,7 @@ static ssize_t reset_store(struct device *dev,
- 	}
- 
- 	config->res_idx = 0x0;
--	for (i = 0; i < drvdata->nr_resource; i++)
-+	for (i = 2; i < 2 * drvdata->nr_resource; i++)
- 		config->res_ctrl[i] = 0x0;
- 
- 	config->ss_idx = 0x0;
-@@ -1663,8 +1663,11 @@ static ssize_t res_idx_store(struct device *dev,
- 
- 	if (kstrtoul(buf, 16, &val))
- 		return -EINVAL;
--	/* Resource selector pair 0 is always implemented and reserved */
--	if ((val == 0) || (val >= drvdata->nr_resource))
-+	/*
-+	 * Resource selector pair 0 is always implemented and reserved,
-+	 * namely an idx with 0 and 1 is illegal.
-+	 */
-+	if ((val < 2) || (val >= 2 * drvdata->nr_resource))
- 		return -EINVAL;
- 
- 	/*
--- 
-2.25.1
-
+> IMHO we should be filtering those out for at least two reasons:
+>   a) They're wrong
+>   b) We're probably not keeping the set of visible CPUID fields the same
+>     when we move between host kernels, and that can't be good for
+> migration.
+> 
+> Still, those are separate problems.
+> 
+> Dave
+> 
+> > > > KVM_MAX_CPUID_ENTRIES(80) is reported to be hit. Last time it was raised
+> > > > from '40' in 2010. We can, of course, just bump it a little bit to fix
+> > > > the immediate issue but the report made me wonder why we need to pre-
+> > > > allocate vcpu->arch.cpuid_entries array instead of sizing it dynamically.
+> > > > This RFC is intended to feed my curiosity.
+> > > > 
+> > > > Very mildly tested with selftests/kvm-unit-tests and nothing seems to
+> > > > break. I also don't have access to the system where the original issue
+> > > > was reported but chances we're fixing it are very good IMO as just the
+> > > > second patch alone was reported to be sufficient.
+> > > > 
+> > > > Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> > > 
+> > > Oh nice, I was just going to bump the magic number :-)
+> > > 
+> > > Anyway, this seems to work for me, so:
+> > > 
+> > > Tested-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> > > 
+> > 
+> > I tested on two platforms and the patches worked fine. So no objection on the
+> > design.
+> > 
+> > Tested-by: Wei Huang <wei.huang2@amd.com>
+> > 
+> > > > Vitaly Kuznetsov (2):
+> > > >   KVM: x86: allocate vcpu->arch.cpuid_entries dynamically
+> > > >   KVM: x86: bump KVM_MAX_CPUID_ENTRIES
+> > > > 
+> > > >  arch/x86/include/asm/kvm_host.h |  4 +--
+> > > >  arch/x86/kvm/cpuid.c            | 55 ++++++++++++++++++++++++---------
+> > > >  arch/x86/kvm/x86.c              |  1 +
+> > > >  3 files changed, 43 insertions(+), 17 deletions(-)
+> > > > 
+> > > > -- 
+> > > > 2.25.4
+> > > > 
+> > > -- 
+> > > Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> > > 
+> > 
+> -- 
+> Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> 
