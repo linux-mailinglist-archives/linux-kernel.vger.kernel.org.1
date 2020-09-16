@@ -2,120 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC46126BAE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D1426BAB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgIPDtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:49:08 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:45670 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726486AbgIPDs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:48:56 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 095602008D0;
-        Wed, 16 Sep 2020 05:48:54 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9905B2008BD;
-        Wed, 16 Sep 2020 05:48:50 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 105C14035E;
-        Wed, 16 Sep 2020 05:11:22 +0200 (CEST)
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     shawnguo@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com
-Cc:     andy.tang@nxp.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        Zhao Qiang <qiang.zhao@nxp.com>
-Subject: [PATCH 2/2] arm64: dts: layerscape: modify clocks divider to 32 for wdt
-Date:   Wed, 16 Sep 2020 11:03:11 +0800
-Message-Id: <20200916030311.17280-2-qiang.zhao@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916030311.17280-1-qiang.zhao@nxp.com>
-References: <20200916030311.17280-1-qiang.zhao@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726336AbgIPDkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:40:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48944 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726302AbgIPDk0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 23:40:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600227622;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sa18Wy+AFGfNEzK/QEu3XYN/v5F2MKLXPBV9X785ZOo=;
+        b=R5Qd5YkVWsz4nEF6pq2WaTLDtqC+R8w6c5qWCYgk0fO8ANgk+pIWQBJeLr27+mbxbpwgS/
+        aYFf+NhHvGPTEMM5O0sV1kTir7ZLhO68oYcYL8+SiH2liBjI8U+prqMz4qaHgBxDkwVx8x
+        pRfGqXVkYyH3ymnrBtLKelTC3GeW+bg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-xHzbVAyzPC693VGLrZM1aA-1; Tue, 15 Sep 2020 23:40:21 -0400
+X-MC-Unique: xHzbVAyzPC693VGLrZM1aA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DCD61800D4A;
+        Wed, 16 Sep 2020 03:40:19 +0000 (UTC)
+Received: from [10.64.54.108] (vpn2-54-108.bne.redhat.com [10.64.54.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 930AC702E7;
+        Wed, 16 Sep 2020 03:40:18 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH -next] firmware: arm_sdei: simplify the return expression
+ of sdei_device_freeze()
+To:     Liu Shixin <liushixin2@huawei.com>,
+        James Morse <james.morse@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20200915032625.1772413-1-liushixin2@huawei.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <9fdd9c4d-d957-e7d5-818d-cc9247be9dfd@redhat.com>
+Date:   Wed, 16 Sep 2020 13:40:16 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
+MIME-Version: 1.0
+In-Reply-To: <20200915032625.1772413-1-liushixin2@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Qiang <qiang.zhao@nxp.com>
+On 9/15/20 1:26 PM, Liu Shixin wrote:
+> Simplify the return expression.
+> 
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
 
-On LX2088A, wdt's clock are get from clockgen divided by 32,
-so modify clocks in device tree.
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-index 7016791..de6c751 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-@@ -194,56 +194,56 @@
- 		cluster1_core0_watchdog: wdt@c000000 {
- 			compatible = "arm,sp805-wdt", "arm,primecell";
- 			reg = <0x0 0xc000000 0x0 0x1000>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
- 			clock-names = "apb_pclk", "wdog_clk";
- 		};
- 
- 		cluster1_core1_watchdog: wdt@c010000 {
- 			compatible = "arm,sp805-wdt", "arm,primecell";
- 			reg = <0x0 0xc010000 0x0 0x1000>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
- 			clock-names = "apb_pclk", "wdog_clk";
- 		};
- 
- 		cluster2_core0_watchdog: wdt@c100000 {
- 			compatible = "arm,sp805-wdt", "arm,primecell";
- 			reg = <0x0 0xc100000 0x0 0x1000>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
- 			clock-names = "apb_pclk", "wdog_clk";
- 		};
- 
- 		cluster2_core1_watchdog: wdt@c110000 {
- 			compatible = "arm,sp805-wdt", "arm,primecell";
- 			reg = <0x0 0xc110000 0x0 0x1000>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
- 			clock-names = "apb_pclk", "wdog_clk";
- 		};
- 
- 		cluster3_core0_watchdog: wdt@c200000 {
- 			compatible = "arm,sp805-wdt", "arm,primecell";
- 			reg = <0x0 0xc200000 0x0 0x1000>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
- 			clock-names = "apb_pclk", "wdog_clk";
- 		};
- 
- 		cluster3_core1_watchdog: wdt@c210000 {
- 			compatible = "arm,sp805-wdt", "arm,primecell";
- 			reg = <0x0 0xc210000 0x0 0x1000>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
- 			clock-names = "apb_pclk", "wdog_clk";
- 		};
- 
- 		cluster4_core0_watchdog: wdt@c300000 {
- 			compatible = "arm,sp805-wdt", "arm,primecell";
- 			reg = <0x0 0xc300000 0x0 0x1000>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
- 			clock-names = "apb_pclk", "wdog_clk";
- 		};
- 
- 		cluster4_core1_watchdog: wdt@c310000 {
- 			compatible = "arm,sp805-wdt", "arm,primecell";
- 			reg = <0x0 0xc310000 0x0 0x1000>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
- 			clock-names = "apb_pclk", "wdog_clk";
- 		};
- 
--- 
-2.7.4
+>   drivers/firmware/arm_sdei.c | 8 +-------
+>   1 file changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
+> index b4b9ce97f415..5b4c8c51cb20 100644
+> --- a/drivers/firmware/arm_sdei.c
+> +++ b/drivers/firmware/arm_sdei.c
+> @@ -798,16 +798,10 @@ static int sdei_device_resume(struct device *dev)
+>    */
+>   static int sdei_device_freeze(struct device *dev)
+>   {
+> -	int err;
+> -
+>   	/* unregister private events */
+>   	cpuhp_remove_state(CPUHP_AP_ARM_SDEI_STARTING);
+>   
+> -	err = sdei_unregister_shared();
+> -	if (err)
+> -		return err;
+> -
+> -	return 0;
+> +	return sdei_unregister_shared();
+>   }
+>   
+>   static int sdei_device_thaw(struct device *dev)
+> 
 
