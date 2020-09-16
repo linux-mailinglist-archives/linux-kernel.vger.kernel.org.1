@@ -2,139 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737A026C0A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AD726C0A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbgIPJcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:32:20 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:14763 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726243AbgIPJbv (ORCPT
+        id S1726681AbgIPJdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726425AbgIPJdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:31:51 -0400
+        Wed, 16 Sep 2020 05:33:14 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A109C06174A;
+        Wed, 16 Sep 2020 02:33:14 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e11so1817902wme.0;
+        Wed, 16 Sep 2020 02:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600248711; x=1631784711;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=j0FQ0m4Q6N26iiRThQsRwlC33/2n3AHGpWayuoJn1GE=;
-  b=Hixz21G2AQ1Jl0YyUx+Km/hE57Z54WW83l5gZpl+hIjD5SKkezV1UMdm
-   Sdx4k14Q+wc3SQYD42sVt6/alrpYWNZSJ27IyOH7yldJQ17yrBEEICqo3
-   rIqqgVsn24qeNSKuDDL8zOQ0qg+i8SH8I7PTPE1GPnpKf0t68rE8tSkgn
-   s=;
-X-IronPort-AV: E=Sophos;i="5.76,432,1592870400"; 
-   d="scan'208";a="75377086"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 16 Sep 2020 09:31:38 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id C8299A1C39;
-        Wed, 16 Sep 2020 09:31:36 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Sep 2020 09:31:36 +0000
-Received: from freeip.amazon.com (10.43.160.183) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Sep 2020 09:31:33 +0000
-Subject: Re: [PATCH v6 1/7] KVM: x86: Deflect unknown MSR accesses to user
- space
-To:     Aaron Lewis <aaronlewis@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        kvm list <kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200902125935.20646-1-graf@amazon.com>
- <20200902125935.20646-2-graf@amazon.com>
- <CAAAPnDFGD8+5KBCLKERrH0hajHEwU9UdEEGqp3RZu3Lws+5rmw@mail.gmail.com>
-From:   Alexander Graf <graf@amazon.com>
-Message-ID: <186ccace-2fad-3db3-0848-cd272b1a64ba@amazon.com>
-Date:   Wed, 16 Sep 2020 11:31:30 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YjecuPhauQHL4j4Z2a9keky4ajO3faW/VO0iw9ZMsyw=;
+        b=A+yh78E6fm9DBZfbdqzQH+qzcsEGu6J4+jBTWy2YENyyyt2Zbq0S/OFMY+YMWluCW8
+         z8t3xi+iP90JmyDxktlPvCO+1T3U3hFBPr8qrN+yRgMmJ0GM2L7qRI0Eo3AOZ7RMkQPe
+         LWE3uzHR7S4jsQzPTnyioG1nqAXIH9Jsv1zZo5fzHTOi1paYswkOFIvKmndmutMHCR0b
+         y7j++ofj0gze7dcveAmPNZVSNVJ8f7dc9HkoqOY5StLB4q0UsS53QODCjO0b8LP6kuiJ
+         8vHisP+2YnnZzbQCZ5tRX2F0md65KbL3npfLcO72aSz6q9hmrXsAZ2AjIqklFE2qGRqP
+         eeXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YjecuPhauQHL4j4Z2a9keky4ajO3faW/VO0iw9ZMsyw=;
+        b=DD3rdSDtqTIWqRQM9vg+LtAgbYXATRxYYPW1fg+f8mAsYcaMqIrs10gJyvfl5MLKnJ
+         dkM17lKEggN/R6ZmcHh3H8iCFnNgnEm3u6VTkcN9o95KfIjxsqEWmH6uxUP8L9mMHW3f
+         yh49oXBkVdN/BEIRCGk7QYqxcqCPajJSvnel/XHkhfFITNZsyA1P7vbKDO3UHwqm0sdr
+         geWFEeSkk1PYqhNHdVBzugBqifjlaGMWvcYIlcPseqmznjjmSu511u3HnGM1rcyRv3sG
+         rqkgApHJhSA9hBgdDStlpzPxuNfCs2fG43dYDrPTY5dEhuPvUu0vSKXXh9XvMBkeGXiF
+         7KuQ==
+X-Gm-Message-State: AOAM5307yMWX1cOViO3Fyjxx/FPl5O6YHzByNAXNnq7QdxZSEymaia0x
+        YtWb9c1EftKrWrKe5/U57p4=
+X-Google-Smtp-Source: ABdhPJxBZS9ztI4xvrbGTpOSw6c/HLSysA8VOVuU/1daXUC/dE1jO2LoC/ZzlHwtXxsbSfmuJA8jmA==
+X-Received: by 2002:a05:600c:2047:: with SMTP id p7mr4017341wmg.168.1600248792836;
+        Wed, 16 Sep 2020 02:33:12 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id u8sm4171183wmj.45.2020.09.16.02.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 02:33:11 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 11:33:09 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: Re: [PATCH v2 4/4] crypto: allwinner/sun8i - Simplify with
+ dev_err_probe()
+Message-ID: <20200916093309.GA11483@Red>
+References: <20200910192919.12503-1-krzk@kernel.org>
+ <20200910192919.12503-4-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAAPnDFGD8+5KBCLKERrH0hajHEwU9UdEEGqp3RZu3Lws+5rmw@mail.gmail.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.160.183]
-X-ClientProxiedBy: EX13D45UWB003.ant.amazon.com (10.43.161.67) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910192919.12503-4-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWFyb24sCgpUaGFua3MgYSBsb3QgZm9yIHRoZSBhbWF6aW5nIHJldmlldyEgSSd2ZSBiZWVu
-IGNhdWdodCBpbiBzb21lIG90aGVyIAp0aGluZ3MgcmVjZW50bHksIHNvIHNvcnJ5IGZvciB0aGUg
-ZGVsYXllZCByZXNwb25zZS4KCk9uIDAzLjA5LjIwIDIxOjI3LCBBYXJvbiBMZXdpcyB3cm90ZToK
-PiAKPj4gKzo6Cj4+ICsKPj4gKyAgICAgICAgICAgICAgIC8qIEtWTV9FWElUX1g4Nl9SRE1TUiAv
-IEtWTV9FWElUX1g4Nl9XUk1TUiAqLwo+PiArICAgICAgICAgICAgICAgc3RydWN0IHsKPj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgX191OCBlcnJvcjsgLyogdXNlciAtPiBrZXJuZWwgKi8KPj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgX191OCBwYWRbM107Cj4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgIF9fdTMyIHJlYXNvbjsgLyoga2VybmVsIC0+IHVzZXIgKi8KPj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgX191MzIgaW5kZXg7IC8qIGtlcm5lbCAtPiB1c2VyICovCj4+ICsgICAgICAg
-ICAgICAgICAgICAgICAgIF9fdTY0IGRhdGE7IC8qIGtlcm5lbCA8LT4gdXNlciAqLwo+PiArICAg
-ICAgICAgICAgICAgfSBtc3I7Cj4+ICsKPj4gK1VzZWQgb24geDg2IHN5c3RlbXMuIFdoZW4gdGhl
-IFZNIGNhcGFiaWxpdHkgS1ZNX0NBUF9YODZfVVNFUl9TUEFDRV9NU1IgaXMKPj4gK2VuYWJsZWQs
-IE1TUiBhY2Nlc3NlcyB0byByZWdpc3RlcnMgdGhhdCB3b3VsZCBpbnZva2UgYSAjR1AgYnkgS1ZN
-IGtlcm5lbCBjb2RlCj4+ICt3aWxsIGluc3RlYWQgdHJpZ2dlciBhIEtWTV9FWElUX1g4Nl9SRE1T
-UiBleGl0IGZvciByZWFkcyBhbmQgS1ZNX0VYSVRfWDg2X1dSTVNSCj4+ICtleGl0IGZvciB3cml0
-ZXMuCj4+ICsKPj4gK1RoZSAicmVhc29uIiBmaWVsZCBzcGVjaWZpZXMgd2h5IHRoZSBNU1IgdHJh
-cCBvY2N1cnJlZC4gVXNlciBzcGFjZSB3aWxsIG9ubHkKPj4gK3JlY2VpdmUgTVNSIGV4aXQgdHJh
-cHMgd2hlbiBhIHBhcnRpY3VsYXIgcmVhc29uIHdhcyByZXF1ZXN0ZWQgZHVyaW5nIHRocm91Z2gK
-Pj4gK0VOQUJMRV9DQVAuIEN1cnJlbnRseSB2YWxpZCBleGl0IHJlYXNvbnMgYXJlOgo+PiArCj4+
-ICsgICAgICAgS1ZNX01TUl9FWElUX1JFQVNPTl9JTlZBTCAtIGFjY2VzcyB0byBpbnZhbGlkIE1T
-UnMgb3IgcmVzZXJ2ZWQgYml0cwo+IAo+IAo+IENhbiB3ZSBhbHNvIGhhdmUgRU5PRU5UPwo+ICAg
-ICAgICAgIEtWTV9NU1JfRVhJVF9SRUFTT05fRU5PRU5UIC0gVW5rbm93biBNU1IKCkkgdHJpZWQg
-dG8gYWRkIHRoYXQgYXQgZmlyc3QsIGJ1dCBpdCBnZXRzIHRyaWNreSByZWFsbHkgZmFzdC4gV2h5
-IHNob3VsZCAKdXNlciBzcGFjZSBoYXZlIGEgdmVzdGVkIGludGVyZXN0IGluIGRpZmZlcmVudGlh
-dGluZyBiZXR3ZWVuICJNU1IgaXMgbm90IAppbXBsZW1lbnRlZCIgYW5kICJNU1IgaXMgZ3VhcmRl
-ZCBieSBhIENQVUlEIGZsYWcgYW5kIHRodXMgbm90IGhhbmRsZWQiIApvciAiTVNSIGlzIGd1YXJk
-ZWQgYnkgYSBDQVAiPwoKVGhlIG1vcmUgZGV0YWlscyB3ZSByZXZlYWwsIHRoZSBtb3JlIGxpa2Vs
-eSB3ZSdyZSB0byBicmVhayBBQkkgCmNvbXBhdGliaWxpdHkuCgo+IAo+Pgo+PiArCj4+ICtGb3Ig
-S1ZNX0VYSVRfWDg2X1JETVNSLCB0aGUgImluZGV4IiBmaWVsZCB0ZWxscyB1c2VyIHNwYWNlIHdo
-aWNoIE1TUiB0aGUgZ3Vlc3QKPj4gK3dhbnRzIHRvIHJlYWQuIFRvIHJlc3BvbmQgdG8gdGhpcyBy
-ZXF1ZXN0IHdpdGggYSBzdWNjZXNzZnVsIHJlYWQsIHVzZXIgc3BhY2UKPj4gK3dyaXRlcyB0aGUg
-cmVzcGVjdGl2ZSBkYXRhIGludG8gdGhlICJkYXRhIiBmaWVsZCBhbmQgbXVzdCBjb250aW51ZSBn
-dWVzdAo+PiArZXhlY3V0aW9uIHRvIGVuc3VyZSB0aGUgcmVhZCBkYXRhIGlzIHRyYW5zZmVycmVk
-IGludG8gZ3Vlc3QgcmVnaXN0ZXIgc3RhdGUuCj4+Cj4+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9r
-dm0veDg2LmMgYi9hcmNoL3g4Ni9rdm0veDg2LmMKPj4gaW5kZXggODhjNTkzZjgzYjI4Li40ZDI4
-NWJmMDU0ZmIgMTAwNjQ0Cj4+IC0tLSBhL2FyY2gveDg2L2t2bS94ODYuYwo+PiArKysgYi9hcmNo
-L3g4Ni9rdm0veDg2LmMKPj4gQEAgLTE1NDksMTIgKzE1NDksODggQEAgaW50IGt2bV9zZXRfbXNy
-KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwgdTMyIGluZGV4LCB1NjQgZGF0YSkKPj4gICB9Cj4+ICAg
-RVhQT1JUX1NZTUJPTF9HUEwoa3ZtX3NldF9tc3IpOwo+Pgo+PiArc3RhdGljIGludCBjb21wbGV0
-ZV9lbXVsYXRlZF9tc3Ioc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCBib29sIGlzX3JlYWQpCj4+ICt7
-Cj4+ICsgICAgICAgaWYgKHZjcHUtPnJ1bi0+bXNyLmVycm9yKSB7Cj4+ICsgICAgICAgICAgICAg
-ICBrdm1faW5qZWN0X2dwKHZjcHUsIDApOwo+IAo+IEFkZCByZXR1cm4gMS4gVGhlIFJJUCBkb2Vz
-buKAmXQgYWR2YW5jZSB3aGVuIHRoZSBpbnN0cnVjdGlvbiByYWlzZXMgYSBmYXVsdC4KCllpa2Vz
-LiBHb29kIGNhdGNoISBUaGFuayB5b3UhCgo+IAo+Pgo+PiArICAgICAgIH0gZWxzZSBpZiAoaXNf
-cmVhZCkgewo+PiArICAgICAgICAgICAgICAga3ZtX3JheF93cml0ZSh2Y3B1LCAodTMyKXZjcHUt
-PnJ1bi0+bXNyLmRhdGEpOwo+PiArICAgICAgICAgICAgICAga3ZtX3JkeF93cml0ZSh2Y3B1LCB2
-Y3B1LT5ydW4tPm1zci5kYXRhID4+IDMyKTsKPj4gKyAgICAgICB9Cj4+ICsKPj4gKyAgICAgICBy
-ZXR1cm4ga3ZtX3NraXBfZW11bGF0ZWRfaW5zdHJ1Y3Rpb24odmNwdSk7Cj4+ICt9Cj4+ICsKPj4g
-K3N0YXRpYyBpbnQgY29tcGxldGVfZW11bGF0ZWRfcmRtc3Ioc3RydWN0IGt2bV92Y3B1ICp2Y3B1
-KQo+PiArewo+PiArICAgICAgIHJldHVybiBjb21wbGV0ZV9lbXVsYXRlZF9tc3IodmNwdSwgdHJ1
-ZSk7Cj4+ICt9Cj4+ICsKPj4KPj4gICAvKiBGb3IgS1ZNX0VYSVRfSU5URVJOQUxfRVJST1IgKi8K
-Pj4gICAvKiBFbXVsYXRlIGluc3RydWN0aW9uIGZhaWxlZC4gKi8KPj4gQEAgLTQxMiw2ICs0MTQs
-MTUgQEAgc3RydWN0IGt2bV9ydW4gewo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgX191NjQg
-ZXNyX2lzczsKPj4gICAgICAgICAgICAgICAgICAgICAgICAgIF9fdTY0IGZhdWx0X2lwYTsKPj4g
-ICAgICAgICAgICAgICAgICB9IGFybV9uaXN2Owo+PiArICAgICAgICAgICAgICAgLyogS1ZNX0VY
-SVRfWDg2X1JETVNSIC8gS1ZNX0VYSVRfWDg2X1dSTVNSICovCj4+ICsgICAgICAgICAgICAgICBz
-dHJ1Y3Qgewo+PiArICAgICAgICAgICAgICAgICAgICAgICBfX3U4IGVycm9yOyAvKiB1c2VyIC0+
-IGtlcm5lbCAqLwo+PiArICAgICAgICAgICAgICAgICAgICAgICBfX3U4IHBhZFszXTsKPiAKPiBf
-X3U4IHBhZFs3XSB0byBtYWludGFpbiA4IGJ5dGUgYWxpZ25tZW50PyAgdW5sZXNzIHdlIGNhbiBn
-ZXQgYXdheSB3aXRoCj4gZmV3ZXIgYml0cyBmb3IgJ3JlYXNvbicgYW5kCj4gZ2V0IHRoZW0gZnJv
-bSAncGFkJy4KCldoeSB3b3VsZCB3ZSBuZWVkIGFuIDggYnl0ZSBhbGlnbm1lbnQgaGVyZT8gSSBh
-bHdheXMgdGhvdWdodCBuYXR1cmFsIHU2NCAKYWxpZ25tZW50IG9uIHg4Nl82NCB3YXMgb24gNCBi
-eXRlcz8KCgpBbGV4CgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFueSBHbWJICkty
-YXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBT
-Y2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJs
-b3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkg
-MjM3IDg3OQoKCg==
+On Thu, Sep 10, 2020 at 09:29:19PM +0200, Krzysztof Kozlowski wrote:
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and the error value gets printed.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> ---
+> 
+> Changes since v1:
+> 1. None
+> ---
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 9 +++------
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 9 +++------
+>  2 files changed, 6 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> index 138759dc8190..e3c62051c595 100644
+> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+> @@ -573,12 +573,9 @@ static int sun8i_ce_probe(struct platform_device *pdev)
+>  		return irq;
+>  
+>  	ce->reset = devm_reset_control_get(&pdev->dev, NULL);
+> -	if (IS_ERR(ce->reset)) {
+> -		if (PTR_ERR(ce->reset) == -EPROBE_DEFER)
+> -			return PTR_ERR(ce->reset);
+> -		dev_err(&pdev->dev, "No reset control found\n");
+> -		return PTR_ERR(ce->reset);
+> -	}
+> +	if (IS_ERR(ce->reset))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(ce->reset),
+> +				     "No reset control found\n");
+>  
+>  	mutex_init(&ce->mlock);
+>  
+> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
+> index 9a23515783a6..576df8c8df51 100644
+> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
+> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
+> @@ -545,12 +545,9 @@ static int sun8i_ss_probe(struct platform_device *pdev)
+>  		return irq;
+>  
+>  	ss->reset = devm_reset_control_get(&pdev->dev, NULL);
+> -	if (IS_ERR(ss->reset)) {
+> -		if (PTR_ERR(ss->reset) == -EPROBE_DEFER)
+> -			return PTR_ERR(ss->reset);
+> -		dev_err(&pdev->dev, "No reset control found\n");
+> -		return PTR_ERR(ss->reset);
+> -	}
+> +	if (IS_ERR(ss->reset))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(ss->reset),
+> +				     "No reset control found\n");
+>  
+>  	mutex_init(&ss->mlock);
+>  
+> -- 
+> 2.17.1
+> 
 
+Hello
+
+Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+
+Thanks
