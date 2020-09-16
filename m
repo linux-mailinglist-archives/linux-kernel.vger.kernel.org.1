@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB8F26CC1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EF226CBFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgIPUjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:39:11 -0400
-Received: from mga03.intel.com ([134.134.136.65]:22452 "EHLO mga03.intel.com"
+        id S1728378AbgIPUho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:37:44 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14999 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726815AbgIPRHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:07:41 -0400
-IronPort-SDR: U5dl+/a40t9q3px383jKWAEof/5mHNna5bfYNd+wYSw3g8FSyPjiyG20kPk6/Q/eLq/4WGvpZl
- i+/vwuRQM50g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="159573139"
+        id S1726849AbgIPRJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:09:22 -0400
+IronPort-SDR: NRRfqxIk2POsUCi6COTFpiYUT+IRTW9bCotYLwH8EbF229HbkzlW3YosPyxkdHpKCMSaZ7yX/u
+ gY13ALiH5vIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="156909016"
 X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="159573139"
+   d="scan'208";a="156909016"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 10:07:34 -0700
-IronPort-SDR: rsMdceZP7IxqDZTTjfrm1J1b7P29IrVOZFj7S0TpUbmKpr7/qPzeu3IUSHgLa7oFYStdloWbzh
- qRsERdWkw3Gw==
-X-ExtLoop1: 1
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 10:08:41 -0700
+IronPort-SDR: VQ1WRuPQofTMsAY577bwERRjOaaJuPrpDemjjRSKVq28NMlARkxp2x3q5tOYrRVqo7DIhV1eAn
+ oCOKk015bv2A==
 X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="336090675"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 16 Sep 2020 10:07:31 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kIatz-00H8Ag-V9; Wed, 16 Sep 2020 20:07:27 +0300
-Date:   Wed, 16 Sep 2020 20:07:27 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v1 0/5] irqdomain: clean up, add
- irq_domain_create_legacy()
-Message-ID: <20200916170727.GE3956970@smile.fi.intel.com>
-References: <20200708162135.31010-1-andriy.shevchenko@linux.intel.com>
+   d="scan'208";a="451937469"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 10:08:40 -0700
+Date:   Wed, 16 Sep 2020 10:08:39 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Alexander Graf <graf@amazon.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        kvm list <kvm@vger.kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/7] KVM: x86: Deflect unknown MSR accesses to user
+ space
+Message-ID: <20200916170839.GD10227@sjchrist-ice>
+References: <20200902125935.20646-1-graf@amazon.com>
+ <20200902125935.20646-2-graf@amazon.com>
+ <CAAAPnDFGD8+5KBCLKERrH0hajHEwU9UdEEGqp3RZu3Lws+5rmw@mail.gmail.com>
+ <186ccace-2fad-3db3-0848-cd272b1a64ba@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200708162135.31010-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <186ccace-2fad-3db3-0848-cd272b1a64ba@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 07:21:30PM +0300, Andy Shevchenko wrote:
-> In order to make users OF independent provide irq_domain_create_legacy() API.
-> Last patch is an example of such user. First three patches are little cleanups.
+On Wed, Sep 16, 2020 at 11:31:30AM +0200, Alexander Graf wrote:
+> On 03.09.20 21:27, Aaron Lewis wrote:
+> > > @@ -412,6 +414,15 @@ struct kvm_run {
+> > >                          __u64 esr_iss;
+> > >                          __u64 fault_ipa;
+> > >                  } arm_nisv;
+> > > +               /* KVM_EXIT_X86_RDMSR / KVM_EXIT_X86_WRMSR */
+> > > +               struct {
+> > > +                       __u8 error; /* user -> kernel */
+> > > +                       __u8 pad[3];
+> > 
+> > __u8 pad[7] to maintain 8 byte alignment?  unless we can get away with
+> > fewer bits for 'reason' and
+> > get them from 'pad'.
 > 
-> Since regmap patch is dependent to what is now in regmap tree, I suggest to
-> create an immutable branch in IRQ domain tree and Mark can pull it and apply
-> the last one.
+> Why would we need an 8 byte alignment here? I always thought natural u64
+> alignment on x86_64 was on 4 bytes?
 
-Rafael, can you review this? It seems stuck supposedly b/c of no review tag
-given.
-
-> Andy Shevchenko (5):
->   irqdomain: Remove unused of_device_id forward declaration
->   irqdomain: Add forward declaration of fwnode_handle
->   irqdomain: Replace open coded of_node_to_fwnode()
->   irqdomain: Introduce irq_domain_create_legacy() API
->   regmap: irq: Convert to use fwnode directly
-> 
->  Documentation/core-api/irq/irq-domain.rst |  6 ++++++
->  drivers/base/regmap/regmap-irq.c          | 11 +++++------
->  include/linux/irqdomain.h                 |  8 +++++++-
->  kernel/irq/irqdomain.c                    | 19 +++++++++++++++----
->  4 files changed, 33 insertions(+), 11 deletions(-)
-> 
-> -- 
-> 2.27.0
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+u64 will usually (always?) be 8 byte aligned by the compiler.  "Natural"
+alignment means an object is aligned to its size.  E.g. an 8-byte object
+can split a cache line if it's only aligned on a 4-byte boundary.
