@@ -2,132 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B06F26C47C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983C926C441
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbgIPPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 11:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        id S1726320AbgIPPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 11:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgIPPaW (ORCPT
+        with ESMTP id S1726183AbgIPPaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:30:22 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77FAC0D941C;
-        Wed, 16 Sep 2020 07:57:17 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id u21so10821342eja.2;
-        Wed, 16 Sep 2020 07:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BavzM8dqao5JCiPkWFEijbjqferuuSqIJ7QT/mKoTAQ=;
-        b=nQn4NukiiRCo18F4AEpFB+HOHN7WOI+rKirSQpjyRP4nmmO3697PAVTWv092GNG/k8
-         kp3TKYaL+GKVqBfEzVKELXgdIhndqS+7gDH5LIOf2Awcr9rvxKba0usL6+NprjZo59y+
-         WPWNlD8cFafBUra2EOCbqnFw5K8p4HazPUNbBx+UU7RTWsr2sOYeaViwGv3XqS3yoQ9Y
-         wHAtetcNTyjbmz+LG2Dz6SNBVd2uvIpFilSf7/A4ZgdNIWZil1NME8GVqVzLN4LBnn49
-         7HxREZ2eCGJCkwRIWfMDIZftQX42C8n5ywKYWOEo6MLVN2Me+zduyJ0lBaAdPEgYMMHZ
-         fi0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BavzM8dqao5JCiPkWFEijbjqferuuSqIJ7QT/mKoTAQ=;
-        b=TXub0/Tn8OvBj2iPPdr9MNdkiIiTNOGQkzps7I/i3kMaUDA1/oe4uNHdUipIaIeeal
-         ec9TNUhi6jmOwXuX4hFUheVZH9iplzl3/uONhaDhbzwPAZyGvbP13ZAIaNOIvnqemrRi
-         TKg+ZK+OEP96tzSkeFY6Kt5hpPswk9vwidNcoL/+hpMOqR4zp9ZeG23gX30HXi+p3N39
-         /MVUKN6aSb2Y730brJywTwW16+o6fjDBR0+l6TuZOe1Lke9whhjQhuY/qdJpQLPYvULb
-         5dagtYNl34bPB0O6oRc9/+LMZqcHFAi182Sfk1Zh4d9bgLBo061uuTxh4E2AUIHel+Or
-         Es2A==
-X-Gm-Message-State: AOAM531uCLbaL21YydSXQ72P2U9HPWvMSgfM2OQ3PJW032bkKg5/LekS
-        OnAgRWHhQyTNWVBLr8f+wTIFSr/Ykg29Tckp/ZU=
-X-Google-Smtp-Source: ABdhPJx9FNTjCittOjxhqVQ8Y3/Ji00bVrlyO0GKfHoEdHIMHs+TI34YOUrZdyDTCMX0SDNkYsvmR37O4kEsPhGUX2M=
-X-Received: by 2002:a17:906:c1c6:: with SMTP id bw6mr26850175ejb.374.1600268236393;
- Wed, 16 Sep 2020 07:57:16 -0700 (PDT)
+        Wed, 16 Sep 2020 11:30:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403BBC02C293;
+        Wed, 16 Sep 2020 08:20:16 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:12:06 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600269127;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pf0+ufXR0xc+j9jc48XVsAZnZZKWGa6q0O/P9Yz/b7k=;
+        b=POtzbeV93GLe1QBN3WKeUgTo1oemCYCEZeJIBMwyM4STuL9V93XjoXrf620WhxnYcdLGV/
+        zPwuWzlZ5Yfg+Dkl5Ew7RFyFM2nvqXq5NyO8xlxT2JfRtDPamI+kqk7jRuqwE5cp/1K507
+        3BJOXtdSrGqzES4XLkyl8BRBrMAHmtYeF8cXhBgHAbSh8+YS2mbSt6Z1FDgwMcqi11YBT4
+        nx8545YSNmuNIae+PDNLGDMC9x8AFpg14T5BAfzWr35hyXZTKbEU/6dPNC0PEw4hFydhn5
+        GicYJ9OgFrUydRjAVl9ZNxboyRHw4TDW8Y7ptmJZ1p5t5ZGb1zbvzUvH00R07Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600269127;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pf0+ufXR0xc+j9jc48XVsAZnZZKWGa6q0O/P9Yz/b7k=;
+        b=3lZd1Jng/PQyfeT2UbvVV7l6WZsrKQfSIV6Z3kV/Zp0Xcy22Iurtp3FQFAH39i5ow5ECpS
+        uHZA3tw0ArNXUBAA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/irq] iommm/amd: Store irq domain in struct device
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <jroedel@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200826112333.806328762@linutronix.de>
+References: <20200826112333.806328762@linutronix.de>
 MIME-Version: 1.0
-References: <20200916122247.534374-1-pgwipeout@gmail.com> <20200916122247.534374-2-pgwipeout@gmail.com>
- <3cdcb877-e4c7-aab8-b7f9-0c88f2247d03@gmail.com>
-In-Reply-To: <3cdcb877-e4c7-aab8-b7f9-0c88f2247d03@gmail.com>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 16 Sep 2020 10:57:04 -0400
-Message-ID: <CAMdYzYrKHBrh47PMrj=TP_FPttFOkRO2J_wrDr7oEyBNnyexAA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ARM: tegra: Add device-tree for Ouya
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Bob Ham <rah@settrans.net>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <160026912693.15536.9009617814481746173.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:17 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 16.09.2020 15:22, Peter Geis =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > The Ouya was the sole device produced by Ouya Inc in 2013.
-> > It was a game console originally running Android 5 on top of Linux 3.1.=
-10.
-> >
-> > This patch adds the device tree supporting the Ouya.
-> > It has been tested on the original variant with Samsung ram.
-> >
-> > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> > ---
-> >  arch/arm/boot/dts/Makefile         |    3 +-
-> >  arch/arm/boot/dts/tegra30-ouya.dts | 4498 ++++++++++++++++++++++++++++
-> >  2 files changed, 4500 insertions(+), 1 deletion(-)
-> >  create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
->
-> Hello, Peter! Very nice work!
+The following commit has been merged into the x86/irq branch of tip:
 
-Thanks!
+Commit-ID:     2b2c6aa63824c69c112bbe4f937f034c5e606a6c
+Gitweb:        https://git.kernel.org/tip/2b2c6aa63824c69c112bbe4f937f034c5e606a6c
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 26 Aug 2020 13:17:00 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 16 Sep 2020 16:52:37 +02:00
 
->
-> Could you please clarify how many variants of the board exist?
+iommm/amd: Store irq domain in struct device
 
-It is unknown how many exist in reality.
-At least three RAM variants are supported in the downstream kernel,
-Samsung, Hynix M, and Hynix A.
-Two variants in storage capacity, the original had 8GB eMMC while the
-new variant had 16GB eMMC.
+As the next step to make X86 utilize the direct MSI irq domain operations
+store the irq domain pointer in the device struct when a device is probed.
 
->
-> What are the differences between the variants?
+It only overrides the irqdomain of devices which are handled by a regular
+PCI/MSI irq domain which protects PCI devices behind special busses like
+VMD which have their own irq domain.
 
-Aside from the RAM and storage changes there should be no functional
-differences.
-It is unknown at which point the RAM changes were cut in with the eMMC chan=
-ge.
+No functional change.
 
->
-> Is this device-tree suitable for all variants?
+It just avoids the redirection through arch_*_msi_irqs() and allows the
+PCI/MSI core to directly invoke the irq domain alloc/free functions instead
+of having to look up the irq domain for every single MSI interupt.
 
-This device tree should support all variants, but I haven't been able
-to locate anyone with the newer variants who can test it yet.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Joerg Roedel <jroedel@suse.de>
+Link: https://lore.kernel.org/r/20200826112333.806328762@linutronix.de
 
->
-> How user could determine the board's variant?
 
-On upstream:
-The tegra emc driver will output the RAM code detected in the kernel log:
-tegra30-emc 7000f400.memory-controller: got 6 timings for RAM code 0
-(min 25MHz max 800MHz)
-The mmc-core will output the storage capacity in the kernel log:
-mmcblk1: mmc1:0001 MMC08G 7.19 GiB
+---
+ drivers/iommu/amd/iommu.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-On downstream:
-The ram variant is output in the kernel log:
-DDR Strap Pin AD4: 0
-DDR Strap Pin AD5: 0
-Init DFS table for Samsung DDR
-The mmc-core outputs the storage capacity in the kernel log:
-mmcblk0: mmc0:0001 MMC08G 7.18 GiB
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index bc7bb4c..a9d8b32 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -729,7 +729,21 @@ static void iommu_poll_ga_log(struct amd_iommu *iommu)
+ 		}
+ 	}
+ }
+-#endif /* CONFIG_IRQ_REMAP */
++
++static void
++amd_iommu_set_pci_msi_domain(struct device *dev, struct amd_iommu *iommu)
++{
++	if (!irq_remapping_enabled || !dev_is_pci(dev) ||
++	    pci_dev_has_special_msi_domain(to_pci_dev(dev)))
++		return;
++
++	dev_set_msi_domain(dev, iommu->msi_domain);
++}
++
++#else /* CONFIG_IRQ_REMAP */
++static inline void
++amd_iommu_set_pci_msi_domain(struct device *dev, struct amd_iommu *iommu) { }
++#endif /* !CONFIG_IRQ_REMAP */
+ 
+ #define AMD_IOMMU_INT_MASK	\
+ 	(MMIO_STATUS_EVT_INT_MASK | \
+@@ -2157,6 +2171,7 @@ static struct iommu_device *amd_iommu_probe_device(struct device *dev)
+ 		iommu_dev = ERR_PTR(ret);
+ 		iommu_ignore_device(dev);
+ 	} else {
++		amd_iommu_set_pci_msi_domain(dev, iommu);
+ 		iommu_dev = &iommu->iommu;
+ 	}
+ 
