@@ -2,131 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1404326C842
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EB326C7F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgIPSoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:44:39 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39436 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728109AbgIPSoS (ORCPT
+        id S1728214AbgIPSgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728082AbgIPS3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:44:18 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCHxrx021539;
-        Wed, 16 Sep 2020 07:17:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600258679;
-        bh=+1DhbG8Idme2HwVduZLQbbMrlIUjr/zU9AX0qPhimO0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=w8EFoSz7mXr4kbhXwZ1EyRXVTYx/ShT25/Hoy0NDZhH+VRDZ8ADBetb3Cn8xiFdEP
-         GWu7OoqMy1Eyc5KsgPJ3ZUzxsO/HcAAhL2n8ODAeOM+CCBatuo3AV7L5i8HoLQ1KXQ
-         jH7qBXfwBsrU9m3WIrw1Zd8lruH8f4VQGJ8QIt5s=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCHxFV058206
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 07:17:59 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:17:59 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:17:59 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCHtUQ101755;
-        Wed, 16 Sep 2020 07:17:55 -0500
-Subject: Re: [PATCH v10 1/3] dt-bindings: drm/bridge: Document Cadence
- MHDP8546 bridge bindings
-To:     Swapnil Jakhade <sjakhade@cadence.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <Laurent.pinchart@ideasonboard.com>,
-        <robh+dt@kernel.org>, <a.hajda@samsung.com>,
-        <narmstrong@baylibre.com>, <jonas@kwiboo.se>,
-        <jernej.skrabec@siol.net>, <dri-devel@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <yamonkar@cadence.com>, <jsarha@ti.com>,
-        <nsekhar@ti.com>, <praneeth@ti.com>, <nikhil.nd@ti.com>
-References: <1600087715-15729-1-git-send-email-sjakhade@cadence.com>
- <1600087715-15729-2-git-send-email-sjakhade@cadence.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <37aacded-72e3-eaa9-f97e-488733da98ba@ti.com>
-Date:   Wed, 16 Sep 2020 15:17:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Sep 2020 14:29:13 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19725C0A8898;
+        Wed, 16 Sep 2020 05:56:57 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id n61so6542931ota.10;
+        Wed, 16 Sep 2020 05:56:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YSV7beY8QnOVtgzVdZnUtZuTvKoFmwg9z8LNmIBeTUg=;
+        b=cmqs8VWQWuuIkKuHoCmICC/RDIkKwSLn8nLvLe40jxX21Bbxway42jK0l1PpZNHnfb
+         0ZAA+jWPluzPip+rP94yyf0L/oDrqSJyS4Im8G5J50O1DRACiRkaIPAoCznjZBjqLtk5
+         jBuZ+G2Nz4RExWkO5sFHEVyVvzY8fOCMWTcoBTXNt55ZynGWOZEVEIuY1BFlbxTj/INu
+         ET0ZUnqpGVxUMuYYPklBpjRlUbM8UjPHdVRbH5DBFHyiBU1gMcEqW5PsGCVcMVx2HmJf
+         WIoQieCPWsmfkgpaSNa/FY/SVxUwA/AzLNe15pCW/pAu3VOoUIVd+ir78D6F9U8PRECZ
+         +Ycg==
+X-Gm-Message-State: AOAM530DDIGt6WjW5T+oFx2kqE0JCXA5lPkk8BgRBbl97jC0urG8iyS6
+        HKuw1d1lj0Q4KjUAjIGPC8w45iSASHmZ1xYVrh4GyYW/
+X-Google-Smtp-Source: ABdhPJxsBY+YxMhxeJDPgjewT6+zp4SOgN5BJwIW9A2xZGcZMC3QGI7WwgkMe0Ng550QOb4souLWpZkVDPAlrqpW2ug=
+X-Received: by 2002:a9d:6010:: with SMTP id h16mr16326592otj.262.1600258686519;
+ Wed, 16 Sep 2020 05:18:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1600087715-15729-2-git-send-email-sjakhade@cadence.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200821184810.22484-1-ricardo.neri-calderon@linux.intel.com>
+In-Reply-To: <20200821184810.22484-1-ricardo.neri-calderon@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 16 Sep 2020 14:17:54 +0200
+Message-ID: <CAJZ5v0hopjUuoWG3S=zGt_fR6r8qxWrj5X-evnmvm=13Vxs4hA@mail.gmail.com>
+Subject: Re: [PATCH] powercap/rapl: Add support for Lakefield
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Swapnil, Yuti,
+On Fri, Aug 21, 2020 at 8:46 PM Ricardo Neri
+<ricardo.neri-calderon@linux.intel.com> wrote:
+>
+> Simply add Lakefield model ID. No additional changes are needed.
+>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
+> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 
-On 14/09/2020 15:48, Swapnil Jakhade wrote:
-> From: Yuti Amonkar <yamonkar@cadence.com>
-> 
-> Document the bindings used for the Cadence MHDP8546 DPI/DP bridge in
-> yaml format.
-> 
-> Signed-off-by: Yuti Amonkar <yamonkar@cadence.com>
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Applied as 5.9-rc material (with a minor subject edit), sorry for the delay.
+
+Thanks!
+
 > ---
->  .../display/bridge/cdns,mhdp8546.yaml         | 154 ++++++++++++++++++
->  1 file changed, 154 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-I was testing this on J7 EVM, and looking at the dts files and DT bindings. To
-get rid of the warnings from dtbs_check, I made the following changes.
-
-I think the interrupt one is clear. The driver needs the interrupt, but it was
-not defined in the yaml file.
-
-For phy-names, we had that in the out-of-tree dts file, so I added it here. The
-driver just looks for the PHY via index, but I guess we should require it.
-
-The power-domain is not needed by the driver, but if I'm not mistaken, has to
-be defined here.
-
-
-diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-index a21a4bfe15cf..c5f5781c1ed6 100644
---- a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-@@ -46,6 +46,16 @@ properties:
-     description:
-       phandle to the DisplayPort PHY.
- 
-+  phy-names:
-+    items:
-+      - const: dpphy
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-   ports:
-     type: object
-     description:
-@@ -114,6 +124,8 @@ required:
-   - reg
-   - reg-names
-   - phys
-+  - phy-names
-+  - interrupts
-   - ports
- 
- additionalProperties: false
-
- Tomi
-
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>  drivers/powercap/intel_rapl_common.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
+> index 6f55aaef8afc..d85a3d95ef20 100644
+> --- a/drivers/powercap/intel_rapl_common.c
+> +++ b/drivers/powercap/intel_rapl_common.c
+> @@ -1036,6 +1036,7 @@ static const struct x86_cpu_id rapl_ids[] __initconst = {
+>         X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,           &rapl_defaults_core),
+>         X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,         &rapl_defaults_core),
+>         X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,    &rapl_defaults_spr_server),
+> +       X86_MATCH_INTEL_FAM6_MODEL(LAKEFIELD,           &rapl_defaults_core),
+>
+>         X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT,     &rapl_defaults_byt),
+>         X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,        &rapl_defaults_cht),
+> --
+> 2.17.1
+>
