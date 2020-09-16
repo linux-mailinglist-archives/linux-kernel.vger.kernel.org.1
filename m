@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6716A26C82F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E16E26C7DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728191AbgIPSnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:43:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37816 "EHLO mx2.suse.de"
+        id S1728226AbgIPSfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:35:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:35262 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727670AbgIPSXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:23:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 80D76AE64;
-        Wed, 16 Sep 2020 10:54:34 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D4B8A1E12E1; Wed, 16 Sep 2020 12:54:18 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 12:54:18 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jan Kara <jack@suse.com>, reiserfs-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+187510916eb6a14598f7@syzkaller.appspotmail.com
-Subject: Re: [PATCH] reiserfs: only call unlock_new_inode() if I_NEW
-Message-ID: <20200916105418.GC3607@quack2.suse.cz>
-References: <20200628070057.820213-1-ebiggers@kernel.org>
- <20200727165215.GI1138@sol.localdomain>
- <20200916040118.GB825@sol.localdomain>
+        id S1728207AbgIPSfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:35:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8C9113A1;
+        Wed, 16 Sep 2020 03:56:18 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 521533F68F;
+        Wed, 16 Sep 2020 03:56:13 -0700 (PDT)
+References: <20200914204209.256266093@linutronix.de> <20200914204441.268144917@linutronix.de>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [patch 03/13] preempt: Clenaup PREEMPT_COUNT leftovers
+In-reply-to: <20200914204441.268144917@linutronix.de>
+Date:   Wed, 16 Sep 2020 11:56:01 +0100
+Message-ID: <jhja6xq56ta.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916040118.GB825@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15-09-20 21:01:18, Eric Biggers wrote:
-> On Mon, Jul 27, 2020 at 09:52:15AM -0700, Eric Biggers wrote:
-> > On Sun, Jun 28, 2020 at 12:00:57AM -0700, Eric Biggers wrote:
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > unlock_new_inode() is only meant to be called after a new inode has
-> > > already been inserted into the hash table.  But reiserfs_new_inode() can
-> > > call it even before it has inserted the inode, triggering the WARNING in
-> > > unlock_new_inode().  Fix this by only calling unlock_new_inode() if the
-> > > inode has the I_NEW flag set, indicating that it's in the table.
-> > > 
-> > > This addresses the syzbot report "WARNING in unlock_new_inode"
-> > > (https://syzkaller.appspot.com/bug?extid=187510916eb6a14598f7).
-> > > 
-> > > Reported-by: syzbot+187510916eb6a14598f7@syzkaller.appspotmail.com
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > 
-> > Anyone interested in taking this patch?
-> 
-> Jan, you seem to be taking some reiserfs patches... Any interest in
-> taking this one?
 
-Sure, the patch looks good to me so I've added it to my tree. Thanks!
+On 14/09/20 21:42, Thomas Gleixner wrote:
+> CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
+> removed. Cleanup the leftovers before doing so.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
