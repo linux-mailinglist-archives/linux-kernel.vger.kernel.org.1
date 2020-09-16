@@ -2,700 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2334226CB25
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1553A26CAD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgIPUWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
+        id S1728316AbgIPUNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727121AbgIPR3H (ORCPT
+        with ESMTP id S1727061AbgIPRdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:29:07 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39E9C02C2AB;
-        Wed, 16 Sep 2020 09:02:37 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id e23so7185939otk.7;
-        Wed, 16 Sep 2020 09:02:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vGX+CVqAyk0trkD875hqIZfIbA4lv20wXPOf/onoUTA=;
-        b=l467frT92z1mVWfW3CBluLrCNKvA2ygvUGkTjspU4OEUmDdTjnm9IdeDe2c7s+Q38O
-         +y6UiHstFe3FZpsEquwEU+lJJ9d9PQx5LYKDeAsIj5dk94azHrwpo3ovlg4eduzTB5o0
-         GrXDrUjNuOxSws1NrxlAK/9VoZrXwXruXFwLP7i6kdwPgdF+aX9BhQWKaGtEcIAheHXI
-         5rE1gZIE0m5iUiFnrJEItdqHyF7IKPYu85X1V/mW8h/s1yC9VayTSz63USO3ITk4VVVq
-         fdR2qqqk1MkAfl2taBDNVMoeI+nK3r1EjSH7Fvg7W8HXEOlWyJMm28hJxFBtnncAq/kO
-         AJ+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vGX+CVqAyk0trkD875hqIZfIbA4lv20wXPOf/onoUTA=;
-        b=XmMSqQtjcc7ZdcGRgBF8YC6lC2Kok/n3D2br0BJI2vcCjXwllHIvPEMGuxY7GCc2B2
-         +/OeCem0cwdF+AylYZUY6fcH0z5ec8OdQMHJwSae53DZYRr2JsuL5gke5FbpV9mcaZ2i
-         fhrzM4P58GAHICNSRF+bsSixrJ7RnZSsbehz64YURqToYfDgTr0w/4RAHIt6kPj/1xtO
-         eA8hwP/zGBFbdeUqHkfBvhB8gmSgZ7cnJoNlGZlqsPIX74o8N//v4mB7l8SgeDuNvS3W
-         Y3pLo+iOFwCMlIQa1WtOCkcJHd6CqWkVdU7eNevSYOsNXMtQaEmvDmFuEShXeW0HlD3R
-         V2pQ==
-X-Gm-Message-State: AOAM530lOu6hZ66j62E1cids/HnC6fFavm+nXk+JcOol0/jfAD4RQEjt
-        3uWcIYp2AAqTIE5IO0N8eB4=
-X-Google-Smtp-Source: ABdhPJybZRrgiOSHVgBmDgl8PanD63tYkpVtOX62jYQy4IlwdYLTO8AEjCfN7Oqw1JEy/aLd77pP1w==
-X-Received: by 2002:a9d:785a:: with SMTP id c26mr17330575otm.180.1600272157002;
-        Wed, 16 Sep 2020 09:02:37 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g23sm10891791ooh.45.2020.09.16.09.02.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 09:02:36 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 09:02:33 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     jdelvare@suse.com, lee.jones@linaro.org,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        mdf@kernel.org
-Subject: Re: [PATCH v2] hwmon: intel-m10-bmc-hwmon: add hwmon support for
- Intel MAX 10 BMC
-Message-ID: <20200916160233.GB90122@roeck-us.net>
-References: <1600226062-25755-1-git-send-email-yilun.xu@intel.com>
- <1600226062-25755-2-git-send-email-yilun.xu@intel.com>
- <225fc391-2c07-cf76-d6f3-d746cd4884c8@roeck-us.net>
- <20200916064858.GB13851@yilunxu-OptiPlex-7050>
+        Wed, 16 Sep 2020 13:33:14 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA66EC02C2AD;
+        Wed, 16 Sep 2020 09:03:24 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 30C2D689F; Wed, 16 Sep 2020 12:03:16 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 30C2D689F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1600272196;
+        bh=AhbQil9hi1jajqnwwBoDpoEkSw6sqlLr283ReFc5xQg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oGFyz4comJG6R79ISTIV5cstLTo7DBCtV3gmkUf2vHJHQue7W9VeVwmdy+Dqp2ucR
+         gc1fU3CQra+Ebnqq67PfhQ2EkkLC5VhhQcXeZdIQb3xyWM1iBUU7TXG+MbbMZiejrz
+         E1/Wi9MFGcYe+jJfw4dnRGXPvS+jDFiftMA3szxs=
+Date:   Wed, 16 Sep 2020 12:03:16 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     syzbot <syzbot+1594adb1b44e354153d8@syzkaller.appspotmail.com>
+Cc:     anna.schumaker@netapp.com, chuck.lever@oracle.com,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, trond.myklebust@hammerspace.com
+Subject: Re: general protection fault in cache_clean
+Message-ID: <20200916160316.GA4560@fieldses.org>
+References: <0000000000002b3ac605af559958@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916064858.GB13851@yilunxu-OptiPlex-7050>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0000000000002b3ac605af559958@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 02:48:58PM +0800, Xu Yilun wrote:
-> On Tue, Sep 15, 2020 at 10:22:32PM -0700, Guenter Roeck wrote:
-> > On 9/15/20 8:14 PM, Xu Yilun wrote:
-> > > This patch adds hwmon functionality for Intel MAX 10 BMC chip. This BMC
-> > > chip connects to a set of sensor chips to monitor current, voltage,
-> > > thermal and power of different components on board. The BMC firmware is
-> > > responsible for sensor data sampling and recording in shared registers.
-> > > Host driver reads the sensor data from these shared registers and
-> > > exposes them to users as hwmon interfaces.
-> > > 
-> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > Signed-off-by: Tom Rix <trix@redhat.com>
-> > 
-> > Is that really the Sign-off path, or are some of those reviewers ? Just wondering.
+On Tue, Sep 15, 2020 at 01:04:20AM -0700, syzbot wrote:
+> syzbot found the following issue on:
 > 
-> The original version of the product driver is initiated by Hao. I made
-> this upstream version. And during our internal procedures for this
-> upstream version, Matthew & Tom had comments and also sent fix patches
-> for it. So I added Signed-off for them.
+> HEAD commit:    581cb3a2 Merge tag 'f2fs-for-5.9-rc5' of git://git.kernel...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11f5c011900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+> dashboard link: https://syzkaller.appspot.com/bug?extid=1594adb1b44e354153d8
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
 > 
-> After reading Documentation/process/submitting-patches.rst, my
-> understanding is that if people contribute the whole or part of the
-> code, a Signed-off-by could be added. Is that right?
+> Unfortunately, I don't have any reproducer for this issue yet.
 > 
-Ok with me, just asking.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+1594adb1b44e354153d8@syzkaller.appspotmail.com
+> 
+> general protection fault, probably for non-canonical address 0xdffffc0012e34a9a: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: probably user-memory-access in range [0x00000000971a54d0-0x00000000971a54d7]
+> CPU: 1 PID: 19990 Comm: kworker/1:11 Not tainted 5.9.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: events_power_efficient do_cache_clean
+> RIP: 0010:cache_clean+0x119/0x7f0 net/sunrpc/cache.c:444
 
-> > 
-> > > ---
-> > > v2: add the Documentation
-> > >     refactor the code, provide static hwmon_channel_info
-> > >     remove Unnecessary hwmon-sysfs.h
-> > >     make the sensor data table const
-> > > ---
-> > >  Documentation/hwmon/index.rst               |   1 +
-> > >  Documentation/hwmon/intel-m10-bmc-hwmon.rst |  78 ++++++
-> > >  drivers/hwmon/Kconfig                       |  11 +
-> > >  drivers/hwmon/Makefile                      |   1 +
-> > >  drivers/hwmon/intel-m10-bmc-hwmon.c         | 355 ++++++++++++++++++++++++++++
-> > >  5 files changed, 446 insertions(+)
-> > >  create mode 100644 Documentation/hwmon/intel-m10-bmc-hwmon.rst
-> > >  create mode 100644 drivers/hwmon/intel-m10-bmc-hwmon.c
-> > > 
-> > > diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> > > index a926f1a..4bcb1a7 100644
-> > > --- a/Documentation/hwmon/index.rst
-> > > +++ b/Documentation/hwmon/index.rst
-> > > @@ -74,6 +74,7 @@ Hardware Monitoring Kernel Drivers
-> > >     ina209
-> > >     ina2xx
-> > >     ina3221
-> > > +   intel-m10-bmc-hwmon
-> > >     ir35221
-> > >     ir38064
-> > >     isl68137
-> > > diff --git a/Documentation/hwmon/intel-m10-bmc-hwmon.rst b/Documentation/hwmon/intel-m10-bmc-hwmon.rst
-> > > new file mode 100644
-> > > index 0000000..3d148c6
-> > > --- /dev/null
-> > > +++ b/Documentation/hwmon/intel-m10-bmc-hwmon.rst
-> > > @@ -0,0 +1,78 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +Kernel driver intel-m10-bmc-hwmon
-> > > +=================================
-> > > +
-> > > +Supported chips:
-> > > +
-> > > + * Intel MAX 10 BMC for Intel PAC N3000
-> > > +
-> > > +   Prefix: 'n3000bmc-hwmon'
-> > > +
-> > > +Author: Xu Yilun <yilun.xu@intel.com>
-> > > +
-> > > +
-> > > +Description
-> > > +-----------
-> > > +
-> > > +This driver adds the temperature, voltage, current and power reading
-> > > +support for the Intel MAX 10 Board Management Controller (BMC) chip.
-> > > +The BMC chip is integrated in some Intel Programmable Acceleration
-> > > +Cards (PAC). It connects to a set of sensor chips to monitor the
-> > > +sensor data of different components on the board. The BMC firmware is
-> > > +responsible for sensor data sampling and recording in shared
-> > > +registers. The host driver reads the sensor data from these shared
-> > > +registers and exposes them to users as hwmon interfaces.
-> > > +
-> > > +The BMC chip is implemented using the Intel MAX 10 CPLD. It could be
-> > > +reprogramed to some variants in order to support different Intel
-> > > +PACs. The driver is designed to be able to distinguish between the
-> > > +variants, but now it only supports the BMC for Intel PAC N3000.
-> > > +
-> > > +
-> > > +Sysfs attributes
-> > > +----------------
-> > > +
-> > > +The following attributes are supported:
-> > > +
-> > > +- Intel MAX 10 BMC for Intel PAC N3000:
-> > > +
-> > > +======================= =======================================================
-> > > +tempX_input             Temperature of the component (specified by tempX_label)
-> > > +tempX_max               Temperature maximum setpoint of the component
-> > > +tempX_crit              Temperature critical setpoint of the component
-> > > +tempX_max_hyst          Hysteresis for temperature maximum of the component
-> > > +tempX_crit_hyst         Hysteresis for temperature critical of the component
-> > > +temp1_label             "Board Temperature"
-> > > +temp2_label             "FPGA Die Temperature"
-> > > +temp3_label             "QSFP0 Temperature"
-> > > +temp4_label             "QSFP1 Temperature"
-> > > +temp5_label             "Retimer A Temperature"
-> > > +temp6_label             "Retimer A SerDes Temperature"
-> > > +temp7_label             "Retimer B Temperature"
-> > > +temp8_label             "Retimer B SerDes Temperature"
-> > > +
-> > > +inX_input               Measured voltage of the component (specified by
-> > > +                        inX_label)
-> > > +in0_label               "QSFP0 Supply Voltage"
-> > > +in1_label               "QSFP1 Supply Voltage"
-> > > +in2_label               "FPGA Core Voltage"
-> > > +in3_label               "12V Backplane Voltage"
-> > > +in4_label               "1.2V Voltage"
-> > > +in5_label               "12V AUX Voltage"
-> > > +in6_label               "1.8V Voltage"
-> > > +in7_label               "3.3V Voltage"
-> > > +
-> > > +currX_input             Measured current of the component (specified by
-> > > +                        currX_label)
-> > > +curr1_label             "FPGA Core Current"
-> > > +curr2_label             "12V Backplane Current"
-> > > +curr3_label             "12V AUX Current"
-> > > +
-> > > +powerX_input            Measured power of the component (specified by
-> > > +                        powerX_label)
-> > > +power1_label            "Board Power"
-> > > +
-> > > +======================= =======================================================
-> > > +
-> > > +All the attributes are read-only.
-> > > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> > > index 8dc28b2..53af15c 100644
-> > > --- a/drivers/hwmon/Kconfig
-> > > +++ b/drivers/hwmon/Kconfig
-> > > @@ -2064,6 +2064,17 @@ config SENSORS_XGENE
-> > >  	  If you say yes here you get support for the temperature
-> > >  	  and power sensors for APM X-Gene SoC.
-> > >  
-> > > +config SENSORS_INTEL_M10_BMC_HWMON
-> > > +	tristate "Intel MAX10 BMC Hardware Monitoring"
-> > > +	depends on MFD_INTEL_M10_BMC
-> > > +	help
-> > > +	  This driver provides support for the hardware monitoring functionality
-> > > +	  on Intel MAX10 BMC chip.
-> > > +
-> > > +	  This BMC Chip is used on Intel FPGA PCIe Acceleration Cards (PAC). Its
-> > > +	  sensors monitor various telemetry data of different components on the
-> > > +	  card, e.g. board temperature, FPGA core temperature/voltage/current.
-> > > +
-> > >  if ACPI
-> > >  
-> > >  comment "ACPI drivers"
-> > > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> > > index a8f4b35..ba5a25a 100644
-> > > --- a/drivers/hwmon/Makefile
-> > > +++ b/drivers/hwmon/Makefile
-> > > @@ -90,6 +90,7 @@ obj-$(CONFIG_SENSORS_IIO_HWMON) += iio_hwmon.o
-> > >  obj-$(CONFIG_SENSORS_INA209)	+= ina209.o
-> > >  obj-$(CONFIG_SENSORS_INA2XX)	+= ina2xx.o
-> > >  obj-$(CONFIG_SENSORS_INA3221)	+= ina3221.o
-> > > +obj-$(CONFIG_SENSORS_INTEL_M10_BMC_HWMON) += intel-m10-bmc-hwmon.o
-> > >  obj-$(CONFIG_SENSORS_IT87)	+= it87.o
-> > >  obj-$(CONFIG_SENSORS_JC42)	+= jc42.o
-> > >  obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
-> > > diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> > > new file mode 100644
-> > > index 0000000..ce73545
-> > > --- /dev/null
-> > > +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> > > @@ -0,0 +1,355 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * Intel MAX 10 BMC HWMON Driver
-> > > + *
-> > > + * Copyright (C) 2018-2020 Intel Corporation. All rights reserved.
-> > > + *
-> > > + */
-> > > +#include <linux/device.h>
-> > > +#include <linux/hwmon.h>
-> > > +#include <linux/mfd/intel-m10-bmc.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/mod_devicetable.h>
-> > > +#include <linux/platform_device.h>
-> > > +
-> > > +struct m10bmc_sdata {
-> > > +	unsigned int reg_input;
-> > > +	unsigned int reg_max;
-> > > +	unsigned int reg_crit;
-> > > +	unsigned int reg_hyst;
-> > > +	unsigned int reg_min;
-> > > +	unsigned int multiplier;
-> > > +	const char *label;
-> > > +};
-> > > +
-> > > +struct m10bmc_hwmon_board_data {
-> > > +	const struct m10bmc_sdata *temp;
-> > > +	const struct m10bmc_sdata *in;
-> > > +	const struct m10bmc_sdata *curr;
-> > > +	const struct m10bmc_sdata *power;
-> > > +	const struct hwmon_channel_info **hinfo;
-> > > +};
-> > > +
-> > > +struct m10bmc_hwmon {
-> > > +	struct device *dev;
-> > > +	struct hwmon_chip_info chip;
-> > > +	char *hw_name;
-> > > +	struct intel_m10bmc *m10bmc;
-> > > +	struct m10bmc_hwmon_board_data *bdata;
-> > > +};
-> > > +
-> > > +static const struct m10bmc_sdata n3000bmc_temp_tbl[] = {
-> > > +	{ 0x100, 0x104, 0x108, 0x10c, 0x0, 500, "Board Temperature" },
-> > > +	{ 0x110, 0x114, 0x118, 0x0, 0x0, 500, "FPGA Die Temperature" },
-> > > +	{ 0x11c, 0x124, 0x120, 0x0, 0x0, 500, "QSFP0 Temperature" },
-> > > +	{ 0x12c, 0x134, 0x130, 0x0, 0x0, 500, "QSFP1 Temperature" },
-> > > +	{ 0x168, 0x0, 0x0, 0x0, 0x0, 500, "Retimer A Temperature" },
-> > > +	{ 0x16c, 0x0, 0x0, 0x0, 0x0, 500, "Retimer A SerDes Temperature" },
-> > > +	{ 0x170, 0x0, 0x0, 0x0, 0x0, 500, "Retimer B Temperature" },
-> > > +	{ 0x174, 0x0, 0x0, 0x0, 0x0, 500, "Retimer B SerDes Temperature" },
-> > > +};
-> > > +
-> > > +static const struct m10bmc_sdata n3000bmc_in_tbl[] = {
-> > > +	{ 0x128, 0x0, 0x0, 0x0, 0x0, 1, "QSFP0 Supply Voltage" },
-> > > +	{ 0x138, 0x0, 0x0, 0x0, 0x0, 1, "QSFP1 Supply Voltage" },
-> > > +	{ 0x13c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Voltage" },
-> > > +	{ 0x144, 0x0, 0x0, 0x0, 0x0, 1, "12V Backplane Voltage" },
-> > > +	{ 0x14c, 0x0, 0x0, 0x0, 0x0, 1, "1.2V Voltage" },
-> > > +	{ 0x150, 0x0, 0x0, 0x0, 0x0, 1, "12V AUX Voltage" },
-> > > +	{ 0x158, 0x0, 0x0, 0x0, 0x0, 1, "1.8V Voltage" },
-> > > +	{ 0x15c, 0x0, 0x0, 0x0, 0x0, 1, "3.3V Voltage" },
-> > > +};
-> > > +
-> > > +static const struct m10bmc_sdata n3000bmc_curr_tbl[] = {
-> > > +	{ 0x140, 0x0, 0x0, 0x0, 0x0, 1, "FPGA Core Current" },
-> > > +	{ 0x148, 0x0, 0x0, 0x0, 0x0, 1, "12V Backplane Current" },
-> > > +	{ 0x154, 0x0, 0x0, 0x0, 0x0, 1, "12V AUX Current" },
-> > > +};
-> > > +
-> > > +static const struct m10bmc_sdata n3000bmc_power_tbl[] = {
-> > > +	{ 0x160, 0x0, 0x0, 0x0, 0x0, 1000, "Board Power" },> +};
-> > > +
-> > > +static const struct hwmon_channel_info *n3000bmc_hinfo[] = {
-> > > +	HWMON_CHANNEL_INFO(temp,
-> > > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_HYST |
-> > > +			   HWMON_T_CRIT | HWMON_T_CRIT_HYST | HWMON_T_LABEL,
-> > > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > > +			   HWMON_T_LABEL,
-> > > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > > +			   HWMON_T_LABEL,
-> > > +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT |
-> > > +			   HWMON_T_LABEL,
-> > > +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> > > +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> > > +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> > > +			   HWMON_T_INPUT | HWMON_T_LABEL),
-> > > +	HWMON_CHANNEL_INFO(in,
-> > > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > > +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> > > +			   HWMON_I_INPUT | HWMON_I_LABEL),
-> > > +	HWMON_CHANNEL_INFO(curr,
-> > > +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> > > +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> > > +			   HWMON_C_INPUT | HWMON_C_LABEL),
-> > > +	HWMON_CHANNEL_INFO(power,
-> > > +			   HWMON_P_INPUT | HWMON_P_LABEL),
-> > > +	NULL
-> > > +};
-> > > +
-> > > +struct m10bmc_hwmon_board_data n3000bmc_hwmon_bdata = {
-> > 
-> > static, and probably const
-> 
-> Yes.
-> 
-> > 
-> > > +	.temp = n3000bmc_temp_tbl,
-> > > +	.in = n3000bmc_in_tbl,
-> > > +	.curr = n3000bmc_curr_tbl,
-> > > +	.power = n3000bmc_power_tbl,
-> > 
-> > I would suggest to declare
-> > 	const struct m10bmc_sdata *tables[hwmon_max];
-> > and initialize with
-> > 	.tables[hwmon_temp] = n3000bmc_temp_tbl,
-> > 	.tables[hwmon_in] = n3000bmc_in_tbl,
-> > and so on. That makes the structure a bit larger, but simplifies
-> > the operational code (see below).
-> 
-> Yes my concern is also the data size. But since it simplifies the code
-> I'll follow the change.
-> 
-Data size increase is minimal, especially since it reduces runtime
-code size at the same time.
+That's in cache_clean():
+	spin_lock(&cache_list_lock);
+	...
+	current_detail = list_entry(next, struct cache_detail, others)
+444:	if (current_detail->nextcheck > seconds_since_boot())
 
-> > 
-> > > +	.hinfo = n3000bmc_hinfo,
-> > > +};
-> > > +
-> > > +static umode_t
-> > > +m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
-> > > +			u32 attr, int channel)
-> > > +{
-> > > +	return 0444;
-> > > +}
-> > > +
-> > > +static const struct m10bmc_sdata *
-> > > +find_sensor_data(struct m10bmc_hwmon *hw, enum hwmon_sensor_types type,
-> > > +		 int channel)
-> > > +{
-> > > +	const struct m10bmc_sdata *tbl;
-> > > +
-> > > +	switch (type) {
-> > > +	case hwmon_temp:
-> > > +		tbl = hw->bdata->temp;
-> > > +		break;
-> > > +	case hwmon_in:
-> > > +		tbl = hw->bdata->in;
-> > > +		break;
-> > > +	case hwmon_curr:
-> > > +		tbl = hw->bdata->curr;
-> > > +		break;
-> > > +	case hwmon_power:
-> > > +		tbl = hw->bdata->power;
-> > > +		break;
-> > > +	default:
-> > > +		return ERR_PTR(-EOPNOTSUPP);
-> > > +	}
-> > 
-> > Then you can use
-> > 	tbl = hw->bdata->tables[type];
-> Yes.
-> 
-> > 
-> > > +
-> > > +	if (!tbl)
-> > > +		return ERR_PTR(-EOPNOTSUPP);
-> > > +
-> > > +	return &tbl[channel];
-> > > +}
-> > > +
-> > > +static int do_sensor_read(struct m10bmc_hwmon *hw,
-> > > +			  const struct m10bmc_sdata *data,
-> > > +			  unsigned int regoff, long *val)
-> > > +{
-> > > +	unsigned int regval;
-> > > +	int ret;
-> > > +
-> > > +	ret = m10bmc_sys_read(hw->m10bmc, regoff, &regval);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	/*
-> > > +	 * BMC Firmware will return 0xdeadbeef if the sensor value is invalid
-> > > +	 * at that time. This usually happens on sensor channels which connect
-> > > +	 * to external pluggable modules, e.g. QSFP temperature and voltage.
-> > > +	 * When the QSFP is unplugged from cage, driver will get 0xdeadbeef
-> > > +	 * from their registers.
-> > > +	 */
-> > > +	if (regval == 0xdeadbeef)
-> > > +		return -EBUSY;
-> > 
-> > Is this appropriate ? The description above would suggest differently.
-> > -ENODATA, maybe ? Also, are those module hot pluggable ? If not,
-> 
-> I could change to -ENODATA.
-> 
-> Those modules are hot pluggable. QSFP is a compact, hot-pluggable optical
-> module for ethernet connection. The real sensors are embedded in QSFP
-> modules, not on the cages of the board. So at running time, if the QSFP
-> is plugged in the cage, we have valid sensor data, if it is unplugged,
-> we have 0xdeadbeef.
-> 
--ENODATA seems to be better in this case.
+It suggests cache_list or current_detail (both globals) are corrupted
+somehow.
 
-> > it may be more appropriate to detect the status in the in_visible function
-> > and not create affected attributes in the first place.
-> > 
-> > > +
-> > > +	*val = regval * data->multiplier;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int m10bmc_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-> > > +			     u32 attr, int channel, long *val)
-> > > +{
-> > > +	struct m10bmc_hwmon *hw = dev_get_drvdata(dev);
-> > > +	unsigned int reg = 0, reg_hyst = 0;
-> > > +	const struct m10bmc_sdata *data;
-> > > +	long hyst, value;
-> > > +	int ret;
-> > > +
-> > > +	data = find_sensor_data(hw, type, channel);
-> > > +	if (IS_ERR(data))
-> > > +		return PTR_ERR(data);
-> > > +
-> > > +	switch (type) {
-> > > +	case hwmon_temp:
-> > > +		switch (attr) {
-> > > +		case hwmon_temp_input:
-> > > +			reg = data->reg_input;
-> > > +			break;
-> > > +		case hwmon_temp_max_hyst:
-> > > +			reg_hyst = data->reg_hyst;
-> > > +			fallthrough;
-> > > +		case hwmon_temp_max:
-> > > +			reg = data->reg_max;
-> > > +			break;
-> > > +		case hwmon_temp_crit_hyst:
-> > > +			reg_hyst = data->reg_hyst;
-> > > +			fallthrough;
-> > > +		case hwmon_temp_crit:
-> > > +			reg = data->reg_crit;
-> > > +			break;
-> > > +		default:
-> > > +			return -EOPNOTSUPP;
-> > > +		}
-> > > +		break;
-> > > +	case hwmon_in:
-> > > +		switch (attr) {
-> > > +		case hwmon_in_input:
-> > > +			reg = data->reg_input;
-> > > +			break;
-> > > +		case hwmon_in_max:
-> > > +			reg = data->reg_max;
-> > > +			break;
-> > > +		case hwmon_in_crit:
-> > > +			reg = data->reg_crit;
-> > > +			break;
-> > > +		case hwmon_in_min:
-> > > +			reg = data->reg_min;
-> > > +			break;
-> > > +		default:
-> > > +			return -EOPNOTSUPP;
-> > > +		}
-> > > +		break;
-> > > +	case hwmon_curr:
-> > > +		switch (attr) {
-> > > +		case hwmon_curr_input:
-> > > +			reg = data->reg_input;
-> > > +			break;
-> > > +		case hwmon_curr_max:
-> > > +			reg = data->reg_max;
-> > > +			break;
-> > > +		case hwmon_curr_crit:
-> > > +			reg = data->reg_crit;
-> > > +			break;
-> > > +		default:
-> > > +			return -EOPNOTSUPP;
-> > > +		}
-> > > +		break;
-> > > +	case hwmon_power:
-> > > +		switch (attr) {
-> > > +		case hwmon_power_input:
-> > > +			reg = data->reg_input;
-> > > +			break;
-> > > +		default:
-> > > +			return -EOPNOTSUPP;
-> > > +		}
-> > > +		break;
-> > > +	default:
-> > > +		return -EOPNOTSUPP;
-> > > +	}
-> > > +
-> > > +	if (!reg)
-> > > +		return -EOPNOTSUPP;
-> > > +
-> > 
-> > That can't happen with the code above. reg is always initialized.
-> > All other cases already returned -EOPNOTSUPP.
-> 
-> In the n3000bmc_xxx_tbl, we mark the reg as 0 if the attr is not supported,
-> this should be aligned with the hwmon_channel_info. And it has to be
-> ensured manually.
-> 
-> If everything is fine, this can't happen. But if developers made mistake
-> when inputing data, e.g. the HWMON_X_XXX bit is set but reg in table is 0,
-> then we may got confusing value. This is the intention I added the
-> check.
-> 
-Ok, makes sense.
+Those are manipulated only by cache_clean() and
+sunrpc_{init,destroy}_cache_detail(), always under the cache_list_lock.
 
-> > 
-> > > +	ret = do_sensor_read(hw, data, reg, &value);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	if (reg_hyst) {
-> > > +		ret = do_sensor_read(hw, data, reg_hyst, &hyst);
-> > > +		if (ret)
-> > > +			return ret;
-> > > +
-> > > +		value -= hyst;
-> > 
-> > Is that also correct for _min attributes ? Normally I'd assume that the hysteresis
-> > for those is larger than the base attribute value.
-> 
-> Mm.. the hysteresis attr value should be larger than min attr.
-> 
-> But now the code expose no _min_hyst attr. So is it OK now?
-> 
-Ah, I see. Yes, that is ok.
+All the callers have to do to get this right is make sure the
+cache_detail they pass in is allocated before calling
+sunrpc_init_cache_detail() and not freed till after calling
+sunrpc_destroy_cache_detail().  I think they all get that right.
 
-Thanks,
-Guenter
+So I'm assuming this is a random memory scribble from somewhere else or
+something, unless it pops up again....
 
-> > 
-> > > +	}
-> > > +
-> > > +	*val = value;
-> > > +
-> > > +	return ret;
-> > 
-> > ret is always 0 here -> return 0;
+(The one thing I'm a little unsure of here is the
+list_empty(&cache_list) checks used to decide when to stop the
+cache_cleaner.  But that's a separate problem, if it is a problem.)
+
+--b.
+
+
+> Code: 81 fb 20 eb 94 8a 0f 84 b8 00 00 00 e8 80 df 33 fa 48 8d 83 40 ff ff ff 48 8d 7b 10 48 89 05 8e 8e 13 06 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 e0 05 00 00 48 8d 6c 24 38 4c 8b 63 10 48 89
+> RSP: 0018:ffffc90008e1fc48 EFLAGS: 00010206
+> RAX: 0000000012e34a9a RBX: 00000000971a54c0 RCX: ffffffff87406dbb
+> RDX: ffff88804358a000 RSI: ffffffff87406e00 RDI: 00000000971a54d0
+> RBP: 0000000000000100 R08: 0000000000000001 R09: 0000000000000003
+> R10: 0000000000000100 R11: 0000000000000000 R12: 0000000000000100
+> R13: dffffc0000000000 R14: ffff88803451b200 R15: ffff8880ae735600
+> FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000004ef310 CR3: 000000009ca1b000 CR4: 00000000001526e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  do_cache_clean+0xd/0xd0 net/sunrpc/cache.c:502
+>  process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>  kthread+0x3b5/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> Modules linked in:
+> ---[ end trace 4c54bbd0e20d734b ]---
+> RIP: 0010:cache_clean+0x119/0x7f0 net/sunrpc/cache.c:444
+> Code: 81 fb 20 eb 94 8a 0f 84 b8 00 00 00 e8 80 df 33 fa 48 8d 83 40 ff ff ff 48 8d 7b 10 48 89 05 8e 8e 13 06 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 e0 05 00 00 48 8d 6c 24 38 4c 8b 63 10 48 89
+> RSP: 0018:ffffc90008e1fc48 EFLAGS: 00010206
+> RAX: 0000000012e34a9a RBX: 00000000971a54c0 RCX: ffffffff87406dbb
+> RDX: ffff88804358a000 RSI: ffffffff87406e00 RDI: 00000000971a54d0
+> RBP: 0000000000000100 R08: 0000000000000001 R09: 0000000000000003
+> R10: 0000000000000100 R11: 0000000000000000 R12: 0000000000000100
+> R13: dffffc0000000000 R14: ffff88803451b200 R15: ffff8880ae735600
+> FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000004ef310 CR3: 000000009ca1b000 CR4: 00000000001526e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 > 
-> I'll change it.
 > 
-> > 
-> > > +}
-> > > +
-> > > +static int m10bmc_hwmon_read_string(struct device *dev,
-> > > +				    enum hwmon_sensor_types type,
-> > > +				    u32 attr, int channel, const char **str)
-> > > +{
-> > > +	struct m10bmc_hwmon *hw = dev_get_drvdata(dev);
-> > > +	const struct m10bmc_sdata *data;
-> > > +
-> > > +	data = find_sensor_data(hw, type, channel);
-> > > +	if (IS_ERR(data))
-> > > +		return PTR_ERR(data);
-> > > +
-> > > +	*str = data->label;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static const struct hwmon_ops m10bmc_hwmon_ops = {
-> > > +	.is_visible = m10bmc_hwmon_is_visible,
-> > > +	.read = m10bmc_hwmon_read,
-> > > +	.read_string = m10bmc_hwmon_read_string,
-> > > +};
-> > > +
-> > > +static int m10bmc_hwmon_probe(struct platform_device *pdev)
-> > > +{
-> > > +	const struct platform_device_id *id = platform_get_device_id(pdev);
-> > > +	struct intel_m10bmc *m10bmc = dev_get_drvdata(pdev->dev.parent);
-> > > +	struct device *hwmon_dev, *dev = &pdev->dev;
-> > > +	struct m10bmc_hwmon *hw;
-> > > +	int i;
-> > > +
-> > > +	if (!id || !id->driver_data) {
-> > 
-> > That can not really happen.
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> I see. We will not fall-back to driver name match if pdrv->id_table is
-> provided.
-> 
-> Thanks,
-> Yilun
-> 
-> > 
-> > > +		dev_err(dev, "Failed to get board data\n");
-> > > +		return -ENODEV;
-> > > +	}
-> > > +
-> > > +	hw = devm_kzalloc(dev, sizeof(*hw), GFP_KERNEL);
-> > > +	if (!hw)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	hw->dev = dev;
-> > > +	hw->m10bmc = m10bmc;
-> > > +	hw->bdata = (struct m10bmc_hwmon_board_data *)id->driver_data;
-> > > +
-> > > +	hw->chip.info = hw->bdata->hinfo;
-> > > +	hw->chip.ops = &m10bmc_hwmon_ops;
-> > > +
-> > > +	hw->hw_name = devm_kstrdup(dev, id->name, GFP_KERNEL);
-> > > +	if (!hw->hw_name)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	for (i = 0; hw->hw_name[i]; i++)
-> > > +		if (hwmon_is_bad_char(hw->hw_name[i]))
-> > > +			hw->hw_name[i] = '_';
-> > > +
-> > > +	hwmon_dev = devm_hwmon_device_register_with_info(dev, hw->hw_name,
-> > > +							 hw, &hw->chip, NULL);
-> > > +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> > > +}
-> > > +
-> > > +static const struct platform_device_id intel_m10bmc_hwmon_ids[] = {
-> > > +	{
-> > > +		.name = "n3000bmc-hwmon",
-> > > +		.driver_data = (unsigned long)&n3000bmc_hwmon_bdata,
-> > > +	},
-> > > +	{ }
-> > > +};
-> > > +
-> > > +static struct platform_driver intel_m10bmc_hwmon_driver = {
-> > > +	.probe = m10bmc_hwmon_probe,
-> > > +	.driver = {
-> > > +		.name = "intel-m10-bmc-hwmon",
-> > > +	},
-> > > +	.id_table = intel_m10bmc_hwmon_ids,
-> > > +};
-> > > +module_platform_driver(intel_m10bmc_hwmon_driver);
-> > > +
-> > > +MODULE_DEVICE_TABLE(platform, intel_m10bmc_hwmon_ids);
-> > > +MODULE_AUTHOR("Intel Corporation");
-> > > +MODULE_DESCRIPTION("Intel MAX 10 BMC hardware monitor");
-> > > +MODULE_LICENSE("GPL");
-> > > 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
