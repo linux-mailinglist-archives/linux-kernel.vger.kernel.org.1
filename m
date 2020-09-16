@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871F726BC2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB9426BC2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726324AbgIPGIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:08:22 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:18716 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726219AbgIPGIU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:08:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600236500; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=sACAp3XOdkGTgtb5Bx1apDUtcLqnVpEZFqB5s5mEvLQ=;
- b=rzFUWUgKc3tF7dggk/OOt+lXlkxI4CyeMExPhNc9qOFXz2GaD86Qm8CXTQkgC4bNCLXJGjdh
- EXVf3JpirmlqllhfwV1chvNz6GfekpTJyv9s7EUUvy8lKC4e8xerNnwN7lPIPj1a8LGR8qtL
- Av8zwuPjXgcrD/0lHckOGvep8SY=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f61abc8947f606f7e86de7d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 06:08:08
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D5CACC43382; Wed, 16 Sep 2020 06:08:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0F37C433F1;
-        Wed, 16 Sep 2020 06:08:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A0F37C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1726311AbgIPGIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:08:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58698 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgIPGIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:08:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8CDB6AAC7;
+        Wed, 16 Sep 2020 06:08:29 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 08:08:08 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     zangchunxin@bytedance.com
+Cc:     akpm@linux-foundation.org, chris@chrisdown.name, vbabka@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v5] mm/vmscan: add a fatal signals check in drop_slab_node
+Message-ID: <20200916060808.GA18998@dhcp22.suse.cz>
+References: <20200916025359.70203-1-zangchunxin@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wlcore: Remove unused macro WL1271_SUSPEND_SLEEP
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200909135905.35728-1-yuehaibing@huawei.com>
-References: <20200909135905.35728-1-yuehaibing@huawei.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200916060807.D5CACC43382@smtp.codeaurora.org>
-Date:   Wed, 16 Sep 2020 06:08:07 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916025359.70203-1-zangchunxin@bytedance.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YueHaibing <yuehaibing@huawei.com> wrote:
-
-> commit 45aa7f071b06 ("wlcore: Use generic runtime pm calls for wowlan elp configuration")
-> left behind this, remove it.
+On Wed 16-09-20 10:53:59, zangchunxin@bytedance.com wrote:
+> From: Chunxin Zang <zangchunxin@bytedance.com>
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> On our server, there are about 10k memcg in one machine. They use memory
+> very frequently. We have observed that drop_caches can take a
+> considerable amount of time, and can't stop it.
+> 
+> There are two reasons:
+> 1. There is somebody constantly generating more objects to reclaim
+>   on drop_caches, result the 'freed' always bigger than 10.
+> 2. The process has no chance to process signals.
+> 
+> We can get the following info through 'ps':
+> 
+>  root:~# ps -aux | grep drop
+>  root  357956 ... R    Aug25 21119854:55 echo 3 > /proc/sys/vm/drop_caches
+>  root 1771385 ... R    Aug16 21146421:17 echo 3 > /proc/sys/vm/drop_caches
+> 
+> Add a bail out on the fatal signals in the main loop so that the
+> operation can be terminated by userspace.
+> 
+> Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Patch applied to wireless-drivers-next.git, thanks.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-d06e2f8b41b6 wlcore: Remove unused macro WL1271_SUSPEND_SLEEP
+> ---
+> 	changelogs in v5:
+> 	1) v4 patch used wrong branch, very apologies about that.
+> 
+> 	changelogs in v4:
+>     changelogs in v3:
+>     1) Fix some descriptive problems pointed out by Michal Hocko.
+>         v2 named: mm/vmscan: fix infinite loop in drop_slab_node
+> 
+>     changelogs in v2:
+>     1) via check fatal signal break loop.
+> 
+>  mm/vmscan.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index b6d84326bdf2..c3ed8b45d264 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -704,6 +704,9 @@ void drop_slab_node(int nid)
+>  	do {
+>  		struct mem_cgroup *memcg = NULL;
+>  
+> +		if (fatal_signal_pending(current))
+> +			return;
+> +
+>  		freed = 0;
+>  		memcg = mem_cgroup_iter(NULL, NULL, NULL);
+>  		do {
+> -- 
+> 2.11.0
+> 
 
 -- 
-https://patchwork.kernel.org/patch/11765701/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Michal Hocko
+SUSE Labs
