@@ -2,179 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626F326BA7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBB226BA81
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgIPDE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726093AbgIPDE1 (ORCPT
+        id S1726200AbgIPDH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:07:57 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:56287 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726023AbgIPDHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:04:27 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46DFC06174A;
-        Tue, 15 Sep 2020 20:04:26 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id u25so5317095otq.6;
-        Tue, 15 Sep 2020 20:04:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v49V7vbkYoTBj10sWwziFhYTHsbTXwr8gPL6z6VrHDY=;
-        b=NyKoj3h+7Y+cgmDT9PEMxObBB5K6BnXXaQ7+DL6wHS+lguPyCCZaY8Vzk6/sS5NFlb
-         PnpF0hKSqFzMg6k0Ba+MStsE7ITCuMtOE3AInJL20J3szJm7aidFRxKPOjbAacTWvcf5
-         AmT7sqMkNHr96b0TInLOy+ha/29mpZRibe7wfCg7REVCAU611TETSjJs770FNkSDymzi
-         r7m1dlH87F4c78c0xmi9meN2vgTong0pXI5jVbKoN0+ziJpwgCcitB/wOCZbQFFtyMTM
-         f1mrlau1DZ2n9YxGrhLHPTjgGOd9s4cTT+bsTf4dxZervXwoIEo+dg0igtx00wNII+21
-         jZgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=v49V7vbkYoTBj10sWwziFhYTHsbTXwr8gPL6z6VrHDY=;
-        b=PmVfuz9BI9C+InG9mKEu1hC0H2rKYXZYjUHgPBMMAvW4FeknuB41vYs0K6ZCc2V1Qi
-         tS+TW+0YghwJCb+YHC0U46fihL/H+NzkMWDjJ5lXWKgjTzkdnEVOhgWdTX4igR8P2k7w
-         AGiEMRWP7DD19O2/SWhqdpApkOjWriGJRQStZqpLbPY/6XxaoOyve0q2uSmGpFPrsnv2
-         EiBF9xVDjVvZD7+QK/zpOFwKP/jzeX2dY0vXgsUr/YLokzU/8RYiQv49NTG78ujk7eVZ
-         Ph4TYickCxKtvKNO8jHLezCXDq+MmVRRbDMMaAwBbu0+WG1WqVM1cookqNaGbo/Yo+aQ
-         zrdQ==
-X-Gm-Message-State: AOAM5338MNBlyrwKMXfXmNsWGTrKO4zZa9d8J4bq3vhEayBGMZghtreB
-        /4NKKLNlGxoOXY814Se35pw=
-X-Google-Smtp-Source: ABdhPJzMFc8bt+miVOUHkbe431Dux/uc6vPnQFzvSn+2Pft9G/cUr0K3UZVP4OqOL0NM3l2/4d5Z7Q==
-X-Received: by 2002:a9d:5e8a:: with SMTP id f10mr14494565otl.242.1600225466292;
-        Tue, 15 Sep 2020 20:04:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j1sm8097451oig.45.2020.09.15.20.04.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 20:04:25 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: hwmon: max20730: adding device tree doc for
- max20730
-To:     Chu Lin <linchuyuan@google.com>, jdelvare@suse.com,
-        robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qiongwang@google.com, zhongqil@google.com, jasonling@google.com,
-        belgaied@google.com
-References: <20200910170638.1985729-1-linchuyuan@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6059ab76-02ff-0ab6-15bf-e34026a2f855@roeck-us.net>
-Date:   Tue, 15 Sep 2020 20:04:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Sep 2020 23:07:51 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U94yIkx_1600225667;
+Received: from IT-C02W23QPG8WN.local(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0U94yIkx_1600225667)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 16 Sep 2020 11:07:48 +0800
+From:   Wen Yang <wenyang@linux.alibaba.com>
+Subject: Re: [PATCH] net: core: explicitly call linkwatch_fire_event to speed
+ up the startup of network services
+To:     David Miller <davem@davemloft.net>
+Cc:     kuba@kernel.org, andrew@lunn.ch, edumazet@google.com,
+        jiri@mellanox.com, leon@kernel.org, jwi@linux.ibm.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200801085845.20153-1-wenyang@linux.alibaba.com>
+ <20200804.155831.644663742975051162.davem@davemloft.net>
+ <41107812-01ba-169e-2f18-69cecec94d8d@linux.alibaba.com>
+Message-ID: <21bd2d87-c784-06dd-6e1e-25569ebef040@linux.alibaba.com>
+Date:   Wed, 16 Sep 2020 11:07:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <20200910170638.1985729-1-linchuyuan@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <41107812-01ba-169e-2f18-69cecec94d8d@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 10:06 AM, Chu Lin wrote:
-> Testing:
-> make dt_binding_check
-> 
 
-This isn't really an appropriate patch description.
+on 2020/8/6 PM5:09, Wen Yang wrote:
+>
+>
+> 在 2020/8/5 上午6:58, David Miller 写道:
+>> From: Wen Yang <wenyang@linux.alibaba.com>
+>> Date: Sat,  1 Aug 2020 16:58:45 +0800
+>>
+>>> diff --git a/net/core/link_watch.c b/net/core/link_watch.c
+>>> index 75431ca..6b9d44b 100644
+>>> --- a/net/core/link_watch.c
+>>> +++ b/net/core/link_watch.c
+>>> @@ -98,6 +98,9 @@ static bool linkwatch_urgent_event(struct 
+>>> net_device *dev)
+>>>       if (netif_is_lag_port(dev) || netif_is_lag_master(dev))
+>>>           return true;
+>>>   +    if ((dev->flags & IFF_UP) && dev->operstate == IF_OPER_DOWN)
+>>> +        return true;
+>>> +
+>>>       return netif_carrier_ok(dev) && qdisc_tx_changing(dev);
+>>>   }
+>>
+>> You're bypassing explicitly the logic here:
+>>
+>>     /*
+>>      * Limit the number of linkwatch events to one
+>>      * per second so that a runaway driver does not
+>>      * cause a storm of messages on the netlink
+>>      * socket.  This limit does not apply to up events
+>>      * while the device qdisc is down.
+>>      */
+>>     if (!urgent_only)
+>>         linkwatch_nextevent = jiffies + HZ;
+>>     /* Limit wrap-around effect on delay. */
+>>     else if (time_after(linkwatch_nextevent, jiffies + HZ))
+>>         linkwatch_nextevent = jiffies;
+>>
+>> Something about this isn't right.  We need to analyze what you are 
+>> seeing,
+>> what device you are using, and what systemd is doing to figure out what
+>> the right place for the fix.
+>>
+>> Thank you.
+>>
+>
+> Thank you very much for your comments.
+> We are using virtio_net and the environment is a microvm similar to 
+> firecracker.
+>
+> Let's briefly explain.
+> net_device->operstate is assigned through linkwatch_event, and the 
+> call stack is as follows:
+> process_one_work
+> -> linkwatch_event
+>  -> __linkwatch_run_queue
+>   -> linkwatch_do_dev
+>    -> rfc2863_policy
+>     -> default_operstate
+>
+> During the machine startup process, net_device->operstate has the 
+> following two-step state changes:
+>
+> STEP A: virtnet_probe detects the network card and triggers the 
+> execution of linkwatch_fire_event.
+> Since linkwatch_nextevent is initialized to 0, linkwatch_work will run.
+> And since net_device->state is 6 (__LINK_STATE_PRESENT | 
+> __LINK_STATE_NOCARRIER), net_device->operstate will be changed from 
+> IF_OPER_UNKNOWN to IF_OPER_DOWN:
+> eth0 operstate:0 (IF_OPER_UNKNOWN) -> operstate:2 (IF_OPER_DOWN)
+>
+> virtnet_probe then executes netif_carrier_on to update 
+> net_device->state, it will be changed from ‘__LINK_STATE_PRESENT | 
+> __LINK_STATE_NOCARRIER’ to __LINK_STATE_PRESENT:
+> eth0 state: 6 (__LINK_STATE_PRESENT | __LINK_STATE_NOCARRIER) -> 2 
+> (__LINK_STATE_PRESENT)
+>
+> STEP B: One second later (because linkwatch_nextevent = jiffies + HZ), 
+> linkwatch_work is executed again.
+> At this time, since net_device->state is __LINK_STATE_PRESENT, so the 
+> net_device->operstate will be changed from IF_OPER_DOWN to IF_OPER_UP:
+> eth0 operstate:2 (IF_OPER_DOWN) -> operstate:6 (IF_OPER_UP)
+>
+>
+> The above state change can be completed within 2 seconds.
+> Generally, the machine will load the initramfs first, and do some 
+> initialization in the initramfs, which takes some time; then 
+> switch_root to the system disk and continue the initialization, which 
+> will also take some time, and finally start the systemd-networkd 
+> service, bringing link, etc.,
+> In this way, the linkwatch_work work queue has enough time to run 
+> twice, and the state of net_device->operstate is already IF_OPER_UP,
+> So bringing link up quickly returns the following information:
+> Aug 06 16:35:55.966121 iZuf6h1kfgutxc3el68z2lZ systemd-networkd[580]: 
+> eth0: bringing link up
+> ...
+> Aug 06 16:35:55.990461 iZuf6h1kfgutxc3el68z2lZ systemd-networkd[580]: 
+> eth0: flags change: +UP +LOWER_UP +RUNNING
+>
+> But we are now using MicroVM, which requires extreme speed to start, 
+> bypassing the initramfs and directly booting the trimmed system on the 
+> disk.
+> systemd-networkd starts in less than 1 second after booting. the STEP 
+> B has not been run yet, so it will wait for several hundred 
+> milliseconds here, as follows:
+> Jul 20 22:00:47.432552 systemd-networkd[210]: eth0: bringing link up
+> ...
+> Jul 20 22:00:47.446108 systemd-networkd[210]: eth0: flags change: +UP 
+> +LOWER_UP
+> ...
+> Jul 20 22:00:47.781463 systemd-networkd[210]: eth0: flags change: 
+> +RUNNING
+>
+>
+> Note: dhcp pays attention to IFF_RUNNING status, we may refer to:
+> https://www.kernel.org/doc/Documentation/networking/operstates.txt
+>
+> A routing daemon or dhcp client just needs to care for IFF_RUNNING or
+> waiting for operstate to go IF_OPER_UP/IF_OPER_UNKNOWN before
+> considering the interface / querying a DHCP address.
+>
+> Finally, the STEP B above only updates the value of operstate based on 
+> the known state (operstate/state) on the net_device, without any 
+> hardware interaction involved, so it is not very reasonable to wait 
+> for 1 second there.
+>
+> By adding:
+> +    if ((dev->flags & IFF_UP) && dev->operstate == IF_OPER_DOWN)
+> +        return true;
+> +
+> We hope to improve the linkwatch_urgent_event function a bit.
+>
+> Hope to get more of your advice and guidance.
+>
+> Best wishes,
+> Wen
 
-> Signed-off-by: Chu Lin <linchuyuan@google.com>
-> ---
->  .../devicetree/bindings/hwmon/max20730.txt    | 23 +++++++++++++++++++
+hi, this issue is worth continuing discussion.
+In the microVM scenario, it is valuable to increase the startup speed by 
+a few hundred milliseconds.
 
-AFAIK this needs to be written as .yaml file.
+Best wishes,
+Wen
 
-Guenter
 
->  MAINTAINERS                                   |  1 +
->  2 files changed, 24 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/max20730.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/max20730.txt b/Documentation/devicetree/bindings/hwmon/max20730.txt
-> new file mode 100644
-> index 000000000000..3afb42b04567
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/max20730.txt
-> @@ -0,0 +1,23 @@
-> +max20730 properties
-> +
-> +Required properties:
-> +- compatible: Must be one of the supported compatible strings:
-> +	"maxim,max20730" for max20730
-> +	"maxim,max20734" for max20734
-> +	"maxim,max20743" for max20743
-> +- reg: I2C address
-> +
-> +Optional properties:
-> +
-> +- vout-voltage-divider
-> +	Resistance of the vout voltage divider.
-> +	Two numbers, the first number is the output resistor,
-> +	the second number is the total resistance.
-> +
-> +Example:
-> +
-> +max20730@10 {
-> +	compatible = "maxim,max20730";
-> +	reg = <0x10>;
-> +	vout-voltage-divider = <1000 2000>;
-> +};
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0a6ac3f00ed5..a04bf34a65b8 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12371,6 +12371,7 @@ W:	http://www.roeck-us.net/linux/drivers/
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
-> +F:	Documentation/devicetree/bindings/hwmon/max20730.txt
->  F:	Documentation/devicetree/bindings/hwmon/max31785.txt
->  F:	Documentation/devicetree/bindings/hwmon/ltc2978.txt
->  F:	Documentation/hwmon/adm1275
-> 
 
