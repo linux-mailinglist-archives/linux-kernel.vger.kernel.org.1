@@ -2,102 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496B226C5DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F6326C59E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIPRXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:23:34 -0400
-Received: from mga12.intel.com ([192.55.52.136]:54981 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726884AbgIPRVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:21:21 -0400
-IronPort-SDR: cqHiMs3waixP8NrGB30kNwvLNXV9IPuWvOVr4thh9y/zuH68hfkJwj7hs6TF1P9byfneegbTSE
- vH1rN8gjvm6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="139008854"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="139008854"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:04:28 -0700
-IronPort-SDR: Q/fd4pGPyabmqm3WKVszibb4fe3jwPJLd4rGMqL1nJnzdcTRtg2+g9fPONPZhFyJUOrljiyHfA
- l34HiqxNm8Pw==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="483365305"
-Received: from scusackx-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.87])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:04:21 -0700
-Date:   Wed, 16 Sep 2020 19:04:19 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
- Control hardware bits
-Message-ID: <20200916160419.GB21026@linux.intel.com>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
- <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
- <20200914151816.u6camicid4bd5lgo@treble>
- <20200914153812.c6uh3spqmcy2ft3d@treble>
- <20200915095716.GI3612@linux.intel.com>
- <20200915132725.a2qbdio3jsu7rsqs@treble>
- <20200915133929.GI14436@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915133929.GI14436@zn.tnic>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1726938AbgIPRMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726792AbgIPRJW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:09:22 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156A7C02C2A1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:37:04 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id m5so7679345lfp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:37:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=jMYu4kXE2sjgBZ9G0n0UMw/4sfdmoPqRtdExz+XAFWs=;
+        b=iA8Gq/YnrRpNj705xinp0UvGfAmmUb+FvDWYzbCZILwOStSmi7k7yRicuZ+OFi/Jey
+         EYzGUzcOj1of4kQDN1doygwRCKgkrt1JJyrVwb4lNKemp+17ZddMKiRSlm7auBl/dzOm
+         NFt7vL8nLyuqg85P0OYs8MyEIJ6apy0XF1E7TB6XuJ9YJTwoE8Ri2FYgXCFIW7DwX/kJ
+         MpLNtn1Ms8hNKP/k0kLPjRsS4wWv6sP5m+Et+WGAUh82IJYa43b6pdiC4UlQ//N7Iq70
+         q0TYiP/+HhXSaaEB1OC6rYWlZ6/WdxdjGMKczjYg8I9zdCjETU5ljUoluDcDZfpzaxR/
+         7hzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jMYu4kXE2sjgBZ9G0n0UMw/4sfdmoPqRtdExz+XAFWs=;
+        b=pkxeeClXMahFpRdWZWWYeW8hquGvqPByKa5SZDRioFXp1Mzc0WMqAKh7LsnFFkTquk
+         pm79xHvLbOs43pYx7QJmlz8MlagrrWZQsu2vEs12kZ6cEqVydOqYUktWd+aKbcZg7vrp
+         vRucFXWWjAr8/9vvKyI053VywzlkByWCV2P/d7P9ZWjGJnCPS2hLQBWb8Yau5eIsJbP9
+         8iKYgCdXTdyTyb6XVewCPIcEthKUfAwfq35sLIm3lQe6dIFHjKhvh4lNOxEakEGbfHF8
+         ISRdCSDa9SzMFUdNYm126nILWCgO3eSxsTjOA7EMlvc9QT82uhNobPkOKY0AqA623lrz
+         d0wg==
+X-Gm-Message-State: AOAM531Gr4ju3o/dkPBwVCk1xGVZ/zCcZ9EjZ+nEIZCmwdv6UVlNMXMr
+        Fb6kxsjsxnFBECYbGoeO8kRz6w==
+X-Google-Smtp-Source: ABdhPJwcCdpfObZXqTGqBWbqGkCbuZ41n1X/oiZxN1Zv/wkx2VjUjFa3aUlmgB8PN1u9TCcFhIXNIw==
+X-Received: by 2002:ac2:494f:: with SMTP id o15mr2729070lfi.355.1600274222391;
+        Wed, 16 Sep 2020 09:37:02 -0700 (PDT)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id o15sm4684400lfo.188.2020.09.16.09.37.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Sep 2020 09:37:01 -0700 (PDT)
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        s-anna@ti.com
+Cc:     grzegorz.jaszczyk@linaro.org, robh+dt@kernel.org,
+        lee.jones@linaro.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, david@lechnology.com,
+        praneeth@ti.com
+Subject: [PATCH v7 3/5] irqchip/irq-pruss-intc: Add logic for handling reserved interrupts
+Date:   Wed, 16 Sep 2020 18:36:36 +0200
+Message-Id: <1600274198-30470-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 03:39:29PM +0200, Borislav Petkov wrote:
-> On Tue, Sep 15, 2020 at 08:27:25AM -0500, Josh Poimboeuf wrote:
-> > I see the v37 missing patches now, but they're not threaded with the
-> > original thread.
-> 
-> Probably because he bounced only the ones you didn't get, separately.
-> 
-> > v38 has some missing patches as well.
-> 
-> And I got them twice. Can we please stop the spamming?
-> 
-> And yeah, use another mail service - all those companies switching the
-> o365 and mimecast, means time to move kernel development off of company
-> mail because company mail simply can't handle it.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+From: Suman Anna <s-anna@ti.com>
 
-The duplicate versions of v38 are equal. The "backup" server was just
-really slow with vger. That's why I retried.
+The PRUSS INTC has a fixed number of output interrupt lines that are
+connected to a number of processors or other PRUSS instances or other
+devices (like DMA) on the SoC. The output interrupt lines 2 through 9
+are usually connected to the main Arm host processor and are referred
+to as host interrupts 0 through 7 from ARM/MPU perspective.
 
-As can be seen here both v38's are also complete:
+All of these 8 host interrupts are not always exclusively connected
+to the Arm interrupt controller. Some SoCs have some interrupt lines
+not connected to the Arm interrupt controller at all, while a few others
+have the interrupt lines connected to multiple processors in which they
+need to be partitioned as per SoC integration needs. For example, AM437x
+and 66AK2G SoCs have 2 PRUSS instances each and have the host interrupt 5
+connected to the other PRUSS, while AM335x has host interrupt 0 shared
+between MPU and TSC_ADC and host interrupts 6 & 7 shared between MPU and
+a DMA controller.
 
-https://lore.kernel.org/linux-sgx/
+Add logic to the PRUSS INTC driver to ignore both these shared and
+invalid interrupts.
 
-I've tried for months to get kernel.org account but I have troubles
-getting my PGP trusted. I really would like to move the whole thing
-over there. And use that account for email.
+Signed-off-by: Suman Anna <s-anna@ti.com>
+Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+---
+v6->v7:
+- Add Co-developed-by tag.
+v5->v6:
+- No change.
+v4->v5:
+- Rename: s/invalid_intr/irqs_reserved/
+v3->v4:
+- Due to changes in DT bindings which converts irqs-reserved
+  property from uint8-array to bitmask requested by Rob introduce
+  relevant changes in the driver.
+- Merge the irqs-reserved and irqs-shared to one property since they
+  can be handled by one logic (relevant change was introduced to DT
+  binding).
+- Update commit message.
+v2->v3:
+- Extra checks for (intc->irqs[i]) in error/remove path was moved from
+  "irqchip/irq-pruss-intc: Add a PRUSS irqchip driver for PRUSS
+  interrupts" to this patch
+v1->v2:
+- https://patchwork.kernel.org/patch/11069757/
+---
+ drivers/irqchip/irq-pruss-intc.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
-Three maintainers have signed my key but when I do gpg --refresh, I
-do not get any signatures for my key. The command uses keys.openpgp.org.
-I have no idea if that is the correct key server or not. And I have no
-idea how PGP servers mirror stuff with each other. And I have not found
-anything on this from kernel documentation (e.g. PGP maintainer guide).
+diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
+index c8bdef4..e7ba358 100644
+--- a/drivers/irqchip/irq-pruss-intc.c
++++ b/drivers/irqchip/irq-pruss-intc.c
+@@ -484,7 +484,7 @@ static int pruss_intc_probe(struct platform_device *pdev)
+ 	struct pruss_intc *intc;
+ 	struct pruss_host_irq_data *host_data;
+ 	int i, irq, ret;
+-	u8 max_system_events;
++	u8 max_system_events, irqs_reserved = 0;
+ 
+ 	data = of_device_get_match_data(dev);
+ 	if (!data)
+@@ -504,6 +504,16 @@ static int pruss_intc_probe(struct platform_device *pdev)
+ 	if (IS_ERR(intc->base))
+ 		return PTR_ERR(intc->base);
+ 
++	ret = of_property_read_u8(dev->of_node, "ti,irqs-reserved",
++				  &irqs_reserved);
++
++	/*
++	 * The irqs-reserved is used only for some SoC's therefore not having
++	 * this property is still valid
++	 */
++	if (ret < 0 && ret != -EINVAL)
++		return ret;
++
+ 	pruss_intc_init(intc);
+ 
+ 	mutex_init(&intc->lock);
+@@ -514,6 +524,9 @@ static int pruss_intc_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	for (i = 0; i < MAX_NUM_HOST_IRQS; i++) {
++		if (irqs_reserved & BIT(i))
++			continue;
++
+ 		irq = platform_get_irq_byname(pdev, irq_names[i]);
+ 		if (irq <= 0) {
+ 			ret = (irq == 0) ? -EINVAL : irq;
+@@ -538,8 +551,11 @@ static int pruss_intc_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ fail_irq:
+-	while (--i >= 0)
+-		irq_set_chained_handler_and_data(intc->irqs[i], NULL, NULL);
++	while (--i >= 0) {
++		if (intc->irqs[i])
++			irq_set_chained_handler_and_data(intc->irqs[i], NULL,
++							 NULL);
++	}
+ 
+ 	irq_domain_remove(intc->domain);
+ 
+@@ -553,8 +569,11 @@ static int pruss_intc_remove(struct platform_device *pdev)
+ 	unsigned int hwirq;
+ 	int i;
+ 
+-	for (i = 0; i < MAX_NUM_HOST_IRQS; i++)
+-		irq_set_chained_handler_and_data(intc->irqs[i], NULL, NULL);
++	for (i = 0; i < MAX_NUM_HOST_IRQS; i++) {
++		if (intc->irqs[i])
++			irq_set_chained_handler_and_data(intc->irqs[i], NULL,
++							 NULL);
++	}
+ 
+ 	for (hwirq = 0; hwirq < max_system_events; hwirq++)
+ 		irq_dispose_mapping(irq_find_mapping(intc->domain, hwirq));
+-- 
+2.7.4
 
-/Jarkko
