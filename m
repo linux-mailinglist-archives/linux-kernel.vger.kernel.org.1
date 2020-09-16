@@ -2,156 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0462A26BF6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBE626BF70
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgIPIfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:35:53 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44344 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbgIPIfv (ORCPT
+        id S1726568AbgIPIgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbgIPIg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:35:51 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08G8Znpf093841;
-        Wed, 16 Sep 2020 03:35:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600245349;
-        bh=IJyXH9+BhG9uPYs6VuSOzVhQhTpmZ2S2LrLmpLkb5gk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=a+baDbpDfPWApiH56aPqKIe5xF3V/GoMzPyDYgRIyVLysDYxSYn05qIOtaLtmqCbW
-         aKbFqseIxbo0QkEcoypQOXuqyX/Kqu0NWKYVD1jIg0o0+/tSF6U91m7GlNu4bi8yOn
-         HhMx7cztT7sTRtMz/92b0rb8/F4oghvm+b27iCxY=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08G8ZmQI093308
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 03:35:48 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 03:35:48 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 03:35:48 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08G8ZksU080979;
-        Wed, 16 Sep 2020 03:35:47 -0500
-Subject: Re: [PATCH] dmaengine: ti: k3-udma-glue: fix channel enable functions
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, <dmaengine@vger.kernel.org>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <20200915164149.22123-1-grygorii.strashko@ti.com>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <46ea0401-e4f7-5b08-c780-b6cd7d1af5e9@ti.com>
-Date:   Wed, 16 Sep 2020 11:35:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 16 Sep 2020 04:36:29 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9191CC06174A;
+        Wed, 16 Sep 2020 01:36:29 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x123so3547026pfc.7;
+        Wed, 16 Sep 2020 01:36:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KT47zfJmk0l7JghqVT5ZA5rEy8OCXlg/IWMuynysqoI=;
+        b=I/nL8EJJEdwYLLDbfZjvs/cqVdyYo5txPiN1xZ7rkpBRmJIrn4u3/Hxb/wjG0rehZ4
+         go8mNOFsVCgqGnSnLZmn/UzVoh2xfNa+X3CCDeB3LHXqFStfNJGGepQWWqzMC2fr2SBX
+         jFO7fNse+b7YDJPRBTLT5WU5LurvCTxoxZrUBETu8viXtFAGMS2s+tx1ar7I865v/9OA
+         UgSE00xU6hImInbi57hnzYOEXHz/pljPeYAgf7t3xjpOnOLjdeuTSo09aMewwx40FzQZ
+         kXUm/+RR29oDy8NYBYVxRGgILZWO1Z4grhJrMqZ7/Zkh/+yrNSowDNAPtj/FkJahh6z6
+         9fMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KT47zfJmk0l7JghqVT5ZA5rEy8OCXlg/IWMuynysqoI=;
+        b=B71yEVDtW3O/UK5BI54ukkkUoAJ+1LUvnn/qWc0cVLx5p2pCEOnZr3iWBIvhWgpURI
+         Od9HrDkDCH0t5Vt8VPm1IZXxgTl4Xk1lK/0EbsYjxs1wEUA8oaSKSLlPivhqCX+ZoIAM
+         2Fl6vLdHeccVveCRxARZoqjR5QbRjr7QPLqJYfoJsSw0/t2MEhyydswNIIodsIv5aYXP
+         BoaNeZ4KDEgDe4meLSC0UiN+4ZUDjmz78+4I9TPYUuGIr+5NKuaeLaG8WC6sitTv7e9/
+         VOcssN1p4hRwnbA46pkkDSwagSvj7O/8CcacCmyddD7juGFVoU8AgO21/D2NNq1mLg+3
+         xEAg==
+X-Gm-Message-State: AOAM532Zq4caHrn/qcoWk/eq6xc7fRkbFBfp7vWiKvTsIoXdbTo5HdDh
+        0fEEDqWHdZNyLUhnhA2VL3o5/Bvs0ngo
+X-Google-Smtp-Source: ABdhPJxniQ3ds4YHSA2Ue2nrlmMmPPLMCqvXrVwKt7jYep+pX01hfC0BD9DPul4ueTvSoZH0p7Z6ng==
+X-Received: by 2002:a63:8ac8:: with SMTP id y191mr17492646pgd.159.1600245388877;
+        Wed, 16 Sep 2020 01:36:28 -0700 (PDT)
+Received: from LiHaiwei.tencent.com ([203.205.141.64])
+        by smtp.gmail.com with ESMTPSA id w6sm14523417pgf.72.2020.09.16.01.36.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Sep 2020 01:36:28 -0700 (PDT)
+From:   lihaiwei.kernel@gmail.com
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
+Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, Haiwei Li <lihaiwei@tencent.com>
+Subject: [PATCH] KVM: SVM: use __GFP_ZERO instead of clear_page()
+Date:   Wed, 16 Sep 2020 16:36:21 +0800
+Message-Id: <20200916083621.5512-1-lihaiwei.kernel@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200915164149.22123-1-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Haiwei Li <lihaiwei@tencent.com>
 
+Use __GFP_ZERO while alloc_page().
 
-On 15/09/2020 19.41, Grygorii Strashko wrote:
-> Now the K3 UDMA glue layer enable functions perform RMW operation on UD=
-MA
-> RX/TX RT_CTL registers to set EN bit and enable channel, which is
-> incorrect, because only EN bit has to be set in those registers to enab=
-le
-> channel (all other bits should be cleared 0).
-> More over, this causes issues when bootloader leaves UDMA channel RX/TX=
+Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+---
+ arch/x86/kvm/svm/avic.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> RT_CTL registers in incorrect state - TDOWN bit set, for example. As
-> result, UDMA channel will just perform teardown right after it's enable=
-d.
->=20
-> Hence, fix it by writing correct values (EN=3D1) directly in UDMA chann=
-el
-> RX/TX RT_CTL registers in k3_udma_glue_enable_tx/rx_chn() functions.
-
-This is how the DMAengine driver deals with the enable.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-> Fixes: d70241913413 ("dmaengine: ti: k3-udma: Add glue layer for non DM=
-Aengine users")
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> ---
->  drivers/dma/ti/k3-udma-glue.c | 15 +++------------
->  1 file changed, 3 insertions(+), 12 deletions(-)
->=20
-> diff --git a/drivers/dma/ti/k3-udma-glue.c b/drivers/dma/ti/k3-udma-glu=
-e.c
-> index dc03880f021a..37d706cf3ba9 100644
-> --- a/drivers/dma/ti/k3-udma-glue.c
-> +++ b/drivers/dma/ti/k3-udma-glue.c
-> @@ -370,7 +370,6 @@ EXPORT_SYMBOL_GPL(k3_udma_glue_pop_tx_chn);
-> =20
->  int k3_udma_glue_enable_tx_chn(struct k3_udma_glue_tx_channel *tx_chn)=
-
->  {
-> -	u32 txrt_ctl;
->  	int ret;
-> =20
->  	ret =3D xudma_navss_psil_pair(tx_chn->common.udmax,
-> @@ -383,15 +382,11 @@ int k3_udma_glue_enable_tx_chn(struct k3_udma_glu=
-e_tx_channel *tx_chn)
-> =20
->  	tx_chn->psil_paired =3D true;
-> =20
-> -	txrt_ctl =3D UDMA_PEER_RT_EN_ENABLE;
->  	xudma_tchanrt_write(tx_chn->udma_tchanx, UDMA_CHAN_RT_PEER_RT_EN_REG,=
-
-> -			    txrt_ctl);
-> +			    UDMA_PEER_RT_EN_ENABLE);
-> =20
-> -	txrt_ctl =3D xudma_tchanrt_read(tx_chn->udma_tchanx,
-> -				      UDMA_CHAN_RT_CTL_REG);
-> -	txrt_ctl |=3D UDMA_CHAN_RT_CTL_EN;
->  	xudma_tchanrt_write(tx_chn->udma_tchanx, UDMA_CHAN_RT_CTL_REG,
-> -			    txrt_ctl);
-> +			    UDMA_CHAN_RT_CTL_EN);
-> =20
->  	k3_udma_glue_dump_tx_rt_chn(tx_chn, "txchn en");
->  	return 0;
-> @@ -1059,7 +1054,6 @@ EXPORT_SYMBOL_GPL(k3_udma_glue_rx_flow_disable);
-> =20
->  int k3_udma_glue_enable_rx_chn(struct k3_udma_glue_rx_channel *rx_chn)=
-
->  {
-> -	u32 rxrt_ctl;
->  	int ret;
-> =20
->  	if (rx_chn->remote)
-> @@ -1078,11 +1072,8 @@ int k3_udma_glue_enable_rx_chn(struct k3_udma_gl=
-ue_rx_channel *rx_chn)
-> =20
->  	rx_chn->psil_paired =3D true;
-> =20
-> -	rxrt_ctl =3D xudma_rchanrt_read(rx_chn->udma_rchanx,
-> -				      UDMA_CHAN_RT_CTL_REG);
-> -	rxrt_ctl |=3D UDMA_CHAN_RT_CTL_EN;
->  	xudma_rchanrt_write(rx_chn->udma_rchanx, UDMA_CHAN_RT_CTL_REG,
-> -			    rxrt_ctl);
-> +			    UDMA_CHAN_RT_CTL_EN);
-> =20
->  	xudma_rchanrt_write(rx_chn->udma_rchanx, UDMA_CHAN_RT_PEER_RT_EN_REG,=
-
->  			    UDMA_PEER_RT_EN_ENABLE);
->=20
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index ac830cd50830..f73f84d56452 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -153,20 +153,18 @@ int avic_vm_init(struct kvm *kvm)
+ 		return 0;
+ 
+ 	/* Allocating physical APIC ID table (4KB) */
+-	p_page = alloc_page(GFP_KERNEL_ACCOUNT);
++	p_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+ 	if (!p_page)
+ 		goto free_avic;
+ 
+ 	kvm_svm->avic_physical_id_table_page = p_page;
+-	clear_page(page_address(p_page));
+ 
+ 	/* Allocating logical APIC ID table (4KB) */
+-	l_page = alloc_page(GFP_KERNEL_ACCOUNT);
++	l_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+ 	if (!l_page)
+ 		goto free_avic;
+ 
+ 	kvm_svm->avic_logical_id_table_page = l_page;
+-	clear_page(page_address(l_page));
+ 
+ 	spin_lock_irqsave(&svm_vm_data_hash_lock, flags);
+  again:
+-- 
+2.18.4
 
