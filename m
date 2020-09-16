@@ -2,104 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C3C26CC5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5511E26CD82
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgIPUnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:43:04 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:17012 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726652AbgIPREe (ORCPT
+        id S1726806AbgIPVA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726495AbgIPQaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:04:34 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08GFeaAi025252;
-        Wed, 16 Sep 2020 10:44:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=nFKZCH0kN2Gt59QfN2Op+UT82VEXFIRegFKnaH31KkQ=;
- b=DMUdRZNbGfQjTVqpbwTpXWg8DdX6jiZNv4TaJ9AZEfLzguZShUcUjsXyCH7fC3fxDsgv
- HD91lkmX3yCOnH5WtmccrhUQf0mfSz8PEUb5eIAKX7arYCRvN6gxQ6qpNqhwFbjE6RdJ
- gePOKfro+glV/ZmQn/khdt7LP1o2ZhJHU8r/iPeXu5mpm+yrZ39mOEqLEBGuw8UtQ47u
- kfXOE+sHMunzCbOGkvA15tIwcqNszyIRHf2NJZYZS0nVyYrScm34ZDrNoCDVf151Tn5A
- 3tHjN9b+wsA4tNsUk/FYgTTlYy7ftF9WqHDaNcoFwsAmM+YXMqsVCQjjSQ1b0va45sp4 Og== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 33k5prhd5h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 16 Sep 2020 10:44:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 16 Sep
- 2020 16:44:33 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 16 Sep 2020 16:44:33 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6BD1C45;
-        Wed, 16 Sep 2020 15:44:33 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: [PATCH] regmap: debugfs: Duplicate name string if delaying debugfs init
-Date:   Wed, 16 Sep 2020 16:44:33 +0100
-Message-ID: <20200916154433.7003-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
+        Wed, 16 Sep 2020 12:30:24 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B80BC02C2A8;
+        Wed, 16 Sep 2020 08:56:54 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id a3so8691239oib.4;
+        Wed, 16 Sep 2020 08:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WM9s3RsVy5Wg/Fr5iWNEv4Ft/ePfRGMrEjAFWBssexY=;
+        b=HibUHMtrtW4RCSELXbpEJ/jU9BQUHRKY1KLG0tSoyWXtDEXnMOXArt4bXrtKF0wI+l
+         hEWgQnPcY5ndeeKXQrdEqvjIYbATa2MHPTjkQnVUYBL7J24NEA8z7Cm9UpO56RXmV5BV
+         nsQLibmMb1aIRicQ+8IQ8uyZXi2tKzwJ3nzzIm03lb5rDecbUXhlmyOv70+aAiAq2bIz
+         jVaaO0CThQDFrkxK4rbRcAkvw28QowcyE/lzv23D7UDIU9EfrYytE+/WOdAs6PYQehdh
+         cikfmx6mhxof2G4HIokFFgTBxnrjBRhHTf17GAfDBDeKbP1qhPsx5GCMD2RrniZVe6eK
+         wzJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WM9s3RsVy5Wg/Fr5iWNEv4Ft/ePfRGMrEjAFWBssexY=;
+        b=F4Ml8SQ5hjjQRFbdD61ReCAgXnvYvDfND0DVoqjCWNlGf6geXBc6Wb0fnwu1pCcC8m
+         YmBu/ZNrXiwnji/ZUk3H6YL3t1ROhCfZfQ+BpPouAucKGsB50mhjTxVKG+p4cxGjncX+
+         g+z9RnRyKTqVUMA+MmOm6puFNLv7rnmFocRRnF/X9h2dJJAV+Pjq1N3XfgFv8HNkBPVN
+         od80v8tOieEMOs0IUdmR10IYLCoEYc9QvVmiBT0hWc+bkSSFoicticHicA/O7xvR/Ch/
+         DrUydFthguCFUNoL7xTkOjfXI2KoKVDVPfd+PeF4z2NRSEuVj2DX3uTl338Oefz13XUB
+         IR/w==
+X-Gm-Message-State: AOAM532azv/uRKPhiaRN0xmJBVQqGY+W4SWHaSyTF8Fwmd1wDq5IUMbf
+        7WZ/bVvkKHdRm9gYiqz4p+0=
+X-Google-Smtp-Source: ABdhPJyHYueqAW0g+xfrRVGc4rFP8R+hvE8d7LEnDb/RxanX+QeoVw3b8fHsVd4K26So3/y/leBYqA==
+X-Received: by 2002:aca:7544:: with SMTP id q65mr3688427oic.77.1600271814047;
+        Wed, 16 Sep 2020 08:56:54 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r62sm8460206oih.12.2020.09.16.08.56.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Sep 2020 08:56:53 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 08:56:51 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>, wsa@kernel.org,
+        Joel Stanley <joel@jms.id.au>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] hwmon: (pmbus/ucd9000) Throttle SMBus transfers
+ to avoid poor behaviour
+Message-ID: <20200916155651.GA90122@roeck-us.net>
+References: <20200914122811.3295678-1-andrew@aj.id.au>
+ <20200914122811.3295678-3-andrew@aj.id.au>
+ <71067b18-c4bc-533a-0069-f21069c5fd0d@roeck-us.net>
+ <48962472-b025-4b0d-90e9-60469bebf206@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=993
- clxscore=1015 phishscore=0 adultscore=0 spamscore=0 suspectscore=3
- lowpriorityscore=0 malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009160115
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48962472-b025-4b0d-90e9-60469bebf206@www.fastmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In regmap_debugfs_init the initialisation of the debugfs is delayed
-if the root node isn't ready yet. Most callers of regmap_debugfs_init
-pass the name from the regmap_config, which is considered temporary
-ie. may be unallocated after the regmap_init call returns. This leads
-to a potential use after free, where config->name has been freed by
-the time it is used in regmap_debugfs_initcall.
+On Wed, Sep 16, 2020 at 02:51:08PM +0930, Andrew Jeffery wrote:
+> 
+> 
+> On Mon, 14 Sep 2020, at 23:44, Guenter Roeck wrote:
+> > On 9/14/20 5:28 AM, Andrew Jeffery wrote:
+> > > Short turn-around times between transfers to e.g. the UCD90320 can lead
+> > > to problematic behaviour, including excessive clock stretching, bus
+> > > lockups and potential corruption of the device's volatile state.
+> > > 
+> > > Introduce transfer throttling for the device with a minimum access
+> > > delay of 1ms.
+> > > 
+> > 
+> > Some Zilker labs devices have the same problem, though not as bad
+> > to need a 1ms delay. See zl6100.c. Various LTS devices have a similar
+> > problem, but there it is possible to poll the device until it is ready.
+> > See ltc2978.c.
+> > 
+> > > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > > ---
+> > >  drivers/hwmon/pmbus/ucd9000.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > > 
+> > > diff --git a/drivers/hwmon/pmbus/ucd9000.c b/drivers/hwmon/pmbus/ucd9000.c
+> > > index 81f4c4f166cd..a0b97d035326 100644
+> > > --- a/drivers/hwmon/pmbus/ucd9000.c
+> > > +++ b/drivers/hwmon/pmbus/ucd9000.c
+> > > @@ -9,6 +9,7 @@
+> > >  #include <linux/debugfs.h>
+> > >  #include <linux/kernel.h>
+> > >  #include <linux/module.h>
+> > > +#include <linux/moduleparam.h>
+> > >  #include <linux/of_device.h>
+> > >  #include <linux/init.h>
+> > >  #include <linux/err.h>
+> > > @@ -18,6 +19,9 @@
+> > >  #include <linux/gpio/driver.h>
+> > >  #include "pmbus.h"
+> > >  
+> > > +static unsigned long smbus_delay_us = 1000;
+> > 
+> > Is that to be on the super-safe side ? Patch 0 talks about needing 250 uS.
+> > 
+> > > +module_param(smbus_delay_us, ulong, 0664);
+> > > +
+> > 
+> > I would not want to have this in user control, and it should not affect devices
+> > not known to be affected. 
+> 
+> Can you clarify what you mean here? Initially I interpreted your statement as 
+> meaning "Don't impose delays on the UCD90160 when the issues have only been 
+> demonstrated with the UCD90320". But I've since looked at zl6100.c and its 
 
-This situation can be seen on Zynq, where the architecture init_irq
-callback registers a syscon device, using a local variable for the
-regmap_config. As init_irq is very early in the platform bring up the
-regmap debugfs root isn't ready yet. Although this doesn't crash it
-does result in the debugfs entry not having the correct name.
+Yes, that is what I meant.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- drivers/base/regmap/regmap-debugfs.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> delay is also exposed as a module parameter, which makes me wonder whether it 
 
-diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
-index f58baff2be0af..184fc327192bf 100644
---- a/drivers/base/regmap/regmap-debugfs.c
-+++ b/drivers/base/regmap/regmap-debugfs.c
-@@ -569,7 +569,12 @@ void regmap_debugfs_init(struct regmap *map, const char *name)
- 		if (!node)
- 			return;
- 		node->map = map;
--		node->name = name;
-+		node->name = kstrdup(name, GFP_KERNEL);
-+		if (!node->name) {
-+			kfree(node);
-+			return;
-+		}
-+
- 		mutex_lock(&regmap_debugfs_early_lock);
- 		list_add(&node->link, &regmap_debugfs_early_list);
- 		mutex_unlock(&regmap_debugfs_early_lock);
-@@ -681,6 +686,7 @@ void regmap_debugfs_initcall(void)
- 	list_for_each_entry_safe(node, tmp, &regmap_debugfs_early_list, link) {
- 		regmap_debugfs_init(node->map, node->name);
- 		list_del(&node->link);
-+		kfree(node->name);
- 		kfree(node);
- 	}
- 	mutex_unlock(&regmap_debugfs_early_lock);
--- 
-2.11.0
+My bad. Not how I would implement it today. I'd also not use udelay() if I were
+to re-implement this today.
 
+> was unclear that smbus_delay_us here is specific to the driver's i2c_client and 
+> is not a delay imposed on all SMBus accesses from the associated master. That 
+> is, with the implementation I've posted here, other (non-UCD9000) devices on 
+> the same bus are _not_ impacted by this value.
+> 
+The delay is specific to the driver's i2c client.
+
+> > I would suggest an implementation similar to other
+> > affected devices; again, see zl6100.c or ltc2978.c for examples.
+> 
+> I've had a look at these two examples. As you suggest the delays in zl6100.c 
+> look pretty similar to what this series implements in the i2c core. I'm finding 
+> it hard to dislodge the feeling that open-coding the waits is error prone, but 
+> to avoid that and not implement the waits in the i2c core means having almost 
+> duplicate implementations of handlers for i2c_smbus_{read,write}*() and 
+> pmbus_{read,write}*() calls in the driver.
+> 
+
+Not sure I can follow you here. Anyway, it seems to me that you are set on
+an implementation in the i2c core. I personally don't like that approach,
+but I'll accept a change in the ucd9000 driver to make use of it. Please
+leave the zl6100 code alone, though - it took me long enough to get that
+working, and I won't have time to test any changes.
+
+Thanks,
+Guenter
