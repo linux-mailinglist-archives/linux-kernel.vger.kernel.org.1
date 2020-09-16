@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE3026C05D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894CA26C05E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgIPJVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
+        id S1726642AbgIPJWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIPJVv (ORCPT
+        with ESMTP id S1726536AbgIPJVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:21:51 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E120C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:21:50 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id x14so6064796wrl.12
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:21:50 -0700 (PDT)
+        Wed, 16 Sep 2020 05:21:53 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2491CC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:21:53 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y15so2215467wmi.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:21:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QcLuhNnrX/nQCZhthEE8aR8w/AwdzuMVVfrZbO3TD9g=;
-        b=zwpPinI/Rr9H8iwdQqSgkeJmlIy6IG6vrUVdUIT8CJAniqdNZru9Waie7WlTmyyT1S
-         Nug/KefJnhLLIoDZ2hqapgVx3xE9lSEoMX3AWOv7ZC+TyZc/6H5pvGPsGuXFv/C0KQT6
-         ds804bTLAjuXkMty18ffemSkElCgDebaL6XPpqiNgr+YPSuMW14nwpACjiHu5buFb+u+
-         l6cN2v5iIrJfjl077t+XwqGqbO7ZYbdr98esIhyh1G67UtA15RMhbXGjoCn4l7I70fEw
-         aFY2KjAQOMlJfO0+6KcsfM5GFVks9TY+KQSRKTlAWzKIVHqtdLiSDZn/f/+E1KXdEZrE
-         jygw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LAN7y6gmMq3/PD5iIj3RPLoID/sAvRO9lIlKiy0ArFU=;
+        b=x/WKrGKlNXI82tMCd+If83qGZ4A5V0aiez3Q4+B/y4E0Ii27Gjq07m6Z3gwi1CG23y
+         E24ooW4ovp0kMi0yOQcyXv7z+vkI5TYNGoLhtxjhqXR1005UJQA6IfOBBL0u2SNze86C
+         +UpBB3Gz9ifTz7wnsgQoURBYlUCWQT83Sti5onaAGBlWfOrkbf9n7Eci4PFLJ1LppDBK
+         oiKJcSU+bNjwayoeta4NHd107xBTta+5YhPBCBp18zPBNZ3DmZLRE/XGW9dQqW5Tf0x7
+         L/9c27aVxvMpRr0DewhXER6jKs50HLLrVjSdAXAQ/LCkdhQ6UgibO7ErYRNCu1fqLfqU
+         JGgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QcLuhNnrX/nQCZhthEE8aR8w/AwdzuMVVfrZbO3TD9g=;
-        b=DeaqEmcCC6VPZzbBPB2qUKoJziKlbe2wm5ZKj6eTpCxbRfyBHcpeJyeDFO/4Fy/Za8
-         Mg6jhvVpKebKKaiQN3mBavNv03UbIIyD+CNjvUG/I7q74A7pkRHajlM3ZqGTv6venlmZ
-         +88DFuSZZTushFK43qfTmqg1zCz0S/jrBMb1XSFpQve1W66Y160yNbHa8T+dO3TZ826K
-         XUjrK3suK53ZqZvusk6bim02mtD0+15YXbXAmlUWPf9cWGGDk6dxFCbhDgcYr4eERYzd
-         xZlmNOVnF2zMpmBCzM5rQv1VchBbQqqoOAj6Q1FP+SVDZYMBBSoyVtX8vWfENAwf7yDK
-         36QA==
-X-Gm-Message-State: AOAM5339cfYjoVKc5W764fZaTSwql22BjMwcVvqrsH6z7HnSS/rzedO2
-        PW6ELQN0+NACioqiFcyKoLP2KSa4IRsM0g==
-X-Google-Smtp-Source: ABdhPJy5m+mdqlv4OG5JdIdq8YqyOLfF8S9OUft4LXq72Toaw/0mXAlfmewTtZX/SaRKGmW8bN6d1Q==
-X-Received: by 2002:adf:e449:: with SMTP id t9mr26130245wrm.154.1600248108935;
-        Wed, 16 Sep 2020 02:21:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LAN7y6gmMq3/PD5iIj3RPLoID/sAvRO9lIlKiy0ArFU=;
+        b=BDOdoT0yv8IQM5voGBiBYDpcN/jc3GIwzr0hZjlZcUVozA8ebozhCwa0lMKdXurX6S
+         kNiZJLSz+LIxaY5JYBcu3Fx+09A5B/LQV3KbIzpnqJMW6JTxSV7SIrkVUWWA0sGGagIY
+         vS435O4/04cM02tU6tXWXAB1FtDPQkrx2LZVvRrZ3HPqjss5B8r5BRQaUIEb/MVlWj2z
+         VshYh8trBW8Ya+tA3/HuwVJWJF4hY7NXMQR8TTxEgTCOpVHfz7xkq1SO6kt41cwanXii
+         HH7RJXdmXzMPVXmQbM7SLRr73spFZbj8Z5KoYYDnRGHdxpk6m2E/c51t8amZdFr4q/HY
+         az+g==
+X-Gm-Message-State: AOAM533uCKQPVK52TCzNpluvQqxSGRrh3nQKXKZ7WjJr3klBCnkGXPt+
+        j7UbxHQ/nm33dIRTX6U4aQopeQ==
+X-Google-Smtp-Source: ABdhPJwuzWJ4qsPKBeZ7Q5Qn1v4IuB+iXGGLmkSzblCo6ZCfthm5bcvzLrZLaYJTBbDvBAJj+277cQ==
+X-Received: by 2002:a1c:bdd4:: with SMTP id n203mr3612728wmf.119.1600248110995;
+        Wed, 16 Sep 2020 02:21:50 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id f6sm32181670wro.5.2020.09.16.02.21.47
+        by smtp.gmail.com with ESMTPSA id f6sm32181670wro.5.2020.09.16.02.21.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 02:21:48 -0700 (PDT)
+        Wed, 16 Sep 2020 02:21:49 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     vkoul@kernel.org, yung-chuan.liao@linux.intel.com
 Cc:     pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 0/3] soundwire: qcom: fix IP version v1.5.1 support
-Date:   Wed, 16 Sep 2020 10:21:22 +0100
-Message-Id: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 1/3] soundwire: qcom: clear BIT FIELDs before value set.
+Date:   Wed, 16 Sep 2020 10:21:23 +0100
+Message-Id: <20200916092125.30898-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
+References: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,30 +66,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While testing Qualcomm soundwire controller version 1.5.1, found two issue,
-Firstly the frame shape information configured vs the bus parameters
-are out of sync. secondly some ports on this ip version require
-block packing mode support.
+According to usage (bitfields.h) of REG_FIELDS,
+Modify is:
+  reg &= ~REG_FIELD_C;
+  reg |= FIELD_PREP(REG_FIELD_C, c);
 
-With this patchset I was able to test 2 WSA speakers!
+Patch ("soundwire: qcom : use FIELD_{GET|PREP}") seems to have
+accidentally removed clearing bit field while modifying the register.
 
-Also I found a regression due to move to REG_FIELD, which patch 1 fixes it!
+Fix this by adding back clear register mask before setting it up!
 
-thanks,
-srini
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/qcom.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Changes since v1:
- - rebased on top of REG_FILED patch or soundwire-next branch
- - udated qcom_swrm_data to use u32 instead of int as suggested by VKoul
-
-Srinivas Kandagatla (3):
-  soundwire: qcom: clear BIT FIELDs before value set.
-  soundwire: qcom: add support to block packing mode
-  soundwire: qcom: get max rows and cols info from compatible
-
- drivers/soundwire/qcom.c | 76 ++++++++++++++++++++++++++++++----------
- 1 file changed, 58 insertions(+), 18 deletions(-)
-
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index d7aabdaffee3..5d26361ab4f6 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -311,6 +311,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 
+ 	/* Configure No pings */
+ 	ctrl->reg_read(ctrl, SWRM_MCP_CFG_ADDR, &val);
++	val &= ~SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK;
+ 	val |= FIELD_PREP(SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK, SWRM_DEF_CMD_NO_PINGS);
+ 	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
+ 
+@@ -372,6 +373,9 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
+ 
+ 	ctrl->reg_read(ctrl, reg, &val);
+ 
++	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
++	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
++
+ 	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MAX_COL_VAL);
+ 	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
+ 
 -- 
 2.21.0
 
