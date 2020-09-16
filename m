@@ -2,175 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01ED26BE87
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA2226BE8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgIPHwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgIPHwB (ORCPT
+        id S1726487AbgIPHwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:52:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52215 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726262AbgIPHwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:52:01 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BDDC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:52:00 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e11so1630813wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dVvKltWqBEU89BlHB4WRQdNVMd2wZl+8cOFR2ESkNKo=;
-        b=Q2xM5bAJA/Q2WFGxfesK2VFF/My8eoWs6bHKJhos95mBiqc9lVTNUtWxEjtDNhw9P+
-         o2nW4Oc7bpXzn5htepF+j+WG1QREUrbdjd8zyVZii+omDNhTHcBpXOgfr1/APV87AC2S
-         +H6ZwmSx2gokn9FmGFszkLtNCBIMZ3a4lT/FM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=dVvKltWqBEU89BlHB4WRQdNVMd2wZl+8cOFR2ESkNKo=;
-        b=PCkApXFJ3O5R+ZsByT0KgNnIe2vh53+r1GrZ93Gk0cX7J249UTGwlnQmnYKbGbMoVZ
-         FCaXaepTPxIq/r/SjC17tx17uwHxiar1IoqNcG6EcMCAh7nf2LMzNQ1fAHwokc9gbfJ3
-         cQ2BGaDLFqjtyXUGbm90wOevkQJKfZqOxu7nfVtmaRhId1F7UqDxV97ba9eIbPo1vIzb
-         xIq+1dR+LJXothEUwCPpgl+wlgvjZesT3VOn4YC3Pd4V1RKPH9Zysjg5mOCZp+Jit0/4
-         8Xfe61yvOJjy8prhpryjDDJ/m5ofM+FSM2R/JAOYFgnc8T2NuyMpzntb2n34DSWg8Z4N
-         jY+w==
-X-Gm-Message-State: AOAM531tzV0eJeIOglillZUdBvZgEZF8Of50SkVZjaaLG5K17oxJqS5T
-        29sRRZJlasfjDf74PS2o0L+B6g==
-X-Google-Smtp-Source: ABdhPJywveMidt4/e57hl8eEyBcYSOyCCUhd5x9XtTRmTYAj/r/rHiq9Oz3XsLdH6qy6VOddsTRFfg==
-X-Received: by 2002:a1c:a551:: with SMTP id o78mr3315971wme.4.1600242719437;
-        Wed, 16 Sep 2020 00:51:59 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m10sm3771805wmi.9.2020.09.16.00.51.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 00:51:58 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 09:51:56 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     christian.koenig@amd.com
-Cc:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>,
-        Alex Deucher <alexdeucher@gmail.com>, yi.zhang@huawei.com,
-        Dave Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Zheng Bin <zhengbin13@huawei.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>
-Subject: Re: [PATCH -next 0/8] drm/amd/amdgpu: fix comparison pointer to bool
- warning
-Message-ID: <20200916075156.GU438822@phenom.ffwll.local>
-Mail-Followup-To: christian.koenig@amd.com,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-        Alex Deucher <alexdeucher@gmail.com>, yi.zhang@huawei.com,
-        Dave Airlie <airlied@linux.ie>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Zheng Bin <zhengbin13@huawei.com>,
-        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>
-References: <20200909130720.105234-1-zhengbin13@huawei.com>
- <1fce0f2a-3777-e6d8-5a09-30261f843cfd@amd.com>
- <CADnq5_NoeFbBAMT6s_ictVXsUc2tx1U48MLxnMbAr2Sd58jyYA@mail.gmail.com>
- <20200915193549.GP6112@intel.com>
- <6658f89f-6957-e6ea-af41-7625f1fd3cb1@gmail.com>
+        Wed, 16 Sep 2020 03:52:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600242760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=gatuFDoANgKmG0wqNObZOOy2jkgf5G/5dsofuvphf9M=;
+        b=Tg+zPzP4tLCicC27k1SWVowt3ASVXwZDR5mafYhfaG3ANWBI/Uj+TpoAXDvAdCP4Iq91BM
+        nvejVsByiIofIJ5uuhehyd1zq/syPelKHWRnMYYYNG+rGoPv1Bt0Copjt0zwQ3K9OfCXxt
+        4KkODix4nOtE5AGJq3/+tfndAChGGQs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-111-oUTlp6IEP0GIft-o2b1B5A-1; Wed, 16 Sep 2020 03:52:36 -0400
+X-MC-Unique: oUTlp6IEP0GIft-o2b1B5A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35D7B1084C8B;
+        Wed, 16 Sep 2020 07:52:34 +0000 (UTC)
+Received: from [10.36.113.190] (ovpn-113-190.ams2.redhat.com [10.36.113.190])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4AEF967CF0;
+        Wed, 16 Sep 2020 07:52:31 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] mm: replace memmap_context by meminit_context
+To:     Laurent Dufour <ldufour@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     akpm@linux-foundation.org, Oscar Salvador <osalvador@suse.de>,
+        mhocko@suse.com, linux-mm@kvack.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>, nathanl@linux.ibm.com,
+        cheloha@linux.ibm.com, Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200915121541.GD4649@dhcp22.suse.cz>
+ <20200915132624.9723-1-ldufour@linux.ibm.com>
+ <20200916063325.GK142621@kroah.com>
+ <0b3f2eb1-0efa-a491-c509-d16a7e18d8e8@linux.ibm.com>
+ <20200916074047.GA189144@kroah.com>
+ <9e8d38b9-3875-0fd8-5f28-3502f33c2c34@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <95005625-b159-0d49-8334-3c6cdbb7f27a@redhat.com>
+Date:   Wed, 16 Sep 2020 09:52:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <9e8d38b9-3875-0fd8-5f28-3502f33c2c34@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6658f89f-6957-e6ea-af41-7625f1fd3cb1@gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:38:34AM +0200, Christian König wrote:
-> Am 15.09.20 um 21:35 schrieb Ville Syrjälä:
-> > On Tue, Sep 15, 2020 at 03:16:32PM -0400, Alex Deucher wrote:
-> > > I question the value of these warnings.  Why even have a boolean type
-> > > if you are going to get warnings when you use them...
-> > > That said, applied to avoid getting these patches again and again
-> > > every time someone sees this.
-> > if (this_is_sparta)
-> > if (this_is_sparta == true)
-> > if (this_is_sparta != false)
-> > 
-> > I think the first one reads the best, and avoids having to
-> > decide between truth and falsehood :)
+On 16.09.20 09:47, Laurent Dufour wrote:
+> Le 16/09/2020 Ã  09:40, Greg Kroah-Hartman a Ã©critÂ :
+>> On Wed, Sep 16, 2020 at 09:29:22AM +0200, Laurent Dufour wrote:
+>>> Le 16/09/2020 Ã  08:33, Greg Kroah-Hartman a Ã©critÂ :
+>>>> On Tue, Sep 15, 2020 at 03:26:24PM +0200, Laurent Dufour wrote:
+>>>>> The memmap_context enum is used to detect whether a memory operation is due
+>>>>> to a hot-add operation or happening at boot time.
+>>>>>
+>>>>> Make it general to the hotplug operation and rename it as meminit_context.
+>>>>>
+>>>>> There is no functional change introduced by this patch
+>>>>>
+>>>>> Suggested-by: David Hildenbrand <david@redhat.com>
+>>>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>>>>> ---
+>>>>>    arch/ia64/mm/init.c    |  6 +++---
+>>>>>    include/linux/mm.h     |  2 +-
+>>>>>    include/linux/mmzone.h | 11 ++++++++---
+>>>>>    mm/memory_hotplug.c    |  2 +-
+>>>>>    mm/page_alloc.c        | 10 +++++-----
+>>>>>    5 files changed, 18 insertions(+), 13 deletions(-)
+>>>>
+>>>> <formletter>
+>>>>
+>>>> This is not the correct way to submit patches for inclusion in the
+>>>> stable kernel tree.  Please read:
+>>>>       https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+>>>> for how to do this properly.
+>>>>
+>>>> </formletter>
+>>>
+>>> Hi Greg,
+>>>
+>>> I'm sorry, I read that document few days ago before sending the series and
+>>> again this morning, but I can't figure out what I missed (following option
+>>> 1).
+>>>
+>>> Should the "Cc: stable@vger.kernel.org" tag be on each patch of the series
+>>> even if the whole series has been sent to stable ?
+>>
+>> That should be on any patch you expect to show up in a stable kernel
+>> release.
+>>
+>>> Should the whole series sent again (v4) instead of sending a fix as a reply to ?
+>>
+>> It's up to the maintainer what they want, but as it is, this patch is
+>> not going to end up in stable kernel release (which it looks like is the
+>> right thing to do...)
 > 
-> +1
+> Thanks a lot Greg.
+> 
+> I'll send that single patch again with the Cc: stable tag.
 
-+1, especially because we also have the inversion when using negative
-errno codes for failures and 0 as success, which results in
+I think Andrew can add that when sending upstream.
 
-	if (errno == 0) /* success case */
+While a single patch to fix + backport would be nicer, I don't see an
+easy (!ugly) way to achieve the same without this cleanup.
 
-but
-	if (bool == 0) /* failure case */
+1. We could rework patch #2 to pass a simple boolean flag, and a
+follow-on patch to pass the context. Not sure if that's any better.
 
-now creative people do sometimes
+2. We could rework patch #2 to pass memmap_context first, and modify
+patch #1 to also rename this instance.
 
-	if (!errno) /* success case */
-
-which I think is horribly confusing. So imo for more easier telling apart
-of these too I think consistently using the short form for booleans, and
-consistently using the more explicit long form for errno checks is a Very
-Good Pattern :-)
-
-Cheers, Daniel
+Maybe 2. might be reasonable (not sure if worth the trouble). @Greg any
+preference?
 
 > 
-> Christian.
-> 
-> > 
-> > > Alex
-> > > 
-> > > On Wed, Sep 9, 2020 at 9:21 AM Christian König <christian.koenig@amd.com> wrote:
-> > > > Acked-by: Christian König <christian.koenig@amd.com> for the series.
-> > > > 
-> > > > Am 09.09.20 um 15:07 schrieb Zheng Bin:
-> > > > > Zheng Bin (8):
-> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in gfx_v9_0.c
-> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in gfx_v10_0.c
-> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in sdma_v5_0.c
-> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in sdma_v5_2.c
-> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in si.c
-> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in uvd_v6_0.c
-> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in
-> > > > >       amdgpu_atpx_handler.c
-> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in sdma_v4_0.c
-> > > > > 
-> > > > >    drivers/gpu/drm/amd/amdgpu/amdgpu_atpx_handler.c | 4 ++--
-> > > > >    drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c           | 2 +-
-> > > > >    drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c            | 2 +-
-> > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c           | 4 ++--
-> > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c           | 2 +-
-> > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c           | 2 +-
-> > > > >    drivers/gpu/drm/amd/amdgpu/si.c                  | 2 +-
-> > > > >    drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c            | 4 ++--
-> > > > >    8 files changed, 11 insertions(+), 11 deletions(-)
-> > > > > 
-> > > > > --
-> > > > > 2.26.0.106.g9fadedd
-> > > > > 
-> > > > _______________________________________________
-> > > > amd-gfx mailing list
-> > > > amd-gfx@lists.freedesktop.org
-> > > > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> I don't think the patch 3 need to be backported, it doesn't fix any issue and 
+> with the patch 1 and 2 applied, the BUG_ON should no more be triggered easily.
+
+Agreed.
+
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+
+David / dhildenb
+
