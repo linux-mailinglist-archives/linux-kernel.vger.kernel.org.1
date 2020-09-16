@@ -2,85 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B89126BF17
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F106426BF14
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgIPIWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:22:31 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:63568 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726161AbgIPIWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:22:31 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G8IISf023138;
-        Wed, 16 Sep 2020 04:22:28 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33k5q51q38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 04:22:28 -0400
-Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 08G8MRJV013259
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 16 Sep 2020 04:22:27 -0400
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 16 Sep 2020 04:22:35 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 16 Sep 2020 04:22:35 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 16 Sep 2020 04:22:34 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08G8MNne019773;
-        Wed, 16 Sep 2020 04:22:24 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: adc: ad9467: return ENODEV vs EINVAL in ad9467_setup()
-Date:   Wed, 16 Sep 2020 11:22:21 +0300
-Message-ID: <20200916082221.72851-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726601AbgIPIV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:21:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgIPIVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:21:53 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBF642083B;
+        Wed, 16 Sep 2020 08:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600244512;
+        bh=xvNuiguLoALCQNOj0pxCTsjPZcdVb4n1+r7PPV4LjIY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mfpzGTxzw8SBYHiJahTjs3M5wMRgXhvi68qJZrwNt0QX+AT+DvC0DsrZH8IzC7WiG
+         Gy2KBL5BWVQ5d/n4Qs0/m2hHS+nOjjfAV/LTiMdQE7EnPomR7+Fk60sMqxW+3dPrQg
+         3tbBrFDWkuA7Kg/OzciQQ7QJDdzzSYARU6/l70X8=
+Date:   Wed, 16 Sep 2020 10:22:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200916082226.GA509119@kroah.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915.134252.1280841239760138359.davem@davemloft.net>
+ <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
+ <20200916062614.GF142621@kroah.com>
+ <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
+ <20200916074217.GB189144@kroah.com>
+ <CAFCwf10zLR9v65sgGGdkcf+JzZaw_WORAbQvEw-hbbfj=dy2Xg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_02:2020-09-15,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- impostorscore=0 mlxscore=0 malwarescore=0 phishscore=0 mlxlogscore=873
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160061
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf10zLR9v65sgGGdkcf+JzZaw_WORAbQvEw-hbbfj=dy2Xg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The proper error code should be ENODEV (vs EINVAL) in case the chip ID
-isn't recognized.
+On Wed, Sep 16, 2020 at 11:02:39AM +0300, Oded Gabbay wrote:
+> On Wed, Sep 16, 2020 at 10:41 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
+> > > On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
+> > > > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
+> > > > > >
+> > > > > > From: Oded Gabbay <oded.gabbay@gmail.com>
+> > > > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
+> > > > > >
+> > > > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > > > > > > into the habanalabs driver.
+> > > > > > >
+> > > > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > > > > > > are in that patch's commit message.
+> > > > > > >
+> > > > > > > Link to v2 cover letter:
+> > > > > > > https://lkml.org/lkml/2020/9/12/201
+> > > > > >
+> > > > > > I agree with Jakub, this driver definitely can't go-in as it is currently
+> > > > > > structured and designed.
+> > > > > Why is that ?
+> > > > > Can you please point to the things that bother you or not working correctly?
+> > > > > I can't really fix the driver if I don't know what's wrong.
+> > > > >
+> > > > > In addition, please read my reply to Jakub with the explanation of why
+> > > > > we designed this driver as is.
+> > > > >
+> > > > > And because of the RDMA'ness of it, the RDMA
+> > > > > > folks have to be CC:'d and have a chance to review this.
+> > > > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
+> > > > > the kernel and we can't connect to it due to the lack of H/W support
+> > > > > we have
+> > > > > Therefore, I don't see why we need to CC linux-rdma.
+> > > > > I understood why Greg asked me to CC you because we do connect to the
+> > > > > netdev and standard eth infrastructure, but regarding the RDMA, it's
+> > > > > not really the same.
+> > > >
+> > > > Ok, to do this "right" it needs to be split up into separate drivers,
+> > > > hopefully using the "virtual bus" code that some day Intel will resubmit
+> > > > again that will solve this issue.
+> > > Hi Greg,
+> > > Can I suggest an alternative for the short/medium term ?
+> > >
+> > > In an earlier email, Jakub said:
+> > > "Is it not possible to move the files and still build them into a single
+> > > module?"
+> > >
+> > > I thought maybe that's a good way to progress here ?
+> >
+> > Cross-directory builds of a single module are crazy.  Yes, they work,
+> > but really, that's a mess, and would never suggest doing that.
+> >
+> > > First, split the content to Ethernet and RDMA.
+> > > Then move the Ethernet part to drivers/net but build it as part of
+> > > habanalabs.ko.
+> > > Regarding the RDMA code, upstream/review it in a different patch-set
+> > > (maybe they will want me to put the files elsewhere).
+> > >
+> > > What do you think ?
+> >
+> > I think you are asking for more work there than just splitting out into
+> > separate modules :)
+> >
+> > thanks,
+> >
+> > greg k-h
+> Hi Greg,
+> 
+> If cross-directory building is out of the question, what about
+> splitting into separate modules ? And use cross-module notifiers/calls
+> ? I did that with amdkfd and amdgpu/radeon a couple of years back. It
+> worked (that's the best thing I can say about it).
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/adc/ad9467.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That's fine with me.
 
-diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
-index 1e8fd83b9bc2..8a6682b567be 100644
---- a/drivers/iio/adc/ad9467.c
-+++ b/drivers/iio/adc/ad9467.c
-@@ -324,7 +324,7 @@ static int ad9467_setup(struct ad9467_state *st, unsigned int chip_id)
- 				  AN877_ADC_OUTPUT_MODE_TWOS_COMPLEMENT;
- 		return 0;
- 	default:
--		return -EINVAL;
-+		return -ENODEV;
- 	}
- }
- 
--- 
-2.17.1
+> The main problem with this "virtual bus" thing is that I'm not
+> familiar with it at all and from my experience I imagine it would take
+> a considerable time and effort to upstream this infrastructure work.
 
+It shouldn't be taking that long, but for some unknown reason, the
+original author of that code is sitting on it and not resending it.  Go
+poke them through internal Intel channels to find out what the problem
+is, as I have no clue why a 200-300 line bus module is taking so long to
+get "right" :(
+
+I'm _ALMOST_ at the point where I would just do that work myself, but
+due to my current status with Intel, I'll let them do it as I have
+enough other things on my plate...
+
+> This could delay the NIC code for a couple of years, which by then
+> this won't be relevant at all.
+
+Why wouldn't this code be relevant in a year?  It's going to be 2+ years
+before any of this shows up in an "enterprise distro" based on their
+release cycles anyway :)
+
+thanks,
+
+greg k-h
