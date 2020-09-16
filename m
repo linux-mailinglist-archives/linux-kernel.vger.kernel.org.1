@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3A626BCAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79A626BCD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgIPGVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:21:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12298 "EHLO huawei.com"
+        id S1726553AbgIPGXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:23:11 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12722 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726205AbgIPGU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:20:56 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8F87EB1388928149EAE6;
-        Wed, 16 Sep 2020 14:20:49 +0800 (CST)
+        id S1726336AbgIPGUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:20:55 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 941A61B18CA26962224C;
+        Wed, 16 Sep 2020 14:20:53 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 16 Sep 2020 14:20:43 +0800
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 16 Sep 2020 14:20:44 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] irqchip/gic-v3: use for_each_matching_node() macro
-Date:   Wed, 16 Sep 2020 14:21:24 +0800
-Message-ID: <20200916062124.190682-1-miaoqinglang@huawei.com>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH -next] macintosh: smu_sensors: use for_each_child_of_node() macro
+Date:   Wed, 16 Sep 2020 14:21:25 +0800
+Message-ID: <20200916062125.190729-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -37,57 +35,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use for_each_matching_node() macro instead of open coding it.
+Use for_each_child_of_node() macro instead of open coding it.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c   | 3 +--
- drivers/irqchip/irq-gic-v3-its-pci-msi.c      | 3 +--
- drivers/irqchip/irq-gic-v3-its-platform-msi.c | 3 +--
- 3 files changed, 3 insertions(+), 6 deletions(-)
+ drivers/macintosh/windfarm_smu_sensors.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c b/drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c
-index 634263dfd..b4eec9f51 100644
---- a/drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c
-+++ b/drivers/irqchip/irq-gic-v3-its-fsl-mc-msi.c
-@@ -147,8 +147,7 @@ static void __init its_fsl_mc_of_msi_init(void)
- {
- 	struct device_node *np;
+diff --git a/drivers/macintosh/windfarm_smu_sensors.c b/drivers/macintosh/windfarm_smu_sensors.c
+index 3e6059eaa..c8706cfb8 100644
+--- a/drivers/macintosh/windfarm_smu_sensors.c
++++ b/drivers/macintosh/windfarm_smu_sensors.c
+@@ -421,8 +421,7 @@ static int __init smu_sensors_init(void)
+ 		return -ENODEV;
  
--	for (np = of_find_matching_node(NULL, its_device_id); np;
--	     np = of_find_matching_node(np, its_device_id)) {
-+	for_each_matching_node(np, its_device_id) {
- 		if (!of_device_is_available(np))
- 			continue;
- 		if (!of_property_read_bool(np, "msi-controller"))
-diff --git a/drivers/irqchip/irq-gic-v3-its-pci-msi.c b/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-index 87711e0f8..fdc596c87 100644
---- a/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-+++ b/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-@@ -130,8 +130,7 @@ static int __init its_pci_of_msi_init(void)
- {
- 	struct device_node *np;
+ 	/* Look for sensors subdir */
+-	for (sensors = NULL;
+-	     (sensors = of_get_next_child(smu, sensors)) != NULL;)
++	for_each_child_of_node(smu, sensors)
+ 		if (of_node_name_eq(sensors, "sensors"))
+ 			break;
  
--	for (np = of_find_matching_node(NULL, its_device_id); np;
--	     np = of_find_matching_node(np, its_device_id)) {
-+	for_each_matching_node(np, its_device_id) {
- 		if (!of_device_is_available(np))
- 			continue;
- 		if (!of_property_read_bool(np, "msi-controller"))
-diff --git a/drivers/irqchip/irq-gic-v3-its-platform-msi.c b/drivers/irqchip/irq-gic-v3-its-platform-msi.c
-index daa6d5053..5ce2c2ff2 100644
---- a/drivers/irqchip/irq-gic-v3-its-platform-msi.c
-+++ b/drivers/irqchip/irq-gic-v3-its-platform-msi.c
-@@ -143,8 +143,7 @@ static void __init its_pmsi_of_init(void)
- {
- 	struct device_node *np;
- 
--	for (np = of_find_matching_node(NULL, its_device_id); np;
--	     np = of_find_matching_node(np, its_device_id)) {
-+	for_each_matching_node(np, its_device_id) {
- 		if (!of_device_is_available(np))
- 			continue;
- 		if (!of_property_read_bool(np, "msi-controller"))
 -- 
 2.23.0
 
