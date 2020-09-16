@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD86826BC27
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EE126BC2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726172AbgIPGGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:06:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726093AbgIPGGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:06:34 -0400
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726210AbgIPGH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:07:59 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:12874 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726100AbgIPGHx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:07:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600236472; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=PjDPPtDXwEfTn0V8emtHYytm7C14QTX7ob6r1/GtgjU=;
+ b=GUgyy6LIdGKcdQyaOoWdpqm64uerHAuPVEsQXw+iLaPZkyy8Q6tHO8caxoJR/20x/UN11QEZ
+ I/5PzJfEGoJuLQJQEjS00xokf+uNDrX8ErWGxta1pHcYhkcdsjc5GdFkDc00qWBAg6w2J65/
+ yBicBBy7t1UMXU4wlLsDipNOLeE=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f61ab75698ee477d1bbcf4f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 06:06:45
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9232EC433F1; Wed, 16 Sep 2020 06:06:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46CA5221E5;
-        Wed, 16 Sep 2020 06:06:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600236393;
-        bh=U6lfdq5Z5bwZ24KqwURAAzz5yhP2cgUVn12Cy9cE4ds=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=huLTFENqc8cld6OUesuosVn7xrdIxeN3uKGDyjG5F6exNyPgC1oiadsDIGigA4e5I
-         ZGRkcuAUmchsx2p0410TCzc8yChkHG8nMb+nK879C+vQwR2Mh8pZJ8Q/nY8aqwPM4u
-         0pMdLtUSFaDUYr5UcadN3RMNwIbcy7/GsYlX7sGU=
-Received: by mail-ej1-f53.google.com with SMTP id p9so8584042ejf.6;
-        Tue, 15 Sep 2020 23:06:33 -0700 (PDT)
-X-Gm-Message-State: AOAM533X5W8iya0eEHZ9aHE16stizwDpnZdt0/q7L+qhRn1HYfMyOQDx
-        aUBXmTgYAUmTP53jE1flC0prgneZ2PUFUtR1QQM=
-X-Google-Smtp-Source: ABdhPJyPBiRtR+Hb1jazRB3djHeAzVp8UncHE+p7s1eiOctaHHBa4dpN0Pdot92mECEB3DNgWeOmejJaLj6E59zEbs8=
-X-Received: by 2002:a17:906:82d1:: with SMTP id a17mr23566817ejy.385.1600236391690;
- Tue, 15 Sep 2020 23:06:31 -0700 (PDT)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93CE2C433C8;
+        Wed, 16 Sep 2020 06:06:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 93CE2C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200828145744.3636-1-krzk@kernel.org> <20200828145744.3636-2-krzk@kernel.org>
- <20200916005359.GE1681290@dtor-ws>
-In-Reply-To: <20200916005359.GE1681290@dtor-ws>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 16 Sep 2020 08:06:20 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPf5kjJitS=7_9wTWMmM4L1TwSnpdhspR9dQXpY2LH1y=g@mail.gmail.com>
-Message-ID: <CAJKOXPf5kjJitS=7_9wTWMmM4L1TwSnpdhspR9dQXpY2LH1y=g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] Input: omap4-keypad - Fix handling of
- platform_get_irq() error
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-input@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] brcmsmac: phy_lcn: Eliminate defined but not used
+ 'lcnphy_rx_iqcomp_table_rev0'
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200910140455.1168174-1-yanaijie@huawei.com>
+References: <20200910140455.1168174-1-yanaijie@huawei.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
+        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
+        <wright.feng@cypress.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <lee.jones@linaro.org>, <yanaijie@huawei.com>,
+        <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200916060645.9232EC433F1@smtp.codeaurora.org>
+Date:   Wed, 16 Sep 2020 06:06:45 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 at 02:54, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
->
-> On Fri, Aug 28, 2020 at 04:57:42PM +0200, Krzysztof Kozlowski wrote:
-> > platform_get_irq() returns -ERRNO on error.  In such case comparison
-> > to 0 would pass the check.
-> >
-> > Fixes: f3a1ba60dbdb ("Input: omap4-keypad - use platform device helpers")
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >
-> > ---
-> >
-> > Changes since v1:
-> > 1. None
-> > ---
-> >  drivers/input/keyboard/omap4-keypad.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
-> > index 94c94d7f5155..b075f1af0305 100644
-> > --- a/drivers/input/keyboard/omap4-keypad.c
-> > +++ b/drivers/input/keyboard/omap4-keypad.c
-> > @@ -240,10 +240,8 @@ static int omap4_keypad_probe(struct platform_device *pdev)
-> >       }
-> >
-> >       irq = platform_get_irq(pdev, 0);
-> > -     if (!irq) {
-> > -             dev_err(&pdev->dev, "no keyboard irq assigned\n");
-> > -             return -EINVAL;
-> > -     }
-> > +     if (irq < 0)
-> > +             return -irq;
->
-> You must have meant just "irq", right?
+Jason Yan <yanaijie@huawei.com> wrote:
 
-Damn it, of course. I'll send a v2 for this.
+> This addresses the following gcc warning with "make W=1":
+> 
+> drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c:361:25:
+> warning: ‘lcnphy_rx_iqcomp_table_rev0’ defined but not used
+> [-Wunused-const-variable=]
+>   361 | struct lcnphy_rx_iqcomp lcnphy_rx_iqcomp_table_rev0[] = {
+>       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-Best regards,
-Krzysztof
+Already fixed.
+
+Patch set to Rejected.
+
+-- 
+https://patchwork.kernel.org/patch/11769331/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
