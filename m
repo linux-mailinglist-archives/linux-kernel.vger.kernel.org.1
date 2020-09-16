@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A9126B6F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651DB26B708
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgIPAOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:14:49 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35560 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727101AbgIPAOh (ORCPT
+        id S1727320AbgIPAPy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Sep 2020 20:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726736AbgIPAPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:14:37 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G0ENnD041954;
-        Wed, 16 Sep 2020 00:14:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=p2iMSbaAWay8r33ejE1bDmGmOAJFDwvtAWfJoc6bZLQ=;
- b=gEmlFsfKzCRWChSF5HCdVzeScCMv9levNP58/qTBoZWkU4jOoF/HXDYik47Gwv4oewbJ
- 5RAsIenwyJjzPYgcSpjC5i9Ud0v8F4EHGU+8OpKDAiJKYQzExmYObQ9PVLX3clpR5Oya
- 8joEoTvdbRYUScVg17mjB24fWCEedsyoTMr8Zt0E//wf3rHZ/Lkm6j/S4bUqY5CMlN8v
- 1boLlV780iJ9Jz3pwq1r3KxRz+mNeNgBm5qhkUheoY8hNnHHMN3whS+2KkkhWGFtEGLF
- g3tmDQfc9KScuzUOxUTC7BCw6/9kA3P0PhXJJ6onQzhgHGnZdnXWu/42wXffaY7yBwYB eQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33j91dhrq7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 00:14:23 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G09wuS012523;
-        Wed, 16 Sep 2020 00:14:22 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33h7wpxfvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 00:14:22 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08G0EJtq016284;
-        Wed, 16 Sep 2020 00:14:19 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Sep 2020 00:14:18 +0000
-To:     Daejun Park <daejun7.park@samsung.com>
-Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH] scsi: ufs: Fix NOP OUT timeout value
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq15z8e37e7.fsf@ca-mkp.ca.oracle.com>
-References: <CGME20200902025852epcms2p2a2d4ac934f4fc09233d4272c96df9ff1@epcms2p2>
-        <231786897.01599016081767.JavaMail.epsvc@epcpadp2>
-Date:   Tue, 15 Sep 2020 20:14:15 -0400
-In-Reply-To: <231786897.01599016081767.JavaMail.epsvc@epcpadp2> (Daejun Park's
-        message of "Wed, 02 Sep 2020 11:58:52 +0900")
+        Tue, 15 Sep 2020 20:15:45 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44535C06174A;
+        Tue, 15 Sep 2020 17:15:45 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 20D78140A47;
+        Wed, 16 Sep 2020 02:15:38 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 02:15:37 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH leds + devicetree v2 2/2] leds: trigger: netdev: parse
+ `trigger-sources` from device tree
+Message-ID: <20200916021537.106a29e5@nic.cz>
+In-Reply-To: <03fc62d8-eeaa-7b74-5ed9-7e482ea6b888@gmail.com>
+References: <20200915152616.20591-1-marek.behun@nic.cz>
+        <20200915152616.20591-3-marek.behun@nic.cz>
+        <03fc62d8-eeaa-7b74-5ed9-7e482ea6b888@gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160000
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=1 mlxlogscore=999
- clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160000
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 15 Sep 2020 23:35:25 +0200
+Jacek Anaszewski <jacek.anaszewski@gmail.com> wrote:
 
-Daejun,
+> Hi Marek,
+> 
+> On 9/15/20 5:26 PM, Marek Behún wrote:
+> > Allow setting netdev LED trigger as default when given LED DT node has
+> > the `trigger-sources` property pointing to a node corresponding to a
+> > network device.
+> > 
+> > The specific netdev trigger mode is determined from the `function` LED
+> > property.
+> > 
+> > Example:
+> >    eth0: ethernet@30000 {
+> >      compatible = "xyz";
+> >      #trigger-source-cells = <0>;
+> >    };
+> > 
+> >    led {
+> >      color = <LED_COLOR_ID_GREEN>;
+> >      function = LED_FUNCTION_LINK;
+> >      trigger-sources = <&eth0>;
+> >    };
+> > 
+> > Signed-off-by: Marek Behún <marek.behun@nic.cz>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > ---
+> >   drivers/leds/trigger/ledtrig-netdev.c | 80 ++++++++++++++++++++++++++-
+> >   include/dt-bindings/leds/common.h     |  1 +
+> >   2 files changed, 80 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
+> > index d5e774d830215..99fc2f0c68e12 100644
+> > --- a/drivers/leds/trigger/ledtrig-netdev.c
+> > +++ b/drivers/leds/trigger/ledtrig-netdev.c
+> > @@ -20,6 +20,7 @@  
+> [...]
+> 
+> >   static int netdev_trig_activate(struct led_classdev *led_cdev)
+> >   {
+> >   	struct led_netdev_data *trigger_data;
+> > @@ -414,10 +479,17 @@ static int netdev_trig_activate(struct led_classdev *led_cdev)
+> >   	trigger_data->last_activity = 0;
+> >   
+> >   	led_set_trigger_data(led_cdev, trigger_data);
+> > +	netdev_trig_of_parse(led_cdev, trigger_data);  
+> 
+> Please be aware of LED_INIT_DEFAULT_TRIGGER flag - it would make
+> sense to use it here so as not to unnecessarily call
+> netdev_trig_of_parse(), which makes sense only if trigger will be
+> default, I presume.
+> 
+> See timer_trig_activate() in  drivers/leds/trigger/ledtrig-timer.c
+> for reference.
+> 
 
-> In some Samsung UFS devices, there is some booting fail issue with
-> low-power UFS device. The reason of this issue is the UFS device has a
-> little bit longer latency for NOP OUT response. It causes booting fail
-> because NOP OUT command is issued during initialization to check whether
-> the device transport protocol is ready or not. This issue is resolved by
-> releasing NOP_OUT_TIMEOUT value.
+Hmmm. Jacek, all the triggers that work with the macro
+LED_INIT_DEFAULT_TRIGGER are oneshot, timer and pattern.
+If this macro is set, they all call pattern_init function where they
+read led-pattern from fwnode.
 
-Applied to 5.10/scsi-staging, thanks!
+But there is no device tree in Linux sources using this property.
+In fact the command
+  git grep led-pattern
+yields only 2 files:
+  Documentation/devicetree/bindings/leds/common.yaml
+  drivers/leds/led-core.c
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+What is the purpose if no device tree uses this property? Is this used
+from other fwnode sources, like acpi or efi?
+
+The reason why I am asking this is that the `led-pattern` property in
+device tree goes against the principle of device tree, that it
+shouldn't set settings settable from userspace, only describe the
+devices on the system and how they are connected to each other.
+
+This is the same reason why multi-CPU DSA proposals which proposed to
+set mappings between CPU ports and user ports were rejected...
+
+Marek
