@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AD326C093
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C28426C094
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgIPJa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgIPJaF (ORCPT
+        id S1726726AbgIPJai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:30:38 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:24312 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726149AbgIPJaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:30:05 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174FBC06174A;
-        Wed, 16 Sep 2020 02:30:05 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id kk9so1242500pjb.2;
-        Wed, 16 Sep 2020 02:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Hvl1B1auC2/Md3/Ns69FoG4JWQf3oFK8zylbBJi7l0g=;
-        b=hdhvtslzUYPMKHXkuRHLYtkrjgQT+hQLVFKAPU8BPmBvdj+BjUb5rTYDwqUwArVhEV
-         A/CETvbBVJzpk9v7H9BzzMSUWU8belUllC7a4JwBPWF0vFkFMFC69P8jNVu1ye2V0Nyz
-         tYezjrKiQf4wMkhAFei/D8tPHjVShQM9CLnMnYGlY3KsRenrX0KMeEMP6camDdcsrG1s
-         grgCv6joFA4Zph3Z3lWIy2FS4wWYpd0PKv+V/yhzCgOyaIAxJvXjySqxWmmjdY+jK59M
-         ExIWQoS7omzmSrTk4z9RPHs+5URdWGM+UmI0xOUAzu6BCmvOMiGrhElIkjTaJZDDU/Zu
-         Y9Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Hvl1B1auC2/Md3/Ns69FoG4JWQf3oFK8zylbBJi7l0g=;
-        b=ZUZuo0LurKMFqGxgNQNsCwVZhL75ePUpvSad5vSgRW4UZNfuct3AmX8FCYPLQ5xVWR
-         3bpgrwurSl842w01bN3WQ1P3B23xu9bFZhNntAHB5iwFJMSdJvK+eI6FnhiH5vVjPnND
-         7va0xjsDrAVZQ7t2kJSIJ0td+unNbMINeSd9KZAdU8VTnyRcf7emPUQ94LJXZbbDiEpz
-         eYXAuzA2CUaEKOFxfzoyYsCJZ6z0m/6HKj0btW7G/X0ShZVE4CSavJ/zaiENK8ggRnnF
-         UsPfo8I+GmEA9iU/akOSP5EgivrI1sPQOjNPSOpAYT54Mz/D38uheMEWc8v68je2SUPu
-         Li+Q==
-X-Gm-Message-State: AOAM53048wmVL8uWC9ptopSGLWn+FOeJYFEp10+10I8z+E3ii2lgqBPH
-        ZMOudr/S0J4sTEShE9xbVw==
-X-Google-Smtp-Source: ABdhPJzXoGBH6LSvD07Rw00wUEjDsrs8OqQndfG3xrdW6l4FA6TYc3kuhtSpfSZ9CTRtRlSPvvBpdA==
-X-Received: by 2002:a17:90a:e517:: with SMTP id t23mr3016287pjy.25.1600248604598;
-        Wed, 16 Sep 2020 02:30:04 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.53])
-        by smtp.gmail.com with ESMTPSA id x5sm13675378pgf.65.2020.09.16.02.30.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 02:30:03 -0700 (PDT)
-Subject: Re: [PATCH] Revert "KVM: Check the allocation of pv cpu mask"
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Haiwei Li <lihaiwei@tencent.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-References: <20200916090342.748452-1-vkuznets@redhat.com>
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Message-ID: <6c2204ad-590b-025d-f728-0e6e67bf24ba@gmail.com>
-Date:   Wed, 16 Sep 2020 17:29:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Wed, 16 Sep 2020 05:30:09 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G9PL3o032570;
+        Wed, 16 Sep 2020 05:29:56 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33k5p61uxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 05:29:56 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08G9Ttj7050428
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 16 Sep 2020 05:29:55 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 16 Sep 2020 05:29:56 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 16 Sep 2020 05:29:56 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 16 Sep 2020 05:29:56 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08G9TeJx022137;
+        Wed, 16 Sep 2020 05:29:41 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux-imx@nxp.com>, <festevam@gmail.com>, <jic23@kernel.org>,
+        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
+        <kernel@pengutronix.de>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] iio: adc: fsl-imx25-gcq: Replace indio_dev->mlock with own device lock
+Date:   Wed, 16 Sep 2020 12:29:28 +0300
+Message-ID: <20200916092928.78026-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200826120609.203724-1-alexandru.ardelean@analog.com>
+References: <20200826120609.203724-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <20200916090342.748452-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-16_02:2020-09-15,2020-09-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=649
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1011 suspectscore=0
+ malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160069
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/9/16 17:03, Vitaly Kuznetsov wrote:
-> The commit 0f990222108d ("KVM: Check the allocation of pv cpu mask") we
-> have in 5.9-rc5 has two issue:
-> 1) Compilation fails for !CONFIG_SMP, see:
->     https://bugzilla.kernel.org/show_bug.cgi?id=209285
-> 
-> 2) This commit completely disables PV TLB flush, see
->     https://lore.kernel.org/kvm/87y2lrnnyf.fsf@vitty.brq.redhat.com/
-> 
-> The allocation problem is likely a theoretical one, if we don't
-> have memory that early in boot process we're likely doomed anyway.
-> Let's solve it properly later.
+From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
 
-Hi, i have sent a patchset to fix this commit.
+As part of the general cleanup of indio_dev->mlock, this change replaces
+it with a local lock, to protect against any other accesses during the
+reading of sample. Reading a sample requires multiple consecutive regmap
+operations and a completion callback, so this requires that no other
+read occurs until it completes.
 
-https://lore.kernel.org/kvm/20200914091148.95654-1-lihaiwei.kernel@gmail.com/T/#m6c27184012ee5438e5d91c09b1ba1b6a3ee30ee4
+This is part of a bigger cleanup.
+Link: https://lore.kernel.org/linux-iio/CA+U=Dsoo6YABe5ODLp+eFNPGFDjk5ZeQEceGkqjxXcVEhLWubw@mail.gmail.com/
 
-What do you think?
+Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/adc/fsl-imx25-gcq.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-Haiwei Li
+diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
+index 8cb51cf7a816..ab5139e911c3 100644
+--- a/drivers/iio/adc/fsl-imx25-gcq.c
++++ b/drivers/iio/adc/fsl-imx25-gcq.c
+@@ -40,6 +40,15 @@ struct mx25_gcq_priv {
+ 	int irq;
+ 	struct regulator *vref[4];
+ 	u32 channel_vref_mv[MX25_NUM_CFGS];
++	/*
++	 * Lock to protect the device state during a potential concurrent
++	 * read access from userspace. Reading a raw value requires a sequence
++	 * of register writes, then a wait for a completion callback,
++	 * and finally a register read, during which userspace could issue
++	 * another read request. This lock protects a read access from
++	 * ocurring before another one has finished.
++	 */
++	struct mutex lock;
+ };
+ 
+ #define MX25_CQG_CHAN(chan, id) {\
+@@ -137,9 +146,9 @@ static int mx25_gcq_read_raw(struct iio_dev *indio_dev,
+ 
+ 	switch (mask) {
+ 	case IIO_CHAN_INFO_RAW:
+-		mutex_lock(&indio_dev->mlock);
++		mutex_lock(&priv->lock);
+ 		ret = mx25_gcq_get_raw_value(&indio_dev->dev, chan, priv, val);
+-		mutex_unlock(&indio_dev->mlock);
++		mutex_unlock(&priv->lock);
+ 		return ret;
+ 
+ 	case IIO_CHAN_INFO_SCALE:
+@@ -314,6 +323,8 @@ static int mx25_gcq_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->regs);
+ 	}
+ 
++	mutex_init(&priv->lock);
++
+ 	init_completion(&priv->completed);
+ 
+ 	ret = mx25_gcq_setup_cfgs(pdev, priv);
+-- 
+2.17.1
+
