@@ -2,131 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0257E26BA47
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9F326BA4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgIPCke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:40:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37347 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726128AbgIPCkW (ORCPT
+        id S1726303AbgIPCpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgIPCpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:40:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600224020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ASyeTVwuUEeU8l0NdXBbwtEToG7x1iFYHSQxl0OiJ2Y=;
-        b=bCroBcKPw7tfTjpaTq7uGa7FUHlYuVsHuOLrLZqRuZcdz+JkWx45Mr5HLG/+i3PfPybmPc
-        afTra2B/pR3APCB4+U+EIKxvjIIOVHoRNbecUoD2zHhRFTf0eHjygbS6Cd3u/TJ8pSo0Sx
-        6T71cCkxCO/cRU22HyM03H8gAiHOPBA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-72-W2XbK7WnMsugWgXerJZpbw-1; Tue, 15 Sep 2020 22:40:17 -0400
-X-MC-Unique: W2XbK7WnMsugWgXerJZpbw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21313425D1;
-        Wed, 16 Sep 2020 02:40:15 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-113-115.rdu2.redhat.com [10.10.113.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DE4B25FC16;
-        Wed, 16 Sep 2020 02:40:11 +0000 (UTC)
-Subject: Re: [PATCH v11 3/5] locking/qspinlock: Introduce CNA into the slow
- path of qspinlock
-To:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
-        peterz@infradead.org, mingo@redhat.com, will.deacon@arm.com,
-        arnd@arndb.de, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        guohanjun@huawei.com, jglauber@marvell.com
-Cc:     steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
-        dave.dice@oracle.com
-References: <20200915180535.2975060-1-alex.kogan@oracle.com>
- <20200915180535.2975060-4-alex.kogan@oracle.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <05a65878-d24c-0f8e-c271-24ebc729d7e3@redhat.com>
-Date:   Tue, 15 Sep 2020 22:40:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 15 Sep 2020 22:45:41 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F22DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 19:45:41 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id v14so764458pjd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 19:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MjF3+x9EzhdvpwkfgHNm6fCxJhsYfijrbsp5nTW4btk=;
+        b=TFqZS2R0m222F1PpstUQjgnssD8KBxBq2UnQoK3XNMEmgo0GqrqYy3UNc2QomqCL9Q
+         Rjq/gjGSG4To7GIWcl0a2bVvh9mfyPtGSbVCIhOhQtD7UcCj5bFs1QwTUi91XMCGn0ot
+         XzIM3CObSqg+igz1rE6hW7FGStNFpCaJ95bvJsBc0BVGPusEXNuPKZPE1HQcpsJ4W4kV
+         b1ZhDwshZNkc33IR9x+8x2ofAPlhCCpraHAybRO0zIULfY95TxBEeIMexHPn2sg8s8Kb
+         oGmo4RnB9ACv51S04r6v+rrx1nHJO2xn496ATeQGorVZKphQgOUu4i8FMsSmOvot/8dF
+         QoBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MjF3+x9EzhdvpwkfgHNm6fCxJhsYfijrbsp5nTW4btk=;
+        b=j/wBch+VfxFGJOmOdoP1M8tme+HSb4zfdWZ2Ya/mU/GN47zlUoGr1ei/ljpAaGFQPg
+         WpCLMC5vNtXGM+pwNzzWToN4Z0YAcv7WTrBoEQQF2MFitr4la5a6H2zh1Kcyl5JQQLNp
+         25h69FGcRLg2XHxfsiA9bcn4wggcK3OlYCqe9irf6xh8RYrwgpB5ox074pbsPU5DrrTf
+         FwJDGDjzf3yHKguTtR5bnOddXjTO3asJOcL+Wt0dV7aMkXZsIlW15yPgqAikfU1lpkJd
+         BYN59NIX1uJk5Tq/v45m4F+5HxPZZLnXiLpZpc4Zf/C4/m6+Osu+o2kUhCrbSJaurZrX
+         0yvA==
+X-Gm-Message-State: AOAM532IyHov5YeFcEE9WDrsafKL5ZyU77VuvT5XV9loTrYOBn6QyPKB
+        4QK3s1xjslmrtspAvqNo65KT5kkYv6Whnz7LiWRv6A==
+X-Google-Smtp-Source: ABdhPJwQUmoHrkkKHxHWVxGeTnBYi6Mtj+lxHnZr+5S36ywWnha+P6KyFwM7kKSQXksZzvU9GeSjckV2Af7XxXPxkl0=
+X-Received: by 2002:a17:902:aa4b:b029:d0:cbe1:e739 with SMTP id
+ c11-20020a170902aa4bb02900d0cbe1e739mr22798393plr.20.1600224339980; Tue, 15
+ Sep 2020 19:45:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200915180535.2975060-4-alex.kogan@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200915125947.26204-1-songmuchun@bytedance.com>
+ <20200915143241.GH5449@casper.infradead.org> <CAMZfGtW0PqU6SLihLABA8rU+FuBqm8NksDW=EkLXy1RZfYeDGA@mail.gmail.com>
+ <20200915154213.GI5449@casper.infradead.org> <CAMZfGtVTjopGgFv4xCDcF1+iGeRva_ypH4EQWcDUFBdsfqhQbA@mail.gmail.com>
+ <20200915173948.GK5449@casper.infradead.org> <CAMZfGtW3S8kGJwff6oH14QWPXKTuQEAGdYwcLRUZxuJ7q8s7sA@mail.gmail.com>
+ <20200915181530.GL5449@casper.infradead.org>
+In-Reply-To: <20200915181530.GL5449@casper.infradead.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 16 Sep 2020 10:45:04 +0800
+Message-ID: <CAMZfGtX1T6K5d=z6vPXtwnsDE70uEVRi9a3rADiXrdHr8_ri9Q@mail.gmail.com>
+Subject: Re: [External] Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap
+ pages of hugetlb page
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de, almasrymina@google.com,
+        David Rientjes <rientjes@google.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 2:05 PM, Alex Kogan wrote:
-> In CNA, spinning threads are organized in two queues, a primary queue for
-> threads running on the same node as the current lock holder, and a
-> secondary queue for threads running on other nodes. After acquiring the
-> MCS lock and before acquiring the spinlock, the MCS lock
-> holder checks whether the next waiter in the primary queue (if exists) is
-> running on the same NUMA node. If it is not, that waiter is detached from
-> the main queue and moved into the tail of the secondary queue. This way,
-> we gradually filter the primary queue, leaving only waiters running on
-> the same preferred NUMA node. For more details, see
-> https://arxiv.org/abs/1810.05600.
+On Wed, Sep 16, 2020 at 2:15 AM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> Note that this variant of CNA may introduce starvation by continuously
-> passing the lock between waiters in the main queue. This issue will be
-> addressed later in the series.
+> On Wed, Sep 16, 2020 at 02:03:15AM +0800, Muchun Song wrote:
+> > On Wed, Sep 16, 2020 at 1:39 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Wed, Sep 16, 2020 at 01:32:46AM +0800, Muchun Song wrote:
+> > > > On Tue, Sep 15, 2020 at 11:42 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > >
+> > > > > On Tue, Sep 15, 2020 at 11:28:01PM +0800, Muchun Song wrote:
+> > > > > > On Tue, Sep 15, 2020 at 10:32 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, Sep 15, 2020 at 08:59:23PM +0800, Muchun Song wrote:
+> > > > > > > > This patch series will free some vmemmap pages(struct page structures)
+> > > > > > > > associated with each hugetlbpage when preallocated to save memory.
+> > > > > > >
+> > > > > > > It would be lovely to be able to do this.  Unfortunately, it's completely
+> > > > > > > impossible right now.  Consider, for example, get_user_pages() called
+> > > > > > > on the fifth page of a hugetlb page.
+> > > > > >
+> > > > > > Can you elaborate on the problem? Thanks so much.
+> > > > >
+> > > > > OK, let's say you want to do a 2kB I/O to offset 0x5000 of a 2MB page
+> > > > > on a 4kB base page system.  Today, that results in a bio_vec containing
+> > > > > {head+5, 0, 0x800}.  Then we call page_to_phys() on that (head+5) struct
+> > > > > page to get the physical address of the I/O, and we turn it into a struct
+> > > > > scatterlist, which similarly has a reference to the page (head+5).
+> > > >
+> > > > As I know, in this case, the get_user_pages() will get a reference
+> > > > to the head page (head+0) before returning such that the hugetlb
+> > > > page can not be freed. Although get_user_pages() returns the
+> > > > page (head+5) and the scatterlist has a reference to the page
+> > > > (head+5), this patch series can handle this situation. I can not
+> > > > figure out where the problem is. What I missed? Thanks.
+> > >
+> > > You freed pages 4-511 from the vmemmap so they could be used for
+> > > something else.  Page 5 isn't there any more.  So if you return head+5,
+> > > then when we complete the I/O, we'll look for the compound_head() of
+> > > head+5 and we won't find head.
+> >
+> > We do not free pages 4-511 from the vmemmap. Actually, we only
+> > free pages 128-511 from the vmemmap.
+> >
+> > The 512 struct pages occupy 8 pages of physical memory. We only
+> > free 6 physical page frames to the buddy. But we will create a new
+> > mapping just like below. The virtual address of the freed pages will
+> > remap to the second page frame. So the second page frame is
+> > reused.
 >
-> Enabling CNA is controlled via a new configuration option
-> (NUMA_AWARE_SPINLOCKS). By default, the CNA variant is patched in at the
-> boot time only if we run on a multi-node machine in native environment and
-> the new config is enabled. (For the time being, the patching requires
-> CONFIG_PARAVIRT_SPINLOCKS to be enabled as well. However, this should be
-> resolved once static_call() is available.) This default behavior can be
-> overridden with the new kernel boot command-line option
-> "numa_spinlock=on/off" (default is "auto").
+> Oh!  I get what you're doing now.
 >
-> Signed-off-by: Alex Kogan <alex.kogan@oracle.com>
-> Reviewed-by: Steve Sistare <steven.sistare@oracle.com>
-> Reviewed-by: Waiman Long <longman@redhat.com>
-> ---
->   .../admin-guide/kernel-parameters.txt         |  10 +
->   arch/x86/Kconfig                              |  20 ++
->   arch/x86/include/asm/qspinlock.h              |   4 +
->   arch/x86/kernel/alternative.c                 |   4 +
->   kernel/locking/mcs_spinlock.h                 |   2 +-
->   kernel/locking/qspinlock.c                    |  42 ++-
->   kernel/locking/qspinlock_cna.h                | 336 ++++++++++++++++++
->   7 files changed, 413 insertions(+), 5 deletions(-)
->   create mode 100644 kernel/locking/qspinlock_cna.h
+> For the vmemmap case, you free the last N-2 physical pages but map the
+> second physical page multiple times.  So for the 512 pages case, we
+> see pages:
 >
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index a1068742a6df..51ce050f8701 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3353,6 +3353,16 @@
->   
->   	nox2apic	[X86-64,APIC] Do not enable x2APIC mode.
->   
-> +	numa_spinlock=	[NUMA, PV_OPS] Select the NUMA-aware variant
-> +			of spinlock. The options are:
-> +			auto - Enable this variant if running on a multi-node
-> +			machine in native environment.
-> +			on  - Unconditionally enable this variant.
-> +			off - Unconditionally disable this variant.
-> +
-> +			Not specifying this option is equivalent to
-> +			numa_spinlock=auto.
-> +
->   	cpu0_hotplug	[X86] Turn on CPU0 hotplug feature when
->   			CONFIG_BOOTPARAM_HOTPLUG_CPU0 is off.
->   			Some features depend on CPU0. Known dependencies are:
+> abcdefgh | ijklmnop | ijklmnop | ijklmnop | ijklmnop | ijklmnop | ijklmnop ...
 
-You will have to move down this hunk according to alphabetic order. 
-Other than that this patch looks good to me.
+Yeah, great. You are right.
 
-Cheers,
-Longman
+>
+> Huh.  I think that might work, except for PageHWPoison.  I'll go back
+> to your patch series and look at that some more.
+>
 
+The PageHWPoison also is considered in the patch series. Looking
+forward to your suggestions. Thanks.
+
+
+-- 
+Yours,
+Muchun
