@@ -2,237 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BEC26C5D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E348526C609
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgIPRUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:20:21 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12099 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbgIPRNx (ORCPT
+        id S1727148AbgIPRaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:30:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48693 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727085AbgIPR2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:13:53 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6247380000>; Wed, 16 Sep 2020 10:11:20 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 16 Sep 2020 10:11:32 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 10:11:32 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
- 2020 17:11:32 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 16 Sep 2020 17:11:32 +0000
-Received: from sumitg-l4t.nvidia.com (Not Verified[10.24.37.103]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f6247410000>; Wed, 16 Sep 2020 10:11:31 -0700
-From:   Sumit Gupta <sumitg@nvidia.com>
-To:     <viresh.kumar@linaro.org>, <rjw@rjwysocki.net>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ksitaraman@nvidia.com>, <bbasu@nvidia.com>, <sumitg@nvidia.com>
-Subject: [Patch 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
-Date:   Wed, 16 Sep 2020 22:41:17 +0530
-Message-ID: <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
-References: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
-X-NVConfidentiality: public
+        Wed, 16 Sep 2020 13:28:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600277281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n1lez62sfSsQdftfXDlxJ6noSF6UYRgTS9vyWDTEKb8=;
+        b=KXicPxqE7fKjQhXWp9CfLBFZLX+sxPlEz0RzCzSv20iZWJsko7N0dOEGXHOK+s2xFBhSL7
+        CC8Fvg7eLoaS99ggV+onLpm0QHTdKgwhM1rSOL8FYu5Q5fO/BcpwJNJQex9CSA1Q8Xw62E
+        7ZQQqOkrI+bkY8pVJctTFCYJvGbSbto=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-NFme99R0Myy804af0r5kxw-1; Wed, 16 Sep 2020 13:19:37 -0400
+X-MC-Unique: NFme99R0Myy804af0r5kxw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11B2E107465A;
+        Wed, 16 Sep 2020 17:19:34 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-120-66.rdu2.redhat.com [10.10.120.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E14E1C4;
+        Wed, 16 Sep 2020 17:19:32 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     intel-gfx@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Ville Syrjala <ville.syrjala@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>, thaytan@noraisin.net,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC v2 2/8] drm/i915: Rename pwm_* backlight callbacks to ext_pwm_*
+Date:   Wed, 16 Sep 2020 13:18:49 -0400
+Message-Id: <20200916171855.129511-3-lyude@redhat.com>
+In-Reply-To: <20200916171855.129511-1-lyude@redhat.com>
+References: <20200916171855.129511-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600276280; bh=ox9oENiyu3gx4p8E6vGXmfBT1FSXs+lmzFKORun6J7Q=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
-         Content-Type;
-        b=Q4hACVQO1Pz1oFwn+w5viQHnibREBYv6f6WAPoqftNGYN7g0zq+ZrCVKc3HuoAdab
-         YKyrgp7mnQ6xwJAj/j0eT3jg51Mrogr0E8TCmt+lCtWr+rPJoLqmB3mnDcyz2GP/7t
-         IL1urfnIZ/FiJJSGMcm1KUMpJbY7ceXpWCpSQFN2BJtmiqV68NDvfd4LW09wI6DWqv
-         nn1ZDIor6PRotVsNh2XFP9h/eiGrzxSnqs9mtbeb+22LN6uk3I6jBHkcDNmV3BEWPr
-         qjm05qmeNCYapeXOVN2BhmckCmyyNVt2g37qlMxIMtLql7O7DMFcbKsAfip0EpGmsb
-         b1ukze47CaP5Q==
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warning coming during boot because the boot freq set by bootloader
-gets filtered out due to big freq steps while creating freq_table.
-Fixing this by setting closest ndiv value from freq_table.
-Warning:
-  cpufreq: cpufreq_online: CPU0: Running at unlisted freq
-  cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed
+Since we're going to need to add a set of lower-level PWM backlight
+control hooks to be shared by normal backlight controls and HDR
+backlight controls in SDR mode, let's add a prefix to the external PWM
+backlight functions so that the difference between them and the high
+level PWM-only backlight functions is a bit more obvious.
 
-Also, added change in init to wait till current frequency becomes
-equal or near to the previously requested frequency. This is done
-because it takes some time to restore the previous frequency while
-turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
+This introduces no functional changes.
 
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: thaytan@noraisin.net
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- drivers/cpufreq/tegra194-cpufreq.c | 118 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 111 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/i915/display/intel_panel.c | 24 +++++++++++-----------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
-index d5b608d..c3c058a3 100644
---- a/drivers/cpufreq/tegra194-cpufreq.c
-+++ b/drivers/cpufreq/tegra194-cpufreq.c
-@@ -7,6 +7,7 @@
- #include <linux/cpufreq.h>
- #include <linux/delay.h>
- #include <linux/dma-mapping.h>
-+#include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_platform.h>
-@@ -21,7 +22,6 @@
- #define KHZ                     1000
- #define REF_CLK_MHZ             408 /* 408 MHz */
- #define US_DELAY                500
--#define US_DELAY_MIN            2
- #define CPUFREQ_TBL_STEP_HZ     (50 * KHZ * KHZ)
- #define MAX_CNT                 ~0U
- 
-@@ -241,26 +241,130 @@ static unsigned int tegra194_get_speed(u32 cpu)
- 	return rate;
+diff --git a/drivers/gpu/drm/i915/display/intel_panel.c b/drivers/gpu/drm/i915/display/intel_panel.c
+index 9f23bac0d7924..c0e36244bb07d 100644
+--- a/drivers/gpu/drm/i915/display/intel_panel.c
++++ b/drivers/gpu/drm/i915/display/intel_panel.c
+@@ -589,7 +589,7 @@ static u32 bxt_get_backlight(struct intel_connector *connector)
+ 			     BXT_BLC_PWM_DUTY(panel->backlight.controller));
  }
  
-+static int
-+freqtable_find_index_closest_ndiv(struct cpufreq_frequency_table *table,
-+				  unsigned int target_ndiv)
-+{
-+	struct cpufreq_frequency_table *pos;
-+	unsigned int ndiv;
-+	int idx, best = -1;
-+
-+	cpufreq_for_each_valid_entry_idx(pos, table, idx) {
-+		ndiv = pos->driver_data;
-+
-+		if (ndiv == target_ndiv)
-+			return idx;
-+
-+		if (ndiv < target_ndiv) {
-+			best = idx;
-+			continue;
-+		}
-+
-+		/* No ndiv found below target_ndiv */
-+		if (best == -1)
-+			return idx;
-+
-+		/* Choose the closest ndiv */
-+		if (target_ndiv - table[best].driver_data > ndiv - target_ndiv)
-+			return idx;
-+
-+		return best;
-+	}
-+
-+	return best;
-+}
-+
-+static int
-+freqtable_set_closest_ndiv(struct cpufreq_frequency_table *freq_table,
-+			   int cpu)
-+{
-+	u64 ndiv;
-+	int idx, ret;
-+
-+	if (!cpu_online(cpu))
-+		return -EINVAL;
-+
-+	/* get ndiv for the last frequency request from software  */
-+	ret = smp_call_function_single(cpu, get_cpu_ndiv, &ndiv, true);
-+	if (ret) {
-+		pr_err("cpufreq: Failed to get ndiv for CPU%d\n", cpu);
-+		return ret;
-+	}
-+
-+	/* while creating freq_table during boot, if the ndiv value got
-+	 * filtered out due to large freq steps, then find closest ndiv
-+	 * from freq_table and set that.
-+	 */
-+	idx = freqtable_find_index_closest_ndiv(freq_table, ndiv);
-+
-+	if (ndiv != freq_table[idx].driver_data) {
-+		pr_debug("cpufreq: new freq:%d ndiv:%d, old ndiv:%llu\n",
-+			 freq_table[idx].frequency,
-+			 freq_table[idx].driver_data, ndiv);
-+
-+		ret = smp_call_function_single(cpu, set_cpu_ndiv,
-+					       freq_table + idx, true);
-+		if (ret) {
-+			pr_err("cpufreq: setting ndiv for CPU%d failed\n",
-+			       cpu);
-+			return ret;
-+		}
-+	}
-+
-+	return freq_table[idx].frequency;
-+}
-+
- static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
+-static u32 pwm_get_backlight(struct intel_connector *connector)
++static u32 ext_pwm_get_backlight(struct intel_connector *connector)
  {
- 	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
--	u32 cpu;
-+	u32 cpu = policy->cpu;
-+	int new_freq, ret;
- 	u32 cl;
+ 	struct intel_panel *panel = &connector->panel;
+ 	struct pwm_state state;
+@@ -666,7 +666,7 @@ static void bxt_set_backlight(const struct drm_connector_state *conn_state, u32
+ 		       BXT_BLC_PWM_DUTY(panel->backlight.controller), level);
+ }
  
--	smp_call_function_single(policy->cpu, get_cpu_cluster, &cl, true);
-+	if (!cpu_online(cpu))
-+		return -EINVAL;
-+
-+	ret = smp_call_function_single(cpu, get_cpu_cluster, &cl, true);
-+	if (ret) {
-+		pr_err("cpufreq: Failed to get cluster for CPU%d\n", cpu);
-+		return ret;
-+	}
+-static void pwm_set_backlight(const struct drm_connector_state *conn_state, u32 level)
++static void ext_pwm_set_backlight(const struct drm_connector_state *conn_state, u32 level)
+ {
+ 	struct intel_panel *panel = &to_intel_connector(conn_state->connector)->panel;
  
- 	if (cl >= data->num_clusters)
- 		return -EINVAL;
+@@ -835,7 +835,7 @@ static void cnp_disable_backlight(const struct drm_connector_state *old_conn_sta
+ 		       tmp & ~BXT_BLC_PWM_ENABLE);
+ }
  
--	/* boot freq */
--	policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY_MIN);
--
- 	/* set same policy for all cpus in a cluster */
- 	for (cpu = (cl * 2); cpu < ((cl + 1) * 2); cpu++)
- 		cpumask_set_cpu(cpu, policy->cpus);
+-static void pwm_disable_backlight(const struct drm_connector_state *old_conn_state)
++static void ext_pwm_disable_backlight(const struct drm_connector_state *old_conn_state)
+ {
+ 	struct intel_connector *connector = to_intel_connector(old_conn_state->connector);
+ 	struct intel_panel *panel = &connector->panel;
+@@ -1168,8 +1168,8 @@ static void cnp_enable_backlight(const struct intel_crtc_state *crtc_state,
+ 		       pwm_ctl | BXT_BLC_PWM_ENABLE);
+ }
  
- 	policy->freq_table = data->tables[cl];
--	policy->cpuinfo.transition_latency = TEGRA_CPUFREQ_TRANSITION_LATENCY;
-+	policy->cpuinfo.transition_latency =
-+		TEGRA_CPUFREQ_TRANSITION_LATENCY;
-+
-+	/* Find and set the closest ndiv from freq_table if the boot freq
-+	 * already set is filtered out from freq_table or not present.
-+	 */
-+	new_freq = freqtable_set_closest_ndiv(policy->freq_table, policy->cpu);
-+	if (new_freq < 0) {
-+		pr_err("cpufreq: set closest ndiv for CPU%d failed(%d)\n",
-+		       policy->cpu, new_freq);
-+		return new_freq;
-+	}
-+
-+	/* It takes some time to restore the previous frequency while
-+	 * turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
-+	 * So, wait till it reaches the previous value and timeout if the
-+	 * time taken to reach requested freq is >100ms
-+	 */
-+	ret = read_poll_timeout(tegra194_get_speed_common, policy->cur,
-+				abs(policy->cur - new_freq) <= 115200, 0,
-+				100 * USEC_PER_MSEC, false, policy->cpu,
-+				US_DELAY);
-+	if (ret)
-+		pr_warn("cpufreq: time taken to restore freq >100ms\n");
-+
-+	pr_debug("cpufreq: cpu%d, curfreq:%d, setfreq:%d\n", policy->cpu,
-+		 policy->cur, new_freq);
- 
+-static void pwm_enable_backlight(const struct intel_crtc_state *crtc_state,
+-				 const struct drm_connector_state *conn_state)
++static void ext_pwm_enable_backlight(const struct intel_crtc_state *crtc_state,
++				     const struct drm_connector_state *conn_state)
+ {
+ 	struct intel_connector *connector = to_intel_connector(conn_state->connector);
+ 	struct intel_panel *panel = &connector->panel;
+@@ -1890,8 +1890,8 @@ cnp_setup_backlight(struct intel_connector *connector, enum pipe unused)
  	return 0;
  }
+ 
+-static int pwm_setup_backlight(struct intel_connector *connector,
+-			       enum pipe pipe)
++static int ext_pwm_setup_backlight(struct intel_connector *connector,
++				   enum pipe pipe)
+ {
+ 	struct drm_device *dev = connector->base.dev;
+ 	struct drm_i915_private *dev_priv = to_i915(dev);
+@@ -2065,11 +2065,11 @@ intel_panel_init_backlight_funcs(struct intel_panel *panel)
+ 		panel->backlight.hz_to_pwm = pch_hz_to_pwm;
+ 	} else if (IS_VALLEYVIEW(dev_priv) || IS_CHERRYVIEW(dev_priv)) {
+ 		if (connector->base.connector_type == DRM_MODE_CONNECTOR_DSI) {
+-			panel->backlight.setup = pwm_setup_backlight;
+-			panel->backlight.enable = pwm_enable_backlight;
+-			panel->backlight.disable = pwm_disable_backlight;
+-			panel->backlight.set = pwm_set_backlight;
+-			panel->backlight.get = pwm_get_backlight;
++			panel->backlight.setup = ext_pwm_setup_backlight;
++			panel->backlight.enable = ext_pwm_enable_backlight;
++			panel->backlight.disable = ext_pwm_disable_backlight;
++			panel->backlight.set = ext_pwm_set_backlight;
++			panel->backlight.get = ext_pwm_get_backlight;
+ 		} else {
+ 			panel->backlight.setup = vlv_setup_backlight;
+ 			panel->backlight.enable = vlv_enable_backlight;
 -- 
-2.7.4
+2.26.2
 
