@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA34026BA22
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C1926BA4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgIPC2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:28:39 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58530 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726406AbgIPC2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:28:06 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 73DDE467085A06020A0E;
-        Wed, 16 Sep 2020 10:28:04 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
- 10:27:55 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Karan Tilak Kumar <kartilak@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] scsi: snic: convert to use DEFINE_SEQ_ATTRIBUTE macro
-Date:   Wed, 16 Sep 2020 10:50:30 +0800
-Message-ID: <20200916025030.3992991-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+        id S1726306AbgIPClp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:41:45 -0400
+Received: from mga14.intel.com ([192.55.52.115]:17839 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726079AbgIPClp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:41:45 -0400
+IronPort-SDR: cYuKMYz4px8i0wZ/lRCMk7uQndwo7kdffUlX9VByWknnLA5niweuc/C0piifeUJJhqd84hcW0d
+ ff2NfzQftp4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="158667533"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="158667533"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 19:41:43 -0700
+IronPort-SDR: WvYV8c7liVIQ9zCjn3jIyAHwjA96a9TXWHx0PHavH7nGVbLaikka5HSnwL6bBZCVJ81GKPdzE8
+ 54weBgBOa3sQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="335875192"
+Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
+  by orsmga008.jf.intel.com with ESMTP; 15 Sep 2020 19:41:41 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yan Zhao <yan.y.zhao@intel.com>
+Subject: [PATCH v2] vfio: add a singleton check for vfio_group_pin_pages
+Date:   Wed, 16 Sep 2020 10:28:33 +0800
+Message-Id: <20200916022833.26304-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
+Page pinning is used both to translate and pin device mappings for DMA
+purpose, as well as to indicate to the IOMMU backend to limit the dirty
+page scope to those pages that have been pinned, in the case of an IOMMU
+backed device.
+To support this, the vfio_pin_pages() interface limits itself to only
+singleton groups such that the IOMMU backend can consider dirty page
+scope only at the group level.  Implement the same requirement for the
+vfio_group_pin_pages() interface.
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+Fixes: 95fc87b44104 ("vfio: Selective dirty page tracking if IOMMU backed device pins pages")
+
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+
 ---
- drivers/scsi/snic/snic_debugfs.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+v2:
+1. updated the commit message to declare the issue clearly. (Alex)
+2. updated the format of the Fixes: line.
+---
+ drivers/vfio/vfio.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/scsi/snic/snic_debugfs.c b/drivers/scsi/snic/snic_debugfs.c
-index 2b349365592f..4471c4c8aafa 100644
---- a/drivers/scsi/snic/snic_debugfs.c
-+++ b/drivers/scsi/snic/snic_debugfs.c
-@@ -439,26 +439,14 @@ snic_trc_seq_show(struct seq_file *sfp, void *data)
- 	return 0;
- }
+diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+index 5e6e0511b5aa..2f0fa272ebf2 100644
+--- a/drivers/vfio/vfio.c
++++ b/drivers/vfio/vfio.c
+@@ -2053,6 +2053,9 @@ int vfio_group_pin_pages(struct vfio_group *group,
+ 	if (!group || !user_iova_pfn || !phys_pfn || !npage)
+ 		return -EINVAL;
  
--static const struct seq_operations snic_trc_seq_ops = {
-+static const struct seq_operations snic_trc_sops = {
- 	.start	= snic_trc_seq_start,
- 	.next	= snic_trc_seq_next,
- 	.stop	= snic_trc_seq_stop,
- 	.show	= snic_trc_seq_show,
- };
++	if (group->dev_counter > 1)
++		return  -EINVAL;
++
+ 	if (npage > VFIO_PIN_PAGES_MAX_ENTRIES)
+ 		return -E2BIG;
  
--static int
--snic_trc_open(struct inode *inode, struct file *filp)
--{
--	return seq_open(filp, &snic_trc_seq_ops);
--}
--
--static const struct file_operations snic_trc_fops = {
--	.owner	= THIS_MODULE,
--	.open	= snic_trc_open,
--	.read	= seq_read,
--	.llseek = seq_lseek,
--	.release = seq_release,
--};
-+DEFINE_SEQ_ATTRIBUTE(snic_trc);
- 
- /*
-  * snic_trc_debugfs_init : creates trace/tracing_enable files for trace
 -- 
-2.25.1
+2.17.1
 
