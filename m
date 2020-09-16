@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCDA26B997
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE0626B995
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgIPCCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:02:08 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:56916 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726039AbgIPCCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:02:08 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 45A8C72410859EBA9344;
-        Wed, 16 Sep 2020 10:02:06 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 16 Sep 2020 10:01:59 +0800
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-To:     <maz@kernel.org>, <james.morse@arm.com>,
-        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Xiaofei Tan <tanxiaofei@huawei.com>
-Subject: [PATCH v2] KVM: arm64: fix doc warnings in mmu code
-Date:   Wed, 16 Sep 2020 10:00:39 +0800
-Message-ID: <1600221639-4471-1-git-send-email-tanxiaofei@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726172AbgIPCBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:01:09 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50558 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgIPCBE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:01:04 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G1sRI9004551;
+        Wed, 16 Sep 2020 02:00:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : in-reply-to : message-id : references : date : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=YzaglPsjt4/JTPJfQ2xWXePQIqkgW9AqHUCvoonbdnU=;
+ b=VzU+tqAAGyKIdOz3LgZXlo6gvVKGr/NhckaaMqijgiZnAUFeAqUHLVkYkpfVzcOOGXmv
+ PJO4BG/4zgPEKAPjrplO8Sy3BAKacZoTbvGCHrbsO3Mkc5IOTwThRROCOhkIivsoJ74b
+ utIX/uccLen1tClly6rA+RlZQx0qV5tbPcLvUpy+k9dwikLZJgi/mkGbzqsyndTTl0r0
+ DWY/PTIlAuheW3hOYA84VirNaSmtFyuzqx5+CBAM7tA7MZnG288jtk8ZtjSKoJ9tk9QO
+ QhvOVtcN1q21svKyHPzKs1ce3h0nyMqpxEynTvUaD6oxlskLXLXmigxy3f7pjA0TfuqP 8w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33j91dhyx5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 02:00:57 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G1trQH126201;
+        Wed, 16 Sep 2020 02:00:57 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 33hm31nvkn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 02:00:57 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08G20tsx023420;
+        Wed, 16 Sep 2020 02:00:55 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 02:00:55 +0000
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: aic7xxx: Use kmemdup in two places
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+In-Reply-To: <20200909185855.151964-1-alex.dewar90@gmail.com> (Alex Dewar's
+        message of "Wed, 9 Sep 2020 19:58:55 +0100")
+Organization: Oracle Corporation
+Message-ID: <yq1v9gexz0g.fsf@ca-mkp.ca.oracle.com>
+References: <20200909185855.151964-1-alex.dewar90@gmail.com>
+Date:   Tue, 15 Sep 2020 22:00:53 -0400
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160011
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=1 mlxlogscore=999
+ clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160011
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following warnings caused by mismatch bewteen function parameters
-and comments.
-arch/arm64/kvm/mmu.c:128: warning: Function parameter or member 'mmu' not described in '__unmap_stage2_range'
-arch/arm64/kvm/mmu.c:128: warning: Function parameter or member 'may_block' not described in '__unmap_stage2_range'
-arch/arm64/kvm/mmu.c:128: warning: Excess function parameter 'kvm' description in '__unmap_stage2_range'
-arch/arm64/kvm/mmu.c:499: warning: Function parameter or member 'writable' not described in 'kvm_phys_addr_ioremap'
-arch/arm64/kvm/mmu.c:538: warning: Function parameter or member 'mmu' not described in 'stage2_wp_range'
-arch/arm64/kvm/mmu.c:538: warning: Excess function parameter 'kvm' description in 'stage2_wp_range'
 
-Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
----
- arch/arm64/kvm/mmu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Alex,
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index e8a51799..909e995 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -114,9 +114,10 @@ static bool kvm_is_device_pfn(unsigned long pfn)
-  */
- /**
-  * unmap_stage2_range -- Clear stage2 page table entries to unmap a range
-- * @kvm:   The VM pointer
-+ * @mmu:   pointer to mmu structure to operate on
-  * @start: The intermediate physical base address of the range to unmap
-  * @size:  The size of the area to unmap
-+ * @may_block: The flag that if block is allowed here
-  *
-  * Clear a range of stage-2 mappings, lowering the various ref-counts.  Must
-  * be called while holding mmu_lock (unless for freeing the stage2 pgd before
-@@ -493,6 +494,7 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
-  * @guest_ipa:	The IPA at which to insert the mapping
-  * @pa:		The physical address of the device
-  * @size:	The size of the mapping
-+ * @writable:   If it is writable here
-  */
- int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
- 			  phys_addr_t pa, unsigned long size, bool writable)
-@@ -530,7 +532,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
- 
- /**
-  * stage2_wp_range() - write protect stage2 memory region range
-- * @kvm:	The KVM pointer
-+ * @mmu:        pointer to mmu structure to operate on
-  * @addr:	Start address of range
-  * @end:	End address of range
-  */
+> kmemdup can be used instead of kmalloc+memcpy. Replace two occurrences
+> of this pattern.
+>
+> Issue identified with Coccinelle.
+
+Applied to 5.10/scsi-staging, thanks!
+
 -- 
-2.8.1
-
+Martin K. Petersen	Oracle Linux Engineering
