@@ -2,203 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870A326C060
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40F126C064
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgIPJWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgIPJVz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:21:55 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CEEC06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:21:55 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z1so6132396wrt.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u1hJdOGE6PE2L8q7V2RDIPCnW82wr0NYOq44Om20nBE=;
-        b=oYq1xUozS+JbK0qBnLdccJM1mRa1RUrIL39b7g/t6b5fmdsgyr5zv1tSgLU0WdWGAt
-         i3EIFY1bmiIqz2ojzJP0tNQzubaP7aBdjLW22D6AJmSgCINKTY9wEQwBoWEBs8KbS84R
-         JymAxC1t/d2f10P/1OqOE6AgtxGztV+0TfNRR2DqdeE73wvH/atPirum8UIcApRIF3GW
-         t0rHPl1VvLVwQXqEEIueiJJm2xYcGk0JuOK/cfNrZ6hpNMbOJP+nzW0kwNh+/lG40RLF
-         zedpxDz5aE3LARYSf4HIY97mqRbvFyH4SUJHGHlYvBmi3E1UVIW8xt6NqN8ojmw3a7Es
-         UOFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u1hJdOGE6PE2L8q7V2RDIPCnW82wr0NYOq44Om20nBE=;
-        b=VSc0CnwCCdZHCJJnPbWFKM1PaK9HFjyjZAY9khyYdpRJY83b+v8LxuHDotRDK0964S
-         f8mg7Q4NQ2vcjezIqIHS+9D2lvvL+Q9VSVx0KXf/Qc2IlZQIdki8aMd7UYHP7ksbDJpn
-         uX5IaXnWrus5n+UsaXbm4myjd8SIyFKSKVPVAPLjm30FLedeBlGtxkBVRNqh/PiPzJ2W
-         SEHcYoJFCKDVA3hM2sy8JnsnDb6kpGumk+y36+CuNyKQV5qEAp7gjTPnLvvx7ayHD3O2
-         AtRmXK8sOzXNfbli0aZnSt2VbI0LjZt+gbZgGz9dXSlOOxXZAvVs+b1UA0w1Ts0NFIcK
-         q2eg==
-X-Gm-Message-State: AOAM53210auz47YOrIfs14zKHTeDYEdaX6DjEMVPqBSqjUV0jG2/p9mD
-        ODlpWHAuB3+bZFU/guO35eZk+g==
-X-Google-Smtp-Source: ABdhPJzzyXLTM6CWuygfNPgQ7ZQZbT8zI3ltZq4+MuAltfjBqs5ZwlWdYNcr9AZzD8MfEcQ5VdJWcQ==
-X-Received: by 2002:adf:f04c:: with SMTP id t12mr26232864wro.121.1600248113780;
-        Wed, 16 Sep 2020 02:21:53 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id f6sm32181670wro.5.2020.09.16.02.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 02:21:53 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-Cc:     pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 3/3] soundwire: qcom: get max rows and cols info from compatible
-Date:   Wed, 16 Sep 2020 10:21:25 +0100
-Message-Id: <20200916092125.30898-4-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
-References: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
+        id S1726693AbgIPJXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:23:16 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:57172 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726302AbgIPJXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 05:23:13 -0400
+Received: from zn.tnic (p200300ec2f0c3e00d3c4597872eea104.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:d3c4:5978:72ee:a104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DD7101EC03C9;
+        Wed, 16 Sep 2020 11:23:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600248190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3TeVrXwZQcowPr3JVdy9o1Dg4I+EinWtvHyXdySMq5s=;
+        b=Kw93KpWs1gavg5TpBawH9nRHEqEKgAyDnCI7ur5keketPJHiZyjLnweVmZLFtYEX7i+I0v
+        FQjuTAh3wqRducl/P6hb2EaVVojrm6jDTgS4Xp9T82NbEPe1X/HsCBxZC6cYCoZ5XMLM2d
+        IuXHfNpelWMVE2wgly9Ch15LsMjVL/k=
+Date:   Wed, 16 Sep 2020 11:23:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
+        Roman Kiryanov <rkir@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-pm@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Alistair Delva <adelva@google.com>,
+        Haitao Shan <hshan@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] arch: x86: power: cpu: init %gs before
+ __restore_processor_state (clang)
+Message-ID: <20200916092302.GC2643@zn.tnic>
+References: <20200915172658.1432732-1-rkir@google.com>
+ <20200915174643.GT14436@zn.tnic>
+ <CAKwvOdm9bQmL=gZypkosH0MG=S28=jJ6wZiTMCNP6=Z+NfN1AA@mail.gmail.com>
+ <20200915182530.GV14436@zn.tnic>
+ <CAKwvOdkKk1KuAFDoWNLnMUi3_JnV7atDFnvS7CdkgNXnNg0p1g@mail.gmail.com>
+ <20200915202034.GZ14436@zn.tnic>
+ <CAKwvOdmmXEu40m9bVL9zY5XyBRs2f15cs3FZQLCCh4u3i07pDA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdmmXEu40m9bVL9zY5XyBRs2f15cs3FZQLCCh4u3i07pDA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-currently the max rows and cols values are hardcoded. In reality
-these values depend on the IP version. So get these based on
-device tree compatible strings.
+On Tue, Sep 15, 2020 at 02:49:40PM -0700, Nick Desaulniers wrote:
+> 1. they don't pay me enough for that.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 50 ++++++++++++++++++++++++++++------------
- 1 file changed, 35 insertions(+), 15 deletions(-)
+They probably should - you're doing it anyway and it's not like they
+have a shortage of cash. :-P
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 76963a7bdaa3..1dbf33684470 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -66,11 +66,6 @@
- #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
- 			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
- 
--#define SWRM_MAX_ROW_VAL	0 /* Rows = 48 */
--#define SWRM_DEFAULT_ROWS	48
--#define SWRM_MIN_COL_VAL	0 /* Cols = 2 */
--#define SWRM_DEFAULT_COL	16
--#define SWRM_MAX_COL_VAL	7
- #define SWRM_SPECIAL_CMD_ID	0xF
- #define MAX_FREQ_NUM		1
- #define TIMEOUT_MS		(2 * HZ)
-@@ -104,6 +99,8 @@ struct qcom_swrm_ctrl {
- 	unsigned int version;
- 	int num_din_ports;
- 	int num_dout_ports;
-+	int cols_index;
-+	int rows_index;
- 	unsigned long dout_port_mask;
- 	unsigned long din_port_mask;
- 	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
-@@ -113,6 +110,21 @@ struct qcom_swrm_ctrl {
- 	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
- };
- 
-+struct qcom_swrm_data {
-+	u32 default_cols;
-+	u32 default_rows;
-+};
-+
-+static struct qcom_swrm_data swrm_v1_3_data = {
-+	.default_rows = 48,
-+	.default_cols = 16,
-+};
-+
-+static struct qcom_swrm_data swrm_v1_5_data = {
-+	.default_rows = 50,
-+	.default_cols = 16,
-+};
-+
- #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
- 
- static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
-@@ -299,8 +311,10 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	u32 val;
- 
- 	/* Clear Rows and Cols */
--	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
--	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MIN_COL_VAL);
-+	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK,
-+			 ctrl->rows_index);
-+	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK,
-+			  ctrl->cols_index);
- 
- 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
- 
-@@ -378,8 +392,10 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
- 	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
- 	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
- 
--	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MAX_COL_VAL);
--	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
-+	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK,
-+			  ctrl->cols_index);
-+	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK,
-+			  ctrl->rows_index);
- 
- 	return ctrl->reg_write(ctrl, reg, val);
- }
-@@ -780,6 +796,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	struct sdw_master_prop *prop;
- 	struct sdw_bus_params *params;
- 	struct qcom_swrm_ctrl *ctrl;
-+	const struct qcom_swrm_data *data;
- 	int ret;
- 	u32 val;
- 
-@@ -787,6 +804,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	if (!ctrl)
- 		return -ENOMEM;
- 
-+	data = of_device_get_match_data(dev);
-+	ctrl->rows_index = sdw_find_row_index(data->default_rows);
-+	ctrl->cols_index = sdw_find_col_index(data->default_cols);
- #if IS_ENABLED(CONFIG_SLIMBUS)
- 	if (dev->parent->bus == &slimbus_bus) {
- #else
-@@ -836,8 +856,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	params = &ctrl->bus.params;
- 	params->max_dr_freq = DEFAULT_CLK_FREQ;
- 	params->curr_dr_freq = DEFAULT_CLK_FREQ;
--	params->col = SWRM_DEFAULT_COL;
--	params->row = SWRM_DEFAULT_ROWS;
-+	params->col = data->default_cols;
-+	params->row = data->default_rows;
- 	ctrl->reg_read(ctrl, SWRM_MCP_STATUS, &val);
- 	params->curr_bank = val & SWRM_MCP_STATUS_BANK_NUM_MASK;
- 	params->next_bank = !params->curr_bank;
-@@ -847,8 +867,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	prop->num_clk_gears = 0;
- 	prop->num_clk_freq = MAX_FREQ_NUM;
- 	prop->clk_freq = &qcom_swrm_freq_tbl[0];
--	prop->default_col = SWRM_DEFAULT_COL;
--	prop->default_row = SWRM_DEFAULT_ROWS;
-+	prop->default_col = data->default_cols;
-+	prop->default_row = data->default_rows;
- 
- 	ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &ctrl->version);
- 
-@@ -899,8 +919,8 @@ static int qcom_swrm_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id qcom_swrm_of_match[] = {
--	{ .compatible = "qcom,soundwire-v1.3.0", },
--	{ .compatible = "qcom,soundwire-v1.5.1", },
-+	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
-+	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
- 	{/* sentinel */},
- };
- 
+> 2. even if they did, I wouldn't want that responsibility
+
+Too late, my friend. :-)
+
+> 3. I'm probably least qualified for that.  Google has many strong
+> upstream contributors with much longer contribution history than
+> myself.  Maybe toolchain specific stuff though...
+
+Sure, toolchain only, if you prefer. And others can take care of other
+areas. And yes, those people should have some time allocated only to
+upstream development. I think that's only fair...
+
+> 4. you generally don't want people like that in any organization.
+> More gatekeepers winds up being a synchronization/contention point.
+> Remember, the goal is to train others to be self sufficient, so you
+> can drink margaritas on the roof.  That suggestion goes against the
+> ultimate goal.
+
+Sure, but there's the community and we want to support that. Business
+interest pays the bills but without the community to thrive around it,
+it is just another crap software.
+
+> 5. You'd think a multi-billion-dollar per quarter company could hire a
+> few more people to help; instead stock buybacks are more attractive I
+> guess?  Maybe better ROI? I suspect one too many managers
+> internalized the Mythical Man Month's point about "adding more people
+> to a late software project just makes it later" to mean "starve your
+> projects for resources" and run a ghost-ship (ie. big boat, with
+> little to no deck hands to ensure the boat doesn't "Costa Concordia"
+> (noun-as-a-verb...oh well)).
+
+LOL. And true. My experience with managers is that they have no clue
+about how the open source community works. It is always the egotistic
+and omnipresent take take take and little or no give.
+
+> To be fair, hiring has been impacted by COVID; my point is more so
+> being stretched incredibly thin. There's been what, 3 Clang related
+> kernel bugs you and I have been CC'ed on today. Hard to fix compiler
+> bugs AND triage from the fire hose. I should probably just put down
+> LKML for today and start fixing the [haunted][damned] compiler.
+
+Oh, welcome to drinking from the firehose. This never stops. Ever! So
+yeah, even if you can hire more maintainers, there's always bottlenecks.
+
+> That's a rule for stable, yes.  But also because we have folks that
+> don't seem to understand (moreso maybe haven't considered) that
+> "forking is not free" when upstream moves faster than you and you'd
+> also like to rebase someday; as such acquiring technical debt at a
+> rate that's impossible to pay off.
+
+I guess you need an upstreaming team which takes over technology
+produced by other projects - as those projects cannot slow down to
+adapt to the upstream pace - so they give the code to the upstreaming
+team after the project is done and they add it to the mainline kernel
+eventually. I think that would make a lot of sense for *everybody*
+involved.
+
+> I guess you're paying for beers then.  "Android Common Kernels" run
+> mainline.  (They're a bit esoteric in terms of "production" but
+> cuttlefish virtual devices are running Android on mainline).
+
+Only half of the beers - this "production" is a stretch - I mean
+infrastructure machines, not some funky toys. And *virtual* at that. :-)
+
+> Martin has patches for that, he has CC'ed me when sending them
+> upstream for review.  Review was stalled, so I provided some feedback.
+> I'll review a GCC patch (once it's updated with my previous feedback)
+> if I have to; I'm not against it. w/e so long as we have a timeline
+> for a kernel fix.
+
+That's good. I guess it'll get there eventually. We'll still hold on
+to that fix for years, for those gccs which don't have the function
+attribute. Which is yet another reason for my aversion against compiler
+workarounds.
+
+> I CC'ed Martin on the LLVM bug, since this is a case I'm looking for
+> his input on, or at least for him to be aware of the test case.
+
+Cool.
+
+> I look forward to it.
+
+Ditto.
+
+:-)
+
 -- 
-2.21.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
