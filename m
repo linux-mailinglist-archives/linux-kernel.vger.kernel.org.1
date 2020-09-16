@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450AC26CD91
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5541426CDA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgIPVBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgIPQaY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:30:24 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C318FC061220;
-        Wed, 16 Sep 2020 04:01:58 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id l17so5798154edq.12;
-        Wed, 16 Sep 2020 04:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=f6gBl1x/o83U9v6TkMazyXIZKggUPpY2KATUn29zmFU=;
-        b=ILW3UNWsoHPKtyHaJaBvEo2QrCUU6rZjdhhFeFCwUwyO5uXIYZRjBXmSuUKCRj1oCG
-         VOC9Qh79qB0qj9plRJEnfFSzb8dRAtd35wiijjE8LsrdyJqtlrDd5EZdvrR1zgECJG+y
-         04lY366RXF7AD59y8E+1gNQDw7ahUxvibSSrt66ZCW6TJo6SaVZ84hjRe+paVwYwPph8
-         gNpk2uX1WZhaqOpdKlG2zKCp/H6LUg/PApK6lkIbG0msw4r8xHNeRiRPo5qEl71d6k/7
-         kIGZOl5ZsxC2Bl077OiJW7GEpKmvPYg4lEGFodCbXqm0jPXtETsvTM2hwx4esYCrZPw4
-         WLtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=f6gBl1x/o83U9v6TkMazyXIZKggUPpY2KATUn29zmFU=;
-        b=jOKPsAsDEys/ffPcwnl2ioTAo9NUTWg2lt0Maw3uoyGUUKDh/H9dFVk6r/S9v15jJo
-         yZsZKH6qTzR3Kkf7K+v1/v9ghFZOjEan4KUEqpZ1UxOT0YBy8rNT6UmDxUA/R3AOTNyO
-         7M+EoOSjPqnoouu+ITA2U2fjXYJDBCaeWllSCl4kaU5LyEyQ2R9J9EPnYHpvB/y/zdnv
-         kWl2EULt4Rcf3FTRctWlzQlQhEpyT1gdZLr2aEtudeOEnGtH5V+FQ8T4KR6n/3kyAxX5
-         s36/vW3HM/yCYswTAVRLDzxDirrmSRrYxl2sqcvfZ2h+lU2V3/2qTyS7jjz9Ki2n/GW+
-         qR7g==
-X-Gm-Message-State: AOAM531Y2TeSJupI/PkG1H/pnHHIfhzIzHTqYRRrevApch8bbT7Ye/Bd
-        ONsomgxtt7XmTychXU3mKK4=
-X-Google-Smtp-Source: ABdhPJxruDKya2RnudTwDrLGxUPfcPxghoMLkVz/CqLyEy7TthpXI90k7jitfGr8NFLWcyzTmMWllA==
-X-Received: by 2002:a50:baed:: with SMTP id x100mr11659390ede.384.1600254117074;
-        Wed, 16 Sep 2020 04:01:57 -0700 (PDT)
-Received: from skbuf ([188.25.217.212])
-        by smtp.gmail.com with ESMTPSA id l15sm12218265ejk.50.2020.09.16.04.01.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 04:01:56 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 14:01:54 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     pankaj.bansal@nxp.com, pankaj.bansal@oss.nxp.com,
-        mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc:     qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org
-Subject: Re: canfdtest on flexcan loopback
-Message-ID: <20200916110154.hp4up6yhyokduvf2@skbuf>
+        id S1726353AbgIPVCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:02:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:33466 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726485AbgIPQPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:15:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2511D1435;
+        Wed, 16 Sep 2020 04:07:09 -0700 (PDT)
+Received: from red-moon.arm.com (unknown [10.57.6.237])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A2C23F68F;
+        Wed, 16 Sep 2020 04:07:06 -0700 (PDT)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        George Cherian <george.cherian@marvell.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH v2 1/3] sparc32: Remove useless io_32.h __KERNEL__ preprocessor guard
+Date:   Wed, 16 Sep 2020 12:06:56 +0100
+Message-Id: <084753d3064fe946ff1963eda2eb425cfd7daa7b.1600254147.git.lorenzo.pieralisi@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <cover.1600254147.git.lorenzo.pieralisi@arm.com>
+References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com> <cover.1600254147.git.lorenzo.pieralisi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 9/2/2020 10:09 AM, Wolfgang Grandegger wrote:
-> canfdtest normally runs on the DUT *and* a the host. The DUT receives
-> the messages from the host, increments the frame data bytes and then
-> sends them back to the host. With "loopback" mode, the data bytes are
-> not incremented and that's what you see above.
->
-> Wolfgang
+The __KERNEL_ preprocessor guard is useless in non-uapi headers.
 
-Wolfgang is of course right, but we're nonetheless investigating what
-seems to be a real problem, and what Pankaj had seen was a red herring.
+Remove it.
 
-So currently what I suspect is going on, when I am running canfdtest
-between 2 LS1028A-RDB boards, is that the DUT is reordering frames on
-TX.
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: David S. Miller <davem@davemloft.net>
+---
+ arch/sparc/include/asm/io_32.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-See, for example, the screenshot below:
-https://drive.google.com/file/d/1rOeW3aXh3kPh1CJ39lCccRfjFz5JN5I6/view?usp=sharing
+diff --git a/arch/sparc/include/asm/io_32.h b/arch/sparc/include/asm/io_32.h
+index 9a52d9506f80..8179958e3ce1 100644
+--- a/arch/sparc/include/asm/io_32.h
++++ b/arch/sparc/include/asm/io_32.h
+@@ -121,8 +121,6 @@ static inline void sbus_memcpy_toio(volatile void __iomem *dst,
+ 	}
+ }
+ 
+-#ifdef __KERNEL__
+-
+ /*
+  * Bus number may be embedded in the higher bits of the physical address.
+  * This is why we have no bus number argument to ioremap().
+@@ -148,8 +146,6 @@ static inline int sbus_can_burst64(void)
+ struct device;
+ void sbus_set_sbus64(struct device *, int);
+ 
+-#endif
+-
+ #define __ARCH_HAS_NO_PAGE_ZERO_MAPPED		1
+ 
+ 
+-- 
+2.26.1
 
-I have added trace points to the end of the flexcan_start_xmit function,
-which print the entire skb, and the frames appear to be written to the
-TX message buffer in the correct order. They are seen, however, in the
-incorrect order on the wire.
-
-Thanks,
--Vladimir
