@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34C326CC25
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA5026CC2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbgIPUjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbgIPRGR (ORCPT
+        id S1726783AbgIPUkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:40:08 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:42388 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726806AbgIPRGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:06:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932F8C0611BC;
-        Wed, 16 Sep 2020 10:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=PKWr6P6N/QvHgzN9Xr6p5YvfrLnhJZhCYTZt2ESdvQg=; b=FjA3jDsdaleXkbpXiv8ZZ4gEG8
-        42Luzslojh4iE42ezrc4nnWSBJY1cvbqdCn0be3m2PrY+/qV+xeM3FPIc5i/hS4bKQhb2FYlnn6lp
-        KIINRq35vdlKp2bbEulH4S14v7QzXM6Kq7rKcxamEObgWIoT+/B8pVff3CBkfTyazyGjoj6asPgfs
-        /1X0AQlg2Hr3rfCe1AaJ+amPlnH8cSbdVuFle+0vQvqWDxZgmgt8o3Vj1gnLLGgHOpwgxndrQFoeK
-        hdvrSrtX5RR4OTcunOK8GJEAH0tkrfLM7feW+tGeZ3IMaJ09mZT4Dtd8NozktXqdrn2X5v4fy0epv
-        kAxltcxw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIasZ-0005LY-SK; Wed, 16 Sep 2020 17:06:00 +0000
-Subject: Re: [PATCH v4 17/17] Documentation: PCI: Add userguide for PCI
- endpoint NTB function
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, Rob Herring <robh@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tom Joseph <tjoseph@cadence.com>, linux-pci@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ntb@googlegroups.com
-References: <20200915042110.3015-1-kishon@ti.com>
- <20200915042110.3015-18-kishon@ti.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <17b7c073-d358-e274-c783-1a17590a83a3@infradead.org>
-Date:   Wed, 16 Sep 2020 10:05:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 16 Sep 2020 13:06:13 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08GH0fGb000642;
+        Wed, 16 Sep 2020 12:06:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=tswE/o+nEuqnPz1L70KM6dGVyJ8R2GgfFb65mjn5ES4=;
+ b=jUAiLNj89aXLxh9MBsyyd7LGs4Eqs8lDXcCpKtllxhsPGcLolOn9RI4UM00NAwG9dXF0
+ Dx/V8nn1swCuGmr3Gts6zmV1J7y/VINOBU3RsEn6I7U6spaJ0q3j96aYBejtyoDtAYOm
+ 11ed0Cqbj/lVDSRE43/akYNdmXKUIOFjhW9nPIcBJORNBe9kUN2hSMcLn2DoKYEl0HMS
+ fR4opOl3A1SODKPYg6rSvo3aUul9cBpgmxaRecwIRipqny0LGDXdIBw+KfYKON5NfOaC
+ 7SriU8CA+xTIVAkhr1rhULQoSOmb1G+y9DZJeT1ssD6i8ZzjVLsVOCRx0iW+exthLtws qA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 33k5prhhp0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 16 Sep 2020 12:06:03 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 16 Sep
+ 2020 18:06:01 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Wed, 16 Sep 2020 18:06:01 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 440AE45;
+        Wed, 16 Sep 2020 17:06:01 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 17:06:01 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+Subject: Re: [PATCH] regmap: debugfs: Duplicate name string if delaying
+ debugfs init
+Message-ID: <20200916170601.GM10899@ediswmail.ad.cirrus.com>
+References: <20200916154433.7003-1-ckeepax@opensource.cirrus.com>
+ <20200916161418.GB6374@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20200915042110.3015-18-kishon@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200916161418.GB6374@sirena.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=891
+ clxscore=1015 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 9:21 PM, Kishon Vijay Abraham I wrote:
-> Add documentation to help users use pci-epf-ntb function driver and
-> existing host side NTB infrastructure for NTB functionality.
+On Wed, Sep 16, 2020 at 05:14:18PM +0100, Mark Brown wrote:
+> On Wed, Sep 16, 2020 at 04:44:33PM +0100, Charles Keepax wrote:
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  Documentation/PCI/endpoint/index.rst         |   1 +
->  Documentation/PCI/endpoint/pci-ntb-howto.rst | 160 +++++++++++++++++++
->  2 files changed, 161 insertions(+)
->  create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
+> > -		node->name = name;
+> > +		node->name = kstrdup(name, GFP_KERNEL);
+> > +		if (!node->name) {
 > 
+> Two things here - one is that this should be kstrdup_const(), the other
+> is that we already took a copy of the name in __regmap_init() so the
+> thing to do here is to change the regmap_debugfs_init() call there to
+> use the copy we just made rather than the copy in the config.
 
-LGTM. Thanks for the update.
+Thanks Mark, I will have a look and update.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-
--- 
-~Randy
+Thanks,
+Charles
