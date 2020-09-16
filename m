@@ -2,146 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8958C26BB9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D537F26BBA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgIPExF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 00:53:05 -0400
-Received: from mail-eopbgr50113.outbound.protection.outlook.com ([40.107.5.113]:45366
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726069AbgIPExD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 00:53:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WEgwvXX1Pvyl6Dw8RXGOhs9hMKKXtxOKhmaukTm0qSSMrq6ks0N/W1ph+nxyhrcED5tzKN2lKNuuar0H1chhtxTSyb3zezKeV3H3Ht+Y49E1AOBbSyxZkjnF7gPKfmVWWUWqrYujma+tOJHSlCZpvujyol+7GB7HyJE9qv+x4/o/W7VuUmS2PnR18u951X5VivPmD/8VEhxsYHA2zWI5gq1E+9GsKjhRo6s6d24XH1MC3LnD7Aw5YsY8BXwC0t7OReOgvDFgfSNsVV0dQc5QrbYrf4cMuVOkZKJy/nNZgAr+0bHjFsBPdm7OJAnnglxQpt9G2MfG8bEcScdgKaX6EA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KVw77rlgu5fr1GQRDmhd/5SHTh8BQoIY9WER70IFCmY=;
- b=AcKJCLQgGcqwZgA4LzPtv5OYCEXTzd1mkzHDQcptshOrcupe8t1y8zMwYLCU+QewIrqyEl//cxV6xUicCFzBXDCsjwoGNj82eiNsr3u1NTGAQddi0V1FIvJ1qpCEVvmmU/3XLXafR3wPuIxwnDA0M7/6mU1V4UI1DSD1sLgecdMF/7m5iZeB7nauo3N3MwKHoUsWgvCpG61UiVvJakIvUiquSUZzyLjqzzMQjNQjiEjRa6Gz3zXISgAMa8n8Ck68LQaG5pLBMeU6pXP+Wamn/Lg4fk9OKeaiEPGe34RNEK9bLKbd6YjhJseUOwbrDopkh00TXbmz60vqQTwxm+HeCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KVw77rlgu5fr1GQRDmhd/5SHTh8BQoIY9WER70IFCmY=;
- b=ZEciWRAjUtcE2xBEVjDxlE6/tANF3lj11NCh3jWtRogJlep5sxdvb3t62j2/F0QpKB1/wrJGfWmsAK+pb8pZrrOIMdxU4gCVnioZwrn6R5ZDf3s9370KgypWz/ciZHT0b6PTyI6JfR+E9XXqyF2KRzleiEm3TY2Cl8ijTHhFR5M=
-Authentication-Results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB8PR02MB5964.eurprd02.prod.outlook.com (2603:10a6:10:11e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
- 2020 04:52:57 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::3890:7b1:97a6:1e47]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::3890:7b1:97a6:1e47%7]) with mapi id 15.20.3391.011; Wed, 16 Sep 2020
- 04:52:57 +0000
-Subject: Re: [PATCH v3 1/6] dt-bindings: mux-j7200-wiz: Add lane function
- defines
-To:     Roger Quadros <rogerq@ti.com>, t-kristo@ti.com, nm@ti.com
-Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        nsekhar@ti.com, kishon@ti.com
-References: <20200915112038.30219-1-rogerq@ti.com>
- <20200915112038.30219-2-rogerq@ti.com>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <e28e98a0-f3fc-29bd-d7a6-cc45f3a69ede@axentia.se>
-Date:   Wed, 16 Sep 2020 06:52:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <20200915112038.30219-2-rogerq@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: sv-SE
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HE1P192CA0024.EURP192.PROD.OUTLOOK.COM (2603:10a6:3:fe::34)
- To DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+        id S1726178AbgIPEz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 00:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgIPEzX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 00:55:23 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BEEC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 21:55:22 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id v123so6916611qkd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 21:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tPHd4pdGXjsQOHAETQ6Xbv099uq9TN20sjm5ojVFh/U=;
+        b=Bpxqol9+GpfW2RNYhG2r7k+wDV6Gwp4UaOZlFz7j/L8ig0Ok0UX5a3nGiasEfKyHI9
+         Y7wL5CRCckbJKgousmhGnL1fe44JIgwdau/G5wgvc66rz4U61waUwkVcCZtkhAKzeFJr
+         HNjBbMA2aA3NKd4T665eJ9BDE/aMUma6X6xl4aT0EyOqPDqUY1XTyceC5jAj5HFCh7Ht
+         ZxJcwv2wBDE+Tt5slxAUHZ/td1d+etV14tzWRxb8NcvlzUHkw7le8/Rnwx+SiIXBFfFe
+         l9RM/dC4fXREeakU7d1Gvb/CFW63npVi4jq5oe9l+NPq+bvudFsRvHF9fB6Ooex4pbv3
+         rdaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tPHd4pdGXjsQOHAETQ6Xbv099uq9TN20sjm5ojVFh/U=;
+        b=mM4AWqdQkkmcqHtH0hHNDpD0NdR6mbI77ooRHmrEXh1kaNORnicV0ruBGQzPs07T/8
+         8akwVfZH3TsNmn/Jen+trNdw3HFGpQH0xstmOFqh/5CyvXOE1smLF06SeqR8OKObrL4h
+         y11yQkrQwrqkT7+tywlrGQp+en41WoQ2iilKW7fNJEymEodxTg3dO2yxpn0xSbauUstN
+         qAoN+AERtyhTQhFpjrYK6Cxk1LC+wH0DVmkZESpsXgq/gAuGqPnbr13Eb2AJy4jGcKiT
+         28JV+gA4DU5YbPX4OJcbgT2Hyqer2Q0Pk4R1qA2F5M/hUploaoPFkF7OG7S+6LBDW/pw
+         V7vg==
+X-Gm-Message-State: AOAM5311c9MlVhNJkqPkH1roE8f5kl8bijHj1VCo+rNCZKpTqBKPSh2a
+        9lNhug4qcD/ShRbSszQz+/lOm+P99MMzUffYTUMFa8B6y0jRAA==
+X-Google-Smtp-Source: ABdhPJz/mRP2nZ/dBHANgxTq2gzIzIjlPzsD/OqRvQCN2EH8hbXWqR16FKFcO5iC6QSOIhT2o6ZKR/DFeSuPuEdxQoU=
+X-Received: by 2002:a37:54a:: with SMTP id 71mr18965698qkf.407.1600232121286;
+ Tue, 15 Sep 2020 21:55:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.226.217.78) by HE1P192CA0024.EURP192.PROD.OUTLOOK.COM (2603:10a6:3:fe::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Wed, 16 Sep 2020 04:52:55 +0000
-X-Originating-IP: [85.226.217.78]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9e71ecb1-ef0b-45dc-1123-08d859fc614b
-X-MS-TrafficTypeDiagnostic: DB8PR02MB5964:
-X-Microsoft-Antispam-PRVS: <DB8PR02MB59640D75B66EEB158F04317CBC210@DB8PR02MB5964.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f01eL+mJBLo6k4RcFakpVHRhUV0YBjILwtaQPpocYGdXwzLiEiURziY6wkvqGM6W7xG4oxp281XLSDmMU7v2zxHkDRqNCcKk6KqxSgTJVGI48McGYi+DPPPw6Z5r7s4VmwsYhHTnoDRmSZlMCnWMp4C9uomHiPwsuhAuThYH/gR5RW5ybdKyUYZpUnnUv6TZBphf33SvXf6VUliiXCyOj/Ag5OxJkIh6XZzjJ9U0l0sjaFqPwvYqj2njQ4CqLp5cAR5EeaziMW6PFi7wawhx/9Lq4Fud1jMcWmv/AhD++3Es00TReyPAYJt5O8K4NsG1H24Qoith45/dsdFpcq3Fp+O7cigICVg83REsxyWFBpgRILYxljIgkPbrZmXz2Wxx
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(376002)(39830400003)(31696002)(478600001)(16526019)(186003)(4326008)(66476007)(5660300002)(26005)(66946007)(6666004)(6486002)(956004)(66556008)(86362001)(31686004)(53546011)(8936002)(2616005)(316002)(36756003)(52116002)(16576012)(8676002)(2906002)(36916002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 0EaoAJWZWkaWiJC+whckVSvftxuUcoQy/tIJTV3t9+l23ArneSDAV2G02A4THh39P4kAYFaZcNuYw+/pOTnnHRItCzqZS/FQJ/Jm4vDdRW6Xs9TXr1vlebvQ9+lhbI6tJaDCnJNpmUYYwALI7OLizB+QgjV3TzjYKzPJoaKxXYYXgxuEIcI9eGl8kp+Z1rl3WjL3kCKGbJh86Rr1zcB6j6HQx8T6WI2VxsoHL0GPK/yifFWv1IEA4JHbrtqt2OfnhzU6aRrx8HBkcKKXfsNst1DrCKtO5xLDwiCdz/b6xOI0k5B3n1/UFlD8CKIghLT0PcKQMR+G8TG8TMJA+cKpvPoHc0hha8m/2Y9elSMuC+WI8M7tQ1ehyJryNrMmdB1p2UxGGLzS5zcIf06PMFSJvZV/lhVwLhlg8/IgMZwHa9VNv1oDYJ7jHZPn5SAO01AJPtHX8ylmgZDpvQVTCxR3lFZjfB236Pc0JHOuYxZmWlox0wXxMrxueJ+HmwKAn56zr5xK1EKQxOUp50dobtQ8CMxTUxiBfnAn8G3JpQpRO8wUVFUKqlFCQhsNVFwJUvBZcuXRngR7f2mRw6528FDbH6uJ8SEk30oFvM1wHfG35GCOhFZBet6wjCYf3iXAesAomGH/37W51pwd8c1tDTSaew==
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e71ecb1-ef0b-45dc-1123-08d859fc614b
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 04:52:57.4913
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1jmtlT2dJQecOotX9JGLhS38pdX3nhu8UzovL+aS/W/uH4ZcNF4/omdHrL2wgStw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR02MB5964
+References: <00000000000059b6d40594d0f776@google.com> <a8a0dbe1-80de-4438-9443-6e25de63910fn@googlegroups.com>
+In-Reply-To: <a8a0dbe1-80de-4438-9443-6e25de63910fn@googlegroups.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 16 Sep 2020 06:55:09 +0200
+Message-ID: <CACT4Y+bvwOZCF_--T=_Vxk1YCqGxMGEyrs3tRSyGNw1ENMJb1g@mail.gmail.com>
+Subject: Re: WARNING in batadv_iv_send_outstanding_bat_ogm_packet
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 15, 2020 at 8:34 PM Anant Thazhemadam
+<anant.thazhemadam@gmail.com> wrote:
+> On Monday, October 14, 2019 at 2:25:08 AM UTC+5:30 syzbot wrote:
+>>
+>> Hello,
+>>
+>> syzbot found the following crash on:
+>>
+>> HEAD commit: da940012 Merge tag 'char-misc-5.4-rc3' of git://git.kernel..
+>> git tree: upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=13ffd808e00000
+>> kernel config: https://syzkaller.appspot.com/x/.config?x=2d2fd92a28d3e50
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=c0b807de416427ff3dd1
+>> compiler: clang version 9.0.0 (/home/glider/llvm/clang
+>> 80fee25776c2fb61e74c1ecb1a523375c2500b69)
+>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=141ffd77600000
+>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=11edd580e00000
+>>
+>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+>> Reported-by: syzbot+c0b807...@syzkaller.appspotmail.com
+>>
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 1 PID: 30 at net/batman-adv/bat_iv_ogm.c:382
+>> batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:382 [inline]
+>> WARNING: CPU: 1 PID: 30 at net/batman-adv/bat_iv_ogm.c:382
+>> batadv_iv_send_outstanding_bat_ogm_packet+0x6b4/0x770
+>> net/batman-adv/bat_iv_ogm.c:1663
+>> Kernel panic - not syncing: panic_on_warn set ...
+>> CPU: 1 PID: 30 Comm: kworker/u4:2 Not tainted 5.4.0-rc2+ #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+>> Google 01/01/2011
+>> Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
+>> Call Trace:
+>> __dump_stack lib/dump_stack.c:77 [inline]
+>> dump_stack+0x1d8/0x2f8 lib/dump_stack.c:113
+>> panic+0x264/0x7a9 kernel/panic.c:221
+>> __warn+0x20e/0x210 kernel/panic.c:582
+>> report_bug+0x1b6/0x2f0 lib/bug.c:195
+>> fixup_bug arch/x86/kernel/traps.c:179 [inline]
+>> do_error_trap+0xd7/0x440 arch/x86/kernel/traps.c:272
+>> do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:291
+>> invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1028
+>> RIP: 0010:batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:382 [inline]
+>> RIP: 0010:batadv_iv_send_outstanding_bat_ogm_packet+0x6b4/0x770
+>> net/batman-adv/bat_iv_ogm.c:1663
+>> Code: 66 05 00 eb 05 e8 9c 48 23 fa 48 83 c4 68 5b 41 5c 41 5d 41 5e 41 5f
+>> 5d c3 e8 88 48 23 fa 0f 0b e9 34 ff ff ff e8 7c 48 23 fa <0f> 0b e9 28 ff
+>> ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c c1 f9 ff
+>> RSP: 0018:ffff8880a9abfc48 EFLAGS: 00010293
+>> RAX: ffffffff874fe8a4 RBX: ffff888094160870 RCX: ffff8880a9ab2080
+>> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000002
+>> RBP: ffff8880a9abfcd8 R08: ffffffff874fe28e R09: ffffed10123e6969
+>> R10: ffffed10123e6969 R11: 0000000000000000 R12: ffff888091f34000
+>> R13: dffffc0000000000 R14: ffff8880a80c5000 R15: ffff8880a4481400
+>> process_one_work+0x7ef/0x10e0 kernel/workqueue.c:2269
+>> worker_thread+0xc01/0x1630 kernel/workqueue.c:2415
+>> kthread+0x332/0x350 kernel/kthread.c:255
+>> ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+>> Kernel Offset: disabled
+>> Rebooting in 86400 seconds..
+>>
+>>
+>> ---
+>> This bug is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzk...@googlegroups.com.
+>>
+>> syzbot will keep track of this bug report. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>> syzbot can test patches for this bug, for details see:
+>> https://goo.gl/tpsmEJ#testing-patches
+>
+>
+> For this bug, syzbot does not seem to be able to build the kernel anymore.
+> Can bugs like these be considered and closed as invalid?
+>
+> Thanks,
+> Anant
 
-Sorry for the delay.
+Hi Anant,
 
-On 2020-09-15 13:20, Roger Quadros wrote:
-> Each SERDES lane mux can select upto 4 different IPs.
-> There are 4 lanes in each J7200 SERDES. Define all
-> the possible functions in this file.
-> 
-> Cc: Peter Rosin <peda@axentia.se>
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> ---
->  include/dt-bindings/mux/mux-j7200-wiz.h | 29 +++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->  create mode 100644 include/dt-bindings/mux/mux-j7200-wiz.h
-> 
-> diff --git a/include/dt-bindings/mux/mux-j7200-wiz.h b/include/dt-bindings/mux/mux-j7200-wiz.h
-> new file mode 100644
-> index 000000000000..b091b1185a36
-> --- /dev/null
-> +++ b/include/dt-bindings/mux/mux-j7200-wiz.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * This header provides constants for J7200 WIZ.
-> + */
-> +
-> +#ifndef _DT_BINDINGS_J7200_WIZ
-> +#define _DT_BINDINGS_J7200_WIZ
-> +
-> +#define SERDES0_LANE0_QSGMII_LANE3	0x0
-> +#define SERDES0_LANE0_PCIE1_LANE0	0x1
-> +#define SERDES0_LANE0_IP3_UNUSED	0x2
-> +#define SERDES0_LANE0_IP4_UNUSED	0x3
-> +
-> +#define SERDES0_LANE1_QSGMII_LANE4	0x0
-> +#define SERDES0_LANE1_PCIE1_LANE1	0x1
-> +#define SERDES0_LANE1_IP3_UNUSED	0x2
-> +#define SERDES0_LANE1_IP4_UNUSED	0x3
-> +
-> +#define SERDES0_LANE2_QSGMII_LANE1	0x0
-> +#define SERDES0_LANE2_PCIE1_LANE2	0x1
-> +#define SERDES0_LANE2_IP3_UNUSED	0x2
-> +#define SERDES0_LANE2_IP4_UNUSED	0x3
-> +
-> +#define SERDES0_LANE3_QSGMII_LANE2	0x0
-> +#define SERDES0_LANE3_PCIE1_LANE3	0x1
-> +#define SERDES0_LANE3_USB		0x2
-> +#define SERDES0_LANE3_IP4_UNUSED	0x3
-> +
-> +#endif /* _DT_BINDINGS_J7200_WIZ */
++syzkaler, lkml (nobody is generally reading syzkaller-bugs).
 
-Should not the defines start with J7200_WIZ? SERDES0 seems like a too
-generic prefix, at least to me.
-
-Cheers,
-Peter
+What do you mean by "not able to build a kernel for this bug"?
+Building a kernel is not related to a particular bug. It's the same
+for all bugs...
