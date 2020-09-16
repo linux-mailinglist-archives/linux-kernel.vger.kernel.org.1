@@ -2,86 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E25126C913
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C9E26C97D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbgIPTDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727485AbgIPRsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:35 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC04C0611C2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:09:50 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s12so6418125wrw.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BtfD39sd0nMdQV9/O9Z3aVwFFH7FdxRsFaEXRfET0Pk=;
-        b=JMfXnKjc+V6oefEfHPxrJc0ASOsVHknp4fC393byiq1s0Wql02e0UwVma6O/xdLogB
-         nv/VzMLg8R/G7mEK2+SPJ1OEaPWP3MzPXqsclLSgp/7owr30xJaGLb0Ry+hZJ5nnmWYb
-         YaRDlgJrAthFEr3jt0X+9LJ4zoLdS48c0KxJKfoeE2JYDNitMe0YGWCGDQjFXTlVYWDV
-         cC1oakzx3NmihAnNqwXMUtXgUOvgrAH7d886SwQLbzVQrD1MMTVe1cLUj8/MNZzHCarf
-         5lhwB7o1YQFnaeumfaS0uBCXxq59uESPZi0vIXkOJcE+fz8JWOgtd2RCe8QXmAinUAqI
-         8jfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BtfD39sd0nMdQV9/O9Z3aVwFFH7FdxRsFaEXRfET0Pk=;
-        b=JEYLDrpnrjwKcFtZaEAQdBhYkOs+DrrtEYNDzDxoXe+ZrhL+KvPCD8nkwzqvW6hToh
-         pBsappZ/XfMqUTEUYRRc6WIBxXLVr1nKzrQtEPahlsCm/gxyGp/kkV25zGZAYc1P04sK
-         ivF122ptOLRGrjs7Sa8Klc6NHZ4N9qrjMYNSP9+6ig+tyvJSvmsqQPmv5bhGQwHzlY6j
-         HuH+mIJRJ9E6FYSLrxNxvUVxeOyG8Ge8nrs7voX9wK0UKXsa/wSZAnJqQ2aUpwq2T1eU
-         HOACQfkARv4QUD5UvvgkQkIMlXmAR+kmhjNEAY1MzIEB18PdLZSpJabBcEDieUtVtYmH
-         BQdA==
-X-Gm-Message-State: AOAM533MllbVIZb6QjOKzdDnTThW1GvVsiJaYQ6hrR+m9CakT6Mekiil
-        meUjODBSDXO/+u+2QeqUhSly/w==
-X-Google-Smtp-Source: ABdhPJy4dZpmUwlAyx/BKQK6y4C9acThXDJDxCXFc5C+hNp6beal5vCckquXeaDceJb14bG9teu8aQ==
-X-Received: by 2002:adf:ef03:: with SMTP id e3mr21385449wro.146.1600254589005;
-        Wed, 16 Sep 2020 04:09:49 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id v9sm31876597wru.37.2020.09.16.04.09.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Sep 2020 04:09:48 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     stanimir.varbanov@linaro.org, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        georgi.djakov@linaro.org
-Subject: [PATCH] media: platform: Remove depends on interconnect
-Date:   Wed, 16 Sep 2020 14:09:47 +0300
-Message-Id: <20200916110947.6933-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        id S1727279AbgIPTKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:10:45 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:57738 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727770AbgIPTKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 15:10:05 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 577BA53427FD7C688870;
+        Wed, 16 Sep 2020 19:04:33 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 19:04:29 +0800
+From:   Qilong Zhang <zhangqilong3@huawei.com>
+To:     <peter.ujfalusi@ti.com>, <perex@perex.cz>, <tiwai@suse.com>
+CC:     <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] sound: use devm_platform_ioremap_resource_byname
+Date:   Wed, 16 Sep 2020 19:11:22 +0800
+Message-ID: <20200916111122.144963-1-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dependency on interconnect in the Kconfig was introduced to avoid
-the case of interconnect=m and driver=y, but the interconnect framework
-has been converted from tristate to bool now. Remove the dependency as
-the framework can't be a module anymore.
+Use the devm_platform_ioremap_resource_byname() helper instead of
+calling platform_get_resource_byname() and devm_ioremap_resource()
+separately.
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
 ---
- drivers/media/platform/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/ti/omap-mcbsp.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index bbf32086b607..1dbfb9b9d129 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -484,7 +484,6 @@ config VIDEO_QCOM_VENUS
- 	tristate "Qualcomm Venus V4L2 encoder/decoder driver"
- 	depends on VIDEO_DEV && VIDEO_V4L2
- 	depends on (ARCH_QCOM && IOMMU_DMA) || COMPILE_TEST
--	depends on INTERCONNECT || !INTERCONNECT
- 	select QCOM_MDT_LOADER if ARCH_QCOM
- 	select QCOM_SCM if ARCH_QCOM
- 	select VIDEOBUF2_DMA_SG
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index 6025b30bbe77..186cea91076f 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -620,11 +620,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ 	spin_lock_init(&mcbsp->lock);
+ 	mcbsp->free = true;
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+-	if (!res)
+-		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-
+-	mcbsp->io_base = devm_ioremap_resource(&pdev->dev, res);
++	mcbsp->io_base = devm_platform_ioremap_resource_byname(pdev, "mpu");
+ 	if (IS_ERR(mcbsp->io_base))
+ 		return PTR_ERR(mcbsp->io_base);
+ 
+-- 
+2.17.1
+
