@@ -2,122 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C07F26C68D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED4C26C6AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbgIPRyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
+        id S1727614AbgIPR7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727651AbgIPRyS (ORCPT
+        with ESMTP id S1727452AbgIPR5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:54:18 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA38AC02C2A6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:36:56 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id e7so6415674qtj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:36:56 -0700 (PDT)
+        Wed, 16 Sep 2020 13:57:53 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BD1C02C2AA
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:40:06 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id g4so6784466edk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:40:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TTuIKeDT4oZBu9/PmyTJFWVXKqpQ0FNzrmIL6pppv2w=;
-        b=Nwh4CIe8iyvAdxENM+gMC5s21hXvVZ07MqkMYP+6Kj2yaWgRuSTRzMvAirfHGbsZTK
-         HmvIXCkPww+m+kEGQEHQkW7i02uR9n1QL6lDu3VPGjUBYiDbEFgDOW1GDRWo8m5s7fbJ
-         wBGSlVylOqphT2VFgvz7zluzNVD34a7XeAtRBUKLkA/XZ5QsZL8kc74MXigRyF+Ny1E1
-         Su+NhuLQY2qx2IXQqt6r3y16d2IfJx+HHs+aOHhqQ4ZMsPNOFhAiPllrOiefgqKb4uyp
-         1mqQRJ43phNT799cpQUQ3i2NozpWaiyIsbykC00DwdeYPlgXKKMB/DtAx4kJF5Q35859
-         vHiQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lYwFJVVyWUnvr3RRMVPcQVxmSTwmiXnhNz3uXivvFZA=;
+        b=C1Hh9LyW50A8UnujcPZRIXI0ouy2JMnjXJvBkcGhAKb2pLUbr1rD4bPI3jdCJXHhnC
+         tx3ak9cITTK4qeciTuBhe8nVxr3oz32O6JPmpklUrcf2776BVokaN923bZ9/rq88Rh5K
+         CF1wLbCxUlvSOeWui43H0Jvz9TEqBo+LVxGxtnCSlu6/rGeSy9LnezIIZbEdZhJ98SIt
+         F9fdJ6pwCbq21caas/gFAcjGFFn4O7xzi5uk7AG7yJSql8cb9NbKx8HG67QxQrrjfa0Y
+         o7Cxv4lii7MsmwlOmqGbeKr/SdJLsWrtqDsad358aHKAYoOJnI+XawOA4KNF9f6Eb5al
+         QZRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TTuIKeDT4oZBu9/PmyTJFWVXKqpQ0FNzrmIL6pppv2w=;
-        b=q4Av5dE5XsFP+rRVTRuefNVn6Rpvd3+fWrT6Q/Zeb2uEXlOdMX/9seWNh91m+9Owk9
-         L+9q5zeuncQuRFtJ6mLaY/HkFDAESn1VzPbRddMGHfHpOQJB4biG47sL2sao66kWnsCW
-         /MXrhmIPrSMjTLDE7MNOTGcYaVvYvXK3Lc+IZJMHiRiiaWeo7mjEZa3b98QwGZoPVNYo
-         35jNkEsUDFdkrYiSuH2aAlzu87FuVj70lqFlBkRGUVMNzDscC8XxMn65cTAEb/JcQAAa
-         arr5sV0UzJjvKeSYs//TrCGa36XXu9dZY3He9LqmiqEzftrmwOsOM3/5be4w91vYV9p4
-         InVg==
-X-Gm-Message-State: AOAM531eCgd37hprmqS0ImB0YI1Q+ijOnw/T6CJpgEDxkkGbLMEHya41
-        kKePoXp47ogmNyZFzdWw6Xk=
-X-Google-Smtp-Source: ABdhPJxmRJoZnXvvEr70yS68oDpU4wfvDGLr4WCGB6/Ql/9c8V0oIJFNGn8BHMarY8skC5JEnK5VpQ==
-X-Received: by 2002:aed:36e7:: with SMTP id f94mr23372706qtb.369.1600270615917;
-        Wed, 16 Sep 2020 08:36:55 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c100:b9d:d54e:5074:9d44:3698])
-        by smtp.googlemail.com with ESMTPSA id x26sm18469219qtr.78.2020.09.16.08.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 08:36:55 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Tong Zhang <ztong0001@gmail.com>
-Subject: [PATCH] nvme: fix NULL pointer dereference
-Date:   Wed, 16 Sep 2020 11:36:49 -0400
-Message-Id: <20200916153648.5475-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lYwFJVVyWUnvr3RRMVPcQVxmSTwmiXnhNz3uXivvFZA=;
+        b=FvvWJOEC8pcjVjXgGE8OqcDaRFnA6Xq/udzUumKmVYswV7/GAcwRFQupC03bSosgm5
+         Xys9XosZhYhLvbCZRLBdw3I68CzMTnjisA6/fEb1enygQSOexP7X7g0V+s072fD4mHUk
+         7lHwu0uAxp3tunn1ueV8p5p+3VVfHTX2b1XsmqJ5/Ilcqb3LXAq7XfvcqhD8YHPzFp6X
+         2owuxNNi1eBsibxdkYaLMAQSjU1lwnAgWl9lPlYsiaZYDLJpScqDlEALYGXD8/wtDMPj
+         SzuLvNIxDE2eaDOwMWuwe4epxUGpjvsZfBCsgJVu3g/NkboGljQAqvVi4WDSsTA9bK0B
+         oGiA==
+X-Gm-Message-State: AOAM5320XaRFLbPaqoIndI1w80uzyQ7uUsrs+jDpLSykAoJrsm+IYmm0
+        QWoxy83iLN+W/gG3NOVq1izRUYxGS8dN78vn/qWzMQ==
+X-Google-Smtp-Source: ABdhPJwOo9r6FDUzpRY8OEBlsg9uhT7ZY2IDJIhHGcJvcQ0nag1UhTOihVozgoZqTeaMaapgroNGI4E/cvmpKLiV1VY=
+X-Received: by 2002:a05:6402:17ec:: with SMTP id t12mr27216734edy.328.1600270805229;
+ Wed, 16 Sep 2020 08:40:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200916152909.6812-1-vadym.kochan@plvision.eu>
+In-Reply-To: <20200916152909.6812-1-vadym.kochan@plvision.eu>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 16 Sep 2020 17:39:54 +0200
+Message-ID: <CAMpxmJV3Rq65SY4MvLc8ONcpzt4DGZ3Kz5GpGi0TGZqHcJPWwg@mail.gmail.com>
+Subject: Re: [PATCH] misc: eeprom: set type id as EEPROM for nvmem devices
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-blk_mq_tag_to_rq can return NULL and this condition must be checked
+On Wed, Sep 16, 2020 at 5:29 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
+>
+> Set type as NVMEM_TYPE_EEPROM to expose this info via
+> sysfs:
+>
+> $ cat /sys/bus/nvmem/devices/0-00560/type
+> EEPROM
+>
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> ---
+> Checked only with at24.
+>
+>  drivers/misc/eeprom/at24.c          | 1 +
+>  drivers/misc/eeprom/at25.c          | 1 +
+>  drivers/misc/eeprom/eeprom_93xx46.c | 1 +
+>  3 files changed, 3 insertions(+)
+>
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index 2591c21b2b5d..800300296c74 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -678,6 +678,7 @@ static int at24_probe(struct i2c_client *client)
+>                         return err;
+>         }
+>
+> +       nvmem_config.type = NVMEM_TYPE_EEPROM;
+>         nvmem_config.name = dev_name(dev);
+>         nvmem_config.dev = dev;
+>         nvmem_config.read_only = !writable;
+> diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
+> index ed8d38b09925..3a586a7c4b1a 100644
+> --- a/drivers/misc/eeprom/at25.c
+> +++ b/drivers/misc/eeprom/at25.c
+> @@ -348,6 +348,7 @@ static int at25_probe(struct spi_device *spi)
+>         spi_set_drvdata(spi, at25);
+>         at25->addrlen = addrlen;
+>
+> +       at25->nvmem_config.type = NVMEM_TYPE_EEPROM;
+>         at25->nvmem_config.name = dev_name(&spi->dev);
+>         at25->nvmem_config.dev = &spi->dev;
+>         at25->nvmem_config.read_only = chip.flags & EE_READONLY;
+> diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
+> index 94cfb675fe4e..7c45f82b4302 100644
+> --- a/drivers/misc/eeprom/eeprom_93xx46.c
+> +++ b/drivers/misc/eeprom/eeprom_93xx46.c
+> @@ -455,6 +455,7 @@ static int eeprom_93xx46_probe(struct spi_device *spi)
+>         edev->pdata = pd;
+>
+>         edev->size = 128;
+> +       edev->nvmem_config.type = NVMEM_TYPE_EEPROM;
+>         edev->nvmem_config.name = dev_name(&spi->dev);
+>         edev->nvmem_config.dev = &spi->dev;
+>         edev->nvmem_config.read_only = pd->flags & EE_READONLY;
+> --
+> 2.17.1
+>
 
-[  147.861050] BUG: KASAN: null-ptr-deref in nvme_irq+0xfc/0x410
-[  147.861326] Write of size 2 at addr 0000000000000122 by task kworker/u4:1/56
-[  147.861675]
-[  147.861756] CPU: 1 PID: 56 Comm: kworker/u4:1 Not tainted 5.9.0-rc4+ #83
-[  147.862657] Workqueue: nvme-wq nvme_scan_work
-[  147.862876] Call Trace:
-[  147.863002]  <IRQ>
-[  147.863112]  dump_stack+0x7d/0xb0
-[  147.863280]  kasan_report.cold+0x6a/0x7e
-[  147.863478]  ? nvme_irq+0xfc/0x410
-[  147.863650]  nvme_irq+0xfc/0x410
-[  147.863815]  ? __x64_sys_getrandom+0xb0/0xb0
-[  147.864030]  ? nvme_del_cq_end+0x70/0x70
-[  147.864229]  __handle_irq_event_percpu+0x69/0x280
-[  147.864465]  handle_irq_event_percpu+0x6a/0xe0
-[  147.864689]  ? __handle_irq_event_percpu+0x280/0x280
-[  147.864939]  ? _raw_spin_lock+0x75/0xd0
-[  147.865131]  ? _raw_read_lock_irq+0x30/0x30
-[  147.865345]  handle_irq_event+0x57/0x86
-[  147.865537]  handle_edge_irq+0xe5/0x2d0
-[  147.865732]  asm_call_on_stack+0x12/0x20
-[  147.865929]  </IRQ>
-[  147.866038]  common_interrupt+0xad/0x110
-[  147.866236]  asm_common_interrupt+0x1e/0x40
-[  147.866447] RIP: 0010:__asan_load4+0x40/0xa0
-[  147.866663] Code: 00 00 ff 48 39 f8 77 56 48 8d 47 03 48 89 c2 83 e2 07 48 83 fa 02 76 2f 48 b9 00 00 00 00 00 fc ff df 48 c1 e8 03 0f b6 04 08 <84>0
-[  147.867577] RSP: 0000:ffff8880666e6d48 EFLAGS: 00000a06
-[  147.867837] RAX: 0000000000000000 RBX: ffff8880666e6e28 RCX: dffffc0000000000
-[  147.868190] RDX: 0000000000000003 RSI: ffffffffb053e44f RDI: ffff8880666e6e30
-[  147.868544] RBP: 0000000000000013 R08: ffffffffafb5ee6f R09: fffffbfff64977ad
-[  147.868897] R10: ffffffffb24bbd63 R11: fffffbfff64977ac R12: ffffffffb053e44f
-[  147.869250] R13: 0000000000000000 R14: ffff8880666d8040 R15: 0000000000000130
+Please split it into separate patches - these drivers have different
+maintainers.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/nvme/host/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 899d2f4d7ab6..725d2263a0f5 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -960,6 +960,8 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
- 	}
- 
- 	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
-+	if (!req)
-+		return;
- 	trace_nvme_sq(req, cqe->sq_head, nvmeq->sq_tail);
- 	if (!nvme_try_complete_req(req, cqe->status, cqe->result))
- 		nvme_pci_complete_rq(req);
--- 
-2.25.1
-
+Bartosz
