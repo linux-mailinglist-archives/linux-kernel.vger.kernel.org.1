@@ -2,123 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1511126C0DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49DD26C0EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgIPJlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgIPJlM (ORCPT
+        id S1726681AbgIPJoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:44:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726243AbgIPJoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:41:12 -0400
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFB4C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:41:11 -0700 (PDT)
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 9E76A5C1831;
-        Wed, 16 Sep 2020 11:41:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1600249267;
+        Wed, 16 Sep 2020 05:44:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600249450;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8rHy8vdkEo72E7HSOmCsMx7Z/WPlGosnFRGYVLBt0W8=;
-        b=lo8s4de7bPmN7TTDClL5Q+6U32mjTHTMNUdP1Z8Ed//9z32RmClr34Wphejz7rWt6fhjaQ
-        xbnrNfcNihTHPkUMIebTrEb547uPWNlGAZcKy2Bq5nkKp8YqrSamCN38z0911S0yplIb8z
-        dH34YOSbrlY/VN4SR0GeYH6dgOu9uEw=
+        bh=SFaZWPLKSCf3bE5hLnZDxFsTVIgAlxg96TUTz46i64w=;
+        b=GURjBdA1XqOF9pxwQHHqvWA48WVnZO1/ZNT7V5Qozv64IehAapQOtGRlYkv227aTJ/K1sG
+        O/DMSuarLpRTAMfW6KsuneHM+01ExM1DxLUeLDnkiReWQ4Nc47Yv5yUSmiNg8bSuET3+FS
+        arnMDO4laLC+WENEFJ9NRDDuD2Li9XI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-0M9Tfb-_MIGuYoFDQeNTGg-1; Wed, 16 Sep 2020 05:44:07 -0400
+X-MC-Unique: 0M9Tfb-_MIGuYoFDQeNTGg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E0CB1007469;
+        Wed, 16 Sep 2020 09:44:05 +0000 (UTC)
+Received: from gondolin (ovpn-112-252.ams2.redhat.com [10.36.112.252])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B77A819D6C;
+        Wed, 16 Sep 2020 09:44:00 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 11:41:59 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     alex.williamson@redhat.com, pmorel@linux.ibm.com,
+        schnelle@linux.ibm.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] vfio iommu: Add dma available capability
+Message-ID: <20200916114159.42e145fd.cohuck@redhat.com>
+In-Reply-To: <1600196718-23238-2-git-send-email-mjrosato@linux.ibm.com>
+References: <1600196718-23238-1-git-send-email-mjrosato@linux.ibm.com>
+        <1600196718-23238-2-git-send-email-mjrosato@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 16 Sep 2020 11:41:07 +0200
-From:   Stefan Agner <stefan@agner.ch>
-To:     marex@denx.de, stefan@agner.ch
-Cc:     laurent.pinchart@ideasonboard.com, airlied@linux.ie,
-        daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, tomi.valkeinen@ti.com,
-        linux-imx@nxp.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drm: mxsfb: check framebuffer pitch
-In-Reply-To: <20200908141654.266836-1-stefan@agner.ch>
-References: <20200908141654.266836-1-stefan@agner.ch>
-User-Agent: Roundcube Webmail/1.4.1
-Message-ID: <8d70f07a68b9dc199715ba897e093331@agner.ch>
-X-Sender: stefan@agner.ch
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-08 16:16, Stefan Agner wrote:
-> The lcdif IP does not support a framebuffer pitch (stride) other than
-> framebuffer width. Check for equality and reject the framebuffer
-> otherwise.
+On Tue, 15 Sep 2020 15:05:18 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+
+> Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container")
+> added the ability to limit the number of memory backed DMA mappings.
+> However on s390x, when lazy mapping is in use, we use a very large
+> number of concurrent mappings.  Let's provide the current allowable
+> number of DMA mappings to userspace via the IOMMU info chain so that
+> userspace can take appropriate mitigation.
 > 
-> This prevents a distorted picture when using 640x800 and running the
-> Mesa graphics stack. Mesa tries to use a cache aligned stride, which
-> leads at that particular resolution to width != stride. Currently
-> Mesa has no fallback behavior, but rejecting this configuration allows
-> userspace to handle the issue correctly.
-> 
-> Fixes: 45d59d704080 ("drm: Add new driver for MXSFB controller")
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-Applied to drm-misc-next.
-
---
-Stefan
-
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
 > ---
-> Changes in v3:
-> - Fix typo in commit message
-> - Add fixes tag
-> 
-> Changes in v2:
-> - Validate pitch in fb_create callback
-> 
->  drivers/gpu/drm/mxsfb/mxsfb_drv.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> index 8c549c3931af..35122aef037b 100644
-> --- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> +++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> @@ -21,6 +21,7 @@
->  #include <drm/drm_connector.h>
->  #include <drm/drm_drv.h>
->  #include <drm/drm_fb_helper.h>
-> +#include <drm/drm_fourcc.h>
->  #include <drm/drm_gem_cma_helper.h>
->  #include <drm/drm_gem_framebuffer_helper.h>
->  #include <drm/drm_irq.h>
-> @@ -81,8 +82,26 @@ void mxsfb_disable_axi_clk(struct mxsfb_drm_private *mxsfb)
->  		clk_disable_unprepare(mxsfb->clk_axi);
->  }
->  
-> +static struct drm_framebuffer *
-> +mxsfb_fb_create(struct drm_device *dev, struct drm_file *file_priv,
-> +		const struct drm_mode_fb_cmd2 *mode_cmd)
-> +{
-> +	const struct drm_format_info *info;
-> +
-> +	info = drm_get_format_info(dev, mode_cmd);
-> +	if (!info)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (mode_cmd->width * info->cpp[0] != mode_cmd->pitches[0]) {
-> +		dev_dbg(dev->dev, "Invalid pitch: fb width must match pitch\n");
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	return drm_gem_fb_create(dev, file_priv, mode_cmd);
-> +}
-> +
->  static const struct drm_mode_config_funcs mxsfb_mode_config_funcs = {
-> -	.fb_create		= drm_gem_fb_create,
-> +	.fb_create		= mxsfb_fb_create,
->  	.atomic_check		= drm_atomic_helper_check,
->  	.atomic_commit		= drm_atomic_helper_commit,
->  };
+>  drivers/vfio/vfio_iommu_type1.c | 17 +++++++++++++++++
+>  include/uapi/linux/vfio.h       | 15 +++++++++++++++
+>  2 files changed, 32 insertions(+)
+
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+
