@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FFA26C15C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 12:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBDE26C162
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 12:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgIPKCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 06:02:39 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:38575 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726302AbgIPKC2 (ORCPT
+        id S1726824AbgIPKDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 06:03:22 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41290 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726727AbgIPKDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 06:02:28 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R281e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U97.XS1_1600250543;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U97.XS1_1600250543)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 16 Sep 2020 18:02:24 +0800
-Date:   Wed, 16 Sep 2020 18:02:23 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-s390@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH] kernel/resource: make iomem_resource implicit in
- release_mem_region_adjustable()
-Message-ID: <20200916100223.GA46154@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200911103459.10306-1-david@redhat.com>
- <20200916073041.10355-1-david@redhat.com>
+        Wed, 16 Sep 2020 06:03:16 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G9iM97064373;
+        Wed, 16 Sep 2020 10:02:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=vcNrF7Sq6F2ImPCfjf6RQKmFE7yEZsDh2IYWNQJgSMw=;
+ b=XFeYAJoTNyFQWAlAPEq50jQHimi5JFeUc+FtD3lCHmt/qVM+3sfzKkjEdkOufB4grC1i
+ o+pjNY0jerL08dmLQf4ul/WnixVY8anGegYN2PgFhyzgCxpjU4tLuOsHa1bMi3yFQwcJ
+ EYWekSojw6D/7CzvScLME4vlWjW5j+a1mgKcsocWe6fMNoCyFwCehNyq99JB3xA4efME
+ gRsJXeAsT4e6eWMW+heHXsTTio4YTuN2JWTWpUvXFLF6N6SbVF55aa5mYM48Y7IFckmN
+ QcHEcAKjoHg0Cb3FtddhhR3C3Yy/DlpWcSBFwf49hkm4UtyrncfS3el+SdLmtyzT54HF ew== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33j91dkr6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 10:02:50 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G9jqBj150316;
+        Wed, 16 Sep 2020 10:02:50 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 33hm32djg0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 10:02:49 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08GA2fVG012273;
+        Wed, 16 Sep 2020 10:02:41 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 10:02:39 +0000
+Date:   Wed, 16 Sep 2020 13:02:32 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     mporter@kernel.crashing.org, alex.bou9@gmail.com,
+        akpm@linux-foundation.org, gustavoars@kernel.org,
+        jhubbard@nvidia.com, madhuparnabhowmik10@gmail.com,
+        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [linux-next PATCH] rapidio: Fix error handling path
+Message-ID: <20200916100232.GF18329@kadam>
+References: <1600227737-20785-1-git-send-email-jrdr.linux@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916073041.10355-1-david@redhat.com>
+In-Reply-To: <1600227737-20785-1-git-send-email-jrdr.linux@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160071
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=2 mlxlogscore=999
+ clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160071
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:30:41AM +0200, David Hildenbrand wrote:
->"mem" in the name already indicates the root, similar to
->release_mem_region() and devm_request_mem_region(). Make it implicit.
->The only single caller always passes iomem_resource, other parents are
->not applicable.
->
-
-Looks good to me.
-
-Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-
->Suggested-by: Wei Yang <richard.weiyang@linux.alibaba.com>
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Michal Hocko <mhocko@suse.com>
->Cc: Dan Williams <dan.j.williams@intel.com>
->Cc: Jason Gunthorpe <jgg@ziepe.ca>
->Cc: Kees Cook <keescook@chromium.org>
->Cc: Ard Biesheuvel <ardb@kernel.org>
->Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->Cc: Baoquan He <bhe@redhat.com>
->Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->Signed-off-by: David Hildenbrand <david@redhat.com>
->---
->
->Based on next-20200915. Follow up on
->	"[PATCH v4 0/8] selective merging of system ram resources" [1]
->That's in next-20200915. As noted during review of v2 by Wei [2].
->
->[1] https://lkml.kernel.org/r/20200911103459.10306-1-david@redhat.com
->[2] https://lkml.kernel.org/r/20200915021012.GC2007@L-31X9LVDL-1304.local
->
->---
-> include/linux/ioport.h | 3 +--
-> kernel/resource.c      | 5 ++---
-> mm/memory_hotplug.c    | 2 +-
-> 3 files changed, 4 insertions(+), 6 deletions(-)
->
->diff --git a/include/linux/ioport.h b/include/linux/ioport.h
->index 7e61389dcb01..5135d4b86cd6 100644
->--- a/include/linux/ioport.h
->+++ b/include/linux/ioport.h
->@@ -251,8 +251,7 @@ extern struct resource * __request_region(struct resource *,
-> extern void __release_region(struct resource *, resource_size_t,
-> 				resource_size_t);
-> #ifdef CONFIG_MEMORY_HOTREMOVE
->-extern void release_mem_region_adjustable(struct resource *, resource_size_t,
->-					  resource_size_t);
->+extern void release_mem_region_adjustable(resource_size_t, resource_size_t);
-> #endif
-> #ifdef CONFIG_MEMORY_HOTPLUG
-> extern void merge_system_ram_resource(struct resource *res);
->diff --git a/kernel/resource.c b/kernel/resource.c
->index 7a91b935f4c2..ca2a666e4317 100644
->--- a/kernel/resource.c
->+++ b/kernel/resource.c
->@@ -1240,7 +1240,6 @@ EXPORT_SYMBOL(__release_region);
-> #ifdef CONFIG_MEMORY_HOTREMOVE
-> /**
->  * release_mem_region_adjustable - release a previously reserved memory region
->- * @parent: parent resource descriptor
->  * @start: resource start address
->  * @size: resource region size
->  *
->@@ -1258,9 +1257,9 @@ EXPORT_SYMBOL(__release_region);
->  *   assumes that all children remain in the lower address entry for
->  *   simplicity.  Enhance this logic when necessary.
->  */
->-void release_mem_region_adjustable(struct resource *parent,
->-				   resource_size_t start, resource_size_t size)
->+void release_mem_region_adjustable(resource_size_t start, resource_size_t size)
-> {
->+	struct resource *parent = &iomem_resource;
-> 	struct resource *new_res = NULL;
-> 	bool alloc_nofail = false;
-> 	struct resource **p;
->diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
->index 553c718226b3..7c5e4744ac51 100644
->--- a/mm/memory_hotplug.c
->+++ b/mm/memory_hotplug.c
->@@ -1764,7 +1764,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
-> 		memblock_remove(start, size);
-> 	}
+On Wed, Sep 16, 2020 at 09:12:17AM +0530, Souptick Joarder wrote:
+> There is an error when pin_user_pages_fast() returns -ERRNO and
+> inside error handling path driver end up calling unpin_user_pages()
+> with -ERRNO which is not correct.
 > 
->-	release_mem_region_adjustable(&iomem_resource, start, size);
->+	release_mem_region_adjustable(start, size);
-> 
-> 	try_offline_node(nid);
-> 
->-- 
->2.26.2
+> This patch will fix the problem.
 
--- 
-Wei Yang
-Help you, Help me
+There are a few ways we could prevent bug in the future.
+
+1) This could have been caught with existing static analysis tools
+   which warn about when a value is set but not used.
+
+2) I've created a Smatch check which warngs about:
+
+	drivers/rapidio/devices/rio_mport_cdev.c:955 rio_dma_transfer() warn: unpinning negative pages 'nr_pages'
+
+   I'll test it out tonight and see how well it works.  I don't
+   immediately see any other bugs allthough Smatch doesn't like the code
+   in siw_umem_release().  It uses "min_t(int" which suggests that
+   negative pages are okay.
+
+	   int to_free = min_t(int, PAGES_PER_CHUNK, num_pages);
+
+3) We could add a check in unpin_user_pages().
+
+	if (WARN_ON(IS_ERR_VALUE(npages)))
+		return;
+
+It's not possible to pin more than "ULONG_MAX - 4095" because otherwise
+returning error pointers wouldn't work.  So this check can't break
+anything and it could prevent a crash.
+
+regards,
+dan carpenter
+
