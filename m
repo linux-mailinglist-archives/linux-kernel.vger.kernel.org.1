@@ -2,122 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F5626C9DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C278826C9E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbgIPTby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
+        id S1727780AbgIPTfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728185AbgIPT1s (ORCPT
+        with ESMTP id S1727287AbgIPTby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 15:27:48 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E53C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:27:18 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k15so4536836pfc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:27:18 -0700 (PDT)
+        Wed, 16 Sep 2020 15:31:54 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDD4C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:31:13 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id gr14so12436264ejb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:31:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sR/xYZr4LEgOrl+IbZ9jlJQDRZY5vQLajnenX9LFols=;
-        b=MNVF8TvcPWY3eeFn4HzT6kU1YkW7DvEZmNLo7UYzumvDpZ4mECWs58glstVCILzfW+
-         yaY5Ar/3V3T6TrxxrGNtBWUfp2Mh4ZOcb8StDZf0Z7XH6/zRv0WYYyUVFzY5m2Nu1v7p
-         FkL2YwUOGv+fA3lNECNbUWaSIFtnnE0C1krC8=
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EZp5toX9T1gQJ7KRJFQSQsUwLhYGKZg5A/ENVGfokLk=;
+        b=detMbyNfda+sMtEgJ8wbC4HrMzYk3BcgRMdbhpVeAGepbF+kat9yNAUGo/3Y5oYxAx
+         JcIhsomGq6FmSan401dR/dMwAyJEwXSOZ8yvdg4oon4aO0l550Fkx0JPETQjkQtJ/vDj
+         bAcprtRQGkkCRh9W7AnYhAjPcDLnvGJlcNA2w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sR/xYZr4LEgOrl+IbZ9jlJQDRZY5vQLajnenX9LFols=;
-        b=o5Z2biQ1S8hqvq63vMwKjoF0P7WCOy0dWam41H/bTLKX9T0fzkyHGWC/rkx9PperUa
-         ExXjYwFrkJm3qIRbJCUmNUpn0H3B3yBajWD5sjfQ3AqLX77ngqN/jip28hGXAOz2E3rO
-         w7ejxt7ohJ6TLv+WmShslAB+M9QaM1RTjEAMG0dtE6HUk0Odz8hJ5r3EjMKeCZ0onoca
-         SvkglAR0ySYphgN8b9/ixGcJslL+UbGzbH41beTHEqI+argoTkjB0zHnAOGFXksMSv0e
-         xetIev4njeIOIqWHZ2iYzC7bH/DDHfDYt8cofVDDamjtA6/x1yLghJPTEKDodhx8YzPO
-         WzHQ==
-X-Gm-Message-State: AOAM531CxoD2C+l9mDcagCpF0mHSLfPinbxwKMCmbkd0RVLsCRngJ9cF
-        qUpgFuepcdosEbnb1wW7kJQlQA==
-X-Google-Smtp-Source: ABdhPJy0DnJtx4hulvq3KJWtC6BUsatwfwJXaBeWhCGFtsumy/RNBJ1kLXeNp7WDRc9RK+97rX8DRQ==
-X-Received: by 2002:a05:6a00:1481:b029:142:2501:35d7 with SMTP id v1-20020a056a001481b0290142250135d7mr7928007pfu.55.1600284437582;
-        Wed, 16 Sep 2020 12:27:17 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id k24sm17799139pfg.148.2020.09.16.12.27.16
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EZp5toX9T1gQJ7KRJFQSQsUwLhYGKZg5A/ENVGfokLk=;
+        b=S7QQB0gFukWqd5QZKD1/HdjSkjoKk2xOWbiKw3UaTl/48kWVTs3RnpAuc0Hc/Ef0k/
+         zQc2jG6ZVVmOI5zWgk6gXUg4pAFVVTVV3ej8nniK0xpaU58Qc60lrZeO7SmEirjALMxk
+         JaLBapQ8rdnhbtwWVkiqOO/tFto732yiz+WFrJaXR3BWIHXWuDN7O8acB7/itGE0Q8z4
+         Su9aC62ZXrXc1jru9ILC04f6CSXewTyBHZ51OS714how2fCFzm9XlnwB3JtXTkOIFKs3
+         ZCXvu1X+Tb7oCJtmYATR4INq4vkfWiFcG8eAVdeDnJdhaUmQeyNxZ3zAbDc0pvlY+ZlP
+         WioQ==
+X-Gm-Message-State: AOAM533AI/m32VGrkXkfD1Xwp+m8mf04JKBCL/O10zCcMTDp/ZrscuwY
+        9wMqt9OXxwpSkM8Cjmz5h4Xnh2K7SM6jDXVQ
+X-Google-Smtp-Source: ABdhPJy3uD8HGn1Rrn9TD9rXf5kzYRYxK+NgjNksprlbpyGJ9rT+i30K1TPt2a0G6vCxGC1q2AtWwA==
+X-Received: by 2002:a17:906:8258:: with SMTP id f24mr26292491ejx.551.1600284671213;
+        Wed, 16 Sep 2020 12:31:11 -0700 (PDT)
+Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
+        by smtp.gmail.com with ESMTPSA id r16sm14987362edc.57.2020.09.16.12.31.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 12:27:17 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 12:27:15 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Peter Chen <peter.chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 2/2] USB: misc: Add onboard_usb_hub driver
-Message-ID: <20200916192715.GC3560556@google.com>
-References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200914112716.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <20200915025426.GA17450@b29397-desktop>
- <20200915050207.GF2022397@google.com>
- <AM7PR04MB715735A8A102F3EC9041EA328B200@AM7PR04MB7157.eurprd04.prod.outlook.com>
- <20200915230345.GF2771744@google.com>
- <20200916021421.GA1024554@rowland.harvard.edu>
+        Wed, 16 Sep 2020 12:31:10 -0700 (PDT)
+Subject: Re: [PATCH] scripts/setlocalversion: make git describe output more
+ reliable
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
+ <CAK7LNARE6NpCYAd7=--m-oO8_LweBWhP2aWfSRdTz=TX8dM5rw@mail.gmail.com>
+ <CA+ASDXOuK=iCdzWbtc+aRhBy=8xy860XqxwJg+wFuQaXKfg3UQ@mail.gmail.com>
+ <f3ce9b3e-d3c1-a96b-e14b-a8d3c4600b09@rasmusvillemoes.dk>
+ <CAK7LNATJ2seAuYpi-WPdLNFn2C9Vwm494nk-SWvgBJB3CmCJrw@mail.gmail.com>
+ <fd1bb3d9-2b21-c330-7fa8-02ec76292d8b@rasmusvillemoes.dk>
+ <CAK7LNASvh=pR=b0YtfzdKU1Y+M8kUiOKu887k05UH-xKs3b99g@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <0873059d-2912-3ef2-bab1-9db0cbe904a0@rasmusvillemoes.dk>
+Date:   Wed, 16 Sep 2020 21:31:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAK7LNASvh=pR=b0YtfzdKU1Y+M8kUiOKu887k05UH-xKs3b99g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200916021421.GA1024554@rowland.harvard.edu>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:14:21PM -0400, Alan Stern wrote:
-> On Tue, Sep 15, 2020 at 04:03:45PM -0700, Matthias Kaehlcke wrote:
-> > Hi Peter,
-> > 
-> > On Tue, Sep 15, 2020 at 07:05:38AM +0000, Peter Chen wrote:
+On 16/09/2020 20.01, Masahiro Yamada wrote:
+> On Thu, Sep 17, 2020 at 12:23 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>>
+>> On 16/09/2020 16.28, Masahiro Yamada wrote:
+>>> On Fri, Sep 11, 2020 at 5:28 PM Rasmus Villemoes
+>>> <linux@rasmusvillemoes.dk> wrote:
+>>>>
+
+>>> Why do we care about the uniqueness of the abbreviated
+>>> hash in the whole git history?
+>>
+>> Because when I ask a customer "what kernel are you running", and they
+>> tell me "4.19.45-rt67-00567-123abc8", I prefer that 123abc8 uniquely
+>> identifies the right commit, instead of me having to dig around each of
+>> the commits starting with that prefix and see which one of them matches
+>> "is exactly 567 commits from 4.19.45-rt67". 7 hexchars is nowhere near
+>> enough for that today, which is why Linus himself did that "auto-tune
+>> abbrev based on repo size" patch for git.git.
 > 
-> > > Whether or not it is a wakeup_source, it could get through its or its children's
-> > > /sys/../power/wakeup value, you have already used usb_wakeup_enabled_descendants
-> > > to know it.
-> > 
-> > I conceptually agree, but in practice there are some conflicting details:
-> > 
-> > wakeup for the hubs on my system is by default disabled, yet USB wakeup works
-> > regardless, so the flag doesn't really provide useful information. I guess we
-> > could still use it if there is no better way, but it doesn't seem ideal.
+> I like:
 > 
-> The wakeup setting for USB hubs affects only the following events: port 
-> connect, port disconnect, and port overcurrent.  It does not refer to 
-> forwarding wakeup requests from downstream USB devices; that is always 
-> enabled.  So maybe your wakeup flag really is accurate and you didn't 
-> realize it.
-
-Thanks for the clarification!
-
-> > Similar for udev->bus->controller, according to sysfs it doesn't even have wakeup
-> > support. Please let me know if there is a reliable way to check if wakeup is
-> > enabled on the controller of a device.
+>    git rev-parse --verify HEAD 2>/dev/null | cut -c1-15
 > 
-> The host controller's sysfs wakeup setting should always be correct.  If 
-> it isn't, that indicates there is a bug in the host controller driver or 
-> the corresponding platform-specific code.
+> better than:
+> 
+>    git rev-parse --verify --short=15 HEAD 2>/dev/null
+> 
+> The former produces the deterministic kernelrelease string.
+> 
+> 
+> But, let's reconsider if we need as long as 15-digits.
+> 
+> There are a couple of kinds of objects in git: commit, tree, blob.
+> 
+> I think you came up with 15-digits to ensure the uniqueness
+> in _all_ kinds of objects.
+> 
+> But, when your customer says "4.19.45-rt67-00567-123abc8",
+> 123abc8 is apparently a commit instead of a tree or a blob.
+> 
+> 
+> 
+> In the context of the kernel version, we can exclude
+> tree and blob objects.
+> 
+> In other words, I think "grows ~60000 objects per release"
+> is somewhat over-estimating.
+> 
+> We have ~15000 commits per release. So, the difference
+> is just 4x factor, though...
+> 
+> 
+> 
+> BTW, I did some experiments, and I noticed
+> "git log" accepts a shorter hash
+> than "git show" does presumably because
+> "git log" only takes a commit.
+> 
+> 
+> 
+> For example, "git show 06a0d" fails, but
+> "git log 06a0d" works.
+> 
+> 
+> masahiro@oscar:~/ref/linux$ git  show   06a0d
+> error: short SHA1 06a0d is ambiguous
+> hint: The candidates are:
+> hint:   06a0df4d1b8b commit 2020-09-08 - fbcon: remove now unusued
+> 'softback_lines' cursor() argument
+> hint:   06a0d81911b3 tree
+> hint:   06a0dc5a84d2 tree
+> hint:   06a0d1947c77 blob
+> hint:   06a0df434249 blob
+> fatal: ambiguous argument '06a0d': unknown revision or path not in the
+> working tree.
+> Use '--' to separate paths from revisions, like this:
+> 'git <command> [<revision>...] -- [<file>...]'
+> masahiro@oscar:~/ref/linux$ git  log --oneline  -1   06a0d
+> 06a0df4d1b8b fbcon: remove now unusued 'softback_lines' cursor() argument
+> 
+> 
+> 
+> 
+> What is interesting is, if you prepend <tag>-<number-of-commits>-
+> to the abbreviated hash, "git show" accepts as short as a commit
+> "git log" does.
+> 
+> masahiro@oscar:~/ref/linux$ git  show   v5.9-rc5-00002-g06a0d  | head -1
+> commit 06a0df4d1b8b13b551668e47b11fd7629033b7df
+> 
+> 
+> I guess git cleverly understands it refers to a commit object
+> since "v5.9-rc5-00002-" prefix only makes sense
+> in the commit context.
+> 
 
-Good to know :)
+Well, yes, but unfortunately only so far as applying the same "the user
+means a commit object" logic; git doesn't do anything to actually use
+the prefix to disambiguate. In fact, looking at a semi-random commit in
+4.19-stable v4.19.114-7-g236c445eb352:
 
-> What driver does your system use?
+$ git show 236c44
+error: short SHA1 236c44 is ambiguous
+hint: The candidates are:
+hint:   236c445eb352 commit 2020-03-13 - drm/bochs: downgrade
+pci_request_region failure from error to warning
+hint:   236c448cb6e7 commit 2011-09-08 - usbmon vs. tcpdump: fix dropped
+packet count
+hint:   236c445b1930 blob
 
-The driver is dwc3-qcom, Peter pointed me to a patch he recently sent to add
-the missing wakeup entry (https://patchwork.kernel.org/patch/11717835/). It
-seems that should solve the problem, except for some confusion on my side
-about the wakeup flag of the xHCI device vs. that of the platform device
-(details in my reply to Peter).
+Now you're right that we get
+
+$ git show v4.19.114-7-g236c445 | head -n1
+commit 236c445eb3529aa7c976f8812513c3cb26d77e27
+
+so it knows we're not looking at that blob. But "git show
+v4.19.114-7-g236c44" still fails because there are two commits. Adding
+to the fun is that "git show v4.19.114-7-g236c448" actually shows the
+usbmon commit, which is old v3.2 stuff and certainly not a descendant of
+v4.19.114.
+
+I didn't actually know that git would even accept those prefixed strings
+as possible refspecs, and for a moment you had me hoping that git would
+actually do the disambiguation using that prefix, which would certainly
+make 7 hex chars enough; unfortunately that's not the case.
+
+> Keeping those above in mind, I believe 15-digits is too long.
+
+Well, as you indicated, commits are probably ~1/4 of all objects, i.e.
+half a hexchar worth of bits. So the commit/object distinction shouldn't
+matter very much for the choice of suitable fixed length.
+
+> So, I propose two options.
+> 
+> 
+> [1] 7 digits
+> 
+> The abbreviated hash part may not uniquely identify
+> the commit. In that case, you need some extra git
+> operations to find out which one is it.
+> 
+> As for the kernel build,
+> <kernel-version>-<number-of-commits>-<7-digits> is enough
+> to provide the unique kernelrelease string.
+> 
+> 
+> 
+> [2] 12 digits
+> 
+> This matches to the Fixes: tag policy specified in
+> Documentation/process/submitting-patches.rst
+> 
+> The abbreviated hash part is very likely unique
+> in the commit object space.
+> (Of course, it is impossible to guarantee the uniqueness)
+
+I can live with 12. It would be extremely rare that I would have to do
+some extra git yoga to figure out which commit they actually mean. I
+think we can still use git describe to do the bulk of the work (the 'git
+rev-parse | cut ... is easy, but it's somewhat tedious to find the
+closest tag, then compute the #commits-on-top part), then just have the
+awk script used for pretty-printing (the %05d of the #commits-on-top)
+can probably also be used to chop the abbreviated sha1 at 12 chars,
+should git have needed to make it longer. Please see below for an
+updated patch+commit log.
+
+>> Alternatively, would you consider a Kconfig knob, LOCALVERSION_ABBREV?
+> 
+> 
+> No, I do not think LOCALVERSION_ABBREV is a good idea.
+
+Neither do I; I considered it before sending the patch but decided that yes:
+
+> We should eliminate this problem
+> irrespective of the kernel configuration.
+
+Rasmus
+
+====
+
+something like this, then?
+
+
+    scripts/setlocalversion: make git describe output more reliable
+
+    When building for an embedded target using Yocto, we're sometimes
+    observing that the version string that gets built into vmlinux (and
+    thus what uname -a reports) differs from the path under /lib/modules/
+    where modules get installed in the rootfs, but only in the length of
+    the -gabc123def suffix. Hence modprobe always fails.
+
+    The problem is that Yocto has the concept of "sstate" (shared state),
+    which allows different developers/buildbots/etc. to share build
+    artifacts, based on a hash of all the metadata that went into building
+    that artifact - and that metadata includes all dependencies (e.g. the
+    compiler used etc.). That normally works quite well; usually a clean
+    build (without using any sstate cache) done by one developer ends up
+    being binary identical to a build done on another host. However, one
+    thing that can cause two developers to end up with different builds
+    [and thus make one's vmlinux package incompatible with the other's
+    kernel-dev package], which is not captured by the metadata hashing, is
+    this `git describe`: The output of that can be affected by
+
+    (1) git version: before 2.11 git defaulted to a minimum of 7, since
+    2.11 (git.git commit e6c587) the default is dynamic based on the
+    number of objects in the repo
+    (2) hence even if both run the same git version, the output can differ
+    based on how many remotes are being tracked (or just lots of local
+    development branches or plain old garbage)
+    (3) and of course somebody could have a core.abbrev config setting in
+    ~/.gitconfig
+
+    So in order to avoid `uname -a` output relying on such random details
+    of the build environment which are rather hard to ensure are
+    consistent between developers and buildbots, make sure the abbreviated
+    sha1 always consists of exactly 12 hex characters. That is consistent
+    with the current rule for -stable patches, and is almost always enough
+    to identify the head commit unambigously - in the few cases where it
+    does not, the v5.4.3-00021- prefix would certainly nail it down.
+
+diff --git a/scripts/setlocalversion b/scripts/setlocalversion
+index 20f2efd57b11..b51072167df1 100755
+--- a/scripts/setlocalversion
++++ b/scripts/setlocalversion
+@@ -45,7 +45,7 @@ scm_version()
+
+ 	# Check for git and a git repo.
+ 	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
+-	   head=$(git rev-parse --verify --short HEAD 2>/dev/null); then
++	   head=$(git rev-parse --verify HEAD 2>/dev/null); then
+
+ 		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
+ 		# it, because this version is defined in the top level Makefile.
+@@ -59,11 +59,22 @@ scm_version()
+ 			fi
+ 			# If we are past a tagged commit (like
+ 			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
+-			if atag="$(git describe 2>/dev/null)"; then
+-				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
+-
+-			# If we don't have a tag at all we print -g{commitish}.
++                        #
++                        # Ensure the abbreviated sha1 has exactly 12
++                        # hex characters, to make the output
++                        # independent of git version, local
++                        # core.abbrev settings and/or total number of
++                        # objects in the current repository - passing
++                        # --abbrev=12 ensures a minimum of 12, and the
++                        # awk substr() then picks the 'g' and first 12
++                        # hex chars.
++			if atag="$(git describe --abbrev=12 2>/dev/null)"; then
++				echo "$atag" | awk -F- '{printf("-%05d-%s",
+$(NF-1),substr($(NF),0,13))}'
++
++			# If we don't have a tag at all we print -g{commitish},
++			# again using exactly 12 hex chars.
+ 			else
++				head="$(echo $head | cut -c1-12)"
+ 				printf '%s%s' -g $head
+ 			fi
+ 		fi
