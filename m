@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB1026BCEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE65426BCEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgIPG0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgIPGZ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:25:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164ABC06174A;
-        Tue, 15 Sep 2020 23:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5DkGrdwtKboVv6oJ+L5ofbnVJYprbMvRcR1X/5Ks8Fk=; b=NwUKULRasoHoDh5Re+0oSBPoOy
-        cVoFabxviFAt51K/mnHZ97XXOZDkQYezTtUKQ0Ug21qeRpaVtxtxlqn+eIJOMnGZoOeLK4h1mmPe1
-        Yk4ICgexAbxXc56SRoycT/PX2Gm6yHY7lBVC6Sh9BEdV5Rv760gEXf7Kkkwn8Qioq0xRniiS/DEbc
-        jSn+Ax4XAc07B3QMykBleghV6+CZPmccpDA1gI8N6d1WKCCTIZY37pK1boZ/RYKw/qD1xJX+xLGyC
-        jEjasxT5xSri6kUplc0O7LATOQY7MvfSqKgERkQd1Re11IPDbem7jREFTAgnH5WTBSUIgqUO4x98u
-        p114gKbQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIQt7-0007XL-BE; Wed, 16 Sep 2020 06:25:53 +0000
-Date:   Wed, 16 Sep 2020 07:25:53 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Rich Felker <dalias@libc.org>
-Cc:     linux-api@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] vfs: block chmod of symlinks
-Message-ID: <20200916062553.GB27867@infradead.org>
-References: <20200916002157.GO3265@brightrain.aerifal.cx>
- <20200916002253.GP3265@brightrain.aerifal.cx>
+        id S1726326AbgIPGZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:25:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726133AbgIPGZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:25:40 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A6E920684;
+        Wed, 16 Sep 2020 06:25:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600237540;
+        bh=EQvU7dWi7voY9jawweC8AYpjkgUXrmGDJ3AzYRtOUM8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jp0ivcc38pTfJZObDbE4McF/zDi+SuH7SEUn1ItXiPU8JsXD/mmdOot/LFQWevy60
+         1WAagkeK5Qi/My9syGTN1EbQZxz4kN6278e84wftIBqZucn3PS1Dvx+uF/AQ9zJbO5
+         uq4sIa65JzuR8GuEKXgiAgU1SH5GjzEMwN7C61M0=
+Date:   Wed, 16 Sep 2020 08:26:14 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200916062614.GF142621@kroah.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915.134252.1280841239760138359.davem@davemloft.net>
+ <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916002253.GP3265@brightrain.aerifal.cx>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:22:54PM -0400, Rich Felker wrote:
-> It was discovered while implementing userspace emulation of fchmodat
-> AT_SYMLINK_NOFOLLOW (using O_PATH and procfs magic symlinks; otherwise
-> it's not possible to target symlinks with chmod operations) that some
-> filesystems erroneously allow access mode of symlinks to be changed,
-> but return failure with EOPNOTSUPP (see glibc issue #14578 and commit
-> a492b1e5ef). This inconsistency is non-conforming and wrong, and the
-> consensus seems to be that it was unintentional to allow link modes to
-> be changed in the first place.
+On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
+> On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
+> >
+> > From: Oded Gabbay <oded.gabbay@gmail.com>
+> > Date: Tue, 15 Sep 2020 20:10:08 +0300
+> >
+> > > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > > into the habanalabs driver.
+> > >
+> > > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > > are in that patch's commit message.
+> > >
+> > > Link to v2 cover letter:
+> > > https://lkml.org/lkml/2020/9/12/201
+> >
+> > I agree with Jakub, this driver definitely can't go-in as it is currently
+> > structured and designed.
+> Why is that ?
+> Can you please point to the things that bother you or not working correctly?
+> I can't really fix the driver if I don't know what's wrong.
 > 
-> Signed-off-by: Rich Felker <dalias@libc.org>
-> ---
->  fs/open.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> In addition, please read my reply to Jakub with the explanation of why
+> we designed this driver as is.
 > 
-> diff --git a/fs/open.c b/fs/open.c
-> index 9af548fb841b..cdb7964aaa6e 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -570,6 +570,12 @@ int chmod_common(const struct path *path, umode_t mode)
->  	struct iattr newattrs;
->  	int error;
->  
-> +	/* Block chmod from getting to fs layer. Ideally the fs would either
-> +	 * allow it or fail with EOPNOTSUPP, but some are buggy and return
-> +	 * an error but change the mode, which is non-conforming and wrong. */
-> +	if (S_ISLNK(inode->i_mode))
-> +		return -EOPNOTSUPP;
+> And because of the RDMA'ness of it, the RDMA
+> > folks have to be CC:'d and have a chance to review this.
+> As I said to Jakub, the driver doesn't use the RDMA infrastructure in
+> the kernel and we can't connect to it due to the lack of H/W support
+> we have
+> Therefore, I don't see why we need to CC linux-rdma.
+> I understood why Greg asked me to CC you because we do connect to the
+> netdev and standard eth infrastructure, but regarding the RDMA, it's
+> not really the same.
 
-Our usualy place for this would be setattr_prepare.  Also the comment
-style is off, and I don't think we should talk about buggy file systems
-here, but a policy to not allow the chmod.  I also suspect the right
-error value is EINVAL - EOPNOTSUPP isn't really used in normal posix
-file system interfaces.
+Ok, to do this "right" it needs to be split up into separate drivers,
+hopefully using the "virtual bus" code that some day Intel will resubmit
+again that will solve this issue.
+
+That will allow you to put the network driver portion in drivers/net/
+and split the code up into the proper different pieces easier.
+
+I recommend grabbing the virtual bus code from the archives and looking
+at that for how this can be done.  Now that you are part of Intel, I'm
+sure that the internal-Intel-Linux-kernel-review-process can kick in and
+those developers can help you out.  If not, let me know, so I can go
+kick them :)
+
+As for the RDMA stuff, yeah, you should look at the current RDMA
+interfaces and verify that those really do not work for you here, and
+then document why that is in your patch submission.
+
+thanks,
+
+greg k-h
