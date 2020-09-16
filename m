@@ -2,478 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AD126BD28
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A2B26BD32
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgIPGcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgIPGbw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:31:52 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18011C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:31:52 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bd2so2645886plb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:31:52 -0700 (PDT)
+        id S1726408AbgIPGc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:32:57 -0400
+Received: from mail-mw2nam10on2066.outbound.protection.outlook.com ([40.107.94.66]:39713
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726161AbgIPGc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:32:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CWp68CSfQMzzOW5U/hYg6DZc+sbLkQss/L89g5ikVBs6wDBIF5+TGfix/UqgboAiZn6o1qXIbKwCZnTKXD5AecMCCT2SK7f2GZu7v/Bxi7sZ/JKYQVUkxfZd3qpj6GRKlEQLiweuGSImlDst10/ADTpB8xkUostjcDpAmBaggxJAt4h7goZJfFs4+WHtDtOzRJim9D086FVUTsAcX29yQIulTXJdzAn5JqW0NwYvWSZydBezwt6F7RCjohw4DAv992nAuljU3A6GvIUFX12QcY8ndeeHv9W1dfXwse1A9uOe3NXWyIjN0xvCSGXpls1mOILmadboymOzTDIcScqNXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v32Mkl8uM7sL3wf1lpr8Vqn9ze9+JN20zd9lc9dVRtI=;
+ b=VvKV1MEBeqJ/DpxOpNl1vPNZWdCKn3KY/dWx/lKjvcdx25tQdLD0tl6E4nB/L+NbqOwLMRveXcGGE90yQOpSU41sXQFcM5KJXWBRmTcYD1qS7gToMoXPFp++SYlVWaOnW6U0f6x5Gja4uRgX7BOPLEB+EE+bziZxetHR6j0f7svqZEZvphGIGcEK/rMBOnxU3j6TlbaGBEr7vpLih7PWIVXPLASBeMvlOKhLk1arice7YnU4o4aYWxVfb9RZhiNX/U/GhLiIP02ERDcPrdj+I3En3a5/GSxgxMfLoU+OTRWoswqOUKkgGkuXp5IMZ6GXGIn2BAbT1kd3gRsiv0KDYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Rps1h9ra698tJdTpkbyViJsRK79aEnA5XOr65AtbmzQ=;
-        b=BTQLKZrGRs3wXo0i4paZ8I1pruz1p1rDC4Y5IXwmKi9OVv5PKdZ2qk//e3g5pRdtdE
-         wwtg+oBsETzBtnzkuZ6LQilG2lFgVIlUj9nYJSGbfPxh2bxEMlVO/0k2F0B5413z8qvy
-         Ruk/2teG4G+jS9h5ohwRtBQvr4RXfKDZVBzdlBGGdZBmPM4AsCmhHvGQZPWguAbGFg1u
-         2BWXXbdPA7X0jETHRJ4OHqVCAGQOINSYcIfXLDD5LTAWoyOkHFhwaw0P+m8izkf8rd/1
-         B1Nn+NRmMj3yeDlnSmcZ10S0AaMCyIzROklcx/x9NnJG/0853BWt5Ms1jaDS2YOQbTS3
-         JWZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=Rps1h9ra698tJdTpkbyViJsRK79aEnA5XOr65AtbmzQ=;
-        b=HNT0ZqfdtxB/JoplyzFdHC3kf5iASLE+Nq65llqn/q8nrSZGlBp/qMWehoB0c9cYs4
-         6P4t1DIEpAItHg9AWLWtylUScvRF6FhHqheEW0eg69cMwFxw7pehb2H1CroASjw8VgA0
-         08ecEm1uPeEpktxDsYUUf9MTGyvmmaFo1tsw3QMSMiZbHSMHxcWAWsSpCmPoJTYxqJoN
-         9J0wtxCgz/S4a2IfBnFcFGUeJa2KC/mJysQ44I+ek3iWHo+yz27aS97+gBGxP5Ju+ILS
-         9AmYmZmXfKunASwmbEZqUGf8OezbZ4qbyaz1KwaBpwFOcoWWgM8j4I4fUKnqIKRrr4tu
-         xHhg==
-X-Gm-Message-State: AOAM530yt6J7MnPqqYfZG4Wpi2B6Ekdy5+EnoCPrXLcklXiUxlsp2UCQ
-        ecgajKaJJRH9WIuWdR28NUg=
-X-Google-Smtp-Source: ABdhPJx5Q7c/sjFyHTCqbdR+gtr1pNAgf6ZPoUxg44JZQfTR/PtEr2IYSGuSrVFfsQ0N8W79FvXlzQ==
-X-Received: by 2002:a17:902:9f84:b029:d1:f2de:d850 with SMTP id g4-20020a1709029f84b02900d1f2ded850mr272354plq.68.1600237911390;
-        Tue, 15 Sep 2020 23:31:51 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id 203sm15401388pfz.131.2020.09.15.23.31.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 23:31:50 -0700 (PDT)
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 4/4] perf test: Add expand cgroup event test
-Date:   Wed, 16 Sep 2020 15:31:29 +0900
-Message-Id: <20200916063129.1061487-5-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-In-Reply-To: <20200916063129.1061487-1-namhyung@kernel.org>
-References: <20200916063129.1061487-1-namhyung@kernel.org>
-MIME-Version: 1.0
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v32Mkl8uM7sL3wf1lpr8Vqn9ze9+JN20zd9lc9dVRtI=;
+ b=P9G3aizOV1WZFVUhIxmNLBmltHDMd0Kd+CYn7QEuiBsfk8KJMeqScAaIredZdR40uFaB7427qR9S+ejz1gJ6hGN2akmQHo8FDgoQIwpIFl8+2Yqdo44SKmqYQEtsdarcegibDKCIvCpN1mxP2b5nrHyZPR4EN3cjlSnUT1C1q50=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
+ 2020 06:32:53 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
+ 06:32:52 +0000
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnA=?=
+To:     paulmck@kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200914194208.GA2579423@google.com>
+ <20200914205642.GE29330@paulmck-ThinkPad-P72>
+ <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200915034139.GK29330@paulmck-ThinkPad-P72>
+ <1079509d-c474-42bd-44e9-18cfa948fbae@windriver.com>
+ <20200915180613.GQ29330@paulmck-ThinkPad-P72>
+From:   "Zhang,Qiang" <qiang.zhang@windriver.com>
+Message-ID: <ef4e4da7-d5e2-4655-0fcc-54b6d4c34a71@windriver.com>
+Date:   Wed, 16 Sep 2020 14:32:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+In-Reply-To: <20200915180613.GQ29330@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YTOPR0101CA0045.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:14::22) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.183] (60.247.85.82) by YTOPR0101CA0045.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Wed, 16 Sep 2020 06:32:49 +0000
+X-Originating-IP: [60.247.85.82]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c2a925a4-b37a-4202-582a-08d85a0a56ce
+X-MS-TrafficTypeDiagnostic: BY5PR11MB4241:
+X-Microsoft-Antispam-PRVS: <BY5PR11MB424196204088FBE106FC3771FF210@BY5PR11MB4241.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uW3im+BnhhUytmJWXU9Rshbziyz6hYpqUoqIQSjCD6lesm/8i9NvL2UunryOiXlwxCdeoALNV3E85S26gSeSiEtwiBqlEBGoFkGjt9c+63f+2SAeb7tSa6hjKCzqqf//r62TY101Pu8XmLkwPPJj4ISlI/DHpLBsdiyZ/w7t93XEUbx/F5NmRHizmYm3NfqBGr22kbNQil/S1fEO4tOUDJNyo4O47OEYQP/kSp7immSZJX331BovP85gP8pS3TwKuhlIhhLuCfbvUGgsCPN515cDX80ksUWW+dX847cqr6JJ2/MUhdwGdpAHfCSK/mYU293bCHvLdlRLJUNnGhX2gB9pYp3b1N/ByDVjvhTfTx0ecsU1wdchw2HCqcnpqSTKpA0EFLTB0xvIo/vm4wCv/w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(366004)(376002)(396003)(136003)(86362001)(6666004)(5660300002)(6706004)(54906003)(6916009)(478600001)(31696002)(66946007)(66574015)(83380400001)(66556008)(66476007)(224303003)(52116002)(31686004)(16526019)(6486002)(316002)(53546011)(16576012)(2906002)(26005)(186003)(36756003)(956004)(8936002)(4326008)(2616005)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ePXmiroGO5IPzHUm08+atCK+I/GH6BHPoUxCKwnI6+NdthUyh6NlAVDgmH73pJC7B5XfaPPLzPzLYnaZIhzd3HZqqJttAUC7HBmj105JrAmPKPvMeVH/rBqAY0BGOJhx/W1BGAhLO6GqCSPK2GqBfVIGy9K3ERUeHQVcMymfso2Vu+uBm3ADPDKt5xkJMIiBFcNgpHxIf9q4Qik16B0exaaEOxpmOpSPggDy/NSzXN/hPZ5agVVuh3lOnkbJm3dW5ru4n87foQuiGnvNx5hU+zLCVnQzgAa04o3fu+G/khvIkog6RWrBH4BjLofk5XOPo6hamPREC3o78U0WhED6/mCOi0LNel/6+P7lpwoCUzymcR7RDWW+ydks7u30qpeufNVBbOsJbnKYS6zcI89LPEriM5bZapua2N424yeqqhuoDMDbaDS5d/rrHlcXyLT4MBRaF3QZGACt13EPquRxXuA//U14LuvvpxmYxEothKqtFSkOnuEMUs9tphWHsXUMU23/N68tCzUpO4Mt7qsqQxoHScwZfYYoJRAMY7HQu4pL3hdfDVbYcy33wyujmpKYr/M5fMaLv60Uq11s2v+MjQdHZAEFsOypkwjWwzYU2qaZd1brUKgTvpOA1F7LcZpxpb4WIINAYd4jyAc7/+xYzg==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2a925a4-b37a-4202-582a-08d85a0a56ce
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 06:32:52.7840
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SB//DysgtfA6KkUFzAuqY5M2qdY33O4+fxuaQOIdKlgZv0rlQ1dYcpLKOwQSFEiXC3g1ZKFxXG5zC07GA78v9rO9dwS5cGpCeZ1oJ1Xck04=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4241
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It'll expand given events for cgroups A, B and C.
 
-  $ ./perf test -v expansion
-  69: Event expansion for cgroups                      :
-  --- start ---
-  test child forked, pid 983140
-  metric expr 1 / IPC for CPI
-  metric expr instructions / cycles for IPC
-  found event instructions
-  found event cycles
-  adding {instructions,cycles}:W
-  copying metric event for cgroup 'A': instructions (idx=0)
-  copying metric event for cgroup 'B': instructions (idx=0)
-  copying metric event for cgroup 'C': instructions (idx=0)
-  test child finished with 0
-  ---- end ----
-  Event expansion for cgroups: Ok
 
-Cc: John Garry <john.garry@huawei.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/builtin-stat.c        |   2 +-
- tools/perf/tests/Build           |   1 +
- tools/perf/tests/builtin-test.c  |   4 +
- tools/perf/tests/expand-cgroup.c | 241 +++++++++++++++++++++++++++++++
- tools/perf/tests/tests.h         |   1 +
- tools/perf/util/cgroup.c         |  19 ++-
- tools/perf/util/cgroup.h         |   2 +-
- 7 files changed, 261 insertions(+), 9 deletions(-)
- create mode 100644 tools/perf/tests/expand-cgroup.c
+On 9/16/20 2:06 AM, Paul E. McKenney wrote:
+> On Tue, Sep 15, 2020 at 01:16:39PM +0800, Zhang,Qiang wrote:
+>>
+>>
+>> On 9/15/20 11:41 AM, Paul E. McKenney wrote:
+>>> On Tue, Sep 15, 2020 at 03:18:23AM +0000, Zhang, Qiang wrote:
+>>>>
+>>>>
+>>>> ________________________________________
+>>>> 发件人: Paul E. McKenney <paulmck@kernel.org>
+>>>> 发送时间: 2020年9月15日 4:56
+>>>> 收件人: Joel Fernandes
+>>>> 抄送: Zhang, Qiang; Uladzislau Rezki; josh@joshtriplett.org; rostedt@goodmis.org; mathieu.desnoyers@efficios.com; Lai Jiangshan; rcu@vger.kernel.org; LKML
+>>>> 主题: Re: RCU: Question on force_qs_rnp
+>>>>
+>>>> On Mon, Sep 14, 2020 at 03:42:08PM -0400, Joel Fernandes wrote:
+>>>>> On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
+>>>>>> Hello Paul
+>>>>>>
+>>>>>> I have some questions for you .
+>>>>>> in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
+>>>>>> report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
+>>>>>> after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0,
+>>>>>> we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
+>>>>>
+>>>>> Could you clarify what good is this going to do? What problem are you trying to
+>>>>> address?
+>>>>>
+>>>>> You could have a task that is blocked in an RCU leaf node, but the
+>>>>> force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
+>>>>> CPU could be dyntick-idle and a quiescent state is reported. However, the GP
+>>>>> must not end and the rcu leaf node should still be present in its parent
+>>>>> intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
+>>>>> any relevance.
+>>>>>
+>>>>> Or am I missing the point of the question?
+>>>>
+>>>>> Hello, Qiang,
+>>>>
+>>>>> Another way of making Joel's point is to say that the additional check
+>>>>> you are asking for is already being done, but by rcu_report_qs_rnp().
+>>>>
+>>>>>                                                          Thanx, Paul
+>>>>
+>>>> Hello Pual,  Joel
+>>>>
+>>>> What I want to express is as follows :
+>>>>
+>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>>> index 7623128d0020..beb554539f01 100644
+>>>> --- a/kernel/rcu/tree.c
+>>>> +++ b/kernel/rcu/tree.c
+>>>> @@ -2622,6 +2622,11 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+>>>>                   if (mask != 0) {
+>>>>                           /* Idle/offline CPUs, report (releases rnp->lock). */
+>>>>                           rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+>>>> +                       raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>>>> +                       if (rnp->qsmask == 0 && rcu_preempt_blocked_readers_cgp(rnp))
+>>>> +                               rcu_initiate_boost(rnp, flags);
+>>>> +                       else
+>>>> +                               raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>>>>                   } else {
+>>>>                           /* Nothing to do here, so just drop the lock. */
+>>>>                           raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>>>
+>>> But in that case, why duplicate the code from rcu_initiate_boost()?
+>>>
+>>> 							Thanx, Paul
+>>>
+>>
+>> Hello Paul
+>>
+>> When we force a qs for rnp, we first check the leaf node "rnp->qsmask" if it
+>> is reached zero, will check if there are some blocked readers in this leaf
+>> rnp node, if so we need to priority-boost blocked readers.
+>> if not we will check cpu dyntick-idle and report leaf node qs, after this
+>> leaf rnp node report qs, there is may be some blocked readers in this node,
+>> should we also need to priority-boost blocked readers?
+> 
+> Yes, but we will do that on the next time around, a few milliseconds
+> later.  And by that time, it is quite possible that the reader will have
+> completed, which will save us from having to priority-boost it.
+> 
+> 							Thanx, Paul
+> 
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 8b81d62ab18b..f00600d9903e 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -2249,7 +2249,7 @@ int cmd_stat(int argc, const char **argv)
- 
- 	if (stat_config.cgroup_list) {
- 		if (evlist__expand_cgroup(evsel_list, stat_config.cgroup_list,
--					  &stat_config.metric_events) < 0)
-+					  &stat_config.metric_events, true) < 0)
- 			goto out;
- 	}
- 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 69bea7996f18..4d15bf6041fb 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -61,6 +61,7 @@ perf-y += demangle-java-test.o
- perf-y += pfm.o
- perf-y += parse-metric.o
- perf-y += pe-file-parsing.o
-+perf-y += expand-cgroup.o
- 
- $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
- 	$(call rule_mkdir)
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 651b8ea3354a..132bdb3e6c31 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -345,6 +345,10 @@ static struct test generic_tests[] = {
- 		.desc = "PE file support",
- 		.func = test__pe_file_parsing,
- 	},
-+	{
-+		.desc = "Event expansion for cgroups",
-+		.func = test__expand_cgroup_events,
-+	},
- 	{
- 		.func = NULL,
- 	},
-diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
-new file mode 100644
-index 000000000000..d5771e4d094f
---- /dev/null
-+++ b/tools/perf/tests/expand-cgroup.c
-@@ -0,0 +1,241 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "tests.h"
-+#include "debug.h"
-+#include "evlist.h"
-+#include "cgroup.h"
-+#include "rblist.h"
-+#include "metricgroup.h"
-+#include "parse-events.h"
-+#include "pmu-events/pmu-events.h"
-+#include "pfm.h"
-+#include <subcmd/parse-options.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+static int test_expand_events(struct evlist *evlist,
-+			      struct rblist *metric_events)
-+{
-+	int i, ret = TEST_FAIL;
-+	int nr_events;
-+	bool was_group_event;
-+	int nr_members;  /* for the first evsel only */
-+	const char cgrp_str[] = "A,B,C";
-+	const char *cgrp_name[] = { "A", "B", "C" };
-+	int nr_cgrps = ARRAY_SIZE(cgrp_name);
-+	char **ev_name;
-+	struct evsel *evsel;
-+
-+	TEST_ASSERT_VAL("evlist is empty", !perf_evlist__empty(evlist));
-+
-+	nr_events = evlist->core.nr_entries;
-+	ev_name = calloc(nr_events, sizeof(*ev_name));
-+	if (ev_name == NULL) {
-+		pr_debug("memory allocation failure\n");
-+		return TEST_FAIL;
-+	}
-+	i = 0;
-+	evlist__for_each_entry(evlist, evsel) {
-+		ev_name[i] = strdup(evsel->name);
-+		if (ev_name[i] == NULL) {
-+			pr_debug("memory allocation failure\n");
-+			goto out;
-+		}
-+		i++;
-+	}
-+	/* remember grouping info */
-+	was_group_event = evsel__is_group_event(evlist__first(evlist));
-+	nr_members = evlist__first(evlist)->core.nr_members;
-+
-+	ret = evlist__expand_cgroup(evlist, cgrp_str, metric_events, false);
-+	if (ret < 0) {
-+		pr_debug("failed to expand events for cgroups\n");
-+		goto out;
-+	}
-+
-+	ret = TEST_FAIL;
-+	if (evlist->core.nr_entries != nr_events * nr_cgrps) {
-+		pr_debug("event count doesn't match\n");
-+		goto out;
-+	}
-+
-+	i = 0;
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (strcmp(evsel->name, ev_name[i % nr_events])) {
-+			pr_debug("event name doesn't match:\n");
-+			pr_debug("  evsel[%d]: %s\n  expected: %s\n",
-+				 i, evsel->name, ev_name[i % nr_events]);
-+			goto out;
-+		}
-+		if (strcmp(evsel->cgrp->name, cgrp_name[i / nr_events])) {
-+			pr_debug("cgroup name doesn't match:\n");
-+			pr_debug("  evsel[%d]: %s\n  expected: %s\n",
-+				 i, evsel->cgrp->name, cgrp_name[i / nr_events]);
-+			goto out;
-+		}
-+
-+		if ((i % nr_events) == 0) {
-+			if (evsel__is_group_event(evsel) != was_group_event) {
-+				pr_debug("event group doesn't match: got %s, expect %s\n",
-+					 evsel__is_group_event(evsel) ? "true" : "false",
-+					 was_group_event ? "true" : "false");
-+				goto out;
-+			}
-+			if (evsel->core.nr_members != nr_members) {
-+				pr_debug("event group member doesn't match: %d vs %d\n",
-+					 evsel->core.nr_members, nr_members);
-+				goto out;
-+			}
-+		}
-+		i++;
-+	}
-+	ret = TEST_OK;
-+
-+out:	for (i = 0; i < nr_events; i++)
-+		free(ev_name[i]);
-+	free(ev_name);
-+	return ret;
-+}
-+
-+static int expand_default_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+
-+	evlist = perf_evlist__new_default();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_group_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	struct parse_events_error err;
-+	const char event_str[] = "{cycles,instructions}";
-+
-+	symbol_conf.event_group = true;
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	ret = parse_events(evlist, event_str, &err);
-+	if (ret < 0) {
-+		pr_debug("failed to parse event '%s', err %d, str '%s'\n",
-+			 event_str, ret, err.str);
-+		parse_events_print_error(&err, event_str);
-+		goto out;
-+	}
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+out:
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_libpfm_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	const char event_str[] = "UNHALTED_CORE_CYCLES";
-+	struct option opt = {
-+		.value = &evlist,
-+	};
-+
-+	symbol_conf.event_group = true;
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	ret = parse_libpfm_events_option(&opt, event_str, 0);
-+	if (ret < 0) {
-+		pr_debug("failed to parse libpfm event '%s', err %d\n",
-+			 event_str, ret);
-+		goto out;
-+	}
-+	if (perf_evlist__empty(evlist)) {
-+		pr_debug("libpfm was not enabled\n");
-+		goto out;
-+	}
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+out:
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_metric_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	const char metric_str[] = "CPI";
-+
-+	struct pmu_event pme_test[] = {
-+		{
-+			.metric_expr	= "instructions / cycles",
-+			.metric_name	= "IPC",
-+		},
-+		{
-+			.metric_expr	= "1 / IPC",
-+			.metric_name	= "CPI",
-+		},
-+		{
-+			.metric_expr	= NULL,
-+			.metric_name	= NULL,
-+		},
-+	};
-+	struct pmu_events_map ev_map = {
-+		.cpuid		= "test",
-+		.version	= "1",
-+		.type		= "core",
-+		.table		= pme_test,
-+	};
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	rblist__init(&metric_events);
-+	ret = metricgroup__parse_groups_test(evlist, &ev_map, metric_str,
-+					     false, false, &metric_events);
-+	if (ret < 0) {
-+		pr_debug("failed to parse '%s' metric\n", metric_str);
-+		goto out;
-+	}
-+
-+	ret = test_expand_events(evlist, &metric_events);
-+
-+out:
-+	metricgroup__rblist_exit(&metric_events);
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+int test__expand_cgroup_events(struct test *test __maybe_unused,
-+			       int subtest __maybe_unused)
-+{
-+	int ret;
-+
-+	ret = expand_default_events();
-+	TEST_ASSERT_EQUAL("failed to expand default events", ret, 0);
-+
-+	ret = expand_group_events();
-+	TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
-+
-+	ret = expand_libpfm_events();
-+	TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
-+
-+	ret = expand_metric_events();
-+	TEST_ASSERT_EQUAL("failed to expand metric events", ret, 0);
-+
-+	return ret;
-+}
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index ef0f33c6ba23..c85a2c08e407 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -123,6 +123,7 @@ const char *test__pfm_subtest_get_desc(int subtest);
- int test__pfm_subtest_get_nr(void);
- int test__parse_metric(struct test *test, int subtest);
- int test__pe_file_parsing(struct test *test, int subtest);
-+int test__expand_cgroup_events(struct test *test, int subtest);
- 
- bool test__bp_signal_is_supported(void);
- bool test__bp_account_is_supported(void);
-diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-index a1bf345a770b..eeffa08251b5 100644
---- a/tools/perf/util/cgroup.c
-+++ b/tools/perf/util/cgroup.c
-@@ -52,7 +52,7 @@ static struct cgroup *evlist__find_cgroup(struct evlist *evlist, const char *str
- 	return NULL;
- }
- 
--static struct cgroup *cgroup__new(const char *name)
-+static struct cgroup *cgroup__new(const char *name, bool do_open)
- {
- 	struct cgroup *cgroup = zalloc(sizeof(*cgroup));
- 
-@@ -62,9 +62,14 @@ static struct cgroup *cgroup__new(const char *name)
- 		cgroup->name = strdup(name);
- 		if (!cgroup->name)
- 			goto out_err;
--		cgroup->fd = open_cgroup(name);
--		if (cgroup->fd == -1)
--			goto out_free_name;
-+
-+		if (do_open) {
-+			cgroup->fd = open_cgroup(name);
-+			if (cgroup->fd == -1)
-+				goto out_free_name;
-+		} else {
-+			cgroup->fd = -1;
-+		}
- 	}
- 
- 	return cgroup;
-@@ -80,7 +85,7 @@ struct cgroup *evlist__findnew_cgroup(struct evlist *evlist, const char *name)
- {
- 	struct cgroup *cgroup = evlist__find_cgroup(evlist, name);
- 
--	return cgroup ?: cgroup__new(name);
-+	return cgroup ?: cgroup__new(name, true);
- }
- 
- static int add_cgroup(struct evlist *evlist, const char *str)
-@@ -202,7 +207,7 @@ int parse_cgroups(const struct option *opt, const char *str,
- }
- 
- int evlist__expand_cgroup(struct evlist *evlist, const char *str,
--			  struct rblist *metric_events)
-+			  struct rblist *metric_events, bool open_cgroup)
- {
- 	struct evlist *orig_list, *tmp_list;
- 	struct evsel *pos, *evsel, *leader;
-@@ -240,7 +245,7 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str,
- 			if (!name)
- 				break;
- 
--			cgrp = cgroup__new(name);
-+			cgrp = cgroup__new(name, open_cgroup);
- 			free(name);
- 			if (cgrp == NULL)
- 				break;
-diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-index eea6df8ee373..162906f3412a 100644
---- a/tools/perf/util/cgroup.h
-+++ b/tools/perf/util/cgroup.h
-@@ -26,7 +26,7 @@ struct rblist;
- 
- struct cgroup *evlist__findnew_cgroup(struct evlist *evlist, const char *name);
- int evlist__expand_cgroup(struct evlist *evlist, const char *cgroups,
--			  struct rblist *metric_events);
-+			  struct rblist *metric_events, bool open_cgroup);
- 
- void evlist__set_default_cgroup(struct evlist *evlist, struct cgroup *cgroup);
- 
--- 
-2.28.0.618.gf4bc123cb7-goog
+Thanks Paul, I see.
 
