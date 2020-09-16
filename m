@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A75C26BD3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A16C26BD39
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgIPGeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:34:15 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:60051 "EHLO m43-7.mailgun.net"
+        id S1726348AbgIPGdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:33:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgIPGeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:34:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600238052; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=prCtKq1R1zy4yEQC9e7arLt8v2FySSHVYD5hW893oqo=;
- b=X3iznLYAAOm+8yRRsNK0pGTWGEtw25eKGl6DsBJfM6Ui0E1ltN8lfzU1fK5M5w2KVfu6xPVI
- 8TP7u5yyW9pKjuiIEOg8vo3mnzuFFzksvGlZZxihOzqobJEGUVamHowxIoTTbhgirkadl87Q
- adH1SCBFiQiNqSVqYQTZSMAP2ts=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f61b1e1698ee477d1c4c9e3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 06:34:09
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 75A3DC433A0; Wed, 16 Sep 2020 06:34:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726140AbgIPGdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:33:47 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3651C433F1;
-        Wed, 16 Sep 2020 06:34:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CAA3206A5;
+        Wed, 16 Sep 2020 06:33:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600238026;
+        bh=v98Ux7dwZYwFgt6/Idh2G0/wQfplByJeeDP1GaXQ/FA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k7kKxMSaCXIv5jy6MoB51KJ0ASDE7hbYwh7xV3MIy0q0EQsGJhoDlCAiQUMQLQlwN
+         bihJ25tIvji6rGQsGKtw9KVTIMbOAzKgWHg4XiNHZidwMJ/1nxFKZ5R99hQNXd1ZJV
+         Zc15TMbH1Tb6Ug10L9F7m9Z3RHOaLMVwaECDw+ak=
+Date:   Wed, 16 Sep 2020 08:34:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srinivas.kandagatla@linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH] soc: qcom: apr: Fixup the error displayed on lookup
+ failure
+Message-ID: <20200916063416.GM142621@kroah.com>
+References: <20200915154232.27523-1-sibis@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 16 Sep 2020 14:34:08 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Bean Huo <huobean@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Abort tasks before clear them from
- doorbell
-In-Reply-To: <yq1wo0u6bdw.fsf@ca-mkp.ca.oracle.com>
-References: <1599099873-32579-1-git-send-email-cang@codeaurora.org>
- <1599099873-32579-2-git-send-email-cang@codeaurora.org>
- <1599627906.10803.65.camel@linux.ibm.com>
- <yq14ko62wn5.fsf@ca-mkp.ca.oracle.com>
- <1599706080.10649.30.camel@mtkswgap22>
- <1599718697.3851.3.camel@HansenPartnership.com>
- <1599725880.10649.35.camel@mtkswgap22>
- <1599754148.3575.4.camel@HansenPartnership.com>
- <010101747af387e9-f68ac6fa-1bc6-461d-92ec-dc0ee4486728-000000@us-west-2.amazonses.com>
- <d151d6a2b53cfbd7bf3f9c9313b49c4c404c4c5a.camel@gmail.com>
- <4017d039fa323a63f89f01b5bf4cf714@codeaurora.org>
- <yq1wo0u6bdw.fsf@ca-mkp.ca.oracle.com>
-Message-ID: <149974f6d7073dae363797874fc088bf@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915154232.27523-1-sibis@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-16 04:21, Martin K. Petersen wrote:
-> Can,
+On Tue, Sep 15, 2020 at 09:12:32PM +0530, Sibi Sankar wrote:
+> APR client incorrectly prints out "ret" variable on pdr_add_lookup failure,
+> it should be printing the error value returned by the lookup instead.
 > 
->> Do you know when can this change be picked up in scsi-queue-5.10?
->> If I push my fixes to ufshcd_abort() on scsi-queue-5.10, they will
->> run into conflicts with this one again, right? How should I move
->> forward now?
+> Fixes: 8347356626028 ("soc: qcom: apr: Add avs/audio tracking functionality")
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  drivers/soc/qcom/apr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> You should be able to use 5.10/scsi-queue as baseline now.
+> diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+> index 1f35b097c6356..7abfc8c4fdc72 100644
+> --- a/drivers/soc/qcom/apr.c
+> +++ b/drivers/soc/qcom/apr.c
+> @@ -328,7 +328,7 @@ static int of_apr_add_pd_lookups(struct device *dev)
+>  
+>  		pds = pdr_add_lookup(apr->pdr, service_name, service_path);
+>  		if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
+> -			dev_err(dev, "pdr add lookup failed: %d\n", ret);
+> +			dev_err(dev, "pdr add lookup failed: %ld\n", PTR_ERR(pds));
+>  			return PTR_ERR(pds);
+>  		}
+>  	}
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
-> For 5.11 I think I'll do a separate branch for UFS.
 
-Thanks for the information.
+<formletter>
 
-Regards,
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-Can Guo.
+</formletter>
