@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F169026CB4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5FF26CB1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgIPUZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        id S1727243AbgIPUWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgIPR1i (ORCPT
+        with ESMTP id S1726896AbgIPR3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:27:38 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC803C061A31;
-        Wed, 16 Sep 2020 10:27:15 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id w7so4391897pfi.4;
-        Wed, 16 Sep 2020 10:27:15 -0700 (PDT)
+        Wed, 16 Sep 2020 13:29:14 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469FCC06174A;
+        Wed, 16 Sep 2020 10:29:11 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l126so4388244pfd.5;
+        Wed, 16 Sep 2020 10:29:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bO4fdTifCbsbsP2IhleoA3vXtN6f7O4IH+1Jq/pjP2k=;
-        b=mO3hFUu0GImd1goVrECVXRGIa0A8Nm7b9YstEMyUy8lPWHap5IhmPgzQdgHDmKtbN+
-         QHsTFedtEIZGDZjqTUgKubnI1I2KfPECFPWoaEMQNE/lbDf2AMyaEbqmTeUS6i0Z/6sX
-         oq0KJ5zBXXuKr4u7PE48vB+5DyAvA6MExJuy5wZgqzFpvIeP9K5iRUM+Frq8ThmToIpq
-         eD1pYVlgnptoaIslvMaWfGHaLUDvVokcjwvyGUBJoOBWeJHbHRNblVXVmRLkcEf4ZRrf
-         qqZ9fuRkK6kRhglgrUp9jB0BZ0p0lm/mhSl8JWxGW9sDlJwJktME3bKWZQfVW+ZQBLhQ
-         fbqg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=l5QENNkdAGMuTC5nW+iy9KsmDtcHDjxhRO+rPJdPpPM=;
+        b=nkIZ1Yz1wfmopDGdAEt3hWupDEXkUSS2QDMSF+v9DPARbfQn6vsqnk8bCov1jPMn0g
+         4pa8QZzKZdN88lkxxeCOw5BlWjiXdOJgAL0RThOFEVSPu0mUFsbo54bWePy/sGrnNSKl
+         ZN5e8Y8mcrfC7NfnclUreQzj9thUQRob/6UsGMSvhRk3NDf2oBLZFxd8GjDN9RjmrljZ
+         YxkLzqD/3RcS73PZWRjcWZZ6EoDdKYg0S4c1o+Fd6nYe0V1vir9f0Mz+XJm8TcKtDxSH
+         S3Rr82PuU/NL59rs9DU0VBgx2qTeMy4yHtcANIrc7//6jaARjy49MtCEi3tYS1DpKXJD
+         BINw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bO4fdTifCbsbsP2IhleoA3vXtN6f7O4IH+1Jq/pjP2k=;
-        b=ZHQN1q6cGrxRCllzwweBFQt2x09SfaiPODivx/EBdzczwue9tRgGs3k7/gz/QIeeck
-         nAA8pj6z0j2Gh7DuEqaGrYTYADV/nvD/+j/ioRFJol/X5UMRUGZTvS4Ei7m1dRnsrRhq
-         bghbYfC+APCUX0YTDhPtETaUKoyV7UrvapwNHpS8cq8760FPR3PxyOt5SqrfgsANOxlX
-         ynNLH3LtMK4RFxWh62EDP2AQQBAQEIs0KMcH+nuaEG6hr55EQ+JTYeX0sZDjAe4EpKzi
-         nFozUnln0h73/sXW+v+075RtIEnV9FEqP6PvqsPkz0W463OV81UJfB1eTK784DfMcWUE
-         WqEQ==
-X-Gm-Message-State: AOAM5321uTAKKy/uAJ5So0nx9pdcMDPJXi/8UvaFtfkoitfUmlgmy9Hx
-        c9r+LGMHiX+KR393HlNmoXLWE8BKA21oL9H6AKs=
-X-Google-Smtp-Source: ABdhPJyTOQigECECSyGp9bnw5Ai8y2TsU/ceVs5PMCCP/LIJ3wf9n8JCo7zbCa78DwkerSAMOsFtSmCXxvdlMB0zy74=
-X-Received: by 2002:a63:ec4c:: with SMTP id r12mr18735528pgj.74.1600277235025;
- Wed, 16 Sep 2020 10:27:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l5QENNkdAGMuTC5nW+iy9KsmDtcHDjxhRO+rPJdPpPM=;
+        b=laWEl8iCtcmCzPnn6z9qfOn0e0C+jGnw2w7l12Akg1rYEuEXIpLHosbIGLAi2k4cjI
+         dmTuAyTT9XAseGKwExEkEOygUrxLWXnOGwb2X9uaGs3kLvxoo5D5Zwy4dtNpIStvdArg
+         ADF+/RBLpGVHswegXwSkM3KuBWmlNFa9Pd6LJFk5jIliEDZMDEweHIjp8148InsTDydr
+         +9xX2eEU7PYaJzDVZXFuCeVV9DpnICpe2JTQu8YPofC7O8CDLz0dGHeDTXFeJb49gK/K
+         YOr8LkQXIRm81NYN3I7Tbc26uGfeociHfSwyrpkojXMQ4G/WsvG80GZJf10Db9Yphkta
+         E1bQ==
+X-Gm-Message-State: AOAM530P099OAEYnYVmS04LF4Ub+HEsx3QC9kp1cbyhLMEd+TmpJdTkc
+        W2e17lto6+w4InisZ5Of1hVfEfUJqvM=
+X-Google-Smtp-Source: ABdhPJxmtmqYNX393z5XpwmaQERqHPEt7Mlp1Syuz6+p5V+ykLZgZDqJP1FGN2p2enupG+I2XQqgeQ==
+X-Received: by 2002:a63:6881:: with SMTP id d123mr19452899pgc.370.1600277350575;
+        Wed, 16 Sep 2020 10:29:10 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id gd17sm3230369pjb.6.2020.09.16.10.29.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 10:29:10 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 10:29:07 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        andi@etezian.org, javier@osg.samsung.com, robh@kernel.org,
+        linux-input@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] Input: stmfts - Fix a & vs && typo
+Message-ID: <20200916172907.GK1681290@dtor-ws>
+References: <20200916141941.16684-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-References: <20200910211520.1490626-1-luzmaximilian@gmail.com> <EMZQgUl1xLN4o0hV9ZkCD563O85SuOYB5kNFZ5_hlxLQXbJCXpQfrM2afyFIr28h31tXMxD1mxE4DkA5Wy60A0Z2mDnstwF17tEdnX4IRas=@protonmail.com>
-In-Reply-To: <EMZQgUl1xLN4o0hV9ZkCD563O85SuOYB5kNFZ5_hlxLQXbJCXpQfrM2afyFIr28h31tXMxD1mxE4DkA5Wy60A0Z2mDnstwF17tEdnX4IRas=@protonmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 16 Sep 2020 20:26:56 +0300
-Message-ID: <CAHp75Ve8jaYsecsQjuojrihyoVsYr7G011drmXN7q9yzt_tMnQ@mail.gmail.com>
-Subject: Re: [PATCH v2] platform/x86: Add Driver to set up lid GPEs on MS
- Surface device
-To:     =?UTF-8?B?QmFybmFiw6FzIFDFkWN6ZQ==?= <pobrn@protonmail.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916141941.16684-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 2:58 AM Barnab=C3=A1s P=C5=91cze <pobrn@protonmail.=
-com> wrote:
+On Wed, Sep 16, 2020 at 10:19:41PM +0800, YueHaibing wrote:
+> In stmfts_sysfs_hover_enable_write(), we should check
+> value and sdata->hover_enabled is all true.
+> 
+> Fixes: 78bcac7b2ae1 ("Input: add support for the STMicroelectronics FingerTip touchscreen")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-...
+Applied, thank you.
 
-> > +             dev_err(dev, "failed to set GPE wake mask: %d\n", status)=
-;
->
-> I'm not sure if it's technically safe to print acpi_status with the %d fo=
-rmat
-> specifier since 'acpi_status' is defined as 'u32' at the moment.
->  func("%lu", (unsigned long) status)
-> would be safer.
-
-Please, no explicit castings for printf(). In 99% cases it means that
-something is not being used correctly.
-
-
-
-
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Dmitry
