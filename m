@@ -2,118 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C94626C645
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAA226C657
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbgIPRmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbgIPRk1 (ORCPT
+        id S1727321AbgIPRqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:46:39 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:35921 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727297AbgIPRmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:40:27 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6347C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:40:25 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id j2so7131670eds.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uV0tE7wFf4iDXsIGWtEvvLMw+8GMDfCmV/fmV+L5rtE=;
-        b=VUL59OIjIyapTdJmj8801q2Y3Mpvx7u/EUu0OW6UkOjIUtwW/SNHGKoOeax/rYuwFm
-         BV+zC1jvzAnrHZ1+lB6gnvz/k34BGHKFYWsvs4xz5diwhGTkav8A0fXp1OSF1SVXrMNA
-         GLgLeBWbfYQFhlJWYDSqhAvOOynHfdz3tdzgBr7WR0swtYyTgVYf3vz1RVxlC/uoAIWp
-         pG98RBSBX5qWKRT1T68utMs4dX5/GL6lROu88danJYsXhPfOOipKUgyN/i0KEo2LcHRN
-         nUr+R+oaGvfLrK5T8EnNypzlI70SgVNfFRidyM8avNMPlJwthJJAKYpib0C16t3rg8t/
-         7lkw==
+        Wed, 16 Sep 2020 13:42:23 -0400
+Received: by mail-wr1-f67.google.com with SMTP id z1so7816258wrt.3;
+        Wed, 16 Sep 2020 10:42:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uV0tE7wFf4iDXsIGWtEvvLMw+8GMDfCmV/fmV+L5rtE=;
-        b=CXeROzJK9+Ce6/Gr/q127J+O0xUpx0oqeGE+MbSNnN/pG4QO+HaSaeUwo9ujiIeVAa
-         WpSi0DaXznTdfubhoZYZ8uKNcU1AhNzbZo1DmurgWBuzREXSYhLtp+B88wMJGNDtGU+V
-         x3I6KigEDq7Nb48jsOTt4W8yIhVfQhvneh69OKX3HneVonZ7xCo680SPUMaaB7hmBmjO
-         rCpRp/1iY9qh8IxiEcHzhdg/TaYVpI96Ci0Xx6/0POicqSjRs4TjktOsIUTKzcS2ywJ9
-         CePaVP5I+b1Wh6plHtb4pcv5g79S47w9ZPrQTAPMEcaFMfgZl9ZIu6AQ8oxMviYp+6kh
-         gAiQ==
-X-Gm-Message-State: AOAM533Z+mlbxzJAxDU5r2ugOAcTZSCB1wehVPbtRFB7tjZPabkYBDDl
-        8ccVFDkvJ24a6dk52BaD8RN5hmVP6uCi3qU3NGzIgrGiFjcZTA==
-X-Google-Smtp-Source: ABdhPJzpHn0y6abLjMHwzZfMOYlSY1x/tDmVXtLr70lERpOAZ6Mr1OrxP6/6W1RpzzyfKPPPiW/omY0hhpf2kB2k3ag=
-X-Received: by 2002:aa7:c148:: with SMTP id r8mr29631134edp.210.1600278024225;
- Wed, 16 Sep 2020 10:40:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mZM+DPpEcfwHy6w47m49YsAp4ppTWvN4oVK5Trply5g=;
+        b=iRcuxEzQgB8dgm7yMOhc4w1BhwvEIoRat6t47aB6E+n2kgERaqKg2qs9LH9scR/zBs
+         PqFc3iiBsFxHiIPnzELU2OB+JXaDhEawHB6nMZw4xxv6mc6I424ZoGpHsT+0XxIrPQiJ
+         lRqUh9wI1QnaS4VCuVmCLTRNpRDT0Q+xwUslnWBwpqJjSX5Bjp4Q2CZc8PkIXceodbe+
+         EYCiTsdwM5Fnoq3PpSXJAmXcpAaR3Dp0+bEM1ZgN2QuwayFXYaK8fVOr98RknC6exsKr
+         hG639S0ZcDL+BoeGm1WSDSVf4+ZCLzMjsAylgNVNOqWJF4uy/HVrGfppH7TK4lYohQ/o
+         Bdrw==
+X-Gm-Message-State: AOAM532ByHabZUnys4CsUKTh7wq8gEHWkEYsINs+KklNFcWY6/+u21HE
+        oo6TfTy5OjqCN2MGtgU4sY/0XGSo6Q7+wYDw
+X-Google-Smtp-Source: ABdhPJxqTflk58WRHyVtD9XbqL9Q118Cqj3AUT87A43/ZCuGySbyxf6K/9H38Cgpf4SCgzC076Bv/g==
+X-Received: by 2002:a5d:634d:: with SMTP id b13mr28939753wrw.324.1600278141285;
+        Wed, 16 Sep 2020 10:42:21 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.191])
+        by smtp.googlemail.com with ESMTPSA id f6sm34757724wro.5.2020.09.16.10.42.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Sep 2020 10:42:20 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 19:42:18 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memory: omap-gpmc: Fix compile test on SPARC
+Message-ID: <20200916174218.GA23084@kozik-lap>
+References: <20200911143251.399-1-krzk@kernel.org>
 MIME-Version: 1.0
-References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com>
- <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com> <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
-In-Reply-To: <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 16 Sep 2020 10:40:13 -0700
-Message-ID: <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
-Subject: Re: [PATCH] pmem: export the symbols __copy_user_flushcache and __copy_from_user_flushcache
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
-        <rajesh.tadakamadla@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200911143251.399-1-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:24 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
->
->
->
-> On Wed, 16 Sep 2020, Dan Williams wrote:
->
-> > On Wed, Sep 16, 2020 at 3:57 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
-> > >
-> > >
-> > >
-> > > I'm submitting this patch that adds the required exports (so that we could
-> > > use __copy_from_user_flushcache on x86, arm64 and powerpc). Please, queue
-> > > it for the next merge window.
-> >
-> > Why? This should go with the first user, and it's not clear that it
-> > needs to be relative to the current dax_operations export scheme.
->
-> Before nvfs gets included in the kernel, I need to distribute it as a
-> module. So, it would make my maintenance easier. But if you don't want to
-> export it now, no problem, I can just copy __copy_user_flushcache from the
-> kernel to the module.
+On Fri, Sep 11, 2020 at 04:32:51PM +0200, Krzysztof Kozlowski wrote:
+> SPARC comes without CONFIG_OF_ADDRESS thus compile testing fails on
+> linking:
+> 
+>   /usr/bin/sparc64-linux-gnu-ld: drivers/memory/omap-gpmc.o: in function `gpmc_probe_generic_child':
+>   omap-gpmc.c:(.text.unlikely+0x14ec): undefined reference to `of_platform_device_create'
+> 
+> Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/memory/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-That sounds a better plan than exporting symbols with no in-kernel consumer.
+Applied.
 
-> > My first question about nvfs is how it compares to a daxfs with
-> > executables and other binaries configured to use page cache with the
-> > new per-file dax facility?
->
-> nvfs is faster than dax-based filesystems on metadata-heavy operations
-> because it doesn't have the overhead of the buffer cache and bios. See
-> this: http://people.redhat.com/~mpatocka/nvfs/BENCHMARKS
+Best regards,
+Krzysztof
 
-...and that metadata problem is intractable upstream? Christoph poked
-at bypassing the block layer for xfs metadata operations [1], I just
-have not had time to carry that further.
-
-[1]: "xfs: use dax_direct_access for log writes", although it seems
-he's dropped that branch from his xfs.git
