@@ -2,183 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D399E26B94E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18D626B951
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgIPBVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 21:21:50 -0400
-Received: from mail-eopbgr140053.outbound.protection.outlook.com ([40.107.14.53]:57861
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726023AbgIPBVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 21:21:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lKv36e03JNw73Wz5Zx/Jqikon59MhEINt2XsO/wSta+d0GbaCk0MqILFcklnOSrXVeY7dR2InOC6FPNCbh43x3aBqK4+DRyH9Do+j9SljWfEWAFOVsTHlhfTeKsvvV1XhWUXc8D959vT+cLouWJBDY2uD8ZAhcMLyr+Vik1rc1nd5gvet+pqsyK8sZUlb6cytBl/o1q0D9YhwDrr631HV9WmJcA1sDRuonJabwbVHzrCb/yru+zYDRAPxpwX7+O/g2UwLyT8ZIv0sphLZWBrCeV2GfnGFPqARG49ce3zKgtj0aUIi467mCJeEnac8xQ4GM/Z76txGGTVcLZNnrxypQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iRGZC5rV431h9+tzLJPeMOFuOcLtwkqQvIw1V4Btm2E=;
- b=HUqHQiX+axnJUNAMBn3hUsAWGCrD8TlildR57LJewOz+Ybg6QkWALVLJGFnKFtUiR9YCCDPP31f0rAzZx17Qj2HvVnP9bPTW+FCFRi5+neLLm+IOCwSuPMSnx2ppSetBO8hWVZAuXgcyK3z5JB3aQJlSY5jkolcJwp/MJMPgRKzLuvAkmuDVMc7Ci5DStAGp5MnCfJ34mQC4j8ZYRyXOiVB7rZHAlfJrIknYDwE0qNJtBRmNkheXWkGXiFh4nuJ8OrUeWEIfwGMiWaWe4VS5z0gjy+kCBWZTfHoFHf1qg3AfjLz//3jZbLxMhYvVJYh92scnr+sP1zOuNXSN8DbrlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iRGZC5rV431h9+tzLJPeMOFuOcLtwkqQvIw1V4Btm2E=;
- b=ptumVNCrEWy9z41ZpqiyEBRCnS6mtun3JggcH6CEL0HUzHG1qciWdHjOwGpENatwzY6SsK2ZTtvIOWz4Y62/h68QLdp0ccAASY/LJpeu/agfAqBwkGyja0UhWWkohxoegz83lCZpAwAl+uOyNffpU5s66A3nDjVDF/ndcvqIw70=
-Received: from AM6PR04MB5413.eurprd04.prod.outlook.com (2603:10a6:20b:96::28)
- by AM6PR04MB4742.eurprd04.prod.outlook.com (2603:10a6:20b:4::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.18; Wed, 16 Sep
- 2020 01:21:44 +0000
-Received: from AM6PR04MB5413.eurprd04.prod.outlook.com
- ([fe80::1953:c81a:cca2:60ec]) by AM6PR04MB5413.eurprd04.prod.outlook.com
- ([fe80::1953:c81a:cca2:60ec%7]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
- 01:21:44 +0000
-From:   Ran Wang <ran.wang_1@nxp.com>
-To:     kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
-        Leo Li <leoyang.li@nxp.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
+        id S1726293AbgIPBWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 21:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgIPBWh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 21:22:37 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507EFC06174A;
+        Tue, 15 Sep 2020 18:22:37 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id i22so7951012eja.5;
+        Tue, 15 Sep 2020 18:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WGihwO2qHF9dIaN/RvziO+QyhtTNOKpl7CTi5MgK0G0=;
+        b=H1O32mcbMyK6VD7OYOqCHvzFyjrKvS1KfBnZRz5xF2mWL5YzDiwg8Aoc3XOe/GoM+O
+         DCEv8RcN7byYy8gTss9xXCwBaGyEWLyVS4vLobef66n1GgD5HbqlV9IPiIqAdIzcf5xt
+         wRTZRGFzKNXfSrTS26kZmkAExDJThyyBNWRgXOelOmfUBoP9xlQfaGhkygVJoPNkT3wg
+         SNPed+Req2vU1dPN48abX5WKsbAhM5LauXO9lZn0rcDAhM0dU53pu0cxVHCHJSrr17Xs
+         jJ7RBhlvoyJt7oRmqjOj0L8bPcGAOK7QxmbcMr1paKnJpEVXsrchxy+Lb5RELx+oQ9iV
+         sVDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WGihwO2qHF9dIaN/RvziO+QyhtTNOKpl7CTi5MgK0G0=;
+        b=MXymvm0q8T3zJhU0xV0TKvP4L/StzbL76LsSgy26MjKipwtYgTZR5Sy7nps8PNzwMO
+         BjlUUOkKJ5oz/JJkp95uGNz/cgSuViiUGvFFu0021RIY/VLJiLpc7Uho/Cvrjj12Bgg4
+         Sa5R5ihhMuL7SvziJDVlAQSl45PyAnV7+QtdNGnvzn2Q35wSgHlayyUwH9CzEAJIYfDP
+         nqMJO8unpQ1yFXEODOnwviXjbj3NCM2tt11nXMV7k9mEAKPRjfITd9XhoT4Y+XqB3ygB
+         HKbE7BgRKoJGF6bMbEWLkg/rqgnrSLZEYvBwAZ4HYQnGLmMBhnAapRvSl3PpvUAw2qfb
+         aKDw==
+X-Gm-Message-State: AOAM5327OLhWSej8lNTg1xRBvI3Jd7zULNuuOmuoGYsn5zKCMCJt45fa
+        Fq/1gbh+FguRvaSM/zMAbKfRgcSxb7Y=
+X-Google-Smtp-Source: ABdhPJxFscktvzZpXZmcY7/Jb07hTuEJxXkZqFJl9pzR4PAdtCwJiBJIFGKpJ5gArOQZDMW1zEcLiA==
+X-Received: by 2002:a17:906:70d4:: with SMTP id g20mr24103494ejk.413.1600219355247;
+        Tue, 15 Sep 2020 18:22:35 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a337.dip0.t-ipconnect.de. [217.229.163.55])
+        by smtp.gmail.com with ESMTPSA id m6sm11370966ejb.85.2020.09.15.18.22.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 18:22:34 -0700 (PDT)
+Subject: Re: [PATCH v2] platform/x86: Add Driver to set up lid GPEs on MS
+ Surface device
+To:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Biwen Li <biwen.li@nxp.com>, Varun Sethi <V.Sethi@nxp.com>,
-        Arokia Samy <arokia.samy@nxp.com>,
-        Ard Biesheuvel <Ard.Biesheuvel@arm.com>,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Paul Yang <Paul.Yang@arm.com>,
-        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
-        tanveer <tanveer.alam@puresoftware.com>
-Subject: RE: [PATCH v1] soc: fsl: rcpm: Add ACPI support
-Thread-Topic: [PATCH v1] soc: fsl: rcpm: Add ACPI support
-Thread-Index: AQHWi1Bdrf69Hjks3kmx49279KDQI6lqdRfQ
-Date:   Wed, 16 Sep 2020 01:21:44 +0000
-Message-ID: <AM6PR04MB5413CCFCC68AE2BF90C72C47F1210@AM6PR04MB5413.eurprd04.prod.outlook.com>
-References: <20200915110647.846-1-kuldip.dwivedi@puresoftware.com>
-In-Reply-To: <20200915110647.846-1-kuldip.dwivedi@puresoftware.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: puresoftware.com; dkim=none (message not signed)
- header.d=none;puresoftware.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4a2f0fac-aefa-4ab5-ce0b-08d859dedfbb
-x-ms-traffictypediagnostic: AM6PR04MB4742:
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB47428D2C733936A6164E224CF1210@AM6PR04MB4742.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2Ioogp2HN9TNouBCMmIDEAlUUSr0chz3yEgSUb2gGLFtpQIxexAMz9nr9uNkxryCrISq77XTsAdWXbD/u+nl4GIcQdcnKPGbkzCq3/C3pka6KYQjDaEb4tn9Z32bRERxETQ45DQQ8tddwFuq9li0SIo5Wb1I0c7tPpPWnmRfQGoYD8Heuwr99POjxiys3J8V+1bdcE6QuAcSajiJZiVEBA6NKATmiSREnxHPPdRcaTT4n4S6temdlhxcLewAVCuZ5eReG+tJBYoCaeSl09AV2Vo+qu2xPjCRXzxLLOuJs3WsgJy8Yn73EgU8hwraZvX4DnQEfKB+63XqxkKY1dAgwierNgASE5TUKsq+gak0+kxFpe4lhDweSkT4QIrPH3HpjGpUCLap9blYXmXCJ+5jEw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5413.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(366004)(376002)(76116006)(4326008)(66946007)(66446008)(64756008)(66556008)(55016002)(66476007)(9686003)(8676002)(7696005)(71200400001)(86362001)(478600001)(6506007)(53546011)(8936002)(110136005)(966005)(186003)(83380400001)(54906003)(2906002)(33656002)(26005)(5660300002)(52536014)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: speHqpjpby+LPx1DWzkqpz2e8L3ZiLOVpOWKkVyJhER+np7cAWNgZDFauQwymOv7/W8OlXAh/ZySPkYWtlBc9yo1bDo+mZ8QoDirHHOsiw5g4+WwDHqAN5YOE3ehiLOHFyz4B6HO1fKE44iLN+BSnd4bZp76DHgRN6TH4OpGj3pmLIc/XMbAx5Sj0VEHexabdhwyscmPSI+uW/N0JoMRre5p2BASH01f9TGu+I7A77TQikQ8hpgnIE00Kt0/gBBTG5tHwyIPLj67ESiu9ZrGzfOAERJoJwcf0nlINPgKcO7qvcZzmeP/orqjSHMscPToPCEydsURpB1n0M8fpA+RmuYh5MQ51gdNba92SOCt0ii40sutrvd7PHNDzUafCp9BTLKOfHB/HN6fVHbl3sc9cSMrsTueNASKcVuRXOoLxM2nPvEOBFq5P5dMVCNzRFGMIaOElaEkQDxbOhSqvoRxWWZcLX4ieNAG6KRa9IfFVxaWClAiYq6TRMl+ZLE/1s/iIifFbikSUYUDhAQ/VPvIVFVEYqC1gSNsMygzSJDbPwcRFA8uffgXsjZ6hAUPP92jfn8NTHfb8dJxl+8NUiQW442ifNNaOlSWuWQSFe+mgcBMWA3EseI/xlPdz9zsIetDG4psb7LDGaqVt126qxRSww==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+References: <20200910211520.1490626-1-luzmaximilian@gmail.com>
+ <EMZQgUl1xLN4o0hV9ZkCD563O85SuOYB5kNFZ5_hlxLQXbJCXpQfrM2afyFIr28h31tXMxD1mxE4DkA5Wy60A0Z2mDnstwF17tEdnX4IRas=@protonmail.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <355dae14-2508-706b-53f8-48b78f84e7cc@gmail.com>
+Date:   Wed, 16 Sep 2020 03:22:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5413.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a2f0fac-aefa-4ab5-ce0b-08d859dedfbb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 01:21:44.3494
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DdU82NemEaJIFHg30ffA3HcTnMk6TJhJpCGSYmfROL9DchVNUkReFByxj942ZuCnkMnm6xsXEMdxi5kDxitWRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4742
+In-Reply-To: <EMZQgUl1xLN4o0hV9ZkCD563O85SuOYB5kNFZ5_hlxLQXbJCXpQfrM2afyFIr28h31tXMxD1mxE4DkA5Wy60A0Z2mDnstwF17tEdnX4IRas=@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kuldip,
+Hi,
 
-On Tuesday, September 15, 2020 7:07 PM, kuldip dwivedi wrote:
-> Subject: [PATCH v1] soc: fsl: rcpm: Add ACPI support
+On 9/16/20 1:58 AM, Barnabás Pőcze wrote:
+> Hi
+> 
+> 
+>> [...]
+>> +static int surface_lid_enable_wakeup(struct device *dev, bool enable)
+>> +{
+>> +	const struct surface_lid_device *lid = dev_get_drvdata(dev);
+>> +	int action = enable ? ACPI_GPE_ENABLE : ACPI_GPE_DISABLE;
+>> +	acpi_status status;
+>> +
+>> +	status = acpi_set_gpe_wake_mask(NULL, lid->gpe_number, action);
+>> +	if (status) {
+> 
+> I think 'if (ACPI_FAILURE(status))' would be better.
 
-Actually I also post a patch for this recently: https://lore.kernel.org/pat=
-chwork/patch/1299959/  :)
+Okay, I'll change that (here and below).
 
-Regards,
-Ran
+>> +		dev_err(dev, "failed to set GPE wake mask: %d\n", status);
+> 
+> I'm not sure if it's technically safe to print acpi_status with the %d format
+> specifier since 'acpi_status' is defined as 'u32' at the moment.
+>   func("%lu", (unsigned long) status)
+> would be safer. You could also use 'acpi_format_exception()', which is possibly
+> the most correct approach since it assumes nothing about what 'acpi_status'
+> actually is.
 
-> Add ACPI support in fsl RCPM driver. This is required to support ACPI S3 =
-state.
-> S3 is the ACPI sleep state that is known as "sleep" or "suspend to RAM".
-> It essentially turns off most power of the system but keeps memory powere=
-d.
+I wasn't aware of acpi_format_exception(). That looks like a good thing
+to do here, thanks!
+  
+> 
+>> +		return -EINVAL;
+> 
+> I'm not sure if -EINVAL is the best error to return here.
 
-Actually the low power mode is to gate clocks rather than power down on Lay=
-erscape platforms.
+I'd argue that if this fails, it's most likely due to the GPE number
+being invalid (which I'd argue is an input), although I'm open for
+suggestions. Same reasoning for the -EINVALs below.
 
-> Signed-off-by: tanveer <tanveer.alam@puresoftware.com>
-> Signed-off-by: kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
-> ---
->=20
-> Notes:
->     1. Add ACPI match table
->     2. NXP team members are added for confirming HID changes
->     3. There is only one node in ACPI so no need to check for
->        current device explicitly
->     4. These changes are tested on LX2160A and LS1046A platforms
->=20
->  drivers/soc/fsl/rcpm.c | 22 +++++++++++++++++++---
->  1 file changed, 19 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/soc/fsl/rcpm.c b/drivers/soc/fsl/rcpm.c index
-> a093dbe6d2cb..e75a436fb159 100644
-> --- a/drivers/soc/fsl/rcpm.c
-> +++ b/drivers/soc/fsl/rcpm.c
-> @@ -2,10 +2,12 @@
->  //
->  // rcpm.c - Freescale QorIQ RCPM driver  // -// Copyright 2019 NXP
-> +// Copyright 2019-2020 NXP
-> +// Copyright 2020 Puresoftware Ltd.
->  //
->  // Author: Ran Wang <ran.wang_1@nxp.com>
->=20
-> +#include <linux/acpi.h>
->  #include <linux/init.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> @@ -57,8 +59,13 @@ static int rcpm_pm_prepare(struct device *dev)
->  				rcpm->wakeup_cells + 1);
->=20
->  		/*  Wakeup source should refer to current rcpm device */
-> -		if (ret || (np->phandle !=3D value[0]))
-> -			continue;
-> +		if (is_acpi_node(dev->fwnode)) {
-> +			if (ret)
-> +				continue;
-> +		} else {
-> +			if (ret || (np->phandle !=3D value[0]))
-> +				continue;
-> +		}
->  		/* Property "#fsl,rcpm-wakeup-cells" of rcpm node defines the
->  		 * number of IPPDEXPCR register cells, and "fsl,rcpm-wakeup"
-> @@ -139,10 +146,19 @@ static const struct of_device_id rcpm_of_match[] =
-=3D
-> {  };  MODULE_DEVICE_TABLE(of, rcpm_of_match);
->=20
-> +#ifdef CONFIG_ACPI
-> +static const struct acpi_device_id rcpm_acpi_match[] =3D {
-> +	{ "NXP0015", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(acpi, rcpm_acpi_match); #endif
-> +
->  static struct platform_driver rcpm_driver =3D {
->  	.driver =3D {
->  		.name =3D "rcpm",
->  		.of_match_table =3D rcpm_of_match,
-> +		.acpi_match_table =3D ACPI_PTR(rcpm_acpi_match),
->  		.pm	=3D &rcpm_pm_ops,
->  	},
->  	.probe =3D rcpm_probe,
-> --
-> 2.17.1
+> 
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> [...]
+>> +static int surface_gpe_probe(struct platform_device *pdev)
+>> +{
+>> +	struct surface_lid_device *lid;
+>> +	u32 gpe_number;
+>> +	int status;
+>> +
+>> +	status = device_property_read_u32(&pdev->dev, "gpe", &gpe_number);
+>> +	if (status)
+>> +		return -ENODEV;
+> 
+> 'device_property_read_u32()' returns an error code, you could simply return that
+> instead of hiding it.
 
+My thought there was that if the "gpe" property isn't present or of a
+different type, this is not a device that we want to/can handle. Thus
+the -ENODEV. Although I think a debug print statement may be useful
+here.
+
+>> +
+>> +	status = acpi_mark_gpe_for_wake(NULL, gpe_number);
+>> +	if (status) {
+>> +		dev_err(&pdev->dev, "failed to mark GPE for wake: %d\n", status);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	status = acpi_enable_gpe(NULL, gpe_number);
+>> +	if (status) {
+>> +		dev_err(&pdev->dev, "failed to enable GPE: %d\n", status);
+>> +		return -EINVAL;
+>> +	}
+> 
+> My previous comments about ACPI and the returned value apply here as well.
+> Furthermore, 'acpi_mark_gpe_for_wake()' and 'acpi_enable_gpe()' both return
+> a value of type 'acpi_status', not 'int'.
+
+Noted, I'll use acpi_status and acpi_format_exception(). See my
+reasoning above for the -EINVAL. Again, I'm open for suggestions on
+better values here.
+
+>> +
+>> +	lid = devm_kzalloc(&pdev->dev, sizeof(struct surface_lid_device),
+>> +			   GFP_KERNEL);
+> 
+>   lid = devm_kzalloc(..., sizeof(*lid), ...)
+> is preferred.
+
+Okay, I'll change that.
+
+>> +	if (!lid)
+>> +		return -ENOMEM;
+> 
+> Isn't that problematic that the side effects of the previous two ACPI calls are
+> not undone when returning here with -ENOMEM? Allocating this struct right after
+> querying 'gpe_number' could prevent it.
+
+Yes, I think switching those would be cleaner. Also yes, the
+acpi_enable_gpe() call is missing a acpi_disable_gpe() here, thanks! I'm
+not aware of any counter-part to acpi_mark_gpe_for_wake(), but I think
+the side-effects of that are fairly negligible when the GPE is disabled.
+
+>> +
+>> +	lid->gpe_number = gpe_number;
+>> +	platform_set_drvdata(pdev, lid);
+>> +
+>> +	status = surface_lid_enable_wakeup(&pdev->dev, false);
+>> +	if (status) {
+>> +		acpi_disable_gpe(NULL, gpe_number);
+>> +		platform_set_drvdata(pdev, NULL);
+> 
+> Why is 'platform_set_drvdata(pdev, NULL)' needed?
+
+Is this not required for clean-up once the driver data has been set? Or
+does the driver-base take care of that for us when the driver is
+removed/fails to probe? My reasoning was that I don't want to leave
+stuff around for any other driver to trip on (and rather have that
+driver oops on a NULL-pointer). If the driver-core already takes care of
+NULL-ing that, that line is not needed. Unfortunately that behavior
+doesn't seem to be explained in the documentation.
+
+>> +		return status;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int surface_gpe_remove(struct platform_device *pdev)
+>> +{
+>> +	struct surface_lid_device *lid = dev_get_drvdata(&pdev->dev);
+>> +
+>> +	/* restore default behavior without this module */
+>> +	surface_lid_enable_wakeup(&pdev->dev, false);
+>> +	acpi_disable_gpe(NULL, lid->gpe_number);
+>> +
+>> +	platform_set_drvdata(pdev, NULL);
+> 
+> I'm wondering why this is needed?
+
+See my question above.
+
+>> +	return 0;
+>> +}
+>> [...]
+>> +static int __init surface_gpe_init(void)
+>> +{
+>> +	const struct dmi_system_id *match;
+>> +	const struct property_entry *props;
+>> +	struct platform_device *pdev;
+>> +	struct fwnode_handle *fwnode;
+>> +	int status;
+>> +
+>> +	match = dmi_first_match(dmi_lid_device_table);
+>> +	if (!match) {
+>> +		pr_info(KBUILD_MODNAME": no device detected, exiting\n");
+> 
+> If you put
+>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> before including any headers, you can simply write 'pr_info("no device...")' and it'll
+> be prefixed by the module name. This is the "usual" way of achieving what you want.
+
+Right, thanks!
+
+>> +		return 0;
+> 
+> Shouldn't it return -ENODEV?
+
+How does module auto-loading behave with a -ENODEV return value in init?
+I know that in the driver's probe callback it signals that the driver
+isn't intended for the device. Is this the same for modules or would a
+user get an error message in the kernel log? As I couldn't find any
+documentation on this, I assumed it didn't behave the same and would
+emit an error message.
+
+The reason I don't want to emit an error message here is that the module
+can be loaded for devices that it's not intended (and that's not
+something we can fix with a better MODULE_ALIAS as Microsoft cleverly
+named their 5th generation Surface Pro "Surface Pro", without any
+version number). Mainly, I don't want users to get a random error
+message that doesn't indicate an actual error.
+
+>> +	}
+>> +
+>> +	props = match->driver_data;
+>> +
+>> +	status = platform_driver_register(&surface_gpe_driver);
+>> +	if (status)
+>> +		return status;
+>> +
+>> +	pdev = platform_device_alloc("surface_gpe", PLATFORM_DEVID_NONE);
+>> +	if (!pdev) {
+>> +		platform_driver_unregister(&surface_gpe_driver);
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	fwnode = fwnode_create_software_node(props, NULL);
+>> +	if (IS_ERR(fwnode)) {
+>> +		platform_device_put(pdev);
+>> +		platform_driver_unregister(&surface_gpe_driver);
+>> +		return PTR_ERR(fwnode);
+>> +	}
+>> +
+>> +	pdev->dev.fwnode = fwnode;
+>> +
+>> +	status = platform_device_add(pdev);
+>> +	if (status) {
+>> +		platform_device_put(pdev);
+>> +		platform_driver_unregister(&surface_gpe_driver);
+>> +		return status;
+>> +	}
+>> +
+> 
+> It may be a matter of preference, but I think the 'if (err) goto X' pattern would
+> be better in this function (at least for the last 3 or so error paths).
+
+Noted, I'll change that.
+
+>> +	surface_gpe_device = pdev;
+>> +	return 0;
+>> +}
+>> +module_init(surface_gpe_init);
+>> +
+>> +static void __exit surface_gpe_exit(void)
+>> +{
+>> +	if (!surface_gpe_device)
+>> +		return;
+> 
+> If you returned -ENODEV in init when no DMI match is found,
+> then this check would be redundant.
+
+Yes. See my question regarding -ENODEV above.
+
+Thank you for your time,
+Max
