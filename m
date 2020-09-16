@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F54D26CD5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EA626CCEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgIPU6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:58:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726539AbgIPQdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:33:15 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADA5120795;
-        Wed, 16 Sep 2020 14:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600265694;
-        bh=bqb9nEnlPu902pTm0s2ZgPXSNYuC1CrIiyMquhk5AYE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=f56xT//OlHO4sXCZK9bN2re3PYowqLzF5g8rVsDf5/pymxVyW79KZh5DozEZ5W10w
-         nxvgiE08DQB1QqRjecxgIXh5rBeJQ/4wrgh5XJqSctYIKG5adxj/2MBKsXbG2ZlnAg
-         +nYSYgslq9UVGtZr/6hVssiYhqQAyXHy0a7V6lR8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id S1728567AbgIPUv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726622AbgIPQy4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:54:56 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB78C002148
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:22:54 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kIYCy-00CMOJ-Pt; Wed, 16 Sep 2020 15:14:52 +0100
+        (envelope-from <afa@pengutronix.de>)
+        id 1kIYKf-0001wr-0h; Wed, 16 Sep 2020 16:22:49 +0200
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kIYKd-0004uw-Sj; Wed, 16 Sep 2020 16:22:47 +0200
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: stm32: declare device tree syscon node for TAMP peripheral
+Date:   Wed, 16 Sep 2020 16:22:16 +0200
+Message-Id: <20200916142216.25142-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 16 Sep 2020 15:14:52 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Saravana Kannan <saravanak@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-In-Reply-To: <CACRpkdbqiUye3fcLSdtNB2WffsKp-tmpV64RtWm_kwkqiz2+7w@mail.gmail.com>
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-9-maz@kernel.org>
- <CACRpkdbqiUye3fcLSdtNB2WffsKp-tmpV64RtWm_kwkqiz2+7w@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <9d3c8d2de29618797568e3d4e325b10b@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, saravanak@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The stm32mp1 TAMP (Tamper and backup registers) does tamper detection
+and features 32 backup registers that, being in the RTC domain, may
+survive even with Vdd switched off.
 
-On 2020-09-16 15:03, Linus Walleij wrote:
-> On Tue, Sep 1, 2020 at 4:44 PM Marc Zyngier <maz@kernel.org> wrote:
-> 
->> Change the way we deal with GIC SGIs by turning them into proper
->> IRQs, and calling into the arch code to register the interrupt range
->> instead of a callback.
->> 
->> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> 
-> Hmmm apart from Exynos this crashes the Ux500 too... I don't
-> even get the crash dumpon a LL UART, it hard hangs.
+We don't have a driver for the peripheral, but handling it as syscon
+allows using it with existing drivers that work with them, in particular
+a syscon-reboot-mode child node can be defined in board.dts (or fixed up
+by the bootloader) to exchange reboot mode information with the bootloader.
 
-No output whatsoever? That's really odd... Or do you see the kernel
-booting and locking up when starting secondaries? If the latter, it
-would indicate that we haven't properly deactivated the SGI...
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-         M.
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index bfe29023fbd5..fa4eb96c95af 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1144,6 +1144,11 @@ syscfg: syscon@50020000 {
+ 			clocks = <&rcc SYSCFG>;
+ 		};
+ 
++		tamp: tamp@5c00a000 {
++			compatible = "simple-bus", "syscon", "simple-mfd";
++			reg = <0x5c00a000 0x400>;
++		};
++
+ 		lptimer2: timer@50021000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
 -- 
-Jazz is not dead. It just smells funny...
+2.28.0
+
