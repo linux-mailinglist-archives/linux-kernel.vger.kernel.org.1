@@ -2,172 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE70E26C983
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E424726C990
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbgIPTMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:12:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56304 "EHLO mail.kernel.org"
+        id S1727777AbgIPTNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:13:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727324AbgIPRkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:40:40 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1727313AbgIPRka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:40:30 -0400
+Received: from localhost (unknown [122.172.186.249])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00CB822208;
-        Wed, 16 Sep 2020 12:00:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAD5622209;
+        Wed, 16 Sep 2020 12:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600257620;
-        bh=9s/rvEjo1wq+KwkqjNhV00XmoufWCEUO/ivOHV5rAGU=;
+        s=default; t=1600258141;
+        bh=/PEHb0bQ0hzOiam0x0I97ptl06cw+UgKXjvJHrGwcYY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MztvbYDnbk2NXEcYstZNeAJ6aWgFbPSOOSfLrbFaXyxEfjR7wHm1e1+gUiW8w061N
-         RV0g8a+uEO39D8pZCvr+axOuo72XFHhRWiTJv8tlpilNbrnF0hICqbc4wGKmBdhUpF
-         br/L1V9FN/vYx1Os7u42M45FthQreInRFat5d+qQ=
-Date:   Wed, 16 Sep 2020 14:00:54 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200916120054.GA2753544@kroah.com>
-References: <20200915171022.10561-1-oded.gabbay@gmail.com>
- <20200915.134252.1280841239760138359.davem@davemloft.net>
- <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
- <20200916062614.GF142621@kroah.com>
- <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
- <20200916074217.GB189144@kroah.com>
- <CAFCwf10zLR9v65sgGGdkcf+JzZaw_WORAbQvEw-hbbfj=dy2Xg@mail.gmail.com>
- <20200916082226.GA509119@kroah.com>
- <CAFCwf1366_GoTj1gpneJBSqVxJ1mOnsdZiC+DJLG85GHGfZrzw@mail.gmail.com>
+        b=yEcEjb8IC0CCZ6yqWkNX+XpPZz8UINg3ejRTW7ycSGwrsaP8uswlXCdupdiNhox1R
+         7diKZG76HtPSM8sc4CY1TrI7CODs+fe1+sKdpULCVIG8T/GVbKbS+nTnXGaWcHBKtC
+         n2rYAnOXLpd3bngDaqvvq3YUPY1+yQPQhPbwWckI=
+Date:   Wed, 16 Sep 2020 17:38:54 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Swapnil Jakhade <sjakhade@cadence.com>
+Cc:     kishon@ti.com, linux-kernel@vger.kernel.org, maxime@cerno.tech,
+        Laurent.pinchart@ideasonboard.com, mparab@cadence.com,
+        yamonkar@cadence.com, nsekhar@ti.com, tomi.valkeinen@ti.com,
+        jsarha@ti.com, praneeth@ti.com
+Subject: Re: [PATCH v6 0/2] PHY: Add new PHY attribute max_link_rate
+Message-ID: <20200916120854.GF2968@vkoul-mobl>
+References: <1599805114-22063-1-git-send-email-sjakhade@cadence.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFCwf1366_GoTj1gpneJBSqVxJ1mOnsdZiC+DJLG85GHGfZrzw@mail.gmail.com>
+In-Reply-To: <1599805114-22063-1-git-send-email-sjakhade@cadence.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:47:58AM +0300, Oded Gabbay wrote:
-> On Wed, Sep 16, 2020 at 11:21 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Sep 16, 2020 at 11:02:39AM +0300, Oded Gabbay wrote:
-> > > On Wed, Sep 16, 2020 at 10:41 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
-> > > > > On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
-> > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > >
-> > > > > > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
-> > > > > > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
-> > > > > > > >
-> > > > > > > > From: Oded Gabbay <oded.gabbay@gmail.com>
-> > > > > > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
-> > > > > > > >
-> > > > > > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
-> > > > > > > > > into the habanalabs driver.
-> > > > > > > > >
-> > > > > > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
-> > > > > > > > > are in that patch's commit message.
-> > > > > > > > >
-> > > > > > > > > Link to v2 cover letter:
-> > > > > > > > > https://lkml.org/lkml/2020/9/12/201
-> > > > > > > >
-> > > > > > > > I agree with Jakub, this driver definitely can't go-in as it is currently
-> > > > > > > > structured and designed.
-> > > > > > > Why is that ?
-> > > > > > > Can you please point to the things that bother you or not working correctly?
-> > > > > > > I can't really fix the driver if I don't know what's wrong.
-> > > > > > >
-> > > > > > > In addition, please read my reply to Jakub with the explanation of why
-> > > > > > > we designed this driver as is.
-> > > > > > >
-> > > > > > > And because of the RDMA'ness of it, the RDMA
-> > > > > > > > folks have to be CC:'d and have a chance to review this.
-> > > > > > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
-> > > > > > > the kernel and we can't connect to it due to the lack of H/W support
-> > > > > > > we have
-> > > > > > > Therefore, I don't see why we need to CC linux-rdma.
-> > > > > > > I understood why Greg asked me to CC you because we do connect to the
-> > > > > > > netdev and standard eth infrastructure, but regarding the RDMA, it's
-> > > > > > > not really the same.
-> > > > > >
-> > > > > > Ok, to do this "right" it needs to be split up into separate drivers,
-> > > > > > hopefully using the "virtual bus" code that some day Intel will resubmit
-> > > > > > again that will solve this issue.
-> > > > > Hi Greg,
-> > > > > Can I suggest an alternative for the short/medium term ?
-> > > > >
-> > > > > In an earlier email, Jakub said:
-> > > > > "Is it not possible to move the files and still build them into a single
-> > > > > module?"
-> > > > >
-> > > > > I thought maybe that's a good way to progress here ?
-> > > >
-> > > > Cross-directory builds of a single module are crazy.  Yes, they work,
-> > > > but really, that's a mess, and would never suggest doing that.
-> > > >
-> > > > > First, split the content to Ethernet and RDMA.
-> > > > > Then move the Ethernet part to drivers/net but build it as part of
-> > > > > habanalabs.ko.
-> > > > > Regarding the RDMA code, upstream/review it in a different patch-set
-> > > > > (maybe they will want me to put the files elsewhere).
-> > > > >
-> > > > > What do you think ?
-> > > >
-> > > > I think you are asking for more work there than just splitting out into
-> > > > separate modules :)
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > > Hi Greg,
-> > >
-> > > If cross-directory building is out of the question, what about
-> > > splitting into separate modules ? And use cross-module notifiers/calls
-> > > ? I did that with amdkfd and amdgpu/radeon a couple of years back. It
-> > > worked (that's the best thing I can say about it).
-> >
-> > That's fine with me.
-> >
-> > > The main problem with this "virtual bus" thing is that I'm not
-> > > familiar with it at all and from my experience I imagine it would take
-> > > a considerable time and effort to upstream this infrastructure work.
-> >
-> > It shouldn't be taking that long, but for some unknown reason, the
-> > original author of that code is sitting on it and not resending it.  Go
-> > poke them through internal Intel channels to find out what the problem
-> > is, as I have no clue why a 200-300 line bus module is taking so long to
-> > get "right" :(
-> >
-> > I'm _ALMOST_ at the point where I would just do that work myself, but
-> > due to my current status with Intel, I'll let them do it as I have
-> > enough other things on my plate...
-> >
-> > > This could delay the NIC code for a couple of years, which by then
-> > > this won't be relevant at all.
-> >
-> > Why wouldn't this code be relevant in a year?  It's going to be 2+ years
-> > before any of this shows up in an "enterprise distro" based on their
-> > release cycles anyway :)
-> >
-> > thanks,
-> >
-> > greg k-h
+On 11-09-20, 08:18, Swapnil Jakhade wrote:
+> This patch series adds a new PHY attribute max_link_rate.
+> It also updates Cadence Torrent PHY driver to set attributes bus_width,
+> max_link_rate and mode for DisplayPort.
 > 
-> Hi Greg,
-> ok, I'll take a look. Do you happen to have the name of the patch-set / author ?
+> It includes following patches:
+> 
+> 1. 0001-phy-Add-new-PHY-attribute-max_link_rate.patch
+> This patch adds max_link_rate as a new PHY attribute.
+> 
+> 2. 0002-phy-cadence-torrent-Set-Torrent-PHY-attributes.patch
+> This patch sets PHY attributes in Cadence Torrent PHY driver. This will
+> enable drivers using this PHY to read these properties.
+> 
+> These attributes will be used in the Cadence MHDP DRM bridge driver [1]
+> which is in the process of upstreaming.
 
-Here's at least one copy:
-	https://lore.kernel.org/linux-rdma/20200520070227.3392100-2-jeffrey.t.kirsher@intel.com/
+Applied, thanks
 
-there might have been a newer one, can't remember, sorry.
-
-thanks,
-
-greg k-h
+-- 
+~Vinod
