@@ -2,108 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF2826C9EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13DA26CA74
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgIPTTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        id S1727351AbgIPUAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727265AbgIPRiI (ORCPT
+        with ESMTP id S1726530AbgIPRfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:38:08 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7721AC0258FA;
-        Wed, 16 Sep 2020 09:59:14 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l9so3790405wme.3;
-        Wed, 16 Sep 2020 09:59:14 -0700 (PDT)
+        Wed, 16 Sep 2020 13:35:22 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F205C061223
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:35:04 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id z9so3903767wmk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=1Cyg0WIppUnNjtSQjb5xzehZs4xNIP5GmeGygQdn4yo=;
-        b=rvPzgDuJ+cVuZ5Hx+9BQPemjI1Y70qzwAVVQEeYKOtQjKMFR6beZHS+KEszMZdFjO6
-         Aleit13kXaRzgU1wgxMoxMxGWKCrB/l/f5Kndr71xLi0+6371kqmSanFtiBKav6HRFe8
-         68ximSA9OCEKJyaTMWMDLe4CryacLImZ3zWePzp+1apJ71Ll641acOahO6yJZxZuafh2
-         cfiSAGzYMSdU/kZiLlES2qtE1EJ0ky+OjOm7JxgaGlgwndhkbiwUGGrNy8l7wVaK4vC7
-         zcwvAUCWEZxBhnaAToiGgGKO7FHAB2jb+2Q2+Jo5S042zN5PIagJXiUikIN2NMyK2wg8
-         gDag==
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3ZouLpoLHZGhnRn3IE3lAdYTtqQtOaDPWcW0BXT72MM=;
+        b=HNZo35gC+J7olQM/J4RAmLlZS6QxVf8SG/2BDEI9P1bohZ+P5Q96wTZVwc7II0n9BL
+         cgE7q3s2HuB8SyeYAwP76jfvS9ilgnaSdWf3BN5CpaP3PpCWpHo7OyCzXoLczzUjYIh+
+         TAvf72HVFbYYjUfwXRs9KQWyCZzjv5SmQjRTwHXgeAoUK3/2zXTwbrvIkPx4Um1P5RvS
+         TU1N+Ppw0DKArVS8ynQ4bf+jV171VTr1y4ZU53me1jkwW1cniiMaCioHU1u/AMChZdp6
+         1BnnWaIQvyESEBhMsuSyugrLCEkTdp5crIYFCA9FneqGow+l1YuEeHkCEHhBbzEX3vON
+         E0iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=1Cyg0WIppUnNjtSQjb5xzehZs4xNIP5GmeGygQdn4yo=;
-        b=lWMJrGeqxCUxzMsEXaRAGSqQOy+uVWhZecEWd7dC9xURyhCDjmgskVkPxf+NKvxPJj
-         lZewqxxpbeizQdxAwq3uGesibQAYZml3uou4mIoPL5u5FdSH9jICNBHywyJgmH7xCQ/7
-         ajuD5rxjZ+EiylvvDYgoJdSUi1U226PSfStwHXtyr9R2wLV8tj4Jw9CSTN7D+IdJRs7p
-         ftf8E/tIAGkC8k1F35Ey752Gcy34gBm3tgcoAfp7bZ+2sbo9mLj0joe5io+/yTYPApyS
-         qihFgjOh4ChUsDiSpGMag+gwgqHfuJO8hNDEP3IiPOtKLFBQCSX8WGkuq8qwS5JJMODI
-         43fw==
-X-Gm-Message-State: AOAM532mIFJJVLD2Uf7Gg5MjPLlpVwUuwUB9Pb2m0ldbPuEatENMH2yE
-        D2xsOdMbiYgljF+0nmSAL3w=
-X-Google-Smtp-Source: ABdhPJzCoxjasywHVAn6Hb2IHWmpF2ygM4DriiiSTBMx2ZYCjMTJNnY6K+2m4NlxnokqZwZ66/AgGw==
-X-Received: by 2002:a1c:7502:: with SMTP id o2mr5552050wmc.29.1600275553009;
-        Wed, 16 Sep 2020 09:59:13 -0700 (PDT)
-Received: from [192.168.0.18] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id s17sm35710235wrr.40.2020.09.16.09.59.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3ZouLpoLHZGhnRn3IE3lAdYTtqQtOaDPWcW0BXT72MM=;
+        b=j1arjmfs5qkpR0qD0bNuxBbPXx7FQe6x5U8G7G8vdr57V4rj76nLQb1Og77nDZPOw7
+         RZy+TC9DW/f0J1eshIdgkC2rsmSkY+lAEBvoYfchLbo3gRnXpCHRCrVLQvL3hwiDU+BL
+         8z4+GyJabitJXlFKXq/ETy6SNWYTawmeRCsyDn0Sn2T51ry1OLWYVDyvbqaB9eM9e3no
+         Sbut1S4c1iO2DLFA/CARx/1E2Gkxi//VXYkFE/9/tJ16wxOiZw04LSlAAJ8JaYf+6Ig9
+         +qyTnqieCkdGgTyHeFN543QtVKLzf0IXUsqcdVRrLZUbgwab72ruA43sg/kR1U7PzMc6
+         WbTg==
+X-Gm-Message-State: AOAM530Q1GV6L7XXbZwTb7nS72jAMgKalujLEa7JQZmZ1OUIGLY4/z+P
+        51QCG1tYlppHjZTHFuRW1KMsKg==
+X-Google-Smtp-Source: ABdhPJyjAeHVuIWwfCgiltujOqCdZJciMMvPMbdeAr38UjlrUERhWuN+mDjxXhXo26gYVThTzJRNbg==
+X-Received: by 2002:a1c:2e08:: with SMTP id u8mr6233481wmu.156.1600277702955;
+        Wed, 16 Sep 2020 10:35:02 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
+        by smtp.gmail.com with ESMTPSA id p1sm8808360wma.0.2020.09.16.10.35.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 09:59:12 -0700 (PDT)
-Subject: Re: [PATCH] ath10k: sdio: remove reduntant check in for loop
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>
-References: <20200914191925.24192-1-alex.dewar90@gmail.com>
- <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <57efff54-7aa4-8220-c705-1fdf35b0099e@gmail.com>
-Date:   Wed, 16 Sep 2020 17:59:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 16 Sep 2020 10:35:01 -0700 (PDT)
+From:   David Brazdil <dbrazdil@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v3 09/11] kvm: arm64: Mark hyp stack pages reserved
+Date:   Wed, 16 Sep 2020 18:34:37 +0100
+Message-Id: <20200916173439.32265-10-dbrazdil@google.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200916173439.32265-1-dbrazdil@google.com>
+References: <20200916173439.32265-1-dbrazdil@google.com>
 MIME-Version: 1.0
-In-Reply-To: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[snip]
-> 'i' is only referenced once inside the loop to check boundary,
->
-> the loop is actually iterating over cur_section, so i would make it
-> clear in the loop statement, e.g.:
-> Remove the break condition and the cur_section assignment at the end of
-> the loop and use the loop statement to do it for you
->
-> for (; cur_section; cur_section = next_section)
->
->
->>   		section_size = cur_section->end - cur_section->start;
->>   
->>   		if (section_size <= 0) {
->> @@ -2318,7 +2318,7 @@ static int
->> ath10k_sdio_dump_memory_section(struct ath10k *ar,
->>   			break;
->>   		}
->>   
->> -		if ((i + 1) == mem_region->section_table.size) {
-> And for i you can just increment it inline:
-> if (++i == ...)
+In preparation for unmapping hyp pages from host stage-2, allocate/free hyp
+stack using new helpers which automatically mark the pages reserved.
 
-Good suggestions! I've sent a v2 with these changes.
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+---
+ arch/arm64/kvm/arm.c | 49 ++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 47 insertions(+), 2 deletions(-)
 
->      
->
->> +		if (i == mem_region->section_table.size) {
->>   			/* last section */
->>   			next_section = NULL;
->>   			skip_size = 0;
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 7af9809fa193..58d7d614519b 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1456,13 +1456,58 @@ static int init_subsystems(void)
+ 	return err;
+ }
+ 
++/*
++ * Alloc pages and mark them reserved so the kernel never tries to
++ * take them away from the hypervisor.
++ */
++static unsigned long alloc_hyp_pages(gfp_t flags, unsigned int order)
++{
++	struct page *page;
++	unsigned long i;
++
++	page = alloc_pages(flags, order);
++	if (!page)
++		return 0;
++
++	for (i = 0; i < (1ul << order); ++i)
++		mark_page_reserved(page + i);
++
++	return (unsigned long)page_address(page);
++}
++
++static unsigned long alloc_hyp_page(gfp_t flags)
++{
++	return alloc_hyp_pages(flags, 0);
++}
++
++/*
++ * Free pages which were previously marked reserved for the hypervisor.
++ */
++static void free_hyp_pages(unsigned long addr, unsigned int order)
++{
++	unsigned long i;
++	struct page *page;
++
++	if (!addr)
++		return;
++
++	page = virt_to_page(addr);
++	for (i = 0; i < (1ul << order); ++i)
++		free_reserved_page(page + i);
++}
++
++static void free_hyp_page(unsigned long addr)
++{
++	return free_hyp_pages(addr, 0);
++}
++
+ static void teardown_hyp_mode(void)
+ {
+ 	int cpu;
+ 
+ 	free_hyp_pgds();
+ 	for_each_possible_cpu(cpu)
+-		free_page(per_cpu(kvm_arm_hyp_stack_page, cpu));
++		free_hyp_page(per_cpu(kvm_arm_hyp_stack_page, cpu));
+ }
+ 
+ /**
+@@ -1486,7 +1531,7 @@ static int init_hyp_mode(void)
+ 	for_each_possible_cpu(cpu) {
+ 		unsigned long stack_page;
+ 
+-		stack_page = __get_free_page(GFP_KERNEL);
++		stack_page = alloc_hyp_page(GFP_KERNEL);
+ 		if (!stack_page) {
+ 			err = -ENOMEM;
+ 			goto out_err;
+-- 
+2.28.0.618.gf4bc123cb7-goog
 
