@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA0026BBAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D62926BBB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 07:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgIPE5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 00:57:55 -0400
-Received: from mail-m1272.qiye.163.com ([115.236.127.2]:35380 "EHLO
-        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPE5w (ORCPT
+        id S1726156AbgIPFHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 01:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgIPFHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 00:57:52 -0400
-Received: from ubuntu.localdomain (unknown [58.251.74.226])
-        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id 68BA1B0217A;
-        Wed, 16 Sep 2020 12:57:35 +0800 (CST)
-From:   Bailu Lin <bailu.lin@vivo.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Bailu Lin <bailu.lin@vivo.com>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     wangqing@vivo.com
-Subject: [PATCH] doc: zh_CN: index files in arm64 subdirectory
-Date:   Tue, 15 Sep 2020 21:57:01 -0700
-Message-Id: <20200916045720.33636-1-bailu.lin@vivo.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 16 Sep 2020 01:07:17 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF55C06174A;
+        Tue, 15 Sep 2020 22:07:16 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id q12so524795plr.12;
+        Tue, 15 Sep 2020 22:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qRRVZQATJVxdmxym9cYS4r8KR3RWYxM+eecLHTbYKPE=;
+        b=aVC2T637dzhAw/XBS0mqij3Sm2gNdKH71qrUuBjRZC4Xc2udN+J6iTb+mtgJeGDfzX
+         1iu9AFzMGkFfU0GRVYO5vVDboPQs8etP9zBvfmulOczq9JdFP0x9UKBnpzo8S0FCx/Vy
+         TcfffegkK3cRDB+1LS7J0dl1/CADD3Zld/eWTsXXYrtuky2GwRm/5/8ZnJukNHSjr2zl
+         AeeUPEGh5+QicmNMzFWuBL86RyUX0qDUb1WjlyqKIBfNjSYImx3Aixn1HMD0Y3BuI/Pb
+         zkZQKpurvYn2vNPo4v8UfqjZrwKbm5kWHqgIIUEQvprgL+LaQSZMi3jMSAOb0BMDt2xL
+         gwhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qRRVZQATJVxdmxym9cYS4r8KR3RWYxM+eecLHTbYKPE=;
+        b=TNChEVhglcAhlVllH4slASOAEyrBypKKR/NLil9VcWXwKk9lgdbqKxNDKVzEzS7II8
+         S1ifOu46mkBULId2Uj/0ll/QS+2uq28psOo7diA8wKrQphe/OcRsRIUtl9keXdya5Pd4
+         KPxn+EG0j5AJ+lLixP5mk4WDaMeSZwtWJScJ9Qc81riMKr7XxJ+yB/+Hz5s3ilPov2fc
+         64eO6+RDkMmHQpQ2tZQdXDU8+E5N5mzD/SPF/5h/q2DLCRdtXzh+dRnA4tbcbkR0jbkG
+         cOzDfk50eQ1gdmyXcV1zove7y4+HPl0SNLtgnKaXH+ACeHMUp9nfD3k6U/8yN8jR/l6s
+         1zJw==
+X-Gm-Message-State: AOAM531rLiED2ktKJSu5ZkyleetBuyWQkrOOlqvi/4M/H1lx93KPoGT3
+        ktj58wuafwG7MqmRtvDsfjcrsNnMbGZGx3TRk4Y=
+X-Google-Smtp-Source: ABdhPJyJ+cNX0PC6p643Vv5Ufb4fI56gTf58TjK5qVI6yEX/Z6q7hcMqJYTTdXwOCzLJs8JTaoE69Q==
+X-Received: by 2002:a17:902:b185:b029:d1:e5e7:bdd1 with SMTP id s5-20020a170902b185b02900d1e5e7bdd1mr4953338plr.49.1600232836024;
+        Tue, 15 Sep 2020 22:07:16 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.198.18])
+        by smtp.gmail.com with ESMTPSA id i20sm13108051pgk.77.2020.09.15.22.07.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 22:07:15 -0700 (PDT)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees][PATCH] rtl8150: set memory to all 0xFFs on failed register reads
+Date:   Wed, 16 Sep 2020 10:35:40 +0530
+Message-Id: <20200916050540.15290-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSR4fGk9PGU1KQx9DVkpNS0tJSElJTk5CSElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZVUtZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KyI6Lhw6UT8iKBURUTcUFkIi
-        Fk4aCgpVSlVKTUtLSUhJSU5NSEtPVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
-        VUlOSlVMT1VJSU1ZV1kIAVlBSUJOTjcG
-X-HM-Tid: 0a749546713598b7kuuu68ba1b0217a
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add filesystems subdirectory into the table of Contents for zh_CN,
-all translations residing on it would be indexed conveniently.
+get_registers() copies whatever memory is written by the
+usb_control_msg() call even if the underlying urb call ends up failing.
 
-Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+If get_registers() fails, or ends up reading 0 bytes, meaningless and 
+junk register values would end up being copied over (and eventually read 
+by the driver), and since most of the callers of get_registers() don't 
+check the return values of get_registers() either, this would go unnoticed.
+
+It might be a better idea to try and mirror the PCI master abort
+termination and set memory to 0xFFs instead in such cases.
+
+Fixes: https://syzkaller.appspot.com/bug?extid=abbc768b560c84d92fd3
+Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 ---
- Documentation/arm64/index.rst                    |  4 ++++
- Documentation/translations/zh_CN/arm64/index.rst | 16 ++++++++++++++++
- Documentation/translations/zh_CN/index.rst       |  1 +
- 3 files changed, 21 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/arm64/index.rst
+ drivers/net/usb/rtl8150.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
-index d9665d83c53a..907cda9c0f71 100644
---- a/Documentation/arm64/index.rst
-+++ b/Documentation/arm64/index.rst
-@@ -1,3 +1,7 @@
-+.. SPDX-License-Identifier: GPL-2.0
+diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+index 733f120c852b..04fca7bfcbcb 100644
+--- a/drivers/net/usb/rtl8150.c
++++ b/drivers/net/usb/rtl8150.c
+@@ -162,8 +162,13 @@ static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+ 	ret = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
+ 			      RTL8150_REQ_GET_REGS, RTL8150_REQT_READ,
+ 			      indx, 0, buf, size, 500);
+-	if (ret > 0 && ret <= size)
 +
-+.. _arm64_index:
++	if (ret < 0)
++		memset(data, 0xff, size);
 +
- ==================
- ARM64 Architecture
- ==================
-diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rsts
-index 000000000000..c236b648740d
---- /dev/null
-+++ b/Documentation/translations/zh_CN/arm64/index.rst
-@@ -0,0 +1,16 @@
-+.. SPDX-License-Identifier: GPL-2.0
++	else
+ 		memcpy(data, buf, ret);
 +
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :ref:`Documentation/arm64/index.rst <arm64_index>`
-+:Translator: Bailu Lin <bailu.lin@vivo.com>
-+
-+.. _cn_arm64_index:
-+
-+
-+==========
-+ARM64 架构
-+==========
-+
-+.. toctree::
-+    :maxdepth: 2
-diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
-index 85643e46e308..be6f11176200 100644
---- a/Documentation/translations/zh_CN/index.rst
-+++ b/Documentation/translations/zh_CN/index.rst
-@@ -19,6 +19,7 @@
-    admin-guide/index
-    process/index
-    filesystems/index
-+   arm64/index
+ 	kfree(buf);
+ 	return ret;
+ }
+@@ -276,7 +281,7 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
  
- 目录和表格
- ----------
+ static inline void set_ethernet_addr(rtl8150_t * dev)
+ {
+-	u8 node_id[6];
++	u8 node_id[6] = {0};
+ 
+ 	get_registers(dev, IDR, sizeof(node_id), node_id);
+ 	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
 -- 
-2.20.1
+2.25.1
 
