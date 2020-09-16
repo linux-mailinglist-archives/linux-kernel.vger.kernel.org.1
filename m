@@ -2,162 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E47626BF22
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994ED26BF0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgIPIYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:24:52 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:46599 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726149AbgIPIYv (ORCPT
+        id S1726597AbgIPIVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:21:17 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:57121 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgIPIVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:24:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600244689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A3zq54xqkWA5eb4xEUbwdpPcSymUXWCwU7vYCM/AZQg=;
-        b=LGkIKQrNPNIDR6Wkw+rS1ITVrtw2F1mZznSXm83aW5oMSfwWNxKY5RcxCCQDKRnFs7DyKb
-        Y0ZN8CCsWIF1xgmmE0OFms/WAoHVVbqA9DZiBebzqaJs9FLThA90oun3oWFZlnn9AiVpm5
-        6g0Q0vWGB+20gRWAxFqafmxRxgFf9Kk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-427-_bohXwhdPcOVriGVJ1pSog-1; Wed, 16 Sep 2020 04:24:47 -0400
-X-MC-Unique: _bohXwhdPcOVriGVJ1pSog-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E4F410082E8;
-        Wed, 16 Sep 2020 08:24:46 +0000 (UTC)
-Received: from krava (ovpn-114-172.ams2.redhat.com [10.36.114.172])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2F8A97839F;
-        Wed, 16 Sep 2020 08:24:44 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 10:24:43 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 3/3] perf inject: Do not load map/dso when injecting
- build-id
-Message-ID: <20200916082443.GB2301783@krava>
-References: <20200914141859.332459-1-namhyung@kernel.org>
- <20200914141859.332459-3-namhyung@kernel.org>
- <20200915100533.GC2171499@krava>
- <CAM9d7cjHzbamDDQRmBQ_UydbkUCNA5MZfPj4fGCbb7O9m3KOgA@mail.gmail.com>
+        Wed, 16 Sep 2020 04:21:16 -0400
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id E67C5100009;
+        Wed, 16 Sep 2020 08:21:08 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 10:24:59 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v5 2/3] media: i2c: ov772x: Add support for BT.656 mode
+Message-ID: <20200916082459.udoppvygwniktkzi@uno.localdomain>
+References: <20200915174235.1229-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200915174235.1229-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cjHzbamDDQRmBQ_UydbkUCNA5MZfPj4fGCbb7O9m3KOgA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200915174235.1229-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:55:34PM +0900, Namhyung Kim wrote:
-> On Tue, Sep 15, 2020 at 7:05 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Mon, Sep 14, 2020 at 11:18:59PM +0900, Namhyung Kim wrote:
-> > > No need to load symbols in a DSO when injecting build-id.  I guess the
-> > > reason was to check the DSO is a special file like anon files.  Use
-> > > some helper functions in map.c to check them before reading build-id.
-> > > Also pass sample event's cpumode to a new build-id event.
-> > >
-> > > Original-patch-by: Stephane Eranian <eranian@google.com>
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/perf/builtin-inject.c | 30 ++++++++++--------------------
-> > >  tools/perf/util/map.c       | 17 +----------------
-> > >  tools/perf/util/map.h       | 14 ++++++++++++++
-> > >  3 files changed, 25 insertions(+), 36 deletions(-)
-> > >
-> > > diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> > > index a2804d906d2a..6d4e6833efed 100644
-> > > --- a/tools/perf/builtin-inject.c
-> > > +++ b/tools/perf/builtin-inject.c
-> > > @@ -436,21 +436,22 @@ static int dso__read_build_id(struct dso *dso)
-> > >  }
-> > >
-> > >  static int dso__inject_build_id(struct dso *dso, struct perf_tool *tool,
-> > > -                             struct machine *machine)
-> > > +                             struct machine *machine, u8 cpumode)
-> > >  {
-> > > -     u16 misc = PERF_RECORD_MISC_USER;
-> > >       int err;
-> > >
-> > > +     if (is_anon_memory(dso->long_name))
-> > > +             return 0;
-> > > +     if (is_no_dso_memory(dso->long_name))
-> > > +             return 0;
-> >
-> > should we check for vdso as well? I don't think it has build id
-> 
-> I don't know.. But I guess there's no reason it shouldn't?
+Hi Prabhakar,
 
-I haven't checked, it's just I always saw only zeros for vdso build ids
+On Tue, Sep 15, 2020 at 06:42:34PM +0100, Lad Prabhakar wrote:
+> Add support to read the bus-type for V4L2_MBUS_BT656 and
+> enable BT.656 mode in the sensor if needed.
 
-jirka
-> 
-> 
-> >
-> > > +
-> > >       if (dso__read_build_id(dso) < 0) {
-> > >               pr_debug("no build_id found for %s\n", dso->long_name);
-> > >               return -1;
-> > >       }
-> > >
-> > > -     if (dso->kernel)
-> > > -             misc = PERF_RECORD_MISC_KERNEL;
-> > > -
-> > > -     err = perf_event__synthesize_build_id(tool, dso, misc, perf_event__repipe,
-> > > -                                           machine);
-> > > +     err = perf_event__synthesize_build_id(tool, dso, cpumode,
-> > > +                                           perf_event__repipe, machine);
-> > >       if (err) {
-> > >               pr_err("Can't synthesize build_id event for %s\n", dso->long_name);
-> > >               return -1;
-> > > @@ -478,19 +479,8 @@ static int perf_event__inject_buildid(struct perf_tool *tool,
-> > >       if (thread__find_map(thread, sample->cpumode, sample->ip, &al)) {
-> > >               if (!al.map->dso->hit) {
-> > >                       al.map->dso->hit = 1;
-> > > -                     if (map__load(al.map) >= 0) {
-> >
-> > nice, that might do some nice speedup, did you see any?
-> 
-> Yes, I believe so.  But my quick test on a laptop was too short.
-> I will test it again and share the speedup.
-> 
-> Thanks
-> Namhyung
-> 
-> 
-> >
-> > jirka
-> >
-> > > -                             dso__inject_build_id(al.map->dso, tool, machine);
-> > > -                             /*
-> > > -                              * If this fails, too bad, let the other side
-> > > -                              * account this as unresolved.
-> > > -                              */
-> > > -                     } else {
-> > > -#ifdef HAVE_LIBELF_SUPPORT
-> > > -                             pr_warning("no symbols found in %s, maybe "
-> > > -                                        "install a debug package?\n",
-> > > -                                        al.map->dso->long_name);
-> > > -#endif
-> > > -                     }
-> > > +                     dso__inject_build_id(al.map->dso, tool, machine,
-> > > +                                          sample->cpumode);
-> > >               }
-> >
-> > SNIP
-> >
-> 
+Here we should be concerned about retro-compatibility, as a new bus
+type is added. I would move the comment you had in 1/3 to this patch.
 
+Otherwise the code flow looks ok: if no bus-type is specified assume
+parallel as it was the only supported bus type at the time.
+If someone wants BT.656 it has to be a new DTS and then the bus-type
+property is mandatory.
+
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+>  drivers/media/i2c/ov772x.c | 19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> index 4ab4b3c883d0..869f2d94faec 100644
+> --- a/drivers/media/i2c/ov772x.c
+> +++ b/drivers/media/i2c/ov772x.c
+> @@ -583,6 +583,13 @@ static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
+>  	if (priv->streaming == enable)
+>  		goto done;
+>
+> +	if (priv->bus_type == V4L2_MBUS_BT656) {
+> +		ret = regmap_update_bits(priv->regmap, COM7, ITU656_ON_OFF,
+> +					 enable ? ITU656_ON_OFF : ~ITU656_ON_OFF);
+> +		if (ret)
+> +			goto done;
+> +	}
+> +
+>  	ret = regmap_update_bits(priv->regmap, COM2, SOFT_SLEEP_MODE,
+>  				 enable ? 0 : SOFT_SLEEP_MODE);
+>  	if (ret)
+> @@ -1436,9 +1443,17 @@ static int ov772x_probe(struct i2c_client *client)
+>  	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+>  	priv->bus_type = bus_cfg.bus_type;
+>  	v4l2_fwnode_endpoint_free(&bus_cfg);
+> +	if (ret) {
+> +		bus_cfg = (struct v4l2_fwnode_endpoint)
+> +			  { .bus_type = V4L2_MBUS_BT656 };
+> +		ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+
+If you really want to keep using alloc_parse() you should remember to
+endpoint_free() here.
+
+> +		if (ret) {
+> +			fwnode_handle_put(ep);
+> +			goto error_clk_put;
+> +		}
+> +		priv->bus_type = bus_cfg.bus_type;
+> +	}
+>  	fwnode_handle_put(ep);
+
+I would assign priv->bus_type here.
+
+Also, this has grown quite a bit, have you considered making a
+ov772x_parse_dt() function ?
+
+With this last changes I think we're good to go. I'll send tags on
+the next version!
+
+Thank you for your perseverance
+
+> -	if (ret)
+> -		goto error_clk_put;
+>
+>  	ret = ov772x_video_probe(priv);
+>  	if (ret < 0)
+> --
+> 2.17.1
+>
