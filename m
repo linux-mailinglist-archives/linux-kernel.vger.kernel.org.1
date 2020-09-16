@@ -2,1522 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A992926C573
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BA226C576
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgIPQ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 12:58:36 -0400
-Received: from mail-eopbgr60101.outbound.protection.outlook.com ([40.107.6.101]:22501
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        id S1726613AbgIPQ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 12:59:28 -0400
+Received: from mail-bn8nam12on2046.outbound.protection.outlook.com ([40.107.237.46]:30017
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726514AbgIPQwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:52:02 -0400
+        id S1726591AbgIPQxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:53:31 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bs+cmSM/0g0ZgNd26R5BNIebHDfMv0nlZCsKmPJNl28nUgDRJr3Wo8hu1tA82SM3kIfFthDj7wUbmcQOLQ2/64BgOlkl6zikeeNuiinSFKVrCFsI5bL3NktH8R2kYpJL0SFvKLl4zusWnHYpDCE/3w5N+K1voi8AGrQfP4YKnoehUxKWd8lIdY1FhwMmEzikevNfzBYOguuWOTlnzjF9Vu8/sBkxYmQcx9UxZozqf8D+rqz8oZZUslNY0Q9IXqd//qgGve+4HJNUkPiZFBIvd6UWIX+egFE6efnsLEHZELaoMNZdNz99xyGj0DwIvIbJpFmMxZ1B9ZRO15w/h2NG+w==
+ b=W1Wxo/mvAM9xEeFsCZI0l8XxkkI8QRAAdJU6vI8n3zDvTuVBfnhzqYX/oQSNCWm3HKmx/clyJ1sKMvwUTXYAeXYvGAwggkx+BLU66sJKgF0UpTCf/8K+m4wR3CqtWfl3v8kxBCNSDwz9JYJ8nPrs20n41Xdd34o31o9c8N8zfO2hg0Cddeu2x1YSxjIcwowQNVfR4LfHKDbp0l0h6xtR3eg01DvYsx+QlPPjZag/MUpIUEQ/qnua2+o26ub19E28piSCEE/uNasn+CvpOjdAMcdFryl7z/Jipuj6SCMdrTf9MSC2ni2bGEw5X/RmBLhV/7bKIDZC9+ZNpjPFA/el+g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cZ3X13RiKIv8M+LZ6kNZd/GXiFD8ch7kRyOL9ihxlgs=;
- b=DpKSrAgwjxm6lp8jPi+ayB5a17KQZcVvcC9HtjrmCM7NpFVVq6mtcBeMIw0AAxYlPf5F2QTSSNeRbuqM5hsdpExx2+rfMieF3Q4nzg7ai28kRPEyF33tdGrAiPM4aozirSzFMK4GDEVwHb5oH7+/o/tlAFQygZ/ps+S0c8kjFL7AQwkV77z+c8oo5cQSg5uab8yQsBb+uEQI9SySiS3CjxJLqswi45nntE2y2QSuGsmpQa8+cX97RBkXL658IyIXESFDBk9GmGncSdmx1CQSz23cjk/eHDwwwwi64cKksYwFzjomt7kxWsYxmuCFIBF245GeLOW+m+Ay6Z9SCWrGGQ==
+ bh=Ni3eEGUkp85vu4hlkINe1v0gFKSYVc8Ey4nz/sPfXGc=;
+ b=CwTZmAs2Kk+/P12jqhY8lMl7GsLtkQ/ru+HcCYwshMbwIxajLD2quVa+VCx9O/oCJKpVWgNlz0OHpVj+AwHydxxFUDlP5474N+VGxu8BZY8btDw0Zd3DnUOVL2Usb/hTe6TnUYeKRsGuCHsWhRknF7aag2uwPFQjRF+9grpED7Sr9GKzQwdaUuerPw9Qc/sw43JOhdbFk7W9vHWaON/N+1y8yusvA/g1Lv0uOcp255rnj+vVM/Ne6My2UX2mQGBqpA9yZU7Qp1Vcv3XMOj1+w25zfZYelAMph8RzLrnqGHsf2oy7vz385vpMl6cAw4KCQNnHRM//LjAfAQLHFqEt0A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cZ3X13RiKIv8M+LZ6kNZd/GXiFD8ch7kRyOL9ihxlgs=;
- b=FjtUqAK74+Jzb63dQIn+b8yOEQWxHMWsDbi+mWmEzMdJrcsPp43vryQiaw5slC1dhMeV0vFaAMYGYhKuiVPYX/XTUy7Jx4/kndk/XKLvDt/UXU989MWlxHd3+BtcZLP+E5tyDPjemfAnsU6C4eN+eX+LSkRgpQaIT0i3IowOpPE=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0332.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:62::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3370.19; Wed, 16 Sep 2020 16:31:37 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
- 16:31:37 +0000
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: [PATCH net-next v9 4/6] net: marvell: prestera: Add ethtool interface support
-Date:   Wed, 16 Sep 2020 19:31:00 +0300
-Message-Id: <20200916163102.3408-5-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916163102.3408-1-vadym.kochan@plvision.eu>
-References: <20200916163102.3408-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain
-X-ClientProxiedBy: AM6PR0202CA0070.eurprd02.prod.outlook.com
- (2603:10a6:20b:3a::47) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+ bh=Ni3eEGUkp85vu4hlkINe1v0gFKSYVc8Ey4nz/sPfXGc=;
+ b=GOGxItGo4ssnG2R1ERDfCPWlDzCJUiBAKwabO2NkvC8zHIXTPftKOvQHwwBv36f9pXILl+4DqjI9F24Jqfpd2NuwLiXJm8Izd/tEbARwasnxCFq6WRiXGhYJ9Y5D/DEreomNSDYcZG0FcPZLumju4oiAZoQSlVHUwN2tsWQxJPI=
+Received: from BYAPR02MB5622.namprd02.prod.outlook.com (2603:10b6:a03:9b::32)
+ by BY5PR02MB6852.namprd02.prod.outlook.com (2603:10b6:a03:207::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 16 Sep
+ 2020 16:53:25 +0000
+Received: from BYAPR02MB5622.namprd02.prod.outlook.com
+ ([fe80::dc74:73a0:fe2:6c6e]) by BYAPR02MB5622.namprd02.prod.outlook.com
+ ([fe80::dc74:73a0:fe2:6c6e%6]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
+ 16:53:25 +0000
+From:   Amit Sunil Dhamne <amitsuni@xilinx.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "ard.biesheuvel@linaro.org" <ard.biesheuvel@linaro.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "matt@codeblueprint.co.uk" <matt@codeblueprint.co.uk>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
+        Michal Simek <michals@xilinx.com>,
+        Rajan Vaja <RAJANV@xilinx.com>,
+        Tejas Patel <TEJASP@xilinx.com>,
+        Jolly Shah <JOLLYS@xilinx.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rajan Vaja <RAJANV@xilinx.com>, Jolly Shah <JOLLYS@xilinx.com>
+Subject: RE: [PATCH 1/3] firmware: xilinx: Add validation check for IOCTL
+Thread-Topic: [PATCH 1/3] firmware: xilinx: Add validation check for IOCTL
+Thread-Index: AQHWhwg4A4eef5X5ukS95py8Uwip4KlrLFsAgABXakA=
+Date:   Wed, 16 Sep 2020 16:53:24 +0000
+Message-ID: <BYAPR02MB56225CBE23F9F9CCE157F63FA7210@BYAPR02MB5622.namprd02.prod.outlook.com>
+References: <1599697204-32103-1-git-send-email-amit.sunil.dhamne@xilinx.com>
+ <1599697204-32103-2-git-send-email-amit.sunil.dhamne@xilinx.com>
+ <20200916113334.GB1124534@kroah.com>
+In-Reply-To: <20200916113334.GB1124534@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=xilinx.com;
+x-originating-ip: [24.130.17.198]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 41be25ff-ce9f-48fc-8662-08d85a61073b
+x-ms-traffictypediagnostic: BY5PR02MB6852:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR02MB685275B870984F496C6FCF1BA7210@BY5PR02MB6852.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:374;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1OZhynxu2QTLMm6MmW/Ljne536dVSAwc07i8ZSfHqujei2dIamsQptm6Us/3fPpN1HGuAasflKRfJABdL/oZLwm2J/+/vQ9MKRJdvPSkTQvu2m0GBQsSJXn2aSXPNWiPV64GJQdQjZRFhLE6O8/+U7spepMlb1d8JVRkArllEinGR/UNi8ig9lsXCKJnWNY17d3HXan9Q6HYxUELtaIbdANrvtlwdK5BCIZQh2wZlcINi+AivUPX50pzv84ErHcrpxovAbBgUhuP6Ri0wIGBK4ORzpTx0s5v4w/veVe7eo5+pL+jGOV1z7Gzc7ohKocCd/UWvMkh6tfIZqbaR9CsUg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5622.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(346002)(136003)(39860400002)(2906002)(7416002)(33656002)(83380400001)(4326008)(86362001)(9686003)(8936002)(6916009)(107886003)(8676002)(55016002)(64756008)(66556008)(478600001)(76116006)(66476007)(66446008)(66946007)(5660300002)(54906003)(52536014)(186003)(7696005)(71200400001)(316002)(26005)(6506007)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: sju79GoIXFm3jyQuJV6bi0Kwv4M5iSjTrl8P95c/XN8Vw8Ouk8K5wXHY7HQVkMAhvw3FBrS1gOvJPli7pnHz/R6UBbJQqbRND3n0bnKooDw3Y+FHkh7eCwlPSrsVbbLFspihhISUDDAHZ3xX909riNC2VOhg14jpSVuJ4zT/Ld+8M5uFMPsGUeg7XxS7fytnmTrCk6txPQvutvx8edKfBNRKXQ/CpiIkVogasC4mtRyFXuwylSSn58Rgop26oeP1u8YRd6/Yu6/cgjMOs6UPR3FlxCwKTtGY3J2WoNhv9u/wieeDpmJvzqchicvOniV6ntHigDqEJGnpUg/C5KYz9gdO/V6uKs9WthnGiAw9mGec2scFE2MfRrDVuACKi+6uMCjUyahXA4cXAwwgfPAtCQGNIlQoN1e5nD0Xc6vrnHCG8Y8GAKLjJuN5kDNMXBA5XRS5NbzhiKwWTOeQLCTaEaPBw0kJ7TeAJ/LbqstseJ6/4k6uJpXqLIrTN47qyyx0RyFHF4x7pKMsWnDlpED5vn1qhinrLFmH2yeKDY5eoWEUFnL+FoEViZmR+CXF/X3RHmoYmLr7nyZOMbKdXocQ5EbxnajA0SW+YiXFSnc4lh9Ws+0GNGeiSGFczUOExXTY1H1M7E17jeZSLN9tucWcYw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM6PR0202CA0070.eurprd02.prod.outlook.com (2603:10a6:20b:3a::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend Transport; Wed, 16 Sep 2020 16:31:34 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 940b861f-88fa-4be0-3491-08d85a5dfb2b
-X-MS-TrafficTypeDiagnostic: HE1P190MB0332:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0332939D6893F5D43217BFFD95210@HE1P190MB0332.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:612;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QDvc35ynUaJdV8OB4g9XBVAkxT+TOLhq+KfYkng4YSu4iI8cirIT6ifjyZoMinUGoz8wYocKW2Dbm0MPwvQgD/yx0RSy218r7WANI2oXjABcDTsSARYU2oMwECRkrl94TpQh8T1m3Z+W3pqbEAIqKh8d0veeWRo3StmiQcrMPyAaBUO6RzGf5aCIKp5BOkbzgFGoSbFpkJk3k6CRBXTbDaroHJbqu+ZOb/pS+VqhPAr/utankzOObnLQnFFzHMb8Jrm3OrmK42s5YIglnKmStxNadhTxbA9tnj7PcW1ByvLsl8egTRVGZcCzKyhkyH9kAC0DQqL7LqWAFipHRAFkYVh1WSxSZZao8Fvr69zaeKunZuc2WCpRYV/AUAwTRtoKLcBN32doAZbzdwKjcsGNfg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(346002)(39830400003)(396003)(110136005)(478600001)(66556008)(66946007)(8936002)(4326008)(66476007)(30864003)(8676002)(6666004)(6486002)(1076003)(86362001)(5660300002)(6512007)(36756003)(44832011)(83380400001)(2906002)(54906003)(6506007)(316002)(52116002)(26005)(107886003)(16526019)(186003)(2616005)(956004)(333604002)(921003)(579004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: WvVnrhtRuuVAuwVEgmmJMdEUwnP+UmRvhWNUal6fplMQZ6nF3oLCQKse3/8JI1G7US1GgIHL6UMMXE7SFMtBgTPK8k/EvUr6nNJ6dKZVR0jTDay3/bxRMYiKYH+K/2Q4xIl3ZaLQRck2mh7WA6foQbpdE/V6INRws5TM9nY5FNeGgnZyyFtDzMrqWQSucYToLCXcyBt1dNwhEELdwi5u3NPVkvd5DC7qkuDOPY8I7a3fVJfMbTfhW4HEfpuJQZb1PU9nOcJ37sye1inFzuFS9XBQgiaWVrK1HnXir8pOKr+66TobNwiWQP4k+7QH7gme9hcSW53NG/ZqzoFDx/AOIuMoTCV3phUJGLuwrkVRFQsKxDYYpjMfLT27qIYD/psP1KMCbOJZI09Soodz4KLGGDbrRGkYqLFbAad2U6y5OgAmOTR1VXedAbg2pMvCXx7kUOwjwo7WCeZ6A6LDLcAQ4Z5yGD+tqdBpsDU1W2a6wSmfKjvMzr9wC3Lu//viS25jn3pGkuTVUKfvoRIz4FyZODdZPKkvlN9AM9HG1nEGeC+/oGsJPx1Su8OpWAfLe0VT6rRYQg8Qr/lYM40yhyiS2Rr9S3LoVoBQVte49eO75iXg5UMmcNAKGUaMfZVb3aLJScoTZu7hBWa4TPzU3BzemA==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 940b861f-88fa-4be0-3491-08d85a5dfb2b
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-OriginatorOrg: xilinx.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 16:31:36.8074
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5622.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41be25ff-ce9f-48fc-8662-08d85a61073b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 16:53:25.0385
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mKthPlyjxOaATRvDvnxJ4JkjS2vqLY/0KjcJnl7AyOtdbv+ZYoSDN0bpEl0Xz7NV7jmDpf4D3UZEZVUDSy1LisvQqkToc9TxFTiByIL8U4U=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0332
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kqsa6GXpD6O9F1x8VAcCbFJ06d1JxpKz+OwE+maCnNMBZKne7IOckcrLBUTKS8WDO70CRkpa7HquHTx0E1e+0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6852
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ethtool API provides support for the configuration of the following
-features: speed and duplex, auto-negotiation, MDI-x, forward error
-correction, port media type. The API also provides information about the
-port status, hardware and software statistic. The following limitation
-exists:
+Hi Greg,
 
-    - port media type should be configured before speed setting
-    - ethtool -m option is not supported
-    - ethtool -p option is not supported
-    - ethtool -r option is supported for RJ45 port only
-    - the following combination of parameters is not supported:
+> -----Original Message-----
+> From: Greg KH <gregkh@linuxfoundation.org>
+> Sent: Wednesday, September 16, 2020 4:34 AM
+> To: Amit Sunil Dhamne <amitsuni@xilinx.com>
+> Cc: ard.biesheuvel@linaro.org; mingo@kernel.org;
+> matt@codeblueprint.co.uk; sudeep.holla@arm.com; hkallweit1@gmail.com;
+> keescook@chromium.org; dmitry.torokhov@gmail.com; Michal Simek
+> <michals@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>; Tejas Patel
+> <TEJASP@xilinx.com>; Jolly Shah <JOLLYS@xilinx.com>; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Rajan Vaja
+> <RAJANV@xilinx.com>; Jolly Shah <JOLLYS@xilinx.com>
+> Subject: Re: [PATCH 1/3] firmware: xilinx: Add validation check for IOCTL
+>=20
+> On Wed, Sep 09, 2020 at 05:20:02PM -0700, Amit Sunil Dhamne wrote:
+> > From: Tejas Patel <tejas.patel@xilinx.com>
+> >
+> > Validate IOCTL ID for ZynqMP and Versal before calling
+> > zynqmp_pm_invoke_fn().
+> >
+> > Signed-off-by: Tejas Patel <tejas.patel@xilinx.com>
+> > Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+> > ---
+> >  drivers/firmware/xilinx/zynqmp.c | 117
+> > +++++++++++++++++++++++++++++++--------
+> >  1 file changed, 95 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/drivers/firmware/xilinx/zynqmp.c
+> > b/drivers/firmware/xilinx/zynqmp.c
+> > index 8d1ff24..8fe0912 100644
+> > --- a/drivers/firmware/xilinx/zynqmp.c
+> > +++ b/drivers/firmware/xilinx/zynqmp.c
+> > @@ -514,6 +514,89 @@ int zynqmp_pm_clock_getparent(u32 clock_id, u32
+> > *parent_id)  EXPORT_SYMBOL_GPL(zynqmp_pm_clock_getparent);
+> >
+> >  /**
+> > + * versal_is_valid_ioctl() - Check whether IOCTL ID is valid or not
+> > +for versal
+> > + * @ioctl_id:  IOCTL ID
+> > + *
+> > + * Return: 1 if IOCTL is valid else 0  */ static inline int
+> > +versal_is_valid_ioctl(u32 ioctl_id) {
+> > +       switch (ioctl_id) {
+> > +       case IOCTL_SD_DLL_RESET:
+> > +       case IOCTL_SET_SD_TAPDELAY:
+> > +       case IOCTL_SET_PLL_FRAC_MODE:
+> > +       case IOCTL_GET_PLL_FRAC_MODE:
+> > +       case IOCTL_SET_PLL_FRAC_DATA:
+> > +       case IOCTL_GET_PLL_FRAC_DATA:
+> > +       case IOCTL_WRITE_GGS:
+> > +       case IOCTL_READ_GGS:
+> > +       case IOCTL_WRITE_PGGS:
+> > +       case IOCTL_READ_PGGS:
+> > +       case IOCTL_SET_BOOT_HEALTH_STATUS:
+> > +               return 1;
+> > +       default:
+> > +               return 0;
+>=20
+> bool is nicer, right?
+>=20
+> > +       }
+> > +}
+> > +
+> > +/**
+> > + * zynqmp_is_valid_ioctl() - Check whether IOCTL ID is valid or not
+> > + * @ioctl_id:  IOCTL ID
+> > + *
+> > + * Return: 1 if IOCTL is valid else 0  */ static inline int
+> > +zynqmp_is_valid_ioctl(u32 ioctl_id) {
+> > +       switch (ioctl_id) {
+> > +       case IOCTL_SD_DLL_RESET:
+> > +       case IOCTL_SET_SD_TAPDELAY:
+> > +       case IOCTL_SET_PLL_FRAC_MODE:
+> > +       case IOCTL_GET_PLL_FRAC_MODE:
+> > +       case IOCTL_SET_PLL_FRAC_DATA:
+> > +       case IOCTL_GET_PLL_FRAC_DATA:
+> > +       case IOCTL_WRITE_GGS:
+> > +       case IOCTL_READ_GGS:
+> > +       case IOCTL_WRITE_PGGS:
+> > +       case IOCTL_READ_PGGS:
+> > +       case IOCTL_SET_BOOT_HEALTH_STATUS:
+> > +               return 1;
+> > +       default:
+> > +               return 0;
+> > +       }
+> > +}
+> > +
+> > +/**
+> > + * zynqmp_pm_ioctl() - PM IOCTL API for device control and configs
+> > + * @node_id:   Node ID of the device
+> > + * @ioctl_id:  ID of the requested IOCTL
+> > + * @arg1:      Argument 1 to requested IOCTL call
+> > + * @arg2:      Argument 2 to requested IOCTL call
+> > + * @out:       Returned output value
+> > + *
+> > + * This function calls IOCTL to firmware for device control and
+> configuration.
+> > + *
+> > + * Return: Returns status, either success or error+reason  */ static
+> > +int zynqmp_pm_ioctl(u32 node_id, u32 ioctl_id, u32 arg1, u32 arg2,
+> > +                          u32 *out)
+> > +{
+> > +       struct device_node *np;
+> > +
+> > +       np =3D of_find_compatible_node(NULL, NULL, "xlnx,versal");
+> > +       if (np) {
+> > +               if (!versal_is_valid_ioctl(ioctl_id))
+> > +                       return -EINVAL;
+>=20
+> Wrong error value.
+>=20
+> > +       } else {
+> > +               if (!zynqmp_is_valid_ioctl(ioctl_id))
+> > +                       return -EINVAL;
+>=20
+> Wrong error value.
+>=20
+> > +       }
+> > +       of_node_put(np);
+> > +
+> > +       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, ioctl_id, arg1,
+> arg2,
+> > +                                  out);
+>=20
+> No other checking of ioctl commands and arguments?  Brave...
+>=20
+> > +}
+> > +
+> > +/**
+> >   * zynqmp_pm_set_pll_frac_mode() - PM API for set PLL mode
+> >   *
+> >   * @clk_id:    PLL clock ID
+> > @@ -525,8 +608,7 @@
+> EXPORT_SYMBOL_GPL(zynqmp_pm_clock_getparent);
+> >   */
+> >  int zynqmp_pm_set_pll_frac_mode(u32 clk_id, u32 mode)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0,
+> IOCTL_SET_PLL_FRAC_MODE,
+> > -                                  clk_id, mode, NULL);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_SET_PLL_FRAC_MODE, clk_id,
+> > + mode, NULL);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_mode);
+> >
+> > @@ -542,8 +624,7 @@
+> EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_mode);
+> >   */
+> >  int zynqmp_pm_get_pll_frac_mode(u32 clk_id, u32 *mode)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0,
+> IOCTL_GET_PLL_FRAC_MODE,
+> > -                                  clk_id, 0, mode);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_GET_PLL_FRAC_MODE, clk_id, 0,
+> > + mode);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_mode);
+> >
+> > @@ -560,8 +641,7 @@
+> EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_mode);
+> >   */
+> >  int zynqmp_pm_set_pll_frac_data(u32 clk_id, u32 data)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0,
+> IOCTL_SET_PLL_FRAC_DATA,
+> > -                                  clk_id, data, NULL);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_SET_PLL_FRAC_DATA, clk_id,
+> > + data, NULL);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_data);
+> >
+> > @@ -577,8 +657,7 @@
+> EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_data);
+> >   */
+> >  int zynqmp_pm_get_pll_frac_data(u32 clk_id, u32 *data)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0,
+> IOCTL_GET_PLL_FRAC_DATA,
+> > -                                  clk_id, 0, data);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_GET_PLL_FRAC_DATA, clk_id, 0,
+> > + data);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_data);
+> >
+> > @@ -595,8 +674,8 @@
+> EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_data);
+> >   */
+> >  int zynqmp_pm_set_sd_tapdelay(u32 node_id, u32 type, u32 value)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id,
+> IOCTL_SET_SD_TAPDELAY,
+> > -                                  type, value, NULL);
+> > +       return zynqmp_pm_ioctl(node_id, IOCTL_SET_SD_TAPDELAY, type,
+> value,
+> > +                              NULL);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
+> >
+> > @@ -612,8 +691,7 @@
+> EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
+> >   */
+> >  int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id,
+> IOCTL_SET_SD_TAPDELAY,
+> > -                                  type, 0, NULL);
+> > +       return zynqmp_pm_ioctl(node_id, IOCTL_SET_SD_TAPDELAY, type,
+> > + 0, NULL);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
+> >
+> > @@ -628,8 +706,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
+> >   */
+> >  int zynqmp_pm_write_ggs(u32 index, u32 value)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_WRITE_GGS,
+> > -                                  index, value, NULL);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_WRITE_GGS, index, value,
+> > + NULL);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_write_ggs);
+> >
+> > @@ -644,8 +721,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_write_ggs);
+> >   */
+> >  int zynqmp_pm_read_ggs(u32 index, u32 *value)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_READ_GGS,
+> > -                                  index, 0, value);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_READ_GGS, index, 0, value);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_read_ggs);
+> >
+> > @@ -661,8 +737,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_read_ggs);
+> >   */
+> >  int zynqmp_pm_write_pggs(u32 index, u32 value)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_WRITE_PGGS,
+> index, value,
+> > -                                  NULL);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_WRITE_PGGS, index, value,
+> > + NULL);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_write_pggs);
+> >
+> > @@ -678,8 +753,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_write_pggs);
+> >   */
+> >  int zynqmp_pm_read_pggs(u32 index, u32 *value)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_READ_PGGS,
+> index, 0,
+> > -                                  value);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_READ_PGGS, index, 0, value);
+> >  }
+> >  EXPORT_SYMBOL_GPL(zynqmp_pm_read_pggs);
+> >
+> > @@ -694,8 +768,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_read_pggs);
+> >   */
+> >  int zynqmp_pm_set_boot_health_status(u32 value)  {
+> > -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0,
+> IOCTL_SET_BOOT_HEALTH_STATUS,
+> > -                                  value, 0, NULL);
+> > +       return zynqmp_pm_ioctl(0, IOCTL_SET_BOOT_HEALTH_STATUS,
+> value,
+> > + 0, NULL);
+> >  }
+> >
+> >  /**
+> > --
+> > 2.7.4
+> >
+> > This email and any attachments are intended for the sole use of the nam=
+ed
+> recipient(s) and contain(s) confidential information that may be propriet=
+ary,
+> privileged or copyrighted under applicable law. If you are not the intend=
+ed
+> recipient, do not read, copy, or forward this email message or any
+> attachments. Delete this email message and any attachments immediately.
+>=20
+> Oops, this means I have to drop this, it's not compatible with kernel
+> development, sorry.
+>=20
+> greg k-h
 
-          ethtool -s sw1pX port XX autoneg on
+I will incorporate your suggestions in the next version of patch-set. The
+footer message has unfortunately cropped up. Will also fix that in the next=
+ version.
 
-    - forward error correction feature is supported only on SFP ports, 10G
-      speed
-
-    - auto-negotiation and MDI-x features are not supported on
-      Copper-to-Fiber SFP module
-
-Co-developed-by: Andrii Savka <andrii.savka@plvision.eu>
-Signed-off-by: Andrii Savka <andrii.savka@plvision.eu>
-Co-developed-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
-Signed-off-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
----
-PATCH v8:
-    1) Sorted includes.
-
-    2) Use traditional error handling pattern:
-
-       err = F();
-       if (err)
-           return err;
-
-    3) Invert '!err ? speed : SPEED_UNKNOWN' into 'err ? SPEED_UNKNOWN : speed'
-
-    4) Return original error code from last called func
-       in places where instead other error code was used.
-
-    5) Put license in one line.
-
-    6) Add missing comma for last enum member
-
-    7) Add comma for last member in initialized struct in prestera_hw.c
-
-PATCH v5:
-
-    1) Convert following error check:
-
-        if (func(...))
-        or
-        if (!func(...))
-
-        to use err variable:
-
-        err = func(...)
-        if (err)
-
-    2) Remove "," from terminated enum entry.
-
-PATCH v4:
-    1) Export only prestera_ethtool_ops instead of
-       each ethtool handler.
-
-    2) Get rid of not needed cast in prestera_ethtool_get_stats(...)
-       when doing memcpy.
-
- .../net/ethernet/marvell/prestera/Makefile    |   2 +-
- .../net/ethernet/marvell/prestera/prestera.h  |   3 +
- .../marvell/prestera/prestera_ethtool.c       | 780 ++++++++++++++++++
- .../marvell/prestera/prestera_ethtool.h       |  11 +
- .../ethernet/marvell/prestera/prestera_hw.c   | 299 +++++++
- .../ethernet/marvell/prestera/prestera_hw.h   |  65 ++
- .../ethernet/marvell/prestera/prestera_main.c |  28 +-
- 7 files changed, 1182 insertions(+), 6 deletions(-)
- create mode 100644 drivers/net/ethernet/marvell/prestera/prestera_ethtool.c
- create mode 100644 drivers/net/ethernet/marvell/prestera/prestera_ethtool.h
-
-diff --git a/drivers/net/ethernet/marvell/prestera/Makefile b/drivers/net/ethernet/marvell/prestera/Makefile
-index babd71fba809..7684e7047562 100644
---- a/drivers/net/ethernet/marvell/prestera/Makefile
-+++ b/drivers/net/ethernet/marvell/prestera/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_PRESTERA)	+= prestera.o
- prestera-objs		:= prestera_main.o prestera_hw.o prestera_dsa.o \
--			   prestera_rxtx.o prestera_devlink.o
-+			   prestera_rxtx.o prestera_devlink.o prestera_ethtool.o
- 
- obj-$(CONFIG_PRESTERA_PCI)	+= prestera_pci.o
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera.h b/drivers/net/ethernet/marvell/prestera/prestera.h
-index 0a34d7ca4823..69628632e2bd 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera.h
-+++ b/drivers/net/ethernet/marvell/prestera/prestera.h
-@@ -169,4 +169,7 @@ void prestera_device_unregister(struct prestera_device *dev);
- struct prestera_port *prestera_port_find_by_hwid(struct prestera_switch *sw,
- 						 u32 dev_id, u32 hw_id);
- 
-+int prestera_port_autoneg_set(struct prestera_port *port, bool enable,
-+			      u64 adver_link_modes, u8 adver_fec);
-+
- #endif /* _PRESTERA_H_ */
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_ethtool.c b/drivers/net/ethernet/marvell/prestera/prestera_ethtool.c
-new file mode 100644
-index 000000000000..93a5e2baf808
---- /dev/null
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_ethtool.c
-@@ -0,0 +1,780 @@
-+// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0
-+/* Copyright (c) 2019-2020 Marvell International Ltd. All rights reserved */
-+
-+#include <linux/ethtool.h>
-+#include <linux/kernel.h>
-+#include <linux/netdevice.h>
-+
-+#include "prestera_ethtool.h"
-+#include "prestera.h"
-+#include "prestera_hw.h"
-+
-+#define PRESTERA_STATS_CNT \
-+	(sizeof(struct prestera_port_stats) / sizeof(u64))
-+#define PRESTERA_STATS_IDX(name) \
-+	(offsetof(struct prestera_port_stats, name) / sizeof(u64))
-+#define PRESTERA_STATS_FIELD(name)	\
-+	[PRESTERA_STATS_IDX(name)] = __stringify(name)
-+
-+static const char driver_kind[] = "prestera";
-+
-+static const struct prestera_link_mode {
-+	enum ethtool_link_mode_bit_indices eth_mode;
-+	u32 speed;
-+	u64 pr_mask;
-+	u8 duplex;
-+	u8 port_type;
-+} port_link_modes[PRESTERA_LINK_MODE_MAX] = {
-+	[PRESTERA_LINK_MODE_10baseT_Half] = {
-+		.eth_mode =  ETHTOOL_LINK_MODE_10baseT_Half_BIT,
-+		.speed = 10,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_10baseT_Half,
-+		.duplex = PRESTERA_PORT_DUPLEX_HALF,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_10baseT_Full] = {
-+		.eth_mode =  ETHTOOL_LINK_MODE_10baseT_Full_BIT,
-+		.speed = 10,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_10baseT_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_100baseT_Half] = {
-+		.eth_mode =  ETHTOOL_LINK_MODE_100baseT_Half_BIT,
-+		.speed = 100,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_100baseT_Half,
-+		.duplex = PRESTERA_PORT_DUPLEX_HALF,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_100baseT_Full] = {
-+		.eth_mode =  ETHTOOL_LINK_MODE_100baseT_Full_BIT,
-+		.speed = 100,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_100baseT_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_1000baseT_Half] = {
-+		.eth_mode =  ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
-+		.speed = 1000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_1000baseT_Half,
-+		.duplex = PRESTERA_PORT_DUPLEX_HALF,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_1000baseT_Full] = {
-+		.eth_mode =  ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
-+		.speed = 1000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_1000baseT_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_1000baseX_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
-+		.speed = 1000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_1000baseX_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_FIBRE,
-+	},
-+	[PRESTERA_LINK_MODE_1000baseKX_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_1000baseKX_Full_BIT,
-+		.speed = 1000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_1000baseKX_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_2500baseX_Full] = {
-+		.eth_mode =  ETHTOOL_LINK_MODE_2500baseX_Full_BIT,
-+		.speed = 2500,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_2500baseX_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+	},
-+	[PRESTERA_LINK_MODE_10GbaseKR_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
-+		.speed = 10000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_10GbaseKR_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_10GbaseSR_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_10000baseSR_Full_BIT,
-+		.speed = 10000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_10GbaseSR_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_FIBRE,
-+	},
-+	[PRESTERA_LINK_MODE_10GbaseLR_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_10000baseLR_Full_BIT,
-+		.speed = 10000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_10GbaseLR_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_FIBRE,
-+	},
-+	[PRESTERA_LINK_MODE_20GbaseKR2_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_20000baseKR2_Full_BIT,
-+		.speed = 20000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_20GbaseKR2_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_25GbaseCR_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_25000baseCR_Full_BIT,
-+		.speed = 25000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_25GbaseCR_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_DA,
-+	},
-+	[PRESTERA_LINK_MODE_25GbaseKR_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_25000baseKR_Full_BIT,
-+		.speed = 25000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_25GbaseKR_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_25GbaseSR_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_25000baseSR_Full_BIT,
-+		.speed = 25000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_25GbaseSR_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_FIBRE,
-+	},
-+	[PRESTERA_LINK_MODE_40GbaseKR4_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_40000baseKR4_Full_BIT,
-+		.speed = 40000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_40GbaseKR4_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_40GbaseCR4_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_40000baseCR4_Full_BIT,
-+		.speed = 40000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_40GbaseCR4_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_DA,
-+	},
-+	[PRESTERA_LINK_MODE_40GbaseSR4_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_40000baseSR4_Full_BIT,
-+		.speed = 40000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_40GbaseSR4_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_FIBRE,
-+	},
-+	[PRESTERA_LINK_MODE_50GbaseCR2_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_50000baseCR2_Full_BIT,
-+		.speed = 50000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_50GbaseCR2_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_DA,
-+	},
-+	[PRESTERA_LINK_MODE_50GbaseKR2_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_50000baseKR2_Full_BIT,
-+		.speed = 50000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_50GbaseKR2_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_50GbaseSR2_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_50000baseSR2_Full_BIT,
-+		.speed = 50000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_50GbaseSR2_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_FIBRE,
-+	},
-+	[PRESTERA_LINK_MODE_100GbaseKR4_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_100000baseKR4_Full_BIT,
-+		.speed = 100000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_100GbaseKR4_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_TP,
-+	},
-+	[PRESTERA_LINK_MODE_100GbaseSR4_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_100000baseSR4_Full_BIT,
-+		.speed = 100000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_100GbaseSR4_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_FIBRE,
-+	},
-+	[PRESTERA_LINK_MODE_100GbaseCR4_Full] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_100000baseCR4_Full_BIT,
-+		.speed = 100000,
-+		.pr_mask = 1 << PRESTERA_LINK_MODE_100GbaseCR4_Full,
-+		.duplex = PRESTERA_PORT_DUPLEX_FULL,
-+		.port_type = PRESTERA_PORT_TYPE_DA,
-+	}
-+};
-+
-+static const struct prestera_fec {
-+	u32 eth_fec;
-+	enum ethtool_link_mode_bit_indices eth_mode;
-+	u8 pr_fec;
-+} port_fec_caps[PRESTERA_PORT_FEC_MAX] = {
-+	[PRESTERA_PORT_FEC_OFF] = {
-+		.eth_fec = ETHTOOL_FEC_OFF,
-+		.eth_mode = ETHTOOL_LINK_MODE_FEC_NONE_BIT,
-+		.pr_fec = 1 << PRESTERA_PORT_FEC_OFF,
-+	},
-+	[PRESTERA_PORT_FEC_BASER] = {
-+		.eth_fec = ETHTOOL_FEC_BASER,
-+		.eth_mode = ETHTOOL_LINK_MODE_FEC_BASER_BIT,
-+		.pr_fec = 1 << PRESTERA_PORT_FEC_BASER,
-+	},
-+	[PRESTERA_PORT_FEC_RS] = {
-+		.eth_fec = ETHTOOL_FEC_RS,
-+		.eth_mode = ETHTOOL_LINK_MODE_FEC_RS_BIT,
-+		.pr_fec = 1 << PRESTERA_PORT_FEC_RS,
-+	}
-+};
-+
-+static const struct prestera_port_type {
-+	enum ethtool_link_mode_bit_indices eth_mode;
-+	u8 eth_type;
-+} port_types[PRESTERA_PORT_TYPE_MAX] = {
-+	[PRESTERA_PORT_TYPE_NONE] = {
-+		.eth_mode = __ETHTOOL_LINK_MODE_MASK_NBITS,
-+		.eth_type = PORT_NONE,
-+	},
-+	[PRESTERA_PORT_TYPE_TP] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_TP_BIT,
-+		.eth_type = PORT_TP,
-+	},
-+	[PRESTERA_PORT_TYPE_AUI] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_AUI_BIT,
-+		.eth_type = PORT_AUI,
-+	},
-+	[PRESTERA_PORT_TYPE_MII] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_MII_BIT,
-+		.eth_type = PORT_MII,
-+	},
-+	[PRESTERA_PORT_TYPE_FIBRE] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_FIBRE_BIT,
-+		.eth_type = PORT_FIBRE,
-+	},
-+	[PRESTERA_PORT_TYPE_BNC] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_BNC_BIT,
-+		.eth_type = PORT_BNC,
-+	},
-+	[PRESTERA_PORT_TYPE_DA] = {
-+		.eth_mode = ETHTOOL_LINK_MODE_TP_BIT,
-+		.eth_type = PORT_TP,
-+	},
-+	[PRESTERA_PORT_TYPE_OTHER] = {
-+		.eth_mode = __ETHTOOL_LINK_MODE_MASK_NBITS,
-+		.eth_type = PORT_OTHER,
-+	}
-+};
-+
-+static const char prestera_cnt_name[PRESTERA_STATS_CNT][ETH_GSTRING_LEN] = {
-+	PRESTERA_STATS_FIELD(good_octets_received),
-+	PRESTERA_STATS_FIELD(bad_octets_received),
-+	PRESTERA_STATS_FIELD(mac_trans_error),
-+	PRESTERA_STATS_FIELD(broadcast_frames_received),
-+	PRESTERA_STATS_FIELD(multicast_frames_received),
-+	PRESTERA_STATS_FIELD(frames_64_octets),
-+	PRESTERA_STATS_FIELD(frames_65_to_127_octets),
-+	PRESTERA_STATS_FIELD(frames_128_to_255_octets),
-+	PRESTERA_STATS_FIELD(frames_256_to_511_octets),
-+	PRESTERA_STATS_FIELD(frames_512_to_1023_octets),
-+	PRESTERA_STATS_FIELD(frames_1024_to_max_octets),
-+	PRESTERA_STATS_FIELD(excessive_collision),
-+	PRESTERA_STATS_FIELD(multicast_frames_sent),
-+	PRESTERA_STATS_FIELD(broadcast_frames_sent),
-+	PRESTERA_STATS_FIELD(fc_sent),
-+	PRESTERA_STATS_FIELD(fc_received),
-+	PRESTERA_STATS_FIELD(buffer_overrun),
-+	PRESTERA_STATS_FIELD(undersize),
-+	PRESTERA_STATS_FIELD(fragments),
-+	PRESTERA_STATS_FIELD(oversize),
-+	PRESTERA_STATS_FIELD(jabber),
-+	PRESTERA_STATS_FIELD(rx_error_frame_received),
-+	PRESTERA_STATS_FIELD(bad_crc),
-+	PRESTERA_STATS_FIELD(collisions),
-+	PRESTERA_STATS_FIELD(late_collision),
-+	PRESTERA_STATS_FIELD(unicast_frames_received),
-+	PRESTERA_STATS_FIELD(unicast_frames_sent),
-+	PRESTERA_STATS_FIELD(sent_multiple),
-+	PRESTERA_STATS_FIELD(sent_deferred),
-+	PRESTERA_STATS_FIELD(good_octets_sent),
-+};
-+
-+static void prestera_ethtool_get_drvinfo(struct net_device *dev,
-+					 struct ethtool_drvinfo *drvinfo)
-+{
-+	struct prestera_port *port = netdev_priv(dev);
-+	struct prestera_switch *sw = port->sw;
-+
-+	strlcpy(drvinfo->driver, driver_kind, sizeof(drvinfo->driver));
-+	strlcpy(drvinfo->bus_info, dev_name(prestera_dev(sw)),
-+		sizeof(drvinfo->bus_info));
-+	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
-+		 "%d.%d.%d",
-+		 sw->dev->fw_rev.maj,
-+		 sw->dev->fw_rev.min,
-+		 sw->dev->fw_rev.sub);
-+}
-+
-+static u8 prestera_port_type_get(struct prestera_port *port)
-+{
-+	if (port->caps.type < PRESTERA_PORT_TYPE_MAX)
-+		return port_types[port->caps.type].eth_type;
-+
-+	return PORT_OTHER;
-+}
-+
-+static int prestera_port_type_set(const struct ethtool_link_ksettings *ecmd,
-+				  struct prestera_port *port)
-+{
-+	u32 new_mode = PRESTERA_LINK_MODE_MAX;
-+	u32 type, mode;
-+	int err;
-+
-+	for (type = 0; type < PRESTERA_PORT_TYPE_MAX; type++) {
-+		if (port_types[type].eth_type == ecmd->base.port &&
-+		    test_bit(port_types[type].eth_mode,
-+			     ecmd->link_modes.supported)) {
-+			break;
-+		}
-+	}
-+
-+	if (type == port->caps.type)
-+		return 0;
-+	if (type != port->caps.type && ecmd->base.autoneg == AUTONEG_ENABLE)
-+		return -EINVAL;
-+	if (type == PRESTERA_PORT_TYPE_MAX)
-+		return -EOPNOTSUPP;
-+
-+	for (mode = 0; mode < PRESTERA_LINK_MODE_MAX; mode++) {
-+		if ((port_link_modes[mode].pr_mask &
-+		    port->caps.supp_link_modes) &&
-+		    type == port_link_modes[mode].port_type) {
-+			new_mode = mode;
-+		}
-+	}
-+
-+	if (new_mode < PRESTERA_LINK_MODE_MAX)
-+		err = prestera_hw_port_link_mode_set(port, new_mode);
-+	else
-+		err = -EINVAL;
-+
-+	if (err)
-+		return err;
-+
-+	port->caps.type = type;
-+	port->autoneg = false;
-+
-+	return 0;
-+}
-+
-+static void prestera_modes_to_eth(unsigned long *eth_modes, u64 link_modes,
-+				  u8 fec, u8 type)
-+{
-+	u32 mode;
-+
-+	for (mode = 0; mode < PRESTERA_LINK_MODE_MAX; mode++) {
-+		if ((port_link_modes[mode].pr_mask & link_modes) == 0)
-+			continue;
-+
-+		if (type != PRESTERA_PORT_TYPE_NONE &&
-+		    port_link_modes[mode].port_type != type)
-+			continue;
-+
-+		__set_bit(port_link_modes[mode].eth_mode, eth_modes);
-+	}
-+
-+	for (mode = 0; mode < PRESTERA_PORT_FEC_MAX; mode++) {
-+		if ((port_fec_caps[mode].pr_fec & fec) == 0)
-+			continue;
-+
-+		__set_bit(port_fec_caps[mode].eth_mode, eth_modes);
-+	}
-+}
-+
-+static void prestera_modes_from_eth(const unsigned long *eth_modes,
-+				    u64 *link_modes, u8 *fec, u8 type)
-+{
-+	u64 adver_modes = 0;
-+	u32 fec_modes = 0;
-+	u32 mode;
-+
-+	for (mode = 0; mode < PRESTERA_LINK_MODE_MAX; mode++) {
-+		if (!test_bit(port_link_modes[mode].eth_mode, eth_modes))
-+			continue;
-+
-+		if (port_link_modes[mode].port_type != type)
-+			continue;
-+
-+		adver_modes |= port_link_modes[mode].pr_mask;
-+	}
-+
-+	for (mode = 0; mode < PRESTERA_PORT_FEC_MAX; mode++) {
-+		if (!test_bit(port_fec_caps[mode].eth_mode, eth_modes))
-+			continue;
-+
-+		fec_modes |= port_fec_caps[mode].pr_fec;
-+	}
-+
-+	*link_modes = adver_modes;
-+	*fec = fec_modes;
-+}
-+
-+static void prestera_port_supp_types_get(struct ethtool_link_ksettings *ecmd,
-+					 struct prestera_port *port)
-+{
-+	u32 mode;
-+	u8 ptype;
-+
-+	for (mode = 0; mode < PRESTERA_LINK_MODE_MAX; mode++) {
-+		if ((port_link_modes[mode].pr_mask &
-+		    port->caps.supp_link_modes) == 0)
-+			continue;
-+
-+		ptype = port_link_modes[mode].port_type;
-+		__set_bit(port_types[ptype].eth_mode,
-+			  ecmd->link_modes.supported);
-+	}
-+}
-+
-+static void prestera_port_remote_cap_get(struct ethtool_link_ksettings *ecmd,
-+					 struct prestera_port *port)
-+{
-+	bool asym_pause;
-+	bool pause;
-+	u64 bitmap;
-+	int err;
-+
-+	err = prestera_hw_port_remote_cap_get(port, &bitmap);
-+	if (!err) {
-+		prestera_modes_to_eth(ecmd->link_modes.lp_advertising,
-+				      bitmap, 0, PRESTERA_PORT_TYPE_NONE);
-+
-+		if (!bitmap_empty(ecmd->link_modes.lp_advertising,
-+				  __ETHTOOL_LINK_MODE_MASK_NBITS)) {
-+			ethtool_link_ksettings_add_link_mode(ecmd,
-+							     lp_advertising,
-+							     Autoneg);
-+		}
-+	}
-+
-+	err = prestera_hw_port_remote_fc_get(port, &pause, &asym_pause);
-+	if (err)
-+		return;
-+
-+	if (pause)
-+		ethtool_link_ksettings_add_link_mode(ecmd,
-+						     lp_advertising,
-+						     Pause);
-+	if (asym_pause)
-+		ethtool_link_ksettings_add_link_mode(ecmd,
-+						     lp_advertising,
-+						     Asym_Pause);
-+}
-+
-+static void prestera_port_speed_get(struct ethtool_link_ksettings *ecmd,
-+				    struct prestera_port *port)
-+{
-+	u32 speed;
-+	int err;
-+
-+	err = prestera_hw_port_speed_get(port, &speed);
-+	ecmd->base.speed = err ? SPEED_UNKNOWN : speed;
-+}
-+
-+static void prestera_port_duplex_get(struct ethtool_link_ksettings *ecmd,
-+				     struct prestera_port *port)
-+{
-+	u8 duplex;
-+	int err;
-+
-+	err = prestera_hw_port_duplex_get(port, &duplex);
-+	if (err) {
-+		ecmd->base.duplex = DUPLEX_UNKNOWN;
-+		return;
-+	}
-+
-+	ecmd->base.duplex = duplex == PRESTERA_PORT_DUPLEX_FULL ?
-+			    DUPLEX_FULL : DUPLEX_HALF;
-+}
-+
-+static int
-+prestera_ethtool_get_link_ksettings(struct net_device *dev,
-+				    struct ethtool_link_ksettings *ecmd)
-+{
-+	struct prestera_port *port = netdev_priv(dev);
-+
-+	ethtool_link_ksettings_zero_link_mode(ecmd, supported);
-+	ethtool_link_ksettings_zero_link_mode(ecmd, advertising);
-+	ethtool_link_ksettings_zero_link_mode(ecmd, lp_advertising);
-+
-+	ecmd->base.autoneg = port->autoneg ? AUTONEG_ENABLE : AUTONEG_DISABLE;
-+
-+	if (port->caps.type == PRESTERA_PORT_TYPE_TP) {
-+		ethtool_link_ksettings_add_link_mode(ecmd, supported, Autoneg);
-+
-+		if (netif_running(dev) &&
-+		    (port->autoneg ||
-+		     port->caps.transceiver == PRESTERA_PORT_TCVR_COPPER))
-+			ethtool_link_ksettings_add_link_mode(ecmd, advertising,
-+							     Autoneg);
-+	}
-+
-+	prestera_modes_to_eth(ecmd->link_modes.supported,
-+			      port->caps.supp_link_modes,
-+			      port->caps.supp_fec,
-+			      port->caps.type);
-+
-+	prestera_port_supp_types_get(ecmd, port);
-+
-+	if (netif_carrier_ok(dev)) {
-+		prestera_port_speed_get(ecmd, port);
-+		prestera_port_duplex_get(ecmd, port);
-+	} else {
-+		ecmd->base.speed = SPEED_UNKNOWN;
-+		ecmd->base.duplex = DUPLEX_UNKNOWN;
-+	}
-+
-+	ecmd->base.port = prestera_port_type_get(port);
-+
-+	if (port->autoneg) {
-+		if (netif_running(dev))
-+			prestera_modes_to_eth(ecmd->link_modes.advertising,
-+					      port->adver_link_modes,
-+					      port->adver_fec,
-+					      port->caps.type);
-+
-+		if (netif_carrier_ok(dev) &&
-+		    port->caps.transceiver == PRESTERA_PORT_TCVR_COPPER)
-+			prestera_port_remote_cap_get(ecmd, port);
-+	}
-+
-+	if (port->caps.type == PRESTERA_PORT_TYPE_TP &&
-+	    port->caps.transceiver == PRESTERA_PORT_TCVR_COPPER)
-+		prestera_hw_port_mdix_get(port, &ecmd->base.eth_tp_mdix,
-+					  &ecmd->base.eth_tp_mdix_ctrl);
-+
-+	return 0;
-+}
-+
-+static int prestera_port_mdix_set(const struct ethtool_link_ksettings *ecmd,
-+				  struct prestera_port *port)
-+{
-+	if (ecmd->base.eth_tp_mdix_ctrl != ETH_TP_MDI_INVALID &&
-+	    port->caps.transceiver == PRESTERA_PORT_TCVR_COPPER &&
-+	    port->caps.type == PRESTERA_PORT_TYPE_TP)
-+		return prestera_hw_port_mdix_set(port,
-+						 ecmd->base.eth_tp_mdix_ctrl);
-+
-+	return 0;
-+}
-+
-+static int prestera_port_link_mode_set(struct prestera_port *port,
-+				       u32 speed, u8 duplex, u8 type)
-+{
-+	u32 new_mode = PRESTERA_LINK_MODE_MAX;
-+	u32 mode;
-+
-+	for (mode = 0; mode < PRESTERA_LINK_MODE_MAX; mode++) {
-+		if (speed != port_link_modes[mode].speed)
-+			continue;
-+
-+		if (duplex != port_link_modes[mode].duplex)
-+			continue;
-+
-+		if (!(port_link_modes[mode].pr_mask &
-+		    port->caps.supp_link_modes))
-+			continue;
-+
-+		if (type != port_link_modes[mode].port_type)
-+			continue;
-+
-+		new_mode = mode;
-+		break;
-+	}
-+
-+	if (new_mode == PRESTERA_LINK_MODE_MAX)
-+		return -EOPNOTSUPP;
-+
-+	return prestera_hw_port_link_mode_set(port, new_mode);
-+}
-+
-+static int
-+prestera_port_speed_duplex_set(const struct ethtool_link_ksettings *ecmd,
-+			       struct prestera_port *port)
-+{
-+	u32 curr_mode;
-+	u8 duplex;
-+	u32 speed;
-+	int err;
-+
-+	err = prestera_hw_port_link_mode_get(port, &curr_mode);
-+	if (err)
-+		return err;
-+	if (curr_mode >= PRESTERA_LINK_MODE_MAX)
-+		return -EINVAL;
-+
-+	if (ecmd->base.duplex != DUPLEX_UNKNOWN)
-+		duplex = ecmd->base.duplex == DUPLEX_FULL ?
-+			 PRESTERA_PORT_DUPLEX_FULL : PRESTERA_PORT_DUPLEX_HALF;
-+	else
-+		duplex = port_link_modes[curr_mode].duplex;
-+
-+	if (ecmd->base.speed != SPEED_UNKNOWN)
-+		speed = ecmd->base.speed;
-+	else
-+		speed = port_link_modes[curr_mode].speed;
-+
-+	return prestera_port_link_mode_set(port, speed, duplex,
-+					   port->caps.type);
-+}
-+
-+static int
-+prestera_ethtool_set_link_ksettings(struct net_device *dev,
-+				    const struct ethtool_link_ksettings *ecmd)
-+{
-+	struct prestera_port *port = netdev_priv(dev);
-+	u64 adver_modes;
-+	u8 adver_fec;
-+	int err;
-+
-+	err = prestera_port_type_set(ecmd, port);
-+	if (err)
-+		return err;
-+
-+	if (port->caps.transceiver == PRESTERA_PORT_TCVR_COPPER) {
-+		err = prestera_port_mdix_set(ecmd, port);
-+		if (err)
-+			return err;
-+	}
-+
-+	prestera_modes_from_eth(ecmd->link_modes.advertising, &adver_modes,
-+				&adver_fec, port->caps.type);
-+
-+	err = prestera_port_autoneg_set(port,
-+					ecmd->base.autoneg == AUTONEG_ENABLE,
-+					adver_modes, adver_fec);
-+	if (err)
-+		return err;
-+
-+	if (ecmd->base.autoneg == AUTONEG_DISABLE) {
-+		err = prestera_port_speed_duplex_set(ecmd, port);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int prestera_ethtool_get_fecparam(struct net_device *dev,
-+					 struct ethtool_fecparam *fecparam)
-+{
-+	struct prestera_port *port = netdev_priv(dev);
-+	u8 active;
-+	u32 mode;
-+	int err;
-+
-+	err = prestera_hw_port_fec_get(port, &active);
-+	if (err)
-+		return err;
-+
-+	fecparam->fec = 0;
-+
-+	for (mode = 0; mode < PRESTERA_PORT_FEC_MAX; mode++) {
-+		if ((port_fec_caps[mode].pr_fec & port->caps.supp_fec) == 0)
-+			continue;
-+
-+		fecparam->fec |= port_fec_caps[mode].eth_fec;
-+	}
-+
-+	if (active < PRESTERA_PORT_FEC_MAX)
-+		fecparam->active_fec = port_fec_caps[active].eth_fec;
-+	else
-+		fecparam->active_fec = ETHTOOL_FEC_AUTO;
-+
-+	return 0;
-+}
-+
-+static int prestera_ethtool_set_fecparam(struct net_device *dev,
-+					 struct ethtool_fecparam *fecparam)
-+{
-+	struct prestera_port *port = netdev_priv(dev);
-+	u8 fec, active;
-+	u32 mode;
-+	int err;
-+
-+	if (port->autoneg) {
-+		netdev_err(dev, "FEC set is not allowed while autoneg is on\n");
-+		return -EINVAL;
-+	}
-+
-+	err = prestera_hw_port_fec_get(port, &active);
-+	if (err)
-+		return err;
-+
-+	fec = PRESTERA_PORT_FEC_MAX;
-+	for (mode = 0; mode < PRESTERA_PORT_FEC_MAX; mode++) {
-+		if ((port_fec_caps[mode].eth_fec & fecparam->fec) &&
-+		    (port_fec_caps[mode].pr_fec & port->caps.supp_fec)) {
-+			fec = mode;
-+			break;
-+		}
-+	}
-+
-+	if (fec == active)
-+		return 0;
-+
-+	if (fec == PRESTERA_PORT_FEC_MAX)
-+		return -EOPNOTSUPP;
-+
-+	return prestera_hw_port_fec_set(port, fec);
-+}
-+
-+static int prestera_ethtool_get_sset_count(struct net_device *dev, int sset)
-+{
-+	switch (sset) {
-+	case ETH_SS_STATS:
-+		return PRESTERA_STATS_CNT;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static void prestera_ethtool_get_strings(struct net_device *dev,
-+					 u32 stringset, u8 *data)
-+{
-+	if (stringset != ETH_SS_STATS)
-+		return;
-+
-+	memcpy(data, prestera_cnt_name, sizeof(prestera_cnt_name));
-+}
-+
-+static void prestera_ethtool_get_stats(struct net_device *dev,
-+				       struct ethtool_stats *stats, u64 *data)
-+{
-+	struct prestera_port *port = netdev_priv(dev);
-+	struct prestera_port_stats *port_stats;
-+
-+	port_stats = &port->cached_hw_stats.stats;
-+
-+	memcpy(data, port_stats, sizeof(*port_stats));
-+}
-+
-+static int prestera_ethtool_nway_reset(struct net_device *dev)
-+{
-+	struct prestera_port *port = netdev_priv(dev);
-+
-+	if (netif_running(dev) &&
-+	    port->caps.transceiver == PRESTERA_PORT_TCVR_COPPER &&
-+	    port->caps.type == PRESTERA_PORT_TYPE_TP)
-+		return prestera_hw_port_autoneg_restart(port);
-+
-+	return -EINVAL;
-+}
-+
-+const struct ethtool_ops prestera_ethtool_ops = {
-+	.get_drvinfo = prestera_ethtool_get_drvinfo,
-+	.get_link_ksettings = prestera_ethtool_get_link_ksettings,
-+	.set_link_ksettings = prestera_ethtool_set_link_ksettings,
-+	.get_fecparam = prestera_ethtool_get_fecparam,
-+	.set_fecparam = prestera_ethtool_set_fecparam,
-+	.get_sset_count = prestera_ethtool_get_sset_count,
-+	.get_strings = prestera_ethtool_get_strings,
-+	.get_ethtool_stats = prestera_ethtool_get_stats,
-+	.get_link = ethtool_op_get_link,
-+	.nway_reset = prestera_ethtool_nway_reset
-+};
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_ethtool.h b/drivers/net/ethernet/marvell/prestera/prestera_ethtool.h
-new file mode 100644
-index 000000000000..523ef1f592ce
---- /dev/null
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_ethtool.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0 */
-+/* Copyright (c) 2019-2020 Marvell International Ltd. All rights reserved. */
-+
-+#ifndef __PRESTERA_ETHTOOL_H_
-+#define __PRESTERA_ETHTOOL_H_
-+
-+#include <linux/ethtool.h>
-+
-+extern const struct ethtool_ops prestera_ethtool_ops;
-+
-+#endif /* _PRESTERA_ETHTOOL_H_ */
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_hw.c b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-index 9f1e222024ef..e501f8c7dc50 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-@@ -31,9 +31,18 @@ enum {
- 	PRESTERA_CMD_PORT_ATTR_ADMIN_STATE = 1,
- 	PRESTERA_CMD_PORT_ATTR_MTU = 3,
- 	PRESTERA_CMD_PORT_ATTR_MAC = 4,
-+	PRESTERA_CMD_PORT_ATTR_SPEED = 5,
- 	PRESTERA_CMD_PORT_ATTR_CAPABILITY = 9,
-+	PRESTERA_CMD_PORT_ATTR_REMOTE_CAPABILITY = 10,
-+	PRESTERA_CMD_PORT_ATTR_REMOTE_FC = 11,
-+	PRESTERA_CMD_PORT_ATTR_LINK_MODE = 12,
-+	PRESTERA_CMD_PORT_ATTR_TYPE = 13,
-+	PRESTERA_CMD_PORT_ATTR_FEC = 14,
- 	PRESTERA_CMD_PORT_ATTR_AUTONEG = 15,
-+	PRESTERA_CMD_PORT_ATTR_DUPLEX = 16,
- 	PRESTERA_CMD_PORT_ATTR_STATS = 17,
-+	PRESTERA_CMD_PORT_ATTR_MDIX = 18,
-+	PRESTERA_CMD_PORT_ATTR_AUTONEG_RESTART = 19,
- };
- 
- enum {
-@@ -47,6 +56,13 @@ enum {
- 	PRESTERA_CMD_ACK_MAX
- };
- 
-+enum {
-+	PRESTERA_PORT_TP_NA,
-+	PRESTERA_PORT_TP_MDI,
-+	PRESTERA_PORT_TP_MDIX,
-+	PRESTERA_PORT_TP_AUTO,
-+};
-+
- enum {
- 	PRESTERA_PORT_GOOD_OCTETS_RCV_CNT,
- 	PRESTERA_PORT_BAD_OCTETS_RCV_CNT,
-@@ -82,6 +98,13 @@ enum {
- 	PRESTERA_PORT_CNT_MAX
- };
- 
-+enum {
-+	PRESTERA_FC_NONE,
-+	PRESTERA_FC_SYMMETRIC,
-+	PRESTERA_FC_ASYMMETRIC,
-+	PRESTERA_FC_SYMM_ASYMM,
-+};
-+
- struct prestera_fw_event_handler {
- 	struct list_head list;
- 	struct rcu_head rcu;
-@@ -137,11 +160,23 @@ struct prestera_msg_port_cap_param {
- 	u8  transceiver;
- };
- 
-+struct prestera_msg_port_mdix_param {
-+	u8 status;
-+	u8 admin_mode;
-+};
-+
- union prestera_msg_port_param {
- 	u8  admin_state;
- 	u8  oper_state;
- 	u32 mtu;
- 	u8  mac[ETH_ALEN];
-+	u32 speed;
-+	u32 link_mode;
-+	u8  type;
-+	u8  duplex;
-+	u8  fec;
-+	u8  fc;
-+	struct prestera_msg_port_mdix_param mdix;
- 	struct prestera_msg_port_autoneg_param autoneg;
- 	struct prestera_msg_port_cap_param cap;
- };
-@@ -483,6 +518,238 @@ int prestera_hw_port_cap_get(const struct prestera_port *port,
- 	return err;
- }
- 
-+int prestera_hw_port_remote_cap_get(const struct prestera_port *port,
-+				    u64 *link_mode_bitmap)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_REMOTE_CAPABILITY,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+	struct prestera_msg_port_attr_resp resp;
-+	int err;
-+
-+	err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-+			       &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-+	if (err)
-+		return err;
-+
-+	*link_mode_bitmap = resp.param.cap.link_mode;
-+
-+	return 0;
-+}
-+
-+int prestera_hw_port_remote_fc_get(const struct prestera_port *port,
-+				   bool *pause, bool *asym_pause)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_REMOTE_FC,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+	struct prestera_msg_port_attr_resp resp;
-+	int err;
-+
-+	err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-+			       &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-+	if (err)
-+		return err;
-+
-+	switch (resp.param.fc) {
-+	case PRESTERA_FC_SYMMETRIC:
-+		*pause = true;
-+		*asym_pause = false;
-+		break;
-+	case PRESTERA_FC_ASYMMETRIC:
-+		*pause = false;
-+		*asym_pause = true;
-+		break;
-+	case PRESTERA_FC_SYMM_ASYMM:
-+		*pause = true;
-+		*asym_pause = true;
-+		break;
-+	default:
-+		*pause = false;
-+		*asym_pause = false;
-+	}
-+
-+	return 0;
-+}
-+
-+int prestera_hw_port_type_get(const struct prestera_port *port, u8 *type)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_TYPE,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+	struct prestera_msg_port_attr_resp resp;
-+	int err;
-+
-+	err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-+			       &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-+	if (err)
-+		return err;
-+
-+	*type = resp.param.type;
-+
-+	return 0;
-+}
-+
-+int prestera_hw_port_fec_get(const struct prestera_port *port, u8 *fec)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_FEC,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+	struct prestera_msg_port_attr_resp resp;
-+	int err;
-+
-+	err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-+			       &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-+	if (err)
-+		return err;
-+
-+	*fec = resp.param.fec;
-+
-+	return 0;
-+}
-+
-+int prestera_hw_port_fec_set(const struct prestera_port *port, u8 fec)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_FEC,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+		.param = {
-+			.fec = fec,
-+		}
-+	};
-+
-+	return prestera_cmd(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_SET,
-+			    &req.cmd, sizeof(req));
-+}
-+
-+static u8 prestera_hw_mdix_to_eth(u8 mode)
-+{
-+	switch (mode) {
-+	case PRESTERA_PORT_TP_MDI:
-+		return ETH_TP_MDI;
-+	case PRESTERA_PORT_TP_MDIX:
-+		return ETH_TP_MDI_X;
-+	case PRESTERA_PORT_TP_AUTO:
-+		return ETH_TP_MDI_AUTO;
-+	default:
-+		return ETH_TP_MDI_INVALID;
-+	}
-+}
-+
-+static u8 prestera_hw_mdix_from_eth(u8 mode)
-+{
-+	switch (mode) {
-+	case ETH_TP_MDI:
-+		return PRESTERA_PORT_TP_MDI;
-+	case ETH_TP_MDI_X:
-+		return PRESTERA_PORT_TP_MDIX;
-+	case ETH_TP_MDI_AUTO:
-+		return PRESTERA_PORT_TP_AUTO;
-+	default:
-+		return PRESTERA_PORT_TP_NA;
-+	}
-+}
-+
-+int prestera_hw_port_mdix_get(const struct prestera_port *port, u8 *status,
-+			      u8 *admin_mode)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_MDIX,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+	struct prestera_msg_port_attr_resp resp;
-+	int err;
-+
-+	err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-+			       &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-+	if (err)
-+		return err;
-+
-+	*status = prestera_hw_mdix_to_eth(resp.param.mdix.status);
-+	*admin_mode = prestera_hw_mdix_to_eth(resp.param.mdix.admin_mode);
-+
-+	return 0;
-+}
-+
-+int prestera_hw_port_mdix_set(const struct prestera_port *port, u8 mode)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_MDIX,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+
-+	req.param.mdix.admin_mode = prestera_hw_mdix_from_eth(mode);
-+
-+	return prestera_cmd(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_SET,
-+			    &req.cmd, sizeof(req));
-+}
-+
-+int prestera_hw_port_link_mode_set(const struct prestera_port *port, u32 mode)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_LINK_MODE,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+		.param = {
-+			.link_mode = mode,
-+		}
-+	};
-+
-+	return prestera_cmd(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_SET,
-+			    &req.cmd, sizeof(req));
-+}
-+
-+int prestera_hw_port_link_mode_get(const struct prestera_port *port, u32 *mode)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_LINK_MODE,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+	struct prestera_msg_port_attr_resp resp;
-+	int err;
-+
-+	err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-+			       &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-+	if (err)
-+		return err;
-+
-+	*mode = resp.param.link_mode;
-+
-+	return 0;
-+}
-+
-+int prestera_hw_port_speed_get(const struct prestera_port *port, u32 *speed)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_SPEED,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+	struct prestera_msg_port_attr_resp resp;
-+	int err;
-+
-+	err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-+			       &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-+	if (err)
-+		return err;
-+
-+	*speed = resp.param.speed;
-+
-+	return 0;
-+}
-+
- int prestera_hw_port_autoneg_set(const struct prestera_port *port,
- 				 bool autoneg, u64 link_modes, u8 fec)
- {
-@@ -503,6 +770,38 @@ int prestera_hw_port_autoneg_set(const struct prestera_port *port,
- 			    &req.cmd, sizeof(req));
- }
- 
-+int prestera_hw_port_autoneg_restart(struct prestera_port *port)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_AUTONEG_RESTART,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+
-+	return prestera_cmd(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_SET,
-+			    &req.cmd, sizeof(req));
-+}
-+
-+int prestera_hw_port_duplex_get(const struct prestera_port *port, u8 *duplex)
-+{
-+	struct prestera_msg_port_attr_req req = {
-+		.attr = PRESTERA_CMD_PORT_ATTR_DUPLEX,
-+		.port = port->hw_id,
-+		.dev = port->dev_id,
-+	};
-+	struct prestera_msg_port_attr_resp resp;
-+	int err;
-+
-+	err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-+			       &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-+	if (err)
-+		return err;
-+
-+	*duplex = resp.param.duplex;
-+
-+	return 0;
-+}
-+
- int prestera_hw_port_stats_get(const struct prestera_port *port,
- 			       struct prestera_port_stats *st)
- {
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_hw.h b/drivers/net/ethernet/marvell/prestera/prestera_hw.h
-index 5fc923cbb6a5..203c0daa4af1 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_hw.h
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_hw.h
-@@ -6,19 +6,69 @@
- 
- #include <linux/types.h>
- 
-+enum {
-+	PRESTERA_LINK_MODE_10baseT_Half,
-+	PRESTERA_LINK_MODE_10baseT_Full,
-+	PRESTERA_LINK_MODE_100baseT_Half,
-+	PRESTERA_LINK_MODE_100baseT_Full,
-+	PRESTERA_LINK_MODE_1000baseT_Half,
-+	PRESTERA_LINK_MODE_1000baseT_Full,
-+	PRESTERA_LINK_MODE_1000baseX_Full,
-+	PRESTERA_LINK_MODE_1000baseKX_Full,
-+	PRESTERA_LINK_MODE_2500baseX_Full,
-+	PRESTERA_LINK_MODE_10GbaseKR_Full,
-+	PRESTERA_LINK_MODE_10GbaseSR_Full,
-+	PRESTERA_LINK_MODE_10GbaseLR_Full,
-+	PRESTERA_LINK_MODE_20GbaseKR2_Full,
-+	PRESTERA_LINK_MODE_25GbaseCR_Full,
-+	PRESTERA_LINK_MODE_25GbaseKR_Full,
-+	PRESTERA_LINK_MODE_25GbaseSR_Full,
-+	PRESTERA_LINK_MODE_40GbaseKR4_Full,
-+	PRESTERA_LINK_MODE_40GbaseCR4_Full,
-+	PRESTERA_LINK_MODE_40GbaseSR4_Full,
-+	PRESTERA_LINK_MODE_50GbaseCR2_Full,
-+	PRESTERA_LINK_MODE_50GbaseKR2_Full,
-+	PRESTERA_LINK_MODE_50GbaseSR2_Full,
-+	PRESTERA_LINK_MODE_100GbaseKR4_Full,
-+	PRESTERA_LINK_MODE_100GbaseSR4_Full,
-+	PRESTERA_LINK_MODE_100GbaseCR4_Full,
-+
-+	PRESTERA_LINK_MODE_MAX
-+};
-+
- enum {
- 	PRESTERA_PORT_TYPE_NONE,
- 	PRESTERA_PORT_TYPE_TP,
-+	PRESTERA_PORT_TYPE_AUI,
-+	PRESTERA_PORT_TYPE_MII,
-+	PRESTERA_PORT_TYPE_FIBRE,
-+	PRESTERA_PORT_TYPE_BNC,
-+	PRESTERA_PORT_TYPE_DA,
-+	PRESTERA_PORT_TYPE_OTHER,
- 
- 	PRESTERA_PORT_TYPE_MAX
- };
- 
-+enum {
-+	PRESTERA_PORT_TCVR_COPPER,
-+	PRESTERA_PORT_TCVR_SFP,
-+
-+	PRESTERA_PORT_TCVR_MAX
-+};
-+
- enum {
- 	PRESTERA_PORT_FEC_OFF,
-+	PRESTERA_PORT_FEC_BASER,
-+	PRESTERA_PORT_FEC_RS,
- 
- 	PRESTERA_PORT_FEC_MAX
- };
- 
-+enum {
-+	PRESTERA_PORT_DUPLEX_HALF,
-+	PRESTERA_PORT_DUPLEX_FULL,
-+};
-+
- struct prestera_switch;
- struct prestera_port;
- struct prestera_port_stats;
-@@ -47,10 +97,25 @@ int prestera_hw_port_mac_set(const struct prestera_port *port, const char *mac);
- int prestera_hw_port_mac_get(const struct prestera_port *port, char *mac);
- int prestera_hw_port_cap_get(const struct prestera_port *port,
- 			     struct prestera_port_caps *caps);
-+int prestera_hw_port_remote_cap_get(const struct prestera_port *port,
-+				    u64 *link_mode_bitmap);
-+int prestera_hw_port_remote_fc_get(const struct prestera_port *port,
-+				   bool *pause, bool *asym_pause);
-+int prestera_hw_port_type_get(const struct prestera_port *port, u8 *type);
-+int prestera_hw_port_fec_get(const struct prestera_port *port, u8 *fec);
-+int prestera_hw_port_fec_set(const struct prestera_port *port, u8 fec);
- int prestera_hw_port_autoneg_set(const struct prestera_port *port,
- 				 bool autoneg, u64 link_modes, u8 fec);
-+int prestera_hw_port_autoneg_restart(struct prestera_port *port);
-+int prestera_hw_port_duplex_get(const struct prestera_port *port, u8 *duplex);
- int prestera_hw_port_stats_get(const struct prestera_port *port,
- 			       struct prestera_port_stats *stats);
-+int prestera_hw_port_link_mode_set(const struct prestera_port *port, u32 mode);
-+int prestera_hw_port_link_mode_get(const struct prestera_port *port, u32 *mode);
-+int prestera_hw_port_mdix_get(const struct prestera_port *port, u8 *status,
-+			      u8 *admin_mode);
-+int prestera_hw_port_mdix_set(const struct prestera_port *port, u8 mode);
-+int prestera_hw_port_speed_get(const struct prestera_port *port, u32 *speed);
- 
- /* Event handlers */
- int prestera_hw_event_handler_register(struct prestera_switch *sw,
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-index 47cd2bc367bf..bb51ee5646cd 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-@@ -13,6 +13,7 @@
- #include "prestera_hw.h"
- #include "prestera_rxtx.h"
- #include "prestera_devlink.h"
-+#include "prestera_ethtool.h"
- 
- #define PRESTERA_MTU_DEFAULT	1536
- 
-@@ -190,22 +191,38 @@ static const struct net_device_ops prestera_netdev_ops = {
- 	.ndo_get_devlink_port = prestera_devlink_get_port,
- };
- 
--static int prestera_port_autoneg_set(struct prestera_port *port, bool enable,
--				     u64 link_modes, u8 fec)
-+int prestera_port_autoneg_set(struct prestera_port *port, bool enable,
-+			      u64 adver_link_modes, u8 adver_fec)
- {
- 	bool refresh = false;
-+	u64 link_modes;
- 	int err;
-+	u8 fec;
- 
- 	if (port->caps.type != PRESTERA_PORT_TYPE_TP)
- 		return enable ? -EINVAL : 0;
- 
--	if (port->adver_link_modes != link_modes || port->adver_fec != fec) {
--		port->adver_fec = fec ?: BIT(PRESTERA_PORT_FEC_OFF);
-+	if (!enable)
-+		goto set_autoneg;
-+
-+	link_modes = port->caps.supp_link_modes & adver_link_modes;
-+	fec = port->caps.supp_fec & adver_fec;
-+
-+	if (!link_modes && !fec)
-+		return -EOPNOTSUPP;
-+
-+	if (link_modes && port->adver_link_modes != link_modes) {
- 		port->adver_link_modes = link_modes;
- 		refresh = true;
- 	}
- 
--	if (port->autoneg == enable && !(port->autoneg && refresh))
-+	if (fec && port->adver_fec != fec) {
-+		port->adver_fec = fec;
-+		refresh = true;
-+	}
-+
-+set_autoneg:
-+	if (port->autoneg == enable && !refresh)
- 		return 0;
- 
- 	err = prestera_hw_port_autoneg_set(port, enable, port->adver_link_modes,
-@@ -261,6 +278,7 @@ static int prestera_port_create(struct prestera_switch *sw, u32 id)
- 
- 	dev->features |= NETIF_F_NETNS_LOCAL;
- 	dev->netdev_ops = &prestera_netdev_ops;
-+	dev->ethtool_ops = &prestera_ethtool_ops;
- 
- 	netif_carrier_off(dev);
- 
--- 
-2.17.1
-
+Thanks,
+Amit
