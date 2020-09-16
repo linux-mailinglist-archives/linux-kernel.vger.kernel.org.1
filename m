@@ -2,236 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D68526BE73
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EB326BE76
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgIPHqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPHqU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:46:20 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53882C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:46:20 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id f18so3462497pfa.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:46:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YBGqaQ7Mhk39pbTnXIi+xyhZDjqG6D7yXDA2Zk5NuOk=;
-        b=fNnVPdvlgD65xX2UEg1tGvdK16fHWLa5Nd42tfy9sUti5Sg14mSUtFwX5FXwSyH+nG
-         GnMA57A5Uqc5q3bxhB3j83YvblFWIWlOjgPbAxTwDN4zdw17XQ+fXDo2lHvbqblnaZVZ
-         1NlFiEdUFwDgoC842rEtlbSWFcXY1fOKHh+ByLbt+a56NsfGyJ0gfHg5SFwLt5dnCmr4
-         2BPOPq6qjCTs8e+EVli+UYDUF1wRd9jD200yzRV4dA+KTW/shSAH7V34esazV/PGg1OC
-         ynBaUoyKl7CVWIMdPREQ/hRgRrldST2yyfgMCCLkMXQeru3J8O4EcUlcXguq0SeN4Ske
-         64Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=YBGqaQ7Mhk39pbTnXIi+xyhZDjqG6D7yXDA2Zk5NuOk=;
-        b=PVay9DwEQHgeV3Qi5CO7fxhPhRBKWSpvzCkBuINUmm8FTC209TLrTq0Am5D/o96JFi
-         EYF0gQ8BihMHQd70hv3gi+GPVuVDiqY6658dS3S+M+21AfTm5Z+c3C87w60VOtldVxvV
-         6vIerXWsyGEhKEDLY5nmyUAylpdaO930eTZ+xsZG6g5nDPmYetehxLtTsO6xsTe1Ufpc
-         lDm1C2Kwrh/PX1vcFrHCjwPuneW04Il8Y8OjLSP9yENH7LKDNPL5zVvPJuTPzY91Ktkd
-         5fQVM3sAM4jUPAQZ4VUK3YNPZOtJhN9VfTV3Ugvpa2x6c43MRf8CEyeaKkbhhHYFL5CK
-         2mfA==
-X-Gm-Message-State: AOAM530wlQh37z9siXWb4Mlc2p4nII055AhEmtsi8BqogtjgQE572t1T
-        EXzdGmfWr5oPWiRCDkTQNhnv6Q==
-X-Google-Smtp-Source: ABdhPJycyrhUihV5cTTqsmGs9Uo4RSf7rHRSbwZkMvxGeJXQbUwb7C8IPdGdNwDkBRmFsOEcI+9A9Q==
-X-Received: by 2002:a63:f441:: with SMTP id p1mr7413405pgk.453.1600242377052;
-        Wed, 16 Sep 2020 00:46:17 -0700 (PDT)
-Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id q16sm16782125pfj.117.2020.09.16.00.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 00:46:16 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 16:46:12 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH V3 15/21] mmc: sdhci: UHS-II support, modify
- set_power() to handle vdd2
-Message-ID: <20200916074612.GA2977734@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111140.29725-1-benchuanggli@gmail.com>
- <97c43596-a18f-4c7a-c226-5209772d91d1@intel.com>
- <20200914054537.GA2738017@laputa>
- <f0ff6c0a-4029-72a9-559c-8930ef0ea8bb@intel.com>
- <20200915062443.GB2860208@laputa>
- <0c11a3cb-fe7c-978d-7608-c98453899b5f@intel.com>
+        id S1726314AbgIPHr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:47:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44140 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgIPHr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:47:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C30FDB460;
+        Wed, 16 Sep 2020 07:47:40 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 09:47:15 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [v2 1/2] mm: khugepaged: recalculate min_free_kbytes after
+ memory hotplug as expected by khugepaged
+Message-ID: <20200916074715.GD18998@dhcp22.suse.cz>
+References: <1600204258-13683-1-git-send-email-vijayb@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0c11a3cb-fe7c-978d-7608-c98453899b5f@intel.com>
+In-Reply-To: <1600204258-13683-1-git-send-email-vijayb@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian,
+On Tue 15-09-20 14:10:57, Vijay Balakrishna wrote:
+> When memory is hotplug added or removed the min_free_kbytes must be
+> recalculated based on what is expected by khugepaged.  Currently
+> after hotplug, min_free_kbytes will be set to a lower default and higher
+> default set when THP enabled is lost. This leaves the system with small
+> min_free_kbytes which isn't suitable for systems especially with network
+> intensive loads.  Typical failure symptoms include HW WATCHDOG reset,
+> soft lockup hang notices, NETDEVICE WATCHDOG timeouts, and OOM process
+> kills.
 
-On Wed, Sep 16, 2020 at 09:42:28AM +0300, Adrian Hunter wrote:
-> On 15/09/20 9:24 am, AKASHI Takahiro wrote:
-> > Adrain,
-> > 
-> > On Mon, Sep 14, 2020 at 09:36:02AM +0300, Adrian Hunter wrote:
-> >> On 14/09/20 8:45 am, AKASHI Takahiro wrote:
-> >>> Adrian,
-> >>>
-> >>> On Fri, Aug 21, 2020 at 05:11:18PM +0300, Adrian Hunter wrote:
-> >>>> On 10/07/20 2:11 pm, Ben Chuang wrote:
-> >>>>> From: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> >>>>>
-> >>>>> VDD2 is used for powering UHS-II interface.
-> >>>>> Modify sdhci_set_power_and_bus_voltage(), sdhci_set_power_noreg()
-> >>>>> and sdhci_set_power_noreg() to handle VDD2.
-> >>>>
-> >>>> vdd2 is always 1.8 V and I suspect there may never be support for anything
-> >>>> else, so we should start with 1.8 V only.
-> >>>
-> >>> What do you mean here?
-> >>> You don't want to add an extra argument, vdd2, to sdhci_set_power().
-> >>> Correct?
-> >>
-> >> Yes
-> >>
-> >>>
-> >>>> Also can we create uhs2_set_power_reg() and uhs2_set_power_noreg() and use
-> >>>> the existing ->set_power() callback
-> >>>
-> >>> Again what do you expect here?
-> >>>
-> >>> Do you want to see any platform-specific mmc driver who supports UHS-II
-> >>> to implement its own call back like:
-> >>
-> >> Not exactly.  I expect there to be a common implementation in sdhci-uhs2.c
-> >> called sdhci_uhs2_set_power() for example, that drivers can use by setting
-> >> their .set_power = sdhci_uhs2_set_power.  If they need platform-specific
-> >> code as well then their platform-specific code can call
-> >> sdhci_uhs2_set_power() if desired.
-> >>
-> >>>
-> >>> void sdhci_foo_set_power(struct sdhci_host *host, unsigned char mode,
-> >>>                                   unsigned short vdd)
-> >>> {
-> >>>         sdhci_set_power(host, mode,vdd);
-> >>>
-> >>>         /* in case that sdhci_uhs2 module is not inserted */
-> >>>         if (!(mmc->caps & MMC_CAP_UHS2))
-> >>>                 return;
-> >>>
-> >>>         /* vdd2 specific operation */
-> >>>         if (IS_ERR_OR_NULL(host->mmc->supply.vmmc2))
-> >>>                 sdhci_uhs2_set_power_noreg(host, mode);
-> >>>         else
-> >>>                 sdhci_uhs2_set_power_reg(host, mode);
-> >>>
-> >>>         /* maybe more platform-specific initialization */
-> >>> }
-> >>>
-> >>> struct sdhci_ops sdhci_foo_ops = {
-> >>>         .set_power = sdhci_foo_set_power,
-> >>>         ...
-> >>> }
-> > 
-> > What do you think about this logic in general?
-> > (If necessary, read it replacing "foo" to "uhs2".)
-> > 
-> > What I'm concerned about is SDHCI_POWER_CONTROL register.
-> > Vdd and vdd2 are controlled with corresponding bits in this register.
-> > It seems to be "natural" to me that vdd and vdd2 are enabled
-> > in a single function rather than putting them in separate ones.
-> > 
-> > In particular, in the case of sdhci_set_power_noreg(), there exist a couple
-> > of "quirks" around writing the bits to SDHCI_POWER_CONTROL register.
+This changelog still doesn't explain the underlying problem IMO. It
+sounds it is papering over some other problem. I do agree that the
+current behavior is non intuitive and surprising. Justifying the change
+by that inconsistency is likely much better than arguing with soft
+lockups and OOMs which shouldn't be a result of this inconsistency.
+ 
+> Fixes: f000565adb77 ("thp: set recommended min free kbytes")
 > 
-> We can treat UHS-II support as being for new hardware and therefore
-> we don't necessarily need to support old quirks.  Just make sure if
-> a quirk is not being supported, to add a comment to that effect.
+> Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> ---
+>  include/linux/khugepaged.h |  5 +++++
+>  mm/khugepaged.c            | 13 +++++++++++--
+>  mm/memory_hotplug.c        |  3 +++
+>  3 files changed, 19 insertions(+), 2 deletions(-)
 > 
-> > I don't know how we should handle them if we have a separate function,
-> > say, sdhci_uhs2_set_power_noreg().
-> > Do you want to see a copy of the same logic in sdhci_uhs2_set_power_noreg()? 
-> 
-> I would probably consider making another function that non-UHS-II
-> drivers do not need to care about e.g. existing drivers can keep using
-> sdhci_set_power_noreg() and sdhci_uhs2 can call __sdhci_set_power_noreg()
-
-Well, but
-
-
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index 592a55a34b58..ffe54f06fe38 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -2013,8 +2013,8 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
->  		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
->  }
->  
-> -void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> -			   unsigned short vdd)
-> +void __sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> +			   unsigned short vdd, u8 vdd2)
+> diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
+> index bc45ea1efbf7..c941b7377321 100644
+> --- a/include/linux/khugepaged.h
+> +++ b/include/linux/khugepaged.h
+> @@ -15,6 +15,7 @@ extern int __khugepaged_enter(struct mm_struct *mm);
+>  extern void __khugepaged_exit(struct mm_struct *mm);
+>  extern int khugepaged_enter_vma_merge(struct vm_area_struct *vma,
+>  				      unsigned long vm_flags);
+> +extern void khugepaged_min_free_kbytes_update(void);
+>  #ifdef CONFIG_SHMEM
+>  extern void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr);
+>  #else
+> @@ -85,6 +86,10 @@ static inline void collapse_pte_mapped_thp(struct mm_struct *mm,
+>  					   unsigned long addr)
 >  {
->  	u8 pwr = 0;
->  
-> @@ -2048,7 +2048,7 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
->  	if (host->pwr == pwr)
->  		return;
->  
-> -	host->pwr = pwr;
-> +	host->pwr = pwr | vdd2;
-
-(the line above is wrong, but anyway)
-
-we must also set
-        if (vdd2)
-                pwr |= SDHCI_VDD2_POWER_ON;
-
-As a result, this new function is the almost exact same as the corresponding one
-in our v3 patch, except its name.
-
-Now do you allow such a small piece of UHS-II specific code to be
-placed in sdhci.c?
-
--Takahiro Akashi
-
-
->  	if (pwr == 0) {
->  		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
-> @@ -2085,6 +2085,13 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
->  			mdelay(10);
->  	}
 >  }
-> +EXPORT_SYMBOL_GPL(__sdhci_set_power_noreg);
 > +
-> +void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> +			   unsigned short vdd)
+> +static inline void khugepaged_min_free_kbytes_update(void)
 > +{
-> +	__sdhci_set_power_noreg(host, mode, vdd, 0);
 > +}
->  EXPORT_SYMBOL_GPL(sdhci_set_power_noreg);
+>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
 >  
->  void sdhci_set_power(struct sdhci_host *host, unsigned char mode,
-> 
-> > 
-> > -Takahiro Akashi
-> > 
-> > 
-> >>>
-> >>> Is this what you mean?
-> >>> (I'm not quite sure yet that sdhci_ush2_set_power_noreg() can be split off
-> >>> from sdhci_set_power_noreg().)
-> >>>
-> >>> -Takahiro Akashi
-> 
+>  #endif /* _LINUX_KHUGEPAGED_H */
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index cfa0dba5fd3b..4f7107476a6f 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -56,6 +56,9 @@ enum scan_result {
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/huge_memory.h>
+>  
+> +static struct task_struct *khugepaged_thread __read_mostly;
+> +static DEFINE_MUTEX(khugepaged_mutex);
+> +
+>  /* default scan 8*512 pte (or vmas) every 30 second */
+>  static unsigned int khugepaged_pages_to_scan __read_mostly;
+>  static unsigned int khugepaged_pages_collapsed;
+> @@ -2292,8 +2295,6 @@ static void set_recommended_min_free_kbytes(void)
+>  
+>  int start_stop_khugepaged(void)
+>  {
+> -	static struct task_struct *khugepaged_thread __read_mostly;
+> -	static DEFINE_MUTEX(khugepaged_mutex);
+>  	int err = 0;
+>  
+>  	mutex_lock(&khugepaged_mutex);
+> @@ -2320,3 +2321,11 @@ int start_stop_khugepaged(void)
+>  	mutex_unlock(&khugepaged_mutex);
+>  	return err;
+>  }
+> +
+> +void khugepaged_min_free_kbytes_update(void)
+> +{
+> +	mutex_lock(&khugepaged_mutex);
+> +	if (khugepaged_enabled() && khugepaged_thread)
+> +		set_recommended_min_free_kbytes();
+> +	mutex_unlock(&khugepaged_mutex);
+> +}
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index e9d5ab5d3ca0..3e19272c1fad 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -36,6 +36,7 @@
+>  #include <linux/memblock.h>
+>  #include <linux/compaction.h>
+>  #include <linux/rmap.h>
+> +#include <linux/khugepaged.h>
+>  
+>  #include <asm/tlbflush.h>
+>  
+> @@ -857,6 +858,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>  	zone_pcp_update(zone);
+>  
+>  	init_per_zone_wmark_min();
+> +	khugepaged_min_free_kbytes_update();
+>  
+>  	kswapd_run(nid);
+>  	kcompactd_run(nid);
+> @@ -1600,6 +1602,7 @@ static int __ref __offline_pages(unsigned long start_pfn,
+>  	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+>  
+>  	init_per_zone_wmark_min();
+> +	khugepaged_min_free_kbytes_update();
+>  
+>  	if (!populated_zone(zone)) {
+>  		zone_pcp_reset(zone);
+> -- 
+> 2.28.0
+
+-- 
+Michal Hocko
+SUSE Labs
