@@ -2,246 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB38D26C794
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149F326C85E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgIPSax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:30:53 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37872 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728094AbgIPSaE (ORCPT
+        id S1728173AbgIPSqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727957AbgIPSWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:30:04 -0400
-Received: from localhost.localdomain (unknown [47.187.206.220])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 169662074C90;
-        Wed, 16 Sep 2020 08:08:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 169662074C90
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1600268917;
-        bh=b+dZfSYt921SZbqVi9d6jmG8B2GKXdUDhoo8NhJxV+k=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Ujz+S1OqtosPp/8L9N3unu6wuJGss69KS6W/GHWBWqM4qfdWcRG/EKRgUKJbOEORc
-         x+qd/TTcA8Trl1XdmvODaLvWIGzELcQgFeVjLlgZi8uYhTVxlKm7dCUF532grSOPqk
-         Po96nXGPIm2UK+uUyzCR1OmHS74BMY4y3GHpUvus=
-From:   madvenka@linux.microsoft.com
-To:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, madvenka@linux.microsoft.com
-Subject: [PATCH v2 4/4] [RFC] arm/trampfd: Provide support for the trampoline file descriptor
-Date:   Wed, 16 Sep 2020 10:08:26 -0500
-Message-Id: <20200916150826.5990-5-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916150826.5990-1-madvenka@linux.microsoft.com>
-References: <210d7cd762d5307c2aa1676705b392bd445f1baa>
- <20200916150826.5990-1-madvenka@linux.microsoft.com>
+        Wed, 16 Sep 2020 14:22:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A4FC0F26FA;
+        Wed, 16 Sep 2020 08:17:03 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:12:03 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600269124;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIP2y3pp+EafYUCYti5vm6KfHc0I5pEhcQCmR3kW1SI=;
+        b=pjYA+ojbdvuiPX79hVJa9swKJ7NOUVm+I7LRW+BJL6DKHykYtbtKHTmT5JceRygysi1Z4q
+        md5v3Q+Tz8LWsuj5wAVeU69QPW+quwjYzmEdURr9vedg8YYt35YoqAh3Cfa2l7NkFWcNgf
+        kuCrISngRlaocoWTwSyXi2UXuo3bMDMi7w3pumWb0yzErShnn/i9w+xjrB2vTIt27J7Rec
+        Y/8J8qmxrnGgDQubdXECmDdwdrVX/FzY9bMqQTN/7rm8XL2k1k2/2k0XkMqmMMdWsqG6Hg
+        WGgYwSCra2R8NhdZvwLxP3u4ytSPSKZhCAjHxqtZtwlqccgHBjsjaiInF7sYzQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600269124;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIP2y3pp+EafYUCYti5vm6KfHc0I5pEhcQCmR3kW1SI=;
+        b=4+WBE3BKhedKdHmz3kIdDKJ5J80Wp3XK21dfGB49kDcb6j+Dt6ggkHBlfuI0nrzCoxRdYw
+        8e/DQW8ADZuPTPDw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/irq] x86/irq: Make most MSI ops XEN private
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200826112334.198633344@linutronix.de>
+References: <20200826112334.198633344@linutronix.de>
+MIME-Version: 1.0
+Message-ID: <160026912386.15536.13334083050941731245.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+The following commit has been merged into the x86/irq branch of tip:
 
-	- Define architecture specific register names
-	- Architecture specific functions for:
-		- system call init
-		- code descriptor check
-		- data descriptor check
-	- Fill a page with a trampoline table,
+Commit-ID:     874a2013a07dd8ec48413db5d06d27d02f7765b5
+Gitweb:        https://git.kernel.org/tip/874a2013a07dd8ec48413db5d06d27d02f7765b5
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 26 Aug 2020 13:17:04 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 16 Sep 2020 16:52:38 +02:00
 
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+x86/irq: Make most MSI ops XEN private
+
+Nothing except XEN uses the setup/teardown ops. Hide them there.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20200826112334.198633344@linutronix.de
+
 ---
- arch/arm/include/uapi/asm/ptrace.h |  21 +++++
- arch/arm/kernel/Makefile           |   1 +
- arch/arm/kernel/trampfd.c          | 124 +++++++++++++++++++++++++++++
- arch/arm/tools/syscall.tbl         |   1 +
- 4 files changed, 147 insertions(+)
- create mode 100644 arch/arm/kernel/trampfd.c
+ arch/x86/include/asm/x86_init.h |  2 --
+ arch/x86/pci/xen.c              | 21 ++++++++++++++-------
+ 2 files changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm/include/uapi/asm/ptrace.h b/arch/arm/include/uapi/asm/ptrace.h
-index e61c65b4018d..598047768f9b 100644
---- a/arch/arm/include/uapi/asm/ptrace.h
-+++ b/arch/arm/include/uapi/asm/ptrace.h
-@@ -151,6 +151,27 @@ struct pt_regs {
- #define ARM_r0		uregs[0]
- #define ARM_ORIG_r0	uregs[17]
+diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
+index d8b597c..397196f 100644
+--- a/arch/x86/include/asm/x86_init.h
++++ b/arch/x86/include/asm/x86_init.h
+@@ -276,8 +276,6 @@ struct x86_platform_ops {
+ struct pci_dev;
  
-+/*
-+ * These register names are to be used by 32-bit applications.
-+ */
-+enum reg_32_name {
-+	arm_min,
-+	arm_r0 = arm_min,
-+	arm_r1,
-+	arm_r2,
-+	arm_r3,
-+	arm_r4,
-+	arm_r5,
-+	arm_r6,
-+	arm_r7,
-+	arm_r8,
-+	arm_r9,
-+	arm_r10,
-+	arm_r11,
-+	arm_r12,
-+	arm_max,
+ struct x86_msi_ops {
+-	int (*setup_msi_irqs)(struct pci_dev *dev, int nvec, int type);
+-	void (*teardown_msi_irqs)(struct pci_dev *dev);
+ 	void (*restore_msi_irqs)(struct pci_dev *dev);
+ };
+ 
+diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
+index cb90095..c552cd2 100644
+--- a/arch/x86/pci/xen.c
++++ b/arch/x86/pci/xen.c
+@@ -157,6 +157,13 @@ static int acpi_register_gsi_xen(struct device *dev, u32 gsi,
+ struct xen_pci_frontend_ops *xen_pci_frontend;
+ EXPORT_SYMBOL_GPL(xen_pci_frontend);
+ 
++struct xen_msi_ops {
++	int (*setup_msi_irqs)(struct pci_dev *dev, int nvec, int type);
++	void (*teardown_msi_irqs)(struct pci_dev *dev);
 +};
 +
- /*
-  * The size of the user-visible VFP state as seen by PTRACE_GET/SETVFPREGS
-  * and core dumps.
-diff --git a/arch/arm/kernel/Makefile b/arch/arm/kernel/Makefile
-index 89e5d864e923..652c54c2f19a 100644
---- a/arch/arm/kernel/Makefile
-+++ b/arch/arm/kernel/Makefile
-@@ -105,5 +105,6 @@ obj-$(CONFIG_SMP)		+= psci_smp.o
- endif
++static struct xen_msi_ops xen_msi_ops __ro_after_init;
++
+ static int xen_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+ {
+ 	int irq, ret, i;
+@@ -415,7 +422,7 @@ static int xen_msi_domain_alloc_irqs(struct irq_domain *domain,
+ 	else
+ 		type = PCI_CAP_ID_MSI;
  
- obj-$(CONFIG_HAVE_ARM_SMCCC)	+= smccc-call.o
-+obj-$(CONFIG_TRAMPFD)		+= trampfd.o
+-	return x86_msi.setup_msi_irqs(to_pci_dev(dev), nvec, type);
++	return xen_msi_ops.setup_msi_irqs(to_pci_dev(dev), nvec, type);
+ }
  
- extra-y := $(head-y) vmlinux.lds
-diff --git a/arch/arm/kernel/trampfd.c b/arch/arm/kernel/trampfd.c
-new file mode 100644
-index 000000000000..45146ed489e8
---- /dev/null
-+++ b/arch/arm/kernel/trampfd.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Trampoline FD - ARM support.
-+ *
-+ * Author: Madhavan T. Venkataraman (madvenka@linux.microsoft.com)
-+ *
-+ * Copyright (c) 2020, Microsoft Corporation.
-+ */
-+
-+#include <linux/thread_info.h>
-+#include <linux/trampfd.h>
-+
-+#define TRAMPFD_CODE_SIZE		28
-+
-+/*
-+ * trampfd syscall.
-+ */
-+void trampfd_arch(struct trampfd_info *info)
-+{
-+	info->code_size = TRAMPFD_CODE_SIZE;
-+	info->ntrampolines = PAGE_SIZE / info->code_size;
-+	info->code_offset = TRAMPFD_CODE_PGOFF << PAGE_SHIFT;
-+	info->reserved = 0;
-+}
-+
-+/*
-+ * trampfd code descriptor check.
-+ */
-+int trampfd_code_arch(struct trampfd_code *code)
-+{
-+	int	ntrampolines;
-+	int	min, max;
-+
-+	min = arm_min;
-+	max = arm_max;
-+	ntrampolines = PAGE_SIZE / TRAMPFD_CODE_SIZE;
-+
-+	if (code->reg < min || code->reg >= max)
-+		return -EINVAL;
-+
-+	if (!code->ntrampolines || code->ntrampolines > ntrampolines)
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+/*
-+ * trampfd data descriptor check.
-+ */
-+int trampfd_data_arch(struct trampfd_data *data)
-+{
-+	int	min, max;
-+
-+	min = arm_min;
-+	max = arm_max;
-+
-+	if (data->reg < min || data->reg >= max)
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+#define MOVW(ins, reg, imm32)						\
-+{									\
-+	u16	*_imm16 = (u16 *) &(imm32);	/* little endian */	\
-+	int	_hw, _opcode;						\
-+									\
-+	for (_hw = 0; _hw < 2; _hw++) {					\
-+		/* movw or movt */					\
-+		_opcode = _hw ? 0xe3400000 : 0xe3000000;		\
-+		*ins++ = _opcode | (_imm16[_hw] >> 12) << 16 |		\
-+			 (reg) << 12 | (_imm16[_hw] & 0xFFF);		\
-+	}								\
-+}
-+
-+#define LDR(ins, reg)							\
-+{									\
-+	*ins++ = 0xe5900000 | (reg) << 16 | (reg) << 12;		\
-+}
-+
-+#define BX(ins, reg)							\
-+{									\
-+	*ins++ = 0xe12fff10 | (reg);					\
-+}
-+
-+void trampfd_code_fill(struct trampfd *trampfd, char *addr)
-+{
-+	char		*eaddr = addr + PAGE_SIZE;
-+	int		creg = trampfd->code_reg - arm_min;
-+	int		dreg = trampfd->data_reg - arm_min;
-+	u32		*code = trampfd->code;
-+	u32		*data = trampfd->data;
-+	u32		*instruction = (u32 *) addr;
-+	int		i;
-+
-+	for (i = 0; i < trampfd->ntrampolines; i++, code++, data++) {
-+		/*
-+		 * movw creg, code & 0xFFFF
-+		 * movt creg, code >> 16
-+		 */
-+		MOVW(instruction, creg, code);
-+
-+		/*
-+		 * ldr	creg, [creg]
-+		 */
-+		LDR(instruction, creg);
-+
-+		/*
-+		 * movw dreg, data & 0xFFFF
-+		 * movt dreg, data >> 16
-+		 */
-+		MOVW(instruction, dreg, data);
-+
-+		/*
-+		 * ldr	dreg, [dreg]
-+		 */
-+		LDR(instruction, dreg);
-+
-+		/*
-+		 * bx	creg
-+		 */
-+		BX(instruction, creg);
-+	}
-+	addr = (char *) instruction;
-+	memset(addr, 0, eaddr - addr);
-+}
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index d5cae5ffede0..85dcbc9e08ee 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -452,3 +452,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	trampfd				sys_trampfd
--- 
-2.17.1
-
+ static void xen_msi_domain_free_irqs(struct irq_domain *domain,
+@@ -424,7 +431,7 @@ static void xen_msi_domain_free_irqs(struct irq_domain *domain,
+ 	if (WARN_ON_ONCE(!dev_is_pci(dev)))
+ 		return;
+ 
+-	x86_msi.teardown_msi_irqs(to_pci_dev(dev));
++	xen_msi_ops.teardown_msi_irqs(to_pci_dev(dev));
+ }
+ 
+ static struct msi_domain_ops xen_pci_msi_domain_ops = {
+@@ -463,16 +470,16 @@ static __init void xen_setup_pci_msi(void)
+ {
+ 	if (xen_pv_domain()) {
+ 		if (xen_initial_domain()) {
+-			x86_msi.setup_msi_irqs = xen_initdom_setup_msi_irqs;
++			xen_msi_ops.setup_msi_irqs = xen_initdom_setup_msi_irqs;
+ 			x86_msi.restore_msi_irqs = xen_initdom_restore_msi_irqs;
+ 		} else {
+-			x86_msi.setup_msi_irqs = xen_setup_msi_irqs;
++			xen_msi_ops.setup_msi_irqs = xen_setup_msi_irqs;
+ 		}
+-		x86_msi.teardown_msi_irqs = xen_pv_teardown_msi_irqs;
++		xen_msi_ops.teardown_msi_irqs = xen_pv_teardown_msi_irqs;
+ 		pci_msi_ignore_mask = 1;
+ 	} else if (xen_hvm_domain()) {
+-		x86_msi.setup_msi_irqs = xen_hvm_setup_msi_irqs;
+-		x86_msi.teardown_msi_irqs = xen_teardown_msi_irqs;
++		xen_msi_ops.setup_msi_irqs = xen_hvm_setup_msi_irqs;
++		xen_msi_ops.teardown_msi_irqs = xen_teardown_msi_irqs;
+ 	} else {
+ 		WARN_ON_ONCE(1);
+ 		return;
