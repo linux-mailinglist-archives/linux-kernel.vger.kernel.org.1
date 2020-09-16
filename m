@@ -2,93 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7843426BC84
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771B626BC91
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgIPGR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:17:56 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33728 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgIPGRx (ORCPT
+        id S1726357AbgIPGTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgIPGTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:17:53 -0400
-Received: by mail-wr1-f68.google.com with SMTP id m6so5618637wrn.0;
-        Tue, 15 Sep 2020 23:17:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8vW5SNbsYECBXjdZ1DGGkHYYubwmAc4H6dnKQMUSdNQ=;
-        b=ZOIue+DuPibp02cAhjTcdne/FL6c/Ls7msxQVjIotiE4Yq+Ui9kQJvOmRtzrudZBoR
-         fPG5u5c2U5cWsrCH0OkMP1CqpWgH+AzEAmwK3mJts0FiBQc0Kdbu5ybUAyfroIG4EBf+
-         TJ9tJoUGmt2xgDlfK2DOgW8xNi8fKsBxiqQ+kXC78G2XL4As8UeS4kQ7TWW2N9XdGQZB
-         cLv6jW5JEZWAoZLDpnOe/EhVGrg0uJXWLQtdJVr+5XlrxS63/Z8Y30ps8dBVeoQonT7Z
-         N2/jMLJr5czqUdJxuOPxK/zmJEd7qO2tpWdPe9GT8crqA6aatVhRPLlx7rcsZkvL9Qww
-         pjDA==
-X-Gm-Message-State: AOAM531EENRzP/QLoZp/ceHW/T3r8USsuXG6VixdNXgBRvmiIH8Mo//5
-        fzcjlcyX4lTLb3v42rfHWCk=
-X-Google-Smtp-Source: ABdhPJzMLOJzsclIPzvuI83RUFmsd5HgaJ2eaBsTbqc3L06wuPMXJeI+OP+Ge57HQlUgAnZDDyL8RQ==
-X-Received: by 2002:a5d:46c5:: with SMTP id g5mr26008097wrs.416.1600237070506;
-        Tue, 15 Sep 2020 23:17:50 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.124])
-        by smtp.googlemail.com with ESMTPSA id z19sm3344360wmi.3.2020.09.15.23.17.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Sep 2020 23:17:49 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 08:17:47 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Rob Herring <robh@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Kukjin Kim <kgene@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: exynos-adc: require second
- interrupt with touch screen
-Message-ID: <20200916061747.GB5719@kozik-lap>
-References: <20200910161933.9156-1-krzk@kernel.org>
- <20200915194444.GA2384148@bogus>
+        Wed, 16 Sep 2020 02:19:30 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7CDC06174A;
+        Tue, 15 Sep 2020 23:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=mOoC3WhkRPklNHV9fnbrv5yj6L/BVPWFaL4Zo1Rk0oo=; b=UsaA/+7NOkPglS/ElEpfGYHry4
+        mPLASdy5QX8z94b4XOJjdfokBy2+zsfij/usRv0A2UfLe+RzXiZo054XCisfUC2YV9fAjdicLfeRM
+        Zb3vVgKyiD4sPr0kEzsdZUoiVYe3LE/NYI7fNyWjleALXajyPMNcxAewJM78o4iJ5RaE=;
+Received: from p200300ccff0b15001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0b:1500:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kIQmp-0005Zk-Is; Wed, 16 Sep 2020 08:19:23 +0200
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kIQmp-0008NF-27; Wed, 16 Sep 2020 08:19:23 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     lee.jones@linaro.org, robh+dt@kernel.org, andreas@kemnade.info,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        b.galvani@gmail.com, stefan@agner.ch
+Subject: [PATCH v2] dt-bindings: mfd: Convert rn5t618 to json-schema
+Date:   Wed, 16 Sep 2020 08:17:57 +0200
+Message-Id: <20200916061757.32144-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915194444.GA2384148@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:44:44PM -0600, Rob Herring wrote:
-> On Thu, 10 Sep 2020 18:19:32 +0200, Krzysztof Kozlowski wrote:
-> > The ADC in S3C/S5P/Exynos SoCs can be used also for handling touch
-> > screen.  In such case the second interrupt is required.  This second
-> > interrupt can be anyway provided, even without touch screens.  This
-> > fixes dtbs_check warnings like:
-> > 
-> >   arch/arm/boot/dts/s5pv210-aquila.dt.yaml: adc@e1700000: interrupts: [[23], [24]] is too long
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > Acked-by: Jonathan Cameron <Jonathan.Cameron@huwei.com>
-> > 
-> > ---
-> > 
-> > Changes since v1:
-> > 1. Fix if:has-touchscreen, as pointed by Rob.
-> > 2. Add Ack.
-> > ---
-> >  .../bindings/iio/adc/samsung,exynos-adc.yaml       | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > 
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+Convert the RN5T618 binding to DT schema format. Also
+clearly state which regulators are available.
 
-Jonathan,
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+Changes in v2:
+- drop irq description
 
-Could you pick up these two?
+Due to its .txt-format history BSD license was not added.
+ .../bindings/mfd/ricoh,rn5t618.yaml           | 111 ++++++++++++++++++
+ .../devicetree/bindings/mfd/rn5t618.txt       |  52 --------
+ 2 files changed, 111 insertions(+), 52 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mfd/rn5t618.txt
 
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
+new file mode 100644
+index 000000000000..d70e85a09c84
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
+@@ -0,0 +1,111 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/ricoh,rn5t618.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Ricoh RN5T567/RN5T618/RC5T619 PMIC
++
++maintainers:
++  - Andreas Kemnade <andreas@kemnade.info>
++
++description: |
++  Ricoh RN5T567/RN5T618/RC5T619 is a power management IC family which
++  integrates 3 to 5 step-down DCDC converters, 7 to 10 low-dropout regulators,
++  GPIOs, and a watchdog timer. It can be controlled through an I2C interface.
++  The RN5T618/RC5T619 provides additionally a Li-ion battery charger,
++  fuel gauge, and an ADC.
++  The RC5T619 additionnally includes USB charger detection and an RTC.
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: ricoh,rn5t567
++    then:
++      properties:
++        regulators:
++          patternProperties:
++            "^(DCDC[1-4]|LDO[1-5]|LDORTC[12])$":
++              $ref: ../regulator/regulator.yaml
++          additionalProperties: false
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: ricoh,rn5t618
++    then:
++      properties:
++        regulators:
++          patternProperties:
++            "^(DCDC[1-3]|LDO[1-5]|LDORTC[12])$":
++              $ref: ../regulator/regulator.yaml
++          additionalProperties: false
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: ricoh,rc5t619
++    then:
++      properties:
++        regulators:
++          patternProperties:
++            "^(DCDC[1-5]|LDO[1-9]|LDO10|LDORTC[12])$":
++              $ref: ../regulator/regulator.yaml
++          additionalProperties: false
++
++properties:
++  compatible:
++    enum:
++      - ricoh,rn5t567
++      - ricoh,rn5t618
++      - ricoh,rc5t619
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  system-power-controller:
++    type: boolean
++    description: |
++      See Documentation/devicetree/bindings/power/power-controller.txt
++
++  regulators:
++    type: object
++
++additionalProperties: false
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      pmic@32 {
++        compatible = "ricoh,rn5t618";
++        reg = <0x32>;
++        interrupt-parent = <&gpio5>;
++        interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
++        system-power-controller;
++
++        regulators {
++          DCDC1 {
++            regulator-min-microvolt = <1050000>;
++            regulator-max-microvolt = <1050000>;
++          };
++
++          DCDC2 {
++            regulator-min-microvolt = <1175000>;
++            regulator-max-microvolt = <1175000>;
++          };
++        };
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/mfd/rn5t618.txt b/Documentation/devicetree/bindings/mfd/rn5t618.txt
+deleted file mode 100644
+index 16778ea00dbc..000000000000
+--- a/Documentation/devicetree/bindings/mfd/rn5t618.txt
++++ /dev/null
+@@ -1,52 +0,0 @@
+-* Ricoh RN5T567/RN5T618 PMIC
+-
+-Ricoh RN5T567/RN5T618/RC5T619 is a power management IC family which
+-integrates 3 to 5 step-down DCDC converters, 7 to 10 low-dropout regulators,
+-GPIOs, and a watchdog timer. It can be controlled through an I2C interface.
+-The RN5T618/RC5T619 provides additionally a Li-ion battery charger,
+-fuel gauge, and an ADC.
+-The RC5T619 additionnally includes USB charger detection and an RTC.
+-
+-Required properties:
+- - compatible: must be one of
+-		"ricoh,rn5t567"
+-		"ricoh,rn5t618"
+-		"ricoh,rc5t619"
+- - reg: the I2C slave address of the device
+-
+-Optional properties:
+- - interrupts: interrupt mapping for IRQ
+-   See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+- - system-power-controller:
+-   See Documentation/devicetree/bindings/power/power-controller.txt
+-
+-Sub-nodes:
+- - regulators: the node is required if the regulator functionality is
+-   needed. The valid regulator names are: DCDC1, DCDC2, DCDC3, DCDC4
+-   (RN5T567/RC5T619), LDO1, LDO2, LDO3, LDO4, LDO5, LDO6, LDO7, LDO8,
+-   LDO9, LDO10, LDORTC1 and LDORTC2.
+-   LDO7-10 are specific to RC5T619.
+-   The common bindings for each individual regulator can be found in:
+-   Documentation/devicetree/bindings/regulator/regulator.txt
+-
+-Example:
+-
+-	pmic@32 {
+-		compatible = "ricoh,rn5t618";
+-		reg = <0x32>;
+-		interrupt-parent = <&gpio5>;
+-		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
+-		system-power-controller;
+-
+-		regulators {
+-			DCDC1 {
+-				regulator-min-microvolt = <1050000>;
+-				regulator-max-microvolt = <1050000>;
+-			};
+-
+-			DCDC2 {
+-				regulator-min-microvolt = <1175000>;
+-				regulator-max-microvolt = <1175000>;
+-			};
+-		};
+-	};
+-- 
+2.20.1
 
