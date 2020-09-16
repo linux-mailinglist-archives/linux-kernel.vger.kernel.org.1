@@ -2,80 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD3A26B9B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E854126B9BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgIPCOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:14:24 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:39801 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726298AbgIPCOX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:14:23 -0400
-Received: (qmail 1024888 invoked by uid 1000); 15 Sep 2020 22:14:21 -0400
-Date:   Tue, 15 Sep 2020 22:14:21 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Peter Chen <peter.chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 2/2] USB: misc: Add onboard_usb_hub driver
-Message-ID: <20200916021421.GA1024554@rowland.harvard.edu>
-References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200914112716.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <20200915025426.GA17450@b29397-desktop>
- <20200915050207.GF2022397@google.com>
- <AM7PR04MB715735A8A102F3EC9041EA328B200@AM7PR04MB7157.eurprd04.prod.outlook.com>
- <20200915230345.GF2771744@google.com>
+        id S1726336AbgIPCO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:14:56 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42788 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726125AbgIPCOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:14:47 -0400
+Received: from [10.130.0.60] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxyMUJdWFf2psVAA--.5896S3;
+        Wed, 16 Sep 2020 10:14:35 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Loongson64: Add kexec/kdump support
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>
+References: <1600175263-7872-1-git-send-email-hejinyang@loongson.cn>
+ <376B4B91-0736-43FA-87EA-43E12FF24EF1@flygoat.com>
+Cc:     Youling Tang <tangyouling@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Jinyang He <hejinyang@loongson.cn>
+Message-ID: <7b78c4d4-7ee3-cf57-71d1-95611713de2b@loongson.cn>
+Date:   Wed, 16 Sep 2020 10:14:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915230345.GF2771744@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <376B4B91-0736-43FA-87EA-43E12FF24EF1@flygoat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxyMUJdWFf2psVAA--.5896S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Wr13Ar17JF1DJFy3Wr43trb_yoW7tw1kpa
+        4UCa1DKFs5Xr47ArnaqrWDZw1ru395JFy7AF4Skas5Wa4qkr18JFyrWF17ur97Ar45KF1I
+        vFy0vr1rGF45K3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07Al
+        zVAYIcxG8wCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JUHWlkUUUUU=
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 04:03:45PM -0700, Matthias Kaehlcke wrote:
-> Hi Peter,
-> 
-> On Tue, Sep 15, 2020 at 07:05:38AM +0000, Peter Chen wrote:
 
-> > Whether or not it is a wakeup_source, it could get through its or its children's
-> > /sys/../power/wakeup value, you have already used usb_wakeup_enabled_descendants
-> > to know it.
-> 
-> I conceptually agree, but in practice there are some conflicting details:
-> 
-> wakeup for the hubs on my system is by default disabled, yet USB wakeup works
-> regardless, so the flag doesn't really provide useful information. I guess we
-> could still use it if there is no better way, but it doesn't seem ideal.
 
-The wakeup setting for USB hubs affects only the following events: port 
-connect, port disconnect, and port overcurrent.  It does not refer to 
-forwarding wakeup requests from downstream USB devices; that is always 
-enabled.  So maybe your wakeup flag really is accurate and you didn't 
-realize it.
+On 09/16/2020 09:33 AM, Jiaxun Yang wrote:
+>
+> 于 2020年9月15日 GMT+08:00 下午9:07:43, Jinyang He <hejinyang@loongson.cn> 写到:
+>> Add loongson_kexec_prepare(), loongson_kexec_shutdown() and
+>> loongson_kexec_crashdown() for passing the parameters of kexec_args.
+>>
+>> To start loongson64, CPU0 needs 3 parameters:
+>> fw_arg0: the number of cmd.
+>> fw_arg1: cmd structure which seems strange, the cmd array[index]'s
+>>          value is cmd string's address, index >= 1.
+>> fw_arg2: environment.
+>>
+>> Secondary CPUs do not need parameter at once. They query their
+>> mailbox to get PC, SP and GP in a loop before CPU0 brings them up
+>> and passes these parameters via mailbox.
+>>
+>> loongson_kexec_prepare(): Alloc new memory to save cmd for kexec.
+>> Combine the kexec append option string as cmd structure, and the cmd
+>> struct will be parsed in fw_init_cmdline() of arch/mips/fw/lib/cmdline.c.
+>> image->control_code_page need pointing to a safe memory page. In order to
+>> maintain compatibility for the old firmware the low 2MB is reserverd
+>> and safe for Loongson. So let it points here.
+>>
+>> loongson_kexec_shutdown(): Wake up all present CPUs and let them go
+>> to reboot_code_buffer. Pass the kexec parameters to kexec_args.
+>>
+>> loongson_crash_shutdown(): Pass the kdump parameters to kexec_args.
+>>
+>> The assembly part provide a way like BIOS doing to keep secondary
+>> CPUs in a querying loop.
+>>
+>> This patch referenced [1][2][3].
+>>
+>> [1] arch/mips/cavium-octeon/setup.c
+>> [2] https://patchwork.kernel.org/patch/10799217/
+>> [3] https://gitee.com/loongsonlab/qemu/blob/master/hw/mips/loongson3a_rom.h
+>>
+>> Co-developed-by: Youling Tang <tangyouling@loongson.cn>
+>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+>> ---
+>> arch/mips/kernel/relocate_kernel.S | 19 ++++++++
+>> arch/mips/loongson64/reset.c       | 88 ++++++++++++++++++++++++++++++++++++++
+>> 2 files changed, 107 insertions(+)
+>>
+>> diff --git a/arch/mips/kernel/relocate_kernel.S b/arch/mips/kernel/relocate_kernel.S
+>> index ac87089..061cbfb 100644
+>> --- a/arch/mips/kernel/relocate_kernel.S
+>> +++ b/arch/mips/kernel/relocate_kernel.S
+>> @@ -133,6 +133,25 @@ LEAF(kexec_smp_wait)
+>> #else
+>> 	sync
+>> #endif
+>> +
+>> +#ifdef CONFIG_CPU_LOONGSON64
+>> +#define MAILBOX_BASE 0x900000003ff01000
+> Please avoid hardcoded SMP information. You're breaking Loongson 3B support.
+>
+Ok, I see. Since my machine is Loongson 3A. I'll send v2
+after I test it in 3B.
 
-> Similar for udev->bus->controller, according to sysfs it doesn't even have wakeup
-> support. Please let me know if there is a reliable way to check if wakeup is
-> enabled on the controller of a device.
+Thanks.
 
-The host controller's sysfs wakeup setting should always be correct.  If 
-it isn't, that indicates there is a bug in the host controller driver or 
-the corresponding platform-specific code.  What driver does your system 
-use?
+- Jinyang
+>> +	mfc0  t1, CP0_EBASE
+>> +	andi  t1, MIPS_EBASE_CPUNUM
+>> +	dli   t0, MAILBOX_BASE
+>> +	andi  t3, t1, 0x3
+>> +	sll   t3, 8
+>> +	or    t0, t0, t3	/* insert core id */
+>> +	andi  t2, t1, 0xc
+>> +	dsll  t2, 42
+>> +	or    t0, t0, t2	/* insert node id */
+>> +1:	ld    s1, 0x20(t0)	/* get PC via mailbox0 */
+>> +	beqz  s1, 1b
+>> +	ld    sp, 0x28(t0)	/* get SP via mailbox1 */
+>> +	ld    gp, 0x30(t0)	/* get GP via mailbox2 */
+>> +	ld    a1, 0x38(t0)
+>> +	jr    s1
+>> +#endif
+>> 	j		s1
+>> 	END(kexec_smp_wait)
+>> #endif
+>> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+>> index 3bb8a1e..322c326 100644
+>> --- a/arch/mips/loongson64/reset.c
+>> +++ b/arch/mips/loongson64/reset.c
+>> @@ -47,12 +47,100 @@ static void loongson_halt(void)
+>> 	}
+>> }
+>>
+>> +#ifdef CONFIG_KEXEC
+>> +#include <linux/cpu.h>
+>> +#include <linux/kexec.h>
+>> +
+>> +#include <asm/bootinfo.h>
+>> +
+>> +#define CONTROL_CODE_PAGE    0xFFFFFFFF80000000UL
+>> +static int kexec_argc;
+>> +static int kdump_argc;
+>> +static void *kexec_argv;
+>> +static void *kdump_argv;
+>> +
+>> +static int loongson_kexec_prepare(struct kimage *image)
+>> +{
+>> +	int i, offt, argc = 0;
+>> +	int *argv;
+>> +	char *str, *ptr, *bootloader = "kexec";
+>> +
+>> +	argv = kmalloc(COMMAND_LINE_SIZE, GFP_KERNEL);
+>> +	if (!argv)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < image->nr_segments; i++) {
+>> +		if (!strncmp(bootloader, (char *)image->segment[i].buf,
+>> +				strlen(bootloader))) {
+>> +			argv[argc++] = fw_arg1 + COMMAND_LINE_SIZE/2;
+>> +			str = (char *)argv + COMMAND_LINE_SIZE/2;
+>> +			memcpy(str, image->segment[i].buf, COMMAND_LINE_SIZE/2);
+>> +			ptr = strchr(str, ' ');
+>> +			while (ptr) {
+>> +				*ptr = '\0';
+>> +				if (ptr[1] != ' ') {
+>> +					offt = (int)(ptr - str + 1);
+>> +					argv[argc++] = fw_arg1 + COMMAND_LINE_SIZE/2 + offt;
+>> +				}
+>> +				ptr = strchr(ptr + 1, ' ');
+>> +			}
+>> +			break;
+>> +		}
+>> +	}
+>> +
+>> +	/* Kexec/kdump needs a safe page to save reboot_code_buffer. */
+>> +	image->control_code_page = virt_to_page((void *)CONTROL_CODE_PAGE);
+>> +
+>> +	if (image->type == KEXEC_TYPE_CRASH) {
+>> +		kfree(kdump_argv);
+>> +		kdump_argc = argc;
+>> +		kdump_argv = argv;
+>> +	} else {
+>> +		kfree(kexec_argv);
+>> +		kexec_argc = argc;
+>> +		kexec_argv = argv;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void loongson_kexec_shutdown(void)
+>> +{
+>> +#ifdef CONFIG_SMP
+>> +	bringup_nonboot_cpus(loongson_sysconf.nr_cpus);
+>> +#endif
+>> +	fw_arg0 = kexec_argc;
+>> +	memcpy((void *)fw_arg1, kexec_argv, COMMAND_LINE_SIZE);
+>> +
+>> +	kexec_args[0] = fw_arg0;
+>> +	kexec_args[1] = fw_arg1;
+>> +	kexec_args[2] = fw_arg2;
+>> +}
+>> +
+>> +static void loongson_crash_shutdown(struct pt_regs *regs)
+>> +{
+>> +	default_machine_crash_shutdown(regs);
+>> +	fw_arg0 = kdump_argc;
+>> +	memcpy((void *)fw_arg1, kdump_argv, COMMAND_LINE_SIZE);
+>> +
+>> +	kexec_args[0] = fw_arg0;
+>> +	kexec_args[1] = fw_arg1;
+>> +	kexec_args[2] = fw_arg2;
+>> +}
+>> +#endif
+>> +
+>> static int __init mips_reboot_setup(void)
+>> {
+>> 	_machine_restart = loongson_restart;
+>> 	_machine_halt = loongson_halt;
+>> 	pm_power_off = loongson_poweroff;
+>>
+>> +#ifdef CONFIG_KEXEC
+>> +	_machine_kexec_prepare = loongson_kexec_prepare;
+>> +	_machine_kexec_shutdown = loongson_kexec_shutdown;
+>> +	_machine_crash_shutdown = loongson_crash_shutdown;
+>> +#endif
+>> +
+>> 	return 0;
+>> }
+>>
 
-Alan Stern
