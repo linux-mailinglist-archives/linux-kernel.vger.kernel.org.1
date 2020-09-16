@@ -2,101 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A3626BD5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DFC26BD60
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgIPGi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:38:26 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:43521 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIPGiY (ORCPT
+        id S1726317AbgIPGji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:39:38 -0400
+Received: from lan.nucleusys.com ([92.247.61.126]:56154 "EHLO
+        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726140AbgIPGjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:38:24 -0400
-Received: by mail-wr1-f65.google.com with SMTP id k15so5603880wrn.10;
-        Tue, 15 Sep 2020 23:38:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OIJLGGGniVhQVtQMrqVCccoyI58LfU7rsBw2hzyYuuI=;
-        b=HLljIdornHtRj2Jq/h73nvjIlh8BtfpPrxEihiwWtQnS4jDdS1NAoMapDjfh4xArLr
-         /DfgoSd6uSIj3V7qiYCked9Romadt8VNpVYXE1/4qX3P5qk/iXbb76D6SL4mWRV2ewdl
-         mwSTD0d4LOipDaaO61D4jPKbEt1KZCQK3aPksBOBkoEiMoz0mFatmRNppfjA82vXXStq
-         UuTd7La3jwkr7Rc/KczKr7SUnpVWQh8m1F2DLTjy7/ILc/BAXpHr4ucMvWgV/69YUVtD
-         m2sNwarTuGWAshgfoo45mjly1Ln/iLLSQDnkZ+MWlbFJwUUov502higrYEIyscGh2hXu
-         DMrQ==
-X-Gm-Message-State: AOAM533gWmxRHKxyvXiY61dyft7O2mVyGHTv5la86TsHcnQEnhuH9Ddl
-        sltNZ+1M9Hljx4Udo436Qnw=
-X-Google-Smtp-Source: ABdhPJyQlteL0N/pU4eGx+adqZwehoEnOdIRonAvDPv+rO2M8s8kM/CkVEgxf3jd4rBP/JE1VfY6cg==
-X-Received: by 2002:adf:f3c6:: with SMTP id g6mr27189618wrp.340.1600238303133;
-        Tue, 15 Sep 2020 23:38:23 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.124])
-        by smtp.googlemail.com with ESMTPSA id 18sm3308363wmj.28.2020.09.15.23.38.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Sep 2020 23:38:22 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 08:38:19 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        devicetree@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        David Airlie <airlied@linux.ie>, Li Yang <leoyang.li@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 03/13] dt-bindings: arm: fsl: Fix matching Purism Librem5
- phones
-Message-ID: <20200916063819.GA6687@kozik-lap>
-References: <20200904145312.10960-1-krzk@kernel.org>
- <20200904145312.10960-4-krzk@kernel.org>
- <20200914223343.GA386301@bogus>
+        Wed, 16 Sep 2020 02:39:35 -0400
+X-Greylist: delayed 1172 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 02:39:34 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Wtu7UwIuDippJJwE5jWzvgh91CAIDjoUM/4pw51EOEc=; b=pqmtaaTvkLHf6V1EmHjEox/Z0I
+        HvraRytcLRb1olVf6GUtBPM7FbCviCPkC2x7Cspnzm5G1hi/hPR0Ax2FifJ295RGrksZZM4xx/BEW
+        GsW+Lw8ce7T4uheXR30LEcxT/xm+1jmG79erCMq1xZpmneERgwtKTlcp/sftGbZTzu/0=;
+Received: from 78-83-68-78.spectrumnet.bg ([78.83.68.78] helo=p310)
+        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <petkan@nucleusys.com>)
+        id 1kIR6D-0005AO-Oi; Wed, 16 Sep 2020 09:39:25 +0300
+Date:   Wed, 16 Sep 2020 09:39:25 +0300
+From:   Petko Manolov <petkan@nucleusys.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees][PATCH] rtl8150: set memory to all 0xFFs
+ on failed register reads
+Message-ID: <20200916063925.GC38262@p310>
+References: <20200916050540.15290-1-anant.thazhemadam@gmail.com>
+ <20200916062227.GD142621@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914223343.GA386301@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200916062227.GD142621@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Score: -1.0 (-)
+X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On 20-09-16 08:22:27, Greg KH wrote: > On Wed, Sep 16, 2020
+    at 10:35:40AM +0530, Anant Thazhemadam wrote: > > get_registers() copies
+   whatever memory is written by the > > usb_control_msg() call even i [...] 
+ Content analysis details:   (-1.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+  0.0 TVD_RCVD_IP            Message was received from an IP address
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 04:33:43PM -0600, Rob Herring wrote:
-> On Fri, 04 Sep 2020 16:53:02 +0200, Krzysztof Kozlowski wrote:
-> > All Purism Librem5 phones have three compatibles so they need their own
-> > entry to fix dbts_check warnings like:
+On 20-09-16 08:22:27, Greg KH wrote:
+> On Wed, Sep 16, 2020 at 10:35:40AM +0530, Anant Thazhemadam wrote:
+> > get_registers() copies whatever memory is written by the
+> > usb_control_msg() call even if the underlying urb call ends up failing.
 > > 
-> >   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: /:
-> >     compatible: ['purism,librem5r2', 'purism,librem5', 'fsl,imx8mq'] is not valid under any of the given schemas
+> > If get_registers() fails, or ends up reading 0 bytes, meaningless and 
+> > junk register values would end up being copied over (and eventually read 
+> > by the driver), and since most of the callers of get_registers() don't 
+> > check the return values of get_registers() either, this would go unnoticed.
 > > 
-> >   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: /:
-> >     compatible: ['purism,librem5r2', 'purism,librem5', 'fsl,imx8mq'] is too long
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > It might be a better idea to try and mirror the PCI master abort
+> > termination and set memory to 0xFFs instead in such cases.
+> 
+> It would be better to use this new api call instead of
+> usb_control_msg():
+> 	https://lore.kernel.org/r/20200914153756.3412156-1-gregkh@linuxfoundation.org
+
+Heh, wasn't aware of the new api.
+
+> How about porting this patch to run on top of that series instead?  That 
+> should make this logic much simpler.
+
+I'll need to check if in this case 'size' is the right amount of bytes expected 
+and not an upper limit.  Then i'll convert it to the new api.
+
+
+cheers,
+Petko
+
+
+> > Fixes: https://syzkaller.appspot.com/bug?extid=abbc768b560c84d92fd3
+> > Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+> > Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+> > Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 > > ---
-> >  Documentation/devicetree/bindings/arm/fsl.yaml | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >  drivers/net/usb/rtl8150.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
 > > 
+> > diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+> > index 733f120c852b..04fca7bfcbcb 100644
+> > --- a/drivers/net/usb/rtl8150.c
+> > +++ b/drivers/net/usb/rtl8150.c
+> > @@ -162,8 +162,13 @@ static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+> >  	ret = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
+> >  			      RTL8150_REQ_GET_REGS, RTL8150_REQT_READ,
+> >  			      indx, 0, buf, size, 500);
+> > -	if (ret > 0 && ret <= size)
+> > +
+> > +	if (ret < 0)
+> > +		memset(data, 0xff, size);
+> > +
+> > +	else
+> >  		memcpy(data, buf, ret);
+> > +
+> >  	kfree(buf);
+> >  	return ret;
+> >  }
+> > @@ -276,7 +281,7 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
+> >  
+> >  static inline void set_ethernet_addr(rtl8150_t * dev)
+> >  {
+> > -	u8 node_id[6];
+> > +	u8 node_id[6] = {0};
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> This should not be needed to be done.
 > 
-> I expect Shawn to pick this one up as this file gets touched a fair 
-> amount.
-
-Hi Shawn,
-
-Could you pick up this patch as well?
-
-Best regards,
-Krzysztof
-
+> thanks,
+> 
+> greg k-h
+> 
