@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158DD26CA94
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC4F26CAA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgIPUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
+        id S1728294AbgIPUKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727043AbgIPReN (ORCPT
+        with ESMTP id S1727189AbgIPRdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:34:13 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A5BC0698D6;
-        Wed, 16 Sep 2020 04:44:51 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c3e000ee699b54c433a91.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:ee6:99b5:4c43:3a91])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A31221EC0136;
-        Wed, 16 Sep 2020 13:44:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600256689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=NPzVMHj3XVHq963E2HNb7nFJ33J0AKwoKhJxk7Xuz2M=;
-        b=WZdSnuQv5G/ql6BEEZrnr7cd8xh9dzmCiijvQyUtmizQf9eVTzkuUIskLZn0iq2DMUyGCm
-        +mqh9VCWUzdcpJFi63w4IbKWRk8a8coABoamUsG1V1jGhCdKQUFypgux0aj1VUXZ5v55l5
-        RqLB5j9QElE/Tg0L2iTha0kc+nsM6b4=
-Date:   Wed, 16 Sep 2020 13:44:48 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Borislav Petkov <bp@suse.de>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 03/24] x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
-Message-ID: <20200916114448.GI2643@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-4-jarkko.sakkinen@linux.intel.com>
+        Wed, 16 Sep 2020 13:33:42 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FBBC0698D7;
+        Wed, 16 Sep 2020 04:45:37 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id j2so5924286eds.9;
+        Wed, 16 Sep 2020 04:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V6SQ95iuYBA2VrNE4b4AFdLhxDnlqOkMOm9qPCQ2rWE=;
+        b=prbFeWJsNCTyQL7UeinrkyhUUkcjHZc7OqwVlg5/ZWvpMENY5VDied43TZCXcPtC1/
+         cVL6DsQ+99WQf8KgGe1/plSIpFKhgv+l8oN0LL7Qk7NSPmqi2gNkRjBiMG8sQhGemPOk
+         2TTo/JDlbLZrVdiOJT2j0q3EgKMEQ9uzwcVLLRGIMTvkTW0uHI0Ux1pavFU0fUrbOU0g
+         x0RCRVygH3de3a88eVKdfkgm2/gPsMSQ0rbYPtpoGag7zxRaLeasg2qVcggsF769ou6f
+         AVOaL0NAMXLOPcJ28f5spa78Lep9eNgdT2GO+eQ4A0LLn0T+/ZVlJnEW3Vz4AdnNwLNc
+         Xw5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V6SQ95iuYBA2VrNE4b4AFdLhxDnlqOkMOm9qPCQ2rWE=;
+        b=mr3s2cDjLMQdwc/qNTrEYiLScs5q9xL8yIrefNggfpeNE0QP/W8ZGEeAc2J2UHH4wm
+         a/ZPMoB7ekVoS6FV9NKEcZIoyFkzvtGktE99nRFV50JLeWxsaPWMgQtzglHMa3myCiUq
+         mrsxW0x3q3W/LFVhQbM+Rwsarx0d/0VyBNbUg02yr8WjzTrufVJfIcBt6xnP+AQf0K8P
+         WQVqyvCfBjGb/Bkw/OXA9AK+Bb7qSTV+ckb2aiAvKeyDPrffCjIzseORosVE39+aqx+c
+         qJxep5UAZ2WTWKUUHhEAchjhuiiQWqbveKdd7EJdSzk4IXz+MRYJq2QkfYPMYHXWBPXd
+         1UPw==
+X-Gm-Message-State: AOAM5313KZBdi46HQGRCXb4sqFpYwZZCb8g6oA5kZLcIMwixQtuRH65Z
+        Q78xLT5gDIwN3phwA69C5Jk=
+X-Google-Smtp-Source: ABdhPJw9pQ31c/lNE0yZuxO37Z/8pdb4x+ZxzsEdex8lsz9lyI7OfbiAiZhAxngGGgN55F3U2MOgSA==
+X-Received: by 2002:a50:99d6:: with SMTP id n22mr27628762edb.265.1600256735956;
+        Wed, 16 Sep 2020 04:45:35 -0700 (PDT)
+Received: from skbuf ([188.25.217.212])
+        by smtp.gmail.com with ESMTPSA id k1sm11823265eji.20.2020.09.16.04.45.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 04:45:35 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 14:45:33 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     wg@grandegger.com, pankaj.bansal@nxp.com,
+        pankaj.bansal@oss.nxp.com, linux-can@vger.kernel.org,
+        qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
+        vladimir.oltean@nxp.com
+Subject: Re: canfdtest on flexcan loopback
+Message-ID: <20200916114533.3hlthhfd7xmpamoa@skbuf>
+References: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
+ <20200916110154.hp4up6yhyokduvf2@skbuf>
+ <20200916110448.dsla6vjzy4fvdr22@skbuf>
+ <12688d2b-a198-ef5e-dd8f-64957df36574@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915112842.897265-4-jarkko.sakkinen@linux.intel.com>
+In-Reply-To: <12688d2b-a198-ef5e-dd8f-64957df36574@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:28:21PM +0300, Jarkko Sakkinen wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> 
-> Include SGX bit to the PF error codes and throw SIGSEGV with PF_SGX when
-> a #PF with SGX set happens.
-> 
-> CPU throws a #PF with the SGX set in the event of Enclave Page Cache Map
-> (EPCM) conflict. The EPCM is a CPU-internal table, which describes the
-> properties for a enclave page. Enclaves are measured and signed software
-> entities, which SGX hosts. [1]
-> 
-> Although the primary purpose of the EPCM conflict checks  is to prevent
-> malicious accesses to an enclave, an illegit access can happen also for
-> legit reasons.
-> 
-> All SGX reserved memory, including EPCM is encrypted with a transient key
-> that does not survive from the power transition. Throwing a SIGSEGV allows
-> user space software to react when this happens (e.g. recreate the enclave,
-> which was invalidated).
-> 
-> [1] Intel SDM: 36.5.1 Enclave Page Cache Map (EPCM)
-> 
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-> Reviewed-by: Borislav Petkov <bp@suse.de>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  arch/x86/include/asm/traps.h | 14 ++++++++------
+On Wed, Sep 16, 2020 at 01:32:49PM +0200, Marc Kleine-Budde wrote:
+> Which driver are you using? The mainline driver only uses one TX buffer.
 
-The SEV-ES patchset moved that to arch/x86/include/asm/trap_pf.h but
-fixing that up is real easy. Simply do this search-replace
+Are there multiple flexcan drivers in circulation? Yes, the mainline
+driver with a single priv->tx_mb.
 
-s!arch/x86/include/asm/traps.h!arch/x86/include/asm/trap_pf.h!
-
-on this patch.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+-Vladimir
