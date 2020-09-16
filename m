@@ -2,122 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E606F26CF0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE1226CF12
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgIPWpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgIPWpr (ORCPT
+        id S1726600AbgIPWq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:46:57 -0400
+Received: from sonic309-14.consmr.mail.bf2.yahoo.com ([74.6.129.124]:40561
+        "EHLO sonic309-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726174AbgIPWq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:45:47 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55703C06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 15:45:47 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id y5so120675otg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 15:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mSPBN6R1sa+s+aXjb7bLc56lTmvRIEa3Tj0pNL1DtAs=;
-        b=Xyr66PPEDJ2lFdT1dZgEBP7yEoadnPkYbN2OeOWbUjE051q2HkIHFh2DY8Z0MZe6rR
-         Z+xXrgXrQtkqVs2JUo039Lstewge9fiTWYW3zFy0c5ynnVisMotuE2fCxMSskz/ON0wt
-         jfeV+IRhzMyXg0ckLRz/r2ChSXRhtwsCsjLxwIqYgEk1XnckrTTd7/RnTsFIfVi+qwJZ
-         S+LOSriDUUu7yzbGXYFQ55l/Q0+zvAvA63NoEMDTjYoqJmqu+Axhdg7HEz9ujJ1Mbt+k
-         ef9N+MmkdeybRs4009fkUu3460b0XWVVnC4udkVC/IUhIcOJDHf0b9WIl9FBOTMSM4+9
-         LxmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mSPBN6R1sa+s+aXjb7bLc56lTmvRIEa3Tj0pNL1DtAs=;
-        b=sE/BiGvIb3liKo/GEYnst+Mrn3J/g6M92shBHTIGcmX2fAjY/AjtWBRloNplzfano4
-         S9U94ijPgEwouXH8jqxIgOaa2ydGPAyPD+rmKNqEvtQ+XHezJ1E39QrGJg2VqltnuuCc
-         riIv2QLtBPgMR0AjSwRT/JnLTrAdyipkE50fK9S8GSkhs4oZ5T28iNP2ddGnSenFZSVO
-         wXQLEbXrSUqbezpf+JUI8EZg/ECfgVBciF/t4Ri4KPz1Ed2U+vzyY3pJqHFSdnuMwVO1
-         QGr7MAvPwmobhocrkP7nqIr8eH5BmdBMVb8IUlYYDh3xsmcrKhDdmWpLI92xdqwKdmOl
-         NrVA==
-X-Gm-Message-State: AOAM5330ct4/SRmMaPnut3HuCVxs1QNXhyUgv5yGH2IHbUnCEO7Z0Tsa
-        V58PY9RcirKr233OmqtOrug9jw==
-X-Google-Smtp-Source: ABdhPJxm0s45AtmEZVAKj5PYYYbpECFzxiWfua7H6FDMJJAeMl76CZ0dlEyNMoQn+qRQtUFYQhiRng==
-X-Received: by 2002:a9d:6219:: with SMTP id g25mr18071407otj.58.1600296346467;
-        Wed, 16 Sep 2020 15:45:46 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:7cad:6eff:fec8:37e4])
-        by smtp.gmail.com with ESMTPSA id c34sm9253888otb.69.2020.09.16.15.45.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 15:45:45 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 17:45:41 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, kishon@ti.com, vkoul@kernel.org,
-        robh@kernel.org, svarbanov@mm-sol.com, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: phy: qcom,qmp: Document SM8250 PCIe PHY
- bindings
-Message-ID: <20200916224541.GF1893@yoga>
-References: <20200916132000.1850-1-manivannan.sadhasivam@linaro.org>
- <20200916132000.1850-2-manivannan.sadhasivam@linaro.org>
+        Wed, 16 Sep 2020 18:46:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600296414; bh=K9OzRX4qXPelZ1iZX+pF472C4G22/QpiwRqFyotzZg8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=UO+3Wi4xXMt+Acut+pRD1mIzXbjfPca1PzMY/cl0qGCjsmwbrK9nga8ZBaBQKYDQ1rj6XTOgTjZm9Uddhm6u+ImjiJ/ph8vKdRl0cvELuJ2aH0D/JabrMyhzWKrpKlRnBKbs3dlPzaD8E/GsamjsHeGCaw2qQk3Vs6hiJBaQUeR+5Z/rcNPRl1pSAkS6Cn57EIaUPa2iQN3kj4+aKaPz38jpu0kMRUeIHtC7uGFhfNzsSuVcNrHomYwAPbSCJbfdXiVq0ujz8fI1MsGG4RHoo9Pj4DF7XGy9tMf0xMDrnfi6MDSMslOZVXwYYtavhcBT8UwWE8UXiO0OCrRgoJZ1XQ==
+X-YMail-OSG: LNUorHEVM1lvyMT_qGkGBdfqRdOdQ1oV55mtKKZ48kVZ.4XEuYQxDsMYwFWyUzO
+ TTo9dSBUMlfTFj3_G6xUtsv3V6WZUbYQYgJmn2Ijhq.F5FHy1lSL0A0a9_Ph8ka.ABP161d0R9j.
+ k722m7T5_DjpNedv2Ucl.sklv1jpbJjJbWhBKS.IbcUcs5HAQQnq79KqNkRZNYxnP9nqWoWAvVlF
+ 8fNLKSuNpZVmsPpnO1Wrpd7hxivyVBWXF27phzqLgrn_Lh7tclpg5KXCcL8FaZUXj5wK7YNcML3G
+ u34y4EItpkZQTRvbYKp8_lXgpkNFu83OG75w6yaSJPb6s3jna4DMjiJc14ZPKnZg1bskN_YSZEFd
+ s7RLNRP3DgbQsMo_OjQS6f7.ey0RbgW_HJp33UmqZ_e7yKGXMaerzhP81W1vaNKsFpcrxxUESY.D
+ uCayeENLsSQ_6.MwM6WLnX5eI3xXx1tSfoQY9_KROE2HY5jBno5v8l9lFLynyXrQpIjS4FvG8sNx
+ XzLeUCxeqTIa6FScUOboBjVtLUU67Q2j7u4Lhz0IANB6aKletezyjanz90JePbeQrEi3iOyonedh
+ RnWrHZeISursTaE6UsbibDH1L5bUv.JirhaKS30hw7.LNhwLYPrsRz7kT2xL9sUWeu9p1mf6L6z6
+ 2YgP7_IXuSQwSKeaBYfe8DI6kel_1F6qlvm7pKQ_ZhdcTA4UIbau4fNE4uNGTIFVMukSCulAQqks
+ YdDMVkPHxF6u4PZOvHXf2QcSoeLzGHGKLGf8liRmL4ofveVzEVECrPXaUhBjfJIf60AeC6.EbMRQ
+ T8yTHjm4Z2KHM.yjPwPZE6HAEMfwqeBidT2cFC_N3PVUN_pDvLI.eM256vJ3TTxCHnhL3bw0TX98
+ EIGaMTLB7JmhGM0QA3UeGicBdnOorHPDMgQGM2fwfmeomhTpRCwKgguWdl7FUE7JXJSG2hu53Qdr
+ MqJzZ3dmQYbUC3_FuTEj5aD2gK3mwXpvjTbz5NM690lMaC0mj0ZXD3Eudyv4OE30CKuB9PBbM_U0
+ N9DwAki0Zb5ou505V508x7_LBLHfkXXKKfTM0QOkfjKanbNwpL23LZok1xbPIu2vB.n.TXtkLdAP
+ lbmCbZsGIN2bAS8ppWrzkZsnsP_Ho9mRVYjWRKA.9FTJ2I57Blqd3cHEEoky3IB4BuiGILD0Q176
+ WH.k7hyxYBNUs3kERKgtfg20w1KltkkM3i3FBkKugNxOpAUYByW5cx3g7ekZzqquwc9g_cOZXZK9
+ HfIhK4J2tuYKWgwZQ3GrMD1mv9ct6Xcxnz_J9rA8WcwZYG0AeAh2mH.VQCuu_5rEWGU135lPXEBq
+ EdFOfXgbcU6H2YFxX06DNpUl6jg.QFMFnQwZ6a0wYAfNgiTGT8atPyNEh.KNY6VAEShriJirMvL9
+ FctUgoSxfK4ooc.rdzjwWBgPHIAAgeE.Hq9YxnAkzgGmeBXZ.WfLjwMidq44m
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.bf2.yahoo.com with HTTP; Wed, 16 Sep 2020 22:46:54 +0000
+Date:   Wed, 16 Sep 2020 22:46:53 +0000 (UTC)
+From:   WordRemit Transfer <wordremit@usa.com>
+Reply-To: worldremitt@fastservice.com
+Message-ID: <789165590.2984208.1600296413448@mail.yahoo.com>
+Subject: URGENT PAYMENT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916132000.1850-2-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <789165590.2984208.1600296413448.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16 Sep 08:19 CDT 2020, Manivannan Sadhasivam wrote:
 
-> Document the DT bindings of below PCIe PHY versions used on SM8250:
-> 
-> QMP GEN3x1 PHY - 1 lane
-> QMP GEN3x2 PHY - 2 lanes
-> QMP Modem PHY - 2 lanes
 
-How about something like "Add the three PCIe PHYs found in SM8250 to the
-QMP binding"?
 
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> index 185cdea9cf81..69b67f79075c 100644
-> --- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> @@ -31,6 +31,9 @@ properties:
->        - qcom,sdm845-qmp-usb3-uni-phy
->        - qcom,sm8150-qmp-ufs-phy
->        - qcom,sm8250-qmp-ufs-phy
-> +      - qcom,qcom,sm8250-qmp-gen3x1-pcie-phy
-> +      - qcom,qcom,sm8250-qmp-gen3x2-pcie-phy
-> +      - qcom,qcom,sm8250-qmp-modem-pcie-phy
+Attn: Beneficiary,
 
-One "qcom," should be enough.
+This to your notice that International Monetary Fund (IMF) have mobilized all compensate fund Scam and fraud victims awarded in past due to complains of Beneficiaries concern banks defraud beneficiaries through Western Union/MoneyGram/ATM Visa Card and etc,
 
->  
->    reg:
->      items:
-> @@ -259,6 +262,8 @@ allOf:
->              enum:
->                - qcom,sdm845-qhp-pcie-phy
->                - qcom,sdm845-qmp-pcie-phy
-> +              - qcom,sm8250-qhp-pcie-phy
-> +              - qcom,sm8250-qmp-pcie-phy
+You are advice to cancel all the transactions you're dealing with banks in name of receiving your fund through Bank wire Transfer/Western Union/MoneyGram/ATM Visa Card and etc, because the World Bank Group in conjunction with International Monetary Fund (IMF) have commissions our service WorldRemit Money Transfer a bill to compensate every Scam victims each with (USD$1.200.000.00). You will be receiving $5,000 dollars in the morning and afternoon till your total compensation fund complete USD$1.200.000.00 Million.
 
-Adjust these.
+Before you start receiving your Daily payment from us, you're required to pay your mobilized fee $245 dollars and fill out the form below.
 
-Regards,
-Bjorn
+Your Receivers Name:_____________________________
+Your Home Address:___________________________________
+Your Zip Code:___________________________
+Your City:____________________________
+Your Country:____________________________
+Your Direct Telephone Number:__________________________
 
->      then:
->        properties:
->          clocks:
-> -- 
-> 2.17.1
-> 
+
+this only our requirement; Immediately we receive your details and your mobilized fee $245 dollars. You will start receiving your daily payment from us within 24 hours the requirement complet without further delay.
+
+We are waiting to be at your service
+
+Mr. Mousa Dawood
+WorldRemit Money Transfer
+Branch Office Ouagadougou
+Burkina Faso.
