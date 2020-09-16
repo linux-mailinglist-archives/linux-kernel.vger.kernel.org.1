@@ -2,76 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A850526CC41
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA91726CC4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727174AbgIPUl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:41:29 -0400
-Received: from smtprelay0225.hostedemail.com ([216.40.44.225]:32888 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728483AbgIPUlP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 16:41:15 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 85AB7180458CB;
-        Wed, 16 Sep 2020 20:41:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:800:960:968:973:988:989:1260:1311:1314:1345:1359:1437:1515:1534:1540:1568:1711:1714:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3865:3867:3868:3872:4321:4419:5007:6261:10004:10848:11026:11473:11658:11914:12043:12297:12438:12555:12895:13069:13255:13311:13357:13894:14181:14384:14394:14721:21080:21627:21990:30029:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: cakes28_4701f512711c
-X-Filterd-Recvd-Size: 1847
-Received: from joe-laptop.perches.com (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 16 Sep 2020 20:41:12 +0000 (UTC)
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 8/8] drivers core: node: Use a more typical macro definition style for ACCESS_ATTR
-Date:   Wed, 16 Sep 2020 13:40:45 -0700
-Message-Id: <faf51a671160cf884efa68fb458d3e8a44b1a7a7.1600285923.git.joe@perches.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <cover.1600285923.git.joe@perches.com>
-References: <cover.1600285923.git.joe@perches.com>
+        id S1728307AbgIPUmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:42:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726820AbgIPUmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 16:42:16 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 505A120684;
+        Wed, 16 Sep 2020 20:42:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600288935;
+        bh=dz3DaFJNUaTnZv4EWd6uUImFJGXZn72NdfOSo0OXNl0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=zFZPD8xYpBzX68Wawf/BkwceacoSwneuvsOm+rbrV7jdbp3Wlycn3rt9XOzQTy14g
+         u31A74PU7PgMoik25Rh8E5VAKFMfPmIgLzhKRarItWxKefK8RMsd8xj/WsVGfL18rO
+         kI7G1hmpaprs00gtZQPKUcdJeI0mwCHxvtfTCe58=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DCC853522BA0; Wed, 16 Sep 2020 13:42:14 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 13:42:14 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [rcu:dev.2020.09.10a 35/35] kernel/rcu/rcutorture.c:698:20:
+ error: 'show_rcu_tasks_classic_gp_kthread' undeclared here (not in a
+ function)
+Message-ID: <20200916204214.GA29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <202009170107.iYHal4Ue%lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202009170107.iYHal4Ue%lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the trailing semicolon from the macro and add it to its uses.
+On Thu, Sep 17, 2020 at 01:56:10AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.09.10a
+> head:   ccb38b2f3e160fbfecedbd0c80bde97a7dfcbdec
+> commit: ccb38b2f3e160fbfecedbd0c80bde97a7dfcbdec [35/35] rcutorture: Make grace-period kthread report match RCU flavor being tested
+> config: sh-allmodconfig (attached as .config)
+> compiler: sh4-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout ccb38b2f3e160fbfecedbd0c80bde97a7dfcbdec
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=sh 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> kernel/rcu/rcutorture.c:698:20: error: 'show_rcu_tasks_classic_gp_kthread' undeclared here (not in a function)
+>      698 |  .gp_kthread_dbg = show_rcu_tasks_classic_gp_kthread,
+>          |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >> kernel/rcu/rcutorture.c:768:20: error: 'show_rcu_tasks_rude_gp_kthread' undeclared here (not in a function)
+>      768 |  .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
+>          |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >> kernel/rcu/rcutorture.c:807:20: error: 'show_rcu_tasks_trace_gp_kthread' undeclared here (not in a function)
+>      807 |  .gp_kthread_dbg = show_rcu_tasks_trace_gp_kthread,
+>          |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/base/node.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Good catch, folding in fix with attribution, thank you!
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index dafe03e82e7c..25dbe36c0cf2 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -165,12 +165,12 @@ static ssize_t name##_show(struct device *dev,				\
- 	return sysfs_emit(buf, "%u\n",					\
- 			  to_access_nodes(dev)->hmem_attrs.name);	\
- }									\
--static DEVICE_ATTR_RO(name);
-+static DEVICE_ATTR_RO(name)
- 
--ACCESS_ATTR(read_bandwidth)
--ACCESS_ATTR(read_latency)
--ACCESS_ATTR(write_bandwidth)
--ACCESS_ATTR(write_latency)
-+ACCESS_ATTR(read_bandwidth);
-+ACCESS_ATTR(read_latency);
-+ACCESS_ATTR(write_bandwidth);
-+ACCESS_ATTR(write_latency);
- 
- static struct attribute *access_attrs[] = {
- 	&dev_attr_read_bandwidth.attr,
--- 
-2.26.0
+							Thanx, Paul
+
+> # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=ccb38b2f3e160fbfecedbd0c80bde97a7dfcbdec
+> git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+> git fetch --no-tags rcu dev.2020.09.10a
+> git checkout ccb38b2f3e160fbfecedbd0c80bde97a7dfcbdec
+> vim +/show_rcu_tasks_classic_gp_kthread +698 kernel/rcu/rcutorture.c
+> 
+>    685	
+>    686	static struct rcu_torture_ops tasks_ops = {
+>    687		.ttype		= RCU_TASKS_FLAVOR,
+>    688		.init		= rcu_sync_torture_init,
+>    689		.readlock	= tasks_torture_read_lock,
+>    690		.read_delay	= rcu_read_delay,  /* just reuse rcu's version. */
+>    691		.readunlock	= tasks_torture_read_unlock,
+>    692		.get_gp_seq	= rcu_no_completed,
+>    693		.deferred_free	= rcu_tasks_torture_deferred_free,
+>    694		.sync		= synchronize_rcu_tasks,
+>    695		.exp_sync	= synchronize_rcu_mult_test,
+>    696		.call		= call_rcu_tasks,
+>    697		.cb_barrier	= rcu_barrier_tasks,
+>  > 698		.gp_kthread_dbg	= show_rcu_tasks_classic_gp_kthread,
+>    699		.fqs		= NULL,
+>    700		.stats		= NULL,
+>    701		.irq_capable	= 1,
+>    702		.slow_gps	= 1,
+>    703		.name		= "tasks"
+>    704	};
+>    705	
+>    706	/*
+>    707	 * Definitions for trivial CONFIG_PREEMPT=n-only torture testing.
+>    708	 * This implementation does not necessarily work well with CPU hotplug.
+>    709	 */
+>    710	
+>    711	static void synchronize_rcu_trivial(void)
+>    712	{
+>    713		int cpu;
+>    714	
+>    715		for_each_online_cpu(cpu) {
+>    716			rcutorture_sched_setaffinity(current->pid, cpumask_of(cpu));
+>    717			WARN_ON_ONCE(raw_smp_processor_id() != cpu);
+>    718		}
+>    719	}
+>    720	
+>    721	static int rcu_torture_read_lock_trivial(void) __acquires(RCU)
+>    722	{
+>    723		preempt_disable();
+>    724		return 0;
+>    725	}
+>    726	
+>    727	static void rcu_torture_read_unlock_trivial(int idx) __releases(RCU)
+>    728	{
+>    729		preempt_enable();
+>    730	}
+>    731	
+>    732	static struct rcu_torture_ops trivial_ops = {
+>    733		.ttype		= RCU_TRIVIAL_FLAVOR,
+>    734		.init		= rcu_sync_torture_init,
+>    735		.readlock	= rcu_torture_read_lock_trivial,
+>    736		.read_delay	= rcu_read_delay,  /* just reuse rcu's version. */
+>    737		.readunlock	= rcu_torture_read_unlock_trivial,
+>    738		.get_gp_seq	= rcu_no_completed,
+>    739		.sync		= synchronize_rcu_trivial,
+>    740		.exp_sync	= synchronize_rcu_trivial,
+>    741		.fqs		= NULL,
+>    742		.stats		= NULL,
+>    743		.irq_capable	= 1,
+>    744		.name		= "trivial"
+>    745	};
+>    746	
+>    747	/*
+>    748	 * Definitions for rude RCU-tasks torture testing.
+>    749	 */
+>    750	
+>    751	static void rcu_tasks_rude_torture_deferred_free(struct rcu_torture *p)
+>    752	{
+>    753		call_rcu_tasks_rude(&p->rtort_rcu, rcu_torture_cb);
+>    754	}
+>    755	
+>    756	static struct rcu_torture_ops tasks_rude_ops = {
+>    757		.ttype		= RCU_TASKS_RUDE_FLAVOR,
+>    758		.init		= rcu_sync_torture_init,
+>    759		.readlock	= rcu_torture_read_lock_trivial,
+>    760		.read_delay	= rcu_read_delay,  /* just reuse rcu's version. */
+>    761		.readunlock	= rcu_torture_read_unlock_trivial,
+>    762		.get_gp_seq	= rcu_no_completed,
+>    763		.deferred_free	= rcu_tasks_rude_torture_deferred_free,
+>    764		.sync		= synchronize_rcu_tasks_rude,
+>    765		.exp_sync	= synchronize_rcu_tasks_rude,
+>    766		.call		= call_rcu_tasks_rude,
+>    767		.cb_barrier	= rcu_barrier_tasks_rude,
+>  > 768		.gp_kthread_dbg	= show_rcu_tasks_rude_gp_kthread,
+>    769		.fqs		= NULL,
+>    770		.stats		= NULL,
+>    771		.irq_capable	= 1,
+>    772		.name		= "tasks-rude"
+>    773	};
+>    774	
+>    775	/*
+>    776	 * Definitions for tracing RCU-tasks torture testing.
+>    777	 */
+>    778	
+>    779	static int tasks_tracing_torture_read_lock(void)
+>    780	{
+>    781		rcu_read_lock_trace();
+>    782		return 0;
+>    783	}
+>    784	
+>    785	static void tasks_tracing_torture_read_unlock(int idx)
+>    786	{
+>    787		rcu_read_unlock_trace();
+>    788	}
+>    789	
+>    790	static void rcu_tasks_tracing_torture_deferred_free(struct rcu_torture *p)
+>    791	{
+>    792		call_rcu_tasks_trace(&p->rtort_rcu, rcu_torture_cb);
+>    793	}
+>    794	
+>    795	static struct rcu_torture_ops tasks_tracing_ops = {
+>    796		.ttype		= RCU_TASKS_TRACING_FLAVOR,
+>    797		.init		= rcu_sync_torture_init,
+>    798		.readlock	= tasks_tracing_torture_read_lock,
+>    799		.read_delay	= srcu_read_delay,  /* just reuse srcu's version. */
+>    800		.readunlock	= tasks_tracing_torture_read_unlock,
+>    801		.get_gp_seq	= rcu_no_completed,
+>    802		.deferred_free	= rcu_tasks_tracing_torture_deferred_free,
+>    803		.sync		= synchronize_rcu_tasks_trace,
+>    804		.exp_sync	= synchronize_rcu_tasks_trace,
+>    805		.call		= call_rcu_tasks_trace,
+>    806		.cb_barrier	= rcu_barrier_tasks_trace,
+>  > 807		.gp_kthread_dbg	= show_rcu_tasks_trace_gp_kthread,
+>    808		.fqs		= NULL,
+>    809		.stats		= NULL,
+>    810		.irq_capable	= 1,
+>    811		.slow_gps	= 1,
+>    812		.name		= "tasks-tracing"
+>    813	};
+>    814	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
 
