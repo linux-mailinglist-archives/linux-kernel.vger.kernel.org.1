@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04AD26CD3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8FB26CCD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727392AbgIPU4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
+        id S1727022AbgIPUtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726577AbgIPQxB (ORCPT
+        with ESMTP id S1726327AbgIPQ4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:53:01 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A37C014D82
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:14:23 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id g4so6268838edk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:14:23 -0700 (PDT)
+        Wed, 16 Sep 2020 12:56:46 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4353C014D55
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:20:23 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id gf14so1522559pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:20:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t9VqfpNCj0MSyiJOj8cou5kDvPvXrecq9WKcceNDp5Q=;
-        b=hWbLla41yjx7vVEITV+EPi+Ayks1q3blrSO4z5Sy2PROXR6ozrgmywAefAZeNh2ARP
-         3ku+bZbKZnXb3cIsH2nFmV1Vw7VH9eRdcZj67g3vDR2XubZ3HcPT/PymxtcH8nOsxk86
-         BzIsYIg6sTUk1bq0wy0gWd20je59ztK32g1wCYlCoCnnpzf6VQj0ZDPFAUVrqOOtPtKN
-         mpYef6hNgBbbLgS13n50PVmr+wfM3GB4q7hlgrCt0mOE5ll8DI1xQ7+pZW346T6dvmzQ
-         8Yw//O8IYYG9UfDo5gi0ocpt3xhEySgoLtArCSzjvopPs86sGBlfaEpbVFRPwggkI1q9
-         uwYA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=tdOFUZh3LY5QuHGnOCX8BttL0CjvetqcKHFgt32bNC8=;
+        b=kDeOGHzo6ODa94vjhKjernayhpGqi6FSvbuGB7wrUZzSHldsXMPnTScMhpe6RHf/Ur
+         EV0eCx9jn2zVRvmx9FvD6B1n/e7VV99+DZxtOA1dtRTrFalnMWDDrorI6vzT+67TPyi1
+         aSuOd9dsEXmuIq+93YPAqWE87V5euz28b23JOL7A69AjEYMPb/9wlfQcBJRTQ3h8smSr
+         jbjaY6XcstN6ZhjSzNAYhc7HeKeB43MPw/cj+heXa0dTaJm9S7UaTAmU2nNpptZwA5KS
+         iym0vwUvjz/IhoH93a/XkTa5II5GG71PmnhgKpxEq4cVVRrI7iMpLq/eW6A0N3S6r+ka
+         hX6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t9VqfpNCj0MSyiJOj8cou5kDvPvXrecq9WKcceNDp5Q=;
-        b=SQanZ0Hb87Hcqyp5clNfhLblTVZjQhFPc/ThNlHAdkllUdjViRqJQoamI5twDj32nh
-         0+teOVmBNwvlru46LpHFv4AacEGRMSLy3Qri+uKgMogJiP0NszDw5kkRT7WCxwlsdKtx
-         aFpJFEGgvR1KcjjG5veflz7pRmVIFyokpgwkR25cCK7fT27xOnv4HC31yL2jj/sEYLw/
-         WpB5Y213eSWdOn26+Bnk7Gn8oya8pF+YaBmpdsqvPGPnTAYqjYDkpneLqBVTwHe60RFq
-         57AaLhCmkWajcP08Q+G+U2974JPr+UmSEohsPX0nXMIKcRMbQM0Hx1/XF80Wr2xjH32S
-         vxPA==
-X-Gm-Message-State: AOAM530rCUQ2RKHEJOSX4Y+NlxTGw9mY3przYl4CELgeVLKnAgyu6pW+
-        M8o44NQyaANJETj+J6MzuF4+Hw==
-X-Google-Smtp-Source: ABdhPJzNzf1HOn2IBAdX5MK2PjeksZXhGz4klv1LeR3D7lg57J8cmDaNg8/+1vya7CMDTh4rk6MofQ==
-X-Received: by 2002:a50:da84:: with SMTP id q4mr26780039edj.238.1600262061835;
-        Wed, 16 Sep 2020 06:14:21 -0700 (PDT)
-Received: from tsr-vdi-mbaerts.nix.tessares.net (static.23.216.130.94.clients.your-server.de. [94.130.216.23])
-        by smtp.gmail.com with ESMTPSA id y9sm14031441edo.37.2020.09.16.06.14.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tdOFUZh3LY5QuHGnOCX8BttL0CjvetqcKHFgt32bNC8=;
+        b=PmAVvH6opPyRYNT0nNBP6D2acYslrbd3zf24siTeK8U/J5eQK1g1ZTPGWwHY2VsN2S
+         C9llzDR+SmyhyC7VEa4WPkV17QX87hd7Pq048cpkyqbOKr7KQIZEMFoFCwcssOJrayTi
+         BJZ2sLSFnEg0a20G9NpOS/kvzyFLWrIfn1K5TQBb/FMpVhvnwDaMp1NI5wj3IFJUNTpD
+         S7p9V/nmcTnmjYTlf2sAKjs2+yavWWugnY+lhn0M4e3jp/YeM9mseLR8qA7Br2KDmJJ3
+         eqX1Lp5I6ztMYSZf+zoYaIUiuPyQNfECzWPAGZqSgM7hIis/zUGLo8assPItst1sU9sa
+         A1Zw==
+X-Gm-Message-State: AOAM533kMwL4ROycD90atkrj2dZRwN+mEVWrCtP55smicXxPq544fCNE
+        wEAkIAtfhnchFDdOPPjdO495
+X-Google-Smtp-Source: ABdhPJyQiaAIah4+UzyR8HWiFAgzNuGj44Kivt85wD300DAf5M8dYhJwGxHEE8pWE6wo0kHuV4qWaA==
+X-Received: by 2002:a17:90b:3905:: with SMTP id ob5mr3849182pjb.61.1600262421090;
+        Wed, 16 Sep 2020 06:20:21 -0700 (PDT)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.googlemail.com with ESMTPSA id e123sm17615726pfh.167.2020.09.16.06.20.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 06:14:21 -0700 (PDT)
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Davide Caratti <dcaratti@redhat.com>,
-        Florian Westphal <fw@strlen.de>
-Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] selftests: mptcp: interpret \n as a new line
-Date:   Wed, 16 Sep 2020 15:13:51 +0200
-Message-Id: <20200916131352.3072764-1-matthieu.baerts@tessares.net>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 16 Sep 2020 06:20:20 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org
+Cc:     svarbanov@mm-sol.com, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/5] Add PCIe support for SM8250 SoC
+Date:   Wed, 16 Sep 2020 18:49:55 +0530
+Message-Id: <20200916132000.1850-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of errors, this message was printed:
+Hello,
 
-  (...)
-  # read: Resource temporarily unavailable
-  #  client exit code 0, server 3
-  # \nnetns ns1-0-BJlt5D socket stat for 10003:
-  (...)
+This series adds PCIe support for Qualcomm SM8250 SoC with relevant PHYs.
+There are 3 PCIe instances on this SoC each with different PHYs. The PCIe
+controller and PHYs are mostly comaptible with the ones found on SDM845
+SoC, hence the old drivers are modified to add the support.
 
-Obviously, the idea was to add a new line before the socket stat and not
-print "\nnetns".
+This series has been tested on RB5 board with QCA6390 chipset connected
+onboard.
 
-Fixes: b08fbf241064 ("selftests: add test-cases for MPTCP MP_JOIN")
-Fixes: 048d19d444be ("mptcp: add basic kselftest for mptcp")
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
----
+Note: The dts patches will be submitted later once driver bits got applied!
 
-Notes:
-    This commit improves the output in selftests in case of errors, mostly
-    seen when modifying MPTCP code. The selftests behaviour is not changed.
-    That's why this patch is proposed only for net-next.
+Thanks,
+Mani
 
- tools/testing/selftests/net/mptcp/mptcp_connect.sh | 4 ++--
- tools/testing/selftests/net/mptcp/mptcp_join.sh    | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Manivannan Sadhasivam (5):
+  dt-bindings: phy: qcom,qmp: Document SM8250 PCIe PHY bindings
+  phy: qualcomm: phy-qcom-qmp: Add PCIe PHY support for SM8250 SoC
+  dt-bindings: pci: qcom: Document PCIe bindings for SM8250 SoC
+  pci: controller: dwc: qcom: Add PCIe support for SM8250 SoC
+  pci: controller: dwc: qcom: Harcode PCIe config SID
 
-diff --git a/tools/testing/selftests/net/mptcp/mptcp_connect.sh b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-index e4df9ba64824..2cfd87d94db8 100755
---- a/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-+++ b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-@@ -443,9 +443,9 @@ do_transfer()
- 	duration=$(printf "(duration %05sms)" $duration)
- 	if [ ${rets} -ne 0 ] || [ ${retc} -ne 0 ]; then
- 		echo "$duration [ FAIL ] client exit code $retc, server $rets" 1>&2
--		echo "\nnetns ${listener_ns} socket stat for $port:" 1>&2
-+		echo -e "\nnetns ${listener_ns} socket stat for ${port}:" 1>&2
- 		ip netns exec ${listener_ns} ss -nita 1>&2 -o "sport = :$port"
--		echo "\nnetns ${connector_ns} socket stat for $port:" 1>&2
-+		echo -e "\nnetns ${connector_ns} socket stat for ${port}:" 1>&2
- 		ip netns exec ${connector_ns} ss -nita 1>&2 -o "dport = :$port"
- 
- 		cat "$capout"
-diff --git a/tools/testing/selftests/net/mptcp/mptcp_join.sh b/tools/testing/selftests/net/mptcp/mptcp_join.sh
-index f39c1129ce5f..c2943e4dfcfe 100755
---- a/tools/testing/selftests/net/mptcp/mptcp_join.sh
-+++ b/tools/testing/selftests/net/mptcp/mptcp_join.sh
-@@ -176,9 +176,9 @@ do_transfer()
- 
- 	if [ ${rets} -ne 0 ] || [ ${retc} -ne 0 ]; then
- 		echo " client exit code $retc, server $rets" 1>&2
--		echo "\nnetns ${listener_ns} socket stat for $port:" 1>&2
-+		echo -e "\nnetns ${listener_ns} socket stat for ${port}:" 1>&2
- 		ip netns exec ${listener_ns} ss -nita 1>&2 -o "sport = :$port"
--		echo "\nnetns ${connector_ns} socket stat for $port:" 1>&2
-+		echo -e "\nnetns ${connector_ns} socket stat for ${port}:" 1>&2
- 		ip netns exec ${connector_ns} ss -nita 1>&2 -o "dport = :$port"
- 
- 		cat "$capout"
+ .../devicetree/bindings/pci/qcom,pcie.txt     |   5 +-
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml |   5 +
+ drivers/pci/controller/dwc/pcie-qcom.c        |  11 +
+ drivers/phy/qualcomm/phy-qcom-qmp.c           | 297 ++++++++++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp.h           |  18 ++
+ 5 files changed, 334 insertions(+), 2 deletions(-)
+
 -- 
-2.27.0
+2.17.1
 
