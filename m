@@ -2,127 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252F626CA17
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D07926CA29
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgIPTqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728132AbgIPTqE (ORCPT
+        id S1727943AbgIPTtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:49:43 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20479 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727725AbgIPTsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 15:46:04 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A32C061756;
-        Wed, 16 Sep 2020 12:46:03 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id c18so8090118wrm.9;
-        Wed, 16 Sep 2020 12:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=mU3cDRgq1g+naNQJ65S1yYLb8Rp53s6t2LxJPp49zWA=;
-        b=Vt6Oq8zeEuG/NWaeBhvUWE2AJ2AKtiKaRMFE8doEFs7OExE43Atoo1dUuG0mdNPjwJ
-         ycmZ70J5ZiMpPu0etB8IbbYNiz5iBq8hgJ7dgZcg+gHwdK24Z5D34Y2FxweWS26c53/M
-         HADWTkMohnHg85pNmyjMr9Szm7+MwMVSotQNViWkU3h4n+srw4RMxXj5W/N48STAWEGb
-         A2KHZQpHAw4aDRF4Ksu+12BShSMRK7PmFdMR5W75t30KOmGkbm2Y++cQJQJrVlNuB+Zz
-         9qhAv5bwBflaWR7x70AKH4lBlDyRe2Bts4ed1rfaROuTVY1SXZq2cJmyfRQ2W1Cx3uCl
-         2MiQ==
+        Wed, 16 Sep 2020 15:48:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600285660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9tkD7fLHRzfBDrWOBVG4rZwkIcJdSt6QPk/vTM/imCo=;
+        b=B7ScFEvc0CFcGbEKO5hcfX4pTa7DwKn1/4fUcXiDCW65R2VyO9KtLB6guJV++aE01vSi7A
+        nktvbqXxz2awlmJxdlJ5umlC71tOEVSW+a8kItsVcC+KiEnC+jhvh89S3Snqsw5webjNwB
+        F6o6YrKts+k0JoklOaYsl4DoaB4hVpE=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-JfhrSMTTM2GhLAxcZpJFiw-1; Wed, 16 Sep 2020 15:47:39 -0400
+X-MC-Unique: JfhrSMTTM2GhLAxcZpJFiw-1
+Received: by mail-qk1-f199.google.com with SMTP id 205so7097191qkd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:47:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=mU3cDRgq1g+naNQJ65S1yYLb8Rp53s6t2LxJPp49zWA=;
-        b=oQP+aA38B8A4Qp+ZMh9RMxWyL0loQUcQGoi1f/F5RFcaMGaMDTkro/Spg04oXeAS4a
-         5W4PTFfh/aT7m2eKREAtAKA8K3O1a/lW1uQ3T7fNpx9OAriSo53DOcAzXZRksdtGbR+U
-         kZts9DsrHquDwDvSzmgZWlgCF+f3/kGCich2FYjU4SfGACV3C2vrsIbpnU2Pa+pcx9PI
-         JjilYwZxFct8eBej8t2xP+Joj3V/dum+DqyvtH9iq/i7MaiCcPsoOvEkdoaCADoufM/0
-         B6T8wH39eyGpjMEkzQR4aQ2S0TQpEqhfGIFleruULgrUGcDy8Gqrfubf1bn9BD63kecd
-         Bg0Q==
-X-Gm-Message-State: AOAM533BEoTkCD5vi4uAiP19bOIXx8jf8vHw3y5Y4hgNh0crZ8SD16/9
-        OtPD2abWL0MGgJnY6RO63UjDxEfiYBLNToW3
-X-Google-Smtp-Source: ABdhPJwNaHgbIj6yxFA2Wq4aPyuBf4vwFexHZq931I2pE5PXLB2U27wQ4EaOq4SkTwv8DQ98ZtPjjA==
-X-Received: by 2002:a5d:608f:: with SMTP id w15mr5463281wrt.244.1600285562177;
-        Wed, 16 Sep 2020 12:46:02 -0700 (PDT)
-Received: from felia ([2001:16b8:2dec:c500:3c50:8c2f:cc8a:657a])
-        by smtp.gmail.com with ESMTPSA id 2sm6765364wmf.25.2020.09.16.12.46.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9tkD7fLHRzfBDrWOBVG4rZwkIcJdSt6QPk/vTM/imCo=;
+        b=swCMgXHedx0mCqfN8zT1/oRpuMylQaIbCZchz2IV4C9jkIHoIcd9iJGKUMUXp+ktDg
+         +56VKQNc7mcElL3f8awHCuiyxpeOm+Y7RON49eetalDHQ1THtC2kXYKkckowBznSaDGD
+         2DjHjIXHIiIvJBFz7bfOvcFStSaRGnCi8lqHgBq5ubRIvfVsrmGJO2AkRzXtjex2cJui
+         gvAl/9NweD1Vb/nXtoi3e7qVy4mzGdjVRjBqbxQSQmGEuSPCW6wPRItILTygG0TcqIzB
+         TkWns3eWhW2fcwH22jcH15aZUz0Z2FHOEsyGhccVvRRfo8fD2Aj7Afz2/mdwmnXKEgRY
+         IgNw==
+X-Gm-Message-State: AOAM531qAmtuDGaAwdnCUBxDwWZ0yyUI5zPC0pvcxiOSFu5d1NmRJM34
+        Y0DmUCmjCUY7UXdpObljsYk1vZsrecppvoB7g3S3PVXgh+fT4IpJXdSqQ7EHwcN5QA1d+cXv4zi
+        wS6MKise5S1joFNp5xbLR1jzx
+X-Received: by 2002:a37:a514:: with SMTP id o20mr23551147qke.374.1600285658948;
+        Wed, 16 Sep 2020 12:47:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxxq3px1MuOCLEAZ17g8N7rutkh9QqWBZHPIaoMca4ZxTzOIagFtyp9Bsgm4Yt1jLSoR/n1gQ==
+X-Received: by 2002:a37:a514:: with SMTP id o20mr23551136qke.374.1600285658700;
+        Wed, 16 Sep 2020 12:47:38 -0700 (PDT)
+Received: from dev.jcline.org.com ([136.56.20.95])
+        by smtp.gmail.com with ESMTPSA id g4sm18683447qth.30.2020.09.16.12.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 12:46:01 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Wed, 16 Sep 2020 21:45:55 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: mark linux-samsung-soc list non-moderated
-In-Reply-To: <20200916165357.GA18287@kozik-lap>
-Message-ID: <alpine.DEB.2.21.2009162140130.14568@felia>
-References: <20200914061353.17535-1-lukas.bulwahn@gmail.com> <20200916165357.GA18287@kozik-lap>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Wed, 16 Sep 2020 12:47:37 -0700 (PDT)
+From:   Jeremy Cline <jcline@redhat.com>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Karol Herbst <kherbst@redhat.com>,
+        Jeremy Cline <jcline@redhat.com>
+Subject: [PATCH v2 0/2] Add fine-grain temperature reporting
+Date:   Wed, 16 Sep 2020 15:47:09 -0400
+Message-Id: <20200916194711.999602-1-jcline@redhat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200812204952.1921587-1-jcline@redhat.com>
+References: <20200812204952.1921587-1-jcline@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi folks,
 
+This series adjusts the temp_get() interface in the thermal functions to
+report milli-degrees, and additionally alters the way errors are
+reported. As I went through all the users and implementations I realized
+that Pascal's temp_get() implementation didn't include turning negative
+temperatures to 0 like other implementations, so I separated error
+reporting from the temperature in the API.
 
-On Wed, 16 Sep 2020, Krzysztof Kozlowski wrote:
+Couple of things I'm on the fence about here:
 
-> On Mon, Sep 14, 2020 at 08:13:53AM +0200, Lukas Bulwahn wrote:
-> > In fifteen entries mentioning linux-samsung-soc@vger.kernel.org in
-> > MAINTAINERS, seven entries mention the list being moderated for
-> > non-subscribers and eight entries do not. Clearly only one can be right,
-> > though.
-> > 
-> > Joe Perches suggested that all vger.kernel.org are not moderated for
-> > non-subscribers.
-> > 
-> > Remove all the remarks from the entries following Joe's suggestion.
-> > 
-> > Link: https://lore.kernel.org/lkml/da6f30896a8fd78635b3ca454d77a5292a9aa76d.camel@perches.com/
-> > Suggested-by: Joe Perches <joe@perches.com>
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> > applies cleanly on v5.9-rc5 and next-20200911
-> > 
-> > Krzysztof, please pick this minor non-urgent cleanup patch.
-> > 
-> > This patch submission will also show me if linux-samsung-soc is moderated
-> > or not. I have not subscribed to linux-samsung-soc and if it shows up
-> > quickly in the archive, the list is probably not moderated, and hence,
-> > validating the patch.
-> 
-> Please use scripts/get_maintainers.pl (for example on files in modified
-> maintainers section) to get the addresses of people.  This mail missed
-> all my filters and got archived immediately because you sent it to
-> unusual address (how did you get this address, BTW? It does not appear
-> in the sources since few years).
->
+* I allowed the nvkm_therm_temp_get() functions to accept NULL as a way
+  to check if temperature reading is available rather than adding a
+  separate helper, but was torn about whether this is clearer than a
+  separate helper function.
 
-Sorry, I usually do use ./scripts/get_maintainers.pl and you are right 
-there is no way one could pick up that email address from the repository.
+* I added a WARN_ON in places that previously called
+  nvkm_therm_temp_get() and didn't check the return value for an error.
+  This may not be a reasonable error handling method.
 
-It was difficult to recall where I got the address from, but then I 
-finally remembered.
+Jeremy Cline (2):
+  drm/nouveau: return temperatures in temp_get() via parameter
+  drm/nouveau: Add fine-grain temperature reporting
 
-I wanted to know who is responsible for the linus-samsung-soc mailing 
-list for this patch. So I went to:
+ .../nouveau/include/nvkm/subdev/bios/therm.h  | 13 +++++++++
+ .../drm/nouveau/include/nvkm/subdev/therm.h   | 28 ++++++++++++++++++-
+ drivers/gpu/drm/nouveau/nouveau_hwmon.c       | 12 ++++----
+ .../gpu/drm/nouveau/nvkm/subdev/therm/base.c  | 28 +++++++++++++++----
+ .../gpu/drm/nouveau/nvkm/subdev/therm/g84.c   | 11 ++++----
+ .../gpu/drm/nouveau/nvkm/subdev/therm/gp100.c | 11 ++++----
+ .../gpu/drm/nouveau/nvkm/subdev/therm/nv40.c  |  9 ++----
+ .../gpu/drm/nouveau/nvkm/subdev/therm/nv50.c  |  9 ++----
+ .../gpu/drm/nouveau/nvkm/subdev/therm/priv.h  | 17 +++++++++--
+ .../gpu/drm/nouveau/nvkm/subdev/therm/temp.c  | 12 +++++---
+ 10 files changed, 110 insertions(+), 40 deletions(-)
 
-https://patchwork.kernel.org/project/linux-samsung-soc/
+-- 
+2.26.2
 
-And there in 'About this project', it still lists your gmail address. I 
-did not crosscheck that mail address with .mailmap, get_maintainers.pl 
-etc., but just send the patch out.
-
-> Thanks, applied.
-
-I am happy it reached you despite this mess-up on my side.
-
-Lukas
