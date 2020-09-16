@@ -2,165 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E5926CAD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0B426CADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbgIPUP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:15:56 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:42066 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726921AbgIPRb3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:31:29 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GHSOsr182311;
-        Wed, 16 Sep 2020 17:31:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=16MVLMxJEjiqUj2yCZKb2qIuPejsvOFsf6Uv7KdzcwM=;
- b=Oh9ULta134KSgFt7v49f3Efb9aRp74ymj1fBPooUp6AFLmpBTd+m+J/TBfkSo1fDtx4n
- T6LQ3nkEAv6RwDIbPCaOzPXpU40GPYu3yOuNANTUAoTNQX/6dbOBhDeO5A+6M2A/9d42
- L4Pw9XkYSPR949KVvzWMh8ch5Pl2+yg+U1fT9Wt7KK1iRHQOAWkzs6jDv5VNBXHU/+hf
- Xp7f4lItRqNsuzpkmJb15B3GMZjy1aXTTFVx6Xe4M5DXIKc8DhvazYV4U0YBnYvdcxTi
- USscGpZXe2UNDmiNYqMYGE0b4w7jvoPkrcYsOWHAvnaQLVit7kQLLNY+JgCR3o/NDbhe Sw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33j91dp56h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 17:31:05 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GHTs5J134351;
-        Wed, 16 Sep 2020 17:31:04 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33hm337mvg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 17:31:04 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08GHV0OP017867;
-        Wed, 16 Sep 2020 17:31:00 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Sep 2020 17:31:00 +0000
-Subject: Re: [RFC PATCH] cma: make number of CMA areas dynamic, remove
- CONFIG_CMA_AREAS
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        Roman Gushchin <guro@fb.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Joonsoo Kim <js1304@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Aslan Bakirov <aslan@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200903030204.253433-1-mike.kravetz@oracle.com>
- <20200916043207.GA713@infradead.org>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <7e730a74-3a9d-a18c-3f6a-f7bb206298d5@oracle.com>
-Date:   Wed, 16 Sep 2020 10:30:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727058AbgIPUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727172AbgIPRbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:31:03 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B72E222C8;
+        Wed, 16 Sep 2020 17:30:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600277453;
+        bh=Ms7SR3/sWRqfkOqtXGugqTmM9pwbi5WP66/p/LE+AuA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wrqUu1/5o7yonR3qmYpfQI5/pVWhdYchgJPDOvjqtQ8twknc2A/NQ0az26yssvhwe
+         gbjt7r5X1hnQIBP5Zd6iU4d6BkaEyT0KP2UWX7UjIqyePGuHW6Qsgi3Y6xPUJfOm53
+         j4sAfwQnV5ZlB1GS476nwkYCIsTxgm5RI0cHhLho=
+Date:   Wed, 16 Sep 2020 19:31:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gprocida@google.com,
+        maennich@google.com, kernel-team@android.com
+Subject: Re: [PATCH] ehci-hcd: Move include to keep CRC stable
+Message-ID: <20200916173127.GB3068942@kroah.com>
+References: <20200916171825.3228122-1-qperret@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200916043207.GA713@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009160122
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160122
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916171825.3228122-1-qperret@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 9:32 PM, Christoph Hellwig wrote:
-> On Wed, Sep 02, 2020 at 08:02:04PM -0700, Mike Kravetz wrote:
->> --- a/arch/arm/mm/dma-mapping.c
->> +++ b/arch/arm/mm/dma-mapping.c
->> @@ -383,25 +383,34 @@ postcore_initcall(atomic_pool_init);
->>  struct dma_contig_early_reserve {
->>  	phys_addr_t base;
->>  	unsigned long size;
->> +	struct list_head areas;
->>  };
->>  
->> +static __initdata LIST_HEAD(dma_mmu_remap_areas);
->>  
->>  void __init dma_contiguous_early_fixup(phys_addr_t base, unsigned long size)
->>  {
->> +	struct dma_contig_early_reserve *d;
->> +
->> +	d = memblock_alloc(sizeof(struct dma_contig_early_reserve),
->> +			sizeof(void *));
->> +	if (!d) {
->> +		pr_err("Unable to allocate dma_contig_early_reserve struct!\n");
->> +		return;
->> +	}
->> +
->> +	d->base = base;
->> +	d->size = size;
->> +	list_add_tail(&d->areas, &dma_mmu_remap_areas);
->>  }
+On Wed, Sep 16, 2020 at 06:18:25PM +0100, Quentin Perret wrote:
+> The CRC calculation done by genksyms is triggered when the parser hits
+> EXPORT_SYMBOL*() macros. At this point, genksyms recursively expands the
+> types of the function parameters, and uses that as the input for the CRC
+> calculation. In the case of forward-declared structs, the type expands
+> to 'UNKNOWN'. Following this, it appears that the result of the
+> expansion of each type is cached somewhere, and seems to be re-used
+> when/if the same type is seen again for another exported symbol in the
+> same C file.
 > 
-> I wonder if struct cma should grow a flags or type field, so that the
-> arm code can simply use cma_for_each_area to iterate the CMA areas for
-> the DMA fixup, and we can remove the extra list and the magic hook.
-
-I will look into a way of doing that.
-
+> Unfortunately, this can cause CRC 'stability' issues when a struct
+> definition becomes visible in the middle of a C file. For example, let's
+> assume code with the following pattern:
 > 
->> +/* modify here */
->> +LIST_HEAD(cma_areas);
+>     struct foo;
 > 
-> What does this comment mean?
-
-Sorry, that might have been a note to myself that was accidentally left.
-
+>     int bar(struct foo *arg)
+>     {
+> 	/* Do work ... */
+>     }
+>     EXPORT_SYMBOL_GPL(bar);
 > 
->> +static unsigned int cma_area_count;
+>     /* This contains struct foo's definition */
+>     #include "foo.h"
 > 
-> It seems this is only used to provide a default name for the CMA
-> areas, but all areas actually provide a name, so I think we can drop
-> the default naming and the cma_area_count variable entirely.
+>     int baz(struct foo *arg)
+>     {
+> 	/* Do more work ... */
+>     }
+>     EXPORT_SYMBOL_GPL(baz);
 > 
-
-Seems reasonable.
-We can change behavior to require a name.
-
->>  	if (!size || !memblock_is_region_reserved(base, size))
->>  		return -EINVAL;
->>  
->> +
->>  	/* ensure minimal alignment required by mm core */
+> Here, baz's CRC will be computed using the expansion of struct foo that
+> was cached after bar's CRC calculation ('UNKOWN' here). But if
+> EXPORT_SYMBOL_GPL(bar) is removed from the file (because of e.g. symbol
+> trimming using CONFIG_TRIM_UNUSED_KSYMS), struct foo will be expanded
+> late, during baz's CRC calculation, which now has visibility over the
+> full struct definition, hence resulting in a different CRC for baz.
 > 
-> This adds a spurious empty line.
-
-yes, my bad.
-
->>  static int __init cma_debugfs_init(void)
->>  {
->>  	struct dentry *cma_debugfs_root;
->> -	int i;
->> +	struct cma *c;
->>  
->>  	cma_debugfs_root = debugfs_create_dir("cma", NULL);
->>  
->> -	for (i = 0; i < cma_area_count; i++)
->> -		cma_debugfs_add_one(&cma_areas[i], cma_debugfs_root);
->> +	list_for_each_entry(c, &cma_areas, areas)
->> +		cma_debugfs_add_one(c, cma_debugfs_root);
+> The proper fix for this certainly is in genksyms, but that will take me
+> some time to get right. In the meantime, we have seen one occurrence of
+> this in the ehci-hcd code which hits this problem because of the way it
+> includes C files halfway through the code together with an unlucky mix
+> of symbol trimming.
 > 
-> I think this should use cma_for_each_area, that way cma_areas can be
-> keep static in cma.c.
+> In order to workaround this, move the include done in ehci-hub.c early
+> in ehci-hcd.c, hence making sure the struct definitions are visible to
+> the entire file. This improves CRC stability of the ehci-hcd exports
+> even when symbol trimming is enabled.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  drivers/usb/host/ehci-hcd.c | 1 +
+>  drivers/usb/host/ehci-hub.c | 1 -
+>  2 files changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+> index 6257be4110ca..3575b7201881 100644
+> --- a/drivers/usb/host/ehci-hcd.c
+> +++ b/drivers/usb/host/ehci-hcd.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/usb.h>
+>  #include <linux/usb/hcd.h>
+> +#include <linux/usb/otg.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/debugfs.h>
+> diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
+> index ce0eaf7d7c12..087402aec5cb 100644
+> --- a/drivers/usb/host/ehci-hub.c
+> +++ b/drivers/usb/host/ehci-hub.c
+> @@ -14,7 +14,6 @@
+>   */
+>  
+>  /*-------------------------------------------------------------------------*/
+> -#include <linux/usb/otg.h>
+>  
+>  #define	PORT_WAKE_BITS	(PORT_WKOC_E|PORT_WKDISC_E|PORT_WKCONN_E)
 
-Yes, will provide a cma_for_each_area routine.
+Thanks for root-causing this issue.  genksyms is a fragile beast, good
+luck trying to resolve that!
 
--- 
-Mike Kravetz
+I'll go queue this up and mark it for stable kernels, thanks.
+
+greg k-h
