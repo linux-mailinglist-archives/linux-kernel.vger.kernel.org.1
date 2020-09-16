@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4838626CA24
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF93826CA5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727255AbgIPTsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727262AbgIPRiI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:38:08 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA02DC0A3BFF
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:24:37 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 574A957F;
-        Wed, 16 Sep 2020 14:19:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1600258765;
-        bh=ev/yS5qTUd4vkPy46pXJDOJvEKIMIslJGb4EFf8b61M=;
+        id S1728262AbgIPT5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727209AbgIPRfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:35:41 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 709BC2224A;
+        Wed, 16 Sep 2020 12:34:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600259686;
+        bh=cGNtWAo22LwCSwjqAlF0X3q0KPrk7PCvy8F/Khpgj0U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WjVgTzt4omvWQ55FO48Q0XKLbWKzm07gAJShKeALLRGJ8EJmoXRLV2R4c4mgZ/Za3
-         mmY9ZuzAFayV3tpy742HL4J2SprCc7i0WdMP+H2hSxeRPq6VdUGKHnRxaGn946VkFI
-         4zYu1kHBMimw6Z/GgFJ1gE66y+JmLzahhoYkNcvY=
-Date:   Wed, 16 Sep 2020 15:18:55 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sekhar Nori <nsekhar@ti.com>
-Cc:     Swapnil Jakhade <sjakhade@cadence.com>, vkoul@kernel.org,
-        kishon@ti.com, linux-kernel@vger.kernel.org, maxime@cerno.tech,
-        mparab@cadence.com, yamonkar@cadence.com, tomi.valkeinen@ti.com,
-        jsarha@ti.com, praneeth@ti.com
-Subject: Re: [PATCH v6 0/2] PHY: Add new PHY attribute max_link_rate
-Message-ID: <20200916121855.GB3853@pendragon.ideasonboard.com>
-References: <1599805114-22063-1-git-send-email-sjakhade@cadence.com>
- <e1ae0a53-02a2-8a17-094f-570be6d24b1c@ti.com>
+        b=p6F+Qdc4YH2FUK0R5O8EMOgm3+HLxnk/hnSC1fjpoXhVw3M77lVKwIiGLlwljOgt1
+         MDvvlIRv8SrVlCxBOM9hdzO5DsUs+/dfQNPuCkskrBj3GhIsF1L0B1EN8IKzGMuUtK
+         EzM4YvOTVhooc6tGVvOx+FC3SNW0l5DKudnkpj1g=
+Date:   Wed, 16 Sep 2020 14:35:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>,
+        george.kennedy@oracle.com, jirislaby@kernel.org,
+        syzkaller-bugs@googlegroups.com, b.zolnierkie@samsung.com,
+        daniel.vetter@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        natechancellor@gmail.com
+Subject: Re: [PATCH] fbcon: Fix user font detection test at fbcon_resize().
+Message-ID: <20200916123519.GB2808885@kroah.com>
+References: <00000000000024be1505ad487cbb@google.com>
+ <f6e3e611-8704-1263-d163-f52c906a4f06@I-love.SAKURA.ne.jp>
+ <7c52e8cd-e4cb-cd0b-40d5-b9654aec09f3@I-love.SAKURA.ne.jp>
+ <20200916082624.GC509119@kroah.com>
+ <3233dcc2-31d5-42e7-3d9d-b36a65b660ea@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e1ae0a53-02a2-8a17-094f-570be6d24b1c@ti.com>
+In-Reply-To: <3233dcc2-31d5-42e7-3d9d-b36a65b660ea@i-love.sakura.ne.jp>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sekhar,
-
-On Wed, Sep 16, 2020 at 01:11:17PM +0530, Sekhar Nori wrote:
-> On 11/09/20 11:48 AM, Swapnil Jakhade wrote:
-> > This patch series adds a new PHY attribute max_link_rate.
-> > It also updates Cadence Torrent PHY driver to set attributes bus_width,
-> > max_link_rate and mode for DisplayPort.
+On Wed, Sep 16, 2020 at 07:06:31PM +0900, Tetsuo Handa wrote:
+> On 2020/09/16 17:26, Greg KH wrote:
+> > On Wed, Sep 16, 2020 at 09:01:06AM +0900, Tetsuo Handa wrote:
+> >> Greg, will you pick up this patch?
+> >>
+> >> It seems that finding the real cause of [3] and actually fixing [3] will be difficult.
+> >> Since I can't reproduce [3] locally, I will have to try flood of "#syz test" requests
+> >> for debug printk() patches.
 > > 
-> > It includes following patches:
+> > I agree with Daniel here, can you retest these against Linus's latest
+> > tree please?
 > > 
-> > 1. 0001-phy-Add-new-PHY-attribute-max_link_rate.patch
-> > This patch adds max_link_rate as a new PHY attribute.
-> > 
-> > 2. 0002-phy-cadence-torrent-Set-Torrent-PHY-attributes.patch
-> > This patch sets PHY attributes in Cadence Torrent PHY driver. This will
-> > enable drivers using this PHY to read these properties.
-> > 
-> > These attributes will be used in the Cadence MHDP DRM bridge driver [1]
-> > which is in the process of upstreaming.
 > 
-> Can you please add these patches on an immutable branch/tag when you are
-> ready to apply them - will try to see if we can use it to get the
-> DisplayPort driver merged in v5.10 too.
+> syzbot already reproduced these bugs using the latest commit. ;-)
 > 
-> Hi Laurent, any other ideas on managing the dependency?
+> You can find
+> 
+>   ci-upstream-kasan-gce-root 	2020/09/15 15:18 	upstream 	fc4f28bb 
+> 
+> record for "KASAN: global-out-of-bounds Read in bit_putcs" and
+> 
+>   ci-upstream-kasan-gce-root 	2020/09/16 09:54 	upstream 	fc4f28bb
+> 
+> record for "KASAN: global-out-of-bounds Read in fbcon_resize".
 
-I think that will work fine.
+Ok, will pick it up now, thanks.
 
--- 
-Regards,
-
-Laurent Pinchart
+greg k-h
