@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBF426CF17
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F43C26CF19
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgIPWtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:49:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54572 "EHLO mail.kernel.org"
+        id S1726765AbgIPWu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:50:26 -0400
+Received: from mga03.intel.com ([134.134.136.65]:54656 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIPWto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:49:44 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8D5521D7D;
-        Wed, 16 Sep 2020 22:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600296584;
-        bh=RtnALUsgvrvWQLqClUZrqNctB+3lZ1evOkvlS2taoeU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=crGCSZ641vZjegrvb8M2mpC05dKgMtjPNTQfnLXJoDAF2BZATSoOlh+NZMlpYc351
-         J2z1uKB5ICQimkGVWDYnECXGdfHFTerm4HQgwdJihxCJFl53CP/OxwqHjGUVtyoEs5
-         HaL0DRKgE4heTkaqA7d3qQCFBVUv7kwJR/7cg4Q8=
-Date:   Wed, 16 Sep 2020 17:49:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, Jonathan.Cameron@huawei.com,
-        rjw@rjwysocki.net, sathyanarayanan.kuppuswamy@linux.intel.com,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/10] PCI/RCEC: Add pcie_walk_rcec() to walk
- associated RCiEPs
-Message-ID: <20200916224942.GA1594177@bjorn-Precision-5520>
+        id S1726280AbgIPWuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 18:50:19 -0400
+IronPort-SDR: th8Eg01hoTrJhw/58i4gwNIpkBPOB8Yp5+ieRBXJmFQI2sM6/UH6+QK8A6ixY3wvgmudRVgvt1
+ +mjFgyeffh1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="159631868"
+X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
+   d="scan'208";a="159631868"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 15:50:18 -0700
+IronPort-SDR: Wucms044M2dJy6yu4PwISQysgWFV9TvAzVd3c/iminns7GJTmeX8fH37PW8oLYqE84RcoDX9pf
+ kV+strBvDXkw==
+X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
+   d="scan'208";a="508169587"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 15:50:17 -0700
+Date:   Wed, 16 Sep 2020 15:50:16 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 08/35] KVM: SVM: Prevent debugging under SEV-ES
+Message-ID: <20200916225015.GB12355@sjchrist-ice>
+References: <58093c542b5b442b88941828595fb2548706f1bf.1600114548.git.thomas.lendacky@amd.com>
+ <20200914212601.GA7192@sjchrist-ice>
+ <fd790047-4107-b28a-262e-03ed5bc4c421@amd.com>
+ <20200915163010.GB8420@sjchrist-ice>
+ <aff46d8d-07ff-7d14-3e7f-ffe60f2bd779@amd.com>
+ <5e816811-450f-b732-76f7-6130479642e0@amd.com>
+ <20200916160210.GA10227@sjchrist-ice>
+ <b62e055a-000e-ff7b-00e4-41b5b39b55d5@amd.com>
+ <20200916164923.GC10227@sjchrist-ice>
+ <9988f485-ce78-4df4-b294-32cc7743b6b2@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7B04CA9A-7332-4001-963B-E56642044F5D@intel.com>
+In-Reply-To: <9988f485-ce78-4df4-b294-32cc7743b6b2@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:55:53AM -0700, Sean V Kelley wrote:
-> On 11 Sep 2020, at 17:50, Bjorn Helgaas wrote:
-> > On Fri, Sep 11, 2020 at 04:16:03PM -0700, Sean V Kelley wrote:
-
-> > > I’ve done some experimenting with this approach, and I think
-> > > there may be a problem of just walking the busses during
-> > > enumeration pci_init_capabilities(). One problem is where one
-> > > has an RCEC on a root bus: 6a(00.4) and an RCiEP on another root
-> > > bus: 6b(00.0).  They will never find each other in this approach
-> > > through a normal pci_bus_walk() call using their respective
-> > > root_bus.
-> > > 
-> > > >  +-[0000:6b]-+-00.0
-> > > >  |           +-00.1
-> > > >  |           +-00.2
-> > > >  |           \-00.3
-> > > >  +-[0000:6a]-+-00.0
-> > > >  |           +-00.1
-> > > >  |           +-00.2
-> > > >  |           \-00.4
+On Wed, Sep 16, 2020 at 03:27:13PM -0500, Tom Lendacky wrote:
+> On 9/16/20 11:49 AM, Sean Christopherson wrote:
+> > On Wed, Sep 16, 2020 at 11:38:38AM -0500, Tom Lendacky wrote:
+> >>
+> >>
+> >> On 9/16/20 11:02 AM, Sean Christopherson wrote:
+> >>> On Wed, Sep 16, 2020 at 10:11:10AM -0500, Tom Lendacky wrote:
+> >>>> On 9/15/20 3:13 PM, Tom Lendacky wrote:
+> >>>>> On 9/15/20 11:30 AM, Sean Christopherson wrote:
+> >>>>>> I don't quite follow the "doesn't mean debugging can't be done in the future".
+> >>>>>> Does that imply that debugging could be supported for SEV-ES guests, even if
+> >>>>>> they have an encrypted VMSA?
+> >>>>>
+> >>>>> Almost anything can be done with software. It would require a lot of
+> >>>>> hypervisor and guest code and changes to the GHCB spec, etc. So given
+> >>>>> that, probably just the check for arch.guest_state_protected is enough for
+> >>>>> now. I'll just need to be sure none of the debugging paths can be taken
+> >>>>> before the VMSA is encrypted.
+> >>>>
+> >>>> So I don't think there's any guarantee that the KVM_SET_GUEST_DEBUG ioctl
+> >>>> couldn't be called before the VMSA is encrypted, meaning I can't check the
+> >>>> arch.guest_state_protected bit for that call. So if we really want to get
+> >>>> rid of the allow_debug() op, I'd need some other way to indicate that this
+> >>>> is an SEV-ES / protected state guest.
+> >>>
+> >>> Would anything break if KVM "speculatively" set guest_state_protected before
+> >>> LAUNCH_UPDATE_VMSA?  E.g. does KVM need to emulate before LAUNCH_UPDATE_VMSA?
+> >>
+> >> Yes, the way the code is set up, the guest state (VMSA) is initialized in
+> >> the same way it is today (mostly) and that state is encrypted by the
+> >> LAUNCH_UPDATE_VMSA call. I check the guest_state_protected bit to decide
+> >> on whether to direct the updates to the real VMSA (before it's encrypted)
+> >> or the GHCB (that's the get_vmsa() function from patch #5).
 > > 
-> > Wow, is that even allowed?
-> > 
-> > There's no bridge from 0000:6a to 0000:6b, so we will not scan 0000:6b
-> > unless we find a host bridge with _CRS where 6b is the first bus
-> > number below the bridge.  I think that means this would have to be
-> > described in ACPI as two separate root bridges:
-> > 
-> >   ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 6a])
-> >   ACPI: PCI Root Bridge [PCI1] (domain 0000 [bus 6b])
+> > Ah, gotcha.  Would it work to set guest_state_protected[*] from time zero,
+> > and move vmsa_encrypted to struct vcpu_svm?  I.e. keep vmsa_encrypted, but
+> > use it only for guiding get_vmsa() and related behavior.
 > 
-> Otherwise, the RCEC Associated Endpoint Extended Capabilities would have to
-> have explicitly mentioned a bridge?
+> It is mainly __set_sregs() that needs to know when to allow the register
+> writes and when not to. During guest initialization, __set_sregs is how
+> some of the VMSA is initialized by Qemu.
 
-I just meant that the enumeration algorithm starts with a PNP0A03
-device and searches the root bus from its _CRS, descending under any
-bridges it finds.  There's no PCI-to-PCI bridge from 6a to 6b (if
-there *were* such a bridge, 6b would not be a root bridge).
+Hmm.  I assume that also means KVM_SET_REGS and KVM_GET_XCRS are also legal
+before the VMSA is encrypted?  If so, then the current behavior of setting
+vmsa_encrypted "late" make sense.  KVM_SET_FPU/XSAVE can be handled by not
+allocating guest_fpu, i.e. they can be disallowed from time zero without
+adding an SEV-ES specific check.
 
-> > I *guess* maybe it's allowed by the PCIe spec to have an RCEC and
-> > associated RCiEPs on separate root buses?  It seems awfully strange
-> > and not in character for PCIe, but I guess I can't point to language
-> > that prohibits it.
-> 
-> Yes, it should be possible.
-
-Ugh :)
+Which brings us back to KVM_SET_GUEST_DEBUG.  What would happen if that were
+allowed prior to VMSA encryption?  If LAUNCH_UPDATE_VMSA acts as a sort of
+reset, one thought would be to allow KVM_SET_GUEST_DEBUG and then sanitize
+KVM's state during LAUNCH_UPDATE_VMSA.  Or perhaps even better, disallow
+LAUNCH_UPDATE_VMSA if vcpu->guest_debug!=0.  That would allow using debug
+capabilities up until LAUNCH_UPDATE_VMSA without adding much burden to KVM.
