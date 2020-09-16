@@ -2,310 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007DD26CC78
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7C526CCA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgIPUnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:43:49 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:15518 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726744AbgIPRD2 (ORCPT
+        id S1728515AbgIPUri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726649AbgIPRBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:03:28 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GD9Md5010152;
-        Wed, 16 Sep 2020 09:21:21 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33k5p62hn7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 09:21:21 -0400
-Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08GDLKNh029875
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 16 Sep 2020 09:21:20 -0400
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 16 Sep 2020 09:21:27 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 16 Sep 2020 09:21:27 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 16 Sep 2020 09:21:27 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08GDLGMe026529;
-        Wed, 16 Sep 2020 09:21:17 -0400
-From:   Cristian Pop <cristian.pop@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, Cristian Pop <cristian.pop@analog.com>
-Subject: [PATCH v4 1/3] iio: core: Add optional symbolic label to a device channel
-Date:   Wed, 16 Sep 2020 16:21:15 +0300
-Message-ID: <20200916132115.81795-1-cristian.pop@analog.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 16 Sep 2020 13:01:20 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC9BC0086D1;
+        Wed, 16 Sep 2020 06:41:01 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t7so1622229pjd.3;
+        Wed, 16 Sep 2020 06:41:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=a7VpgUXD3etb/W2u95CFqiHYYBXyXu79NXiK4t98Blw=;
+        b=I+qQ5j9mEE3iA0H4ZUBphMax7ReOC8kLIFC4DG0UZcKdQnYem3m8Y+7sCVJiRZJ/B/
+         pw8tMLhpfRFVWel7rSka1hqv7O+41MZIaPaAoRO64Re5IL8TAkR1wJJOSWwT10WJMY1S
+         MmLmpoRxLod/Oqy9GDd2FhG94gZ7/74YYZ25q0zp1FMPB/mZFfmEX8B2sotKLoWCAR9m
+         ScqhB8raR4jlvngSTMKThpKS98ZX+BfZbhZnmqcHUcIZJeWdC/MkkwOEN+mlx2nDXPJ+
+         rGBjZ0Qawi4ak9DsvFSaQWQtOz12PLCl68CPxiYgA+fLS6yRBLooKDQ4+D0XFi4PMMz6
+         4PZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=a7VpgUXD3etb/W2u95CFqiHYYBXyXu79NXiK4t98Blw=;
+        b=hn+VglDnqbU6nU8bK3NmY/Nqmd/OsbglntwwyiW4BwxLcGPPyWrAN+BYfmR9mBENhw
+         kRPvC6BJee56w4g5VlTv0LCEz9d2w+sQmEnHK93co54v6XqCOEgT6GMH2Ap4/Fp6mCis
+         uGRUYLu5AKjehB/iAHMvSFoTRMxAAYmxEbdzf9JnyiM0ZDUmzALBlNe5tKXYHoxCaow1
+         1+ZoBEYqzTRLPSD3BiC2rIMd4RTFwEiUtVK5CGtaMHBi9ywdGKLH/Njn+8TnpI0WgJwL
+         0KTohg6vvyj1LrXePhi238b/A9JD7qqs+k3pPcNDYLMBGgkyPJYHuhqFW2yJ8JQEwPnO
+         T9ag==
+X-Gm-Message-State: AOAM533giAi5udOIqwEqYtzsfrKM2bynIw61Ja3tjU273s9tnd3Z3B4A
+        /gyKvHQU++nEGKl7JwGkJKodk6E2nwpOnNJDQxE=
+X-Google-Smtp-Source: ABdhPJwsdlcogMP86H7W0+GT+TmcgrKpclDe9FF5ms19t0nLyBthmXVXaKb8aLBdzPeosDJc3+hC3w==
+X-Received: by 2002:a17:90a:7ac1:: with SMTP id b1mr3975237pjl.121.1600263660892;
+        Wed, 16 Sep 2020 06:41:00 -0700 (PDT)
+Received: from [192.168.0.104] ([49.207.198.18])
+        by smtp.gmail.com with ESMTPSA id gm17sm2784507pjb.46.2020.09.16.06.40.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Sep 2020 06:41:00 -0700 (PDT)
+Subject: Re: [Linux-kernel-mentees][PATCH] rtl8150: set memory to all 0xFFs on
+ failed register reads
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200916050540.15290-1-anant.thazhemadam@gmail.com>
+ <20200916062227.GD142621@kroah.com>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <dfdb48b8-5cd9-2b19-11cc-b17f45904e0f@gmail.com>
+Date:   Wed, 16 Sep 2020 19:10:55 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_07:2020-09-16,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 impostorscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1015 suspectscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160097
+In-Reply-To: <20200916062227.GD142621@kroah.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a label is defined in the device tree for this channel add that
-to the channel specific attributes. This is useful for userspace to
-be able to identify an individual channel.
 
-Signed-off-by: Cristian Pop <cristian.pop@analog.com>
----
-Change in V4:
-	- Check for callback before generating file system for label
-	- Add documentation in: Documentation/ABI/testing/sysfs-bus-iio
-	- Add example of usage for channel label attribute
- drivers/iio/industrialio-core.c | 41 +++++++++++++++++++++++++++++++++
- include/linux/iio/iio.h         |  6 +++++
- 2 files changed, 47 insertions(+)
+On 16/09/20 11:52 am, Greg KH wrote:
+> On Wed, Sep 16, 2020 at 10:35:40AM +0530, Anant Thazhemadam wrote:
+>> get_registers() copies whatever memory is written by the
+>> usb_control_msg() call even if the underlying urb call ends up failing.
+>>
+>> If get_registers() fails, or ends up reading 0 bytes, meaningless and 
+>> junk register values would end up being copied over (and eventually read 
+>> by the driver), and since most of the callers of get_registers() don't 
+>> check the return values of get_registers() either, this would go unnoticed.
+>>
+>> It might be a better idea to try and mirror the PCI master abort
+>> termination and set memory to 0xFFs instead in such cases.
+> It would be better to use this new api call instead of
+> usb_control_msg():
+> 	https://lore.kernel.org/r/20200914153756.3412156-1-gregkh@linuxfoundation.org
+>
+> How about porting this patch to run on top of that series instead?  That
+> should make this logic much simpler.
+This looks viable to me. I'll be sure to try this out.
+>> Fixes: https://syzkaller.appspot.com/bug?extid=abbc768b560c84d92fd3
+>> Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+>> Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+>> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+>> ---
+>>  drivers/net/usb/rtl8150.c | 9 +++++++--
+>>  1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+>> index 733f120c852b..04fca7bfcbcb 100644
+>> --- a/drivers/net/usb/rtl8150.c
+>> +++ b/drivers/net/usb/rtl8150.c
+>> @@ -162,8 +162,13 @@ static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+>>  	ret = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
+>>  			      RTL8150_REQ_GET_REGS, RTL8150_REQT_READ,
+>>  			      indx, 0, buf, size, 500);
+>> -	if (ret > 0 && ret <= size)
+>> +
+>> +	if (ret < 0)
+>> +		memset(data, 0xff, size);
+>> +
+>> +	else
+>>  		memcpy(data, buf, ret);
+>> +
+>>  	kfree(buf);
+>>  	return ret;
+>>  }
+>> @@ -276,7 +281,7 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
+>>  
+>>  static inline void set_ethernet_addr(rtl8150_t * dev)
+>>  {
+>> -	u8 node_id[6];
+>> +	u8 node_id[6] = {0};
+> This should not be needed to be done.
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 1527f01a44f1..49868e080840 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -643,6 +643,21 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals)
- }
- EXPORT_SYMBOL_GPL(iio_format_value);
- 
-+static ssize_t iio_read_channel_label(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-+	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
-+
-+	if (indio_dev->info->read_label)
-+		return indio_dev->info->read_label(indio_dev,
-+							this_attr->c,
-+							buf);
-+	else
-+		return -EINVAL;
-+}
-+
- static ssize_t iio_read_channel_info(struct device *dev,
- 				     struct device_attribute *attr,
- 				     char *buf)
-@@ -1111,6 +1126,25 @@ int __iio_add_chan_devattr(const char *postfix,
- 	return ret;
- }
- 
-+static int iio_device_add_channel_label(struct iio_dev *indio_dev,
-+					 struct iio_chan_spec const *chan)
-+{
-+	int ret;
-+
-+	ret = __iio_add_chan_devattr("label",
-+					chan,
-+					&iio_read_channel_label,
-+					NULL,
-+					0,
-+					IIO_SEPARATE,
-+					&indio_dev->dev,
-+					&indio_dev->channel_attr_list);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 1;
-+}
-+
- static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
- 					 struct iio_chan_spec const *chan,
- 					 enum iio_shared_by shared_by,
-@@ -1241,6 +1275,13 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
- 		return ret;
- 	attrcount += ret;
- 
-+	if (indio_dev->info->read_label) {
-+		ret = iio_device_add_channel_label(indio_dev, chan);
-+		if (ret < 0)
-+			return ret;
-+		attrcount += ret;
-+	}
-+
- 	if (chan->ext_info) {
- 		unsigned int i = 0;
- 		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
-diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
-index a1be82e74c93..58b151f5321d 100644
---- a/include/linux/iio/iio.h
-+++ b/include/linux/iio/iio.h
-@@ -362,6 +362,8 @@ struct iio_trigger; /* forward declaration */
-  *			and max. For lists, all possible values are enumerated.
-  * @write_raw:		function to write a value to the device.
-  *			Parameters are the same as for read_raw.
-+ * @read_label:		function to request label name for a specified label,
-+ *			for better channel identification.
-  * @write_raw_get_fmt:	callback function to query the expected
-  *			format/precision. If not set by the driver, write_raw
-  *			returns IIO_VAL_INT_PLUS_MICRO.
-@@ -420,6 +422,10 @@ struct iio_info {
- 			 int val2,
- 			 long mask);
- 
-+	int (*read_label)(struct iio_dev *indio_dev,
-+			 struct iio_chan_spec const *chan,
-+			 char *label);
-+
- 	int (*write_raw_get_fmt)(struct iio_dev *indio_dev,
- 			 struct iio_chan_spec const *chan,
- 			 long mask);
--- 
-2.17.1
+Noted.
 
+Thank you for your time.
 
-From 1e6dc76e6574c5b74e0ce22ba0e91d2e47aa8699 Mon Sep 17 00:00:00 2001
-From: Cristian Pop <cristian.pop@analog.com>
-Date: Wed, 16 Sep 2020 14:35:59 +0000
-Subject: [PATCH v4 2/3] iio:Documentation: Add documentation for label channel
- attribute
-
-If a label is defined in the device tree for this channel add that to the
-channel specific attributes. This is useful for userspace to be able to
-identify an individual channel.
-
-Signed-off-by: Cristian Pop <cristian.pop@analog.com>
----
- Documentation/ABI/testing/sysfs-bus-iio | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index d3e53a6d8331..f2a9a03b8af9 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -1697,6 +1697,15 @@ Description:
- 
- 		Raw counter device counters direction for channel Y.
- 
-+What:		/sys/bus/iio/devices/iio:deviceX/channel_label
-+KernelVersion:	5.8
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Optional symbolic label to a device channel.
-+		If a label is defined in the device tree for this channel add
-+		that to the channel specific attributes. This is useful for
-+		userspace to be able to identify an individual channel.
-+
- What:		/sys/bus/iio/devices/iio:deviceX/in_phaseY_raw
- KernelVersion:	4.18
- Contact:	linux-iio@vger.kernel.org
--- 
-2.17.1
-
-
-From c6cf59857fb3001ad831bc49ab7fce6c7a9e48ff Mon Sep 17 00:00:00 2001
-From: Cristian Pop <cristian.pop@analog.com>
-Date: Wed, 16 Sep 2020 15:19:57 +0000
-Subject: [PATCH v4 3/3] iio: adc: ad7768-1: Add channel label example
-
-This is a demo usage of new "label" attribute for channel.
-
-Signed-off-by: Cristian Pop <cristian.pop@analog.com>
----
- drivers/iio/adc/ad7768-1.c | 49 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-diff --git a/drivers/iio/adc/ad7768-1.c b/drivers/iio/adc/ad7768-1.c
-index 0d132708c429..5ca9f9febb5a 100644
---- a/drivers/iio/adc/ad7768-1.c
-+++ b/drivers/iio/adc/ad7768-1.c
-@@ -161,6 +161,7 @@ struct ad7768_state {
- 	struct completion completion;
- 	struct iio_trigger *trig;
- 	struct gpio_desc *gpio_sync_in;
-+	const char **labels;
- 	/*
- 	 * DMA (thus cache coherency maintenance) requires the
- 	 * transfer buffers to live in their own cache lines.
-@@ -407,6 +408,14 @@ static int ad7768_write_raw(struct iio_dev *indio_dev,
- 	}
- }
- 
-+static int ad7768_read_label(struct iio_dev *indio_dev,
-+	const struct iio_chan_spec *chan, char *label)
-+{
-+	struct ad7768_state *st = iio_priv(indio_dev);
-+
-+	return sprintf(label, "%s\n", st->labels[chan->channel]);
-+}
-+
- static struct attribute *ad7768_attributes[] = {
- 	&iio_dev_attr_sampling_frequency_available.dev_attr.attr,
- 	NULL
-@@ -420,6 +429,7 @@ static const struct iio_info ad7768_info = {
- 	.attrs = &ad7768_group,
- 	.read_raw = &ad7768_read_raw,
- 	.write_raw = &ad7768_write_raw,
-+	.read_label = ad7768_read_label,
- 	.debugfs_reg_access = &ad7768_reg_access,
- };
- 
-@@ -538,6 +548,41 @@ static void ad7768_clk_disable(void *data)
- 	clk_disable_unprepare(st->mclk);
- }
- 
-+static int ad7768_set_channel_label(struct iio_dev *indio_dev,
-+						int num_channels)
-+{
-+	struct ad7768_state *st = iio_priv(indio_dev);
-+	struct device *device = indio_dev->dev.parent;
-+	struct fwnode_handle *fwnode;
-+	struct fwnode_handle *child;
-+	const char *label;
-+	int crt_ch = 0;
-+
-+	st->labels = devm_kcalloc(indio_dev->dev.parent,
-+					num_channels,
-+					sizeof(**st->labels),
-+					GFP_KERNEL);
-+
-+	if (!st->labels)
-+		return -ENOMEM;
-+
-+	fwnode = dev_fwnode(device);
-+	fwnode_for_each_child_node(fwnode, child) {
-+		if (fwnode_property_read_u32(child, "reg", &crt_ch))
-+			continue;
-+
-+		if (crt_ch >= num_channels)
-+			continue;
-+
-+		if (fwnode_property_read_string(child, "label", &label))
-+			continue;
-+
-+		st->labels[crt_ch] = label;
-+	}
-+
-+	return 0;
-+}
-+
- static int ad7768_probe(struct spi_device *spi)
- {
- 	struct ad7768_state *st;
-@@ -611,6 +656,10 @@ static int ad7768_probe(struct spi_device *spi)
- 
- 	init_completion(&st->completion);
- 
-+	ret = ad7768_set_channel_label(indio_dev, ARRAY_SIZE(ad7768_channels));
-+	if (ret)
-+		return ret;
-+
- 	ret = devm_request_irq(&spi->dev, spi->irq,
- 			       &ad7768_interrupt,
- 			       IRQF_TRIGGER_RISING | IRQF_ONESHOT,
--- 
-2.17.1
+Thanks,
+Anant
 
