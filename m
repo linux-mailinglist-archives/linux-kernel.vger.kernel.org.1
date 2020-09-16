@@ -2,137 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757BB26BADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137A826BAE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbgIPDsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:48:04 -0400
-Received: from mail-co1nam11on2084.outbound.protection.outlook.com ([40.107.220.84]:63009
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726320AbgIPDr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:47:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G2qVge2YcENv5htHFvacfQ+uuOLnvp1ud3X4E5YbxoPtJ6CYAzSYV89NS5HrY3ncKo3usOlMpw1bhOzYMCOMpGfjX6zVB6IGp9IRnNcXrOXUcDCf0dwhoe+xBzf3MlbluZkbc573ZYkc+ArNfQq+XpGjnC9ih8codNx4X1aE+16CbN06fXO9s9o+RYKnzdLS71qJmpjZxxSvlFFYGIcvo9NKBxeKbtvRQ3J8WLozoDo9ySsDQAgujEXhLmlekjPJH9X17R27r5n99zVI4tfDqef7Dp1EaMqkxsG8o3fZCSnJ1e4pWu6PYGX4VZzoxBKq93XhMJbsnr/WVAU/nKrAuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QzbGHpubkRsMoy2LlSRiRVdcXYNEIuwXQKuBSvL9DmQ=;
- b=EbFvQlk6OmrCaPs6qW2zU5/pDSi2iDS2g98r0sTU9PVo938DRohqdJfVNZW9E2rfDTcItyHzDKfcATeOhz4CH8sJl5YiM5OmS4V0js5/L6RFfpzJtV1EMH34ujyWKRLygbiHlktuF0HCRd5tRf+VVRMFRY4qaojKWaFxWFpjK/vqaZjP7anh9kfI9PwfzyqgY8f95LV5Bzg3jBPeVSsvODoPt/Xp3TjbIEOHq5SPt3jnZN2u/5mZgtm3gzelmUxQg0vJF2kXt3lEhHKLqlfjVplSiKC+oFqJ9OXwxDDXUrzX0fu7LNPl2iQXbhDItLSFyUfNpx7xfE7joFDgxb/LiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1726413AbgIPDsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbgIPDs2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 23:48:28 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96677C06174A;
+        Tue, 15 Sep 2020 20:48:27 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id n133so6789618qkn.11;
+        Tue, 15 Sep 2020 20:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QzbGHpubkRsMoy2LlSRiRVdcXYNEIuwXQKuBSvL9DmQ=;
- b=Au9oLUKAQTeiTlh+B2hfMojPkavrQLBbowniE6OWbN7XhTBM1te1HTo9D2u23R+TeMcykRjE6nXiftMd+J5O5+2iGxwzMHTPDLl9bUukZE1hguMZx3L1OR791ypseVYMOi9JNdOyUs3cXBQ4HoXZcyTRe9YwknELDcf736vHcq8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BY5PR11MB3893.namprd11.prod.outlook.com (2603:10b6:a03:183::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
- 2020 03:47:55 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::8d64:f85b:1cce:a1c0]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::8d64:f85b:1cce:a1c0%5]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
- 03:47:55 +0000
-Subject: Re: [PATCH] mm/page_alloc.c: avoid inheritting current's flags when
- invoked in interrupt
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20200915075635.1112-1-yanfei.xu@windriver.com>
- <20200915181749.2bb7420e2c7e62267b21a0fc@linux-foundation.org>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <86c342b0-3ed2-71da-a3eb-da73d19d9c6c@windriver.com>
-Date:   Wed, 16 Sep 2020 11:47:47 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-In-Reply-To: <20200915181749.2bb7420e2c7e62267b21a0fc@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HK2PR06CA0013.apcprd06.prod.outlook.com
- (2603:1096:202:2e::25) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xom8pv8pA5D1wdYSli3646ft73285J8Rq30WVkF+CBQ=;
+        b=nxUE6SE1fvzk0PjJBd6cS8bHQOdOaPxPYkADORPwwRlAgnDcnhEpl7zjFiKRbO0Gvh
+         0KT5ZywHMAhj6Hpv6vr9/B1wmQ4HOLMRnwt4kga5VzUJ3ukjzJsd6pEtp+gwI+7mkKCe
+         7DI8dwAMeYqgyw1M2y5xhL+twpxEV2ejO9C+syGcZKa/cfiYG2rTUweEpkLyzVV6J+iA
+         wamaizzgqdFCysoZspVBXPBO/4bG8r/50Fcjql+1qPKXP0kdZYSgGUt6WoXiW32o0krP
+         hzHvoNyswpLAsGKz7iqFsrAPOEbCHA5Pk3R7Disk+EMvBwAU6azIrXBVUSFHLW7pUJJ8
+         Ii9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xom8pv8pA5D1wdYSli3646ft73285J8Rq30WVkF+CBQ=;
+        b=pkwSAWZ6GNANbLKo8zeVvXavMjKLHoUVvtKIcjnXshQ3wbONaI7XVXKKNdU+GAVpX6
+         VThnmJDuppzWWTC468E1BhS0PpmsSGc1Hsh0nZqFTfWVG1780+IwdGzOpG1w9XIixTja
+         R+GZ6W9Ssr3EbdPeqzXQVItWFldZJ2aWcvJS954xD1soTdgdcZ5s/sPb7YGz56+vqG7L
+         zZzQMThSxdwPekW4FZkZlnbtUjPMn7kwm/SoUfCApdMjN9I8ssU+vG8wz1FF5VfWuESe
+         pvoU6y6+zKNO33AjGAHTslwb1eQKQ+nVJY/8lK2Q6/vfv6bwuzOQG34D7ZovAa08thAu
+         RmUQ==
+X-Gm-Message-State: AOAM532+2Evq9tZA6GNOpQhQpa8ULqzeYfZ2D7uLvU6dupiVKuFjl2lH
+        9yVMvyxF2nbRM34zqdcaV38=
+X-Google-Smtp-Source: ABdhPJwBZj+PJ1pX+JAfEeaBfIE7g8NqzyqPnN82hV+SZaeV9E3sfyqPr9wckUHLsyXMketqOJbmcg==
+X-Received: by 2002:a37:4c4:: with SMTP id 187mr21793282qke.40.1600228106823;
+        Tue, 15 Sep 2020 20:48:26 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id g12sm18491396qke.90.2020.09.15.20.48.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Sep 2020 20:48:24 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1919927C0054;
+        Tue, 15 Sep 2020 23:48:23 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 15 Sep 2020 23:48:23 -0400
+X-ME-Sender: <xms:BothX0JDGcLcL1kYuwZ2HZIkEoItrXBKUAilTe4S0Bf5aeF18f3LIQ>
+    <xme:BothX0IL_dvYRjq5mzJ0zwkGYB7_zUHmxWBOmgyiGlNPTB4GqWXr3mDuFC3dYh3XI
+    L246h2drGKDtnXEvg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtddugdeikecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
+    fuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvufffkffoggfgsedtkeer
+    tdertddtnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesgh
+    hmrghilhdrtghomheqnecuggftrfgrthhtvghrnhepieeuveejleehudetfeevfeelgfej
+    teefhedvkedukefggedugefhudfhteevjedunecuffhomhgrihhnpehkvghrnhgvlhdroh
+    hrghenucfkphephedvrdduheehrdduuddurdejudenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvg
+    hrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhf
+    vghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:BothX0tvE5f5ZC1lbM16lmY7tH-hCjGuTfc-_5_lko2Pff9Rq5ViIg>
+    <xmx:BothXxYxS7FL22BQIwb9rooiOsikpAcbK66b2bIZWZDZaAKjd9UGyg>
+    <xmx:BothX7ZuqZs-GQ75QHCnJv8y_wRPE3u9Fs5hBvT1TDpsLRoLTPBNgQ>
+    <xmx:B4thX4ImC6wMsSoue1e08VHUqYpdBF2taAfN8vhH4lGw6hxTaI6LLH1JJzE>
+Received: from localhost (unknown [52.155.111.71])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 91E613064682;
+        Tue, 15 Sep 2020 23:48:21 -0400 (EDT)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>, will@kernel.org,
+        ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
+        mark.rutland@arm.com, maz@kernel.org,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH v4 00/11] Hyper-V: Support PAGE_SIZE larger than 4K
+Date:   Wed, 16 Sep 2020 11:48:06 +0800
+Message-Id: <20200916034817.30282-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK2PR06CA0013.apcprd06.prod.outlook.com (2603:1096:202:2e::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend Transport; Wed, 16 Sep 2020 03:47:53 +0000
-X-Originating-IP: [60.247.85.82]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8fdf4055-af5b-40eb-ac6d-08d859f34b7e
-X-MS-TrafficTypeDiagnostic: BY5PR11MB3893:
-X-Microsoft-Antispam-PRVS: <BY5PR11MB38935E07B01CED8AC16117E3E4210@BY5PR11MB3893.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HVHpXRxkyJ7AKuGt8f0tCxdUQ1nQjf1+3ugYT9zJ0kgZBJU77Av42ByoHJPhZIvObXCIjiCQekAyaqRQ/y6JWgEeVc7K2d7BaJpGTMACZB0L61ttduJ7qNu/uMOuTBiHPmstvwnK2azmcOTHGBxgnYun+d1qmnNGZwl0jZzOjA6LdO0YRuJ9iXHRjUzaykWZC4n2raaGkXagSaWbF8SGwSdTBdCo0XYT1MS8NeBYNcMQD6HKNsaJ5P7X0RSH3Wmq2WT5YrPAHwowU4yazZeIQ5xK4vUWYZes3K5dRdDpKS3+KMkf9eNTn4ed62y0H8TTEowqUOCqPMhRVXUGhJb02SxBXovgf8G7bGd2rk5JOegXerPg4EuukENoo9rJ64V99oQI+mBKue3XHPe4wbcfTO+H+9UGheyZtMHd4oKV+uZeIGPZZlnLxuj7UNqXIENSGan5oGW1CkEI3qzopcNVFw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(346002)(39850400004)(136003)(316002)(6486002)(83380400001)(26005)(36756003)(66556008)(66946007)(66476007)(5660300002)(2906002)(8676002)(31696002)(4326008)(8936002)(956004)(2616005)(16576012)(86362001)(31686004)(6706004)(478600001)(186003)(16526019)(6916009)(53546011)(52116002)(6666004)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 9I5L2LADoErkL2fTCDaJRcjr22kpNAI/1zsAXXWHhUbCUmfHHlbKvruU/kJe/jg2nM5Ya/yitX6xaIauzjLnu19TkQ3iMLqMwl5skpsbcr8B1bgNeerDu17EQ2BEmcLVoCHfmf/O44DDIKxjvC/Qhi2eWxud2LEnYJAvn9R4a8q1TcaxfA8+/IcfM0TClw8wdivzqkmWP90KnHsqanYude5CIRQMFNYh4ftZhr9iWPrrSJvF7X4/7+Rs1c1w3/hvlcIjnkiVOrNl7gGpD+8wcoqMGFyxJM2wtjVsyd9PYkHb1EFJsnIB3Qvue+r4t3QVo1xSl0IIbReoYRWZ1DlLfRzL4Bm4g47JOcP8ixJE+aGbnPsvUtfvkt1VFefDydSvZfImIT6ApCgu1cFLF7rZ1EhcQNuuM48h9450na+u6/n9IrzfErkZrzB7H8qZmowscQRISrVa+Dv1wbWxj0AsmhMqs9CwjaFqQsx/RVNjr9pP4+9Rd7br1E9CYeB3jevinOLl14YJumL26OzHIbYNS6kH3HOn/IgS018eCMhn6/so/6tDcDIqqYK5PjfRUfoNd91uFP84wu2y/Q+WXXkPwiiIWYb//844o/wTbEqjAY42+2pVAqjycUkavC3/ZXUuW5owS7GDbzcJdcCqh2CxPQ==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fdf4055-af5b-40eb-ac6d-08d859f34b7e
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 03:47:55.4571
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IiANzMJHfgH80ygSOujG8uWG/fQM7EFI4e6Xjcv5DGiNhY8wVSwYE4I+8xmV7m3MTyUOyOn3/XMjGSK+41l01Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3893
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset add the necessary changes to support guests whose page
+size is larger than 4K. And the main architecture which we develop this
+for is ARM64 (also it's the architecture that I use to test this
+feature).
 
+Previous version:
+v1: https://lore.kernel.org/lkml/20200721014135.84140-1-boqun.feng@gmail.com/
+v2: https://lore.kernel.org/lkml/20200902030107.33380-1-boqun.feng@gmail.com
+v3: https://lore.kernel.org/lkml/20200910143455.109293-1-boqun.feng@gmail.com/
 
-On 9/16/20 9:17 AM, Andrew Morton wrote:
-> On Tue, 15 Sep 2020 15:56:35 +0800 <yanfei.xu@windriver.com> wrote:
-> 
->> From: Yanfei Xu <yanfei.xu@windriver.com>
->>
->> alloc_mask shouldn't inherit the current task's flags when
->> __alloc_pages_nodemask is invoked in interrupt.
->>
->> ...
->>
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -4889,7 +4889,8 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
->>   	 * from a particular context which has been marked by
->>   	 * memalloc_no{fs,io}_{save,restore}.
->>   	 */
->> -	alloc_mask = current_gfp_context(gfp_mask);
->> +	if (!in_interrupt())
->> +		alloc_mask = current_gfp_context(gfp_mask);
->>   	ac.spread_dirty_pages = false;
->>   
->>   	/*
-> 
-> hm, yes, and perhaps other callsites in page_alloc.c.
-> 
-> I assume this doesn't actually make any runtime difference?  Because
-> gfp_mask in interrupt contexts isn't going to have __GFP_IO or __GFP_FS
-> anyway.
-> 
-Thanks for your reply!
+Changes since v3:
 
-Yes, It doesn't make any runtime difference. Theoretically, GPF_ATOMIC 
-or GFP_NOWAIT should be used in interrupt context for allocate pages, so
-that gfp_mask isn't going to have __GFP_IO or __GFP_FS.
+*	Fix a bug that ringbuffer sizes are not page-aligned when
+	PAGE_SIZE = 16k. Drop the Acked-by and Reviewed-by tags for
+	those patches accordingly.
 
-But if somebody use wrong gfp_masks, __GFP_IO or __GFP_FS will be 
-introduced, with the process interrupted has PF_MEMALLOC_NOIO or 
-PF_MEMALLOC_NOFS, current_gfp_context may help to hide these wrong 
-usages. I don't think it is the original purpose of that piece of
-codes.
+*	Code improvement as per suggestion from Michael Kelley.
 
-And how about add BUG_ON or WARN_ON to figure out the situation which
-introduce __GFP_IO or __GFP_FS in interrupt context?
+I've done some tests with PAGE_SIZE=64k and PAGE_SIZE=16k configurations
+on ARM64 guests (with Michael's patchset[1] for ARM64 Hyper-V guest
+support), everything worked fine ;-)
+
+Looking forwards to comments and suggestions!
 
 Regards,
-Yanfei
+Boqun
+
+[1]: https://lore.kernel.org/lkml/1598287583-71762-1-git-send-email-mikelley@microsoft.com/
+
+Boqun Feng (11):
+  Drivers: hv: vmbus: Always use HV_HYP_PAGE_SIZE for gpadl
+  Drivers: hv: vmbus: Move __vmbus_open()
+  Drivers: hv: vmbus: Introduce types of GPADL
+  Drivers: hv: Use HV_HYP_PAGE in hv_synic_enable_regs()
+  Drivers: hv: vmbus: Move virt_to_hvpfn() to hyperv header
+  hv: hyperv.h: Introduce some hvpfn helper functions
+  hv_netvsc: Use HV_HYP_PAGE_SIZE for Hyper-V communication
+  Input: hyperv-keyboard: Use VMBUS_RING_SIZE() for ringbuffer sizes
+  HID: hyperv: Use VMBUS_RING_SIZE() for ringbuffer sizes
+  Driver: hv: util: Use VMBUS_RING_SIZE() for ringbuffer sizes
+  scsi: storvsc: Support PAGE_SIZE larger than 4K
+
+ drivers/hid/hid-hyperv.c              |   4 +-
+ drivers/hv/channel.c                  | 461 ++++++++++++++++----------
+ drivers/hv/hv.c                       |   4 +-
+ drivers/hv/hv_util.c                  |  11 +-
+ drivers/input/serio/hyperv-keyboard.c |   4 +-
+ drivers/net/hyperv/netvsc.c           |   2 +-
+ drivers/net/hyperv/netvsc_drv.c       |  46 +--
+ drivers/net/hyperv/rndis_filter.c     |  13 +-
+ drivers/scsi/storvsc_drv.c            |  56 +++-
+ include/linux/hyperv.h                |  68 +++-
+ 10 files changed, 442 insertions(+), 227 deletions(-)
+
+-- 
+2.28.0
+
