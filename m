@@ -2,167 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F81926BF30
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB68126BF50
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgIPI0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:26:53 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:34425 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgIPI0r (ORCPT
+        id S1726543AbgIPIaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbgIPIat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:26:47 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 38CC5FF806;
-        Wed, 16 Sep 2020 08:26:40 +0000 (UTC)
+        Wed, 16 Sep 2020 04:30:49 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC1AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QHHY9c/6O+Ni91iKJG2q/1GSjFd3jc5M8UDRptkyw7M=; b=o3PNTI1Ba8j5mF2bzU+XilaYbm
+        ghyjuNQRVxu22Nro4tbWX2mWt69ayH4wOKlBZNLfSuFpQN0/P4+HjVpyh6PpZdyNQOoYpH4liCVus
+        D4moMZN18Yb2QcEvUOtLZv4pcm3pDGipkNkoX1mXDiku9UXPJDQhVOeyNrRZpjs62YYadk33O3EpP
+        jFuKK8K2/ENbRx2nveFP34naeI6DJfdONsgNrPGMjK3+r87j48uCOn9mWw/FwJntfMLFUtCXfEtaA
+        ZqqZSzBrITojSdYbLqd4WyiJXPV0oRvjSxhuKtYDj8qSP0l1f9IZpPBKc9+R6O7B/CTOPo5pzNRfQ
+        vMEXnXeQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kISpo-0000n5-I0; Wed, 16 Sep 2020 08:30:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A1A923050F0;
+        Wed, 16 Sep 2020 10:30:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8C9392127D319; Wed, 16 Sep 2020 10:30:32 +0200 (CEST)
 Date:   Wed, 16 Sep 2020 10:30:32 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v5 1/3] media: i2c: ov772x: Parse endpoint properties
-Message-ID: <20200916083032.yif4veaf3n44hkpf@uno.localdomain>
-References: <20200915174235.1229-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200915174235.1229-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200916074737.phc6atpsahxowfjt@uno.localdomain>
+From:   peterz@infradead.org
+To:     Marco Elver <elver@google.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
+ e6eb15c9ba3165698488ae5c34920eea20eaa38e
+Message-ID: <20200916083032.GL2674@hirez.programming.kicks-ass.net>
+References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
+ <20200915135519.GJ14436@zn.tnic>
+ <20200915141816.GC28738@shao2-debian>
+ <20200915160554.GN14436@zn.tnic>
+ <20200915170248.gcv54pvyckteyhk3@treble>
+ <20200915172152.GR14436@zn.tnic>
+ <CAKwvOdkh=bZE6uY8zk_QePq5B3fY1ue9VjEguJ_cQi4CtZ4xgw@mail.gmail.com>
+ <CANpmjNPWOus2WnMLSAXnzaXC5U5RDM3TTeV8vFDtvuZvrkoWtA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916074737.phc6atpsahxowfjt@uno.localdomain>
+In-Reply-To: <CANpmjNPWOus2WnMLSAXnzaXC5U5RDM3TTeV8vFDtvuZvrkoWtA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-  sorry, two more tiny nits
+On Tue, Sep 15, 2020 at 08:09:16PM +0200, Marco Elver wrote:
+> On Tue, 15 Sep 2020 at 19:40, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > On Tue, Sep 15, 2020 at 10:21 AM Borislav Petkov <bp@alien8.de> wrote:
 
-On Wed, Sep 16, 2020 at 09:47:37AM +0200, Jacopo Mondi wrote:
-> Hi Prabhakar,
->
-> On Tue, Sep 15, 2020 at 06:42:33PM +0100, Lad Prabhakar wrote:
-> > Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
-> > to determine bus-type and store it locally in priv data.
-> >
-> > v4l2_fwnode_endpoint_alloc_parse() with bus_type set to
-> > V4L2_MBUS_PARALLEL falls back to V4L2_MBUS_PARALLEL thus handling
-> > backward compatibility with existing DT where bus-type isn't specified.
->
->
-> I don't think this is necessary here. This patch does not need to
-> handle any retrocompatibility, as only PARALLEL is supported.
->
-> The 'right' way to put it to me would be
-> "Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
-> to determine the bus type and store it in the driver structure.
->
-> Set bus_type to V4L2_MBUS_PARALLEL as it's the only supported one"
->
-> See comment in the next patch for retrocompatibility
->
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/media/i2c/ov772x.c | 25 +++++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> >
-> > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-> > index 2cc6a678069a..4ab4b3c883d0 100644
-> > --- a/drivers/media/i2c/ov772x.c
-> > +++ b/drivers/media/i2c/ov772x.c
-> > @@ -31,6 +31,7 @@
-> >  #include <media/v4l2-ctrls.h>
-> >  #include <media/v4l2-device.h>
-> >  #include <media/v4l2-event.h>
-> > +#include <media/v4l2-fwnode.h>
-> >  #include <media/v4l2-image-sizes.h>
-> >  #include <media/v4l2-subdev.h>
-> >
-> > @@ -434,6 +435,7 @@ struct ov772x_priv {
-> >  #ifdef CONFIG_MEDIA_CONTROLLER
-> >  	struct media_pad pad;
-> >  #endif
-> > +	enum v4l2_mbus_type		  bus_type;
-> >  };
-> >
-> >  /*
-> > @@ -1354,6 +1356,8 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
-> >
-> >  static int ov772x_probe(struct i2c_client *client)
-> >  {
-> > +	struct v4l2_fwnode_endpoint bus_cfg;
-> > +	struct fwnode_handle	*ep;
-> >  	struct ov772x_priv	*priv;
-> >  	int			ret;
-> >  	static const struct regmap_config ov772x_regmap_config = {
-> > @@ -1415,6 +1419,27 @@ static int ov772x_probe(struct i2c_client *client)
-> >  		goto error_clk_put;
-> >  	}
-> >
-> > +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
-> > +					    NULL);
-> > +	if (!ep) {
-> > +		dev_err(&client->dev, "endpoint node not found\n");
+> > > init/calibrate.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > init/calibrate.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > init/version.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > init/version.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > certs/system_keyring.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > certs/system_keyring.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> 
+> This one also appears with Clang 11. This is new I think because we
+> started emitting ASAN ctors for globals redzone initialization.
+> 
+> I think we really do not care about precise stack frames in these
+> compiler-generated functions. So, would it be reasonable to make
+> objtool ignore all *san.module_ctor and *san.module_dtor functions (we
+> have them for ASAN, TSAN, MSAN)?
 
-Nit: other error messages in the driver start with a capital letter,
+The thing is, if objtool cannot follow, it cannot generate ORC data and
+our unwinder cannot unwind through the instrumentation, and that is a
+fail.
 
-> > +		ret = -EINVAL;
-> > +		goto error_clk_put;
-> > +	}
-> > +
-> > +	/* For backward compatibility with the existing DT where
-> > +	 * bus-type isn't specified v4l2_fwnode_endpoint_alloc_parse()
-> > +	 * with bus_type set to V4L2_MBUS_PARALLEL falls back to
-> > +	 * V4L2_MBUS_PARALLEL
-> > +	 */
->
-> You can drop this comment block
->
-
-Or better move it to the next patch. Two nits in the meantime:
-
-Use
-        /*
-         * This
-
-in place of
-
-        /* This
-
-And I would write it as something like
-
-        /*
-         * For backward compatibility with older DTS where the
-         * bus-type property was not mandatory, assume
-         * V4L2_MBUS_PARALLEL as it was the only supported bus at the
-         * time. v4l2_fwnode_endpoint_alloc_parse() will not fail if
-         * 'bus-type' is not specified.
-         */
-
-Thanks
-   j
-
-> > +	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
-> > +	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
-> > +	priv->bus_type = bus_cfg.bus_type;
->
-> Set this after if (ret)
->
-> > +	v4l2_fwnode_endpoint_free(&bus_cfg);
-> > +	fwnode_handle_put(ep);
-> > +	if (ret)
-> > +		goto error_clk_put;
-> > +
-> >  	ret = ov772x_video_probe(priv);
-> >  	if (ret < 0)
-> >  		goto error_gpio_put;
-> > --
-> > 2.17.1
-> >
+Or am I missing something here?
