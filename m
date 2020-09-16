@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1AF26C99A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E25126C913
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbgIPTOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:14:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727314AbgIPRka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:40:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 909172076D;
-        Wed, 16 Sep 2020 11:04:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600254274;
-        bh=lFBiwHtK6AFv8tNn9lt8ZEVeIHstWsf8bfrVPBe167s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HbYou1Uleay1Ns6v0dFkL5dnxzRbUGZu7vtK5KaOuXn1vEPoAs/hq7W22Oqf3iNRk
-         tId7LuzG4GsxuZogz5khUK/cuiDXnX032ijC+sUGAz5gjWzltocw0umRVB3iwXeO7p
-         CiHcnYuyT15VsDEakoe6glA6S4awoOzQYK+JNs2o=
-Date:   Wed, 16 Sep 2020 13:05:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/14] TCPM support for FRS and AutoDischarge
- Disconnect
-Message-ID: <20200916110508.GA825656@kroah.com>
-References: <20200901025927.3596190-1-badhri@google.com>
+        id S1727482AbgIPTDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727485AbgIPRsf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:48:35 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC04C0611C2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:09:50 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s12so6418125wrw.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BtfD39sd0nMdQV9/O9Z3aVwFFH7FdxRsFaEXRfET0Pk=;
+        b=JMfXnKjc+V6oefEfHPxrJc0ASOsVHknp4fC393byiq1s0Wql02e0UwVma6O/xdLogB
+         nv/VzMLg8R/G7mEK2+SPJ1OEaPWP3MzPXqsclLSgp/7owr30xJaGLb0Ry+hZJ5nnmWYb
+         YaRDlgJrAthFEr3jt0X+9LJ4zoLdS48c0KxJKfoeE2JYDNitMe0YGWCGDQjFXTlVYWDV
+         cC1oakzx3NmihAnNqwXMUtXgUOvgrAH7d886SwQLbzVQrD1MMTVe1cLUj8/MNZzHCarf
+         5lhwB7o1YQFnaeumfaS0uBCXxq59uESPZi0vIXkOJcE+fz8JWOgtd2RCe8QXmAinUAqI
+         8jfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BtfD39sd0nMdQV9/O9Z3aVwFFH7FdxRsFaEXRfET0Pk=;
+        b=JEYLDrpnrjwKcFtZaEAQdBhYkOs+DrrtEYNDzDxoXe+ZrhL+KvPCD8nkwzqvW6hToh
+         pBsappZ/XfMqUTEUYRRc6WIBxXLVr1nKzrQtEPahlsCm/gxyGp/kkV25zGZAYc1P04sK
+         ivF122ptOLRGrjs7Sa8Klc6NHZ4N9qrjMYNSP9+6ig+tyvJSvmsqQPmv5bhGQwHzlY6j
+         HuH+mIJRJ9E6FYSLrxNxvUVxeOyG8Ge8nrs7voX9wK0UKXsa/wSZAnJqQ2aUpwq2T1eU
+         HOACQfkARv4QUD5UvvgkQkIMlXmAR+kmhjNEAY1MzIEB18PdLZSpJabBcEDieUtVtYmH
+         BQdA==
+X-Gm-Message-State: AOAM533MllbVIZb6QjOKzdDnTThW1GvVsiJaYQ6hrR+m9CakT6Mekiil
+        meUjODBSDXO/+u+2QeqUhSly/w==
+X-Google-Smtp-Source: ABdhPJy4dZpmUwlAyx/BKQK6y4C9acThXDJDxCXFc5C+hNp6beal5vCckquXeaDceJb14bG9teu8aQ==
+X-Received: by 2002:adf:ef03:: with SMTP id e3mr21385449wro.146.1600254589005;
+        Wed, 16 Sep 2020 04:09:49 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id v9sm31876597wru.37.2020.09.16.04.09.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Sep 2020 04:09:48 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     stanimir.varbanov@linaro.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org
+Subject: [PATCH] media: platform: Remove depends on interconnect
+Date:   Wed, 16 Sep 2020 14:09:47 +0300
+Message-Id: <20200916110947.6933-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901025927.3596190-1-badhri@google.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 07:59:13PM -0700, Badhri Jagan Sridharan wrote:
-> First of all apologies for mixing up the patch version as noted by
-> Heikki and Greg. All of them were v1's but since I was manually adding
-> the version numbers I mixed them up. Using the --reroll-count option
-> now. Updating the patch version to v6 (highest version number in the
-> previous patchset + 1) to avoid confusion.
-> 
-> I also rebased on to off of the recent usb-next tip:
-> 5fedf0d295d3 (origin/usb-testing, origin/usb-next) Merge 5.9-rc3 into usb-next
-> Which had the following changes causing merge conflict:
-> 3ed8e1c2ac99 usb: typec: tcpm: Migrate workqueue to RT priority for processing events
-> 6bbe2a90a0bb usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
-> 
-> Addressed comments from Heikki and Randy which have described in the
-> individual commit's change history as well.
+The dependency on interconnect in the Kconfig was introduced to avoid
+the case of interconnect=m and driver=y, but the interconnect framework
+has been converted from tristate to bool now. Remove the dependency as
+the framework can't be a module anymore.
 
-First 3 patches now queued up, thanks.
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
+ drivers/media/platform/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index bbf32086b607..1dbfb9b9d129 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -484,7 +484,6 @@ config VIDEO_QCOM_VENUS
+ 	tristate "Qualcomm Venus V4L2 encoder/decoder driver"
+ 	depends on VIDEO_DEV && VIDEO_V4L2
+ 	depends on (ARCH_QCOM && IOMMU_DMA) || COMPILE_TEST
+-	depends on INTERCONNECT || !INTERCONNECT
+ 	select QCOM_MDT_LOADER if ARCH_QCOM
+ 	select QCOM_SCM if ARCH_QCOM
+ 	select VIDEOBUF2_DMA_SG
