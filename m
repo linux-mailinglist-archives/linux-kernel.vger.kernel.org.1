@@ -2,30 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C4026BA1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA34026BA22
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgIPC2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:28:20 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58392 "EHLO huawei.com"
+        id S1726475AbgIPC2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:28:39 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58530 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726397AbgIPC2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:28:02 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A0472D58BABBA9BC5833;
-        Wed, 16 Sep 2020 10:28:00 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
- 10:27:54 +0800
+        id S1726406AbgIPC2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:28:06 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 73DDE467085A06020A0E;
+        Wed, 16 Sep 2020 10:28:04 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 10:27:55 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-CC:     <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     Karan Tilak Kumar <kartilak@cisco.com>,
+        Sesidhar Baddela <sebaddel@cisco.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] s390/diag: convert to use DEFINE_SEQ_ATTRIBUTE macro
-Date:   Wed, 16 Sep 2020 10:50:29 +0800
-Message-ID: <20200916025029.3992939-1-liushixin2@huawei.com>
+Subject: [PATCH -next] scsi: snic: convert to use DEFINE_SEQ_ATTRIBUTE macro
+Date:   Wed, 16 Sep 2020 10:50:30 +0800
+Message-ID: <20200916025030.3992991-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,33 +42,42 @@ Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- arch/s390/kernel/diag.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ drivers/scsi/snic/snic_debugfs.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/arch/s390/kernel/diag.c b/arch/s390/kernel/diag.c
-index ccba63aaeb47..b8b0cd7b008f 100644
---- a/arch/s390/kernel/diag.c
-+++ b/arch/s390/kernel/diag.c
-@@ -104,18 +104,7 @@ static const struct seq_operations show_diag_stat_sops = {
- 	.show	= show_diag_stat,
+diff --git a/drivers/scsi/snic/snic_debugfs.c b/drivers/scsi/snic/snic_debugfs.c
+index 2b349365592f..4471c4c8aafa 100644
+--- a/drivers/scsi/snic/snic_debugfs.c
++++ b/drivers/scsi/snic/snic_debugfs.c
+@@ -439,26 +439,14 @@ snic_trc_seq_show(struct seq_file *sfp, void *data)
+ 	return 0;
+ }
+ 
+-static const struct seq_operations snic_trc_seq_ops = {
++static const struct seq_operations snic_trc_sops = {
+ 	.start	= snic_trc_seq_start,
+ 	.next	= snic_trc_seq_next,
+ 	.stop	= snic_trc_seq_stop,
+ 	.show	= snic_trc_seq_show,
  };
  
--static int show_diag_stat_open(struct inode *inode, struct file *file)
+-static int
+-snic_trc_open(struct inode *inode, struct file *filp)
 -{
--	return seq_open(file, &show_diag_stat_sops);
+-	return seq_open(filp, &snic_trc_seq_ops);
 -}
 -
--static const struct file_operations show_diag_stat_fops = {
--	.open		= show_diag_stat_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= seq_release,
+-static const struct file_operations snic_trc_fops = {
+-	.owner	= THIS_MODULE,
+-	.open	= snic_trc_open,
+-	.read	= seq_read,
+-	.llseek = seq_lseek,
+-	.release = seq_release,
 -};
--
-+DEFINE_SEQ_ATTRIBUTE(show_diag_stat);
++DEFINE_SEQ_ATTRIBUTE(snic_trc);
  
- static int __init show_diag_stat_init(void)
- {
+ /*
+  * snic_trc_debugfs_init : creates trace/tracing_enable files for trace
 -- 
 2.25.1
 
