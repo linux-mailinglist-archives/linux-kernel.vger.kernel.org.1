@@ -2,205 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A285C26CB29
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D2726CB84
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgIPUXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbgIPR3C (ORCPT
+        id S1727142AbgIPU3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:29:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40111 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726990AbgIPRYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:29:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DB5C02C297;
-        Wed, 16 Sep 2020 08:20:16 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:12:17 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600269138;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Wed, 16 Sep 2020 13:24:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600277005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NNQQ+weTsOhTxGscMKJcGAGkUigmfTPjARgrh4O+rpU=;
-        b=LvkaKFDr4B6ai9WHuQ1MjtZqyPLS7xN7Zk16FKElbnho6B3DSe3UiewZz+F+Km0zIfiS8c
-        r6BT32g990XEo25TNd+aMuM1d8nrc4MWRw+S6cLhTyo/Cc5LbclnOLmaprrujwhW/R8DvV
-        305ZacQECa7G4MfS5v/DyCr0gZ+JroFXlierCf84nesomBA+jBHE5WmgGf79mYd9Lu0bmd
-        AZLaIEUeH8HcMXDrUXiZDTxuYqwLLApn2q3hzWF3k4II6NcuwGSdXWRKbcR/FB2zKsuR56
-        8SmBwkvwGG72aBLfVZ7PpHdkVRkKMTbIdj7vxqhcyHCr392XJFJLBtnVQVLQ7g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600269138;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NNQQ+weTsOhTxGscMKJcGAGkUigmfTPjARgrh4O+rpU=;
-        b=BNGJaG0lr6YK1URf4ekX8fHzFgdbjh1swfPngLRzUSnPpm3YU9EHBMTnG+9NSQKOBzG01o
-        820XUsrhzgZdukCw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] x86/msi: Consolidate MSI allocation
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Wei Liu <wei.liu@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200826112332.466405395@linutronix.de>
-References: <20200826112332.466405395@linutronix.de>
+        bh=0FBHbk68iVZgx7bJXMjUxCpKA5G+DPHMYndfXbzqZBk=;
+        b=DZJzl9kVrSGmki2zkzK6nz44M28KKXSBxKH+ue+TPelc8nXf+xh2DHbrdNxyTBnI1akNw8
+        hFgUH8EWn80fLDz3zc0zWwgG4eueKNsYKNMrgX3iwfOCuvX9XcX64mZL/5CXOEye0457WC
+        Q1DXrHG0QMloit5ZMlNX/flyXJT8HI4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-108-ssaaT3QjOJKzRu4Ac00xZA-1; Wed, 16 Sep 2020 11:12:41 -0400
+X-MC-Unique: ssaaT3QjOJKzRu4Ac00xZA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86E7064095;
+        Wed, 16 Sep 2020 15:12:39 +0000 (UTC)
+Received: from starship (unknown [10.35.206.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DD9F25FC36;
+        Wed, 16 Sep 2020 15:12:37 +0000 (UTC)
+Message-ID: <adcd725ec06d2a72de4f7e035edc743697fdbbb2.camel@redhat.com>
+Subject: Re: [PATCH v2] iommu/amd: Restore IRTE.RemapEn bit for
+ amd_iommu_activate_guest_mode
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     joro@8bytes.org, Joao Martins <joao.m.martins@oracle.com>
+Date:   Wed, 16 Sep 2020 18:12:36 +0300
+In-Reply-To: <20200916111720.43913-1-suravee.suthikulpanit@amd.com>
+References: <20200916111720.43913-1-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Message-ID: <160026913739.15536.6275942744489847917.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/irq branch of tip:
+On Wed, 2020-09-16 at 11:17 +0000, Suravee Suthikulpanit wrote:
+> Commit e52d58d54a32 ("iommu/amd: Use cmpxchg_double() when updating
+> 128-bit IRTE") removed an assumption that modify_irte_ga always set
+> the valid bit, which requires the callers to set the appropriate value
+> for the struct irte_ga.valid bit before calling the function.
+> 
+> Similar to the commit 26e495f34107 ("iommu/amd: Restore IRTE.RemapEn
+> bit after programming IRTE"), which is for the function
+> amd_iommu_deactivate_guest_mode().
+> 
+> The same change is also needed for the amd_iommu_activate_guest_mode().
+> Otherwise, this could trigger IO_PAGE_FAULT for the VFIO based VMs with
+> AVIC enabled.
+> 
+> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Cc: Joao Martins <joao.m.martins@oracle.com>
+> Fixes: e52d58d54a321 ("iommu/amd: Use cmpxchg_double() when updating 128-bit IRTE")
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> ---
+>  drivers/iommu/amd/iommu.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+> index e938677af8bc..db4fb840c59c 100644
+> --- a/drivers/iommu/amd/iommu.c
+> +++ b/drivers/iommu/amd/iommu.c
+> @@ -3900,14 +3900,18 @@ int amd_iommu_activate_guest_mode(void *data)
+>  {
+>  	struct amd_ir_data *ir_data = (struct amd_ir_data *)data;
+>  	struct irte_ga *entry = (struct irte_ga *) ir_data->entry;
+> +	u64 valid;
+>  
+>  	if (!AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) ||
+>  	    !entry || entry->lo.fields_vapic.guest_mode)
+>  		return 0;
+>  
+> +	valid = entry->lo.fields_vapic.valid;
+> +
+>  	entry->lo.val = 0;
+>  	entry->hi.val = 0;
+>  
+> +	entry->lo.fields_vapic.valid       = valid;
+>  	entry->lo.fields_vapic.guest_mode  = 1;
+>  	entry->lo.fields_vapic.ga_log_intr = 1;
+>  	entry->hi.fields.ga_root_ptr       = ir_data->ga_root_ptr;
 
-Commit-ID:     3b9c1d377d67072d1d8a2373b4969103cca00dab
-Gitweb:        https://git.kernel.org/tip/3b9c1d377d67072d1d8a2373b4969103cca00dab
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 26 Aug 2020 13:16:46 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 16 Sep 2020 16:52:35 +02:00
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Best regards,
+	Maxim Levitsky
 
-x86/msi: Consolidate MSI allocation
-
-Convert the interrupt remap drivers to retrieve the pci device from the msi
-descriptor and use info::hwirq.
-
-This is the first step to prepare x86 for using the generic MSI domain ops.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Wei Liu <wei.liu@kernel.org>
-Acked-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/r/20200826112332.466405395@linutronix.de
-
----
- arch/x86/include/asm/hw_irq.h       | 8 --------
- arch/x86/kernel/apic/msi.c          | 7 +++----
- drivers/iommu/amd/iommu.c           | 5 +++--
- drivers/iommu/intel/irq_remapping.c | 4 ++--
- drivers/pci/controller/pci-hyperv.c | 2 +-
- 5 files changed, 9 insertions(+), 17 deletions(-)
-
-diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index dd0b479..a4aeeaa 100644
---- a/arch/x86/include/asm/hw_irq.h
-+++ b/arch/x86/include/asm/hw_irq.h
-@@ -86,14 +86,6 @@ struct irq_alloc_info {
- 	union {
- 		struct ioapic_alloc_info	ioapic;
- 		struct uv_alloc_info		uv;
--
--		int		unused;
--#ifdef	CONFIG_PCI_MSI
--		struct {
--			struct pci_dev	*msi_dev;
--			irq_hw_number_t	msi_hwirq;
--		};
--#endif
- 	};
- };
- 
-diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
-index 6d7655b..6b490d9 100644
---- a/arch/x86/kernel/apic/msi.c
-+++ b/arch/x86/kernel/apic/msi.c
-@@ -188,7 +188,6 @@ int native_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
- 
- 	init_irq_alloc_info(&info, NULL);
- 	info.type = X86_IRQ_ALLOC_TYPE_PCI_MSI;
--	info.msi_dev = dev;
- 
- 	domain = irq_remapping_get_irq_domain(&info);
- 	if (domain == NULL)
-@@ -207,7 +206,7 @@ void native_teardown_msi_irq(unsigned int irq)
- static irq_hw_number_t pci_msi_get_hwirq(struct msi_domain_info *info,
- 					 msi_alloc_info_t *arg)
- {
--	return arg->msi_hwirq;
-+	return arg->hwirq;
- }
- 
- int pci_msi_prepare(struct irq_domain *domain, struct device *dev, int nvec,
-@@ -217,7 +216,6 @@ int pci_msi_prepare(struct irq_domain *domain, struct device *dev, int nvec,
- 	struct msi_desc *desc = first_pci_msi_entry(pdev);
- 
- 	init_irq_alloc_info(arg, NULL);
--	arg->msi_dev = pdev;
- 	if (desc->msi_attrib.is_msix) {
- 		arg->type = X86_IRQ_ALLOC_TYPE_PCI_MSIX;
- 	} else {
-@@ -231,7 +229,8 @@ EXPORT_SYMBOL_GPL(pci_msi_prepare);
- 
- void pci_msi_set_desc(msi_alloc_info_t *arg, struct msi_desc *desc)
- {
--	arg->msi_hwirq = pci_msi_domain_calc_hwirq(desc);
-+	arg->desc = desc;
-+	arg->hwirq = pci_msi_domain_calc_hwirq(desc);
- }
- EXPORT_SYMBOL_GPL(pci_msi_set_desc);
- 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 8183a71..bc7bb4c 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -3528,7 +3528,7 @@ static int get_devid(struct irq_alloc_info *info)
- 		return get_hpet_devid(info->devid);
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
--		return get_device_id(&info->msi_dev->dev);
-+		return get_device_id(msi_desc_to_dev(info->desc));
- 	default:
- 		WARN_ON_ONCE(1);
- 		return -1;
-@@ -3702,7 +3702,8 @@ static int irq_remapping_alloc(struct irq_domain *domain, unsigned int virq,
- 		   info->type == X86_IRQ_ALLOC_TYPE_PCI_MSIX) {
- 		bool align = (info->type == X86_IRQ_ALLOC_TYPE_PCI_MSI);
- 
--		index = alloc_irq_index(devid, nr_irqs, align, info->msi_dev);
-+		index = alloc_irq_index(devid, nr_irqs, align,
-+					msi_desc_to_pci_dev(info->desc));
- 	} else {
- 		index = alloc_irq_index(devid, nr_irqs, false, NULL);
- 	}
-diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-index 90ba70d..d9db2f3 100644
---- a/drivers/iommu/intel/irq_remapping.c
-+++ b/drivers/iommu/intel/irq_remapping.c
-@@ -1124,7 +1124,7 @@ static struct irq_domain *intel_get_irq_domain(struct irq_alloc_info *info)
- 		return map_hpet_to_ir(info->devid);
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
--		return map_dev_to_ir(info->msi_dev);
-+		return map_dev_to_ir(msi_desc_to_pci_dev(info->desc));
- 	default:
- 		WARN_ON_ONCE(1);
- 		return NULL;
-@@ -1293,7 +1293,7 @@ static void intel_irq_remapping_prepare_irte(struct intel_ir_data *data,
- 		if (info->type == X86_IRQ_ALLOC_TYPE_HPET)
- 			set_hpet_sid(irte, info->devid);
- 		else
--			set_msi_sid(irte, info->msi_dev);
-+			set_msi_sid(irte, msi_desc_to_pci_dev(info->desc));
- 
- 		msg->address_hi = MSI_ADDR_BASE_HI;
- 		msg->data = sub_handle;
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index fc4c3a1..f6cc49b 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -1534,7 +1534,7 @@ static struct irq_chip hv_msi_irq_chip = {
- static irq_hw_number_t hv_msi_domain_ops_get_hwirq(struct msi_domain_info *info,
- 						   msi_alloc_info_t *arg)
- {
--	return arg->msi_hwirq;
-+	return arg->hwirq;
- }
- 
- static struct msi_domain_ops hv_msi_ops = {
