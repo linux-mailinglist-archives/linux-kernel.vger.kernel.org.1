@@ -2,139 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA17726CCBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F18826CCE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbgIPUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:48:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728444AbgIPUsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 16:48:43 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4AE9206BE;
-        Wed, 16 Sep 2020 20:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600289321;
-        bh=QF1zQJP79WVPgC7BQeqDP3DZhHjaF5z1yd8g5M2I7fo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=akB9Q04wZh3xRPtHQo3QuvPylihDbICVfThimNTeh+6Dq0zpizzibT3VdQC852Awd
-         fuMHbK20SAzoAhLwH6t+euR5PcSNWcJa0SR4ujAxGLaUq8AJQAgfX4YxZ7alYezUvX
-         j37+068f8IMjVrTrNXFe4dEm94w3+K/HU0qZ4xJY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6BBF33522BA0; Wed, 16 Sep 2020 13:48:41 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 13:48:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-Message-ID: <20200916204841.GC29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200914204209.256266093@linutronix.de>
- <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de>
- <20200916192352.GO5449@casper.infradead.org>
+        id S1728535AbgIPUuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726743AbgIPUuN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 16:50:13 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E18BC06174A;
+        Wed, 16 Sep 2020 13:50:13 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k18so4375995wmj.5;
+        Wed, 16 Sep 2020 13:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TVdlmRRpxaOmJp0wpVVEjEPcXY/5kO+TQCDCCLVJ6hg=;
+        b=G7Qd/LcqX6GnUw4HwAETsZJC3kfYWCGoq88416Zk1MSfG7rWo/v7qEKxRG+cTU4wPW
+         CqFZDKDK3+BvEwALubLpQ2zYb8mJnl5Jo2e/2k4YRx2EB1d1sAx1K12STM9pjqpyEad9
+         RppDA3yh5l5I9VaDWylWdso3bnBfYWcoYHdf79CnqWojt9u71DuQQ8gsW+Gps7y4XxjY
+         u+NocKWfdGXAm+mhCAvVTtVE3Fytl//yoSvXDta0rCzv6rUvNqtzfZbxieHdeK/KN0xC
+         hhBVcitoo/1hOeeUN2YxtPHIYcBWjuYEADSNFm2Z1kF89SzbJN89YON3HQSc2Hd7hJ0Q
+         SB0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TVdlmRRpxaOmJp0wpVVEjEPcXY/5kO+TQCDCCLVJ6hg=;
+        b=gf9WmnYi4lqlyXBr82uH3iHUSg+46TshZBFzQE0JHXm/NO2I1GekptcsfIPKPW0A0B
+         u2YSGW2oAzdfSZ8hBlnyRT4Icm6KFRkTCjBQqeXNlL4N1QkIvbeW4y7kwJyau3aYwu7p
+         wwDi++mjwrnHD4g2AXRyX2fcomOXGcUJTX0okQMHFf8hAuJvvSnpXM3XRDMgjh/8Ybg5
+         GMnzYOGgu8Pza1zYE9GcLH0BA76K3CGJsexY2MaYfKxiL38AcvT/L/KNLBXgfiXkb/PK
+         XE38zxdKLBiJsMNCuXKcwN7Zkv9TwQ9F43l0wSrAkh3gWzKjyltUGZ26Y6Z0YeE4mWJl
+         nGTA==
+X-Gm-Message-State: AOAM5333eLzUrkAg880J3SJ4P+s7ZzNlxz1xug6oHXG9NnDPXXxsorMJ
+        MJR44upG3/NJLydlBbyYgnQ=
+X-Google-Smtp-Source: ABdhPJxRPEz6cLPrGaaD3Q9jTaxwljb6VA9QWbvZQVPXsnVMm7Zkyqz9HkM8Q8wHaWQKhjFcp6Jivg==
+X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr6167718wml.147.1600289411985;
+        Wed, 16 Sep 2020 13:50:11 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id z7sm34879619wrw.93.2020.09.16.13.50.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 13:50:11 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] i40e: Fix use of uninitialized variable
+Date:   Wed, 16 Sep 2020 21:49:42 +0100
+Message-Id: <20200916204943.41017-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916192352.GO5449@casper.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:23:52PM +0100, Matthew Wilcox wrote:
-> On Mon, Sep 14, 2020 at 11:55:24PM +0200, Thomas Gleixner wrote:
-> > But just look at any check which uses preemptible(), especially those
-> > which check !preemptible():
-> 
-> hmm.
-> 
-> +++ b/include/linux/preempt.h
-> @@ -180,7 +180,9 @@ do { \
->  
->  #define preempt_enable_no_resched() sched_preempt_enable_no_resched()
->  
-> +#ifndef MODULE
->  #define preemptible()  (preempt_count() == 0 && !irqs_disabled())
-> +#endif
->  
->  #ifdef CONFIG_PREEMPTION
->  #define preempt_enable() \
-> 
-> 
-> $ git grep -w preemptible drivers
-> (slightly trimmed by hand to remove, eg, comments)
-> drivers/firmware/arm_sdei.c:    WARN_ON_ONCE(preemptible());
-> drivers/firmware/arm_sdei.c:    WARN_ON_ONCE(preemptible());
-> drivers/firmware/arm_sdei.c:    WARN_ON_ONCE(preemptible());
-> drivers/firmware/arm_sdei.c:    WARN_ON_ONCE(preemptible());
-> drivers/firmware/arm_sdei.c:    WARN_ON(preemptible());
-> drivers/firmware/efi/efi-pstore.c:                            preemptible(), record->size, record->psi->buf);
-> drivers/irqchip/irq-gic-v4.c:   WARN_ON(preemptible());
-> drivers/irqchip/irq-gic-v4.c:   WARN_ON(preemptible());
-> drivers/scsi/hisi_sas/hisi_sas_main.c:          if (!preemptible())
-> drivers/xen/time.c:     BUG_ON(preemptible());
-> 
-> That only looks like two drivers that need more than WARNectomies.
+In i40e_clean_rx_irq_zc(), the variable failure is only set when a
+condition is met, but then its value is used unconditionally. Fix this.
 
-I could easily imagine someone thinking that these did something in
-CONFIG_PREEMPT_NONE=y kernels.  In fact, I could easily imagine myself
-making that mistake.  :-/
+Addresses-Coverity: 1496986 ("Uninitialized value")
+Fixes: 8cbf74149903 ("i40e, xsk: move buffer allocation out of the Rx processing loop")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Although maybe rcu_read_load_sched_held() or rcu_read_lock_any_held()
-> might get called from a module ...
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index 6acede0acdca..18c05d23e15e 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -364,8 +364,8 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
+ 		napi_gro_receive(&rx_ring->q_vector->napi, skb);
+ 	}
+ 
+-	if (cleaned_count >= I40E_RX_BUFFER_WRITE)
+-		failure = !i40e_alloc_rx_buffers_zc(rx_ring, cleaned_count);
++	failure = (cleaned_count >= I40E_RX_BUFFER_WRITE) &&
++		  !i40e_alloc_rx_buffers_zc(rx_ring, cleaned_count);
+ 
+ 	i40e_finalize_xdp_rx(rx_ring, xdp_xmit);
+ 	i40e_update_rx_stats(rx_ring, total_rx_bytes, total_rx_packets);
+-- 
+2.28.0
 
-But yes, from the rcutorture module for certain and also from any other
-RCU-using module that includes the usual RCU debug checks.
-
-							Thanx, Paul
