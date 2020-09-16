@@ -2,174 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2412B26CCAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0571026CC33
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgIPUsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:48:09 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53414 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726683AbgIPRBO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:01:14 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GG69EG186647;
-        Wed, 16 Sep 2020 12:10:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=qM8GgVvqfUwPcqj9nGCvGWGoNwi0Zbhd1BMN07olGOI=;
- b=MLK+e4h+ske7As7axhaUEHzD6nLaC4NYjBipp/vm0ToomPivLa+dl4DkrySLOD8COPck
- n+BljFAhNQz5xluWMeD/pVzojhuS54eXt1NgoXg4H1yZxeX5o8CisVih4ITVTb78zT9N
- mjIFONFIH1Yva0wv6QmPt+hU+WBH9pcI4jBeZUzKt0529Tu3Dl8JKqumi56vIPKT3b/r
- 53ztkNrbvyDttHgVYmZjWIz0C8M1OyumWfE5b7Mgwmv2x1O/9c4RmefoPeopK3yrd4zt
- wPzZcfj2fvLh/Hh8Jtf660bcYwQR8hfNiT0+ESGlvjV8okn/7wrs1WRsZWo1KgZAfi6C 3A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33knps8mvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 12:10:02 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08GG2aqZ168844;
-        Wed, 16 Sep 2020 12:10:02 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33knps8mum-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 12:10:02 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08GFvL0Z026945;
-        Wed, 16 Sep 2020 16:09:59 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 33k9ge8nsm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 16:09:59 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08GG9uI018415886
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 16:09:57 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D878411C050;
-        Wed, 16 Sep 2020 16:09:56 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 52AD811C04A;
-        Wed, 16 Sep 2020 16:09:55 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.183.110])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Sep 2020 16:09:55 +0000 (GMT)
-Subject: Re: [PATCH v3 1/3] mm: replace memmap_context by meminit_context
-To:     akpm@linux-foundation.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oscar Salvador <osalvador@suse.de>, mhocko@suse.com,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20200915121541.GD4649@dhcp22.suse.cz>
- <20200915132624.9723-1-ldufour@linux.ibm.com>
- <20200916063325.GK142621@kroah.com>
- <0b3f2eb1-0efa-a491-c509-d16a7e18d8e8@linux.ibm.com>
- <20200916074047.GA189144@kroah.com>
- <9e8d38b9-3875-0fd8-5f28-3502f33c2c34@linux.ibm.com>
- <95005625-b159-0d49-8334-3c6cdbb7f27a@redhat.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <f522bcb8-575e-0ac7-69cb-1064e8b38c58@linux.ibm.com>
-Date:   Wed, 16 Sep 2020 18:09:55 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726781AbgIPUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:40:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726785AbgIPRFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:05:42 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02B1D2253D;
+        Wed, 16 Sep 2020 16:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600272745;
+        bh=iEVZrxuZhmhpRqyK1DK1vz8F+gtErcSkPD2sBCuwodQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=p5HsXlnNI7zoLhS/fzfih8jwhFJ1GOAuN01SkvoHxjAzzCqyQ7tbpsQpaQBqCHU5D
+         zlJSKORad/ft8woW+x2Qf+ukZqdoPvSy9fsLnoGiR+/+T0J9sx4loGK4u6Hlx5s6Q+
+         JHJ7fC1THphLTFTUvm9WQQklDF5uwxlZmKAmhG3U=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 9FB6E3522836; Wed, 16 Sep 2020 09:12:24 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 09:12:24 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kernel] srcu: Fix static initialization
+Message-ID: <20200916161224.GA30546@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200908144306.33355-1-aik@ozlabs.ru>
+ <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
+ <20200909115010.GG29330@paulmck-ThinkPad-P72>
+ <37f76aac-d8e3-8ab1-24e9-c417b719e2a6@ozlabs.ru>
+ <20200910185353.GS29330@paulmck-ThinkPad-P72>
+ <611a6a87-f673-c5b7-3b60-58805fba580a@ozlabs.ru>
+ <20200911135208.GX29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <95005625-b159-0d49-8334-3c6cdbb7f27a@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_10:2020-09-16,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=688
- priorityscore=1501 bulkscore=0 suspectscore=0 spamscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160114
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911135208.GX29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 16/09/2020 à 09:52, David Hildenbrand a écrit :
-> On 16.09.20 09:47, Laurent Dufour wrote:
->> Le 16/09/2020 à 09:40, Greg Kroah-Hartman a écrit :
->>> On Wed, Sep 16, 2020 at 09:29:22AM +0200, Laurent Dufour wrote:
->>>> Le 16/09/2020 à 08:33, Greg Kroah-Hartman a écrit :
->>>>> On Tue, Sep 15, 2020 at 03:26:24PM +0200, Laurent Dufour wrote:
->>>>>> The memmap_context enum is used to detect whether a memory operation is due
->>>>>> to a hot-add operation or happening at boot time.
->>>>>>
->>>>>> Make it general to the hotplug operation and rename it as meminit_context.
->>>>>>
->>>>>> There is no functional change introduced by this patch
->>>>>>
->>>>>> Suggested-by: David Hildenbrand <david@redhat.com>
->>>>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
->>>>>> ---
->>>>>>     arch/ia64/mm/init.c    |  6 +++---
->>>>>>     include/linux/mm.h     |  2 +-
->>>>>>     include/linux/mmzone.h | 11 ++++++++---
->>>>>>     mm/memory_hotplug.c    |  2 +-
->>>>>>     mm/page_alloc.c        | 10 +++++-----
->>>>>>     5 files changed, 18 insertions(+), 13 deletions(-)
->>>>>
->>>>> <formletter>
->>>>>
->>>>> This is not the correct way to submit patches for inclusion in the
->>>>> stable kernel tree.  Please read:
->>>>>        https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
->>>>> for how to do this properly.
->>>>>
->>>>> </formletter>
->>>>
->>>> Hi Greg,
->>>>
->>>> I'm sorry, I read that document few days ago before sending the series and
->>>> again this morning, but I can't figure out what I missed (following option
->>>> 1).
->>>>
->>>> Should the "Cc: stable@vger.kernel.org" tag be on each patch of the series
->>>> even if the whole series has been sent to stable ?
->>>
->>> That should be on any patch you expect to show up in a stable kernel
->>> release.
->>>
->>>> Should the whole series sent again (v4) instead of sending a fix as a reply to ?
->>>
->>> It's up to the maintainer what they want, but as it is, this patch is
->>> not going to end up in stable kernel release (which it looks like is the
->>> right thing to do...)
->>
->> Thanks a lot Greg.
->>
->> I'll send that single patch again with the Cc: stable tag.
-> 
-> I think Andrew can add that when sending upstream.
+On Fri, Sep 11, 2020 at 06:52:08AM -0700, Paul E. McKenney wrote:
+> On Fri, Sep 11, 2020 at 03:09:41PM +1000, Alexey Kardashevskiy wrote:
+> > On 11/09/2020 04:53, Paul E. McKenney wrote:
+> > > On Wed, Sep 09, 2020 at 10:31:03PM +1000, Alexey Kardashevskiy wrote:
 
-Andrew, can you do that?
+[ . . . ]
 
-> While a single patch to fix + backport would be nicer, I don't see an
-> easy (!ugly) way to achieve the same without this cleanup.
+> > >> init_srcu_struct_nodes() assumes ssp->sda!=NULL but alloc_percpu() fails
+> > >> here:
+> > >>
+> > >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/percpu.c#n1734
+> > >> ===
+> > >> 	} else if (mutex_lock_killable(&pcpu_alloc_mutex)) {
+> > >> 			pcpu_memcg_post_alloc_hook(objcg, NULL, 0, size);
+> > >> 			return NULL;
+> > >> ===
+> > >>
+> > >> I am still up to reading that osr-rcuusage.pdf to provide better
+> > >> analysis :) Thanks,
+> > > 
+> > > Ah, got it!  Does the following patch help?
+> > > 
+> > > There will likely also need to be changes to cleanup_srcu_struct(),
+> > > but first let's see if I understand the problem.  ;-)
+> > > 
+> > > 							Thanx, Paul
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > index c13348e..6f7880a 100644
+> > > --- a/kernel/rcu/srcutree.c
+> > > +++ b/kernel/rcu/srcutree.c
+> > > @@ -177,11 +177,13 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> > >  	INIT_DELAYED_WORK(&ssp->work, process_srcu);
+> > >  	if (!is_static)
+> > >  		ssp->sda = alloc_percpu(struct srcu_data);
+> > > +	if (!ssp->sda)
+> > > +		return -ENOMEM;
+> > >  	init_srcu_struct_nodes(ssp, is_static);
+> > >  	ssp->srcu_gp_seq_needed_exp = 0;
+> > >  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+> > >  	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
+> > 
+> > The line above confuses me a bit. What you propose returns without
+> > smp_store_release() called which should not matter I suppose.
 > 
-> 1. We could rework patch #2 to pass a simple boolean flag, and a
-> follow-on patch to pass the context. Not sure if that's any better.
+> The idea is that if init_srcu_struct() returns -ENOMEM, the structure
+> has not been initialized and had better not be used.  If the calling code
+> cannot handle that outcome, then the calling code needs to do something
+> to insulate init_srcu_struct() from signals.  One thing that it could
+> do would be to invoke init_srcu_struct() from a workqueue handler and
+> wait for this handler to complete.
 > 
-> 2. We could rework patch #2 to pass memmap_context first, and modify
-> patch #1 to also rename this instance.
+> Please keep in mind that there is nothing init_srcu_struct() can do
+> about this:  The srcu_struct is useless unless alloc_percpu() succeeds.
 > 
-> Maybe 2. might be reasonable (not sure if worth the trouble). @Greg any
-> preference?
+> And yes, I do need to update the header comments to make this clear.
 > 
->>
->> I don't think the patch 3 need to be backported, it doesn't fix any issue and
->> with the patch 1 and 2 applied, the BUG_ON should no more be triggered easily.
+> > Otherwise it should work, although I cannot verify right now as my box
+> > went down and since it is across Pacific - it may take time to power
+> > cycle it :) Thanks,
 > 
-> Agreed.
-> 
-> 
+> I know that feeling!  And here is hoping that the box is out of reach
+> of the local hot spots.  ;-)
 
+Just following up...  Did that patch help?
+
+							Thanx, Paul
