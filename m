@@ -2,193 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E910B26C933
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD2226C973
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727456AbgIPTE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:04:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727435AbgIPRqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:46:21 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B64F12245B;
-        Wed, 16 Sep 2020 15:29:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600270196;
-        bh=7NyPhCsJFe+XnywOE0R6a34Zb8JkKakmIMyfHGRY4M4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RDn2wViv7vu9hmTmpsb1bbpxLvCuo/SWaPWp9V1mUJjTgcbrPb3R9uT93osWEIaEM
-         9afuPUPWLKufiQ8ziF9Odhp5i1jimAe0xZ86J+gr+sITpv+bXYsBTi2jsiSuqu37hP
-         IQWviNGI8iEhKKuiZkBJY1pWiLjStFx1TIayKIP0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4FBEC3522836; Wed, 16 Sep 2020 08:29:56 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 08:29:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        id S1727355AbgIPTJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727356AbgIPRoZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:44:25 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4882FC061356;
+        Wed, 16 Sep 2020 08:31:35 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id r7so10924982ejs.11;
+        Wed, 16 Sep 2020 08:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=FFVIMLw/qCsSLnB7Hf2n5qox/a9OEmYxxlddH5dk/ng=;
+        b=NonqZq3rUzQcLEzLa0eBBE1h+gfBuDVn6anZ5i79FdEzJ+JYlB5SF7WfWfG3Mqvcrz
+         mpBRMc8amwyC7GvLim/gZecRiJ0vOCz1yEPW5AGY5gdgIiAxVnKaz6+8cQWgOOE1JBWo
+         umZ7lUC4fu6kdAIr/pLSd3uACF3Leq/HOcTZ1qLED+2Dh1I4zZFDqYA3g7QkB/mkQbHh
+         cq+zcHmwJnCTpRvWYKWZ+sW6FV/DqDnOPIEaE1u4XZmMa77U6nIxauuufDzKAfmeZ6Cl
+         CnFDeB1TboTcq3DxTXjkmIxcdUlTEg1NlZE99ETZER7DASL0l92c2vwTdrneuKiaL0fS
+         h6UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=FFVIMLw/qCsSLnB7Hf2n5qox/a9OEmYxxlddH5dk/ng=;
+        b=swWJmTWlJn5fxdz9nnCIa8Fe7F3PfxegyeIVlYFpR94AF4UnI0RuTUE4HlRLFhqDt+
+         TiaYyxM/kEVDVQCLwsRLpPXJ85NZAt3SO67a6x2woEIrvA8IRNRbFsvKGCo30ThQUqe2
+         m5qjlC2RTKhn0IwhSOe2ku6z9mfPum6g2K4lLxclUQ6kUjsZyJVNDwxbhD259F06t0tZ
+         CwuZBXpNy3nqHznryOIuAcQtnH/5+pb1jum4xp/ejOAEAWW6E91T6zepg/aTxgHFvlbn
+         +eUUDO6iUZNk5LtiLRDJDJokwA3ucE5qdo9kfnI+MEw0hhZtwdRihamPZTeqnQdqSgZr
+         jYZA==
+X-Gm-Message-State: AOAM532ITPC2UYgbveIDfCazGgPsW4V52xJMflL53Gw4We6pXZ86Xm4Y
+        scMKp9qQL0q5wrD5o+YL0g+2Mk+7CJU=
+X-Google-Smtp-Source: ABdhPJx8ArZnxCH5L/M6w2OQ/SkKcPuPpgnzuN/T5LBMYwHsyZz643N/8p/J/r8TnQEqdpzY+GTdEQ==
+X-Received: by 2002:a17:906:d965:: with SMTP id rp5mr25015415ejb.364.1600270293644;
+        Wed, 16 Sep 2020 08:31:33 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id lo25sm12877150ejb.53.2020.09.16.08.31.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Sep 2020 08:31:33 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-Message-ID: <20200916152956.GV29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200914204209.256266093@linutronix.de>
- <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de>
- <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <87bli75t7v.fsf@nanos.tec.linutronix.de>
- <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
- <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20200914132920.59183-1-christian.koenig@amd.com>
+ <40cd26ae-b855-4627-5a13-4dcea5d622f6@gmail.com>
+ <20200914140632.GD1221970@ziepe.ca>
+ <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com>
+ <20200916095359.GD438822@phenom.ffwll.local> <20200916140710.GA8409@ziepe.ca>
+ <8db2474f-ecb7-0e17-5f5b-145708fe44d5@amd.com>
+ <CAKMK7uFdwrT3HACPh3ADAKvhXJ-Hf3dExZmgJVAQ1KKjSai_0w@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <aa953b09-53b1-104b-dc4b-156ad8a75e62@gmail.com>
+Date:   Wed, 16 Sep 2020 17:31:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAKMK7uFdwrT3HACPh3ADAKvhXJ-Hf3dExZmgJVAQ1KKjSai_0w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:37:17AM +0200, Daniel Vetter wrote:
-> On Tue, Sep 15, 2020 at 7:35 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > >
-> > > OTOH, having a working 'preemptible()' or maybe better named
-> > > 'can_schedule()' check makes tons of sense to make decisions about
-> > > allocation modes or other things.
-> >
-> > No. I think that those kinds of decisions about actual behavior are
-> > always simply fundamentally wrong.
-> >
-> > Note that this is very different from having warnings about invalid
-> > use. THAT is correct. It may not warn in all configurations, but that
-> > doesn't matter: what matters is that it warns in common enough
-> > configurations that developers will catch it.
-> >
-> > So having a warning in "might_sleep()" that doesn't always trigger,
-> > because you have a limited configuration that can't even detect the
-> > situation, that's fine and dandy and intentional.
-> >
-> > But having code like
-> >
-> >        if (can_schedule())
-> >            .. do something different ..
-> >
-> > is fundamentally complete and utter garbage.
-> >
-> > It's one thing if you test for "am I in hardware interrupt context".
-> > Those tests aren't great either, but at least they make sense.
-> >
-> > But a driver - or some library routine - making a difference based on
-> > some nebulous "can I schedule" is fundamentally and basically WRONG.
-> >
-> > If some code changes behavior, it needs to be explicit to the *caller*
-> > of that code.
-> >
-> > So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
-> > do_something_atomic()" is pure shite.
-> >
-> > And I am not IN THE LEAST interested in trying to help people doing
-> > pure shite. We need to fix them. Like the crypto code is getting
-> > fixed.
-> 
-> Just figured I'll throw my +1 in from reading too many (gpu) drivers.
-> Code that tries to cleverly adjust its behaviour depending upon the
-> context it's running in is harder to understand and blows up in more
-> interesting ways. We still have drm_can_sleep() and it's mostly just
-> used for debug code, and I've largely ended up just deleting
-> everything that used it because when you're driver is blowing up the
-> last thing you want is to realize your debug code and output can't be
-> relied upon. Or worse, that the only Oops you have is the one in the
-> debug code, because the real one scrolled away - the original idea
-> behind drm_can_sleep was to make all the modeset code work
-> automagically both in normal ioctl/kworker context and in the panic
-> handlers or kgdb callbacks. Wishful thinking at best.
-> 
-> Also at least for me that extends to everything, e.g. I much prefer
-> explicit spin_lock and spin_lock_irq vs magic spin_lock_irqsave for
-> locks shared with interrupt handlers, since the former two gives me
-> clear information from which contexts such function can be called.
-> Other end is the memalloc_no*_save/restore functions, where I recently
-> made a real big fool of myself because I didn't realize how much that
-> impacts everything that's run within - suddenly "GFP_KERNEL for small
-> stuff never fails" is wrong everywhere.
-> 
-> It's all great for debugging and sanity checks (and we run with all
-> that stuff enabled in our CI), but really semantic changes depending
-> upon magic context checks freak my out :-)
+Am 16.09.20 um 17:24 schrieb Daniel Vetter:
+> On Wed, Sep 16, 2020 at 4:14 PM Christian König
+> <christian.koenig@amd.com> wrote:
+>> Am 16.09.20 um 16:07 schrieb Jason Gunthorpe:
+>>> On Wed, Sep 16, 2020 at 11:53:59AM +0200, Daniel Vetter wrote:
+>>>
+>>>> But within the driver, we generally need thousands of these, and that
+>>>> tends to bring fd exhaustion problems with it. That's why all the private
+>>>> buffer objects which aren't shared with other process or other drivers are
+>>>> handles only valid for a specific fd instance of the drm chardev (each
+>>>> open gets their own namespace), and only for ioctls done on that chardev.
+>>>> And for mmap we assign fake (but unique across all open fd on it) offsets
+>>>> within the overall chardev. Hence all the pgoff mangling and re-mangling.
+>>> Are they still unique struct files? Just without a fdno?
+>> Yes, exactly.
+> Not entirely, since dma-buf happened after drm chardev, so for that
+> historical reason the underlying struct file is shared, since it's the
+> drm chardev. But since that's per-device we don't have a problem in
+> practice with different vm_ops, since those are also per-device. But
+> yeah we could fish out some entirely hidden per-object struct file if
+> that's required for some mm internal reasons.
 
-All fair, but some of us need to write code that must handle being
-invoked from a wide variety of contexts.  Now perhaps you like the idea of
-call_rcu() for schedulable contexts, call_rcu_nosched() when preemption
-is disabled, call_rcu_irqs_are_disabled() when interrupts are disabled,
-call_rcu_raw_atomic() from contexts where (for example) raw spinlocks
-are held, and so on.  However, from what I can see, most people instead
-consistently prefer that the RCU API instead be consolidated.
+Hui? Ok that is just the handling in i915, isn't it?
 
-Some in-flight cache-efficiency work for kvfree_rcu() and call_rcu()
-needs to be able to allocate memory occasionally.  It can do that when
-invoked from some contexts, but not when invoked from others.  Right now,
-in !PREEMPT kernels, it cannot tell, and must either do things to the
-memory allocators that some of the MM hate or must unnecessarily invoke
-workqueues.  Thomas's patches would allow the code to just allocate in
-the common case when these primitives are invoked from contexts where
-allocation is permitted.
+As far as I know we create an unique struct file for each DMA-buf.
 
-If we want to restrict access to the can_schedule() or whatever primitive,
-fine and good.  We can add a check to checkpatch.pl, for example.  Maybe
-we can go back to the old brlock approach of requiring certain people's
-review for each addition to the kernel.
+Regards,
+Christian.
 
-But there really are use cases that it would greatly help.
 
-							Thanx, Paul
+> -Daniel
+>
+>>>> Hence why we'd like to be able to forward aliasing mappings and adjust the
+>>>> file and pgoff, while hopefully everything keeps working. I thought this
+>>>> would work, but Christian noticed it doesn't really.
+>>> It seems reasonable to me that the dma buf should be the owner of the
+>>> VMA, otherwise like you say, there is a big mess attaching the custom
+>>> vma ops and what not to the proper dma buf.
+>>>
+>>> I don't see anything obviously against this in mmap_region() - why did
+>>> Chritian notice it doesn't really work?
+>> To clarify I think this might work.
+>>
+>> I just had the same "Is that legal?", "What about security?", etc..
+>> questions you raised as well.
+>>
+>> It seems like a source of trouble so I thought better ask somebody more
+>> familiar with that.
+>>
+>> Christian.
+>>
+>>> Jason
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
+>
+
