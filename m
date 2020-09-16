@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609FA26C804
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616B426C87C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgIPSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727694AbgIPS27 (ORCPT
+        id S1728101AbgIPSvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:51:17 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35854 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727387AbgIPSVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:28:59 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BD8C035437
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:06:59 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e16so6673178wrm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Rp7Xhs/bBt9D8tUMlvjIoqHMOsBqD8IYyxiK/2FKKG8=;
-        b=NzuEqJEaQL8fg8E+ugG0EvQ+ISnYy96VOTeyqJ2H4egEbK1//gM37ymiqQDoNLVucw
-         ZHKgF8zoZS4sE+eFUY5nU3d0PGYihU3kowLoGaEPHhj2oy4IPrVBPyh1462yd5rznFvZ
-         2PtEI+LhLapu6mgrPLWGZVRDWX7X4PLtZb42I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Rp7Xhs/bBt9D8tUMlvjIoqHMOsBqD8IYyxiK/2FKKG8=;
-        b=dyFNWWL9kPJ5h4oOIs5e/pBu78q4lTpRVn1ftUK3/z7/DrCYnm4b2C5g35eUsxL68H
-         V5mIeg0c3SS0psmybokm0MpmyPTLqhrKzlukozugGNVp5Tn/1Cw2/rj+rTCgH3BL8yKr
-         H6GJKLjj43H/DOIBLKDFHM4YiBAaAAyVnkqXuOCegiFlPGTOd8Fs3G+RZ4PMEp27Ergx
-         UYAJWZ0IcJ9eod4N1ahIPTIdK1hnBqcOJGIfKpPjA6aJ5uNfp1RP7eTvwmaugRGSza13
-         gOEMqq1eRDteqVFYE9lLYNdNy2cDLX/3RE4QciN7tn5ylsfjnZxGeN9NEMsniwc5+BA5
-         HlLg==
-X-Gm-Message-State: AOAM530h6MBU/citmgdjiVsurPHZB2FpDIo+nIHNfYhN5SPHd1cPk2Lb
-        FMhM8wCUHnt/yttOckv7oX/mLxKqCiGS/1Jd/xE=
-X-Google-Smtp-Source: ABdhPJwhEX5BY4LjbmOas8IFcM0+VybB2aJZphWqZuuk3BYpd+O+YeVNh7I4lfx7jWld+B+H8VyF6w==
-X-Received: by 2002:adf:dd0b:: with SMTP id a11mr25833458wrm.422.1600258018090;
-        Wed, 16 Sep 2020 05:06:58 -0700 (PDT)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id h8sm32042888wrw.68.2020.09.16.05.06.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 05:06:57 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH] ima: Fix NULL pointer dereference in ima_file_hash
-Date:   Wed, 16 Sep 2020 12:05:48 +0000
-Message-Id: <20200916120548.364892-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+        Wed, 16 Sep 2020 14:21:10 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCA4Sx019540;
+        Wed, 16 Sep 2020 07:10:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600258204;
+        bh=eYVjrXG7n0dNY1scg668IOD4Bg6anWGa0/3eL4ICiuA=;
+        h=From:To:CC:Subject:Date;
+        b=p4Oey2wg+4Z3q3vC+mXmJl+lXqYEeuIAOduqwRFU9SXwkHGVjAa525NOhVjyV90+3
+         3T/Chw/0FoZh3LIVGFDF6QrOrKajRBwH4OKwTypo2+N3HPlG1qso1RPeVqMpVr75pi
+         lEdbmiOsGf64kOyrbbDdxbiU+87AxqwT2RxwR0U4=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCA4xd097182;
+        Wed, 16 Sep 2020 07:10:04 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
+ Sep 2020 07:10:04 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 16 Sep 2020 07:10:04 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCA3c3089115;
+        Wed, 16 Sep 2020 07:10:03 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        <dmaengine@vger.kernel.org>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH v2] dmaengine: ti: k3-udma-glue: fix channel enable functions
+Date:   Wed, 16 Sep 2020 15:09:55 +0300
+Message-ID: <20200916120955.7963-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+Now the K3 UDMA glue layer enable functions perform RMW operation on UDMA
+RX/TX RT_CTL registers to set EN bit and enable channel, which is
+incorrect, because only EN bit has to be set in those registers to enable
+channel (all other bits should be cleared 0).
+More over, this causes issues when bootloader leaves UDMA channel RX/TX
+RT_CTL registers in incorrect state - TDOWN bit set, for example. As
+result, UDMA channel will just perform teardown right after it's enabled.
 
-ima_file_hash can be called when there is no iint->ima_hash available
-even though the inode exists in the integrity cache.
+Hence, fix it by writing correct values (EN=1) directly in UDMA channel
+RX/TX RT_CTL registers in k3_udma_glue_enable_tx/rx_chn() functions.
 
-An example where this can happen (suggested by Jann Horn):
-
-Process A does:
-
-	while(1) {
-		unlink("/tmp/imafoo");
-		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
-		if (fd == -1) {
-			perror("open");
-			continue;
-		}
-		write(fd, "A", 1);
-		close(fd);
-	}
-
-and Process B does:
-
-	while (1) {
-		int fd = open("/tmp/imafoo", O_RDONLY);
-		if (fd == -1)
-			continue;
-    		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
-			 	     MAP_PRIVATE, fd, 0);
-		if (mapping != MAP_FAILED)
-			munmap(mapping, 0x1000);
-		close(fd);
-  	}
-
-Due to the race to get the iint->mutex between ima_file_hash and
-process_measurement iint->ima_hash could still be NULL.
-
-Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
-Signed-off-by: KP Singh <kpsingh@google.com>
+Fixes: d70241913413 ("dmaengine: ti: k3-udma: Add glue layer for non DMAengine users")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- security/integrity/ima/ima_main.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Changes in v2:
+- properly rebased on top of -master
+- add ack from Peter Ujfalusi
 
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 8a91711ca79b..4c86cd4eece0 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
- 		return -EOPNOTSUPP;
+ drivers/dma/ti/k3-udma-glue.c | 17 +++--------------
+ 1 file changed, 3 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/dma/ti/k3-udma-glue.c b/drivers/dma/ti/k3-udma-glue.c
+index 3a5d33ea5ebe..42c8ad10d75e 100644
+--- a/drivers/dma/ti/k3-udma-glue.c
++++ b/drivers/dma/ti/k3-udma-glue.c
+@@ -378,17 +378,11 @@ EXPORT_SYMBOL_GPL(k3_udma_glue_pop_tx_chn);
  
- 	mutex_lock(&iint->mutex);
-+
-+	/*
-+	 * ima_file_hash can be called when ima_collect_measurement has still
-+	 * not been called, we might not always have a hash.
-+	 */
-+	if (!iint->ima_hash) {
-+		mutex_unlock(&iint->mutex);
-+		return -EOPNOTSUPP;
-+	}
-+
- 	if (buf) {
- 		size_t copied_size;
+ int k3_udma_glue_enable_tx_chn(struct k3_udma_glue_tx_channel *tx_chn)
+ {
+-	u32 txrt_ctl;
+-
+-	txrt_ctl = UDMA_PEER_RT_EN_ENABLE;
+ 	xudma_tchanrt_write(tx_chn->udma_tchanx, UDMA_CHAN_RT_PEER_RT_EN_REG,
+-			    txrt_ctl);
++			    UDMA_PEER_RT_EN_ENABLE);
  
+-	txrt_ctl = xudma_tchanrt_read(tx_chn->udma_tchanx,
+-				      UDMA_CHAN_RT_CTL_REG);
+-	txrt_ctl |= UDMA_CHAN_RT_CTL_EN;
+ 	xudma_tchanrt_write(tx_chn->udma_tchanx, UDMA_CHAN_RT_CTL_REG,
+-			    txrt_ctl);
++			    UDMA_CHAN_RT_CTL_EN);
+ 
+ 	k3_udma_glue_dump_tx_rt_chn(tx_chn, "txchn en");
+ 	return 0;
+@@ -1058,19 +1052,14 @@ EXPORT_SYMBOL_GPL(k3_udma_glue_rx_flow_disable);
+ 
+ int k3_udma_glue_enable_rx_chn(struct k3_udma_glue_rx_channel *rx_chn)
+ {
+-	u32 rxrt_ctl;
+-
+ 	if (rx_chn->remote)
+ 		return -EINVAL;
+ 
+ 	if (rx_chn->flows_ready < rx_chn->flow_num)
+ 		return -EINVAL;
+ 
+-	rxrt_ctl = xudma_rchanrt_read(rx_chn->udma_rchanx,
+-				      UDMA_CHAN_RT_CTL_REG);
+-	rxrt_ctl |= UDMA_CHAN_RT_CTL_EN;
+ 	xudma_rchanrt_write(rx_chn->udma_rchanx, UDMA_CHAN_RT_CTL_REG,
+-			    rxrt_ctl);
++			    UDMA_CHAN_RT_CTL_EN);
+ 
+ 	xudma_rchanrt_write(rx_chn->udma_rchanx, UDMA_CHAN_RT_PEER_RT_EN_REG,
+ 			    UDMA_PEER_RT_EN_ENABLE);
 -- 
-2.28.0.618.gf4bc123cb7-goog
+2.17.1
 
