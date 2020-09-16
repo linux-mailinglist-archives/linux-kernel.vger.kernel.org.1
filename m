@@ -2,114 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0075426CD66
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4506026CD44
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgIPU7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:59:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726358AbgIPQbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:31:35 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA7EF22473;
-        Wed, 16 Sep 2020 15:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600271933;
-        bh=euoNrh4CREhCtBrTlTDs/D23cyiar9mHO2VGZrvJGGw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r7ZBSAWp7ngag0GivIYwEMRvi2kI5TJyoUxd2xusn24/6ovXSjFvdFXYscQlIvUlL
-         gqpGyfwBEw0kKQGlha2BEP6GReJ4HpHYs1ZIL5ck1dgiJaZmcAsukmLwMClRxnlD9/
-         4owCOsi3+7MgIuO0CrXIPLYDZ/BRpPcnZzBOBK/A=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 10/15] ARM: dts: am3874: iceboard: fix GPIO expander reset GPIOs
-Date:   Wed, 16 Sep 2020 17:57:10 +0200
-Message-Id: <20200916155715.21009-11-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916155715.21009-1-krzk@kernel.org>
-References: <20200916155715.21009-1-krzk@kernel.org>
+        id S1728568AbgIPU5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:57:12 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29568 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726328AbgIPQwh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:52:37 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GFmeJI113957;
+        Wed, 16 Sep 2020 12:00:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=oR2/YwL1liHbE41SOzBmZTcOtgNASTFaWbA+0ZtZrX8=;
+ b=ZC3DBNecdsCrKlYL0jMJVJI+qkE9QrjhaE9TkmnM+IAPH1OuyFde0M8I4sKTVT8KASK7
+ cSynfxx8wogcj1UBc2xpQVGJB/tEqdV5SYr37Ct9j7f5vYwVVq5OM9UaDBd1vFP9Vde9
+ cGGEckclxtrx+qbHHfYhkl6a47ONLsTzhtLg7SWhJ/y0Ky7Dpx/FsclcvXoh1tW2dIij
+ i1BZm6hBylaNTc8MeHqemhC1ctGBGq2sLI8a/W2FRJK/7BRcsyS161CssbI4UXLiWW4I
+ pFhTRXSNEPKJSvGyz43Xglv9zud72DosstaPj3NcbAe3HZt/kVxCQLNxB9BXx2MSisvR TA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33knp3ga9d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 12:00:18 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08GFnZb4120125;
+        Wed, 16 Sep 2020 12:00:18 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33knp3ga7d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 12:00:18 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08GFwsMY012798;
+        Wed, 16 Sep 2020 16:00:16 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 33k6esgt3q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 16:00:15 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08GG0DYF9372018
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 16:00:13 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6EA56A4066;
+        Wed, 16 Sep 2020 16:00:13 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93DA4A4062;
+        Wed, 16 Sep 2020 16:00:11 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.98.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Sep 2020 16:00:11 +0000 (GMT)
+Message-ID: <8cee070eed5b8a3dc9f373fc9db8d99a70b7d75a.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] ima: Fix NULL pointer dereference in ima_file_hash
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Florent Revest <revest@chromium.org>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Jann Horn <jannh@google.com>
+Date:   Wed, 16 Sep 2020 12:00:10 -0400
+In-Reply-To: <20200916124931.1254990-1-kpsingh@chromium.org>
+References: <20200916124931.1254990-1-kpsingh@chromium.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-16_10:2020-09-16,2020-09-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 adultscore=0 malwarescore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 priorityscore=1501 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160113
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct the property for reset GPIOs of the GPIO expander.
+On Wed, 2020-09-16 at 14:49 +0200, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> ima_file_hash can be called when there is no iint->ima_hash available
+> even though the inode exists in the integrity cache.
+> 
+> An example where this can happen (suggested by Jann Horn):
+> 
+> Process A does:
+> 
+> 	while(1) {
+> 		unlink("/tmp/imafoo");
+> 		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
+> 		if (fd == -1) {
+> 			perror("open");
+> 			continue;
+> 		}
+> 		write(fd, "A", 1);
+> 		close(fd);
+> 	}
+> 
+> and Process B does:
+> 
+> 	while (1) {
+> 		int fd = open("/tmp/imafoo", O_RDONLY);
+> 		if (fd == -1)
+> 			continue;
+>     		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
+> 			 	     MAP_PRIVATE, fd, 0);
+> 		if (mapping != MAP_FAILED)
+> 			munmap(mapping, 0x1000);
+> 		close(fd);
+>   	}
+> 
+> Due to the race to get the iint->mutex between ima_file_hash and
+> process_measurement iint->ima_hash could still be NULL.
+> 
+> Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> Reviewed-by: Florent Revest <revest@chromium.org>
+> ---
+>  security/integrity/ima/ima_main.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 8a91711ca79b..4c86cd4eece0 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+>  		return -EOPNOTSUPP;
+>  
+>  	mutex_lock(&iint->mutex);
+> +
+> +	/*
+> +	 * ima_file_hash can be called when ima_collect_measurement has still
+> +	 * not been called, we might not always have a hash.
+> +	 */
+> +	if (!iint->ima_hash) {
+> +		mutex_unlock(&iint->mutex);
+> +		return -EOPNOTSUPP;
+> +	}
+> +
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/boot/dts/am3874-iceboard.dts | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Not having a file hash is rather common (e.g. mknodat, prior to the
+file being closed).  Before appraising the integrity of a file, it
+checks whether it is a new file (eg. IMA_NEW_FILE), but, unfortunately,
+the flag is only set for those files in the appraise policy.
 
-diff --git a/arch/arm/boot/dts/am3874-iceboard.dts b/arch/arm/boot/dts/am3874-iceboard.dts
-index 1bb57019d082..9423e9feaa10 100644
---- a/arch/arm/boot/dts/am3874-iceboard.dts
-+++ b/arch/arm/boot/dts/am3874-iceboard.dts
-@@ -195,7 +195,7 @@
- 					"FMCA_PG_C2M", "FMCA_PRSNT_M2C_L", "FMCA_CLK_DIR", "SFP_LOS",
- 					"FMCB_EN_12V0", "FMCB_EN_3V3", "FMCB_EN_VADJ", "FMCB_PG_M2C",
- 					"FMCB_PG_C2M", "FMCB_PRSNT_M2C_L", "FMCB_CLK_DIR", "SFP_ModPrsL";
--				reset_gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
-+				reset-gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
- 			};
- 
- 			u42: pca9575@21 {
-@@ -208,7 +208,7 @@
- 					"QSFPA_LPMode", "QSFPB_ModPrsL", "QSFPB_IntL", "QSFPB_ResetL",
- 					"SFP_TxFault", "SFP_TxDisable", "SFP_RS0", "SFP_RS1",
- 					"QSFPB_ModSelL", "QSFPB_LPMode", "SEL_SFP", "ARM_MR";
--				reset_gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
-+				reset-gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
- 			};
- 
- 			u48: pca9575@22 {
-@@ -227,7 +227,7 @@
- 					"GP_SW5", "GP_SW6", "GP_SW7", "GP_SW8",
- 					"GP_LED8", "GP_LED7", "GP_LED6", "GP_LED5",
- 					"GP_LED4", "GP_LED3", "GP_LED2", "GP_LED1";
--				reset_gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
-+				reset-gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
- 			};
- 
- 			u59: pca9575@23 {
-@@ -240,7 +240,7 @@
- 					"GTX1V8PowerFault", "PHYAPowerFault", "PHYBPowerFault", "ArmPowerFault",
- 					"BP_SLOW_GPIO0", "BP_SLOW_GPIO1", "BP_SLOW_GPIO2", "BP_SLOW_GPIO3",
- 					"BP_SLOW_GPIO4", "BP_SLOW_GPIO5", "__unused_u59_p16", "__unused_u59_p17";
--				reset_gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
-+				reset-gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
- 			};
- 
- 			tmp100@48 { compatible = "ti,tmp100"; reg = <0x48>; };
--- 
-2.17.1
+The patch looks fine, but you might want to reflect not having a file
+hash is common in the patch description.
+
+Mimi
+
+>  	if (buf) {
+>  		size_t copied_size;
+>  
+
 
