@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABA426BF63
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9945126BF66
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgIPIeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:34:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46510 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725840AbgIPIeB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:34:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600245239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DAGiU6tQPn7qIzmXwLxHU7yiPU3YBQ56AcEEwsHRgsA=;
-        b=BrqK9OihjhnHvpGJHUcQbLCckLsiREpv7sgSCut3k6IeONOZR4lb1Um1ZCDjHOIfiatRdI
-        W8z6vUg+aIzFIoCBLdcl+GDcdFzgfkbO1j5U6mo6TCYOo4sLNJKC0sHoVF4Ytj9FwXTCOz
-        JzdANeyloEiB7agQCy9H8nLprFjGiiM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-474-4HDCgbP5Okm5jDY_6ZfxHg-1; Wed, 16 Sep 2020 04:33:58 -0400
-X-MC-Unique: 4HDCgbP5Okm5jDY_6ZfxHg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B00D1800D4A;
-        Wed, 16 Sep 2020 08:33:56 +0000 (UTC)
-Received: from work-vm (ovpn-114-237.ams2.redhat.com [10.36.114.237])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1EF9B5DE86;
-        Wed, 16 Sep 2020 08:33:53 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 09:33:51 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Wei Huang <wei.huang2@amd.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, Wei Huang <whuang2@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/2] KVM: x86: allow for more CPUID entries
-Message-ID: <20200916083351.GA2833@work-vm>
-References: <20200915154306.724953-1-vkuznets@redhat.com>
- <20200915165131.GC2922@work-vm>
- <20200916034905.GA508748@weilap>
+        id S1726611AbgIPIeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:34:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:56338 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726474AbgIPIeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:34:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A53501045;
+        Wed, 16 Sep 2020 01:34:07 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E5A63F718;
+        Wed, 16 Sep 2020 01:34:06 -0700 (PDT)
+References: <20200914100340.17608-1-vincent.guittot@linaro.org> <20200914100340.17608-5-vincent.guittot@linaro.org> <jhjft7i6euf.mognet@arm.com> <CAKfTPtBmNF8WrXLrnQow037bk=7z285ub7yLp2KdFQcJK1fsUw@mail.gmail.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] sched/fair: reduce busy load balance interval
+In-reply-to: <CAKfTPtBmNF8WrXLrnQow037bk=7z285ub7yLp2KdFQcJK1fsUw@mail.gmail.com>
+Date:   Wed, 16 Sep 2020 09:34:04 +0100
+Message-ID: <jhjbli65ddv.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916034905.GA508748@weilap>
-User-Agent: Mutt/1.14.6 (2020-07-11)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Wei Huang (wei.huang2@amd.com) wrote:
-> On 09/15 05:51, Dr. David Alan Gilbert wrote:
-> > * Vitaly Kuznetsov (vkuznets@redhat.com) wrote:
-> > > With QEMU and newer AMD CPUs (namely: Epyc 'Rome') the current limit for
-> 
-> Could you elaborate on this limit? On Rome, I counted ~35 CPUID functions which
-> include Fn0000_xxxx, Fn4000_xxxx and Fn8000_xxxx.
 
-On my 7302P the output of:
-    cpuid -1 -r | wc -l
+On 16/09/20 08:02, Vincent Guittot wrote:
+> On Tue, 15 Sep 2020 at 21:04, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>>
+>>
+>> On 14/09/20 11:03, Vincent Guittot wrote:
+>> > The busy_factor, which increases load balance interval when a cpu is busy,
+>> > is set to 32 by default. This value generates some huge LB interval on
+>> > large system like the THX2 made of 2 node x 28 cores x 4 threads.
+>> > For such system, the interval increases from 112ms to 3584ms at MC level.
+>> > And from 228ms to 7168ms at NUMA level.
+>> >
+>> > Even on smaller system, a lower busy factor has shown improvement on the
+>> > fair distribution of the running time so let reduce it for all.
+>> >
+>>
+>> ISTR you mentioned taking this one step further and making
+>> (interval * busy_factor) scale logarithmically with the number of CPUs to
+>> avoid reaching outrageous numbers. Did you experiment with that already?
+>
+> Yes I have tried the logarithmically scale but It didn't give any
+> benefit compared to this solution for the fairness problem but
+> impacted other use cases because it impacts idle interval and it also
+> adds more constraints in the computation of the interval and
+> busy_factor because we can end up with the same interval for 2
+> consecutive levels .
+>
 
-is 61, there is one line of header in there.
+Right, I suppose we could frob a topology level index in there to prevent
+that if we really wanted to...
 
-However in a guest I see more; and I think that's because KVM  tends to
-list the CPUID entries for a lot of disabled Intel features, even on
-AMD, e.g. 0x11-0x1f which AMD doesn't have, are listed in a KVM guest.
-Then you add the KVM CPUIDs at 4...0 and 4....1.
+> That being said, it might be useful for other cases but i haven't look
+> further for this
+>
 
-IMHO we should be filtering those out for at least two reasons:
-  a) They're wrong
-  b) We're probably not keeping the set of visible CPUID fields the same
-    when we move between host kernels, and that can't be good for
-migration.
+Fair enough!
 
-Still, those are separate problems.
-
-Dave
-
-> > > KVM_MAX_CPUID_ENTRIES(80) is reported to be hit. Last time it was raised
-> > > from '40' in 2010. We can, of course, just bump it a little bit to fix
-> > > the immediate issue but the report made me wonder why we need to pre-
-> > > allocate vcpu->arch.cpuid_entries array instead of sizing it dynamically.
-> > > This RFC is intended to feed my curiosity.
-> > > 
-> > > Very mildly tested with selftests/kvm-unit-tests and nothing seems to
-> > > break. I also don't have access to the system where the original issue
-> > > was reported but chances we're fixing it are very good IMO as just the
-> > > second patch alone was reported to be sufficient.
-> > > 
-> > > Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-> > 
-> > Oh nice, I was just going to bump the magic number :-)
-> > 
-> > Anyway, this seems to work for me, so:
-> > 
-> > Tested-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-> > 
-> 
-> I tested on two platforms and the patches worked fine. So no objection on the
-> design.
-> 
-> Tested-by: Wei Huang <wei.huang2@amd.com>
-> 
-> > > Vitaly Kuznetsov (2):
-> > >   KVM: x86: allocate vcpu->arch.cpuid_entries dynamically
-> > >   KVM: x86: bump KVM_MAX_CPUID_ENTRIES
-> > > 
-> > >  arch/x86/include/asm/kvm_host.h |  4 +--
-> > >  arch/x86/kvm/cpuid.c            | 55 ++++++++++++++++++++++++---------
-> > >  arch/x86/kvm/x86.c              |  1 +
-> > >  3 files changed, 43 insertions(+), 17 deletions(-)
-> > > 
-> > > -- 
-> > > 2.25.4
-> > > 
-> > -- 
-> > Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-> > 
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+>>
+>> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+>> > ---
+>> >  kernel/sched/topology.c | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> > index 1a84b778755d..a8477c9e8569 100644
+>> > --- a/kernel/sched/topology.c
+>> > +++ b/kernel/sched/topology.c
+>> > @@ -1336,7 +1336,7 @@ sd_init(struct sched_domain_topology_level *tl,
+>> >       *sd = (struct sched_domain){
+>> >               .min_interval           = sd_weight,
+>> >               .max_interval           = 2*sd_weight,
+>> > -             .busy_factor            = 32,
+>> > +             .busy_factor            = 16,
+>> >               .imbalance_pct          = 117,
+>> >
+>> >               .cache_nice_tries       = 0,
