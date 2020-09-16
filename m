@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4F826C92E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEF826C960
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbgIPTEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
+        id S1727222AbgIPTIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727464AbgIPRrx (ORCPT
+        with ESMTP id S1727211AbgIPRoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:47:53 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216E8C014DBC
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:35:08 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x14so6909190wrl.12
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:35:08 -0700 (PDT)
+        Wed, 16 Sep 2020 13:44:55 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DCFC0086D6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:43:40 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q9so2853776wmj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:43:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y0GHMsQrfoNkF8hoL5Nxc0+CH+Sz1FlZ4J0DpK8dO70=;
-        b=OpOeI24LEAE+oDQATH8MdVWdt4mZNQ4qh1Hc0omlnt7RwHiPRKvJrLL01717FgPnnb
-         1t+n+B6+mnQxwsOhc5OfAHt9THe5P9ok+08CnWZwgPJLemA4xraL3S0LRRaUFrd0nuU7
-         yRKZjwxGHu2Xcb4i1Mdyqj+a2bvB9eJzXsEOa3kbquHPZTCRLg6PiXODmEUA6N/ezqtH
-         WrdIqnvo6yMjPIgfbcKtYQzcIktY+hY7v3S3aaNBZGh1xFeC7rDf3IQUoCoKX+3JD4qH
-         ShFWfgA8F0+G1Or4c6EbK0e67x7FvsJI33FROdF/TI1M6+2DETeMlQ74rxZgNY5SadWE
-         gcLg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=8Zatbl7mrAhM9R5fUS2YkaTonXg6opq03K7IVVy2jXk=;
+        b=KmPJRTBfjSReOhmZEAA0xaFKj0rSG6mdJJXaH6YOhZcIs+4LmghOyYVsX1ZW/ceAvS
+         XU8vSwAn4+NjOCZyDYaIjUCHZg/KdMFaKjkbOf7AbHkEvJg/asPj2T4413jNfoaHgd/r
+         IGMirpGCDw/ziH5ArOD0RoDwf9yLfIqGLziZk9NMQv3EV/jNLKpSjB8DQohl/5E/QBub
+         RLg9edr2gR/47lrvX/XGKoIW51NJ+tsRXKgHFwYXSc6PSXsmG43AvnLJTgH/hkEETNgz
+         /eq0eBldf/BAXhxQWD2UdRhKPIyI/3A1e4kkdxbEbF1XehQB4voh5010UukMlzzVjwfJ
+         n5cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y0GHMsQrfoNkF8hoL5Nxc0+CH+Sz1FlZ4J0DpK8dO70=;
-        b=p9bt5Id/zkZqZ5GLsVLUIkTLlfEmnc7WHDWbOC42HccFVWWujaBIS14l4KmdeoSo6n
-         pk+qzwcGXi21BnR4wcmYfuNZjldzLAMPgIqAXSPdA4i1lL6AcepA8fMDuDWjBJ1Jy7+u
-         xnKE5Ib31Oac6O6KqGOQNM1J9wI99X9gBcB4tSE9uYAEmfkyVK3cAZDKwr69mq+kOo29
-         KTMQ5G2VC1MoL8C68djbT4Q23GuUO7wS9uG+WnV8jZmEm4Ex9FsvRS922le1qvJko9OZ
-         q/IftDDQkJgIA3qz4//KY7lvfO+oylLzTexpHQKAmjMyYG7yVbCsTR+uNPf6XVNudBZ0
-         DGNw==
-X-Gm-Message-State: AOAM531BrSJmxejQW0s5pKRWKZxyINJErgfiJcuy4lhGWBehPZ+X5qOK
-        /3vTKT6uAJHVpwiN+eL1KV5pZA==
-X-Google-Smtp-Source: ABdhPJxj1njKOkMy/uGBtiswR54WhjIWwVc4v6yTTlieFUIM6NmtAP4wvPkgHYBaLSDHrvMxwMPqPg==
-X-Received: by 2002:a5d:45cc:: with SMTP id b12mr4416951wrs.395.1600263306480;
-        Wed, 16 Sep 2020 06:35:06 -0700 (PDT)
-Received: from google.com ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
-        by smtp.gmail.com with ESMTPSA id v9sm37780715wrv.35.2020.09.16.06.35.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=8Zatbl7mrAhM9R5fUS2YkaTonXg6opq03K7IVVy2jXk=;
+        b=q6LPJNVB953Yu/bYl2WgQTBVPGuIuLjJbUu2T2zn7K7vW1GJOowNDVG1nXL642wuMF
+         mhuh2WIny4r+nbb7k/KXChIwcI58i8ZohG1pGTlQfdV5a9Y9aIpycpLFwyqOkUX/rJC6
+         dM98m0oeWiQb6jinVyJ6lNztlcGuEBzCyznilZ1JioABwZkdCjYmqhVx81NtMYSFI+aQ
+         RQU+mbcEW56LBd0XL5Zr29W0RjEjTjT0gQamuJULc4uwRrOvnn/SRhRcnXnh++W3KoU4
+         hi5XsQ6IKIM9xn6C6Jqz7yuvp2NE3bJ0rLQx/wbObM69naDHl3TzIAyKrZh4F5RgIY5a
+         TtYA==
+X-Gm-Message-State: AOAM53025sB55KNHY+pBVb3IXUq3oEI6nY20ZgGLHnSUPA+Mzqno4F8E
+        64wdwSiwDH3LU6jM4dkeKQkWvp9t2sY=
+X-Google-Smtp-Source: ABdhPJxpWL+cfsd8kHVURQNd5zD41UryNOSQvpyLEwN1p+KA76HGm+cTEAMOPT+oI5NVzUpwwWQ0jA==
+X-Received: by 2002:a7b:c1d4:: with SMTP id a20mr4903825wmj.30.1600263818431;
+        Wed, 16 Sep 2020 06:43:38 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id w81sm5658664wmg.47.2020.09.16.06.43.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 06:35:05 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 14:35:04 +0100
-From:   David Brazdil <dbrazdil@google.com>
-To:     Andrew Scull <ascull@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 10/10] kvm: arm64: Remove unnecessary hyp mappings
-Message-ID: <20200916133504.7v5j7y5ccajw2a7s@google.com>
-References: <20200903091712.46456-1-dbrazdil@google.com>
- <20200903091712.46456-11-dbrazdil@google.com>
- <20200910140738.GE93664@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910140738.GE93664@google.com>
+        Wed, 16 Sep 2020 06:43:37 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai
+Subject: [PATCH 2/3] habanalabs/gaudi: fix DMA completions max outstanding to 15
+Date:   Wed, 16 Sep 2020 16:43:32 +0300
+Message-Id: <20200916134333.4029-2-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200916134333.4029-1-oded.gabbay@gmail.com>
+References: <20200916134333.4029-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +	for_each_possible_cpu(cpu)
-> > +		*(per_cpu_ptr_nvhe(arm64_ssbd_callback_required, cpu)) =
-> > +			per_cpu(arm64_ssbd_callback_required, cpu);
-> 
-> Careful with breaking allocations across lines, that seems to be taboo
-> in this subsystem.
+This is a workaround for H/W bug H3-2116, where if there are more than 16
+outstanding completions in the DMA transpose engine, there can be a
+deadlock in the engine.
 
-Happy to put the `ptr` var back. Sorry *embarrassed emoji*.
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ drivers/misc/habanalabs/gaudi/gaudi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks for reviewing,
-David
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 2c10e3f92c86..86650be5898f 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -1918,6 +1918,9 @@ static void gaudi_init_dma_core(struct hl_device *hdev, int dma_id)
+ 	WREG32(mmDMA0_CORE_RD_MAX_OUTSTAND + dma_offset, 0);
+ 	WREG32(mmDMA0_CORE_RD_MAX_SIZE + dma_offset, 0);
+ 
++	/* WA for H/W bug H3-2116 */
++	WREG32(mmDMA0_CORE_LBW_MAX_OUTSTAND + dma_offset, 15);
++
+ 	/* STOP_ON bit implies no completion to operation in case of RAZWI */
+ 	if (hdev->stop_on_err)
+ 		dma_err_cfg |= 1 << DMA0_CORE_ERR_CFG_STOP_ON_ERR_SHIFT;
+-- 
+2.17.1
+
