@@ -2,127 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3331A26C60B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E432026C611
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgIPRat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
+        id S1727176AbgIPRbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727102AbgIPR2l (ORCPT
+        with ESMTP id S1727118AbgIPR3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:28:41 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C07C061355
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:17:51 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id bd2so3544879plb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:17:51 -0700 (PDT)
+        Wed, 16 Sep 2020 13:29:05 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A180EC06121C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:18:37 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id q131so6597108qke.22
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:18:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=icqQdJptZU1+Cli7+KP35XPpco/lrViFrPCj4c4ItTU=;
-        b=mNTDCrovWeR++HPoKJ5nc9Jd4bCTN0psmXsvkS5E3/I1fy+W6uAlWjYQsHgbHwIjZT
-         7rW0VJ1LogMzOqE+y/JfsZJsMrGDIOaoBaWZZmqKsie1JUYETlh8qdq2SSI2nhoZ27I7
-         FZQfkeVKS19jy6I03LnAS/dFZwDUNick/O9kg=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Y0CPyJBwGQKF4TQ8zu0H48gbO6NYy9xi7Y4e0tcM1aw=;
+        b=AKcdiPC8efayCQdDN10LvIwxIxN45JmyKaoTeC1THHFKEOIMQ0ITfoGNlFPyYhVETY
+         H1fJm0YJ4NkBeEQ5g9uN4zPH4mO4tQ3qQd4AGqFpK/os0xUBQDVFNwOyvjh5VsB6kHOL
+         MFtH55xPMLaZ9nBpF4QO3bOoi0Mxhd4B8+kWEfqMKPo/yEbIxCbk4RTn1LWhrKNhJJPq
+         BJVBMvbUFzDf8dL+b4dzYOIepi6BTrjdvqe14vnOXWopFyqNa/Rz+LEBAu/+c1HlWqH2
+         MdPs0Lf12rnEGwXFQtyiN6QDhLsEmGO4EhI9Eud57PhAR2Dwq8UvNtoId9Y7MbpJi7xC
+         x9bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=icqQdJptZU1+Cli7+KP35XPpco/lrViFrPCj4c4ItTU=;
-        b=nDfK234E44q8jN4lSS3Y/duG1QE0B+Si6XEq97WA8FD0R0zdl2Ru1O3yFcGV8xMYAH
-         oev0Dj1yDD61kBMGQYCBEn8VSE+32EAgEMjlG31DT0je4jw5HNOf37+bFnlEQK3k+1wf
-         yw1gZ713JoIJCJlotdpo+hYDJqzXq7CBhW2QpO6UsORkuFy2WjHRCR4mMowzpyx9YKa8
-         Sqti+Csb70lstVFJFBTsJQhnWEJEgDZK68AYdijvPTW7XL3rv6dViDT5oh1C2GdZn09/
-         arY0yFqh8pYMGfu3M44CT0XpFZFzEySRQg/LJD2c7c9RJdeWIGWY5M4UzE27sqq7psd4
-         eNAA==
-X-Gm-Message-State: AOAM531DD6NzPuZpKOwZryYYGkWu/fRkE441/Ozb/djBB5GkQLklLiE6
-        MXnlHw5XZpV0TSc8k/qSj6UBKA==
-X-Google-Smtp-Source: ABdhPJwls/xnxK0gmUalIkWlfpej7xUrnrowqMX77b9HSLjNZLh8iL4/eR5Em7wKVHXEpoKFK6BvkQ==
-X-Received: by 2002:a17:902:8643:b029:d1:920c:c1db with SMTP id y3-20020a1709028643b02900d1920cc1dbmr25400194plt.42.1600276671136;
-        Wed, 16 Sep 2020 10:17:51 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id x4sm17420010pff.57.2020.09.16.10.17.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 10:17:50 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200916145252.16024-1-sibis@codeaurora.org>
-References: <20200916145252.16024-1-sibis@codeaurora.org>
-Subject: Re: [PATCH v2] remoteproc: qcom_q6v5: Assign mpss region to Q6 before MBA boot
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ohad@wizery.com, evgreen@chromium.org,
-        Sibi Sankar <sibis@codeaurora.org>
-To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org
-Date:   Wed, 16 Sep 2020 10:17:48 -0700
-Message-ID: <160027666863.4188128.6191735162530147774@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Y0CPyJBwGQKF4TQ8zu0H48gbO6NYy9xi7Y4e0tcM1aw=;
+        b=e3X1/e1+XA6Ne9mbqpcIiiEUo36al/tZykPrDELV1DBXWiqQN4u9rrWj6ayl9SJV9p
+         vF76qgvaBgbXmSS7xW7o+/8jUX4zL9qgRePlH58ch9Et9lt+vfxGH3WFkMv26G7xgdaF
+         iia7vVS2locOpLz/USnSSjuPQFXtW4Y0l1YtaLhzvHJT/kbZBrFguRc6/pXEWCO9K2Ch
+         issDYgTzpM+VvXMOMUEssRcZhxT+/TIaDuOA+r7oMXkHqbvxKj9jhPRmQgzFBigkEuG/
+         u2cxRd2qc8e66Hn+onXp+pk66EDP3CvAtCzYfs1XcOp07Df5wYEP8MfmjaZjoPwN9TRU
+         2NdQ==
+X-Gm-Message-State: AOAM5308qBsRoSyfn+hzmKbFDCeScW87VWlTiTwuvwnL+hblAu+gLE3I
+        51g8T1JLFJoCjt0UTCEQTnrF9/8xCl+M
+X-Google-Smtp-Source: ABdhPJznneI9TAMGyd2aPyjb7DmSc4PR6Y++OBX/SaiCh7j1ELLhBHs25xVeDzbpuY3fAJOT29JQgmtByDnZ
+X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+ (user=qperret job=sendgmr) by 2002:ad4:57a7:: with SMTP id
+ g7mr24575105qvx.10.1600276714810; Wed, 16 Sep 2020 10:18:34 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 18:18:25 +0100
+Message-Id: <20200916171825.3228122-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [PATCH] ehci-hcd: Move include to keep CRC stable
+From:   Quentin Perret <qperret@google.com>
+To:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gprocida@google.com, maennich@google.com, kernel-team@android.com,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sibi Sankar (2020-09-16 07:52:52)
-> On secure devices which support warm reset, the MBA firmware requires
-> access to the modem region to clear them out. Hence provide Q6 access
-> to this region before MBA boot. This will be a nop during a modem SSR.
->=20
+The CRC calculation done by genksyms is triggered when the parser hits
+EXPORT_SYMBOL*() macros. At this point, genksyms recursively expands the
+types of the function parameters, and uses that as the input for the CRC
+calculation. In the case of forward-declared structs, the type expands
+to 'UNKNOWN'. Following this, it appears that the result of the
+expansion of each type is cached somewhere, and seems to be re-used
+when/if the same type is seen again for another exported symbol in the
+same C file.
 
-Does it need a Fixes: tag? Probably.
+Unfortunately, this can cause CRC 'stability' issues when a struct
+definition becomes visible in the middle of a C file. For example, let's
+assume code with the following pattern:
 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->=20
+    struct foo;
 
-Trivia time!
+    int bar(struct foo *arg)
+    {
+	/* Do work ... */
+    }
+    EXPORT_SYMBOL_GPL(bar);
 
->=20
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom=
-_q6v5_mss.c
-> index c401bcc263fa..f989ca81d374 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -931,6 +931,16 @@ static int q6v5_mba_load(struct q6v5 *qproc)
->                 goto assert_reset;
->         }
-> =20
-> +       /* Some versions of the MBA firmware will upon boot wipe the MPSS=
- region as well, so provide
+    /* This contains struct foo's definition */
+    #include "foo.h"
 
-Should have /* on a line by itself.
+    int baz(struct foo *arg)
+    {
+	/* Do more work ... */
+    }
+    EXPORT_SYMBOL_GPL(baz);
 
-> +        * the Q6 access to this region.
-> +        */
-> +       ret =3D q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, false, =
-true,
-> +                                     qproc->mpss_phys, qproc->mpss_size);
-> +       if (ret) {
-> +               dev_err(qproc->dev, "assigning Q6 access to mpss memory f=
-ailed: %d\n", ret);
-> +               goto disable_active_clks;
-> +       }
-> +
->         /* Assign MBA image access in DDR to q6 */
->         ret =3D q6v5_xfer_mem_ownership(qproc, &qproc->mba_perm, false, t=
-rue,
->                                       qproc->mba_phys, qproc->mba_size);
-> @@ -1137,8 +1147,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
-> =20
->         /**
+Here, baz's CRC will be computed using the expansion of struct foo that
+was cached after bar's CRC calculation ('UNKOWN' here). But if
+EXPORT_SYMBOL_GPL(bar) is removed from the file (because of e.g. symbol
+trimming using CONFIG_TRIM_UNUSED_KSYMS), struct foo will be expanded
+late, during baz's CRC calculation, which now has visibility over the
+full struct definition, hence resulting in a different CRC for baz.
 
-Should be /* instead of /**, the latter is for kernel-doc which this is
-not.
+The proper fix for this certainly is in genksyms, but that will take me
+some time to get right. In the meantime, we have seen one occurrence of
+this in the ehci-hcd code which hits this problem because of the way it
+includes C files halfway through the code together with an unlucky mix
+of symbol trimming.
 
->          * In case of a modem subsystem restart on secure devices, the mo=
-dem
-> -        * memory can be reclaimed only after MBA is loaded. For modem co=
-ld
-> -        * boot this will be a nop
-> +        * memory can be reclaimed only after MBA is loaded.
->          */
->         q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, true, false,
->                                 qproc->mpss_phys, qproc->mpss_size);
+In order to workaround this, move the include done in ehci-hub.c early
+in ehci-hcd.c, hence making sure the struct definitions are visible to
+the entire file. This improves CRC stability of the ehci-hcd exports
+even when symbol trimming is enabled.
+
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+ drivers/usb/host/ehci-hcd.c | 1 +
+ drivers/usb/host/ehci-hub.c | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+index 6257be4110ca..3575b7201881 100644
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -22,6 +22,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/usb.h>
+ #include <linux/usb/hcd.h>
++#include <linux/usb/otg.h>
+ #include <linux/moduleparam.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/debugfs.h>
+diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
+index ce0eaf7d7c12..087402aec5cb 100644
+--- a/drivers/usb/host/ehci-hub.c
++++ b/drivers/usb/host/ehci-hub.c
+@@ -14,7 +14,6 @@
+  */
+ 
+ /*-------------------------------------------------------------------------*/
+-#include <linux/usb/otg.h>
+ 
+ #define	PORT_WAKE_BITS	(PORT_WKOC_E|PORT_WKDISC_E|PORT_WKCONN_E)
+ 
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
