@@ -2,136 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DFC26BD60
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F066626BD65
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgIPGji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:39:38 -0400
-Received: from lan.nucleusys.com ([92.247.61.126]:56154 "EHLO
-        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726140AbgIPGjf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:39:35 -0400
-X-Greylist: delayed 1172 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 02:39:34 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Wtu7UwIuDippJJwE5jWzvgh91CAIDjoUM/4pw51EOEc=; b=pqmtaaTvkLHf6V1EmHjEox/Z0I
-        HvraRytcLRb1olVf6GUtBPM7FbCviCPkC2x7Cspnzm5G1hi/hPR0Ax2FifJ295RGrksZZM4xx/BEW
-        GsW+Lw8ce7T4uheXR30LEcxT/xm+1jmG79erCMq1xZpmneERgwtKTlcp/sftGbZTzu/0=;
-Received: from 78-83-68-78.spectrumnet.bg ([78.83.68.78] helo=p310)
-        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <petkan@nucleusys.com>)
-        id 1kIR6D-0005AO-Oi; Wed, 16 Sep 2020 09:39:25 +0300
-Date:   Wed, 16 Sep 2020 09:39:25 +0300
-From:   Petko Manolov <petkan@nucleusys.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        id S1726321AbgIPGk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726136AbgIPGku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:40:50 -0400
+Received: from coco.lan (ip5f5ad5c9.dynamic.kabel-deutschland.de [95.90.213.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA69A20708;
+        Wed, 16 Sep 2020 06:40:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600238448;
+        bh=K5Kj9HgJm7gM+MKCU/+K5/S5g3OT6iP7z0/H3hNi3Do=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ks4Ey8cfFsbf5k8pWgHTca7IKjs+0r0g/7Dd3nMX7aN6UEEoHkKo09czyivdr+M21
+         EhWyAshF4CqSE46ZQ+U3+BgmFpzHGcoT8Ht3B8zNHR52WD0LsOgVf/VCvlA+XMUDd6
+         JqA1HcTz6ZYUOMHve7AyKilMjxzTvcb169l7Bi0M=
+Date:   Wed, 16 Sep 2020 08:40:36 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Cc:     geert@linux-m68k.org, r.verdejo@samsung.com,
+        linux-media@vger.kernel.org, nicolas@ndufresne.ca,
+        skhan@linuxfoundation.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees][PATCH] rtl8150: set memory to all 0xFFs
- on failed register reads
-Message-ID: <20200916063925.GC38262@p310>
-References: <20200916050540.15290-1-anant.thazhemadam@gmail.com>
- <20200916062227.GD142621@kroah.com>
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] media: vidtv: fix build on 32bit architectures
+Message-ID: <20200916084036.09e8f3c8@coco.lan>
+In-Reply-To: <20200915180509.2661572-1-dwlsalmeida@gmail.com>
+References: <20200915180509.2661572-1-dwlsalmeida@gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916062227.GD142621@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Score: -1.0 (-)
-X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On 20-09-16 08:22:27, Greg KH wrote: > On Wed, Sep 16, 2020
-    at 10:35:40AM +0530, Anant Thazhemadam wrote: > > get_registers() copies
-   whatever memory is written by the > > usb_control_msg() call even i [...] 
- Content analysis details:   (-1.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
-  0.0 TVD_RCVD_IP            Message was received from an IP address
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-09-16 08:22:27, Greg KH wrote:
-> On Wed, Sep 16, 2020 at 10:35:40AM +0530, Anant Thazhemadam wrote:
-> > get_registers() copies whatever memory is written by the
-> > usb_control_msg() call even if the underlying urb call ends up failing.
-> > 
-> > If get_registers() fails, or ends up reading 0 bytes, meaningless and 
-> > junk register values would end up being copied over (and eventually read 
-> > by the driver), and since most of the callers of get_registers() don't 
-> > check the return values of get_registers() either, this would go unnoticed.
-> > 
-> > It might be a better idea to try and mirror the PCI master abort
-> > termination and set memory to 0xFFs instead in such cases.
+Em Tue, 15 Sep 2020 15:05:09 -0300
+"Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
+
+> From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 > 
-> It would be better to use this new api call instead of
-> usb_control_msg():
-> 	https://lore.kernel.org/r/20200914153756.3412156-1-gregkh@linuxfoundation.org
-
-Heh, wasn't aware of the new api.
-
-> How about porting this patch to run on top of that series instead?  That 
-> should make this logic much simpler.
-
-I'll need to check if in this case 'size' is the right amount of bytes expected 
-and not an upper limit.  Then i'll convert it to the new api.
-
-
-cheers,
-Petko
-
-
-> > Fixes: https://syzkaller.appspot.com/bug?extid=abbc768b560c84d92fd3
-> > Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-> > Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-> > Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> > ---
-> >  drivers/net/usb/rtl8150.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
-> > index 733f120c852b..04fca7bfcbcb 100644
-> > --- a/drivers/net/usb/rtl8150.c
-> > +++ b/drivers/net/usb/rtl8150.c
-> > @@ -162,8 +162,13 @@ static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
-> >  	ret = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
-> >  			      RTL8150_REQ_GET_REGS, RTL8150_REQT_READ,
-> >  			      indx, 0, buf, size, 500);
-> > -	if (ret > 0 && ret <= size)
-> > +
-> > +	if (ret < 0)
-> > +		memset(data, 0xff, size);
-> > +
-> > +	else
-> >  		memcpy(data, buf, ret);
-> > +
-> >  	kfree(buf);
-> >  	return ret;
-> >  }
-> > @@ -276,7 +281,7 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
-> >  
-> >  static inline void set_ethernet_addr(rtl8150_t * dev)
-> >  {
-> > -	u8 node_id[6];
-> > +	u8 node_id[6] = {0};
+> Fix the following error for builds on 32bit architectures:
 > 
-> This should not be needed to be done.
+> ERROR: modpost: "__udivdi3"
+> [drivers/media/test-drivers/vidtv/dvb-vidtv-bridge.ko] undefined!
 > 
-> thanks,
+> Which is due to 64bit divisions that did not go through the helpers
+> in linux/math64.h
 > 
-> greg k-h
+> As vidtv_mux_check_mux_rate was not operational in its current form,
+> drop the entire function  while it is not fixed properly.
 > 
+> For now, call vidtv_mux_pad_with_nulls with a constant number of packets
+> to avoid warnings due to unused functions when building this driver.
+> 
+> Fixes: f90cf6079bf67988 ("media: vidtv: add a bridge driver")
+> Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+> ---
+>  drivers/media/test-drivers/vidtv/vidtv_mux.c  | 34 +------------------
+>  .../media/test-drivers/vidtv/vidtv_s302m.c    |  4 +--
+>  2 files changed, 3 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.c b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+> index 5d1a275d504b..6e402a880fdc 100644
+> --- a/drivers/media/test-drivers/vidtv/vidtv_mux.c
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+> @@ -336,38 +336,6 @@ static u32 vidtv_mux_pad_with_nulls(struct vidtv_mux *m, u32 npkts)
+>  	return nbytes;
+>  }
+>  
+> -static u32 vidtv_mux_check_mux_rate(struct vidtv_mux *m)
+> -{
+> -	/*
+> -	 * attempt to maintain a constant mux rate, padding with null packets
+> -	 * if needed
+> -	 */
+> -
+> -	u32 nbytes = 0;  /* the number of bytes written by this function */
+> -
+> -	u64 nbytes_expected; /* the number of bytes we should have written */
+> -	u64 nbytes_streamed; /* the number of bytes we actually wrote */
+> -	u32 num_null_pkts; /* number of null packets to bridge the gap */
+> -
+> -	u64 elapsed_time_msecs = jiffies_to_usecs(m->timing.current_jiffies -
+> -						  m->timing.past_jiffies);
+> -
+> -	elapsed_time_msecs = min(elapsed_time_msecs, (u64)VIDTV_MAX_SLEEP_USECS / 1000);
+> -	nbytes_expected = div64_u64(m->mux_rate_kbytes_sec * 1000, MSEC_PER_SEC);
+> -	nbytes_expected *= elapsed_time_msecs;
+> -
+> -	nbytes_streamed = m->mux_buf_offset;
+> -
+> -	if (nbytes_streamed < nbytes_expected) {
+> -		/* can't write half a packet: roundup to a 188 multiple */
+> -		nbytes_expected  = roundup(nbytes_expected - nbytes_streamed, TS_PACKET_LEN);
+> -		num_null_pkts    = nbytes_expected / TS_PACKET_LEN;
+> -		nbytes          += vidtv_mux_pad_with_nulls(m, num_null_pkts);
+> -	}
+> -
+> -	return nbytes;
+> -}
+> -
+>  static void vidtv_mux_clear(struct vidtv_mux *m)
+>  {
+>  	/* clear the packets currently in the mux */
+> @@ -397,7 +365,7 @@ static void vidtv_mux_tick(struct work_struct *work)
+>  			nbytes += vidtv_mux_push_si(m);
+>  
+>  		nbytes += vidtv_mux_poll_encoders(m);
+> -		nbytes += vidtv_mux_check_mux_rate(m);
+> +		nbytes += vidtv_mux_pad_with_nulls(m, 256);
+>  
+>  		npkts = nbytes / TS_PACKET_LEN;
+>  
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_s302m.c b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
+> index f8049cdf564a..e3290facf57b 100644
+> --- a/drivers/media/test-drivers/vidtv/vidtv_s302m.c
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
+> @@ -285,12 +285,12 @@ static void vidtv_s302m_compute_pts(struct vidtv_encoder *e)
+>  {
+>  	u64 count = e->sample_count;
+>  	struct vidtv_access_unit *au = e->access_units;
+> +	u32 duration = CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
+>  
+>  	while (au) {
+>  		count += au->num_samples;
+>  
+> -		au->pts = count *
+> -			  CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
+> +		au->pts = count * duration;
+
+That doesn't seem to be the right thing to do here. 
+
+Assuming that sampling rate is 48 kHz, you'll
+have duration = 1.875, which would be rounded to 1.
+
+In other words, the above is identical to:
+
+	au->pts = count
+
+Now, I don't know from where that CLOCK_UNIT_90KHZ came from.
+
+If such constant is not needed anymore, just drop it. 
+	
+If, on the other hand, this is required by the specs, then
+you may need to do a 64 bits division, e. g. using
+div64_u64() or do_div().
+
+Thanks,
+Mauro
