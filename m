@@ -2,124 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC6C26BDA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90C026BDA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbgIPHGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:06:19 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43663 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgIPHGS (ORCPT
+        id S1726317AbgIPHHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:07:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33541 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726128AbgIPHHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:06:18 -0400
-Received: by mail-ot1-f67.google.com with SMTP id n61so5698203ota.10;
-        Wed, 16 Sep 2020 00:06:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LsQvtHeib1atrvvp2feLEjcTV2UF2/kU0aaYslA7vbY=;
-        b=eaJPkXMOR066DPgOaI8d/avzSx2KWlD71RWh7AcVPCJXPPrkNXA35oc6/6CP0c9Amy
-         UE3cV1SMYUQQ32I9IiljZjjzC52mPAbtbEZR7fODnKIJY24Z+3JidaCjkf0EYaZZFdVV
-         MwScgRvP1s/8Q4a+OKmZYuVeF1WTgQwKfvN8pHbOSgWNIFX8n7FxyY6yHxLs+VeVK/e/
-         BJYqMx/3dIC4IvmouxRd0lZ/GYVgrSIB3ATe4thnK3Yxl7SY4wH1fWfDBcetv+GoAwVn
-         FC0DydjU8U/Wbzc8UWJAimzi26NRBlhcyMbR6OwSdwGhMSHimyc9dD+bvLZE6GRRm4C3
-         DyJg==
-X-Gm-Message-State: AOAM530FSTGuQ8VY0SkdA0Hs+2v+d+SPN0oESD+Q6xGQvWsqVehi5UdA
-        MdtwVTt8b8xOIbH49PAGJ+BCKx2A09XPasSo6QQ6VtunMm0=
-X-Google-Smtp-Source: ABdhPJxKmwKiMQprL5cUYhYw8TtCpuH52UjOz5tY3oy5rjo3bFWSZ4m127dVecTxjDzhROsJWJLoZIyaiNxs2MyUSSk=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr15872454otb.250.1600239977269;
- Wed, 16 Sep 2020 00:06:17 -0700 (PDT)
+        Wed, 16 Sep 2020 03:07:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600240031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9lcStce28iJ3BFfx9sit/J8sWPEU7IP9Yla520UVtYc=;
+        b=CbFjJcEAurnAT1rkvpMLfcjBHW0KzuZFgl8eMJyDOGNAEcHYZoR2jGlaTx4pKoYOGcDME8
+        OiLIrFDj+bfWDu8ANzQeRacYHEd9B8CHwlcMqx6AXOtrgf/DeTGxEpRHq+YDpGuJh1F6Oh
+        bq8AywobbcBJlVWeg17sAU5rzLkM1vU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-23-LRJQr7ETPjGbwKt7aO2cGQ-1; Wed, 16 Sep 2020 03:07:09 -0400
+X-MC-Unique: LRJQr7ETPjGbwKt7aO2cGQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B80B8107464B;
+        Wed, 16 Sep 2020 07:07:07 +0000 (UTC)
+Received: from x1.bristot.me.redhat.com (ovpn-112-9.rdu2.redhat.com [10.10.112.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E9EFE1002D46;
+        Wed, 16 Sep 2020 07:06:55 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Mark Simmons <msimmons@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/deadline: Unthrottle PI boosted threads while enqueuing
+Date:   Wed, 16 Sep 2020 09:06:39 +0200
+Message-Id: <5076e003450835ec74e6fa5917d02c4fa41687e6.1600170294.git.bristot@redhat.com>
 MIME-Version: 1.0
-References: <20200915180509.2661572-1-dwlsalmeida@gmail.com> <20200916084036.09e8f3c8@coco.lan>
-In-Reply-To: <20200916084036.09e8f3c8@coco.lan>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 16 Sep 2020 09:06:06 +0200
-Message-ID: <CAMuHMdXjA7q-v-mYY9DChC0XQbv9vfW6c3Vfn07-H-FgBr+izA@mail.gmail.com>
-Subject: Re: [PATCH] media: vidtv: fix build on 32bit architectures
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        r.verdejo@samsung.com,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        nicolas@ndufresne.ca, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro, Daniel,
+stress-ng has a test (stress-ng --cyclic) that creates a set of threads
+under SCHED_DEADLINE with the following parameters:
 
-On Wed, Sep 16, 2020 at 8:40 AM Mauro Carvalho Chehab
-<mchehab@kernel.org> wrote:
-> Em Tue, 15 Sep 2020 15:05:09 -0300
-> "Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
-> > From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
-> >
-> > Fix the following error for builds on 32bit architectures:
-> >
-> > ERROR: modpost: "__udivdi3"
-> > [drivers/media/test-drivers/vidtv/dvb-vidtv-bridge.ko] undefined!
-> >
-> > Which is due to 64bit divisions that did not go through the helpers
-> > in linux/math64.h
-> >
-> > As vidtv_mux_check_mux_rate was not operational in its current form,
-> > drop the entire function  while it is not fixed properly.
-> >
-> > For now, call vidtv_mux_pad_with_nulls with a constant number of packets
-> > to avoid warnings due to unused functions when building this driver.
-> >
-> > Fixes: f90cf6079bf67988 ("media: vidtv: add a bridge driver")
-> > Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+    dl_runtime   =  10000 (10 us)
+    dl_deadline  = 100000 (100 us)
+    dl_period    = 100000 (100 us)
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # build-tested
+These parameters are very aggressive. When using a system without HRTICK
+set, these threads can easily execute longer than the dl_runtime because
+the throttling happens with 1/HZ resolution.
 
-> > --- a/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-> > +++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-> > @@ -285,12 +285,12 @@ static void vidtv_s302m_compute_pts(struct vidtv_encoder *e)
-> >  {
-> >       u64 count = e->sample_count;
-> >       struct vidtv_access_unit *au = e->access_units;
-> > +     u32 duration = CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
-> >
-> >       while (au) {
-> >               count += au->num_samples;
-> >
-> > -             au->pts = count *
-> > -                       CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
-> > +             au->pts = count * duration;
->
-> That doesn't seem to be the right thing to do here.
->
-> Assuming that sampling rate is 48 kHz, you'll
-> have duration = 1.875, which would be rounded to 1.
->
-> In other words, the above is identical to:
->
->         au->pts = count
->
-> Now, I don't know from where that CLOCK_UNIT_90KHZ came from.
->
-> If such constant is not needed anymore, just drop it.
->
-> If, on the other hand, this is required by the specs, then
-> you may need to do a 64 bits division, e. g. using
-> div64_u64() or do_div().
+During the main part of the test, the system works just fine because
+the workload does not try to run over the 10 us. The problem happens at
+the end of the test, on the exit() path. During exit(), the threads need
+to do some cleanups that require real-time mutex locks, mainly those
+related to memory management, resulting in this scenario:
 
-As vidtv_encoder.sampling_rate_hz is u32, there's fortunately no need
-to use div64_u64() (64-by-64), so div_u64() (64-by-32) is fine.
+Note: locks are rt_mutexes...
+ ------------------------------------------------------------------------
+    TASK A:		TASK B:				TASK C:
+    activation
+							activation
+			activation
 
-Gr{oetje,eeting}s,
+    lock(a): OK!	lock(b): OK!
+    			<overrun runtime>
+    			lock(a)
+    			-> block (task A owns it)
+			  -> self notice/set throttled
+ +--<			  -> arm replenished timer
+ |    			switch-out
+ |    							lock(b)
+ |    							-> <C prio > B prio>
+ |    							-> boost TASK B
+ |  unlock(a)						switch-out
+ |  -> handle lock a to B
+ |    -> wakeup(B)
+ |      -> B is throttled:
+ |        -> do not enqueue
+ |     switch-out
+ |
+ |
+ +---------------------> replenishment timer
+			-> TASK B is boosted:
+			  -> do not enqueue
+ ------------------------------------------------------------------------
 
-                        Geert
+BOOM: TASK B is runnable but !enqueued, holding TASK C: the system
+crashes with hung task C.
 
+This problem is avoided by removing the throttle state from the boosted
+thread while boosting it (by TASK A in the example above), allowing it to
+be queued and run boosted.
+
+The next replenishment will take care of the runtime overrun, pushing
+the deadline further away. See the "while (dl_se->runtime <= 0)" on
+replenish_dl_entity() for more information.
+
+Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Reported-by: Mark Simmons <msimmons@redhat.com>
+Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
+Tested-by: Mark Simmons <msimmons@redhat.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: linux-kernel@vger.kernel.org
+
+---
+ kernel/sched/deadline.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 3862a28cd05d..50ba5fca0403 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1525,6 +1525,27 @@ static void enqueue_task_dl(struct rq *rq, struct task_struct *p, int flags)
+ 	 */
+ 	if (pi_task && dl_prio(pi_task->normal_prio) && p->dl.dl_boosted) {
+ 		pi_se = &pi_task->dl;
++		/*
++		 * Because of delays in the detection of the overrun of a
++		 * thread's runtime, it might be the case that a thread
++		 * goes to sleep in a rt mutex with negative runtime. As
++		 * a consequence, the thread will be throttled.
++		 *
++		 * While waiting for the mutex, this thread can also be
++		 * boosted via PI, resulting in a thread that is throttled
++		 * and boosted at the same time.
++		 *
++		 * In this case, the boost overrides the throttle.
++		 */
++		if (p->dl.dl_throttled) {
++			/*
++			 * The replenish timer needs to be canceled. No
++			 * problem if it fires concurrently: boosted threads
++			 * are ignored in dl_task_timer().
++			 */
++			hrtimer_try_to_cancel(&p->dl.dl_timer);
++			p->dl.dl_throttled = 0;
++		}
+ 	} else if (!dl_prio(p->normal_prio)) {
+ 		/*
+ 		 * Special case in which we have a !SCHED_DEADLINE task
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
