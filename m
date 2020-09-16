@@ -2,100 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E84526BE86
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01ED26BE87
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgIPHwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        id S1726381AbgIPHwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726243AbgIPHwD (ORCPT
+        with ESMTP id S1726189AbgIPHwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:52:03 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7563AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:52:03 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id x18so2751138pll.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:52:03 -0700 (PDT)
+        Wed, 16 Sep 2020 03:52:01 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BDDC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:52:00 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e11so1630813wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:52:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Anlcd5X+sFxxua67QCprvg2aJ+aYTEJuJfgNbmvuiIM=;
-        b=kCueafGrI25+xhYjr5DKPWns8bpI4VT+AFnhb1HcUImGWU/sE8dqPIrmUsJx0D3swI
-         WCu+p1NWMPWeZvEwPy77HVFNcpOEKOUN9x1rhllcqpgGpgCOEK/EHv/+v6FQHWXbMd1h
-         0jwXraS312mXXjUHAffTk4YpLcdqIwuZYt9c2TuuYdjKz6//MIceBuaSPiDZ8OKxEPiS
-         ASU8NwFTYm/hqX1H5RZb15nq+NfnJFV3zDDfLj5TzfR/BeSci4p6ph+/gy/qaEZeeavM
-         DsjonQgICs5E+aADBo5EypNyZEh7u8C8pgP0nVxROV+WuL7fbn75PzNyve9llWVHiFVb
-         daXw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dVvKltWqBEU89BlHB4WRQdNVMd2wZl+8cOFR2ESkNKo=;
+        b=Q2xM5bAJA/Q2WFGxfesK2VFF/My8eoWs6bHKJhos95mBiqc9lVTNUtWxEjtDNhw9P+
+         o2nW4Oc7bpXzn5htepF+j+WG1QREUrbdjd8zyVZii+omDNhTHcBpXOgfr1/APV87AC2S
+         +H6ZwmSx2gokn9FmGFszkLtNCBIMZ3a4lT/FM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Anlcd5X+sFxxua67QCprvg2aJ+aYTEJuJfgNbmvuiIM=;
-        b=BylHEvJgQWZUHewMDq0qXAo2nRabhOUCuBzQ/06OTXO1ztvNmbLcaTG3sIDCOZR5wQ
-         USRtlXbrFXxWkFoNqO0kh0+cbJXF4p+mGxBVnycXSgNcMJ/MyQP/NFjiurBvmoa/WeaP
-         cAcjKW8PkUGkCYh0jGuZphgyP6E+Z7G2biXI2prA9+5/UZgtRXCMJSAKOI7TK1sN/Lvz
-         AIwsCaroRgnwpG50MuBqtZXfsVthhPoXwjvMeozCsOJBXTuaEsfP7xCJVAjfGmDexVkR
-         889NqiWIezSQTXyAfb2bqu51IzLxXuTQHK3AOIZKLLjkLYBe2xvKPWScoj5iUdYfxRq9
-         B2VQ==
-X-Gm-Message-State: AOAM531ZmB192HfCQtMVEjTEuYJmGxlEvgDbZATURo+2AVyllVFebV1v
-        Nt3NtYlvtQ14JXFsxbiLaJvE53y3Ei5vIMhN
-X-Google-Smtp-Source: ABdhPJz96ZoEE1vXvD2dbTVe9hrtsMkjsrEbFGpTu5obqktOxQj/yrGSkikruZrIPGSWcmz8B5JctA==
-X-Received: by 2002:a17:90b:ecc:: with SMTP id gz12mr2707145pjb.219.1600242722990;
-        Wed, 16 Sep 2020 00:52:02 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id s3sm1436331pgc.61.2020.09.16.00.51.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 00:52:02 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:51:54 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2] perf kvm: add kvm-stat for arm64
-Message-ID: <20200916075154.GA13660@leoy-ThinkPad-X240s>
-References: <20200915091140.152775-1-sergey.senozhatsky@gmail.com>
- <20200915103644.GA32758@leoy-ThinkPad-X240s>
- <20200915105702.GA604@jagdpanzerIV.localdomain>
- <20200915111541.GB604@jagdpanzerIV.localdomain>
- <20200915132109.GB32758@leoy-ThinkPad-X240s>
- <20200916004404.GE604@jagdpanzerIV.localdomain>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=dVvKltWqBEU89BlHB4WRQdNVMd2wZl+8cOFR2ESkNKo=;
+        b=PCkApXFJ3O5R+ZsByT0KgNnIe2vh53+r1GrZ93Gk0cX7J249UTGwlnQmnYKbGbMoVZ
+         FCaXaepTPxIq/r/SjC17tx17uwHxiar1IoqNcG6EcMCAh7nf2LMzNQ1fAHwokc9gbfJ3
+         cQ2BGaDLFqjtyXUGbm90wOevkQJKfZqOxu7nfVtmaRhId1F7UqDxV97ba9eIbPo1vIzb
+         xIq+1dR+LJXothEUwCPpgl+wlgvjZesT3VOn4YC3Pd4V1RKPH9Zysjg5mOCZp+Jit0/4
+         8Xfe61yvOJjy8prhpryjDDJ/m5ofM+FSM2R/JAOYFgnc8T2NuyMpzntb2n34DSWg8Z4N
+         jY+w==
+X-Gm-Message-State: AOAM531tzV0eJeIOglillZUdBvZgEZF8Of50SkVZjaaLG5K17oxJqS5T
+        29sRRZJlasfjDf74PS2o0L+B6g==
+X-Google-Smtp-Source: ABdhPJywveMidt4/e57hl8eEyBcYSOyCCUhd5x9XtTRmTYAj/r/rHiq9Oz3XsLdH6qy6VOddsTRFfg==
+X-Received: by 2002:a1c:a551:: with SMTP id o78mr3315971wme.4.1600242719437;
+        Wed, 16 Sep 2020 00:51:59 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m10sm3771805wmi.9.2020.09.16.00.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 00:51:58 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 09:51:56 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     christian.koenig@amd.com
+Cc:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>,
+        Alex Deucher <alexdeucher@gmail.com>, yi.zhang@huawei.com,
+        Dave Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Zheng Bin <zhengbin13@huawei.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>
+Subject: Re: [PATCH -next 0/8] drm/amd/amdgpu: fix comparison pointer to bool
+ warning
+Message-ID: <20200916075156.GU438822@phenom.ffwll.local>
+Mail-Followup-To: christian.koenig@amd.com,
+        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+        Alex Deucher <alexdeucher@gmail.com>, yi.zhang@huawei.com,
+        Dave Airlie <airlied@linux.ie>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Zheng Bin <zhengbin13@huawei.com>,
+        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>
+References: <20200909130720.105234-1-zhengbin13@huawei.com>
+ <1fce0f2a-3777-e6d8-5a09-30261f843cfd@amd.com>
+ <CADnq5_NoeFbBAMT6s_ictVXsUc2tx1U48MLxnMbAr2Sd58jyYA@mail.gmail.com>
+ <20200915193549.GP6112@intel.com>
+ <6658f89f-6957-e6ea-af41-7625f1fd3cb1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200916004404.GE604@jagdpanzerIV.localdomain>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6658f89f-6957-e6ea-af41-7625f1fd3cb1@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:44:04AM +0900, Sergey Senozhatsky wrote:
-> On (20/09/15 21:21), Leo Yan wrote:
+On Wed, Sep 16, 2020 at 09:38:34AM +0200, Christian König wrote:
+> Am 15.09.20 um 21:35 schrieb Ville Syrjälä:
+> > On Tue, Sep 15, 2020 at 03:16:32PM -0400, Alex Deucher wrote:
+> > > I question the value of these warnings.  Why even have a boolean type
+> > > if you are going to get warnings when you use them...
+> > > That said, applied to avoid getting these patches again and again
+> > > every time someone sees this.
+> > if (this_is_sparta)
+> > if (this_is_sparta == true)
+> > if (this_is_sparta != false)
 > > 
-> > Sorry if I miss anything for this.
+> > I think the first one reads the best, and avoids having to
+> > decide between truth and falsehood :)
+> 
+> +1
+
++1, especially because we also have the inversion when using negative
+errno codes for failures and 0 as success, which results in
+
+	if (errno == 0) /* success case */
+
+but
+	if (bool == 0) /* failure case */
+
+now creative people do sometimes
+
+	if (!errno) /* success case */
+
+which I think is horribly confusing. So imo for more easier telling apart
+of these too I think consistently using the short form for booleans, and
+consistently using the more explicit long form for errno checks is a Very
+Good Pattern :-)
+
+Cheers, Daniel
+
+> 
+> Christian.
+> 
 > > 
+> > > Alex
+> > > 
+> > > On Wed, Sep 9, 2020 at 9:21 AM Christian König <christian.koenig@amd.com> wrote:
+> > > > Acked-by: Christian König <christian.koenig@amd.com> for the series.
+> > > > 
+> > > > Am 09.09.20 um 15:07 schrieb Zheng Bin:
+> > > > > Zheng Bin (8):
+> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in gfx_v9_0.c
+> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in gfx_v10_0.c
+> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in sdma_v5_0.c
+> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in sdma_v5_2.c
+> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in si.c
+> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in uvd_v6_0.c
+> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in
+> > > > >       amdgpu_atpx_handler.c
+> > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in sdma_v4_0.c
+> > > > > 
+> > > > >    drivers/gpu/drm/amd/amdgpu/amdgpu_atpx_handler.c | 4 ++--
+> > > > >    drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c           | 2 +-
+> > > > >    drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c            | 2 +-
+> > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c           | 4 ++--
+> > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c           | 2 +-
+> > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c           | 2 +-
+> > > > >    drivers/gpu/drm/amd/amdgpu/si.c                  | 2 +-
+> > > > >    drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c            | 4 ++--
+> > > > >    8 files changed, 11 insertions(+), 11 deletions(-)
+> > > > > 
+> > > > > --
+> > > > > 2.26.0.106.g9fadedd
+> > > > > 
+> > > > _______________________________________________
+> > > > amd-gfx mailing list
+> > > > amd-gfx@lists.freedesktop.org
+> > > > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
 > 
-> No, you are absolutely right! I should have looked more attentively.
-> 
-> Is "IL" good enough for a decoded reason
-> 
->  	{ARM_EXCEPTION_IRQ,		"IRQ"		},	\
->  	{ARM_EXCEPTION_EL1_SERROR,	"SERROR"	},	\
->  	{ARM_EXCEPTION_TRAP,		"TRAP"		},	\
-> +	{ARM_EXCEPTION_IL,		"IL"		}, \
->  	{ARM_EXCEPTION_HYP_GONE,	"HYP_GONE"	}
-> 
-> or should there be "ILLEGAL", or maybe something even better?
-> ILLEGAL_EXC, etc.
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-I personally think "ILLEGAL" is neat and clear :)
-
-Thanks,
-Leo
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
