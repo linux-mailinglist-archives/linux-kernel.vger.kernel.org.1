@@ -2,111 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FEE26CD9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024DC26CE1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgIPVC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:02:26 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17116 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726502AbgIPQTJ (ORCPT
+        id S1728373AbgIPVKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:10:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48250 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728334AbgIPVJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:19:09 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GG2RVq051537;
-        Wed, 16 Sep 2020 12:15:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=cPFcV4rzKB/0Ttq4UdnaRFgFQtnB3Rt6bFZmoLbN3TA=;
- b=fbB6UXDp4J6Nh7LIFvNSPUqmT1WQkclkByz0A/4/8RPFctgDRTVIHJP/lptuWf6Q1YS6
- eRcWZtzthv/BudMssP5pO2gK8YJxsrur/IcF7FtFz8HjxLojViWlOdVvrYsSKyjodaG/
- prahTgontzzogWT3mKPaMwlGXMOZZHCrNFdU/ivLBrdMu9wC4fN3be3333rFhYieUU6l
- QdtFViyeYY4yGF5ss5lGdyDI3Rt5rOMPelfzwuKSW/iEMPYNNMsuvqZfEF3KdinkBkL6
- 0YkLbk/xQGVbPuM6I6WiwW5bmRnXhWlgnJQpVcV/Oc/E34kSYReeLsqTYWyGXqpLfcCx uw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33knk1h39v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 12:15:27 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08GG3Fpd057597;
-        Wed, 16 Sep 2020 12:15:26 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33knk1h38g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 12:15:26 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08GGEbEP025728;
-        Wed, 16 Sep 2020 16:15:23 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 33k6esgth3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 16:15:23 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08GGFLW922479182
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 16:15:21 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 061B04C05A;
-        Wed, 16 Sep 2020 16:15:21 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4457B4C04E;
-        Wed, 16 Sep 2020 16:15:19 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.98.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Sep 2020 16:15:19 +0000 (GMT)
-Message-ID: <3183edb20e3a84c29be6f3e3b459bf51c3355b6b.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 04/12] evm: Execute evm_inode_init_security() only
- when the HMAC key is loaded
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com,
-        stable@vger.kernel.org
-Date:   Wed, 16 Sep 2020 12:15:18 -0400
-In-Reply-To: <20200904092339.19598-5-roberto.sassu@huawei.com>
-References: <20200904092339.19598-1-roberto.sassu@huawei.com>
-         <20200904092339.19598-5-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+        Wed, 16 Sep 2020 17:09:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600290595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RVdVObv8tbiDVGVAm0SCTZNM8HTzvb9fYiClqlI5+Vg=;
+        b=bI3OVVUD/YsAqBnDeGsooiEkyl0cStEGWYrEg9ZlGJv/IbRSEU3hNfShVkJMMAF4Hhu0Je
+        Mws9029ilAQLbYm8lNq4eIfl6wEdVi8/dnUYDP0H12pI4Kq8SfDazifgd4+yAI3ozMZ9zn
+        6CyLdQdNtfOc2hntl8GV7E+b+m60ePE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-oYobg3TyPaOR4_EN5N2vjg-1; Wed, 16 Sep 2020 17:09:51 -0400
+X-MC-Unique: oYobg3TyPaOR4_EN5N2vjg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93725801ADC;
+        Wed, 16 Sep 2020 21:09:50 +0000 (UTC)
+Received: from ovpn-66-86.rdu2.redhat.com (ovpn-66-86.rdu2.redhat.com [10.10.66.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B345C1001281;
+        Wed, 16 Sep 2020 21:09:49 +0000 (UTC)
+Message-ID: <87ded87d232d9cf87c9c64495bf9190be0e0b6e8.camel@redhat.com>
+Subject: Re: slab-out-of-bounds in iov_iter_revert()
+From:   Qian Cai <cai@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     torvalds@linux-foundation.org, vgoyal@redhat.com,
+        miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 16 Sep 2020 17:09:49 -0400
+In-Reply-To: <20200911235511.GB3421308@ZenIV.linux.org.uk>
+References: <20200911215903.GA16973@lca.pw>
+         <20200911235511.GB3421308@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_10:2020-09-16,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- clxscore=1015 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- spamscore=0 suspectscore=0 mlxscore=0 impostorscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160114
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roberto,
+On Sat, 2020-09-12 at 00:55 +0100, Al Viro wrote:
+> On Fri, Sep 11, 2020 at 05:59:04PM -0400, Qian Cai wrote:
+> > Super easy to reproduce on today's mainline by just fuzzing for a few
+> > minutes
+> > on virtiofs (if it ever matters). Any thoughts?
+> 
+> Usually happens when ->direct_IO() fucks up and reports the wrong amount
+> of data written/read.  We had several bugs like that in the past - see
+> e.g. 85128b2be673 (fix nfs O_DIRECT advancing iov_iter too much).
+> 
+> Had there been any recent O_DIRECT-related patches on the filesystems
+> involved?
 
-On Fri, 2020-09-04 at 11:23 +0200, Roberto Sassu wrote:
-> evm_inode_init_security() requires the HMAC key to calculate the HMAC on
-> initial xattrs provided by LSMs. Unfortunately, with the evm_key_loaded()
-> check, the function continues even if the HMAC key is not loaded
-> (evm_key_loaded() returns true also if EVM has been initialized only with a
-> public key). If the HMAC key is not loaded, evm_inode_init_security()
-> returns an error later when it calls evm_init_hmac().
-
-This is all true, but the context for why it wasn't an issue previously
-is missing.
-
-The original usecase for allowing signature verificaton prior to
-loading the HMAC key was a fully signed, possibly immutable, initrd. 
-No new files were created or, at least, were in policy until the HMAC
-key was loaded.   More recently support for requiring an EVM HMAC key
-was removed.  Files having a portable and immutable signature were
-given additional privileges.
-
-Please update the patch description with the context of what has
-changed.
-
-Mimi
+This is only reproducible using FUSE/virtiofs so far, so I will stare at
+fuse_direct_IO() until someone can beat me to it.
 
