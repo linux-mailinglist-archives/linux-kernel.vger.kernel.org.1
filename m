@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D0E26BAEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC46126BAE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgIPDth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:49:37 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40266 "EHLO inva020.nxp.com"
+        id S1726536AbgIPDtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:49:08 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:45670 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgIPDsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:48:55 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 038031A0BB2;
+        id S1726486AbgIPDs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 23:48:56 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 095602008D0;
         Wed, 16 Sep 2020 05:48:54 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 92AB41A0C11;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9905B2008BD;
         Wed, 16 Sep 2020 05:48:50 +0200 (CEST)
 Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D6ADF409AD;
-        Wed, 16 Sep 2020 05:11:20 +0200 (CEST)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 105C14035E;
+        Wed, 16 Sep 2020 05:11:22 +0200 (CEST)
 From:   Qiang Zhao <qiang.zhao@nxp.com>
 To:     shawnguo@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com
 Cc:     andy.tang@nxp.com, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
         Zhao Qiang <qiang.zhao@nxp.com>
-Subject: [PATCH 1/2] clk: qoriq: modify MAX_PLL_DIV to 32
-Date:   Wed, 16 Sep 2020 11:03:10 +0800
-Message-Id: <20200916030311.17280-1-qiang.zhao@nxp.com>
+Subject: [PATCH 2/2] arm64: dts: layerscape: modify clocks divider to 32 for wdt
+Date:   Wed, 16 Sep 2020 11:03:11 +0800
+Message-Id: <20200916030311.17280-2-qiang.zhao@nxp.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200916030311.17280-1-qiang.zhao@nxp.com>
+References: <20200916030311.17280-1-qiang.zhao@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -37,27 +39,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhao Qiang <qiang.zhao@nxp.com>
 
-On LS2088A, Watchdog need clk divided by 32,
-so modify MAX_PLL_DIV to 32
+On LX2088A, wdt's clock are get from clockgen divided by 32,
+so modify clocks in device tree.
 
 Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
 ---
- drivers/clk/clk-qoriq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/clk-qoriq.c b/drivers/clk/clk-qoriq.c
-index 5942e98..46101c6 100644
---- a/drivers/clk/clk-qoriq.c
-+++ b/drivers/clk/clk-qoriq.c
-@@ -31,7 +31,7 @@
- #define CGA_PLL4	4	/* only on clockgen-1.0, which lacks CGB */
- #define CGB_PLL1	4
- #define CGB_PLL2	5
--#define MAX_PLL_DIV	16
-+#define MAX_PLL_DIV	32
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+index 7016791..de6c751 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+@@ -194,56 +194,56 @@
+ 		cluster1_core0_watchdog: wdt@c000000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc000000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
  
- struct clockgen_pll_div {
- 	struct clk *clk;
+ 		cluster1_core1_watchdog: wdt@c010000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc010000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster2_core0_watchdog: wdt@c100000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc100000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster2_core1_watchdog: wdt@c110000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc110000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster3_core0_watchdog: wdt@c200000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc200000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster3_core1_watchdog: wdt@c210000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc210000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster4_core0_watchdog: wdt@c300000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc300000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster4_core1_watchdog: wdt@c310000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc310000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 31>, <&clockgen 4 31>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
 -- 
 2.7.4
 
