@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4969426C94C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8B726C91C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgIPTGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727405AbgIPRpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:45:42 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C66EC22225;
-        Wed, 16 Sep 2020 12:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600259962;
-        bh=SG4MuQp/zwduxe3VaSSRDORy0X7NqWtWqo77LpwkLVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=clfcM+a6rpyIvjE9f/xKkFEArCvnhlB83pHLnB4FRf9h/LWBgsDNWuLET6KuYTnlg
-         ipu1/I8F0W3MU7Xv6S7hEF6BswSLvz2VZlaBcO+rZHonVu7dRFYKA54uWJ7VdXESG3
-         ryxftx2FjhHc+UTLAyC8ogG/hxgTSlN2VjehXuzo=
-Date:   Wed, 16 Sep 2020 13:39:14 +0100
-From:   Will Deacon <will@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 00/10] Independent per-CPU data section for nVHE
-Message-ID: <20200916123913.GA28056@willie-the-truck>
-References: <20200903091712.46456-1-dbrazdil@google.com>
- <20200914174008.GA25238@willie-the-truck>
- <20200916115404.rhv4dkyjz35e4x25@google.com>
- <20200916122412.elxfxbdygvmdgrj5@google.com>
+        id S1727214AbgIPTDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727479AbgIPRsf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:48:35 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F1FC0A888A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:42:04 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id x69so7912420oia.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=czd653EAQqRd9y6KWSclqvh0oWs0wM7+eL3iGSU/nsI=;
+        b=Lu3BjPbRiC/AX011FfwezqvylAv3ZKt1PhgO2s9ivkaAdFT+L+aU0tlTbH9aGB3QdD
+         ZRH99A3CPlO3UqmOgNoRm+sYa3H4f9liy9wkSbTEbzeH6grEkhQUdoV/KEkl0b+7g6Fl
+         aZYv0CeL8ooRR1NM3VZWi8l0zPzoTUe7oUQL4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=czd653EAQqRd9y6KWSclqvh0oWs0wM7+eL3iGSU/nsI=;
+        b=lVzyHWJE6k5kjcIOgj08rpMj3kMDR6NX2k26I776JTBZL1R6J4m+wb5pPyuhQp6d5t
+         TQQAQwhAr/vnbvcUFpvWqkV2Myp4WiRJP3mivIOmHvxgDJyvClet29J7UY/v3cXll6Hw
+         nB4U2mDlfHCkW22veHTCaRmJ5oavZNvrF7vlGiJJQa/stoDKyZcK/R/KjBSJYlu5uGL/
+         ibrDhQA6AQExSDxaQquR0FvnIO08UAkyjzfWwqb1DDeW/M9Xs3l366ip6aZO3i/xjrbA
+         tujO8w6cQjeH/xgvnNM6YqOCEXlgk7fbXoQCG7twaQTeBHqxDeRAqS8Q3s7BQT5ByqB1
+         xcSg==
+X-Gm-Message-State: AOAM53250qeVBM2aGv80xGYE+4LtECfh/OgIvws2PeM1L+JJ8L7bVs0x
+        8q1XN9klHN2nRMQkZgPib8FP4bVOHe6yn6qttzywHw==
+X-Google-Smtp-Source: ABdhPJwB+2iScSnSRjswx0wBN3crEjmROMPJs/KcyWAFLMOIPP9Nlf6b8MzVFM61WOlkTuWWi8Wacl+i3PJJq3k7BoM=
+X-Received: by 2002:aca:6083:: with SMTP id u125mr3033440oib.14.1600260122457;
+ Wed, 16 Sep 2020 05:42:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916122412.elxfxbdygvmdgrj5@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200914132920.59183-1-christian.koenig@amd.com>
+ <40cd26ae-b855-4627-5a13-4dcea5d622f6@gmail.com> <20200914140632.GD1221970@ziepe.ca>
+ <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com> <20200916095359.GD438822@phenom.ffwll.local>
+ <fc8f2af7-9fc2-cb55-3065-75a4060b7c82@amd.com> <b621db68-30b9-cc3f-c2c0-237a7fe4db09@amd.com>
+In-Reply-To: <b621db68-30b9-cc3f-c2c0-237a7fe4db09@amd.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 16 Sep 2020 14:41:51 +0200
+Message-ID: <CAKMK7uGJVMj6Sb1nDTBoY8SsXc55y2ypUEsGhNLOkbbjFLuYfw@mail.gmail.com>
+Subject: Re: Changing vma->vm_file in dma_buf_mmap()
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:24:12PM +0100, David Brazdil wrote:
-> > I was also wondering about another approach - using the PERCPU_SECTION macro
-> > unchanged in the hyp linker script. It would lay out a single .data..percpu and
-> > we would then prefix it with .hyp and the symbols with __kvm_nvhe_ as with
-> > everything else. WDYT? Haven't tried that yet, could be a naive idea. 
-> 
-> Seems to work. Can't use PERCPU_SECTION directly because then we couldn't
-> rename it in the same linker script, but if we just unwrap that one layer
-> we can use PERCPU_INPUT. No global macro changes needed.
-> 
-> Let me know what you think.
-> 
-> ------8<------
-> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-> index 5904a4de9f40..9e6bf21268f1 100644
-> --- a/arch/arm64/kernel/vmlinux.lds.S
-> +++ b/arch/arm64/kernel/vmlinux.lds.S
-> @@ -195,11 +195,9 @@ SECTIONS
->         PERCPU_SECTION(L1_CACHE_BYTES)
-> 
->         /* KVM nVHE per-cpu section */
-> -       #undef PERCPU_SECTION_NAME
-> -       #undef PERCPU_SYMBOL_NAME
-> -       #define PERCPU_SECTION_NAME(suffix)     CONCAT3(.hyp, PERCPU_SECTION_BASE_NAME, suffix)
-> -       #define PERCPU_SYMBOL_NAME(name)        __kvm_nvhe_ ## name
-> -       PERCPU_SECTION(L1_CACHE_BYTES)
-> +       . = ALIGN(PAGE_SIZE);
-> +       .hyp.data..percpu : { *(.hyp.data..percpu) }
-> +       . = ALIGN(PAGE_SIZE);
-> 
->         .rela.dyn : ALIGN(8) {
->                 *(.rela .rela*)
-> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp.lds.S b/arch/arm64/kvm/hyp/nvhe/hyp.lds.S
-> index 7d8c3fa004f4..1d8e4f7edc29 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/hyp.lds.S
-> +++ b/arch/arm64/kvm/hyp/nvhe/hyp.lds.S
-> @@ -4,6 +4,10 @@
->   * Written by David Brazdil <dbrazdil@google.com>
->   */
-> 
-> +#include <asm-generic/vmlinux.lds.h>
-> +#include <asm/cache.h>
-> +#include <asm/memory.h>
-> +
->  /*
->   * Defines an ELF hyp section from input section @NAME and its subsections.
->   */
-> @@ -11,9 +15,9 @@
-> 
->  SECTIONS {
->         HYP_SECTION(.text)
-> -       HYP_SECTION(.data..percpu)
-> -       HYP_SECTION(.data..percpu..first)
-> -       HYP_SECTION(.data..percpu..page_aligned)
-> -       HYP_SECTION(.data..percpu..read_mostly)
-> -       HYP_SECTION(.data..percpu..shared_aligned)
-> +
-> +       .hyp..data..percpu : {
+On Wed, Sep 16, 2020 at 1:45 PM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> [SNIP]
+>
+> But Jason pointed me to the right piece of code. See this comment in in m=
+map_region():
+>
+> /* ->mmap() can change vma->vm_file, but must guarantee that
+> * vma_link() below can deny write-access if VM_DENYWRITE is set
+> * and map writably if VM_SHARED is set. This usually means the
+> * new file must not have been exposed to user-space, yet.
+> */
+> vma->vm_file =3D get_file(file);
+> error =3D call_mmap(file, vma);
+>
+>
+> So changing vma->vm_file is allowed at least under certain circumstances.
+>
+> Only the "file must not have been exposed to user-space, yet" part still =
+needs double checking. Currently working on that.
+>
+>
+> Ok, I think we can guarantee for all DMA-bufs what is required here.
+>
+> While searching the code I've found that at least vgem_prime_mmap() and i=
+915_gem_dmabuf_mmap() are doing the same thing of modifying vma->vm_file.
+>
+> So I'm leaning towards that this works as expected and we should just doc=
+ument this properly.
+>
+> Daniel and Jason what do you think?
 
-Too many '.'s here?
+Well I can claim I started this, so I started out with naively
+assuming that it Just Works :-)
 
-> +               __per_cpu_load = .;
+I think we already have vgem/i915 prime testcases in igt which try to
+excercise this mmap forwarding, including provoking pte shoot-downs.
+So I think best would be if you could also add a variant for amdgpu,
+to make sure this really works and keeps working.
 
-I don't think we need this symbol.
-
-Otherwise, idea looks good to me. Can you respin like this, but also
-incorporating some of the cleanup in the diff I posted, please?
-
-Will
+Plus ofc the documentation patch so that core mm folks can officially
+ack this as legit.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
