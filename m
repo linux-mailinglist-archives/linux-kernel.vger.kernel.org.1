@@ -2,142 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046F526C045
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F9226C065
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgIPJRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726243AbgIPJRN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:17:13 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86159C06174A;
-        Wed, 16 Sep 2020 02:16:48 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id ay8so5508815edb.8;
-        Wed, 16 Sep 2020 02:16:48 -0700 (PDT)
+        id S1726707AbgIPJX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:23:28 -0400
+Received: from mail-bn8nam12on2135.outbound.protection.outlook.com ([40.107.237.135]:2273
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726243AbgIPJXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 05:23:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fC8Y/pH8neYKAThE7fd9P7rHFyuGvGSOZ71o5tRMxvzwklRjA6NJmQMoN7sDZS1K1jRHIRtvS/WMb1W+gIDRsAENmKXXIHCLHacF6vsEksvLMmixZtRNi9CZoX1TtYj8aR9TwF+X/dYprCkr817sOwkKgDEskQV3vSupihI4xmkZp+ZLhRMVP+SQLoV6czCd0f3ob8+9o/NsJjy4EQcf8Bhhl88gTrmNUQ+GBVPHkUmvmHP1ntPOBh+ip1S+wT4V93udKNW1XrvWTd3Nu/BhY7qPgKUT/QYh5KZjxV0pOtvUpVS+/zE64uMu4CBPYgzJMAfR2C9tQdIHxtR1/Qt9pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CIoE/htBsA6fTejMxQzuVVxCxAW9gdkskMDSoebDosA=;
+ b=QPUY1Vm5tZk/Mh+0+oZ4Jivgo1jgK2TEOSnjFSvTOflkh90JesUkcAjac7Z0sMLmo9B3NOiH85ipl0rkJiEmzTFE6J1P0fqWOlFWdfBi0a2wD1TK2JQYRI5Hvxg8FR5stmASbGTN4yI4qq+LOyIr0iS9PdPW0mQaQHN1CzmBnnSa1WdXMQ1O3j84iCiibf+ap+HA6s2LvRC4ncYl1WUT05FZRzyZNq9fyUNZRUJgL+mOXCCZxHzaFyAScYHIW+HsmsT/FFcWppXbPPBCJ4c0ICgxhBJaV+iqkZ0+2PJ63jIdnZKkxxXA1LCglC3bhUikgFWGKhTTD5PvX5dVxL3iWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=tiUWzelY/QM67YXAjw8S4hXq7Bdu/l8z7sYlivpXpPw=;
-        b=fNXRrzI5ATAQQf42TGNXbdPQFYj/tg1++kXw6Nh4Lx4iet8BUz7h2WJxsCyFD7prCV
-         LBWv6OTVYI32dDum7UKyFzwaHKHDEWRqtPcgPpgFUGKYmHV2hZ92sjXJu362U4i5hRMC
-         LRl+ETNByRKWHXKfaH8+IHV4r4gnw4IZ95Bwda9gZn2fSRLNhBYlMfOvmH3Pn/YA8t2i
-         OfX0MZ/tWEwZvdmXWE/ONSzkNqdz0FziXO9YzkHcYI3bYKYeaq5PAOLD0/aLk7+R11L5
-         yczvlBiPFBMaUgDU7iHjJI9TXiMPNW/f7kjjBQZuLQgaNd4A0+58I3UHLDGgdNu9v4QR
-         zFLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=tiUWzelY/QM67YXAjw8S4hXq7Bdu/l8z7sYlivpXpPw=;
-        b=kj8OM7JTNAPliA0SxpEAX0yDPtNlACa06r8zoVfHsXcr+7p/+5VQ4JRlD+8lMBCt1z
-         yEq+017JsPiOrzm3rbPlfwD7INJCTz4Dt11Z9USk4P8C4ZlrH/Y1LGjDIivVhnyRzH04
-         H4p4OHMvSmvcV/T8Z2pE8x44L6FYehxVhsiVVy6FxBWW70G6T0HWkHdlqv6oORIhY69b
-         XWgOFHuIj+lga6AcLwUm4lFDCvEPwCyoQCUAyuL4Dm9ybX2+oiKB0or8IAJId4zaA2bH
-         cnLt9Ywfo/Rz4Pd8hjGuvgHu/94K2dVUigIfCPhkU9Q2jHlQrceZaM7QO/4WI08sZ5Wt
-         uAcg==
-X-Gm-Message-State: AOAM532gwgoQTnMV2MYdow/k5Be+nMPLqnXhdiexLdaG+JiHWl/UdOSh
-        nc0RhvuIe1Op7zfGfX4lJXXOnYwlrZDDDjix
-X-Google-Smtp-Source: ABdhPJx6ArxE7cZbDhSS9hfa8xkncYEtFcWk/bYSUcGG11MDPsPrW1h3klaQUoLboqhBrTRCyswQfQ==
-X-Received: by 2002:aa7:d30b:: with SMTP id p11mr26764557edq.80.1600247807032;
-        Wed, 16 Sep 2020 02:16:47 -0700 (PDT)
-Received: from felia ([2001:16b8:2dec:c500:15b1:3554:3841:68b])
-        by smtp.gmail.com with ESMTPSA id b25sm2973870ejc.75.2020.09.16.02.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 02:16:46 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Wed, 16 Sep 2020 11:16:45 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Mikhail Zaslonko <zaslonko@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Thomas Gleixner <tglx@linutronix.de>, linux-spdx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH] LICENSES/deprecated: add Zlib license text
-In-Reply-To: <20200401211316.7251-1-zaslonko@linux.ibm.com>
-Message-ID: <alpine.DEB.2.21.2009161111460.10877@felia>
-References: <20200401211316.7251-1-zaslonko@linux.ibm.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CIoE/htBsA6fTejMxQzuVVxCxAW9gdkskMDSoebDosA=;
+ b=IhHIJ7y+/MOESQrQQVmYhmqK8TVpKCe/0NHy7YPRNHgjcFYCntEQPI8v6fSXOrQFC0VU9zkvF2miXdT6KMJ7AIgH5N0OO/o9bLfb/C8aZ5e7twQzKJVIfK7Z01BQh1Y+pDxx1O9LfcP3vwmLFxhUQJRmgT8HB/kEDEfeg0k1Izg=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB4648.namprd04.prod.outlook.com (2603:10b6:a03:59::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 16 Sep
+ 2020 09:23:16 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::1dc0:7d4b:9820:e68]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::3c04:982f:7d75:779e%7]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
+ 09:23:16 +0000
+Date:   Wed, 16 Sep 2020 17:16:47 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: [PATCH v15 0/2] Add initial support for slimport anx7625
+Message-ID: <cover.1600239656.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-ClientProxiedBy: HKAPR03CA0017.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::22) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-user (114.247.245.146) by HKAPR03CA0017.apcprd03.prod.outlook.com (2603:1096:203:c8::22) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3391.6 via Frontend Transport; Wed, 16 Sep 2020 09:23:15 +0000
+X-Originating-IP: [114.247.245.146]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e2c37a11-779b-4bd8-eb55-08d85a222459
+X-MS-TrafficTypeDiagnostic: BYAPR04MB4648:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB464855BC30C35F327B8A4C22C7210@BYAPR04MB4648.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hFSHUz4UQj0b77ug/fFhK8TrdkwWCp7lVXs9+FcpVdcSfEI8rYWYsZZXLSI5vUzJtysSKEyzhL22Fwv+4N5frLCZBqDPHNnN8bEi6HF9MNEQJtLrpUeEHsNV/8Tr/2ZXI3jDoefVUzE2antXg0k+qIdH5B/zgP8kBkuDpJv7uPx6/s4FBTO6k0ZmrR53yfab2NQAy5XvCbRqQvCW8mXiqucqsPtbv1duwtJ5RRmYAc/1qKGdDq6xx9K2EFe/DDuHH+R7myapZSDb7i9ni2Sa4ft+dKUiC1MNUpz23kWaweAbMP5YujVFxJo/0ZDTJpa7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(366004)(39840400004)(396003)(26005)(66946007)(110136005)(2616005)(956004)(478600001)(4326008)(107886003)(6486002)(66556008)(66476007)(8676002)(6496006)(7416002)(86362001)(16526019)(52116002)(186003)(83380400001)(6666004)(54906003)(316002)(8936002)(5660300002)(2906002)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: aAo03JpSj6/m4XorsoLdR8lVn1P15sgJpOMFCxbj1ThyyjzAPlV5rZnCwkLX4m/PvpcWomCp8VhqiubtZFYPwtrMBeHs8A1XmvXA773a3hIxgXOPZxdNoJcC5bBiQlIWGOiMfz4QMdHJaX1eF1Bwi4xAOlEdIn07GCGAqGZyJqX6bFNIFlle09WfQtvFSU/OSy7jBSIglsh4io9ht3xPS5lHUWYWPCpuJrsLKb4cvIeuMpYEf0iMiueW3QURuVWwm2XS7IoyLyJYNA4T4196EbDhGGg3L83Ta9N+8L/u/W9bsR+FSbtVaykOeUM3nzkeNaXnQkauJmXj0GwBN3OkCw2HfNy3zt9uBTtL1EV2uejwvRMnXDJusD1p/IO7jqUn0l7HskmA7FcIPjOZd+/AamHGf4tQzwQoaTIFEhfdsix+ET0zTGkqnirXRO3HkJ+eLeZEURq3NYTLU0JPN1eaE2D1AT9q5i3tgN5tnaHwu8pOc9ChAGJbuOtFiUIQJn3PdE9DH41ArwKNfJu09rn2xMiTQzKW+ZZCuHmXBUwa1h/VpnWnhQMN/SHyH4qH3T1/5leNIFwrSdsGVzjWyBvZnLXOY+ugGrZSFdUgTaQzIZrLaPBT+EFxqUsyOWm6ZzIPmD6WLU4WuAY5eu9ccxHm/g==
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2c37a11-779b-4bd8-eb55-08d85a222459
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 09:23:16.0157
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DnNf3Qo3qjkJ7NDvyBa0rKY8B5DY1lRqf8Gc16R1FDmNtVdd2HE9cru3t9uQ2yZB56QYja7kFMNb51BAK3YdmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4648
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
 
-On Wed, 1 Apr 2020, Mikhail Zaslonko wrote:
+The following series add support for the Slimport ANX7625 transmitter, a
+ultra-low power Full-HD 4K MIPI to DP transmitter designed for portable device.
 
-> The new files contributed to zlib have Zlib SPDX license identifier. Since
-> there was no Zlib license text in LICENSES, scripts/spdxcheck.py
-> reported the following errors:
->   lib/zlib_dfltcc/dfltcc.c: 1:28 Invalid License ID: Zlib
->   lib/zlib_dfltcc/dfltcc.h: 1:28 Invalid License ID: Zlib
->   lib/zlib_dfltcc/dfltcc_deflate.c: 1:28 Invalid License ID: Zlib
->   lib/zlib_dfltcc/dfltcc_inflate.c: 1:28 Invalid License ID: Zlib
->   lib/zlib_dfltcc/dfltcc_util.h: 1:28 Invalid License ID: Zlib
-> 
-> The patch adds Zlib SPDX license to LICENSES/deprecated, thus
-> resolving the issues reported by spdxcheck.
-> 
-> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: Mikhail Zaslonko <zaslonko@linux.ibm.com>
-> ---
 
-IANAL, but to me that looks identical to the reference text on spdx.org. 
-So:
+This is the v15 version, any mistakes, please let me know, I will fix it in
+the next series.
 
-Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Change history:
+v15: Fix comments from Sam and Hsin-Yi Wang
+ - Remove connector
+ - Allocate memory for edid at ".get_edid()"
 
-Greg, could you pick this patch on your spdx tree?
+v14: Fix comments from Sam and Nicolas
+ - Check flags at drm_bridge_attach
+ - Use panel_bridge instead of drm_panel
+ - Fix not correct return value
 
-It has been hanging around here quite long :)
+v13: Fix comments from Launrent Pinchart and Rob Herring
+ - Picked up Rob's Reviewed-By
+ - Add .detect and .get_edid interface in bridge funcs.
 
-Lukas
+v12: Fix comments from Hsin-Yi Wang
+ - Rebase the code on kernel 5.7, fix DRM interface not match issue.
 
->  LICENSES/deprecated/Zlib | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->  create mode 100644 LICENSES/deprecated/Zlib
-> 
-> diff --git a/LICENSES/deprecated/Zlib b/LICENSES/deprecated/Zlib
-> new file mode 100644
-> index 000000000000..b60d0d73f131
-> --- /dev/null
-> +++ b/LICENSES/deprecated/Zlib
-> @@ -0,0 +1,27 @@
-> +Valid-License-Identifier: Zlib
-> +SPDX-URL: https://spdx.org/licenses/Zlib.html
-> +Usage-Guide:
-> +  To use the Zlib License put the following SPDX tag/value pair into a
-> +  comment according to the placement guidelines in the licensing rules
-> +  documentation:
-> +    SPDX-License-Identifier: Zlib
-> +License-Text:
-> +
-> +zlib License
-> +
-> +Copyright (c) <year> <copyright holders>
-> +
-> +This software is provided 'as-is', without any express or implied warranty. In
-> +no event will the authors be held liable for any damages arising from the use
-> +of this software.
-> +
-> +Permission is granted to anyone to use this software for any purpose, including
-> +commercial applications, and to alter it and redistribute it freely, subject
-> +to the following restrictions:
-> +  1. The origin of this software must not be misrepresented; you must not
-> +claim that you wrote the original software. If you use this software in a
-> +product, an acknowledgment in the product documentation would be appreciated
-> +but is not required.
-> +  2. Altered source versions must be plainly marked as such, and must not be
-> +misrepresented as being the original software.
-> +  3. This notice may not be removed or altered from any source distribution.
-> -- 
-> 2.17.1
-> 
-> 
+v11: Fix comments from Rob Herring
+ - Update commit message.
+ - Remove unused label.
+
+v10: Fix comments from Rob Herring, Daniel.
+ - Fix dt_binding_check warning.
+ - Update description.
+
+v9: Fix comments from Sam, Nicolas, Daniel
+ - Remove extcon interface.
+ - Remove DPI support.
+ - Fix dt_binding_check complains.
+ - Code clean up and update description.
+
+v8: Fix comments from Nicolas.
+ - Fix several coding format.
+ - Update description.
+
+v7:
+ - Fix critical timing(eg:odd hfp/hbp) in "mode_fixup" interface,
+   enhance MIPI RX tolerance by setting register MIPI_DIGITAL_ADJ_1 to 0x3D.
+
+
+
+Xin Ji (2):
+  dt-bindings: drm/bridge: anx7625: MIPI to DP transmitter DT schema
+  drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP
+
+ .../bindings/display/bridge/analogix,anx7625.yaml  |   95 +
+ drivers/gpu/drm/bridge/analogix/Kconfig            |    9 +
+ drivers/gpu/drm/bridge/analogix/Makefile           |    1 +
+ drivers/gpu/drm/bridge/analogix/anx7625.c          | 1848 ++++++++++++++++++++
+ drivers/gpu/drm/bridge/analogix/anx7625.h          |  390 +++++
+ 5 files changed, 2343 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+ create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.c
+ create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.h
+
+-- 
+2.7.4
+
