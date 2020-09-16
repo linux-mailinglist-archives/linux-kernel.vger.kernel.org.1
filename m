@@ -2,135 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B158226C984
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0E426C991
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgIPTMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:12:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
+        id S1727662AbgIPTNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:13:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727328AbgIPRkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:40:40 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1727312AbgIPRka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:40:30 -0400
+Received: from kernel.org (unknown [87.71.73.56])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6625E222E8;
-        Wed, 16 Sep 2020 14:00:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FB6220936;
+        Wed, 16 Sep 2020 14:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600264812;
-        bh=NQq1On/fkwKTYqrcq7ShBRprV9UXWEuflauH83OIRvc=;
+        s=default; t=1600265083;
+        bh=vjT9vG5+3yp/xt4ZdTXRH4nnYrq6Zz1hIgyXzWpV/CY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GORHr6l4BlJj6kWrku14MTLiELS5zPh2+nrpH0zuXLtRoZUSFS33l3GiKoVUlNJPn
-         uMVCY5QkxVgs6dddX1GVVW6U/0os1syzplyu3W2FQA14Ne9K/ZvUjGlRZrpIyk9lC/
-         N3S7IRd2ZU5FJJRMo+BUwZSCC5kITTFl9LIxjcpg=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 827C6400E9; Wed, 16 Sep 2020 11:00:10 -0300 (-03)
-Date:   Wed, 16 Sep 2020 11:00:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 2/2] perf parse-event: Fix cpu map leaks
-Message-ID: <20200916140010.GQ720847@kernel.org>
-References: <20200916053131.1001604-1-namhyung@kernel.org>
- <20200916053131.1001604-2-namhyung@kernel.org>
+        b=xjwbjybAHtj33ndRCCkAiu8k9aM3x5UONFAamN+w8FRYz0P2tMaxUZwELYD6J9x5T
+         kcnj4gTXIX/DXUM1zLXMIgdffznpjlOJeUpN7Mxgl0rnNsNcorWqVivGLmv2nT3hRw
+         tnXEoHNNMQ8EA1tly5syKlCO+GqulbWkZ5lHrDbg=
+Date:   Wed, 16 Sep 2020 17:04:37 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [Firmware Bug]: Kernel image misaligned at boot, please fix your
+ bootloader
+Message-ID: <20200916140437.GL2142832@kernel.org>
+References: <CA+G9fYtz4=fO++JsL4McMWecFnFGWzm7kJvKKmfHOspjvMU9yQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916053131.1001604-2-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CA+G9fYtz4=fO++JsL4McMWecFnFGWzm7kJvKKmfHOspjvMU9yQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 16, 2020 at 02:31:31PM +0900, Namhyung Kim escreveu:
-> Like evlist cpu map, evsel's cpu map should have a proper refcount.
-> As it's created with a refcount, we don't need to get an extra count.
-> Thanks to Arnaldo for the simpler suggestion.
+On Wed, Sep 16, 2020 at 05:50:34PM +0530, Naresh Kamboju wrote:
+> arm64 boot failed on linux next 20200916.
 
-You forgot this part:
+There is a fix at 
+https://lore.kernel.org/linux-mm/20200916085933.25220-1-song.bao.hua@hisilicon.com/
 
-
-[acme@five perf]$ git diff
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 667cbca1547ac5f6..0154331ea213f166 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -353,7 +353,7 @@ __add_event(struct list_head *list, int *idx,
-            const char *cpu_list)
- {
-        struct evsel *evsel;
--       struct perf_cpu_map *cpus = pmu ? pmu->cpus :
-+       struct perf_cpu_map *cpus = pmu ? perf_cpu_map__get(pmu->cpus) :
-                               cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
-
-        if (init_attr)
-
-Right?
-
-- Arnaldo
- 
-> This fixes the following ASAN report:
+> [    0.000000] Linux version 5.9.0-rc5-next-20200916
+> (TuxBuild@3aa8232c0e38) (aarch64-linux-gnu-gcc (Debian 9.3.0-8) 9.3.0,
+> GNU ld (GNU Binutils for Debian) 2.34) #1 SMP PREEMPT Wed Sep 16
+> 10:13:15 UTC 2020
+> [    0.000000] Machine model: Freescale Layerscape 2088A RDB Board
+> [    0.000000] earlycon: uart8250 at MMIO 0x00000000021c0600 (options '')
+> [    0.000000] printk: bootconsole [uart8250] enabled
+> [    0.000000] efi: UEFI not found.
+> [    0.000000] [Firmware Bug]: Kernel image misaligned at boot, please
+> fix your bootloader!
+> [    0.000000] Unable to handle kernel paging request at virtual
+> address ffff0082ffffff70
+> [    0.000000] Mem abort info:
+> [    0.000000]   ESR = 0x96000044
+> [    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    0.000000]   SET = 0, FnV = 0
+> [    0.000000]   EA = 0, S1PTW = 0
+> [    0.000000] Data abort info:
+> [    0.000000]   ISV = 0, ISS = 0x00000044
+> [    0.000000]   CM = 0, WnR = 1
+> [    0.000000] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000827f9000
+> [    0.000000] [ffff0082ffffff70] pgd=0000000000000000, p4d=0000000000000000
+> [    0.000000] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+> [    0.000000] Modules linked in:
+> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
+> 5.9.0-rc5-next-20200916 #1
+> [    0.000000] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+> [    0.000000] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+> [    0.000000] pc : __memset+0x148/0x188
+> [    0.000000] lr : memblock_alloc_try_nid+0xc4/0xdc
+> [    0.000000] sp : ffffc305b2393cd0
+> [    0.000000] x29: ffffc305b2393cd0 x28: 000000008116237c
+> [    0.000000] x27: 0000000080000000 x26: ffffc305b1b51000
+> [    0.000000] x25: 0000008380000000 x24: ffffc305b18014f8
+> [    0.000000] x23: ffffc305b27a0f30 x22: 0000000000000000
+> [    0.000000] x21: 00000000ffffffff x20: ffff0082ffffff70
+> [    0.000000] x19: 0000000000000090 x18: 0000000000000010
+> [    0.000000] x17: 0000000000001400 x16: 0000000000001c00
+> [    0.000000] x15: ffffc305b23a48c0 x14: ffffc305b23a48c0
+> [    0.000000] x13: fffffdfffe600000 x12: ffffc305b2393e44
+> [    0.000000] x11: 0000000000004aa8 x10: ffffc305b2393df4
+> [    0.000000] x9 : 0000000000000000 x8 : ffff0082ffffff70
+> [    0.000000] x7 : 0000000000000000 x6 : 000000000000003f
+> [    0.000000] x5 : 0000000000000040 x4 : 0000000000000010
+> [    0.000000] x3 : 0000000000000080 x2 : 0000000000000080
+> [    0.000000] x1 : 0000000000000000 x0 : ffff0082ffffff70
+> [    0.000000] Call trace:
+> [    0.000000]  __memset+0x148/0x188
+> [    0.000000]  cma_init_reserved_mem+0x9c/0x15c
+> [    0.000000]  cma_declare_contiguous_nid+0x288/0x308
+> [    0.000000]  dma_contiguous_reserve_area+0x50/0x80
+> [    0.000000]  dma_contiguous_reserve+0xfc/0x114
+> [    0.000000]  arm64_memblock_init+0x42c/0x464
+> [    0.000000]  setup_arch+0x27c/0x64c
+> [    0.000000]  start_kernel+0xa0/0x56c
+> [    0.000000] Code: f101007f fa45a068 54fffc0b aa0303e2 (a9001d07)
+> [    0.000000] random: get_random_bytes called from
+> print_oops_end_marker+0x34/0x78 with crng_init=0
+> [    0.000000] ---[ end trace 0000000000000000 ]---
+> [    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+> [    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill
+> the idle task! ]---
 > 
->   Direct leak of 840 byte(s) in 70 object(s) allocated from:
->     #0 0x7fe36703f628 in malloc (/lib/x86_64-linux-gnu/libasan.so.5+0x107628)
->     #1 0x559fbbf611ca in cpu_map__trim_new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:79
->     #2 0x559fbbf6229c in perf_cpu_map__new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:237
->     #3 0x559fbbcc6c6d in __add_event util/parse-events.c:357
->     #4 0x559fbbcc6c6d in add_event_tool util/parse-events.c:408
->     #5 0x559fbbcc6c6d in parse_events_add_tool util/parse-events.c:1414
->     #6 0x559fbbd8474d in parse_events_parse util/parse-events.y:439
->     #7 0x559fbbcc95da in parse_events__scanner util/parse-events.c:2096
->     #8 0x559fbbcc95da in __parse_events util/parse-events.c:2141
->     #9 0x559fbbc2788b in check_parse_id tests/pmu-events.c:406
->     #10 0x559fbbc2788b in check_parse_id tests/pmu-events.c:393
->     #11 0x559fbbc2788b in check_parse_fake tests/pmu-events.c:436
->     #12 0x559fbbc2788b in metric_parse_fake tests/pmu-events.c:553
->     #13 0x559fbbc27e2d in test_parsing_fake tests/pmu-events.c:599
->     #14 0x559fbbc27e2d in test_parsing_fake tests/pmu-events.c:574
->     #15 0x559fbbc0109b in run_test tests/builtin-test.c:410
->     #16 0x559fbbc0109b in test_and_print tests/builtin-test.c:440
->     #17 0x559fbbc03e69 in __cmd_test tests/builtin-test.c:695
->     #18 0x559fbbc03e69 in cmd_test tests/builtin-test.c:807
->     #19 0x559fbbc691f4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
->     #20 0x559fbbb071a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
->     #21 0x559fbbb071a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
->     #22 0x559fbbb071a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
->     #23 0x7fe366b68cc9 in __libc_start_main ../csu/libc-start.c:308
 > 
-> And I've failed which commit introduced this bug as the code was
-> heavily changed since then. ;-/
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/parse-events.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 176a51698a64..204395596381 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -366,7 +366,7 @@ __add_event(struct list_head *list, int *idx,
->  	}
->  
->  	(*idx)++;
-> -	evsel->core.cpus   = perf_cpu_map__get(cpus);
-> +	evsel->core.cpus = cpus;
->  	evsel->core.own_cpus = perf_cpu_map__get(cpus);
->  	evsel->core.system_wide = pmu ? pmu->is_uncore : false;
->  	evsel->auto_merge_stats = auto_merge_stats;
 > -- 
-> 2.28.0.618.gf4bc123cb7-goog
-> 
+> Linaro LKFT
+> https://lkft.linaro.org
 
 -- 
-
-- Arnaldo
+Sincerely yours,
+Mike.
