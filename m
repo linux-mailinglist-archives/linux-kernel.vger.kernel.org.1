@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2676326C8D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BCF26C83B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgIPS62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:58:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726868AbgIPRwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:52:02 -0400
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80E522224E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 13:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600264433;
-        bh=jOr1ILBrH0hsIe4Uxj0HglLHNtHLCgPAOSI7lD6Bk0A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p9VWVOxqy0ZOpY6zV+lgUxPY3vw6KIsl7EKpGzi/f5TJiOJuxEkiQ/G4gh/h5EzHS
-         RF68RygSMJzp1/h8NeBPg+O7beXq7pBMA/m7hUDQMMXJocOkwnecFGmmYzMf7uZb0o
-         AGOuxHWQwZXx2lQ+zyA8jN8N/CcUyUTP+mpFQPzA=
-Received: by mail-wm1-f47.google.com with SMTP id e11so2301754wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:53:53 -0700 (PDT)
-X-Gm-Message-State: AOAM533oRFOTibChtUIkOQP3sYTMluty0BKpQ+xEGJ4fbDgSO0bhPVU8
-        5xki6I6MW7OarqX+B6Dr6PrxT9jOtdaLBXKJZfhsyA==
-X-Google-Smtp-Source: ABdhPJwsFxAlLKwvcgub1p7xhg7wLnttUhWDVhNNq6UFPkr9RccoakwAwNYCTooMbhwj5JmFeJr/NfK4O+SpA8c8x0E=
-X-Received: by 2002:a05:600c:4104:: with SMTP id j4mr4760326wmi.36.1600264432116;
- Wed, 16 Sep 2020 06:53:52 -0700 (PDT)
+        id S1728232AbgIPSnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:43:39 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12761 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727984AbgIPSX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:23:26 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BECEDA15FE83E11004E4;
+        Wed, 16 Sep 2020 22:17:13 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 22:17:03 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] netfilter: nf_tables: Remove ununsed function nft_data_debug
+Date:   Wed, 16 Sep 2020 22:16:56 +0800
+Message-ID: <20200916141656.22988-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <20200916043652.96640-1-ebiggers@kernel.org>
-In-Reply-To: <20200916043652.96640-1-ebiggers@kernel.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 16 Sep 2020 06:53:41 -0700
-X-Gmail-Original-Message-ID: <CALCETrU-D=b-oGE3+zjoYFP5dBU7ur41dqwkz1BifOzN2=jV7g@mail.gmail.com>
-Message-ID: <CALCETrU-D=b-oGE3+zjoYFP5dBU7ur41dqwkz1BifOzN2=jV7g@mail.gmail.com>
-Subject: Re: [PATCH] random: remove dead code left over from blocking pool
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 9:38 PM Eric Biggers <ebiggers@kernel.org> wrote:>
-> From: Eric Biggers <ebiggers@google.com>
->
-> Remove some dead code that was left over following commit 90ea1c6436d2
-> ("random: remove the blocking pool").
->
+It is never used, so can be removed.
 
-Looks good to me.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ include/net/netfilter/nf_tables.h | 7 -------
+ 1 file changed, 7 deletions(-)
 
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 8ceca0e419b3..c4c526507ddb 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -148,13 +148,6 @@ static inline void nft_data_copy(u32 *dst, const struct nft_data *src,
+ 	memcpy(dst, src, len);
+ }
+ 
+-static inline void nft_data_debug(const struct nft_data *data)
+-{
+-	pr_debug("data[0]=%x data[1]=%x data[2]=%x data[3]=%x\n",
+-		 data->data[0], data->data[1],
+-		 data->data[2], data->data[3]);
+-}
+-
+ /**
+  *	struct nft_ctx - nf_tables rule/set context
+  *
+-- 
+2.17.1
+
