@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D01926C8FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A609B26C8F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgIPTBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727533AbgIPRsy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:54 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BA3C061756;
-        Wed, 16 Sep 2020 10:48:16 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id C54F92E5;
-        Wed, 16 Sep 2020 17:48:12 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 11:48:11 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Subject: Re: [PATCH 0/3] docs: Add automatic cross-reference for
- documentation pages
-Message-ID: <20200916114811.61721553@lwn.net>
-In-Reply-To: <20200911133339.327721-1-nfraprado@protonmail.com>
-References: <20200911133339.327721-1-nfraprado@protonmail.com>
-Organization: LWN.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1728223AbgIPTBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:01:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727617AbgIPTA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 15:00:26 -0400
+Subject: Re: [GIT PULL] Hyper-V fixes for 5.9-rc6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600282825;
+        bh=diYUg/Atzoj3Sg/gpFWsuRSLsNWf09rssXPFQw0N3s0=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=kRxPPWgkTqI1BMlumNbzFvOaGiIwwxkNNplWKSFN6XgpLWXDP6waTkGKrI+M82VYQ
+         CTIVeHxG7XXbvGmzfxnR+YlTQVE6jDJrcubTZBtOh6QNwEANjtqzTpKIU9vxIVVQyw
+         fub/v454lq4HJmaK+6CkSAzz904hCzNrg0n3Ch4E=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200915114457.tozhtbxojblcnyow@liuwe-devbox-debian-v2>
+References: <20200915114457.tozhtbxojblcnyow@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200915114457.tozhtbxojblcnyow@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
+X-PR-Tracked-Commit-Id: 911e1987efc8f3e6445955fbae7f54b428b92bd3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 00acc50506329bef3c28d11481730e6cda01a6a0
+Message-Id: <160028282559.10613.17712799534565360889.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Sep 2020 19:00:25 +0000
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 13:34:27 +0000
-Nícolas F. R. A. Prado <nfraprado@protonmail.com> wrote:
+The pull request you sent on Tue, 15 Sep 2020 11:44:57 +0000:
 
-> Cross-referencing from a documentation page to another can be done using the
-> :doc:`doc-file` directive from Sphinx.
-> This however introduces markup that could be avoided to increase readability in
-> plain text.
-> This patch series adds automatic markup for cross-referencing between
-> documentation pages.
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
 
-Once again, this looks great.  I've applied it, many thanks!
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/00acc50506329bef3c28d11481730e6cda01a6a0
 
-jon
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
