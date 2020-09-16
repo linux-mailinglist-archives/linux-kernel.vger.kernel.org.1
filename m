@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AA426C742
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1D826C76D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgIPSWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:22:19 -0400
-Received: from mga05.intel.com ([192.55.52.43]:25895 "EHLO mga05.intel.com"
+        id S1727862AbgIPS0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:26:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727760AbgIPSVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:21:25 -0400
-IronPort-SDR: 8ukguTZ4f1SUug5kzNE/8Ka8JAbyG3vB86Y9wbTR26TADdkjR1DOhhQ7NI3w8h6Vrg/JPRKAS9
- 0qA5OVik9jcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="244340747"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="244340747"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:02:36 -0700
-IronPort-SDR: RvbkOg0yPbL+k8A0PRubgOPsxVaYPCXIBn/0cAgKLZlM/vFjE6hK5kcCxnDDSM6eii/skUQ0Lt
- M+Blt9qb3T7g==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="288402007"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:02:34 -0700
-Date:   Wed, 16 Sep 2020 09:02:12 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 08/35] KVM: SVM: Prevent debugging under SEV-ES
-Message-ID: <20200916160210.GA10227@sjchrist-ice>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <58093c542b5b442b88941828595fb2548706f1bf.1600114548.git.thomas.lendacky@amd.com>
- <20200914212601.GA7192@sjchrist-ice>
- <fd790047-4107-b28a-262e-03ed5bc4c421@amd.com>
- <20200915163010.GB8420@sjchrist-ice>
- <aff46d8d-07ff-7d14-3e7f-ffe60f2bd779@amd.com>
- <5e816811-450f-b732-76f7-6130479642e0@amd.com>
+        id S1727780AbgIPSZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:25:43 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F713206B5;
+        Wed, 16 Sep 2020 16:05:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600272334;
+        bh=HyK6e1+O96SknV92tJzQftwOnmSFa30VAHDCHZnsim0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sn/PKPBsbuwouKfzLqpPiPeRrRMelmWbS8zJ7JWaVVbmx6TztXUZ95QFwktdNXrt7
+         OzJqNVplOzkMkoBDQvJjzBJHXuLiNQVoERsDU7MfoFPyJ0fV0AcpzU1Nmo1pX5NSZ3
+         EfFrOKBv+sFZdEFJ2MpaoZxNa7WF7voExrLr8fOY=
+Date:   Wed, 16 Sep 2020 09:05:33 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Can Guo <cang@codeaurora.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH 5/6] scsi: ufs: show ufs part info in error case
+Message-ID: <20200916160533.GA1011272@google.com>
+References: <20200915204532.1672300-1-jaegeuk@kernel.org>
+ <20200915204532.1672300-5-jaegeuk@kernel.org>
+ <bdc48d03dae86abef158aa33468f6c2f8e669ce8.camel@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5e816811-450f-b732-76f7-6130479642e0@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <bdc48d03dae86abef158aa33468f6c2f8e669ce8.camel@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:11:10AM -0500, Tom Lendacky wrote:
-> On 9/15/20 3:13 PM, Tom Lendacky wrote:
-> > On 9/15/20 11:30 AM, Sean Christopherson wrote:
-> >> I don't quite follow the "doesn't mean debugging can't be done in the future".
-> >> Does that imply that debugging could be supported for SEV-ES guests, even if
-> >> they have an encrypted VMSA?
+On 09/16, Bean Huo wrote:
+> On Tue, 2020-09-15 at 13:45 -0700, Jaegeuk Kim wrote:
+> > Cc: Avri Altman <avri.altman@wdc.com>
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> > ---
+> >  drivers/scsi/ufs/ufshcd.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
 > > 
-> > Almost anything can be done with software. It would require a lot of
-> > hypervisor and guest code and changes to the GHCB spec, etc. So given
-> > that, probably just the check for arch.guest_state_protected is enough for
-> > now. I'll just need to be sure none of the debugging paths can be taken
-> > before the VMSA is encrypted.
+> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > index bdc82cc3824aa..b81c116b976ff 100644
+> > --- a/drivers/scsi/ufs/ufshcd.c
+> > +++ b/drivers/scsi/ufs/ufshcd.c
+> > @@ -500,6 +500,14 @@ static void ufshcd_print_tmrs(struct ufs_hba
+> > *hba, unsigned long bitmap)
+> >  static void ufshcd_print_host_state(struct ufs_hba *hba)
+> >  {
+> >         dev_err(hba->dev, "UFS Host state=%d\n", hba->ufshcd_state);
+> > +       if (hba->sdev_ufs_device) {
+> > +               dev_err(hba->dev, " vendor = %.8s\n",
+> > +                                       hba->sdev_ufs_device-
+> > >vendor);
+> > +               dev_err(hba->dev, " model = %.16s\n",
+> > +                                       hba->sdev_ufs_device->model);
+> > +               dev_err(hba->dev, " rev = %.4s\n",
+> > +                                       hba->sdev_ufs_device->rev);
+> > +       }
 > 
-> So I don't think there's any guarantee that the KVM_SET_GUEST_DEBUG ioctl
-> couldn't be called before the VMSA is encrypted, meaning I can't check the
-> arch.guest_state_protected bit for that call. So if we really want to get
-> rid of the allow_debug() op, I'd need some other way to indicate that this
-> is an SEV-ES / protected state guest.
+> Hi Jaegeuk
+> these prints have been added since this change:
+> 
+> commit 3f8af6044713 ("scsi: ufs: Add some debug information to
+> ufshcd_print_host_state()")                
+> 
+> https://patchwork.kernel.org/patch/11694371/
 
-Would anything break if KVM "speculatively" set guest_state_protected before
-LAUNCH_UPDATE_VMSA?  E.g. does KVM need to emulate before LAUNCH_UPDATE_VMSA?
+Cool, thank you for pointing this out. BTW, which branch can I see the -next
+patches?
 
-> How are you planning on blocking this ioctl for TDX? Would the
-> arch.guest_state_protected bit be sit earlier than is done for SEV-ES?
-
-Yep, guest_state_protected is set from time zero (kvm_x86_ops.vm_init) as
-guest state is encrypted/inaccessible from the get go.  The flag actually
-gets turned off for debuggable TDX guests, but that's also forced to happen
-before the KVM_RUN can be invoked (TDX architecture) and is a one-time
-configuration, i.e. userspace can flip the switch exactly once, and only at
-a very specific point in time.
+> 
+> Thanks,
+> Bean
