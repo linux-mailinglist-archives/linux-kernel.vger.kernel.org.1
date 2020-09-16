@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D5D26CAB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A9126CAA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727521AbgIPUMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:12:12 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:50735 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgIPRdQ (ORCPT
+        id S1728264AbgIPULZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727187AbgIPRde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:33:16 -0400
-Received: by mail-wm1-f68.google.com with SMTP id e17so3577749wme.0;
-        Wed, 16 Sep 2020 10:33:14 -0700 (PDT)
+        Wed, 16 Sep 2020 13:33:34 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AA9C025266;
+        Wed, 16 Sep 2020 09:59:20 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a17so7671605wrn.6;
+        Wed, 16 Sep 2020 09:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zuDfgEoZuBS30U/qqcPskrweiytOsrp9+LzlvUTV6AI=;
+        b=e+KWNj6SHmuBq3BSL+qt3D6fhSFFzr/deE+ZSnbxvXRInB13Yb4CrMYEHuYZEezRLS
+         altf9ECg8xUR5AiWnH8yDPgit6kOXeBV2g7Km5jNq2dJgu6dcp5m3KgkJ0lljJw1UIBN
+         cnV6OYQxN2+vQrsIdLl+aaq747FTCHsTFgvM+OANBr2H9I9jMrdLCjpLOJ2JyyVkqAi8
+         blc0lu/7lE5GredQggAQyw06iTxyDSQqtitb8GLrYZpGdiigHpec7G1zYUXtsUz1H/jV
+         jIZGXv7/4sXgvVwvW7IMrLbk/24eoO8eiPRC5WXjm1EOpYj+2+EDsNRZqEtIdhMGB4z8
+         TpsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ldHCQZEbH6mXJ0nQIfyxhFzRsfVxNZ4TaLzszON1d9k=;
-        b=tKcYuEPnMMRxhy/wAXuhZfR7duE+RlVJZ1geQRopYt+9xTP7aBKncwRlXPbDuExdPY
-         WrNrxFlesM+qK2v3+o0Lw+IZbCWZc2sOD0YcWZaB0T4/ucjDp6F1egTnzF0ZyhQrI0n8
-         ok/GZL13xlr+eNRmt2PG8pNA1s6DFdORUgA2kVWkTJYqOhKszqaA/kfSRjYhSMeALmGj
-         xKVm32iGWsagqRbqQhw5sBaK2xyIii4HV2cZ5Lm2ixO6rKX1clUkQGUM9Kpn+c2P6BOr
-         pTQ92oNdMuVZTfSA+GJusubzR0jRLR5CWbNDaNgnsp7VgB4naGUlmfB+iDYqKSKlpf1Y
-         4uWA==
-X-Gm-Message-State: AOAM533i2WIidp+sHXdIDWxDzQ8e4xnulz/naQFsrWK8izquhddn6G9D
-        xETdkXrcRRTxXExdE3GC2Djm8pRHyaA=
-X-Google-Smtp-Source: ABdhPJxKE9LndKWPqE9c0rk+ywJAV/cod/ghoctHMJq5VT/1ihI9WVcOOfs570RwJJYaVmhfZp36RQ==
-X-Received: by 2002:a7b:cf1a:: with SMTP id l26mr5502058wmg.164.1600273965104;
-        Wed, 16 Sep 2020 09:32:45 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id z14sm32544835wrh.14.2020.09.16.09.32.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zuDfgEoZuBS30U/qqcPskrweiytOsrp9+LzlvUTV6AI=;
+        b=lBcM/hqRjnwpMTsTJzGKccG0zaUTwH87t0kjuzi957GdYVxQChVCbw9lYik+7lFPT3
+         z77X6c6/JmLgcNd1JHwwv0FvnQmm1ha+lMayMetT7gk6HeR2lP6syveDpL1XlcxirD0m
+         qOsEsf5+VoIVQB5kLGVJoYU1Wl1QV2W82sQvzzCh3fOinZLEdqsIhGOvsnlO+taOCqAd
+         wzmj9+rdUw4NMiNtNIq0nmxWTtCRc/XN2MY7GKLmS0nTUzBA+kmxbkAsNKezulHV9qyO
+         /m4BX/IKpZ43+ZT9uxwxFh4M3FF2oRN5civumJFOBByGbY64p5vPx5C6YI72QP6qFizK
+         OIIw==
+X-Gm-Message-State: AOAM532YxFGlUtmbKTXcdFW2gNM93YSGg22w20lPF4vWucOB6rpglKpf
+        BfpTMRZHUPmw91T9XELuW4k=
+X-Google-Smtp-Source: ABdhPJw6gOPk33k8iaAOP74REJ4QomG2u3G+8mRYr0/W/BvTPcNtre4cpC/zNon9IAMNdzUQnWz/wQ==
+X-Received: by 2002:a5d:53d1:: with SMTP id a17mr26306527wrw.98.1600275559519;
+        Wed, 16 Sep 2020 09:59:19 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id x24sm33266130wrd.53.2020.09.16.09.59.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 09:32:44 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 16:32:43 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nudasnev@microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH RFC v1 07/18] x86/hyperv: extract partition ID from
- Microsoft Hypervisor if necessary
-Message-ID: <20200916163243.3zkhff57gpoug6x4@liuwe-devbox-debian-v2>
-References: <20200914112802.80611-1-wei.liu@kernel.org>
- <20200914112802.80611-8-wei.liu@kernel.org>
- <87y2lbjpx7.fsf@vitty.brq.redhat.com>
+        Wed, 16 Sep 2020 09:59:19 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ath10k: sdio: remove redundant check in for loop
+Date:   Wed, 16 Sep 2020 17:57:49 +0100
+Message-Id: <20200916165748.20927-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
+References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y2lbjpx7.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:27:16PM +0200, Vitaly Kuznetsov wrote:
-> Wei Liu <wei.liu@kernel.org> writes:
-[...]
-> >  
-> > +void __init hv_get_partition_id(void)
-> > +{
-> > +	struct hv_get_partition_id *output_page;
-> > +	int status;
-> > +	unsigned long flags;
-> > +
-> > +	local_irq_save(flags);
-> > +	output_page = *this_cpu_ptr(hyperv_pcpu_output_arg);
-> > +	status = hv_do_hypercall(HVCALL_GET_PARTITION_ID, NULL, output_page) &
-> > +		HV_HYPERCALL_RESULT_MASK;
-> 
-> Nit: in this case status is 'u16', we can define it as such (instead of
-> signed int).
+The for loop checks whether cur_section is NULL on every iteration, but
+we know it can never be NULL as there is another check towards the
+bottom of the loop body. Refactor to avoid this unnecessary check.
 
-Fixed.
+Also, increment the variable i inline for clarity
 
-> 
-> > +	if (status != HV_STATUS_SUCCESS)
-> > +		pr_err("Failed to get partition ID: %d\n", status);
-> > +	else
-> > +		hv_current_partition_id = output_page->partition_id;
-> > +	local_irq_restore(flags);
-> > +
-> > +	/* No point in proceeding if this failed */
-> > +	BUG_ON(status != HV_STATUS_SUCCESS);
-> > +}
-> > +
-> >  /*
-> >   * This function is to be invoked early in the boot sequence after the
-> >   * hypervisor has been detected.
-> > @@ -440,6 +463,9 @@ void __init hyperv_init(void)
-> >  
-> >  	register_syscore_ops(&hv_syscore_ops);
-> >  
-> > +	if (hv_root_partition)
-> > +		hv_get_partition_id();
-> 
-> According to TLFS, partition ID is available when AccessPartitionId
-> privilege is granted. I'd suggest we check that instead of
-> hv_root_partition (and we can set hv_current_partition_id to something
-> like U64_MAX so we know it wasn't acuired). So the BUG_ON condition will
-> move here:
-> 
->         hv_get_partition_id();
->         BUG_ON(hv_root_partition && hv_current_partition_id == U64_MAX);
-> 
+Addresses-Coverity: 1496984 ("Null pointer dereferences)
+Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+v2: refactor in the manner suggested by Saeed
 
-Good point. I will reorganize this a bit.
+ drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-Wei.
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 81ddaafb6721..486886c74e6a 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+ 	}
+ 
+ 	count = 0;
+-
+-	for (i = 0; cur_section; i++) {
++	i = 0;
++	for (; cur_section; cur_section = next_section) {
+ 		section_size = cur_section->end - cur_section->start;
+ 
+ 		if (section_size <= 0) {
+@@ -2318,7 +2318,7 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+ 			break;
+ 		}
+ 
+-		if ((i + 1) == mem_region->section_table.size) {
++		if (++i == mem_region->section_table.size) {
+ 			/* last section */
+ 			next_section = NULL;
+ 			skip_size = 0;
+@@ -2361,12 +2361,6 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+ 		}
+ 
+ 		count += skip_size;
+-
+-		if (!next_section)
+-			/* this was the last section */
+-			break;
+-
+-		cur_section = next_section;
+ 	}
+ 
+ 	return count;
+-- 
+2.28.0
+
