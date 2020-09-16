@@ -2,101 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCDE26BB43
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56AC26BB49
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726145AbgIPELq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 00:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
+        id S1726161AbgIPEP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 00:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbgIPELo (ORCPT
+        with ESMTP id S1726129AbgIPEP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 00:11:44 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2C6C06174A;
-        Tue, 15 Sep 2020 21:11:43 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BrmrB6m90z9sTq;
-        Wed, 16 Sep 2020 14:11:38 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600229499;
-        bh=NCnOfZS9txRkfq335KiZCBOpEvYrpQ9/fSYkc1PlLgE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pybg5GqzkV8AIMUVYkOX7oYETJksm0DpqZeYD9T5EAONeiXqT09UZYITjjS1NjtYP
-         rwtLFxzElHOp0FgLjX9SXJ0/3DMIf5Ik04way9kqVEO7Mwuh0rHjlh0dWf9jw9fn9s
-         fH5h8oUEw4MpcslQX8M+MfowDzHAgI0B0hL6qK/dvGHJQQG4GtHsskwjiei7OylIYd
-         MtEJVvYKWdMQ9I9tW8pCellLiqLbHQWMm/xruUHey+Ioiyn9Z58DFPAH/oTI166PvZ
-         mNNZGbrbuzdABVUfsAKRnyP+9yCROnmTzrtCv5RGqtqW8oQr8XIxxwyx7HnUsJiVKj
-         bnhKe1FIeVylg==
-Date:   Wed, 16 Sep 2020 14:11:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the akpm-current tree with the
- dma-mapping tree
-Message-ID: <20200916141130.398aa2a8@canb.auug.org.au>
+        Wed, 16 Sep 2020 00:15:26 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B31CC061788
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 21:15:26 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id e4so2481354pln.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 21:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LCRAOABNyfnd7lzn4QMxDV96zQMAtn58NYDWlvquY3g=;
+        b=2G6cIT8yZsbFxrYcihmm01Gj0GSrMKff8Czby6u+EPsC5Y13yzYr4IjiO33Hbh6W/S
+         3XcK0ykjiUDsKYjgLk5yq6aEZlY8UOw/EMR+GXEHF5B4qga8TW5wh71rA8wRUI+O1GpF
+         JRF8qYyUOP2vwBL0t5/skhaS8XNKzuppA5BzeZPbp+3zARCR1zbOWN7Jt4HgGiOYEoBS
+         qyqW/6uNQxmXZke8BhbUXEvptwlrBP5RMTLKs2xagCaon+uPVYO0G1YiJ2lliVZpRdQt
+         EoLdWPztPztdRe7hxe6Qy/FfIlXNwnh1ij5YFpXRg9gnDnrr+tYWs2UU4DIu88wynRFK
+         qWFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LCRAOABNyfnd7lzn4QMxDV96zQMAtn58NYDWlvquY3g=;
+        b=i6K9fODjpXantgpbl9XAgBRHQc+rPqFYoCCqFydi8ARPIg2S/3NRIZKlmozI/Uzqf7
+         REtcFhHJTiSfiwe5gxI7kCIyOSwqiNrgUfGEYupnriJ1NDoZCXXqbyhuvZzVLmjsQoUr
+         jPGcQfQF1C+NxwuI4B1pYZ2S8e+IQyrNRO9gD6TolGVSLJbvfmvHcEaRahEtGQuivqTS
+         ZCrVeLqyKOgjoeZDKmKvP9MApgXzIlO2+eLEgNfLZbKvIR0TZKvgDaTZbPheNevvairf
+         Y5p1Sn+kGY3B9gWRfARWp0BqZTgURkL5w37EwpsjSA0XEUVyiqk+ayB83FWwmwiQVlIg
+         oVJg==
+X-Gm-Message-State: AOAM531w/7fIpOEb9REEqP48XhHHp3oruOnI0yHzqT4Uf/eTCPNh57rH
+        URrOMo2V/zzOXWKWdwKT+toK8fdcuh8lwZFKcWM0vw==
+X-Google-Smtp-Source: ABdhPJy2sy8PVXcyCJOvShHPTPgr0MnoBvJ8hNXFb+iNCh2bapM/ywuberhz6eOfN37SIu/IZPymzXp6hkAMbtGvh/Q=
+X-Received: by 2002:a17:90a:b78b:: with SMTP id m11mr2289570pjr.13.1600229725682;
+ Tue, 15 Sep 2020 21:15:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vxseJ=fnbht=IjELBYlUJ7.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200915171801.39761-1-songmuchun@bytedance.com> <20200915214845.GB189808@cmpxchg.org>
+In-Reply-To: <20200915214845.GB189808@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 16 Sep 2020 12:14:49 +0800
+Message-ID: <CAMZfGtXOR1Ed2PyB4TB5mq=1mh7p7La-4BsoZ8oYhtgc8ZcqLQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5] mm: memcontrol: Add the missing
+ numa_stat interface for cgroup v2
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vxseJ=fnbht=IjELBYlUJ7.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Sep 16, 2020 at 5:50 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Wed, Sep 16, 2020 at 01:18:01AM +0800, Muchun Song wrote:
+> > In the cgroup v1, we have a numa_stat interface. This is useful for
+> > providing visibility into the numa locality information within an
+> > memcg since the pages are allowed to be allocated from any physical
+> > node. One of the use cases is evaluating application performance by
+> > combining this information with the application's CPU allocation.
+> > But the cgroup v2 does not. So this patch adds the missing information.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Suggested-by: Shakeel Butt <shakeelb@google.com>
+> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>
+> Yup, that would be useful information to have. Just a few comments on
+> the patch below:
+>
+> > @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
+> >               collapsing an existing range of pages. This counter is not
+> >               present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
+> >
+> > +  memory.numa_stat
+> > +     A read-only flat-keyed file which exists on non-root cgroups.
+>
+> It's a nested key file, not flat.
 
-Hi all,
+This is just copied from memory.stat documentation.Is the memory.stat
+also a nested key file?
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+>
+> > +     This breaks down the cgroup's memory footprint into different
+> > +     types of memory, type-specific details, and other information
+> > +     per node on the state of the memory management system.
+> > +
+> > +     This is useful for providing visibility into the NUMA locality
+> > +     information within an memcg since the pages are allowed to be
+> > +     allocated from any physical node. One of the use case is evaluating
+> > +     application performance by combining this information with the
+> > +     application's CPU allocation.
+> > +
+> > +     All memory amounts are in bytes.
+> > +
+> > +     The output format of memory.numa_stat is::
+> > +
+> > +       type N0=<bytes in node 0> N1=<bytes in node 1> ...
+> > +
+> > +     The entries are ordered to be human readable, and new entries
+> > +     can show up in the middle. Don't rely on items remaining in a
+> > +     fixed position; use the keys to look up specific values!
+> > +
+> > +       anon
+> > +             Amount of memory per node used in anonymous mappings such
+> > +             as brk(), sbrk(), and mmap(MAP_ANONYMOUS).
+> > +
+> > +       file
+> > +             Amount of memory per node used to cache filesystem data,
+> > +             including tmpfs and shared memory.
+> > +
+> > +       kernel_stack
+> > +             Amount of memory per node allocated to kernel stacks.
+> > +
+> > +       shmem
+> > +             Amount of cached filesystem data per node that is swap-backed,
+> > +             such as tmpfs, shm segments, shared anonymous mmap()s.
+> > +
+> > +       file_mapped
+> > +             Amount of cached filesystem data per node mapped with mmap().
+> > +
+> > +       file_dirty
+> > +             Amount of cached filesystem data per node that was modified but
+> > +             not yet written back to disk.
+> > +
+> > +       file_writeback
+> > +             Amount of cached filesystem data per node that was modified and
+> > +             is currently being written back to disk.
+> > +
+> > +       anon_thp
+> > +             Amount of memory per node used in anonymous mappings backed by
+> > +             transparent hugepages.
+> > +
+> > +       inactive_anon, active_anon, inactive_file, active_file, unevictable
+> > +             Amount of memory, swap-backed and filesystem-backed,
+> > +             per node on the internal memory management lists used
+> > +             by the page reclaim algorithm.
+> > +
+> > +             As these represent internal list state (e.g. shmem pages are on
+> > +             anon memory management lists), inactive_foo + active_foo may not
+> > +             be equal to the value for the foo counter, since the foo counter
+> > +             is type-based, not list-based.
+> > +
+> > +       slab_reclaimable
+> > +             Amount of memory per node used for storing in-kernel data
+> > +             structures which might be reclaimed, such as dentries and
+> > +             inodes.
+> > +
+> > +       slab_unreclaimable
+> > +             Amount of memory per node used for storing in-kernel data
+> > +             structures which cannot be reclaimed on memory pressure.
+> > +
+> >    memory.swap.current
+> >       A read-only single value file which exists on non-root
+> >       cgroups.
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 75cd1a1e66c8..ff919ef3b57b 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6425,6 +6425,86 @@ static int memory_stat_show(struct seq_file *m, void *v)
+> >       return 0;
+> >  }
+> >
+> > +#ifdef CONFIG_NUMA
+> > +struct numa_stat {
+> > +     const char *name;
+> > +     unsigned int ratio;
+> > +     enum node_stat_item idx;
+> > +};
+> > +
+> > +static struct numa_stat numa_stats[] = {
+> > +     { "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> > +     { "file", PAGE_SIZE, NR_FILE_PAGES },
+> > +     { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> > +     { "shmem", PAGE_SIZE, NR_SHMEM },
+> > +     { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> > +     { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> > +     { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +     /*
+> > +      * The ratio will be initialized in numa_stats_init(). Because
+> > +      * on some architectures, the macro of HPAGE_PMD_SIZE is not
+> > +      * constant(e.g. powerpc).
+> > +      */
+> > +     { "anon_thp", 0, NR_ANON_THPS },
+> > +#endif
+> > +     { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> > +     { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> > +     { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> > +     { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> > +     { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> > +     { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> > +     { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> > +};
+>
+> This is a bit duplicative with memory_stat_format(), and the
+> collections will easily go out of sync as we add/change stat items.
+>
+> Can you please convert memory_stat_format() to use the same shared table?
+>
+> You may have to add another flag for the MEMCG_* items for which we
+> don't have per-node counters.
+>
+> The same applies to the documentation. Please don't duplicate the list
+> of items, but have memory.numa_stat refer to the list for memory.stat.
+> You can add (not in memory.numa_stat) or something to percpu and sock.
 
-  mm/Kconfig
+Thanks for your suggestions.
 
-between commit:
+>
+> > +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> > +                                        unsigned int nid,
+> > +                                        enum node_stat_item idx)
+> > +{
+> > +     VM_BUG_ON(nid >= nr_node_ids);
+> > +     return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
+> > +}
+>
+> Please drop this wrapper and use lruvec_page_state directly below.
+>
+> Otherwise, this looks reasonable to me.
 
-  b7176c261cdb ("dma-contiguous: provide the ability to reserve per-numa CM=
-A")
+OK. Will do that.
 
-from the dma-mapping tree and commit:
 
-  c999bd436fe9 ("mm/cma: make number of CMA areas dynamic, remove CONFIG_CM=
-A_AREAS")
 
-from the akpm-current tree.
-
-I fixed it up (I just used the latter version) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vxseJ=fnbht=IjELBYlUJ7.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9hkHIACgkQAVBC80lX
-0GzixAf/UIv2ZnuPGuKI/0X3MPgcqv+llNphg1PEJqK91yUPnxpobznXqIZiB3ep
-ctir8Ohno8bJgck2SbN49MFiTyw1FNPAbmcTA/BgJ/G4hMg93wEdCw/s/Fyhe5nJ
-jM7hUFHRh/6sh/nkdTNArQ3CnTVmAWD5Nxv5epGmCoLoUsagp5l4oNSk6PhBE7+K
-1Jhu8RjqRL/BXdM7pls/2XskAFB9Cr3V6z+Axl4zmst0k1H55ik73yC51G7iW6DZ
-yUf36kZdwYSGNMQiP/evZ22wXZHGKLOoeQ+zCpF0Fzj61TS2Sws0kLhnb51IDri4
-hzKGhHgAVhimEQPtQ051Lf3kfqaQww==
-=LZzK
------END PGP SIGNATURE-----
-
---Sig_/vxseJ=fnbht=IjELBYlUJ7.--
+-- 
+Yours,
+Muchun
