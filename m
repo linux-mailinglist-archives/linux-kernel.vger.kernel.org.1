@@ -2,126 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A9126CAA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C94126CB97
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgIPULZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727187AbgIPRde (ORCPT
+        id S1726874AbgIPRVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:21:20 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9776 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726891AbgIPRNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:33:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AA9C025266;
-        Wed, 16 Sep 2020 09:59:20 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a17so7671605wrn.6;
-        Wed, 16 Sep 2020 09:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zuDfgEoZuBS30U/qqcPskrweiytOsrp9+LzlvUTV6AI=;
-        b=e+KWNj6SHmuBq3BSL+qt3D6fhSFFzr/deE+ZSnbxvXRInB13Yb4CrMYEHuYZEezRLS
-         altf9ECg8xUR5AiWnH8yDPgit6kOXeBV2g7Km5jNq2dJgu6dcp5m3KgkJ0lljJw1UIBN
-         cnV6OYQxN2+vQrsIdLl+aaq747FTCHsTFgvM+OANBr2H9I9jMrdLCjpLOJ2JyyVkqAi8
-         blc0lu/7lE5GredQggAQyw06iTxyDSQqtitb8GLrYZpGdiigHpec7G1zYUXtsUz1H/jV
-         jIZGXv7/4sXgvVwvW7IMrLbk/24eoO8eiPRC5WXjm1EOpYj+2+EDsNRZqEtIdhMGB4z8
-         TpsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zuDfgEoZuBS30U/qqcPskrweiytOsrp9+LzlvUTV6AI=;
-        b=lBcM/hqRjnwpMTsTJzGKccG0zaUTwH87t0kjuzi957GdYVxQChVCbw9lYik+7lFPT3
-         z77X6c6/JmLgcNd1JHwwv0FvnQmm1ha+lMayMetT7gk6HeR2lP6syveDpL1XlcxirD0m
-         qOsEsf5+VoIVQB5kLGVJoYU1Wl1QV2W82sQvzzCh3fOinZLEdqsIhGOvsnlO+taOCqAd
-         wzmj9+rdUw4NMiNtNIq0nmxWTtCRc/XN2MY7GKLmS0nTUzBA+kmxbkAsNKezulHV9qyO
-         /m4BX/IKpZ43+ZT9uxwxFh4M3FF2oRN5civumJFOBByGbY64p5vPx5C6YI72QP6qFizK
-         OIIw==
-X-Gm-Message-State: AOAM532YxFGlUtmbKTXcdFW2gNM93YSGg22w20lPF4vWucOB6rpglKpf
-        BfpTMRZHUPmw91T9XELuW4k=
-X-Google-Smtp-Source: ABdhPJw6gOPk33k8iaAOP74REJ4QomG2u3G+8mRYr0/W/BvTPcNtre4cpC/zNon9IAMNdzUQnWz/wQ==
-X-Received: by 2002:a5d:53d1:: with SMTP id a17mr26306527wrw.98.1600275559519;
-        Wed, 16 Sep 2020 09:59:19 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id x24sm33266130wrd.53.2020.09.16.09.59.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 09:59:19 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ath10k: sdio: remove redundant check in for loop
-Date:   Wed, 16 Sep 2020 17:57:49 +0100
-Message-Id: <20200916165748.20927-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
-References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
+        Wed, 16 Sep 2020 13:13:53 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6247100003>; Wed, 16 Sep 2020 10:10:40 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 16 Sep 2020 10:11:23 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 10:11:23 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
+ 2020 17:11:23 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 16 Sep 2020 17:11:23 +0000
+Received: from sumitg-l4t.nvidia.com (Not Verified[10.24.37.103]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f6247380001>; Wed, 16 Sep 2020 10:11:22 -0700
+From:   Sumit Gupta <sumitg@nvidia.com>
+To:     <viresh.kumar@linaro.org>, <rjw@rjwysocki.net>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ksitaraman@nvidia.com>, <bbasu@nvidia.com>, <sumitg@nvidia.com>
+Subject: [Patch 0/2] Tegra194 cpufreq driver misc changes
+Date:   Wed, 16 Sep 2020 22:41:15 +0530
+Message-ID: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600276240; bh=KDmFmHnbdZXAGP959ydQrI6k+UcmrVJXDgccwkGxf2w=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=qzXvQkx1mCXjNKRPbX5yO4g9llcmu8dnti/bkRB0zY6arVj3jC0NkByCmhCWtsb7O
+         0AvBBwmNRBTMMOBEA9KeEy18O8Jmhn6BgalyGvnNvHM6H2PoevDq4mqHKtMYbYZ0Rr
+         FC971T/KVyNkfiwWPxE2Ctg1gB6f0S7GakjIqzsa+b01bZek4894bbB6gr0vRMqRoO
+         UzD9/VviDAjccFfASJJQNbkgdm7bvyog1pFFCtZ57hYQFnoGP3QMSNmabEdbjTFu19
+         6jGdMYSZpABIlxTrXASYoMeZ6AIo437aZobV8C5SYG2V+3kjHphk/o6CjUSVasgb08
+         UaVA+8o2JOk/Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The for loop checks whether cur_section is NULL on every iteration, but
-we know it can never be NULL as there is another check towards the
-bottom of the loop body. Refactor to avoid this unnecessary check.
+This patch set has below two changes:
+1) get consistent cpuinfo_cur_freq value from freq_table.
+2) Fix unlisted boot freq warning by setting closest ndiv value
+   from freq_table if the boot frequency gets filtered while
+   creating freq_table in kernel.
 
-Also, increment the variable i inline for clarity
+Sumit Gupta (2):
+  cpufreq: tegra194: get consistent cpuinfo_cur_freq
+  cpufreq: tegra194: Fix unlisted boot freq warning
 
-Addresses-Coverity: 1496984 ("Null pointer dereferences)
-Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
-v2: refactor in the manner suggested by Saeed
+ drivers/cpufreq/tegra194-cpufreq.c | 182 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 167 insertions(+), 15 deletions(-)
 
- drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 81ddaafb6721..486886c74e6a 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
- 	}
- 
- 	count = 0;
--
--	for (i = 0; cur_section; i++) {
-+	i = 0;
-+	for (; cur_section; cur_section = next_section) {
- 		section_size = cur_section->end - cur_section->start;
- 
- 		if (section_size <= 0) {
-@@ -2318,7 +2318,7 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
- 			break;
- 		}
- 
--		if ((i + 1) == mem_region->section_table.size) {
-+		if (++i == mem_region->section_table.size) {
- 			/* last section */
- 			next_section = NULL;
- 			skip_size = 0;
-@@ -2361,12 +2361,6 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
- 		}
- 
- 		count += skip_size;
--
--		if (!next_section)
--			/* this was the last section */
--			break;
--
--		cur_section = next_section;
- 	}
- 
- 	return count;
 -- 
-2.28.0
+2.7.4
 
