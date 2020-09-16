@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7986926CDCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B4B26CDA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgIPVF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:05:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:8872 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgIPQPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:15:01 -0400
-IronPort-SDR: Nxaf18JWAD1ByTJyVNm9jDeywPHSRVNEOfhBN8kgAR8sZO3ecSdWjEA1HHSV6tsQ3Qo57OO6hB
- QHqtaodyW+oQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="156847936"
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="156847936"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 06:27:39 -0700
-IronPort-SDR: SD7152pPPAgw2JkHU2xNe/XZCzOPQBL0yRS/KHuGoTxQAXaw1xkwJ7EGEIAKH+/xpKZ6yA/eMT
- taVI80n7V9iA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="409556841"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 16 Sep 2020 06:27:35 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 16 Sep 2020 16:27:35 +0300
-Date:   Wed, 16 Sep 2020 16:27:35 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH 0/3] PM operations for software nodes
-Message-ID: <20200916132735.GF1358028@kuha.fi.intel.com>
-References: <20200825135951.53340-1-heikki.krogerus@linux.intel.com>
+        id S1728636AbgIPVC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:02:59 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12790 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726309AbgIPQPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:15:06 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A4CBA443C0E1A38A211B;
+        Wed, 16 Sep 2020 22:16:23 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 22:16:14 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] net/sched: Remove unused function qdisc_queue_drop_head()
+Date:   Wed, 16 Sep 2020 22:16:11 +0800
+Message-ID: <20200916141611.43524-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825135951.53340-1-heikki.krogerus@linux.intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Sakari
+It is not used since commit a09ceb0e0814 ("sched: remove qdisc->drop")
 
-On Tue, Aug 25, 2020 at 04:59:48PM +0300, Heikki Krogerus wrote:
-> Hi guys,
-> 
-> Unfortunately the last patch depends on this:
-> https://lore.kernel.org/linux-usb/20200821131101.81915-1-heikki.krogerus@linux.intel.com/
-> 
-> Would it be easiest that Felipe took care of these (assuming they are
-> acceptable)?
-> 
-> thanks,
-> 
-> Heikki Krogerus (3):
->   software node: Power management operations for software nodes
->   software node: Introduce device_add_software_node()
->   usb: dwc3: pci: Register a software node for the dwc3 platform device
-> 
->  drivers/base/power/common.c |   8 +-
->  drivers/base/swnode.c       | 569 +++++++++++++++++++++++++++++++++++-
->  drivers/usb/dwc3/dwc3-pci.c | 175 ++++++-----
->  include/linux/property.h    |  13 +
->  4 files changed, 666 insertions(+), 99 deletions(-)
-> 
-> -- 
-> 2.28.0
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ include/net/sch_generic.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index d60e7c39d60c..6c762457122f 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -1047,12 +1047,6 @@ static inline unsigned int __qdisc_queue_drop_head(struct Qdisc *sch,
+ 	return 0;
+ }
+ 
+-static inline unsigned int qdisc_queue_drop_head(struct Qdisc *sch,
+-						 struct sk_buff **to_free)
+-{
+-	return __qdisc_queue_drop_head(sch, &sch->q, to_free);
+-}
+-
+ static inline struct sk_buff *qdisc_peek_head(struct Qdisc *sch)
+ {
+ 	const struct qdisc_skb_head *qh = &sch->q;
 -- 
-heikki
+2.17.1
+
