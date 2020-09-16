@@ -2,109 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA5226C4AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A756C26C4BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgIPP5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 11:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgIPPz0 (ORCPT
+        id S1726285AbgIPP6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 11:58:47 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:38782 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbgIPPzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:55:26 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F644C02C2AE
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:41:10 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so7393254wrm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QR4X/TKCD+d57b2Ze0jlcbxYS6HqjaoNPSGjtgtVeZ8=;
-        b=x96G+S6zKbDmbASlvP7erU7iD+GDKspcvh52WK9lO3bptq4o/JN2t6vGLMOkkB5KOG
-         Qc5PuhIaOF4Et5HnoBGWs6yPo2pNJ6//0n37joIqJr9LQ+aqEq+DaPbC29flNyFfasUR
-         HxACTxe9CJRbPdlbPFOSEBXE94Py6lsccWUI2TS//pkF1pNnwgZVfa+ZI99aXcgKCvlD
-         nSNfrCnoJSrykTuLW/uEyIFR82beHvuaOV1doArQS2pa7/XzLVvZUb7CDbP+3JZ0MLU7
-         Y3rJNI5f+jALXdF0UEASyVU/p6v8/1Xunbt9Jyr0XrEhRMBwwKeyf5L81A9pB+4eX8TG
-         efJQ==
+        Wed, 16 Sep 2020 11:55:31 -0400
+Received: by mail-wm1-f66.google.com with SMTP id l9so3575148wme.3;
+        Wed, 16 Sep 2020 08:54:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QR4X/TKCD+d57b2Ze0jlcbxYS6HqjaoNPSGjtgtVeZ8=;
-        b=Pq5ZNqWBgEcneyXwJMxsdKFkUw+940Z9P4GmcHP3fy3nW0XjIxWsUKggAr8fjRrX2S
-         TPm5BsstJNTt49aez9EMjOfOGHLgR07cgn8FZIwt009IHP0OjCnLTkwWNK3hDfsEtIm9
-         b+dlnn0GVy2TtgZDlHWm3pus5OxvR7KMC43y6kWtdNmBChn+me01cFPsQ5imvEGMfD4D
-         rpGiOq3nR+SA4/BXj8ojhACK9IVYCz3dFe9Y/AOziLC0mdsawRGo6ZFHkXAQ/xwy+HKa
-         xnuveYz6lDbNmdgwzrZ3VnDgXqrkUUTClXe/YpYBZwQ9NYqYxI3PF6pq94DoqnPMk8Xd
-         MABA==
-X-Gm-Message-State: AOAM532aL9EzSm9n/cZFNAI0DIuPAbhtmERHt9xFJR4QxjvEPW7F9PfJ
-        21gzmw8SjnRURd0MIAusirTqDQ==
-X-Google-Smtp-Source: ABdhPJxvV/oYmxQjdvC/nE1y4Kgb+u9RgTb9KXGP+lXTt6/rlDcYaUJwo3RYwi7k/zRFDaSSopmDiA==
-X-Received: by 2002:a05:6000:100c:: with SMTP id a12mr29222491wrx.115.1600270868971;
-        Wed, 16 Sep 2020 08:41:08 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id t22sm7223901wmt.1.2020.09.16.08.41.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=G2L3TW2WxV4GsWXWBBVjTC9AR//at+StzHS5DH3Oqf0=;
+        b=qrw8Ba/B+s/J7oSklTMNE3a9uHuAanOV8+WQoQXByMQXcUpvMWSrGrT/xxdTaYjCYk
+         FJzn1I/AKIZ1nDIWlnDE2EvdLCCB0yq1L4Y63CZyguE54kTH019MjRzFw/TcgMH9Sdrn
+         vtLNYCNlHSY0+lQgcMY17h/BV9NV0g55WThHVXWhuZn2PuRvuAdQwwLJjzLW5krq3T3M
+         EC66/uv6aHNiN2Zk+JkwBKn94HaIMmzUOHqMnuVnbOAF9raOPfptH8W4YkpH26vtq4XM
+         3vuwJHaMI1G3uAZ4ISXygX3vwsW02ifU6EGhV399y+0uGWvDmrGDbl62pm5ugeuoxhIo
+         N6vQ==
+X-Gm-Message-State: AOAM530qcBSLVmvKsRYIUhJN+JbR4RvuiC8JLatg93+/dki4z6YhB21T
+        rLANbY3DFmeoTRbVR9dQI7g0Hk9LWME=
+X-Google-Smtp-Source: ABdhPJwKDhptBJ/g7u54/YxLQysgEgYHB3c+TuF55KTGGzFdShYpmn2p1D0pmCSDGTuWaA29gAzqPw==
+X-Received: by 2002:a05:600c:410e:: with SMTP id j14mr5699106wmi.13.1600270923209;
+        Wed, 16 Sep 2020 08:42:03 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id t22sm7228468wmt.1.2020.09.16.08.42.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 08:41:08 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-Cc:     pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 1/3] soundwire: qcom: clear BIT FIELDs before value set.
-Date:   Wed, 16 Sep 2020 16:40:59 +0100
-Message-Id: <20200916154101.2254-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200916154101.2254-1-srinivas.kandagatla@linaro.org>
-References: <20200916154101.2254-1-srinivas.kandagatla@linaro.org>
+        Wed, 16 Sep 2020 08:42:02 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:42:00 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nudasnev@microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH RFC v1 06/18] x86/hyperv: allocate output arg pages if
+ required
+Message-ID: <20200916154200.7nf74vjmqu3f6sfq@liuwe-devbox-debian-v2>
+References: <20200914112802.80611-1-wei.liu@kernel.org>
+ <20200914112802.80611-7-wei.liu@kernel.org>
+ <871rj3l4yt.fsf@vitty.brq.redhat.com>
+ <20200915124318.z6tisek5y4d7e254@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915124318.z6tisek5y4d7e254@liuwe-devbox-debian-v2>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to usage (bitfields.h) of REG_FIELDS,
-Modify is:
-  reg &= ~REG_FIELD_C;
-  reg |= FIELD_PREP(REG_FIELD_C, c);
+On Tue, Sep 15, 2020 at 12:43:18PM +0000, Wei Liu wrote:
+> On Tue, Sep 15, 2020 at 12:16:58PM +0200, Vitaly Kuznetsov wrote:
+> > Wei Liu <wei.liu@kernel.org> writes:
+> > 
+> > > When Linux runs as the root partition, it will need to make hypercalls
+> > > which return data from the hypervisor.
+> > >
+> > > Allocate pages for storing results when Linux runs as the root
+> > > partition.
+> > >
+> > > Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> > > Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+> > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > > ---
+> > >  arch/x86/hyperv/hv_init.c       | 45 +++++++++++++++++++++++++++++----
+> > >  arch/x86/include/asm/mshyperv.h |  1 +
+> > >  2 files changed, 41 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> > > index cac8e4c56261..ebba4be4185d 100644
+> > > --- a/arch/x86/hyperv/hv_init.c
+> > > +++ b/arch/x86/hyperv/hv_init.c
+> > > @@ -45,6 +45,9 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
+> > >  void  __percpu **hyperv_pcpu_input_arg;
+> > >  EXPORT_SYMBOL_GPL(hyperv_pcpu_input_arg);
+> > >  
+> > > +void  __percpu **hyperv_pcpu_output_arg;
+> > > +EXPORT_SYMBOL_GPL(hyperv_pcpu_output_arg);
+> > > +
+> > >  u32 hv_max_vp_index;
+> > >  EXPORT_SYMBOL_GPL(hv_max_vp_index);
+> > >  
+> > > @@ -75,14 +78,29 @@ static int hv_cpu_init(unsigned int cpu)
+> > >  	u64 msr_vp_index;
+> > >  	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
+> > >  	void **input_arg;
+> > > -	struct page *pg;
+> > > +	struct page *input_pg;
+> > >  
+> > >  	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
+> > >  	/* hv_cpu_init() can be called with IRQs disabled from hv_resume() */
+> > > -	pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
+> > > -	if (unlikely(!pg))
+> > > +	input_pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
+> > > +	if (unlikely(!input_pg))
+> > >  		return -ENOMEM;
+> > > -	*input_arg = page_address(pg);
+> > > +	*input_arg = page_address(input_pg);
+> > > +
+> > > +	if (hv_root_partition) {
+> > > +		struct page *output_pg;
+> > > +		void **output_arg;
+> > > +
+> > > +		output_pg = alloc_page(irqs_disabled() ? GFP_ATOMIC :
+> > >  	GFP_KERNEL);
+> > 
+> > To simplify the code, can we just rename 'input_arg' to 'hypercall_args'
+> > and do alloc_pages(rqs_disabled() ? GFP_ATOMIC : GFP_KERNEL, 1) to
+> > allocate two pages above?
+> 
+> It should be doable, but I need to code it up and test it to be 100%
+> sure.
+> 
 
-Patch ("soundwire: qcom : use FIELD_{GET|PREP}") seems to have
-accidentally removed clearing bit field while modifying the register.
+I switch to alloc_pages to allocate an order of 2 page if necessary, but
+I keep input_arg and output_arg separate because I want to avoid code
+churn in other places.
 
-Fix this by using u32_replace_bits() to clear and set the values.
+Wei.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index d7aabdaffee3..0036d3248fb4 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -311,7 +311,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 
- 	/* Configure No pings */
- 	ctrl->reg_read(ctrl, SWRM_MCP_CFG_ADDR, &val);
--	val |= FIELD_PREP(SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK, SWRM_DEF_CMD_NO_PINGS);
-+	val = u32_replace_bits(val, SWRM_DEF_CMD_NO_PINGS, SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK);
- 	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
- 
- 	/* Configure number of retries of a read/write cmd */
-@@ -372,8 +372,8 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
- 
- 	ctrl->reg_read(ctrl, reg, &val);
- 
--	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MAX_COL_VAL);
--	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
-+	val = u32_replace_bits(val, SWRM_MAX_COL_VAL, SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK);
-+	val = u32_replace_bits(val, SWRM_MAX_ROW_VAL, SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK);
- 
- 	return ctrl->reg_write(ctrl, reg, val);
- }
--- 
-2.21.0
-
+> > 
+> > >  
+> [...]
+> > > +	/* Allocate the per-CPU state for output arg for root */
+> > > +	if (hv_root_partition) {
+> > > +		hyperv_pcpu_output_arg = alloc_percpu(void  *);
+> > 					redundant space ^^^^^
+> 
+> Fixed. Thanks. This is in fact copied from the input_arg code, so there
+> is a similar issue there to be fixed. But that's going to wait till
+> another day.
+> 
+> Wei.
