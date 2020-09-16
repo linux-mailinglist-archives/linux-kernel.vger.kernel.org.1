@@ -2,153 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42E626CAD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1F226CA75
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgIPUQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:16:05 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42012 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727167AbgIPRbE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:31:04 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GBhSp1016396;
-        Wed, 16 Sep 2020 13:43:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=FE2nDTAv+JDtwnTgqT9lmJ23Dlw6u2h28rI8qGiC8eA=;
- b=0JMkt+X6hSq5eyOmTlt6qSszqkSKHir9kkhUpVC8VsHmu9cacFKA5GYNWhNNTlRJ4NO/
- IxTzi7PqAK127kreoR5ban1a7iisplIV5NLr6BCJ4L3r1VSfLpIopnWFaq7tgpbV1RQf
- q8OEDLGNl70pYMiGhbY4B9wmL9ehyU7lYBZ7w3pyuUPOmh0Q31w8ActzENcfyoHc2uEQ
- /m2/0ksH8fAzBb1MH/eCVmmq047TvXQZ+rsftbjtLznCJTIWvyqit8W+V3bvmgCSSBXy
- MzwzvKd2G9l487+I5xfX7q6DkqiNykwp0+b61uRe0OtKdg1De+0wo/UAHMX49/v4j2wj zQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33k691bpdr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 13:43:34 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 55C68100143;
-        Wed, 16 Sep 2020 12:18:04 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag5node3.st.com [10.75.127.15])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3C1E8212FB3;
-        Wed, 16 Sep 2020 12:18:04 +0200 (CEST)
-Received: from [10.48.1.149] (10.75.127.47) by SFHDAG5NODE3.st.com
- (10.75.127.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
- 2020 12:18:03 +0200
-Subject: Re: [PATCH v2] iio: stm32-dac: Replace indio_dev->mlock with own
- device lock
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <olivier.moysan@st.com>,
-        Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-References: <20200826063850.47625-1-alexandru.ardelean@analog.com>
- <20200916092349.75647-1-alexandru.ardelean@analog.com>
-From:   Fabrice Gasnier <fabrice.gasnier@st.com>
-Message-ID: <b8d5cbb5-f393-6a5f-19cd-afa983b9f10a@st.com>
-Date:   Wed, 16 Sep 2020 12:18:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200916092349.75647-1-alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG5NODE3.st.com
- (10.75.127.15)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_06:2020-09-16,2020-09-16 signatures=0
+        id S1728295AbgIPUAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:00:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:34560 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726661AbgIPRfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:35:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9208C1045;
+        Wed, 16 Sep 2020 03:46:42 -0700 (PDT)
+Received: from seattle-bionic.arm.com.Home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D5033F68F;
+        Wed, 16 Sep 2020 03:46:41 -0700 (PDT)
+From:   Oliver Swede <oli.swede@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] Add usercopy fixup accuracy tests
+Date:   Wed, 16 Sep 2020 10:46:35 +0000
+Message-Id: <20200916104636.19172-1-oli.swede@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 11:23 AM, Alexandru Ardelean wrote:
-> From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> 
-> As part of the general cleanup of indio_dev->mlock, this change replaces
-> it with a local lock. The lock protects against potential races when
-> reading the CR reg and then updating, so that the state of pm_runtime
-> is consistent between the two operations.
-> 
-> This is part of a bigger cleanup.
-> Link: https://lore.kernel.org/linux-iio/CA+U=Dsoo6YABe5ODLp+eFNPGFDjk5ZeQEceGkqjxXcVEhLWubw@mail.gmail.com/
-> 
-> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/dac/stm32-dac.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
+This adds a selftest subtarget that can be used to verify the
+accuracy of the usercopy fixup routines.
 
-Hi Alexandru,
+The patch contains a test module that integrates with the selftest
+framework and can be specified as a subtarget for the arm64 selftest
+target. It can be invoked through the same method as the other
+subtargets, provided that test_usercopy_fixup is installed prior to the
+run. This enables debugging of modifications made to the usercopy fixup
+routines, and/or provides a method of verification across system
+configurations.
 
-Many thanks for this updated patch,
+Comments are welcome regarding the suitability of this location for these
+tests, and any other suggestions would also be greatly appreciated.
 
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+This was used in conjunction with lib/test_user_copy.c to help verify
+the following usercopy fixup patches:
+https://lore.kernel.org/lkml/20200914150958.2200-1-oli.swede@arm.com/
 
-Best regards,
-Fabrice
+Thanks in advance,
+Oli
 
-> 
-> diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
-> index 092c796fa3d9..12dec68c16f7 100644
-> --- a/drivers/iio/dac/stm32-dac.c
-> +++ b/drivers/iio/dac/stm32-dac.c
-> @@ -26,9 +26,12 @@
->  /**
->   * struct stm32_dac - private data of DAC driver
->   * @common:		reference to DAC common data
-> + * @lock:		lock to protect against potential races when reading
-> + *			and update CR, to keep it in sync with pm_runtime
->   */
->  struct stm32_dac {
->  	struct stm32_dac_common *common;
-> +	struct mutex		lock;
->  };
->  
->  static int stm32_dac_is_enabled(struct iio_dev *indio_dev, int channel)
-> @@ -58,10 +61,10 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
->  	int ret;
->  
->  	/* already enabled / disabled ? */
-> -	mutex_lock(&indio_dev->mlock);
-> +	mutex_lock(&dac->lock);
->  	ret = stm32_dac_is_enabled(indio_dev, ch);
->  	if (ret < 0 || enable == !!ret) {
-> -		mutex_unlock(&indio_dev->mlock);
-> +		mutex_unlock(&dac->lock);
->  		return ret < 0 ? ret : 0;
->  	}
->  
-> @@ -69,13 +72,13 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
->  		ret = pm_runtime_get_sync(dev);
->  		if (ret < 0) {
->  			pm_runtime_put_noidle(dev);
-> -			mutex_unlock(&indio_dev->mlock);
-> +			mutex_unlock(&dac->lock);
->  			return ret;
->  		}
->  	}
->  
->  	ret = regmap_update_bits(dac->common->regmap, STM32_DAC_CR, msk, en);
-> -	mutex_unlock(&indio_dev->mlock);
-> +	mutex_unlock(&dac->lock);
->  	if (ret < 0) {
->  		dev_err(&indio_dev->dev, "%s failed\n", en ?
->  			"Enable" : "Disable");
-> @@ -327,6 +330,8 @@ static int stm32_dac_probe(struct platform_device *pdev)
->  	indio_dev->info = &stm32_dac_iio_info;
->  	indio_dev->modes = INDIO_DIRECT_MODE;
->  
-> +	mutex_init(&dac->lock);
-> +
->  	ret = stm32_dac_chan_of_init(indio_dev);
->  	if (ret < 0)
->  		return ret;
-> 
+Oliver Swede (1):
+  kselftest: arm64: Add usercopy fixup accuracy tests
+
+ arch/arm64/Kconfig.debug                      |   7 +
+ arch/arm64/lib/Makefile                       |   2 +
+ arch/arm64/lib/test_usercopy_fixup.c          | 276 ++++++++++++++++++
+ tools/testing/selftests/arm64/Makefile        |   2 +-
+ tools/testing/selftests/arm64/README          |   2 +-
+ .../testing/selftests/arm64/usercopy/Makefile |   3 +
+ tools/testing/selftests/arm64/usercopy/config |   1 +
+ .../arm64/usercopy/run_fixup_tests.sh         |   4 +
+ 8 files changed, 295 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/lib/test_usercopy_fixup.c
+ create mode 100644 tools/testing/selftests/arm64/usercopy/Makefile
+ create mode 100644 tools/testing/selftests/arm64/usercopy/config
+ create mode 100755 tools/testing/selftests/arm64/usercopy/run_fixup_tests.sh
+
+-- 
+2.17.1
+
