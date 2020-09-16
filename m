@@ -2,87 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB8D26C5B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F96326C5D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIPRPD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Sep 2020 13:15:03 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:37631 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbgIPRKW (ORCPT
+        id S1726817AbgIPRTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:19:53 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12086 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726894AbgIPRNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:10:22 -0400
-Received: by mail-wr1-f68.google.com with SMTP id z4so7734583wrr.4;
-        Wed, 16 Sep 2020 10:10:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=f/vjZ5qVXOPRaO7N1qyaXW4EBfCPk0ZUVPktaETjU8A=;
-        b=NULsmW+HpSjOhuhXrTrt+vxdr+f6loyKEFUiE7ZldinzC3sh0iI3Sj/Xnolmsse7XE
-         +hpS6TXxIuMrFYZey82vBm03mjbkqoQbKcgnbk/GiV2A/rXU9ejOhUml85U4qVTUArHm
-         dzgQ7BVAoliiSXrYPif8ciw7Y43XwRw6OyWbgnHthDemEpFIVWj1F8SYFHLbjjSh8lvA
-         W7hwVhOKv3A7oD9HknFmKxY20nlGbJEBh0nDKGvv3VENvWzP6xJ6rW5iA8nT+uZUPaTh
-         Y+grT4rDQ8M8/bWXCk4IAz/elC+bgsas+ZxkZIGN4hz4Q2MmtGgO9Pd2a72xO0tOdD2B
-         7Ttg==
-X-Gm-Message-State: AOAM530a9BbnbTC4gpTUW01WLLwPlIw4SIlyMEJt938w/2Kd09ftHvoW
-        PkxHfbB0a47NgUQYsxeOhY8=
-X-Google-Smtp-Source: ABdhPJwmJ2e+t9hZmYr64pvM4lBibRqr4nKDnRP/3Be66E5m5Qedo5Ij+8Wi/bjTZ1O7QlTmHILB8w==
-X-Received: by 2002:adf:ef45:: with SMTP id c5mr26930933wrp.37.1600276209235;
-        Wed, 16 Sep 2020 10:10:09 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.191])
-        by smtp.googlemail.com with ESMTPSA id v9sm38769873wrv.35.2020.09.16.10.10.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 10:10:07 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 19:10:05 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Kukjin Kim <kgene@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tomasz Figa <t.figa@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/2] ARM: s3c24xx: fix Wunused-variable warning on !MMU
-Message-ID: <20200916171005.GB19427@kozik-lap>
-References: <20200910154150.3318-1-krzk@kernel.org>
- <20200910154150.3318-2-krzk@kernel.org>
+        Wed, 16 Sep 2020 13:13:53 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6247320001>; Wed, 16 Sep 2020 10:11:14 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 16 Sep 2020 10:11:27 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 10:11:27 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
+ 2020 17:11:27 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 16 Sep 2020 17:11:27 +0000
+Received: from sumitg-l4t.nvidia.com (Not Verified[10.24.37.103]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f62473c0001>; Wed, 16 Sep 2020 10:11:27 -0700
+From:   Sumit Gupta <sumitg@nvidia.com>
+To:     <viresh.kumar@linaro.org>, <rjw@rjwysocki.net>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ksitaraman@nvidia.com>, <bbasu@nvidia.com>, <sumitg@nvidia.com>
+Subject: [Patch 1/2] cpufreq: tegra194: get consistent cpuinfo_cur_freq
+Date:   Wed, 16 Sep 2020 22:41:16 +0530
+Message-ID: <1600276277-7290-2-git-send-email-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
+References: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200910154150.3318-2-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600276274; bh=oXH+axlIrWrmMMW7JliHScXS/IYj9I3hPRTXw99Y67M=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
+         Content-Type;
+        b=e5NpJqEtVyF0iSjm3HSYcIZEjbmI05YLKBUhC83u3VL1qlZA20cd13Okj2u9fKqoe
+         /L5Fcp1uRMIAYT5Q1yNkUTqMaqhmE2Dy9LzjKVKTxUXvt2R07j6soJ96kyU5nzllqM
+         OIebOGaUZpbpz46qVQbxJsPY72KhxAY3I1oAr02zpPWQOS1qUmP6UOKjmnGEnsGBsg
+         ljFa0ODuT/WNxQ7onZ7AygSQJ2ER+a7f/hUhb4oXqX5ZwSQ6ExHQDwv4nOHXLsk+zX
+         HIL37shFft9GCvSLNj235VXgsgXdmitp+dFq8h9yzAR2lQd0d0q5mU9npk+9KJIg5u
+         vstmOw40P0TKg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 05:41:50PM +0200, Krzysztof Kozlowski wrote:
-> If S3C24xx machine code is build without CONFIG_MMU, the iotable()
-> macros do nothing so annotate structures to get rid of warnings:
-> 
->   arch/arm/mach-s3c24xx/common.c:140:24: warning: ‘s3c_iodesc’ defined but not used [-Wunused-variable]
->   arch/arm/mach-s3c24xx/s3c2410.c:49:24: warning: ‘s3c2410_iodesc’ defined but not used [-Wunused-variable]
->   arch/arm/mach-s3c24xx/s3c2412.c:60:24: warning: ‘s3c2412_iodesc’ defined but not used [-Wunused-variable]
->   arch/arm/mach-s3c24xx/s3c2416.c:54:24: warning: ‘s3c2416_iodesc’ defined but not used [-Wunused-variable]
->   arch/arm/mach-s3c24xx/s3c2443.c:45:24: warning: ‘s3c2443_iodesc’ defined but not used [-Wunused-variable]
->   arch/arm/mach-s3c24xx/s3c244x.c:44:24: warning: ‘s3c244x_iodesc’ defined but not used [-Wunused-variable]
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/mach-s3c24xx/common.c  | 2 +-
->  arch/arm/mach-s3c24xx/s3c2410.c | 2 +-
->  arch/arm/mach-s3c24xx/s3c2412.c | 2 +-
->  arch/arm/mach-s3c24xx/s3c2416.c | 2 +-
->  arch/arm/mach-s3c24xx/s3c2443.c | 2 +-
->  arch/arm/mach-s3c24xx/s3c244x.c | 2 +-
->  6 files changed, 6 insertions(+), 6 deletions(-)
+Frequency returned by 'cpuinfo_cur_freq' using counters is not fixed
+and keeps changing slightly. This change returns a consistent value
+from freq_table. If the reconstructed frequency has acceptable delta
+from the last written value, then return the frequency corresponding
+to the last written ndiv value from freq_table. Otherwise, print a
+warning and return the reconstructed freq.
 
-Applied.
+Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+---
+ drivers/cpufreq/tegra194-cpufreq.c | 66 ++++++++++++++++++++++++++++++++------
+ 1 file changed, 57 insertions(+), 9 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
+index e1d931c..d5b608d 100644
+--- a/drivers/cpufreq/tegra194-cpufreq.c
++++ b/drivers/cpufreq/tegra194-cpufreq.c
+@@ -180,9 +180,65 @@ static unsigned int tegra194_get_speed_common(u32 cpu, u32 delay)
+ 	return (rate_mhz * KHZ); /* in KHz */
+ }
+ 
++static void get_cpu_ndiv(void *ndiv)
++{
++	u64 ndiv_val;
++
++	asm volatile("mrs %0, s3_0_c15_c0_4" : "=r" (ndiv_val) : );
++
++	*(u64 *)ndiv = ndiv_val;
++}
++
++static void set_cpu_ndiv(void *data)
++{
++	struct cpufreq_frequency_table *tbl = data;
++	u64 ndiv_val = (u64)tbl->driver_data;
++
++	asm volatile("msr s3_0_c15_c0_4, %0" : : "r" (ndiv_val));
++}
++
+ static unsigned int tegra194_get_speed(u32 cpu)
+ {
+-	return tegra194_get_speed_common(cpu, US_DELAY);
++	struct cpufreq_frequency_table *table, *pos;
++	struct cpufreq_policy policy;
++	unsigned int rate;
++	u64 ndiv;
++	int err;
++
++	cpufreq_get_policy(&policy, cpu);
++	table = policy.freq_table;
++
++	/* reconstruct actual cpu freq using counters*/
++	rate = tegra194_get_speed_common(cpu, US_DELAY);
++
++	/* get last written ndiv value*/
++	err = smp_call_function_single(cpu, get_cpu_ndiv, &ndiv, true);
++	if (err) {
++		pr_err("cpufreq: Failed to get ndiv for CPU%d, ret:%d\n",
++		       cpu, err);
++		return rate;
++	}
++
++	/* if the reconstructed frequency has acceptable delta from
++	 * the last written value, then return freq corresponding
++	 * to the last written ndiv value from freq_table. This is
++	 * done to return consistent value.
++	 */
++	cpufreq_for_each_valid_entry(pos, table) {
++		if (pos->driver_data != ndiv)
++			continue;
++
++		if (abs(pos->frequency - rate) > 115200) {
++			pr_warn("cpufreq: high delta (%d) on CPU%d\n",
++				abs(pos->frequency - rate), cpu);
++			pr_warn("cpufreq: cur:%u, set:%u, set ndiv:%llu\n",
++				rate, pos->frequency, ndiv);
++		} else {
++			rate = pos->frequency;
++		}
++		break;
++	}
++	return rate;
+ }
+ 
+ static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
+@@ -209,14 +265,6 @@ static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
+ 	return 0;
+ }
+ 
+-static void set_cpu_ndiv(void *data)
+-{
+-	struct cpufreq_frequency_table *tbl = data;
+-	u64 ndiv_val = (u64)tbl->driver_data;
+-
+-	asm volatile("msr s3_0_c15_c0_4, %0" : : "r" (ndiv_val));
+-}
+-
+ static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
+ 				       unsigned int index)
+ {
+-- 
+2.7.4
 
