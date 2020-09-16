@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B9D26CB81
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7143E26CB6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgIPU3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgIPRYQ (ORCPT
+        id S1727936AbgIPU1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:27:21 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57657 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726935AbgIPRYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:24:16 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FDCC0611C0;
-        Wed, 16 Sep 2020 10:22:41 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c3e00db2f62bd592f04a0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:db2f:62bd:592f:4a0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1522C1EC026F;
-        Wed, 16 Sep 2020 19:22:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600276960;
+        Wed, 16 Sep 2020 13:24:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600277061;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CXiDzhd51Y1X9PUqSzctKBUMynV+tiDkIpdtvyBec+o=;
-        b=FA22T5GORdlesUNedODvDvgYmaDdj8PkbyqTIBGIJGmwPSV7OwXITkTe+/heqhPzL51mx/
-        pz9TN+9/aavENJg5AcMKLXQbd8fQkM/a7YpcMLiW6VU6TuZrjI1W39VNhvn1DoPE0GxQtm
-        LTCrTJdKJtIOJzBUC8dhq1g4Pd1Q8lE=
-Date:   Wed, 16 Sep 2020 19:22:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Stefan Schaeckeler <sschaeck@cisco.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-edac@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] EDAC/aspeed: use module_platform_driver to
- simplify the code
-Message-ID: <20200916172238.GQ2643@zn.tnic>
-References: <20200914065358.3726216-1-liushixin2@huawei.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=MIDNYXiU2iGbO/F9JK0prHUpFcyTmc8uGMG0d6uO9go=;
+        b=Oe78V3G2XAlLxooeZf9iwlrWCJ1R9YlYjJKMpQIV7xlKDWieR2xO2lPH5n2HwzHzH6CKwW
+        3NGvQZkrYTni1qUbGgEOyc3QBCvkRVykSSFtKFX2U6al5zGpJGMT9gDvnpwUtFYB88iWoW
+        rnVkmTOqA4/Pk7h1vxudqScEPFnqxiQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-vMiOjr13O8uH-OJWC3YD5w-1; Wed, 16 Sep 2020 13:24:17 -0400
+X-MC-Unique: vMiOjr13O8uH-OJWC3YD5w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E405A107464B;
+        Wed, 16 Sep 2020 17:24:14 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9499E60BFA;
+        Wed, 16 Sep 2020 17:24:14 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08GHOEOU016676;
+        Wed, 16 Sep 2020 13:24:14 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08GHOCwu016672;
+        Wed, 16 Sep 2020 13:24:12 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 16 Sep 2020 13:24:12 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Dan Williams <dan.j.williams@intel.com>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
+        <rajesh.tadakamadla@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: Re: [PATCH] pmem: export the symbols __copy_user_flushcache and
+ __copy_from_user_flushcache
+In-Reply-To: <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
+Message-ID: <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com> <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200914065358.3726216-1-liushixin2@huawei.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 02:53:58PM +0800, Liu Shixin wrote:
-> module_platform_driver() makes the code simpler by eliminating
-> boilerplate code.
+
+
+On Wed, 16 Sep 2020, Dan Williams wrote:
+
+> On Wed, Sep 16, 2020 at 3:57 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
+> >
+> >
+> >
+> > I'm submitting this patch that adds the required exports (so that we could
+> > use __copy_from_user_flushcache on x86, arm64 and powerpc). Please, queue
+> > it for the next merge window.
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  drivers/edac/aspeed_edac.c | 18 +-----------------
->  1 file changed, 1 insertion(+), 17 deletions(-)
-> 
-> diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
-> index fbec28dc661d..fde809efc520 100644
-> --- a/drivers/edac/aspeed_edac.c
-> +++ b/drivers/edac/aspeed_edac.c
-> @@ -388,23 +388,7 @@ static struct platform_driver aspeed_driver = {
->  	.probe		= aspeed_probe,
->  	.remove		= aspeed_remove
->  };
-> -
-> -
-> -static int __init aspeed_init(void)
-> -{
-> -	return platform_driver_register(&aspeed_driver);
-> -}
-> -
-> -
-> -static void __exit aspeed_exit(void)
-> -{
-> -	platform_driver_unregister(&aspeed_driver);
-> -}
-> -
-> -
-> -module_init(aspeed_init);
-> -module_exit(aspeed_exit);
-> -
-> +module_platform_driver(aspeed_driver);
->  
->  MODULE_LICENSE("GPL");
->  MODULE_AUTHOR("Stefan Schaeckeler <sschaeck@cisco.com>");
-> -- 
+> Why? This should go with the first user, and it's not clear that it
+> needs to be relative to the current dax_operations export scheme.
 
-Applied, thanks.
+Before nvfs gets included in the kernel, I need to distribute it as a 
+module. So, it would make my maintenance easier. But if you don't want to 
+export it now, no problem, I can just copy __copy_user_flushcache from the 
+kernel to the module.
 
--- 
-Regards/Gruss,
-    Boris.
+> My first question about nvfs is how it compares to a daxfs with
+> executables and other binaries configured to use page cache with the
+> new per-file dax facility?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+nvfs is faster than dax-based filesystems on metadata-heavy operations 
+because it doesn't have the overhead of the buffer cache and bios. See 
+this: http://people.redhat.com/~mpatocka/nvfs/BENCHMARKS
+
+Mikulas
+
