@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4053926CF85
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E39A26CFA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgIPXUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 19:20:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726084AbgIPXUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 19:20:24 -0400
-Received: from X1 (unknown [67.22.170.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA81722205;
-        Wed, 16 Sep 2020 23:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600298423;
-        bh=g39pvrmQ7hfk10VvG24PcSf7yUXQxh3QrCaIs2OFPxw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GGy3cWrY1KWygiIV+LN8jdTlPMczqnmnOowS6kdzNzT02rztNefpmWOud0sB5DuhW
-         tYPB2wewkh27YeY5ELsjeG6otz7U7l9BXGGjwZ40yc/FJb39YCYRFP4SKYro0qWLdA
-         08KKQW84Cld8I364URHf5f0fJMPvSvi2987Kgz9w=
-Date:   Wed, 16 Sep 2020 16:20:20 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v5 0/5] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-Id: <20200916162020.0d68c2bd6711024cfcaa8bd7@linux-foundation.org>
-In-Reply-To: <20200916073539.3552-1-rppt@kernel.org>
-References: <20200916073539.3552-1-rppt@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726929AbgIPX3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 19:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgIPX3p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 19:29:45 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E71C06174A;
+        Wed, 16 Sep 2020 16:29:45 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d6so11326pfn.9;
+        Wed, 16 Sep 2020 16:29:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R9Gw6+PM5z71+mLBKqII8RPfqr0DXLe+0fkTbe6vh6w=;
+        b=tth1Nh/XQ96Hj5oCinWcQ2Jk+3xdLMXzDw8xIBWeF5PcgupbqWguKg/c08xeECM8pG
+         uYYvUUIhBbk/Arj8lzMcjWaPe8Zx3UK9NrXxBm2Q2ZmbXyoEjBQ50cnek9COerWEEc9p
+         9aj2b1qlhKWiH8EW8fw7NrWmsh3Yu54OUY8FXXxq2RWy1CpCUA7TRqsJitPIMhlk/QJu
+         RKfpiP1GQL3T6CsitBINMUyYd+cehiPrIBoNY0Lo0UwcVNm5S7UUKvTQwjbVmOJgFouH
+         1fpGpIDp7+hOXdh5+lfdct02Cllk46hpoNmqTy9OaFLLzOCEZlJbl6kwPEkSWQl7Z5Rc
+         vKbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R9Gw6+PM5z71+mLBKqII8RPfqr0DXLe+0fkTbe6vh6w=;
+        b=uiBbhyqVr49dNzAPA4LXbD/3CE9GKo/58bhv9DFY9jonR/elyqzRXXeC7Ebc1PwCnW
+         VrLzunFfJNONfsyM/NMMLTJoLZYhbY5KwzkSx5QUnpiHqKeARe5GpOOxuVIIP1hiD5ZM
+         jbjXzJm+TL/3LdPTtr9gIJxPJldXyZXSDvNX85uU7ga4iyGLZsfoGTapKmEdXP6Q15VO
+         ruBK9jystE3O7TWxUYzhMvDPPs/YcXpAI1mBeqYyQCbl4DZVIv7lXFNnxnMfRupZLTy4
+         dOclIKPFJldjdmWlQf74X8mqEmxZjBfqtNOZEHBAFZaSwIIcfGhtsbfXNmLInGKzWjif
+         WXZA==
+X-Gm-Message-State: AOAM531cl9G7/lEaTdUulnfRtMlVzy22pteVC1NNry4/MPAbeq9/u2rO
+        SQcdL0a3LptBFNt4l/Y6PNA=
+X-Google-Smtp-Source: ABdhPJyCnFrPabBdWCyLPPtMJja+gOhWvlL7wM89YS7TmpqjwDflag2Hdqv+S7qniKqbtV+wHVr3xg==
+X-Received: by 2002:a63:384f:: with SMTP id h15mr1923748pgn.144.1600298984670;
+        Wed, 16 Sep 2020 16:29:44 -0700 (PDT)
+Received: from localhost.localdomain (sau-ff5be-or.servercontrol.com.au. [43.250.207.3])
+        by smtp.gmail.com with ESMTPSA id m13sm4880196pgl.68.2020.09.16.16.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 16:29:43 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH v3] docs: fb: Remove sstfb scrollback boot option
+Date:   Thu, 17 Sep 2020 04:51:41 +0530
+Message-Id: <20200916232141.17311-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 10:35:34 +0300 Mike Rapoport <rppt@kernel.org> wrote:
 
-> This is an implementation of "secret" mappings backed by a file descriptor. 
-> I've dropped the boot time reservation patch for now as it is not strictly
-> required for the basic usage and can be easily added later either with or
-> without CMA.
+This patch remove the reference of scrollback from this file. This is related to 
+these below commits.
 
-It seems early days for this, especially as regards reviewer buyin. 
-But I'll toss it in there to get it some additional testing.
+Commit 973c096f6a85(vgacon: remove software scrollback support)
+Commit 50145474f6ef(fbcon: remove soft scrollback code)
 
-A test suite in tools/testging/selftests/ would be helpful, especially
-for arch maintainers.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+This version correcting the previous versions errors. Proper changelog and subject 
+text. Trying to incorporate Willy's and Greg's suggestions.
 
-I assume that user-facing manpage alterations are planned?
+ Documentation/fb/sstfb.rst | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/Documentation/fb/sstfb.rst b/Documentation/fb/sstfb.rst
+index 8e8c1b940359..42466ff49c58 100644
+--- a/Documentation/fb/sstfb.rst
++++ b/Documentation/fb/sstfb.rst
+@@ -185,9 +185,6 @@ Bugs
+   contact me.
+ - The 24/32 is not likely to work anytime soon, knowing that the
+   hardware does ... unusual things in 24/32 bpp.
+-- When used with another video board, current limitations of the linux
+-  console subsystem can cause some troubles, specifically, you should
+-  disable software scrollback, as it can oops badly ...
+ 
+ Todo
+ ====
+-- 
+2.28.0
+
