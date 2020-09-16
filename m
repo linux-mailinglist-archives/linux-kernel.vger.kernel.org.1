@@ -2,165 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEFF26C630
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9C826C63C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbgIPRgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgIPRfW (ORCPT
+        id S1727334AbgIPRkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:40:40 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:38225 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727279AbgIPRiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:35:22 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BB0C06121E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:35:00 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z4so7804099wrr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N/a5esHE2nX/K6yt6KRtONQ/utoU9A1KMk/TmGOQstA=;
-        b=cKP/rHoQVyZyHVqZKyh7DfsE+mZFPUCn8SD3R2cnVqPlL2IpZN/1aLKkpOuKklj1R1
-         Ff4dtVMf31VqV7eFBh6ys+o6DxOtke8LtPBezFeyWpXkzs3EU+umYnaWkrQnejG9YXnB
-         sHAqmCN4KOZBEQnZDiWlay4r0GDhl5YJGXgS8X0RlMcYif6v2kf7SYPcj7OcW10ScDk1
-         vjhBdmd1g44WnQjvQUVjyp6PazaRbDijYf2bR5RSFaB6frYEk96o78v/rIri2yBfQGOr
-         AGYUvN3smNU0kV381ttfiFlS2yJpKppiHzhvMlNiMB9av3Maor7OK9Esa5xZHrFb599K
-         0BZA==
+        Wed, 16 Sep 2020 13:38:52 -0400
+Received: by mail-oi1-f195.google.com with SMTP id y6so9034005oie.5;
+        Wed, 16 Sep 2020 10:38:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N/a5esHE2nX/K6yt6KRtONQ/utoU9A1KMk/TmGOQstA=;
-        b=DXbYVjiTwuE+OafqYVNWQbYAlm6LnXuWm+JWuu2t0hkqU1l0Wz1xpXspM0RV6zUe4z
-         qbN15Y1BDHHPhzIEZ3UE4jwUe1BBzik8JNo04l6TsUQGqUdH9C3gVUktf+hK3zxgK1HF
-         DYuftvPhVL634Kw1bE4Hsyv75mkeNywgWXHGIhgqTFuiXvC7QGpgg1AH2bNryycQVnYF
-         BRnHVQeOsy0CNpnGtmtlvzTySM2ITwvswhWCbOGn7cGILtV9T3T+/+B8cWIQGfsZvaoW
-         oa164ATms6r+igf5FT+uGbwOpb60R1xL4WsbW/uHV297RH5zc9y2HbJyqZXHlSCz8VbU
-         cF+Q==
-X-Gm-Message-State: AOAM533AV1bBF90uoMreDb4cD00eT7Yv6uJhczaYX2OlV4fw9kgw6koC
-        M8QL1GcrGTAzGRYPLToFiBjfgg==
-X-Google-Smtp-Source: ABdhPJxomQAbrt08pj/u0T2EZWQsduo0LZzXxFu69uumIM0NIEhf5lzxyS7IebV8zrXzmcgv8Rs77w==
-X-Received: by 2002:adf:f3c4:: with SMTP id g4mr28414841wrp.168.1600277699045;
-        Wed, 16 Sep 2020 10:34:59 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
-        by smtp.gmail.com with ESMTPSA id i3sm33528281wrs.4.2020.09.16.10.34.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 10:34:58 -0700 (PDT)
-From:   David Brazdil <dbrazdil@google.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v3 07/11] kvm: arm64: Duplicate arm64_ssbd_callback_required for nVHE hyp
-Date:   Wed, 16 Sep 2020 18:34:35 +0100
-Message-Id: <20200916173439.32265-8-dbrazdil@google.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916173439.32265-1-dbrazdil@google.com>
-References: <20200916173439.32265-1-dbrazdil@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uo+bA2t+v8v9rdUgKJFXxm1RCRKONpBn25AFgkBx9ik=;
+        b=pohnJdV4dyKaApvk4rEKGR4wJT7PxXalx1PCqc5tT7GWTJmYBSvqqCcap0nPnmG+sy
+         41ebR4T+d7EiV0oLS1Uu8riH4emmcU1bmkX3TtSt4TPuU+qvcJ9o5C229F032l244kRX
+         5xLO4F5Wfve1+eC4UU3ee1dODWcLg/7oBOcJkyKMXKssC+5sis+QFcgaYoNFbsEba/t0
+         jO19W772QQxWEjq+vQx99zQwsAVpAGL0Al4rBoev3ugC8ekTnyTbRl1V+7fQVLegHgyT
+         2F202oacD/zzrqR4R0D6EAMOcHSwnFzR0vEWhT2XIHQZIC+KLePv458UMf5kb3N32XG2
+         k5Rw==
+X-Gm-Message-State: AOAM5324t5Q6AsDNUq+Ek45t3tuKYPYgoVY11BH7mChdNzXObVxm+EaP
+        evba/dvTKL+SGnWSvAXM2fRtoTjiNCnZRyKBUxw=
+X-Google-Smtp-Source: ABdhPJxKiT1YuF0AdZqj480R8CGXOdyh+gY1WMAgZYKGUe42WAoaznb7Rgjd8TkTrpfN6bfgY2Y++/jCvW4nXWM2fEo=
+X-Received: by 2002:aca:5b09:: with SMTP id p9mr3309069oib.68.1600277927809;
+ Wed, 16 Sep 2020 10:38:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200915103157.345404192@infradead.org> <20200915103806.280265587@infradead.org>
+ <CAJZ5v0jD-Lv5WAKHd9KN8sPozN4DeA-sQ4pXZTHNSZ4XS=as3A@mail.gmail.com>
+ <20200916154212.GE1362448@hirez.programming.kicks-ass.net> <20200916160103.GL2643@zn.tnic>
+In-Reply-To: <20200916160103.GL2643@zn.tnic>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 16 Sep 2020 19:38:36 +0200
+Message-ID: <CAJZ5v0hrfhUm+nF0ARnpNEH85EkpsjYZSqfjhh0a5KjUEpjdjA@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/4] acpi: Use CPUIDLE_FLAG_TIMER_STOP
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hyp keeps track of which cores require SSBD callback by accessing a
-kernel-proper global variable. Create an nVHE symbol of the same name
-and copy the value from kernel proper to nVHE at KVM init time.
+On Wed, Sep 16, 2020 at 6:01 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Sep 16, 2020 at 05:42:12PM +0200, peterz@infradead.org wrote:
+> > On Tue, Sep 15, 2020 at 06:26:52PM +0200, Rafael J. Wysocki wrote:
+> > > On Tue, Sep 15, 2020 at 12:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > >
+> > > > Make acpi_processor_idle use the common broadcast code, there's no
+> > > > reason not to. This also removes some RCU usage after
+> > > > rcu_idle_enter().
+> > > >
+> > > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > >
+> > > The whole series looks good to me, so please feel free to add
+> > >
+> > > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > to all of the four patches.
+> > >
+> > > Alternatively, please let me know if you want me to take the patches.
+> >
+> > Feel free to take them. All the prerequisite borkage is in linus' tree
+> > already.
+>
+> You can add:
+>
+> Reported-by: Borislav Petkov <bp@suse.de>
+>
+> for this one and for this whole series:
+>
+> Tested-by: Borislav Petkov <bp@suse.de>
 
-Done in preparation for separating percpu memory owned by kernel
-proper and nVHE.
-
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/include/asm/kvm_mmu.h | 10 +++++++---
- arch/arm64/kernel/image-vars.h   |  1 -
- arch/arm64/kvm/arm.c             |  2 +-
- arch/arm64/kvm/hyp/nvhe/switch.c |  3 +++
- 4 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index 189839c3706a..9db93da35606 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -529,23 +529,27 @@ static inline int kvm_map_vectors(void)
- 
- #ifdef CONFIG_ARM64_SSBD
- DECLARE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
-+DECLARE_KVM_NVHE_PER_CPU(u64, arm64_ssbd_callback_required);
- 
--static inline int hyp_map_aux_data(void)
-+static inline int hyp_init_aux_data(void)
- {
- 	int cpu, err;
- 
- 	for_each_possible_cpu(cpu) {
- 		u64 *ptr;
- 
--		ptr = per_cpu_ptr(&arm64_ssbd_callback_required, cpu);
-+		ptr = per_cpu_ptr_nvhe(arm64_ssbd_callback_required, cpu);
- 		err = create_hyp_mappings(ptr, ptr + 1, PAGE_HYP);
- 		if (err)
- 			return err;
-+
-+		/* Copy value from kernel to hyp. */
-+		*ptr = per_cpu(arm64_ssbd_callback_required, cpu);
- 	}
- 	return 0;
- }
- #else
--static inline int hyp_map_aux_data(void)
-+static inline int hyp_init_aux_data(void)
- {
- 	return 0;
- }
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index 76da2ad1010c..59d12a0b4622 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -67,7 +67,6 @@ KVM_NVHE_ALIAS(kvm_patch_vector_branch);
- KVM_NVHE_ALIAS(kvm_update_va_mask);
- 
- /* Global kernel state accessed by nVHE hyp code. */
--KVM_NVHE_ALIAS(arm64_ssbd_callback_required);
- KVM_NVHE_ALIAS(kvm_host_data);
- KVM_NVHE_ALIAS(kvm_vgic_global_state);
- 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index b588c3b5c2f0..3bdc2661d276 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1552,7 +1552,7 @@ static int init_hyp_mode(void)
- 		}
- 	}
- 
--	err = hyp_map_aux_data();
-+	err = hyp_init_aux_data();
- 	if (err)
- 		kvm_err("Cannot map host auxiliary data: %d\n", err);
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
-index cc4f8e790fb3..4662df6330d7 100644
---- a/arch/arm64/kvm/hyp/nvhe/switch.c
-+++ b/arch/arm64/kvm/hyp/nvhe/switch.c
-@@ -27,6 +27,9 @@
- #include <asm/processor.h>
- #include <asm/thread_info.h>
- 
-+/* Non-VHE copy of the kernel symbol. */
-+DEFINE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
-+
- static void __activate_traps(struct kvm_vcpu *vcpu)
- {
- 	u64 val;
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+Done.
