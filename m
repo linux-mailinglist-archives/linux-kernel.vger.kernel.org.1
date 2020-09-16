@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D8B26B92E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC2126B93D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgIPBBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 21:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48384 "EHLO
+        id S1726196AbgIPBNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 21:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726093AbgIPBBo (ORCPT
+        with ESMTP id S1726102AbgIPBNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 21:01:44 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AECC06174A;
-        Tue, 15 Sep 2020 18:01:44 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id l71so436095pge.4;
-        Tue, 15 Sep 2020 18:01:44 -0700 (PDT)
+        Tue, 15 Sep 2020 21:13:21 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E91C06174A;
+        Tue, 15 Sep 2020 18:13:20 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id gf14so665462pjb.5;
+        Tue, 15 Sep 2020 18:13:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DycTmxSFFnDVXWFUqr21zhna4kBRrUqR0acmd5MtpdQ=;
-        b=GxnJyXiq4QG+ghyb61K6sKuh3mV+hxrs8JA7BWsf3+9XItarPjm0OW4IccPj9xtF2N
-         sxJS+xiFJ9u6MWEmxHVmvqJsqhPr1GSJZXvwaxBofSrMHZMSp8n80MHY5dd8L024tesz
-         wUcLR9bBtLq7lNQBylSiR0dfbAhTerBafpMmDsvX2OEkyD6P5Y8S+d16gujIjplpEbxp
-         LZPBXvTbjQIJ7sFyQDXn4FPIQsm5sSMHF29Umvlvfw/+sw0RVQE5UFZIMiD97nhRnBDX
-         8kK7fd55zieoLW37kygtOLJaarl1NlBhH2whlPDhid36Zh7U2i/XGMxQTMF+WNFWnseY
-         OFng==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=phx4PXb0zuSXgskpcI5JN8X2D625+29rCnggRE/ElQA=;
+        b=I6MQ6kDnjnZXnsi3OxLG52sK9oRPUU3M0UchAHdj+YxFPg36TfVFIsYoKfek2NVMs6
+         5jmkllhOOeApZc+Y+qQ0zpJuuTwbhjDr3AM61dyqg93KhY/Sf8D2Ok7mu0QFRzg9JNEo
+         bYYUBObQBUlZqoxjHKDxyEFkg2KS7g+0mX15WHn8u2YXOVVLw7iuT1992Yj4JZUTh3Gr
+         HvI14vbr2NohnpWIaNJ0DzuFgRHoBxw2SgYjnugO0TYRm13N/jLUbyi893o8YyY6sSWh
+         dLwsYI53RyhYGgn8x2ZWnI63qDW43Nc1Rv6qCB0EVmVDxBU4WcUGa16YrLdJLMnHD7BX
+         O9qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DycTmxSFFnDVXWFUqr21zhna4kBRrUqR0acmd5MtpdQ=;
-        b=iBIScWG/V4l65UmSapv2ntsls0bruD9+MezQhDqT1PQqqnyOJu80wESueCtgFZmQ3U
-         ulwdF4osU27LUbIjRxpUnB5XwV9VHUggUooLxLKJqcs1b61qsTkZka0FgecXdl4b6lHc
-         6kDl5gDuaq09iLf/bl4GjjSfuvOjc4ZGvKSpEpfDDOlCgXtrCNcCQOy2UgKGsTAkWG4f
-         ttYdjg7KwpnheHXJYY0vRIp7QLP73FAnwYc6CdaikV+afu6NLOI7081WD5UVm8uIVYtq
-         nh3jZycnOz3MVF9yZaDKSweoX+gO13MViQaTHH/Z4zjJ8QQSpS3+KAWwqrXy00m7TYAD
-         czrg==
-X-Gm-Message-State: AOAM530VCU0FaNMlotmHmdJS7oMdu/bC2DvfbVuL5yxzUZ1Wq3yOEy4b
-        EgETy1iV3No6n9/vVw1w1X8=
-X-Google-Smtp-Source: ABdhPJwnm/FnXuLqgQyD1LM4EpxtcV+dBr1YFz0ubNGr228NPkWg4tawBz7y5hafZWeyOVS5fwQPdw==
-X-Received: by 2002:aa7:9491:0:b029:142:2501:34dd with SMTP id z17-20020aa794910000b0290142250134ddmr4273238pfk.54.1600218103467;
-        Tue, 15 Sep 2020 18:01:43 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id y203sm14338924pfb.58.2020.09.15.18.01.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=phx4PXb0zuSXgskpcI5JN8X2D625+29rCnggRE/ElQA=;
+        b=UCDZXz70vlyy6/eEhyNE0+v9JmDwgdtNv5edthfeBw9Mrits5DVwHlO5SBZxGZSVSm
+         urqEyoqB7uUJexlfI8XrlTug3WXZcBA7jA0G7cceHzdx2GLvIwEWP4nemBIjzr4fULql
+         I67h9+2l59nn0i6zRiwi90q03P18xrEAx387IYmWPL8a8i9QM78+7/6KYhdAeJSU3avt
+         2JWcb4On5e6b7N1CHSoEZDePzHP4Rw8EsWzxEEQqYfQTZa10bjqleNUB/NU8zAOI7QVb
+         xqx4+ses5jIbUZzLL/fRvCaWNThmdYpBiDe/XZgY/1eDpUSK+fNs9oMQsIypIyJ42oCA
+         vBYQ==
+X-Gm-Message-State: AOAM531Y6VKsXFKL1wfom84Ma044BoQpUt7+hLtQzt+fOZbHQtm+7Hym
+        69JgPwM2+wTujrhJRiYjGb7euTyMenwtxA==
+X-Google-Smtp-Source: ABdhPJxWZE6XK1FbYAWU5Zj0ADxkblqRskktQCQDM2T+nGYOCg1ngmFZUAZj3+trYTg9FNcrzLa69g==
+X-Received: by 2002:a17:90b:f83:: with SMTP id ft3mr1754798pjb.234.1600218799535;
+        Tue, 15 Sep 2020 18:13:19 -0700 (PDT)
+Received: from localhost.localdomain (sau-ff5be-or.servercontrol.com.au. [43.250.207.3])
+        by smtp.gmail.com with ESMTPSA id gl17sm612582pjb.49.2020.09.15.18.13.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 18:01:42 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 18:01:40 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 4/4] Input: sun4i-ps2 - Fix handling of
- platform_get_irq() error
-Message-ID: <20200916010140.GG1681290@dtor-ws>
-References: <20200828145744.3636-1-krzk@kernel.org>
- <20200828145744.3636-4-krzk@kernel.org>
+        Tue, 15 Sep 2020 18:13:18 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] docs: fb: Remove scrollback related stanza
+Date:   Wed, 16 Sep 2020 06:40:00 +0530
+Message-Id: <20200916011000.18286-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828145744.3636-4-krzk@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 04:57:44PM +0200, Krzysztof Kozlowski wrote:
-> platform_get_irq() returns -ERRNO on error.  In such case comparison
-> to 0 would pass the check.
-> 
-> Fixes: e443631d20f5 ("Input: serio - add support for Alwinner A10/A20 PS/2 controller")
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. None
-> ---
->  drivers/input/serio/sun4i-ps2.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/input/serio/sun4i-ps2.c b/drivers/input/serio/sun4i-ps2.c
-> index a681a2c04e39..7da1ea8741fc 100644
-> --- a/drivers/input/serio/sun4i-ps2.c
-> +++ b/drivers/input/serio/sun4i-ps2.c
-> @@ -265,9 +265,8 @@ static int sun4i_ps2_probe(struct platform_device *pdev)
->  
->  	/* Get IRQ for the device */
->  	irq = platform_get_irq(pdev, 0);
-> -	if (!irq) {
-> -		dev_err(dev, "no IRQ found\n");
-> -		error = -ENXIO;
-> +	if (irq < 0) {
+This patch remove the stanza related to framebuffer scrollback effect.
 
-"irq" is unsigned here, so this will not work. I'll change it to use
-drvdat->irq which happens to be signed, and drop "irq" variable.
+Commit 973c096f6a85(vgacon: remove software scrollback support)
+Commit 50145474f6ef(fbcon: remove soft scrollback code)
 
-> +		error = irq;
->  		goto err_disable_clk;
->  	}
->  
-> -- 
-> 2.17.1
-> 
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Documentation/fb/sstfb.rst | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Thanks.
-
+diff --git a/Documentation/fb/sstfb.rst b/Documentation/fb/sstfb.rst
+index 8e8c1b940359..42466ff49c58 100644
+--- a/Documentation/fb/sstfb.rst
++++ b/Documentation/fb/sstfb.rst
+@@ -185,9 +185,6 @@ Bugs
+   contact me.
+ - The 24/32 is not likely to work anytime soon, knowing that the
+   hardware does ... unusual things in 24/32 bpp.
+-- When used with another video board, current limitations of the linux
+-  console subsystem can cause some troubles, specifically, you should
+-  disable software scrollback, as it can oops badly ...
+ 
+ Todo
+ ====
 -- 
-Dmitry
+2.26.2
+
