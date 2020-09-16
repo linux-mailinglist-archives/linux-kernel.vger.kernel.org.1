@@ -2,236 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6367D26CC85
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B2226CBC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgIPUpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgIPRDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:03:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9468C014DA1;
-        Wed, 16 Sep 2020 06:16:43 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 13:11:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600261879;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nEtD8RnQ7ym+xkai86OWicaRhtPBMHP7gde0ZIGcFvE=;
-        b=T4owpgQc2BQvLiNMoQ4NiBMFFI4cdZPmhTTB91O8343O/y6BPcbYRV0Hk2UWT9uFq1ugOE
-        wpUsQbsrvv0h/wnCTkO158GA/QES6DfWzBI6gljR+QVjASYLT/UbDK71LIoXckod7FU75X
-        PesbBYh5rDE/5dF6KCtiB1MD/dTHS+e5VeD07RS/zpXVGWUlo0edMy7zkPwfZjl9wlFTmC
-        u02r1oIwAkawo5xVEVUbKKqiIx4Qa/xMT1E4vBADwWiZphoSrhfsUNsqGNjyXuhZkAv0fC
-        SZU/7G7yP4fDQzWadW+4wI3fXqqYCU9Xlc2oRXiZWX59RLhjCMMLI2fWiqtX1g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600261879;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nEtD8RnQ7ym+xkai86OWicaRhtPBMHP7gde0ZIGcFvE=;
-        b=P7ACa/njV5j5hSrzk8JMynkC18zqgmTJ0bt0H9+NXnhm2GoH8JoE+6IKWcoPiBH5pVhJt2
-        UFUvZcNBvmrw13CA==
-From:   "tip-bot2 for Balbir Singh" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/pti] prctl: Hook L1D flushing in via prctl
-Cc:     Balbir Singh <sblbir@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200729001103.6450-5-sblbir@amazon.com>
-References: <20200729001103.6450-5-sblbir@amazon.com>
+        id S1728334AbgIPUeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:34:14 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13195 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726899AbgIPRMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:12:54 -0400
+IronPort-SDR: NELNjm2oB/3DjuOVuB2RsN8JuY3VMR+jh9sLYCpyF36hxCKaSkPAr3JR7LBkEgbme/6KTGCVNM
+ epvBW0vNRB/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="139466139"
+X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
+   d="scan'208";a="139466139"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 06:12:17 -0700
+IronPort-SDR: MVS8Hy5teS3hg1wO0idxtJ8DVPmkc0coiYjpFJO/ilmoKoFGp0/oIZtyk58SFaqekoLTdCuIH5
+ y30DXIdCUMWg==
+X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
+   d="scan'208";a="507163140"
+Received: from gopikapa-mobl.amr.corp.intel.com (HELO [10.209.66.210]) ([10.209.66.210])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 06:12:16 -0700
+Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
+ controls
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        alsa-devel@alsa-project.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+        gregkh@linuxfoundation.org,
+        open list <linux-kernel@vger.kernel.org>, broonie@kernel.org,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Bard liao <yung-chuan.liao@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>
+References: <20200904050244.GT2639@vkoul-mobl>
+ <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
+ <20200909075555.GK77521@vkoul-mobl>
+ <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
+ <20200910062223.GQ77521@vkoul-mobl>
+ <adf51127-2813-cdf0-e5a6-f5ec3b0d33fa@linux.intel.com>
+ <20200911070649.GU77521@vkoul-mobl>
+ <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
+ <20200914050825.GA2968@vkoul-mobl>
+ <11feabb2-dc8b-7acc-6e4d-0903fc435b00@linux.intel.com>
+ <20200916123545.GK2968@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d717f109-7ffd-11cb-f44d-f6c0b48d4985@linux.intel.com>
+Date:   Wed, 16 Sep 2020 08:11:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <160026187842.15536.285514864386042510.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200916123545.GK2968@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/pti branch of tip:
 
-Commit-ID:     b6724f118d44606fddde391ba7527526b3cad211
-Gitweb:        https://git.kernel.org/tip/b6724f118d44606fddde391ba7527526b3cad211
-Author:        Balbir Singh <sblbir@amazon.com>
-AuthorDate:    Wed, 29 Jul 2020 10:11:02 +10:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 16 Sep 2020 15:08:03 +02:00
 
-prctl: Hook L1D flushing in via prctl
+On 9/16/20 7:35 AM, Vinod Koul wrote:
+> On 14-09-20, 09:44, Pierre-Louis Bossart wrote:
+>>> For LSB bits, I dont think this is an issue. I expect it to work, for example:
+>>> #define CONTROL_LSB_MASK  GENMASK(2, 0)
+>>>           foo |= u32_encode_bits(control, CONTROL_LSB_MASK);
+>>>
+>>> would mask the control value and program that in specific bitfeild.
+>>>
+>>> But for MSB bits, I am not sure above will work so, you may need to extract
+>>> the bits and then use, for example:
+>>> #define CONTROL_MSB_BITS        GENMASK(5, 3)
+>>> #define CONTROL_MSB_MASK        GENMASK(17, 15)
+>>>
+>>>           control = FIELD_GET(CONTROL_MSB_BITS, control);
+>>>           foo |= u32_encode_bits(control, CONTROL_MSB_MASK);
+>>>
+>>>> If you have a better suggestion that the FIELD_PREP/FIELD_GET use, I am all
+>>>> ears. At the end of the day, the mapping is pre-defined and we don't have
+>>>> any degree of freedom. What I do want is that this macro/inline function is
+>>>> shared by all codec drivers so that we don't have different interpretations
+>>>> of how the address is constructed.
+>>>
+>>> Absolutely, this need to be defined here and used by everyone else.
+>>
+>> Compare:
+>>
+>> #define SDCA_CONTROL_MSB_BITS        GENMASK(5, 3)
+>> #define SDCA_CONTROL_MSB_MASK        GENMASK(17, 15)
+>> #define SDCA_CONTROL_LSB_MASK        GENMASK(2, 0)
+>>
+>> foo |= u32_encode_bits(control, SDCA_CONTROL_LSB_MASK);
+>> control = FIELD_GET(SDCA_CONTROL_MSB_BITS, control);
+>> foo |= u32_encode_bits(control, SDCA_CONTROL_MSB_MASK);
+>>
+>> with the original proposal:
+>>
+>> foo |= FIELD_GET(GENMASK(2, 0), control))	
+>> foo |= FIELD_PREP(GENMASK(17, 15), FIELD_GET(GENMASK(5, 3), control))	
+>>
+>> it gets worse when the LSB positions don't match, you need another variable
+>> and an additional mask.
+>>
+>> I don't see how this improves readability? I get that hard-coding magic
+>> numbers is a bad thing in general, but in this case there are limited
+>> benefits to the use of additional defines.
+> 
+> I think it would be prudent to define the masks and use them rather than
+> magic values. Also it makes it future proof
 
-Use the existing PR_GET/SET_SPECULATION_CTRL API to expose the L1D
-flush capability. For L1D flushing PR_SPEC_FORCE_DISABLE and
-PR_SPEC_DISABLE_NOEXEC are not supported.
+I don't see your point at all. The values cannot be modified, a 
+different macro would be needed for a standard change.
 
-There is also no seccomp integration for the feature.
-
-Signed-off-by: Balbir Singh <sblbir@amazon.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20200729001103.6450-5-sblbir@amazon.com
-
----
- arch/x86/kernel/cpu/bugs.c | 54 +++++++++++++++++++++++++++++++++++++-
- arch/x86/mm/tlb.c          | 25 ++++++++++++++++-
- include/uapi/linux/prctl.h |  1 +-
- 3 files changed, 79 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d3f0db4..3923e48 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -296,6 +296,13 @@ enum taa_mitigations {
- 	TAA_MITIGATION_TSX_DISABLED,
- };
- 
-+enum l1d_flush_out_mitigations {
-+	L1D_FLUSH_OUT_OFF,
-+	L1D_FLUSH_OUT_ON,
-+};
-+
-+static enum l1d_flush_out_mitigations l1d_flush_out_mitigation __ro_after_init = L1D_FLUSH_OUT_ON;
-+
- /* Default mitigation for TAA-affected CPUs */
- static enum taa_mitigations taa_mitigation __ro_after_init = TAA_MITIGATION_VERW;
- static bool taa_nosmt __ro_after_init;
-@@ -379,6 +386,18 @@ out:
- 	pr_info("%s\n", taa_strings[taa_mitigation]);
- }
- 
-+static int __init l1d_flush_out_parse_cmdline(char *str)
-+{
-+	if (!boot_cpu_has_bug(X86_BUG_L1TF))
-+		return 0;
-+
-+	if (!strcmp(str, "off"))
-+		l1d_flush_out_mitigation = L1D_FLUSH_OUT_OFF;
-+
-+	return 0;
-+}
-+early_param("l1d_flush_out", l1d_flush_out_parse_cmdline);
-+
- static int __init tsx_async_abort_parse_cmdline(char *str)
- {
- 	if (!boot_cpu_has_bug(X86_BUG_TAA))
-@@ -1215,6 +1234,23 @@ static void task_update_spec_tif(struct task_struct *tsk)
- 		speculation_ctrl_update_current();
- }
- 
-+static int l1d_flush_out_prctl_set(struct task_struct *task, unsigned long ctrl)
-+{
-+
-+	if (l1d_flush_out_mitigation == L1D_FLUSH_OUT_OFF)
-+		return -EPERM;
-+
-+	switch (ctrl) {
-+	case PR_SPEC_ENABLE:
-+		return enable_l1d_flush_for_task(task);
-+	case PR_SPEC_DISABLE:
-+		return disable_l1d_flush_for_task(task);
-+	default:
-+		return -ERANGE;
-+	}
-+	return 0;
-+}
-+
- static int ssb_prctl_set(struct task_struct *task, unsigned long ctrl)
- {
- 	if (ssb_mode != SPEC_STORE_BYPASS_PRCTL &&
-@@ -1306,6 +1342,8 @@ int arch_prctl_spec_ctrl_set(struct task_struct *task, unsigned long which,
- 		return ssb_prctl_set(task, ctrl);
- 	case PR_SPEC_INDIRECT_BRANCH:
- 		return ib_prctl_set(task, ctrl);
-+	case PR_SPEC_L1D_FLUSH_OUT:
-+		return l1d_flush_out_prctl_set(task, ctrl);
- 	default:
- 		return -ENODEV;
- 	}
-@@ -1322,6 +1360,20 @@ void arch_seccomp_spec_mitigate(struct task_struct *task)
- }
- #endif
- 
-+static int l1d_flush_out_prctl_get(struct task_struct *task)
-+{
-+	int ret;
-+
-+	if (l1d_flush_out_mitigation == L1D_FLUSH_OUT_OFF)
-+		return PR_SPEC_FORCE_DISABLE;
-+
-+	ret = test_ti_thread_flag(&task->thread_info, TIF_SPEC_L1D_FLUSH);
-+	if (ret)
-+		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
-+	else
-+		return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
-+}
-+
- static int ssb_prctl_get(struct task_struct *task)
- {
- 	switch (ssb_mode) {
-@@ -1375,6 +1427,8 @@ int arch_prctl_spec_ctrl_get(struct task_struct *task, unsigned long which)
- 		return ssb_prctl_get(task);
- 	case PR_SPEC_INDIRECT_BRANCH:
- 		return ib_prctl_get(task);
-+	case PR_SPEC_L1D_FLUSH_OUT:
-+		return l1d_flush_out_prctl_get(task);
- 	default:
- 		return -ENODEV;
- 	}
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 6369a54..6b0f4c8 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -316,8 +316,31 @@ EXPORT_SYMBOL_GPL(leave_mm);
- 
- int enable_l1d_flush_for_task(struct task_struct *tsk)
- {
-+	int cpu, ret = 0, i;
-+
-+	/*
-+	 * Do not enable L1D_FLUSH_OUT if
-+	 * b. The CPU is not affected by the L1TF bug
-+	 * c. The CPU does not have L1D FLUSH feature support
-+	 * c. The task's affinity is on cores with SMT on.
-+	 */
-+
-+	if (!boot_cpu_has_bug(X86_BUG_L1TF) ||
-+			!static_cpu_has(X86_FEATURE_FLUSH_L1D))
-+		return -EINVAL;
-+
-+	cpu = get_cpu();
-+
-+	for_each_cpu(i, &tsk->cpus_mask) {
-+		if (cpu_data(i).smt_active == true) {
-+			put_cpu();
-+			return -EINVAL;
-+		}
-+	}
-+
- 	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
--	return 0;
-+	put_cpu();
-+	return ret;
- }
- 
- int disable_l1d_flush_for_task(struct task_struct *tsk)
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 07b4f81..1e86486 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -213,6 +213,7 @@ struct prctl_mm_map {
- /* Speculation control variants */
- # define PR_SPEC_STORE_BYPASS		0
- # define PR_SPEC_INDIRECT_BRANCH	1
-+# define PR_SPEC_L1D_FLUSH_OUT		2
- /* Return and control values for PR_SET/GET_SPECULATION_CTRL */
- # define PR_SPEC_NOT_AFFECTED		0
- # define PR_SPEC_PRCTL			(1UL << 0)
+Anyways, I am not going to argue further, I'll use your code example as 
+is and move on.
