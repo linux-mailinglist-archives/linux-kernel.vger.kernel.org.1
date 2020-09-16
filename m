@@ -2,257 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCE826C651
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E7B26C68E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbgIPRpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:45:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727336AbgIPRkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:40:42 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A02D6206E6;
-        Wed, 16 Sep 2020 12:29:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600259387;
-        bh=mAhcdMnqXGa3OUhEa0SjPZLOVorOJ1GvtFTOatg1nS8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tr2bRmrDKeAhAzYJ35RkeXqyHCY3nIrUgdVYS5IZ8HjGu1yHhXyzr6ufRvmUAxmsv
-         W8tzbp/COwbKNso/t3qhxSp9HV8Gk78jdikfXbwW7j6nhM05QniwpjmDr8pjzU63QM
-         jSAKd4WLJ+PfL5gUQ4r9f2HRzbIFraBaDr/ayvWg=
-Date:   Wed, 16 Sep 2020 14:30:20 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "puranjay12@gmail.com" <puranjay12@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "vailbhavgupta40@gmail.com" <vailbhavgupta40@gmail.com>
-Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
- driving parameter
-Message-ID: <20200916123020.GA2796266@kroah.com>
-References: <4a677365e7a64699b16ae0b25eca1041@realtek.com>
- <20200915152811.GA1383952@bjorn-Precision-5520>
+        id S1727678AbgIPRyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727637AbgIPRxQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:53:16 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E63C0A8887
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:40:50 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id k18so2848525wmj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SHWTqsRrpvdPx0tBOPELgE5HkWuQTwHGc/3aI5QE1HY=;
+        b=QehNvtX2SryaVlrh3oRpLKvQXaA321J8J2rWE9nBVHLPUgI50PzqYEAcIABF380PtC
+         9NDRWzgncEP4mNNOlban8PDvDL3FswoMuuayj43rhl2+HUxXOjVL4XW+VclSGMdA2Og8
+         GE1XRR+LNnVc2sBlNMBhTJ+mGrWaZtP+tSLTYIP3RQRjsEmctstJK2cuxjdbE6gjknON
+         q/PrKStFzGteU3RCiUUzijYZu4vWgo2JYbOm/2xX9M5Y6ptZZzPkdW7aN380hBPAbV/n
+         5nqrdkvrNbRtueRtfWsbTNFvSh6Qx9L7B7C5Q5gMhhctF8cYq9ZRRPQMNzZD6znaGJK8
+         xjEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SHWTqsRrpvdPx0tBOPELgE5HkWuQTwHGc/3aI5QE1HY=;
+        b=Xwey8svbXHAhuDMcZ7ufoqWh2XA2L+vcBOfNAVp22AZqGYx/JiuX6ErCLSqFk7+d9W
+         /imOj6jQhOfa+Vln1b3GEwueVsSWYvqrIHjRKTldNA18mpMmK/BO/aYMBya7fQPIlXrJ
+         gWgwR9NvO3uLO8oxRiGd4e4nA8N3TbXyYHnCC0g25GghMjNmH5et7imLpab9Q/Fa8JiM
+         6rG92EbvwaTRXnONZ8FD7T/UZoe+cvh9C5QX1Bzm/R6cD7w5tLwGAKN8RF/s6w//nrQ3
+         1wmJgWmu0WlDpnGbuiYVl4xpn905LuIZIu4McK/hXf8kicSA4k5BvqZ90Q5ZwMxS3kBv
+         IpEw==
+X-Gm-Message-State: AOAM533ZZfF3ZfNwjLnBn90s+uYvx3e2vM4bXIIP685LSyzxcVC1yxVc
+        J8eFRjtGHu6s+gY+avX+JfwpOQ==
+X-Google-Smtp-Source: ABdhPJwA4P8SpiiyN27RMOw1Mmmvb2s4C9MzoRrI8V/f6GP5+OmiwBGeC9tuLCDkSa/+obWc5Z4Rmg==
+X-Received: by 2002:a1c:f415:: with SMTP id z21mr4520772wma.88.1600260047425;
+        Wed, 16 Sep 2020 05:40:47 -0700 (PDT)
+Received: from google.com ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
+        by smtp.gmail.com with ESMTPSA id 10sm5250595wmi.37.2020.09.16.05.40.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 05:40:46 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 13:40:45 +0100
+From:   David Brazdil <dbrazdil@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 00/10] Independent per-CPU data section for nVHE
+Message-ID: <20200916124045.stlrdh5lvedpzab4@google.com>
+References: <20200903091712.46456-1-dbrazdil@google.com>
+ <20200914174008.GA25238@willie-the-truck>
+ <20200916115404.rhv4dkyjz35e4x25@google.com>
+ <20200916122412.elxfxbdygvmdgrj5@google.com>
+ <20200916123913.GA28056@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200915152811.GA1383952@bjorn-Precision-5520>
+In-Reply-To: <20200916123913.GA28056@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:28:11AM -0500, Bjorn Helgaas wrote:
-> On Tue, Sep 15, 2020 at 08:24:50AM +0000, 吳昊澄 Ricky wrote:
-> > > -----Original Message-----
-> > > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
-> > > Sent: Friday, September 11, 2020 10:56 PM
-> > > To: 吳昊澄 Ricky
-> > > Cc: arnd@arndb.de; gregkh@linuxfoundation.org; bhelgaas@google.com;
-> > > ulf.hansson@linaro.org; rui_feng@realsil.com.cn; linux-kernel@vger.kernel.org;
-> > > puranjay12@gmail.com; linux-pci@vger.kernel.org;
-> > > vailbhavgupta40@gamail.com
-> > > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix driving
-> > > parameter
-> > > 
-> > > On Fri, Sep 11, 2020 at 08:18:22AM +0000, 吳昊澄 Ricky wrote:
-> > > > > -----Original Message-----
-> > > > > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
-> > > > > Sent: Thursday, September 10, 2020 1:44 AM
-> > > > > To: 吳昊澄 Ricky
-> > > > > Cc: arnd@arndb.de; gregkh@linuxfoundation.org; bhelgaas@google.com;
-> > > > > ulf.hansson@linaro.org; rui_feng@realsil.com.cn;
-> > > linux-kernel@vger.kernel.org;
-> > > > > puranjay12@gmail.com; linux-pci@vger.kernel.org;
-> > > > > vailbhavgupta40@gamail.com
-> > > > > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
-> > > driving
-> > > > > parameter
-> > > > >
-> > > > > On Wed, Sep 09, 2020 at 07:10:19AM +0000, 吳昊澄 Ricky wrote:
-> > > > > > > -----Original Message-----
-> > > > > > > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
-> > > > > > > Sent: Wednesday, September 09, 2020 6:29 AM
-> > > > > > > To: 吳昊澄 Ricky
-> > > > > > > Cc: arnd@arndb.de; gregkh@linuxfoundation.org;
-> > > bhelgaas@google.com;
-> > > > > > > ulf.hansson@linaro.org; rui_feng@realsil.com.cn;
-> > > > > linux-kernel@vger.kernel.org;
-> > > > > > > puranjay12@gmail.com; linux-pci@vger.kernel.org;
-> > > > > > > vailbhavgupta40@gamail.com
-> > > > > > > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
-> > > > > driving
-> > > > > > > parameter
-> > > > > > >
-> > > > > > > On Mon, Sep 07, 2020 at 06:07:31PM +0800, ricky_wu@realtek.com
-> > > wrote:
-> > > > > > > > From: Ricky Wu <ricky_wu@realtek.com>
-> > > > > > > >
-> > > > > > > > v4:
-> > > > > > > > split power down flow and power saving function to two patch
-> > > > > > > >
-> > > > > > > > v5:
-> > > > > > > > fix up modified change under the --- line
-> > > > > > >
-> > > > > > > Hehe, this came out *above* the "---" line :)
-> > > > > > >
-> > > > > > > > Add rts522a L1 sub-state support
-> > > > > > > > Save more power on rts5227 rts5249 rts525a rts5260
-> > > > > > > > Fix rts5260 driving parameter
-> > > > > > > >
-> > > > > > > > Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> > > > > > > > ---
-> > > > > > > >  drivers/misc/cardreader/rts5227.c  | 112 +++++++++++++++++++++-
-> > > > > > > >  drivers/misc/cardreader/rts5249.c  | 145
-> > > > > > > ++++++++++++++++++++++++++++-
-> > > > > > > >  drivers/misc/cardreader/rts5260.c  |  28 +++---
-> > > > > > > >  drivers/misc/cardreader/rtsx_pcr.h |  17 ++++
-> > > > > > > >  4 files changed, 283 insertions(+), 19 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/misc/cardreader/rts5227.c
-> > > > > > > b/drivers/misc/cardreader/rts5227.c
-> > > > > > > > index 747391e3fb5d..8859011672cb 100644
-> > > > > > > > --- a/drivers/misc/cardreader/rts5227.c
-> > > > > > > > +++ b/drivers/misc/cardreader/rts5227.c
-> > > > > > > > @@ -72,15 +72,80 @@ static void
-> > > rts5227_fetch_vendor_settings(struct
-> > > > > > > rtsx_pcr *pcr)
-> > > > > > > >
-> > > > > > > >  	pci_read_config_dword(pdev, PCR_SETTING_REG2, &reg);
-> > > > > > > >  	pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", PCR_SETTING_REG2, reg);
-> > > > > > > > +	if (rtsx_check_mmc_support(reg))
-> > > > > > > > +		pcr->extra_caps |= EXTRA_CAPS_NO_MMC;
-> > > > > > > >  	pcr->sd30_drive_sel_3v3 = rtsx_reg_to_sd30_drive_sel_3v3(reg);
-> > > > > > > >  	if (rtsx_reg_check_reverse_socket(reg))
-> > > > > > > >  		pcr->flags |= PCR_REVERSE_SOCKET;
-> > > > > > > >  }
-> > > > > > > >
-> > > > > > > > +static void rts5227_init_from_cfg(struct rtsx_pcr *pcr)
-> > > > > > > > +{
-> > > > > > > > +	struct pci_dev *pdev = pcr->pci;
-> > > > > > > > +	int l1ss;
-> > > > > > > > +	u32 lval;
-> > > > > > > > +	struct rtsx_cr_option *option = &pcr->option;
-> > > > > > > > +
-> > > > > > > > +	l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
-> > > > > > > > +	if (!l1ss)
-> > > > > > > > +		return;
-> > > > > > > > +
-> > > > > > > > +	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, &lval);
-> > > > > > >
-> > > > > > > This looks a little problematic.  PCI_L1SS_CTL1 is an architected
-> > > > > > > register in the ASPM L1 PM Substates capability, and its value may
-> > > > > > > change at runtime because drivers/pci/pcie/aspm.c manages it.
-> > > > > > >
-> > > > > > > It looks like the code below does device-specific configuration based
-> > > > > > > on the current PCI_L1SS_CTL1 value.  But what happens if aspm.c
-> > > > > > > changes PCI_L1SS_CTL1 later?
-> > > > > >
-> > > > > > We are going to make sure and set the best configuration on the
-> > > > > > current time, if host change the capability later, it doesn't affect
-> > > > > > function, only affect a little power saving
-> > > > >
-> > > > > Why don't you unconditionally do the following?
-> > > > >
-> > > > >   rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
-> > > > >   rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
-> > > > >   rtsx_set_dev_flag(pcr, PM_L1_1_EN);
-> > > > >   rtsx_set_dev_flag(pcr, PM_L1_2_EN);
-> > > >
-> > > > Our power saving function have 2 different flow L1 and L1substate,
-> > > > so we need to check it for which flow we are going to
-> > > > Detail to see below reply
-> > > >
-> > > > > Let's assume the generic code in aspm.c has cleared all these bits:
-> > > > >
-> > > > >   PCI_L1SS_CTL1_ASPM_L1_1
-> > > > >   PCI_L1SS_CTL1_ASPM_L1_2
-> > > > >   PCI_L1SS_CTL1_PCIPM_L1_1
-> > > > >   PCI_L1SS_CTL1_PCIPM_L1_2
-> > > > >
-> > > > > in the L1 PM Substates capability.
-> > > > >
-> > > > > I think you are saying that if you *also* clear ASPM_L1_1_EN,
-> > > > > ASPM_L1_2_EN, PM_L1_1_EN, and PM_L1_2_EN in your device-specific
-> > > > > registers, it uses less power than if you set those device-specific
-> > > > > bits.  Right?
-> > > > >
-> > > > > And moreover, I think you're saying that if aspm.c subsequently *sets*
-> > > > > some of those bits in the L1 PM Substates capability, those substates
-> > > > > *work* even though the device-specific ASPM_L1_1_EN, ASPM_L1_2_EN,
-> > > > > PM_L1_1_EN, and PM_L1_2_EN bits are not set.  Right?
-> > > > >
-> > > > > I do not feel good about this as a general strategy.  I think we
-> > > > > should program the device so the behavior is completely predictable,
-> > > > > regardless of the generic enable bits happened to be set at
-> > > > > probe-time.
-> > > > >
-> > > > > The current approach means that if we enable L1 substates after the
-> > > > > driver probe, the device is configured differently than if we enabled
-> > > > > L1 substates before probe.  That's not a reliable way to operate it.
-> > > >
-> > > > Talk about our power saving function
-> > > > a) basic L1 power saving
-> > > > b) advance L1 power saving
-> > > > c) advance L1 substate power saving
-> > > 
-> > > I have no idea what the difference between "basic L1 power saving" and
-> > > "advance L1 power saving" is, so I assume those are device-specific
-> > > things.  If not, please use the same terminology as the PCIe spec.
-> > > 
-> > > > at initial, we check pci port support L1 subs or not, if not we are
-> > > > going to b) otherwise going to c).
-> > > 
-> > > You're not checking whether the port *supports* L1 substates.  You
-> > > would look at PCI_L1SS_CAP to learn that.  You're looking at
-> > > PCI_L1SS_CTL1, which tells you whether L1 substates are *enabled*.
-> > > 
-> > > > Assume aspm.c change bit of L1 PM Substates capability after our
-> > > > driver probe, we are going to a)
-> > > >
-> > > > So far we did not see any platform change L1 PM Substates capability
-> > > > after our driver probe.
-> > > 
-> > > You should expect that aspm.c will change bits in the L1 PM *control*
-> > > register (PCI_L1SS_CTL1) after probe.
-> > > 
-> > > You might not actually see it change, depending on how you tested, but
-> > > you cannot rely on PCI_L1SS_CTL1 being constant.  It may change based
-> > > on power/performance tradeoffs, e.g., whether the system is plugged
-> > > into AC power, whether it's idle, etc.
-> > > 
-> > 
-> > Our ASPM function is a HW solution follow the PCIe SPEC. don’t worry
-> > about crash the system If HOST change our device config space
-> > setting at run time our HW will do the corresponding things which
-> > follows the SPEC.  At initial time we set these parameter just good
-> > for more power saving
+> >  SECTIONS {
+> >         HYP_SECTION(.text)
+> > -       HYP_SECTION(.data..percpu)
+> > -       HYP_SECTION(.data..percpu..first)
+> > -       HYP_SECTION(.data..percpu..page_aligned)
+> > -       HYP_SECTION(.data..percpu..read_mostly)
+> > -       HYP_SECTION(.data..percpu..shared_aligned)
+> > +
+> > +       .hyp..data..percpu : {
 > 
-> OK.  It would be better if your hardware would notice the
-> PCI_L1SS_CTL1 change and set its own device-specific power-saving
-> parameters.  The drivers would be simpler, and the device behavior
-> would be more consistent.
+> Too many '.'s here?
+Oops
+
 > 
-> Drivers *writing* to standard PCI config things (64-byte config header
-> or Capabilities like PCIe, PM, ASPM, L1 Substates) is a definite
-> problem because the PCI core owns those and writes from drivers need
-> to be mediated somehow.  AFAICT your drivers don't write to these
-> things.
+> > +               __per_cpu_load = .;
 > 
-> Drivers *reading* these things (as your drivers do) shouldn't cause
-> problems, but it does violate the interface abstractions that the PCI
-> core should provide.
+> I don't think we need this symbol.
+True
 
-So is it ok to take this patch now, or does it need to be changed any?
+> 
+> Otherwise, idea looks good to me. Can you respin like this, but also
+> incorporating some of the cleanup in the diff I posted, please?
 
-thanks,
+On it! :)
 
-greg k-h
+David
