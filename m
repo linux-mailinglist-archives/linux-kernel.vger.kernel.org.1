@@ -2,164 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4506026CD44
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2412B26CCAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbgIPU5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:57:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29568 "EHLO
+        id S1728554AbgIPUsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:48:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53414 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726328AbgIPQwh (ORCPT
+        by vger.kernel.org with ESMTP id S1726683AbgIPRBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:52:37 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GFmeJI113957;
-        Wed, 16 Sep 2020 12:00:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=oR2/YwL1liHbE41SOzBmZTcOtgNASTFaWbA+0ZtZrX8=;
- b=ZC3DBNecdsCrKlYL0jMJVJI+qkE9QrjhaE9TkmnM+IAPH1OuyFde0M8I4sKTVT8KASK7
- cSynfxx8wogcj1UBc2xpQVGJB/tEqdV5SYr37Ct9j7f5vYwVVq5OM9UaDBd1vFP9Vde9
- cGGEckclxtrx+qbHHfYhkl6a47ONLsTzhtLg7SWhJ/y0Ky7Dpx/FsclcvXoh1tW2dIij
- i1BZm6hBylaNTc8MeHqemhC1ctGBGq2sLI8a/W2FRJK/7BRcsyS161CssbI4UXLiWW4I
- pFhTRXSNEPKJSvGyz43Xglv9zud72DosstaPj3NcbAe3HZt/kVxCQLNxB9BXx2MSisvR TA== 
+        Wed, 16 Sep 2020 13:01:14 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GG69EG186647;
+        Wed, 16 Sep 2020 12:10:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qM8GgVvqfUwPcqj9nGCvGWGoNwi0Zbhd1BMN07olGOI=;
+ b=MLK+e4h+ske7As7axhaUEHzD6nLaC4NYjBipp/vm0ToomPivLa+dl4DkrySLOD8COPck
+ n+BljFAhNQz5xluWMeD/pVzojhuS54eXt1NgoXg4H1yZxeX5o8CisVih4ITVTb78zT9N
+ mjIFONFIH1Yva0wv6QmPt+hU+WBH9pcI4jBeZUzKt0529Tu3Dl8JKqumi56vIPKT3b/r
+ 53ztkNrbvyDttHgVYmZjWIz0C8M1OyumWfE5b7Mgwmv2x1O/9c4RmefoPeopK3yrd4zt
+ wPzZcfj2fvLh/Hh8Jtf660bcYwQR8hfNiT0+ESGlvjV8okn/7wrs1WRsZWo1KgZAfi6C 3A== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33knp3ga9d-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33knps8mvs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 12:00:18 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08GFnZb4120125;
-        Wed, 16 Sep 2020 12:00:18 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33knp3ga7d-1
+        Wed, 16 Sep 2020 12:10:02 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08GG2aqZ168844;
+        Wed, 16 Sep 2020 12:10:02 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33knps8mum-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 12:00:18 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08GFwsMY012798;
-        Wed, 16 Sep 2020 16:00:16 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 33k6esgt3q-1
+        Wed, 16 Sep 2020 12:10:02 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08GFvL0Z026945;
+        Wed, 16 Sep 2020 16:09:59 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 33k9ge8nsm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 16:00:15 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08GG0DYF9372018
+        Wed, 16 Sep 2020 16:09:59 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08GG9uI018415886
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 16:00:13 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6EA56A4066;
-        Wed, 16 Sep 2020 16:00:13 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93DA4A4062;
-        Wed, 16 Sep 2020 16:00:11 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.98.9])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Sep 2020 16:00:11 +0000 (GMT)
-Message-ID: <8cee070eed5b8a3dc9f373fc9db8d99a70b7d75a.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] ima: Fix NULL pointer dereference in ima_file_hash
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Florent Revest <revest@chromium.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Jann Horn <jannh@google.com>
-Date:   Wed, 16 Sep 2020 12:00:10 -0400
-In-Reply-To: <20200916124931.1254990-1-kpsingh@chromium.org>
-References: <20200916124931.1254990-1-kpsingh@chromium.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 16 Sep 2020 16:09:57 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D878411C050;
+        Wed, 16 Sep 2020 16:09:56 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52AD811C04A;
+        Wed, 16 Sep 2020 16:09:55 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.183.110])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Sep 2020 16:09:55 +0000 (GMT)
+Subject: Re: [PATCH v3 1/3] mm: replace memmap_context by meminit_context
+To:     akpm@linux-foundation.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oscar Salvador <osalvador@suse.de>, mhocko@suse.com,
+        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200915121541.GD4649@dhcp22.suse.cz>
+ <20200915132624.9723-1-ldufour@linux.ibm.com>
+ <20200916063325.GK142621@kroah.com>
+ <0b3f2eb1-0efa-a491-c509-d16a7e18d8e8@linux.ibm.com>
+ <20200916074047.GA189144@kroah.com>
+ <9e8d38b9-3875-0fd8-5f28-3502f33c2c34@linux.ibm.com>
+ <95005625-b159-0d49-8334-3c6cdbb7f27a@redhat.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <f522bcb8-575e-0ac7-69cb-1064e8b38c58@linux.ibm.com>
+Date:   Wed, 16 Sep 2020 18:09:55 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <95005625-b159-0d49-8334-3c6cdbb7f27a@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-16_10:2020-09-16,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 adultscore=0 malwarescore=0 impostorscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 spamscore=0 priorityscore=1501 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009160113
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=688
+ priorityscore=1501 bulkscore=0 suspectscore=0 spamscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160114
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-16 at 14:49 +0200, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
+Le 16/09/2020 à 09:52, David Hildenbrand a écrit :
+> On 16.09.20 09:47, Laurent Dufour wrote:
+>> Le 16/09/2020 à 09:40, Greg Kroah-Hartman a écrit :
+>>> On Wed, Sep 16, 2020 at 09:29:22AM +0200, Laurent Dufour wrote:
+>>>> Le 16/09/2020 à 08:33, Greg Kroah-Hartman a écrit :
+>>>>> On Tue, Sep 15, 2020 at 03:26:24PM +0200, Laurent Dufour wrote:
+>>>>>> The memmap_context enum is used to detect whether a memory operation is due
+>>>>>> to a hot-add operation or happening at boot time.
+>>>>>>
+>>>>>> Make it general to the hotplug operation and rename it as meminit_context.
+>>>>>>
+>>>>>> There is no functional change introduced by this patch
+>>>>>>
+>>>>>> Suggested-by: David Hildenbrand <david@redhat.com>
+>>>>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>>>>>> ---
+>>>>>>     arch/ia64/mm/init.c    |  6 +++---
+>>>>>>     include/linux/mm.h     |  2 +-
+>>>>>>     include/linux/mmzone.h | 11 ++++++++---
+>>>>>>     mm/memory_hotplug.c    |  2 +-
+>>>>>>     mm/page_alloc.c        | 10 +++++-----
+>>>>>>     5 files changed, 18 insertions(+), 13 deletions(-)
+>>>>>
+>>>>> <formletter>
+>>>>>
+>>>>> This is not the correct way to submit patches for inclusion in the
+>>>>> stable kernel tree.  Please read:
+>>>>>        https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+>>>>> for how to do this properly.
+>>>>>
+>>>>> </formletter>
+>>>>
+>>>> Hi Greg,
+>>>>
+>>>> I'm sorry, I read that document few days ago before sending the series and
+>>>> again this morning, but I can't figure out what I missed (following option
+>>>> 1).
+>>>>
+>>>> Should the "Cc: stable@vger.kernel.org" tag be on each patch of the series
+>>>> even if the whole series has been sent to stable ?
+>>>
+>>> That should be on any patch you expect to show up in a stable kernel
+>>> release.
+>>>
+>>>> Should the whole series sent again (v4) instead of sending a fix as a reply to ?
+>>>
+>>> It's up to the maintainer what they want, but as it is, this patch is
+>>> not going to end up in stable kernel release (which it looks like is the
+>>> right thing to do...)
+>>
+>> Thanks a lot Greg.
+>>
+>> I'll send that single patch again with the Cc: stable tag.
 > 
-> ima_file_hash can be called when there is no iint->ima_hash available
-> even though the inode exists in the integrity cache.
-> 
-> An example where this can happen (suggested by Jann Horn):
-> 
-> Process A does:
-> 
-> 	while(1) {
-> 		unlink("/tmp/imafoo");
-> 		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
-> 		if (fd == -1) {
-> 			perror("open");
-> 			continue;
-> 		}
-> 		write(fd, "A", 1);
-> 		close(fd);
-> 	}
-> 
-> and Process B does:
-> 
-> 	while (1) {
-> 		int fd = open("/tmp/imafoo", O_RDONLY);
-> 		if (fd == -1)
-> 			continue;
->     		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
-> 			 	     MAP_PRIVATE, fd, 0);
-> 		if (mapping != MAP_FAILED)
-> 			munmap(mapping, 0x1000);
-> 		close(fd);
->   	}
-> 
-> Due to the race to get the iint->mutex between ima_file_hash and
-> process_measurement iint->ima_hash could still be NULL.
-> 
-> Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Reviewed-by: Florent Revest <revest@chromium.org>
-> ---
->  security/integrity/ima/ima_main.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 8a91711ca79b..4c86cd4eece0 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
->  		return -EOPNOTSUPP;
->  
->  	mutex_lock(&iint->mutex);
-> +
-> +	/*
-> +	 * ima_file_hash can be called when ima_collect_measurement has still
-> +	 * not been called, we might not always have a hash.
-> +	 */
-> +	if (!iint->ima_hash) {
-> +		mutex_unlock(&iint->mutex);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
+> I think Andrew can add that when sending upstream.
 
-Not having a file hash is rather common (e.g. mknodat, prior to the
-file being closed).  Before appraising the integrity of a file, it
-checks whether it is a new file (eg. IMA_NEW_FILE), but, unfortunately,
-the flag is only set for those files in the appraise policy.
+Andrew, can you do that?
 
-The patch looks fine, but you might want to reflect not having a file
-hash is common in the patch description.
-
-Mimi
-
->  	if (buf) {
->  		size_t copied_size;
->  
-
+> While a single patch to fix + backport would be nicer, I don't see an
+> easy (!ugly) way to achieve the same without this cleanup.
+> 
+> 1. We could rework patch #2 to pass a simple boolean flag, and a
+> follow-on patch to pass the context. Not sure if that's any better.
+> 
+> 2. We could rework patch #2 to pass memmap_context first, and modify
+> patch #1 to also rename this instance.
+> 
+> Maybe 2. might be reasonable (not sure if worth the trouble). @Greg any
+> preference?
+> 
+>>
+>> I don't think the patch 3 need to be backported, it doesn't fix any issue and
+>> with the patch 1 and 2 applied, the BUG_ON should no more be triggered easily.
+> 
+> Agreed.
+> 
+> 
 
