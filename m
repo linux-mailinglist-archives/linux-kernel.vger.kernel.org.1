@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940F626CB6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158DD26CA94
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgIPRYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:24:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:34380 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726982AbgIPRWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:22:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1341C142F;
-        Wed, 16 Sep 2020 04:07:06 -0700 (PDT)
-Received: from red-moon.arm.com (unknown [10.57.6.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B0053F68F;
-        Wed, 16 Sep 2020 04:07:03 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        George Cherian <george.cherian@marvell.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 0/3] Fix pci_iounmap() on !CONFIG_GENERIC_IOMAP
-Date:   Wed, 16 Sep 2020 12:06:55 +0100
-Message-Id: <cover.1600254147.git.lorenzo.pieralisi@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
-References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
+        id S1728287AbgIPUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727043AbgIPReN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:34:13 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A5BC0698D6;
+        Wed, 16 Sep 2020 04:44:51 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c3e000ee699b54c433a91.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:ee6:99b5:4c43:3a91])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A31221EC0136;
+        Wed, 16 Sep 2020 13:44:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600256689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=NPzVMHj3XVHq963E2HNb7nFJ33J0AKwoKhJxk7Xuz2M=;
+        b=WZdSnuQv5G/ql6BEEZrnr7cd8xh9dzmCiijvQyUtmizQf9eVTzkuUIskLZn0iq2DMUyGCm
+        +mqh9VCWUzdcpJFi63w4IbKWRk8a8coABoamUsG1V1jGhCdKQUFypgux0aj1VUXZ5v55l5
+        RqLB5j9QElE/Tg0L2iTha0kc+nsM6b4=
+Date:   Wed, 16 Sep 2020 13:44:48 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Borislav Petkov <bp@suse.de>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 03/24] x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
+Message-ID: <20200916114448.GI2643@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-4-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200915112842.897265-4-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v2 of a previous posting.
+On Tue, Sep 15, 2020 at 02:28:21PM +0300, Jarkko Sakkinen wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> 
+> Include SGX bit to the PF error codes and throw SIGSEGV with PF_SGX when
+> a #PF with SGX set happens.
+> 
+> CPU throws a #PF with the SGX set in the event of Enclave Page Cache Map
+> (EPCM) conflict. The EPCM is a CPU-internal table, which describes the
+> properties for a enclave page. Enclaves are measured and signed software
+> entities, which SGX hosts. [1]
+> 
+> Although the primary purpose of the EPCM conflict checks  is to prevent
+> malicious accesses to an enclave, an illegit access can happen also for
+> legit reasons.
+> 
+> All SGX reserved memory, including EPCM is encrypted with a transient key
+> that does not survive from the power transition. Throwing a SIGSEGV allows
+> user space software to react when this happens (e.g. recreate the enclave,
+> which was invalidated).
+> 
+> [1] Intel SDM: 36.5.1 Enclave Page Cache Map (EPCM)
+> 
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+> Reviewed-by: Borislav Petkov <bp@suse.de>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  arch/x86/include/asm/traps.h | 14 ++++++++------
 
-v1->v2:
-	- Added additional patch to remove sparc32 useless __KERNEL__
-	  guard
+The SEV-ES patchset moved that to arch/x86/include/asm/trap_pf.h but
+fixing that up is real easy. Simply do this search-replace
 
-v1: https://lore.kernel.org/lkml/20200915093203.16934-1-lorenzo.pieralisi@arm.com
+s!arch/x86/include/asm/traps.h!arch/x86/include/asm/trap_pf.h!
 
-Original cover letter
----
-
-Fix the empty pci_iounmap() implementation that is causing memory leaks on
-!CONFIG_GENERIC_IOMAP configs relying on asm-generic/io.h.
-
-A small tweak is required on sparc32 to pull in some declarations,
-hopefully nothing problematic, subject to changes as requested.
-
-Previous tentatives:
-https://lore.kernel.org/lkml/20200905024811.74701-1-yangyingliang@huawei.com
-https://lore.kernel.org/lkml/20200824132046.3114383-1-george.cherian@marvell.com
-
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: George Cherian <george.cherian@marvell.com>
-Cc: Yang Yingliang <yangyingliang@huawei.com>
-
-Lorenzo Pieralisi (3):
-  sparc32: Remove useless io_32.h __KERNEL__ preprocessor guard
-  sparc32: Move ioremap/iounmap declaration before asm-generic/io.h
-    include
-  asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP pci_iounmap()
-    implementation
-
- arch/sparc/include/asm/io_32.h | 17 ++++++---------
- include/asm-generic/io.h       | 39 +++++++++++++++++++++++-----------
- 2 files changed, 34 insertions(+), 22 deletions(-)
+on this patch.
 
 -- 
-2.26.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
