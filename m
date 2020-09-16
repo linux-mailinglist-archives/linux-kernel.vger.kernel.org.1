@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E94226C6D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CF926C75D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727764AbgIPSCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:02:30 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:41719 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727752AbgIPSCL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:02:11 -0400
-Received: from marcel-macbook.fritz.box (p4ff9f430.dip0.t-ipconnect.de [79.249.244.48])
-        by mail.holtmann.org (Postfix) with ESMTPSA id B0D7ECED03;
-        Wed, 16 Sep 2020 16:29:44 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] Bluetooth: pause/resume advertising around suspend
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200915141229.1.Icfac86f8dfa0813bba6c7604c420d11c3820b4ab@changeid>
-Date:   Wed, 16 Sep 2020 16:22:47 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <21AC2E8F-BEC6-431D-89BB-8F2E3EDFBBC1@holtmann.org>
-References: <20200915141229.1.Icfac86f8dfa0813bba6c7604c420d11c3820b4ab@changeid>
-To:     Daniel Winkler <danielwinkler@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1727859AbgIPSZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:25:43 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42754 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727843AbgIPSYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:24:54 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 3CE77694E5F374E610F5;
+        Wed, 16 Sep 2020 22:25:46 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 22:25:38 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <hao.wu@intel.com>, <trix@redhat.com>, <mdf@kernel.org>,
+        <yilun.xu@intel.com>
+CC:     <linux-fpga@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] fpga: dfl: Make m10_n3000_info static
+Date:   Wed, 16 Sep 2020 22:25:36 +0800
+Message-ID: <20200916142536.28748-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Fix sparse warning:
 
-> Currently, the controller will continue advertising when the system
-> enters suspend. This patch makes sure that all advertising instances are
-> paused when entering suspend, and resumed when suspend exits.
-> 
-> The Advertising and Suspend/Resume test suites were both run on this
-> change on 4.19 kernel with both hardware offloaded multi-advertising and
-> software rotated multi-advertising. In addition, a new test was added
-> that performs the following steps:
-> * Register 3 advertisements via bluez RegisterAdvertisement
-> * Verify reception of all advertisements by remote peer
-> * Enter suspend on DUT
-> * Verify failure to receive all advertisements by remote peer
-> * Exit suspend on DUT
-> * Verify reception of all advertisements by remote peer
-> 
-> Signed-off-by: Daniel Winkler <danielwinkler@google.com>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> ---
-> 
-> net/bluetooth/hci_request.c | 67 +++++++++++++++++++++++++++++++------
-> 1 file changed, 57 insertions(+), 10 deletions(-)
+drivers/fpga/dfl-n3000-nios.c:392:23: warning:
+ symbol 'm10_n3000_info' was not declared. Should it be static?
 
-Patch has been applied to bluetooth-next tree.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/fpga/dfl-n3000-nios.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards
-
-Marcel
+diff --git a/drivers/fpga/dfl-n3000-nios.c b/drivers/fpga/dfl-n3000-nios.c
+index 5088f8f0e0cd..686813b59d33 100644
+--- a/drivers/fpga/dfl-n3000-nios.c
++++ b/drivers/fpga/dfl-n3000-nios.c
+@@ -389,7 +389,7 @@ static int n3000_nios_init_done_check(struct n3000_nios *ns)
+ 	return ret;
+ }
+ 
+-struct spi_board_info m10_n3000_info = {
++static struct spi_board_info m10_n3000_info = {
+ 	.modalias = "m10-n3000",
+ 	.max_speed_hz = 12500000,
+ 	.bus_num = 0,
+-- 
+2.17.1
 
