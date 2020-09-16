@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A814226C705
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F11F26C712
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgIPSPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:15:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727788AbgIPSOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:14:32 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1937221582;
-        Wed, 16 Sep 2020 18:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600280071;
-        bh=e6tjX3AZSUdyzKyerPV7zrM6nT1CqJ4Mtu7Z0dRX+JY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mnsqJITC7J5lkVg2jQuYfXtBMqzGq4e/pMKLAvBiHUykik/CKs69vGRbN7yQroOMt
-         MRNfRXyBV2PAPI+aglnSV/0XoSCpRCaEGJsUbwaXrY7o/IzCsSrbQZ0AcedAutp6Yp
-         oDp5n6465k9m6oYzwkqxgtipLH5CnAiXN1VSkXls=
-Date:   Wed, 16 Sep 2020 19:14:29 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: adc: ad9467: refine mismatch vs unknown chip-id
- messages
-Message-ID: <20200916191429.38fdc488@archlinux>
-In-Reply-To: <20200916083128.73729-1-alexandru.ardelean@analog.com>
-References: <20200916083128.73729-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726767AbgIPSQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727864AbgIPSQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:16:23 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5BEC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:16:23 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id u3so1939890pjr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UiFIrPp4DQBnGtCxEmkSHjKyh1WtbAV+s1rsFBSqEIw=;
+        b=RracI24PIbtqBZhGuaJPp3NPwyCDdn8AOd8rWRUPflnPHVdvry0MfFf+SKCCAu0xx2
+         YAyqDtA/SxT67abUlFtL1i/GKuW1jLkErjQMQnuxtj72vPwz9IVeY1Hgom5wvFRoPpr3
+         0wgMBHSnamI8JtH96vryAz1bVUm2LvoWFr+eI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UiFIrPp4DQBnGtCxEmkSHjKyh1WtbAV+s1rsFBSqEIw=;
+        b=DFOoU2MNbJprnP0tkPCapXh3on8QcqlA22qdvnWOFHg5jy54Qt3Xau5mYh/SsGHuDz
+         FbLXzCR+O0nEO+C7f77blNZ3EwqBDNAuEUlEuho/xkJ2+ZR7LS2mPg4lHyl7z/xEzkK8
+         JSzZnobeySd8JoGmQGzkx41+hRMeQiR22DFCbHBvouEF0lXEkVpem42sM583qolqFUXH
+         m2LRa8qWSCuZsdrQ83jbQ0r6Cl2S4Mc8Z5h+tdQqURTKlPNhtm4OIpEvdLVXDp+LEqoD
+         hqB1DpPik9Iq3pmWA7X1ge8RGXWP2EJiJuJOCuN6PeftdzSgQRU0dnhture+d6Acdctj
+         MN0A==
+X-Gm-Message-State: AOAM532fNjz2Hvr+gUvWTbthl4v2ToFccqWFQ6Jf3po69KyvVido727y
+        KPm3O8PGAOe+JkI+ZmbyfoN46g==
+X-Google-Smtp-Source: ABdhPJxDCMtCerajjQla9DC9/rtMsEm7NoHMyC9ADXn3GWrc7JbhH40Mtb54++bGZ9palI5JY5xuIw==
+X-Received: by 2002:a17:902:9697:b029:d1:e598:4001 with SMTP id n23-20020a1709029697b02900d1e5984001mr7574830plp.59.1600280182843;
+        Wed, 16 Sep 2020 11:16:22 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id e207sm19091618pfh.171.2020.09.16.11.16.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 11:16:22 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     cychiang@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Patrick Lai <plai@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: qcom: lpass-sc7180: Add MODULE_DEVICE_TABLE
+Date:   Wed, 16 Sep 2020 11:15:55 -0700
+Message-Id: <20200916111545.1.I4c3758817d94c433bafeac344a395e21ea6657e3@changeid>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 11:31:28 +0300
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+The lpass-sc7180 driver can be built as a module but is lacking a
+MODULE_DEVICE_TABLE.  This means it won't auto-load.  Fix this
+oversight.
 
-> We should probably print what the expected chip-ID is. We already have
-> that information available, based on the device specified via
-> device-tree.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-applied.
+Fixes: 24caf8d9eb10 ("ASoC: qcom: lpass-sc7180: Add platform driver for lpass audio")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-thanks,
+ sound/soc/qcom/lpass-sc7180.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Jonathan
-
-> ---
->  drivers/iio/adc/ad9467.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
-> index 8a6682b567be..f068256cfca9 100644
-> --- a/drivers/iio/adc/ad9467.c
-> +++ b/drivers/iio/adc/ad9467.c
-> @@ -390,7 +390,8 @@ static int ad9467_probe(struct spi_device *spi)
->  
->  	id = ad9467_spi_read(spi, AN877_ADC_REG_CHIP_ID);
->  	if (id != conv->chip_info->id) {
-> -		dev_err(&spi->dev, "Unrecognized CHIP_ID 0x%X\n", id);
-> +		dev_err(&spi->dev, "Mismatch CHIP_ID, got 0x%X, expected 0x%X\n",
-> +			id, conv->chip_info->id);
->  		return -ENODEV;
->  	}
->  
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index 167bf2cbc556..a8a3d8f8f567 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -200,6 +200,7 @@ static const struct of_device_id sc7180_lpass_cpu_device_id[] = {
+ 	{.compatible = "qcom,sc7180-lpass-cpu", .data = &sc7180_data},
+ 	{}
+ };
++MODULE_DEVICE_TABLE(of, sc7180_lpass_cpu_device_id);
+ 
+ static struct platform_driver sc7180_lpass_cpu_platform_driver = {
+ 	.driver = {
+-- 
+2.28.0.618.gf4bc123cb7-goog
 
