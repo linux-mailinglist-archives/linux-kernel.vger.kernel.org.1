@@ -2,97 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC5126CBEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCC526CBC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgIPUg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:36:58 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21154 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726793AbgIPRKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:10:21 -0400
-IronPort-SDR: L9i3YG3xSoZc/0ZTN1Lu/XgFkpizjcUbzLq06j2flQRUS5MqVo8AWWHEQG6kSVp+3y/9+xwy3Q
- dnB3l2hHmMZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="147137498"
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="147137498"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 05:26:43 -0700
-IronPort-SDR: p7/YuHpQIogTkInWLhal8vzrvsLtpNi254IL9RX3AA6hWTXoyG5ZN/rgH0eN/0RtWo9F/B+uOQ
- ipuMsEyloMzg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="451832627"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga004.jf.intel.com with ESMTP; 16 Sep 2020 05:26:41 -0700
-Subject: Re: [PATCH] xhci: workaround for S3 issue on AMD SNPS 3.0 xHC
-To:     Nehal Bakulchandra Shah <Nehal-bakulchandra.Shah@amd.com>,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sandeep.Singh@amd.com,
-        yuanmei@lenovo.com
-References: <20200831065246.1166470-1-Nehal-bakulchandra.Shah@amd.com>
-From:   Mathias Nyman <mathias.nyman@intel.com>
-Message-ID: <897a7917-5ea6-025b-c516-482188759e0a@intel.com>
-Date:   Wed, 16 Sep 2020 15:30:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728293AbgIPUen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:34:43 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12798 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728388AbgIPUeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 16:34:22 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id DC9C6BD5A73D45D7311C;
+        Wed, 16 Sep 2020 20:32:22 +0800 (CST)
+Received: from [10.174.177.167] (10.174.177.167) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 16 Sep 2020 20:32:21 +0800
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+To:     <peterz@infradead.org>, Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+CC:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        "Christoph Lameter" <cl@linux.com>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+Date:   Wed, 16 Sep 2020 20:32:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200831065246.1166470-1-Nehal-bakulchandra.Shah@amd.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.167]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.8.2020 9.52, Nehal Bakulchandra Shah wrote:
-> From: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+Hi,
+
+On 2020/9/16 0:03, peterz@infradead.org wrote:
+> On Tue, Sep 15, 2020 at 05:51:50PM +0200, peterz@infradead.org wrote:
 > 
-> On some platform of AMD, S3 fails with HCE and SRE errors.To fix this,
-> sparse controller enable bit has to be disabled.
+>> Anyway, I'll rewrite the Changelog and stuff it in locking/urgent.
 > 
-> Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+> How's this?
+> 
+Thanks for that.
+
 > ---
->  drivers/usb/host/xhci-pci.c | 12 ++++++++++++
->  drivers/usb/host/xhci.h     |  1 +
->  2 files changed, 13 insertions(+)
+> Subject: locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
+> From: Hou Tao <houtao1@huawei.com>
+> Date: Tue, 15 Sep 2020 22:07:50 +0800
 > 
-> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-> index 3feaafebfe58..865a16e6c1ed 100644
-> --- a/drivers/usb/host/xhci-pci.c
-> +++ b/drivers/usb/host/xhci-pci.c
-> @@ -160,6 +160,9 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
->  	    (pdev->device == 0x15e0 || pdev->device == 0x15e1))
->  		xhci->quirks |= XHCI_SNPS_BROKEN_SUSPEND;
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> The __this_cpu*() accessors are (in general) IRQ-unsafe which, given
+> that percpu-rwsem is a blocking primitive, should be just fine.
+> 
+> However, file_end_write() is used from IRQ context and will cause
+> load-store issues.
+> 
+> Fixing it by using the IRQ-safe this_cpu_*() for operations on
+> read_count. This will generate more expensive code on a number of
+> platforms, which might cause a performance regression for some of the
+> other percpu-rwsem users.
+> 
+> If any such is reported, we can consider alternative solutions.
+> 
+I have simply test the performance impact on both x86 and aarch64.
+
+There is no degradation under x86 (2 sockets, 18 core per sockets, 2 threads per core)
+
+v5.8.9
+no writer, reader cn                               | 18        | 36        | 72
+the rate of down_read/up_read per second           | 231423957 | 230737381 | 109943028
+the rate of down_read/up_read per second (patched) | 232864799 | 233555210 | 109768011
+
+However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
+
+v4.19.111
+no writer, reader cn                               | 24        | 48        | 72        | 96
+the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
+the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
+
+I will test the aarch64 host by using v5.8 tomorrow.
+
+Regards,
+Tao
+
+
+> Fixes: 70fe2f48152e ("aio: fix freeze protection of aio writes")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Link: https://lkml.kernel.org/r/20200915140750.137881-1-houtao1@huawei.com
+> ---
+>  include/linux/percpu-rwsem.h  |    8 ++++----
+>  kernel/locking/percpu-rwsem.c |    4 ++--
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> --- a/include/linux/percpu-rwsem.h
+> +++ b/include/linux/percpu-rwsem.h
+> @@ -60,7 +60,7 @@ static inline void percpu_down_read(stru
+>  	 * anything we did within this RCU-sched read-size critical section.
+>  	 */
+>  	if (likely(rcu_sync_is_idle(&sem->rss)))
+> -		__this_cpu_inc(*sem->read_count);
+> +		this_cpu_inc(*sem->read_count);
+>  	else
+>  		__percpu_down_read(sem, false); /* Unconditional memory barrier */
+>  	/*
+> @@ -79,7 +79,7 @@ static inline bool percpu_down_read_tryl
+>  	 * Same as in percpu_down_read().
+>  	 */
+>  	if (likely(rcu_sync_is_idle(&sem->rss)))
+> -		__this_cpu_inc(*sem->read_count);
+> +		this_cpu_inc(*sem->read_count);
+>  	else
+>  		ret = __percpu_down_read(sem, true); /* Unconditional memory barrier */
+>  	preempt_enable();
+> @@ -103,7 +103,7 @@ static inline void percpu_up_read(struct
+>  	 * Same as in percpu_down_read().
+>  	 */
+>  	if (likely(rcu_sync_is_idle(&sem->rss))) {
+> -		__this_cpu_dec(*sem->read_count);
+> +		this_cpu_dec(*sem->read_count);
+>  	} else {
+>  		/*
+>  		 * slowpath; reader will only ever wake a single blocked
+> @@ -115,7 +115,7 @@ static inline void percpu_up_read(struct
+>  		 * aggregate zero, as that is the only time it matters) they
+>  		 * will also see our critical section.
+>  		 */
+> -		__this_cpu_dec(*sem->read_count);
+> +		this_cpu_dec(*sem->read_count);
+>  		rcuwait_wake_up(&sem->writer);
+>  	}
+>  	preempt_enable();
+> --- a/kernel/locking/percpu-rwsem.c
+> +++ b/kernel/locking/percpu-rwsem.c
+> @@ -45,7 +45,7 @@ EXPORT_SYMBOL_GPL(percpu_free_rwsem);
 >  
-> +	if (pdev->vendor == PCI_VENDOR_ID_AMD && pdev->device == 0x15e5)
-> +		xhci->quirks |= XHCI_DISABLE_SPARSE;
-> +
->  	if (pdev->vendor == PCI_VENDOR_ID_AMD)
->  		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
+>  static bool __percpu_down_read_trylock(struct percpu_rw_semaphore *sem)
+>  {
+> -	__this_cpu_inc(*sem->read_count);
+> +	this_cpu_inc(*sem->read_count);
 >  
-> @@ -371,6 +374,15 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
->  	/* USB 2.0 roothub is stored in the PCI device now. */
->  	hcd = dev_get_drvdata(&dev->dev);
->  	xhci = hcd_to_xhci(hcd);
-> +
-> +	if (xhci->quirks & XHCI_DISABLE_SPARSE) {
-> +		u32 reg;
-> +
-> +		reg = readl(hcd->regs + 0xC12C);
-> +		reg &=  ~BIT(17);
-> +		writel(reg, hcd->regs + 0xC12C);
-> +	}
-> +
-
-Is disabling the bit once in probe enough?
-xHC will be reset after hibernation as well, does this bit need to be cleared after that?
-
-Also consider turning this into a separate function with a proper description,
-see xhci_pme_quirk() for example. Avoids cluttering probe.
-Actually if this bit only needs to be cleared once then that function could be called from xhci_pci_setup()
-
--Mathias
+>  	/*
+>  	 * Due to having preemption disabled the decrement happens on
+> @@ -71,7 +71,7 @@ static bool __percpu_down_read_trylock(s
+>  	if (likely(!atomic_read_acquire(&sem->block)))
+>  		return true;
+>  
+> -	__this_cpu_dec(*sem->read_count);
+> +	this_cpu_dec(*sem->read_count);
+>  
+>  	/* Prod writer to re-evaluate readers_active_check() */
+>  	rcuwait_wake_up(&sem->writer);
+> .
+> 
