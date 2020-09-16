@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD60F26BEDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F02F26BEB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgIPIMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:12:45 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:57746 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726068AbgIPIMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:12:43 -0400
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 08G6TSk4066452
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 14:29:28 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 08G6SMmp064082
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 14:28:22 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 16 Sep 2020 14:28:24 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <minyard@acm.org>, <arnd@arndb.de>, <gregkh@linuxfoundation.org>
-CC:     <openipmi-developer@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] ipmi: add retry in try_get_dev_id()
-Date:   Wed, 16 Sep 2020 14:21:29 +0800
-Message-ID: <20200916062129.26129-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726408AbgIPIA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIPIAy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:00:54 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16874C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:00:54 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id k13so2763362plk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OAIQjzWxp9lAMNudVUiJQwy4JFFQa3XuwC39/v/9ilU=;
+        b=CueE9/CSb4QP1dKfBaRNwqrA16o7U/cXAxdHPmccV3UJUoyF9f7zeQ3rxfqFl7wPeD
+         A1jCXFey4aqxAOalIdx24SIsAWcnQ2ONZKewrR3IxBgCvI2pyh2CBugPZKmZBqf/GPz7
+         0wwmbVf05BuC8tVWo3OQGYz4dRJuwQZpbEqyCgcoH7hEp0KqHGrJ3syiTF18PSogC7Vo
+         cvU4dDaEKby5xJN5B6+Jqg5J8DYr2JjREb/rN+PoyyxIdiNIePw+tbEaohKQyhda2ALg
+         0pujr/jaGD0gC6KeY9bhz83orWg4FU6FTOOOLGFksBZHIO/bTKxU9IOwoqSl0F3y5SH0
+         /1ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OAIQjzWxp9lAMNudVUiJQwy4JFFQa3XuwC39/v/9ilU=;
+        b=hzfCKD0lXqjggksHgPYrLJus02jEMo98SjRdkWQsUDFZoDffAvwT/D0H4Zw6o+Rd9d
+         u2B1YbFtemO2gmfmtDHxNdj5rkl9tXpCmIDnRrNHsBn3b+i/0v4E6WZVCDdaQVS/3vy3
+         pk/a7z9ey5AzYuHyxSWR+09AKqhc8rcx6EYiFIVxMZxpa6Zk1OXrcJhB9n4nSqATIMtm
+         Vj1PG1XZRbAM+TjePAAp0yhhoXKDo8GJtfTtO+8mWd5oU+1rQMgRqQwDvO1IMkQ52iq/
+         AUsov530fq5iazY2iNWmecWnpsfXPXtrKzKNoJoBTptPau5kVoltF7Dzy/uvnFxOatY+
+         YzbQ==
+X-Gm-Message-State: AOAM531iZcTBHOCSYa+sMpA/hM0bzcM1q4oPWZyqYTAxyu5uCeiXKQbS
+        3WhqfOJ8C2GY1VRv22kv394=
+X-Google-Smtp-Source: ABdhPJx3W4zHxBIa46OFWsH/1o0ZQBUSOqEwTK6Ap/U6tJwvwKdKXzviL6wxPLZCKnwhNot7kKZb6A==
+X-Received: by 2002:a17:902:d909:b029:d0:cbe1:e716 with SMTP id c9-20020a170902d909b02900d0cbe1e716mr22691608plz.36.1600243253402;
+        Wed, 16 Sep 2020 01:00:53 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id n127sm15484233pfn.155.2020.09.16.01.00.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 01:00:52 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 17:00:51 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2] perf kvm: add kvm-stat for arm64
+Message-ID: <20200916080051.GF604@jagdpanzerIV.localdomain>
+References: <20200915091140.152775-1-sergey.senozhatsky@gmail.com>
+ <20200915103644.GA32758@leoy-ThinkPad-X240s>
+ <20200915105702.GA604@jagdpanzerIV.localdomain>
+ <20200915111541.GB604@jagdpanzerIV.localdomain>
+ <20200915132109.GB32758@leoy-ThinkPad-X240s>
+ <20200916004404.GE604@jagdpanzerIV.localdomain>
+ <20200916075154.GA13660@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 08G6SMmp064082
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916075154.GA13660@leoy-ThinkPad-X240s>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use retry machanism to give device more opportunitys to correctly response
-kernel when we received specific completion codes.
+On (20/09/16 15:51), Leo Yan wrote:
+> On Wed, Sep 16, 2020 at 09:44:04AM +0900, Sergey Senozhatsky wrote:
+> > On (20/09/15 21:21), Leo Yan wrote:
+> > > 
+> > > Sorry if I miss anything for this.
+> > > 
+> > 
+> > No, you are absolutely right! I should have looked more attentively.
+> > 
+> > Is "IL" good enough for a decoded reason
+> > 
+> >  	{ARM_EXCEPTION_IRQ,		"IRQ"		},	\
+> >  	{ARM_EXCEPTION_EL1_SERROR,	"SERROR"	},	\
+> >  	{ARM_EXCEPTION_TRAP,		"TRAP"		},	\
+> > +	{ARM_EXCEPTION_IL,		"IL"		}, \
+> >  	{ARM_EXCEPTION_HYP_GONE,	"HYP_GONE"	}
+> > 
+> > or should there be "ILLEGAL", or maybe something even better?
+> > ILLEGAL_EXC, etc.
+> 
+> I personally think "ILLEGAL" is neat and clear :)
 
-This is similar to what we done in __get_device_id().
+OK.
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- drivers/char/ipmi/ipmi_msghandler.c |  2 --
- drivers/char/ipmi/ipmi_si_intf.c    | 17 +++++++++++++++++
- include/uapi/linux/ipmi.h           |  2 ++
- 3 files changed, 19 insertions(+), 2 deletions(-)
+By the way, arch/arm64/kernel/traps.c has esr_class_str[] with
+decoded exception names. Maybe I can reuse some.
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index b9685093e..75cb7e062 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -62,8 +62,6 @@ enum ipmi_panic_event_op {
- #define IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_NONE
- #endif
- 
--#define GET_DEVICE_ID_MAX_RETRY	5
--
- static enum ipmi_panic_event_op ipmi_send_panic_event = IPMI_PANIC_DEFAULT;
- 
- static int panic_op_write_handler(const char *val,
-diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-index 77b8d551a..beeb705f1 100644
---- a/drivers/char/ipmi/ipmi_si_intf.c
-+++ b/drivers/char/ipmi/ipmi_si_intf.c
-@@ -1316,6 +1316,7 @@ static int try_get_dev_id(struct smi_info *smi_info)
- 	unsigned char         *resp;
- 	unsigned long         resp_len;
- 	int                   rv = 0;
-+	unsigned int          retry_count = 0;
- 
- 	resp = kmalloc(IPMI_MAX_MSG_LENGTH, GFP_KERNEL);
- 	if (!resp)
-@@ -1327,6 +1328,8 @@ static int try_get_dev_id(struct smi_info *smi_info)
- 	 */
- 	msg[0] = IPMI_NETFN_APP_REQUEST << 2;
- 	msg[1] = IPMI_GET_DEVICE_ID_CMD;
-+
-+retry:
- 	smi_info->handlers->start_transaction(smi_info->si_sm, msg, 2);
- 
- 	rv = wait_for_msg_done(smi_info);
-@@ -1339,6 +1342,20 @@ static int try_get_dev_id(struct smi_info *smi_info)
- 	/* Check and record info from the get device id, in case we need it. */
- 	rv = ipmi_demangle_device_id(resp[0] >> 2, resp[1],
- 			resp + 2, resp_len - 2, &smi_info->device_id);
-+	if (rv) {
-+		/* record completion code */
-+		char cc = *(resp + 2);
-+
-+		if ((cc == IPMI_DEVICE_IN_FW_UPDATE_ERR
-+		    || cc == IPMI_DEVICE_IN_INIT_ERR
-+		    || cc == IPMI_NOT_IN_MY_STATE_ERR)
-+		    && ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
-+			dev_warn(smi_info->io.dev,
-+				"retry to get device id as completion code 0x%x\n",
-+				 cc);
-+			goto retry;
-+		}
-+	}
- 
- out:
- 	kfree(resp);
-diff --git a/include/uapi/linux/ipmi.h b/include/uapi/linux/ipmi.h
-index 32d148309..bc57f07e3 100644
---- a/include/uapi/linux/ipmi.h
-+++ b/include/uapi/linux/ipmi.h
-@@ -426,4 +426,6 @@ struct ipmi_timing_parms {
- #define IPMICTL_GET_MAINTENANCE_MODE_CMD	_IOR(IPMI_IOC_MAGIC, 30, int)
- #define IPMICTL_SET_MAINTENANCE_MODE_CMD	_IOW(IPMI_IOC_MAGIC, 31, int)
- 
-+#define GET_DEVICE_ID_MAX_RETRY		5
-+
- #endif /* _UAPI__LINUX_IPMI_H */
--- 
-2.17.1
-
+	-ss
