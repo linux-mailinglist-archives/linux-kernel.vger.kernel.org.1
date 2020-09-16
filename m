@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826F226C789
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB3326C6C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbgIPS3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
+        id S1727785AbgIPSDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728001AbgIPS2w (ORCPT
+        with ESMTP id S1727778AbgIPSCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:28:52 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9B4C0A8895;
-        Wed, 16 Sep 2020 05:54:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3fsuI9w5GdoIgxeD1xv5qa75sHOHCTimKxD8QqBKKvM=; b=jlXXu49/jB89TDAuiJwrD8HRAS
-        SHqt4hS3yNU6uPG9WnxXbo1RnlYY+wGBcvWMQ+XvDifTL8dN472JqW6xcTzUcnohkmbcE9EINw1Ov
-        Bg2kT+yGHOg6OYKgEQMwWL+H/JezTCFvZmrnycvcyBtJcQ8IZ/t72tN8cTYFoKbhLvmYHZtGv4yLq
-        DqJNdcmUHWBzshsvkiEgRQWzNr84Q+Iqx2ENzvimsHDuRbYz6X0qa5Da8l6mDWHdp6cNHo0h8IkLe
-        PEqqaKlvKomk7GUQygg9XTNPDm+F9WoABVU00pS3fgEzjCQ8cN9Uohn+oRvUkr/ikmgfCODioV0Ca
-        d7MTghBg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIWwn-0002Cn-1a; Wed, 16 Sep 2020 12:54:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 85BC13011FE;
-        Wed, 16 Sep 2020 14:54:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CD1522B9285CC; Wed, 16 Sep 2020 14:54:02 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 14:54:02 +0200
-From:   peterz@infradead.org
-To:     Qian Cai <cai@redhat.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 0/5] seqlock: Introduce PREEMPT_RT support
-Message-ID: <20200916125402.GR2674@hirez.programming.kicks-ass.net>
-References: <20200904153231.11994-1-a.darwish@linutronix.de>
- <224bd11b533dd2acff3f6cce51ab4ca676eb4f9f.camel@redhat.com>
- <20200915124817.GA127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200915143028.GB2674@hirez.programming.kicks-ass.net>
- <32bfdec1ad4e11cfecd840e1b83d95ba2bab1abc.camel@redhat.com>
+        Wed, 16 Sep 2020 14:02:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0021C014B22;
+        Wed, 16 Sep 2020 06:25:41 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 13:21:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600262520;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=37tQsIlHlxymyLmHuJB2eTPFlu9JP4zQdFpzOyYo/a8=;
+        b=I3D/3x35JTn8zDdTcFIj7l4ERf0/Yp5tBsMDsyycacottKhxxern1WXWzF293HQ+RLMJ20
+        c4gLO8ZA7ahxu3PDHlcl1D4x6vvWY0A+ROIkQQgRAzItHGV7RUE42xIsd9uLkcgXDW//AH
+        pXlmbfhk+0RPLZtsDL2oBF5pLaMtvHy/64Me3iLxgpSVrt9fqZYGDwG/KWqynSjM2vxKBn
+        Iifwy8WD392QuuHN+F30A8FZIFfoJqLVwtzva1QWLdxFrFaZ92luuVeLC90VonrLaJNsJB
+        ReqtTjpQ3h1AXsamjLdpCSs4+9f3e+GAyzyHI3zovioo336SfIFIZxsCQv5tuA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600262520;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=37tQsIlHlxymyLmHuJB2eTPFlu9JP4zQdFpzOyYo/a8=;
+        b=D1uRzI2IGQ7yd+/CylkXXmzYy9NKximKCz1Ya5Qvf9racmZYhqbVpchF9szgLL13t4/h6X
+        KPw0Mf3el/jjAoDw==
+From:   "tip-bot2 for Jiafei Pan" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] softirq: Add debug check to __raise_softirq_irqoff()
+Cc:     Jiafei Pan <Jiafei.Pan@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200814045522.45719-1-Jiafei.Pan@nxp.com>
+References: <20200814045522.45719-1-Jiafei.Pan@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32bfdec1ad4e11cfecd840e1b83d95ba2bab1abc.camel@redhat.com>
+Message-ID: <160026251907.15536.10650431255857233346.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:52:07AM -0400, Qian Cai wrote:
-> On Tue, 2020-09-15 at 16:30 +0200, peterz@infradead.org wrote:
-> > On Tue, Sep 15, 2020 at 08:48:17PM +0800, Boqun Feng wrote:
-> > > I think this happened because seqcount_##lockname##_init() is defined at
-> > > function rather than macro, so when the seqcount_init() gets expand in
-> > 
-> > Bah! I hate all this :/
-> > 
-> > I suspect the below, while more verbose than I'd like is the best
-> > option.
-> 
-> Stephen, can you add this patch for now until Peter beats you to it?
+The following commit has been merged into the irq/core branch of tip:
 
-Did you verify it works? I only wrote it..
+Commit-ID:     cdabce2e3dff7e4bcef73473987618569d178af3
+Gitweb:        https://git.kernel.org/tip/cdabce2e3dff7e4bcef73473987618569d178af3
+Author:        Jiafei Pan <Jiafei.Pan@nxp.com>
+AuthorDate:    Fri, 14 Aug 2020 12:55:22 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 16 Sep 2020 15:18:56 +02:00
+
+softirq: Add debug check to __raise_softirq_irqoff()
+
+__raise_softirq_irqoff() must be called with interrupts disabled to protect
+the per CPU softirq pending state update against an interrupt and soft
+interrupt handling on return from interrupt.
+
+Add a lockdep assertion to validate the calling convention.
+
+[ tglx: Massaged changelog ]
+
+Signed-off-by: Jiafei Pan <Jiafei.Pan@nxp.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20200814045522.45719-1-Jiafei.Pan@nxp.com
+
+---
+ kernel/softirq.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index bf88d7f..09229ad 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -481,6 +481,7 @@ void raise_softirq(unsigned int nr)
+ 
+ void __raise_softirq_irqoff(unsigned int nr)
+ {
++	lockdep_assert_irqs_disabled();
+ 	trace_softirq_raise(nr);
+ 	or_softirq_pending(1UL << nr);
+ }
