@@ -2,96 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C846C26BD68
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055C926BD6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726243AbgIPGmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgIPGmS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:42:18 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FF7C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:42:18 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id j3so3006533qvi.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:42:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=XhbFoRt7RLTn++aQK8Wkv7CgYgyz3yvURMx4NGMT3sk=;
-        b=NntKN76bELN/x0Lk2AGwESb0KC+WOEDgdTNTEkisRL9NwFbarbnNORLddmx63oxN+F
-         Vxa6XphwvrcrY9Mz7bddtpQrnnEkhzAAYpHrD0TgaWtG5eiUQoRtU+5y1JAHMXWHcoIv
-         MnyULK6TeWEEnRqgNCi1roF3LqFz6T2lxjwEMrJKoqmWf6UpP7S0HyOWnmY5e5O+AEbI
-         OczBIEfQsLk4XdpRDrBBPcRTG96dZyU/t8dck5IknpFNrf8bCLRHfS6XKPSj3YfkKOwT
-         kSwWbaK5ppi9jXW9lpF3/H7AhXUNyHbgfl960PoRMNuhrFbGQtbX3HDvfOjie6MbR8RE
-         BDcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=XhbFoRt7RLTn++aQK8Wkv7CgYgyz3yvURMx4NGMT3sk=;
-        b=cc8nmcAlyYiOoTQlx7aQnBORDeHPpcd2TiXlyVEKmmUKVjGiGzNopa2YnCb70UkYwH
-         xvr8UklpFiDJvtuZkar0+LnajLSpWLIfiC+jMcXKKAING7b9uEvttTHEPm2zFtBFX4Ip
-         6u4zRFAitShLJneNcWYktcwgpGBNITwygCe5FAAcbC0cLrlbouhER4Sv/MqzRS2NBM3t
-         IAqIWFKroSrD6Q/gcPZLdSgtJtiRhM8gIfkxSFpMrGCgl3MjBKKuGZtJlLgN3dHIR/3e
-         ScY0XB7L/kcRMln4K0Wa++y9o117nBDHEuNBnWKqJf66pKdZRUTj4dRvUCmx4aZxGhbN
-         Pu2g==
-X-Gm-Message-State: AOAM532f4RuaVU90FOUeB5qlcXgUUCk6RODnx66mFLrBac1urq3NYZsr
-        sCdZcN+XOEHg/zCiJgt7vND8nvaXPbLRgEHYomD/0DuVRANfeg==
-X-Google-Smtp-Source: ABdhPJwSHSRWeVSZ3VmvdckqoWENJo1rARcPnkehPZzTz93KkSDzguyDEVt04VpXVe/ApRn5fI+UzzGRa4odjqgXbng=
-X-Received: by 2002:a0c:a4c5:: with SMTP id x63mr5477660qvx.58.1600238536928;
- Tue, 15 Sep 2020 23:42:16 -0700 (PDT)
+        id S1726336AbgIPGnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:43:00 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30202 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726279AbgIPGm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:42:59 -0400
+IronPort-SDR: NBgssxAuhlGYZYgR1UR5iwSSJRlEPRJSlvWywd0g1Cam/sjWMBgiO52TUCVFC+gSGtkQmPfGQj
+ UEw3cVP9PLrw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="147163234"
+X-IronPort-AV: E=Sophos;i="5.76,431,1592895600"; 
+   d="scan'208";a="147163234"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 23:42:57 -0700
+IronPort-SDR: PpHmEUn8pkqBkhBNvyeaWiBzg3+Eeq/8Rtfdr0W/M6o7Wd+XSlWJ5mZzWZVcvUgy4QdWKO0kqi
+ JYFrmrhiKCSw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,431,1592895600"; 
+   d="scan'208";a="319734179"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
+  by orsmga002.jf.intel.com with ESMTP; 15 Sep 2020 23:42:55 -0700
+Subject: Re: [RFC PATCH V3 15/21] mmc: sdhci: UHS-II support, modify
+ set_power() to handle vdd2
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20200710111140.29725-1-benchuanggli@gmail.com>
+ <97c43596-a18f-4c7a-c226-5209772d91d1@intel.com>
+ <20200914054537.GA2738017@laputa>
+ <f0ff6c0a-4029-72a9-559c-8930ef0ea8bb@intel.com>
+ <20200915062443.GB2860208@laputa>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <0c11a3cb-fe7c-978d-7608-c98453899b5f@intel.com>
+Date:   Wed, 16 Sep 2020 09:42:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 16 Sep 2020 08:42:05 +0200
-Message-ID: <CACT4Y+bYGnyqBH4a29wR_02Skw3LW8GNGJNz94_WupK8fy6ObA@mail.gmail.com>
-Subject: Providing machine info for reported bugs
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     syzkaller <syzkaller@googlegroups.com>, kernelci@groups.io,
-        KVM list <kvm@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200915062443.GB2860208@laputa>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 15/09/20 9:24 am, AKASHI Takahiro wrote:
+> Adrain,
+> 
+> On Mon, Sep 14, 2020 at 09:36:02AM +0300, Adrian Hunter wrote:
+>> On 14/09/20 8:45 am, AKASHI Takahiro wrote:
+>>> Adrian,
+>>>
+>>> On Fri, Aug 21, 2020 at 05:11:18PM +0300, Adrian Hunter wrote:
+>>>> On 10/07/20 2:11 pm, Ben Chuang wrote:
+>>>>> From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+>>>>>
+>>>>> VDD2 is used for powering UHS-II interface.
+>>>>> Modify sdhci_set_power_and_bus_voltage(), sdhci_set_power_noreg()
+>>>>> and sdhci_set_power_noreg() to handle VDD2.
+>>>>
+>>>> vdd2 is always 1.8 V and I suspect there may never be support for anything
+>>>> else, so we should start with 1.8 V only.
+>>>
+>>> What do you mean here?
+>>> You don't want to add an extra argument, vdd2, to sdhci_set_power().
+>>> Correct?
+>>
+>> Yes
+>>
+>>>
+>>>> Also can we create uhs2_set_power_reg() and uhs2_set_power_noreg() and use
+>>>> the existing ->set_power() callback
+>>>
+>>> Again what do you expect here?
+>>>
+>>> Do you want to see any platform-specific mmc driver who supports UHS-II
+>>> to implement its own call back like:
+>>
+>> Not exactly.  I expect there to be a common implementation in sdhci-uhs2.c
+>> called sdhci_uhs2_set_power() for example, that drivers can use by setting
+>> their .set_power = sdhci_uhs2_set_power.  If they need platform-specific
+>> code as well then their platform-specific code can call
+>> sdhci_uhs2_set_power() if desired.
+>>
+>>>
+>>> void sdhci_foo_set_power(struct sdhci_host *host, unsigned char mode,
+>>>                                   unsigned short vdd)
+>>> {
+>>>         sdhci_set_power(host, mode,vdd);
+>>>
+>>>         /* in case that sdhci_uhs2 module is not inserted */
+>>>         if (!(mmc->caps & MMC_CAP_UHS2))
+>>>                 return;
+>>>
+>>>         /* vdd2 specific operation */
+>>>         if (IS_ERR_OR_NULL(host->mmc->supply.vmmc2))
+>>>                 sdhci_uhs2_set_power_noreg(host, mode);
+>>>         else
+>>>                 sdhci_uhs2_set_power_reg(host, mode);
+>>>
+>>>         /* maybe more platform-specific initialization */
+>>> }
+>>>
+>>> struct sdhci_ops sdhci_foo_ops = {
+>>>         .set_power = sdhci_foo_set_power,
+>>>         ...
+>>> }
+> 
+> What do you think about this logic in general?
+> (If necessary, read it replacing "foo" to "uhs2".)
+> 
+> What I'm concerned about is SDHCI_POWER_CONTROL register.
+> Vdd and vdd2 are controlled with corresponding bits in this register.
+> It seems to be "natural" to me that vdd and vdd2 are enabled
+> in a single function rather than putting them in separate ones.
+> 
+> In particular, in the case of sdhci_set_power_noreg(), there exist a couple
+> of "quirks" around writing the bits to SDHCI_POWER_CONTROL register.
 
-We've recently added a feature to collect some machine info on syzbot
-and provide it with crashes, in the case it is useful for
-debugging/understanding what happened.
+We can treat UHS-II support as being for new hardware and therefore
+we don't necessarily need to support old quirks.  Just make sure if
+a quirk is not being supported, to add a comment to that effect.
 
-Here are 2 example crashes, check out "VM info" column for crashes:
-https://syzkaller.appspot.com/bug?id=7f42f0f8b84628785150a192bafc24fca25e817d
-https://syzkaller.appspot.com/bug?id=7c451a21f5159f1993ed44bcbacd5018e4428219
+> I don't know how we should handle them if we have a separate function,
+> say, sdhci_uhs2_set_power_noreg().
+> Do you want to see a copy of the same logic in sdhci_uhs2_set_power_noreg()? 
 
-And here is a direct link with a sample of machine info:
-https://syzkaller.appspot.com/text?tag=MachineInfo&x=873d2426f38045aa
+I would probably consider making another function that non-UHS-II
+drivers do not need to care about e.g. existing drivers can keep using
+sdhci_set_power_noreg() and sdhci_uhs2 can call __sdhci_set_power_noreg()
 
-Currently it includes only /proc/cpuinfo and some info from /sys/module/kvm*
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 592a55a34b58..ffe54f06fe38 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -2013,8 +2013,8 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
+ 		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+ }
+ 
+-void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+-			   unsigned short vdd)
++void __sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
++			   unsigned short vdd, u8 vdd2)
+ {
+ 	u8 pwr = 0;
+ 
+@@ -2048,7 +2048,7 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+ 	if (host->pwr == pwr)
+ 		return;
+ 
+-	host->pwr = pwr;
++	host->pwr = pwr | vdd2;
+ 
+ 	if (pwr == 0) {
+ 		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+@@ -2085,6 +2085,13 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+ 			mdelay(10);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(__sdhci_set_power_noreg);
++
++void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
++			   unsigned short vdd)
++{
++	__sdhci_set_power_noreg(host, mode, vdd, 0);
++}
+ EXPORT_SYMBOL_GPL(sdhci_set_power_noreg);
+ 
+ void sdhci_set_power(struct sdhci_host *host, unsigned char mode,
 
-This was a long-standing user feature request, in particular for
-debugging KVM bugs (may be highly dependent on HW):
-https://github.com/google/syzkaller/issues/466
+> 
+> -Takahiro Akashi
+> 
+> 
+>>>
+>>> Is this what you mean?
+>>> (I'm not quite sure yet that sdhci_ush2_set_power_noreg() can be split off
+>>> from sdhci_set_power_noreg().)
+>>>
+>>> -Takahiro Akashi
 
-So please be aware of this new feature. Currently it's only shown on
-the dashboard, we decided to not pollute emails with it yet.
-
-What other info may be useful for debugging of bugs in your subsystem?
-We don't want to dump just every bit of info in all sysfs/debugfs/dev
-(can be gigs of text). But if there is some critical bit that you
-really need to know for debugging of bugs, we will try to include it.
-Basically: if you are receiving an external bug report, what info are
-you generally asking for?
-As far as I remember +Takashi asked for something in the past, like a
-list of sound devices present, but I don't remember exactly what it
-was.
-
-I've added kernelci@ because such a list may be useful for other
-testing systems as well. Is there a prior art on this? LKML is not
-read directly by lots of people, so if you know who may answer this
-question for a particular subsystem, please CC.
-
-Thank you
