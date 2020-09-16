@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D609826C90E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D679026C96C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgIPTC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727483AbgIPRsf (ORCPT
+        id S1728288AbgIPTJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:09:04 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:50747 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727289AbgIPRoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:35 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C14BC061221
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:02:04 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id y2so6459599lfy.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JA4PHlNQaMJ1D5IFW/tpkL4nmImFR/EKeGxTzWjK4EI=;
-        b=ODUZML88Dx0iFsSm8FrYDDW66yeAdO8HE2aG/UmGH0c1bKotJoVG+cm6HaJyIk7uwW
-         QkW/oHj28CFkcu3AhajMu3oiBxKfntVt39vel8tM4xp9aFPT3D2SXxXTct/f+QqVtuko
-         puOEDeIHtDZL5T6vyyIz6TRrpNAusDLKzI8vjfNLlQNmEM58OLSqX+EdsrY6n39Y+iz8
-         tl1curU5w3BCKu1xx0bzMdhfUcNstadkqswhgtS1Z3fgFSMZGs/px4HPeAj9Q/oOkpw6
-         JhVSGJeWp0+/b5k5IwzdPi9kH2ZnZ4iwaOnVa2tFcBCRI3NpNauXeEx/lRgC5BIMPyYT
-         MPvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JA4PHlNQaMJ1D5IFW/tpkL4nmImFR/EKeGxTzWjK4EI=;
-        b=RUhLyPGaUyJK4smyf5Frwuz7aeDukRQTCanqxXVIEM+dR0BxlabWZVsj4y+1BtAGo6
-         LM6I197OI6z5ik9YZF5as3JGv4dixOuOz2csgiqqAeJX/fBZ7eDnuTu0cvEGGFZGYFP9
-         doN97S5xocA+6RqeTH6zBOsTGrwRIM9jYW+ljRjsrhY4QFiC0avE1cF9ga8ivaFUM+V4
-         9dJ8zCOzFznUR6cN4KcCPqfSbrnbjpe20h3rNp3r02okA0aqhN1ssQDRYRxH1Hh+D/zA
-         sOsQEThU0KRiuk19cTGI0whImohhFKqbfSy0xWkB443hmlyMBeV7v2dddgR5wYyyDya4
-         u5Nw==
-X-Gm-Message-State: AOAM533sRyowFmtFBNjld3usyIgO548hauj0AVqj1DADomLPLZq/Z3KV
-        8T37modRzRefaA36vB6jNEs=
-X-Google-Smtp-Source: ABdhPJxFfk/ocTjF6hPh2Z4/NvFWvbfmyK1pNp8DIIQwJT2EmJCJq8sPR6c0kOzYbBsGffbVLrKdSA==
-X-Received: by 2002:a19:8386:: with SMTP id f128mr6932052lfd.78.1600254122843;
-        Wed, 16 Sep 2020 04:02:02 -0700 (PDT)
-Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
-        by smtp.gmail.com with ESMTPSA id 82sm4475792lfk.216.2020.09.16.04.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 04:02:02 -0700 (PDT)
-From:   mateusznosek0@gmail.com
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, akpm@linux-foundation.org
-Subject: [RFC PATCH] mm/page_alloc.c: clean code by merging two functions
-Date:   Wed, 16 Sep 2020 13:01:18 +0200
-Message-Id: <20200916110118.6537-1-mateusznosek0@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 16 Sep 2020 13:44:34 -0400
+Received: from mail-qv1-f48.google.com ([209.85.219.48]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MIdS1-1kEsiK2Mj7-00Eg3I; Wed, 16 Sep 2020 13:02:41 +0200
+Received: by mail-qv1-f48.google.com with SMTP id cy2so3295687qvb.0;
+        Wed, 16 Sep 2020 04:02:41 -0700 (PDT)
+X-Gm-Message-State: AOAM531Nw7irZ9H4kuVPXD2jf5EI5/Q14R2lvKDnmZ/xxfZ+XWL8Ec6L
+        cQDXehcl2Hy0zlUxhDe4Ze0rimrugrrPPGi0am0=
+X-Google-Smtp-Source: ABdhPJzuJrJvQsGtUiuL+16EpeBsTP/ldoobNcDcIEbx2eyk3x9px1nSg/L5LCAG0u9JFS+7UkZs1YcP/VO4yVMMwcA=
+X-Received: by 2002:ad4:4594:: with SMTP id x20mr23091171qvu.4.1600254160175;
+ Wed, 16 Sep 2020 04:02:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <3874de094d193a08624a00a35067a3237e0b42b1.1600249102.git.viresh.kumar@linaro.org>
+ <7f4a98d4dac9257d9577e48992cbfb62a968f127.1600249102.git.viresh.kumar@linaro.org>
+In-Reply-To: <7f4a98d4dac9257d9577e48992cbfb62a968f127.1600249102.git.viresh.kumar@linaro.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 16 Sep 2020 13:02:24 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1o5Ey9KVPW0Tk+bOCH_TC8PgbO=Oh3Lgm=kHEioUtgpw@mail.gmail.com>
+Message-ID: <CAK8P3a1o5Ey9KVPW0Tk+bOCH_TC8PgbO=Oh3Lgm=kHEioUtgpw@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] dt-bindings: mailbox: add doorbell support to ARM MHU
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:IBDXzLfe8wcS6Fxyzqi/6+81janeqXRabL6eFrjtAeBjocYUk0J
+ rsDPVXSk9tFgtV2m/zMBvZNpfhhIfHjAk/69yVNhVrccZvg25kF38DWxP/+h0V6nawBWN2r
+ kQb7To1K4HL85zLGSY6CsySlts6WW9vw74shU7/NArkFUVodhdujCTJedh7dNBjq4dNqNs0
+ AXHytEFWqkHM9u1/626NA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JQ3jHQkw4Fo=:8Bkhm7HxadNbhAniMIaUvO
+ nMau930v1WACDKbBAZwQnuS07IhONEpPdDtd4y26vh7/y1yCztUuHSCbBgqrmBZN/QJoUaSmu
+ VlX6HfvzGh3LI3+zEkV+P7m1UUidH4HfrFymf/yoCVX9AOVinLcdfjQz4uvWKq5bWVbdNzk2n
+ kMksALgYZLcOKDwYv7NLb8ahLoG5RNuAX85cbmZ6C8jYq3KRXuZmSl+Ov4YZw5ETZi4y5ZzQ9
+ Y/3RHpjIvVJjR/v/48RL8JG3KFeaZ3mQuVfiAIxPKgl2rNuJIqMLKyLuEPW4W4JXz/2M85KEB
+ ygRue99SbNw2M/nZSHef+Ulzpz+ovAdwI/ODFC2QwNnC8nRYtKnV2D09KnRqfZ3lztelUe9sh
+ M5+lfygftf7UUx90lFIKZSPl6ffIQjvufxPOPV6nVGnKKlFlgXh4ST7TBeZ84pYHBE0bWOEOL
+ vvUSfiUUZvlPvwGpiqcskOExveWrY59pA432o4ACAR0p+Bk/EMM30K2vWC46FEQMz3Yi8/MPD
+ XVFXZm3rglaQohYixadoqNS6ODzwfgckvdHSVN+8lsa758p+zxerk0BulldQ5ahobPB0Lb1pn
+ Ghtj+ubQA/Xu1842P1mDlfNPYVemZ9oja5QrQk8bIVDXmA/xvzgdtG1PZYTlpnevtYJwn/jIa
+ E7I1C9RqZnVjAGD4oAoYtm3/GMvi0+S9G1HF0eESVfTJuYIwDFjOEyEENp0xB4wRCqx1Zb8vJ
+ Trd00vhcnvsC94neMFgoYKfMnF5IhcH7Ehk/JWVEvbVtkxDadRtTtp8TuWq5yrCfAAqLI7q2k
+ FbIMw37yMyk0DVfaGXCrSf/6ZRay+8TE6FWH1H61rcrlx4EGWvmDKg6lk0mSB545bmuQf+S
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Nosek <mateusznosek0@gmail.com>
+On Wed, Sep 16, 2020 at 11:39 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> From: Sudeep Holla <sudeep.holla@arm.com>
+>
+> The ARM MHU's reference manual states following:
+>
+> "The MHU drives the signal using a 32-bit register, with all 32 bits
+> logically ORed together. The MHU provides a set of registers to enable
+> software to set, clear, and check the status of each of the bits of this
+> register independently.  The use of 32 bits for each interrupt line
+> enables software to provide more information about the source of the
+> interrupt. For example, each bit of the register can be associated with
+> a type of event that can contribute to raising the interrupt."
+>
+> This patch thus extends the MHU controller's DT binding to add support
+> for doorbell mode.
+>
+> Though the same MHU hardware controller is used in the two modes, A new
+> compatible string is added here to represent the combination of the MHU
+> hardware and the firmware sitting on the other side (which expects each
+> bit to represent a different signal now).
+>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> Co-developed-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-The 'finalise_ac' function is just 'epilogue' for 'prepare_alloc_pages'.
-Therefore there is no need to keep them both so 'finalise_ac' content can
-be merged into 'prepare_alloc_pages' code. It would make
-'__alloc_pages_nodemask' cleaner when it comes to readability.
-
-Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
----
- mm/page_alloc.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b9bd75cacf02..a094e297c88f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4824,12 +4824,6 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
- 
- 	*alloc_flags = current_alloc_flags(gfp_mask, *alloc_flags);
- 
--	return true;
--}
--
--/* Determine whether to spread dirty pages and what the first usable zone */
--static inline void finalise_ac(gfp_t gfp_mask, struct alloc_context *ac)
--{
- 	/* Dirty zone balancing only done in the fast path */
- 	ac->spread_dirty_pages = (gfp_mask & __GFP_WRITE);
- 
-@@ -4840,6 +4834,8 @@ static inline void finalise_ac(gfp_t gfp_mask, struct alloc_context *ac)
- 	 */
- 	ac->preferred_zoneref = first_zones_zonelist(ac->zonelist,
- 					ac->highest_zoneidx, ac->nodemask);
-+
-+	return true;
- }
- 
- /*
-@@ -4868,8 +4864,6 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
- 	if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
- 		return NULL;
- 
--	finalise_ac(gfp_mask, &ac);
--
- 	/*
- 	 * Forbid the first pass from falling back to types that fragment
- 	 * memory until all local zones are considered.
--- 
-2.20.1
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
