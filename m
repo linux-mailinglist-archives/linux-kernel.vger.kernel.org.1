@@ -2,180 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C61426BFDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1FB26BFF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgIPIwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:52:25 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:47225 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726425AbgIPIwQ (ORCPT
+        id S1726575AbgIPI6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726243AbgIPI6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:52:16 -0400
-Received: by mail-il1-f206.google.com with SMTP id s128so2291772ilc.14
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:52:15 -0700 (PDT)
+        Wed, 16 Sep 2020 04:58:42 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B7CC06174A;
+        Wed, 16 Sep 2020 01:58:41 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id z9so2130879wmk.1;
+        Wed, 16 Sep 2020 01:58:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2KTok6gVmhkLo7YM284bMYXzQlRqMVhC5bg8YBdyf6w=;
+        b=upLP4VVgaeRWkY+1e0SALXRsKRhXSqfUDb6gjc3DHWn4pE5QGrTX8Y+iTwM7Z+m/c6
+         sNdQMjxSGUCdcy649Fg7Cs5e51lHf4Xz5/GCyagvc9RN+2ZwZ8Z7KlljbNLZ92nBQldK
+         fXn+Owq11zO4udSkOm+ptRwazSpZlYlVRvHRwmb16jKhS1AvCUPiOFVM43cc5SVZ75gN
+         C9m1o/FDZTKT7hvRhtLCnbHQRmtxx+WxA83TYQNxGKmFE+vgkPqA7gor4NaogJ4MKWTx
+         cKaBcAeu7SWyME2OH+tSfqUk54v4SC45vRl+YPz2rwUCog5Wfv2Y8KbV2RCuyu5Ec9aw
+         LF4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=R8C+QzQBoXS9C6i/TEwgz/S51dgBQPXEcwPrSd0S8DU=;
-        b=jyEjzp2HLs3KwtNQwVei2GKDo4J/phXlKTTZd6KpAN7tLihsxMwmntpR/7HwOU7v3I
-         t7FTaoRgvPdiQvs9HmoDfMDyMCUzBGBG1TgZDlk34V9D4mJbFsAVeBRaAyiPVQEaQEse
-         hIqpwmcato2bYOQHvktqP4YTOsRVGQVilsMT/rVTixT9qcQord/fywohX6MBOi1kd5Te
-         JD8oPwpsTJX9J0wFzUiSRCAiQbsZrMeD+dDlbdeXvfem1/x48y1sWROTVuD4DuOlsLDo
-         bN0yFx24wAufuCezac61s7KjKeWJuf7rRu7o6IWtkXlSYtBzdbPUDtrxm3wFakGvSHpq
-         UCLw==
-X-Gm-Message-State: AOAM531pah+vZc+qBNhfKFjeCdd/bR8dT+enaPnzij1A67pIsXEGA5g+
-        RVoAFF51IDoyUtk4j6BtZm3p7vsxhPniszsLjy59vKUHY5Oq
-X-Google-Smtp-Source: ABdhPJxszs9Odkfnq6c7Sf7vC23Ry4t7jbp8hOkcZpqpBU7TPRb8sXRUjXbjZ45SSTEci93NqkyFXjJqByq3eSgOamdrGYIMeB06
-MIME-Version: 1.0
-X-Received: by 2002:a6b:8b89:: with SMTP id n131mr18349587iod.170.1600246335113;
- Wed, 16 Sep 2020 01:52:15 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 01:52:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005b8e4505af6a62a9@google.com>
-Subject: KASAN: use-after-free Write in rxrpc_put_bundle
-From:   syzbot <syzbot+d57aaf84dd8a550e6d91@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dhowells@redhat.com, kuba@kernel.org,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, netdev@vger.kernel.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2KTok6gVmhkLo7YM284bMYXzQlRqMVhC5bg8YBdyf6w=;
+        b=O0f3YuudCnwz/rIo/Bls19dv8+m7QK/yGU01nL0Npd046oy5TNOX0Qt+B3PJ3/hkxw
+         isJCxyUhEWchfTxsjtV21vRbIUYKzn0ZV/VQ79bbSqMBD6e8gqUGW4RJJz8aoAkrQdie
+         b/8xxQ9E47LHXZQZdYe8Y92fISLR9Bz0RBNffhS44WZd5Ewfndig8At9bYdtniPWetC6
+         kJQYXGERXjOnS1Zy9LYzIaomTMgOsbVzqI40SMDODNI0IdQ8ykkXqDrrjTSl/oGAPO/9
+         NGxa5Hm3z5Ra53HGcNdOBdQIFvR27lmCmdgpiH59tE849QyLXBRqsvWlYJtsVECkHQgz
+         oaBw==
+X-Gm-Message-State: AOAM530enCSaF+2a8WyubTXcNaDVwB3ddtw70RRSDUWidsRb6l9n+bNq
+        b+7ulHZQk7bvyMa/d/rr5gw=
+X-Google-Smtp-Source: ABdhPJzVp+dN7D8wyCUv0heKGyY7kzaAEe3/quQpOKtdISAesnL2qExlTI9Zb1djSYjXVn511GPp/Q==
+X-Received: by 2002:a1c:a949:: with SMTP id s70mr2386736wme.42.1600246719990;
+        Wed, 16 Sep 2020 01:58:39 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2dec:c500:15b1:3554:3841:68b])
+        by smtp.gmail.com with ESMTPSA id f14sm4184965wme.22.2020.09.16.01.58.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 01:58:39 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-spdx@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Raed Salem <raeds@mellanox.com>,
+        Huy Nguyen <huyn@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] net/mlx5: IPsec: make spdxcheck.py happy
+Date:   Wed, 16 Sep 2020 10:58:24 +0200
+Message-Id: <20200916085824.30731-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Commit 2d64663cd559 ("net/mlx5: IPsec: Add HW crypto offload support")
+provided a proper SPDX license expression, but slipped in a typo.
 
-syzbot found the following issue on:
+Fortunately, ./scripts/spdxcheck.py warns:
 
-HEAD commit:    ed6d9b02 ionic: fix up debugfs after queue swap
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13d4c1b5900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d29a102d22f784ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=d57aaf84dd8a550e6d91
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fe9101900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1749d92d900000
+  drivers/net/ethernet/mellanox/mlx5/core/accel/ipsec_offload.c: 1:39 \
+  Invalid License ID: Linux-OpenIBt
 
-The issue was bisected to:
+Remove the typo and make spdxcheck.py happy.
 
-commit 245500d853e9f20036cec7df4f6984ece4c6bf26
-Author: David Howells <dhowells@redhat.com>
-Date:   Wed Jul 1 10:15:32 2020 +0000
-
-    rxrpc: Rewrite the client connection manager
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12348911900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11348911900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16348911900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d57aaf84dd8a550e6d91@syzkaller.appspotmail.com
-Fixes: 245500d853e9 ("rxrpc: Rewrite the client connection manager")
-
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_write include/linux/instrumented.h:71 [inline]
-BUG: KASAN: use-after-free in atomic_dec_return include/asm-generic/atomic-instrumented.h:340 [inline]
-BUG: KASAN: use-after-free in rxrpc_put_bundle+0x1d/0x80 net/rxrpc/conn_client.c:141
-Write of size 4 at addr ffff8880a8669220 by task ksoftirqd/0/9
-
-CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.9.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_write include/linux/instrumented.h:71 [inline]
- atomic_dec_return include/asm-generic/atomic-instrumented.h:340 [inline]
- rxrpc_put_bundle+0x1d/0x80 net/rxrpc/conn_client.c:141
- rxrpc_destroy_connection+0x150/0x2f0 net/rxrpc/conn_object.c:367
- rcu_do_batch kernel/rcu/tree.c:2428 [inline]
- rcu_core+0x5ca/0x1130 kernel/rcu/tree.c:2656
- __do_softirq+0x1f7/0xa91 kernel/softirq.c:298
- run_ksoftirqd kernel/softirq.c:652 [inline]
- run_ksoftirqd+0xcf/0x170 kernel/softirq.c:644
- smpboot_thread_fn+0x655/0x9e0 kernel/smpboot.c:165
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Allocated by task 6875:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmem_cache_alloc_trace+0x174/0x2c0 mm/slab.c:3550
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:666 [inline]
- rxrpc_alloc_bundle+0x7e/0x290 net/rxrpc/conn_client.c:121
- rxrpc_look_up_bundle net/rxrpc/conn_client.c:275 [inline]
- rxrpc_prep_call net/rxrpc/conn_client.c:374 [inline]
- rxrpc_connect_call+0x85c/0x1580 net/rxrpc/conn_client.c:710
- rxrpc_new_client_call+0x961/0x1020 net/rxrpc/call_object.c:331
- rxrpc_new_client_call_for_sendmsg net/rxrpc/sendmsg.c:622 [inline]
- rxrpc_do_sendmsg+0xf14/0x136d net/rxrpc/sendmsg.c:679
- rxrpc_sendmsg+0x420/0x630 net/rxrpc/af_rxrpc.c:560
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x331/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmmsg+0x195/0x480 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg net/socket.c:2523 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2523
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 2642:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x10e/0x2b0 mm/slab.c:3756
- rxrpc_put_bundle net/rxrpc/conn_client.c:146 [inline]
- rxrpc_put_bundle+0x6b/0x80 net/rxrpc/conn_client.c:138
- rxrpc_unbundle_conn+0x1f8/0x3d0 net/rxrpc/conn_client.c:935
- rxrpc_clean_up_local_conns+0x38d/0x587 net/rxrpc/conn_client.c:1114
- rxrpc_local_destroyer net/rxrpc/local_object.c:399 [inline]
- rxrpc_local_processor+0x38d/0x5e0 net/rxrpc/local_object.c:433
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-The buggy address belongs to the object at ffff8880a8669200
- which belongs to the cache kmalloc-192 of size 192
-The buggy address is located 32 bytes inside of
- 192-byte region [ffff8880a8669200, ffff8880a86692c0)
-The buggy address belongs to the page:
-page:000000007bfb6cde refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880a8669d00 pfn:0xa8669
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002a42f88 ffffea00027d8f08 ffff8880aa040000
-raw: ffff8880a8669d00 ffff8880a8669000 000000010000000d 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880a8669100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880a8669180: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->ffff8880a8669200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                               ^
- ffff8880a8669280: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff8880a8669300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Greg, please pick this minor non-urgent patch into your spdx tree.
+
+ drivers/net/ethernet/mellanox/mlx5/core/accel/ipsec_offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/accel/ipsec_offload.c b/drivers/net/ethernet/mellanox/mlx5/core/accel/ipsec_offload.c
+index 2f13a250aab3..d6667d38e1de 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/accel/ipsec_offload.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/accel/ipsec_offload.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIBt
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2020, Mellanox Technologies inc. All rights reserved. */
+ 
+ #include "mlx5_core.h"
+-- 
+2.17.1
+
