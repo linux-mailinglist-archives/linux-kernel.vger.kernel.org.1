@@ -2,106 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3376526CB61
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF71626CB09
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgIPR0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:26:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41108 "EHLO mail.kernel.org"
+        id S1728273AbgIPUVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:21:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727017AbgIPRZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:25:36 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727160AbgIPRau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:30:50 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87A0E22450;
-        Wed, 16 Sep 2020 15:53:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D3B922464;
+        Wed, 16 Sep 2020 15:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600271587;
-        bh=rj7DZjNAJCrrNWFqVqySDbZbtBkOXOstK9wfGztg5BM=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=oR03WAhanMUWM0OzUS245GpcP1EqoOPTLWHrj0iN8bkFLA+vo/jFgf4uOPynrcH8d
-         KCov77ujZVhIjDIB4K/p6Sm/PUlnHgjPmvdJbJZWnBeE5Tr0hG64HK3BTtPwe2QbdC
-         cFPMvEdkJHW/WZJ7en/wZRq9EbIdb0GiqHBXWMEQ=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 216173522836; Wed, 16 Sep 2020 08:53:07 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 08:53:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled
-Message-ID: <20200916155307.GA29530@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        s=default; t=1600271894;
+        bh=wdAkw2TjM1udxEqqVOzxHnXaiuAOFMCD3JyJ0x6GXJI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CEkiTIX+Fl0xgU9GaFowB3IBFoj0LdQvWJp6D/j5lf4NecsiG9e7rpukGJOxIsOGX
+         OiHfB2CHjp8UzjXsoU4dCoauEfCjSPEEzbwnAko1gQFeuf/NUQwGG6LcEcvfRUlBi8
+         pOcI/Xun6ff/784JHIbliYALEOTgbG6oNJuCy1EA=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v3 05/15] arm64: dts: renesas: align GPIO hog names with dtschema
+Date:   Wed, 16 Sep 2020 17:57:05 +0200
+Message-Id: <20200916155715.21009-6-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200916155715.21009-1-krzk@kernel.org>
+References: <20200916155715.21009-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Peter!
+The convention for node names is to use hyphens, not underscores.
+dtschema for pca95xx expects GPIO hogs to end with 'hog' prefix.
 
-Are you OK with your Signed-off-by on this patch?
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ .../boot/dts/renesas/r8a77951-salvator-xs.dts      |  2 +-
+ .../boot/dts/renesas/r8a77965-salvator-xs.dts      |  2 +-
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi           | 14 +++++++-------
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-Or is there some other approach you would prefer?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 903c5302fa2df20c4074ea1fef01b1be9b4065d7
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Sat Aug 29 10:22:24 2020 -0700
-
-    sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled
-    
-    The try_invoke_on_locked_down_task() function currently requires
-    that interrupts be enabled, but it is called with interrupts
-    disabled from rcu_print_task_stall(), resulting in an "IRQs not
-    enabled as expected" diagnostic.  This commit therefore updates
-    try_invoke_on_locked_down_task() to use raw_spin_lock_irqsave() instead
-    of raw_spin_lock_irq(), thus allowing use from either context.
-    
-    Link: https://lore.kernel.org/lkml/000000000000903d5805ab908fc4@google.com/
-    Reported-by: syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com
-    Not-signed-off-by: Peter Zijlstra <peterz@infradead.org>
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8471a0f..a814028 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2988,7 +2988,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+diff --git a/arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dts b/arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dts
+index cef9da4376a3..e5922329a4b8 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dts
+@@ -118,7 +118,7 @@
+ };
  
- /**
-  * try_invoke_on_locked_down_task - Invoke a function on task in fixed state
-- * @p: Process for which the function is to be invoked.
-+ * @p: Process for which the function is to be invoked, can be @current.
-  * @func: Function to invoke.
-  * @arg: Argument to function.
-  *
-@@ -3006,12 +3006,11 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
-  */
- bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct task_struct *t, void *arg), void *arg)
- {
--	bool ret = false;
- 	struct rq_flags rf;
-+	bool ret = false;
- 	struct rq *rq;
+ &pca9654 {
+-	pcie_sata_switch {
++	pcie-sata-switch-hog {
+ 		gpio-hog;
+ 		gpios = <7 GPIO_ACTIVE_HIGH>;
+ 		output-low; /* enable SATA by default */
+diff --git a/arch/arm64/boot/dts/renesas/r8a77965-salvator-xs.dts b/arch/arm64/boot/dts/renesas/r8a77965-salvator-xs.dts
+index 5cef64605464..d7e621101af7 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77965-salvator-xs.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77965-salvator-xs.dts
+@@ -55,7 +55,7 @@
+ };
  
--	lockdep_assert_irqs_enabled();
--	raw_spin_lock_irq(&p->pi_lock);
-+	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
- 	if (p->on_rq) {
- 		rq = __task_rq_lock(p, &rf);
- 		if (task_rq(p) == rq)
-@@ -3028,7 +3027,7 @@ bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct t
- 				ret = func(p, arg);
- 		}
- 	}
--	raw_spin_unlock_irq(&p->pi_lock);
-+	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
- 	return ret;
- }
+ &pca9654 {
+-	pcie_sata_switch {
++	pcie-sata-switch-hog {
+ 		gpio-hog;
+ 		gpios = <7 GPIO_ACTIVE_HIGH>;
+ 		output-low; /* enable SATA by default */
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index 202177706cde..e9ed2597f1c2 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -143,49 +143,49 @@
+ 		interrupt-parent = <&gpio6>;
+ 		interrupts = <8 IRQ_TYPE_EDGE_FALLING>;
  
+-		audio_out_off {
++		audio-out-off-hog {
+ 			gpio-hog;
+ 			gpios = <0 GPIO_ACTIVE_HIGH>; /* P00 */
+ 			output-high;
+ 			line-name = "Audio_Out_OFF";
+ 		};
+ 
+-		hub_pwen {
++		hub-pwen-hog {
+ 			gpio-hog;
+ 			gpios = <6 GPIO_ACTIVE_HIGH>;
+ 			output-high;
+ 			line-name = "HUB pwen";
+ 		};
+ 
+-		hub_rst {
++		hub-rst-hog {
+ 			gpio-hog;
+ 			gpios = <7 GPIO_ACTIVE_HIGH>;
+ 			output-high;
+ 			line-name = "HUB rst";
+ 		};
+ 
+-		otg_extlpn {
++		otg-extlpn-hog {
+ 			gpio-hog;
+ 			gpios = <9 GPIO_ACTIVE_HIGH>;
+ 			output-high;
+ 			line-name = "OTG EXTLPn";
+ 		};
+ 
+-		otg_offvbusn {
++		otg-offvbusn-hog {
+ 			gpio-hog;
+ 			gpios = <8 GPIO_ACTIVE_HIGH>;
+ 			output-low;
+ 			line-name = "OTG OFFVBUSn";
+ 		};
+ 
+-		sd-wifi-mux {
++		sd-wifi-mux-hog {
+ 			gpio-hog;
+ 			gpios = <5 GPIO_ACTIVE_HIGH>;
+ 			output-low;	/* Connect WL1837 */
+ 			line-name = "SD WiFi mux";
+ 		};
+ 
+-		snd_rst {
++		snd-rst-hog {
+ 			gpio-hog;
+ 			gpios = <15 GPIO_ACTIVE_HIGH>; /* P17 */
+ 			output-high;
+-- 
+2.17.1
+
