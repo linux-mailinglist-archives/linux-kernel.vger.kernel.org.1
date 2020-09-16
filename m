@@ -2,283 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB5026BF3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E53A26BF2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgIPI1e convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Sep 2020 04:27:34 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:58013 "EHLO h3cspam01-ex.h3c.com"
+        id S1726577AbgIPI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:26:33 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:47556 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726568AbgIPI1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:27:18 -0400
-Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
-        by h3cspam01-ex.h3c.com with ESMTPS id 08G8QFQA097631
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 16:26:15 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 16 Sep 2020 16:26:18 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.1713.004; Wed, 16 Sep 2020 16:26:18 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     "minyard@acm.org" <minyard@acm.org>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] [v2] ipmi: retry to get device id when error
-Thread-Topic: [PATCH] [v2] ipmi: retry to get device id when error
-Thread-Index: AQHWim/ckayNXmMPfkaknRpd9ndbxKlnv4SAgAGgMND//+T7AIAAjHIggAEfhNA=
-Date:   Wed, 16 Sep 2020 08:26:18 +0000
-Message-ID: <9ff00fb4187e42a0bd47e61fdd238292@h3c.com>
-References: <20200914081313.31450-1-tian.xianting@h3c.com>
- <20200914153937.GL15602@minyard.net>
- <226f9cfc421c49278cad9572bb33ac3a@h3c.com>
- <20200915145230.GB3674@minyard.net> 
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726161AbgIPI0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:26:30 -0400
+Received: from zn.tnic (p200300ec2f0c3e00e4ebe415c26f1039.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:e4eb:e415:c26f:1039])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6FD311EC0330;
+        Wed, 16 Sep 2020 10:26:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600244787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K8XdDNTffEBxVg9FrlI2e4DT7s1P+rkY7MIdNMA1C5M=;
+        b=GHkvpiG8emGCxbDRJHOoMkKsQkFlhypg1SRq2InapTS5RXayF9QHQPcvVJ5IHZIQoYv6Ka
+        /TKUXf6h22TOPcNKeDjh1Kd6hkdq3yML0sk5ZmN/TNjd4LoQqa2IqeEikdHp/URq0JJPy4
+        mUc/t7BmJ/+7QyzD2hXW+FY4tDWvRxU=
+Date:   Wed, 16 Sep 2020 10:26:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] x86/smap: Fix the smap_save() asm
+Message-ID: <20200916082621.GB2643@zn.tnic>
+References: <CAKwvOdnjHbyamsW71FJ=Cd36YfVppp55ftcE_eSDO_z+KE9zeQ@mail.gmail.com>
+ <441AA771-A859-4145-9425-E9D041580FE4@amacapital.net>
+ <7233f4cf-5b1d-0fca-0880-f1cf2e6e765b@citrix.com>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 08G8QFQA097631
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7233f4cf-5b1d-0fca-0880-f1cf2e6e765b@citrix.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Corey,
-Would you please review this patch: add the same retry in try_get_dev_id()
-https://lkml.org/lkml/2020/9/16/244
+On Wed, Sep 16, 2020 at 12:40:30AM +0100, Andrew Cooper wrote:
+> It's worse than that.  Even when stating that %rsp is modified in the
+> asm, the generated code sequence is still buggy, for recent Clang and GCC.
+> 
+> https://godbolt.org/z/ccz9v7
+> 
+> It's clearly not safe to ever use memory operands with pushf/popf asm
+> fragments.
 
-Thanks a lot.
+So I went and singlestepped your snippet in gdb. And it all seems to
+work - it is simply a bit confusing: :-)
 
------Original Message-----
-From: tianxianting (RD) 
-Sent: Tuesday, September 15, 2020 11:20 PM
-To: 'minyard@acm.org' <minyard@acm.org>
-Cc: arnd@arndb.de; gregkh@linuxfoundation.org; openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
-Subject: RE: [PATCH] [v2] ipmi: retry to get device id when error
+eflags         0x246               [ PF ZF IF ]
 
-I get it now, thank you Corey :)
-I will send the patch for you review tomorrow.
+=> 0x000055555555505d <main+13>:        9c      pushfq
+0x7fffffffe440: 0x00007fffffffe540      0x0000000000000000
+0x7fffffffe450: 0x0000000000000000      0x00007ffff7e0ecca
+0x7fffffffe460: 0x00007fffffffe548      0x00000001ffffe7c9
+0x7fffffffe470: 0x0000555555555050      0x00007ffff7e0e8f8
+0x7fffffffe480: 0x0000000000000000      0x0c710afd7e78681b
 
------Original Message-----
-From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey Minyard
-Sent: Tuesday, September 15, 2020 10:53 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: arnd@arndb.de; gregkh@linuxfoundation.org; openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] ipmi: retry to get device id when error
+those lines under the "=>" line are the stack contents printed with
 
-On Tue, Sep 15, 2020 at 09:40:02AM +0000, Tianxianting wrote:
-> Hi Corey,
-> Thanks for your comments,
-> Please review these two patches, which are based on your guide.
-> 1, [PATCH] ipmi: print current state when error
-> https://lkml.org/lkml/2020/9/15/183
-> 2, [PATCH] [v3] ipmi: retry to get device id when error
-> https://lkml.org/lkml/2020/9/15/156
+$ x/10gx $sp
 
-Patches are applied and in my next tree.
+Then, we will pop into 0x8(%rsp):
 
-> 
-> As you said "You are having the same issue in the ipmi_si code. It's choosing defaults, but that's not ideal.  You probably need to handle this there, too, in a separate patch."
-> I am not sure whether I grasped what you said, The print ' device id 
-> demangle failed: -22' in commit message, is just triggered by bmc_device_id_handler->ipmi_demangle_device_id, this is the issue we met and is solving.
-> I found try_get_dev_id(in drivers/char/ipmi/ipmi_si_intf.c) also called ipmi_demangle_device_id(), do you mean if this ipmi_demangle_device_id() returned error, we also need to retry?
+=> 0x55555555505e <main+14>:    popq   0x8(%rsp)
+0x7fffffffe438: 0x0000000000000346      0x00007fffffffe540
+0x7fffffffe448: 0x0000000000000000      0x0000000000000000
+0x7fffffffe458: 0x00007ffff7e0ecca      0x00007fffffffe548
+0x7fffffffe468: 0x00000001ffffe7c9      0x0000555555555050
+0x7fffffffe478: 0x00007ffff7e0e8f8      0x0000000000000000
 
-Yes, I think so, retrying in try_get_dev_id() would be a good idea, I think.  You are probably getting sub-optimal performance if you don't do this.
+Now, POP copies the value pointed to by %rsp, *increments* the stack
+pointer and *then* computes the effective address of the operand. It
+says so in the SDM too (thanks peterz!):
 
-Thanks,
+"If the ESP register is used as a base register for addressing a
+destination operand in memory, the POP instruction computes the
+effective address of the operand after it increments the ESP register."
 
--corey
+*That*s why, FLAGS is in 0x7fffffffe448! which is %rsp + 8.
 
-> 
-> Thanks a lot.
-> 
-> -----Original Message-----
-> From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey 
-> Minyard
-> Sent: Monday, September 14, 2020 11:40 PM
-> To: tianxianting (RD) <tian.xianting@h3c.com>
-> Cc: arnd@arndb.de; gregkh@linuxfoundation.org; 
-> openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] [v2] ipmi: retry to get device id when error
-> 
-> On Mon, Sep 14, 2020 at 04:13:13PM +0800, Xianting Tian wrote:
-> > We can't get bmc's device id with low probability when loading ipmi 
-> > driver, it caused bmc device register failed. When this issue 
-> > happened, we got below kernel printks:
-> 
-> This patch is moving in the right direction.  For the final patch(es), I can clean up the english grammar issues, since that's not your native language.  A few comments:
-> 
-> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: IPMI message handler: 
-> > device id demangle failed: -22
-> 
-> You are having the same issue in the ipmi_si code.  It's choosing defaults, but that's not ideal.  You probably need to handle this there, too, in a separate patch.
-> 
-> Can you create a separate patch to add a dev_warn() to the BT code when it returns IPMI_NOT_IN_MY_STATE_ERR, like I asked previously?  And print the current state when it happens.  That way we know where this issue is coming from and possibly fix the state machine.  I'm thinking that the BMC is just not responding, but I'd like to be sure.
-> 
-> Other comments inline...
-> 
-> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: using default values
-> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: req2rsp=5 secs retries=2
-> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: Unable to get the device id: -5
-> > 	[Wed Sep  9 19:52:04 2020] ipmi_si IPI0001:00: Unable to register
-> > device: error -5
-> > 
-> > When this issue happened, we want to manually unload the driver and 
-> > try to load it again, but it can't be unloaded by 'rmmod' as it is already 'in use'.
-> > 
-> > We add below 'printk' in handle_one_recv_msg(), when this issue 
-> > happened, the msg we received is "Recv: 1c 01 d5", which means the 
-> > data_len is 1, data[0] is 0xd5(completion code), which means "bmc cannot execute command.
-> > Command, or request parameter(s), not supported in present state".
-> > 	Debug code:
-> > 	static int handle_one_recv_msg(struct ipmi_smi *intf,
-> >                                struct ipmi_smi_msg *msg) {
-> >         	printk("Recv: %*ph\n", msg->rsp_size, msg->rsp);
-> > 		... ...
-> > 	}
-> > Then in ipmi_demangle_device_id(), it returned '-EINVAL' as 'data_len < 7'
-> > and 'data[0] != 0'.
-> > 
-> > We used this patch to retry to get device id when error happen, we 
-> > reproduced this issue again and the retry succeed on the first 
-> > retry, we finally got the correct msg and then all is ok:
-> > Recv: 1c 01 00 01 81 05 84 02 af db 07 00 01 00 b9 00 10 00
-> > 
-> > So use retry machanism in this patch to give bmc more opportunity to 
-> > correctly response kernel when we received specific completion code.
-> > 
-> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> > ---
-> >  drivers/char/ipmi/ipmi_msghandler.c | 29 +++++++++++++++++++++++++----
-> >  include/uapi/linux/ipmi_msgdefs.h   |  2 ++
-> >  2 files changed, 27 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/char/ipmi/ipmi_msghandler.c
-> > b/drivers/char/ipmi/ipmi_msghandler.c
-> > index 737c0b6b2..07d5be2cd 100644
-> > --- a/drivers/char/ipmi/ipmi_msghandler.c
-> > +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> > @@ -34,6 +34,7 @@
-> >  #include <linux/uuid.h>
-> >  #include <linux/nospec.h>
-> >  #include <linux/vmalloc.h>
-> > +#include <linux/delay.h>
-> >  
-> >  #define IPMI_DRIVER_VERSION "39.2"
-> >  
-> > @@ -60,6 +61,9 @@ enum ipmi_panic_event_op {  #else  #define 
-> > IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_NONE  #endif
-> > +
-> > +#define GET_DEVICE_ID_MAX_RETRY	5
-> > +
-> >  static enum ipmi_panic_event_op ipmi_send_panic_event = 
-> > IPMI_PANIC_DEFAULT;
-> >  
-> >  static int panic_op_write_handler(const char *val, @@ -317,6 +321,7 
-> > @@ struct bmc_device {
-> >  	int                    dyn_guid_set;
-> >  	struct kref	       usecount;
-> >  	struct work_struct     remove_work;
-> > +	char		       cc; /* completion code */
-> >  };
-> >  #define to_bmc_device(x) container_of((x), struct bmc_device,
-> > pdev.dev)
-> >  
-> > @@ -2381,6 +2386,8 @@ static void bmc_device_id_handler(struct ipmi_smi *intf,
-> >  			msg->msg.data, msg->msg.data_len, &intf->bmc->fetch_id);
-> >  	if (rv) {
-> >  		dev_warn(intf->si_dev, "device id demangle failed: %d\n", rv);
-> > +		/* record completion code when error */
-> > +		intf->bmc->cc = msg->msg.data[0];
-> >  		intf->bmc->dyn_id_set = 0;
-> >  	} else {
-> >  		/*
-> > @@ -2426,19 +2433,34 @@ send_get_device_id_cmd(struct ipmi_smi
-> > *intf) static int __get_device_id(struct ipmi_smi *intf, struct 
-> > bmc_device
-> > *bmc)  {
-> >  	int rv;
-> > -
-> > -	bmc->dyn_id_set = 2;
-> > +	unsigned int retry_count = 0;
-> 
-> You need to initialize bmc->cc to 0 here.
-> 
-> >  
-> >  	intf->null_user_handler = bmc_device_id_handler;
-> >  
-> > +retry:
-> > +	bmc->dyn_id_set = 2;
-> > +
-> >  	rv = send_get_device_id_cmd(intf);
-> >  	if (rv)
-> >  		return rv;
-> >  
-> >  	wait_event(intf->waitq, bmc->dyn_id_set != 2);
-> >  
-> > -	if (!bmc->dyn_id_set)
-> > +	if (!bmc->dyn_id_set) {
-> > +		if ((bmc->cc == IPMI_NOT_IN_MY_STATE_ERR
-> > +		     || bmc->cc == IPMI_NOT_IN_MY_STATE_ERR_1
-> > +		     || bmc->cc == IPMI_NOT_IN_MY_STATE_ERR_2)
-> > +		     && ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
-> > +			msleep(500);
-> > +			dev_warn(intf->si_dev,
-> > +				"retry to get bmc device id as completion code 0x%x\n",
-> > +				bmc->cc);
-> > +			bmc->cc = 0;
-> > +			goto retry;
-> > +		}
-> > +
-> >  		rv = -EIO; /* Something went wrong in the fetch. */
-> > +	}
-> >  
-> >  	/* dyn_id_set makes the id data available. */
-> >  	smp_rmb();
-> > @@ -3245,7 +3267,6 @@ channel_handler(struct ipmi_smi *intf, struct ipmi_recv_msg *msg)
-> >  		/* It's the one we want */
-> >  		if (msg->msg.data[0] != 0) {
-> >  			/* Got an error from the channel, just go on. */
-> > -
-> >  			if (msg->msg.data[0] == IPMI_INVALID_COMMAND_ERR) {
-> >  				/*
-> >  				 * If the MC does not support this diff --git 
-> > a/include/uapi/linux/ipmi_msgdefs.h
-> > b/include/uapi/linux/ipmi_msgdefs.h
-> > index c2b23a9fd..46a0df434 100644
-> > --- a/include/uapi/linux/ipmi_msgdefs.h
-> > +++ b/include/uapi/linux/ipmi_msgdefs.h
-> > @@ -70,6 +70,8 @@
-> >  #define IPMI_REQ_LEN_INVALID_ERR	0xc7
-> >  #define IPMI_REQ_LEN_EXCEEDED_ERR	0xc8
-> >  #define IPMI_NOT_IN_MY_STATE_ERR	0xd5	/* IPMI 2.0 */
-> > +#define IPMI_NOT_IN_MY_STATE_ERR_1	0xd1
-> 
-> For the above name, can you use IPMI_DEVICE_IN_FW_UPDATE_ERR to match the spec?
-> 
-> > +#define IPMI_NOT_IN_MY_STATE_ERR_2	0xd2
-> 
-> For the above name, can you use IPMI_DEVICE_IN_INIT_ERR to match the spec?
-> 
-> Thanks,
-> 
-> -corey
-> 
-> >  #define IPMI_LOST_ARBITRATION_ERR	0x81
-> >  #define IPMI_BUS_ERR			0x82
-> >  #define IPMI_NAK_ON_WRITE_ERR		0x83
-> > --
-> > 2.17.1
-> > 
+Basically flags is there *twice* on the stack:
+
+(gdb) x/10x 0x7fffffffe438
+0x7fffffffe438: 0x0000000000000346      0x00007fffffffe540
+		^^^^^^^^^^^^^^^^^^
+0x7fffffffe448: 0x0000000000000346      0x0000000000000000
+		^^^^^^^^^^^^^^^^^^
+0x7fffffffe458: 0x00007ffff7e0ecca      0x00007fffffffe548
+0x7fffffffe468: 0x00000001ffffe7c9      0x0000555555555050
+0x7fffffffe478: 0x00007ffff7e0e8f8      0x0000000000000000
+
+and now we read the second copy into %rsi.
+
+=> 0x555555555062 <main+18>:    mov    0x8(%rsp),%rsi
+0x7fffffffe440: 0x00007fffffffe540      0x0000000000000346
+0x7fffffffe450: 0x0000000000000000      0x00007ffff7e0ecca
+0x7fffffffe460: 0x00007fffffffe548      0x00000001ffffe7c9
+0x7fffffffe470: 0x0000555555555050      0x00007ffff7e0e8f8
+0x7fffffffe480: 0x0000000000000000      0x0c710afd7e78681b
+
+Looks like it works as designed.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
