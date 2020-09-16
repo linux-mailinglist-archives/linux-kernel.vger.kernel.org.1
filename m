@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B667626CA67
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5517126CA68
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbgIPT6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:58:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15054 "EHLO m43-7.mailgun.net"
+        id S1728119AbgIPT7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:59:07 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59627 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727780AbgIPT4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727683AbgIPT4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 15:56:25 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600286184; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=/LCfAr6BAH7IdfVVVvfVBFWx6xFSZL9n6uUjXHmeWM8=; b=m6CocVWT62nxRWEHtkxZd5+Fzhy9kJxhQZ220iz6mgyXy2VNvv742YfUFO7ZB78IEJCs+4WB
- n6pBNxcUwigrL2Cih62tE7aescUn0e4LEr0Inf1aHsWDIQxvKZEt7lh3pEaMgN7LbU5SzePy
- jBGCLNk/GuFQYvRn+CqpDEGTfwo=
+ s=smtp; t=1600286184; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=y4puZpwgg//JDZy+2Q3u7RfwKCMl4fLcPSjBRmNaB4A=; b=uFSRvsl+X7qpKwTPOgfOXBOcn2AUr50BGnGaNCQRkhfTOpnJvFPMdJm3vjCC1D/Mp5BmnGO6
+ J5FS6+1z6wmsijJdxP8syxZtLk/xRBmtZU9CY4mUyo55u0AD062ag2NlRkM9yeNtLTo65PvO
+ xWVQJvGvtHVJVlUU0qlb50/Aues=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f626ddf6b1937bb657535f7 (version=TLS1.2,
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f626ddfc4180d293bda8ac1 (version=TLS1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 19:56:15
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C91F8C433FE; Wed, 16 Sep 2020 19:56:14 +0000 (UTC)
+        id B22B9C433C8; Wed, 16 Sep 2020 19:56:15 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EE63FC433CA;
-        Wed, 16 Sep 2020 19:56:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EE63FC433CA
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8CF29C433C8;
+        Wed, 16 Sep 2020 19:56:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8CF29C433C8
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
 From:   Hemant Kumar <hemantk@codeaurora.org>
@@ -45,57 +46,71 @@ To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         jhugo@codeaurora.org, bbhatt@codeaurora.org,
         Hemant Kumar <hemantk@codeaurora.org>
-Subject: [PATCH v6 0/4] user space client interface driver
-Date:   Wed, 16 Sep 2020 12:56:03 -0700
-Message-Id: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
+Subject: [PATCH v6 1/4] bus: mhi: core: Add helper API to return number of free TREs
+Date:   Wed, 16 Sep 2020 12:56:04 -0700
+Message-Id: <1600286167-4432-2-git-send-email-hemantk@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
+References: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V6:
-- Moved uci.c to mhi directory.
-- Updated Kconfig to add module information.
-- Updated Makefile to rename uci object file name as mhi_uci
-- Removed kref for open count
+Introduce mhi_get_no_free_descriptors() API to return number
+of TREs available to queue buffer. MHI clients can use this
+API to know before hand if ring is full without calling queue
+API.
 
-V5:
-- Removed mhi_uci_drv structure.
-- Used idr instead of creating global list of uci devices.
-- Used kref instead of local ref counting for uci device and
-  open count.
-- Removed unlikely macro.
+Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+---
+ drivers/bus/mhi/core/main.c | 12 ++++++++++++
+ include/linux/mhi.h         |  9 +++++++++
+ 2 files changed, 21 insertions(+)
 
-V4:
-- Fix locking to protect proper struct members.
-- Updated documentation describing uci client driver use cases.
-- Fixed uci ref counting in mhi_uci_open for error case.
-- Addressed style related review comments.
-
-V3: Added documentation for MHI UCI driver.
-
-V2: Added mutex lock to prevent multiple readers to access same
-mhi buffer which can result into use after free.
-
-Hemant Kumar (4):
-  bus: mhi: core: Add helper API to return number of free TREs
-  bus: mhi: core: Move MHI_MAX_MTU to external header file
-  docs: Add documentation for userspace client interface
-  bus: mhi: Add userspace client interface driver
-
- Documentation/mhi/index.rst     |   1 +
- Documentation/mhi/uci.rst       |  39 +++
- drivers/bus/mhi/Kconfig         |  13 +
- drivers/bus/mhi/Makefile        |   4 +
- drivers/bus/mhi/core/internal.h |   1 -
- drivers/bus/mhi/core/main.c     |  12 +
- drivers/bus/mhi/uci.c           | 657 ++++++++++++++++++++++++++++++++++++++++
- include/linux/mhi.h             |  12 +
- 8 files changed, 738 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/mhi/uci.rst
- create mode 100644 drivers/bus/mhi/uci.c
-
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index 2cff5dd..0599e7d 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -258,6 +258,18 @@ int mhi_destroy_device(struct device *dev, void *data)
+ 	return 0;
+ }
+ 
++int mhi_get_no_free_descriptors(struct mhi_device *mhi_dev,
++				enum dma_data_direction dir)
++{
++	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
++	struct mhi_chan *mhi_chan = (dir == DMA_TO_DEVICE) ?
++		mhi_dev->ul_chan : mhi_dev->dl_chan;
++	struct mhi_ring *tre_ring = &mhi_chan->tre_ring;
++
++	return get_nr_avail_ring_elements(mhi_cntrl, tre_ring);
++}
++EXPORT_SYMBOL_GPL(mhi_get_no_free_descriptors);
++
+ void mhi_notify(struct mhi_device *mhi_dev, enum mhi_callback cb_reason)
+ {
+ 	struct mhi_driver *mhi_drv;
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index a35d876..6565528 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -600,6 +600,15 @@ void mhi_set_mhi_state(struct mhi_controller *mhi_cntrl,
+ void mhi_notify(struct mhi_device *mhi_dev, enum mhi_callback cb_reason);
+ 
+ /**
++ * mhi_get_no_free_descriptors - Get transfer ring length
++ * Get # of TD available to queue buffers
++ * @mhi_dev: Device associated with the channels
++ * @dir: Direction of the channel
++ */
++int mhi_get_no_free_descriptors(struct mhi_device *mhi_dev,
++				enum dma_data_direction dir);
++
++/**
+  * mhi_prepare_for_power_up - Do pre-initialization before power up.
+  *                            This is optional, call this before power up if
+  *                            the controller does not want bus framework to
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
