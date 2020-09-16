@@ -2,89 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6F826B97D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D82A26B981
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgIPBsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 21:48:12 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3603 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726023AbgIPBsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 21:48:12 -0400
-Received: from dggeme702-chm.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id A39656185BC785536EC8;
-        Wed, 16 Sep 2020 09:48:09 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme702-chm.china.huawei.com (10.1.199.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 16 Sep 2020 09:48:09 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Wed, 16 Sep 2020 09:48:09 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     syzbot <syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hdanton@sina.com" <hdanton@sina.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-Subject: Re: general protection fault in unlink_file_vma
-Thread-Topic: general protection fault in unlink_file_vma
-Thread-Index: AdaLyqUwCHihR92YQfeHMgqL8TkOUA==
-Date:   Wed, 16 Sep 2020 01:48:09 +0000
-Message-ID: <b542932c58eb464992529069cf58beaf@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.109]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726302AbgIPBuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 21:50:50 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2826 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgIPBur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 21:50:47 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f616ee90001>; Tue, 15 Sep 2020 18:48:25 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 15 Sep 2020 18:50:47 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 15 Sep 2020 18:50:47 -0700
+Received: from [10.2.57.195] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
+ 2020 01:50:46 +0000
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        "Yang Shi" <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        "Kirill Shutemov" <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200914211515.GA5901@xz-x1> <20200914225542.GO904879@nvidia.com>
+ <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
+ <20200914232851.GH1221970@ziepe.ca> <20200915145040.GA2949@xz-x1>
+ <20200915160553.GJ1221970@ziepe.ca> <20200915182933.GM1221970@ziepe.ca>
+ <20200915191346.GD2949@xz-x1> <20200915193838.GN1221970@ziepe.ca>
+ <20200915213330.GE2949@xz-x1> <20200915232238.GO1221970@ziepe.ca>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+Date:   Tue, 15 Sep 2020 18:50:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200915232238.GO1221970@ziepe.ca>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600220905; bh=R8RK6+q/opEu27GaII0hstPQtlgYS8rx6zExB0/RPu4=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=r11pzfubxATnhdYAblbr+/r3uMQ7KILDqrF5RvkYhbfCPZuBSgX6mQFkqvsuYBtU+
+         8+i+2deMTM0ryZecHkYAitLrG68dubAOEjv6Y5y1FmJ7MjnJTpznBOx3O5RXjzDhsL
+         unFt1AVAIF0b9vqlpiJy8BQJ0q7xBvoCth1/MCRafIuHOtyRh+PNE6NRa6j931nyIm
+         BP5YV2nvbf09+LFdkuHv0jqTQdRvzJrtyIWKSU5j/sC+uMSLClO86jQ/mAEKG4k6mU
+         MlEiT1wU8ZRfonl52gN2eAO776ScAaXhMRiN89N7Q4XVTmwlPUPjoqPH9NE+R8W+qN
+         VLtd/ZaV/bVDA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBIZWxsbywNCj4NCj4gc3l6Ym90IGhhcyB0ZXN0ZWQgdGhlIHByb3Bvc2VkIHBhdGNoIGJ1dCB0
-aGUgcmVwcm9kdWNlciBpcyBzdGlsbCB0cmlnZ2VyaW5nIGFuIGlzc3VlOg0KPiBrZXJuZWwgcGFu
-aWM6IGNvcnJ1cHRlZCBzdGFjayBlbmQgaW4gc3lzX25hbm9zbGVlcA0KPg0KPiBLZXJuZWwgcGFu
-aWMgLSBub3Qgc3luY2luZzogY29ycnVwdGVkIHN0YWNrIGVuZCBkZXRlY3RlZCBpbnNpZGUgc2No
-ZWR1bGVyDQo+IENQVTogMCBQSUQ6IDEzNzkxIENvbW06IHN5ei1leGVjdXRvci40IE5vdCB0YWlu
-dGVkIDUuOS4wLXJjNS1zeXprYWxsZXIgIzAgSGFyZHdhcmUgbmFtZTogR29vZ2xlIEdvb2dsZSBD
-b21wdXRlIEVuZ2luZS9Hb29nbGUgQ29tcHV0ZSBFbmdpbmUsIEJJT1MgR29vZ2xlIDAxLzAxLzIw
-MTEgQ2FsbCBUcmFjZToNCj4gIF9fZHVtcF9zdGFjayBsaWIvZHVtcF9zdGFjay5jOjc3IFtpbmxp
-bmVdICBkdW1wX3N0YWNrKzB4MTk4LzB4MWZkIGxpYi9kdW1wX3N0YWNrLmM6MTE4DQo+ICBwYW5p
-YysweDM0Ny8weDdjMCBrZXJuZWwvcGFuaWMuYzoyMzENCj4gIHNjaGVkdWxlX2RlYnVnIGtlcm5l
-bC9zY2hlZC9jb3JlLmM6NDI3OCBbaW5saW5lXQ0KPiAgX19zY2hlZHVsZSsweDIyMWUvMHgyMjMw
-IGtlcm5lbC9zY2hlZC9jb3JlLmM6NDQyMg0KPiAgc2NoZWR1bGUrMHhkMC8weDJhMCBrZXJuZWwv
-c2NoZWQvY29yZS5jOjQ2MDIgIGZyZWV6YWJsZV9zY2hlZHVsZSBpbmNsdWRlL2xpbnV4L2ZyZWV6
-ZXIuaDoxNzIgW2lubGluZV0NCj4gIGRvX25hbm9zbGVlcCsweDIyMi8weDY1MCBrZXJuZWwvdGlt
-ZS9ocnRpbWVyLmM6MTg4Mw0KPiAgaHJ0aW1lcl9uYW5vc2xlZXArMHgxZjkvMHg0MzAga2VybmVs
-L3RpbWUvaHJ0aW1lci5jOjE5MzYgIF9fZG9fc3lzX25hbm9zbGVlcCBrZXJuZWwvdGltZS9ocnRp
-bWVyLmM6MTk3MCBbaW5saW5lXSAgX19zZV9zeXNfbmFub3NsZWVwIGtlcm5lbC90aW1lL2hydGlt
-ZXIuYzoxOTU3IFtpbmxpbmVdDQo+ICBfX3g2NF9zeXNfbmFub3NsZWVwKzB4MWRjLzB4MjYwIGtl
-cm5lbC90aW1lL2hydGltZXIuYzoxOTU3DQo+ICBkb19zeXNjYWxsXzY0KzB4MmQvMHg3MCBhcmNo
-L3g4Ni9lbnRyeS9jb21tb24uYzo0Ng0KPiAgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1l
-KzB4NDQvMHhhOQ0KPiBSSVA6IDAwMzM6MHg0NWJhODENCj4gQ29kZTogNzUgMTQgYjggMjMgMDAg
-MDAgMDAgMGYgMDUgNDggM2QgMDEgZjAgZmYgZmYgMGYgODMgODQgY2YgZmIgZmYgYzMgNDggODMg
-ZWMgMDggZTggZWEgNDYgMDAgMDAgNDggODkgMDQgMjQgYjggMjMgMDAgMDAgMDAgMGYgMDUgPDQ4
-PiA4YiAzYyAyNCA0OCA4OSBjMiBlOCAzMyA0NyAwMCAwMCA0OCA4OSBkMCA0OCA4MyBjNCAwOCA0
-OCAzZCAwMQ0KPiBSU1A6IDAwMmI6MDAwMDdmZmNhNmNiNmQ3MCBFRkxBR1M6IDAwMDAwMjkzIE9S
-SUdfUkFYOiAwMDAwMDAwMDAwMDAwMDIzDQo+IFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAw
-MDAwMDAwMDAwMmYyMjYgUkNYOiAwMDAwMDAwMDAwNDViYTgxDQo+IFJEWDogMDAwMDAwMDAwMDAw
-MDAwMCBSU0k6IDAwMDAwMDAwMDAwMDAwMDAgUkRJOiAwMDAwN2ZmY2E2Y2I2ZDgwDQo+IFJCUDog
-MDAwMDAwMDAwMDAwMDAwMSBSMDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwMDAwMDAwMDAw
-MDAwDQo+IFIxMDogMDAwMDdmZmNhNmNiNmU4MCBSMTE6IDAwMDAwMDAwMDAwMDAyOTMgUjEyOiAw
-MDAwMDAwMDAxMThjZjQwDQo+IFIxMzogMDAwMDAwMDAwMTE4ZDk0MCBSMTQ6IGZmZmZmZmZmZmZm
-ZmZmZmYgUjE1OiAwMDAwMDAwMDAxMThjZmVjIEtlcm5lbCBPZmZzZXQ6IGRpc2FibGVkIFJlYm9v
-dGluZyBpbiA4NjQwMCBzZWNvbmRzLi4NCj4NCj4NCj4gVGVzdGVkIG9uOg0KPg0KPiBjb21taXQ6
-ICAgICAgICAgNzk2Y2Q4ZjQgZml4IGdwZg0KPiBnaXQgdHJlZTogICAgICAgaHR0cHM6Ly9naXRo
-dWIuY29tL0xpbm1pYW9oZS9saW51eC8NCj4gY29uc29sZSBvdXRwdXQ6IGh0dHBzOi8vc3l6a2Fs
-bGVyLmFwcHNwb3QuY29tL3gvbG9nLnR4dD94PTEyYjVkNTAxOTAwMDAwDQo+IGtlcm5lbCBjb25m
-aWc6ICBodHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS94Ly5jb25maWc/eD1mODJlNThhNjY2
-MWE1YWM0DQo+IGRhc2hib2FyZCBsaW5rOiBodHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS9i
-dWc/ZXh0aWQ9YzVkNWE1MWRjYmI1NThjYTBjYjUNCj4gY29tcGlsZXI6ICAgICAgIGdjYyAoR0ND
-KSAxMC4xLjAtc3l6IDIwMjAwNTA3DQo+DQoNCiNzeXogdGVzdDogaHR0cHM6Ly9naXRodWIuY29t
-L0xpbm1pYW9oZS9saW51eCB2bWFfbWVyZ2VfZml4DQoNCg==
+On 9/15/20 4:22 PM, Jason Gunthorpe wrote:
+> On Tue, Sep 15, 2020 at 05:33:30PM -0400, Peter Xu wrote:
+> 
+>>> RDMA doesn't ever use !WRITE
+>>>
+>>> I'm guessing #5 is the issue, just with a different ordering. If the
+>>> #3 pin_user_pages() preceeds the #2 fork, don't we get to the same #5?
+>>
+>> Right, but only if without MADV_DONTFORK?
+> 
+> Yes, results are that MADV_DONTFORK resolves the issue for initial
+> tests. I should know if a bigger test suite passes in a few days.
+>   
+>>>> If this is a problem, we may still need the fix patch (maybe not as urgent as
+>>>> before at least).  But I'd like to double confirm, just in case I miss some
+>>>> obvious facts above.
+>>>
+>>> I'm worred that the sudden need to have MAD_DONTFORK is going to be a
+>>> turn into a huge regression. It already blew up our first level of
+>>> synthetic test cases. I'm worried what we will see when the
+>>> application suite is run in a few months :\
+>>
+>> For my own preference I'll consider changing kernel behavior if the impact is
+>> still under control (the performance report of 30%+ boost is also attractive
+>> after the simplify-cow patch).  The other way is to maintain the old reuse
+>> logic forever, that'll be another kind of burden.  Seems no easy way on either
+>> side...
+> 
+> It seems very strange that a physical page exclusively owned by a
+> process can become copied if pin_user_pages() is active and the
+> process did fork() at some point.
+> 
+> Could the new pin_user_pages() logic help here? eg the
+> GUP_PIN_COUNTING_BIAS stuff?
+> 
+> Could the COW code consider a refcount of GUP_PIN_COUNTING_BIAS + 1 as
+> being owned by the current mm and not needing COW? The DMA pin would
+> be 'invisible' for COW purposes?
+
+
+Please do be careful to use the API, rather than the implementation. The
+FOLL_PIN refcounting system results in being able to get a "maybe
+DMA-pinned", or a "definitely not DMA-pinned", via this API call:
+
+     static inline bool page_maybe_dma_pinned(struct page *page)
+
+...which does *not* always use GUP_PIN_COUNTING_BIAS to provide that
+answer.
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
