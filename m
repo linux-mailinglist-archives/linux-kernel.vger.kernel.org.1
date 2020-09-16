@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8138826C012
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D91126C015
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgIPJDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:03:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49505 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726149AbgIPJDx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:03:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600247031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=k1t3aEF1OX+VjrQN9WEWMI8c1AvBflhlomB9um5hxKk=;
-        b=d8zM/AUuOyKv7qVnrbYYYB3kZIK/9uOgThZi5ns86Fy4DnSE3A5doSP4zBSNj48LMV/sGG
-        4O6q2IwP+2hH/VdORDwyAPSBrbx5mjCgYWFj6fneiVn0M9iwgRpfyQcuBt6WI/tVKwTymu
-        BmhuKCNQ1siag6BUR1ayos2zW1VfxyI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-8tOYClDzM0itUWfAY2fe4A-1; Wed, 16 Sep 2020 05:03:48 -0400
-X-MC-Unique: 8tOYClDzM0itUWfAY2fe4A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5981A1005E72;
-        Wed, 16 Sep 2020 09:03:46 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.192.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E040278808;
-        Wed, 16 Sep 2020 09:03:43 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Haiwei Li <lihaiwei@tencent.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Subject: [PATCH] Revert "KVM: Check the allocation of pv cpu mask"
-Date:   Wed, 16 Sep 2020 11:03:42 +0200
-Message-Id: <20200916090342.748452-1-vkuznets@redhat.com>
+        id S1726592AbgIPJF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:05:28 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:50834 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726149AbgIPJF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 05:05:28 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 150A58404A182D99E61A;
+        Wed, 16 Sep 2020 17:05:24 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 16 Sep 2020 17:05:23 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Wed, 16 Sep 2020 17:05:23 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     syzbot <syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "hdanton@sina.com" <hdanton@sina.com>,
+        Hillf Danton <hdanton@sina.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Subject: Re: general protection fault in unlink_file_vma
+Thread-Topic: general protection fault in unlink_file_vma
+Thread-Index: AdaMByb6IiUe+ccPQACQ+SPbxy1QFg==
+Date:   Wed, 16 Sep 2020 09:05:23 +0000
+Message-ID: <8d48e1ee791f4b0db8766f75b6dcc9e0@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.109]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 0f990222108d ("KVM: Check the allocation of pv cpu mask") we
-have in 5.9-rc5 has two issue:
-1) Compilation fails for !CONFIG_SMP, see:
-   https://bugzilla.kernel.org/show_bug.cgi?id=209285
-
-2) This commit completely disables PV TLB flush, see
-   https://lore.kernel.org/kvm/87y2lrnnyf.fsf@vitty.brq.redhat.com/
-
-The allocation problem is likely a theoretical one, if we don't
-have memory that early in boot process we're likely doomed anyway.
-Let's solve it properly later.
-
-This reverts commit 0f990222108d214a0924d920e6095b58107d7b59.
-
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kernel/kvm.c | 22 +++-------------------
- 1 file changed, 3 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 1b51b727b140..9663ba31347c 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -652,6 +652,7 @@ static void __init kvm_guest_init(void)
- 	}
- 
- 	if (pv_tlb_flush_supported()) {
-+		pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
- 		pv_ops.mmu.tlb_remove_table = tlb_remove_table;
- 		pr_info("KVM setup pv remote TLB flush\n");
- 	}
-@@ -764,14 +765,6 @@ static __init int activate_jump_labels(void)
- }
- arch_initcall(activate_jump_labels);
- 
--static void kvm_free_pv_cpu_mask(void)
--{
--	unsigned int cpu;
--
--	for_each_possible_cpu(cpu)
--		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
--}
--
- static __init int kvm_alloc_cpumask(void)
- {
- 	int cpu;
-@@ -790,20 +783,11 @@ static __init int kvm_alloc_cpumask(void)
- 
- 	if (alloc)
- 		for_each_possible_cpu(cpu) {
--			if (!zalloc_cpumask_var_node(
--				per_cpu_ptr(&__pv_cpu_mask, cpu),
--				GFP_KERNEL, cpu_to_node(cpu))) {
--				goto zalloc_cpumask_fail;
--			}
-+			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
-+				GFP_KERNEL, cpu_to_node(cpu));
- 		}
- 
--	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
--	pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
- 	return 0;
--
--zalloc_cpumask_fail:
--	kvm_free_pv_cpu_mask();
--	return -ENOMEM;
- }
- arch_initcall(kvm_alloc_cpumask);
- 
--- 
-2.25.4
-
+Pg0KPkhlbGxvLA0KPg0KPnN5emJvdCBoYXMgdGVzdGVkIHRoZSBwcm9wb3NlZCBwYXRjaCBidXQg
+dGhlIHJlcHJvZHVjZXIgaXMgc3RpbGwgdHJpZ2dlcmluZyBhbiBpc3N1ZToNCj5rZXJuZWwgQlVH
+IGF0IGFyY2gveDg2L21tL3BoeXNhZGRyLmM6TElORSENCj4NCj4tLS0tLS0tLS0tLS1bIGN1dCBo
+ZXJlIF0tLS0tLS0tLS0tLS0NCj5rZXJuZWwgQlVHIGF0IGFyY2gveDg2L21tL3BoeXNhZGRyLmM6
+MjghDQo+aW52YWxpZCBvcGNvZGU6IDAwMDAgWyMxXSBQUkVFTVBUIFNNUCBLQVNBTg0KPkNQVTog
+MCBQSUQ6IDY5NzUgQ29tbTogc3l6LWV4ZWN1dG9yLjIgTm90IHRhaW50ZWQgNS45LjAtcmMzLXN5
+emthbGxlciAjMCBIYXJkd2FyZSBuYW1lOiBHb29nbGUgR29vZ2xlIENvbXB1dGUgRW5naW5lL0dv
+b2dsZSBDb21wdXRlIEVuZ2luZSwgQklPUyBHb29nbGUgMDEvMDEvMjAxMQ0KPlJJUDogMDAxMDpf
+X3BoeXNfYWRkcisweGE3LzB4MTEwIGFyY2gveDg2L21tL3BoeXNhZGRyLmM6MjgNCj5Db2RlOiA5
+MiA3ZCAwOSA0YyA4OSBlMyAzMSBmZiA0OCBkMyBlYiA0OCA4OSBkZSBlOCAxMCA4ZSAzZiAwMCA0
+OCA4NSBkYiA3NSAwZCBlOCA2NiA5MSAzZiAwMCA0YyA4OSBlMCA1YiA1ZCA0MSA1YyBjMyBlOCA1
+OSA5MSAzZiAwMCA8MGY+IDBiIGU4IDUyIDkxIDNmIDAwIDQ4IGM3IGMwIDEwIDUwIGE5IDg5IDQ4
+IGJhIDAwIDAwIDAwIDAwIDAwIGZjDQo+UlNQOiAwMDE4OmZmZmZjOTAwMDU1ZTdhMTggRUZMQUdT
+OiAwMDAxMDI5Mw0KPlJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAwMDc3MDAwMDAwMDAg
+UkNYOiBmZmZmZmZmZjgxMzRiOTQ4DQo+UkRYOiBmZmZmODg4MGE4M2M4MjgwIFJTSTogZmZmZmZm
+ZmY4MTM0YjlhNyBSREk6IDAwMDAwMDAwMDAwMDAwMDYNCj5SQlA6IDAwMDAwMDc3ODAwMDAwMDAg
+UjA4OiAwMDAwMDAwMDAwMDAwMDAxIFIwOTogZmZmZmZmZmY4YzVmNGE1Nw0KPlIxMDogMDAwMDAw
+Nzc4MDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOiAwMDAwNzdmNzAwMDAwMDAwDQo+
+UjEzOiBmZmZmYzkwMDA1NWU3YTgwIFIxNDogMDAwMDAwMDAwMDAwMDIwMCBSMTU6IGRmZmZmYzAw
+MDAwMDAwMDANCj5GUzogIDAwMDAwMDAwMDIyMWM5NDAoMDAwMCkgR1M6ZmZmZjg4ODBhZTYwMDAw
+MCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQo+Q1M6ICAwMDEwIERTOiAwMDAwIEVTOiAw
+MDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPkNSMjogMDAwMDAwMDAwMDc0OTE5OCBDUjM6IDAw
+MDAwMDAwYTdkZjEwMDAgQ1I0OiAwMDAwMDAwMDAwMTUwNmYwDQo+RFIwOiAwMDAwMDAwMDAwMDAw
+MDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANCj5EUjM6IDAw
+MDAwMDAwMDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzogMDAwMDAwMDAwMDAwMDQw
+MCBDYWxsIFRyYWNlOg0KPiB2aXJ0X3RvX2hlYWRfcGFnZSBpbmNsdWRlL2xpbnV4L21tLmg6ODQ4
+IFtpbmxpbmVdICBxbGlua190b19jYWNoZSBtbS9rYXNhbi9xdWFyYW50aW5lLmM6MTI4IFtpbmxp
+bmVdDQo+IHFsaXN0X2ZyZWVfYWxsKzB4ZDkvMHgxNzAgbW0va2FzYW4vcXVhcmFudGluZS5jOjE2
+NQ0KPiBxdWFyYW50aW5lX3JlZHVjZSsweDE3ZS8weDIwMCBtbS9rYXNhbi9xdWFyYW50aW5lLmM6
+MjYxDQo+IF9fa2FzYW5fa21hbGxvYy5jb25zdHByb3AuMCsweDllLzB4ZDAgbW0va2FzYW4vY29t
+bW9uLmM6NDQyICBzbGFiX3Bvc3RfYWxsb2NfaG9vayBtbS9zbGFiLmg6NTE4IFtpbmxpbmVdICBz
+bGFiX2FsbG9jX25vZGUgbW0vc2xhYi5jOjMyNTQgW2lubGluZV0NCj4ga21lbV9jYWNoZV9hbGxv
+Y19ub2RlX3RyYWNlKzB4MTQ0LzB4M2YwIG1tL3NsYWIuYzozNTkyICBrbWFsbG9jX25vZGUgaW5j
+bHVkZS9saW51eC9zbGFiLmg6NTcyIFtpbmxpbmVdICBremFsbG9jX25vZGUgaW5jbHVkZS9saW51
+eC9zbGFiLmg6Njc3IFtpbmxpbmVdDQo+IF9fZ2V0X3ZtX2FyZWFfbm9kZSsweDEyNi8weDNiMCBt
+bS92bWFsbG9jLmM6MjA3NSAgX192bWFsbG9jX25vZGVfcmFuZ2UgbW0vdm1hbGxvYy5jOjI1MDYg
+W2lubGluZV0gIF9fdm1hbGxvY19ub2RlIG1tL3ZtYWxsb2MuYzoyNTU0IFtpbmxpbmVdDQo+IHZ6
+YWxsb2MrMHhmMi8weDFhMCBtbS92bWFsbG9jLmM6MjYwNw0KPiBkb19pcHRfZ2V0X2N0bCsweDYx
+My8weDlkMCBuZXQvaXB2NC9uZXRmaWx0ZXIvaXBfdGFibGVzLmM6ODAwDQo+IG5mX2dldHNvY2tv
+cHQrMHg3Mi8weGQwIG5ldC9uZXRmaWx0ZXIvbmZfc29ja29wdC5jOjExNiAgaXBfZ2V0c29ja29w
+dCBuZXQvaXB2NC9pcF9zb2NrZ2x1ZS5jOjE3NzggW2lubGluZV0NCj4gaXBfZ2V0c29ja29wdCsw
+eDE2NC8weDFjMCBuZXQvaXB2NC9pcF9zb2NrZ2x1ZS5jOjE3NTcNCj4gdGNwX2dldHNvY2tvcHQr
+MHg4Ni8weGQwIG5ldC9pcHY0L3RjcC5jOjM4NzYNCj4gX19zeXNfZ2V0c29ja29wdCsweDIxOS8w
+eDRjMCBuZXQvc29ja2V0LmM6MjE3MyAgX19kb19zeXNfZ2V0c29ja29wdCBuZXQvc29ja2V0LmM6
+MjE4OCBbaW5saW5lXSAgX19zZV9zeXNfZ2V0c29ja29wdCBuZXQvc29ja2V0LmM6MjE4NSBbaW5s
+aW5lXQ0KPiBfX3g2NF9zeXNfZ2V0c29ja29wdCsweGJhLzB4MTUwIG5ldC9zb2NrZXQuYzoyMTg1
+DQo+IGRvX3N5c2NhbGxfNjQrMHgyZC8weDcwIGFyY2gveDg2L2VudHJ5L2NvbW1vbi5jOjQ2DQo+
+IGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDQ0LzB4YTkNCj5SSVA6IDAwMzM6MHg0
+NjAwY2ENCj5Db2RlOiBiOCAzNCAwMSAwMCAwMCAwZiAwNSA0OCAzZCAwMSBmMCBmZiBmZiAwZiA4
+MyAzZCA4OSBmYiBmZiBjMyA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCA2NiA5MCA0OSA4
+OSBjYSBiOCAzNyAwMCAwMCAwMCAwZiAwNSA8NDg+IDNkIDAxIGYwIGZmIGZmIDBmIDgzIDFhIDg5
+IGZiIGZmIGMzIDY2IDBmIDFmIDg0IDAwIDAwIDAwIDAwIDAwDQo+UlNQOiAwMDJiOjAwMDA3ZmZm
+NjFjYTc3NzggRUZMQUdTOiAwMDAwMDIxNiBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDAzNw0KPlJB
+WDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDA3ZmZmNjFjYTc3YTAgUkNYOiAwMDAwMDAwMDAw
+NDYwMGNhDQo+UkRYOiAwMDAwMDAwMDAwMDAwMDQxIFJTSTogMDAwMDAwMDAwMDAwMDAwMCBSREk6
+IDAwMDAwMDAwMDAwMDAwMDMNCj5SQlA6IDAwMDAwMDAwMDA3NDllNjAgUjA4OiAwMDAwN2ZmZjYx
+Y2E3NzljIFIwOTogMDAwMDAwMDAwMDAwNDAwMA0KPlIxMDogMDAwMDdmZmY2MWNhNzgwMCBSMTE6
+IDAwMDAwMDAwMDAwMDAyMTYgUjEyOiAwMDAwN2ZmZjYxY2E3ODAwDQo+UjEzOiAwMDAwMDAwMDAw
+MDAwMDAzIFIxNDogMDAwMDAwMDAwMDc0OTdhMCBSMTU6IDAwMDAwMDAwMDAwMDAwMDAgTW9kdWxl
+cyBsaW5rZWQgaW46DQo+LS0tWyBlbmQgdHJhY2UgNThjMDhiMDBiMTk0ODdkOCBdLS0tDQo+UklQ
+OiAwMDEwOl9fcGh5c19hZGRyKzB4YTcvMHgxMTAgYXJjaC94ODYvbW0vcGh5c2FkZHIuYzoyOA0K
+PkNvZGU6IDkyIDdkIDA5IDRjIDg5IGUzIDMxIGZmIDQ4IGQzIGViIDQ4IDg5IGRlIGU4IDEwIDhl
+IDNmIDAwIDQ4IDg1IGRiIDc1IDBkIGU4IDY2IDkxIDNmIDAwIDRjIDg5IGUwIDViIDVkIDQxIDVj
+IGMzIGU4IDU5IDkxIDNmIDAwIDwwZj4gMGIgZTggNTIgOTEgM2YgMDAgNDggYzcgYzAgMTAgNTAg
+YTkgODkgNDggYmEgMDAgMDAgMDAgMDAgMDAgZmMNCj5SU1A6IDAwMTg6ZmZmZmM5MDAwNTVlN2Ex
+OCBFRkxBR1M6IDAwMDEwMjkzDQo+UkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJCWDogMDAwMDAwNzcw
+MDAwMDAwMCBSQ1g6IGZmZmZmZmZmODEzNGI5NDgNCj5SRFg6IGZmZmY4ODgwYTgzYzgyODAgUlNJ
+OiBmZmZmZmZmZjgxMzRiOWE3IFJESTogMDAwMDAwMDAwMDAwMDAwNg0KPlJCUDogMDAwMDAwNzc4
+MDAwMDAwMCBSMDg6IDAwMDAwMDAwMDAwMDAwMDEgUjA5OiBmZmZmZmZmZjhjNWY0YTU3DQo+UjEw
+OiAwMDAwMDA3NzgwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDAwMCBSMTI6IDAwMDA3N2Y3MDAw
+MDAwMDANCj5SMTM6IGZmZmZjOTAwMDU1ZTdhODAgUjE0OiAwMDAwMDAwMDAwMDAwMjAwIFIxNTog
+ZGZmZmZjMDAwMDAwMDAwMA0KPkZTOiAgMDAwMDAwMDAwMjIxYzk0MCgwMDAwKSBHUzpmZmZmODg4
+MGFlNjAwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDANCj5DUzogIDAwMTAgRFM6IDAw
+MDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQo+Q1IyOiAwMDAwMDAwMDAwNzQ5MTk4
+IENSMzogMDAwMDAwMDBhN2RmMTAwMCBDUjQ6IDAwMDAwMDAwMDAxNTA2ZjANCj5EUjA6IDAwMDAw
+MDAwMDAwMDAwMDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMA0K
+PkRSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAw
+MDAwMDAwNDAwDQo+DQo+DQo+VGVzdGVkIG9uOg0KPg0KPmNvbW1pdDogICAgICAgICAxNTJkMjQ2
+ZiBtbWFwOiByZXZlcnQgbW0tbW1hcC1tZXJnZS12bWEtYWZ0ZXItY2FsbF9tbWFwLWlmLi4NCj5n
+aXQgdHJlZTogICAgICAgaHR0cHM6Ly9naXRodWIuY29tL0xpbm1pYW9oZS9saW51eCB2bWFfbWVy
+Z2VfZml4DQo+Y29uc29sZSBvdXRwdXQ6IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL3gv
+bG9nLnR4dD94PTE2MmU2Y2M1OTAwMDAwDQo+a2VybmVsIGNvbmZpZzogIGh0dHBzOi8vc3l6a2Fs
+bGVyLmFwcHNwb3QuY29tL3gvLmNvbmZpZz94PTNjNWY2Y2U4ZDViNjgyOTkNCj5kYXNoYm9hcmQg
+bGluazogaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20vYnVnP2V4dGlkPWM1ZDVhNTFkY2Ji
+NTU4Y2EwY2I1DQo+Y29tcGlsZXI6ICAgICAgIGdjYyAoR0NDKSAxMC4xLjAtc3l6IDIwMjAwNTA3
+DQo+DQoNCkkgcmV2ZXJ0IG15IHByZXZpb3VzIGNvbW1pdCBhbHRvZ2V0aGVyLCBkNzBjZWM4OTgz
+MjQxYSAoIm1tOiBtbWFwOiBtZXJnZSB2bWEgYWZ0ZXIgY2FsbF9tbWFwKCkgaWYgcG9zc2libGUg
+IiksIGJ1dCB0aGVyZSBpcyBzdGlsbCBpcnJlbGV2YW50IGlzc3VlLg0KQW5kIHdpdGggbXkgcHJl
+dmlvdXMgY29tbWl0IGFuZCBwcm9wb3NlZCBwYXRjaCwgdGhlIG9yaWdpbiBnZW5lcmFsIHByb3Rl
+Y3Rpb24gZmF1bHQgaW4gdW5saW5rX2ZpbGVfdm1hIGRpc2FwcGVhcmVkLg0KU28gSSB0aGluayB0
+aGlzIGlzIGFub3RoZXIgaXNzdWUgYW5kIHRoZSBvcmlnaW4gaXNzdWUgaXMgZml4ZWQgd2l0aCBt
+eSBwYXRjaC4NClRoYW5rcy4NCg0K
