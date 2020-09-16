@@ -2,167 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B244426BE61
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F7A26BE6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgIPHni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:43:38 -0400
-Received: from mga06.intel.com ([134.134.136.31]:22721 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgIPHnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:43:37 -0400
-IronPort-SDR: 9w+ZN43qWVCDwqoonecx6fC9GgLqd1Kt5qBML2P+TKuXCuR4g6TRip4zswjD1JDk2r+EBsq/QN
- 8qGGyuhnsiJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="220975308"
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="220975308"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 00:43:36 -0700
-IronPort-SDR: OZ7tMty0VP/hRXfVXL0x4qgPXpQXMNVgdmQghv9OU0GOtBg6LdI4ZajhNrKK03UbRAXfRCzuQ8
- uyjHu6wOhSvw==
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="483196147"
-Received: from djgriffi-mobl.ger.corp.intel.com (HELO localhost) ([10.252.8.217])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 00:43:30 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Lyude Paul <lyude@redhat.com>
-Cc:     David Airlie <airlied@linux.ie>, intel-gfx@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>
-Subject: Re: [Intel-gfx] [RFC 1/5] drm/i915/dp: Program source OUI on eDP panels
-In-Reply-To: <20200915190639.GC503362@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20200915172939.2810538-1-lyude@redhat.com> <20200915172939.2810538-2-lyude@redhat.com> <20200915190639.GC503362@intel.com>
-Date:   Wed, 16 Sep 2020 10:43:35 +0300
-Message-ID: <87mu1qw4ig.fsf@intel.com>
+        id S1726473AbgIPHov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726285AbgIPHoq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:44:46 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92A6C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:44:45 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so5820422wrt.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gACftkqjBuyjf+zxcwTdPE4aVk82AzAE+qvbHK69U/A=;
+        b=VW8jw8YEYjZgdPD435inAB/oRSzC7kFip/OyJ50F6TkuQejvY7gjR6mMsmxb0pgZu4
+         0CWP/EKGJlgXwKBxMGZRAGyo8YNjbwIeX8bFmIOvcVV31Y66W5BD1Fw01Y/T4jmL+drS
+         SoNWdGUp7DaS1aBBYPItmTnL4mdzRmkENIMmI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=gACftkqjBuyjf+zxcwTdPE4aVk82AzAE+qvbHK69U/A=;
+        b=Cp9wNiRkuelof0ZPalIDqVvY2eWS/fIr2597Mj99xWARJ+qwkoRR2d5HnQZzDrRSdR
+         Z4UxJOYQRrtCRqzho6sB4VEhbNv+NorA3MBb+PQxzinQCODtf3wnv5lYRCGtApn9Is+7
+         Xn7Bp0Wmol0UGfGPJ5EECtMnpjn0RgD1qvZY2j2HWiMMTTFREsjZkU/R+suLb59KmTOh
+         8rS/g0IZdCxEW5007yhkTT0QGSNIspZ4Mg1gk1sfPO6GFqf+mmlefPVYszOab4Z2YWU8
+         Tj1EeaS9sS4he7rs+/pOi4NppkcsY/KB0MzXGapDj3CkatS9M4WepICJZIveHfB4i/B/
+         qRwA==
+X-Gm-Message-State: AOAM531U6EaPoAEw0MrVEFPDGwz/9ZJQf06vOKlrHCXT8u9sUsfEWpc2
+        OJDJ+h7RHh/7+tQXXy3EGwUkYA==
+X-Google-Smtp-Source: ABdhPJz1K5cCNxbRhfiXX5qHSgznwHKvu3aphdwgb8xTXLmzsdmPPiKGgtxrfodwW8+zN4AkEr3WKQ==
+X-Received: by 2002:adf:fec7:: with SMTP id q7mr25329042wrs.293.1600242284167;
+        Wed, 16 Sep 2020 00:44:44 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b64sm3003219wmh.13.2020.09.16.00.44.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 00:44:43 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 09:44:41 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>,
+        george.kennedy@oracle.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, syzkaller-bugs@googlegroups.com,
+        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, natechancellor@gmail.com
+Subject: Re: [PATCH] fbcon: Fix user font detection test at fbcon_resize().
+Message-ID: <20200916074441.GT438822@phenom.ffwll.local>
+Mail-Followup-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>,
+        george.kennedy@oracle.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, syzkaller-bugs@googlegroups.com,
+        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        natechancellor@gmail.com
+References: <00000000000024be1505ad487cbb@google.com>
+ <f6e3e611-8704-1263-d163-f52c906a4f06@I-love.SAKURA.ne.jp>
+ <7c52e8cd-e4cb-cd0b-40d5-b9654aec09f3@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c52e8cd-e4cb-cd0b-40d5-b9654aec09f3@I-love.SAKURA.ne.jp>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020, Rodrigo Vivi <rodrigo.vivi@intel.com> wrote:
-> On Tue, Sep 15, 2020 at 01:29:35PM -0400, Lyude Paul wrote:
->> Since we're about to start adding support for Intel's magic HDR
->> backlight interface over DPCD, we need to ensure we're properly
->> programming this field so that Intel specific sink services are exposed.
->> Otherwise, 0x300-0x3ff will just read zeroes.
->> 
->> We also take care not to reprogram the source OUI if it already matches
->> what we expect. This is just to be careful so that we don't accidentally
->> take the panel out of any backlight control modes we found it in.
+On Wed, Sep 16, 2020 at 09:01:06AM +0900, Tetsuo Handa wrote:
+> Greg, will you pick up this patch?
+> 
+> It seems that finding the real cause of [3] and actually fixing [3] will be difficult.
+> Since I can't reproduce [3] locally, I will have to try flood of "#syz test" requests
+> for debug printk() patches.
 
-(For whatever reason I didn't receive the original message.)
+Grasping for straws, but have you retested with the scrollback code
+removed already? That was full of fail and we outright deleted it:
 
->> 
->> Signed-off-by: Lyude Paul <lyude@redhat.com>
->> Cc: thaytan@noraisin.net
->> Cc: Vasily Khoruzhick <anarsoul@gmail.com>
->> ---
->>  drivers/gpu/drm/i915/display/intel_dp.c | 32 +++++++++++++++++++++++++
->>  1 file changed, 32 insertions(+)
->> 
->> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
->> index 4bd10456ad188..b591672ec4eab 100644
->> --- a/drivers/gpu/drm/i915/display/intel_dp.c
->> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
->> @@ -3428,6 +3428,7 @@ void intel_dp_sink_set_decompression_state(struct intel_dp *intel_dp,
->>  void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
->>  {
->>  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->> +	u8 edp_oui[] = { 0x00, 0xaa, 0x01 };
->
-> what are these values?
+50145474f6ef ("fbcon: remove soft scrollback code")
 
-An OUI lookup confirms these are Intel OUI.
+Cheers, Daniel
 
->
->>  	int ret, i;
->>  
->>  	/* Should have a valid DPCD by this point */
->> @@ -3443,6 +3444,14 @@ void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
->>  	} else {
->>  		struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
->>  
->> +		/* Write the source OUI as early as possible */
->> +		if (intel_dp_is_edp(intel_dp)) {
->> +			ret = drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, edp_oui,
->> +						sizeof(edp_oui));
->> +			if (ret < 0)
->> +				drm_err(&i915->drm, "Failed to write eDP source OUI\n");
->> +		}
->> +
->>  		/*
->>  		 * When turning on, we need to retry for 1ms to give the sink
->>  		 * time to wake up.
->> @@ -4530,6 +4539,23 @@ static void intel_dp_get_dsc_sink_cap(struct intel_dp *intel_dp)
->>  	}
->>  }
->>  
->> +static void
->> +intel_edp_init_source_oui(struct intel_dp *intel_dp)
->> +{
->> +	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->> +	u8 oui[] = { 0x00, 0xaa, 0x01 };
->> +	u8 buf[3] = { 0 };
->> +
->> +	if (drm_dp_dpcd_read(&intel_dp->aux, DP_SOURCE_OUI, buf, sizeof(buf)) < 0)
->> +		drm_err(&i915->drm, "Failed to read source OUI\n");
->> +
->> +	if (memcmp(oui, buf, sizeof(oui)) == 0)
->> +		return;
->> +
->> +	if (drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, oui, sizeof(oui)) < 0)
->> +		drm_err(&i915->drm, "Failed to write source OUI\n");
->> +}
-
-Maybe add this function with a parameter to force write or write only if
-necessary, and call from both places that set source OUI?
-
->> +
->>  static bool
->>  intel_edp_init_dpcd(struct intel_dp *intel_dp)
->>  {
->> @@ -4607,6 +4633,12 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
->>  	if (INTEL_GEN(dev_priv) >= 10 || IS_GEMINILAKE(dev_priv))
->>  		intel_dp_get_dsc_sink_cap(intel_dp);
->>  
->> +	/*
->> +	 * Program our source OUI so we can make various Intel-specific AUX
->> +	 * services available (such as HDR backlight controls)
->> +	 */
->> +	intel_edp_init_source_oui(intel_dp);
->
-> I believe we should restrict this to the supported platforms: cfl, whl, cml, icl, tgl
-> no?
-
-Mmh, this just exposes sink behaviour that I think can be supported by
-any platform. I don't understand the notion of "supported platforms"
-here.
-
->
->> +
->>  	return true;
->>  }
->>  
->> -- 
->> 2.26.2
->> 
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+> 
+> On 2020/09/11 7:57, Tetsuo Handa wrote:
+> > syzbot is reporting OOB read at fbcon_resize() [1], for
+> > commit 39b3cffb8cf31117 ("fbcon: prevent user font height or width change
+> >  from causing potential out-of-bounds access") is by error using
+> > registered_fb[con2fb_map[vc->vc_num]]->fbcon_par->p->userfont (which was
+> > set to non-zero) instead of fb_display[vc->vc_num].userfont (which remains
+> > zero for that display).
+> > 
+> > We could remove tricky userfont flag [2], for we can determine it by
+> > comparing address of the font data and addresses of built-in font data.
+> > But since that commit is failing to fix the original OOB read [3], this
+> > patch keeps the change minimal in case we decide to revert altogether.
+> > 
+> > [1] https://syzkaller.appspot.com/bug?id=ebcbbb6576958a496500fee9cf7aa83ea00b5920
+> > [2] https://syzkaller.appspot.com/text?tag=Patch&x=14030853900000
+> > [3] https://syzkaller.appspot.com/bug?id=6fba8c186d97cf1011ab17660e633b1cc4e080c9
+> > 
+> > Reported-by: syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>
+> > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> > Fixes: 39b3cffb8cf31117 ("fbcon: prevent user font height or width change from causing potential out-of-bounds access")
+> > Cc: George Kennedy <george.kennedy@oracle.com>
+> > ---
+> >  drivers/video/fbdev/core/fbcon.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+> > index 66167830fefd..dae7ae7f225a 100644
+> > --- a/drivers/video/fbdev/core/fbcon.c
+> > +++ b/drivers/video/fbdev/core/fbcon.c
+> > @@ -2203,7 +2203,7 @@ static int fbcon_resize(struct vc_data *vc, unsigned int width,
+> >  	struct fb_var_screeninfo var = info->var;
+> >  	int x_diff, y_diff, virt_w, virt_h, virt_fw, virt_fh;
+> >  
+> > -	if (ops->p && ops->p->userfont && FNTSIZE(vc->vc_font.data)) {
+> > +	if (p->userfont && FNTSIZE(vc->vc_font.data)) {
+> >  		int size;
+> >  		int pitch = PITCH(vc->vc_font.width);
+> >  
+> > 
+> 
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
