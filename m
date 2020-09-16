@@ -2,97 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B0D26BF4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F81926BF30
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgIPIaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:30:14 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:54522 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgIPIaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:30:10 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 891FBA0040;
-        Wed, 16 Sep 2020 10:30:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 891FBA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1600245007; bh=TQ91kqqBQQybpadn/+Q9Y8FSsSvI6ypsdUv0cosU3CM=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=IiaEKTyCnpjT8j/yhk3609FCgP8g6kueBlGDF+od8ixsS6wI/CmngbZHYNSjkl36E
-         gzxvA3w1VHj2zJvTbiuBXwiggWrTZR1iszIGZrWABsUnuHQ0kvFlLPhpDqvRf1gQG7
-         tTGEvhi/xScRmH8+2wg37cNYh9JzWFob+6RY/hWI=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Wed, 16 Sep 2020 10:29:52 +0200 (CEST)
-Subject: Re: [PATCH] soundwire: Add generic bandwidth allocation algorithm
-From:   Jaroslav Kysela <perex@perex.cz>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, gregkh@linuxfoundation.org,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, hui.wang@canonical.com,
-        srinivas.kandagatla@linaro.org, bard.liao@intel.com,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, linux-kernel@vger.kernel.org
-References: <20200908131520.5712-1-yung-chuan.liao@linux.intel.com>
- <fdf22a3c-457f-09ef-8dc5-c0f3871cf2ce@perex.cz>
-Message-ID: <02abf228-f331-61fb-d8f6-d1df4b2f54a3@perex.cz>
-Date:   Wed, 16 Sep 2020 10:29:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726594AbgIPI0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:26:53 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:34425 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgIPI0r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:26:47 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 38CC5FF806;
+        Wed, 16 Sep 2020 08:26:40 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 10:30:32 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v5 1/3] media: i2c: ov772x: Parse endpoint properties
+Message-ID: <20200916083032.yif4veaf3n44hkpf@uno.localdomain>
+References: <20200915174235.1229-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200915174235.1229-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200916074737.phc6atpsahxowfjt@uno.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <fdf22a3c-457f-09ef-8dc5-c0f3871cf2ce@perex.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200916074737.phc6atpsahxowfjt@uno.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 09. 09. 20 v 8:26 Jaroslav Kysela napsal(a):
-> Dne 08. 09. 20 v 15:15 Bard Liao napsal(a):
->> This algorithm computes bus parameters like clock frequency, frame
->> shape and port transport parameters based on active stream(s) running
->> on the bus.
->>
->> Developers can also implement their own .compute_params() callback for
->> specific resource management algorithm, and set if before calling
->> sdw_add_bus_master()
->>
->> Credits: this patch is based on an earlier internal contribution by
->> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. All hard-coded
->> values were removed from the initial contribution to use BIOS
->> information instead.
->>
->> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->> ---
->>  drivers/soundwire/Kconfig                     |   5 +
->>  drivers/soundwire/Makefile                    |   3 +
->>  drivers/soundwire/bus.c                       |   6 +
->>  drivers/soundwire/bus.h                       |  46 +-
->>  .../soundwire/generic_bandwidth_allocation.c  | 427 ++++++++++++++++++
->>  drivers/soundwire/intel.c                     |   3 +
->>  drivers/soundwire/stream.c                    |  12 +
->>  include/linux/soundwire/sdw.h                 |   3 +
->>  8 files changed, 503 insertions(+), 2 deletions(-)
->>  create mode 100644 drivers/soundwire/generic_bandwidth_allocation.c
-> 
-> I did testing and I've not found any issues. The abstraction looks good.
-> 
-> Acked-by: Jaroslav Kysela <perex@perex.cz>
-> 
+Hi Prabhakar,
+  sorry, two more tiny nits
 
-Vinod, ping.... This is the last patch which is missing to get the soundwire
-audio working on some Intel hardware platforms (laptops) which are already on
-the market.
+On Wed, Sep 16, 2020 at 09:47:37AM +0200, Jacopo Mondi wrote:
+> Hi Prabhakar,
+>
+> On Tue, Sep 15, 2020 at 06:42:33PM +0100, Lad Prabhakar wrote:
+> > Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
+> > to determine bus-type and store it locally in priv data.
+> >
+> > v4l2_fwnode_endpoint_alloc_parse() with bus_type set to
+> > V4L2_MBUS_PARALLEL falls back to V4L2_MBUS_PARALLEL thus handling
+> > backward compatibility with existing DT where bus-type isn't specified.
+>
+>
+> I don't think this is necessary here. This patch does not need to
+> handle any retrocompatibility, as only PARALLEL is supported.
+>
+> The 'right' way to put it to me would be
+> "Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
+> to determine the bus type and store it in the driver structure.
+>
+> Set bus_type to V4L2_MBUS_PARALLEL as it's the only supported one"
+>
+> See comment in the next patch for retrocompatibility
+>
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  drivers/media/i2c/ov772x.c | 25 +++++++++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> >
+> > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> > index 2cc6a678069a..4ab4b3c883d0 100644
+> > --- a/drivers/media/i2c/ov772x.c
+> > +++ b/drivers/media/i2c/ov772x.c
+> > @@ -31,6 +31,7 @@
+> >  #include <media/v4l2-ctrls.h>
+> >  #include <media/v4l2-device.h>
+> >  #include <media/v4l2-event.h>
+> > +#include <media/v4l2-fwnode.h>
+> >  #include <media/v4l2-image-sizes.h>
+> >  #include <media/v4l2-subdev.h>
+> >
+> > @@ -434,6 +435,7 @@ struct ov772x_priv {
+> >  #ifdef CONFIG_MEDIA_CONTROLLER
+> >  	struct media_pad pad;
+> >  #endif
+> > +	enum v4l2_mbus_type		  bus_type;
+> >  };
+> >
+> >  /*
+> > @@ -1354,6 +1356,8 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
+> >
+> >  static int ov772x_probe(struct i2c_client *client)
+> >  {
+> > +	struct v4l2_fwnode_endpoint bus_cfg;
+> > +	struct fwnode_handle	*ep;
+> >  	struct ov772x_priv	*priv;
+> >  	int			ret;
+> >  	static const struct regmap_config ov772x_regmap_config = {
+> > @@ -1415,6 +1419,27 @@ static int ov772x_probe(struct i2c_client *client)
+> >  		goto error_clk_put;
+> >  	}
+> >
+> > +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> > +					    NULL);
+> > +	if (!ep) {
+> > +		dev_err(&client->dev, "endpoint node not found\n");
 
-				Thank you,
-					Jaroslav
+Nit: other error messages in the driver start with a capital letter,
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> > +		ret = -EINVAL;
+> > +		goto error_clk_put;
+> > +	}
+> > +
+> > +	/* For backward compatibility with the existing DT where
+> > +	 * bus-type isn't specified v4l2_fwnode_endpoint_alloc_parse()
+> > +	 * with bus_type set to V4L2_MBUS_PARALLEL falls back to
+> > +	 * V4L2_MBUS_PARALLEL
+> > +	 */
+>
+> You can drop this comment block
+>
+
+Or better move it to the next patch. Two nits in the meantime:
+
+Use
+        /*
+         * This
+
+in place of
+
+        /* This
+
+And I would write it as something like
+
+        /*
+         * For backward compatibility with older DTS where the
+         * bus-type property was not mandatory, assume
+         * V4L2_MBUS_PARALLEL as it was the only supported bus at the
+         * time. v4l2_fwnode_endpoint_alloc_parse() will not fail if
+         * 'bus-type' is not specified.
+         */
+
+Thanks
+   j
+
+> > +	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
+> > +	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+> > +	priv->bus_type = bus_cfg.bus_type;
+>
+> Set this after if (ret)
+>
+> > +	v4l2_fwnode_endpoint_free(&bus_cfg);
+> > +	fwnode_handle_put(ep);
+> > +	if (ret)
+> > +		goto error_clk_put;
+> > +
+> >  	ret = ov772x_video_probe(priv);
+> >  	if (ret < 0)
+> >  		goto error_gpio_put;
+> > --
+> > 2.17.1
+> >
