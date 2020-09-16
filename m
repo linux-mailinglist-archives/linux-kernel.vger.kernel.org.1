@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A26B26C69F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B14226C64C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgIPR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:56:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727648AbgIPRzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:55:31 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36ED3222EA;
-        Wed, 16 Sep 2020 16:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600274322;
-        bh=rflpX5n+9OObJA8GzIUK1V/BxsZIGf+Dt4zGo4jzs5A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=feZ82ZrsZ+ZgI7uB+wqDcLOBx6pjp6unANhcnBAzF9+sdsU3ARzjL9H7JLe9QGque
-         +wuBy8qGITyz3UwWl3YRcdpq6I1S62IGvfKL+NpNxFtqQTCNWSPPmiWOohbKSHGMbg
-         e1uVVBB8xaUDjBGEwRq5hxKzu0uzlfudWwfFS5/8=
-Date:   Wed, 16 Sep 2020 09:38:40 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Omer Shpigelman <oshpigelman@habana.ai>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 12/15] habanalabs/gaudi: add debugfs entries for the NIC
-Message-ID: <20200916093840.27112c98@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAFCwf12o71waoJ9T5kL=M-re8+LzRk+EuzbJARB22wk6+ypQdw@mail.gmail.com>
-References: <20200910161126.30948-1-oded.gabbay@gmail.com>
-        <20200910161126.30948-13-oded.gabbay@gmail.com>
-        <20200910130138.6d595527@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf113A_=da2fGxgMbq_V0OcHsxdp5MpfHiUfeew+gEdnjaQ@mail.gmail.com>
-        <20200910131629.65b3e02c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf10XdCDhLeyiArc29PAJ_7=BGpdiUvFRotvFHieiaRn=aA@mail.gmail.com>
-        <20200910133058.0fe0f5e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <AM0PR02MB552316B9A1635C18F8464116B8230@AM0PR02MB5523.eurprd02.prod.outlook.com>
-        <20200914095018.21808fae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf12o71waoJ9T5kL=M-re8+LzRk+EuzbJARB22wk6+ypQdw@mail.gmail.com>
+        id S1727369AbgIPRop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:44:45 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:36724 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727346AbgIPRlH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:41:07 -0400
+Received: by mail-lf1-f65.google.com with SMTP id x69so7905881lff.3;
+        Wed, 16 Sep 2020 10:41:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7K53KnV3RB0dBmHomdKTRhU0IiLbQ4+LVNa0ye9IqpI=;
+        b=XO0jE2YWluxGLF1NkWeNI5+guceqtHhyq2y8vSqFOHO6wPOmi8GNrHdH4Ia14eDIiX
+         NTAo0sQt66iT/hOhjwGV4EvNUMYy6CTGAi+6V9EuOw4tWA4aJpIRGVa13u4sHtgV3o3y
+         mJmxBJ0RQGnQ18Iwk72z5wkooPM0qQizoXbDWGM6jgB9J0b5WgC6cgjKGb2Pvw349DcB
+         gdvwB63FDpUgEsREmvK9PIVc75ImXto1WZGEFN+0rINhA2vECBH0YZgdbVaHOv09Qe/K
+         xJeO0DETnXqlVnd7MceBDZ6W2Nj/h5qWjCkaCvErVMalawjDf4nATXUSR13MQ6hB47Tt
+         Hcpw==
+X-Gm-Message-State: AOAM533/LQ7ONQ6ZFTILxEObzINjk31zJyxwjHssqc46Ke6/1QWyyIhB
+        5L8iz3PpnU5ckQDHxe22+QK82kaIrAMuN+vF
+X-Google-Smtp-Source: ABdhPJxBtful0Z+qE+L5pXwSxbO+yea+lOU0v+qNQxTnSCG1x8dx7LmcGHJsv0G0v/GE5JcpanqZ4A==
+X-Received: by 2002:adf:f084:: with SMTP id n4mr4551624wro.26.1600276345057;
+        Wed, 16 Sep 2020 10:12:25 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.191])
+        by smtp.googlemail.com with ESMTPSA id n11sm34074076wrx.91.2020.09.16.10.12.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Sep 2020 10:12:24 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 19:12:21 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] ARM: dts: exynos: Align OPP table name with
+ dt-schema
+Message-ID: <20200916171221.GC19427@kozik-lap>
+References: <20200903191438.12781-1-krzk@kernel.org>
+ <20200903191438.12781-5-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200903191438.12781-5-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 15:57:16 +0300 Oded Gabbay wrote:
-> On Mon, Sep 14, 2020 at 7:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > What's the use for a networking device which only communicates with
-> > itself, other than testing?  
+On Thu, Sep 03, 2020 at 09:14:37PM +0200, Krzysztof Kozlowski wrote:
+> Device tree nodes should have hyphens instead of underscores.  This is
+> also expected by the bindings.
 > 
-> No use, and we do have a suite of tests that runs from user-space on
-> the device after we move the interfaces to loopback mode.
-> The main problem, as Omer said, is that we have two H/W bugs:
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> 1. Where you need to reset the entire SoC in case you want to move a
-> single interface into (or out of) loopback mode. So doing it via
-> ethtool will cause a reset to the entire SoC, and if you want to move
-> all 10 ports to loopback mode, you need to reset the device 10 times
-> before you can actually use that.
+> ---
 > 
-> 2. Our 10 ports are divided into 5 groups of 2 ports each, from H/W
-> POV. That means if you move port 0 to loopback mode, it will affect
-> port 1 (and vice-versa). I don't think we want that behavior.
-> 
-> That's why we need this specific exception to the rule and do it via
-> debugfs. I understand it is not common practice, but due to H/W bugs
-> we can't workaround, we ask this exception.
+> Changes since v1:
+> 1. New patch
+> ---
+>  arch/arm/boot/dts/exynos4412.dtsi | 16 ++++++++--------
+>  arch/arm/boot/dts/exynos5250.dtsi |  2 +-
+>  2 files changed, 9 insertions(+), 9 deletions(-)
 
-Are those tests open source?
+Applied.
 
-Are you sure you need this upstream? Are your users going to run those
-tests?
+Best regards,
+Krzysztof
+
