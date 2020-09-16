@@ -2,122 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F407226C941
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DA326C996
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgIPTFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:05:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727431AbgIPRqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:46:19 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727414AbgIPTMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:12:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727236AbgIPRkj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:40:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600278036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=N/FooNR41ggN094Lgldj1TdOqktbtV3zDMiLDM3Ds1M=;
+        b=UkqjcmrN6BzFC5lBFFyBbSXCtJhkhcK9uJRoLb92x6h0aNawyt66REH5ghwoTmVftAtBlm
+        k8IdNqVWl7KGuyKvptdfsNkZtzMPKNWCrsDeTHZbeHb6kN1wuXblboRC3PCW2EPlzoQv8w
+        y09Crd2noC+y6cgeI5zDYfga7j46x20=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-1rNvWUVlOs2V3KrkUVwlVA-1; Wed, 16 Sep 2020 11:29:53 -0400
+X-MC-Unique: 1rNvWUVlOs2V3KrkUVwlVA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01EDE20715;
-        Wed, 16 Sep 2020 15:25:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600269955;
-        bh=L3ATN5SkAg5QienUVgSnHS6amRSeN8XZTpAIwp8DitY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V8ZewoTBOL5l0jFfC96BgwpiJ+ivSbCO4hZD3xfFCotWrrVPWPgOflJGJ/gieF4SS
-         S0Ie5aCWSPLp8nJhoKxr05Kw6R/0ChNkl3symgCA3pVhuTUf0NU4GwYj1E2yxENXpB
-         Vd3xSHrXr5oA+4z3Uju2fVOSjxacrj6WwEuWgqbE=
-Date:   Wed, 16 Sep 2020 17:26:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Prateek Sood <prsood@codeaurora.org>, Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-Message-ID: <20200916152629.GD3018065@kroah.com>
-References: <20200915140653.610388773@linuxfoundation.org>
- <b94c29b3-ef68-897b-25a8-e6fcc181a22a@linuxfoundation.org>
- <8277900f-d300-79fa-eac7-096686a6fbc3@linuxfoundation.org>
- <20200916062958.GH142621@kroah.com>
- <69e7c908-4332-91fd-bdb2-6be19fcbf126@linuxfoundation.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AA7884E247;
+        Wed, 16 Sep 2020 15:29:50 +0000 (UTC)
+Received: from [10.36.113.190] (ovpn-113-190.ams2.redhat.com [10.36.113.190])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C9009610F2;
+        Wed, 16 Sep 2020 15:29:42 +0000 (UTC)
+Subject: Re: [RFC] autonuma: Migrate on fault among multiple bound nodes
+To:     Qian Cai <cai@redhat.com>, Huang Ying <ying.huang@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+References: <20200916005936.232788-1-ying.huang@intel.com>
+ <2fe2a22235a0474b4a3de939cc22c19affc945fd.camel@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <91cfda06-0286-cb36-01fb-23cf28facee4@redhat.com>
+Date:   Wed, 16 Sep 2020 17:29:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <69e7c908-4332-91fd-bdb2-6be19fcbf126@linuxfoundation.org>
+In-Reply-To: <2fe2a22235a0474b4a3de939cc22c19affc945fd.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:26:48AM -0600, Shuah Khan wrote:
-> On 9/16/20 12:29 AM, Greg Kroah-Hartman wrote:
-> > On Tue, Sep 15, 2020 at 08:54:24PM -0600, Shuah Khan wrote:
-> > > On 9/15/20 3:06 PM, Shuah Khan wrote:
-> > > > On 9/15/20 8:11 AM, Greg Kroah-Hartman wrote:
-> > > > > This is the start of the stable review cycle for the 5.8.10 release.
-> > > > > There are 177 patches in this series, all will be posted as a response
-> > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > let me know.
-> > > > > 
-> > > > > Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
-> > > > > Anything received after that time might be too late.
-> > > > > 
-> > > > > The whole patch series can be found in one patch at:
-> > > > >      https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
-> > > > > 
-> > > > > or in the git tree and branch at:
-> > > > >      git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > > > linux-5.8.y
-> > > > > and the diffstat can be found below.
-> > > > > 
-> > > > > thanks,
-> > > > > 
-> > > > > greg k-h
-> > > > > 
-> > > > 
-> > > > Compiled and booted fine. wifi died:
-> > > > 
-> > > > ath10k_pci 0000:02:00.0: could not init core (-110)
-> > > > ath10k_pci 0000:02:00.0: could not probe fw (-110)
-> > > > 
-> > > > This is regression from 5.8.9 and 5.9-rc5 works just fine.
-> > > > 
-> > > > I will try to bisect later this evening to see if I can isolate the
-> > > > commit.
-> > > > 
-> > > 
-> > > The following commit is what caused ath10k_pci driver problem
-> > > that killed wifi.
-> > > 
-> > > Prateek Sood <prsood@codeaurora.org>
-> > >      firmware_loader: fix memory leak for paged buffer
-> > > 
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.8.y&id=ec0a59266c9c9f46037efd3dcc0323973e102271
-> > 
-> > Ugh, that's not good, is this also a problem in 5.9-rc5 as well?  For
-> > reference, this is commit 4965b8cd1bc1 ("firmware_loader: fix memory
-> > leak for paged buffer") in Linus's tree.
-> > 
+On 16.09.20 15:39, Qian Cai wrote:
+> On Wed, 2020-09-16 at 08:59 +0800, Huang Ying wrote:
+>>  static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+>> @@ -2474,11 +2481,13 @@ int mpol_misplaced(struct page *page, struct
+>> vm_area_struct *vma, unsigned long
+>>  	int thisnid = cpu_to_node(thiscpu);
+>>  	int polnid = NUMA_NO_NODE;
+>>  	int ret = -1;
+>> +	bool moron;
 > 
-> I am not seeing this on Linux 5.9-rc5 for sure.
+> Are you really going to use that name those days?
 > 
-> > And it should be showing up in 5.4.y at the moment too, as this patch is
-> > in that tree right now...
-> > 
 > 
-> I don't see this patch in  4.19.146-rc1
 
-It's not there, it's in 5.4.66-rc1, which worked for you somehow, right?
+include/uapi/linux/mempolicy.h:#define MPOL_F_MORON     (1 << 4) /*
+Migrate On protnone Reference On Node */
 
-> Linus's tree works for with this patch in. I compared the two files
-> for differences in commit between Linus's tree and 5.8.10-rc1
-> 
-> Couldn't find anything obvious.
+Not commenting the decision for that name. It's uapi ... and naming the
+variable like the uapi flag seems to be a sane thing to do ... hmmm ...
 
-Again, really odd...
+-- 
+Thanks,
 
-I don't have a problem dropping it, but I should drop it from both 5.4.y
-and 5.8.y, right?
+David / dhildenb
 
-thanks,
-
-greg k-h
