@@ -2,122 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C00126BFA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF26726BFB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgIPIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S1726632AbgIPIsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgIPIqy (ORCPT
+        with ESMTP id S1726068AbgIPIs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:46:54 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24DFC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:46:53 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id g10so5932374otq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:46:53 -0700 (PDT)
+        Wed, 16 Sep 2020 04:48:27 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8705DC06174A;
+        Wed, 16 Sep 2020 01:48:27 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id n61so5926749ota.10;
+        Wed, 16 Sep 2020 01:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mFHlsqUTp6bF1BGPzUjg3LJj5CvZI8A5XHbHTxJpfjI=;
-        b=s3aJCgj3o2+HOyPW2y5oQ6FHm99qHE3quyCn9AiqVXCY29lH7v25P4pV3RaBzYr6tI
-         TXsfCsViS30UfmXp9txl1r1XYHoJgUKcr2i0ukFwUOgdjpL8t96JsBVxl1rMyQ7G7TZL
-         tz5nog7zbQMP0vGP2MFs1KLVoqnyTD3Qc5KXgpr9B9GZFSRwIDLz3ATpV344qAa5G9u7
-         K41LFww87ee6HgxlRrG87o8HJCTj/uJhboUgZozUgkj1oTAyrTJ6hdFoTmTX/QyIvJhi
-         t1kUldhN7ncNvR9yn63zkry9G6szzV1kc+pC7ZvAYdJZbhGo8Ta3Lkq8iHsP1qBCUxr+
-         MKWg==
+        bh=9WmfdGG11fZlXHtIWtmEZpI64NmbJvrHDfdVUWJJ26I=;
+        b=WTBZsz3I1yt7dHuR/zcAGYSfhZgF/fh/i7uG0aE1q0wmhrwqhH5mV72hu1CWBEfP0x
+         NhoVDmEdXyNoGeiuHRFcfj8uRKdJerbF8uPZVcuZdgonfm1ix+F63SZTVXv/Sj58OElV
+         m04+wAMYuOKYa9THDLTCPWbO5KowcMYGFoXRhyGy0Bh5wKzeXLYpSxpd0R+GQnY3X+Lw
+         lZECnH8kD1fyLyXpHk4bTRtyBOxG5sR0IqtdXkB9EwBouBo1pwRENRcESlkdQWtLqk25
+         JUeBKq5UQcKfv/65Cft1+edkDTBMNLL6dpKpEP+p1V5jOaVsSJ5ySBHE0RZfukFa6ndF
+         dzXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mFHlsqUTp6bF1BGPzUjg3LJj5CvZI8A5XHbHTxJpfjI=;
-        b=I8yNlo6buy1W7wtoD6SWZBpoCM/gb0TTnFPD+yecv6Br5SsKgwmy3NAOjJTAyqqFOy
-         cMz0Hc5tXSunVK+/RppcKpMTEnszT8efzdPVy25I9ZKXMO/htKOS1lwWkaK8gIngEIcf
-         ub3RI2Fj+gS5IUOD4I32Dktz/zWwTMALIsm5NtP6n3v6bqoyayjPAXzbglbz8R1RwVL2
-         Xf1CDQpci4mDD3b1jeetJXS2mAkHIrx+DKEzj57SqZXgzEb/c1dUeACM8/tsGo+pWerN
-         Yi1C+ovkYTxvIdqdPuu0CZDZcNB4NQl8Uil/SNaFkNIOQ4J6itLORzuPTrVlItMEU3K6
-         ruKA==
-X-Gm-Message-State: AOAM531KHQd+q+AyGr4Qv5T+xFA28wJumMsUXo8B50eSsdG2tS9vedka
-        IjW4NmUlvu/QTpYOBg1qJwiwELYm1j/tfXWtb+Uhcw==
-X-Google-Smtp-Source: ABdhPJxtpLioQG/Z3NDJwdR4UBTH2EAWi1MSqQgFDS5qx+9E3jTvri8hk9NLITZf4bPTuyioP0r1Q9SVhKuxiHLkINg=
-X-Received: by 2002:a9d:66a:: with SMTP id 97mr2793069otn.233.1600246013074;
- Wed, 16 Sep 2020 01:46:53 -0700 (PDT)
+        bh=9WmfdGG11fZlXHtIWtmEZpI64NmbJvrHDfdVUWJJ26I=;
+        b=Qc8FeC65hR6CyJUyWhmWwTE8VsG0ohf5/k+mgNY9nvwsgy52DBo9wnLE0ombHNglUf
+         DYMD7SHn8P0BMBPsI9sy/lHe3ZfdSM0iG0riXNmhr8DZS/pDVV//wDYuPJTPnIqxJVwe
+         csdPlT91FNppt2TJiefO6EUoa3xriWmIKO7t+5xgtxThwhxJ7n4SuYWcY+O+q8rpEach
+         xn8I6aqDmyojept3D4k+lIlG5KT2dj3M/3L2sR6oaou1aVfn3p4IOXCMRsB0xA9IVhQA
+         472vCyz36tOFPwB5kvZexC164/KS34mTaoifnjjA13oc1jXMfdr/CknfkyK7dV/F2fM1
+         j/sg==
+X-Gm-Message-State: AOAM530XJVXsZF8Y9XZ4YsdyVMdxcXvtQCXKVQRha1penSfTYlq1X76L
+        uMVVMAxGkfGPSBTZ/Yyo93M530YJDicv15mLbqk=
+X-Google-Smtp-Source: ABdhPJwISwR0m1rtGDZALu5HLELsrHJCDuhuDRh2Wv0WsYeZ5yobjBKDu6QZDuf+CQPmlYwZlkuTGmR3YslmwW7D8Ow=
+X-Received: by 2002:a9d:6d95:: with SMTP id x21mr16350478otp.339.1600246106782;
+ Wed, 16 Sep 2020 01:48:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble> <20200915172152.GR14436@zn.tnic>
- <CAKwvOdkh=bZE6uY8zk_QePq5B3fY1ue9VjEguJ_cQi4CtZ4xgw@mail.gmail.com>
- <CANpmjNPWOus2WnMLSAXnzaXC5U5RDM3TTeV8vFDtvuZvrkoWtA@mail.gmail.com> <20200916083032.GL2674@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200916083032.GL2674@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 16 Sep 2020 10:46:41 +0200
-Message-ID: <CANpmjNOBUp0kRTODJMuSLteE=-woFZ2nUzk1=H8wqcusvi+T_g@mail.gmail.com>
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915.134252.1280841239760138359.davem@davemloft.net>
+ <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
+ <20200916062614.GF142621@kroah.com> <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
+ <20200916074217.GB189144@kroah.com> <CAFCwf10zLR9v65sgGGdkcf+JzZaw_WORAbQvEw-hbbfj=dy2Xg@mail.gmail.com>
+ <20200916082226.GA509119@kroah.com>
+In-Reply-To: <20200916082226.GA509119@kroah.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Wed, 16 Sep 2020 11:47:58 +0300
+Message-ID: <CAFCwf1366_GoTj1gpneJBSqVxJ1mOnsdZiC+DJLG85GHGfZrzw@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     David Miller <davem@davemloft.net>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 at 10:30, <peterz@infradead.org> wrote:
-> On Tue, Sep 15, 2020 at 08:09:16PM +0200, Marco Elver wrote:
-> > On Tue, 15 Sep 2020 at 19:40, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > On Tue, Sep 15, 2020 at 10:21 AM Borislav Petkov <bp@alien8.de> wrote:
+On Wed, Sep 16, 2020 at 11:21 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> > > > init/calibrate.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-> > > > init/calibrate.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
-> > > > init/version.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-> > > > init/version.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
-> > > > certs/system_keyring.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-> > > > certs/system_keyring.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> On Wed, Sep 16, 2020 at 11:02:39AM +0300, Oded Gabbay wrote:
+> > On Wed, Sep 16, 2020 at 10:41 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
+> > > > On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
+> > > > > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
+> > > > > > >
+> > > > > > > From: Oded Gabbay <oded.gabbay@gmail.com>
+> > > > > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
+> > > > > > >
+> > > > > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > > > > > > > into the habanalabs driver.
+> > > > > > > >
+> > > > > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > > > > > > > are in that patch's commit message.
+> > > > > > > >
+> > > > > > > > Link to v2 cover letter:
+> > > > > > > > https://lkml.org/lkml/2020/9/12/201
+> > > > > > >
+> > > > > > > I agree with Jakub, this driver definitely can't go-in as it is currently
+> > > > > > > structured and designed.
+> > > > > > Why is that ?
+> > > > > > Can you please point to the things that bother you or not working correctly?
+> > > > > > I can't really fix the driver if I don't know what's wrong.
+> > > > > >
+> > > > > > In addition, please read my reply to Jakub with the explanation of why
+> > > > > > we designed this driver as is.
+> > > > > >
+> > > > > > And because of the RDMA'ness of it, the RDMA
+> > > > > > > folks have to be CC:'d and have a chance to review this.
+> > > > > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
+> > > > > > the kernel and we can't connect to it due to the lack of H/W support
+> > > > > > we have
+> > > > > > Therefore, I don't see why we need to CC linux-rdma.
+> > > > > > I understood why Greg asked me to CC you because we do connect to the
+> > > > > > netdev and standard eth infrastructure, but regarding the RDMA, it's
+> > > > > > not really the same.
+> > > > >
+> > > > > Ok, to do this "right" it needs to be split up into separate drivers,
+> > > > > hopefully using the "virtual bus" code that some day Intel will resubmit
+> > > > > again that will solve this issue.
+> > > > Hi Greg,
+> > > > Can I suggest an alternative for the short/medium term ?
+> > > >
+> > > > In an earlier email, Jakub said:
+> > > > "Is it not possible to move the files and still build them into a single
+> > > > module?"
+> > > >
+> > > > I thought maybe that's a good way to progress here ?
+> > >
+> > > Cross-directory builds of a single module are crazy.  Yes, they work,
+> > > but really, that's a mess, and would never suggest doing that.
+> > >
+> > > > First, split the content to Ethernet and RDMA.
+> > > > Then move the Ethernet part to drivers/net but build it as part of
+> > > > habanalabs.ko.
+> > > > Regarding the RDMA code, upstream/review it in a different patch-set
+> > > > (maybe they will want me to put the files elsewhere).
+> > > >
+> > > > What do you think ?
+> > >
+> > > I think you are asking for more work there than just splitting out into
+> > > separate modules :)
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > Hi Greg,
 > >
-> > This one also appears with Clang 11. This is new I think because we
-> > started emitting ASAN ctors for globals redzone initialization.
-> >
-> > I think we really do not care about precise stack frames in these
-> > compiler-generated functions. So, would it be reasonable to make
-> > objtool ignore all *san.module_ctor and *san.module_dtor functions (we
-> > have them for ASAN, TSAN, MSAN)?
+> > If cross-directory building is out of the question, what about
+> > splitting into separate modules ? And use cross-module notifiers/calls
+> > ? I did that with amdkfd and amdgpu/radeon a couple of years back. It
+> > worked (that's the best thing I can say about it).
 >
-> The thing is, if objtool cannot follow, it cannot generate ORC data and
-> our unwinder cannot unwind through the instrumentation, and that is a
-> fail.
+> That's fine with me.
 >
-> Or am I missing something here?
+> > The main problem with this "virtual bus" thing is that I'm not
+> > familiar with it at all and from my experience I imagine it would take
+> > a considerable time and effort to upstream this infrastructure work.
+>
+> It shouldn't be taking that long, but for some unknown reason, the
+> original author of that code is sitting on it and not resending it.  Go
+> poke them through internal Intel channels to find out what the problem
+> is, as I have no clue why a 200-300 line bus module is taking so long to
+> get "right" :(
+>
+> I'm _ALMOST_ at the point where I would just do that work myself, but
+> due to my current status with Intel, I'll let them do it as I have
+> enough other things on my plate...
+>
+> > This could delay the NIC code for a couple of years, which by then
+> > this won't be relevant at all.
+>
+> Why wouldn't this code be relevant in a year?  It's going to be 2+ years
+> before any of this shows up in an "enterprise distro" based on their
+> release cycles anyway :)
+>
+> thanks,
+>
+> greg k-h
 
-They aren't about the actual instrumentation. The warnings are about
-module_ctor/module_dtor functions which are compiler-generated, and
-these are only called on initialization/destruction (dtors only for
-modules I guess).
+Hi Greg,
+ok, I'll take a look. Do you happen to have the name of the patch-set / author ?
 
-E.g. for KASAN it's the calls to __asan_register_globals that are
-called from asan.module_ctor. For KCSAN the tsan.module_ctor is
-effectively a noop (because __tsan_init() is a noop), so it really
-doesn't matter much.
-
-Is my assumption correct that the only effect would be if something
-called by them fails, we just don't see the full stack trace? I think
-we can live with that, there are only few central places that deal
-with ctors/dtors (do_ctors(), ...?).
-
-The "real" fix would be to teach the compilers about "frame pointer
-save/setup" for generated functions, but I don't think that's
-realistic.
+Regarding the RDMA stuff, I'll do some work internally to separate it
+from the Ethernet code and then will send that code only to RDMA
+people with more detailed explanations.
 
 Thanks,
--- Marco
+Oded
