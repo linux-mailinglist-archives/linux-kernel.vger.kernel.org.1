@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983C926C441
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E5026C49A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgIPPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 11:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        id S1726249AbgIPPwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 11:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIPPaH (ORCPT
+        with ESMTP id S1726191AbgIPP3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:30:07 -0400
+        Wed, 16 Sep 2020 11:29:52 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403BBC02C293;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1928C02C291;
         Wed, 16 Sep 2020 08:20:16 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:12:06 -0000
+Date:   Wed, 16 Sep 2020 15:12:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600269127;
+        s=2020; t=1600269129;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pf0+ufXR0xc+j9jc48XVsAZnZZKWGa6q0O/P9Yz/b7k=;
-        b=POtzbeV93GLe1QBN3WKeUgTo1oemCYCEZeJIBMwyM4STuL9V93XjoXrf620WhxnYcdLGV/
-        zPwuWzlZ5Yfg+Dkl5Ew7RFyFM2nvqXq5NyO8xlxT2JfRtDPamI+kqk7jRuqwE5cp/1K507
-        3BJOXtdSrGqzES4XLkyl8BRBrMAHmtYeF8cXhBgHAbSh8+YS2mbSt6Z1FDgwMcqi11YBT4
-        nx8545YSNmuNIae+PDNLGDMC9x8AFpg14T5BAfzWr35hyXZTKbEU/6dPNC0PEw4hFydhn5
-        GicYJ9OgFrUydRjAVl9ZNxboyRHw4TDW8Y7ptmJZ1p5t5ZGb1zbvzUvH00R07Q==
+        bh=4W66X9vT4ZasibPwcKebQcLDgO1s4Fxc+gXyaS9LLuI=;
+        b=SnsHJAJjDZlyT238qKF1Ag09Qkb5fOTfS+XCJkBw/UZOy6vrOgmay3Bp5y5yTSpl1IRU75
+        3ndRXN8EuOAESfSOIx81zDroB66xwXTRv79Pa3kBnLHajFnRwrXC8JZd4do1z/p5zLaYfZ
+        lPTnEAyhaBcfxyqe1+qNkpHwYQB507T8ruM+fk4Gs0CVjDgs4VauUi5opOAGB27F9p25oQ
+        /GU67O1Xr3H7iEuahXCzxdndxa3Vr51EtxyLPgcPz6j/cSNs+TO0uH9G9Bpxh0wOCBDRpo
+        nWc+zspbOk1vo9/RZ7Id7RTzDC4j75HEMesAXa7mJvs4xoEgn8U0wtIpA5D9TA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600269127;
+        s=2020e; t=1600269129;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pf0+ufXR0xc+j9jc48XVsAZnZZKWGa6q0O/P9Yz/b7k=;
-        b=3lZd1Jng/PQyfeT2UbvVV7l6WZsrKQfSIV6Z3kV/Zp0Xcy22Iurtp3FQFAH39i5ow5ECpS
-        uHZA3tw0ArNXUBAA==
+        bh=4W66X9vT4ZasibPwcKebQcLDgO1s4Fxc+gXyaS9LLuI=;
+        b=U/mX5IqTelBizCZHLsXiYEylXc4az/jxY/Ws8Ofmo82VdHiJdluZlArnh8StHomOioYwnr
+        LpUyb1TIQ2gzVmAw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] iommm/amd: Store irq domain in struct device
+Subject: [tip: x86/irq] x86/xen: Wrap XEN MSI management into irqdomain
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <jroedel@suse.de>, x86 <x86@kernel.org>,
+        Juergen Gross <jgross@suse.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200826112333.806328762@linutronix.de>
-References: <20200826112333.806328762@linutronix.de>
+In-Reply-To: <20200826112333.622352798@linutronix.de>
+References: <20200826112333.622352798@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160026912693.15536.9009617814481746173.tip-bot2@tip-bot2>
+Message-ID: <160026912842.15536.9228669080202517710.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,69 +61,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/irq branch of tip:
 
-Commit-ID:     2b2c6aa63824c69c112bbe4f937f034c5e606a6c
-Gitweb:        https://git.kernel.org/tip/2b2c6aa63824c69c112bbe4f937f034c5e606a6c
+Commit-ID:     2e4386eba0c0830becc5c88848b765950970533d
+Gitweb:        https://git.kernel.org/tip/2e4386eba0c0830becc5c88848b765950970533d
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 26 Aug 2020 13:17:00 +02:00
+AuthorDate:    Wed, 26 Aug 2020 13:16:58 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 16 Sep 2020 16:52:37 +02:00
 
-iommm/amd: Store irq domain in struct device
+x86/xen: Wrap XEN MSI management into irqdomain
 
-As the next step to make X86 utilize the direct MSI irq domain operations
-store the irq domain pointer in the device struct when a device is probed.
+To allow utilizing the irq domain pointer in struct device it is necessary
+to make XEN/MSI irq domain compatible.
 
-It only overrides the irqdomain of devices which are handled by a regular
-PCI/MSI irq domain which protects PCI devices behind special busses like
-VMD which have their own irq domain.
+While the right solution would be to truly convert XEN to irq domains, this
+is an exercise which is not possible for mere mortals with limited XENology.
 
-No functional change.
-
-It just avoids the redirection through arch_*_msi_irqs() and allows the
-PCI/MSI core to directly invoke the irq domain alloc/free functions instead
-of having to look up the irq domain for every single MSI interupt.
+Provide a plain irqdomain wrapper around XEN. While this is blatant
+violation of the irqdomain design, it's the only solution for a XEN igorant
+person to make progress on the issue which triggered this change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/r/20200826112333.806328762@linutronix.de
-
+Acked-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/20200826112333.622352798@linutronix.de
 
 ---
- drivers/iommu/amd/iommu.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ arch/x86/pci/xen.c | 63 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 63 insertions(+)
 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index bc7bb4c..a9d8b32 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -729,7 +729,21 @@ static void iommu_poll_ga_log(struct amd_iommu *iommu)
- 		}
- 	}
+diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
+index 3a5611b..161f397 100644
+--- a/arch/x86/pci/xen.c
++++ b/arch/x86/pci/xen.c
+@@ -407,6 +407,63 @@ static void xen_teardown_msi_irq(unsigned int irq)
+ 	WARN_ON_ONCE(1);
  }
--#endif /* CONFIG_IRQ_REMAP */
-+
-+static void
-+amd_iommu_set_pci_msi_domain(struct device *dev, struct amd_iommu *iommu)
+ 
++static int xen_msi_domain_alloc_irqs(struct irq_domain *domain,
++				     struct device *dev,  int nvec)
 +{
-+	if (!irq_remapping_enabled || !dev_is_pci(dev) ||
-+	    pci_dev_has_special_msi_domain(to_pci_dev(dev)))
-+		return;
++	int type;
 +
-+	dev_set_msi_domain(dev, iommu->msi_domain);
++	if (WARN_ON_ONCE(!dev_is_pci(dev)))
++		return -EINVAL;
++
++	if (first_msi_entry(dev)->msi_attrib.is_msix)
++		type = PCI_CAP_ID_MSIX;
++	else
++		type = PCI_CAP_ID_MSI;
++
++	return x86_msi.setup_msi_irqs(to_pci_dev(dev), nvec, type);
 +}
 +
-+#else /* CONFIG_IRQ_REMAP */
-+static inline void
-+amd_iommu_set_pci_msi_domain(struct device *dev, struct amd_iommu *iommu) { }
-+#endif /* !CONFIG_IRQ_REMAP */
- 
- #define AMD_IOMMU_INT_MASK	\
- 	(MMIO_STATUS_EVT_INT_MASK | \
-@@ -2157,6 +2171,7 @@ static struct iommu_device *amd_iommu_probe_device(struct device *dev)
- 		iommu_dev = ERR_PTR(ret);
- 		iommu_ignore_device(dev);
- 	} else {
-+		amd_iommu_set_pci_msi_domain(dev, iommu);
- 		iommu_dev = &iommu->iommu;
++static void xen_msi_domain_free_irqs(struct irq_domain *domain,
++				     struct device *dev)
++{
++	if (WARN_ON_ONCE(!dev_is_pci(dev)))
++		return;
++
++	x86_msi.teardown_msi_irqs(to_pci_dev(dev));
++}
++
++static struct msi_domain_ops xen_pci_msi_domain_ops = {
++	.domain_alloc_irqs	= xen_msi_domain_alloc_irqs,
++	.domain_free_irqs	= xen_msi_domain_free_irqs,
++};
++
++static struct msi_domain_info xen_pci_msi_domain_info = {
++	.ops			= &xen_pci_msi_domain_ops,
++};
++
++/*
++ * This irq domain is a blatant violation of the irq domain design, but
++ * distangling XEN into real irq domains is not a job for mere mortals with
++ * limited XENology. But it's the least dangerous way for a mere mortal to
++ * get rid of the arch_*_msi_irqs() hackery in order to store the irq
++ * domain pointer in struct device. This irq domain wrappery allows to do
++ * that without breaking XEN terminally.
++ */
++static __init struct irq_domain *xen_create_pci_msi_domain(void)
++{
++	struct irq_domain *d = NULL;
++	struct fwnode_handle *fn;
++
++	fn = irq_domain_alloc_named_fwnode("XEN-MSI");
++	if (fn)
++		d = msi_create_irq_domain(fn, &xen_pci_msi_domain_info, NULL);
++
++	/* FIXME: No idea how to survive if this fails */
++	BUG_ON(!d);
++
++	return d;
++}
++
+ static __init void xen_setup_pci_msi(void)
+ {
+ 	if (xen_pv_domain()) {
+@@ -427,6 +484,12 @@ static __init void xen_setup_pci_msi(void)
  	}
  
+ 	x86_msi.teardown_msi_irq = xen_teardown_msi_irq;
++
++	/*
++	 * Override the PCI/MSI irq domain init function. No point
++	 * in allocating the native domain and never use it.
++	 */
++	x86_init.irqs.create_pci_msi_domain = xen_create_pci_msi_domain;
+ }
+ 
+ #else /* CONFIG_PCI_MSI */
