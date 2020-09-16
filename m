@@ -2,181 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616E826C6B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EE426C730
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbgIPSBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
+        id S1727795AbgIPSOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727699AbgIPR64 (ORCPT
+        with ESMTP id S1727647AbgIPSMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:58:56 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D52C014D59
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:36:41 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id o5so6891362wrn.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:36:41 -0700 (PDT)
+        Wed, 16 Sep 2020 14:12:53 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26F1C014D06;
+        Wed, 16 Sep 2020 06:38:27 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 34so3885592pgo.13;
+        Wed, 16 Sep 2020 06:38:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=r5jUXeSw/4ggqv8IN7COH2Z5GZeDPF7AGOPBRf1SYI0=;
-        b=ig6ZQKRGLyN6XNhUpuB/u1pVkJdj64SQdhmlbQamjF9zW8WxwgHX1uqj35w+Xh2ZnA
-         lD5sTpJuT/IFOZ+atqmjosTryiHlchqSSgFArIFZ8STOIm6Z2qcBbzFDFQEZBWNSOk/p
-         aMuxEjt3Wz+xLbTA+ufEdFluAW6+dOhwH08vfKdYOvFPArPtyQ+XIEIMa6yIKdHZp0tm
-         y9HTxRGTWaNMz1g9BYfpbfgTQzTiln06WuohZir74vPBN10YC79eL23pvynVfE/wEbsx
-         Ow0vPp2hHlmqLC79I/m/Bsn/ABVTMxAvXJcvMmF0jGh3F9GdQQn3nS5p6Qx7uPI6Tg33
-         BghA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=RPMmBa/zuVIVa6YT0Ct/PRYo3W8xK4AI2YIowuyMAz8=;
+        b=fHilp9TKndRfRIpIEW7pskStpJIx9tJimZ/y0pA9ypEvUHuYNm+18QlWmYOouD1tX0
+         LCK9aNAEI5YK+8CxLy6PgjIyLZmIZKfqvdx8B+9dwUnu8GnDSki3ejFJDcxMtw4ZvZkD
+         o58I2PumQyjbrEwCBsQvpOvIod2iRymYkDGLSlbDNe4W6UpmWWVqCwY2nBO6TgvF0l4g
+         KHU2qC9MgZICr7bfyPlIUWcx9aqQb6z72coEyRXs4xC52mJuXIJ47/9zIuWZe9xlXciN
+         rWrQ0jdnFJUZre4qzzTb/8uUrDgfCghNIQGgFqFdkhyrVn5mG75WLqiOFP8ZrHLbyxL8
+         NelQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=r5jUXeSw/4ggqv8IN7COH2Z5GZeDPF7AGOPBRf1SYI0=;
-        b=R083x7/gu0yIEA34mRXD5mELI6IC1orAOHmWPy5+7cwNhxb/PjLMHXCr4Sh8/s+A4l
-         3yx1VUncDsovzkcH6+8zZanXgl9KfUCYOJjdDROOzqyGpGa5eLaOC+PHGbSEsAeD+I3O
-         KhwQlCLiGg1FPXv8VpPVHD4A6WVUG4sa4Ct5oSfmvYrDVBaRWuXCC22AWXWTJTgsbdyN
-         l8X45DBQ9F092LRoy04HHxL2PO4sq/ojfhbvcujQYDoxI3Xv4+Ut0/Z6efVW7OHJSEFi
-         vW8BJXCe0Q44VQO9Kn3+DcSIU+joi1S6rJXOuv16VHXc51n7eplOo/WVOjG1UVtrkGmf
-         HmJQ==
-X-Gm-Message-State: AOAM531umg5qELKxhI0VsiBxaUuTVyEp5Fuc+HLVYCFVivC/zuu74O4N
-        4VD7Y0SFRA+ysqNvuDKh66dNlmSN3J18dZTI7bA=
-X-Google-Smtp-Source: ABdhPJz0EHmnPCfH0eRO3mR2rVLD52zmKN9kD0WOxU4XQOjqSUjfS6kR79//Svvg/jabT/LHpVLj1OT8TcgFsVfvbkw=
-X-Received: by 2002:adf:f290:: with SMTP id k16mr28611770wro.124.1600263399711;
- Wed, 16 Sep 2020 06:36:39 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RPMmBa/zuVIVa6YT0Ct/PRYo3W8xK4AI2YIowuyMAz8=;
+        b=jfTHcUUvW1CA4vlmQzW1747Vme3acmyrR3wNr4HC65JdygXqIXH7fDntCYyEB+f4i8
+         QOTQNC6c28ILk0iygOtM069qUUUne4a3FBHnWoT05EQUq3zaNhp635qY/iX5GOj2OneX
+         kUtt8blkzqNfd/fYrsDofD7iD4au/6oi/Ywr73rYPRzzoXfdz0hMAk2enY6UVBlXSFf9
+         AL4KJLZx0ONwZ+GA9hIcgPg3I37DQErwYXyJv2jeW6uLdTyrrYmaoE5t7HKfP0FxbL+Z
+         0dT5Oq/iFHY9g7QA6qJso1RCbzaN5FBHMSoaH1YiOJQ8ewHZWJKr+gF0BPR0QOMIDXol
+         0X5w==
+X-Gm-Message-State: AOAM531Dw56MEgBasnOcUr5nIuOy12nC75STWwx/VKsehDoX4SYaetoC
+        AcfZy4lkMfMbgI3cSMSomRkrRNVSgiKjVukRLFE=
+X-Google-Smtp-Source: ABdhPJw8pDY+mq6BWskzMRd1QiEHrMA+qZcz43pBqGlrejs0IcKqbHwaajsxiVnJqEydNRZeG2HCHg==
+X-Received: by 2002:a63:30c:: with SMTP id 12mr18613171pgd.66.1600263506704;
+        Wed, 16 Sep 2020 06:38:26 -0700 (PDT)
+Received: from [192.168.0.104] ([49.207.198.18])
+        by smtp.gmail.com with ESMTPSA id e62sm16987968pfh.76.2020.09.16.06.38.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Sep 2020 06:38:26 -0700 (PDT)
+Subject: Re: [Linux-kernel-mentees][PATCH] rtl8150: set memory to all 0xFFs on
+ failed register reads
+To:     Petko Manolov <petkan@nucleusys.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200916050540.15290-1-anant.thazhemadam@gmail.com>
+ <20200916061946.GA38262@p310>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <780e991d-864d-0491-f440-12a926920a8a@gmail.com>
+Date:   Wed, 16 Sep 2020 19:08:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200909130720.105234-1-zhengbin13@huawei.com>
- <1fce0f2a-3777-e6d8-5a09-30261f843cfd@amd.com> <CADnq5_NoeFbBAMT6s_ictVXsUc2tx1U48MLxnMbAr2Sd58jyYA@mail.gmail.com>
- <20200915193549.GP6112@intel.com> <6658f89f-6957-e6ea-af41-7625f1fd3cb1@gmail.com>
- <20200916075156.GU438822@phenom.ffwll.local>
-In-Reply-To: <20200916075156.GU438822@phenom.ffwll.local>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 16 Sep 2020 09:36:28 -0400
-Message-ID: <CADnq5_OS814FxmadZ9yBkrY6ije8h7FxswWstsxNr3rw=Bum=Q@mail.gmail.com>
-Subject: Re: [PATCH -next 0/8] drm/amd/amdgpu: fix comparison pointer to bool warning
-To:     Christian Koenig <christian.koenig@amd.com>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Alex Deucher <alexdeucher@gmail.com>, yi.zhang@huawei.com,
-        Dave Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Zheng Bin <zhengbin13@huawei.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200916061946.GA38262@p310>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 3:51 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Wed, Sep 16, 2020 at 09:38:34AM +0200, Christian K=C3=B6nig wrote:
-> > Am 15.09.20 um 21:35 schrieb Ville Syrj=C3=A4l=C3=A4:
-> > > On Tue, Sep 15, 2020 at 03:16:32PM -0400, Alex Deucher wrote:
-> > > > I question the value of these warnings.  Why even have a boolean ty=
-pe
-> > > > if you are going to get warnings when you use them...
-> > > > That said, applied to avoid getting these patches again and again
-> > > > every time someone sees this.
-> > > if (this_is_sparta)
-> > > if (this_is_sparta =3D=3D true)
-> > > if (this_is_sparta !=3D false)
-> > >
-> > > I think the first one reads the best, and avoids having to
-> > > decide between truth and falsehood :)
-> >
-> > +1
->
-> +1, especially because we also have the inversion when using negative
-> errno codes for failures and 0 as success, which results in
->
->         if (errno =3D=3D 0) /* success case */
->
-> but
->         if (bool =3D=3D 0) /* failure case */
->
-> now creative people do sometimes
->
->         if (!errno) /* success case */
->
-> which I think is horribly confusing. So imo for more easier telling apart
-> of these too I think consistently using the short form for booleans, and
-> consistently using the more explicit long form for errno checks is a Very
-> Good Pattern :-)
 
-I don't disagree with your logic, but we regularly get patches to
-convert errno checks to drop the direct comparison because that is the
-"preferred kernel style".  Arguably, we should be explicit in all
-cases as that avoids all confusion.  With that in mind, my original
-point stands.  Why have a type when comparisons against valid settings
-for that type produce errors?
+On 16/09/20 11:49 am, Petko Manolov wrote:
+> On 20-09-16 10:35:40, Anant Thazhemadam wrote:
+>> get_registers() copies whatever memory is written by the
+>> usb_control_msg() call even if the underlying urb call ends up failing.
+> Not true, memcpy() is only called if "ret" is positive.
+Right. I'm really sorry I fumbled and messed up the commit message
+there. Thank you for pointing that out.
+>> If get_registers() fails, or ends up reading 0 bytes, meaningless and junk 
+>> register values would end up being copied over (and eventually read by the 
+>> driver), and since most of the callers of get_registers() don't check the 
+>> return values of get_registers() either, this would go unnoticed.
+> usb_control_msg() returns negative on error (look up usb_internal_control_msg() 
+> to see for yourself) so it does not go unnoticed.
 
-Alex
+When I said "this would go unnoticed", I meant get_register() failing would
+go unnoticed, not that usb_control_msg() failing would go unnoticed.
+I agree that get_registers() notices usb_control_msg() failing, and
+appropriately returns the return value from usb_control_msg().
+But there are many instances where get_registers() is called but the return
+value of get_registers() is not checked, to see if it failed or not; hence, "this
+would go unnoticed".
 
->
-> Cheers, Daniel
->
-> >
-> > Christian.
-> >
-> > >
-> > > > Alex
-> > > >
-> > > > On Wed, Sep 9, 2020 at 9:21 AM Christian K=C3=B6nig <christian.koen=
-ig@amd.com> wrote:
-> > > > > Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com> for the=
- series.
-> > > > >
-> > > > > Am 09.09.20 um 15:07 schrieb Zheng Bin:
-> > > > > > Zheng Bin (8):
-> > > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in g=
-fx_v9_0.c
-> > > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in g=
-fx_v10_0.c
-> > > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in s=
-dma_v5_0.c
-> > > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in s=
-dma_v5_2.c
-> > > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in s=
-i.c
-> > > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in u=
-vd_v6_0.c
-> > > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in
-> > > > > >       amdgpu_atpx_handler.c
-> > > > > >     drm/amd/amdgpu: fix comparison pointer to bool warning in s=
-dma_v4_0.c
-> > > > > >
-> > > > > >    drivers/gpu/drm/amd/amdgpu/amdgpu_atpx_handler.c | 4 ++--
-> > > > > >    drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c           | 2 +-
-> > > > > >    drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c            | 2 +-
-> > > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c           | 4 ++--
-> > > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c           | 2 +-
-> > > > > >    drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c           | 2 +-
-> > > > > >    drivers/gpu/drm/amd/amdgpu/si.c                  | 2 +-
-> > > > > >    drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c            | 4 ++--
-> > > > > >    8 files changed, 11 insertions(+), 11 deletions(-)
-> > > > > >
-> > > > > > --
-> > > > > > 2.26.0.106.g9fadedd
-> > > > > >
-> > > > > _______________________________________________
-> > > > > amd-gfx mailing list
-> > > > > amd-gfx@lists.freedesktop.org
-> > > > > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
-> > > > _______________________________________________
-> > > > dri-devel mailing list
-> > > > dri-devel@lists.freedesktop.org
-> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> If for some reason it return zero, nothing is copied.  Also, if usb transfer fail 
+> no register values are being copied anywhere.
+
+True.
+Now consider set_ethernet_addr(), and suppose get_register() fails when
+invoked from inside set_ethernet_addr().
+As you said, no value is copied back, which means no value is copied back
+into node_id, which leaves node_id uninitialized. This node_id (still
+uninitialized) is then blindly copied into dev->netdev->dev_addr; which
+is less than ideal and could also quickly prove to become an issue, right?
+
+> Your patch also allows for memcpy() to be called with 'size' either zero or 
+> greater than the allocated buffer size. Please, look at the code carefully.
+Oh. I apologize for this. This can be reverted relatively easily.
+>> It might be a better idea to try and mirror the PCI master abort
+>> termination and set memory to 0xFFs instead in such cases.
+> I wasn't aware drivers are now responsible for filling up the memory with 
+> anything.  Does not sound like a good idea to me.
+Since we copy the correct register values when get_register() doesn't fail,
+I thought it might be a slightly better alternative to fill node_id with 0xFFs,
+instead of leaving it go uninitialized in case get_registers() fails.
+
+Also, what are the odds that a successful get_register() call would see
+0xFFs being copied?
+If that's very real scenario, then I admit this doesn't work at all.
+
+The only other alternative approach I can think of that can handle the
+issue I highlighted above, is to introduce checking for get_registers()'s
+return values nearly everywhere it gets called.
+Would that be a more preferable and welcome approach?
+
+Thank you for your time.
+
+Thanks,
+Anant
+
+
