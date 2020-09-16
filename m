@@ -2,275 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895CE26BEBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3248D26BEC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgIPIB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIPIBp (ORCPT
+        id S1726383AbgIPIED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:04:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62592 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726424AbgIPIDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:01:45 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC1AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:01:45 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g29so3469283pgl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Jzms5XAy0HxBD6ul+TJwAtKpEdXIIQEvIQXmembsOLs=;
-        b=QC/a9gxIFQcQOJO+uA+vjVshZqDN8e+LFRdyf/aIAVoxC6nt6GyZMHOWcZvoME0w87
-         aSe0E7xu0+ZGXIE7WrAXn//6ydaMyNBCBc+QjStY7SIQBm1YCSo7xYtzW0RFzRgNXf1f
-         1yLhZ0g0VuKfw3IfLpoz0voPYrp9ZPxHjaAovtMHgeQVMKX9bVGNvpS/rRgm/9pv0ToS
-         0V6gf+vOX7w9japVUv1/b/bs6Ze4C4xX7YFaUhdfalPVuIoiVi88/RAMDRrSVn4FyHSJ
-         rwDYrlp4PuzT/W5NxJEjng8q7U6zQwC8KQFZCIj1QyHKdfzL3/798HNVYEbVM8c7I2Wc
-         ZG3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Jzms5XAy0HxBD6ul+TJwAtKpEdXIIQEvIQXmembsOLs=;
-        b=OoNJwrl4gX/aSNR0Pp7pLv4P/18h7Hip8NMNV7xsS4auTjUMVkefpIRzx2qnyRkZnd
-         BCjCA0te93tVVb46EcSJXdDyzVLYaw3Q1j6Bh5TuHyHFBCMDdtE3RYVhCz1TUK5OmQz6
-         mYruVSJhN61R3pbVfh4PdZoBlr+koEgOiYs95R/QQ2o8I+Ph6rSXxunTb5TwUhmLGhLq
-         HwG5Edeb0JmvyPd68xzwmygQ9NKCPZ2VoksueQNolF2qdQYdngRh2XDGK49itDCuLjmo
-         JaBMgJ0qu0bWM8B9nJCDL+C49c8vGDwFssiGjiAnL+C+cISnhSOpDTHUArEvxoCIMtQy
-         h+Vg==
-X-Gm-Message-State: AOAM532+25D4UbShYgMYrJmBpWSA3GHHHiYDeGhwS6C/SwQ82gqNopvi
-        X4gS7LwfqQ+JAbntsgK85LLLuDOeXuQu+3XrmREK/g==
-X-Google-Smtp-Source: ABdhPJwN2QFGXNPzAZFIilK1Py2rGwqQ0bbheksG8Mxx6NCNiQuM7ZG8NklYYP87LUBNlsvMF6HpPVEL1Zj6OHCa7iw=
-X-Received: by 2002:aa7:941a:0:b029:142:2501:35d1 with SMTP id
- x26-20020aa7941a0000b0290142250135d1mr5277487pfo.49.1600243304416; Wed, 16
- Sep 2020 01:01:44 -0700 (PDT)
+        Wed, 16 Sep 2020 04:03:44 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G7XfFw191725;
+        Wed, 16 Sep 2020 04:02:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=kYONQpZnfoJRN7A+f+OKz3QnmPOTSx5z/t0BhOZ1t2Y=;
+ b=mKW0ajCDhgsIBeC9W6whMBawJODAYR1jH5SqpG+bikxDbGclbnUEi/LPtlkC9aZR+W9s
+ 6FBbPVbxV4cnlu8VF/lUtfqz3GjEeUTLIyICBG0IOsFKjBV68wux464weHRHyClqW0bZ
+ CLOE4qLYWqzTLtwDSwqGi6HrkM6/A7etF6lnUKjkxn0s71PYNDhcqd0ngWKYlgJp6AgZ
+ O+GVpF3M2tN56WRhyoUwnArdCYImlrgrlDwD1dWbMRkNIIU0rkz2INiA7innyHLmag4w
+ z+MXvSO832xIr+kEeHk3tu/WSIuBk4EHoFlrjBHRDWcY7++wGq0/xnO4zcBlY3vlZnXl fg== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33kd7tauv8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 04:02:16 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08G7v8p0008379;
+        Wed, 16 Sep 2020 08:02:14 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 33k5u7r77d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 08:02:14 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08G82BS728705204
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 08:02:12 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A80DBA4109;
+        Wed, 16 Sep 2020 08:02:10 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17809A411C;
+        Wed, 16 Sep 2020 08:01:57 +0000 (GMT)
+Received: from satheesh (unknown [9.85.113.207])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 16 Sep 2020 08:01:56 +0000 (GMT)
+Date:   Wed, 16 Sep 2020 13:31:52 +0530
+From:   Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     sathnaga@linux.vnet.ibm.com, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] Doc: admin-guide: Add entry for kvm_cma_resv_ratio
+ kernel param
+Message-ID: <20200916080152.GB561070@satheesh>
+Reply-To: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+References: <20200916061130.723411-1-sathnaga@linux.vnet.ibm.com>
+ <28eb9747-e4cc-424c-1f16-c68ed165b36a@infradead.org>
 MIME-Version: 1.0
-References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
- <20200903131242.128665-8-tianjia.zhang@linux.alibaba.com> <CAOtvUMfT5zgv=e9nCgz8-1r7LuYSRZ8Zdx2xc0JwckUJZufcvg@mail.gmail.com>
- <6f251e1e-42a0-7e6c-e0cd-51fba3150d17@linux.alibaba.com>
-In-Reply-To: <6f251e1e-42a0-7e6c-e0cd-51fba3150d17@linux.alibaba.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Wed, 16 Sep 2020 11:01:34 +0300
-Message-ID: <CAOtvUMdxeYxztajMG=XDzV-G8cB2GLaVnNBSAxLkwuZwqPxr2A@mail.gmail.com>
-Subject: Re: [PATCH v6 7/8] X.509: support OSCCA sm2-with-sm3 certificate verification
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-security-module@vger.kernel.org,
-        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <28eb9747-e4cc-424c-1f16-c68ed165b36a@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-16_02:2020-09-15,2020-09-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=5
+ spamscore=0 mlxlogscore=999 clxscore=1011 adultscore=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160054
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 9:34 AM Tianjia Zhang
-<tianjia.zhang@linux.alibaba.com> wrote:
->
-> Hi Gilad,
->
-> On 9/13/20 3:12 PM, Gilad Ben-Yossef wrote:
-> > Hi,
-> >
-> >
-> > On Thu, Sep 3, 2020 at 4:13 PM Tianjia Zhang
-> > <tianjia.zhang@linux.alibaba.com> wrote:
-> >>
-> >> The digital certificate format based on SM2 crypto algorithm as
-> >> specified in GM/T 0015-2012. It was published by State Encryption
-> >> Management Bureau, China.
-> >>
-> >> The method of generating Other User Information is defined as
-> >> ZA=3DH256(ENTLA || IDA || a || b || xG || yG || xA || yA), it also
-> >> specified in https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02.
-> >>
-> >> The x509 certificate supports sm2-with-sm3 type certificate
-> >> verification.  Because certificate verification requires ZA
-> >> in addition to tbs data, ZA also depends on elliptic curve
-> >> parameters and public key data, so you need to access tbs in sig
-> >> and calculate ZA. Finally calculate the digest of the
-> >> signature and complete the verification work. The calculation
-> >> process of ZA is declared in specifications GM/T 0009-2012
-> >> and GM/T 0003.2-2012.
-> >>
-> >> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> >> Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
-> >> ---
-> >>   crypto/asymmetric_keys/Makefile          |  1 +
-> >>   crypto/asymmetric_keys/public_key.c      |  6 +++
-> >>   crypto/asymmetric_keys/public_key_sm2.c  | 61 ++++++++++++++++++++++=
-++
-> >>   crypto/asymmetric_keys/x509_public_key.c |  3 ++
-> >>   include/crypto/public_key.h              | 15 ++++++
-> >>   5 files changed, 86 insertions(+)
-> >>   create mode 100644 crypto/asymmetric_keys/public_key_sm2.c
-> >>
-> >> diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/=
-Makefile
-> >> index 28b91adba2ae..1a99ea5acb6b 100644
-> >> --- a/crypto/asymmetric_keys/Makefile
-> >> +++ b/crypto/asymmetric_keys/Makefile
-> >> @@ -11,6 +11,7 @@ asymmetric_keys-y :=3D \
-> >>          signature.o
-> >>
-> >>   obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) +=3D public_key.o
-> >> +obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) +=3D public_key_sm2.o
-> >>   obj-$(CONFIG_ASYMMETRIC_TPM_KEY_SUBTYPE) +=3D asym_tpm.o
-> >>
-> >>   #
-> >> diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_k=
-eys/public_key.c
-> >> index d8410ffd7f12..1d0492098bbd 100644
-> >> --- a/crypto/asymmetric_keys/public_key.c
-> >> +++ b/crypto/asymmetric_keys/public_key.c
-> >> @@ -299,6 +299,12 @@ int public_key_verify_signature(const struct publ=
-ic_key *pkey,
-> >>          if (ret)
-> >>                  goto error_free_key;
-> >>
-> >> +       if (strcmp(sig->pkey_algo, "sm2") =3D=3D 0 && sig->data_size) =
-{
-> >> +               ret =3D cert_sig_digest_update(sig, tfm);
-> >> +               if (ret)
-> >> +                       goto error_free_key;
-> >> +       }
-> >> +
-> >>          sg_init_table(src_sg, 2);
-> >>          sg_set_buf(&src_sg[0], sig->s, sig->s_size);
-> >>          sg_set_buf(&src_sg[1], sig->digest, sig->digest_size);
-> >> diff --git a/crypto/asymmetric_keys/public_key_sm2.c b/crypto/asymmetr=
-ic_keys/public_key_sm2.c
-> >> new file mode 100644
-> >> index 000000000000..7325cf21dbb4
-> >> --- /dev/null
-> >> +++ b/crypto/asymmetric_keys/public_key_sm2.c
-> >> @@ -0,0 +1,61 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> >> +/*
-> >> + * asymmetric public-key algorithm for SM2-with-SM3 certificate
-> >> + * as specified by OSCCA GM/T 0003.1-2012 -- 0003.5-2012 SM2 and
-> >> + * described at https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
-> >> + *
-> >> + * Copyright (c) 2020, Alibaba Group.
-> >> + * Authors: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> >> + */
-> >> +
-> >> +#include <crypto/sm3_base.h>
-> >> +#include <crypto/sm2.h>
-> >> +#include <crypto/public_key.h>
-> >> +
-> >> +#if IS_REACHABLE(CONFIG_CRYPTO_SM2)
-> >> +
-> >> +int cert_sig_digest_update(const struct public_key_signature *sig,
-> >> +                               struct crypto_akcipher *tfm_pkey)
-> >> +{
-> >> +       struct crypto_shash *tfm;
-> >> +       struct shash_desc *desc;
-> >> +       size_t desc_size;
-> >> +       unsigned char dgst[SM3_DIGEST_SIZE];
-> >> +       int ret;
-> >> +
-> >> +       BUG_ON(!sig->data);
-> >> +
-> >> +       ret =3D sm2_compute_z_digest(tfm_pkey, SM2_DEFAULT_USERID,
-> >> +                                       SM2_DEFAULT_USERID_LEN, dgst);
-> >> +       if (ret)
-> >> +               return ret;
-> >> +
-> >> +       tfm =3D crypto_alloc_shash(sig->hash_algo, 0, 0);
-> >> +       if (IS_ERR(tfm))
-> >> +               return PTR_ERR(tfm);
-> >> +
-> >> +       desc_size =3D crypto_shash_descsize(tfm) + sizeof(*desc);
-> >> +       desc =3D kzalloc(desc_size, GFP_KERNEL);
-> >> +       if (!desc)
-> >> +               goto error_free_tfm;
-> >> +
-> >> +       desc->tfm =3D tfm;
-> >> +
-> >> +       ret =3D crypto_shash_init(desc);
-> >> +       if (ret < 0)
-> >> +               goto error_free_desc;
-> >> +
-> >> +       ret =3D crypto_shash_update(desc, dgst, SM3_DIGEST_SIZE);
-> >> +       if (ret < 0)
-> >> +               goto error_free_desc;
-> >> +
-> >> +       ret =3D crypto_shash_finup(desc, sig->data, sig->data_size, si=
-g->digest);
-> >
-> > It looks like you are doing a separate init, update, finup every time
-> > - I would consider using crypto_shash_digest() in one go.
-> >
-> > In fact, considering the fact that you are allocating a tfm just for
-> > this use and then releasing it, I would consider switching to
-> > crypto_shash_tfm_digest() and dropping the kzalloc all together.
-> >
-> > This should simplify the code a bit.
-> >
-> > Other than that I don't have anything smart to say :-)
-> >
-> > Gilad
-> >
->
-> The hash calculation here includes two parts of data, 'dgst' and
-> 'sig->data'. The last call is 'finup()' not 'final()'. I understand that
-> it should not be possible to use 'crypto_shash_tfm_digest()' This kind
-> of function is simplified.
->
-> If a new scope is added, the assignment of desc can be optimized, as
-> follows:
-> ```
-> do {
->      SHASH_DESC_ON_STACK(desc, tfm);
->      desc->tfm =3D tfm;
->
->      /* ... */
-> } while (0);
-> ```
-> However, the kernel code may not accept this style. What is your opinion?
+Hi Randy,
 
-No, you are right. I've indeed missed that it's a finup() and not a
-final(). If the size of data was big enough it might have been worth
-going to the async. hash interface and creating a scatter list for
-this but I suspect it is not justified with the data sizes we are
-dealing with there.
+Thanks for the comments, will send a V2 fixing them.
 
-So:
+On Tue, Sep 15, 2020 at 11:18:52PM -0700, Randy Dunlap wrote:
+> On 9/15/20 11:11 PM, sathnaga@linux.vnet.ibm.com wrote:
+> > From: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+> > 
+> > Add document entry for kvm_cma_resv_ratio kernel param which
+> > is used to alter the KVM contiguous memory allocation percentage
+> > for hash pagetable allocation used by hash mode PowerPC KVM guests.
+> > 
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: kvm-ppc@vger.kernel.org
+> > Cc: linuxppc-dev@lists.ozlabs.org
+> > Cc: Paul Mackerras <paulus@samba.org>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Jonathan Corbet <corbet@lwn.net>  
+> > Signed-off-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+> > ---
+> >  Documentation/admin-guide/kernel-parameters.txt | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index a1068742a6df..9cb126573c71 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -599,6 +599,15 @@
+> >  			altogether. For more information, see
+> >  			include/linux/dma-contiguous.h
+> >  
+> > +        kvm_cma_resv_ratio=n
+> > +                        [PPC]
+> 
+> You can put [PPC] on the line above.
+> 
+sure
+> > +                        Reserves given percentage from system memory area for
+> > +                        contiguous memory allocation for KVM hash pagetable
+> > +                        allocation.
+> > +                        Bydefault it reserves 5% of total system memory.
+> 
+> 			   By default
+> 
+> > +                        Format: <integer>
+> > +                        Default: 5
+> > +
+> 
+> and please use tabs for indentation, not all spaces.
+> 
+sure
+> >  	cmo_free_hint=	[PPC] Format: { yes | no }
+> >  			Specify whether pages are marked as being inactive
+> >  			when they are freed.  This is used in CMO environments
+> > 
+> 
+> Entries in kernel-parameters.txt should be sorted into dictionary order,
+> so please put that with the other kvm parameters.
+> 
+sure.
+> thanks.
+> -- 
+> ~Randy
+> 
 
-Reviewed-by: Gilad Ben-Yossef <gilad@benyossef.com>
-
-Thanks,
-Gilad
-
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
-
-values of =CE=B2 will give rise to dom!
+Thanks!
+-Satheesh.
