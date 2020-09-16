@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D694726CE09
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691BF26CD8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgIPVJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S1726314AbgIPVA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726468AbgIPQDj (ORCPT
+        with ESMTP id S1726419AbgIPQaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:03:39 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C5BC0698E3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:54:07 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id b79so2692054wmb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:54:07 -0700 (PDT)
+        Wed, 16 Sep 2020 12:30:24 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0C0C0A3BFE
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:24:15 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so6724816wrr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:24:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Yh0igFnXFGH3K7pZzQhRNs7ViU5/hMjpnGkORzHpipk=;
-        b=JyQsV3C/yV+HMhjcrBeo4b6vbtbXN/7M7NJbIgBea1ZCl6bB/Wv56zT6tM39MhZYIz
-         1ePZsPTW5M75mT5wRpRoNtZy/x1FJ8O69Jo5IFaxDlzHdWeRiNrB4GKbyft7T7Rf3m7c
-         aWwz5PsssRQJClQFnacWnvlS5MQg4yUM9L2jw8VuALu4NTPRUxNv67kIW5FUWGPCDVP9
-         yMm7HzrgXsD04qEeBHOQTjc1spMBk+h1ObSRut8UsG0poo7gRH4ptNx9EujbEMj5Cb7U
-         w4FXV2249ahLD5jNOQ2ov9+67BvirUZC0p0CE4a+dXdPSDP2nJyRXQPZXP6lPs90vfLk
-         zTZQ==
+        bh=yWmAHcgT2wDa3AHqlJ16t/WowuUKj+5oH128IS3to+s=;
+        b=ecyvxJA9SssekdAOtuviJ13pOnV2clLGkWhiOWO+2yrKD8LW/yxDkjFG3CzSaKPwdz
+         lO4l8QLk4EjgOwdsycDk3JkggZLdyWLIjx79hY9n3+KYGB1WQIAQ4FECAlbZPLNNzst2
+         +V8xxssKHQL+hxHT661evNUe9qi63Lr5THWvEXVzmU8ys481d4Icv0X7UrGAWcX3Y6R6
+         TW53J0GJUqSsZ/FtTU9WDgV3l69ZLSMQ+ne9CePfgEfWy5GDf3/fHWWq15NCFehU95v3
+         AHJkB5O7SLJY0IhMVow1YeZiDiMLuOOGL8aCTq8O7o0OtK/8YUEzsxMcZLk6TNgC2ruT
+         WwzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Yh0igFnXFGH3K7pZzQhRNs7ViU5/hMjpnGkORzHpipk=;
-        b=gvprVuGAty5nv5i7G54T0mkqc4Zu7xNPnoPGBKGC4sMkREKIHWWH/hvlFk0VBvNsVL
-         8p9QjIPoGvJWyDy7J695qRrnxynyyqMzgGpvv+2xq1SXUAblsYjLrpH/fMgF/Ascjcz2
-         RG+gGh/jOn+nIOeVmNhvGuggedGyIVmc0Q0a1gV0uQPuJHWRTcSZY+tjLylR0D0/raYX
-         Yh0ozOUM6VP2UBz75W3GqNzBc4kPruRTYRXGb0jciBYSFOoS3TJuhxed9vsqfrm4HFmG
-         lKA+lulA4KfKenW8Sa6PL61dIOctMeSqe7F+dfzbsOFUhxfkjBrlw7KzE26O6GGwqyYZ
-         TgKw==
-X-Gm-Message-State: AOAM531uBzNgsc8ooSnKh56e9nwRMLNPH3QqO7Z8tPtsJrq6F+2stCri
-        MQ0ME5Kk8OUPKr++BUJEZ5gosw==
-X-Google-Smtp-Source: ABdhPJwEUCld1s87TOjbwzmcs50r5qVIn7ePIrzWPUYEsAFENq0CtkJ+OctMHBN++deLK1KNg4U8hw==
-X-Received: by 2002:a05:600c:2118:: with SMTP id u24mr4258846wml.59.1600257246355;
-        Wed, 16 Sep 2020 04:54:06 -0700 (PDT)
+        bh=yWmAHcgT2wDa3AHqlJ16t/WowuUKj+5oH128IS3to+s=;
+        b=RiVict7AuQ8+0J9iqiZ6HBslv4fvxtN4IY4LfuIq7WztDCP2cARaF7QqFHsxgEYkrp
+         cF+b8OMC7ZKEt/P6WeFtLY2DjBS0N4jK5x1mFmwcrSvcX/20K017J+E9XlUAgPLkuyUl
+         sm5Jy2MgC4sAQWotJ7FY9Aa+Ip3cqwjtakN0gapyA978kRdXnCvgmwpCCNPjTas/zoUT
+         GCiuPVStFepoyfm1NyHXxcpv3P7RQbjfNcyPNAGUiVqp3bLFU286/fy4hMmS0AFzzJVx
+         2lRdFUm5K1rEOjqLO+LnZDU9Do36Ev3tTpxuJ6PVW6DyLkwot1vYa2RN4EgoldA82pop
+         m0eg==
+X-Gm-Message-State: AOAM532D9MhTzbPkeQp1ON5wXmnfZW48ZeQ8biabBh5S3lg3giy1KCq8
+        8uVlHfN1YJ3nXoRn8yFlYAAvYQ==
+X-Google-Smtp-Source: ABdhPJyN8ng2AKyfXE308SyYBOpK5+vw1l709E5yQIVxjKXFjVd61eroffH5kXqXdkXmnXUZ3JvTow==
+X-Received: by 2002:adf:9b8b:: with SMTP id d11mr19383508wrc.71.1600259054273;
+        Wed, 16 Sep 2020 05:24:14 -0700 (PDT)
 Received: from google.com ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
-        by smtp.gmail.com with ESMTPSA id u66sm5088416wmg.44.2020.09.16.04.54.05
+        by smtp.gmail.com with ESMTPSA id j26sm2567165wrc.79.2020.09.16.05.24.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 04:54:05 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 12:54:04 +0100
+        Wed, 16 Sep 2020 05:24:13 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 13:24:12 +0100
 From:   David Brazdil <dbrazdil@google.com>
 To:     Will Deacon <will@kernel.org>
 Cc:     Marc Zyngier <maz@kernel.org>,
@@ -63,58 +63,80 @@ Cc:     Marc Zyngier <maz@kernel.org>,
         kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
         kernel-team@android.com
 Subject: Re: [PATCH v2 00/10] Independent per-CPU data section for nVHE
-Message-ID: <20200916115404.rhv4dkyjz35e4x25@google.com>
+Message-ID: <20200916122412.elxfxbdygvmdgrj5@google.com>
 References: <20200903091712.46456-1-dbrazdil@google.com>
  <20200914174008.GA25238@willie-the-truck>
+ <20200916115404.rhv4dkyjz35e4x25@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914174008.GA25238@willie-the-truck>
+In-Reply-To: <20200916115404.rhv4dkyjz35e4x25@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+> I was also wondering about another approach - using the PERCPU_SECTION macro
+> unchanged in the hyp linker script. It would lay out a single .data..percpu and
+> we would then prefix it with .hyp and the symbols with __kvm_nvhe_ as with
+> everything else. WDYT? Haven't tried that yet, could be a naive idea. 
 
-On Mon, Sep 14, 2020 at 06:40:09PM +0100, Will Deacon wrote:
-> Hi David,
-> 
-> On Thu, Sep 03, 2020 at 11:17:02AM +0200, David Brazdil wrote:
-> > Introduce '.hyp.data..percpu' as part of ongoing effort to make nVHE
-> > hyp code self-contained and independent of the rest of the kernel.
-> > 
-> > The series builds on top of the "Split off nVHE hyp code" series which
-> > used objcopy to rename '.text' to '.hyp.text' and prefix all ELF
-> > symbols with '__kvm_nvhe' for all object files under kvm/hyp/nvhe.
-> 
-> I've been playing around with this series this afternoon, trying to see
-> if we can reduce the coupling between the nVHE code and the core code. I've
-> ended up with the diff below on top of your series, but I think it actually
-> removes the need to change the core code at all. The idea is to collapse
-> the percpu sections during prelink, and then we can just deal with the
-> resulting data section a bit like we do for .hyp.text already.
-> 
-> Have I missed something critical?
+Seems to work. Can't use PERCPU_SECTION directly because then we couldn't
+rename it in the same linker script, but if we just unwrap that one layer
+we can use PERCPU_INPUT. No global macro changes needed.
 
-I was wondering whether this approach would be sufficient as well because of
-the simplicity. We'd just need to be careful about correctly preserving the
-semantics of the different .data..percpu..* sections.
+Let me know what you think.
 
-For instance, I've noticed you make .hyp..data..percpu page-aligned rather than
-cacheline-aligned. We need that for stage-2 unmapping but it also happens to
-correctly align DEFINE_PER_CPU_PAGE_ALIGNED variables when collapsed into the
-single hyp section. The reason why I ended up reusing the global macro was to
-avoid introducing subtleties like that into the arm64 linker script. Do you
-think it's a worthwhile trade off?
+------8<------
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 5904a4de9f40..9e6bf21268f1 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -195,11 +195,9 @@ SECTIONS
+        PERCPU_SECTION(L1_CACHE_BYTES)
 
-One place where this approach doesn't work is DEFINE_PER_CPU_FIRST. But I'm
-guessing that's something we can live without.
+        /* KVM nVHE per-cpu section */
+-       #undef PERCPU_SECTION_NAME
+-       #undef PERCPU_SYMBOL_NAME
+-       #define PERCPU_SECTION_NAME(suffix)     CONCAT3(.hyp, PERCPU_SECTION_BASE_NAME, suffix)
+-       #define PERCPU_SYMBOL_NAME(name)        __kvm_nvhe_ ## name
+-       PERCPU_SECTION(L1_CACHE_BYTES)
++       . = ALIGN(PAGE_SIZE);
++       .hyp.data..percpu : { *(.hyp.data..percpu) }
++       . = ALIGN(PAGE_SIZE);
 
-I was also wondering about another approach - using the PERCPU_SECTION macro
-unchanged in the hyp linker script. It would lay out a single .data..percpu and
-we would then prefix it with .hyp and the symbols with __kvm_nvhe_ as with
-everything else. WDYT? Haven't tried that yet, could be a naive idea. 
+        .rela.dyn : ALIGN(8) {
+                *(.rela .rela*)
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp.lds.S b/arch/arm64/kvm/hyp/nvhe/hyp.lds.S
+index 7d8c3fa004f4..1d8e4f7edc29 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp.lds.S
++++ b/arch/arm64/kvm/hyp/nvhe/hyp.lds.S
+@@ -4,6 +4,10 @@
+  * Written by David Brazdil <dbrazdil@google.com>
+  */
 
-Thanks for reviewing,
++#include <asm-generic/vmlinux.lds.h>
++#include <asm/cache.h>
++#include <asm/memory.h>
++
+ /*
+  * Defines an ELF hyp section from input section @NAME and its subsections.
+  */
+@@ -11,9 +15,9 @@
+
+ SECTIONS {
+        HYP_SECTION(.text)
+-       HYP_SECTION(.data..percpu)
+-       HYP_SECTION(.data..percpu..first)
+-       HYP_SECTION(.data..percpu..page_aligned)
+-       HYP_SECTION(.data..percpu..read_mostly)
+-       HYP_SECTION(.data..percpu..shared_aligned)
++
++       .hyp..data..percpu : {
++               __per_cpu_load = .;
++               PERCPU_INPUT(L1_CACHE_BYTES)
++       }
+ }
+-----8<------
+
 David
