@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5317326BA56
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F363726BA59
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgIPCtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgIPCtK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:49:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E389CC06174A;
-        Tue, 15 Sep 2020 19:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Sv9Vl7JNADXrPEema1u8+9rY9RXo33Dj3P6UNr+t14k=; b=JYLx7GgOoYj35BYgnwiL04axCZ
-        ufStCfdCdTSVXS8b5XyxXRZp/ZgBAVMPTygs4pihcjkj+5df9JRbrtguEl9UjyAaloWBR1WKSbYqs
-        j0WL8N8o5N6C34XNnjvovYioDTrDMrMWhkxkV1Nzodtjx0s+Dvp4EuoDwDnpdac/IpB4jfST/dL4w
-        vupiAu0A4m1HvicBswuoJaJBvnDVWMehiAZWLfHQSOwOSKQQFjQwscZfflILWGla1ff+IWgSXzwxv
-        PiPphboOr0VZlOD64dnxpHYUaqCJrDULVflyPWrITMa4W1UwpFj9Utn+7jbqEmG6AX7mLF/cLn37g
-        KMvVfDkg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kINVJ-0003n4-Sj; Wed, 16 Sep 2020 02:49:06 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        id S1726420AbgIPCuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:50:14 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:53864 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726372AbgIPCt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:49:59 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 92173D65FF03895370B7;
+        Wed, 16 Sep 2020 10:49:57 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.253) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 16 Sep 2020 10:49:49 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, Jessica Yu <jeyu@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] Documentation: kernel-parameters: clarify "module."
- parameters
-Message-ID: <67d40b6d-c073-a3bf-cbb6-6cad941cceeb@infradead.org>
-Date:   Tue, 15 Sep 2020 19:49:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Jianguo Chen <chenjianguo3@huawei.com>
+Subject: [PATCH v3 0/2] ARM: support PHYS_OFFSET minimum aligned at 64KiB boundary
+Date:   Wed, 16 Sep 2020 10:49:25 +0800
+Message-ID: <20200916024927.3191-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+v2 --> v3:
+1. cancel send to "patches@armlinux.org.uk", the patches should have been reviewed first.
+2. drop the "default n" of the configuration option ARM_PATCH_PHYS_VIRT_RADICAL.
+3. remove an unnecessary cast: below (unsigned long). "t" is already unsigned long.
+   __pv_stub((unsigned long) t, t, "sub", __PV_BITS_23_16);
 
-The command-line parameters "dyndbg" and "async_probe" are not
-parameters for kernel/module.c but instead they are for the
-module that is being loaded. Try to make that distinction in the
-help text.
 
-OTOH, "module.sig_enforce" is handled as a parameter of kernel/module.c
-so "module." is correct for it.
+v1 --> v2:
+Nothing changed, but add mail list: patches@armlinux.org.uk
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jessica Yu <jeyu@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
----
- Documentation/admin-guide/kernel-parameters.txt |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v1:
+Currently, only support the kernels where the base of physical memory is
+at a 16MiB boundary. Because the add/sub instructions only contains 8bits
+unrotated value. But we can use one more "add/sub" instructions to handle
+bits 23-16, to support PHYS_OFFSET minimum aligned at 64KiB boundary.
 
---- lnx-59-rc5.orig/Documentation/admin-guide/kernel-parameters.txt
-+++ lnx-59-rc5/Documentation/admin-guide/kernel-parameters.txt
-@@ -1019,7 +1019,7 @@
- 			what data is available or for reverse-engineering.
- 
- 	dyndbg[="val"]		[KNL,DYNAMIC_DEBUG]
--	module.dyndbg[="val"]
-+	<module>.dyndbg[="val"]
- 			Enable debug messages at boot time.  See
- 			Documentation/admin-guide/dynamic-debug-howto.rst
- 			for details.
-@@ -1027,7 +1027,7 @@
- 	nopku		[X86] Disable Memory Protection Keys CPU feature found
- 			in some Intel CPUs.
- 
--	module.async_probe [KNL]
-+	<module>.async_probe [KNL]
- 			Enable asynchronous probe on this module.
- 
- 	early_ioremap_debug [KNL]
+This function is required at least by some Huawei boards, such as Hi1380
+board. Becuase the kernel Image is loaded at 2MiB boundary.
+
+Zhen Lei (2):
+  ARM: fix trivial comments in head.S
+  ARM: support PHYS_OFFSET minimum aligned at 64KiB boundary
+
+ arch/arm/Kconfig              | 17 ++++++++++++++++-
+ arch/arm/include/asm/memory.h | 16 +++++++++++++---
+ arch/arm/kernel/head.S        | 31 ++++++++++++++++++++++---------
+ 3 files changed, 51 insertions(+), 13 deletions(-)
+
+-- 
+1.8.3
+
 
