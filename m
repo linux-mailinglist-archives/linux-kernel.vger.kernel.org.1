@@ -2,120 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F129A26CA73
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D231726CA65
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbgIPUAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:00:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:34566 "EHLO foss.arm.com"
+        id S1727725AbgIPT4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:56:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726627AbgIPRfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:35:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C3991396;
-        Wed, 16 Sep 2020 03:46:45 -0700 (PDT)
-Received: from [10.57.47.84] (unknown [10.57.47.84])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CA383F68F;
-        Wed, 16 Sep 2020 03:46:44 -0700 (PDT)
-Subject: Re: [PATCH 2/2] arm64/mm: Enable color zero pages
-To:     Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>
-Cc:     mark.rutland@arm.com, anshuman.khandual@arm.com,
-        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
-        shan.gavin@gmail.com, linux-arm-kernel@lists.infradead.org
-References: <20200916032523.13011-1-gshan@redhat.com>
- <20200916032523.13011-3-gshan@redhat.com>
- <20200916082819.GB27496@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <77dcab5a-b5f2-a67c-6157-71a5a53db5de@arm.com>
-Date:   Wed, 16 Sep 2020 11:46:38 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727188AbgIPRgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:36:19 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D45821655;
+        Wed, 16 Sep 2020 11:11:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600254684;
+        bh=nT/vmCGFfmSFgpzah3Ct0QpHS6z8WSZoQrZ6dGKhyXc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0pB3ubzTyE8/ykxSVzAiSm6ewVDfdniIBUsWAjrJAKC/6jxW48ijVQjrUCLVyEWeX
+         8bNITgFrub12hJB9JZMDySfXplhT4bYeBfier33GUOHRasNSq6TSYp/tm9sWmBK5Sg
+         JMg95DQcs9GeroP7nEv0lMwrhr4rbOE8eYUxE6ac=
+Date:   Wed, 16 Sep 2020 13:11:59 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     trix@redhat.com
+Cc:     jerome.pouiller@silabs.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wfx: simplify virt_addr_valid call
+Message-ID: <20200916111159.GA923212@kroah.com>
+References: <20200912144719.13929-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200916082819.GB27496@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200912144719.13929-1-trix@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-16 09:28, Will Deacon wrote:
-> On Wed, Sep 16, 2020 at 01:25:23PM +1000, Gavin Shan wrote:
->> This enables color zero pages by allocating contigous page frames
->> for it. The number of pages for this is determined by L1 dCache
->> (or iCache) size, which is probbed from the hardware.
->>
->>     * Add cache_total_size() to return L1 dCache (or iCache) size
->>
->>     * Implement setup_zero_pages(), which is called after the page
->>       allocator begins to work, to allocate the contigous pages
->>       needed by color zero page.
->>
->>     * Reworked ZERO_PAGE() and define __HAVE_COLOR_ZERO_PAGE.
->>
->> Signed-off-by: Gavin Shan <gshan@redhat.com>
->> ---
->>   arch/arm64/include/asm/cache.h   | 22 ++++++++++++++++++++
->>   arch/arm64/include/asm/pgtable.h |  9 ++++++--
->>   arch/arm64/kernel/cacheinfo.c    | 34 +++++++++++++++++++++++++++++++
->>   arch/arm64/mm/init.c             | 35 ++++++++++++++++++++++++++++++++
->>   arch/arm64/mm/mmu.c              |  7 -------
->>   5 files changed, 98 insertions(+), 9 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cache.h
->> index a4d1b5f771f6..420e9dde2c51 100644
->> --- a/arch/arm64/include/asm/cache.h
->> +++ b/arch/arm64/include/asm/cache.h
->> @@ -39,6 +39,27 @@
->>   #define CLIDR_LOC(clidr)	(((clidr) >> CLIDR_LOC_SHIFT) & 0x7)
->>   #define CLIDR_LOUIS(clidr)	(((clidr) >> CLIDR_LOUIS_SHIFT) & 0x7)
->>   
->> +#define CSSELR_TND_SHIFT	4
->> +#define CSSELR_TND_MASK		(UL(1) << CSSELR_TND_SHIFT)
->> +#define CSSELR_LEVEL_SHIFT	1
->> +#define CSSELR_LEVEL_MASK	(UL(7) << CSSELR_LEVEL_SHIFT)
->> +#define CSSELR_IND_SHIFT	0
->> +#define CSSERL_IND_MASK		(UL(1) << CSSELR_IND_SHIFT)
->> +
->> +#define CCSIDR_64_LS_SHIFT	0
->> +#define CCSIDR_64_LS_MASK	(UL(7) << CCSIDR_64_LS_SHIFT)
->> +#define CCSIDR_64_ASSOC_SHIFT	3
->> +#define CCSIDR_64_ASSOC_MASK	(UL(0x1FFFFF) << CCSIDR_64_ASSOC_SHIFT)
->> +#define CCSIDR_64_SET_SHIFT	32
->> +#define CCSIDR_64_SET_MASK	(UL(0xFFFFFF) << CCSIDR_64_SET_SHIFT)
->> +
->> +#define CCSIDR_32_LS_SHIFT	0
->> +#define CCSIDR_32_LS_MASK	(UL(7) << CCSIDR_32_LS_SHIFT)
->> +#define CCSIDR_32_ASSOC_SHIFT	3
->> +#define CCSIDR_32_ASSOC_MASK	(UL(0x3FF) << CCSIDR_32_ASSOC_SHIFT)
->> +#define CCSIDR_32_SET_SHIFT	13
->> +#define CCSIDR_32_SET_MASK	(UL(0x7FFF) << CCSIDR_32_SET_SHIFT)
+On Sat, Sep 12, 2020 at 07:47:19AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> I don't think we should be inferring cache structure from these register
-> values. The Arm ARM helpfully says:
+> Reviewing sram_write_dma_safe(), there are two
+> identical calls to virt_addr_valid().  The second
+> call can be simplified by a comparison of variables
+> set from the first call.
 > 
->    | You cannot make any inference about the actual sizes of caches based
->    | on these parameters.
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/staging/wfx/fwio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> so we need to take the topology information from elsewhere.
+> diff --git a/drivers/staging/wfx/fwio.c b/drivers/staging/wfx/fwio.c
+> index 22d3b684f04f..c99adb0c99f1 100644
+> --- a/drivers/staging/wfx/fwio.c
+> +++ b/drivers/staging/wfx/fwio.c
+> @@ -94,7 +94,7 @@ static int sram_write_dma_safe(struct wfx_dev *wdev, u32 addr, const u8 *buf,
+>  		tmp = buf;
+>  	}
+>  	ret = sram_buf_write(wdev, addr, tmp, len);
+> -	if (!virt_addr_valid(buf))
+> +	if (tmp != buf)
+>  		kfree(tmp);
+>  	return ret;
+>  }
 
-Yes, these represent parameters for the low-level cache maintenance by 
-set/way instructions, and nothing more. There are definitely cases where 
-they do not reflect the underlying cache structure (commit 793acf870ea3 
-is an obvious first call).
+Jerome, any thoughts?
 
-Robin.
+thanks,
 
-> But before we get into that, can you justify why we need to do this at all,
-> please? Do you have data to show the benefit of adding this complexity?
-> 
-> Cheers,
-> 
-> Will
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+greg k-h
