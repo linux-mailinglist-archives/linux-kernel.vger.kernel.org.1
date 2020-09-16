@@ -2,106 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7143E26CB6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165AB26CB5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgIPU1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:27:21 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57657 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726935AbgIPRYo (ORCPT
+        id S1728305AbgIPU0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:26:24 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:17891 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727052AbgIPR0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:24:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600277061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MIDNYXiU2iGbO/F9JK0prHUpFcyTmc8uGMG0d6uO9go=;
-        b=Oe78V3G2XAlLxooeZf9iwlrWCJ1R9YlYjJKMpQIV7xlKDWieR2xO2lPH5n2HwzHzH6CKwW
-        3NGvQZkrYTni1qUbGgEOyc3QBCvkRVykSSFtKFX2U6al5zGpJGMT9gDvnpwUtFYB88iWoW
-        rnVkmTOqA4/Pk7h1vxudqScEPFnqxiQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-vMiOjr13O8uH-OJWC3YD5w-1; Wed, 16 Sep 2020 13:24:17 -0400
-X-MC-Unique: vMiOjr13O8uH-OJWC3YD5w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E405A107464B;
-        Wed, 16 Sep 2020 17:24:14 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9499E60BFA;
-        Wed, 16 Sep 2020 17:24:14 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08GHOEOU016676;
-        Wed, 16 Sep 2020 13:24:14 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08GHOCwu016672;
-        Wed, 16 Sep 2020 13:24:12 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Wed, 16 Sep 2020 13:24:12 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Dan Williams <dan.j.williams@intel.com>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
-        <rajesh.tadakamadla@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: [PATCH] pmem: export the symbols __copy_user_flushcache and
- __copy_from_user_flushcache
-In-Reply-To: <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
-Message-ID: <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com> <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Wed, 16 Sep 2020 13:26:55 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 16 Sep 2020 10:26:17 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Sep 2020 10:26:16 -0700
+Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Sep 2020 22:56:00 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id A908721D3D; Wed, 16 Sep 2020 22:55:59 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: [PATCH RESEND v2 0/4] Venus - change clk enable, disable order and change bw values
+Date:   Wed, 16 Sep 2020 22:55:53 +0530
+Message-Id: <1600277157-24327-1-git-send-email-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The intention of this patchset is to correct clock enable and disable
+order and vote for venus-ebi and cpucfg paths with average bandwidth
+instad of peak bandwidth since with current implementation we are seeing
+clock related warning during XO-SD and suspend device while video playback
 
+---
+Resending as all patches not updated properly because
+of some mailing issues.
 
-On Wed, 16 Sep 2020, Dan Williams wrote:
+Mansur Alisha Shaik (4):
+  venus: core: change clk enable and disable order in resume and suspend
+  venus: core: vote for video-mem path
+  venus: core: vote with average bandwidth and peak bandwidth as zero
+  venus: put dummy vote on video-mem path after last session release
 
-> On Wed, Sep 16, 2020 at 3:57 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
-> >
-> >
-> >
-> > I'm submitting this patch that adds the required exports (so that we could
-> > use __copy_from_user_flushcache on x86, arm64 and powerpc). Please, queue
-> > it for the next merge window.
-> 
-> Why? This should go with the first user, and it's not clear that it
-> needs to be relative to the current dax_operations export scheme.
+ drivers/media/platform/qcom/venus/core.c       | 29 +++++++++++++++++++-------
+ drivers/media/platform/qcom/venus/pm_helpers.c |  3 +++
+ 2 files changed, 25 insertions(+), 7 deletions(-)
 
-Before nvfs gets included in the kernel, I need to distribute it as a 
-module. So, it would make my maintenance easier. But if you don't want to 
-export it now, no problem, I can just copy __copy_user_flushcache from the 
-kernel to the module.
-
-> My first question about nvfs is how it compares to a daxfs with
-> executables and other binaries configured to use page cache with the
-> new per-file dax facility?
-
-nvfs is faster than dax-based filesystems on metadata-heavy operations 
-because it doesn't have the overhead of the buffer cache and bios. See 
-this: http://people.redhat.com/~mpatocka/nvfs/BENCHMARKS
-
-Mikulas
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
