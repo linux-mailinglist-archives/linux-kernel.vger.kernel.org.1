@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DD226BA1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4AB26BA35
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgIPC2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:28:13 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58212 "EHLO huawei.com"
+        id S1726564AbgIPC3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:29:50 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:57714 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726388AbgIPC1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726387AbgIPC1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 22:27:55 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A9B5F8E99C0D23CD06C6;
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 4F66E912A19B44A2A8FB;
         Wed, 16 Sep 2020 10:27:52 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
- 10:27:42 +0800
+Received: from huawei.com (10.175.113.32) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 10:27:43 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Vishal Kulkarni <vishal@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     Christine Caulfield <ccaulfie@redhat.com>,
+        David Teigland <teigland@redhat.com>
+CC:     <cluster-devel@redhat.com>, <linux-kernel@vger.kernel.org>,
         Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] cxgb4vf: convert to use DEFINE_SEQ_ATTRIBUTE macro
-Date:   Wed, 16 Sep 2020 10:50:18 +0800
-Message-ID: <20200916025018.3992419-1-liushixin2@huawei.com>
+Subject: [PATCH -next] dlm: convert to use DEFINE_SEQ_ATTRIBUTE macro
+Date:   Wed, 16 Sep 2020 10:50:19 +0800
+Message-ID: <20200916025019.3992471-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,165 +40,148 @@ Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- .../ethernet/chelsio/cxgb4vf/cxgb4vf_main.c   | 92 +++----------------
- 1 file changed, 11 insertions(+), 81 deletions(-)
+ fs/dlm/debug_fs.c | 104 ++++------------------------------------------
+ 1 file changed, 8 insertions(+), 96 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c b/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c
-index e2fe78e2e242..2820a0bb971b 100644
---- a/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c
-@@ -2017,33 +2017,14 @@ static void mboxlog_stop(struct seq_file *seq, void *v)
- {
+diff --git a/fs/dlm/debug_fs.c b/fs/dlm/debug_fs.c
+index d6bbccb0ed15..c4d1860b9e41 100644
+--- a/fs/dlm/debug_fs.c
++++ b/fs/dlm/debug_fs.c
+@@ -571,126 +571,38 @@ static void table_seq_stop(struct seq_file *seq, void *iter_ptr)
+ 	}
  }
  
--static const struct seq_operations mboxlog_seq_ops = {
-+static const struct seq_operations mboxlog_sops = {
- 	.start = mboxlog_start,
- 	.next  = mboxlog_next,
- 	.stop  = mboxlog_stop,
- 	.show  = mboxlog_show
+-static const struct seq_operations format1_seq_ops = {
++static const struct seq_operations format1_sops = {
+ 	.start = table_seq_start,
+ 	.next  = table_seq_next,
+ 	.stop  = table_seq_stop,
+ 	.show  = table_seq_show,
  };
  
--static int mboxlog_open(struct inode *inode, struct file *file)
+-static const struct seq_operations format2_seq_ops = {
++static const struct seq_operations format2_sops = {
+ 	.start = table_seq_start,
+ 	.next  = table_seq_next,
+ 	.stop  = table_seq_stop,
+ 	.show  = table_seq_show,
+ };
+ 
+-static const struct seq_operations format3_seq_ops = {
++static const struct seq_operations format3_sops = {
+ 	.start = table_seq_start,
+ 	.next  = table_seq_next,
+ 	.stop  = table_seq_stop,
+ 	.show  = table_seq_show,
+ };
+ 
+-static const struct seq_operations format4_seq_ops = {
++static const struct seq_operations format4_sops = {
+ 	.start = table_seq_start,
+ 	.next  = table_seq_next,
+ 	.stop  = table_seq_stop,
+ 	.show  = table_seq_show,
+ };
+ 
+-static const struct file_operations format1_fops;
+-static const struct file_operations format2_fops;
+-static const struct file_operations format3_fops;
+-static const struct file_operations format4_fops;
+-
+-static int table_open1(struct inode *inode, struct file *file)
 -{
--	int res = seq_open(file, &mboxlog_seq_ops);
+-	struct seq_file *seq;
+-	int ret;
 -
--	if (!res) {
--		struct seq_file *seq = file->private_data;
+-	ret = seq_open(file, &format1_seq_ops);
+-	if (ret)
+-		return ret;
 -
--		seq->private = inode->i_private;
--	}
--	return res;
+-	seq = file->private_data;
+-	seq->private = inode->i_private; /* the dlm_ls */
+-	return 0;
 -}
 -
--static const struct file_operations mboxlog_fops = {
--	.owner   = THIS_MODULE,
--	.open    = mboxlog_open,
--	.read    = seq_read,
--	.llseek  = seq_lseek,
--	.release = seq_release,
--};
--
-+DEFINE_SEQ_ATTRIBUTE(mboxlog);
- /*
-  * Show SGE Queue Set information.  We display QPL Queues Sets per line.
-  */
-@@ -2171,31 +2152,14 @@ static void *sge_queue_next(struct seq_file *seq, void *v, loff_t *pos)
- 	return *pos < entries ? (void *)((uintptr_t)*pos + 1) : NULL;
- }
- 
--static const struct seq_operations sge_qinfo_seq_ops = {
-+static const struct seq_operations sge_qinfo_sops = {
- 	.start = sge_queue_start,
- 	.next  = sge_queue_next,
- 	.stop  = sge_queue_stop,
- 	.show  = sge_qinfo_show
- };
- 
--static int sge_qinfo_open(struct inode *inode, struct file *file)
+-static int table_open2(struct inode *inode, struct file *file)
 -{
--	int res = seq_open(file, &sge_qinfo_seq_ops);
+-	struct seq_file *seq;
+-	int ret;
 -
--	if (!res) {
--		struct seq_file *seq = file->private_data;
--		seq->private = inode->i_private;
--	}
--	return res;
+-	ret = seq_open(file, &format2_seq_ops);
+-	if (ret)
+-		return ret;
+-
+-	seq = file->private_data;
+-	seq->private = inode->i_private; /* the dlm_ls */
+-	return 0;
 -}
 -
--static const struct file_operations sge_qinfo_debugfs_fops = {
--	.owner   = THIS_MODULE,
--	.open    = sge_qinfo_open,
--	.read    = seq_read,
--	.llseek  = seq_lseek,
--	.release = seq_release,
--};
-+DEFINE_SEQ_ATTRIBUTE(sge_qinfo);
- 
- /*
-  * Show SGE Queue Set statistics.  We display QPL Queues Sets per line.
-@@ -2317,31 +2281,14 @@ static void *sge_qstats_next(struct seq_file *seq, void *v, loff_t *pos)
- 	return *pos < entries ? (void *)((uintptr_t)*pos + 1) : NULL;
- }
- 
--static const struct seq_operations sge_qstats_seq_ops = {
-+static const struct seq_operations sge_qstats_sops = {
- 	.start = sge_qstats_start,
- 	.next  = sge_qstats_next,
- 	.stop  = sge_qstats_stop,
- 	.show  = sge_qstats_show
- };
- 
--static int sge_qstats_open(struct inode *inode, struct file *file)
+-static int table_open3(struct inode *inode, struct file *file)
 -{
--	int res = seq_open(file, &sge_qstats_seq_ops);
+-	struct seq_file *seq;
+-	int ret;
 -
--	if (res == 0) {
--		struct seq_file *seq = file->private_data;
--		seq->private = inode->i_private;
--	}
--	return res;
+-	ret = seq_open(file, &format3_seq_ops);
+-	if (ret)
+-		return ret;
+-
+-	seq = file->private_data;
+-	seq->private = inode->i_private; /* the dlm_ls */
+-	return 0;
 -}
 -
--static const struct file_operations sge_qstats_proc_fops = {
--	.owner   = THIS_MODULE,
--	.open    = sge_qstats_open,
--	.read    = seq_read,
--	.llseek  = seq_lseek,
--	.release = seq_release,
--};
-+DEFINE_SEQ_ATTRIBUTE(sge_qstats);
- 
- /*
-  * Show PCI-E SR-IOV Virtual Function Resource Limits.
-@@ -2415,31 +2362,14 @@ static void interfaces_stop(struct seq_file *seq, void *v)
- {
- }
- 
--static const struct seq_operations interfaces_seq_ops = {
-+static const struct seq_operations interfaces_sops = {
- 	.start = interfaces_start,
- 	.next  = interfaces_next,
- 	.stop  = interfaces_stop,
- 	.show  = interfaces_show
- };
- 
--static int interfaces_open(struct inode *inode, struct file *file)
+-static int table_open4(struct inode *inode, struct file *file)
 -{
--	int res = seq_open(file, &interfaces_seq_ops);
+-	struct seq_file *seq;
+-	int ret;
 -
--	if (res == 0) {
--		struct seq_file *seq = file->private_data;
--		seq->private = inode->i_private;
--	}
--	return res;
+-	ret = seq_open(file, &format4_seq_ops);
+-	if (ret)
+-		return ret;
+-
+-	seq = file->private_data;
+-	seq->private = inode->i_private; /* the dlm_ls */
+-	return 0;
 -}
 -
--static const struct file_operations interfaces_proc_fops = {
+-static const struct file_operations format1_fops = {
 -	.owner   = THIS_MODULE,
--	.open    = interfaces_open,
+-	.open    = table_open1,
 -	.read    = seq_read,
 -	.llseek  = seq_lseek,
--	.release = seq_release,
+-	.release = seq_release
 -};
-+DEFINE_SEQ_ATTRIBUTE(interfaces);
+-
+-static const struct file_operations format2_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = table_open2,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release
+-};
+-
+-static const struct file_operations format3_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = table_open3,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release
+-};
+-
+-static const struct file_operations format4_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = table_open4,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release
+-};
++DEFINE_SEQ_ATTRIBUTE(format1);
++DEFINE_SEQ_ATTRIBUTE(format2);
++DEFINE_SEQ_ATTRIBUTE(format3);
++DEFINE_SEQ_ATTRIBUTE(format4);
  
  /*
-  * /sys/kernel/debugfs/cxgb4vf/ files list.
-@@ -2452,10 +2382,10 @@ struct cxgb4vf_debugfs_entry {
- 
- static struct cxgb4vf_debugfs_entry debugfs_files[] = {
- 	{ "mboxlog",    0444, &mboxlog_fops },
--	{ "sge_qinfo",  0444, &sge_qinfo_debugfs_fops },
--	{ "sge_qstats", 0444, &sge_qstats_proc_fops },
-+	{ "sge_qinfo",  0444, &sge_qinfo_fops },
-+	{ "sge_qstats", 0444, &sge_qstats_fops },
- 	{ "resources",  0444, &resources_fops },
--	{ "interfaces", 0444, &interfaces_proc_fops },
-+	{ "interfaces", 0444, &interfaces_fops },
- };
- 
- /*
+  * dump lkb's on the ls_waiters list
 -- 
 2.25.1
 
