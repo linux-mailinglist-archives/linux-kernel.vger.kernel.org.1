@@ -2,180 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F9F26B99C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B4726B9AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgIPCCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:02:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12929 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgIPCCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:02:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600221768; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Ip2VN/FNmvU+7orc2a6pZAYO/+IWNOcQEXEYPx0uFJM=;
- b=HyhmVcTDo9skeQ+KNby4XXVD84qbqxJ2BU554OCr91VuDH5iF8zgI9+l6UCepNpVGN1WQd14
- 1gkMPWSFBpWoAUllnodBE9lakTh7t+O9Lfa1QXFSMGMWzoCqGHk+FTk7GUCcy5Y0Ti9zP8b5
- l8UOEkIVq/TyUuq+H7fMUB0yE5U=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f617247238e1efa37cf6306 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 02:02:47
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0D02CC433FE; Wed, 16 Sep 2020 02:02:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rjliao)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 85A11C433C8;
-        Wed, 16 Sep 2020 02:02:46 +0000 (UTC)
+        id S1726253AbgIPCLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgIPCLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:11:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79044C06174A;
+        Tue, 15 Sep 2020 19:11:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=nTKIBWOP6+WpdGT2H6jGa3P9YtQ8grc6+Ik6AGR2Qb8=; b=jge5AAJnaS9TAKULysr8Xc2YMC
+        s9CakwAKXd+snWykDY8VDpiXY3MlJAy8TAr2fbKuIIDozCIZfMVJqOvnfcAuJpbRvcz9U8/adLuKI
+        xDxs/NUBIeNIbSQZmn691oWqIYHm6/TMRuA51NWsMVusavMrO8hTNcizmjKAxc9xup1sR/bPoO5v+
+        73WQPIQ/mHAwn1I3Hj1bH5gkEJvqfyD74V2rhI81ujeqyLxdit5YaLGL942QCotj3mVsbZxg8qCwc
+        h8RwIQ9ikhgFawVW3ozqFvoUEYMBGAowuzZOHcC9CNrwv8DlljmTE9GLrQgyYSJsHoBDj51RMWvl4
+        nosL32/g==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIMuc-00021E-TN; Wed, 16 Sep 2020 02:11:11 +0000
+Subject: Re: [RFC PATCH 20/24] mm/hugetlb: Add a kernel parameter
+ hugetlb_free_vmemmap
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de, almasrymina@google.com,
+        rientjes@google.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20200915125947.26204-1-songmuchun@bytedance.com>
+ <20200915125947.26204-21-songmuchun@bytedance.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <defc8d4f-b143-d4ae-f609-fd22624aafc3@infradead.org>
+Date:   Tue, 15 Sep 2020 19:10:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 16 Sep 2020 10:02:46 +0800
-From:   Rocky Liao <rjliao@codeaurora.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        linux-bluetooth-owner@vger.kernel.org
-Subject: Re: [PATCH v2] Bluetooth: btusb: Add Qualcomm Bluetooth SoC WCN6855
- support
-In-Reply-To: <A89496D5-1CDD-499E-B167-FA2064BDF1A7@holtmann.org>
-References: <0101017457c6b819-d1292819-1fae-43af-8fb8-3bc572f53cd5-000000@us-west-2.amazonses.com>
- <20200914092744.17464-1-rjliao@codeaurora.org>
- <4FCC6630-8350-4E4A-B156-42B2F3581BFD@holtmann.org>
- <c9912094c4627b34f49458ae36c9cd25@codeaurora.org>
- <A89496D5-1CDD-499E-B167-FA2064BDF1A7@holtmann.org>
-Message-ID: <212f6f38e3279dbaa6d5593f2260a0c9@codeaurora.org>
-X-Sender: rjliao@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20200915125947.26204-21-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+Hi,
+Please see comments below.
 
-在 2020-09-15 21:57，Marcel Holtmann 写道：
-> Hi Rocky,
+On 9/15/20 5:59 AM, Muchun Song wrote:
+> Add a kernel parameter hugetlb_free_vmemmap to disable the feature of
+> freeing unused vmemmap pages associated with each hugetlb page on boot.
 > 
->>>> This patch add support for WCN6855 i.e. patch and nvm download
->>>> support.
->>>> Signed-off-by: Rocky Liao <rjliao@codeaurora.org>
->>>> ---
->>>> drivers/bluetooth/btusb.c | 50 
->>>> ++++++++++++++++++++++++++++++++++-----
->>>> 1 file changed, 44 insertions(+), 6 deletions(-)
->>>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
->>>> index fe80588c7bd3..789e8d5e829e 100644
->>>> --- a/drivers/bluetooth/btusb.c
->>>> +++ b/drivers/bluetooth/btusb.c
->>>> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
->>>> #define BTUSB_MEDIATEK		0x200000
->>>> #define BTUSB_WIDEBAND_SPEECH	0x400000
->>>> #define BTUSB_VALID_LE_STATES   0x800000
->>>> +#define BTUSB_QCA_WCN6855	0x1000000
->>>> static const struct usb_device_id btusb_table[] = {
->>>> 	/* Generic Bluetooth USB device */
->>>> @@ -273,6 +274,10 @@ static const struct usb_device_id 
->>>> blacklist_table[] = {
->>>> 	{ USB_DEVICE(0x13d3, 0x3496), .driver_info = BTUSB_QCA_ROME },
->>>> 	{ USB_DEVICE(0x13d3, 0x3501), .driver_info = BTUSB_QCA_ROME },
->>>> +	/* QCA WCN6855 chipset */
->>>> +	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
->>>> +						     BTUSB_WIDEBAND_SPEECH },
->>>> +
->>>> 	/* Broadcom BCM2035 */
->>>> 	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
->>>> 	{ USB_DEVICE(0x0a5c, 0x200a), .driver_info = BTUSB_WRONG_SCO_MTU },
->>>> @@ -3391,6 +3396,26 @@ static int btusb_set_bdaddr_ath3012(struct 
->>>> hci_dev *hdev,
->>>> 	return 0;
->>>> }
->>>> +static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
->>>> +				const bdaddr_t *bdaddr)
->>>> +{
->>>> +	struct sk_buff *skb;
->>>> +	u8 buf[6];
->>>> +	long ret;
->>>> +
->>>> +	memcpy(buf, bdaddr, sizeof(bdaddr_t));
->>>> +
->>>> +	skb = __hci_cmd_sync(hdev, 0xfc14, sizeof(buf), buf, 
->>>> HCI_INIT_TIMEOUT);
->>>> +	if (IS_ERR(skb)) {
->>>> +		ret = PTR_ERR(skb);
->>>> +		bt_dev_err(hdev, "Change address command failed (%ld)", ret);
->>>> +		return ret;
->>>> +	}
->>>> +	kfree_skb(skb);
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>> #define QCA_DFU_PACKET_LEN	4096
->>>> #define QCA_GET_TARGET_VERSION	0x09
->>>> @@ -3428,6 +3453,8 @@ static const struct qca_device_info 
->>>> qca_devices_table[] = {
->>>> 	{ 0x00000201, 28, 4, 18 }, /* Rome 2.1 */
->>>> 	{ 0x00000300, 28, 4, 18 }, /* Rome 3.0 */
->>>> 	{ 0x00000302, 28, 4, 18 }, /* Rome 3.2 */
->>>> +	{ 0x00130100, 40, 4, 18 }, /* WCN6855 1.0 */
->>>> +	{ 0x00130200, 40, 4, 18 }  /* WCN6855 2.0 */
->>>> };
->>>> static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
->>>> request,
->>>> @@ -3529,8 +3556,8 @@ static int 
->>>> btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
->>>> {
->>>> 	struct qca_rampatch_version *rver;
->>>> 	const struct firmware *fw;
->>>> -	u32 ver_rom, ver_patch;
->>>> -	u16 rver_rom, rver_patch;
->>>> +	u32 ver_rom, ver_patch, rver_rom;
->>>> +	u16 rver_rom_low, rver_rom_high, rver_patch;
->>>> 	char fwname[64];
->>>> 	int err;
->>>> @@ -3549,9 +3576,16 @@ static int 
->>>> btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
->>>> 	bt_dev_info(hdev, "using rampatch file: %s", fwname);
->>>> 	rver = (struct qca_rampatch_version *)(fw->data + 
->>>> info->ver_offset);
->>>> -	rver_rom = le16_to_cpu(rver->rom_version);
->>>> +	rver_rom_low = le16_to_cpu(rver->rom_version);
->>>> 	rver_patch = le16_to_cpu(rver->patch_version);
->>>> +	if (ver_rom & ~0xffffU) {
->>>> +		rver_rom_high = le16_to_cpu(*(__le16 *)(fw->data + 16));
->>>> +		rver_rom = le32_to_cpu(rver_rom_high << 16 | rver_rom_low);
->>>> +	} else {
->>>> +		rver_rom = (__force u32)rver_rom_low;
->>>> +	}
->>>> +
->>> I don’t get this. Is anything wrong with get_unaligned_le32 etc.?
->>> My brain just hurts with your casting and pointer magic. Maybe the
->>> whole rver logic needs a clean up first.
->> It's not a 4 bytes le data, for example the version stream is 0x13, 
->> 0x00, 0x00, 0x01 and we need to convert it to 0x00130100. So we have 
->> to convert it to 2 u16 value then combine them to a u32.
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  9 ++++++++
+>  Documentation/admin-guide/mm/hugetlbpage.rst  |  3 +++
+>  mm/hugetlb.c                                  | 23 +++++++++++++++++++
+>  3 files changed, 35 insertions(+)
 > 
-> what is it then? Is it big endian formatted. If it is not a 32-bit
-> value, then don’t store it as one.
-> 
-OK, let me refine the patch to a more readable format.
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 5debfe238027..69d18ef6f66b 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1551,6 +1551,15 @@
+>  			Documentation/admin-guide/mm/hugetlbpage.rst.
+>  			Format: size[KMG]
+>  
+> +	hugetlb_free_vmemmap=
+> +			[KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
+> +			this disables freeing unused vmemmap pages associated
 
-> Regards
-> 
-> Marcel
+			this controls
+
+> +			each HugeTLB page.
+
+			with each HugeTLB page.
+
+> +			Format: { on (default) | off }
+> +
+> +			on:  enable the feature
+> +			off: dosable the feature
+
+			     disable
+
+> +
+>  	hung_task_panic=
+>  			[KNL] Should the hung task detector generate panics.
+>  			Format: 0 | 1
+> diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+> index f7b1c7462991..7d6129ee97dd 100644
+> --- a/Documentation/admin-guide/mm/hugetlbpage.rst
+> +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+> @@ -145,6 +145,9 @@ default_hugepagesz
+>  
+>  	will all result in 256 2M huge pages being allocated.  Valid default
+>  	huge page size is architecture dependent.
+
+insert blank line here.
+
+> +hugetlb_free_vmemmap
+> +	When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this disables freeing
+> +	unused vmemmap pages associated each HugeTLB page.
+>  
+>  When multiple huge page sizes are supported, ``/proc/sys/vm/nr_hugepages``
+>  indicates the current number of pre-allocated huge pages of the default size.
+
+
+-- 
+~Randy
+
