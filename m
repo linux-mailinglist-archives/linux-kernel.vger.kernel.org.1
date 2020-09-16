@@ -2,52 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B7C26CA5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4838626CA24
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgIPT6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:58:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727119AbgIPRfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:35:40 -0400
-Received: from localhost (unknown [122.172.186.249])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9C1E22224;
-        Wed, 16 Sep 2020 12:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600258428;
-        bh=qIHPYfBqriTwYcGPPnUjFFpN3ScakiVkgdeJCIAMpLk=;
+        id S1727255AbgIPTsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727262AbgIPRiI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:38:08 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA02DC0A3BFF
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:24:37 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 574A957F;
+        Wed, 16 Sep 2020 14:19:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1600258765;
+        bh=ev/yS5qTUd4vkPy46pXJDOJvEKIMIslJGb4EFf8b61M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nBeMDdDTxM8ArWOumt7JWHUJ+tAYwRUySxyIkDpwx7Nq++F+N0iHkv3dMLWS6sYq+
-         9xK6frsoX4sZruBhJzmesrk65QhDKb4eCKcY7wz0RzS/7OBxhWetUH4d1eXkRXcRKP
-         7dVHnLtBxwG8SnXpPAFaPU8m4sbyY96ZvPhARlAQ=
-Date:   Wed, 16 Sep 2020 17:43:40 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        Yuti Amonkar <yamonkar@cadence.com>,
-        Sanket Parmar <sparmar@cadence.com>
-Subject: Re: [PATCH 0/3] drivers/phy/cadence: Constify static structs
-Message-ID: <20200916121340.GI2968@vkoul-mobl>
-References: <20200912204639.501669-1-rikard.falkeborn@gmail.com>
+        b=WjVgTzt4omvWQ55FO48Q0XKLbWKzm07gAJShKeALLRGJ8EJmoXRLV2R4c4mgZ/Za3
+         mmY9ZuzAFayV3tpy742HL4J2SprCc7i0WdMP+H2hSxeRPq6VdUGKHnRxaGn946VkFI
+         4zYu1kHBMimw6Z/GgFJ1gE66y+JmLzahhoYkNcvY=
+Date:   Wed, 16 Sep 2020 15:18:55 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sekhar Nori <nsekhar@ti.com>
+Cc:     Swapnil Jakhade <sjakhade@cadence.com>, vkoul@kernel.org,
+        kishon@ti.com, linux-kernel@vger.kernel.org, maxime@cerno.tech,
+        mparab@cadence.com, yamonkar@cadence.com, tomi.valkeinen@ti.com,
+        jsarha@ti.com, praneeth@ti.com
+Subject: Re: [PATCH v6 0/2] PHY: Add new PHY attribute max_link_rate
+Message-ID: <20200916121855.GB3853@pendragon.ideasonboard.com>
+References: <1599805114-22063-1-git-send-email-sjakhade@cadence.com>
+ <e1ae0a53-02a2-8a17-094f-570be6d24b1c@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200912204639.501669-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <e1ae0a53-02a2-8a17-094f-570be6d24b1c@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-09-20, 22:46, Rikard Falkeborn wrote:
-> Constify a number of static structs that are never changed to allow the
-> compiler to put them in read-only memory.
+Hi Sekhar,
 
-Applied, thanks
+On Wed, Sep 16, 2020 at 01:11:17PM +0530, Sekhar Nori wrote:
+> On 11/09/20 11:48 AM, Swapnil Jakhade wrote:
+> > This patch series adds a new PHY attribute max_link_rate.
+> > It also updates Cadence Torrent PHY driver to set attributes bus_width,
+> > max_link_rate and mode for DisplayPort.
+> > 
+> > It includes following patches:
+> > 
+> > 1. 0001-phy-Add-new-PHY-attribute-max_link_rate.patch
+> > This patch adds max_link_rate as a new PHY attribute.
+> > 
+> > 2. 0002-phy-cadence-torrent-Set-Torrent-PHY-attributes.patch
+> > This patch sets PHY attributes in Cadence Torrent PHY driver. This will
+> > enable drivers using this PHY to read these properties.
+> > 
+> > These attributes will be used in the Cadence MHDP DRM bridge driver [1]
+> > which is in the process of upstreaming.
+> 
+> Can you please add these patches on an immutable branch/tag when you are
+> ready to apply them - will try to see if we can use it to get the
+> DisplayPort driver merged in v5.10 too.
+> 
+> Hi Laurent, any other ideas on managing the dependency?
+
+I think that will work fine.
 
 -- 
-~Vinod
+Regards,
+
+Laurent Pinchart
