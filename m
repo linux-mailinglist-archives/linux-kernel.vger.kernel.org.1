@@ -2,90 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DC326BA45
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0257E26BA47
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgIPChC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgIPChB (ORCPT
+        id S1726260AbgIPCke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:40:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37347 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726128AbgIPCkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:37:01 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D3AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 19:37:00 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a15so4604819ljk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 19:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fv8yt3Mc4zl4f94N5JDsxGnqubAPR0A1k38BepP4lq8=;
-        b=LsoMQ9jgoUVYemW5jeO9ZrjqVwiOIoBF/niIFvkCZZCE3WW2cGKEwmoLP2gUobuZUG
-         iie+zJIMmfknwsDyXecyN0xYhoF45QgIeLyg2ZKVkQJKJz1AoKnT1CJS/VcSlmM27vPC
-         FYfZvV4k6MVQMIpapJXFEF3vZ39QvJvF0ZW4LPqdr06CEHbaczP8kGyPLIXAn0w+ZrAa
-         gjnfeNeID89L1DSP3hHtBC2NtCmfksQdpxbuHlLMZgFq9QGm5Q/GapYBtCqED2L+8I0N
-         zp50Jv6CteM0WB12JdYId4TQ0AOf7dLULYFDZGJ6WkeLwCuwbOcBkZWxNJbA8epw0j6r
-         cyWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fv8yt3Mc4zl4f94N5JDsxGnqubAPR0A1k38BepP4lq8=;
-        b=psp/hyAMJdt0ig5vHlZgFFqRqVE2WcuzqX/+TKOjsJRk86VXnah+TrFsnRL5ZxjW4E
-         EJ4/N6hTeRtxF8O9PM/Q9AsP6RmUKvyz2xt4cOUc0E1SybfOuE/jKojcFMFIBnab6lLd
-         Ltexm7U+VRFSJcYYswXeqYMuCVegfet1pttlvrzPkaJapvJaiGOBIMtx0Hr2wwyd+mM2
-         06YVyvevEWaAGW5jG0aGT8Si26l6rUkZNTV6jJqOKGMX/QzG+BaJAxcSp7FoohZHk2s0
-         CKrL66VwuL0hjqRrpESBn4wqzkFFj3r7nkL+DaRQzGFoSPgGET29dznMtKtsgI6Je9lk
-         PkiQ==
-X-Gm-Message-State: AOAM533H5CZ7NIKQZ/sVGFYoo9mF8V+or1IR9TbsLPhYDASSLS8JmHAO
-        x0NVm19Yorat2PMN7GnwMFeFW/Yg1vX0J/Ol5XAUPA==
-X-Google-Smtp-Source: ABdhPJx1JVUXcV+qAuIt1Ulq1cCdBPwGFDNwYw6hlbe2tZaHW1zQ0sz2/FL9dKBsZ62IDLjqiTT3waizNWoS86lRtaA=
-X-Received: by 2002:a2e:9089:: with SMTP id l9mr8683636ljg.408.1600223819202;
- Tue, 15 Sep 2020 19:36:59 -0700 (PDT)
+        Tue, 15 Sep 2020 22:40:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600224020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ASyeTVwuUEeU8l0NdXBbwtEToG7x1iFYHSQxl0OiJ2Y=;
+        b=bCroBcKPw7tfTjpaTq7uGa7FUHlYuVsHuOLrLZqRuZcdz+JkWx45Mr5HLG/+i3PfPybmPc
+        afTra2B/pR3APCB4+U+EIKxvjIIOVHoRNbecUoD2zHhRFTf0eHjygbS6Cd3u/TJ8pSo0Sx
+        6T71cCkxCO/cRU22HyM03H8gAiHOPBA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-72-W2XbK7WnMsugWgXerJZpbw-1; Tue, 15 Sep 2020 22:40:17 -0400
+X-MC-Unique: W2XbK7WnMsugWgXerJZpbw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21313425D1;
+        Wed, 16 Sep 2020 02:40:15 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-113-115.rdu2.redhat.com [10.10.113.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DE4B25FC16;
+        Wed, 16 Sep 2020 02:40:11 +0000 (UTC)
+Subject: Re: [PATCH v11 3/5] locking/qspinlock: Introduce CNA into the slow
+ path of qspinlock
+To:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
+        peterz@infradead.org, mingo@redhat.com, will.deacon@arm.com,
+        arnd@arndb.de, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        guohanjun@huawei.com, jglauber@marvell.com
+Cc:     steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com
+References: <20200915180535.2975060-1-alex.kogan@oracle.com>
+ <20200915180535.2975060-4-alex.kogan@oracle.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <05a65878-d24c-0f8e-c271-24ebc729d7e3@redhat.com>
+Date:   Tue, 15 Sep 2020 22:40:11 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200915132741.84869-1-zangchunxin@bytedance.com>
- <20200915144737.GA2581123@chrisdown.name> <20200915145533.GG3736@dhcp22.suse.cz>
- <20200915162604.GB2581123@chrisdown.name>
-In-Reply-To: <20200915162604.GB2581123@chrisdown.name>
-From:   Chunxin Zang <zangchunxin@bytedance.com>
-Date:   Wed, 16 Sep 2020 10:36:48 +0800
-Message-ID: <CAKRVAePsLTRzQC+5dYYYQ+x+fk8ogoME9uuobzyeJ2J-6kNHPg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v4] mm/vmscan: add a fatal signals check in drop_slab_node
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200915180535.2975060-4-alex.kogan@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 12:26 AM Chris Down <chris@chrisdown.name> wrote:
+On 9/15/20 2:05 PM, Alex Kogan wrote:
+> In CNA, spinning threads are organized in two queues, a primary queue for
+> threads running on the same node as the current lock holder, and a
+> secondary queue for threads running on other nodes. After acquiring the
+> MCS lock and before acquiring the spinlock, the MCS lock
+> holder checks whether the next waiter in the primary queue (if exists) is
+> running on the same NUMA node. If it is not, that waiter is detached from
+> the main queue and moved into the tail of the secondary queue. This way,
+> we gradually filter the primary queue, leaving only waiters running on
+> the same preferred NUMA node. For more details, see
+> https://arxiv.org/abs/1810.05600.
 >
-> Michal Hocko writes:
-> >On Tue 15-09-20 15:47:37, Chris Down wrote:
-> >> zangchunxin@bytedance.com writes:
-> >> > +          if (signal_pending(current))
-> >> > +                  return;
-> >>
-> >> This doesn't match your patch title, please update it. :-)
-> >
-> >I have to admit I have completely missed this and I think that this
-> >should better be fatal_signal_pending because that would make sure that
-> >the userspace will not see an incomplete operation. This is a general
-> >practice for other bail outs as well.
+> Note that this variant of CNA may introduce starvation by continuously
+> passing the lock between waiters in the main queue. This issue will be
+> addressed later in the series.
 >
-> Oh sorry, to be clear, I meant the patch should match the title, not the other
-> way around.
+> Enabling CNA is controlled via a new configuration option
+> (NUMA_AWARE_SPINLOCKS). By default, the CNA variant is patched in at the
+> boot time only if we run on a multi-node machine in native environment and
+> the new config is enabled. (For the time being, the patching requires
+> CONFIG_PARAVIRT_SPINLOCKS to be enabled as well. However, this should be
+> resolved once static_call() is available.) This default behavior can be
+> overridden with the new kernel boot command-line option
+> "numa_spinlock=on/off" (default is "auto").
+>
+> Signed-off-by: Alex Kogan <alex.kogan@oracle.com>
+> Reviewed-by: Steve Sistare <steven.sistare@oracle.com>
+> Reviewed-by: Waiman Long <longman@redhat.com>
+> ---
+>   .../admin-guide/kernel-parameters.txt         |  10 +
+>   arch/x86/Kconfig                              |  20 ++
+>   arch/x86/include/asm/qspinlock.h              |   4 +
+>   arch/x86/kernel/alternative.c                 |   4 +
+>   kernel/locking/mcs_spinlock.h                 |   2 +-
+>   kernel/locking/qspinlock.c                    |  42 ++-
+>   kernel/locking/qspinlock_cna.h                | 336 ++++++++++++++++++
+>   7 files changed, 413 insertions(+), 5 deletions(-)
+>   create mode 100644 kernel/locking/qspinlock_cna.h
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a1068742a6df..51ce050f8701 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3353,6 +3353,16 @@
+>   
+>   	nox2apic	[X86-64,APIC] Do not enable x2APIC mode.
+>   
+> +	numa_spinlock=	[NUMA, PV_OPS] Select the NUMA-aware variant
+> +			of spinlock. The options are:
+> +			auto - Enable this variant if running on a multi-node
+> +			machine in native environment.
+> +			on  - Unconditionally enable this variant.
+> +			off - Unconditionally disable this variant.
+> +
+> +			Not specifying this option is equivalent to
+> +			numa_spinlock=auto.
+> +
+>   	cpu0_hotplug	[X86] Turn on CPU0 hotplug feature when
+>   			CONFIG_BOOTPARAM_HOTPLUG_CPU0 is off.
+>   			Some features depend on CPU0. Known dependencies are:
 
-My apologies about that. In my first version of patch, it's
-'fatal_signal_pending'.
-But in this version, I used the wrong branch. I will update it now.
+You will have to move down this hunk according to alphabetic order. 
+Other than that this patch looks good to me.
 
-Best wishes
-Chunxin
+Cheers,
+Longman
+
