@@ -2,366 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4218A26CCDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444EA26CC39
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgIPUuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:50:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53694 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726641AbgIPQ4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:56:00 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03F01224D3;
-        Wed, 16 Sep 2020 16:44:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600274696;
-        bh=8tdwj3aFqDfhW0jHoTtJmNGhQP2dJm5epE5yr5XkVn8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J+idCUK3PRYFPDUaKRgvPavOPLfWuPV6eVSfZpdwOX++4OG7p7IPFx/anCpTqyCsT
-         8Y+BFoqa4Fv4FB2zwtoKO8r5w7eKUuKd0ENVzeX87qa9zi3bmMIjMjAle9eNYYGIDy
-         t6u8hKw0M5xKji4HVeTRxYp0YU/DQfML6GFxjuuQ=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     "Frank Ch . Eigler" <fche@redhat.com>,
-        Aaron Merey <amerey@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] perf probe: Fall back to debuginfod query if debuginfo and source not found
-Date:   Thu, 17 Sep 2020 01:44:52 +0900
-Message-Id: <160027469272.803747.13799945548211140499.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160027467316.803747.10741549521899847231.stgit@devnote2>
-References: <160027467316.803747.10741549521899847231.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1728385AbgIPUk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:40:58 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8886 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726762AbgIPREy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:04:54 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6241520002>; Wed, 16 Sep 2020 09:46:10 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 16 Sep 2020 09:46:53 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 09:46:53 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
+ 2020 16:46:52 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.176)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 16 Sep 2020 16:46:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=caYGveoIGTqvY7tiwBlW4m8FWc18I2D4rDhewrOieY8kdSfX6mKY6Fb3HHW2xBBbahLFQmsXmQc03PZxGpEsn+4uJvZR3jv8PmcsQIoq8ieB7njZ2WKnV/LRd+68Bo285VrwcNMzQU0Ev++zo9CApNHOyWfvT0q0iZ1ZFFnKV6tNUtDPZmRH1R9iaQAv4vvQ+T7d/smT7np08pV/Ai4JQkUEwmPqpsZ6Qyxgb4OP/JLk7sXTnP4LPlBWlFjuQ3CQV7Xf0SbF3Y/wu55xg3jl9eSpF9xENqJsbCmIQC4fpKiFwmhYQVOhXKy+t1ww2SOC33FuumSwOiQ54OTJwqPL9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BcwpLTsZnqxfIQmMsm45lh6mQfVBPUc3olThvYIG9kU=;
+ b=DW4Yj7qF/G5ieCnq4hYFsH38UKoqbkK6ByXLwFAA7o+wIET3iOFzam7ZMXX+++cyGE7ONRc/YObr5D7FrQ7x4uY3l3+SDFQtcChqN0K31sBsNbEf+xCwg87qBQtu1/fc1aTHQxuyc7s8UhEZKsS1kp5XmIRh6WTbsvhFP03JSkgKb5rtilrfyi2ESTGpkNpne+fncfyv0gEgRVl5/ZRnJwoP1S3+f3qWgaTcnpEw0v2Q+FYoSxNV/3heKK8Pz5Ez4cuBm75LXr/brGvVqryeJszwsivjiP8Tt090YaG0dm38LaUWng0l/L0XPmvAEkhwO9YOaFAq3dLJkEFcOklU5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3513.namprd12.prod.outlook.com (2603:10b6:5:18a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 16 Sep
+ 2020 16:46:45 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Wed, 16 Sep 2020
+ 16:46:45 +0000
+Date:   Wed, 16 Sep 2020 13:46:44 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Liu Shixin <liushixin2@huawei.com>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] infiniband: ipoib: convert to use
+ DEFINE_SEQ_ATTRIBUTE macro
+Message-ID: <20200916164644.GA19901@nvidia.com>
+References: <20200916025022.3992627-1-liushixin2@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200916025022.3992627-1-liushixin2@huawei.com>
+X-ClientProxiedBy: MN2PR15CA0030.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::43) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0030.namprd15.prod.outlook.com (2603:10b6:208:1b4::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Wed, 16 Sep 2020 16:46:45 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kIaZw-0005Bb-6Q; Wed, 16 Sep 2020 13:46:44 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6c951c68-8ea5-4d5e-5335-08d85a6018bd
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3513:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB351374A15E75488ABE1E3619C2210@DM6PR12MB3513.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7m3pF/Agi/oTUvNtWOrkY8M9y00AwzG8sp6ibSZKzLqBxNLp4lZkOc+9quLyiqZNooulunmlJq/aZo0221763xggaF7t/BXDh6M7C96FrpIlIVLFyTEtQvd3vfXpUr2MH5sqQBX4gOSW9+U0PeeAwCL5AcWTyb+asnFwXMjpV3hDbvwZlKnlBqPpGRyB2X+H+b+pcMnxHIveErksakbEOhTvo9lLkWyfQUbDFG6PfltGqeuBaP+CVUDNNc2MxbVdLD0y76oZP/IREY01f/iiTnwqpVGiFlkzwRQdTZBbmY4OARYsM1/AvFGqbqWhOka7+1Tx8DWplDX5wfm7F/iizg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(366004)(6916009)(186003)(66476007)(66556008)(36756003)(5660300002)(86362001)(66946007)(1076003)(8676002)(33656002)(2906002)(4744005)(26005)(4326008)(478600001)(83380400001)(2616005)(316002)(8936002)(9786002)(9746002)(426003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 4tglq2CQHrOijbk18gLcWVkSOEFOA1cEsZQjQDXMjum4ojU4bFogmOlrDwy7oITkaiapcSz8kIXQ11Jq+H2gkFQIKu0vpJaLlxnsO6t/jHsQhxkK5wSxWyCfu6gE5E3eeKwQrQHFVjMWOwuRMyA9RblQrvJ5CZVigRtSCf9cMPWUxPYcoyJDVGqkMv3E+rict7HScMt2WeVb/1ZmtLGTMj3h8gRwau/WeBRhwrIeCG4V1L2wfN4QezK+wZL2IfhW3U6dkuACt3zfDIZKMQFuRyTb1YRAroXuLaGdk2dSubRTntH8esDtVPnOtHHAi/h1tsuO90fY4ErqEGAgq8ZfCiEX2Wf1e7Uv5YgT1MC3d6U2eEvBcza1EDa1Rn5ia4s3taeIF+C9dKX+HPhGUnQB5PzMsymC1EdroCc7qkeKLIhHp9VUe2KPhEKzsg78JD8zCjaoT3dbu3knHvsyk1PQOu6Ixi6xRmkHbJx2Sul4rJpkkMxliG7H7S8l8xzdJHAHlU64FbIhhX9BihpqX2ji/uSwaYj1IbVY7EeCVDIpYtfH5TIMpBMbVdPwXRoc2p6JoyDqJI4FJGr0ciih3SumM6+85752MO1uqkAU44WgK2RGuszU239KURGNtMaufcHUJBiKouK9TZ+sl8jVJ2FowQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c951c68-8ea5-4d5e-5335-08d85a6018bd
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 16:46:45.4954
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GceimPVn2Bq7RvtQWz8WGiqzLvYEf8UGbEo8ZqX4LgG/+rz1oojIcXns5qmeVg9m
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3513
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600274770; bh=BcwpLTsZnqxfIQmMsm45lh6mQfVBPUc3olThvYIG9kU=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=Pi5i81ryij1NFpL7pVZ2JXZtTiUlKuhtKfsH4z/S6Wv6WUu8MwZ1WCFS1bdt1J8rl
+         Ofw+dRQJKLlFZKMa/8MgibF4Ix1yksCAfDdn2kOjrmqwfVfwkns+XxuqcT6uuCiCPk
+         Z9DZ0aXNhNsLw/ldBJrO/HWLCy5G08aUq+byPnhY5VUOCs9K3hqZ1wmJzT+XY64uiW
+         Waov/M2hReVIrICxEToDU9HOxcBERexcc++Jxzvq+sUrXAzxkqy5fqgW+3lLmtoJQE
+         nouaZLpt4cZK3FUbx/dVYldKK5QWG+P5fA+TAu5PgMr19rY0CVGE1svMRdQwYythix
+         +gt8OERxr8fhQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the perf-probe heavily depends on the debuginfo, debuginfod
-gives us many benefits on the perf probe command on remote machine.
-Especially, this will be helpful for the embedded devices which will
-not have enough storage, or boot with a cross-build kernel whose
-source code is in the host machine.
-This will work as similar to the commit c7a14fdcb3fa ("perf build-ids:
-Fall back to debuginfod query if debuginfo not found")
+On Wed, Sep 16, 2020 at 10:50:22AM +0800, Liu Shixin wrote:
+> Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
+> 
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
+>  drivers/infiniband/ulp/ipoib/ipoib_fs.c | 50 ++-----------------------
+>  1 file changed, 4 insertions(+), 46 deletions(-)
 
-Tested with:
+Applied to for-next, thanks
 
-  (host) $ cd PATH/TO/KBUILD/DIR/
-  (host) $ debuginfod -F .
-  ...
-
-  (remote) # perf probe -L vfs_read
-  Failed to find the path for the kernel: No such file or directory
-    Error: Failed to show lines.
-
-  (remote) # export DEBUGINFOD_URLS="http://$HOST_IP:8002/"
-  (remote) # perf probe -L vfs_read
-  <vfs_read@...>
-        0  ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
-           {
-        2         ssize_t ret;
-
-                  if (!(file->f_mode & FMODE_READ))
-                          return -EBADF;
-        6         if (!(file->f_mode & FMODE_CAN_READ))
-                          return -EINVAL;
-        8         if (unlikely(!access_ok(buf, count)))
-                          return -EFAULT;
-
-       11         ret = rw_verify_area(READ, file, pos, count);
-       12         if (ret)
-                          return ret;
-                  if (count > MAX_RW_COUNT)
-  ...
-
-  (remote) # perf probe -a "vfs_read count"
-  Added new event:
-    probe:vfs_read       (on vfs_read with count)
-
-  (remote) # perf probe -l
-    probe:vfs_read       (on vfs_read@ksrc/linux/fs/read_write.c with count)
-
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/perf/util/probe-event.c  |   52 ++++++++++++++++++++++++++++++++++++-
- tools/perf/util/probe-finder.c |   56 ++++++++++++++++++++++++++++++++++++----
- tools/perf/util/probe-finder.h |    7 ++++-
- 3 files changed, 107 insertions(+), 8 deletions(-)
-
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index 17831f186ab5..26733c8070a7 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -43,6 +43,10 @@
- #include <linux/ctype.h>
- #include <linux/zalloc.h>
- 
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+#include <elfutils/debuginfod.h>
-+#endif
-+
- #define PERFPROBE_GROUP "probe"
- 
- bool probe_event_dry_run;	/* Dry run flag */
-@@ -338,6 +342,8 @@ static int kernel_get_module_dso(const char *module, struct dso **pdso)
- 
- 	map = machine__kernel_map(host_machine);
- 	dso = map->dso;
-+	if (!dso->has_build_id)
-+		dso__read_running_kernel_build_id(dso, host_machine);
- 
- 	vmlinux_name = symbol_conf.vmlinux_name;
- 	dso->load_errno = 0;
-@@ -453,6 +459,43 @@ static int get_alternative_line_range(struct debuginfo *dinfo,
- 	return ret;
- }
- 
-+static struct debuginfo *open_from_debuginfod(struct dso *dso, struct nsinfo *nsi,
-+					      bool silent)
-+{
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+	debuginfod_client * c = debuginfod_begin();
-+	char sbuild_id[SBUILD_ID_SIZE + 1];
-+	struct debuginfo *ret = NULL;
-+	struct nscookie nsc;
-+	char *path;
-+	int fd;
-+
-+	if (!c)
-+		return NULL;
-+
-+	build_id__sprintf(dso->build_id, BUILD_ID_SIZE, sbuild_id);
-+	fd = debuginfod_find_debuginfo(c, (const unsigned char *)sbuild_id,
-+					0, &path);
-+	if (fd >= 0)
-+		close(fd);
-+	debuginfod_end(c);
-+	if (fd < 0) {
-+		if (!silent)
-+			pr_debug("Failed to find debuginfo in debuginfod.\n");
-+		return NULL;
-+	}
-+	if (!silent)
-+		pr_debug("Load debuginfo from debuginfod (%s)\n", path);
-+
-+	nsinfo__mountns_enter(nsi, &nsc);
-+	ret = debuginfo__new((const char *)path);
-+	nsinfo__mountns_exit(&nsc);
-+	return ret;
-+#else
-+	return NULL;
-+#endif
-+}
-+
- /* Open new debuginfo of given module */
- static struct debuginfo *open_debuginfo(const char *module, struct nsinfo *nsi,
- 					bool silent)
-@@ -472,6 +515,10 @@ static struct debuginfo *open_debuginfo(const char *module, struct nsinfo *nsi,
- 					strcpy(reason, "(unknown)");
- 			} else
- 				dso__strerror_load(dso, reason, STRERR_BUFSIZE);
-+			if (dso)
-+				ret = open_from_debuginfod(dso, nsi, silent);
-+			if (ret)
-+				return ret;
- 			if (!silent) {
- 				if (module)
- 					pr_err("Module %s is not loaded, please specify its full path name.\n", module);
-@@ -959,6 +1006,7 @@ static int __show_line_range(struct line_range *lr, const char *module,
- 	int ret;
- 	char *tmp;
- 	char sbuf[STRERR_BUFSIZE];
-+	char sbuild_id[SBUILD_ID_SIZE] = "";
- 
- 	/* Search a line range */
- 	dinfo = open_debuginfo(module, NULL, false);
-@@ -971,6 +1019,8 @@ static int __show_line_range(struct line_range *lr, const char *module,
- 		if (!ret)
- 			ret = debuginfo__find_line_range(dinfo, lr);
- 	}
-+	if (dinfo->build_id)
-+		build_id__sprintf(dinfo->build_id, BUILD_ID_SIZE, sbuild_id);
- 	debuginfo__delete(dinfo);
- 	if (ret == 0 || ret == -ENOENT) {
- 		pr_warning("Specified source line is not found.\n");
-@@ -982,7 +1032,7 @@ static int __show_line_range(struct line_range *lr, const char *module,
- 
- 	/* Convert source file path */
- 	tmp = lr->path;
--	ret = get_real_path(tmp, lr->comp_dir, &lr->path);
-+	ret = find_source_path(tmp, sbuild_id, lr->comp_dir, &lr->path);
- 
- 	/* Free old path when new path is assigned */
- 	if (tmp != lr->path)
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 659024342e9a..a98590940003 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -31,6 +31,10 @@
- #include "probe-file.h"
- #include "string2.h"
- 
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+#include <elfutils/debuginfod.h>
-+#endif
-+
- /* Kprobe tracer basic type is up to u64 */
- #define MAX_BASIC_TYPE_BITS	64
- 
-@@ -51,6 +55,7 @@ static const Dwfl_Callbacks offline_callbacks = {
- static int debuginfo__init_offline_dwarf(struct debuginfo *dbg,
- 					 const char *path)
- {
-+	GElf_Addr dummy;
- 	int fd;
- 
- 	fd = open(path, O_RDONLY);
-@@ -70,6 +75,8 @@ static int debuginfo__init_offline_dwarf(struct debuginfo *dbg,
- 	if (!dbg->dbg)
- 		goto error;
- 
-+	dwfl_module_build_id(dbg->mod, &dbg->build_id, &dummy);
-+
- 	dwfl_report_end(dbg->dwfl, NULL, NULL);
- 
- 	return 0;
-@@ -942,6 +949,7 @@ static int probe_point_lazy_walker(const char *fname, int lineno,
- /* Find probe points from lazy pattern  */
- static int find_probe_point_lazy(Dwarf_Die *sp_die, struct probe_finder *pf)
- {
-+	char sbuild_id[SBUILD_ID_SIZE] = "";
- 	int ret = 0;
- 	char *fpath;
- 
-@@ -949,7 +957,10 @@ static int find_probe_point_lazy(Dwarf_Die *sp_die, struct probe_finder *pf)
- 		const char *comp_dir;
- 
- 		comp_dir = cu_get_comp_dir(&pf->cu_die);
--		ret = get_real_path(pf->fname, comp_dir, &fpath);
-+		if (pf->dbg->build_id)
-+			build_id__sprintf(pf->dbg->build_id,
-+					BUILD_ID_SIZE, sbuild_id);
-+		ret = find_source_path(pf->fname, sbuild_id, comp_dir, &fpath);
- 		if (ret < 0) {
- 			pr_warning("Failed to find source file path.\n");
- 			return ret;
-@@ -1448,7 +1459,7 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
- 				 struct probe_trace_event **tevs)
- {
- 	struct trace_event_finder tf = {
--			.pf = {.pev = pev, .callback = add_probe_trace_event},
-+			.pf = {.pev = pev, .dbg = dbg, .callback = add_probe_trace_event},
- 			.max_tevs = probe_conf.max_probes, .mod = dbg->mod};
- 	int ret, i;
- 
-@@ -1618,7 +1629,7 @@ int debuginfo__find_available_vars_at(struct debuginfo *dbg,
- 				      struct variable_list **vls)
- {
- 	struct available_var_finder af = {
--			.pf = {.pev = pev, .callback = add_available_vars},
-+			.pf = {.pev = pev, .dbg = dbg, .callback = add_available_vars},
- 			.mod = dbg->mod,
- 			.max_vls = probe_conf.max_probes};
- 	int ret;
-@@ -1973,17 +1984,52 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
- 	return (ret < 0) ? ret : lf.found;
- }
- 
-+/* debuginfod doesn't require the comp_dir but buildid is required */
-+static int get_source_from_debuginfod(const char *raw_path,
-+				const char *sbuild_id, char **new_path)
-+{
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+	debuginfod_client * c = debuginfod_begin();
-+	const char *p = raw_path;
-+	int fd;
-+
-+	if (!c)
-+		return -ENOMEM;
-+
-+	fd = debuginfod_find_source(c, (const unsigned char *)sbuild_id,
-+				0, p, new_path);
-+	pr_debug("Search %s from debuginfod -> %d\n", p, fd);
-+	if (fd >= 0)
-+		close(fd);
-+	debuginfod_end(c);
-+	if (fd < 0) {
-+		pr_debug("Failed to find %s in debuginfod (%s)\n",
-+			raw_path, sbuild_id);
-+		return -ENOENT;
-+	}
-+	pr_debug("Got a source %s\n", *new_path);
-+
-+	return 0;
-+#else
-+	return -ENOTSUP;
-+#endif
-+}
- /*
-  * Find a src file from a DWARF tag path. Prepend optional source path prefix
-  * and chop off leading directories that do not exist. Result is passed back as
-  * a newly allocated path on success.
-  * Return 0 if file was found and readable, -errno otherwise.
-  */
--int get_real_path(const char *raw_path, const char *comp_dir,
--			 char **new_path)
-+int find_source_path(const char *raw_path, const char *sbuild_id,
-+		const char *comp_dir, char **new_path)
- {
- 	const char *prefix = symbol_conf.source_prefix;
- 
-+	if (sbuild_id && !prefix) {
-+		if (!get_source_from_debuginfod(raw_path, sbuild_id, new_path))
-+			return 0;
-+	}
-+
- 	if (!prefix) {
- 		if (raw_path[0] != '/' && comp_dir)
- 			/* If not an absolute path, try to use comp_dir */
-diff --git a/tools/perf/util/probe-finder.h b/tools/perf/util/probe-finder.h
-index 11be10080613..2febb5875678 100644
---- a/tools/perf/util/probe-finder.h
-+++ b/tools/perf/util/probe-finder.h
-@@ -4,6 +4,7 @@
- 
- #include <stdbool.h>
- #include "intlist.h"
-+#include "build-id.h"
- #include "probe-event.h"
- #include <linux/ctype.h>
- 
-@@ -32,6 +33,7 @@ struct debuginfo {
- 	Dwfl_Module	*mod;
- 	Dwfl		*dwfl;
- 	Dwarf_Addr	bias;
-+	const unsigned char	*build_id;
- };
- 
- /* This also tries to open distro debuginfo */
-@@ -59,11 +61,12 @@ int debuginfo__find_available_vars_at(struct debuginfo *dbg,
- 				      struct variable_list **vls);
- 
- /* Find a src file from a DWARF tag path */
--int get_real_path(const char *raw_path, const char *comp_dir,
--			 char **new_path);
-+int find_source_path(const char *raw_path, const char *sbuild_id,
-+		     const char *comp_dir, char **new_path);
- 
- struct probe_finder {
- 	struct perf_probe_event	*pev;		/* Target probe event */
-+	struct debuginfo	*dbg;
- 
- 	/* Callback when a probe point is found */
- 	int (*callback)(Dwarf_Die *sc_die, struct probe_finder *pf);
-
+Jason
