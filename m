@@ -2,141 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D91126C015
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39FC26C01A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgIPJF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:05:28 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:50834 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726149AbgIPJF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:05:28 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 150A58404A182D99E61A;
-        Wed, 16 Sep 2020 17:05:24 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 16 Sep 2020 17:05:23 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Wed, 16 Sep 2020 17:05:23 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     syzbot <syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hdanton@sina.com" <hdanton@sina.com>,
-        Hillf Danton <hdanton@sina.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-Subject: Re: general protection fault in unlink_file_vma
-Thread-Topic: general protection fault in unlink_file_vma
-Thread-Index: AdaMByb6IiUe+ccPQACQ+SPbxy1QFg==
-Date:   Wed, 16 Sep 2020 09:05:23 +0000
-Message-ID: <8d48e1ee791f4b0db8766f75b6dcc9e0@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.109]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726637AbgIPJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIPJGa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 05:06:30 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81EFFC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XGOGWszl2fZU1wbir3hgL3wXW46VrlHkuXhbLpO08Eo=; b=fEezQmk/8ai823rFebUytBjY5y
+        IV44DUH8WhTUysiCTNpXhJu7FYGpDSlvp1wnKBDsHHQZ89iZcj4ZAg171aFSWMStaiuup8xI4Pyg6
+        o+zYu2SNH2eV6u02z81xgGNIpfKxuD01zNPq+wsziSg/vUxSXZN2NZLuLFNvFjXtqpAYLGM/pvkv3
+        qtqIKvHoohr9zqwH6nJQYm+ycf7H090vLu4oXnbPzBXH56+2HgSKbra1DpZ3JlEcUjiLTkHKAZWwl
+        veIWBscVakesnjWOVUITVU+dwps9RZduAwty8pMPXNdfBipK+uk7A6RXQo20zZFpyKaEzBtQAyoSN
+        n6uIFp7Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kITOP-0006oH-Lj; Wed, 16 Sep 2020 09:06:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4050B3012DF;
+        Wed, 16 Sep 2020 11:06:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3012A2149392C; Wed, 16 Sep 2020 11:06:20 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 11:06:20 +0200
+From:   peterz@infradead.org
+To:     Marco Elver <elver@google.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
+ e6eb15c9ba3165698488ae5c34920eea20eaa38e
+Message-ID: <20200916090620.GN2674@hirez.programming.kicks-ass.net>
+References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
+ <20200915135519.GJ14436@zn.tnic>
+ <20200915141816.GC28738@shao2-debian>
+ <20200915160554.GN14436@zn.tnic>
+ <20200915170248.gcv54pvyckteyhk3@treble>
+ <20200915172152.GR14436@zn.tnic>
+ <CAKwvOdkh=bZE6uY8zk_QePq5B3fY1ue9VjEguJ_cQi4CtZ4xgw@mail.gmail.com>
+ <CANpmjNPWOus2WnMLSAXnzaXC5U5RDM3TTeV8vFDtvuZvrkoWtA@mail.gmail.com>
+ <20200916083032.GL2674@hirez.programming.kicks-ass.net>
+ <CANpmjNOBUp0kRTODJMuSLteE=-woFZ2nUzk1=H8wqcusvi+T_g@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOBUp0kRTODJMuSLteE=-woFZ2nUzk1=H8wqcusvi+T_g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pg0KPkhlbGxvLA0KPg0KPnN5emJvdCBoYXMgdGVzdGVkIHRoZSBwcm9wb3NlZCBwYXRjaCBidXQg
-dGhlIHJlcHJvZHVjZXIgaXMgc3RpbGwgdHJpZ2dlcmluZyBhbiBpc3N1ZToNCj5rZXJuZWwgQlVH
-IGF0IGFyY2gveDg2L21tL3BoeXNhZGRyLmM6TElORSENCj4NCj4tLS0tLS0tLS0tLS1bIGN1dCBo
-ZXJlIF0tLS0tLS0tLS0tLS0NCj5rZXJuZWwgQlVHIGF0IGFyY2gveDg2L21tL3BoeXNhZGRyLmM6
-MjghDQo+aW52YWxpZCBvcGNvZGU6IDAwMDAgWyMxXSBQUkVFTVBUIFNNUCBLQVNBTg0KPkNQVTog
-MCBQSUQ6IDY5NzUgQ29tbTogc3l6LWV4ZWN1dG9yLjIgTm90IHRhaW50ZWQgNS45LjAtcmMzLXN5
-emthbGxlciAjMCBIYXJkd2FyZSBuYW1lOiBHb29nbGUgR29vZ2xlIENvbXB1dGUgRW5naW5lL0dv
-b2dsZSBDb21wdXRlIEVuZ2luZSwgQklPUyBHb29nbGUgMDEvMDEvMjAxMQ0KPlJJUDogMDAxMDpf
-X3BoeXNfYWRkcisweGE3LzB4MTEwIGFyY2gveDg2L21tL3BoeXNhZGRyLmM6MjgNCj5Db2RlOiA5
-MiA3ZCAwOSA0YyA4OSBlMyAzMSBmZiA0OCBkMyBlYiA0OCA4OSBkZSBlOCAxMCA4ZSAzZiAwMCA0
-OCA4NSBkYiA3NSAwZCBlOCA2NiA5MSAzZiAwMCA0YyA4OSBlMCA1YiA1ZCA0MSA1YyBjMyBlOCA1
-OSA5MSAzZiAwMCA8MGY+IDBiIGU4IDUyIDkxIDNmIDAwIDQ4IGM3IGMwIDEwIDUwIGE5IDg5IDQ4
-IGJhIDAwIDAwIDAwIDAwIDAwIGZjDQo+UlNQOiAwMDE4OmZmZmZjOTAwMDU1ZTdhMTggRUZMQUdT
-OiAwMDAxMDI5Mw0KPlJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAwMDc3MDAwMDAwMDAg
-UkNYOiBmZmZmZmZmZjgxMzRiOTQ4DQo+UkRYOiBmZmZmODg4MGE4M2M4MjgwIFJTSTogZmZmZmZm
-ZmY4MTM0YjlhNyBSREk6IDAwMDAwMDAwMDAwMDAwMDYNCj5SQlA6IDAwMDAwMDc3ODAwMDAwMDAg
-UjA4OiAwMDAwMDAwMDAwMDAwMDAxIFIwOTogZmZmZmZmZmY4YzVmNGE1Nw0KPlIxMDogMDAwMDAw
-Nzc4MDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOiAwMDAwNzdmNzAwMDAwMDAwDQo+
-UjEzOiBmZmZmYzkwMDA1NWU3YTgwIFIxNDogMDAwMDAwMDAwMDAwMDIwMCBSMTU6IGRmZmZmYzAw
-MDAwMDAwMDANCj5GUzogIDAwMDAwMDAwMDIyMWM5NDAoMDAwMCkgR1M6ZmZmZjg4ODBhZTYwMDAw
-MCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQo+Q1M6ICAwMDEwIERTOiAwMDAwIEVTOiAw
-MDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPkNSMjogMDAwMDAwMDAwMDc0OTE5OCBDUjM6IDAw
-MDAwMDAwYTdkZjEwMDAgQ1I0OiAwMDAwMDAwMDAwMTUwNmYwDQo+RFIwOiAwMDAwMDAwMDAwMDAw
-MDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANCj5EUjM6IDAw
-MDAwMDAwMDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzogMDAwMDAwMDAwMDAwMDQw
-MCBDYWxsIFRyYWNlOg0KPiB2aXJ0X3RvX2hlYWRfcGFnZSBpbmNsdWRlL2xpbnV4L21tLmg6ODQ4
-IFtpbmxpbmVdICBxbGlua190b19jYWNoZSBtbS9rYXNhbi9xdWFyYW50aW5lLmM6MTI4IFtpbmxp
-bmVdDQo+IHFsaXN0X2ZyZWVfYWxsKzB4ZDkvMHgxNzAgbW0va2FzYW4vcXVhcmFudGluZS5jOjE2
-NQ0KPiBxdWFyYW50aW5lX3JlZHVjZSsweDE3ZS8weDIwMCBtbS9rYXNhbi9xdWFyYW50aW5lLmM6
-MjYxDQo+IF9fa2FzYW5fa21hbGxvYy5jb25zdHByb3AuMCsweDllLzB4ZDAgbW0va2FzYW4vY29t
-bW9uLmM6NDQyICBzbGFiX3Bvc3RfYWxsb2NfaG9vayBtbS9zbGFiLmg6NTE4IFtpbmxpbmVdICBz
-bGFiX2FsbG9jX25vZGUgbW0vc2xhYi5jOjMyNTQgW2lubGluZV0NCj4ga21lbV9jYWNoZV9hbGxv
-Y19ub2RlX3RyYWNlKzB4MTQ0LzB4M2YwIG1tL3NsYWIuYzozNTkyICBrbWFsbG9jX25vZGUgaW5j
-bHVkZS9saW51eC9zbGFiLmg6NTcyIFtpbmxpbmVdICBremFsbG9jX25vZGUgaW5jbHVkZS9saW51
-eC9zbGFiLmg6Njc3IFtpbmxpbmVdDQo+IF9fZ2V0X3ZtX2FyZWFfbm9kZSsweDEyNi8weDNiMCBt
-bS92bWFsbG9jLmM6MjA3NSAgX192bWFsbG9jX25vZGVfcmFuZ2UgbW0vdm1hbGxvYy5jOjI1MDYg
-W2lubGluZV0gIF9fdm1hbGxvY19ub2RlIG1tL3ZtYWxsb2MuYzoyNTU0IFtpbmxpbmVdDQo+IHZ6
-YWxsb2MrMHhmMi8weDFhMCBtbS92bWFsbG9jLmM6MjYwNw0KPiBkb19pcHRfZ2V0X2N0bCsweDYx
-My8weDlkMCBuZXQvaXB2NC9uZXRmaWx0ZXIvaXBfdGFibGVzLmM6ODAwDQo+IG5mX2dldHNvY2tv
-cHQrMHg3Mi8weGQwIG5ldC9uZXRmaWx0ZXIvbmZfc29ja29wdC5jOjExNiAgaXBfZ2V0c29ja29w
-dCBuZXQvaXB2NC9pcF9zb2NrZ2x1ZS5jOjE3NzggW2lubGluZV0NCj4gaXBfZ2V0c29ja29wdCsw
-eDE2NC8weDFjMCBuZXQvaXB2NC9pcF9zb2NrZ2x1ZS5jOjE3NTcNCj4gdGNwX2dldHNvY2tvcHQr
-MHg4Ni8weGQwIG5ldC9pcHY0L3RjcC5jOjM4NzYNCj4gX19zeXNfZ2V0c29ja29wdCsweDIxOS8w
-eDRjMCBuZXQvc29ja2V0LmM6MjE3MyAgX19kb19zeXNfZ2V0c29ja29wdCBuZXQvc29ja2V0LmM6
-MjE4OCBbaW5saW5lXSAgX19zZV9zeXNfZ2V0c29ja29wdCBuZXQvc29ja2V0LmM6MjE4NSBbaW5s
-aW5lXQ0KPiBfX3g2NF9zeXNfZ2V0c29ja29wdCsweGJhLzB4MTUwIG5ldC9zb2NrZXQuYzoyMTg1
-DQo+IGRvX3N5c2NhbGxfNjQrMHgyZC8weDcwIGFyY2gveDg2L2VudHJ5L2NvbW1vbi5jOjQ2DQo+
-IGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDQ0LzB4YTkNCj5SSVA6IDAwMzM6MHg0
-NjAwY2ENCj5Db2RlOiBiOCAzNCAwMSAwMCAwMCAwZiAwNSA0OCAzZCAwMSBmMCBmZiBmZiAwZiA4
-MyAzZCA4OSBmYiBmZiBjMyA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCA2NiA5MCA0OSA4
-OSBjYSBiOCAzNyAwMCAwMCAwMCAwZiAwNSA8NDg+IDNkIDAxIGYwIGZmIGZmIDBmIDgzIDFhIDg5
-IGZiIGZmIGMzIDY2IDBmIDFmIDg0IDAwIDAwIDAwIDAwIDAwDQo+UlNQOiAwMDJiOjAwMDA3ZmZm
-NjFjYTc3NzggRUZMQUdTOiAwMDAwMDIxNiBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDAzNw0KPlJB
-WDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDA3ZmZmNjFjYTc3YTAgUkNYOiAwMDAwMDAwMDAw
-NDYwMGNhDQo+UkRYOiAwMDAwMDAwMDAwMDAwMDQxIFJTSTogMDAwMDAwMDAwMDAwMDAwMCBSREk6
-IDAwMDAwMDAwMDAwMDAwMDMNCj5SQlA6IDAwMDAwMDAwMDA3NDllNjAgUjA4OiAwMDAwN2ZmZjYx
-Y2E3NzljIFIwOTogMDAwMDAwMDAwMDAwNDAwMA0KPlIxMDogMDAwMDdmZmY2MWNhNzgwMCBSMTE6
-IDAwMDAwMDAwMDAwMDAyMTYgUjEyOiAwMDAwN2ZmZjYxY2E3ODAwDQo+UjEzOiAwMDAwMDAwMDAw
-MDAwMDAzIFIxNDogMDAwMDAwMDAwMDc0OTdhMCBSMTU6IDAwMDAwMDAwMDAwMDAwMDAgTW9kdWxl
-cyBsaW5rZWQgaW46DQo+LS0tWyBlbmQgdHJhY2UgNThjMDhiMDBiMTk0ODdkOCBdLS0tDQo+UklQ
-OiAwMDEwOl9fcGh5c19hZGRyKzB4YTcvMHgxMTAgYXJjaC94ODYvbW0vcGh5c2FkZHIuYzoyOA0K
-PkNvZGU6IDkyIDdkIDA5IDRjIDg5IGUzIDMxIGZmIDQ4IGQzIGViIDQ4IDg5IGRlIGU4IDEwIDhl
-IDNmIDAwIDQ4IDg1IGRiIDc1IDBkIGU4IDY2IDkxIDNmIDAwIDRjIDg5IGUwIDViIDVkIDQxIDVj
-IGMzIGU4IDU5IDkxIDNmIDAwIDwwZj4gMGIgZTggNTIgOTEgM2YgMDAgNDggYzcgYzAgMTAgNTAg
-YTkgODkgNDggYmEgMDAgMDAgMDAgMDAgMDAgZmMNCj5SU1A6IDAwMTg6ZmZmZmM5MDAwNTVlN2Ex
-OCBFRkxBR1M6IDAwMDEwMjkzDQo+UkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJCWDogMDAwMDAwNzcw
-MDAwMDAwMCBSQ1g6IGZmZmZmZmZmODEzNGI5NDgNCj5SRFg6IGZmZmY4ODgwYTgzYzgyODAgUlNJ
-OiBmZmZmZmZmZjgxMzRiOWE3IFJESTogMDAwMDAwMDAwMDAwMDAwNg0KPlJCUDogMDAwMDAwNzc4
-MDAwMDAwMCBSMDg6IDAwMDAwMDAwMDAwMDAwMDEgUjA5OiBmZmZmZmZmZjhjNWY0YTU3DQo+UjEw
-OiAwMDAwMDA3NzgwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDAwMCBSMTI6IDAwMDA3N2Y3MDAw
-MDAwMDANCj5SMTM6IGZmZmZjOTAwMDU1ZTdhODAgUjE0OiAwMDAwMDAwMDAwMDAwMjAwIFIxNTog
-ZGZmZmZjMDAwMDAwMDAwMA0KPkZTOiAgMDAwMDAwMDAwMjIxYzk0MCgwMDAwKSBHUzpmZmZmODg4
-MGFlNjAwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDANCj5DUzogIDAwMTAgRFM6IDAw
-MDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQo+Q1IyOiAwMDAwMDAwMDAwNzQ5MTk4
-IENSMzogMDAwMDAwMDBhN2RmMTAwMCBDUjQ6IDAwMDAwMDAwMDAxNTA2ZjANCj5EUjA6IDAwMDAw
-MDAwMDAwMDAwMDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMA0K
-PkRSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAw
-MDAwMDAwNDAwDQo+DQo+DQo+VGVzdGVkIG9uOg0KPg0KPmNvbW1pdDogICAgICAgICAxNTJkMjQ2
-ZiBtbWFwOiByZXZlcnQgbW0tbW1hcC1tZXJnZS12bWEtYWZ0ZXItY2FsbF9tbWFwLWlmLi4NCj5n
-aXQgdHJlZTogICAgICAgaHR0cHM6Ly9naXRodWIuY29tL0xpbm1pYW9oZS9saW51eCB2bWFfbWVy
-Z2VfZml4DQo+Y29uc29sZSBvdXRwdXQ6IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL3gv
-bG9nLnR4dD94PTE2MmU2Y2M1OTAwMDAwDQo+a2VybmVsIGNvbmZpZzogIGh0dHBzOi8vc3l6a2Fs
-bGVyLmFwcHNwb3QuY29tL3gvLmNvbmZpZz94PTNjNWY2Y2U4ZDViNjgyOTkNCj5kYXNoYm9hcmQg
-bGluazogaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20vYnVnP2V4dGlkPWM1ZDVhNTFkY2Ji
-NTU4Y2EwY2I1DQo+Y29tcGlsZXI6ICAgICAgIGdjYyAoR0NDKSAxMC4xLjAtc3l6IDIwMjAwNTA3
-DQo+DQoNCkkgcmV2ZXJ0IG15IHByZXZpb3VzIGNvbW1pdCBhbHRvZ2V0aGVyLCBkNzBjZWM4OTgz
-MjQxYSAoIm1tOiBtbWFwOiBtZXJnZSB2bWEgYWZ0ZXIgY2FsbF9tbWFwKCkgaWYgcG9zc2libGUg
-IiksIGJ1dCB0aGVyZSBpcyBzdGlsbCBpcnJlbGV2YW50IGlzc3VlLg0KQW5kIHdpdGggbXkgcHJl
-dmlvdXMgY29tbWl0IGFuZCBwcm9wb3NlZCBwYXRjaCwgdGhlIG9yaWdpbiBnZW5lcmFsIHByb3Rl
-Y3Rpb24gZmF1bHQgaW4gdW5saW5rX2ZpbGVfdm1hIGRpc2FwcGVhcmVkLg0KU28gSSB0aGluayB0
-aGlzIGlzIGFub3RoZXIgaXNzdWUgYW5kIHRoZSBvcmlnaW4gaXNzdWUgaXMgZml4ZWQgd2l0aCBt
-eSBwYXRjaC4NClRoYW5rcy4NCg0K
+On Wed, Sep 16, 2020 at 10:46:41AM +0200, Marco Elver wrote:
+> On Wed, 16 Sep 2020 at 10:30, <peterz@infradead.org> wrote:
+> > On Tue, Sep 15, 2020 at 08:09:16PM +0200, Marco Elver wrote:
+> > > On Tue, 15 Sep 2020 at 19:40, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > > On Tue, Sep 15, 2020 at 10:21 AM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > > > > init/calibrate.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > > init/calibrate.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > > > init/version.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > > init/version.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > > > certs/system_keyring.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > > certs/system_keyring.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > >
+> > > This one also appears with Clang 11. This is new I think because we
+> > > started emitting ASAN ctors for globals redzone initialization.
+> > >
+> > > I think we really do not care about precise stack frames in these
+> > > compiler-generated functions. So, would it be reasonable to make
+> > > objtool ignore all *san.module_ctor and *san.module_dtor functions (we
+> > > have them for ASAN, TSAN, MSAN)?
+> >
+> > The thing is, if objtool cannot follow, it cannot generate ORC data and
+> > our unwinder cannot unwind through the instrumentation, and that is a
+> > fail.
+> >
+> > Or am I missing something here?
+> 
+> They aren't about the actual instrumentation. The warnings are about
+> module_ctor/module_dtor functions which are compiler-generated, and
+> these are only called on initialization/destruction (dtors only for
+> modules I guess).
+> 
+> E.g. for KASAN it's the calls to __asan_register_globals that are
+> called from asan.module_ctor. For KCSAN the tsan.module_ctor is
+> effectively a noop (because __tsan_init() is a noop), so it really
+> doesn't matter much.
+> 
+> Is my assumption correct that the only effect would be if something
+> called by them fails, we just don't see the full stack trace? I think
+> we can live with that, there are only few central places that deal
+> with ctors/dtors (do_ctors(), ...?).
+
+Not only fails, lockdep for example likes to store stack traces of
+various callsites etc.. Also perf (NMI) likes to think it can unwind at
+all times.
+
+> The "real" fix would be to teach the compilers about "frame pointer
+> save/setup" for generated functions, but I don't think that's
+> realistic.
+
+How is that unrealistic? If you build with framepointers enabled, the
+compiler is supposed to know about this stuff.
