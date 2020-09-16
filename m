@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BD526C54C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214B226C558
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgIPQqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 12:46:54 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49996 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgIPQdt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:33:49 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiPtk029007;
-        Wed, 16 Sep 2020 07:44:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600260265;
-        bh=PHOXHbIfBUacKMzXaq9v2INusAFOOeC/jfdqrKTIwwE=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=fGNG3Xu6Ii6Y/BMDY0e8Dp+9AWQQftCdtncWvZOdcewcEmrvut6SvdXk/mSJnrt5/
-         kj2dtnVyNZJIjn2lfqOAXCI6CxQYg/QNns5h6iWtAnofRrEAlHrrhVw0sJGyPzEq0h
-         4mSUqeQPAgCzrN2JaMd0WfDiN5ImJtJKFhr+uRrk=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCiPuv101516
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 07:44:25 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:44:25 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:44:25 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpV125391;
-        Wed, 16 Sep 2020 07:44:22 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v13 01/15] mtd: spi-nor: core: use EOPNOTSUPP instead of ENOTSUPP
-Date:   Wed, 16 Sep 2020 18:14:04 +0530
-Message-ID: <20200916124418.833-2-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
+        id S1726533AbgIPQvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 12:51:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726382AbgIPQd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:33:28 -0400
+Received: from localhost (unknown [122.172.186.249])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A865A20658;
+        Wed, 16 Sep 2020 12:46:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600260402;
+        bh=IpFNcwpgMGhaIjjYrhn3RrCKJAOKHJ/C9PHWEAEGuwc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wdmTyPZ+ChCahHH7J8zYPseh58htz4QL4nWTppk8PToYfyp1NH1p4VgPbS3HXQa51
+         ilxcZ4QKeNPFvJKXJ1P8b/qCjfgok7LdgE2zyYdvQ4vTGeiJKhSTpMx5m2x8hb+P4O
+         KE6kvVoBMHD7zGdaj71NJNQyeLNWhzaYNBUqIYC0=
+Date:   Wed, 16 Sep 2020 18:16:34 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] soundwire: qcom: clear BIT FIELDs before value
+ set.
+Message-ID: <20200916124634.GM2968@vkoul-mobl>
+References: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
+ <20200916092125.30898-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916092125.30898-2-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ENOTSUPP is not a SUSV4 error code. Using EOPNOTSUPP is preferred
-in its stead.
+Hi Srini,
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On 16-09-20, 10:21, Srinivas Kandagatla wrote:
+> According to usage (bitfields.h) of REG_FIELDS,
+> Modify is:
+>   reg &= ~REG_FIELD_C;
+>   reg |= FIELD_PREP(REG_FIELD_C, c);
+> 
+> Patch ("soundwire: qcom : use FIELD_{GET|PREP}") seems to have
+> accidentally removed clearing bit field while modifying the register.
+> 
+> Fix this by adding back clear register mask before setting it up!
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/soundwire/qcom.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index d7aabdaffee3..5d26361ab4f6 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -311,6 +311,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>  
+>  	/* Configure No pings */
+>  	ctrl->reg_read(ctrl, SWRM_MCP_CFG_ADDR, &val);
+> +	val &= ~SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK;
+>  	val |= FIELD_PREP(SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK, SWRM_DEF_CMD_NO_PINGS);
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 65eff4ce6ab1..623384ef9a5d 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2297,7 +2297,7 @@ static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
-  *@nor:        pointer to a 'struct spi_nor'
-  *@op:         pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 				   struct spi_mem_op *op)
-@@ -2311,12 +2311,12 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 	op->addr.nbytes = 4;
- 	if (!spi_mem_supports_op(nor->spimem, op)) {
- 		if (nor->mtd.size > SZ_16M)
--			return -ENOTSUPP;
-+			return -EOPNOTSUPP;
- 
- 		/* If flash size <= 16MB, 3 address bytes are sufficient */
- 		op->addr.nbytes = 3;
- 		if (!spi_mem_supports_op(nor->spimem, op))
--			return -ENOTSUPP;
-+			return -EOPNOTSUPP;
- 	}
- 
- 	return 0;
-@@ -2328,7 +2328,7 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
-  *@nor:         pointer to a 'struct spi_nor'
-  *@read:        pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_readop(struct spi_nor *nor,
- 				       const struct spi_nor_read_command *read)
-@@ -2354,7 +2354,7 @@ static int spi_nor_spimem_check_readop(struct spi_nor *nor,
-  *@nor:         pointer to a 'struct spi_nor'
-  *@pp:          pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_pp(struct spi_nor *nor,
- 				   const struct spi_nor_pp_command *pp)
+Should we rather use u32_replace_bits() here, I think the intention is
+to replace bits.
+
+>  	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
+>  
+> @@ -372,6 +373,9 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
+>  
+>  	ctrl->reg_read(ctrl, reg, &val);
+>  
+> +	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
+> +	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
+> +
+>  	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MAX_COL_VAL);
+>  	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
+>  
+> -- 
+> 2.21.0
+
 -- 
-2.28.0
-
+~Vinod
