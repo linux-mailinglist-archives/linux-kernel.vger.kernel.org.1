@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296FC26C46E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE51026C476
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 17:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgIPPj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 11:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
+        id S1726376AbgIPPmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 11:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgIPPaG (ORCPT
+        with ESMTP id S1726324AbgIPPaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:30:06 -0400
+        Wed, 16 Sep 2020 11:30:22 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D225DC02C292;
-        Wed, 16 Sep 2020 08:20:16 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:12:21 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E42C061356
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:21:25 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:12:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600269141;
+        s=2020; t=1600269146;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BTg/YWez9IXSn7cG6G80O6ITDooXZtsmUwYKaTqYOlo=;
-        b=uWdiXSmgKPVOhnp6b85VV4ICn1tI6VLASRRNNVqCH/yKoWblU0lYPJD/YjCcjGGI45RY15
-        Lh6TmSOFVRzv4odNWH9J5s2WHO8sPG/DrjE6/veJipKJi36qNr3MaM2DLNhd+JywHQse1x
-        BcpZxV3pax2r0dvVofSe7zvXL9XQ3FHL7CmujALZnBPRY9pxHzV8NlpsRe99LVcm4PT1xE
-        m2WfBz2q+yo/fjTbIVt5VQH0smkuPuMGz5/DvFoSsmUjAIXJr9yq5QlgrW/DAGoMzCSYQY
-        3DdTTZqIcpD/4FJy2wx/xfHfuu6vn64+RDnhGqSQURlxyqRMcr7JOsMQW6JklQ==
+        bh=1fKx577JqjqH7CTxIBwMt0y8m2ttxXin5mrFYhUSCqQ=;
+        b=wfzU6CuQgwDIoPekD5Pn4FsO+eFzzZHfe9rzQ18pe7bzajnNDbyafDvttprkTt3FNXnjxq
+        29anhUC+VhItcjyHJuxdUTpEKW/+XL0/i75U8ZfNONNWl/wNyJJHwFrUO6ST/+Htsf9LUn
+        dMoQpO2OugkEphHZF3ozYH4XX/umskBEpnTloGrobbLkGrddS5TcTdoa939xELTUXuCb9S
+        wbYLTRa/RYLaMyY0Y9JxVFz2YvrLnVZ1YKTJRFiIWVejf6nRyR5tmPohJltYeBLK7EShn8
+        800bh5eOdlPColZGq+ML8//LEgUuCZ5Y4BfZWQc09qgC/Q21dGIHP3h3M7VM2w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600269141;
+        s=2020e; t=1600269146;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BTg/YWez9IXSn7cG6G80O6ITDooXZtsmUwYKaTqYOlo=;
-        b=lxYIYcquLqUKjdaPfph26ntuO974ze23MBvagbgh2izXNKvdtijaWolBMrCZQLFux3exiu
-        S9WvzzzBZG8IN9Cw==
+        bh=1fKx577JqjqH7CTxIBwMt0y8m2ttxXin5mrFYhUSCqQ=;
+        b=jNu7PvfD4I5eOGmZkZzgxrG5WfxyX7uXaxMmh0u5Syc0A22+g8SEGvLGlc/RIMG3/zsVaI
+        Gxfd6rt9p1g8yLCQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] x86/msi: Consolidate HPET allocation
+Subject: [tip: x86/irq]
+ x86_irq_Rename_X86_IRQ_ALLOC_TYPE_MSI_to_reflect_PCI_dependency
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Joerg Roedel <jroedel@suse.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200826112331.943993771@linutronix.de>
-References: <20200826112331.943993771@linutronix.de>
+In-Reply-To: <20200826112331.343103175@linutronix.de>
+References: <20200826112331.343103175@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160026914100.15536.14781063006916517529.tip-bot2@tip-bot2>
+Message-ID: <160026914526.15536.17524400052014409045.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,123 +62,189 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/irq branch of tip:
 
-Commit-ID:     2bf1e7bcedb8802cb4fc65757b229edfe112a4bb
-Gitweb:        https://git.kernel.org/tip/2bf1e7bcedb8802cb4fc65757b229edfe112a4bb
+Commit-ID:     801b5e4c4eec7b6c7f968d4bbce43da7cacffae4
+Gitweb:        https://git.kernel.org/tip/801b5e4c4eec7b6c7f968d4bbce43da7cacffae4
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 26 Aug 2020 13:16:41 +02:00
+AuthorDate:    Wed, 26 Aug 2020 13:16:35 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 16 Sep 2020 16:52:31 +02:00
+CommitterDate: Wed, 16 Sep 2020 16:52:29 +02:00
 
-x86/msi: Consolidate HPET allocation
+x86_irq_Rename_X86_IRQ_ALLOC_TYPE_MSI_to_reflect_PCI_dependency
 
-None of the magic HPET fields are required in any way.
+No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/r/20200826112331.943993771@linutronix.de
+Link: https://lore.kernel.org/r/20200826112331.343103175@linutronix.de
 ---
- arch/x86/include/asm/hw_irq.h       |  7 -------
- arch/x86/kernel/apic/msi.c          | 14 +++++++-------
- drivers/iommu/amd/iommu.c           |  2 +-
- drivers/iommu/intel/irq_remapping.c |  4 ++--
- 4 files changed, 10 insertions(+), 17 deletions(-)
+ arch/x86/include/asm/hw_irq.h       |  4 ++--
+ arch/x86/kernel/apic/msi.c          |  6 +++---
+ drivers/iommu/amd/iommu.c           | 24 ++++++++++++------------
+ drivers/iommu/intel/irq_remapping.c | 18 +++++++++---------
+ 4 files changed, 26 insertions(+), 26 deletions(-)
 
 diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index b0e15f6..2d39e61 100644
+index 74c1243..3982a1e 100644
 --- a/arch/x86/include/asm/hw_irq.h
 +++ b/arch/x86/include/asm/hw_irq.h
-@@ -65,13 +65,6 @@ struct irq_alloc_info {
- 
- 	union {
- 		int		unused;
--#ifdef	CONFIG_HPET_TIMER
--		struct {
--			int		hpet_id;
--			int		hpet_index;
--			void		*hpet_data;
--		};
--#endif
- #ifdef	CONFIG_PCI_MSI
- 		struct {
- 			struct pci_dev	*msi_dev;
+@@ -36,8 +36,8 @@ struct msi_desc;
+ enum irq_alloc_type {
+ 	X86_IRQ_ALLOC_TYPE_IOAPIC = 1,
+ 	X86_IRQ_ALLOC_TYPE_HPET,
+-	X86_IRQ_ALLOC_TYPE_MSI,
+-	X86_IRQ_ALLOC_TYPE_MSIX,
++	X86_IRQ_ALLOC_TYPE_PCI_MSI,
++	X86_IRQ_ALLOC_TYPE_PCI_MSIX,
+ 	X86_IRQ_ALLOC_TYPE_DMAR,
+ 	X86_IRQ_ALLOC_TYPE_UV,
+ };
 diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
-index 9edb1bb..da68d08 100644
+index f4ed814..7410d34 100644
 --- a/arch/x86/kernel/apic/msi.c
 +++ b/arch/x86/kernel/apic/msi.c
-@@ -423,7 +423,7 @@ static struct irq_chip hpet_msi_controller __ro_after_init = {
- static irq_hw_number_t hpet_msi_get_hwirq(struct msi_domain_info *info,
- 					  msi_alloc_info_t *arg)
- {
--	return arg->hpet_index;
-+	return arg->hwirq;
- }
- 
- static int hpet_msi_init(struct irq_domain *domain,
-@@ -431,8 +431,8 @@ static int hpet_msi_init(struct irq_domain *domain,
- 			 irq_hw_number_t hwirq, msi_alloc_info_t *arg)
- {
- 	irq_set_status_flags(virq, IRQ_MOVE_PCNTXT);
--	irq_domain_set_info(domain, virq, arg->hpet_index, info->chip, NULL,
--			    handle_edge_irq, arg->hpet_data, "edge");
-+	irq_domain_set_info(domain, virq, arg->hwirq, info->chip, NULL,
-+			    handle_edge_irq, arg->data, "edge");
- 
- 	return 0;
- }
-@@ -473,7 +473,7 @@ struct irq_domain *hpet_create_irq_domain(int hpet_id)
+@@ -187,7 +187,7 @@ int native_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+ 	struct irq_alloc_info info;
  
  	init_irq_alloc_info(&info, NULL);
- 	info.type = X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT;
--	info.hpet_id = hpet_id;
-+	info.devid = hpet_id;
- 	parent = irq_remapping_get_irq_domain(&info);
- 	if (parent == NULL)
- 		parent = x86_vector_domain;
-@@ -502,9 +502,9 @@ int hpet_assign_irq(struct irq_domain *domain, struct hpet_channel *hc,
+-	info.type = X86_IRQ_ALLOC_TYPE_MSI;
++	info.type = X86_IRQ_ALLOC_TYPE_PCI_MSI;
+ 	info.msi_dev = dev;
  
- 	init_irq_alloc_info(&info, NULL);
- 	info.type = X86_IRQ_ALLOC_TYPE_HPET;
--	info.hpet_data = hc;
--	info.hpet_id = hpet_dev_id(domain);
--	info.hpet_index = dev_num;
-+	info.data = hc;
-+	info.devid = hpet_dev_id(domain);
-+	info.hwirq = dev_num;
+ 	domain = irq_remapping_get_irq_domain(&info);
+@@ -219,9 +219,9 @@ int pci_msi_prepare(struct irq_domain *domain, struct device *dev, int nvec,
+ 	init_irq_alloc_info(arg, NULL);
+ 	arg->msi_dev = pdev;
+ 	if (desc->msi_attrib.is_msix) {
+-		arg->type = X86_IRQ_ALLOC_TYPE_MSIX;
++		arg->type = X86_IRQ_ALLOC_TYPE_PCI_MSIX;
+ 	} else {
+-		arg->type = X86_IRQ_ALLOC_TYPE_MSI;
++		arg->type = X86_IRQ_ALLOC_TYPE_PCI_MSI;
+ 		arg->flags |= X86_IRQ_ALLOC_CONTIGUOUS_VECTORS;
+ 	}
  
- 	return irq_domain_alloc_irqs(domain, 1, NUMA_NO_NODE, &info);
- }
 diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 18b4dfb..a308472 100644
+index db44ce6..cf26b73 100644
 --- a/drivers/iommu/amd/iommu.c
 +++ b/drivers/iommu/amd/iommu.c
-@@ -3525,7 +3525,7 @@ static int get_devid(struct irq_alloc_info *info)
- 		return get_ioapic_devid(info->ioapic_id);
+@@ -3528,8 +3528,8 @@ static int get_devid(struct irq_alloc_info *info)
  	case X86_IRQ_ALLOC_TYPE_HPET:
- 	case X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT:
--		return get_hpet_devid(info->hpet_id);
-+		return get_hpet_devid(info->devid);
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
- 		return get_device_id(&info->msi_dev->dev);
+ 		devid     = get_hpet_devid(info->hpet_id);
+ 		break;
+-	case X86_IRQ_ALLOC_TYPE_MSI:
+-	case X86_IRQ_ALLOC_TYPE_MSIX:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
+ 		devid = get_device_id(&info->msi_dev->dev);
+ 		break;
+ 	default:
+@@ -3567,8 +3567,8 @@ static struct irq_domain *get_irq_domain(struct irq_alloc_info *info)
+ 		return NULL;
+ 
+ 	switch (info->type) {
+-	case X86_IRQ_ALLOC_TYPE_MSI:
+-	case X86_IRQ_ALLOC_TYPE_MSIX:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
+ 		devid = get_device_id(&info->msi_dev->dev);
+ 		if (devid < 0)
+ 			return NULL;
+@@ -3629,8 +3629,8 @@ static void irq_remapping_prepare_irte(struct amd_ir_data *data,
+ 		break;
+ 
+ 	case X86_IRQ_ALLOC_TYPE_HPET:
+-	case X86_IRQ_ALLOC_TYPE_MSI:
+-	case X86_IRQ_ALLOC_TYPE_MSIX:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
+ 		msg->address_hi = MSI_ADDR_BASE_HI;
+ 		msg->address_lo = MSI_ADDR_BASE_LO;
+ 		msg->data = irte_info->index;
+@@ -3674,15 +3674,15 @@ static int irq_remapping_alloc(struct irq_domain *domain, unsigned int virq,
+ 
+ 	if (!info)
+ 		return -EINVAL;
+-	if (nr_irqs > 1 && info->type != X86_IRQ_ALLOC_TYPE_MSI &&
+-	    info->type != X86_IRQ_ALLOC_TYPE_MSIX)
++	if (nr_irqs > 1 && info->type != X86_IRQ_ALLOC_TYPE_PCI_MSI &&
++	    info->type != X86_IRQ_ALLOC_TYPE_PCI_MSIX)
+ 		return -EINVAL;
+ 
+ 	/*
+ 	 * With IRQ remapping enabled, don't need contiguous CPU vectors
+ 	 * to support multiple MSI interrupts.
+ 	 */
+-	if (info->type == X86_IRQ_ALLOC_TYPE_MSI)
++	if (info->type == X86_IRQ_ALLOC_TYPE_PCI_MSI)
+ 		info->flags &= ~X86_IRQ_ALLOC_CONTIGUOUS_VECTORS;
+ 
+ 	devid = get_devid(info);
+@@ -3714,9 +3714,9 @@ static int irq_remapping_alloc(struct irq_domain *domain, unsigned int virq,
+ 		} else {
+ 			index = -ENOMEM;
+ 		}
+-	} else if (info->type == X86_IRQ_ALLOC_TYPE_MSI ||
+-		   info->type == X86_IRQ_ALLOC_TYPE_MSIX) {
+-		bool align = (info->type == X86_IRQ_ALLOC_TYPE_MSI);
++	} else if (info->type == X86_IRQ_ALLOC_TYPE_PCI_MSI ||
++		   info->type == X86_IRQ_ALLOC_TYPE_PCI_MSIX) {
++		bool align = (info->type == X86_IRQ_ALLOC_TYPE_PCI_MSI);
+ 
+ 		index = alloc_irq_index(devid, nr_irqs, align, info->msi_dev);
+ 	} else {
 diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-index 0289a78..58c2d7a 100644
+index 8f4ce72..33c4389 100644
 --- a/drivers/iommu/intel/irq_remapping.c
 +++ b/drivers/iommu/intel/irq_remapping.c
-@@ -1121,7 +1121,7 @@ static struct irq_domain *intel_get_irq_domain(struct irq_alloc_info *info)
- 	case X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT:
- 		return map_ioapic_to_ir(info->ioapic_id);
- 	case X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT:
--		return map_hpet_to_ir(info->hpet_id);
-+		return map_hpet_to_ir(info->devid);
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
- 		return map_dev_to_ir(info->msi_dev);
-@@ -1291,7 +1291,7 @@ static void intel_irq_remapping_prepare_irte(struct intel_ir_data *data,
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
- 		if (info->type == X86_IRQ_ALLOC_TYPE_HPET)
--			set_hpet_sid(irte, info->hpet_id);
-+			set_hpet_sid(irte, info->devid);
- 		else
- 			set_msi_sid(irte, info->msi_dev);
+@@ -1121,8 +1121,8 @@ static struct irq_domain *intel_get_ir_irq_domain(struct irq_alloc_info *info)
+ 	case X86_IRQ_ALLOC_TYPE_HPET:
+ 		iommu = map_hpet_to_ir(info->hpet_id);
+ 		break;
+-	case X86_IRQ_ALLOC_TYPE_MSI:
+-	case X86_IRQ_ALLOC_TYPE_MSIX:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
+ 		iommu = map_dev_to_ir(info->msi_dev);
+ 		break;
+ 	default:
+@@ -1141,8 +1141,8 @@ static struct irq_domain *intel_get_irq_domain(struct irq_alloc_info *info)
+ 		return NULL;
  
+ 	switch (info->type) {
+-	case X86_IRQ_ALLOC_TYPE_MSI:
+-	case X86_IRQ_ALLOC_TYPE_MSIX:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
+ 		iommu = map_dev_to_ir(info->msi_dev);
+ 		if (iommu)
+ 			return iommu->ir_msi_domain;
+@@ -1312,8 +1312,8 @@ static void intel_irq_remapping_prepare_irte(struct intel_ir_data *data,
+ 		break;
+ 
+ 	case X86_IRQ_ALLOC_TYPE_HPET:
+-	case X86_IRQ_ALLOC_TYPE_MSI:
+-	case X86_IRQ_ALLOC_TYPE_MSIX:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
++	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
+ 		if (info->type == X86_IRQ_ALLOC_TYPE_HPET)
+ 			set_hpet_sid(irte, info->hpet_id);
+ 		else
+@@ -1368,15 +1368,15 @@ static int intel_irq_remapping_alloc(struct irq_domain *domain,
+ 
+ 	if (!info || !iommu)
+ 		return -EINVAL;
+-	if (nr_irqs > 1 && info->type != X86_IRQ_ALLOC_TYPE_MSI &&
+-	    info->type != X86_IRQ_ALLOC_TYPE_MSIX)
++	if (nr_irqs > 1 && info->type != X86_IRQ_ALLOC_TYPE_PCI_MSI &&
++	    info->type != X86_IRQ_ALLOC_TYPE_PCI_MSIX)
+ 		return -EINVAL;
+ 
+ 	/*
+ 	 * With IRQ remapping enabled, don't need contiguous CPU vectors
+ 	 * to support multiple MSI interrupts.
+ 	 */
+-	if (info->type == X86_IRQ_ALLOC_TYPE_MSI)
++	if (info->type == X86_IRQ_ALLOC_TYPE_PCI_MSI)
+ 		info->flags &= ~X86_IRQ_ALLOC_CONTIGUOUS_VECTORS;
+ 
+ 	ret = irq_domain_alloc_irqs_parent(domain, virq, nr_irqs, arg);
