@@ -2,333 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322C726C93A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E1426C94D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728262AbgIPTF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37588 "EHLO mail.kernel.org"
+        id S1726510AbgIPTG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:06:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727432AbgIPRqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:46:20 -0400
-Received: from localhost (unknown [122.172.186.249])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727401AbgIPRpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:45:42 -0400
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDD05221EB;
-        Wed, 16 Sep 2020 13:05:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB2BB22284;
+        Wed, 16 Sep 2020 13:09:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600261557;
-        bh=PImqcFtzvvSk4TPQwCNpCjFClWEk9Y7NrcjrlDub7Fw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HMygxyah/1wVclzSw+uMchV9nGXWDuGh46jBjSbIxCmUbvbuQyntyvrrpn9OS+tjv
-         locWYncScFSvdN5gH3LoESwjadrMnSpSdu1vWwHFSe+R1y6jGl4g1EXmkrLR1Y55cF
-         dkFF9vlZQqdamTY6SMqFLLjRtZpATBXdSWrXcZZQ=
-Date:   Wed, 16 Sep 2020 18:35:53 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Yu Chen <chenyu56@huawei.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 RESEND 1/8] phy: hisilicon: add USB physical layer for
- Kirin 3670
-Message-ID: <20200916130553.GO2968@vkoul-mobl>
-References: <cover.1599826421.git.mchehab+huawei@kernel.org>
- <2bcc14afcbd1cc8972ab8f1a561a13aae04b881a.1599826421.git.mchehab+huawei@kernel.org>
+        s=default; t=1600261787;
+        bh=HXKmEB+gVrlnCwL4jhYUdk21Fx+cEGbZ7v9sMWjklP8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uQO56onJR6+k5d43NMLAzyz6MEFicSp6F7461G5ZQ2b5GldA75myUsfICEmpy0J9I
+         lkVENS4IZJjYTFRXZaD8JdU1nppQ5lIYQ+uQ9gkMfbgrN7Kwv9RwWo6ouMipQvVHxV
+         p2wAZQ6gyFTVO85A82cU+ZwQmlS0lQN3B0tHpGWg=
+Received: by mail-ot1-f42.google.com with SMTP id e23so6622457otk.7;
+        Wed, 16 Sep 2020 06:09:47 -0700 (PDT)
+X-Gm-Message-State: AOAM530TLHYkYzkGLarrX3x4bX98t+0eBIv2EI03Eyyxgn/Wy8ARCA3x
+        RC69pw/yjWCu5a6gaseDSKPW5Glbt/xPZxjC7Bw=
+X-Google-Smtp-Source: ABdhPJzWXGjnWT4sGj/Dszvt19cOxly0HZeAV+QlcRdZunOCvR5gkuzck5v/O3RtX241uYgNwOf7IQwEUMe0MfHJdzM=
+X-Received: by 2002:a9d:335:: with SMTP id 50mr2259149otv.90.1600261787088;
+ Wed, 16 Sep 2020 06:09:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2bcc14afcbd1cc8972ab8f1a561a13aae04b881a.1599826421.git.mchehab+huawei@kernel.org>
+References: <20200819143544.155096-1-alex.kluver@hpe.com> <20200819143544.155096-2-alex.kluver@hpe.com>
+ <20200915163312.GO14436@zn.tnic> <CAMj1kXHmVhB88qZc-1mHAD1ovNJQnWRBncmQJTR_4+kV0fXG5w@mail.gmail.com>
+ <CAMj1kXGvfiqZz-j5=LU0Z6yYCkr24pCz6aJS62QL8cBYUP_S=w@mail.gmail.com> <20200915171910.GQ14436@zn.tnic>
+In-Reply-To: <20200915171910.GQ14436@zn.tnic>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 16 Sep 2020 16:09:36 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXE6PKb==h_154hRKwZLr3Ek+4z4A8FdTHx=co18ww5d3Q@mail.gmail.com>
+Message-ID: <CAMj1kXE6PKb==h_154hRKwZLr3Ek+4z4A8FdTHx=co18ww5d3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] edac,ghes,cper: Add Row Extension to Memory Error Record
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Alex Kluver <alex.kluver@hpe.com>, linux-edac@vger.kernel.org,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mchehab@kernel.org, russ.anderson@hpe.com,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        kluveralex@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-09-20, 14:16, Mauro Carvalho Chehab wrote:
-> From: Yu Chen <chenyu56@huawei.com>
-> 
-> Add the Hisilicon Kirin 3670 USB phy driver just after the
-> hi3660, using the same namespace.
-> 
-> This driver was imported from Linaro's official Hikey 970
-> tree, from the original patch, removing the addition of
-> the dwg3-specific parts.
-> 
-> Signed-off-by: Yu Chen <chenyu56@huawei.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../bindings/phy/phy-hi3670-usb3.txt          |  25 +
->  drivers/phy/hisilicon/Kconfig                 |  10 +
->  drivers/phy/hisilicon/Makefile                |   1 +
->  drivers/phy/hisilicon/phy-hi3670-usb3.c       | 682 ++++++++++++++++++
->  4 files changed, 718 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
->  create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
-> new file mode 100644
-> index 000000000000..4cb02612ff23
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+On Tue, 15 Sep 2020 at 20:19, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Sep 15, 2020 at 08:12:31PM +0300, Ard Biesheuvel wrote:
+> > Boris - do you anticipate any conflicts? If so, please take these via
+> > the EDAC tree - the CPER code is mostly self contained so I don't
+> > expect any conflicts with the EFI tree in that case.
+>
+> None so far, and I applied them for testing ontop of my EDAC queue for
+> 5.10 so it should be all good. But if you want me, I can test-merge your
+> branch once ready, just in case...
+>
 
-Not yaml bindings?
+I managed to apply these patches by using a different base and
+cherrypicking them into efi/next
 
-> +#define CTRL0_USB3_VBUSVLD		BIT(7)
-> +#define CTRL0_USB3_VBUSVLD_SEL		BIT(6)
-> +
-> +#define CTRL3_USB2_VBUSVLDEXT0		BIT(6)
-> +#define CTRL3_USB2_VBUSVLDEXTSEL0	BIT(5)
-> +
-> +#define CTRL5_USB2_SIDDQ		BIT(0)
-> +
-> +#define CTRL7_USB2_REFCLKSEL_MASK	(3 << 3)
-> +#define CTRL7_USB2_REFCLKSEL_ABB	(3 << 3)
-> +#define CTRL7_USB2_REFCLKSEL_PAD	(2 << 3)
+I expect to send out a couple of PRs tomorrow, once the bots have had
+a go at building the branches. In the meantime, you can take a look at
 
-GENMASK() for these please?
-
-> +
-> +#define CFG50_USB3_PHY_TEST_POWERDOWN	BIT(23)
-> +
-> +#define CFG54_USB31PHY_CR_ADDR_MASK	(0xFFFF)
-
-Here and other places as well
-
-> +#define CFG54_USB31PHY_CR_ADDR_SHIFT	(16)
-
-Okay we should get rid of all shift define. See <linux/bitfield.h> it
-has FIELD_PREP, xxx_encode_bits() you can use these to program teh bit
-fields
-
-> +static int kirin970_phy_cr_clk(struct regmap *usb31misc)
-> +{
-> +	int ret;
-> +
-> +	/* Clock up */
-> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +			CFG54_USB31PHY_CR_CLK, CFG54_USB31PHY_CR_CLK);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Clock down */
-> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +			CFG54_USB31PHY_CR_CLK, 0);
-> +
-> +	return ret;
-
-        return regmap_update_bits()
-
-> +static int kirin970_phy_cr_start(struct regmap *usb31misc, int direction)
-> +{
-> +	int ret;
-> +
-> +	if (direction)
-> +		ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +			CFG54_USB31PHY_CR_WR_EN, CFG54_USB31PHY_CR_WR_EN);
-> +	else
-> +		ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +			CFG54_USB31PHY_CR_RD_EN, CFG54_USB31PHY_CR_RD_EN);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = kirin970_phy_cr_clk(usb31misc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +			CFG54_USB31PHY_CR_RD_EN | CFG54_USB31PHY_CR_WR_EN, 0);
-> +
-> +	return ret;
-
-here as well
-
-> +static int kirin970_phy_cr_wait_ack(struct regmap *usb31misc)
-> +{
-> +	u32 reg;
-> +	int retry = 100000;
-> +	int ret;
-> +
-> +	while (retry-- > 0) {
-> +		ret = regmap_read(usb31misc, USB_MISC_CFG54, &reg);
-> +		if (ret)
-> +			return ret;
-> +		if ((reg & CFG54_USB31PHY_CR_ACK) == CFG54_USB31PHY_CR_ACK)
-> +			return 0;
-> +
-> +		ret = kirin970_phy_cr_clk(usb31misc);
-> +		if (ret)
-> +			return ret;
-
-no delay here while checking?
-
-> +static int kirin970_phy_cr_set_addr(struct regmap *usb31misc, u32 addr)
-> +{
-> +	u32 reg;
-> +	int ret;
-> +
-> +	ret = regmap_read(usb31misc, USB_MISC_CFG54, &reg);
-> +	if (ret)
-> +		return ret;
-> +
-> +	reg &= ~(CFG54_USB31PHY_CR_ADDR_MASK << CFG54_USB31PHY_CR_ADDR_SHIFT);
-> +	reg |= ((addr & CFG54_USB31PHY_CR_ADDR_MASK) <<
-> +			CFG54_USB31PHY_CR_ADDR_SHIFT);
-
-u32_replace_bits() looks apt here
-
-> +static int kirin970_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
-> +{
-> +	int reg;
-> +	int i;
-> +	int ret;
-> +
-> +	for (i = 0; i < 100; i++) {
-> +		ret = kirin970_phy_cr_clk(usb31misc);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	ret = kirin970_phy_cr_set_sel(usb31misc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = kirin970_phy_cr_set_addr(usb31misc, addr);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = kirin970_phy_cr_start(usb31misc, 0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = kirin970_phy_cr_wait_ack(usb31misc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_read(usb31misc, USB_MISC_CFG58, &reg);
-> +	if (ret)
-> +		return ret;
-
-Do you really care about each step error check? if not, we can have:
-        ret |= step_1;
-        ret |= step_n;
-
-        if (ret)
-                ...
-
-> +static int kirin970_phy_init(struct phy *phy)
-> +{
-> +	struct kirin970_priv *priv = phy_get_drvdata(phy);
-> +	u32 val;
-> +	int ret;
-> +
-> +	kirin970_phy_exit(phy);
-> +	dev_info(priv->dev, "%s in\n", __func__);
-
-Lower to debug level?
-
-> +	/* assert controller */
-> +	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
-> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, 0);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret = kirin970_config_phy_clock(priv);
-> +	if (ret)
-> +		goto out;
-> +
-> +	/* Exit from IDDQ mode */
-> +	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL5,
-> +			CTRL5_USB2_SIDDQ, 0);
-> +	if (ret)
-> +		goto out;
-> +
-> +	/* Release USB31 PHY out of TestPowerDown mode */
-> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG50,
-> +			CFG50_USB3_PHY_TEST_POWERDOWN, 0);
-> +	if (ret)
-> +		goto out;
-> +
-> +	/* Tell the PHY power is stable */
-> +	val = CFG54_USB3_PHY0_ANA_PWR_EN | CFG54_PHY0_PCS_PWR_STABLE |
-> +		CFG54_PHY0_PMA_PWR_STABLE;
-> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG54,
-> +			val, val);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret = kirin970_config_tca(priv);
-> +	if (ret)
-> +		goto out;
-> +
-> +	/* Enable SSC */
-> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG5C,
-> +			CFG5C_USB3_PHY0_SS_MPLLA_SSC_EN,
-> +			CFG5C_USB3_PHY0_SS_MPLLA_SSC_EN);
-> +	if (ret)
-> +		goto out;
-> +
-> +	/* Deassert phy */
-> +	val = CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
-> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
-> +	if (ret)
-> +		goto out;
-> +
-> +	udelay(100);
-> +
-> +	/* Deassert controller */
-> +	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
-> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
-> +	if (ret)
-> +		goto out;
-> +
-> +	udelay(100);
-> +
-> +	/* Set fake vbus valid signal */
-> +	val = CTRL0_USB3_VBUSVLD | CTRL0_USB3_VBUSVLD_SEL;
-> +	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL0, val, val);
-> +	if (ret)
-> +		goto out;
-> +
-> +	val = CTRL3_USB2_VBUSVLDEXT0 | CTRL3_USB2_VBUSVLDEXTSEL0;
-> +	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL3, val, val);
-> +	if (ret)
-> +		goto out;
-> +
-> +	udelay(100);
-> +
-> +	ret = kirin970_phy_set_params(priv);
-> +	if (ret)
-> +		goto out;
-> +
-> +	{
-> +		ret = regmap_read(priv->peri_crg, 0x4c,
-> +				&val);
-> +		if (!ret)
-> +			dev_info(priv->dev, "peri_crg 0x4c %x\n", val);
-> +		ret = regmap_read(priv->peri_crg, 0x404,
-> +				&val);
-> +		if (!ret)
-> +			dev_info(priv->dev, "peri_crg 0x404 %x\n", val);
-> +		ret = regmap_read(priv->peri_crg, 0xc,
-> +				&val);
-> +		if (!ret)
-> +			dev_info(priv->dev, "peri_crg 0xc %x\n", val);
-> +		ret = regmap_read(priv->peri_crg, 0xac,
-> +				&val);
-> +		if (!ret)
-> +			dev_info(priv->dev, "peri_crg 0xac %x\n", val);
-> +		ret = regmap_read(priv->pctrl, 0x10,
-> +				&val);
-> +		if (!ret)
-> +			dev_info(priv->dev, "pctrl 0x10 %x\n", val);
-> +	}
-
-Whats with the funny braces and one more level on indentation here ?
-
--- 
-~Vinod
+git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi.git next
