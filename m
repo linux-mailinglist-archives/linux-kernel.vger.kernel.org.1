@@ -2,122 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CA126CB69
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB13626CB9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727175AbgIPU06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:26:58 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:58446 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727004AbgIPRZi (ORCPT
+        id S1728325AbgIPUa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:30:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37742 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726906AbgIPRM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:25:38 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GClLqX043458;
-        Wed, 16 Sep 2020 07:47:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600260441;
-        bh=BoLji1jDPhuJCxrV8+eJr3d2Zu6IFzNElVtPtmkib9Q=;
-        h=From:To:CC:Subject:Date;
-        b=kwZA42v45JxKnrxNk1inRxTz8tXL73G/oiO4Vihi8gJSJt2U5Hz456o1JglrDU/7U
-         sgviUdpAvKnSL0LOm6+/5SVReYURyUD/xDthCupxBoJtavg7WOHfIXPr3RgS3FXhty
-         iGI3Ma44Rqduy9y0pt2QeajLJEDTF2d0GBx6l+WA=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GClLQQ106494
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 07:47:21 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:47:20 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:47:20 -0500
-Received: from deskari.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GClIou027623;
-        Wed, 16 Sep 2020 07:47:18 -0500
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        Yuti Amonkar <yamonkar@cadence.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: [PATCH 1/2] dt-bindings: phy: ti,phy-j721e-wiz: fix bindings for torrent phy
-Date:   Wed, 16 Sep 2020 15:47:10 +0300
-Message-ID: <20200916124711.166643-1-tomi.valkeinen@ti.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Wed, 16 Sep 2020 13:12:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600276345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a/uZkMaSEplobPhH3Wu4dvyo0GT39VR4zdw/7XiMvVw=;
+        b=ZiE+NtZuwdyh9U0jywF1VKeOEexm6kdBRlA/UwoSE6uxNiMQnqmZigbELB3Qbg+cnmURw/
+        JF+3XZ4rwtigX3VvL/rslDzWQTUYwHod6xEfW0dgH06hVaF75BSYPco8bhnnkVyhhnIbJI
+        x1U8xUFMIsqIr371YutQDT/kKsssElI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-190-kB-txecbN0iMh4mpTFJjtg-1; Wed, 16 Sep 2020 08:52:19 -0400
+X-MC-Unique: kB-txecbN0iMh4mpTFJjtg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C20C80F059;
+        Wed, 16 Sep 2020 12:52:17 +0000 (UTC)
+Received: from ovpn-66-86.rdu2.redhat.com (ovpn-66-86.rdu2.redhat.com [10.10.66.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DFBBD1002D54;
+        Wed, 16 Sep 2020 12:52:07 +0000 (UTC)
+Message-ID: <32bfdec1ad4e11cfecd840e1b83d95ba2bab1abc.camel@redhat.com>
+Subject: Re: [PATCH v2 0/5] seqlock: Introduce PREEMPT_RT support
+From:   Qian Cai <cai@redhat.com>
+To:     peterz@infradead.org, Boqun Feng <boqun.feng@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Date:   Wed, 16 Sep 2020 08:52:07 -0400
+In-Reply-To: <20200915143028.GB2674@hirez.programming.kicks-ass.net>
+References: <20200904153231.11994-1-a.darwish@linutronix.de>
+         <224bd11b533dd2acff3f6cce51ab4ca676eb4f9f.camel@redhat.com>
+         <20200915124817.GA127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+         <20200915143028.GB2674@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When WIZ wraps a Cadence Torrent PHY (instead of Cadence Sierra PHY)
-there is a difference in the refclk-dig node: Torrent only has two
-clocks instead of Sierra's four clocks. Add minItems: 2 to solve this.
+On Tue, 2020-09-15 at 16:30 +0200, peterz@infradead.org wrote:
+> On Tue, Sep 15, 2020 at 08:48:17PM +0800, Boqun Feng wrote:
+> > I think this happened because seqcount_##lockname##_init() is defined at
+> > function rather than macro, so when the seqcount_init() gets expand in
+> 
+> Bah! I hate all this :/
+> 
+> I suspect the below, while more verbose than I'd like is the best
+> option.
 
-Additionally, in our use case we only need to use assigned-clock for a
-single clock, but the current binding requires either no assigned-clocks
-or two. Fix this by adding minItems: 1 to all the assigned-clock
-properties.
+Stephen, can you add this patch for now until Peter beats you to it?
 
-There was also an extra trailing whitespace, which this patch removes.
-
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
----
- .../devicetree/bindings/phy/ti,phy-j721e-wiz.yaml   | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-index 5ffc95c62909..c33e9bc79521 100644
---- a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-+++ b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-@@ -45,9 +45,15 @@ properties:
-   ranges: true
- 
-   assigned-clocks:
-+    minItems: 1
-     maxItems: 2
- 
-   assigned-clock-parents:
-+    minItems: 1
-+    maxItems: 2
-+
-+  assigned-clock-rates:
-+    minItems: 1
-     maxItems: 2
- 
-   typec-dir-gpios:
-@@ -119,9 +125,10 @@ patternProperties:
-       logic.
-     properties:
-       clocks:
-+        minItems: 2
-         maxItems: 4
--        description: Phandle to four clock nodes representing the inputs to
--          refclk_dig
-+        description: Phandle to two (Torrent) or four (Sierra) clock nodes representing
-+          the inputs to refclk_dig
- 
-       "#clock-cells":
-         const: 0
-@@ -203,7 +210,7 @@ examples:
-            };
- 
-            refclk-dig {
--                  clocks = <&k3_clks 292 11>, <&k3_clks 292 0>, 
-+                  clocks = <&k3_clks 292 11>, <&k3_clks 292 0>,
-                           <&dummy_cmn_refclk>, <&dummy_cmn_refclk1>;
-                   #clock-cells = <0>;
-                   assigned-clocks = <&wiz0_refclk_dig>;
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
+> ---
+>  include/linux/seqlock.h | 22 ++++++++++++++--------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+> index f73c7eb68f27..76e44e6c0100 100644
+> --- a/include/linux/seqlock.h
+> +++ b/include/linux/seqlock.h
+> @@ -173,6 +173,19 @@ static inline void seqcount_lockdep_reader_access(const
+> seqcount_t *s)
+>   * @lock:	Pointer to the associated lock
+>   */
+>  
+> +#define seqcount_LOCKNAME_init(s, _lock, lockname)			\
+> +	do {								\
+> +		seqcount_##lockname##_t *____s = (s);			\
+> +		seqcount_init(&____s->seqcount);			\
+> +		__SEQ_LOCK(____s->lock = (_lock));			\
+> +	} while (0)
+> +
+> +#define seqcount_raw_spinlock_init(s, lock)	seqcount_LOCKNAME_init(s, lock,
+> raw_spinlock)
+> +#define seqcount_spinlock_init(s, lock)		seqcount_LOCKNAME_init(s
+> , lock, spinlock)
+> +#define seqcount_rwlock_init(s, lock)		seqcount_LOCKNAME_init(s
+> , lock, rwlock);
+> +#define seqcount_mutex_init(s, lock)		seqcount_LOCKNAME_init(s, lock,
+> mutex);
+> +#define seqcount_ww_mutex_init(s, lock)		seqcount_LOCKNAME_init(s
+> , lock, ww_mutex);
+> +
+>  /*
+>   * SEQCOUNT_LOCKNAME()	- Instantiate seqcount_LOCKNAME_t and helpers
+>   * seqprop_LOCKNAME_*()	- Property accessors for seqcount_LOCKNAME_t
+> @@ -190,13 +203,6 @@ typedef struct seqcount_##lockname {				
+> 	\
+>  	__SEQ_LOCK(locktype	*lock);					\
+>  } seqcount_##lockname##_t;						\
+>  									\
+> -static __always_inline void						\
+> -seqcount_##lockname##_init(seqcount_##lockname##_t *s, locktype *lock)	
+> \
+> -{									\
+> -	seqcount_init(&s->seqcount);					\
+> -	__SEQ_LOCK(s->lock = lock);					\
+> -}									\
+> -									\
+>  static __always_inline seqcount_t *					\
+>  __seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			
+> \
+>  {									\
+> @@ -284,8 +290,8 @@ SEQCOUNT_LOCKNAME(ww_mutex,     struct ww_mutex,
+> true,     &s->lock->base, ww_mu
+>  	__SEQ_LOCK(.lock	= (assoc_lock))				\
+>  }
+>  
+> -#define SEQCNT_SPINLOCK_ZERO(name, lock)	SEQCOUNT_LOCKNAME_ZERO(name,
+> lock)
+>  #define SEQCNT_RAW_SPINLOCK_ZERO(name, lock)	SEQCOUNT_LOCKNAME_ZERO(name,
+> lock)
+> +#define SEQCNT_SPINLOCK_ZERO(name, lock)	SEQCOUNT_LOCKNAME_ZERO(name,
+> lock)
+>  #define SEQCNT_RWLOCK_ZERO(name, lock)		SEQCOUNT_LOCKNAME_ZERO(n
+> ame, lock)
+>  #define SEQCNT_MUTEX_ZERO(name, lock)		SEQCOUNT_LOCKNAME_ZERO(n
+> ame, lock)
+>  #define SEQCNT_WW_MUTEX_ZERO(name, lock) 	SEQCOUNT_LOCKNAME_ZERO(name,
+> lock)
+> 
 
