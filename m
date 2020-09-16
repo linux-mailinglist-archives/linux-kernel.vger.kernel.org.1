@@ -2,99 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565DF26BF7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378B126BF7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgIPIiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:38:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726531AbgIPIiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:38:03 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4FA82064E;
-        Wed, 16 Sep 2020 08:38:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600245482;
-        bh=ayHqD0TxwK+DKfoaoQ5U/0qGfOY6exkP6goS8angK4c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qGEn+X97bm/YN/f+V8umKxtNMSFx/ciTUIo7tQe8epZAfaYwBRvP6AEB5Z5NInYAD
-         S3STXFRBhTgYskh7xiRZm9P5KJIN/vOPJWDaBdcjdTou5QCVZYtRIuk2X40h3l80fw
-         uQ5jSfJsSaY2ecWqqpn4aTryoCuef03zQiXcvC+s=
-Date:   Wed, 16 Sep 2020 09:37:57 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     maz@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH v2] KVM: arm64: fix doc warnings in mmu code
-Message-ID: <20200916083756.GD27496@willie-the-truck>
-References: <1600221639-4471-1-git-send-email-tanxiaofei@huawei.com>
+        id S1726587AbgIPIjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgIPIjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:39:09 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94850C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:39:08 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t13so5665186ile.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JT6v7wMmRRApS8LmHSvE0RpU/6xtKoeS84pBH0gWQr8=;
+        b=hrZv26mZbOdawlGGDUntFlNCFGHX9RG2dncSRkLVTNIK06u9xy9NOfglZd8EmquqqA
+         Wk9rVE3elxEjwWLHWLgh2bb5/l0apJW9rj2DMIqyHDo6LGI95awOPoaxIcblBYJhkSMo
+         aUkQabUHSOsmW2LBDvGD1irCNgmts6usIloEbvz3GilPUrvyZdk5K1THGh0qTEEEdogh
+         9jiFE/mOi7OjgVXESARkVWKGEdO3CEj8B0keuB8796ksgZNL2ZfutuAVuCFjhinr0e03
+         ortymrg2uAo6qnkShdTlX4otP1tXwTTtsES1gq05dAZRhjymEk8f/ShyDD//198O5eld
+         6/7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JT6v7wMmRRApS8LmHSvE0RpU/6xtKoeS84pBH0gWQr8=;
+        b=pb7hebAIm4g/W3gpEqbCv30k/sriU5/ycTlJEJzU5kInSHNMRPoq33AZG4lIWHRDIQ
+         2V13C5CBjUfz06+4eBdFH130JWXsK7wcJNd8mv4GJ8b4wUx0whuzhOwg0a9/XAaeUEoy
+         s2wniq+BOKR2+zPeX8YTwVJg5C9fBnqGtpuFlaR/Ryd50wvmtm1Stv8LBqSQFFOl+ecE
+         8liT3lEABYOsqroBTAV2GE9AqlsMYmFPtPMk6lcORy289F5z2PwqePc7g5DC/9elwEiJ
+         WLqVRUoNm96641Adlg5lGompXsSBkwEy3QbXnGOg79UoqY9WAT0xP6vy/2UqOyjct7MY
+         saig==
+X-Gm-Message-State: AOAM531tFmhum/EGAjVsfbCrDQwL3OlMse1OcT2oPWBCZJK6/JpFR7r7
+        Yz6KAUczBwwxMpQPcEpjPP1o5Q4lwp5ia5sc20Z8FQ==
+X-Google-Smtp-Source: ABdhPJwOaAT/NvvF3qHlNr93GTy/LMlROi45Sxaeub50tguwCjp+Gpc2PMcAJgNTlqDPHSUy2jleSwq1Moaw8fvLqYA=
+X-Received: by 2002:a92:1b8b:: with SMTP id f11mr3330268ill.216.1600245546474;
+ Wed, 16 Sep 2020 01:39:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600221639-4471-1-git-send-email-tanxiaofei@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1600085217-26245-1-git-send-email-tanhuazhong@huawei.com>
+ <1600085217-26245-7-git-send-email-tanhuazhong@huawei.com>
+ <e615366cb2b260bf1b77fdaa0692957ab750a9a4.camel@nvidia.com>
+ <2b1219b6-a7dd-38a3-bfb7-1cb49330df90@huawei.com> <f2a27306606ab6a882f6a6e4363d07174e55c745.camel@kernel.org>
+In-Reply-To: <f2a27306606ab6a882f6a6e4363d07174e55c745.camel@kernel.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 16 Sep 2020 10:38:54 +0200
+Message-ID: <CANn89iJwJwzv60pmWEcU-nJ1unbxXuAU7hyFBuzEo-nTHZmm8A@mail.gmail.com>
+Subject: Re: [PATCH net-next 6/6] net: hns3: use napi_consume_skb() when
+ cleaning tx desc
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "tanhuazhong@huawei.com" <tanhuazhong@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "yisen.zhuang@huawei.com" <yisen.zhuang@huawei.com>,
+        "salil.mehta@huawei.com" <salil.mehta@huawei.com>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:00:39AM +0800, Xiaofei Tan wrote:
-> Fix following warnings caused by mismatch bewteen function parameters
-> and comments.
-> arch/arm64/kvm/mmu.c:128: warning: Function parameter or member 'mmu' not described in '__unmap_stage2_range'
-> arch/arm64/kvm/mmu.c:128: warning: Function parameter or member 'may_block' not described in '__unmap_stage2_range'
-> arch/arm64/kvm/mmu.c:128: warning: Excess function parameter 'kvm' description in '__unmap_stage2_range'
-> arch/arm64/kvm/mmu.c:499: warning: Function parameter or member 'writable' not described in 'kvm_phys_addr_ioremap'
-> arch/arm64/kvm/mmu.c:538: warning: Function parameter or member 'mmu' not described in 'stage2_wp_range'
-> arch/arm64/kvm/mmu.c:538: warning: Excess function parameter 'kvm' description in 'stage2_wp_range'
-> 
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> ---
->  arch/arm64/kvm/mmu.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index e8a51799..909e995 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -114,9 +114,10 @@ static bool kvm_is_device_pfn(unsigned long pfn)
->   */
->  /**
->   * unmap_stage2_range -- Clear stage2 page table entries to unmap a range
-> - * @kvm:   The VM pointer
-> + * @mmu:   pointer to mmu structure to operate on
->   * @start: The intermediate physical base address of the range to unmap
->   * @size:  The size of the area to unmap
-> + * @may_block: The flag that if block is allowed here
+On Wed, Sep 16, 2020 at 10:33 AM Saeed Mahameed <saeed@kernel.org> wrote:
+>
+> On Tue, 2020-09-15 at 15:04 +0800, Yunsheng Lin wrote:
+> > On 2020/9/15 13:09, Saeed Mahameed wrote:
+> > > On Mon, 2020-09-14 at 20:06 +0800, Huazhong Tan wrote:
+> > > > From: Yunsheng Lin <linyunsheng@huawei.com>
+> > > >
+> > > > Use napi_consume_skb() to batch consuming skb when cleaning
+> > > > tx desc in NAPI polling.
+> > > >
+> > > > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> > > > Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+> > > > ---
+> > > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 27
+> > > > +++++++++++-
+> > > > ----------
+> > > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  2 +-
+> > > >  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  4 ++--
+> > > >  3 files changed, 17 insertions(+), 16 deletions(-)
+> > > >
+> > > > diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> > > > b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> > > > index 4a49a76..feeaf75 100644
+> > > > --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> > > > +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> > > > @@ -2333,10 +2333,10 @@ static int hns3_alloc_buffer(struct
+> > > > hns3_enet_ring *ring,
+> > > >  }
+> > > >
+> > > >  static void hns3_free_buffer(struct hns3_enet_ring *ring,
+> > > > -                      struct hns3_desc_cb *cb)
+> > > > +                      struct hns3_desc_cb *cb, int budget)
+> > > >  {
+> > > >   if (cb->type == DESC_TYPE_SKB)
+> > > > -         dev_kfree_skb_any((struct sk_buff *)cb->priv);
+> > > > +         napi_consume_skb(cb->priv, budget);
+> > >
+> > > This code can be reached from hns3_lb_clear_tx_ring() below which
+> > > is
+> > > your loopback test and called with non-zero budget, I am not sure
+> > > you
+> > > are allowed to call napi_consume_skb() with non-zero budget outside
+> > > napi context, perhaps the cb->type for loopback test is different
+> > > in lb
+> > > test case ? Idk.. , please double check other code paths.
+> >
+> > Yes, loopback test may call napi_consume_skb() with non-zero budget
+> > outside
+> > napi context. Thanks for pointing out this case.
+> >
+> > How about add the below WARN_ONCE() in napi_consume_skb() to catch
+> > this
+> > kind of error?
+> >
+> > WARN_ONCE(!in_serving_softirq(), "napi_consume_skb() is called with
+> > non-zero budget outside napi context");
+> >
+>
+> Cc: Eric
+>
+> I don't know, need to check performance impact.
+> And in_serving_softirq() doesn't necessarily mean in napi
+> but looking at _kfree_skb_defer(), i think it shouldn't care if napi or
+> not as long as it runs in soft irq it will push the skb to that
+> particular cpu napi_alloc_cache, which should be fine.
+>
+> Maybe instead of the WARN_ONCE just remove the budget condition and
+> replace it with
+>
+> if (!in_serving_softirq())
+>       dev_consume_skb_any(skb);
+>
 
-Whether or not we are permitted to block.
+I think we need to keep costs small.
 
->   *
->   * Clear a range of stage-2 mappings, lowering the various ref-counts.  Must
->   * be called while holding mmu_lock (unless for freeing the stage2 pgd before
-> @@ -493,6 +494,7 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
->   * @guest_ipa:	The IPA at which to insert the mapping
->   * @pa:		The physical address of the device
->   * @size:	The size of the mapping
-> + * @writable:   If it is writable here
-
-Whether or not to create a writable mapping.
-
->   */
->  int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
->  			  phys_addr_t pa, unsigned long size, bool writable)
-> @@ -530,7 +532,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
->  
->  /**
->   * stage2_wp_range() - write protect stage2 memory region range
-> - * @kvm:	The KVM pointer
-> + * @mmu:        pointer to mmu structure to operate on
-
-The KVM stage-2 MMU pointer.
-
-Will
+So lets add a CONFIG_DEBUG_NET option so that developers can add
+various DEBUG_NET() clauses.
