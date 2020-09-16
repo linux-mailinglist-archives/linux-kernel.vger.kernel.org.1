@@ -2,165 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ED226CC8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532F626CCC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgIPUqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
+        id S1728578AbgIPUss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgIPRDY (ORCPT
+        with ESMTP id S1726673AbgIPRAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:03:24 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD90C02C2AE
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:37:09 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u21so6474464ljl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:37:09 -0700 (PDT)
+        Wed, 16 Sep 2020 13:00:53 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3664C0A3BDD;
+        Wed, 16 Sep 2020 09:44:25 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q9so3447921wmj.2;
+        Wed, 16 Sep 2020 09:44:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=EkdGaMAWsiITjixL8vtqkk4znvOu3Q/xzFs2YIEcfEY=;
-        b=dpvpqsnv1se+B+N0B3X73ZARW0xp0qYtrllJbwUMEaTaPYAhDr3QA1JvBn8NUzvi/Z
-         s8/YO99GSsIQU66VS4Y21URWzrqFy3MCSfvxw+pZqn4rifzBbNx2BJgMeksakO170Z52
-         JPksnTeACT5MlZRIedoBUIaPfuTTJMYrmuNm4nBCXCwlym2M+aUB2z4kYkJ0ouJaSY00
-         70k7LERJHRRCJjPRwRId0KijyzilqRY9bkwG2n2Sba11nDKP2TEzW5F79CkYt4U8RCAV
-         +RMne5o9ys2+dp6NFUda1mLsnvldt8KlUv+Tr51FA+G/lZn1INDC4VhR7AUJMAsKGndQ
-         DMuQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=57jNkCFpR+ZC91t3GQZtyiHeManNCPVgldSKXxvGYAc=;
+        b=isnr1b7FbA6/O30CYuwqC9X9Y0Utf8gqRSaeHW8RTec7xV0QQEgmtRIHFQiD3j0NPP
+         rRZF80J0UNF0xYjm3Qt83cLJaTNzQItaoiY6ucEYcO6eIEy2bAlrXFnldm1kgBdwMg48
+         AGoHp6vlRYEvN84qFPTz+yl2po3lBFBqecP16b6HT/C3i8YW6CsFE6TwhePIF0BqYGJW
+         LpywdCCWDSzFvv/QOwnR112MOC2jpC97oJgwMX0J+oLG8TzCef04ttFY4or6KiGx1VFa
+         EWZEy06dMNoktQ9PocEITUPNVQI26lnQcjg3LLsb16nbXFwQ9gOS+E1Af6JE2rFNnpzW
+         Q3Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=EkdGaMAWsiITjixL8vtqkk4znvOu3Q/xzFs2YIEcfEY=;
-        b=aGU23kGNEox2eEFDCLy7NOL2skQ8T2YVi+0vybGewDMVcQJeuu9uI+OLfmqCrqWkW6
-         ruXYY9I6aJCeOAc1IIK7d94pFlmRUnPkF81TRO2IPoxfk5leUC4GfIltqVD/9DDD0XEY
-         DFODMwsTP9uQuk4TWUdFZJQdAGVYJDM1CZMkTogGTTmhWJb1/e6JdAfrCaamBpLFrSS0
-         5VEOrabxxIxvO0Zjn2tCil1VtQQMMcJcGRIWF2LPVhfPtI5I2wHq2Rw0umxbSJN67C/T
-         hqvcuar6SZAkx7vkqAD7tZqdJbXNGFazNMEtBLKOQupcouXKYOBRUscM1V9gXya5zu7W
-         1gbA==
-X-Gm-Message-State: AOAM532kVL4do8YuxdfNqnzwQM7e8lRsXWhFRvrn7rxap74g2guth4pG
-        cpgmxDVzMsjFxaXBp3gBXppb3g==
-X-Google-Smtp-Source: ABdhPJweMbctsM8dhw1DMsPTH+UQrB1ETp35qvjl+dAbRFkt1qlxj5Z1ZMezb9PHcSl/mT5nBIGqww==
-X-Received: by 2002:a2e:a587:: with SMTP id m7mr8896222ljp.133.1600274227566;
-        Wed, 16 Sep 2020 09:37:07 -0700 (PDT)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id o15sm4684400lfo.188.2020.09.16.09.37.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=57jNkCFpR+ZC91t3GQZtyiHeManNCPVgldSKXxvGYAc=;
+        b=DrNuHRwOrRStTT6FPs2o/fN+iQMX+R74hyUHIaSTOAVxVucgBA0SUHu1M0FSoJfQsB
+         4ENqE9UsEztHpNhBziuF4rd+jKyWtsp6tfoA4uuoyyanKo2rQJLlFYePDxkw2+7AHt+l
+         bHuD6So1AYRGL9dWqySjxBp3445rmSqIs7W+oGADvPt4tcfGJV8GKe+SfHS3ZqMgTT2s
+         jYo8HQfFpi+nqiKegbFYpzR4I5zCXgJxb4a90BuRKV422KIboczhgy+h/2m7e35Kmlz3
+         Bcn1DXrnQER10ayj+9wZqt3G5BRDnEiFiYLaizuRFg3Ltp8bfGDbk9PjcpAPc7s8Wg1q
+         0iog==
+X-Gm-Message-State: AOAM530UjE73EQUCZ7GuXnxlJLxXdo7JJMw+aFpl59Pgth6LXrimYe6Z
+        NsN9oLOy+KAzMxj8c1tGPvORDQR1mF6THg==
+X-Google-Smtp-Source: ABdhPJy9U/LgP8IdGF1y1AIcpK3pCp/q8zFu+6omF/0GF/QSJQlYlNvFWp3YXR2RaT/1tIHAj8dtFA==
+X-Received: by 2002:a05:600c:252:: with SMTP id 18mr5307304wmj.63.1600274664460;
+        Wed, 16 Sep 2020 09:44:24 -0700 (PDT)
+Received: from ctocxl0004.cto.st.com (net-109-115-0-45.cust.vodafonedsl.it. [109.115.0.45])
+        by smtp.gmail.com with ESMTPSA id h17sm36210381wro.27.2020.09.16.09.44.23
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Sep 2020 09:37:07 -0700 (PDT)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
-        s-anna@ti.com
-Cc:     grzegorz.jaszczyk@linaro.org, robh+dt@kernel.org,
-        lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, david@lechnology.com,
-        praneeth@ti.com
-Subject: [PATCH v7 4/5] irqchip/irq-pruss-intc: Implement irq_{get,set}_irqchip_state ops
-Date:   Wed, 16 Sep 2020 18:36:37 +0200
-Message-Id: <1600274198-30470-2-git-send-email-grzegorz.jaszczyk@linaro.org>
+        Wed, 16 Sep 2020 09:44:23 -0700 (PDT)
+From:   Mario Tesi <martepisa@gmail.com>
+To:     lorenzo.bianconi83@gmail.com
+Cc:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
+        pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mario.tesi@st.com
+Subject: [PATCH] iio: imu: st_lsm6dsx: Scaling factor type set to IIO_VAL_INT_PLUS_NANO
+Date:   Wed, 16 Sep 2020 18:44:20 +0200
+Message-Id: <1600274660-29143-1-git-send-email-martepisa@gmail.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600274198-30470-1-git-send-email-grzegorz.jaszczyk@linaro.org>
-References: <1600274198-30470-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Lechner <david@lechnology.com>
+From: Mario Tesi <mario.tesi@st.com>
 
-This implements the irq_get_irqchip_state and irq_set_irqchip_state
-callbacks for the TI PRUSS INTC driver. The set callback can be used
-by drivers to "kick" a PRU by injecting a PRU system event.
+Scaling factor values for Acc lead to an unacceptable rounding of the
+full scale (FS) calculated by some SensorHAL on Android devices. For examples
+setting FS to 4g the in_accel_x_scale, in_accel_y_scale and in_accel_z_scale
+are 0.001196 on 6 decimal digits and the FS is
+0.001196 × ((2^15) − 1) ~= 39.1893 m/s^2.
 
-Co-developed-by: Suman Anna <s-anna@ti.com>
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Signed-off-by: David Lechner <david@lechnology.com>
-Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Reviewed-by: Lee Jones <lee.jones@linaro.org>
+Android CTS R10 SensorParameterRangeTest test expects a value greater than
+39.20 m/s^2 so this test fails (ACCELEROMETER_MAX_RANGE = 4 * 9.80).
+
+Using 9 decimal digits the new scale factor is 0.001196411 and the FS now
+is 0.001196411 × ((2^15)−1) ~= 39.2028 m/s^2.
+
+This patch extends to IIO_VAL_INT_PLUS_NANO type the scaling factor to all
+IMU devices where SensorParameterRangeTest CTS test fails.
+
+Signed-off-by: Mario Tesi <mario.tesi@st.com>
 ---
-v6->v7:
-- Add Co-developed-by tags.
-v5->v6:
-- Drop example from the commit log
-v4->v5:
-- No change.
-v3->v4:
-- Update commit message
-v2->v3:
-- Get rid of unnecessary pruss_intc_check_write() and use
-  pruss_intc_write_reg directly.
-v1->v2:
-- https://patchwork.kernel.org/patch/11069769/
----
- drivers/irqchip/irq-pruss-intc.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 136 ++++++++++++++++-----------
+ 1 file changed, 79 insertions(+), 57 deletions(-)
 
-diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
-index e7ba358..bfe529a 100644
---- a/drivers/irqchip/irq-pruss-intc.c
-+++ b/drivers/irqchip/irq-pruss-intc.c
-@@ -12,6 +12,7 @@
-  * Copyright (C) 2019 David Lechner <david@lechnology.com>
-  */
+diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+index 346c242..382643e 100644
+--- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
++++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+@@ -157,10 +157,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x20,
+ 					.mask = GENMASK(4, 3),
+ 				},
+-				.fs_avl[0] = {  IIO_G_TO_M_S_2(61), 0x0 },
+-				.fs_avl[1] = { IIO_G_TO_M_S_2(122), 0x2 },
+-				.fs_avl[2] = { IIO_G_TO_M_S_2(244), 0x3 },
+-				.fs_avl[3] = { IIO_G_TO_M_S_2(732), 0x1 },
++				.fs_avl[0] = {  IIO_G_TO_M_S_2(61000), 0x0 },
++				.fs_avl[1] = { IIO_G_TO_M_S_2(122000), 0x2 },
++				.fs_avl[2] = { IIO_G_TO_M_S_2(244000), 0x3 },
++				.fs_avl[3] = { IIO_G_TO_M_S_2(732000), 0x1 },
+ 				.fs_len = 4,
+ 			},
+ 			[ST_LSM6DSX_ID_GYRO] = {
+@@ -169,9 +169,9 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.mask = GENMASK(4, 3),
+ 				},
  
-+#include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
-@@ -323,6 +324,43 @@ static void pruss_intc_irq_relres(struct irq_data *data)
- 	module_put(THIS_MODULE);
+-				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750), 0x0 },
+-				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500), 0x1 },
+-				.fs_avl[2] = { IIO_DEGREE_TO_RAD(70000), 0x3 },
++				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
++				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500000), 0x1 },
++				.fs_avl[2] = { IIO_DEGREE_TO_RAD(70000000), 0x3 },
+ 				.fs_len = 3,
+ 			},
+ 		},
+@@ -259,10 +259,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x10,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_G_TO_M_S_2(61), 0x0 },
+-				.fs_avl[1] = { IIO_G_TO_M_S_2(122), 0x2 },
+-				.fs_avl[2] = { IIO_G_TO_M_S_2(244), 0x3 },
+-				.fs_avl[3] = { IIO_G_TO_M_S_2(488), 0x1 },
++				.fs_avl[0] = {  IIO_G_TO_M_S_2(61000), 0x0 },
++				.fs_avl[1] = { IIO_G_TO_M_S_2(122000), 0x2 },
++				.fs_avl[2] = { IIO_G_TO_M_S_2(244000), 0x3 },
++				.fs_avl[3] = { IIO_G_TO_M_S_2(488000), 0x1 },
+ 				.fs_len = 4,
+ 			},
+ 			[ST_LSM6DSX_ID_GYRO] = {
+@@ -270,10 +270,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x11,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750), 0x0 },
+-				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500), 0x1 },
+-				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000), 0x2 },
+-				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000), 0x3 },
++				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
++				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500000), 0x1 },
++				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000000), 0x2 },
++				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000000), 0x3 },
+ 				.fs_len = 4,
+ 			},
+ 		},
+@@ -425,10 +425,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x10,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_G_TO_M_S_2(61), 0x0 },
+-				.fs_avl[1] = { IIO_G_TO_M_S_2(122), 0x2 },
+-				.fs_avl[2] = { IIO_G_TO_M_S_2(244), 0x3 },
+-				.fs_avl[3] = { IIO_G_TO_M_S_2(488), 0x1 },
++				.fs_avl[0] = {  IIO_G_TO_M_S_2(61000), 0x0 },
++				.fs_avl[1] = { IIO_G_TO_M_S_2(122000), 0x2 },
++				.fs_avl[2] = { IIO_G_TO_M_S_2(244000), 0x3 },
++				.fs_avl[3] = { IIO_G_TO_M_S_2(488000), 0x1 },
+ 				.fs_len = 4,
+ 			},
+ 			[ST_LSM6DSX_ID_GYRO] = {
+@@ -436,10 +436,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x11,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750), 0x0 },
+-				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500), 0x1 },
+-				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000), 0x2 },
+-				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000), 0x3 },
++				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
++				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500000), 0x1 },
++				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000000), 0x2 },
++				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000000), 0x3 },
+ 				.fs_len = 4,
+ 			},
+ 		},
+@@ -600,10 +600,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x10,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_G_TO_M_S_2(61), 0x0 },
+-				.fs_avl[1] = { IIO_G_TO_M_S_2(122), 0x2 },
+-				.fs_avl[2] = { IIO_G_TO_M_S_2(244), 0x3 },
+-				.fs_avl[3] = { IIO_G_TO_M_S_2(488), 0x1 },
++				.fs_avl[0] = {  IIO_G_TO_M_S_2(61000), 0x0 },
++				.fs_avl[1] = { IIO_G_TO_M_S_2(122000), 0x2 },
++				.fs_avl[2] = { IIO_G_TO_M_S_2(244000), 0x3 },
++				.fs_avl[3] = { IIO_G_TO_M_S_2(488000), 0x1 },
+ 				.fs_len = 4,
+ 			},
+ 			[ST_LSM6DSX_ID_GYRO] = {
+@@ -611,10 +611,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x11,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750), 0x0 },
+-				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500), 0x1 },
+-				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000), 0x2 },
+-				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000), 0x3 },
++				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
++				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500000), 0x1 },
++				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000000), 0x2 },
++				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000000), 0x3 },
+ 				.fs_len = 4,
+ 			},
+ 		},
+@@ -816,10 +816,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x10,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_G_TO_M_S_2(61), 0x0 },
+-				.fs_avl[1] = { IIO_G_TO_M_S_2(122), 0x2 },
+-				.fs_avl[2] = { IIO_G_TO_M_S_2(244), 0x3 },
+-				.fs_avl[3] = { IIO_G_TO_M_S_2(488), 0x1 },
++				.fs_avl[0] = {  IIO_G_TO_M_S_2(61000), 0x0 },
++				.fs_avl[1] = { IIO_G_TO_M_S_2(122000), 0x2 },
++				.fs_avl[2] = { IIO_G_TO_M_S_2(244000), 0x3 },
++				.fs_avl[3] = { IIO_G_TO_M_S_2(488000), 0x1 },
+ 				.fs_len = 4,
+ 			},
+ 			[ST_LSM6DSX_ID_GYRO] = {
+@@ -827,10 +827,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x11,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750), 0x0 },
+-				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500), 0x1 },
+-				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000), 0x2 },
+-				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000), 0x3 },
++				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
++				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500000), 0x1 },
++				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000000), 0x2 },
++				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000000), 0x3 },
+ 				.fs_len = 4,
+ 			},
+ 		},
+@@ -1021,10 +1021,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x10,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_G_TO_M_S_2(61), 0x0 },
+-				.fs_avl[1] = { IIO_G_TO_M_S_2(122), 0x2 },
+-				.fs_avl[2] = { IIO_G_TO_M_S_2(244), 0x3 },
+-				.fs_avl[3] = { IIO_G_TO_M_S_2(488), 0x1 },
++				.fs_avl[0] = {  IIO_G_TO_M_S_2(61000), 0x0 },
++				.fs_avl[1] = { IIO_G_TO_M_S_2(122000), 0x2 },
++				.fs_avl[2] = { IIO_G_TO_M_S_2(244000), 0x3 },
++				.fs_avl[3] = { IIO_G_TO_M_S_2(488000), 0x1 },
+ 				.fs_len = 4,
+ 			},
+ 			[ST_LSM6DSX_ID_GYRO] = {
+@@ -1032,10 +1032,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x11,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750), 0x0 },
+-				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500), 0x1 },
+-				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000), 0x2 },
+-				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000), 0x3 },
++				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
++				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500000), 0x1 },
++				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000000), 0x2 },
++				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000000), 0x3 },
+ 				.fs_len = 4,
+ 			},
+ 		},
+@@ -1200,10 +1200,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x10,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_G_TO_M_S_2(61), 0x0 },
+-				.fs_avl[1] = { IIO_G_TO_M_S_2(122), 0x2 },
+-				.fs_avl[2] = { IIO_G_TO_M_S_2(244), 0x3 },
+-				.fs_avl[3] = { IIO_G_TO_M_S_2(488), 0x1 },
++				.fs_avl[0] = {  IIO_G_TO_M_S_2(61000), 0x0 },
++				.fs_avl[1] = { IIO_G_TO_M_S_2(122000), 0x2 },
++				.fs_avl[2] = { IIO_G_TO_M_S_2(244000), 0x3 },
++				.fs_avl[3] = { IIO_G_TO_M_S_2(488000), 0x1 },
+ 				.fs_len = 4,
+ 			},
+ 			[ST_LSM6DSX_ID_GYRO] = {
+@@ -1211,10 +1211,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_sensor_settings[] = {
+ 					.addr = 0x11,
+ 					.mask = GENMASK(3, 2),
+ 				},
+-				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750), 0x0 },
+-				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500), 0x1 },
+-				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000), 0x2 },
+-				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000), 0x3 },
++				.fs_avl[0] = {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
++				.fs_avl[1] = { IIO_DEGREE_TO_RAD(17500000), 0x1 },
++				.fs_avl[2] = { IIO_DEGREE_TO_RAD(35000000), 0x2 },
++				.fs_avl[3] = { IIO_DEGREE_TO_RAD(70000000), 0x3 },
+ 				.fs_len = 4,
+ 			},
+ 		},
+@@ -1598,7 +1598,7 @@ static int st_lsm6dsx_read_raw(struct iio_dev *iio_dev,
+ 	case IIO_CHAN_INFO_SCALE:
+ 		*val = 0;
+ 		*val2 = sensor->gain;
+-		ret = IIO_VAL_INT_PLUS_MICRO;
++		ret = IIO_VAL_INT_PLUS_NANO;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -1836,13 +1836,33 @@ static ssize_t st_lsm6dsx_sysfs_scale_avail(struct device *dev,
+ 
+ 	fs_table = &hw->settings->fs_table[sensor->id];
+ 	for (i = 0; i < fs_table->fs_len; i++)
+-		len += scnprintf(buf + len, PAGE_SIZE - len, "0.%06u ",
++		len += scnprintf(buf + len, PAGE_SIZE - len, "0.%09u ",
+ 				 fs_table->fs_avl[i].gain);
+ 	buf[len - 1] = '\n';
+ 
+ 	return len;
  }
  
-+static int pruss_intc_irq_get_irqchip_state(struct irq_data *data,
-+					    enum irqchip_irq_state which,
-+					    bool *state)
++static int st_lsm6dsx_write_raw_get_fmt(struct iio_dev *indio_dev,
++					struct iio_chan_spec const *chan,
++					long mask)
 +{
-+	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
-+	u32 reg, mask, srsr;
++	switch (mask) {
++	case IIO_CHAN_INFO_SCALE:
++		switch (chan->type) {
++		case IIO_ANGL_VEL:
++		case IIO_ACCEL:
++			return IIO_VAL_INT_PLUS_NANO;
++		default:
++			return IIO_VAL_INT_PLUS_MICRO;
++		}
++	default:
++		return IIO_VAL_INT_PLUS_MICRO;
++	}
 +
-+	if (which != IRQCHIP_STATE_PENDING)
-+		return -EINVAL;
-+
-+	reg = PRU_INTC_SRSR(data->hwirq / 32);
-+	mask = BIT(data->hwirq % 32);
-+
-+	srsr = pruss_intc_read_reg(intc, reg);
-+
-+	*state = !!(srsr & mask);
-+
-+	return 0;
++	return -EINVAL;
 +}
 +
-+static int pruss_intc_irq_set_irqchip_state(struct irq_data *data,
-+					    enum irqchip_irq_state which,
-+					    bool state)
-+{
-+	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
-+
-+	if (which != IRQCHIP_STATE_PENDING)
-+		return -EINVAL;
-+
-+	if (state)
-+		pruss_intc_write_reg(intc, PRU_INTC_SISR, data->hwirq);
-+	else
-+		pruss_intc_write_reg(intc, PRU_INTC_SICR, data->hwirq);
-+
-+	return 0;
-+}
-+
- static struct irq_chip pruss_irqchip = {
- 	.name			= "pruss-intc",
- 	.irq_ack		= pruss_intc_irq_ack,
-@@ -330,6 +368,8 @@ static struct irq_chip pruss_irqchip = {
- 	.irq_unmask		= pruss_intc_irq_unmask,
- 	.irq_request_resources	= pruss_intc_irq_reqres,
- 	.irq_release_resources	= pruss_intc_irq_relres,
-+	.irq_get_irqchip_state	= pruss_intc_irq_get_irqchip_state,
-+	.irq_set_irqchip_state	= pruss_intc_irq_set_irqchip_state,
+ static IIO_DEV_ATTR_SAMP_FREQ_AVAIL(st_lsm6dsx_sysfs_sampling_frequency_avail);
+ static IIO_DEVICE_ATTR(in_accel_scale_available, 0444,
+ 		       st_lsm6dsx_sysfs_scale_avail, NULL, 0);
+@@ -1868,6 +1888,7 @@ static const struct iio_info st_lsm6dsx_acc_info = {
+ 	.read_event_config = st_lsm6dsx_read_event_config,
+ 	.write_event_config = st_lsm6dsx_write_event_config,
+ 	.hwfifo_set_watermark = st_lsm6dsx_set_watermark,
++	.write_raw_get_fmt = st_lsm6dsx_write_raw_get_fmt,
  };
  
- static int pruss_intc_validate_mapping(struct pruss_intc *intc, int event,
+ static struct attribute *st_lsm6dsx_gyro_attributes[] = {
+@@ -1885,6 +1906,7 @@ static const struct iio_info st_lsm6dsx_gyro_info = {
+ 	.read_raw = st_lsm6dsx_read_raw,
+ 	.write_raw = st_lsm6dsx_write_raw,
+ 	.hwfifo_set_watermark = st_lsm6dsx_set_watermark,
++	.write_raw_get_fmt = st_lsm6dsx_write_raw_get_fmt,
+ };
+ 
+ static int st_lsm6dsx_get_drdy_pin(struct st_lsm6dsx_hw *hw, int *drdy_pin)
 -- 
 2.7.4
 
