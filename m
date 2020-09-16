@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA5026CC2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7877926CC26
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgIPUkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:40:08 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:42388 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726806AbgIPRGN (ORCPT
+        id S1728517AbgIPUjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgIPRGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:06:13 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08GH0fGb000642;
-        Wed, 16 Sep 2020 12:06:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=tswE/o+nEuqnPz1L70KM6dGVyJ8R2GgfFb65mjn5ES4=;
- b=jUAiLNj89aXLxh9MBsyyd7LGs4Eqs8lDXcCpKtllxhsPGcLolOn9RI4UM00NAwG9dXF0
- Dx/V8nn1swCuGmr3Gts6zmV1J7y/VINOBU3RsEn6I7U6spaJ0q3j96aYBejtyoDtAYOm
- 11ed0Cqbj/lVDSRE43/akYNdmXKUIOFjhW9nPIcBJORNBe9kUN2hSMcLn2DoKYEl0HMS
- fR4opOl3A1SODKPYg6rSvo3aUul9cBpgmxaRecwIRipqny0LGDXdIBw+KfYKON5NfOaC
- 7SriU8CA+xTIVAkhr1rhULQoSOmb1G+y9DZJeT1ssD6i8ZzjVLsVOCRx0iW+exthLtws qA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 33k5prhhp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 16 Sep 2020 12:06:03 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 16 Sep
- 2020 18:06:01 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 16 Sep 2020 18:06:01 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 440AE45;
-        Wed, 16 Sep 2020 17:06:01 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 17:06:01 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH] regmap: debugfs: Duplicate name string if delaying
- debugfs init
-Message-ID: <20200916170601.GM10899@ediswmail.ad.cirrus.com>
-References: <20200916154433.7003-1-ckeepax@opensource.cirrus.com>
- <20200916161418.GB6374@sirena.org.uk>
+        Wed, 16 Sep 2020 13:06:14 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D471C0611C0;
+        Wed, 16 Sep 2020 10:06:04 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id n2so8942505oij.1;
+        Wed, 16 Sep 2020 10:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lFqd3lR855O3OJL/2i1GXW9OFx3k1PKlTbd/Qc1Stn0=;
+        b=MgpyflVGVmvOehzHEf6qX/mRoKan1mUyVqURLkR19hnk31ZzXTgiYl6CoRLtYC9iXP
+         CT4oEZMGmD45ZslSXebgJjRjH1lE/FJ4/D04jRPxx1rBf3uf+I8hWGEM62ISOCbIa4Hx
+         228aacyoIljakbkDgbjIHHtoxTMdMEGHLzWA9gOMwd9LRoY/lG0gHOPGr7KkaTQWmLkL
+         xvrptvFfF0o76NRYsA9fpD0Qq47ay1EvpmahC7i9Mffydu5Ao2HDc0kh/GqRjWPXRGZl
+         mnlK0K7j2TAZ5tpYA5xnTDenXIouYrtMlvooeR8TdFYFbaG4o3LYic20aLN3Q6dWA0cs
+         NbfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lFqd3lR855O3OJL/2i1GXW9OFx3k1PKlTbd/Qc1Stn0=;
+        b=CFsakiYU4Lbn1QCDNX0GVOoPd8r9DJISudaI584WB/J98CCLZUBkVDmo27rR5nWS2M
+         hPDn3ocrOk+oLlosCnEfnDNW8XpRMsXKjs+YkldHrp6ZBJ6i36cuIJ5i/Sanp4ua8XYc
+         6yFMOs5XVWARu43IeTXO1Tnut+D/hsZ61ylfbg6GAae937if8ft2AqsWyapEKkQJUVJl
+         sy+VyMWS5mD439eMhIhTb7aXVJdOpfx4KLz0VRYk8HBFiELlzMvdq5Bawsviseh/DBDR
+         BdG4ELq1RZAxZ4q0PwHnlttofnoFgYgiDVE7YLq+hMHMzdYa86/xUBdYrdgjUPt/GYm5
+         +/iw==
+X-Gm-Message-State: AOAM5321oSUYJRB3mmaXrElAtbhZLbIecXX+gwhY1LRjzvMmUaPNaVg9
+        fyhuJgvzNRoglQpxNxN4j68=
+X-Google-Smtp-Source: ABdhPJxgo9sTR8/dHKoJLXUuoqzosTPzH6bSaqynQa7oqCHdVujfIAoNCTd9hy//85fAxMymD+vu1g==
+X-Received: by 2002:aca:1312:: with SMTP id e18mr3819913oii.19.1600275963632;
+        Wed, 16 Sep 2020 10:06:03 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d63sm9898760oig.53.2020.09.16.10.06.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Sep 2020 10:06:03 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 10:06:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/130] 5.4.66-rc3 review
+Message-ID: <20200916170602.GB93678@roeck-us.net>
+References: <20200916063531.282549329@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916161418.GB6374@sirena.org.uk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=891
- clxscore=1015 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009160120
+In-Reply-To: <20200916063531.282549329@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 05:14:18PM +0100, Mark Brown wrote:
-> On Wed, Sep 16, 2020 at 04:44:33PM +0100, Charles Keepax wrote:
+On Wed, Sep 16, 2020 at 08:37:45AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.66 release.
+> There are 130 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > -		node->name = name;
-> > +		node->name = kstrdup(name, GFP_KERNEL);
-> > +		if (!node->name) {
+> Responses should be made by Fri, 18 Sep 2020 06:35:01 +0000.
+> Anything received after that time might be too late.
 > 
-> Two things here - one is that this should be kstrdup_const(), the other
-> is that we already took a copy of the name in __regmap_init() so the
-> thing to do here is to change the regmap_debugfs_init() call there to
-> use the copy we just made rather than the copy in the config.
 
-Thanks Mark, I will have a look and update.
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 430 pass: 430 fail: 0
 
-Thanks,
-Charles
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
