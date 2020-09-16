@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7307F26CD69
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EE226CD0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgIPU7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:59:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44226 "EHLO mail.kernel.org"
+        id S1727757AbgIPUxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:53:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44742 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbgIPQbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:31:34 -0400
-Received: from gaia (unknown [46.69.195.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CE28206A2;
-        Wed, 16 Sep 2020 14:51:14 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 15:51:11 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        George Cherian <george.cherian@marvell.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 3/3] asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP
- pci_iounmap() implementation
-Message-ID: <20200916145111.GB3122@gaia>
-References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
- <cover.1600254147.git.lorenzo.pieralisi@arm.com>
- <a9daf8d8444d0ebd00bc6d64e336ec49dbb50784.1600254147.git.lorenzo.pieralisi@arm.com>
+        id S1726607AbgIPQyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:54:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=cantorsusede;
+        t=1600268017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XWkcsvUYLuBv2uzcZZ0bcAz6BNNnURdggjQevDJBQMk=;
+        b=B4ZfZkQTyh6ucc0CDOCoHrBoEoqEKXhzrWyFLZovTbslQ3qlxl9dwKILWewGtRRgbZ7jGN
+        oCspOgcD2NxVF2Uoem6CrWV3rZeIQ/jL0GIJHPid+1dBMZDai76UsFfEyMFdmZh6hP3hek
+        u5SxSi1yYLMTJa8Ok4sHOjNvjrDALiyEom14min4kLbKOpiXjiz0q6wWZP3Sl7L2LAQOJK
+        TooeaSbvdjdOiHfDIHSO4Y9pzziFgRwbKx3Oce7RH+V+V18TxBd5v16Yhn6CMBrJZFZBM/
+        wW8YMf2r4GqiIzDVqE7f+EN/iorB0kzWQEY67MdhIffOxYm1PWAsFZvjS8rLYg==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4C570AC4D;
+        Wed, 16 Sep 2020 14:53:52 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 16:53:36 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: correct the comment of
+ mem_cgroup_unmark_under_oom()
+Message-ID: <20200916145336.GI18998@dhcp22.suse.cz>
+References: <20200916131927.11340-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a9daf8d8444d0ebd00bc6d64e336ec49dbb50784.1600254147.git.lorenzo.pieralisi@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200916131927.11340-1-linmiaohe@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 12:06:58PM +0100, Lorenzo Pieralisi wrote:
-> For arches that do not select CONFIG_GENERIC_IOMAP, the current
-> pci_iounmap() function does nothing causing obvious memory leaks
-> for mapped regions that are backed by MMIO physical space.
+On Wed 16-09-20 09:19:27, Miaohe Lin wrote:
+> Since commit fb2a6fc56be6 ("mm: memcg: rework and document OOM waiting and
+> wakeup"), we have renamed mem_cgroup_oom_lock to mem_cgroup_oom_trylock. So
+> replace mem_cgroup_oom_lock with mem_cgroup_oom_trylock in comment.
+
+While you are right I find the comment more confusing then helpful.
+What does it try to tell us actually? Is it still valid? Shouldn't we
+rather remove it or make it more clear?
 > 
-> In order to detect if a mapped pointer is IO vs MMIO, a check must made
-> available to the pci_iounmap() function so that it can actually detect
-> whether the pointer has to be unmapped.
-> 
-> In configurations where CONFIG_HAS_IOPORT_MAP && !CONFIG_GENERIC_IOMAP,
-> a mapped port is detected using an ioport_map() stub defined in
-> asm-generic/io.h.
-> 
-> Use the same logic to implement a stub (ie __pci_ioport_unmap()) that
-> detects if the passed in pointer in pci_iounmap() is IO vs MMIO to
-> iounmap conditionally and call it in pci_iounmap() fixing the issue.
-> 
-> Leave __pci_ioport_unmap() as a NOP for all other config options.
-> 
-> Reported-by: George Cherian <george.cherian@marvell.com>
-> Link: https://lore.kernel.org/lkml/20200905024811.74701-1-yangyingliang@huawei.com
-> Link: https://lore.kernel.org/lkml/20200824132046.3114383-1-george.cherian@marvell.com
-> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: George Cherian <george.cherian@marvell.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Yang Yingliang <yangyingliang@huawei.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
->  include/asm-generic/io.h | 39 +++++++++++++++++++++++++++------------
->  1 file changed, 27 insertions(+), 12 deletions(-)
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 3d26b4b954e2..702aa4d7ebbc 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1846,7 +1846,7 @@ static void mem_cgroup_unmark_under_oom(struct mem_cgroup *memcg)
+>  
+>  	/*
+>  	 * When a new child is created while the hierarchy is under oom,
+> -	 * mem_cgroup_oom_lock() may not be called. Watch for underflow.
+> +	 * mem_cgroup_oom_trylock() may not be called. Watch for underflow.
+>  	 */
+>  	spin_lock(&memcg_oom_lock);
+>  	for_each_mem_cgroup_tree(iter, memcg)
+> -- 
+> 2.19.1
 
-This works for me. The only question I have is whether pci_iomap.h is
-better than io.h for __pci_ioport_unmap(). These headers are really
-confusing.
-
-Either way:
-
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+-- 
+Michal Hocko
+SUSE Labs
