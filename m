@@ -2,169 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCC526CBC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852DB26CD55
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgIPUen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:34:43 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12798 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728388AbgIPUeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 16:34:22 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id DC9C6BD5A73D45D7311C;
-        Wed, 16 Sep 2020 20:32:22 +0800 (CST)
-Received: from [10.174.177.167] (10.174.177.167) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 16 Sep 2020 20:32:21 +0800
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-To:     <peterz@infradead.org>, Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-CC:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        "Christoph Lameter" <cl@linux.com>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>
-References: <20200915140750.137881-1-houtao1@huawei.com>
- <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
-Date:   Wed, 16 Sep 2020 20:32:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726575AbgIPU6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:58:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726565AbgIPQd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:33:27 -0400
+Received: from localhost (unknown [122.172.186.249])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F338420665;
+        Wed, 16 Sep 2020 12:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600259750;
+        bh=dUpUZqe3rC0sVtDWDaPG2xJyKgaEhAZQeOxcGrqq61I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aClGXSR6UsBal59SBWT86GU8nrZzQUWEy+YFXPAHx6RnuJqnIj4OOq7G9hwiTPAVh
+         phpz/3aiU+J3+ipNNHH04Nf8BXPocH9FpXlJKfQdH6nw7M6uoFARGm+QxHLMuR2GAA
+         Td6e/ltujdkiU7VAnoAPXpsbFUqosKCXR7IwU14s=
+Date:   Wed, 16 Sep 2020 18:05:45 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        gregkh@linuxfoundation.org,
+        Bard liao <yung-chuan.liao@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
+ controls
+Message-ID: <20200916123545.GK2968@vkoul-mobl>
+References: <20200904050244.GT2639@vkoul-mobl>
+ <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
+ <20200909075555.GK77521@vkoul-mobl>
+ <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
+ <20200910062223.GQ77521@vkoul-mobl>
+ <adf51127-2813-cdf0-e5a6-f5ec3b0d33fa@linux.intel.com>
+ <20200911070649.GU77521@vkoul-mobl>
+ <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
+ <20200914050825.GA2968@vkoul-mobl>
+ <11feabb2-dc8b-7acc-6e4d-0903fc435b00@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200915160344.GH35926@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.167]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11feabb2-dc8b-7acc-6e4d-0903fc435b00@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 14-09-20, 09:44, Pierre-Louis Bossart wrote:
+> > For LSB bits, I dont think this is an issue. I expect it to work, for example:
+> > #define CONTROL_LSB_MASK  GENMASK(2, 0)
+> >          foo |= u32_encode_bits(control, CONTROL_LSB_MASK);
+> > 
+> > would mask the control value and program that in specific bitfeild.
+> > 
+> > But for MSB bits, I am not sure above will work so, you may need to extract
+> > the bits and then use, for example:
+> > #define CONTROL_MSB_BITS        GENMASK(5, 3)
+> > #define CONTROL_MSB_MASK        GENMASK(17, 15)
+> > 
+> >          control = FIELD_GET(CONTROL_MSB_BITS, control);
+> >          foo |= u32_encode_bits(control, CONTROL_MSB_MASK);
+> > 
+> > > If you have a better suggestion that the FIELD_PREP/FIELD_GET use, I am all
+> > > ears. At the end of the day, the mapping is pre-defined and we don't have
+> > > any degree of freedom. What I do want is that this macro/inline function is
+> > > shared by all codec drivers so that we don't have different interpretations
+> > > of how the address is constructed.
+> > 
+> > Absolutely, this need to be defined here and used by everyone else.
+> 
+> Compare:
+> 
+> #define SDCA_CONTROL_MSB_BITS        GENMASK(5, 3)
+> #define SDCA_CONTROL_MSB_MASK        GENMASK(17, 15)
+> #define SDCA_CONTROL_LSB_MASK        GENMASK(2, 0)
+> 
+> foo |= u32_encode_bits(control, SDCA_CONTROL_LSB_MASK);
+> control = FIELD_GET(SDCA_CONTROL_MSB_BITS, control);
+> foo |= u32_encode_bits(control, SDCA_CONTROL_MSB_MASK);
+> 
+> with the original proposal:
+> 
+> foo |= FIELD_GET(GENMASK(2, 0), control))	
+> foo |= FIELD_PREP(GENMASK(17, 15), FIELD_GET(GENMASK(5, 3), control))	
+> 
+> it gets worse when the LSB positions don't match, you need another variable
+> and an additional mask.
+> 
+> I don't see how this improves readability? I get that hard-coding magic
+> numbers is a bad thing in general, but in this case there are limited
+> benefits to the use of additional defines.
 
-On 2020/9/16 0:03, peterz@infradead.org wrote:
-> On Tue, Sep 15, 2020 at 05:51:50PM +0200, peterz@infradead.org wrote:
-> 
->> Anyway, I'll rewrite the Changelog and stuff it in locking/urgent.
-> 
-> How's this?
-> 
-Thanks for that.
+I think it would be prudent to define the masks and use them rather than
+magic values. Also it makes it future proof
 
-> ---
-> Subject: locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
-> From: Hou Tao <houtao1@huawei.com>
-> Date: Tue, 15 Sep 2020 22:07:50 +0800
-> 
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> The __this_cpu*() accessors are (in general) IRQ-unsafe which, given
-> that percpu-rwsem is a blocking primitive, should be just fine.
-> 
-> However, file_end_write() is used from IRQ context and will cause
-> load-store issues.
-> 
-> Fixing it by using the IRQ-safe this_cpu_*() for operations on
-> read_count. This will generate more expensive code on a number of
-> platforms, which might cause a performance regression for some of the
-> other percpu-rwsem users.
-> 
-> If any such is reported, we can consider alternative solutions.
-> 
-I have simply test the performance impact on both x86 and aarch64.
-
-There is no degradation under x86 (2 sockets, 18 core per sockets, 2 threads per core)
-
-v5.8.9
-no writer, reader cn                               | 18        | 36        | 72
-the rate of down_read/up_read per second           | 231423957 | 230737381 | 109943028
-the rate of down_read/up_read per second (patched) | 232864799 | 233555210 | 109768011
-
-However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
-
-v4.19.111
-no writer, reader cn                               | 24        | 48        | 72        | 96
-the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
-the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
-
-I will test the aarch64 host by using v5.8 tomorrow.
-
-Regards,
-Tao
-
-
-> Fixes: 70fe2f48152e ("aio: fix freeze protection of aio writes")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Link: https://lkml.kernel.org/r/20200915140750.137881-1-houtao1@huawei.com
-> ---
->  include/linux/percpu-rwsem.h  |    8 ++++----
->  kernel/locking/percpu-rwsem.c |    4 ++--
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> --- a/include/linux/percpu-rwsem.h
-> +++ b/include/linux/percpu-rwsem.h
-> @@ -60,7 +60,7 @@ static inline void percpu_down_read(stru
->  	 * anything we did within this RCU-sched read-size critical section.
->  	 */
->  	if (likely(rcu_sync_is_idle(&sem->rss)))
-> -		__this_cpu_inc(*sem->read_count);
-> +		this_cpu_inc(*sem->read_count);
->  	else
->  		__percpu_down_read(sem, false); /* Unconditional memory barrier */
->  	/*
-> @@ -79,7 +79,7 @@ static inline bool percpu_down_read_tryl
->  	 * Same as in percpu_down_read().
->  	 */
->  	if (likely(rcu_sync_is_idle(&sem->rss)))
-> -		__this_cpu_inc(*sem->read_count);
-> +		this_cpu_inc(*sem->read_count);
->  	else
->  		ret = __percpu_down_read(sem, true); /* Unconditional memory barrier */
->  	preempt_enable();
-> @@ -103,7 +103,7 @@ static inline void percpu_up_read(struct
->  	 * Same as in percpu_down_read().
->  	 */
->  	if (likely(rcu_sync_is_idle(&sem->rss))) {
-> -		__this_cpu_dec(*sem->read_count);
-> +		this_cpu_dec(*sem->read_count);
->  	} else {
->  		/*
->  		 * slowpath; reader will only ever wake a single blocked
-> @@ -115,7 +115,7 @@ static inline void percpu_up_read(struct
->  		 * aggregate zero, as that is the only time it matters) they
->  		 * will also see our critical section.
->  		 */
-> -		__this_cpu_dec(*sem->read_count);
-> +		this_cpu_dec(*sem->read_count);
->  		rcuwait_wake_up(&sem->writer);
->  	}
->  	preempt_enable();
-> --- a/kernel/locking/percpu-rwsem.c
-> +++ b/kernel/locking/percpu-rwsem.c
-> @@ -45,7 +45,7 @@ EXPORT_SYMBOL_GPL(percpu_free_rwsem);
->  
->  static bool __percpu_down_read_trylock(struct percpu_rw_semaphore *sem)
->  {
-> -	__this_cpu_inc(*sem->read_count);
-> +	this_cpu_inc(*sem->read_count);
->  
->  	/*
->  	 * Due to having preemption disabled the decrement happens on
-> @@ -71,7 +71,7 @@ static bool __percpu_down_read_trylock(s
->  	if (likely(!atomic_read_acquire(&sem->block)))
->  		return true;
->  
-> -	__this_cpu_dec(*sem->read_count);
-> +	this_cpu_dec(*sem->read_count);
->  
->  	/* Prod writer to re-evaluate readers_active_check() */
->  	rcuwait_wake_up(&sem->writer);
-> .
-> 
+Thanks
+-- 
+~Vinod
