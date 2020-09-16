@@ -2,130 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB94126C890
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CB726C8A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728153AbgIPSwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        id S1728062AbgIPSzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727777AbgIPSJL (ORCPT
+        with ESMTP id S1727677AbgIPR6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:09:11 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA9EC02526C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:20:46 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id z46so2110875uac.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:20:46 -0700 (PDT)
+        Wed, 16 Sep 2020 13:58:03 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D081DC02526F;
+        Wed, 16 Sep 2020 05:23:21 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id e7so5866441qtj.11;
+        Wed, 16 Sep 2020 05:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=/mmyXwgKk0v94wDR5wziYxYkecNHTpk6pOU5axrJVv8=;
-        b=IaCPdRABMD+D9OJ14XC6hu6h0zPzssklKhz8NgsTkmOwj7NZrylAheg2gsWR8PYGdQ
-         CDHnsyv9rlpZToNF8uA/xSu7bQb6kfQEcGipyGMEDBVOHMkZ/8Werbeyym7YFFru2STJ
-         3dajgIzTLtl9SEzAmlArh2UvJQcqUkKmmAmiSxR2N9qJOYJ3CG+KsXmkFnJovKeCk0Mk
-         Ld8UVjf1zEcjtQe9nnx/BbnrM5mfMmkAKY5DymHINsN2zH+1w5aTJ6qlb7cEuU0mZQUc
-         QUCp+Bti2y83cyJ0HnHdtOJEW1AUCC+BxMyitOAsH4peXpUCRk6k+GlbxbrZas6qYFhm
-         DLtg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x4wPfQmQhf0NljYX+V0pyWs88eqATG0x9CyI9/ZzQY0=;
+        b=UrD16+4ZGVjqAOCUEP3SztgNMTfkfYV48g797TFORwMqRQKhFfL7bvC0TujD+q1bHi
+         QmGFHcsHtuVsQq+P8Q3+caTRG5sovVxjxqjx+QwZ59hJeAZGYmi76/VUf7af8kkisLBK
+         Yv2zDs+toOhfEDtL789wOoFSR8hYkEMjBbSvJwqq8xV2Qv8WdYWRy+UbMiTgXdZVzoPz
+         t8d9bw8y1O6lixH4fdwgqz+l4itVoeM6fBgC8h5tyEQjmHxQIDle2VWyfxcxsr7fxHrV
+         0pNflCzHF1XlLb4Z5RpzXLAuXjxz6DbXtKWjAvfmYjCwggVb6XQASYYvso+Y/ST3QfcC
+         kP8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=/mmyXwgKk0v94wDR5wziYxYkecNHTpk6pOU5axrJVv8=;
-        b=Pb8kDi6uOcPr6bUIB+QHANp5i8vM0TXyqNniLU9KO2bOQQRJT3e5v72i6Bv8vSbPz6
-         ujJpZyrDYEyJMglu1naTUvLZjGqKyaC2HvWLsrnijJI7YgNDOpGMwX1FELnNaucAAwLU
-         sCLMuvcpluvncLM0VwlQv+ew7TAXrRfZyiYsvkgYs1+fd62e4BO+F+0nlSDAPEbLWqd2
-         CmEd1iPhFa5qyLA+h+HCOdgw47oX6So5x7E60Q4WkF8DjfLdXsVtFLoIlGzd7fr/N56E
-         x0KujPJXGGf7wKnJpmrtmL2iwdESmj4bHMNJ2IvuAEriSG8pwEMM92tmTbmqDWzOmsbH
-         iw9g==
-X-Gm-Message-State: AOAM532OaFCTHTdkNodqM/wzVqW5XJwrJ3kIh5FmtLkumRvVrw5ehmY3
-        JM9WOomFyiuHJASuShO6Gi1zDKZDMEIJ2ls6ykFueg==
-X-Google-Smtp-Source: ABdhPJzga6i0E1Il8boIzaPNvfTb4mKEsRnw2K/8gqZFu0jDG1Hh8IhL3Abx/XRt/I5j/dV5SS1UsX7miMG+bx+hlA8=
-X-Received: by 2002:ab0:2c1a:: with SMTP id l26mr13094715uar.6.1600258845405;
- Wed, 16 Sep 2020 05:20:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x4wPfQmQhf0NljYX+V0pyWs88eqATG0x9CyI9/ZzQY0=;
+        b=Lw8ANrW6kZS+1+wVBy+52Vv+Qdt3p3aP+OMuXppaNHARaUrjaJ/GvLlrWAfAbM/EGz
+         GsKJYNwfnRyVYAPUeOIIrH0i6Ib9DdBxK0yhAo3N7pVKGek5YpJ/0/oR3M0x8PPAy+nx
+         3Wc4FQojPiIoV7lwurbZXHrMIrKcvtMDV5KHNuJV+/Qr0g3gS9F2xkiAVLlSDhBPmOuD
+         kDvos5w5pTQhlKxlS/8rxFUyKLB58hvWr/ds7C/HEd46crvTmFhpvBWCq9bxoKrfVEQ2
+         hCJeHA/jKMfuR00F7sWF6Dd84hZTiSyfbQUbrg3iDbazd03grE0RHoK2GiwLcllSsccB
+         mF1A==
+X-Gm-Message-State: AOAM531vGDCLZaA8rLEmuvGiXTvuvQL+QASwR93mfT0OjDiP1JWd2E8S
+        zAGW04zQTcxlrU0A4o1w5X8=
+X-Google-Smtp-Source: ABdhPJyYFHM98y3t4bvelmErVTC+bzmtmK5S7QI0UYB/iUZVijInyy/6WwWg0jYRBUl0iwYVRGFrhQ==
+X-Received: by 2002:ac8:6e84:: with SMTP id c4mr10320947qtv.118.1600259000895;
+        Wed, 16 Sep 2020 05:23:20 -0700 (PDT)
+Received: from rockpro64.hsd1.md.comcast.net ([2601:153:900:7730::20])
+        by smtp.gmail.com with ESMTPSA id v30sm19916177qtj.52.2020.09.16.05.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 05:23:20 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH 0/3] Support NVIDIA Tegra-based Ouya game console
+Date:   Wed, 16 Sep 2020 12:22:44 +0000
+Message-Id: <20200916122247.534374-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 16 Sep 2020 17:50:34 +0530
-Message-ID: <CA+G9fYtz4=fO++JsL4McMWecFnFGWzm7kJvKKmfHOspjvMU9yQ@mail.gmail.com>
-Subject: [Firmware Bug]: Kernel image misaligned at boot, please fix your bootloader
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Cc:     lkft-triage@lists.linaro.org,
-        Andrew Morton <akpm@linux-foundation.org>, rppt@kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arm64 boot failed on linux next 20200916.
+Good Day,
 
-[    0.000000] Linux version 5.9.0-rc5-next-20200916
-(TuxBuild@3aa8232c0e38) (aarch64-linux-gnu-gcc (Debian 9.3.0-8) 9.3.0,
-GNU ld (GNU Binutils for Debian) 2.34) #1 SMP PREEMPT Wed Sep 16
-10:13:15 UTC 2020
-[    0.000000] Machine model: Freescale Layerscape 2088A RDB Board
-[    0.000000] earlycon: uart8250 at MMIO 0x00000000021c0600 (options '')
-[    0.000000] printk: bootconsole [uart8250] enabled
-[    0.000000] efi: UEFI not found.
-[    0.000000] [Firmware Bug]: Kernel image misaligned at boot, please
-fix your bootloader!
-[    0.000000] Unable to handle kernel paging request at virtual
-address ffff0082ffffff70
-[    0.000000] Mem abort info:
-[    0.000000]   ESR = 0x96000044
-[    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    0.000000]   SET = 0, FnV = 0
-[    0.000000]   EA = 0, S1PTW = 0
-[    0.000000] Data abort info:
-[    0.000000]   ISV = 0, ISS = 0x00000044
-[    0.000000]   CM = 0, WnR = 1
-[    0.000000] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000827f9000
-[    0.000000] [ffff0082ffffff70] pgd=0000000000000000, p4d=0000000000000000
-[    0.000000] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-[    0.000000] Modules linked in:
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
-5.9.0-rc5-next-20200916 #1
-[    0.000000] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-[    0.000000] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-[    0.000000] pc : __memset+0x148/0x188
-[    0.000000] lr : memblock_alloc_try_nid+0xc4/0xdc
-[    0.000000] sp : ffffc305b2393cd0
-[    0.000000] x29: ffffc305b2393cd0 x28: 000000008116237c
-[    0.000000] x27: 0000000080000000 x26: ffffc305b1b51000
-[    0.000000] x25: 0000008380000000 x24: ffffc305b18014f8
-[    0.000000] x23: ffffc305b27a0f30 x22: 0000000000000000
-[    0.000000] x21: 00000000ffffffff x20: ffff0082ffffff70
-[    0.000000] x19: 0000000000000090 x18: 0000000000000010
-[    0.000000] x17: 0000000000001400 x16: 0000000000001c00
-[    0.000000] x15: ffffc305b23a48c0 x14: ffffc305b23a48c0
-[    0.000000] x13: fffffdfffe600000 x12: ffffc305b2393e44
-[    0.000000] x11: 0000000000004aa8 x10: ffffc305b2393df4
-[    0.000000] x9 : 0000000000000000 x8 : ffff0082ffffff70
-[    0.000000] x7 : 0000000000000000 x6 : 000000000000003f
-[    0.000000] x5 : 0000000000000040 x4 : 0000000000000010
-[    0.000000] x3 : 0000000000000080 x2 : 0000000000000080
-[    0.000000] x1 : 0000000000000000 x0 : ffff0082ffffff70
-[    0.000000] Call trace:
-[    0.000000]  __memset+0x148/0x188
-[    0.000000]  cma_init_reserved_mem+0x9c/0x15c
-[    0.000000]  cma_declare_contiguous_nid+0x288/0x308
-[    0.000000]  dma_contiguous_reserve_area+0x50/0x80
-[    0.000000]  dma_contiguous_reserve+0xfc/0x114
-[    0.000000]  arm64_memblock_init+0x42c/0x464
-[    0.000000]  setup_arch+0x27c/0x64c
-[    0.000000]  start_kernel+0xa0/0x56c
-[    0.000000] Code: f101007f fa45a068 54fffc0b aa0303e2 (a9001d07)
-[    0.000000] random: get_random_bytes called from
-print_oops_end_marker+0x34/0x78 with crng_init=0
-[    0.000000] ---[ end trace 0000000000000000 ]---
-[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
-[    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill
-the idle task! ]---
+This series introduces upstream kernel support for the Ouya game console device. Please review and apply. Thank you in advance.
 
+Peter Geis (3):
+  ARM: tegra: Add device-tree for Ouya
+  dt-bindings: Add vendor prefix for Ouya Inc.
+  dt-bindings: ARM: tegra: Add Ouya game console
+
+ .../devicetree/bindings/arm/tegra.yaml        |    3 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ arch/arm/boot/dts/Makefile                    |    3 +-
+ arch/arm/boot/dts/tegra30-ouya.dts            | 4498 +++++++++++++++++
+ 4 files changed, 4505 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
 
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.25.1
+
