@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB9426BC2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18C826BC32
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgIPGIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:08:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58698 "EHLO mx2.suse.de"
+        id S1726332AbgIPGIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:08:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgIPGIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:08:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8CDB6AAC7;
-        Wed, 16 Sep 2020 06:08:29 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 08:08:08 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     zangchunxin@bytedance.com
-Cc:     akpm@linux-foundation.org, chris@chrisdown.name, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH v5] mm/vmscan: add a fatal signals check in drop_slab_node
-Message-ID: <20200916060808.GA18998@dhcp22.suse.cz>
-References: <20200916025359.70203-1-zangchunxin@bytedance.com>
+        id S1726133AbgIPGIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:08:51 -0400
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 144082087D;
+        Wed, 16 Sep 2020 06:08:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600236530;
+        bh=yq+rh/yidum8ufs/ceMkyfzcJR8SkmGhPc5YlK4pJug=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tHgSfo1UbdAD9x6dURfRbzyyfotz9ZBhxm3dW4JLwBxzBD9dHm0P1NyWkaRGPOfI0
+         cA2iztOi+qNuXMyFFY0qPD3m3Am5owsuWc6YOrJorFoGmOqxFHLE99lW6/0R5LedMS
+         0deYcA0i2gnVQ4unVDdyyT/RjdQ4AriwyNzBYKd4=
+Received: by mail-ed1-f46.google.com with SMTP id n22so5060506edt.4;
+        Tue, 15 Sep 2020 23:08:50 -0700 (PDT)
+X-Gm-Message-State: AOAM533jnA5T4I4a9Kq5Re2cEQYcOuxY+2bA6fCaa7IH9bWkg+EFEoo1
+        9mDvI1BUkHV8P+7T4dxZ8H+5LOmmvqg4ikIohMQ=
+X-Google-Smtp-Source: ABdhPJxP81HSvrNQp5Kg5be5vASZ61X4kdfIAE4mMNX3H3Ax1gIcvuHBDdEtIIRGjRc/uSg3wZmhVjn1J9yVFQzvCSs=
+X-Received: by 2002:a05:6402:1a48:: with SMTP id bf8mr25553137edb.298.1600236528625;
+ Tue, 15 Sep 2020 23:08:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916025359.70203-1-zangchunxin@bytedance.com>
+References: <20200828145744.3636-1-krzk@kernel.org> <20200828145744.3636-4-krzk@kernel.org>
+ <20200916010140.GG1681290@dtor-ws>
+In-Reply-To: <20200916010140.GG1681290@dtor-ws>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 16 Sep 2020 08:08:36 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPesf1mnt_QC59Bgt27r4Ntu4vowBQCvexmRkASVhuPLEw@mail.gmail.com>
+Message-ID: <CAJKOXPesf1mnt_QC59Bgt27r4Ntu4vowBQCvexmRkASVhuPLEw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] Input: sun4i-ps2 - Fix handling of
+ platform_get_irq() error
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        linux-input@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16-09-20 10:53:59, zangchunxin@bytedance.com wrote:
-> From: Chunxin Zang <zangchunxin@bytedance.com>
-> 
-> On our server, there are about 10k memcg in one machine. They use memory
-> very frequently. We have observed that drop_caches can take a
-> considerable amount of time, and can't stop it.
-> 
-> There are two reasons:
-> 1. There is somebody constantly generating more objects to reclaim
->   on drop_caches, result the 'freed' always bigger than 10.
-> 2. The process has no chance to process signals.
-> 
-> We can get the following info through 'ps':
-> 
->  root:~# ps -aux | grep drop
->  root  357956 ... R    Aug25 21119854:55 echo 3 > /proc/sys/vm/drop_caches
->  root 1771385 ... R    Aug16 21146421:17 echo 3 > /proc/sys/vm/drop_caches
-> 
-> Add a bail out on the fatal signals in the main loop so that the
-> operation can be terminated by userspace.
-> 
-> Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+On Wed, 16 Sep 2020 at 03:01, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+>
+> On Fri, Aug 28, 2020 at 04:57:44PM +0200, Krzysztof Kozlowski wrote:
+> > platform_get_irq() returns -ERRNO on error.  In such case comparison
+> > to 0 would pass the check.
+> >
+> > Fixes: e443631d20f5 ("Input: serio - add support for Alwinner A10/A20 PS/2 controller")
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> >
+> > ---
+> >
+> > Changes since v1:
+> > 1. None
+> > ---
+> >  drivers/input/serio/sun4i-ps2.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/input/serio/sun4i-ps2.c b/drivers/input/serio/sun4i-ps2.c
+> > index a681a2c04e39..7da1ea8741fc 100644
+> > --- a/drivers/input/serio/sun4i-ps2.c
+> > +++ b/drivers/input/serio/sun4i-ps2.c
+> > @@ -265,9 +265,8 @@ static int sun4i_ps2_probe(struct platform_device *pdev)
+> >
+> >       /* Get IRQ for the device */
+> >       irq = platform_get_irq(pdev, 0);
+> > -     if (!irq) {
+> > -             dev_err(dev, "no IRQ found\n");
+> > -             error = -ENXIO;
+> > +     if (irq < 0) {
+>
+> "irq" is unsigned here, so this will not work. I'll change it to use
+> drvdat->irq which happens to be signed, and drop "irq" variable.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Yes, thanks. I wonder now why there was no warning of unsigned<0 comparison.
 
-> ---
-> 	changelogs in v5:
-> 	1) v4 patch used wrong branch, very apologies about that.
-> 
-> 	changelogs in v4:
->     changelogs in v3:
->     1) Fix some descriptive problems pointed out by Michal Hocko.
->         v2 named: mm/vmscan: fix infinite loop in drop_slab_node
-> 
->     changelogs in v2:
->     1) via check fatal signal break loop.
-> 
->  mm/vmscan.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index b6d84326bdf2..c3ed8b45d264 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -704,6 +704,9 @@ void drop_slab_node(int nid)
->  	do {
->  		struct mem_cgroup *memcg = NULL;
->  
-> +		if (fatal_signal_pending(current))
-> +			return;
-> +
->  		freed = 0;
->  		memcg = mem_cgroup_iter(NULL, NULL, NULL);
->  		do {
-> -- 
-> 2.11.0
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+Best regards,
+Krzysztof
