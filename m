@@ -2,180 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B24826B95B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A068226B963
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgIPB1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 21:27:46 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:44225 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726023AbgIPB1q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 21:27:46 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07386801|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0709241-0.000172201-0.928904;FP=11851636359211976435|3|2|12|0|-1|-1|-1;HT=e02c03307;MF=liush@allwinnertech.com;NM=1;PH=DW;RN=14;RT=14;SR=0;TI=W4_5948689_DEFAULT_0AC264F1_1600219605038_o7001c9512;
-Received: from WS-web (liush@allwinnertech.com[W4_5948689_DEFAULT_0AC264F1_1600219605038_o7001c9512]) by ay29a011140100200.et135 at Wed, 16 Sep 2020 09:27:40 +0800
-Date:   Wed, 16 Sep 2020 09:27:40 +0800
-From:   "liush" <liush@allwinnertech.com>
-To:     "Palmer Dabbelt" <palmer@dabbelt.com>
-Cc:     "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "aou" <aou@eecs.berkeley.edu>, "rjw" <rjw@rjwysocki.net>,
-        "daniel.lezcano" <daniel.lezcano@linaro.org>,
-        "Anup Patel" <Anup.Patel@wdc.com>,
-        "Atish Patra" <Atish.Patra@wdc.com>,
-        "Damien Le Moal" <Damien.LeMoal@wdc.com>,
-        "wangkefeng.wang" <wangkefeng.wang@huawei.com>,
-        "kernel" <kernel@esmil.dk>, "zong.li" <zong.li@sifive.com>,
-        "linux-riscv" <linux-riscv@lists.infradead.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "linux-pm" <linux-pm@vger.kernel.org>
-Reply-To: "liush" <liush@allwinnertech.com>
-Message-ID: <e7eec7e8-083f-4802-962f-99adc89b28ac.liush@allwinnertech.com>
-Subject: =?UTF-8?B?5Zue5aSN77yaW1BBVENIXSBjcHVpZGxlOiBhZGQgcmlzY3YgY3B1aWRsZSBkcml2ZXI=?=
-X-Mailer: [Alimail-Mailagent][W4_5948689][DEFAULT][Chrome]
+        id S1726285AbgIPBbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 21:31:36 -0400
+Received: from mga14.intel.com ([192.55.52.115]:12530 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726039AbgIPBbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 21:31:34 -0400
+IronPort-SDR: S8S86uKIWk9duu2MQEYQTSj2FI+516LZQfYRp+jbXvlexQzEeNnNd5aLR7HmjkHrvN+pIrnoLa
+ lACkmyvIJTKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="158661207"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="158661207"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 18:31:32 -0700
+IronPort-SDR: vrQV2lNJK2eIL0XZTK+LJIElKj6m1ReVBt3cqWBVsg60bO+wYrtSMOYIqo3/HcIOl/ErYz4GDd
+ Llw6G0TvWbAg==
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="451648122"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 18:31:30 -0700
+Date:   Wed, 16 Sep 2020 09:30:26 +0800
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio: add a singleton check for vfio_group_pin_pages
+Message-ID: <20200916013025.GA18827@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200915003042.14273-1-yan.y.zhao@intel.com>
+ <20200915130301.15d95412@x1.home>
+ <20200915133011.1e3652ee@x1.home>
 MIME-Version: 1.0
-References: <1600048323-2964-1-git-send-email-liush@allwinnertech.com>,<mhng-e743b908-36de-4226-832d-bc5acbbfd81b@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-e743b908-36de-4226-832d-bc5acbbfd81b@palmerdabbelt-glaptop1>
-x-aliyun-mail-creator: W4_5948689_DEFAULT_MzYTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgNi4xOyBXaW42NDsgeDY0KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvODUuMC40MTgzLjEwMiBTYWZhcmkvNTM3LjM2zc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915133011.1e3652ee@x1.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUGFsbWVyLAoKPiA+IFRoaXMgcGF0Y2ggYWRkcyBhIGNwdWlkbGUgZHJpdmVyIGZvciBzeXN0
-ZW1zIGJhc2VkIFJJU0NWIGFyY2hpdGVjdHVyZS4KPiA+IFRoaXMgcGF0Y2ggc3VwcG9ydHMgc3Rh
-dGUgV0ZJLiBPdGhlciBzdGF0ZXMgd2lsbCBiZSBzdXBwb3J0ZWQgaW4gdGhlCj4gPiBmdXR1cmUu
-Cj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogbGl1c2ggPGxpdXNoQGFsbHdpbm5lcnRlY2guY29tPgo+
-ID4gLS0tCj4gPiAgYXJjaC9yaXNjdi9LY29uZmlnICAgICAgICAgICAgICAgfCAgNyArKysrKwo+
-ID4gIGFyY2gvcmlzY3YvaW5jbHVkZS9hc20vY3B1aWRsZS5oIHwgIDcgKysrKysKPiA+ICBhcmNo
-L3Jpc2N2L2tlcm5lbC9NYWtlZmlsZSAgICAgICB8ICAxICsKPiA+ICBhcmNoL3Jpc2N2L2tlcm5l
-bC9jcHVpZGxlLmMgICAgICB8ICA4ICsrKysrKwo+ID4gIGRyaXZlcnMvY3B1aWRsZS9LY29uZmln
-ICAgICAgICAgIHwgIDUgKysrKwo+ID4gIGRyaXZlcnMvY3B1aWRsZS9LY29uZmlnLnJpc2N2ICAg
-IHwgMTEgKysrKysrKysKPiA+ICBkcml2ZXJzL2NwdWlkbGUvTWFrZWZpbGUgICAgICAgICB8ICA0
-ICsrKwo+ID4gIGRyaXZlcnMvY3B1aWRsZS9jcHVpZGxlLXJpc2N2LmMgIHwgNTUgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ID4gIDggZmlsZXMgY2hhbmdlZCwgOTgg
-aW5zZXJ0aW9ucygrKQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3Jpc2N2L2luY2x1ZGUv
-YXNtL2NwdWlkbGUuaAo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3Jpc2N2L2tlcm5lbC9j
-cHVpZGxlLmMKPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jcHVpZGxlL0tjb25maWcu
-cmlzY3YKPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jcHVpZGxlL2NwdWlkbGUtcmlz
-Y3YuYwo+ID4KPiA+IGRpZmYgLS1naXQgYS9hcmNoL3Jpc2N2L0tjb25maWcgYi9hcmNoL3Jpc2N2
-L0tjb25maWcKPiA+IGluZGV4IGRmMTgzNzIuLmM3ZGRiOWQgMTAwNjQ0Cj4gPiAtLS0gYS9hcmNo
-L3Jpc2N2L0tjb25maWcKPiA+ICsrKyBiL2FyY2gvcmlzY3YvS2NvbmZpZwo+ID4gQEAgLTg2LDYg
-Kzg2LDcgQEAgY29uZmlnIFJJU0NWCj4gPiAgIHNlbGVjdCBTUEFSU0VfSVJRCj4gPiAgIHNlbGVj
-dCBTWVNDVExfRVhDRVBUSU9OX1RSQUNFCj4gPiAgIHNlbGVjdCBUSFJFQURfSU5GT19JTl9UQVNL
-Cj4gPiArIHNlbGVjdCBDUFVfSURMRQo+ID4KPiA+ICBjb25maWcgQVJDSF9NTUFQX1JORF9CSVRT
-X01JTgo+ID4gICBkZWZhdWx0IDE4IGlmIDY0QklUCj4gPiBAQCAtNDA3LDYgKzQwOCwxMiBAQCBj
-b25maWcgQlVJTFRJTl9EVEIKPiA+ICAgZGVwZW5kcyBvbiBSSVNDVl9NX01PREUKPiA+ICAgZGVw
-ZW5kcyBvbiBPRgo+ID4KPiA+ICttZW51ICJDUFUgUG93ZXIgTWFuYWdlbWVudCIKPiA+ICsKPiA+
-ICtzb3VyY2UgImRyaXZlcnMvY3B1aWRsZS9LY29uZmlnIgo+ID4gKwo+ID4gK2VuZG1lbnUKPiA+
-ICsKPiA+ICBtZW51ICJQb3dlciBtYW5hZ2VtZW50IG9wdGlvbnMiCj4gPgo+ID4gIHNvdXJjZSAi
-a2VybmVsL3Bvd2VyL0tjb25maWciCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9yaXNjdi9pbmNsdWRl
-L2FzbS9jcHVpZGxlLmggYi9hcmNoL3Jpc2N2L2luY2x1ZGUvYXNtL2NwdWlkbGUuaAo+ID4gbmV3
-IGZpbGUgbW9kZSAxMDA2NDQKPiA+IGluZGV4IDAwMDAwMDAwLi4yNTk5ZDJmCj4gPiAtLS0gL2Rl
-di9udWxsCj4gPiArKysgYi9hcmNoL3Jpc2N2L2luY2x1ZGUvYXNtL2NwdWlkbGUuaAo+ID4gQEAg
-LTAsMCArMSw3IEBACj4gPiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgKi8K
-PiA+ICsjaWZuZGVmIF9fUklTQ1ZfQ1BVSURMRV9ICj4gPiArI2RlZmluZSBfX1JJU0NWX0NQVUlE
-TEVfSAo+ID4gKwo+ICtleHRlcm4gdm9pZCBjcHVfZG9faWRsZSh2b2lkKTsKPiA+ICsKPiA+ICsj
-ZW5kaWYKPiA+IGRpZmYgLS1naXQgYS9hcmNoL3Jpc2N2L2tlcm5lbC9NYWtlZmlsZSBiL2FyY2gv
-cmlzY3Yva2VybmVsL01ha2VmaWxlCj4gPiBpbmRleCBkYzkzNzEwLi4zOTZiYTljIDEwMDY0NAo+
-ID4gLS0tIGEvYXJjaC9yaXNjdi9rZXJuZWwvTWFrZWZpbGUKPiA+ICsrKyBiL2FyY2gvcmlzY3Yv
-a2VybmVsL01ha2VmaWxlCj4gPiBAQCAtMjksNiArMjksNyBAQCBvYmoteSArPSByaXNjdl9rc3lt
-cy5vCj4gPiAgb2JqLXkgKz0gc3RhY2t0cmFjZS5vCj4gPiAgb2JqLXkgKz0gY2FjaGVpbmZvLm8K
-PiA+ICBvYmoteSArPSBwYXRjaC5vCj4gPiArb2JqLXkgKz0gY3B1aWRsZS5vCgo+IFByZXN1bWFi
-bHkgd2Ugd2FudCB0aGlzIHRvIGJlIGEgS2NvbmZpZyBvcHRpb24sIGlmIG9ubHkgdG8gYXZvaWQg
-ZXhjZXNzIHNpemUgb24KPiB0aGUgc21hbGxlciBzeXN0ZW1zPwoKVGhhbmsgeW91IGZvciB5b3Vy
-IHN1Z2dlc3Rpb25zLgpJIGFtIGNvbnNpZGVyaW5nIGZvbGxvd2luZyBBbnVwJ3Mgc3VnZ2VzdGlv
-biAtIGRlbGV0ZSBjcHVpZGxlLmMgYW5kIGltcGxlbWVudCAKY3B1X2RvX2lkbGUgaW4gY3B1aWRs
-ZS5oLgoKPiA+ICBvYmotJChDT05GSUdfTU1VKSArPSB2ZHNvLm8gdmRzby8KPiA+Cj4gPiAgb2Jq
-LSQoQ09ORklHX1JJU0NWX01fTU9ERSkgKz0gdHJhcHNfbWlzYWxpZ25lZC5vCj4gPiBkaWZmIC0t
-Z2l0IGEvYXJjaC9yaXNjdi9rZXJuZWwvY3B1aWRsZS5jIGIvYXJjaC9yaXNjdi9rZXJuZWwvY3B1
-aWRsZS5jCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXggMDAwMDAwMDAuLmEzMjg5
-ZTcKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL2FyY2gvcmlzY3Yva2VybmVsL2NwdWlkbGUu
-Ywo+ID4gQEAgLTAsMCArMSw4IEBACj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQ
-TC0yLjAKPiA+ICsjaW5jbHVkZSA8YXNtL2NwdWlkbGUuaD4KPiA+ICsKPiA+ICt2b2lkIGNwdV9k
-b19pZGxlKHZvaWQpCj4gPiArewo+ID4gKyBfX2FzbV9fIF9fdm9sYXRpbGVfXyAoIndmaSIpOwo+
-ID4gKwoKPiBXZSBoYXZlIHdhaXRfZm9yX2ludGVycnVwdCgpIHRoYXQgZG9lcyB0aGlzIGFscmVh
-ZHksIGJ1dCBpdCdzIG9uZSBsaW5lIHNvIGl0Cj4gZG9lc24ndCByZWFsbHkgbWF0dGVyLiAgRWl0
-aGVyIHdheSwgdGhlcmUncyBhbiBleHRyYSBuZXdsaW5lIGhlcmUuCgpUaGFua3MsIGknbGwgbW9k
-aWZ5IGl0Cgo+IEFkZGl0aW9uYWxseSwgd2UgaGF2ZSBhcmNoX2NwdV9pZGxlKCkgd2hpY2ggaXMg
-Y2FsbGluZyBjcHVfZG9faWRsZSgpIG9uIG90aGVyCj4gcGxhdGZvcm1zLiAgUHJlc3VtYWJseSB3
-ZSBzaG91bGQgYmUgZG9pbmcgc29tZXRoaW5nIHNpbWlsYXIsIHVuZGVyIHRoZQo+IGFzc3VtcHRp
-b24gdGhhdCB3ZSB3aWxsIGV2ZW50dWFsbHkgaGF2ZSBjcHVfZG9faWRsZSgpIGhvb2sgaW50byBD
-UFUgaWRsZQo+IGRyaXZlcnMgaGVyZT8KCkJhc2VkIG9uIHlvdXIgY29tbWVudHMsIEkgcnVuIGEg
-dGVzdCBhbmQgZm91bmQgdGhhdCBhcmNoX2NwdV9pZGxlIGNvdWxkIGJlIGV4ZWN1dGVkIApub3Jt
-YWxseSB3aXRob3V0IGVuYWJsaW5nIHRoZSBpZGxlIGRyaXZlci5QYXJ0IG9mIHRoZSBjb2RlIG9m
-IHRoZSBleHBlcmltZW50OgogCitzdGF0aWMgaW5saW5lIHZvaWQgY3B1X2RvX2lkbGUodm9pZCkK
-K3sKKyAgICAgICBtYigpOworICAgICAgIHdhaXRfZm9yX2ludGVycnVwdCgpOworfQogCiB2b2lk
-IGFyY2hfY3B1X2lkbGUodm9pZCkKIHsKLSAgICAgICB3YWl0X2Zvcl9pbnRlcnJ1cHQoKTsKKyAg
-ICAgICBjcHVfZG9faWRsZSgpOwogICAgICAgIGxvY2FsX2lycV9lbmFibGUoKTsKIH0gCiAKPiA+
-ICt9Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jcHVpZGxlL0tjb25maWcgYi9kcml2ZXJzL2Nw
-dWlkbGUvS2NvbmZpZwo+ID4gaW5kZXggYzBhZWVkZC4uZjZiZTBmZCAxMDA2NDQKPiA+IC0tLSBh
-L2RyaXZlcnMvY3B1aWRsZS9LY29uZmlnCj4gPiArKysgYi9kcml2ZXJzL2NwdWlkbGUvS2NvbmZp
-Zwo+ID4gQEAgLTYyLDYgKzYyLDExIEBAIGRlcGVuZHMgb24gUFBDCj4gPiAgc291cmNlICJkcml2
-ZXJzL2NwdWlkbGUvS2NvbmZpZy5wb3dlcnBjIgo+ID4gIGVuZG1lbnUKPiA+Cj4gPiArbWVudSAi
-UklTQ1YgQ1BVIElkbGUgRHJpdmVycyIKPiA+ICtkZXBlbmRzIG9uIFJJU0NWCj4gPiArc291cmNl
-ICJkcml2ZXJzL2NwdWlkbGUvS2NvbmZpZy5yaXNjdiIKPiA+ICtlbmRtZW51Cj4gPiArCj4gPiAg
-Y29uZmlnIEhBTFRQT0xMX0NQVUlETEUKPiA+ICAgdHJpc3RhdGUgIkhhbHQgcG9sbCBjcHVpZGxl
-IGRyaXZlciIKPiA+ICAgZGVwZW5kcyBvbiBYODYgJiYgS1ZNX0dVRVNUCj4gPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9jcHVpZGxlL0tjb25maWcucmlzY3YgYi9kcml2ZXJzL2NwdWlkbGUvS2NvbmZp
-Zy5yaXNjdgo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiA+IGluZGV4IDAwMDAwMDAwLi5lODZk
-MzZiCj4gPiAtLS0gL2Rldi9udWxsCj4gPiArKysgYi9kcml2ZXJzL2NwdWlkbGUvS2NvbmZpZy5y
-aXNjdgo+ID4gQEAgLTAsMCArMSwxMSBAQAo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6
-IEdQTC0yLjAtb25seQo+ID4gKyMKPiA+ICsjIFJJU0NWIENQVSBJZGxlIGRyaXZlcnMKPiA+ICsj
-Cj4gPiArY29uZmlnIFJJU0NWX0NQVUlETEUKPiA+ICsgICAgICAgIGJvb2wgIkdlbmVyaWMgUklT
-Q1YgQ1BVIGlkbGUgRHJpdmVyIgo+ID4gKyAgICAgICAgc2VsZWN0IERUX0lETEVfU1RBVEVTCj4g
-PiArIHNlbGVjdCBDUFVfSURMRV9NVUxUSVBMRV9EUklWRVJTCgo+IExvb2tzIGxpa2UgdGhlcmUn
-cyBzb21lIHNwYWNlL3RhYiBpc3N1ZXMgaGVyZS4gIElJUkMgY2hlY2twYXRjaCB3aWxsIGNhdGNo
-IHRoaXMKPiBzb3J0IG9mIHRoaW5nLgoKeWVzLCBpJ2xsIG1vZGlmeSBpdAoKPiA+ICsgICAgICAg
-IGhlbHAKPiA+ICsgICAgICAgICAgU2VsZWN0IHRoaXMgb3B0aW9uIHRvIGVuYWJsZSBnZW5lcmlj
-IGNwdWlkbGUgZHJpdmVyIGZvciBSSVNDVi4KPiA+ICsgICBOb3cgb25seSBzdXBwb3J0IEMwIFN0
-YXRlLgo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY3B1aWRsZS9NYWtlZmlsZSBiL2RyaXZlcnMv
-Y3B1aWRsZS9NYWtlZmlsZQo+ID4gaW5kZXggMjZiYmM1ZS4uNGM4M2M0ZSAxMDA2NDQKPiA+IC0t
-LSBhL2RyaXZlcnMvY3B1aWRsZS9NYWtlZmlsZQo+ID4gKysrIGIvZHJpdmVycy9jcHVpZGxlL01h
-a2VmaWxlCj4gPiBAQCAtMzQsMyArMzQsNyBAQCBvYmotJChDT05GSUdfTUlQU19DUFNfQ1BVSURM
-RSkgICs9IGNwdWlkbGUtY3BzLm8KPiA+ICAjIFBPV0VSUEMgZHJpdmVycwo+ID4gIG9iai0kKENP
-TkZJR19QU0VSSUVTX0NQVUlETEUpICArPSBjcHVpZGxlLXBzZXJpZXMubwo+ID4gIG9iai0kKENP
-TkZJR19QT1dFUk5WX0NQVUlETEUpICArPSBjcHVpZGxlLXBvd2VybnYubwo+ID4gKwo+ID4gKyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMKPiA+ICsjIFJJU0NWIGRyaXZlcnMKPiA+ICtvYmotJChDT05G
-SUdfUklTQ1ZfQ1BVSURMRSkgICs9IGNwdWlkbGUtcmlzY3Yubwo+ID4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvY3B1aWRsZS9jcHVpZGxlLXJpc2N2LmMgYi9kcml2ZXJzL2NwdWlkbGUvY3B1aWRsZS1y
-aXNjdi5jCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXggMDAwMDAwMDAuLjVkZGRj
-ZmEKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL2RyaXZlcnMvY3B1aWRsZS9jcHVpZGxlLXJp
-c2N2LmMKPiA+IEBAIC0wLDAgKzEsNTUgQEAKPiA+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogR1BMLTIuMAo+ID4gKy8qCj4gPiArICogUklTQy1WIENQVSBpZGxlIGRyaXZlci4KPiA+ICsg
-Kgo+ID4gKyAqIENvcHlyaWdodCAoQykgMjAyMC0yMDIyIEFsbHdpbm5lciBMdGQKPiA+ICsgKgo+
-ID4gKyAqIEJhc2VkIG9uIGNvZGUgLSBkcml2ZXIvY3B1aWRsZS9jcHVpZGxlLWF0OTEuYwo+ID4g
-KyAqCj4gPiArICovCj4gPiArI2luY2x1ZGUgPGxpbnV4L2NwdWlkbGUuaD4KPiA+ICsjaW5jbHVk
-ZSA8bGludXgvY3B1bWFzay5oPgo+ID4gKyNpbmNsdWRlIDxsaW51eC9jcHVfcG0uaD4KPiA+ICsj
-aW5jbHVkZSA8bGludXgva2VybmVsLmg+Cj4gPiArI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+
-ID4gKyNpbmNsdWRlIDxsaW51eC9vZi5oPgo+ID4gKyNpbmNsdWRlIDxsaW51eC9zbGFiLmg+Cj4g
-PiArI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgo+ID4gKyNpbmNsdWRlIDxhc20v
-Y3B1aWRsZS5oPgo+ID4gKwo+ID4gKyNkZWZpbmUgTUFYX0lETEVfU1RBVEVTIDEKPiA+ICsKPiA+
-ICsvKiBUT0RPOiBJbXBsZW1lbnQgZGVlcGVyIGlkbGUgc3RhdGVzICovCj4gPiArc3RhdGljIGlu
-dCByaXNjdl9sb3dfbGV2ZWxfc3VzcGVuZF9lbnRlcihpbnQgc3RhdGUpCj4gPiArewo+ID4gKyBy
-ZXR1cm4gMDsKCj4gQXMgZmFyIGFzIEkgY2FuIHRlbGwsIHRoaXMgZHJpdmVyIGp1c3QgZG9lc24n
-dCBkbyBhbnl0aGluZz8gIEFzc3VtaW5nIHRoYXQncwo+IHRoZSBjYXNlLCBpdCdzIHByb2JhYmx5
-IGJlc3QgdG8ganVzdCBkcm9wIGV2ZXJ5dGhpbmcgYnV0IGNwdV9kb19pZGxlKCkgdW50aWwgd2UK
-PiBoYXZlIHNvbWV0aGluZyB0byBleGVyY2lzZSB0aGlzLgoKQWx0aG91Z2gsIHRoZSBkcml2ZXIg
-aW4gdGhpcyBjYXNlIGlzIG5vdCBuZWNlc3NhcnksIGl0IGlzIGVzc2VudGlhbCB3aGVuIHdvcmsg
-CmluIHRoZSBtYWNybyBDUFVfUE1fQ1BVX0lETEVfRU5URVJfUEFSQU0uQW5kIGl0IGNvdWxkIGFs
-c28gYmUgdXNlZCBmb3Igc3VwcG9ydGluZyAKb3RoZXIgZGVlcGVyIHN0YXRlcyBpbiB0aGUgZnV0
-dXJlLiBTbyBJIHRoaW5rIGl0IHdvdWxkIGJlIGJldHRlciB0byBrZWVwIApyaXNjdl9sb3dfbGV2
-ZWxfc3VzcGVuZF9lbnRlciBidXQgY2hhbmdlIGl0IHRvIF9fd2VhayBmdW5jdGlvbi4KCj4gPiAr
-fQo+ID4gKwo+ID4gKy8qIEFjdHVhbCBjb2RlIHRoYXQgcHV0cyB0aGUgU29DIGluIGRpZmZlcmVu
-dCBpZGxlIHN0YXRlcyAqLwo+ID4gK3N0YXRpYyBpbnQgcmlzY3ZfZW50ZXJfaWRsZShzdHJ1Y3Qg
-Y3B1aWRsZV9kZXZpY2UgKmRldiwKPiA+ICsgICBzdHJ1Y3QgY3B1aWRsZV9kcml2ZXIgKmRydiwK
-PiA+ICsgICAgICAgICAgaW50IGluZGV4KQo+ID4gK3sKPiA+ICsgcmV0dXJuIENQVV9QTV9DUFVf
-SURMRV9FTlRFUl9QQVJBTShyaXNjdl9sb3dfbGV2ZWxfc3VzcGVuZF9lbnRlciwKPiA+ICsgICAg
-ICAgIGluZGV4LCAwKTsKPiA+ICt9Cj4gPiArCj4gPiArc3RhdGljIHN0cnVjdCBjcHVpZGxlX2Ry
-aXZlciByaXNjdl9pZGxlX2RyaXZlciA9IHsKPiA+ICsgLm5hbWUgICA9ICJyaXNjdl9pZGxlIiwK
-PiA+ICsgLm93bmVyICAgPSBUSElTX01PRFVMRSwKPiA+ICsgLnN0YXRlc1swXSAgPSB7Cj4gPiAr
-ICAuZW50ZXIgICA9IHJpc2N2X2VudGVyX2lkbGUsCj4gPiArICAuZXhpdF9sYXRlbmN5ICA9IDEs
-Cj4gPiArICAudGFyZ2V0X3Jlc2lkZW5jeSA9IDEsCj4gPiArICAubmFtZSAgID0gIldGSSIsCj4g
-PiArICAuZGVzYyAgID0gIlJJU0NWIFdGSSIsCj4gPiArIH0sCj4gPiArIC5zdGF0ZV9jb3VudCA9
-IE1BWF9JRExFX1NUQVRFUywKPiA+ICt9Owo+ID4gKwo+ID4gK3N0YXRpYyBpbnQgX19pbml0IHJp
-c2N2X2NwdWlkbGVfaW5pdCh2b2lkKQo+ID4gK3sKPiA+ICsgcmV0dXJuIGNwdWlkbGVfcmVnaXN0
-ZXIoJnJpc2N2X2lkbGVfZHJpdmVyLCBOVUxMKTsKPiA+ICt9Cj4gPiArCj4gPiArZGV2aWNlX2lu
-aXRjYWxsKHJpc2N2X2NwdWlkbGVfaW5pdCk7CgpSZWdhcmRzLApsaXVzaA==
+On Tue, Sep 15, 2020 at 01:30:11PM -0600, Alex Williamson wrote:
+> On Tue, 15 Sep 2020 13:03:01 -0600
+> Alex Williamson <alex.williamson@redhat.com> wrote:
+> 
+> > On Tue, 15 Sep 2020 08:30:42 +0800
+> > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > 
+> > > vfio_pin_pages() and vfio_group_pin_pages() are used purely to mark dirty
+> > > pages to devices with IOMMU backend as they already have all VM pages
+> > > pinned at VM startup.  
+> > 
+> > This is wrong.  The entire initial basis of mdev devices is for
+> > non-IOMMU backed devices which provide mediation outside of the scope
+> > of the IOMMU.  That mediation includes interpreting device DMA
+> > programming and making use of the vfio_pin_pages() interface to
+> > translate and pin IOVA address to HPA.  Marking pages dirty is a
+> > secondary feature.
+> > 
+> > > when there're multiple devices in the vfio group, the dirty pages
+> > > marked through pin_pages interface by one device is not useful as the
+> > > other devices may access and dirty any VM pages.  
+> > 
+> > I don't know of any cases where there are multiple devices in a group
+> > that would make use of this interface, however, all devices within a
+> > group necessarily share an IOMMU context and any one device dirtying a
+> > page will dirty that page for all devices, so I don't see that this is
+> > a valid statement either.
+> > 
+> > > So added a check such that only singleton IOMMU groups can pin pages
+> > > in vfio_group_pin_pages. for mdevs, there's always only one dev in a
+> > > vfio group.
+> > > This is a fix to the commit below that added a singleton IOMMU group
+> > > check in vfio_pin_pages.  
+> > 
+> > None of the justification above is accurate, please try again.  Thanks,
+> 
+> FWIW, I think this should read something like "Page pinning is used
+> both to translate and pin device mappings for DMA purpose, as well as
+> to indicate to the IOMMU backend to limit the dirty page scope to those
+> pages that have been pinned, in the case of an IOMMU backed device.  To
+> support this, the vfio_pin_pages() interface limits itself to only
+> singleton groups such that the IOMMU backend can consider dirty page
+> scope only at the group level.  Implement the same requirement for the
+> vfio_group_pin_pages() interface."  Thanks,
+> 
+yes, I'm sorry that I didn't express the meaning clearly.
+will resend it using this version.
+
+Thanks
+Yan
+
+
+> 
+> 
+> > > Fixes: 95fc87b44104 (vfio: Selective dirty page tracking if IOMMU backed
+> > > device pins pages)
+> > > 
+> > > Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+> > > ---
+> > >  drivers/vfio/vfio.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> > > index 5e6e0511b5aa..2f0fa272ebf2 100644
+> > > --- a/drivers/vfio/vfio.c
+> > > +++ b/drivers/vfio/vfio.c
+> > > @@ -2053,6 +2053,9 @@ int vfio_group_pin_pages(struct vfio_group *group,
+> > >  	if (!group || !user_iova_pfn || !phys_pfn || !npage)
+> > >  		return -EINVAL;
+> > >  
+> > > +	if (group->dev_counter > 1)
+> > > +		return  -EINVAL;
+> > > +
+> > >  	if (npage > VFIO_PIN_PAGES_MAX_ENTRIES)
+> > >  		return -E2BIG;
+> > >    
+> > 
+> 
