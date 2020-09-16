@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0D326C729
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CA226C72C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgIPSUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727882AbgIPSUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:20:40 -0400
+Received: from ms.lwn.net ([45.79.88.28]:41576 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727869AbgIPSUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 14:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgIPSUG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:20:06 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7481EC061756;
-        Wed, 16 Sep 2020 11:20:00 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id CDB6DC63F3; Wed, 16 Sep 2020 19:19:54 +0100 (BST)
-Date:   Wed, 16 Sep 2020 19:19:54 +0100
-From:   Sean Young <sean@mess.org>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>, Andy Duan <fugang.duan@nxp.com>
-Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
- system
-Message-ID: <20200916181954.GA27005@gofer.mess.org>
-References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
- <20200915093342.GA24139@gofer.mess.org>
- <DB8PR04MB67951DE19DD876721093AED4E6200@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <20200915201947.GA4019@gofer.mess.org>
- <DB8PR04MB679586E9818080C0ED804848E6210@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 889BD2B2;
+        Wed, 16 Sep 2020 18:20:15 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 12:20:14 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Ralph Campbell" <rcampbell@nvidia.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mm/doc: add usage description for migrate_vma_*()
+Message-ID: <20200916122014.48c85e20@lwn.net>
+In-Reply-To: <2077765.OaWJzLOgzI@nvdebian>
+References: <20200909212956.20104-1-rcampbell@nvidia.com>
+        <20200910105657.6007c5ca@lwn.net>
+        <20200910172514.GN87483@ziepe.ca>
+        <2077765.OaWJzLOgzI@nvdebian>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB8PR04MB679586E9818080C0ED804848E6210@DB8PR04MB6795.eurprd04.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joakim,
+On Tue, 15 Sep 2020 11:05:10 +1000
+Alistair Popple <apopple@nvidia.com> wrote:
 
-On Wed, Sep 16, 2020 at 10:22:11AM +0000, Joakim Zhang wrote:
+> > Ralph wrote all the in kernel tests for this API, so I think he is
+> > well positioned to write the documentation :)  
 > 
-> Hi Sean,
+> I have recently read through most of the code to get back up to date with 
+> recent HMM developments and the documentation here didn't conflict with my 
+> understanding based on the code. The description of pgmap_owner is good as 
+> it's usage wasn't immediately clear on the first code read through. So feel 
+> free to add:
 > 
-> Thanks for your hint, I will send a V2 soon according to your suggestions.
-> 
-> We also have a concern, since you are a IR expert, may you can give us answers. With this patch, the first frame once press could not been decoded.
-> AFAIK, IR protocols have not specify how may frames transmitting once press, is there ang criterion to decide this?
-> 
-> Is it possible that single frame transmitting once pressing? Per my understanding, it will transmit more than one frame.
+> Reviewed-by: Alistair Popple <apopple@nvidia.com>
 
-So remotes send IR signals while a button is being pressed down. For the
-remotes I've seen, when pressing a button a short amount of time will repeat
-the IR message at least three times. This is a few times when I've tried
-this, but by no means exhaustive of all remotes or protocols.
-
-I think the question you are trying to answer is, if we miss the first
-message, will we at least have another chance if the message is repeated?
-
-So I think the message will be repeated, but the repeat message is not
-enough for the nec protocol. The nec repeat is a shorter message which
-does not carry any information apart from "last key still pressed":
-
-https://www.sbprojects.net/knowledge/ir/nec.php
+OK good enough, I've applied this.
 
 Thanks,
 
-Sean
+jon
