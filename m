@@ -2,115 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727A926CC70
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BF726CC3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgIPUoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        id S1728436AbgIPUlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbgIPRD1 (ORCPT
+        with ESMTP id S1726768AbgIPREy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:03:27 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79466C035433;
-        Wed, 16 Sep 2020 10:01:01 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c3e00db2f62bd592f04a0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:db2f:62bd:592f:4a0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 153991EC0380;
-        Wed, 16 Sep 2020 19:01:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600275660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=LkvwYUOfny5INeLJrbeKgLZhTjk6a4VOIrstYBGgPu4=;
-        b=Toq2quLW5TpQcsGP5DrMm+RsrcWMdI9imdYdNvge5DpZB18SQP3QeRLa/Pgzi6qUdI5RB5
-        5TAbcTwPjU0bIBRXPQGE+I9R7CbhbgrJscGlti7j70pjvYe86MEVI5cjJnNRTubDd5i60D
-        jae3m9HuKdzGOk24rLnTScrSvac4WWw=
-Date:   Wed, 16 Sep 2020 19:00:52 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     mchehab@kernel.org, tony.luck@intel.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
- {max,dimm}_location
-Message-ID: <20200916170052.GO2643@zn.tnic>
-References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
+        Wed, 16 Sep 2020 13:04:54 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54092C02C287
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:04:07 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id r24so6587600ljm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oUrT5gwD52MsR1wVTFrUE/WFQvwScZ/Kn5UNNx4HIXA=;
+        b=JjID6IlfOKBWQ4lGtoBOpv1ttQeatHSDCajwiJ0azKXbH3YYrtGydW+Gxgc9Piel58
+         YFhSrOBPjpmjpppbHq0U1XIL2d7aM4huBXm1h4WWTeRveWVq+kXGVPdqcbZUiqkY8pop
+         Wd86Q/TDYKOncWV1Y5HGdXg4ibithp/E8iohuJpujgMxmv3d/X2gB4S8O8jMFW/FikAq
+         FYHhoI1jGVqUqtPlRtThH8ISjo9nJmtJbc7R8zCOsqzCnsiOS6x38RzgGJY6PcCS1z4h
+         LRNXYbtrV+wpzUFIBRj6Vj/XisBq07u82l92zuLu4ecwxS7qL7Y5yT/EKsYpV7mrhasE
+         K9sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oUrT5gwD52MsR1wVTFrUE/WFQvwScZ/Kn5UNNx4HIXA=;
+        b=VS89uWuk2IxAtxIiDjvtKsK2rkEU8ULBj/a/bxAREUW5R/RAgKMGewoSxP0XajmqnX
+         0mXi3nSa2xIkiUdkJBrtCFSh7oGKuzBIgx28nDPods/HbyMeo9n47+DCa4Q9wCT8mQSL
+         p++4IxjIaKHzgxdDyfKPLiYGJh8/x6vCpbsTNDEAvxo56gs8rpu0NTaV2Kf/FSFYMBJJ
+         50zdHKqUdh9TFufBE2ZbyNejVVHCbUrRCOyFQSWPxEVLoJfv83sju6mvWA4htnQdO96Q
+         hkHH4bl8RisfjfqqnnLVGZUD/zW38L3xs/Ur5cZSt1IprgOU9S0lSWb9NPBua5sjvWhC
+         flMQ==
+X-Gm-Message-State: AOAM532WRSh8L4AcWuhFgxJpwLaAXVxlwnzptIAmLx0SM91jZ69QbiIW
+        9LnLI8ZAX6BTuXYv+95ZXvsdbxGaqBprOf7V5XI=
+X-Google-Smtp-Source: ABdhPJyHd0Ooh4IK/vHvj2P4gv3lfDfIBiO8RqhPNolmmBPPICV/UOwNTXFmvzSGmOtJPgxjXHBzXE9TuLHprQ7UyvE=
+X-Received: by 2002:a2e:a550:: with SMTP id e16mr9601438ljn.125.1600275845628;
+ Wed, 16 Sep 2020 10:04:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
+References: <1600251387-1863-1-git-send-email-shengjiu.wang@nxp.com> <1600251387-1863-2-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1600251387-1863-2-git-send-email-shengjiu.wang@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 16 Sep 2020 14:03:54 -0300
+Message-ID: <CAOMZO5CZtdxbZdnXrckgYE7bzW-PDo2XOfQobuTf91C1hp462g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: fsl_sai: Add new added registers and new bit definition
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:48:54AM +0800, Xiongfeng Wang wrote:
-> @@ -813,15 +817,21 @@ static ssize_t mci_max_location_show(struct device *dev,
->  				     char *data)
->  {
->  	struct mem_ctl_info *mci = to_mci(dev);
-> -	int i;
-> +	int i, n;
->  	char *p = data;
-> +	unsigned int len = PAGE_SIZE;
->  
->  	for (i = 0; i < mci->n_layers; i++) {
-> -		p += sprintf(p, "%s %d ",
-> +		n = snprintf(p, len, "%s %d ",
->  			     edac_layer_name[mci->layers[i].type],
->  			     mci->layers[i].size - 1);
-> +		p += n;
-> +		len -= n;
+Hi Shengjiu,
 
-What happens if that subtraction causes len to wrap around and become a
-huge positive unsigned integer?
+On Wed, Sep 16, 2020 at 7:23 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+>
+> On i.MX850/i.MX815/i.MX845 platform, the sai IP is upgraded.
 
-> +		if (!len)
-
-Would that test still work?
-
-IOW, I did this to your patch ontop. Note that I've moved the "p"
-pointer incrementation after the length check so that the pointer
-doesn't overflow too:
-
----
-diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
-index bf0e075fb635..fa0551c81e63 100644
---- a/drivers/edac/edac_mc_sysfs.c
-+++ b/drivers/edac/edac_mc_sysfs.c
-@@ -817,19 +817,22 @@ static ssize_t mci_max_location_show(struct device *dev,
- 				     char *data)
- {
- 	struct mem_ctl_info *mci = to_mci(dev);
--	int i, n;
-+	int len = PAGE_SIZE;
- 	char *p = data;
--	unsigned int len = PAGE_SIZE;
-+	int i, n;
- 
- 	for (i = 0; i < mci->n_layers; i++) {
- 		n = snprintf(p, len, "%s %d ",
- 			     edac_layer_name[mci->layers[i].type],
- 			     mci->layers[i].size - 1);
--		p += n;
-+
- 		len -= n;
--		if (!len)
-+		if (len < 0)
- 			goto out;
-+
-+		p += n;
- 	}
-+
- 	p += snprintf(p, len, "\n");
- out:
- 	return p - data;
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Please avoid such internal SoC namings and use i.MX8MQ/i.MX8MN/iMX8MM instead.
