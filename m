@@ -2,159 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB7626BEA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5979A26BEAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgIPH7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:59:15 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:33514 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPH7N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:59:13 -0400
-Received: by mail-wm1-f68.google.com with SMTP id e11so1643363wme.0;
-        Wed, 16 Sep 2020 00:59:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f9vR3Ti7HGJjlVupS35gCwKRPU2ouBmpdxOZm0a6pHg=;
-        b=BmuQBVVSUC2pe7DhJ4tbxn9qCGs3gOOhWAmdEuzUuHsjCRvEBEq6Q9jwU/k25KWu5Z
-         mSRa2w8K5yQ3LQ0ackCIfxI0TzdKrzTqvfGBhl7luuEAnvaF7Jr/YtOTr/7L+m043xku
-         aPgV/0A13JtZ3RsznqMLNoGNCGTSblJJl22ePdGFx4rDd3ySJSr+X7moEfvvVmvREZye
-         Wg7w3ry9w1XNBKWX2SrIZnFW7T8FpHILeOqfoFPUqFYJywOQMAemgqY2JDNFLwqz/iO2
-         jqRdGun0DIuA4F215lMgAPw9P+pzB2EYBoDT1sl/czYOZ5UWWtzJKMov9CWBFs/+EyLT
-         bdcQ==
-X-Gm-Message-State: AOAM532E4cHjIWXC/Y4UdPy8EdJMdmjvf022S1rXiVMkRNONKJYiCkrW
-        UoGzBk8pquPlKmn2mwR5TC4=
-X-Google-Smtp-Source: ABdhPJxvAiLHTzMl+wXAqNoAvB4Yv/BV83AUKMAclJ4hQWRQUQ98jocoP+WC+dpkBraRRwrLGVhbrg==
-X-Received: by 2002:a1c:7c1a:: with SMTP id x26mr3467656wmc.112.1600243151114;
-        Wed, 16 Sep 2020 00:59:11 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.124])
-        by smtp.googlemail.com with ESMTPSA id a81sm4022587wmf.32.2020.09.16.00.59.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 00:59:09 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 09:59:07 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sangbeom Kim <sbkim73@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alsa-devel@alsa-project.org,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [RFT 09/10] arm64: dts: exynos: Correct port of USB-C connector
- node on Exynos5433 TM2
-Message-ID: <20200916075907.GA10270@kozik-lap>
-References: <20200829142501.31478-1-krzk@kernel.org>
- <CGME20200829142602eucas1p1ce457a8fddc6b1fba4bf8c08992fa0b3@eucas1p1.samsung.com>
- <20200829142501.31478-9-krzk@kernel.org>
- <4eb7d0d9-29e2-9162-4521-10e4422f9c71@samsung.com>
- <021495a9-7a00-eb91-ddfa-885cc2fb5462@samsung.com>
+        id S1726496AbgIPIAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:00:00 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:44530 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgIPH7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:59:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=2854; q=dns/txt; s=axis-central1;
+  t=1600243193; x=1631779193;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=DwvnYeml1NZSY3bghbQPce2z0t9CsHFsugNSM39PW9I=;
+  b=fLUof9C3iiarE2CceR84CumBsW1Kv/QYR1T2tpIAu5MtvZZqmDrHvHEK
+   J8jFfRnKoekAjOXHEtlYZXiMZxWrHdyu0kgeZAP2HqZII3/FGhFliimbs
+   38XTw9+PpcnXF4aq0ojrWQ95zB3F/+uxh2bkjBAZ7hSEElKkWsBmPYaa7
+   vzhQ8RSD0d0LBOtgI+mgi1Up/18gZSkAEcWaWASfnSPfYJxcxaYI0FGYZ
+   M9T0Pg53HxtoZIGm359E8CIqDqha++XbeV+pfYG5Zg/zfWDwvKHYSNrOo
+   sgqP64sWwL/iIgC3PY91KWZIzoi4J6C9nVeMkN/bpGGzp3RF1++TqLx5g
+   g==;
+IronPort-SDR: oYhP3a+9occXN2PMZqrwGFo5xF4w8PXuORVMqOFcvcsCy/YtH23kCwNKccqqppkHgtCGWM9oKc
+ tQhmmtfX06z1LND7ynH09RwHjRUCgzCxxvRgAJk+eUe1nHi5XvpFRE7i60N2tnjHlHfGS2SKhs
+ FTHDiGmYvQWsi2wlOgFvBFspyWSYHtgcqdjIa504vkyDc3Pf1ISuD4JnjtEyy+TfD/FEtSrjEj
+ qjsLlnYJJlHZJ2Qsd8dnYm1BnySI4n/T+T2frGwZr3/pvR+4TEbQWn5JriiEWkboeDqRV3SrXh
+ fLs=
+X-IronPort-AV: E=Sophos;i="5.76,432,1592863200"; 
+   d="scan'208";a="12999944"
+From:   Camel Guo <camel.guo@axis.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
+        <dmurphy@ti.com>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Camel Guo <camelg@axis.com>
+Subject: [PATCH v3 1/2] dt-bindings: tlv320adcx140: Add GPIO config and drive config
+Date:   Wed, 16 Sep 2020 09:59:48 +0200
+Message-ID: <20200916075949.28479-1-camel.guo@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <021495a9-7a00-eb91-ddfa-885cc2fb5462@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 01:23:50PM +0200, Andrzej Hajda wrote:
-> 
-> On 31.08.2020 14:50, Marek Szyprowski wrote:
-> > Hi Krzysztof,
-> >
-> > On 29.08.2020 16:25, Krzysztof Kozlowski wrote:
-> >> The USB-C connector bindings require port@0.  Such port was already
-> >> described in DTS but outside of the connector itself.  Put it into
-> >> proper place to fix dtbs_check warnings like:
-> >>
-> >>     arch/arm64/boot/dts/exynos/exynos5433-tm2.dt.yaml: musb_connector: ports: 'port@0' is a required property
-> >>
-> >> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > I'm not sure if topic should be about USB-C, I will call it simply USB
-> > connector node. TM2(e) uses Samsung's 11-pin micro USB 2.0 connector,
-> > which has nothing in common with USB Type-C.
-> >
-> > Anyway, this patch breaks DWC3 (tested in Device mode) driver operation,
-> > so something has to be somehow adjusted or fixed. Added CC Andrzej
-> > Hajda, who actually worked on this.
-> >
-> >> ---
-> >>
-> >> Not tested on HQ. Please kindly review and test.
-> >>
-> >> Best regards,
-> >> Krzysztof
-> >> ---
-> >>    .../boot/dts/exynos/exynos5433-tm2-common.dtsi    | 15 +++++++--------
-> >>    1 file changed, 7 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-> >> index 6246cce2a15e..bab6c1addd5f 100644
-> >> --- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-> >> +++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-> >> @@ -871,6 +871,13 @@
-> >>    					#address-cells = <1>;
-> >>    					#size-cells = <0>;
-> >>    
-> >> +					port@0 {
-> >> +						reg = <0>;
-> >> +						muic_to_usb: endpoint {
-> >> +							remote-endpoint = <&usb_to_muic>;
-> >> +						};
-> >> +					};
-> >> +
-> 
-> 
-> According to not-yet-yaml documentation of dt-bindings (patch 05/10):
-> > -Required nodes:
-> > -- any data bus to the connector should be modeled using the OF graph bindings
-> > -  specified in bindings/graph.txt, unless the bus is between parent node and
-> > -  the connector.
-> 
-> This is 'unless' case - muic is parent of the connector, so the port 0 is not necessary.
-> 
-> 
-> >>    					port@3 {
-> >>    						reg = <3>;
-> >>    						musb_con_to_mhl: endpoint {
-> >> @@ -879,14 +886,6 @@
-> >>    					};
-> >>    				};
-> >>    			};
-> >> -
-> >> -			ports {
-> >> -				port {
-> >> -					muic_to_usb: endpoint {
-> >> -						remote-endpoint = <&usb_to_muic>;
-> >> -					};
-> >> -				};
-> 
-> 
-> And this port belongs to MUIC - it describes connection between USB-HOST 
-> and MUIC, it has nothing to do with the connector, and is necessary.
+From: Camel Guo <camelg@axis.com>
 
-Thanks for checking this. It's really appreciated!
+Add properties for configuring the General Purpose Input Output (GPIO).
+There are 2 settings for GPIO, configuration and the output drive type.
 
-I'll work on v2 later to address the schema warning, hopefully without
-breaking things...
+Signed-off-by: Camel Guo <camelg@axis.com>
+Acked-by: Dan Murphy <dmurphy@ti.com>
+---
+ v3:
+  - Fix typo
+  - Add Acked-By from Dan
 
-Best regards,
-Krzysztof
+ .../bindings/sound/tlv320adcx140.yaml         | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+index f578f17f3e04..2f95ccde4dc3 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
++++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+@@ -134,6 +134,49 @@ patternProperties:
+        4d - Drive weak low and active high
+        5d - Drive Hi-Z and active high
+ 
++  ti,gpio-config:
++    description: |
++       Defines the configuration and output drive for the General Purpose
++       Input and Output pin (GPIO1). Its value is a pair, the first value is for
++       the configuration type and the second value is for the output drive
++       type. The array is defined as <GPIO1_CFG GPIO1_DRV>
++
++       configuration for the GPIO pin can be one of the following:
++       0 - disabled
++       1 - GPIO1 is configured as a general-purpose output (GPO)
++       2 - (default) GPIO1 is configured as a device interrupt output (IRQ)
++       3 - GPIO1 is configured as a secondary ASI output (SDOUT2)
++       4 - GPIO1 is configured as a PDM clock output (PDMCLK)
++       8 - GPIO1 is configured as an input to control when MICBIAS turns on or
++           off (MICBIAS_EN)
++       9 - GPIO1 is configured as a general-purpose input (GPI)
++       10 - GPIO1 is configured as a master clock input (MCLK)
++       11 - GPIO1 is configured as an ASI input for daisy-chain (SDIN)
++       12 - GPIO1 is configured as a PDM data input for channel 1 and channel 2
++            (PDMDIN1)
++       13 - GPIO1 is configured as a PDM data input for channel 3 and channel 4
++            (PDMDIN2)
++       14 - GPIO1 is configured as a PDM data input for channel 5 and channel 6
++            (PDMDIN3)
++       15 - GPIO1 is configured as a PDM data input for channel 7 and channel 8
++            (PDMDIN4)
++
++       output drive type for the GPIO pin can be one of the following:
++       0 - Hi-Z output
++       1 - Drive active low and active high
++       2 - (default) Drive active low and weak high
++       3 - Drive active low and Hi-Z
++       4 - Drive weak low and active high
++       5 - Drive Hi-Z and active high
++
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32-array
++      - minItems: 2
++        maxItems: 2
++        items:
++          maximum: 15
++        default: [2, 2]
++
+ required:
+   - compatible
+   - reg
+@@ -150,6 +193,7 @@ examples:
+         ti,mic-bias-source = <6>;
+         ti,pdm-edge-select = <0 1 0 1>;
+         ti,gpi-config = <4 5 6 7>;
++        ti,gpio-config = <10 2>;
+         ti,gpo-config-1 = <0 0>;
+         ti,gpo-config-2 = <0 0>;
+         reset-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
+-- 
+2.20.1
 
