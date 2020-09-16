@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326BF26CC9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727A926CC70
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbgIPUqu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Sep 2020 16:46:50 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:50718 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgIPRBY (ORCPT
+        id S1728312AbgIPUoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbgIPRD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:01:24 -0400
-Received: by mail-wm1-f67.google.com with SMTP id e17so3488563wme.0;
-        Wed, 16 Sep 2020 10:00:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Bn+sbCWoMoEWXFDYYD/cn5Vwv90GZomveDJ0LJsbSEs=;
-        b=Zj0cf9BQVhIjYadlApua5Wunw/CjOZLtUnKlm1FAhyQcNN1AYZSiPk5OqhBReG3obg
-         S/5vTJ2aUCvlPjGcrt790i1WLeRn8/3XexM9lhLiKIrYmibiQ2jh+L8Mu1b1NzZBxj2v
-         k61JVAaeZ0N2+ZFb8JRAXNLpI6YZZa/9MARAyapCphFYGgpAqp7hd0xlJSXEaOLSiyYh
-         l2DyJz2pmoozRhzl5dvDOB9OMuf1eE9rAhm95aka7OU5wVXlrvggZYDG+KZ54YRnwzEO
-         cRCwVGniHnGm5EJH3eG/FDtSWneDHeY24kLAdkoRh1t37qBN8ryuS4c/zpOpYWlGFlf5
-         50hg==
-X-Gm-Message-State: AOAM5317ALdwfJ23ut3Kp6MvzzzgvOwW9NIdCnq/EuhU1IfK0W6pPn41
-        TOPkQNrvyPY32phQbZ1XfRQ=
-X-Google-Smtp-Source: ABdhPJzST1TbrG+M5Me6cW+XADMMr7T7ClzGrnimh+Kd5fIyONzHa8GzoHhctJNlccK4+AMkN4FJ+A==
-X-Received: by 2002:a7b:c5cf:: with SMTP id n15mr5670927wmk.93.1600275607933;
-        Wed, 16 Sep 2020 10:00:07 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.191])
-        by smtp.googlemail.com with ESMTPSA id s80sm5914786wme.41.2020.09.16.10.00.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 10:00:07 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 19:00:04 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Kukjin Kim <kgene@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tomasz Figa <t.figa@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] ARM: samsung: fix PM debug build with DEBUG_LL but
- !MMU
-Message-ID: <20200916170004.GA19427@kozik-lap>
-References: <20200910154150.3318-1-krzk@kernel.org>
+        Wed, 16 Sep 2020 13:03:27 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79466C035433;
+        Wed, 16 Sep 2020 10:01:01 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c3e00db2f62bd592f04a0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:db2f:62bd:592f:4a0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 153991EC0380;
+        Wed, 16 Sep 2020 19:01:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600275660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=LkvwYUOfny5INeLJrbeKgLZhTjk6a4VOIrstYBGgPu4=;
+        b=Toq2quLW5TpQcsGP5DrMm+RsrcWMdI9imdYdNvge5DpZB18SQP3QeRLa/Pgzi6qUdI5RB5
+        5TAbcTwPjU0bIBRXPQGE+I9R7CbhbgrJscGlti7j70pjvYe86MEVI5cjJnNRTubDd5i60D
+        jae3m9HuKdzGOk24rLnTScrSvac4WWw=
+Date:   Wed, 16 Sep 2020 19:00:52 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc:     mchehab@kernel.org, tony.luck@intel.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
+ {max,dimm}_location
+Message-ID: <20200916170052.GO2643@zn.tnic>
+References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200910154150.3318-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 05:41:49PM +0200, Krzysztof Kozlowski wrote:
-> Selecting CONFIG_SAMSUNG_PM_DEBUG (depending on CONFIG_DEBUG_LL) but
-> without CONFIG_MMU leads to build errors:
-> 
->   arch/arm/plat-samsung/pm-debug.c: In function ‘s3c_pm_uart_base’:
->   arch/arm/plat-samsung/pm-debug.c:57:2: error:
->     implicit declaration of function ‘debug_ll_addr’ [-Werror=implicit-function-declaration]
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 99b2fc2b8b40 ("ARM: SAMSUNG: Use debug_ll_addr() to get UART base address")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Patchset is rebased on v5.9-rc1.
-> ---
->  arch/arm/plat-samsung/Kconfig | 1 +
+On Mon, Sep 14, 2020 at 10:48:54AM +0800, Xiongfeng Wang wrote:
+> @@ -813,15 +817,21 @@ static ssize_t mci_max_location_show(struct device *dev,
+>  				     char *data)
+>  {
+>  	struct mem_ctl_info *mci = to_mci(dev);
+> -	int i;
+> +	int i, n;
+>  	char *p = data;
+> +	unsigned int len = PAGE_SIZE;
+>  
+>  	for (i = 0; i < mci->n_layers; i++) {
+> -		p += sprintf(p, "%s %d ",
+> +		n = snprintf(p, len, "%s %d ",
+>  			     edac_layer_name[mci->layers[i].type],
+>  			     mci->layers[i].size - 1);
+> +		p += n;
+> +		len -= n;
 
-Applied.
+What happens if that subtraction causes len to wrap around and become a
+huge positive unsigned integer?
 
-Best regards,
-Krzysztof
+> +		if (!len)
 
+Would that test still work?
+
+IOW, I did this to your patch ontop. Note that I've moved the "p"
+pointer incrementation after the length check so that the pointer
+doesn't overflow too:
+
+---
+diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
+index bf0e075fb635..fa0551c81e63 100644
+--- a/drivers/edac/edac_mc_sysfs.c
++++ b/drivers/edac/edac_mc_sysfs.c
+@@ -817,19 +817,22 @@ static ssize_t mci_max_location_show(struct device *dev,
+ 				     char *data)
+ {
+ 	struct mem_ctl_info *mci = to_mci(dev);
+-	int i, n;
++	int len = PAGE_SIZE;
+ 	char *p = data;
+-	unsigned int len = PAGE_SIZE;
++	int i, n;
+ 
+ 	for (i = 0; i < mci->n_layers; i++) {
+ 		n = snprintf(p, len, "%s %d ",
+ 			     edac_layer_name[mci->layers[i].type],
+ 			     mci->layers[i].size - 1);
+-		p += n;
++
+ 		len -= n;
+-		if (!len)
++		if (len < 0)
+ 			goto out;
++
++		p += n;
+ 	}
++
+ 	p += snprintf(p, len, "\n");
+ out:
+ 	return p - data;
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
