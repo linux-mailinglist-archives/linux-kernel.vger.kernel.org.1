@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEAD26CBB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E8F26CBB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgIPUdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:33:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728260AbgIPUck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 16:32:40 -0400
-Received: from sx1.lan (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        id S1727050AbgIPUdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728313AbgIPUdG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 16:33:06 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FBFC061756;
+        Wed, 16 Sep 2020 13:33:06 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c3e00fd1c4c3dc2a42d43.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:fd1c:4c3d:c2a4:2d43])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F30302087D;
-        Wed, 16 Sep 2020 20:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600288360;
-        bh=d/8hIoJcpw6lciK0UiA5WK7VZIO5zilcrzUREDvRU6U=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=SWXsUoAijFtauzg8g+pC2BICLnwNeTpOCcymAudpSlGmcFXM3zNZY6PvG0u+cg7EJ
-         3mUIKWbemWlt7sB5nCah3Dvwx64txyXqqddhAAlH5rxfOrPgOEK85IS9qDI3HZukV5
-         K0kBzQBYuOLNoQn9UadFkR0nFzDvT9lowUKalS0g=
-Message-ID: <37c7b88261ad99c038764256a6e4d1ba995d3cdd.camel@kernel.org>
-Subject: Re: [PATCH net-next] netdev: Remove unused funtions
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 16 Sep 2020 13:32:38 -0700
-In-Reply-To: <20200916141814.7376-1-yuehaibing@huawei.com>
-References: <20200916141814.7376-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 569C01EC026F;
+        Wed, 16 Sep 2020 22:33:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600288384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=2boFix6LG8HpStw2voLaFUD6dySJr24aMaETXIdc5Xw=;
+        b=qx3bYOzqESzGZZwSeyTbxuG9orWxe+vudCx+iD/vte8TigDFb3kkht68snonY4sUQw60wa
+        mjkIN1F/6YX+8q/pDH9/sl1R1O0hp8NUXsF21/AlceNthHHHG1hu195fMj7v3IlEwaVKYf
+        aNFBkrjrt3UumRkKHV8VgwL/dQ3LgF4=
+Date:   Wed, 16 Sep 2020 22:32:57 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 03/24] x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
+Message-ID: <20200916203257.GT2643@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-4-jarkko.sakkinen@linux.intel.com>
+ <20200916114448.GI2643@zn.tnic>
+ <20200916203008.GE25541@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200916203008.GE25541@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-16 at 22:18 +0800, YueHaibing wrote:
-> There is no callers in tree, so can remove it.
-> 
+On Wed, Sep 16, 2020 at 11:30:08PM +0300, Jarkko Sakkinen wrote:
+> Zero conflicts and there is no trap_pf.h yet. So this is not yet in
+> Linus' tree?
 
-You have a typo in the patch title:
-funtions -> functions
+tip tree: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/?h=x86/seves
 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+-- 
+Regards/Gruss,
+    Boris.
 
-Please feel free to add my R.B tag after on V2.
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-
-And by the way, you have 3 patches doing similar things, please
-consider submitting them as one series on V2:
-
-$ git format-patch --cover-letter \
-    --subject-prefix="PATCH net-next"  HEAD~3.. -o patches/ 
-
-
-> ---
->  include/linux/netdevice.h | 10 ----------
->  1 file changed, 10 deletions(-)
-> 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 157e0242e9ee..909b1fbb0481 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -4677,16 +4677,6 @@ int netdev_class_create_file_ns(const struct
-> class_attribute *class_attr,
->  void netdev_class_remove_file_ns(const struct class_attribute
-> *class_attr,
->  				 const void *ns);
->  
-> -static inline int netdev_class_create_file(const struct
-> class_attribute *class_attr)
-> -{
-> -	return netdev_class_create_file_ns(class_attr, NULL);
-> -}
-> -
-> -static inline void netdev_class_remove_file(const struct
-> class_attribute *class_attr)
-> -{
-> -	netdev_class_remove_file_ns(class_attr, NULL);
-> -}
-> -
->  extern const struct kobj_ns_type_operations net_ns_type_operations;
->  
->  const char *netdev_drivername(const struct net_device *dev);
-
+https://people.kernel.org/tglx/notes-about-netiquette
