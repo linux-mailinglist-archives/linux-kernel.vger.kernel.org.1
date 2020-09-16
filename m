@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DBD26C58E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA3C26C588
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIPRGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbgIPRAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:00:52 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8073AC0A3BDA;
-        Wed, 16 Sep 2020 09:44:15 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so7600654wrm.9;
-        Wed, 16 Sep 2020 09:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NIAOHzQzFLfA0GPWXwaNH3lHE/0XW9hoINO0h/wj+Js=;
-        b=HaYjRzay6bO8Gb/ySvO0a1JMXZ0yNUMnoS3JJa+Lo/IKV6kXGuGbjj+buu/BHpwpa9
-         bSaoFF1NkIqV7FcEqfUhZv87klmLDuw5FEZdVLy6PGlw0if9csJ+FydEPmWeuQLHpLq1
-         f2YwwJVYIHKGrXHYpoM95X1pgEQBAJfe5oQnaStAza5umWvhwYRGZogc0BX6yN5Ilqwj
-         3pOEmshgvRdJXjNj248td+7lKwiI91JRwaJjlvRY+zE/GD9e1i61511w8ROaGEx0M5WP
-         CZYD9vu5oS3JGhM4hkKVaQtkXhHJiuCy86Fl0twTu+DhzxVi2q/O5np8IZGLZN9mbnrN
-         lsKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NIAOHzQzFLfA0GPWXwaNH3lHE/0XW9hoINO0h/wj+Js=;
-        b=hkQSN8wcZJAqINkm35IqhVDcGTa/onn3XvZcNiN5umk5R5SI/X1zYvR7s0n07toyOx
-         hmdFKx6j5FlMhtmSd3F4SoVXlLh+1N8ocjrR/oEpFKeMwalsMUWFLalAmDaqB2srjTIg
-         cFV3BzQmmTkiBPGqnbXXHgDmUuk0vmd1+sEF9SJvKmANsWDYvP5TJ9/FaCoDG+Sy0ZNl
-         f1errBu1y/UGzVs3XVkrlCck9tjPxNooxqNaRpiY6gUAxR3OU+L4ZQ1RgkIZlzg7NEGZ
-         ewvgEYpyLBQq5TSpfBFDmZmd+OQDfpgRf0+rCaeQCw0b/4G+96drw0NCbZlMc8yAPjU0
-         dSQQ==
-X-Gm-Message-State: AOAM530NRUpDnTRQ4P0vX/bgqLOaQoAldhNR78MQL5d6qkT2sB9JrKZG
-        JaAGJyPdJgNH4SKRQLPJ8FY=
-X-Google-Smtp-Source: ABdhPJysWo0vQD8RNCx9oWslc3MySE+uNCO1jeXyh3UMpdHfudjcl27MfFfbX5e6qhsafFQJHYbJJg==
-X-Received: by 2002:a5d:540a:: with SMTP id g10mr26279976wrv.138.1600274654416;
-        Wed, 16 Sep 2020 09:44:14 -0700 (PDT)
-Received: from lenovo-laptop (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id x24sm33199670wrd.53.2020.09.16.09.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 09:44:13 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Wed, 16 Sep 2020 17:44:11 +0100
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/3] scsi: mpt: Refactor and port to dma_* interface
-Message-ID: <20200916164411.hkpmqigdhgdb66dl@lenovo-laptop>
-References: <20200903152832.484908-1-alex.dewar90@gmail.com>
- <yq1ft7ixyg8.fsf@ca-mkp.ca.oracle.com>
+        id S1726755AbgIPRD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:03:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbgIPQ5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:57:34 -0400
+Received: from localhost (odyssey.drury.edu [64.22.249.253])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 122B620731;
+        Wed, 16 Sep 2020 16:56:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600275366;
+        bh=JZn7jl83lNE5bzNJDZn1/gldMHkDPgWZGzZpS962Up8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=xODPVpEu4xL+5KyHse9gke9V6IKkl5QzO5r0OKUYNHwVYmEEo/Q3UQGDjcPOk58pB
+         jefneoej000eFtsElcudZcsrXpdmlV7mtZSe1Olbg1b99MrPaL8wsu9h+JVP1Ej1gQ
+         W1K1gIsk/JSXsPWv9hG1/NTjt6ackZlqc+qKRCMs=
+Date:   Wed, 16 Sep 2020 11:56:05 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jiang Biao <benbjiang@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Bin Lai <robinlai@tencent.com>
+Subject: Re: [PATCH] driver/pci: reduce the single block time in
+ pci_read_config
+Message-ID: <20200916165605.GA1554766@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yq1ft7ixyg8.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <CAPJCdBngxwYdc-CEfSabTAdAXCdnG424Qa2BS47+xcV2wDvJCA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:12:06PM -0400, Martin K. Petersen wrote:
-> 
-> Alex,
-> 
-> > Any feedback would be greatly appreciated!
-> 
-> Have you tested your changes?
+On Sun, Sep 13, 2020 at 12:27:09PM +0800, Jiang Biao wrote:
+> On Thu, 10 Sep 2020 at 09:59, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Thu, Sep 10, 2020 at 09:54:02AM +0800, Jiang Biao wrote:
+> > > On Thu, 10 Sep 2020 at 09:25, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > On Mon, Aug 24, 2020 at 01:20:25PM +0800, Jiang Biao wrote:
+> > > > > From: Jiang Biao <benbjiang@tencent.com>
+> > > > >
+> > > > > pci_read_config() could block several ms in kernel space, mainly
+> > > > > caused by the while loop to call pci_user_read_config_dword().
+> > > > > Singel pci_user_read_config_dword() loop could consume 130us+,
+> > > > >               |    pci_user_read_config_dword() {
+> > > > >               |      _raw_spin_lock_irq() {
+> > > > > ! 136.698 us  |        native_queued_spin_lock_slowpath();
+> > > > > ! 137.582 us  |      }
+> > > > >               |      pci_read() {
+> > > > >               |        raw_pci_read() {
+> > > > >               |          pci_conf1_read() {
+> > > > >   0.230 us    |            _raw_spin_lock_irqsave();
+> > > > >   0.035 us    |            _raw_spin_unlock_irqrestore();
+> > > > >   8.476 us    |          }
+> > > > >   8.790 us    |        }
+> > > > >   9.091 us    |      }
+> > > > > ! 147.263 us  |    }
+> > > > > and dozens of the loop could consume ms+.
+> > > > >
+> > > > > If we execute some lspci commands concurrently, ms+ scheduling
+> > > > > latency could be detected.
+> > > > >
+> > > > > Add scheduling chance in the loop to improve the latency.
+> > > >
+> > > > Thanks for the patch, this makes a lot of sense.
+> > > >
+> > > > Shouldn't we do the same in pci_write_config()?
+> > >
+> > > Yes, IMHO, that could be helpful too.
+> >
+> > If it's feasible, it would be nice to actually verify that it makes a
+> > difference.  I know config writes should be faster than reads, but
+> > they're certainly not as fast as a CPU can pump out data, so there
+> > must be *some* mechanism that slows the CPU down.
+> >
+> We failed to build a test case to produce the latency by setpci command,
+> AFAIU, setpci could be much less frequently realistically used than lspci.
+> So, the latency from pci_write_config() path could not be verified for now,
+> could we apply this patch alone to erase the verified latency introduced
+> by pci_read_config() path? :)
 
-No, as I'm afraid I don't have the hardware.
+Thanks for trying!  I'll apply the patch as-is.  I'd like to include a
+note in the commit log about the user-visible effect of this.  I
+looked through recent similar commits:
 
-For patch #1 though, I'm not sure that's such an issue, as the
-refactoring was really simple, even though the diffstat has ended up
-being quite large! I probably should have submitted that one
-individually without the RFC tag. Absolutely loads of functions have a
-sleepFlag parameter, but I only found one case where this was actually
-set to NO_SLEEP. Otherwise, if you follow the call stack it always ends
-up being a sleeping case. I verified this by changing functions one at a
-time and compile testing. Would you like me to resend this separately? I
-feel that this should probably be merged in any case before we discuss
-any of the other changes.
+  928da37a229f ("RDMA/umem: Add a schedule point in ib_umem_get()")
+  47aaabdedf36 ("fanotify: Avoid softlockups when reading many events")
+  9f47eb5461aa ("fs/btrfs: Add cond_resched() for try_release_extent_mapping() stalls")
+  0a3b3c253a1e ("mm/mmap.c: Add cond_resched() for exit_mmap() CPU stalls")
+  b7e3debdd040 ("mm/memory_hotplug.c: fix false softlockup during pfn range removal")
+  d35bd764e689 ("dm writecache: add cond_resched to loop in persistent_memory_claim()")
+  da97f2d56bbd ("mm: call cond_resched() from deferred_init_memmap()")
+  ab8b65be1831 ("KVM: PPC: Book3S: Fix some RCU-list locks")
+  48c963e31bc6 ("KVM: arm/arm64: Release kvm->mmu_lock in loop to prevent starvation")
+  e84fe99b68ce ("mm/page_alloc: fix watchdog soft lockups during set_zone_contiguous()")
+  4005f5c3c9d0 ("wireguard: send/receive: cond_resched() when processing worker ringbuffers")
+  3fd44c86711f ("io_uring: use cond_resched() in io_ring_ctx_wait_and_kill()")
+  7979457b1d3a ("net: bridge: vlan: Add a schedule point during VLAN processing")
+  2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
+  1edaa447d958 ("dm writecache: add cond_resched to avoid CPU hangs")
+  ce9a4186f9ac ("macvlan: add cond_resched() during multicast processing")
+  7be1b9b8e9d1 ("drm/mm: Break long searches in fragmented address spaces")
+  bb699a793110 ("drm/i915/gem: Break up long lists of object reclaim")
+  9424ef56e13a ("ext4: add cond_resched() to __ext4_find_entry()")
 
-If someone who does have the hardware would like to test it though, that'd be
-great :-)
+and many of them mention softlockups, RCU CPU stall warnings, or
+watchdogs triggering.  Are you seeing one of those, or are you
+measuring latency some other way?
 
-Best,
-Alex
-
-> 
-> -- 
-> Martin K. Petersen	Oracle Linux Engineering
+Bjorn
