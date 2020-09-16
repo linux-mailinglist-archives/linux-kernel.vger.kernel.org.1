@@ -2,171 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E032D26CE54
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB2F26CE56
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgIPWIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
+        id S1726239AbgIPWIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgIPWH6 (ORCPT
+        with ESMTP id S1726189AbgIPWH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 18:07:58 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C89C0698CC;
-        Wed, 16 Sep 2020 14:50:23 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id r9so10054117ioa.2;
-        Wed, 16 Sep 2020 14:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9DHi2ho0KH+wBCRJM1DdFlQ9qEjTcKukPUUIn5wAvDI=;
-        b=htt3avZzKb3wDFJrlO7nW1PKF5/0ogQcZFk/WRuB9jdLRxWHo/vy0dLwunk18z0aqn
-         eXXnQbFUAy7VaYV+A2lKnHa9hzrohBakycpfI63LDxzIs8JeD8pEjGaU+xmUf1+/xRi1
-         8cc1Ge9TC36xj4D4UdhShvdiRjGT0hRKMZQGhdurknx6870qwHhhXj++sz86ibO5tXYj
-         6unm/zqd8M5Tw+LZfW6P73FzSRowq6fP5LFeN2Qusyl03BHEVAnSkT6QjwK0uJa5BVsG
-         8hRigZ7rwgPqxVOwlIO5Z5bmKJguw4pDxFIy//9s8BLyQ5pn/nVK4YGl/QUsNQkVXWTI
-         Qktg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9DHi2ho0KH+wBCRJM1DdFlQ9qEjTcKukPUUIn5wAvDI=;
-        b=k7RE4IX5gForoeW4plW07fsjiCTs6R+ZqAojefjE0bazpRXyVyUVslP4MVDorhjC2A
-         kNEXrp8oMYHZoxT/c1Aj2ly6um869XupghdVY4gtUMl7FcoBzApIQlLg5TzKoqbJnSgc
-         KNOh4eEu2KHamVStWw5UNegEp8MvSduqmk3pEdhpQe4nbGCNMUUx0KlQA4LNIQJAvYVm
-         2q7tKdtJR4Y+JJUVog9BoNk9GM+V3RNbHF3cdaSZ3FwUIXlQ85sGcJ0aOWUU1AynA14R
-         SIkwiuD5OOoEhZ8eQhym0uGQH1UZCfFECsYTokeqyM1cXJBE73rc+Dd7GRILq2qRCfFE
-         1RTA==
-X-Gm-Message-State: AOAM5323NJQ8M9p01N5tQX6KOPsYoHYwTneta61nZ8iV2gA4RCU8dOYw
-        rCiyymuRkK40MW3RxhXe098Rox4lFXu2qqflk/I=
-X-Google-Smtp-Source: ABdhPJzRyZ8l88j/n9kP1d9xMPyJ+mETN/OqQSnYFVABj7UBsbzXNO5CFm0s7NjDHjMNiSM2H+aGPp2knGxx0vyO9mI=
-X-Received: by 2002:a5e:8f4c:: with SMTP id x12mr21471194iop.38.1600293022783;
- Wed, 16 Sep 2020 14:50:22 -0700 (PDT)
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B13C0698CE;
+        Wed, 16 Sep 2020 14:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=WXS+ff+b5bMlOip+NKUbf0Z9b6R6EpWN0difBpMRFZs=; b=P50r4tzkwmXp8h4nAvjTnJw/v7
+        kPbHSxNAst66A4F4n8LTtKjaowXthHcYZkR+2ZXVtua9qRpZPYUjRbYoEQ32DBDizBkJgDy3wEeNm
+        iBdTZAzAJGvbtdHpbLUE3woMTHE9p++LmeCvs9WGlGEBemg+VPLVUeKgriDTarI38RhVSGxw5dKEs
+        YAelkJXRv6tLNIHHPnxwDtTRSI2ypj6uuyecMw8AnHF7AYN5OkbA8/UPAQCFB76XEqk6zxqkeVXjh
+        fPhwCG6Pw1VIDt8npyntlIQKLPgozok5L46mzxqbzl+kjqXKXGfn0G+XmVJMsjM+cSICMv2EQMTxu
+        edQEL8bw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIfLy-0005SU-Te; Wed, 16 Sep 2020 21:52:39 +0000
+Subject: Re: [PATCH v6 4/4] bus: mhi: Add userspace client interface driver
+To:     Hemant Kumar <hemantk@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org
+References: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
+ <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <73ab1853-a07d-599f-9d4c-c346376aa6fc@infradead.org>
+Date:   Wed, 16 Sep 2020 14:52:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200916183411.64756-1-david@redhat.com> <20200916183411.64756-3-david@redhat.com>
-In-Reply-To: <20200916183411.64756-3-david@redhat.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 16 Sep 2020 14:50:11 -0700
-Message-ID: <CAKgT0UfaERUDFhd=qCRRrQo4GW6B+9EqOu-B6g-K8nLGXAbc4g@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/4] mm/page_alloc: place pages to tail in __putback_isolated_page()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:34 AM David Hildenbrand <david@redhat.com> wrote:
->
-> __putback_isolated_page() already documents that pages will be placed to
-> the tail of the freelist - this is, however, not the case for
-> "order >= MAX_ORDER - 2" (see buddy_merge_likely()) - which should be
-> the case for all existing users.
->
-> This change affects two users:
-> - free page reporting
-> - page isolation, when undoing the isolation.
->
-> This behavior is desireable for pages that haven't really been touched
+On 9/16/20 12:56 PM, Hemant Kumar wrote:
+> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
+> index 6a217ff..8aebe8b 100644
+> --- a/drivers/bus/mhi/Kconfig
+> +++ b/drivers/bus/mhi/Kconfig
+> @@ -20,3 +20,16 @@ config MHI_BUS_DEBUG
+>  	 Enable debugfs support for use with the MHI transport. Allows
+>  	 reading and/or modifying some values within the MHI controller
+>  	 for debug and test purposes.
 
-I think "desirable" is misspelled here.
+Hi,
+Please indent Kconfig keywords with one tab only, and indent
+help text with one tab + 2 spaces, as documented in
+Documentation/process/coding-style.rst:
 
-> lately, so exactly the two users that don't actually read/write page
-> content, but rather move untouched pages.
+"""
+For all of the Kconfig* configuration files throughout the source tree,
+the indentation is somewhat different.  Lines under a ``config`` definition
+are indented with one tab, while help text is indented an additional two
+spaces.
+"""
 
-So in reality we were already dealing with this for page reporting,
-but not in the most direct way. If I recall we were adding the pages
-to the head of the list and then when we would go back to pull more
-pages we were doing list rotation in the report function so they were
-technically being added to the head, but usually would end up back on
-the tail anyway. If anything the benefit for page reporting is that it
-should be more direct this way as we will only have to rescan the
-pages now when we have consumed all of the reported ones on the list.
-
-> The new behavior is especially desirable for memory onlining, where we
-> allow allocation of newly onlined pages via undo_isolate_page_range()
-> in online_pages(). Right now, we always place them to the head of the
-> free list, resulting in undesireable behavior: Assume we add
-> individual memory chunks via add_memory() and online them right away to
-> the NORMAL zone. We create a dependency chain of unmovable allocations
-> e.g., via the memmap. The memmap of the next chunk will be placed onto
-> previous chunks - if the last block cannot get offlined+removed, all
-> dependent ones cannot get offlined+removed. While this can already be
-> observed with individual DIMMs, it's more of an issue for virtio-mem
-> (and I suspect also ppc DLPAR).
->
-> Note: If we observe a degradation due to the changed page isolation
-> behavior (which I doubt), we can always make this configurable by the
-> instance triggering undo of isolation (e.g., alloc_contig_range(),
-> memory onlining, memory offlining).
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Scott Cheloha <cheloha@linux.ibm.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/page_alloc.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 91cefb8157dd..bba9a0f60c70 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -89,6 +89,12 @@ typedef int __bitwise fop_t;
->   */
->  #define FOP_SKIP_REPORT_NOTIFY ((__force fop_t)BIT(0))
->
-> +/*
-> + * Place the freed page to the tail of the freelist after buddy merging. Will
-> + * get ignored with page shuffling enabled.
-> + */
-> +#define FOP_TO_TAIL            ((__force fop_t)BIT(1))
 > +
->  /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
->  static DEFINE_MUTEX(pcp_batch_high_lock);
->  #define MIN_PERCPU_PAGELIST_FRACTION   (8)
-> @@ -1040,6 +1046,8 @@ static inline void __free_one_page(struct page *page, unsigned long pfn,
->
->         if (is_shuffle_order(order))
->                 to_tail = shuffle_pick_tail();
-> +       else if (fop_flags & FOP_TO_TAIL)
-> +               to_tail = true;
->         else
->                 to_tail = buddy_merge_likely(pfn, buddy_pfn, page, order);
->
-> @@ -3289,7 +3297,7 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
->
->         /* Return isolated page to tail of freelist. */
->         __free_one_page(page, page_to_pfn(page), zone, order, mt,
-> -                       FOP_SKIP_REPORT_NOTIFY);
-> +                       FOP_SKIP_REPORT_NOTIFY | FOP_TO_TAIL);
->  }
->
->  /*
+> +config MHI_UCI
+> +       tristate "MHI UCI"
+> +       depends on MHI_BUS
+> +       help
+> +	 MHI based userspace client interface driver is used for transferring
+> +	 raw data between host and device using standard file operations from
+> +	 userspace. Open, read, write, and close operations are supported
+> +	 by this driver. Please check mhi_uci_match_table for all supported
+> +	 channels that are exposed to userspace.
+> +
+> +	 To compile this driver as a module, choose M here: the module will be
+> +	 called mhi_uci.
 
-The code looks good to me.
+thanks.
+-- 
+~Randy
 
-Reviewed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
