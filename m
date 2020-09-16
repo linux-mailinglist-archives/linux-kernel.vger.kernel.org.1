@@ -2,134 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4434C26CCCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E28026CD5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgIPUtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
+        id S1726509AbgIPU6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726481AbgIPQ4w (ORCPT
+        with ESMTP id S1726537AbgIPQdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:56:52 -0400
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (mail-cys01nam02on0603.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe45::603])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB572C0A88AC
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:00:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SkOcGAk6VGtv/HDQnpb2MgMFF52iCw6XZwsnN9QzkaQNztevGZeCjkjtOgRoKLHjzPm/W1qbtPo5MzdhSH5D1eE7EHb8JxCjEJMmmmU1uUZu+meMrHc3Qs5nV4NTIkiUk8NhIh6Gm/J7i16XZR6M8CCcxDZDhsoa9kKtGKhfeW3d8zIj8O/ZRxbF3lQiEHj3md+AWl+Xo/wni7rRiqAIOMhcZjAG9efQ56y5mklqPxgRXuVxMqhOVCOBiSCX8KRSCgQn2ICRyN2TtngizHgOW7eo4cwsKZ3znLISPXyoSt8H6DBsovYPL4kxjgf2S2iPLEO9ylbBD1PG/xVRfbQKlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CtsfjhDT8+PY9GJlwx24BcaBzC9mY7YUEj4kwlDvPmg=;
- b=MIBniRYxoK8ldJdLXC3D43JmPVPau+2bMgAizJmYBuT/fB1r9QvmUbvBQwYFi2K45uXRNLR6Zfrb9IqqizBahiwM7XdprZWySijn24IgDeM/gFyASxLWeuLoVnsz65P/oi7MHdGF8JugKpBizdh+aiBO3xeQeSno3sEdC1tJ1OUQCqZUSmd+WlPv2yJ4ogJBjlyqDakKQdNd51sgSZd457jxgJEeBgSwSqaXegtJVzZZ+rqNOXVG8knUXwTXf1QL8jmrz0hQqnQa9oULyFH48o81ulmFuPGB2l1gz6LfGWQnWNPU0xEXX8g19Qqz9ZUOQFBvpwSLVbMfirxGnKTCZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CtsfjhDT8+PY9GJlwx24BcaBzC9mY7YUEj4kwlDvPmg=;
- b=NGHKk4uwiKolDkE35Uj2bQpDeT5gqdNS2mscupK7VgthANkBP2Qo/jqgFyPuaV3eDqo4/CulQgHrSCneJYb13kdVjVtKf+istv9FePI6sYs3x/edk7qTGV7o7S8dSggyD8Z++gEOkweKihffhZDJe8APdhj1X4j8THnsJ0BFB9E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
- DM6PR12MB2892.namprd12.prod.outlook.com (2603:10b6:5:182::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3391.11; Wed, 16 Sep 2020 11:15:33 +0000
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
- 11:15:33 +0000
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     mlevitsk@redhat.com, joro@8bytes.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: [PATCH v2] iommu/amd: Restore IRTE.RemapEn bit for amd_iommu_activate_guest_mode
-Date:   Wed, 16 Sep 2020 11:17:20 +0000
-Message-Id: <20200916111720.43913-1-suravee.suthikulpanit@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: DM5PR12CA0009.namprd12.prod.outlook.com (2603:10b6:4:1::19)
- To DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18)
+        Wed, 16 Sep 2020 12:33:14 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31229C0698D0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:33:02 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kIVgF-0001jm-BU; Wed, 16 Sep 2020 13:32:55 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:8d0c:cfd0:3f99:a545] (unknown [IPv6:2a03:f580:87bc:d400:8d0c:cfd0:3f99:a545])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 689565619AB;
+        Wed, 16 Sep 2020 11:32:53 +0000 (UTC)
+Subject: Re: canfdtest on flexcan loopback
+To:     Vladimir Oltean <olteanv@gmail.com>, wg@grandegger.com,
+        pankaj.bansal@nxp.com, pankaj.bansal@oss.nxp.com,
+        linux-can@vger.kernel.org
+Cc:     qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
+        vladimir.oltean@nxp.com
+References: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
+ <20200916110154.hp4up6yhyokduvf2@skbuf>
+ <20200916110448.dsla6vjzy4fvdr22@skbuf>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <12688d2b-a198-ef5e-dd8f-64957df36574@pengutronix.de>
+Date:   Wed, 16 Sep 2020 13:32:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by DM5PR12CA0009.namprd12.prod.outlook.com (2603:10b6:4:1::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend Transport; Wed, 16 Sep 2020 11:15:32 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [165.204.78.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: eae1a376-068a-4734-5563-08d85a31d41f
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2892:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB289251A964EA01E7915BEDB7F3210@DM6PR12MB2892.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:765;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YsmHyvQJXkuj10TLRA433RpH8V1o/8ykrH74UY9FJ2qU9eLqzKOPkONXzdQ95syCQAdErPgYEUb6Er7PXYZLOT4qaELzK9RIzfhtgReco/yMIYcuJkjGXaTHrHTl1ypd/CYsAMN/Pir/IZY0YoKUVUQSBbXKuxV/3Y8LJj5JXlnTTPkkBXesRgeGuq2a1uo8TeLzruLfsTesi3+NoyMdKrglh0dq2GqJ2Y7WIBhq/1QlFiMfqasjL5ongjX9A+8+Bp404viD0aKGKjU2Y6tLzDy5wTjCGS9Vw7yoBkD4n1cosk/nkJgB+2pxl8OVeGw6zC7IOkxcC+F2crfExO1YUSdkJ3cdzLL2mP14J3pDHtHnus3zpmAqE/vDhz9guYG+
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(366004)(186003)(36756003)(66476007)(66556008)(86362001)(7696005)(52116002)(66946007)(5660300002)(2906002)(8676002)(1076003)(478600001)(83380400001)(16526019)(26005)(6666004)(2616005)(956004)(44832011)(316002)(54906003)(8936002)(6486002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: KiXGM8DyBllXuqAyaaSzEN0CfVXK9+ClBwKTAruh/RIoRv3Eed7RXsTLkBWIV5+TygtbiNqRAXWVMCMeEuZC5Ao8I1e7bif9IO3zoKHhPcvDHmsQGINhuzwrnEEJaFwuzGMi/mM5DcV3werfaV5Sah831vrjFou58PZ8GroiP3Yq49n48oX5vcfZ4L+YsmHylAianFnzOlsOrWfjtPlz9TKTIX8sL6RjqffMWLmNEMeysK1+Tc4Y+Tzq3WMmeMTftSS/1q5OdkKub5I62Zjp1BYpjGFVvsHMFfEFrd0S+1nlytJal2IxUYYaEl9ZiWOvARuxEkF4u0B0S4tHC/vvC3Gt1vP254F5XjyUsvZ+Dfez5OVtLbIJTYM1abEXI8XI2B9/s03WPKQHYxijr8K7OLNVISxJzRRjVS+iBSUcmluM/DvrEwIZ9OFZ6EA164I2yhvw/UfpzRLfdABrIDIV0d/F2EbHkU2tz+3QVx01/5nR1taD9DK4NviFVUlLJM/sxL0VCM5ROprxVLnEn2dehFb0nQQiEnlcDn4utvikJeu42CsuNDACzl2ckhJX28c75losM82fq57j/srA2XiiSXYGq7vZ6FQs/4ynuOrnTqiefQOI1fLQU7RuUWJHwIIJpnN9AhVNo5+CfPRCfro0qg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eae1a376-068a-4734-5563-08d85a31d41f
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 11:15:33.3634
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V2GkHXbPcvj9XKucKbG8y5ZEKacF1hZzrOMKcTHmTWGEtiBaDmbBgebssqyFx6blbvfqhsZVIEj82TY7C22yCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2892
+In-Reply-To: <20200916110448.dsla6vjzy4fvdr22@skbuf>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="igqdiIXYfmKX4NNZjNqv9zMrIBMFIpHqB"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e52d58d54a32 ("iommu/amd: Use cmpxchg_double() when updating
-128-bit IRTE") removed an assumption that modify_irte_ga always set
-the valid bit, which requires the callers to set the appropriate value
-for the struct irte_ga.valid bit before calling the function.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--igqdiIXYfmKX4NNZjNqv9zMrIBMFIpHqB
+Content-Type: multipart/mixed; boundary="iKOlyW8hBlSIMkTfr47eBefZd00fFFcz2";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vladimir Oltean <olteanv@gmail.com>, wg@grandegger.com,
+ pankaj.bansal@nxp.com, pankaj.bansal@oss.nxp.com, linux-can@vger.kernel.org
+Cc: qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
+ vladimir.oltean@nxp.com
+Message-ID: <12688d2b-a198-ef5e-dd8f-64957df36574@pengutronix.de>
+Subject: Re: canfdtest on flexcan loopback
+References: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
+ <20200916110154.hp4up6yhyokduvf2@skbuf>
+ <20200916110448.dsla6vjzy4fvdr22@skbuf>
+In-Reply-To: <20200916110448.dsla6vjzy4fvdr22@skbuf>
 
-Similar to the commit 26e495f34107 ("iommu/amd: Restore IRTE.RemapEn
-bit after programming IRTE"), which is for the function
-amd_iommu_deactivate_guest_mode().
+--iKOlyW8hBlSIMkTfr47eBefZd00fFFcz2
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-The same change is also needed for the amd_iommu_activate_guest_mode().
-Otherwise, this could trigger IO_PAGE_FAULT for the VFIO based VMs with
-AVIC enabled.
+On 9/16/20 1:04 PM, Vladimir Oltean wrote:
+> [ resending, forgot to copy Wolfgang ]
+>=20
+> On Wed 9/2/2020 10:09 AM, Wolfgang Grandegger wrote:
+>> canfdtest normally runs on the DUT *and* a the host. The DUT receives
+>> the messages from the host, increments the frame data bytes and then
+>> sends them back to the host. With "loopback" mode, the data bytes are
+>> not incremented and that's what you see above.
+>>
+>> Wolfgang
+>=20
+> Wolfgang is of course right, but we're nonetheless investigating what
+> seems to be a real problem, and what Pankaj had seen was a red herring.=
 
-Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
-Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
-Cc: Joao Martins <joao.m.martins@oracle.com>
-Fixes: e52d58d54a321 ("iommu/amd: Use cmpxchg_double() when updating 128-bit IRTE")
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
----
- drivers/iommu/amd/iommu.c | 4 ++++
- 1 file changed, 4 insertions(+)
+>=20
+> So currently what I suspect is going on, when I am running canfdtest
+> between 2 LS1028A-RDB boards, is that the DUT is reordering frames on
+> TX.
+>=20
+> See, for example, the screenshot below:
+> https://drive.google.com/file/d/1rOeW3aXh3kPh1CJ39lCccRfjFz5JN5I6/view?=
+usp=3Dsharing
+>=20
+> I have added trace points to the end of the flexcan_start_xmit function=
+,
+> which print the entire skb, and the frames appear to be written to the
+> TX message buffer in the correct order. They are seen, however, in the
+> incorrect order on the wire.
 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index e938677af8bc..db4fb840c59c 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -3900,14 +3900,18 @@ int amd_iommu_activate_guest_mode(void *data)
- {
- 	struct amd_ir_data *ir_data = (struct amd_ir_data *)data;
- 	struct irte_ga *entry = (struct irte_ga *) ir_data->entry;
-+	u64 valid;
- 
- 	if (!AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) ||
- 	    !entry || entry->lo.fields_vapic.guest_mode)
- 		return 0;
- 
-+	valid = entry->lo.fields_vapic.valid;
-+
- 	entry->lo.val = 0;
- 	entry->hi.val = 0;
- 
-+	entry->lo.fields_vapic.valid       = valid;
- 	entry->lo.fields_vapic.guest_mode  = 1;
- 	entry->lo.fields_vapic.ga_log_intr = 1;
- 	entry->hi.fields.ga_root_ptr       = ir_data->ga_root_ptr;
--- 
-2.17.1
+Which driver are you using? The mainline driver only uses one TX buffer.
 
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--iKOlyW8hBlSIMkTfr47eBefZd00fFFcz2--
+
+--igqdiIXYfmKX4NNZjNqv9zMrIBMFIpHqB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9h9+EACgkQqclaivrt
+76kybwf/YjpkSjtKQRvYUEAMCqfUxvT5a1moY7GGVIclYAxjW7cY2IPoDxSgK5ZH
+YAcD2hFhjTJ2qzp5Ffa+9fKHhLGUe9OpQXSjcPTdCeGAt8UnYC5gAkZp+mcie2si
+z3y/GhPk4Hp4ENeJV5T3tt13DwCoKL+fE1yxcbn4X3+LhkUbG1oVE/g44yF9hPBY
+B8BrUQg5foTfWapdhlEia3emGf8IRs2SM+fG6TO23VsJRaayvU7emVFGUk0B8BF9
+5aFfuDxwtjDeersqSOtMzfHIMNkc60LnqIJj9hMd40E9QFO0ac2ox7msx5sj5j9d
+MhPOB1qeTbNLNCw7YwGIyYAmDP23TQ==
+=rJuP
+-----END PGP SIGNATURE-----
+
+--igqdiIXYfmKX4NNZjNqv9zMrIBMFIpHqB--
