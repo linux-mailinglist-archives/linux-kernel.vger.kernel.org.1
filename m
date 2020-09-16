@@ -2,79 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8B326C4CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFDE26C4D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgIPQA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 12:00:56 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:42186 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726305AbgIPP7p (ORCPT
+        id S1726446AbgIPQCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 12:02:49 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44506 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726433AbgIPQA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:59:45 -0400
-X-UUID: d375b2d7ef3b4924870ec3d7c51a879a-20200916
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=W4f0Gv7pUKvtQ+PgBn2oCT/tUuwNvMVT9QsIDFwdjg0=;
-        b=tREe3azI1u0MEgbt5H0hr3f29KZke4ZBJZj5JaGT+v3kP/QolKolAIg7L442D2z4O5/TEm5vMiIENcUohNUmNxaQtWj5mua/rr7vMjf074+uKEwuyYMsGmkICbqnosYdvebnaz/s6JiaLkh8ewzIM4osRYKpNY+XdBgfWqAAxHg=;
-X-UUID: d375b2d7ef3b4924870ec3d7c51a879a-20200916
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1425565730; Wed, 16 Sep 2020 19:39:15 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Sep 2020 19:39:12 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Sep 2020 19:39:11 +0800
-Message-ID: <1600256353.7042.13.camel@mtkswgap22>
-Subject: Re: [PATCH v7] cpufreq: mediatek-hw: Add support for Mediatek
- cpufreq HW driver
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rob Herring" <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>
-Date:   Wed, 16 Sep 2020 19:39:13 +0800
-In-Reply-To: <20200910053406.t37rgioykzvk3oem@vireshk-i7>
-References: <1599712262-8819-1-git-send-email-hector.yuan@mediatek.com>
-         <20200910050341.pgyieq3q7ijitosn@vireshk-i7>
-         <1599715851.7042.9.camel@mtkswgap22>
-         <20200910053406.t37rgioykzvk3oem@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 16 Sep 2020 12:00:26 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCA4Sx019540;
+        Wed, 16 Sep 2020 07:10:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600258204;
+        bh=eYVjrXG7n0dNY1scg668IOD4Bg6anWGa0/3eL4ICiuA=;
+        h=From:To:CC:Subject:Date;
+        b=p4Oey2wg+4Z3q3vC+mXmJl+lXqYEeuIAOduqwRFU9SXwkHGVjAa525NOhVjyV90+3
+         3T/Chw/0FoZh3LIVGFDF6QrOrKajRBwH4OKwTypo2+N3HPlG1qso1RPeVqMpVr75pi
+         lEdbmiOsGf64kOyrbbDdxbiU+87AxqwT2RxwR0U4=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCA4xd097182;
+        Wed, 16 Sep 2020 07:10:04 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
+ Sep 2020 07:10:04 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 16 Sep 2020 07:10:04 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCA3c3089115;
+        Wed, 16 Sep 2020 07:10:03 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        <dmaengine@vger.kernel.org>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH v2] dmaengine: ti: k3-udma-glue: fix channel enable functions
+Date:   Wed, 16 Sep 2020 15:09:55 +0300
+Message-ID: <20200916120955.7963-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: D31B7E4528DDBB4A6FAA5C2B85C8B1EDF1AF3454225063A0AD4497AD9E8527D22000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFJvYiBzaXI6DQoNClNvcnJ5IHRvIGJvdGhlciB5b3UsIG1heSBJIGhhdmUgeW91ciByZXZp
-ZXcgY29tbWVudCBmb3IgdGhlIGJpbmRpbmcNCnBhcnQ/DQpBcHByZWNpYXRlZC4NCg0KT24gVGh1
-LCAyMDIwLTA5LTEwIGF0IDExOjA0ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+IE9uIDEw
-LTA5LTIwLCAxMzozMCwgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gT24gVGh1LCAyMDIwLTA5LTEw
-IGF0IDEwOjMzICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+ID4gPiBPbiAxMC0wOS0yMCwg
-MTI6MzEsIEhlY3RvciBZdWFuIHdyb3RlOg0KPiA+ID4gPiBUaGUgQ1BVZnJlcSBIVyBwcmVzZW50
-IGluIHNvbWUgTWVkaWF0ZWsgY2hpcHNldHMgb2ZmbG9hZHMgdGhlIHN0ZXBzIG5lY2Vzc2FyeSBm
-b3IgY2hhbmdpbmcgdGhlIGZyZXF1ZW5jeSBvZiBDUFVzLiANCj4gPiA+ID4gVGhlIGRyaXZlciBp
-bXBsZW1lbnRzIHRoZSBjcHVmcmVxIGRyaXZlciBpbnRlcmZhY2UgZm9yIHRoaXMgaGFyZHdhcmUg
-ZW5naW5lLiANCj4gPiA+ID4gDQo+ID4gPiA+IFRoaXMgcGF0Y2ggZGVwZW5kcyBvbiB0aGUgTVQ2
-Nzc5IERUUyBwYXRjaCBzdWJtaXR0ZWQgYnkgSGFua3MgQ2hlbg0KPiA+ID4gPiAgaHR0cHM6Ly9s
-a21sLm9yZy9sa21sLzIwMjAvOC80LzEwOTQNCj4gPiA+IA0KPiA+ID4gVGhhbmtzIGZvciBoYW5n
-aW5nIHRoZXJlLiBMb29rcyBnb29kIHRvIG1lLiBJIHdpbGwgYXBwbHkgaXQgb25jZSBSb2INCj4g
-PiA+IEFjaydzIHRoZSBiaW5kaW5nIHBhdGNoLg0KPiA+ID4gDQo+ID4gDQo+ID4gTWFueSB0aGFu
-a3MgZm9yIHlvdXIgaGVscC4gTWF5IEkga25vdyBpZiB5b3UgY2FuIGFkZCBSZXZpZXdlZC1ieSB0
-YWcgdG8NCj4gPiB0aGlzIHBhdGNoIHNldC4NCj4gDQo+IFNpbmNlIHRoaXMgcGF0Y2hzZXQgaXMg
-Z29pbmcgdG8gZ2V0IG1lcmdlZCB2aWEgbXkgdHJlZSAoQVJNIGNwdWZyZXENCj4gdHJlZSksIGEg
-cmV2aWV3ZWQtYnkgaXNuJ3QgcmVxdWlyZWQgaGVyZS4gSSB3aWxsIHF1ZXVlIGl0IHVwIGZvcg0K
-PiA1LjEwLXJjMSBhZnRlciBJIHJlY2VpdmUgYW4gQWNrIGZyb20gUm9iLg0KPiANCj4gPiBJIHdv
-dWxkIGxpa2UgdG8gcHJlcGFyZSBzb21lIHBhdGNoZXMgZm9yIG1vcmUgZmVhdHVyZXMNCj4gPiBi
-YXNlZCBvbiB0aGlzLiBJcyB0aGF0IG9rYXkgdG8geW91PyBUaGFua3MgYWdhaW4uDQo+IA0KPiBU
-aGF0IHNob3VsZCBiZSBmaW5lLg0KPiANCg0KDQo=
 
