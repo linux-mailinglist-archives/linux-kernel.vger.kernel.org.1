@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AA526CD37
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9195826CCAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgIPU4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:56:18 -0400
-Received: from mga12.intel.com ([192.55.52.136]:51996 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgIPQww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:52:52 -0400
-IronPort-SDR: gWixcFHN3jAoJ6gFiDZSr7Ro9EuMOUod1GmMM5zhwcoPNfmbrpWhFohWWYwAfD/cOy/eOKS7sE
- FRNdkuXsirmQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="139024811"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="139024811"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:49:25 -0700
-IronPort-SDR: 9XPDFBcq2CYfeTnmvu0XQg2wz09WgX6OsPOZPKgeySGJ/G5i9vFKH+uih3kTRLcOlE6xtadwXz
- BKL5zDVguypQ==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="307109500"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:49:24 -0700
-Date:   Wed, 16 Sep 2020 09:49:23 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 08/35] KVM: SVM: Prevent debugging under SEV-ES
-Message-ID: <20200916164923.GC10227@sjchrist-ice>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <58093c542b5b442b88941828595fb2548706f1bf.1600114548.git.thomas.lendacky@amd.com>
- <20200914212601.GA7192@sjchrist-ice>
- <fd790047-4107-b28a-262e-03ed5bc4c421@amd.com>
- <20200915163010.GB8420@sjchrist-ice>
- <aff46d8d-07ff-7d14-3e7f-ffe60f2bd779@amd.com>
- <5e816811-450f-b732-76f7-6130479642e0@amd.com>
- <20200916160210.GA10227@sjchrist-ice>
- <b62e055a-000e-ff7b-00e4-41b5b39b55d5@amd.com>
+        id S1728555AbgIPUsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726670AbgIPRBO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:01:14 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E626AC0D941D;
+        Wed, 16 Sep 2020 09:54:01 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id z9so3782141wmk.1;
+        Wed, 16 Sep 2020 09:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zX0LITDdTRuuCUge/vQRwE/mjMWdK4VvHcKMoxIg+PM=;
+        b=aADs+wA7Plzzsr9mINUP5TmmQYKvZ662dmq2plN2cCpo5awBVMFzy/lFDfCyFsTyxa
+         7JSJxNl8H4X8yEyPwkwpAsRmhC9Iac/1/wWVlbVvZIouPZ5SnmZEZT8fN5JJ5ZyvTUZB
+         PTka1oj0qXKGyFYkNcHHG1WTYqFQ8ciqqlvo3l7Ib3Pg/G9ef+l6tz8cPPTt7iB0t//f
+         icbBjMBpW2b1o1zg8ih2Kv/fNBbrH5WfL9l5UsIOPXUDLxTekbpyNuYp0UXJx0xoA8jY
+         RxEzbW3/xVYpP9g8uW5jJRhCYAHw1ussrb8BT0TUTSFKjTKdiNHwOP4HbuJtwiLKxR3a
+         Pwig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zX0LITDdTRuuCUge/vQRwE/mjMWdK4VvHcKMoxIg+PM=;
+        b=uI/jSXPvWpJawMrwL+fKrzpnzigQ/bkGbbqO3RRK6bcXxqbpKWr/OI/MslSHBNgCke
+         dFPxh3ktleJ8W7IKwRkNHdo5bC63ioMGcXyQ2SapKX3WdWlZFyHc4MdpeAgu2z0nXFmZ
+         bgZ+HcGTan9oQhw38Cbz+WmQcvKGYdHzvIaLMmoRtNRwJnU0q2aOg+9Q3/vBkUUUJ0za
+         H3GJ3AQaPyyB63Ux6H8vEGRdB3WkSziAKENHXzzRAJP7rzmjj3Hu8UPXAy2g6zdz3rP6
+         r4szSfLHVuETMM95rQu/F4MsjsKEuAivKl279c3lXvD+aBiIUARhxMW7RbF/UtdwQsT8
+         +JQQ==
+X-Gm-Message-State: AOAM530Mtf/zE6k52tPvIyV3hWVZALwhQa6/0/av0hyCced3T44U7vVb
+        S84rnaGOVdCP0/KVRy9MeDo=
+X-Google-Smtp-Source: ABdhPJzdve2S5+ojtGAs6QR7XcI+4lN6whbTHWSGnFkjuxZ5CBL0MKIrnOCDXAV6/8zWm00ogW6uOg==
+X-Received: by 2002:a7b:cd8b:: with SMTP id y11mr5813023wmj.172.1600275240202;
+        Wed, 16 Sep 2020 09:54:00 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.191])
+        by smtp.googlemail.com with ESMTPSA id o15sm6107022wmh.29.2020.09.16.09.53.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Sep 2020 09:53:59 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 18:53:57 +0200
+From:   Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-samsung-soc@vger.kernel.org,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: mark linux-samsung-soc list non-moderated
+Message-ID: <20200916165357.GA18287@kozik-lap>
+References: <20200914061353.17535-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <b62e055a-000e-ff7b-00e4-41b5b39b55d5@amd.com>
+In-Reply-To: <20200914061353.17535-1-lukas.bulwahn@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:38:38AM -0500, Tom Lendacky wrote:
+On Mon, Sep 14, 2020 at 08:13:53AM +0200, Lukas Bulwahn wrote:
+> In fifteen entries mentioning linux-samsung-soc@vger.kernel.org in
+> MAINTAINERS, seven entries mention the list being moderated for
+> non-subscribers and eight entries do not. Clearly only one can be right,
+> though.
 > 
+> Joe Perches suggested that all vger.kernel.org are not moderated for
+> non-subscribers.
 > 
-> On 9/16/20 11:02 AM, Sean Christopherson wrote:
-> > On Wed, Sep 16, 2020 at 10:11:10AM -0500, Tom Lendacky wrote:
-> >> On 9/15/20 3:13 PM, Tom Lendacky wrote:
-> >>> On 9/15/20 11:30 AM, Sean Christopherson wrote:
-> >>>> I don't quite follow the "doesn't mean debugging can't be done in the future".
-> >>>> Does that imply that debugging could be supported for SEV-ES guests, even if
-> >>>> they have an encrypted VMSA?
-> >>>
-> >>> Almost anything can be done with software. It would require a lot of
-> >>> hypervisor and guest code and changes to the GHCB spec, etc. So given
-> >>> that, probably just the check for arch.guest_state_protected is enough for
-> >>> now. I'll just need to be sure none of the debugging paths can be taken
-> >>> before the VMSA is encrypted.
-> >>
-> >> So I don't think there's any guarantee that the KVM_SET_GUEST_DEBUG ioctl
-> >> couldn't be called before the VMSA is encrypted, meaning I can't check the
-> >> arch.guest_state_protected bit for that call. So if we really want to get
-> >> rid of the allow_debug() op, I'd need some other way to indicate that this
-> >> is an SEV-ES / protected state guest.
-> > 
-> > Would anything break if KVM "speculatively" set guest_state_protected before
-> > LAUNCH_UPDATE_VMSA?  E.g. does KVM need to emulate before LAUNCH_UPDATE_VMSA?
+> Remove all the remarks from the entries following Joe's suggestion.
 > 
-> Yes, the way the code is set up, the guest state (VMSA) is initialized in
-> the same way it is today (mostly) and that state is encrypted by the
-> LAUNCH_UPDATE_VMSA call. I check the guest_state_protected bit to decide
-> on whether to direct the updates to the real VMSA (before it's encrypted)
-> or the GHCB (that's the get_vmsa() function from patch #5).
+> Link: https://lore.kernel.org/lkml/da6f30896a8fd78635b3ca454d77a5292a9aa76d.camel@perches.com/
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on v5.9-rc5 and next-20200911
+> 
+> Krzysztof, please pick this minor non-urgent cleanup patch.
+> 
+> This patch submission will also show me if linux-samsung-soc is moderated
+> or not. I have not subscribed to linux-samsung-soc and if it shows up
+> quickly in the archive, the list is probably not moderated, and hence,
+> validating the patch.
 
-Ah, gotcha.  Would it work to set guest_state_protected[*] from time zero,
-and move vmsa_encrypted to struct vcpu_svm?  I.e. keep vmsa_encrypted, but
-use it only for guiding get_vmsa() and related behavior.
+Please use scripts/get_maintainers.pl (for example on files in modified
+maintainers section) to get the addresses of people.  This mail missed
+all my filters and got archived immediately because you sent it to
+unusual address (how did you get this address, BTW? It does not appear
+in the sources since few years).
+
+Thanks, applied.
+
+Best regards,
+Krzysztof
+
