@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18E926C6EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1C426C73A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727704AbgIPSKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:10:02 -0400
-Received: from mga11.intel.com ([192.55.52.93]:12675 "EHLO mga11.intel.com"
+        id S1727897AbgIPSVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:21:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727789AbgIPSJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:09:27 -0400
-IronPort-SDR: RK2LhpBUQ4k9/QnPeyOfkvhKPoTzvUvn47D+OXMWlEd24lVwmsueadaMCzgJ2GudD/1XKFsQdx
- qX0GoOBd0gRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="156944438"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="156944438"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 11:09:18 -0700
-IronPort-SDR: c2YZaBfwpgZg0IVWD0z4A32XdPWZkRYKKQ+iJXz1rQh07lGfQ3w0KAyYXU00i8ZDUN/ekyqVN7
- +73tVOwYNbhQ==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="483411840"
-Received: from scusackx-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.87])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 11:09:11 -0700
-Date:   Wed, 16 Sep 2020 21:09:08 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com, dwmw2@infradead.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        jmorris@namei.org, serge@hallyn.com, nayna@linux.ibm.com,
-        zohar@linux.ibm.com, erichte@linux.ibm.com, mpe@ellerman.id.au,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
-Message-ID: <20200916180908.GG21026@linux.intel.com>
-References: <20200916004927.64276-1-eric.snowberg@oracle.com>
+        id S1727816AbgIPSKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:10:44 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D47AB2083B;
+        Wed, 16 Sep 2020 18:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600279827;
+        bh=Ju+mDAYgGgYm5szp6plQMoO737lg/ofifEnvRT90SNI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uigVu9nT/DR8STMbyQA9tMT/XkN6el3Pw15dPTt8xh/BbT/YlbLT2pDFr6UdeUYo0
+         HbpOF80HJsVzvdniwdV2k9f1EtOg/eNVhYp8gLWbIR5hvLedQgUjzrboKXUgQNs/Is
+         55NRPAOwYxB4o39VSGRCT1FcBTK+778DMRhEPGqA=
+Date:   Wed, 16 Sep 2020 19:10:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] iio: adc: palmas_gpadc: use
+ module_platform_driver to simplify the code
+Message-ID: <20200916191026.56932e1c@archlinux>
+In-Reply-To: <20200914065401.3726354-1-liushixin2@huawei.com>
+References: <20200914065401.3726354-1-liushixin2@huawei.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916004927.64276-1-eric.snowberg@oracle.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:49:27PM -0400, Eric Snowberg wrote:
-> The Secure Boot Forbidden Signature Database, dbx, contains a list of now
-> revoked signatures and keys previously approved to boot with UEFI Secure
-> Boot enabled.  The dbx is capable of containing any number of
-> EFI_CERT_X509_SHA256_GUID, EFI_CERT_SHA256_GUID, and EFI_CERT_X509_GUID
-> entries.
-> 
-> Currently when EFI_CERT_X509_GUID are contained in the dbx, the entries are
-> skipped.
-> 
-> Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_GUID
-> is found, it is added as an asymmetrical key to the .blacklist keyring.
-> Anytime the .platform keyring is used, the keys in the .blacklist keyring
-> are referenced, if a matching key is found, the key will be rejected.
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+On Mon, 14 Sep 2020 14:54:01 +0800
+Liu Shixin <liushixin2@huawei.com> wrote:
 
-Looks good to me.
+> module_platform_driver() makes the code simpler by eliminating
+> boilerplate code.
+> 
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to see if we missed anything.
 
-/Jarkko
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/adc/palmas_gpadc.c | 13 +------------
+>  1 file changed, 1 insertion(+), 12 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/palmas_gpadc.c b/drivers/iio/adc/palmas_gpadc.c
+> index 1ca6570be66a..889b88768b63 100644
+> --- a/drivers/iio/adc/palmas_gpadc.c
+> +++ b/drivers/iio/adc/palmas_gpadc.c
+> @@ -834,18 +834,7 @@ static struct platform_driver palmas_gpadc_driver = {
+>  		.of_match_table = of_palmas_gpadc_match_tbl,
+>  	},
+>  };
+> -
+> -static int __init palmas_gpadc_init(void)
+> -{
+> -	return platform_driver_register(&palmas_gpadc_driver);
+> -}
+> -module_init(palmas_gpadc_init);
+> -
+> -static void __exit palmas_gpadc_exit(void)
+> -{
+> -	platform_driver_unregister(&palmas_gpadc_driver);
+> -}
+> -module_exit(palmas_gpadc_exit);
+> +module_platform_driver(palmas_gpadc_driver);
+>  
+>  MODULE_DESCRIPTION("palmas GPADC driver");
+>  MODULE_AUTHOR("Pradeep Goudagunta<pgoudagunta@nvidia.com>");
+
