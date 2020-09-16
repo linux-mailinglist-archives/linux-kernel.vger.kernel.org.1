@@ -2,91 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1F126CC96
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB70226CC5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgIPUqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726714AbgIPRB5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:01:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1940FC006938
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0sirvuqazzshCbZE24EWceX5REl9RxuudL9lwx7DoI8=; b=Ic68Vg7iyk7XWdoCFOawJ0CNKp
-        ZBJRI2EhsHoaSgmtHmVarEKFFat/VArg8kjPcBj7hxHQkOTJv1WZXOkILeYWjd/Kxwc0Jo1rViaZh
-        bEIui5SolkKPEmzfMjzkH+kuiF07ugy1sIDdWgl0oAUD0k9IwHsf0C9al2CcEUcNQQZIhD8BpZGx5
-        Ukfphf342knAcSRXLw69kpJWU56h/tWDbgUJHCElCEgSvBgvqj4a8Ldazy1wYXioiv7ngoC/s2nd6
-        WssGZgS1W7QHgSkn8WjEp49/qyK4vzXpqoLoO2sLFUoJzcdpsLzRCidJVZAySVJFp8oAZd95g04j6
-        m0lW+mLA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIY3w-0002D6-OJ; Wed, 16 Sep 2020 14:05:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 44BC33006D0;
-        Wed, 16 Sep 2020 16:05:32 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 33BED2B9285F4; Wed, 16 Sep 2020 16:05:32 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 16:05:32 +0200
-From:   peterz@infradead.org
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Wade Mealing <wmealing@redhat.com>
-Subject: Re: [PATCHv2] perf: Fix race in perf_mmap_close function
-Message-ID: <20200916140532.GA1362448@hirez.programming.kicks-ass.net>
-References: <20200910104153.1672460-1-jolsa@kernel.org>
- <CAM9d7cjqq8+wcZWJ77oONKXu-FsaT_YvRxzaGbRT8PjLOw-AkQ@mail.gmail.com>
- <20200910144744.GA1663813@krava>
- <CAM9d7ciEAA_3Quo1-q7hU=Te+hBgJ2wYAjbDazXd7yS70HrhPA@mail.gmail.com>
- <20200911074931.GA1714160@krava>
- <CAM9d7cicyzZvkrXTvSrGrOE626==myvF2hnuUNiUoLXiOKHB+A@mail.gmail.com>
- <20200914205936.GD1714160@krava>
- <alpine.LRH.2.20.2009151734230.12057@Diego>
- <20200916115311.GE2301783@krava>
+        id S1726958AbgIPUnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:43:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50184 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726647AbgIPRDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:03:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 544ABAFE6;
+        Wed, 16 Sep 2020 14:07:01 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 16:06:43 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Aristeu Rozanski <aris@ruivo.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "cai@lca.pw" <cai@lca.pw>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH v3 0/5] HWpoison: further fixes and cleanups
+Message-ID: <20200916140624.GA17833@linux>
+References: <20200914101559.17103-1-osalvador@suse.de>
+ <20200915212222.GA18315@cathedrallabs.org>
+ <20200916134215.GA30407@hori.linux.bs1.fc.nec.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200916115311.GE2301783@krava>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200916134215.GA30407@hori.linux.bs1.fc.nec.co.jp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:53:11PM +0200, Jiri Olsa wrote:
-> There's a possible race in perf_mmap_close when checking ring buffer's
-> mmap_count refcount value. The problem is that the mmap_count check is
-> not atomic because we call atomic_dec and atomic_read separately.
+On Wed, Sep 16, 2020 at 01:42:15PM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
+> On Tue, Sep 15, 2020 at 05:22:22PM -0400, Aristeu Rozanski wrote:
+ 
+> I reproduced the similar -EBUSY with small average x86 VM, where it seems to me
+> a race between page_take_off_buddy() and page allocation.  Oscar's debug patch
+> shows the following kernel messages:
 > 
->   perf_mmap_close:
->   ...
->    atomic_dec(&rb->mmap_count);
->    ...
->    if (atomic_read(&rb->mmap_count))
->       goto out_put;
+>     [  627.357009] Soft offlining pfn 0x235018 at process virtual address 0x7fd112140000
+>     [  627.358747] __get_any_page: 0x235018 free buddy page
+>     [  627.359875] page:00000000038b52c9 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x1 pfn:0x235018
+>     [  627.362002] flags: 0x57ffe000000000()
+>     [  627.362841] raw: 0057ffe000000000 fffff84648d12688 ffff955abffd1dd0 0000000000000000
+>     [  627.364555] raw: 0000000000000001 0000000000000000 00000000ffffff7f 0000000000000000
+>     [  627.366258] page dumped because: page_handle_poison
+>     [  627.367357] page->mem_cgroup:ffff9559b6912000
+>     [  627.368342] page_handle_poison: hugepage_or_freepage failed\xb8n
+>     [  627.368344] soft_offline_free_page: page_handle_poison -EBUSY
+>     [  627.370901] page:00000000038b52c9 refcount:6 mapcount:3 mapping:000000001226bf89 index:0x2710 pfn:0x235018
+>     [  627.373048] aops:ext4_da_aops ino:c63f3 dentry name:"system.journal"
+>     [  627.374526] flags: 0x57ffe00000201c(uptodate|dirty|lru|private)
+>     [  627.375865] raw: 0057ffe00000201c fffff84648d300c8 ffff955ab8c3f020 ffff955aba5f4ee0
+>     [  627.377586] raw: 0000000000002710 ffff9559b811fc98 0000000500000002 ffff9559b6912000
+>     [  627.379308] page dumped because: soft_offline_free_page
+>     [  627.380480] page->mem_cgroup:ffff9559b6912000
 > 
->    <ring buffer detach>
->    free_uid
+>     CPU 0                                CPU 1
 > 
-> out_put:
->   ring_buffer_put(rb); /* could be last */
+>     get_any_page // returns 0 (free buddy path)
+>       soft_offline_free_page
+>                                          the page is allocated
+>         page_handle_poison -> fail
+>           return -EBUSY
 > 
-> The race can happen when we have two (or more) events sharing same ring
-> buffer and they go through atomic_dec and then they both see 0 as refcount
-> value later in atomic_read. Then both will go on and execute code which
-> is meant to be run just once.
+> I'm still not sure why this issue is invisible before rework patch,
+> but setting migrate type to MIGRATE_ISOLATE during offlining could affect
+> the behavior sensitively.
 
-The trival case should be protected by mmap_sem, we call vm_ops->close()
-with mmap_sem held for writing IIRC. But yes, I think it's possible to
-construct a failure here.
+Well, this is very timing depending.
+AFAICS, before the rework patchset, we could still race with an allocation
+as the page could have been allocated between the get_any_page()
+and the call to set_hwpoison_free_buddy_page() which takes the zone->lock
+to prevent that.
+
+Maybe we just happen to take longer now to reach take_page_off_buddy, so the
+race window is bigger.
+
+AFAICS, this has nothing to do with MIGRATE_ISOLATE, because here we are
+dealing with pages that already free (part of the buddy system).
+
+The only thing that comes to my mind right off the bat, might be to do
+a "retry" in soft_offline_page in case soft_offline_free_page returns -EBUSY,
+so we can call again get_any_page and try to handle the new type of page.
+Something like (untested):
+
+@@ -1923,6 +1977,7 @@ int soft_offline_page(unsigned long pfn, int flags)
+ {
+ 	int ret;
+ 	struct page *page;
++	bool try_again = true;
+ 
+ 	if (!pfn_valid(pfn))
+ 		return -ENXIO;
+@@ -1938,6 +1993,7 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 		return 0;
+ 	}
+ 
++retry:
+ 	get_online_mems();
+ 	ret = get_any_page(page, pfn, flags);
+ 	put_online_mems();
+@@ -1945,7 +2001,10 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 	if (ret > 0)
+ 		ret = soft_offline_in_use_page(page);
+ 	else if (ret == 0)
+-		ret = soft_offline_free_page(page);
++		if (soft_offline_free_page(page) && try_again) {
++			try_again = false;
++			goto retry;
++		}
+ 
+ 	return ret;
+
+
+-- 
+Oscar Salvador
+SUSE L3
