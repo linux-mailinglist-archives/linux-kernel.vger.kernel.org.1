@@ -2,249 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13C826B8EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311EB26B8F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgIPAwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:52:30 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39066 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbgIPAwR (ORCPT
+        id S1726536AbgIPAws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbgIPAwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:52:17 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G0oMEh142287;
-        Wed, 16 Sep 2020 00:51:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=P1pMOoWe6LNIy0K4uxNXT7zrnhjw8PJuQG/b1p84A/8=;
- b=NA/shWYmIU/HiJZQs68zdaRh+mh+f9i58n8nc+wpbk6gWgvsYkSIoYRXYBiqODqTQyNp
- PwMBbOESlIV6AUE+xmvI0TqKeZZevtT40RS8JNyzE5PFDyk00ho6am3VM5es7lyDTCge
- v7JisUOYAcbj7TAB9vF2q6mYq2aVo2BasPzvV+escOBUrT6YkKxezM9jmCPuYNoxCntM
- F+S/5+MWL5JwWuCT/qo46uLpE4OzDeQ5kmyj/xno3IjtIj79Rg6vvJueX5GIbszky3dy
- HkJZ9N9FJrtummgcUW3Vuo8U5H69bWRZXs72mt1bArIk11DvHNjWthl8sz3Mjrz8YkOb vg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 33gnrr0827-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 00:51:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G0UjCe151431;
-        Wed, 16 Sep 2020 00:49:47 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 33h890bpgx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 00:49:47 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08G0naIe029785;
-        Wed, 16 Sep 2020 00:49:39 GMT
-Received: from localhost.us.oracle.com (/10.147.27.2)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Sep 2020 00:49:35 +0000
-From:   Eric Snowberg <eric.snowberg@oracle.com>
-To:     dhowells@redhat.com, dwmw2@infradead.org,
-        jarkko.sakkinen@linux.intel.com
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        jmorris@namei.org, serge@hallyn.com, nayna@linux.ibm.com,
-        zohar@linux.ibm.com, eric.snowberg@oracle.com,
-        erichte@linux.ibm.com, mpe@ellerman.id.au,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
-Date:   Tue, 15 Sep 2020 20:49:27 -0400
-Message-Id: <20200916004927.64276-1-eric.snowberg@oracle.com>
-X-Mailer: git-send-email 2.18.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009160001
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160002
+        Tue, 15 Sep 2020 20:52:23 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEA6C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 17:52:18 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id bd2so2246290plb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 17:52:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GPeCAv+61SbaCTEFUaEZ0zdbDCaVT+T1r3F8ImmWNss=;
+        b=xPEE1epm0ecAjz01c+R2GPOQNTZ1GIMbPiwagVVKat+yGoq/w0nzIwaZe7DwXL2/Hv
+         6oOytHU3kBh4+msIcIhye4VC0PwkPJa4cdNBo9TOBlEh1dKiB/gvN8EAkyYAjlM979JE
+         wL9mwpVyk7NOEMBrET8wjy+TtUyK56aKagqg6WkxpdqpFmEFkZelwIplDEuYDb0ygM9j
+         mziil+sQ07DuJqqTj14Bd2c5Z3UFDRGBZsGbRzrDlHSh3X01Ss+3yL+X2CWgCCJziCQt
+         1XoBlp9RQoJ+4y+L3dqkaVjv2Q2ECpvcQ/4wIB61x9YcRzD2UPkk/zFl22BDJEpbCykT
+         pqQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=GPeCAv+61SbaCTEFUaEZ0zdbDCaVT+T1r3F8ImmWNss=;
+        b=lWiHvyMYISccV2ILwmqCwMJT34TnIaWcnBNDtUJYxv1nyFWIKwChaLpK7/yHoF42cC
+         F9g3NoU8BsAQrS5qlvoonF4ko+0s4t+nEWmaX0QanJFs0m42bhhbKd5OEBeFGKAwaV83
+         b608fVEVRNTC7Dzp3dpb7f6riraIumxk8vClPsR2A/KfNBGA2uOLQPnGgWSinigZmqhY
+         4fQiSyFwWb4uYvMN3w58JWtpwWUojmGx5kVwT5Jwb3HyB4ol7yHWJWaNX/BVHcRDll/t
+         yTPmpXowF2QT1TzDiCwOWegZrolpaFzThEIrD+MPwp0CjmIO/0hl7NoL01+Fl8as++0b
+         JuRg==
+X-Gm-Message-State: AOAM533vqkmrizrgXkC+jpBR7qMmQ9JYk/Ub1T+mSCaA8+K8VzTikhmu
+        Fw0HYdq2AxrwBd+xJH5agCqWpA==
+X-Google-Smtp-Source: ABdhPJweD8TuWUq3fEBYJkmDmrGHe2ZptJWLQLVKKLAot5rdTNFOs8WPgHttoLY7TLrTtc9jOEqPeA==
+X-Received: by 2002:a17:90b:1b03:: with SMTP id nu3mr1711403pjb.148.1600217537646;
+        Tue, 15 Sep 2020 17:52:17 -0700 (PDT)
+Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
+        by smtp.gmail.com with ESMTPSA id z4sm14925695pfr.197.2020.09.15.17.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 17:52:17 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 09:52:13 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Ben Chuang <benchuanggli@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
+Subject: Re: [RFC PATCH V3 13/21] mmc: sdhci: UHS-II support, skip
+ signal_voltage_switch()
+Message-ID: <20200916005213.GA2942982@laputa>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Ben Chuang <benchuanggli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
+References: <20200710111104.29616-1-benchuanggli@gmail.com>
+ <9ab64a9d-cd78-785c-b48f-561048cfe2ed@intel.com>
+ <20200914064001.GA2743583@laputa>
+ <a0000661-a0e1-8813-0672-c0eb73184079@intel.com>
+ <20200915060306.GA2860208@laputa>
+ <CACT4zj-sZaKxyPGL=wm28Bdwq5G7R8-XfDnd=U7=vrNXnXAQVA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4zj-sZaKxyPGL=wm28Bdwq5G7R8-XfDnd=U7=vrNXnXAQVA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Secure Boot Forbidden Signature Database, dbx, contains a list of now
-revoked signatures and keys previously approved to boot with UEFI Secure
-Boot enabled.  The dbx is capable of containing any number of
-EFI_CERT_X509_SHA256_GUID, EFI_CERT_SHA256_GUID, and EFI_CERT_X509_GUID
-entries.
+On Tue, Sep 15, 2020 at 07:36:14PM +0800, Ben Chuang wrote:
+> Hi Takahiro,
+> 
+> On Tue, Sep 15, 2020 at 2:03 PM AKASHI Takahiro
+> <takahiro.akashi@linaro.org> wrote:
+> >
+> > Ben, Adrian,
+> >
+> > On Mon, Sep 14, 2020 at 11:08:14AM +0300, Adrian Hunter wrote:
+> > > On 14/09/20 9:40 am, AKASHI Takahiro wrote:
+> > > > Adrian,
+> > > >
+> > > > On Fri, Aug 21, 2020 at 05:09:01PM +0300, Adrian Hunter wrote:
+> > > >> On 10/07/20 2:11 pm, Ben Chuang wrote:
+> > > >>> From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > > >>>
+> > > >>> sdhci_start_signal_voltage_switch() should be called only in UHS-I mode,
+> > > >>> and not for UHS-II mode.
+> > > >>>
+> > > >>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > > >>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > > >>> ---
+> > > >>>  drivers/mmc/host/sdhci.c | 7 ++++++-
+> > > >>>  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > >>>
+> > > >>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> > > >>> index 5511649946b9..7f2537648a08 100644
+> > > >>> --- a/drivers/mmc/host/sdhci.c
+> > > >>> +++ b/drivers/mmc/host/sdhci.c
+> > > >>> @@ -2623,8 +2623,13 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
+> > > >>>   /*
+> > > >>>    * Signal Voltage Switching is only applicable for Host Controllers
+> > > >>>    * v3.00 and above.
+> > > >>> +  * But for UHS2, the signal voltage is supplied by vdd2 which is
+> > > >>> +  * already 1.8v so no voltage switch required.
+> >
+> > I have been confused with this comment.
+> > (I know it came from the original Intel code, not from Ben.)
+> >
+> > If this comment is true,
+> >
+> > > >>>    */
+> > > >>> - if (host->version < SDHCI_SPEC_300)
+> > > >>> + if (host->version < SDHCI_SPEC_300 ||
+> > > >>> +     (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > >>> +      host->version >= SDHCI_SPEC_400 &&
+> > > >>> +      host->mmc->flags & MMC_UHS2_SUPPORT))
+> >
+> > the condition above must be wrong since 'flags & MMC_UHS2_SUPPORT'
+> > is one of capabilities for a host controller, not a card
+> > while the selection of voltage depends on a card type.
+> 
+> The flag MMC_UHS2_SUPPORT is set at the beginning of mmc_uhs2_rescan_try_freq().
+> In UHS-II flow, it stays set.
+> If the attempt to UHS-II fails finally, it will be unset.
 
-Currently when EFI_CERT_X509_GUID are contained in the dbx, the entries are
-skipped.
+Right, but MMC_UHS2_SUPPORT is also set, at least initially,
+in sdhci_uhs2_add_host(). It is confusing, isn't it?
 
-Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_GUID
-is found, it is added as an asymmetrical key to the .blacklist keyring.
-Anytime the .platform keyring is used, the keys in the .blacklist keyring
-are referenced, if a matching key is found, the key will be rejected.
+As we discussed before, any card-specific properties, like UHS-II mode,
+should be placed in a card structure, not a host structure.
 
-Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
----
-v4:
-Remove unneeded symbol export found by Jarkko Sakkinen
+> >
+> > So I wonder why this code still works.
+> > I guess that it is because set_signal_voltage(), or other variant functions,
+> > will never be called for UHS-II cards under the current implementation.
+> >
+> > Looking at mmc_sd_init_card(), we have added some hack:
+> > mmc_sd_init_card()
+> > {
+> >         ...
+> >         /* For UHS2, skip the UHS-I initialization. */
+> >         if ((host->flags & MMC_UHS2_SUPPORT) &&
+> >             (host->flags & MMC_UHS2_INITIALIZED))
+> >                 goto done;
+> >         ...
+> >                 if (mmc_sd_card_using_v18(card)) {
+> >                         if (mmc_host_set_uhs_voltage(host) ||
+> >                             mmc_sd_init_uhs_card(card)) {
+> >                 ...
+> > }
+> >
+> > Ben, can you confirm this?
+> > (There is another callsite of mmc_host_set_uhs_voltage() though.)
+> 
+> UHS-II cards use differential signals and don't need to signal voltage switch.
+> But the main task is to set the parameters of UHS-II card interface.
 
-v3:
-Fixed an issue when CONFIG_PKCS7_MESSAGE_PARSER is not builtin and defined
-as a module instead, pointed out by Randy Dunlap
+Whoever sets MMC_UHS2_SUPPORT (and MMC_UHS2_INITIALIZED), my assertion above
+(mmc_host_set_uhs_voltage, and hence [sdhci_]start_signal_voltage_switch(), is
+never called for UHS-II cards) will be valid, isn't it?
 
-v2: 
-Fixed build issue reported by kernel test robot <lkp@intel.com>
-Commit message update (suggested by Jarkko Sakkinen)
----
- certs/blacklist.c                             | 32 +++++++++++++++++++
- certs/blacklist.h                             | 12 +++++++
- certs/system_keyring.c                        |  6 ++++
- include/keys/system_keyring.h                 | 11 +++++++
- .../platform_certs/keyring_handler.c          | 11 +++++++
- 5 files changed, 72 insertions(+)
+-Takahiro Akashi
 
-diff --git a/certs/blacklist.c b/certs/blacklist.c
-index 6514f9ebc943..4adac7f8fd94 100644
---- a/certs/blacklist.c
-+++ b/certs/blacklist.c
-@@ -100,6 +100,38 @@ int mark_hash_blacklisted(const char *hash)
- 	return 0;
- }
- 
-+int mark_key_revocationlisted(const char *data, size_t size)
-+{
-+	key_ref_t key;
-+
-+	key = key_create_or_update(make_key_ref(blacklist_keyring, true),
-+				   "asymmetric",
-+				   NULL,
-+				   data,
-+				   size,
-+				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW),
-+				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN);
-+
-+	if (IS_ERR(key)) {
-+		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
-+		return PTR_ERR(key);
-+	}
-+
-+	return 0;
-+}
-+
-+int is_key_revocationlisted(struct pkcs7_message *pkcs7)
-+{
-+	int ret;
-+
-+	ret = validate_trust(pkcs7, blacklist_keyring);
-+
-+	if (ret == 0)
-+		return -EKEYREJECTED;
-+
-+	return -ENOKEY;
-+}
-+
- /**
-  * is_hash_blacklisted - Determine if a hash is blacklisted
-  * @hash: The hash to be checked as a binary blob
-diff --git a/certs/blacklist.h b/certs/blacklist.h
-index 1efd6fa0dc60..420bb7c86e07 100644
---- a/certs/blacklist.h
-+++ b/certs/blacklist.h
-@@ -1,3 +1,15 @@
- #include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <crypto/pkcs7.h>
- 
- extern const char __initconst *const blacklist_hashes[];
-+
-+#ifdef CONFIG_INTEGRITY_PLATFORM_KEYRING
-+#define validate_trust pkcs7_validate_trust
-+#else
-+static inline int validate_trust(struct pkcs7_message *pkcs7,
-+				 struct key *trust_keyring)
-+{
-+	return -ENOKEY;
-+}
-+#endif
-diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-index 798291177186..f8ea96219155 100644
---- a/certs/system_keyring.c
-+++ b/certs/system_keyring.c
-@@ -241,6 +241,12 @@ int verify_pkcs7_message_sig(const void *data, size_t len,
- 			pr_devel("PKCS#7 platform keyring is not available\n");
- 			goto error;
- 		}
-+
-+		ret = is_key_revocationlisted(pkcs7);
-+		if (ret != -ENOKEY) {
-+			pr_devel("PKCS#7 platform key revocationlisted\n");
-+			goto error;
-+		}
- 	}
- 	ret = pkcs7_validate_trust(pkcs7, trusted_keys);
- 	if (ret < 0) {
-diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-index fb8b07daa9d1..b6991cfe1b6d 100644
---- a/include/keys/system_keyring.h
-+++ b/include/keys/system_keyring.h
-@@ -31,11 +31,14 @@ extern int restrict_link_by_builtin_and_secondary_trusted(
- #define restrict_link_by_builtin_and_secondary_trusted restrict_link_by_builtin_trusted
- #endif
- 
-+extern struct pkcs7_message *pkcs7;
- #ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
- extern int mark_hash_blacklisted(const char *hash);
-+extern int mark_key_revocationlisted(const char *data, size_t size);
- extern int is_hash_blacklisted(const u8 *hash, size_t hash_len,
- 			       const char *type);
- extern int is_binary_blacklisted(const u8 *hash, size_t hash_len);
-+extern int is_key_revocationlisted(struct pkcs7_message *pkcs7);
- #else
- static inline int is_hash_blacklisted(const u8 *hash, size_t hash_len,
- 				      const char *type)
-@@ -47,6 +50,14 @@ static inline int is_binary_blacklisted(const u8 *hash, size_t hash_len)
- {
- 	return 0;
- }
-+static inline int mark_key_revocationlisted(const char *data, size_t size)
-+{
-+	return 0;
-+}
-+static inline int is_key_revocationlisted(struct pkcs7_message *pkcs7)
-+{
-+	return -ENOKEY;
-+}
- #endif
- 
- #ifdef CONFIG_IMA_BLACKLIST_KEYRING
-diff --git a/security/integrity/platform_certs/keyring_handler.c b/security/integrity/platform_certs/keyring_handler.c
-index c5ba695c10e3..cc5a43804bc4 100644
---- a/security/integrity/platform_certs/keyring_handler.c
-+++ b/security/integrity/platform_certs/keyring_handler.c
-@@ -55,6 +55,15 @@ static __init void uefi_blacklist_binary(const char *source,
- 	uefi_blacklist_hash(source, data, len, "bin:", 4);
- }
- 
-+/*
-+ * Revocationlist the X509 cert
-+ */
-+static __init void uefi_revocationlist_x509(const char *source,
-+					    const void *data, size_t len)
-+{
-+	mark_key_revocationlisted(data, len);
-+}
-+
- /*
-  * Return the appropriate handler for particular signature list types found in
-  * the UEFI db and MokListRT tables.
-@@ -76,5 +85,7 @@ __init efi_element_handler_t get_handler_for_dbx(const efi_guid_t *sig_type)
- 		return uefi_blacklist_x509_tbs;
- 	if (efi_guidcmp(*sig_type, efi_cert_sha256_guid) == 0)
- 		return uefi_blacklist_binary;
-+	if (efi_guidcmp(*sig_type, efi_cert_x509_guid) == 0)
-+		return uefi_revocationlist_x509;
- 	return 0;
- }
--- 
-2.18.1
-
+> >
+> > > >> Please look at hooking ->start_signal_voltage_switch() instead
+> > > >
+> > > > Do you mean that you want every platform driver who wants to support UHS-II
+> > > > to set NULL to start_signal_voltage_switch hook even if this hack is
+> > > > platform agnostic?
+> > >
+> > > No, I see UHS-II as a separate layer i.e.
+> > >
+> > >  UHS-II host controller driver
+> > >   |   |
+> > >   |   v
+> > >   |   sdhci-uhs2 e.g. sdhci_uhs2_start_signal_voltage_switch
+> > >   |   |
+> > >   v   v
+> > >   sdhci e.g. sdhci_start_signal_voltage_switch
+> > >
+> > > Most things should go through sdhci-uhs2 but not nessarily everything.
+> >
+> > What I meant by my previous comment is that we don't have to
+> > call any function, sdhci_uhs2_start_signal_voltage_switch in above example,
+> > for UHS-II cards in any case since it is always simply empty.
+> >
+> > -Takahiro Akashi
