@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA3C26C588
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B876226C5B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgIPRD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:03:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726652AbgIPQ5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:57:34 -0400
-Received: from localhost (odyssey.drury.edu [64.22.249.253])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 122B620731;
-        Wed, 16 Sep 2020 16:56:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600275366;
-        bh=JZn7jl83lNE5bzNJDZn1/gldMHkDPgWZGzZpS962Up8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=xODPVpEu4xL+5KyHse9gke9V6IKkl5QzO5r0OKUYNHwVYmEEo/Q3UQGDjcPOk58pB
-         jefneoej000eFtsElcudZcsrXpdmlV7mtZSe1Olbg1b99MrPaL8wsu9h+JVP1Ej1gQ
-         W1K1gIsk/JSXsPWv9hG1/NTjt6ackZlqc+qKRCMs=
-Date:   Wed, 16 Sep 2020 11:56:05 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jiang Biao <benbjiang@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Bin Lai <robinlai@tencent.com>
-Subject: Re: [PATCH] driver/pci: reduce the single block time in
- pci_read_config
-Message-ID: <20200916165605.GA1554766@bjorn-Precision-5520>
+        id S1726985AbgIPRSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:18:02 -0400
+Received: from mail-am6eur05on2116.outbound.protection.outlook.com ([40.107.22.116]:47200
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726883AbgIPRK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:10:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iZMG6c/BSuHXKZA0s5TfYHnGovm4lXKsfepOhVYyc40PnFxEIboct85UduFVHf6DDy/VpNz9lXX5VWeFXAQY32Impfqs1SeCGOXNCTr/eu0FQCptDyztn4R9dm8wKj+G2q/SuCbuEKack1kOQdNl4vJiM4V7+29bDP0RwL+Glas+pjWnbBKnRdTEVNeI/8jT00hGBrpYH1be1NNidWvKxmDphbO2ONyiG8+M5dqZsmQHnpHRGVmJu9Yrf0Powzb4iP+LS7IGT++G0o/mzOEXetic1Y1C1AsQAVXSxd6I2ALsBa9US/eGR+Rl/jdJ0qoFtm/653eQ1zRqbGICIsEPdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ixZeWA3OLBC/FUH76keXGGbyzodtrG445uLdRTBQyJE=;
+ b=So1Z1Jo8QzwRD9gAj02wCmYsHxEUFh7gWX7o182IhElfZpwN0xPM8YCucyvAEko2WTfouf7s+3jHid6R1FarbsyaYou/4K2HvvzOx0OmlT/c/99UBRUsPOuMvGrQccwOQdJMyiTo/OifmJFH5zAxccVw9WcafrJoTIci8SsEROiia0JvMjA0Tp+R7LNQKFemgpKHtLir29RxNsa351eqtBKRIx/77twGjAoMKfMn1QOjdqzztAlbJA3gkj+vJafi7M34V9WYvhjYeo3D65vlrR6BKDOAqlyQ33BIkI+RVIL8CH8SHaRv/LXMyCM+Pz7NOmljn8MQHFXoE21V8l0E7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ixZeWA3OLBC/FUH76keXGGbyzodtrG445uLdRTBQyJE=;
+ b=XR7ssSnhg7DSllTeA/cdr8K7x4TggDW4CbViuOoygXs0HVzkt/gxBIbrYLdz8SBjRlgan3csXN9a+leIPilammT0EgZR2ykcn1TZD76POt/yXzOm3JhGVPVYKStisIuuhNySREBcG4iEi4xTKN42c04bwd5CxeP9rl7MiIHCTXM=
+Authentication-Results: baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0026.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:c9::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3391.11; Wed, 16 Sep 2020 17:10:05 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
+ 17:10:05 +0000
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>
+Subject: [PATCH 2/3] eeprom: at25: set type id as EEPROM
+Date:   Wed, 16 Sep 2020 20:09:32 +0300
+Message-Id: <20200916170933.20302-3-vadym.kochan@plvision.eu>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200916170933.20302-1-vadym.kochan@plvision.eu>
+References: <20200916170933.20302-1-vadym.kochan@plvision.eu>
+Content-Type: text/plain
+X-ClientProxiedBy: AM6PR10CA0016.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:209:89::29) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPJCdBngxwYdc-CEfSabTAdAXCdnG424Qa2BS47+xcV2wDvJCA@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM6PR10CA0016.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:89::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 16 Sep 2020 17:10:03 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [217.20.186.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 00a03ce3-d2a8-43ce-00ae-08d85a635ae7
+X-MS-TrafficTypeDiagnostic: HE1P190MB0026:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0026260A0358E01D542B269695210@HE1P190MB0026.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:489;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r7K6U2e88oZq+9YtfmMJqw1ReD24SV8A/LXhSPY0vz4CEt+ZPUhuvoO8p8cZaei0zHsKhkUuJUxu9ae1Z765BfG8B5YnO99e5guxUk+BO8EoQZ+/x2P+VuPx08doUeljHE3u3fnjXg9txVMs1gYp1efoPE67M0zgRORFSFydw87sKto+/THnpKrWItAyw0SNzT+suhS0qa1RzhJfz9Il2p+NqENHpL3cVNa7IqS9o0RRC/s5IXKMS3+O5gdTLeCZzSMmDT49NpSnTxCE15x2NFinCavEPJx1z1+zZ8Vusybs/M485NArfKRZBk8MMiDnPE1Mbkts1Gu8LNAjRc0eSQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(39830400003)(366004)(376002)(136003)(346002)(86362001)(316002)(8936002)(6666004)(52116002)(16526019)(8676002)(186003)(6512007)(2906002)(4744005)(1076003)(36756003)(5660300002)(26005)(66946007)(110136005)(44832011)(6506007)(4326008)(107886003)(956004)(66556008)(6486002)(66476007)(478600001)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: ZCVqqX+QG9c7fUfq7N+WObyjOwrFPMyOo9xxEz+jSrJdKj37AicwYyp6RqaT2eYY4sOKUbYrcUv/Ca537xaWTl/2GpXrov6THSBkchvhGlj+qlVOQUVA/GY+fGG2AOg/QX7R4Ju3dTpJkyZV/JrCJ0qVO0UyabjnPozyvJpX19Nfa7RwwJOYT7N90hhzcRtc0//DvFGFon7sTrh+wGQ7CUQAg2GlswdbB5DjLEIzQBXRjCdm5qRE1araq0h0dewJs1Q5acODL88Nwtkbeqsy4nhdIyxQU7UAsqSNst+V/UW4ZJwnwvbFRjwNplfL5fpF/++B5wDg3kSFoS0XKthYxbqow6ker8j5mX7Y/6DMfC/0VrhQbe7+V2GLi8OSRywRTMtJE4+RoLig2q6TGZhCPt5jYNF/zdImo6XKCTSv1f77Pjnp1KFnLvu6BLPlN4QppNIO/aR1h2AAzRy05vkkE0ul33NuAKT5SM3hRxsBhvvOKYln6ADrEeYpYqSMNZT6EKgFplAPKHeLhIT8EFlPrAWzXmmV8vyWSJkT+rY1ZKbwQOVTsFwup7M/EpU8heRviE+hTAbw271asBvFz47UdrY5p6xuK2O6bxhyoHH94UulC9GRGF1P1dv5aN0m1gR9waOP1BhrSL8UI1hqoFLsSw==
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00a03ce3-d2a8-43ce-00ae-08d85a635ae7
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 17:10:04.8594
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yBN3qNiQBWIPYbEaKCRbp+ke0H4NZRb4iSRLtLEa1J0ifel+cBxM66Dmjjk6nvk4ZgIkwjQSTH/mqObAOLaoAAhy5iBnzuZgtm34Dqr7dNg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0026
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 12:27:09PM +0800, Jiang Biao wrote:
-> On Thu, 10 Sep 2020 at 09:59, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Thu, Sep 10, 2020 at 09:54:02AM +0800, Jiang Biao wrote:
-> > > On Thu, 10 Sep 2020 at 09:25, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Mon, Aug 24, 2020 at 01:20:25PM +0800, Jiang Biao wrote:
-> > > > > From: Jiang Biao <benbjiang@tencent.com>
-> > > > >
-> > > > > pci_read_config() could block several ms in kernel space, mainly
-> > > > > caused by the while loop to call pci_user_read_config_dword().
-> > > > > Singel pci_user_read_config_dword() loop could consume 130us+,
-> > > > >               |    pci_user_read_config_dword() {
-> > > > >               |      _raw_spin_lock_irq() {
-> > > > > ! 136.698 us  |        native_queued_spin_lock_slowpath();
-> > > > > ! 137.582 us  |      }
-> > > > >               |      pci_read() {
-> > > > >               |        raw_pci_read() {
-> > > > >               |          pci_conf1_read() {
-> > > > >   0.230 us    |            _raw_spin_lock_irqsave();
-> > > > >   0.035 us    |            _raw_spin_unlock_irqrestore();
-> > > > >   8.476 us    |          }
-> > > > >   8.790 us    |        }
-> > > > >   9.091 us    |      }
-> > > > > ! 147.263 us  |    }
-> > > > > and dozens of the loop could consume ms+.
-> > > > >
-> > > > > If we execute some lspci commands concurrently, ms+ scheduling
-> > > > > latency could be detected.
-> > > > >
-> > > > > Add scheduling chance in the loop to improve the latency.
-> > > >
-> > > > Thanks for the patch, this makes a lot of sense.
-> > > >
-> > > > Shouldn't we do the same in pci_write_config()?
-> > >
-> > > Yes, IMHO, that could be helpful too.
-> >
-> > If it's feasible, it would be nice to actually verify that it makes a
-> > difference.  I know config writes should be faster than reads, but
-> > they're certainly not as fast as a CPU can pump out data, so there
-> > must be *some* mechanism that slows the CPU down.
-> >
-> We failed to build a test case to produce the latency by setpci command,
-> AFAIU, setpci could be much less frequently realistically used than lspci.
-> So, the latency from pci_write_config() path could not be verified for now,
-> could we apply this patch alone to erase the verified latency introduced
-> by pci_read_config() path? :)
+Set type as NVMEM_TYPE_EEPROM to expose this info via
+sysfs:
 
-Thanks for trying!  I'll apply the patch as-is.  I'd like to include a
-note in the commit log about the user-visible effect of this.  I
-looked through recent similar commits:
+$ cat /sys/bus/nvmem/devices/{DEVICE}/type
+EEPROM
 
-  928da37a229f ("RDMA/umem: Add a schedule point in ib_umem_get()")
-  47aaabdedf36 ("fanotify: Avoid softlockups when reading many events")
-  9f47eb5461aa ("fs/btrfs: Add cond_resched() for try_release_extent_mapping() stalls")
-  0a3b3c253a1e ("mm/mmap.c: Add cond_resched() for exit_mmap() CPU stalls")
-  b7e3debdd040 ("mm/memory_hotplug.c: fix false softlockup during pfn range removal")
-  d35bd764e689 ("dm writecache: add cond_resched to loop in persistent_memory_claim()")
-  da97f2d56bbd ("mm: call cond_resched() from deferred_init_memmap()")
-  ab8b65be1831 ("KVM: PPC: Book3S: Fix some RCU-list locks")
-  48c963e31bc6 ("KVM: arm/arm64: Release kvm->mmu_lock in loop to prevent starvation")
-  e84fe99b68ce ("mm/page_alloc: fix watchdog soft lockups during set_zone_contiguous()")
-  4005f5c3c9d0 ("wireguard: send/receive: cond_resched() when processing worker ringbuffers")
-  3fd44c86711f ("io_uring: use cond_resched() in io_ring_ctx_wait_and_kill()")
-  7979457b1d3a ("net: bridge: vlan: Add a schedule point during VLAN processing")
-  2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
-  1edaa447d958 ("dm writecache: add cond_resched to avoid CPU hangs")
-  ce9a4186f9ac ("macvlan: add cond_resched() during multicast processing")
-  7be1b9b8e9d1 ("drm/mm: Break long searches in fragmented address spaces")
-  bb699a793110 ("drm/i915/gem: Break up long lists of object reclaim")
-  9424ef56e13a ("ext4: add cond_resched() to __ext4_find_entry()")
+Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+---
+ drivers/misc/eeprom/at25.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-and many of them mention softlockups, RCU CPU stall warnings, or
-watchdogs triggering.  Are you seeing one of those, or are you
-measuring latency some other way?
+diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
+index ed8d38b09925..3a586a7c4b1a 100644
+--- a/drivers/misc/eeprom/at25.c
++++ b/drivers/misc/eeprom/at25.c
+@@ -348,6 +348,7 @@ static int at25_probe(struct spi_device *spi)
+ 	spi_set_drvdata(spi, at25);
+ 	at25->addrlen = addrlen;
+ 
++	at25->nvmem_config.type = NVMEM_TYPE_EEPROM;
+ 	at25->nvmem_config.name = dev_name(&spi->dev);
+ 	at25->nvmem_config.dev = &spi->dev;
+ 	at25->nvmem_config.read_only = chip.flags & EE_READONLY;
+-- 
+2.17.1
 
-Bjorn
