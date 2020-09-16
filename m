@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB84A26C9F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3CC26C9ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbgIPTkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
+        id S1727828AbgIPTih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727310AbgIPTTa (ORCPT
+        with ESMTP id S1727371AbgIPTTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 15:19:30 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCA4C061351
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:17:47 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s65so4483418pgb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:17:47 -0700 (PDT)
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4C2C061354
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:17:51 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id l126so4555541pfd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hMJpZJO+2jiFbj8wcLuUaO2zDrxZ7Y0vpl9oHvf3HWM=;
-        b=GTGP5UbUl6DVcepsjEQDw63YIXpk6nBZ7o3Wei+3/VinKwNlvopmyWceSpRvUe513y
-         wH11+u1eI7b7L37gaxadfb91MFPg4Sc6utEOff4kYaOIPde0MaDeNYgRqY8uvRf8r0rx
-         PDfpcKzE4qWU3RDGFuvM+Y+TzfE+vu4ZngZ7G2KlSqrnwEUR4XSa+asd7pFJZji9aspX
-         nsOtizA1EhA5ACB2S03hUAJB9AmUGzRuVfcShA9eAWAyWs0pTk1sd5lQtba8rOQIUMwb
-         IQeHKFWje2GpFB7mYRT05BjXRNwDbzkLAp50VDqyycSMYuR3ZXdk7K7e/ImWhS3/nUEj
-         qkuw==
+        bh=4vmHBZCLmqwGh1JrNfyEzOHsM8+Nrv3dx8TspskyRXo=;
+        b=KZJOSshqj5FFzQ7czSqunHffeDNfegzos7p7XFd0SdxE2EBbpS1IWYdpTpcJn0XxQ5
+         ClNb0/mXssumjBRQnZn0J9dLOQRFd/5F8t7zo2TpN+f1fYlb8lk1PbcNZwqOM5Ztk5Xx
+         fed76TqxxRzzx6PmfQIoGWuypcKRpYh5cuyAX8gxwTEpXwDyFjLhNKrBtPyqqrqa3nOy
+         3BJ2goSv5DwQtrv5N0k2/XdNGuivWFd2ZLHJ+aOM4mQ5lP726zDZk+W6NQXilOrsLN0v
+         OD+cOR75uc9azOko6WqLYItsoa/pjRaslja7dbL0jtAFuzGJv0MlFdOGsIsUWOmuOICf
+         pwOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hMJpZJO+2jiFbj8wcLuUaO2zDrxZ7Y0vpl9oHvf3HWM=;
-        b=KOWydfR058/Ayjcqm9XuZnnE9eWFN5mKELXCoQLzzfCywAF/0XE/5DPmqb6HvbFh+e
-         SBxgmn8qGwZv429TzeCgk0O7M9vOj0LGFpBqaMNcypDu02wo0qIEt9riIuART4d2NJ12
-         U1FVSSA25uj9OVRl8ADuV55okuvTSQcDMle75c1fUBCSGTDa9QgcOIADOop5fI5fIwmF
-         tkY2heryng9YG8cxqK7xrkxrwFJyl7Zzhay1zjYVLc/KIxBMBNu/h10OvtRvPegHRlDb
-         Cvh6CEpNNoqWqq4TelUXS0bec5s/akYwVGL9NDRIM+FceKQ0rQm7baIM85E3V3/fhFkY
-         OziA==
-X-Gm-Message-State: AOAM533UV42IaQZvQQVUxt2phPwt2pphvb9TmPpXr2i8F6jE369r7eyr
-        qPe2f/DiV2geZrgLXUfpJ8lFUA==
-X-Google-Smtp-Source: ABdhPJzWt/qy7GvIwMAy8Zb248zpCpwAEUbHaVHNwAuqZd34yzLd+Cg/+m/JJ7VA+j9Hav+2Y7ZQcg==
-X-Received: by 2002:a62:7f13:0:b029:13e:d13d:a087 with SMTP id a19-20020a627f130000b029013ed13da087mr23721856pfd.30.1600283867426;
-        Wed, 16 Sep 2020 12:17:47 -0700 (PDT)
+        bh=4vmHBZCLmqwGh1JrNfyEzOHsM8+Nrv3dx8TspskyRXo=;
+        b=S8BwSTTS1fW0gJWgB/WF0dVBZWL5Q4/X0URhWQoAadnLxiUbY1j9M9sIgXQ5XGR0sr
+         6nb5vuQLjtX2FQgxyJShOHIwc70wcjbNmvslaVULQeodKqUuNCTm/ufL6nbdtELtY7SU
+         3cFiY8IiWK4/q/eKcXyJIVDspoWRIqDt3GccDmdZ2ddqFlDE1hyp3HlrMxqTzi/+gfIV
+         ApZHKQ3SOivqbHjPLhExGJeJDoUfOz0HXs/SCYN16cXatXgy5+Y6eBwRFBMjEW4QdT94
+         u582AIin8V2sV/pw4FX5qaCof4TEdRUiuN8yEDrfYAbnvq+1t17N7OIo42D+x0X83xEf
+         aE7Q==
+X-Gm-Message-State: AOAM533jeasP5UZP40UNHQo87E3b/ZLvd2Jjqznp4QRiDGcaIkRQSuZu
+        m9O0HW8dV26d+lUCgQ3bVecxZQ==
+X-Google-Smtp-Source: ABdhPJwqgLEEt/Zs/+PIDGya7dvTCcQaxAtK24x78juhCiKYpfkL4WT80mdnASV/NVVQMbx8iH/JdA==
+X-Received: by 2002:a63:4a43:: with SMTP id j3mr20191746pgl.42.1600283870703;
+        Wed, 16 Sep 2020 12:17:50 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id b2sm11373688pfp.3.2020.09.16.12.17.46
+        by smtp.gmail.com with ESMTPSA id b2sm11373688pfp.3.2020.09.16.12.17.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 12:17:46 -0700 (PDT)
+        Wed, 16 Sep 2020 12:17:50 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 07/16] coresight: etm4x: Ensure default perf settings filter user/kernel
-Date:   Wed, 16 Sep 2020 13:17:28 -0600
-Message-Id: <20200916191737.4001561-8-mathieu.poirier@linaro.org>
+Subject: [PATCH 10/16] coresight: etm4x: Handle unreachable sink in perf mode
+Date:   Wed, 16 Sep 2020 13:17:31 -0600
+Message-Id: <20200916191737.4001561-11-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200916191737.4001561-1-mathieu.poirier@linaro.org>
 References: <20200916191737.4001561-1-mathieu.poirier@linaro.org>
@@ -64,117 +64,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Leach <mike.leach@linaro.org>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Moving from using an address filter to trace the default "all addresses"
-range to no filtering to acheive the same result, has caused the perf
-filtering of kernel/user address spaces from not working unless an
-explicit address filter was used.
+If the specified/hinted sink is not reachable from a subset of the CPUs,
+we could end up unable to trace the event on those CPUs. This
+is the best effort we could do until we support 1:1 configurations.
+Fail gracefully in such cases avoiding a WARN_ON, which can be easily
+triggered by the user on certain platforms (Arm N1SDP), with the following
+trace paths :
 
-This is due to the original code using a side-effect of the address
-filtering rather than setting the global TRCVICTLR exception level
-filtering.
+ CPU0
+      \
+       -- Funnel0 --> ETF0 -->
+      /                        \
+ CPU1                           \
+                                  MainFunnel
+ CPU2                           /
+      \                        /
+       -- Funnel1 --> ETF1 -->
+      /
+ CPU1
 
-The use of the mode sysfs file is also similarly affected.
+$ perf record --per-thread -e cs_etm/@ETF0/u -- <app>
 
-A helper function is added to fix both instances.
+could trigger the following WARNING, when the event is scheduled
+on CPU2.
 
-Fixes: ae2041510d5d ("coresight: etmv4: Update default filter and initialisation")
-Reported-by: Leo Yan <leo.yan@linaro.org>
-Signed-off-by: Mike Leach <mike.leach@linaro.org>
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-Tested-by: Leo Yan <leo.yan@linaro.org>
+[10919.513250] ------------[ cut here ]------------
+[10919.517861] WARNING: CPU: 2 PID: 24021 at
+drivers/hwtracing/coresight/coresight-etm-perf.c:316 etm_event_start+0xf8/0x100
+...
+
+[10919.564403] CPU: 2 PID: 24021 Comm: perf Not tainted 5.8.0+ #24
+[10919.570308] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
+[10919.575865] pc : etm_event_start+0xf8/0x100
+[10919.580034] lr : etm_event_start+0x80/0x100
+[10919.584202] sp : fffffe001932f940
+[10919.587502] x29: fffffe001932f940 x28: fffffc834995f800
+[10919.592799] x27: 0000000000000000 x26: fffffe0011f3ced0
+[10919.598095] x25: fffffc837fce244c x24: fffffc837fce2448
+[10919.603391] x23: 0000000000000002 x22: fffffc8353529c00
+[10919.608688] x21: fffffc835bb31000 x20: 0000000000000000
+[10919.613984] x19: fffffc837fcdcc70 x18: 0000000000000000
+[10919.619281] x17: 0000000000000000 x16: 0000000000000000
+[10919.624577] x15: 0000000000000000 x14: 00000000000009f8
+[10919.629874] x13: 00000000000009f8 x12: 0000000000000018
+[10919.635170] x11: 0000000000000000 x10: 0000000000000000
+[10919.640467] x9 : fffffe00108cd168 x8 : 0000000000000000
+[10919.645763] x7 : 0000000000000020 x6 : 0000000000000001
+[10919.651059] x5 : 0000000000000002 x4 : 0000000000000001
+[10919.656356] x3 : 0000000000000000 x2 : 0000000000000000
+[10919.661652] x1 : fffffe836eb40000 x0 : 0000000000000000
+[10919.666949] Call trace:
+[10919.669382]  etm_event_start+0xf8/0x100
+[10919.673203]  etm_event_add+0x40/0x60
+[10919.676765]  event_sched_in.isra.134+0xcc/0x210
+[10919.681281]  merge_sched_in+0xb0/0x2a8
+[10919.685017]  visit_groups_merge.constprop.140+0x15c/0x4b8
+[10919.690400]  ctx_sched_in+0x15c/0x170
+[10919.694048]  perf_event_sched_in+0x6c/0xa0
+[10919.698130]  ctx_resched+0x60/0xa0
+[10919.701517]  perf_event_exec+0x288/0x2f0
+[10919.705425]  begin_new_exec+0x4c8/0xf58
+[10919.709247]  load_elf_binary+0x66c/0xf30
+[10919.713155]  exec_binprm+0x15c/0x450
+[10919.716716]  __do_execve_file+0x508/0x748
+[10919.720711]  __arm64_sys_execve+0x40/0x50
+[10919.724707]  do_el0_svc+0xf4/0x1b8
+[10919.728095]  el0_sync_handler+0xf8/0x124
+[10919.732003]  el0_sync+0x140/0x180
+
+Even though we don't support using separate sinks for the ETMs yet (e.g,
+for 1:1 configurations), we should at least honor the user's choice and
+handle the limitations gracefully, by simply skipping the tracing on ETMs
+which can't reach the requested sink.
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mike Leach <mike.leach@linaro.org>
+Fixes: f9d81a657bb8 ("coresight: perf: Allow tracing on hotplugged CPUs")
+Reported-by: Jeremy Linton <jeremy.linton@arm.com>
+Tested-by: Jeremy Linton <jeremy.linton@arm.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-etm4x.c | 32 +++++++++++++------
- drivers/hwtracing/coresight/coresight-etm4x.h |  3 ++
- 2 files changed, 25 insertions(+), 10 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm-perf.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-index f027ceed9793..63cb1e0d5953 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-@@ -52,6 +52,7 @@ static struct etmv4_drvdata *etmdrvdata[NR_CPUS];
- static void etm4_set_default_config(struct etmv4_config *config);
- static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
- 				  struct perf_event *event);
-+static u64 etm4_get_access_type(struct etmv4_config *config);
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index 1a3169e69bb1..9d61a71da96f 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -321,6 +321,16 @@ static void etm_event_start(struct perf_event *event, int flags)
+ 	if (!event_data)
+ 		goto fail;
  
- static enum cpuhp_state hp_online;
- 
-@@ -783,6 +784,22 @@ static void etm4_init_arch_data(void *info)
- 	CS_LOCK(drvdata->base);
- }
- 
-+/* Set ELx trace filter access in the TRCVICTLR register */
-+static void etm4_set_victlr_access(struct etmv4_config *config)
-+{
-+	u64 access_type;
-+
-+	config->vinst_ctrl &= ~(ETM_EXLEVEL_S_VICTLR_MASK | ETM_EXLEVEL_NS_VICTLR_MASK);
-+
 +	/*
-+	 * TRCVICTLR::EXLEVEL_NS:EXLEVELS: Set kernel / user filtering
-+	 * bits in vinst_ctrl, same bit pattern as TRCACATRn values returned by
-+	 * etm4_get_access_type() but with a relative shift in this register.
++	 * Check if this ETM is allowed to trace, as decided
++	 * at etm_setup_aux(). This could be due to an unreachable
++	 * sink from this ETM. We can't do much in this case if
++	 * the sink was specified or hinted to the driver. For
++	 * now, simply don't record anything on this ETM.
 +	 */
-+	access_type = etm4_get_access_type(config) << ETM_EXLEVEL_LSHIFT_TRCVICTLR;
-+	config->vinst_ctrl |= (u32)access_type;
-+}
++	if (!cpumask_test_cpu(cpu, &event_data->mask))
++		goto fail_end_stop;
 +
- static void etm4_set_default_config(struct etmv4_config *config)
- {
- 	/* disable all events tracing */
-@@ -800,6 +817,9 @@ static void etm4_set_default_config(struct etmv4_config *config)
- 
- 	/* TRCVICTLR::EVENT = 0x01, select the always on logic */
- 	config->vinst_ctrl = BIT(0);
-+
-+	/* TRCVICTLR::EXLEVEL_NS:EXLEVELS: Set kernel / user filtering */
-+	etm4_set_victlr_access(config);
- }
- 
- static u64 etm4_get_ns_access_type(struct etmv4_config *config)
-@@ -1064,7 +1084,7 @@ static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
- 
- void etm4_config_trace_mode(struct etmv4_config *config)
- {
--	u32 addr_acc, mode;
-+	u32 mode;
- 
- 	mode = config->mode;
- 	mode &= (ETM_MODE_EXCL_KERN | ETM_MODE_EXCL_USER);
-@@ -1076,15 +1096,7 @@ void etm4_config_trace_mode(struct etmv4_config *config)
- 	if (!(mode & ETM_MODE_EXCL_KERN) && !(mode & ETM_MODE_EXCL_USER))
- 		return;
- 
--	addr_acc = config->addr_acc[ETM_DEFAULT_ADDR_COMP];
--	/* clear default config */
--	addr_acc &= ~(ETM_EXLEVEL_NS_APP | ETM_EXLEVEL_NS_OS |
--		      ETM_EXLEVEL_NS_HYP);
--
--	addr_acc |= etm4_get_ns_access_type(config);
--
--	config->addr_acc[ETM_DEFAULT_ADDR_COMP] = addr_acc;
--	config->addr_acc[ETM_DEFAULT_ADDR_COMP + 1] = addr_acc;
-+	etm4_set_victlr_access(config);
- }
- 
- static int etm4_online_cpu(unsigned int cpu)
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index b8283e1d6d88..5259f96fd28a 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.h
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -192,6 +192,9 @@
- #define ETM_EXLEVEL_NS_HYP		BIT(14)
- #define ETM_EXLEVEL_NS_NA		BIT(15)
- 
-+/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
-+#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
-+
- /* secure / non secure masks - TRCVICTLR, IDR3 */
- #define ETM_EXLEVEL_S_VICTLR_MASK	GENMASK(19, 16)
- /* NS MON (EL3) mode never implemented */
+ 	path = etm_event_cpu_path(event_data, cpu);
+ 	/* We need a sink, no need to continue without one */
+ 	sink = coresight_get_sink(path);
 -- 
 2.25.1
 
