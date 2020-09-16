@@ -2,109 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DB126C95D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FA126C946
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbgIPTHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727295AbgIPRoz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:44:55 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789B2C0698CB
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:28:34 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id b13so3319460qvl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rnKcSlNkQR35LZf6iND6zHQpJOWDy/dSu0BrUtUSzkE=;
-        b=LbcnFSLBii35TjI4Hw5pPUs1/st3gHYC+ASBPFwHWMKMpNzK2VB2UixcZ/j9kJRgSO
-         k/xy69mEwCXzw3XZeqk8eX47sZ3+aZ8shmj6m1AGrUbViI8jmB1Md9rRtUcrudBLJe6j
-         retA+MwIvQa2N7Hj4kUyxSibd7QVqw8ptlyKIBw8yoOaSLBRSjisGs7QwajJHnqV9Nhk
-         9PT87+aV1o5dVkn+/J6yffrnFkyvLchUprUGWWAFAEQsSwHA0ldI3r+b2LBb40yKa/iO
-         zoT5OnR1OqrfwEMGJTdBQJEauDuudHtB7jS+F7gbztZ6D3rHEu23lAXKQP8HX8BFwpc+
-         UGuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rnKcSlNkQR35LZf6iND6zHQpJOWDy/dSu0BrUtUSzkE=;
-        b=mwo9rO1gBvC6RITSjKsgFq5maEj5qVkAVViKGt77kVqeNlzxqNIv76vJA/0JUrdki9
-         VhY8N8Q/1FERx/uGJ0vBuPyBlxMGZWKahZvLf7/TNn5iBZB0xzW+rVqQreTi4W/vTDof
-         naDROjKznjtXhiF0pg+a5epoRJdCDiCWMyAfVUYSISiwHsEgP7rQcjpRDxuOPL/jWOMy
-         e8YbHBly4uIkX1nzFvBzj1Tjf1hqmEg94T4VO/UkbnFjr/gxGqa7Nr5MDgRSs4sMf/D5
-         rZvoDsttVj1By04NOsbbZ0HfwNRsRzxG5Q2bFz2dRaZ1G+MiD9lP2OXnIEXVez0iHGGI
-         9syQ==
-X-Gm-Message-State: AOAM532cKRdc3njrby1NFL9gwvXOGvYbLFJ8KRW6E/rVBDSfWXWFvfi5
-        rvTQzrUXFWkZfI0VIdvMU4elzniMRaX8MqlgjtOTUA==
-X-Google-Smtp-Source: ABdhPJzV6FkEuZbmAv7oARvd/eh2RnB+dgMffb2TR9yN0gIClEXp5egnd6G5hCJ9qchy7RbOzo6GZmxnYvrPUwb2qFU=
-X-Received: by 2002:ad4:4e33:: with SMTP id dm19mr6414279qvb.47.1600255711033;
- Wed, 16 Sep 2020 04:28:31 -0700 (PDT)
+        id S1726884AbgIPTGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:06:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727322AbgIPRpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:45:43 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2991B21D7D;
+        Wed, 16 Sep 2020 11:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600255979;
+        bh=NrN65FExOcUCU520Iq+usyuxFbZLtc2nG2HuzYo+/Z8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WKy38OSed/DKr+wyau8wsgBMcKVVfD6ZZYBTUCn0W5pyOjW/hXhxzJThMFuXngdtX
+         cpS/OEj8cv6p4b3xGA3JHsc4V/uSTCDugqMgyjgZPBJSOLktovCGJCEZ2BSUPlID1X
+         njdNx2JNLYBA5TJqxi89LYGeoAsV9G5y7GnNXLVM=
+Date:   Wed, 16 Sep 2020 13:33:34 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+Cc:     ard.biesheuvel@linaro.org, mingo@kernel.org,
+        matt@codeblueprint.co.uk, sudeep.holla@arm.com,
+        hkallweit1@gmail.com, keescook@chromium.org,
+        dmitry.torokhov@gmail.com, michal.simek@xilinx.com,
+        rajanv@xilinx.com, tejas.patel@xilinx.com, jollys@xilinx.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rajan.vaja@xilinx.com, jolly.shah@xilinx.com
+Subject: Re: [PATCH 1/3] firmware: xilinx: Add validation check for IOCTL
+Message-ID: <20200916113334.GB1124534@kroah.com>
+References: <1599697204-32103-1-git-send-email-amit.sunil.dhamne@xilinx.com>
+ <1599697204-32103-2-git-send-email-amit.sunil.dhamne@xilinx.com>
 MIME-Version: 1.0
-References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
- <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp> <0f7233f7-a04a-e9c9-7920-3a170cc97e4b@i-love.sakura.ne.jp>
-In-Reply-To: <0f7233f7-a04a-e9c9-7920-3a170cc97e4b@i-love.sakura.ne.jp>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 16 Sep 2020 13:28:19 +0200
-Message-ID: <CACT4Y+bjPr=64Lq1-ARD6T=K9LmC_Aor4BRXPcZVtUU8vF0oGg@mail.gmail.com>
-Subject: Re: [PATCH v2] lockdep: Allow tuning tracing capacity constants.
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599697204-32103-2-git-send-email-amit.sunil.dhamne@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 6:05 PM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> Hello. Can we apply this patch?
->
-> This patch addresses top crashers for syzbot, and applying this patch
-> will help utilizing syzbot's resource for finding other bugs.
+On Wed, Sep 09, 2020 at 05:20:02PM -0700, Amit Sunil Dhamne wrote:
+> From: Tejas Patel <tejas.patel@xilinx.com>
+> 
+> Validate IOCTL ID for ZynqMP and Versal before calling
+> zynqmp_pm_invoke_fn().
+> 
+> Signed-off-by: Tejas Patel <tejas.patel@xilinx.com>
+> Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+> ---
+>  drivers/firmware/xilinx/zynqmp.c | 117 +++++++++++++++++++++++++++++++--------
+>  1 file changed, 95 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+> index 8d1ff24..8fe0912 100644
+> --- a/drivers/firmware/xilinx/zynqmp.c
+> +++ b/drivers/firmware/xilinx/zynqmp.c
+> @@ -514,6 +514,89 @@ int zynqmp_pm_clock_getparent(u32 clock_id, u32 *parent_id)
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_clock_getparent);
+> 
+>  /**
+> + * versal_is_valid_ioctl() - Check whether IOCTL ID is valid or not for versal
+> + * @ioctl_id:  IOCTL ID
+> + *
+> + * Return: 1 if IOCTL is valid else 0
+> + */
+> +static inline int versal_is_valid_ioctl(u32 ioctl_id)
+> +{
+> +       switch (ioctl_id) {
+> +       case IOCTL_SD_DLL_RESET:
+> +       case IOCTL_SET_SD_TAPDELAY:
+> +       case IOCTL_SET_PLL_FRAC_MODE:
+> +       case IOCTL_GET_PLL_FRAC_MODE:
+> +       case IOCTL_SET_PLL_FRAC_DATA:
+> +       case IOCTL_GET_PLL_FRAC_DATA:
+> +       case IOCTL_WRITE_GGS:
+> +       case IOCTL_READ_GGS:
+> +       case IOCTL_WRITE_PGGS:
+> +       case IOCTL_READ_PGGS:
+> +       case IOCTL_SET_BOOT_HEALTH_STATUS:
+> +               return 1;
+> +       default:
+> +               return 0;
 
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
+bool is nicer, right?
 
-Peter, do you still have concerns with this?
+> +       }
+> +}
+> +
+> +/**
+> + * zynqmp_is_valid_ioctl() - Check whether IOCTL ID is valid or not
+> + * @ioctl_id:  IOCTL ID
+> + *
+> + * Return: 1 if IOCTL is valid else 0
+> + */
+> +static inline int zynqmp_is_valid_ioctl(u32 ioctl_id)
+> +{
+> +       switch (ioctl_id) {
+> +       case IOCTL_SD_DLL_RESET:
+> +       case IOCTL_SET_SD_TAPDELAY:
+> +       case IOCTL_SET_PLL_FRAC_MODE:
+> +       case IOCTL_GET_PLL_FRAC_MODE:
+> +       case IOCTL_SET_PLL_FRAC_DATA:
+> +       case IOCTL_GET_PLL_FRAC_DATA:
+> +       case IOCTL_WRITE_GGS:
+> +       case IOCTL_READ_GGS:
+> +       case IOCTL_WRITE_PGGS:
+> +       case IOCTL_READ_PGGS:
+> +       case IOCTL_SET_BOOT_HEALTH_STATUS:
+> +               return 1;
+> +       default:
+> +               return 0;
+> +       }
+> +}
+> +
+> +/**
+> + * zynqmp_pm_ioctl() - PM IOCTL API for device control and configs
+> + * @node_id:   Node ID of the device
+> + * @ioctl_id:  ID of the requested IOCTL
+> + * @arg1:      Argument 1 to requested IOCTL call
+> + * @arg2:      Argument 2 to requested IOCTL call
+> + * @out:       Returned output value
+> + *
+> + * This function calls IOCTL to firmware for device control and configuration.
+> + *
+> + * Return: Returns status, either success or error+reason
+> + */
+> +static int zynqmp_pm_ioctl(u32 node_id, u32 ioctl_id, u32 arg1, u32 arg2,
+> +                          u32 *out)
+> +{
+> +       struct device_node *np;
+> +
+> +       np = of_find_compatible_node(NULL, NULL, "xlnx,versal");
+> +       if (np) {
+> +               if (!versal_is_valid_ioctl(ioctl_id))
+> +                       return -EINVAL;
 
-Both MAX_LOCKDEP_ENTRIES and MAX_LOCKDEP_CHAINS still fire on syzbot a
-lot and harm ability to test whole kernel:
-https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
-https://syzkaller.appspot.com/bug?id=63fc8d0501c39609dd2f268e4190ec9a72619563
+Wrong error value.
 
-I hate disabling lockdep entirely as it also finds lots of useful things.
+> +       } else {
+> +               if (!zynqmp_is_valid_ioctl(ioctl_id))
+> +                       return -EINVAL;
 
+Wrong error value.
 
-> On 2020/08/28 0:20, Tetsuo Handa wrote:
-> > Since syzkaller continues various test cases until the kernel crashes,
-> > syzkaller tends to examine more locking dependencies than normal systems.
-> > As a result, syzbot is reporting that the fuzz testing was terminated
-> > due to hitting upper limits lockdep can track [1] [2] [3].
-> >
-> > Let's allow individually tuning upper limits via kernel config options
-> > (based on an assumption that there is no inter-dependency among these
-> > constants).
-> >
-> > [1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
-> > [2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
-> > [3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
-> >
-> > Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
-> > Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
-> > Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
-> > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> > ---
-> >  kernel/locking/lockdep.c           |  2 +-
-> >  kernel/locking/lockdep_internals.h |  8 +++---
-> >  lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
-> >  3 files changed, 45 insertions(+), 5 deletions(-)
-> >
+> +       }
+> +       of_node_put(np);
+> +
+> +       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, ioctl_id, arg1, arg2,
+> +                                  out);
+
+No other checking of ioctl commands and arguments?  Brave...
+
+> +}
+> +
+> +/**
+>   * zynqmp_pm_set_pll_frac_mode() - PM API for set PLL mode
+>   *
+>   * @clk_id:    PLL clock ID
+> @@ -525,8 +608,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_clock_getparent);
+>   */
+>  int zynqmp_pm_set_pll_frac_mode(u32 clk_id, u32 mode)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_SET_PLL_FRAC_MODE,
+> -                                  clk_id, mode, NULL);
+> +       return zynqmp_pm_ioctl(0, IOCTL_SET_PLL_FRAC_MODE, clk_id, mode, NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_mode);
+> 
+> @@ -542,8 +624,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_mode);
+>   */
+>  int zynqmp_pm_get_pll_frac_mode(u32 clk_id, u32 *mode)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_GET_PLL_FRAC_MODE,
+> -                                  clk_id, 0, mode);
+> +       return zynqmp_pm_ioctl(0, IOCTL_GET_PLL_FRAC_MODE, clk_id, 0, mode);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_mode);
+> 
+> @@ -560,8 +641,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_mode);
+>   */
+>  int zynqmp_pm_set_pll_frac_data(u32 clk_id, u32 data)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_SET_PLL_FRAC_DATA,
+> -                                  clk_id, data, NULL);
+> +       return zynqmp_pm_ioctl(0, IOCTL_SET_PLL_FRAC_DATA, clk_id, data, NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_data);
+> 
+> @@ -577,8 +657,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_data);
+>   */
+>  int zynqmp_pm_get_pll_frac_data(u32 clk_id, u32 *data)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_GET_PLL_FRAC_DATA,
+> -                                  clk_id, 0, data);
+> +       return zynqmp_pm_ioctl(0, IOCTL_GET_PLL_FRAC_DATA, clk_id, 0, data);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_data);
+> 
+> @@ -595,8 +674,8 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_data);
+>   */
+>  int zynqmp_pm_set_sd_tapdelay(u32 node_id, u32 type, u32 value)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, IOCTL_SET_SD_TAPDELAY,
+> -                                  type, value, NULL);
+> +       return zynqmp_pm_ioctl(node_id, IOCTL_SET_SD_TAPDELAY, type, value,
+> +                              NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
+> 
+> @@ -612,8 +691,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
+>   */
+>  int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, IOCTL_SET_SD_TAPDELAY,
+> -                                  type, 0, NULL);
+> +       return zynqmp_pm_ioctl(node_id, IOCTL_SET_SD_TAPDELAY, type, 0, NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
+> 
+> @@ -628,8 +706,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
+>   */
+>  int zynqmp_pm_write_ggs(u32 index, u32 value)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_WRITE_GGS,
+> -                                  index, value, NULL);
+> +       return zynqmp_pm_ioctl(0, IOCTL_WRITE_GGS, index, value, NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_write_ggs);
+> 
+> @@ -644,8 +721,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_write_ggs);
+>   */
+>  int zynqmp_pm_read_ggs(u32 index, u32 *value)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_READ_GGS,
+> -                                  index, 0, value);
+> +       return zynqmp_pm_ioctl(0, IOCTL_READ_GGS, index, 0, value);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_read_ggs);
+> 
+> @@ -661,8 +737,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_read_ggs);
+>   */
+>  int zynqmp_pm_write_pggs(u32 index, u32 value)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_WRITE_PGGS, index, value,
+> -                                  NULL);
+> +       return zynqmp_pm_ioctl(0, IOCTL_WRITE_PGGS, index, value, NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_write_pggs);
+> 
+> @@ -678,8 +753,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_write_pggs);
+>   */
+>  int zynqmp_pm_read_pggs(u32 index, u32 *value)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_READ_PGGS, index, 0,
+> -                                  value);
+> +       return zynqmp_pm_ioctl(0, IOCTL_READ_PGGS, index, 0, value);
+>  }
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_read_pggs);
+> 
+> @@ -694,8 +768,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_read_pggs);
+>   */
+>  int zynqmp_pm_set_boot_health_status(u32 value)
+>  {
+> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_SET_BOOT_HEALTH_STATUS,
+> -                                  value, 0, NULL);
+> +       return zynqmp_pm_ioctl(0, IOCTL_SET_BOOT_HEALTH_STATUS, value, 0, NULL);
+>  }
+> 
+>  /**
+> --
+> 2.7.4
+> 
+> This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
+
+Oops, this means I have to drop this, it's not compatible with kernel
+development, sorry.
+
+greg k-h
