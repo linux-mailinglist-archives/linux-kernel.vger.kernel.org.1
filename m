@@ -2,158 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D97E26CF2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D9226CF13
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgIPW4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:56:20 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57422 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbgIPW4Q (ORCPT
+        id S1726605AbgIPWrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:47:41 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:54924 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726174AbgIPWrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:56:16 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GGOXv6051337;
-        Wed, 16 Sep 2020 16:30:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=YKdl8gzDEpK1YpA3WFQ+M1n3JfBUrOCHTQf+cD4wugA=;
- b=rlDLQX50qseJ8UBRo7iVkY7W7X1/qWAPNDxWEm74Ee7+sG8hfbEGCE/Tb2PDzPwPrHgz
- 28VqUG3+zitRVNBuWdk200HkH6XoL+uomTkfSL2DvmrfVnK9+VLGOfgutpKDBm6lxEae
- JFU/O7i1nryMgvfcrbOTI/qJyjTJqPqS/VH6hmX26QvteLSlLrBQvR/iyHAyFnV+DXqE
- 02g+tQMiSselV4fxXlIK0SVjHO6rbOjnef7KK34ll7wseI6cfWbQrI6PQLGlX06497CR
- FEFYgQ3gQXpEUY511dRH2s6jyShaR8Zd2tfvNAG0eCMOQ4DZKWl/7HeVjw5nRFNFEDsu 6A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33j91dntjc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 16:30:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GGQ2E4007875;
-        Wed, 16 Sep 2020 16:30:30 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33khpkpsd5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 16:30:30 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08GGUPg7008158;
-        Wed, 16 Sep 2020 16:30:25 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Sep 2020 16:30:25 +0000
-Subject: Re: [PATCH] cma: make number of CMA areas dynamic, remove
- CONFIG_CMA_AREAS
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
-        Joonsoo Kim <js1304@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Aslan Bakirov <aslan@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>
-References: <20200915205703.34572-1-mike.kravetz@oracle.com>
- <4b7b14c9eb6a42509f8324f7ed84b46f@hisilicon.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <2bf99eee-29b1-4965-da7d-d4e341803440@oracle.com>
-Date:   Wed, 16 Sep 2020 09:30:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 16 Sep 2020 18:47:39 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 0C5913AA941
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 21:14:11 +0000 (UTC)
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 1D582C0002;
+        Wed, 16 Sep 2020 21:13:49 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 23:13:48 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ARM: at91: DT for 5.10
+Message-ID: <20200916211348.GA275895@piout.net>
 MIME-Version: 1.0
-In-Reply-To: <4b7b14c9eb6a42509f8324f7ed84b46f@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160118
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 2:14 AM, Song Bao Hua (Barry Song) wrote:
->>> -----Original Message-----
->>> From: Mike Kravetz [mailto:mike.kravetz@oracle.com]
->>> Sent: Wednesday, September 16, 2020 8:57 AM
->>> To: linux-mm@kvack.org; linux-kernel@vger.kernel.org;
->>> linux-arm-kernel@lists.infradead.org; linux-mips@vger.kernel.org
->>> Cc: Roman Gushchin <guro@fb.com>; Song Bao Hua (Barry Song)
->>> <song.bao.hua@hisilicon.com>; Mike Rapoport <rppt@kernel.org>; Joonsoo
->>> Kim <js1304@gmail.com>; Rik van Riel <riel@surriel.com>; Aslan Bakirov
->>> <aslan@fb.com>; Michal Hocko <mhocko@kernel.org>; Andrew Morton
->>> <akpm@linux-foundation.org>; Mike Kravetz <mike.kravetz@oracle.com>
->>> Subject: [PATCH] cma: make number of CMA areas dynamic, remove
->>> CONFIG_CMA_AREAS
->>>
->>> The number of distinct CMA areas is limited by the constant
->>> CONFIG_CMA_AREAS.  In most environments, this was set to a default
->>> value of 7.  Not too long ago, support was added to allocate hugetlb
->>> gigantic pages from CMA.  More recent changes to make
->> dma_alloc_coherent
->>> NUMA-aware on arm64 added more potential users of CMA areas.  Along
->>> with the dma_alloc_coherent changes, the default value of CMA_AREAS
->>> was bumped up to 19 if NUMA is enabled.
->>>
->>> It seems that the number of CMA users is likely to grow.  Instead of
->>> using a static array for cma areas, use a simple linked list.  These
->>> areas are used before normal memory allocators, so use the memblock
->>> allocator.
->>>
->>> Acked-by: Roman Gushchin <guro@fb.com>
->>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> ---
->>> rfc->v1
->>>   - Made minor changes suggested by Song Bao Hua (Barry Song)
->>>   - Removed check for late calls to cma_init_reserved_mem that was part
->>>     of RFC.
->>>   - Added ACK from Roman Gushchin
->>>   - Still in need of arm testing
->>
->> Unfortunately, the test result on my arm64 board is negative, Linux can't boot
->> after applying
->> this patch.
->>
->> I guess we have to hold on this patch for a while till this is fixed. BTW, Mike, do
->> you have
->> a qemu-based arm64 numa system to debug? It is very easy to reproduce, we
->> don't need to
->> use hugetlb_cma and pernuma_cma. Just the default cma will make the boot
->> hang.
-> 
-> Hi Mike,
-> I spent some time on debugging the boot issue and sent a patch here:
-> https://lore.kernel.org/linux-mm/20200916085933.25220-1-song.bao.hua@hisilicon.com/
-> All details and knic oops can be found there.
-> pls feel free to merge my patch into your v2 if you want. And we probably need ack from
-> arm maintainers.
-> 
-> Also,  +Will,
-> 
-> Hi Will, the whole story is that Mike tried to remove the cma array with CONFIG_CMA_AREAS
-> and moved to use memblock_alloc() to allocate cma area, so that the number of cma areas
-> could be dynamic. It turns out it causes a kernel panic on arm64 during system boot as the
-> returned address from memblock_alloc is invalid before paging_init() is done on arm64.
-> 
+Arnd, Olof,
 
-Thank you!
+The bulk of the changes are fixes for issues found by dtbs_check. A new
+board is also introduced.
 
-Based on your analysis, I am concerned that other architectures may also
-have issues.
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-Andrew,
-I suggest we remove this patch from your tree.  I will audit all architectures
-which enable CMA and look for similar issues there.  Will then merge Barry's
-patch into a V2 with any other arch specific changes.
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-dt-5.10
+
+for you to fetch changes up to 860b6d803f3d5feab4b67d500b060168a77f9a04:
+
+  ARM: dts: at91: sama5d2: add missing flexcom spi node properties (2020-09-16 10:45:32 +0200)
+
+----------------------------------------------------------------
+AT91 DT for 5.10
+
+ - New board: GARDENA smart Gateway (Art. 19000)
+ - dtbs_check warnings fixes
+
+----------------------------------------------------------------
+Alexandre Belloni (5):
+      ARM: dts: at91: fix cpu node
+      ARM: dts: at91: fix sram nodes
+      ARM: dts: at91: move mmc pinctrl-names property to board dts
+      ARM: dts: at91: add unit-address to memory node
+      ARM: dts: at91: sama5d2: add missing flexcom spi node properties
+
+Reto Schneider (2):
+      dt-bindings: arm: at91: Add GARDENA smart Gateway (Art. 19000) board
+      ARM: at91: Add GARDENA smart Gateway (Art. 19000) support
+
+ .../devicetree/bindings/arm/atmel-at91.yaml        |   1 +
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/animeo_ip.dts                    |   3 +-
+ arch/arm/boot/dts/at91-ariag25.dts                 |   3 +-
+ arch/arm/boot/dts/at91-ariettag25.dts              |   3 +-
+ arch/arm/boot/dts/at91-cosino.dtsi                 |   3 +-
+ arch/arm/boot/dts/at91-cosino_mega2560.dts         |   1 +
+ arch/arm/boot/dts/at91-foxg20.dts                  |   3 +-
+ arch/arm/boot/dts/at91-kizbox.dts                  |   2 +-
+ arch/arm/boot/dts/at91-kizbox2-common.dtsi         |   2 +-
+ arch/arm/boot/dts/at91-kizboxmini-common.dtsi      |   2 +-
+ arch/arm/boot/dts/at91-linea.dtsi                  |   2 +-
+ arch/arm/boot/dts/at91-qil_a9260.dts               |   3 +-
+ arch/arm/boot/dts/at91-sam9_l9260.dts              |   3 +-
+ arch/arm/boot/dts/at91-sama5d3_xplained.dts        |   2 +-
+ arch/arm/boot/dts/at91-sama5d4_ma5d4.dtsi          |   2 +-
+ arch/arm/boot/dts/at91-sama5d4_xplained.dts        |   2 +-
+ arch/arm/boot/dts/at91-sama5d4ek.dts               |   2 +-
+ arch/arm/boot/dts/at91-som60.dtsi                  |   2 +-
+ arch/arm/boot/dts/at91-vinco.dts                   |   2 +-
+ arch/arm/boot/dts/at91-wb45n.dtsi                  |   3 +-
+ arch/arm/boot/dts/at91-wb50n.dtsi                  |   2 +-
+ arch/arm/boot/dts/at91rm9200.dtsi                  |  11 +-
+ arch/arm/boot/dts/at91rm9200ek.dts                 |   2 +-
+ arch/arm/boot/dts/at91sam9260.dtsi                 |  11 +-
+ arch/arm/boot/dts/at91sam9260ek.dts                |   3 +-
+ arch/arm/boot/dts/at91sam9261.dtsi                 |  10 +-
+ arch/arm/boot/dts/at91sam9261ek.dts                |   2 +-
+ arch/arm/boot/dts/at91sam9263.dtsi                 |  15 +-
+ arch/arm/boot/dts/at91sam9263ek.dts                |   3 +-
+ arch/arm/boot/dts/at91sam9g20.dtsi                 |   5 +-
+ arch/arm/boot/dts/at91sam9g20ek_common.dtsi        |   3 +-
+ .../boot/dts/at91sam9g25-gardena-smart-gateway.dts | 158 +++++++++++++++++++++
+ arch/arm/boot/dts/at91sam9g45.dtsi                 |  12 +-
+ arch/arm/boot/dts/at91sam9m10g45ek.dts             |   4 +-
+ arch/arm/boot/dts/at91sam9n12.dtsi                 |  10 +-
+ arch/arm/boot/dts/at91sam9n12ek.dts                |   2 +-
+ arch/arm/boot/dts/at91sam9rl.dtsi                  |  10 +-
+ arch/arm/boot/dts/at91sam9rlek.dts                 |   2 +-
+ arch/arm/boot/dts/at91sam9x5.dtsi                  |  12 +-
+ arch/arm/boot/dts/at91sam9x5cm.dtsi                |   2 +-
+ arch/arm/boot/dts/at91sam9x5ek.dtsi                |   2 +
+ arch/arm/boot/dts/at91sam9xe.dtsi                  |   3 +
+ arch/arm/boot/dts/ethernut5.dts                    |   2 +-
+ arch/arm/boot/dts/mpa1600.dts                      |   2 +-
+ arch/arm/boot/dts/pm9g45.dts                       |   3 +-
+ arch/arm/boot/dts/sam9x60.dtsi                     |  10 +-
+ arch/arm/boot/dts/sama5d2.dtsi                     |  19 ++-
+ arch/arm/boot/dts/sama5d3.dtsi                     |   8 +-
+ arch/arm/boot/dts/sama5d3xcm.dtsi                  |   2 +-
+ arch/arm/boot/dts/sama5d3xcm_cmp.dtsi              |   2 +-
+ arch/arm/boot/dts/sama5d4.dtsi                     |   8 +-
+ arch/arm/boot/dts/tny_a9260_common.dtsi            |   2 +-
+ arch/arm/boot/dts/tny_a9263.dts                    |   2 +-
+ arch/arm/boot/dts/usb_a9260.dts                    |   2 +-
+ arch/arm/boot/dts/usb_a9263.dts                    |   2 +-
+ arch/arm/boot/dts/usb_a9g20_common.dtsi            |   2 +-
+ 57 files changed, 320 insertions(+), 77 deletions(-)
+ create mode 100644 arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
+
 -- 
-Mike Kravetz
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
