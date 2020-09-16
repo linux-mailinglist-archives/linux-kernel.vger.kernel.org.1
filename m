@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC75926C5F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EAE26C606
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbgIPRZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:25:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727001AbgIPRY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:24:57 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88B58223E8;
-        Wed, 16 Sep 2020 17:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600277095;
-        bh=NFo+DJ/fouaauEXtmorMH6AncUeRb0g6T6S/Z660evo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0XovzQPdUuczyoy5mz8H2Lk6xEgRLmbf5kgwjh3G49xX7iSf6b2ENBTGg6RXrTd0q
-         39TXjCLODN78LPhyGqQlnauJTdtEjH1DpX/RaYS7N/Crg6h+flRZUvzpOIKKk9/J/C
-         P0aM/56tJ2Vf11ZvtPd6KIon9PSRuUFv8rRubRhg=
-Date:   Wed, 16 Sep 2020 19:25:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Prateek Sood <prsood@codeaurora.org>, Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-Message-ID: <20200916172529.GA3056792@kroah.com>
-References: <20200915140653.610388773@linuxfoundation.org>
- <b94c29b3-ef68-897b-25a8-e6fcc181a22a@linuxfoundation.org>
- <8277900f-d300-79fa-eac7-096686a6fbc3@linuxfoundation.org>
- <20200916062958.GH142621@kroah.com>
- <69e7c908-4332-91fd-bdb2-6be19fcbf126@linuxfoundation.org>
- <20200916152629.GD3018065@kroah.com>
- <09de87b0-8055-26ef-cc31-0c63e63e5d2a@linuxfoundation.org>
+        id S1727058AbgIPR3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:29:51 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38456 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727083AbgIPR2T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:28:19 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GHRrkH025564;
+        Wed, 16 Sep 2020 12:27:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600277273;
+        bh=LkBW9ONdKm4rqq/prIT6RDmrGFJczaFsMOjwTjMAG/o=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=rj6XGgTVaO0Xk3aevo8OqbCTnu5gU+bONevSGgPR25UDSnxGOIsKPnOczH9yNHaDd
+         d0gjFSZ6UNTP0yLgOM9A9H8/LrrPBuxjbVegyyQVNxWyh5uaZX+zZ2VeO7YOpH9fw5
+         xsoEzPnaZatnccyICtESgqbM9b623/1VaVLMbvIY=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GHRrjT051739;
+        Wed, 16 Sep 2020 12:27:53 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
+ Sep 2020 12:27:53 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 16 Sep 2020 12:27:53 -0500
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GHRk1W018084;
+        Wed, 16 Sep 2020 12:27:50 -0500
+Subject: Re: [PATCH v6 0/2] PHY: Add new PHY attribute max_link_rate
+To:     Vinod Koul <vkoul@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Swapnil Jakhade <sjakhade@cadence.com>, <kishon@ti.com>,
+        <linux-kernel@vger.kernel.org>, <maxime@cerno.tech>,
+        <mparab@cadence.com>, <yamonkar@cadence.com>,
+        <tomi.valkeinen@ti.com>, <jsarha@ti.com>, <praneeth@ti.com>
+References: <1599805114-22063-1-git-send-email-sjakhade@cadence.com>
+ <e1ae0a53-02a2-8a17-094f-570be6d24b1c@ti.com>
+ <20200916121855.GB3853@pendragon.ideasonboard.com>
+ <20200916124307.GL2968@vkoul-mobl>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <d7d2f8b5-86a2-c2f9-62ff-cf60278a5463@ti.com>
+Date:   Wed, 16 Sep 2020 22:57:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <09de87b0-8055-26ef-cc31-0c63e63e5d2a@linuxfoundation.org>
+In-Reply-To: <20200916124307.GL2968@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:34:52AM -0600, Shuah Khan wrote:
-> On 9/16/20 9:26 AM, Greg Kroah-Hartman wrote:
-> > On Wed, Sep 16, 2020 at 08:26:48AM -0600, Shuah Khan wrote:
-> > > On 9/16/20 12:29 AM, Greg Kroah-Hartman wrote:
-> > > > On Tue, Sep 15, 2020 at 08:54:24PM -0600, Shuah Khan wrote:
-> > > > > On 9/15/20 3:06 PM, Shuah Khan wrote:
-> > > > > > On 9/15/20 8:11 AM, Greg Kroah-Hartman wrote:
-> > > > > > > This is the start of the stable review cycle for the 5.8.10 release.
-> > > > > > > There are 177 patches in this series, all will be posted as a response
-> > > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > > let me know.
-> > > > > > > 
-> > > > > > > Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
-> > > > > > > Anything received after that time might be too late.
-> > > > > > > 
-> > > > > > > The whole patch series can be found in one patch at:
-> > > > > > >       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
-> > > > > > > 
-> > > > > > > or in the git tree and branch at:
-> > > > > > >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > > > > > linux-5.8.y
-> > > > > > > and the diffstat can be found below.
-> > > > > > > 
-> > > > > > > thanks,
-> > > > > > > 
-> > > > > > > greg k-h
-> > > > > > > 
-> > > > > > 
-> > > > > > Compiled and booted fine. wifi died:
-> > > > > > 
-> > > > > > ath10k_pci 0000:02:00.0: could not init core (-110)
-> > > > > > ath10k_pci 0000:02:00.0: could not probe fw (-110)
-> > > > > > 
-> > > > > > This is regression from 5.8.9 and 5.9-rc5 works just fine.
-> > > > > > 
-> > > > > > I will try to bisect later this evening to see if I can isolate the
-> > > > > > commit.
-> > > > > > 
-> > > > > 
-> > > > > The following commit is what caused ath10k_pci driver problem
-> > > > > that killed wifi.
-> > > > > 
-> > > > > Prateek Sood <prsood@codeaurora.org>
-> > > > >       firmware_loader: fix memory leak for paged buffer
-> > > > > 
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.8.y&id=ec0a59266c9c9f46037efd3dcc0323973e102271
-> > > > 
-> > > > Ugh, that's not good, is this also a problem in 5.9-rc5 as well?  For
-> > > > reference, this is commit 4965b8cd1bc1 ("firmware_loader: fix memory
-> > > > leak for paged buffer") in Linus's tree.
-> > > > 
-> > > 
-> > > I am not seeing this on Linux 5.9-rc5 for sure.
-> > > 
-> > > > And it should be showing up in 5.4.y at the moment too, as this patch is
-> > > > in that tree right now...
-> > > > 
-> > > 
-> > > I don't see this patch in  4.19.146-rc1
-> > 
-> > It's not there, it's in 5.4.66-rc1, which worked for you somehow, right?
-> > 
-> > > Linus's tree works for with this patch in. I compared the two files
-> > > for differences in commit between Linus's tree and 5.8.10-rc1
-> > > 
-> > > Couldn't find anything obvious.
-> > 
-> > Again, really odd...
-> > 
-> > I don't have a problem dropping it, but I should drop it from both 5.4.y
-> > and 5.8.y, right?
-> > 
+On 16/09/20 6:13 PM, Vinod Koul wrote:
+> On 16-09-20, 15:18, Laurent Pinchart wrote:
+>> Hi Sekhar,
+>>
+>> On Wed, Sep 16, 2020 at 01:11:17PM +0530, Sekhar Nori wrote:
+>>> On 11/09/20 11:48 AM, Swapnil Jakhade wrote:
+>>>> This patch series adds a new PHY attribute max_link_rate.
+>>>> It also updates Cadence Torrent PHY driver to set attributes bus_width,
+>>>> max_link_rate and mode for DisplayPort.
+>>>>
+>>>> It includes following patches:
+>>>>
+>>>> 1. 0001-phy-Add-new-PHY-attribute-max_link_rate.patch
+>>>> This patch adds max_link_rate as a new PHY attribute.
+>>>>
+>>>> 2. 0002-phy-cadence-torrent-Set-Torrent-PHY-attributes.patch
+>>>> This patch sets PHY attributes in Cadence Torrent PHY driver. This will
+>>>> enable drivers using this PHY to read these properties.
+>>>>
+>>>> These attributes will be used in the Cadence MHDP DRM bridge driver [1]
+>>>> which is in the process of upstreaming.
+>>>
+>>> Can you please add these patches on an immutable branch/tag when you are
+>>> ready to apply them - will try to see if we can use it to get the
+>>> DisplayPort driver merged in v5.10 too.
+>>>
+>>> Hi Laurent, any other ideas on managing the dependency?
+>>
+>> I think that will work fine.
 > 
-> Sorry. Yes. Dropping from 5.8 and 5.4 would be great until we figure out
-> why this patch causes problems.
-> 
-> I will continue debugging and let you know what I find.
+> Please pull tag phy-attrs-5.10 for phy tree
 
-Thanks, now dropped from both trees.
+Thanks Vinod!
 
-greg k-h
+Swapnil, please be sure to let DRM maintainers know about the PHY tree
+and the tag they can use when the DP patches are ready for merge.
+
+Please keep Vinod in the loop too so he is aware of the tag being pulled.
+
+Thanks,
+Sekhar
