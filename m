@@ -2,134 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EF926CD01
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7307F26CD69
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgIPUw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbgIPQy4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:54:56 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7D5C0D9417
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:47:49 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k8so755699pfk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FQGO6d/0mEB1ogv6r8XPPwwDAuJ9mmObgleVeh1W30Q=;
-        b=diAhpmQrYS7M270CGrN/O5Df6Kk/JIw2jK0wB8bstS53QPuZIMXExqEKVk18DEyzjV
-         lrxvcXifZ+5YUVBfWIwCtt7OL+27JGQ4L6/7JfqaU/QubBtMkdF5BiHfRNUNu5xc6s9K
-         AJ7katPYRezI+CcMmjtpqq8ya/8MlrOYuWNc237it6xBe7QJU8lEHsJEiHYWLLq9ERdW
-         BheACdvioFzNHXrAxzi2skE1jYQhc6reOgiq78JPVS+vGTCNAlfbk53fkYaROBTG13j7
-         X1GrYdQmyNtu+fn7IOnI+Dff9pLuqE3a44IT0Q+A7uB1oip+EXX3cRjS1IJ0R+YRsUNg
-         NgpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FQGO6d/0mEB1ogv6r8XPPwwDAuJ9mmObgleVeh1W30Q=;
-        b=uWlcrtPeWzXNX1YAsvgHstzDYzhfYfoquwW2ALD33MpBYvGA2QGBe5SmFkZZYg03LN
-         +66y1AcODilkg7emdpH4QDcSncuYvrp1EqNsNtT1RN+7D/6nbgWoFH9xAxTJZdPd0xPD
-         iXwTa7oXh7yRlIzr4wZkMdUMeuY/BfTXoZuUFpUoUSTN1mIsCkObgTMWvRyKJCdrQzMi
-         ODl1Z8/R/2+KPpek1eAn0phWgU84RRsPTPenknK4NtTQDiJQXhA13NPHHuQs709cUl/r
-         Wnxx5GPgslPkTgFw6OF3soRydjNRoatp9nxqTzBa8aZjJEhAs14x4ZRf9IO3F28m3cG0
-         Gyeg==
-X-Gm-Message-State: AOAM532GWwVzYS3+OqiCk1wYjFyCNsAd1XsSHWG+o7XBASt8SNxkDncU
-        VngK1I2iEb9MgM9VTwM6LWN/IGs1vIwz9bPPTZIsXQ==
-X-Google-Smtp-Source: ABdhPJwHamuSqfH4lJpIQcn0CZDeDCmKb5iALIr0BJPrcv+edfAnkn4NuZArB/B5l70iTD2jJffpjleIYuvEGchu+bs=
-X-Received: by 2002:aa7:941a:0:b029:142:2501:35d1 with SMTP id
- x26-20020aa7941a0000b0290142250135d1mr6672587pfo.49.1600267669164; Wed, 16
- Sep 2020 07:47:49 -0700 (PDT)
+        id S1726410AbgIPU7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:59:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbgIPQbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:31:34 -0400
+Received: from gaia (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CE28206A2;
+        Wed, 16 Sep 2020 14:51:14 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 15:51:11 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        George Cherian <george.cherian@marvell.com>,
+        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v2 3/3] asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP
+ pci_iounmap() implementation
+Message-ID: <20200916145111.GB3122@gaia>
+References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
+ <cover.1600254147.git.lorenzo.pieralisi@arm.com>
+ <a9daf8d8444d0ebd00bc6d64e336ec49dbb50784.1600254147.git.lorenzo.pieralisi@arm.com>
 MIME-Version: 1.0
-References: <20200915171801.39761-1-songmuchun@bytedance.com>
- <20200915214845.GB189808@cmpxchg.org> <CAMZfGtXOR1Ed2PyB4TB5mq=1mh7p7La-4BsoZ8oYhtgc8ZcqLQ@mail.gmail.com>
- <20200916144057.GA194430@cmpxchg.org>
-In-Reply-To: <20200916144057.GA194430@cmpxchg.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 16 Sep 2020 22:47:12 +0800
-Message-ID: <CAMZfGtX-q6vB853YCKqW3Yo=N=AFWcQSxYF=mYK6PKC2XAHMAg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5] mm: memcontrol: Add the missing
- numa_stat interface for cgroup v2
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a9daf8d8444d0ebd00bc6d64e336ec49dbb50784.1600254147.git.lorenzo.pieralisi@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:42 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Sep 16, 2020 at 12:14:49PM +0800, Muchun Song wrote:
-> > On Wed, Sep 16, 2020 at 5:50 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > >
-> > > On Wed, Sep 16, 2020 at 01:18:01AM +0800, Muchun Song wrote:
-> > > > In the cgroup v1, we have a numa_stat interface. This is useful for
-> > > > providing visibility into the numa locality information within an
-> > > > memcg since the pages are allowed to be allocated from any physical
-> > > > node. One of the use cases is evaluating application performance by
-> > > > combining this information with the application's CPU allocation.
-> > > > But the cgroup v2 does not. So this patch adds the missing information.
-> > > >
-> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > Suggested-by: Shakeel Butt <shakeelb@google.com>
-> > > > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> > >
-> > > Yup, that would be useful information to have. Just a few comments on
-> > > the patch below:
-> > >
-> > > > @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
-> > > >               collapsing an existing range of pages. This counter is not
-> > > >               present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
-> > > >
-> > > > +  memory.numa_stat
-> > > > +     A read-only flat-keyed file which exists on non-root cgroups.
-> > >
-> > > It's a nested key file, not flat.
-> >
-> > This is just copied from memory.stat documentation.Is the memory.stat
-> > also a nested key file?
->
-> No, memory.stat is a different format. From higher up in the document:
->
->   Flat keyed
->
->         KEY0 VAL0\n
->         KEY1 VAL1\n
->         ...
->
->   Nested keyed
->
->         KEY0 SUB_KEY0=VAL00 SUB_KEY1=VAL01...
->         KEY1 SUB_KEY0=VAL10 SUB_KEY1=VAL11...
->         ...
+On Wed, Sep 16, 2020 at 12:06:58PM +0100, Lorenzo Pieralisi wrote:
+> For arches that do not select CONFIG_GENERIC_IOMAP, the current
+> pci_iounmap() function does nothing causing obvious memory leaks
+> for mapped regions that are backed by MMIO physical space.
+> 
+> In order to detect if a mapped pointer is IO vs MMIO, a check must made
+> available to the pci_iounmap() function so that it can actually detect
+> whether the pointer has to be unmapped.
+> 
+> In configurations where CONFIG_HAS_IOPORT_MAP && !CONFIG_GENERIC_IOMAP,
+> a mapped port is detected using an ioport_map() stub defined in
+> asm-generic/io.h.
+> 
+> Use the same logic to implement a stub (ie __pci_ioport_unmap()) that
+> detects if the passed in pointer in pci_iounmap() is IO vs MMIO to
+> iounmap conditionally and call it in pci_iounmap() fixing the issue.
+> 
+> Leave __pci_ioport_unmap() as a NOP for all other config options.
+> 
+> Reported-by: George Cherian <george.cherian@marvell.com>
+> Link: https://lore.kernel.org/lkml/20200905024811.74701-1-yangyingliang@huawei.com
+> Link: https://lore.kernel.org/lkml/20200824132046.3114383-1-george.cherian@marvell.com
+> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: George Cherian <george.cherian@marvell.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  include/asm-generic/io.h | 39 +++++++++++++++++++++++++++------------
+>  1 file changed, 27 insertions(+), 12 deletions(-)
 
-Got it. Thanks for your explanation.
+This works for me. The only question I have is whether pci_iomap.h is
+better than io.h for __pci_ioport_unmap(). These headers are really
+confusing.
 
->
-> > > Otherwise, this looks reasonable to me.
-> >
-> > OK. Will do that.
->
-> Thanks!
+Either way:
 
-
-
--- 
-Yours,
-Muchun
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
