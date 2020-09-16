@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F4726C939
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB6F26C8FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbgIPTFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:05:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52108 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727423AbgIPRqU (ORCPT
+        id S1727634AbgIPTB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727530AbgIPRsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:46:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600278367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XRO16mMg5GaRKPmGz8IPQMX7zD3Ci0CVQkdQAp+eeDU=;
-        b=GuDZ+YxuF5l38LkZfbJZtRHWLQ8tiMs3hYS8g12tGmPtbPrRiATDB5XY1jOMHwikHsW7T8
-        dG8Xf4EKtaT9KqEa9H/gtNhGW2QboVwKedmpqK/VeGzgGBFibabvEOnsJP5lyltLquBiHU
-        0RJVGrNemdpyPuGR28bc33OwKwNV1IE=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-2tUFb-zgOi6fqAcuVBDoeg-1; Wed, 16 Sep 2020 07:04:47 -0400
-X-MC-Unique: 2tUFb-zgOi6fqAcuVBDoeg-1
-Received: by mail-wm1-f70.google.com with SMTP id w3so890439wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:04:46 -0700 (PDT)
+        Wed, 16 Sep 2020 13:48:52 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC14C061222;
+        Wed, 16 Sep 2020 04:04:55 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id j11so9803624ejk.0;
+        Wed, 16 Sep 2020 04:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8yyOs8M38oSzNrlEQXmu5SSo5wKakYP4BlxDSuTxupc=;
+        b=ggjcPcajfgPW1CHntIHR3hz80OMBSbQU7Gwc9RoXmAnGM9T3eNT3gICD5QzpSFGWRl
+         JlA3WUd8EvzBglannUWdaHxayk78gS8ezQxXkBo+9Yew9KOOZWVDe2bMNsr+EX7yY72l
+         rAYAuo5SEljjGbL845wHOLWY/37a2YCtbHzyLmuqOid2Vwr3zlpsGOWHwbMGdOvrJ//I
+         KL+3n7NCtchkaAOl8RVgllX7HXv0wLi1KI6yT2Yhwq+ScxV8dFeFf6lWFjJ4Qv9GQfTI
+         ztuHvm+w2aNZTjBzpeffzd1TFYVOpstvWQTCtSLZ0vEjoKLtdDD3hoSYllsBjpPNnY5r
+         59lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=XRO16mMg5GaRKPmGz8IPQMX7zD3Ci0CVQkdQAp+eeDU=;
-        b=NWFHASizLYo7YDYjMgoFm1/WNki0YTcpthfh6YirXM9F0jDmAKgouTV7xiyX5CYZhL
-         3V9b+dX9Cy8lTQ8PajG2NJZJIoQErCD8lV5lzsoC8/HHiuPGpVe+v/DPtwx4aDEnNrFC
-         rS1dOhMVvHaliZqWUrR93rMxRpp1Th0c2pxbA5ZKg5erkXkjYwfge6lEPAkloUrVlBk8
-         WPzvhRQ9q8QOdhD4jMNwuYN3JiqETEXdyOY+Xjz7SWOOx6wiOs00evm8bPAPDGbkdW5H
-         6DAHspunicL2R5Hf+kOstZz24w5Yucmu4ImnMt3tfYWPlTg72WCvAZnMWok3UXLMeFFk
-         mMvQ==
-X-Gm-Message-State: AOAM530tTzE80vhZYPdDN1AnheXU+oB3N/fb1EaDQ2KDicLPzuBMTGyF
-        3vQ+4h3UllRaQAj0KzGHNy1QJekuNHcOz5sKK1dVc0UT9vc/m/w0dqv/HBZ9b/Wf6nV1v7zYdUV
-        5X9Xs1AedFiP81eX03C8gnQ3+
-X-Received: by 2002:a1c:4886:: with SMTP id v128mr4176303wma.139.1600254285983;
-        Wed, 16 Sep 2020 04:04:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXOwHgcuX4ilwFSwurcSnFqefL8bUg1Iqgl1HlBLU/S03zKb0qDPImdtVb99TfNdUw7AXySw==
-X-Received: by 2002:a1c:4886:: with SMTP id v128mr4176289wma.139.1600254285795;
-        Wed, 16 Sep 2020 04:04:45 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id l4sm4640990wme.43.2020.09.16.04.04.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8yyOs8M38oSzNrlEQXmu5SSo5wKakYP4BlxDSuTxupc=;
+        b=GhVVH3wRDY3VANoACWS0pDms4MfZY23vYDau5/8EGRVVHQsYCxL/uOe19o0jy+1inJ
+         EkZCcJ8DBUyLq/g11x8p6d4172MFUAo05TYnmWbwycOPMj0hTsje5ppXTFJv1K5IPrkB
+         QkbwzlCyo1h992kCqCcQDNgZLuNzr5Cpcf3ojrJtVH4VvdPEly49f/CjgBRpU8+wFilt
+         cQsZ+FuyCHsEzQkZCrv6OeTuqumfMsun2JGEPEVcH0zabp69+WKItCjEEdyqvE9EtFqc
+         mlwv4jRacTHqHzyI+eTyHmDuSLo1A20d6KDG743R6PvqCHFbqroeFTExrn7MeA4kAjXW
+         LUyg==
+X-Gm-Message-State: AOAM531ogubLMrHnUJS7xx84tinlsI3JrfEtZWCKf3jYvE4/yF8X3vce
+        YtdX+L0M3vFpmIf3RA8lRps1ucp1B2U=
+X-Google-Smtp-Source: ABdhPJz9CxWsjmf+K1u1jhtjPkh8nevL8QCMYOLC8Q8Nj6rdeZsSCgHqbOd7t84pBrr8/BKOhvnmig==
+X-Received: by 2002:a17:906:88d:: with SMTP id n13mr25343926eje.75.1600254291481;
+        Wed, 16 Sep 2020 04:04:51 -0700 (PDT)
+Received: from skbuf ([188.25.217.212])
+        by smtp.gmail.com with ESMTPSA id ch29sm13931115edb.74.2020.09.16.04.04.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 04:04:44 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Haiwei Li <lihaiwei.kernel@gmail.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Haiwei Li <lihaiwei@tencent.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH] Revert "KVM: Check the allocation of pv cpu mask"
-In-Reply-To: <6c2204ad-590b-025d-f728-0e6e67bf24ba@gmail.com>
-References: <20200916090342.748452-1-vkuznets@redhat.com> <6c2204ad-590b-025d-f728-0e6e67bf24ba@gmail.com>
-Date:   Wed, 16 Sep 2020 13:04:43 +0200
-Message-ID: <87een2htis.fsf@vitty.brq.redhat.com>
+        Wed, 16 Sep 2020 04:04:51 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 14:04:48 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     wg@grandegger.com, pankaj.bansal@nxp.com,
+        pankaj.bansal@oss.nxp.com, mkl@pengutronix.de,
+        linux-can@vger.kernel.org
+Cc:     qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
+        vladimir.oltean@nxp.com
+Subject: Re: canfdtest on flexcan loopback
+Message-ID: <20200916110448.dsla6vjzy4fvdr22@skbuf>
+References: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
+ <20200916110154.hp4up6yhyokduvf2@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916110154.hp4up6yhyokduvf2@skbuf>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Haiwei Li <lihaiwei.kernel@gmail.com> writes:
+[ resending, forgot to copy Wolfgang ]
 
-> On 20/9/16 17:03, Vitaly Kuznetsov wrote:
->> The commit 0f990222108d ("KVM: Check the allocation of pv cpu mask") we
->> have in 5.9-rc5 has two issue:
->> 1) Compilation fails for !CONFIG_SMP, see:
->>     https://bugzilla.kernel.org/show_bug.cgi?id=209285
->> 
->> 2) This commit completely disables PV TLB flush, see
->>     https://lore.kernel.org/kvm/87y2lrnnyf.fsf@vitty.brq.redhat.com/
->> 
->> The allocation problem is likely a theoretical one, if we don't
->> have memory that early in boot process we're likely doomed anyway.
->> Let's solve it properly later.
+On Wed 9/2/2020 10:09 AM, Wolfgang Grandegger wrote:
+> canfdtest normally runs on the DUT *and* a the host. The DUT receives
+> the messages from the host, increments the frame data bytes and then
+> sends them back to the host. With "loopback" mode, the data bytes are
+> not incremented and that's what you see above.
 >
-> Hi, i have sent a patchset to fix this commit.
->
-> https://lore.kernel.org/kvm/20200914091148.95654-1-lihaiwei.kernel@gmail.com/T/#m6c27184012ee5438e5d91c09b1ba1b6a3ee30ee4
->
-> What do you think?
+> Wolfgang
 
-Saw it, looks good to me. We are, however, already very, very late in 5.9
-release cycle and the original issue you were addressing (allocation
-failure) is likely a theoretical only I suggest we just revert it before
-5.9 is released. For 5.9 we can certainly take your PATCH2 merged with
-0f99022210.
+Wolfgang is of course right, but we're nonetheless investigating what
+seems to be a real problem, and what Pankaj had seen was a red herring.
 
-This Paolo's call anyway)
+So currently what I suspect is going on, when I am running canfdtest
+between 2 LS1028A-RDB boards, is that the DUT is reordering frames on
+TX.
 
--- 
-Vitaly
+See, for example, the screenshot below:
+https://drive.google.com/file/d/1rOeW3aXh3kPh1CJ39lCccRfjFz5JN5I6/view?usp=sharing
 
+I have added trace points to the end of the flexcan_start_xmit function,
+which print the entire skb, and the frames appear to be written to the
+TX message buffer in the correct order. They are seen, however, in the
+incorrect order on the wire.
+
+Thanks,
+-Vladimir
