@@ -2,185 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4B926CB88
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407CA26CB8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728345AbgIPU3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726982AbgIPU3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728370AbgIPU3U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 16:29:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgIPU3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 16:29:13 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F9AB21D7D;
-        Wed, 16 Sep 2020 20:29:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600288151;
-        bh=SCzOrB4lweKRckm+knWwjnNg0jROK6biqRSX3ki2BiI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=e+Iw1mt5Yc3Veu814QCcNeWLyoD8CW+fHgKI0AaMwjENQZ2vUle+NUGstcirnxahl
-         bdZzwlwFIDxDk+WZI6LSDAry40EKQcuVawKnOpeyU4sKK72dj5Y1F3k4+jGjjPORTK
-         JQiQKQ6UNCRLTryuwSRXpW+jiPrVLiz0RuLuDhks=
-Received: by mail-ot1-f51.google.com with SMTP id q21so2307056ota.8;
-        Wed, 16 Sep 2020 13:29:11 -0700 (PDT)
-X-Gm-Message-State: AOAM531BkTAGMqrRra4X7mTqqAz371e8sUURvt5BUV49KoAgnTdUQakA
-        Ao4B0UdfjBfF9DOSIu99ftMgwpIeukT6emW+FQ==
-X-Google-Smtp-Source: ABdhPJxikvqySgGdEj1VMvgSrNsppqXbHljdvAdVlwshBvut7lz06KKXIwW3HGoDvf3gsrmB2mReYPnlfY2ANx9wcRM=
-X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr17954623otp.129.1600288150737;
- Wed, 16 Sep 2020 13:29:10 -0700 (PDT)
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E31C06178B
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 13:29:18 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id c10so7893220otm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 13:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jfgJnSB2bhKQDSQtNR/O8X7GsVYOAbT1ea08kPi1xE8=;
+        b=Hg8y851ePYZ8WQiMJoPwyU+sXO5H1E4m1YWgJB25Vi80MlW/sWDUqOxp2mcpnbFjRA
+         JQaXwZKjvCdBn7KFi5t/HBjntwthC3FY/aIkSk+md/+gwxuei9VHD6ldDA1E5QelovRK
+         REsPW2xBPjZrnpKbi5tB6r38dw//jdnXVvQX4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jfgJnSB2bhKQDSQtNR/O8X7GsVYOAbT1ea08kPi1xE8=;
+        b=Q2vWiUE4mGlDCJIA2QGQ5lvot+nY1x4UW5iQox3s7+T+jBAjDV+SY0fm1cZDz4IHh7
+         EEBNZM3GaFZdyTm9jdb/MNQrWwAjTY5nQGiZVLbOjY3wp/BcjSbfzZKkeVcSHPZCo+nW
+         tmnOmc5QCRme7nSU7fbJ+6EjpSX8X8ZlSrrGEdRAEAYbeC035/86wsmbBqukmGqiql0X
+         EAeMokreT3Q0Km23jpN1RhJG1EVtsmCUXuzZGH6dQHijFfGTJpfD3KeCtlqBmBMCH924
+         nR29YhEE5J2x4Y+lg/UX2H5cPhynkiQh6UZiUjnUNHtwRoXrE+oCUyDcdzX5XjzcklLv
+         NBsw==
+X-Gm-Message-State: AOAM5308b4FNhdncrM7ut2464fUnArsJrWu3WwsUst92KtfK5frQhSna
+        l52uxJpY41egnTIv48Bc8daImjnK6KvN0pzy1pzxWA==
+X-Google-Smtp-Source: ABdhPJyp9Of+LYn6qLPki7Nl/8rfmMLDV2B7cI3AVOwAQ4KqtvLG8pHiS+TQrmOMl+LluaOA2Eov6ysFmH7fg1w3xeE=
+X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr18605193otq.188.1600288157601;
+ Wed, 16 Sep 2020 13:29:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
-In-Reply-To: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 16 Sep 2020 14:28:59 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
-Message-ID: <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of dw_child_pcie_ops
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Michael Walle <michael@walle.cc>,
-        Ard Biesheuvel <ardb@kernel.org>
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de> <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+ <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com> <20200916152956.GV29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200916152956.GV29330@paulmck-ThinkPad-P72>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 16 Sep 2020 22:29:06 +0200
+Message-ID: <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:49 PM Zhiqiang Hou <Zhiqiang.Hou@nxp.com> wrote:
+On Wed, Sep 16, 2020 at 5:29 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> On Wed, Sep 16, 2020 at 09:37:17AM +0200, Daniel Vetter wrote:
+> > On Tue, Sep 15, 2020 at 7:35 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > > >
+> > > > OTOH, having a working 'preemptible()' or maybe better named
+> > > > 'can_schedule()' check makes tons of sense to make decisions about
+> > > > allocation modes or other things.
+> > >
+> > > No. I think that those kinds of decisions about actual behavior are
+> > > always simply fundamentally wrong.
+> > >
+> > > Note that this is very different from having warnings about invalid
+> > > use. THAT is correct. It may not warn in all configurations, but that
+> > > doesn't matter: what matters is that it warns in common enough
+> > > configurations that developers will catch it.
+> > >
+> > > So having a warning in "might_sleep()" that doesn't always trigger,
+> > > because you have a limited configuration that can't even detect the
+> > > situation, that's fine and dandy and intentional.
+> > >
+> > > But having code like
+> > >
+> > >        if (can_schedule())
+> > >            .. do something different ..
+> > >
+> > > is fundamentally complete and utter garbage.
+> > >
+> > > It's one thing if you test for "am I in hardware interrupt context".
+> > > Those tests aren't great either, but at least they make sense.
+> > >
+> > > But a driver - or some library routine - making a difference based on
+> > > some nebulous "can I schedule" is fundamentally and basically WRONG.
+> > >
+> > > If some code changes behavior, it needs to be explicit to the *caller*
+> > > of that code.
+> > >
+> > > So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
+> > > do_something_atomic()" is pure shite.
+> > >
+> > > And I am not IN THE LEAST interested in trying to help people doing
+> > > pure shite. We need to fix them. Like the crypto code is getting
+> > > fixed.
+> >
+> > Just figured I'll throw my +1 in from reading too many (gpu) drivers.
+> > Code that tries to cleverly adjust its behaviour depending upon the
+> > context it's running in is harder to understand and blows up in more
+> > interesting ways. We still have drm_can_sleep() and it's mostly just
+> > used for debug code, and I've largely ended up just deleting
+> > everything that used it because when you're driver is blowing up the
+> > last thing you want is to realize your debug code and output can't be
+> > relied upon. Or worse, that the only Oops you have is the one in the
+> > debug code, because the real one scrolled away - the original idea
+> > behind drm_can_sleep was to make all the modeset code work
+> > automagically both in normal ioctl/kworker context and in the panic
+> > handlers or kgdb callbacks. Wishful thinking at best.
+> >
+> > Also at least for me that extends to everything, e.g. I much prefer
+> > explicit spin_lock and spin_lock_irq vs magic spin_lock_irqsave for
+> > locks shared with interrupt handlers, since the former two gives me
+> > clear information from which contexts such function can be called.
+> > Other end is the memalloc_no*_save/restore functions, where I recently
+> > made a real big fool of myself because I didn't realize how much that
+> > impacts everything that's run within - suddenly "GFP_KERNEL for small
+> > stuff never fails" is wrong everywhere.
+> >
+> > It's all great for debugging and sanity checks (and we run with all
+> > that stuff enabled in our CI), but really semantic changes depending
+> > upon magic context checks freak my out :-)
 >
-> On NXP Layerscape platforms, it results in SError in the
-> enumeration of the PCIe controller, which is not connecting
-> with an Endpoint device. And it doesn't make sense to
-> enumerate the Endpoints when the PCIe link is down. So this
-> patch added the link up check to avoid to fire configuration
-> transactions on link down bus.
-
-Michael reported the same issue as well.
-
-What happens if the link goes down between the check and the access?
-It's a racy check. I'd like to find an alternative solution. It's even
-worse if Layerscape is used in ECAM mode. I looked at the EDK2 setup
-for layerscape[1] and it looks like root ports are just skipped if
-link is down. Maybe a link down just never happens once up, but if so,
-then we only need to check it once and fail probe.
-
-I've dug into this a bit more and am curious about the PCIE_ABSERR
-register setting which is set to:
-
-#define PCIE_ABSERR_SETTING 0x9401 /* Forward error of non-posted request */
-
-It seems to me this is not what we want at least for config accesses,
-but commit 84d897d6993 where this was added seems to say otherwise. Is
-it not possible to configure the response per access type?
-
-This appears to be a standard DWC register as the tegra driver defines
-this address as PORT_LOGIC_AMBA_ERROR_RESPONSE_DEFAULT. Perhaps
-someone can shed some light on what this register contains.
-
-Rob
-
-[1] https://git.linaro.org/leg/noupstream/edk2-platforms.git/tree/Silicon/NXP/Library/PciHostBridgeLib/PciHostBridgeLib.c?h=developer-box#n756
-
-
+> All fair, but some of us need to write code that must handle being
+> invoked from a wide variety of contexts.  Now perhaps you like the idea of
+> call_rcu() for schedulable contexts, call_rcu_nosched() when preemption
+> is disabled, call_rcu_irqs_are_disabled() when interrupts are disabled,
+> call_rcu_raw_atomic() from contexts where (for example) raw spinlocks
+> are held, and so on.  However, from what I can see, most people instead
+> consistently prefer that the RCU API instead be consolidated.
 >
-> [    0.807773] SError Interrupt on CPU2, code 0xbf000002 -- SError
-> [    0.807775] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> [    0.807776] Hardware name: LS1046A RDB Board (DT)
-> [    0.807777] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> [    0.807778] pc : pci_generic_config_read+0x3c/0xe0
-> [    0.807778] lr : pci_generic_config_read+0x24/0xe0
-> [    0.807779] sp : ffff80001003b7b0
-> [    0.807780] x29: ffff80001003b7b0 x28: ffff80001003ba74
-> [    0.807782] x27: ffff000971d96800 x26: ffff00096e77e0a8
-> [    0.807784] x25: ffff80001003b874 x24: ffff80001003b924
-> [    0.807786] x23: 0000000000000004 x22: 0000000000000000
-> [    0.807788] x21: 0000000000000000 x20: ffff80001003b874
-> [    0.807790] x19: 0000000000000004 x18: ffffffffffffffff
-> [    0.807791] x17: 00000000000000c0 x16: fffffe0025981840
-> [    0.807793] x15: ffffb94c75b69948 x14: 62203a383634203a
-> [    0.807795] x13: 666e6f635f726568 x12: 202c31203d207265
-> [    0.807797] x11: 626d756e3e2d7375 x10: 656877202c307830
-> [    0.807799] x9 : 203d206e66766564 x8 : 0000000000000908
-> [    0.807801] x7 : 0000000000000908 x6 : ffff800010900000
-> [    0.807802] x5 : ffff00096e77e080 x4 : 0000000000000000
-> [    0.807804] x3 : 0000000000000003 x2 : 84fa3440ff7e7000
-> [    0.807806] x1 : 0000000000000000 x0 : ffff800010034000
-> [    0.807808] Kernel panic - not syncing: Asynchronous SError Interrupt
-> [    0.807809] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> [    0.807810] Hardware name: LS1046A RDB Board (DT)
-> [    0.807811] Call trace:
-> [    0.807812]  dump_backtrace+0x0/0x1c0
-> [    0.807813]  show_stack+0x18/0x28
-> [    0.807814]  dump_stack+0xd8/0x134
-> [    0.807814]  panic+0x180/0x398
-> [    0.807815]  add_taint+0x0/0xb0
-> [    0.807816]  arm64_serror_panic+0x78/0x88
-> [    0.807817]  do_serror+0x68/0x180
-> [    0.807818]  el1_error+0x84/0x100
-> [    0.807818]  pci_generic_config_read+0x3c/0xe0
-> [    0.807819]  dw_pcie_rd_other_conf+0x78/0x110
-> [    0.807820]  pci_bus_read_config_dword+0x88/0xe8
-> [    0.807821]  pci_bus_generic_read_dev_vendor_id+0x30/0x1b0
-> [    0.807822]  pci_bus_read_dev_vendor_id+0x4c/0x78
-> [    0.807823]  pci_scan_single_device+0x80/0x100
-> [    0.807824]  pci_scan_slot+0x38/0x130
-> [    0.807825]  pci_scan_child_bus_extend+0x54/0x2a0
-> [    0.807826]  pci_scan_child_bus+0x14/0x20
-> [    0.807827]  pci_scan_bridge_extend+0x230/0x570
-> [    0.807828]  pci_scan_child_bus_extend+0x134/0x2a0
-> [    0.807829]  pci_scan_root_bus_bridge+0x64/0xf0
-> [    0.807829]  pci_host_probe+0x18/0xc8
-> [    0.807830]  dw_pcie_host_init+0x220/0x378
-> [    0.807831]  ls_pcie_probe+0x104/0x140
-> [    0.807832]  platform_drv_probe+0x54/0xa8
-> [    0.807833]  really_probe+0x118/0x3e0
-> [    0.807834]  driver_probe_device+0x5c/0xc0
-> [    0.807835]  device_driver_attach+0x74/0x80
-> [    0.807835]  __driver_attach+0x8c/0xd8
-> [    0.807836]  bus_for_each_dev+0x7c/0xd8
-> [    0.807837]  driver_attach+0x24/0x30
-> [    0.807838]  bus_add_driver+0x154/0x200
-> [    0.807839]  driver_register+0x64/0x120
-> [    0.807839]  __platform_driver_probe+0x7c/0x148
-> [    0.807840]  ls_pcie_driver_init+0x24/0x30
-> [    0.807841]  do_one_initcall+0x60/0x1d8
-> [    0.807842]  kernel_init_freeable+0x1f4/0x24c
-> [    0.807843]  kernel_init+0x14/0x118
-> [    0.807843]  ret_from_fork+0x10/0x34
-> [    0.807854] SMP: stopping secondary CPUs
-> [    0.807855] Kernel Offset: 0x394c64080000 from 0xffff800010000000
-> [    0.807856] PHYS_OFFSET: 0xffff8bfd40000000
-> [    0.807856] CPU features: 0x0240022,21806000
-> [    0.807857] Memory Limit: none
+> Some in-flight cache-efficiency work for kvfree_rcu() and call_rcu()
+> needs to be able to allocate memory occasionally.  It can do that when
+> invoked from some contexts, but not when invoked from others.  Right now,
+> in !PREEMPT kernels, it cannot tell, and must either do things to the
+> memory allocators that some of the MM hate or must unnecessarily invoke
+> workqueues.  Thomas's patches would allow the code to just allocate in
+> the common case when these primitives are invoked from contexts where
+> allocation is permitted.
 >
-> Fixes: c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-host.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> If we want to restrict access to the can_schedule() or whatever primitive,
+> fine and good.  We can add a check to checkpatch.pl, for example.  Maybe
+> we can go back to the old brlock approach of requiring certain people's
+> review for each addition to the kernel.
 >
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index c01c9d2fb3f9..e82b518430c5 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -442,6 +442,9 @@ static void __iomem *dw_pcie_other_conf_map_bus(struct pci_bus *bus,
->         struct pcie_port *pp = bus->sysdata;
->         struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->
-> +       if (!dw_pcie_link_up(pci))
-> +               return NULL;
-> +
->         busdev = PCIE_ATU_BUS(bus->number) | PCIE_ATU_DEV(PCI_SLOT(devfn)) |
->                  PCIE_ATU_FUNC(PCI_FUNC(devfn));
->
-> --
-> 2.17.1
->
+> But there really are use cases that it would greatly help.
+
+We can deadlock in random fun places if random stuff we're calling
+suddenly starts allocating. Sometimes. Maybe once in a blue moon, to
+make it extra fun to reproduce. Maybe most driver subsystems are less
+brittle, but gpu drivers definitely need to know about the details for
+exactly this example. And yes gpu drivers use rcu for freeing
+dma_fence structures, and that tends to happen in code that we only
+recently figured out should really not allocate memory.
+
+I think minimally you need to throw in an unconditional
+fs_reclaim_acquire();fs_reclaim_release(); so that everyone who runs
+with full debugging knows what might happen. It's kinda like
+might_sleep, but a lot more specific. might_sleep() alone is not
+enough, because in the specific code paths I'm thinking of (and
+created special lockdep annotations for just recently) sleeping is
+allowed, but any memory allocations with GFP_RECLAIM set are no-go.
+
+Cheers, Daniel
+
+
+
+
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
