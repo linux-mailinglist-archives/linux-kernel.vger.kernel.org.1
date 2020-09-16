@@ -2,80 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5FF26CB1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E5926CAD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbgIPUWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbgIPR3O (ORCPT
+        id S1727358AbgIPUP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:15:56 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42066 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726921AbgIPRb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:29:14 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469FCC06174A;
-        Wed, 16 Sep 2020 10:29:11 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id l126so4388244pfd.5;
-        Wed, 16 Sep 2020 10:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l5QENNkdAGMuTC5nW+iy9KsmDtcHDjxhRO+rPJdPpPM=;
-        b=nkIZ1Yz1wfmopDGdAEt3hWupDEXkUSS2QDMSF+v9DPARbfQn6vsqnk8bCov1jPMn0g
-         4pa8QZzKZdN88lkxxeCOw5BlWjiXdOJgAL0RThOFEVSPu0mUFsbo54bWePy/sGrnNSKl
-         ZN5e8Y8mcrfC7NfnclUreQzj9thUQRob/6UsGMSvhRk3NDf2oBLZFxd8GjDN9RjmrljZ
-         YxkLzqD/3RcS73PZWRjcWZZ6EoDdKYg0S4c1o+Fd6nYe0V1vir9f0Mz+XJm8TcKtDxSH
-         S3Rr82PuU/NL59rs9DU0VBgx2qTeMy4yHtcANIrc7//6jaARjy49MtCEi3tYS1DpKXJD
-         BINw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l5QENNkdAGMuTC5nW+iy9KsmDtcHDjxhRO+rPJdPpPM=;
-        b=laWEl8iCtcmCzPnn6z9qfOn0e0C+jGnw2w7l12Akg1rYEuEXIpLHosbIGLAi2k4cjI
-         dmTuAyTT9XAseGKwExEkEOygUrxLWXnOGwb2X9uaGs3kLvxoo5D5Zwy4dtNpIStvdArg
-         ADF+/RBLpGVHswegXwSkM3KuBWmlNFa9Pd6LJFk5jIliEDZMDEweHIjp8148InsTDydr
-         +9xX2eEU7PYaJzDVZXFuCeVV9DpnICpe2JTQu8YPofC7O8CDLz0dGHeDTXFeJb49gK/K
-         YOr8LkQXIRm81NYN3I7Tbc26uGfeociHfSwyrpkojXMQ4G/WsvG80GZJf10Db9Yphkta
-         E1bQ==
-X-Gm-Message-State: AOAM530P099OAEYnYVmS04LF4Ub+HEsx3QC9kp1cbyhLMEd+TmpJdTkc
-        W2e17lto6+w4InisZ5Of1hVfEfUJqvM=
-X-Google-Smtp-Source: ABdhPJxmtmqYNX393z5XpwmaQERqHPEt7Mlp1Syuz6+p5V+ykLZgZDqJP1FGN2p2enupG+I2XQqgeQ==
-X-Received: by 2002:a63:6881:: with SMTP id d123mr19452899pgc.370.1600277350575;
-        Wed, 16 Sep 2020 10:29:10 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id gd17sm3230369pjb.6.2020.09.16.10.29.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 10:29:10 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 10:29:07 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        andi@etezian.org, javier@osg.samsung.com, robh@kernel.org,
-        linux-input@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] Input: stmfts - Fix a & vs && typo
-Message-ID: <20200916172907.GK1681290@dtor-ws>
-References: <20200916141941.16684-1-yuehaibing@huawei.com>
+        Wed, 16 Sep 2020 13:31:29 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GHSOsr182311;
+        Wed, 16 Sep 2020 17:31:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=16MVLMxJEjiqUj2yCZKb2qIuPejsvOFsf6Uv7KdzcwM=;
+ b=Oh9ULta134KSgFt7v49f3Efb9aRp74ymj1fBPooUp6AFLmpBTd+m+J/TBfkSo1fDtx4n
+ T6LQ3nkEAv6RwDIbPCaOzPXpU40GPYu3yOuNANTUAoTNQX/6dbOBhDeO5A+6M2A/9d42
+ L4Pw9XkYSPR949KVvzWMh8ch5Pl2+yg+U1fT9Wt7KK1iRHQOAWkzs6jDv5VNBXHU/+hf
+ Xp7f4lItRqNsuzpkmJb15B3GMZjy1aXTTFVx6Xe4M5DXIKc8DhvazYV4U0YBnYvdcxTi
+ USscGpZXe2UNDmiNYqMYGE0b4w7jvoPkrcYsOWHAvnaQLVit7kQLLNY+JgCR3o/NDbhe Sw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33j91dp56h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 17:31:05 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GHTs5J134351;
+        Wed, 16 Sep 2020 17:31:04 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 33hm337mvg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 17:31:04 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08GHV0OP017867;
+        Wed, 16 Sep 2020 17:31:00 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 17:31:00 +0000
+Subject: Re: [RFC PATCH] cma: make number of CMA areas dynamic, remove
+ CONFIG_CMA_AREAS
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Joonsoo Kim <js1304@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Aslan Bakirov <aslan@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200903030204.253433-1-mike.kravetz@oracle.com>
+ <20200916043207.GA713@infradead.org>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <7e730a74-3a9d-a18c-3f6a-f7bb206298d5@oracle.com>
+Date:   Wed, 16 Sep 2020 10:30:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916141941.16684-1-yuehaibing@huawei.com>
+In-Reply-To: <20200916043207.GA713@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160122
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160122
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:19:41PM +0800, YueHaibing wrote:
-> In stmfts_sysfs_hover_enable_write(), we should check
-> value and sdata->hover_enabled is all true.
+On 9/15/20 9:32 PM, Christoph Hellwig wrote:
+> On Wed, Sep 02, 2020 at 08:02:04PM -0700, Mike Kravetz wrote:
+>> --- a/arch/arm/mm/dma-mapping.c
+>> +++ b/arch/arm/mm/dma-mapping.c
+>> @@ -383,25 +383,34 @@ postcore_initcall(atomic_pool_init);
+>>  struct dma_contig_early_reserve {
+>>  	phys_addr_t base;
+>>  	unsigned long size;
+>> +	struct list_head areas;
+>>  };
+>>  
+>> +static __initdata LIST_HEAD(dma_mmu_remap_areas);
+>>  
+>>  void __init dma_contiguous_early_fixup(phys_addr_t base, unsigned long size)
+>>  {
+>> +	struct dma_contig_early_reserve *d;
+>> +
+>> +	d = memblock_alloc(sizeof(struct dma_contig_early_reserve),
+>> +			sizeof(void *));
+>> +	if (!d) {
+>> +		pr_err("Unable to allocate dma_contig_early_reserve struct!\n");
+>> +		return;
+>> +	}
+>> +
+>> +	d->base = base;
+>> +	d->size = size;
+>> +	list_add_tail(&d->areas, &dma_mmu_remap_areas);
+>>  }
 > 
-> Fixes: 78bcac7b2ae1 ("Input: add support for the STMicroelectronics FingerTip touchscreen")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> I wonder if struct cma should grow a flags or type field, so that the
+> arm code can simply use cma_for_each_area to iterate the CMA areas for
+> the DMA fixup, and we can remove the extra list and the magic hook.
 
-Applied, thank you.
+I will look into a way of doing that.
+
+> 
+>> +/* modify here */
+>> +LIST_HEAD(cma_areas);
+> 
+> What does this comment mean?
+
+Sorry, that might have been a note to myself that was accidentally left.
+
+> 
+>> +static unsigned int cma_area_count;
+> 
+> It seems this is only used to provide a default name for the CMA
+> areas, but all areas actually provide a name, so I think we can drop
+> the default naming and the cma_area_count variable entirely.
+> 
+
+Seems reasonable.
+We can change behavior to require a name.
+
+>>  	if (!size || !memblock_is_region_reserved(base, size))
+>>  		return -EINVAL;
+>>  
+>> +
+>>  	/* ensure minimal alignment required by mm core */
+> 
+> This adds a spurious empty line.
+
+yes, my bad.
+
+>>  static int __init cma_debugfs_init(void)
+>>  {
+>>  	struct dentry *cma_debugfs_root;
+>> -	int i;
+>> +	struct cma *c;
+>>  
+>>  	cma_debugfs_root = debugfs_create_dir("cma", NULL);
+>>  
+>> -	for (i = 0; i < cma_area_count; i++)
+>> -		cma_debugfs_add_one(&cma_areas[i], cma_debugfs_root);
+>> +	list_for_each_entry(c, &cma_areas, areas)
+>> +		cma_debugfs_add_one(c, cma_debugfs_root);
+> 
+> I think this should use cma_for_each_area, that way cma_areas can be
+> keep static in cma.c.
+
+Yes, will provide a cma_for_each_area routine.
 
 -- 
-Dmitry
+Mike Kravetz
