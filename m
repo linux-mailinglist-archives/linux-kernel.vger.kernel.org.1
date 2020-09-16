@@ -2,112 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DA326C66F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46D826C65B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727480AbgIPRtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727426AbgIPRsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:35 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF406C0086BC
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:44:59 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id q9so2857896wmj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:44:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4dl2E36IT++Epfaf89pf4ocS2i76rCOis/+URY5PLmQ=;
-        b=FPK/6jzmYFbA+D673b79HCVgLqvHTYf/fbXTB3/wEVBKsD3TjfAL2Ysp8udcHucQmH
-         ksOMEe403/ORGrd8qmCWb9XVg/tMbdUYvTZSsi16bDZRxZcFP8VKwFJxcv6ByjsCcuGd
-         qpXDgMXHKcZJKmXEOuouiUcIDBcAxSPSBPoMQcVhQc5/eHUCevr3ADjvFoR7zHEOJzVw
-         BAfrA0QyiRE1FY6vbRYHf+oNpVTMcnTInjEqvHAQgZO2+D5ISCre/PtxF2BrnPLtUcup
-         wIBNz/2NzpQMFp+Mgkg+ZExTyQxBX4vei9FZ/a4mdxnnGjBh3hMAljhqsd7CuUn+56c8
-         ryxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4dl2E36IT++Epfaf89pf4ocS2i76rCOis/+URY5PLmQ=;
-        b=U0a1VoRwtJKu0K80BVkHk1wEzUw+jIOqsmbBG1jeohwdDNIMuA8Ep0CpsmhgDwlHIu
-         l1p3u+ETjUClE8r54wC5hAZgcKht8SDHdK/GwWTG4zCu65BmW9lZgPDDmBD/AcJN+Y/+
-         VF9qf1bxATWFmDYn6GVlG+PqGLci5B47A/233GtWn/O43LGC1yb65LDjDl+qiplTFgRA
-         Xci3nRAp/MynriRYV7dtTtIg2qLEdigmIpJ05A3sRXd7m5RdsTkJL+IM9ZtrKugJhEaI
-         hbtKuxIBc0lMkHu2CiaXqsPebfrlF1ApBNnS1XOYPqL2w0SPDVxcT3Kesig53LkttFVu
-         CsXg==
-X-Gm-Message-State: AOAM532orFHr1ioXC7KyfFyShNqBnoibGIXjFUItE5ZEv+jj2UM+tCC6
-        D9pWmM+DzQVT+3lh7byGDPvBSg==
-X-Google-Smtp-Source: ABdhPJzIStvqGlvQyfrjasZ1DnHHZ9nJu8xB5ntjy2TO3DIc6VErhfegcv/LA1Hbwnd1PFEqlvlZkA==
-X-Received: by 2002:a1c:7215:: with SMTP id n21mr5123028wmc.154.1600263898338;
-        Wed, 16 Sep 2020 06:44:58 -0700 (PDT)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id z7sm33064936wrw.93.2020.09.16.06.44.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 06:44:57 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 14:44:55 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Allen Pais <allen.cryptic@gmail.com>
-Cc:     kvalo@codeaurora.org, kuba@kernel.org, jirislaby@kernel.org,
-        mickflemm@gmail.com, mcgrof@kernel.org, chunkeey@googlemail.com,
-        Larry.Finger@lwfinger.net, stas.yakovlev@gmail.com,
-        helmut.schaa@googlemail.com, pkshih@realtek.com,
-        yhchuang@realtek.com, dsd@gentoo.org, kune@deine-taler.de,
-        keescook@chromium.org, ath11k@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, b43-dev@lists.infradead.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Subject: Re: [PATCH 10/16] wireless: intersil: convert tasklets to use new
- tasklet_setup() API
-Message-ID: <20200916134455.GD4678@dell>
-References: <20200817090637.26887-1-allen.cryptic@gmail.com>
- <20200817090637.26887-11-allen.cryptic@gmail.com>
+        id S1727447AbgIPRqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727417AbgIPRqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:46:18 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC2FE222B7;
+        Wed, 16 Sep 2020 13:54:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600264488;
+        bh=qKQqnxzRQxd/vr0zAdpm6sfQKn89rWwS4k5j1IwIQC0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YOR6F/G35l7Y5nJcVzTX20iL9YlsKqqfeVkp9nv8rPr+WPovGSKYRo3JCk8JSbrNL
+         mzRRzKQrEH2cjlBX08WNE4bLLtXtehAfXbXWpCfldRt0k8WNOvO1cbbRTgnkXOxs9Z
+         A5mU5NlO5Pri734moqVGX3xpmlvNaq1TkUnO4Q6Y=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 09EE7400E9; Wed, 16 Sep 2020 10:54:46 -0300 (-03)
+Date:   Wed, 16 Sep 2020 10:54:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Qi Liu <liuqi115@huawei.com>
+Cc:     ak@linux.intel.com, mingo@redhat.com, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH V2 RESEND] perf stat: Fix the ratio comments of
+ miss-events
+Message-ID: <20200916135445.GP720847@kernel.org>
+References: <1600253331-10535-1-git-send-email-liuqi115@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200817090637.26887-11-allen.cryptic@gmail.com>
+In-Reply-To: <1600253331-10535-1-git-send-email-liuqi115@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Aug 2020, Allen Pais wrote:
+Em Wed, Sep 16, 2020 at 06:48:51PM +0800, Qi Liu escreveu:
+> Perf stat displays miss ratio of L1-dcache, L1-icache, dTLB cache,
+> iTLB cache and LL-cache. Take L1-dcache for example, miss ratio is
+> caculated as "L1-dcache-load-misses/L1-dcache-loads". So
+> "of all L1-dcache hits" is unsuitable to describe it, and
+> "of all L1-dcache accesses" seems better.
+> 
+> The comments of L1-icache, dTLB cache, iTLB cache and LL-cache are
+> fixed in the same way.
+> 
+> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
 
-> From: Allen Pais <allen.lkml@gmail.com>
-> 
-> In preparation for unconditionally passing the
-> struct tasklet_struct pointer to all tasklet
-> callbacks, switch to using the new tasklet_setup()
-> and from_tasklet() to pass the tasklet pointer explicitly
-> and remove .data field.
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+Thanks, applied.
+
+- Arnaldo
+
 > ---
->  .../net/wireless/intersil/hostap/hostap_hw.c   | 18 +++++++++---------
->  drivers/net/wireless/intersil/orinoco/main.c   |  7 +++----
->  drivers/net/wireless/intersil/p54/p54pci.c     |  8 ++++----
->  3 files changed, 16 insertions(+), 17 deletions(-)
-
-This patch seems to cause several warnings along the lines of:
-
-drivers/net/wireless/intersil/hostap/hostap_hw.c: In function ‘prism2_init_local_data’:
-drivers/net/wireless/intersil/hostap/hostap_hw.c:3185:48: warning: cast between incompatible function types from ‘void (*)(struct tasklet_struct *)’ to ‘void (*)(long unsigned int)’ [-Wcast-function-type]
-3185 | do { memset((q), 0, sizeof(*(q))); (q)->func = (void(*)(unsigned long))(f); } | ^
-drivers/net/wireless/intersil/hostap/hostap_hw.c:3187:2: note: in expansion of macro ‘HOSTAP_TASKLET_INIT’
-3187 | HOSTAP_TASKLET_INIT(&local->bap_tasklet, hostap_bap_tasklet,
-| ^~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/intersil/hostap/hostap_hw.c:3185:48: warning: cast between incompatible function types from ‘void (*)(struct tasklet_struct *)’ to ‘void (*)(long unsigned int)’ [-Wcast-function-type]
+>  tools/perf/util/stat-shadow.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
+> index e1ba6c1..ee3c404 100644
+> --- a/tools/perf/util/stat-shadow.c
+> +++ b/tools/perf/util/stat-shadow.c
+> @@ -517,7 +517,7 @@ static void print_l1_dcache_misses(struct perf_stat_config *config,
+> 
+>  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
+> 
+> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all L1-dcache hits", ratio);
+> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all L1-dcache accesses", ratio);
+>  }
+> 
+>  static void print_l1_icache_misses(struct perf_stat_config *config,
+> @@ -538,7 +538,7 @@ static void print_l1_icache_misses(struct perf_stat_config *config,
+>  		ratio = avg / total * 100.0;
+> 
+>  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
+> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all L1-icache hits", ratio);
+> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all L1-icache accesses", ratio);
+>  }
+> 
+>  static void print_dtlb_cache_misses(struct perf_stat_config *config,
+> @@ -558,7 +558,7 @@ static void print_dtlb_cache_misses(struct perf_stat_config *config,
+>  		ratio = avg / total * 100.0;
+> 
+>  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
+> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all dTLB cache hits", ratio);
+> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all dTLB cache accesses", ratio);
+>  }
+> 
+>  static void print_itlb_cache_misses(struct perf_stat_config *config,
+> @@ -578,7 +578,7 @@ static void print_itlb_cache_misses(struct perf_stat_config *config,
+>  		ratio = avg / total * 100.0;
+> 
+>  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
+> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all iTLB cache hits", ratio);
+> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all iTLB cache accesses", ratio);
+>  }
+> 
+>  static void print_ll_cache_misses(struct perf_stat_config *config,
+> @@ -598,7 +598,7 @@ static void print_ll_cache_misses(struct perf_stat_config *config,
+>  		ratio = avg / total * 100.0;
+> 
+>  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
+> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all LL-cache hits", ratio);
+> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all LL-cache accesses", ratio);
+>  }
+> 
+>  /*
+> @@ -918,7 +918,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+>  		if (runtime_stat_n(st, STAT_L1_DCACHE, ctx, cpu) != 0)
+>  			print_l1_dcache_misses(config, cpu, evsel, avg, out, st);
+>  		else
+> -			print_metric(config, ctxp, NULL, NULL, "of all L1-dcache hits", 0);
+> +			print_metric(config, ctxp, NULL, NULL, "of all L1-dcache accesses", 0);
+>  	} else if (
+>  		evsel->core.attr.type == PERF_TYPE_HW_CACHE &&
+>  		evsel->core.attr.config ==  ( PERF_COUNT_HW_CACHE_L1I |
+> @@ -928,7 +928,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+>  		if (runtime_stat_n(st, STAT_L1_ICACHE, ctx, cpu) != 0)
+>  			print_l1_icache_misses(config, cpu, evsel, avg, out, st);
+>  		else
+> -			print_metric(config, ctxp, NULL, NULL, "of all L1-icache hits", 0);
+> +			print_metric(config, ctxp, NULL, NULL, "of all L1-icache accesses", 0);
+>  	} else if (
+>  		evsel->core.attr.type == PERF_TYPE_HW_CACHE &&
+>  		evsel->core.attr.config ==  ( PERF_COUNT_HW_CACHE_DTLB |
+> @@ -938,7 +938,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+>  		if (runtime_stat_n(st, STAT_DTLB_CACHE, ctx, cpu) != 0)
+>  			print_dtlb_cache_misses(config, cpu, evsel, avg, out, st);
+>  		else
+> -			print_metric(config, ctxp, NULL, NULL, "of all dTLB cache hits", 0);
+> +			print_metric(config, ctxp, NULL, NULL, "of all dTLB cache accesses", 0);
+>  	} else if (
+>  		evsel->core.attr.type == PERF_TYPE_HW_CACHE &&
+>  		evsel->core.attr.config ==  ( PERF_COUNT_HW_CACHE_ITLB |
+> @@ -948,7 +948,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+>  		if (runtime_stat_n(st, STAT_ITLB_CACHE, ctx, cpu) != 0)
+>  			print_itlb_cache_misses(config, cpu, evsel, avg, out, st);
+>  		else
+> -			print_metric(config, ctxp, NULL, NULL, "of all iTLB cache hits", 0);
+> +			print_metric(config, ctxp, NULL, NULL, "of all iTLB cache accesses", 0);
+>  	} else if (
+>  		evsel->core.attr.type == PERF_TYPE_HW_CACHE &&
+>  		evsel->core.attr.config ==  ( PERF_COUNT_HW_CACHE_LL |
+> @@ -958,7 +958,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+>  		if (runtime_stat_n(st, STAT_LL_CACHE, ctx, cpu) != 0)
+>  			print_ll_cache_misses(config, cpu, evsel, avg, out, st);
+>  		else
+> -			print_metric(config, ctxp, NULL, NULL, "of all LL-cache hits", 0);
+> +			print_metric(config, ctxp, NULL, NULL, "of all LL-cache accesses", 0);
+>  	} else if (evsel__match(evsel, HARDWARE, HW_CACHE_MISSES)) {
+>  		total = runtime_stat_avg(st, STAT_CACHEREFS, ctx, cpu);
+> 
+> --
+> 2.8.1
+> 
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+
+- Arnaldo
