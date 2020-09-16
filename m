@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C6826C5EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ACD26C5FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbgIPRZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:25:22 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:42073 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726377AbgIPRYo (ORCPT
+        id S1727120AbgIPR2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:28:43 -0400
+Received: from smtpout1.mo804.mail-out.ovh.net ([79.137.123.220]:50225 "EHLO
+        smtpout1.mo804.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727049AbgIPR0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:24:44 -0400
-X-IronPort-AV: E=Sophos;i="5.76,432,1592838000"; 
-   d="scan'208";a="57210328"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 16 Sep 2020 20:00:04 +0900
-Received: from devel.example.org?044ree.adwin.renesas.com (unknown [10.226.36.120])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id A32294278DAC;
-        Wed, 16 Sep 2020 20:00:01 +0900 (JST)
-From:   Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v2 3/3] media: dt-bindings: media: renesas,drif: Add r8a77990 support
-Date:   Wed, 16 Sep 2020 11:59:49 +0100
-Message-Id: <20200916105949.24858-4-fabrizio.castro.jz@renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200916105949.24858-1-fabrizio.castro.jz@renesas.com>
-References: <20200916105949.24858-1-fabrizio.castro.jz@renesas.com>
+        Wed, 16 Sep 2020 13:26:19 -0400
+Received: from mxplan5.mail.ovh.net (unknown [10.108.4.12])
+        by mo804.mail-out.ovh.net (Postfix) with ESMTPS id 4E301623C91A;
+        Wed, 16 Sep 2020 14:16:23 +0200 (CEST)
+Received: from kaod.org (37.59.142.97) by DAG8EX1.mxp5.local (172.16.2.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Wed, 16 Sep
+ 2020 14:16:22 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-97G002e1fe5b2b-4e4d-47ab-b857-58b54de75c1a,
+                    341A1E608B89118414D473E9652EAD3A863CA3A2) smtp.auth=groug@kaod.org
+Date:   Wed, 16 Sep 2020 14:16:21 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Christian Schoenebeck <qemu_oss@crudebyte.com>
+CC:     Jianyong Wu <jianyong.wu@arm.com>, <ericvh@gmail.com>,
+        <lucho@ionkov.net>, <asmadeus@codewreck.org>,
+        <v9fs-developer@lists.sourceforge.net>, <justin.he@arm.com>,
+        <linux-kernel@vger.kernel.org>, Thomas Huth <thuth@redhat.com>
+Subject: Re: [V9fs-developer] [PATCH RFC 0/4] 9p: fix open-unlink-f*syscall
+ bug
+Message-ID: <20200916141621.5de7d397@bahia.lan>
+In-Reply-To: <20200914174630.195e816f@bahia.lan>
+References: <20200914033754.29188-1-jianyong.wu@arm.com>
+        <2828347.d8MXItvaOC@silver>
+        <20200914144325.7928dbd3@bahia.lan>
+        <2037087.W39pGsgtbe@silver>
+        <20200914174630.195e816f@bahia.lan>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.59.142.97]
+X-ClientProxiedBy: DAG9EX1.mxp5.local (172.16.2.81) To DAG8EX1.mxp5.local
+ (172.16.2.71)
+X-Ovh-Tracer-GUID: becf4751-b578-4efe-927e-fab0f5bd1e5e
+X-Ovh-Tracer-Id: 150589112631335215
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrtddvgdehtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgfgihesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepkedvgfeugfdtvdelfeffueevfeegudekhefftdejvefgveeileeludffkeeuvdffnecuffhomhgrihhnpehnohhnghhnuhdrohhrghenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddrleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehgrhhouhhgsehkrghougdrohhrghdprhgtphhtthhopehthhhuthhhsehrvgguhhgrthdrtghomh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The r8a77990 (a.k.a. R-Car E3) device tree schema is
-compatible with R-Car H3 and M3-W schema.
+On Mon, 14 Sep 2020 17:46:30 +0200
+Greg Kurz <groug@kaod.org> wrote:
 
-Document r8a77990 support within renesas,drif.yaml.
+> On Mon, 14 Sep 2020 17:19:20 +0200
+> Christian Schoenebeck <qemu_oss@crudebyte.com> wrote:
+> 
+> > On Montag, 14. September 2020 14:43:25 CEST Greg Kurz wrote:
+> > > > So yes, looks like this also requires changes to the 9pfs 'local' fs
+> > > > driver on QEMU side:
+> > > > https://lists.nongnu.org/archive/html/qemu-devel/2016-06/msg07586.html
+> > > > 
+> > > > Eric, Greg, would there be an easy way to establish QEMU test cases
+> > > > running
+> > > > the 9pfs 'local' fs driver? Right now we only have 9pfs qtest cases for
+> > > > QEMU which can only use the 'synth' driver, which is not helpful for such
+> > > > kind of issues.
+> > > 
+> > > I guess it's possible to introduce new qtests that start QEMU with
+> > > -fsdev local instead of -fsdev synth... I haven't looked in a while
+> > > though, so I won't comment on "easy way" ;-)
+> > 
+> > Makes sense, and I considered that approach as well.
+> > 
+> > The question is the following: is there a QEMU policy about test cases that 
+> > create/write/read/delete *real* files? I.e. should those test files be written 
+> > to a certain location, and are there measures of sandboxing required?
+> > 
+> 
+> I don't know. You'll need to figure out by yourself, reading code from
+> other tests or asking on IRC.
+> 
 
-Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
----
-v1->v2:
-* No change
+Maybe Thomas (added in Cc) can give some hints on how test cases should
+handle creation/deletion of real files ?
 
- Documentation/devicetree/bindings/media/renesas,drif.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/media/renesas,drif.yaml b/Documentation/devicetree/bindings/media/renesas,drif.yaml
-index 4763a6009e8b..2e12b353b395 100644
---- a/Documentation/devicetree/bindings/media/renesas,drif.yaml
-+++ b/Documentation/devicetree/bindings/media/renesas,drif.yaml
-@@ -53,6 +53,7 @@ properties:
-       - enum:
-         - renesas,r8a7795-drif        # R-Car H3
-         - renesas,r8a7796-drif        # R-Car M3-W
-+        - renesas,r8a77990-drif       # R-Car E3
-       - const: renesas,rcar-gen3-drif # Generic R-Car Gen3 compatible device
- 
-   reg:
--- 
-2.25.1
+> > Best regards,
+> > Christian Schoenebeck
+> > 
+> > 
+> 
 
