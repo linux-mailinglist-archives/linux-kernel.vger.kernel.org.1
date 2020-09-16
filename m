@@ -2,69 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D1826BBDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 07:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4852326BBEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 07:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgIPFhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 01:37:01 -0400
-Received: from verein.lst.de ([213.95.11.211]:50829 "EHLO verein.lst.de"
+        id S1726178AbgIPFlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 01:41:32 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31687 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726068AbgIPFhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 01:37:01 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4C02568BFE; Wed, 16 Sep 2020 07:36:54 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 07:36:53 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>, kvm-ppc@vger.kernel.org,
-        nouveau@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm: remove extra ZONE_DEVICE struct page refcount
-Message-ID: <20200916053653.GA7321@lst.de>
-References: <20200914224509.17699-1-rcampbell@nvidia.com> <CAPcyv4gVJuWsOtejrKvWgByq=c1niwQOZ0HHYaSo4h6vc-Xw+Q@mail.gmail.com> <10b4b85c-f1e9-b6b5-74cd-6190ee0aca5d@nvidia.com> <20200915162956.GA21990@infradead.org> <6dff5231-26d5-1aec-0c05-6880cf747642@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6dff5231-26d5-1aec-0c05-6880cf747642@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1726100AbgIPFlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 01:41:31 -0400
+IronPort-SDR: VRcb5TeKYvxDnFbow68SVZ8Wg46wXoOEh6u6LgFuPU5UXtTE3Y7tVzorRqXN8sM3gZfBcsR8+C
+ JytimR/bpoTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="158686086"
+X-IronPort-AV: E=Sophos;i="5.76,431,1592895600"; 
+   d="scan'208";a="158686086"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 22:41:30 -0700
+IronPort-SDR: Bi21qIxeMtcEDZzsloKhCsZR+uKQPTqbkVEXP+mBF1XOQETQT+BY3DC6AQaETRfeeIBXtHG24D
+ fJY9OPqNppxA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,431,1592895600"; 
+   d="scan'208";a="346115038"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga007.jf.intel.com with ESMTP; 15 Sep 2020 22:41:28 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     krzk@kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, yilun.xu@intel.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com, mdf@kernel.org
+Subject: [PATCH v2] add the FPGA Device Feature List (DFL) EMIF support
+Date:   Wed, 16 Sep 2020 13:37:01 +0800
+Message-Id: <1600234622-8815-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:39:47AM -0700, Ralph Campbell wrote:
->> I don't think any of the three ->page_free instances even cares about
->> the page refcount.
->>
-> Not true. The page_free() callback records the page is free by setting
-> a bit or putting the page on a free list but when it allocates a free
-> device private struct page to be used with migrate_vma_setup(), it needs to
-> increment the refcount.
->
-> For the ZONE_DEVICE MEMORY_DEVICE_GENERIC and MEMORY_DEVICE_PCI_P2PDMA
-> struct pages, I think you are correct because they don't define page_free()
-> and from what I can see, don't decrement the page refcount to zero.
+The patchsets "Modularization of DFL private feature drivers" & "add dfl 
+bus support to MODULE_DEVICE_TABLE()" are all queued to linux-next. So
+there is no dependency now.
 
-Umm, the whole point of ZONE_DEVICE is to have a struct page for
-something that is not system memory.  For both the ppc kvm case (magic
-hypervisor pool) and Noveau (device internal) memory that clear is the
-case.  But looks like test_hmm uses normal pages to fake this up, so
-I was wrong about the third caller.  But I think we can just call
-set_page_count just before freeing the page there with a comment
-explaining what is goin on.
+The driver supports the EMIF controller on Intel Programmable
+Acceleration Card (PAC). The controller manages the on-board memory of
+the PCIe card.
+
+Xu Yilun (1):
+  memory: dfl-emif: add the DFL EMIF private feature driver
+
+ .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
+ drivers/memory/Kconfig                             |   9 +
+ drivers/memory/Makefile                            |   2 +
+ drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
+ 4 files changed, 243 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+ create mode 100644 drivers/memory/dfl-emif.c
+
+-- 
+2.7.4
+
