@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6241526C5E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496B226C5DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgIPRXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:23:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38642 "EHLO mail.kernel.org"
+        id S1726709AbgIPRXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:23:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:54981 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726987AbgIPRWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:22:53 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6614422470;
-        Wed, 16 Sep 2020 15:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600271923;
-        bh=z54NT2te4cQqCwvnxGuhIvp2W2PqIQwX8Rfrwo03n6k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HK32OVkYHkBdJOofLkJ+eUoiFHxyVHCmMnup/A7LJvnMbmFRiwsgEMgYtwJqubXXq
-         JCspG3tYh6jh9B4NAgWMrK96wSIlk+dYeGSlk9dnzukQSbkIiOSIKR8DOI5Es5fyRl
-         4yJvpL+qxOp5+HXbERF/ET+85d6NF+YAf9Huy1sY=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 09/15] ARM: dts: am335x: t335: align GPIO hog names with dtschema
-Date:   Wed, 16 Sep 2020 17:57:09 +0200
-Message-Id: <20200916155715.21009-10-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916155715.21009-1-krzk@kernel.org>
-References: <20200916155715.21009-1-krzk@kernel.org>
+        id S1726884AbgIPRVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:21:21 -0400
+IronPort-SDR: cqHiMs3waixP8NrGB30kNwvLNXV9IPuWvOVr4thh9y/zuH68hfkJwj7hs6TF1P9byfneegbTSE
+ vH1rN8gjvm6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="139008854"
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="139008854"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:04:28 -0700
+IronPort-SDR: Q/fd4pGPyabmqm3WKVszibb4fe3jwPJLd4rGMqL1nJnzdcTRtg2+g9fPONPZhFyJUOrljiyHfA
+ l34HiqxNm8Pw==
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="483365305"
+Received: from scusackx-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.87])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:04:21 -0700
+Date:   Wed, 16 Sep 2020 19:04:19 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
+ Control hardware bits
+Message-ID: <20200916160419.GB21026@linux.intel.com>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
+ <20200914151816.u6camicid4bd5lgo@treble>
+ <20200914153812.c6uh3spqmcy2ft3d@treble>
+ <20200915095716.GI3612@linux.intel.com>
+ <20200915132725.a2qbdio3jsu7rsqs@treble>
+ <20200915133929.GI14436@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915133929.GI14436@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The convention for node names is to use hyphens, not underscores.
-dtschema for pca95xx expects GPIO hogs to end with 'hog' prefix.
+On Tue, Sep 15, 2020 at 03:39:29PM +0200, Borislav Petkov wrote:
+> On Tue, Sep 15, 2020 at 08:27:25AM -0500, Josh Poimboeuf wrote:
+> > I see the v37 missing patches now, but they're not threaded with the
+> > original thread.
+> 
+> Probably because he bounced only the ones you didn't get, separately.
+> 
+> > v38 has some missing patches as well.
+> 
+> And I got them twice. Can we please stop the spamming?
+> 
+> And yeah, use another mail service - all those companies switching the
+> o365 and mimecast, means time to move kernel development off of company
+> mail because company mail simply can't handle it.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/boot/dts/am335x-sbc-t335.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The duplicate versions of v38 are equal. The "backup" server was just
+really slow with vger. That's why I retried.
 
-diff --git a/arch/arm/boot/dts/am335x-sbc-t335.dts b/arch/arm/boot/dts/am335x-sbc-t335.dts
-index a3f6bc4072d9..81e4453687ba 100644
---- a/arch/arm/boot/dts/am335x-sbc-t335.dts
-+++ b/arch/arm/boot/dts/am335x-sbc-t335.dts
-@@ -155,13 +155,13 @@
- 		gpio-controller;
- 		#gpio-cells = <2>;
- 		reg = <0x26>;
--		dvi_ena {
-+		dvi-ena-hog {
- 			gpio-hog;
- 			gpios = <13 GPIO_ACTIVE_HIGH>;
- 			output-high;
- 			line-name = "dvi-enable";
- 		};
--		lcd_ena {
-+		lcd-ena-hog {
- 			gpio-hog;
- 			gpios = <11 GPIO_ACTIVE_HIGH>;
- 			output-high;
--- 
-2.17.1
+As can be seen here both v38's are also complete:
 
+https://lore.kernel.org/linux-sgx/
+
+I've tried for months to get kernel.org account but I have troubles
+getting my PGP trusted. I really would like to move the whole thing
+over there. And use that account for email.
+
+Three maintainers have signed my key but when I do gpg --refresh, I
+do not get any signatures for my key. The command uses keys.openpgp.org.
+I have no idea if that is the correct key server or not. And I have no
+idea how PGP servers mirror stuff with each other. And I have not found
+anything on this from kernel documentation (e.g. PGP maintainer guide).
+
+/Jarkko
