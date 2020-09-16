@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0556526C5F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2892426C5E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbgIPR0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:26:16 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:58446 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbgIPRZa (ORCPT
+        id S1727002AbgIPRY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbgIPRYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:25:30 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiwg2042791;
-        Wed, 16 Sep 2020 07:44:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600260298;
-        bh=gxuAx0BuQR0ZpOXB5qXMenIgG3U+J4rXn0pxen/9h4M=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=T6psRdSvidJFTNS8JUWeMbt0XZ5TCi4QVgtQh/I/Wl+jMMOYnm1W/CNyZjHqkLAda
-         yXoL3PJv8yYWd0JF4mzNOAHY16IZfAwWIjSfJU8avIugD/RtLERVh/TEm5IT0uU1wn
-         DEGCizo+luyd8jnHSV4BhtWIaSIoHzXPU1eju/5Y=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiwNX018108;
-        Wed, 16 Sep 2020 07:44:58 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:44:58 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:44:58 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpg125391;
-        Wed, 16 Sep 2020 07:44:56 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v13 12/15] mtd: spi-nor: core: disable Octal DTR mode on suspend.
-Date:   Wed, 16 Sep 2020 18:14:15 +0530
-Message-ID: <20200916124418.833-13-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
+        Wed, 16 Sep 2020 13:24:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5A1C0A893D;
+        Wed, 16 Sep 2020 06:11:22 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 13:11:20 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600261881;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sCZCdgfiySQMPQy2FuYEb++B+EE+LdtjaayAFptCdTo=;
+        b=QpnDuXoABD8SIvVGptrfj1ERBfhkU7zSoSmn/T3t6FhnLw6262nCAmhNkjEeRMTgfd8ibi
+        ebovb8z1/uqtllCcBQ+xzbSMnp1RtOOqE0jJIHIRaSebAp3d9poHhR6xOD8FUoE1tjjttd
+        UFq1KdpvqE3BqsXCF6HLqy00YNGL6Bk1mLavOk/bZR/xKgnu/O5ZW0kRt7TaeNTx7AXzy+
+        5QQ0nf1MhooJ78vP5tc/4csIwRy7/L7aPymX2aImOn1Cv2QdKwYR0pyypsvqrNlUSL13Nu
+        jg3A7fgJtEkfELiNcA39BGmgfeGqCfyW/YPSZtT9ZA6uWe0b8tpumsQP8FfijA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600261881;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sCZCdgfiySQMPQy2FuYEb++B+EE+LdtjaayAFptCdTo=;
+        b=hcJG5H8j+jFUZWpRlGYTSoTTrzEw4dyYVDuSIvQU90V6j1TEXVtnPzIbkpC4unPnnq6rWw
+        BJ2I1pyt5RiorzDA==
+From:   "tip-bot2 for Balbir Singh" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/pti] x86/smp: Add a per-cpu view of SMT state
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Balbir Singh <sblbir@amazon.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200729001103.6450-2-sblbir@amazon.com>
+References: <20200729001103.6450-2-sblbir@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-ID: <160026188050.15536.7745071933237655912.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On resume, the init procedure will be run that will re-enable it.
+The following commit has been merged into the x86/pti branch of tip:
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Commit-ID:     0a260b1c5867863121b044afa8087d6b37e4fb7d
+Gitweb:        https://git.kernel.org/tip/0a260b1c5867863121b044afa8087d6b37e4fb7d
+Author:        Balbir Singh <sblbir@amazon.com>
+AuthorDate:    Wed, 29 Jul 2020 10:10:59 +10:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 16 Sep 2020 15:08:02 +02:00
+
+x86/smp: Add a per-cpu view of SMT state
+
+A new field smt_active in cpuinfo_x86 identifies if the current core/cpu
+is in SMT mode or not. This can be very helpful if the system has some
+of its cores with threads offlined and can be used for cases where
+action is taken based on the state of SMT. The follow up patches use
+this feature.
+
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Balbir Singh <sblbir@amazon.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20200729001103.6450-2-sblbir@amazon.com
+
 ---
- drivers/mtd/spi-nor/core.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ arch/x86/include/asm/processor.h |  2 ++
+ arch/x86/kernel/smpboot.c        | 11 ++++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 853dfa02f0de..d5c92c9c7307 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3212,6 +3212,23 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
- 	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 97143d8..d9eb20f 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -136,6 +136,8 @@ struct cpuinfo_x86 {
+ 	u16			logical_die_id;
+ 	/* Index into per_cpu list: */
+ 	u16			cpu_index;
++	/*  Is SMT active on this core? */
++	bool			smt_active;
+ 	u32			microcode;
+ 	/* Address space bits used by the cache internally */
+ 	u8			x86_cache_bits;
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index f5ef689..5fc7e0e 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -635,6 +635,9 @@ void set_cpu_sibling_map(int cpu)
+ 	threads = cpumask_weight(topology_sibling_cpumask(cpu));
+ 	if (threads > __max_smt_threads)
+ 		__max_smt_threads = threads;
++
++	for_each_cpu(i, topology_sibling_cpumask(cpu))
++		cpu_data(i).smt_active = threads > 1;
  }
  
-+/* mtd suspend handler */
-+static int spi_nor_suspend(struct mtd_info *mtd)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	struct device *dev = nor->dev;
-+	int ret;
+ /* maps the cpu to the sched domain representing multi-core */
+@@ -1548,10 +1551,16 @@ static void remove_siblinginfo(int cpu)
+ 
+ 	for_each_cpu(sibling, topology_die_cpumask(cpu))
+ 		cpumask_clear_cpu(cpu, topology_die_cpumask(sibling));
+-	for_each_cpu(sibling, topology_sibling_cpumask(cpu))
 +
-+	/* Disable octal DTR mode if we enabled it. */
-+	ret = spi_nor_octal_dtr_enable(nor, false);
-+	if (ret) {
-+		dev_err(dev, "suspend() failed\n");
-+		return ret;
++	for_each_cpu(sibling, topology_sibling_cpumask(cpu)) {
+ 		cpumask_clear_cpu(cpu, topology_sibling_cpumask(sibling));
++		if (cpumask_weight(topology_sibling_cpumask(sibling)) == 1)
++			cpu_data(sibling).smt_active = false;
 +	}
 +
-+	return 0;
-+}
+ 	for_each_cpu(sibling, cpu_llc_shared_mask(cpu))
+ 		cpumask_clear_cpu(cpu, cpu_llc_shared_mask(sibling));
 +
- /* mtd resume handler */
- static void spi_nor_resume(struct mtd_info *mtd)
- {
-@@ -3406,6 +3423,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	mtd->size = nor->params->size;
- 	mtd->_erase = spi_nor_erase;
- 	mtd->_read = spi_nor_read;
-+	mtd->_suspend = spi_nor_suspend;
- 	mtd->_resume = spi_nor_resume;
- 
- 	if (nor->params->locking_ops) {
--- 
-2.28.0
-
+ 	cpumask_clear(cpu_llc_shared_mask(cpu));
+ 	cpumask_clear(topology_sibling_cpumask(cpu));
+ 	cpumask_clear(topology_core_cpumask(cpu));
