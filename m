@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ACD26C5FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD4826C5A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgIPR2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:28:43 -0400
-Received: from smtpout1.mo804.mail-out.ovh.net ([79.137.123.220]:50225 "EHLO
-        smtpout1.mo804.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727049AbgIPR0T (ORCPT
+        id S1726535AbgIPRQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:16:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33246 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726765AbgIPRKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:26:19 -0400
-Received: from mxplan5.mail.ovh.net (unknown [10.108.4.12])
-        by mo804.mail-out.ovh.net (Postfix) with ESMTPS id 4E301623C91A;
-        Wed, 16 Sep 2020 14:16:23 +0200 (CEST)
-Received: from kaod.org (37.59.142.97) by DAG8EX1.mxp5.local (172.16.2.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Wed, 16 Sep
- 2020 14:16:22 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-97G002e1fe5b2b-4e4d-47ab-b857-58b54de75c1a,
-                    341A1E608B89118414D473E9652EAD3A863CA3A2) smtp.auth=groug@kaod.org
-Date:   Wed, 16 Sep 2020 14:16:21 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Christian Schoenebeck <qemu_oss@crudebyte.com>
-CC:     Jianyong Wu <jianyong.wu@arm.com>, <ericvh@gmail.com>,
-        <lucho@ionkov.net>, <asmadeus@codewreck.org>,
-        <v9fs-developer@lists.sourceforge.net>, <justin.he@arm.com>,
-        <linux-kernel@vger.kernel.org>, Thomas Huth <thuth@redhat.com>
-Subject: Re: [V9fs-developer] [PATCH RFC 0/4] 9p: fix open-unlink-f*syscall
- bug
-Message-ID: <20200916141621.5de7d397@bahia.lan>
-In-Reply-To: <20200914174630.195e816f@bahia.lan>
-References: <20200914033754.29188-1-jianyong.wu@arm.com>
-        <2828347.d8MXItvaOC@silver>
-        <20200914144325.7928dbd3@bahia.lan>
-        <2037087.W39pGsgtbe@silver>
-        <20200914174630.195e816f@bahia.lan>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 16 Sep 2020 13:10:22 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GB3vsU117647;
+        Wed, 16 Sep 2020 08:20:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=zAVBQ++6d5ZC0uw5q6xbSv5Mv4NHicB2IH95EfBvfho=;
+ b=rsSbWp8fjOTtLeU2Tt+2Wxap6g9m1gAyIfdb7B0z9+DqAIzGkNR7b5ZoahUqiu7Ux9FR
+ pTPchQiE0OeIXmPI1Ih6D/iQTUjhj+9pSRTn+W09KNozDRV3JLsE44rOALt7791qEW7j
+ B7YWMoCv5g6AdvtdJXw6+KxJ2P2vwchT48u+S85Z79W1isg0Os4dG7hQt9JHyh2nEc8D
+ OmKzo12QfkxzrJtd23kDCLAKE15hoxP6UJB8dbb+a5BK3kWh1ScrS2pMe/5Bi1Os7jz/
+ yjkbJsNdrIrgBXSp9zLYI3SafGmL/q7GPMjZVnxi431FyqKPWgRQVqLWKKFul4Yrt16I kA== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33kfv65etq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 08:20:53 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08GCHhcf000828;
+        Wed, 16 Sep 2020 12:20:51 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 33k65v0asx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 12:20:50 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08GCJD8E29032952
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 12:19:13 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B617CAE053;
+        Wed, 16 Sep 2020 12:20:47 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 67B7CAE051;
+        Wed, 16 Sep 2020 12:20:47 +0000 (GMT)
+Received: from osiris (unknown [9.171.80.23])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 16 Sep 2020 12:20:47 +0000 (GMT)
+Date:   Wed, 16 Sep 2020 14:20:46 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Harald Freudenberger <freude@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] s390/ap: remove unnecessary spin_lock_init()
+Message-ID: <20200916122046.GB7076@osiris>
+References: <20200916062130.190910-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.59.142.97]
-X-ClientProxiedBy: DAG9EX1.mxp5.local (172.16.2.81) To DAG8EX1.mxp5.local
- (172.16.2.71)
-X-Ovh-Tracer-GUID: becf4751-b578-4efe-927e-fab0f5bd1e5e
-X-Ovh-Tracer-Id: 150589112631335215
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrtddvgdehtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgfgihesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepkedvgfeugfdtvdelfeffueevfeegudekhefftdejvefgveeileeludffkeeuvdffnecuffhomhgrihhnpehnohhnghhnuhdrohhrghenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddrleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehgrhhouhhgsehkrghougdrohhrghdprhgtphhtthhopehthhhuthhhsehrvgguhhgrthdrtghomh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916062130.190910-1-miaoqinglang@huawei.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-16_06:2020-09-16,2020-09-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=1
+ clxscore=1011 mlxscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160082
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 17:46:30 +0200
-Greg Kurz <groug@kaod.org> wrote:
-
-> On Mon, 14 Sep 2020 17:19:20 +0200
-> Christian Schoenebeck <qemu_oss@crudebyte.com> wrote:
+On Wed, Sep 16, 2020 at 02:21:30PM +0800, Qinglang Miao wrote:
+> The spinlock ap_poll_timer_lock is initialized statically. It is
+> unnecessary to initialize by spin_lock_init().
 > 
-> > On Montag, 14. September 2020 14:43:25 CEST Greg Kurz wrote:
-> > > > So yes, looks like this also requires changes to the 9pfs 'local' fs
-> > > > driver on QEMU side:
-> > > > https://lists.nongnu.org/archive/html/qemu-devel/2016-06/msg07586.html
-> > > > 
-> > > > Eric, Greg, would there be an easy way to establish QEMU test cases
-> > > > running
-> > > > the 9pfs 'local' fs driver? Right now we only have 9pfs qtest cases for
-> > > > QEMU which can only use the 'synth' driver, which is not helpful for such
-> > > > kind of issues.
-> > > 
-> > > I guess it's possible to introduce new qtests that start QEMU with
-> > > -fsdev local instead of -fsdev synth... I haven't looked in a while
-> > > though, so I won't comment on "easy way" ;-)
-> > 
-> > Makes sense, and I considered that approach as well.
-> > 
-> > The question is the following: is there a QEMU policy about test cases that 
-> > create/write/read/delete *real* files? I.e. should those test files be written 
-> > to a certain location, and are there measures of sandboxing required?
-> > 
-> 
-> I don't know. You'll need to figure out by yourself, reading code from
-> other tests or asking on IRC.
-> 
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/s390/crypto/ap_bus.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-Maybe Thomas (added in Cc) can give some hints on how test cases should
-handle creation/deletion of real files ?
-
-> > Best regards,
-> > Christian Schoenebeck
-> > 
-> > 
-> 
-
+Applied, thanks.
