@@ -2,131 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8201026CD3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B24C26CC10
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgIPU4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:56:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726376AbgIPQwi (ORCPT
+        id S1726828AbgIPUir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726839AbgIPRH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:52:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600275151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L+TNH3xQjUTmzDd20XHvgOV5iRw7fxpPAv4mwBAvE/w=;
-        b=Vey0iO5V5M+dSKFHnuaeEI7PkAqYPLVBFJ67Nw3blZC+zl/9fDO2SfkyznvKP4BygFG6Ff
-        t94GfOigpfH/cV6qW+R/eksNGTWvLD7oIUo5jbVbYrtw86cVxeSG2GehhdhLAxb6gS4t7s
-        gMx7wbIcKrAu3z/oxeXjNSSm5i2auDY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-DUiY4zD9OliHxp7z-SwUHg-1; Wed, 16 Sep 2020 10:38:24 -0400
-X-MC-Unique: DUiY4zD9OliHxp7z-SwUHg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8ADA464085;
-        Wed, 16 Sep 2020 14:38:22 +0000 (UTC)
-Received: from krava (ovpn-114-172.ams2.redhat.com [10.36.114.172])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CFEA019D6C;
-        Wed, 16 Sep 2020 14:38:20 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 16:38:19 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     peterz@infradead.org
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Wade Mealing <wmealing@redhat.com>
-Subject: Re: [PATCHv2] perf: Fix race in perf_mmap_close function
-Message-ID: <20200916143819.GF2301783@krava>
-References: <20200910104153.1672460-1-jolsa@kernel.org>
- <CAM9d7cjqq8+wcZWJ77oONKXu-FsaT_YvRxzaGbRT8PjLOw-AkQ@mail.gmail.com>
- <20200910144744.GA1663813@krava>
- <CAM9d7ciEAA_3Quo1-q7hU=Te+hBgJ2wYAjbDazXd7yS70HrhPA@mail.gmail.com>
- <20200911074931.GA1714160@krava>
- <CAM9d7cicyzZvkrXTvSrGrOE626==myvF2hnuUNiUoLXiOKHB+A@mail.gmail.com>
- <20200914205936.GD1714160@krava>
- <alpine.LRH.2.20.2009151734230.12057@Diego>
- <20200916115311.GE2301783@krava>
- <20200916135402.GZ1362448@hirez.programming.kicks-ass.net>
+        Wed, 16 Sep 2020 13:07:56 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7050C002178
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:42:23 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id w186so8416533qkd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:42:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fKYfJDr6XxN79fp7RRW8vHbFzGf8aLsEG/U2ZaiDjdE=;
+        b=x3fuQca0YO4vXhnbqTr/awp8cN0ZmiMYzYQ/wBG5yKnOrO8F+Nw+YZ0TuosHxJH//Y
+         3iNLZoxNj3tgOeuQOZc/gGlF2FUljYQwnGuXvAJLuhARwn22qD/0LFjmb/NZ3tKLJ+of
+         Gr1QMEfApz/Dx/Qro6daJdCGB5v8rMY7CZQp0JFUZHnZysVsMBjlc53pAUpu1lkR/jwA
+         GaWH31lJFMfcLnxfjTsd2oFBxFLjxEuT2GZiX3v9V95vS6x+6VnHOOh1j46dEpnz3rOI
+         gItFy9wcDwGEuqN9UCktG0P2Nk87Swobyq2yLNj8GLYSO0YGumg8dOshimjHMZL5xP8Q
+         s4WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fKYfJDr6XxN79fp7RRW8vHbFzGf8aLsEG/U2ZaiDjdE=;
+        b=HkdZKb/sXjil1y7jGsXTKBhOcGoJ1pBW7evkw9lG6UeBsYx+K0q+k9bq/1yDOa6hNB
+         7NipgZDlR4H6766fMQigLa9lBl8FykKmucdv8j0Ib1Wq5dEoor93RJ9T8NpEH5nGl+1h
+         9k9MR0UwVCo1XFFe2fbhvpfJM1XwCIfhE8T+tTXjol9tM41ZFU/oZYJoD6KLA86oTJ5P
+         x2CYsTIo5DGihWXW0RkM8f36TjhA7D3vL3p9zYXMudY2NtqwXzL0JdiSHXB/7HOIHi0T
+         ioXC5x9IzlZfTlkg6Zhi7fcawZLHON0DoXLYHNVldFdY811eTXuKHdS5gg+1gqFNno3F
+         C9oQ==
+X-Gm-Message-State: AOAM533+yhN+wlHz5hwRJOAQeZsdRQ6JbQdgzqJvfJ/5rbClS7zaejvw
+        MnPTZCqLekvdQfXzuezI/wb7gA==
+X-Google-Smtp-Source: ABdhPJwijrABVKYt/qN7UOpgp0u84imCjvrxLSbBsmEHE10f61LGvpcUBadv1NkypK+pBVqu+G4IGA==
+X-Received: by 2002:ae9:dd01:: with SMTP id r1mr22802872qkf.467.1600267342448;
+        Wed, 16 Sep 2020 07:42:22 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:445c])
+        by smtp.gmail.com with ESMTPSA id 16sm19950302qks.102.2020.09.16.07.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 07:42:21 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 10:40:57 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [External] Re: [PATCH v5] mm: memcontrol: Add the missing
+ numa_stat interface for cgroup v2
+Message-ID: <20200916144057.GA194430@cmpxchg.org>
+References: <20200915171801.39761-1-songmuchun@bytedance.com>
+ <20200915214845.GB189808@cmpxchg.org>
+ <CAMZfGtXOR1Ed2PyB4TB5mq=1mh7p7La-4BsoZ8oYhtgc8ZcqLQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916135402.GZ1362448@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <CAMZfGtXOR1Ed2PyB4TB5mq=1mh7p7La-4BsoZ8oYhtgc8ZcqLQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 03:54:02PM +0200, peterz@infradead.org wrote:
-> On Wed, Sep 16, 2020 at 01:53:11PM +0200, Jiri Olsa wrote:
-> > There's a possible race in perf_mmap_close when checking ring buffer's
-> > mmap_count refcount value. The problem is that the mmap_count check is
-> > not atomic because we call atomic_dec and atomic_read separately.
-> > 
-> >   perf_mmap_close:
-> >   ...
-> >    atomic_dec(&rb->mmap_count);
-> >    ...
-> >    if (atomic_read(&rb->mmap_count))
-> >       goto out_put;
-> > 
-> >    <ring buffer detach>
-> >    free_uid
-> > 
-> > out_put:
-> >   ring_buffer_put(rb); /* could be last */
-> > 
-> > The race can happen when we have two (or more) events sharing same ring
-> > buffer and they go through atomic_dec and then they both see 0 as refcount
-> > value later in atomic_read. Then both will go on and execute code which
-> > is meant to be run just once.
-> > 
-> > The code that detaches ring buffer is probably fine to be executed more
-> > than once, but the problem is in calling free_uid, which will later on
-> > demonstrate in related crashes and refcount warnings, like:
-> > 
-> >   refcount_t: addition on 0; use-after-free.
-> >   ...
-> >   RIP: 0010:refcount_warn_saturate+0x6d/0xf
-> >   ...
-> >   Call Trace:
-> >   prepare_creds+0x190/0x1e0
-> >   copy_creds+0x35/0x172
-> >   copy_process+0x471/0x1a80
-> >   _do_fork+0x83/0x3a0
-> >   __do_sys_wait4+0x83/0x90
-> >   __do_sys_clone+0x85/0xa0
-> >   do_syscall_64+0x5b/0x1e0
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > 
-> > Using atomic decrease and check instead of separated calls.
-> > This fixes CVE-2020-14351.
+On Wed, Sep 16, 2020 at 12:14:49PM +0800, Muchun Song wrote:
+> On Wed, Sep 16, 2020 at 5:50 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Wed, Sep 16, 2020 at 01:18:01AM +0800, Muchun Song wrote:
+> > > In the cgroup v1, we have a numa_stat interface. This is useful for
+> > > providing visibility into the numa locality information within an
+> > > memcg since the pages are allowed to be allocated from any physical
+> > > node. One of the use cases is evaluating application performance by
+> > > combining this information with the application's CPU allocation.
+> > > But the cgroup v2 does not. So this patch adds the missing information.
+> > >
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > Suggested-by: Shakeel Butt <shakeelb@google.com>
+> > > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> >
+> > Yup, that would be useful information to have. Just a few comments on
+> > the patch below:
+> >
+> > > @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
+> > >               collapsing an existing range of pages. This counter is not
+> > >               present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
+> > >
+> > > +  memory.numa_stat
+> > > +     A read-only flat-keyed file which exists on non-root cgroups.
+> >
+> > It's a nested key file, not flat.
 > 
-> I'm tempted to remove that line; I can never seem to find anything
-> useful in a CVE.
+> This is just copied from memory.stat documentation.Is the memory.stat
+> also a nested key file?
 
-I was asked by security guys to add this, Wade?
+No, memory.stat is a different format. From higher up in the document:
 
+  Flat keyed
+
+	KEY0 VAL0\n
+	KEY1 VAL1\n
+	...
+
+  Nested keyed
+
+	KEY0 SUB_KEY0=VAL00 SUB_KEY1=VAL01...
+	KEY1 SUB_KEY0=VAL10 SUB_KEY1=VAL11...
+	...
+
+> > Otherwise, this looks reasonable to me.
 > 
-> Fixes: ?
+> OK. Will do that.
 
-right, sry..
-
-Fixes: 9bb5d40cd93c ("perf: Fix mmap() accounting hole");
-
-thanks,
-jirka
-
-> 
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> > Tested-by: Michael Petlan <mpetlan@redhat.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> 
-
+Thanks!
