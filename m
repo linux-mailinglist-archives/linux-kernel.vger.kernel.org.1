@@ -2,68 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB13526C236
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 13:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADCA26C2A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 14:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIPLdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 07:33:32 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:62750 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbgIPKcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 06:32:54 -0400
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 16 Sep 2020 03:28:27 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 16 Sep 2020 03:28:26 -0700
-Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Sep 2020 15:58:13 +0530
-Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
-        id 1E04B21D39; Wed, 16 Sep 2020 15:58:13 +0530 (IST)
-From:   Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: [PATCH v2 3/4] venus: core: vote with average bandwidth and peak bandwidth as zero
-Date:   Wed, 16 Sep 2020 15:58:04 +0530
-Message-Id: <1600252084-30779-4-git-send-email-mansur@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600252084-30779-1-git-send-email-mansur@codeaurora.org>
-References: <1600252084-30779-1-git-send-email-mansur@codeaurora.org>
+        id S1727291AbgIPMR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 08:17:29 -0400
+Received: from mail-dm6nam10on2130.outbound.protection.outlook.com ([40.107.93.130]:42709
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726843AbgIPKcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 06:32:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z3WqBvHs4mQVszMkjnD3fdzxYOrJKIyToh7i2PPJKOMfMmetow6MOGO/Jxc9TO15eAYwdAcv8dAQ+/5yaQYa5RPisd7+hpG2HzI+NKN0RHUTzFNqyo+ZijXXXQf/hecXa8vf7OyHk82wvZixxm/duHhr61KoggWTAeaZxOP89M+P9C5I9vDM4m3AOLJh2V1ojQP7VavwSLfxmnO2xVJ2E+inabABRdcCYLakvCyrTTaIVcCJUdi89D41k4qLjqgSS8TI7H2ZuPWMUlxfcYgcx8H22TLUdipdzm7fU/+vSuhE7feONKR4YlPum6J6u1heT5BjY1Q2rJZAqC2sjyrrDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CIoE/htBsA6fTejMxQzuVVxCxAW9gdkskMDSoebDosA=;
+ b=fAHO1kuiAM5TcMJZjnnmI59pkezYkFzxS00Vmogo6AmuSKaR7OmcAUSVC6JtEPFhnUcVfv5azRdrdKE8ah7mRiFJrb4i1NXrFMp/7xqO1MpLFVIHGUW7ndFfi3ZWIzJ2sc4pyBDhFfg7y6gwSKmzHQGggjJaMe4p4uxFDcuC4YosdpfjFd31UAlLfCi+ZAmGGKApiFlZnPUk/XdSHBvq6qJMKph3u2cVw/sazwKTimd2donP0CkdzEvXp7dQkvFQkg+VKxmkOm2n2Gd6zOOLWHOeSnLXlDxwMZkSHzytD9X1NQ19fyc6ZA24N2zX8fY2EIoeSc3Z3t0RVUVfervfpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CIoE/htBsA6fTejMxQzuVVxCxAW9gdkskMDSoebDosA=;
+ b=t2BJQ+jp3UbsAIdVkxsanofpxZvNfHmRtYXKbYl8agCs45MBHr074B4P5ZBSxHp4eMEacePIJ06Q3UlTo+spi7K4mU0O1Og/J3AcHCrfQvLbJhS5qbsnFy8eVfzYLu1adYxSu3x66jHG0DpB66hDq4caS1xPCN6NjOiVo39pmEU=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BY5PR04MB6658.namprd04.prod.outlook.com (2603:10b6:a03:228::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 16 Sep
+ 2020 10:14:40 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::1dc0:7d4b:9820:e68]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::3c04:982f:7d75:779e%7]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
+ 10:14:40 +0000
+Date:   Wed, 16 Sep 2020 18:10:17 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: [PATCH v15 0/2] Add initial support for slimport anx7625
+Message-ID: <cover.1600239656.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-ClientProxiedBy: HKAPR03CA0007.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::12) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-user (114.247.245.146) by HKAPR03CA0007.apcprd03.prod.outlook.com (2603:1096:203:c8::12) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3391.11 via Frontend Transport; Wed, 16 Sep 2020 10:14:39 +0000
+X-Originating-IP: [114.247.245.146]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fcf9ec16-c83d-44d2-2a92-08d85a2952d8
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6658:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR04MB665837005CF8878F6A1AB178C7210@BY5PR04MB6658.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u/0ZSZUJCWK7kOFlByYQPyCwCiF1SvYO7v8MUJPDFQ/P8kF92j9BSX79y/CyAWn8WX7aEc7a1zBkuclN980SW4gYwl6bh1u/qMNyvzO/VY1iH28v6SDKB1C59fXwsdM1d0yKipNiglmQFc4zOGA2g9QL2dOmcD1x/BAAGVZTS7Vlf1BAWFuw7KJOc/wPOvkYg/qi1iCrLhcfDE5+3jGcjPqBww7MDFucioIctOic7h0D1k5IluG7wXqd8w9n0FKoZsvNZNtgfLNb1drooAGkZG3fbO1N+WAiX3Q2Vhno52NCo9eoEFIcFUvg9uUOMhzx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(136003)(396003)(376002)(366004)(346002)(8676002)(52116002)(110136005)(54906003)(2906002)(7416002)(36756003)(66946007)(66556008)(5660300002)(66476007)(83380400001)(2616005)(107886003)(86362001)(16526019)(4326008)(478600001)(26005)(316002)(6486002)(186003)(6666004)(6496006)(8936002)(956004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: Iu2pBydSWHNMdR/vapBE8cAmin8B/ihFeCkWDFqoEG7YLk6vTJV9O3ADzlVAIU5Mz/DWysk5AoE530+KLcv3cYEkJcywaQf0PRAYI/PSSonq37kODW32h7nWQt4OLycskQVKCLiwNKb9wgaCKg9dKWaCrco+19nGZsySXv/xBDljhiaBjeF6+5M+U5RmcwNnctmNAO3mtmbeEvq2kF+Mxu44cD/CxHybhTVgGhEnTceO29f3wy7LcmRNNe/aPvSFDgEeQsNe5xI48S0nZjcGEsQuFQ/vRcBx7mKonesM8FtW08+y6sgF4YuiflGSC2IOVU92+fL/wK/HnXd/K8D2/jEJbXV0SEBTGX2yG52mcEeETioo5ghNQQRwM6JGXNHWJBBfYorxDi1U3y3Aos5vPYI931d8HTdpolKcESEUv0p6F28x9RnOg3iEvCwjaFTyGXcEQy1vG5RDHml+LWPWJ+IhIJq+uh1WqCpShc+w28Gh0KTsUxSbdkZL45P6TUqd+aZWnlfqf7JDMFBvnezYe9z5jdeCwpiKmv/T2xZCjYDjFdRV0KfONdsrBTYyKGNRcS3UByAidLpDtJ29yAC1ZSru5j0vYD25JlhJ9k8Ok6Fy39XIeRkWNKENRG1l90s9ap/6O86ePIg4zCOYZALzSg==
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fcf9ec16-c83d-44d2-2a92-08d85a2952d8
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 10:14:40.5342
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H5TkNx/7fuG99WxeHQm8txwKPU3M8RPwqtySB9hBLjLb8/rDObT/+PH7HPDCodRlB53RLrH31jgLmZQpthkajQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6658
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per bandwidth table we are voting with average bandwidth
-for "video-mem" and "cpu-cfg" paths as peak bandwidth is zero
-in bandwidth table.
+Hi all,
 
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The following series add support for the Slimport ANX7625 transmitter, a
+ultra-low power Full-HD 4K MIPI to DP transmitter designed for portable device.
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 064b6c8..c9669ad 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -382,11 +382,11 @@ static __maybe_unused int venus_runtime_resume(struct device *dev)
- 	const struct venus_pm_ops *pm_ops = core->pm_ops;
- 	int ret;
- 
--	ret = icc_set_bw(core->video_path, 0, kbps_to_icc(1000));
-+	ret = icc_set_bw(core->video_path, kbps_to_icc(20000), 0);
- 	if (ret)
- 		return ret;
- 
--	ret = icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
-+	ret = icc_set_bw(core->cpucfg_path, kbps_to_icc(1000), 0);
- 	if (ret)
- 		return ret;
- 
+
+This is the v15 version, any mistakes, please let me know, I will fix it in
+the next series.
+
+Change history:
+v15: Fix comments from Sam and Hsin-Yi Wang
+ - Remove connector
+ - Allocate memory for edid at ".get_edid()"
+
+v14: Fix comments from Sam and Nicolas
+ - Check flags at drm_bridge_attach
+ - Use panel_bridge instead of drm_panel
+ - Fix not correct return value
+
+v13: Fix comments from Launrent Pinchart and Rob Herring
+ - Picked up Rob's Reviewed-By
+ - Add .detect and .get_edid interface in bridge funcs.
+
+v12: Fix comments from Hsin-Yi Wang
+ - Rebase the code on kernel 5.7, fix DRM interface not match issue.
+
+v11: Fix comments from Rob Herring
+ - Update commit message.
+ - Remove unused label.
+
+v10: Fix comments from Rob Herring, Daniel.
+ - Fix dt_binding_check warning.
+ - Update description.
+
+v9: Fix comments from Sam, Nicolas, Daniel
+ - Remove extcon interface.
+ - Remove DPI support.
+ - Fix dt_binding_check complains.
+ - Code clean up and update description.
+
+v8: Fix comments from Nicolas.
+ - Fix several coding format.
+ - Update description.
+
+v7:
+ - Fix critical timing(eg:odd hfp/hbp) in "mode_fixup" interface,
+   enhance MIPI RX tolerance by setting register MIPI_DIGITAL_ADJ_1 to 0x3D.
+
+
+
+Xin Ji (2):
+  dt-bindings: drm/bridge: anx7625: MIPI to DP transmitter DT schema
+  drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP
+
+ .../bindings/display/bridge/analogix,anx7625.yaml  |   95 +
+ drivers/gpu/drm/bridge/analogix/Kconfig            |    9 +
+ drivers/gpu/drm/bridge/analogix/Makefile           |    1 +
+ drivers/gpu/drm/bridge/analogix/anx7625.c          | 1848 ++++++++++++++++++++
+ drivers/gpu/drm/bridge/analogix/anx7625.h          |  390 +++++
+ 5 files changed, 2343 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+ create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.c
+ create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.h
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.7.4
 
