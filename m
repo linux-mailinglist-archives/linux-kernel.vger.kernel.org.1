@@ -2,99 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C7426CF5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E5D26CF66
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgIPXPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 19:15:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34558 "EHLO mail.kernel.org"
+        id S1726952AbgIPXQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 19:16:59 -0400
+Received: from mail.nic.cz ([217.31.204.67]:53728 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726338AbgIPXPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 19:15:06 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E401E22205;
-        Wed, 16 Sep 2020 23:15:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600298105;
-        bh=c8yswup9fEqdroo+11JlgMNYrPAHpEYaACRkVanOMxA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=K5arknn+W3p4QHaOFNFrKDrCDyTQ2SA4ZLp/RMgps4EL4VTtxYr5oUgW+2TvwKflH
-         9wjNv7bl0/9ttYmXzjuQb4SNeuEzOpCb69z/eSQGzfyNkL/pCsDyH9PuFU5/Ab1Z0C
-         IDySUd6ZGJDeojza4aCUuvhC1NtbJWB4/vbkvIXk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 988913522BA0; Wed, 16 Sep 2020 16:15:05 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 16:15:05 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, joel@joelfernandes.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, josh@joshtriplett.org, peterz@infradead.org,
-        christian.brauner@ubuntu.com
-Subject: Re: [PATCH net-next 0/7] rcu: prevent RCU_LOCKDEP_WARN() from
- swallowing  the condition
-Message-ID: <20200916231505.GH29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200916184528.498184-1-kuba@kernel.org>
+        id S1726338AbgIPXQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 19:16:54 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTP id EE03A14087C;
+        Thu, 17 Sep 2020 01:16:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1600298212; bh=Qzc2oeb5j3zVH60aJj9N0ARs+prgEmmPeOQqVCkt/KE=;
+        h=From:To:Date;
+        b=SLUTaYh2xQ9QgjWtW1B+v0AoTBW9QbFJefLZ+s7jVFr0pyu2inlJNRAdlDeNGlqX8
+         ZqjibhVIwWjLoOX+Rdd59vQfjronAaTPxPhdJGzL7cn7POB4xCu2C2Hs/cSh03ReUD
+         JmLz+PnowTwfplSWZjsfd3VG5z/vUrMw5TA2BTVk=
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+To:     linux-leds@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Rivshin <drivshin@allworx.com>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Simon Guinot <sguinot@lacie.com>,
+        Simon Guinot <simon.guinot@sequanux.org>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Vincent Donnefort <vdonnefort@gmail.com>
+Subject: [PATCH leds v1 00/10] Start moving parsing of `linux,default-trigger` to LED core (a cleanup of LED drivers)
+Date:   Thu, 17 Sep 2020 01:16:40 +0200
+Message-Id: <20200916231650.11484-1-marek.behun@nic.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916184528.498184-1-kuba@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Spam-Status: No, score=0.00
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:45:21AM -0700, Jakub Kicinski wrote:
-> Hi!
-> 
-> So I unfolded the RFC patch into smaller chunks and fixed an issue
-> in SRCU pointed out by build bot. Build bot has been quiet for
-> a day but I'm not 100% sure it's scanning my tree, so let's
-> give these patches some ML exposure.
-> 
-> The motivation here is that we run into a unused variable
-> warning in networking code because RCU_LOCKDEP_WARN() makes
-> its argument disappear with !LOCKDEP / !PROVE_RCU. We marked
-> the variable as __maybe_unused, but that's ugly IMHO.
-> 
-> This set makes the relevant function declarations visible to
-> the compiler and uses (0 && (condition)) to make the compiler
-> remove those calls before linker realizes they are never defined.
-> 
-> I'm tentatively marking these for net-next, but if anyone (Paul?)
-> wants to take them into their tree - even better.
+Hi,
 
-I have pulled these into -rcu for review and further testing, thank you!
-I of course could not resist editing the commit logs, so please check
-to make sure that I did not mess anything up.  Just so you know, unless
-this is urgent, it is in my v5.11 pile, that is, for the merge window
-after next.
+this series is also available at
+  https://git.kernel.org/pub/scm/linux/kernel/git/kabel/linux.git/log/?h=leds-cleanup-for-pavel
 
-If someone else wants to take them, please feel free to add my
-Acked-by to the RCU pieces.
+this is a cleanup of some LED subsystem drivers. The main reason behind
+this is that I wanted to avoid code repetition by moving the parsing
+of `linux,default-trigger` DT property from specific drivers to LED
+core. Before this series 32 drivers parse this property (31 in
+drivers/leds and one in drivers/input/keyboard/cap11xx.c).
+After applying this series only 10 drivers are parsing this property.
 
-							Thanx, Paul
+The reason is that in discussion [1] Rob Herring says that
+`linux,default-trigger` DT property is deprecated in favor of the
+`function` DT property. This makes sense in a way since DT should not
+be Linux specific.
 
-> Jakub Kicinski (7):
->   sched: un-hide lockdep_tasklist_lock_is_held() for !LOCKDEP
->   rcu: un-hide lockdep maps for !LOCKDEP
->   net: un-hide lockdep_sock_is_held() for !LOCKDEP
->   net: sched: remove broken definitions and un-hide for !LOCKDEP
->   srcu: use a more appropriate lockdep helper
->   lockdep: provide dummy forward declaration of *_is_held() helpers
->   rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
-> 
->  include/linux/lockdep.h        |  6 ++++++
->  include/linux/rcupdate.h       | 11 ++++++-----
->  include/linux/rcupdate_trace.h |  4 ++--
->  include/linux/sched/task.h     |  2 --
->  include/net/sch_generic.h      | 12 ------------
->  include/net/sock.h             |  2 --
->  kernel/rcu/srcutree.c          |  2 +-
->  7 files changed, 15 insertions(+), 24 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
+After all drivers are converted we can maybe start work on slow
+deprecation of this property. I do realize that we can't take it away,
+but we can at least convert device trees in Linux repository to stop
+using it in favor of `function` (and for default-on trigger in favor
+of the `default-state` DT property), and print a deprecation warning
+to the user when this `linux,default-trigger` property is present.
+
+I wanted to prepare the way for slow deprecation of the DT property,
+but it turns out that it is more difficult.
+
+The first thing I wanted to do was to move the parsing of the
+`linux,default-trigger` property to LED core. Currently many drivers
+do this themselves. But it can't be moved that simply.
+
+The first patch in this series adds the parsing of this DT property
+into led_classdev_register_ext. If fwnode is given in init_data, the
+property is read. This patch also removes the parsing of this property
+from drivers where led_classdev_register_ext is already called. These
+are:
+  an30259a, aw2013, cr0014114, el15203000, gpio, lm3532, lm3692x,
+  lp8860, lt3593, tlc591xx and turris-omnia.
+
+Patches 2 to 6 do a simple conversion of some drivers to use
+led_classdev_register_ext. These drivers are:
+  bcm6328, bcm6358, lm3697, max77650, mt6323 and pm8058.
+
+In patches 7 to 10 I did a bigger refactor: either they first parsed
+all LED nodes and only after that started registering them, or they
+used too deep nesting or were weird in some other ways:
+  is31fl32xx, is31fl319x, lm36274 and ns2.
+
+There is still a long way to go: some drivers still use the old
+platform_data framework (which has a different structure for every
+driver) instead of device properties via fwnode_* functions or OF).
+
+Some of these can be changed to use device tree only, since they
+already support it and the platform_data isn't used by anything in
+the kernel (for example tca6507 can work with platform_data but
+there is no board definition using it, all usage is via DT).
+
+Some will be harder, because the platform_data code is still used
+(pca9532 is used in arch/arm/mach-iop32x/n2100.c). Even this can
+be done by converting the drivers to use fwnode_* API and converting
+the mach code to use swnodes. I shall look into this later.
+
+This series is compile tested on top of Pavel's tree. Since I
+obviously don't have the various hardware that this code touches,
+I am unable to test it. I therefore add maintainers and authors of
+these drivers to Cc.
+
+Marek
+
+[1] https://lore.kernel.org/linux-leds/20200909235819.0b0fe7ce@nic.cz/T/#m3b6c154f49d0467a707c0f9a552ec87bcbd89df2
+
+Cc: Álvaro Fernández Rojas <noltari@gmail.com>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Dan Murphy <dmurphy@ti.com>
+Cc: David Rivshin <drivshin@allworx.com>
+Cc: H. Nikolaus Schaller <hns@goldelico.com>
+Cc: Jaedon Shin <jaedon.shin@gmail.com>
+Cc: John Crispin <john@phrozen.org>
+Cc: Kevin Cernekee <cernekee@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Ryder Lee <ryder.lee@mediatek.com>
+Cc: Sean Wang <sean.wang@mediatek.com>
+Cc: Simon Guinot <sguinot@lacie.com>
+Cc: Simon Guinot <simon.guinot@sequanux.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Vincent Donnefort <vdonnefort@gmail.com>
+
+Marek Behún (10):
+  leds: parse linux,default-trigger DT property in LED core
+  leds: bcm6328, bcm6358: use struct led_init_data when registering
+  leds: lm3697: use struct led_init_data when registering
+  leds: max77650: use struct led_init_data when registering
+  leds: mt6323: use struct led_init_data when registering
+  leds: pm8058: use struct led_init_data when registering
+  leds: is31fl32xx: use struct led_init_data when registering
+  leds: is31fl319x: use struct led_init_data when registering
+  leds: lm36274: use struct led_init_data when registering
+  leds: ns2: refactor and use struct led_init_data
+
+ drivers/leds/Kconfig             |   2 +-
+ drivers/leds/led-class.c         |   5 +
+ drivers/leds/leds-an30259a.c     |   3 -
+ drivers/leds/leds-aw2013.c       |   3 -
+ drivers/leds/leds-bcm6328.c      |  10 +-
+ drivers/leds/leds-bcm6358.c      |  10 +-
+ drivers/leds/leds-cr0014114.c    |   3 -
+ drivers/leds/leds-el15203000.c   |   3 -
+ drivers/leds/leds-gpio.c         |   3 -
+ drivers/leds/leds-is31fl319x.c   | 204 ++++++++---------
+ drivers/leds/leds-is31fl32xx.c   |  95 +++-----
+ drivers/leds/leds-lm3532.c       |   3 -
+ drivers/leds/leds-lm36274.c      | 100 +++++----
+ drivers/leds/leds-lm3692x.c      |   3 -
+ drivers/leds/leds-lm3697.c       |  18 +-
+ drivers/leds/leds-lp8860.c       |   4 -
+ drivers/leds/leds-lt3593.c       |   3 -
+ drivers/leds/leds-max77650.c     |  24 +-
+ drivers/leds/leds-mt6323.c       |  13 +-
+ drivers/leds/leds-ns2.c          | 361 ++++++++++---------------------
+ drivers/leds/leds-pm8058.c       |  38 ++--
+ drivers/leds/leds-tlc591xx.c     |   2 -
+ drivers/leds/leds-turris-omnia.c |   2 -
+ 23 files changed, 337 insertions(+), 575 deletions(-)
+
+-- 
+2.26.2
+
