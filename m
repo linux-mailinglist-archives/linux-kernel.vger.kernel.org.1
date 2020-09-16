@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA0C26C749
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5483F26C754
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgIPSXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
+        id S1727720AbgIPSYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727949AbgIPSWy (ORCPT
+        with ESMTP id S1727969AbgIPSW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:22:54 -0400
+        Wed, 16 Sep 2020 14:22:58 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEC4C02C282;
-        Wed, 16 Sep 2020 08:17:14 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:12:14 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BFDC02C28A;
+        Wed, 16 Sep 2020 08:17:18 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:12:24 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600269135;
+        s=2020; t=1600269145;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5zL3ElABjLkm4bVdXYgrFM0x9ZFPwQSgfZnxEaAEkGc=;
-        b=1AGJW1Xs61isOi+14PfVoqUffT+t33rMIHRJYv9GNcz0CtnM5sijWEEMDMC1XZn9qDg/8R
-        WQRAV1Uv+H276T1CAqCsmLCCLB2+e5MbA6fvkCLv+EMEcNrj7YtSG8gLwTNKJKSyJre+tm
-        ClXg+cMH+krjW4bl8pyd0CNuNZzk0TKNJRA0Jx6Tgtk2X0iCAIYUSJsnWnnMH1ZSZbsA+q
-        6RCSdmwwhStScFQ52L8RneSbGy4DNWAwM5d4/hxTGtEk/LBBw5vQ7Zvz1qgbRk35qkaibN
-        vUK/pvTCxBHx90nnuTw9AUUUBFUDeH3yMlH/U/PeQ3za0FAV8NZ46wr134IMOg==
+        bh=rW0q3pgqcygaiLdb2Ww7tZ+fu+C22PaxPKJYrTUxjMY=;
+        b=oYe3sZQzaTisEYRig7tXDXMy6j+u8WcDRCGDmuQXgpVkxzRjL54Ir3il86MaE2LhQYoHrq
+        wht2/q5nj4joNEbUsl8DvcH4Pqcd2t+MK4jvLS/XRjbAwsp6+Bg/+Gp+3Nb+kSoHikjUHb
+        uU902hDt7LoEZxPIxC+Nw0BpEfKHM/T6ikGXbS/VdOcY92Q6VZEqWrY/RlzQS6ck0/IzHL
+        O5Ox6JMEMSwaET+Wd4D6nd7pykPzh9If4/gvEA3U9t8qR/HcIqDOZgxT30Jfqxfm8F44tz
+        iO2SQBz0iCQBMk6VaRlPIp/tJ/gcjQ46XR3SsT+nqDhdI3is8HhTJiWxCndS5Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600269135;
+        s=2020e; t=1600269145;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5zL3ElABjLkm4bVdXYgrFM0x9ZFPwQSgfZnxEaAEkGc=;
-        b=xhIKMmWhevnZI5YxXH5wCNJ370jqARDj5LGM6GpUfwYrkp7xIoMc/doJWjjSfXUEsgdcXV
-        BVA0PtnQkSSJQYCg==
+        bh=rW0q3pgqcygaiLdb2Ww7tZ+fu+C22PaxPKJYrTUxjMY=;
+        b=vYft43ApnAmi3sP8i4n1pa0T/MN+OOkZIFvF3p1GMF+olT3Jw2YthtXJLNyyrDa0GQjjCK
+        6kvZG6xOGp6Or9AA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] x86/pci: Reducde #ifdeffery in PCI init code
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+Subject: [tip: x86/irq] x86/irq: Add allocation type for parent domain retrieval
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <jroedel@suse.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200826112332.767707340@linutronix.de>
-References: <20200826112332.767707340@linutronix.de>
+In-Reply-To: <20200826112331.436350257@linutronix.de>
+References: <20200826112331.436350257@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160026913496.15536.1930227378334662971.tip-bot2@tip-bot2>
+Message-ID: <160026914454.15536.10889063727643231215.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,89 +61,130 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/irq branch of tip:
 
-Commit-ID:     445d3595ab290ba16ca5f202c7a67d71460cb39f
-Gitweb:        https://git.kernel.org/tip/445d3595ab290ba16ca5f202c7a67d71460cb39f
+Commit-ID:     b4c364da32cf3b85297648ff5563de2c47d9e32f
+Gitweb:        https://git.kernel.org/tip/b4c364da32cf3b85297648ff5563de2c47d9e32f
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 26 Aug 2020 13:16:49 +02:00
+AuthorDate:    Wed, 26 Aug 2020 13:16:36 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 16 Sep 2020 16:52:35 +02:00
+CommitterDate: Wed, 16 Sep 2020 16:52:29 +02:00
 
-x86/pci: Reducde #ifdeffery in PCI init code
+x86/irq: Add allocation type for parent domain retrieval
 
-Adding a function call before the first #ifdef in arch_pci_init() triggers
-a 'mixed declarations and code' warning if PCI_DIRECT is enabled.
+irq_remapping_ir_irq_domain() is used to retrieve the remapping parent
+domain for an allocation type. irq_remapping_irq_domain() is for retrieving
+the actual device domain for allocating interrupts for a device.
 
-Use stub functions and move the #ifdeffery to the header file where it is
-not in the way.
+The two functions are similar and can be unified by using explicit modes
+for parent irq domain retrieval.
+
+Add X86_IRQ_ALLOC_TYPE_IOAPIC/HPET_GET_PARENT and use it in the iommu
+implementations. Drop the parent domain retrieval for PCI_MSI/X as that is
+unused.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20200826112332.767707340@linutronix.de
+Acked-by: Joerg Roedel <jroedel@suse.de>
+Link: https://lore.kernel.org/r/20200826112331.436350257@linutronix.de
 
 ---
- arch/x86/include/asm/pci_x86.h | 11 +++++++++++
- arch/x86/pci/init.c            | 10 +++-------
- 2 files changed, 14 insertions(+), 7 deletions(-)
+ arch/x86/include/asm/hw_irq.h       | 2 ++
+ arch/x86/kernel/apic/io_apic.c      | 2 +-
+ arch/x86/kernel/apic/msi.c          | 2 +-
+ drivers/iommu/amd/iommu.c           | 8 ++++++++
+ drivers/iommu/hyperv-iommu.c        | 2 +-
+ drivers/iommu/intel/irq_remapping.c | 8 ++------
+ 6 files changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
-index 73bb404..490411d 100644
---- a/arch/x86/include/asm/pci_x86.h
-+++ b/arch/x86/include/asm/pci_x86.h
-@@ -114,9 +114,20 @@ extern const struct pci_raw_ops pci_direct_conf1;
- extern bool port_cf9_safe;
+diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
+index 3982a1e..91b064d 100644
+--- a/arch/x86/include/asm/hw_irq.h
++++ b/arch/x86/include/asm/hw_irq.h
+@@ -40,6 +40,8 @@ enum irq_alloc_type {
+ 	X86_IRQ_ALLOC_TYPE_PCI_MSIX,
+ 	X86_IRQ_ALLOC_TYPE_DMAR,
+ 	X86_IRQ_ALLOC_TYPE_UV,
++	X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT,
++	X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT,
+ };
  
- /* arch_initcall level */
-+#ifdef CONFIG_PCI_DIRECT
- extern int pci_direct_probe(void);
- extern void pci_direct_init(int type);
-+#else
-+static inline int pci_direct_probe(void) { return -1; }
-+static inline  void pci_direct_init(int type) { }
-+#endif
-+
-+#ifdef CONFIG_PCI_BIOS
- extern void pci_pcbios_init(void);
-+#else
-+static inline void pci_pcbios_init(void) { }
-+#endif
-+
- extern void __init dmi_check_pciprobe(void);
- extern void __init dmi_check_skip_isa_align(void);
- 
-diff --git a/arch/x86/pci/init.c b/arch/x86/pci/init.c
-index 5fc617e..bf66909 100644
---- a/arch/x86/pci/init.c
-+++ b/arch/x86/pci/init.c
-@@ -8,11 +8,9 @@
-    in the right sequence from here. */
- static __init int pci_arch_init(void)
- {
--#ifdef CONFIG_PCI_DIRECT
--	int type = 0;
-+	int type;
- 
- 	type = pci_direct_probe();
--#endif
- 
- 	if (!(pci_probe & PCI_PROBE_NOEARLY))
- 		pci_mmcfg_early_init();
-@@ -20,18 +18,16 @@ static __init int pci_arch_init(void)
- 	if (x86_init.pci.arch_init && !x86_init.pci.arch_init())
+ struct irq_alloc_info {
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index 779a89e..be01bb6 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -2296,7 +2296,7 @@ static int mp_irqdomain_create(int ioapic)
  		return 0;
  
--#ifdef CONFIG_PCI_BIOS
- 	pci_pcbios_init();
--#endif
+ 	init_irq_alloc_info(&info, NULL);
+-	info.type = X86_IRQ_ALLOC_TYPE_IOAPIC;
++	info.type = X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT;
+ 	info.ioapic_id = mpc_ioapic_id(ioapic);
+ 	parent = irq_remapping_get_ir_irq_domain(&info);
+ 	if (!parent)
+diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
+index 7410d34..421c016 100644
+--- a/arch/x86/kernel/apic/msi.c
++++ b/arch/x86/kernel/apic/msi.c
+@@ -472,7 +472,7 @@ struct irq_domain *hpet_create_irq_domain(int hpet_id)
+ 	domain_info->data = (void *)(long)hpet_id;
+ 
+ 	init_irq_alloc_info(&info, NULL);
+-	info.type = X86_IRQ_ALLOC_TYPE_HPET;
++	info.type = X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT;
+ 	info.hpet_id = hpet_id;
+ 	parent = irq_remapping_get_ir_irq_domain(&info);
+ 	if (parent == NULL)
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index cf26b73..b98b0ab 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -3548,6 +3548,14 @@ static struct irq_domain *get_ir_irq_domain(struct irq_alloc_info *info)
+ 	if (!info)
+ 		return NULL;
+ 
++	switch (info->type) {
++	case X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT:
++	case X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT:
++		break;
++	default:
++		return NULL;
++	}
 +
- 	/*
- 	 * don't check for raw_pci_ops here because we want pcbios as last
- 	 * fallback, yet it's needed to run first to set pcibios_last_bus
- 	 * in case legacy PCI probing is used. otherwise detecting peer busses
- 	 * fails.
- 	 */
--#ifdef CONFIG_PCI_DIRECT
- 	pci_direct_init(type);
--#endif
-+
- 	if (!raw_pci_ops && !raw_pci_ext_ops)
- 		printk(KERN_ERR
- 		"PCI: Fatal: No config space access function found\n");
+ 	devid = get_devid(info);
+ 	if (devid >= 0) {
+ 		iommu = amd_iommu_rlookup_table[devid];
+diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
+index 8919c1c..e7bee11 100644
+--- a/drivers/iommu/hyperv-iommu.c
++++ b/drivers/iommu/hyperv-iommu.c
+@@ -184,7 +184,7 @@ static int __init hyperv_enable_irq_remapping(void)
+ 
+ static struct irq_domain *hyperv_get_ir_irq_domain(struct irq_alloc_info *info)
+ {
+-	if (info->type == X86_IRQ_ALLOC_TYPE_IOAPIC)
++	if (info->type == X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT)
+ 		return ioapic_ir_domain;
+ 	else
+ 		return NULL;
+diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
+index 33c4389..9b15cd0 100644
+--- a/drivers/iommu/intel/irq_remapping.c
++++ b/drivers/iommu/intel/irq_remapping.c
+@@ -1115,16 +1115,12 @@ static struct irq_domain *intel_get_ir_irq_domain(struct irq_alloc_info *info)
+ 		return NULL;
+ 
+ 	switch (info->type) {
+-	case X86_IRQ_ALLOC_TYPE_IOAPIC:
++	case X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT:
+ 		iommu = map_ioapic_to_ir(info->ioapic_id);
+ 		break;
+-	case X86_IRQ_ALLOC_TYPE_HPET:
++	case X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT:
+ 		iommu = map_hpet_to_ir(info->hpet_id);
+ 		break;
+-	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
+-	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
+-		iommu = map_dev_to_ir(info->msi_dev);
+-		break;
+ 	default:
+ 		BUG_ON(1);
+ 		break;
