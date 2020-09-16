@@ -2,111 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB6326BC03
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 07:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B3C26BC06
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 07:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726155AbgIPF4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 01:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgIPF4s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 01:56:48 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0CDC061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 22:56:47 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b17so978124pji.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 22:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PyJpRejCCxPh/nnkiT5lYQR6vzYVBlBqRRVevWzgDgs=;
-        b=oQP/qoI9cm0wd9Lhiy/DNnRpKfa08CLU5u97M6Xsdt53si7+wRG+lDpjBpCjVLF7YA
-         /qYHS1+zmPngFnWwdSnadxnb0btTE4D83lVCApQmTQcEufHkj884KNFFDJtMqwnRSbBe
-         6amLunedN5FBNeWKn7mykbOz366IlZM+c9Ci+uH68GuPMlmaUpY45N2nvaXrdqKcET/e
-         tQOcwvSHrflxwsVzrL6thF/dZlibhSfuRbhN93zzZ8Elb+cFL5WjWmlfkmck07od/oPL
-         aqT0LFBQ2Feo91KWNe5YWx0Fp8DkbcDSfbeWXbO8UeqZjc8znfF4BwOShEt2vAw55J3j
-         lQ1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PyJpRejCCxPh/nnkiT5lYQR6vzYVBlBqRRVevWzgDgs=;
-        b=O+22EbSi4Xl8qImTU0m+Ya+8xsRe7i9kfCxfIaqGuu91BYjDzBxpHJShAfKqAL+WYB
-         b3FQ6zwT38WKH5Bh0UxViRdLrkiHZzmC0nYxXfF9cD705CztmYBqT7SV4d3FKeIqw9rJ
-         3EmJwcMoNESnEF/5rhg4Hu5COJHv7mLHZe2FW4xhywTdsYkNiJuEzUirLRwxFppgi6vD
-         xzEniV0UUlOzgweQYM4ldnjGzHQBeZld+LcF02M1LptY8/zek6gZoDxmf5nt75jv0Ze2
-         P60iu08Y+dZNEwdHXipbt4oSnMOwD6HNOBK+6DvGQyYCg+Ez4n7WPycl1ehv6oy2ZRBi
-         i/jw==
-X-Gm-Message-State: AOAM530afxF/9IJoyoPkn39EuV4PHmRr2sAr0a7EKh2UNk8lz0vQJIvt
-        /Gl3Ykq5zG0qz5VS1f2VUJ7/MQ==
-X-Google-Smtp-Source: ABdhPJytCYV1eL6dVOXXq/TtuS96mBhckOBdmELoYmq8WFkj/WAskbMrE/JW90tE0oUK/LQ+lMANXw==
-X-Received: by 2002:a17:90a:8a04:: with SMTP id w4mr2542531pjn.72.1600235806982;
-        Tue, 15 Sep 2020 22:56:46 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id g129sm3801342pfb.9.2020.09.15.22.56.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 22:56:45 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 11:26:41 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cristian.marussi@arm.com, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] cpufreq: stats: Defer stats update to
- cpufreq_stats_record_transition()
-Message-ID: <20200916055641.g654zoukjeqpjmwz@vireshk-i7>
-References: <cover.1599031227.git.viresh.kumar@linaro.org>
- <973bd0536c4957d03f36447398498cfacb2393d9.1599031227.git.viresh.kumar@linaro.org>
- <bd6e6d93-7491-0971-3bed-27d1885c38cd@arm.com>
+        id S1726172AbgIPF5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 01:57:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48712 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgIPF5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 01:57:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600235850; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=EXoqVp08jsm9GqxqzKytogxerwplgTdxqNuyrQFiXP8=;
+ b=EYOIxNtKf0zdax4YHCXK4GRozo2fKPbPlpD1GXr8tZ0FYIXpK/2uAhwKwN0WXvpKoLK792lG
+ Ms/tdxkCL+zT5kNN4Y0em3ePwqUvDK01I/6/uEG1mpUxHo8fhrrFMGcR7Jj6giaROwU6jWnX
+ bD0VMpajutH2ZTPFj4LbxTLFQPg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f61a92ed2819a184642caf7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 05:57:02
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A09B2C43385; Wed, 16 Sep 2020 05:57:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE2DDC433F0;
+        Wed, 16 Sep 2020 05:56:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BE2DDC433F0
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bd6e6d93-7491-0971-3bed-27d1885c38cd@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] airo: switch from 'pci_' to 'dma_' API
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200907201942.321568-1-christophe.jaillet@wanadoo.fr>
+References: <20200907201942.321568-1-christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     davem@davemloft.net, kuba@kernel.org, lee.jones@linaro.org,
+        mpe@ellerman.id.au, adobriyan@gmail.com, dan.carpenter@oracle.com,
+        vulab@iscas.ac.cn, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200916055702.A09B2C43385@smtp.codeaurora.org>
+Date:   Wed, 16 Sep 2020 05:57:02 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-09-20, 11:04, Lukasz Luba wrote:
-> Hi Viresh,
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+
+> The wrappers in include/linux/pci-dma-compat.h should go away.
 > 
-> On 9/2/20 8:24 AM, Viresh Kumar wrote:
-> > In order to prepare for lock-less stats update, add support to defer any
-> > updates to it until cpufreq_stats_record_transition() is called.
-> > 
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >   drivers/cpufreq/cpufreq_stats.c | 75 ++++++++++++++++++++++++---------
-> >   1 file changed, 56 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
-> > index 94d959a8e954..fdf9e8556a49 100644
-> > --- a/drivers/cpufreq/cpufreq_stats.c
-> > +++ b/drivers/cpufreq/cpufreq_stats.c
-> > @@ -22,17 +22,22 @@ struct cpufreq_stats {
+> The patch has been generated with the coccinelle script below and has been
+> hand modified to replace GFP_ with a correct flag.
+> It has been compile tested.
 > 
-> Would it be possible to move this structure in the
-> linux/cpufreq.h header? Any subsystem could have access to it,
-> like to the cpuidle stats.
+> When memory is allocated in 'mpi_map_card()' GFP_KERNEL can be used because
+> this function is called from a probe or a module_init() function and no
+> spinlock is taken in the between.
+> 
+> The call chains are:
+>   airo_init_module				module_init function in 'airo.c'
+> or
+>   airo_probe				.probe function in 'airo_cs.c'
+>     --> airo_config
+> 
+> followed in both cases by:
+>       --> init_airo_card
+>         --> _init_airo_card
+>           --> mpi_map_card
+> 
+> 
+> @@
+> @@
+> -    PCI_DMA_BIDIRECTIONAL
+> +    DMA_BIDIRECTIONAL
+> 
+> @@
+> @@
+> -    PCI_DMA_TODEVICE
+> +    DMA_TO_DEVICE
+> 
+> @@
+> @@
+> -    PCI_DMA_FROMDEVICE
+> +    DMA_FROM_DEVICE
+> 
+> @@
+> @@
+> -    PCI_DMA_NONE
+> +    DMA_NONE
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> -    pci_alloc_consistent(e1, e2, e3)
+> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> -    pci_zalloc_consistent(e1, e2, e3)
+> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_free_consistent(e1, e2, e3, e4)
+> +    dma_free_coherent(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_single(e1, e2, e3, e4)
+> +    dma_map_single(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_single(e1, e2, e3, e4)
+> +    dma_unmap_single(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4, e5;
+> @@
+> -    pci_map_page(e1, e2, e3, e4, e5)
+> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_page(e1, e2, e3, e4)
+> +    dma_unmap_page(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_sg(e1, e2, e3, e4)
+> +    dma_map_sg(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_sg(e1, e2, e3, e4)
+> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
+> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
+> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
+> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
+> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_dma_mapping_error(e1, e2)
+> +    dma_mapping_error(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_consistent_dma_mask(e1, e2)
+> +    dma_set_coherent_mask(&e1->dev, e2)
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Hmm, I am not sure why we should be doing it. In case of cpuidle many
-parts of the kernel are playing with cpuidle code, like drivers/idle/,
-drivers/cpuidle, etc.
+Patch applied to wireless-drivers-next.git, thanks.
 
-Something should land in include/ only if you want others to use it,
-but in case of cpufreq no one should be using cpufreq stats.
-
-So unless you have a real case where that might be beneficial, I am
-going to keep it as is.
-
-> Apart from that (and the comment regarding the 'atomic_t' field)
-> I don't see any issues.
-
-Thanks.
+ac4c323cbb91 airo: switch from 'pci_' to 'dma_' API
 
 -- 
-viresh
+https://patchwork.kernel.org/patch/11762179/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
