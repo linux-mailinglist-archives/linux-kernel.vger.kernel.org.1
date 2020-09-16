@@ -2,259 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2066B26CE9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD8F26CEA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgIPWXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
+        id S1726592AbgIPWXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgIPWXB (ORCPT
+        with ESMTP id S1726426AbgIPWXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:23:01 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6B7C061D7E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 14:43:14 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id n61so8074161ota.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 14:43:14 -0700 (PDT)
+        Wed, 16 Sep 2020 18:23:02 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E36C0698CA;
+        Wed, 16 Sep 2020 14:44:26 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id r9so10037727ioa.2;
+        Wed, 16 Sep 2020 14:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0U6lePtHUzuHNkGr/lHdQ2n9vFxpAC0RKTsGOLtWqMU=;
-        b=BuOSmxtghdYv1Pu3+U3tb8abJ5nf3TWnJBg3uVURF8/e2SpjhWAdyUHWhFgYIFMxvB
-         d5+bwZ5pRd58OgZ4vH/yU+7BPFXtf1oaS9iv8VNgV6jcyzfMIggtf1o50gCrR9J41Dga
-         uJ7taPXVqQy9TZGItqkyL1/OnuZWlkNHLm4+E=
+        bh=/6p2UL06xRCrtfganU+UNWFu+nueRBEvuh8BmgJZ8II=;
+        b=fTJMcutrq6igd5vYMabKNTl2pV3QLLIVga8eZVWB3Qo8LD5CuAU2xBCagWdvlNfz7Y
+         SdgLDHmtx+cP77RccgrN17Zpod+wgXnVDWU4BWCp8glD8TmR0CgYjIK7sLhk3gCv4jka
+         0gbLLTASvnEGY2kVqdeZEAAj+Xc+ag6xxs2n1cu0ypLrogcOS57JfDYiPaxg0LJA89D3
+         bES/LQ47vgte8onzKDnKVVIsfe4evM0ux9J7ojZJx4ruWYRLDpiMdRs++WmWMiRluaDE
+         RkpwwSpAnZ0yEClbYo3zllxy1Ya+SnHZx3iZ/1TrKJfNpfmg6ZilGkn/hSmOuJJfnWy3
+         zo8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0U6lePtHUzuHNkGr/lHdQ2n9vFxpAC0RKTsGOLtWqMU=;
-        b=Hq7D2wYPNRf9Uvwd68hohWqsBYb+gmDhJv0r7iBs6Gox5HZO5P6kkXXv0w+/skk3iS
-         i5GY7np8jHBSHnOPGFc3/bfM2ojTZ67i1SWg6u2ExCRhI7KktpVcD7+ifzL2nmGhYsJa
-         rJUmStO544Yd+J0yF+sEeVUOsl2jkqYLbP/oni3K3FjsdP3Tc8omq6ExMxMaAOWDl96c
-         hn7A6dmnOVBRV+0CpknKLlpfm0LennOEpVYD/ySK69tl7nSakLBh6w3yBKoWMvXm721g
-         18upOhRSSD29A1sfr/hoRsxBP6nKjQjeiRj23pBv9S1ONL/FZOM0shEigOj3FPA5V40n
-         NW6w==
-X-Gm-Message-State: AOAM532RVnx0k8UKVVMY4M0LeTdSuKuS/0htr0Q9j/JR7FnH4ReIV3dh
-        +Dsh8mcUOx2t2D/HYePFxXb14nXqeOze2JC4+CecnD4sytidcA==
-X-Google-Smtp-Source: ABdhPJxGBBe98enWtsOYaL3WRSDoocQkSDwgwVOMBH2iYSWZcVReSaRcccihGCR06ESa6+wDuF2q58JK53iBrw3zjHc=
-X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr18766603otq.188.1600292593863;
- Wed, 16 Sep 2020 14:43:13 -0700 (PDT)
+        bh=/6p2UL06xRCrtfganU+UNWFu+nueRBEvuh8BmgJZ8II=;
+        b=NmvgBL/tm7ZQFfkp7AtW9keatgjkfW4KrlcBvy459hJnFLLAffwbrB61ju0Sp7az6g
+         T3mSBrb4bpwl7uW6/JXpaehLFdwsCIVLzglq1N5wGPV2SgwRTuuEqRro3zvYtkBQQ8oY
+         XIF+veh2aPGZi5vJQ/kchOsFaX7B0m8aX9WtAmRQ2ciVIHsVGH3HM5pG+AO/pW528bWF
+         LD+U/XZV1mjSgjFX4CjDuL8sDsj8Bk7aARdgSJ/mYuJEc0ByJ7q/aL+2MeX+vRKWZoPd
+         9j53uiUiQuYkg3TObev2ww/gWQPeMbu53aFUGIPVhXRVjhJhrpgaVQb9Yz/vfCZ/MuJM
+         Hs1Q==
+X-Gm-Message-State: AOAM530rCXwvZnEVZpn2i0GF79HkomyxqsJpx93bQbna7ZZWXN0nKcnn
+        zRRTDZ0IJt/zt/JVzv7t4WRCuI1tBk+A4qvBSNN3f5fDDXk=
+X-Google-Smtp-Source: ABdhPJxVIty+Dfq+gHcJafZBfiUeb8mqaNsz4GMGNLyLwU88OT1JilrdN5E6o4aMmGksSrwkrnrtPtD7su/aUhaQfzw=
+X-Received: by 2002:a6b:7a41:: with SMTP id k1mr21469290iop.187.1600292665347;
+ Wed, 16 Sep 2020 14:44:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <87bli75t7v.fsf@nanos.tec.linutronix.de> <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
- <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
- <20200916152956.GV29330@paulmck-ThinkPad-P72> <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
- <20200916205840.GD29330@paulmck-ThinkPad-P72>
-In-Reply-To: <20200916205840.GD29330@paulmck-ThinkPad-P72>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 16 Sep 2020 23:43:02 +0200
-Message-ID: <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
+References: <20200916183411.64756-1-david@redhat.com> <20200916183411.64756-2-david@redhat.com>
+In-Reply-To: <20200916183411.64756-2-david@redhat.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 16 Sep 2020 14:44:14 -0700
+Message-ID: <CAKgT0UfbnWoPOsaK5H_JtYbQdp-p+ngupO+6sq-_sy8Zetoanw@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/4] mm/page_alloc: convert "report" flag of
+ __free_one_page() to a proper flag
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Wed, Sep 16, 2020 at 11:34 AM David Hildenbrand <david@redhat.com> wrote:
 >
-> On Wed, Sep 16, 2020 at 10:29:06PM +0200, Daniel Vetter wrote:
-> > On Wed, Sep 16, 2020 at 5:29 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Wed, Sep 16, 2020 at 09:37:17AM +0200, Daniel Vetter wrote:
-> > > > On Tue, Sep 15, 2020 at 7:35 PM Linus Torvalds
-> > > > <torvalds@linux-foundation.org> wrote:
-> > > > >
-> > > > > On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > > > > >
-> > > > > > OTOH, having a working 'preemptible()' or maybe better named
-> > > > > > 'can_schedule()' check makes tons of sense to make decisions about
-> > > > > > allocation modes or other things.
-> > > > >
-> > > > > No. I think that those kinds of decisions about actual behavior are
-> > > > > always simply fundamentally wrong.
-> > > > >
-> > > > > Note that this is very different from having warnings about invalid
-> > > > > use. THAT is correct. It may not warn in all configurations, but that
-> > > > > doesn't matter: what matters is that it warns in common enough
-> > > > > configurations that developers will catch it.
-> > > > >
-> > > > > So having a warning in "might_sleep()" that doesn't always trigger,
-> > > > > because you have a limited configuration that can't even detect the
-> > > > > situation, that's fine and dandy and intentional.
-> > > > >
-> > > > > But having code like
-> > > > >
-> > > > >        if (can_schedule())
-> > > > >            .. do something different ..
-> > > > >
-> > > > > is fundamentally complete and utter garbage.
-> > > > >
-> > > > > It's one thing if you test for "am I in hardware interrupt context".
-> > > > > Those tests aren't great either, but at least they make sense.
-> > > > >
-> > > > > But a driver - or some library routine - making a difference based on
-> > > > > some nebulous "can I schedule" is fundamentally and basically WRONG.
-> > > > >
-> > > > > If some code changes behavior, it needs to be explicit to the *caller*
-> > > > > of that code.
-> > > > >
-> > > > > So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
-> > > > > do_something_atomic()" is pure shite.
-> > > > >
-> > > > > And I am not IN THE LEAST interested in trying to help people doing
-> > > > > pure shite. We need to fix them. Like the crypto code is getting
-> > > > > fixed.
-> > > >
-> > > > Just figured I'll throw my +1 in from reading too many (gpu) drivers.
-> > > > Code that tries to cleverly adjust its behaviour depending upon the
-> > > > context it's running in is harder to understand and blows up in more
-> > > > interesting ways. We still have drm_can_sleep() and it's mostly just
-> > > > used for debug code, and I've largely ended up just deleting
-> > > > everything that used it because when you're driver is blowing up the
-> > > > last thing you want is to realize your debug code and output can't be
-> > > > relied upon. Or worse, that the only Oops you have is the one in the
-> > > > debug code, because the real one scrolled away - the original idea
-> > > > behind drm_can_sleep was to make all the modeset code work
-> > > > automagically both in normal ioctl/kworker context and in the panic
-> > > > handlers or kgdb callbacks. Wishful thinking at best.
-> > > >
-> > > > Also at least for me that extends to everything, e.g. I much prefer
-> > > > explicit spin_lock and spin_lock_irq vs magic spin_lock_irqsave for
-> > > > locks shared with interrupt handlers, since the former two gives me
-> > > > clear information from which contexts such function can be called.
-> > > > Other end is the memalloc_no*_save/restore functions, where I recently
-> > > > made a real big fool of myself because I didn't realize how much that
-> > > > impacts everything that's run within - suddenly "GFP_KERNEL for small
-> > > > stuff never fails" is wrong everywhere.
-> > > >
-> > > > It's all great for debugging and sanity checks (and we run with all
-> > > > that stuff enabled in our CI), but really semantic changes depending
-> > > > upon magic context checks freak my out :-)
-> > >
-> > > All fair, but some of us need to write code that must handle being
-> > > invoked from a wide variety of contexts.  Now perhaps you like the idea of
-> > > call_rcu() for schedulable contexts, call_rcu_nosched() when preemption
-> > > is disabled, call_rcu_irqs_are_disabled() when interrupts are disabled,
-> > > call_rcu_raw_atomic() from contexts where (for example) raw spinlocks
-> > > are held, and so on.  However, from what I can see, most people instead
-> > > consistently prefer that the RCU API instead be consolidated.
-> > >
-> > > Some in-flight cache-efficiency work for kvfree_rcu() and call_rcu()
-> > > needs to be able to allocate memory occasionally.  It can do that when
-> > > invoked from some contexts, but not when invoked from others.  Right now,
-> > > in !PREEMPT kernels, it cannot tell, and must either do things to the
-> > > memory allocators that some of the MM hate or must unnecessarily invoke
-> > > workqueues.  Thomas's patches would allow the code to just allocate in
-> > > the common case when these primitives are invoked from contexts where
-> > > allocation is permitted.
-> > >
-> > > If we want to restrict access to the can_schedule() or whatever primitive,
-> > > fine and good.  We can add a check to checkpatch.pl, for example.  Maybe
-> > > we can go back to the old brlock approach of requiring certain people's
-> > > review for each addition to the kernel.
-> > >
-> > > But there really are use cases that it would greatly help.
-> >
-> > We can deadlock in random fun places if random stuff we're calling
-> > suddenly starts allocating. Sometimes. Maybe once in a blue moon, to
-> > make it extra fun to reproduce. Maybe most driver subsystems are less
-> > brittle, but gpu drivers definitely need to know about the details for
-> > exactly this example. And yes gpu drivers use rcu for freeing
-> > dma_fence structures, and that tends to happen in code that we only
-> > recently figured out should really not allocate memory.
-> >
-> > I think minimally you need to throw in an unconditional
-> > fs_reclaim_acquire();fs_reclaim_release(); so that everyone who runs
-> > with full debugging knows what might happen. It's kinda like
-> > might_sleep, but a lot more specific. might_sleep() alone is not
-> > enough, because in the specific code paths I'm thinking of (and
-> > created special lockdep annotations for just recently) sleeping is
-> > allowed, but any memory allocations with GFP_RECLAIM set are no-go.
+> Let's prepare for additional flags and avoid long parameter lists of bools.
+> Follow-up patches will also make use of the flags in __free_pages_ok(),
+> however, I wasn't able to come up with a better name for the type - should
+> be good enough for internal purposes.
 >
-> Completely agreed!  Any allocation on any free path must be handled
-> -extremely- carefully.  To that end...
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/page_alloc.c | 28 ++++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 8 deletions(-)
 >
-> First, there is always a fallback in case the allocation fails.  Which
-> might have performance or corner-case robustness issues, but which will
-> at least allow forward progress.  Second, we consulted with a number of
-> MM experts to arrive at appropriate GFP_* flags (and their patience is
-> greatly appreciated).  Third, the paths that can allocate will do so about
-> one time of 500, so any issues should be spotted sooner rather than later.
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 6b699d273d6e..91cefb8157dd 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -77,6 +77,18 @@
+>  #include "shuffle.h"
+>  #include "page_reporting.h"
 >
-> So you are quite right to be concerned, but I believe we will be doing the
-> right things.  And based on his previous track record, I am also quite
-> certain that Mr. Murphy will be on hand to provide me any additional
-> education that I might require.
+> +/* Free One Page flags: for internal, non-pcp variants of free_pages(). */
+> +typedef int __bitwise fop_t;
+> +
+> +/* No special request */
+> +#define FOP_NONE               ((__force fop_t)0)
+> +
+> +/*
+> + * Skip free page reporting notification after buddy merging (will *not* mark
+> + * the page reported, only skip the notification).
+> + */
+> +#define FOP_SKIP_REPORT_NOTIFY ((__force fop_t)BIT(0))
+> +
+>  /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
+>  static DEFINE_MUTEX(pcp_batch_high_lock);
+>  #define MIN_PERCPU_PAGELIST_FRACTION   (8)
+> @@ -948,10 +960,9 @@ buddy_merge_likely(unsigned long pfn, unsigned long buddy_pfn,
+>   * -- nyc
+>   */
 >
-> Finally, I have noted down your point about fs_reclaim_acquire() and
-> fs_reclaim_release().  Whether or not they prove to be needed, I do
-> appreciate your calling them to my attention.
+> -static inline void __free_one_page(struct page *page,
+> -               unsigned long pfn,
+> -               struct zone *zone, unsigned int order,
+> -               int migratetype, bool report)
+> +static inline void __free_one_page(struct page *page, unsigned long pfn,
+> +                                  struct zone *zone, unsigned int order,
+> +                                  int migratetype, fop_t fop_flags)
+>  {
+>         struct capture_control *capc = task_capc(zone);
+>         unsigned long buddy_pfn;
+> @@ -1038,7 +1049,7 @@ static inline void __free_one_page(struct page *page,
+>                 add_to_free_list(page, zone, order, migratetype);
+>
+>         /* Notify page reporting subsystem of freed page */
+> -       if (report)
+> +       if (!(fop_flags & FOP_SKIP_REPORT_NOTIFY))
+>                 page_reporting_notify_free(order);
+>  }
+>
+> @@ -1368,7 +1379,7 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+>                 if (unlikely(isolated_pageblocks))
+>                         mt = get_pageblock_migratetype(page);
+>
+> -               __free_one_page(page, page_to_pfn(page), zone, 0, mt, true);
+> +               __free_one_page(page, page_to_pfn(page), zone, 0, mt, FOP_NONE);
+>                 trace_mm_page_pcpu_drain(page, 0, mt);
+>         }
+>         spin_unlock(&zone->lock);
+> @@ -1384,7 +1395,7 @@ static void free_one_page(struct zone *zone,
+>                 is_migrate_isolate(migratetype))) {
+>                 migratetype = get_pfnblock_migratetype(page, pfn);
+>         }
+> -       __free_one_page(page, pfn, zone, order, migratetype, true);
+> +       __free_one_page(page, pfn, zone, order, migratetype, FOP_NONE);
+>         spin_unlock(&zone->lock);
+>  }
+>
+> @@ -3277,7 +3288,8 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
+>         lockdep_assert_held(&zone->lock);
+>
+>         /* Return isolated page to tail of freelist. */
+> -       __free_one_page(page, page_to_pfn(page), zone, order, mt, false);
+> +       __free_one_page(page, page_to_pfn(page), zone, order, mt,
+> +                       FOP_SKIP_REPORT_NOTIFY);
+>  }
+>
+>  /*
 
-I just realized that since these dma_fence structs are refcounted and
-userspace can hold references (directly, it can pass them around
-behind file descriptors) we might never hit such a path until slightly
-unusual or evil userspace does something interesting. Do you have
-links to those patches? Some googling didn't turn up anything. I can
-then figure out whether it's better to risk not spotting issues with
-call_rcu vs slapping a memalloc_noio_save/restore around all these
-critical section which force-degrades any allocation to GFP_ATOMIC at
-most, but has the risk that we run into code that assumes "GFP_KERNEL
-never fails for small stuff" and has a decidedly less tested fallback
-path than rcu code.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Seems pretty straight forward. So we are basically flipping the logic
+and replacing !report with FOP_SKIP_REPORT_NOTIFY.
+
+Reviewed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
