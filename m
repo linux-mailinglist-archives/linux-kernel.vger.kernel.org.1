@@ -2,186 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB4026BDC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B4F26BDC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgIPHRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIPHRO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:17:14 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3B2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:17:13 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s13so1688927wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QRBI10mF4N+0+Kra08TFwTNNSJeLSrUKwPwXHKEl7Js=;
-        b=DWBvlQicn2YrBwcRxfxb8i+7y8uKMiTZQESQLrOqMDQ+822l5gc2vXVjFd7BhyuKIQ
-         HQ3pA3Teaknz6izx32nSR0C8HE8QPUPpFFo1bRldNbEbE47tnze4Q30xr9l/BfnSvP28
-         vuLjQQMmiQqcDejL/R9Lh4kzI5cuDUg7kzVrU9dDo9bi5rASGXAbd/VSzxvlBPd6Y761
-         44oy5X5yH0mGyWSEdlIOdVhBmzlE/NPI+XUCIZ2o4jt0pat2x+S9uYJcz/pn09KT0yAF
-         1ollNtR00798AlTNFPUWTMUxie/j17mCSIM56rbyfeV8jgnE+XVUvOkTlSo0RYdNppow
-         xKFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=QRBI10mF4N+0+Kra08TFwTNNSJeLSrUKwPwXHKEl7Js=;
-        b=SoMjcm13AnVWvB9orL+DMLAamIubW1uEDVRU61kwM3rMk0auY8ui1Y9m0ilnsFfd2J
-         Iv2jBCI30Eg2L+xiyzOyturDNmlT5yJ6JnNCc4pU2UzXvuAdeEESBegNKj8lKobBX5Q+
-         ugCEdVX6ZMhFfDy5tdwkCCnsxktY9KOd/6VyktZn4XaO/oSTTOPbJy15VL2OeBU4JwKM
-         yFzZ4PDvxuNXDvyscRABKiJh0ZBgV04gOLe6PShDYlhxoPIG4eu0PUPhUPxvpV40B67a
-         q3nXjZAGE9C9//+KK2fV5/5YUL0mOTrIbo/5VWmmzO88QnBUzfa8ot6hjpBjbZdM42Z5
-         eIOg==
-X-Gm-Message-State: AOAM533dhD9PYpt1d5WQ0Qn6dvB/6aPXaEltAzf5BwQSFHar6Cld8kB7
-        941rA2mgf5V3yI0GDDzz9ZiUnxg0tegjhiLa
-X-Google-Smtp-Source: ABdhPJwZ9b9QxHlE5Pd4LWa0J0DyU8OiZQJc/nI4/GGYss1953s52F16/ZDbbvWSiTyKV5uBd4GB5w==
-X-Received: by 2002:a7b:c753:: with SMTP id w19mr3029816wmk.157.1600240631896;
-        Wed, 16 Sep 2020 00:17:11 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac? ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
-        by smtp.gmail.com with ESMTPSA id v204sm3640070wmg.20.2020.09.16.00.17.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 00:17:10 -0700 (PDT)
-Subject: Re: [PATCH RESEND 2/2] soc: amlogic: meson-ee-pwrc: add support for
- the Meson AXG SoCs
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     khilman@baylibre.com, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20200904161654.24141-1-narmstrong@baylibre.com>
- <20200904161654.24141-3-narmstrong@baylibre.com>
- <CAFBinCBDKuFkdR_mTyS=cYPAwCzs+TYSh1koR29uTnLmAtugPQ@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKE5laWwgQXJtc3Ryb25nIDxuYXJtc3Ryb25nQGJheWxpYnJlLmNvbT7CwHsEEwEKACUC
- GyMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheABQJXDO2CAhkBAAoJEBaat7Gkz/iubGIH/iyk
- RqvgB62oKOFlgOTYCMkYpm2aAOZZLf6VKHKc7DoVwuUkjHfIRXdslbrxi4pk5VKU6ZP9AKsN
- NtMZntB8WrBTtkAZfZbTF7850uwd3eU5cN/7N1Q6g0JQihE7w4GlIkEpQ8vwSg5W7hkx3yQ6
- 2YzrUZh/b7QThXbNZ7xOeSEms014QXazx8+txR7jrGF3dYxBsCkotO/8DNtZ1R+aUvRfpKg5
- ZgABTC0LmAQnuUUf2PHcKFAHZo5KrdO+tyfL+LgTUXIXkK+tenkLsAJ0cagz1EZ5gntuheLD
- YJuzS4zN+1Asmb9kVKxhjSQOcIh6g2tw7vaYJgL/OzJtZi6JlIXOwU0EVid/pAEQAND7AFhr
- 5faf/EhDP9FSgYd/zgmb7JOpFPje3uw7jz9wFb28Cf0Y3CcncdElYoBNbRlesKvjQRL8mozV
- 9RN+IUMHdUx1akR/A4BPXNdL7StfzKWOCxZHVS+rIQ/fE3Qz/jRmT6t2ZkpplLxVBpdu95qJ
- YwSZjuwFXdC+A7MHtQXYi3UfCgKiflj4+/ITcKC6EF32KrmIRqamQwiRsDcUUKlAUjkCLcHL
- CQvNsDdm2cxdHxC32AVm3Je8VCsH7/qEPMQ+cEZk47HOR3+Ihfn1LEG5LfwsyWE8/JxsU2a1
- q44LQM2lcK/0AKAL20XDd7ERH/FCBKkNVzi+svYJpyvCZCnWT0TRb72mT+XxLWNwfHTeGALE
- +1As4jIS72IglvbtONxc2OIid3tR5rX3k2V0iud0P7Hnz/JTdfvSpVj55ZurOl2XAXUpGbq5
- XRk5CESFuLQV8oqCxgWAEgFyEapI4GwJsvfl/2Er8kLoucYO1Id4mz6N33+omPhaoXfHyLSy
- dxD+CzNJqN2GdavGtobdvv/2V0wukqj86iKF8toLG2/Fia3DxMaGUxqI7GMOuiGZjXPt/et/
- qeOySghdQ7Sdpu6fWc8CJXV2mOV6DrSzc6ZVB4SmvdoruBHWWOR6YnMz01ShFE49pPucyU1h
- Av4jC62El3pdCrDOnWNFMYbbon3vABEBAAHCwn4EGAECAAkFAlYnf6QCGwICKQkQFpq3saTP
- +K7BXSAEGQECAAYFAlYnf6QACgkQd9zb2sjISdGToxAAkOjSfGxp0ulgHboUAtmxaU3viucV
- e2Hl1BVDtKSKmbIVZmEUvx9D06IijFaEzqtKD34LXD6fjl4HIyDZvwfeaZCbJbO10j3k7FJE
- QrBtpdVqkJxme/nYlGOVzcOiKIepNkwvnHVnuVDVPcXyj2wqtsU7VZDDX41z3X4xTQwY3SO1
- 9nRO+f+i4RmtJcITgregMa2PcB0LvrjJlWroI+KAKCzoTHzSTpCXMJ1U/dEqyc87bFBdc+DI
- k8mWkPxsccdbs4t+hH0NoE3Kal9xtAl56RCtO/KgBLAQ5M8oToJVatxAjO1SnRYVN1EaAwrR
- xkHdd97qw6nbg9BMcAoa2NMc0/9MeiaQfbgW6b0reIz/haHhXZ6oYSCl15Knkr4t1o3I2Bqr
- Mw623gdiTzotgtId8VfLB2Vsatj35OqIn5lVbi2ua6I0gkI6S7xJhqeyrfhDNgzTHdQVHB9/
- 7jnM0ERXNy1Ket6aDWZWCvM59dTyu37g3VvYzGis8XzrX1oLBU/tTXqo1IFqqIAmvh7lI0Se
- gCrXz7UanxCwUbQBFjzGn6pooEHJYRLuVGLdBuoApl/I4dLqCZij2AGa4CFzrn9W0cwm3HCO
- lR43gFyz0dSkMwNUd195FrvfAz7Bjmmi19DnORKnQmlvGe/9xEEfr5zjey1N9+mt3//geDP6
- clwKBkq0JggA+RTEAELzkgPYKJ3NutoStUAKZGiLOFMpHY6KpItbbHjF2ZKIU1whaRYkHpB2
- uLQXOzZ0d7x60PUdhqG3VmFnzXSztA4vsnDKk7x2xw0pMSTKhMafpxaPQJf494/jGnwBHyi3
- h3QGG1RjfhQ/OMTX/HKtAUB2ct3Q8/jBfF0hS5GzT6dYtj0Ci7+8LUsB2VoayhNXMnaBfh+Q
- pAhaFfRZWTjUFIV4MpDdFDame7PB50s73gF/pfQbjw5Wxtes/0FnqydfId95s+eej+17ldGp
- lMv1ok7K0H/WJSdr7UwDAHEYU++p4RRTJP6DHWXcByVlpNQ4SSAiivmWiwOt490+Ac7ATQRN
- WQbPAQgAvIoM384ZRFocFXPCOBir5m2J+96R2tI2XxMgMfyDXGJwFilBNs+fpttJlt2995A8
- 0JwPj8SFdm6FBcxygmxBBCc7i/BVQuY8aC0Z/w9Vzt3Eo561r6pSHr5JGHe8hwBQUcNPd/9l
- 2ynP57YTSE9XaGJK8gIuTXWo7pzIkTXfN40Wh5jeCCspj4jNsWiYhljjIbrEj300g8RUT2U0
- FcEoiV7AjJWWQ5pi8lZJX6nmB0lc69Jw03V6mblgeZ/1oTZmOepkagwy2zLDXxihf0GowUif
- GphBDeP8elWBNK+ajl5rmpAMNRoKxpN/xR4NzBg62AjyIvigdywa1RehSTfccQARAQABwsBf
- BBgBAgAJBQJNWQbPAhsMAAoJEBaat7Gkz/iuteIH+wZuRDqK0ysAh+czshtG6JJlLW6eXJJR
- Vi7dIPpgFic2LcbkSlvB8E25Pcfz/+tW+04Urg4PxxFiTFdFCZO+prfd4Mge7/OvUcwoSub7
- ZIPo8726ZF5/xXzajahoIu9/hZ4iywWPAHRvprXaim5E/vKjcTeBMJIqZtS4u/UK3EpAX59R
- XVxVpM8zJPbk535ELUr6I5HQXnihQm8l6rt9TNuf8p2WEDxc8bPAZHLjNyw9a/CdeB97m2Tr
- zR8QplXA5kogS4kLe/7/JmlDMO8Zgm9vKLHSUeesLOrjdZ59EcjldNNBszRZQgEhwaarfz46
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <ee188741-e759-62aa-da41-3859ff2f9cb9@baylibre.com>
-Date:   Wed, 16 Sep 2020 09:17:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726385AbgIPHRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:17:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726149AbgIPHRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:17:25 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCB262076B;
+        Wed, 16 Sep 2020 07:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600240645;
+        bh=lPltz0UA//MmcZWvq3LaaXKDBJM+SO+YnSL4n5jpfn0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lMzTtvuFxSoJYvZ7IP4WZyqQbx/dcPRXdz6RQZjc+n2IF/YMhxHfBLeuuLUwnFqNc
+         LFmDCGuU2WxJtVTymLWNQfl8d5IK4RCWU39i4wANX5kBlTQY/o+yEfrUE0/PBaZQH8
+         hJ0Do36tvsGC6pcl73QrN9mGhPrcESKmBbAOU3v8=
+Date:   Wed, 16 Sep 2020 10:17:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 1/4] lib/scatterlist: Refactor
+ sg_alloc_table_from_pages
+Message-ID: <20200916071721.GC486552@unreal>
+References: <20200910134259.1304543-1-leon@kernel.org>
+ <20200910134259.1304543-2-leon@kernel.org>
+ <20200915161643.GA24320@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCBDKuFkdR_mTyS=cYPAwCzs+TYSh1koR29uTnLmAtugPQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915161643.GA24320@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2020 21:45, Martin Blumenstingl wrote:
-> Hi Neil,
-> 
-> On Fri, Sep 4, 2020 at 6:17 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->>
->> The Power Controller in the Amlogic AXG SoCs is similar to the GXL one
->> but with less VPU memory domains to enable and a supplementary Audio
->> memory power domain.
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> I have three small comments below - no show-stoppers though:
-> Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> 
-> [...]
->> +static struct meson_ee_pwrc_mem_domain axg_pwrc_mem_vpu[] = {
->> +       VPU_MEMPD(HHI_VPU_MEM_PD_REG0),
->> +       VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
->> +};
->> +
-> I would put this above the g12a one
+On Tue, Sep 15, 2020 at 06:16:43PM +0200, Christoph Hellwig wrote:
+> On Thu, Sep 10, 2020 at 04:42:56PM +0300, Leon Romanovsky wrote:
+> > From: Maor Gottlieb <maorg@nvidia.com>
+> >
+> > Currently, sg_alloc_table_from_pages doesn't support dynamic chaining of
+> > SG entries. Therefore it requires from user to allocate all the pages in
+> > advance and hold them in a large buffer. Such a buffer consumes a lot of
+> > temporary memory in HPC systems which do a very large memory registration.
+> >
+> > The next patches introduce API for dynamically allocation from pages and
+> > it requires us to do the following:
+> >  * Extract the code to alloc_from_pages_common.
+> >  * Change the build of the table to iterate on the chunks and not on the
+> >    SGEs. It will allow dynamic allocation of more SGEs.
+> >
+> > Since sg_alloc_table_from_pages allocate exactly the number of chunks,
+> > therefore chunks are equal to the number of SG entries.
+> >
+> > Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>
+> I really don't think this refactoring on its own adds any value,
+> it just makes reading the rest of the series harder.
 
-Sure, I'll change for v2
+We expected this type of the comment, but decided to send "splitted"
+version because it is much easier to squash patches instead of splitting
+them later.
 
-> 
-> [...]
->> +static struct meson_ee_pwrc_domain_desc axg_pwrc_domains[] = {
->> +       [PWRC_AXG_VPU_ID]  = VPU_PD("VPU", &gx_pwrc_vpu, axg_pwrc_mem_vpu,
->> +                                    pwrc_ee_get_power, 5, 2),
->> +       [PWRC_AXG_ETHERNET_MEM_ID] = MEM_PD("ETH", meson_pwrc_mem_eth),
->> +       [PWRC_AXG_AUDIO_ID] = MEM_PD("AUDIO", axg_pwrc_mem_audio),
->> +};
->> +
-> same here
+We will squash and resubmit.
 
-Sure, I'll change for v2
+>
+> (functionally it looks correct, though)
 
-
-> 
-> [...]
->>  static struct meson_ee_pwrc_domain_data meson_ee_gxbb_pwrc_data = {
->>         .count = ARRAY_SIZE(gxbb_pwrc_domains),
->>         .domains = gxbb_pwrc_domains,
->> @@ -566,6 +588,10 @@ static const struct of_device_id meson_ee_pwrc_match_table[] = {
->>                 .compatible = "amlogic,meson-gxbb-pwrc",
->>                 .data = &meson_ee_gxbb_pwrc_data,
->>         },
->> +       {
->> +               .compatible = "amlogic,meson-axg-pwrc",
->> +               .data = &meson_ee_axg_pwrc_data,
->> +       },
-> this one I would put above the GXBB one
-
-Sure, I'll change for v2
-
-Thanks for the review,
-Neil
-> 
-> 
-> Best regards,
-> Martin
-> 
-
+Thanks
