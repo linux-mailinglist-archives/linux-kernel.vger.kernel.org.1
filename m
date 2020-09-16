@@ -2,62 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0598126C82D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3879726C892
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgIPSmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:42:52 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36498 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728008AbgIPS1o (ORCPT
+        id S1727450AbgIPSxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727693AbgIPSIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:27:44 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCj89F029357;
-        Wed, 16 Sep 2020 07:45:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600260308;
-        bh=fel5I5uCTsqozrBsF/NrMzV3MQM9Xh3iOpDKfZK/a6k=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=OSRgJcRYBp5hmCPxwlmsJjtY/RDXhgY9c/Augr6fLsYT7PNZxjn/MZy7bNydtabrV
-         omUKv2X+2oQXTjArFG9TVU1in7YTx5udUUni6f73JKlXM9wfqW4hrqsNsplTk/0xJp
-         qEyAqf44Ho5Yy2oykUEk6PhCuT4AvWBnQ0VgEKWA=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCj8vh103488
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 07:45:08 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:45:07 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:45:07 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpj125391;
-        Wed, 16 Sep 2020 07:45:05 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v13 15/15] mtd: spi-nor: micron-st: allow using MT35XU512ABA in Octal DTR mode
-Date:   Wed, 16 Sep 2020 18:14:18 +0530
-Message-ID: <20200916124418.833-16-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
+        Wed, 16 Sep 2020 14:08:48 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3D9C0A8891;
+        Wed, 16 Sep 2020 05:51:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PHSmocSTx2CTgXVGt4QCFFureAzLtVyh1W7SKpBbobA=; b=BiaPO8fQHpw/cGxYNRW32uFx0K
+        9j9zojyZYlXl8zpf5oejBkBrIgv5P9JhWY47qIEW3H81J1eL+Iz6b/KyyLexJJrnNqDy7g1xdK+9H
+        jNnX7L1YurAwHCue5yjJ/KuU9J7wEtKMLGp4iKkAHcc+PZKbD85IA+ueQammgVoDp0Js7/np1jPv8
+        ImM7adAAN6qC0w2rBKJH1XF3CVrbxH1CrhsgBunH8DDlLdijpOtO++hQp6ikm6HbVN/ZPQLZHmTbh
+        TAED4Jy+z00+li1QAWjioVcEeXL32/XVItvk+hMDiI+SQCD6aqnKAEc1hyidsppVQ315oVKxWAC3n
+        LHCSZllA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIWu9-0001Pv-GS; Wed, 16 Sep 2020 12:51:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C815F3012C3;
+        Wed, 16 Sep 2020 14:51:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5DE1C2B9285C9; Wed, 16 Sep 2020 14:51:17 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 14:51:17 +0200
+From:   peterz@infradead.org
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, "Christoph Lameter" <cl@linux.com>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200916125117.GQ2674@hirez.programming.kicks-ass.net>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 16, 2020 at 08:32:20PM +0800, Hou Tao wrote:
 
+> I have simply test the performance impact on both x86 and aarch64.
+> 
+> There is no degradation under x86 (2 sockets, 18 core per sockets, 2 threads per core)
+
+Yeah, x86 is magical here, it's the same single instruction for both ;-)
+But it is, afaik, unique in this position, no other arch can pull that
+off.
+
+> However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
+> 
+> v4.19.111
+> no writer, reader cn                               | 24        | 48        | 72        | 96
+> the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
+> the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
+
+Teh hurt :/
