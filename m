@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C8926CDE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF8F26CDD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728602AbgIPVG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:06:57 -0400
-Received: from mga05.intel.com ([192.55.52.43]:11457 "EHLO mga05.intel.com"
+        id S1728642AbgIPVFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:05:45 -0400
+Received: from mga12.intel.com ([192.55.52.136]:47961 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgIPQOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:14:44 -0400
-IronPort-SDR: N3Qw40H49KXR3pMg3I14fjlOv1t6zZD6NU4Iv/4afW650gly3OVkMidO5121B+1wg/JnGQ9b5Y
- H6UPGQLLI57A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="244342272"
+        id S1726452AbgIPQOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:14:54 -0400
+IronPort-SDR: YM8xyj2v5IK2PGuPv2Bz6Q1liFC9nQiB3/psqLnl0UXvq1Iwki6oapQYNJ4keIvu/+QmIOtQmA
+ izdEITI/XCow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="139010505"
 X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="244342272"
+   d="scan'208";a="139010505"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:09:13 -0700
-IronPort-SDR: PXl0x/ESxSTx+56q8kc/UsPwLO450SS8TaplzdK7JshJum/HNnyS8RErTqv4cZ95SYFthXFLB4
- UYKWyigkB3nw==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:10:21 -0700
+IronPort-SDR: 3Y50nJV6jyTxRwFVh14qPPfHsdKEpLlg7UV3QSz72B9ow8R8dan/HuwotGEgAeNS1nF1kKi+ys
+ ZWE1O912MAcg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="508055839"
-Received: from scusackx-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.87])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:09:07 -0700
-Date:   Wed, 16 Sep 2020 19:09:05 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
- Control hardware bits
-Message-ID: <20200916160905.GC21026@linux.intel.com>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
- <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
- <20200914151816.u6camicid4bd5lgo@treble>
- <20200914153812.c6uh3spqmcy2ft3d@treble>
- <20200915095716.GI3612@linux.intel.com>
- <20200915132725.a2qbdio3jsu7rsqs@treble>
- <20200915133929.GI14436@zn.tnic>
- <20200915140250.kf2kgfbgzxfvmoiy@treble>
+   d="scan'208";a="336075017"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 16 Sep 2020 09:10:19 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kIa0d-00H7Ue-Go; Wed, 16 Sep 2020 19:10:15 +0300
+Date:   Wed, 16 Sep 2020 19:10:15 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Dan Scally <djrscally@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>, gregkh@linuxfoundation.org,
+        rafael@kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com
+Subject: Re: [PATCH v2] software_node: Add support for fwnode_graph*() family
+ of functions
+Message-ID: <20200916161015.GX3956970@smile.fi.intel.com>
+References: <20200915232827.3416-1-djrscally@gmail.com>
+ <20200916091707.GL834@valkosipuli.retiisi.org.uk>
+ <7b81d743-736d-62d1-7072-d08759a0d5d7@gmail.com>
+ <4a355889-6e65-70e0-1646-bb832579fd91@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915140250.kf2kgfbgzxfvmoiy@treble>
+In-Reply-To: <4a355889-6e65-70e0-1646-bb832579fd91@ideasonboard.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:02:50AM -0500, Josh Poimboeuf wrote:
-> On Tue, Sep 15, 2020 at 03:39:29PM +0200, Borislav Petkov wrote:
-> > On Tue, Sep 15, 2020 at 08:27:25AM -0500, Josh Poimboeuf wrote:
-> > > I see the v37 missing patches now, but they're not threaded with the
-> > > original thread.
-> > 
-> > Probably because he bounced only the ones you didn't get, separately.
-> > 
-> > > v38 has some missing patches as well.
-> > 
-> > And I got them twice. Can we please stop the spamming?
-> > 
-> > And yeah, use another mail service - all those companies switching the
-> > o365 and mimecast, means time to move kernel development off of company
-> > mail because company mail simply can't handle it.
+On Wed, Sep 16, 2020 at 04:06:25PM +0100, Kieran Bingham wrote:
+> On 16/09/2020 14:22, Dan Scally wrote:
+> > On 16/09/2020 10:17, Sakari Ailus wrote:
+> >> On Wed, Sep 16, 2020 at 12:28:27AM +0100, Daniel Scally wrote:
+
+Thank you, Kieran, for detailed explanation, one small correction below though.
+
+...
+
+> >> This looks like a bugfix that probably should or could be backported. Could
+> >> you make it a separate patch, with a Fixes: tag?
+> > Yes, sure. That does change how some of the other code would need to
+> > work though if this patch were applied but not the separated one. Sorry;
+> > not sure what's the best way to proceed in that case. Should I just note
+> > that this patch depends on the prior application of the separated one?
 > 
-> If you getting them (twice?) and vger's not, it sounds like vger is
-> dropping them for some reason.
+> I think the assumption is that this individual change to
+> software_node_property_present() should be in a patch on it's own
+> preceeding 'this' one.
+> 
+> Running git-blame on drivers/base/swnode.c identifies this line as
+> previously being added by: 59abd83672f70, so you would add the tag:
 
-It was my fault.
+> Fixes: 59abd83672f7 ("drivers: base: Introducing software nodes to the
+> firmware node framework")
 
-First time when I sent with mail.kapsi.fi I did not see anything for
-like 20 minutes or so. I thought that things went wrong. So, I applied
-git send-email another time for v38. Over hours both came to LKML as
-can be seen from here:
+Just to point out that this must be on one line.
 
-https://lore.kernel.org/linux-sgx/
+> to the 'fixing' patch, and that can be backported accordingly.
+> 
+> When patches are sent in a series, the dependency becomes implicit.
+> You can do this by specifying a range when you do `git format-patch`
+> 
+> If you want to save off the last '2' patches, you can use a range
+> shorthand of '-2':
+> 
+> for example:
+> 
+>   git format-patch -2 -v3 --cover-letter -o patches/swnode
+> 
+> As it's a 'series' we add a cover letter to group them, and that gives a
+> location to add some free-form text as you wish too.
 
-I'll try to sort out kernel.org account thing asap. Already sent my
-key for the 2nd time to keys@linux.kernel.org albeit my PGP skills are
-not good enough to check whether the signatures for my key are
-somewhere.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-/Jarkko
+
