@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8451C26C097
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB0426C09F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgIPJbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgIPJa3 (ORCPT
+        id S1726596AbgIPJcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:32:04 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:46876 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726688AbgIPJbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:30:29 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBC0C06174A;
-        Wed, 16 Sep 2020 02:30:28 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id l71so1068707pge.4;
-        Wed, 16 Sep 2020 02:30:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SCNEyiBlJTYXRBwb8N4Xh5OTPZHbrAxllnyvvCrU834=;
-        b=DpgP0VPFGiabQndlchr2GZuxIFhIbTpWJFgPCtwrGRnbEl8aSxp8gpEaPz0xJVtK6g
-         eubjr3mu/98KuJ48lZH7E67467IqPDzwQsFeG2gWDusrivJaCfbe2WpD5iNbpXLE5toW
-         hrh8zOdfzLPCVER+dqIpprDC8caB51rvB0/iQJwBeeSPdO1TW/Ay1HY9bRjGUQr/9K9i
-         YGJilZzwzW2VYfmLVhkh3imc+m9N8TOnON15NGIvl12ChXEcJy1Z9TgW8f++c/cjg+Hy
-         q6HOIbEgXdGPsLlVcQYhp5nEfvJSqf1v/7ZEx27ZQQmsKHv9IgEhpAdscR8mBBF9gHsk
-         LBtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SCNEyiBlJTYXRBwb8N4Xh5OTPZHbrAxllnyvvCrU834=;
-        b=mHOfzmOjiS39+DWNxFSg6KKpSFcyAulrXlvmSRQcz+PnYRHqxf2a/McxURojcmMx/O
-         1A+xOpQLWROc0b7K2R/l8dkyKXSvh5ud6mbJl72x+C/qZKLd2Q/QWm8XudpecxpiLD1Y
-         njjPW158MB/jKfYucMtmSI7dNSAGbHotiIi+rB16X1B0znHAptCIHEyzQLKivBda33In
-         Fz28ln8U0Caa2z12jPv1mcXXbZAyYUf6WN3KtZxDaZPpY1yZHZgp+wxE5O0pQSskv8tH
-         TXGA1m839ce01oWAwckJF2X+omZ0ZDzvLv/9fDAAexk1LxKOBhvGmHB84GBBxxJbqDI8
-         fErQ==
-X-Gm-Message-State: AOAM532HCB/al8+EQZzsBbXTJWa1xdNjbyKKoAK58+BKFGGryt+Kx1n6
-        0hfacp83mkFWoDt6z0GIg2sHekAAHrM=
-X-Google-Smtp-Source: ABdhPJy6RsWtsvBDRTjJH2DVVNgy/U4ByLFwTKrz49kE984yOxc5aum6LeJ82rmIUkTC2ujeQWPb1A==
-X-Received: by 2002:a63:781:: with SMTP id 123mr11064255pgh.295.1600248628085;
-        Wed, 16 Sep 2020 02:30:28 -0700 (PDT)
-Received: from [192.168.1.200] (FL1-111-169-191-163.hyg.mesh.ad.jp. [111.169.191.163])
-        by smtp.gmail.com with ESMTPSA id m24sm14309073pgn.44.2020.09.16.02.30.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 02:30:27 -0700 (PDT)
-Subject: Re: [PATCH 2/3] exfat: remove useless check in exfat_move_file()
-To:     Sungjong Seo <sj1557.seo@samsung.com>
-Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
-        mori.takahiro@ab.mitsubishielectric.co.jp,
-        motai.hirotaka@aj.mitsubishielectric.co.jp,
-        'Namjae Jeon' <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CGME20200911044511epcas1p4d62863352e65c534cd6080dd38d54b26@epcas1p4.samsung.com>
- <20200911044506.13912-1-kohada.t2@gmail.com>
- <015f01d68bd1$95ace4d0$c106ae70$@samsung.com>
-From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
-Message-ID: <8a430d18-39ac-135f-d522-90d44276faf8@gmail.com>
-Date:   Wed, 16 Sep 2020 18:30:25 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 16 Sep 2020 05:31:38 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G9PWrX012821;
+        Wed, 16 Sep 2020 05:31:31 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33k5p61v2p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 05:31:30 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08G9VT0n050743
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 16 Sep 2020 05:31:29 -0400
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 16 Sep
+ 2020 02:31:36 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 16 Sep 2020 02:31:36 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08G9VL9d022209;
+        Wed, 16 Sep 2020 05:31:22 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <kgene@kernel.org>, <krzk@kernel.org>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] iio: adc: exynos_adc: Replace indio_dev->mlock with own device lock
+Date:   Wed, 16 Sep 2020 12:31:23 +0300
+Message-ID: <20200916093123.78954-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200826132203.236748-1-alexandru.ardelean@analog.com>
+References: <20200826132203.236748-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <015f01d68bd1$95ace4d0$c106ae70$@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-16_02:2020-09-15,2020-09-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=949
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1011 suspectscore=0
+ malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160069
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> --- a/fs/exfat/namei.c
->> +++ b/fs/exfat/namei.c
->> @@ -1095,11 +1095,6 @@ static int exfat_move_file(struct inode *inode,
->> struct exfat_chain *p_olddir,
->>   	if (!epmov)
->>   		return -EIO;
->>
->> -	/* check if the source and target directory is the same */
->> -	if (exfat_get_entry_type(epmov) == TYPE_DIR &&
->> -	    le32_to_cpu(epmov->dentry.stream.start_clu) == p_newdir->dir)
->> -		return -EINVAL;
->> -
-> 
-> It might check if the cluster numbers are same between source entry and
-> target directory.
+From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
 
-This checks if newdir is the move target itself.
-Example:
-   mv /mnt/dir0 /mnt/dir0/foo
+As part of the general cleanup of indio_dev->mlock, this change replaces
+it with a local lock, to protect potential concurrent access to the
+completion callback during a conversion.
 
-However, this check is not enough.
-We need to check newdir and all ancestors.
-Example:
-   mv /mnt/dir0 /mnt/dir0/dir1/foo
-   mv /mnt/dir0 /mnt/dir0/dir1/dir2/foo
-   ...
+This is part of a bigger cleanup.
+Link: https://lore.kernel.org/linux-iio/CA+U=Dsoo6YABe5ODLp+eFNPGFDjk5ZeQEceGkqjxXcVEhLWubw@mail.gmail.com/
 
-This is probably a taboo for all layered filesystems.
-
-
-> Could you let me know what code you mentioned?
-> Or do you mean the codes on vfs?
-
-You can find in do_renameat2(). --- around 'fs/namei.c:4440'
-If the destination ancestors are itself, our driver will not be called.
-
-
-BTW
-Are you busy now?
-I am waiting for your reply about "integrates dir-entry getting and validation" patch.
-
-BR
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 ---
-Tetsuhiro Kohada <kohada.t2@gmail.com>
+ drivers/iio/adc/exynos_adc.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
+index 20477b249f2a..99f4404e9fd1 100644
+--- a/drivers/iio/adc/exynos_adc.c
++++ b/drivers/iio/adc/exynos_adc.c
+@@ -138,6 +138,16 @@ struct exynos_adc {
+ 	bool			read_ts;
+ 	u32			ts_x;
+ 	u32			ts_y;
++
++	/*
++	 * Lock to protect from potential concurrent access to the
++	 * completion callback during a manual conversion. For this driver
++	 * a wait-callback is used to wait for the conversion result,
++	 * so in the meantime no other read request (or conversion start)
++	 * must be performed, otherwise it would interfere with the
++	 * current conversion result.
++	 */
++	struct mutex		lock;
+ };
+ 
+ struct exynos_adc_data {
+@@ -542,7 +552,7 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
+ 		return -EINVAL;
+ 	}
+ 
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&info->lock);
+ 	reinit_completion(&info->completion);
+ 
+ 	/* Select the channel to be used and Trigger conversion */
+@@ -562,7 +572,7 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
+ 		ret = IIO_VAL_INT;
+ 	}
+ 
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&info->lock);
+ 
+ 	return ret;
+ }
+@@ -573,7 +583,7 @@ static int exynos_read_s3c64xx_ts(struct iio_dev *indio_dev, int *x, int *y)
+ 	unsigned long timeout;
+ 	int ret;
+ 
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&info->lock);
+ 	info->read_ts = true;
+ 
+ 	reinit_completion(&info->completion);
+@@ -598,7 +608,7 @@ static int exynos_read_s3c64xx_ts(struct iio_dev *indio_dev, int *x, int *y)
+ 	}
+ 
+ 	info->read_ts = false;
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&info->lock);
+ 
+ 	return ret;
+ }
+@@ -868,6 +878,8 @@ static int exynos_adc_probe(struct platform_device *pdev)
+ 	indio_dev->channels = exynos_adc_iio_channels;
+ 	indio_dev->num_channels = info->data->num_channels;
+ 
++	mutex_init(&info->lock);
++
+ 	ret = request_irq(info->irq, exynos_adc_isr,
+ 					0, dev_name(&pdev->dev), info);
+ 	if (ret < 0) {
+-- 
+2.17.1
+
