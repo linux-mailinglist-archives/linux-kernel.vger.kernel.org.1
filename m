@@ -2,137 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504F326C83A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2065F26C7F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgIPSnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
+        id S1728229AbgIPShh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728098AbgIPSnL (ORCPT
+        with ESMTP id S1727940AbgIPShV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:43:11 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D265CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:43:10 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id q13so11997750ejo.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:43:10 -0700 (PDT)
+        Wed, 16 Sep 2020 14:37:21 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5D7C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:37:20 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so7960831wrt.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AxuwlCpSO8TsaLIcauC4aS5tgqsK9SeD3UYfP7DN7g0=;
-        b=ZKGyeh6DjOj0P0poUJri2yvAXd4omTbSKkycPwhZ3i+69eOgCicq7HjntIxGCUS9d/
-         zNZFDIECDK4GwkaKDrKuGgCWjAAnhqqHdcPPPF/38HaA25t0OpynH7kdnV1WYZaxFMxz
-         W50ov+r+RFsylVih7TsRScGj6r7RgJSz63qJs=
+        bh=0JdUEKJbhGOQtJkj5RkA6Vy6ympc/FtO4ki7TxV0UEI=;
+        b=kc7bZ1cVF77sJ9TtX4s+ADzuNPRC85H3VFVtIvjTYXDcqyhH5BpoEjdKpERLMUtkmM
+         KFpEbxMwHoi/NKP+/76V6E0BZNOk5BmljSmdV83jfsfOI27csPI49Gaol23fFOrs0F6X
+         U0c0xBdZAXeWVC+UNfEATDaKQC9lIvUfMPQSNsfJ7w7ZG4EuJg5vfMk9+cZLpFgJKZy7
+         IqUq5BQ2VnYlgbzyKZ3nCmPuZpG/cyWHWaRTEBCbfAZIXT6HhdJHWdfHuVvvgcAIqyhz
+         zTi1BAYg148P/YwcQHgkJTPsX9z7QTeZK1NP58sHJHZMDNvqqn+Nd9GmNccgM9zi6zJY
+         uwbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AxuwlCpSO8TsaLIcauC4aS5tgqsK9SeD3UYfP7DN7g0=;
-        b=r3rMRJkcJ+VG1HSE3meNHTa37SQiEmr8cmgNAfCyYyNrCGj3KpxeX0BN9Ubnr2uLR9
-         Cp7PuS0sewFBUU4c2VsASWWYPvNvRvnoLF1jxvMFwI9sBBMX0ZHBK6dRgw4T3+55/mbt
-         bATXIni1+32i3A1Ha0JNaq0ixTeM2Mao/b4OL5Oc2mR7YAIQmZZQYwnrGm7FSKtyDGWq
-         fUF9EdYG4r2lJLp/ACwgLkgoOwErEcCay10xX5r9qbpgdeCjaioitwkCSfqRFMiNl1CF
-         QYjTZVP9Eopw4pU2YRbTCH6YJHfcrRZga12wSHFIdQRMzLMjYboZq8fFNAtL+5ew6/Lk
-         0q3Q==
-X-Gm-Message-State: AOAM531QVSocxHNYE5sO8PYenZ2N/8pNj/27RYHaT+SpVS6Wm6QP9E+Q
-        sT2VQ0mdeSxu2W2eUO6PXmQtni4Cb6HAzw==
-X-Google-Smtp-Source: ABdhPJz8oGWAIbA0M6PZM9r/Ey2bkFPkn4rn+ffMyWstAm2p4yIs6xcD2jckNKwnlhuzDhlGLa8PxQ==
-X-Received: by 2002:a17:906:ca4f:: with SMTP id jx15mr26579107ejb.454.1600281789130;
-        Wed, 16 Sep 2020 11:43:09 -0700 (PDT)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id o23sm13233016eju.17.2020.09.16.11.43.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 11:43:08 -0700 (PDT)
-Received: by mail-ej1-f43.google.com with SMTP id nw23so12040838ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:43:08 -0700 (PDT)
-X-Received: by 2002:a19:521a:: with SMTP id m26mr9002648lfb.133.1600281306776;
- Wed, 16 Sep 2020 11:35:06 -0700 (PDT)
+        bh=0JdUEKJbhGOQtJkj5RkA6Vy6ympc/FtO4ki7TxV0UEI=;
+        b=mTDpQT0uDCpBlWUY53RDgD7Flld3WI1vgI2W6Vlai7N5t5rmQP0NsgYqBSG/SoVV7P
+         G5IAb4nA5MV61WblVuueSZ4wlxyCdruEedIJjdyuozcgnLa3KAlLKQ4m/wxu2DjQ4CHS
+         9G9mP8Pscw8WrYtSgqmTX7LR7DtAI233u+/Q3+1UAkv2Uh9N7Y/cKgu+poh+tbLwRpcr
+         vEWyzrol6rn0h3y8xu0nkZiLEqTDOloJbhc6kzdHqMEmNY+5VHdjB67XLdTlSbKf1ema
+         RqrHKfmDA8whXFjSe5qgQMLUk3jVIqOC9SS3brf4/DWQe23BrI0N4b49+9P8jFfdBx3/
+         AXmg==
+X-Gm-Message-State: AOAM533LW1u7rWu2bPgI9NGH0phxlcgd0OlvEg+fSczuS91R2BS1PNaW
+        /TybSey5vZQ/SJSlFeFeIMhwfafNQRIYoeIDMt/HXA==
+X-Google-Smtp-Source: ABdhPJwtzbnhI1LZ9zUO4o4QfDzYbn6nFaUwTMYgB2wARoMx/Ri2iwZ2BkhB9EuneX5IZ16rqVYsX1of9VMpku9NCq0=
+X-Received: by 2002:a5d:5583:: with SMTP id i3mr27246557wrv.119.1600281439193;
+ Wed, 16 Sep 2020 11:37:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <87bli75t7v.fsf@nanos.tec.linutronix.de> <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
- <87y2la4xu6.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87y2la4xu6.fsf@nanos.tec.linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 16 Sep 2020 11:34:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whvULv3M2dQzPra1W-uGiX=_6Z_YeGnRDodbtXgJpihWA@mail.gmail.com>
-Message-ID: <CAHk-=whvULv3M2dQzPra1W-uGiX=_6Z_YeGnRDodbtXgJpihWA@mail.gmail.com>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+References: <20200915031819.386559-1-namhyung@kernel.org> <20200915031819.386559-6-namhyung@kernel.org>
+ <20200915121912.GF720847@kernel.org> <CAP-5=fXwuS_GAjnQgBav=Ugc26OACimUmbhtAHbeThb_BEk0UQ@mail.gmail.com>
+ <0679eacce01f187037e726a45e6acdacde61f99d.camel@redhat.com> <CAM9d7cgtDq8yOFDEGEdTD9kN=Ko1gX=5o+tAB4+EDtN0WtGQPw@mail.gmail.com>
+In-Reply-To: <CAM9d7cgtDq8yOFDEGEdTD9kN=Ko1gX=5o+tAB4+EDtN0WtGQPw@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 16 Sep 2020 11:37:03 -0700
+Message-ID: <CAP-5=fWr0UVxp+JBcwzPV3=+EuUiBXuzHtaH5+1s1rCQb_dmdw@mail.gmail.com>
+Subject: Re: [PATCH 05/11] perf parse-event: Fix memory leak in evsel->unit
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     David Malcolm <dmalcolm@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        Andi Kleen <ak@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:57 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Wed, Sep 16, 2020 at 12:12 AM Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> You wish. I just found a 7 year old bug in a 10G network driver which
-> surely would have been found if people would enable debug configs and
-> not just run the crap on their PREEMPT_NONE, all debug off kernel. And
-> that driver is not subject to bitrot, it gets regular bug fixes from
-> people who seem to care (distro folks).
+> Hello Ian and David,
+>
+> Thank you for the good suggestions!
+>
+> On Wed, Sep 16, 2020 at 4:56 AM David Malcolm <dmalcolm@redhat.com> wrote:
+> > Some ideas (with the caveat that I'm a GCC developer, and not a regular
+> > on LKML): can you capture the ownership status in the type system?
+> > I'm brainstorming here but how about:
+> >   typedef char *owned_string_t;
+> >   typedef const char *borrowed_string_t;
+> > This would at least capture the intent in human-readable form, and
+> > *might* make things more amenable to checking by a machine.  It's also
+> > less macro cruft.
+> > I take it that capturing the ownership status with a runtime flag next
+> > to the pointer in a struct is too expensive for your code?
+>
+> Adding more random thoughts..
+>
+> I think we can make it more generic like __attribute__((owned))
+> so that it can be applied to any pointers.  And we can use a
+> conventional macro like '__owned' in the declaration..
+>
+> __owned char *name;
+> __owned char *strdup(const char *);
+> ...
+>
+> Thanks
+> Namhyung
 
-That driver clearly cannot be very well maintained. All the distro
-kernels have the basic debug checks in place, afaik.
+I have to say I like the idea of a __owned like "modifier" before
+these names more than introducing types. David, do you think a patch
+with something like the following is reasonable? I'm also throwing
+this out there to see if somebody on the linux code side screams and
+thinks this is the worst idea ever in existence :-)
 
-Is it some wonderful "enterprise hardware" garbage again that only
-gets used in special data centers?
+compiler.h:
+/* In the future __owned and __unowned will be an attribute to allow
+static analysis to perform certain correctness checks. For now they
+are placeholders to provide documentation. */
+#define __owned
+#define __unowned
+..
+evsel.h:
+..
+struct evsel {
+  ..
+  __owned char *name;
+  ..
+  __unowned const char *unit;
+  ..
 
-Becasue the "enterprise" people really are special. Very much in the
-"short bus" special kind of way. The fact that they have fooled so
-much of the industry into thinking that they are the competent and
-serious people is a disgrace.
-
-              Linus
+Thanks,
+Ian
