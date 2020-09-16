@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A499226CD90
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D694726CE09
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgIPVB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
+        id S1726557AbgIPVJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgIPQaY (ORCPT
+        with ESMTP id S1726468AbgIPQDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:30:24 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E2DC0698D5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:39:59 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c3e000ee699b54c433a91.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:ee6:99b5:4c43:3a91])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 892AD1EC0136;
-        Wed, 16 Sep 2020 13:34:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600256096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4PTEjwjWCxnifqmay2schcOj42jghOVREf92+55yeao=;
-        b=WFTrHxF7aRz7y3HdsqQHlVAeb4hm08P7tXBq736IBvFvIZOjHWA9xn9q1riewV2WbR9icz
-        iiN5tWrJ/meR4p+KaiHlSbPKh+I+6uPtGCgPevihelODO0dFz3FambZKKFAwUEYD1CEt6H
-        4NDo7BaAFj0otmUOpYlM3d6k3MEDils=
-Date:   Wed, 16 Sep 2020 13:34:49 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Marco Elver <elver@google.com>
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
- e6eb15c9ba3165698488ae5c34920eea20eaa38e
-Message-ID: <20200916113449.GH2643@zn.tnic>
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
- <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian>
- <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble>
- <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
- <20200915204912.GA14436@zn.tnic>
- <20200915215054.GA1104608@rani.riverdale.lan>
+        Wed, 16 Sep 2020 12:03:39 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C5BC0698E3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:54:07 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id b79so2692054wmb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yh0igFnXFGH3K7pZzQhRNs7ViU5/hMjpnGkORzHpipk=;
+        b=JyQsV3C/yV+HMhjcrBeo4b6vbtbXN/7M7NJbIgBea1ZCl6bB/Wv56zT6tM39MhZYIz
+         1ePZsPTW5M75mT5wRpRoNtZy/x1FJ8O69Jo5IFaxDlzHdWeRiNrB4GKbyft7T7Rf3m7c
+         aWwz5PsssRQJClQFnacWnvlS5MQg4yUM9L2jw8VuALu4NTPRUxNv67kIW5FUWGPCDVP9
+         yMm7HzrgXsD04qEeBHOQTjc1spMBk+h1ObSRut8UsG0poo7gRH4ptNx9EujbEMj5Cb7U
+         w4FXV2249ahLD5jNOQ2ov9+67BvirUZC0p0CE4a+dXdPSDP2nJyRXQPZXP6lPs90vfLk
+         zTZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yh0igFnXFGH3K7pZzQhRNs7ViU5/hMjpnGkORzHpipk=;
+        b=gvprVuGAty5nv5i7G54T0mkqc4Zu7xNPnoPGBKGC4sMkREKIHWWH/hvlFk0VBvNsVL
+         8p9QjIPoGvJWyDy7J695qRrnxynyyqMzgGpvv+2xq1SXUAblsYjLrpH/fMgF/Ascjcz2
+         RG+gGh/jOn+nIOeVmNhvGuggedGyIVmc0Q0a1gV0uQPuJHWRTcSZY+tjLylR0D0/raYX
+         Yh0ozOUM6VP2UBz75W3GqNzBc4kPruRTYRXGb0jciBYSFOoS3TJuhxed9vsqfrm4HFmG
+         lKA+lulA4KfKenW8Sa6PL61dIOctMeSqe7F+dfzbsOFUhxfkjBrlw7KzE26O6GGwqyYZ
+         TgKw==
+X-Gm-Message-State: AOAM531uBzNgsc8ooSnKh56e9nwRMLNPH3QqO7Z8tPtsJrq6F+2stCri
+        MQ0ME5Kk8OUPKr++BUJEZ5gosw==
+X-Google-Smtp-Source: ABdhPJwEUCld1s87TOjbwzmcs50r5qVIn7ePIrzWPUYEsAFENq0CtkJ+OctMHBN++deLK1KNg4U8hw==
+X-Received: by 2002:a05:600c:2118:: with SMTP id u24mr4258846wml.59.1600257246355;
+        Wed, 16 Sep 2020 04:54:06 -0700 (PDT)
+Received: from google.com ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
+        by smtp.gmail.com with ESMTPSA id u66sm5088416wmg.44.2020.09.16.04.54.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 04:54:05 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 12:54:04 +0100
+From:   David Brazdil <dbrazdil@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 00/10] Independent per-CPU data section for nVHE
+Message-ID: <20200916115404.rhv4dkyjz35e4x25@google.com>
+References: <20200903091712.46456-1-dbrazdil@google.com>
+ <20200914174008.GA25238@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200915215054.GA1104608@rani.riverdale.lan>
+In-Reply-To: <20200914174008.GA25238@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 05:50:54PM -0400, Arvind Sankar wrote:
-> On Tue, Sep 15, 2020 at 10:49:12PM +0200, Borislav Petkov wrote:
-> > 
-> > (Btw, clang doesn't need to add that "xor %eax,%eax" - panic() should not be
-> >  returning, ever. :-))
-> > 
+Hi Will,
+
+On Mon, Sep 14, 2020 at 06:40:09PM +0100, Will Deacon wrote:
+> Hi David,
 > 
-> I think this is because panic() is varargs, and clang doesn't support
-> gcc's -mskip-rax-setup. The normal ABI requires the caller to set RAX to
-> the number of arguments in vector registers.
+> On Thu, Sep 03, 2020 at 11:17:02AM +0200, David Brazdil wrote:
+> > Introduce '.hyp.data..percpu' as part of ongoing effort to make nVHE
+> > hyp code self-contained and independent of the rest of the kernel.
+> > 
+> > The series builds on top of the "Split off nVHE hyp code" series which
+> > used objcopy to rename '.text' to '.hyp.text' and prefix all ELF
+> > symbols with '__kvm_nvhe' for all object files under kvm/hyp/nvhe.
 > 
-> https://patchwork.ozlabs.org/project/gcc/patch/20141218131150.GA32638@intel.com/
+> I've been playing around with this series this afternoon, trying to see
+> if we can reduce the coupling between the nVHE code and the core code. I've
+> ended up with the diff below on top of your series, but I think it actually
+> removes the need to change the core code at all. The idea is to collapse
+> the percpu sections during prelink, and then we can just deal with the
+> resulting data section a bit like we do for .hyp.text already.
+> 
+> Have I missed something critical?
 
-Ah, good point. Found this in the ABI doc:
+I was wondering whether this approach would be sufficient as well because of
+the simplicity. We'd just need to be careful about correctly preserving the
+semantics of the different .data..percpu..* sections.
 
-"For calls that may call functions that use varargs or stdargs
-(prototype-less calls or calls to functions containing ellipsis (...) in
-the declaration) %al is used as hidden argument to specify the number of
-vector registers used. The contents of %al do not need to match exactly
-the number of registers, but must be an upper bound on the number of
-vector registers used and is in the range 0–8 inclusive."
+For instance, I've noticed you make .hyp..data..percpu page-aligned rather than
+cacheline-aligned. We need that for stage-2 unmapping but it also happens to
+correctly align DEFINE_PER_CPU_PAGE_ALIGNED variables when collapsed into the
+single hyp section. The reason why I ended up reusing the global macro was to
+avoid introducing subtleties like that into the arm64 linker script. Do you
+think it's a worthwhile trade off?
 
-Thx.
+One place where this approach doesn't work is DEFINE_PER_CPU_FIRST. But I'm
+guessing that's something we can live without.
 
--- 
-Regards/Gruss,
-    Boris.
+I was also wondering about another approach - using the PERCPU_SECTION macro
+unchanged in the hyp linker script. It would lay out a single .data..percpu and
+we would then prefix it with .hyp and the symbols with __kvm_nvhe_ as with
+everything else. WDYT? Haven't tried that yet, could be a naive idea. 
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks for reviewing,
+David
