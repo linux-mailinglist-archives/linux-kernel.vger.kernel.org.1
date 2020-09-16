@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A62D26CF58
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2359626CFA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727241AbgIPXNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 19:13:10 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:45467 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727007AbgIPXMz (ORCPT
+        id S1726788AbgIPX3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 19:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgIPX3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 19:12:55 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id B0FE75C0A37;
-        Wed, 16 Sep 2020 19:12:49 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 16 Sep 2020 19:12:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to
-        :subject:content-type; s=fm3; bh=wWsRwlVvP8+43MZ6dwzJ2Fdj/0px7Bt
-        Uhpq3T6t85KU=; b=gsvTVMUl3GJG8bCr0WIzqog4pLruzE0o4Dawa2TPuJ1t/qx
-        Ren3Xs5Qkpl7qXc4qf34+KXoRLNhrJ9Zcofm8gsyhv+JrxO4yNj4JlTJlcvRCySs
-        /tyC8uQwzmz7olHkRvJm969w6a+j5PG9qcekak2B6lS3M4VIJ7vPv9bi45YabCnF
-        zvT7okIv6bjkxuV+6waXzQPCldibUjPx2NOWXVi1Xjz6JhgzuI7vX3K3ETLqXJoC
-        IoeySVWrHW75AljKifV21TErzU/qzU+KaxwqVi3vSkpAsVUd25ZlyHrLBKygp0mJ
-        9RXfG7iEyQAaiFrmu/yG3E5y5xwhhC3rXGsPuLg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=wWsRwl
-        VvP8+43MZ6dwzJ2Fdj/0px7BtUhpq3T6t85KU=; b=d0NLfsFYhpCurbF8wtJvhY
-        jLZ+YJR2/D2BW81nT5LGL2+zM3VQ0N5eU9cXoRtc6xSNm3EeiLatKpGHUxXIywFs
-        GaETtjGrLqbxhxv+OzHr5pJaTAFub0sCD+GJdr2NdxTDT6jQcNwCbkC9bmyIw0Hi
-        uzKqhnAnFNnnB3lLbaxPaX0EbAHI4G6mtDTQew7aDM3H76FvnmC9p69SiWc/qLcc
-        ArDjMi8DPiF8ldqrpcPaNLJUPAwDHPE//nWqaQ5RDDNog6YJxTwt1QIAJYfv4YBS
-        aOd9FZEdLSwJdQgNlVVG1mfhEUMFPfImmOJtV/cUD989NVnrv5W0BLl6zrU39Ijw
-        ==
-X-ME-Sender: <xms:8JtiX95Q1ko-nid23vEXX398tgQo5c9I3NFfnybjHjJFpMd05BzhSw>
-    <xme:8JtiX67-hcL---jVisrikvraUXrrh2bAbXOHORYgkUz2rxHwNOtfu11BunuZpZ2H_
-    IZ13g2PKuZ_JPA1kA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdefgddulecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:8JtiX0ccptkrtNtXU672t5kq8HR2WJkyq-2L3QmQr24hF3KfZ_VcqQ>
-    <xmx:8JtiX2JAedFucucSNridRRpeaj-470-pL_IEsuoPz3-srrAT9qawJA>
-    <xmx:8JtiXxI6FLPVJTlF0P-pZHf2l65LRjzhMrW5C0RtQr8PeR_bSlvjtw>
-    <xmx:8ZtiX2qQRAk9cVvc4LR0PA6HqrLNIU8wdRJi0I6fmOKDJHxLAsQGfw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 847BEE00D1; Wed, 16 Sep 2020 19:12:47 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-324-g0f99587-fm-20200916.004-g0f995879
-Mime-Version: 1.0
-Message-Id: <60f9f14a-c9be-45ac-b3a8-516ab73d9bee@www.fastmail.com>
-In-Reply-To: <20200916204216.9423-1-rentao.bupt@gmail.com>
-References: <20200916204216.9423-1-rentao.bupt@gmail.com>
-Date:   Thu, 17 Sep 2020 08:42:27 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Tao Ren" <rentao.bupt@gmail.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        "Joel Stanley" <joel@jms.id.au>, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, "Tao Ren" <taoren@fb.com>
-Subject: Re: [PATCH] gpio: aspeed: fix ast2600 bank properties
-Content-Type: text/plain
+        Wed, 16 Sep 2020 19:29:41 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E4CC06174A;
+        Wed, 16 Sep 2020 16:29:40 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id v196so33911pfc.1;
+        Wed, 16 Sep 2020 16:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VOYtEk8KZWrcvtZ12wbyiXgSHJ3z1+Q3xen139w9qgI=;
+        b=eDzevpvUUV9bEk0cwG0ugKmwO4ounBKbrfuwPGHApNmNVoZ01y0p5LlDHKxm3SDUBD
+         CdfVk5xlKwro9dEUSneOJMpyQ1uL92YA82BwA3rOJQF0XmZDvJqrJ99zdD/KCesNEeW1
+         6zdajBngeO/tFvI7E1M/9FOoParvQpPcZIaVveq3RAcq8Gbied9xmjaVVd4Nhfdtfcwh
+         ybI2LzlPz5sE8YS/D9wPCN9bY1OwyUDnRy2ln0udYkLmyJ0AckuHvL11knQUE1EtqWDq
+         hPI8j8CSJRG+3SMSGSsqb8lDmRHM65BK8XLJahcBwVmJyX1TaQXvks7bZQxOEFKGboGh
+         22HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VOYtEk8KZWrcvtZ12wbyiXgSHJ3z1+Q3xen139w9qgI=;
+        b=Pbu7fyReidox7JJWF2W1tapDpt5rBsl3B0z8OkHfDsIQaEGlHqxmIqqUpaT/tNMXFQ
+         OLbkoZ/+W4IU46VSoouICfx+J+UtIUFD5QfSK2PvhDpZXGsYAkVCPEaSnhP2nyFWuOZx
+         jeYFZtz/EanGTCm9PlCQ+uGuxW+VhL5y+Vc5zUDsUpMMWCPzVvTsogno5jD3HWaW5qWx
+         n2St1c5En8FjIpPSk4i1jHiIZ6GCkNL4AfHlGBaCi9FLatJY4ilKhVe9BQvl/CLp09Eu
+         qNVpYRjIJ2a1tBX0mRxI8B9QxkZmnazFFicB8Uug0qq+oGu5WJ2Tn//8wTT6esHqnjCm
+         Kf4g==
+X-Gm-Message-State: AOAM530u6XCH5fA9a8KVSNhGXRulahEAg/eLkw0PlSUbRoIrgFqAJ5Bv
+        Jc8t8c6Cczj/6s9kcpGsdX8=
+X-Google-Smtp-Source: ABdhPJwa+2NAh4mm3To4oBtqglSVETowI3JwufWM839p7L74VFz6f98xoG3dt76WbkwZjmZiYC3eig==
+X-Received: by 2002:a63:5d07:: with SMTP id r7mr7505957pgb.440.1600298980041;
+        Wed, 16 Sep 2020 16:29:40 -0700 (PDT)
+Received: from localhost.localdomain (sau-ff5be-or.servercontrol.com.au. [43.250.207.3])
+        by smtp.gmail.com with ESMTPSA id u14sm18366213pfm.80.2020.09.16.16.29.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 16:29:39 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH v3] docs: fb: Remove matroxfb scrollback boot option
+Date:   Thu, 17 Sep 2020 04:43:01 +0530
+Message-Id: <20200916231301.32066-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+This patch remove the reference of scrollback option from this file. This
+is related to the below commits.
 
-On Thu, 17 Sep 2020, at 06:12, rentao.bupt@gmail.com wrote:
-> From: Tao Ren <rentao.bupt@gmail.com>
-> 
-> GPIO_U is mapped to the least significant byte of input/output mask, and
-> the byte in "output" mask should be 0 because GPIO_U is input only. All
-> the other bits need to be 1 because GPIO_V/W/X support both input and
-> output modes.
-> 
-> Similarly, GPIO_Y/Z are mapped to the 2 least significant bytes, and the
-> according bits need to be 1 because GPIO_Y/Z support both input and
-> output modes.
-> 
-> Fixes: ab4a85534c3e ("gpio: aspeed: Add in ast2600 details to Aspeed driver")
-> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+Commit 973c096f6a85(vgacon: remove software scrollback support)
+Commit 50145474f6ef(fbcon: remove soft scrollback code)
 
-Thanks Tao,
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+Correcting the previous versions errors. Proper changelog, subject text.
+Trying to incorporate Willy's and Greg's suggestions.
 
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+ Documentation/fb/matroxfb.rst | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/Documentation/fb/matroxfb.rst b/Documentation/fb/matroxfb.rst
+index f1859d98606e..6158c49c8571 100644
+--- a/Documentation/fb/matroxfb.rst
++++ b/Documentation/fb/matroxfb.rst
+@@ -317,8 +317,6 @@ Currently there are following known bugs:
+  - interlaced text mode is not supported; it looks like hardware limitation,
+    but I'm not sure.
+  - Gxx0 SGRAM/SDRAM is not autodetected.
+- - If you are using more than one framebuffer device, you must boot kernel
+-   with 'video=scrollback:0'.
+  - maybe more...
+ 
+ And following misfeatures:
+-- 
+2.28.0
+
