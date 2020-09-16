@@ -2,135 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D451926BE63
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E84526BE86
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgIPHnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:43:52 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:49513 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgIPHnv (ORCPT
+        id S1726446AbgIPHwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726243AbgIPHwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:43:51 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 046716000A;
-        Wed, 16 Sep 2020 07:43:46 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 09:47:37 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v5 1/3] media: i2c: ov772x: Parse endpoint properties
-Message-ID: <20200916074737.phc6atpsahxowfjt@uno.localdomain>
-References: <20200915174235.1229-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200915174235.1229-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Wed, 16 Sep 2020 03:52:03 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7563AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:52:03 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x18so2751138pll.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Anlcd5X+sFxxua67QCprvg2aJ+aYTEJuJfgNbmvuiIM=;
+        b=kCueafGrI25+xhYjr5DKPWns8bpI4VT+AFnhb1HcUImGWU/sE8dqPIrmUsJx0D3swI
+         WCu+p1NWMPWeZvEwPy77HVFNcpOEKOUN9x1rhllcqpgGpgCOEK/EHv/+v6FQHWXbMd1h
+         0jwXraS312mXXjUHAffTk4YpLcdqIwuZYt9c2TuuYdjKz6//MIceBuaSPiDZ8OKxEPiS
+         ASU8NwFTYm/hqX1H5RZb15nq+NfnJFV3zDDfLj5TzfR/BeSci4p6ph+/gy/qaEZeeavM
+         DsjonQgICs5E+aADBo5EypNyZEh7u8C8pgP0nVxROV+WuL7fbn75PzNyve9llWVHiFVb
+         daXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Anlcd5X+sFxxua67QCprvg2aJ+aYTEJuJfgNbmvuiIM=;
+        b=BylHEvJgQWZUHewMDq0qXAo2nRabhOUCuBzQ/06OTXO1ztvNmbLcaTG3sIDCOZR5wQ
+         USRtlXbrFXxWkFoNqO0kh0+cbJXF4p+mGxBVnycXSgNcMJ/MyQP/NFjiurBvmoa/WeaP
+         cAcjKW8PkUGkCYh0jGuZphgyP6E+Z7G2biXI2prA9+5/UZgtRXCMJSAKOI7TK1sN/Lvz
+         AIwsCaroRgnwpG50MuBqtZXfsVthhPoXwjvMeozCsOJBXTuaEsfP7xCJVAjfGmDexVkR
+         889NqiWIezSQTXyAfb2bqu51IzLxXuTQHK3AOIZKLLjkLYBe2xvKPWScoj5iUdYfxRq9
+         B2VQ==
+X-Gm-Message-State: AOAM531ZmB192HfCQtMVEjTEuYJmGxlEvgDbZATURo+2AVyllVFebV1v
+        Nt3NtYlvtQ14JXFsxbiLaJvE53y3Ei5vIMhN
+X-Google-Smtp-Source: ABdhPJz96ZoEE1vXvD2dbTVe9hrtsMkjsrEbFGpTu5obqktOxQj/yrGSkikruZrIPGSWcmz8B5JctA==
+X-Received: by 2002:a17:90b:ecc:: with SMTP id gz12mr2707145pjb.219.1600242722990;
+        Wed, 16 Sep 2020 00:52:02 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id s3sm1436331pgc.61.2020.09.16.00.51.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Sep 2020 00:52:02 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:51:54 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2] perf kvm: add kvm-stat for arm64
+Message-ID: <20200916075154.GA13660@leoy-ThinkPad-X240s>
+References: <20200915091140.152775-1-sergey.senozhatsky@gmail.com>
+ <20200915103644.GA32758@leoy-ThinkPad-X240s>
+ <20200915105702.GA604@jagdpanzerIV.localdomain>
+ <20200915111541.GB604@jagdpanzerIV.localdomain>
+ <20200915132109.GB32758@leoy-ThinkPad-X240s>
+ <20200916004404.GE604@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915174235.1229-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200916004404.GE604@jagdpanzerIV.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Wed, Sep 16, 2020 at 09:44:04AM +0900, Sergey Senozhatsky wrote:
+> On (20/09/15 21:21), Leo Yan wrote:
+> > 
+> > Sorry if I miss anything for this.
+> > 
+> 
+> No, you are absolutely right! I should have looked more attentively.
+> 
+> Is "IL" good enough for a decoded reason
+> 
+>  	{ARM_EXCEPTION_IRQ,		"IRQ"		},	\
+>  	{ARM_EXCEPTION_EL1_SERROR,	"SERROR"	},	\
+>  	{ARM_EXCEPTION_TRAP,		"TRAP"		},	\
+> +	{ARM_EXCEPTION_IL,		"IL"		}, \
+>  	{ARM_EXCEPTION_HYP_GONE,	"HYP_GONE"	}
+> 
+> or should there be "ILLEGAL", or maybe something even better?
+> ILLEGAL_EXC, etc.
 
-On Tue, Sep 15, 2020 at 06:42:33PM +0100, Lad Prabhakar wrote:
-> Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
-> to determine bus-type and store it locally in priv data.
->
-> v4l2_fwnode_endpoint_alloc_parse() with bus_type set to
-> V4L2_MBUS_PARALLEL falls back to V4L2_MBUS_PARALLEL thus handling
-> backward compatibility with existing DT where bus-type isn't specified.
+I personally think "ILLEGAL" is neat and clear :)
 
-
-I don't think this is necessary here. This patch does not need to
-handle any retrocompatibility, as only PARALLEL is supported.
-
-The 'right' way to put it to me would be
-"Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
-to determine the bus type and store it in the driver structure.
-
-Set bus_type to V4L2_MBUS_PARALLEL as it's the only supported one"
-
-See comment in the next patch for retrocompatibility
-
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/media/i2c/ov772x.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-> index 2cc6a678069a..4ab4b3c883d0 100644
-> --- a/drivers/media/i2c/ov772x.c
-> +++ b/drivers/media/i2c/ov772x.c
-> @@ -31,6 +31,7 @@
->  #include <media/v4l2-ctrls.h>
->  #include <media/v4l2-device.h>
->  #include <media/v4l2-event.h>
-> +#include <media/v4l2-fwnode.h>
->  #include <media/v4l2-image-sizes.h>
->  #include <media/v4l2-subdev.h>
->
-> @@ -434,6 +435,7 @@ struct ov772x_priv {
->  #ifdef CONFIG_MEDIA_CONTROLLER
->  	struct media_pad pad;
->  #endif
-> +	enum v4l2_mbus_type		  bus_type;
->  };
->
->  /*
-> @@ -1354,6 +1356,8 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
->
->  static int ov772x_probe(struct i2c_client *client)
->  {
-> +	struct v4l2_fwnode_endpoint bus_cfg;
-> +	struct fwnode_handle	*ep;
->  	struct ov772x_priv	*priv;
->  	int			ret;
->  	static const struct regmap_config ov772x_regmap_config = {
-> @@ -1415,6 +1419,27 @@ static int ov772x_probe(struct i2c_client *client)
->  		goto error_clk_put;
->  	}
->
-> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
-> +					    NULL);
-> +	if (!ep) {
-> +		dev_err(&client->dev, "endpoint node not found\n");
-> +		ret = -EINVAL;
-> +		goto error_clk_put;
-> +	}
-> +
-> +	/* For backward compatibility with the existing DT where
-> +	 * bus-type isn't specified v4l2_fwnode_endpoint_alloc_parse()
-> +	 * with bus_type set to V4L2_MBUS_PARALLEL falls back to
-> +	 * V4L2_MBUS_PARALLEL
-> +	 */
-
-You can drop this comment block
-
-> +	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
-> +	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
-> +	priv->bus_type = bus_cfg.bus_type;
-
-Set this after if (ret)
-
-> +	v4l2_fwnode_endpoint_free(&bus_cfg);
-> +	fwnode_handle_put(ep);
-> +	if (ret)
-> +		goto error_clk_put;
-> +
->  	ret = ov772x_video_probe(priv);
->  	if (ret < 0)
->  		goto error_gpio_put;
-> --
-> 2.17.1
->
+Thanks,
+Leo
