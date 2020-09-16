@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560E826BF48
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B0D26BF4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgIPI21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:28:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60238 "EHLO mail.kernel.org"
+        id S1726507AbgIPIaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:30:14 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:54522 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726068AbgIPI2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:28:25 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726149AbgIPIaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:30:10 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 891FBA0040;
+        Wed, 16 Sep 2020 10:30:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 891FBA0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1600245007; bh=TQ91kqqBQQybpadn/+Q9Y8FSsSvI6ypsdUv0cosU3CM=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=IiaEKTyCnpjT8j/yhk3609FCgP8g6kueBlGDF+od8ixsS6wI/CmngbZHYNSjkl36E
+         gzxvA3w1VHj2zJvTbiuBXwiggWrTZR1iszIGZrWABsUnuHQ0kvFlLPhpDqvRf1gQG7
+         tTGEvhi/xScRmH8+2wg37cNYh9JzWFob+6RY/hWI=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F17D20872;
-        Wed, 16 Sep 2020 08:28:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600244904;
-        bh=OTC3FlcJE6Dg/iOvApxI6QhF/kIkiQWIOKiqpniO2sM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OCskcxSo5A5L9/apeK6y3IFpTwgjRRq917gJ6PED0ff0/VbCYwWZxNOz7oidzbmFI
-         TupfIAhdJIJuQ/1ksgkNXQx/YZqSMWJoKA7O9uipPPPgYFEdyErlMOJWhE1WfmaUjI
-         OAdacoiJWpPhCFxmaghj3rGA5zCvOjRLtvFJQ9+0=
-Date:   Wed, 16 Sep 2020 09:28:20 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        linux-kernel@vger.kernel.org, shan.gavin@gmail.com
-Subject: Re: [PATCH 2/2] arm64/mm: Enable color zero pages
-Message-ID: <20200916082819.GB27496@willie-the-truck>
-References: <20200916032523.13011-1-gshan@redhat.com>
- <20200916032523.13011-3-gshan@redhat.com>
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Wed, 16 Sep 2020 10:29:52 +0200 (CEST)
+Subject: Re: [PATCH] soundwire: Add generic bandwidth allocation algorithm
+From:   Jaroslav Kysela <perex@perex.cz>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, gregkh@linuxfoundation.org,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, hui.wang@canonical.com,
+        srinivas.kandagatla@linaro.org, bard.liao@intel.com,
+        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, linux-kernel@vger.kernel.org
+References: <20200908131520.5712-1-yung-chuan.liao@linux.intel.com>
+ <fdf22a3c-457f-09ef-8dc5-c0f3871cf2ce@perex.cz>
+Message-ID: <02abf228-f331-61fb-d8f6-d1df4b2f54a3@perex.cz>
+Date:   Wed, 16 Sep 2020 10:29:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916032523.13011-3-gshan@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <fdf22a3c-457f-09ef-8dc5-c0f3871cf2ce@perex.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:25:23PM +1000, Gavin Shan wrote:
-> This enables color zero pages by allocating contigous page frames
-> for it. The number of pages for this is determined by L1 dCache
-> (or iCache) size, which is probbed from the hardware.
+Dne 09. 09. 20 v 8:26 Jaroslav Kysela napsal(a):
+> Dne 08. 09. 20 v 15:15 Bard Liao napsal(a):
+>> This algorithm computes bus parameters like clock frequency, frame
+>> shape and port transport parameters based on active stream(s) running
+>> on the bus.
+>>
+>> Developers can also implement their own .compute_params() callback for
+>> specific resource management algorithm, and set if before calling
+>> sdw_add_bus_master()
+>>
+>> Credits: this patch is based on an earlier internal contribution by
+>> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. All hard-coded
+>> values were removed from the initial contribution to use BIOS
+>> information instead.
+>>
+>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>> ---
+>>  drivers/soundwire/Kconfig                     |   5 +
+>>  drivers/soundwire/Makefile                    |   3 +
+>>  drivers/soundwire/bus.c                       |   6 +
+>>  drivers/soundwire/bus.h                       |  46 +-
+>>  .../soundwire/generic_bandwidth_allocation.c  | 427 ++++++++++++++++++
+>>  drivers/soundwire/intel.c                     |   3 +
+>>  drivers/soundwire/stream.c                    |  12 +
+>>  include/linux/soundwire/sdw.h                 |   3 +
+>>  8 files changed, 503 insertions(+), 2 deletions(-)
+>>  create mode 100644 drivers/soundwire/generic_bandwidth_allocation.c
 > 
->    * Add cache_total_size() to return L1 dCache (or iCache) size
+> I did testing and I've not found any issues. The abstraction looks good.
 > 
->    * Implement setup_zero_pages(), which is called after the page
->      allocator begins to work, to allocate the contigous pages
->      needed by color zero page.
+> Acked-by: Jaroslav Kysela <perex@perex.cz>
 > 
->    * Reworked ZERO_PAGE() and define __HAVE_COLOR_ZERO_PAGE.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/include/asm/cache.h   | 22 ++++++++++++++++++++
->  arch/arm64/include/asm/pgtable.h |  9 ++++++--
->  arch/arm64/kernel/cacheinfo.c    | 34 +++++++++++++++++++++++++++++++
->  arch/arm64/mm/init.c             | 35 ++++++++++++++++++++++++++++++++
->  arch/arm64/mm/mmu.c              |  7 -------
->  5 files changed, 98 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cache.h
-> index a4d1b5f771f6..420e9dde2c51 100644
-> --- a/arch/arm64/include/asm/cache.h
-> +++ b/arch/arm64/include/asm/cache.h
-> @@ -39,6 +39,27 @@
->  #define CLIDR_LOC(clidr)	(((clidr) >> CLIDR_LOC_SHIFT) & 0x7)
->  #define CLIDR_LOUIS(clidr)	(((clidr) >> CLIDR_LOUIS_SHIFT) & 0x7)
->  
-> +#define CSSELR_TND_SHIFT	4
-> +#define CSSELR_TND_MASK		(UL(1) << CSSELR_TND_SHIFT)
-> +#define CSSELR_LEVEL_SHIFT	1
-> +#define CSSELR_LEVEL_MASK	(UL(7) << CSSELR_LEVEL_SHIFT)
-> +#define CSSELR_IND_SHIFT	0
-> +#define CSSERL_IND_MASK		(UL(1) << CSSELR_IND_SHIFT)
-> +
-> +#define CCSIDR_64_LS_SHIFT	0
-> +#define CCSIDR_64_LS_MASK	(UL(7) << CCSIDR_64_LS_SHIFT)
-> +#define CCSIDR_64_ASSOC_SHIFT	3
-> +#define CCSIDR_64_ASSOC_MASK	(UL(0x1FFFFF) << CCSIDR_64_ASSOC_SHIFT)
-> +#define CCSIDR_64_SET_SHIFT	32
-> +#define CCSIDR_64_SET_MASK	(UL(0xFFFFFF) << CCSIDR_64_SET_SHIFT)
-> +
-> +#define CCSIDR_32_LS_SHIFT	0
-> +#define CCSIDR_32_LS_MASK	(UL(7) << CCSIDR_32_LS_SHIFT)
-> +#define CCSIDR_32_ASSOC_SHIFT	3
-> +#define CCSIDR_32_ASSOC_MASK	(UL(0x3FF) << CCSIDR_32_ASSOC_SHIFT)
-> +#define CCSIDR_32_SET_SHIFT	13
-> +#define CCSIDR_32_SET_MASK	(UL(0x7FFF) << CCSIDR_32_SET_SHIFT)
 
-I don't think we should be inferring cache structure from these register
-values. The Arm ARM helpfully says:
+Vinod, ping.... This is the last patch which is missing to get the soundwire
+audio working on some Intel hardware platforms (laptops) which are already on
+the market.
 
-  | You cannot make any inference about the actual sizes of caches based
-  | on these parameters.
+				Thank you,
+					Jaroslav
 
-so we need to take the topology information from elsewhere.
-
-But before we get into that, can you justify why we need to do this at all,
-please? Do you have data to show the benefit of adding this complexity?
-
-Cheers,
-
-Will
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
