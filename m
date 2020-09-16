@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D147526C08E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AD326C093
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgIPJ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:29:51 -0400
-Received: from mout.gmx.net ([212.227.17.21]:48101 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgIPJ3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:29:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600248552;
-        bh=qUGJBV+LmwxwcbrLgtQC3FmqOE9MHn2vtmTA4RuY3Ys=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=U1cz8VM0uS5s6ucIGVHbJehmWY6HZBNoIE58j0GJUCbdts6kKuupEvrcAl4ECSq2j
-         TAS1eoH5/yhHpTv1rVUijGqsqX2Qup/n+3kx8cDpXnquLogxFvs5w2bt5oxsNDBRnV
-         MWfw4OydIwPBOnSAKtVAGSumau6j+loWLIgProps=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.159.245] ([217.61.159.245]) by web-mail.gmx.net
- (3c-app-gmx-bap11.server.lan [172.19.172.81]) (via HTTP); Wed, 16 Sep 2020
- 11:29:11 +0200
+        id S1726719AbgIPJa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgIPJaF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 05:30:05 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174FBC06174A;
+        Wed, 16 Sep 2020 02:30:05 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id kk9so1242500pjb.2;
+        Wed, 16 Sep 2020 02:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Hvl1B1auC2/Md3/Ns69FoG4JWQf3oFK8zylbBJi7l0g=;
+        b=hdhvtslzUYPMKHXkuRHLYtkrjgQT+hQLVFKAPU8BPmBvdj+BjUb5rTYDwqUwArVhEV
+         A/CETvbBVJzpk9v7H9BzzMSUWU8belUllC7a4JwBPWF0vFkFMFC69P8jNVu1ye2V0Nyz
+         tYezjrKiQf4wMkhAFei/D8tPHjVShQM9CLnMnYGlY3KsRenrX0KMeEMP6camDdcsrG1s
+         grgCv6joFA4Zph3Z3lWIy2FS4wWYpd0PKv+V/yhzCgOyaIAxJvXjySqxWmmjdY+jK59M
+         ExIWQoS7omzmSrTk4z9RPHs+5URdWGM+UmI0xOUAzu6BCmvOMiGrhElIkjTaJZDDU/Zu
+         Y9Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Hvl1B1auC2/Md3/Ns69FoG4JWQf3oFK8zylbBJi7l0g=;
+        b=ZUZuo0LurKMFqGxgNQNsCwVZhL75ePUpvSad5vSgRW4UZNfuct3AmX8FCYPLQ5xVWR
+         3bpgrwurSl842w01bN3WQ1P3B23xu9bFZhNntAHB5iwFJMSdJvK+eI6FnhiH5vVjPnND
+         7va0xjsDrAVZQ7t2kJSIJ0td+unNbMINeSd9KZAdU8VTnyRcf7emPUQ94LJXZbbDiEpz
+         eYXAuzA2CUaEKOFxfzoyYsCJZ6z0m/6HKj0btW7G/X0ShZVE4CSavJ/zaiENK8ggRnnF
+         UsPfo8I+GmEA9iU/akOSP5EgivrI1sPQOjNPSOpAYT54Mz/D38uheMEWc8v68je2SUPu
+         Li+Q==
+X-Gm-Message-State: AOAM53048wmVL8uWC9ptopSGLWn+FOeJYFEp10+10I8z+E3ii2lgqBPH
+        ZMOudr/S0J4sTEShE9xbVw==
+X-Google-Smtp-Source: ABdhPJzXoGBH6LSvD07Rw00wUEjDsrs8OqQndfG3xrdW6l4FA6TYc3kuhtSpfSZ9CTRtRlSPvvBpdA==
+X-Received: by 2002:a17:90a:e517:: with SMTP id t23mr3016287pjy.25.1600248604598;
+        Wed, 16 Sep 2020 02:30:04 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.53])
+        by smtp.gmail.com with ESMTPSA id x5sm13675378pgf.65.2020.09.16.02.30.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Sep 2020 02:30:03 -0700 (PDT)
+Subject: Re: [PATCH] Revert "KVM: Check the allocation of pv cpu mask"
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Haiwei Li <lihaiwei@tencent.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+References: <20200916090342.748452-1-vkuznets@redhat.com>
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+Message-ID: <6c2204ad-590b-025d-f728-0e6e67bf24ba@gmail.com>
+Date:   Wed, 16 Sep 2020 17:29:59 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Message-ID: <trinity-ae5f43d2-c2e3-46eb-84c7-d96843beb7de-1600248551915@3c-app-gmx-bap11>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Landen Chao <landen.chao@mediatek.com>,
-        Qingfang DENG <dqfext@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Aw: [PATCH] arm: dts: mt7623: add missing pause for switchport
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 16 Sep 2020 11:29:11 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20200907070517.51715-1-linux@fw-web.de>
-References: <20200907070517.51715-1-linux@fw-web.de>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:TC01A2xr8RkXbGgsLFqV/VbN+AQWwQnYA29J/gOoyTQTIr8jw2P4VTWWxuwr9MrAtMe6U
- uzP6I/mCnUJpUbaPsvJHZzg7U+63MfHeqcKzLQ4PHx48//3Ftii+5hGc97AKyZeiUGBVu8b53bqb
- UsV8RZZS1vslD17/qzt4n0p/+sB6x5XxE5jJoiLFJ7LoyoaWWM1oDs4igtcYPsRddltjzZ7H/kQ4
- NPP0VsOmDPrWc91W0xoXyIxg5yqiqLHKrTpFdhA2BD90X5LVXXbVZ3AaXuTUszI2FixJyaaxw1lT
- io=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sqErrydygD4=:evonUZdnNfjkzK5DzG4aaM
- usCFiwJmZLrRLKL0CDSIY2jUA64Co9RBWXVZAPuli/1LI7qzhg8mRuGc+xufAiDLbioLmwPmt
- riQPSD9BPMGyJ3iqGv/4DFw6NcX+DhaRgLr2priRBqHBZyLFAuwjsA1gxQ8MCxAPOiYQC2EQ6
- RE1CqkORT9ReeumjCaGZTYWyiyGIu7b+Y0gJ6370Cr9L/V90R/UggTWgIGD6a+nscgUh9JNb/
- NW03Uph/yvz0I10wotR3Ws9xuFHuc4OWDlcL7Uv75cb6l24gykk85ZEiy3J4+mLUKgnzlABFh
- tKYP4akwZaMeivNq0HDs2DuhHgZf6PPF3bUKN2XgYLdZZfgEFhGhIX9ZxymKOMX/hyiaxoAWR
- jDPr/FCviuP5QqX+m8Oxr38iAvX4uIGB1NfsZqNwtFOkUgsMCcfIvLUlWyn6zIq/FG7lX+GxE
- GhYTg1KO9vJEM6ZMV9ToVPBIyBQP3OPyqny6pXr3V5+SgJWWToEMxPTE7kf8/rfTFScifnLoV
- lXlaqjwyD1NE2lXGRl6/IAAyUnsGBS83Wp8nakQgolDn1kHR4QZTRmd1enisnle6vPUCs5WIv
- rhZMGzYGE9Ico2lE5zSZpr2wCfzBtO6IYRDmdlAeWQMrcuAk0FmFO7/fFOjjDzMaiLbyx8Bx1
- 1JHv1ZS4j7fXim8TefcpdAYwU+K6sfcHlXgaN3If+WrEWMOS1zQElrViMTDSxBV07FAY=
+In-Reply-To: <20200916090342.748452-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-just a gentle ping
+On 20/9/16 17:03, Vitaly Kuznetsov wrote:
+> The commit 0f990222108d ("KVM: Check the allocation of pv cpu mask") we
+> have in 5.9-rc5 has two issue:
+> 1) Compilation fails for !CONFIG_SMP, see:
+>     https://bugzilla.kernel.org/show_bug.cgi?id=209285
+> 
+> 2) This commit completely disables PV TLB flush, see
+>     https://lore.kernel.org/kvm/87y2lrnnyf.fsf@vitty.brq.redhat.com/
+> 
+> The allocation problem is likely a theoretical one, if we don't
+> have memory that early in boot process we're likely doomed anyway.
+> Let's solve it properly later.
 
-regards Frank
+Hi, i have sent a patchset to fix this commit.
 
+https://lore.kernel.org/kvm/20200914091148.95654-1-lihaiwei.kernel@gmail.com/T/#m6c27184012ee5438e5d91c09b1ba1b6a3ee30ee4
 
-> Gesendet: Montag, 07. September 2020 um 09:05 Uhr
+What do you think?
 
-> +++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-> @@ -192,6 +192,7 @@ port@6 {
->  					fixed-link {
->  						speed = <1000>;
->  						full-duplex;
-> +						pause;
-
+Haiwei Li
