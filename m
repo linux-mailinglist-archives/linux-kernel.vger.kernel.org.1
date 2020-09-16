@@ -2,47 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A96526B644
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD4326B659
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727176AbgIPABo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:01:44 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:49217 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727021AbgIPABT (ORCPT
+        id S1727406AbgIPADN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727353AbgIPADF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:01:19 -0400
-Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08G01Fah025558;
-        Wed, 16 Sep 2020 09:01:15 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
- Wed, 16 Sep 2020 09:01:15 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08G017YP025522
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 16 Sep 2020 09:01:15 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Subject: Re: [PATCH] fbcon: Fix user font detection test at fbcon_resize().
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>,
-        george.kennedy@oracle.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, syzkaller-bugs@googlegroups.com
-Cc:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, natechancellor@gmail.com
-References: <00000000000024be1505ad487cbb@google.com>
- <f6e3e611-8704-1263-d163-f52c906a4f06@I-love.SAKURA.ne.jp>
-Message-ID: <7c52e8cd-e4cb-cd0b-40d5-b9654aec09f3@I-love.SAKURA.ne.jp>
-Date:   Wed, 16 Sep 2020 09:01:06 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 15 Sep 2020 20:03:05 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED93C06174A;
+        Tue, 15 Sep 2020 17:03:05 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d19so2190481pld.0;
+        Tue, 15 Sep 2020 17:03:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/9YC3jzxgXrgHNvLV2DgKLu9vRPOEeUndPKkcJPjDSI=;
+        b=jf9mDfg00fVj/EphFCM3fHgNMnH5rlkZ88FTfEbdsiXbD3jHObKr2feFEkpxgSqHgM
+         w8xtcPHIrz5QxSdbj68FYVkzfR6KXWRiXFiu3RqGA4lkgv8z+iENnMEf5h2UPCdcbY41
+         de6Urh5A4PvZ9ztobefpx8bA0PsGBQ4Yl+JMjPiJblHEEsBSq2CLiRzEURv0W5jXdMes
+         gDmvm5JB+JRMI1bFPWDQ7Q9TdJ9U7fF2WPm6Z3rCPM+IaPBFqxWMjgBUnkWLclRI8z7O
+         Kx40EhJyj6I7q9wINksgDQIIuUz8aXeiSY9riKg+FKD+c1Ul1Cl/u7lwNYnG0uJamBoy
+         xagw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/9YC3jzxgXrgHNvLV2DgKLu9vRPOEeUndPKkcJPjDSI=;
+        b=QOIrdmnAt7pUxFLsR+wLFXpeyKpRX5A7NTzFnjN6F+Ibx4ALEebXhiKpctyCDfx3iy
+         1ZKZzQ0Nvr/3GnnT5uC0+PU94Ru0xa5F+rbMCgSMhb2X/p35528kVe8gDZ6/BdFZMJhm
+         VuTo+J5gYkp6Gnr/twhGnExRtFHtqaUrj37l/LNPOT1PDb3ohlhsJygq9VdfLw0fKuh4
+         fXq1GUUNwv56/lcsaTQxLcDkbfPeMMv3M50E0y2u91rcmPOA9ZwUszlrxpTxBw+w7P5b
+         wPv+B2xmQKTJk1jHmHTCb/op9OJTX0TqnfOVDqzfrKcPZqiDToJ/MqSL/uKPd+oaBqeo
+         jQKg==
+X-Gm-Message-State: AOAM533MPKiWx0EG8v38nfiXRXFjLBcJBoUYpq5Qpr1xhlOVeO4t8PYL
+        e5L0Cu89F/wiCGEFk+uc1lM=
+X-Google-Smtp-Source: ABdhPJwXZLREEPePNQ09vlrQA/w6bnVK1+xr2DoofOoKKiFD/yJFWzHp7fSEVmNoHeMMrfNyXMrCgw==
+X-Received: by 2002:a17:90a:db0f:: with SMTP id g15mr1569754pjv.145.1600214584632;
+        Tue, 15 Sep 2020 17:03:04 -0700 (PDT)
+Received: from [10.230.28.120] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o17sm12100848pgb.46.2020.09.15.17.02.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 17:03:03 -0700 (PDT)
+Subject: Re: [PATCH net-next 0/3] net: stmmac: Add ethtool support for get|set
+ channels
+To:     "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        David Miller <davem@davemloft.net>
+Cc:     "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "alexandre.torgue@st.com" <alexandre.torgue@st.com>,
+        "joabreu@synopsys.com" <joabreu@synopsys.com>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "Joao.Pinto@synopsys.com" <Joao.Pinto@synopsys.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Voon, Weifeng" <weifeng.voon@intel.com>,
+        "Vijaya Balan, Sadhishkhanna" <sadhishkhanna.vijaya.balan@intel.com>,
+        "Seow, Chen Yong" <chen.yong.seow@intel.com>
+References: <20200915012840.31841-1-vee.khee.wong@intel.com>
+ <20200915.154302.373083705277550666.davem@davemloft.net>
+ <b945fcc5-e287-73e2-8e37-bd78559944ab@gmail.com>
+ <BYAPR11MB287046044CA144193135B0E7AB200@BYAPR11MB2870.namprd11.prod.outlook.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <16a0dc9e-4e08-6d71-6be4-13c2fc8c53dd@gmail.com>
+Date:   Tue, 15 Sep 2020 17:02:54 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <f6e3e611-8704-1263-d163-f52c906a4f06@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <BYAPR11MB287046044CA144193135B0E7AB200@BYAPR11MB2870.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -50,49 +90,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg, will you pick up this patch?
 
-It seems that finding the real cause of [3] and actually fixing [3] will be difficult.
-Since I can't reproduce [3] locally, I will have to try flood of "#syz test" requests
-for debug printk() patches.
 
-On 2020/09/11 7:57, Tetsuo Handa wrote:
-> syzbot is reporting OOB read at fbcon_resize() [1], for
-> commit 39b3cffb8cf31117 ("fbcon: prevent user font height or width change
->  from causing potential out-of-bounds access") is by error using
-> registered_fb[con2fb_map[vc->vc_num]]->fbcon_par->p->userfont (which was
-> set to non-zero) instead of fb_display[vc->vc_num].userfont (which remains
-> zero for that display).
+On 9/15/2020 4:59 PM, Wong, Vee Khee wrote:
+> My bad...
 > 
-> We could remove tricky userfont flag [2], for we can determine it by
-> comparing address of the font data and addresses of built-in font data.
-> But since that commit is failing to fix the original OOB read [3], this
-> patch keeps the change minimal in case we decide to revert altogether.
-> 
-> [1] https://syzkaller.appspot.com/bug?id=ebcbbb6576958a496500fee9cf7aa83ea00b5920
-> [2] https://syzkaller.appspot.com/text?tag=Patch&x=14030853900000
-> [3] https://syzkaller.appspot.com/bug?id=6fba8c186d97cf1011ab17660e633b1cc4e080c9
-> 
-> Reported-by: syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Fixes: 39b3cffb8cf31117 ("fbcon: prevent user font height or width change from causing potential out-of-bounds access")
-> Cc: George Kennedy <george.kennedy@oracle.com>
-> ---
->  drivers/video/fbdev/core/fbcon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-> index 66167830fefd..dae7ae7f225a 100644
-> --- a/drivers/video/fbdev/core/fbcon.c
-> +++ b/drivers/video/fbdev/core/fbcon.c
-> @@ -2203,7 +2203,7 @@ static int fbcon_resize(struct vc_data *vc, unsigned int width,
->  	struct fb_var_screeninfo var = info->var;
->  	int x_diff, y_diff, virt_w, virt_h, virt_fw, virt_fh;
->  
-> -	if (ops->p && ops->p->userfont && FNTSIZE(vc->vc_font.data)) {
-> +	if (p->userfont && FNTSIZE(vc->vc_font.data)) {
->  		int size;
->  		int pitch = PITCH(vc->vc_font.width);
->  
-> 
+> Hi David Miller,
 
+(please don't top post)
+
+> 
+> Can you help with the commit message fix or do you want to to send a new patch with the fix since the patches are applied on net-next?
+
+It has already been applied, so this is too late, just telling you so 
+you can avoid it next time. And it should be part of David's CI while 
+applying patching, too.
+-- 
+Florian
