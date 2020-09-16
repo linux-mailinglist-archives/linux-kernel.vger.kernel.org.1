@@ -2,137 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1553A26CAD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BBC26CAD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728316AbgIPUNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
+        id S1727095AbgIPRcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727061AbgIPRdO (ORCPT
+        with ESMTP id S1727106AbgIPR3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:33:14 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA66EC02C2AD;
-        Wed, 16 Sep 2020 09:03:24 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 30C2D689F; Wed, 16 Sep 2020 12:03:16 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 30C2D689F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1600272196;
-        bh=AhbQil9hi1jajqnwwBoDpoEkSw6sqlLr283ReFc5xQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oGFyz4comJG6R79ISTIV5cstLTo7DBCtV3gmkUf2vHJHQue7W9VeVwmdy+Dqp2ucR
-         gc1fU3CQra+Ebnqq67PfhQ2EkkLC5VhhQcXeZdIQb3xyWM1iBUU7TXG+MbbMZiejrz
-         E1/Wi9MFGcYe+jJfw4dnRGXPvS+jDFiftMA3szxs=
-Date:   Wed, 16 Sep 2020 12:03:16 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     syzbot <syzbot+1594adb1b44e354153d8@syzkaller.appspotmail.com>
-Cc:     anna.schumaker@netapp.com, chuck.lever@oracle.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, trond.myklebust@hammerspace.com
-Subject: Re: general protection fault in cache_clean
-Message-ID: <20200916160316.GA4560@fieldses.org>
-References: <0000000000002b3ac605af559958@google.com>
+        Wed, 16 Sep 2020 13:29:11 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D079AC02C29D;
+        Wed, 16 Sep 2020 09:09:06 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v23so6451953ljd.1;
+        Wed, 16 Sep 2020 09:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WU8kkRrE3jlr7jbbJ1vMZoztyKQSB8TKep3W2+Nhdpo=;
+        b=PX7zxOa0V1P+T5PQE8MemGbm8QD2DVms2wDVKL0zvIl654L3hn4IH9ImISDHPhiUWx
+         BLk3uerGbG/Cu2WECtitLX5tZZYQKw3GN4pYJvktzAaSEFy2rjZ9L+bBA+MjWJH1F9Pi
+         uU750U2N7VA4ZXpPre+5W7l1Hw0xSQJA6+zZ31HZQ0EFegsM7WqaZrCq9QSIr/E2H2nR
+         SgKr1UhwmwJq57nEy5CrwC6fUeShqN2u2jOMgRC5gKOCdvD2z6cNaTumY1duObWGvYm7
+         A32s+XjKK9tDlVKTOjrnjYuiWzyviQLKEAoET98SqTVV3MBctGHXYFgAY9nvxk/jQQxg
+         pu0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WU8kkRrE3jlr7jbbJ1vMZoztyKQSB8TKep3W2+Nhdpo=;
+        b=YEGqkzzZgHbVAZzs2jZKHZeGETO9yRu2YyG5N1FmRr/5+gMVTz2QGHa1XDoL+maXl3
+         mYHksa8uwNt0hQSSHukORmNDZFi9GsGYTqfer304GNGubBOQLkXQWK87GLlogmB0d03u
+         1Ji726eaQdQC7Eon1widUmLfDAd5fylBbZ3GzxNOAGvknDMF5OSbbEMkqCDf2OaF4RHy
+         UlS9l8phKCBbCq9fKM5c3Z97Oo4AXMEAptBT8iUkt/fI9fhjZ/IQE9d6dQuDu5Ord7uJ
+         4i2vAN+JA/ahbXjyCVeyvQExWUUrxrxsh+Rv5maThO7I588jZD4KJY4eU7zRIW/RxuAu
+         ixNg==
+X-Gm-Message-State: AOAM533O0CzlDhGb4IdI5MU09ar5OOaRb0dnvfzeOMGk9Ta2NFo7BZ7r
+        PjseKq7DnUMsJVnLg9qR3iqvcB0Q9zg=
+X-Google-Smtp-Source: ABdhPJwgUpIjt1JfZmr2hIDAqmuETyFK5I1BMqLPpG/JmuzJbZgHaxUG0ETD48tl/QDqV3qD5CzHdQ==
+X-Received: by 2002:a2e:9116:: with SMTP id m22mr8286871ljg.387.1600272544856;
+        Wed, 16 Sep 2020 09:09:04 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id l82sm5051890lfd.58.2020.09.16.09.09.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Sep 2020 09:09:03 -0700 (PDT)
+Subject: Re: [PATCH 1/3] ARM: tegra: Add device-tree for Ouya
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200916122247.534374-1-pgwipeout@gmail.com>
+ <20200916122247.534374-2-pgwipeout@gmail.com>
+ <3cdcb877-e4c7-aab8-b7f9-0c88f2247d03@gmail.com>
+ <CAMdYzYrKHBrh47PMrj=TP_FPttFOkRO2J_wrDr7oEyBNnyexAA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c92a457d-9829-99ce-8d7c-29fe5395728c@gmail.com>
+Date:   Wed, 16 Sep 2020 19:09:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000002b3ac605af559958@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CAMdYzYrKHBrh47PMrj=TP_FPttFOkRO2J_wrDr7oEyBNnyexAA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:04:20AM -0700, syzbot wrote:
-> syzbot found the following issue on:
+16.09.2020 17:57, Peter Geis пишет:
+> On Wed, Sep 16, 2020 at 10:17 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 16.09.2020 15:22, Peter Geis пишет:
+>>> The Ouya was the sole device produced by Ouya Inc in 2013.
+>>> It was a game console originally running Android 5 on top of Linux 3.1.10.
+>>>
+>>> This patch adds the device tree supporting the Ouya.
+>>> It has been tested on the original variant with Samsung ram.
+>>>
+>>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+>>> ---
+>>>  arch/arm/boot/dts/Makefile         |    3 +-
+>>>  arch/arm/boot/dts/tegra30-ouya.dts | 4498 ++++++++++++++++++++++++++++
+>>>  2 files changed, 4500 insertions(+), 1 deletion(-)
+>>>  create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
+>>
+>> Hello, Peter! Very nice work!
 > 
-> HEAD commit:    581cb3a2 Merge tag 'f2fs-for-5.9-rc5' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11f5c011900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1594adb1b44e354153d8
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> Thanks!
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> Could you please clarify how many variants of the board exist?
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+1594adb1b44e354153d8@syzkaller.appspotmail.com
+> It is unknown how many exist in reality.
+> At least three RAM variants are supported in the downstream kernel,
+> Samsung, Hynix M, and Hynix A.
+> Two variants in storage capacity, the original had 8GB eMMC while the
+> new variant had 16GB eMMC.
 > 
-> general protection fault, probably for non-canonical address 0xdffffc0012e34a9a: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: probably user-memory-access in range [0x00000000971a54d0-0x00000000971a54d7]
-> CPU: 1 PID: 19990 Comm: kworker/1:11 Not tainted 5.9.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: events_power_efficient do_cache_clean
-> RIP: 0010:cache_clean+0x119/0x7f0 net/sunrpc/cache.c:444
-
-That's in cache_clean():
-	spin_lock(&cache_list_lock);
-	...
-	current_detail = list_entry(next, struct cache_detail, others)
-444:	if (current_detail->nextcheck > seconds_since_boot())
-
-It suggests cache_list or current_detail (both globals) are corrupted
-somehow.
-
-Those are manipulated only by cache_clean() and
-sunrpc_{init,destroy}_cache_detail(), always under the cache_list_lock.
-
-All the callers have to do to get this right is make sure the
-cache_detail they pass in is allocated before calling
-sunrpc_init_cache_detail() and not freed till after calling
-sunrpc_destroy_cache_detail().  I think they all get that right.
-
-So I'm assuming this is a random memory scribble from somewhere else or
-something, unless it pops up again....
-
-(The one thing I'm a little unsure of here is the
-list_empty(&cache_list) checks used to decide when to stop the
-cache_cleaner.  But that's a separate problem, if it is a problem.)
-
---b.
-
-
-> Code: 81 fb 20 eb 94 8a 0f 84 b8 00 00 00 e8 80 df 33 fa 48 8d 83 40 ff ff ff 48 8d 7b 10 48 89 05 8e 8e 13 06 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 e0 05 00 00 48 8d 6c 24 38 4c 8b 63 10 48 89
-> RSP: 0018:ffffc90008e1fc48 EFLAGS: 00010206
-> RAX: 0000000012e34a9a RBX: 00000000971a54c0 RCX: ffffffff87406dbb
-> RDX: ffff88804358a000 RSI: ffffffff87406e00 RDI: 00000000971a54d0
-> RBP: 0000000000000100 R08: 0000000000000001 R09: 0000000000000003
-> R10: 0000000000000100 R11: 0000000000000000 R12: 0000000000000100
-> R13: dffffc0000000000 R14: ffff88803451b200 R15: ffff8880ae735600
-> FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000004ef310 CR3: 000000009ca1b000 CR4: 00000000001526e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  do_cache_clean+0xd/0xd0 net/sunrpc/cache.c:502
->  process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
->  kthread+0x3b5/0x4a0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> Modules linked in:
-> ---[ end trace 4c54bbd0e20d734b ]---
-> RIP: 0010:cache_clean+0x119/0x7f0 net/sunrpc/cache.c:444
-> Code: 81 fb 20 eb 94 8a 0f 84 b8 00 00 00 e8 80 df 33 fa 48 8d 83 40 ff ff ff 48 8d 7b 10 48 89 05 8e 8e 13 06 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 e0 05 00 00 48 8d 6c 24 38 4c 8b 63 10 48 89
-> RSP: 0018:ffffc90008e1fc48 EFLAGS: 00010206
-> RAX: 0000000012e34a9a RBX: 00000000971a54c0 RCX: ffffffff87406dbb
-> RDX: ffff88804358a000 RSI: ffffffff87406e00 RDI: 00000000971a54d0
-> RBP: 0000000000000100 R08: 0000000000000001 R09: 0000000000000003
-> R10: 0000000000000100 R11: 0000000000000000 R12: 0000000000000100
-> R13: dffffc0000000000 R14: ffff88803451b200 R15: ffff8880ae735600
-> FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000004ef310 CR3: 000000009ca1b000 CR4: 00000000001526e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>
+>> What are the differences between the variants?
 > 
+> Aside from the RAM and storage changes there should be no functional
+> differences.
+> It is unknown at which point the RAM changes were cut in with the eMMC change.
 > 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>
+>> Is this device-tree suitable for all variants?
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> This device tree should support all variants, but I haven't been able
+> to locate anyone with the newer variants who can test it yet.
+> 
+>>
+>> How user could determine the board's variant?
+> 
+> On upstream:
+> The tegra emc driver will output the RAM code detected in the kernel log:
+> tegra30-emc 7000f400.memory-controller: got 6 timings for RAM code 0
+> (min 25MHz max 800MHz)
+> The mmc-core will output the storage capacity in the kernel log:
+> mmcblk1: mmc1:0001 MMC08G 7.19 GiB
+> 
+> On downstream:
+> The ram variant is output in the kernel log:
+> DDR Strap Pin AD4: 0
+> DDR Strap Pin AD5: 0
+> Init DFS table for Samsung DDR
+> The mmc-core outputs the storage capacity in the kernel log:
+> mmcblk0: mmc0:0001 MMC08G 7.18 GiB
+> 
+
+I was thinking that maybe it could be necessary to separate the DT per
+board variant, like we did it for Nexus 7, but it shouldn't be needed
+given yours answer.
+
+So far looks good to me!
