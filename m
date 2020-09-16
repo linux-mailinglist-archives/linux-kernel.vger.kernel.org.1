@@ -2,142 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6D626CDF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83A726CDCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgIPVHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46388 "EHLO
+        id S1726648AbgIPVFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIPQDm (ORCPT
+        with ESMTP id S1726187AbgIPQPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:03:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A26C02C295;
-        Wed, 16 Sep 2020 08:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=2L8WeVvRo1osqjjhclSBTpn136Oyr6chq2WMPl65EcM=; b=sha7upVR0ozVlTJFDWdFS4KUrg
-        Dlh504xPkCjJ6bcnR0tgQmZYiIutQK/G0ONBD+iomCp+zVQ82oPYqYPfOa29q6UCwl36D+BB9FNFs
-        pSeTBdPEiVQz6llxOwpNLZRraxMD45Yt9agHPf8ceWEhufE5EkURg5LtEm+1DjoRnfjJ/WOFs5+4j
-        BadKgeBe/qwlbda6A6xYg/rSWFAOIGOJ/+qKGuMxZNBtCJ1ZUglDN7/DVuOWKZv/bNRIhqme65n0j
-        CV7jlQDHwCcs1yfZz07j2hPdh6zbICLmsA3R4X5f+JNoZnWPrhrt60ytieQyxK1LeEjJ519udtgbv
-        hAy+S0yQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIZqU-0000qm-87; Wed, 16 Sep 2020 15:59:46 +0000
-Subject: Re: [PATCH v5 3/5] mm: introduce memfd_secret system call to create
- "secret" memory areas
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Wed, 16 Sep 2020 12:15:01 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6560EC02C2AE
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:04:09 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id nw23so11107342ejb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/MCv6kGzbCOa/DlsDScqqLMNRtWklF6jilIPECQzCg0=;
+        b=Z9MjrknpOuPF+pqKLQzqZid8FW3zEaHnhoX5IP5NryC11gEwO7uLcWUhqVJxueC9W6
+         7CyEpxmwOqnfqxe61a1+dIvuU7OnfHkNIofhb5es+kRTzdzNW0FeLmP3GTVpwKsqCAx9
+         i/yxgS1SeMvI41chMQEFucT6tmbFzA5SyLmdZGcX8ThN3ccdXUQ0V2MbUttBhZ4aR/uG
+         kTDaZX/9nNor4lMYTgCQTv4GahD7XgYuDxdC8I1g6Qdg9zarXeNsOCuXfRjOpkDCi5/h
+         qT5Y31/7nfG6eQqQ4BRT9zXcgnZPcL68LubYbNrQEx0ABy/gIz0PExjwugqJxjUAo47o
+         hPww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/MCv6kGzbCOa/DlsDScqqLMNRtWklF6jilIPECQzCg0=;
+        b=OgI92oNjG6jbT5tFeqtyyy43m1ZnQle8f3O9xNoFCrujnuD3ZoKEjzAIm0TVWaTfYY
+         CWgPdPnyridRhZxGu2+SXvoKzwk1gE7WNpNvR49B9qHAfe2+M8jXLCPAUf6WLY0MShoU
+         MwBRRtLs3nrWWCeJThmrqrXoiAlDYzlPlwxuVNN5nhQK7m9Y8QQrNAqVmi1Zsp/wzGYh
+         hqJ5CJ+4GMqmUofiO4VYghZkyoJYTUYAWaWyei6ceOL2sNpyllcM5iSY1+wGULrU81TX
+         dTi4fkz/AaCB/3d2m21+HliFFDTNmR8Bqi5NR8/CQ4wa+IXgUfIj0kq5GgZGe8jZgcNv
+         nZhg==
+X-Gm-Message-State: AOAM533blqrcA+s8kzB5ZVu3rCAr2YSPF+B5jLSczzCdd1WSQCaRvMB6
+        OG04Bt66EfxfqRHcKu6RNE1BFA==
+X-Google-Smtp-Source: ABdhPJwnwOjURbFapQp8v5CLihCKN0iTNY+IAPC8bmYxQUARFNDKMn4DRN3DSrBLnjhBjmyMpFoO8Q==
+X-Received: by 2002:a17:906:52c2:: with SMTP id w2mr26710730ejn.389.1600272247918;
+        Wed, 16 Sep 2020 09:04:07 -0700 (PDT)
+Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
+        by smtp.gmail.com with ESMTPSA id lc25sm13011774ejb.35.2020.09.16.09.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 09:04:07 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 19:04:04 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-References: <20200916073539.3552-1-rppt@kernel.org>
- <20200916073539.3552-4-rppt@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6319035d-73db-4b4d-3fa7-aaa11d3843a0@infradead.org>
-Date:   Wed, 16 Sep 2020 08:59:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200916160404.GA153139@apalos.home>
+References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
+ <20200915131102.GA26439@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20200916073539.3552-4-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915131102.GA26439@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+Hi Will, 
 
-
-On 9/16/20 12:35 AM, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Tue, Sep 15, 2020 at 02:11:03PM +0100, Will Deacon wrote:
+[...]
+> >  			continue;
+> >  		}
+> > -		if (ctx->image == NULL)
+> > -			ctx->offset[i] = ctx->idx;
+> >  		if (ret)
+> >  			return ret;
+> >  	}
+> > +	if (ctx->image == NULL)
+> > +		ctx->offset[i] = ctx->idx;
 > 
+> I think it would be cleared to set ctx->offset[0] before the for loop (with
+> a comment about what it is) and then change the for loop to iterate from 1
+> all the way to prog->len.
+
+On a second thought while trying to code this, I'd prefer leaving it as is. 
+First of all we'll have to increase ctx->idx while adding ctx->offset[0] and 
+more importantly, I don't think that's a 'special' case. 
+It's still the same thing i.e the start of the 1st instruction (which happens 
+to be the end of prologue), the next one will be the start of the second 
+instruction etc etc. 
+
+I don't mind changing if you feel strongly about it, but I think it makese sense
+as-is.
+
+Thanks
+/Ilias
 > 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/Kconfig                   |   7 +
->  arch/x86/Kconfig               |   1 +
->  include/uapi/linux/magic.h     |   1 +
->  include/uapi/linux/secretmem.h |   8 +
->  kernel/sys_ni.c                |   2 +
->  mm/Kconfig                     |   4 +
->  mm/Makefile                    |   1 +
->  mm/secretmem.c                 | 264 +++++++++++++++++++++++++++++++++
->  8 files changed, 288 insertions(+)
->  create mode 100644 include/uapi/linux/secretmem.h
->  create mode 100644 mm/secretmem.c
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index af14a567b493..8d161bd4142d 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -975,6 +975,13 @@ config HAVE_SPARSE_SYSCALL_NR
->  config ARCH_HAS_VDSO_DATA
->  	bool
->  
-> +config HAVE_SECRETMEM_UNCACHED
-> +       bool
-> +       help
-> +          An architecture can select this if its semantics of non-cached
-> +          mappings can be used to prevent speculative loads and it is
-> +          useful for secret protection.
-
-Please use tabs instead of spaces for indentation.
-
-> +
->  source "kernel/gcov/Kconfig"
->  
->  source "scripts/gcc-plugins/Kconfig"
-
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 6c974888f86f..70cfc20d7caa 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -868,4 +868,8 @@ config ARCH_HAS_HUGEPD
->  config MAPPING_DIRTY_HELPERS
->          bool
->  
-> +config SECRETMEM
-> +        def_bool ARCH_HAS_SET_DIRECT_MAP && !EMBEDDED
-
-Use tab above for indentation.
-
-> +	select GENERIC_ALLOCATOR
-> +
->  endmenu
-
-
-thanks.
--- 
-~Randy
-
+> Will
