@@ -2,118 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F7126BF42
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560E826BF48
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbgIPI1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPI0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:26:48 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACB3C06174A;
-        Wed, 16 Sep 2020 01:26:46 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id w16so7228783oia.2;
-        Wed, 16 Sep 2020 01:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=91zh4RimXAEVlpOKUCGDUKoc77/FjASLS3nmPi0RCO8=;
-        b=nU3utdsbpOTVLmMNRYLNojwbz8TGY9gJu612u6xFKIBalDKxuxbanLJBgpWSpsoJCi
-         n7NarMlAsCwK60CM/1AquzvTJdvcRujw92/K/5EDNcqKThCFqpdXJVgsvjtXE0n6ktZm
-         x7I7fHXflkGmWq7uteyBDKOFsU2rVfWn4AiWDyVru8ttXtbg5iTDHYmdOlO3ruLHNL0O
-         SyeIrb/tAQ4glQONRp+/UXw0RZBC/PiA0EJ+y9egkpy5I/yrf1KldWYw3+BrJaUi6yLD
-         tmbZO0fO9LcGB0q8Klsc+NgDyQ4QfgvtoW5ln44I+H59X3LjRjdQrrC81MwRdiC/N2XV
-         q4nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=91zh4RimXAEVlpOKUCGDUKoc77/FjASLS3nmPi0RCO8=;
-        b=SKctX7n3O15Wt2aWFcj60lXvhKB2UW7UAor/oAlo8GagCqpvrbrYJ1SzZjcdNPuOBe
-         jOKtvFitak29z5/8CzeB90WPLT4crzzD9ymFkwVlFUGpfz+pC9nEi2qO/K7BhoVhAcZo
-         QFhzRaXJ08w0QVEcl29ZJ2z4YEW0md+HjBZzj7nU4e1o8pKs/mkxyfJnOJhNNbjL8+4/
-         gl9MH2vLD9LX5s8Nswb7HLCF7/dpPBRJN6eYsvktKEgt4Q2lvctYW70WEB/7ZDz5G6C1
-         Pkp09FQct16Ou+TvMXt59lIQD2ryL6wx8d2eEsiILenJT2rjlkmP6qKLrLKI/NuudWKo
-         HMOw==
-X-Gm-Message-State: AOAM533EUL/3r76w1QhIGuNu+0Gr0ZZJg/nqIbXt/huOh2kY8Pqx32ZC
-        V065kW10Z3VUkdUThh4XBDAp/3HEB/DCPJdTg6U=
-X-Google-Smtp-Source: ABdhPJy14BRcrFOpKMyzRkdWnrZd8nyOOg8ZdKxIHwRAq6PaHTh0y40U6xBixjCCazylMyxh8o50zDrJ3j+WVgKydBU=
-X-Received: by 2002:aca:b48b:: with SMTP id d133mr2447100oif.47.1600244806223;
- Wed, 16 Sep 2020 01:26:46 -0700 (PDT)
+        id S1726570AbgIPI21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:28:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgIPI2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:28:25 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F17D20872;
+        Wed, 16 Sep 2020 08:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600244904;
+        bh=OTC3FlcJE6Dg/iOvApxI6QhF/kIkiQWIOKiqpniO2sM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OCskcxSo5A5L9/apeK6y3IFpTwgjRRq917gJ6PED0ff0/VbCYwWZxNOz7oidzbmFI
+         TupfIAhdJIJuQ/1ksgkNXQx/YZqSMWJoKA7O9uipPPPgYFEdyErlMOJWhE1WfmaUjI
+         OAdacoiJWpPhCFxmaghj3rGA5zCvOjRLtvFJQ9+0=
+Date:   Wed, 16 Sep 2020 09:28:20 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
+        anshuman.khandual@arm.com, catalin.marinas@arm.com,
+        linux-kernel@vger.kernel.org, shan.gavin@gmail.com
+Subject: Re: [PATCH 2/2] arm64/mm: Enable color zero pages
+Message-ID: <20200916082819.GB27496@willie-the-truck>
+References: <20200916032523.13011-1-gshan@redhat.com>
+ <20200916032523.13011-3-gshan@redhat.com>
 MIME-Version: 1.0
-References: <20200912125148.1271481-1-maz@kernel.org> <20200912125148.1271481-5-maz@kernel.org>
- <20200912232203.GH3715@yoga>
-In-Reply-To: <20200912232203.GH3715@yoga>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Wed, 16 Sep 2020 10:26:34 +0200
-Message-ID: <CAFqH_53iWr+KeteGzL3uJnpgWqFezDn=tzD70oUuvSQ+P3A_DQ@mail.gmail.com>
-Subject: Re: [PATCH 4/6] irqchip/mtk-cirq: Allow modular build
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Frank Wunderlich <linux@fw-web.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Hanks Chen <hanks.chen@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916032523.13011-3-gshan@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Missatge de Bjorn Andersson <bjorn.andersson@linaro.org> del dia dg.,
-13 de set. 2020 a les 1:26:
->
-> On Sat 12 Sep 07:51 CDT 2020, Marc Zyngier wrote:
->
-> > Switch the driver to a "hybrid probe" model which preserves the
-> > built-in behaviour while allowing the driver to be optionnally
-> > built as a module for development purposes.
-> >
->
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->
-> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+On Wed, Sep 16, 2020 at 01:25:23PM +1000, Gavin Shan wrote:
+> This enables color zero pages by allocating contigous page frames
+> for it. The number of pages for this is determined by L1 dCache
+> (or iCache) size, which is probbed from the hardware.
+> 
+>    * Add cache_total_size() to return L1 dCache (or iCache) size
+> 
+>    * Implement setup_zero_pages(), which is called after the page
+>      allocator begins to work, to allocate the contigous pages
+>      needed by color zero page.
+> 
+>    * Reworked ZERO_PAGE() and define __HAVE_COLOR_ZERO_PAGE.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/include/asm/cache.h   | 22 ++++++++++++++++++++
+>  arch/arm64/include/asm/pgtable.h |  9 ++++++--
+>  arch/arm64/kernel/cacheinfo.c    | 34 +++++++++++++++++++++++++++++++
+>  arch/arm64/mm/init.c             | 35 ++++++++++++++++++++++++++++++++
+>  arch/arm64/mm/mmu.c              |  7 -------
+>  5 files changed, 98 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cache.h
+> index a4d1b5f771f6..420e9dde2c51 100644
+> --- a/arch/arm64/include/asm/cache.h
+> +++ b/arch/arm64/include/asm/cache.h
+> @@ -39,6 +39,27 @@
+>  #define CLIDR_LOC(clidr)	(((clidr) >> CLIDR_LOC_SHIFT) & 0x7)
+>  #define CLIDR_LOUIS(clidr)	(((clidr) >> CLIDR_LOUIS_SHIFT) & 0x7)
+>  
+> +#define CSSELR_TND_SHIFT	4
+> +#define CSSELR_TND_MASK		(UL(1) << CSSELR_TND_SHIFT)
+> +#define CSSELR_LEVEL_SHIFT	1
+> +#define CSSELR_LEVEL_MASK	(UL(7) << CSSELR_LEVEL_SHIFT)
+> +#define CSSELR_IND_SHIFT	0
+> +#define CSSERL_IND_MASK		(UL(1) << CSSELR_IND_SHIFT)
+> +
+> +#define CCSIDR_64_LS_SHIFT	0
+> +#define CCSIDR_64_LS_MASK	(UL(7) << CCSIDR_64_LS_SHIFT)
+> +#define CCSIDR_64_ASSOC_SHIFT	3
+> +#define CCSIDR_64_ASSOC_MASK	(UL(0x1FFFFF) << CCSIDR_64_ASSOC_SHIFT)
+> +#define CCSIDR_64_SET_SHIFT	32
+> +#define CCSIDR_64_SET_MASK	(UL(0xFFFFFF) << CCSIDR_64_SET_SHIFT)
+> +
+> +#define CCSIDR_32_LS_SHIFT	0
+> +#define CCSIDR_32_LS_MASK	(UL(7) << CCSIDR_32_LS_SHIFT)
+> +#define CCSIDR_32_ASSOC_SHIFT	3
+> +#define CCSIDR_32_ASSOC_MASK	(UL(0x3FF) << CCSIDR_32_ASSOC_SHIFT)
+> +#define CCSIDR_32_SET_SHIFT	13
+> +#define CCSIDR_32_SET_MASK	(UL(0x7FFF) << CCSIDR_32_SET_SHIFT)
 
-I've tested this on mt8173 and mt8183, and this time, the patches
-didn't break booting on these platforms. For MediaTek, right now, only
-makes sense the driver to be built-in as other drivers that use it are
-not ready for deferring their probe. So,
+I don't think we should be inferring cache structure from these register
+values. The Arm ARM helpfully says:
 
-Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+  | You cannot make any inference about the actual sizes of caches based
+  | on these parameters.
 
-Thanks
-  Enric
+so we need to take the topology information from elsewhere.
 
-> > ---
-> >  drivers/irqchip/irq-mtk-cirq.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/irqchip/irq-mtk-cirq.c b/drivers/irqchip/irq-mtk-cirq.c
-> > index 69ba8ce3c178..43e880b63ed2 100644
-> > --- a/drivers/irqchip/irq-mtk-cirq.c
-> > +++ b/drivers/irqchip/irq-mtk-cirq.c
-> > @@ -295,4 +295,6 @@ static int __init mtk_cirq_of_init(struct device_node *node,
-> >       return ret;
-> >  }
-> >
-> > -IRQCHIP_DECLARE(mtk_cirq, "mediatek,mtk-cirq", mtk_cirq_of_init);
-> > +IRQCHIP_HYBRID_DRIVER_BEGIN(mtk_cirq)
-> > +IRQCHIP_MATCH("mediatek,mtk-cirq", mtk_cirq_of_init)
-> > +IRQCHIP_HYBRID_DRIVER_END(mtk_cirq)
-> > --
-> > 2.28.0
-> >
+But before we get into that, can you justify why we need to do this at all,
+please? Do you have data to show the benefit of adding this complexity?
+
+Cheers,
+
+Will
