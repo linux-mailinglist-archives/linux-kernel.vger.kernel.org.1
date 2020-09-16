@@ -2,285 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FA126C946
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE70E26C983
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgIPTGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:06:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36802 "EHLO mail.kernel.org"
+        id S1727725AbgIPTMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:12:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727322AbgIPRpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:45:43 -0400
+        id S1727324AbgIPRkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:40:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2991B21D7D;
-        Wed, 16 Sep 2020 11:32:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00CB822208;
+        Wed, 16 Sep 2020 12:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600255979;
-        bh=NrN65FExOcUCU520Iq+usyuxFbZLtc2nG2HuzYo+/Z8=;
+        s=default; t=1600257620;
+        bh=9s/rvEjo1wq+KwkqjNhV00XmoufWCEUO/ivOHV5rAGU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WKy38OSed/DKr+wyau8wsgBMcKVVfD6ZZYBTUCn0W5pyOjW/hXhxzJThMFuXngdtX
-         cpS/OEj8cv6p4b3xGA3JHsc4V/uSTCDugqMgyjgZPBJSOLktovCGJCEZ2BSUPlID1X
-         njdNx2JNLYBA5TJqxi89LYGeoAsV9G5y7GnNXLVM=
-Date:   Wed, 16 Sep 2020 13:33:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-Cc:     ard.biesheuvel@linaro.org, mingo@kernel.org,
-        matt@codeblueprint.co.uk, sudeep.holla@arm.com,
-        hkallweit1@gmail.com, keescook@chromium.org,
-        dmitry.torokhov@gmail.com, michal.simek@xilinx.com,
-        rajanv@xilinx.com, tejas.patel@xilinx.com, jollys@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        rajan.vaja@xilinx.com, jolly.shah@xilinx.com
-Subject: Re: [PATCH 1/3] firmware: xilinx: Add validation check for IOCTL
-Message-ID: <20200916113334.GB1124534@kroah.com>
-References: <1599697204-32103-1-git-send-email-amit.sunil.dhamne@xilinx.com>
- <1599697204-32103-2-git-send-email-amit.sunil.dhamne@xilinx.com>
+        b=MztvbYDnbk2NXEcYstZNeAJ6aWgFbPSOOSfLrbFaXyxEfjR7wHm1e1+gUiW8w061N
+         RV0g8a+uEO39D8pZCvr+axOuo72XFHhRWiTJv8tlpilNbrnF0hICqbc4wGKmBdhUpF
+         br/L1V9FN/vYx1Os7u42M45FthQreInRFat5d+qQ=
+Date:   Wed, 16 Sep 2020 14:00:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200916120054.GA2753544@kroah.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915.134252.1280841239760138359.davem@davemloft.net>
+ <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
+ <20200916062614.GF142621@kroah.com>
+ <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
+ <20200916074217.GB189144@kroah.com>
+ <CAFCwf10zLR9v65sgGGdkcf+JzZaw_WORAbQvEw-hbbfj=dy2Xg@mail.gmail.com>
+ <20200916082226.GA509119@kroah.com>
+ <CAFCwf1366_GoTj1gpneJBSqVxJ1mOnsdZiC+DJLG85GHGfZrzw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1599697204-32103-2-git-send-email-amit.sunil.dhamne@xilinx.com>
+In-Reply-To: <CAFCwf1366_GoTj1gpneJBSqVxJ1mOnsdZiC+DJLG85GHGfZrzw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 05:20:02PM -0700, Amit Sunil Dhamne wrote:
-> From: Tejas Patel <tejas.patel@xilinx.com>
+On Wed, Sep 16, 2020 at 11:47:58AM +0300, Oded Gabbay wrote:
+> On Wed, Sep 16, 2020 at 11:21 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Sep 16, 2020 at 11:02:39AM +0300, Oded Gabbay wrote:
+> > > On Wed, Sep 16, 2020 at 10:41 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
+> > > > > On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
+> > > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > >
+> > > > > > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
+> > > > > > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
+> > > > > > > >
+> > > > > > > > From: Oded Gabbay <oded.gabbay@gmail.com>
+> > > > > > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
+> > > > > > > >
+> > > > > > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > > > > > > > > into the habanalabs driver.
+> > > > > > > > >
+> > > > > > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > > > > > > > > are in that patch's commit message.
+> > > > > > > > >
+> > > > > > > > > Link to v2 cover letter:
+> > > > > > > > > https://lkml.org/lkml/2020/9/12/201
+> > > > > > > >
+> > > > > > > > I agree with Jakub, this driver definitely can't go-in as it is currently
+> > > > > > > > structured and designed.
+> > > > > > > Why is that ?
+> > > > > > > Can you please point to the things that bother you or not working correctly?
+> > > > > > > I can't really fix the driver if I don't know what's wrong.
+> > > > > > >
+> > > > > > > In addition, please read my reply to Jakub with the explanation of why
+> > > > > > > we designed this driver as is.
+> > > > > > >
+> > > > > > > And because of the RDMA'ness of it, the RDMA
+> > > > > > > > folks have to be CC:'d and have a chance to review this.
+> > > > > > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
+> > > > > > > the kernel and we can't connect to it due to the lack of H/W support
+> > > > > > > we have
+> > > > > > > Therefore, I don't see why we need to CC linux-rdma.
+> > > > > > > I understood why Greg asked me to CC you because we do connect to the
+> > > > > > > netdev and standard eth infrastructure, but regarding the RDMA, it's
+> > > > > > > not really the same.
+> > > > > >
+> > > > > > Ok, to do this "right" it needs to be split up into separate drivers,
+> > > > > > hopefully using the "virtual bus" code that some day Intel will resubmit
+> > > > > > again that will solve this issue.
+> > > > > Hi Greg,
+> > > > > Can I suggest an alternative for the short/medium term ?
+> > > > >
+> > > > > In an earlier email, Jakub said:
+> > > > > "Is it not possible to move the files and still build them into a single
+> > > > > module?"
+> > > > >
+> > > > > I thought maybe that's a good way to progress here ?
+> > > >
+> > > > Cross-directory builds of a single module are crazy.  Yes, they work,
+> > > > but really, that's a mess, and would never suggest doing that.
+> > > >
+> > > > > First, split the content to Ethernet and RDMA.
+> > > > > Then move the Ethernet part to drivers/net but build it as part of
+> > > > > habanalabs.ko.
+> > > > > Regarding the RDMA code, upstream/review it in a different patch-set
+> > > > > (maybe they will want me to put the files elsewhere).
+> > > > >
+> > > > > What do you think ?
+> > > >
+> > > > I think you are asking for more work there than just splitting out into
+> > > > separate modules :)
+> > > >
+> > > > thanks,
+> > > >
+> > > > greg k-h
+> > > Hi Greg,
+> > >
+> > > If cross-directory building is out of the question, what about
+> > > splitting into separate modules ? And use cross-module notifiers/calls
+> > > ? I did that with amdkfd and amdgpu/radeon a couple of years back. It
+> > > worked (that's the best thing I can say about it).
+> >
+> > That's fine with me.
+> >
+> > > The main problem with this "virtual bus" thing is that I'm not
+> > > familiar with it at all and from my experience I imagine it would take
+> > > a considerable time and effort to upstream this infrastructure work.
+> >
+> > It shouldn't be taking that long, but for some unknown reason, the
+> > original author of that code is sitting on it and not resending it.  Go
+> > poke them through internal Intel channels to find out what the problem
+> > is, as I have no clue why a 200-300 line bus module is taking so long to
+> > get "right" :(
+> >
+> > I'm _ALMOST_ at the point where I would just do that work myself, but
+> > due to my current status with Intel, I'll let them do it as I have
+> > enough other things on my plate...
+> >
+> > > This could delay the NIC code for a couple of years, which by then
+> > > this won't be relevant at all.
+> >
+> > Why wouldn't this code be relevant in a year?  It's going to be 2+ years
+> > before any of this shows up in an "enterprise distro" based on their
+> > release cycles anyway :)
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> Validate IOCTL ID for ZynqMP and Versal before calling
-> zynqmp_pm_invoke_fn().
-> 
-> Signed-off-by: Tejas Patel <tejas.patel@xilinx.com>
-> Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-> ---
->  drivers/firmware/xilinx/zynqmp.c | 117 +++++++++++++++++++++++++++++++--------
->  1 file changed, 95 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-> index 8d1ff24..8fe0912 100644
-> --- a/drivers/firmware/xilinx/zynqmp.c
-> +++ b/drivers/firmware/xilinx/zynqmp.c
-> @@ -514,6 +514,89 @@ int zynqmp_pm_clock_getparent(u32 clock_id, u32 *parent_id)
->  EXPORT_SYMBOL_GPL(zynqmp_pm_clock_getparent);
-> 
->  /**
-> + * versal_is_valid_ioctl() - Check whether IOCTL ID is valid or not for versal
-> + * @ioctl_id:  IOCTL ID
-> + *
-> + * Return: 1 if IOCTL is valid else 0
-> + */
-> +static inline int versal_is_valid_ioctl(u32 ioctl_id)
-> +{
-> +       switch (ioctl_id) {
-> +       case IOCTL_SD_DLL_RESET:
-> +       case IOCTL_SET_SD_TAPDELAY:
-> +       case IOCTL_SET_PLL_FRAC_MODE:
-> +       case IOCTL_GET_PLL_FRAC_MODE:
-> +       case IOCTL_SET_PLL_FRAC_DATA:
-> +       case IOCTL_GET_PLL_FRAC_DATA:
-> +       case IOCTL_WRITE_GGS:
-> +       case IOCTL_READ_GGS:
-> +       case IOCTL_WRITE_PGGS:
-> +       case IOCTL_READ_PGGS:
-> +       case IOCTL_SET_BOOT_HEALTH_STATUS:
-> +               return 1;
-> +       default:
-> +               return 0;
+> Hi Greg,
+> ok, I'll take a look. Do you happen to have the name of the patch-set / author ?
 
-bool is nicer, right?
+Here's at least one copy:
+	https://lore.kernel.org/linux-rdma/20200520070227.3392100-2-jeffrey.t.kirsher@intel.com/
 
-> +       }
-> +}
-> +
-> +/**
-> + * zynqmp_is_valid_ioctl() - Check whether IOCTL ID is valid or not
-> + * @ioctl_id:  IOCTL ID
-> + *
-> + * Return: 1 if IOCTL is valid else 0
-> + */
-> +static inline int zynqmp_is_valid_ioctl(u32 ioctl_id)
-> +{
-> +       switch (ioctl_id) {
-> +       case IOCTL_SD_DLL_RESET:
-> +       case IOCTL_SET_SD_TAPDELAY:
-> +       case IOCTL_SET_PLL_FRAC_MODE:
-> +       case IOCTL_GET_PLL_FRAC_MODE:
-> +       case IOCTL_SET_PLL_FRAC_DATA:
-> +       case IOCTL_GET_PLL_FRAC_DATA:
-> +       case IOCTL_WRITE_GGS:
-> +       case IOCTL_READ_GGS:
-> +       case IOCTL_WRITE_PGGS:
-> +       case IOCTL_READ_PGGS:
-> +       case IOCTL_SET_BOOT_HEALTH_STATUS:
-> +               return 1;
-> +       default:
-> +               return 0;
-> +       }
-> +}
-> +
-> +/**
-> + * zynqmp_pm_ioctl() - PM IOCTL API for device control and configs
-> + * @node_id:   Node ID of the device
-> + * @ioctl_id:  ID of the requested IOCTL
-> + * @arg1:      Argument 1 to requested IOCTL call
-> + * @arg2:      Argument 2 to requested IOCTL call
-> + * @out:       Returned output value
-> + *
-> + * This function calls IOCTL to firmware for device control and configuration.
-> + *
-> + * Return: Returns status, either success or error+reason
-> + */
-> +static int zynqmp_pm_ioctl(u32 node_id, u32 ioctl_id, u32 arg1, u32 arg2,
-> +                          u32 *out)
-> +{
-> +       struct device_node *np;
-> +
-> +       np = of_find_compatible_node(NULL, NULL, "xlnx,versal");
-> +       if (np) {
-> +               if (!versal_is_valid_ioctl(ioctl_id))
-> +                       return -EINVAL;
+there might have been a newer one, can't remember, sorry.
 
-Wrong error value.
-
-> +       } else {
-> +               if (!zynqmp_is_valid_ioctl(ioctl_id))
-> +                       return -EINVAL;
-
-Wrong error value.
-
-> +       }
-> +       of_node_put(np);
-> +
-> +       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, ioctl_id, arg1, arg2,
-> +                                  out);
-
-No other checking of ioctl commands and arguments?  Brave...
-
-> +}
-> +
-> +/**
->   * zynqmp_pm_set_pll_frac_mode() - PM API for set PLL mode
->   *
->   * @clk_id:    PLL clock ID
-> @@ -525,8 +608,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_clock_getparent);
->   */
->  int zynqmp_pm_set_pll_frac_mode(u32 clk_id, u32 mode)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_SET_PLL_FRAC_MODE,
-> -                                  clk_id, mode, NULL);
-> +       return zynqmp_pm_ioctl(0, IOCTL_SET_PLL_FRAC_MODE, clk_id, mode, NULL);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_mode);
-> 
-> @@ -542,8 +624,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_mode);
->   */
->  int zynqmp_pm_get_pll_frac_mode(u32 clk_id, u32 *mode)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_GET_PLL_FRAC_MODE,
-> -                                  clk_id, 0, mode);
-> +       return zynqmp_pm_ioctl(0, IOCTL_GET_PLL_FRAC_MODE, clk_id, 0, mode);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_mode);
-> 
-> @@ -560,8 +641,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_mode);
->   */
->  int zynqmp_pm_set_pll_frac_data(u32 clk_id, u32 data)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_SET_PLL_FRAC_DATA,
-> -                                  clk_id, data, NULL);
-> +       return zynqmp_pm_ioctl(0, IOCTL_SET_PLL_FRAC_DATA, clk_id, data, NULL);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_data);
-> 
-> @@ -577,8 +657,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_pll_frac_data);
->   */
->  int zynqmp_pm_get_pll_frac_data(u32 clk_id, u32 *data)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_GET_PLL_FRAC_DATA,
-> -                                  clk_id, 0, data);
-> +       return zynqmp_pm_ioctl(0, IOCTL_GET_PLL_FRAC_DATA, clk_id, 0, data);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_data);
-> 
-> @@ -595,8 +674,8 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_data);
->   */
->  int zynqmp_pm_set_sd_tapdelay(u32 node_id, u32 type, u32 value)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, IOCTL_SET_SD_TAPDELAY,
-> -                                  type, value, NULL);
-> +       return zynqmp_pm_ioctl(node_id, IOCTL_SET_SD_TAPDELAY, type, value,
-> +                              NULL);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
-> 
-> @@ -612,8 +691,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
->   */
->  int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, IOCTL_SET_SD_TAPDELAY,
-> -                                  type, 0, NULL);
-> +       return zynqmp_pm_ioctl(node_id, IOCTL_SET_SD_TAPDELAY, type, 0, NULL);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
-> 
-> @@ -628,8 +706,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
->   */
->  int zynqmp_pm_write_ggs(u32 index, u32 value)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_WRITE_GGS,
-> -                                  index, value, NULL);
-> +       return zynqmp_pm_ioctl(0, IOCTL_WRITE_GGS, index, value, NULL);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_write_ggs);
-> 
-> @@ -644,8 +721,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_write_ggs);
->   */
->  int zynqmp_pm_read_ggs(u32 index, u32 *value)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_READ_GGS,
-> -                                  index, 0, value);
-> +       return zynqmp_pm_ioctl(0, IOCTL_READ_GGS, index, 0, value);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_read_ggs);
-> 
-> @@ -661,8 +737,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_read_ggs);
->   */
->  int zynqmp_pm_write_pggs(u32 index, u32 value)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_WRITE_PGGS, index, value,
-> -                                  NULL);
-> +       return zynqmp_pm_ioctl(0, IOCTL_WRITE_PGGS, index, value, NULL);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_write_pggs);
-> 
-> @@ -678,8 +753,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_write_pggs);
->   */
->  int zynqmp_pm_read_pggs(u32 index, u32 *value)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_READ_PGGS, index, 0,
-> -                                  value);
-> +       return zynqmp_pm_ioctl(0, IOCTL_READ_PGGS, index, 0, value);
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_read_pggs);
-> 
-> @@ -694,8 +768,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_read_pggs);
->   */
->  int zynqmp_pm_set_boot_health_status(u32 value)
->  {
-> -       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_SET_BOOT_HEALTH_STATUS,
-> -                                  value, 0, NULL);
-> +       return zynqmp_pm_ioctl(0, IOCTL_SET_BOOT_HEALTH_STATUS, value, 0, NULL);
->  }
-> 
->  /**
-> --
-> 2.7.4
-> 
-> This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
-
-Oops, this means I have to drop this, it's not compatible with kernel
-development, sorry.
+thanks,
 
 greg k-h
