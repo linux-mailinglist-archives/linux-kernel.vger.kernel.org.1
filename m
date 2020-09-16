@@ -2,184 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B3326BDF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1268026BDF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgIPH26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:28:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726359AbgIPH26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:28:58 -0400
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE27F20771;
-        Wed, 16 Sep 2020 07:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600241337;
-        bh=2pPFIyfq0HjxH/I1nQKf+tcVT9qAd8yS6QngBOEx7EM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=F0h5DWgUhvU5XLcsYtcxIKA1Q3wQfwVGd3nw0B8mU624p9XWkw6wiW7p1Zuz/xTRZ
-         O9KcB9xE81T9A1Gvj+KtDQXmGmJhd84/x+WIU0x3WwcVe459cy+13EBlfQ+CQkNRJM
-         twHYIljA0tJ22HO3pmMbhJOKF/hh5PkILOigTe2g=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-Subject: [PATCH v5 0/5] mm: introduce memfd_secret system call to create "secret" memory areas
-Date:   Wed, 16 Sep 2020 10:28:37 +0300
-Message-Id: <20200916072842.3502-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1726159AbgIPH3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:29:43 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28776 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726285AbgIPH3k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:29:40 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G6Whgp191066;
+        Wed, 16 Sep 2020 03:29:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=AWZZJFJRXFs7fou2XZXqNHA6HWBjC2PWD4vfkVc54/Y=;
+ b=V5U9ZDb5RgrjTzJ4py/zbwCzG57C+CZnOKGT6U1l7n6rILSVSwQQpNNWvwnDIP3MyAXB
+ 2LQGaaotTGpArlCXOSPAp30VZxe5ifTS8wDjL++pXdUXLAYNBtkMr79rsmbw1p0DOEHZ
+ x9CY5+bkTEdSLNheBSWIEuGuuImtkQpb3hTkm+0n/4XbHFs/M/JZuhRSLAjUeGQ3s2oO
+ xTMYDKTyFuVkf7mNkPh5iG3lFhwmjZ+fHWpp22YVFU6lSUxL+l5+PKWRQjW4QXaMvuRw
+ WxYxF9Mfn2EerUtLpz/b68kunw8NqvvANkb4AlVyaURGK9GYawuJOgyMS9VNF6EjxgL1 hA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33kc2t3r0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 03:29:29 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08G6ZEi5002492;
+        Wed, 16 Sep 2020 03:29:28 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33kc2t3qyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 03:29:28 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08G76v34000817;
+        Wed, 16 Sep 2020 07:29:26 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 33k5u7r6s4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Sep 2020 07:29:26 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08G7TNjO20644226
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 07:29:23 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4D58211C052;
+        Wed, 16 Sep 2020 07:29:23 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 60EA111C050;
+        Wed, 16 Sep 2020 07:29:22 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.183.110])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Sep 2020 07:29:22 +0000 (GMT)
+Subject: Re: [PATCH v3 1/3] mm: replace memmap_context by meminit_context
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>, mhocko@suse.com,
+        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200915121541.GD4649@dhcp22.suse.cz>
+ <20200915132624.9723-1-ldufour@linux.ibm.com>
+ <20200916063325.GK142621@kroah.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <0b3f2eb1-0efa-a491-c509-d16a7e18d8e8@linux.ibm.com>
+Date:   Wed, 16 Sep 2020 09:29:22 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20200916063325.GK142621@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-16_02:2020-09-15,2020-09-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0 clxscore=1015
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxlogscore=627
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160047
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Le 16/09/2020 à 08:33, Greg Kroah-Hartman a écrit :
+> On Tue, Sep 15, 2020 at 03:26:24PM +0200, Laurent Dufour wrote:
+>> The memmap_context enum is used to detect whether a memory operation is due
+>> to a hot-add operation or happening at boot time.
+>>
+>> Make it general to the hotplug operation and rename it as meminit_context.
+>>
+>> There is no functional change introduced by this patch
+>>
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>> ---
+>>   arch/ia64/mm/init.c    |  6 +++---
+>>   include/linux/mm.h     |  2 +-
+>>   include/linux/mmzone.h | 11 ++++++++---
+>>   mm/memory_hotplug.c    |  2 +-
+>>   mm/page_alloc.c        | 10 +++++-----
+>>   5 files changed, 18 insertions(+), 13 deletions(-)
+> 
+> <formletter>
+> 
+> This is not the correct way to submit patches for inclusion in the
+> stable kernel tree.  Please read:
+>      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> for how to do this properly.
+> 
+> </formletter>
 
-Hi,
+Hi Greg,
 
-This is an implementation of "secret" mappings backed by a file descriptor. 
-I've dropped the boot time reservation patch for now as it is not strictly
-required for the basic usage and can be easily added later either with or
-without CMA.
+I'm sorry, I read that document few days ago before sending the series and again 
+this morning, but I can't figure out what I missed (following option 1).
 
-v5 changes:
-* rebase on v5.9-rc5
-* drop boot time memory reservation patch
+Should the "Cc: stable@vger.kernel.org" tag be on each patch of the series even 
+if the whole series has been sent to stable ?
 
-v4 changes:
-* rebase on v5.9-rc1
-* Do not redefine PMD_PAGE_ORDER in fs/dax.c, thanks Kirill
-* Make secret mappings exclusive by default and only require flags to
-  memfd_secret() system call for uncached mappings, thanks again Kirill :)
+Should the whole series sent again (v4) instead of sending a fix as a reply to ?
 
-v3 changes:
-* Squash kernel-parameters.txt update into the commit that added the
-  command line option.
-* Make uncached mode explicitly selectable by architectures. For now enable
-  it only on x86.
-
-v2 changes:
-* Follow Michael's suggestion and name the new system call 'memfd_secret'
-* Add kernel-parameters documentation about the boot option
-* Fix i386-tinyconfig regression reported by the kbuild bot.
-  CONFIG_SECRETMEM now depends on !EMBEDDED to disable it on small systems
-  from one side and still make it available unconditionally on
-  architectures that support SET_DIRECT_MAP.
-
-The file descriptor backing secret memory mappings is created using a
-dedicated memfd_secret system call The desired protection mode for the
-memory is configured using flags parameter of the system call. The mmap()
-of the file descriptor created with memfd_secret() will create a "secret"
-memory mapping. The pages in that mapping will be marked as not present in
-the direct map and will have desired protection bits set in the user page
-table. For instance, current implementation allows uncached mappings.
-
-Although normally Linux userspace mappings are protected from other users, 
-such secret mappings are useful for environments where a hostile tenant is
-trying to trick the kernel into giving them access to other tenants
-mappings.
-
-Additionally, the secret mappings may be used as a mean to protect guest
-memory in a virtual machine host.
-
-For demonstration of secret memory usage we've created a userspace library
-[1] that does two things: the first is act as a preloader for openssl to
-redirect all the OPENSSL_malloc calls to secret memory meaning any secret
-keys get automatically protected this way and the other thing it does is
-expose the API to the user who needs it. We anticipate that a lot of the
-use cases would be like the openssl one: many toolkits that deal with
-secret keys already have special handling for the memory to try to give
-them greater protection, so this would simply be pluggable into the
-toolkits without any need for user application modification.
-
-I've hesitated whether to continue to use new flags to memfd_create() or to
-add a new system call and I've decided to use a new system call after I've
-started to look into man pages update. There would have been two completely
-independent descriptions and I think it would have been very confusing.
-
-Hiding secret memory mappings behind an anonymous file allows (ab)use of
-the page cache for tracking pages allocated for the "secret" mappings as
-well as using address_space_operations for e.g. page migration callbacks.
-
-The anonymous file may be also used implicitly, like hugetlb files, to
-implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
-ABIs in the future.
-
-As the fragmentation of the direct map was one of the major concerns raised
-during the previous postings, I've added an amortizing cache of PMD-size
-pages to each file descriptor that is used as an allocation pool for the
-secret memory areas.
-
-v4: https://lore.kernel.org/lkml/20200818141554.13945-1-rppt@kernel.org
-v3: https://lore.kernel.org/lkml/20200804095035.18778-1-rppt@kernel.org
-v2: https://lore.kernel.org/lkml/20200727162935.31714-1-rppt@kernel.org
-v1: https://lore.kernel.org/lkml/20200720092435.17469-1-rppt@kernel.org/
-rfc-v2: https://lore.kernel.org/lkml/20200706172051.19465-1-rppt@kernel.org/
-rfc-v1: https://lore.kernel.org/lkml/20200130162340.GA14232@rapoport-lnx/
-
-
-Mike Rapoport (5):
-  mm: add definition of PMD_PAGE_ORDER
-  mmap: make mlock_future_check() global
-  mm: introduce memfd_secret system call to create "secret" memory areas
-  arch, mm: wire up memfd_secret system call were relevant
-  mm: secretmem: use PMD-size pages to amortize direct map fragmentation
-
- arch/Kconfig                           |   7 +
- arch/arm64/include/asm/unistd.h        |   2 +-
- arch/arm64/include/asm/unistd32.h      |   2 +
- arch/arm64/include/uapi/asm/unistd.h   |   1 +
- arch/riscv/include/asm/unistd.h        |   1 +
- arch/x86/Kconfig                       |   1 +
- arch/x86/entry/syscalls/syscall_32.tbl |   1 +
- arch/x86/entry/syscalls/syscall_64.tbl |   1 +
- fs/dax.c                               |  11 +-
- include/linux/pgtable.h                |   3 +
- include/linux/syscalls.h               |   1 +
- include/uapi/asm-generic/unistd.h      |   7 +-
- include/uapi/linux/magic.h             |   1 +
- include/uapi/linux/secretmem.h         |   8 +
- kernel/sys_ni.c                        |   2 +
- mm/Kconfig                             |   4 +
- mm/Makefile                            |   1 +
- mm/internal.h                          |   3 +
- mm/mmap.c                              |   5 +-
- mm/secretmem.c                         | 333 +++++++++++++++++++++++++
- 20 files changed, 383 insertions(+), 12 deletions(-)
- create mode 100644 include/uapi/linux/secretmem.h
- create mode 100644 mm/secretmem.c
-
--- 
-2.28.0
-
+Thanks,
+Laurent.
