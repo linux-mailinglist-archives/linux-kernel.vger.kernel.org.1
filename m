@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED4C26C6AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ACF26C65A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgIPR7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727452AbgIPR5x (ORCPT
+        id S1727331AbgIPRqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:46:47 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:52634 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727010AbgIPRog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:57:53 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BD1C02C2AA
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:40:06 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id g4so6784466edk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lYwFJVVyWUnvr3RRMVPcQVxmSTwmiXnhNz3uXivvFZA=;
-        b=C1Hh9LyW50A8UnujcPZRIXI0ouy2JMnjXJvBkcGhAKb2pLUbr1rD4bPI3jdCJXHhnC
-         tx3ak9cITTK4qeciTuBhe8nVxr3oz32O6JPmpklUrcf2776BVokaN923bZ9/rq88Rh5K
-         CF1wLbCxUlvSOeWui43H0Jvz9TEqBo+LVxGxtnCSlu6/rGeSy9LnezIIZbEdZhJ98SIt
-         F9fdJ6pwCbq21caas/gFAcjGFFn4O7xzi5uk7AG7yJSql8cb9NbKx8HG67QxQrrjfa0Y
-         o7Cxv4lii7MsmwlOmqGbeKr/SdJLsWrtqDsad358aHKAYoOJnI+XawOA4KNF9f6Eb5al
-         QZRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lYwFJVVyWUnvr3RRMVPcQVxmSTwmiXnhNz3uXivvFZA=;
-        b=FvvWJOEC8pcjVjXgGE8OqcDaRFnA6Xq/udzUumKmVYswV7/GAcwRFQupC03bSosgm5
-         Xys9XosZhYhLvbCZRLBdw3I68CzMTnjisA6/fEb1enygQSOexP7X7g0V+s072fD4mHUk
-         7lHwu0uAxp3tunn1ueV8p5p+3VVfHTX2b1XsmqJ5/Ilcqb3LXAq7XfvcqhD8YHPzFp6X
-         2owuxNNi1eBsibxdkYaLMAQSjU1lwnAgWl9lPlYsiaZYDLJpScqDlEALYGXD8/wtDMPj
-         SzuLvNIxDE2eaDOwMWuwe4epxUGpjvsZfBCsgJVu3g/NkboGljQAqvVi4WDSsTA9bK0B
-         oGiA==
-X-Gm-Message-State: AOAM5320XaRFLbPaqoIndI1w80uzyQ7uUsrs+jDpLSykAoJrsm+IYmm0
-        QWoxy83iLN+W/gG3NOVq1izRUYxGS8dN78vn/qWzMQ==
-X-Google-Smtp-Source: ABdhPJwOo9r6FDUzpRY8OEBlsg9uhT7ZY2IDJIhHGcJvcQ0nag1UhTOihVozgoZqTeaMaapgroNGI4E/cvmpKLiV1VY=
-X-Received: by 2002:a05:6402:17ec:: with SMTP id t12mr27216734edy.328.1600270805229;
- Wed, 16 Sep 2020 08:40:05 -0700 (PDT)
+        Wed, 16 Sep 2020 13:44:36 -0400
+Received: from relay10.mail.gandi.net (unknown [217.70.178.230])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 298A13AB401;
+        Wed, 16 Sep 2020 15:45:18 +0000 (UTC)
+Received: from uno.lan (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 8435A24000F;
+        Wed, 16 Sep 2020 15:39:54 +0000 (UTC)
+From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
+To:     kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, mchehab@kernel.org
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sakari Ailus <sakari.ailus@iki.fi>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/2] media: i2c: Add support for RDACM21 camera module
+Date:   Wed, 16 Sep 2020 17:43:36 +0200
+Message-Id: <20200916154338.159747-1-jacopo+renesas@jmondi.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200916152909.6812-1-vadym.kochan@plvision.eu>
-In-Reply-To: <20200916152909.6812-1-vadym.kochan@plvision.eu>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 16 Sep 2020 17:39:54 +0200
-Message-ID: <CAMpxmJV3Rq65SY4MvLc8ONcpzt4DGZ3Kz5GpGi0TGZqHcJPWwg@mail.gmail.com>
-Subject: Re: [PATCH] misc: eeprom: set type id as EEPROM for nvmem devices
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 5:29 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
->
-> Set type as NVMEM_TYPE_EEPROM to expose this info via
-> sysfs:
->
-> $ cat /sys/bus/nvmem/devices/0-00560/type
-> EEPROM
->
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> ---
-> Checked only with at24.
->
->  drivers/misc/eeprom/at24.c          | 1 +
->  drivers/misc/eeprom/at25.c          | 1 +
->  drivers/misc/eeprom/eeprom_93xx46.c | 1 +
->  3 files changed, 3 insertions(+)
->
-> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> index 2591c21b2b5d..800300296c74 100644
-> --- a/drivers/misc/eeprom/at24.c
-> +++ b/drivers/misc/eeprom/at24.c
-> @@ -678,6 +678,7 @@ static int at24_probe(struct i2c_client *client)
->                         return err;
->         }
->
-> +       nvmem_config.type = NVMEM_TYPE_EEPROM;
->         nvmem_config.name = dev_name(dev);
->         nvmem_config.dev = dev;
->         nvmem_config.read_only = !writable;
-> diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-> index ed8d38b09925..3a586a7c4b1a 100644
-> --- a/drivers/misc/eeprom/at25.c
-> +++ b/drivers/misc/eeprom/at25.c
-> @@ -348,6 +348,7 @@ static int at25_probe(struct spi_device *spi)
->         spi_set_drvdata(spi, at25);
->         at25->addrlen = addrlen;
->
-> +       at25->nvmem_config.type = NVMEM_TYPE_EEPROM;
->         at25->nvmem_config.name = dev_name(&spi->dev);
->         at25->nvmem_config.dev = &spi->dev;
->         at25->nvmem_config.read_only = chip.flags & EE_READONLY;
-> diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-> index 94cfb675fe4e..7c45f82b4302 100644
-> --- a/drivers/misc/eeprom/eeprom_93xx46.c
-> +++ b/drivers/misc/eeprom/eeprom_93xx46.c
-> @@ -455,6 +455,7 @@ static int eeprom_93xx46_probe(struct spi_device *spi)
->         edev->pdata = pd;
->
->         edev->size = 128;
-> +       edev->nvmem_config.type = NVMEM_TYPE_EEPROM;
->         edev->nvmem_config.name = dev_name(&spi->dev);
->         edev->nvmem_config.dev = &spi->dev;
->         edev->nvmem_config.read_only = pd->flags & EE_READONLY;
-> --
-> 2.17.1
->
+Hello,
+   this series introduces support for the RDACM21 camera module, an automotive
+camera module based on GMSL technology.
 
-Please split it into separate patches - these drivers have different
-maintainers.
+The camera module integrates a MAX9271 serializer, and OV10640 image sensor
+coupled with an OV490 ISP. The image sensor and the ISP are programmed loading
+the content of an EEPROM chip integrated in the camera module package and
+are configured to produce images in 1280x1080 YUYV8 format.
 
-Bartosz
+The camera module driver uses the max9271 library to control the serializer,
+as the RDACM20 does, to maximize code reuse.
+
+And that's for patch 2/2: it's all unicorns and rainbows!
+
+Patch 1/2 is the less nice one, and is sent as RFC to trigger discussions.
+
+The camera module is connected to a MAXIM development board which integrates a
+MAX9286 deserializer. The same expansion board is used with the RDACM20 camera
+module and the max9286 driver is meant to work with both cameras without
+modifications.
+
+Unfortunately, each camera module has its own characteristics, in details:
+
+- the RDACM20 module integrates a micro-controller unit that pre-programs the
+  embedded max9271 serializer at power-up time. The serializer then operates
+  with the GMSL reverse channel towards the de-serializer with electrical
+  noise immunity feature enabled ("high-threshold" as per chip manual), and
+  requires the de-serializer to communicate with the camera module with the
+  reverse channel amplitude compensated to 170mV.
+
+- the RDACM21 module is not pre-programmed by any micro-controller, and requires
+  the de-serializer to initially maintain the reverse channel amplitude to
+  100mV, then after the remote ends have been probed and have enabled the noise
+  immunity feature on their reverse channels to increase the amplitude to 170mV
+  to guarantee stability of the communications.
+
+For that reason, a mechanism to control the reverse channel amplitude of the
+GMSL channel is required. The channel amplitude is controlled by the
+de-serializer, but depends on the properties of the remote serializer.
+
+We have explored a few solutions in the past:
+1) A dt property that specifies the initial reverse channel amplitude (or simply
+   a boolean property that specifies if any channel pre-compensation is
+   required). Issue is that the property should be set in the de-serializer
+   but depends on the remote side configuration and on which camera module
+   is currently connected.
+
+2) Use get_mbus_config to retrieve the GMSL channel configuration. Hyun has
+   added to get_mbus_config support for GMSL parameters to control the signal
+   polarities[1]. This seems nice, but the channel amplitude has to be set
+   -before- the remote end is probed and no subdev operation can be called
+   until the remote sub-device have registered.
+
+In this initial version, [1/2] simply adjust the reverse channel after all
+remotes have probed, allowing support for RDACM21 but breaking compatibility
+with RDACM20.
+
+Any comment on how this should better be handled ?
+
+Thanks
+  j
+
+[1] https://github.com/xlnx-hyunkwon/linux-xlnx/commits/hyunk/vision-wip-5.4-next
+
+Jacopo Mondi (2):
+  RFC: media: i2c: max9286: Compensate reverse channel
+  media: i2c: Add driver for RDACM21 camera module
+
+ MAINTAINERS                 |  12 +
+ drivers/media/i2c/Kconfig   |  13 +
+ drivers/media/i2c/Makefile  |   2 +
+ drivers/media/i2c/max9286.c |   8 +-
+ drivers/media/i2c/rdacm21.c | 541 ++++++++++++++++++++++++++++++++++++
+ 5 files changed, 574 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/media/i2c/rdacm21.c
+
+--
+2.28.0
+
