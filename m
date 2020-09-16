@@ -2,248 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A4A26B962
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A7826B969
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIPBbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 21:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgIPBbe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 21:31:34 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36C0C06174A;
-        Tue, 15 Sep 2020 18:31:33 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id x14so6190289oic.9;
-        Tue, 15 Sep 2020 18:31:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XcTqkVu7zkYa856gUsq83PU17ZhqrGDVpLNgq8R1Ocg=;
-        b=Vw8SR1xio5QVZt0ZYJlfOwyGU01Aab0fwS83XVnlGNNupQZXrqrzCVI4WsdLnUjc99
-         Lb82aUpf8PjK+qtzcPnuqvwTR3t1fj7acngdDT7G+SUcrPSW9yIPhcBjoyVDFbxeIOh5
-         /EEWtFoGLryDdWn/n50KnpZZPdtjB9tL5qgHzDS+DKzS2ZtjPPs7tuZgZSnj06/pRLCH
-         +okjR6mdrV+lQM9SkS2jyiUCCvfXHntFwnV114gb/2uI6D3KxTjhywdqzJ7riMo0Cn2g
-         Q7GJT5JrI+ahTjtghahtu3BtrI0tIe21K4sIWwTCaGAjWlDcseaJE8DqZQvcE/JsjpkH
-         hBGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XcTqkVu7zkYa856gUsq83PU17ZhqrGDVpLNgq8R1Ocg=;
-        b=Rm0D9tQ3kMZRe3Rq6nX27kPqqQnvx6DIS5phqzxNdMXlZW6/9DGdli1g5jPCEeqKdM
-         32PV5xYaVl8fcRADlgsMsSndenQNQez6kGwDvo6WNQSKYd5P93LRxpCWE3L7eYgbKrIq
-         hazk+2d8fim+PyYgK9k+4h5IZoLKWH1YMvythu9hyD9shDIvNNIMhaxLafX4JI8tRH+4
-         pZxtbxok+AqeqUe7ltoazaF8ABsDSrjkcjn/ka4Rbao7GOiGXLuL2NMqt67vK93FBdBf
-         4mUekQXcXGyLt6iGp1rsO0em39R/Oi+VjewsDi7abz5aYzr+tv/a7UPl75GR4a4nTzh6
-         qS6A==
-X-Gm-Message-State: AOAM533gzrBk3EZNe0InvA8rD5K109b8BtJrIzc7D8BX3qfZnhcRIzCM
-        k9EB/SulVbvw/8B/1Wgr4u3JIw0zA8kHFEPbRuUhW+4R
-X-Google-Smtp-Source: ABdhPJxvBb3MvxZdsnrRDww2ACvfEpTYcONzrB8s3WoKbwN6qGZQmg/kwgI21/UAKF/RyuxPcDwETjRdHC8MPyH1K9w=
-X-Received: by 2002:a05:6808:8e5:: with SMTP id d5mr1550636oic.33.1600219893229;
- Tue, 15 Sep 2020 18:31:33 -0700 (PDT)
+        id S1726343AbgIPBck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 21:32:40 -0400
+Received: from mail-db8eur05on2058.outbound.protection.outlook.com ([40.107.20.58]:29793
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726317AbgIPBce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 21:32:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OY53K516Emsy7H/z3MuKpwCyNrlTmGjppjI4M1IfejVaIFV+Lci+/ok9zPyjiIVw2ixIYC7ArYJG5hYFWi0KuCsfUta3fLQNBOirVJXKzojFOpQ9KnHlf7ZVxQeXeCBfUoWcwuBYrgnSbWDRo97OGUfR53eJjulYygYVVIeNqUJ+4a/m/GIhBC8iEkqlCo9wKL02uOclj7z7rKJ1xZEnsk7KgiIVmcJMcPzzZyDdSxI9fJgJQaw1aQmPiXCDtFu6x+gK00bLPpATCuf7jE5mHKzX/4xOOj4TRmhFxR89ssapKkTwJSm2KUcT+EA+5b7hWw/Whbrj+Z7Y5pwLEnqEvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2mk32yOrUufwnZWpQoYh4SFJ7kxtmrrCSTauetfS3Ug=;
+ b=NmdVFgJJiQDF5xQdmj8assSKFw1Ncw2U52yYFoFx4yA0HLdr8nsfdPUG/tj4/Qe2rqn5lTcHlPATnm5TUbFFBjyjKFxg3tFIq0sP6B7oJFfxx5f23jAN09nadvNdFsLL1ZRKtkJzpkrgDjZ1rDj07bxbF7WpbVmMkJPDxk5zzJtN502BRuukHJTn7yS1UwZ9gUfeN8jYubktgNed8ZbXpOoiaWUZ3qvgCt0xRF500mal10c9MozNHU1DRJIhmpuIg7KV8xEyoRD38FYOV69hFGlnKRAX6VQWj9s/OHwO4qehE2TiplSVwaShy8Yld1yqBNsqXlgi/BABSDHTM9rzuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2mk32yOrUufwnZWpQoYh4SFJ7kxtmrrCSTauetfS3Ug=;
+ b=qiStkqiKtxIOxzHnB032xlaZXRT7uabtb0kHHEuabTGoB5MafGHahEcbeaiYY2DKvHoc9GDGHgjJmrjiiHfHp6Dxm+4TReG+Z8lxna/VhsZZTVATEqLr8No5E0v1YgLLF66b+UjriXzEgzH1O5Tc+SGkM6ggQKKRk9iuDDQDGIQ=
+Received: from AM6PR04MB5413.eurprd04.prod.outlook.com (2603:10a6:20b:96::28)
+ by AM6PR04MB5703.eurprd04.prod.outlook.com (2603:10a6:20b:a3::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
+ 2020 01:32:29 +0000
+Received: from AM6PR04MB5413.eurprd04.prod.outlook.com
+ ([fe80::1953:c81a:cca2:60ec]) by AM6PR04MB5413.eurprd04.prod.outlook.com
+ ([fe80::1953:c81a:cca2:60ec%7]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
+ 01:32:29 +0000
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Ard Biesheuvel <ard.biesheuvel@arm.com>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Biwen Li <biwen.li@nxp.com>, Varun Sethi <V.Sethi@nxp.com>,
+        Arokia Samy <arokia.samy@nxp.com>,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Paul Yang <Paul.Yang@arm.com>,
+        tanveer <tanveer.alam@puresoftware.com>
+Subject: RE: [PATCH v1] soc: fsl: rcpm: Add ACPI support
+Thread-Topic: [PATCH v1] soc: fsl: rcpm: Add ACPI support
+Thread-Index: AQHWi1Bdrf69Hjks3kmx49279KDQI6lpiwOAgADt6GA=
+Date:   Wed, 16 Sep 2020 01:32:29 +0000
+Message-ID: <AM6PR04MB5413903EAAEDB2EED2E254C6F1210@AM6PR04MB5413.eurprd04.prod.outlook.com>
+References: <20200915110647.846-1-kuldip.dwivedi@puresoftware.com>
+ <4e008f0a-69da-d5c2-4dfc-ef8695e17f47@arm.com>
+In-Reply-To: <4e008f0a-69da-d5c2-4dfc-ef8695e17f47@arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f1f1a716-59f4-4040-a1b1-08d859e0600b
+x-ms-traffictypediagnostic: AM6PR04MB5703:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB57037132E42C1DD9EB981A74F1210@AM6PR04MB5703.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: egN7I5Jy1GCrIk7o7BRBL3ogVkfID08SY6tlKjLa9LA7RHWYZBV2f/h63JSs/ek/hUW5QSDuG1qlWXhyXq5YNPxBdlu126Y1GSp+zfoIjU75WUYLSOVTPHCppie8+IGaTiAaM1OB9Bvs/VnsWR/wfiVuLEzQt4j5pOdteIm+pk/loPUNDzPr0kwrKI+jhPooeaezs8BzNBYRmUFCu071HJjSezr6TLxGwgKyFCvO41uKE1yfcIX42D+qgq3YiOcWrDJ9JkgHiH3mWpZlZhjrLvpDl1I5QS38Ba0FUutcxpTbw3mPxBMT9k9/SuEXSOubXiJtVHWbGgI+ZzjfLXQjERXqq79UyA/oiJgik9CKY7roQ/q4qwqqrrxWkWYeAtq6
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5413.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(346002)(366004)(136003)(186003)(33656002)(83380400001)(4326008)(26005)(55016002)(316002)(9686003)(8676002)(86362001)(8936002)(71200400001)(7696005)(6506007)(110136005)(54906003)(478600001)(53546011)(2906002)(52536014)(5660300002)(76116006)(66446008)(66946007)(66556008)(66476007)(64756008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: mFM7I1VNcD0sgaiVXZJBC3emN5UOCIBUMs971CnnsGSPFUe8c85vxSyz6YgAB1YDdxFWL5s4AmDmseTRexqPlFUDtRQ10SlMPfblwjbvTXrQ88UzJNeEb7sDbCTY+AIbL3PHOFWhBN02d1fc+mNFKZkdJaJ0zLL0ifpRw/opec3+DE6dd0NX4ISFdUt3c3/XamRLnUfLRK5Zyl4WuEkg3bJ+KuRequNOmnbkNnKfa/42pMGjOaQIhCnF0Q2F5uagq5Bz1fhFS8hlNqz6i8LzkEjsOAlBOBZXITpAMVjyIle84xFeAprWGEibEo46c3A51KR7THD6zt1g/dbr1IdF1xG6Qlbt6qq8/MGvxqcmmxtMgeDzvn04b0UWJ3BuwJVB/0HfsN5xrt9UYcOgiKH51AESAXaOfjOQhSDlXxjdaMGIL5KnVUmdgXdL5CDrN2uKDHK6pqgsgk05P1vgGGHxHSBlJs55TsJPMkFv8Y3CILeHYp3wnoyr+BBfmElOtg3QcV2JQq+v8fwscQ0WAduxy/JN5iRwF1WJx5wOIrAl+HUhZj6orPRkfRE86FV3npzGcYWud71he4EWZA/d4ZwjPrcO+IRbMj0ica7MREnXHijoPqG/NCNZeQh1uChz/XT+pGP3AhXfNBg5C7RWjs8hsA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200915232702.15945-1-sean.j.christopherson@intel.com>
-In-Reply-To: <20200915232702.15945-1-sean.j.christopherson@intel.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 16 Sep 2020 09:31:22 +0800
-Message-ID: <CANRm+Cx85NBnL76VoFV+DNrShp_2o+c4dgQCwNARzrAcmX1KAw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Add kvm_x86_ops hook to short circuit emulation
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5413.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1f1a716-59f4-4040-a1b1-08d859e0600b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 01:32:29.0827
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AXpuymu37LxB2uo29vmNNAZ6J8RzWBUsGw9xtBZzpk+XwOXyAI8i0rjhO6seZvIVlHbfkoex++jm09ZLzdHVbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5703
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 at 07:29, Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Replace the existing kvm_x86_ops.need_emulation_on_page_fault() with a
-> more generic is_emulatable(), and unconditionally call the new function
-> in x86_emulate_instruction().
->
-> KVM will use the generic hook to support multiple security related
-> technologies that prevent emulation in one way or another.  Similar to
-> the existing AMD #NPF case where emulation of the current instruction is
-> not possible due to lack of information, AMD's SEV-ES and Intel's SGX
-> and TDX will introduce scenarios where emulation is impossible due to
-> the guest's register state being inaccessible.  And again similar to the
-> existing #NPF case, emulation can be initiated by kvm_mmu_page_fault(),
-> i.e. outside of the control of vendor-specific code.
->
-> While the cause and architecturally visible behavior of the various
-> cases are different, e.g. SGX will inject a #UD, AMD #NPF is a clean
-> resume or complete shutdown, and SEV-ES and TDX "return" an error, the
-> impact on the common emulation code is identical: KVM must stop
-> emulation immediately and resume the guest.
->
-> Query is_emulatable() in handle_ud() as well so that the
-> force_emulation_prefix code doesn't incorrectly modify RIP before
-> calling emulate_instruction() in the absurdly unlikely scenario that
-> KVM encounters forced emulation in conjunction with "do not emulate".
->
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  2 +-
->  arch/x86/kvm/mmu/mmu.c          | 12 ------------
->  arch/x86/kvm/svm/svm.c          | 31 ++++++++++++++++++-------------
->  arch/x86/kvm/vmx/vmx.c          | 12 ++++++------
->  arch/x86/kvm/x86.c              |  9 ++++++++-
->  5 files changed, 33 insertions(+), 33 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 5303dbc5c9bc..fa89511ed9d6 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1221,7 +1221,7 @@ struct kvm_x86_ops {
->
->         int (*get_msr_feature)(struct kvm_msr_entry *entry);
->
-> -       bool (*need_emulation_on_page_fault)(struct kvm_vcpu *vcpu);
-> +       bool (*is_emulatable)(struct kvm_vcpu *vcpu, void *insn, int insn_len);
->
->         bool (*apic_init_signal_blocked)(struct kvm_vcpu *vcpu);
->         int (*enable_direct_tlbflush)(struct kvm_vcpu *vcpu);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a5d0207e7189..f818a46db58c 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5485,18 +5485,6 @@ int kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 error_code,
->         if (!mmio_info_in_cache(vcpu, cr2_or_gpa, direct) && !is_guest_mode(vcpu))
->                 emulation_type |= EMULTYPE_ALLOW_RETRY_PF;
->  emulate:
-> -       /*
-> -        * On AMD platforms, under certain conditions insn_len may be zero on #NPF.
-> -        * This can happen if a guest gets a page-fault on data access but the HW
-> -        * table walker is not able to read the instruction page (e.g instruction
-> -        * page is not present in memory). In those cases we simply restart the
-> -        * guest, with the exception of AMD Erratum 1096 which is unrecoverable.
-> -        */
-> -       if (unlikely(insn && !insn_len)) {
-> -               if (!kvm_x86_ops.need_emulation_on_page_fault(vcpu))
-> -                       return 1;
-> -       }
-> -
->         return x86_emulate_instruction(vcpu, cr2_or_gpa, emulation_type, insn,
->                                        insn_len);
->  }
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 03dd7bac8034..3a55495d985f 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3933,19 +3933,10 @@ static void enable_smi_window(struct kvm_vcpu *vcpu)
->         }
->  }
->
-> -static bool svm_need_emulation_on_page_fault(struct kvm_vcpu *vcpu)
-> +static bool svm_is_emulatable(struct kvm_vcpu *vcpu, void *insn, int insn_len)
->  {
-> -       unsigned long cr4 = kvm_read_cr4(vcpu);
-> -       bool smep = cr4 & X86_CR4_SMEP;
-> -       bool smap = cr4 & X86_CR4_SMAP;
-> -       bool is_user = svm_get_cpl(vcpu) == 3;
-> -
-> -       /*
-> -        * If RIP is invalid, go ahead with emulation which will cause an
-> -        * internal error exit.
-> -        */
-> -       if (!kvm_vcpu_gfn_to_memslot(vcpu, kvm_rip_read(vcpu) >> PAGE_SHIFT))
-> -               return true;
-> +       bool smep, smap, is_user;
-> +       unsigned long cr4;
->
->         /*
->          * Detect and workaround Errata 1096 Fam_17h_00_0Fh.
-> @@ -3987,6 +3978,20 @@ static bool svm_need_emulation_on_page_fault(struct kvm_vcpu *vcpu)
->          * instruction pointer so we will not able to workaround it. Lets
->          * print the error and request to kill the guest.
->          */
-> +       if (likely(!insn || insn_len))
-> +               return true;
-> +
-> +       /*
-> +        * If RIP is invalid, go ahead with emulation which will cause an
-> +        * internal error exit.
-> +        */
-> +       if (!kvm_vcpu_gfn_to_memslot(vcpu, kvm_rip_read(vcpu) >> PAGE_SHIFT))
-> +               return true;
-> +
-> +       cr4 = kvm_read_cr4(vcpu);
-> +       smep = cr4 & X86_CR4_SMEP;
-> +       smap = cr4 & X86_CR4_SMAP;
-> +       is_user = svm_get_cpl(vcpu) == 3;
->         if (smap && (!smep || is_user)) {
->                 if (!sev_guest(vcpu->kvm))
->                         return true;
-> @@ -4148,7 +4153,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->         .mem_enc_reg_region = svm_register_enc_region,
->         .mem_enc_unreg_region = svm_unregister_enc_region,
->
-> -       .need_emulation_on_page_fault = svm_need_emulation_on_page_fault,
-> +       .is_emulatable = svm_is_emulatable,
->
->         .apic_init_signal_blocked = svm_apic_init_signal_blocked,
->  };
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 46ba2e03a892..c92717c54bf9 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1561,6 +1561,11 @@ static int vmx_rtit_ctl_check(struct kvm_vcpu *vcpu, u64 data)
->         return 0;
->  }
->
-> +static bool vmx_is_emulatable(struct kvm_vcpu *vcpu, void *insn, int insn_len)
-> +{
-> +       return true;
-> +}
-> +
->  static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
->  {
->         unsigned long rip, orig_rip;
-> @@ -7843,11 +7848,6 @@ static void enable_smi_window(struct kvm_vcpu *vcpu)
->         /* RSM will cause a vmexit anyway.  */
->  }
->
-> -static bool vmx_need_emulation_on_page_fault(struct kvm_vcpu *vcpu)
-> -{
-> -       return false;
-> -}
-> -
->  static bool vmx_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
->  {
->         return to_vmx(vcpu)->nested.vmxon;
-> @@ -8002,7 +8002,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
->         .pre_leave_smm = vmx_pre_leave_smm,
->         .enable_smi_window = enable_smi_window,
->
-> -       .need_emulation_on_page_fault = vmx_need_emulation_on_page_fault,
-> +       .is_emulatable = vmx_is_emulatable,
->         .apic_init_signal_blocked = vmx_apic_init_signal_blocked,
->         .migrate_timers = vmx_migrate_timers,
->  };
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 539ea1cd6020..5208217049d9 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -5707,6 +5707,9 @@ int handle_ud(struct kvm_vcpu *vcpu)
->         char sig[5]; /* ud2; .ascii "kvm" */
->         struct x86_exception e;
->
-> +       if (unlikely(!kvm_x86_ops.is_emulatable(vcpu, NULL, 0)))
-> +               return 1;
-> +
-
-Both VMX and SVM scenarios always fail this check.
-
-    Wanpeng
+SGkgQXJkLA0KDQpPbiBUdWVzZGF5LCBTZXB0ZW1iZXIgMTUsIDIwMjAgNzoxMCBQTSwgQXJkIEJp
+ZXNoZXV2ZWwgd3JvdGU6DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjFdIHNvYzogZnNsOiByY3Bt
+OiBBZGQgQUNQSSBzdXBwb3J0DQo+IA0KPiBPbiA5LzE1LzIwIDE6MDYgUE0sIGt1bGRpcCBkd2l2
+ZWRpIHdyb3RlOg0KPiA+IEFkZCBBQ1BJIHN1cHBvcnQgaW4gZnNsIFJDUE0gZHJpdmVyLiBUaGlz
+IGlzIHJlcXVpcmVkIHRvIHN1cHBvcnQgQUNQSQ0KPiA+IFMzIHN0YXRlLiBTMyBpcyB0aGUgQUNQ
+SSBzbGVlcCBzdGF0ZSB0aGF0IGlzIGtub3duIGFzICJzbGVlcCIgb3INCj4gPiAic3VzcGVuZCB0
+byBSQU0iLg0KPiA+IEl0IGVzc2VudGlhbGx5IHR1cm5zIG9mZiBtb3N0IHBvd2VyIG9mIHRoZSBz
+eXN0ZW0gYnV0IGtlZXBzIG1lbW9yeQ0KPiA+IHBvd2VyZWQuDQo+ID4NCj4gPiBTaWduZWQtb2Zm
+LWJ5OiB0YW52ZWVyIDx0YW52ZWVyLmFsYW1AcHVyZXNvZnR3YXJlLmNvbT4NCj4gPiBTaWduZWQt
+b2ZmLWJ5OiBrdWxkaXAgZHdpdmVkaSA8a3VsZGlwLmR3aXZlZGlAcHVyZXNvZnR3YXJlLmNvbT4N
+Cj4gDQo+IFdoeSBkb2VzIHRoZSBPUyBuZWVkIHRvIHByb2dyYW0gdGhpcyBkZXZpY2U/IENhbid0
+IHRoaXMgYmUgZG9uZSBieQ0KPiBmaXJtd2FyZT8NCg0KVGhpcyBkZXZpY2UgaXMgdXNlIHRvIHRl
+bGwgSFcgd2hpY2ggSVAgKHN1Y2ggYXMgVVNCLCBTREhDLCBTQVRBLCBldGMpIHNob3VsZCBub3Qg
+YmUNCmNsb2NrIGdhdGVkIGR1cmluZyBzeXN0ZW0gZW50ZXIgbG93IHBvd2VyIHN0YXRlICh0byBh
+bGxvdyB0aGF0IElQIHdvcmsgYXMgYQ0Kd2FrZXVwIHNvdXJjZSkuIEFuZCB1c2VyIGRvZXMgdGhp
+cyBjb25maWd1cmF0aW9uIGluIGRldmljZSB0cmVlLiBTbyBpbXBsZW1lbnQNCnRoaXMgUkNQTSBk
+cml2ZXIgdG8gZG8gaXQgaW4ga2VybmVsIHJhdGhlciB0aGFuIGZpcm13YXJlLg0KDQpSZWdhcmRz
+LA0KUmFuDQoNCj4gPiAtLS0NCj4gPg0KPiA+IE5vdGVzOg0KPiA+ICAgICAgMS4gQWRkIEFDUEkg
+bWF0Y2ggdGFibGUNCj4gPiAgICAgIDIuIE5YUCB0ZWFtIG1lbWJlcnMgYXJlIGFkZGVkIGZvciBj
+b25maXJtaW5nIEhJRCBjaGFuZ2VzDQo+ID4gICAgICAzLiBUaGVyZSBpcyBvbmx5IG9uZSBub2Rl
+IGluIEFDUEkgc28gbm8gbmVlZCB0byBjaGVjayBmb3INCj4gPiAgICAgICAgIGN1cnJlbnQgZGV2
+aWNlIGV4cGxpY2l0bHkNCj4gPiAgICAgIDQuIFRoZXNlIGNoYW5nZXMgYXJlIHRlc3RlZCBvbiBM
+WDIxNjBBIGFuZCBMUzEwNDZBIHBsYXRmb3Jtcw0KPiA+DQo+ID4gICBkcml2ZXJzL3NvYy9mc2wv
+cmNwbS5jIHwgMjIgKysrKysrKysrKysrKysrKysrKy0tLQ0KPiA+ICAgMSBmaWxlIGNoYW5nZWQs
+IDE5IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9zb2MvZnNsL3JjcG0uYyBiL2RyaXZlcnMvc29jL2ZzbC9yY3BtLmMgaW5kZXgNCj4g
+PiBhMDkzZGJlNmQyY2IuLmU3NWE0MzZmYjE1OSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Nv
+Yy9mc2wvcmNwbS5jDQo+ID4gKysrIGIvZHJpdmVycy9zb2MvZnNsL3JjcG0uYw0KPiA+IEBAIC0y
+LDEwICsyLDEyIEBADQo+ID4gICAvLw0KPiA+ICAgLy8gcmNwbS5jIC0gRnJlZXNjYWxlIFFvcklR
+IFJDUE0gZHJpdmVyDQo+ID4gICAvLw0KPiA+IC0vLyBDb3B5cmlnaHQgMjAxOSBOWFANCj4gPiAr
+Ly8gQ29weXJpZ2h0IDIwMTktMjAyMCBOWFANCj4gPiArLy8gQ29weXJpZ2h0IDIwMjAgUHVyZXNv
+ZnR3YXJlIEx0ZC4NCj4gPiAgIC8vDQo+ID4gICAvLyBBdXRob3I6IFJhbiBXYW5nIDxyYW4ud2Fu
+Z18xQG54cC5jb20+DQo+ID4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L2FjcGkuaD4NCj4gPiAgICNp
+bmNsdWRlIDxsaW51eC9pbml0Lmg+DQo+ID4gICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQo+
+ID4gICAjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ID4gQEAgLTU3LDggKzU5
+LDEzIEBAIHN0YXRpYyBpbnQgcmNwbV9wbV9wcmVwYXJlKHN0cnVjdCBkZXZpY2UgKmRldikNCj4g
+PiAgIAkJCQlyY3BtLT53YWtldXBfY2VsbHMgKyAxKTsNCj4gPg0KPiA+ICAgCQkvKiAgV2FrZXVw
+IHNvdXJjZSBzaG91bGQgcmVmZXIgdG8gY3VycmVudCByY3BtIGRldmljZSAqLw0KPiA+IC0JCWlm
+IChyZXQgfHwgKG5wLT5waGFuZGxlICE9IHZhbHVlWzBdKSkNCj4gPiAtCQkJY29udGludWU7DQo+
+ID4gKwkJaWYgKGlzX2FjcGlfbm9kZShkZXYtPmZ3bm9kZSkpIHsNCj4gPiArCQkJaWYgKHJldCkN
+Cj4gPiArCQkJCWNvbnRpbnVlOw0KPiA+ICsJCX0gZWxzZSB7DQo+ID4gKwkJCWlmIChyZXQgfHwg
+KG5wLT5waGFuZGxlICE9IHZhbHVlWzBdKSkNCj4gPiArCQkJCWNvbnRpbnVlOw0KPiA+ICsJCX0N
+Cj4gPg0KPiA+ICAgCQkvKiBQcm9wZXJ0eSAiI2ZzbCxyY3BtLXdha2V1cC1jZWxscyIgb2YgcmNw
+bSBub2RlIGRlZmluZXMgdGhlDQo+ID4gICAJCSAqIG51bWJlciBvZiBJUFBERVhQQ1IgcmVnaXN0
+ZXIgY2VsbHMsIGFuZCAiZnNsLHJjcG0td2FrZXVwIg0KPiA+IEBAIC0xMzksMTAgKzE0NiwxOSBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCByY3BtX29mX21hdGNoW10NCj4gPSB7
+DQo+ID4gICB9Ow0KPiA+ICAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgcmNwbV9vZl9tYXRjaCk7
+DQo+ID4NCj4gPiArI2lmZGVmIENPTkZJR19BQ1BJDQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qg
+YWNwaV9kZXZpY2VfaWQgcmNwbV9hY3BpX21hdGNoW10gPSB7DQo+ID4gKwl7ICJOWFAwMDE1Iiwg
+fSwNCj4gPiArCXsgfQ0KPiA+ICt9Ow0KPiA+ICtNT0RVTEVfREVWSUNFX1RBQkxFKGFjcGksIHJj
+cG1fYWNwaV9tYXRjaCk7ICNlbmRpZg0KPiA+ICsNCj4gPiAgIHN0YXRpYyBzdHJ1Y3QgcGxhdGZv
+cm1fZHJpdmVyIHJjcG1fZHJpdmVyID0gew0KPiA+ICAgCS5kcml2ZXIgPSB7DQo+ID4gICAJCS5u
+YW1lID0gInJjcG0iLA0KPiA+ICAgCQkub2ZfbWF0Y2hfdGFibGUgPSByY3BtX29mX21hdGNoLA0K
+PiA+ICsJCS5hY3BpX21hdGNoX3RhYmxlID0gQUNQSV9QVFIocmNwbV9hY3BpX21hdGNoKSwNCj4g
+PiAgIAkJLnBtCT0gJnJjcG1fcG1fb3BzLA0KPiA+ICAgCX0sDQo+ID4gICAJLnByb2JlID0gcmNw
+bV9wcm9iZSwNCj4gPg0KDQo=
