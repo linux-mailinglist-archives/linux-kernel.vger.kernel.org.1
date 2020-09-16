@@ -2,87 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3E526C125
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B6526C130
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgIPJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
+        id S1726762AbgIPJyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgIPJwk (ORCPT
+        with ESMTP id S1726662AbgIPJyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:52:40 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB80BC06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:52:39 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t14so3578590pgl.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:52:39 -0700 (PDT)
+        Wed, 16 Sep 2020 05:54:04 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04928C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:54:04 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q9so2141536wmj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:54:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sJeQpySpr2/Cg7PhopRLYFwLmukLvBLeAiNxpR8vIw8=;
-        b=ZBC033qR/zJT4vCGMRQTH1LWGsTCF9TB8cEQHJXwHZuSONSUItbX+VLqtRA3Vhngem
-         pFtScUlyKVWRSxANtli1MfeIjPYB64qklAPpysZQ3IjEeob/jADBx4JUWCWaaoXFAfAA
-         Kyjr1PPVotHWPMt21luVQNqc532NUHDI95RbUi27FSxvKCUJhmpl6KBQTz61fjmPMlyE
-         4782j1Xwb41P4BGDDORNXPHjL/InNboeZbmRMmn1s0WYT0MVWem37k/H8g0jI9PTSQ38
-         du67ll0dojCMp+eoMtnQyRR4zVHAoOOpJuW59VVtciRv3NOWT7QFY3o/T0GAbjw80RLN
-         Ix0w==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=2iYj6uXZfdILOqgogXly8EZQExVDmJHzJxebCj3FO2Y=;
+        b=kLEN0BssrrGNNSneN66oFCjjAadmKcUDJz92qqA1hlRweOfcEvHYpQdfeRRtwkF4EQ
+         dcUsTbuHAmwH/0mnTlAiojEnwfsHgztTx14z7ldzdOZ3sB9zWn6RU/pryOBlEtk4a/OV
+         Z84xyaG+7QYeXaJ7WzDVD282q5e3iYHLjHFlY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sJeQpySpr2/Cg7PhopRLYFwLmukLvBLeAiNxpR8vIw8=;
-        b=lzPr+jOOIaIddInDjJ8hBkdbhSGsDWzSmIcFo7h74aFHg/m1+5g1Y3v2FYeWeqXOq+
-         u4jHjLwKiRP6F62W2HO6o4FyEk2UWPnmQA4YIRZVQ6IP0uR+3PZbrTK8g1Uq6+J3xjs0
-         FGvHMLiJKSyyCDcV8ASp9bJSxBJtpBmFdWxiBkAua1YKa85esqRGMzSDon/XvOQo7uRg
-         L/aOUgnNG7LpWWrP8Fed/4q+X9MdSeAAEO9LUJ/vma+V17FplgSOqUFXkzODGUBF8k9O
-         EpNrqed9bmBDPmka3H5ZOm9G2VHa4BBpHIkNPjh5SsbY3f6eWL+RH2XjXM5gQ0Qz5Cyg
-         EZyQ==
-X-Gm-Message-State: AOAM5326r8swmBYEjrOpQs4ODx9tH1+9xRHjiPgAR0pEf7betwPIDtKg
-        MFUug5jfDSSQbcKQhSCrs5PWGg==
-X-Google-Smtp-Source: ABdhPJwzZFOwCUCV3nhWvQGjFOjBueE4nd5EViKbUhIu3xcHb87/vja/HKPEVo/JJBpn+EZRQtdobg==
-X-Received: by 2002:a63:e057:: with SMTP id n23mr16800523pgj.87.1600249959118;
-        Wed, 16 Sep 2020 02:52:39 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id t24sm16538902pfq.37.2020.09.16.02.52.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Sep 2020 02:52:38 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:22:35 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Taniya Das <tdas@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>
-Subject: Re: [PATCH] cpufreq: qcom: Don't add frequencies without an OPP
-Message-ID: <20200916095235.gixejqmyt6ajj5as@vireshk-i7>
-References: <20200915101007.1.Iebcd373535de8eb0aa304ad22b062a5bbc88a665@changeid>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=2iYj6uXZfdILOqgogXly8EZQExVDmJHzJxebCj3FO2Y=;
+        b=nyNvNjVedqEc+LCSyOa+2GLOHit1u4dEt+PHCaMwI7Q6PKQ6/jT1qtcDqtSUzywJv+
+         hTAQw8kgJytrc2+FqHN6PwGNJrASrW0vTU2+VVzmbnsMtTFuSIo7zq9z9191cUBmvFGL
+         DtNQEBJpBWZaqUqrz4joaOWjz+1AxtwBOZjV8oCznvpByux2mOjgTVx3ltdl2sM+eZQX
+         ZPEuDP8Y1AYJH/MyA5UNYarIvKvQixWLE8mvkxsD+8QNLCh5qfnKOZI7AyVK9sBbhMO1
+         zxYHx4KU5s2HzM+0qr5OJxqgfAhzGecYYFvCS2aurntQn8HDh2UiJ84MTI9OindzkuaK
+         Mr+A==
+X-Gm-Message-State: AOAM531zDlSlW1IoZ+H9ZEMf4uLHA3dcfLepznP02Symfij5qFGmcgXt
+        g91TjEpgn2+elCicGT9hc5QrEQ==
+X-Google-Smtp-Source: ABdhPJx8T8vv6SboEWDzt863SflX4VsUCD5E76qf3ZL+BjSfaIFA4+TQRt4D0/rFrg4RphT0bDAcYQ==
+X-Received: by 2002:a1c:7912:: with SMTP id l18mr3807909wme.124.1600250042604;
+        Wed, 16 Sep 2020 02:54:02 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id i83sm4609049wma.22.2020.09.16.02.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 02:54:01 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 11:53:59 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     christian.koenig@amd.com
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, akpm@linux-foundation.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: Changing vma->vm_file in dma_buf_mmap()
+Message-ID: <20200916095359.GD438822@phenom.ffwll.local>
+Mail-Followup-To: christian.koenig@amd.com, Jason Gunthorpe <jgg@ziepe.ca>,
+        akpm@linux-foundation.org, sumit.semwal@linaro.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20200914132920.59183-1-christian.koenig@amd.com>
+ <40cd26ae-b855-4627-5a13-4dcea5d622f6@gmail.com>
+ <20200914140632.GD1221970@ziepe.ca>
+ <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200915101007.1.Iebcd373535de8eb0aa304ad22b062a5bbc88a665@changeid>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-09-20, 10:10, Matthias Kaehlcke wrote:
-> The driver currently adds all frequencies from the hardware LUT to
-> the cpufreq table, regardless of whether the corresponding OPP
-> exists. This prevents devices from disabling certain OPPs through
-> the device tree and can result in CPU frequencies for which the
-> interconnect bandwidth can't be adjusted. Only add frequencies
-> with an OPP entry.
+On Mon, Sep 14, 2020 at 08:26:47PM +0200, Christian König wrote:
+> Am 14.09.20 um 16:06 schrieb Jason Gunthorpe:
+> > On Mon, Sep 14, 2020 at 03:30:47PM +0200, Christian König wrote:
+> > > Am 14.09.20 um 15:29 schrieb Christian König:
+> > > > Hi Andrew,
+> > > > 
+> > > > I'm the new DMA-buf maintainer and Daniel and others came up with
+> > > > patches extending the use of the dma_buf_mmap() function.
+> > > > 
+> > > > Now this function is doing something a bit odd by changing the
+> > > > vma->vm_file while installing a VMA in the mmap() system call
+> > It doesn't look obviously safe as mmap_region() has an interesting mix
+> > of file and vma->file
+> > 
+> > Eg it calls mapping_unmap_writable() using both routes
 > 
-> Fixes: 55538fbc79e9 ("cpufreq: qcom: Read voltage LUT and populate OPP")
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
+> Thanks for the hint, going to take a look at that code tomorrow.
+> 
+> > What about security? Is it OK that some other random file, maybe in
+> > another process, is being linked to this mmap?
+> 
+> Good question, I have no idea. That's why I send out this mail.
+> 
+> > > > The background here is that DMA-buf allows device drivers to
+> > > > export buffer which are then imported into another device
+> > > > driver. The mmap() handler of the importing device driver then
+> > > > find that the pgoff belongs to the exporting device and so
+> > > > redirects the mmap() call there.
+> > So the pgoff is some virtualized thing?
+> 
+> Yes, absolutely.
 
-Applied. Thanks.
+Maybe notch more context. Conceptually the buffer objects we use to manage
+gpu memory are all stand-alone objects, internally refcounted and
+everything. And if you export them as a dma-buf, then they are indeed
+stand-alone file descriptors like any other.
+
+But within the driver, we generally need thousands of these, and that
+tends to bring fd exhaustion problems with it. That's why all the private
+buffer objects which aren't shared with other process or other drivers are
+handles only valid for a specific fd instance of the drm chardev (each
+open gets their own namespace), and only for ioctls done on that chardev.
+And for mmap we assign fake (but unique across all open fd on it) offsets
+within the overall chardev. Hence all the pgoff mangling and re-mangling.
+
+Now for unmap_mapping_range we'd like it to find all such fake offset
+aliases pointing at the one underlying buffer object:
+- mmap on the dma-buf fd, at offset 0
+- mmap on the drm chardev where the buffer was originally allocated, at some unique offset
+- mmap on the drm chardev where the buffer was imported, again at some
+  (likely) different unique (for that chardev) offset.
+
+So to make unmap_mapping_range work across the entire delegation change
+we'd actually need to change the vma->vma_file and pgoff twice:
+- once when forwarding from the importing drm chardev to the dma-buf
+- once when forwarding from the dma-buf to the exported drm chardev fake
+  offset, which (mostly for historical reasons) is considered the
+  canonical fake offset
+
+We can't really do the delegation in userspace because:
+- the importer might not have access to the exporters drm chardev, it only
+  gets the dma-buf. If we'd give it the underlying drm chardev it could do
+  stuff like issue rendering commands, breaking the access model.
+- the dma-buf fd is only used to establish the sharing, once it's imported
+  everywhere it generally gets closed. Userspace could re-export it and
+  then call mmap on that, but feels a bit contrived.
+- especially on SoC platforms this has already become uapi. It's not a big
+  problem because the drivers that really need unmap_mapping_range to work
+  are the big gpu drivers with discrete vram, where mappings need to be
+  invalidate when moving buffer objects in/out of vram.
+
+Hence why we'd like to be able to forward aliasing mappings and adjust the
+file and pgoff, while hopefully everything keeps working. I thought this
+would work, but Christian noticed it doesn't really.
+
+Cheers, Daniel
+
+
+> 
+> Christian.
+> 
+> > 
+> > Jason
+> 
 
 -- 
-viresh
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
