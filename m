@@ -2,109 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC2226C64B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5EA26C675
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727338AbgIPRoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:44:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56298 "EHLO mail.kernel.org"
+        id S1727590AbgIPRvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:51:19 -0400
+Received: from mga09.intel.com ([134.134.136.24]:10142 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727335AbgIPRkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:40:41 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0F41223C8;
-        Wed, 16 Sep 2020 14:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600265266;
-        bh=KHuglKLcKtYICMFeenAq3DvHYF00j0yYiXqdTbisipw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vVEApFj0yzYYodJ/TmxoXbAwb/XPSO7sOlGGqvPJhLfrTL8aF4+u8zUS6p1CJH9yZ
-         RWhoeXWDewsS4v/5zeyrCUoCgHR8NdcSRt3e3jvcBmq/5EUpsz7cUIqfABe3PSGdty
-         eKpM/Xk3+JMnrUt5KlW3OQpaHyfUm/bWkXE9drew=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B4666400E9; Wed, 16 Sep 2020 11:07:44 -0300 (-03)
-Date:   Wed, 16 Sep 2020 11:07:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 16/26] perf tools: Synthesize modules with mmap3
-Message-ID: <20200916140744.GR720847@kernel.org>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-17-jolsa@kernel.org>
- <20200914160758.GK160517@kernel.org>
- <CAP-5=fV4Agxe3UMpkbWkh9CuG1tYho413w7xehy0SiMX+tPv1Q@mail.gmail.com>
- <20200916082018.GA2301783@krava>
+        id S1727555AbgIPRtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:49:53 -0400
+IronPort-SDR: gJC9KQrGz7PNLfiRC6j6+O5xRPn2eAsOz2+Ubns7jvVjezTjWDXLx4gYMVSKDI6BDw+u3be1Vj
+ FxG6LtUuZoGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="160395369"
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="160395369"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 07:09:23 -0700
+IronPort-SDR: f6lEK6rr61QfJLrKixbHM2tY184hPKA3gqXtKYIaZE5f5CnutmwPYL/Q6k3e7bQNOdG3KM3B+e
+ IkN1W1Swyaug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="331700580"
+Received: from mylly.fi.intel.com (HELO [10.237.72.153]) ([10.237.72.153])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Sep 2020 07:09:19 -0700
+Subject: Re: [PATCH v3] i2c: Squash of SMBus block read patchset to save power
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
+        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
+        wsa@kernel.org
+References: <b3b751fc-668d-91e2-220b-0d7edd231e01@linux.intel.com>
+ <20200914001523.3878-1-sultan@kerneltoast.com>
+ <bcf9cd02-13d1-8f87-8ef9-2f05f0b54808@linux.intel.com>
+ <20200915174844.GA16807@sultan-box.localdomain>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <796a23d2-cb98-c431-3494-b59044189468@linux.intel.com>
+Date:   Wed, 16 Sep 2020 17:09:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916082018.GA2301783@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200915174844.GA16807@sultan-box.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 16, 2020 at 10:20:18AM +0200, Jiri Olsa escreveu:
-> On Tue, Sep 15, 2020 at 01:17:44PM -0700, Ian Rogers wrote:
+On 9/15/20 8:48 PM, Sultan Alsawaf wrote:
+> On Tue, Sep 15, 2020 at 02:55:48PM +0300, Jarkko Nikula wrote:
+>> I tested this on top of fc4f28bb3daf ("Merge tag 'for-5.9-rc5-tag' of
+>> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux") and seems to be
+>> working fine. What was the key change compared to previous version that was
+>> regressing for me?
 > 
-> SNIP
+> This change fixed your issue (and my issue with 5.8):
+> --- a/drivers/i2c/busses/i2c-designware-master.c
+> +++ b/drivers/i2c/busses/i2c-designware-master.c
+> @@ -395,8 +395,9 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
+>   	 * Adjust the buffer length and mask the flag
+>   	 * after receiving the first byte.
+>   	 */
+> -	len += (flags & I2C_CLIENT_PEC) ? 2 : 1;
+> -	dev->tx_buf_len = len - min_t(u8, len, dev->rx_outstanding);
+> +	if (flags & I2C_CLIENT_PEC)
+> +		len++;
+> +	dev->tx_buf_len = len - min_t(u8, len - 1, dev->rx_outstanding);
+>   	msgs[dev->msg_read_idx].len = len;
+>   	msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
 > 
-> > > >       /*
-> > > >        * kernel uses 0 for user space maps, see kernel/perf_event.c
-> > > >        * __perf_event_mmap
-> > > > @@ -631,17 +629,30 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
-> > > >                       continue;
-> > > >
-> > > >               size = PERF_ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
-> > > > -             event->mmap.header.type = PERF_RECORD_MMAP;
-> > > > -             event->mmap.header.size = (sizeof(event->mmap) -
-> > > > -                                     (sizeof(event->mmap.filename) - size));
-> > > > -             memset(event->mmap.filename + size, 0, machine->id_hdr_size);
-> > > > -             event->mmap.header.size += machine->id_hdr_size;
-> > > > -             event->mmap.start = pos->start;
-> > > > -             event->mmap.len   = pos->end - pos->start;
-> > > > -             event->mmap.pid   = machine->pid;
-> > > > -
-> > > > -             memcpy(event->mmap.filename, pos->dso->long_name,
-> > > > +             event->mmap3.header.type = PERF_RECORD_MMAP3;
-> > > > +             event->mmap3.header.size = (sizeof(event->mmap3) -
-> > > > +                                        (sizeof(event->mmap3.filename) - size));
-> > > > +             memset(event->mmap3.filename + size, 0, machine->id_hdr_size);
-> > > > +             event->mmap3.header.size += machine->id_hdr_size;
-> > > > +             event->mmap3.start = pos->start;
-> > > > +             event->mmap3.len   = pos->end - pos->start;
-> > > > +             event->mmap3.pid   = machine->pid;
-> > > > +
-> > > > +             memcpy(event->mmap3.filename, pos->dso->long_name,
-> > > >                      pos->dso->long_name_len + 1);
-> > > > +
-> > > > +             rc = filename__read_build_id(event->mmap3.filename, event->mmap3.buildid,
-> > > > +                                          BUILD_ID_SIZE);
-> > > > +             if (rc != BUILD_ID_SIZE) {
-> > 
-> > IIRC BUILD_ID_SIZE is 20 bytes which is the correct size for SHA-1. A
-> > build ID may be 128-bits (16 bytes) if md5 or uuid hashes are used.
-> > Should this test just be "> 0" ?
+> I've attributed this change with the following commit message:
+> "i2c: designware: Ensure tx_buf_len is nonzero for SMBus block reads
 > 
-> ah right, will check on that
+> The point of adding a byte to len in i2c_dw_recv_len() is to make sure
+> that tx_buf_len is nonzero, so that i2c_dw_xfer_msg() can let the i2c
+> controller know that the i2c transaction can end. Otherwise, the i2c
+> controller will think that the transaction can never end for block
+> reads, which results in the stop-detection bit never being set and thus
+> the transaction timing out.
+> 
+> Adding a byte to len is not a reliable way to do this though; sometimes
+> it lets tx_buf_len become zero, which results in the scenario described
+> above. Therefore, just directly ensure tx_buf_len cannot be zero to fix
+> the issue."
+> 
+Ok, nice that you found it.
 
-And how do you deal with this in the kernel? I.e. to inform userspace,
-via the PERF_RECORD_MMAP3 (or MMAP2 with that misc bit trick) the size
-of the build-id?
+> Does the patch series look good to submit?
+> 
+Yes, go ahead.
 
-- Arnaldo
+Jarkko
