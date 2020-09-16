@@ -2,180 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3B826BE3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68ADA26BE41
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgIPHhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S1726528AbgIPHiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726384AbgIPHhc (ORCPT
+        with ESMTP id S1726424AbgIPHiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:37:32 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B00C061797
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:37:31 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id g10so5776590otq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:37:31 -0700 (PDT)
+        Wed, 16 Sep 2020 03:38:03 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C012C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:38:03 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id j3so3490630vsm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ir83kA7yZmatKHQpy7nyYwdfudWOyhH141WksSrpLpI=;
-        b=Wbmy2wm4Y3Z7IHj2WQgnSxJHvWaqiIYxvJrRLzN5yosJdstiBZVZo9gvc44pSE/nA1
-         P9hDpmjXczq2zLOkqvx/WHir/QasP1J2aBD5X+7FKjnP91s5nxsyqJv2jhU8PZzNRGRF
-         pjrrhaFUmLe21mq1kggp9iTxwlhfZdVWViCcQ=
+        bh=Ql2HHk7xdYd1gFzJiNUYKj4+ShA64J5FO0Fpo9subGg=;
+        b=QgYllN+sJMUY6IuNH3kRCFQJNCcrUIoyn7TfP6oEUs9aB7Viis3UfjVfm0FgBAWKGl
+         KZd2QiAmyOgSQIGoOTBCmxo7ZNqGOeSB9+YduMA+OMvsz/nozc8AlVILEqePedlRO9Oi
+         xbwztFePw6scCBRSjrjy6+9YPVews1dXkVvMwrfJ6jE03z+wVLIb7o1RG5Y1gQjLnZRQ
+         PQhnOnh7YQTIye1jVY60amlekjqk3pAP3wJW9CDNvyh4SO8J8Y+02FXlLuKQb6hTJ0JJ
+         FuzrJ7Aiyn+2Rc/1PAwqspdf8C9MBZeZKFXF1vDshGiWGlgJ+K/Ng0eMIGOAYXzceky0
+         SuJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ir83kA7yZmatKHQpy7nyYwdfudWOyhH141WksSrpLpI=;
-        b=YIJFUp4jc8jnv6DFcI+gT2Sgyjf0ntFNLGVfPsCuoDI8yJPdwFwh2UKQJbKs82ec3y
-         k5yrYJ/5hWTwoByY9HuzIGKmdX8E6put7xoeaBta/FtJ42DMim1fGdJLvQhRoGJ4othH
-         110urJ+lYgTkLp/mcuMDIkcLokiQ1V2Z41IAaGM3F7x/7DSEw/TT7EWvBXIh0l1LsWfz
-         o+RSFr9qiGbzaH13B59/YUPVSF96bhShBHH2CqT+BCxRuFLYyaVa1MrvOrcEiCpUc6N0
-         zdha0PQRPolc7ozGUgidEJVzVlK6lhiqvhZHP3chXSURAmemh/usS9KCy0PbR8bAO2nz
-         OWjQ==
-X-Gm-Message-State: AOAM530yxQ+rMQqPve+72lu6/J0/PNPz3jr2qz63MKsLSRdBPZLlOmt+
-        FDWf9EcfNKnM+xrtfrWIY6GTdJEY+N/+O2oPJIi2tA==
-X-Google-Smtp-Source: ABdhPJwGl0rb2zlMJB/+T8+6pHD/ce/ZZx4zrU0sObZFxXtLXBpNIcPMMRDqJU2JyoR0WPCWkLBmcTGbfcRbBMPy77o=
-X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr16390529otq.188.1600241849077;
- Wed, 16 Sep 2020 00:37:29 -0700 (PDT)
+        bh=Ql2HHk7xdYd1gFzJiNUYKj4+ShA64J5FO0Fpo9subGg=;
+        b=eQ9Hox/+qtmhG1z0xnByP1pf9g7XU6Yfcki/lPbQ6/wJPJJDXYwFpyTc3ouST8j1ud
+         WC+jxIhTHMlNE4uXr/qR06JwvZ2E+2wuDCV4rs7q6786ni/Su4JI/qjILqLczr5podfY
+         GjsEXHRAVyg31/FenAkByrE35d6HWhyiZGmLlilURAUGG4EVxVBBRPW27hybq21SBsbS
+         kWc6iy3Dutt0ZiPFtJ7iPfwDbKwIAjNQROy+YQK3QiEvFlCy5DN3wl7kTJWvwYGcbyQR
+         lLMuX/TLcVTu0IYNRZOgrMU19uCj32na81AjhlekrcO59KFvDuI2oIbLVuuBXIDharXc
+         +2GA==
+X-Gm-Message-State: AOAM531uSWuJ8wN+2iVoJSN2MOnv2qp2dl8jFMlFF2FBDJYP4aRSFKRk
+        2lKGzP1yUFxDVHkU2C60vaOThvUUtQT6E2eFhx9bAGnvwZEkKA==
+X-Google-Smtp-Source: ABdhPJwAIVZFHEuYzqUsbgel+CzL0Ssqkp0Twb2u8HkeHT4/zRLDF7InSMgI7svCSj8PI2ql/cmeOzBtl2N8qyWrEDw=
+X-Received: by 2002:a67:2e54:: with SMTP id u81mr3713148vsu.55.1600241882142;
+ Wed, 16 Sep 2020 00:38:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <87bli75t7v.fsf@nanos.tec.linutronix.de> <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
-In-Reply-To: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 16 Sep 2020 09:37:17 +0200
-Message-ID: <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+References: <CA+G9fYvYEsxjU_cnm6oWFgOrU4x0T1CMoN-L2SHLGeJC6MF54Q@mail.gmail.com>
+ <CAPDyKFqVB_hgDghaYU1B1BbWUuL6GHhWMbZEYM-cXDQ8T8ThfQ@mail.gmail.com> <20200916052239.7c5z4wqqrdpauti4@vireshk-i7>
+In-Reply-To: <20200916052239.7c5z4wqqrdpauti4@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 16 Sep 2020 09:37:26 +0200
+Message-ID: <CAPDyKFrxrKRuJec0pDLooovV3BJBVvmDizoL6N4eb+hv1D0NgA@mail.gmail.com>
+Subject: Re: Unable to handle kernel paging request at virtual address dead - __clk_put
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 7:35 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Wed, 16 Sep 2020 at 07:22, Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> On 15-09-20, 23:39, Ulf Hansson wrote:
+> > On Tue, 15 Sep 2020 at 16:33, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > >
+> > > arm64 dragonboard-410c boot failed while running linux next 2020915 due to
+> > > the kernel crash.
+> > >
+> > > metadata:
+> > >   git branch: master
+> > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+> > >   git describe: next-20200915
+> > >   make_kernelversion: 5.9.0-rc5
+> > >   kernel-config:
+> > > https://builds.tuxbuild.com/J5oDTkph2aj855oeGOd45Q/kernel.config
+> > >
+> > >
+> > > crash log:
+> > > -------------
+> > > [    3.517615] Synopsys Designware Multimedia Card Interface Driver
+> > > [    3.524258] sdhci-pltfm: SDHCI platform and OF driver helper
+> > > [    3.531302] Unable to handle kernel paging request at virtual
+> > > address dead000000000108
+> > > [    3.531396] Mem abort info:
+> > > [    3.531460] sdhci_msm 7864900.sdhci: Got CD GPIO
+> > > [    3.539182]   ESR = 0x96000044
+> > > [    3.541953] ledtrig-cpu: registered to indicate activity on CPUs
+> > > [    3.546692]   EC = 0x25: DABT (current EL), IL = 32 bits
+> > > [    3.546701]   SET = 0, FnV = 0
+> > > [    3.555694] usbcore: registered new interface driver usbhid
+> > > [    3.555703] usbhid: USB HID core driver
+> > > [    3.561638] genirq: irq_chip msmgpio did not update eff. affinity
+> > > mask of irq 75
+> > > [    3.563908]   EA = 0, S1PTW = 0
+> > > [    3.580792] Data abort info:
+> > > [    3.583673]   ISV = 0, ISS = 0x00000044
+> > > [    3.583900] NET: Registered protocol family 10
+> > > [    3.586785]   CM = 0, WnR = 1
+> > > [    3.586794] [dead000000000108] address between user and kernel address ranges
+> > > [    3.586806] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+> > > [    3.591869] Segment Routing with IPv6
+> > > [    3.594829] Modules linked in:
+> > > [    3.594841] CPU: 2 PID: 7 Comm: kworker/u8:0 Not tainted
+> > > 5.9.0-rc5-next-20200915 #1
+> > > [    3.594844] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> > > [    3.594862] Workqueue: events_unbound async_run_entry_fn
+> > > [    3.597959] NET: Registered protocol family 17
+> > > [    3.604991] pstate: 60000005 (nZCv daif -PAN -UAO BTYPE=--)
+> > > [    3.605000] pc : __clk_put+0x40/0x140
+> > > [    3.605009] lr : __clk_put+0x2c/0x140
+> > > [    3.610613] 9pnet: Installing 9P2000 support
+> > > [    3.614183] sp : ffff80001005bbe0
+> > > [    3.614189] x29: ffff80001005bbe0
+> > > [    3.617233] Key type dns_resolver registered
+> > > [    3.624696] x28: 000000000000002e
+> > > [    3.624701] x27: ffff00003b620a68 x26: ffff800011496568
+> > > [    3.624708] x25: ffff00003fcfe8f8 x24: ffff00003d30c410
+> > > [    3.632518] registered taskstats version 1
+> > > [    3.636931] x23: ffff800011495cf8 x22: ffff00003b620a40
+> > > [    3.636938] x21: ffff00003d30c400 x20: ffff00003b620580
+> > > [    3.636945] x19: ffff00003b64f380 x18: 0000000007824000
+> > > [    3.636951] x17: ffff00003b620a00 x16: ffff00003b6205d0
+> > > [    3.636958] x15: ffff8000119929f8 x14: ffffffffffffffff
+> > > [    3.636965] x13: ffff800012947000 x12: ffff800012947000
+> > > [    3.636975] x11: 0000000000000020
+> > > [    3.641233] Loading compiled-in X.509 certificates
+> > > [    3.646650] x10: 0101010101010101
+> > > [    3.646654] x9 : ffff8000107b4c84 x8 : 7f7f7f7f7f7f7f7f
+> > > [    3.646661] x7 : ffff000009fe5880 x6 : 0000000000000000
+> > > [    3.646668] x5 : 0000000000000000 x4 : ffff000009fe5880
+> > > [    3.646674] x3 : ffff80001250d7a0 x2 : ffff000009fe5880
+> > > [    3.746653] x1 : ffff00003b64f680 x0 : dead000000000100
+> > > [    3.751949] Call trace:
+> > > [    3.757243]  __clk_put+0x40/0x140
+> > > [    3.759413]  clk_put+0x18/0x28
+> > > [    3.762885]  dev_pm_opp_put_clkname+0x30/0x58
+> > > [    3.765837]  sdhci_msm_probe+0x288/0x9a8
+> > > [    3.770265]  platform_drv_probe+0x5c/0xb0
+> > > [    3.774258]  really_probe+0xf0/0x4d8
+> > > [    3.778163]  driver_probe_device+0xfc/0x168
+> > > [    3.781810]  __driver_attach_async_helper+0xbc/0xc8
+> > > [    3.785717]  async_run_entry_fn+0x4c/0x1b0
+> > > [    3.790575]  process_one_work+0x1c8/0x498
+> > > [    3.794741]  worker_thread+0x54/0x428
+> > > [    3.798822]  kthread+0x120/0x158
+> > > [    3.802467]  ret_from_fork+0x10/0x30
+> > > [    3.805771] Code: 35000720 a9438660 f9000020 b4000040 (f9000401)
+> > > [    3.809334] ---[ end trace 1a607a5ea6891b9f ]---
+> > >
+> > > full test log link,
+> > > https://lkft.validation.linaro.org/scheduler/job/1765840#L2014
+> > > https://lkft.validation.linaro.org/scheduler/job/1765842#L1960
+> > >
+> > > --
+> > > Linaro LKFT
+> > > https://lkft.linaro.org
 > >
-> > OTOH, having a working 'preemptible()' or maybe better named
-> > 'can_schedule()' check makes tons of sense to make decisions about
-> > allocation modes or other things.
+> > Naresh, thanks for reporting!
+> >
+> > There have been regressions related to the opp library this cycle, so
+> > I am wondering if Viresh may have any ideas, before going into more
+> > details.
 >
-> No. I think that those kinds of decisions about actual behavior are
-> always simply fundamentally wrong.
->
-> Note that this is very different from having warnings about invalid
-> use. THAT is correct. It may not warn in all configurations, but that
-> doesn't matter: what matters is that it warns in common enough
-> configurations that developers will catch it.
->
-> So having a warning in "might_sleep()" that doesn't always trigger,
-> because you have a limited configuration that can't even detect the
-> situation, that's fine and dandy and intentional.
->
-> But having code like
->
->        if (can_schedule())
->            .. do something different ..
->
-> is fundamentally complete and utter garbage.
->
-> It's one thing if you test for "am I in hardware interrupt context".
-> Those tests aren't great either, but at least they make sense.
->
-> But a driver - or some library routine - making a difference based on
-> some nebulous "can I schedule" is fundamentally and basically WRONG.
->
-> If some code changes behavior, it needs to be explicit to the *caller*
-> of that code.
->
-> So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
-> do_something_atomic()" is pure shite.
->
-> And I am not IN THE LEAST interested in trying to help people doing
-> pure shite. We need to fix them. Like the crypto code is getting
-> fixed.
+> I am really pissed at this. This is the exact bug we got earlier,
+> which Naresh also confirmed as being fixed after the patches I
+> proposed.
 
-Just figured I'll throw my +1 in from reading too many (gpu) drivers.
-Code that tries to cleverly adjust its behaviour depending upon the
-context it's running in is harder to understand and blows up in more
-interesting ways. We still have drm_can_sleep() and it's mostly just
-used for debug code, and I've largely ended up just deleting
-everything that used it because when you're driver is blowing up the
-last thing you want is to realize your debug code and output can't be
-relied upon. Or worse, that the only Oops you have is the one in the
-debug code, because the real one scrolled away - the original idea
-behind drm_can_sleep was to make all the modeset code work
-automagically both in normal ioctl/kworker context and in the panic
-handlers or kgdb callbacks. Wishful thinking at best.
+No worries, let's just fix it, again. :-)
 
-Also at least for me that extends to everything, e.g. I much prefer
-explicit spin_lock and spin_lock_irq vs magic spin_lock_irqsave for
-locks shared with interrupt handlers, since the former two gives me
-clear information from which contexts such function can be called.
-Other end is the memalloc_no*_save/restore functions, where I recently
-made a real big fool of myself because I didn't realize how much that
-impacts everything that's run within - suddenly "GFP_KERNEL for small
-stuff never fails" is wrong everywhere.
+>
+> > One thing that also changed from the sdhci-msm point of view, is that
+> > we enabled async probe [1]. This could be the thing that triggers an
+> > untested error path of the probe?
+>
+> Maybe, but I am not sure if this will cause such an issue. At max it
+> should cause issues for other stuff that depends on sdhci.
+>
+> > Otherwise we can always try to revert "mmc: sdhci-msm: Unconditionally
+> > call dev_pm_opp_of_remove_table()", which I recently applied again
+> > after the earlier errors.
+>
+> Yeah, that's the easiest of all.
+>
+> I am trying to find someone with local 410c who can help me fix it in
+> realtime. Lets see.
 
-It's all great for debugging and sanity checks (and we run with all
-that stuff enabled in our CI), but really semantic changes depending
-upon magic context checks freak my out :-)
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I have the board as well. If you need some help with testing, just let me know.
+
+In any case, I will try the revert and see how that changes things.
+
+Kind regards
+Uffe
