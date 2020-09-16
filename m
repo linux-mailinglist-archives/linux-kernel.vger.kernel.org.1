@@ -2,339 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C278826C9E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE35926C9E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgIPTfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727287AbgIPTby (ORCPT
+        id S1727696AbgIPTeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:34:44 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25406 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727525AbgIPTcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 15:31:54 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDD4C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:31:13 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gr14so12436264ejb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EZp5toX9T1gQJ7KRJFQSQsUwLhYGKZg5A/ENVGfokLk=;
-        b=detMbyNfda+sMtEgJ8wbC4HrMzYk3BcgRMdbhpVeAGepbF+kat9yNAUGo/3Y5oYxAx
-         JcIhsomGq6FmSan401dR/dMwAyJEwXSOZ8yvdg4oon4aO0l550Fkx0JPETQjkQtJ/vDj
-         bAcprtRQGkkCRh9W7AnYhAjPcDLnvGJlcNA2w=
+        Wed, 16 Sep 2020 15:32:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600284687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H30dbXoNbzsTkPGiKpd2XjhJWXqjtA7dGp0dwpbyBQA=;
+        b=Q2TAjVK1i1o+4f4DqEWRYey6mLyFuPShulyNtZBkiUUbfOiZk63wvoOdeg11Iya2uQTrWc
+        d01hMvqoYOv8UiSuqQeR1EMd2EGC/9x1ZmySJymGhJ8fRmlWrWPmyRS3doUjSsdUFU1xAr
+        DSMxEW/wKHFSRjEQ7WSm//CKRM/zYSo=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-IfqPHs6xOMydqlJLmFK5pA-1; Wed, 16 Sep 2020 15:31:25 -0400
+X-MC-Unique: IfqPHs6xOMydqlJLmFK5pA-1
+Received: by mail-ej1-f71.google.com with SMTP id w10so3340103ejq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:31:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EZp5toX9T1gQJ7KRJFQSQsUwLhYGKZg5A/ENVGfokLk=;
-        b=S7QQB0gFukWqd5QZKD1/HdjSkjoKk2xOWbiKw3UaTl/48kWVTs3RnpAuc0Hc/Ef0k/
-         zQc2jG6ZVVmOI5zWgk6gXUg4pAFVVTVV3ej8nniK0xpaU58Qc60lrZeO7SmEirjALMxk
-         JaLBapQ8rdnhbtwWVkiqOO/tFto732yiz+WFrJaXR3BWIHXWuDN7O8acB7/itGE0Q8z4
-         Su9aC62ZXrXc1jru9ILC04f6CSXewTyBHZ51OS714how2fCFzm9XlnwB3JtXTkOIFKs3
-         ZCXvu1X+Tb7oCJtmYATR4INq4vkfWiFcG8eAVdeDnJdhaUmQeyNxZ3zAbDc0pvlY+ZlP
-         WioQ==
-X-Gm-Message-State: AOAM533AI/m32VGrkXkfD1Xwp+m8mf04JKBCL/O10zCcMTDp/ZrscuwY
-        9wMqt9OXxwpSkM8Cjmz5h4Xnh2K7SM6jDXVQ
-X-Google-Smtp-Source: ABdhPJy3uD8HGn1Rrn9TD9rXf5kzYRYxK+NgjNksprlbpyGJ9rT+i30K1TPt2a0G6vCxGC1q2AtWwA==
-X-Received: by 2002:a17:906:8258:: with SMTP id f24mr26292491ejx.551.1600284671213;
-        Wed, 16 Sep 2020 12:31:11 -0700 (PDT)
-Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id r16sm14987362edc.57.2020.09.16.12.31.10
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=H30dbXoNbzsTkPGiKpd2XjhJWXqjtA7dGp0dwpbyBQA=;
+        b=tmKZBWzvbb+8HjUSykl2NTU3iVbdt4j8hATziCqN0ASAgEulSldBhJbP/GhtuWIUcd
+         5rcSqdGGqAEqNWN3rI+WgFydRbVUjn3gogDCdfeWF6mbvXWQU2xTf6gIatLj6RkBQC9r
+         01EN9mpVLROCnBua9ZUDuC2A14bAX3jxxYYG8H08snHbyz9XiumssEV4tK6ThEIJOj0X
+         1nUfpRKE7TpTgRl8W8yDJYTq0BxemuDlF/q9NK2L3Iz0x4JkaPJqKmbiTJWlyQ9Zv8FU
+         Adi74Rmo1LO9UJyD8QMU9zhZ40CCcshjWcV1vE58Exq740PPNXszy+OEb2jRPD9q8pLg
+         SsOA==
+X-Gm-Message-State: AOAM5322sJBXclRJbagJfWx6F4Oh4MBDRTNBUq2Ip0pK/oq0iTV6QW0L
+        XDPuxKRIt9gLYvwTUbmPedjutUP2q4gK90RQHudtM8fd8An0sjPt4b09PmIt/3VPC38UysL0WAY
+        1vzYbGfcNpXtpwYJeb+JdtH8T
+X-Received: by 2002:aa7:c7c2:: with SMTP id o2mr30417824eds.366.1600284684121;
+        Wed, 16 Sep 2020 12:31:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNf5C6IgWA4C90hz+1DV+boU+avbJN14GYmBM3jetRxVAOiNjdDaQK6JfCvz8qKCYsfBo/YA==
+X-Received: by 2002:aa7:c7c2:: with SMTP id o2mr30417797eds.366.1600284683833;
+        Wed, 16 Sep 2020 12:31:23 -0700 (PDT)
+Received: from [192.168.3.122] (p4ff23c30.dip0.t-ipconnect.de. [79.242.60.48])
+        by smtp.gmail.com with ESMTPSA id k25sm13202917ejk.3.2020.09.16.12.31.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 12:31:10 -0700 (PDT)
-Subject: Re: [PATCH] scripts/setlocalversion: make git describe output more
- reliable
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
- <CAK7LNARE6NpCYAd7=--m-oO8_LweBWhP2aWfSRdTz=TX8dM5rw@mail.gmail.com>
- <CA+ASDXOuK=iCdzWbtc+aRhBy=8xy860XqxwJg+wFuQaXKfg3UQ@mail.gmail.com>
- <f3ce9b3e-d3c1-a96b-e14b-a8d3c4600b09@rasmusvillemoes.dk>
- <CAK7LNATJ2seAuYpi-WPdLNFn2C9Vwm494nk-SWvgBJB3CmCJrw@mail.gmail.com>
- <fd1bb3d9-2b21-c330-7fa8-02ec76292d8b@rasmusvillemoes.dk>
- <CAK7LNASvh=pR=b0YtfzdKU1Y+M8kUiOKu887k05UH-xKs3b99g@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <0873059d-2912-3ef2-bab1-9db0cbe904a0@rasmusvillemoes.dk>
-Date:   Wed, 16 Sep 2020 21:31:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAK7LNASvh=pR=b0YtfzdKU1Y+M8kUiOKu887k05UH-xKs3b99g@mail.gmail.com>
+        Wed, 16 Sep 2020 12:31:23 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH RFC 0/4] mm: place pages to the freelist tail when onling and undoing isolation
+Date:   Wed, 16 Sep 2020 21:31:21 +0200
+Message-Id: <DAC9E747-BDDF-41B6-A89B-604880DD7543@redhat.com>
+References: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Wei Liu <wei.liu@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+In-Reply-To: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
+To:     osalvador@suse.de
+X-Mailer: iPhone Mail (17H35)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/2020 20.01, Masahiro Yamada wrote:
-> On Thu, Sep 17, 2020 at 12:23 AM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
->>
->> On 16/09/2020 16.28, Masahiro Yamada wrote:
->>> On Fri, Sep 11, 2020 at 5:28 PM Rasmus Villemoes
->>> <linux@rasmusvillemoes.dk> wrote:
->>>>
-
->>> Why do we care about the uniqueness of the abbreviated
->>> hash in the whole git history?
->>
->> Because when I ask a customer "what kernel are you running", and they
->> tell me "4.19.45-rt67-00567-123abc8", I prefer that 123abc8 uniquely
->> identifies the right commit, instead of me having to dig around each of
->> the commits starting with that prefix and see which one of them matches
->> "is exactly 567 commits from 4.19.45-rt67". 7 hexchars is nowhere near
->> enough for that today, which is why Linus himself did that "auto-tune
->> abbrev based on repo size" patch for git.git.
-> 
-> I like:
-> 
->    git rev-parse --verify HEAD 2>/dev/null | cut -c1-15
-> 
-> better than:
-> 
->    git rev-parse --verify --short=15 HEAD 2>/dev/null
-> 
-> The former produces the deterministic kernelrelease string.
-> 
-> 
-> But, let's reconsider if we need as long as 15-digits.
-> 
-> There are a couple of kinds of objects in git: commit, tree, blob.
-> 
-> I think you came up with 15-digits to ensure the uniqueness
-> in _all_ kinds of objects.
-> 
-> But, when your customer says "4.19.45-rt67-00567-123abc8",
-> 123abc8 is apparently a commit instead of a tree or a blob.
-> 
-> 
-> 
-> In the context of the kernel version, we can exclude
-> tree and blob objects.
-> 
-> In other words, I think "grows ~60000 objects per release"
-> is somewhat over-estimating.
-> 
-> We have ~15000 commits per release. So, the difference
-> is just 4x factor, though...
-> 
-> 
-> 
-> BTW, I did some experiments, and I noticed
-> "git log" accepts a shorter hash
-> than "git show" does presumably because
-> "git log" only takes a commit.
-> 
-> 
-> 
-> For example, "git show 06a0d" fails, but
-> "git log 06a0d" works.
-> 
-> 
-> masahiro@oscar:~/ref/linux$ git  show   06a0d
-> error: short SHA1 06a0d is ambiguous
-> hint: The candidates are:
-> hint:   06a0df4d1b8b commit 2020-09-08 - fbcon: remove now unusued
-> 'softback_lines' cursor() argument
-> hint:   06a0d81911b3 tree
-> hint:   06a0dc5a84d2 tree
-> hint:   06a0d1947c77 blob
-> hint:   06a0df434249 blob
-> fatal: ambiguous argument '06a0d': unknown revision or path not in the
-> working tree.
-> Use '--' to separate paths from revisions, like this:
-> 'git <command> [<revision>...] -- [<file>...]'
-> masahiro@oscar:~/ref/linux$ git  log --oneline  -1   06a0d
-> 06a0df4d1b8b fbcon: remove now unusued 'softback_lines' cursor() argument
-> 
-> 
-> 
-> 
-> What is interesting is, if you prepend <tag>-<number-of-commits>-
-> to the abbreviated hash, "git show" accepts as short as a commit
-> "git log" does.
-> 
-> masahiro@oscar:~/ref/linux$ git  show   v5.9-rc5-00002-g06a0d  | head -1
-> commit 06a0df4d1b8b13b551668e47b11fd7629033b7df
-> 
-> 
-> I guess git cleverly understands it refers to a commit object
-> since "v5.9-rc5-00002-" prefix only makes sense
-> in the commit context.
-> 
-
-Well, yes, but unfortunately only so far as applying the same "the user
-means a commit object" logic; git doesn't do anything to actually use
-the prefix to disambiguate. In fact, looking at a semi-random commit in
-4.19-stable v4.19.114-7-g236c445eb352:
-
-$ git show 236c44
-error: short SHA1 236c44 is ambiguous
-hint: The candidates are:
-hint:   236c445eb352 commit 2020-03-13 - drm/bochs: downgrade
-pci_request_region failure from error to warning
-hint:   236c448cb6e7 commit 2011-09-08 - usbmon vs. tcpdump: fix dropped
-packet count
-hint:   236c445b1930 blob
-
-Now you're right that we get
-
-$ git show v4.19.114-7-g236c445 | head -n1
-commit 236c445eb3529aa7c976f8812513c3cb26d77e27
-
-so it knows we're not looking at that blob. But "git show
-v4.19.114-7-g236c44" still fails because there are two commits. Adding
-to the fun is that "git show v4.19.114-7-g236c448" actually shows the
-usbmon commit, which is old v3.2 stuff and certainly not a descendant of
-v4.19.114.
-
-I didn't actually know that git would even accept those prefixed strings
-as possible refspecs, and for a moment you had me hoping that git would
-actually do the disambiguation using that prefix, which would certainly
-make 7 hex chars enough; unfortunately that's not the case.
-
-> Keeping those above in mind, I believe 15-digits is too long.
-
-Well, as you indicated, commits are probably ~1/4 of all objects, i.e.
-half a hexchar worth of bits. So the commit/object distinction shouldn't
-matter very much for the choice of suitable fixed length.
-
-> So, I propose two options.
-> 
-> 
-> [1] 7 digits
-> 
-> The abbreviated hash part may not uniquely identify
-> the commit. In that case, you need some extra git
-> operations to find out which one is it.
-> 
-> As for the kernel build,
-> <kernel-version>-<number-of-commits>-<7-digits> is enough
-> to provide the unique kernelrelease string.
-> 
-> 
-> 
-> [2] 12 digits
-> 
-> This matches to the Fixes: tag policy specified in
-> Documentation/process/submitting-patches.rst
-> 
-> The abbreviated hash part is very likely unique
-> in the commit object space.
-> (Of course, it is impossible to guarantee the uniqueness)
-
-I can live with 12. It would be extremely rare that I would have to do
-some extra git yoga to figure out which commit they actually mean. I
-think we can still use git describe to do the bulk of the work (the 'git
-rev-parse | cut ... is easy, but it's somewhat tedious to find the
-closest tag, then compute the #commits-on-top part), then just have the
-awk script used for pretty-printing (the %05d of the #commits-on-top)
-can probably also be used to chop the abbreviated sha1 at 12 chars,
-should git have needed to make it longer. Please see below for an
-updated patch+commit log.
-
->> Alternatively, would you consider a Kconfig knob, LOCALVERSION_ABBREV?
-> 
-> 
-> No, I do not think LOCALVERSION_ABBREV is a good idea.
-
-Neither do I; I considered it before sending the patch but decided that yes:
-
-> We should eliminate this problem
-> irrespective of the kernel configuration.
-
-Rasmus
-
-====
-
-something like this, then?
 
 
-    scripts/setlocalversion: make git describe output more reliable
+> Am 16.09.2020 um 20:50 schrieb osalvador@suse.de:
+>=20
+> =EF=BB=BFOn 2020-09-16 20:34, David Hildenbrand wrote:
+>> When adding separate memory blocks via add_memory*() and onlining them
+>> immediately, the metadata (especially the memmap) of the next block will b=
+e
+>> placed onto one of the just added+onlined block. This creates a chain
+>> of unmovable allocations: If the last memory block cannot get
+>> offlined+removed() so will all dependant ones. We directly have unmovable=
 
-    When building for an embedded target using Yocto, we're sometimes
-    observing that the version string that gets built into vmlinux (and
-    thus what uname -a reports) differs from the path under /lib/modules/
-    where modules get installed in the rootfs, but only in the length of
-    the -gabc123def suffix. Hence modprobe always fails.
+>> allocations all over the place.
+>> This can be observed quite easily using virtio-mem, however, it can also
+>> be observed when using DIMMs. The freshly onlined pages will usually be
+>> placed to the head of the freelists, meaning they will be allocated next,=
 
-    The problem is that Yocto has the concept of "sstate" (shared state),
-    which allows different developers/buildbots/etc. to share build
-    artifacts, based on a hash of all the metadata that went into building
-    that artifact - and that metadata includes all dependencies (e.g. the
-    compiler used etc.). That normally works quite well; usually a clean
-    build (without using any sstate cache) done by one developer ends up
-    being binary identical to a build done on another host. However, one
-    thing that can cause two developers to end up with different builds
-    [and thus make one's vmlinux package incompatible with the other's
-    kernel-dev package], which is not captured by the metadata hashing, is
-    this `git describe`: The output of that can be affected by
+>> turning the just-added memory usually immediately un-removable. The
+>> fresh pages are cold, prefering to allocate others (that might be hot)
+>> also feels to be the natural thing to do.
+>> It also applies to the hyper-v balloon xen-balloon, and ppc64 dlpar: when=
 
-    (1) git version: before 2.11 git defaulted to a minimum of 7, since
-    2.11 (git.git commit e6c587) the default is dynamic based on the
-    number of objects in the repo
-    (2) hence even if both run the same git version, the output can differ
-    based on how many remotes are being tracked (or just lots of local
-    development branches or plain old garbage)
-    (3) and of course somebody could have a core.abbrev config setting in
-    ~/.gitconfig
+>> adding separate, successive memory blocks, each memory block will have
+>> unmovable allocations on them - for example gigantic pages will fail to
+>> allocate.
+>> While the ZONE_NORMAL doesn't provide any guarantees that memory can get
+>> offlined+removed again (any kind of fragmentation with unmovable
+>> allocations is possible), there are many scenarios (hotplugging a lot of
+>> memory, running workload, hotunplug some memory/as much as possible) wher=
+e
+>> we can offline+remove quite a lot with this patchset.
+>=20
+> Hi David,
+>=20
 
-    So in order to avoid `uname -a` output relying on such random details
-    of the build environment which are rather hard to ensure are
-    consistent between developers and buildbots, make sure the abbreviated
-    sha1 always consists of exactly 12 hex characters. That is consistent
-    with the current rule for -stable patches, and is almost always enough
-    to identify the head commit unambigously - in the few cases where it
-    does not, the v5.4.3-00021- prefix would certainly nail it down.
+Hi Oscar.
 
-diff --git a/scripts/setlocalversion b/scripts/setlocalversion
-index 20f2efd57b11..b51072167df1 100755
---- a/scripts/setlocalversion
-+++ b/scripts/setlocalversion
-@@ -45,7 +45,7 @@ scm_version()
+> I did not read through the patchset yet, so sorry if the question is nonse=
+nse, but is this not trying to fix the same issue the vmemmap patches did? [=
+1]
 
- 	# Check for git and a git repo.
- 	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
--	   head=$(git rev-parse --verify --short HEAD 2>/dev/null); then
-+	   head=$(git rev-parse --verify HEAD 2>/dev/null); then
+Not nonesense at all. It only helps to some degree, though. It solves the de=
+pendencies due to the memmap. However, it=E2=80=98s not completely ideal, es=
+pecially for single memory blocks.
 
- 		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
- 		# it, because this version is defined in the top level Makefile.
-@@ -59,11 +59,22 @@ scm_version()
- 			fi
- 			# If we are past a tagged commit (like
- 			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
--			if atag="$(git describe 2>/dev/null)"; then
--				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
--
--			# If we don't have a tag at all we print -g{commitish}.
-+                        #
-+                        # Ensure the abbreviated sha1 has exactly 12
-+                        # hex characters, to make the output
-+                        # independent of git version, local
-+                        # core.abbrev settings and/or total number of
-+                        # objects in the current repository - passing
-+                        # --abbrev=12 ensures a minimum of 12, and the
-+                        # awk substr() then picks the 'g' and first 12
-+                        # hex chars.
-+			if atag="$(git describe --abbrev=12 2>/dev/null)"; then
-+				echo "$atag" | awk -F- '{printf("-%05d-%s",
-$(NF-1),substr($(NF),0,13))}'
-+
-+			# If we don't have a tag at all we print -g{commitish},
-+			# again using exactly 12 hex chars.
- 			else
-+				head="$(echo $head | cut -c1-12)"
- 				printf '%s%s' -g $head
- 			fi
- 		fi
+With single memory blocks (virtio-mem, xen-balloon, hv balloon, ppc dlpar) y=
+ou still have unmovable (vmemmap chunks) all over the physical address space=
+. Consider the gigantic page example after hotplug. You directly fragmented a=
+ll hotplugged memory.
+
+Of course, there might be (less extreme) dependencies due page tables for th=
+e identity mapping, extended struct pages and similar.
+
+Having that said, there are other benefits when preferring other memory over=
+ just hotplugged memory. Think about adding+onlining memory during boot (dim=
+ms under QEMU, virtio-mem), once the system is up you will have most (all) o=
+f that memory completely untouched.
+
+So while vmemmap on hotplugged memory would tackle some part of the issue, t=
+here are cases where this approach is better, and there are even benefits wh=
+en combining both.
+
+Thanks!
+
+David
+
+>=20
+> I was about to give it a new respin now that thw hwpoison stuff has been s=
+ettled.
+>=20
+> [1] https://patchwork.kernel.org/cover/11059175/
+>=20
+
