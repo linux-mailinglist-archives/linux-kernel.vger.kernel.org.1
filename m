@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE35926C9E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7B126C9F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727696AbgIPTeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:34:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25406 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727525AbgIPTcF (ORCPT
+        id S1727178AbgIPTmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:42:10 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15021 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727323AbgIPTjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 15:32:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600284687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H30dbXoNbzsTkPGiKpd2XjhJWXqjtA7dGp0dwpbyBQA=;
-        b=Q2TAjVK1i1o+4f4DqEWRYey6mLyFuPShulyNtZBkiUUbfOiZk63wvoOdeg11Iya2uQTrWc
-        d01hMvqoYOv8UiSuqQeR1EMd2EGC/9x1ZmySJymGhJ8fRmlWrWPmyRS3doUjSsdUFU1xAr
-        DSMxEW/wKHFSRjEQ7WSm//CKRM/zYSo=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-IfqPHs6xOMydqlJLmFK5pA-1; Wed, 16 Sep 2020 15:31:25 -0400
-X-MC-Unique: IfqPHs6xOMydqlJLmFK5pA-1
-Received: by mail-ej1-f71.google.com with SMTP id w10so3340103ejq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 12:31:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=H30dbXoNbzsTkPGiKpd2XjhJWXqjtA7dGp0dwpbyBQA=;
-        b=tmKZBWzvbb+8HjUSykl2NTU3iVbdt4j8hATziCqN0ASAgEulSldBhJbP/GhtuWIUcd
-         5rcSqdGGqAEqNWN3rI+WgFydRbVUjn3gogDCdfeWF6mbvXWQU2xTf6gIatLj6RkBQC9r
-         01EN9mpVLROCnBua9ZUDuC2A14bAX3jxxYYG8H08snHbyz9XiumssEV4tK6ThEIJOj0X
-         1nUfpRKE7TpTgRl8W8yDJYTq0BxemuDlF/q9NK2L3Iz0x4JkaPJqKmbiTJWlyQ9Zv8FU
-         Adi74Rmo1LO9UJyD8QMU9zhZ40CCcshjWcV1vE58Exq740PPNXszy+OEb2jRPD9q8pLg
-         SsOA==
-X-Gm-Message-State: AOAM5322sJBXclRJbagJfWx6F4Oh4MBDRTNBUq2Ip0pK/oq0iTV6QW0L
-        XDPuxKRIt9gLYvwTUbmPedjutUP2q4gK90RQHudtM8fd8An0sjPt4b09PmIt/3VPC38UysL0WAY
-        1vzYbGfcNpXtpwYJeb+JdtH8T
-X-Received: by 2002:aa7:c7c2:: with SMTP id o2mr30417824eds.366.1600284684121;
-        Wed, 16 Sep 2020 12:31:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNf5C6IgWA4C90hz+1DV+boU+avbJN14GYmBM3jetRxVAOiNjdDaQK6JfCvz8qKCYsfBo/YA==
-X-Received: by 2002:aa7:c7c2:: with SMTP id o2mr30417797eds.366.1600284683833;
-        Wed, 16 Sep 2020 12:31:23 -0700 (PDT)
-Received: from [192.168.3.122] (p4ff23c30.dip0.t-ipconnect.de. [79.242.60.48])
-        by smtp.gmail.com with ESMTPSA id k25sm13202917ejk.3.2020.09.16.12.31.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 12:31:23 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH RFC 0/4] mm: place pages to the freelist tail when onling and undoing isolation
-Date:   Wed, 16 Sep 2020 21:31:21 +0200
-Message-Id: <DAC9E747-BDDF-41B6-A89B-604880DD7543@redhat.com>
-References: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Wei Liu <wei.liu@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-In-Reply-To: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
-To:     osalvador@suse.de
-X-Mailer: iPhone Mail (17H35)
+        Wed, 16 Sep 2020 15:39:55 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6269b30000>; Wed, 16 Sep 2020 12:38:27 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 16 Sep 2020 12:39:55 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 12:39:55 -0700
+Received: from [10.26.74.242] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
+ 2020 19:39:41 +0000
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+To:     Mikko Perttunen <cyndis@kapsi.fi>, Marc Zyngier <maz@kernel.org>
+CC:     Sumit Garg <sumit.garg@linaro.org>, <kernel-team@android.com>,
+        "Florian Fainelli" <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <linus.walleij@linaro.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        <linux-kernel@vger.kernel.org>,
+        "Krzysztof Kozlowski" <krzk@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Will Deacon" <will@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+ <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+ <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+ <dcf812d9-2409-bcae-1925-e21740c2932e@nvidia.com>
+ <a6c7bbc91c5b23baa44f3abe35eb61c9@kernel.org>
+ <d6dddab0-47aa-ddf2-959b-85493b8da52d@nvidia.com>
+ <13c096832bd923f956ddd7db7e337857@kernel.org>
+ <02bb9262-221a-b2cf-4471-dd3a46b442e7@nvidia.com>
+ <63815f37-6a82-27c2-10e9-2649b2c864a0@kapsi.fi>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <28655b4b-79fe-2400-8dbc-5592660e6b4a@nvidia.com>
+Date:   Wed, 16 Sep 2020 20:39:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <63815f37-6a82-27c2-10e9-2649b2c864a0@kapsi.fi>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600285107; bh=/5KjCkcLzngnkCQGz7TD33bT1DSdH/EM8+HlFjeCcYc=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=IcyIvdV5Nks+v9t6EZeKukN52YaSukQXQqwW8I/r1q3SFx3FnNyMieAHNVufe27vL
+         zDdui7llBBMMflOnHIhtUSVFUZBsS+tBY6ndRO/1H+qwbnb+A/PFV5C+CYLNq2hdt7
+         vWUC9ZN6W8O/CNdqSYhDUa5IftysTwJzVCoaNdRA/YzqdwNbcFFoUuzPJC4Aj098d6
+         6TbohVolnqJXW2eUOZy5xKjgIJGWLMjUDmrjOONTPJSqxzoLw8FZezHkPahoBIWMu8
+         WJcUiJxQh32OGmZp+nzx4bKj0gT/0ywJPuIMJXsYL11BAHR/ORl6sdxQZsJSjC2mjM
+         2AxzBUS0q3yzA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 16/09/2020 20:26, Mikko Perttunen wrote:
+> Not sure which boards this issue is happening on, but looking at my
+> hobby kernel's git history (from a couple of years ago, memory is a bit
+> hazy), the commit labeled "Add support for TX2" adds code to drop from
+> EL2 to EL1 at boot.
 
-> Am 16.09.2020 um 20:50 schrieb osalvador@suse.de:
->=20
-> =EF=BB=BFOn 2020-09-16 20:34, David Hildenbrand wrote:
->> When adding separate memory blocks via add_memory*() and onlining them
->> immediately, the metadata (especially the memmap) of the next block will b=
-e
->> placed onto one of the just added+onlined block. This creates a chain
->> of unmovable allocations: If the last memory block cannot get
->> offlined+removed() so will all dependant ones. We directly have unmovable=
+I am seeing boot issues on Tegra20, Tegra30, Tegra186 and Tegra194.
+Interestingly, Tegra124 and Tegra210 are booting OK.
 
->> allocations all over the place.
->> This can be observed quite easily using virtio-mem, however, it can also
->> be observed when using DIMMs. The freshly onlined pages will usually be
->> placed to the head of the freelists, meaning they will be allocated next,=
+Jon
 
->> turning the just-added memory usually immediately un-removable. The
->> fresh pages are cold, prefering to allocate others (that might be hot)
->> also feels to be the natural thing to do.
->> It also applies to the hyper-v balloon xen-balloon, and ppc64 dlpar: when=
-
->> adding separate, successive memory blocks, each memory block will have
->> unmovable allocations on them - for example gigantic pages will fail to
->> allocate.
->> While the ZONE_NORMAL doesn't provide any guarantees that memory can get
->> offlined+removed again (any kind of fragmentation with unmovable
->> allocations is possible), there are many scenarios (hotplugging a lot of
->> memory, running workload, hotunplug some memory/as much as possible) wher=
-e
->> we can offline+remove quite a lot with this patchset.
->=20
-> Hi David,
->=20
-
-Hi Oscar.
-
-> I did not read through the patchset yet, so sorry if the question is nonse=
-nse, but is this not trying to fix the same issue the vmemmap patches did? [=
-1]
-
-Not nonesense at all. It only helps to some degree, though. It solves the de=
-pendencies due to the memmap. However, it=E2=80=98s not completely ideal, es=
-pecially for single memory blocks.
-
-With single memory blocks (virtio-mem, xen-balloon, hv balloon, ppc dlpar) y=
-ou still have unmovable (vmemmap chunks) all over the physical address space=
-. Consider the gigantic page example after hotplug. You directly fragmented a=
-ll hotplugged memory.
-
-Of course, there might be (less extreme) dependencies due page tables for th=
-e identity mapping, extended struct pages and similar.
-
-Having that said, there are other benefits when preferring other memory over=
- just hotplugged memory. Think about adding+onlining memory during boot (dim=
-ms under QEMU, virtio-mem), once the system is up you will have most (all) o=
-f that memory completely untouched.
-
-So while vmemmap on hotplugged memory would tackle some part of the issue, t=
-here are cases where this approach is better, and there are even benefits wh=
-en combining both.
-
-Thanks!
-
-David
-
->=20
-> I was about to give it a new respin now that thw hwpoison stuff has been s=
-ettled.
->=20
-> [1] https://patchwork.kernel.org/cover/11059175/
->=20
-
+-- 
+nvpublic
