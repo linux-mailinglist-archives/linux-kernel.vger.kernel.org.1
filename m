@@ -2,87 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3986A26BC4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAD826BC55
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgIPGMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:12:51 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:60789 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726068AbgIPGMi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:12:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600236758; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=ENpHmoNNGHPsdeWRvPgXC2S1t1eowRnOK+MNktNQBf8=;
- b=FV5h0P+Yyhb3n5/SsNS63mYdNAgDq0QkOo79nny7H0uI/kgCnMbOYWzg4UEEUqe+s3kvRcIt
- riX2qxZgr9upJu5zZQzvEz/a0QcrevmnGTC9SbQOcgrxRCplR4A9aX/CpyC7nr9l+XgFN6SV
- nPxG/8SKEMipcX+PPeg62vdNo6g=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f61acd6ba408b30ce89b1f0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 06:12:38
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 74540C433CA; Wed, 16 Sep 2020 06:12:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D718EC433C8;
-        Wed, 16 Sep 2020 06:12:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D718EC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1726281AbgIPGOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:14:05 -0400
+Received: from verein.lst.de ([213.95.11.211]:51030 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgIPGOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:14:03 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 3122868B05; Wed, 16 Sep 2020 08:13:59 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 08:13:59 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
+        Russell King <linux@armlinux.org.uk>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devicetree@vger.kernel.org,
+        arnaud.pouliquen@st.com, loic.pallardy.st.com@lst.de
+Subject: Re: [PATCH 6/6] dma-mapping: introduce DMA range map, supplanting
+ dma_pfn_offset
+Message-ID: <20200916061359.GA8424@lst.de>
+References: <20200914073343.1579578-1-hch@lst.de> <20200914073343.1579578-7-hch@lst.de> <20200914230147.GA3251212@xps15> <20200915054122.GA18079@lst.de> <20200915195501.GA3666944@xps15>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH -next 1/3] rtlwifi: rtl8723ae: fix comparison pointer to
- bool
- warning in rf.c
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200910141642.127006-2-zhengbin13@huawei.com>
-References: <20200910141642.127006-2-zhengbin13@huawei.com>
-To:     Zheng Bin <zhengbin13@huawei.com>
-Cc:     <pkshih@realtek.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <zhengbin13@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200916061237.74540C433CA@smtp.codeaurora.org>
-Date:   Wed, 16 Sep 2020 06:12:37 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915195501.GA3666944@xps15>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zheng Bin <zhengbin13@huawei.com> wrote:
-
-> Fixes coccicheck warning:
+On Tue, Sep 15, 2020 at 01:55:01PM -0600, Mathieu Poirier wrote:
+> That did the trick - the stm32 platform driver's probe() function completes and
+> the remote processor is operatinal. 
 > 
-> drivers/net/wireless/realtek/rtlwifi/rtl8723ae/rf.c:52:5-22: WARNING: Comparison to bool
-> drivers/net/wireless/realtek/rtlwifi/rtl8723ae/rf.c:482:6-14: WARNING: Comparison to bool
-> 
-> Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+> That being said the value returned by function dma_to_pfn()
+> is 0x137fff in the original code and 0xfffff with your patches applied.
 
-3 patches applied to wireless-drivers-next.git, thanks.
-
-4eef91a8dbce rtlwifi: rtl8723ae: fix comparison pointer to bool warning in rf.c
-9d886ac4397e rtlwifi: rtl8723ae: fix comparison pointer to bool warning in trx.c
-f26506f06bf8 rtlwifi: rtl8723ae: fix comparison pointer to bool warning in phy.c
-
--- 
-https://patchwork.kernel.org/patch/11767923/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Yes, that is intentional.  The old code just applied the range and got
+an out of range offset, the new one reports the max offset.
