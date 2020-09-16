@@ -2,82 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA6D26BC37
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18A026BC3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgIPGJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:09:13 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:37593 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726285AbgIPGJJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:09:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600236548; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=0PhPse1fAuXhvgCnPdooOQgglRxHYeqV3vovP/hlC/k=;
- b=hM+tFhYZeocNGJEaRn6FjGswU8T7zVfpN3+e+MT3EOlcklhfXbTnS4ufWaXptBazlIUOpfdY
- MZ7oLywYdJ+7CDtLy76ajoC1CKYs6x2SW+YqIiANqMcq5sGsRkafTZBwcpMj7w96+P12Or9+
- CYuRyt7WIfiUJ+wUvdWByO7CKOs=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f61ac0473afa3417e2e4bcc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 06:09:08
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A1ED3C433F1; Wed, 16 Sep 2020 06:09:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 77C8CC433F0;
-        Wed, 16 Sep 2020 06:09:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 77C8CC433F0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1726373AbgIPGJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:09:28 -0400
+Received: from verein.lst.de ([213.95.11.211]:50982 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgIPGJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:09:26 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id BDE1368B05; Wed, 16 Sep 2020 08:09:21 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 08:09:21 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, kvm-ppc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mm: remove extra ZONE_DEVICE struct page refcount
+Message-ID: <20200916060921.GB7321@lst.de>
+References: <20200914224509.17699-1-rcampbell@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: rtw88: rtw8822c: eliminate code duplication,
- use native swap() function
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200913165958.419744-1-insafonov@gmail.com>
-References: <20200913165958.419744-1-insafonov@gmail.com>
-To:     Ivan Safonov <insafonov@gmail.com>
-Cc:     Yan-Hsuan Chuang <yhchuang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ivan Safonov <insafonov@gmail.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200916060907.A1ED3C433F1@smtp.codeaurora.org>
-Date:   Wed, 16 Sep 2020 06:09:07 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914224509.17699-1-rcampbell@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ivan Safonov <insafonov@gmail.com> wrote:
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 517751310dd2..5a82037a4b26 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1093,34 +1093,6 @@ static inline bool is_zone_device_page(const struct page *page)
+>  #ifdef CONFIG_DEV_PAGEMAP_OPS
+>  void free_devmap_managed_page(struct page *page);
+>  DECLARE_STATIC_KEY_FALSE(devmap_managed_key);
 
-> swap_u32() duplicate native swap(), so replace swap_u32() with swap().
-> 
-> Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+The export for devmap_managed_key can be dropped now.  In fact I think
+we can remove devmap_managed_key entirely now - it is only checked in
+the actual page free path instead of for each refcount manipulation,
+so a good old unlikely is probably enough.
 
-Patch applied to wireless-drivers-next.git, thanks.
+Also free_devmap_managed_page can move to mm/internal.h.
 
-d10f6af58ef4 rtw88: rtw8822c: eliminate code duplication, use native swap() function
+> +#ifdef CONFIG_DEV_PAGEMAP_OPS
+> +static void __put_devmap_managed_page(struct page *page)
+> +{
+> +	if (!static_branch_unlikely(&devmap_managed_key))
+> +		return;
+> +
+> +	switch (page->pgmap->type) {
+> +	case MEMORY_DEVICE_PRIVATE:
+> +	case MEMORY_DEVICE_FS_DAX:
+> +		free_devmap_managed_page(page);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +}
+> +#else
+> +static inline void __put_devmap_managed_page(struct page *page)
+> +{
+> +}
+> +#endif
 
--- 
-https://patchwork.kernel.org/patch/11772397/
+I think this should be moved to mm/memremap.c or even better
+actually be folded into free_devmap_managed_page, which would need
+a new name like free_zone_device_page().
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Something like this incremental patch:
 
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 7bb9e93cf86cde..29350dc27cd0cd 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1090,11 +1090,6 @@ static inline bool is_zone_device_page(const struct page *page)
+ }
+ #endif
+ 
+-#ifdef CONFIG_DEV_PAGEMAP_OPS
+-void free_devmap_managed_page(struct page *page);
+-DECLARE_STATIC_KEY_FALSE(devmap_managed_key);
+-#endif /* CONFIG_DEV_PAGEMAP_OPS */
+-
+ static inline bool is_device_private_page(const struct page *page)
+ {
+ 	return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
+diff --git a/mm/internal.h b/mm/internal.h
+index 6345b08ce86ccf..629959a6f26d7c 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -618,4 +618,12 @@ struct migration_target_control {
+ 	gfp_t gfp_mask;
+ };
+ 
++#ifdef CONFIG_DEV_PAGEMAP_OPS
++void free_zone_device_page(struct page *page);
++#else
++static inline void free_zone_device_page(struct page *page)
++{
++}
++#endif
++
+ #endif	/* __MM_INTERNAL_H */
+diff --git a/mm/memremap.c b/mm/memremap.c
+index d549e3733f4098..b15ad2264a4f1c 100644
+--- a/mm/memremap.c
++++ b/mm/memremap.c
+@@ -12,6 +12,7 @@
+ #include <linux/types.h>
+ #include <linux/wait_bit.h>
+ #include <linux/xarray.h>
++#include "internal.h"
+ 
+ static DEFINE_XARRAY(pgmap_array);
+ 
+@@ -37,36 +38,6 @@ unsigned long memremap_compat_align(void)
+ EXPORT_SYMBOL_GPL(memremap_compat_align);
+ #endif
+ 
+-#ifdef CONFIG_DEV_PAGEMAP_OPS
+-DEFINE_STATIC_KEY_FALSE(devmap_managed_key);
+-EXPORT_SYMBOL(devmap_managed_key);
+-
+-static void devmap_managed_enable_put(void)
+-{
+-	static_branch_dec(&devmap_managed_key);
+-}
+-
+-static int devmap_managed_enable_get(struct dev_pagemap *pgmap)
+-{
+-	if (pgmap->type == MEMORY_DEVICE_PRIVATE &&
+-	    (!pgmap->ops || !pgmap->ops->page_free)) {
+-		WARN(1, "Missing page_free method\n");
+-		return -EINVAL;
+-	}
+-
+-	static_branch_inc(&devmap_managed_key);
+-	return 0;
+-}
+-#else
+-static int devmap_managed_enable_get(struct dev_pagemap *pgmap)
+-{
+-	return -EINVAL;
+-}
+-static void devmap_managed_enable_put(void)
+-{
+-}
+-#endif /* CONFIG_DEV_PAGEMAP_OPS */
+-
+ static void pgmap_array_delete(struct range *range)
+ {
+ 	xa_store_range(&pgmap_array, PHYS_PFN(range->start), PHYS_PFN(range->end),
+@@ -181,7 +152,6 @@ void memunmap_pages(struct dev_pagemap *pgmap)
+ 		pageunmap_range(pgmap, i);
+ 
+ 	WARN_ONCE(pgmap->altmap.alloc, "failed to free all reserved pages\n");
+-	devmap_managed_enable_put();
+ }
+ EXPORT_SYMBOL_GPL(memunmap_pages);
+ 
+@@ -319,7 +289,6 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
+ 		.pgprot = PAGE_KERNEL,
+ 	};
+ 	const int nr_range = pgmap->nr_range;
+-	bool need_devmap_managed = true;
+ 	int error, i;
+ 
+ 	if (WARN_ONCE(!nr_range, "nr_range must be specified\n"))
+@@ -331,8 +300,9 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
+ 			WARN(1, "Device private memory not supported\n");
+ 			return ERR_PTR(-EINVAL);
+ 		}
+-		if (!pgmap->ops || !pgmap->ops->migrate_to_ram) {
+-			WARN(1, "Missing migrate_to_ram method\n");
++		if (!pgmap->ops ||
++		    !pgmap->ops->migrate_to_ram || !pgmap->ops->page_free) {
++			WARN(1, "Missing ops\n");
+ 			return ERR_PTR(-EINVAL);
+ 		}
+ 		if (!pgmap->owner) {
+@@ -348,11 +318,9 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
+ 		}
+ 		break;
+ 	case MEMORY_DEVICE_GENERIC:
+-		need_devmap_managed = false;
+ 		break;
+ 	case MEMORY_DEVICE_PCI_P2PDMA:
+ 		params.pgprot = pgprot_noncached(params.pgprot);
+-		need_devmap_managed = false;
+ 		break;
+ 	default:
+ 		WARN(1, "Invalid pgmap type %d\n", pgmap->type);
+@@ -376,12 +344,6 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
+ 		}
+ 	}
+ 
+-	if (need_devmap_managed) {
+-		error = devmap_managed_enable_get(pgmap);
+-		if (error)
+-			return ERR_PTR(error);
+-	}
+-
+ 	/*
+ 	 * Clear the pgmap nr_range as it will be incremented for each
+ 	 * successfully processed range. This communicates how many
+@@ -496,16 +458,9 @@ struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
+ EXPORT_SYMBOL_GPL(get_dev_pagemap);
+ 
+ #ifdef CONFIG_DEV_PAGEMAP_OPS
+-void free_devmap_managed_page(struct page *page)
++static void free_device_private_page(struct page *page)
+ {
+-	/* notify page idle for dax */
+-	if (!is_device_private_page(page)) {
+-		wake_up_var(&page->_refcount);
+-		return;
+-	}
+-
+ 	__ClearPageWaiters(page);
+-
+ 	mem_cgroup_uncharge(page);
+ 
+ 	/*
+@@ -540,4 +495,19 @@ void free_devmap_managed_page(struct page *page)
+ 	page->mapping = NULL;
+ 	page->pgmap->ops->page_free(page);
+ }
++
++void free_zone_device_page(struct page *page)
++{
++	switch (page->pgmap->type) {
++	case MEMORY_DEVICE_FS_DAX:
++		/* notify page idle */
++		wake_up_var(&page->_refcount);
++		return;
++	case MEMORY_DEVICE_PRIVATE:
++		free_device_private_page(page);
++		return;
++	default:
++		return;
++	}
++}
+ #endif /* CONFIG_DEV_PAGEMAP_OPS */
+diff --git a/mm/swap.c b/mm/swap.c
+index bcab5db351184a..83451ac70d0f05 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -113,36 +113,14 @@ static void __put_compound_page(struct page *page)
+ 	destroy_compound_page(page);
+ }
+ 
+-#ifdef CONFIG_DEV_PAGEMAP_OPS
+-static void __put_devmap_managed_page(struct page *page)
+-{
+-	if (!static_branch_unlikely(&devmap_managed_key))
+-		return;
+-
+-	switch (page->pgmap->type) {
+-	case MEMORY_DEVICE_PRIVATE:
+-	case MEMORY_DEVICE_FS_DAX:
+-		free_devmap_managed_page(page);
+-		break;
+-	default:
+-		break;
+-	}
+-}
+-#else
+-static inline void __put_devmap_managed_page(struct page *page)
+-{
+-}
+-#endif
+-
+ void __put_page(struct page *page)
+ {
+ 	if (is_zone_device_page(page)) {
+-		__put_devmap_managed_page(page);
+-
+ 		/*
+ 		 * The page belongs to the device that created pgmap. Do
+ 		 * not return it to page allocator.
+ 		 */
++		free_zone_device_page(page);
+ 		return;
+ 	}
+ 
+@@ -923,7 +901,7 @@ void release_pages(struct page **pages, int nr)
+ 						       flags);
+ 				locked_pgdat = NULL;
+ 			}
+-			__put_devmap_managed_page(page);
++			free_zone_device_page(page);
+ 			return;
+ 		}
+ 
