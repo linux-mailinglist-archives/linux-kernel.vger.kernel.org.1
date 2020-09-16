@@ -2,145 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76BF26CA3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B667626CA67
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727333AbgIPTwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:52:31 -0400
-Received: from mail-bn8nam12on2089.outbound.protection.outlook.com ([40.107.237.89]:27841
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727904AbgIPTwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 15:52:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hjgXLLcuNG9tzeDZESfqxzaK2YSSaUS/d5ABCn5pbx2ZfnnzUnYLV5ez/LhmlmvVQ+T55dLe/p61LrayvJWBrL8RvFCvn5Wjje+kW3z6zgYncLTBZCQU52uVjzww1oQMIx6klqcKXJkzXqJtaAqW/x2r0kvM2GFRL1KqsE0jxghXXBYOV+x+zcUiZOPRKYlNXVrX6QPWxiTp0+NSXX7hNmdVPcdvknpAt6JO8aSUnTja7KyMDQrrxMSAh5H5ohANs9BvPzv1at9Lzfbkqap6Pi+gKwkSSOVE/vySuUH/9orAX8z4P0XlXOGEgXM4Hx30pQhnIHyIIyn4C/HUw/VaxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SZ5bohymRVyrFC0kixiHJP+pGz+l+XM0BWqSiog4A90=;
- b=mCthpom6SX7nTBSVbEl0QtFXTbvLGQK9m1uX047GV7I1/7n19v7yQaY+aP1PtEagAJRUhhAju3mUwM7OCV2Q6WhEyyZeB1wCq5G98NHLX1Z1SCK3n8+yOoCYi1RQT65gX0s8zCmT0KX4y9b9e22o8Nk+aMbDxDgbeMIfAiXE334O/JpHzVBc0brlfu+VNpX7Ln8C9Bgy2UGFTwyH2oTpc4jbruxq+TkqrsmZ9RXfHPrAB2JFfT5LxnQDu92r3zGB0x3KQQGOrupLw74rbnGts9qYvsjdfEkqBdlg9GgBAN1eBZTklkjuj5dNdF1HpOEO5/IXvOpD569FyW9nfgSyZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SZ5bohymRVyrFC0kixiHJP+pGz+l+XM0BWqSiog4A90=;
- b=LVYRmGuIfs0Gvuk64vUrsTUOeqNnxIcTMHOxgYPmHThFddwmuFjwsK2zKyWRu6dN8LSWUxhyLOh5YyMookkFrJH/8Rg87hho1P88vN9Gg5nUQxGm3ETxA0xaNBsW9H1D7cG11oszXTy2O0qcVVQTHlZv/oc8bxElRTt+QyLzZAs=
-Authentication-Results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN6PR12MB1571.namprd12.prod.outlook.com (2603:10b6:405:4::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
- 2020 19:52:03 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::b038:2a58:64e0:2a3e]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::b038:2a58:64e0:2a3e%4]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
- 19:52:03 +0000
-Date:   Wed, 16 Sep 2020 14:51:52 -0500
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, x86@kernel.org,
-        Smita.KoralahalliChannabasappa@amd.com
-Subject: Re: [PATCH v2 1/8] x86/CPU/AMD: Save NodeId on AMD-based systems
-Message-ID: <20200916195152.GA3042858@yaz-nikka.amd.com>
-References: <20200903200144.310991-1-Yazen.Ghannam@amd.com>
- <20200903200144.310991-2-Yazen.Ghannam@amd.com>
- <20200909180647.GF12237@zn.tnic>
- <20200909201755.GB3014671@yaz-nikka.amd.com>
- <20200910101443.GC8357@zn.tnic>
- <20200914192039.GA39519@yaz-nikka.amd.com>
- <20200915083259.GC14436@zn.tnic>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915083259.GC14436@zn.tnic>
-X-ClientProxiedBy: DM6PR08CA0041.namprd08.prod.outlook.com
- (2603:10b6:5:1e0::15) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from yaz-nikka.amd.com (165.204.78.2) by DM6PR08CA0041.namprd08.prod.outlook.com (2603:10b6:5:1e0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend Transport; Wed, 16 Sep 2020 19:52:02 +0000
-X-Originating-IP: [165.204.78.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8dff4f86-ced7-48b0-f2d3-08d85a79fbab
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1571:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR12MB15711A9914DC7A44F48242C1F8210@BN6PR12MB1571.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wHM5K2XQVB6pHvz27mbTlDkGXsFL8uAm16/BFkv/6txgSGzLU+3k+hzAJkYNGKAEGbHcmsOcrMYNPXNeMLLN6aqt3gt8uP5VeiRsvipwY9RbaSSksDJMtJO/DQg5N/ng47jj8395EktjSmcfmF9Ff36XscMzw3GtB0agxD8V4cQ5ph1mLvbsXyTcGPOrKvedK9lnDnTw9WAP6vyZTRnmjYTYouIDZXx+PxLnAewlUDQvEeA3OX3yq6VXZJRtcWmOHRwRhx8dsMPL0AL3Z+Y78UFrK8f2Dj+6vU+3rwJ2BXgoQ4sON32vE+H68lmqJda5GFH0TnH9XsemaC71KAsbWvD8zfF1ZEGQ2TgMfmgOBqpfSqVTQ/LjVdpIg2x1islK0YpDtAIMi9nclDYUG5MSYvftGs2IPcsZBt+5XY2Pe+A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(396003)(346002)(136003)(376002)(478600001)(66476007)(66946007)(44832011)(55016002)(6666004)(16526019)(26005)(5660300002)(4326008)(186003)(956004)(66556008)(86362001)(1076003)(8936002)(83380400001)(7696005)(33656002)(316002)(8676002)(2906002)(52116002)(6916009)(98474003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: d/lE7fZWaKWwjaFdhNDDPnqPZX8PH1ra4t11529Cjkv8wfEixDDaqauXvjBcEwDdbFUl784FzQ1Yhz6Cwd97gJXXn+wL2yMlJFxnxHxhHkYV/CkcQuA/uncushkcCy17HWyuLSOIHShFBs13PdfDIv+au9YN4SD/iWhne8We60GTsm1jkL5bbaUibdNEoCr4LEQ+iOJRtlKznaodyBnGThXsmwLDKFUYTyvMF8BHxmGS+oZysjh9QbWnzNYBINcjIS8KYUKLe8eK8gHHHMjJGJ/BrApS9YYyTr/mvMHsxhd0MxFdFkkFvgD2+IfnRd/BkZFRUGQPKv++VzI+/cld0e/Ko9ZmyRfTVkP5BLknYGjyJ6R0LWIbnD/2DohnVMJtEnk3rOKGQ7CaKyBY+SzVIUEmBKrKS4tKEcRFNoeqAzNV1csaz1Kx6QzsDliLyMnUk/WoHj20S/qJRRlwHyWEJS+aV6DhDULbZaZJbZAp1RglIEXtZ4QBwvQv4VMjm7lsoeiwC7yxikbZACrJ3LleTgDEgy3HZ/harMELPyh3HL2Xl8rp4lrKdRxdzARzCdCBduuCENkhyb7KhlEFvuDqhHziBgk7EBhIJk1j/JlCP3lMPQRGrvznGucuiA7MZLzFfnO2PIHxYk6gW2qcTuwj5w==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8dff4f86-ced7-48b0-f2d3-08d85a79fbab
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 19:52:03.5716
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5IR2RSjLgWPzd8/7VTcAyXpJB3o7wOS6OpO4YyW28x6E1AYm46PtBxXwOQ85rspSMs6gJC7oNd4PrWNANAV5Vw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1571
+        id S1727769AbgIPT6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:58:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15054 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727780AbgIPT4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 15:56:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600286184; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=/LCfAr6BAH7IdfVVVvfVBFWx6xFSZL9n6uUjXHmeWM8=; b=m6CocVWT62nxRWEHtkxZd5+Fzhy9kJxhQZ220iz6mgyXy2VNvv742YfUFO7ZB78IEJCs+4WB
+ n6pBNxcUwigrL2Cih62tE7aescUn0e4LEr0Inf1aHsWDIQxvKZEt7lh3pEaMgN7LbU5SzePy
+ jBGCLNk/GuFQYvRn+CqpDEGTfwo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f626ddf6b1937bb657535f7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 19:56:15
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C91F8C433FE; Wed, 16 Sep 2020 19:56:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EE63FC433CA;
+        Wed, 16 Sep 2020 19:56:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EE63FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v6 0/4] user space client interface driver
+Date:   Wed, 16 Sep 2020 12:56:03 -0700
+Message-Id: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:35:15AM +0200, Borislav Petkov wrote:
-...
-> > Yeah, I think example 4b works here. The mismatch though is with
-> > phys_proc_id and package on AMD systems. You can see above that
-> > phys_proc_id gives a socket number, and the AMD NodeId gives a package
-> > number.
-> 
-> Ok, now looka here:
-> 
-> "  - cpuinfo_x86.logical_proc_id:
-> 
->     The logical ID of the package. As we do not trust BIOSes to enumerate the
->     packages in a consistent way, we introduced the concept of logical package
->     ID so we can sanely calculate the number of maximum possible packages in
->     the system and have the packages enumerated linearly."
-> 
-> Doesn't that sound like exactly what you need?
-> 
-> Because that DF ID *is* practically the package ID as there's 1:1
-> mapping between DF and a package, as you say above.
-> 
-> Right?
-> 
-> Now, it says
-> 
-> [    7.670791] smpboot: Max logical packages: 2
-> 
-> on my Rome box but what you want sounds very much like the logical
-> package ID and if we define that on AMD to be that and document it this
-> way, I guess that should work too, provided there are no caveats like
-> sched is using this info for proper task placement and so on. That would
-> need code audit, of course...
->
+V6:
+- Moved uci.c to mhi directory.
+- Updated Kconfig to add module information.
+- Updated Makefile to rename uci object file name as mhi_uci
+- Removed kref for open count
 
-The only use of logical_proc_id seems to be in hswep_uncore_cpu_init().
-So I think maybe we can use this.
+V5:
+- Removed mhi_uci_drv structure.
+- Used idr instead of creating global list of uci devices.
+- Used kref instead of local ref counting for uci device and
+  open count.
+- Removed unlikely macro.
 
-However, I think there are two issues.
+V4:
+- Fix locking to protect proper struct members.
+- Updated documentation describing uci client driver use cases.
+- Fixed uci ref counting in mhi_uci_open for error case.
+- Addressed style related review comments.
 
-1) The logical_proc_id seems like it should refer to the same type of
-structure as phys_proc_id. In our case, this won't be true as
-phys_proc_id would refer to the "socket" on AMD and logical_proc_id
-would refer to the package/AMD NodeId.
+V3: Added documentation for MHI UCI driver.
 
-2) The AMD NodeId is read during c_init()/init_amd(), so logical_proc_id
-can be set here. But then logical_proc_id will get overwritten later in 
-topology_update_package_map(). I don't know if it'd be good to modify
-the generic flow to support this vendor-specific behavior.
+V2: Added mutex lock to prevent multiple readers to access same
+mhi buffer which can result into use after free.
 
-What do you think?
+Hemant Kumar (4):
+  bus: mhi: core: Add helper API to return number of free TREs
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
+  docs: Add documentation for userspace client interface
+  bus: mhi: Add userspace client interface driver
 
-Thanks,
-Yazen
+ Documentation/mhi/index.rst     |   1 +
+ Documentation/mhi/uci.rst       |  39 +++
+ drivers/bus/mhi/Kconfig         |  13 +
+ drivers/bus/mhi/Makefile        |   4 +
+ drivers/bus/mhi/core/internal.h |   1 -
+ drivers/bus/mhi/core/main.c     |  12 +
+ drivers/bus/mhi/uci.c           | 657 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mhi.h             |  12 +
+ 8 files changed, 738 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/mhi/uci.rst
+ create mode 100644 drivers/bus/mhi/uci.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
