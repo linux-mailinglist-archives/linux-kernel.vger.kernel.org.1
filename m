@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4D726C878
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7A126C87B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgIPSuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:50:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47818 "EHLO mail.kernel.org"
+        id S1728078AbgIPSvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:51:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50312 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728239AbgIPStl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:49:41 -0400
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D283F2222D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 18:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600282180;
-        bh=16sTH0SegakzZKBjY8U3FsytaAxRFzwi1y28PIc8vKg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=A8v0KRNufPmq2ID94lvuAYBLHSHS5ug/gBN4O948j2OLRL/yNp7TGrcaoMc8dhzbO
-         gakR5PNyJc34jx5b5aXJZqOG+ECqvTX6r+JpS79zCVia6YDkI+sbXhF5mFPtKxxwmH
-         lKt5qdjIMkNtCN34jJEvfHrZYNfN+/RBAbfSnBT8=
-Received: by mail-ed1-f49.google.com with SMTP id w1so7538370edr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:49:39 -0700 (PDT)
-X-Gm-Message-State: AOAM532Oyw4DjdO3r3R9JADCQvkvm0b+GkHIErra65tScYurHcWCGbic
-        8bMT8FWNU9ZHBsQ/XY9w8CjNLefQoDk754xRIk6NSg==
-X-Google-Smtp-Source: ABdhPJwUX3bHQLCL84qG4wIC/JlN+nYNkgmXwAB8lo/1k8NF8oo4sGXt7L/6GSwGvTFkR4oICcgx71syaFhCR+ehMOk=
-X-Received: by 2002:a5d:5111:: with SMTP id s17mr28001448wrt.70.1600282177590;
- Wed, 16 Sep 2020 11:49:37 -0700 (PDT)
+        id S1727499AbgIPSup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:50:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A4D40AF6D;
+        Wed, 16 Sep 2020 18:50:58 +0000 (UTC)
 MIME-Version: 1.0
-References: <20200916072842.3502-1-rppt@kernel.org>
-In-Reply-To: <20200916072842.3502-1-rppt@kernel.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 16 Sep 2020 11:49:25 -0700
-X-Gmail-Original-Message-ID: <CALCETrV6nFQ4tzhxKPSnK+Ec=U8ojY0k_-G2EqEG-WMGT4TkUw@mail.gmail.com>
-Message-ID: <CALCETrV6nFQ4tzhxKPSnK+Ec=U8ojY0k_-G2EqEG-WMGT4TkUw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/5] mm: introduce memfd_secret system call to create
- "secret" memory areas
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-riscv@lists.infradead.org, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Sep 2020 20:50:41 +0200
+From:   osalvador@suse.de
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Wei Liu <wei.liu@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH RFC 0/4] mm: place pages to the freelist tail when onling
+ and undoing isolation
+In-Reply-To: <20200916183411.64756-1-david@redhat.com>
+References: <20200916183411.64756-1-david@redhat.com>
+User-Agent: Roundcube Webmail
+Message-ID: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
+X-Sender: osalvador@suse.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 12:28 AM Mike Rapoport <rppt@kernel.org> wrote:
->
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> Hi,
->
-> This is an implementation of "secret" mappings backed by a file descriptor.
-> I've dropped the boot time reservation patch for now as it is not strictly
-> required for the basic usage and can be easily added later either with or
-> without CMA.
->
-> v5 changes:
-> * rebase on v5.9-rc5
-> * drop boot time memory reservation patch
->
-> v4 changes:
-> * rebase on v5.9-rc1
-> * Do not redefine PMD_PAGE_ORDER in fs/dax.c, thanks Kirill
-> * Make secret mappings exclusive by default and only require flags to
->   memfd_secret() system call for uncached mappings, thanks again Kirill :)
->
-> v3 changes:
-> * Squash kernel-parameters.txt update into the commit that added the
->   command line option.
-> * Make uncached mode explicitly selectable by architectures. For now enable
->   it only on x86.
->
-> v2 changes:
-> * Follow Michael's suggestion and name the new system call 'memfd_secret'
-> * Add kernel-parameters documentation about the boot option
-> * Fix i386-tinyconfig regression reported by the kbuild bot.
->   CONFIG_SECRETMEM now depends on !EMBEDDED to disable it on small systems
->   from one side and still make it available unconditionally on
->   architectures that support SET_DIRECT_MAP.
->
-> The file descriptor backing secret memory mappings is created using a
-> dedicated memfd_secret system call The desired protection mode for the
-> memory is configured using flags parameter of the system call. The mmap()
-> of the file descriptor created with memfd_secret() will create a "secret"
-> memory mapping. The pages in that mapping will be marked as not present in
-> the direct map and will have desired protection bits set in the user page
-> table. For instance, current implementation allows uncached mappings.
+On 2020-09-16 20:34, David Hildenbrand wrote:
+> When adding separate memory blocks via add_memory*() and onlining them
+> immediately, the metadata (especially the memmap) of the next block 
+> will be
+> placed onto one of the just added+onlined block. This creates a chain
+> of unmovable allocations: If the last memory block cannot get
+> offlined+removed() so will all dependant ones. We directly have 
+> unmovable
+> allocations all over the place.
+> 
+> This can be observed quite easily using virtio-mem, however, it can 
+> also
+> be observed when using DIMMs. The freshly onlined pages will usually be
+> placed to the head of the freelists, meaning they will be allocated 
+> next,
+> turning the just-added memory usually immediately un-removable. The
+> fresh pages are cold, prefering to allocate others (that might be hot)
+> also feels to be the natural thing to do.
+> 
+> It also applies to the hyper-v balloon xen-balloon, and ppc64 dlpar: 
+> when
+> adding separate, successive memory blocks, each memory block will have
+> unmovable allocations on them - for example gigantic pages will fail to
+> allocate.
+> 
+> While the ZONE_NORMAL doesn't provide any guarantees that memory can 
+> get
+> offlined+removed again (any kind of fragmentation with unmovable
+> allocations is possible), there are many scenarios (hotplugging a lot 
+> of
+> memory, running workload, hotunplug some memory/as much as possible) 
+> where
+> we can offline+remove quite a lot with this patchset.
 
-I still have serious concerns with uncached mappings.  I'm not saying
-I can't be convinced, but I'm not currently convinced that we should
-allow user code to create UC mappings on x86.
+Hi David,
 
---Andy
+I did not read through the patchset yet, so sorry if the question is 
+nonsense, but is this not trying to fix the same issue the vmemmap 
+patches did? [1]
+
+I was about to give it a new respin now that thw hwpoison stuff has been 
+settled.
+
+[1] https://patchwork.kernel.org/cover/11059175/
+> 
