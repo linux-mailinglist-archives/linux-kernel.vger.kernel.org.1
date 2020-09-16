@@ -2,166 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7460126C89E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14A526C792
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgIPSys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727605AbgIPR6I (ORCPT
+        id S1728109AbgIPSam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:30:42 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36588 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727941AbgIPS37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:58:08 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B032C02526E;
-        Wed, 16 Sep 2020 05:23:14 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k8so518777pfk.2;
-        Wed, 16 Sep 2020 05:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SO0Ex4Ya6mRvIxqSXq6/Ym0CZ/B5t5LeMXgsGfBB4Fc=;
-        b=novr6WWX8fdVkdvdJeDqfgQgieWTgpBpGyXMKup4fVRcSP0NVo27LvsQgKul+MpioA
-         C87TFhwVaOBEOlcAM6necJHJHfTXkVKqFJBqBM0l4dHus9+IpWRE+u2+OL6hj1TtFjDC
-         EjIYsqQFKHaDneM1iTj2tpJ7HzQuulJU+a8OhbOmw5DGBTOymAB8XSN3aF7knZxk+gDD
-         4gM+oWa8xQClRjRdObPiX1MTlcwxPuVu2RE3tzdUekRq58J4VVC4ZlbdkBWJ9nKJikf3
-         pJiM1BMHLAUkCO1SHEfhcXBEaNzmPSvhhudbykDEe4kwK4NmseJgJw9aZlDvCUp1U7iq
-         sfEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SO0Ex4Ya6mRvIxqSXq6/Ym0CZ/B5t5LeMXgsGfBB4Fc=;
-        b=LintwFUS8ibPH8dQgdOPBdqKa8m9HD8qcPPOEI5CItTMU2q7eYu8AWc5IYfuvE9PZq
-         jkiA551fyJhnG+QGeum+GlgLlr3KxqW+l7lRTPDMb+TrVeh1KD3WIQ7v7gqsf4A4L4CG
-         vK4DWx0X2gTVN6gh4duAfwrrQ2O1up/VjXmfpcANV0eCUzLACAFGGL+hfq/CvIgpi+xl
-         WZwZQIZWP3N+fM1muHIURnnge5HH4vTHe6kvysupdWAU7v+7MFoxXw4gYARLtCdmOui1
-         BSPCwHfVWmwc466YWKwtYCD+zN6p89G6agy4bD/3QFwUjNVl5vnPubqQycknxLUoqcCW
-         WuNQ==
-X-Gm-Message-State: AOAM532BJoOJ5/SYoOjVhhvftFuT11jyz0/bDRWtsCdVVUcUmhP7wA8v
-        Yhs5qZ4nLHoOOQkBxJQsUPU=
-X-Google-Smtp-Source: ABdhPJxKuaW/PLmdWfNmMICKBuNfnQtk22cI3eWSLMn8CZO3nteLRn4T87oOg934C0TnONScFhiicA==
-X-Received: by 2002:a63:5ec5:: with SMTP id s188mr18361332pgb.218.1600258992545;
-        Wed, 16 Sep 2020 05:23:12 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:29a5:9632:a091:4adb])
-        by smtp.gmail.com with ESMTPSA id n21sm14796147pgl.7.2020.09.16.05.23.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 05:23:11 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Wang Hai <wanghai38@huawei.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next] net/packet: Fix a comment about mac_header
-Date:   Wed, 16 Sep 2020 05:23:08 -0700
-Message-Id: <20200916122308.11678-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 16 Sep 2020 14:29:59 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiejE029151;
+        Wed, 16 Sep 2020 07:44:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600260280;
+        bh=gEyDrvzwJLdbtGthrXmK6DEEay7wSQ0T8vikD8Ijg2E=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Jwoz1c8l/7eoZ7hbzi4gZZVFm33FX9cdyTtNlDWfz6XauuGG9liFix5nr+QliJw5r
+         BqJqL9lOXpKUlGkslRFNCnI0CZUd2rkY/lRd2kFM5j9uwCzNgJfkiWfdyUbm5jugPX
+         AjPL52zUcHem0WME7AqPF9pmoDFsKAubQTNkRFQU=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCieRm086593
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 07:44:40 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
+ Sep 2020 07:44:40 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 16 Sep 2020 07:44:40 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpa125391;
+        Wed, 16 Sep 2020 07:44:37 -0500
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Subject: [PATCH v13 06/15] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+Date:   Wed, 16 Sep 2020 18:14:09 +0530
+Message-ID: <20200916124418.833-7-p.yadav@ti.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Change all "dev->hard_header" to "dev->header_ops"
+This table is indication that the flash is xSPI compliant and hence
+supports octal DTR mode. Extract information like the fast read opcode,
+dummy cycles, the number of dummy cycles needed for a Read Status
+Register command, and the number of address bytes needed for a Read
+Status Register command.
 
-2. On receiving incoming frames when header_ops == NULL:
+We don't know what speed the controller is running at. Find the fast
+read dummy cycles for the fastest frequency the flash can run at to be
+sure we are never short of dummy cycles. If nothing is available,
+default to 20. Flashes that use a different value should update it in
+their fixup hooks.
 
-The comment only says what is wrong, but doesn't say what is right.
-This patch changes the comment to make it clear what is right.
+Since we want to set read settings, expose spi_nor_set_read_settings()
+in core.h.
 
-3. On transmitting and receiving outgoing frames when header_ops == NULL:
-
-The comment explains that the LL header will be later added by the driver.
-
-However, I think it's better to simply say that the LL header is invisible
-to us. This phrasing is better from a software engineering perspective,
-because this makes it clear that what happens in the driver should be
-hidden from us and we should not care about what happens internally in the
-driver.
-
-4. On resuming the LL header (for RAW frames) when header_ops == NULL:
-
-The comment says we are "unlikely" to restore the LL header.
-
-However, we should say that we are "unable" to restore it.
-It's not possible (rather than not likely) to restore it, because:
-
-1) There is no way for us to restore because the LL header internally
-processed by the driver should be invisible to us.
-
-2) In function packet_rcv and tpacket_rcv, the code only tries to restore
-the LL header when header_ops != NULL.
-
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- net/packet/af_packet.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/mtd/spi-nor/core.c |  2 +-
+ drivers/mtd/spi-nor/core.h | 10 +++++
+ drivers/mtd/spi-nor/sfdp.c | 91 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 102 insertions(+), 1 deletion(-)
 
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 2d5d5fbb435c..f59fa26d4826 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -105,42 +105,43 @@
-    - packet socket receives packets with pulled ll header,
-      so that SOCK_RAW should push it back.
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 7445d7122304..cbb1aab27d03 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2333,7 +2333,7 @@ static int spi_nor_check(struct spi_nor *nor)
+ 	return 0;
+ }
  
- On receive:
- -----------
+-static void
++void
+ spi_nor_set_read_settings(struct spi_nor_read_command *read,
+ 			  u8 num_mode_clocks,
+ 			  u8 num_wait_states,
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 125d27b0a72f..42ec7692d8e7 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -192,6 +192,9 @@ struct spi_nor_locking_ops {
+  *
+  * @size:		the flash memory density in bytes.
+  * @page_size:		the page size of the SPI NOR flash memory.
++ * @rdsr_dummy:		dummy cycles needed for Read Status Register command.
++ * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
++ *			command.
+  * @hwcaps:		describes the read and page program hardware
+  *			capabilities.
+  * @reads:		read capabilities ordered by priority: the higher index
+@@ -214,6 +217,8 @@ struct spi_nor_locking_ops {
+ struct spi_nor_flash_parameter {
+ 	u64				size;
+ 	u32				page_size;
++	u8				rdsr_dummy;
++	u8				rdsr_addr_nbytes;
  
--Incoming, dev->hard_header!=NULL
-+Incoming, dev->header_ops != NULL
-    mac_header -> ll header
-    data       -> data
+ 	struct spi_nor_hwcaps		hwcaps;
+ 	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+@@ -425,6 +430,11 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
  
--Outgoing, dev->hard_header!=NULL
-+Outgoing, dev->header_ops != NULL
-    mac_header -> ll header
-    data       -> ll header
+ int spi_nor_hwcaps_read2cmd(u32 hwcaps);
+ u8 spi_nor_convert_3to4_read(u8 opcode);
++void spi_nor_set_read_settings(struct spi_nor_read_command *read,
++			       u8 num_mode_clocks,
++			       u8 num_wait_states,
++			       u8 opcode,
++			       enum spi_nor_protocol proto);
+ void spi_nor_set_pp_settings(struct spi_nor_pp_command *pp, u8 opcode,
+ 			     enum spi_nor_protocol proto);
  
--Incoming, dev->hard_header==NULL
--   mac_header -> UNKNOWN position. It is very likely, that it points to ll
--		 header.  PPP makes it, that is wrong, because introduce
--		 assymetry between rx and tx paths.
-+Incoming, dev->header_ops == NULL
-+   mac_header -> data
-+     However drivers often make it point to the ll header.
-+     This is incorrect because the ll header should be invisible to us.
-    data       -> data
- 
--Outgoing, dev->hard_header==NULL
--   mac_header -> data. ll header is still not built!
-+Outgoing, dev->header_ops == NULL
-+   mac_header -> data. ll header is invisible to us.
-    data       -> data
- 
- Resume
--  If dev->hard_header==NULL we are unlikely to restore sensible ll header.
-+  If dev->header_ops == NULL we are unable to restore the ll header,
-+    because it is invisible to us.
- 
- 
- On transmit:
- ------------
- 
--dev->hard_header != NULL
-+dev->header_ops != NULL
-    mac_header -> ll header
-    data       -> ll header
- 
--dev->hard_header == NULL (ll header is added by device, we cannot control it)
-+dev->header_ops == NULL (ll header is invisible to us)
-    mac_header -> data
-    data       -> data
- 
-    We should set nh.raw on output to correct posistion,
-    packet classifier depends on it.
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index c77655968f80..cadb1ed27ffe 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2014, Freescale Semiconductor, Inc.
   */
+ 
++#include <linux/bitfield.h>
+ #include <linux/slab.h>
+ #include <linux/sort.h>
+ #include <linux/mtd/spi-nor.h>
+@@ -19,6 +20,7 @@
+ #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
+ #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
+ #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
++#define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
+ 
+ #define SFDP_SIGNATURE		0x50444653U
+ 
+@@ -1108,6 +1110,91 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 	return ret;
+ }
+ 
++#define PROFILE1_DWORD1_RDSR_ADDR_BYTES		BIT(29)
++#define PROFILE1_DWORD1_RDSR_DUMMY		BIT(28)
++#define PROFILE1_DWORD1_RD_FAST_CMD		GENMASK(15, 8)
++#define PROFILE1_DWORD4_DUMMY_200MHZ		GENMASK(11, 7)
++#define PROFILE1_DWORD5_DUMMY_166MHZ		GENMASK(31, 27)
++#define PROFILE1_DWORD5_DUMMY_133MHZ		GENMASK(21, 17)
++#define PROFILE1_DWORD5_DUMMY_100MHZ		GENMASK(11, 7)
++#define PROFILE1_DUMMY_DEFAULT			20
++
++/**
++ * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
++ * @nor:		pointer to a 'struct spi_nor'
++ * @profile1_header:	pointer to the 'struct sfdp_parameter_header' describing
++ *			the 4-Byte Address Instruction Table length and version.
++ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_parse_profile1(struct spi_nor *nor,
++				  const struct sfdp_parameter_header *profile1_header,
++				  struct spi_nor_flash_parameter *params)
++{
++	u32 *dwords, addr;
++	size_t len;
++	int ret;
++	u8 dummy, opcode;
++
++	len = profile1_header->length * sizeof(*dwords);
++	dwords = kmalloc(len, GFP_KERNEL);
++	if (!dwords)
++		return -ENOMEM;
++
++	addr = SFDP_PARAM_HEADER_PTP(profile1_header);
++	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
++	if (ret)
++		goto out;
++
++	le32_to_cpu_array(dwords, profile1_header->length);
++
++	/* Get 8D-8D-8D fast read opcode and dummy cycles. */
++	opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, dwords[0]);
++
++	 /* Set the Read Status Register dummy cycles and dummy address bytes. */
++	if (dwords[0] & PROFILE1_DWORD1_RDSR_DUMMY)
++		params->rdsr_dummy = 8;
++	else
++		params->rdsr_dummy = 4;
++
++	if (dwords[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
++		params->rdsr_addr_nbytes = 4;
++	else
++		params->rdsr_addr_nbytes = 0;
++
++	/*
++	 * We don't know what speed the controller is running at. Find the
++	 * dummy cycles for the fastest frequency the flash can run at to be
++	 * sure we are never short of dummy cycles. A value of 0 means the
++	 * frequency is not supported.
++	 *
++	 * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
++	 * flashes set the correct value if needed in their fixup hooks.
++	 */
++	dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, dwords[3]);
++	if (!dummy)
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, dwords[4]);
++	if (!dummy)
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, dwords[4]);
++	if (!dummy)
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, dwords[4]);
++	if (!dummy)
++		dummy = PROFILE1_DUMMY_DEFAULT;
++
++	/* Round up to an even value to avoid tripping controllers up. */
++	dummy = round_up(dummy, 2);
++
++	/* Update the fast read settings. */
++	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
++				  0, dummy, opcode,
++				  SNOR_PROTO_8_8_8_DTR);
++
++out:
++	kfree(dwords);
++	return ret;
++}
++
+ /**
+  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
+  * @nor:		pointer to a 'struct spi_nor'
+@@ -1209,6 +1296,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 			err = spi_nor_parse_4bait(nor, param_header, params);
+ 			break;
+ 
++		case SFDP_PROFILE1_ID:
++			err = spi_nor_parse_profile1(nor, param_header, params);
++			break;
++
+ 		default:
+ 			break;
+ 		}
 -- 
-2.25.1
+2.28.0
 
