@@ -2,165 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F9226C065
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2359126C048
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgIPJX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:23:28 -0400
-Received: from mail-bn8nam12on2135.outbound.protection.outlook.com ([40.107.237.135]:2273
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726243AbgIPJXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:23:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fC8Y/pH8neYKAThE7fd9P7rHFyuGvGSOZ71o5tRMxvzwklRjA6NJmQMoN7sDZS1K1jRHIRtvS/WMb1W+gIDRsAENmKXXIHCLHacF6vsEksvLMmixZtRNi9CZoX1TtYj8aR9TwF+X/dYprCkr817sOwkKgDEskQV3vSupihI4xmkZp+ZLhRMVP+SQLoV6czCd0f3ob8+9o/NsJjy4EQcf8Bhhl88gTrmNUQ+GBVPHkUmvmHP1ntPOBh+ip1S+wT4V93udKNW1XrvWTd3Nu/BhY7qPgKUT/QYh5KZjxV0pOtvUpVS+/zE64uMu4CBPYgzJMAfR2C9tQdIHxtR1/Qt9pw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CIoE/htBsA6fTejMxQzuVVxCxAW9gdkskMDSoebDosA=;
- b=QPUY1Vm5tZk/Mh+0+oZ4Jivgo1jgK2TEOSnjFSvTOflkh90JesUkcAjac7Z0sMLmo9B3NOiH85ipl0rkJiEmzTFE6J1P0fqWOlFWdfBi0a2wD1TK2JQYRI5Hvxg8FR5stmASbGTN4yI4qq+LOyIr0iS9PdPW0mQaQHN1CzmBnnSa1WdXMQ1O3j84iCiibf+ap+HA6s2LvRC4ncYl1WUT05FZRzyZNq9fyUNZRUJgL+mOXCCZxHzaFyAScYHIW+HsmsT/FFcWppXbPPBCJ4c0ICgxhBJaV+iqkZ0+2PJ63jIdnZKkxxXA1LCglC3bhUikgFWGKhTTD5PvX5dVxL3iWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CIoE/htBsA6fTejMxQzuVVxCxAW9gdkskMDSoebDosA=;
- b=IhHIJ7y+/MOESQrQQVmYhmqK8TVpKCe/0NHy7YPRNHgjcFYCntEQPI8v6fSXOrQFC0VU9zkvF2miXdT6KMJ7AIgH5N0OO/o9bLfb/C8aZ5e7twQzKJVIfK7Z01BQh1Y+pDxx1O9LfcP3vwmLFxhUQJRmgT8HB/kEDEfeg0k1Izg=
-Authentication-Results: analogixsemi.com; dkim=none (message not signed)
- header.d=none;analogixsemi.com; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB4648.namprd04.prod.outlook.com (2603:10b6:a03:59::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 16 Sep
- 2020 09:23:16 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::1dc0:7d4b:9820:e68]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::3c04:982f:7d75:779e%7]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
- 09:23:16 +0000
-Date:   Wed, 16 Sep 2020 17:16:47 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>
-Subject: [PATCH v15 0/2] Add initial support for slimport anx7625
-Message-ID: <cover.1600239656.git.xji@analogixsemi.com>
+        id S1726653AbgIPJSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIPJRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 05:17:55 -0400
+Received: from hillosipuli.retiisi.org.uk (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97D0C06174A;
+        Wed, 16 Sep 2020 02:17:54 -0700 (PDT)
+Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 36E46634C8C;
+        Wed, 16 Sep 2020 12:17:07 +0300 (EEST)
+Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@retiisi.org.uk>)
+        id 1kITYp-0001lS-C0; Wed, 16 Sep 2020 12:17:07 +0300
+Date:   Wed, 16 Sep 2020 12:17:07 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        kieran.bingham@ideasonboard.com, jorhand@linux.microsoft.com,
+        kitakar@gmail.com
+Subject: Re: [PATCH v2] software_node: Add support for fwnode_graph*() family
+ of functions
+Message-ID: <20200916091707.GL834@valkosipuli.retiisi.org.uk>
+References: <20200915232827.3416-1-djrscally@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-ClientProxiedBy: HKAPR03CA0017.apcprd03.prod.outlook.com
- (2603:1096:203:c8::22) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-user (114.247.245.146) by HKAPR03CA0017.apcprd03.prod.outlook.com (2603:1096:203:c8::22) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3391.6 via Frontend Transport; Wed, 16 Sep 2020 09:23:15 +0000
-X-Originating-IP: [114.247.245.146]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e2c37a11-779b-4bd8-eb55-08d85a222459
-X-MS-TrafficTypeDiagnostic: BYAPR04MB4648:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB464855BC30C35F327B8A4C22C7210@BYAPR04MB4648.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hFSHUz4UQj0b77ug/fFhK8TrdkwWCp7lVXs9+FcpVdcSfEI8rYWYsZZXLSI5vUzJtysSKEyzhL22Fwv+4N5frLCZBqDPHNnN8bEi6HF9MNEQJtLrpUeEHsNV/8Tr/2ZXI3jDoefVUzE2antXg0k+qIdH5B/zgP8kBkuDpJv7uPx6/s4FBTO6k0ZmrR53yfab2NQAy5XvCbRqQvCW8mXiqucqsPtbv1duwtJ5RRmYAc/1qKGdDq6xx9K2EFe/DDuHH+R7myapZSDb7i9ni2Sa4ft+dKUiC1MNUpz23kWaweAbMP5YujVFxJo/0ZDTJpa7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(366004)(39840400004)(396003)(26005)(66946007)(110136005)(2616005)(956004)(478600001)(4326008)(107886003)(6486002)(66556008)(66476007)(8676002)(6496006)(7416002)(86362001)(16526019)(52116002)(186003)(83380400001)(6666004)(54906003)(316002)(8936002)(5660300002)(2906002)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: aAo03JpSj6/m4XorsoLdR8lVn1P15sgJpOMFCxbj1ThyyjzAPlV5rZnCwkLX4m/PvpcWomCp8VhqiubtZFYPwtrMBeHs8A1XmvXA773a3hIxgXOPZxdNoJcC5bBiQlIWGOiMfz4QMdHJaX1eF1Bwi4xAOlEdIn07GCGAqGZyJqX6bFNIFlle09WfQtvFSU/OSy7jBSIglsh4io9ht3xPS5lHUWYWPCpuJrsLKb4cvIeuMpYEf0iMiueW3QURuVWwm2XS7IoyLyJYNA4T4196EbDhGGg3L83Ta9N+8L/u/W9bsR+FSbtVaykOeUM3nzkeNaXnQkauJmXj0GwBN3OkCw2HfNy3zt9uBTtL1EV2uejwvRMnXDJusD1p/IO7jqUn0l7HskmA7FcIPjOZd+/AamHGf4tQzwQoaTIFEhfdsix+ET0zTGkqnirXRO3HkJ+eLeZEURq3NYTLU0JPN1eaE2D1AT9q5i3tgN5tnaHwu8pOc9ChAGJbuOtFiUIQJn3PdE9DH41ArwKNfJu09rn2xMiTQzKW+ZZCuHmXBUwa1h/VpnWnhQMN/SHyH4qH3T1/5leNIFwrSdsGVzjWyBvZnLXOY+ugGrZSFdUgTaQzIZrLaPBT+EFxqUsyOWm6ZzIPmD6WLU4WuAY5eu9ccxHm/g==
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2c37a11-779b-4bd8-eb55-08d85a222459
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 09:23:16.0157
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DnNf3Qo3qjkJ7NDvyBa0rKY8B5DY1lRqf8Gc16R1FDmNtVdd2HE9cru3t9uQ2yZB56QYja7kFMNb51BAK3YdmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4648
+In-Reply-To: <20200915232827.3416-1-djrscally@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Moi Daniel and Heikki,
 
-The following series add support for the Slimport ANX7625 transmitter, a
-ultra-low power Full-HD 4K MIPI to DP transmitter designed for portable device.
+On Wed, Sep 16, 2020 at 12:28:27AM +0100, Daniel Scally wrote:
+> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> 
+> This implements the remaining .graph_* callbacks in the
+> fwnode operations vector for the software nodes. That makes
+> the fwnode_graph*() functions available in the drivers also
+> when software nodes are used.
+> 
+> The implementation tries to mimic the "OF graph" as much as
+> possible, but there is no support for the "reg" device
+> property. The ports will need to have the index in their
+> name which starts with "port" (for example "port0", "port1",
+> ...) and endpoints will use the index of the software node
+> that is given to them during creation. The port nodes can
+> also be grouped under a specially named "ports" subnode,
+> just like in DT, if necessary.
+> 
+> The remote-endpoints are reference properties under the
+> endpoint nodes that are named "remote-endpoint". 
+> 
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Co-developed-by: Daniel Scally <djrscally@gmail.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> changes in v2:
+> 	- added software_node_device_is_available
+> 	- altered software_node_get_next_child to get references
+> 	- altered software_node_get_next_endpoint to release references
+> 	to ports and avoid passing invalid combinations of swnodes to
+> 	software_node_get_next_child
+> 	- altered swnode_graph_find_next_port to release port rather than
+> 	old
+> 	
+>  drivers/base/swnode.c | 129 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 127 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 010828fc785b..d69034b807e3 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -363,6 +363,11 @@ static void software_node_put(struct fwnode_handle *fwnode)
+>  	kobject_put(&swnode->kobj);
+>  }
+>  
+> +static bool software_node_device_is_available(const struct fwnode_handle *fwnode)
+> +{
+> +	return is_software_node(fwnode);
 
+This basically tells whether the device is there. Are there software node
+based devices, i.e. do you need this?
 
-This is the v15 version, any mistakes, please let me know, I will fix it in
-the next series.
+If you do really need this, then I guess this could just return true for
+now as if you somehow get here, the node is a software node anyway.
 
-Change history:
-v15: Fix comments from Sam and Hsin-Yi Wang
- - Remove connector
- - Allocate memory for edid at ".get_edid()"
+> +}
+> +
+>  static bool software_node_property_present(const struct fwnode_handle *fwnode,
+>  					   const char *propname)
+>  {
+> @@ -450,7 +455,7 @@ software_node_get_next_child(const struct fwnode_handle *fwnode,
+>  		c = list_next_entry(c, entry);
+>  	else
+>  		c = list_first_entry(&p->children, struct swnode, entry);
+> -	return &c->fwnode;
+> +	return software_node_get(&c->fwnode);
 
-v14: Fix comments from Sam and Nicolas
- - Check flags at drm_bridge_attach
- - Use panel_bridge instead of drm_panel
- - Fix not correct return value
+This looks like a bugfix that probably should or could be backported. Could
+you make it a separate patch, with a Fixes: tag?
 
-v13: Fix comments from Launrent Pinchart and Rob Herring
- - Picked up Rob's Reviewed-By
- - Add .detect and .get_edid interface in bridge funcs.
+>  }
+>  
+>  static struct fwnode_handle *
+> @@ -536,9 +541,125 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
+>  	return 0;
+>  }
+>  
+> +static struct fwnode_handle *
+> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
+> +			    struct fwnode_handle *port)
+> +{
+> +	struct fwnode_handle *old = port;
+> +
+> +	while ((port = software_node_get_next_child(parent, old))) {
+> +		if (!strncmp(to_swnode(port)->node->name, "port", 4))
+> +			return port;
+> +		fwnode_handle_put(port);
+> +		old = port;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
+> +				      struct fwnode_handle *endpoint)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	struct fwnode_handle *old = endpoint;
+> +	struct fwnode_handle *parent_of_old;
+> +	struct fwnode_handle *parent;
+> +	struct fwnode_handle *port;
+> +
+> +	if (!swnode)
+> +		return NULL;
+> +
+> +	if (endpoint) {
+> +		port = software_node_get_parent(endpoint);
+> +		parent = software_node_get_parent(port);
+> +	} else {
+> +		parent = software_node_get_named_child_node(fwnode, "ports");
+> +		if (!parent)
+> +			parent = software_node_get(&swnode->fwnode);
+> +
+> +		port = swnode_graph_find_next_port(parent, NULL);
+> +	}
+> +
+> +	for (; port; port = swnode_graph_find_next_port(parent, port)) {
+> +
+> +		if (old) {
+> +			parent_of_old = software_node_get_parent(old);
+> +
+> +			if (parent_of_old != port)
+> +				old = NULL;
+> +
+> +			fwnode_handle_put(parent_of_old);
+> +		}
+> +
+> +		endpoint = software_node_get_next_child(port, old);
+> +		fwnode_handle_put(old);
+> +		if (endpoint)
+> +			break;
+> +
+> +		fwnode_handle_put(port);
+> +	}
+> +
+> +	fwnode_handle_put(port);
+> +	software_node_put(parent);
 
-v12: Fix comments from Hsin-Yi Wang
- - Rebase the code on kernel 5.7, fix DRM interface not match issue.
+This probably should be fwnode_handle_put() as well as this is basically
+corresponding the device (i.e. likely not a software node).
 
-v11: Fix comments from Rob Herring
- - Update commit message.
- - Remove unused label.
-
-v10: Fix comments from Rob Herring, Daniel.
- - Fix dt_binding_check warning.
- - Update description.
-
-v9: Fix comments from Sam, Nicolas, Daniel
- - Remove extcon interface.
- - Remove DPI support.
- - Fix dt_binding_check complains.
- - Code clean up and update description.
-
-v8: Fix comments from Nicolas.
- - Fix several coding format.
- - Update description.
-
-v7:
- - Fix critical timing(eg:odd hfp/hbp) in "mode_fixup" interface,
-   enhance MIPI RX tolerance by setting register MIPI_DIGITAL_ADJ_1 to 0x3D.
-
-
-
-Xin Ji (2):
-  dt-bindings: drm/bridge: anx7625: MIPI to DP transmitter DT schema
-  drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP
-
- .../bindings/display/bridge/analogix,anx7625.yaml  |   95 +
- drivers/gpu/drm/bridge/analogix/Kconfig            |    9 +
- drivers/gpu/drm/bridge/analogix/Makefile           |    1 +
- drivers/gpu/drm/bridge/analogix/anx7625.c          | 1848 ++++++++++++++++++++
- drivers/gpu/drm/bridge/analogix/anx7625.h          |  390 +++++
- 5 files changed, 2343 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
- create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.c
- create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.h
+> +
+> +	return endpoint;
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	const struct software_node_ref_args *ref;
+> +	const struct property_entry *prop;
+> +
+> +	if (!swnode)
+> +		return NULL;
+> +
+> +	prop = property_entry_get(swnode->node->properties, "remote-endpoint");
+> +	if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
+> +		return NULL;
+> +
+> +	ref = prop->pointer;
+> +
+> +	return software_node_get(software_node_fwnode(ref[0].node));
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	struct fwnode_handle *parent;
+> +
+> +	if (!strcmp(swnode->parent->node->name, "ports"))
+> +		parent = &swnode->parent->parent->fwnode;
+> +	else
+> +		parent = &swnode->parent->fwnode;
+> +
+> +	return software_node_get(parent);
+> +}
+> +
+> +static int
+> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
+> +				   struct fwnode_endpoint *endpoint)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	int ret;
+> +
+> +	ret = kstrtou32(swnode->parent->node->name + 4, 10, &endpoint->port);
+> +	if (ret)
+> +		return ret;
+> +
+> +	endpoint->id = swnode->id;
+> +	endpoint->local_fwnode = fwnode;
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct fwnode_operations software_node_ops = {
+>  	.get = software_node_get,
+>  	.put = software_node_put,
+> +	.device_is_available = software_node_device_is_available,
+>  	.property_present = software_node_property_present,
+>  	.property_read_int_array = software_node_read_int_array,
+>  	.property_read_string_array = software_node_read_string_array,
+> @@ -547,7 +668,11 @@ static const struct fwnode_operations software_node_ops = {
+>  	.get_parent = software_node_get_parent,
+>  	.get_next_child_node = software_node_get_next_child,
+>  	.get_named_child_node = software_node_get_named_child_node,
+> -	.get_reference_args = software_node_get_reference_args
+> +	.get_reference_args = software_node_get_reference_args,
+> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
+> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
+> +	.graph_get_port_parent = software_node_graph_get_port_parent,
+> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
+>  };
+>  
+>  /* -------------------------------------------------------------------------- */
 
 -- 
-2.7.4
+Kind regards,
 
+Sakari Ailus
