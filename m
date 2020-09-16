@@ -2,108 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD2626C02D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BCA26C02C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgIPJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:09:13 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12304 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726129AbgIPJJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:09:10 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 787E2330D12FE261413A;
-        Wed, 16 Sep 2020 17:09:00 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
- 17:08:51 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm: mmap: Fix general protection fault in unlink_file_vma()
-Date:   Wed, 16 Sep 2020 05:07:33 -0400
-Message-ID: <20200916090733.31427-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726491AbgIPJI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgIPJIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 05:08:53 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ABEC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:08:52 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id k14so3523626pgi.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Qwm01cIWY/VsraWej7K5Ms+WL7l4tRX3I6VJ48fegEk=;
+        b=tDmtTdGvDCYHAAxoFRsjiLwoZ2x6hW6GcTNUAuD2gzS/h43T5Jar5Qcd/ILHN3l341
+         HvSPahmSnAErKjQCtSEdpukGU4TmzfUOHoip+TUWCeqLSMvG7sVC/hwimZa9kltrRnbd
+         quV6oJpIvvrbzF5mcH84qAe9un7bCy3onGOMAf8CnXUTecEgP9w8vbXq0PRuODLO6jFC
+         J73LMTG/SILK3Y1c+0K5007taZWcPy31QWu2VCRF51+Y7+Q3iOuVp8sCDRgcAWRFvhPf
+         osshUv7sxeFK39YsdYLY0Ky0EtKN+FJWAGtR+EE6QVpICFoo4Qh0bwIos6ra81kcwVAg
+         xStw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Qwm01cIWY/VsraWej7K5Ms+WL7l4tRX3I6VJ48fegEk=;
+        b=lCskigP6pYftEBDTciYhL8ivoSagL91CQ+vI8sZHISQ8ekiOrLWRtYvMxYauq4pfPr
+         gB3gR7ZIYRrwWdMh/skyEkkq/ElR2PDZnUrnUn3RN0QJIoCdqQ4hkiTsA0lbc59oMJuV
+         Kl8B80JtGXr1a/eIuKWA//07m9tfveS/fOvYb936j5txj5E9IxIs4AxO1ZEbKvgse5VX
+         5lN7Mvk4ExWalENZNYunuI+RQSnV6kmnDoo+pyeJWUjlIgjKhT4i9pAsREiwFMbZe2ay
+         DorUJ9MFg15NDw05ssZ0HD9Peg81WmtgBaocRCwqjGIH+K/mDhVWVLRdzup9DX4KU7D4
+         u8Rg==
+X-Gm-Message-State: AOAM533HkD6EQl/lKB2e9X7JWzrZx00QE707EJM8s4hvk5DdE35+T5VL
+        /lKQxcyWXGRJp+FWo6R/pbKsRQ==
+X-Google-Smtp-Source: ABdhPJxs6rsKzQ6o3iaNTmygSfIw778F1H3qX/p5YD9wMYhm5u6HZMs3NK7UuE0oCSNYZa8vbpj4Mw==
+X-Received: by 2002:a63:2e42:: with SMTP id u63mr1479728pgu.292.1600247331884;
+        Wed, 16 Sep 2020 02:08:51 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id y1sm13562457pgr.3.2020.09.16.02.08.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Sep 2020 02:08:51 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 14:38:44 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>, stephan@gerhold.net,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org, naresh.kamboju@linaro.org,
+        ulf.hansson@linaro.org
+Subject: Re: [PATCH] opp: Handle multiple calls for same OPP table in
+ _of_add_opp_table_v1()
+Message-ID: <20200916090844.ur4ysyg57injydz5@vireshk-i7>
+References: <99f1c7ff37b00d2f59fbce9d934abf23932363c5.1598956021.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <99f1c7ff37b00d2f59fbce9d934abf23932363c5.1598956021.git.viresh.kumar@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The syzbot reported the below general protection fault:
+On 01-09-20, 15:57, Viresh Kumar wrote:
+> Until now for V1 OPP bindings we used to call
+> dev_pm_opp_of_cpumask_add_table() first and then
+> dev_pm_opp_set_sharing_cpus() in the cpufreq-dt driver.
+> 
+> A later patch will though update the cpufreq-dt driver to optimize the
+> code a bit and we will call dev_pm_opp_set_sharing_cpus() first followed
+> by dev_pm_opp_of_cpumask_add_table(), which doesn't work well today as
+> it tries to re parse the OPP entries. This should work nevertheless for
+> V1 bindings as the same works for V2 bindings.
+> 
+> Adapt the same approach from V2 bindings and fix this.
+> 
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/opp/of.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+> index d8b623cc015a..6fc56660fa52 100644
+> --- a/drivers/opp/of.c
+> +++ b/drivers/opp/of.c
+> @@ -886,6 +886,16 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
+>  	const __be32 *val;
+>  	int nr, ret = 0;
+>  
+> +	mutex_lock(&opp_table->lock);
+> +	if (opp_table->parsed_static_opps) {
+> +		opp_table->parsed_static_opps++;
+> +		mutex_unlock(&opp_table->lock);
+> +		return 0;
+> +	}
+> +
+> +	opp_table->parsed_static_opps = 1;
+> +	mutex_unlock(&opp_table->lock);
+> +
+>  	prop = of_find_property(dev->of_node, "operating-points", NULL);
+>  	if (!prop)
+>  		return -ENODEV;
+> @@ -902,10 +912,6 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
+>  		return -EINVAL;
+>  	}
+>  
+> -	mutex_lock(&opp_table->lock);
+> -	opp_table->parsed_static_opps = 1;
+> -	mutex_unlock(&opp_table->lock);
+> -
+>  	val = prop->value;
+>  	while (nr) {
+>  		unsigned long freq = be32_to_cpup(val++) * 1000;
 
-general protection fault, probably for non-canonical address
-0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range
-[0x00777770000001d8-0x00777770000001df]
-CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 5.9.0-rc3-syzkaller #0
-RIP: 0010:unlink_file_vma+0x57/0xb0 mm/mmap.c:164
-Code: 4c 8b a5 a0 00 00 00 4d 85 e4 74 4e e8 92 d7 cd ff 49 8d bc 24
-d8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c
-02 00 75 3d 4d 8b b4 24 d8 01 00 00 4d 8d 6e 78 4c 89 ef e8
-RSP: 0018:ffffc9000ac0f9b0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88800010ceb0 RCX: ffffffff81592421
-RDX: 000eeeee0000003b RSI: ffffffff81a6736e RDI: 00777770000001d8
-RBP: ffff88800010ceb0 R08: 0000000000000001 R09: ffff88801291a50f
-R10: ffffed10025234a1 R11: 0000000000000001 R12: 0077777000000000
-R13: 00007f1eea0da000 R14: 00007f1eea0d9000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1eea11a9d0 CR3: 000000000007e000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- free_pgtables+0x1b3/0x2f0 mm/memory.c:415
- exit_mmap+0x2c0/0x530 mm/mmap.c:3184
- __mmput+0x122/0x470 kernel/fork.c:1076
- mmput+0x53/0x60 kernel/fork.c:1097
- exit_mm kernel/exit.c:483 [inline]
- do_exit+0xa8b/0x29f0 kernel/exit.c:793
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
- exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:167
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:242
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This wasn't enough. Merged this diff as well to this patch:
 
-It's because the ->mmap() callback can change vma->vm_file and fput the
-original file. But the commit d70cec898324 ("mm: mmap: merge vma after
-call_mmap() if possible") failed to catch this case and always fput() the
-original file, hence add an extra fput().
+ drivers/opp/of.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-[ Thanks Hillf for pointing this extra fput() out. ]
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index e72753be7dc7..aa829a569825 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -916,10 +916,14 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
+        mutex_unlock(&opp_table->lock);
+ 
+        prop = of_find_property(dev->of_node, "operating-points", NULL);
+-       if (!prop)
+-               return -ENODEV;
+-       if (!prop->value)
+-               return -ENODATA;
++       if (!prop) {
++               ret = -ENODEV;
++               goto remove_static_opp;
++       }
++       if (!prop->value) {
++               ret = -ENODATA;
++               goto remove_static_opp;
++       }
+ 
+        /*
+         * Each OPP is a set of tuples consisting of frequency and
+@@ -928,7 +932,8 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
+        nr = prop->length / sizeof(u32);
+        if (nr % 2) {
+                dev_err(dev, "%s: Invalid OPP table\n", __func__);
+-               return -EINVAL;
++               ret = -EINVAL;
++               goto remove_static_opp;
+        }
+ 
+        val = prop->value;
+@@ -940,12 +945,14 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
+                if (ret) {
+                        dev_err(dev, "%s: Failed to add OPP %ld (%d)\n",
+                                __func__, freq, ret);
+-                       _opp_remove_all_static(opp_table);
+-                       return ret;
++                       goto remove_static_opp;
+                }
+                nr -= 2;
+        }
+ 
++remove_static_opp:
++       _opp_remove_all_static(opp_table);
++
+        return ret;
+ }
 
-Fixes: d70cec898324 ("mm: mmap: merge vma after call_mmap() if possible")
-Reported-by: syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/mmap.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/mm/mmap.c b/mm/mmap.c
-index e3a1c1b48909..37c985850dc6 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1815,7 +1815,11 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 			merge = vma_merge(mm, prev, vma->vm_start, vma->vm_end, vma->vm_flags,
- 				NULL, vma->vm_file, vma->vm_pgoff, NULL, NULL_VM_UFFD_CTX);
- 			if (merge) {
--				fput(file);
-+				/* ->mmap() can change vma->vm_file and fput the original file. So
-+				 * fput the vma->vm_file here or we would add an extra fput for file
-+				 * and cause general protection fault ultimately.
-+				 */
-+				fput(vma->vm_file);
- 				vm_area_free(vma);
- 				vma = merge;
- 				/* Update vm_flags and possible addr to pick up the change. We don't
 -- 
-2.19.1
-
+viresh
