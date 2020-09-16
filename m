@@ -2,61 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C2626CCD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CACE26CBEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgIPUt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgIPQ4q (ORCPT
+        id S1728452AbgIPUgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:36:50 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:55127 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726770AbgIPRKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:56:46 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0372C0A8890
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:49:35 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id w5so6773547wrp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jTfO3goFQ53jX3wxtR/mPL0APiItMgxITG7tSdcSODo=;
-        b=InxUCSWP1Ix4941Y8ZuonBPbJv4JjOVbjAheCgW+waNMMd7sdM8tnn83rP/Q3lIBOu
-         cNGgA5Ck6dD3KYpWWh3MEhjBrcJOQ6hHc6D6assuxadGdhCp3hVfg+ro0XP99ZoMKGW8
-         YxiMmAQBKSNQJjLGe/hD5UInswPyTpclk5Hyo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jTfO3goFQ53jX3wxtR/mPL0APiItMgxITG7tSdcSODo=;
-        b=OYJIkqZEV0AZMSEU7T34ebG9WkMVlBLTsqp/agV+Yj9j64gr7SFKtqUrlOegMg+Vkd
-         xKKF04O1heULlrc2bmfYe8zg2raoCoHwcaXoLkQOeLQCWijkG97dQ851w59cVBkZDVR6
-         clPtyRYf0XZrJfUZBKGTBYi+t0wgC/62XYl3U8M8wZm3/SV0xUnvkU6oKuVK+7ePKSKy
-         P+xffEai0sVfn+84cqcw/CE+20Vekfd8QXzP8auOrE/6Inz7vmXwvA+0AVgRX/dFE1gC
-         ffNhDTqRR/EOUoWvtSSQy38IcpOBJmzRCHQ+MYofJNrApDortikbJEsn9XHOW+2OdDOC
-         YFtg==
-X-Gm-Message-State: AOAM5338eMlwekroZJSP9MiXI6+z6ieUB9Vi4CVLDzwz/03VXXeMcNUn
-        mGdPL/58M/JvWNvSKyRSpW5EONaJr7riGBvt
-X-Google-Smtp-Source: ABdhPJzrTeYUbCd54+0I1gVq1atLgahupxaCLEXDOXN7T+1M8VUhQQ/vYXMuOg/L/e5xhT7ssBFurQ==
-X-Received: by 2002:adf:81e6:: with SMTP id 93mr26429889wra.412.1600260574156;
-        Wed, 16 Sep 2020 05:49:34 -0700 (PDT)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id a11sm5242066wmm.18.2020.09.16.05.49.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 05:49:33 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Florent Revest <revest@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Jann Horn <jannh@google.com>
-Subject: [PATCH v2] ima: Fix NULL pointer dereference in ima_file_hash
-Date:   Wed, 16 Sep 2020 14:49:31 +0200
-Message-Id: <20200916124931.1254990-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+        Wed, 16 Sep 2020 13:10:21 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 08GCtuuL031126;
+        Wed, 16 Sep 2020 15:55:57 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
+        id D7CBA639D5; Wed, 16 Sep 2020 15:55:56 +0300 (IDT)
+From:   Tomer Maimon <tmaimon77@gmail.com>
+To:     robh+dt@kernel.org, mark.rutland@arm.com, avifishman70@gmail.com,
+        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, joel@jms.id.au
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, tmaimon77@gmail.com
+Subject: [PATCH v5 0/3] arm: dts: add and modify device node in NPCM7xx device tree
+Date:   Wed, 16 Sep 2020 15:55:51 +0300
+Message-Id: <20200916125554.195749-1-tmaimon77@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,70 +34,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+This patch set adds and modify device tree nodes in the NPCM7xx
+Baseboard Management Controller (BMC) device tree.
 
-ima_file_hash can be called when there is no iint->ima_hash available
-even though the inode exists in the integrity cache.
+The following device node add:
+        - NPCM7xx Pin controller and GPIO
+        - NPCM7xx PWM and FAN.
+        - NPCM7xx EHCI USB.
+        - NPCM7xx KCS.
+        - NPCM Reset.
+        - NPCM Peripheral SPI.
+        - NPCM FIU SPI.
+        - NPCM HWRNG.
+        - NPCM I2C.
+        - STMicro STMMAC.
 
-An example where this can happen (suggested by Jann Horn):
+The following device node modified:
+        - NPCM7xx timer.
+        - NPCM7xx clock constants parameters.
 
-Process A does:
+NPCM7xx device tree tested on NPCM750 evaluation board.
 
-	while(1) {
-		unlink("/tmp/imafoo");
-		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
-		if (fd == -1) {
-			perror("open");
-			continue;
-		}
-		write(fd, "A", 1);
-		close(fd);
-	}
+Changes since version 4:
+ - Tested patches in Linux kernel 5.9.
 
-and Process B does:
+Changes since version 3:
+ - Tested patches in Linux kernel 5.6.
 
-	while (1) {
-		int fd = open("/tmp/imafoo", O_RDONLY);
-		if (fd == -1)
-			continue;
-    		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
-			 	     MAP_PRIVATE, fd, 0);
-		if (mapping != MAP_FAILED)
-			munmap(mapping, 0x1000);
-		close(fd);
-  	}
+Changes since version 2:
+ - Remove unnecessary output-enable flags.
 
-Due to the race to get the iint->mutex between ima_file_hash and
-process_measurement iint->ima_hash could still be NULL.
+Changes since version 1:
+ - Add NPCM reset device node.
+ - Add reset parameters to NPCM driver device nodes.
 
-Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
-Signed-off-by: KP Singh <kpsingh@google.com>
-Reviewed-by: Florent Revest <revest@chromium.org>
----
- security/integrity/ima/ima_main.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Tomer Maimon (3):
+  arm: dts: modify NPCM7xx device tree clock parameter
+  arm: dts: modify NPCM7xx device tree timer register size
+  arm: dts: add new device nodes to NPCM750 device tree
 
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 8a91711ca79b..4c86cd4eece0 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
- 		return -EOPNOTSUPP;
- 
- 	mutex_lock(&iint->mutex);
-+
-+	/*
-+	 * ima_file_hash can be called when ima_collect_measurement has still
-+	 * not been called, we might not always have a hash.
-+	 */
-+	if (!iint->ima_hash) {
-+		mutex_unlock(&iint->mutex);
-+		return -EOPNOTSUPP;
-+	}
-+
- 	if (buf) {
- 		size_t copied_size;
- 
+ arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi | 974 +++++++++++++++++-
+ arch/arm/boot/dts/nuvoton-npcm750-evb.dts     | 404 +++++++-
+ .../boot/dts/nuvoton-npcm750-pincfg-evb.dtsi  | 157 +++
+ arch/arm/boot/dts/nuvoton-npcm750.dtsi        |  24 +-
+ 4 files changed, 1522 insertions(+), 37 deletions(-)
+ create mode 100644 arch/arm/boot/dts/nuvoton-npcm750-pincfg-evb.dtsi
+
 -- 
-2.28.0.526.ge36021eeef-goog
+2.22.0
 
