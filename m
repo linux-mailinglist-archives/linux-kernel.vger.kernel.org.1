@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FED826BC7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEB526BC8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgIPGRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:17:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbgIPGRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:17:41 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81814208E4;
-        Wed, 16 Sep 2020 06:17:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600237061;
-        bh=kAkRcZ8M/UW3Dl9iN5zhPGSOU71JhfTvi7/ksXTCTy8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JO7JrnUNreEqXiYcukH57/YA+z9hYDvRoMLGMo9P3ylTlShw+roBNWbKTjsuxvbHW
-         neSfnus98EEC8jps5YQZ1G7AXCq3TxSc1leIbisRx2oepi/79N7Zrqbp4ep3dczm3v
-         9cYxo6iWGbBfhmjTciE2qBi04mdXOXogWF8FYDyo=
-Date:   Wed, 16 Sep 2020 08:18:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rich Felker <dalias@libc.org>
-Cc:     linux-api@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] vfs: block chmod of symlinks
-Message-ID: <20200916061815.GB142621@kroah.com>
-References: <20200916002157.GO3265@brightrain.aerifal.cx>
- <20200916002253.GP3265@brightrain.aerifal.cx>
+        id S1726320AbgIPGTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgIPGTJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:19:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93843C06174A;
+        Tue, 15 Sep 2020 23:19:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=fse+h8UCPDsleRNPufm6YCU5bALHyxaJ9NrZcm6xYM8=; b=DsBud3yN3zMNa+2ZYy1fFVo6t6
+        b+xLAGAzKH9Op3myuxDOH7JrQPH0g+Y0wi6n+ZmdCfJDEFuI1PA6lRnb5zu1m3v0oVnWPalTEXpoR
+        +cPDQORK6hBHtAvSCyJo73Vf8XmZldkrg44MW4H7Af+x98KfFOBoTOFz2XSHDD89QHpBlDGhK0Shf
+        xV1vaRVt0cm5Pqc+4qL6sfRC5tITrJnPNZiSoW/YJrMC7ejuq8bHD3nCRM2fFzul+EysUkUv6U5Gi
+        VZJI3Krd3r6uX5jTnPaJId+Hal8YM6cSwm68plBGaCxTBCQrn3fD+UjPSsggdbQ3Lt1b8Jvwiwk4j
+        o6Kp8nMw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIQmO-0006tb-Lm; Wed, 16 Sep 2020 06:18:57 +0000
+Subject: Re: [PATCH] Doc: admin-guide: Add entry for kvm_cma_resv_ratio kernel
+ param
+To:     sathnaga@linux.vnet.ibm.com, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <20200916061130.723411-1-sathnaga@linux.vnet.ibm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <28eb9747-e4cc-424c-1f16-c68ed165b36a@infradead.org>
+Date:   Tue, 15 Sep 2020 23:18:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916002253.GP3265@brightrain.aerifal.cx>
+In-Reply-To: <20200916061130.723411-1-sathnaga@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:22:54PM -0400, Rich Felker wrote:
-> It was discovered while implementing userspace emulation of fchmodat
-> AT_SYMLINK_NOFOLLOW (using O_PATH and procfs magic symlinks; otherwise
-> it's not possible to target symlinks with chmod operations) that some
-> filesystems erroneously allow access mode of symlinks to be changed,
-> but return failure with EOPNOTSUPP (see glibc issue #14578 and commit
-> a492b1e5ef). This inconsistency is non-conforming and wrong, and the
-> consensus seems to be that it was unintentional to allow link modes to
-> be changed in the first place.
+On 9/15/20 11:11 PM, sathnaga@linux.vnet.ibm.com wrote:
+> From: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
 > 
-> Signed-off-by: Rich Felker <dalias@libc.org>
+> Add document entry for kvm_cma_resv_ratio kernel param which
+> is used to alter the KVM contiguous memory allocation percentage
+> for hash pagetable allocation used by hash mode PowerPC KVM guests.
+> 
+> Cc: linux-kernel@vger.kernel.org
+> Cc: kvm-ppc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Jonathan Corbet <corbet@lwn.net>  
+> Signed-off-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
 > ---
->  fs/open.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  Documentation/admin-guide/kernel-parameters.txt | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/fs/open.c b/fs/open.c
-> index 9af548fb841b..cdb7964aaa6e 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -570,6 +570,12 @@ int chmod_common(const struct path *path, umode_t mode)
->  	struct iattr newattrs;
->  	int error;
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a1068742a6df..9cb126573c71 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -599,6 +599,15 @@
+>  			altogether. For more information, see
+>  			include/linux/dma-contiguous.h
 >  
-> +	/* Block chmod from getting to fs layer. Ideally the fs would either
-> +	 * allow it or fail with EOPNOTSUPP, but some are buggy and return
-> +	 * an error but change the mode, which is non-conforming and wrong. */
-> +	if (S_ISLNK(inode->i_mode))
-> +		return -EOPNOTSUPP;
+> +        kvm_cma_resv_ratio=n
+> +                        [PPC]
 
-I still fail to understand why these "buggy" filesystems can not be
-fixed.  Why are you papering over a filesystem-specific-bug with this
-core kernel change that we will forever have to keep?
+You can put [PPC] on the line above.
 
-thanks,
+> +                        Reserves given percentage from system memory area for
+> +                        contiguous memory allocation for KVM hash pagetable
+> +                        allocation.
+> +                        Bydefault it reserves 5% of total system memory.
 
-greg k-h
+			   By default
+
+> +                        Format: <integer>
+> +                        Default: 5
+> +
+
+and please use tabs for indentation, not all spaces.
+
+>  	cmo_free_hint=	[PPC] Format: { yes | no }
+>  			Specify whether pages are marked as being inactive
+>  			when they are freed.  This is used in CMO environments
+> 
+
+Entries in kernel-parameters.txt should be sorted into dictionary order,
+so please put that with the other kvm parameters.
+
+thanks.
+-- 
+~Randy
+
