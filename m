@@ -2,185 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A4C26C38B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 16:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F23626C374
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 16:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbgIPOPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 10:15:13 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61357 "EHLO mga02.intel.com"
+        id S1726985AbgIPOAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 10:00:23 -0400
+Received: from mga12.intel.com ([192.55.52.136]:30867 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgIPNlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 09:41:06 -0400
-IronPort-SDR: o5bk9mBYw0QobTHAeKrhTMNiXQoQYNTtka6QUFoIlHTnk3Ja1+izXYz8VLzQSmhsgE7ItHbJR+
- fs2dL8tFRnTQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="147127976"
+        id S1726648AbgIPNlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 09:41:44 -0400
+IronPort-SDR: 5oPOXgeW7uQ1mYhiHfWexAC+QwexYWCU3h2AcJk+UIdFpWmYIV1LpUyug21XegkvoVAt7ZZkn8
+ K2/Y71ZgAhVQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="138954082"
 X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="147127976"
+   d="scan'208";a="138954082"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 03:53:24 -0700
-IronPort-SDR: /MRqqEYBuPe2sosnPAUy+SYDj5OJ7As0+jzp8HpNAM1CaPsu4SYHiIqWVwsXbtuiHbLbrcSYmu
- XwpmvEmjV+JQ==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 05:43:52 -0700
+IronPort-SDR: WOynIPceZCbhvv68/lf6IeVOaC2paax4n3bYUpPxg3kFa4mILFaNYtswptGHf859A0EEZOTdlJ
+ dodjpcBiToWw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="507127440"
-Received: from lkp-server02.sh.intel.com (HELO bdcb92cf8b4e) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 16 Sep 2020 03:53:23 -0700
-Received: from kbuild by bdcb92cf8b4e with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kIV3y-00004K-Ca; Wed, 16 Sep 2020 10:53:22 +0000
-Date:   Wed, 16 Sep 2020 18:53:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 953bb62921006c65c5373b8d6e72c0a70f739d17
-Message-ID: <5f61ee9a.oFJ0wBLwbUVmFMoZ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="451838929"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by orsmga004.jf.intel.com with ESMTP; 16 Sep 2020 05:43:50 -0700
+Subject: Re: [PATCH] xhci: workaround for S3 issue on AMD SNPS 3.0 xHC
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Nehal Bakulchandra Shah <Nehal-bakulchandra.Shah@amd.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sandeep.Singh@amd.com, yuanmei@lenovo.com
+References: <20200831065246.1166470-1-Nehal-bakulchandra.Shah@amd.com>
+ <20200916080611.GA486670@kroah.com>
+From:   Mathias Nyman <mathias.nyman@intel.com>
+Message-ID: <86106f56-68a7-8d58-0ba8-7e19788688f2@intel.com>
+Date:   Wed, 16 Sep 2020 15:47:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20200916080611.GA486670@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 953bb62921006c65c5373b8d6e72c0a70f739d17  rcutorture: Make preemptible TRACE02 enable lockdep
+On 16.9.2020 11.06, Greg KH wrote:
+> On Mon, Aug 31, 2020 at 06:52:46AM +0000, Nehal Bakulchandra Shah wrote:
+>> From: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+>>
+>> On some platform of AMD, S3 fails with HCE and SRE errors.To fix this,
+>> sparse controller enable bit has to be disabled.
+>>
+>> Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+>> ---
+>>  drivers/usb/host/xhci-pci.c | 12 ++++++++++++
+>>  drivers/usb/host/xhci.h     |  1 +
+>>  2 files changed, 13 insertions(+)
+>>
+>> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c  
+>> @@ -371,6 +374,15 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>  	/* USB 2.0 roothub is stored in the PCI device now. */
+>>  	hcd = dev_get_drvdata(&dev->dev);
+>>  	xhci = hcd_to_xhci(hcd);
+>> +
+>> +	if (xhci->quirks & XHCI_DISABLE_SPARSE) {
+>> +		u32 reg;
+>> +
+>> +		reg = readl(hcd->regs + 0xC12C);
+>> +		reg &=  ~BIT(17); 
+>
+> And is this the proper place to be testing for quirks and applying them?
+> Why not do the above in the xhci_pci_quirks() call?
 
-elapsed time: 725m
+xhci_pci_quirks() is a confusing name, it actually only sets quirk flags based on PCI
+vendor/device.
 
-configs tested: 120
-configs skipped: 2
+Anyway, point is still valid, this level of bitops in probe isn't very nice.
+Turn it into a separate function, and call it from xhci_pci_setup(), or if flag
+needs to be cleared more often, and is related to S3 problems then possibly from xhci_pci_suspend()
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      walnut_defconfig
-powerpc                     ppa8548_defconfig
-mips                        bcm63xx_defconfig
-c6x                         dsk6455_defconfig
-powerpc                 canyonlands_defconfig
-sh                               j2_defconfig
-arm                          ixp4xx_defconfig
-xtensa                              defconfig
-mips                         cobalt_defconfig
-sh                          rsk7264_defconfig
-mips                      bmips_stb_defconfig
-powerpc                        fsp2_defconfig
-arc                             nps_defconfig
-arm                            dove_defconfig
-sh                     sh7710voipgw_defconfig
-arm                         socfpga_defconfig
-sh                          r7785rp_defconfig
-s390                             alldefconfig
-mips                        nlm_xlp_defconfig
-microblaze                    nommu_defconfig
-sh                           se7780_defconfig
-i386                             alldefconfig
-powerpc                     tqm5200_defconfig
-m68k                        m5407c3_defconfig
-mips                     loongson1c_defconfig
-powerpc                       holly_defconfig
-mips                      maltaaprp_defconfig
-arm                         shannon_defconfig
-arm                         ebsa110_defconfig
-arm                          gemini_defconfig
-arc                           tb10x_defconfig
-powerpc                     tqm8560_defconfig
-xtensa                    xip_kc705_defconfig
-arm                        spear6xx_defconfig
-mips                           jazz_defconfig
-powerpc                     rainier_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                     powernv_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                          pcm027_defconfig
-powerpc                       eiger_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                malta_kvm_guest_defconfig
-sh                           se7751_defconfig
-sh                   sh7770_generic_defconfig
-ia64                            zx1_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                  iss476-smp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20200916
-x86_64               randconfig-a004-20200916
-x86_64               randconfig-a003-20200916
-x86_64               randconfig-a002-20200916
-x86_64               randconfig-a001-20200916
-x86_64               randconfig-a005-20200916
-i386                 randconfig-a004-20200916
-i386                 randconfig-a006-20200916
-i386                 randconfig-a003-20200916
-i386                 randconfig-a001-20200916
-i386                 randconfig-a002-20200916
-i386                 randconfig-a005-20200916
-i386                 randconfig-a015-20200916
-i386                 randconfig-a014-20200916
-i386                 randconfig-a011-20200916
-i386                 randconfig-a013-20200916
-i386                 randconfig-a016-20200916
-i386                 randconfig-a012-20200916
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a014-20200916
-x86_64               randconfig-a011-20200916
-x86_64               randconfig-a016-20200916
-x86_64               randconfig-a012-20200916
-x86_64               randconfig-a015-20200916
-x86_64               randconfig-a013-20200916
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-Mathias
