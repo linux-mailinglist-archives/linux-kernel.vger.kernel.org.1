@@ -2,158 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1694C26BF9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06E726BFA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgIPIph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIPIp0 (ORCPT
+        id S1726583AbgIPIpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:45:42 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:16467 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726531AbgIPIph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:45:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABD7C06174A;
-        Wed, 16 Sep 2020 01:45:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RwS3rW8B+ViP4YJxJK0d4LsKrqUL+lbB0Q2Eor68chU=; b=iJxcOZA45Nc6D2m+4Ydi8g6iJE
-        EIzSywwIr1olZ0MonhuBswR4j28Emdvcj3jqhxn4trt4bZiPuz6hRsxDQp+fF7u4Vad9mYlIrmHUy
-        9C/pTn05QR6nzpYSwGfgoXkM7jKEaxnMo7nTmVAqT1m+8uiBBgURlasPg0kQvKSJZC7F9NAmZ7+xC
-        ZRw7rcabO84VdXXNwGH8BS+iwALMldc9Bviz0KNZe146/g6y81I3eldK7E1C9Rwr9CeozfvuEh1We
-        mIYRhjxWmfLoboJQrS7XaqwDFCpHSVjEqo4e34iVo4XUVW+KAwXAtewUPHgnak02iqj3iRtJgU0Nu
-        rqrQfD3A==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIT3u-000883-2t; Wed, 16 Sep 2020 08:45:10 +0000
-Date:   Wed, 16 Sep 2020 09:45:10 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Brian Foster <bfoster@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, willy@infradead.org,
-        minlei@redhat.com
-Subject: Re: [PATCH] iomap: Fix the write_count in iomap_add_to_ioend().
-Message-ID: <20200916084510.GA30815@infradead.org>
-References: <20200820231140.GE7941@dread.disaster.area>
- <20200821044533.BBFD1A405F@d06av23.portsmouth.uk.ibm.com>
- <20200821215358.GG7941@dread.disaster.area>
- <20200822131312.GA17997@infradead.org>
- <20200824142823.GA295033@bfoster>
- <20200824150417.GA12258@infradead.org>
- <20200824154841.GB295033@bfoster>
- <20200825004203.GJ12131@dread.disaster.area>
- <20200825144917.GA321765@bfoster>
- <20200916001242.GE7955@magnolia>
+        Wed, 16 Sep 2020 04:45:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600245936; x=1631781936;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=3sFJ6uUg18+wlOlRlnb48vvNRuVw22lTmEB6Om7+Hzs=;
+  b=OlKB5MffiYijCpP5Hxc/9bSU1H9Kewx2HlgDkh79IKhXdKl3qvi2Ro65
+   MlFHn9hgUpHlBPnEnyGdjekfboaKwRHMViS3iU2hYy3FkkQAZMTmxr/c2
+   XyoGJmnicm2D0m7Z3R/lf8sXJEan7ZbgV70uaW5OYCo1F+f5cOh1JSVlZ
+   2EYkVbWvEox0fHm9oPM2QW0Kw+c9qzRWgIU+Ao81QUlX6NTRJ187hEF/G
+   9646NlHmEfzcSdbO44CWM75kN7bZmFzO6gAUAmb4QYSFpPrakWqDv2v6c
+   G//NNAR7cFNQPISMJl4hU6SaDve80QaBSdqw6t58pCNw1ujz1gjAouDId
+   g==;
+IronPort-SDR: ODfo5XAyXE5GaYR5sbGiT1eeVj7TSbpY8Vk94vMsXe16DtGTSG4ZaeXynAO4rp/m6kAJrjsvay
+ lGz96P5dqUxyC1gmfXr5JNQyLOiheUbBIWMqJNNpjyKO2OnhkS/9a95kN58kaqcxp5NQJ3m3bp
+ Oq2Y3mQQOjufd8Fpk9BMy0WRuaEKzT3Bno5GI/LX9F0QbVOwBweh9kJ5WwbawQ9TN9braufxJx
+ kMgNS6FJCJlULW8Kf6PrAEtOLI7pLCicOvWQQYj06ohGXgJc5pnKZukVwibmJ4vJCq7psnaVnB
+ Hc8=
+X-IronPort-AV: E=Sophos;i="5.76,432,1592841600"; 
+   d="scan'208";a="147425569"
+Received: from mail-bn8nam12lp2172.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.172])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Sep 2020 16:45:34 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JvKOWLMydPMvks/wKtBaePnFiGrem/FQWH08UwuDBjz4Ijw6lCOApV+lrQCBPvZwY6AFRwno93SLGQOKqxDBzatZ3UiiTh5eChjOThVUhkoo8Ge4hqGzPLt2i6aF349zvNpsESGTIvQFTm8kxbN5i1vWp6/Dr6fiQCH80Z9H9a7RmP8xBBaQCpDidUq+5CU98S1nWQIzfCK9gsRpNPAa3LQlxKRSjrumfTpRLb66l9YxGy0jtpytTruki+skaaQqZM1mRcK/+E9ouE/i8CjDLiQULCcx0gbwF19WoUfdrqaVBu2OrDhobLTAcYr40nMFyXa++F7GEWFY9Io+Ur+biA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ECzUTV3f3s/tPjGfWOPvKdy3OEUcoXMtx0nU477w7Ws=;
+ b=JewUVp4XHsKv9upBVUb/p+8dQXN6ncYJ2rrW5f/9HoB0XmsZ6XZlL+3yEPgBBVytaPJoBPsKscG5fHe3b1g/iJhNQM1hMOr619I6qxEfmoqw8XOX+sowar3+gsuFTHvhZYku8u29w4iPIg/aOS3bcGeeig5pvBdfJOTubeJzPwmP5wNCvzXM8hXRFl13K/mHnGAO2aVOQCKe+Tuoju/FdhNTghRZXNm1QgCZ8YwQt3siuSTA27d3Wk+ZIXUrw2NATua1YbRPMnUtbmAiiXp4J/AGx35Cgw/Mcb33kal0arYZkCBNTFl2MQcdZHbgR5C81r0wcxDZ0xbRoWzfFgWyxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ECzUTV3f3s/tPjGfWOPvKdy3OEUcoXMtx0nU477w7Ws=;
+ b=T70L/CjwSWQUw6v/ltazwNzjm/sVQoSPB0KpTd4VpIXew7HJd7xg4Kmb7ZcQWgudOK+URpYVNjIrPg6vFXWdsa3lMrdTD0VE59hNFLNJEma/8Rtltkg1HcCx2017Oo10Ju7bWkspA6w42JrolDJKdC+nhBfQ60taHQ2I+sQLPGY=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB5118.namprd04.prod.outlook.com
+ (2603:10b6:805:9a::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
+ 2020 08:45:33 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
+ 08:45:32 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     syzbot <syzbot+e864a35d361e1d4e29a5@syzkaller.appspotmail.com>,
+        "anand.jain@oracle.com" <anand.jain@oracle.com>,
+        "clm@fb.com" <clm@fb.com>, "dsterba@suse.com" <dsterba@suse.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "jthumshirn@suse.de" <jthumshirn@suse.de>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Subject: Re: kernel BUG at lib/string.c:LINE! (5)
+Thread-Topic: kernel BUG at lib/string.c:LINE! (5)
+Thread-Index: AQHWi1Aw47gymd3CJ0Ciy/1hIPgGyg==
+Date:   Wed, 16 Sep 2020 08:45:32 +0000
+Message-ID: <SN4PR0401MB3598381B90F2B10586B8005A9B210@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <0000000000000bcff305af69ecae@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: syzkaller.appspotmail.com; dkim=none (message not
+ signed) header.d=none;syzkaller.appspotmail.com; dmarc=none action=none
+ header.from=wdc.com;
+x-originating-ip: [2001:a62:1460:3d01:38cf:f1ce:e1ec:d261]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 7e98b1e9-0597-4665-c9f4-08d85a1cdf83
+x-ms-traffictypediagnostic: SN6PR04MB5118:
+x-microsoft-antispam-prvs: <SN6PR04MB5118FDD8B301ABEF9895029D9B210@SN6PR04MB5118.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:651;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yJ9yV4d/BSXAVpGOLjNUNHlUKnNzSWDmfHwzKEvyEvP7MEZDUZO2/Q5GM+ZiLBTXZvxIHBOvWtd9YnAZH/hRQR/b97qE4tBF1N4n+G/R6npjQEiAXy/gkmUYkeqiet4gOTU76W5DXg+rt7QPLXDLrGz6p0ntqEg4NMTA/745CsLquNx7ymv+vslOYATbrmbXtDL7qmk6RmripQD4QblQZjc7tEvUaW4qLnef9LLs+Ns1lNwPAicjgjlUBSy0OhGJaFJM96OoyXLm7eIQtqoEE2ikC9NCyP8EgPYLIs+rtHyUzEIlKIcPxhB7VRZpu50Ksfmbgo97/IJwaBz14wwZo60GpKQAnMALL0kWWnvI8R0jnoAAMdqX1zBhPgoqLjitaWdWJejdbaPH999BqwjwQ664kKMCT9lX3vtLM6xmOcP37QQOmPaNx4Vw5BbmQN8255NS784u7Buw2bdUeJ27ki8Wp5OqCu6vLeVWC4ZmwPY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(91956017)(76116006)(498600001)(71200400001)(52536014)(64756008)(66476007)(966005)(110136005)(55016002)(86362001)(9686003)(2906002)(66556008)(66946007)(66446008)(5660300002)(53546011)(8676002)(6506007)(33656002)(8936002)(186003)(83080400001)(7696005)(74793001)(99710200001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: lguesEZdi3GRcqrnqHvZvJiGmJcIxuaX48Y1+TdQ6uWm1tddtEdnSWBJJrEj+1BNAIn1Li0gNUuGHbbcwGn41pFgYIYhPmjlj5z1UC1mc7WcGSJ+nHt5iDuiImeIpm2zaL9b8gq4zzzPSXriOv/wZS4zcNGR80i9oXZKTLzZbFCRBZZh9eXOZOA+2nnxjH/EvAfZR1jgopfMtjKeDK6q4Ov4RgbbEYOBLjB/z03gnEiZJl1fCDNOvLLwaHGEsVbWEIiaCkf1BpYlDDormVl8LevStLbzcK9nWO211beYWMzOtH2Go2erVwJdqyFlthCbl14L+3+Su5ebob0nFhl2iA6zNgEERNYauZwOYme5kphIDwDx6WqE80DQVsKViBYOO/7umswTVrdNXEoOsKqoUkiTISH7UFyMlnGeodx27uD6zyWs3WpEyd/JMKfCdhtY0E8Sfu+Hj7+SVTYXegjlBUWOeNmvBSBrIadI9geQczphFfVZ9eJCIFP/ZPdH7B58zhC+N31XyPk/QO5CrQaJ14FBBoYRjosAdgj0/klXdcSSCyagokGBTr/YZaTWGfisIzJnyaX0naAgIEIhkQtfAOzNQr6Nv2x73r6FFINMQZ0bQmJ75rVGObegw+NKA0EedXH+uPKxXt6UowQsVdUpAsBSs4IUhJTl8Kh9uvVEvmN/BSKRwFDUPKAC31BNPVK/GFiE4ueRsZtofDcX9l51UQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916001242.GE7955@magnolia>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e98b1e9-0597-4665-c9f4-08d85a1cdf83
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 08:45:32.7046
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OoTBV4WB5jNk5lB0f1SMzQyPXon7804OF8swQzpDaC3A38l0N9Z1iu4r9OJZAUmNVrwxQcecU8rxOAdC2MmxL7RxR5g2SgjjUYjizdK/25I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5118
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 05:12:42PM -0700, Darrick J. Wong wrote:
-> On Tue, Aug 25, 2020 at 10:49:17AM -0400, Brian Foster wrote:
-> > cc Ming
-> > 
-> > On Tue, Aug 25, 2020 at 10:42:03AM +1000, Dave Chinner wrote:
-> > > On Mon, Aug 24, 2020 at 11:48:41AM -0400, Brian Foster wrote:
-> > > > On Mon, Aug 24, 2020 at 04:04:17PM +0100, Christoph Hellwig wrote:
-> > > > > On Mon, Aug 24, 2020 at 10:28:23AM -0400, Brian Foster wrote:
-> > > > > > Do I understand the current code (__bio_try_merge_page() ->
-> > > > > > page_is_mergeable()) correctly in that we're checking for physical page
-> > > > > > contiguity and not necessarily requiring a new bio_vec per physical
-> > > > > > page?
-> > > > > 
-> > > > > 
-> > > > > Yes.
-> > > > > 
-> > > > 
-> > > > Ok. I also realize now that this occurs on a kernel without commit
-> > > > 07173c3ec276 ("block: enable multipage bvecs"). That is probably a
-> > > > contributing factor, but it's not clear to me whether it's feasible to
-> > > > backport whatever supporting infrastructure is required for that
-> > > > mechanism to work (I suspect not).
-> > > > 
-> > > > > > With regard to Dave's earlier point around seeing excessively sized bio
-> > > > > > chains.. If I set up a large memory box with high dirty mem ratios and
-> > > > > > do contiguous buffered overwrites over a 32GB range followed by fsync, I
-> > > > > > can see upwards of 1GB per bio and thus chains on the order of 32+ bios
-> > > > > > for the entire write. If I play games with how the buffered overwrite is
-> > > > > > submitted (i.e., in reverse) however, then I can occasionally reproduce
-> > > > > > a ~32GB chain of ~32k bios, which I think is what leads to problems in
-> > > > > > I/O completion on some systems. Granted, I don't reproduce soft lockup
-> > > > > > issues on my system with that behavior, so perhaps there's more to that
-> > > > > > particular issue.
-> > > > > > 
-> > > > > > Regardless, it seems reasonable to me to at least have a conservative
-> > > > > > limit on the length of an ioend bio chain. Would anybody object to
-> > > > > > iomap_ioend growing a chain counter and perhaps forcing into a new ioend
-> > > > > > if we chain something like more than 1k bios at once?
-> > > > > 
-> > > > > So what exactly is the problem of processing a long chain in the
-> > > > > workqueue vs multiple small chains?  Maybe we need a cond_resched()
-> > > > > here and there, but I don't see how we'd substantially change behavior.
-> > > > > 
-> > > > 
-> > > > The immediate problem is a watchdog lockup detection in bio completion:
-> > > > 
-> > > >   NMI watchdog: Watchdog detected hard LOCKUP on cpu 25
-> > > > 
-> > > > This effectively lands at the following segment of iomap_finish_ioend():
-> > > > 
-> > > > 		...
-> > > >                /* walk each page on bio, ending page IO on them */
-> > > >                 bio_for_each_segment_all(bv, bio, iter_all)
-> > > >                         iomap_finish_page_writeback(inode, bv->bv_page, error);
-> > > > 
-> > > > I suppose we could add a cond_resched(), but is that safe directly
-> > > > inside of a ->bi_end_io() handler? Another option could be to dump large
-> > > > chains into the completion workqueue, but we may still need to track the
-> > > > length to do that. Thoughts?
-> > > 
-> > > We have ioend completion merging that will run the compeltion once
-> > > for all the pending ioend completions on that inode. IOWs, we do not
-> > > need to build huge chains at submission time to batch up completions
-> > > efficiently. However, huge bio chains at submission time do cause
-> > > issues with writeback fairness, pinning GBs of ram as unreclaimable
-> > > for seconds because they are queued for completion while we are
-> > > still submitting the bio chain and submission is being throttled by
-> > > the block layer writeback throttle, etc. Not to mention the latency
-> > > of stable pages in a situation like this - a mmap() write fault
-> > > could stall for many seconds waiting for a huge bio chain to finish
-> > > submission and run completion processing even when the IO for the
-> > > given page we faulted on was completed before the page fault
-> > > occurred...
-> > > 
-> > > Hence I think we really do need to cap the length of the bio
-> > > chains here so that we start completing and ending page writeback on
-> > > large writeback ranges long before the writeback code finishes
-> > > submitting the range it was asked to write back.
-> > > 
-> > 
-> > Ming pointed out separately that limiting the bio chain itself might not
-> > be enough because with multipage bvecs, we can effectively capture the
-> > same number of pages in much fewer bios. Given that, what do you think
-> > about something like the patch below to limit ioend size? This
-> > effectively limits the number of pages per ioend regardless of whether
-> > in-core state results in a small chain of dense bios or a large chain of
-> > smaller bios, without requiring any new explicit page count tracking.
-> > 
-> > Brian
-> 
-> Dave was asking on IRC if I was going to pull this patch in.  I'm unsure
-> of its status (other than it hasn't been sent as a proper [PATCH]) so I
-> wonder, is this necessary, and if so, can it be cleaned up and
-> submitted?
-
-Maybe it is lost somewhere, but what is the point of this patch?
-What does the magic number try to represent?
+On 16/09/2020 10:19, syzbot wrote:=0A=
+> syzbot has bisected this issue to:=0A=
+> =0A=
+> commit 3951e7f050ac6a38bbc859fc3cd6093890c31d1c=0A=
+> Author: Johannes Thumshirn <jthumshirn@suse.de>=0A=
+> Date:   Mon Oct 7 09:11:01 2019 +0000=0A=
+> =0A=
+>     btrfs: add xxhash64 to checksumming algorithms=0A=
+> =0A=
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D10aadcc590=
+0000=0A=
+> start commit:   e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/=
+p..=0A=
+> git tree:       upstream=0A=
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D12aadcc590=
+0000=0A=
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D14aadcc590000=
+0=0A=
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dc61610091f4ca=
+8c4=0A=
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3De864a35d361e1d4=
+e29a5=0A=
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D177582be900=
+000=0A=
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D13deb2b590000=
+0=0A=
+> =0A=
+> Reported-by: syzbot+e864a35d361e1d4e29a5@syzkaller.appspotmail.com=0A=
+> Fixes: 3951e7f050ac ("btrfs: add xxhash64 to checksumming algorithms")=0A=
+> =0A=
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion=0A=
+> =0A=
+=0A=
+This commit only allowed 8 byte checksums, but d5178578bcd4 ("btrfs: direct=
+ly=0A=
+call into crypto framework for checksumming") is the one that was missing t=
+he=0A=
+conversion in btree_readpage_end_io_hook() and a prerequisite for 3951e7f05=
+0ac=0A=
+("btrfs: add xxhash64 to checksumming algorithms"). So I think it makes mor=
+e =0A=
+sense to add d5178578bcd4 to the fixes line.=0A=
