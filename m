@@ -2,167 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46D826C65B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC2226C64B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727447AbgIPRqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:46:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37240 "EHLO mail.kernel.org"
+        id S1727338AbgIPRoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:44:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727417AbgIPRqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:46:18 -0400
+        id S1727335AbgIPRkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:40:41 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC2FE222B7;
-        Wed, 16 Sep 2020 13:54:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0F41223C8;
+        Wed, 16 Sep 2020 14:07:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600264488;
-        bh=qKQqnxzRQxd/vr0zAdpm6sfQKn89rWwS4k5j1IwIQC0=;
+        s=default; t=1600265266;
+        bh=KHuglKLcKtYICMFeenAq3DvHYF00j0yYiXqdTbisipw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YOR6F/G35l7Y5nJcVzTX20iL9YlsKqqfeVkp9nv8rPr+WPovGSKYRo3JCk8JSbrNL
-         mzRRzKQrEH2cjlBX08WNE4bLLtXtehAfXbXWpCfldRt0k8WNOvO1cbbRTgnkXOxs9Z
-         A5mU5NlO5Pri734moqVGX3xpmlvNaq1TkUnO4Q6Y=
+        b=vVEApFj0yzYYodJ/TmxoXbAwb/XPSO7sOlGGqvPJhLfrTL8aF4+u8zUS6p1CJH9yZ
+         RWhoeXWDewsS4v/5zeyrCUoCgHR8NdcSRt3e3jvcBmq/5EUpsz7cUIqfABe3PSGdty
+         eKpM/Xk3+JMnrUt5KlW3OQpaHyfUm/bWkXE9drew=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 09EE7400E9; Wed, 16 Sep 2020 10:54:46 -0300 (-03)
-Date:   Wed, 16 Sep 2020 10:54:45 -0300
+        id B4666400E9; Wed, 16 Sep 2020 11:07:44 -0300 (-03)
+Date:   Wed, 16 Sep 2020 11:07:44 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     ak@linux.intel.com, mingo@redhat.com, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH V2 RESEND] perf stat: Fix the ratio comments of
- miss-events
-Message-ID: <20200916135445.GP720847@kernel.org>
-References: <1600253331-10535-1-git-send-email-liuqi115@huawei.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 16/26] perf tools: Synthesize modules with mmap3
+Message-ID: <20200916140744.GR720847@kernel.org>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-17-jolsa@kernel.org>
+ <20200914160758.GK160517@kernel.org>
+ <CAP-5=fV4Agxe3UMpkbWkh9CuG1tYho413w7xehy0SiMX+tPv1Q@mail.gmail.com>
+ <20200916082018.GA2301783@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600253331-10535-1-git-send-email-liuqi115@huawei.com>
+In-Reply-To: <20200916082018.GA2301783@krava>
 X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 16, 2020 at 06:48:51PM +0800, Qi Liu escreveu:
-> Perf stat displays miss ratio of L1-dcache, L1-icache, dTLB cache,
-> iTLB cache and LL-cache. Take L1-dcache for example, miss ratio is
-> caculated as "L1-dcache-load-misses/L1-dcache-loads". So
-> "of all L1-dcache hits" is unsuitable to describe it, and
-> "of all L1-dcache accesses" seems better.
+Em Wed, Sep 16, 2020 at 10:20:18AM +0200, Jiri Olsa escreveu:
+> On Tue, Sep 15, 2020 at 01:17:44PM -0700, Ian Rogers wrote:
 > 
-> The comments of L1-icache, dTLB cache, iTLB cache and LL-cache are
-> fixed in the same way.
+> SNIP
 > 
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> > > >       /*
+> > > >        * kernel uses 0 for user space maps, see kernel/perf_event.c
+> > > >        * __perf_event_mmap
+> > > > @@ -631,17 +629,30 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
+> > > >                       continue;
+> > > >
+> > > >               size = PERF_ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
+> > > > -             event->mmap.header.type = PERF_RECORD_MMAP;
+> > > > -             event->mmap.header.size = (sizeof(event->mmap) -
+> > > > -                                     (sizeof(event->mmap.filename) - size));
+> > > > -             memset(event->mmap.filename + size, 0, machine->id_hdr_size);
+> > > > -             event->mmap.header.size += machine->id_hdr_size;
+> > > > -             event->mmap.start = pos->start;
+> > > > -             event->mmap.len   = pos->end - pos->start;
+> > > > -             event->mmap.pid   = machine->pid;
+> > > > -
+> > > > -             memcpy(event->mmap.filename, pos->dso->long_name,
+> > > > +             event->mmap3.header.type = PERF_RECORD_MMAP3;
+> > > > +             event->mmap3.header.size = (sizeof(event->mmap3) -
+> > > > +                                        (sizeof(event->mmap3.filename) - size));
+> > > > +             memset(event->mmap3.filename + size, 0, machine->id_hdr_size);
+> > > > +             event->mmap3.header.size += machine->id_hdr_size;
+> > > > +             event->mmap3.start = pos->start;
+> > > > +             event->mmap3.len   = pos->end - pos->start;
+> > > > +             event->mmap3.pid   = machine->pid;
+> > > > +
+> > > > +             memcpy(event->mmap3.filename, pos->dso->long_name,
+> > > >                      pos->dso->long_name_len + 1);
+> > > > +
+> > > > +             rc = filename__read_build_id(event->mmap3.filename, event->mmap3.buildid,
+> > > > +                                          BUILD_ID_SIZE);
+> > > > +             if (rc != BUILD_ID_SIZE) {
+> > 
+> > IIRC BUILD_ID_SIZE is 20 bytes which is the correct size for SHA-1. A
+> > build ID may be 128-bits (16 bytes) if md5 or uuid hashes are used.
+> > Should this test just be "> 0" ?
+> 
+> ah right, will check on that
 
-Thanks, applied.
-
-- Arnaldo
-
-> ---
->  tools/perf/util/stat-shadow.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-> index e1ba6c1..ee3c404 100644
-> --- a/tools/perf/util/stat-shadow.c
-> +++ b/tools/perf/util/stat-shadow.c
-> @@ -517,7 +517,7 @@ static void print_l1_dcache_misses(struct perf_stat_config *config,
-> 
->  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
-> 
-> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all L1-dcache hits", ratio);
-> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all L1-dcache accesses", ratio);
->  }
-> 
->  static void print_l1_icache_misses(struct perf_stat_config *config,
-> @@ -538,7 +538,7 @@ static void print_l1_icache_misses(struct perf_stat_config *config,
->  		ratio = avg / total * 100.0;
-> 
->  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
-> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all L1-icache hits", ratio);
-> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all L1-icache accesses", ratio);
->  }
-> 
->  static void print_dtlb_cache_misses(struct perf_stat_config *config,
-> @@ -558,7 +558,7 @@ static void print_dtlb_cache_misses(struct perf_stat_config *config,
->  		ratio = avg / total * 100.0;
-> 
->  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
-> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all dTLB cache hits", ratio);
-> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all dTLB cache accesses", ratio);
->  }
-> 
->  static void print_itlb_cache_misses(struct perf_stat_config *config,
-> @@ -578,7 +578,7 @@ static void print_itlb_cache_misses(struct perf_stat_config *config,
->  		ratio = avg / total * 100.0;
-> 
->  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
-> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all iTLB cache hits", ratio);
-> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all iTLB cache accesses", ratio);
->  }
-> 
->  static void print_ll_cache_misses(struct perf_stat_config *config,
-> @@ -598,7 +598,7 @@ static void print_ll_cache_misses(struct perf_stat_config *config,
->  		ratio = avg / total * 100.0;
-> 
->  	color = get_ratio_color(GRC_CACHE_MISSES, ratio);
-> -	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all LL-cache hits", ratio);
-> +	out->print_metric(config, out->ctx, color, "%7.2f%%", "of all LL-cache accesses", ratio);
->  }
-> 
->  /*
-> @@ -918,7 +918,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
->  		if (runtime_stat_n(st, STAT_L1_DCACHE, ctx, cpu) != 0)
->  			print_l1_dcache_misses(config, cpu, evsel, avg, out, st);
->  		else
-> -			print_metric(config, ctxp, NULL, NULL, "of all L1-dcache hits", 0);
-> +			print_metric(config, ctxp, NULL, NULL, "of all L1-dcache accesses", 0);
->  	} else if (
->  		evsel->core.attr.type == PERF_TYPE_HW_CACHE &&
->  		evsel->core.attr.config ==  ( PERF_COUNT_HW_CACHE_L1I |
-> @@ -928,7 +928,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
->  		if (runtime_stat_n(st, STAT_L1_ICACHE, ctx, cpu) != 0)
->  			print_l1_icache_misses(config, cpu, evsel, avg, out, st);
->  		else
-> -			print_metric(config, ctxp, NULL, NULL, "of all L1-icache hits", 0);
-> +			print_metric(config, ctxp, NULL, NULL, "of all L1-icache accesses", 0);
->  	} else if (
->  		evsel->core.attr.type == PERF_TYPE_HW_CACHE &&
->  		evsel->core.attr.config ==  ( PERF_COUNT_HW_CACHE_DTLB |
-> @@ -938,7 +938,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
->  		if (runtime_stat_n(st, STAT_DTLB_CACHE, ctx, cpu) != 0)
->  			print_dtlb_cache_misses(config, cpu, evsel, avg, out, st);
->  		else
-> -			print_metric(config, ctxp, NULL, NULL, "of all dTLB cache hits", 0);
-> +			print_metric(config, ctxp, NULL, NULL, "of all dTLB cache accesses", 0);
->  	} else if (
->  		evsel->core.attr.type == PERF_TYPE_HW_CACHE &&
->  		evsel->core.attr.config ==  ( PERF_COUNT_HW_CACHE_ITLB |
-> @@ -948,7 +948,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
->  		if (runtime_stat_n(st, STAT_ITLB_CACHE, ctx, cpu) != 0)
->  			print_itlb_cache_misses(config, cpu, evsel, avg, out, st);
->  		else
-> -			print_metric(config, ctxp, NULL, NULL, "of all iTLB cache hits", 0);
-> +			print_metric(config, ctxp, NULL, NULL, "of all iTLB cache accesses", 0);
->  	} else if (
->  		evsel->core.attr.type == PERF_TYPE_HW_CACHE &&
->  		evsel->core.attr.config ==  ( PERF_COUNT_HW_CACHE_LL |
-> @@ -958,7 +958,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
->  		if (runtime_stat_n(st, STAT_LL_CACHE, ctx, cpu) != 0)
->  			print_ll_cache_misses(config, cpu, evsel, avg, out, st);
->  		else
-> -			print_metric(config, ctxp, NULL, NULL, "of all LL-cache hits", 0);
-> +			print_metric(config, ctxp, NULL, NULL, "of all LL-cache accesses", 0);
->  	} else if (evsel__match(evsel, HARDWARE, HW_CACHE_MISSES)) {
->  		total = runtime_stat_avg(st, STAT_CACHEREFS, ctx, cpu);
-> 
-> --
-> 2.8.1
-> 
-
--- 
+And how do you deal with this in the kernel? I.e. to inform userspace,
+via the PERF_RECORD_MMAP3 (or MMAP2 with that misc bit trick) the size
+of the build-id?
 
 - Arnaldo
