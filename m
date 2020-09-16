@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471DB26CB39
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4F426CB9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgIPUYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbgIPR2V (ORCPT
+        id S1726915AbgIPUaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:30:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22979 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726912AbgIPRMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:28:21 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B59C014A95
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:30:10 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id q13so3986937vsj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2ZiMEy//1kayA505gPczbbN35iqby1CxZE5VK4t65mE=;
-        b=P+7V4bFUf/RvjRpWfeP0Q4K/T92HZyPjcVMWkmfGy57XXUfRJKnm1EGaEcP5cRrl7p
-         Vhi4lQHLZ1gtEfPyzRIkaQr7wrvN0paQCK7DUr4relNqRTPL0FBHzXIuSuVK7O7hhfjs
-         dAb9yJZAU+pLPFk5XCPwa0SeyGaNYVIb7hD2ism9V/CEklXP+joCcO4HTKedEr+eazu4
-         SgXo3wOlXCgn/qlBQVaMnCCgle7zOtPkF4/9FZWQRza3iwMHSPGXcd8N693DeGnFcVz0
-         CimWVVGuBiRlsBsUnlKtmIu/gj0nxYxqH4ZGwjnYvK9oBKmzHKrVFJQWKaFYY16dESS7
-         I1Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2ZiMEy//1kayA505gPczbbN35iqby1CxZE5VK4t65mE=;
-        b=pLvnKQFnwLm8C/eDrSljkjIh+ENvO6wA9+iowtEF+ljR5hw+7krn7b0lEOd3Gcl0/d
-         jkbtbRIrabnn7cnOSnzNPvkeD4nBtfhtfIG1w4/j5Alvcf1SlI21/awXzvwFpW1UQJbA
-         mI8GrlPP9ESHRVPfoexQ+3XkmSAff9UJouhzelM6iZiehzyrTFh+AB7owvOdwm/sRvuX
-         EWiPRbjvTK2bDwGnAmDaR14BridMwshUnTUyV1L8EM4WY8SlunttDdedVlgIhB6MfQIA
-         QWZ0uNkLOeQF0/sVa1c9qQwwgJ0XbCw5kIQPvX9/rRX80X/wvA5j8gFl7AY0kBjtP9U6
-         p+Yw==
-X-Gm-Message-State: AOAM531fG7KebUJFNFrINkL4cbNlWkWP4Rtlp0Ye+plDHojK86Mffsb8
-        BDwQkCtLaDTZdOKMK4oXTpU5CGNxMSnVqo8F/D/TKw==
-X-Google-Smtp-Source: ABdhPJwGKLu0z/dTDqySAlqgfg7vIw00CAxMAF/n/hdDKH4w89Jgg8+PYleCXBvx1Bvv7Pek2lkAhCyQonJy7yX90Kg=
-X-Received: by 2002:a67:e290:: with SMTP id g16mr4591851vsf.56.1600263009036;
- Wed, 16 Sep 2020 06:30:09 -0700 (PDT)
+        Wed, 16 Sep 2020 13:12:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600276345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEOYWIWUZZbjOvWaaaZu93r2/i0CVOT9x7lwnsy/CMY=;
+        b=YV7iGDY0Fb9YPpT+1IGPqcWcqz1eUJK2XOJFVehc98nG+DabWnhk8+Ncpitb9ADaGDGnmE
+        LEwGF/TEr1mOtAinWkpuaoSOJcfooIkdFtMAjDtwphlfRE3wqUIFDgbVg8kN16flAfIo+m
+        hdUQbTLQuE+LNHrtCw/OdkkkEw5tUgs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-rId4z_HRNOupn5g7JK_1kQ-1; Wed, 16 Sep 2020 09:45:35 -0400
+X-MC-Unique: rId4z_HRNOupn5g7JK_1kQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13722AD682;
+        Wed, 16 Sep 2020 13:45:32 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-114-67.ams2.redhat.com [10.36.114.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54A1A78811;
+        Wed, 16 Sep 2020 13:45:26 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
+References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
+        <20200915131102.GA26439@willie-the-truck>
+        <20200915135344.GA113966@apalos.home>
+        <20200915141707.GB26439@willie-the-truck>
+        <20200915192311.GA124360@apalos.home> <xunyo8m5hp4m.fsf@redhat.com>
+        <20200916131702.GB5316@myrica>
+Date:   Wed, 16 Sep 2020 16:45:24 +0300
+In-Reply-To: <20200916131702.GB5316@myrica> (Jean-Philippe Brucker's message
+        of "Wed, 16 Sep 2020 15:17:02 +0200")
+Message-ID: <xunyk0wthm2z.fsf@redhat.com>
 MIME-Version: 1.0
-References: <20200908125813.8809-1-brgl@bgdev.pl> <CADYN=9+3kHG0CexzZiMQoXdF2piN2ZhOTObhY=7VCKrnFVN0Kw@mail.gmail.com>
-In-Reply-To: <CADYN=9+3kHG0CexzZiMQoXdF2piN2ZhOTObhY=7VCKrnFVN0Kw@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 16 Sep 2020 15:29:58 +0200
-Message-ID: <CAMRc=MdNxxAHQK5i4rZo3d4iy5JNco-f0V-UzVNTTJQyH6AZpA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] gpiolib: generalize GPIO line names property
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 2:02 PM Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> On Tue, 8 Sep 2020 at 18:40, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > I initially sent this as part of the gpio-mockup overhaul but since
-> > these patches are indepentent and the work on gpio-mockup may become
-> > more complicated - I'm sending these separately.
-> >
-> > The only change is adding additional property helpers to count strings
-> > in array.
-> >
-> > Bartosz Golaszewski (3):
-> >   device: property: add helpers to count items in string arrays
-> >   gpiolib: generalize devprop_gpiochip_set_names() for device properties
-> >   gpiolib: unexport devprop_gpiochip_set_names()
->
-> I do an arm64 allmodconfig build fron linux-next (tag: next-20200915) and
-> run that in qemu. When I run I see the following output (see full log [1]):
-> "BUG: KASAN: null-ptr-deref in device_property_read_string_array".
->
->
+Hi, Jean-Philippe!
 
-FYI: this fails because someone passes a NULL struct device * to
-dev_fwnode() - this is probably caused by some ordering issues in this
-patch. I'm working on it.
+>>>>> On Wed, 16 Sep 2020 15:17:02 +0200, Jean-Philippe Brucker  wrote:
 
-Bartosz
+ > On Wed, Sep 16, 2020 at 03:39:37PM +0300, Yauheni Kaliuta wrote:
+ >> If you start to amend extables, could you consider a change like
+ >> 
+ >> 05a68e892e89 ("s390/kernel: expand exception table logic to allow
+ >> new handling options")
+ >> 
+ >> and implementation of BPF_PROBE_MEM then?
+
+ > Commit 800834285361 ("bpf, arm64: Add BPF exception tables") should have
+ > taken care of that, no?
+
+Ah, missed that. Thanks!
+
+-- 
+WBR,
+Yauheni Kaliuta
+
