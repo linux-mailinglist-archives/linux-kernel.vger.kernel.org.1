@@ -2,193 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC1226C6C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A30926C6C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727692AbgIPSDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        id S1727789AbgIPSDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727774AbgIPSCd (ORCPT
+        with ESMTP id S1727782AbgIPSCt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:02:33 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1211C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:02:31 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k8so1086525pfk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:02:31 -0700 (PDT)
+        Wed, 16 Sep 2020 14:02:49 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F48AC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:02:48 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l9so3969907wme.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:02:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oKK+R4vB+7dRT25SkGFNImJ3MtLBDRDqIznhx0nRzAs=;
-        b=RAv+ZcfpNEyAbGataYWi56XvH+C0d2XlA3emc1lqWb35HAVu5yFwWC1CUAL88Z3rz8
-         O113BD6SSZ7xE1R6gCYR+5Uiv8Wz4wRppiA+tTQym8I/NnqdG+l6StU2B0twqgdGYvAS
-         wUJLqUDnBrTeDpBjWcEAif4I6ydTNJmouwBy4=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RPwhusTWYDQ4QjD+ev8+QjSTTu6T0Fu2+n0uxDZxjos=;
+        b=VyjLGizpCp6P2PFqz82TtrO43roEou9wcLjw9UHR3RZ+XQ0Jgur0rvXmT4ZVZBFMef
+         SceMXRAdAgYQ4Py0eZcOdoBSnRsQScHAH1e65lTujVJGlW1AzE4AweL06S5/wx1oUhec
+         vRHL13BNVcF1qAcUApaT2VrpOQNS+9LTYNZHI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oKK+R4vB+7dRT25SkGFNImJ3MtLBDRDqIznhx0nRzAs=;
-        b=KMh/Av+IEm3Kk6P5V6nQ3CPVv/5zQ4vpRKD7UeqPbVWsr/0lr3mEEMM5JAryK06Soj
-         siV/dMct+zzxEB22fhDx8Tmfao5gLBvhdOdOu0HyP1SC5tk7zrtlL0U6aDjDLemqLhhN
-         jasYvVOODspwSw7K2TG6KwEBNwkWMVgy0LP/IOpKhQ/xnOAOwwNnU52Qn6dzyyXufbvA
-         aEt4EcGW2bUCOHBpix6cDBVLBXFRaKpagWfefs0UNL/jrOUuh8rcKN2i94As2FOYVMgG
-         CSIbYx5Je7qkKlgmJDK2HaXkjmpghgLiFfIhjz3h1tXJoH6HEoGBNAXw78Ud2/nOv53V
-         A1KQ==
-X-Gm-Message-State: AOAM533QYxxuIXIse77nwtAqgL6Pe4r4x6GxbiG/Y0iDgbNo9k0Gkjsk
-        FH9LjfcTo3sTztBKdGroz4jFMw==
-X-Google-Smtp-Source: ABdhPJyByD4aTCPLAJcpe/mnCOM1dCgtz7cfGxhzyAuNU3s+nJ2bpn6PbSwbInUI7LZr3ekI7PjsjQ==
-X-Received: by 2002:a62:3044:0:b029:142:2501:398b with SMTP id w65-20020a6230440000b02901422501398bmr7496943pfw.80.1600279350855;
-        Wed, 16 Sep 2020 11:02:30 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id z1sm17315402pfz.70.2020.09.16.11.02.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 11:02:30 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 11:02:29 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        bgodavar@codeaurora.org, rjliao@codeaurora.org,
-        hbandi@codeaurora.org, abhishekpandit@chromium.org
-Subject: Re: [PATCH v1] Bluetooth: Use NVM files based on SoC ID for WCN3991
-Message-ID: <20200916180229.GA3560556@google.com>
-References: <1600184605-31611-1-git-send-email-gubbaven@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RPwhusTWYDQ4QjD+ev8+QjSTTu6T0Fu2+n0uxDZxjos=;
+        b=dKsAdvAvVbBM9jTa8HQFQKt1vcvO7vmn9vYNC+bljXcuyMaq1Mfygu+KVGL5qdGcyt
+         nBp6nj1DVe9Y7Nyc7suBoxLcx3lhTEP4ePFU0Zyq/vNhVRqE5I+8A2X01dMZ9xYOBT7v
+         Zb/50AvxQYNRvw9vkJwVnvEqR96lhCQ1BuEVMDNijhI0zanso4r/dsvJaJrG3cvFyjKv
+         5Uf/VQbuZMMo0pYNT2bx8RgTAJTj5zL1QyVWOf6IsEfAiDX96KX/u98WSbadMgEu3261
+         WhDhSdhcqd2JwV1U1L04cYgpo0BloBBjeeF9L75ZgO8VwWDrKKz/0eKDrcu8++K7i1Zq
+         xUdA==
+X-Gm-Message-State: AOAM532uhOhZJ3yGCFHvZzDDXfGVB23hoZHU4zEBtXdoMPbMShU19gK1
+        eLQpUBTf/QUhNNddtD+V5T4QrDHOLUupglFQ
+X-Google-Smtp-Source: ABdhPJwVNH/jhFaJjqOw4YY09k+qaa4JgESdF9XioxXnqexJSIWHzIQiPqBw2Ugj/jiIFesx3LvRnA==
+X-Received: by 2002:a05:600c:210c:: with SMTP id u12mr6434238wml.185.1600279366269;
+        Wed, 16 Sep 2020 11:02:46 -0700 (PDT)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id v17sm36702944wrc.23.2020.09.16.11.02.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 11:02:45 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc:     Florent Revest <revest@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Jann Horn <jannh@google.com>
+Subject: [PATCH v3] ima: Fix NULL pointer dereference in ima_file_hash
+Date:   Wed, 16 Sep 2020 18:02:42 +0000
+Message-Id: <20200916180242.430668-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1600184605-31611-1-git-send-email-gubbaven@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Venkata,
+From: KP Singh <kpsingh@google.com>
 
-I agree with Marcel that the version magic is confusing ...
+ima_file_hash can be called when there is no iint->ima_hash available
+even though the inode exists in the integrity cache. It is fairly
+common for a file to not have a hash. (e.g. an mknodat, prior to the
+file being closed).
 
-On Tue, Sep 15, 2020 at 09:13:25PM +0530, Venkata Lakshmi Narayana Gubba wrote:
-> This change will allow to use different NVM file based
-> on WCN3991 BT SoC ID.Need to use different NVM file based on
-> fab location for WCN3991 BT SoC.
-> 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> ---
->  drivers/bluetooth/btqca.c   | 41 +++++++++++++++++++++++++----------------
->  drivers/bluetooth/btqca.h   | 13 ++++++++-----
->  drivers/bluetooth/hci_qca.c | 11 +++++------
->  3 files changed, 38 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-> index ce9dcff..a7e72f1 100644
-> --- a/drivers/bluetooth/btqca.c
-> +++ b/drivers/bluetooth/btqca.c
-> @@ -14,12 +14,11 @@
->  
->  #define VERSION "0.1"
->  
-> -int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
-> +int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_version *ver,
->  			 enum qca_btsoc_type soc_type)
->  {
->  	struct sk_buff *skb;
->  	struct edl_event_hdr *edl;
-> -	struct qca_btsoc_version *ver;
->  	char cmd;
->  	int err = 0;
->  	u8 event_type = HCI_EV_VENDOR;
-> @@ -70,9 +69,9 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
->  	}
->  
->  	if (soc_type >= QCA_WCN3991)
-> -		memmove(&edl->data, &edl->data[1], sizeof(*ver));
-> -
-> -	ver = (struct qca_btsoc_version *)(edl->data);
-> +		memcpy(ver, &edl->data[1], sizeof(*ver));
-> +	else
-> +		memcpy(ver, &edl->data, sizeof(*ver));
->  
->  	bt_dev_info(hdev, "QCA Product ID   :0x%08x",
->  		    le32_to_cpu(ver->product_id));
-> @@ -83,13 +82,7 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
->  	bt_dev_info(hdev, "QCA Patch Version:0x%08x",
->  		    le16_to_cpu(ver->patch_ver));
->  
-> -	/* QCA chipset version can be decided by patch and SoC
-> -	 * version, combination with upper 2 bytes from SoC
-> -	 * and lower 2 bytes from patch will be used.
-> -	 */
-> -	*soc_version = (le32_to_cpu(ver->soc_id) << 16) |
-> -		       (le16_to_cpu(ver->rom_ver) & 0x0000ffff);
-> -	if (*soc_version == 0)
-> +	if (le32_to_cpu(ver->soc_id) == 0 || le16_to_cpu(ver->rom_ver) == 0)
->  		err = -EILSEQ;
->  
->  out:
-> @@ -446,15 +439,25 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
->  EXPORT_SYMBOL_GPL(qca_set_bdaddr_rome);
->  
->  int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> -		   enum qca_btsoc_type soc_type, u32 soc_ver,
-> +		   enum qca_btsoc_type soc_type, struct qca_btsoc_version ver,
->  		   const char *firmware_name)
->  {
->  	struct qca_fw_config config;
->  	int err;
->  	u8 rom_ver = 0;
-> +	u32 soc_ver;
->  
->  	bt_dev_dbg(hdev, "QCA setup on UART");
->  
-> +	/* QCA chipset version can be decided by patch and SoC
-> +	 * version, combination with upper 2 bytes from SoC
-> +	 * and lower 2 bytes from patch will be used.
-> +	 */
-> +	soc_ver = (le32_to_cpu(ver.soc_id) << 16) |
-> +		       (le16_to_cpu(ver.rom_ver) & 0x0000ffff);
-> +
+Another example where this can happen (suggested by Jann Horn):
 
-Can we at least do the leN_to_cpu conversions in qca_read_soc_version()
-as previously to make this less clunky?
+Process A does:
 
-And/or define a macro to extract 'soc_ver' to unclunkify this further.
+	while(1) {
+		unlink("/tmp/imafoo");
+		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
+		if (fd == -1) {
+			perror("open");
+			continue;
+		}
+		write(fd, "A", 1);
+		close(fd);
+	}
 
-> +	bt_dev_info(hdev, "QCA controller version 0x%08x", soc_ver);
-> +
->  	config.user_baud_rate = baudrate;
->  
->  	/* Download rampatch file */
-> @@ -491,9 +494,15 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
->  	if (firmware_name)
->  		snprintf(config.fwname, sizeof(config.fwname),
->  			 "qca/%s", firmware_name);
-> -	else if (qca_is_wcn399x(soc_type))
-> -		snprintf(config.fwname, sizeof(config.fwname),
-> -			 "qca/crnv%02x.bin", rom_ver);
-> +	else if (qca_is_wcn399x(soc_type)) {
-> +		if (ver.soc_id == QCA_WCN3991_SOC_ID) {
-> +			snprintf(config.fwname, sizeof(config.fwname),
-> +				 "qca/crnv%02xu.bin", rom_ver);
-> +		} else {
-> +			snprintf(config.fwname, sizeof(config.fwname),
-> +				 "qca/crnv%02x.bin", rom_ver);
-> +		}
-> +	}
->  	else if (soc_type == QCA_QCA6390)
->  		snprintf(config.fwname, sizeof(config.fwname),
->  			 "qca/htnv%02x.bin", rom_ver);
-> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
-> index d81b74c..d01a9f5 100644
-> --- a/drivers/bluetooth/btqca.h
-> +++ b/drivers/bluetooth/btqca.h
-> @@ -34,6 +34,8 @@
->  #define QCA_HCI_CC_OPCODE		0xFC00
->  #define QCA_HCI_CC_SUCCESS		0x00
->  
-> +#define QCA_WCN3991_SOC_ID		(0x40014320)
+and Process B does:
 
-The QCA_ prefix seems a bit verbose, given that this is a QCA driver and
-WCN3991 uniquely identifies the chip. Having the prefix just needlessly
-clutters conditions, I suggest to just call it SOC_ID_WCN3991.
+	while (1) {
+		int fd = open("/tmp/imafoo", O_RDONLY);
+		if (fd == -1)
+			continue;
+    		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
+			 	     MAP_PRIVATE, fd, 0);
+		if (mapping != MAP_FAILED)
+			munmap(mapping, 0x1000);
+		close(fd);
+  	}
+
+Due to the race to get the iint->mutex between ima_file_hash and
+process_measurement iint->ima_hash could still be NULL.
+
+Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
+Signed-off-by: KP Singh <kpsingh@google.com>
+Reviewed-by: Florent Revest <revest@chromium.org>
+---
+ security/integrity/ima/ima_main.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+Changelog:
+
+v2 -> v3
+
+- Updated commit description.
+
+v1 -> v2
+
+- Added Review Tags, attempt to get the patch on the lists somehow.
+
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 8a91711ca79b..4c86cd4eece0 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+ 		return -EOPNOTSUPP;
+ 
+ 	mutex_lock(&iint->mutex);
++
++	/*
++	 * ima_file_hash can be called when ima_collect_measurement has still
++	 * not been called, we might not always have a hash.
++	 */
++	if (!iint->ima_hash) {
++		mutex_unlock(&iint->mutex);
++		return -EOPNOTSUPP;
++	}
++
+ 	if (buf) {
+ 		size_t copied_size;
+ 
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
