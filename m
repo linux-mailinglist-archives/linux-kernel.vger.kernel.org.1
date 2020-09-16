@@ -2,159 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F066626BD65
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2894626BD63
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgIPGk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726136AbgIPGku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:40:50 -0400
-Received: from coco.lan (ip5f5ad5c9.dynamic.kabel-deutschland.de [95.90.213.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA69A20708;
-        Wed, 16 Sep 2020 06:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600238448;
-        bh=K5Kj9HgJm7gM+MKCU/+K5/S5g3OT6iP7z0/H3hNi3Do=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ks4Ey8cfFsbf5k8pWgHTca7IKjs+0r0g/7Dd3nMX7aN6UEEoHkKo09czyivdr+M21
-         EhWyAshF4CqSE46ZQ+U3+BgmFpzHGcoT8Ht3B8zNHR52WD0LsOgVf/VCvlA+XMUDd6
-         JqA1HcTz6ZYUOMHve7AyKilMjxzTvcb169l7Bi0M=
-Date:   Wed, 16 Sep 2020 08:40:36 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-Cc:     geert@linux-m68k.org, r.verdejo@samsung.com,
-        linux-media@vger.kernel.org, nicolas@ndufresne.ca,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] media: vidtv: fix build on 32bit architectures
-Message-ID: <20200916084036.09e8f3c8@coco.lan>
-In-Reply-To: <20200915180509.2661572-1-dwlsalmeida@gmail.com>
-References: <20200915180509.2661572-1-dwlsalmeida@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726210AbgIPGks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:40:48 -0400
+Received: from mail-eopbgr140073.outbound.protection.outlook.com ([40.107.14.73]:35797
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726136AbgIPGkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:40:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FGp+49U9bFMra/7k4fkikyhyK2p0vk99ko6t+zrndlG5owGhYQbCqX5pAxgiymuNsGdscxgOODg4EqMaEiFbA4EOzg24Z1U/gZkZ8xh4KDIUrXoCD/c6wZ1HGKkNNYClc6FRHzX+3tFnUEUhB7Jy2Qo/mlrV+65TPp3plQGLsLVQ6mpJp6sSBCEOAqzBsVBiCqIK2nbGI04RDi3RmtraRiIXKJ87vqo4ftjX4Ov4kUK1HM67bHQzVyH08Gw1pMLwAPwwXdZXu7lLOV7TsLVoExcaZAL2WesCgv9GFccCbBJ1LhLR4ogPIuey6aEWzhlVPZ43G/vuCEupkJ6nfjWxyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LDC9bF/jOQsBiRcAlPmmQL7H2uM+CqyIRFMH+kRMvMI=;
+ b=BvcVFV63xNIzzke1lMs8uGAHz874utGLSt6VRLWrd0i1wAKyfdiVUj/tMc/cduYvM9Flh/AuEZQROyHqwgFHGgrvE/PwLt4FLzMUMnYqyytXlVLlhiXb+5mD5lW+ih7jOmtxkyETbgbXQxwfZqdmGLB+3hPFxzfmrRPGBXPJUpmaUX6Uze3oPjXhBQj8RkoUzMGITXr+ImRpCdIZa8e1wAyYGr5QM+9/JisC9bl5fAsfQ/wRC/BtotgKopLzWMkhwSV/sqEJ4IulGNeTiHWM0xKyRO29v8nCBKZH1T54W0RYGZoZPXQ4G8jLsHvecjwhLYydJUBu3eRy/YLDtkjFlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LDC9bF/jOQsBiRcAlPmmQL7H2uM+CqyIRFMH+kRMvMI=;
+ b=M8zAfyPdcRBa/wVPx0ygQxuxYs8a/4khTl/Z+UDRLgHcQBCqFxUEYnBbyWvh4b5Y6F2gGWJKZpJvMmIoHYqMu2+h6c1Vvsd8zYHDV7IXjtouaU3YUfHFK68GyJwjFCw3xKvhbDw5xe/+jYSLo8trzn2eLJJPSK5wVCpWYBU/gwk=
+Received: from AM6PR04MB5413.eurprd04.prod.outlook.com (2603:10a6:20b:96::28)
+ by AM6PR04MB5815.eurprd04.prod.outlook.com (2603:10a6:20b:b0::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
+ 2020 06:40:40 +0000
+Received: from AM6PR04MB5413.eurprd04.prod.outlook.com
+ ([fe80::1953:c81a:cca2:60ec]) by AM6PR04MB5413.eurprd04.prod.outlook.com
+ ([fe80::1953:c81a:cca2:60ec%7]) with mapi id 15.20.3391.014; Wed, 16 Sep 2020
+ 06:40:40 +0000
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Ard Biesheuvel <ard.biesheuvel@arm.com>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Biwen Li <biwen.li@nxp.com>, Varun Sethi <V.Sethi@nxp.com>,
+        Arokia Samy <arokia.samy@nxp.com>,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Paul Yang <Paul.Yang@arm.com>,
+        tanveer <tanveer.alam@puresoftware.com>
+Subject: RE: [PATCH v1] soc: fsl: rcpm: Add ACPI support
+Thread-Topic: [PATCH v1] soc: fsl: rcpm: Add ACPI support
+Thread-Index: AQHWi1Bdrf69Hjks3kmx49279KDQI6lpiwOAgADt6GCAAFCjAIAABUwg
+Date:   Wed, 16 Sep 2020 06:40:39 +0000
+Message-ID: <AM6PR04MB5413488247501D00A2CC95C6F1210@AM6PR04MB5413.eurprd04.prod.outlook.com>
+References: <20200915110647.846-1-kuldip.dwivedi@puresoftware.com>
+ <4e008f0a-69da-d5c2-4dfc-ef8695e17f47@arm.com>
+ <AM6PR04MB5413903EAAEDB2EED2E254C6F1210@AM6PR04MB5413.eurprd04.prod.outlook.com>
+ <caf01871-1c3d-bdf8-867d-daf7138966a8@arm.com>
+In-Reply-To: <caf01871-1c3d-bdf8-867d-daf7138966a8@arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 682477e7-72f4-41c9-505a-08d85a0b6d93
+x-ms-traffictypediagnostic: AM6PR04MB5815:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB5815B5155F84AB78796BA9F1F1210@AM6PR04MB5815.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8xFzXBbimUyB20T6kU3q7Z2lL9b1m0LaXKiJRehTLVilHcVG7G+xTgH6emF9bPKSZVrE7nplbn/ZZWWVA84kJVz59v99jyArDEbYZfYtxY3r+banp5df2XEI1Vmjr6fzgPgJcYwU0pict+YVrQiVi+GDm/G6j8Z0deW+YAohkvp7UBcoljbNaoU+lnthFotkfdX8dNlzuMv8YA6HsLgZp3en5iy+BMAT+bi6i/Oz1S0EiDH8bU0awnzpu/DN8WfkXzxJnOSjjvAcrtkUX56PVf4wIZ3zJa+4woFmHHs9k41P2KPi3aFtMo2x9HC2IiXLXfD1GaAa140CEz5hl8zlvieuNocpkKprzcfVJivAjEE3Iqnpt/IxSjKWtS7KCh5X
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5413.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(376002)(396003)(66946007)(9686003)(8676002)(6506007)(5660300002)(86362001)(53546011)(66446008)(71200400001)(54906003)(7696005)(110136005)(33656002)(66476007)(76116006)(64756008)(66556008)(26005)(316002)(2906002)(52536014)(186003)(55016002)(8936002)(478600001)(83380400001)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: t6ytKXKv9HLEkSsNGnLtnKmjfxHVhRkNgBgjm4ZmYIwdtjymci4Fno/mcQJSMcwAvxKm/zIdEWVF01rn16FKVb9ZHeyK0iVIThLYBeN3FFnZlExB9YEFRtB4fQSG9m39PoNvr+QzHO5xaYDyn1YE/1JRyW2hlN3twyB7tqdyWJ3TIGGJihL9zd/phU+KjyQOYWiNQPAXhfIBZDmR9PwrrPEo8IPIo1LvHM7och5dl8220LP64TXseBMeq+qUMamvKlCxjCx4utesDZggKvlmz7VufDGkqCmPVdUWbw/TBpzEvrF0l1UycndEJPnfHqMfJa+fpdGIXlp8ZtBVV1QiQVzihZDMcF9e9Do8KB0VZkFFdlkD2BJ+B5lU6NXd7WoxaTjRqr7s+Hsjqq+EN2ZfvwBfQgeBT7P6GUOMe35LCVbrRJNGs+4mexqtVCm2e7VyVtVG1HbYL0tg9mqzRQTbdJDB0ZDJUHEYz1tSmm6YjeeUl7kQB0HIVDhS10HSDEbKuC1NuH1tZ5qZ38tFo8r0UI14G9aOAMYTOCshPp4ovPf37iBGnfFynDrrcawDdzLZYp1+k5+SqLCc4/fFamE4+xsTWOb4iUFSUnAQ23FCq9ChHe0Vr6x9Lf2T8oj2JfWDvJAOxE6t3guWxxh5N6RQmg==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5413.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 682477e7-72f4-41c9-505a-08d85a0b6d93
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 06:40:40.0547
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: W+/t69wFctefpdX7l8Yds+wkDTIb769PaAMpRoIZ80YiQnb/4xDGtPr/RaDDZwz2xCy7SmYGxZDbhDEjPT8xDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5815
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 15 Sep 2020 15:05:09 -0300
-"Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
-
-> From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
-> 
-> Fix the following error for builds on 32bit architectures:
-> 
-> ERROR: modpost: "__udivdi3"
-> [drivers/media/test-drivers/vidtv/dvb-vidtv-bridge.ko] undefined!
-> 
-> Which is due to 64bit divisions that did not go through the helpers
-> in linux/math64.h
-> 
-> As vidtv_mux_check_mux_rate was not operational in its current form,
-> drop the entire function  while it is not fixed properly.
-> 
-> For now, call vidtv_mux_pad_with_nulls with a constant number of packets
-> to avoid warnings due to unused functions when building this driver.
-> 
-> Fixes: f90cf6079bf67988 ("media: vidtv: add a bridge driver")
-> Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
-> ---
->  drivers/media/test-drivers/vidtv/vidtv_mux.c  | 34 +------------------
->  .../media/test-drivers/vidtv/vidtv_s302m.c    |  4 +--
->  2 files changed, 3 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.c b/drivers/media/test-drivers/vidtv/vidtv_mux.c
-> index 5d1a275d504b..6e402a880fdc 100644
-> --- a/drivers/media/test-drivers/vidtv/vidtv_mux.c
-> +++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
-> @@ -336,38 +336,6 @@ static u32 vidtv_mux_pad_with_nulls(struct vidtv_mux *m, u32 npkts)
->  	return nbytes;
->  }
->  
-> -static u32 vidtv_mux_check_mux_rate(struct vidtv_mux *m)
-> -{
-> -	/*
-> -	 * attempt to maintain a constant mux rate, padding with null packets
-> -	 * if needed
-> -	 */
-> -
-> -	u32 nbytes = 0;  /* the number of bytes written by this function */
-> -
-> -	u64 nbytes_expected; /* the number of bytes we should have written */
-> -	u64 nbytes_streamed; /* the number of bytes we actually wrote */
-> -	u32 num_null_pkts; /* number of null packets to bridge the gap */
-> -
-> -	u64 elapsed_time_msecs = jiffies_to_usecs(m->timing.current_jiffies -
-> -						  m->timing.past_jiffies);
-> -
-> -	elapsed_time_msecs = min(elapsed_time_msecs, (u64)VIDTV_MAX_SLEEP_USECS / 1000);
-> -	nbytes_expected = div64_u64(m->mux_rate_kbytes_sec * 1000, MSEC_PER_SEC);
-> -	nbytes_expected *= elapsed_time_msecs;
-> -
-> -	nbytes_streamed = m->mux_buf_offset;
-> -
-> -	if (nbytes_streamed < nbytes_expected) {
-> -		/* can't write half a packet: roundup to a 188 multiple */
-> -		nbytes_expected  = roundup(nbytes_expected - nbytes_streamed, TS_PACKET_LEN);
-> -		num_null_pkts    = nbytes_expected / TS_PACKET_LEN;
-> -		nbytes          += vidtv_mux_pad_with_nulls(m, num_null_pkts);
-> -	}
-> -
-> -	return nbytes;
-> -}
-> -
->  static void vidtv_mux_clear(struct vidtv_mux *m)
->  {
->  	/* clear the packets currently in the mux */
-> @@ -397,7 +365,7 @@ static void vidtv_mux_tick(struct work_struct *work)
->  			nbytes += vidtv_mux_push_si(m);
->  
->  		nbytes += vidtv_mux_poll_encoders(m);
-> -		nbytes += vidtv_mux_check_mux_rate(m);
-> +		nbytes += vidtv_mux_pad_with_nulls(m, 256);
->  
->  		npkts = nbytes / TS_PACKET_LEN;
->  
-> diff --git a/drivers/media/test-drivers/vidtv/vidtv_s302m.c b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-> index f8049cdf564a..e3290facf57b 100644
-> --- a/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-> +++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-> @@ -285,12 +285,12 @@ static void vidtv_s302m_compute_pts(struct vidtv_encoder *e)
->  {
->  	u64 count = e->sample_count;
->  	struct vidtv_access_unit *au = e->access_units;
-> +	u32 duration = CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
->  
->  	while (au) {
->  		count += au->num_samples;
->  
-> -		au->pts = count *
-> -			  CLOCK_UNIT_90KHZ / e->sampling_rate_hz;
-> +		au->pts = count * duration;
-
-That doesn't seem to be the right thing to do here. 
-
-Assuming that sampling rate is 48 kHz, you'll
-have duration = 1.875, which would be rounded to 1.
-
-In other words, the above is identical to:
-
-	au->pts = count
-
-Now, I don't know from where that CLOCK_UNIT_90KHZ came from.
-
-If such constant is not needed anymore, just drop it. 
-	
-If, on the other hand, this is required by the specs, then
-you may need to do a 64 bits division, e. g. using
-div64_u64() or do_div().
-
-Thanks,
-Mauro
+SGkgQXJkLA0KDQpPbiBXZWRuZXNkYXksIFNlcHRlbWJlciAxNiwgMjAyMCAyOjExIFBNLCBBcmQg
+Qmllc2hldXZlbCB3cm90ZToNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MV0gc29jOiBmc2w6IHJj
+cG06IEFkZCBBQ1BJIHN1cHBvcnQNCj4gDQo+IE9uIDkvMTYvMjAgMzozMiBBTSwgUmFuIFdhbmcg
+d3JvdGU6DQo+ID4gSGkgQXJkLA0KPiA+DQo+ID4gT24gVHVlc2RheSwgU2VwdGVtYmVyIDE1LCAy
+MDIwIDc6MTAgUE0sIEFyZCBCaWVzaGV1dmVsIHdyb3RlOg0KPiA+PiBTdWJqZWN0OiBSZTogW1BB
+VENIIHYxXSBzb2M6IGZzbDogcmNwbTogQWRkIEFDUEkgc3VwcG9ydA0KPiA+Pg0KPiA+PiBPbiA5
+LzE1LzIwIDE6MDYgUE0sIGt1bGRpcCBkd2l2ZWRpIHdyb3RlOg0KPiA+Pj4gQWRkIEFDUEkgc3Vw
+cG9ydCBpbiBmc2wgUkNQTSBkcml2ZXIuIFRoaXMgaXMgcmVxdWlyZWQgdG8gc3VwcG9ydA0KPiA+
+Pj4gQUNQSQ0KPiA+Pj4gUzMgc3RhdGUuIFMzIGlzIHRoZSBBQ1BJIHNsZWVwIHN0YXRlIHRoYXQg
+aXMga25vd24gYXMgInNsZWVwIiBvcg0KPiA+Pj4gInN1c3BlbmQgdG8gUkFNIi4NCj4gPj4+IEl0
+IGVzc2VudGlhbGx5IHR1cm5zIG9mZiBtb3N0IHBvd2VyIG9mIHRoZSBzeXN0ZW0gYnV0IGtlZXBz
+IG1lbW9yeQ0KPiA+Pj4gcG93ZXJlZC4NCj4gPj4+DQo+ID4+PiBTaWduZWQtb2ZmLWJ5OiB0YW52
+ZWVyIDx0YW52ZWVyLmFsYW1AcHVyZXNvZnR3YXJlLmNvbT4NCj4gPj4+IFNpZ25lZC1vZmYtYnk6
+IGt1bGRpcCBkd2l2ZWRpIDxrdWxkaXAuZHdpdmVkaUBwdXJlc29mdHdhcmUuY29tPg0KPiA+Pg0K
+PiA+PiBXaHkgZG9lcyB0aGUgT1MgbmVlZCB0byBwcm9ncmFtIHRoaXMgZGV2aWNlPyBDYW4ndCB0
+aGlzIGJlIGRvbmUgYnkNCj4gPj4gZmlybXdhcmU/DQo+ID4NCj4gPiBUaGlzIGRldmljZSBpcyB1
+c2UgdG8gdGVsbCBIVyB3aGljaCBJUCAoc3VjaCBhcyBVU0IsIFNESEMsIFNBVEEsIGV0YykNCj4g
+PiBzaG91bGQgbm90IGJlIGNsb2NrIGdhdGVkIGR1cmluZyBzeXN0ZW0gZW50ZXIgbG93IHBvd2Vy
+IHN0YXRlICh0bw0KPiA+IGFsbG93IHRoYXQgSVAgd29yayBhcyBhIHdha2V1cCBzb3VyY2UpLiBB
+bmQgdXNlciBkb2VzIHRoaXMgY29uZmlndXJhdGlvbiBpbg0KPiBkZXZpY2UgdHJlZS4NCj4gDQo+
+IFRoZSBwb2ludCBvZiBBQ1BJIGlzICpub3QqIHRvIGRlc2NyaWJlIGEgRFQgdG9wb2xvZ3kgdXNp
+bmcgYSB0YWJsZSBmb3JtYXQgdGhhdA0KPiBpcyBub3Qgc3VpdGVkIGZvciBpdC4gVGhlIHBvaW50
+IG9mIEFDUEkgaXMgdG8gZGVzY3JpYmUgYSBtYWNoaW5lIHRoYXQgaXMgbW9yZQ0KPiBhYnN0cmFj
+dGVkIGZyb20gdGhlIGhhcmR3YXJlIHRoYW4gaXMgdHlwaWNhbGx5IHBvc3NpYmxlIHdpdGggRFQs
+IHdoZXJlIHRoZQ0KPiBhYnN0cmFjdGlvbnMgYXJlIGltcGxlbWVudGVkIGJ5IEFNTCBjb2RlIHRo
+YXQgaXMgcHJvdmlkZWQgYnkgdGhlIGZpcm13YXJlLA0KPiBidXQgZXhlY3V0ZWQgaW4gdGhlIGNv
+bnRleHQgb2YgdGhlIE9TLg0KPiANCj4gU28gdGhlIGlkZWEgaXMgKm5vdCogZmluZGluZyB0aGUg
+c2hvcnRlc3QgcG9zc2libGUgcGF0aCB0byBnZXQgeW91ciBleGlzdGluZyBEVA0KPiBkcml2ZXIg
+Y29kZSBydW5uaW5nIG9uIGEgc3lzdGVtIHRoYXQgYm9vdHMgdmlhIEFDUEkuDQo+IEluc3RlYWQs
+IHlvdSBzaG91bGQgY2FyZWZ1bGx5IHRoaW5rIGFib3V0IHRoZSBhYnN0cmFjdCBBQ1BJIG1hY2hp
+bmUgdGhhdCB5b3UNCj4gd2lsbCBleHBvc2UgdG8gdGhlIE9TLCBhbmQgaGlkZSBldmVyeXRoaW5n
+IGVsc2UgaW4gZmlybXdhcmUuDQo+IA0KPiBJbiB0aGlzIHBhcnRpY3VsYXIgY2FzZSwgaXQgc2Vl
+bXMgbGlrZSB5b3VyIFVTQiwgU0RIQyBhbmQgU0FUQSBkZXZpY2Ugb2JqZWN0cw0KPiBtYXkgbmVl
+ZCBwb3dlciBzdGF0ZSBkZXBlbmRlbnQgQU1MIG1ldGhvZHMgdGhhdCBwcm9ncmFtIHRoaXMgYmxv
+Y2sNCj4gZGlyZWN0bHkuDQoNCkFjdHVhbGx5IHRoZSBzY2VuYXJpbyBpcyBhIGxpdHRsZSBiaXQg
+Y29tcGxpY2F0ZWQgZm9yIFJDUE0gZnVuY3Rpb246IGl0IG5lZWQgdG8gcXVlcnkNCmtlcm5lbCB3
+YWtldXAgc291cmNlIGZyYW1ld29yayAoc2VlIGZvcl9lYWNoX3dha2V1cF9zb3VyY2Uod3MpKSB0
+byBmZXRjaCBhbGwNCnBvdGVudGlhbCBjYW5kaWRhdGVzIHRoZW4gZG8gdGhlIHByb2dyYW1taW5n
+IGFjY29yZGluZ2x5LiBJZiB3ZSBpbXBsZW1lbnQNCnRoaXMgbG9naWMgaW4gQU1MIG1ldGhvZHMs
+IEkgaGF2ZSBubyBpZGVhIGhvdyB0byBjb2xsZWN0IHRob3NlIGluZm9ybWF0aW9uIHN0b3JlZCBp
+bg0Kd2FrZXVwIHNvdXJjZSBkYXRhIG9mIGtlcm5lbC4NCg0KUmVnYXJkcywNClJhbg0KDQo+IA0K
+PiANCj4gPiBTbyBpbXBsZW1lbnQNCj4gPiB0aGlzIFJDUE0gZHJpdmVyIHRvIGRvIGl0IGluIGtl
+cm5lbCByYXRoZXIgdGhhbiBmaXJtd2FyZS4NCj4gPg0KPiA+IFJlZ2FyZHMsDQo+ID4gUmFuDQo+
+ID4NCj4gPj4+IC0tLQ0KPiA+Pj4NCj4gPj4+IE5vdGVzOg0KPiA+Pj4gICAgICAgMS4gQWRkIEFD
+UEkgbWF0Y2ggdGFibGUNCj4gPj4+ICAgICAgIDIuIE5YUCB0ZWFtIG1lbWJlcnMgYXJlIGFkZGVk
+IGZvciBjb25maXJtaW5nIEhJRCBjaGFuZ2VzDQo+ID4+PiAgICAgICAzLiBUaGVyZSBpcyBvbmx5
+IG9uZSBub2RlIGluIEFDUEkgc28gbm8gbmVlZCB0byBjaGVjayBmb3INCj4gPj4+ICAgICAgICAg
+IGN1cnJlbnQgZGV2aWNlIGV4cGxpY2l0bHkNCj4gPj4+ICAgICAgIDQuIFRoZXNlIGNoYW5nZXMg
+YXJlIHRlc3RlZCBvbiBMWDIxNjBBIGFuZCBMUzEwNDZBIHBsYXRmb3Jtcw0KPiA+Pj4NCj4gPj4+
+ICAgIGRyaXZlcnMvc29jL2ZzbC9yY3BtLmMgfCAyMiArKysrKysrKysrKysrKysrKysrLS0tDQo+
+ID4+PiAgICAxIGZpbGUgY2hhbmdlZCwgMTkgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkN
+Cj4gPj4+DQo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvZnNsL3JjcG0uYyBiL2RyaXZl
+cnMvc29jL2ZzbC9yY3BtLmMgaW5kZXgNCj4gPj4+IGEwOTNkYmU2ZDJjYi4uZTc1YTQzNmZiMTU5
+IDEwMDY0NA0KPiA+Pj4gLS0tIGEvZHJpdmVycy9zb2MvZnNsL3JjcG0uYw0KPiA+Pj4gKysrIGIv
+ZHJpdmVycy9zb2MvZnNsL3JjcG0uYw0KPiA+Pj4gQEAgLTIsMTAgKzIsMTIgQEANCj4gPj4+ICAg
+IC8vDQo+ID4+PiAgICAvLyByY3BtLmMgLSBGcmVlc2NhbGUgUW9ySVEgUkNQTSBkcml2ZXINCj4g
+Pj4+ICAgIC8vDQo+ID4+PiAtLy8gQ29weXJpZ2h0IDIwMTkgTlhQDQo+ID4+PiArLy8gQ29weXJp
+Z2h0IDIwMTktMjAyMCBOWFANCj4gPj4+ICsvLyBDb3B5cmlnaHQgMjAyMCBQdXJlc29mdHdhcmUg
+THRkLg0KPiA+Pj4gICAgLy8NCj4gPj4+ICAgIC8vIEF1dGhvcjogUmFuIFdhbmcgPHJhbi53YW5n
+XzFAbnhwLmNvbT4NCj4gPj4+DQo+ID4+PiArI2luY2x1ZGUgPGxpbnV4L2FjcGkuaD4NCj4gPj4+
+ICAgICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQo+ID4+PiAgICAjaW5jbHVkZSA8bGludXgvbW9k
+dWxlLmg+DQo+ID4+PiAgICAjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+IEBAIC01
+Nyw4ICs1OSwxMyBAQCBzdGF0aWMgaW50DQo+ID4+PiByY3BtX3BtX3ByZXBhcmUoc3RydWN0IGRl
+dmljZSAqZGV2KQ0KPiA+Pj4gICAgCQkJCXJjcG0tPndha2V1cF9jZWxscyArIDEpOw0KPiA+Pj4N
+Cj4gPj4+ICAgIAkJLyogIFdha2V1cCBzb3VyY2Ugc2hvdWxkIHJlZmVyIHRvIGN1cnJlbnQgcmNw
+bSBkZXZpY2UgKi8NCj4gPj4+IC0JCWlmIChyZXQgfHwgKG5wLT5waGFuZGxlICE9IHZhbHVlWzBd
+KSkNCj4gPj4+IC0JCQljb250aW51ZTsNCj4gPj4+ICsJCWlmIChpc19hY3BpX25vZGUoZGV2LT5m
+d25vZGUpKSB7DQo+ID4+PiArCQkJaWYgKHJldCkNCj4gPj4+ICsJCQkJY29udGludWU7DQo+ID4+
+PiArCQl9IGVsc2Ugew0KPiA+Pj4gKwkJCWlmIChyZXQgfHwgKG5wLT5waGFuZGxlICE9IHZhbHVl
+WzBdKSkNCj4gPj4+ICsJCQkJY29udGludWU7DQo+ID4+PiArCQl9DQo+ID4+Pg0KPiA+Pj4gICAg
+CQkvKiBQcm9wZXJ0eSAiI2ZzbCxyY3BtLXdha2V1cC1jZWxscyIgb2YgcmNwbSBub2RlIGRlZmlu
+ZXMgdGhlDQo+ID4+PiAgICAJCSAqIG51bWJlciBvZiBJUFBERVhQQ1IgcmVnaXN0ZXIgY2VsbHMs
+IGFuZCAiZnNsLHJjcG0td2FrZXVwIg0KPiA+Pj4gQEAgLTEzOSwxMCArMTQ2LDE5IEBAIHN0YXRp
+YyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkDQo+ID4+PiByY3BtX29mX21hdGNoW10NCj4gPj4g
+PSB7DQo+ID4+PiAgICB9Ow0KPiA+Pj4gICAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgcmNwbV9v
+Zl9tYXRjaCk7DQo+ID4+Pg0KPiA+Pj4gKyNpZmRlZiBDT05GSUdfQUNQSQ0KPiA+Pj4gK3N0YXRp
+YyBjb25zdCBzdHJ1Y3QgYWNwaV9kZXZpY2VfaWQgcmNwbV9hY3BpX21hdGNoW10gPSB7DQo+ID4+
+PiArCXsgIk5YUDAwMTUiLCB9LA0KPiA+Pj4gKwl7IH0NCj4gPj4+ICt9Ow0KPiA+Pj4gK01PRFVM
+RV9ERVZJQ0VfVEFCTEUoYWNwaSwgcmNwbV9hY3BpX21hdGNoKTsgI2VuZGlmDQo+ID4+PiArDQo+
+ID4+PiAgICBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciByY3BtX2RyaXZlciA9IHsNCj4g
+Pj4+ICAgIAkuZHJpdmVyID0gew0KPiA+Pj4gICAgCQkubmFtZSA9ICJyY3BtIiwNCj4gPj4+ICAg
+IAkJLm9mX21hdGNoX3RhYmxlID0gcmNwbV9vZl9tYXRjaCwNCj4gPj4+ICsJCS5hY3BpX21hdGNo
+X3RhYmxlID0gQUNQSV9QVFIocmNwbV9hY3BpX21hdGNoKSwNCj4gPj4+ICAgIAkJLnBtCT0gJnJj
+cG1fcG1fb3BzLA0KPiA+Pj4gICAgCX0sDQo+ID4+PiAgICAJLnByb2JlID0gcmNwbV9wcm9iZSwN
+Cj4gPj4+DQo+ID4NCg0K
