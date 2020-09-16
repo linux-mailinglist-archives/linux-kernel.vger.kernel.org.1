@@ -2,87 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1C426C73A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC41626C6EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgIPSVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:21:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727816AbgIPSKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727760AbgIPSLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727813AbgIPSKo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 14:10:44 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4284C06174A;
+        Wed, 16 Sep 2020 11:10:33 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c3e00d1c41ee080a628ee.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:d1c4:1ee0:80a6:28ee])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D47AB2083B;
-        Wed, 16 Sep 2020 18:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600279827;
-        bh=Ju+mDAYgGgYm5szp6plQMoO737lg/ofifEnvRT90SNI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uigVu9nT/DR8STMbyQA9tMT/XkN6el3Pw15dPTt8xh/BbT/YlbLT2pDFr6UdeUYo0
-         HbpOF80HJsVzvdniwdV2k9f1EtOg/eNVhYp8gLWbIR5hvLedQgUjzrboKXUgQNs/Is
-         55NRPAOwYxB4o39VSGRCT1FcBTK+778DMRhEPGqA=
-Date:   Wed, 16 Sep 2020 19:10:26 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] iio: adc: palmas_gpadc: use
- module_platform_driver to simplify the code
-Message-ID: <20200916191026.56932e1c@archlinux>
-In-Reply-To: <20200914065401.3726354-1-liushixin2@huawei.com>
-References: <20200914065401.3726354-1-liushixin2@huawei.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 50C851EC0380;
+        Wed, 16 Sep 2020 20:10:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600279831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=8AMmW7Bvo1yK12Dhb305WK6iubhLC0h7i2uyYoqgfeA=;
+        b=mLnkd5FMnPRvoq5f3oqSYw3op2h0vGG0ajHPkwCtP2gm4Nu5zQ+2fqLJtA6Co4uplJj8bs
+        1x9LsdFgEC/SIgI+N1Apy+5jy7leXD7OV+wWbDZ1y778kWjmRvlvumsTDRS7Pamll4U7Lp
+        UI5Ksm3Embaz7BlK+ODjuVsgZ6fgl2w=
+Date:   Wed, 16 Sep 2020 20:10:30 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Alex Kluver <alex.kluver@hpe.com>, linux-edac@vger.kernel.org,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mchehab@kernel.org, russ.anderson@hpe.com,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        kluveralex@gmail.com
+Subject: Re: [PATCH v2 1/2] edac,ghes,cper: Add Row Extension to Memory Error
+ Record
+Message-ID: <20200916181030.GR2643@zn.tnic>
+References: <20200819143544.155096-1-alex.kluver@hpe.com>
+ <20200819143544.155096-2-alex.kluver@hpe.com>
+ <20200915163312.GO14436@zn.tnic>
+ <CAMj1kXHmVhB88qZc-1mHAD1ovNJQnWRBncmQJTR_4+kV0fXG5w@mail.gmail.com>
+ <CAMj1kXGvfiqZz-j5=LU0Z6yYCkr24pCz6aJS62QL8cBYUP_S=w@mail.gmail.com>
+ <20200915171910.GQ14436@zn.tnic>
+ <CAMj1kXE6PKb==h_154hRKwZLr3Ek+4z4A8FdTHx=co18ww5d3Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXE6PKb==h_154hRKwZLr3Ek+4z4A8FdTHx=co18ww5d3Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 14:54:01 +0800
-Liu Shixin <liushixin2@huawei.com> wrote:
+On Wed, Sep 16, 2020 at 04:09:36PM +0300, Ard Biesheuvel wrote:
+> git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi.git next
 
-> module_platform_driver() makes the code simpler by eliminating
-> boilerplate code.
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+Looks good and no conflicts, builds fine too.
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to see if we missed anything.
+[boris@zn: ~/kernel/linux> git fetch efi
+remote: Enumerating objects: 85, done.
+remote: Counting objects: 100% (85/85), done.
+remote: Compressing objects: 100% (14/14), done.
+remote: Total 131 (delta 71), reused 85 (delta 71), pack-reused 46
+Receiving objects: 100% (131/131), 113.14 KiB | 1.69 MiB/s, done.
+Resolving deltas: 100% (89/89), completed with 33 local objects.
+From git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi
+ + 84780c5438ef...744de4180a43 next                    -> efi/next  (forced update)
+   fb1201aececc..46908326c6b8  urgent                  -> efi/urgent
+ * [new tag]                   efi-next-for-v5.10      -> efi-next-for-v5.10
+ * [new tag]                   efi-urgent-for-v5.9-rc5 -> efi-urgent-for-v5.9-rc5
+ * [new tag]                   efi-riscv-shared-for-v5.10 -> efi-riscv-shared-for-v5.10
+[boris@zn: ~/kernel/linux> git checkout -b test-merge ras/edac-for-next
+Branch 'test-merge' set up to track remote branch 'edac-for-next' from 'ras'.
+Switched to a new branch 'test-merge'
+[boris@zn: ~/kernel/linux> git merge efi/next
+Auto-merging drivers/firmware/efi/libstub/efi-stub-helper.c
+Auto-merging drivers/firmware/efi/efi.c
+Auto-merging drivers/edac/ghes_edac.c
+Auto-merging arch/x86/platform/efi/efi.c
+Merge made by the 'recursive' strategy.
+ arch/arm/include/asm/efi.h                      |  23 +++--
+ arch/arm64/include/asm/efi.h                    |   5 +-
+ arch/x86/kernel/setup.c                         |   1 +
+ arch/x86/platform/efi/efi.c                     |   3 +
+ drivers/edac/ghes_edac.c                        |  17 +++-
+ drivers/firmware/efi/Makefile                   |   3 +-
+ drivers/firmware/efi/cper.c                     |  18 +++-
+ drivers/firmware/efi/{arm-init.c => efi-init.c} |   1 +
+ drivers/firmware/efi/efi.c                      |   6 ++
+ drivers/firmware/efi/libstub/arm32-stub.c       | 178 +++++++---------------------------
+ drivers/firmware/efi/libstub/arm64-stub.c       |   1 -
+ drivers/firmware/efi/libstub/efi-stub-helper.c  | 101 +++++++++++++++++++-
+ drivers/firmware/efi/libstub/efi-stub.c         |  48 +---------
+ drivers/firmware/efi/libstub/efistub.h          |  61 +++++++++++-
+ drivers/firmware/efi/libstub/file.c             |   5 +-
+ drivers/firmware/efi/libstub/relocate.c         |   4 +-
+ drivers/firmware/efi/libstub/vsprintf.c         |   2 +-
+ drivers/firmware/efi/mokvar-table.c             | 360 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/cper.h                            |  24 ++++-
+ include/linux/efi.h                             |  34 +++++++
+ include/linux/pe.h                              |   3 +
+ security/integrity/platform_certs/load_uefi.c   |  85 +++++++++++++----
+ 22 files changed, 746 insertions(+), 237 deletions(-)
+ rename drivers/firmware/efi/{arm-init.c => efi-init.c} (99%)
+ create mode 100644 drivers/firmware/efi/mokvar-table.c
 
-Thanks,
+-- 
+Regards/Gruss,
+    Boris.
 
-Jonathan
-
-> ---
->  drivers/iio/adc/palmas_gpadc.c | 13 +------------
->  1 file changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/palmas_gpadc.c b/drivers/iio/adc/palmas_gpadc.c
-> index 1ca6570be66a..889b88768b63 100644
-> --- a/drivers/iio/adc/palmas_gpadc.c
-> +++ b/drivers/iio/adc/palmas_gpadc.c
-> @@ -834,18 +834,7 @@ static struct platform_driver palmas_gpadc_driver = {
->  		.of_match_table = of_palmas_gpadc_match_tbl,
->  	},
->  };
-> -
-> -static int __init palmas_gpadc_init(void)
-> -{
-> -	return platform_driver_register(&palmas_gpadc_driver);
-> -}
-> -module_init(palmas_gpadc_init);
-> -
-> -static void __exit palmas_gpadc_exit(void)
-> -{
-> -	platform_driver_unregister(&palmas_gpadc_driver);
-> -}
-> -module_exit(palmas_gpadc_exit);
-> +module_platform_driver(palmas_gpadc_driver);
->  
->  MODULE_DESCRIPTION("palmas GPADC driver");
->  MODULE_AUTHOR("Pradeep Goudagunta<pgoudagunta@nvidia.com>");
-
+https://people.kernel.org/tglx/notes-about-netiquette
