@@ -2,206 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BFB26C768
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AA426C742
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgIPS0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:26:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56736 "EHLO mail.kernel.org"
+        id S1727936AbgIPSWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:22:19 -0400
+Received: from mga05.intel.com ([192.55.52.43]:25895 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727723AbgIPSZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:25:43 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 488FE224D1;
-        Wed, 16 Sep 2020 15:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600271972;
-        bh=sVRW+Q4w/VIyVW+IR4tgq66N90jKOapREO5ueA+lxUY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jlud3ZfnHWw7zTZF2T9cB6BlWS09yQycNhBZqAyoDK+lyMZ+TxuwDSYneGZtg8u6D
-         Ng/l+RwM7zHlz3rDcjw2ByKDzWA1kUVYekTUzwHMFQKZc20hWBRokgls6nVd1+TzNO
-         L0+qiQjbFVgHa5z9jQyCaXAuUWBKgNknv11M93vY=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 15/15] ARM: dts: imx6q: align GPIO hog names with dtschema
-Date:   Wed, 16 Sep 2020 17:57:15 +0200
-Message-Id: <20200916155715.21009-16-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916155715.21009-1-krzk@kernel.org>
-References: <20200916155715.21009-1-krzk@kernel.org>
+        id S1727760AbgIPSVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:21:25 -0400
+IronPort-SDR: 8ukguTZ4f1SUug5kzNE/8Ka8JAbyG3vB86Y9wbTR26TADdkjR1DOhhQ7NI3w8h6Vrg/JPRKAS9
+ 0qA5OVik9jcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="244340747"
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="244340747"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:02:36 -0700
+IronPort-SDR: RvbkOg0yPbL+k8A0PRubgOPsxVaYPCXIBn/0cAgKLZlM/vFjE6hK5kcCxnDDSM6eii/skUQ0Lt
+ M+Blt9qb3T7g==
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="288402007"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:02:34 -0700
+Date:   Wed, 16 Sep 2020 09:02:12 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 08/35] KVM: SVM: Prevent debugging under SEV-ES
+Message-ID: <20200916160210.GA10227@sjchrist-ice>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <58093c542b5b442b88941828595fb2548706f1bf.1600114548.git.thomas.lendacky@amd.com>
+ <20200914212601.GA7192@sjchrist-ice>
+ <fd790047-4107-b28a-262e-03ed5bc4c421@amd.com>
+ <20200915163010.GB8420@sjchrist-ice>
+ <aff46d8d-07ff-7d14-3e7f-ffe60f2bd779@amd.com>
+ <5e816811-450f-b732-76f7-6130479642e0@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e816811-450f-b732-76f7-6130479642e0@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dtschema for pca95xx expects GPIO hogs to end with 'hog' prefix.  While
-touching the hogs, fix indentation (spaces -> tabs).
+On Wed, Sep 16, 2020 at 10:11:10AM -0500, Tom Lendacky wrote:
+> On 9/15/20 3:13 PM, Tom Lendacky wrote:
+> > On 9/15/20 11:30 AM, Sean Christopherson wrote:
+> >> I don't quite follow the "doesn't mean debugging can't be done in the future".
+> >> Does that imply that debugging could be supported for SEV-ES guests, even if
+> >> they have an encrypted VMSA?
+> > 
+> > Almost anything can be done with software. It would require a lot of
+> > hypervisor and guest code and changes to the GHCB spec, etc. So given
+> > that, probably just the check for arch.guest_state_protected is enough for
+> > now. I'll just need to be sure none of the debugging paths can be taken
+> > before the VMSA is encrypted.
+> 
+> So I don't think there's any guarantee that the KVM_SET_GUEST_DEBUG ioctl
+> couldn't be called before the VMSA is encrypted, meaning I can't check the
+> arch.guest_state_protected bit for that call. So if we really want to get
+> rid of the allow_debug() op, I'd need some other way to indicate that this
+> is an SEV-ES / protected state guest.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/boot/dts/imx6q-b450v3.dts  | 14 +++++++-------
- arch/arm/boot/dts/imx6q-b650v3.dts  | 12 ++++++------
- arch/arm/boot/dts/imx6q-b850v3.dts  |  4 ++--
- arch/arm/boot/dts/imx6q-bx50v3.dtsi | 12 ++++++------
- 4 files changed, 21 insertions(+), 21 deletions(-)
+Would anything break if KVM "speculatively" set guest_state_protected before
+LAUNCH_UPDATE_VMSA?  E.g. does KVM need to emulate before LAUNCH_UPDATE_VMSA?
 
-diff --git a/arch/arm/boot/dts/imx6q-b450v3.dts b/arch/arm/boot/dts/imx6q-b450v3.dts
-index fb0980190aa0..604f2420370f 100644
---- a/arch/arm/boot/dts/imx6q-b450v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b450v3.dts
-@@ -84,19 +84,19 @@
- };
- 
- &pca9539 {
--	P04 {
-+	P04-hog {
- 		gpio-hog;
- 		gpios = <4 0>;
- 		output-low;
- 		line-name = "PCA9539-P04";
- 	};
- 
--        P07 {
--                gpio-hog;
--                gpios = <7 0>;
--                output-low;
--                line-name = "PCA9539-P07";
--        };
-+	P07-hog {
-+		gpio-hog;
-+		gpios = <7 0>;
-+		output-low;
-+		line-name = "PCA9539-P07";
-+	};
- };
- 
- &pci_root {
-diff --git a/arch/arm/boot/dts/imx6q-b650v3.dts b/arch/arm/boot/dts/imx6q-b650v3.dts
-index 8f762d9c5ae9..56d2aeb1900c 100644
---- a/arch/arm/boot/dts/imx6q-b650v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b650v3.dts
-@@ -84,12 +84,12 @@
- };
- 
- &pca9539 {
--        P07 {
--                gpio-hog;
--                gpios = <7 0>;
--                output-low;
--                line-name = "PCA9539-P07";
--        };
-+	P07-hog {
-+		gpio-hog;
-+		gpios = <7 0>;
-+		output-low;
-+		line-name = "PCA9539-P07";
-+	};
- };
- 
- &usbphy1 {
-diff --git a/arch/arm/boot/dts/imx6q-b850v3.dts b/arch/arm/boot/dts/imx6q-b850v3.dts
-index 1ea64ecf4291..3d6b757bf325 100644
---- a/arch/arm/boot/dts/imx6q-b850v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b850v3.dts
-@@ -199,14 +199,14 @@
- };
- 
- &pca9539 {
--	P10 {
-+	P10-hog {
- 		gpio-hog;
- 		gpios = <8 0>;
- 		output-low;
- 		line-name = "PCA9539-P10";
- 	};
- 
--	P11 {
-+	P11-hog {
- 		gpio-hog;
- 		gpios = <9 0>;
- 		output-low;
-diff --git a/arch/arm/boot/dts/imx6q-bx50v3.dtsi b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-index 02812e6cb302..2a98cc657595 100644
---- a/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-+++ b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-@@ -248,42 +248,42 @@
- 				interrupt-parent = <&gpio2>;
- 				interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
- 
--				P12 {
-+				P12-hog {
- 					gpio-hog;
- 					gpios = <10 0>;
- 					output-low;
- 					line-name = "PCA9539-P12";
- 				};
- 
--				P13 {
-+				P13-hog {
- 					gpio-hog;
- 					gpios = <11 0>;
- 					output-low;
- 					line-name = "PCA9539-P13";
- 				};
- 
--				P14 {
-+				P14-hog {
- 					gpio-hog;
- 					gpios = <12 0>;
- 					output-low;
- 					line-name = "PCA9539-P14";
- 				};
- 
--				P15 {
-+				P15-hog {
- 					gpio-hog;
- 					gpios = <13 0>;
- 					output-low;
- 					line-name = "PCA9539-P15";
- 				};
- 
--				P16 {
-+				P16-hog {
- 					gpio-hog;
- 					gpios = <14 0>;
- 					output-low;
- 					line-name = "PCA9539-P16";
- 				};
- 
--				P17 {
-+				P17-hog {
- 					gpio-hog;
- 					gpios = <15 0>;
- 					output-low;
--- 
-2.17.1
+> How are you planning on blocking this ioctl for TDX? Would the
+> arch.guest_state_protected bit be sit earlier than is done for SEV-ES?
 
+Yep, guest_state_protected is set from time zero (kvm_x86_ops.vm_init) as
+guest state is encrypted/inaccessible from the get go.  The flag actually
+gets turned off for debuggable TDX guests, but that's also forced to happen
+before the KVM_RUN can be invoked (TDX architecture) and is a one-time
+configuration, i.e. userspace can flip the switch exactly once, and only at
+a very specific point in time.
