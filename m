@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A944F26CC22
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB8F26CC1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgIPUja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726741AbgIPRGs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:06:48 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BF7C0698D0;
-        Wed, 16 Sep 2020 10:06:39 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id u25so7356511otq.6;
-        Wed, 16 Sep 2020 10:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SF9voxU64z1pyZcrMFE+ap4wxWaAPRKw46Uhy3wwL6s=;
-        b=fatBCrZhVMhXB5v+8znmZjQTUMq+BYZoYOIrpoMyY1dkNPxplhcP4hgu06GowR97dJ
-         aP6fVNwlGqyk2Ln0FIrlgHAlETGSQHA+Vmh+laESxYS8I1lVzbIGFTV4IMkt0oi09iBC
-         zNx5LupI+BL5vHwu6iMgB2zboFrt10GIT9i3CopOrqK9Hde4WHS4rcll6b6JKa5/tUHX
-         lfjG+hpZG222eEik70CAQ+v6vnt4WI9k2ae1yqjR6Y2uiylNaio45gjq1Y8obp7HpS4Z
-         qxIFOy73ZcLy6rqbMUVuVOBIbjyQ2QyvaYWq/3g2Wf4p3JZZGJI+fRU3o/dC555FH+De
-         xxmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SF9voxU64z1pyZcrMFE+ap4wxWaAPRKw46Uhy3wwL6s=;
-        b=nDVOO3PEy+DzWjC/y1pWz8H2RopYuuSu2f3ohsvLgmVHpBwIHIOUgq6Z+7ENH979JM
-         kmp7ofkly6n+S7CTrsQtD15tqWq2mmEGP+NtXu1l+mvkxZJ7IV/YPkQV2KC629ancHwn
-         vnyq4CQHL61rUMhTzavnxVfbIRz9PjQ4BgTlRmIyhalctmgolOu5vrTAXlIv8JdxrMfS
-         aMFa8cZDNJtfHgF6QC6iwHKrj63lRVmuynzSy5iUzi7zVJ1h8TYoTntz42VG2SLRRqI+
-         39ZoDK2o1PBd6ToFAcL1FR0f9tQBIxxUGbjF4UPwLisI+RsD3omFDsdaMUQ4yYsiKOri
-         58Ng==
-X-Gm-Message-State: AOAM530dOy/Zs1RF7BR4hpXwI7LJY0w372143EjmmZjTJuQSEdbUxFSJ
-        lqAY0L3p4e4mCndu0M/YCUJrwr3W0Vs=
-X-Google-Smtp-Source: ABdhPJyBEVI4n4fE1Xk6ru73Cr/hJKqwDOaacxkYkAQZ6wTW86rG3kmtgV6zCrcZZZ0Lv2+OrCDtwQ==
-X-Received: by 2002:a05:6830:1be7:: with SMTP id k7mr17284343otb.162.1600275999375;
-        Wed, 16 Sep 2020 10:06:39 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 34sm8636012otg.23.2020.09.16.10.06.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 10:06:39 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 10:06:37 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-Message-ID: <20200916170637.GC93678@roeck-us.net>
-References: <20200915140653.610388773@linuxfoundation.org>
+        id S1728491AbgIPUjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:39:11 -0400
+Received: from mga03.intel.com ([134.134.136.65]:22452 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726815AbgIPRHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:07:41 -0400
+IronPort-SDR: U5dl+/a40t9q3px383jKWAEof/5mHNna5bfYNd+wYSw3g8FSyPjiyG20kPk6/Q/eLq/4WGvpZl
+ i+/vwuRQM50g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="159573139"
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="159573139"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 10:07:34 -0700
+IronPort-SDR: rsMdceZP7IxqDZTTjfrm1J1b7P29IrVOZFj7S0TpUbmKpr7/qPzeu3IUSHgLa7oFYStdloWbzh
+ qRsERdWkw3Gw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="336090675"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 16 Sep 2020 10:07:31 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kIatz-00H8Ag-V9; Wed, 16 Sep 2020 20:07:27 +0300
+Date:   Wed, 16 Sep 2020 20:07:27 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v1 0/5] irqdomain: clean up, add
+ irq_domain_create_legacy()
+Message-ID: <20200916170727.GE3956970@smile.fi.intel.com>
+References: <20200708162135.31010-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200708162135.31010-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 04:11:11PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.10 release.
-> There are 177 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Jul 08, 2020 at 07:21:30PM +0300, Andy Shevchenko wrote:
+> In order to make users OF independent provide irq_domain_create_legacy() API.
+> Last patch is an example of such user. First three patches are little cleanups.
 > 
-> Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
-> Anything received after that time might be too late.
+> Since regmap patch is dependent to what is now in regmap tree, I suggest to
+> create an immutable branch in IRQ domain tree and Mark can pull it and apply
+> the last one.
+
+Rafael, can you review this? It seems stuck supposedly b/c of no review tag
+given.
+
+> Andy Shevchenko (5):
+>   irqdomain: Remove unused of_device_id forward declaration
+>   irqdomain: Add forward declaration of fwnode_handle
+>   irqdomain: Replace open coded of_node_to_fwnode()
+>   irqdomain: Introduce irq_domain_create_legacy() API
+>   regmap: irq: Convert to use fwnode directly
+> 
+>  Documentation/core-api/irq/irq-domain.rst |  6 ++++++
+>  drivers/base/regmap/regmap-irq.c          | 11 +++++------
+>  include/linux/irqdomain.h                 |  8 +++++++-
+>  kernel/irq/irqdomain.c                    | 19 +++++++++++++++----
+>  4 files changed, 33 insertions(+), 11 deletions(-)
+> 
+> -- 
+> 2.27.0
 > 
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 430 pass: 430 fail: 0
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Guenter
