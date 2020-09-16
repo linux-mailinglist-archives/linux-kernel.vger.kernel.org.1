@@ -2,117 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994ED26BF0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7879D26BF20
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgIPIVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:21:17 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:57121 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPIVQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:21:16 -0400
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id E67C5100009;
-        Wed, 16 Sep 2020 08:21:08 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 10:24:59 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v5 2/3] media: i2c: ov772x: Add support for BT.656 mode
-Message-ID: <20200916082459.udoppvygwniktkzi@uno.localdomain>
-References: <20200915174235.1229-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200915174235.1229-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726474AbgIPIYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:24:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726149AbgIPIYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 04:24:36 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FA8820872;
+        Wed, 16 Sep 2020 08:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600244676;
+        bh=zPhvVqTz0Z81Pvv9qTb/O+koD5jHaLdOlDZDhXxlZDo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0UstnE+3LvFJK3WLYoC13EAGhug1zVobuzEIGquyLWByBxnNssMKMs4KDBbC2LpMY
+         dSMFO7Cvx/R7hkz8ZzVFOX1Y4z5xvUsCwqix6hCgHOJDgd++CtmRKyU9NwEujtkqj4
+         nRTW9OmekNVIv466ClynPCy5ExDNkD8IgvuI55N4=
+Date:   Wed, 16 Sep 2020 10:25:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     jikos@suse.cz, vojtech@suse.cz, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Yuan Ming <yuanmingbuaa@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 4.19 66/78] fbcon: remove soft scrollback code
+Message-ID: <20200916082510.GB509119@kroah.com>
+References: <20200915140633.552502750@linuxfoundation.org>
+ <20200915140636.861676717@linuxfoundation.org>
+ <20200916075759.GC32537@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915174235.1229-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200916075759.GC32537@duo.ucw.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Wed, Sep 16, 2020 at 09:57:59AM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > From: Linus Torvalds <torvalds@linux-foundation.org>
+> > 
+> > commit 50145474f6ef4a9c19205b173da6264a644c7489 upstream.
+> > 
+> > This (and the VGA soft scrollback) turns out to have various nasty small
+> > special cases that nobody really is willing to fight.  The soft
+> > scrollback code was really useful a few decades ago when you typically
+> > used the console interactively as the main way to interact with the
+> > machine, but that just isn't the case any more.
+> > 
+> > So it's not worth dragging along.
+> 
+> It is still useful.
+> 
+> In particular, kernel is now very verbose, so important messages
+> during bootup scroll away. It is way bigger deal when you can no
+> longer get to them using shift-pageup.
+> 
+> fsck is rather verbose, too, and there's no easy way to run that under
+> X terminal... and yes, that makes scrollback very useful, too.
+> 
+> So, I believe we'll need to fix this. I guess I could do it. I also
+> guess I'll not have to, because SuSE or RedHat will want to fix it.
+> 
+> Anyway, this really should not be merged into stable.
 
-On Tue, Sep 15, 2020 at 06:42:34PM +0100, Lad Prabhakar wrote:
-> Add support to read the bus-type for V4L2_MBUS_BT656 and
-> enable BT.656 mode in the sensor if needed.
+It's merged into the stable trees that _I_ have to maintain.  If you
+want to revert it for trees you maintain and wish to keep secure, that's
+up to you.  But it's something that I _STRONGLY_ do not advise doing.
 
-Here we should be concerned about retro-compatibility, as a new bus
-type is added. I would move the comment you had in 1/3 to this patch.
+See the email recently on oss-devel for one such reason why this was
+removed...
 
-Otherwise the code flow looks ok: if no bus-type is specified assume
-parallel as it was the only supported bus type at the time.
-If someone wants BT.656 it has to be a new DTS and then the bus-type
-property is mandatory.
+good luck!
 
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
->  drivers/media/i2c/ov772x.c | 19 +++++++++++++++++--
->  1 file changed, 17 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-> index 4ab4b3c883d0..869f2d94faec 100644
-> --- a/drivers/media/i2c/ov772x.c
-> +++ b/drivers/media/i2c/ov772x.c
-> @@ -583,6 +583,13 @@ static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
->  	if (priv->streaming == enable)
->  		goto done;
->
-> +	if (priv->bus_type == V4L2_MBUS_BT656) {
-> +		ret = regmap_update_bits(priv->regmap, COM7, ITU656_ON_OFF,
-> +					 enable ? ITU656_ON_OFF : ~ITU656_ON_OFF);
-> +		if (ret)
-> +			goto done;
-> +	}
-> +
->  	ret = regmap_update_bits(priv->regmap, COM2, SOFT_SLEEP_MODE,
->  				 enable ? 0 : SOFT_SLEEP_MODE);
->  	if (ret)
-> @@ -1436,9 +1443,17 @@ static int ov772x_probe(struct i2c_client *client)
->  	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
->  	priv->bus_type = bus_cfg.bus_type;
->  	v4l2_fwnode_endpoint_free(&bus_cfg);
-> +	if (ret) {
-> +		bus_cfg = (struct v4l2_fwnode_endpoint)
-> +			  { .bus_type = V4L2_MBUS_BT656 };
-> +		ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
-
-If you really want to keep using alloc_parse() you should remember to
-endpoint_free() here.
-
-> +		if (ret) {
-> +			fwnode_handle_put(ep);
-> +			goto error_clk_put;
-> +		}
-> +		priv->bus_type = bus_cfg.bus_type;
-> +	}
->  	fwnode_handle_put(ep);
-
-I would assign priv->bus_type here.
-
-Also, this has grown quite a bit, have you considered making a
-ov772x_parse_dt() function ?
-
-With this last changes I think we're good to go. I'll send tags on
-the next version!
-
-Thank you for your perseverance
-
-> -	if (ret)
-> -		goto error_clk_put;
->
->  	ret = ov772x_video_probe(priv);
->  	if (ret < 0)
-> --
-> 2.17.1
->
+greg k-h
