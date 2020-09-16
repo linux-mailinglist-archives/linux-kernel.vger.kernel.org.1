@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D6926CC1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0075426CD66
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728373AbgIPUjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:39:14 -0400
-Received: from mga14.intel.com ([192.55.52.115]:34041 "EHLO mga14.intel.com"
+        id S1726827AbgIPU7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726814AbgIPRHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:07:41 -0400
-IronPort-SDR: Nou1s9vYz+cUrR2WHtE+5bmWtavOnXNTzkmYmYyNz9he3RedrKqso6jG4PeERHFuPvdStOqspa
- 5URahKjvBt4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="158786308"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="158786308"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 08:57:11 -0700
-IronPort-SDR: vO3xT64Rc9Yi4I8JGyJpAXgCwBYFYMUUsxDVJKwSyhAl6loi5G41Lvdam9Hynlg+TSCxVqE2wm
- Wn0Rbc5Rxv5Q==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="451910610"
-Received: from scusackx-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.87])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 08:57:04 -0700
-Date:   Wed, 16 Sep 2020 18:57:02 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
- Control hardware bits
-Message-ID: <20200916155702.GA21026@linux.intel.com>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
- <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
- <20200914151816.u6camicid4bd5lgo@treble>
- <20200914153812.c6uh3spqmcy2ft3d@treble>
- <20200915095716.GI3612@linux.intel.com>
- <20200915132725.a2qbdio3jsu7rsqs@treble>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915132725.a2qbdio3jsu7rsqs@treble>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1726358AbgIPQbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:31:35 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA7EF22473;
+        Wed, 16 Sep 2020 15:58:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600271933;
+        bh=euoNrh4CREhCtBrTlTDs/D23cyiar9mHO2VGZrvJGGw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=r7ZBSAWp7ngag0GivIYwEMRvi2kI5TJyoUxd2xusn24/6ovXSjFvdFXYscQlIvUlL
+         gqpGyfwBEw0kKQGlha2BEP6GReJ4HpHYs1ZIL5ck1dgiJaZmcAsukmLwMClRxnlD9/
+         4owCOsi3+7MgIuO0CrXIPLYDZ/BRpPcnZzBOBK/A=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v3 10/15] ARM: dts: am3874: iceboard: fix GPIO expander reset GPIOs
+Date:   Wed, 16 Sep 2020 17:57:10 +0200
+Message-Id: <20200916155715.21009-11-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200916155715.21009-1-krzk@kernel.org>
+References: <20200916155715.21009-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:27:25AM -0500, Josh Poimboeuf wrote:
-> On Tue, Sep 15, 2020 at 12:57:16PM +0300, Jarkko Sakkinen wrote:
-> > On Mon, Sep 14, 2020 at 10:38:26AM -0500, Josh Poimboeuf wrote:
-> > > On Mon, Sep 14, 2020 at 10:18:16AM -0500, Josh Poimboeuf wrote:
-> > > > Hi Jarko,
-> > > > 
-> > > > It looks like some of the patches weren't delivered to the lists.
-> > > > Patches 0, 1, 8, 9, and 17 seem to be missing.
-> > > > 
-> > > > Lore agrees with me:
-> > > > 
-> > > >   https://lore.kernel.org/linux-sgx/20200911124019.42178-1-jarkko.sakkinen@linux.intel.com/
-> > > 
-> > > And my first email to you bounced, similar to an email I tried sending
-> > > to Kristen a few weeks ago.  Something weird going on with Intel mail
-> > > servers?
-> > 
-> > Possible. I don't honestly know what is going on.
-> > 
-> > At least now all the patches are out:
-> > 
-> > https://lore.kernel.org/linux-sgx/
-> > 
-> > Not sure if a resend would make sense for the full patch set but maybe I
-> > just do quick iteration and send v38 soon. And just in case use some alt
-> > smtp server.
-> 
-> I see the v37 missing patches now, but they're not threaded with the
-> original thread.  v38 has some missing patches as well.
+Correct the property for reset GPIOs of the GPIO expander.
 
-Now, v38 is there as complete but it has a duplicate version (they have
-exact same contents). Through the alternative mail server it just took
-hours to get them to LKML so I did another git send-email :-(
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ arch/arm/boot/dts/am3874-iceboard.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Anyway, there is no difference between the patch sets marked as v38.
+diff --git a/arch/arm/boot/dts/am3874-iceboard.dts b/arch/arm/boot/dts/am3874-iceboard.dts
+index 1bb57019d082..9423e9feaa10 100644
+--- a/arch/arm/boot/dts/am3874-iceboard.dts
++++ b/arch/arm/boot/dts/am3874-iceboard.dts
+@@ -195,7 +195,7 @@
+ 					"FMCA_PG_C2M", "FMCA_PRSNT_M2C_L", "FMCA_CLK_DIR", "SFP_LOS",
+ 					"FMCB_EN_12V0", "FMCB_EN_3V3", "FMCB_EN_VADJ", "FMCB_PG_M2C",
+ 					"FMCB_PG_C2M", "FMCB_PRSNT_M2C_L", "FMCB_CLK_DIR", "SFP_ModPrsL";
+-				reset_gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
++				reset-gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+ 			};
+ 
+ 			u42: pca9575@21 {
+@@ -208,7 +208,7 @@
+ 					"QSFPA_LPMode", "QSFPB_ModPrsL", "QSFPB_IntL", "QSFPB_ResetL",
+ 					"SFP_TxFault", "SFP_TxDisable", "SFP_RS0", "SFP_RS1",
+ 					"QSFPB_ModSelL", "QSFPB_LPMode", "SEL_SFP", "ARM_MR";
+-				reset_gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
++				reset-gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+ 			};
+ 
+ 			u48: pca9575@22 {
+@@ -227,7 +227,7 @@
+ 					"GP_SW5", "GP_SW6", "GP_SW7", "GP_SW8",
+ 					"GP_LED8", "GP_LED7", "GP_LED6", "GP_LED5",
+ 					"GP_LED4", "GP_LED3", "GP_LED2", "GP_LED1";
+-				reset_gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
++				reset-gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+ 			};
+ 
+ 			u59: pca9575@23 {
+@@ -240,7 +240,7 @@
+ 					"GTX1V8PowerFault", "PHYAPowerFault", "PHYBPowerFault", "ArmPowerFault",
+ 					"BP_SLOW_GPIO0", "BP_SLOW_GPIO1", "BP_SLOW_GPIO2", "BP_SLOW_GPIO3",
+ 					"BP_SLOW_GPIO4", "BP_SLOW_GPIO5", "__unused_u59_p16", "__unused_u59_p17";
+-				reset_gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
++				reset-gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+ 			};
+ 
+ 			tmp100@48 { compatible = "ti,tmp100"; reg = <0x48>; };
+-- 
+2.17.1
 
-> 
-> -- 
-> Josh
-> 
-
-/Jarkko
