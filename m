@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6F926C912
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DB126C95D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgIPTDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
+        id S1727946AbgIPTHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727279AbgIPRsf (ORCPT
+        with ESMTP id S1727295AbgIPRoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:35 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55826C0698CA;
-        Wed, 16 Sep 2020 04:25:21 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id r7so9770983ejs.11;
-        Wed, 16 Sep 2020 04:25:21 -0700 (PDT)
+        Wed, 16 Sep 2020 13:44:55 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789B2C0698CB
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:28:34 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id b13so3319460qvl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:28:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+mqCE1Gph5m1yXF7bV6laGDpK9C2HQ1xfAV3LJcGXyk=;
-        b=V0xugFUwP2zKWQ3C6C6Oo6ZRSdKDI6SRacL8HgfrX8iw1MKIHqeTIofH/h6gvBbrOi
-         42G03NGAZdP94ZPBIcGONaBen5QoZ2w/rfCdfJCYNoys0kJx388ZNycBRMGPiRlr67sG
-         KW8lI3PO88QDhLDuY3OJ90X6NJv2GgJ9r6C9CaNvVXnTTDKlcbAdivt5TrcK2tezpxce
-         7/B+rW0/2DkYw6Tsnilr4rxufuCPPL5ntODuTgY3U+jCJJ6JpWVhwkPzWj8tjAw75gFd
-         5CscWNzYtswiu78RmMUw8fEBQ/ez4V/wTNGtwdj/cENKEwLIoINUnat3vAqAqkp3MbdC
-         +QHg==
+         :cc;
+        bh=rnKcSlNkQR35LZf6iND6zHQpJOWDy/dSu0BrUtUSzkE=;
+        b=LbcnFSLBii35TjI4Hw5pPUs1/st3gHYC+ASBPFwHWMKMpNzK2VB2UixcZ/j9kJRgSO
+         k/xy69mEwCXzw3XZeqk8eX47sZ3+aZ8shmj6m1AGrUbViI8jmB1Md9rRtUcrudBLJe6j
+         retA+MwIvQa2N7Hj4kUyxSibd7QVqw8ptlyKIBw8yoOaSLBRSjisGs7QwajJHnqV9Nhk
+         9PT87+aV1o5dVkn+/J6yffrnFkyvLchUprUGWWAFAEQsSwHA0ldI3r+b2LBb40yKa/iO
+         zoT5OnR1OqrfwEMGJTdBQJEauDuudHtB7jS+F7gbztZ6D3rHEu23lAXKQP8HX8BFwpc+
+         UGuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+mqCE1Gph5m1yXF7bV6laGDpK9C2HQ1xfAV3LJcGXyk=;
-        b=SGHZd6BlsZtGC/nZi3V/zXOEDM89+WavqKWVBJXvR2cbsF8lJ5jJ6AwfBO0p2UdshG
-         zCoWBTSp9MRg84YI3ZdL+SEF+Mo9cbfCRLC/lngOjLE0JKtrJkPNMQDZJN7q9kQ1J5J0
-         qhpNWBu+6n55+Qio91Y/5JMqH0kF1VUQFm54aOtD6OC3EJ/4W3n6U8vTugVkHZ8jROt3
-         aCAre/m6p9qKC6Ziyt7GvbdWlTXkNCwHUETeyveRIzBCRwODaFiWVVBHL5axtqEulgvy
-         RDMip6cUkL/rAU4A+huFxnb4fZHRu22OdYbacsCKfA9boR76zowiW266UJXgQrNa5CTN
-         ub8A==
-X-Gm-Message-State: AOAM532CjqNgaBurz1kS8q8SjaBOOzhYHjrE2S/9cvhklNtNVngfU5KM
-        UkS0mw6cKZTS5sSolR4SEomV9LEIfR7fvavfKg==
-X-Google-Smtp-Source: ABdhPJyixyYti8m5yiACM/A3dKdas+hh45AAS4bMeCuzp5+OiXXkuFr73Ln3baDPyaTPw4glCszAn/R857RwhcaCsng=
-X-Received: by 2002:a17:906:aecb:: with SMTP id me11mr25984406ejb.217.1600255520046;
- Wed, 16 Sep 2020 04:25:20 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=rnKcSlNkQR35LZf6iND6zHQpJOWDy/dSu0BrUtUSzkE=;
+        b=mwo9rO1gBvC6RITSjKsgFq5maEj5qVkAVViKGt77kVqeNlzxqNIv76vJA/0JUrdki9
+         VhY8N8Q/1FERx/uGJ0vBuPyBlxMGZWKahZvLf7/TNn5iBZB0xzW+rVqQreTi4W/vTDof
+         naDROjKznjtXhiF0pg+a5epoRJdCDiCWMyAfVUYSISiwHsEgP7rQcjpRDxuOPL/jWOMy
+         e8YbHBly4uIkX1nzFvBzj1Tjf1hqmEg94T4VO/UkbnFjr/gxGqa7Nr5MDgRSs4sMf/D5
+         rZvoDsttVj1By04NOsbbZ0HfwNRsRzxG5Q2bFz2dRaZ1G+MiD9lP2OXnIEXVez0iHGGI
+         9syQ==
+X-Gm-Message-State: AOAM532cKRdc3njrby1NFL9gwvXOGvYbLFJ8KRW6E/rVBDSfWXWFvfi5
+        rvTQzrUXFWkZfI0VIdvMU4elzniMRaX8MqlgjtOTUA==
+X-Google-Smtp-Source: ABdhPJzV6FkEuZbmAv7oARvd/eh2RnB+dgMffb2TR9yN0gIClEXp5egnd6G5hCJ9qchy7RbOzo6GZmxnYvrPUwb2qFU=
+X-Received: by 2002:ad4:4e33:: with SMTP id dm19mr6414279qvb.47.1600255711033;
+ Wed, 16 Sep 2020 04:28:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916090342.748452-1-vkuznets@redhat.com> <6c2204ad-590b-025d-f728-0e6e67bf24ba@gmail.com>
- <87een2htis.fsf@vitty.brq.redhat.com>
-In-Reply-To: <87een2htis.fsf@vitty.brq.redhat.com>
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Date:   Wed, 16 Sep 2020 19:25:08 +0800
-Message-ID: <CAB5KdObJ4_0oJf+rwGXWNk6MsKm1j0dqrcGQkzQ63ek1LY=zMQ@mail.gmail.com>
-Subject: Re: [PATCH] Revert "KVM: Check the allocation of pv cpu mask"
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Haiwei Li <lihaiwei@tencent.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org
+References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp> <0f7233f7-a04a-e9c9-7920-3a170cc97e4b@i-love.sakura.ne.jp>
+In-Reply-To: <0f7233f7-a04a-e9c9-7920-3a170cc97e4b@i-love.sakura.ne.jp>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 16 Sep 2020 13:28:19 +0200
+Message-ID: <CACT4Y+bjPr=64Lq1-ARD6T=K9LmC_Aor4BRXPcZVtUU8vF0oGg@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdep: Allow tuning tracing capacity constants.
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vitaly Kuznetsov <vkuznets@redhat.com> =E4=BA=8E2020=E5=B9=B49=E6=9C=8816=
-=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=887:04=E5=86=99=E9=81=93=EF=BC=
-=9A
+On Fri, Sep 4, 2020 at 6:05 PM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
 >
-> Haiwei Li <lihaiwei.kernel@gmail.com> writes:
+> Hello. Can we apply this patch?
 >
-> > On 20/9/16 17:03, Vitaly Kuznetsov wrote:
-> >> The commit 0f990222108d ("KVM: Check the allocation of pv cpu mask") w=
-e
-> >> have in 5.9-rc5 has two issue:
-> >> 1) Compilation fails for !CONFIG_SMP, see:
-> >>     https://bugzilla.kernel.org/show_bug.cgi?id=3D209285
-> >>
-> >> 2) This commit completely disables PV TLB flush, see
-> >>     https://lore.kernel.org/kvm/87y2lrnnyf.fsf@vitty.brq.redhat.com/
-> >>
-> >> The allocation problem is likely a theoretical one, if we don't
-> >> have memory that early in boot process we're likely doomed anyway.
-> >> Let's solve it properly later.
-> >
-> > Hi, i have sent a patchset to fix this commit.
-> >
-> > https://lore.kernel.org/kvm/20200914091148.95654-1-lihaiwei.kernel@gmai=
-l.com/T/#m6c27184012ee5438e5d91c09b1ba1b6a3ee30ee4
-> >
-> > What do you think?
->
-> Saw it, looks good to me. We are, however, already very, very late in 5.9
-> release cycle and the original issue you were addressing (allocation
-> failure) is likely a theoretical only I suggest we just revert it before
-> 5.9 is released. For 5.9 we can certainly take your PATCH2 merged with
-> 0f99022210.
->
-> This Paolo's call anyway)
+> This patch addresses top crashers for syzbot, and applying this patch
+> will help utilizing syzbot's resource for finding other bugs.
 
-I see.  Thank you.
+Acked-by: Dmitry Vyukov <dvyukov@google.com>
 
-Haiwei Li
+Peter, do you still have concerns with this?
+
+Both MAX_LOCKDEP_ENTRIES and MAX_LOCKDEP_CHAINS still fire on syzbot a
+lot and harm ability to test whole kernel:
+https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
+https://syzkaller.appspot.com/bug?id=63fc8d0501c39609dd2f268e4190ec9a72619563
+
+I hate disabling lockdep entirely as it also finds lots of useful things.
+
+
+> On 2020/08/28 0:20, Tetsuo Handa wrote:
+> > Since syzkaller continues various test cases until the kernel crashes,
+> > syzkaller tends to examine more locking dependencies than normal systems.
+> > As a result, syzbot is reporting that the fuzz testing was terminated
+> > due to hitting upper limits lockdep can track [1] [2] [3].
+> >
+> > Let's allow individually tuning upper limits via kernel config options
+> > (based on an assumption that there is no inter-dependency among these
+> > constants).
+> >
+> > [1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
+> > [2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
+> > [3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
+> >
+> > Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
+> > Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
+> > Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
+> > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> > ---
+> >  kernel/locking/lockdep.c           |  2 +-
+> >  kernel/locking/lockdep_internals.h |  8 +++---
+> >  lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
+> >  3 files changed, 45 insertions(+), 5 deletions(-)
+> >
