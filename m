@@ -2,119 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D62926BBB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 07:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8390026BBC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 07:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgIPFHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 01:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPFHR (ORCPT
+        id S1726172AbgIPFVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 01:21:40 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:34295 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726068AbgIPFVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 01:07:17 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF55C06174A;
-        Tue, 15 Sep 2020 22:07:16 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id q12so524795plr.12;
-        Tue, 15 Sep 2020 22:07:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qRRVZQATJVxdmxym9cYS4r8KR3RWYxM+eecLHTbYKPE=;
-        b=aVC2T637dzhAw/XBS0mqij3Sm2gNdKH71qrUuBjRZC4Xc2udN+J6iTb+mtgJeGDfzX
-         1iu9AFzMGkFfU0GRVYO5vVDboPQs8etP9zBvfmulOczq9JdFP0x9UKBnpzo8S0FCx/Vy
-         TcfffegkK3cRDB+1LS7J0dl1/CADD3Zld/eWTsXXYrtuky2GwRm/5/8ZnJukNHSjr2zl
-         AeeUPEGh5+QicmNMzFWuBL86RyUX0qDUb1WjlyqKIBfNjSYImx3Aixn1HMD0Y3BuI/Pb
-         zkZQKpurvYn2vNPo4v8UfqjZrwKbm5kWHqgIIUEQvprgL+LaQSZMi3jMSAOb0BMDt2xL
-         gwhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qRRVZQATJVxdmxym9cYS4r8KR3RWYxM+eecLHTbYKPE=;
-        b=TNChEVhglcAhlVllH4slASOAEyrBypKKR/NLil9VcWXwKk9lgdbqKxNDKVzEzS7II8
-         S1ifOu46mkBULId2Uj/0ll/QS+2uq28psOo7diA8wKrQphe/OcRsRIUtl9keXdya5Pd4
-         KPxn+EG0j5AJ+lLixP5mk4WDaMeSZwtWJScJ9Qc81riMKr7XxJ+yB/+Hz5s3ilPov2fc
-         64eO6+RDkMmHQpQ2tZQdXDU8+E5N5mzD/SPF/5h/q2DLCRdtXzh+dRnA4tbcbkR0jbkG
-         cOzDfk50eQ1gdmyXcV1zove7y4+HPl0SNLtgnKaXH+ACeHMUp9nfD3k6U/8yN8jR/l6s
-         1zJw==
-X-Gm-Message-State: AOAM531rLiED2ktKJSu5ZkyleetBuyWQkrOOlqvi/4M/H1lx93KPoGT3
-        ktj58wuafwG7MqmRtvDsfjcrsNnMbGZGx3TRk4Y=
-X-Google-Smtp-Source: ABdhPJyJ+cNX0PC6p643Vv5Ufb4fI56gTf58TjK5qVI6yEX/Z6q7hcMqJYTTdXwOCzLJs8JTaoE69Q==
-X-Received: by 2002:a17:902:b185:b029:d1:e5e7:bdd1 with SMTP id s5-20020a170902b185b02900d1e5e7bdd1mr4953338plr.49.1600232836024;
-        Tue, 15 Sep 2020 22:07:16 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.198.18])
-        by smtp.gmail.com with ESMTPSA id i20sm13108051pgk.77.2020.09.15.22.07.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 22:07:15 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        Petko Manolov <petkan@nucleusys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees][PATCH] rtl8150: set memory to all 0xFFs on failed register reads
-Date:   Wed, 16 Sep 2020 10:35:40 +0530
-Message-Id: <20200916050540.15290-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Wed, 16 Sep 2020 01:21:35 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 4C0BB469;
+        Wed, 16 Sep 2020 01:21:34 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Wed, 16 Sep 2020 01:21:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=Ra4+jaLN+MXOy6NAuUDpQpiZtwMKVaz
+        lgglIg2VCfnY=; b=GYk+BtegPglrn/LC4SM6TK0u+9ewxwONcvdB/dCntdIdOVM
+        5sdFn3h+Zgve+Ip+v/i0UbnnqtwsXuvIFKca60kw6yfLwiSzOmcm5pKeVQlxQEL7
+        KBXzWcW+2rkeVAlDwzZ/5zbE1ELUiNl9vCtjbo76+FF4rAB9kH2uVsIha/UMbWgH
+        4kFosVa7nCT89RFeBLYN7zH390ZfkqJ8Gzw4mOuUbuuatz971BAPiBHN9pu1goO7
+        e+/ZpbbEKVZ4FsCyg4KGcJw/Ia5M2v67HHJOwlUtkv+DgSPEYJ94enur/kDC2skJ
+        zMD1ZtojglPFTUYosBONN/RSqQD50BXSalEnw/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Ra4+ja
+        LN+MXOy6NAuUDpQpiZtwMKVazlgglIg2VCfnY=; b=JQXwvHt971ra+JJ+q5qOq7
+        3cG54V6pILeLeMt+dIqktlY+DFZus1VrzLz8OOPG9A9NqbUXChHPWfL/ax9f+RMX
+        79g4gv0nse9F4WDX1RhZgRDunKcXsaekq4C3CW+Y+lSQUKktiG7VKeBLVbFvOCdQ
+        yHkm+Lb9tS4rvHOaiYpqv+DYZJm7JAoCytXl4Qb1l2faKnq0g1TeaKERBnOO835n
+        FPjDHRmkh5U5Yj0yShj536oEYfvUKqmKWV36NOnHkfmzgu2P33oik7ADQpT7fpb7
+        +Dha5aquUZ0Umc4UOlYdiSrqt9eMnbUDGDPcd9vQg/dzw1rWnB3OS2nuy/ybGLyA
+        ==
+X-ME-Sender: <xms:3aBhX1mU9Ucei7AlFnXaHcR-82xUEXt6-_7hAsEhsaszO0HQXPQJ9Q>
+    <xme:3aBhXw082n4L0oOGPDHnKg63weQTh4ZURrl8z2K2FgwSGZvPsFg0NxxCT7xC2QVhy
+    EGsMQ1Rud6aM7b_aA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtddugdekkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpedutddtkeeugeegvddttdeukeeiuddtgfeuuddtfeeiueetfeeileettedv
+    tdfhieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:3aBhX7qXO66M7PZzQwUgxw3MePX_SUVnSAmPuJmjPq2m-ISBOh5Kjg>
+    <xmx:3aBhX1kiDCpZ_xB3_8tOpAdfaFsrRbaNYU5gXCt12n-6KW7trC9OGQ>
+    <xmx:3aBhXz1aVuIdTxol-h63De_hOub3wYRv0sfGfu6t6AVOebaYbNRn-A>
+    <xmx:3aBhX-SZYX2uzaWiSFOsnBFMwU6PFhXFTnlHL5gLaNt-LYc_IwK-4w>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 641C1E00C8; Wed, 16 Sep 2020 01:21:32 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-259-g88fbbfa-fm-20200903.003-g88fbbfa3
+Mime-Version: 1.0
+Message-Id: <48962472-b025-4b0d-90e9-60469bebf206@www.fastmail.com>
+In-Reply-To: <71067b18-c4bc-533a-0069-f21069c5fd0d@roeck-us.net>
+References: <20200914122811.3295678-1-andrew@aj.id.au>
+ <20200914122811.3295678-3-andrew@aj.id.au>
+ <71067b18-c4bc-533a-0069-f21069c5fd0d@roeck-us.net>
+Date:   Wed, 16 Sep 2020 14:51:08 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Guenter Roeck" <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Cc:     "Jean Delvare" <jdelvare@suse.com>, wsa@kernel.org,
+        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[RFC_PATCH_2/2]_hwmon:_(pmbus/ucd9000)_Throttle_SMBus_tran?=
+ =?UTF-8?Q?sfers_to_avoid_poor_behaviour?=
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_registers() copies whatever memory is written by the
-usb_control_msg() call even if the underlying urb call ends up failing.
 
-If get_registers() fails, or ends up reading 0 bytes, meaningless and 
-junk register values would end up being copied over (and eventually read 
-by the driver), and since most of the callers of get_registers() don't 
-check the return values of get_registers() either, this would go unnoticed.
 
-It might be a better idea to try and mirror the PCI master abort
-termination and set memory to 0xFFs instead in such cases.
+On Mon, 14 Sep 2020, at 23:44, Guenter Roeck wrote:
+> On 9/14/20 5:28 AM, Andrew Jeffery wrote:
+> > Short turn-around times between transfers to e.g. the UCD90320 can lead
+> > to problematic behaviour, including excessive clock stretching, bus
+> > lockups and potential corruption of the device's volatile state.
+> > 
+> > Introduce transfer throttling for the device with a minimum access
+> > delay of 1ms.
+> > 
+> 
+> Some Zilker labs devices have the same problem, though not as bad
+> to need a 1ms delay. See zl6100.c. Various LTS devices have a similar
+> problem, but there it is possible to poll the device until it is ready.
+> See ltc2978.c.
+> 
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > ---
+> >  drivers/hwmon/pmbus/ucd9000.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/hwmon/pmbus/ucd9000.c b/drivers/hwmon/pmbus/ucd9000.c
+> > index 81f4c4f166cd..a0b97d035326 100644
+> > --- a/drivers/hwmon/pmbus/ucd9000.c
+> > +++ b/drivers/hwmon/pmbus/ucd9000.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/debugfs.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/module.h>
+> > +#include <linux/moduleparam.h>
+> >  #include <linux/of_device.h>
+> >  #include <linux/init.h>
+> >  #include <linux/err.h>
+> > @@ -18,6 +19,9 @@
+> >  #include <linux/gpio/driver.h>
+> >  #include "pmbus.h"
+> >  
+> > +static unsigned long smbus_delay_us = 1000;
+> 
+> Is that to be on the super-safe side ? Patch 0 talks about needing 250 uS.
+> 
+> > +module_param(smbus_delay_us, ulong, 0664);
+> > +
+> 
+> I would not want to have this in user control, and it should not affect devices
+> not known to be affected. 
 
-Fixes: https://syzkaller.appspot.com/bug?extid=abbc768b560c84d92fd3
-Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
- drivers/net/usb/rtl8150.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Can you clarify what you mean here? Initially I interpreted your statement as 
+meaning "Don't impose delays on the UCD90160 when the issues have only been 
+demonstrated with the UCD90320". But I've since looked at zl6100.c and its 
+delay is also exposed as a module parameter, which makes me wonder whether it 
+was unclear that smbus_delay_us here is specific to the driver's i2c_client and 
+is not a delay imposed on all SMBus accesses from the associated master. That 
+is, with the implementation I've posted here, other (non-UCD9000) devices on 
+the same bus are _not_ impacted by this value.
 
-diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
-index 733f120c852b..04fca7bfcbcb 100644
---- a/drivers/net/usb/rtl8150.c
-+++ b/drivers/net/usb/rtl8150.c
-@@ -162,8 +162,13 @@ static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
- 	ret = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
- 			      RTL8150_REQ_GET_REGS, RTL8150_REQT_READ,
- 			      indx, 0, buf, size, 500);
--	if (ret > 0 && ret <= size)
-+
-+	if (ret < 0)
-+		memset(data, 0xff, size);
-+
-+	else
- 		memcpy(data, buf, ret);
-+
- 	kfree(buf);
- 	return ret;
- }
-@@ -276,7 +281,7 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
- 
- static inline void set_ethernet_addr(rtl8150_t * dev)
- {
--	u8 node_id[6];
-+	u8 node_id[6] = {0};
- 
- 	get_registers(dev, IDR, sizeof(node_id), node_id);
- 	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
--- 
-2.25.1
+> I would suggest an implementation similar to other
+> affected devices; again, see zl6100.c or ltc2978.c for examples.
 
+I've had a look at these two examples. As you suggest the delays in zl6100.c 
+look pretty similar to what this series implements in the i2c core. I'm finding 
+it hard to dislodge the feeling that open-coding the waits is error prone, but 
+to avoid that and not implement the waits in the i2c core means having almost 
+duplicate implementations of handlers for i2c_smbus_{read,write}*() and 
+pmbus_{read,write}*() calls in the driver.
+
+Andrew
