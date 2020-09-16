@@ -2,104 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C9226C7ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609FA26C804
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgIPSgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
+        id S1728193AbgIPSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728074AbgIPS3N (ORCPT
+        with ESMTP id S1727694AbgIPS27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:29:13 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E175C035434
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:04:34 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id d15so6657331lfq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:04:34 -0700 (PDT)
+        Wed, 16 Sep 2020 14:28:59 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BD8C035437
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:06:59 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e16so6673178wrm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:06:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z06F5xs8rOeFbMpImAz4XH2OtRkrnuxG8td3c2+DORY=;
-        b=G0guapgKGXfsR56yg5UXFtPAfwtlgpf1PB0JgI5nlwwS1uc3vr1LzbuJm51wuX8E0u
-         IPiG5wTyhPfiRzanaVY8jkB/smVSiMRounukFkEtLu2Oz1TickegTdpiEv2T7nX9Y0wB
-         m9i3LOhWt7GTodEBDOGCoLejrlquqp8I/R2rjKHOfDHYgXAiKmUNWZ0HRXyCAns0k9g8
-         bIfqHZgIOgkG62B4wpSRFZPo9+fGHsqO41BZGVl9NhDpM/T3aL1l9ITgSNXXz68nK+mV
-         0LHWhUlQAOBM9M9kakNLu9c6IVlOEi7tjgYTQBZEpFGl6q54EIryzobWSCWpK+NqbDDR
-         LHdg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rp7Xhs/bBt9D8tUMlvjIoqHMOsBqD8IYyxiK/2FKKG8=;
+        b=NzuEqJEaQL8fg8E+ugG0EvQ+ISnYy96VOTeyqJ2H4egEbK1//gM37ymiqQDoNLVucw
+         ZHKgF8zoZS4sE+eFUY5nU3d0PGYihU3kowLoGaEPHhj2oy4IPrVBPyh1462yd5rznFvZ
+         2PtEI+LhLapu6mgrPLWGZVRDWX7X4PLtZb42I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z06F5xs8rOeFbMpImAz4XH2OtRkrnuxG8td3c2+DORY=;
-        b=F+t67Q1UHyCGaO9VTR9QHQgK2byzyhRcYoEDz0yuONaQTdDNmlRT1omr7usaX/0w3a
-         PdtOLO1bMBFp96za5M2aX+gYpvAUt8XmmX0Yy5Bi3mgD3sQyI9dYkQ6XtsU2ykb9WiKY
-         rBIgWalarO/3rdDNU2gYKlD1M7h+US6mEUkcXbNyCpxgOiVLoq77RuHdO4sUoYesiduU
-         D+0owJpSzECdmDQGdBMxG171/o/v7kB7bWtmnH1WtNA74ioPf1c5Irw4VSjEsiYOn73q
-         XtjH5tLjfXJeQaVaY8I3HSb5z3lPla1izVGiUcHp9mIWUDbooxJBNM+0+k658dNnLZjn
-         u9eg==
-X-Gm-Message-State: AOAM531sH7YHew5pvbjTb1/ZywUb/tNY+Siw9HpYiURyhHPEe2Fe0QEb
-        laOA0tIs/ll1VtX326HGeuQLWvEYiNSbtNw1/oYIHw==
-X-Google-Smtp-Source: ABdhPJwsA2eWrqx7yOZZyshlq1TzXR1oYTzFvBQx4tEyST+vmICSOx+qsj/iBqp4t8fKFGK464wnZ0sM3o1PTFlh9UE=
-X-Received: by 2002:ac2:43c2:: with SMTP id u2mr7338318lfl.573.1600257872742;
- Wed, 16 Sep 2020 05:04:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rp7Xhs/bBt9D8tUMlvjIoqHMOsBqD8IYyxiK/2FKKG8=;
+        b=dyFNWWL9kPJ5h4oOIs5e/pBu78q4lTpRVn1ftUK3/z7/DrCYnm4b2C5g35eUsxL68H
+         V5mIeg0c3SS0psmybokm0MpmyPTLqhrKzlukozugGNVp5Tn/1Cw2/rj+rTCgH3BL8yKr
+         H6GJKLjj43H/DOIBLKDFHM4YiBAaAAyVnkqXuOCegiFlPGTOd8Fs3G+RZ4PMEp27Ergx
+         UYAJWZ0IcJ9eod4N1ahIPTIdK1hnBqcOJGIfKpPjA6aJ5uNfp1RP7eTvwmaugRGSza13
+         gOEMqq1eRDteqVFYE9lLYNdNy2cDLX/3RE4QciN7tn5ylsfjnZxGeN9NEMsniwc5+BA5
+         HlLg==
+X-Gm-Message-State: AOAM530h6MBU/citmgdjiVsurPHZB2FpDIo+nIHNfYhN5SPHd1cPk2Lb
+        FMhM8wCUHnt/yttOckv7oX/mLxKqCiGS/1Jd/xE=
+X-Google-Smtp-Source: ABdhPJwhEX5BY4LjbmOas8IFcM0+VybB2aJZphWqZuuk3BYpd+O+YeVNh7I4lfx7jWld+B+H8VyF6w==
+X-Received: by 2002:adf:dd0b:: with SMTP id a11mr25833458wrm.422.1600258018090;
+        Wed, 16 Sep 2020 05:06:58 -0700 (PDT)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id h8sm32042888wrw.68.2020.09.16.05.06.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 05:06:57 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH] ima: Fix NULL pointer dereference in ima_file_hash
+Date:   Wed, 16 Sep 2020 12:05:48 +0000
+Message-Id: <20200916120548.364892-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-References: <20200916043103.606132-1-aubrey.li@linux.intel.com> <20200916110039.GG3117@suse.de>
-In-Reply-To: <20200916110039.GG3117@suse.de>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 16 Sep 2020 14:04:20 +0200
-Message-ID: <CAKfTPtAD59oRG2PWxu=Xme4ak1JaZXwb_iK6nnfPbhNEr9JgyQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
- sched domain
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Aubrey Li <aubrey.li@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 at 13:00, Mel Gorman <mgorman@suse.de> wrote:
->
-> On Wed, Sep 16, 2020 at 12:31:03PM +0800, Aubrey Li wrote:
-> > Added idle cpumask to track idle cpus in sched domain. When a CPU
-> > enters idle, its corresponding bit in the idle cpumask will be set,
-> > and when the CPU exits idle, its bit will be cleared.
-> >
-> > When a task wakes up to select an idle cpu, scanning idle cpumask
-> > has low cost than scanning all the cpus in last level cache domain,
-> > especially when the system is heavily loaded.
-> >
-> > The following benchmarks were tested on a x86 4 socket system with
-> > 24 cores per socket and 2 hyperthreads per core, total 192 CPUs:
-> >
->
-> This still appears to be tied to turning the tick off. An idle CPU
-> available for computation does not necessarily have the tick turned off
-> if it's for short periods of time. When nohz is disabled or a machine is
-> active enough that CPUs are not disabling the tick, select_idle_cpu may
-> fail to select an idle CPU and instead stack tasks on the old CPU.
->
-> The other subtlety is that select_idle_sibling() currently allows a
-> SCHED_IDLE cpu to be used as a wakeup target. The CPU is not really
-> idle as such, it's simply running a low priority task that is suitable
-> for preemption. I suspect this patch breaks that.
+From: KP Singh <kpsingh@google.com>
 
-Yes, good point. I completely missed this
+ima_file_hash can be called when there is no iint->ima_hash available
+even though the inode exists in the integrity cache.
 
->
-> --
-> Mel Gorman
-> SUSE Labs
+An example where this can happen (suggested by Jann Horn):
+
+Process A does:
+
+	while(1) {
+		unlink("/tmp/imafoo");
+		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
+		if (fd == -1) {
+			perror("open");
+			continue;
+		}
+		write(fd, "A", 1);
+		close(fd);
+	}
+
+and Process B does:
+
+	while (1) {
+		int fd = open("/tmp/imafoo", O_RDONLY);
+		if (fd == -1)
+			continue;
+    		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
+			 	     MAP_PRIVATE, fd, 0);
+		if (mapping != MAP_FAILED)
+			munmap(mapping, 0x1000);
+		close(fd);
+  	}
+
+Due to the race to get the iint->mutex between ima_file_hash and
+process_measurement iint->ima_hash could still be NULL.
+
+Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
+Signed-off-by: KP Singh <kpsingh@google.com>
+---
+ security/integrity/ima/ima_main.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 8a91711ca79b..4c86cd4eece0 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+ 		return -EOPNOTSUPP;
+ 
+ 	mutex_lock(&iint->mutex);
++
++	/*
++	 * ima_file_hash can be called when ima_collect_measurement has still
++	 * not been called, we might not always have a hash.
++	 */
++	if (!iint->ima_hash) {
++		mutex_unlock(&iint->mutex);
++		return -EOPNOTSUPP;
++	}
++
+ 	if (buf) {
+ 		size_t copied_size;
+ 
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
