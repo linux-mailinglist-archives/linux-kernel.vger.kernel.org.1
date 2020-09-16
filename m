@@ -2,77 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CBC26C179
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 12:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6827126C17E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 12:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbgIPKGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 06:06:49 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:49453 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgIPKGg (ORCPT
+        id S1726761AbgIPKIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 06:08:45 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45272 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726726AbgIPKHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 06:06:36 -0400
-Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08GA6XLm039361;
-        Wed, 16 Sep 2020 19:06:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
- Wed, 16 Sep 2020 19:06:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08GA6WMi039358
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 16 Sep 2020 19:06:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] fbcon: Fix user font detection test at fbcon_resize().
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>,
-        george.kennedy@oracle.com, jirislaby@kernel.org,
-        syzkaller-bugs@googlegroups.com, b.zolnierkie@samsung.com,
-        daniel.vetter@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        natechancellor@gmail.com
-References: <00000000000024be1505ad487cbb@google.com>
- <f6e3e611-8704-1263-d163-f52c906a4f06@I-love.SAKURA.ne.jp>
- <7c52e8cd-e4cb-cd0b-40d5-b9654aec09f3@I-love.SAKURA.ne.jp>
- <20200916082624.GC509119@kroah.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <3233dcc2-31d5-42e7-3d9d-b36a65b660ea@i-love.sakura.ne.jp>
-Date:   Wed, 16 Sep 2020 19:06:31 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 16 Sep 2020 06:07:54 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GA5P7S097078;
+        Wed, 16 Sep 2020 10:07:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=WMMMFzNtDOILb0KvcMc+mzeor91B41zRmZlAM5dq96g=;
+ b=yM5nBpd1SAuYuSKhkXcV8NzSr36UUXX2WWMZZI27nA2aOZTSOZ8xap8EHudELTuyfGzN
+ 911RrtF6ydX/rUd0F+9hclktrnSkCMlUqtm5w7v6HJKBLSJGxflnV36+Ys7V9NT9ncMX
+ DUFmOSgLtmhHdXMNBFKli2nq2mz6C1oatGU7jEx0cOt85m195zWwRAGrgFxkkbhCWGhG
+ J9ZmGygVUfvvj/BlJM/t3UKnExHXkjOnJkq+qtZncMOzX12MTWOalvMnLYSOTu4gYoSj
+ oTNytzILk+6zLAQf1t/SpaJvud4GVYURN8dwPThMzmTwuoAvSm3dZfl1255P9FvkFZmZ VA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 33j91dkrue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 10:07:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GA604I183329;
+        Wed, 16 Sep 2020 10:07:41 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 33h7wqjrvw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 10:07:41 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08GA7btU032651;
+        Wed, 16 Sep 2020 10:07:37 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 10:07:37 +0000
+Date:   Wed, 16 Sep 2020 13:07:29 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     mporter@kernel.crashing.org, alex.bou9@gmail.com,
+        akpm@linux-foundation.org, gustavoars@kernel.org,
+        jhubbard@nvidia.com, madhuparnabhowmik10@gmail.com,
+        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [linux-next PATCH] rapidio: Fix error handling path
+Message-ID: <20200916100729.GG18329@kadam>
+References: <1600227737-20785-1-git-send-email-jrdr.linux@gmail.com>
+ <20200916100232.GF18329@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20200916082624.GC509119@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916100232.GF18329@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160072
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=2 mlxlogscore=999
+ clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009160072
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/09/16 17:26, Greg KH wrote:
-> On Wed, Sep 16, 2020 at 09:01:06AM +0900, Tetsuo Handa wrote:
->> Greg, will you pick up this patch?
->>
->> It seems that finding the real cause of [3] and actually fixing [3] will be difficult.
->> Since I can't reproduce [3] locally, I will have to try flood of "#syz test" requests
->> for debug printk() patches.
+On Wed, Sep 16, 2020 at 01:02:32PM +0300, Dan Carpenter wrote:
+> On Wed, Sep 16, 2020 at 09:12:17AM +0530, Souptick Joarder wrote:
+> > There is an error when pin_user_pages_fast() returns -ERRNO and
+> > inside error handling path driver end up calling unpin_user_pages()
+> > with -ERRNO which is not correct.
+> > 
+> > This patch will fix the problem.
 > 
-> I agree with Daniel here, can you retest these against Linus's latest
-> tree please?
+> There are a few ways we could prevent bug in the future.
 > 
+> 1) This could have been caught with existing static analysis tools
+>    which warn about when a value is set but not used.
+> 
+> 2) I've created a Smatch check which warngs about:
+> 
+> 	drivers/rapidio/devices/rio_mport_cdev.c:955 rio_dma_transfer() warn: unpinning negative pages 'nr_pages'
+> 
+>    I'll test it out tonight and see how well it works.  I don't
+>    immediately see any other bugs allthough Smatch doesn't like the code
+>    in siw_umem_release().  It uses "min_t(int" which suggests that
+>    negative pages are okay.
+> 
+> 	   int to_free = min_t(int, PAGES_PER_CHUNK, num_pages);
+> 
+> 3) We could add a check in unpin_user_pages().
+> 
+> 	if (WARN_ON(IS_ERR_VALUE(npages)))
+> 		return;
+> 
+> It's not possible to pin more than "ULONG_MAX - 4095" because otherwise
+> returning error pointers wouldn't work.  So this check can't break
+> anything and it could prevent a crash.
 
-syzbot already reproduced these bugs using the latest commit. ;-)
+Actually pin_user_pages_fast() returns an int.  It's not possible to
+pin more than INT_MAX.
 
-You can find
+regards,
+dan carpenter
 
-  ci-upstream-kasan-gce-root 	2020/09/15 15:18 	upstream 	fc4f28bb 
-
-record for "KASAN: global-out-of-bounds Read in bit_putcs" and
-
-  ci-upstream-kasan-gce-root 	2020/09/16 09:54 	upstream 	fc4f28bb
-
-record for "KASAN: global-out-of-bounds Read in fbcon_resize".
