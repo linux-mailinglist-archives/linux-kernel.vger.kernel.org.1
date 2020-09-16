@@ -2,180 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B542F26C14F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 12:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FFA26C15C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 12:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgIPKBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 06:01:24 -0400
-Received: from mga09.intel.com ([134.134.136.24]:25979 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726735AbgIPKBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 06:01:08 -0400
-IronPort-SDR: vHJz5K+ZBv8hs8keMAPKafVwrpSZQn9iKs/fCgTu3yKEiWs9f7iVrHIRXTtdCMHQ3BeOwhFVLy
- 5ytbSjwzz/DQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="160364657"
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="160364657"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 03:01:04 -0700
-IronPort-SDR: luZr4p0iUmS6jSHCuQLN6dShhBsLeklsLj/YP4EgPrNwrzGdciC2nnU6Ja7cgN4FZqrKefv4i3
- hAJTxEkM6xTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
-   d="scan'208";a="319785131"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga002.jf.intel.com with ESMTP; 16 Sep 2020 03:01:02 -0700
-Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
- additional operations
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111054.29562-1-benchuanggli@gmail.com>
- <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
- <20200916080558.GA2978867@laputa>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <6bf86b26-391a-0699-1818-d070357b9ddc@intel.com>
-Date:   Wed, 16 Sep 2020 13:00:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726816AbgIPKCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 06:02:39 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:38575 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726302AbgIPKC2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 06:02:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R281e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U97.XS1_1600250543;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U97.XS1_1600250543)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 16 Sep 2020 18:02:24 +0800
+Date:   Wed, 16 Sep 2020 18:02:23 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH] kernel/resource: make iomem_resource implicit in
+ release_mem_region_adjustable()
+Message-ID: <20200916100223.GA46154@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200911103459.10306-1-david@redhat.com>
+ <20200916073041.10355-1-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200916080558.GA2978867@laputa>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916073041.10355-1-david@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/20 11:05 am, AKASHI Takahiro wrote:
-> Adrian,
-> 
-> Your comments are scattered over various functions, and so
-> I would like to address them in separate replies.
-> 
-> First, I'd like to discuss sdhci_[add|remove]_host().
-> 
-> On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
->> On 10/07/20 2:10 pm, Ben Chuang wrote:
->>> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
->>>
->>> In this commit, UHS-II related operations will be called via a function
->>> pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
->>> a kernel module.
->>> This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
->>> and when the UHS-II module is loaded. Otherwise, all the functions
->>> stay void.
->>>
->>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
->>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
->>> ---
-> 
->  (snip)
-> 
->>>  		if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
->>>  			u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
->>>  				      SDHCI_CARD_PRESENT;
->>> @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
->>>  		/* This may alter mmc->*_blk_* parameters */
->>>  		sdhci_allocate_bounce_buffer(host);
->>>  
->>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
->>> +	    host->version >= SDHCI_SPEC_400 &&
->>> +	    sdhci_uhs2_ops.add_host) {
->>> +		ret = sdhci_uhs2_ops.add_host(host, host->caps1);
->>> +		if (ret)
->>> +			goto unreg;
->>> +	}
->>> +
->>
->> I think you should look at creating uhs2_add_host() instead
->>
->>>  	return 0;
->>>  
->>>  unreg:
->>> @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
->>>  {
->>>  	struct mmc_host *mmc = host->mmc;
->>>  
->>> +	/* FIXME: Do we have to do some cleanup for UHS2 here? */
->>> +
->>>  	if (!IS_ERR(mmc->supply.vqmmc))
->>>  		regulator_disable(mmc->supply.vqmmc);
->>>  
->>> @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
->>>  		mmc->cqe_ops = NULL;
->>>  	}
->>>  
->>> +	if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
->>> +		/* host doesn't want to enable UHS2 support */
->>> +		mmc->caps &= ~MMC_CAP_UHS2;
->>> +		mmc->flags &= ~MMC_UHS2_SUPPORT;
->>> +
->>> +		/* FIXME: Do we have to do some cleanup here? */
->>> +	}
->>> +
->>>  	host->complete_wq = alloc_workqueue("sdhci", flags, 0);
->>>  	if (!host->complete_wq)
->>>  		return -ENOMEM;
->>> @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
->>>  unled:
->>>  	sdhci_led_unregister(host);
->>>  unirq:
->>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
->>> +	    sdhci_uhs2_ops.remove_host)
->>> +		sdhci_uhs2_ops.remove_host(host, 0);
->>>  	sdhci_do_reset(host, SDHCI_RESET_ALL);
->>>  	sdhci_writel(host, 0, SDHCI_INT_ENABLE);
->>>  	sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
->>> @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
->>>  
->>>  	sdhci_led_unregister(host);
->>>  
->>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
->>> +	    sdhci_uhs2_ops.remove_host)
->>> +		sdhci_uhs2_ops.remove_host(host, dead);
->>> +
->>
->> I think you should look at creating uhs2_remove_host() instead
-> 
-> You suggest that we will have separate sdhci_uhs2_[add|remove]_host(),
-> but I don't think it's always convenient.
-> 
-> UHS-II capable host will be set to call sdhci_uhs2_add_host() explicitly,
-> but we can't do that in case of pci and pltfm based drivers as they utilize
-> common helper functions, sdhci_pci_probe() and sdhci_pltfm_register(),
-> respectively.
+On Wed, Sep 16, 2020 at 09:30:41AM +0200, David Hildenbrand wrote:
+>"mem" in the name already indicates the root, similar to
+>release_mem_region() and devm_request_mem_region(). Make it implicit.
+>The only single caller always passes iomem_resource, other parents are
+>not applicable.
+>
 
-sdhci-pci has an add_host op
+Looks good to me.
 
-sdhci_pltfm_init can be used instead of sdhci_pltfm_register
+Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-
-> Therefore, we inevitably have to call sdhci_uhs2_add_host() there.
+>Suggested-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>Cc: Andrew Morton <akpm@linux-foundation.org>
+>Cc: Michal Hocko <mhocko@suse.com>
+>Cc: Dan Williams <dan.j.williams@intel.com>
+>Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>Cc: Kees Cook <keescook@chromium.org>
+>Cc: Ard Biesheuvel <ardb@kernel.org>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Cc: Baoquan He <bhe@redhat.com>
+>Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
+>---
+>
+>Based on next-20200915. Follow up on
+>	"[PATCH v4 0/8] selective merging of system ram resources" [1]
+>That's in next-20200915. As noted during review of v2 by Wei [2].
+>
+>[1] https://lkml.kernel.org/r/20200911103459.10306-1-david@redhat.com
+>[2] https://lkml.kernel.org/r/20200915021012.GC2007@L-31X9LVDL-1304.local
+>
+>---
+> include/linux/ioport.h | 3 +--
+> kernel/resource.c      | 5 ++---
+> mm/memory_hotplug.c    | 2 +-
+> 3 files changed, 4 insertions(+), 6 deletions(-)
+>
+>diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+>index 7e61389dcb01..5135d4b86cd6 100644
+>--- a/include/linux/ioport.h
+>+++ b/include/linux/ioport.h
+>@@ -251,8 +251,7 @@ extern struct resource * __request_region(struct resource *,
+> extern void __release_region(struct resource *, resource_size_t,
+> 				resource_size_t);
+> #ifdef CONFIG_MEMORY_HOTREMOVE
+>-extern void release_mem_region_adjustable(struct resource *, resource_size_t,
+>-					  resource_size_t);
+>+extern void release_mem_region_adjustable(resource_size_t, resource_size_t);
+> #endif
+> #ifdef CONFIG_MEMORY_HOTPLUG
+> extern void merge_system_ram_resource(struct resource *res);
+>diff --git a/kernel/resource.c b/kernel/resource.c
+>index 7a91b935f4c2..ca2a666e4317 100644
+>--- a/kernel/resource.c
+>+++ b/kernel/resource.c
+>@@ -1240,7 +1240,6 @@ EXPORT_SYMBOL(__release_region);
+> #ifdef CONFIG_MEMORY_HOTREMOVE
+> /**
+>  * release_mem_region_adjustable - release a previously reserved memory region
+>- * @parent: parent resource descriptor
+>  * @start: resource start address
+>  * @size: resource region size
+>  *
+>@@ -1258,9 +1257,9 @@ EXPORT_SYMBOL(__release_region);
+>  *   assumes that all children remain in the lower address entry for
+>  *   simplicity.  Enhance this logic when necessary.
+>  */
+>-void release_mem_region_adjustable(struct resource *parent,
+>-				   resource_size_t start, resource_size_t size)
+>+void release_mem_region_adjustable(resource_size_t start, resource_size_t size)
+> {
+>+	struct resource *parent = &iomem_resource;
+> 	struct resource *new_res = NULL;
+> 	bool alloc_nofail = false;
+> 	struct resource **p;
+>diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+>index 553c718226b3..7c5e4744ac51 100644
+>--- a/mm/memory_hotplug.c
+>+++ b/mm/memory_hotplug.c
+>@@ -1764,7 +1764,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+> 		memblock_remove(start, size);
+> 	}
 > 
-> If so, why should we distinguish sdhci_uhs2_add_host from sdhci_uhs_add_host?
-> I don't see any good reason.
-> Moreover, as a result, there exists a mixed usage of sdhci_ interfaces
-> and sdhci_uhs2_ interfaces in sdhci-pci-core.c and sdhci-pltfm.c.
+>-	release_mem_region_adjustable(&iomem_resource, start, size);
+>+	release_mem_region_adjustable(start, size);
 > 
-> It sounds odd to me.
+> 	try_offline_node(nid);
+> 
+>-- 
+>2.26.2
 
-It is already done that way for cqhci.
-
-> 
-> -Takahiro Akashi
-> 
-> 
->>
->>>  	if (!dead)
->>>  		sdhci_do_reset(host, SDHCI_RESET_ALL);
->>>  
->>>
->>
-
+-- 
+Wei Yang
+Help you, Help me
