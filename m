@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0343E26CBE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DF226CC37
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbgIPUgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726847AbgIPRKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:10:30 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726757AbgIPUky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgIPRFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:05:36 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB21C061223;
+        Wed, 16 Sep 2020 09:21:07 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c3e00db2f62bd592f04a0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:db2f:62bd:592f:4a0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9595F227C3;
-        Wed, 16 Sep 2020 16:17:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600273071;
-        bh=LN9CdnpYig01xRkC8IS2l0nFAprnIaPmxff2deSsbdM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=arZO1DSzyRhOIJzlgIdKnCqEdPq/+2oXH63V3zCRjt2uefr7rK8wu2FICE1m/evd4
-         PlqSMpOP/sMmTTnpdckGd2RTU2CZs6H8hQ2e0xrGUnH+VxSn5fabupSMTnPVjpODK1
-         n6acg/19rRfvPoRNDQbAwgcoHWP6hRI2xjgG86tg=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        David Lechner <david@lechnology.com>,
-        Sekhar Nori <nsekhar@ti.com>, Heiko Stuebner <heiko@sntech.de>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/6] clk: fixed: add missing kerneldoc
-Date:   Wed, 16 Sep 2020 18:17:36 +0200
-Message-Id: <20200916161740.14173-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916161740.14173-1-krzk@kernel.org>
-References: <20200916161740.14173-1-krzk@kernel.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0315D1EC032C;
+        Wed, 16 Sep 2020 18:21:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600273266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=bIXSVgwmouub5tQQiDJ6zHx3om935DwZM13GEWZRvYw=;
+        b=Ox88FatiCrIiQHkFOoc+k3Qu2xr3U63O6XxF7mA1+89aTstwme3ws54oZBMncKcd4/GY84
+        spDXHkxbnqzydyc3gEI0A4xqeY8ICS7ydsn7lKf8f+Mu4L4Id3uE6pOe6rLl+lY001tu6p
+        mCBmbpKNNKqPKeIarFtvgwc9+POsNoU=
+Date:   Wed, 16 Sep 2020 18:20:59 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
+ Control hardware bits
+Message-ID: <20200916162059.GM2643@zn.tnic>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
+ <20200914151816.u6camicid4bd5lgo@treble>
+ <20200914153812.c6uh3spqmcy2ft3d@treble>
+ <20200915095716.GI3612@linux.intel.com>
+ <20200915132725.a2qbdio3jsu7rsqs@treble>
+ <20200915133929.GI14436@zn.tnic>
+ <20200916160419.GB21026@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200916160419.GB21026@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing kerneldoc to fix compile warnings like:
+On Wed, Sep 16, 2020 at 07:04:19PM +0300, Jarkko Sakkinen wrote:
+> The duplicate versions of v38 are equal. The "backup" server was just
+> really slow with vger. That's why I retried.
 
-  drivers/clk/clk-fixed-factor.c:211: warning: Function parameter or member 'node' not described in 'of_fixed_factor_clk_setup'
+Well, vger has been really slow for a while now...
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/clk/clk-fixed-factor.c | 1 +
- drivers/clk/clk-fixed-rate.c   | 1 +
- 2 files changed, 2 insertions(+)
+> As can be seen here both v38's are also complete:
+> 
+> https://lore.kernel.org/linux-sgx/
+> 
+> I've tried for months to get kernel.org account but I have troubles
+> getting my PGP trusted.
 
-diff --git a/drivers/clk/clk-fixed-factor.c b/drivers/clk/clk-fixed-factor.c
-index 8b343e59dc61..910e6e74ae90 100644
---- a/drivers/clk/clk-fixed-factor.c
-+++ b/drivers/clk/clk-fixed-factor.c
-@@ -206,6 +206,7 @@ static struct clk_hw *_of_fixed_factor_clk_setup(struct device_node *node)
- 
- /**
-  * of_fixed_factor_clk_setup() - Setup function for simple fixed factor clock
-+ * @node:	device node for the clock
-  */
- void __init of_fixed_factor_clk_setup(struct device_node *node)
- {
-diff --git a/drivers/clk/clk-fixed-rate.c b/drivers/clk/clk-fixed-rate.c
-index 77499a27c8fb..45501637705c 100644
---- a/drivers/clk/clk-fixed-rate.c
-+++ b/drivers/clk/clk-fixed-rate.c
-@@ -168,6 +168,7 @@ static struct clk_hw *_of_fixed_clk_setup(struct device_node *node)
- 
- /**
-  * of_fixed_clk_setup() - Setup function for simple fixed rate clock
-+ * @node:	device node for the clock
-  */
- void __init of_fixed_clk_setup(struct device_node *node)
- {
+Have you tried this:
+
+https://korg.docs.kernel.org/accounts.html
+
+?
+
+I believe you'll find enough people within Intel who are in the web of
+trust.
+
+> I really would like to move the whole thing over there. And use that
+> account for email.
+
+https://korg.docs.kernel.org/mail.html
+
+You'd need mailbox hosting etc as k.org doesn't have that.
+
+> Three maintainers have signed my key but when I do gpg --refresh, I
+> do not get any signatures for my key. The command uses keys.openpgp.org.
+> I have no idea if that is the correct key server or not. And I have no
+> idea how PGP servers mirror stuff with each other. And I have not found
+> anything on this from kernel documentation (e.g. PGP maintainer guide).
+
+Yeah, see that accounts.html link I pasted above - "Exporting your
+public key".
+
+HTH.
+
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
