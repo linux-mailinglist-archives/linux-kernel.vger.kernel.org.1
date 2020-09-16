@@ -2,189 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5483F26C754
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA71A26C6BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727720AbgIPSYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbgIPSW6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:22:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BFDC02C28A;
-        Wed, 16 Sep 2020 08:17:18 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:12:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600269145;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rW0q3pgqcygaiLdb2Ww7tZ+fu+C22PaxPKJYrTUxjMY=;
-        b=oYe3sZQzaTisEYRig7tXDXMy6j+u8WcDRCGDmuQXgpVkxzRjL54Ir3il86MaE2LhQYoHrq
-        wht2/q5nj4joNEbUsl8DvcH4Pqcd2t+MK4jvLS/XRjbAwsp6+Bg/+Gp+3Nb+kSoHikjUHb
-        uU902hDt7LoEZxPIxC+Nw0BpEfKHM/T6ikGXbS/VdOcY92Q6VZEqWrY/RlzQS6ck0/IzHL
-        O5Ox6JMEMSwaET+Wd4D6nd7pykPzh9If4/gvEA3U9t8qR/HcIqDOZgxT30Jfqxfm8F44tz
-        iO2SQBz0iCQBMk6VaRlPIp/tJ/gcjQ46XR3SsT+nqDhdI3is8HhTJiWxCndS5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600269145;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rW0q3pgqcygaiLdb2Ww7tZ+fu+C22PaxPKJYrTUxjMY=;
-        b=vYft43ApnAmi3sP8i4n1pa0T/MN+OOkZIFvF3p1GMF+olT3Jw2YthtXJLNyyrDa0GQjjCK
-        6kvZG6xOGp6Or9AA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] x86/irq: Add allocation type for parent domain retrieval
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <jroedel@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200826112331.436350257@linutronix.de>
-References: <20200826112331.436350257@linutronix.de>
+        id S1727755AbgIPSCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:02:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:34856 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727291AbgIPSAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:00:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E251214BF;
+        Wed, 16 Sep 2020 08:38:15 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 91CA13F718;
+        Wed, 16 Sep 2020 08:38:14 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 16:38:12 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Boyan Karatotev <boian4o1@gmail.com>
+Cc:     Boyan Karatotev <boyan.karatotev@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        amit.kachhap@arm.com, vincenzo.frascino@arm.com,
+        Shuah Khan <shuah@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/4] kselftests/arm64: add PAuth test for whether exec()
+ changes keys
+Message-ID: <20200916153809.GZ6642@arm.com>
+References: <20200828131606.7946-1-boyan.karatotev@arm.com>
+ <20200828131606.7946-4-boyan.karatotev@arm.com>
+ <20200902170052.GJ6642@arm.com>
+ <70e207ea-f7c2-2c9d-e868-3ba3b6451c6f@arm.com>
+ <20200907102717.GM6642@arm.com>
+ <4f38a974-d5a0-87e6-3db3-647e3cc32c0e@gmail.com>
 MIME-Version: 1.0
-Message-ID: <160026914454.15536.10889063727643231215.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f38a974-d5a0-87e6-3db3-647e3cc32c0e@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/irq branch of tip:
+On Tue, Sep 15, 2020 at 04:18:28PM +0100, Boyan Karatotev wrote:
+> On 07/09/2020 11:27 am, Dave Martin wrote:
+> > On Thu, Sep 03, 2020 at 11:20:25AM +0100, Boyan Karatotev wrote:
+> >> On 02/09/2020 18:00, Dave Martin wrote:
+> >>> On Fri, Aug 28, 2020 at 02:16:05PM +0100, Boyan Karatotev wrote:
+> >>>> +int exec_sign_all(struct signatures *signed_vals, size_t val)
+> >>>> +{
+> >>>
+> >>> Could popen(3) be used here?
+> >>>
+> >>> Fork-and-exec is notoriously fiddly, so it's preferable to use a library
+> >>> function to do it where applicable.I would love to, but the worker needs a bidirectional channel and popen
+> >> only gives a unidirectional stream.
+> > 
+> > Ah, fair point.
+> > 
+> > Would it help if you created an additional pipe before calling popen()?
+> > 
+> > May not be worth it, though.  For one thing, wiring that extra pipe to
+> > stdin or stdout in the child process would require some extra work...
+> Well, I probably could, but I doubt the result would be any better. I
+> agree that I'm not sure the effort is worth it and would rather keep it
+> the same.
 
-Commit-ID:     b4c364da32cf3b85297648ff5563de2c47d9e32f
-Gitweb:        https://git.kernel.org/tip/b4c364da32cf3b85297648ff5563de2c47d9e32f
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 26 Aug 2020 13:16:36 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 16 Sep 2020 16:52:29 +02:00
+Sure, fair enough.
 
-x86/irq: Add allocation type for parent domain retrieval
+Ideally kselftest would provide some common code for this sort of thing,
+but I guess that's a separate discussion.
 
-irq_remapping_ir_irq_domain() is used to retrieve the remapping parent
-domain for an allocation type. irq_remapping_irq_domain() is for retrieving
-the actual device domain for allocating interrupts for a device.
-
-The two functions are similar and can be unified by using explicit modes
-for parent irq domain retrieval.
-
-Add X86_IRQ_ALLOC_TYPE_IOAPIC/HPET_GET_PARENT and use it in the iommu
-implementations. Drop the parent domain retrieval for PCI_MSI/X as that is
-unused.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/r/20200826112331.436350257@linutronix.de
-
----
- arch/x86/include/asm/hw_irq.h       | 2 ++
- arch/x86/kernel/apic/io_apic.c      | 2 +-
- arch/x86/kernel/apic/msi.c          | 2 +-
- drivers/iommu/amd/iommu.c           | 8 ++++++++
- drivers/iommu/hyperv-iommu.c        | 2 +-
- drivers/iommu/intel/irq_remapping.c | 8 ++------
- 6 files changed, 15 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index 3982a1e..91b064d 100644
---- a/arch/x86/include/asm/hw_irq.h
-+++ b/arch/x86/include/asm/hw_irq.h
-@@ -40,6 +40,8 @@ enum irq_alloc_type {
- 	X86_IRQ_ALLOC_TYPE_PCI_MSIX,
- 	X86_IRQ_ALLOC_TYPE_DMAR,
- 	X86_IRQ_ALLOC_TYPE_UV,
-+	X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT,
-+	X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT,
- };
- 
- struct irq_alloc_info {
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 779a89e..be01bb6 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -2296,7 +2296,7 @@ static int mp_irqdomain_create(int ioapic)
- 		return 0;
- 
- 	init_irq_alloc_info(&info, NULL);
--	info.type = X86_IRQ_ALLOC_TYPE_IOAPIC;
-+	info.type = X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT;
- 	info.ioapic_id = mpc_ioapic_id(ioapic);
- 	parent = irq_remapping_get_ir_irq_domain(&info);
- 	if (!parent)
-diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
-index 7410d34..421c016 100644
---- a/arch/x86/kernel/apic/msi.c
-+++ b/arch/x86/kernel/apic/msi.c
-@@ -472,7 +472,7 @@ struct irq_domain *hpet_create_irq_domain(int hpet_id)
- 	domain_info->data = (void *)(long)hpet_id;
- 
- 	init_irq_alloc_info(&info, NULL);
--	info.type = X86_IRQ_ALLOC_TYPE_HPET;
-+	info.type = X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT;
- 	info.hpet_id = hpet_id;
- 	parent = irq_remapping_get_ir_irq_domain(&info);
- 	if (parent == NULL)
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index cf26b73..b98b0ab 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -3548,6 +3548,14 @@ static struct irq_domain *get_ir_irq_domain(struct irq_alloc_info *info)
- 	if (!info)
- 		return NULL;
- 
-+	switch (info->type) {
-+	case X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT:
-+	case X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT:
-+		break;
-+	default:
-+		return NULL;
-+	}
-+
- 	devid = get_devid(info);
- 	if (devid >= 0) {
- 		iommu = amd_iommu_rlookup_table[devid];
-diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
-index 8919c1c..e7bee11 100644
---- a/drivers/iommu/hyperv-iommu.c
-+++ b/drivers/iommu/hyperv-iommu.c
-@@ -184,7 +184,7 @@ static int __init hyperv_enable_irq_remapping(void)
- 
- static struct irq_domain *hyperv_get_ir_irq_domain(struct irq_alloc_info *info)
- {
--	if (info->type == X86_IRQ_ALLOC_TYPE_IOAPIC)
-+	if (info->type == X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT)
- 		return ioapic_ir_domain;
- 	else
- 		return NULL;
-diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-index 33c4389..9b15cd0 100644
---- a/drivers/iommu/intel/irq_remapping.c
-+++ b/drivers/iommu/intel/irq_remapping.c
-@@ -1115,16 +1115,12 @@ static struct irq_domain *intel_get_ir_irq_domain(struct irq_alloc_info *info)
- 		return NULL;
- 
- 	switch (info->type) {
--	case X86_IRQ_ALLOC_TYPE_IOAPIC:
-+	case X86_IRQ_ALLOC_TYPE_IOAPIC_GET_PARENT:
- 		iommu = map_ioapic_to_ir(info->ioapic_id);
- 		break;
--	case X86_IRQ_ALLOC_TYPE_HPET:
-+	case X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT:
- 		iommu = map_hpet_to_ir(info->hpet_id);
- 		break;
--	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
--	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
--		iommu = map_dev_to_ir(info->msi_dev);
--		break;
- 	default:
- 		BUG_ON(1);
- 		break;
+Cheers
+---Dave
