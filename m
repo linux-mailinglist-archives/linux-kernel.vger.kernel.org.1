@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA9226C6E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18E926C6EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727736AbgIPSHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:07:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41229 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727660AbgIPSGm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:06:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600279600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XOZJZdrt+409MPzx7FHPcsrccxwoUMGEk7L/i2mTWJY=;
-        b=FAf9lPnGqe1uXE8lZFqlnpGPGr26db3V3EvaMqLEJrkqTdtrjK0AduF8nRnNEZ/Fx1svHv
-        uuqQS/HOTtW+h2lRicFv0n/qWtPkVT+ApnKiBncdP5oq6A8sZDWf3krFD8+6MpOYazvxJU
-        BaUmC7W2W0VuQexww1ZoWdRRfFleFuw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-HsoummUsO9qRP3CaGZBICA-1; Wed, 16 Sep 2020 14:06:36 -0400
-X-MC-Unique: HsoummUsO9qRP3CaGZBICA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C56D80734C;
-        Wed, 16 Sep 2020 18:06:34 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C468F709BB;
-        Wed, 16 Sep 2020 18:06:32 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08GI6Wlw021462;
-        Wed, 16 Sep 2020 14:06:32 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08GI6VJK021458;
-        Wed, 16 Sep 2020 14:06:31 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Wed, 16 Sep 2020 14:06:31 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Dan Williams <dan.j.williams@intel.com>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
-        <rajesh.tadakamadla@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: [PATCH] pmem: export the symbols __copy_user_flushcache and
- __copy_from_user_flushcache
-In-Reply-To: <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
-Message-ID: <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com> <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
- <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        id S1727704AbgIPSKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:10:02 -0400
+Received: from mga11.intel.com ([192.55.52.93]:12675 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727789AbgIPSJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:09:27 -0400
+IronPort-SDR: RK2LhpBUQ4k9/QnPeyOfkvhKPoTzvUvn47D+OXMWlEd24lVwmsueadaMCzgJ2GudD/1XKFsQdx
+ qX0GoOBd0gRQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="156944438"
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="156944438"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 11:09:18 -0700
+IronPort-SDR: c2YZaBfwpgZg0IVWD0z4A32XdPWZkRYKKQ+iJXz1rQh07lGfQ3w0KAyYXU00i8ZDUN/ekyqVN7
+ +73tVOwYNbhQ==
+X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
+   d="scan'208";a="483411840"
+Received: from scusackx-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.87])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 11:09:11 -0700
+Date:   Wed, 16 Sep 2020 21:09:08 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com, nayna@linux.ibm.com,
+        zohar@linux.ibm.com, erichte@linux.ibm.com, mpe@ellerman.id.au,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
+Message-ID: <20200916180908.GG21026@linux.intel.com>
+References: <20200916004927.64276-1-eric.snowberg@oracle.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916004927.64276-1-eric.snowberg@oracle.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Wed, 16 Sep 2020, Dan Williams wrote:
-
-> On Wed, Sep 16, 2020 at 10:24 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
-> >
-> > > My first question about nvfs is how it compares to a daxfs with
-> > > executables and other binaries configured to use page cache with the
-> > > new per-file dax facility?
-> >
-> > nvfs is faster than dax-based filesystems on metadata-heavy operations
-> > because it doesn't have the overhead of the buffer cache and bios. See
-> > this: http://people.redhat.com/~mpatocka/nvfs/BENCHMARKS
+On Tue, Sep 15, 2020 at 08:49:27PM -0400, Eric Snowberg wrote:
+> The Secure Boot Forbidden Signature Database, dbx, contains a list of now
+> revoked signatures and keys previously approved to boot with UEFI Secure
+> Boot enabled.  The dbx is capable of containing any number of
+> EFI_CERT_X509_SHA256_GUID, EFI_CERT_SHA256_GUID, and EFI_CERT_X509_GUID
+> entries.
 > 
-> ...and that metadata problem is intractable upstream? Christoph poked
-> at bypassing the block layer for xfs metadata operations [1], I just
-> have not had time to carry that further.
+> Currently when EFI_CERT_X509_GUID are contained in the dbx, the entries are
+> skipped.
 > 
-> [1]: "xfs: use dax_direct_access for log writes", although it seems
-> he's dropped that branch from his xfs.git
+> Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_GUID
+> is found, it is added as an asymmetrical key to the .blacklist keyring.
+> Anytime the .platform keyring is used, the keys in the .blacklist keyring
+> are referenced, if a matching key is found, the key will be rejected.
+> 
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
 
-XFS is very big. I wanted to create something small.
+Looks good to me.
 
-Mikulas
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
+/Jarkko
