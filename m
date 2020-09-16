@@ -2,155 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2FB26C65F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959D026C647
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727335AbgIPRr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:47:29 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:63276 "EHLO h3cspam01-ex.h3c.com"
+        id S1727351AbgIPRnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:43:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727416AbgIPRqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:46:47 -0400
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 08GFCc31071692;
-        Wed, 16 Sep 2020 23:12:38 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 08GF54h5067487
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 23:05:04 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 16 Sep 2020 23:05:09 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] blk-mq: add cond_resched() in __blk_mq_alloc_rq_maps()
-Date:   Wed, 16 Sep 2020 22:58:04 +0800
-Message-ID: <20200916145804.30939-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727331AbgIPRkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:40:40 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A92B223FB;
+        Wed, 16 Sep 2020 15:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600269059;
+        bh=xmzrdiPDzVhpJTnNuaWDllL6DAJjHryvlroLhWdhC9M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1SOzr1ftqfk896/TZheIMp9Y5OQJlAqv5Rb7IRMk3qQ4uEy5eZv7YxkYhKOVDxGW0
+         O65YkHDIgG1Ce8rxdSQVFNzalVXKEHTKP3Qp+pAUK3wXt90mp04qtSDGirtMMozHjl
+         F1Q6QSQsnrecimNKmlLUAqskD0wF+V7uIujIH2Lo=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kIZ5F-00CMqs-JJ; Wed, 16 Sep 2020 16:10:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 08GF54h5067487
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Sep 2020 16:10:57 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linus.walleij@linaro.org
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+In-Reply-To: <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+ <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, m.szyprowski@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, b.zolnierkie@samsung.com, krzk@kernel.org, linux-samsung-soc@vger.kernel.org, tglx@linutronix.de, will@kernel.org, Valentin.Schneider@arm.com, linux-tegra@vger.kernel.org, linus.walleij@linaro.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We found it takes more time of blk_mq_alloc_rq_maps() in kernel space when
-testing nvme hot-plugging. The test and anlysis as below.
+Hi Jon,
 
-Debug code,
-1, blk_mq_alloc_rq_maps():
-        u64 start, end;
-        depth = set->queue_depth;
-        start = ktime_get_ns();
-        pr_err("[%d:%s switch:%ld,%ld] queue depth %d, nr_hw_queues %d\n",
-                        current->pid, current->comm, current->nvcsw, current->nivcsw,
-                        set->queue_depth, set->nr_hw_queues);
-        do {
-                err = __blk_mq_alloc_rq_maps(set);
-                if (!err)
-                        break;
++Linus, who is facing a similar issue.
 
-                set->queue_depth >>= 1;
-                if (set->queue_depth < set->reserved_tags + BLK_MQ_TAG_MIN) {
-                        err = -ENOMEM;
-                        break;
-                }
-        } while (set->queue_depth);
-        end = ktime_get_ns();
-        pr_err("[%d:%s switch:%ld,%ld] all hw queues init cost time %lld ns\n",
-                        current->pid, current->comm,
-                        current->nvcsw, current->nivcsw, end - start);
+On 2020-09-16 15:16, Jon Hunter wrote:
+> Hi Marc,
+> 
+> On 14/09/2020 14:06, Marek Szyprowski wrote:
+>> Hi Marc,
+>> 
+>> On 01.09.2020 16:43, Marc Zyngier wrote:
+>>> Change the way we deal with GIC SGIs by turning them into proper
+>>> IRQs, and calling into the arch code to register the interrupt range
+>>> instead of a callback.
+>>> 
+>>> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+>>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> This patch landed in linux next-20200914 as commit ac063232d4b0
+>> ("irqchip/gic: Configure SGIs as standard interrupts"). Sadly it 
+>> breaks
+>> booting of all Samsung Exynos 4210/4412 based boards (dual/quad ARM
+>> Cortex A9 based). Here are the last lines from the bootlog:
+> 
+> I am observing the same thing on several Tegra boards (both arm and
+> arm64). Bisect is pointing to this commit. Reverting this alone does 
+> not
+> appear to be enough to fix the issue.
 
-2, __blk_mq_alloc_rq_maps():
-        u64 start, end;
-        for (i = 0; i < set->nr_hw_queues; i++) {
-                start = ktime_get_ns();
-                if (!__blk_mq_alloc_rq_map(set, i))
-                        goto out_unwind;
-                end = ktime_get_ns();
-                pr_err("hw queue %d init cost time %lld\n", i, end - start);
-        }
+Right, I am just massively by the GICv3 spec, and failed to remember
+that ye olde GIC exposes the source CPU in AIR *and* wants it back, 
+while
+newer GICs deal with that transparently.
 
-Test nvme hot-plugging with above debug code, we found it totally cost more
-than 3ms in kernel space without being scheduled out when alloc rqs for all
-hw queues, each  hw queue cost about 140-250us. The time cost will be
-increased with hw queue number increasing. And if __blk_mq_alloc_rq_maps()
-returns -ENOMEM, it will try "queue_depth >>= 1", it will cost more time.
-	[  428.428771] nvme nvme0: pci function 10000:01:00.0
-	[  428.428798] nvme 10000:01:00.0: enabling device (0000 -> 0002)
-	[  428.428806] pcieport 10000:00:00.0: can't derive routing for PCI INT A
-	[  428.428809] nvme 10000:01:00.0: PCI INT A: no GSI
-	[  432.593374] [4688:kworker/u33:8 switch:663,2] queue depth 30, nr_hw_queues 1
-	[  432.593404] hw queue 0 init cost time 22883 ns
-	[  432.593408] [4688:kworker/u33:8 switch:663,2] all hw queues init cost time 35960 ns
-	[  432.595953] nvme nvme0: 16/0/0 default/read/poll queues
-	[  432.595958] [4688:kworker/u33:8 switch:700,2] queue depth 1023, nr_hw_queues 16
-	[  432.596203] hw queue 0 init cost time 242630 ns
-	[  432.596441] hw queue 1 init cost time 235913 ns
-	[  432.596659] hw queue 2 init cost time 216461 ns
-	[  432.596877] hw queue 3 init cost time 215851 ns
-	[  432.597107] hw queue 4 init cost time 228406 ns
-	[  432.597336] hw queue 5 init cost time 227298 ns
-	[  432.597564] hw queue 6 init cost time 224633 ns
-	[  432.597785] hw queue 7 init cost time 219954 ns
-	[  432.597937] hw queue 8 init cost time 150930 ns
-	[  432.598082] hw queue 9 init cost time 143496 ns
-	[  432.598231] hw queue 10 init cost time 147261 ns
-	[  432.598397] hw queue 11 init cost time 164522 ns
-	[  432.598542] hw queue 12 init cost time 143401 ns
-	[  432.598692] hw queue 13 init cost time 148934 ns
-	[  432.598841] hw queue 14 init cost time 147194 ns
-	[  432.598991] hw queue 15 init cost time 148942 ns
-	[  432.598993] [4688:kworker/u33:8 switch:700,2] all hw queues init cost time 3035099 ns
-	[  432.602611]  nvme0n1: p1
+Can you try the patch below and let me know?
 
-So use this patch to trigger schedule between each hw queue init, to avoid
-stuck of other tasks.
+         M.
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- block/blk-mq.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index 98743afdaea6..56492bf8b6f9 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -121,9 +121,10 @@ static struct gic_chip_data 
+gic_data[CONFIG_ARM_GIC_MAX_NR] __read_mostly;
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index b3d2785ee..12418ecf5 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -3256,10 +3256,13 @@ static int __blk_mq_alloc_rq_maps(struct blk_mq_tag_set *set)
- {
- 	int i;
- 
--	for (i = 0; i < set->nr_hw_queues; i++)
-+	for (i = 0; i < set->nr_hw_queues; i++) {
- 		if (!__blk_mq_alloc_map_and_request(set, i))
- 			goto out_unwind;
- 
-+		cond_resched();
-+	}
+  static struct gic_kvm_info gic_v2_kvm_info;
+
++static DEFINE_PER_CPU(u32, sgi_intid);
 +
- 	return 0;
- 
- out_unwind:
-@@ -3292,6 +3295,9 @@ static int blk_mq_alloc_map_and_requests(struct blk_mq_tag_set *set)
- 		}
- 	} while (set->queue_depth);
- 
-+
-+
-+
- 	if (!set->queue_depth || err) {
- 		pr_err("blk-mq: failed to allocate request map\n");
- 		return -ENOMEM;
+  #ifdef CONFIG_GIC_NON_BANKED
+  static DEFINE_STATIC_KEY_FALSE(frankengic_key);
+-static DEFINE_PER_CPU(u32, sgi_intid);
+
+  static void enable_frankengic(void)
+  {
+@@ -135,16 +136,6 @@ static inline bool is_frankengic(void)
+  	return static_branch_unlikely(&frankengic_key);
+  }
+
+-static inline void set_sgi_intid(u32 intid)
+-{
+-	this_cpu_write(sgi_intid, intid);
+-}
+-
+-static inline u32 get_sgi_intid(void)
+-{
+-	return this_cpu_read(sgi_intid);
+-}
+-
+  static inline void __iomem *__get_base(union gic_base *base)
+  {
+  	if (is_frankengic())
+@@ -160,8 +151,6 @@ static inline void __iomem *__get_base(union 
+gic_base *base)
+  #define gic_data_cpu_base(d)	((d)->cpu_base.common_base)
+  #define enable_frankengic()	do { } while(0)
+  #define is_frankengic()		false
+-#define set_sgi_intid(i)	do { } while(0)
+-#define get_sgi_intid()		0
+  #endif
+
+  static inline void __iomem *gic_dist_base(struct irq_data *d)
+@@ -236,8 +225,8 @@ static void gic_eoi_irq(struct irq_data *d)
+  {
+  	u32 hwirq = gic_irq(d);
+
+-	if (is_frankengic() && hwirq < 16)
+-		hwirq = get_sgi_intid();
++	if (hwirq < 16)
++		hwirq = this_cpu_read(sgi_intid);
+
+  	writel_relaxed(hwirq, gic_cpu_base(d) + GIC_CPU_EOI);
+  }
+@@ -365,14 +354,13 @@ static void __exception_irq_entry 
+gic_handle_irq(struct pt_regs *regs)
+  			smp_rmb();
+
+  			/*
+-			 * Samsung's funky GIC encodes the source CPU in
+-			 * GICC_IAR, leading to the deactivation to fail if
+-			 * not written back as is to GICC_EOI.  Stash the
+-			 * INTID away for gic_eoi_irq() to write back.
+-			 * This only works because we don't nest SGIs...
++			 * The GIC encodes the source CPU in GICC_IAR,
++			 * leading to the deactivation to fail if not
++			 * written back as is to GICC_EOI.  Stash the INTID
++			 * away for gic_eoi_irq() to write back.  This only
++			 * works because we don't nest SGIs...
+  			 */
+-			if (is_frankengic())
+-				set_sgi_intid(irqstat);
++			this_cpu_write(sgi_intid, intid);
+  		}
+
+  		handle_domain_irq(gic->domain, irqnr, regs);
+
 -- 
-2.17.1
-
+Jazz is not dead. It just smells funny...
