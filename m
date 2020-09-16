@@ -2,28 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E62A26BCCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9C526BCAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgIPGVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:21:07 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12723 "EHLO huawei.com"
+        id S1726463AbgIPGVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:21:18 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44990 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726140AbgIPGU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726340AbgIPGU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 02:20:56 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9C63AED3374EF7840856;
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9333F9C127C521A72810;
         Wed, 16 Sep 2020 14:20:54 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 16 Sep 2020 14:20:45 +0800
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 16 Sep 2020 14:20:46 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next] MIPS: OCTEON: use devm_platform_ioremap_resource
-Date:   Wed, 16 Sep 2020 14:21:27 +0800
-Message-ID: <20200916062127.190774-1-miaoqinglang@huawei.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH -next] PCI: rpadlpar: use for_each_child_of_node() and for_each_node_by_name
+Date:   Wed, 16 Sep 2020 14:21:28 +0800
+Message-ID: <20200916062128.190819-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -35,50 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note that error handling on the result of a call to platform_get_resource()
-is unneeded when the value is passed to devm_ioremap_resource(), so remove
-it. Then use the helper function that wraps the calls to platform_get_resource()
-and devm_ioremap_resource() together.
+Use for_each_child_of_node() and for_each_node_by_name macro
+instead of open coding it.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- arch/mips/cavium-octeon/octeon-usb.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/pci/hotplug/rpadlpar_core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/cavium-octeon/octeon-usb.c b/arch/mips/cavium-octeon/octeon-usb.c
-index 950e6c6e8..97f6dc31e 100644
---- a/arch/mips/cavium-octeon/octeon-usb.c
-+++ b/arch/mips/cavium-octeon/octeon-usb.c
-@@ -498,7 +498,6 @@ static int __init dwc3_octeon_device_init(void)
- 	const char compat_node_name[] = "cavium,octeon-7130-usb-uctl";
- 	struct platform_device *pdev;
- 	struct device_node *node;
--	struct resource *res;
- 	void __iomem *base;
+diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
+index f979b7098..0a3c80ba6 100644
+--- a/drivers/pci/hotplug/rpadlpar_core.c
++++ b/drivers/pci/hotplug/rpadlpar_core.c
+@@ -40,13 +40,13 @@ static DEFINE_MUTEX(rpadlpar_mutex);
+ static struct device_node *find_vio_slot_node(char *drc_name)
+ {
+ 	struct device_node *parent = of_find_node_by_name(NULL, "vdevice");
+-	struct device_node *dn = NULL;
++	struct device_node *dn;
+ 	int rc;
  
- 	/*
-@@ -516,20 +515,13 @@ static int __init dwc3_octeon_device_init(void)
- 			if (!pdev)
- 				return -ENODEV;
+ 	if (!parent)
+ 		return NULL;
  
--			res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--			if (res == NULL) {
--				put_device(&pdev->dev);
--				dev_err(&pdev->dev, "No memory resources\n");
--				return -ENXIO;
--			}
--
- 			/*
- 			 * The code below maps in the registers necessary for
- 			 * setting up the clocks and reseting PHYs. We must
- 			 * release the resources so the dwc3 subsystem doesn't
- 			 * know the difference.
- 			 */
--			base = devm_ioremap_resource(&pdev->dev, res);
-+			base = devm_platform_ioremap_resource(pdev, 0);
- 			if (IS_ERR(base)) {
- 				put_device(&pdev->dev);
- 				return PTR_ERR(base);
+-	while ((dn = of_get_next_child(parent, dn))) {
++	for_each_child_of_node(parent, dn) {
+ 		rc = rpaphp_check_drc_props(dn, drc_name, NULL);
+ 		if (rc == 0)
+ 			break;
+@@ -60,10 +60,10 @@ static struct device_node *find_vio_slot_node(char *drc_name)
+ static struct device_node *find_php_slot_pci_node(char *drc_name,
+ 						  char *drc_type)
+ {
+-	struct device_node *np = NULL;
++	struct device_node *np;
+ 	int rc;
+ 
+-	while ((np = of_find_node_by_name(np, "pci"))) {
++	for_each_node_by_name(np, "pci") {
+ 		rc = rpaphp_check_drc_props(np, drc_name, drc_type);
+ 		if (rc == 0)
+ 			break;
 -- 
 2.23.0
 
