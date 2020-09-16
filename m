@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BB026B983
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17BC26B98A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 03:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgIPBv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 21:51:56 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45446 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726023AbgIPBvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 21:51:55 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 8B4CFF0684C28E4090F6;
-        Wed, 16 Sep 2020 09:51:53 +0800 (CST)
-Received: from [127.0.0.1] (10.74.185.4) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
- 09:51:42 +0800
-Subject: Re: [PATCH] KVM: arm64: fix doc warnings in mmu code
-To:     Marc Zyngier <maz@kernel.org>
-References: <1600175890-7435-1-git-send-email-tanxiaofei@huawei.com>
- <7bcb5fd9b6490e98cfa8aa22496a8a71@kernel.org>
-CC:     <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
-        <suzuki.poulose@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <5F616FAE.4030006@huawei.com>
-Date:   Wed, 16 Sep 2020 09:51:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1726260AbgIPBx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 21:53:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36240 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgIPBxX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 21:53:23 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G1molB146115;
+        Wed, 16 Sep 2020 01:52:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=ECh2MOTmhtTfYZyfuT4yJTL2a4p1wqNmCrWKl3fPcS8=;
+ b=zTLFMYai5ScmwCtq04/oHxEbvGXr6UFvjNNnNUO4jqd6neMj2JnIlyDW2S3sPJ/WapxD
+ w9puNsCx9PGUDgTGQxRzMD9y27qiKq3naFpDriZf7pgH6mw2pMhd3M+zi40/BqKO9iNc
+ EvfrV4iF2JMGDu59P33Dc0RQKpvQ6WzjSGv+vUJV2zcR+e0iW4/JjAeNy/Td4LeTk9TD
+ C6PHQQxgyxqASo/rCp9Ru8IaDy7rdkmczuix5Ei7nPRWhGc7Xx9suytKNBlPMLegBlfX
+ r+wtQMdfHpCmlzOZMZ3+g3V6UACJaTLB4tbdogN5O6XtRVD7ZT3rJebAyUjZOP+a9YgH Eg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33gp9m8awk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 01:52:21 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G1ohhq170487;
+        Wed, 16 Sep 2020 01:52:20 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33h890e9hu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 01:52:20 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08G1qIvQ019662;
+        Wed, 16 Sep 2020 01:52:18 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 01:52:18 +0000
+To:     Matej Genci <matej.genci@nutanix.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "stefanha@redhat.com" <stefanha@redhat.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Felipe Franciosi <felipe@nutanix.com>
+Subject: Re: [PATCH] Rescan the entire target on transport reset when LUN is 0
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq11rj2zdx9.fsf@ca-mkp.ca.oracle.com>
+References: <CY4PR02MB33354370E0A81E75DD9DFE74FB520@CY4PR02MB3335.namprd02.prod.outlook.com>
+Date:   Tue, 15 Sep 2020 21:52:15 -0400
+In-Reply-To: <CY4PR02MB33354370E0A81E75DD9DFE74FB520@CY4PR02MB3335.namprd02.prod.outlook.com>
+        (Matej Genci's message of "Fri, 28 Aug 2020 12:21:35 +0000")
 MIME-Version: 1.0
-In-Reply-To: <7bcb5fd9b6490e98cfa8aa22496a8a71@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.185.4]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ suspectscore=1 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160010
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=996
+ adultscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160010
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
 
-OK, I will send v2 patch based on kvmarm-next branch. thanks.
+Matej,
 
-On 2020/9/15 21:47, Marc Zyngier wrote:
-> Hi Xiaofei,
-> 
-> On 2020-09-15 14:18, Xiaofei Tan wrote:
->> Fix following warnings caused by mismatch bewteen function parameters
->> and comments.
->> arch/arm64/kvm/mmu.c:119: warning: Function parameter or member
->> 'pudp'not described in 'stage2_dissolve_pud'
->> arch/arm64/kvm/mmu.c:119: warning: Excess function parameter 'pud'
->> description in 'stage2_dissolve_pud'
-> 
-> [...]
-> 
-> Most of this code is being deleted. If you want to fix comments,
-> please look at what is in -next.
-> 
-> Thanks,
-> 
->         M.
+> This change introduces the behaviour described above by scanning the
+> entire scsi target when LUN is set to 0. This is both a functional and a
+> performance fix. It aligns the driver with the spec and allows control
+> planes to hotplug targets with large numbers of LUNs without having to
+> request a RESCAN for each one of them.
+
+Applied to 5.10/scsi-staging, thanks!
 
 -- 
- thanks
-tanxiaofei
-
+Martin K. Petersen	Oracle Linux Engineering
