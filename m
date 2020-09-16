@@ -2,136 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D9226CF13
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E6526CEEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIPWrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:47:41 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:54924 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726174AbgIPWrj (ORCPT
+        id S1726959AbgIPWjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726382AbgIPWh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:47:39 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 0C5913AA941
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 21:14:11 +0000 (UTC)
-X-Originating-IP: 90.65.88.165
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 1D582C0002;
-        Wed, 16 Sep 2020 21:13:49 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 23:13:48 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ARM: at91: DT for 5.10
-Message-ID: <20200916211348.GA275895@piout.net>
+        Wed, 16 Sep 2020 18:37:56 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9D6C061353;
+        Wed, 16 Sep 2020 14:22:17 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g4so8350516wrs.5;
+        Wed, 16 Sep 2020 14:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rZwJCenpJW1FFkhwXKCJoTS7EbTuiQatdTV3wO3465M=;
+        b=lF9NC+kfAULQDzJUeIysMGpU1qmq1uc9cI0WU7ORfR1EU2dLqnh94+0r7StcST6C9p
+         br7r/ZmCqXP2ymM4AVq1cinWHtmFK5vh3JULY3m8eB6v/V2CRWr1fL5O9R96OiXUcFEY
+         eyFkuJT1gJtJUl0vTpqMzdszq0AMAFJhuNduH4SgHXLhSnJTNS8nVuV9F5+MfurVxEJ/
+         G2AlSOMo4/OhGgHvgVKc9ezZwZOknpRQnDxsDCcu9COQpeplvBWnhWOtTF/CS4fmzszO
+         xDg4PltxpWlXG2I2IY0Vmx/1agW+6vdK6++hromHbLgQFDnTZ6QKXGtJFu1F6E/QuyL9
+         wxdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rZwJCenpJW1FFkhwXKCJoTS7EbTuiQatdTV3wO3465M=;
+        b=l9+jjy/NN8ekSqjxwvDSEzbNfBhkwSOAdbtXEnHBT4FVumOQk+3vmxaTHC4Wmq68X0
+         ZpXvQu8AUiCg010pN7uM8I1ylRMuYFbanEsjE64Ow3vBz1Lnrel+HIhThSGWsz+85e56
+         SxLkR/iypD2MAdMAAgWEDFfke6Hv+pBZrTBTNXLjI9wpLIlyG6OylBcPDGF7TqZuuZcC
+         mwJcAFa5EEKDAEvyUTy5uxmMxh4yf6Neb84xuS/LwY8pmvADZhOUihj5jXiMesViQFha
+         rgjzD5RRDJLXozrmWI48DeYV3i4wx9xdeeN5NKWaXrdUg5MYR/KzVjHbVgp4ce7yC3wu
+         rdsg==
+X-Gm-Message-State: AOAM530oIEDElH/oZy0nRBKQbPpiGJ8QPALKzj1vHGKv8DxHG3jsupLh
+        vABFhVuo+/b723kPReKW/+M=
+X-Google-Smtp-Source: ABdhPJxKuwijj5bY37fOmOmdBmn1qD4Bk+KgvLkkEPSn5wxYikUVEInLjb1qrj8IlMvKQsfEROjXhw==
+X-Received: by 2002:adf:ef45:: with SMTP id c5mr6367417wrp.384.1600291336432;
+        Wed, 16 Sep 2020 14:22:16 -0700 (PDT)
+Received: from lenovo-laptop (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id t15sm28380498wrp.20.2020.09.16.14.22.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 14:22:15 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
+Date:   Wed, 16 Sep 2020 22:22:13 +0100
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Landen Chao <landen.chao@mediatek.com>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: dsa: mt7530: Add some return-value checks
+Message-ID: <20200916212213.v2xqqj3ep6v452eh@lenovo-laptop>
+References: <20200916195017.34057-1-alex.dewar90@gmail.com>
+ <e46ec744-ec6a-e53a-03e8-1c75c910682f@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <e46ec744-ec6a-e53a-03e8-1c75c910682f@embeddedor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd, Olof,
+[snip] 
+> >  
+> >  	/* Enable Mediatek header mode on the cpu port */
+> >  	mt7530_write(priv, MT7530_PVC_P(port),
+> > @@ -2275,7 +2279,7 @@ mt7531_cpu_port_config(struct dsa_switch *ds, int port)
+> >  {
+> >  	struct mt7530_priv *priv = ds->priv;
+> >  	phy_interface_t interface;
+> > -	int speed;
+> > +	int ret, speed;
+> 
+> Don't do this. Instead, declare each variable on its own line. In this case,
+> speed before ret.
 
-The bulk of the changes are fixes for issues found by dtbs_check. A new
-board is also introduced.
-
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-dt-5.10
-
-for you to fetch changes up to 860b6d803f3d5feab4b67d500b060168a77f9a04:
-
-  ARM: dts: at91: sama5d2: add missing flexcom spi node properties (2020-09-16 10:45:32 +0200)
-
-----------------------------------------------------------------
-AT91 DT for 5.10
-
- - New board: GARDENA smart Gateway (Art. 19000)
- - dtbs_check warnings fixes
-
-----------------------------------------------------------------
-Alexandre Belloni (5):
-      ARM: dts: at91: fix cpu node
-      ARM: dts: at91: fix sram nodes
-      ARM: dts: at91: move mmc pinctrl-names property to board dts
-      ARM: dts: at91: add unit-address to memory node
-      ARM: dts: at91: sama5d2: add missing flexcom spi node properties
-
-Reto Schneider (2):
-      dt-bindings: arm: at91: Add GARDENA smart Gateway (Art. 19000) board
-      ARM: at91: Add GARDENA smart Gateway (Art. 19000) support
-
- .../devicetree/bindings/arm/atmel-at91.yaml        |   1 +
- arch/arm/boot/dts/Makefile                         |   1 +
- arch/arm/boot/dts/animeo_ip.dts                    |   3 +-
- arch/arm/boot/dts/at91-ariag25.dts                 |   3 +-
- arch/arm/boot/dts/at91-ariettag25.dts              |   3 +-
- arch/arm/boot/dts/at91-cosino.dtsi                 |   3 +-
- arch/arm/boot/dts/at91-cosino_mega2560.dts         |   1 +
- arch/arm/boot/dts/at91-foxg20.dts                  |   3 +-
- arch/arm/boot/dts/at91-kizbox.dts                  |   2 +-
- arch/arm/boot/dts/at91-kizbox2-common.dtsi         |   2 +-
- arch/arm/boot/dts/at91-kizboxmini-common.dtsi      |   2 +-
- arch/arm/boot/dts/at91-linea.dtsi                  |   2 +-
- arch/arm/boot/dts/at91-qil_a9260.dts               |   3 +-
- arch/arm/boot/dts/at91-sam9_l9260.dts              |   3 +-
- arch/arm/boot/dts/at91-sama5d3_xplained.dts        |   2 +-
- arch/arm/boot/dts/at91-sama5d4_ma5d4.dtsi          |   2 +-
- arch/arm/boot/dts/at91-sama5d4_xplained.dts        |   2 +-
- arch/arm/boot/dts/at91-sama5d4ek.dts               |   2 +-
- arch/arm/boot/dts/at91-som60.dtsi                  |   2 +-
- arch/arm/boot/dts/at91-vinco.dts                   |   2 +-
- arch/arm/boot/dts/at91-wb45n.dtsi                  |   3 +-
- arch/arm/boot/dts/at91-wb50n.dtsi                  |   2 +-
- arch/arm/boot/dts/at91rm9200.dtsi                  |  11 +-
- arch/arm/boot/dts/at91rm9200ek.dts                 |   2 +-
- arch/arm/boot/dts/at91sam9260.dtsi                 |  11 +-
- arch/arm/boot/dts/at91sam9260ek.dts                |   3 +-
- arch/arm/boot/dts/at91sam9261.dtsi                 |  10 +-
- arch/arm/boot/dts/at91sam9261ek.dts                |   2 +-
- arch/arm/boot/dts/at91sam9263.dtsi                 |  15 +-
- arch/arm/boot/dts/at91sam9263ek.dts                |   3 +-
- arch/arm/boot/dts/at91sam9g20.dtsi                 |   5 +-
- arch/arm/boot/dts/at91sam9g20ek_common.dtsi        |   3 +-
- .../boot/dts/at91sam9g25-gardena-smart-gateway.dts | 158 +++++++++++++++++++++
- arch/arm/boot/dts/at91sam9g45.dtsi                 |  12 +-
- arch/arm/boot/dts/at91sam9m10g45ek.dts             |   4 +-
- arch/arm/boot/dts/at91sam9n12.dtsi                 |  10 +-
- arch/arm/boot/dts/at91sam9n12ek.dts                |   2 +-
- arch/arm/boot/dts/at91sam9rl.dtsi                  |  10 +-
- arch/arm/boot/dts/at91sam9rlek.dts                 |   2 +-
- arch/arm/boot/dts/at91sam9x5.dtsi                  |  12 +-
- arch/arm/boot/dts/at91sam9x5cm.dtsi                |   2 +-
- arch/arm/boot/dts/at91sam9x5ek.dtsi                |   2 +
- arch/arm/boot/dts/at91sam9xe.dtsi                  |   3 +
- arch/arm/boot/dts/ethernut5.dts                    |   2 +-
- arch/arm/boot/dts/mpa1600.dts                      |   2 +-
- arch/arm/boot/dts/pm9g45.dts                       |   3 +-
- arch/arm/boot/dts/sam9x60.dtsi                     |  10 +-
- arch/arm/boot/dts/sama5d2.dtsi                     |  19 ++-
- arch/arm/boot/dts/sama5d3.dtsi                     |   8 +-
- arch/arm/boot/dts/sama5d3xcm.dtsi                  |   2 +-
- arch/arm/boot/dts/sama5d3xcm_cmp.dtsi              |   2 +-
- arch/arm/boot/dts/sama5d4.dtsi                     |   8 +-
- arch/arm/boot/dts/tny_a9260_common.dtsi            |   2 +-
- arch/arm/boot/dts/tny_a9263.dts                    |   2 +-
- arch/arm/boot/dts/usb_a9260.dts                    |   2 +-
- arch/arm/boot/dts/usb_a9263.dts                    |   2 +-
- arch/arm/boot/dts/usb_a9g20_common.dtsi            |   2 +-
- 57 files changed, 320 insertions(+), 77 deletions(-)
- create mode 100644 arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Good point. I'll do this in v2 :-)
+> 
+> Thanks
+> --
+> Gustavo
