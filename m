@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9091B26BDAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFDA26BDAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgIPHIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:08:45 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:35266 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgIPHIo (ORCPT
+        id S1726369AbgIPHJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:09:44 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:38257 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIPHJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:08:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1600240123; x=1631776123;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=kRZu+9DWwWzAavQX/XVNxGelxwlfukUlgQUjykqNXgE=;
-  b=qayZ3XUtssFFSofofV9lDD9LARyKq+DrCf0ir+sruFo8BEZTlQ9OTpWu
-   gHL5mMhaFvLeUPXERjq9nLh7GXJiOZaG8/Gy2htd50LbWn1TINfAuLeEP
-   JhYv4aLlaSLzsJptYc17TCUxbWGVLNgctOIwijnjGxY2PcRhNAl4CcToE
-   aWOIrwt01ga0WPeBfESQhb+jN/Z7rBGCSo802NY22uMQJRQqhTeYTmffE
-   Lq2oZdT/AYdxCVLWGsC8Vkiy+zpo5kAtXSLMXzzZVk439erj69VIgia8b
-   DkPeX5+i58codOnG/2UMeiRSvD5SCvAqWEstuvPByAWQbdzmqmp1R0FwH
-   g==;
-IronPort-SDR: bBHBK/VezAlFji1zCJrRtPFxLjwXVigFQKQlyGvAIn6RS6fh9U3ofpmFJEG+57br9oPDxPI3qL
- ODMEn98DgMCAc5aHXy2cRa2YQs/AlGHowLxOnIwYsNWOO6KoNZNnURbHwoTmG6+v67FJinZOHG
- 2f5rLekrUieffD9dhrzmQUob/WFesDNjonG7ETXeLN39os0S/XI3Ht5kTzvo40IXMLuk/8AQI1
- rH6TObkb28putEQ+xFQK51msWCzLSnzsVk+vcfZYVN9AxxbPNC9x5Ry8VqvdR8yHmoMVxCjLJs
- zC4=
-X-IronPort-AV: E=Sophos;i="5.76,431,1592895600"; 
-   d="scan'208";a="91976494"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Sep 2020 00:08:43 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 16 Sep 2020 00:08:26 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 16 Sep 2020 00:08:32 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <jic23@kernel.org>, <alexandru.ardelean@analog.com>
-CC:     <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH] iio: adc: at91-sama5d2_adc: fix DMA conversion crash
-Date:   Wed, 16 Sep 2020 10:08:21 +0300
-Message-ID: <20200916070821.118374-1-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 16 Sep 2020 03:09:42 -0400
+Received: by mail-ot1-f65.google.com with SMTP id y5so5751974otg.5;
+        Wed, 16 Sep 2020 00:09:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D3ZsO49KVaYq2py9m5cc26md3Laz3QAxI2qPOKnva08=;
+        b=eCJua0Tojw2609khHECJCZ1pzQEtDH6Im1XRS27q9g2HNAwuLAeox8zG1gJ00fRxax
+         GOVGQDf35O6zzMmQl7LOqiZ3xxev7J8HCUMoNrf3KW9yHJhpZehZk8z4QOU+qFPU63w+
+         qMrcvh/gJ5SBNed4dQtOJLPmfQMIsdZikCXm99d9iz+wE+xDewbEDJL+mjUGGolT1Cxn
+         aGCwEyJXeV9Yiuo5sAOqPSONDbGflZld5tpceu34ubTsTvF8BARPQATZMVOEm1igfcpP
+         0YNFihMUCtvyybIoSaRVSZRr10V0AJNLJbgNM6LAMNwb1KLyKs5a5pQAN/z+Cwfo/K2V
+         DmJA==
+X-Gm-Message-State: AOAM531z75yEmTnk+uvbBKtq1YXbAf9RNo59FyHkmZENyVSYiYbxMF/2
+        LVpWElfLeCv9D78+IObYaahuby/kSfaPRRdCha4=
+X-Google-Smtp-Source: ABdhPJx0hz9CuVlFI9T56ch9l9oYJEaHv/X8jtRyojKjzekwVZzufpCDXBQJRhrHrtZVSJAxOxgUI9K81Ggjs6zUBD8=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr15880170otb.250.1600240181722;
+ Wed, 16 Sep 2020 00:09:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <alpine.DEB.2.21.2009151345001.31296@ramsan.of.borg>
+ <EA89ED5D-E477-4464-B523-D729796CE0D0@getmailspring.com> <CAMuHMdVfoQ-vW3VeO8vDVALNREBV1afaSnwnc0jnkoXmvw6xhQ@mail.gmail.com>
+ <20200916090111.7dcfa0fe@coco.lan>
+In-Reply-To: <20200916090111.7dcfa0fe@coco.lan>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 16 Sep 2020 09:09:30 +0200
+Message-ID: <CAMuHMdW8kzcugxoDosT_50mfAbaHks72_CLWs5yJH5UQ6rz_Zw@mail.gmail.com>
+Subject: Re: [v10 3/4] media: vidtv: add a bridge driver
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        "r.verdejo@samsung.com" <r.verdejo@samsung.com>,
+        "nicolas@ndufresne.ca" <nicolas@ndufresne.ca>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "skhan@linuxfoundation.org" <skhan@linuxfoundation.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the move of the postenable code to preenable, the DMA start was
-done before the DMA init, which is not correct.
-The DMA is initialized in set_watermark. Because of this, we need to call
-the DMA start functions in set_watermark, after the DMA init, instead of
-preenable hook, when the DMA is not properly setup yet.
+Hi Mauro,
 
-Fixes: f3c034f61775 ("iio: at91-sama5d2_adc: adjust iio_triggered_buffer_{predisable,postenable} positions")
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
+On Wed, Sep 16, 2020 at 9:01 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+> Em Tue, 15 Sep 2020 15:35:00 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> escreveu:
+> > On Tue, Sep 15, 2020 at 3:26 PM Daniel W. S. Almeida
+> > <dwlsalmeida@gmail.com> wrote:
+> > > >> +    u32 nbytes = 0;  /* the number of bytes written by this function */
+> > > >> +
+> > > >> +    u64 nbytes_expected; /* the number of bytes we should have written */
+> > > >> +    u64 nbytes_streamed; /* the number of bytes we actually wrote */
+> > > >> +    u32 num_null_pkts; /* number of null packets to bridge the gap */
+> > > >> +
+> > > >> +    u64 elapsed_time_msecs = jiffies_to_usecs(m->timing.current_jiffies -
+> > > >> +                                              m->timing.past_jiffies);
+> > > >> +
+> > > >> +    elapsed_time_msecs = min(elapsed_time_msecs,
+> > > >> (u64)VIDTV_MAX_SLEEP_USECS / 1000);
+> > > >> +    nbytes_expected = div64_u64(m->mux_rate_kbytes_sec * 1000, MSEC_PER_SEC);
+> > > >
+> > > > Seriously?!?
+> > > >
+> > > > You multiply by 1000 first, followed by a division by 1000 using an
+> > > > expensive 64-by-64 division?
+> > >
+> > > This entire function is broken and needs a do-over :)
+> > >
+> > > > using an expensive 64-by-64 division?
+> > >
+> > > I am new to kernel development. I wasn't even aware that this was
+> > > expensive, to be honest.
+> >
+> > All divisions involving 64-bit data are expensive, especially on 32-bit
+> > platforms.  That's why we have the helpers in <linux/math.h>.  Most
+> > of them implement simplified variants, which are less expensive.
+>
+> I agree that 64-bit math is something that should be used with some
+> care. However, it is almost unavoidable do to 64-bit divisions for
+> digital TV.
 
-Hi,
+Sure. If 64-bit math is needed, it should be used.
 
-This crash is in the kernel since 5.8-rc1
+The macros (and the link failure on 32-bit) exist to (a) make sure
+people think twice before using 64-math, and (b) let people pick a
+less-expensive variant if that is sufficient.
 
-Please have a look at discussion here:
-https://lore.kernel.org/linux-iio/CA+U=DsqRUtjjoe5nevP_wNxTgr27+O2V1h9w7d3QijBQ+5f3XA@mail.gmail.com/T/#t
+Gr{oetje,eeting}s,
 
-Thanks !
+                        Geert
 
- drivers/iio/adc/at91-sama5d2_adc.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-index de9583d6cddd..b5196797dcb8 100644
---- a/drivers/iio/adc/at91-sama5d2_adc.c
-+++ b/drivers/iio/adc/at91-sama5d2_adc.c
-@@ -884,7 +884,7 @@ static bool at91_adc_current_chan_is_touch(struct iio_dev *indio_dev)
- 			       AT91_SAMA5D2_MAX_CHAN_IDX + 1);
- }
- 
--static int at91_adc_buffer_preenable(struct iio_dev *indio_dev)
-+static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
- {
- 	int ret;
- 	u8 bit;
-@@ -901,7 +901,7 @@ static int at91_adc_buffer_preenable(struct iio_dev *indio_dev)
- 	/* we continue with the triggered buffer */
- 	ret = at91_adc_dma_start(indio_dev);
- 	if (ret) {
--		dev_err(&indio_dev->dev, "buffer postenable failed\n");
-+		dev_err(&indio_dev->dev, "buffer prepare failed\n");
- 		return ret;
- 	}
- 
-@@ -989,7 +989,6 @@ static int at91_adc_buffer_postdisable(struct iio_dev *indio_dev)
- }
- 
- static const struct iio_buffer_setup_ops at91_buffer_setup_ops = {
--	.preenable = &at91_adc_buffer_preenable,
- 	.postdisable = &at91_adc_buffer_postdisable,
- };
- 
-@@ -1586,7 +1585,11 @@ static int at91_adc_set_watermark(struct iio_dev *indio_dev, unsigned int val)
- 	else if (val > 1)
- 		at91_adc_dma_init(to_platform_device(&indio_dev->dev));
- 
--	return 0;
-+	/*
-+	 * We can start the DMA only after setting the watermark and
-+	 * having the DMA initialization completed
-+	 */
-+	return at91_adc_buffer_prepare(indio_dev);
- }
- 
- static int at91_adc_update_scan_mode(struct iio_dev *indio_dev,
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
