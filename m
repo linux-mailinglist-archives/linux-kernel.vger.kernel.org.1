@@ -2,152 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B3B26C9AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB9626C9A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727751AbgIPTQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727268AbgIPRiM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727267AbgIPRiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 16 Sep 2020 13:38:12 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFB6C025269
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:59:37 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id l15so2649453wmh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:59:37 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726369AbgIPRfW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:35:22 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9518EC061353
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:34:52 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id c18so7751494wrm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 10:34:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VkWUpVUhJm5M+uhJs8eXOgl2X85aT9m+yJLWexWDssM=;
-        b=T5oWizwJbCJmJMI28ZimkDVchUiuRL3d6zUAGcpwNItNmc7l8aP9blPSULOi1eLIP6
-         gZLMi9SVCIUMZMSJO1shI6zAeHnGNMK9vZ0h9LoHNHX8rCxF6o58J0T/jB+aalKJwXyx
-         oV2LHwxQyZtcfKTz/vfkPL11osgxv2Zu44HZ0=
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ki62FqIiIgJ8yaBZSKIYHGl1mRsUtoqotQFZS0p5Has=;
+        b=kuz0lgsVij7wLKItfIOGcuCmtvwNys1htJnrFzCNRHaLjnVgElf4udXEubZns0dGAz
+         NqFkPkuvm9TbHN4J5VCtVm7UDYsIf+4wGcbWnp5r2GIAd9r+/SBADS9HcvFM14SFeAoq
+         P2YaGqpnPwU/jtKoPyr2enlSJh9RNiWe4T5dguCXaWfc0N0jpNjqUEXj8iL+3zzKLce5
+         gQOmsMW24e8arpUJ3wc5JQTLKSJiijZpRkX/RtKzwFR8HA3+DbxQCE5+3Z9HI+eiTgxx
+         FbB0gtfKqTpG/ce9J6iO28HJ/sQI4vk6jtZNWmtWmSFxB01rO8VQFJ/ro1Fry1BHESOm
+         8VGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VkWUpVUhJm5M+uhJs8eXOgl2X85aT9m+yJLWexWDssM=;
-        b=MG+zCZ+6gXisYscIvSBaJlvqWoioHKw9AkHTMaP1JyzgTEFHAq0sTQr1k7iRVwD3dI
-         fs8zQ/0FrGvR1yt2RmlmNehkE+XeoqflVy2K2OrkeLz6HbLU/9+xui9Sx9hVe+RNDSkJ
-         0VZf/72nvQYHIPPNb6y8i5Mi0KIBkpBizxYKs2dzLq00mRmZ4TJA21X/TbvnMEtb+WcX
-         jz8q3NABz9L0lRUGpGAMGceZ0UB8w2/j7O3v3ZeRu3kH0yhxEPI4SndeqFVBGaAtPil5
-         sXyLRDDrnfVF0duIybCX3KhCJ/avZygcAq2I47atvUhHu1zOt4aYH1A/ta3oy+ZC8Cer
-         EFRA==
-X-Gm-Message-State: AOAM533BEwvuLfD9o5ic5E061RSIUfegNfQOnJ6y3/12oqfxfFmbHILN
-        CnxJAeCB3TnqEuix4ZLzRa/Vhz+CTAK1+6f+DsZH/Q==
-X-Google-Smtp-Source: ABdhPJwnkUKOf60qRo8TMjHre1NIVb64k+AgGpe80UPknU1BL6NuBCSG6NpCCQL6tyaQv8jdu8ddGyYbDK4qALFj3vs=
-X-Received: by 2002:a7b:c090:: with SMTP id r16mr5835223wmh.56.1600275576323;
- Wed, 16 Sep 2020 09:59:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ki62FqIiIgJ8yaBZSKIYHGl1mRsUtoqotQFZS0p5Has=;
+        b=EwHtJ8Rb4Mi9sd288hky2PoBdJA8xlVbMZsIBbspjtS9RFsmuLzGT1d0IsKB30C7ns
+         GPRwkR1CylJvAAI5g2PHUqEsGyBQpVGxQPHN8hEI+WGcH7WEr/pc4aIRcdriHEwqOrQM
+         T/XJvzxcPtImFYzNaYozp1WnZxO0/nLBZPufTNIj7L+stoEKPc3wFwY8ZiNFkIk7azp9
+         x8alFR1bbc68G0oyx/I1tGnPscmAAW3WI2eee14e6MZwq4U4j8qBaTuJ2dK9wo4oXywK
+         AUMBz76Mq8anLM6BTLsKHKRvELs6PJmw8tHk9nLGh/aE1MqZxcmSdREuwOsfHRaAKPnR
+         Uv+w==
+X-Gm-Message-State: AOAM532DCm4vyk7rE8xGZahvjHvTQAoHCKdd90LWadU5V6+oG5htL/O0
+        mvVoulvqYv5zoSLD2qE/XXmKjw==
+X-Google-Smtp-Source: ABdhPJzQzJxXIxJM0jRA7b3rUmMwdVhHQPWJyctJSUBa7YGa64yNP8fcblWJOLLn4QkX3rVzCKMVDg==
+X-Received: by 2002:a05:6000:1184:: with SMTP id g4mr27622757wrx.20.1600277691141;
+        Wed, 16 Sep 2020 10:34:51 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8523:2d03:e49d:f6be:d31b:ad3c])
+        by smtp.gmail.com with ESMTPSA id o16sm32123548wrp.52.2020.09.16.10.34.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Sep 2020 10:34:50 -0700 (PDT)
+From:   David Brazdil <dbrazdil@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v3 03/11] kvm: arm64: Only define __kvm_ex_table for CONFIG_KVM
+Date:   Wed, 16 Sep 2020 18:34:31 +0100
+Message-Id: <20200916173439.32265-4-dbrazdil@google.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200916173439.32265-1-dbrazdil@google.com>
+References: <20200916173439.32265-1-dbrazdil@google.com>
 MIME-Version: 1.0
-References: <20200916124931.1254990-1-kpsingh@chromium.org> <8cee070eed5b8a3dc9f373fc9db8d99a70b7d75a.camel@linux.ibm.com>
-In-Reply-To: <8cee070eed5b8a3dc9f373fc9db8d99a70b7d75a.camel@linux.ibm.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 16 Sep 2020 18:59:25 +0200
-Message-ID: <CACYkzJ4C4mLZY0=Z_BHc+0u0oCuCu0xkYdUPCp=Xs12uT7175w@mail.gmail.com>
-Subject: Re: [PATCH v2] ima: Fix NULL pointer dereference in ima_file_hash
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 6:00 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
->
-> On Wed, 2020-09-16 at 14:49 +0200, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > ima_file_hash can be called when there is no iint->ima_hash available
-> > even though the inode exists in the integrity cache.
-> >
-> > An example where this can happen (suggested by Jann Horn):
-> >
-> > Process A does:
-> >
-> >       while(1) {
-> >               unlink("/tmp/imafoo");
-> >               fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
-> >               if (fd == -1) {
-> >                       perror("open");
-> >                       continue;
-> >               }
-> >               write(fd, "A", 1);
-> >               close(fd);
-> >       }
-> >
-> > and Process B does:
-> >
-> >       while (1) {
-> >               int fd = open("/tmp/imafoo", O_RDONLY);
-> >               if (fd == -1)
-> >                       continue;
-> >               char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
-> >                                    MAP_PRIVATE, fd, 0);
-> >               if (mapping != MAP_FAILED)
-> >                       munmap(mapping, 0x1000);
-> >               close(fd);
-> >       }
-> >
-> > Due to the race to get the iint->mutex between ima_file_hash and
-> > process_measurement iint->ima_hash could still be NULL.
-> >
-> > Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > Reviewed-by: Florent Revest <revest@chromium.org>
-> > ---
-> >  security/integrity/ima/ima_main.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> > index 8a91711ca79b..4c86cd4eece0 100644
-> > --- a/security/integrity/ima/ima_main.c
-> > +++ b/security/integrity/ima/ima_main.c
-> > @@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
-> >               return -EOPNOTSUPP;
-> >
-> >       mutex_lock(&iint->mutex);
-> > +
-> > +     /*
-> > +      * ima_file_hash can be called when ima_collect_measurement has still
-> > +      * not been called, we might not always have a hash.
-> > +      */
-> > +     if (!iint->ima_hash) {
-> > +             mutex_unlock(&iint->mutex);
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +
->
-> Not having a file hash is rather common (e.g. mknodat, prior to the
-> file being closed).  Before appraising the integrity of a file, it
-> checks whether it is a new file (eg. IMA_NEW_FILE), but, unfortunately,
-> the flag is only set for those files in the appraise policy.
+Minor cleanup that only creates __kvm_ex_table ELF section and
+related symbols if CONFIG_KVM is enabled.
 
-Makes sense.
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+---
+ arch/arm64/kernel/vmlinux.lds.S | 4 ++++
+ 1 file changed, 4 insertions(+)
 
->
-> The patch looks fine, but you might want to reflect not having a file
-> hash is common in the patch description.
->
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 7cba7623fcec..0d543570e811 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -21,11 +21,15 @@ ENTRY(_text)
+ jiffies = jiffies_64;
+ 
+ 
++#ifdef CONFIG_KVM
+ #define HYPERVISOR_EXTABLE					\
+ 	. = ALIGN(SZ_8);					\
+ 	__start___kvm_ex_table = .;				\
+ 	*(__kvm_ex_table)					\
+ 	__stop___kvm_ex_table = .;
++#else /* CONFIG_KVM */
++#define HYPERVISOR_EXTABLE
++#endif
+ 
+ #define HYPERVISOR_TEXT					\
+ 	/*						\
+-- 
+2.28.0.618.gf4bc123cb7-goog
 
-Thanks! Will send another revision with an updated description.
-
-- KP
-
-> Mimi
->
-> >       if (buf) {
-> >               size_t copied_size;
-> >
->
->
