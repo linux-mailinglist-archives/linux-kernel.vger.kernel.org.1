@@ -2,79 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319F226CB78
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E0B26CB70
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgIPU2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:28:21 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:33164 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726953AbgIPRYR (ORCPT
+        id S1728317AbgIPU1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:27:31 -0400
+Received: from mail-41104.protonmail.ch ([185.70.41.104]:19817 "EHLO
+        mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726954AbgIPRYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:24:17 -0400
-Received: by mail-wr1-f65.google.com with SMTP id m6so7789673wrn.0;
-        Wed, 16 Sep 2020 10:22:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zyl8TJrhVfTe2TXHn1Ylm3CaGAI0Eut0vrDhMWKREwU=;
-        b=WqRV0r/O3bTIQ4soOV3uyD+bdvMNsZFtEAmsLproaR5hrgGx2Vs+OGMKCJW7bPh/aM
-         VTvVa5ul3Nm54zYZtIYO7ziaBlwONkiBnbN2ahYxZsHrC5cYDHFkZvB8F+4oZw7Zb3Db
-         u4Veu5V8WWPLq7AIs1O8zN32a40VF4elQ42MdNVKQdnYfNAnfVHVpXPai/zv9Vm73SQU
-         Fifxg/LbmohT2c+O8MSkHUOTt8jgFFRq2fytKn2IjYNe5zVHMux/SVqzABfodekpDxXB
-         8JjAlgwq9iFCN85OeTr8euSIP+HtuaDkSDRv5xgjRvRHuy3SJYt+yvnnFhdSMLeUWg4w
-         0y9w==
-X-Gm-Message-State: AOAM5302qx9Qahrx4zHSoXSjHMo5DoyjZ9SddBuvf2JQ8Yvbzu/HDWmE
-        p0Akp/wzypMWmB7AClOiF6ool2sZo35+aoET
-X-Google-Smtp-Source: ABdhPJzxTPnq22IWDSWfZN82ctZiAHt+M7IbEHPa2jzbRm5lvwD+4JIY7doBYk52EE6ZV+4m3nYEgw==
-X-Received: by 2002:adf:cd05:: with SMTP id w5mr27473177wrm.62.1600276396656;
-        Wed, 16 Sep 2020 10:13:16 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.191])
-        by smtp.googlemail.com with ESMTPSA id k8sm33846128wrl.42.2020.09.16.10.13.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 10:13:15 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 19:13:13 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Inki Dae <inki.dae@samsung.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] arm64: dts: exynos: Align OPP table name with
- dt-schema
-Message-ID: <20200916171313.GD19427@kozik-lap>
-References: <20200903191438.12781-1-krzk@kernel.org>
- <20200903191438.12781-6-krzk@kernel.org>
+        Wed, 16 Sep 2020 13:24:43 -0400
+Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 6EF5620011F1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 17:15:48 +0000 (UTC)
+Authentication-Results: mail-41104.protonmail.ch;
+        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="N/9TNTrm"
+Date:   Wed, 16 Sep 2020 17:13:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1600276424;
+        bh=JfkCiR3nTJ/mdPJVdjMM9tXvtGnx5GT9uY15VG5lKb0=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=N/9TNTrm9BtFqruRuDqqSr/Z9jGECDWmWmIR4RsXQ8uXue0NKZL1BDjIWc/NuJsJ8
+         d/loYpd5gGOzPxxD5w+aloSXe/W8sS2BE686fh3QQCX7ldI0DI/bsNcUKZMjceU/HU
+         zau0B5DpWHPUb859f7zTKg32v1rfC3o72KEWUGMQ=
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v2] platform/x86: Add Driver to set up lid GPEs on MS Surface device
+Message-ID: <ID5eml6LsB6tCDrZwhbfin228LE3cor6ZEYbAHj6C3SZ9y0AcL40SWweP-iAjmEpCeEV5NZHJLKBpUo5qw1VR0Q7xOXAVSH7epRjTRkj64Y=@protonmail.com>
+In-Reply-To: <355dae14-2508-706b-53f8-48b78f84e7cc@gmail.com>
+References: <20200910211520.1490626-1-luzmaximilian@gmail.com> <EMZQgUl1xLN4o0hV9ZkCD563O85SuOYB5kNFZ5_hlxLQXbJCXpQfrM2afyFIr28h31tXMxD1mxE4DkA5Wy60A0Z2mDnstwF17tEdnX4IRas=@protonmail.com> <355dae14-2508-706b-53f8-48b78f84e7cc@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200903191438.12781-6-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 09:14:38PM +0200, Krzysztof Kozlowski wrote:
-> Device tree nodes should have hyphens instead of underscores.  This is
-> also expected by the bindings.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. New patch
-> ---
->  arch/arm64/boot/dts/exynos/exynos5433.dtsi | 2 +-
+2020. szeptember 16., szerda 3:22 keltez=C3=A9ssel, Maximilian Luz =C3=
+=ADrta:
+> [...]
+> >> +static int surface_lid_enable_wakeup(struct device *dev, bool enable)
+> >> +{
+> >> +=09const struct surface_lid_device *lid =3D dev_get_drvdata(dev);
+> >> +=09int action =3D enable ? ACPI_GPE_ENABLE : ACPI_GPE_DISABLE;
+> >> +=09acpi_status status;
+> >> +
+> >> +=09status =3D acpi_set_gpe_wake_mask(NULL, lid->gpe_number, action);
+> >> +=09if (status) {
+> >
+> > I think 'if (ACPI_FAILURE(status))' would be better.
+>
+> Okay, I'll change that (here and below).
+>
+> >> +=09=09dev_err(dev, "failed to set GPE wake mask: %d\n", status);
+> >
+> > I'm not sure if it's technically safe to print acpi_status with the %d =
+format
+> > specifier since 'acpi_status' is defined as 'u32' at the moment.
+> >   func("%lu", (unsigned long) status)
+> > would be safer. You could also use 'acpi_format_exception()', which is =
+possibly
+> > the most correct approach since it assumes nothing about what 'acpi_sta=
+tus'
+> > actually is.
+>
+> I wasn't aware of acpi_format_exception(). That looks like a good thing
+> to do here, thanks!
+>
+> >
+> >> +=09=09return -EINVAL;
+> >
+> > I'm not sure if -EINVAL is the best error to return here.
+>
+> I'd argue that if this fails, it's most likely due to the GPE number
+> being invalid (which I'd argue is an input), although I'm open for
+> suggestions. Same reasoning for the -EINVALs below.
+>
 
-Applied.
+I see, I guess that makes sense, I didn't think of looking at it this way.
 
-Best regards,
-Krzysztof
 
+> >
+> >> +=09}s
+> >> +
+> >> +=09return 0;
+> >> +}
+> >> [...]
+> >> +static int surface_gpe_probe(struct platform_device *pdev)
+> >> +{
+> >> +=09struct surface_lid_device *lid;
+> >> +=09u32 gpe_number;
+> >> +=09int status;
+> >> +
+> >> +=09status =3D device_property_read_u32(&pdev->dev, "gpe", &gpe_number=
+);
+> >> +=09if (status)
+> >> +=09=09return -ENODEV;
+> >
+> > 'device_property_read_u32()' returns an error code, you could simply re=
+turn that
+> > instead of hiding it.
+>
+> My thought there was that if the "gpe" property isn't present or of a
+> different type, this is not a device that we want to/can handle. Thus
+> the -ENODEV. Although I think a debug print statement may be useful
+> here.
+>
+
+I see, I just wanted to bring to your attention that 'device_property_read_=
+u32()'
+returns various standard error codes and you could simply return those.
+
+
+> [...]
+> >> +
+> >> +=09lid->gpe_number =3D gpe_number;
+> >> +=09platform_set_drvdata(pdev, lid);
+> >> +
+> >> +=09status =3D surface_lid_enable_wakeup(&pdev->dev, false);
+> >> +=09if (status) {
+> >> +=09=09acpi_disable_gpe(NULL, gpe_number);
+> >> +=09=09platform_set_drvdata(pdev, NULL);
+> >
+> > Why is 'platform_set_drvdata(pdev, NULL)' needed?
+>
+> Is this not required for clean-up once the driver data has been set? Or
+> does the driver-base take care of that for us when the driver is
+> removed/fails to probe? My reasoning was that I don't want to leave
+> stuff around for any other driver to trip on (and rather have that
+> driver oops on a NULL-pointer). If the driver-core already takes care of
+> NULL-ing that, that line is not needed. Unfortunately that behavior
+> doesn't seem to be explained in the documentation.
+>
+
+I'm not aware that it would be required. As a matter of fact, only two x86
+platform drivers (intel_pmc_core, ideapad-laptop) do any cleanup of driver =
+data.
+There are much more hits (536) for "set_drvdata(.* NULL" when scanning all =
+drivers.
+There are 4864 hits for "set_drvdata(.*" that have no 'NULL' in them.
+
+There is drivers/base/dd.c:really_probe(), which seems to be the place wher=
+e driver
+probes are actually called. And it calls 'dev_set_drvdata(dev, NULL)' if th=
+e probe
+fails. And it also sets the driver data to NULL in '__device_release_driver=
+()',
+so I'm pretty sure the driver core takes care of it.
+
+
+> >> +=09=09return status;
+> >> +=09}
+> >> +
+> >> +=09return 0;
+> >> +}
+> [...]
+> >> +static int __init surface_gpe_init(void)
+> >> +{
+> >> +=09const struct dmi_system_id *match;
+> >> +=09const struct property_entry *props;
+> >> +=09struct platform_device *pdev;
+> >> +=09struct fwnode_handle *fwnode;
+> >> +=09int status;
+> >> +
+> >> +=09match =3D dmi_first_match(dmi_lid_device_table);
+> >> +=09if (!match) {
+> >> +=09=09pr_info(KBUILD_MODNAME": no device detected, exiting\n");
+> >
+> > If you put
+> >   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> > before including any headers, you can simply write 'pr_info("no device.=
+..")' and it'll
+> > be prefixed by the module name. This is the "usual" way of achieving wh=
+at you want.
+>
+> Right, thanks!
+>
+> >> +=09=09return 0;
+> >
+> > Shouldn't it return -ENODEV?
+>
+> How does module auto-loading behave with a -ENODEV return value in init?
+> I know that in the driver's probe callback it signals that the driver
+> isn't intended for the device. Is this the same for modules or would a
+> user get an error message in the kernel log? As I couldn't find any
+> documentation on this, I assumed it didn't behave the same and would
+> emit an error message.
+>
+> The reason I don't want to emit an error message here is that the module
+> can be loaded for devices that it's not intended (and that's not
+> something we can fix with a better MODULE_ALIAS as Microsoft cleverly
+> named their 5th generation Surface Pro "Surface Pro", without any
+> version number). Mainly, I don't want users to get a random error
+> message that doesn't indicate an actual error.
+>
+
+I wasn't sure, so I tested it. It prints the "no device" message, but that'=
+s it,
+no more indication of the -ENODEV error in the kernel log during automatic
+module loading at boot.
+
+You could print "no compatible Microsoft Surface device found, exitig" (or =
+something
+similar). I think this provides enough information for any user to decide i=
+f
+they should be concerned or not.
+
+
+> >> +=09}
+> [...]
+
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
