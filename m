@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F23F26BDB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D134E26BDB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgIPHKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
+        id S1726414AbgIPHLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgIPHKm (ORCPT
+        with ESMTP id S1726196AbgIPHLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:10:42 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EE7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:10:41 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a9so1778823wmm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:10:41 -0700 (PDT)
+        Wed, 16 Sep 2020 03:11:16 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C442C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:11:14 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l9so1778674wme.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 00:11:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:organization:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uMlGpmGSfaq5wBmML5W0xMmyh1HvBEGoGDtUF7FM+/0=;
-        b=Yxb+IBOTbpRqRMzXGs6MRociILkXzzo3Bxa3zq7KHz6B77f9DXmoVmcg+PLD7odYPA
-         iPTj+RbgUPfyE2Og7YQES9VbyVgCKa9POh5E/fiy+zn2JieBeHTo32PHb3xpyNKj+8jU
-         tSd+CsTKG0LvffHm/XwR6HCrni8iWLR3xXZZeuQ222hbpCHpJcOdGshfk6A79n196wue
-         2NYU4E61djU03bvEdDWJgzbpwtsrvnR95Mbv80Bfg4HwlaZ4ZcQb2mbD4ALShnvts4s3
-         /KVJt2h2X9ygbXldS9s1y5EtETTJIe8Dhh1YMuhMN88o5uaisyR+RvjbVvfF9vcWNGHZ
-         Womw==
+        bh=SmBSMDnB6VXixjNUpgdO9s8i5OvfO/7G1wBPUBiaKjg=;
+        b=MkbRUK8v9uQhn/23wAQ3zqYTZgiqGsXPjQRa3xQTi2Er3EadBcUvmE9EVvaH+mgVmw
+         1LqdcBF18wpa4aIjbZMbgBC/EM/X9+d155EVPp0KOJUB7UQPbCuICNSzpvO4icnuLx2K
+         Vi1T7iIDcS7sPMDQntU7it97K8wtBZ4R25bFKjTylDws8G853ZysjY2UmZ9qpY+MkPQK
+         n5Y5FgQPtQrHRI2cMYAlqz2u/u20WISAOLNnaghMjp+T9sfvCJBsGawF/SSkiDsmFwrT
+         FpYh6KsNayMwiA2FQlC0NYccaPCsSy3xB3RlIy2y6tM3Tr/IdhZBKyYHgkvTVGv4Jac7
+         op/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=uMlGpmGSfaq5wBmML5W0xMmyh1HvBEGoGDtUF7FM+/0=;
-        b=qVJaAfKOV/FLh6jKjhgMzNBq2b1HF4pJvHIlbwG74Nzsk0iYcLbfOFwlsrI+hcY12K
-         9Fob/o1UhWWdXH/cEdpAHVo1ppaBus6n06yCghTY2KhqGqslpO7YrqPkn1vWMnbo0KWf
-         zjhY0ELvsa784fxBeT3wrF7erMVFNXSCMbM6sm+4JCsQ1dYNlNHI7mTyiJ8xlrnZBjdI
-         pMNph0hRWhZfLLkesFKGtHlSjqv+K/ZobxTIYYES+PyXMWVHOFG+ZJLPN2BeowdDlIeF
-         44PRDdnPxU32KCqiqvIQT4arCD7WQ7luod99l8aqq/HF4Uf4bJNo7Vxn4sPTY41JRJrt
-         IfQw==
-X-Gm-Message-State: AOAM532dLrG6wLXkTfjT6HENpl2rO5pExovKyoksy2hyoAyWj74NG+DP
-        Jp3gf60squalgtu/k1EnRlPUhKkSl3LE0vIn
-X-Google-Smtp-Source: ABdhPJzInXT/SgWyPwtI96gRJ7HmBiKzE+X3u0l5DA2Uri9AB8xYLbzsLEYEc9SnsIh+YokNLqP/wQ==
-X-Received: by 2002:a1c:750d:: with SMTP id o13mr3289784wmc.54.1600240240378;
-        Wed, 16 Sep 2020 00:10:40 -0700 (PDT)
+        bh=SmBSMDnB6VXixjNUpgdO9s8i5OvfO/7G1wBPUBiaKjg=;
+        b=sB4obojehKBYn5xz/sAkeeeihHvZw/b++d6kfkUrZ/OJe/ru/SPAmCPdK3olA6qYqg
+         rEmu2jfN40kusIk5iPmb0/kZV26zwtEjaYgBQ1Beuxt0v985iB/T4fnOZfGNjsk/FGCa
+         1SvgyWUcrm09XeTn9W5uK/Ta/j8ur8vC5kw+y2rBdhaJSKLbfl1kSDAlw/suoRY1KmJr
+         rg2Hm3N/TjEPPs/lEKl9oJNCL+dl7stxxFaInmag15szWFmT/qqd8a/fl5lP215J2qLq
+         6//K5DwUIMGRwEOv1abonJCMMajGkC9RYW4O4EszK2e7dIK9dSuOy62cgfR/IWd/rmhD
+         jRMQ==
+X-Gm-Message-State: AOAM533j2iyOJP2FWwn7wxvkI8P3oAve3kWO9xKiF0a99Fu0O8XXLvi5
+        73SZlOYiqyQlwEd6mp64R29zPg==
+X-Google-Smtp-Source: ABdhPJy+5vMI7Ec2VyLnMJ0fH7Ae2qSgfXmDjicDFdvndhkcEyype2M98sYYOORJeY9/7yLqp9YA0w==
+X-Received: by 2002:a1c:1d08:: with SMTP id d8mr3251252wmd.78.1600240273042;
+        Wed, 16 Sep 2020 00:11:13 -0700 (PDT)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac? ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
-        by smtp.gmail.com with ESMTPSA id a83sm3603554wmh.48.2020.09.16.00.10.39
+        by smtp.gmail.com with ESMTPSA id z14sm30120914wrh.14.2020.09.16.00.11.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 00:10:39 -0700 (PDT)
-Subject: Re: [PATCH 4/5] arm64: dts: meson-axg: add USB nodes
+        Wed, 16 Sep 2020 00:11:12 -0700 (PDT)
+Subject: Re: [PATCH 3/5] usb: dwc-meson-g12a: Add support for USB on AXG SoCs
 To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     khilman@baylibre.com, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     khilman@baylibre.com, balbi@kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
 References: <20200909160409.8678-1-narmstrong@baylibre.com>
- <20200909160409.8678-5-narmstrong@baylibre.com>
- <CAFBinCDgqu-fz9xhwC0-jEbQ3eY9RfZEb61-BR6Mwjbo3BOedg@mail.gmail.com>
+ <20200909160409.8678-4-narmstrong@baylibre.com>
+ <CAFBinCCFmb7S9iR7_z7w5=_sOQZ6sMjo7YWdsETObyNa7MP6XA@mail.gmail.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -108,12 +110,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  zR8QplXA5kogS4kLe/7/JmlDMO8Zgm9vKLHSUeesLOrjdZ59EcjldNNBszRZQgEhwaarfz46
  BSwxi7g3Mu7u5kUByanqHyA=
 Organization: Baylibre
-Message-ID: <df488b5d-8e09-37dd-f90a-f6a0232084bf@baylibre.com>
-Date:   Wed, 16 Sep 2020 09:10:38 +0200
+Message-ID: <ff371bf2-f030-f28e-f467-c3bcca5b33df@baylibre.com>
+Date:   Wed, 16 Sep 2020 09:11:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCDgqu-fz9xhwC0-jEbQ3eY9RfZEb61-BR6Mwjbo3BOedg@mail.gmail.com>
+In-Reply-To: <CAFBinCCFmb7S9iR7_z7w5=_sOQZ6sMjo7YWdsETObyNa7MP6XA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -122,31 +124,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2020 22:04, Martin Blumenstingl wrote:
+On 15/09/2020 21:59, Martin Blumenstingl wrote:
 > Hi Neil,
 > 
-> On Wed, Sep 9, 2020 at 6:05 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+> On Wed, Sep 9, 2020 at 6:04 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
 >>
->> This adds the USB Glue node, with the USB2 & USB3 controllers along the single
->> USB2 PHY node.
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>> The Amlogic AXG is close from the GXL Glue but with a single OTG PHY.
+> s/close from/close to/
 > 
 > [...]
->> +                       usb2_phy1: phy@9020 {
->> +                               compatible = "amlogic,meson-gxl-usb2-phy";
->> +                               #phy-cells = <0>;
->> +                               reg = <0x0 0x9020 0x0 0x20>;
->> +                               clocks = <&clkc CLKID_USB>;
->> +                               clock-names = "phy";
->> +                               resets = <&reset RESET_USB_OTG>;
->> +                               reset-names = "phy";
->> +                               status = "okay";
-> if you have to re-send this for some reason: status = "okay" is the
-> default and so I think we can omit this
-> 
-Ok, will removed in v2
+>> +static struct dwc3_meson_g12a_drvdata axg_drvdata = {
+>> +       .otg_switch_supported = true,
+>> +       .clks = meson_gxl_clocks,
+>> +       .num_clks = ARRAY_SIZE(meson_gxl_clocks),
+>> +       .phy_names = meson_a1_phy_names,
+>> +       .num_phys = ARRAY_SIZE(meson_a1_phy_names),
+> I wonder if we should also update the comment for meson_a1_phy_names
+> to understand that part I had to go back to the dt-bindings patch
+Sure,
 
 Thanks,
 Neil
+
+> 
+> 
+> Best regards,
+> Martin
+> 
+
