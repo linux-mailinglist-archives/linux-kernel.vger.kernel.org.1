@@ -2,61 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2A126BCB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3F726BCC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgIPGVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:21:31 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:46576 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726442AbgIPGVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:21:06 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 36CA992F4AB5C7079307;
-        Wed, 16 Sep 2020 14:21:04 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 16 Sep 2020 14:20:58 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] thermal: core: remove unnecessary mutex_init()
-Date:   Wed, 16 Sep 2020 14:21:39 +0800
-Message-ID: <20200916062139.191233-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726538AbgIPGWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:22:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726510AbgIPGVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:21:53 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1419A2067C;
+        Wed, 16 Sep 2020 06:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600237312;
+        bh=uJRg3V5jemoM77QzifyzTeMiwLxju00kO9REccN1WMY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DujFdqAhT1OQ3IRITXYlfsxdYOZL2VkULfVuEtbvzYXPW/m7rri6WMT2RUJjzFf6b
+         eTQtttNQmPq5MX9cyCYupPwWkn9T5Q1EBSBt/mh82kezqtg+pW35+r9TK/Egnxy1F3
+         x/tXW4WOzOHx+Yx7GuP8z3svgmc6aeMtJvg315zo=
+Date:   Wed, 16 Sep 2020 08:22:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees][PATCH] rtl8150: set memory to all 0xFFs
+ on failed register reads
+Message-ID: <20200916062227.GD142621@kroah.com>
+References: <20200916050540.15290-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916050540.15290-1-anant.thazhemadam@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mutex poweroff_lock is initialized statically. It is
-unnecessary to initialize by mutex_init().
+On Wed, Sep 16, 2020 at 10:35:40AM +0530, Anant Thazhemadam wrote:
+> get_registers() copies whatever memory is written by the
+> usb_control_msg() call even if the underlying urb call ends up failing.
+> 
+> If get_registers() fails, or ends up reading 0 bytes, meaningless and 
+> junk register values would end up being copied over (and eventually read 
+> by the driver), and since most of the callers of get_registers() don't 
+> check the return values of get_registers() either, this would go unnoticed.
+> 
+> It might be a better idea to try and mirror the PCI master abort
+> termination and set memory to 0xFFs instead in such cases.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/thermal/thermal_core.c | 1 -
- 1 file changed, 1 deletion(-)
+It would be better to use this new api call instead of
+usb_control_msg():
+	https://lore.kernel.org/r/20200914153756.3412156-1-gregkh@linuxfoundation.org
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index a6616e530..49ae4a61c 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -1652,7 +1652,6 @@ static int __init thermal_init(void)
- 	if (result)
- 		goto error;
- 
--	mutex_init(&poweroff_lock);
- 	result = thermal_register_governors();
- 	if (result)
- 		goto error;
--- 
-2.23.0
+How about porting this patch to run on top of that series instead?  That
+should make this logic much simpler.
 
+
+
+> 
+> Fixes: https://syzkaller.appspot.com/bug?extid=abbc768b560c84d92fd3
+> Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+> Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> ---
+>  drivers/net/usb/rtl8150.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+> index 733f120c852b..04fca7bfcbcb 100644
+> --- a/drivers/net/usb/rtl8150.c
+> +++ b/drivers/net/usb/rtl8150.c
+> @@ -162,8 +162,13 @@ static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+>  	ret = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
+>  			      RTL8150_REQ_GET_REGS, RTL8150_REQT_READ,
+>  			      indx, 0, buf, size, 500);
+> -	if (ret > 0 && ret <= size)
+> +
+> +	if (ret < 0)
+> +		memset(data, 0xff, size);
+> +
+> +	else
+>  		memcpy(data, buf, ret);
+> +
+>  	kfree(buf);
+>  	return ret;
+>  }
+> @@ -276,7 +281,7 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
+>  
+>  static inline void set_ethernet_addr(rtl8150_t * dev)
+>  {
+> -	u8 node_id[6];
+> +	u8 node_id[6] = {0};
+
+This should not be needed to be done.
+
+thanks,
+
+greg k-h
