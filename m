@@ -2,66 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AE626BA85
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC5326BA90
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgIPDLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:11:00 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:4030 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726023AbgIPDK7 (ORCPT
+        id S1726241AbgIPDNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:13:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23838 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726155AbgIPDNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:10:59 -0400
-X-UUID: cbd4855e607847e9aae04bae63b2b54a-20200916
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=XdGgRW/3OeKuYJf8ldjX1lPp2lx16y2TaHXPel27PiI=;
-        b=U5L5/9FV0DUL5oLnBSSDezrmApetUpN4JZqZ5+M7wgiajBFkFXpi+SjNkIKL8YHRVl+4ld7JijH/yCDwVZriKw/52+XCeVqxc+Fx+nonO0R+Hz3aD7Oi+yqKfQm8VtOmE7SvbdKvBEpzTZxcrtZWtuVnHaRj/LZXfytPfq0eRyU=;
-X-UUID: cbd4855e607847e9aae04bae63b2b54a-20200916
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1473426936; Wed, 16 Sep 2020 11:10:55 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Sep 2020 11:10:52 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Sep 2020 11:10:52 +0800
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>
-Subject: [RESEND PATCHv1] proc: use untagged_addr() for pagemap_read addresses
-Date:   Wed, 16 Sep 2020 11:10:51 +0800
-Message-ID: <20200916031051.18064-1-miles.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 15 Sep 2020 23:13:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600225989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7zzn+D/zO+vxG92X/ztZuyi5D19ExpWVl0Ma3JmS6+Y=;
+        b=iBA+DFbAp/Q/QEnUyrgKUu80RFng5HTXMNcxFCQlsn9cJ4w8mnREDYEcLlQW9W+9mt7AWn
+        AL3vfpoA5KrSXwaY7cWkfzvvkVsaRbLtFRD9yo4EJiQlYVj04yGEkGtY3tuNpf9CFLOQ/L
+        XdmG+j9I+zOSDXnaVdevzSNEUISzNZg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-TmN-0tXWMUOJ4U1Pfi9p-w-1; Tue, 15 Sep 2020 23:13:05 -0400
+X-MC-Unique: TmN-0tXWMUOJ4U1Pfi9p-w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C8C71021D27;
+        Wed, 16 Sep 2020 03:13:03 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-113-115.rdu2.redhat.com [10.10.113.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D48519C71;
+        Wed, 16 Sep 2020 03:13:00 +0000 (UTC)
+Subject: Re: [PATCH v11 4/5] locking/qspinlock: Introduce starvation avoidance
+ into CNA
+To:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
+        peterz@infradead.org, mingo@redhat.com, will.deacon@arm.com,
+        arnd@arndb.de, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        guohanjun@huawei.com, jglauber@marvell.com
+Cc:     steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com
+References: <20200915180535.2975060-1-alex.kogan@oracle.com>
+ <20200915180535.2975060-5-alex.kogan@oracle.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <424bb6c1-aef8-e81f-49bc-6710b245d633@redhat.com>
+Date:   Tue, 15 Sep 2020 23:13:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: CE19B1F2FC9FC8C2D05489159D298EA6D34DC5946529AE6C8C162F3A4E39F4C32000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200915180535.2975060-5-alex.kogan@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V2hlbiB3ZSB0cnkgdG8gdmlzaXQgdGhlIHBhZ2VtYXAgb2YgYSB0YWdnZWQgdXNlcnNwYWNlIHBv
-aW50ZXIsIHdlIGZpbmQNCnRoYXQgdGhlIHN0YXJ0X3ZhZGRyIGlzIG5vdCBjb3JyZWN0IGJlY2F1
-c2Ugb2YgdGhlIHRhZy4NClRvIGZpeCBpdCwgd2Ugc2hvdWxkIHVudGFnIHRoZSB1c2VzcGFjZSBw
-b2ludGVycyBpbiBwYWdlbWFwX3JlYWQoKS4NCg0KU2lnbmVkLW9mZi1ieTogTWlsZXMgQ2hlbiA8
-bWlsZXMuY2hlbkBtZWRpYXRlay5jb20+DQotLS0NCiBmcy9wcm9jL3Rhc2tfbW11LmMgfCA0ICsr
-LS0NCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KDQpk
-aWZmIC0tZ2l0IGEvZnMvcHJvYy90YXNrX21tdS5jIGIvZnMvcHJvYy90YXNrX21tdS5jDQppbmRl
-eCA1MDY2YjAyNTFlZDguLmVlMGFjMDllNzlmYyAxMDA2NDQNCi0tLSBhL2ZzL3Byb2MvdGFza19t
-bXUuYw0KKysrIGIvZnMvcHJvYy90YXNrX21tdS5jDQpAQCAtMTU0MSwxMSArMTU0MSwxMSBAQCBz
-dGF0aWMgc3NpemVfdCBwYWdlbWFwX3JlYWQoc3RydWN0IGZpbGUgKmZpbGUsIGNoYXIgX191c2Vy
-ICpidWYsDQogDQogCXNyYyA9ICpwcG9zOw0KIAlzdnBmbiA9IHNyYyAvIFBNX0VOVFJZX0JZVEVT
-Ow0KLQlzdGFydF92YWRkciA9IHN2cGZuIDw8IFBBR0VfU0hJRlQ7DQorCXN0YXJ0X3ZhZGRyID0g
-dW50YWdnZWRfYWRkcihzdnBmbiA8PCBQQUdFX1NISUZUKTsNCiAJZW5kX3ZhZGRyID0gbW0tPnRh
-c2tfc2l6ZTsNCiANCiAJLyogd2F0Y2ggb3V0IGZvciB3cmFwYXJvdW5kICovDQotCWlmIChzdnBm
-biA+IG1tLT50YXNrX3NpemUgPj4gUEFHRV9TSElGVCkNCisJaWYgKHN0YXJ0X3ZhZGRyID4gbW0t
-PnRhc2tfc2l6ZSkNCiAJCXN0YXJ0X3ZhZGRyID0gZW5kX3ZhZGRyOw0KIA0KIAkvKg0KLS0gDQoy
-LjE4LjANCg==
+On 9/15/20 2:05 PM, Alex Kogan wrote:
+> Keep track of the time the thread at the head of the secondary queue
+> has been waiting, and force inter-node handoff once this time passes
+> a preset threshold. The default value for the threshold (10ms) can be
+> overridden with the new kernel boot command-line option
+> "numa_spinlock_threshold". The ms value is translated internally to the
+> nearest rounded-up jiffies.
+>
+> Signed-off-by: Alex Kogan <alex.kogan@oracle.com>
+> Reviewed-by: Steve Sistare <steven.sistare@oracle.com>
+> Reviewed-by: Waiman Long <longman@redhat.com>
+> ---
+>   .../admin-guide/kernel-parameters.txt         |  9 ++
+>   kernel/locking/qspinlock_cna.h                | 95 ++++++++++++++++---
+>   2 files changed, 92 insertions(+), 12 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 51ce050f8701..73ab23a47b97 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3363,6 +3363,15 @@
+>   			Not specifying this option is equivalent to
+>   			numa_spinlock=auto.
+>   
+> +	numa_spinlock_threshold=	[NUMA, PV_OPS]
+> +			Set the time threshold in milliseconds for the
+> +			number of intra-node lock hand-offs before the
+> +			NUMA-aware spinlock is forced to be passed to
+> +			a thread on another NUMA node.	Valid values
+> +			are in the [1..100] range. Smaller values result
+> +			in a more fair, but less performant spinlock,
+> +			and vice versa. The default value is 10.
+> +
+>   	cpu0_hotplug	[X86] Turn on CPU0 hotplug feature when
+>   			CONFIG_BOOTPARAM_HOTPLUG_CPU0 is off.
+>   			Some features depend on CPU0. Known dependencies are:
+> diff --git a/kernel/locking/qspinlock_cna.h b/kernel/locking/qspinlock_cna.h
+> index 590402ad69ef..d3e27549c769 100644
+> --- a/kernel/locking/qspinlock_cna.h
+> +++ b/kernel/locking/qspinlock_cna.h
+> @@ -37,6 +37,12 @@
+>    * gradually filter the primary queue, leaving only waiters running on the same
+>    * preferred NUMA node.
+>    *
+> + * We change the NUMA node preference after a waiter at the head of the
+> + * secondary queue spins for a certain amount of time (10ms, by default).
+> + * We do that by flushing the secondary queue into the head of the primary queue,
+> + * effectively changing the preference to the NUMA node of the waiter at the head
+> + * of the secondary queue at the time of the flush.
+> + *
+>    * For more details, see https://arxiv.org/abs/1810.05600.
+>    *
+>    * Authors: Alex Kogan <alex.kogan@oracle.com>
+> @@ -49,13 +55,33 @@ struct cna_node {
+>   	u16			real_numa_node;
+>   	u32			encoded_tail;	/* self */
+>   	u32			partial_order;	/* enum val */
+> +	s32			start_time;
+>   };
+>   
+>   enum {
+>   	LOCAL_WAITER_FOUND,
+>   	LOCAL_WAITER_NOT_FOUND,
+> +	FLUSH_SECONDARY_QUEUE
+>   };
+>   
+> +/*
+> + * Controls the threshold time in ms (default = 10) for intra-node lock
+> + * hand-offs before the NUMA-aware variant of spinlock is forced to be
+> + * passed to a thread on another NUMA node. The default setting can be
+> + * changed with the "numa_spinlock_threshold" boot option.
+> + */
+> +#define MSECS_TO_JIFFIES(m)	\
+> +	(((m) + (MSEC_PER_SEC / HZ) - 1) / (MSEC_PER_SEC / HZ))
+> +static int intra_node_handoff_threshold __ro_after_init = MSECS_TO_JIFFIES(10);
+> +
+> +static inline bool intra_node_threshold_reached(struct cna_node *cn)
+> +{
+> +	s32 current_time = (s32)jiffies;
+> +	s32 threshold = cn->start_time + intra_node_handoff_threshold;
+> +
+> +	return current_time - threshold > 0;
+> +}
+> +
+>   static void __init cna_init_nodes_per_cpu(unsigned int cpu)
+>   {
+>   	struct mcs_spinlock *base = per_cpu_ptr(&qnodes[0].mcs, cpu);
+> @@ -98,6 +124,7 @@ static __always_inline void cna_init_node(struct mcs_spinlock *node)
+>   	struct cna_node *cn = (struct cna_node *)node;
+>   
+>   	cn->numa_node = cn->real_numa_node;
+> +	cn->start_time = 0;
+>   }
+>   
+>   /*
+> @@ -197,8 +224,15 @@ static void cna_splice_next(struct mcs_spinlock *node,
+>   
+>   	/* stick `next` on the secondary queue tail */
+>   	if (node->locked <= 1) { /* if secondary queue is empty */
+> +		struct cna_node *cn = (struct cna_node *)node;
+> +
+>   		/* create secondary queue */
+>   		next->next = next;
+> +
+> +		cn->start_time = (s32)jiffies;
+> +		/* make sure start_time != 0 iff secondary queue is not empty */
+> +		if (!cn->start_time)
+> +			cn->start_time = 1;
+
+My version of the patch set the end_time while yours set the start_time. 
+The differences are
+
+1) When the node time is 0, yours will reduce the jiffies count by 1. My 
+version will increase it by 1.
+2) The intra_node_handoff_threshold is accessed here in my version when 
+setting the end time while yours will access it in 
+intra_node_threshold_reached().
+
+It is largely a matter of preference, but I am just curious about what 
+you think about the advantage of doing it this way.
+
+Cheers,
+Longman
 
