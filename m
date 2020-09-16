@@ -2,203 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AC826BAF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C149A26BAE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 05:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgIPDt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 23:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgIPDsq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:48:46 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A573BC06178A;
-        Tue, 15 Sep 2020 20:48:45 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id q63so6830459qkf.3;
-        Tue, 15 Sep 2020 20:48:45 -0700 (PDT)
+        id S1726547AbgIPDtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 23:49:15 -0400
+Received: from mail-eopbgr700085.outbound.protection.outlook.com ([40.107.70.85]:21633
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726486AbgIPDtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 23:49:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nnz8h2XonpjJwQ+91YXLmhi5B5HkqFrJTLjCA3qQdcyvSwCaUPYN6cebgxMJCM8CFh6a+0K5t1tAIXRrMUFbOuczqxE9f9HePTrcd52xBTOZOY6sQBGtqNG3czyvUVNLgwCmWZisq41IaMsp/u2MB9S9mnh559Njv7CLSaoQER1F4GuUx5sRKReNOKA+ZV6faAJr123yDtjiGzqjtcbGmG7BhXlX4ChLbj9KVxbYpNSkX3bM67+xIQdBd4GGrnAwMzW4P5anJKw490cB4jVrn0DMC/T1jjunmZdUe5j0ymitfeiupUa6OyFYgzD2aZK5jOKd2u4/RJzOaXL5PlELsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WZ/D+Q/kmxLiYd4w8gULC0EeonEBJFusdeCRLhEqmXk=;
+ b=F29z9NyNSpDtEN0bkYMdeRew8/xSGeX2InDkDWnVirMX6YA5jDOSvmMOEl3XxWwgUr6+sDwWJetk27lydVI6poauE8G+MZKbgYq9SXIB4biCBQPmllffQMguG6nTObUpryWUeudAS3/GanPBU5WH8/E4ufzsy584sOtCmsh742X8Gk21IzNlVFTP1VNWwvE2w717x09+8VD9HWWKXCGtCMI+Kb4+j7eJpdkyv/cqnfGsbdQfm5FwVW8QVqMM3MFIkmYKw0aFXa0DQm8uSdaeTSH6EudNIsuo4FjLdMgw0n+WnuA2xe2r1gnA7mFexXO4pNP1NApV7rvk69FS+Zr8bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=O4H82gItvXsuYW5jJfzm4UzNO1dqSANo/WeqLh46S/o=;
-        b=haKl8fBKAWHbKvPgFv/YznINeUm7GWb4TybvmZrzIzJD+OVLlD82t/hRidSfgGMqNa
-         Wevqedezby/Zx2yr6JWcrtuJXPun+YtgBGYhi8fUY0ikc/aF8ag5LwDDKKiD01RRhid3
-         0YFoFFSIFTZFYne2dpyD2wHgxakEo39CDeGmoSA2AuBbanRuhuRMlBjyaL+9aJEdOCE1
-         UyIfgYjBGBRqebjc3OZNvM5LuqsfUNfVpORcDN09jPE933JpiYUdTIIDY9HF4FqJzCg6
-         jn9lg2aL1/h+8gu2p6x8uH90QoHCKsuPHwsEiV6dd3oVbMvuAfFLBmKYnm6ASO4BKR/O
-         hvXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=O4H82gItvXsuYW5jJfzm4UzNO1dqSANo/WeqLh46S/o=;
-        b=oUNieWN8kUeVsC0dc++ECf94O8AEd1Wvkoa25iJ/yzP1FrjdJe6a9UGqZnZI8AxABK
-         WUDLKGUITFgkv7q1jnasRuEENPvXBDmI2B0RbnnPCEOnF3C+TQ8jIH1aor/R9EcpyQ+s
-         cVCBiotgK12WLPT+UFinbk3K/KMlT8ncF+DPghaMpR18APOioYWC6fNoAM9o7UPRm9hC
-         LCPE4/WKeB1qXKfRGWVp5pjAWDma1BzNXqIyMG3JWKCsPvvD24h0uDreyBKHryYVAFyJ
-         asqcCx9LdinNXbVYopUrZNBBKUOqYNU/1xqh3D2R3eER9lDNummlBdNsaWgFilOkI/V8
-         Xi/Q==
-X-Gm-Message-State: AOAM5327LeA7tjStAHlqGGBDUVImq8VhQIiGC/uWzZ5oYuMC4gjr73YZ
-        QDs9H98SexE6DSXRBxPmQ0A=
-X-Google-Smtp-Source: ABdhPJzuLBp5jXkuB9HZIlQcHs4aGKyg3m421lOq53ZrBST3VLy0Slu3ZIzy2hkg6Ozp7N5u/GZ1EQ==
-X-Received: by 2002:a05:620a:1341:: with SMTP id c1mr20286325qkl.460.1600228124936;
-        Tue, 15 Sep 2020 20:48:44 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id z29sm18606041qtj.79.2020.09.15.20.48.43
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 20:48:44 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id A42DA27C0054;
-        Tue, 15 Sep 2020 23:48:43 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 15 Sep 2020 23:48:43 -0400
-X-ME-Sender: <xms:G4thX1uxuO02wZ3pnuP4YYE7thr3gQyZIxa02MFRyzhufuFtMKhvlg>
-    <xme:G4thX-dh1djB0D7w8PN09gTUVRcT0Mppv5bt91Q5MThH2YvFyMWYndJ_gLCDwEGce
-    dvb0BqcwgAOV5EqJw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtddugdeikecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
-    fuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvufffkffojghfggfgsedt
-    keertdertddtnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghngh
-    esghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhephedvveetfefgiedutedtfeev
-    vddvleekjeeuffffleeguefhhfejteekieeuueelnecukfhppeehvddrudehhedrudduud
-    drjedunecuvehluhhsthgvrhfuihiivgepkeenucfrrghrrghmpehmrghilhhfrhhomhep
-    sghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtie
-    egqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhi
-    gihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:G4thX4yRJJNK8iiUq4ar7RK4zw6lX6Scs4XsZJpQB3AcrJgqvVO5Uw>
-    <xmx:G4thX8MsSVurwqaBgWJo_SMWLa4PsorzM0iyC3jTouQYNXi5ZK9uiw>
-    <xmx:G4thX18FZza6-7zB4llPrZfrvhacE2YgYAxefXM7oZNpQ6tZXy5WzA>
-    <xmx:G4thXxuVIMNjTT7qoqg_QbguidS-1tleNR8MQNo_fQy0mNQ_u7HbTXWUjP0>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E2CE53064682;
-        Tue, 15 Sep 2020 23:48:42 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>, will@kernel.org,
-        ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        mark.rutland@arm.com, maz@kernel.org,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH v4 11/11] scsi: storvsc: Support PAGE_SIZE larger than 4K
-Date:   Wed, 16 Sep 2020 11:48:17 +0800
-Message-Id: <20200916034817.30282-12-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916034817.30282-1-boqun.feng@gmail.com>
-References: <20200916034817.30282-1-boqun.feng@gmail.com>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WZ/D+Q/kmxLiYd4w8gULC0EeonEBJFusdeCRLhEqmXk=;
+ b=OqZ/dV7fOcsbxjo5j8/bcmy4pUw8cXqgNuiUUZclafszmCndf62GJzsoE4h4hYp9DP2asrkBkg3BPoRAt/p2SHhTiVC2yFIS2VcpdwSr1eoShIKMpYSAaYFIZIjujVRBcJuiTP56QL3LPiqnCA5wi9sSL15fOZZ3vQT9cWWoaHk=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
+ by CY4PR1201MB0215.namprd12.prod.outlook.com (2603:10b6:910:1d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
+ 2020 03:49:08 +0000
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::9067:e60d:5698:51d8]) by CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::9067:e60d:5698:51d8%12]) with mapi id 15.20.3391.011; Wed, 16 Sep
+ 2020 03:49:08 +0000
+Date:   Tue, 15 Sep 2020 22:49:05 -0500
+From:   Wei Huang <wei.huang2@amd.com>
+To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, Wei Huang <whuang2@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 0/2] KVM: x86: allow for more CPUID entries
+Message-ID: <20200916034905.GA508748@weilap>
+References: <20200915154306.724953-1-vkuznets@redhat.com>
+ <20200915165131.GC2922@work-vm>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915165131.GC2922@work-vm>
+X-ClientProxiedBy: MN2PR01CA0008.prod.exchangelabs.com (2603:10b6:208:10c::21)
+ To CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
+Importance: high
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (24.55.15.93) by MN2PR01CA0008.prod.exchangelabs.com (2603:10b6:208:10c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Wed, 16 Sep 2020 03:49:07 +0000
+X-Priority: 1 (Highest)
+X-MSMail-Priority: High
+X-Originating-IP: [24.55.15.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3cd52300-2c18-488c-d81d-08d859f376e5
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0215:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB0215BFD0762A668FE2562808CF210@CY4PR1201MB0215.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nA+gc7Tsuiz3vv5+wFVjSXjDyuZSZ4+wVtiGNF+Xe5vgXZ2QjpZepA3CGVqJi2/BPZawafWhuBJnNlJA1NXwDTgx9S8ZG3l5bnHsamW2oSzp69TRIV1cv8vRJUHnT7purFou1N5tlEVV4yFM8D3DtK3xyw3lzEV3XuxfPXtHN6ZyLYM6oa4srswHWna/LX+tac2gwxZtOMuYQBTMde3r4fruvejRvYNpHTKpW7BpJ1e5vGt954WRn3XRHYF1R96NJqjiSnSVTuqC3AGHVSEmzks+J9Kt9nKc+6vNBeUa+pgB1zHj6/roTeHFEOq0c9WhDiLDE+rVeh26fG1peAUZMCb5UR9n0K8+xGH6tKNcu8kdzF9lKIYnyfDmHAeQZiWh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(39860400002)(366004)(396003)(376002)(346002)(136003)(83380400001)(6486002)(16526019)(186003)(66946007)(478600001)(66476007)(66556008)(26005)(52116002)(54906003)(6496006)(33716001)(8676002)(8936002)(4326008)(6916009)(956004)(9686003)(33656002)(2906002)(86362001)(5660300002)(1076003)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: DduOcOfHhAHGl+yT6reauo6b4Nmq1EYHIpwW2URmjcB/nYvENHtoS+UzGPA1L3Pec/FK1cBDXMjc4RPUyeTfdOkIEAXvKLdeeYEIOW998/SiRZFJWbdDB2YeCuN8QTeGAoi5gHRwxIX4zBpkjaU88ct3zhNC4Go053vZzX5Gz+XiG3ROdM6Lnr1cllZdwC5osafkiTwzgrcigusRzbAqVQaTntHStVuJbaE0ETa0JvsFcpLSWpY0AK2K+dnFC3U/Yef2RPViSwaDQE4vnIpkl80NST+MH+Ku1SilWJSN7Zp2/B0EdKxLMJ9eSpir1j5ylBFVG7Yca6zWD+ba1EQE3wVkKvw2Qf4J+DYc55OrtkdZDz7Ov7mkgaT6HQMWpbs4xbSEoNE33dCvF8Wol4iMHcmM82H6ECeQst1qajMejResr+KcMfFWpZe4HVoGGpnvI6lfCINYUNFAkWxha+jbIrggZkjoG4b9lbe1qk90fsRkYsAknnQ8SQcuKGtIoIDwEoMrFyGwsgR3DFjAfKwR47O7/AQtWc2plojxRoYmOPLbWJgDdcFOdbSeUoVwXXl09Ei2gqvHJF+k1sQ2XNHvblV84WvJu4i+bTX5zC81NHVUXSEW0hm4MM9ySVBl+KVa00b07DtoUX8gPqRhH8x80Q==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cd52300-2c18-488c-d81d-08d859f376e5
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 03:49:08.2053
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Lv6nzlFY2ijUfWwDOhnZhoyAOc67bMpzufQzJYakoeiiX4wt2P+CvU2QAH2+Z2sT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hyper-V always use 4k page size (HV_HYP_PAGE_SIZE), so when
-communicating with Hyper-V, a guest should always use HV_HYP_PAGE_SIZE
-as the unit for page related data. For storvsc, the data is
-vmbus_packet_mpb_array. And since in scsi_cmnd, sglist of pages (in unit
-of PAGE_SIZE) is used, we need convert pages in the sglist of scsi_cmnd
-into Hyper-V pages in vmbus_packet_mpb_array.
+On 09/15 05:51, Dr. David Alan Gilbert wrote:
+> * Vitaly Kuznetsov (vkuznets@redhat.com) wrote:
+> > With QEMU and newer AMD CPUs (namely: Epyc 'Rome') the current limit for
 
-This patch does the conversion by dividing pages in sglist into Hyper-V
-pages, offset and indexes in vmbus_packet_mpb_array are recalculated
-accordingly.
+Could you elaborate on this limit? On Rome, I counted ~35 CPUID functions which
+include Fn0000_xxxx, Fn4000_xxxx and Fn8000_xxxx.
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
----
- drivers/scsi/storvsc_drv.c | 56 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 49 insertions(+), 7 deletions(-)
+> > KVM_MAX_CPUID_ENTRIES(80) is reported to be hit. Last time it was raised
+> > from '40' in 2010. We can, of course, just bump it a little bit to fix
+> > the immediate issue but the report made me wonder why we need to pre-
+> > allocate vcpu->arch.cpuid_entries array instead of sizing it dynamically.
+> > This RFC is intended to feed my curiosity.
+> > 
+> > Very mildly tested with selftests/kvm-unit-tests and nothing seems to
+> > break. I also don't have access to the system where the original issue
+> > was reported but chances we're fixing it are very good IMO as just the
+> > second patch alone was reported to be sufficient.
+> > 
+> > Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> 
+> Oh nice, I was just going to bump the magic number :-)
+> 
+> Anyway, this seems to work for me, so:
+> 
+> Tested-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> 
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 8f5f5dc863a4..0c65fbd41035 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1739,23 +1739,65 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	payload_sz = sizeof(cmd_request->mpb);
- 
- 	if (sg_count) {
--		if (sg_count > MAX_PAGE_BUFFER_COUNT) {
-+		unsigned int hvpgoff = 0;
-+		unsigned long offset_in_hvpg = sgl->offset & ~HV_HYP_PAGE_MASK;
-+		unsigned int hvpg_count = HVPFN_UP(offset_in_hvpg + length);
-+		u64 hvpfn;
- 
--			payload_sz = (sg_count * sizeof(u64) +
-+		if (hvpg_count > MAX_PAGE_BUFFER_COUNT) {
-+
-+			payload_sz = (hvpg_count * sizeof(u64) +
- 				      sizeof(struct vmbus_packet_mpb_array));
- 			payload = kzalloc(payload_sz, GFP_ATOMIC);
- 			if (!payload)
- 				return SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 
-+		/*
-+		 * sgl is a list of PAGEs, and payload->range.pfn_array
-+		 * expects the page number in the unit of HV_HYP_PAGE_SIZE (the
-+		 * page size that Hyper-V uses, so here we need to divide PAGEs
-+		 * into HV_HYP_PAGE in case that PAGE_SIZE > HV_HYP_PAGE_SIZE.
-+		 * Besides, payload->range.offset should be the offset in one
-+		 * HV_HYP_PAGE.
-+		 */
- 		payload->range.len = length;
--		payload->range.offset = sgl[0].offset;
-+		payload->range.offset = offset_in_hvpg;
-+		hvpgoff = sgl->offset >> HV_HYP_PAGE_SHIFT;
- 
- 		cur_sgl = sgl;
--		for (i = 0; i < sg_count; i++) {
--			payload->range.pfn_array[i] =
--				page_to_pfn(sg_page((cur_sgl)));
--			cur_sgl = sg_next(cur_sgl);
-+		for (i = 0; i < hvpg_count; i++) {
-+			/*
-+			 * 'i' is the index of hv pages in the payload and
-+			 * 'hvpgoff' is the offset (in hv pages) of the first
-+			 * hv page in the the first page. The relationship
-+			 * between the sum of 'i' and 'hvpgoff' and the offset
-+			 * (in hv pages) in a payload page ('hvpgoff_in_page')
-+			 * is as follow:
-+			 *
-+			 * |------------------ PAGE -------------------|
-+			 * |   NR_HV_HYP_PAGES_IN_PAGE hvpgs in total  |
-+			 * |hvpg|hvpg| ...              |hvpg|... |hvpg|
-+			 * ^         ^                                 ^                 ^
-+			 * +-hvpgoff-+                                 +-hvpgoff_in_page-+
-+			 *           ^                                                   |
-+			 *           +--------------------- i ---------------------------+
-+			 */
-+			unsigned int hvpgoff_in_page =
-+				(i + hvpgoff) % NR_HV_HYP_PAGES_IN_PAGE;
-+
-+			/*
-+			 * Two cases that we need to fetch a page:
-+			 * 1) i == 0, the first step or
-+			 * 2) hvpgoff_in_page == 0, when we reach the boundary
-+			 *    of a page.
-+			 */
-+			if (hvpgoff_in_page == 0 || i == 0) {
-+				hvpfn = page_to_hvpfn(sg_page(cur_sgl));
-+				cur_sgl = sg_next(cur_sgl);
-+			}
-+
-+			payload->range.pfn_array[i] = hvpfn + hvpgoff_in_page;
- 		}
- 	}
- 
--- 
-2.28.0
+I tested on two platforms and the patches worked fine. So no objection on the
+design.
 
+Tested-by: Wei Huang <wei.huang2@amd.com>
+
+> > Vitaly Kuznetsov (2):
+> >   KVM: x86: allocate vcpu->arch.cpuid_entries dynamically
+> >   KVM: x86: bump KVM_MAX_CPUID_ENTRIES
+> > 
+> >  arch/x86/include/asm/kvm_host.h |  4 +--
+> >  arch/x86/kvm/cpuid.c            | 55 ++++++++++++++++++++++++---------
+> >  arch/x86/kvm/x86.c              |  1 +
+> >  3 files changed, 43 insertions(+), 17 deletions(-)
+> > 
+> > -- 
+> > 2.25.4
+> > 
+> -- 
+> Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> 
