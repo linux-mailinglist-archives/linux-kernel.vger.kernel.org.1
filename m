@@ -2,658 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F023E26C0AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739AC26C0B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgIPJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgIPJev (ORCPT
+        id S1726718AbgIPJgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:36:32 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:54707 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726438AbgIPJg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:34:51 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65B1C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:34:50 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id n2so1248689uaw.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:34:50 -0700 (PDT)
+        Wed, 16 Sep 2020 05:36:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600248984; x=1631784984;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=FgldDGaeYa0tYIh2F4rl+Za7Ta9yuiNoTF+KMVTSebY=;
+  b=dzO+YFsMvJHtp372JdRUaK8L3OdriUVyp9lveoOPkF8BkgnIKD3XprSE
+   /U4QBRxKmwxQ2llB0oqAvmVCuTyUgVvWVCW3JCff24iqyqcgMfMKQUJnI
+   aYSZ8h6VfjIFDSaY76+mMDQJ5ndC3zDz3CNZ6izxczMplvRyU3PxPYOOG
+   GSHMUYHYGBsgADFZy4rXj3NiZljNsvoLAE4jpMNcLIdtufXoCSPs1ng6N
+   8nxNca5QnPXG/nsUJEtN9aRE/SFRj4yM7pR3/6xSAjsNJuS2z4yDG5jgO
+   9A7030Q5gnBRek/VqV4jV8LjIBxAMDYpQmNIWy6vA0LDVFtShPifMoUUt
+   Q==;
+IronPort-SDR: 6EZflJUx3YdCQaoPL5zoSAHrxklQ7UFTHO8UUuqyuNxaAF6eTb6kC+YiJRiXue5pnxojDA/rMZ
+ 0E40DJCqKPeNZgHoTU0ji40YO4eXTxG20Kzn0CxlHLrasbd5vM57yZkB2G84srcYTuVyq0vtff
+ njBupGywA3a36jBfP3Az0Qt7p6LapFeoef3T1UpxMnuia4k5dDrxUwLT++h9qlTP1sqvMdzlQP
+ iBojGsmseGvjfWSdi/KGi5zME7O1YvquZX2bSjAEnrsswhhrje0SSJFUTrwtkpPvZZ8lJYLIXF
+ RSg=
+X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
+   d="scan'208";a="26587040"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Sep 2020 02:36:21 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 16 Sep 2020 02:36:05 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Wed, 16 Sep 2020 02:36:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YhjTAIPFLlA9/ayJLd9fMRQOdg0C1gdTxMEOZyJcBT7SIMb+lHLbBzOSrTKbtE8BW8bX5k3VhCcLAs339w0SlJyEcnlFG2rMXRE4zg/XALQ0f23heu1xrRDE3AYqxRywO5k8Okq6NP9V7Wm4xvfulRzCi/B2ufszL0poP5DjrE7X2edMSFm4LCK2BJmWgL2FoN6ej1I/hTAYaqn7hBIQbZQvO1pgx/JvoOVh6+fZSa8+H1z7s7wrmZF0ONDkfh4IF8hHLdelOn1n7Li/LpTTuX9KSG0Tad8CFqTBCXUa74mXw1r3DynR7przoyXLwuBaBnzAIaoZoFw9Q14mFaViHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FgldDGaeYa0tYIh2F4rl+Za7Ta9yuiNoTF+KMVTSebY=;
+ b=RQ4ZaBxELiDSTKlIgaYFvH+AiaviwR27YriJ/SCGomZPhO+I/TZz8s/hvi3MINK7sx16GLdnUYCw5dS8P4IrWme/8e15JZjKSQnRifPw/hWwwNIDB+fKTl1v4Q1PAdBD9Zm1II78aLd0ISaBRBUilpsyXgYSWELXpGld9VZ2oePws3WlydCh283aSxyS0ZW20kKzI4KqP1uW2N6zPPoum8pKdCdYdbUeM+8ENZFsesBMqz5H6sJjQP283GTNyh+F1JjQlsVu4fPP8M7OywH4vhk0yYrG68oxxDjLilYqMZMTx29352+20A4kq+S3La62tE2uOmq3xuZIx+e17Kd/yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xchC9TiGYL+Rcdqk9tQH9VmKwR2wEjN6HUhZbHI/cuY=;
-        b=CMAOrVlpLJJOLfxRV4Z+pEwQaJD+1o3eGzHdmG516hUsWVyHPzgw1NuWCG9pBSMwkJ
-         t2cNM+Ku3ggSo/oWUB5mTycaWL8URGEI246sV3ShWFUW2tdVyJG4mLueT+lKcTIlPrUG
-         lq4bu2uUvG5GQPXOMVPsBa1bAShtKDveqwfqkREuE4uWwVRy35tgzf20sdvA+SYdwTkC
-         CzAp1Fn9dkLQxRNU0bjYHwOcDDKDwnOkpP7vWd0YHkX/Zqh+wazpg3o/xjm2uQstiBv6
-         Ir1bCdaITzeS5sGVfzckjfU47NfDuxdTnWmU8637Eurv9gczRpz5JszI8h5xv1XiKDzP
-         1Flw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xchC9TiGYL+Rcdqk9tQH9VmKwR2wEjN6HUhZbHI/cuY=;
-        b=MAWINNhi97etzK/RUGSLwTZSqSs5FZjrvPXuCu5R8FXYm/LIF8cB8k1aB74jIZiQyN
-         hnVSnCsjWjB3phFjen2bMrnAqjP3FxLsJyXROaBCgHl4/khOFMujL2K7l8/d0bOfDCxy
-         xwpzpZJCDFEOn2FjrJ2Wobb1JMbbxK0hPYtrnfg0hU5EDw1HUuJHQhpwWEsRtrcYnio5
-         UtqOjDiS2pW02op+SeOdSo7szlI3BuyGWBxWgAZP6gP7Q9oFnDzrfaZDITxGx/5b0fsk
-         RyR5JLzec8OqnCc9csi+FcpL9YhMNTQmHwqcVtKaWWAZBCtIlUpKtMIogc/RIHHi4ckL
-         j2Og==
-X-Gm-Message-State: AOAM530dl+WU69yYnN23dpj4qiwYMu8MYecBbR+EtuaYsdSIJmZjY1VO
-        rUuTkAe2rVLdIikvj3VKUrAD2bDWGBDJm/v6dOjeaA==
-X-Google-Smtp-Source: ABdhPJzw9QxaVXQa/vFZQNi8I34GSrEDA1UGdIl7j+FofD6KMKeB9nK678y+NERGUs8+lvS/afloOYraYtdUEKVjEHI=
-X-Received: by 2002:a9f:366e:: with SMTP id s43mr750881uad.69.1600248887791;
- Wed, 16 Sep 2020 02:34:47 -0700 (PDT)
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FgldDGaeYa0tYIh2F4rl+Za7Ta9yuiNoTF+KMVTSebY=;
+ b=o32TrEK49rRq6q0GNopM4zJ14O8j/dMJPv38tPsF4z6Grb1gvTJ2+bAN8q5rM57l4Wxf/b2ZSaM8QP4eFFFsSehTK0EDgnds6gnUKrWYYkY9R6FIlwWY4Jtxo1MxHSo7NgCY5Q9/cZ6O/oscSDsd6HhZ16UvuqTDTSiN08G1XMw=
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
+ by DM5PR11MB1257.namprd11.prod.outlook.com (2603:10b6:3:12::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
+ 2020 09:36:20 +0000
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::a8e8:d0bc:8b3c:d385]) by DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::a8e8:d0bc:8b3c:d385%11]) with mapi id 15.20.3391.014; Wed, 16 Sep
+ 2020 09:36:20 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <vigneshr@ti.com>, <m.felsch@pengutronix.de>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <sergei.shtylyov@cogentembedded.com>,
+        <boris.brezillon@collabora.com>, <michael@walle.cc>,
+        <j.neuschaefer@gmx.net>
+CC:     <linux-mtd@lists.infradead.org>, <kernel@pengutronix.de>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] mtd: spi-nor: sst: fix write support for SST_WRITE
+ marked devices
+Thread-Topic: [PATCH 1/3] mtd: spi-nor: sst: fix write support for SST_WRITE
+ marked devices
+Thread-Index: AQHWjAzVSbw2cN8jH0Sx48szyJxchQ==
+Date:   Wed, 16 Sep 2020 09:36:20 +0000
+Message-ID: <7cee3de0-19ee-d9f7-fd04-7f0771f73da5@microchip.com>
+References: <20200911144703.25409-1-m.felsch@pengutronix.de>
+ <20200911144703.25409-2-m.felsch@pengutronix.de>
+ <dc80d00a-27a3-6c75-5820-97ad2e297d8e@ti.com>
+In-Reply-To: <dc80d00a-27a3-6c75-5820-97ad2e297d8e@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [82.77.80.152]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 796c6b88-7aa5-4bd7-e9e3-08d85a23f80a
+x-ms-traffictypediagnostic: DM5PR11MB1257:
+x-microsoft-antispam-prvs: <DM5PR11MB1257A4941A26D0FB3F8EC919F0210@DM5PR11MB1257.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:949;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mjR1qvehKHBclAiNfd7Sv0T9wCqJ/PJCAMYzWkLGwWfjIOoqRTwoHLoZE2zA6cMGiKj1J1fe6BhDRv1BgevBCTsUbB3ZGfAiIVk9DVO3hT7vBuLJQ6QBgm1XHVap33QjM+zHEA5TDftb1h6re/5VWqWd7c3nEjeqZN7HnMYhLfKltP7EKWDWUPtQqln1l/l6nvLdavF6ZQCxR9BCg4zMUynivSN6b9J4Pjc+mXX1pnLsqsrLLc2/+U10AZg7QcwuKxig20YvVL6NBO67AnP9qT9oUE3hnP73kJVENLlE537F2pv9TzV87cWlVjpuPQDK6qqO4X0Dq/kqNvH+wUN2hhDogEV0fHyZzGTfEtQFcGhcuzsEbFbnHU0F3pZkwJqtA6/BD1H7NAj297ziODc7b+ot72++FiqPi+dk+NZEH4Q=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39850400004)(376002)(346002)(366004)(31696002)(8676002)(83380400001)(478600001)(6512007)(7416002)(2906002)(26005)(316002)(86362001)(186003)(31686004)(71200400001)(2616005)(64756008)(4326008)(66946007)(6506007)(6486002)(36756003)(91956017)(66446008)(54906003)(53546011)(66476007)(66556008)(76116006)(5660300002)(8936002)(110136005)(341764005)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: iDber/c6ZYg/BmvdcBw8RfcRwzkHH6fdE71KDa1ntWS6EMc+G4E68MKlQPj+3PfTMdy75xfRLMuVdOKxLyLsoJk9XQ6I8Ex4v2VM01HserEMXKQjYA5rbfG8IzB1+PRaeuS6mIyIeePL59Stf29FG2Llfhy6AL7auNy8rW8fYO2E7pVoOiZqrpW5pFTd4Ij/eNtYfbEfo7+aZNWx9NAgSGTc/gRJ2tronDYi+GqyXYEJEADh6eQWAH5CQfkpvP13vP2tRnVjuMxBA3QvW3ppfaJ7Ia3F5EjNbWLFvVrCg+k6OP6mCtC/6W3ff9YuHrWxuOM77JgD6P0WfeIbrvbM25a2qD8EM9laF5hyJx5X3PKVckvgy29Eo9Cu7napSD2HgOxYKmTAUdOqW3CfXQUkO6o3QV2eMQ5iUkQfCYZdYmwl16HQ4wDycrPYV12+ZkUiw8iiK4gReTtnGsJk+E/2ZCD1m/0qaqKmG8tPhyMojFeevItF1VukFYbSNuHTpYVh2hNppbiHmATQBUIC2ktf4ZW5tRybogME9AriUoOAfjM/YJGRJSReJCaViErh21N2zFXRDvg/b4JRyD0fXriH3NpzD9RQnbdGue6dMLaasCD1vlQT5Ma1hqjw1NUVRYsJarqNXQT7VpBtDI1XIUgqzw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8C9805C0D0E8F84DA6D369ACAD48482D@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200901025927.3596190-1-badhri@google.com> <20200901025927.3596190-8-badhri@google.com>
- <20200915124356.GG1139641@kuha.fi.intel.com>
-In-Reply-To: <20200915124356.GG1139641@kuha.fi.intel.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Wed, 16 Sep 2020 02:34:10 -0700
-Message-ID: <CAPTae5J8YB8VrKhvWrz8pkQ6rY+uqOFntfR2kY0gZYAu0SXvLw@mail.gmail.com>
-Subject: Re: [PATCH v6 07/14] usb: typec: tcpci_maxim: Chip level TCPC driver
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 796c6b88-7aa5-4bd7-e9e3-08d85a23f80a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 09:36:20.4345
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cJx4F4RgBs9MDsQXIdCaax/kILUU2PxAPkSQLWLJF1h3d4JQ06Ya0nW10gSkPNQ8JCsNCzzVtr4wedbQKvoGx+uKbxw8NIjJ3jGIwc2nrKE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1257
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 5:44 AM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Mon, Aug 31, 2020 at 07:59:20PM -0700, Badhri Jagan Sridharan wrote:
-> > Chip level TCPC driver for Maxim's TCPCI implementation.
-> > This TCPC implementation does not support the following
-> > commands: COMMAND.SinkVbus, COMMAND.SourceVbusDefaultVoltage,
-> > COMMAND.SourceVbusHighVoltage. Instead the sinking and sourcing
-> > from vbus is supported by writes to custom registers.
-> >
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > ---
-> > Changes since v1:
-> > - Changing patch version to v6 to fix version number confusion.
-> > - Removed setting USB_PSY and terminating description with period as
-> >   suggested by Randy.
-> > ---
-> >  drivers/usb/typec/tcpm/Kconfig       |   5 +
-> >  drivers/usb/typec/tcpm/Makefile      |  13 +-
-> >  drivers/usb/typec/tcpm/tcpci.h       |   1 +
-> >  drivers/usb/typec/tcpm/tcpci_maxim.c | 474 +++++++++++++++++++++++++++
-> >  4 files changed, 487 insertions(+), 6 deletions(-)
-> >  create mode 100644 drivers/usb/typec/tcpm/tcpci_maxim.c
-> >
-> > diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
-> > index fa3f39336246..dd0d446a4613 100644
-> > --- a/drivers/usb/typec/tcpm/Kconfig
-> > +++ b/drivers/usb/typec/tcpm/Kconfig
-> > @@ -27,6 +27,11 @@ config TYPEC_RT1711H
-> >         Type-C Port Controller Manager to provide USB PD and USB
-> >         Type-C functionalities.
-> >
-> > +config TYPEC_TCPCI_MAXIM
-> > +     tristate "Maxim TCPCI based Type-C chip driver"
-> > +     help
-> > +       MAXIM TCPCI based Type-C chip driver.
-> > +
-> >  endif # TYPEC_TCPCI
-> >
-> >  config TYPEC_FUSB302
-> > diff --git a/drivers/usb/typec/tcpm/Makefile b/drivers/usb/typec/tcpm/Makefile
-> > index a5ff6c8eb892..58d001cf0dd2 100644
-> > --- a/drivers/usb/typec/tcpm/Makefile
-> > +++ b/drivers/usb/typec/tcpm/Makefile
-> > @@ -1,7 +1,8 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> > -obj-$(CONFIG_TYPEC_TCPM)     += tcpm.o
-> > -obj-$(CONFIG_TYPEC_FUSB302)  += fusb302.o
-> > -obj-$(CONFIG_TYPEC_WCOVE)    += typec_wcove.o
-> > -typec_wcove-y                        := wcove.o
-> > -obj-$(CONFIG_TYPEC_TCPCI)    += tcpci.o
-> > -obj-$(CONFIG_TYPEC_RT1711H)  += tcpci_rt1711h.o
-> > +obj-$(CONFIG_TYPEC_TCPM)             += tcpm.o
-> > +obj-$(CONFIG_TYPEC_FUSB302)          += fusb302.o
-> > +obj-$(CONFIG_TYPEC_WCOVE)            += typec_wcove.o
-> > +typec_wcove-y                                := wcove.o
-> > +obj-$(CONFIG_TYPEC_TCPCI)            += tcpci.o
-> > +obj-$(CONFIG_TYPEC_RT1711H)          += tcpci_rt1711h.o
-> > +obj-$(CONFIG_TYPEC_TCPCI_MAXIM)              += tcpci_maxim.o
-> > diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-> > index 4d441bdf24d5..82f021a82456 100644
-> > --- a/drivers/usb/typec/tcpm/tcpci.h
-> > +++ b/drivers/usb/typec/tcpm/tcpci.h
-> > @@ -109,6 +109,7 @@
-> >
-> >  #define TCPC_RX_BYTE_CNT             0x30
-> >  #define TCPC_RX_BUF_FRAME_TYPE               0x31
-> > +#define TCPC_RX_BUF_FRAME_TYPE_SOP   0
-> >  #define TCPC_RX_HDR                  0x32
-> >  #define TCPC_RX_DATA                 0x34 /* through 0x4f */
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> > new file mode 100644
-> > index 000000000000..b61f290a8f96
-> > --- /dev/null
-> > +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> > @@ -0,0 +1,474 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2020, Google LLC
-> > + *
-> > + * MAXIM TCPCI based TCPC driver
-> > + */
-> > +
-> > +#include <linux/gpio.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/i2c.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of_gpio.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/usb/pd.h>
-> > +#include <linux/usb/tcpm.h>
-> > +#include <linux/usb/typec.h>
-> > +
-> > +#include "tcpci.h"
-> > +
-> > +#define PD_ACTIVITY_TIMEOUT_MS                               10000
-> > +
-> > +#define TCPC_VENDOR_ALERT                            0x80
-> > +
-> > +#define TCPC_RECEIVE_BUFFER_COUNT_OFFSET             0
-> > +#define TCPC_RECEIVE_BUFFER_FRAME_TYPE_OFFSET                1
-> > +#define TCPC_RECEIVE_BUFFER_RX_BYTE_BUF_OFFSET               2
-> > +
-> > +/*
-> > + * LongMessage not supported, hence 32 bytes for buf to be read from RECEIVE_BUFFER.
-> > + * DEVICE_CAPABILITIES_2.LongMessage = 0, the value in READABLE_BYTE_COUNT reg shall be
-> > + * less than or equal to 31. Since, RECEIVE_BUFFER len = 31 + 1(READABLE_BYTE_COUNT).
-> > + */
-> > +#define TCPC_RECEIVE_BUFFER_LEN                              32
-> > +
-> > +#define MAX_BUCK_BOOST_SID                           0x69
-> > +#define MAX_BUCK_BOOST_OP                            0xb9
-> > +#define MAX_BUCK_BOOST_OFF                           0
-> > +#define MAX_BUCK_BOOST_SOURCE                                0xa
-> > +#define MAX_BUCK_BOOST_SINK                          0x5
-> > +
-> > +struct max_tcpci_chip {
-> > +     struct tcpci_data data;
-> > +     struct tcpci *tcpci;
-> > +     struct device *dev;
-> > +     struct i2c_client *client;
-> > +     struct tcpm_port *port;
-> > +};
-> > +
-> > +static const struct regmap_range max_tcpci_tcpci_range[] = {
-> > +     regmap_reg_range(0x00, 0x95)
-> > +};
-> > +
-> > +const struct regmap_access_table max_tcpci_tcpci_write_table = {
-> > +     .yes_ranges = max_tcpci_tcpci_range,
-> > +     .n_yes_ranges = ARRAY_SIZE(max_tcpci_tcpci_range),
-> > +};
-> > +
-> > +static const struct regmap_config max_tcpci_regmap_config = {
-> > +     .reg_bits = 8,
-> > +     .val_bits = 8,
-> > +     .max_register = 0x95,
-> > +     .wr_table = &max_tcpci_tcpci_write_table,
-> > +};
-> > +
-> > +static struct max_tcpci_chip *tdata_to_max_tcpci(struct tcpci_data *tdata)
-> > +{
-> > +     return container_of(tdata, struct max_tcpci_chip, data);
-> > +}
-> > +
-> > +static int max_tcpci_read16(struct max_tcpci_chip *chip, unsigned int reg, u16 *val)
-> > +{
-> > +     return regmap_raw_read(chip->data.regmap, reg, val, sizeof(u16));
-> > +}
-> > +
-> > +static int max_tcpci_write16(struct max_tcpci_chip *chip, unsigned int reg, u16 val)
-> > +{
-> > +     return regmap_raw_write(chip->data.regmap, reg, &val, sizeof(u16));
-> > +}
-> > +
-> > +static int max_tcpci_read8(struct max_tcpci_chip *chip, unsigned int reg, u8 *val)
-> > +{
-> > +     return regmap_raw_read(chip->data.regmap, reg, val, sizeof(u8));
-> > +}
-> > +
-> > +static int max_tcpci_write8(struct max_tcpci_chip *chip, unsigned int reg, u8 val)
-> > +{
-> > +     return regmap_raw_write(chip->data.regmap, reg, &val, sizeof(u8));
-> > +}
-> > +
-> > +static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
-> > +{
-> > +     u16 alert_mask = 0;
-> > +     int ret;
-> > +
-> > +     ret = max_tcpci_write16(chip, TCPC_ALERT, 0xffff);
-> > +     if (ret < 0) {
-> > +             dev_err(chip->dev, "Error writing to TCPC_ALERT ret:%d\n", ret);
-> > +             return;
-> > +     }
-> > +
-> > +     ret = max_tcpci_write16(chip, TCPC_VENDOR_ALERT, 0xffff);
-> > +     if (ret < 0) {
-> > +             dev_err(chip->dev, "Error writing to TCPC_VENDOR_ALERT ret:%d\n", ret);
-> > +             return;
-> > +     }
-> > +
-> > +     alert_mask = TCPC_ALERT_TX_SUCCESS | TCPC_ALERT_TX_DISCARDED | TCPC_ALERT_TX_FAILED |
-> > +             TCPC_ALERT_RX_HARD_RST | TCPC_ALERT_RX_STATUS | TCPC_ALERT_CC_STATUS |
-> > +             TCPC_ALERT_VBUS_DISCNCT | TCPC_ALERT_RX_BUF_OVF | TCPC_ALERT_POWER_STATUS;
-> > +
-> > +     ret = max_tcpci_write16(chip, TCPC_ALERT_MASK, alert_mask);
-> > +     if (ret < 0) {
-> > +             dev_err(chip->dev, "Error writing to TCPC_ALERT_MASK ret:%d\n", ret);
-> > +             return;
-> > +     }
-> > +
-> > +     /* Enable vbus voltage monitoring and voltage alerts */
-> > +     ret = max_tcpci_write8(chip, TCPC_POWER_CTRL, 0);
-> > +     if (ret < 0) {
-> > +             dev_err(chip->dev, "Error writing to TCPC_POWER_CTRL ret:%d\n", ret);
-> > +             return;
-> > +     }
-> > +}
-> > +
-> > +static void process_rx(struct max_tcpci_chip *chip, u16 status)
-> > +{
-> > +     struct pd_message msg;
-> > +     u8 count, frame_type, rx_buf[TCPC_RECEIVE_BUFFER_LEN];
-> > +     int ret, payload_index;
-> > +     u8 *rx_buf_ptr;
-> > +
-> > +     /*
-> > +      * READABLE_BYTE_COUNT: Indicates the number of bytes in the RX_BUF_BYTE_x registers
-> > +      * plus one (for the RX_BUF_FRAME_TYPE) Table 4-36.
-> > +      * Read the count and frame type.
-> > +      */
-> > +     ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, 2);
-> > +     if (ret < 0) {
-> > +             dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d", ret);
-> > +             return;
-> > +     }
-> > +
-> > +     count = rx_buf[TCPC_RECEIVE_BUFFER_COUNT_OFFSET];
-> > +     frame_type = rx_buf[TCPC_RECEIVE_BUFFER_FRAME_TYPE_OFFSET];
-> > +
-> > +     if (count == 0 || frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP) {
-> > +             max_tcpci_write16(chip, TCPC_ALERT, TCPC_ALERT_RX_STATUS);
-> > +             dev_err(chip->dev, "%s", count ==  0 ? "error: count is 0" :
-> > +                     "error frame_type is not SOP");
-> > +             return;
-> > +     }
-> > +
-> > +     if (count > sizeof(struct pd_message) || count + 1 > TCPC_RECEIVE_BUFFER_LEN) {
-> > +             dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d", count);
-> > +             return;
-> > +     }
-> > +
-> > +     /*
-> > +      * Read count + 1 as RX_BUF_BYTE_x is hidden and can only be read through
-> > +      * TCPC_RX_BYTE_CNT
-> > +      */
-> > +     count += 1;
-> > +     ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, count);
-> > +     if (ret < 0) {
-> > +             dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d", ret);
-> > +             return;
-> > +     }
-> > +
-> > +     rx_buf_ptr = rx_buf + TCPC_RECEIVE_BUFFER_RX_BYTE_BUF_OFFSET;
-> > +     msg.header = cpu_to_le16(*(u16 *)rx_buf_ptr);
-> > +     rx_buf_ptr = rx_buf_ptr + sizeof(msg.header);
-> > +     for (payload_index = 0; payload_index < pd_header_cnt_le(msg.header); payload_index++,
-> > +          rx_buf_ptr += sizeof(msg.payload[0]))
-> > +             msg.payload[payload_index] = cpu_to_le32(*(u32 *)rx_buf_ptr);
-> > +
-> > +     /*
-> > +      * Read complete, clear RX status alert bit.
-> > +      * Clear overflow as well if set.
-> > +      */
-> > +     ret = max_tcpci_write16(chip, TCPC_ALERT, status & TCPC_ALERT_RX_BUF_OVF ?
-> > +                             TCPC_ALERT_RX_STATUS | TCPC_ALERT_RX_BUF_OVF :
-> > +                             TCPC_ALERT_RX_STATUS);
-> > +     if (ret < 0)
-> > +             return;
-> > +
-> > +     tcpm_pd_receive(chip->port, &msg);
-> > +}
-> > +
-> > +static int max_tcpci_set_vbus(struct tcpci *tcpci, struct tcpci_data *tdata, bool source, bool sink)
-> > +{
-> > +     struct max_tcpci_chip *chip = tdata_to_max_tcpci(tdata);
-> > +     u8 buffer_source[2] = {MAX_BUCK_BOOST_OP, MAX_BUCK_BOOST_SOURCE};
-> > +     u8 buffer_sink[2] = {MAX_BUCK_BOOST_OP, MAX_BUCK_BOOST_SINK};
-> > +     u8 buffer_none[2] = {MAX_BUCK_BOOST_OP, MAX_BUCK_BOOST_OFF};
-> > +     struct i2c_client *i2c = chip->client;
-> > +     int ret;
-> > +
-> > +     struct i2c_msg msgs[] = {
-> > +             {
-> > +                     .addr = MAX_BUCK_BOOST_SID,
-> > +                     .flags = i2c->flags & I2C_M_TEN,
-> > +                     .len = 2,
-> > +                     .buf = source ? buffer_source : sink ? buffer_sink : buffer_none,
-> > +             },
-> > +     };
-> > +
-> > +     if (source && sink) {
-> > +             dev_err(chip->dev, "Both source and sink set\n");
-> > +             return -EINVAL;
-> > +     }
->
-> So can buffer_none ever be used?
-
-Yes. When TCPM makes the call here
-https://elixir.bootlin.com/linux/latest/source/drivers/usb/typec/tcpm/tcpm.c#L2602.
-@ tcpm_init_vbus which is called in the source/sink disconnect path.
-Does that address your question ?
-
-
->
-> > +     ret = i2c_transfer(i2c->adapter, msgs, 1);
-> > +
-> > +     return  ret < 0 ? ret : 1;
-> > +}
-> > +
-> > +static void process_power_status(struct max_tcpci_chip *chip)
-> > +{
-> > +     u8 pwr_status;
-> > +     int ret;
-> > +
-> > +     ret = max_tcpci_read8(chip, TCPC_POWER_STATUS, &pwr_status);
-> > +     if (ret < 0)
-> > +             return;
-> > +
-> > +     if (pwr_status == 0xff)
-> > +             max_tcpci_init_regs(chip);
-> > +     else
-> > +             tcpm_vbus_change(chip->port);
-> > +}
-> > +
-> > +static void process_tx(struct max_tcpci_chip *chip, u16 status)
-> > +{
-> > +     if (status & TCPC_ALERT_TX_SUCCESS)
-> > +             tcpm_pd_transmit_complete(chip->port, TCPC_TX_SUCCESS);
-> > +     else if (status & TCPC_ALERT_TX_DISCARDED)
-> > +             tcpm_pd_transmit_complete(chip->port, TCPC_TX_DISCARDED);
-> > +     else if (status & TCPC_ALERT_TX_FAILED)
-> > +             tcpm_pd_transmit_complete(chip->port, TCPC_TX_FAILED);
-> > +
-> > +     /* Reinit regs as Hard reset sets them to default value */
-> > +     if ((status & TCPC_ALERT_TX_SUCCESS) && (status & TCPC_ALERT_TX_FAILED))
-> > +             max_tcpci_init_regs(chip);
-> > +}
-> > +
-> > +static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
-> > +{
-> > +     u16 mask;
-> > +     int ret;
-> > +
-> > +     /*
-> > +      * Clear alert status for everything except RX_STATUS, which shouldn't
-> > +      * be cleared until we have successfully retrieved message.
-> > +      */
-> > +     if (status & ~TCPC_ALERT_RX_STATUS) {
-> > +             mask = status & TCPC_ALERT_RX_BUF_OVF ?
-> > +                     status & ~(TCPC_ALERT_RX_STATUS | TCPC_ALERT_RX_BUF_OVF) :
-> > +                     status & ~TCPC_ALERT_RX_STATUS;
-> > +             ret = max_tcpci_write16(chip, TCPC_ALERT, mask);
-> > +             if (ret < 0) {
-> > +                     dev_err(chip->dev, "ALERT clear failed\n");
-> > +                     return ret;
-> > +             }
-> > +     }
-> > +
-> > +     if (status & TCPC_ALERT_RX_BUF_OVF && !(status & TCPC_ALERT_RX_STATUS)) {
-> > +             ret = max_tcpci_write16(chip, TCPC_ALERT, (TCPC_ALERT_RX_STATUS |
-> > +                                                       TCPC_ALERT_RX_BUF_OVF));
-> > +             if (ret < 0) {
-> > +                     dev_err(chip->dev, "ALERT clear failed\n");
-> > +                     return ret;
-> > +             }
-> > +     }
-> > +
-> > +     if (status & TCPC_ALERT_RX_STATUS)
-> > +             process_rx(chip, status);
-> > +
-> > +     if (status & TCPC_ALERT_TX_DISCARDED)
-> > +             dev_info(chip->dev, "TX_DISCARDED");
->
-> What does that mean? Is it relevant for the user?
-This indicates that most recent transmission of the pd packet is not successful.
-I believe TCPM also prints this info in the TCPM debugfs logs
-(status=2 if I remember right).
-I will remove the log since it's redundant.
-
->
-> > +
-> > +     if (status & TCPC_ALERT_VBUS_DISCNCT)
-> > +             tcpm_vbus_change(chip->port);
-> > +
-> > +     if (status & TCPC_ALERT_CC_STATUS)
-> > +             tcpm_cc_change(chip->port);
-> > +
-> > +     if (status & TCPC_ALERT_POWER_STATUS)
-> > +             process_power_status(chip);
-> > +
-> > +     if (status & TCPC_ALERT_RX_HARD_RST) {
-> > +             tcpm_pd_hard_reset(chip->port);
-> > +             max_tcpci_init_regs(chip);
-> > +     }
-> > +
-> > +     if (status & TCPC_ALERT_TX_SUCCESS || status & TCPC_ALERT_TX_DISCARDED || status &
-> > +         TCPC_ALERT_TX_FAILED)
-> > +             process_tx(chip, status);
-> > +
-> > +     return IRQ_HANDLED;
-> > +}
-> > +
-> > +static irqreturn_t max_tcpci_irq(int irq, void *dev_id)
-> > +{
-> > +     struct max_tcpci_chip *chip = dev_id;
-> > +     u16 status;
-> > +     irqreturn_t irq_return;
-> > +     int ret;
-> > +
-> > +     if (!chip->port)
-> > +             return IRQ_HANDLED;
-> > +
-> > +     ret = max_tcpci_read16(chip, TCPC_ALERT, &status);
-> > +     if (ret < 0) {
-> > +             dev_err(chip->dev, "ALERT read failed\n");
-> > +             return ret;
-> > +     }
-> > +     while (status) {
-> > +             irq_return = _max_tcpci_irq(chip, status);
-> > +             /* Do not return if the ALERT is already set. */
-> > +             ret = max_tcpci_read16(chip, TCPC_ALERT, &status);
-> > +             if (ret < 0)
-> > +                     break;
-> > +     }
-> > +
-> > +     return irq_return;
-> > +}
-> > +
-> > +static irqreturn_t max_tcpci_isr(int irq, void *dev_id)
-> > +{
-> > +     struct max_tcpci_chip *chip = dev_id;
-> > +
-> > +     pm_wakeup_event(chip->dev, PD_ACTIVITY_TIMEOUT_MS);
-> > +
-> > +     if (!chip->port)
-> > +             return IRQ_HANDLED;
-> > +
-> > +     return IRQ_WAKE_THREAD;
-> > +}
-> > +
-> > +static int max_tcpci_init_alert(struct max_tcpci_chip *chip, struct i2c_client *client)
-> > +{
-> > +     int ret, irq_gpio;
-> > +
-> > +     irq_gpio = of_get_named_gpio(client->dev.of_node, "usbpd,usbpd_int", 0);
-> > +     client->irq = gpio_to_irq(irq_gpio);
-> > +     if (!client->irq)
-> > +             return -ENODEV;
-> > +
-> > +     ret = devm_request_threaded_irq(chip->dev, client->irq, max_tcpci_isr, max_tcpci_irq,
-> > +                                     (IRQF_TRIGGER_LOW | IRQF_ONESHOT), dev_name(chip->dev),
-> > +                                     chip);
-> > +
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     enable_irq_wake(client->irq);
-> > +     return 0;
-> > +}
-> > +
-> > +static int max_tcpci_start_toggling(struct tcpci *tcpci, struct tcpci_data *tdata,
-> > +                                 enum typec_cc_status cc)
-> > +{
-> > +     struct max_tcpci_chip *chip = tdata_to_max_tcpci(tdata);
-> > +
-> > +     max_tcpci_init_regs(chip);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int tcpci_init(struct tcpci *tcpci, struct tcpci_data *data)
-> > +{
-> > +     /*
-> > +      * Generic TCPCI overwrites the regs once this driver initializes
-> > +      * them. Prevent this by returning -1.
-> > +      */
-> > +     return -1;
-> > +}
-> > +
-> > +static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id *i2c_id)
-> > +{
-> > +     int ret;
-> > +     struct max_tcpci_chip *chip;
-> > +     u8 power_status;
-> > +
-> > +     chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
-> > +     if (!chip)
-> > +             return -ENOMEM;
-> > +
-> > +     chip->client = client;
-> > +     chip->data.regmap = devm_regmap_init_i2c(client, &max_tcpci_regmap_config);
-> > +     if (IS_ERR(chip->data.regmap)) {
-> > +             dev_err(&client->dev, "Regmap init failed\n");
-> > +             return PTR_ERR(chip->data.regmap);
-> > +     }
-> > +
-> > +     chip->dev = &client->dev;
-> > +     i2c_set_clientdata(client, chip);
-> > +
-> > +     ret = max_tcpci_read8(chip, TCPC_POWER_STATUS, &power_status);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     if (power_status & TCPC_POWER_STATUS_UNINIT) {
-> > +             dev_err(&client->dev, "TCPC not ready!");
-> > +             return -EPROBE_DEFER;
-> > +     }
->
-> That looks wrong. There is no guarantee that this wasn't the last
-> device that is registered for a while. Or is there?
->
-> I think you should consider TCPC_POWER_STATUS_UNINIT in tcpci_init(),
-> just like tcpci.c does. Or is there some reason why you are checking
-> it here?
-
-There is no additional reason. I missed that tcpci_iinit code is also
-checking for this.
-Also, misunderstood that the bit is cleared only once after power on as I read
-"1b: The TCPC is still performing internal initialization and the only registers
-that are guaranteed to return the correct values are 00h...0Fh" but missed
-"The TCPM shall check the state of the TCPC Initialization Status bit
-when it starts or **resets.**"
-which is mentioned above the register description.
-
-Will Remove.
-
-> > +
-> > +     /* Chip level tcpci callbacks */
-> > +     chip->data.set_vbus = max_tcpci_set_vbus;
-> > +     chip->data.start_drp_toggling = max_tcpci_start_toggling;
-> > +     chip->data.TX_BUF_BYTE_x_hidden = true;
-> > +     chip->data.init = tcpci_init;
-> > +
-> > +     max_tcpci_init_regs(chip);
-> > +     chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
-> > +     if (IS_ERR_OR_NULL(chip->tcpci)) {
-> > +             dev_err(&client->dev, "TCPCI port registration failed");
-> > +             ret = PTR_ERR(chip->tcpci);
-> > +             return PTR_ERR(chip->tcpci);
-> > +     }
-> > +     chip->port = tcpci_get_tcpm_port(chip->tcpci);
-> > +     ret = max_tcpci_init_alert(chip, client);
-> > +     if (ret < 0)
-> > +             goto unreg_port;
-> > +
-> > +     device_init_wakeup(chip->dev, true);
-> > +     return 0;
-> > +
-> > +unreg_port:
-> > +     tcpci_unregister_port(chip->tcpci);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int max_tcpci_remove(struct i2c_client *client)
-> > +{
-> > +     struct max_tcpci_chip *chip = i2c_get_clientdata(client);
-> > +
-> > +     if (!IS_ERR_OR_NULL(chip->tcpci))
-> > +             tcpci_unregister_port(chip->tcpci);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct i2c_device_id max_tcpci_id[] = {
-> > +     { "maxtcpc", 0 },
-> > +     { }
-> > +};
-> > +MODULE_DEVICE_TABLE(i2c, max_tcpci_id);
-> > +
-> > +#ifdef CONFIG_OF
-> > +static const struct of_device_id max_tcpci_of_match[] = {
-> > +     { .compatible = "maxim,tcpc", },
-> > +     {},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, max_tcpci_of_match);
-> > +#endif
-> > +
-> > +static struct i2c_driver max_tcpci_i2c_driver = {
-> > +     .driver = {
-> > +             .name = "maxtcpc",
-> > +             .of_match_table = of_match_ptr(max_tcpci_of_match),
-> > +     },
-> > +     .probe = max_tcpci_probe,
-> > +     .remove = max_tcpci_remove,
-> > +     .id_table = max_tcpci_id,
-> > +};
-> > +module_i2c_driver(max_tcpci_i2c_driver);
-> > +
-> > +MODULE_AUTHOR("Badhri Jagan Sridharan <badhri@google.com>");
-> > +MODULE_DESCRIPTION("Maxim TCPCI based USB Type-C Port Controller Interface Driver");
-> > +MODULE_LICENSE("GPL v2");
-> > --
-> > 2.28.0.402.g5ffc5be6b7-goog
->
-> thanks,
->
-> --
-> heikki
+T24gOS8xNC8yMCAzOjAwIFBNLCBWaWduZXNoIFJhZ2hhdmVuZHJhIHdyb3RlOg0KPiBFWFRFUk5B
+TCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlv
+dSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDkvMTEvMjAgODoxNyBQTSwgTWFy
+Y28gRmVsc2NoIHdyb3RlOg0KPj4gVGhlIHNzdCB3cml0ZSBzdXBwb3J0IGZvciBkZXZpY2VzIHVz
+aW5nIHRoZSBzcGVjaWFsIFNTVF9XUklURSByb3V0aW5lDQo+PiBpcyBicm9rZW4gc2luY2UgY29t
+bWl0IGNvbW1pdCBkZjVjMjEwMDJjZjQgKCJtdGQ6IHNwaS1ub3I6IHVzZSBzcGktbWVtDQo+PiBk
+aXJtYXAgQVBJIikgYmVjYXVzZSB0aGUgc3BpX25vcl9jcmVhdGVfd3JpdGVfZGlybWFwKCkgZnVu
+Y3Rpb24gY2hlY2tzDQo+PiBTUElOT1JfT1BfQUFJX1dQIGFuZCBzc3Rfd3JpdGVfc2Vjb25kLiBU
+aGVzZSBjaGVja3MgYXJlIG5vdCB2YWxpZCBkdXJpbmcNCj4+IHByb2JlLiBUaGUgY2hlY2sgc2Vl
+bXMgYWxzbyB0byBiZSBicm9rZW4gc2luY2UgdGhlICJvcC0+YWRkci5uYnl0ZXMgPSAwIg0KPj4g
+Y2F1c2VzIHRoZSBkZXZtX3NwaV9tZW1fZGlybWFwX2NyZWF0ZSgpIGZ1bmN0aW9uIHRvIHJldHVy
+bg0KPj4gUFRSX0VSUigtRUlOVkFMKSBhbmQgdGhlIHByb2JlKCkgZnVuY3Rpb24gd2lsbCBmYWls
+Lg0KPj4NCj4+IEl0IHNlZW1zIHRoYXQgdGhlIGNvbW1pdCBvbmx5IGNvcHknbidwYXN0ZWQgdGhl
+IGV4aXN0aW5nIGxvZ2ljLiBVc2UgdGhlDQo+PiBjb3JyZWN0IFNTVF9XUklURSBmbGFnIGFuZCBy
+ZXR1cm4gMCB0byBmaXggYm90aCBpc3N1ZXMuDQo+Pg0KPj4gRml4ZXM6IGRmNWMyMTAwMmNmNCAo
+Im10ZDogc3BpLW5vcjogdXNlIHNwaS1tZW0gZGlybWFwIEFQSSIpDQo+PiBTaWduZWQtb2ZmLWJ5
+OiBNYXJjbyBGZWxzY2ggPG0uZmVsc2NoQHBlbmd1dHJvbml4LmRlPg0KPj4gLS0tDQo+PiAgZHJp
+dmVycy9tdGQvc3BpLW5vci9jb3JlLmMgfCAxMiArKysrKysrKystLS0NCj4+ICAxIGZpbGUgY2hh
+bmdlZCwgOSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5j
+DQo+PiBpbmRleCA2NWVmZjRjZTZhYjEuLjMxODY5YWMyNDVhOCAxMDA2NDQNCj4+IC0tLSBhL2Ry
+aXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jDQo+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2Nv
+cmUuYw0KPj4gQEAgLTMyODksMTUgKzMyODksMjEgQEAgc3RhdGljIGludCBzcGlfbm9yX2NyZWF0
+ZV93cml0ZV9kaXJtYXAoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4+ICAgICAgIH07DQo+PiAgICAg
+ICBzdHJ1Y3Qgc3BpX21lbV9vcCAqb3AgPSAmaW5mby5vcF90bXBsOw0KPj4NCj4+ICsgICAgIC8q
+DQo+PiArICAgICAgKiBNb3N0IFNTVCBTUEktTk9SJ3MgaGF2ZSBhIHNwZWNpYWwgd3JpdGUgcm91
+dGluZS53aGljaCBzaG91bGQgc28NCj4gDQo+IHMvU1BJLU5PUi9TUEkgTk9SLg0KPiANCj4+ICsg
+ICAgICAqIGRpcm1hcC53ZGVzYyBpcyBub3Qgc3VwcG9ydGVkIGZvciB0aGVzZS4NCj4gDQo+IE9y
+IEhvdyBhYm91dCBtb3JlIHJlYWRhYmxlIHZlcnNpb246DQo+IA0KPiAiTW9zdCBTU1QgZmxhc2hl
+cyBoYXZlIHNwZWNpYWwgc2VxdWVuY2UgZm9yIHdyaXRpbmcgZGF0YSB0byB0aGUgZmxhc2gNCj4g
+YW5kIHRoZXJlZm9yZSBjYW5ub3Qgc3VwcG9ydCB3cml0ZXMgdGhyb3VnaCBkaXJlY3QgbWFwcGlu
+ZyBBUElzLiINCj4gDQo+PiArICAgICAgKi8NCj4+ICsgICAgIGlmIChub3ItPmluZm8tPmZsYWdz
+ICYgU1NUX1dSSVRFKSB7DQo+PiArICAgICAgICAgICAgIG5vci0+ZGlybWFwLndkZXNjID0gTlVM
+TDsNCj4gDQo+IG5vci0+ZGlybWFwLndkZXNjIGlzIGtub3duIHRvIGJlIE5VTEwgYXQgdGhpcyBw
+b2ludC4gU28gbm8gbmVlZCB0byBzZXQNCj4gdG8gTlVMTCBhZ2Fpbi4NCj4gDQo+PiArICAgICAg
+ICAgICAgIHJldHVybiAwOw0KPj4gKyAgICAgfQ0KPj4gKw0KPj4gICAgICAgLyogZ2V0IHRyYW5z
+ZmVyIHByb3RvY29scy4gKi8NCj4+ICAgICAgIG9wLT5jbWQuYnVzd2lkdGggPSBzcGlfbm9yX2dl
+dF9wcm90b2NvbF9pbnN0X25iaXRzKG5vci0+d3JpdGVfcHJvdG8pOw0KPj4gICAgICAgb3AtPmFk
+ZHIuYnVzd2lkdGggPSBzcGlfbm9yX2dldF9wcm90b2NvbF9hZGRyX25iaXRzKG5vci0+d3JpdGVf
+cHJvdG8pOw0KPj4gICAgICAgb3AtPmR1bW15LmJ1c3dpZHRoID0gb3AtPmFkZHIuYnVzd2lkdGg7
+DQo+PiAgICAgICBvcC0+ZGF0YS5idXN3aWR0aCA9IHNwaV9ub3JfZ2V0X3Byb3RvY29sX2RhdGFf
+bmJpdHMobm9yLT53cml0ZV9wcm90byk7DQo+Pg0KPj4gLSAgICAgaWYgKG5vci0+cHJvZ3JhbV9v
+cGNvZGUgPT0gU1BJTk9SX09QX0FBSV9XUCAmJiBub3ItPnNzdF93cml0ZV9zZWNvbmQpDQo+PiAt
+ICAgICAgICAgICAgIG9wLT5hZGRyLm5ieXRlcyA9IDA7DQo+PiAtDQo+PiAgICAgICBub3ItPmRp
+cm1hcC53ZGVzYyA9IGRldm1fc3BpX21lbV9kaXJtYXBfY3JlYXRlKG5vci0+ZGV2LCBub3ItPnNw
+aW1lbSwNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgJmluZm8pOw0KPj4gICAgICAgcmV0dXJuIFBUUl9FUlJfT1JfWkVSTyhub3ItPmRpcm1h
+cC53ZGVzYyk7DQo+Pg0KDQpXaXRoIFZpZ25lc2gncyBjb21tZW50cyBhZGRyZXNzZWQsIG9uZSBj
+YW4gYWRkOg0KUmV2aWV3ZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9j
+aGlwLmNvbT4NCg==
