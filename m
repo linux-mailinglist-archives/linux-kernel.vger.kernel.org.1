@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC2C26C907
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A5A26C98F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728307AbgIPTCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727524AbgIPRss (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:48 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF0AC002182
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:17:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9pQIxLLUEkzWAPIkT2AufuHjwMwmkPzl+bptFVgIBd8=; b=2lmLExeHxWL5vAuNjc1CHuf29n
-        3ua/zYKoddDt2v6LKpQkFvzwKryPQBGOyV+RAw9ilwUBeKQLUSVNZhQY36/y8X+C0TnJ82d4UM94W
-        m+HIoQsULk6Fr4DvNFx5puf4jxNARo/24ySCBm2bjgT+r1ahP7rgVbb7+S4pvza0iiIn4WVc7eNcs
-        HIFo7DQ5nb1nyJ7t2IOoHLw245KcIdddDppBqVfc2kun6dyUF0GWQq/I2b6yUQ7s7F1ZY/4UkMeiB
-        XQOuJmRFzO7tp3g9at496cDShcjY8rzAkyqOgVRrZlL6WEPjPrzZz+CY1WsdwLYDgoHdOflzSAGY6
-        d16rhhLw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIYF4-0003Cf-Ov; Wed, 16 Sep 2020 14:17:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1727482AbgIPTM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:12:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727311AbgIPRka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:40:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 186F83050F0;
-        Wed, 16 Sep 2020 16:17:01 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 011062BADC868; Wed, 16 Sep 2020 16:17:00 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 16:17:00 +0200
-From:   peterz@infradead.org
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 16/26] perf tools: Synthesize modules with mmap3
-Message-ID: <20200916141700.GC1362448@hirez.programming.kicks-ass.net>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-17-jolsa@kernel.org>
- <20200914160758.GK160517@kernel.org>
- <CAP-5=fV4Agxe3UMpkbWkh9CuG1tYho413w7xehy0SiMX+tPv1Q@mail.gmail.com>
- <20200916082018.GA2301783@krava>
- <20200916140744.GR720847@kernel.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F547206DC;
+        Wed, 16 Sep 2020 14:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600266462;
+        bh=xf7C1Nf+dJFmvaQcodvUwIxkZ93oC4yDDRg3Ab6MZsg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c4uFbMhTwi4BHj/2LpLqjR+WYtOsZzNWHmwdfZRh4ar5zF7i8hG5HAXnHypm+y0xD
+         TgTeq65DXiA+Oa3yijkvFwSp8K+bmWhPfx56pnAbXX+hI7YNF4T5Xb1cs8gXfXkNWG
+         ZXM/f3uqsjK9oHAhPridS5xYLtvrLlGemAjMrRkI=
+Date:   Wed, 16 Sep 2020 16:28:16 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "puranjay12@gmail.com" <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "vailbhavgupta40@gmail.com" <vailbhavgupta40@gmail.com>
+Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
+ driving parameter
+Message-ID: <20200916142816.GA2979962@kroah.com>
+References: <20200916123020.GA2796266@kroah.com>
+ <20200916133226.GA1535437@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916140744.GR720847@kernel.org>
+In-Reply-To: <20200916133226.GA1535437@bjorn-Precision-5520>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:07:44AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Sep 16, 2020 at 10:20:18AM +0200, Jiri Olsa escreveu:
-
-> > > IIRC BUILD_ID_SIZE is 20 bytes which is the correct size for SHA-1. A
-> > > build ID may be 128-bits (16 bytes) if md5 or uuid hashes are used.
-> > > Should this test just be "> 0" ?
-> > 
-> > ah right, will check on that
+On Wed, Sep 16, 2020 at 08:32:26AM -0500, Bjorn Helgaas wrote:
+> > So is it ok to take this patch now, or does it need to be changed any?
 > 
-> And how do you deal with this in the kernel? I.e. to inform userspace,
-> via the PERF_RECORD_MMAP3 (or MMAP2 with that misc bit trick) the size
-> of the build-id?
+> Yes, it's OK with me if you take this patch.
+> 
+> The ASPM hardware feature is designed to work without any driver
+> support.  It does need to be configured, which involves both the
+> device and the upstream bridge, so it should be done by the BIOS or
+> the PCI core.  There are a few drivers (amdgpu, radeon, hfi1, e1000e,
+> iwlegacy, ath10k, ath9k, mt76, rtlwifi, rtw88, and these rts
+> cardreader drivers) that do it themselves, incorrectly.
+> 
+> But this particular patch only *reads* the ASPM control registers,
+> without writing them, so it shouldn't make anything worse.
 
-The union size is 24 bytes, so there's plenty space to store a length
-field with the buildid.
+Ok, thanks for the review, now queued up.
+
+greg k-h
