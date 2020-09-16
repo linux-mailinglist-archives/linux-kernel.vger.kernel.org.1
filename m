@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E66726CF8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B706526CFA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 01:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIPXZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 19:25:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47236 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726084AbgIPXZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 19:25:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 35CEDAC3F;
-        Wed, 16 Sep 2020 23:26:01 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Thu, 17 Sep 2020 09:25:36 +1000
-Cc:     milan.opensource@gmail.com, lkml <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] fsync.2: ERRORS: add EIO and ENOSPC
-In-Reply-To: <8842543f4c929f7004cf356224230516a7fe2fb7.camel@kernel.org>
-References: <1598685186-27499-1-git-send-email-milan.opensource@gmail.com>
- <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
- <20200908112742.GA2956@quack2.suse.cz>
- <e4f5ccb298170357ba16ae2870fde6a90ca2aa81.camel@kernel.org>
- <87k0x2k0wn.fsf@notabene.neil.brown.name>
- <8842543f4c929f7004cf356224230516a7fe2fb7.camel@kernel.org>
-Message-ID: <87sgbhi9sf.fsf@notabene.neil.brown.name>
+        id S1726981AbgIPX3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 19:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbgIPX3t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 19:29:49 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C22AC061756;
+        Wed, 16 Sep 2020 16:29:48 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id kk9so255046pjb.2;
+        Wed, 16 Sep 2020 16:29:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UuUWLJEBodzYyAEVXki7mrsbF9tCcBb6YY03Mkqze7c=;
+        b=CYblctxPRdoz/n3QXAcmm2DKINKZv4X01IObYhEn+Oe1+Au/Gn5WgCVLKMbKKhorMM
+         QGkAqu/GhZ5Jhs8z//bxyuMFQItM8PgizbnEWETjehh27zTtmpfWe+Sa68o/UA71Oo96
+         SsG3Is+uGY50woklfE0ZZjJLOYo60x6HdB2MJwkqV64rL6NUhEOuXXM3+/tQcyoV2jfZ
+         xvxE3Njn46gXcYPlBK8liWdCtYOQjaL2pqnqoLoBi0RGa5Osj+NirFoOYgy4bQ2DUWDf
+         PjSwG5YurEoWQTQZ0ERWJFSLZOchR1NGwc+ie2YZjRFWiIuxS18Nw1acZ4iFZ011FKMz
+         0m/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UuUWLJEBodzYyAEVXki7mrsbF9tCcBb6YY03Mkqze7c=;
+        b=I87QjYQx770697vtvqhPPXqGCjyXyLFd+e90CDKqFEEJcrIw0nRO6ozX434lYI7i+c
+         +iJV4TWMkfqvyt19doqI9dKyIMs8+eXshLjRb6h+uU1dc8uZrKhG7ABTcKwp5Uw1sqXb
+         iIUxNQghq+13SCmrXCxJ+vyOyzp0l898RMVkVynNwR6IKlDl/FwdO2ZUHXZ/Kc5erAjb
+         h7Fn58hok1Lv3gQ8etABKEdq1zsyJZxCPsqd4bQYpu2LLhCSB3JnwklXTc80Apkl8PXR
+         Nud9QtElbUoZjiCYAuF+zeTy44Cclmb3s2H6N7tZlsFtfk2e2/ooj47T6LoGLUMlWQAN
+         cJcA==
+X-Gm-Message-State: AOAM530VZEo32jGm0Gpx2tmHAesgPmKSXebHihdF2yXNnd2Vd5g8BJIa
+        eThdkP4C4SqJb2sQ3sCduQ3CXYKQwv3VlcUU
+X-Google-Smtp-Source: ABdhPJxNBVuDFVhKSTTFI7L9sfLTHC8yZgMtbiqinUiXm/Byu3HTHLh1h5J3mm5VXUGSn48iM50q3A==
+X-Received: by 2002:a17:902:59ce:b029:d1:e5e7:bde8 with SMTP id d14-20020a17090259ceb02900d1e5e7bde8mr8221612plj.72.1600298988110;
+        Wed, 16 Sep 2020 16:29:48 -0700 (PDT)
+Received: from localhost.localdomain (sau-ff5be-or.servercontrol.com.au. [43.250.207.3])
+        by smtp.gmail.com with ESMTPSA id p11sm17898701pfq.130.2020.09.16.16.29.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 16:29:47 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH v3] docs: fb: Remove vesafb scrollback boot option
+Date:   Thu, 17 Sep 2020 04:59:00 +0530
+Message-Id: <20200916232900.23502-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 10 2020, Jeff Layton wrote:
->
->> Regarding your "NOTES" addition, I don't feel comfortable with the
->> "clean" language.  I would prefer something like:
->>=20
->>  When fsync() reports a failure (EIO, ENOSPC, EDQUOT) it must be assumed
->>  that any write requests initiated since the previous successful fsync
->>  was initiated may have failed, and that any cached data may have been
->>  lost.  A future fsync() will not attempt to write out the same data
->>  again.  If recovery is possible and desired, the application must
->>  repeat all the writes that may have failed.
->>=20
->>  If the regions of a file that were written to prior to a failed fsync()
->>  are read, the content reported may not reflect the stored content, and
->>  subsequent reads may revert to the stored content at any time.
->>=20
->
-> Much nicer.
+This patch remove the reference of scrollback from this file. This is 
+related to these below commits.
 
-I guess someone should turn it into a patch....
+Commit 973c096f6a85(vgacon: remove software scrollback support)
+Commit 50145474f6ef(fbcon: remove soft scrollback code)
 
->
-> Should we make a distinction between usage and functional classes of
-> errors in this? The "usage" errors will probably not result in the pages
-> being tossed out, but the functional ones almost certainly will...
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+Correcting the previous versions errors. Proper changelog and subject text.
+Trying to incorporate Willy's and Greg's suggestions.
 
-Maybe.  I think it is a useful distinction, but to be consistent it
-would be best to make it in all (section 2) man pages.  Maybe not all at
-once though.  It is really up to Michael if that is a direction he is
-interesting in following.
+ Documentation/fb/vesafb.rst | 2 --
+ 1 file changed, 2 deletions(-)
 
-NeilBrown
+diff --git a/Documentation/fb/vesafb.rst b/Documentation/fb/vesafb.rst
+index 6821c87b7893..f890a4f5623b 100644
+--- a/Documentation/fb/vesafb.rst
++++ b/Documentation/fb/vesafb.rst
+@@ -135,8 +135,6 @@ ypan	  enable display panning using the VESA protected mode
+ 
+                 * scrolling (fullscreen) is fast, because there is
+ 		  no need to copy around data.
+-		* You'll get scrollback (the Shift-PgUp thing),
+-		  the video memory can be used as scrollback buffer
+ 
+           kontra:
+ 
+-- 
+2.28.0
 
-
->
-> --=20
-> Jeff Layton <jlayton@kernel.org>
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl9invEOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbnU4Q//aNSYicYkJ0wMvKqbDFZKVkkiZ1Ze0PHZO0WR
-/p+oyRJk0EC3wsG7CTjTgk71DCeMGMh7SQLenHx2apGrzSg585/icGvnj6rY433e
-FpgleXqdsf0JkRRFvfW1SkK7ak2Qkd39nExoYX3E7nuJUQsi6JQlZwMyxQE6pO8P
-YfIkwENISnk2kc6L24dboNt1W4Rbg/s4UQC8hNP/8XCHNdtZ/04XsFLdsbzAK87B
-DWXGDTUPEisXqE0lvQWE1KDoeWQNB8R6bYbSUCQjqOoemqKEnmVWD8kbttpmlaOz
-/mpIeYsAwp5kQuR1NePCog9zykUML9tfSKjtdoWGVgTB854gzmMFt07KbmsmipL0
-YQaGsHnWl7u520D2EJ2Y3oS5DnizAKRGG2jv3i64eIWD9lAl6Cg0VS3AOLHAd1Jn
-xNlpi+tKOklZNPj41mTViAE30UtYYeqy5F7cJG+3gkc/V6a6KgSgMeE84WTaOF67
-eqP9ijvWsOTK6TbIif+3Wqiacgk5OHZQ3bpCgub87Na2IsazfB+jpVYxZfledwSo
-Xn2acKrPwo8qMhaMzEnJC6DDGeyL1TqOTeQHyk9Ja2AvaZa43a80jyWMjpJCEcgq
-fcqCpO2OPAKGAlgXI2yRvApvZdw2lEUx4CPjGR0f46H74IcOdjjVnhhHL3ndnI4p
-1pnGIIE=
-=o6L5
------END PGP SIGNATURE-----
---=-=-=--
