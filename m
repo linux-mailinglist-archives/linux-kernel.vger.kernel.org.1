@@ -2,98 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8710626C74D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3854C26C773
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgIPSXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727973AbgIPSW6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:22:58 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782F7C0698E6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:58:09 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id e23so9950553eja.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=A3xN62utC03A3lq+ZVdlv55wJluSPlBfSfe9+P/nSrA=;
-        b=XRwftWmyPHWLmUOlCJp2dw5J/d7PZKim4ptfJ9VCjFizn9Hz9C93tC/jBF7+F3G+yI
-         Pn2y/hzWyZOcJyCt/0CkRZbr5Da0YHoSopKWRtp+gqqUCg4Gws52dH0pA1ZeLpmnLOf4
-         p3+p+5bGEd8uoWkfzLHzLArwRqEEtUMGJmY1BExpAPGStkI3DE959Q2JWnd/OMiWH0qg
-         9yaQO/xIOULJKh+RLvwN1dLlI2VkMFCYlAEsav4FSugQ0lPvHY1VMWAfFYOojUEs0XZu
-         8pleiSEOZ6JtkmG1BjLZwk39SuuxCf1jXiaxlg8yrIWQY75Ay+RgcKZ57mpuTSp6o853
-         rYfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=A3xN62utC03A3lq+ZVdlv55wJluSPlBfSfe9+P/nSrA=;
-        b=Kq3yTpVAf6gW22qRJmLPnDndOin1TdeeaBl/i3kIJ8WMb5PKAqWfwuCy/ZHTdgUimN
-         PDxoDFOlUOpIBXYrGDE1fqOKa82TjR63NdBrYcavJunGyL26CxK6Kk+r3os6D5pqTZMa
-         PqchLBb2bkiiSGRXIN6dJdaSpGZnuggdRNQMQ6zpSfwu8ag9JNGcylfjE+/wTNIj4Bsi
-         KW/T1niq+UcP/tmepP3UkZtEHqzBzKKG+jrywFoeQKp6oH/Ob0U225t3oOdNZYS/GTJH
-         ekM8MHoCPtO7ZgzK1C1mPk1KSbya+t452hi4/8Z4HUdAgy1hRseLEI/q9otdxHc17krh
-         Oy6A==
-X-Gm-Message-State: AOAM530TMFWuSQIVgDaWGdpMN5E2l5epzS/SnPMEQ+HeAuHkRCbe5cA4
-        1hj+WCD9HeODKvrhtWt+5FkHWxG8lkT9MFFRodU=
-X-Google-Smtp-Source: ABdhPJyUlNJ+29Q+OUAVlyvrbnxxVFqYZNxI3qXpCra/LsJYCVfKkupY3gHkaXnjWXaDJaG40gR6AoxjO6vI5M2So0s=
-X-Received: by 2002:a17:906:2655:: with SMTP id i21mr20117046ejc.511.1600257484130;
- Wed, 16 Sep 2020 04:58:04 -0700 (PDT)
+        id S1727822AbgIPS0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:26:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:35106 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727999AbgIPSZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:25:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 676C230E;
+        Wed, 16 Sep 2020 05:11:18 -0700 (PDT)
+Received: from [10.57.10.184] (unknown [10.57.10.184])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 876B03F68F;
+        Wed, 16 Sep 2020 05:11:15 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] kselftests/arm64: add a basic Pointer
+ Authentication test
+To:     Boyan Karatotev <boyan.karatotev@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     vincenzo.frascino@arm.com, boian4o1@gmail.com,
+        Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20200831110450.30188-1-boyan.karatotev@arm.com>
+ <20200831110450.30188-2-boyan.karatotev@arm.com>
+From:   Amit Kachhap <amit.kachhap@arm.com>
+Message-ID: <2e89a5ff-738b-5484-bd00-9ccdeccf9f60@arm.com>
+Date:   Wed, 16 Sep 2020 17:41:11 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Received: by 2002:a17:906:c1d6:0:0:0:0 with HTTP; Wed, 16 Sep 2020 04:58:03
- -0700 (PDT)
-Reply-To: transfermoney212@foxmail.com
-From:   "Mrs.Susan Dansuki" <mrsgracezinsou@gmail.com>
-Date:   Wed, 16 Sep 2020 04:58:03 -0700
-Message-ID: <CAE9nKpAV8fcfRafjBvaNAJruA5So+bk5Xf3iEQdVGBN1ZJzziw@mail.gmail.com>
-Subject: Re: CONTACT MONEY GRAM FOR YOUR DAILY PAYMENT OF $5,000.00
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200831110450.30188-2-boyan.karatotev@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Attention: Beneficiary,
+Hi Boyan,
 
-This is the second time we are notifying you about your COVID-19
-Palliative fund of $1,500,000.00. Be inform that We have been
-authorized by the United Nations Commission (UNC) to release your
-COVID-19 Response and Recovery Fund of $1,500,000.00 US Dollars
-through MoneyGram money transfer. You will be receiving the sum of
-$5,000.00 daily until the total sum of US $1,500,000.00 is completely
-transferred to you.
+On 8/31/20 4:34 PM, Boyan Karatotev wrote:
+> PAuth signs and verifies return addresses on the stack. It does so by
+> inserting a Pointer Authentication code (PAC) into some of the unused top
+> bits of an address. This is achieved by adding paciasp/autiasp instructions
+> at the beginning and end of a function.
+> 
+> This feature is partially backwards compatible with earlier versions of the
+> ARM architecture. To coerce the compiler into emitting fully backwards
+> compatible code the main file is compiled to target an earlier ARM version.
+> This allows the tests to check for the feature and print meaningful error
+> messages instead of crashing.
+> 
+> Add a test to verify that corrupting the return address results in a
+> SIGSEGV on return.
+> 
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Reviewed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
+> Reviewed-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
+> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
+> ---
+>   tools/testing/selftests/arm64/Makefile        |  2 +-
 
-Besides,we have already credited your first payment of US$5,000.00
-today,therefore,you are advice to contact our director of foreign
-Remittance Department MR.ROBERT TAIWO and request him to give you the
-details of your first payment such as money transfer reference Numbers
-and senders name to enable you pick up your first payment of
-US$5,000.00 at any MoneyGram office located around you. Kindly contact
-him through the information stated below for faster process.
+[...]
 
-Contact Person: MR.ROBERT TAIWO
-E-MAIL: transfermoney212@foxmail.com
-Tel: (+229) 965 483 88 ( WhatsApp )
+> +
+> +/* check that a corrupted PAC results in SIGSEGV */
+> +TEST_SIGNAL(corrupt_pac, SIGSEGV)
+> +{
+> +	ASSERT_PAUTH_ENABLED();
+> +
+> +	pac_corruptor();
 
-REMEMBER TO FORWARD HIM YOUR FULL INFORMATION AS REQUIRED BELOW TO
-ENABLE HIM LOCATE YOUR PAYMENT FILE AND ATTEND TO YOU IMMEDIATELY.
+With 8.6-Pauth extension merged in arm tree [1]. It makes sense to 
+verify PAC corruption for both SIGSEGV and SIGILL signals.
 
-1. Your Full Name:
-2. Address:
-3. Age:
-4. Occupation:
-5. Telephone:
-6. Country:
+Code something like below handles both the cases.
 
-NOTE: that the amount to be paid to you is (USD1.500, 000.00), we
-expect your urgent response to this email to enable us monitor the
-transaction effectively.
+-----------------------------------------------------------------------------------
+  int exec_sign_all(struct signatures *signed_vals, size_t val)
+@@ -187,12 +188,29 @@ int exec_sign_all(struct signatures *signed_vals, 
+size_t val)
+         return 0;
+  }
 
-Best Regards
-Mrs. Susan Dansuki.
+-/* check that a corrupted PAC results in SIGSEGV */
+-TEST_SIGNAL(corrupt_pac, SIGSEGV)
++sigjmp_buf jmpbuf;
++void pac_signal_handler(int signum, siginfo_t *si, void *uc)
+  {
+-       ASSERT_PAUTH_ENABLED();
++       if (signum == SIGSEGV || signum == SIGILL) {
++               siglongjmp(jmpbuf, 1);
++       }
++}
++
++/* check that a corrupted PAC results in SIGSEGV or SIGILL */
++TEST(corrupt_pac)
++{
++       struct sigaction sa;
+
+-       pac_corruptor();
++       ASSERT_PAUTH_ENABLED();
++       if (sigsetjmp(jmpbuf, 1) == 0) {
++               sa.sa_sigaction = pac_signal_handler;
++               sa.sa_flags = SA_SIGINFO;
++               sigemptyset(&sa.sa_mask);
++               sigaction(SIGSEGV, &sa, NULL);
++               sigaction(SIGILL, &sa, NULL);
++               pac_corruptor();
++               ASSERT_TRUE(0) TH_LOG("SIGSEGV/SIGILL signal did not 
+occur");
++       }
+  }
+
+  /*
+@@ -265,7 +283,7 @@ TEST(single_thread_different_keys)
+
+                 tmp = n_same_single_set(&signed_vals, nkeys);
+---------------------------------------------------------------------------------------
+
+
+Thanks,
+Amit Daniel
+
+[1]: 
+https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/ptrauth
+
+
+Regards,
+Amit Daniel
+> +}
+> +
+> +TEST_HARNESS_MAIN
+
+[...]
