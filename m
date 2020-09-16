@@ -2,155 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5E726BD85
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962CA26BD88
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgIPGxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:53:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45064 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726100AbgIPGxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:53:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47C9AB23D;
-        Wed, 16 Sep 2020 06:53:23 +0000 (UTC)
-Date:   Wed, 16 Sep 2020 08:53:06 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [[PATCH]] mm: khugepaged: recalculate min_free_kbytes after
- memory hotplug as expected by khugepaged
-Message-ID: <20200916065306.GB18998@dhcp22.suse.cz>
-References: <1599770859-14826-1-git-send-email-vijayb@linux.microsoft.com>
- <20200914143312.GU16999@dhcp22.suse.cz>
- <c6fcc196-ce7f-1f48-e9bd-c18448272df1@linux.microsoft.com>
- <20200915081832.GA4649@dhcp22.suse.cz>
- <53dd1e2c-f07e-ee5b-51a1-0ef8adb53926@linux.microsoft.com>
+        id S1726307AbgIPGxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726100AbgIPGxq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:53:46 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F403EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:53:45 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b22so5710478lfs.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:53:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=C+Nk7T+vITgNqEYkt/umMt2Yjz3odf+MC/EzyDBXAQI=;
+        b=pqGDWjzQ6lON2ewOoBOoVNQz1P4SBbfdNXCyPCmDM0dlQm5M7OpKIN4l1N0uqVG9BH
+         fExAFWbSGmxfm1ecwiUDHHREZwIKb5agqnH7i39G9wN02r40IM84fx6CSJBiiJEBKe/a
+         Z5GTFSkwAmpDm4t27zSOWuQBMRgrZ1Ul3CRsRUuS59FznJmfgH+F10vcOz+ITJoVKZN8
+         uvX2Min8t2RAqgmZO3ssnUok5FygWJbdJqAk5ryWqe77EC/FGN+gPgCSrOZE5bHHdVHa
+         ITJUEUB5HZV0so9n9/QFOnxwfPvB3F8XU9fngbqgjjFN9zZeRrM8QRLQPdx1fQTJSdKk
+         lOYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=C+Nk7T+vITgNqEYkt/umMt2Yjz3odf+MC/EzyDBXAQI=;
+        b=pMVZqn0PmXRZxQWcX6/W8LXEzDglNq6xLoBr5uXmogyjGgXef3g1YPqS2DYD34RCZ0
+         SzjEWI3LQT63dsq5KNJoYyJ/9RVfmX65k7qgGvddqjXmD5rCrRb4i9+cT1fjx1YgJlW+
+         QCtCzjz1MrpkuDRjbap2rRi6CA9iJkOBLqcH/1x8UNRsBs2xVM3zP8SEK2Tq5ELK3AYx
+         KxJYk6y9xX2Kqdabg4U8Mtpfs7z8hIToYtgi2/jppsrzxfCDiNnLiXlcpJ9AueKbmfFT
+         +fu3fLEr2zWNXCDNw1oTWHBlkxuCaHGN93BEp8BtH2aqz0ceeja2VPx8cEugaUPK0Otk
+         aHrw==
+X-Gm-Message-State: AOAM5317repX14TNqNbEtC39ymG95+I5aCbSRmoVaXGVJYYjNwFVgkR1
+        /pJ//O1qsJAanOE2nok6Yu+nOQYgLPksRSIlRUv/HA==
+X-Google-Smtp-Source: ABdhPJxagiTloaGlUG4JtyWd4Jd1ERoYnuJ/+sOAz4Xsj5l5+4IOZgJ2iyyCVDfyKfv1QqYN5v/YjnY9G5m1Ly9KrMQ=
+X-Received: by 2002:a19:7006:: with SMTP id h6mr7040521lfc.83.1600239224273;
+ Tue, 15 Sep 2020 23:53:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <53dd1e2c-f07e-ee5b-51a1-0ef8adb53926@linux.microsoft.com>
+References: <20200914100340.17608-1-vincent.guittot@linaro.org>
+ <20200914100340.17608-3-vincent.guittot@linaro.org> <jhjimce6ev2.mognet@arm.com>
+In-Reply-To: <jhjimce6ev2.mognet@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 16 Sep 2020 08:53:32 +0200
+Message-ID: <CAKfTPtC0Sf6SN+rqjQje-kXJiOaLzc0XnXqzS3hOF2FE=FscMA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] sched/fair: reduce minimal imbalance threshold
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15-09-20 08:48:08, Vijay Balakrishna wrote:
-> 
-> 
-> On 9/15/2020 1:18 AM, Michal Hocko wrote:
-> > On Mon 14-09-20 09:57:02, Vijay Balakrishna wrote:
-> > > 
-> > > 
-> > > On 9/14/2020 7:33 AM, Michal Hocko wrote:
-> > > > On Thu 10-09-20 13:47:39, Vijay Balakrishna wrote:
-> > > > > When memory is hotplug added or removed the min_free_kbytes must be
-> > > > > recalculated based on what is expected by khugepaged.  Currently
-> > > > > after hotplug, min_free_kbytes will be set to a lower default and higher
-> > > > > default set when THP enabled is lost. This leaves the system with small
-> > > > > min_free_kbytes which isn't suitable for systems especially with network
-> > > > > intensive loads.  Typical failure symptoms include HW WATCHDOG reset,
-> > > > > soft lockup hang notices, NETDEVICE WATCHDOG timeouts, and OOM process
-> > > > > kills.
-> > > > 
-> > > > Care to explain some more please? The whole point of increasing
-> > > > min_free_kbytes for THP is to get a larger free memory with a hope that
-> > > > huge pages will be more likely to appear. While this might help for
-> > > > other users that need a high order pages it is definitely not the
-> > > > primary reason behind it. Could you provide an example with some more
-> > > > data?
-> > > 
-> > > Thanks Michal.  I haven't looked into THP as part of my investigation, so I
-> > > cannot comment.
-> > > 
-> > > In our use case we are hotplug removing ~2GB of 8GB total (on our SoC)
-> > > during normal reboot/shutdown.  This memory is hotplug hot-added as movable
-> > > type via systemd late service during start-of-day.
-> > > 
-> > > In our stress test first we ran into HW WATCHDOG recovery, on enabling
-> > > kernel watchdog we started seeing soft lockup hung task notices, failure
-> > > symptons varied, where stack trace of hung tasks sometimes trying to
-> > > allocate GFP_ATOMIC memory, looping in do_notify_resume, NETDEVICE WATCHDOG
-> > > timeouts, OOM process kills etc.,  During investigation we reran stress test
-> > > without hotplug use case.  Surprisingly this run didn't encounter the said
-> > > problems.  This led to comparing what is different between the two runs,
-> > > while looking at various globals, studying hotplug code I uncovered the
-> > > issue of failing to restore min_free_kbytes.  In particular on our 8GB SoC
-> > > min_free_kbytes went down to 8703 from 22528 after hotplug add.
-> > 
-> > Did you try to increase min_free_kbytes manually after hot remove? Btw.
-> 
-> No, in our use case memory hot remove done during shutdown.
+On Tue, 15 Sep 2020 at 21:04, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+>
+> On 14/09/20 11:03, Vincent Guittot wrote:
+> > The 25% default imbalance threshold for DIE and NUMA domain is large
+> > enough to generate significant unfairness between threads. A typical
+> > example is the case of 11 threads running on 2x4 CPUs. The imbalance of
+> > 20% between the 2 groups of 4 cores is just low enough to not trigger
+> > the load balance between the 2 groups. We will have always the same 6
+> > threads on one group of 4 CPUs and the other 5 threads on the other
+> > group of CPUS. With a fair time sharing in each group, we ends up with
+> > +20% running time for the group of 5 threads.
+> >
+>
+> AIUI this is the culprit:
+>
+>                 if (100 * busiest->avg_load <=3D
+>                                 env->sd->imbalance_pct * local->avg_load)
+>                         goto out_balanced;
+>
+> As in your case imbalance_pct=3D120 becomes the tipping point.
+>
+> Now, ultimately this would need to scale based on the underlying topology=
+,
+> right? If you have a system with 2x32 cores running {33 threads, 34
+> threads}, the tipping point becomes imbalance_pct=E2=89=88103; but then s=
+ince you
+> have this many more cores, it is somewhat questionable.
 
-I do not follow. If you are hotremoving during shutdown then how come
-the value of min_free_kbytes matter at all?
+I wanted to stay conservative and to not trigger too much task
+migration because of small imbalance so I decided to decrease the
+default threshold to the same level as the MC groups but this can
+still generate unfairness. With your example of 2x32 cores, if you end
+up with 33 tasks in one group and 38 in the other one, the system is
+overloaded so you use load and imbalance_pct but the imbalance will
+stay below the new threshold and the 33 tasks will have 13% more
+running time.
 
-> > I would consider oom killer invocation due to min_free_kbytes really
-> > weird behavior. If anything the higher value would cause more memory
-> > reclaim and potentially oom rather than smaller one.
-> 
-> Yes, we wondered about it too.  One panic stack trace (after many OOM kills)
-> 
-> [330321.174240] Out of memory and no killable processes...
-> [330321.179658] Kernel panic - not syncing: System is deadlocked on memory
-> [330321.186489] CPU: 4 PID: 1 Comm: systemd Kdump: loaded Tainted: G       O
-> 5.4.51-xxx #1
-> [330321.196900] Hardware name: Overlake (DT)
-> [330321.201038] Call trace:
-> [330321.203660]  dump_backtrace+0x0/0x1d0
-> [330321.207533]  show_stack+0x20/0x2c
-> [330321.211048]  dump_stack+0xe8/0x150
-> [330321.214656]  panic+0x18c/0x3b4
-> [330321.217901]  out_of_memory+0x4c0/0x6e4
-> [330321.221863]  __alloc_pages_nodemask+0xbdc/0x1c90
-> [330321.226722]  alloc_pages_current+0x21c/0x2b0
-> [330321.231220]  alloc_slab_page+0x1e0/0x7d8
-> [330321.235361]  new_slab+0x2e8/0x2f8
-> [330321.238874]  ___slab_alloc+0x45c/0x59c
-> [330321.242835]  kmem_cache_alloc+0x2d4/0x360
-> [330321.247065]  getname_flags+0x6c/0x2a8
-> [330321.250938]  user_path_at_empty+0x3c/0x68
-> [330321.255168]  do_readlinkat+0x7c/0x17c
-> [330321.259039]  __arm64_sys_readlinkat+0x5c/0x70
-> [330321.263627]  el0_svc_handler+0x1b8/0x32c
-> [330321.267767]  el0_svc+0x10/0x14
-> [330321.271026] SMP: stopping secondary CPUs
-> [330321.275382] Starting crashdump kernel...
-> [330321.279526] Bye!
+This new imbalance_pct seems a reasonable step to decrease the unfairness
 
-Do you have the full oom splat? The fact that previous oom killer
-invocations haven't helped and all the eligible tasks have been killed
-and you still hit the oom would suggest there is a lot of memory
-allocated without a direct relation to tasks. I fail to see how
-min_free_kbytes would be related.
-
-> Then while searching I came across documented warning below.  In above
-> instance panic after OOM kills happened after 3+ days of stress run (a
-> mixure of ttcp, cpuloadgen and fio).
-> 
-> https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/performance_tuning_guide/sect-red_hat_enterprise_linux-performance_tuning_guide-configuration_tools-configuring_system_memory_capacity
-> 
-> Warning
-> 
-> Extreme values can damage your system. Setting min_free_kbytes to an
-> extremely low value prevents the system from reclaiming memory, which can
-> result in system hangs and OOM-killing processes. However, setting
-> min_free_kbytes too high (for example, to 5–10% of total system memory)
-> causes the system to enter an out-of-memory state immediately, resulting in
-> the system spending too much time reclaiming memory.
-
-The auto tuned value should never reach such a low value to cause
-problems.
-
--- 
-Michal Hocko
-SUSE Labs
+>
+> > Consider decreasing the imbalance threshold for overloaded case where w=
+e
+> > use the load to balance task and to ensure fair time sharing.
+> >
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  kernel/sched/topology.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > index 9079d865a935..1a84b778755d 100644
+> > --- a/kernel/sched/topology.c
+> > +++ b/kernel/sched/topology.c
+> > @@ -1337,7 +1337,7 @@ sd_init(struct sched_domain_topology_level *tl,
+> >               .min_interval           =3D sd_weight,
+> >               .max_interval           =3D 2*sd_weight,
+> >               .busy_factor            =3D 32,
+> > -             .imbalance_pct          =3D 125,
+> > +             .imbalance_pct          =3D 117,
+> >
+> >               .cache_nice_tries       =3D 0,
