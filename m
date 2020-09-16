@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E3126B7D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6792426B7E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727383AbgIPAai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:30:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
+        id S1726830AbgIPAbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:31:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbgIONru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:47:50 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1727176AbgIPAbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 20:31:20 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7526521D24;
-        Tue, 15 Sep 2020 13:47:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE25F20739;
+        Wed, 16 Sep 2020 00:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600177647;
-        bh=An8bUf+cWpAG/u+1BnVioiDw+Pkkf8LhEX7EXD3eUOg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eg6ePeAPhBgUAbixIOW8IWWLC8APZSEGurkIj/fSTZexULVYQUIQk4GDVuFJrqpOk
-         ui3ImEmzJPD4Rf7C2nJnjxlHlRwM7PsnG3Ik4qYvbcCVKRlXG+iCkB2Jdk/a4qRnab
-         uvgI8RZosMzMQnZGtMyzaTIKhYv8kSZzH8RW8Wd0=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kIBIr-00C1a8-EQ; Tue, 15 Sep 2020 14:47:25 +0100
+        s=default; t=1600216279;
+        bh=dYoe6uIsk8p/WBGtB6mGYFHVptzfKKSycmXz7RalSEM=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=DvVkryFX3mWNs7za2TmpfGEZWinva3YSjp9NZQDgcV2+TsvnERxUJfpd0NHl98GpC
+         9MgyleOy9G1UmJBdj73/LpSjpdgM6WEZU3hmpAcR7uSFIskeu0/RI/jHVk5LSnX88G
+         +BFfWr5H1ZmcB+yZV6s4na7hEVXGLw6YJdFF3Vzs=
+Date:   Tue, 15 Sep 2020 20:31:17 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        ben.hutchings@codethink.co.uk, stable@vger.kernel.org,
+        pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net,
+        Jonathan Marek <jonathan@marek.ca>
+Subject: Re: [PATCH 5.4 000/130] 5.4.66-rc2 review
+Message-ID: <20200916003117.GF2431@sasha-vm>
+References: <20200915164455.372746145@linuxfoundation.org>
+ <20200915201732.4474qpgnxwshanpw@nuc.therub.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Sep 2020 14:47:25 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH] KVM: arm64: fix doc warnings in mmu code
-In-Reply-To: <1600175890-7435-1-git-send-email-tanxiaofei@huawei.com>
-References: <1600175890-7435-1-git-send-email-tanxiaofei@huawei.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <7bcb5fd9b6490e98cfa8aa22496a8a71@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tanxiaofei@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, linuxarm@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200915201732.4474qpgnxwshanpw@nuc.therub.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiaofei,
+On Tue, Sep 15, 2020 at 03:17:32PM -0500, Dan Rue wrote:
+>On Tue, Sep 15, 2020 at 06:45:55PM +0200, Greg Kroah-Hartman wrote:
+>> This is the start of the stable review cycle for the 5.4.66 release.
+>> There are 130 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+>>
+>> Responses should be made by Thu, 17 Sep 2020 16:44:19 +0000.
+>> Anything received after that time might be too late.
+>>
+>> The whole patch series can be found in one patch at:
+>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.66-rc2.gz
+>> or in the git tree and branch at:
+>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+>> and the diffstat can be found below.
+>>
+>> thanks,
+>>
+>> greg k-h
+>>
+>> -------------
+>> Pseudo-Shortlog of commits:
+>>
+>> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>     Linux 5.4.66-rc2
+>>
+>> Jordan Crouse <jcrouse@codeaurora.org>
+>>     drm/msm: Disable the RPTR shadow
+>>
+>> Jonathan Marek <jonathan@marek.ca>
+>>     drm/msm/a6xx: update a6xx_hw_init for A640 and A650
+>
+>This one ("drm/msm/a6xx: update a6xx_hw_init for A640 and A650") is
+>still causing builds to fail on arm and arm64.
 
-On 2020-09-15 14:18, Xiaofei Tan wrote:
-> Fix following warnings caused by mismatch bewteen function parameters
-> and comments.
-> arch/arm64/kvm/mmu.c:119: warning: Function parameter or member
-> 'pudp'not described in 'stage2_dissolve_pud'
-> arch/arm64/kvm/mmu.c:119: warning: Excess function parameter 'pud'
-> description in 'stage2_dissolve_pud'
+I've dropped it, thanks!
 
-[...]
-
-Most of this code is being deleted. If you want to fix comments,
-please look at what is in -next.
-
-Thanks,
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+Thanks,
+Sasha
