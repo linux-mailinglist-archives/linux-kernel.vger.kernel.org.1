@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AE726CD9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A499226CD90
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728536AbgIPVC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
+        id S1726544AbgIPVB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgIPQTJ (ORCPT
+        with ESMTP id S1726447AbgIPQaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:19:09 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5C8C061223
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:07:10 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g4so6461942wrs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9nu6UrMqV2SVJMMVWIQbvvsBT41Bk/x2/rbQZZMvR5c=;
-        b=RPRtBcCg7Nlj0wORAHGE/VDKI3mlLQS/qXvivUL4M7/JW5ECAKalvw72hjSbxez8Aw
-         lMCZYbPq15i6bIjwQAxfIDpzMfPNPU/WZzWlPgKpy/oc+Y6L6jiGzWLpVMJB08/BtSZT
-         oD2dRBEBNsclb8R+SHrzd4iEmmwYG8+TCQGsqD7GKc1k8aVkk3vybhh7XzdFgXUgO9lI
-         QYDm0ol0pN3tx1rzzGaDqWMGc+wiiGj82UfSpSfbYEgpd1LIf+jsy1e4OB0MSuUMFEro
-         jQSQHm/io9aXGCi5lKWqazsAZMtxawDIHKwA08vwThJ4DSoOkZZBbBDobGS4XE3i1iKb
-         ItAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9nu6UrMqV2SVJMMVWIQbvvsBT41Bk/x2/rbQZZMvR5c=;
-        b=rf4wLZnOAUcGtPgE12i+jEqzhBYK30raKQqOuxXzSqNq++ZlupGVeMfTw/gwS4KH4H
-         O1NKaUmgBPIZGN6QKFr1htW6X6TNm4wtYmvKsFEXg4uUPo7k2rzIh3IPPqmreeBPFfVC
-         Fn6SCbMkumVlEjTpe4BvO1b1P4Sz20W5qqvfr3dEEjvurAzbxd76OyIUWDgb+ZrtHKfW
-         5U62qdWP33DbrO4NkXjCIeD8AAedSc5nIRb/sMPkDzbKjJOKJV1ndyX8qP7I4lhjSatm
-         UpQU/3ctzhDEtapxonHDacGhJNYpAFQTAodYFSL1IPOCq+no1sPGUoN3UKSslyRuw9eB
-         PS2g==
-X-Gm-Message-State: AOAM532ueoK4t8IZPnSMYTKX03viCDenwDNmgb+tfjJCG7uVQfOo6Tmg
-        RfJCvXOFqRj0daBQX72FgtIL1g==
-X-Google-Smtp-Source: ABdhPJzs9y1RZuz1TgxiB6r0FtvUq2fsAnxRCKUrCMfPgN1zHNdHumy2WgbVHV91xEdhhPCKXoSDYQ==
-X-Received: by 2002:a5d:60d0:: with SMTP id x16mr25862069wrt.196.1600254428922;
-        Wed, 16 Sep 2020 04:07:08 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id l19sm4682554wmi.8.2020.09.16.04.07.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Sep 2020 04:07:08 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     robdclark@gmail.com, sean@poorly.run
-Cc:     airlied@linux.ie, daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, georgi.djakov@linaro.org
-Subject: [PATCH] drm/msm: Remove depends on interconnect
-Date:   Wed, 16 Sep 2020 14:07:06 +0300
-Message-Id: <20200916110706.6671-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 16 Sep 2020 12:30:24 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E2DC0698D5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 04:39:59 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c3e000ee699b54c433a91.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:ee6:99b5:4c43:3a91])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 892AD1EC0136;
+        Wed, 16 Sep 2020 13:34:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600256096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4PTEjwjWCxnifqmay2schcOj42jghOVREf92+55yeao=;
+        b=WFTrHxF7aRz7y3HdsqQHlVAeb4hm08P7tXBq736IBvFvIZOjHWA9xn9q1riewV2WbR9icz
+        iiN5tWrJ/meR4p+KaiHlSbPKh+I+6uPtGCgPevihelODO0dFz3FambZKKFAwUEYD1CEt6H
+        4NDo7BaAFj0otmUOpYlM3d6k3MEDils=
+Date:   Wed, 16 Sep 2020 13:34:49 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Marco Elver <elver@google.com>
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
+ e6eb15c9ba3165698488ae5c34920eea20eaa38e
+Message-ID: <20200916113449.GH2643@zn.tnic>
+References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
+ <20200915135519.GJ14436@zn.tnic>
+ <20200915141816.GC28738@shao2-debian>
+ <20200915160554.GN14436@zn.tnic>
+ <20200915170248.gcv54pvyckteyhk3@treble>
+ <CAKwvOdnc8au10g8q8miab89j3tT8UhwnZOMAJdRgkXVrnkhwqQ@mail.gmail.com>
+ <20200915204912.GA14436@zn.tnic>
+ <20200915215054.GA1104608@rani.riverdale.lan>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200915215054.GA1104608@rani.riverdale.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dependency on interconnect in the Kconfig was introduced to avoid
-the case of interconnect=m and driver=y, but the interconnect framework
-has been converted from tristate to bool now. Remove the dependency as
-the framework can't be a module anymore.
+On Tue, Sep 15, 2020 at 05:50:54PM -0400, Arvind Sankar wrote:
+> On Tue, Sep 15, 2020 at 10:49:12PM +0200, Borislav Petkov wrote:
+> > 
+> > (Btw, clang doesn't need to add that "xor %eax,%eax" - panic() should not be
+> >  returning, ever. :-))
+> > 
+> 
+> I think this is because panic() is varargs, and clang doesn't support
+> gcc's -mskip-rax-setup. The normal ABI requires the caller to set RAX to
+> the number of arguments in vector registers.
+> 
+> https://patchwork.ozlabs.org/project/gcc/patch/20141218131150.GA32638@intel.com/
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- drivers/gpu/drm/msm/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+Ah, good point. Found this in the ABI doc:
 
-diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-index 5c55cd0ce9f9..3348969460ab 100644
---- a/drivers/gpu/drm/msm/Kconfig
-+++ b/drivers/gpu/drm/msm/Kconfig
-@@ -6,7 +6,6 @@ config DRM_MSM
- 	depends on ARCH_QCOM || SOC_IMX5 || (ARM && COMPILE_TEST)
- 	depends on OF && COMMON_CLK
- 	depends on MMU
--	depends on INTERCONNECT || !INTERCONNECT
- 	depends on QCOM_OCMEM || QCOM_OCMEM=n
- 	select QCOM_MDT_LOADER if ARCH_QCOM
- 	select REGULATOR
+"For calls that may call functions that use varargs or stdargs
+(prototype-less calls or calls to functions containing ellipsis (...) in
+the declaration) %al is used as hidden argument to specify the number of
+vector registers used. The contents of %al do not need to match exactly
+the number of registers, but must be an upper bound on the number of
+vector registers used and is in the range 0–8 inclusive."
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
