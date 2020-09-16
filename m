@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3333026B803
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5083626B874
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgIPAed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:34:33 -0400
-Received: from smtprelay0130.hostedemail.com ([216.40.44.130]:55218 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726661AbgIPAd5 (ORCPT
+        id S1726597AbgIPAoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726495AbgIPAoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:33:57 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 3DD4D837F24C;
-        Wed, 16 Sep 2020 00:33:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:967:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2560:2563:2682:2685:2693:2828:2859:2898:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6119:6691:9025:10010:10400:10848:11026:11232:11658:11914:12043:12048:12050:12295:12296:12297:12438:12555:12663:12679:12698:12737:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:14777:21080:21324:21433:21627:21740:21939:30012:30054:30070:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: corn68_1c0caec27115
-X-Filterd-Recvd-Size: 3131
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 16 Sep 2020 00:33:53 +0000 (UTC)
-Message-ID: <2786f88508b99c8e1ebee62ea955c4026368c878.camel@perches.com>
-Subject: Re: [PATCH] nfs: remove incorrect fallthrough label
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Hongxiang Lou <louhongxiang@huawei.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Date:   Tue, 15 Sep 2020 17:33:52 -0700
-In-Reply-To: <de27c65b-ae7d-a2ba-3ab8-717c10f297c3@embeddedor.com>
-References: <20200915225751.274531-1-ndesaulniers@google.com>
-         <9441ed0f247d0cac6e85f3847e1b4c32a199dd8f.camel@perches.com>
-         <55f1ff08-fc3c-62ed-429d-c9ae285a3a49@embeddedor.com>
-         <de27c65b-ae7d-a2ba-3ab8-717c10f297c3@embeddedor.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 15 Sep 2020 20:44:07 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E61C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 17:44:07 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id bg9so2236838plb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 17:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WelUEM+5yfEBYnXPBUalgoBTEhxzv9s6CTcU5jFzwGo=;
+        b=C+6IFR/5lCB/RdX9Cf/jqqE9aeHcEy2zepBCCDyPWuacoo9Zyekk9CnM2cam7lsMPE
+         ZX+HIFibRuw75gGbznj1r0hGtkBHMHqRVvundbnLupqdWlaWIKoN5zJXQJByZk32bLMA
+         vdQ8Uwo1od3kfIXOLewz8X647gXClzocJ9kmtzvkPNOwR35f2YnpB88Q6RcNRe2j3ZSu
+         lmfPhtiOmD4fDIGVkIK4oNJf/hldHTWDCWrDZKWID8PZNZ1tFsp5ORc45oU5hvZNh44/
+         +bzOPIh9qPglrbNNaWj/fpg9Vbs7GN2ENweXIR0ekk9lMZHhTER9di0ja9uu0cQ6tBmO
+         ZoBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WelUEM+5yfEBYnXPBUalgoBTEhxzv9s6CTcU5jFzwGo=;
+        b=eiR9GWV+qJ7AR01jL0UH1nVzjYYU2OOQ9W2hvL4p0WMvc4XOrkz5JzEq6hBqm5sgFG
+         YekwjQrqommcpKjgzC9h++OKONTj3lxEXfzu5AIdVMjJndvC8ooU8RP+R0oBObzKEina
+         0YUurAWdkRj6y+C23MPi6jHuqtdGLnHy4UZYrNzMnT4nfFUgAUhFFZtYPPSxrq8YJGhw
+         +8QimDuNvQERKyKBTH8Ql99hcObssGUs9Adr9Af5YhUDzoC/sk6N/jczwSQEmy6Z8Tdq
+         tlf3P03CsrPjJgpSEBx3jOaLe33fzSXbknUNrYMCDJ5AVxD5xkpc5WA59x+5U5UP6db8
+         bR6Q==
+X-Gm-Message-State: AOAM530s6QRQRBDT05vdvt6Zzg41wXCLcTIcfusyK0S2w8OpAAEU9MH0
+        eWCMhqaXcwcYTFN3x3cm7Rw=
+X-Google-Smtp-Source: ABdhPJx4TI3XOb0GO4QgADNeD7SY0NatZS3cGx28Zz9PwLKDaXszSI2w5toZHCEaFSUSVeKh4Hl/Mg==
+X-Received: by 2002:a17:90a:46c2:: with SMTP id x2mr1728315pjg.60.1600217046916;
+        Tue, 15 Sep 2020 17:44:06 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id f5sm14127149pfj.212.2020.09.15.17.44.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 17:44:06 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 09:44:04 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2] perf kvm: add kvm-stat for arm64
+Message-ID: <20200916004404.GE604@jagdpanzerIV.localdomain>
+References: <20200915091140.152775-1-sergey.senozhatsky@gmail.com>
+ <20200915103644.GA32758@leoy-ThinkPad-X240s>
+ <20200915105702.GA604@jagdpanzerIV.localdomain>
+ <20200915111541.GB604@jagdpanzerIV.localdomain>
+ <20200915132109.GB32758@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915132109.GB32758@leoy-ThinkPad-X240s>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-15 at 19:01 -0500, Gustavo A. R. Silva wrote:
+On (20/09/15 21:21), Leo Yan wrote:
 > 
-> On 9/15/20 18:51, Gustavo A. R. Silva wrote:
-> > 
-> > On 9/15/20 18:29, Joe Perches wrote:
-> > > On Tue, 2020-09-15 at 15:57 -0700, Nick Desaulniers wrote:
-> > > > There is no case after the default from which to fallthrough to. Clang
-> > > > will error in this case (unhelpfully without context, see link below)
-> > > > and GCC will with -Wswitch-unreachable.
-> > > > 
-> > > > The previous commit should have just removed the comment.
-> > > []
-> > > > diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-> > > []
-> > > > @@ -889,7 +889,6 @@ static struct nfs_server *nfs_try_mount_request(struct fs_context *fc)
-> > > >  		default:
-> > > >  			if (rpcauth_get_gssinfo(flavor, &info) != 0)
-> > > >  				continue;
-> > > > -			fallthrough;
-> > > 
-> > > My preference would be to convert the fallthrough
-> > > to a break here so if someone ever adds another
-> > > label after default: for any reason, the code would
-> > > still work as expected.
-> > 
-> > I agree with Joe.
+> Sorry if I miss anything for this.
 > 
-> Actually, this is part of the work I plan to do to enable -Wimplicit-fallthrough
-> for Clang: audit every place where we could use a break instead of a fallthrough.
-> 
-> I'm on vacation this week. So, I'll get back to this next week.
 
-Nice, thanks Gustavo.
+No, you are absolutely right! I should have looked more attentively.
 
-As part of that work, perhaps you could also find all the
+Is "IL" good enough for a decoded reason
 
-	switch (<foo>) {
-	[cases...]
-		[code...];
-		break;
+ 	{ARM_EXCEPTION_IRQ,		"IRQ"		},	\
+ 	{ARM_EXCEPTION_EL1_SERROR,	"SERROR"	},	\
+ 	{ARM_EXCEPTION_TRAP,		"TRAP"		},	\
++	{ARM_EXCEPTION_IL,		"IL"		}, \
+ 	{ARM_EXCEPTION_HYP_GONE,	"HYP_GONE"	}
 
-	default:
-		[code...]
-		(no break)
-	}
+or should there be "ILLEGAL", or maybe something even better?
+ILLEGAL_EXC, etc.
 
-uawa where the last label/default block does _not_ have a break
-statement and add one too.
-
-Also see:  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91432
-
-gcc does _not_ warn on
-
-	switch (<foo>) {
-	case BAR:
-		[code];
-		(no fallthrough)
-
-	case BAZ:
-		break;
-	}
-
-It might be good to add the appropriate fallthrough
-for those case blocks too.
-
-
+	-ss
