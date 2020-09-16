@@ -2,96 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9238A26C9A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B3B26C9AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727624AbgIPTPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
+        id S1727751AbgIPTQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727269AbgIPRiM (ORCPT
+        with ESMTP id S1727268AbgIPRiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 13:38:12 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DEDC0698E3;
-        Wed, 16 Sep 2020 09:04:48 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c3e006cd2bace0261b86c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:6cd2:bace:261:b86c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 23A1C1EC032C;
-        Wed, 16 Sep 2020 18:01:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600272069;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=xHyjNCg9lyL8r3f8F9ATmWfKCsYChSlI1Pfif6iFPgA=;
-        b=YglrM89FW96ZdscfcpIc7PJUAzHf8KLJeLwFasyY7mR4eGsWBg3AmwbPaylIK784zyrGoP
-        VDbi7LE51V41yu/JeCNR+Bv24K6u3MQI4HvlJhzVgdHagO4N7dUXtpxAd+kWgb4gI1ITU8
-        A2o1oRRyWy5DXd7ZWWzctwFx7uS43OU=
-Date:   Wed, 16 Sep 2020 18:01:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     peterz@infradead.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Tony Luck <tony.luck@intel.com>, Len Brown <lenb@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [RFC][PATCH 1/4] acpi: Use CPUIDLE_FLAG_TIMER_STOP
-Message-ID: <20200916160103.GL2643@zn.tnic>
-References: <20200915103157.345404192@infradead.org>
- <20200915103806.280265587@infradead.org>
- <CAJZ5v0jD-Lv5WAKHd9KN8sPozN4DeA-sQ4pXZTHNSZ4XS=as3A@mail.gmail.com>
- <20200916154212.GE1362448@hirez.programming.kicks-ass.net>
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFB6C025269
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:59:37 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l15so2649453wmh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 09:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VkWUpVUhJm5M+uhJs8eXOgl2X85aT9m+yJLWexWDssM=;
+        b=T5oWizwJbCJmJMI28ZimkDVchUiuRL3d6zUAGcpwNItNmc7l8aP9blPSULOi1eLIP6
+         gZLMi9SVCIUMZMSJO1shI6zAeHnGNMK9vZ0h9LoHNHX8rCxF6o58J0T/jB+aalKJwXyx
+         oV2LHwxQyZtcfKTz/vfkPL11osgxv2Zu44HZ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VkWUpVUhJm5M+uhJs8eXOgl2X85aT9m+yJLWexWDssM=;
+        b=MG+zCZ+6gXisYscIvSBaJlvqWoioHKw9AkHTMaP1JyzgTEFHAq0sTQr1k7iRVwD3dI
+         fs8zQ/0FrGvR1yt2RmlmNehkE+XeoqflVy2K2OrkeLz6HbLU/9+xui9Sx9hVe+RNDSkJ
+         0VZf/72nvQYHIPPNb6y8i5Mi0KIBkpBizxYKs2dzLq00mRmZ4TJA21X/TbvnMEtb+WcX
+         jz8q3NABz9L0lRUGpGAMGceZ0UB8w2/j7O3v3ZeRu3kH0yhxEPI4SndeqFVBGaAtPil5
+         sXyLRDDrnfVF0duIybCX3KhCJ/avZygcAq2I47atvUhHu1zOt4aYH1A/ta3oy+ZC8Cer
+         EFRA==
+X-Gm-Message-State: AOAM533BEwvuLfD9o5ic5E061RSIUfegNfQOnJ6y3/12oqfxfFmbHILN
+        CnxJAeCB3TnqEuix4ZLzRa/Vhz+CTAK1+6f+DsZH/Q==
+X-Google-Smtp-Source: ABdhPJwnkUKOf60qRo8TMjHre1NIVb64k+AgGpe80UPknU1BL6NuBCSG6NpCCQL6tyaQv8jdu8ddGyYbDK4qALFj3vs=
+X-Received: by 2002:a7b:c090:: with SMTP id r16mr5835223wmh.56.1600275576323;
+ Wed, 16 Sep 2020 09:59:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200916154212.GE1362448@hirez.programming.kicks-ass.net>
+References: <20200916124931.1254990-1-kpsingh@chromium.org> <8cee070eed5b8a3dc9f373fc9db8d99a70b7d75a.camel@linux.ibm.com>
+In-Reply-To: <8cee070eed5b8a3dc9f373fc9db8d99a70b7d75a.camel@linux.ibm.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Wed, 16 Sep 2020 18:59:25 +0200
+Message-ID: <CACYkzJ4C4mLZY0=Z_BHc+0u0oCuCu0xkYdUPCp=Xs12uT7175w@mail.gmail.com>
+Subject: Re: [PATCH v2] ima: Fix NULL pointer dereference in ima_file_hash
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 05:42:12PM +0200, peterz@infradead.org wrote:
-> On Tue, Sep 15, 2020 at 06:26:52PM +0200, Rafael J. Wysocki wrote:
-> > On Tue, Sep 15, 2020 at 12:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > Make acpi_processor_idle use the common broadcast code, there's no
-> > > reason not to. This also removes some RCU usage after
-> > > rcu_idle_enter().
-> > >
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > 
-> > The whole series looks good to me, so please feel free to add
-> > 
-> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > 
-> > to all of the four patches.
-> > 
-> > Alternatively, please let me know if you want me to take the patches.
-> 
-> Feel free to take them. All the prerequisite borkage is in linus' tree
-> already.
+On Wed, Sep 16, 2020 at 6:00 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+>
+> On Wed, 2020-09-16 at 14:49 +0200, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > ima_file_hash can be called when there is no iint->ima_hash available
+> > even though the inode exists in the integrity cache.
+> >
+> > An example where this can happen (suggested by Jann Horn):
+> >
+> > Process A does:
+> >
+> >       while(1) {
+> >               unlink("/tmp/imafoo");
+> >               fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
+> >               if (fd == -1) {
+> >                       perror("open");
+> >                       continue;
+> >               }
+> >               write(fd, "A", 1);
+> >               close(fd);
+> >       }
+> >
+> > and Process B does:
+> >
+> >       while (1) {
+> >               int fd = open("/tmp/imafoo", O_RDONLY);
+> >               if (fd == -1)
+> >                       continue;
+> >               char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
+> >                                    MAP_PRIVATE, fd, 0);
+> >               if (mapping != MAP_FAILED)
+> >                       munmap(mapping, 0x1000);
+> >               close(fd);
+> >       }
+> >
+> > Due to the race to get the iint->mutex between ima_file_hash and
+> > process_measurement iint->ima_hash could still be NULL.
+> >
+> > Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > Reviewed-by: Florent Revest <revest@chromium.org>
+> > ---
+> >  security/integrity/ima/ima_main.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> > index 8a91711ca79b..4c86cd4eece0 100644
+> > --- a/security/integrity/ima/ima_main.c
+> > +++ b/security/integrity/ima/ima_main.c
+> > @@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+> >               return -EOPNOTSUPP;
+> >
+> >       mutex_lock(&iint->mutex);
+> > +
+> > +     /*
+> > +      * ima_file_hash can be called when ima_collect_measurement has still
+> > +      * not been called, we might not always have a hash.
+> > +      */
+> > +     if (!iint->ima_hash) {
+> > +             mutex_unlock(&iint->mutex);
+> > +             return -EOPNOTSUPP;
+> > +     }
+> > +
+>
+> Not having a file hash is rather common (e.g. mknodat, prior to the
+> file being closed).  Before appraising the integrity of a file, it
+> checks whether it is a new file (eg. IMA_NEW_FILE), but, unfortunately,
+> the flag is only set for those files in the appraise policy.
 
-You can add:
+Makes sense.
 
-Reported-by: Borislav Petkov <bp@suse.de>
+>
+> The patch looks fine, but you might want to reflect not having a file
+> hash is common in the patch description.
+>
 
-for this one and for this whole series:
+Thanks! Will send another revision with an updated description.
 
-Tested-by: Borislav Petkov <bp@suse.de>
+- KP
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> Mimi
+>
+> >       if (buf) {
+> >               size_t copied_size;
+> >
+>
+>
