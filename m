@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4D726CAA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50FF26CAA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgIPULL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
+        id S1728101AbgIPUKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727193AbgIPRdl (ORCPT
+        with ESMTP id S1727046AbgIPRdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:33:41 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D355C0073E2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 06:58:23 -0700 (PDT)
-Received: from bigeasy by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <sebastian@breakpoint.cc>)
-        id 1kIXwv-0004I7-Ps; Wed, 16 Sep 2020 15:58:17 +0200
-Date:   Wed, 16 Sep 2020 15:58:17 +0200
-From:   Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-To:     peterz@infradead.org
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bristot@redhat.com, swood@redhat.com,
-        valentin.schneider@arm.com
-Subject: Re: [PATCH 2/2] sched/hotplug: Ensure only per-cpu kthreads run
- during hotplug
-Message-ID: <20200916135817.3djsqmziqvzo6hmq@flow>
-References: <20200911081745.214686199@infradead.org>
- <20200911082536.528661716@infradead.org>
- <20200916101845.5ikjhfk27bgvs3pe@flow>
- <20200916121020.GP2674@hirez.programming.kicks-ass.net>
+        Wed, 16 Sep 2020 13:33:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BD4C00217F;
+        Wed, 16 Sep 2020 07:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=I+Wrsf2OsM4H/FvG28XmzjWSyq2hOoPWFZhAVEE3RCk=; b=vuzIdI2myzrcSR8N8YUZIxJs7P
+        Sx91GDqxw7SKvTK3Q/nRp4WnHClkpkK/1OSKRygFhe90fZaV9fh+k7GQDAKnGLqU52NU1R7o24SfD
+        seMr7Y2+IlmkwzW5l1W2SFiJm7EC1UQvsJqgorQoJrd0mihZ0kd7Vp8ebhVZCF0Q0ELXjj/VrFWna
+        ctPysIiI3CtHiEShBsJMczKgdXTh3NyyyLxs+T7ZmyrJaIQAuUEi+E+Z480NRxWRE3n4HU0iyYgbT
+        oc26VCkL3wOc32lThfhoy8TDA7vL4lHIHRx7dN1lyrOOFn10v1O1A0ycsq6YvIr+h+Hpjh/++0yzE
+        tDUCoKHA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIYhO-0004Yh-Kj; Wed, 16 Sep 2020 14:46:18 +0000
+Date:   Wed, 16 Sep 2020 15:46:18 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Chris Mason <clm@fb.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
+Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
+Message-ID: <20200916144618.GB16392@infradead.org>
+References: <20200916034307.2092020-1-nickrterrell@gmail.com>
+ <20200916034307.2092020-7-nickrterrell@gmail.com>
+ <20200916084958.GC31608@infradead.org>
+ <CCDAB4AB-DE8D-4ADE-9221-02AE732CBAE2@fb.com>
+ <20200916143046.GA13543@infradead.org>
+ <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916121020.GP2674@hirez.programming.kicks-ass.net>
+In-Reply-To: <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-16 14:10:20 [+0200], peterz@infradead.org wrote:
+On Wed, Sep 16, 2020 at 10:43:04AM -0400, Chris Mason wrote:
+> Otherwise we just end up with drift and kernel-specific bugs that are harder
+> to debug.  To the extent those APIs make us contort the kernel code, I???m
+> sure Nick is interested in improving things in both places.
 
-squeeze that in please:
+Seriously, we do not care elsewhere.  Why would zlib be any different?
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a4fe22b8b8418..bed3cd28af578 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6866,7 +6866,7 @@ static int __balance_push_cpu_stop(void *arg)
- 	raw_spin_lock_irq(&p->pi_lock);
- 	rq_lock(rq, &rf);
- 
--	update_rq_clock();
-+	update_rq_clock(rq);
- 
- 	if (task_rq(p) == rq && task_on_rq_queued(p)) {
- 		cpu = select_fallback_rq(rq->cpu, p);
+> There are probably 1000 constructive ways to have that conversation.  Please
+> choose one of those instead of being an asshole.
 
-
-and count me in :)
-
-Sebastian
+I think you are the asshole here by ignoring the practices we are using
+elsewhere and think your employers pet project is somehow special.  It
+is not, and claiming so is everything but constructive.
