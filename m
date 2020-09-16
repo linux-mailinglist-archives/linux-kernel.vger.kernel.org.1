@@ -2,115 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E767A26BE57
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B244426BE61
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgIPHlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:41:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35122 "EHLO mail.kernel.org"
+        id S1726447AbgIPHni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:43:38 -0400
+Received: from mga06.intel.com ([134.134.136.31]:22721 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgIPHlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:41:45 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0DDA20809;
-        Wed, 16 Sep 2020 07:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600242103;
-        bh=BMMd8sHq9Uc24jVPYlSvOGvoD4Z5w5C7QYU90Lm6k/Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kpAj5Lg784g39MwWyqtVx7VlQtD2yeTDLQ8/Vzvegu0CM066ODFFKlMlYFGjNOr1M
-         Jn5pX0lO2D21mjI3/m2g4juXn7i0sax2aUrD7OzCI8xRHMfNDehy0n6bXcxkyzlxGD
-         4CZUhibFjJmDOEfdZU+iY/ZN2loGEFpH3V/uUrvg=
-Date:   Wed, 16 Sep 2020 09:42:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200916074217.GB189144@kroah.com>
-References: <20200915171022.10561-1-oded.gabbay@gmail.com>
- <20200915.134252.1280841239760138359.davem@davemloft.net>
- <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
- <20200916062614.GF142621@kroah.com>
- <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
+        id S1726285AbgIPHnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:43:37 -0400
+IronPort-SDR: 9w+ZN43qWVCDwqoonecx6fC9GgLqd1Kt5qBML2P+TKuXCuR4g6TRip4zswjD1JDk2r+EBsq/QN
+ 8qGGyuhnsiJQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="220975308"
+X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
+   d="scan'208";a="220975308"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 00:43:36 -0700
+IronPort-SDR: OZ7tMty0VP/hRXfVXL0x4qgPXpQXMNVgdmQghv9OU0GOtBg6LdI4ZajhNrKK03UbRAXfRCzuQ8
+ uyjHu6wOhSvw==
+X-IronPort-AV: E=Sophos;i="5.76,432,1592895600"; 
+   d="scan'208";a="483196147"
+Received: from djgriffi-mobl.ger.corp.intel.com (HELO localhost) ([10.252.8.217])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 00:43:30 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Lyude Paul <lyude@redhat.com>
+Cc:     David Airlie <airlied@linux.ie>, intel-gfx@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>
+Subject: Re: [Intel-gfx] [RFC 1/5] drm/i915/dp: Program source OUI on eDP panels
+In-Reply-To: <20200915190639.GC503362@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200915172939.2810538-1-lyude@redhat.com> <20200915172939.2810538-2-lyude@redhat.com> <20200915190639.GC503362@intel.com>
+Date:   Wed, 16 Sep 2020 10:43:35 +0300
+Message-ID: <87mu1qw4ig.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
-> On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
-> > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
-> > > >
-> > > > From: Oded Gabbay <oded.gabbay@gmail.com>
-> > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
-> > > >
-> > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
-> > > > > into the habanalabs driver.
-> > > > >
-> > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
-> > > > > are in that patch's commit message.
-> > > > >
-> > > > > Link to v2 cover letter:
-> > > > > https://lkml.org/lkml/2020/9/12/201
-> > > >
-> > > > I agree with Jakub, this driver definitely can't go-in as it is currently
-> > > > structured and designed.
-> > > Why is that ?
-> > > Can you please point to the things that bother you or not working correctly?
-> > > I can't really fix the driver if I don't know what's wrong.
-> > >
-> > > In addition, please read my reply to Jakub with the explanation of why
-> > > we designed this driver as is.
-> > >
-> > > And because of the RDMA'ness of it, the RDMA
-> > > > folks have to be CC:'d and have a chance to review this.
-> > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
-> > > the kernel and we can't connect to it due to the lack of H/W support
-> > > we have
-> > > Therefore, I don't see why we need to CC linux-rdma.
-> > > I understood why Greg asked me to CC you because we do connect to the
-> > > netdev and standard eth infrastructure, but regarding the RDMA, it's
-> > > not really the same.
-> >
-> > Ok, to do this "right" it needs to be split up into separate drivers,
-> > hopefully using the "virtual bus" code that some day Intel will resubmit
-> > again that will solve this issue.
-> Hi Greg,
-> Can I suggest an alternative for the short/medium term ?
-> 
-> In an earlier email, Jakub said:
-> "Is it not possible to move the files and still build them into a single
-> module?"
-> 
-> I thought maybe that's a good way to progress here ?
+On Tue, 15 Sep 2020, Rodrigo Vivi <rodrigo.vivi@intel.com> wrote:
+> On Tue, Sep 15, 2020 at 01:29:35PM -0400, Lyude Paul wrote:
+>> Since we're about to start adding support for Intel's magic HDR
+>> backlight interface over DPCD, we need to ensure we're properly
+>> programming this field so that Intel specific sink services are exposed.
+>> Otherwise, 0x300-0x3ff will just read zeroes.
+>> 
+>> We also take care not to reprogram the source OUI if it already matches
+>> what we expect. This is just to be careful so that we don't accidentally
+>> take the panel out of any backlight control modes we found it in.
 
-Cross-directory builds of a single module are crazy.  Yes, they work,
-but really, that's a mess, and would never suggest doing that.
+(For whatever reason I didn't receive the original message.)
 
-> First, split the content to Ethernet and RDMA.
-> Then move the Ethernet part to drivers/net but build it as part of
-> habanalabs.ko.
-> Regarding the RDMA code, upstream/review it in a different patch-set
-> (maybe they will want me to put the files elsewhere).
-> 
-> What do you think ?
+>> 
+>> Signed-off-by: Lyude Paul <lyude@redhat.com>
+>> Cc: thaytan@noraisin.net
+>> Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_dp.c | 32 +++++++++++++++++++++++++
+>>  1 file changed, 32 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+>> index 4bd10456ad188..b591672ec4eab 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+>> @@ -3428,6 +3428,7 @@ void intel_dp_sink_set_decompression_state(struct intel_dp *intel_dp,
+>>  void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
+>>  {
+>>  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+>> +	u8 edp_oui[] = { 0x00, 0xaa, 0x01 };
+>
+> what are these values?
 
-I think you are asking for more work there than just splitting out into
-separate modules :)
+An OUI lookup confirms these are Intel OUI.
 
-thanks,
+>
+>>  	int ret, i;
+>>  
+>>  	/* Should have a valid DPCD by this point */
+>> @@ -3443,6 +3444,14 @@ void intel_dp_sink_dpms(struct intel_dp *intel_dp, int mode)
+>>  	} else {
+>>  		struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+>>  
+>> +		/* Write the source OUI as early as possible */
+>> +		if (intel_dp_is_edp(intel_dp)) {
+>> +			ret = drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, edp_oui,
+>> +						sizeof(edp_oui));
+>> +			if (ret < 0)
+>> +				drm_err(&i915->drm, "Failed to write eDP source OUI\n");
+>> +		}
+>> +
+>>  		/*
+>>  		 * When turning on, we need to retry for 1ms to give the sink
+>>  		 * time to wake up.
+>> @@ -4530,6 +4539,23 @@ static void intel_dp_get_dsc_sink_cap(struct intel_dp *intel_dp)
+>>  	}
+>>  }
+>>  
+>> +static void
+>> +intel_edp_init_source_oui(struct intel_dp *intel_dp)
+>> +{
+>> +	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+>> +	u8 oui[] = { 0x00, 0xaa, 0x01 };
+>> +	u8 buf[3] = { 0 };
+>> +
+>> +	if (drm_dp_dpcd_read(&intel_dp->aux, DP_SOURCE_OUI, buf, sizeof(buf)) < 0)
+>> +		drm_err(&i915->drm, "Failed to read source OUI\n");
+>> +
+>> +	if (memcmp(oui, buf, sizeof(oui)) == 0)
+>> +		return;
+>> +
+>> +	if (drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, oui, sizeof(oui)) < 0)
+>> +		drm_err(&i915->drm, "Failed to write source OUI\n");
+>> +}
 
-greg k-h
+Maybe add this function with a parameter to force write or write only if
+necessary, and call from both places that set source OUI?
+
+>> +
+>>  static bool
+>>  intel_edp_init_dpcd(struct intel_dp *intel_dp)
+>>  {
+>> @@ -4607,6 +4633,12 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
+>>  	if (INTEL_GEN(dev_priv) >= 10 || IS_GEMINILAKE(dev_priv))
+>>  		intel_dp_get_dsc_sink_cap(intel_dp);
+>>  
+>> +	/*
+>> +	 * Program our source OUI so we can make various Intel-specific AUX
+>> +	 * services available (such as HDR backlight controls)
+>> +	 */
+>> +	intel_edp_init_source_oui(intel_dp);
+>
+> I believe we should restrict this to the supported platforms: cfl, whl, cml, icl, tgl
+> no?
+
+Mmh, this just exposes sink behaviour that I think can be supported by
+any platform. I don't understand the notion of "supported platforms"
+here.
+
+>
+>> +
+>>  	return true;
+>>  }
+>>  
+>> -- 
+>> 2.26.2
+>> 
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
