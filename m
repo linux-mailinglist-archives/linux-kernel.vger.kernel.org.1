@@ -2,80 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3879726C892
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88FA26C7E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbgIPSxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        id S1728151AbgIPSeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727693AbgIPSIs (ORCPT
+        with ESMTP id S1728084AbgIPS3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:08:48 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3D9C0A8891;
-        Wed, 16 Sep 2020 05:51:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PHSmocSTx2CTgXVGt4QCFFureAzLtVyh1W7SKpBbobA=; b=BiaPO8fQHpw/cGxYNRW32uFx0K
-        9j9zojyZYlXl8zpf5oejBkBrIgv5P9JhWY47qIEW3H81J1eL+Iz6b/KyyLexJJrnNqDy7g1xdK+9H
-        jNnX7L1YurAwHCue5yjJ/KuU9J7wEtKMLGp4iKkAHcc+PZKbD85IA+ueQammgVoDp0Js7/np1jPv8
-        ImM7adAAN6qC0w2rBKJH1XF3CVrbxH1CrhsgBunH8DDlLdijpOtO++hQp6ikm6HbVN/ZPQLZHmTbh
-        TAED4Jy+z00+li1QAWjioVcEeXL32/XVItvk+hMDiI+SQCD6aqnKAEc1hyidsppVQ315oVKxWAC3n
-        LHCSZllA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIWu9-0001Pv-GS; Wed, 16 Sep 2020 12:51:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C815F3012C3;
-        Wed, 16 Sep 2020 14:51:17 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5DE1C2B9285C9; Wed, 16 Sep 2020 14:51:17 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 14:51:17 +0200
-From:   peterz@infradead.org
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, "Christoph Lameter" <cl@linux.com>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200916125117.GQ2674@hirez.programming.kicks-ass.net>
-References: <20200915140750.137881-1-houtao1@huawei.com>
- <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
- <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+        Wed, 16 Sep 2020 14:29:14 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B909EC0A8896
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:54:55 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t10so6842797wrv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:54:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rNdOPIdhtnzpSi7bofh8UM7utpbE8JYVa5S2O7zT4fI=;
+        b=DwQjIK9jIFVQTFkcSQ2vr8IdWUj1C4q2OxsrErtqhYomjeFJ1ghMVXfsX/P4yLjqVy
+         QyYEsMcxpnjbqCX7LKXdpCs7P3W0wvFLucbwmdPKmpA06VOu/H46HhWpM6WinrSmwnyD
+         lrQr8TWBgc/fVMGYNjekmzf0hcXqgWD+Oivw/c/4O3XLfb/+XcLq0a3J5C/NQwyx5OjK
+         PDtPtcgQ0JrIj+E1j/KnKNrdoaX65TzfwytWgXVqH8ocj85+81vqtjFPxyraisq7LIA1
+         PT9DbzQoZ155ymq3YAFmcjpjmROKcvezmrSJMrWogLllaCwGvYO8p10sRnEmryfpjGV+
+         JYQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rNdOPIdhtnzpSi7bofh8UM7utpbE8JYVa5S2O7zT4fI=;
+        b=hNW2/fm5py2d97Cb9LQecVJyfRCVMqLyfomzcvRWTh3TiEdwMb/FQ0jzPqgeBzSwPZ
+         PUvQVbFgv2utxTqRQJMtXXjHX7S8SNEM98lJuTRC+VrJBCGmwl4DWET5qXpIrt/h4w0U
+         wZ+houcoeMrQFjQtLGO19tJz7WfwvtD04epGOTT29rnT2RPy6EQdjR6KlTPQdF26kEJG
+         X/l85XhNf5qnAqMb6kKbvLwEeU3/5yozGP+VlrvuRYMnYjMiH1QXEUYgrvAMtijsvOC0
+         PR46b3kES/wmzB8GmMxsEex1KyfRGvzGoiDt9xcxbTIOUEDVFIuMAJ5EclT7G5nLPWP4
+         bxfg==
+X-Gm-Message-State: AOAM53254YTkoVvMRR/qq9rCyFCtPTmqjcXCzif9dEF6HD8JxLOjRWnS
+        +Uq7MsOuEqzjpMyDEaQl2xWv5UpDO4vAZw==
+X-Google-Smtp-Source: ABdhPJylYriyIC+58rMqaoF1MRMQTl5iINoKpVY3CaorGWN/xQCiINuEsSvG2wBXIB0D79cY2kLy2g==
+X-Received: by 2002:adf:ec90:: with SMTP id z16mr25606781wrn.145.1600260894009;
+        Wed, 16 Sep 2020 05:54:54 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id z15sm32229569wrv.94.2020.09.16.05.54.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Sep 2020 05:54:53 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] soundwire: qcom: get max rows and cols info from
+ compatible
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
+ <20200916092125.30898-4-srinivas.kandagatla@linaro.org>
+ <20200916124911.GN2968@vkoul-mobl>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <9f7c3e8b-872a-e53a-d144-4c558fa6c0b6@linaro.org>
+Date:   Wed, 16 Sep 2020 13:54:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+In-Reply-To: <20200916124911.GN2968@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:32:20PM +0800, Hou Tao wrote:
 
-> I have simply test the performance impact on both x86 and aarch64.
+
+On 16/09/2020 13:49, Vinod Koul wrote:
+> On 16-09-20, 10:21, Srinivas Kandagatla wrote:
+>> currently the max rows and cols values are hardcoded. In reality
+>> these values depend on the IP version. So get these based on
+>> device tree compatible strings.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   drivers/soundwire/qcom.c | 50 ++++++++++++++++++++++++++++------------
+>>   1 file changed, 35 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+>> index 76963a7bdaa3..1dbf33684470 100644
+>> --- a/drivers/soundwire/qcom.c
+>> +++ b/drivers/soundwire/qcom.c
+>> @@ -66,11 +66,6 @@
+>>   #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
+>>   			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
+>>   
+>> -#define SWRM_MAX_ROW_VAL	0 /* Rows = 48 */
+>> -#define SWRM_DEFAULT_ROWS	48
+>> -#define SWRM_MIN_COL_VAL	0 /* Cols = 2 */
+>> -#define SWRM_DEFAULT_COL	16
+>> -#define SWRM_MAX_COL_VAL	7
+>>   #define SWRM_SPECIAL_CMD_ID	0xF
+>>   #define MAX_FREQ_NUM		1
+>>   #define TIMEOUT_MS		(2 * HZ)
+>> @@ -104,6 +99,8 @@ struct qcom_swrm_ctrl {
+>>   	unsigned int version;
+>>   	int num_din_ports;
+>>   	int num_dout_ports;
+>> +	int cols_index;
+>> +	int rows_index;
+>>   	unsigned long dout_port_mask;
+>>   	unsigned long din_port_mask;
+>>   	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
+>> @@ -113,6 +110,21 @@ struct qcom_swrm_ctrl {
+>>   	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
+>>   };
+>>   
+>> +struct qcom_swrm_data {
+>> +	u32 default_cols;
+>> +	u32 default_rows;
+>> +};
+>> +
+>> +static struct qcom_swrm_data swrm_v1_3_data = {
+>> +	.default_rows = 48,
+>> +	.default_cols = 16,
+>> +};
+>> +
+>> +static struct qcom_swrm_data swrm_v1_5_data = {
+>> +	.default_rows = 50,
+>> +	.default_cols = 16,
+>> +};
+>> +
+>>   #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
+>>   
+>>   static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
+>> @@ -299,8 +311,10 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>>   	u32 val;
+>>   
+>>   	/* Clear Rows and Cols */
+>> -	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
+>> -	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MIN_COL_VAL);
+>> +	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK,
+>> +			 ctrl->rows_index);
+>> +	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK,
+>> +			  ctrl->cols_index);
 > 
-> There is no degradation under x86 (2 sockets, 18 core per sockets, 2 threads per core)
+> single line for these ?
+My vimrc had this 80 line autowrap thingy which might have done this!!
 
-Yeah, x86 is magical here, it's the same single instruction for both ;-)
-But it is, afaik, unique in this position, no other arch can pull that
-off.
-
-> However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
 > 
-> v4.19.111
-> no writer, reader cn                               | 24        | 48        | 72        | 96
-> the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
-> the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
+>>   	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
+>>   
+>> @@ -378,8 +392,10 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
+>>   	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
+>>   	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
+>>   
+>> -	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, SWRM_MAX_COL_VAL);
+>> -	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, SWRM_MAX_ROW_VAL);
+>> +	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK,
+>> +			  ctrl->cols_index);
+>> +	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK,
+>> +			  ctrl->rows_index);
+> 
+> here as well
+> 
+>>   
+>>   	return ctrl->reg_write(ctrl, reg, val);
+>>   }
+>> @@ -780,6 +796,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	struct sdw_master_prop *prop;
+>>   	struct sdw_bus_params *params;
+>>   	struct qcom_swrm_ctrl *ctrl;
+>> +	const struct qcom_swrm_data *data;
+>>   	int ret;
+>>   	u32 val;
+>>   
+>> @@ -787,6 +804,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	if (!ctrl)
+>>   		return -ENOMEM;
+>>   
+>> +	data = of_device_get_match_data(dev);
+> 
+> Wont it be good to check if data is valid, we do dereference it few line
+> below
+We Should not hit that case as we will never reach here without matching 
+compatible!
+If you insist, I can add a check but data will be always be valid at the 
+time of check!
 
-Teh hurt :/
+> 
+>> +	ctrl->rows_index = sdw_find_row_index(data->default_rows);
+>> +	ctrl->cols_index = sdw_find_col_index(data->default_cols);
+>>   #if IS_ENABLED(CONFIG_SLIMBUS)
+>>   	if (dev->parent->bus == &slimbus_bus) {
+>>   #else
+>> @@ -836,8 +856,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	params = &ctrl->bus.params;
+>>   	params->max_dr_freq = DEFAULT_CLK_FREQ;
+>>   	params->curr_dr_freq = DEFAULT_CLK_FREQ;
+>> -	params->col = SWRM_DEFAULT_COL;
+>> -	params->row = SWRM_DEFAULT_ROWS;
+>> +	params->col = data->default_cols;
+>> +	params->row = data->default_rows;
+>>   	ctrl->reg_read(ctrl, SWRM_MCP_STATUS, &val);
+>>   	params->curr_bank = val & SWRM_MCP_STATUS_BANK_NUM_MASK;
+>>   	params->next_bank = !params->curr_bank;
+>> @@ -847,8 +867,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	prop->num_clk_gears = 0;
+>>   	prop->num_clk_freq = MAX_FREQ_NUM;
+>>   	prop->clk_freq = &qcom_swrm_freq_tbl[0];
+>> -	prop->default_col = SWRM_DEFAULT_COL;
+>> -	prop->default_row = SWRM_DEFAULT_ROWS;
+>> +	prop->default_col = data->default_cols;
+>> +	prop->default_row = data->default_rows;
+>>   
+>>   	ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &ctrl->version);
+>>   
+>> @@ -899,8 +919,8 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+>>   }
+>>   
+>>   static const struct of_device_id qcom_swrm_of_match[] = {
+>> -	{ .compatible = "qcom,soundwire-v1.3.0", },
+>> -	{ .compatible = "qcom,soundwire-v1.5.1", },
+>> +	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
+>> +	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
+>>   	{/* sentinel */},
+>>   };
+>>   
+>> -- 
+>> 2.21.0
+> 
