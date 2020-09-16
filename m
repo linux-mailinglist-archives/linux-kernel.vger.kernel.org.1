@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D231726CA65
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF75A26CA72
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbgIPT4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:56:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48194 "EHLO mail.kernel.org"
+        id S1728101AbgIPT75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:59:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:34564 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727188AbgIPRgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:36:19 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D45821655;
-        Wed, 16 Sep 2020 11:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600254684;
-        bh=nT/vmCGFfmSFgpzah3Ct0QpHS6z8WSZoQrZ6dGKhyXc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0pB3ubzTyE8/ykxSVzAiSm6ewVDfdniIBUsWAjrJAKC/6jxW48ijVQjrUCLVyEWeX
-         8bNITgFrub12hJB9JZMDySfXplhT4bYeBfier33GUOHRasNSq6TSYp/tm9sWmBK5Sg
-         JMg95DQcs9GeroP7nEv0lMwrhr4rbOE8eYUxE6ac=
-Date:   Wed, 16 Sep 2020 13:11:59 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     trix@redhat.com
-Cc:     jerome.pouiller@silabs.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wfx: simplify virt_addr_valid call
-Message-ID: <20200916111159.GA923212@kroah.com>
-References: <20200912144719.13929-1-trix@redhat.com>
+        id S1726778AbgIPRfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:35:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B21F1147A;
+        Wed, 16 Sep 2020 04:40:59 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F8D13F68F;
+        Wed, 16 Sep 2020 04:40:57 -0700 (PDT)
+References: <20200916043103.606132-1-aubrey.li@linux.intel.com> <20200916110039.GG3117@suse.de>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Aubrey Li <aubrey.li@linux.intel.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in sched domain
+In-reply-to: <20200916110039.GG3117@suse.de>
+Date:   Wed, 16 Sep 2020 12:40:55 +0100
+Message-ID: <jhj7dsu54qg.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200912144719.13929-1-trix@redhat.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 07:47:19AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Reviewing sram_write_dma_safe(), there are two
-> identical calls to virt_addr_valid().  The second
-> call can be simplified by a comparison of variables
-> set from the first call.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/staging/wfx/fwio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/wfx/fwio.c b/drivers/staging/wfx/fwio.c
-> index 22d3b684f04f..c99adb0c99f1 100644
-> --- a/drivers/staging/wfx/fwio.c
-> +++ b/drivers/staging/wfx/fwio.c
-> @@ -94,7 +94,7 @@ static int sram_write_dma_safe(struct wfx_dev *wdev, u32 addr, const u8 *buf,
->  		tmp = buf;
->  	}
->  	ret = sram_buf_write(wdev, addr, tmp, len);
-> -	if (!virt_addr_valid(buf))
-> +	if (tmp != buf)
->  		kfree(tmp);
->  	return ret;
->  }
 
-Jerome, any thoughts?
+On 16/09/20 12:00, Mel Gorman wrote:
+> On Wed, Sep 16, 2020 at 12:31:03PM +0800, Aubrey Li wrote:
+>> Added idle cpumask to track idle cpus in sched domain. When a CPU
+>> enters idle, its corresponding bit in the idle cpumask will be set,
+>> and when the CPU exits idle, its bit will be cleared.
+>>
+>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>> has low cost than scanning all the cpus in last level cache domain,
+>> especially when the system is heavily loaded.
+>>
+>> The following benchmarks were tested on a x86 4 socket system with
+>> 24 cores per socket and 2 hyperthreads per core, total 192 CPUs:
+>>
+>
+> This still appears to be tied to turning the tick off. An idle CPU
+> available for computation does not necessarily have the tick turned off
+> if it's for short periods of time. When nohz is disabled or a machine is
+> active enough that CPUs are not disabling the tick, select_idle_cpu may
+> fail to select an idle CPU and instead stack tasks on the old CPU.
+>
 
-thanks,
+Vincent was pointing out in v1 that we ratelimit nohz_balance_exit_idle()
+by having it happen on a tick to prevent being hammered by a flurry of
+idle enter / exit sub tick granularity. I'm afraid flipping bits of this
+cpumask on idle enter / exit might be too brutal.
 
-greg k-h
+> The other subtlety is that select_idle_sibling() currently allows a
+> SCHED_IDLE cpu to be used as a wakeup target. The CPU is not really
+> idle as such, it's simply running a low priority task that is suitable
+> for preemption. I suspect this patch breaks that.
+
+I think you're spot on.
+
+An alternative I see here would be to move this into its own
+select_idle_foo() function. If that mask is empty or none of the tagged
+CPUs actually pass available_idle_cpu(), we fall-through to the usual idle
+searches.
+
+That's far from perfect; you could wake a truly idle CPU instead of
+preempting a SCHED_IDLE task on a warm and busy CPU. I'm not sure if a
+proliferation of cpumask really is the answer to that...
