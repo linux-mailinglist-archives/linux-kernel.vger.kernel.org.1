@@ -2,142 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094EA26B74B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A0F26B741
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727492AbgIPAUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:20:55 -0400
-Received: from mga06.intel.com ([134.134.136.31]:12001 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgIPATa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:19:30 -0400
-IronPort-SDR: 20pYhSKqPiwk/SDZ7GzIm0aHIdQkv6WAxVP+hf0v2mYq60jzWQKS377KOyntgGGV+GXstCv5Lw
- 4IOSpX4I4aLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="220930309"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="220930309"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 17:19:28 -0700
-IronPort-SDR: 5V0QjOsQmqOXQo0oWNhYHs7itGqThN7qeZlHs640iNf84b/zRYT6OKx1spC29y0IvEo4B2IAup
- vfeiLeB5r+Hw==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="507789024"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 17:19:27 -0700
-Date:   Tue, 15 Sep 2020 17:19:26 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 00/35] SEV-ES hypervisor support
-Message-ID: <20200916001925.GL8420@sjchrist-ice>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <20200914225951.GM7192@sjchrist-ice>
- <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
+        id S1727429AbgIPAUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:20:30 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:57850 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgIPATv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 20:19:51 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G0Evj7187107;
+        Wed, 16 Sep 2020 00:19:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=1hpDoE2wgeJVQBzEyoumb0yD6A5rixQLaZ8Lr6K9zuM=;
+ b=iMXfqHG710Wt27TyhK+1+srWPuB8fejjR7sGgKv7Gj7s8IYyhaRgAxSYThHCjLxGjiJY
+ G3xQu9l7z0uE6inu+SQt5IeFQ+RVtMIAvJHxDjIYRhCQd6PvmqeW76tl43EMX4HAUun9
+ fW3Zb94Fn4wvjBxAwO33Zefu9N/rBREND3EALD/KNuG/idbm+UrwrDLbXr4bRs0oO5Nx
+ xKSbPPpORaMenfbB+BHCdieDBYKdfuaEbQIi2gmkUlAvaGD5qXgJ3b5pLXdHzmKrihSo
+ TYFcWw7yH24oomxGmCVwLzV+TYwEX06+SpW0dDc1YXVm1KkBT5KB7hsJGA5bM50Qrr/s vA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 33gp9m849p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 00:19:45 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08G09p6Y007640;
+        Wed, 16 Sep 2020 00:19:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 33hm31hdxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 00:19:44 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08G0Jgvg016079;
+        Wed, 16 Sep 2020 00:19:43 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 00:19:41 +0000
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc:     <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <target-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: target: tcmu: add a missing newline when printing
+ parameters
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1zh5q1skp.fsf@ca-mkp.ca.oracle.com>
+References: <1599132573-33818-1-git-send-email-wangxiongfeng2@huawei.com>
+Date:   Tue, 15 Sep 2020 20:19:39 -0400
+In-Reply-To: <1599132573-33818-1-git-send-email-wangxiongfeng2@huawei.com>
+        (Xiongfeng Wang's message of "Thu, 3 Sep 2020 19:29:33 +0800")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=935
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160000
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9745 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=967
+ adultscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:22:05PM -0500, Tom Lendacky wrote:
-> On 9/14/20 5:59 PM, Sean Christopherson wrote:
-> > Given that we don't yet have publicly available KVM code for TDX, what if I
-> > generate and post a list of ioctls() that are denied by either SEV-ES or TDX,
-> > organized by the denier(s)?  Then for the ioctls() that are denied by one and
-> > not the other, we add a brief explanation of why it's denied?
-> > 
-> > If that sounds ok, I'll get the list and the TDX side of things posted
-> > tomorrow.
-> 
-> That sounds good.
 
-TDX completely blocks the following ioctl()s:
+Xiongfeng,
 
-  kvm_vcpu_ioctl_interrupt
-  kvm_vcpu_ioctl_smi
-  kvm_vcpu_ioctl_x86_setup_mce
-  kvm_vcpu_ioctl_x86_set_mce
-  kvm_vcpu_ioctl_x86_get_debugregs
-  kvm_vcpu_ioctl_x86_set_debugregs
-  kvm_vcpu_ioctl_x86_get_xsave
-  kvm_vcpu_ioctl_x86_set_xsave
-  kvm_vcpu_ioctl_x86_get_xcrs
-  kvm_vcpu_ioctl_x86_set_xcrs
-  kvm_arch_vcpu_ioctl_get_regs
-  kvm_arch_vcpu_ioctl_set_regs
-  kvm_arch_vcpu_ioctl_get_sregs
-  kvm_arch_vcpu_ioctl_set_sregs
-  kvm_arch_vcpu_ioctl_set_guest_debug
-  kvm_arch_vcpu_ioctl_get_fpu
-  kvm_arch_vcpu_ioctl_set_fpu
+> When I cat module paramter 'global_max_data_area_mb' by sysfs, it
+> displays as follows. It's better to add a newline for easy reading.
 
-Looking through the code, I think kvm_arch_vcpu_ioctl_get_mpstate() and
-kvm_arch_vcpu_ioctl_set_mpstate() should also be disallowed, we just haven't
-actually done so.
+Applied to 5.10/scsi-staging, thanks!
 
-There are also two helper functions that are "blocked".
-dm_request_for_irq_injection() returns false if guest_state_protected, and
-post_kvm_run_save() shoves dummy state.
-
-TDX also selectively blocks/skips portions of other ioctl()s so that the
-TDX code itself can yell loudly if e.g. .get_cpl() is invoked.  The event
-injection restrictions are due to direct injection not being allowed (except
-for NMIs); all IRQs have to be routed through APICv (posted interrupts) and
-exception injection is completely disallowed.
-
-  kvm_vcpu_ioctl_x86_get_vcpu_events:
-	if (!vcpu->kvm->arch.guest_state_protected)
-        	events->interrupt.shadow = kvm_x86_ops.get_interrupt_shadow(vcpu);
-
-  kvm_arch_vcpu_put:
-        if (vcpu->preempted && !vcpu->kvm->arch.guest_state_protected)
-                vcpu->arch.preempted_in_kernel = !kvm_x86_ops.get_cpl(vcpu);
-
-  kvm_vcpu_ioctl_x86_set_vcpu_events:
-	u32 allowed_flags = KVM_VCPUEVENT_VALID_NMI_PENDING |
-			    KVM_VCPUEVENT_VALID_SIPI_VECTOR |
-			    KVM_VCPUEVENT_VALID_SHADOW |
-			    KVM_VCPUEVENT_VALID_SMM |
-			    KVM_VCPUEVENT_VALID_PAYLOAD;
-
-	if (vcpu->kvm->arch.guest_state_protected)
-		allowed_flags = KVM_VCPUEVENT_VALID_NMI_PENDING;
-
-
-  kvm_arch_vcpu_ioctl_run:
-	if (vcpu->kvm->arch.guest_state_protected)
-		kvm_sync_valid_fields = KVM_SYNC_X86_EVENTS;
-	else
-		kvm_sync_valid_fields = KVM_SYNC_X86_VALID_FIELDS;
-
-
-In addition to the more generic guest_state_protected, we also (obviously
-tentatively) have a few other flags to deal with aspects of TDX that I'm
-fairly certain don't apply to SEV-ES:
-
-  tsc_immutable - KVM doesn't have write access to the TSC offset of the
-                  guest.
-
-  eoi_intercept_unsupported - KVM can't intercept EOIs (doesn't have access
-                              to EOI bitmaps) and so can't support level
-                              triggered interrupts, at least not without
-                              extra pain.
-
-  readonly_mem_unsupported - Secure EPT (analagous to SNP) requires RWX
-                             permissions for all private/encrypted memory.
-                             S-EPT isn't optional, so we get the joy of
-                             adding this right off the bat...
+-- 
+Martin K. Petersen	Oracle Linux Engineering
