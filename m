@@ -2,139 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6134026CE53
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173AC26CE46
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgIPWIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgIPWH7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:07:59 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1D3C0698D0;
-        Wed, 16 Sep 2020 14:59:55 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 5C3D229BBA2
-Subject: Re: [PATCH] cma: make number of CMA areas dynamic, remove
- CONFIG_CMA_AREAS
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
-Cc:     Aslan Bakirov <aslan@fb.com>, Joonsoo Kim <js1304@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Mike Rapoport <rppt@kernel.org>, kernelci-results@groups.io
-References: <20200915205703.34572-1-mike.kravetz@oracle.com>
- <4b7b14c9eb6a42509f8324f7ed84b46f@hisilicon.com>
- <2bf99eee-29b1-4965-da7d-d4e341803440@oracle.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <70ad632d-88f3-db6d-3493-b09451150298@collabora.com>
-Date:   Wed, 16 Sep 2020 22:59:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726515AbgIPWFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbgIPWFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 18:05:02 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86F6321D90;
+        Wed, 16 Sep 2020 22:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600293900;
+        bh=eUTWzYD9zEfDsAwI4leq47JAEbZSdDfHGOVYQOI3a44=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=U1OrSH7L/TTyKLRDeuVL1jE/Z2ssgGadqyOgxlOPq+Zvozwwd7aiIYTt1CgIveFdL
+         fnnuF6Pr9gmp04OpJqhun8jtw1oUzjE7CMppmtcEVdd6s6SgCqFdwoSvb2YLFJk+fu
+         mxmvQVA28D5fx+IASJ5CnH6mZyd7dXIEIg5/bEXk=
+Date:   Wed, 16 Sep 2020 17:04:59 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org, svarbanov@mm-sol.com,
+        bhelgaas@google.com, lorenzo.pieralisi@arm.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 4/5] pci: controller: dwc: qcom: Add PCIe support for
+ SM8250 SoC
+Message-ID: <20200916220459.GA1588618@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <2bf99eee-29b1-4965-da7d-d4e341803440@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916132000.1850-5-manivannan.sadhasivam@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/2020 17:30, Mike Kravetz wrote:
-> On 9/16/20 2:14 AM, Song Bao Hua (Barry Song) wrote:
->>>> -----Original Message-----
->>>> From: Mike Kravetz [mailto:mike.kravetz@oracle.com]
->>>> Sent: Wednesday, September 16, 2020 8:57 AM
->>>> To: linux-mm@kvack.org; linux-kernel@vger.kernel.org;
->>>> linux-arm-kernel@lists.infradead.org; linux-mips@vger.kernel.org
->>>> Cc: Roman Gushchin <guro@fb.com>; Song Bao Hua (Barry Song)
->>>> <song.bao.hua@hisilicon.com>; Mike Rapoport <rppt@kernel.org>; Joonsoo
->>>> Kim <js1304@gmail.com>; Rik van Riel <riel@surriel.com>; Aslan Bakirov
->>>> <aslan@fb.com>; Michal Hocko <mhocko@kernel.org>; Andrew Morton
->>>> <akpm@linux-foundation.org>; Mike Kravetz <mike.kravetz@oracle.com>
->>>> Subject: [PATCH] cma: make number of CMA areas dynamic, remove
->>>> CONFIG_CMA_AREAS
->>>>
->>>> The number of distinct CMA areas is limited by the constant
->>>> CONFIG_CMA_AREAS.  In most environments, this was set to a default
->>>> value of 7.  Not too long ago, support was added to allocate hugetlb
->>>> gigantic pages from CMA.  More recent changes to make
->>> dma_alloc_coherent
->>>> NUMA-aware on arm64 added more potential users of CMA areas.  Along
->>>> with the dma_alloc_coherent changes, the default value of CMA_AREAS
->>>> was bumped up to 19 if NUMA is enabled.
->>>>
->>>> It seems that the number of CMA users is likely to grow.  Instead of
->>>> using a static array for cma areas, use a simple linked list.  These
->>>> areas are used before normal memory allocators, so use the memblock
->>>> allocator.
->>>>
->>>> Acked-by: Roman Gushchin <guro@fb.com>
->>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>>> ---
->>>> rfc->v1
->>>>   - Made minor changes suggested by Song Bao Hua (Barry Song)
->>>>   - Removed check for late calls to cma_init_reserved_mem that was part
->>>>     of RFC.
->>>>   - Added ACK from Roman Gushchin
->>>>   - Still in need of arm testing
->>>
->>> Unfortunately, the test result on my arm64 board is negative, Linux can't boot
->>> after applying
->>> this patch.
->>>
->>> I guess we have to hold on this patch for a while till this is fixed. BTW, Mike, do
->>> you have
->>> a qemu-based arm64 numa system to debug? It is very easy to reproduce, we
->>> don't need to
->>> use hugetlb_cma and pernuma_cma. Just the default cma will make the boot
->>> hang.
->>
->> Hi Mike,
->> I spent some time on debugging the boot issue and sent a patch here:
->> https://lore.kernel.org/linux-mm/20200916085933.25220-1-song.bao.hua@hisilicon.com/
->> All details and knic oops can be found there.
->> pls feel free to merge my patch into your v2 if you want. And we probably need ack from
->> arm maintainers.
->>
->> Also,  +Will,
->>
->> Hi Will, the whole story is that Mike tried to remove the cma array with CONFIG_CMA_AREAS
->> and moved to use memblock_alloc() to allocate cma area, so that the number of cma areas
->> could be dynamic. It turns out it causes a kernel panic on arm64 during system boot as the
->> returned address from memblock_alloc is invalid before paging_init() is done on arm64.
->>
+On Wed, Sep 16, 2020 at 06:49:59PM +0530, Manivannan Sadhasivam wrote:
+> The PCIe IP on SM8250 SoC is similar to the one used on SDM845. Hence
+> the support is added reusing the 2.7.0 ops. Only difference is the need
+> of ATU base, which will be fetched opionally if provided by DT/ACPI.
 > 
-> Thank you!
-> 
-> Based on your analysis, I am concerned that other architectures may also
-> have issues.
-> 
-> Andrew,
-> I suggest we remove this patch from your tree.  I will audit all architectures
-> which enable CMA and look for similar issues there.  Will then merge Barry's
-> patch into a V2 with any other arch specific changes.
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-FYI This was also bisected on kernelci.org[1] and it landed on
-this commit: c999bd436fe9 ("mm/cma: make number of CMA areas
-dynamic, remove CONFIG_CMA_AREAS").  Only arm and arm64 seem to
-be affected, and not with all the builds:
+s/opionally/optionally/
 
-  https://kernelci.org/test/job/next/branch/master/kernel/next-20200916/plan/baseline/
+  $ git log --oneline drivers/pci/controller/dwc/pcie-qcom.c | head -10
+  824001cb64c0 PCI: qcom: Replace define with standard value
+  51ed2c2b6026 PCI: qcom: Support pci speed set for ipq806x
+  8df093fe2ae1 PCI: qcom: Add ipq8064 rev2 variant
+  de3c4bf64897 PCI: qcom: Add support for tx term offset for rev 2.1.0
+  5149901e9e6d PCI: qcom: Define some PARF params needed for ipq8064 SoC
+  6a114526af46 PCI: qcom: Use bulk clk api and assert on error
+  ee367e2cdd22 PCI: qcom: Add missing reset for ipq806x
+  dd58318c019f PCI: qcom: Change duplicate PCI reset to phy reset
 
-The list of failures above might help someone debug the issue
-with a platform they have at hand.
+Make yours match, maybe like this:
 
-Guillaume
+  PCI: qcom: Add SM8250 SoC support
 
-[1] https://groups.io/g/kernelci-results-staging/message/2027
+That way the important information ("SM8250") isn't way at the end
+where it may get chopped off.
+
+If you're ambitious, do this for the non-PCI patches, too.
