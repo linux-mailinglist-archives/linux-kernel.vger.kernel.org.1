@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0188F26BA54
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C4D26BA3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 04:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgIPCtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 22:49:19 -0400
-Received: from mga01.intel.com ([192.55.52.88]:28355 "EHLO mga01.intel.com"
+        id S1726579AbgIPCag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 22:30:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:25382 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgIPCtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 22:49:12 -0400
-IronPort-SDR: xgG/nhkpj4Jmxi+OZzRFOPeTW5MeAvR6Oi/phP27sGMj8/mn+dXq7gq4ZzUWGKfoVVfLudyldv
- u7T+l2fGEinw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="177461390"
-X-IronPort-AV: E=Sophos;i="5.76,431,1592895600"; 
-   d="scan'208";a="177461390"
+        id S1726334AbgIPCaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 22:30:35 -0400
+IronPort-SDR: EByuVlpv9TVeVrK29xIQDDCNQ3iKw4pJDaPnAiIQSV21iaoay9UCtHmRhb61OZG/dzaEjrffBh
+ XPqpvwLY6gaQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="223570704"
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="223570704"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 19:49:10 -0700
-IronPort-SDR: w0sYBVSvEv+bHfmTysoiFCFjCw7rmZLj8JPZJQOXsGKDwg4yEwl/JOldE3hth9Eoho6npBSSXT
- PgVlZpLRRqug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,431,1592895600"; 
-   d="scan'208";a="335876367"
-Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
-  by orsmga008.jf.intel.com with ESMTP; 15 Sep 2020 19:49:09 -0700
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     alex.williamson@redhat.com, cohuck@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yan Zhao <yan.y.zhao@intel.com>
-Subject: [PATCH v2] vfio/type1: fix dirty bitmap calculation in vfio_dma_rw
-Date:   Wed, 16 Sep 2020 10:30:05 +0800
-Message-Id: <20200916023005.26414-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 19:30:31 -0700
+IronPort-SDR: BaG7cLyG1T1AMzKbSctEQkLrk668E+MXCHvYGBVJhdWIPZJY39IsAHwNjPW6rHN9lO13VWwCkU
+ HaZDwmrPGIww==
+X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
+   d="scan'208";a="451663401"
+Received: from gschatz-mobl2.amr.corp.intel.com (HELO [10.254.127.209]) ([10.254.127.209])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 19:30:31 -0700
+Subject: Re: [PATCH v8 1/5] PCI: Conditionally initialize host bridge native_*
+ members
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com
+References: <20200915221721.GA1437311@bjorn-Precision-5520>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <388c59f7-4c47-ddea-b37e-9ca001c43723@linux.intel.com>
+Date:   Tue, 15 Sep 2020 19:30:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200915221721.GA1437311@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the count of dirtied pages is not only determined by count of copied
-pages, but also by the start offset.
 
-e.g. if offset = PAGE_SIZE - 1, and *copied=2, the dirty pages count is
-2, instead of 1 or 0.
 
-Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
+On 9/15/20 3:17 PM, Bjorn Helgaas wrote:
+> On Sun, Sep 13, 2020 at 01:49:26PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+>> On 9/10/20 2:00 PM, Kuppuswamy, Sathyanarayanan wrote:
+>>> On 9/10/20 12:49 PM, Bjorn Helgaas wrote:
+>>>> On Fri, Jul 24, 2020 at 08:58:52PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+>>>>> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>>>>
 
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+>>
+>> But I am wondering whether its correct to move LTR code under
+>> CONFIG_PCIEPORTBUS?. As per PCIe spec v5.0 sec 7.8.2, LTR is a
+>> optional PCIe extended capability. So why is not moved under
+>> drivers/pci/pcie/*. What is the criteria for code to be placed under
+>> drivers/pci/pcie/*
+> 
+> Some folks think drivers/pci/pcie/ should not exist, and I tend to
+> agree, but it's a fair bit of churn to remove it.  We do have quite a
+> bit of PCIe extended capability support in drivers/pci -- ats.c,
+> iov.c, vc.c.
+> 
+> There's no need to move LTR under CONFIG_PCIEPORTBUS because
+> CONFIG_PCIEPORTBUS enables portdrv, and AFAIK there's nothing
+> LTR-related that relies on portdrv.
+> 
+> The stuff currently in drivers/pci/pcie is mostly just portdrv and
+> services that depend on it.  aspm.c and ptm.c are exceptions and
+> really should be in drivers/pci.
+Thanks for the clarification. I will remove the CONFIG_PCIEPORTBUS
+dependency.
+> 
 
----
-v2: updated the format of the Fixes: line.
----
- drivers/vfio/vfio_iommu_type1.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>> -- 
+>>>>> 2.17.1
+>>>>>
+>>>
+>>
+>> -- 
+>> Sathyanarayanan Kuppuswamy
+>> Linux Kernel Developer
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 5fbf0c1f7433..d0438388feeb 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -2933,7 +2933,8 @@ static int vfio_iommu_type1_dma_rw_chunk(struct vfio_iommu *iommu,
- 			 * size
- 			 */
- 			bitmap_set(dma->bitmap, offset >> pgshift,
--				   *copied >> pgshift);
-+				   ((offset + *copied - 1) >> pgshift) -
-+				   (offset >> pgshift) + 1);
- 		}
- 	} else
- 		*copied = copy_from_user(data, (void __user *)vaddr,
 -- 
-2.17.1
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
