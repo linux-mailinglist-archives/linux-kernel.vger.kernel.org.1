@@ -2,136 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FD326CD2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9612826CD29
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728513AbgIPUzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:55:01 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:57342 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727174AbgIPUyy (ORCPT
+        id S1728561AbgIPUyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:54:41 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43338 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726904AbgIPUyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 16:54:54 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GKsejU047173;
-        Wed, 16 Sep 2020 15:54:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600289680;
-        bh=xWqHCu7jfOaINCHQDzJtCt2bywNS0XOYCTj1VHDUf2U=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=D4ZgRyxI2wcdEaHE75nx5j7/9vcNp0dl2dmu4+OpGATsO4H8+/gm6I2CXNb/i/35q
-         wRVC9WrPzbyTZo3zS71Vtr1ZZntzIlpQB4ttAf9un/0lDIkGvtANzNCEN4tL0rkk/2
-         F/C9dOT67XOPwYJxNenxf9M2iUMsSdhb3eiboaR0=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GKse8H078555;
-        Wed, 16 Sep 2020 15:54:40 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 15:54:39 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 15:54:39 -0500
-Received: from [10.250.32.129] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GKsdhk113843;
-        Wed, 16 Sep 2020 15:54:39 -0500
-Subject: Re: [PATCH net-next 2/3] net: dp83869: Add ability to advertise Fiber
- connection
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <mkubecek@suse.cz>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200915181708.25842-1-dmurphy@ti.com>
- <20200915181708.25842-3-dmurphy@ti.com> <20200915201718.GD3526428@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <4b297d8a-b4da-0e19-a5fb-6dda89ca4148@ti.com>
-Date:   Wed, 16 Sep 2020 15:54:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Sep 2020 16:54:37 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id DC5031C0B76; Wed, 16 Sep 2020 22:54:34 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 22:54:34 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yuan Ming <yuanmingbuaa@gmail.com>, Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        NopNop Nop <nopitydays@gmail.com>,
+        =?utf-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
+Message-ID: <20200916205434.GA10389@duo.ucw.cz>
+References: <git-mailbomb-linux-master-50145474f6ef4a9c19205b173da6264a644c7489@kernel.org>
+ <c9cd22ec-60dc-d761-b488-d3a1392708c0@infradead.org>
+ <CAHk-=wiNTWpqUF0HgzoyPGEaaAjxD-Bor+EE3DbJ52S30cfCWg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200915201718.GD3526428@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiNTWpqUF0HgzoyPGEaaAjxD-Bor+EE3DbJ52S30cfCWg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
 
-On 9/15/20 3:17 PM, Andrew Lunn wrote:
->> +		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseFX_Full_BIT,
->> +				 phydev->supported);
->> +		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseFX_Half_BIT,
->> +				 phydev->supported);
->> +
->> +		/* Auto neg is not supported in 100base FX mode */
-> Hi Dan
->
-> If it does not support auto neg, how do you decide to do half duplex?
-> I don't see any code here which allows the user to configure it.
+--bp/iNruPH9dso1Pn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ethtool has the provisions to set the duplex and speed right?.
+On Mon 2020-09-14 18:28:34, Linus Torvalds wrote:
+> On Mon, Sep 14, 2020 at 6:19 PM Randy Dunlap <rdunlap@infradead.org> wrot=
+e:
+> >
+> > Now someone can remove the documentation for scrollback (and "no-scroll=
+")...
+>=20
+> Note that scrollback hasn't actually gone away entirely - the original
+> scrollback supported by _hardware_ still exists.
+>=20
+> Of course, that's really just the old-fashioned text VGA console, but
+> that one actually scrolls not by moving any bytes around, but by
+> moving the screen start address. And the scrollback similarly isn't
+> about any software buffering, but about the ability of moving back
+> that screen start address.
+>=20
+> Do people use that? Probably not. But it wasn't removed because it
+> didn't have any of the complexities and bitrot that all the software
+> buffering code had.
+>=20
+> That said, I didn't check how much of the documentation is for the VGA
+> text console, and how much of it is for the actual software scrollback
+> for fbcon etc. So it is entirely possible that all the docs are about
+> the removed parts.
 
-The only call back I see which is valid is config_aneg which would still 
-require a user space tool to set the needed link modes.
+Could we pause this madness? Scrollback is still useful. I needed it
+today... it was too small, so command results I was looking for
+already scrolled away, but... life will be really painful with 0 scrollback.
 
-I could implement the config_aneg to call genphy_setup_forced if auto 
-neg is disabled but that function just writes the BMCR which is already 
-updated and if auto neg is enabled it would just call 
-genphy_check_and_restart_aneg.
+You'll need it, too... as soon as you get oops and will want to see
+errors just prior to that oops.
 
-I verified the ethtool path with the DP83822 by reading the BMCR and 
-ethtool displayed the correct advertisement
+If it means I get to maintain it... I'm not happy about it but that's
+better than no scrollback.
 
-root@am335x-evm:~# ethtool -s eth0 speed 100 duplex full
-root@am335x-evm:~# ethtool eth0
-Settings for eth0:
-         Supported ports: [ TP MII FIBRE ]
-         Supported link modes:   10baseT/Half 10baseT/Full
-                                 100baseT/Half 100baseT/Full
-         Supported pause frame use: Symmetric Receive-only
-         Supports auto-negotiation: No
-         Supported FEC modes: Not reported
-         Advertised link modes:  100baseT/Full
+ Kernel is now very verbose, so important messages
+ during bootup scroll away. It is way bigger deal when you can no
+ longer get to them using shift-pageup.
 
-<snip>
+ fsck is rather verbose, too, and there's no easy way to run that under
+ X terminal... and yes, that makes scrollback very useful, too.
 
-root@am335x-evm:~# ethtool -s eth0 speed 10 duplex half
-root@am335x-evm:~# ethtool eth0
-Settings for eth0:
-         Supported ports: [ TP MII FIBRE ]
-         Supported link modes:   10baseT/Half 10baseT/Full
-                                 100baseT/Half 100baseT/Full
-         Supported pause frame use: Symmetric Receive-only
-         Supports auto-negotiation: No
-         Supported FEC modes: Not reported
-         Advertised link modes:  10baseT/Half
+Best regards,
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-root@am335x-evm:~# ./mdio-test g eth0 0
-0x0000
-root@am335x-evm:~# ethtool -s eth0 speed 100 duplex full
-root@am335x-evm:~# ./mdio-test g eth0 0
-0x2100
-root@am335x-evm:~# ethtool -s eth0 speed 10 duplex half
-root@am335x-evm:~# ./mdio-test g eth0 0
-0x0000
-root@am335x-evm:~# ethtool -s eth0 speed 10 duplex full
-root@am335x-evm:~# ./mdio-test g eth0 0
-0x0100
-root@am335x-evm:~# ethtool eth0
-Settings for eth0:
-         Supported ports: [ TP MII FIBRE ]
-         Supported link modes:   10baseT/Half 10baseT/Full
-                                 100baseT/Half 100baseT/Full
-         Supported pause frame use: Symmetric Receive-only
-         Supports auto-negotiation: No
-         Supported FEC modes: Not reported
-         Advertised link modes:  10baseT/Full
+--bp/iNruPH9dso1Pn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Dan
+-----BEGIN PGP SIGNATURE-----
 
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2J7igAKCRAw5/Bqldv6
+8uAQAKCJl9d/+C94slkWoDEqnA9Sxe/f1ACePzzUiVttoyERR+W9wtLGIlFDYHU=
+=//6K
+-----END PGP SIGNATURE-----
 
+--bp/iNruPH9dso1Pn--
