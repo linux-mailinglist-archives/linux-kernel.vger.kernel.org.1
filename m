@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18C826BC32
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B11126BC33
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIPGIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:08:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726133AbgIPGIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:08:51 -0400
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 144082087D;
-        Wed, 16 Sep 2020 06:08:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600236530;
-        bh=yq+rh/yidum8ufs/ceMkyfzcJR8SkmGhPc5YlK4pJug=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tHgSfo1UbdAD9x6dURfRbzyyfotz9ZBhxm3dW4JLwBxzBD9dHm0P1NyWkaRGPOfI0
-         cA2iztOi+qNuXMyFFY0qPD3m3Am5owsuWc6YOrJorFoGmOqxFHLE99lW6/0R5LedMS
-         0deYcA0i2gnVQ4unVDdyyT/RjdQ4AriwyNzBYKd4=
-Received: by mail-ed1-f46.google.com with SMTP id n22so5060506edt.4;
-        Tue, 15 Sep 2020 23:08:50 -0700 (PDT)
-X-Gm-Message-State: AOAM533jnA5T4I4a9Kq5Re2cEQYcOuxY+2bA6fCaa7IH9bWkg+EFEoo1
-        9mDvI1BUkHV8P+7T4dxZ8H+5LOmmvqg4ikIohMQ=
-X-Google-Smtp-Source: ABdhPJxP81HSvrNQp5Kg5be5vASZ61X4kdfIAE4mMNX3H3Ax1gIcvuHBDdEtIIRGjRc/uSg3wZmhVjn1J9yVFQzvCSs=
-X-Received: by 2002:a05:6402:1a48:: with SMTP id bf8mr25553137edb.298.1600236528625;
- Tue, 15 Sep 2020 23:08:48 -0700 (PDT)
+        id S1726344AbgIPGI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726132AbgIPGI6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:08:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB2DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:08:57 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c18so5539051wrm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 23:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6ltP0aOGQD+pWXD6AJUF98sdvcO7hY5wybesnqZaXUw=;
+        b=Ux1DfmrceSWVJcjxg6rX12nRmouD06dTwTwqh7Kcyhgg4TgM3iB/16UnLsoRmsu+st
+         4v6TkVr6sf2Ei73kzDFuDad+NgXokkTdeChhvnbFU8X8FhYA7W4+zSENytFEiiG2f4QA
+         OW5NdYyiktAhLQmJ/tCpVQ60kPIqaGoveJOrm2xkCWUe5JKM6P3nypW6/Ma4gOLd0PVq
+         XGI8690y/Wob6hZia8JoG5Q8k+LuiDjFEVG+08915OuzGuxgDOp1O9qvSeNh3CnF/OMD
+         oPsPL8h0Ty4pcIJWMpHhfU9vJXBPI08o5aWnRvXSPIPnEEcz9xUMKDV/P1nwDaiHFkIV
+         /EkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6ltP0aOGQD+pWXD6AJUF98sdvcO7hY5wybesnqZaXUw=;
+        b=TMYoRhrsR7ZWC8EgjA4auQlAoYvH8USHsOv4prdouY5j2NxfPmVqH6CmRylRb2ebmz
+         2Pax60HKBzeiypQfGMvuLRnkHNQULKqm7+1MzvaZlem83Osq/LuawaYfxXb8yygTjOGQ
+         N+IHHFZpDaqhODQObJgL9jSh5AmCaNOayFyDHsV+yglGgMyCDAtZCVASfZat2ToI0CM7
+         4RBq+sMHuiURbVdYfxmUrBUY8MCI0KhzOIdxOcLcmyQYajIhThbgeTFb0w7NtRPY/6/R
+         GZd+QV5nmcvzZPJ5A8VQ5k4uvBkqe4NF1W4CLMy/IwRWBwblQdXuv7KZtcMd9iwWNunm
+         qVpA==
+X-Gm-Message-State: AOAM531tRSBL4uy6ueXGDN0r/80YDkZhF+LoLxD4+dpV8rQCCMbXDJPc
+        vK95kJ6LdUcAtHgJ1mL0UWGGWQ==
+X-Google-Smtp-Source: ABdhPJy1lHwl1CXyERuGj7W3u4wqt7kLrissmRGrhp5aC0BjolySXgBxonRNQGZjAdNklIJwvrVT1A==
+X-Received: by 2002:a5d:5751:: with SMTP id q17mr1867192wrw.409.1600236536019;
+        Tue, 15 Sep 2020 23:08:56 -0700 (PDT)
+Received: from localhost ([85.163.43.78])
+        by smtp.gmail.com with ESMTPSA id q18sm29992660wre.78.2020.09.15.23.08.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 23:08:55 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 08:08:54 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@nvidia.com>
+Cc:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4 10/15] net/mlx5: Add support for devlink
+ reload action fw activate
+Message-ID: <20200916060854.GB2278@nanopsycho>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-11-git-send-email-moshe@mellanox.com>
+ <20200914135442.GJ2236@nanopsycho.orion>
+ <565e63b3-2a01-4eba-42d3-f5abc6794ee8@nvidia.com>
+ <20200915133705.GR2236@nanopsycho.orion>
+ <5c5689d9-c2ba-7656-10f3-1d5f33fc6a2e@nvidia.com>
 MIME-Version: 1.0
-References: <20200828145744.3636-1-krzk@kernel.org> <20200828145744.3636-4-krzk@kernel.org>
- <20200916010140.GG1681290@dtor-ws>
-In-Reply-To: <20200916010140.GG1681290@dtor-ws>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 16 Sep 2020 08:08:36 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPesf1mnt_QC59Bgt27r4Ntu4vowBQCvexmRkASVhuPLEw@mail.gmail.com>
-Message-ID: <CAJKOXPesf1mnt_QC59Bgt27r4Ntu4vowBQCvexmRkASVhuPLEw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] Input: sun4i-ps2 - Fix handling of
- platform_get_irq() error
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-input@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5c5689d9-c2ba-7656-10f3-1d5f33fc6a2e@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 at 03:01, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+Tue, Sep 15, 2020 at 10:28:44PM CEST, moshe@nvidia.com wrote:
 >
-> On Fri, Aug 28, 2020 at 04:57:44PM +0200, Krzysztof Kozlowski wrote:
-> > platform_get_irq() returns -ERRNO on error.  In such case comparison
-> > to 0 would pass the check.
-> >
-> > Fixes: e443631d20f5 ("Input: serio - add support for Alwinner A10/A20 PS/2 controller")
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >
-> > ---
-> >
-> > Changes since v1:
-> > 1. None
-> > ---
-> >  drivers/input/serio/sun4i-ps2.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/input/serio/sun4i-ps2.c b/drivers/input/serio/sun4i-ps2.c
-> > index a681a2c04e39..7da1ea8741fc 100644
-> > --- a/drivers/input/serio/sun4i-ps2.c
-> > +++ b/drivers/input/serio/sun4i-ps2.c
-> > @@ -265,9 +265,8 @@ static int sun4i_ps2_probe(struct platform_device *pdev)
-> >
-> >       /* Get IRQ for the device */
-> >       irq = platform_get_irq(pdev, 0);
-> > -     if (!irq) {
-> > -             dev_err(dev, "no IRQ found\n");
-> > -             error = -ENXIO;
-> > +     if (irq < 0) {
+>On 9/15/2020 4:37 PM, Jiri Pirko wrote:
+>> Tue, Sep 15, 2020 at 02:44:02PM CEST, moshe@nvidia.com wrote:
+>> > On 9/14/2020 4:54 PM, Jiri Pirko wrote:
+>> > > Mon, Sep 14, 2020 at 08:07:57AM CEST, moshe@mellanox.com wrote:
+>> > > 
+>> > > [..]
+>> > > 
+>> > > > +static void mlx5_fw_reset_complete_reload(struct mlx5_core_dev *dev)
+>> > > > +{
+>> > > > +	struct mlx5_fw_reset *fw_reset = dev->priv.fw_reset;
+>> > > > +
+>> > > > +	/* if this is the driver that initiated the fw reset, devlink completed the reload */
+>> > > > +	if (test_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags)) {
+>> > > > +		complete(&fw_reset->done);
+>> > > > +	} else {
+>> > > > +		mlx5_load_one(dev, false);
+>> > > > +		devlink_reload_implicit_actions_performed(priv_to_devlink(dev),
+>> > > > +							  DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE,
+>> > > > +							  BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
+>> > > > +							  BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE));
+>> > > Hmm, who originated the reset? Devlink_reload of the same devlink
+>> > > instance?
+>> > 
+>> > Not the same devlink instance for sure. I defer it by the flag above
+>> > MLX5_FW_RESET_FLAG_PENDING_COMP. If the flag set, I set complete to the
+>> > reload_down() waiting for it.
+>> Hmm, thinking about the stats, as
+>> devlink_reload_implicit_actions_performed() is called only in case
+>> another instance does the reload, shouldn't it be a separate set of
+>> stats? I think that the user would like to distinguish local and remote
+>> reload, don't you think?
+>> 
 >
-> "irq" is unsigned here, so this will not work. I'll change it to use
-> drvdat->irq which happens to be signed, and drop "irq" variable.
+>Possible, it will double the counters, but it will give more info.
+>
+>So actually, if devlink_reload is not supported by driver, I should hold and
+>show only the remote stats or all stats always ?
 
-Yes, thanks. I wonder now why there was no warning of unsigned<0 comparison.
+It would make sense to show just remote stats.
 
-Best regards,
-Krzysztof
+>
+>How such remote counter should look like ? something like remote_fw_activate 
+>while the local is just fw_activate ?
+
+Sounds good.
+
+
+>
+>> > 
+>> > > [..]
