@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6967526BB38
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CF826BB41
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 06:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726199AbgIPEFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 00:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
+        id S1726219AbgIPEHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 00:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgIPEFS (ORCPT
+        with ESMTP id S1726145AbgIPEHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 00:05:18 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47203C06174A;
-        Tue, 15 Sep 2020 21:05:17 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d9so3201413pfd.3;
-        Tue, 15 Sep 2020 21:05:16 -0700 (PDT)
+        Wed, 16 Sep 2020 00:07:42 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9707C06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 21:07:40 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bd2so2472875plb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 21:07:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J5hBLNAeKi7sYZ3kBhjD3Odx80a8hnn7AnndRx+Ra8w=;
-        b=JI6cl06/ZTc9Eqe4z9EIUEoq8cN7ktx+bhfqFUaPKb9qD4Ftz8EmjiAa+6pJH5y3kl
-         ztEPpr9a1qYIM+MxU7OIaCWSrLAn6Hzepv3g/YbrWuHmSjKpLd8Rt5rUt6eMBjsdNONV
-         dLbulSM55aHScKGon+ECfE7K9eZe0Z73KvnepSSaL+TZGp4KbsU2uUrFbiPpBw6rfAS0
-         mBg+hUuCgaQ47Ff1pw2L6aYIG/Xo2k9pz8Ewjkt5WcQlOrzyfv/ZnD9WD/WR1z/sGosJ
-         hVEa2uaTzJs7A5PM3RoUzHdPa1FTViY0ptVCFcwXRpX0m5e7xyVcYF1DxxC7qCr5SOli
-         iwBA==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dwWRnwsGGp42nHyvHYAmDpO5pglBD8pM8+TllXGj8yw=;
+        b=azE3P0AgP3hJEcsTJJpcq0kIrViiGK//UpvP9mqGA6o40Im531SZGBXDNgnQdFS3PB
+         wBCQl6lf/X1c/KmzDFSGjQhPvl+ui4vi1DTHra//aKQqCOMx8rU4ZI2IcpNPGy5hJh1s
+         oolKtRnBa+gwzgRn2I9Fk8M92A3huwHa60D59WywFue23XD3CbogiTSRJB5lM1HAF7HC
+         PIuQd07NRFHwCY0YohAqIBDoJS6l38o4j18aL6BqCj5n04A2ExKWKIcmud0lQSHTYLK+
+         dfwV5huTCPPK4WMt25naEXT7bSYfyZ3JpWQeZPyP/M9Bm5r150kgss0Edr7XTPH6nKn9
+         2pJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J5hBLNAeKi7sYZ3kBhjD3Odx80a8hnn7AnndRx+Ra8w=;
-        b=C5lPEGj0N7h+oaoNMX0HM4fqBiZj5axM/4nucMTqxslpcufKKQhGmd1+l7WlVyjWeN
-         igBORQJAZS1PrPDVw0QvZceb4Z/160OPwDTHx5T7WCcI0d+BHXckX4HRNDvyYB3lnXqm
-         jWzomRh2P6UdHC9O0tMtombzEYlmvenCFF0i4kKDB/QK52zrWAWtXMzQxDjNyLJGS0c0
-         jWyhSKT7Y2LPyQDCGi02LZ3D9rN8Ld8SdzDcXeviIiwguti+6ejfL0Xg88ef4APpUB4o
-         PchgbXgDHcgWIO7Yr0QZzTAfzLOn3Sf8hK2fHpD2TNKkG13mI59+PzUR5uqIFl8dJiAt
-         jAkQ==
-X-Gm-Message-State: AOAM532ZUPfawu5z+HRj/yP/viG/nl/po4EAawnt7d274/KDd/kJEk/O
-        bI+HsFG+dWD6YAC/2yKBv2o=
-X-Google-Smtp-Source: ABdhPJwuBQJfISTIpXKH+vrbO4W1krC4th+wfsmwkF0zsNhfMBFZefvLS0SVIQPZr+pLCQ+S2HXWGw==
-X-Received: by 2002:a63:521c:: with SMTP id g28mr10130802pgb.43.1600229114515;
-        Tue, 15 Sep 2020 21:05:14 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id d25sm7586887pgl.23.2020.09.15.21.05.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 21:05:13 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 21:05:11 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>, will@kernel.org,
-        ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        mark.rutland@arm.com, maz@kernel.org
-Subject: Re: [PATCH v4 08/11] Input: hyperv-keyboard: Use VMBUS_RING_SIZE()
- for ringbuffer sizes
-Message-ID: <20200916040511.GH1681290@dtor-ws>
-References: <20200916034817.30282-1-boqun.feng@gmail.com>
- <20200916034817.30282-9-boqun.feng@gmail.com>
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dwWRnwsGGp42nHyvHYAmDpO5pglBD8pM8+TllXGj8yw=;
+        b=QwHzdvt28kI846rekhSvOL97D9DP+U4wA++pADQzvjoClev0ENu6vV/7si/U+tzkQn
+         bIVCgXI93wlFpvdwTBbRhyVbrcBXS96rGNvwOtA6O/G2sUh+QsRDTwutzIYOrai71Urf
+         f0TgWAVbg4+BccY7dyXSmQagtGraOwXLvik9AnlOrXwpq4l7VxJibaMMFivhp7wKEiB8
+         w0gwZ/GxKG1qlXdCv4ifkE6pHTtPX/tAqip/m9U8cTdVzT4vP/2n/xPFRtk9b7Pvrqm3
+         S+7PcWH8fvRMGrNEzFfqnmyYVGWtDQA/LG7VEq5+zppu+QxWIsM9W5FDfwtY7qvROM4B
+         mqKg==
+X-Gm-Message-State: AOAM531taEmbP9XGrDHLAZqNiUIXd+PUG4dffaGFRO1d2OoF+os9QZ5h
+        cXvIZl0SZo3p0nSx7PsVQ8ZL
+X-Google-Smtp-Source: ABdhPJxWtRMMr2pHjJ+1V7e9unODZq5jgqDHwWcJ1/MX6MPAFMT/ZxHjurIf9f4zyw22ZxVRjrPxYQ==
+X-Received: by 2002:a17:90b:3241:: with SMTP id jy1mr2307220pjb.10.1600229259610;
+        Tue, 15 Sep 2020 21:07:39 -0700 (PDT)
+Received: from linux ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id 131sm15062480pfc.20.2020.09.15.21.07.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Sep 2020 21:07:38 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 09:37:32 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org,
+        linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, o.rempel@pengutronix.de
+Subject: Re: [PATCH 0/6] Add support for MCP25XXFD SPI-CAN Network driver
+Message-ID: <20200916040732.GA4281@linux>
+References: <20200910133806.25077-1-manivannan.sadhasivam@linaro.org>
+ <20200915161925.GA5660@linux>
+ <20200915175838.GA12860@x1.vandijck-laurijssen.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916034817.30282-9-boqun.feng@gmail.com>
+In-Reply-To: <20200915175838.GA12860@x1.vandijck-laurijssen.be>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:48:14AM +0800, Boqun Feng wrote:
-> For a Hyper-V vmbus, the size of the ringbuffer has two requirements:
-> 
-> 1)	it has to take one PAGE_SIZE for the header
-> 
-> 2)	it has to be PAGE_SIZE aligned so that double-mapping can work
-> 
-> VMBUS_RING_SIZE() could calculate a correct ringbuffer size which
-> fulfills both requirements, therefore use it to make sure vmbus work
-> when PAGE_SIZE != HV_HYP_PAGE_SIZE (4K).
-> 
-> Note that since the argument for VMBUS_RING_SIZE() is the size of
-> payload (data part), so it will be minus 4k (the size of header when
-> PAGE_SIZE = 4k) than the original value to keep the ringbuffer total
-> size unchanged when PAGE_SIZE = 4k.
-> 
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Michael Kelley <mikelley@microsoft.com>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Hi,
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+On Tue, Sep 15, 2020 at 07:58:38PM +0200, Kurt Van Dijck wrote:
+> On di, 15 sep 2020 21:49:25 +0530, Manivannan Sadhasivam wrote:
+> > Hi,
+> > 
+> > On Thu, Sep 10, 2020 at 07:08:00PM +0530, Manivannan Sadhasivam wrote:
+> > > Hello,
+> > 
+> > Just a quick question: I don't see any activity on this specific driver for
+> > sometime (back in Martin days itself). Is it due to lack of reviewers or
+> > it is due to the patch size (lines of code) so that nobody is interested
+> > in reviewing?
+> 
+> If you look around, there are currently several versions of mcp251x
+> driver around, shipped by hardware vendors who glue the chip on there
+> SOM etc.
+> Until something more-or-less clean becomes mainline, the effort remains
+> spread.
+> 
+> A problem to import a complete driver is that ... its complete.
+> There was an suggestion to split into several patches, but that does not
+> really affect the review work.
+> 
+> The original driver failed to initialize under a loaded CAN bus, on my
+> desk. The current driver is more cleanly written than the original
+> and it seems to survive more than 1 use case (although I have a MAB overflow
+> report pending to investigate).
+> So, this is a good candidate for mainline.
+> 
 
-Please feel free to merge through whatever tree the rest of the patches
-will go.
+I just saw that you've pushed these patches to your testing branch. Does this
+mean that you're going to include it in v5.10 PR?
 
-Thanks.
+Thanks,
+Mani
 
--- 
-Dmitry
+> Kind regards,
+> Kurt
