@@ -2,108 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEB526BC8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE2126BCA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgIPGTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
+        id S1726408AbgIPGT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPGTJ (ORCPT
+        with ESMTP id S1726273AbgIPGTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:19:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93843C06174A;
-        Tue, 15 Sep 2020 23:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=fse+h8UCPDsleRNPufm6YCU5bALHyxaJ9NrZcm6xYM8=; b=DsBud3yN3zMNa+2ZYy1fFVo6t6
-        b+xLAGAzKH9Op3myuxDOH7JrQPH0g+Y0wi6n+ZmdCfJDEFuI1PA6lRnb5zu1m3v0oVnWPalTEXpoR
-        +cPDQORK6hBHtAvSCyJo73Vf8XmZldkrg44MW4H7Af+x98KfFOBoTOFz2XSHDD89QHpBlDGhK0Shf
-        xV1vaRVt0cm5Pqc+4qL6sfRC5tITrJnPNZiSoW/YJrMC7ejuq8bHD3nCRM2fFzul+EysUkUv6U5Gi
-        VZJI3Krd3r6uX5jTnPaJId+Hal8YM6cSwm68plBGaCxTBCQrn3fD+UjPSsggdbQ3Lt1b8Jvwiwk4j
-        o6Kp8nMw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIQmO-0006tb-Lm; Wed, 16 Sep 2020 06:18:57 +0000
-Subject: Re: [PATCH] Doc: admin-guide: Add entry for kvm_cma_resv_ratio kernel
- param
-To:     sathnaga@linux.vnet.ibm.com, linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <20200916061130.723411-1-sathnaga@linux.vnet.ibm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <28eb9747-e4cc-424c-1f16-c68ed165b36a@infradead.org>
-Date:   Tue, 15 Sep 2020 23:18:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 16 Sep 2020 02:19:47 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF74C06174A;
+        Tue, 15 Sep 2020 23:19:45 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id h4so7029878ioe.5;
+        Tue, 15 Sep 2020 23:19:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BQU4Vp5hkd72K0GyoRL03/6xjT4XAFXExo8+j37YSQY=;
+        b=Emg+QmhTNMGGm2Yi4tpkGItYJUUePIBz2tdkxU8bs5Wt8dZcpWrB30CmPAIAuy4jXL
+         LUGCbWYagicgR9MxLlzt4mcbULxHbQrGXV5yJSGmZN7ziABoN7mqxaI8h8vAoGb6zGi8
+         sJCQwNE039cWLxHl1cEUGcya5XSNB2eqh1k6Ct6J+Z01iwefgb948qLGwvJw2ut+v2H8
+         d6J5PsNNR0Id9Zv3kQxYeMEj07RQM4cJ9ZMCzCexW4ylpGDm895x8xKEKWeeIxpWTfSk
+         mnzMZNy/ftKg1mWqVcmbPNhbHAJzRBOeXbklo65GM9UXektQbYuxvsNnp/LOZUvZLTDy
+         3bYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BQU4Vp5hkd72K0GyoRL03/6xjT4XAFXExo8+j37YSQY=;
+        b=fXwazVLXYeQmyYqYE3sO9vdSJpJd1jpgW7BA6VCU3zNEEPu7WFzqFDBKJMiQFzCDyd
+         JrrhW9ecMuvJjSC5c9sKosnHgq2FOlVvLwPmy6GT7vKIwpaopndU5QFAGjpDLb/k6RgG
+         Mr+kf8YRdYnrUhUqIVS7o7aSEjqeYsldT7AwZQywtdVDnp/A98UuSlZAHne57irTJLk0
+         B/MnG3TTp+oq/oNHyXxLx3duo5ZL8PjjlhT4pFtLDcQh5chOUf2uLw+LOHD24TaETVvn
+         J3Q1/x57VCJQ4KgpeKxd4NtiRSWzKDXicVvIIr/a4XpCziAVYR1SR855s49DWjO0cWmQ
+         qYDw==
+X-Gm-Message-State: AOAM5321r558Z1mYDr6aGuuh2Nb/GU7XcFPIRQXKHSAYqy/WoIkngRFx
+        OvC/xzJ9VNOPzUzSZuGLTn4BSI8hgO16+7E7Phs=
+X-Google-Smtp-Source: ABdhPJxJwlKzq65lh/+l/0BV+jVylFOtHxLYQBuCozH4dYszDDV7FPy8Umwb6AE6jiBjLbsBhdhchmt7zod0tdyxYnM=
+X-Received: by 2002:a05:6638:250d:: with SMTP id v13mr16460879jat.50.1600237185081;
+ Tue, 15 Sep 2020 23:19:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200916061130.723411-1-sathnaga@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAAhV-H7+jMPab9oM_E1J8cfzq0NYCd3w==1WNV3_Hkt0NL7ZCA@mail.gmail.com>
+ <20200915203831.GA1426995@bjorn-Precision-5520>
+In-Reply-To: <20200915203831.GA1426995@bjorn-Precision-5520>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Wed, 16 Sep 2020 02:19:27 -0400
+Message-ID: <CAAhV-H7QbhbUjSP-uDb3dwf0Pao-DDhGQrpgPr6NLLjq31NOeg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3] PCI/portdrv: Only disable Bus Master on kexec
+ reboot and connected PCI devices
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@openvz.org>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        zhouyanjie <zhouyanjie@wanyeetech.com>, git <git@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 11:11 PM, sathnaga@linux.vnet.ibm.com wrote:
-> From: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-> 
-> Add document entry for kvm_cma_resv_ratio kernel param which
-> is used to alter the KVM contiguous memory allocation percentage
-> for hash pagetable allocation used by hash mode PowerPC KVM guests.
-> 
-> Cc: linux-kernel@vger.kernel.org
-> Cc: kvm-ppc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Jonathan Corbet <corbet@lwn.net>  
-> Signed-off-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index a1068742a6df..9cb126573c71 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -599,6 +599,15 @@
->  			altogether. For more information, see
->  			include/linux/dma-contiguous.h
->  
-> +        kvm_cma_resv_ratio=n
-> +                        [PPC]
+Hi, Bjorn,
 
-You can put [PPC] on the line above.
+On Tue, Sep 15, 2020 at 4:38 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Tue, Sep 15, 2020 at 09:36:13AM +0800, Huacai Chen wrote:
+> > Hi, Tiezhu,
+> >
+> > On Mon, Sep 14, 2020 at 7:25 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+> > >
+> > > On 09/14/2020 05:46 PM, Huacai Chen wrote:
+> > > > Hi, Tiezhu,
+> > > >
+> > > > On Mon, Sep 14, 2020 at 5:30 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+> > > >> On 09/14/2020 04:52 PM, Huacai Chen wrote:
+> > > >>> Hi, Tiezhu,
+> > > >>>
+> > > >>> How do you test kexec? kexec -e or systemctl kexec? Or both?
+> > > >> kexec -l vmlinux --append="root=/dev/sda2 console=ttyS0,115200"
+> > > >> kexec -e
+> > > > So you haven't tested "systemctl kexec"?
+> > >
+> > > Yes, the distro I used is Loongnix which has not kexec service now.
+> > > Is there any problem when use systemctl kexec? If you have more details,
+> > > please let me know.
+> > If you use systemctl kexec, the first part of kexec is the same as a
+> > normal reboot/poweroff. So, there is no reason that reboot/poweroff is
+> > bad but kexec is good.
+> > Then, Bjorn, what is the best solution now? It seems like my first
+> > version is OK (commit messages should be improved, of course).
+>
+> Sorry, there are too many conversations going on for me to keep track
+> of what first version you're referring to.  Please include a specific
+> lore.kernel.org URL.
+My first version means this one:
+https://patchwork.kernel.org/patch/11695929/
 
-> +                        Reserves given percentage from system memory area for
-> +                        contiguous memory allocation for KVM hash pagetable
-> +                        allocation.
-> +                        Bydefault it reserves 5% of total system memory.
-
-			   By default
-
-> +                        Format: <integer>
-> +                        Default: 5
-> +
-
-and please use tabs for indentation, not all spaces.
-
->  	cmo_free_hint=	[PPC] Format: { yes | no }
->  			Specify whether pages are marked as being inactive
->  			when they are freed.  This is used in CMO environments
-> 
-
-Entries in kernel-parameters.txt should be sorted into dictionary order,
-so please put that with the other kvm parameters.
-
-thanks.
--- 
-~Randy
-
+Thanks,
+Huacai
+>
+> Bjorn
