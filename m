@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F120C26CDB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5F426CDA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgIPVEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:04:25 -0400
-Received: from mga01.intel.com ([192.55.52.88]:38422 "EHLO mga01.intel.com"
+        id S1726380AbgIPVCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:02:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726191AbgIPQPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:15:01 -0400
-IronPort-SDR: 9FHXkSbyrIE5nM8ruif5bBBi09AlmJWYCzdHxyPUub+LaAhiMV/LZbKEUpJsTyL63wTePIRqm8
- 82Cl6oxVyzfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="177577409"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="177577409"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:10:48 -0700
-IronPort-SDR: pESb1QCy6wrVLKVJGpZbs3bTRkGbUfn8V5nnfhT7Lqd0YKYKlpEPNqGYQfFLhNRkKj5XZ7Gvj/
- PjRrX8S+Rtow==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="483367624"
-Received: from scusackx-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.87])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 09:10:39 -0700
-Date:   Wed, 16 Sep 2020 19:10:37 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, haitao.huang@intel.com, josh@joshtriplett.org,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com
-Subject: Re: [PATCH v37 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-Message-ID: <20200916161037.GD21026@linux.intel.com>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
- <20200911124019.42178-14-jarkko.sakkinen@linux.intel.com>
- <op.0qwyftihwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200915095450.GH3612@linux.intel.com>
- <20200915101752.GA883054@linux.intel.com>
- <2156a91c-cf24-bf8b-8680-bd2598e0706d@intel.com>
+        id S1726306AbgIPQPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:15:09 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AF8622581;
+        Wed, 16 Sep 2020 16:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600272908;
+        bh=dUQHH1t0Kjwwdng4izGf7es7NVC9nSokJNE32ljW3nA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VbnIXCqoyU5dinvxyoYd47BNrw0bJMlLOxP+YR+Cwg1Cr0Pye++SYNL9gqJDL1np/
+         MThFzvMvO2d4tCLmEcRH1XrQSGQH8TnZyphNBV846gPMUTNKU0kVUZBK/n35Y5mH8K
+         IWeYEyDtXVX3E5r7SlVB8oGCI9wrAnP2pfLlsc8Y=
+Date:   Wed, 16 Sep 2020 17:14:18 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH] regmap: debugfs: Duplicate name string if delaying
+ debugfs init
+Message-ID: <20200916161418.GB6374@sirena.org.uk>
+References: <20200916154433.7003-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i0/AhcQY5QxfSsSZ"
 Content-Disposition: inline
-In-Reply-To: <2156a91c-cf24-bf8b-8680-bd2598e0706d@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200916154433.7003-1-ckeepax@opensource.cirrus.com>
+X-Cookie: I'm shaving!!  I'M SHAVING!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 07:49:15AM -0700, Dave Hansen wrote:
-> On 9/15/20 3:17 AM, Jarkko Sakkinen wrote:
-> > OK, spotted the regression, sorry about this. I'll fix it for v38, which
-> > I'm sending soon given the email server issues with v37.
-> 
-> I'm going to cry uncle on the mail quantity too.  Someone is going to
-> think the mail relays are mining bitcoin.
-> 
-> Especially all of us on cc, we don't need multiple copies.  I'd suggest
-> throwing your series up on github and then make sure your cover letter
-> gets through.  If anyone is missing a patch, they can just yank it out
-> of the git repo.
 
-The v38 copies should be complete and good.
+--i0/AhcQY5QxfSsSZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The only issue is that it has now two duplicate copies. 
+On Wed, Sep 16, 2020 at 04:44:33PM +0100, Charles Keepax wrote:
 
-/Jarkko
+> -		node->name = name;
+> +		node->name = kstrdup(name, GFP_KERNEL);
+> +		if (!node->name) {
+
+Two things here - one is that this should be kstrdup_const(), the other
+is that we already took a copy of the name in __regmap_init() so the
+thing to do here is to change the regmap_debugfs_init() call there to
+use the copy we just made rather than the copy in the config.
+
+--i0/AhcQY5QxfSsSZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9iOdkACgkQJNaLcl1U
+h9CBfgf9GnSQpLoP4qudoLYN/FrsuHwdxt6zQlQIetYNPWVvc3qW4uLw73sq7YEc
+EPqMamq2nd82vDJbtzEv7LqEoCd7OVwJn37OgBXjSNzW/l7TWuCx/Y4xNlYHYhS7
+sRcStyG/jRrgM5xILP5Iw2AstYo6EFWmC+QE0BRW1VxicPwlA+3DDEi6keyiwZNB
+KZp8u9Zh7+/w2VBuqDpyCmnnZ55OCxAZktEej6E2rsG9jWVhWDnLswFew3IzVlwL
+zU993Z7kBGAv/o8osXHcbLTgRZh4dwmbB8L4s7zkhCepgY63APamWMgMb3EyewwN
+JOKpnJk+4RzMNrmsr8csxtyO5EC/yQ==
+=5+Pm
+-----END PGP SIGNATURE-----
+
+--i0/AhcQY5QxfSsSZ--
