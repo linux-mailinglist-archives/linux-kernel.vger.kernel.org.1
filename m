@@ -2,323 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D399B26C6BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC1226C6C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgIPSCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:02:30 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:39009 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727754AbgIPSCN (ORCPT
+        id S1727692AbgIPSDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727774AbgIPSCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:02:13 -0400
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 08GI1gwX021826
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:01:42 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 08GI1gwX021826
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600279303;
-        bh=vrkojej14gOuPDDTpBXZE88oQaVyq9TsyyMQly7A7JE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gMLh9EbcGJnlXtAf3LW6sT24yVVcDxutdoY22GcGvJXkIbpYM5dopZaYUp1NZepXo
-         EZ+fM+jMyenYA1bJGELVsQOS7RhGPl8dQPp404YEMJLsKzoLkkWn1iBKv1vxExbwwN
-         brr8yNysqu2MZNe0Ds8trJwVBwGaY40v7JbGw+jfgM7eQ8TObUlB4FgcBm5C7vKw4l
-         48Su+v8DFImcSMdvUVRE6WPd/ApP5n8PVTTmUzaAdA6Tqx6XKxk856HhuMysMdz5PG
-         bhrCAddUMyuTYUUXrkGcf2MoXmGmDFtEswhlUn/24qojDaJirfOn0CutGb/iSBWMOr
-         jd82VcrEUeSwQ==
-X-Nifty-SrcIP: [209.85.215.178]
-Received: by mail-pg1-f178.google.com with SMTP id l191so4351249pgd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:01:42 -0700 (PDT)
-X-Gm-Message-State: AOAM530lsd1ysDt1ecWzdFfKAyS1druYrUd1direq522nAteGnaUur/P
-        Lt+uvOu/K8oyOBp521AhMbal4yhtpMVjgxf+Bq8=
-X-Google-Smtp-Source: ABdhPJyaL1rzeK33tiXruJkKngE86A6QMh7Z0QSYBXitiXDCSkAzd+IFjZ0Rtz32sZtJwU4wpDKUa1s/F4D6M0zeooU=
-X-Received: by 2002:a63:d242:: with SMTP id t2mr19934901pgi.47.1600279301800;
- Wed, 16 Sep 2020 11:01:41 -0700 (PDT)
+        Wed, 16 Sep 2020 14:02:33 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1211C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:02:31 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k8so1086525pfk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:02:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oKK+R4vB+7dRT25SkGFNImJ3MtLBDRDqIznhx0nRzAs=;
+        b=RAv+ZcfpNEyAbGataYWi56XvH+C0d2XlA3emc1lqWb35HAVu5yFwWC1CUAL88Z3rz8
+         O113BD6SSZ7xE1R6gCYR+5Uiv8Wz4wRppiA+tTQym8I/NnqdG+l6StU2B0twqgdGYvAS
+         wUJLqUDnBrTeDpBjWcEAif4I6ydTNJmouwBy4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oKK+R4vB+7dRT25SkGFNImJ3MtLBDRDqIznhx0nRzAs=;
+        b=KMh/Av+IEm3Kk6P5V6nQ3CPVv/5zQ4vpRKD7UeqPbVWsr/0lr3mEEMM5JAryK06Soj
+         siV/dMct+zzxEB22fhDx8Tmfao5gLBvhdOdOu0HyP1SC5tk7zrtlL0U6aDjDLemqLhhN
+         jasYvVOODspwSw7K2TG6KwEBNwkWMVgy0LP/IOpKhQ/xnOAOwwNnU52Qn6dzyyXufbvA
+         aEt4EcGW2bUCOHBpix6cDBVLBXFRaKpagWfefs0UNL/jrOUuh8rcKN2i94As2FOYVMgG
+         CSIbYx5Je7qkKlgmJDK2HaXkjmpghgLiFfIhjz3h1tXJoH6HEoGBNAXw78Ud2/nOv53V
+         A1KQ==
+X-Gm-Message-State: AOAM533QYxxuIXIse77nwtAqgL6Pe4r4x6GxbiG/Y0iDgbNo9k0Gkjsk
+        FH9LjfcTo3sTztBKdGroz4jFMw==
+X-Google-Smtp-Source: ABdhPJyByD4aTCPLAJcpe/mnCOM1dCgtz7cfGxhzyAuNU3s+nJ2bpn6PbSwbInUI7LZr3ekI7PjsjQ==
+X-Received: by 2002:a62:3044:0:b029:142:2501:398b with SMTP id w65-20020a6230440000b02901422501398bmr7496943pfw.80.1600279350855;
+        Wed, 16 Sep 2020 11:02:30 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id z1sm17315402pfz.70.2020.09.16.11.02.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Sep 2020 11:02:30 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 11:02:29 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        bgodavar@codeaurora.org, rjliao@codeaurora.org,
+        hbandi@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [PATCH v1] Bluetooth: Use NVM files based on SoC ID for WCN3991
+Message-ID: <20200916180229.GA3560556@google.com>
+References: <1600184605-31611-1-git-send-email-gubbaven@codeaurora.org>
 MIME-Version: 1.0
-References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
- <CAK7LNARE6NpCYAd7=--m-oO8_LweBWhP2aWfSRdTz=TX8dM5rw@mail.gmail.com>
- <CA+ASDXOuK=iCdzWbtc+aRhBy=8xy860XqxwJg+wFuQaXKfg3UQ@mail.gmail.com>
- <f3ce9b3e-d3c1-a96b-e14b-a8d3c4600b09@rasmusvillemoes.dk> <CAK7LNATJ2seAuYpi-WPdLNFn2C9Vwm494nk-SWvgBJB3CmCJrw@mail.gmail.com>
- <fd1bb3d9-2b21-c330-7fa8-02ec76292d8b@rasmusvillemoes.dk>
-In-Reply-To: <fd1bb3d9-2b21-c330-7fa8-02ec76292d8b@rasmusvillemoes.dk>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 17 Sep 2020 03:01:03 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASvh=pR=b0YtfzdKU1Y+M8kUiOKu887k05UH-xKs3b99g@mail.gmail.com>
-Message-ID: <CAK7LNASvh=pR=b0YtfzdKU1Y+M8kUiOKu887k05UH-xKs3b99g@mail.gmail.com>
-Subject: Re: [PATCH] scripts/setlocalversion: make git describe output more reliable
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1600184605-31611-1-git-send-email-gubbaven@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 12:23 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 16/09/2020 16.28, Masahiro Yamada wrote:
-> > On Fri, Sep 11, 2020 at 5:28 PM Rasmus Villemoes
-> > <linux@rasmusvillemoes.dk> wrote:
-> >>
-> >> On 10/09/2020 21.05, Brian Norris wrote:
-> >>> On Thu, Sep 10, 2020 at 7:35 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >>>> On Thu, Sep 10, 2020 at 8:57 PM Rasmus Villemoes
-> >>>> <linux@rasmusvillemoes.dk> wrote:
-> >>>>> So in order to avoid `uname -a` output relying on such random details
-> >>>>> of the build environment which are rather hard to ensure are
-> >>>>> consistent between developers and buildbots, use an explicit
-> >>>>> --abbrev=15 option (and for consistency, also use rev-parse --short=15
-> >>>>> for the unlikely case of no signed tags being usable).
-> >>>
-> >>> For the patch:
-> >>>
-> >>> Reviewed-by: Brian Norris <briannorris@chromium.org>
-> >>>
-> >>>> I agree that any randomness should be avoided.
-> >>>>
-> >>>> My question is, do we need 15-digits?
-> >>> ...
-> >>>> So, I think the conflict happens
-> >>>> only when we have two commits that start with the same 7-digits
-> >>>> in the _same_ release. Is this correct?
-> >>
-> >> No.
-> >>
-> >>> For git-describe (the case where we have a tag to base off):
-> >>> "use <n> digits, or as many digits as needed to form a unique object name"
-> >>
-> >> Yes, the abbreviated hash that `git describe` produces is unique among
-> >> all objects (and objects are more than just commits) in the current
-> >> repo, so what matters for probability-of-collision is the total number
-> >> of objects - linus.git itself probably grows ~60000 objects per release.
-> >>
-> >> As for "do we need 15 digits", well, in theory the next time I merge the
-> >> next rt-stable tag into our kernel I could end up with a commit that
-> >> matches some existing object in the first 33 hex chars at which point I
-> >> should have chosen 34 - but of course that's so unlikely that it's
-> >> irrelevant.
-> >>
-> >> But the upshot of that is that there really is no objective answer to
-> >> "how many digits do we need", so it becomes a tradeoff between "low
-> >> enough probability that anyone anywhere in the next few years would have
-> >> needed more than X when building their own kernel" and readability of
-> >> `uname -r` etc. So I decided somewhat arbitrarily that each time one
-> >> rolls a new release, there should be less than 1e-9 probability that
-> >> HEAD collides with some other object when abbreviated to X hexchars.
-> >> X=12 doesn't pass that criteria even when the repo has only 10M objects
-> >> (and, current linus.git already has objects that need 12 to be unique,
-> >> so such collisions do happen in practice, though of course very rarely).
-> >> 13 and 14 are just weird numbers, so I ended with 15, which also allows
-> >> many many more objects in the repo before the probability crosses that
-> >> 1e-9 threshold.
-> >>
-> >
-> >
-> > This is because you use the output from git as-is.
-> >
-> > Why are you still trying to rely on such obscure behavior of git?
-> >
-> >
-> > It is pretty easy to get the fixed number of digits reliably.
-> >
-> > For example,
-> > git rev-parse --verify HEAD 2>/dev/null | cut -c1-7
-> >
-> >
-> > It always returns a 7-digits hash,
-> > and two different people will get the same result for sure.
-> >
-> > Your solution, --short=15, means "at least 15",
-> > which still contains ambiguity.
-> >
-> >
-> >
-> > As I already noted, the kernelrelease string is
-> > constructed in this format:
-> >
-> > <kernel-version>-<number-of-commits-on-top>-<abbreviated-commit-hash>
-> >
-> >
-> > For example, if I enable CONFIG_LOCALVERSION_AUTO=y
-> > in today's Linus tree, I got this:
-> >
-> > 5.9.0-rc5-00005-gfc4f28bb3daf
-> >
-> >
-> > What if the number of digits were 7?
-> >
-> > 5.9.0-rc5-00005-gfc4f28b
-> >
-> > I see no problem here.
->
-> The problem is that currently, the build relies on things which cannot
-> easily be controlled or reproduced between different developers: Apart
-> from git version (which is reasonable to mandate is the same, just like
-> one must use same compiler, binutils etc. to get binary reproducible
-> output), it depends on whether ~/.gitconfig has a core.abbrev setting -
-> and even worse, it depends on the _total number of objects in the source
-> git repo_, i.e. something that has nothing to do with what is currently
-> in the work tree at all.
->
-> And that leads to real bugs when one builds external modules that end up
-> in one directory in the rootfs, while `uname -r` tells modprobe to look
-> in some other directory (differing in the length of the abbreviated hash).
->
-> > Even if we have another object that starts with "fc4f28b",
-> > the kernelrelease string is still unique thanks to the
-> > <kernel-version>-<number-of-commits-on-top> prefix.
-> >
-> > Why do we care about the uniqueness of the abbreviated
-> > hash in the whole git history?
->
-> Because when I ask a customer "what kernel are you running", and they
-> tell me "4.19.45-rt67-00567-123abc8", I prefer that 123abc8 uniquely
-> identifies the right commit, instead of me having to dig around each of
-> the commits starting with that prefix and see which one of them matches
-> "is exactly 567 commits from 4.19.45-rt67". 7 hexchars is nowhere near
-> enough for that today, which is why Linus himself did that "auto-tune
-> abbrev based on repo size" patch for git.git.
+Hi Venkata,
 
+I agree with Marcel that the version magic is confusing ...
 
+On Tue, Sep 15, 2020 at 09:13:25PM +0530, Venkata Lakshmi Narayana Gubba wrote:
+> This change will allow to use different NVM file based
+> on WCN3991 BT SoC ID.Need to use different NVM file based on
+> fab location for WCN3991 BT SoC.
+> 
+> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+> ---
+>  drivers/bluetooth/btqca.c   | 41 +++++++++++++++++++++++++----------------
+>  drivers/bluetooth/btqca.h   | 13 ++++++++-----
+>  drivers/bluetooth/hci_qca.c | 11 +++++------
+>  3 files changed, 38 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+> index ce9dcff..a7e72f1 100644
+> --- a/drivers/bluetooth/btqca.c
+> +++ b/drivers/bluetooth/btqca.c
+> @@ -14,12 +14,11 @@
+>  
+>  #define VERSION "0.1"
+>  
+> -int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
+> +int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_version *ver,
+>  			 enum qca_btsoc_type soc_type)
+>  {
+>  	struct sk_buff *skb;
+>  	struct edl_event_hdr *edl;
+> -	struct qca_btsoc_version *ver;
+>  	char cmd;
+>  	int err = 0;
+>  	u8 event_type = HCI_EV_VENDOR;
+> @@ -70,9 +69,9 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
+>  	}
+>  
+>  	if (soc_type >= QCA_WCN3991)
+> -		memmove(&edl->data, &edl->data[1], sizeof(*ver));
+> -
+> -	ver = (struct qca_btsoc_version *)(edl->data);
+> +		memcpy(ver, &edl->data[1], sizeof(*ver));
+> +	else
+> +		memcpy(ver, &edl->data, sizeof(*ver));
+>  
+>  	bt_dev_info(hdev, "QCA Product ID   :0x%08x",
+>  		    le32_to_cpu(ver->product_id));
+> @@ -83,13 +82,7 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
+>  	bt_dev_info(hdev, "QCA Patch Version:0x%08x",
+>  		    le16_to_cpu(ver->patch_ver));
+>  
+> -	/* QCA chipset version can be decided by patch and SoC
+> -	 * version, combination with upper 2 bytes from SoC
+> -	 * and lower 2 bytes from patch will be used.
+> -	 */
+> -	*soc_version = (le32_to_cpu(ver->soc_id) << 16) |
+> -		       (le16_to_cpu(ver->rom_ver) & 0x0000ffff);
+> -	if (*soc_version == 0)
+> +	if (le32_to_cpu(ver->soc_id) == 0 || le16_to_cpu(ver->rom_ver) == 0)
+>  		err = -EILSEQ;
+>  
+>  out:
+> @@ -446,15 +439,25 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
+>  EXPORT_SYMBOL_GPL(qca_set_bdaddr_rome);
+>  
+>  int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+> -		   enum qca_btsoc_type soc_type, u32 soc_ver,
+> +		   enum qca_btsoc_type soc_type, struct qca_btsoc_version ver,
+>  		   const char *firmware_name)
+>  {
+>  	struct qca_fw_config config;
+>  	int err;
+>  	u8 rom_ver = 0;
+> +	u32 soc_ver;
+>  
+>  	bt_dev_dbg(hdev, "QCA setup on UART");
+>  
+> +	/* QCA chipset version can be decided by patch and SoC
+> +	 * version, combination with upper 2 bytes from SoC
+> +	 * and lower 2 bytes from patch will be used.
+> +	 */
+> +	soc_ver = (le32_to_cpu(ver.soc_id) << 16) |
+> +		       (le16_to_cpu(ver.rom_ver) & 0x0000ffff);
+> +
 
-I like:
+Can we at least do the leN_to_cpu conversions in qca_read_soc_version()
+as previously to make this less clunky?
 
-   git rev-parse --verify HEAD 2>/dev/null | cut -c1-15
+And/or define a macro to extract 'soc_ver' to unclunkify this further.
 
-better than:
+> +	bt_dev_info(hdev, "QCA controller version 0x%08x", soc_ver);
+> +
+>  	config.user_baud_rate = baudrate;
+>  
+>  	/* Download rampatch file */
+> @@ -491,9 +494,15 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+>  	if (firmware_name)
+>  		snprintf(config.fwname, sizeof(config.fwname),
+>  			 "qca/%s", firmware_name);
+> -	else if (qca_is_wcn399x(soc_type))
+> -		snprintf(config.fwname, sizeof(config.fwname),
+> -			 "qca/crnv%02x.bin", rom_ver);
+> +	else if (qca_is_wcn399x(soc_type)) {
+> +		if (ver.soc_id == QCA_WCN3991_SOC_ID) {
+> +			snprintf(config.fwname, sizeof(config.fwname),
+> +				 "qca/crnv%02xu.bin", rom_ver);
+> +		} else {
+> +			snprintf(config.fwname, sizeof(config.fwname),
+> +				 "qca/crnv%02x.bin", rom_ver);
+> +		}
+> +	}
+>  	else if (soc_type == QCA_QCA6390)
+>  		snprintf(config.fwname, sizeof(config.fwname),
+>  			 "qca/htnv%02x.bin", rom_ver);
+> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
+> index d81b74c..d01a9f5 100644
+> --- a/drivers/bluetooth/btqca.h
+> +++ b/drivers/bluetooth/btqca.h
+> @@ -34,6 +34,8 @@
+>  #define QCA_HCI_CC_OPCODE		0xFC00
+>  #define QCA_HCI_CC_SUCCESS		0x00
+>  
+> +#define QCA_WCN3991_SOC_ID		(0x40014320)
 
-   git rev-parse --verify --short=15 HEAD 2>/dev/null
-
-
-
-The former produces the deterministic kernelrelease string.
-
-
-But, let's reconsider if we need as long as 15-digits.
-
-There are a couple of kinds of objects in git: commit, tree, blob.
-
-I think you came up with 15-digits to ensure the uniqueness
-in _all_ kinds of objects.
-
-But, when your customer says "4.19.45-rt67-00567-123abc8",
-123abc8 is apparently a commit instead of a tree or a blob.
-
-
-
-In the context of the kernel version, we can exclude
-tree and blob objects.
-
-In other words, I think "grows ~60000 objects per release"
-is somewhat over-estimating.
-
-We have ~15000 commits per release. So, the difference
-is just 4x factor, though...
-
-
-
-BTW, I did some experiments, and I noticed
-"git log" accepts a shorter hash
-than "git show" does presumably because
-"git log" only takes a commit.
-
-
-
-For example, "git show 06a0d" fails, but
-"git log 06a0d" works.
-
-
-masahiro@oscar:~/ref/linux$ git  show   06a0d
-error: short SHA1 06a0d is ambiguous
-hint: The candidates are:
-hint:   06a0df4d1b8b commit 2020-09-08 - fbcon: remove now unusued
-'softback_lines' cursor() argument
-hint:   06a0d81911b3 tree
-hint:   06a0dc5a84d2 tree
-hint:   06a0d1947c77 blob
-hint:   06a0df434249 blob
-fatal: ambiguous argument '06a0d': unknown revision or path not in the
-working tree.
-Use '--' to separate paths from revisions, like this:
-'git <command> [<revision>...] -- [<file>...]'
-masahiro@oscar:~/ref/linux$ git  log --oneline  -1   06a0d
-06a0df4d1b8b fbcon: remove now unusued 'softback_lines' cursor() argument
-
-
-
-
-What is interesting is, if you prepend <tag>-<number-of-commits>-
-to the abbreviated hash, "git show" accepts as short as a commit
-"git log" does.
-
-masahiro@oscar:~/ref/linux$ git  show   v5.9-rc5-00002-g06a0d  | head -1
-commit 06a0df4d1b8b13b551668e47b11fd7629033b7df
-
-
-I guess git cleverly understands it refers to a commit object
-since "v5.9-rc5-00002-" prefix only makes sense
-in the commit context.
-
-
-
-Keeping those above in mind, I believe 15-digits is too long.
-
-
-So, I propose two options.
-
-
-[1] 7 digits
-
-The abbreviated hash part may not uniquely identify
-the commit. In that case, you need some extra git
-operations to find out which one is it.
-
-As for the kernel build,
-<kernel-version>-<number-of-commits>-<7-digits> is enough
-to provide the unique kernelrelease string.
-
-
-
-[2] 12 digits
-
-This matches to the Fixes: tag policy specified in
-Documentation/process/submitting-patches.rst
-
-The abbreviated hash part is very likely unique
-in the commit object space.
-(Of course, it is impossible to guarantee the uniqueness)
-
-
-
-I wait for some comments.
-
-
-
-
-
-
-> But what I mostly care about is getting a consistent result. And yes,
-> you're right that the porcelain command 'git describe' could end up
-> using something more than 15 digits (though that's extremely unlikely).
-> So if you prefer, I can try to rewrite the logic purely in terms of
-> plumbing commands. But that's a much more invasive patch, and one would
-> obviously lose the guarantee of the abbreviation being unique among
-> current git objects.
->
-> Alternatively, would you consider a Kconfig knob, LOCALVERSION_ABBREV?
-
-
-No, I do not think LOCALVERSION_ABBREV is a good idea.
-
-We should eliminate this problem
-irrespective of the kernel configuration.
-
-
---
-Best Regards
-Masahiro Yamada
+The QCA_ prefix seems a bit verbose, given that this is a QCA driver and
+WCN3991 uniquely identifies the chip. Having the prefix just needlessly
+clutters conditions, I suggest to just call it SOC_ID_WCN3991.
