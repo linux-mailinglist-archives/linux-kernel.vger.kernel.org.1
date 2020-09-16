@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0201826BD00
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF0926BD04
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726373AbgIPG0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:26:53 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:39599 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgIPG0u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:26:50 -0400
-Received: by mail-wm1-f66.google.com with SMTP id b79so1652766wmb.4;
-        Tue, 15 Sep 2020 23:26:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lQSvi3AQDwgZ3cIv9Pssy5uEwdzPTRNpaJyNghcKf7E=;
-        b=nu87SujOHu3dNsaT8taec1IBlkEGQPXi4HtZMErwAHdoIh8g0YfSkElw29GftHjvm4
-         0v7VyjqGNnG7LZuX6HgU3TsPwQNLyJIEyqfFbTLrSS2SnzRTB5r7WqKl/S30BQooONub
-         9eXsnpqQEFD6hMqJp6bqKt6WdpcDIqkhoi7mZp0rOSPAXVXwRxZ6cpmJo+pG91XkoZ3l
-         5AQEkfVIwEnScVfuOqp4amX/J3ggACaR5yTFbhmRnqVbmEtXFi0Bib/hZYi7+nrQjjfM
-         D0IFcGbe05zY2rfnqotIDNqp9x08qn0PBEzHtlrVaLreoVozzydRhs80HPRHrxmfx+GY
-         I8qw==
-X-Gm-Message-State: AOAM5315TvIKUcv7Bic4/hWLMIhttNcrVJ1ylbyRpKnjjK9kAmw5A6OL
-        DcnXvsdswv/pnRinYPIkn68=
-X-Google-Smtp-Source: ABdhPJwG3GLT7JBbKV8bo032isX4y0MBCOEJ7B4ZBBb2XAIS6iAf2toWE7hQxQ0XHGUyBsMjr20zZQ==
-X-Received: by 2002:a1c:f402:: with SMTP id z2mr2807249wma.87.1600237607973;
-        Tue, 15 Sep 2020 23:26:47 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.124])
-        by smtp.googlemail.com with ESMTPSA id h16sm32810557wre.87.2020.09.15.23.26.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Sep 2020 23:26:46 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 08:26:45 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt-bindings: power: Correct interrupt flags in examples
-Message-ID: <20200916062645.GA5958@kozik-lap>
-References: <20200908145922.4502-1-krzk@kernel.org>
- <20200915165411.GA2113514@bogus>
+        id S1726252AbgIPG2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:28:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgIPG2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:28:02 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1947206A4;
+        Wed, 16 Sep 2020 06:28:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600237681;
+        bh=ebK2N6SDuTxooVxF0/qzEYFcYRAy7jX4uvQFnm0puww=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=sjXpvi8jueOKby6OBVPuBaMaVJECIwDWZwgqaMaMw95Q0iuYYWz3hNTcwmstco6we
+         FTDlZQGeQ9DgE5q5gbtmyB3mN/2MeOUMBm7dmPpTOigRAWwkx2MSEnwWV++KAcoM5K
+         5Sp7Kbset6GUiV7u1D2sEcdirnf/X6xofs9FzYCE=
+Date:   Wed, 16 Sep 2020 08:27:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, ben.hutchings@codethink.co.uk,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net,
+        Jonathan Marek <jonathan@marek.ca>
+Subject: Re: [PATCH 5.4 000/130] 5.4.66-rc2 review
+Message-ID: <20200916062750.GG142621@kroah.com>
+References: <20200915164455.372746145@linuxfoundation.org>
+ <20200915201732.4474qpgnxwshanpw@nuc.therub.org>
+ <20200916003117.GF2431@sasha-vm>
+ <20200916015854.inqx3u2ovzhq45ou@nuc.therub.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200915165411.GA2113514@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200916015854.inqx3u2ovzhq45ou@nuc.therub.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:54:11AM -0600, Rob Herring wrote:
-> On Tue, 08 Sep 2020 16:59:22 +0200, Krzysztof Kozlowski wrote:
-> > GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> > These are simple defines so they could be used in DTS but they will not
-> > have the same meaning:
-> > 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-> > 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
+On Tue, Sep 15, 2020 at 08:58:54PM -0500, Dan Rue wrote:
+> On Tue, Sep 15, 2020 at 08:31:17PM -0400, Sasha Levin wrote:
+> > On Tue, Sep 15, 2020 at 03:17:32PM -0500, Dan Rue wrote:
+> > > On Tue, Sep 15, 2020 at 06:45:55PM +0200, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 5.4.66 release.
+> > > > There are 130 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Thu, 17 Sep 2020 16:44:19 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > > The whole patch series can be found in one patch at:
+> > > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.66-rc2.gz
+> > > > or in the git tree and branch at:
+> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > > > and the diffstat can be found below.
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > greg k-h
+> > > > 
+> > > > -------------
+> > > > Pseudo-Shortlog of commits:
+> > > > 
+> > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > >     Linux 5.4.66-rc2
+> > > > 
+> > > > Jordan Crouse <jcrouse@codeaurora.org>
+> > > >     drm/msm: Disable the RPTR shadow
+> > > > 
+> > > > Jonathan Marek <jonathan@marek.ca>
+> > > >     drm/msm/a6xx: update a6xx_hw_init for A640 and A650
+> > > 
+> > > This one ("drm/msm/a6xx: update a6xx_hw_init for A640 and A650") is
+> > > still causing builds to fail on arm and arm64.
 > > 
-> > Correct the interrupt flags, assuming the author of the code wanted some
-> > logical behavior behind the name "ACTIVE_xxx", this is:
-> >   ACTIVE_LOW => IRQ_TYPE_LEVEL_LOW
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >  .../devicetree/bindings/power/supply/act8945a-charger.txt       | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
+> > I've dropped it, thanks!
 > 
-> Applied, thanks!
+> Could you push it? 😊
 
-Hi Rob,
+Will go do so in a minute...
 
-Did you mean Acked-by or are you taking this patch directly?
+thanks,
 
-Best regards,
-Krzysztof
-
+greg k-h
