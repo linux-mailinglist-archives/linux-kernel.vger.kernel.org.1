@@ -2,144 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FF026C4CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8B326C4CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgIPP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 11:59:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726159AbgIPPzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:55:32 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A3992245C;
-        Wed, 16 Sep 2020 15:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600271729;
-        bh=jHIPUklgKCiY93bGZ11uk5ol4lLn0bboEPgtNpIBuek=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SP7hjKBFbreEF5j0JqqCm6dgGzkCZ6Z8/m0mxvCDNN1/cbtAF9ObulHJiwCMV86Hq
-         W4bbaVBKCYDiCcxDnfUX2m1zpe2+31NLa1zEKxN/Q4H+b3qW9BPxQxBYEJ3l/kRPZn
-         L9URZo+ExYN2Fp0zUgEZJoHwVjURzWoxQxFy0Tv8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kIZmJ-00CNI7-FE; Wed, 16 Sep 2020 16:55:27 +0100
+        id S1726397AbgIPQA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 12:00:56 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:42186 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726305AbgIPP7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 11:59:45 -0400
+X-UUID: d375b2d7ef3b4924870ec3d7c51a879a-20200916
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=W4f0Gv7pUKvtQ+PgBn2oCT/tUuwNvMVT9QsIDFwdjg0=;
+        b=tREe3azI1u0MEgbt5H0hr3f29KZke4ZBJZj5JaGT+v3kP/QolKolAIg7L442D2z4O5/TEm5vMiIENcUohNUmNxaQtWj5mua/rr7vMjf074+uKEwuyYMsGmkICbqnosYdvebnaz/s6JiaLkh8ewzIM4osRYKpNY+XdBgfWqAAxHg=;
+X-UUID: d375b2d7ef3b4924870ec3d7c51a879a-20200916
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1425565730; Wed, 16 Sep 2020 19:39:15 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Sep 2020 19:39:12 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Sep 2020 19:39:11 +0800
+Message-ID: <1600256353.7042.13.camel@mtkswgap22>
+Subject: Re: [PATCH v7] cpufreq: mediatek-hw: Add support for Mediatek
+ cpufreq HW driver
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rob Herring" <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>
+Date:   Wed, 16 Sep 2020 19:39:13 +0800
+In-Reply-To: <20200910053406.t37rgioykzvk3oem@vireshk-i7>
+References: <1599712262-8819-1-git-send-email-hector.yuan@mediatek.com>
+         <20200910050341.pgyieq3q7ijitosn@vireshk-i7>
+         <1599715851.7042.9.camel@mtkswgap22>
+         <20200910053406.t37rgioykzvk3oem@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 16 Sep 2020 16:55:27 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>, linus.walleij@linaro.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-In-Reply-To: <dcf812d9-2409-bcae-1925-e21740c2932e@nvidia.com>
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-9-maz@kernel.org>
- <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
- <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
- <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
- <3378cd07b92e87a24f1db75f708424ee@kernel.org>
- <dcf812d9-2409-bcae-1925-e21740c2932e@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <a6c7bbc91c5b23baa44f3abe35eb61c9@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, sumit.garg@linaro.org, linus.walleij@linaro.org, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, b.zolnierkie@samsung.com, linux-kernel@vger.kernel.org, krzk@kernel.org, will@kernel.org, linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org, tglx@linutronix.de, kernel-team@android.com, Valentin.Schneider@arm.com, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-TM-SNTS-SMTP: D31B7E4528DDBB4A6FAA5C2B85C8B1EDF1AF3454225063A0AD4497AD9E8527D22000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-16 16:46, Jon Hunter wrote:
-> On 16/09/2020 16:10, Marc Zyngier wrote:
->> Hi Jon,
->> 
->> +Linus, who is facing a similar issue.
->> 
->> On 2020-09-16 15:16, Jon Hunter wrote:
->>> Hi Marc,
->>> 
->>> On 14/09/2020 14:06, Marek Szyprowski wrote:
->>>> Hi Marc,
->>>> 
->>>> On 01.09.2020 16:43, Marc Zyngier wrote:
->>>>> Change the way we deal with GIC SGIs by turning them into proper
->>>>> IRQs, and calling into the arch code to register the interrupt 
->>>>> range
->>>>> instead of a callback.
->>>>> 
->>>>> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
->>>>> Signed-off-by: Marc Zyngier <maz@kernel.org>
->>>> This patch landed in linux next-20200914 as commit ac063232d4b0
->>>> ("irqchip/gic: Configure SGIs as standard interrupts"). Sadly it 
->>>> breaks
->>>> booting of all Samsung Exynos 4210/4412 based boards (dual/quad ARM
->>>> Cortex A9 based). Here are the last lines from the bootlog:
->>> 
->>> I am observing the same thing on several Tegra boards (both arm and
->>> arm64). Bisect is pointing to this commit. Reverting this alone does 
->>> not
->>> appear to be enough to fix the issue.
->> 
->> Right, I am just massively by the GICv3 spec, and failed to remember
->> that ye olde GIC exposes the source CPU in AIR *and* wants it back, 
->> while
->> newer GICs deal with that transparently.
->> 
->> Can you try the patch below and let me know?
-> 
-> Yes will do.
-> 
->> @@ -365,14 +354,13 @@ static void __exception_irq_entry
->> gic_handle_irq(struct pt_regs *regs)
->>              smp_rmb();
->> 
->>              /*
->> -             * Samsung's funky GIC encodes the source CPU in
->> -             * GICC_IAR, leading to the deactivation to fail if
->> -             * not written back as is to GICC_EOI.  Stash the
->> -             * INTID away for gic_eoi_irq() to write back.
->> -             * This only works because we don't nest SGIs...
->> +             * The GIC encodes the source CPU in GICC_IAR,
->> +             * leading to the deactivation to fail if not
->> +             * written back as is to GICC_EOI.  Stash the INTID
->> +             * away for gic_eoi_irq() to write back.  This only
->> +             * works because we don't nest SGIs...
->>               */
->> -            if (is_frankengic())
->> -                set_sgi_intid(irqstat);
->> +            this_cpu_write(sgi_intid, intid);
-> 
-> I assume that it should be irqstat here and not intid?
+SGksIFJvYiBzaXI6DQoNClNvcnJ5IHRvIGJvdGhlciB5b3UsIG1heSBJIGhhdmUgeW91ciByZXZp
+ZXcgY29tbWVudCBmb3IgdGhlIGJpbmRpbmcNCnBhcnQ/DQpBcHByZWNpYXRlZC4NCg0KT24gVGh1
+LCAyMDIwLTA5LTEwIGF0IDExOjA0ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+IE9uIDEw
+LTA5LTIwLCAxMzozMCwgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gT24gVGh1LCAyMDIwLTA5LTEw
+IGF0IDEwOjMzICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+ID4gPiBPbiAxMC0wOS0yMCwg
+MTI6MzEsIEhlY3RvciBZdWFuIHdyb3RlOg0KPiA+ID4gPiBUaGUgQ1BVZnJlcSBIVyBwcmVzZW50
+IGluIHNvbWUgTWVkaWF0ZWsgY2hpcHNldHMgb2ZmbG9hZHMgdGhlIHN0ZXBzIG5lY2Vzc2FyeSBm
+b3IgY2hhbmdpbmcgdGhlIGZyZXF1ZW5jeSBvZiBDUFVzLiANCj4gPiA+ID4gVGhlIGRyaXZlciBp
+bXBsZW1lbnRzIHRoZSBjcHVmcmVxIGRyaXZlciBpbnRlcmZhY2UgZm9yIHRoaXMgaGFyZHdhcmUg
+ZW5naW5lLiANCj4gPiA+ID4gDQo+ID4gPiA+IFRoaXMgcGF0Y2ggZGVwZW5kcyBvbiB0aGUgTVQ2
+Nzc5IERUUyBwYXRjaCBzdWJtaXR0ZWQgYnkgSGFua3MgQ2hlbg0KPiA+ID4gPiAgaHR0cHM6Ly9s
+a21sLm9yZy9sa21sLzIwMjAvOC80LzEwOTQNCj4gPiA+IA0KPiA+ID4gVGhhbmtzIGZvciBoYW5n
+aW5nIHRoZXJlLiBMb29rcyBnb29kIHRvIG1lLiBJIHdpbGwgYXBwbHkgaXQgb25jZSBSb2INCj4g
+PiA+IEFjaydzIHRoZSBiaW5kaW5nIHBhdGNoLg0KPiA+ID4gDQo+ID4gDQo+ID4gTWFueSB0aGFu
+a3MgZm9yIHlvdXIgaGVscC4gTWF5IEkga25vdyBpZiB5b3UgY2FuIGFkZCBSZXZpZXdlZC1ieSB0
+YWcgdG8NCj4gPiB0aGlzIHBhdGNoIHNldC4NCj4gDQo+IFNpbmNlIHRoaXMgcGF0Y2hzZXQgaXMg
+Z29pbmcgdG8gZ2V0IG1lcmdlZCB2aWEgbXkgdHJlZSAoQVJNIGNwdWZyZXENCj4gdHJlZSksIGEg
+cmV2aWV3ZWQtYnkgaXNuJ3QgcmVxdWlyZWQgaGVyZS4gSSB3aWxsIHF1ZXVlIGl0IHVwIGZvcg0K
+PiA1LjEwLXJjMSBhZnRlciBJIHJlY2VpdmUgYW4gQWNrIGZyb20gUm9iLg0KPiANCj4gPiBJIHdv
+dWxkIGxpa2UgdG8gcHJlcGFyZSBzb21lIHBhdGNoZXMgZm9yIG1vcmUgZmVhdHVyZXMNCj4gPiBi
+YXNlZCBvbiB0aGlzLiBJcyB0aGF0IG9rYXkgdG8geW91PyBUaGFua3MgYWdhaW4uDQo+IA0KPiBU
+aGF0IHNob3VsZCBiZSBmaW5lLg0KPiANCg0KDQo=
 
-Indeed. As you can tell, I haven't even tried to compile it, sorry about 
-that.
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
