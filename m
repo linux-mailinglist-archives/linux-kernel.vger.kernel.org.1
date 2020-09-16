@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1F126CD8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450AC26CD91
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgIPVBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
+        id S1726293AbgIPVBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbgIPQaY (ORCPT
+        with ESMTP id S1726435AbgIPQaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 12:30:24 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD5AC06121C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 03:58:47 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c3e000ee699b54c433a91.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:3e00:ee6:99b5:4c43:3a91])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 394371EC0118;
-        Wed, 16 Sep 2020 12:53:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600253624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=0eky5pw6XdBpBwN1EG2yefIbQmmc2AbaEkGFcUfgFkc=;
-        b=VzLKez56SEZyu+khXjxCvAQakqscWxSwX0Qgo4OQFd7avfFIqUNhnW7k/tNqOgz1rK6dOY
-        Oz6F1H1uENoj+t3MwB5M4qim0ziY80fgK9qa/6vhgaJIp0M2WUCQIGru+XptMzQszNjsb/
-        MGydyqfLeVCWK88sJ9PMMLK4JicFFwE=
-Date:   Wed, 16 Sep 2020 12:53:36 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Youquan Song <youquan.song@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/8] x86/mce: Avoid tail copy when machine check
- terminated a copy from user
-Message-ID: <20200916105336.GF2643@zn.tnic>
-References: <20200908175519.14223-1-tony.luck@intel.com>
- <20200908175519.14223-6-tony.luck@intel.com>
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C318FC061220;
+        Wed, 16 Sep 2020 04:01:58 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id l17so5798154edq.12;
+        Wed, 16 Sep 2020 04:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=f6gBl1x/o83U9v6TkMazyXIZKggUPpY2KATUn29zmFU=;
+        b=ILW3UNWsoHPKtyHaJaBvEo2QrCUU6rZjdhhFeFCwUwyO5uXIYZRjBXmSuUKCRj1oCG
+         VOC9Qh79qB0qj9plRJEnfFSzb8dRAtd35wiijjE8LsrdyJqtlrDd5EZdvrR1zgECJG+y
+         04lY366RXF7AD59y8E+1gNQDw7ahUxvibSSrt66ZCW6TJo6SaVZ84hjRe+paVwYwPph8
+         gNpk2uX1WZhaqOpdKlG2zKCp/H6LUg/PApK6lkIbG0msw4r8xHNeRiRPo5qEl71d6k/7
+         kIGZOl5ZsxC2Bl077OiJW7GEpKmvPYg4lEGFodCbXqm0jPXtETsvTM2hwx4esYCrZPw4
+         WLtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=f6gBl1x/o83U9v6TkMazyXIZKggUPpY2KATUn29zmFU=;
+        b=jOKPsAsDEys/ffPcwnl2ioTAo9NUTWg2lt0Maw3uoyGUUKDh/H9dFVk6r/S9v15jJo
+         yZsZKH6qTzR3Kkf7K+v1/v9ghFZOjEan4KUEqpZ1UxOT0YBy8rNT6UmDxUA/R3AOTNyO
+         7M+EoOSjPqnoouu+ITA2U2fjXYJDBCaeWllSCl4kaU5LyEyQ2R9J9EPnYHpvB/y/zdnv
+         kWl2EULt4Rcf3FTRctWlzQlQhEpyT1gdZLr2aEtudeOEnGtH5V+FQ8T4KR6n/3kyAxX5
+         s36/vW3HM/yCYswTAVRLDzxDirrmSRrYxl2sqcvfZ2h+lU2V3/2qTyS7jjz9Ki2n/GW+
+         qR7g==
+X-Gm-Message-State: AOAM531Y2TeSJupI/PkG1H/pnHHIfhzIzHTqYRRrevApch8bbT7Ye/Bd
+        ONsomgxtt7XmTychXU3mKK4=
+X-Google-Smtp-Source: ABdhPJxruDKya2RnudTwDrLGxUPfcPxghoMLkVz/CqLyEy7TthpXI90k7jitfGr8NFLWcyzTmMWllA==
+X-Received: by 2002:a50:baed:: with SMTP id x100mr11659390ede.384.1600254117074;
+        Wed, 16 Sep 2020 04:01:57 -0700 (PDT)
+Received: from skbuf ([188.25.217.212])
+        by smtp.gmail.com with ESMTPSA id l15sm12218265ejk.50.2020.09.16.04.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 04:01:56 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 14:01:54 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     pankaj.bansal@nxp.com, pankaj.bansal@oss.nxp.com,
+        mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc:     qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org
+Subject: Re: canfdtest on flexcan loopback
+Message-ID: <20200916110154.hp4up6yhyokduvf2@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908175519.14223-6-tony.luck@intel.com>
+In-Reply-To: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 10:55:16AM -0700, Tony Luck wrote:
-> In the page fault case it is ok to see if a few more unaligned bytes
-> can be copied from the source address. Worst case is that the page fault
-> will be triggered again.
-> 
-> Machine checks are more serious. Just give up at the point where the
-> main copy loop triggered the #MC and return as if the copy succeeded.
-> 
-> [Tried returning bytes not copied here, but that puts the kernel
->  into a loop taking the machine check over and over. I don't know
->  at what level some code is retrying]
-> 
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->  arch/x86/lib/copy_user_64.S | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
-> index 5b68e945bf65..1a58946e7c4e 100644
-> --- a/arch/x86/lib/copy_user_64.S
-> +++ b/arch/x86/lib/copy_user_64.S
-> @@ -15,6 +15,7 @@
->  #include <asm/asm.h>
->  #include <asm/smap.h>
->  #include <asm/export.h>
-> +#include <asm/trapnr.h>
->  
->  .macro ALIGN_DESTINATION
->  	/* check for bad alignment of destination */
-> @@ -221,6 +222,7 @@ EXPORT_SYMBOL(copy_user_enhanced_fast_string)
->   * Try to copy last bytes and clear the rest if needed.
->   * Since protection fault in copy_from/to_user is not a normal situation,
->   * it is not necessary to optimize tail handling.
-> + * Don't try to copy the tail if machine check happened
->   *
->   * Input:
->   * rdi destination
-> @@ -232,10 +234,15 @@ EXPORT_SYMBOL(copy_user_enhanced_fast_string)
->   */
->  SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
->  	movl %edx,%ecx
-> +	cmp $X86_TRAP_MC,%eax		/* check if X86_TRAP_MC */
-> +	je 3f
->  1:	rep movsb
->  2:	mov %ecx,%eax
->  	ASM_CLAC
->  	ret
-> +3:	xorl %eax,%eax	/* pretend we succeeded? */
+On Wed 9/2/2020 10:09 AM, Wolfgang Grandegger wrote:
+> canfdtest normally runs on the DUT *and* a the host. The DUT receives
+> the messages from the host, increments the frame data bytes and then
+> sends them back to the host. With "loopback" mode, the data bytes are
+> not incremented and that's what you see above.
+>
+> Wolfgang
 
-Hmm, but copy_*_user returns the uncopied bytes in eax. Users of this
-need to handle the MC case properly but if you return 0, they would
-think that they copied everything but there's some trailing stuff they
-didn't manage to take.
+Wolfgang is of course right, but we're nonetheless investigating what
+seems to be a real problem, and what Pankaj had seen was a red herring.
 
-And it's not like they *should* have to retry to copy it because they
-will walk right into the faulty region and cause more MCEs.
+So currently what I suspect is going on, when I am running canfdtest
+between 2 LS1028A-RDB boards, is that the DUT is reordering frames on
+TX.
 
-So how is this "I-got-an-MCE-while-copying-from-user" handled on the
-higher level?
+See, for example, the screenshot below:
+https://drive.google.com/file/d/1rOeW3aXh3kPh1CJ39lCccRfjFz5JN5I6/view?usp=sharing
 
-Your 7/8 says:
+I have added trace points to the end of the flexcan_start_xmit function,
+which print the entire skb, and the frames appear to be written to the
+TX message buffer in the correct order. They are seen, however, in the
+incorrect order on the wire.
 
-"Add code to recover from a machine check while copying data from user
-space to the kernel. Action for this case is the same as if the user
-touched the poison directly; unmap the page and send a SIGBUS to the
-task."
-
-So how are users of copy_*_user() expected to handle the page
-disappearing from under them?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+-Vladimir
