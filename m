@@ -2,79 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EF226CBFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E966226CBD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728378AbgIPUho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:37:44 -0400
-Received: from mga04.intel.com ([192.55.52.120]:14999 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726849AbgIPRJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:09:22 -0400
-IronPort-SDR: NRRfqxIk2POsUCi6COTFpiYUT+IRTW9bCotYLwH8EbF229HbkzlW3YosPyxkdHpKCMSaZ7yX/u
- gY13ALiH5vIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="156909016"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="156909016"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 10:08:41 -0700
-IronPort-SDR: VQ1WRuPQofTMsAY577bwERRjOaaJuPrpDemjjRSKVq28NMlARkxp2x3q5tOYrRVqo7DIhV1eAn
- oCOKk015bv2A==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="451937469"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 10:08:40 -0700
-Date:   Wed, 16 Sep 2020 10:08:39 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        kvm list <kvm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/7] KVM: x86: Deflect unknown MSR accesses to user
- space
-Message-ID: <20200916170839.GD10227@sjchrist-ice>
-References: <20200902125935.20646-1-graf@amazon.com>
- <20200902125935.20646-2-graf@amazon.com>
- <CAAAPnDFGD8+5KBCLKERrH0hajHEwU9UdEEGqp3RZu3Lws+5rmw@mail.gmail.com>
- <186ccace-2fad-3db3-0848-cd272b1a64ba@amazon.com>
+        id S1726882AbgIPUfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:35:22 -0400
+Received: from mail-am6eur05on2102.outbound.protection.outlook.com ([40.107.22.102]:51808
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726855AbgIPRKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:10:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QYeUeK0CMBCaXpjOGUCfFgnE4eybdksFIlxFG0hCfL5axGHUUHiRCLPYV739SFzaeFQ6YwH2wc33s36vRYA6KWtc7lhLqjK+1sud2aOXCs/ukKpPUTOWVxilv3lynfeMw/mP7c9hQharUZOUzg+Un9pUoXcA1yqvd+C2nbyZRzMtnpNG1nBW5HnVMMfsDKPMpzpd1ZMJxY79LxdGPREJCDkcBEuVnVkgkMaof4Zl3MnmPFNZxnFNAjclrS4ZJbOXMujXCXXfgYKEKfB1LcQZuNVlze3/6g4A0kTnjDc/rUGWeqUCyysb7lSYOuJj9qGmDlwtd+tRwlNY4oPTLDXPNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p+U3YsbTLCDgRA03fWoWHG94a7lbpGeioW5c+r78u7c=;
+ b=Y3Z3C8bVOanTa8j83c548zdioe1St7RMbnIqaIXd+gis3gPZYqjQYNCcTOdWyFI4MgB4s/IQr7b+ehfXtQL2y0KksVTmBJjdhDgHnRxx13BQPHigPGGlSk8Nw6uLfT1dGRiiwCXzpprdINQFXtgvSoTo+xGpm/ho0by5EGL33cP371fbGzARdu9ktyaAkf3copGWUGqnzWUhnzd5WJqvkidAvCG6hT9pL2wXP79jWV+4fTi7Bi7GATW/8rxI/49dJuV0WihELgVD1GbUgJHN1Z1mjx2c/lR5us6s61c+JswN/gWgdp7SRIy9r1yTwEiLXFakI1w9VV6COliSn0z8kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p+U3YsbTLCDgRA03fWoWHG94a7lbpGeioW5c+r78u7c=;
+ b=lywbWPev5P7OFXMb+KKssWklWPtf4EqXRr1eppWEanjiVc42ulDexWhDxQAm2X3gstOmax7vFoh4rfiR78VlGvDjol5tfBcBIFXhsNhwkZgeOdEV3s1Jco/ra+/230gsqZcGk49MTEEDKBjz2Qp7GXcm6jpE3ts58s9U0KkrONA=
+Authentication-Results: baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0026.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:c9::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3391.11; Wed, 16 Sep 2020 17:10:02 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3370.019; Wed, 16 Sep 2020
+ 17:10:02 +0000
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>
+Subject: [PATCH 0/3] misc: eeprom: set type id as EEPROM for nvmem devices
+Date:   Wed, 16 Sep 2020 20:09:30 +0300
+Message-Id: <20200916170933.20302-1-vadym.kochan@plvision.eu>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AM6PR10CA0016.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:209:89::29) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <186ccace-2fad-3db3-0848-cd272b1a64ba@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM6PR10CA0016.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:89::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 16 Sep 2020 17:10:01 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [217.20.186.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 003b372c-f86a-47ef-043d-08d85a635989
+X-MS-TrafficTypeDiagnostic: HE1P190MB0026:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0026AF568E53207E8E1E72F295210@HE1P190MB0026.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gxz42brIKKRpCmdf+ALtjHKJJc9vM+wcC4qov8R0ddiZEeCYGkmD2c+qN25Mu15ClKsw4biHzHMMUmhVxWQpPaf61lkIPhmNjtbq0hpVAVB5ZVAGvZl1SUFClefv3RaeZY6+MrP+Uc7XxTt1ha4MAV/BkpMThPXlo+LP580l/Vn7AVF8MkAI4wCIcFuQmLB5+Yoo5HxIUGcBeneLbSlCcTrYSevFJSE7ABaUFatUmqIbhytiHY3HoVmcasSZ8K8TC2oI3mPAyDNPlrgHl9Bxv6Z7cEQ/bYwppKYz3ih0npYXYVXOwiZ/SLsvBhZ6HS/NDBwRBmGh32hbKMNtPQNGPQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(39830400003)(366004)(376002)(136003)(346002)(86362001)(316002)(8936002)(6666004)(52116002)(16526019)(8676002)(186003)(6512007)(2906002)(4744005)(1076003)(36756003)(5660300002)(26005)(66946007)(110136005)(44832011)(6506007)(4326008)(107886003)(956004)(66556008)(6486002)(66476007)(478600001)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: nB2AfeudQV1rBoKCF49fH1xsYQe1+zpVS3gWHq1/li83eTGOiGG3KXvWTdcE68S3lrDcZytQtUfJLAuB5r8BEIGvoAJs7q3h4C6FsVFuPkoUBDS0Gd+4sJfVqv0pIFjiG3ZYgPkZTkJVTVJIVGzgVBh+TbGN9/K4xtrrsB2xpzwB7OxNs0aMF477nrrqATbtO1CZSehwVCWQNWDPIjFVe0AoVCAP4HaFtlUhjw3vk/q3d6pXBhnzJJ//2hY8ZpjHaj+Ear6P5Y0dTNxv5pPxQdXG71PCmjfZonF8KBNAp9PU5TR4Oxl8XfmpCEONG3g+E540DGT3K4+yF3c5nQvxzCjnPPeslCui/92pydiCH/khoBnT7oX4RifpWIJjqRWmss9UrB1MovM1xXW9NSmeb3x9/7oMeTHwdJCGQ4k488t0sOXkF1T6mxumnOsKR9zU7JuKWvixNJeyTO9e4/eKJ8+QdID1SeJmvwcCNQjqcoCY5upB1r+dlG28vZNWJEYTjhd3EhyMtOCsNpKVETuEqZxrnerPk4XzQ0D55qST48lxI6XGWx248QqUO3Dfo/6eqOGkjztSkGKrDpdDT8PXHYS3lYbEf4bQM6liQnfIPAyzrzo+bcRYxqEBm+m9hwiIrCSrygU1oAr5AU1scVU+Ow==
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 003b372c-f86a-47ef-043d-08d85a635989
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 17:10:02.5737
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iak30tJy3etXUwvlvrXroy5QQkatrsLW7CTUBgjE6ylqP/8SG0wAnVC5iheVyiSjd3qXR1vRxMhBdCPi0H/Neb+GXq7xMpsZLEDh8N+kn+s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0026
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:31:30AM +0200, Alexander Graf wrote:
-> On 03.09.20 21:27, Aaron Lewis wrote:
-> > > @@ -412,6 +414,15 @@ struct kvm_run {
-> > >                          __u64 esr_iss;
-> > >                          __u64 fault_ipa;
-> > >                  } arm_nisv;
-> > > +               /* KVM_EXIT_X86_RDMSR / KVM_EXIT_X86_WRMSR */
-> > > +               struct {
-> > > +                       __u8 error; /* user -> kernel */
-> > > +                       __u8 pad[3];
-> > 
-> > __u8 pad[7] to maintain 8 byte alignment?  unless we can get away with
-> > fewer bits for 'reason' and
-> > get them from 'pad'.
-> 
-> Why would we need an 8 byte alignment here? I always thought natural u64
-> alignment on x86_64 was on 4 bytes?
+Set type as NVMEM_TYPE_EEPROM to expose this info via
+sysfs:
 
-u64 will usually (always?) be 8 byte aligned by the compiler.  "Natural"
-alignment means an object is aligned to its size.  E.g. an 8-byte object
-can split a cache line if it's only aligned on a 4-byte boundary.
+$ cat /sys/bus/nvmem/devices/0-00560/type
+EEPROM
+
+Tested only with at24 device.
+
+Vadym Kochan (3):
+  eeprom: at24: set type id as EEPROM
+  eeprom: at25: set type id as EEPROM
+  eeprom: 93xx46: set type id as EEPROM
+
+ drivers/misc/eeprom/at24.c          | 1 +
+ drivers/misc/eeprom/at25.c          | 1 +
+ drivers/misc/eeprom/eeprom_93xx46.c | 1 +
+ 3 files changed, 3 insertions(+)
+
+-- 
+2.17.1
+
