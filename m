@@ -2,143 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AD726C0A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595A026C0AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 11:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgIPJdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 05:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
+        id S1726701AbgIPJeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 05:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726425AbgIPJdO (ORCPT
+        with ESMTP id S1726438AbgIPJdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 05:33:14 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A109C06174A;
-        Wed, 16 Sep 2020 02:33:14 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e11so1817902wme.0;
-        Wed, 16 Sep 2020 02:33:14 -0700 (PDT)
+        Wed, 16 Sep 2020 05:33:55 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8FDC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:33:54 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id m12so6100444otr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 02:33:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YjecuPhauQHL4j4Z2a9keky4ajO3faW/VO0iw9ZMsyw=;
-        b=A+yh78E6fm9DBZfbdqzQH+qzcsEGu6J4+jBTWy2YENyyyt2Zbq0S/OFMY+YMWluCW8
-         z8t3xi+iP90JmyDxktlPvCO+1T3U3hFBPr8qrN+yRgMmJ0GM2L7qRI0Eo3AOZ7RMkQPe
-         LWE3uzHR7S4jsQzPTnyioG1nqAXIH9Jsv1zZo5fzHTOi1paYswkOFIvKmndmutMHCR0b
-         y7j++ofj0gze7dcveAmPNZVSNVJ8f7dc9HkoqOY5StLB4q0UsS53QODCjO0b8LP6kuiJ
-         8vHisP+2YnnZzbQCZ5tRX2F0md65KbL3npfLcO72aSz6q9hmrXsAZ2AjIqklFE2qGRqP
-         eeXA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+69jB+wV3csf3KfbgPgpUDFiF1twt7Lc/K19h4NVXE8=;
+        b=b9Tdi+x3m6RjXww5amVy4aWTXdBdze1nTwb8XGuGV06W6ssFDtYxk5tOh0IAs+vI0Y
+         pEHO57Y6fkVbSK4Ucx5uW5zvUOHYxvQivuHXQkmDzF7HhdM0zZy/lKQVTEz0ecIwJqCj
+         Ahq1ISaVydDGOpELkgZPJjIQN89s2A+N2H+HDwuxbZ9aewtS873PRzyq+1tOaeSRSKmu
+         JyoSGYx0QzjA/oOG1Ozo8FoKAUYpOWemYOMlsULJXG843jt+DqIPZBXk1lO0FG7BNlMR
+         bj470I6zMi+EnFyw5J34CTEfeRWJKpaQFKUo98HgBOEs8GeFK0LNJ7niaAOa0tPkiK5w
+         hsFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YjecuPhauQHL4j4Z2a9keky4ajO3faW/VO0iw9ZMsyw=;
-        b=DD3rdSDtqTIWqRQM9vg+LtAgbYXATRxYYPW1fg+f8mAsYcaMqIrs10gJyvfl5MLKnJ
-         dkM17lKEggN/R6ZmcHh3H8iCFnNgnEm3u6VTkcN9o95KfIjxsqEWmH6uxUP8L9mMHW3f
-         yh49oXBkVdN/BEIRCGk7QYqxcqCPajJSvnel/XHkhfFITNZsyA1P7vbKDO3UHwqm0sdr
-         geWFEeSkk1PYqhNHdVBzugBqifjlaGMWvcYIlcPseqmznjjmSu511u3HnGM1rcyRv3sG
-         rqkgApHJhSA9hBgdDStlpzPxuNfCs2fG43dYDrPTY5dEhuPvUu0vSKXXh9XvMBkeGXiF
-         7KuQ==
-X-Gm-Message-State: AOAM5307yMWX1cOViO3Fyjxx/FPl5O6YHzByNAXNnq7QdxZSEymaia0x
-        YtWb9c1EftKrWrKe5/U57p4=
-X-Google-Smtp-Source: ABdhPJxBZS9ztI4xvrbGTpOSw6c/HLSysA8VOVuU/1daXUC/dE1jO2LoC/ZzlHwtXxsbSfmuJA8jmA==
-X-Received: by 2002:a05:600c:2047:: with SMTP id p7mr4017341wmg.168.1600248792836;
-        Wed, 16 Sep 2020 02:33:12 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id u8sm4171183wmj.45.2020.09.16.02.33.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 02:33:11 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 11:33:09 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-Subject: Re: [PATCH v2 4/4] crypto: allwinner/sun8i - Simplify with
- dev_err_probe()
-Message-ID: <20200916093309.GA11483@Red>
-References: <20200910192919.12503-1-krzk@kernel.org>
- <20200910192919.12503-4-krzk@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+69jB+wV3csf3KfbgPgpUDFiF1twt7Lc/K19h4NVXE8=;
+        b=N5pimmIbpNuhBkUyF3w753VN3H4kAG+W0BoiWiL7nk6f/90wz+hu0UScleFdsQxpeb
+         0obRgQD6eOrZfdGs/6RbiOQpDwzldnjecr+hQQMWL4QH1RPKZ8m1YURQKlYMgui8meTT
+         Tag7hUbV/y194S2mTlZMFH8U9/WCSJCvPd6+kLTxMvwtnxWc14fgAeDuLGUA6SstGduZ
+         3WGi/8iIlsiJ1rvIlaJrExnsQtU/pIPwKWMXbnp9BRB0a9WPsVjJIFLLBxxBWPBZV3Gp
+         BiDoJqSA+ppA/RVQ+SQcLbqxsipVgJ7JFpV2b3Ocjy/+kIkJqMK+RQIVHrhSjPd2iGBP
+         h8gg==
+X-Gm-Message-State: AOAM532FlBxVfcvoMB8pURIDyhE4XIWnRmHqEIZYRLjm/os0miQnAl/b
+        7ML5/Y+mZE/EFizC3YAJvM/TTYpYYVm75wWBIKC+fQ==
+X-Google-Smtp-Source: ABdhPJzC3u0MfC7SFCZfdqlXndJgQubQG3xmNxCc/hFWxahQxzm9mxqCA8rt3vIszhKN4told+dhXtlQUN8VFgjYRjw=
+X-Received: by 2002:a9d:758b:: with SMTP id s11mr14889445otk.251.1600248832924;
+ Wed, 16 Sep 2020 02:33:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910192919.12503-4-krzk@kernel.org>
+References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
+ <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic>
+ <20200915170248.gcv54pvyckteyhk3@treble> <20200915172152.GR14436@zn.tnic>
+ <CAKwvOdkh=bZE6uY8zk_QePq5B3fY1ue9VjEguJ_cQi4CtZ4xgw@mail.gmail.com>
+ <CANpmjNPWOus2WnMLSAXnzaXC5U5RDM3TTeV8vFDtvuZvrkoWtA@mail.gmail.com>
+ <20200916083032.GL2674@hirez.programming.kicks-ass.net> <CANpmjNOBUp0kRTODJMuSLteE=-woFZ2nUzk1=H8wqcusvi+T_g@mail.gmail.com>
+ <20200916090620.GN2674@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200916090620.GN2674@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 16 Sep 2020 11:33:41 +0200
+Message-ID: <CANpmjNPnnkfkRetEHWNwafP43qjbKypsWxLrBVidrzjrTOCFaQ@mail.gmail.com>
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 09:29:19PM +0200, Krzysztof Kozlowski wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and the error value gets printed.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. None
-> ---
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 9 +++------
->  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 9 +++------
->  2 files changed, 6 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> index 138759dc8190..e3c62051c595 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> @@ -573,12 +573,9 @@ static int sun8i_ce_probe(struct platform_device *pdev)
->  		return irq;
->  
->  	ce->reset = devm_reset_control_get(&pdev->dev, NULL);
-> -	if (IS_ERR(ce->reset)) {
-> -		if (PTR_ERR(ce->reset) == -EPROBE_DEFER)
-> -			return PTR_ERR(ce->reset);
-> -		dev_err(&pdev->dev, "No reset control found\n");
-> -		return PTR_ERR(ce->reset);
-> -	}
-> +	if (IS_ERR(ce->reset))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(ce->reset),
-> +				     "No reset control found\n");
->  
->  	mutex_init(&ce->mlock);
->  
-> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-> index 9a23515783a6..576df8c8df51 100644
-> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-> @@ -545,12 +545,9 @@ static int sun8i_ss_probe(struct platform_device *pdev)
->  		return irq;
->  
->  	ss->reset = devm_reset_control_get(&pdev->dev, NULL);
-> -	if (IS_ERR(ss->reset)) {
-> -		if (PTR_ERR(ss->reset) == -EPROBE_DEFER)
-> -			return PTR_ERR(ss->reset);
-> -		dev_err(&pdev->dev, "No reset control found\n");
-> -		return PTR_ERR(ss->reset);
-> -	}
-> +	if (IS_ERR(ss->reset))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(ss->reset),
-> +				     "No reset control found\n");
->  
->  	mutex_init(&ss->mlock);
->  
-> -- 
-> 2.17.1
-> 
+On Wed, 16 Sep 2020 at 11:06, <peterz@infradead.org> wrote:
+> On Wed, Sep 16, 2020 at 10:46:41AM +0200, Marco Elver wrote:
+> > On Wed, 16 Sep 2020 at 10:30, <peterz@infradead.org> wrote:
+> > > On Tue, Sep 15, 2020 at 08:09:16PM +0200, Marco Elver wrote:
+> > > > On Tue, 15 Sep 2020 at 19:40, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > > > On Tue, Sep 15, 2020 at 10:21 AM Borislav Petkov <bp@alien8.de> wrote:
+> > >
+> > > > > > init/calibrate.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > > > init/calibrate.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > > > > init/version.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > > > init/version.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > > > > certs/system_keyring.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> > > > > > certs/system_keyring.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+> > > >
+> > > > This one also appears with Clang 11. This is new I think because we
+> > > > started emitting ASAN ctors for globals redzone initialization.
+> > > >
+> > > > I think we really do not care about precise stack frames in these
+> > > > compiler-generated functions. So, would it be reasonable to make
+> > > > objtool ignore all *san.module_ctor and *san.module_dtor functions (we
+> > > > have them for ASAN, TSAN, MSAN)?
+> > >
+> > > The thing is, if objtool cannot follow, it cannot generate ORC data and
+> > > our unwinder cannot unwind through the instrumentation, and that is a
+> > > fail.
+> > >
+> > > Or am I missing something here?
+> >
+> > They aren't about the actual instrumentation. The warnings are about
+> > module_ctor/module_dtor functions which are compiler-generated, and
+> > these are only called on initialization/destruction (dtors only for
+> > modules I guess).
+> >
+> > E.g. for KASAN it's the calls to __asan_register_globals that are
+> > called from asan.module_ctor. For KCSAN the tsan.module_ctor is
+> > effectively a noop (because __tsan_init() is a noop), so it really
+> > doesn't matter much.
+> >
+> > Is my assumption correct that the only effect would be if something
+> > called by them fails, we just don't see the full stack trace? I think
+> > we can live with that, there are only few central places that deal
+> > with ctors/dtors (do_ctors(), ...?).
+>
+> Not only fails, lockdep for example likes to store stack traces of
+> various callsites etc.. Also perf (NMI) likes to think it can unwind at
+> all times.
 
-Hello
+That's fair, and I would also prefer a proper fix. :-)
 
-Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> > The "real" fix would be to teach the compilers about "frame pointer
+> > save/setup" for generated functions, but I don't think that's
+> > realistic.
+>
+> How is that unrealistic? If you build with framepointers enabled, the
+> compiler is supposed to know about this stuff.
 
-Thanks
+If it's a bug in current compilers, it'll be hard to get the fix into
+those. My suspicion is there's a bug somewhere. We can try to make new
+compiler versions do the right thing. Or maybe we're just missing some
+flags, which would be nice. I'll investigate some more.
+
+Thanks,
+-- Marco
