@@ -2,255 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1F826B637
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8463126B603
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727138AbgIOX77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:59:59 -0400
-Received: from mail4.protonmail.ch ([185.70.40.27]:26126 "EHLO
-        mail4.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgIOX6i (ORCPT
+        id S1727237AbgIOX4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:56:12 -0400
+Received: from gateway32.websitewelcome.com ([192.185.144.98]:42792 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727185AbgIOXzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:58:38 -0400
-Date:   Tue, 15 Sep 2020 23:58:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1600214310;
-        bh=pmmxd0OZrU7i19ricDTg0JAz6YI/Zw97KeB6gyb8Wyc=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=TNMS9MWj6NfaDxPbSyD5M+6AanhUv3wdizNckBI6UioYRPAyeo5mYA6+csErDeaW5
-         lJkJ1z3uS9eYts5coEFvQSP6iIxUvzviG5YhkqlzPSsKy7OfXb4HQ2M3kg/hVDhHtb
-         FET0PwobMD2HMTldPMjc554BxHi9dUpi+RmEo/5Y=
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v2] platform/x86: Add Driver to set up lid GPEs on MS Surface device
-Message-ID: <EMZQgUl1xLN4o0hV9ZkCD563O85SuOYB5kNFZ5_hlxLQXbJCXpQfrM2afyFIr28h31tXMxD1mxE4DkA5Wy60A0Z2mDnstwF17tEdnX4IRas=@protonmail.com>
-In-Reply-To: <20200910211520.1490626-1-luzmaximilian@gmail.com>
-References: <20200910211520.1490626-1-luzmaximilian@gmail.com>
+        Tue, 15 Sep 2020 19:55:51 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id 4FE93BD2B
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 18:55:47 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id IKnbkyXDULFNkIKnbkFn6p; Tue, 15 Sep 2020 18:55:47 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=fLHgTl3JALwyAGhJdI3AHMd3LuGgE8cTB9sRD2ehXUY=; b=gMmjBScfCaBBBXYnyanIrFehOa
+        qZFFAxiOaKO/FKn92x/nA0Sm+WZEIRGhqiHWDsHgVoH/tQ5A4yaJiPPqobWaR+A/MFUOWCa+EcUfz
+        GIVp/UVq09at45UpojTcInV0/IpFYdcOcXpyY941U4n6tTeZE1F7iobXT6O6GaLxbOiiSOCKInPOl
+        jl3Oq45p0WqjLDaa9L6e/mi7Ydv436uDdsYcAAEoxPZqRTZgzEgtbeNiwXOcJ6NoRTg1JrS5gj1FD
+        SxdsZPrrDrudRhfIx72pl+6lNdf88US5uA/nZdt4qOhc+cUT7OD60uNM1L2XkcrstLzMw8CcUDqmc
+        iOVOTBNg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:59606 helo=[192.168.15.4])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kIKna-000lEw-R6; Tue, 15 Sep 2020 18:55:46 -0500
+Subject: Re: [PATCH] nfs: remove incorrect fallthrough label
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Joe Perches <joe@perches.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Hongxiang Lou <louhongxiang@huawei.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20200915225751.274531-1-ndesaulniers@google.com>
+ <9441ed0f247d0cac6e85f3847e1b4c32a199dd8f.camel@perches.com>
+ <55f1ff08-fc3c-62ed-429d-c9ae285a3a49@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <de27c65b-ae7d-a2ba-3ab8-717c10f297c3@embeddedor.com>
+Date:   Tue, 15 Sep 2020 19:01:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <55f1ff08-fc3c-62ed-429d-c9ae285a3a49@embeddedor.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kIKna-000lEw-R6
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:59606
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 19
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
 
-> [...]
-> +static int surface_lid_enable_wakeup(struct device *dev, bool enable)
-> +{
-> +=09const struct surface_lid_device *lid =3D dev_get_drvdata(dev);
-> +=09int action =3D enable ? ACPI_GPE_ENABLE : ACPI_GPE_DISABLE;
-> +=09acpi_status status;
-> +
-> +=09status =3D acpi_set_gpe_wake_mask(NULL, lid->gpe_number, action);
-> +=09if (status) {
+On 9/15/20 18:51, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 9/15/20 18:29, Joe Perches wrote:
+>> On Tue, 2020-09-15 at 15:57 -0700, Nick Desaulniers wrote:
+>>> There is no case after the default from which to fallthrough to. Clang
+>>> will error in this case (unhelpfully without context, see link below)
+>>> and GCC will with -Wswitch-unreachable.
+>>>
+>>> The previous commit should have just removed the comment.
+>> []
+>>> diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+>> []
+>>> @@ -889,7 +889,6 @@ static struct nfs_server *nfs_try_mount_request(struct fs_context *fc)
+>>>  		default:
+>>>  			if (rpcauth_get_gssinfo(flavor, &info) != 0)
+>>>  				continue;
+>>> -			fallthrough;
+>>
+>> My preference would be to convert the fallthrough
+>> to a break here so if someone ever adds another
+>> label after default: for any reason, the code would
+>> still work as expected.
+> 
+> I agree with Joe.
 
-I think 'if (ACPI_FAILURE(status))' would be better.
+Actually, this is part of the work I plan to do to enable -Wimplicit-fallthrough
+for Clang: audit every place where we could use a break instead of a fallthrough.
 
+I'm on vacation this week. So, I'll get back to this next week.
 
-> +=09=09dev_err(dev, "failed to set GPE wake mask: %d\n", status);
-
-I'm not sure if it's technically safe to print acpi_status with the %d form=
-at
-specifier since 'acpi_status' is defined as 'u32' at the moment.
- func("%lu", (unsigned long) status)
-would be safer. You could also use 'acpi_format_exception()', which is poss=
-ibly
-the most correct approach since it assumes nothing about what 'acpi_status'
-actually is.
-
-
-> +=09=09return -EINVAL;
-
-I'm not sure if -EINVAL is the best error to return here.
-
-
-> +=09}
-> +
-> +=09return 0;
-> +}
-> [...]
-> +static int surface_gpe_probe(struct platform_device *pdev)
-> +{
-> +=09struct surface_lid_device *lid;
-> +=09u32 gpe_number;
-> +=09int status;
-> +
-> +=09status =3D device_property_read_u32(&pdev->dev, "gpe", &gpe_number);
-> +=09if (status)
-> +=09=09return -ENODEV;
-
-'device_property_read_u32()' returns an error code, you could simply return=
- that
-instead of hiding it.
-
-
-> +
-> +=09status =3D acpi_mark_gpe_for_wake(NULL, gpe_number);
-> +=09if (status) {
-> +=09=09dev_err(&pdev->dev, "failed to mark GPE for wake: %d\n", status);
-> +=09=09return -EINVAL;
-> +=09}
-> +
-> +=09status =3D acpi_enable_gpe(NULL, gpe_number);
-> +=09if (status) {
-> +=09=09dev_err(&pdev->dev, "failed to enable GPE: %d\n", status);
-> +=09=09return -EINVAL;
-> +=09}
-
-My previous comments about ACPI and the returned value apply here as well.
-Furthermore, 'acpi_mark_gpe_for_wake()' and 'acpi_enable_gpe()' both return
-a value of type 'acpi_status', not 'int'.
-
-
-> +
-> +=09lid =3D devm_kzalloc(&pdev->dev, sizeof(struct surface_lid_device),
-> +=09=09=09   GFP_KERNEL);
-
- lid =3D devm_kzalloc(..., sizeof(*lid), ...)
-is preferred.
-
-
-> +=09if (!lid)
-> +=09=09return -ENOMEM;
-
-Isn't that problematic that the side effects of the previous two ACPI calls=
- are
-not undone when returning here with -ENOMEM? Allocating this struct right a=
-fter
-querying 'gpe_number' could prevent it.
-
-
-> +
-> +=09lid->gpe_number =3D gpe_number;
-> +=09platform_set_drvdata(pdev, lid);
-> +
-> +=09status =3D surface_lid_enable_wakeup(&pdev->dev, false);
-> +=09if (status) {
-> +=09=09acpi_disable_gpe(NULL, gpe_number);
-> +=09=09platform_set_drvdata(pdev, NULL);
-
-Why is 'platform_set_drvdata(pdev, NULL)' needed?
-
-
-> +=09=09return status;
-> +=09}
-> +
-> +=09return 0;
-> +}
-> +
-> +static int surface_gpe_remove(struct platform_device *pdev)
-> +{
-> +=09struct surface_lid_device *lid =3D dev_get_drvdata(&pdev->dev);
-> +
-> +=09/* restore default behavior without this module */
-> +=09surface_lid_enable_wakeup(&pdev->dev, false);
-> +=09acpi_disable_gpe(NULL, lid->gpe_number);
-> +
-> +=09platform_set_drvdata(pdev, NULL);
-
-I'm wondering why this is needed?
-
-
-> +=09return 0;
-> +}
-> [...]
-> +static int __init surface_gpe_init(void)
-> +{
-> +=09const struct dmi_system_id *match;
-> +=09const struct property_entry *props;
-> +=09struct platform_device *pdev;
-> +=09struct fwnode_handle *fwnode;
-> +=09int status;
-> +
-> +=09match =3D dmi_first_match(dmi_lid_device_table);
-> +=09if (!match) {
-> +=09=09pr_info(KBUILD_MODNAME": no device detected, exiting\n");
-
-If you put
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-before including any headers, you can simply write 'pr_info("no device...")=
-' and it'll
-be prefixed by the module name. This is the "usual" way of achieving what y=
-ou want.
-
-
-> +=09=09return 0;
-
-Shouldn't it return -ENODEV?
-
-
-> +=09}
-> +
-> +=09props =3D match->driver_data;
-> +
-> +=09status =3D platform_driver_register(&surface_gpe_driver);
-> +=09if (status)
-> +=09=09return status;
-> +
-> +=09pdev =3D platform_device_alloc("surface_gpe", PLATFORM_DEVID_NONE);
-> +=09if (!pdev) {
-> +=09=09platform_driver_unregister(&surface_gpe_driver);
-> +=09=09return -ENOMEM;
-> +=09}
-> +
-> +=09fwnode =3D fwnode_create_software_node(props, NULL);
-> +=09if (IS_ERR(fwnode)) {
-> +=09=09platform_device_put(pdev);
-> +=09=09platform_driver_unregister(&surface_gpe_driver);
-> +=09=09return PTR_ERR(fwnode);
-> +=09}
-> +
-> +=09pdev->dev.fwnode =3D fwnode;
-> +
-> +=09status =3D platform_device_add(pdev);
-> +=09if (status) {
-> +=09=09platform_device_put(pdev);
-> +=09=09platform_driver_unregister(&surface_gpe_driver);
-> +=09=09return status;
-> +=09}
-> +
-
-It may be a matter of preference, but I think the 'if (err) goto X' pattern=
- would
-be better in this function (at least for the last 3 or so error paths).
-
-
-> +=09surface_gpe_device =3D pdev;
-> +=09return 0;
-> +}
-> +module_init(surface_gpe_init);
-> +
-> +static void __exit surface_gpe_exit(void)
-> +{
-> +=09if (!surface_gpe_device)
-> +=09=09return;
-
-If you returned -ENODEV in init when no DMI match is found,
-then this check would be redundant.
-
-
-> [...]
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
+Thanks
+--
+Gustavo
