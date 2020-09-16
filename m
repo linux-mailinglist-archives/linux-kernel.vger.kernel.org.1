@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3900026BEE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0688D26BEEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 10:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgIPIM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 04:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPIMq (ORCPT
+        id S1726381AbgIPIQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 04:16:06 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38688 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgIPIQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:12:46 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1699CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 01:12:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8wPpk2m1xqSm+HjJd05kDMtl7UoPIi25s1Mdrmo0nu4=; b=3QWLESToOrMzlAIh+XFJoQjKnU
-        UmaWN6PVLarQoervt9C9otjeyfOMmYUlT3tT16/k3dFqNAMNxTadcn7pODjLYxWD0jw633c1jad2N
-        9WkmW/gLiMmfVmOek450lMV9iNw+SQoC8SowaPaW4lDEeaedqaXvovV1SCed2CigqY9abGIMM4lL6
-        CCC1X+PtT+3buwIAN3Sqm08XRynCmD0wsIAPLf30TNEgHfztiu7QCz09A0cpb8+ga9HsQd8Mx5ETM
-        UFw/HROpSs1xQ5JM1wy2vYQaOHRb05Dtri4nmUYQQGp2SpA4WNeRsj/cq9mr2+iaOWekhfoSNtgva
-        jCnj1jJg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kISYG-000655-9m; Wed, 16 Sep 2020 08:12:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 35A543012C3;
-        Wed, 16 Sep 2020 10:12:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EFC6B2C27E219; Wed, 16 Sep 2020 10:12:25 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 10:12:25 +0200
-From:   peterz@infradead.org
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] stats: Replace seq_printf with seq_puts
-Message-ID: <20200916081225.GJ2674@hirez.programming.kicks-ass.net>
-References: <20200916034415.25645-1-vulab@iscas.ac.cn>
+        Wed, 16 Sep 2020 04:16:03 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 84A0D1C0B76; Wed, 16 Sep 2020 10:16:00 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 10:16:00 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 4.19 1/8] ALSA; firewire-tascam: exclude Tascam FE-8 from
+ detection
+Message-ID: <20200916081600.GD32537@duo.ucw.cz>
+References: <20200911125421.695645838@linuxfoundation.org>
+ <20200911125421.771196664@linuxfoundation.org>
+ <20200914074731.GA11659@amd>
+ <20200914075858.GA1035258@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="uxuisgdDHaNETlh8"
 Content-Disposition: inline
-In-Reply-To: <20200916034415.25645-1-vulab@iscas.ac.cn>
+In-Reply-To: <20200914075858.GA1035258@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 03:44:15AM +0000, Xu Wang wrote:
-> seq_puts is a lot cheaper than seq_printf, so use that to print
-> literal strings.
 
-performance is not a consideration here.
+--uxuisgdDHaNETlh8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> ---
->  kernel/sched/stats.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
-> index 750fb3c67eed..0818fe03407a 100644
-> --- a/kernel/sched/stats.c
-> +++ b/kernel/sched/stats.c
-> @@ -37,7 +37,7 @@ static int show_schedstat(struct seq_file *seq, void *v)
->  		    rq->rq_cpu_time,
->  		    rq->rq_sched_info.run_delay, rq->rq_sched_info.pcount);
->  
-> -		seq_printf(seq, "\n");
-> +		seq_putc(seq, '\n');
+Hi!
 
-And yet, the changelog says seq_put*s*().
+> > Unfortunately it is too late to fix that now.
+> >=20
+> > This one was scheduled to be released at "Responses should be made by
+> > Sun, 13 Sep 2020 12:54:13 +0000.". But it was released day earlier:
+> > "Date: Sat, 12 Sep 2020 14:42:49 +0200".
+> >=20
+> > Could you actually follow published schedule?
+>=20
+> If all of the reported testing systems come back successful, there is no
+> need to wait any longer.
 
->  
->  #ifdef CONFIG_SMP
->  		/* domain-specific stats */
-> -- 
-> 2.17.1
-> 
+Well, then perhaps you should not publish the schedule, as it is confusing?
+
+> > Could you cc me release announcements on pavel@denx.de email?
+>=20
+> Will add you to the list, thanks.
+
+Thank you,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--uxuisgdDHaNETlh8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2HJwAAKCRAw5/Bqldv6
+8qpkAJoC1q0R+2oC4wD8SPkOeyfrID3JhQCdHKekskyYJ7d8JBVqVBzwI5kgY9Y=
+=doZo
+-----END PGP SIGNATURE-----
+
+--uxuisgdDHaNETlh8--
