@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA8026C845
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D21226C846
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgIPSo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
+        id S1728038AbgIPSof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727875AbgIPSW4 (ORCPT
+        with ESMTP id S1727961AbgIPSW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 14:22:56 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6E7C0F26FC;
-        Wed, 16 Sep 2020 08:17:10 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:12:06 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2852C02C280;
+        Wed, 16 Sep 2020 08:17:11 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:12:12 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600269126;
+        s=2020; t=1600269132;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iIwYxw8FsbHqEPAyz/Y5I5hG0wn5tSwTcN+s+UwHIMg=;
-        b=TTV7Ej65S5Y4MGj7M/VKaZAh795L5Nb6cygaY6HN7n0tdkYTWdO+ct6l4VFBjkB53JRWGd
-        9wS1PvrOjKmkaz9+vrFFjghDteSLJSXNiHiXnixKhfDesMOTtFtz5hUvxnH6JFgKP/5/Rv
-        OGF3dT08ljmrr8dSEBqs9iEScAxDuDWLMJWi0uR7Y2L9DYJoi73u5/TyycRF+tYfQClF17
-        S9vKfzrJYMv8bnQxjRTPLjfPttuAUQIscJNYh5MYogfD7BqpRwhxodgXxidR5zZu7hLmsR
-        aUmuc4QXEwsDXQp6vu6Bunn80clNaHVBi2lse4G6la00ADz4lrKVpYaYPR4vzg==
+        bh=R1lwqRvewv6LCbirIr+fJtFrrYQE8EbwB/K+2ZEcYYI=;
+        b=tJ0FqUE0EMohJ1m3GlQctful4vB6tGDUDvftdYY17aDzsgVuibEaM+oi90EInuxi3DJBTP
+        HgX9kM7lQs4fntnJPJ12A0DPO/p+FB6wRIpg1X2kOnhXKi/mmZ24dNZLm0kYoWQ3tggEiY
+        rpEQHF0AUS6JMfqKOqC/o2GCPX5yemohz3akVvJc2f6jimyN2KEeIyfA8rvBGboR+TE+UB
+        DnbVaR3bnl+6jnhY9Od4qDC9AsFToPr7qwV1WBsuiygsAHVCaC9B8rEpbVOUFXpyrvUFby
+        7omGVhGtwAmvowKJ7g3Waznlqa6SntwiCiSiGHRmQfdS00O0eqLjrfSZyBjz6g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600269126;
+        s=2020e; t=1600269132;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iIwYxw8FsbHqEPAyz/Y5I5hG0wn5tSwTcN+s+UwHIMg=;
-        b=4OsMUzoYjE/fGZahLFRSTV2NOTBHy+ALhPX/Xd53FTN6jlOX0eEL94TmAyKS0UEOal0Wec
-        Hb5Mf31f7H7j3OBA==
+        bh=R1lwqRvewv6LCbirIr+fJtFrrYQE8EbwB/K+2ZEcYYI=;
+        b=6N3Vlcc0/WMzY0rWocBAPJJxThCkf9zkIF0M6QLVpNE5pbi6UjW42LYUaMMV1g7HmWsizg
+        2ylEcDJd4DZXivBQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] x86/pci: Set default irq domain in pcibios_add_device()
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+Subject: [tip: x86/irq] PCI/MSI: Provide pci_dev_has_special_msi_domain() helper
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200826112333.900423047@linutronix.de>
-References: <20200826112333.900423047@linutronix.de>
+In-Reply-To: <20200826112333.139387358@linutronix.de>
+References: <20200826112333.139387358@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160026912617.15536.17241577735912869590.tip-bot2@tip-bot2>
+Message-ID: <160026913201.15536.5464638795760154682.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,108 +61,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/irq branch of tip:
 
-Commit-ID:     2c681e6b37674dc3941869cb262e26c8a6b34047
-Gitweb:        https://git.kernel.org/tip/2c681e6b37674dc3941869cb262e26c8a6b34047
+Commit-ID:     2fd602669ee6d749a7dc47b84b87cef1a5075999
+Gitweb:        https://git.kernel.org/tip/2fd602669ee6d749a7dc47b84b87cef1a5075999
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 26 Aug 2020 13:17:01 +02:00
+AuthorDate:    Wed, 26 Aug 2020 13:16:53 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 16 Sep 2020 16:52:37 +02:00
+CommitterDate: Wed, 16 Sep 2020 16:52:36 +02:00
 
-x86/pci: Set default irq domain in pcibios_add_device()
+PCI/MSI: Provide pci_dev_has_special_msi_domain() helper
 
-Now that interrupt remapping sets the irqdomain pointer when a PCI device
-is added it's possible to store the default irq domain in the device struct
-in pcibios_add_device().
-
-If the bus to which a device is connected has an irq domain associated then
-this domain is used otherwise the default domain (PCI/MSI native or XEN
-PCI/MSI) is used. Using the bus domain ensures that special MSI bus domains
-like VMD work.
-
-This makes XEN and the non-remapped native case work solely based on the
-irq domain pointer in struct device for PCI/MSI and allows to remove the
-arch fallback and make most of the x86_msi ops private to XEN in the next
-steps.
+Provide a helper function to check whether a PCI device is handled by a
+non-standard PCI/MSI domain. This will be used to exclude such devices
+which hang of a special bus, e.g. VMD, to be excluded from the irq domain
+override in irq remapping.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20200826112333.900423047@linutronix.de
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Link: https://lore.kernel.org/r/20200826112333.139387358@linutronix.de
 
 ---
- arch/x86/include/asm/irqdomain.h |  2 ++
- arch/x86/kernel/apic/msi.c       |  2 +-
- arch/x86/pci/common.c            | 18 +++++++++++++++++-
- 3 files changed, 20 insertions(+), 2 deletions(-)
+ drivers/pci/msi.c   | 22 ++++++++++++++++++++++
+ include/linux/msi.h |  1 +
+ 2 files changed, 23 insertions(+)
 
-diff --git a/arch/x86/include/asm/irqdomain.h b/arch/x86/include/asm/irqdomain.h
-index 430486f..cd684d4 100644
---- a/arch/x86/include/asm/irqdomain.h
-+++ b/arch/x86/include/asm/irqdomain.h
-@@ -53,9 +53,11 @@ extern int mp_irqdomain_ioapic_idx(struct irq_domain *domain);
- #ifdef CONFIG_PCI_MSI
- void x86_create_pci_msi_domain(void);
- struct irq_domain *native_create_pci_msi_domain(void);
-+extern struct irq_domain *x86_pci_msi_default_domain;
- #else
- static inline void x86_create_pci_msi_domain(void) { }
- #define native_create_pci_msi_domain	NULL
-+#define x86_pci_msi_default_domain	NULL
- #endif
- 
- #endif
-diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
-index 39136f7..6fd3337 100644
---- a/arch/x86/kernel/apic/msi.c
-+++ b/arch/x86/kernel/apic/msi.c
-@@ -21,7 +21,7 @@
- #include <asm/apic.h>
- #include <asm/irq_remapping.h>
- 
--static struct irq_domain *x86_pci_msi_default_domain __ro_after_init;
-+struct irq_domain *x86_pci_msi_default_domain __ro_after_init;
- 
- static void __irq_msi_compose_msg(struct irq_cfg *cfg, struct msi_msg *msg)
- {
-diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
-index df1d959..3507f45 100644
---- a/arch/x86/pci/common.c
-+++ b/arch/x86/pci/common.c
-@@ -19,6 +19,7 @@
- #include <asm/smp.h>
- #include <asm/pci_x86.h>
- #include <asm/setup.h>
-+#include <asm/irqdomain.h>
- 
- unsigned int pci_probe = PCI_PROBE_BIOS | PCI_PROBE_CONF1 | PCI_PROBE_CONF2 |
- 				PCI_PROBE_MMCONF;
-@@ -633,8 +634,9 @@ static void set_dev_domain_options(struct pci_dev *pdev)
- 
- int pcibios_add_device(struct pci_dev *dev)
- {
--	struct setup_data *data;
- 	struct pci_setup_rom *rom;
-+	struct irq_domain *msidom;
-+	struct setup_data *data;
- 	u64 pa_data;
- 
- 	pa_data = boot_params.hdr.setup_data;
-@@ -661,6 +663,20 @@ int pcibios_add_device(struct pci_dev *dev)
- 		memunmap(data);
- 	}
- 	set_dev_domain_options(dev);
-+
-+	/*
-+	 * Setup the initial MSI domain of the device. If the underlying
-+	 * bus has a PCI/MSI irqdomain associated use the bus domain,
-+	 * otherwise set the default domain. This ensures that special irq
-+	 * domains e.g. VMD are preserved. The default ensures initial
-+	 * operation if irq remapping is not active. If irq remapping is
-+	 * active it will overwrite the domain pointer when the device is
-+	 * associated to a remapping domain.
-+	 */
-+	msidom = dev_get_msi_domain(&dev->bus->dev);
-+	if (!msidom)
-+		msidom = x86_pci_msi_default_domain;
-+	dev_set_msi_domain(&dev->dev, msidom);
- 	return 0;
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 744a1a4..a2f00d1 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -1553,4 +1553,26 @@ struct irq_domain *pci_msi_get_device_domain(struct pci_dev *pdev)
+ 					     DOMAIN_BUS_PCI_MSI);
+ 	return dom;
  }
- 
++
++/**
++ * pci_dev_has_special_msi_domain - Check whether the device is handled by
++ *				    a non-standard PCI-MSI domain
++ * @pdev:	The PCI device to check.
++ *
++ * Returns: True if the device irqdomain or the bus irqdomain is
++ * non-standard PCI/MSI.
++ */
++bool pci_dev_has_special_msi_domain(struct pci_dev *pdev)
++{
++	struct irq_domain *dom = dev_get_msi_domain(&pdev->dev);
++
++	if (!dom)
++		dom = dev_get_msi_domain(&pdev->bus->dev);
++
++	if (!dom)
++		return true;
++
++	return dom->bus_token != DOMAIN_BUS_PCI_MSI;
++}
++
+ #endif /* CONFIG_PCI_MSI_IRQ_DOMAIN */
+diff --git a/include/linux/msi.h b/include/linux/msi.h
+index 5aa126b..a65cc47 100644
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -373,6 +373,7 @@ int pci_msi_domain_check_cap(struct irq_domain *domain,
+ 			     struct msi_domain_info *info, struct device *dev);
+ u32 pci_msi_domain_get_msi_rid(struct irq_domain *domain, struct pci_dev *pdev);
+ struct irq_domain *pci_msi_get_device_domain(struct pci_dev *pdev);
++bool pci_dev_has_special_msi_domain(struct pci_dev *pdev);
+ #else
+ static inline struct irq_domain *pci_msi_get_device_domain(struct pci_dev *pdev)
+ {
