@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8899826BE9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EF826BE9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgIPH6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:58:05 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:35846 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgIPH6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:58:02 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 8F07C1C0B76; Wed, 16 Sep 2020 09:57:59 +0200 (CEST)
-Date:   Wed, 16 Sep 2020 09:57:59 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, jikos@suse.cz,
-        vojtech@suse.cz
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yuan Ming <yuanmingbuaa@gmail.com>, Willy Tarreau <w@1wt.eu>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 4.19 66/78] fbcon: remove soft scrollback code
-Message-ID: <20200916075759.GC32537@duo.ucw.cz>
-References: <20200915140633.552502750@linuxfoundation.org>
- <20200915140636.861676717@linuxfoundation.org>
+        id S1726487AbgIPH7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:59:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48372 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgIPH7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:59:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7FC68AFF8;
+        Wed, 16 Sep 2020 07:59:18 +0000 (UTC)
+Date:   Wed, 16 Sep 2020 09:59:00 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [v2 2/2] mm: khugepaged: avoid overriding min_free_kbytes set by
+ user
+Message-ID: <20200916075900.GE18998@dhcp22.suse.cz>
+References: <1600204258-13683-1-git-send-email-vijayb@linux.microsoft.com>
+ <1600204258-13683-2-git-send-email-vijayb@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915140636.861676717@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1600204258-13683-2-git-send-email-vijayb@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 15-09-20 14:10:58, Vijay Balakrishna wrote:
+> set_recommended_min_free_kbytes need to honor min_free_kbytes set by the
+> user.  Post start-of-day THP enable or memory hotplug operations can
+> lose user specified min_free_kbytes, in particular when it is higher than
+> calculated recommended value.  Also modifying "recommended_min" variable
+> type to "int" from "unsigned long" to avoid undesired result noticed
+> during testing.  It is due to comparing "unsigned long" with "int" type.
+> 
+> Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> ---
+>  mm/khugepaged.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 4f7107476a6f..b4b753ba411a 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -2253,7 +2253,7 @@ static void set_recommended_min_free_kbytes(void)
+>  {
+>  	struct zone *zone;
+>  	int nr_zones = 0;
+> -	unsigned long recommended_min;
+> +	int recommended_min;
+>  
+>  	for_each_populated_zone(zone) {
+>  		/*
+> @@ -2280,12 +2280,12 @@ static void set_recommended_min_free_kbytes(void)
+>  
+>  	/* don't ever allow to reserve more than 5% of the lowmem */
+>  	recommended_min = min(recommended_min,
+> -			      (unsigned long) nr_free_buffer_pages() / 20);
+> +			      (int) nr_free_buffer_pages() / 20);
 
---vOmOzSkFvhd7u8Ms
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+nr_free_buffer_pages can oveflow in int on very large machines.
 
-Hi!
+>  	recommended_min <<= (PAGE_SHIFT-10);
+>  
+> -	if (recommended_min > min_free_kbytes) {
+> +	if (recommended_min > user_min_free_kbytes) {
 
-> From: Linus Torvalds <torvalds@linux-foundation.org>
->=20
-> commit 50145474f6ef4a9c19205b173da6264a644c7489 upstream.
->=20
-> This (and the VGA soft scrollback) turns out to have various nasty small
-> special cases that nobody really is willing to fight.  The soft
-> scrollback code was really useful a few decades ago when you typically
-> used the console interactively as the main way to interact with the
-> machine, but that just isn't the case any more.
->=20
-> So it's not worth dragging along.
+This can decrease the size theoretically. Because user_min_free_kbytes
+is -1 by default and recommended_min might be <= min_free_kbytes.
 
-It is still useful.
+You need to check both. Also can we make user_min_free_kbytes 0 by
+default? From a quick look, nobody should really care.
 
-In particular, kernel is now very verbose, so important messages
-during bootup scroll away. It is way bigger deal when you can no
-longer get to them using shift-pageup.
+>  		if (user_min_free_kbytes >= 0)
+> -			pr_info("raising min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
+> +			pr_info("raising min_free_kbytes from %d to %d to help transparent hugepage allocations\n",
+>  				min_free_kbytes, recommended_min);
+>  
+>  		min_free_kbytes = recommended_min;
+> -- 
+> 2.28.0
+> 
 
-fsck is rather verbose, too, and there's no easy way to run that under
-X terminal... and yes, that makes scrollback very useful, too.
-
-So, I believe we'll need to fix this. I guess I could do it. I also
-guess I'll not have to, because SuSE or RedHat will want to fix it.
-
-Anyway, this really should not be merged into stable.
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---vOmOzSkFvhd7u8Ms
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2HFhwAKCRAw5/Bqldv6
-8l/qAJ0WX5PBLnCVVvvT67LyY7r0YmROQACfU5ZZFE4StnZcxrW1Hmyx01Y+XG8=
-=uUjO
------END PGP SIGNATURE-----
-
---vOmOzSkFvhd7u8Ms--
+-- 
+Michal Hocko
+SUSE Labs
