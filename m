@@ -2,141 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAA526C77A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE9826C759
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgIPS1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:27:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:35104 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727996AbgIPSZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:25:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DAC7E1477;
-        Wed, 16 Sep 2020 04:07:14 -0700 (PDT)
-Received: from red-moon.arm.com (unknown [10.57.6.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 646A23F68F;
-        Wed, 16 Sep 2020 04:07:12 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        George Cherian <george.cherian@marvell.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH v2 3/3] asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP pci_iounmap() implementation
-Date:   Wed, 16 Sep 2020 12:06:58 +0100
-Message-Id: <a9daf8d8444d0ebd00bc6d64e336ec49dbb50784.1600254147.git.lorenzo.pieralisi@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <cover.1600254147.git.lorenzo.pieralisi@arm.com>
-References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com> <cover.1600254147.git.lorenzo.pieralisi@arm.com>
+        id S1727792AbgIPSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:25:01 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:39636 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727695AbgIPSYI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:24:08 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GBkfEo058813;
+        Wed, 16 Sep 2020 06:46:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600256801;
+        bh=f39L0NtWeT8nBr11AnFqXf2qSwpEqyvlCAO4NHzHrU0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=QXK9GTpNryajUTxJIsXPNZHPLqrQAG++6RL8xwA3V9ppbIcLLnB/lOtyNJULXStcr
+         71TU6C9oESqozmPi6m/I/lr9VojL59oyE9CKQbphi4U/1AYCGmRqH6HvYSf8qgoKtJ
+         XqPHG9p7MayDqEuA/U40mJJGTe/kr0o8ciEqgf6Q=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GBkfmm116875
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 06:46:41 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
+ Sep 2020 06:46:40 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 16 Sep 2020 06:46:40 -0500
+Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GBkekj049033;
+        Wed, 16 Sep 2020 06:46:40 -0500
+Subject: Re: [PATCH v2 3/3] ASoC: tlv320adcx140: Add proper support for master
+ mode
+To:     Camel Guo <camelg@axis.com>, Camel Guo <Camel.Guo@axis.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "tiwai@suse.com" <tiwai@suse.com>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel <kernel@axis.com>
+References: <20200911080753.30342-1-camel.guo@axis.com>
+ <20200911080753.30342-3-camel.guo@axis.com>
+ <c2fb617e-fa61-e9d1-449f-7d8806168b9a@ti.com>
+ <507f2f53-e236-f894-cb17-4fc84cf00326@axis.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <7065684e-5e57-8c63-daef-89f4b2ab1605@ti.com>
+Date:   Wed, 16 Sep 2020 06:46:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <507f2f53-e236-f894-cb17-4fc84cf00326@axis.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For arches that do not select CONFIG_GENERIC_IOMAP, the current
-pci_iounmap() function does nothing causing obvious memory leaks
-for mapped regions that are backed by MMIO physical space.
-
-In order to detect if a mapped pointer is IO vs MMIO, a check must made
-available to the pci_iounmap() function so that it can actually detect
-whether the pointer has to be unmapped.
-
-In configurations where CONFIG_HAS_IOPORT_MAP && !CONFIG_GENERIC_IOMAP,
-a mapped port is detected using an ioport_map() stub defined in
-asm-generic/io.h.
-
-Use the same logic to implement a stub (ie __pci_ioport_unmap()) that
-detects if the passed in pointer in pci_iounmap() is IO vs MMIO to
-iounmap conditionally and call it in pci_iounmap() fixing the issue.
-
-Leave __pci_ioport_unmap() as a NOP for all other config options.
-
-Reported-by: George Cherian <george.cherian@marvell.com>
-Link: https://lore.kernel.org/lkml/20200905024811.74701-1-yangyingliang@huawei.com
-Link: https://lore.kernel.org/lkml/20200824132046.3114383-1-george.cherian@marvell.com
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: George Cherian <george.cherian@marvell.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Yang Yingliang <yangyingliang@huawei.com>
----
- include/asm-generic/io.h | 39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
-
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index dabf8cb7203b..9ea83d80eb6f 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -911,18 +911,6 @@ static inline void iowrite64_rep(volatile void __iomem *addr,
- #include <linux/vmalloc.h>
- #define __io_virt(x) ((void __force *)(x))
- 
--#ifndef CONFIG_GENERIC_IOMAP
--struct pci_dev;
--extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
--
--#ifndef pci_iounmap
--#define pci_iounmap pci_iounmap
--static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
--{
--}
--#endif
--#endif /* CONFIG_GENERIC_IOMAP */
--
- /*
-  * Change virtual addresses to physical addresses and vv.
-  * These are pretty trivial
-@@ -1016,6 +1004,16 @@ static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
- 	port &= IO_SPACE_LIMIT;
- 	return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
- }
-+#define __pci_ioport_unmap __pci_ioport_unmap
-+static inline void __pci_ioport_unmap(void __iomem *p)
-+{
-+	uintptr_t start = (uintptr_t) PCI_IOBASE;
-+	uintptr_t addr = (uintptr_t) p;
-+
-+	if (addr >= start && addr < start + IO_SPACE_LIMIT)
-+		return;
-+	iounmap(p);
-+}
- #endif
- 
- #ifndef ioport_unmap
-@@ -1030,6 +1028,23 @@ extern void ioport_unmap(void __iomem *p);
- #endif /* CONFIG_GENERIC_IOMAP */
- #endif /* CONFIG_HAS_IOPORT_MAP */
- 
-+#ifndef CONFIG_GENERIC_IOMAP
-+struct pci_dev;
-+extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
-+
-+#ifndef __pci_ioport_unmap
-+static inline void __pci_ioport_unmap(void __iomem *p) {}
-+#endif
-+
-+#ifndef pci_iounmap
-+#define pci_iounmap pci_iounmap
-+static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
-+{
-+	__pci_ioport_unmap(p);
-+}
-+#endif
-+#endif /* CONFIG_GENERIC_IOMAP */
-+
- /*
-  * Convert a virtual cached pointer to an uncached pointer
-  */
--- 
-2.26.1
 
