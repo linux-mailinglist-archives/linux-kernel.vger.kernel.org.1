@@ -2,142 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A788026BD3F
+	by mail.lfdr.de (Postfix) with ESMTP id 3A75C26BD3E
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 08:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgIPGeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 02:34:18 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:49886 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726140AbgIPGeO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:34:14 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G6RUsd004867;
-        Wed, 16 Sep 2020 08:33:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=HxkrC3S6cMK+LXNjlN3kJlmPK+4qpTmLNr0JbnzCSBU=;
- b=bg7mu+oo8kgfBOeXm2rqvGuQ4DVXDiaLLt9lWTjhaFsSHY/XH2niyRQXUh049LMQgDwv
- VukskLSsMq5a6u2Kv5w3CYl5LzRqTkH96kICTMbtJMpySW9ckjTvYiUV+YahxHJW1WxX
- WzjqlZ6GRctgXWJSLHM8u1GmoYvlBdaUFq1jVXyaxMhYuedNjwHIVJS3gjfPNQa7dEdU
- VfnSxmQsGVAfM1i9BYvMvtxjcsnS9pPwJ97ObdumL6a7qi8hCQoew3bfUvrhJl4HlLXG
- InuKtOxDpctniXu2xz2ASw4mNoNZUdIdZSzP509rqm/D8B3vHw/L4tT0Lt1i4dXeb6VK QA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33k6919s4u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Sep 2020 08:33:49 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 01A68100034;
-        Wed, 16 Sep 2020 08:33:48 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AAF8120759A;
-        Wed, 16 Sep 2020 08:33:48 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG6NODE1.st.com (10.75.127.16)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep 2020 08:33:47
- +0200
-From:   Nicolas Toromanoff <nicolas.toromanoff@st.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     Ard Biesheuvel <ardb@kernel.org>,
-        Nicolas Toromanoff <nicolas.toromanoff@st.com>,
-        <linux-crypto@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] crypto: stm32/crc32 - Avoid lock if hardware is already used
-Date:   Wed, 16 Sep 2020 08:33:44 +0200
-Message-ID: <20200916063344.15054-1-nicolas.toromanoff@st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726362AbgIPGeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 02:34:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:60051 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgIPGeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 02:34:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600238052; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=prCtKq1R1zy4yEQC9e7arLt8v2FySSHVYD5hW893oqo=;
+ b=X3iznLYAAOm+8yRRsNK0pGTWGEtw25eKGl6DsBJfM6Ui0E1ltN8lfzU1fK5M5w2KVfu6xPVI
+ 8TP7u5yyW9pKjuiIEOg8vo3mnzuFFzksvGlZZxihOzqobJEGUVamHowxIoTTbhgirkadl87Q
+ adH1SCBFiQiNqSVqYQTZSMAP2ts=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f61b1e1698ee477d1c4c9e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 06:34:09
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 75A3DC433A0; Wed, 16 Sep 2020 06:34:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3651C433F1;
+        Wed, 16 Sep 2020 06:34:08 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG6NODE1.st.com
- (10.75.127.16)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_02:2020-09-15,2020-09-16 signatures=0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Sep 2020 14:34:08 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Bean Huo <huobean@gmail.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Abort tasks before clear them from
+ doorbell
+In-Reply-To: <yq1wo0u6bdw.fsf@ca-mkp.ca.oracle.com>
+References: <1599099873-32579-1-git-send-email-cang@codeaurora.org>
+ <1599099873-32579-2-git-send-email-cang@codeaurora.org>
+ <1599627906.10803.65.camel@linux.ibm.com>
+ <yq14ko62wn5.fsf@ca-mkp.ca.oracle.com>
+ <1599706080.10649.30.camel@mtkswgap22>
+ <1599718697.3851.3.camel@HansenPartnership.com>
+ <1599725880.10649.35.camel@mtkswgap22>
+ <1599754148.3575.4.camel@HansenPartnership.com>
+ <010101747af387e9-f68ac6fa-1bc6-461d-92ec-dc0ee4486728-000000@us-west-2.amazonses.com>
+ <d151d6a2b53cfbd7bf3f9c9313b49c4c404c4c5a.camel@gmail.com>
+ <4017d039fa323a63f89f01b5bf4cf714@codeaurora.org>
+ <yq1wo0u6bdw.fsf@ca-mkp.ca.oracle.com>
+Message-ID: <149974f6d7073dae363797874fc088bf@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If STM32 CRC device is already in use, calculate CRC by software.
+On 2020-09-16 04:21, Martin K. Petersen wrote:
+> Can,
+> 
+>> Do you know when can this change be picked up in scsi-queue-5.10?
+>> If I push my fixes to ufshcd_abort() on scsi-queue-5.10, they will
+>> run into conflicts with this one again, right? How should I move
+>> forward now?
+> 
+> You should be able to use 5.10/scsi-queue as baseline now.
+> 
+> For 5.11 I think I'll do a separate branch for UFS.
 
-This will release CPU constraint for a concurrent access to the
-hardware, and avoid masking irqs during the whole block processing.
+Thanks for the information.
 
-Fixes: 7795c0baf5ac ("crypto: stm32/crc32 - protect from concurrent accesses")
+Regards,
 
-Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
----
-v2: select CRC32 and not (CRYPTO_CRC32 and CRYPTO_CRC32C) in Kconfig
----
- drivers/crypto/stm32/Kconfig       |  1 +
- drivers/crypto/stm32/stm32-crc32.c | 15 ++++++++++++---
- 2 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/crypto/stm32/Kconfig b/drivers/crypto/stm32/Kconfig
-index 4ef3eb11361c..4a4c3284ae1f 100644
---- a/drivers/crypto/stm32/Kconfig
-+++ b/drivers/crypto/stm32/Kconfig
-@@ -3,6 +3,7 @@ config CRYPTO_DEV_STM32_CRC
- 	tristate "Support for STM32 crc accelerators"
- 	depends on ARCH_STM32
- 	select CRYPTO_HASH
-+	select CRC32
- 	help
- 	  This enables support for the CRC32 hw accelerator which can be found
- 	  on STMicroelectronics STM32 SOC.
-diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
-index 783a64f3f635..75867c0b0017 100644
---- a/drivers/crypto/stm32/stm32-crc32.c
-+++ b/drivers/crypto/stm32/stm32-crc32.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/bitrev.h>
- #include <linux/clk.h>
-+#include <linux/crc32.h>
- #include <linux/crc32poly.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-@@ -149,7 +150,6 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
- 	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
- 	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
- 	struct stm32_crc *crc;
--	unsigned long flags;
- 
- 	crc = stm32_crc_get_next_crc();
- 	if (!crc)
-@@ -157,7 +157,15 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
- 
- 	pm_runtime_get_sync(crc->dev);
- 
--	spin_lock_irqsave(&crc->lock, flags);
-+	if (!spin_trylock(&crc->lock)) {
-+		/* Hardware is busy, calculate crc32 by software */
-+		if (mctx->poly == CRC32_POLY_LE)
-+			ctx->partial = crc32_le(ctx->partial, d8, length);
-+		else
-+			ctx->partial = __crc32c_le(ctx->partial, d8, length);
-+
-+		goto pm_out;
-+	}
- 
- 	/*
- 	 * Restore previously calculated CRC for this context as init value
-@@ -197,8 +205,9 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
- 	/* Store partial result */
- 	ctx->partial = readl_relaxed(crc->regs + CRC_DR);
- 
--	spin_unlock_irqrestore(&crc->lock, flags);
-+	spin_unlock(&crc->lock);
- 
-+pm_out:
- 	pm_runtime_mark_last_busy(crc->dev);
- 	pm_runtime_put_autosuspend(crc->dev);
- 
--- 
-2.18.1
-
+Can Guo.
