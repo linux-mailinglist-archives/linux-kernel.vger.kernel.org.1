@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072D826C4D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70B126C4D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 18:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgIPQDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 12:03:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57596 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726373AbgIPP4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:56:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600271776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uiBkPILqgj6+XmxQSXdoL8r4H4tFY2Qbd0jwLhGYEas=;
-        b=UYbIAeYaTnzU3Rwh/beQ0bTu70Frdy9HY49znz3e4uJcfMLeO3uj73NCUkKyRCzA5+Rb01
-        V3Y2anLexqNk5PNahSFVkX+vadF7Kyt6koKJqBlIyz4QTGsgoxn+E4xUKtQ44o4OT4Y9/3
-        ZLnbkpjXDIM0z2l0Odeltt44Em+n7Kw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-l1_h9eZYNqGQg-zimJyxXg-1; Wed, 16 Sep 2020 09:39:18 -0400
-X-MC-Unique: l1_h9eZYNqGQg-zimJyxXg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726384AbgIPQCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 12:02:11 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37827 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726376AbgIPP41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 11:56:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600271780; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=SSqTKliitikyhS2Hm4khYk3MaXTZpP0INBcLPuNG4D4=; b=WwAQpCm7TxD+1ngbzsf0Znbd+xPk74HtG6S6A4jLu4AHEpeW/uxun/veQmoNw+5OQyG2MAMg
+ dQdDVKCIX9OvC7L/+ffT/cQf/8AF1B5gtcoBlj/DRP/ar7VhBHh3Xi6u8D815CUpP1HUYBVv
+ +ROnIYfhYJEEPBfj39UIU+CQrrk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f62266d9a5950f997bf30f3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Sep 2020 14:51:25
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB37DC433F1; Wed, 16 Sep 2020 14:51:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65B92188C129;
-        Wed, 16 Sep 2020 13:39:16 +0000 (UTC)
-Received: from ovpn-66-86.rdu2.redhat.com (ovpn-66-86.rdu2.redhat.com [10.10.66.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C70E6607A1;
-        Wed, 16 Sep 2020 13:39:14 +0000 (UTC)
-Message-ID: <2fe2a22235a0474b4a3de939cc22c19affc945fd.camel@redhat.com>
-Subject: Re: [RFC] autonuma: Migrate on fault among multiple bound nodes
-From:   Qian Cai <cai@redhat.com>
-To:     Huang Ying <ying.huang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Date:   Wed, 16 Sep 2020 09:39:14 -0400
-In-Reply-To: <20200916005936.232788-1-ying.huang@intel.com>
-References: <20200916005936.232788-1-ying.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5492BC433CA;
+        Wed, 16 Sep 2020 14:51:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5492BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.zkernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ohad@wizery.com, rishabhb@codeaurora.org,
+        Sibi Sankar <sibis@codeaurora.org>, stable@vger.kernel.org
+Subject: [PATCH v2] remoteproc: Fixup coredump debugfs disable request
+Date:   Wed, 16 Sep 2020 20:21:00 +0530
+Message-Id: <20200916145100.15872-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-16 at 08:59 +0800, Huang Ying wrote:
->  static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
-> @@ -2474,11 +2481,13 @@ int mpol_misplaced(struct page *page, struct
-> vm_area_struct *vma, unsigned long
->  	int thisnid = cpu_to_node(thiscpu);
->  	int polnid = NUMA_NO_NODE;
->  	int ret = -1;
-> +	bool moron;
+Fix the discrepancy observed between accepted input and read back value
+while disabling remoteproc coredump through the coredump debugfs entry.
 
-Are you really going to use that name those days?
+Fixes: 3afdc59e4390 ("remoteproc: Add coredump debugfs entry")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+---
+
+V2:
+ * Fixup commit message [Bjorn].
+
+ drivers/remoteproc/remoteproc_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
+index 2e3b3e22e1d0..7ca823f6aa63 100644
+--- a/drivers/remoteproc/remoteproc_debugfs.c
++++ b/drivers/remoteproc/remoteproc_debugfs.c
+@@ -94,7 +94,7 @@ static ssize_t rproc_coredump_write(struct file *filp,
+ 		goto out;
+ 	}
+ 
+-	if (!strncmp(buf, "disable", count)) {
++	if (!strncmp(buf, "disabled", count)) {
+ 		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
+ 	} else if (!strncmp(buf, "inline", count)) {
+ 		rproc->dump_conf = RPROC_COREDUMP_INLINE;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
