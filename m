@@ -2,304 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C6226C881
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C4826C8D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgIPSvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgIPSJL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:09:11 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E5DC014B0A;
-        Wed, 16 Sep 2020 06:22:13 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l9so3017866wme.3;
-        Wed, 16 Sep 2020 06:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=pZIuGtg8ndElc6lTHl35ZSWkRYj/mGSbp5U5gzAABiQ=;
-        b=bDg0CDZDwcRlSYeelPOTiT0FEhVTGG10jRe6geoEt/LqOAoAHuSt2ahL1A9CZCTZnF
-         OqGWKqxK5PCIz6iPfUf+4v9h4Orlltx2ND24uuakGxCFDuULIlNC2Xybool4Ae4xj52U
-         MBYHi+x8OeofYusyWXWlg8GQzWS+wks4hRICLZDQveXgeGnFBHsh3ghHTipqAG1lCP/Z
-         U5regNaMdpE6o+C5D0X6zmOvbU2Mh+FJ226gH7Fts7dHLXuO2poNXRzyfjTAINZ2Qqfr
-         ueQmRuTkufWHhXuPr1s02q6sPjIVfkgOfBN3ABevLaDYqdfDo+Uhv/8DLUwLznst9Lya
-         Y4hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=pZIuGtg8ndElc6lTHl35ZSWkRYj/mGSbp5U5gzAABiQ=;
-        b=TDOXwh9COSYuljx5VgQYxFxDnDk5Tu06IFnkhJn7WwaCXjh+rny2+Tj0GWfpkVHjS0
-         WNbbOjgsjj5Ed+1LfL4zW62RHcmRoqJpCNKbwob1sp/rgLiz/J/bWD1CsAxOFH41C8bP
-         Y736QyewMC1NgzXc9wKjJkwsIhb62aHYkI8kj63WqdpJjNq91wPKECW7TsGn2c1FdTja
-         4VClRkdBQLTO0VUEBSv9fbXRIMkApMX9MRNI7VlVvuQU32Mv/IMCzVacuNf/0JuI1sS9
-         Yt3cs1bysV1gZLRg4EyFUaWemb0eOaO27WKMmADV//By+dqbCjCG6KmdrJjAgPq2bjKZ
-         eyGw==
-X-Gm-Message-State: AOAM533EaVb1AoCO9UynTb/ZkQmXR77GLtN3lBR5HMNCtkYexhN57fTR
-        4VsYZU1jIlfO8hlYqLdk1KIXOLLuNkK6wEMo
-X-Google-Smtp-Source: ABdhPJwiuyc/02V9BaQmHUoc+u0ewDrMdqrTKmfqdfswDpCVJC6aPrBFkJ8lMZkOFzh2d3qVxKHIVQ==
-X-Received: by 2002:a1c:9ecb:: with SMTP id h194mr4625473wme.140.1600262531970;
-        Wed, 16 Sep 2020 06:22:11 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.208.34])
-        by smtp.gmail.com with ESMTPSA id a17sm35590262wra.24.2020.09.16.06.22.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Sep 2020 06:22:11 -0700 (PDT)
-Subject: Re: [PATCH v2] software_node: Add support for fwnode_graph*() family
- of functions
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        kieran.bingham@ideasonboard.com, jorhand@linux.microsoft.com,
-        kitakar@gmail.com
-References: <20200915232827.3416-1-djrscally@gmail.com>
- <20200916091707.GL834@valkosipuli.retiisi.org.uk>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <7b81d743-736d-62d1-7072-d08759a0d5d7@gmail.com>
-Date:   Wed, 16 Sep 2020 14:22:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728239AbgIPS6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:58:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726510AbgIPRv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:51:57 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 020BB2226B;
+        Wed, 16 Sep 2020 13:32:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600263148;
+        bh=P5+9y5YPJYqYEjECRpUtjvOQwwt4I7Fj+UkwXLuICGs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=z48pIJfclM+hfht+C1CKW+UEw+JO92g5uVFvv4dS/YfhkEkydYr8dV3kkNpAWepJy
+         +nZX5lrIZfTZcK9QOfih5PT633yj/8sHug0694+ni4j1OuoCw2dWJln+Yeoq7b8S/r
+         2szLTr2GHiSV4RKdGPew7PxCuTeTpgsw90pmzbLY=
+Date:   Wed, 16 Sep 2020 08:32:26 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "puranjay12@gmail.com" <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "vailbhavgupta40@gmail.com" <vailbhavgupta40@gmail.com>
+Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
+ driving parameter
+Message-ID: <20200916133226.GA1535437@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20200916091707.GL834@valkosipuli.retiisi.org.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200916123020.GA2796266@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari - thanks for the comments
+On Wed, Sep 16, 2020 at 02:30:20PM +0200, gregkh@linuxfoundation.org wrote:
+> On Tue, Sep 15, 2020 at 10:28:11AM -0500, Bjorn Helgaas wrote:
+> > On Tue, Sep 15, 2020 at 08:24:50AM +0000, 吳昊澄 Ricky wrote:
+> > > > -----Original Message-----
+> > > > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
+> > > > Sent: Friday, September 11, 2020 10:56 PM
+> > > > To: 吳昊澄 Ricky
+> > > > Cc: arnd@arndb.de; gregkh@linuxfoundation.org; bhelgaas@google.com;
+> > > > ulf.hansson@linaro.org; rui_feng@realsil.com.cn; linux-kernel@vger.kernel.org;
+> > > > puranjay12@gmail.com; linux-pci@vger.kernel.org;
+> > > > vailbhavgupta40@gamail.com
+> > > > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix driving
+> > > > parameter
+> > > > 
+> > > > On Fri, Sep 11, 2020 at 08:18:22AM +0000, 吳昊澄 Ricky wrote:
+> > > > > > -----Original Message-----
+> > > > > > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
+> > > > > > Sent: Thursday, September 10, 2020 1:44 AM
+> > > > > > To: 吳昊澄 Ricky
+> > > > > > Cc: arnd@arndb.de; gregkh@linuxfoundation.org; bhelgaas@google.com;
+> > > > > > ulf.hansson@linaro.org; rui_feng@realsil.com.cn;
+> > > > linux-kernel@vger.kernel.org;
+> > > > > > puranjay12@gmail.com; linux-pci@vger.kernel.org;
+> > > > > > vailbhavgupta40@gamail.com
+> > > > > > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
+> > > > driving
+> > > > > > parameter
+> > > > > >
+> > > > > > On Wed, Sep 09, 2020 at 07:10:19AM +0000, 吳昊澄 Ricky wrote:
+> > > > > > > > -----Original Message-----
+> > > > > > > > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
+> > > > > > > > Sent: Wednesday, September 09, 2020 6:29 AM
+> > > > > > > > To: 吳昊澄 Ricky
+> > > > > > > > Cc: arnd@arndb.de; gregkh@linuxfoundation.org;
+> > > > bhelgaas@google.com;
+> > > > > > > > ulf.hansson@linaro.org; rui_feng@realsil.com.cn;
+> > > > > > linux-kernel@vger.kernel.org;
+> > > > > > > > puranjay12@gmail.com; linux-pci@vger.kernel.org;
+> > > > > > > > vailbhavgupta40@gamail.com
+> > > > > > > > Subject: Re: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
+> > > > > > driving
+> > > > > > > > parameter
+> > > > > > > >
+> > > > > > > > On Mon, Sep 07, 2020 at 06:07:31PM +0800, ricky_wu@realtek.com
+> > > > wrote:
+> > > > > > > > > From: Ricky Wu <ricky_wu@realtek.com>
+> > > > > > > > >
+> > > > > > > > > v4:
+> > > > > > > > > split power down flow and power saving function to two patch
+> > > > > > > > >
+> > > > > > > > > v5:
+> > > > > > > > > fix up modified change under the --- line
+> > > > > > > >
+> > > > > > > > Hehe, this came out *above* the "---" line :)
+> > > > > > > >
+> > > > > > > > > Add rts522a L1 sub-state support
+> > > > > > > > > Save more power on rts5227 rts5249 rts525a rts5260
+> > > > > > > > > Fix rts5260 driving parameter
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+> > > > > > > > > ---
+> > > > > > > > >  drivers/misc/cardreader/rts5227.c  | 112 +++++++++++++++++++++-
+> > > > > > > > >  drivers/misc/cardreader/rts5249.c  | 145
+> > > > > > > > ++++++++++++++++++++++++++++-
+> > > > > > > > >  drivers/misc/cardreader/rts5260.c  |  28 +++---
+> > > > > > > > >  drivers/misc/cardreader/rtsx_pcr.h |  17 ++++
+> > > > > > > > >  4 files changed, 283 insertions(+), 19 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/drivers/misc/cardreader/rts5227.c
+> > > > > > > > b/drivers/misc/cardreader/rts5227.c
+> > > > > > > > > index 747391e3fb5d..8859011672cb 100644
+> > > > > > > > > --- a/drivers/misc/cardreader/rts5227.c
+> > > > > > > > > +++ b/drivers/misc/cardreader/rts5227.c
+> > > > > > > > > @@ -72,15 +72,80 @@ static void
+> > > > rts5227_fetch_vendor_settings(struct
+> > > > > > > > rtsx_pcr *pcr)
+> > > > > > > > >
+> > > > > > > > >  	pci_read_config_dword(pdev, PCR_SETTING_REG2, &reg);
+> > > > > > > > >  	pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", PCR_SETTING_REG2, reg);
+> > > > > > > > > +	if (rtsx_check_mmc_support(reg))
+> > > > > > > > > +		pcr->extra_caps |= EXTRA_CAPS_NO_MMC;
+> > > > > > > > >  	pcr->sd30_drive_sel_3v3 = rtsx_reg_to_sd30_drive_sel_3v3(reg);
+> > > > > > > > >  	if (rtsx_reg_check_reverse_socket(reg))
+> > > > > > > > >  		pcr->flags |= PCR_REVERSE_SOCKET;
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > > +static void rts5227_init_from_cfg(struct rtsx_pcr *pcr)
+> > > > > > > > > +{
+> > > > > > > > > +	struct pci_dev *pdev = pcr->pci;
+> > > > > > > > > +	int l1ss;
+> > > > > > > > > +	u32 lval;
+> > > > > > > > > +	struct rtsx_cr_option *option = &pcr->option;
+> > > > > > > > > +
+> > > > > > > > > +	l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
+> > > > > > > > > +	if (!l1ss)
+> > > > > > > > > +		return;
+> > > > > > > > > +
+> > > > > > > > > +	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, &lval);
+> > > > > > > >
+> > > > > > > > This looks a little problematic.  PCI_L1SS_CTL1 is an architected
+> > > > > > > > register in the ASPM L1 PM Substates capability, and its value may
+> > > > > > > > change at runtime because drivers/pci/pcie/aspm.c manages it.
+> > > > > > > >
+> > > > > > > > It looks like the code below does device-specific configuration based
+> > > > > > > > on the current PCI_L1SS_CTL1 value.  But what happens if aspm.c
+> > > > > > > > changes PCI_L1SS_CTL1 later?
+> > > > > > >
+> > > > > > > We are going to make sure and set the best configuration on the
+> > > > > > > current time, if host change the capability later, it doesn't affect
+> > > > > > > function, only affect a little power saving
+> > > > > >
+> > > > > > Why don't you unconditionally do the following?
+> > > > > >
+> > > > > >   rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
+> > > > > >   rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
+> > > > > >   rtsx_set_dev_flag(pcr, PM_L1_1_EN);
+> > > > > >   rtsx_set_dev_flag(pcr, PM_L1_2_EN);
+> > > > >
+> > > > > Our power saving function have 2 different flow L1 and L1substate,
+> > > > > so we need to check it for which flow we are going to
+> > > > > Detail to see below reply
+> > > > >
+> > > > > > Let's assume the generic code in aspm.c has cleared all these bits:
+> > > > > >
+> > > > > >   PCI_L1SS_CTL1_ASPM_L1_1
+> > > > > >   PCI_L1SS_CTL1_ASPM_L1_2
+> > > > > >   PCI_L1SS_CTL1_PCIPM_L1_1
+> > > > > >   PCI_L1SS_CTL1_PCIPM_L1_2
+> > > > > >
+> > > > > > in the L1 PM Substates capability.
+> > > > > >
+> > > > > > I think you are saying that if you *also* clear ASPM_L1_1_EN,
+> > > > > > ASPM_L1_2_EN, PM_L1_1_EN, and PM_L1_2_EN in your device-specific
+> > > > > > registers, it uses less power than if you set those device-specific
+> > > > > > bits.  Right?
+> > > > > >
+> > > > > > And moreover, I think you're saying that if aspm.c subsequently *sets*
+> > > > > > some of those bits in the L1 PM Substates capability, those substates
+> > > > > > *work* even though the device-specific ASPM_L1_1_EN, ASPM_L1_2_EN,
+> > > > > > PM_L1_1_EN, and PM_L1_2_EN bits are not set.  Right?
+> > > > > >
+> > > > > > I do not feel good about this as a general strategy.  I think we
+> > > > > > should program the device so the behavior is completely predictable,
+> > > > > > regardless of the generic enable bits happened to be set at
+> > > > > > probe-time.
+> > > > > >
+> > > > > > The current approach means that if we enable L1 substates after the
+> > > > > > driver probe, the device is configured differently than if we enabled
+> > > > > > L1 substates before probe.  That's not a reliable way to operate it.
+> > > > >
+> > > > > Talk about our power saving function
+> > > > > a) basic L1 power saving
+> > > > > b) advance L1 power saving
+> > > > > c) advance L1 substate power saving
+> > > > 
+> > > > I have no idea what the difference between "basic L1 power saving" and
+> > > > "advance L1 power saving" is, so I assume those are device-specific
+> > > > things.  If not, please use the same terminology as the PCIe spec.
+> > > > 
+> > > > > at initial, we check pci port support L1 subs or not, if not we are
+> > > > > going to b) otherwise going to c).
+> > > > 
+> > > > You're not checking whether the port *supports* L1 substates.  You
+> > > > would look at PCI_L1SS_CAP to learn that.  You're looking at
+> > > > PCI_L1SS_CTL1, which tells you whether L1 substates are *enabled*.
+> > > > 
+> > > > > Assume aspm.c change bit of L1 PM Substates capability after our
+> > > > > driver probe, we are going to a)
+> > > > >
+> > > > > So far we did not see any platform change L1 PM Substates capability
+> > > > > after our driver probe.
+> > > > 
+> > > > You should expect that aspm.c will change bits in the L1 PM *control*
+> > > > register (PCI_L1SS_CTL1) after probe.
+> > > > 
+> > > > You might not actually see it change, depending on how you tested, but
+> > > > you cannot rely on PCI_L1SS_CTL1 being constant.  It may change based
+> > > > on power/performance tradeoffs, e.g., whether the system is plugged
+> > > > into AC power, whether it's idle, etc.
+> > > > 
+> > > 
+> > > Our ASPM function is a HW solution follow the PCIe SPEC. don’t worry
+> > > about crash the system If HOST change our device config space
+> > > setting at run time our HW will do the corresponding things which
+> > > follows the SPEC.  At initial time we set these parameter just good
+> > > for more power saving
+> > 
+> > OK.  It would be better if your hardware would notice the
+> > PCI_L1SS_CTL1 change and set its own device-specific power-saving
+> > parameters.  The drivers would be simpler, and the device behavior
+> > would be more consistent.
+> > 
+> > Drivers *writing* to standard PCI config things (64-byte config header
+> > or Capabilities like PCIe, PM, ASPM, L1 Substates) is a definite
+> > problem because the PCI core owns those and writes from drivers need
+> > to be mediated somehow.  AFAICT your drivers don't write to these
+> > things.
+> > 
+> > Drivers *reading* these things (as your drivers do) shouldn't cause
+> > problems, but it does violate the interface abstractions that the PCI
+> > core should provide.
+> 
+> So is it ok to take this patch now, or does it need to be changed any?
 
-On 16/09/2020 10:17, Sakari Ailus wrote:
-> Moi Daniel and Heikki,
->
-> On Wed, Sep 16, 2020 at 12:28:27AM +0100, Daniel Scally wrote:
->> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->>
->> This implements the remaining .graph_* callbacks in the
->> fwnode operations vector for the software nodes. That makes
->> the fwnode_graph*() functions available in the drivers also
->> when software nodes are used.
->>
->> The implementation tries to mimic the "OF graph" as much as
->> possible, but there is no support for the "reg" device
->> property. The ports will need to have the index in their
->> name which starts with "port" (for example "port0", "port1",
->> ...) and endpoints will use the index of the software node
->> that is given to them during creation. The port nodes can
->> also be grouped under a specially named "ports" subnode,
->> just like in DT, if necessary.
->>
->> The remote-endpoints are reference properties under the
->> endpoint nodes that are named "remote-endpoint". 
->>
->> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->> Co-developed-by: Daniel Scally <djrscally@gmail.com>
->> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->> ---
->> changes in v2:
->> 	- added software_node_device_is_available
->> 	- altered software_node_get_next_child to get references
->> 	- altered software_node_get_next_endpoint to release references
->> 	to ports and avoid passing invalid combinations of swnodes to
->> 	software_node_get_next_child
->> 	- altered swnode_graph_find_next_port to release port rather than
->> 	old
->> 	
->>  drivers/base/swnode.c | 129 +++++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 127 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
->> index 010828fc785b..d69034b807e3 100644
->> --- a/drivers/base/swnode.c
->> +++ b/drivers/base/swnode.c
->> @@ -363,6 +363,11 @@ static void software_node_put(struct fwnode_handle *fwnode)
->>  	kobject_put(&swnode->kobj);
->>  }
->>  
->> +static bool software_node_device_is_available(const struct fwnode_handle *fwnode)
->> +{
->> +	return is_software_node(fwnode);
-> This basically tells whether the device is there. Are there software node
-> based devices, i.e. do you need this?
->
-> If you do really need this, then I guess this could just return true for
-> now as if you somehow get here, the node is a software node anyway.
+Yes, it's OK with me if you take this patch.
 
-I do think its better to include it; I'm targeting using this with
-ipu3-cio2; the cio2_parse_firmware() call there doesn't pass
-FWNODE_GRAPH_DEVICE_DISABLED to fwnode_graph_get_endpoint_by_id() so
-this function does need to exist to be found by that call (or else
-cio2_parse_firmware() would need to pass that flag...but I don't know
-the effect of doing that on devices that aren't using software nodes so
-it didn't seem like a good idea). I can change it to return true though sure
+The ASPM hardware feature is designed to work without any driver
+support.  It does need to be configured, which involves both the
+device and the upstream bridge, so it should be done by the BIOS or
+the PCI core.  There are a few drivers (amdgpu, radeon, hfi1, e1000e,
+iwlegacy, ath10k, ath9k, mt76, rtlwifi, rtw88, and these rts
+cardreader drivers) that do it themselves, incorrectly.
 
->> +}
->> +
->>  static bool software_node_property_present(const struct fwnode_handle *fwnode,
->>  					   const char *propname)
->>  {
->> @@ -450,7 +455,7 @@ software_node_get_next_child(const struct fwnode_handle *fwnode,
->>  		c = list_next_entry(c, entry);
->>  	else
->>  		c = list_first_entry(&p->children, struct swnode, entry);
->> -	return &c->fwnode;
->> +	return software_node_get(&c->fwnode);
-> This looks like a bugfix that probably should or could be backported. Could
-> you make it a separate patch, with a Fixes: tag?
-Yes, sure. That does change how some of the other code would need to
-work though if this patch were applied but not the separated one. Sorry;
-not sure what's the best way to proceed in that case. Should I just note
-that this patch depends on the prior application of the separated one?
->
->>  }
->>  
->>  static struct fwnode_handle *
->> @@ -536,9 +541,125 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
->>  	return 0;
->>  }
->>  
->> +static struct fwnode_handle *
->> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
->> +			    struct fwnode_handle *port)
->> +{
->> +	struct fwnode_handle *old = port;
->> +
->> +	while ((port = software_node_get_next_child(parent, old))) {
->> +		if (!strncmp(to_swnode(port)->node->name, "port", 4))
->> +			return port;
->> +		fwnode_handle_put(port);
->> +		old = port;
->> +	}
->> +
->> +	return NULL;
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
->> +				      struct fwnode_handle *endpoint)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	struct fwnode_handle *old = endpoint;
->> +	struct fwnode_handle *parent_of_old;
->> +	struct fwnode_handle *parent;
->> +	struct fwnode_handle *port;
->> +
->> +	if (!swnode)
->> +		return NULL;
->> +
->> +	if (endpoint) {
->> +		port = software_node_get_parent(endpoint);
->> +		parent = software_node_get_parent(port);
->> +	} else {
->> +		parent = software_node_get_named_child_node(fwnode, "ports");
->> +		if (!parent)
->> +			parent = software_node_get(&swnode->fwnode);
->> +
->> +		port = swnode_graph_find_next_port(parent, NULL);
->> +	}
->> +
->> +	for (; port; port = swnode_graph_find_next_port(parent, port)) {
->> +
->> +		if (old) {
->> +			parent_of_old = software_node_get_parent(old);
->> +
->> +			if (parent_of_old != port)
->> +				old = NULL;
->> +
->> +			fwnode_handle_put(parent_of_old);
->> +		}
->> +
->> +		endpoint = software_node_get_next_child(port, old);
->> +		fwnode_handle_put(old);
->> +		if (endpoint)
->> +			break;
->> +
->> +		fwnode_handle_put(port);
->> +	}
->> +
->> +	fwnode_handle_put(port);
->> +	software_node_put(parent);
-> This probably should be fwnode_handle_put() as well as this is basically
-> corresponding the device (i.e. likely not a software node).
-Yep good point, fwnode_handle_put() it is.
->> +
->> +	return endpoint;
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	const struct software_node_ref_args *ref;
->> +	const struct property_entry *prop;
->> +
->> +	if (!swnode)
->> +		return NULL;
->> +
->> +	prop = property_entry_get(swnode->node->properties, "remote-endpoint");
->> +	if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
->> +		return NULL;
->> +
->> +	ref = prop->pointer;
->> +
->> +	return software_node_get(software_node_fwnode(ref[0].node));
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	struct fwnode_handle *parent;
->> +
->> +	if (!strcmp(swnode->parent->node->name, "ports"))
->> +		parent = &swnode->parent->parent->fwnode;
->> +	else
->> +		parent = &swnode->parent->fwnode;
->> +
->> +	return software_node_get(parent);
->> +}
->> +
->> +static int
->> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
->> +				   struct fwnode_endpoint *endpoint)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	int ret;
->> +
->> +	ret = kstrtou32(swnode->parent->node->name + 4, 10, &endpoint->port);
->> +	if (ret)
->> +		return ret;
->> +
->> +	endpoint->id = swnode->id;
->> +	endpoint->local_fwnode = fwnode;
->> +
->> +	return 0;
->> +}
->> +
->>  static const struct fwnode_operations software_node_ops = {
->>  	.get = software_node_get,
->>  	.put = software_node_put,
->> +	.device_is_available = software_node_device_is_available,
->>  	.property_present = software_node_property_present,
->>  	.property_read_int_array = software_node_read_int_array,
->>  	.property_read_string_array = software_node_read_string_array,
->> @@ -547,7 +668,11 @@ static const struct fwnode_operations software_node_ops = {
->>  	.get_parent = software_node_get_parent,
->>  	.get_next_child_node = software_node_get_next_child,
->>  	.get_named_child_node = software_node_get_named_child_node,
->> -	.get_reference_args = software_node_get_reference_args
->> +	.get_reference_args = software_node_get_reference_args,
->> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
->> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
->> +	.graph_get_port_parent = software_node_graph_get_port_parent,
->> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
->>  };
->>  
->>  /* -------------------------------------------------------------------------- */
+But this particular patch only *reads* the ASPM control registers,
+without writing them, so it shouldn't make anything worse.
+
+Bjorn
