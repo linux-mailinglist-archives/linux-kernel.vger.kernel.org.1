@@ -2,118 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8B726C91C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322C726C93A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 21:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbgIPTDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 15:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727479AbgIPRsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:48:35 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F1FC0A888A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:42:04 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id x69so7912420oia.8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 05:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=czd653EAQqRd9y6KWSclqvh0oWs0wM7+eL3iGSU/nsI=;
-        b=Lu3BjPbRiC/AX011FfwezqvylAv3ZKt1PhgO2s9ivkaAdFT+L+aU0tlTbH9aGB3QdD
-         ZRH99A3CPlO3UqmOgNoRm+sYa3H4f9liy9wkSbTEbzeH6grEkhQUdoV/KEkl0b+7g6Fl
-         aZYv0CeL8ooRR1NM3VZWi8l0zPzoTUe7oUQL4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=czd653EAQqRd9y6KWSclqvh0oWs0wM7+eL3iGSU/nsI=;
-        b=lVzyHWJE6k5kjcIOgj08rpMj3kMDR6NX2k26I776JTBZL1R6J4m+wb5pPyuhQp6d5t
-         TQQAQwhAr/vnbvcUFpvWqkV2Myp4WiRJP3mivIOmHvxgDJyvClet29J7UY/v3cXll6Hw
-         nB4U2mDlfHCkW22veHTCaRmJ5oavZNvrF7vlGiJJQa/stoDKyZcK/R/KjBSJYlu5uGL/
-         ibrDhQA6AQExSDxaQquR0FvnIO08UAkyjzfWwqb1DDeW/M9Xs3l366ip6aZO3i/xjrbA
-         tujO8w6cQjeH/xgvnNM6YqOCEXlgk7fbXoQCG7twaQTeBHqxDeRAqS8Q3s7BQT5ByqB1
-         xcSg==
-X-Gm-Message-State: AOAM53250qeVBM2aGv80xGYE+4LtECfh/OgIvws2PeM1L+JJ8L7bVs0x
-        8q1XN9klHN2nRMQkZgPib8FP4bVOHe6yn6qttzywHw==
-X-Google-Smtp-Source: ABdhPJwB+2iScSnSRjswx0wBN3crEjmROMPJs/KcyWAFLMOIPP9Nlf6b8MzVFM61WOlkTuWWi8Wacl+i3PJJq3k7BoM=
-X-Received: by 2002:aca:6083:: with SMTP id u125mr3033440oib.14.1600260122457;
- Wed, 16 Sep 2020 05:42:02 -0700 (PDT)
+        id S1728262AbgIPTF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 15:05:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727432AbgIPRqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:46:20 -0400
+Received: from localhost (unknown [122.172.186.249])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDD05221EB;
+        Wed, 16 Sep 2020 13:05:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600261557;
+        bh=PImqcFtzvvSk4TPQwCNpCjFClWEk9Y7NrcjrlDub7Fw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HMygxyah/1wVclzSw+uMchV9nGXWDuGh46jBjSbIxCmUbvbuQyntyvrrpn9OS+tjv
+         locWYncScFSvdN5gH3LoESwjadrMnSpSdu1vWwHFSe+R1y6jGl4g1EXmkrLR1Y55cF
+         dkFF9vlZQqdamTY6SMqFLLjRtZpATBXdSWrXcZZQ=
+Date:   Wed, 16 Sep 2020 18:35:53 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Yu Chen <chenyu56@huawei.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 RESEND 1/8] phy: hisilicon: add USB physical layer for
+ Kirin 3670
+Message-ID: <20200916130553.GO2968@vkoul-mobl>
+References: <cover.1599826421.git.mchehab+huawei@kernel.org>
+ <2bcc14afcbd1cc8972ab8f1a561a13aae04b881a.1599826421.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20200914132920.59183-1-christian.koenig@amd.com>
- <40cd26ae-b855-4627-5a13-4dcea5d622f6@gmail.com> <20200914140632.GD1221970@ziepe.ca>
- <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com> <20200916095359.GD438822@phenom.ffwll.local>
- <fc8f2af7-9fc2-cb55-3065-75a4060b7c82@amd.com> <b621db68-30b9-cc3f-c2c0-237a7fe4db09@amd.com>
-In-Reply-To: <b621db68-30b9-cc3f-c2c0-237a7fe4db09@amd.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 16 Sep 2020 14:41:51 +0200
-Message-ID: <CAKMK7uGJVMj6Sb1nDTBoY8SsXc55y2ypUEsGhNLOkbbjFLuYfw@mail.gmail.com>
-Subject: Re: Changing vma->vm_file in dma_buf_mmap()
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2bcc14afcbd1cc8972ab8f1a561a13aae04b881a.1599826421.git.mchehab+huawei@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 1:45 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> [SNIP]
->
-> But Jason pointed me to the right piece of code. See this comment in in m=
-map_region():
->
-> /* ->mmap() can change vma->vm_file, but must guarantee that
-> * vma_link() below can deny write-access if VM_DENYWRITE is set
-> * and map writably if VM_SHARED is set. This usually means the
-> * new file must not have been exposed to user-space, yet.
-> */
-> vma->vm_file =3D get_file(file);
-> error =3D call_mmap(file, vma);
->
->
-> So changing vma->vm_file is allowed at least under certain circumstances.
->
-> Only the "file must not have been exposed to user-space, yet" part still =
-needs double checking. Currently working on that.
->
->
-> Ok, I think we can guarantee for all DMA-bufs what is required here.
->
-> While searching the code I've found that at least vgem_prime_mmap() and i=
-915_gem_dmabuf_mmap() are doing the same thing of modifying vma->vm_file.
->
-> So I'm leaning towards that this works as expected and we should just doc=
-ument this properly.
->
-> Daniel and Jason what do you think?
+On 11-09-20, 14:16, Mauro Carvalho Chehab wrote:
+> From: Yu Chen <chenyu56@huawei.com>
+> 
+> Add the Hisilicon Kirin 3670 USB phy driver just after the
+> hi3660, using the same namespace.
+> 
+> This driver was imported from Linaro's official Hikey 970
+> tree, from the original patch, removing the addition of
+> the dwg3-specific parts.
+> 
+> Signed-off-by: Yu Chen <chenyu56@huawei.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../bindings/phy/phy-hi3670-usb3.txt          |  25 +
+>  drivers/phy/hisilicon/Kconfig                 |  10 +
+>  drivers/phy/hisilicon/Makefile                |   1 +
+>  drivers/phy/hisilicon/phy-hi3670-usb3.c       | 682 ++++++++++++++++++
+>  4 files changed, 718 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+>  create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+> new file mode 100644
+> index 000000000000..4cb02612ff23
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
 
-Well I can claim I started this, so I started out with naively
-assuming that it Just Works :-)
+Not yaml bindings?
 
-I think we already have vgem/i915 prime testcases in igt which try to
-excercise this mmap forwarding, including provoking pte shoot-downs.
-So I think best would be if you could also add a variant for amdgpu,
-to make sure this really works and keeps working.
+> +#define CTRL0_USB3_VBUSVLD		BIT(7)
+> +#define CTRL0_USB3_VBUSVLD_SEL		BIT(6)
+> +
+> +#define CTRL3_USB2_VBUSVLDEXT0		BIT(6)
+> +#define CTRL3_USB2_VBUSVLDEXTSEL0	BIT(5)
+> +
+> +#define CTRL5_USB2_SIDDQ		BIT(0)
+> +
+> +#define CTRL7_USB2_REFCLKSEL_MASK	(3 << 3)
+> +#define CTRL7_USB2_REFCLKSEL_ABB	(3 << 3)
+> +#define CTRL7_USB2_REFCLKSEL_PAD	(2 << 3)
 
-Plus ofc the documentation patch so that core mm folks can officially
-ack this as legit.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+GENMASK() for these please?
+
+> +
+> +#define CFG50_USB3_PHY_TEST_POWERDOWN	BIT(23)
+> +
+> +#define CFG54_USB31PHY_CR_ADDR_MASK	(0xFFFF)
+
+Here and other places as well
+
+> +#define CFG54_USB31PHY_CR_ADDR_SHIFT	(16)
+
+Okay we should get rid of all shift define. See <linux/bitfield.h> it
+has FIELD_PREP, xxx_encode_bits() you can use these to program teh bit
+fields
+
+> +static int kirin970_phy_cr_clk(struct regmap *usb31misc)
+> +{
+> +	int ret;
+> +
+> +	/* Clock up */
+> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
+> +			CFG54_USB31PHY_CR_CLK, CFG54_USB31PHY_CR_CLK);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Clock down */
+> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
+> +			CFG54_USB31PHY_CR_CLK, 0);
+> +
+> +	return ret;
+
+        return regmap_update_bits()
+
+> +static int kirin970_phy_cr_start(struct regmap *usb31misc, int direction)
+> +{
+> +	int ret;
+> +
+> +	if (direction)
+> +		ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
+> +			CFG54_USB31PHY_CR_WR_EN, CFG54_USB31PHY_CR_WR_EN);
+> +	else
+> +		ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
+> +			CFG54_USB31PHY_CR_RD_EN, CFG54_USB31PHY_CR_RD_EN);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = kirin970_phy_cr_clk(usb31misc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
+> +			CFG54_USB31PHY_CR_RD_EN | CFG54_USB31PHY_CR_WR_EN, 0);
+> +
+> +	return ret;
+
+here as well
+
+> +static int kirin970_phy_cr_wait_ack(struct regmap *usb31misc)
+> +{
+> +	u32 reg;
+> +	int retry = 100000;
+> +	int ret;
+> +
+> +	while (retry-- > 0) {
+> +		ret = regmap_read(usb31misc, USB_MISC_CFG54, &reg);
+> +		if (ret)
+> +			return ret;
+> +		if ((reg & CFG54_USB31PHY_CR_ACK) == CFG54_USB31PHY_CR_ACK)
+> +			return 0;
+> +
+> +		ret = kirin970_phy_cr_clk(usb31misc);
+> +		if (ret)
+> +			return ret;
+
+no delay here while checking?
+
+> +static int kirin970_phy_cr_set_addr(struct regmap *usb31misc, u32 addr)
+> +{
+> +	u32 reg;
+> +	int ret;
+> +
+> +	ret = regmap_read(usb31misc, USB_MISC_CFG54, &reg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	reg &= ~(CFG54_USB31PHY_CR_ADDR_MASK << CFG54_USB31PHY_CR_ADDR_SHIFT);
+> +	reg |= ((addr & CFG54_USB31PHY_CR_ADDR_MASK) <<
+> +			CFG54_USB31PHY_CR_ADDR_SHIFT);
+
+u32_replace_bits() looks apt here
+
+> +static int kirin970_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
+> +{
+> +	int reg;
+> +	int i;
+> +	int ret;
+> +
+> +	for (i = 0; i < 100; i++) {
+> +		ret = kirin970_phy_cr_clk(usb31misc);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = kirin970_phy_cr_set_sel(usb31misc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = kirin970_phy_cr_set_addr(usb31misc, addr);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = kirin970_phy_cr_start(usb31misc, 0);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = kirin970_phy_cr_wait_ack(usb31misc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = regmap_read(usb31misc, USB_MISC_CFG58, &reg);
+> +	if (ret)
+> +		return ret;
+
+Do you really care about each step error check? if not, we can have:
+        ret |= step_1;
+        ret |= step_n;
+
+        if (ret)
+                ...
+
+> +static int kirin970_phy_init(struct phy *phy)
+> +{
+> +	struct kirin970_priv *priv = phy_get_drvdata(phy);
+> +	u32 val;
+> +	int ret;
+> +
+> +	kirin970_phy_exit(phy);
+> +	dev_info(priv->dev, "%s in\n", __func__);
+
+Lower to debug level?
+
+> +	/* assert controller */
+> +	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
+> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, 0);
+> +	if (ret)
+> +		goto out;
+> +
+> +	ret = kirin970_config_phy_clock(priv);
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* Exit from IDDQ mode */
+> +	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL5,
+> +			CTRL5_USB2_SIDDQ, 0);
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* Release USB31 PHY out of TestPowerDown mode */
+> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG50,
+> +			CFG50_USB3_PHY_TEST_POWERDOWN, 0);
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* Tell the PHY power is stable */
+> +	val = CFG54_USB3_PHY0_ANA_PWR_EN | CFG54_PHY0_PCS_PWR_STABLE |
+> +		CFG54_PHY0_PMA_PWR_STABLE;
+> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG54,
+> +			val, val);
+> +	if (ret)
+> +		goto out;
+> +
+> +	ret = kirin970_config_tca(priv);
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* Enable SSC */
+> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG5C,
+> +			CFG5C_USB3_PHY0_SS_MPLLA_SSC_EN,
+> +			CFG5C_USB3_PHY0_SS_MPLLA_SSC_EN);
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* Deassert phy */
+> +	val = CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
+> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
+> +	if (ret)
+> +		goto out;
+> +
+> +	udelay(100);
+> +
+> +	/* Deassert controller */
+> +	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
+> +	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
+> +	if (ret)
+> +		goto out;
+> +
+> +	udelay(100);
+> +
+> +	/* Set fake vbus valid signal */
+> +	val = CTRL0_USB3_VBUSVLD | CTRL0_USB3_VBUSVLD_SEL;
+> +	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL0, val, val);
+> +	if (ret)
+> +		goto out;
+> +
+> +	val = CTRL3_USB2_VBUSVLDEXT0 | CTRL3_USB2_VBUSVLDEXTSEL0;
+> +	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL3, val, val);
+> +	if (ret)
+> +		goto out;
+> +
+> +	udelay(100);
+> +
+> +	ret = kirin970_phy_set_params(priv);
+> +	if (ret)
+> +		goto out;
+> +
+> +	{
+> +		ret = regmap_read(priv->peri_crg, 0x4c,
+> +				&val);
+> +		if (!ret)
+> +			dev_info(priv->dev, "peri_crg 0x4c %x\n", val);
+> +		ret = regmap_read(priv->peri_crg, 0x404,
+> +				&val);
+> +		if (!ret)
+> +			dev_info(priv->dev, "peri_crg 0x404 %x\n", val);
+> +		ret = regmap_read(priv->peri_crg, 0xc,
+> +				&val);
+> +		if (!ret)
+> +			dev_info(priv->dev, "peri_crg 0xc %x\n", val);
+> +		ret = regmap_read(priv->peri_crg, 0xac,
+> +				&val);
+> +		if (!ret)
+> +			dev_info(priv->dev, "peri_crg 0xac %x\n", val);
+> +		ret = regmap_read(priv->pctrl, 0x10,
+> +				&val);
+> +		if (!ret)
+> +			dev_info(priv->dev, "pctrl 0x10 %x\n", val);
+> +	}
+
+Whats with the funny braces and one more level on indentation here ?
+
+-- 
+~Vinod
