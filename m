@@ -2,122 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B77926CBE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6112026CBB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgIPUgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:36:41 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52652 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726735AbgIPRK1 (ORCPT
+        id S1728411AbgIPUcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:32:52 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:48544 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726943AbgIPUaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:10:27 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GH4ADB183693;
-        Wed, 16 Sep 2020 17:10:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=9bln1IG5mw+Sl51BcjQd98EtjhJKHV8PeNOGu2Eppew=;
- b=FlumdxNcjyxRf16TOvLGo9LzR9RZETJ7NOoP9l2Q5w2kHxcQw/Ai9OUQIhbd9+gxYo5x
- HMjCA2/mr9IBXAE3phlYjdZGEhmF0Jdvr4hv6B+IxYLhcnpIABuvvAktBUJelSUL0vMZ
- V+9b3B81qv6d5d4L4sN6v1sflHsg82My2UV2jS5p/mHthRPNxLt7PbXs0osZb266iwgO
- 3oJxmIZcIXi+Myvxn2QZzNTQg364jIOjmsNaj5Ykt0EvezaC6TBNNlnoqGqTmyR9Hlkn
- TKNKcWxx6bOinJCQf7KsopDApR+mPprkVWlKnJ1l5dRngPvtAmkqpJ7a3FwacsgXG1Gt Wg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 33gnrr4ec2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 17:10:16 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GH616O141707;
-        Wed, 16 Sep 2020 17:10:15 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 33khpkrh6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 17:10:15 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08GHADqK029739;
-        Wed, 16 Sep 2020 17:10:13 GMT
-Received: from [10.175.184.173] (/10.175.184.173)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Sep 2020 17:10:13 +0000
-Subject: Re: [PATCH v2] iommu/amd: Restore IRTE.RemapEn bit for
- amd_iommu_activate_guest_mode
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     mlevitsk@redhat.com, joro@8bytes.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-References: <20200916111720.43913-1-suravee.suthikulpanit@amd.com>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <3dd694a9-ad1e-f9ed-ac9b-20052f985f38@oracle.com>
-Date:   Wed, 16 Sep 2020 18:10:08 +0100
+        Wed, 16 Sep 2020 16:30:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600288207; x=1631824207;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4OMtNb83YORhDNCIQPC8PZHNb6sILR2vnYsotDnFmcY=;
+  b=nzqd9VJjBWWXW9MTRoYBhCRF2bp56x5gccM8yk4c1C873HJ8trVqe4Le
+   8IjnBK8bveUtxcwThN+SofhyABEoJ76aiXBaHe9molyy5tiMKCngKTytU
+   yO8nPXE8FpGm4Bp3z+xs/+1lgPB9pPw5BpowLK/If43t+8LzWqPrUCRp4
+   o=;
+X-IronPort-AV: E=Sophos;i="5.76,434,1592870400"; 
+   d="scan'208";a="54452033"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 16 Sep 2020 20:30:04 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id C7A69A1BD3;
+        Wed, 16 Sep 2020 20:30:02 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 16 Sep 2020 20:30:02 +0000
+Received: from u79c5a0a55de558.ant.amazon.com (10.43.162.35) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 16 Sep 2020 20:29:58 +0000
+From:   Alexander Graf <graf@amazon.com>
+To:     kvm list <kvm@vger.kernel.org>
+CC:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7 0/7] Allow user space to restrict and augment MSR emulation
+Date:   Wed, 16 Sep 2020 22:29:44 +0200
+Message-ID: <20200916202951.23760-1-graf@amazon.com>
+X-Mailer: git-send-email 2.28.0.394.ge197136389
 MIME-Version: 1.0
-In-Reply-To: <20200916111720.43913-1-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+X-Originating-IP: [10.43.162.35]
+X-ClientProxiedBy: EX13D42UWA002.ant.amazon.com (10.43.160.16) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
- mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=1
- clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 12:17 PM, Suravee Suthikulpanit wrote:
-> Commit e52d58d54a32 ("iommu/amd: Use cmpxchg_double() when updating
-> 128-bit IRTE") removed an assumption that modify_irte_ga always set
-> the valid bit, which requires the callers to set the appropriate value
-> for the struct irte_ga.valid bit before calling the function.
-> 
-> Similar to the commit 26e495f34107 ("iommu/amd: Restore IRTE.RemapEn
-> bit after programming IRTE"), which is for the function
-> amd_iommu_deactivate_guest_mode().
-> 
-> The same change is also needed for the amd_iommu_activate_guest_mode().
-> Otherwise, this could trigger IO_PAGE_FAULT for the VFIO based VMs with
-> AVIC enabled.
-> 
-> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Fixes: e52d58d54a321 ("iommu/amd: Use cmpxchg_double() when updating 128-bit IRTE")
-> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> ---
->  drivers/iommu/amd/iommu.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index e938677af8bc..db4fb840c59c 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -3900,14 +3900,18 @@ int amd_iommu_activate_guest_mode(void *data)
->  {
->  	struct amd_ir_data *ir_data = (struct amd_ir_data *)data;
->  	struct irte_ga *entry = (struct irte_ga *) ir_data->entry;
-> +	u64 valid;
->  
->  	if (!AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) ||
->  	    !entry || entry->lo.fields_vapic.guest_mode)
->  		return 0;
->  
-> +	valid = entry->lo.fields_vapic.valid;
-> +
->  	entry->lo.val = 0;
->  	entry->hi.val = 0;
->  
-> +	entry->lo.fields_vapic.valid       = valid;
->  	entry->lo.fields_vapic.guest_mode  = 1;
->  	entry->lo.fields_vapic.ga_log_intr = 1;
->  	entry->hi.fields.ga_root_ptr       = ir_data->ga_root_ptr;
-> 
-FWIW,
+While tying to add support for the MSR_CORE_THREAD_COUNT MSR in KVM,
+I realized that we were still in a world where user space has no control
+over what happens with MSR emulation in KVM.
 
-Reviewed-by: Joao Martins <joao.m.martins@oracle.com>
+That is bad for multiple reasons. In my case, I wanted to emulate the
+MSR in user space, because it's a CPU specific register that does not
+exist on older CPUs and that really only contains informational data that
+is on the package level, so it's a natural fit for user space to provide
+it.
+
+However, it is also bad on a platform compatibility level. Currrently,
+KVM has no way to expose different MSRs based on the selected target CPU
+type.
+
+This patch set introduces a way for user space to indicate to KVM which
+MSRs should be handled in kernel space. With that, we can solve part of
+the platform compatibility story. Or at least we can not handle AMD specific
+MSRs on an Intel platform and vice versa.
+
+In addition, it introduces a way for user space to get into the loop
+when an MSR access would generate a #GP fault, such as when KVM finds an
+MSR that is not handled by the in-kernel MSR emulation or when the guest
+is trying to access reserved registers.
+
+In combination with filtering, user space trapping allows us to emulate
+arbitrary MSRs in user space, paving the way for target CPU specific MSR
+implementations from user space.
+
+v1 -> v2:
+
+  - s/ETRAP_TO_USER_SPACE/ENOENT/g
+  - deflect all #GP injection events to user space, not just unknown MSRs.
+    That was we can also deflect allowlist errors later
+  - fix emulator case
+  - new patch: KVM: x86: Introduce allow list for MSR emulation
+  - new patch: KVM: selftests: Add test for user space MSR handling
+
+v2 -> v3:
+
+  - return r if r == X86EMUL_IO_NEEDED
+  - s/KVM_EXIT_RDMSR/KVM_EXIT_X86_RDMSR/g
+  - s/KVM_EXIT_WRMSR/KVM_EXIT_X86_WRMSR/g
+  - Use complete_userspace_io logic instead of reply field
+  - Simplify trapping code
+  - document flags for KVM_X86_ADD_MSR_ALLOWLIST
+  - generalize exit path, always unlock when returning
+  - s/KVM_CAP_ADD_MSR_ALLOWLIST/KVM_CAP_X86_MSR_ALLOWLIST/g
+  - Add KVM_X86_CLEAR_MSR_ALLOWLIST
+  - Add test to clear whitelist
+  - Adjust to reply-less API
+  - Fix asserts
+  - Actually trap on MSR_IA32_POWER_CTL writes
+
+v3 -> v4:
+
+  - Mention exit reasons in re-enter mandatory section of API documentation
+  - Clear padding bytes
+  - Generalize get/set deflect functions
+  - Remove redundant pending_user_msr field
+  - lock allow check and clearing
+  - free bitmaps on clear
+
+v4 -> v5:
+
+  - use srcu 
+
+v5 -> v6:
+
+  - Switch from allow list to filtering API with explicit fallback option
+  - Support and test passthrough MSR filtering
+  - Check for filter exit reason
+  - Add .gitignore
+  - send filter change notification
+  - change to atomic set_msr_filter ioctl with fallback flag
+  - use EPERM for filter blocks
+  - add bit for MSR user space deflection
+  - check for overflow of BITS_TO_LONGS (thanks Dan Carpenter!)
+  - s/int i;/u32 i;/
+  - remove overlap check
+  - Introduce exit reason mask to allow for future expansion and filtering
+  - s/emul_to_vcpu(ctxt)/vcpu/
+  - imported patch: KVM: x86: Prepare MSR bitmaps for userspace tracked MSRs
+  - new patch: KVM: x86: Add infrastructure for MSR filtering
+  - new patch: KVM: x86: SVM: Prevent MSR passthrough when MSR access is denied
+  - new patch: KVM: x86: VMX: Prevent MSR passthrough when MSR access is denied
+
+v6 -> v7:
+
+  - s/MAX_POSSIBLE_PASSGHROUGH_MSRS/MAX_POSSIBLE_PASSTHROUGH_MSRS/g
+  - Fire #GP without skipping the MSR instruction
+  - uapi: Fix padding
+  - selftest: trap on KVM_MSR_EXIT_REASON_FILTER as well
+  - selftest: fix asserts
+  - selftest: add test for invalid msr handling
+
+Aaron Lewis (1):
+  KVM: x86: Prepare MSR bitmaps for userspace tracked MSRs
+
+Alexander Graf (6):
+  KVM: x86: Deflect unknown MSR accesses to user space
+  KVM: x86: Add infrastructure for MSR filtering
+  KVM: x86: SVM: Prevent MSR passthrough when MSR access is denied
+  KVM: x86: VMX: Prevent MSR passthrough when MSR access is denied
+  KVM: x86: Introduce MSR filtering
+  KVM: selftests: Add test for user space MSR handling
+
+ Documentation/virt/kvm/api.rst                | 176 +++++++++-
+ arch/x86/include/asm/kvm_host.h               |  18 ++
+ arch/x86/include/uapi/asm/kvm.h               |  19 ++
+ arch/x86/kvm/emulate.c                        |  18 +-
+ arch/x86/kvm/svm/svm.c                        | 135 ++++++--
+ arch/x86/kvm/svm/svm.h                        |   7 +
+ arch/x86/kvm/vmx/nested.c                     |   2 +-
+ arch/x86/kvm/vmx/vmx.c                        | 303 ++++++++++++------
+ arch/x86/kvm/vmx/vmx.h                        |   9 +-
+ arch/x86/kvm/x86.c                            | 267 ++++++++++++++-
+ arch/x86/kvm/x86.h                            |   1 +
+ include/trace/events/kvm.h                    |   2 +-
+ include/uapi/linux/kvm.h                      |  17 +
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/user_msr_test.c      | 247 ++++++++++++++
+ 16 files changed, 1088 insertions(+), 135 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/user_msr_test.c
+
+-- 
+2.28.0.394.ge197136389
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
