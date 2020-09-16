@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4216026C614
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A26B26C69F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgIPRcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:32:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43850 "EHLO mail.kernel.org"
+        id S1727614AbgIPR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:56:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727162AbgIPRat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:30:49 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727648AbgIPRzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:55:31 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECA15224BD;
-        Wed, 16 Sep 2020 15:58:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36ED3222EA;
+        Wed, 16 Sep 2020 16:38:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600271941;
-        bh=0+FFO17wAr4hb0tN/J0gdkpjUduKv6+0Pfegkab7QXQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UkMrjjtEx8nJ2MjbDqluecoI+lmlFdY6lBVeB1DtyEZ4P5/9ibyTca30rHWlt84X2
-         7ISNGu6iFk3BvKg+ZvWwWHTE+Pw/Y20sjvuPMAEJAonWbJieF84+M3r0FhIzg++Fvu
-         4EdKzMtFbIDODiPmNDwOcbxVDAdYRSP9M2EXJdTQ=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 11/15] ARM: dts: aspeed: fix PCA95xx GPIO expander properties on Portwell
-Date:   Wed, 16 Sep 2020 17:57:11 +0200
-Message-Id: <20200916155715.21009-12-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916155715.21009-1-krzk@kernel.org>
-References: <20200916155715.21009-1-krzk@kernel.org>
+        s=default; t=1600274322;
+        bh=rflpX5n+9OObJA8GzIUK1V/BxsZIGf+Dt4zGo4jzs5A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=feZ82ZrsZ+ZgI7uB+wqDcLOBx6pjp6unANhcnBAzF9+sdsU3ARzjL9H7JLe9QGque
+         +wuBy8qGITyz3UwWl3YRcdpq6I1S62IGvfKL+NpNxFtqQTCNWSPPmiWOohbKSHGMbg
+         e1uVVBB8xaUDjBGEwRq5hxKzu0uzlfudWwfFS5/8=
+Date:   Wed, 16 Sep 2020 09:38:40 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Omer Shpigelman <oshpigelman@habana.ai>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 12/15] habanalabs/gaudi: add debugfs entries for the NIC
+Message-ID: <20200916093840.27112c98@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAFCwf12o71waoJ9T5kL=M-re8+LzRk+EuzbJARB22wk6+ypQdw@mail.gmail.com>
+References: <20200910161126.30948-1-oded.gabbay@gmail.com>
+        <20200910161126.30948-13-oded.gabbay@gmail.com>
+        <20200910130138.6d595527@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAFCwf113A_=da2fGxgMbq_V0OcHsxdp5MpfHiUfeew+gEdnjaQ@mail.gmail.com>
+        <20200910131629.65b3e02c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAFCwf10XdCDhLeyiArc29PAJ_7=BGpdiUvFRotvFHieiaRn=aA@mail.gmail.com>
+        <20200910133058.0fe0f5e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <AM0PR02MB552316B9A1635C18F8464116B8230@AM0PR02MB5523.eurprd02.prod.outlook.com>
+        <20200914095018.21808fae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAFCwf12o71waoJ9T5kL=M-re8+LzRk+EuzbJARB22wk6+ypQdw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCA95xx GPIO expander requires GPIO controller properties to operate
-properly.
+On Tue, 15 Sep 2020 15:57:16 +0300 Oded Gabbay wrote:
+> On Mon, Sep 14, 2020 at 7:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > What's the use for a networking device which only communicates with
+> > itself, other than testing?  
+> 
+> No use, and we do have a suite of tests that runs from user-space on
+> the device after we move the interfaces to loopback mode.
+> The main problem, as Omer said, is that we have two H/W bugs:
+> 
+> 1. Where you need to reset the entire SoC in case you want to move a
+> single interface into (or out of) loopback mode. So doing it via
+> ethtool will cause a reset to the entire SoC, and if you want to move
+> all 10 ports to loopback mode, you need to reset the device 10 times
+> before you can actually use that.
+> 
+> 2. Our 10 ports are divided into 5 groups of 2 ports each, from H/W
+> POV. That means if you move port 0 to loopback mode, it will affect
+> port 1 (and vice-versa). I don't think we want that behavior.
+> 
+> That's why we need this specific exception to the rule and do it via
+> debugfs. I understand it is not common practice, but due to H/W bugs
+> we can't workaround, we ask this exception.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Joel Stanley <joel@jms.id.au>
----
- arch/arm/boot/dts/aspeed-bmc-portwell-neptune.dts | 2 ++
- 1 file changed, 2 insertions(+)
+Are those tests open source?
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-portwell-neptune.dts b/arch/arm/boot/dts/aspeed-bmc-portwell-neptune.dts
-index 4a1ca8f5b6a7..03c161493ffc 100644
---- a/arch/arm/boot/dts/aspeed-bmc-portwell-neptune.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-portwell-neptune.dts
-@@ -121,6 +121,8 @@
- 	pca9555@27 {
- 		compatible = "nxp,pca9555";
- 		reg = <0x27>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
- 	};
- };
- 
--- 
-2.17.1
-
+Are you sure you need this upstream? Are your users going to run those
+tests?
