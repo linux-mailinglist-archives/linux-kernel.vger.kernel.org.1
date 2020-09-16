@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1EF26CD45
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9100426CD4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728572AbgIPU5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:57:14 -0400
-Received: from mga05.intel.com ([192.55.52.43]:15913 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726556AbgIPQwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:52:37 -0400
-IronPort-SDR: v1d6M0q1gqwwmLJR+vXzKtOG73CRRq5T20MHO9cX1jMv5rNSh/UQO87/DWBmnHNs0j4LX93Sgh
- YGBp43QPmtFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="244310150"
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="244310150"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 07:36:02 -0700
-IronPort-SDR: 9vflgM7vQtpr7bUeEoXhYRQcvsmlrp+E3k7y2J5qr5AMndwoBz/ZUYEdvbzo1cxTyEzo1O3Nym
- fteSH2tygVsA==
-X-IronPort-AV: E=Sophos;i="5.76,433,1592895600"; 
-   d="scan'208";a="483335716"
-Received: from abkhadil-mobl.amr.corp.intel.com (HELO [10.209.66.227]) ([10.209.66.227])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 07:36:01 -0700
-Subject: Re: [PATCH v2 1/3] soundwire: qcom: clear BIT FIELDs before value
- set.
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20200916092125.30898-1-srinivas.kandagatla@linaro.org>
- <20200916092125.30898-2-srinivas.kandagatla@linaro.org>
- <20200916124634.GM2968@vkoul-mobl>
- <24401c7c-b12c-0924-9d8f-fde633d15918@linux.intel.com>
- <20200916142929.GR2968@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <42bbf464-2bc9-2b13-5f08-a19ad1848277@linux.intel.com>
-Date:   Wed, 16 Sep 2020 09:36:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726684AbgIPU5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:57:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35868 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726490AbgIPQwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 12:52:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600275123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MTHeqxpIT8EXX6m2+ZlNqDXIIS9Amzc0XcLnbyVZ7dQ=;
+        b=eY9JxkJCZ6EsNhA51N3RTxGIogGQKDKv5ygCL0WVat9O25xc+XWVE8Jt7LXWQU5ptakq+z
+        fzQ6Ndk3NGpzbaU5iJkZcplJt5LFdSJgjpdi0Zsx5qUaWV9rHZnEZ2rpB1LKNtcH21yoKR
+        dZOyy09lCHlUHLmkoUsz+nWTxkDEfQg=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-A2Al3dyQOPSaDwUYumpPXA-1; Wed, 16 Sep 2020 10:36:59 -0400
+X-MC-Unique: A2Al3dyQOPSaDwUYumpPXA-1
+Received: by mail-pg1-f199.google.com with SMTP id 78so3963072pgf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:36:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MTHeqxpIT8EXX6m2+ZlNqDXIIS9Amzc0XcLnbyVZ7dQ=;
+        b=NlMkSXI4VjvCqXXM9dq8Pn2ot6qV8s2kYR7TW8zVMb2ee/a00eqWaSxwiTgifonmhn
+         fX3nhVYmeILH30EVwGJztiAGZE9DXJ6B/3oFAejKwHg4b/ycVRwtRLOqBlBJQLie07Ia
+         mPf0kJLQzr8VRM2e168UStEJk8PYpvcpcQvfdmWQV5aE1izRGeu635ulNdtbG+tUlC4v
+         wJaqCQulWFnn29NE/ySLa6/edEhSboW/gqEZ1Wa+zSXgfDcEYhQ+UvQDWi0iHB67raLf
+         xcDWTTvSwVMYCdu8uiFGUDFdVId/T7BrDHCMdSXIH6Q4yr4iUCVP2KsqG0qwobcteSUg
+         5iiA==
+X-Gm-Message-State: AOAM531EfIue8xy7cCiDhSlOUUjD3yhfY2sI4dokyTW+pvXgxZpRRfgD
+        2FSOvXrGABbHGqaLmRZreXmz8NMhxqJktm2GG6BHc8/ZKrCN81fQsn22ahrBakdpDV8pv1elot4
+        pDxVrUTSsylqGZBs87uesJfv0
+X-Received: by 2002:a63:4746:: with SMTP id w6mr18998069pgk.412.1600267018014;
+        Wed, 16 Sep 2020 07:36:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydrD4AmJjitwyeWDobFc34EF1rDeWZ1E+AnBFNtqYiQ3U/wMM8WIEa3qQKrM57pGjzqu0/mQ==
+X-Received: by 2002:a63:4746:: with SMTP id w6mr18998053pgk.412.1600267017786;
+        Wed, 16 Sep 2020 07:36:57 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b29sm15071706pgb.71.2020.09.16.07.36.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 07:36:57 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 22:36:48 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Chao Yu <yuchao0@huawei.com>
+Subject: Re: [PATCH] erofs: remove unneeded parameter
+Message-ID: <20200916143648.GA23921@xiangao.remote.csb>
+References: <20200916140604.3799-1-chao@kernel.org>
+ <20200916143304.GA23176@xiangao.remote.csb>
 MIME-Version: 1.0
-In-Reply-To: <20200916142929.GR2968@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916143304.GA23176@xiangao.remote.csb>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/16/20 9:29 AM, Vinod Koul wrote:
-> On 16-09-20, 08:18, Pierre-Louis Bossart wrote:
->>
->>>> According to usage (bitfields.h) of REG_FIELDS,
->>>> Modify is:
->>>>     reg &= ~REG_FIELD_C;
->>>>     reg |= FIELD_PREP(REG_FIELD_C, c);
->>
->>
->> if this is indeed the case, all the code in cadence_master.c is also broken,
->> e.g:
->>
->> 	dpn_config = cdns_readl(cdns, dpn_config_off);
->>
->> 	dpn_config |= FIELD_PREP(CDNS_DPN_CONFIG_WL, (p_params->bps - 1));
->> 	dpn_config |= FIELD_PREP(CDNS_DPN_CONFIG_PORT_FLOW, p_params->flow_mode);
->> 	dpn_config |= FIELD_PREP(CDNS_DPN_CONFIG_PORT_DAT, p_params->data_mode);
+On Wed, Sep 16, 2020 at 10:33:04PM +0800, Gao Xiang wrote:
+> Hi Chao,
 > 
-> This should be replaced with u32_replace_bits(), i am sending the fix
+> On Wed, Sep 16, 2020 at 10:06:04PM +0800, Chao Yu wrote:
+> > From: Chao Yu <yuchao0@huawei.com>
+> > 
+> > In below call path, no page will be cached into @pagepool list
+> > or grabbed from @pagepool list:
+> > - z_erofs_readpage
+> >  - z_erofs_do_read_page
+> >   - preload_compressed_pages
+> >   - erofs_allocpage
+> > 
+> > Let's get rid of this unneeded parameter.
+> 
+> That would be unneeded after .readahead() is introduced recently
+> (so add_to_page_cache_lru() is also moved to mm code), so I agree
+> with you on it.
 
-wondering if we should replace all uses of FIELD_PREP with either 
-u32_insert_bits() or u32_encode_bits() then?
+(cont.)
+
+... also it'd be better to add such historical reason to the commit
+message... since it was of some use before...
+
+Thanks,
+Gao Xiang
 
