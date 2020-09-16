@@ -2,144 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A30926C6C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A01326C6CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 20:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgIPSDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 14:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727782AbgIPSCt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:02:49 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F48AC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:02:48 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l9so3969907wme.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 11:02:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RPwhusTWYDQ4QjD+ev8+QjSTTu6T0Fu2+n0uxDZxjos=;
-        b=VyjLGizpCp6P2PFqz82TtrO43roEou9wcLjw9UHR3RZ+XQ0Jgur0rvXmT4ZVZBFMef
-         SceMXRAdAgYQ4Py0eZcOdoBSnRsQScHAH1e65lTujVJGlW1AzE4AweL06S5/wx1oUhec
-         vRHL13BNVcF1qAcUApaT2VrpOQNS+9LTYNZHI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RPwhusTWYDQ4QjD+ev8+QjSTTu6T0Fu2+n0uxDZxjos=;
-        b=dKsAdvAvVbBM9jTa8HQFQKt1vcvO7vmn9vYNC+bljXcuyMaq1Mfygu+KVGL5qdGcyt
-         nBp6nj1DVe9Y7Nyc7suBoxLcx3lhTEP4ePFU0Zyq/vNhVRqE5I+8A2X01dMZ9xYOBT7v
-         Zb/50AvxQYNRvw9vkJwVnvEqR96lhCQ1BuEVMDNijhI0zanso4r/dsvJaJrG3cvFyjKv
-         5Uf/VQbuZMMo0pYNT2bx8RgTAJTj5zL1QyVWOf6IsEfAiDX96KX/u98WSbadMgEu3261
-         WhDhSdhcqd2JwV1U1L04cYgpo0BloBBjeeF9L75ZgO8VwWDrKKz/0eKDrcu8++K7i1Zq
-         xUdA==
-X-Gm-Message-State: AOAM532uhOhZJ3yGCFHvZzDDXfGVB23hoZHU4zEBtXdoMPbMShU19gK1
-        eLQpUBTf/QUhNNddtD+V5T4QrDHOLUupglFQ
-X-Google-Smtp-Source: ABdhPJwVNH/jhFaJjqOw4YY09k+qaa4JgESdF9XioxXnqexJSIWHzIQiPqBw2Ugj/jiIFesx3LvRnA==
-X-Received: by 2002:a05:600c:210c:: with SMTP id u12mr6434238wml.185.1600279366269;
-        Wed, 16 Sep 2020 11:02:46 -0700 (PDT)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id v17sm36702944wrc.23.2020.09.16.11.02.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 11:02:45 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Florent Revest <revest@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Jann Horn <jannh@google.com>
-Subject: [PATCH v3] ima: Fix NULL pointer dereference in ima_file_hash
-Date:   Wed, 16 Sep 2020 18:02:42 +0000
-Message-Id: <20200916180242.430668-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+        id S1727778AbgIPSE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 14:04:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727614AbgIPSDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:03:30 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CDC32137B;
+        Wed, 16 Sep 2020 18:03:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600279409;
+        bh=wekwBAIKPu1Rz5oUbsaznCNgfQb4fGuy2YA7PTMymvk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SVFaNdjRvlX2xA5CJGz4fdD1CDDM/wAVxm3wfv9vsDjqVmFBZqoj/HoT/8KZEifIP
+         V0C+2baqHooYe68TrshZU7HmpYZ745fbWOYXd66Lcj3vt1sMRGimbCHk2Uwu9xFxzt
+         gn7DIsychTc3yYLT6scbS7MrQ0q0Y11qrN0qwTMo=
+Date:   Wed, 16 Sep 2020 19:03:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Rob Herring <robh@kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Kukjin Kim <kgene@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: exynos-adc: require
+ second interrupt with touch screen
+Message-ID: <20200916190326.3095e945@archlinux>
+In-Reply-To: <20200916061747.GB5719@kozik-lap>
+References: <20200910161933.9156-1-krzk@kernel.org>
+        <20200915194444.GA2384148@bogus>
+        <20200916061747.GB5719@kozik-lap>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Wed, 16 Sep 2020 08:17:47 +0200
+Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-ima_file_hash can be called when there is no iint->ima_hash available
-even though the inode exists in the integrity cache. It is fairly
-common for a file to not have a hash. (e.g. an mknodat, prior to the
-file being closed).
+> On Tue, Sep 15, 2020 at 01:44:44PM -0600, Rob Herring wrote:
+> > On Thu, 10 Sep 2020 18:19:32 +0200, Krzysztof Kozlowski wrote:  
+> > > The ADC in S3C/S5P/Exynos SoCs can be used also for handling touch
+> > > screen.  In such case the second interrupt is required.  This second
+> > > interrupt can be anyway provided, even without touch screens.  This
+> > > fixes dtbs_check warnings like:
+> > > 
+> > >   arch/arm/boot/dts/s5pv210-aquila.dt.yaml: adc@e1700000: interrupts: [[23], [24]] is too long
+> > > 
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > Acked-by: Jonathan Cameron <Jonathan.Cameron@huwei.com>
+> > > 
+> > > ---
+> > > 
+> > > Changes since v1:
+> > > 1. Fix if:has-touchscreen, as pointed by Rob.
+> > > 2. Add Ack.
+> > > ---
+> > >  .../bindings/iio/adc/samsung,exynos-adc.yaml       | 14 +++++++++++++-
+> > >  1 file changed, 13 insertions(+), 1 deletion(-)
+> > >   
+> > 
+> > Reviewed-by: Rob Herring <robh@kernel.org>  
+> 
+> Jonathan,
+> 
+> Could you pick up these two?
+Done.  Applied to the togreg branch of iio.git and pushed out
+as testing for the autobuilders to possibly poke them.
 
-Another example where this can happen (suggested by Jann Horn):
+Thanks,
 
-Process A does:
+Jonathan
 
-	while(1) {
-		unlink("/tmp/imafoo");
-		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
-		if (fd == -1) {
-			perror("open");
-			continue;
-		}
-		write(fd, "A", 1);
-		close(fd);
-	}
-
-and Process B does:
-
-	while (1) {
-		int fd = open("/tmp/imafoo", O_RDONLY);
-		if (fd == -1)
-			continue;
-    		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
-			 	     MAP_PRIVATE, fd, 0);
-		if (mapping != MAP_FAILED)
-			munmap(mapping, 0x1000);
-		close(fd);
-  	}
-
-Due to the race to get the iint->mutex between ima_file_hash and
-process_measurement iint->ima_hash could still be NULL.
-
-Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
-Signed-off-by: KP Singh <kpsingh@google.com>
-Reviewed-by: Florent Revest <revest@chromium.org>
----
- security/integrity/ima/ima_main.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-Changelog:
-
-v2 -> v3
-
-- Updated commit description.
-
-v1 -> v2
-
-- Added Review Tags, attempt to get the patch on the lists somehow.
-
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 8a91711ca79b..4c86cd4eece0 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
- 		return -EOPNOTSUPP;
- 
- 	mutex_lock(&iint->mutex);
-+
-+	/*
-+	 * ima_file_hash can be called when ima_collect_measurement has still
-+	 * not been called, we might not always have a hash.
-+	 */
-+	if (!iint->ima_hash) {
-+		mutex_unlock(&iint->mutex);
-+		return -EOPNOTSUPP;
-+	}
-+
- 	if (buf) {
- 		size_t copied_size;
- 
--- 
-2.28.0.618.gf4bc123cb7-goog
+> 
+> Best regards,
+> Krzysztof
+> 
 
