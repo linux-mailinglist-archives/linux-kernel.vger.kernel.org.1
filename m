@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDF926CF03
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C9126CEC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgIPWnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53526 "EHLO
+        id S1726467AbgIPWbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbgIPWm5 (ORCPT
+        with ESMTP id S1726311AbgIPWbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:42:57 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A316C06121D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 14:25:28 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id b22so8473494lfs.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 14:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7GiT9eDSqdWyYzWccMuLBu4d8BPz/ksICennMbNChNM=;
-        b=NoKXXjtajoWY4tEFRPv2OskWdH4HGzBP1P/qSWuc9FaxXQ+8jqAufht1vLsf99B80m
-         riS1+DGjBqL6gylbik034bUF17j9V99bs70Y39lHhiPe/wMIYMIz2lBihGBf7VXA18TC
-         x/1r0GtDrUau+gBq35J351RVX/wmtLLAbQfhrLLHoTXxuAlZPWZmJF9CfnGH2lPNg7ky
-         G+Wvyg19qnDvcL5dQN6srKoGXQIWyBR2ty79taasZeDEJ9vriuypOmN/LvMPVhL8WhZx
-         vvqQpJILvKOL/cwoOgWCByZr7zkqmbwEeYvHTObSbVXIPOLwa6PKMEkITFWYytcqnf8b
-         fSGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7GiT9eDSqdWyYzWccMuLBu4d8BPz/ksICennMbNChNM=;
-        b=YRASFT8gYrSpFctVVV8a8ReERFWUzvDWwrkwEvrlm2onHziusxQv0p6uiNb5A0cYLK
-         0+Nn9Ubt0UJbUOxonqgumXCvBKD4mPtf+3GWCIylaXtbq+XEo4oYeRFbhdqjnnY7dOsG
-         F7jOiTPZ5B6hIH0U/gBzfMuqxFyi4FWFNKeWnBTYGhJc+9yQa1hJ/u3Hobi31kRjUJ1a
-         k3prxI/rzNsp5MP8YjFggL7kBHmSCMGVqUicrwGC/EQnn2iSCQ5A7PliSFj0OsCVoKfq
-         UvyQ0WcFyxAHfXmW1rbEi9Dt315Gu8Nrt/su2LOkowI2F6QpaHYMmq6nghsZjtFOirrt
-         yjNA==
-X-Gm-Message-State: AOAM531DE8eo2ZU98ceQd4ESfA0COcGqZDWvR+k394aKMPm9Zo9pADns
-        tT46mz8DsrY8QxxoqGPTUMEbHMxxCrXe9H9hlDVScYWNGy6jmw==
-X-Google-Smtp-Source: ABdhPJzs5b4eYGb5oM4j7BucCL1k9GFEUi9CJ1alb6woPq/13hXbCACv89mQmtJYmPgH7ogIwt1+WAgGpNdk80Nlso4=
-X-Received: by 2002:ac2:51a8:: with SMTP id f8mr9031976lfk.472.1600291526503;
- Wed, 16 Sep 2020 14:25:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200916134327.3435-1-brgl@bgdev.pl> <20200916142930.GK3956970@smile.fi.intel.com>
- <CAMRc=Md5diJd+C2j_sHcZN5tM+r_W0Tz-naK1s=qd1bx-_g0Ng@mail.gmail.com>
-In-Reply-To: <CAMRc=Md5diJd+C2j_sHcZN5tM+r_W0Tz-naK1s=qd1bx-_g0Ng@mail.gmail.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Wed, 16 Sep 2020 23:25:15 +0200
-Message-ID: <CADYN=9Jc54usoTcJs0-yZm6MV6Txhh+g7CwiR+PWszr2Ndh6xw@mail.gmail.com>
-Subject: Re: [PATCH next] gpiolib: check for parent device in devprop_gpiochip_set_names()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Wed, 16 Sep 2020 18:31:25 -0400
+Received: from pasta.tip.net.au (pasta.tip.net.au [IPv6:2401:fc00:0:129::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF90EC06174A;
+        Wed, 16 Sep 2020 15:31:23 -0700 (PDT)
+Received: from canb.auug.org.au (203-206-41-51.dyn.iinet.net.au [203.206.41.51])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by pasta.tip.net.au (Postfix) with ESMTPSA id 4BsFF273WQz8t8V;
+        Thu, 17 Sep 2020 08:31:17 +1000 (AEST)
+Date:   Thu, 17 Sep 2020 08:31:15 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: linux-next: Signed-off-by missing for commit in the net-next tree
+Message-ID: <20200917083115.23fb84a0@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/_bd_+EkqQoKkoHQQ.57U3zV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 at 16:47, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> On Wed, Sep 16, 2020 at 4:29 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Wed, Sep 16, 2020 at 03:43:27PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > >
-> > > It's possible for a GPIO chip to not have a parent device (whose
-> > > properties we inspect for 'gpio-line-names'). In this case we should
-> > > simply return from devprop_gpiochip_set_names(). Add an appropriate
-> > > check for this use-case.
-> >
-> > Ah, nice!
-> > Can we also add a small comment in the code, b/c w/o it I would stumble over
-> > and eager to remove looks-as-unneeded check?
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+--Sig_/_bd_+EkqQoKkoHQQ.57U3zV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
+Hi all,
+
+Commits
+
+  0d2ffdc8d400 ("net/mlx5: Don't call timecounter cyc2time directly from 1P=
+PS flow")
+  87f3495cbe8d ("net/mlx5: Release clock lock before scheduling a PPS work")
+  aac2df7f022e ("net/mlx5: Rename ptp clock info")
+  fb609b5112bd ("net/mlx5: Always use container_of to find mdev pointer fro=
+m clock struct")
+  ec529b44abfe ("net/mlx5: remove erroneous fallthrough")
+
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_bd_+EkqQoKkoHQQ.57U3zV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ikjMACgkQAVBC80lX
+0Gwjjwf+JYNxkXnjBVO+jpqvSYjaUtkUgjt/7MCHMmo24i5qti1tnchXNVWvqqJA
+VoCx+xdoTPv1oVCDX1ur/LmUW3D0OZJjAMRzTacexi9vF2mIndlVQvSvgtfOmFfY
+udzu4HgYogtSFrSvN55hv/f5faax+tY8TcXFHdVVM/K/9bvn5UOyxMq9Uknp+Ljk
+Ipst5xbNQeJi6WBbf5MiFOa2DWqf+qlxGUem9Pocusk7G1erPiU+lJnGaalK7A1G
+OX5ZC9JO9cP8e9tw1jlmFPZioa28S3/uoW+6njLCQBjYT47xi4bfT7Rz1ygN9N1x
+DXdPhJhg0oBe/mjoOAuJYrnzYs3UEA==
+=PTfZ
+-----END PGP SIGNATURE-----
+
+--Sig_/_bd_+EkqQoKkoHQQ.57U3zV--
