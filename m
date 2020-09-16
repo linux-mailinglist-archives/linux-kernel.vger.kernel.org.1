@@ -2,251 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E756B26CE03
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB4826CD97
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 23:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIPVIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 17:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        id S1726847AbgIPVB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 17:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgIPQDk (ORCPT
+        with ESMTP id S1726383AbgIPQaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:03:40 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CD0C0D941F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:57:27 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id r19so3330571pls.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 07:57:27 -0700 (PDT)
+        Wed, 16 Sep 2020 12:30:24 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC669C0D9430
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:01:55 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e16so7308380wrm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=vCLuem/Ivj5M+tnBanSeVQAGo/ue6YtdElMdOuANinA=;
-        b=B8qIcMQ7LwFs/IFQB2VO+kkE39DOtVUf9GtV98PzmhWRMMaOHIERgsyYCXKaSZ+qg/
-         heuUsdJ38iK8kueADvLJ9ELoghvNmEXPkcBVVeAR+dIElTayTPwr0vsdlJYZ1UZrs+QZ
-         rJHVhxl/NezI7OW45U0Qa7hUK1qS7ySf5koPw=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hImJ77lnVX3Gt8BtSBrQ9L58KJd7sxpK5SqbvVqBDT4=;
+        b=zn+OYs3Yc6TjDeDMLiJWpLLWggFqYNeLgm6J18K4sU21Tf8A707dIRS/zJPSWEBT2o
+         mOrJtvn+/XGRVorYTU1AR22L+QJt+mapeRzWYs+8v78LOCpeuWjvFgy3Ve1kCJjDlKzk
+         vc6ow+f7V56/J3+1AB12ZA0MTx3oPMNEuiXq1S2mNaVT9aJrcGow+Nd2Z+dB2ii9rkkf
+         aX5fRJNsu46XIPQpdADaIQEhHFm6Ix91chLutkMAfxAGo9b/yfulX/dAIMbMAliOiff1
+         c9EY0xmyHleE6D1Iq2v8+pccK4susTBg181AxyOhknWw2l3AfwxxqxgLUtujtfkihSdi
+         O3EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=vCLuem/Ivj5M+tnBanSeVQAGo/ue6YtdElMdOuANinA=;
-        b=ZLfCTSRbDl5eXikPtSwNuqXT9uZXYbUWHfe007QEbSPNI0dhEN6S/q0/ZaV0hQoqQN
-         uNyhcK9RsgLWGzlOkVm+snop6/RtpJYmD5ad2SE/inpoXNe12XEjyKy6+T+lHYVsi8JH
-         36cfgjHiDftZm7mHneRaPQo2XnRZfTmggnLdZYCeIshGo2tl/M9xIILbt4QQmVpz4MI3
-         DHX3nTV+c+bTlar2cZYmaeJjFL4dWu5CmMieDWh36qZ0dBwgrwllQdmpcHBFL/9iFMJ8
-         QcvEduePdive9kCyI4HOkZXKjJeqTxYSXaXITcDxIL5KWgVcfot0/G2i+qLwbWfXz8gj
-         5eow==
-X-Gm-Message-State: AOAM533BowNKi+gaQTXUmEeHOsCZJyH8jGi1SX8Ym/um+8/cyP9hTUL4
-        AIszwzdGzswvkWfnvDTMopC+oA==
-X-Google-Smtp-Source: ABdhPJxPdcFIJf7Y7r7V+T6n57+3CMecgJqMly75nRv6uxltu3DUIVK67DoStHARIsYQ7H1Y9yQx+g==
-X-Received: by 2002:a17:902:7844:b029:d0:cbe1:e704 with SMTP id e4-20020a1709027844b02900d0cbe1e704mr24389033pln.18.1600268246713;
-        Wed, 16 Sep 2020 07:57:26 -0700 (PDT)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id 82sm15070257pgd.6.2020.09.16.07.57.22
+         :references:mime-version:content-transfer-encoding;
+        bh=hImJ77lnVX3Gt8BtSBrQ9L58KJd7sxpK5SqbvVqBDT4=;
+        b=dM9DQsDtu92hrjjc0vvCkGsEunQpOndOSbSOh/nwwJ4b0Fytu5OHr/g/XephtDNeFF
+         ZTXYqC6ux6Z31DNmofWrdW6+G2hL+FGMmSoImH6l4RyIBABxIpODteX1JTXs/lbsabWv
+         ujqVOetHz/vpvSHI4JvNfl7EWXqBHKsd+E1s7MZtVjMVI8lsP4fdxA30tqe39hZb1J66
+         Ag90zc6AaPtNbSACVtxsUvOvmaNJ7s1lOjz/nLAab4/k+PDHjoN7hTGIHHw+fCmMTSUx
+         XcmRBU4GOIRQWBjySBI+O4rXo9oGG93SAQByx3dQYBUZHi6hCpgRS0+4hQ0i0FAtSR7q
+         uTqA==
+X-Gm-Message-State: AOAM530DvDfqmhfBWeh6W1TZ/9ji7OeVjGrsVotwb0Ke8dpt5JVO2uEC
+        PlAF9h1s041bof1l3ka1mgXV6A==
+X-Google-Smtp-Source: ABdhPJxoLA/tx2P1IXNi1/eKRjFXPh02N6giEvfMg6DRt8JMc/aIkC7UH8raS68XGZ2uahjcBpp/TA==
+X-Received: by 2002:adf:eecb:: with SMTP id a11mr27578093wrp.356.1600268514278;
+        Wed, 16 Sep 2020 08:01:54 -0700 (PDT)
+Received: from bender.baylibre.local (home.beaume.starnux.net. [82.236.8.43])
+        by smtp.gmail.com with ESMTPSA id m3sm33275243wrs.83.2020.09.16.08.01.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 07:57:26 -0700 (PDT)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        james.quinlan@broadcom.com
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 1/1] PCI: pcie_bus_config can be set at build time
-Date:   Wed, 16 Sep 2020 10:57:06 -0400
-Message-Id: <20200916145707.33313-2-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200916145707.33313-1-james.quinlan@broadcom.com>
-References: <20200916145707.33313-1-james.quinlan@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000006c179805af6f7cf9"
+        Wed, 16 Sep 2020 08:01:53 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v2 1/3] drm/panfrost: add support for vendor quirk
+Date:   Wed, 16 Sep 2020 17:01:45 +0200
+Message-Id: <20200916150147.25753-2-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200916150147.25753-1-narmstrong@baylibre.com>
+References: <20200916150147.25753-1-narmstrong@baylibre.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000006c179805af6f7cf9
+The T820, G31 & G52 GPUs integratewd by Amlogic in the respective GXM, G12A/SM1 & G12B
+SoCs needs a quirk in the PWR registers after each reset.
 
-The Kconfig is modified so that the pcie_bus_config setting can be done at
-build time in the same manner as the CONFIG_PCIEASPM_XXXX choice.  The
-pci_bus_config setting may still be overridden by the bootline param.
+This adds a callback in the device compatible struct of permit this.
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- drivers/pci/Kconfig | 56 +++++++++++++++++++++++++++++++++++++++++++++
- drivers/pci/pci.c   | 12 ++++++++++
- 2 files changed, 68 insertions(+)
+ drivers/gpu/drm/panfrost/panfrost_device.h | 3 +++
+ drivers/gpu/drm/panfrost/panfrost_gpu.c    | 4 ++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
-index 4bef5c2bae9f..15ce948858fb 100644
---- a/drivers/pci/Kconfig
-+++ b/drivers/pci/Kconfig
-@@ -187,6 +187,62 @@ config PCI_HYPERV
- 	  The PCI device frontend driver allows the kernel to import arbitrary
- 	  PCI devices from a PCI backend to support PCI driver domains.
+diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+index abfc78db193a..140e004a3790 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_device.h
++++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+@@ -70,6 +70,9 @@ struct panfrost_compatible {
+ 	int num_pm_domains;
+ 	/* Only required if num_pm_domains > 1. */
+ 	const char * const *pm_domain_names;
++
++	/* Vendor implementation quirks callback */
++	void (*vendor_quirk)(struct panfrost_device *pfdev);
+ };
  
-+choice
-+	prompt "PCIE default bus config setting"
-+	default PCIE_BUS_DEFAULT
-+	depends on PCI
-+	help
-+	  One of the following choices will set the pci_bus_config at
-+	  compile time.  The choices offered are the same as those offered
-+	  for the bootline parameter 'pci'; i.e. 'pci=pcie_bus_tune_off',
-+	  'pci=pcie_bus_safe', 'pci=pcie_bus_perf', and 'pci=pcie_bus_peer2peer'.
-+	  This is a compile-time setting and is still be overridden by the
-+	  above bootline parameters, if present.  If unsure, chose PCIE_BUS_DEFAULT.
-+
-+config PCIE_BUS_TUNE_OFF
-+	bool "Tune Off"
-+	depends on PCI
-+	help
-+	  Use the BIOS defaults; doesn't touch MPS at all.  This is the same
-+	  as booting with 'pci=pcie_bus_tune_off'.
-+
-+config PCIE_BUS_DEFAULT
-+	bool "Default"
-+	depends on PCI
-+	help
-+	  Default choice; ensures that the MPS matches upstream bridge.
-+
-+config PCIE_BUS_SAFE
-+	bool "Safe"
-+	depends on PCI
-+	help
-+	  Use largest MPS that boot-time devices support.  If you have a
-+	  closed system with no possibility of adding new devices,
-+	  this will use the largest MPS that's supported by all devices.
-+	  This is the same as booting with 'pci=pcie_bus_safe'.
-+
-+config PCIE_BUS_PERFORMANCE
-+	bool "Performance"
-+	depends on PCI
-+	help
-+	  Use MPS and MRRS for best performance.  This setting ensures
-+	  that a given device's MPS is no larger than its parent MPS,
-+	  which allows us to keep all switches/bridges to the max MPS supported
-+	  by their parent and eventually the PHB.  This is the same as
-+	  booting with 'pci=pcie_bus_perf'.
-+
-+config PCIE_BUS_PEER2PEER
-+	bool "Peer2peer"
-+	depends on PCI
-+	help
-+	  Set MPS = 128 for all devices.  MPS configuration effected by
-+	  the other options could cause the MPS on one root port to be
-+	  different than that of the MPS on another.  Simply making the system
-+	  wide MPS be set to the smallest possible value (128B) solves
-+	  this issue.  This is the same as booting with 'pci=pcie_bus_peer2peer'.
-+
-+endchoice
-+
- source "drivers/pci/hotplug/Kconfig"
- source "drivers/pci/controller/Kconfig"
- source "drivers/pci/endpoint/Kconfig"
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index e39c5499770f..dfb52ed4a931 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -101,7 +101,19 @@ unsigned long pci_hotplug_mmio_pref_size = DEFAULT_HOTPLUG_MMIO_PREF_SIZE;
- #define DEFAULT_HOTPLUG_BUS_SIZE	1
- unsigned long pci_hotplug_bus_size = DEFAULT_HOTPLUG_BUS_SIZE;
+ struct panfrost_device {
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index c7c5da5a31d4..a6de78bc1fa8 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -136,6 +136,10 @@ static void panfrost_gpu_init_quirks(struct panfrost_device *pfdev)
  
+ 	if (quirks)
+ 		gpu_write(pfdev, GPU_JM_CONFIG, quirks);
 +
-+/* PCIE bus config, can be overridden by bootline param */
-+#ifdef CONFIG_PCIE_BUS_TUNE_OFF
-+enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_TUNE_OFF;
-+#elif defined CONFIG_PCIE_BUS_SAFE
-+enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_SAFE;
-+#elif defined CONFIG_PCIE_BUS_PERFORMANCE
-+enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PERFORMANCE;
-+#elif defined CONFIG_PCIE_BUS_PEER2PEER
-+enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PEER2PEER;
-+#else
- enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_DEFAULT;
-+#endif
++	/* Here goes platform specific quirks */
++	if (pfdev->comp->vendor_quirk)
++		pfdev->comp->vendor_quirk(pfdev);
+ }
  
- /*
-  * The default CLS is used if arch didn't set CLS explicitly and not
+ #define MAX_HW_REVS 6
 -- 
-2.17.1
+2.22.0
 
-
---0000000000006c179805af6f7cf9
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
-AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
-hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
-ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
-c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
-aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
-PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
-My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
-KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
-4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
-wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
-VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
-V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
-lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
-5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
-di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFveeto9zs+u
-nCMsgI6cw/k3ns3WNFQ4huev144CfGRxMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMDkxNjE0NTcyN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBqIcrT50QMlW895RGfSiKe0hGqsJSE
-kzdLqRCMNXuyH5SNvbkj5PGCvEx43JwxcgHk2FfOjqmd0XG9lKLGB/D8s8RambMXASlKzo2gmUKb
-9KKHsE0NmAcLkL8MAZy3mMaLiuQgNaXi1oniPdW6kz1TZC1W6QMtYhjjHQGeOgD+DcyOUqrmjbW4
-i+fVqtFZGCxL02qyGaWS7ZhlI1D4XJGIGbAYktyWVC849Z3gY0735PVF7a4ZX3AShfn6jDATdcG+
-QeawHo/D2CWVJadahrFqQ53OFchynK/wqhbxbrEo4Z58v2exQmKOQk0SoEfB2ywpF0aHf8JQRb5w
-jQ475Jv/
---0000000000006c179805af6f7cf9--
