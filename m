@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA1126BE59
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E767A26BE57
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 09:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgIPHma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 03:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgIPHm2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 03:42:28 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DC7C06174A;
-        Wed, 16 Sep 2020 00:42:28 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id q4so1130173pjh.5;
-        Wed, 16 Sep 2020 00:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IjUD0F6XmJJIFT5UAlzkPPx1enPEzZw4LiZfY+PSTUk=;
-        b=bLL86q+ZcOR1A4VJ1duYRTdx6XqB66Wn3Xygvjuss1rMYTIezkiOVlB04WJS4wprxK
-         czipKQk+YDFnf+SKMSJ/ccEzZ/ZIAfFVPgpLWG1EHWU9Xh1+ViF2F9t8kdYCCNPJqAQ8
-         9e+2m/8YKK2E/VNqjidKWHZkxc/KRxvw57jSTQHnyCzoWit53U3pznQLmAqBOoAA8UUw
-         44idV0N1OS814TFucxiZUh5wBsveHanKCQD0o3eb/A6CWCUWHItAVK70tImgIeRoZJIS
-         vnSISoKxNfD5AMkS1YgCiUd9tCQitEjB1Cc2T0sLC8brqfDTU4JqXgMUzOF5KtAhAiJq
-         Vc9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IjUD0F6XmJJIFT5UAlzkPPx1enPEzZw4LiZfY+PSTUk=;
-        b=PBKZOZhzpBGh25Fyv6ffYDkhp4mCqGiVMGzM2NVanB7l/flRpmoW00sZMcY/KfjgpP
-         hMMAMmxymzBogeeWbVV2DKqKyprT4y6Ag+Q53okKLlRls8QKW0uUHXD6ngppc30kk9HY
-         o4HV86WMlOBJmYqq2bqu2gfPRVc0xAMHdD/2pZn3AgyuLlFyQ8VjDvVasj1kpKn5PmBb
-         MD+vdRaNvmpmKvZuck943WrJbfvymOQNfkoP99eGLDzI57aZ0PkqIFQ2APVpNVAR0hVR
-         wM0csq1RL/ZGcHP0D7ItDOQVVERf8Afuji6cykWAaNM2k/Q4MvysTcmTyY8hma1b8y42
-         NT5A==
-X-Gm-Message-State: AOAM531zRg+MvW/PQqvC45Bzf9rASVyZKQCFAYF5V/7IqJc0yQSAf5jG
-        pKm/lBkVLHYknvtrFDM+SiE=
-X-Google-Smtp-Source: ABdhPJza/sEXEDVNzVMlUYOQCWVI82fWeZ5KduXPTQK59ttTaEQQZILDfaf521IzMVIQ75m1GsSstA==
-X-Received: by 2002:a17:90a:d90c:: with SMTP id c12mr2817089pjv.94.1600242147868;
-        Wed, 16 Sep 2020 00:42:27 -0700 (PDT)
-Received: from localhost.localdomain ([2001:470:e92d:10:3481:f05e:64c3:d2bd])
-        by smtp.gmail.com with ESMTPSA id z127sm7393152pfb.34.2020.09.16.00.42.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 00:42:27 -0700 (PDT)
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Rosen Penev <rosenp@gmail.com>
-Subject: [PATCH v1] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-Date:   Wed, 16 Sep 2020 00:42:14 -0700
-Message-Id: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726523AbgIPHlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 03:41:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbgIPHlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:41:45 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0DDA20809;
+        Wed, 16 Sep 2020 07:41:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600242103;
+        bh=BMMd8sHq9Uc24jVPYlSvOGvoD4Z5w5C7QYU90Lm6k/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kpAj5Lg784g39MwWyqtVx7VlQtD2yeTDLQ8/Vzvegu0CM066ODFFKlMlYFGjNOr1M
+         Jn5pX0lO2D21mjI3/m2g4juXn7i0sax2aUrD7OzCI8xRHMfNDehy0n6bXcxkyzlxGD
+         4CZUhibFjJmDOEfdZU+iY/ZN2loGEFpH3V/uUrvg=
+Date:   Wed, 16 Sep 2020 09:42:17 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200916074217.GB189144@kroah.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915.134252.1280841239760138359.davem@davemloft.net>
+ <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
+ <20200916062614.GF142621@kroah.com>
+ <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few archs like powerpc have different errno.h values for macros
-EDEADLOCK and EDEADLK. In code including both libc and linux versions of
-errno.h, this can result in multiple definitions of EDEADLOCK in the
-include chain. Definitions to the same value (e.g. seen with mips) do
-not raise warnings, but on powerpc there are redefinitions changing the
-value, which raise warnings and errors (if using "-Werror").
+On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
+> On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
+> > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
+> > > >
+> > > > From: Oded Gabbay <oded.gabbay@gmail.com>
+> > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
+> > > >
+> > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > > > > into the habanalabs driver.
+> > > > >
+> > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > > > > are in that patch's commit message.
+> > > > >
+> > > > > Link to v2 cover letter:
+> > > > > https://lkml.org/lkml/2020/9/12/201
+> > > >
+> > > > I agree with Jakub, this driver definitely can't go-in as it is currently
+> > > > structured and designed.
+> > > Why is that ?
+> > > Can you please point to the things that bother you or not working correctly?
+> > > I can't really fix the driver if I don't know what's wrong.
+> > >
+> > > In addition, please read my reply to Jakub with the explanation of why
+> > > we designed this driver as is.
+> > >
+> > > And because of the RDMA'ness of it, the RDMA
+> > > > folks have to be CC:'d and have a chance to review this.
+> > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
+> > > the kernel and we can't connect to it due to the lack of H/W support
+> > > we have
+> > > Therefore, I don't see why we need to CC linux-rdma.
+> > > I understood why Greg asked me to CC you because we do connect to the
+> > > netdev and standard eth infrastructure, but regarding the RDMA, it's
+> > > not really the same.
+> >
+> > Ok, to do this "right" it needs to be split up into separate drivers,
+> > hopefully using the "virtual bus" code that some day Intel will resubmit
+> > again that will solve this issue.
+> Hi Greg,
+> Can I suggest an alternative for the short/medium term ?
+> 
+> In an earlier email, Jakub said:
+> "Is it not possible to move the files and still build them into a single
+> module?"
+> 
+> I thought maybe that's a good way to progress here ?
 
-Guard against these redefinitions to avoid build errors like the following,
-first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
-musl 1.1.24:
+Cross-directory builds of a single module are crazy.  Yes, they work,
+but really, that's a mess, and would never suggest doing that.
 
-  In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
-                   from ../../include/linux/err.h:8,
-                   from libbpf.c:29:
-  ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
-   #define EDEADLOCK EDEADLK
+> First, split the content to Ethernet and RDMA.
+> Then move the Ethernet part to drivers/net but build it as part of
+> habanalabs.ko.
+> Regarding the RDMA code, upstream/review it in a different patch-set
+> (maybe they will want me to put the files elsewhere).
+> 
+> What do you think ?
 
-  In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
-                   from libbpf.c:26:
-  toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
-   #define EDEADLOCK       58
+I think you are asking for more work there than just splitting out into
+separate modules :)
 
-  cc1: all warnings being treated as errors
-  make[5]: *** [target-powerpc_8540_musl/bpftools-5.8.9/tools/build/Makefile.build:97: /home/kodidev/openwrt-project/build_dir/target-powerpc_8540_musl/bpftools-minimal/bpftools-5.8.9//libbpf/staticobjs/libbpf.o] Error 1
+thanks,
 
-Fixes: 95f28190aa01 ("tools include arch: Grab a copy of errno.h for arch's
-                      supported by perf")
-Fixes: c3617f72036c ("UAPI: (Scripted) Disintegrate arch/powerpc/include/asm")
-
-Reported-by: Rosen Penev <rosenp@gmail.com>
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
----
- arch/powerpc/include/uapi/asm/errno.h       | 1 +
- tools/arch/powerpc/include/uapi/asm/errno.h | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/arch/powerpc/include/uapi/asm/errno.h b/arch/powerpc/include/uapi/asm/errno.h
-index cc79856896a1..4ba87de32be0 100644
---- a/arch/powerpc/include/uapi/asm/errno.h
-+++ b/arch/powerpc/include/uapi/asm/errno.h
-@@ -2,6 +2,7 @@
- #ifndef _ASM_POWERPC_ERRNO_H
- #define _ASM_POWERPC_ERRNO_H
- 
-+#undef	EDEADLOCK
- #include <asm-generic/errno.h>
- 
- #undef	EDEADLOCK
-diff --git a/tools/arch/powerpc/include/uapi/asm/errno.h b/tools/arch/powerpc/include/uapi/asm/errno.h
-index cc79856896a1..4ba87de32be0 100644
---- a/tools/arch/powerpc/include/uapi/asm/errno.h
-+++ b/tools/arch/powerpc/include/uapi/asm/errno.h
-@@ -2,6 +2,7 @@
- #ifndef _ASM_POWERPC_ERRNO_H
- #define _ASM_POWERPC_ERRNO_H
- 
-+#undef	EDEADLOCK
- #include <asm-generic/errno.h>
- 
- #undef	EDEADLOCK
--- 
-2.25.1
-
+greg k-h
