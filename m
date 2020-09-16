@@ -2,144 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A97026CEC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAD026CED1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 00:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgIPWbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 18:31:44 -0400
-Received: from mail-dm6nam12on2134.outbound.protection.outlook.com ([40.107.243.134]:57697
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726187AbgIPWbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:31:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XHq2kk4IMbnbypMHW+8EfopFhVUova5At7XyEuEQ7Z/ZU3n1riUsuMQ29PqwzRK/aV1pwW0BtdsKFtRCf5LCwsrYQimWZ9NQ3pniryqgcbWJScpuj74WzcnDVORd3mbUdJQSTQwXC+EyTIRtnXzJltgACkesMAs/Uk3Wq+BowPc0/AknLsF4liYz8t4CdVU9wSQh1SgcyuUKB6t4jIfU4445JQypcUjVG2NJT35iwZgM413XfXl1IYbt+e551THYFl0m9RTuW3nN/dNjFunXYeyEiKuPeja1CF8KKg8HRLipsEYUyCf1VOuntrg7shRmXeNdpIhF/hCWb/zApqwlpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=367piMEasM5cbEsXMhz+DffljxGSrLlnMlQvsCu18BA=;
- b=EFmWscdAl3c+c6rZ+iFd4OIvBRiWTTUDcXSoRgI86YznYV5XlaiT0+XIeSbKnx/7BLMK9RR0SlqQzcVOypvJ7uUiMkQxRtHAfBYDd2kNz/IBZZSzXJ6jOquBM1dnB3Qiwbmrz2qMOI1cf/MBkmRnk+2BeCf3zXxv18hd9T5qBuhb9jkJjBsqevLnd+dyXI4bopBqTrWRQKKUUbtfzSt8WTvn0agzQa7o+97ALebMG2T81wfBEihhKSFS5S7zL27OLQWEMNO7FJrYeAIqhR6rJOzIlsLPU/VYB7KUBcrGKaNivSwqKREmmxrAAijX2CFJ2v5b5jUGQSGSHAq79Xyh6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=367piMEasM5cbEsXMhz+DffljxGSrLlnMlQvsCu18BA=;
- b=MzpFLwJ2J6MiRUP8WqsB4sI8oKfjFUdNob7FWeY3KQUbjWuvSVq978AvnO/YTD+F5170jCdfc7YJDWcYPRcWc/jn9RP/nSCCavheJ2ktbiZBCwK3KUgcOCLUI+zND11mgP3sCOHN2rkMb6Oj7TXGIzz1zt+nA4ujdPpIHkn8n/8=
-Received: from DM5PR2101MB0934.namprd21.prod.outlook.com (2603:10b6:4:a5::36)
- by DM5PR21MB0281.namprd21.prod.outlook.com (2603:10b6:3:a7::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.1; Wed, 16 Sep
- 2020 22:31:38 +0000
-Received: from DM5PR2101MB0934.namprd21.prod.outlook.com
- ([fe80::6400:744d:ce9b:499a]) by DM5PR2101MB0934.namprd21.prod.outlook.com
- ([fe80::6400:744d:ce9b:499a%9]) with mapi id 15.20.3370.016; Wed, 16 Sep 2020
- 22:31:38 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH v3] hv_netvsc: Add validation for untrusted Hyper-V values
-Thread-Topic: [PATCH v3] hv_netvsc: Add validation for untrusted Hyper-V
- values
-Thread-Index: AQHWjA5xloo3j6wqeUSXUjm/16PeWalr2cNQ
-Date:   Wed, 16 Sep 2020 22:31:38 +0000
-Message-ID: <DM5PR2101MB093495E2FCC02BF1C0291E57CA210@DM5PR2101MB0934.namprd21.prod.outlook.com>
-References: <20200916094727.46615-1-parri.andrea@gmail.com>
-In-Reply-To: <20200916094727.46615-1-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=990a1d83-a6b9-4925-a417-cc704cfc5593;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-09-16T22:30:11Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [75.100.88.238]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7669b01b-4c3f-40be-00c8-08d85a90471b
-x-ms-traffictypediagnostic: DM5PR21MB0281:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR21MB0281858EECF2C379CA91F92BCA210@DM5PR21MB0281.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bPgRVPuYf6U/jKzeSUnBqaYoEZ4i8Vmr6o+1ca32fWLIlzBzUbjvO4IHKLRwh60P96romTBnzlCgN7uPV6EcGUGrcX001lIqV4nXFFiWR7E+tW6ciQ2XkkOM+PJSaQz3iAQ7D9lALNuqzytnH9Z84RGPQj/P39ZD8G/950NtatxuKrojt3c65HIpZSNQ92HjuGp3bJ110xw1hWZIxeQ13+oc6o8ANyrQOGroZWos/4jGJ7Gmtp2BA47Gv3M6p7nxfc8LRs/OhjApnjXckoJqsmwYKi8YnI0k95PjSObg7IRktak55ltIQCkv4rScHBSOcBH15xLDYvsSWCH6EwOTFzcS4JuhpI4BPUsmEqOiHisqxQe64BTOiaXEbbdeRZ9T
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR2101MB0934.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(136003)(346002)(396003)(33656002)(55016002)(4326008)(9686003)(26005)(8990500004)(110136005)(186003)(316002)(66946007)(71200400001)(66476007)(52536014)(54906003)(66446008)(5660300002)(6506007)(76116006)(66556008)(53546011)(82960400001)(82950400001)(83380400001)(64756008)(7696005)(8676002)(86362001)(2906002)(8936002)(10290500003)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: v6E/Bu0EITHzeo6UsfFzCwMkxrLGFkFSF8GTVuQlXNXwn/loybUjJM29bTdps1CvNJ+k4jMsEr77oYATSLUPB6j3mPh6Ff1EH3IZrIhuXo6rD8qs8EO+kk7ghKoEXZ1s4NUjQIW1Ew/gDAYbcfkc/2yKpI71LPC/NCx/F5z/+WNkhF8WmAayXaWfVo88FmoHCivYAj8Cyu4JwMCWb/EJMFMh4v3yq8wqTFVnqS02wnhK3l1BlF7M2Yer71f2TyYrkhByNAl/XPVVqK4FHI5R5HKfO71byZv60cBNvgrzM2uIZqg5oNHXJb8+RoXG12anmGiR7BPVg5gGxqGmI+lYqfTlmJpFKQ6sns0wPG4pVVZ2n3lGPZ5uwARxXmaG3kp9b2ue+6UNs3nAXl/fZQbnNRLZzHKepZxcw2X5QttO/Fba0k+P1J7APVVyEmUFN3UkxYYBij3YaWCK9Fan0JRa7xkXdWzUriB4pXc2qLkaN0o9lB0EqWBfo3vRFq/xyGKj7dqTNzmOuWWbGwxy13SCZTiW6ddbkfwWwlUWIwWwPQ92u3392/tCAt/uNc7U/73NVEr4y4LiOhBaLKOesllCz/yXmJvz2mqCEYs5gNrB9QyM0UO28xgzJQUN3PXtoXp+8T5VDGSHAFe7rdQTndTy0w==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR2101MB0934.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7669b01b-4c3f-40be-00c8-08d85a90471b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 22:31:38.6208
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tXoL+RWoegKXcTzY0riZ9ALL2f0DhVFN1HiKoxK5WS1dzp5IyFjQDinUwyuyR/pXnRvj9K47QzHx6jJ5ffqGMQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR21MB0281
+        id S1726311AbgIPWh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 18:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgIPWhy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 18:37:54 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761F9C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 15:37:54 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id r128so7517002qkc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 15:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=P0/XHNACdLCUTE2NkPXDYLWlznqm7B496+cU0eLiRvs=;
+        b=N7PvblzepT8TRkUNWA/I98PPBW+aNIvvd+M0mTCRrCSukeeCnVR01+tnMGSI0jzUAN
+         QcGrx8lOIdgc2PYarRTJ9G8hQSBgRpM+lc/UDfCx40FDKUb7h7/+Y/fZiBWoTKQlN0gO
+         hiqpFb8Y7eufHgYUv0pWv8y41/L8MmZ+ulRgGCUi2WELX8u0d4A54fGM0ylBghn09AQD
+         mo9NYz/23bh4T5A+R/SpbQxCKBXsBUYD4efIJz5BqbhUYFIX9rKqZPbHDlZntc6BqbhZ
+         S7c3wKgErQTmuYN3ltJEe32XcLFNKJa76iIUuzxvwR/EVPiZAOc4OiQ4/STFeiGnF1up
+         LeTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=P0/XHNACdLCUTE2NkPXDYLWlznqm7B496+cU0eLiRvs=;
+        b=A93qGiZwoYB81CH9zuT58gcdTjOdaS3gzO77dv9IUq4MZ6SB/vW+8udNm4S8R77x1/
+         13z6UK240Jylqszs4sOPyg1Yre+kzf9XAnl81HEzmp6D6yN0/jTUHvs+acHTjcRVmW0F
+         kCUN4MM7W6GKNxcW3fzO4GcdGoSxEaNNHX+MFmLkBVdU3EZprpEBO9dhIU+PVHLONz6R
+         FEGqO6oKxnx75ABCXQtZDj5q9I95UMa5L7cCgr/K01Swe7TqrUo1rp5wUJWxsMGC+gEJ
+         BWzsjv+cHZt2ul18rUGKfxFdujTQGGW5qe9RUOT9Rxl1z9GF4z00eXML3oP5qKRg82AD
+         Mxow==
+X-Gm-Message-State: AOAM531YpnAoAFpZVSr8TNn6cv7rHU14XMrsrLA6ypcMWKU4aQUE8fBB
+        3JMlnw1GUO5OKWtuzHPkeyVhTryLmvk=
+X-Google-Smtp-Source: ABdhPJwjusGHTRhrPsKDw/1tJ1ThXkW8Ff0AXVS+0XHDja3t+9w1eo4pdYJtV3cCf7Fvj63YepgqZqOVn6c=
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:f693:9fff:fef4:e444])
+ (user=haoluo job=sendgmr) by 2002:a0c:f0d1:: with SMTP id d17mr9473565qvl.34.1600295873277;
+ Wed, 16 Sep 2020 15:37:53 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:35:06 -0700
+Message-Id: <20200916223512.2885524-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [PATCH bpf-next v3 0/6] bpf: BTF support for ksyms
+From:   Hao Luo <haoluo@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Hao Luo <haoluo@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v2 -> v3:
+ - Rename functions and variables in verifier for better readability.
+ - Stick to logging message convention in libbpf.
+ - Move bpf_per_cpu_ptr and bpf_this_cpu_ptr from trace-specific
+   helper set to base helper set.
+ - More specific test in ksyms_btf.
+ - Fix return type cast in bpf_*_cpu_ptr.
+ - Fix btf leak in ksyms_btf selftest.
+ - Fix return error code for kallsyms_find().
+
+v1 -> v2:
+ - Move check_pseudo_btf_id from check_ld_imm() to
+   replace_map_fd_with_map_ptr() and rename the latter.
+ - Add bpf_this_cpu_ptr().
+ - Use bpf_core_types_are_compat() in libbpf.c for checking type
+   compatibility.
+ - Rewrite typed ksym extern type in BTF with int to save space.
+ - Minor revision of bpf_per_cpu_ptr()'s comments.
+ - Avoid using long in tests that use skeleton.
+ - Refactored test_ksyms.c by moving kallsyms_find() to trace_helpers.c
+ - Fold the patches that sync include/linux/uapi and
+   tools/include/linux/uapi.
+
+rfc -> v1:
+ - Encode VAR's btf_id for PSEUDO_BTF_ID.
+ - More checks in verifier. Checking the btf_id passed as
+   PSEUDO_BTF_ID is valid VAR, its name and type.
+ - Checks in libbpf on type compatibility of ksyms.
+ - Add bpf_per_cpu_ptr() to access kernel percpu vars. Introduced
+   new ARG and RET types for this helper.
+
+This patch series extends the previously added __ksym externs with
+btf support.
+
+Right now the __ksym externs are treated as pure 64-bit scalar value.
+Libbpf replaces ld_imm64 insn of __ksym by its kernel address at load
+time. This patch series extend those externs with their btf info. Note
+that btf support for __ksym must come with the kernel btf that has
+VARs encoded to work properly. The corresponding chagnes in pahole
+is available at [1] (with a fix at [2] for gcc 4.9+).
+
+The first 3 patches in this series add support for general kernel
+global variables, which include verifier checking (01/06), libpf
+support (02/06) and selftests for getting typed ksym extern's kernel
+address (03/06).
+
+The next 3 patches extends that capability further by introducing
+helpers bpf_per_cpu_ptr() and bpf_this_cpu_ptr(), which allows accessing
+kernel percpu variables correctly (04/06 and 05/06).
+
+The tests of this feature were performed against pahole that is extended
+with [1] and [2]. For kernel BTF that does not have VARs encoded, the
+selftests will be skipped.
+
+[1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
+[2] https://www.spinics.net/lists/dwarves/msg00451.html
 
 
-> -----Original Message-----
-> From: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Sent: Wednesday, September 16, 2020 5:47 AM
-> To: linux-kernel@vger.kernel.org
-> Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> <haiyangz@microsoft.com>; Stephen Hemminger
-> <sthemmin@microsoft.com>; Wei Liu <wei.liu@kernel.org>; linux-
-> hyperv@vger.kernel.org; Andres Beltran <lkmlabelt@gmail.com>; Michael
-> Kelley <mikelley@microsoft.com>; Saruhan Karademir
-> <skarade@microsoft.com>; Juan Vazquez <juvazq@microsoft.com>; Andrea
-> Parri <parri.andrea@gmail.com>; David S. Miller <davem@davemloft.net>;
-> Jakub Kicinski <kuba@kernel.org>; netdev@vger.kernel.org
-> Subject: [PATCH v3] hv_netvsc: Add validation for untrusted Hyper-V value=
-s
->=20
-> From: Andres Beltran <lkmlabelt@gmail.com>
->=20
-> For additional robustness in the face of Hyper-V errors or malicious
-> behavior, validate all values that originate from packets that Hyper-V
-> has sent to the guest in the host-to-guest ring buffer. Ensure that
-> invalid values cannot cause indexing off the end of an array, or
-> subvert an existing validation via integer overflow. Ensure that
-> outgoing packets do not have any leftover guest memory that has not
-> been zeroed out.
->=20
-> Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
-> Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> ---
-> Changes in v3:
->   - Include header size in the estimate for hv_pkt_datalen (Haiyang)
-> Changes in v2:
->   - Replace size check on struct nvsp_message with sub-checks (Haiyang)
->=20
->  drivers/net/hyperv/hyperv_net.h   |   4 +
->  drivers/net/hyperv/netvsc.c       | 124 ++++++++++++++++++++++++++----
->  drivers/net/hyperv/netvsc_drv.c   |   7 ++
->  drivers/net/hyperv/rndis_filter.c |  73 ++++++++++++++++--
->  4 files changed, 188 insertions(+), 20 deletions(-)
 
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Hao Luo (6):
+  bpf: Introduce pseudo_btf_id
+  bpf/libbpf: BTF support for typed ksyms
+  selftests/bpf: ksyms_btf to test typed ksyms
+  bpf: Introduce bpf_per_cpu_ptr()
+  bpf: Introduce bpf_this_cpu_ptr()
+  bpf/selftests: Test for bpf_per_cpu_ptr() and bpf_this_cpu_ptr()
+
+ include/linux/bpf.h                           |   6 +
+ include/linux/bpf_verifier.h                  |   7 +
+ include/linux/btf.h                           |  26 +++
+ include/uapi/linux/bpf.h                      |  67 +++++-
+ kernel/bpf/btf.c                              |  25 ---
+ kernel/bpf/helpers.c                          |  32 +++
+ kernel/bpf/verifier.c                         | 190 ++++++++++++++++--
+ kernel/trace/bpf_trace.c                      |   4 +
+ tools/include/uapi/linux/bpf.h                |  67 +++++-
+ tools/lib/bpf/libbpf.c                        | 112 +++++++++--
+ .../testing/selftests/bpf/prog_tests/ksyms.c  |  38 ++--
+ .../selftests/bpf/prog_tests/ksyms_btf.c      |  88 ++++++++
+ .../selftests/bpf/progs/test_ksyms_btf.c      |  55 +++++
+ tools/testing/selftests/bpf/trace_helpers.c   |  27 +++
+ tools/testing/selftests/bpf/trace_helpers.h   |   4 +
+ 15 files changed, 653 insertions(+), 95 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf.c
+
+-- 
+2.28.0.618.gf4bc123cb7-goog
 
