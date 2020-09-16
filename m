@@ -2,105 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EAE26C606
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32F226C642
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgIPR3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:29:51 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38456 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727083AbgIPR2T (ORCPT
+        id S1727076AbgIPRlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:41:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35626 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726767AbgIPRkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:28:19 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GHRrkH025564;
-        Wed, 16 Sep 2020 12:27:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600277273;
-        bh=LkBW9ONdKm4rqq/prIT6RDmrGFJczaFsMOjwTjMAG/o=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=rj6XGgTVaO0Xk3aevo8OqbCTnu5gU+bONevSGgPR25UDSnxGOIsKPnOczH9yNHaDd
-         d0gjFSZ6UNTP0yLgOM9A9H8/LrrPBuxjbVegyyQVNxWyh5uaZX+zZ2VeO7YOpH9fw5
-         xsoEzPnaZatnccyICtESgqbM9b623/1VaVLMbvIY=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GHRrjT051739;
-        Wed, 16 Sep 2020 12:27:53 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 12:27:53 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 12:27:53 -0500
-Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GHRk1W018084;
-        Wed, 16 Sep 2020 12:27:50 -0500
-Subject: Re: [PATCH v6 0/2] PHY: Add new PHY attribute max_link_rate
-To:     Vinod Koul <vkoul@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Swapnil Jakhade <sjakhade@cadence.com>, <kishon@ti.com>,
-        <linux-kernel@vger.kernel.org>, <maxime@cerno.tech>,
-        <mparab@cadence.com>, <yamonkar@cadence.com>,
-        <tomi.valkeinen@ti.com>, <jsarha@ti.com>, <praneeth@ti.com>
-References: <1599805114-22063-1-git-send-email-sjakhade@cadence.com>
- <e1ae0a53-02a2-8a17-094f-570be6d24b1c@ti.com>
- <20200916121855.GB3853@pendragon.ideasonboard.com>
- <20200916124307.GL2968@vkoul-mobl>
-From:   Sekhar Nori <nsekhar@ti.com>
-Message-ID: <d7d2f8b5-86a2-c2f9-62ff-cf60278a5463@ti.com>
-Date:   Wed, 16 Sep 2020 22:57:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Wed, 16 Sep 2020 13:40:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600278022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4m/h+yY/PVAaaASlrExFZfjTuXa07+sxs0XLIUnFi6k=;
+        b=P9c7nPHL9otLH5BgLeKK7eGgBPbxF3dA6sHFKZRDWfZMHLNXrSKHvkCjPO8Nwqyxoa73aX
+        69jQWSanpxSyNWhBBMu1maSmMGVCr2GSOH1rUIgDHgWfcI+Qh3PZSwA+dZbuNT0ZpvAhtg
+        rESQYrRKxaY0NsVCYOYLASK6MLQ/RrE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-JHbHg4c9NlaKwI5bE_0bzQ-1; Wed, 16 Sep 2020 06:57:15 -0400
+X-MC-Unique: JHbHg4c9NlaKwI5bE_0bzQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C02D1006712;
+        Wed, 16 Sep 2020 10:57:13 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E3CC7880C;
+        Wed, 16 Sep 2020 10:57:12 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08GAvCZm014220;
+        Wed, 16 Sep 2020 06:57:12 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08GAvA4V014216;
+        Wed, 16 Sep 2020 06:57:10 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 16 Sep 2020 06:57:10 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Dan Williams <dan.j.williams@intel.com>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
+        <rajesh.tadakamadla@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: [PATCH] pmem: export the symbols __copy_user_flushcache and
+ __copy_from_user_flushcache
+In-Reply-To: <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
+Message-ID: <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com> <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-In-Reply-To: <20200916124307.GL2968@vkoul-mobl>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/20 6:13 PM, Vinod Koul wrote:
-> On 16-09-20, 15:18, Laurent Pinchart wrote:
->> Hi Sekhar,
->>
->> On Wed, Sep 16, 2020 at 01:11:17PM +0530, Sekhar Nori wrote:
->>> On 11/09/20 11:48 AM, Swapnil Jakhade wrote:
->>>> This patch series adds a new PHY attribute max_link_rate.
->>>> It also updates Cadence Torrent PHY driver to set attributes bus_width,
->>>> max_link_rate and mode for DisplayPort.
->>>>
->>>> It includes following patches:
->>>>
->>>> 1. 0001-phy-Add-new-PHY-attribute-max_link_rate.patch
->>>> This patch adds max_link_rate as a new PHY attribute.
->>>>
->>>> 2. 0002-phy-cadence-torrent-Set-Torrent-PHY-attributes.patch
->>>> This patch sets PHY attributes in Cadence Torrent PHY driver. This will
->>>> enable drivers using this PHY to read these properties.
->>>>
->>>> These attributes will be used in the Cadence MHDP DRM bridge driver [1]
->>>> which is in the process of upstreaming.
->>>
->>> Can you please add these patches on an immutable branch/tag when you are
->>> ready to apply them - will try to see if we can use it to get the
->>> DisplayPort driver merged in v5.10 too.
->>>
->>> Hi Laurent, any other ideas on managing the dependency?
->>
->> I think that will work fine.
+
+
+On Tue, 15 Sep 2020, Mikulas Patocka wrote:
+
 > 
-> Please pull tag phy-attrs-5.10 for phy tree
+> 
+> On Tue, 15 Sep 2020, Mikulas Patocka wrote:
+> 
+> > > > - __copy_from_user_inatomic_nocache doesn't flush cache for leading and
+> > > > trailing bytes.
+> > > 
+> > > You want copy_user_flushcache(). See how fs/dax.c arranges for
+> > > dax_copy_from_iter() to route to pmem_copy_from_iter().
+> > 
+> > Is it something new for the kernel 5.10? I see only __copy_user_flushcache 
+> > that is implemented just for x86 and arm64.
+> > 
+> > There is __copy_from_user_flushcache implemented for x86, arm64 and power. 
+> > It is used in lib/iov_iter.c under
+> > #ifdef CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE - so should I use this?
+> > 
+> > Mikulas
+> 
+> ... and __copy_user_flushcache is not exported for modules. So, I am stuck 
+> with __copy_from_user_inatomic_nocache.
+> 
+> Mikulas
 
-Thanks Vinod!
+I'm submitting this patch that adds the required exports (so that we could 
+use __copy_from_user_flushcache on x86, arm64 and powerpc). Please, queue 
+it for the next merge window.
 
-Swapnil, please be sure to let DRM maintainers know about the PHY tree
-and the tag they can use when the DP patches are ready for merge.
 
-Please keep Vinod in the loop too so he is aware of the tag being pulled.
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-Thanks,
-Sekhar
+Export the symbols __copy_user_flushcache and __copy_from_user_flushcache,
+so that modules can use this functionality.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+
+---
+ arch/arm64/lib/uaccess_flushcache.c |    1 +
+ arch/powerpc/lib/pmem.c             |    1 +
+ arch/x86/lib/usercopy_64.c          |    1 +
+ 3 files changed, 3 insertions(+)
+
+Index: linux-2.6/arch/arm64/lib/uaccess_flushcache.c
+===================================================================
+--- linux-2.6.orig/arch/arm64/lib/uaccess_flushcache.c	2020-09-16 12:44:15.068038000 +0200
++++ linux-2.6/arch/arm64/lib/uaccess_flushcache.c	2020-09-16 12:44:15.068038000 +0200
+@@ -38,3 +38,4 @@ unsigned long __copy_user_flushcache(voi
+ 	__clean_dcache_area_pop(to, n - rc);
+ 	return rc;
+ }
++EXPORT_SYMBOL_GPL(__copy_user_flushcache);
+Index: linux-2.6/arch/x86/lib/usercopy_64.c
+===================================================================
+--- linux-2.6.orig/arch/x86/lib/usercopy_64.c	2020-09-16 12:44:15.068038000 +0200
++++ linux-2.6/arch/x86/lib/usercopy_64.c	2020-09-16 12:44:15.068038000 +0200
+@@ -134,6 +134,7 @@ long __copy_user_flushcache(void *dst, c
+ 
+ 	return rc;
+ }
++EXPORT_SYMBOL_GPL(__copy_user_flushcache);
+ 
+ void __memcpy_flushcache(void *_dst, const void *_src, size_t size)
+ {
+Index: linux-2.6/arch/powerpc/lib/pmem.c
+===================================================================
+--- linux-2.6.orig/arch/powerpc/lib/pmem.c	2020-09-16 12:44:15.068038000 +0200
++++ linux-2.6/arch/powerpc/lib/pmem.c	2020-09-16 12:44:15.068038000 +0200
+@@ -75,6 +75,7 @@ long __copy_from_user_flushcache(void *d
+ 
+ 	return copied;
+ }
++EXPORT_SYMBOL_GPL(__copy_from_user_flushcache);
+ 
+ void memcpy_flushcache(void *dest, const void *src, size_t size)
+ {
+
