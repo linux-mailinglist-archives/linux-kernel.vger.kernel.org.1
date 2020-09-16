@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DB326C673
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C751C26C686
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 19:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727447AbgIPRu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 13:50:28 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:44627 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727450AbgIPRtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:49:08 -0400
-X-IronPort-AV: E=Sophos;i="5.76,432,1592838000"; 
-   d="scan'208";a="57427885"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 16 Sep 2020 19:59:58 +0900
-Received: from devel.example.org?044ree.adwin.renesas.com (unknown [10.226.36.120])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 6E7F74277746;
-        Wed, 16 Sep 2020 19:59:55 +0900 (JST)
-From:   Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v2 1/3] MAINTAINERS: Add Fabrizio Castro to Renesas DRIF
-Date:   Wed, 16 Sep 2020 11:59:47 +0100
-Message-Id: <20200916105949.24858-2-fabrizio.castro.jz@renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200916105949.24858-1-fabrizio.castro.jz@renesas.com>
-References: <20200916105949.24858-1-fabrizio.castro.jz@renesas.com>
+        id S1727470AbgIPRwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 13:52:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727278AbgIPRwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:52:21 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5CA421973;
+        Wed, 16 Sep 2020 11:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600255155;
+        bh=5Jd9jVHxcOyK7zuQDeG8R+4sy3KRHCao0bv2UcrVMR8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vkai1tLMJU4GdeUGCp9K11DMk7R5iO71tYJ7eFcDU3nm99EXhGeOnzgIeUyqh6jYO
+         3EJzlWcAATX/kACui7SjkEzA1PReh35fsj/Z/4CNqfgESq5kIwMYOqEyDyflnw/c1d
+         IUU4L3vob8oQNXHnLE1fSpalZax8hfd8OSfm9mFo=
+Date:   Wed, 16 Sep 2020 13:19:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paras Sharma <parashar@codeaurora.org>
+Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akashast@codeaurora.org
+Subject: Re: [PATCH V4] serial: qcom_geni_serial: To correct QUP Version
+ detection logic
+Message-ID: <20200916111949.GA969520@kroah.com>
+References: <1600067957-8216-1-git-send-email-parashar@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600067957-8216-1-git-send-email-parashar@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Renesas are expanding their DRIF support and offering,
-I'll be the internal maintainer for DRIF.
+On Mon, Sep 14, 2020 at 12:49:17PM +0530, Paras Sharma wrote:
+> The current implementation reduces the sampling rate by half
+> if qup HW version is  greater is than 2.5 by checking if the
 
-Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
----
-v1->v2:
-* No change
+2 space characters?
 
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+And what is "qup"?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2575f449139a..d9ebaf0c179b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10909,6 +10909,7 @@ F:	include/media/drv-intf/renesas-ceu.h
- 
- MEDIA DRIVERS FOR RENESAS - DRIF
- M:	Ramesh Shanmugasundaram <rashanmu@gmail.com>
-+M:	Fabrizio Castro <fabrizio.castro.jz@renesas.com>
- L:	linux-media@vger.kernel.org
- L:	linux-renesas-soc@vger.kernel.org
- S:	Supported
--- 
-2.25.1
+What is "HW"?
 
+> geni SE major version is greater than 2 and geni SE minor version
+
+what is "geni"?
+
+What is "SE"?
+
+> is greater than 5.This implementation fails when the version is
+> greater than or equal to 3.
+> 
+> Hence, a new macro QUP_SE_VERSION_2_5 is defined having value
+> for major number 2 and minor number 5 as 0x20050000.Hence,if 
+
+That's not a "macro", it is a simple #define.
+
+And can you use a ' ' after a '.' please?  That's all over this
+changelog, including trailing whitespace for some reason :(
+
+> ver is greater than this value,sampling rate is halved. 
+> This logic would work for any future qup version.
+
+"will work"?
+
+> 
+> Fixes: ce734600545f ("tty: serial: qcom_geni_serial: Update the oversampling rate")
+> Signed-off-by: Paras Sharma <parashar@codeaurora.org>
+> ---
+> Changes in V4:
+> Created a new macro QUP_SE_VERSION_2_5 for Qup se version 2.5
+> 
+
+What changed from previous versions than v4?
+
+thanks,
+
+greg k-h
