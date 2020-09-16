@@ -2,53 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD49E26CC6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A514726CC76
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 22:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727723AbgIPUoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 16:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
+        id S1728393AbgIPUoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 16:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbgIPRD1 (ORCPT
+        with ESMTP id S1726737AbgIPRD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Sep 2020 13:03:27 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028BCC02C29A;
-        Wed, 16 Sep 2020 08:20:26 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:12:21 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A645C02C29C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 08:20:50 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 15:12:29 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600269142;
+        s=2020; t=1600269150;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VhkJ/Uf5Pn+VCZtvUSlByH4G4HSOWZCCYqHkZ2mbY0M=;
-        b=Lb2Q8yrJtmEKoaM9vCzYowCSd+DNqVxnZc/Y76/U0to7oizbMj0aBQUndfeX8iHizK+jAe
-        xWO4tY01/jTD5aCXGbov0LHjYpV1JPQdIivzqZ8DVS3ER/iHMcVXfMq9IazNrrhWvAyi7o
-        NlB1hIP3NypgSPCUz+ZH0YHGrzkqQrJ0A4gALuee5KYCTw+vLDsmQEoeROUbuxI3nLnkz5
-        0rTIPgyu1S9+m3nAFeUQbBxcIsUfFCcroYBWMG0cUBvW8S8/z7X/V5ySTwtjr0yzZ+CbOA
-        7PbQNB0w9ZiPGPqlxJATl96HKqFR0SrhnbSu3S5t/dJ7+ErtXyBRW1+L1liSSA==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=aGsFh/euLVJTpFe64sDHpwkI+UN4e/dj4KxLmmR37ko=;
+        b=yN0X3PdVW67rDtWG25uGobkSYxtExAcN0T5d/V0Ue+xoCl0BP3E7m+1QA0EFUkVFcYOwUT
+        NnumLJEvHzOxZv3HfX2KF7eOzu4/anYjv2+cfRcZpDDaNRV9QW2KK4g9Vc6ak1giFs/JLZ
+        pQBxAzrHU6fSf9sYITx0E237wbOOkC5Vcd759e+yuZ9iywhnabgYuQ5fItbhuvmMjZ505R
+        S8aiNcUeMpL/RFNvnZvHO+ICvzBJ2Sp9P54t2rgFAvz6l6VBZo4KCE1s+QmZGZ99gG0cE7
+        wi9qlDkrdBphZDLdcujp00JiV18IlylpAVTAyT+kaQHaka074SM+InZ/2/u3kA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600269142;
+        s=2020e; t=1600269150;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VhkJ/Uf5Pn+VCZtvUSlByH4G4HSOWZCCYqHkZ2mbY0M=;
-        b=le48P3HXzgts3VGvHPvbLL7fzm4moj3/RiTguRsdbbXawFZQqMI0GZnbA/Rxm+xpUH/vfd
-        WEYECXTNnxBzl6DQ==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=aGsFh/euLVJTpFe64sDHpwkI+UN4e/dj4KxLmmR37ko=;
+        b=1kkfR/TbWwj2QemsJ1mCKAjzrKdyChd6oRcsbaFhyejIjed4C8yE7OBALreQQsb9X7KA3Z
+        yTN/z0tniXGui5CA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] x86/irq: Prepare consolidation of irq_alloc_info
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+Subject: [tip: x86/irq] iommu/amd: Prevent NULL pointer dereference
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <jroedel@suse.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200826112331.849577844@linutronix.de>
-References: <20200826112331.849577844@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160026914170.15536.5962432390197354179.tip-bot2@tip-bot2>
+Message-ID: <160026914966.15536.6087229780481843966.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,70 +55,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/irq branch of tip:
 
-Commit-ID:     874d9b3a958897e914982962fa25b3bb9dc07988
-Gitweb:        https://git.kernel.org/tip/874d9b3a958897e914982962fa25b3bb9dc07988
+Commit-ID:     23357b61f8062a8a8c9c84c0252056cd6d849ec8
+Gitweb:        https://git.kernel.org/tip/23357b61f8062a8a8c9c84c0252056cd6d849ec8
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 26 Aug 2020 13:16:40 +02:00
+AuthorDate:    Wed, 26 Aug 2020 13:16:29 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 16 Sep 2020 16:52:30 +02:00
+CommitterDate: Wed, 16 Sep 2020 16:52:25 +02:00
 
-x86/irq: Prepare consolidation of irq_alloc_info
+iommu/amd: Prevent NULL pointer dereference
 
-struct irq_alloc_info is a horrible zoo of unnamed structs in a union. Many
-of the struct fields can be generic and don't have to be type specific like
-hpet_id, ioapic_id...
-
-Provide a generic set of members to prepare for the consolidation. The goal
-is to make irq_alloc_info have the same basic member as the generic
-msi_alloc_info so generic MSI domain ops can be reused and yet more mess
-can be avoided when (non-PCI) device MSI support comes along.
+Dereferencing irq_data before checking it for NULL is suboptimal.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20200826112331.849577844@linutronix.de
----
- arch/x86/include/asm/hw_irq.h | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
 
-diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index 91b064d..b0e15f6 100644
---- a/arch/x86/include/asm/hw_irq.h
-+++ b/arch/x86/include/asm/hw_irq.h
-@@ -44,10 +44,25 @@ enum irq_alloc_type {
- 	X86_IRQ_ALLOC_TYPE_HPET_GET_PARENT,
- };
+---
+ drivers/iommu/amd/iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 07ae8b9..db44ce6 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -3731,8 +3731,8 @@ static int irq_remapping_alloc(struct irq_domain *domain, unsigned int virq,
  
-+/**
-+ * irq_alloc_info - X86 specific interrupt allocation info
-+ * @type:	X86 specific allocation type
-+ * @flags:	Flags for allocation tweaks
-+ * @devid:	Device ID for allocations
-+ * @hwirq:	Associated hw interrupt number in the domain
-+ * @mask:	CPU mask for vector allocation
-+ * @desc:	Pointer to msi descriptor
-+ * @data:	Allocation specific data
-+ */
- struct irq_alloc_info {
- 	enum irq_alloc_type	type;
- 	u32			flags;
--	const struct cpumask	*mask;	/* CPU mask for vector allocation */
-+	u32			devid;
-+	irq_hw_number_t		hwirq;
-+	const struct cpumask	*mask;
-+	struct msi_desc		*desc;
-+	void			*data;
-+
- 	union {
- 		int		unused;
- #ifdef	CONFIG_HPET_TIMER
-@@ -88,11 +103,6 @@ struct irq_alloc_info {
- 			char		*uv_name;
- 		};
- #endif
--#if IS_ENABLED(CONFIG_VMD)
--		struct {
--			struct msi_desc *desc;
--		};
--#endif
- 	};
- };
- 
+ 	for (i = 0; i < nr_irqs; i++) {
+ 		irq_data = irq_domain_get_irq_data(domain, virq + i);
+-		cfg = irqd_cfg(irq_data);
+-		if (!irq_data || !cfg) {
++		cfg = irq_data ? irqd_cfg(irq_data) : NULL;
++		if (!cfg) {
+ 			ret = -EINVAL;
+ 			goto out_free_data;
+ 		}
