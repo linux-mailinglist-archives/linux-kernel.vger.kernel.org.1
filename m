@@ -2,120 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1296A26D557
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BEA26D4E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgIQHzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:55:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38418 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726312AbgIQHys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:54:48 -0400
-X-Greylist: delayed 791 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 03:53:54 EDT
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 50DC9AC92;
-        Thu, 17 Sep 2020 07:40:46 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 647241E12E1; Thu, 17 Sep 2020 09:40:30 +0200 (CEST)
-Date:   Thu, 17 Sep 2020 09:40:30 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Qiuyang Sun <sunqiuyang@huawei.com>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, nborisov@suse.de
-Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around
- filemap_map_pages())
-Message-ID: <20200917074030.GA9555@quack2.suse.cz>
-References: <20200623052059.1893966-1-david@fromorbit.com>
- <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
- <20200916155851.GA1572@quack2.suse.cz>
- <20200917014454.GZ12131@dread.disaster.area>
- <df9eb392-8b86-591a-b1be-535a13b874d9@suse.com>
+        id S1726216AbgIQHlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgIQHlL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 03:41:11 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C0AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:41:08 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b12so1092054lfp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KzGRfdSlTsnA6ugMb6NVstzypnemez8bSdibR9WaXZI=;
+        b=n9IUahF4nx7eVElB/b5yWlOaTpw9Io8kHvS+30WVF70Vvg5Rs4hKZ7sjWxfbQXCL6U
+         HknbOUTOEMlKX8yT9+2zjSIvUrlhFXl6wOHqUopLSO3WaKLX2wJXbImMlr6kHNkdXflD
+         WPlirGqKCrNnSytHO+6HX3dHHHypAzcaWjAWw5/gS2dFyRNCyUbAlSVqC3VkElPX2DZ9
+         UO0U4136FDAdV6SdfKKHfhd1ptDfdmFMjIG4VZLwtWJJnUkee3hs4kmm0xC/cmttQvUr
+         PTbBysSr02mkeQO1rIPMPimPK15nN/p1pYu1DUyruNPcK1vjY2rwqm8MfM7t7cE1oPCQ
+         5kAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KzGRfdSlTsnA6ugMb6NVstzypnemez8bSdibR9WaXZI=;
+        b=b4GZNVZ8xt7tca0j99gyLD9LWkq1fIRMypwSYrQOwki+a0/c9ZSiDqrqTp0DKzvoAM
+         pcrPOUlPo+LaQ6h0aAQgSN2qXrqkOFzyme9wOd33MBcFATXZcipFqsYgjbY1M46tLJ/q
+         czCU0XrFJjmXOn/CTaIlw/DXQaBeJ6lW7QqVG3DOA0jnagQ6lmOpLFlB6DctkzxaVImK
+         WxnV023h+HeimNekiL8yDS1jIn8Gknx1Ic3/rEZV2DWcnUosIAyDyq5VF47ei3n5gVUo
+         XIcDyQXUB0MEr6aVGpKQVYAmLhgpUvsD5C16y2JrGiF57ZAYdkq348q60YEL8nWGtowA
+         L+BQ==
+X-Gm-Message-State: AOAM530O9IuT4M/HJZBU4smuhUhTMJecN+DTlfsWWwsKJKEeN6i/MwlM
+        xGIQYQEngTW71NmIJdh3dwmzCoZnYGrI7Wo1gO5ddQ==
+X-Google-Smtp-Source: ABdhPJw0G6CbvuXojTz0DEQfjC8hW/vyZAE4oeQjTVpHpNO2gXIiI69QIvEFy8ZZF35IJs0vUQ1miDcDwk3aoGuHm0Y=
+X-Received: by 2002:a19:6c2:: with SMTP id 185mr8308729lfg.441.1600328467251;
+ Thu, 17 Sep 2020 00:41:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <df9eb392-8b86-591a-b1be-535a13b874d9@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200901144324.1071694-1-maz@kernel.org> <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com> <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+ <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+In-Reply-To: <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 17 Sep 2020 09:40:56 +0200
+Message-ID: <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard interrupts
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17-09-20 08:37:17, Nikolay Borisov wrote:
-> On 17.09.20 г. 4:44 ч., Dave Chinner wrote:
-> > On Wed, Sep 16, 2020 at 05:58:51PM +0200, Jan Kara wrote:
-> >> On Sat 12-09-20 09:19:11, Amir Goldstein wrote:
-> >>> On Tue, Jun 23, 2020 at 8:21 AM Dave Chinner <david@fromorbit.com> wrote:
-> 
-> <snip>
-> 
-> > 
-> > So....
-> > 
-> > P0					p1
-> > 
-> > hole punch starts
-> >   takes XFS_MMAPLOCK_EXCL
-> >   truncate_pagecache_range()
-> >     unmap_mapping_range(start, end)
-> >       <clears ptes>
-> > 					<read fault>
-> > 					do_fault_around()
-> > 					  ->map_pages
-> > 					    filemap_map_pages()
-> > 					      page mapping valid,
-> > 					      page is up to date
-> > 					      maps PTEs
-> > 					<fault done>
-> >     truncate_inode_pages_range()
-> >       truncate_cleanup_page(page)
-> >         invalidates page
-> >       delete_from_page_cache_batch(page)
-> >         frees page
-> > 					<pte now points to a freed page>
-> > 
-> > That doesn't seem good to me.
-> > 
-> > Sure, maybe the page hasn't been freed back to the free lists
-> > because of elevated refcounts. But it's been released by the
-> > filesystem and not longer in the page cache so nothing good can come
-> > of this situation...
-> > 
-> > AFAICT, this race condition exists for the truncate case as well
-> > as filemap_map_pages() doesn't have a "page beyond inode size" check
-> > in it. 
-> 
-> (It's not relevant to the discussion at hand but for the sake of
-> completeness):
-> 
-> It does have a check:
-> 
->  max_idx = DIV_ROUND_UP(i_size_read(mapping->host), PAGE_SIZE);
->  if (page->index >= max_idx)
->       goto unlock;
+On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
 
-Yes, but this does something meaningful only for truncate. For other
-operations such as hole punch this check doesn't bring anything. That's why
-only filesystems supporting hole punching and similar advanced operations
-need an equivalent of mmap_lock.
+> Can you try the patch below and let me know?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I tried this patch and now Ux500 WORKS. So this patch is definitely
+something you should apply.
+
+> -                       if (is_frankengic())
+> -                               set_sgi_intid(irqstat);
+> +                       this_cpu_write(sgi_intid, intid);
+
+This needs changing to irqstat to compile as pointed out by Jon.
+
+With that:
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
