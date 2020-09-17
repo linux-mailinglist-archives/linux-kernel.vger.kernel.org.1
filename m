@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02F326D0CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8771126D0B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgIQBtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:49:11 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:40258 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726007AbgIQBtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:49:08 -0400
-X-Greylist: delayed 953 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:49:07 EDT
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id EE9CB5F6BE8476A4EB48;
-        Thu, 17 Sep 2020 09:33:13 +0800 (CST)
-Received: from [10.174.179.108] (10.174.179.108) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 09:33:10 +0800
-Subject: Re: [PATCH -next] fpga: dfl: Make m10_n3000_info static
-To:     Moritz Fischer <mdf@kernel.org>
-References: <20200916142536.28748-1-yuehaibing@huawei.com>
- <20200916161040.GA1066896@epycbox.lan>
-CC:     <hao.wu@intel.com>, <trix@redhat.com>, <yilun.xu@intel.com>,
-        <linux-fpga@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <52d8411e-13d8-1e91-756d-131802f5f445@huawei.com>
-Date:   Thu, 17 Sep 2020 09:33:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1726327AbgIQBeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:34:02 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:32862 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIQBdX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:33:23 -0400
+Received: by mail-wr1-f65.google.com with SMTP id m6so260234wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 18:33:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wXYdbE0ylL+xj4NMQULiDTw+nKl+A7qV0MkVXOJKLsw=;
+        b=kEAAvgVzzi9ihm+TKy4Tv1p2JO5DY8c8U21F+T8+TSfonP28pDTGfMc7Muun/zPFsA
+         bViPNHu1Gfw415EIKVy1pWhKrZTVV8ysBkQYcVNm1sCZnYAsCviyKEula5F9mAhD3BNH
+         nCvYvQXNpNAvw0Q+2nuhxa1GbQ01ZmbgR1PLafd3ZlkZPKlz/+qwPG+oXZA00ZzdzRIr
+         mmtWDVTnfF4u8sob73OEauF11gJbxqteDk57piDx3sOvqSA27QZWEMFLyVz+4OMRA0o3
+         0agPyceBj0t7ty0XcO3JprgojtKb2k/4CbAcQIf0mPXPL5cWzW/ZfDNH5uMAPY4GTI24
+         egjg==
+X-Gm-Message-State: AOAM531O1qu27AgTISldaL447BA9Kccj5sl0INDi+bg/gBeYed2fy1sm
+        hbXdfV8gkSol4BwObUWQ9987afQlG90Oo3sjdK0=
+X-Google-Smtp-Source: ABdhPJzh5UUASvNAagA1ZQAoC4/o/+0acKQdzUFozeFkljZqM7rDcKdZ/b4LLei0Y00280kpujNFh20L3QhtTdmXtZQ=
+X-Received: by 2002:adf:9e41:: with SMTP id v1mr32043462wre.60.1600306401171;
+ Wed, 16 Sep 2020 18:33:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200916161040.GA1066896@epycbox.lan>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+References: <20200916063129.1061487-1-namhyung@kernel.org> <20200916063129.1061487-3-namhyung@kernel.org>
+ <20200916135123.GO720847@kernel.org>
+In-Reply-To: <20200916135123.GO720847@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 17 Sep 2020 10:33:10 +0900
+Message-ID: <CAM9d7cixyyND8EOKRn8XdZj=Lf2S68bosMYMnAS4sGdc2x6zDg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] perf stat: Add --for-each-cgroup option
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/17 0:10, Moritz Fischer wrote:
-> Hi Yue,
-> 
-> On Wed, Sep 16, 2020 at 10:25:36PM +0800, YueHaibing wrote:
->> Fix sparse warning:
->>
->> drivers/fpga/dfl-n3000-nios.c:392:23: warning:
->>  symbol 'm10_n3000_info' was not declared. Should it be static?
->>
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>  drivers/fpga/dfl-n3000-nios.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/fpga/dfl-n3000-nios.c b/drivers/fpga/dfl-n3000-nios.c
->> index 5088f8f0e0cd..686813b59d33 100644
->> --- a/drivers/fpga/dfl-n3000-nios.c
->> +++ b/drivers/fpga/dfl-n3000-nios.c
->> @@ -389,7 +389,7 @@ static int n3000_nios_init_done_check(struct n3000_nios *ns)
->>  	return ret;
->>  }
->>  
->> -struct spi_board_info m10_n3000_info = {
->> +static struct spi_board_info m10_n3000_info = {
->>  	.modalias = "m10-n3000",
->>  	.max_speed_hz = 12500000,
->>  	.bus_num = 0,
->> -- 
->> 2.17.1
->>
-> Can you resend this with a [PATCH v2] or [PATCH v2 next], neither
-> lore nor patchwork picks it up in its current form.
-> 
-> This'll make sure it doesn't get lost.
-> 
-> While at it could you change the first line to:
-> 
-> "fpga: dfl: n3000-nios: Make m10_n3000_info static"
+On Wed, Sep 16, 2020 at 10:51 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Wed, Sep 16, 2020 at 03:31:27PM +0900, Namhyung Kim escreveu:
+> > The --for-each-cgroup option is a syntax sugar to monitor large number
+>
+> You forgot to add the man page entry for this new option.
 
-Sure, will resend.
-> 
-> Thanks for the patch,
-> Moritz
-> .
-> 
+OK, will add.. any more comments?
+
+Thanks
+Namhyung
+
+>
+> > of cgroups easily.  Current command line requires to list all the
+> > events and cgroups even if users want to monitor same events for each
+> > cgroup.  This patch addresses that usage by copying given events for
+> > each cgroup on user's behalf.
+> >
+> > For instance, if they want to monitor 6 events for 200 cgroups each
+> > they should write 1200 event names (with -e) AND 1200 cgroup names
+> > (with -G) on the command line.  But with this change, they can just
+> > specify 6 events and 200 cgroups with a new option.
+> >
+> > A simpler example below: It wants to measure 3 events for 2 cgroups
+> > ('A' and 'B').  The result is that total 6 events are counted like
+> > below.
+> >
+> >   $ ./perf stat -a -e cpu-clock,cycles,instructions --for-each-cgroup A,B sleep 1
+> >
+> >    Performance counter stats for 'system wide':
+> >
+> >               988.18 msec cpu-clock                 A #    0.987 CPUs utilized
+> >        3,153,761,702      cycles                    A #    3.200 GHz                      (100.00%)
+> >        8,067,769,847      instructions              A #    2.57  insn per cycle           (100.00%)
+> >               982.71 msec cpu-clock                 B #    0.982 CPUs utilized
+> >        3,136,093,298      cycles                    B #    3.182 GHz                      (99.99%)
+> >        8,109,619,327      instructions              B #    2.58  insn per cycle           (99.99%)
+> >
+> >          1.001228054 seconds time elapsed
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
