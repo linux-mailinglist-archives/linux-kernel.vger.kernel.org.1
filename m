@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CC626D47F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BA326D483
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgIQHUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
+        id S1726321AbgIQHUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgIQHUJ (ORCPT
+        with ESMTP id S1726247AbgIQHUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:20:09 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7365CC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:20:09 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t7so796092pjd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:20:09 -0700 (PDT)
+        Thu, 17 Sep 2020 03:20:24 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB64C061788
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:20:22 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k8so659574pfk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:20:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QRIyLtZ6o3VP5j0NQg3mA1t52Fj+F7jjIZuCaV434Cg=;
-        b=ULn0yfGOq/R//vSsUP4iOnvhuzYmEaeUgbMAPc2961ZS5jeg+KZ0CGfJ9FkLMr75Yl
-         r/fiKIxYciaNrl6NgROpW03mh8PUGU+iftEI2XmXgA0EPw8nztV1v4E6iBhTQ/zL6WyO
-         uSRMsgebDkv3+dYNXkepEV+ipn+APPOlJR+bQwpz+SFdVjWps5rtXx0VfKy6t5GwyENy
-         RVVlCdjn2gVNJk4wFQGiCtcLlvZ7gCPX24QQmMY6Y2BSHi9phKfs+KxAruKxN5/bARft
-         DvyvZfB96TMiNSpYidAnFF5j0CqyIfQsi97BOscSRWER7ranrl3oOZRK2YXR0L6gU8Jf
-         lApQ==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=8mZBJ8cLMtckf5ie94vJM9dG4dXSSI5Lejo+Q/gBHh4=;
+        b=emqitvXamm1Zt4kpxTich+8DdlEB5lfs6ctgPWa0EPCVR9Iyj+wLVcTCZ44Z74IjUY
+         94Mj+hbZqt2kyeIzD3SJ1u5sB1MIHi4psCJJgsF8tfoS7tmUTZ5OzCuBFiTkY4d9O9Xl
+         sE6j+kvR4hBDGNAXRH3Jf1laOeVtuJl9IgMUI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QRIyLtZ6o3VP5j0NQg3mA1t52Fj+F7jjIZuCaV434Cg=;
-        b=oC0VTpzdUzCK1ijedwk/yNjAhVnLGiPdcn/FOxEkayLX0a4ykJ3cRQBL/wsTYdvLfm
-         7KSZgZSBGAuUTZySX6yPyfUYl90gCkrsJycK2Ikk9ByGzH7BWtELDoFoIiUd++c6+ZVF
-         Tp5yA5qjISe4xHpprKLLHQkfZor0nmu6nkoo2IddxhFrgs8SqGte/YgwvcuqU4VhL1GG
-         6LoNiXsBgNK9ia6o4+iI6oymGIGvs8FbmZzIaEwIiBh41ffx8Wd/hTQLUsOIGAMfAFjt
-         CTSUh0Lp79iGHIcSVfNkGqqYVl0R/GEHNlDmy28JONP5VeNaRrD+DgIzjotw6KyKrmej
-         mK7g==
-X-Gm-Message-State: AOAM533K4j52mUBRdkYOtpKmcC/nguFNdyuVIRhkeM/rH533z91/rbCx
-        URbRuo4Rs0K9hQzUe059URidrqTgXvhYP1RJTpV7vg==
-X-Google-Smtp-Source: ABdhPJzOyWW3yRxn3eGe452S9xxe1YK/oe3JKSV7avMo9gsRfJp6nhxOCqaAUnA3yQKoVxT8oCicRR+HfjguhpS4Ll0=
-X-Received: by 2002:a17:90a:e609:: with SMTP id j9mr6843624pjy.129.1600327208818;
- Thu, 17 Sep 2020 00:20:08 -0700 (PDT)
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=8mZBJ8cLMtckf5ie94vJM9dG4dXSSI5Lejo+Q/gBHh4=;
+        b=VM1pNbaxJckXoWikznuF6wrzLxiYP7qVZKm4q74HdL+Lx50hxK4+zHtG/daqhgEcno
+         eZXiVAqfj7fYXI+Cpkn9NfqkUjxlIlMxCe4cCYUzPRFYcfVjecPh2Qi/Uo3s4xbC1RFV
+         TMQ6yILIOCWpYIFdYuwfSU5h9WggZQbwiZt5eddb/rIPAleCFXeR3WKCld9hkEX+c8vz
+         UhgU+5FbEV8lmR7ETWpLdVHWTOmaDrn5NM7gcqWng4uGJxM6cIhvV895xorEEc++Q08P
+         +25VuEJJ319f9uWPaV3mtx+jkrh913y+IQEVjb/YyVMzxigNH66Mkw7BFf7s+zkJpL2i
+         F6iw==
+X-Gm-Message-State: AOAM533QkmXdIloSUAXPOPuyLd9ua0otrtEqcwri4lQ8Hm6Jr/bEwTwr
+        UoTqJ8tJoHiC9GgYuNkWYfyBzayCPVZbFg==
+X-Google-Smtp-Source: ABdhPJwXci7bPJVYBFGnOsZ81TDzX4aNaBlsDL4MOUhAzC4BVReOIP1FUogHNHnB3AqHInM5cq0p0Q==
+X-Received: by 2002:a63:d648:: with SMTP id d8mr21375045pgj.4.1600327222184;
+        Thu, 17 Sep 2020 00:20:22 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id 143sm19564027pfc.66.2020.09.17.00.20.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 00:20:21 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200916071950.1493-3-gilad@benyossef.com> <202009162154.fxQ0Z6wT%lkp@intel.com>
-In-Reply-To: <202009162154.fxQ0Z6wT%lkp@intel.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Thu, 17 Sep 2020 10:19:59 +0300
-Message-ID: <CAOtvUMdv9QNVdaU7N6wJVq27Asyrckuu9bf15fO=+oZUh5iKOg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] crypto: ccree - add custom cache params from DT file
-To:     kernel test robot <lkp@intel.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
-        Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1600305963-7659-3-git-send-email-mansur@codeaurora.org>
+References: <1600305963-7659-1-git-send-email-mansur@codeaurora.org> <1600305963-7659-3-git-send-email-mansur@codeaurora.org>
+Subject: Re: [RESEND v2 2/4] venus: core: vote for video-mem path
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Date:   Thu, 17 Sep 2020 00:20:20 -0700
+Message-ID: <160032722036.4188128.15261798942473063496@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hmm...
+Quoting Mansur Alisha Shaik (2020-09-16 18:26:01)
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/pla=
+tform/qcom/venus/core.c
+> index 52a3886..064b6c8 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -363,8 +363,16 @@ static __maybe_unused int venus_runtime_suspend(stru=
+ct device *dev)
+> =20
+>         ret =3D icc_set_bw(core->cpucfg_path, 0, 0);
+>         if (ret)
+> -               return ret;
+> +               goto err_poweron_core;
+> +
+> +       ret =3D icc_set_bw(core->video_path, 0, 0);
+> +       if (ret)
+> +               goto err_poweron_core;
+> +
+> +       return ret;
+> =20
+> +err_poweron_core:
+> +       pm_ops->core_power(dev, POWER_ON);
 
-On Wed, Sep 16, 2020 at 4:48 PM kernel test robot <lkp@intel.com> wrote:
+Don't we need to put back the bandwidth from before suspend was entered
+if the video_path fails?
+
+>         return ret;
+>  }
 >
-> url:    https://github.com/0day-ci/linux/commits/Gilad-Ben-Yossef/add-opt=
-ional-cache-params-from-DT/20200916-152151
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev=
--2.6.git master
-> config: arm64-randconfig-r015-20200916 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 9e38=
-42d60351f986d77dfe0a94f76e4fd895f188)
-> reproduce (this is a W=3D1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
-n/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm64 cross compiling tool for clang build
->         # apt-get install binutils-aarch64-linux-gnu
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross AR=
-CH=3Darm64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> drivers/crypto/ccree/cc_driver.c:120:18: warning: result of comparison=
- of constant 18446744073709551615 with expression of type 'u32' (aka 'unsig=
-ned int') is always false [-Wtautological-constant-out-of-range-compare]
->            cache_params |=3D FIELD_PREP(mask, val);
->                            ^~~~~~~~~~~~~~~~~~~~~
->    include/linux/bitfield.h:94:3: note: expanded from macro 'FIELD_PREP'
->                    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");  =
-  \
->                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/bitfield.h:52:28: note: expanded from macro '__BF_FIELD_=
-CHECK'
->                    BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,       =
-  \
->                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~
->    include/linux/build_bug.h:39:58: note: expanded from macro 'BUILD_BUG_=
-ON_MSG'
->    #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                        ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
->    include/linux/compiler_types.h:319:22: note: expanded from macro 'comp=
-iletime_assert'
->            _compiletime_assert(condition, msg, __compiletime_assert_, __C=
-OUNTER__)
->            ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~
->    include/linux/compiler_types.h:307:23: note: expanded from macro '_com=
-piletime_assert'
->            __compiletime_assert(condition, msg, prefix, suffix)
->            ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/compiler_types.h:299:9: note: expanded from macro '__com=
-piletime_assert'
->                    if (!(condition))                                     =
-  \
->                          ^~~~~~~~~
-
-I am unable to understand this warning. It looks like it is
-complaining about a FIELD_GET sanity check that is always false, which
-makes sense since we're using a constant.
-
-Anyone can enlighten me if I've missed something?
-
-Thanks,
-Gilad
-
-
-
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
-
-values of =CE=B2 will give rise to dom!
