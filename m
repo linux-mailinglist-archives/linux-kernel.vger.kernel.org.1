@@ -2,211 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2745226E91C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDB626E910
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIQWr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:47:57 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:54153 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgIQWrw (ORCPT
+        id S1726055AbgIQWo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgIQWo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:47:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1600382928; x=1631918928;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=442DvRpDFEIcCxIif/4Q8FsTmegEl5WBXsmfapV7ChU=;
-  b=iuWrMmndE5OxB7LI0ELfCiF+rwLkjIovnZkOGfgg3Z+8qfi8uCXwQGJK
-   dWqp9TWeGrhWXeHyv+h+UW5nfxKxn8FXuM+xSgzZ8hBN5J48VrrsJGy4Q
-   ji9WsHTuPysCatFbJAdWsJkjaYvEdShh/wB13SrtUR4xxd5DVpbHg4N3B
-   q/VfKXnCUJ5N9frpHsdUY3Udp8qzhglT54TZeQCx6h4UR0VjPFdth/pI+
-   W2OwUraEwXbnHeWg1mzfDcXG8CgC7vZ3ONjnzJ9hGsptOG2BjIbICX0Nr
-   xFcvWMSq6oPLvplYyPyLcxLUwiFzY8mVUf4G8cB5aeL+h2RyB5vNkhIBU
-   w==;
-IronPort-SDR: XIc4U+VPxayoruXZpi4OIDaXW6cW9/OYw1dgUDDdL33B5jN/ClF+WVtcog7JiGaBY2aoe11d86
- n6/H1A4kZpmig7xNqIAiazbWx30uzA84f8SVeZURevdAMAcQDRq4svdW0MBdHesqwFh0Hy/ZFQ
- wE5LLryf8EJJjdTNQX7PpO5yCjB4+pIgwI0DWvM5r6Jt5PyDhyOd2i61oQwBeRf8SJx29bFFyx
- MJml77sCjyLUbHAieV8AMPmVsuLgVuszLG6LnkK2kxI3+MmGocfcG6j4tSHoDtK0GTv3hcU1rZ
- /V0=
-X-IronPort-AV: E=Sophos;i="5.77,272,1596470400"; 
-   d="scan'208";a="251021100"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Sep 2020 06:38:03 +0800
-IronPort-SDR: L0nhOalOtLtE1ngQNJH0wWxCFHbDmoW+7OVxEfjKVY1x7CXXosKdDH0eHhPWy+LJ7i5oJ3F+sa
- 4Zc42cRCxriQ==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 15:23:57 -0700
-IronPort-SDR: wrXIzonbackQ6e9XZnFifGX9ISPiDEGGrJezt3qkhBAlbQc65qc4Oo3JxmZ3qiEUgdqG4lhSUU
- qiYx3gppgXVw==
-WDCIronportException: Internal
-Received: from use204338.ad.shared (HELO jedi-01.hgst.com) ([10.86.60.39])
-  by uls-op-cesaip02.wdc.com with ESMTP; 17 Sep 2020 15:37:43 -0700
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-efi@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Zong Li <zong.li@sifive.com>
-Subject: [PATCH v8 7/7] RISC-V: Add page table dump support for uefi
-Date:   Thu, 17 Sep 2020 15:37:16 -0700
-Message-Id: <20200917223716.2300238-8-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200917223716.2300238-1-atish.patra@wdc.com>
-References: <20200917223716.2300238-1-atish.patra@wdc.com>
+        Thu, 17 Sep 2020 18:44:27 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A81DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:44:27 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id s14so3405824pju.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=emK8TCQ/AOCbQCaTZuyx4EX1GGlS5xLteCwUhZhZWKs=;
+        b=asVwRODTCKzTMhPdETpQLiZroP91Get/mIBjAac5bezdK+pOzFI4MJpd0T9o9DUYWW
+         Jrgc59dc5QywWAx0/rRfNXXzIp+8G6594T6t/N1pVZVe2h3Q97pV/5VPO3dLx5rXGWbS
+         OUXTBUjCBjdKZPF75UxabZQM0laVCy2zi9SYQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=emK8TCQ/AOCbQCaTZuyx4EX1GGlS5xLteCwUhZhZWKs=;
+        b=ANEAe4ptdrvOQ9s7gsGsHmpYMdEck9Qf5Fqfn5D5v8RfyNqHhla3neC73IqtWmSf0m
+         zetm9xfoVy8ukc4Pw9k6oM786kq+7iMeeBeEg5yW1QU6wz066eF187HMU8eto6W0dqDd
+         CbwQog3WCwmVbawWY+EFaeJuKBRLSdqAumYtue8bWxm7huQKpXGzJNUG38Lgi/TXs3kC
+         z0NZlES6l9aodeTH86TX2fVk7SdDpsZxoKHRYzSE7nZlOQYVcIvNZwagykDhWReEUuah
+         QDgKR9oFYOJL3NGEaG+ESqBBe7vLfKU7xnminX0LlbtraEmQvLuu6cQRy1iQcM8/q90Z
+         ZCpg==
+X-Gm-Message-State: AOAM531OOz7CnnSWqrlgqbAT9EuJ7NqjrUFMkIQsufP4+CNUCMeKsZXc
+        CQ5k07i/VGh/sAjtSTRmyUyUHVdJB5H99A==
+X-Google-Smtp-Source: ABdhPJywypDGBU0fygZ+vRZ0Ah7m+uJXUNioxfPKAcCRYPGZUExxbYZ5CmLJLP3uPld3wN0+0sGN1Q==
+X-Received: by 2002:a17:902:8509:b029:d0:cbe1:e746 with SMTP id bj9-20020a1709028509b02900d0cbe1e746mr29812096plb.33.1600382667062;
+        Thu, 17 Sep 2020 15:44:27 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id l123sm674509pgl.24.2020.09.17.15.44.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 15:44:26 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH] drm/msm/dp: Sleep properly in dp_hpd_handler kthread
+Date:   Thu, 17 Sep 2020 15:44:25 -0700
+Message-Id: <20200917224425.2331583-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the current page table dump support in RISC-V to include efi
-pages as well.
+We shouldn't be waiting for an event here with a timeout of 100ms when
+we're not in the 'timeout' arm of the if condition. Instead we should be
+sleeping in the interruptible state (S) until something happens and we
+need to wakeup. Right now this kthread is running almost all the time
+because it sleeps for 100ms, wakes up, sees there's nothing to do, and
+then starts the process all over again. Looking at top it shows up in
+the D state (uninterruptible) because it uses wait_event_timeout(). FIx
+this up.
 
-Here is the output of efi runtime page table mappings.
-
----[ UEFI runtime start ]---
-0x0000000020002000-0x0000000020003000 0x00000000be732000 4K PTE D A . . . W R V
-0x0000000020018000-0x0000000020019000 0x00000000be738000 4K PTE D A . . . W R V
-0x000000002002c000-0x000000002002d000 0x00000000be73c000 4K PTE D A . . . W R V
-0x0000000020031000-0x0000000020032000 0x00000000bff61000 4K PTE D A . . X W R V
----[ UEFI runtime end ]---
-
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Tanmay Shah <tanmay@codeaurora.org>
+Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+Reported-by: Douglas Anderson <dianders@chromium.org>
+Fixes: 8ede2ecc3e5e ("drm/msm/dp: Add DP compliance tests on Snapdragon Chipsets")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- arch/riscv/mm/ptdump.c | 48 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
 
-diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-index 0831c2e61a8f..ace74dec7492 100644
---- a/arch/riscv/mm/ptdump.c
-+++ b/arch/riscv/mm/ptdump.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2019 SiFive
-  */
- 
-+#include <linux/efi.h>
- #include <linux/init.h>
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
-@@ -49,6 +50,14 @@ struct addr_marker {
- 	const char *name;
- };
- 
-+/* Private information for debugfs */
-+struct ptd_mm_info {
-+	struct mm_struct		*mm;
-+	const struct addr_marker	*markers;
-+	unsigned long base_addr;
-+	unsigned long end;
-+};
-+
- static struct addr_marker address_markers[] = {
- #ifdef CONFIG_KASAN
- 	{KASAN_SHADOW_START,	"Kasan shadow start"},
-@@ -68,6 +77,28 @@ static struct addr_marker address_markers[] = {
- 	{-1, NULL},
- };
- 
-+static struct ptd_mm_info kernel_ptd_info = {
-+	.mm		= &init_mm,
-+	.markers	= address_markers,
-+	.base_addr	= KERN_VIRT_START,
-+	.end		= ULONG_MAX,
-+};
-+
-+#ifdef CONFIG_EFI
-+static struct addr_marker efi_addr_markers[] = {
-+		{ 0,		"UEFI runtime start" },
-+		{ SZ_1G,	"UEFI runtime end" },
-+		{ -1,		NULL }
-+};
-+
-+static struct ptd_mm_info efi_ptd_info = {
-+	.mm		= &efi_mm,
-+	.markers	= efi_addr_markers,
-+	.base_addr	= 0,
-+	.end		= SZ_2G,
-+};
-+#endif
-+
- /* Page Table Entry */
- struct prot_bits {
- 	u64 mask;
-@@ -245,22 +276,22 @@ static void note_page(struct ptdump_state *pt_st, unsigned long addr,
- 	}
- }
- 
--static void ptdump_walk(struct seq_file *s)
-+static void ptdump_walk(struct seq_file *s, struct ptd_mm_info *pinfo)
- {
- 	struct pg_state st = {
- 		.seq = s,
--		.marker = address_markers,
-+		.marker = pinfo->markers,
- 		.level = -1,
- 		.ptdump = {
- 			.note_page = note_page,
- 			.range = (struct ptdump_range[]) {
--				{KERN_VIRT_START, ULONG_MAX},
-+				{pinfo->base_addr, pinfo->end},
- 				{0, 0}
- 			}
+Based on msm-next-dp of https://gitlab.freedesktop.org/drm/msm.git
+
+ drivers/gpu/drm/msm/dp/dp_display.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 05a97e097edf..e175aa3fd3a9 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -970,9 +970,8 @@ static int hpd_event_thread(void *data)
+ 				(dp_priv->event_pndx == dp_priv->event_gndx),
+ 						EVENT_TIMEOUT);
+ 		} else {
+-			wait_event_timeout(dp_priv->event_q,
+-				(dp_priv->event_pndx != dp_priv->event_gndx),
+-						EVENT_TIMEOUT);
++			wait_event_interruptible(dp_priv->event_q,
++				(dp_priv->event_pndx != dp_priv->event_gndx));
  		}
- 	};
- 
--	ptdump_walk_pgd(&st.ptdump, &init_mm, NULL);
-+	ptdump_walk_pgd(&st.ptdump, pinfo->mm, NULL);
- }
- 
- void ptdump_check_wx(void)
-@@ -293,7 +324,7 @@ void ptdump_check_wx(void)
- 
- static int ptdump_show(struct seq_file *m, void *v)
- {
--	ptdump_walk(m);
-+	ptdump_walk(m, m->private);
- 
- 	return 0;
- }
-@@ -308,8 +339,13 @@ static int ptdump_init(void)
- 		for (j = 0; j < ARRAY_SIZE(pte_bits); j++)
- 			pg_level[i].mask |= pte_bits[j].mask;
- 
--	debugfs_create_file("kernel_page_tables", 0400, NULL, NULL,
-+	debugfs_create_file("kernel_page_tables", 0400, NULL, &kernel_ptd_info,
- 			    &ptdump_fops);
-+#ifdef CONFIG_EFI
-+	if (efi_enabled(EFI_RUNTIME_SERVICES))
-+		debugfs_create_file("efi_page_tables", 0400, NULL, &efi_ptd_info,
-+				    &ptdump_fops);
-+#endif
- 
- 	return 0;
- }
+ 		spin_lock_irqsave(&dp_priv->event_lock, flag);
+ 		todo = &dp_priv->event_list[dp_priv->event_gndx];
+
+base-commit: 937f941ca06f2f3ab64baebf31be2c16d57ae7b8
 -- 
-2.25.1
+Sent by a computer, using git, on the internet
 
