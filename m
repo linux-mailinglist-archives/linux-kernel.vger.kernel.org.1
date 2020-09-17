@@ -2,281 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7E426E65B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF6F26E654
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgIQUMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:12:20 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43993 "EHLO mga02.intel.com"
+        id S1726596AbgIQULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:11:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgIQUMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:12:19 -0400
-IronPort-SDR: 2tY9ycn0VWvf0O0X0BMuC7UPQfp8tt+bu01BzLFMr0puH1cvb5bYDknMVjNZOlftZuVu5NjlkT
- KZTjLXzkJxyQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147474447"
-X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
-   d="scan'208";a="147474447"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 13:11:07 -0700
-IronPort-SDR: Dulw3/UigBrpI1SF4kOUdpESkn9gP+p3HHr2H//Lz6ZZ6dCiCb+QPg2To06w+IG/5H2O2KH1ym
- oCXyGvdKXorA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
-   d="scan'208";a="287708040"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by fmsmga007.fm.intel.com with SMTP; 17 Sep 2020 13:11:03 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Thu, 17 Sep 2020 23:11:02 +0300
-Date:   Thu, 17 Sep 2020 23:11:02 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Puthikorn Voravootivat <puthik@chromium.org>
-Cc:     Kevin Chowski <chowski@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Wambui Karuga <wambui.karugax@gmail.com>
-Subject: Re: [Intel-gfx] [PATCH] i915: Introduce quirk for shifting eDP
- brightness.
-Message-ID: <20200917201102.GD6112@intel.com>
-References: <20200917110838.1.I63d52f5b96d7e81e1e2dc2a72c4bf5fd84d3d3d0@changeid>
- <87o8m4uxcn.fsf@intel.com>
- <CANM=9DOn9wvL1RBDhxzawY1rRq0PFUBmKdXUGmG1CygApK1Vyg@mail.gmail.com>
- <CANCcNXc18jEXF+wdLm8sxR3ySR88D8S65a2x_vYtR5ihZ6XnMw@mail.gmail.com>
- <20200917182535.GC6112@intel.com>
+        id S1726236AbgIQULl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 16:11:41 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46EC6206B7;
+        Thu, 17 Sep 2020 20:11:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600373484;
+        bh=U/TSXspbUHQHp2IjHc8xcgoC/95vhBzwyLQ+rvvEyUU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=WAuVWb5n0Y0idAVKi6/3xBq7O6nIQjGkrHzP/QC/mAnVhT+DkBdtjV4wkcmrdPa7E
+         VzLP3NvEwLSXZWkth1Mo3c7xZx5knRzPXZL/Zrt4tdjUmjX0tGwUijVcts7O5e67uz
+         Ew0dxDpkOIliI5OhcTUKMBG2ld9OG3Q987ml6HZg=
+Date:   Thu, 17 Sep 2020 15:11:23 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, frederic@kernel.org,
+        mtosatti@redhat.com, sassmann@redhat.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
+        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        thomas.lendacky@amd.com, jerinj@marvell.com,
+        mathias.nyman@intel.com, jiri@nvidia.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
+ hosekeeping CPUs
+Message-ID: <20200917201123.GA1726926@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200917182535.GC6112@intel.com>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200909150818.313699-2-nitesh@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 09:25:35PM +0300, Ville Syrjälä wrote:
-> On Thu, Sep 17, 2020 at 11:14:43AM -0700, Puthikorn Voravootivat wrote:
-> > The Lyude fde7266fb2f6 change is actually based on Chromium change
-> > (https://crrev.com/c/1650325) that fixes the brightness for Samsung
-> > Galaxy Chromebook. So currently we have 2 examples that use LSB
-> > interpretation and 1 that use MSB.
+[+cc Ingo, Peter, Juri, Vincent (scheduler maintainers)]
+
+s/hosekeeping/housekeeping/ (in subject)
+
+On Wed, Sep 09, 2020 at 11:08:16AM -0400, Nitesh Narayan Lal wrote:
+> Introduce a new API num_housekeeping_cpus(), that can be used to retrieve
+> the number of housekeeping CPUs by reading an atomic variable
+> __num_housekeeping_cpus. This variable is set from housekeeping_setup().
 > 
-> "If field 4:0 of the EDP_PWMGEN_BIT_COUNT register represents a value
-> of greater than 8 and the BACKLIGHT_BRIGHTNESS_BYTE_COUNT bit
-> is cleared to 0, only the 8 MSB of the brightness control value can be
-> controlled.
-> (See Note below.)
-> Assigned bits are allocated to the MSB of the enabled register
-> combination."
+> This API is introduced for the purpose of drivers that were previously
+> relying only on num_online_cpus() to determine the number of MSIX vectors
+> to create. In an RT environment with large isolated but a fewer
+> housekeeping CPUs this was leading to a situation where an attempt to
+> move all of the vectors corresponding to isolated CPUs to housekeeping
+> CPUs was failing due to per CPU vector limit.
+
+Totally kibitzing here, but AFAICT the concepts of "isolated CPU" and
+"housekeeping CPU" are not currently exposed to drivers, and it's not
+completely clear to me that they should be.
+
+We have carefully constructed notions of possible, present, online,
+active CPUs, and it seems like whatever we do here should be
+somehow integrated with those.
+
+> If there are no isolated CPUs specified then the API returns the number
+> of all online CPUs.
 > 
-> I think that's pretty clear the assigned bits are supposed to be
-> msb aligned.
-
-I guess there's some email issues happening, but just to clarify:
-
-When the spec says MSB in caps here it clearly means
-"most significant-bit(s)" since otherwise "8 MSB" would not make
-any sense in the context of a 2 byte value.
-
-Granted the spec is crap here since "Table 1-1: Acronyms and
-Initialism" does claim "MSB" should be byte(s) and "msb" bit(s).
-
-Also I can't imagine anyone would allocate the bits starting
-from the lsb when the whole thing is clearly supposed to be a
-16bit big endian integer. So with >8 assigned bits you'd end
-up with crazy stuff like this:
-
-[ 7 ... 0 ][7   ...   0]
-[ 8 MSB   ][XXXX][N LSB]
-
-so you couldn't even treat the value as a regular big endian
-thing. Instead, if you squint a bit, it now looks like a funky
-little endian value. So we're deep into some mixed endian land
-where nothing makes sense anymore.
-
-Anyways I think the code should simply do this to match the spec:
-u16 value = brightness << (16 - num_assigned_bits);
-val[0] = value >> 8;
-val[1] = value & 0xff;
-
-
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> ---
+>  include/linux/sched/isolation.h |  7 +++++++
+>  kernel/sched/isolation.c        | 23 +++++++++++++++++++++++
+>  2 files changed, 30 insertions(+)
 > 
-> > 
-> > 
-> > On Thu, Sep 17, 2020 at 10:55 AM Kevin Chowski <chowski@chromium.org> wrote:
-> > >
-> > > Apologies for being too vague. To be as precise I can be, here is the
-> > > specific code delta I tested: https://crrev.com/c/2406616 . To answer
-> > > your other question, the code I tested against is indeed including the
-> > > fde7266fb2f6 (despite ostensibly being called 5.4 in my commit
-> > > message): our current top-of-tree for our 5.4 branch includes the
-> > > intel_dp_aux_calc_max_backlight logic. Further, I'll note that change
-> > > is exactly the change which breaks my Pixelbook model: prior to the
-> > > change, the max_brightness was hard-coded to 0xFFFF and the math
-> > > worked out that it didn't matter that the hardware cared about the MSB
-> > > despite the driver code caring about the LSB.
-> > >
-> > > To answer Ville's question: the fde7266fb2f6 change which fixes one
-> > > laptop (I believe Thinkpad X1 extreme Gen 2, from some bug reports I
-> > > dug up) and breaks another (Pixelbook); so unfortunately I believe we
-> > > need a quirk at least for some laptop. Reading through the copy of the
-> > > datasheet I have, it wasn't clear to me which was the correct
-> > > interpretation. I'm cc'ing puthik@, who was leaning toward the current
-> > > kernel code (caring about LSB) being the correct interpretation. I
-> > > believe we have other chromebooks which do rely on LSB functionality,
-> > > so unless we can find more examples of laptops wanting MSB it
-> > > currently looks like Pixelbook is the outlier.
-> > >
-> > > On Thu, Sep 17, 2020 at 11:28 AM Jani Nikula
-> > > <jani.nikula@linux.intel.com> wrote:
-> > > >
-> > > > On Thu, 17 Sep 2020, Kevin Chowski <chowski@chromium.org> wrote:
-> > > > > We have observed that Google Pixelbook's backlight hardware is
-> > > > > interpretting these backlight bits from the most-significant side of the
-> > > > > 16 bit word (if DP_EDP_PWMGEN_BIT_COUNT < 16), whereas the driver code
-> > > > > assumes the peripheral cares about the least-significant bits.
-> > > > >
-> > > > > Testing was done from within Chrome OS's build environment when the
-> > > > > patch is backported to 5.4 (the version we are newly targeting for the
-> > > > > Pixelbook); for the record:
-> > > > >    $ emerge-eve-kernelnext sys-kernel/chromeos-kernel-5_4 && \
-> > > > >       ./update_kernel.sh --remote=$IP
-> > > > >
-> > > > > I used `/sys/kernel/debug/dri/0/eDP-1/i915_dpcd` on my laptop to verify
-> > > > > that the registers were being set according to what the actual hardware
-> > > > > expects; I also observe that the backlight is noticeably brighter with
-> > > > > this patch.
-> > > >
-> > > > It's unclear to me what kernel version this is against, and what you've
-> > > > actually tested.
-> > > >
-> > > > Have you tried v5.7 kernel with Lyude's fde7266fb2f6 ("drm/i915: Fix eDP
-> > > > DPCD aux max backlight calculations")?
-> > > >
-> > > > I just want to make sure you've tested with all the relevant fixes
-> > > > before adding quirks.
-> > > >
-> > > > BR,
-> > > > Jani.
-> > > >
-> > > > >
-> > > > > Signed-off-by: Kevin Chowski <chowski@chromium.org>
-> > > > > ---
-> > > > >
-> > > > >  .../drm/i915/display/intel_dp_aux_backlight.c | 34 +++++++++++++++++++
-> > > > >  drivers/gpu/drm/i915/display/intel_quirks.c   | 13 +++++++
-> > > > >  drivers/gpu/drm/i915/i915_drv.h               |  1 +
-> > > > >  3 files changed, 48 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> > > > > index acbd7eb66cbe3..99c98f217356d 100644
-> > > > > --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> > > > > +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> > > > > @@ -91,6 +91,23 @@ static u32 intel_dp_aux_get_backlight(struct intel_connector *connector)
-> > > > >       if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT)
-> > > > >               level = (read_val[0] << 8 | read_val[1]);
-> > > > >
-> > > > > +     if (i915->quirks & QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS) {
-> > > > > +             if (!drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
-> > > > > +                                             &read_val[0])) {
-> > > > > +                     DRM_DEBUG_KMS("Failed to read DPCD register 0x%x\n",
-> > > > > +                                     DP_EDP_PWMGEN_BIT_COUNT);
-> > > > > +                     return 0;
-> > > > > +             }
-> > > > > +             // Only bits 4:0 are used, 7:5 are reserved.
-> > > > > +             read_val[0] = read_val[0] & 0x1F;
-> > > > > +             if (read_val[0] > 16) {
-> > > > > +                     DRM_DEBUG_KMS("Invalid DP_EDP_PWNGEN_BIT_COUNT 0x%X, expected at most 16\n",
-> > > > > +                                             read_val[0]);
-> > > > > +                     return 0;
-> > > > > +             }
-> > > > > +             level >>= 16 - read_val[0];
-> > > > > +     }
-> > > > > +
-> > > > >       return level;
-> > > > >  }
-> > > > >
-> > > > > @@ -106,6 +123,23 @@ intel_dp_aux_set_backlight(const struct drm_connector_state *conn_state, u32 lev
-> > > > >       struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> > > > >       u8 vals[2] = { 0x0 };
-> > > > >
-> > > > > +     if (i915->quirks & QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS) {
-> > > > > +             if (!drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
-> > > > > +                                             &vals[0])) {
-> > > > > +                     DRM_DEBUG_KMS("Failed to write aux backlight level: Failed to read DPCD register 0x%x\n",
-> > > > > +                                       DP_EDP_PWMGEN_BIT_COUNT);
-> > > > > +                     return;
-> > > > > +             }
-> > > > > +             // Only bits 4:0 are used, 7:5 are reserved.
-> > > > > +             vals[0] = vals[0] & 0x1F;
-> > > > > +             if (vals[0] > 16) {
-> > > > > +                     DRM_DEBUG_KMS("Failed to write aux backlight level: Invalid DP_EDP_PWNGEN_BIT_COUNT 0x%X, expected at most 16\n",
-> > > > > +                                             vals[0]);
-> > > > > +                     return;
-> > > > > +             }
-> > > > > +             level <<= (16 - vals[0]) & 0xFFFF;
-> > > > > +     }
-> > > > > +
-> > > > >       vals[0] = level;
-> > > > >
-> > > > >       /* Write the MSB and/or LSB */
-> > > > > diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c b/drivers/gpu/drm/i915/display/intel_quirks.c
-> > > > > index 46beb155d835f..63b27d49b2864 100644
-> > > > > --- a/drivers/gpu/drm/i915/display/intel_quirks.c
-> > > > > +++ b/drivers/gpu/drm/i915/display/intel_quirks.c
-> > > > > @@ -53,6 +53,16 @@ static void quirk_increase_ddi_disabled_time(struct drm_i915_private *i915)
-> > > > >       drm_info(&i915->drm, "Applying Increase DDI Disabled quirk\n");
-> > > > >  }
-> > > > >
-> > > > > +/*
-> > > > > + * Some eDP backlight hardware uses the most-significant bits of the brightness
-> > > > > + * register, so brightness values must be shifted first.
-> > > > > + */
-> > > > > +static void quirk_shift_edp_backlight_brightness(struct drm_i915_private *i915)
-> > > > > +{
-> > > > > +     i915->quirks |= QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS;
-> > > > > +     DRM_INFO("Applying shift eDP backlight brightness quirk\n");
-> > > > > +}
-> > > > > +
-> > > > >  struct intel_quirk {
-> > > > >       int device;
-> > > > >       int subsystem_vendor;
-> > > > > @@ -156,6 +166,9 @@ static struct intel_quirk intel_quirks[] = {
-> > > > >       /* ASRock ITX*/
-> > > > >       { 0x3185, 0x1849, 0x2212, quirk_increase_ddi_disabled_time },
-> > > > >       { 0x3184, 0x1849, 0x2212, quirk_increase_ddi_disabled_time },
-> > > > > +
-> > > > > +     /* Google Pixelbook */
-> > > > > +     { 0x591E, 0x8086, 0x2212, quirk_shift_edp_backlight_brightness },
-> > > > >  };
-> > > > >
-> > > > >  void intel_init_quirks(struct drm_i915_private *i915)
-> > > > > diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-> > > > > index e4f7f6518945b..cc93bede4fab8 100644
-> > > > > --- a/drivers/gpu/drm/i915/i915_drv.h
-> > > > > +++ b/drivers/gpu/drm/i915/i915_drv.h
-> > > > > @@ -525,6 +525,7 @@ struct i915_psr {
-> > > > >  #define QUIRK_PIN_SWIZZLED_PAGES (1<<5)
-> > > > >  #define QUIRK_INCREASE_T12_DELAY (1<<6)
-> > > > >  #define QUIRK_INCREASE_DDI_DISABLED_TIME (1<<7)
-> > > > > +#define QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS (1<<8)
-> > > > >
-> > > > >  struct intel_fbdev;
-> > > > >  struct intel_fbc_work;
-> > > >
-> > > > --
-> > > > Jani Nikula, Intel Open Source Graphics Center
-> 
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> index cc9f393e2a70..94c25d956d8a 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -25,6 +25,7 @@ extern bool housekeeping_enabled(enum hk_flags flags);
+>  extern void housekeeping_affine(struct task_struct *t, enum hk_flags flags);
+>  extern bool housekeeping_test_cpu(int cpu, enum hk_flags flags);
+>  extern void __init housekeeping_init(void);
+> +extern unsigned int num_housekeeping_cpus(void);
+>  
+>  #else
+>  
+> @@ -46,6 +47,12 @@ static inline bool housekeeping_enabled(enum hk_flags flags)
+>  static inline void housekeeping_affine(struct task_struct *t,
+>  				       enum hk_flags flags) { }
+>  static inline void housekeeping_init(void) { }
+> +
+> +static unsigned int num_housekeeping_cpus(void)
+> +{
+> +	return num_online_cpus();
+> +}
+> +
+>  #endif /* CONFIG_CPU_ISOLATION */
+>  
+>  static inline bool housekeeping_cpu(int cpu, enum hk_flags flags)
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 5a6ea03f9882..7024298390b7 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -13,6 +13,7 @@ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+>  EXPORT_SYMBOL_GPL(housekeeping_overridden);
+>  static cpumask_var_t housekeeping_mask;
+>  static unsigned int housekeeping_flags;
+> +static atomic_t __num_housekeeping_cpus __read_mostly;
+>  
+>  bool housekeeping_enabled(enum hk_flags flags)
+>  {
+> @@ -20,6 +21,27 @@ bool housekeeping_enabled(enum hk_flags flags)
+>  }
+>  EXPORT_SYMBOL_GPL(housekeeping_enabled);
+>  
+> +/*
+> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
+> + *
+> + * This function returns the number of available housekeeping CPUs
+> + * based on __num_housekeeping_cpus which is of type atomic_t
+> + * and is initialized at the time of the housekeeping setup.
+> + */
+> +unsigned int num_housekeeping_cpus(void)
+> +{
+> +	unsigned int cpus;
+> +
+> +	if (static_branch_unlikely(&housekeeping_overridden)) {
+> +		cpus = atomic_read(&__num_housekeeping_cpus);
+> +		/* We should always have at least one housekeeping CPU */
+> +		BUG_ON(!cpus);
+> +		return cpus;
+> +	}
+> +	return num_online_cpus();
+> +}
+> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
+> +
+>  int housekeeping_any_cpu(enum hk_flags flags)
+>  {
+>  	int cpu;
+> @@ -131,6 +153,7 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
+>  
+>  	housekeeping_flags |= flags;
+>  
+> +	atomic_set(&__num_housekeeping_cpus, cpumask_weight(housekeeping_mask));
+>  	free_bootmem_cpumask_var(non_housekeeping_mask);
+>  
+>  	return 1;
 > -- 
-> Ville Syrjälä
-> Intel
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
-
--- 
-Ville Syrjälä
-Intel
+> 2.27.0
+> 
