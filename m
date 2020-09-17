@@ -2,154 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DAD26DAA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB36226DAA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgIQLqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
+        id S1726806AbgIQLqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbgIQLoP (ORCPT
+        with ESMTP id S1726897AbgIQLoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:44:15 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C6EC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:44:13 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id b79so1710025wmb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:44:13 -0700 (PDT)
+        Thu, 17 Sep 2020 07:44:32 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168C2C06174A;
+        Thu, 17 Sep 2020 04:44:32 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id e16so1726802wrm.2;
+        Thu, 17 Sep 2020 04:44:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q/xNh3KK7BcpDa/un4n60xPyDcwsxLG5qRFTw4dutHI=;
-        b=mw2CaSdDgO2djAMShMNS+yV5rBMcw37ffv1hnAUlPtneAb/Spmn/TuGEh3Q3kNrI+d
-         okiHJyzCYoYYz6zAWHpaqzvMvLl4mADzo1Kw5gD6IbwVN7bPhftUsKuDfW8U7GRXo/Fh
-         +p75QvjR8tsdFqKwTSq2jhQieyrGaQGkJDK6zSQTsuVT9cTyBJOVfGoikhz4PmVyy+lj
-         beXtLcvhmuCcqxphryNnrFiRCXGJGfWyym6gEh/Hn3imxC6Xsz1IiqI+E6HZFRM8TynB
-         6OYVwfW9r54d1gIu8c3n2gdOLnBiMFRey06OGNLQEdlkZhhiT2w7ZFEkQ9FzUKjgSCYX
-         JcTQ==
+         :content-disposition:in-reply-to:user-agent;
+        bh=1GGN+6G9krYwS7+4QvPgXEXU18pdubW8T8iKUwUjjrQ=;
+        b=T+yMaGF8K5wCJIbw9pclQq+HMf7igC/UWJtToVnFwpH3pK3DAMLo1YCSaiaYQ0E48E
+         wurSf10yYVffLUfvcjByog8k3JXMMNZUIEGi7Q3Q2UvDpfl0ajVIINZdyA9ZCD3whQ6w
+         PfOt6Q0ArjJGDrDqcqhalMxYBUNFtmuBKjkQkE/6h4wJu0PFr35bCq5WwrCnBS9abSDK
+         L1mq5H/4EXAXv/flvhiMQ3KR6SM+RqGlRjuJSpjth81V6S/Y/Ryph0YENiJa6iuBsEsU
+         q/12LhZYzb1sV24D2n7ik1P6dA/SYsY6B9eCtafvt5Y1tIHwKznU/FmT+Yen3y9Va5v8
+         6jSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q/xNh3KK7BcpDa/un4n60xPyDcwsxLG5qRFTw4dutHI=;
-        b=RbtwgYoxXVIL/el+Ak9hdufo+DC0bGnffNDuql76MFYULaSER2QsNvWCn1ys1SSvwK
-         /+aDUMgnKgDIPhptiC0fWTgVb8aM7vOYNCSE2cZ8tbulnA/ReNboG6gr5LtBLrxhbTf8
-         YTY6Cv4EMT97zhStMlrS+DMczjsZJH9dRyQnfTduLIMRGvlgOmpGnsNQDTTz5p6vj7cY
-         ozPOS7NVt92gjekf3cw0T2TBx+XOEdIQ5M+TKPOkkgX5Cm0wzy7d8dq/6JJDKoZQToIT
-         qAwdgkDbEoTp6kCIwkV1NZzko2mph0UyOKm8O5MHQBLye/FzkjuXyK8LBx9pSB1t9gwd
-         ZwNg==
-X-Gm-Message-State: AOAM530N3459H+dsxdpmjkIkBuGtEX0FlrVc3Mo9d8a6+FNzXbBiVqON
-        g5IlL+GM8jC2lZQA6qhlftWLRQ==
-X-Google-Smtp-Source: ABdhPJxorxK4ik5Io6/q+rnDtp1V2PR0T3H03RS5/LrOQIskiZ3SLWoGSEoc7BKLAGuaQaOOmF3kow==
-X-Received: by 2002:a7b:cb07:: with SMTP id u7mr9211873wmj.57.1600343052160;
-        Thu, 17 Sep 2020 04:44:12 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:7220:84ff:fe09:a3aa])
-        by smtp.gmail.com with ESMTPSA id m18sm10538595wmg.32.2020.09.17.04.44.11
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1GGN+6G9krYwS7+4QvPgXEXU18pdubW8T8iKUwUjjrQ=;
+        b=ISoCho3sY6iw2k47U8rGlWxFuz4a6wUe6wwdCJRWS1AATdNKk5yFhxUWDmilX+VyPu
+         /T58DCc8egAOETd/Jagf2hNIcCT1UGS1T+pMeRqERkFN6KbHL0dL7t7tLmkbkRdnzdyw
+         ULP2uq9uRIzapeTHnwpanLjY/nQTYTjgQfoUlKEE2/rdxaGRE2cvjKaxFbWIl7tFu8RW
+         UbKG0myG7pRKQEExsKy0wTrGeo01Z6p6hRuQUl0F1s3E3Ko/yRfePiZ7M3K9IYDkb/7Q
+         wbp5yipJlSCNmh0mNFt0i0czGQIOvR5p/V5vxIoEsDzPcr64npLFZZt9VFBmdIB7pbfq
+         3S9w==
+X-Gm-Message-State: AOAM530rbJu7d4Mhq4ApSHyifXaHdWXT3sbuplrMO1y8keid2ynjfraB
+        6/xLEbfQRYS5qyIUpNPh1Dw=
+X-Google-Smtp-Source: ABdhPJxQFm8GwF7T0Z3hRvcm495YnZgcjLmtrXk1yvWUkZMQ8QFbDAwJSI7ZbDhyShvnl4vPamrGyA==
+X-Received: by 2002:a5d:5307:: with SMTP id e7mr8654031wrv.215.1600343070824;
+        Thu, 17 Sep 2020 04:44:30 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id g8sm10616789wmd.12.2020.09.17.04.44.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 04:44:11 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 12:44:11 +0100
-From:   Matthias Maennich <maennich@google.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gprocida@google.com, kernel-team@android.com
-Subject: Re: [PATCH] ehci-hcd: Move include to keep CRC stable
-Message-ID: <20200917114411.GB3897889@google.com>
-References: <20200916171825.3228122-1-qperret@google.com>
+        Thu, 17 Sep 2020 04:44:29 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 13:44:27 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 20/34] i2c: tegra: Remove "dma" variable from
+ tegra_i2c_xfer_msg()
+Message-ID: <20200917114427.GY3515672@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-21-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Tln/wzp9jsNjmSUr"
 Content-Disposition: inline
-In-Reply-To: <20200916171825.3228122-1-qperret@google.com>
+In-Reply-To: <20200908224006.25636-21-digetx@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 06:18:25PM +0100, Quentin Perret wrote:
->The CRC calculation done by genksyms is triggered when the parser hits
->EXPORT_SYMBOL*() macros. At this point, genksyms recursively expands the
->types of the function parameters, and uses that as the input for the CRC
->calculation. In the case of forward-declared structs, the type expands
->to 'UNKNOWN'. Following this, it appears that the result of the
->expansion of each type is cached somewhere, and seems to be re-used
->when/if the same type is seen again for another exported symbol in the
->same C file.
->
->Unfortunately, this can cause CRC 'stability' issues when a struct
->definition becomes visible in the middle of a C file. For example, let's
->assume code with the following pattern:
->
->    struct foo;
->
->    int bar(struct foo *arg)
->    {
->	/* Do work ... */
->    }
->    EXPORT_SYMBOL_GPL(bar);
->
->    /* This contains struct foo's definition */
->    #include "foo.h"
->
->    int baz(struct foo *arg)
->    {
->	/* Do more work ... */
->    }
->    EXPORT_SYMBOL_GPL(baz);
->
->Here, baz's CRC will be computed using the expansion of struct foo that
->was cached after bar's CRC calculation ('UNKOWN' here). But if
->EXPORT_SYMBOL_GPL(bar) is removed from the file (because of e.g. symbol
->trimming using CONFIG_TRIM_UNUSED_KSYMS), struct foo will be expanded
->late, during baz's CRC calculation, which now has visibility over the
->full struct definition, hence resulting in a different CRC for baz.
->
->The proper fix for this certainly is in genksyms, but that will take me
->some time to get right. In the meantime, we have seen one occurrence of
->this in the ehci-hcd code which hits this problem because of the way it
->includes C files halfway through the code together with an unlucky mix
->of symbol trimming.
->
->In order to workaround this, move the include done in ehci-hub.c early
->in ehci-hcd.c, hence making sure the struct definitions are visible to
->the entire file. This improves CRC stability of the ehci-hcd exports
->even when symbol trimming is enabled.
->
->Signed-off-by: Quentin Perret <qperret@google.com>
 
-Reviewed-by: Matthias Maennich <maennich@google.com>
+--Tln/wzp9jsNjmSUr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
-Matthias
+On Wed, Sep 09, 2020 at 01:39:52AM +0300, Dmitry Osipenko wrote:
+> The "dma" variable of tegra_i2c_xfer_msg() function doesn't bring much in
+> regards to readability and generation of the code.
+>=20
+> Besides readability, it's also not very nice that the is_curr_dma_xfer
+> is initialized in tegra_i2c_xfer_msg() and then could be overridden by
+> tegra_i2c_config_fifo_trig(). In a result, the "dma" variable creates
+> slight confusion since it's not instantly obvious why it's set after
+> tegra_i2c_config_fifo_trig().
+>=20
+> Hence should be better to have the variable removed. This makes code
+> more consistent.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
 
->---
-> drivers/usb/host/ehci-hcd.c | 1 +
-> drivers/usb/host/ehci-hub.c | 1 -
-> 2 files changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
->index 6257be4110ca..3575b7201881 100644
->--- a/drivers/usb/host/ehci-hcd.c
->+++ b/drivers/usb/host/ehci-hcd.c
->@@ -22,6 +22,7 @@
-> #include <linux/interrupt.h>
-> #include <linux/usb.h>
-> #include <linux/usb/hcd.h>
->+#include <linux/usb/otg.h>
-> #include <linux/moduleparam.h>
-> #include <linux/dma-mapping.h>
-> #include <linux/debugfs.h>
->diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
->index ce0eaf7d7c12..087402aec5cb 100644
->--- a/drivers/usb/host/ehci-hub.c
->+++ b/drivers/usb/host/ehci-hub.c
->@@ -14,7 +14,6 @@
->  */
->
-> /*-------------------------------------------------------------------------*/
->-#include <linux/usb/otg.h>
->
-> #define	PORT_WAKE_BITS	(PORT_WKOC_E|PORT_WKDISC_E|PORT_WKCONN_E)
->
->-- 
->2.28.0.618.gf4bc123cb7-goog
->
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--Tln/wzp9jsNjmSUr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jTBsACgkQ3SOs138+
+s6G1HQ//X2i75V4eshvomPdZxueOPlRm94R+wDAKAPtQvOlwON++lsuhDyUY5jSG
+8g+XLWb9KUmIWl9ZS/hItiD0OfPWyssa1yoIqGp7FIL5RZooCfJjRhf2bf7Bp8cC
+xdheoPdHxpAGEb23UQ0tt55RsJLmsxu0wde3WXnmMzxw2ApMo4SOAngkFQLYldA5
+POOen4bcCGQuAx2JaJPqIbzft+G/tC9smaoH1hdsifNOHoRa6yetXvXTLw4VYmUv
+VdiyK2KXZXR6sSZk0fS8XSL5wZEqPbs4YXpkcr3rnXewP/BHMkpnWSYoLZbVzxiE
+CnBB2XI83qdAJBUfyqP+mQ7AE9MRRXzR++yze8h+TaXbAF+957Xo0VadaES9lTLe
+tifsCA7ImTKtB9h7G/YjJnpxaKQUtODChzF4aIQX3I/0oDLlnzeBShMngCRlPZ+b
+mJ0smwdlGtk/F+i2IdtcRr4gWNf9JI/Exvqsjz4BnwR+5FBAs3Ou7KLgscrXIROP
++2sCzrXAYd6pDjypICEyNjb9w1iwMRy7rxVa5dcPglfTbd0keJZiQ63WE2Y8kyEb
+SpAFhxhtzYmlksvHj/pDng+9tJu2deJL6Fqr1GiYDWI39yhIiqUCDr9v7IO0xOs5
+9FTQCBATFaRLR04hh2E2RDZVneKhawDYVZFQUaTaH1vjB3jv14M=
+=wy4C
+-----END PGP SIGNATURE-----
+
+--Tln/wzp9jsNjmSUr--
