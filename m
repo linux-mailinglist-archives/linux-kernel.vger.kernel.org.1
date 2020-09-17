@@ -2,122 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959A426D321
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E51926D327
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgIQFbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgIQFaB (ORCPT
+        id S1726380AbgIQFbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:31:25 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:35159 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726106AbgIQFbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:30:01 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E1CC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:30:00 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id dj20so769198qvb.23
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:30:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=7nkg26OctKifdMOC9ynUWWxtGcGNDDYGKPUOkQnY3w4=;
-        b=U8+7NojOYti39Ndb55+oUUZODqy28ZqLq7usV9TXykszcGEUcIaGxINuFHmsczZGR7
-         y3wcHneEG/GwcGYsVuZMKJ+g9s0sobZain0ZpNeEFZSTsEnGN0pzzxhPMQ91tuiK/Nup
-         9WDvmOCD3KN87jlt8fRKIkSIjWrAoNOmpr8qgqhh8bagUQFzGsKXIm/d9isNsvnlgfpg
-         7k5JtoN2e3/t7abbv2N93nlK2oM1cH9K2AHDBwBrL/6i0dC/NVGtO1Ud1U3EULXSdAwz
-         7Ki8K6qrbYU7amPKnroGPJbyzTbgWoQrn3oFgmtWFzphOboIuE1mAKVwaABQj7YiDt5X
-         ZsgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=7nkg26OctKifdMOC9ynUWWxtGcGNDDYGKPUOkQnY3w4=;
-        b=gQ+J18pEBaUeQU0Bg14KkHl+Fv7wlqycaclV4/6ssIziJcmc+zMpuUtVBeY6pGqyFy
-         8LPYXr7bpjdJy6Qho3TNCEkcT+xEK/QlJN7VlQgXsA6OyCOgX7d4dkcMBbUnkVtO04Kr
-         +G7NhXpt9UFm5RMTZMfDC1piF0F5LZ0uB1owZS3kvunDT9cN4X7ROHeTs64fEsXkpiIK
-         WnRB46jJmvKEXLwsZYEy/Oj6Dq5gs06nw+wOsI3AHqjBecKQgDygcTIRFWnZ6HQc9xNP
-         4VVfKfN6m+J79ksCNw4C2s0n7Ba12da1lgloBKE2utwZ5F5z5nLEhrvA0ySTeSDgvhYy
-         +R3Q==
-X-Gm-Message-State: AOAM531nJ8qQV1qTvwO4ZpKLqBsQunaHxKJp8MfxQh23JSUR1bvgqnlb
-        jJr15B9huX1c6tvAc66Dx7G/beTCtMi3IW45XA==
-X-Google-Smtp-Source: ABdhPJx9ZmYekTuJ/BhlyqGQ4czVqNMFjtGq/Gk82PXi4hOOI1yccVgQZUa5Uncin2WGcIFeqGQy/QNzj8A0cEkccA==
-X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
- (user=howardchung job=sendgmr) by 2002:a0c:e0c3:: with SMTP id
- x3mr10242050qvk.43.1600320599505; Wed, 16 Sep 2020 22:29:59 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 13:29:41 +0800
-In-Reply-To: <20200917132836.BlueZ.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
-Message-Id: <20200917132836.BlueZ.4.I3774a8f0d748c7c6ec3402c4adcead32810c9164@changeid>
-Mime-Version: 1.0
-References: <20200917132836.BlueZ.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [BlueZ PATCH 4/6] Bluetooth: Handle system suspend resume case
-From:   Howard Chung <howardchung@google.com>
-To:     linux-bluetooth@vger.kernel.org
-Cc:     mcchou@chromium.org, marcel@holtmann.org, mmandlik@chromium.org,
-        howardchung@google.com, luiz.dentz@gmail.com, alainm@chromium.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 17 Sep 2020 01:31:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0U9BclBt_1600320673;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U9BclBt_1600320673)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 17 Sep 2020 13:31:14 +0800
+Subject: Re: [PATCH v1] atomisp:pci/runtime/queue: modify the return error
+ value
+To:     Xiaoliang Pang <dawning.pang@gmail.com>, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org
+Cc:     alexander.deucher@amd.com, evan.quan@amd.com,
+        christian.koenig@amd.com, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200917034451.20897-1-dawning.pang@gmail.com>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <75262d3f-eeb6-5531-a93d-85376236774a@linux.alibaba.com>
+Date:   Thu, 17 Sep 2020 13:31:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200917034451.20897-1-dawning.pang@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds code to handle the system suspension during interleave
-scan. The interleave scan will be canceled when the system is going to
-sleep, and will be restarted after waking up.
+LGTM.
 
-Signed-off-by: Howard Chung <howardchung@google.com>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
-Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
----
+Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
- net/bluetooth/hci_request.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 89443b48d90ce..d9082019b6386 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1081,6 +1081,9 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
- 		filter_policy |= 0x02;
- 
- 	if (hdev->suspended) {
-+		/* Block suspend notifier on response */
-+		set_bit(SUSPEND_SCAN_ENABLE, hdev->suspend_tasks);
-+
- 		window = hdev->le_scan_window_suspend;
- 		interval = hdev->le_scan_int_suspend;
- 	} else if (hci_is_le_conn_scanning(hdev)) {
-@@ -1167,10 +1170,8 @@ static void hci_req_config_le_suspend_scan(struct hci_request *req)
- 		hci_req_add_le_scan_disable(req, false);
- 
- 	/* Configure params and enable scanning */
--	hci_req_add_le_passive_scan(req);
-+	__hci_update_background_scan(req);
- 
--	/* Block suspend notifier on response */
--	set_bit(SUSPEND_SCAN_ENABLE, req->hdev->suspend_tasks);
- }
- 
- static void cancel_adv_timeout(struct hci_dev *hdev)
-@@ -1282,8 +1283,10 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 		hci_req_add(&req, HCI_OP_WRITE_SCAN_ENABLE, 1, &page_scan);
- 
- 		/* Disable LE passive scan if enabled */
--		if (hci_dev_test_flag(hdev, HCI_LE_SCAN))
-+		if (hci_dev_test_flag(hdev, HCI_LE_SCAN)) {
-+			cancel_interleave_scan(hdev);
- 			hci_req_add_le_scan_disable(&req, false);
-+		}
- 
- 		/* Mark task needing completion */
- 		set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+On 9/17/20 11:44 AM, Xiaoliang Pang wrote:
+> modify the return error value is -EDOM
+> 
+> Fixes: 2cac05dee6e30("drm/amd/powerplay: add the hw manager for vega12 (v4)")
+> Cc: Evan Quan <evan.quan@amd.com>
+> Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
+> ---
+>   .../staging/media/atomisp/pci/runtime/queue/src/queue_access.c  | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue_access.c b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue_access.c
+> index fdca743c4ab7..424e7a15a389 100644
+> --- a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue_access.c
+> +++ b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue_access.c
+> @@ -44,7 +44,7 @@ int ia_css_queue_load(
+>   				   the value as zero. This causes division by 0
+>   				   exception as the size is used in a modular
+>   				   division operation. */
+> -				return EDOM;
+> +				return -EDOM;
+>   			}
+>   		}
+>   
+> 
