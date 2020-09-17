@@ -2,125 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F4E26E710
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F04A26E715
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgIQVEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:04:30 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:54823 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726344AbgIQVE3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:04:29 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id DCDF95C0237;
-        Thu, 17 Sep 2020 17:04:28 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 17 Sep 2020 17:04:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
-        :to:cc:subject:date:message-id:reply-to:mime-version
-        :content-transfer-encoding; s=fm1; bh=J6L2UYFGptZ2yYfZRWaSnPrub0
-        tg5wrrKaCkeegrAac=; b=dMHDqaFagAGff2Q9pBg1lePQktQCbfUROCz+v88YB+
-        ul/1BOxUV9GWjC1OoOKINXOc1mnANy5NU5QIP2Z7OoqpdhZrVvGhgScxNvvqCxrQ
-        zKxxMdjrW8pVdtuzggnFAPlL72kyQgAiOU1Mr8eFtpIPcin0o7btYG1z/HXYNRO1
-        Fnf/EzNVlezMkstYv2Gy42OzWssI/irxHEtrGYDlW0tZYM/snuFaoGT7j03ivxwS
-        1acC9aiuEwVWjjJjoDQC8uem7WFgG7XcGJK1po6rvdBO420frjyNeiVbJf37fhQ1
-        Tg86KHjHLgtk3ON0GZk6RqErH3wyo1kGwXCB3F5daxqw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:reply-to:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=J6L2UY
-        FGptZ2yYfZRWaSnPrub0tg5wrrKaCkeegrAac=; b=bBuLRM51BrDNvT9mbjV6ml
-        rDKjEbkskrmCNJguxQbyJGSdoAu6iro8zCTHXnTpYypTDQF81wUo0TpqaatC7DOp
-        zCbQyC7xWjSAiKSHDSCFv/dDZXfCcUxhju22pMo3RHqvIE3fcxABL/+Xsjbs+u+r
-        3F8bjokQswMtIZdzN5UqBFqgYVchQrUXcpy85swpfDIygusR+i0HJhnpr0b8mEsh
-        Z2MAhv0JtaMjBK32ay8hARwIvhNMRzaVnzihOkrfTq+iHUhlcX69KyeQjbOoZHY4
-        Y38CnI4+qMEgAOISuak68lJMWfH15BLGz7kGM3v2UXy/oqKKJKocC5kqz5tR054g
-        ==
-X-ME-Sender: <xms:XM9jXzl3jkpF7didvNy6tGY4cS74k12wLM7SJmBI6UM2tnCT1lIhbA>
-    <xme:XM9jX20VSFxtUJ_OANymoMRB3o1jlOVllhK3Iqv3GDGTtqBJzgl-c1RppeWRB13a9
-    dnyJiC-T6ZBIwkGQw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdeggdduheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkfforhgggfestdekredtredttdenucfhrhhomhepkghiucgjrghn
-    uceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepgfellefhvd
-    eitdehffejheelgfehtdevheejhffgledtieehtdejffefveeijeehnecukfhppeduvddr
-    geeirddutdeirdduieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
-X-ME-Proxy: <xmx:XM9jX5plzUuF7W06D88KENfb4glSAxuRQGlp_wv6G5zptCwq7cTixQ>
-    <xmx:XM9jX7kKmEoJz90Hq---EruI37pHLC11Ts-QE1Au0bVeXbqqZ1tdEA>
-    <xmx:XM9jXx2LLulCicr6HYQ4kNea4uaYOuRGpVU6nBgXPDWxroCkuSdP2Q>
-    <xmx:XM9jX6w1cbk8vo1oFFZfvi8t_vTfP_NUZxA88CNjHSQhtcYvCkdVnA>
-Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 666AB3280065;
-        Thu, 17 Sep 2020 17:04:28 -0400 (EDT)
-From:   Zi Yan <zi.yan@sent.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zi Yan <ziy@nvidia.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH v2] mm/migrate: correct thp migration stats.
-Date:   Thu, 17 Sep 2020 17:04:13 -0400
-Message-Id: <20200917210413.1462975-1-zi.yan@sent.com>
-X-Mailer: git-send-email 2.28.0
-Reply-To: Zi Yan <ziy@nvidia.com>
+        id S1726526AbgIQVGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:06:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726234AbgIQVGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:06:53 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0044F208E4;
+        Thu, 17 Sep 2020 21:06:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600376813;
+        bh=wnOPfgDD7ID92jdZ56dwprdvFTRV3EVbC9ypZsfycMg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QT4/jqKXPcV61aUPTXkopvnqF5kR7iijgukjgu1Dfj8xtY30xDG933p4mGkYhDwCa
+         pHgWA1isBxcJzvE2fcKKRoWHU+UngTaUN1B1iOPh9vchbjYXt24AIf6qX1JZVIrx79
+         DVxtPmjKIo932TTLPMlsiW/G5xh1FoHs0htwS8ZQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C06773522887; Thu, 17 Sep 2020 14:06:52 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:06:52 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        jolsa@redhat.com, bpf@vger.kernel.org, sfr@canb.auug.org.au
+Subject: Re: [PATCH RFC tip/core/rcu 0/4] Accelerate RCU Tasks Trace updates
+Message-ID: <20200917210652.GA31242@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200910201956.GA24190@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910201956.GA24190@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zi Yan <ziy@nvidia.com>
+Hello!
 
-PageTransHuge returns true for both thp and hugetlb, so thp stats was
-counting both thp and hugetlb migrations. Exclude hugetlb migration by
-setting is_thp variable right.
+This series accelerates RCU Tasks Trace updates, reducing the average
+grace-period latencies from about a second to about 20 milliseconds on my
+x86 laptop.  These are benchmark numbers, based on a previously posted
+patch to rcuscale.c [1] running on my x86 laptop.  Additional patches
+provide a compiler-warning cleanup and fix several race conditions that
+were exposed by the faster grace periods.  The patches in this series
+are as follows:
 
-Clean up thp handling code too when we are there.
+1.	Prevent complaints of unused show_rcu_tasks_classic_gp_kthread().
+	This is not related to the problem at hand, but it is
+	a pre-existing patch that provides a simple cleanup.
+	The grace-period latency thus remains at 980 milliseconds.
 
-Fixes: 1a5bae25e3cf ("mm/vmstat: add events for THP migration without split")
-Signed-off-by: Zi Yan <ziy@nvidia.com>
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
----
- mm/migrate.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+2.	Mark variables static, noted during this effort but otherwise
+	unconnected.  This change has no effect, so that the average
+	grace-period latency remains at 980 milliseconds.
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 941b89383cf3..6bc9559afc70 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1445,7 +1445,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 			 * Capture required information that might get lost
- 			 * during migration.
- 			 */
--			is_thp = PageTransHuge(page);
-+			is_thp = PageTransHuge(page) && !PageHuge(page);
- 			nr_subpages = thp_nr_pages(page);
- 			cond_resched();
- 
-@@ -1471,7 +1471,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 				 * we encounter them after the rest of the list
- 				 * is processed.
- 				 */
--				if (PageTransHuge(page) && !PageHuge(page)) {
-+				if (is_thp) {
- 					lock_page(page);
- 					rc = split_huge_page_to_list(page, from);
- 					unlock_page(page);
-@@ -1480,8 +1480,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 						nr_thp_split++;
- 						goto retry;
- 					}
--				}
--				if (is_thp) {
-+
- 					nr_thp_failed++;
- 					nr_failed += nr_subpages;
- 					goto out;
--- 
-2.28.0
+3.	Use more aggressive polling for RCU Tasks Trace.  This polling
+	starts at five-millisecond intervals instead of the prior
+	100-millisecond intervals.  As before, the polling interval
+	increases in duration as the grace period ages, and again as
+	before is capped at one second.  This change reduces the
+	average grace-period latency to about 620 milliseconds.
 
+4.	Selectively enable more RCU Tasks Trace IPIs.  This retains
+	the old behavior of suppressing IPIs for grace periods that are
+	younger than 500 milliseconds for CONFIG_TASKS_TRACE_RCU_READ_MB=y
+	kernels, including CONFIG_PREEMPT_RT=y kernels, but allows IPIs
+	immediately on other kernels.  It is quite possible that a more
+	sophisticated decision procedure will be required, and changes
+	to RCU's dyntick-idle code might also be needed.  This change
+	(along with the earlier ones) reduces the average grace-period
+	latency to about 120 milliseconds.
+
+5.	Shorten per-grace-period sleep for RCU Tasks Trace.  The
+	current code sleeps for 100 milliseconds after the end of
+	each grace period, which by itself prevents a back-to-back
+	string of grace-period waits from completing faster than
+	ten per second.  This patch also retains this old behavior
+	for CONFIG_TASKS_TRACE_RCU_READ_MB=y (and again thus also
+	for CONFIG_PREEMPT_RT=y kernels).  For other kernels, this
+	post-grace-period sleep is reduced to five milliseconds.
+	This change (along with the earlier ones) reduced the average
+	grace-period latency to about 18 milliseconds, for an overall
+	factor-of-50 reduction in latency.
+
+6.	Fix a deadlock-inducing race between rcu_read_unlock_trace()
+	and trc_read_check_handler().  The race window was only a few
+	instructions wide, but please see the commit log for the full
+	sad story.  The grace-period speedup made this race 50 times
+	more probable, and thus reduced the rcutorture runtime required
+	to reproduce it from about five months to about four days.
+
+7.	Fix a low-probability race between rcu_read_unlock_trace()
+	and the RCU Tasks Trace CPU stall reporting loop in
+	rcu_tasks_trace_postgp().  This race could result in leaking
+	task_struct structures.
+
+8.	Fix a low-probability race between the RCU Tasks Trace CPU
+	stall reporting loop in rcu_tasks_trace_postgp() and task exit.
+	This race could result in use-after-free errors.
+
+Alexei Starovoitov benchmarked an earlier patch [2], producing results
+that are roughly consistent with the above reduction in latency [3].
+
+Changes since last week's RFC version:
+
+o	Added patch #1, which cleans up a compiler warning.
+
+o	Renumbered patches 1-4 to 2-5.
+
+o	Add Ccs to patches 3, 4, and 5.
+
+o	Add patches 6-8 to fix race conditions exposed by 50x faster
+	grace periods.	These are either rare on the one hand or both
+	rare and occurring only during an RCU Tasks Trace CPU stall
+	warning -and- rare on the other.  Still, they need to be fixed.
+
+o	This series maintains the sub-20-millisecond update-side
+	grace-period delays of the RFC series.
+	
+o	Fixing the first of the race conditions required that a
+	compiler barrier be added to rcu_read_lock_trace() and that
+	another compiler barrier along with a WRITE_ONCE() be added to
+	rcu_read_unlock_trace().  This fix therefore adds a fraction of
+	a nanosecond to read-side overhead.  On my laptop, the increase
+	is from about 2.6 nanoseconds to about 3 nanoseconds.  This
+	small increase should not cause noticeable problems.
+
+							Thanx, Paul
+
+[1] https://lore.kernel.org/bpf/20200909193900.GK29330@paulmck-ThinkPad-P72/
+[2] https://lore.kernel.org/bpf/20200910052727.GA4351@paulmck-ThinkPad-P72/
+[3] https://lore.kernel.org/bpf/619554b2-4746-635e-22f3-7f0f09d97760@fb.com/
+
+------------------------------------------------------------------------
+
+ include/linux/rcupdate_trace.h |    4 +
+ kernel/rcu/tasks.h             |   92 +++++++++++++++++++++++++++++++----------
+ 2 files changed, 75 insertions(+), 21 deletions(-)
