@@ -2,287 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D062D26E60A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF8C26E603
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgIQUDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgIQUDA (ORCPT
+        id S1726594AbgIQUA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:00:58 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:53241 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726333AbgIQUA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:03:00 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on20601.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::601])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3788CC061A10;
-        Thu, 17 Sep 2020 12:54:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jqlfjFYVgEA5lHejDn65+/HeWKZZeGOqOUm0U0RTX5Dufttkzd2I6fwBb4yXJSgL/1HNPiyAXQeCaD3t4+a44gWL9zTI2ELXlhPKLKl9KD+68+b+AcJZjff2BS1WlJ4k2c5EeOQT3F6btQ7+/Pic1fRQmNuuql/1dwUbhZpTx0jYgT7uvIixEvq3SuvarTu/jpxoWchbuU6IHYLwIKF6UAc2ClLO8iIWX3XQ93rxQDiqga6P5N2i9xxONOKpnYmPVAqGHXrdmgqi0TT8tutVKnNT7eHXpIWA7CrObTxRalbAebFnTIqLW1vLBC3X5sJ8C1V0jK//L4OsZRJ80qqkmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8XUH5w/XHClRg6X4ZRGlepy7+ogGhWgwKe6nsgSHSrs=;
- b=DI/hwXzT3YZCS9FDg9HF0J+hYF7JpSvYBCrHcxg1myRx5srALykyzLFiAM/tX9ZXF5XgQaoX4pECIuzM571vYkI/OMvVlrOf0Sne3PKnDtKPDlF6cRXQHz87+euRioGPmyPIkCKBWgzZcw1orXcC/W/gR3lz+sx1+rng4o+jByJRBI/f0qUhvTLB6r8t1hTRUphoLCx3qhj+6GGo6ICAsEM5aroAZBd1flB0aPxbLU6J9RaddWrtyPS+nEhR5m05nf+nd/2KxlbPGGRkZ2KuxOqHyS1rcUQ4PK6n5PxnIHb5p9juCh86G66LsQUyz7oZwdf/hhB+o7UZp7G0WfTdjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=lists.infradead.org
- smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
- header.from=xilinx.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8XUH5w/XHClRg6X4ZRGlepy7+ogGhWgwKe6nsgSHSrs=;
- b=q90fBRMSHjJLxJOBjPPtdLnAlXGJwSJ5D1dxtuSX+PWeBlQyTAoD286WrOKZXiZfCuHITjyyF4DHmxdCuUod8HTjcEMgwEXqSq4joU5qQg/Sfc/TT3tJGpjsc0PIRY5rfWDv2/ci8e0VIbiXDKYVvbNwgcmI0XdimfX41rZ3xc4=
-Received: from SN4PR0501CA0120.namprd05.prod.outlook.com
- (2603:10b6:803:42::37) by CY4PR02MB2631.namprd02.prod.outlook.com
- (2603:10b6:903:70::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Thu, 17 Sep
- 2020 19:43:45 +0000
-Received: from SN1NAM02FT010.eop-nam02.prod.protection.outlook.com
- (2603:10b6:803:42:cafe::4b) by SN4PR0501CA0120.outlook.office365.com
- (2603:10b6:803:42::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.5 via Frontend
- Transport; Thu, 17 Sep 2020 19:43:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- SN1NAM02FT010.mail.protection.outlook.com (10.152.72.86) with Microsoft SMTP
- Server id 15.20.3391.15 via Frontend Transport; Thu, 17 Sep 2020 19:43:45
- +0000
-Received: from [149.199.38.66] (port=43986 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <ben.levinsky@xilinx.com>)
-        id 1kIzoe-0005ZC-IV; Thu, 17 Sep 2020 12:43:36 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by smtp.xilinx.com with smtp (Exim 4.63)
-        (envelope-from <ben.levinsky@xilinx.com>)
-        id 1kIzom-0005P5-Vn; Thu, 17 Sep 2020 12:43:45 -0700
-Received: from xsj-pvapsmtp01 (smtp2.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 08HJhgl6028245;
-        Thu, 17 Sep 2020 12:43:42 -0700
-Received: from [172.19.2.206] (helo=xsjblevinsk50.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <ben.levinsky@xilinx.com>)
-        id 1kIzok-0005OV-5c; Thu, 17 Sep 2020 12:43:42 -0700
-From:   Ben Levinsky <ben.levinsky@xilinx.com>
-To:     punit1.agrawal@toshiba.co.jp, stefanos@xilinx.com,
-        michals@xilinx.com, michael.auchter@ni.com
-Cc:     devicetree@vger.kernel.org, mathieu.poirier@linaro.org,
-        emooring@xilinx.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jliang@xilinx.com,
-        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Jason Wu <j.wu@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH v14 4/5] dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc bindings
-Date:   Thu, 17 Sep 2020 12:43:40 -0700
-Message-Id: <20200917194341.16272-5-ben.levinsky@xilinx.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200917194341.16272-1-ben.levinsky@xilinx.com>
-References: <20200917194341.16272-1-ben.levinsky@xilinx.com>
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
+        Thu, 17 Sep 2020 16:00:58 -0400
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 16:00:57 EDT
+Received: (qmail 1101981 invoked by uid 1000); 17 Sep 2020 15:54:16 -0400
+Date:   Thu, 17 Sep 2020 15:54:16 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v2 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200917195416.GA1099735@rowland.harvard.edu>
+References: <20200917114600.v2.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: d3fc49d3-78a4-489e-5d21-08d85b41fd40
-X-MS-TrafficTypeDiagnostic: CY4PR02MB2631:
-X-Microsoft-Antispam-PRVS: <CY4PR02MB263168FC001C1D60567FD040B53E0@CY4PR02MB2631.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SEqHhadT1ABFBb1zb3vO/zmGWI12uut0YrVsGP68TTbluMPC64zw1mwXrMtV2AsBIHgzCjwSoRdqpKYRnHVKB4Ew9rWdh3ahD6Ij/50DtmxzGpQo4fT5bKWqyq0JCSjKu86VG9z+DoVfWxN/MifEvaoLjRw4amSc9IiZSbgEtfPsShqhmy9yxEm10Oy3v6uXWfcSX8XI3c/7vxa9lnCvt9wmbhIy70RLkltgr1MWMrorpQGMUi1zP1/75SVW72vzTudbBKLXkzqasYjOie0VMzqPIBcijBlQVNYRNOnMbyaZlqoF2QJMNJApPvaRDK5sKWLzZYssYMSgQ8QTSl1A/v9lygPJuhjH30V4/Ac/e8URjusTqVRtQY7qdZtxOEVLZxHFQQJh7KXK6NIzDkR+KyTDpcdP/DfA6PWj1nPP1BZKdsIsUu9lSl/27/t6CcexX0dgA94cLKAYwQUozOd3iBdCljDp8PBwmbFoKrUQqdU=
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(376002)(39860400002)(346002)(136003)(396003)(46966005)(47076004)(7696005)(26005)(83380400001)(1076003)(70586007)(82310400003)(356005)(81166007)(70206006)(82740400003)(186003)(107886003)(4326008)(316002)(478600001)(44832011)(2906002)(36756003)(9786002)(8676002)(8936002)(426003)(54906003)(336012)(2616005)(5660300002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 19:43:45.2660
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3fc49d3-78a4-489e-5d21-08d85b41fd40
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT010.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR02MB2631
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding for ZynqMP R5 OpenAMP.
+On Thu, Sep 17, 2020 at 11:46:22AM -0700, Matthias Kaehlcke wrote:
+> The main issue this driver addresses is that a USB hub needs to be
+> powered before it can be discovered. For onboard hubs this is often
+> solved by supplying the hub with an 'always-on' regulator, which is
+> kind of a hack. Some onboard hubs may require further initialization
+> steps, like changing the state of a GPIO or enabling a clock, which
+> requires further hacks. This driver creates a platform device
+> representing the hub which performs the necessary initialization.
+> Currently it only supports switching on a single regulator, support
+> for multiple regulators or other actions can be added as needed.
+> Different initialization sequences can be supported based on the
+> compatible string.
+> 
+> Besides performing the initialization the driver can be configured
+> to power the hub off during system suspend. This can help to extend
+> battery life on battery powered devices which have no requirements
+> to keep the hub powered during suspend. The driver can also be
+> configured to leave the hub powered when a wakeup capable USB device
+> is connected when suspending, and power it off otherwise.
+> 
+> Technically the driver consists of two drivers, the platform driver
+> described above and a very thin USB driver that subclasses the
+> generic driver. The purpose of this driver is to provide the platform
+> driver with the USB devices corresponding to the hub(s) (a hub
+> controller may provide multiple 'logical' hubs, e.g. one to support
+> USB 2.0 and another for USB 3.x).
+> 
+> Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+> Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 
-Represent the RPU domain resources in one device node. Each RPU
-processor is a subnode of the top RPU domain node.
+> +config USB_ONBOARD_HUB
+> +	tristate "Onboard USB hub support"
+> +	depends on OF
+> +	help
+> +	  Say Y here if you want to support onboard USB hubs. The driver
+> +	  powers supported hubs on and may perform other initialization
+> +	  steps.
 
-Signed-off-by: Jason Wu <j.wu@xilinx.com>
-Signed-off-by: Wendy Liang <jliang@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+I have a nagging feeling that this description may be too vague for a
+lot of people to understand.  Does everybody know what an "onboard"
+USB hub is?
 
-Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
----
-v3:
-- update zynqmp_r5 yaml parsing to not raise warnings for extra
-  information in children of R5 node. The warning "node has a unit
-  name, but no reg or ranges property" will still be raised though 
-  as this particular node is needed to describe the
-  '#address-cells' and '#size-cells' information.
-v4::
-- remove warning '/example-0/rpu@ff9a0000/r5@0: 
-  node has a unit name, but no reg or ranges property'
-  by adding reg to r5 node.
-v5:
-- update device tree sample and yaml parsing to not raise any warnings
-- description for memory-region in yaml parsing
-- compatible string in yaml parsing for TCM
-v6:
-- remove coupling TCM nodes with remoteproc 
-- remove mailbox as it is optional not needed
-v7:
-- change lockstep-mode to xlnx,cluster-mode
-v9:
-- show example IPC nodes and tcm bank nodes
-v11:
-- add property meta-memory-regions to illustrate link
-  between r5 and TCM banks
-- update so no warnings from 'make dt_binding_check'
-v14:
-- concerns were raised about the new property meta-memory-regions.
-  There is no clear direction so for the moment I kept it in the series
-- place IPC nodes in RAM in the reserved memory section
----
- .../xilinx,zynqmp-r5-remoteproc.yaml          | 119 ++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+Consider for example that Intel's current EHCI host controllers all
+come with a USB hub built into the chipset.  That built-in hub
+certainly could be considered "onboard", but it doesn't need this
+driver.
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml b/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
-new file mode 100644
-index 000000000000..cd2406b4dc24
---- /dev/null
-+++ b/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
-@@ -0,0 +1,119 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Xilinx R5 remote processor controller bindings
-+
-+description:
-+  This document defines the binding for the remoteproc component that loads and
-+  boots firmwares on the Xilinx Zynqmp and Versal family chipset.
-+
-+  Note that the Linux has global addressing view of the R5-related memory (TCM)
-+  so the absolute address ranges are provided in TCM reg's.
-+maintainers:
-+  - Ed Mooring <ed.mooring@xilinx.com>
-+  - Ben Levinsky <ben.levinsky@xilinx.com>
-+
-+properties:
-+  compatible:
-+    const: "xlnx,zynqmp-r5-remoteproc-1.0"
-+
-+  lockstep-mode:
-+    description:
-+      R5 core configuration (split is 0 or lock-step and 1)
-+    maxItems: 1
-+
-+  interrupts:
-+    description:
-+      Interrupt mapping for remoteproc IPI. It is required if the
-+      user uses the remoteproc driver with the RPMsg kernel driver.
-+    maxItems: 6
-+
-+  memory-region:
-+    description:
-+      collection of memory carveouts used for elf-loading and inter-processor
-+      communication.
-+    maxItems: 4
-+    minItems: 4
-+  meta-memory-regions:
-+    description:
-+      collection of memories that are not present in the top level memory
-+      nodes' mapping. For example, R5s' TCM banks. These banks are needed
-+      for R5 firmware meta data such as the R5 firmware's heap and stack
-+  pnode-id:
-+    maxItems: 1
-+  mboxes:
-+    maxItems: 2
-+  mbox-names:
-+    maxItems: 2
-+
-+examples:
-+  - |
-+     reserved-memory {
-+          #address-cells = <1>;
-+          #size-cells = <1>;
-+          ranges;
-+          elf_load: rproc@3ed000000 {
-+               no-map;
-+               reg = <0x3ed00000 0x40000>;
-+          };
-+
-+          rpu0vdev0vring0: rpu0vdev0vring0@3ed40000 {
-+               no-map;
-+               reg = <0x3ed40000 0x4000>;
-+          };
-+          rpu0vdev0vring1: rpu0vdev0vring1@3ed44000 {
-+               no-map;
-+               reg = <0x3ed44000 0x4000>;
-+          };
-+          rpu0vdev0buffer: rpu0vdev0buffer@3ed48000 {
-+               no-map;
-+               reg = <0x3ed48000 0x100000>;
-+          };
-+
-+     };
-+
-+     /*
-+      * Below nodes are required if using TCM to load R5 firmware
-+      * if not, then either do not provide nodes are label as disabled in
-+      * status property
-+      */
-+     tcm0a: tcm_0a@ffe00000 {
-+         reg = <0xffe00000 0x10000>;
-+         pnode-id = <0xf>;
-+         no-map;
-+         status = "okay";
-+         phandle = <0x40>;
-+         compatible = "xlnx,tcm";
-+     };
-+     tcm0b: tcm_1a@ffe20000 {
-+         reg = <0xffe20000 0x10000>;
-+         pnode-id = <0x10>;
-+         no-map;
-+         status = "okay";
-+         compatible = "xlnx,tcm";
-+         phandle = <0x41>;
-+     };
-+
-+     rpu {
-+          compatible = "xlnx,zynqmp-r5-remoteproc-1.0";
-+          #address-cells = <1>;
-+          #size-cells = <1>;
-+          ranges;
-+          lockstep-mode = <1>;
-+          r5_0 {
-+               ranges;
-+               #address-cells = <1>;
-+               #size-cells = <1>;
-+               memory-region = <&elf_load>,
-+                               <&rpu0vdev0vring0>,
-+                               <&rpu0vdev0vring1>,
-+                               <&rpu0vdev0buffer>;
-+               meta-memory-regions = <&tcm_0a>, <&tcm_0b>;
-+               pnode-id = <0x7>;
-+          };
-+     };
-+
-+...
--- 
-2.17.1
+Maybe also give some examples of devices that require this driver, to
+help make the idea clear to readers.
 
+
+> +static int __maybe_unused onboard_hub_suspend(struct device *dev)
+> +{
+> +	struct onboard_hub *hub = dev_get_drvdata(dev);
+> +	struct udev_node *node;
+> +	int rc = 0;
+> +
+> +	hub->has_wakeup_capable_descendants = false;
+> +
+> +	if (!hub->power_off_in_suspend)
+> +		return 0;
+> +
+> +	mutex_lock(&hub->lock);
+> +
+> +	list_for_each_entry(node, &hub->udev_list, list) {
+> +		if (!device_may_wakeup(node->udev->bus->controller))
+> +			break;
+
+You're assuming that node->udev->bus->controller is going to be the
+same for the nodes on the list, right?
+
+> +
+> +		if (usb_wakeup_enabled_descendants(node->udev)) {
+> +			hub->has_wakeup_capable_descendants = true;
+> +			break;
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&hub->lock);
+> +
+> +	if (!hub->has_wakeup_capable_descendants)
+> +		rc = onboard_hub_power_off(hub);
+> +
+> +	return rc;
+> +}
+> +
+> +static int __maybe_unused onboard_hub_resume(struct device *dev)
+> +{
+> +	struct onboard_hub *hub = dev_get_drvdata(dev);
+> +	int rc = 0;
+> +
+> +	if (hub->power_off_in_suspend && !hub->has_wakeup_capable_descendants)
+
+Instead of this cumbersome two-condition test, how about simply
+having a hub->is_powered_on flag?  Then
+hub->has_wakeup_capable_descendants wouldn't be needed.
+
+> +		rc = onboard_hub_power_on(hub);
+> +
+> +	return rc;
+> +}
+
+> +static int onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
+> +{
+> +	struct udev_node *node;
+> +
+> +	mutex_lock(&hub->lock);
+> +
+> +	list_for_each_entry(node, &hub->udev_list, list) {
+> +		if (node->udev == udev) {
+> +			list_del(&node->list);
+> +			devm_kfree(hub->dev, node);
+
+Why have an explicit kfree here but not anywhere else?  And if you do
+have an explicit kfree, why use devm_kzalloc rather than plain kzalloc?
+
+> +			break;
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&hub->lock);
+> +
+> +	if (node == NULL)
+> +		return -EINVAL;
+
+This test is wrong.  Look at the definition of list_for_each_entry;
+node will never be NULL.  Probably the best approach is to use a local
+"ret" variable.
+
+> +
+> +	return 0;
+> +}
+
+> +static int onboard_hub_remove(struct platform_device *pdev)
+> +{
+> +	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
+> +
+> +	sysfs_remove_file(&pdev->dev.kobj, &dev_attr_power_off_in_suspend.attr);
+> +
+> +	return onboard_hub_power_off(hub);
+> +}
+
+Shouldn't this routine unbind the onboard_hub_usbdev driver from all
+the associated devices?  Otherwise you end up with more-or-less
+dangling references to hub (I say more-or-less because with the devm
+allocations, the structures will hang around as zombies for a while).
+
+Relying on the onboard_hub_power_off call to do this for you isn't a
+great idea, because the effect won't happen immediately.
+
+> +static int onboard_hub_usbdev_probe(struct usb_device *udev)
+> +{
+> +	struct device *dev = &udev->dev;
+> +	struct onboard_hub *hub;
+> +
+> +	/* ignore supported hubs without device tree node */
+> +	if (!dev->of_node)
+> +		return -ENODEV;
+> +
+> +	hub = _find_onboard_hub(dev);
+> +	if (IS_ERR(hub))
+> +		return PTR_ERR(dev);
+> +
+> +	dev_set_drvdata(dev, hub);
+> +
+> +	onboard_hub_add_usbdev(hub, udev);
+
+Ignoring the return code?  Then why does that routine return int rather
+than void?
+
+> +
+> +	return 0;
+> +}
+> +
+> +static void onboard_hub_usbdev_disconnect(struct usb_device *udev)
+> +{
+> +	struct onboard_hub *hub = dev_get_drvdata(&udev->dev);
+> +
+> +	onboard_hub_remove_usbdev(hub, udev);
+
+Ditto.
+
+> +
+> +	put_device(hub->dev);
+
+Is there a matching get_device somewhere (like in _find_onboard_hub)?
+If so, I didn't see it.  And I don't see any reason for it.
+
+Alan Stern
