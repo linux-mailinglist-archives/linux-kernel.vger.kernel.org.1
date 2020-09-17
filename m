@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A8B26E4F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A202C26E4E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIQTDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
+        id S1726686AbgIQTB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgIQS7V (ORCPT
+        with ESMTP id S1726668AbgIQS7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:59:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C44DC06174A;
-        Thu, 17 Sep 2020 11:59:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=dCb3Mw8emqdBD/1nF+oUHT3U3i0WT8UHhM2aFDWS07g=; b=a6AAAWT6OpuM+kWcatw3TlS2JP
-        +8IS6npgj/d5gENj7cfht68AdE18jEyqNklaqeTUkp7d2dLDMsPPi+veQLTosycBB0vDYDd4A8Yyr
-        tznRa1dqP11vzU13o+w8+NI0S2IwbKOxHAR6RHTudrhQhOFeRLJxOB8d7iUlNyWiPZPONYGOMMtMO
-        jMNj7kl01I7FnTNmILeOSFXO2K+G4obIYF76n4aWfGHU+4d/ez4I1+WdKfY8QkAIoHxTzeSrtMWgD
-        979WzHnWW1wU6ehSV+WMb0E8LWmwYqMzX9Jd9A+0HqijmAVIwP9BMmj4KuLIubgEiqvd+S9pNQk99
-        Y9x+AIAw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIz7L-0000LU-Rs; Thu, 17 Sep 2020 18:58:52 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] vdpa: mlx5: select VHOST to fix build errors
-Message-ID: <f47e2bab-c19c-fab5-cfb9-e2b5ba1be69a@infradead.org>
-Date:   Thu, 17 Sep 2020 11:58:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 17 Sep 2020 14:59:51 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8027C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:59:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z4so3184652wrr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=/FQeEcWUlQDqfQ8wanTKIcTElJ0+/H0Q34PjAFqIS2E=;
+        b=UDH2kSarbkBuYBTeWj3n0fqUdD9XU0XvPc+4NOngHaapEW0SOpuLQ8y2YcruoNZeEX
+         svVWs1RwWe/w6VHGkXAOgYyz3Cix45a6NYx3vT6cF0+ufr8RGH7pgc/1fC9yA3KIbmZE
+         MTt7xB/yrUVL+6MJpVcF2vyvi/2cOm2JzUH6JFmGAgB61p5NzL4KKCADVFcHVZh7q+UF
+         ohOzgpHwsME46bLgBALQPJR3APlbQv4PT/DrXz2a7r+k3AZWUjujgKyUqrLxY2ve1zWl
+         96ociw42g1nxXnxTmBpW5arpqMbDoUXiYheqCebLj3yquFlTwDkxwk7xLLnZtqD4h3cP
+         N53A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/FQeEcWUlQDqfQ8wanTKIcTElJ0+/H0Q34PjAFqIS2E=;
+        b=A5pqGdRjEyz5PBRG3uCNjoiBsZdxgM5AdZG+V2A4hQ1uiJtSDzgAoifAe7SSmudeo3
+         /o271oVvNkJzKuiLE3D8E3pGSZ6gkQPRHxcSaxAA+o5G6cqqLO/ulQt8DKziiyWXd7jg
+         JvI19aWYdncU+vbJXnRPXtct81zWw2kJBsF0Wy4A6pZn0Hj6gHFHLDtV/9gjBqolToHb
+         81sLGZ8OKryy05NJg/W+3fran5RCn4h6GrR56QyPj0zGRww2lYtngcW66an17ouDbKV0
+         sU4JiTQUH03joicHE/l3HKDhLQ94v+pQXg+wGs2E+6HmytAsBmsFBnacY7FxlWmhPWTS
+         4Kzw==
+X-Gm-Message-State: AOAM533FrQJ754fBIfCPs8nhDmll+jkDK9B/LqO+cSFvSd4ONJi4eTYU
+        dyI59m7cQDQvDD75HpUefgyvFg==
+X-Google-Smtp-Source: ABdhPJzbVDEFcxbw/TjYhFdXwMyu3mguWYl6vvOW6/lfjbNAQgC808oX9KFWtD4HV3w00/BjD7ipww==
+X-Received: by 2002:a5d:6283:: with SMTP id k3mr35007812wru.191.1600369184565;
+        Thu, 17 Sep 2020 11:59:44 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id f23sm16639470wmc.3.2020.09.17.11.59.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Sep 2020 11:59:43 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] crypto: procfs: Removing some useless only space lines
+Date:   Thu, 17 Sep 2020 18:59:36 +0000
+Message-Id: <1600369176-28975-1-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Some line got only spaces, remove them
 
-drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so select
-VHOST to eliminate build errors.
-
-ld: drivers/vdpa/mlx5/core/mr.o: in function `add_direct_chain':
-mr.c:(.text+0x106): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x1cf): undefined reference to `vhost_iotlb_itree_next'
-ld: mr.c:(.text+0x30d): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x3e8): undefined reference to `vhost_iotlb_itree_next'
-ld: drivers/vdpa/mlx5/core/mr.o: in function `_mlx5_vdpa_create_mr':
-mr.c:(.text+0x908): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x9e6): undefined reference to `vhost_iotlb_itree_next'
-ld: drivers/vdpa/mlx5/core/mr.o: in function `mlx5_vdpa_handle_set_map':
-mr.c:(.text+0xf1d): undefined reference to `vhost_iotlb_itree_first'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: virtualization@lists.linux-foundation.org
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>
-Cc: netdev@vger.kernel.org
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
-Note: This patch may not be the right thing, but it fixes the build errors.
+ crypto/proc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/vdpa/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20200917.orig/drivers/vdpa/Kconfig
-+++ linux-next-20200917/drivers/vdpa/Kconfig
-@@ -32,6 +32,7 @@ config IFCVF
- config MLX5_VDPA
- 	bool "MLX5 VDPA support library for ConnectX devices"
- 	depends on MLX5_CORE
-+	select VHOST
- 	default n
- 	help
- 	  Support library for Mellanox VDPA drivers. Provides code that is
+diff --git a/crypto/proc.c b/crypto/proc.c
+index 08d8c2bc7e62..12fccb9c5205 100644
+--- a/crypto/proc.c
++++ b/crypto/proc.c
+@@ -36,7 +36,7 @@ static void c_stop(struct seq_file *m, void *p)
+ static int c_show(struct seq_file *m, void *p)
+ {
+ 	struct crypto_alg *alg = list_entry(p, struct crypto_alg, cra_list);
+-	
++
+ 	seq_printf(m, "name         : %s\n", alg->cra_name);
+ 	seq_printf(m, "driver       : %s\n", alg->cra_driver_name);
+ 	seq_printf(m, "module       : %s\n", module_name(alg->cra_module));
+@@ -59,7 +59,7 @@ static int c_show(struct seq_file *m, void *p)
+ 		alg->cra_type->show(m, alg);
+ 		goto out;
+ 	}
+-	
++
+ 	switch (alg->cra_flags & CRYPTO_ALG_TYPE_MASK) {
+ 	case CRYPTO_ALG_TYPE_CIPHER:
+ 		seq_printf(m, "type         : cipher\n");
+-- 
+2.26.2
 
