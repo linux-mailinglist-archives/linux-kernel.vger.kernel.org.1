@@ -2,112 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80D226DA6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E19926DAC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgIQLis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
+        id S1726677AbgIQLvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726792AbgIQLbt (ORCPT
+        with ESMTP id S1726757AbgIQLfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:31:49 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6189C06174A;
-        Thu, 17 Sep 2020 04:31:48 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t10so1688256wrv.1;
-        Thu, 17 Sep 2020 04:31:48 -0700 (PDT)
+        Thu, 17 Sep 2020 07:35:23 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64305C06174A;
+        Thu, 17 Sep 2020 04:35:23 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id j34so1195817pgi.7;
+        Thu, 17 Sep 2020 04:35:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UM35Rz/z6Kt1fk3hrJcZfv0YfHRgM9+Q33CFv7aCdSI=;
-        b=XZrVq98D8H2TZ9pw8D4QrlP/urfWYfB05/TiUS9qO0mrL/hlemKvYDgTYsV2v1Cju8
-         mBhS44ceeYeHW/GMFvSYld/fC01ok8+yOzE6LXPDgsWq7tmXB7zlALhC7GY8VP06Dgga
-         hDVuPgf/SXa9s5ZasxUxJBMkkECKGxxaou6+SLj3ovP9h+OjsGDSamDs0jdVJNjyx6iN
-         hcLyLgcb7/GA9dOzhZeJl/qF2sdIGScnEaJCwy3slrRQZGwQ7ifZgYgCi9VaB2EcCzGM
-         YAw5A6+RSutPhvPckfAgibcPKGUrmReJggYRnnK7tWoPUe7VqtvnecQy94VqtNwjEuUL
-         lqQA==
+        h=from:to:cc:subject:date:message-id;
+        bh=GvmM/Nssdueta9CrhTB+xKzv+MVW+fGaedO25VPM3wI=;
+        b=eXKakrSKUeMzAXKyJsDOzKwVoFULgNSRkUcOz/zGh23WFcBhzUv6ZqH1ZHaFSE97XW
+         J/iDAG+4eNrdDsrsdwbusHLauALH/pPxywUoq3Qca25K6gkCpgpcQSI7TWwuZZjKS0VZ
+         wdw6lyIpMRiSM1TBsFV4pkoKI/yvLKEIzpuveTTlP5ktNqvIW5MbnadhUsPm7qjFkAB0
+         OiombkC5GdfchY0x5JaKwGR9NjhR+khRelj/IEgIJRXR9BeEFdCb780xm4Eq2yg6++Sp
+         ouqV4QrEo2bh3lRq1VemVidYAiXbEmlozjhaDpeNnQKePsAlGUThCK1AyClDwG1xgu+/
+         dw9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UM35Rz/z6Kt1fk3hrJcZfv0YfHRgM9+Q33CFv7aCdSI=;
-        b=btpV8qV9R8wHwq6uIRMkeDs2jJutqUqudDP+tW5xVyOqKoJ18bRZmEt+EAYGC89cGk
-         JPOklIa/7oKppiCMNb83ZEsKQ6bMEtvYDVWG53vgcLbEp+Hx0kbFtc8A9f0O0D1Z5o6Z
-         YJAGytUdt9pgAJpwCATOkiYqN9Uq8D3UEyWzEhX/MEbZD+xXVhKL4saSYfS9DJHDTpbG
-         EyeQc7MJx1JytMcUc+IFPrXkdFWTc7HGO6vc7hUOMEs42MstO2gpFfd3XNN1Nfy8syvv
-         7eeeP2fCBtDUqVIc/DfYDhSoyX2IH5OpaHu2A8PV1cUQi+QjXNiTtnOBI2U5PKhCEXO7
-         DuHw==
-X-Gm-Message-State: AOAM530w593Iv3r/DzhhioZJmx5munOyPNPD44MWxZa6lFYXUksIJnm8
-        Sv8FfnKl4mbOGsbdAXYyRtXxg0Eei566cg==
-X-Google-Smtp-Source: ABdhPJyEaskOyNjz75uwych9h7nYbJr3AvRQYu2dfBa3uHwINdIg81F4pYnhyNS0H1s1zO1ebrv6CQ==
-X-Received: by 2002:a5d:43cf:: with SMTP id v15mr32479370wrr.269.1600342307502;
-        Thu, 17 Sep 2020 04:31:47 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id l126sm10205995wmf.39.2020.09.17.04.31.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GvmM/Nssdueta9CrhTB+xKzv+MVW+fGaedO25VPM3wI=;
+        b=Zz3Ds+5buMUWGcVy4H/OR3wWHVgpidbkInZvxxfrIPNOF5yqaYQzi0PDrBrbwr+XHB
+         G+i0b6+cs4xIJrYTBPeBM6SMfmUJViKGNCV0NcSUGkVBFDtEN8WHaqzUi/0vSgyNcxHc
+         bNxyDgPKcvDLH2XGrlPiwsOcgC0tcYCzIvqh+3o8Y7ULQiSE7Xnpvatv2344Td0RsJBk
+         uUQYWtU6xRIBeE8aEAlRcdWffx+jjzbt2b7SWW2fBYMEs1NoTO1Gb3cbl3tzT4D+YqVB
+         Iq9XTdAZubQf97wzEMcW4KhuI7vbnVWOV/BF8osUu9JnZAiLQ2y2oOM5g3DmEMI37DMQ
+         iHcg==
+X-Gm-Message-State: AOAM533iynS2DcgxOfM8BmkdwgyoL7SRWjPO0cQbTWe+25ZMQ3nOXKPQ
+        GpOuwqMDTeedEe0/Gxd65Ow=
+X-Google-Smtp-Source: ABdhPJynw2LhC50rKek/46CFwADUp7ZQhyDvwiGFvl/E2XFVwla9P5bdDg13UZedoG9QVBThxEbYpA==
+X-Received: by 2002:aa7:96e1:0:b029:13e:d13d:a138 with SMTP id i1-20020aa796e10000b029013ed13da138mr26450620pfq.32.1600342521100;
+        Thu, 17 Sep 2020 04:35:21 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id a138sm21128382pfd.19.2020.09.17.04.35.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 04:31:46 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 13:31:44 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 11/34] i2c: tegra: Use platform_get_irq()
-Message-ID: <20200917113144.GU3515672@ulmo>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-12-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="QOa9dl9wYIBIim/b"
-Content-Disposition: inline
-In-Reply-To: <20200908224006.25636-12-digetx@gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+        Thu, 17 Sep 2020 04:35:20 -0700 (PDT)
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     krzk@kernel.org, joro@8bytes.org
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
+        vdumpa@nvidia.com, thierry.reding@gmail.com
+Subject: [RESEND][PATCH 0/2] iommu/tegra-smmu: Fix TLB line for Tegra210
+Date:   Thu, 17 Sep 2020 04:31:53 -0700
+Message-Id: <20200917113155.13438-1-nicoleotsuka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These two patches fix ACTIVE_TLB_LINES field setting in tegra-smmu
+driver for Tegra210 platforms.
 
---QOa9dl9wYIBIim/b
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This resend in series groups two previous seperate changes that're
+corelated, being pointed out by Thierry. Also adding his Acked-by.
 
-On Wed, Sep 09, 2020 at 01:39:43AM +0300, Dmitry Osipenko wrote:
-> Use common helper for retrieval of the interrupt number in order to make
-> code cleaner. Note that platform_get_irq() prints error message by itself.
->=20
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+Nicolin Chen (2):
+  iommu/tegra-smmu: Fix tlb_mask
+  memory: tegra: Correct num_tlb_lines for tegra210
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+ drivers/iommu/tegra-smmu.c      | 2 +-
+ drivers/memory/tegra/tegra210.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---QOa9dl9wYIBIim/b
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jSSAACgkQ3SOs138+
-s6EXkA/6AvPlAXn38dxmP+5hB1FF0aYyDDH2Z0CrYPtYrLfr0lOPjJGHjs8aP184
-fnc3Zwt4/0Ep53tSTgxBNZfQQe+F5bgOHerUbjG6svkWbHs0cXVQ1UlYJn4uzcwz
-Aw8WdQTIXHUmviM6euI3Rhm7PwbNeEcXb+0nWkDGAwcExkUtODPTWinYOYvyAPjR
-fnObgvZxHF1ThN/BhlONzr2GoLJxDYExcXe44rkS1iKi8uVl7hn0pZNJWgVDeD7G
-OYG7bsg3cAxHpKKB2C6fLJoJ+gExYhtl0KOnPmERw9iB2wH02siOssv00VRquh6K
-kxBX5kJ7mD7VYOFRLo4qT9K4U1oAqr6MCelFv1GEEdDkDyUhQQ3HR0OENCv3JDEi
-ivqcjSxb2UBrqSh1aHbgpD0u7SS13+/IvjePV40SB7WsYJrDHChQ6UOcVN+IDKxt
-UHdjk/jbD3HZZFpQHD5eAif6PTbUoYlhfBNxlR+AMJ0nUoS7+3Y5I6CwphUXvbuu
-WB08aTvXBMxGRlpxLIWuUWqJMceyFKA38o6ys1GqBFSp5N0yWusjTJCtdOvJm4e4
-S248kJjIxC1Q+DHcKBEKGkNeiZ6Y6jrJIYEaNzXs9VyrjnDAAERfijbouASCd6gX
-QueZpDaRTxB61DTuv4QMJqJeCWPrxTlxHOFqj/TWGy7ZUuPts3c=
-=sxyt
------END PGP SIGNATURE-----
-
---QOa9dl9wYIBIim/b--
