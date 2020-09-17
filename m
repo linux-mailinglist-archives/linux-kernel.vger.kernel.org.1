@@ -2,87 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8005426E9CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715D126E9CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgIRAIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 20:08:25 -0400
+        id S1726309AbgIRAI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 20:08:28 -0400
 Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:55293 "EHLO
         herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725987AbgIRAIX (ORCPT
+        with ESMTP id S1726183AbgIRAI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 20:08:23 -0400
+        Thu, 17 Sep 2020 20:08:26 -0400
 X-Greylist: delayed 1407 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 20:08:21 EDT
 Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
-        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 08HNiMqK008721;
-        Fri, 18 Sep 2020 02:44:22 +0300
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 08HNiNQh008722;
+        Fri, 18 Sep 2020 02:44:23 +0300
 Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
-        id 6EE6A639D6; Fri, 18 Sep 2020 02:44:22 +0300 (IDT)
+        id 24A7B639D7; Fri, 18 Sep 2020 02:44:23 +0300 (IDT)
 From:   Tomer Maimon <tmaimon77@gmail.com>
 To:     robh+dt@kernel.org, mark.rutland@arm.com, avifishman70@gmail.com,
         tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
         benjaminfair@google.com, joel@jms.id.au
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         openbmc@lists.ozlabs.org, tmaimon77@gmail.com
-Subject: [PATCH v6 0/3] arm: dts: add and modify device node in NPCM7xx device tree
-Date:   Fri, 18 Sep 2020 02:44:17 +0300
-Message-Id: <20200917234420.86137-1-tmaimon77@gmail.com>
+Subject: [PATCH v6 1/3] arm: dts: modify NPCM7xx device tree clock parameter
+Date:   Fri, 18 Sep 2020 02:44:18 +0300
+Message-Id: <20200917234420.86137-2-tmaimon77@gmail.com>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200917234420.86137-1-tmaimon77@gmail.com>
+References: <20200917234420.86137-1-tmaimon77@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set adds and modify device tree nodes in the NPCM7xx
-Baseboard Management Controller (BMC) device tree.
+Modify NPCM7xx device tree clock parameter to clock constants that
+define at include/dt-bindings/clock/nuvoton,npcm7xx-clock.h file.
 
-The following device node add:
-        - NPCM7xx Pin controller and GPIO
-        - NPCM7xx PWM and FAN.
-        - NPCM7xx EHCI USB.
-        - NPCM7xx KCS.
-        - NPCM Reset.
-        - NPCM Peripheral SPI.
-        - NPCM FIU SPI.
-        - NPCM HWRNG.
-        - NPCM I2C.
-        - STMicro STMMAC.
+Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+---
+ arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi | 19 ++++++++++---------
+ arch/arm/boot/dts/nuvoton-npcm750.dtsi        |  6 +++---
+ 2 files changed, 13 insertions(+), 12 deletions(-)
 
-The following device node modified:
-        - NPCM7xx timer.
-        - NPCM7xx clock constants parameters.
-
-NPCM7xx device tree tested on NPCM750 evaluation board.
-
-Changes since version 5:
-Address comments from Joel Stanely: https://lkml.org/lkml/2020/9/16/994
+diff --git a/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
+index d2d0761295a4..16a28c5c4131 100644
+--- a/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
++++ b/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
+@@ -3,6 +3,7 @@
+ // Copyright 2018 Google, Inc.
  
-Changes since version 4:
- - Tested patches in Linux kernel 5.9.
-
-Changes since version 3:
- - Tested patches in Linux kernel 5.6.
-
-Changes since version 2:
- - Remove unnecessary output-enable flags.
-
-Changes since version 1:
- - Add NPCM reset device node.
- - Add reset parameters to NPCM driver device nodes.
-
-Tomer Maimon (3):
-  arm: dts: modify NPCM7xx device tree clock parameter
-  arm: dts: modify NPCM7xx device tree timer register size
-  arm: dts: add new device nodes to NPCM750 device tree
-
- arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi | 968 +++++++++++++++++-
- arch/arm/boot/dts/nuvoton-npcm750-evb.dts     | 404 +++++++-
- .../boot/dts/nuvoton-npcm750-pincfg-evb.dtsi  | 157 +++
- arch/arm/boot/dts/nuvoton-npcm750.dtsi        |  24 +-
- 4 files changed, 1516 insertions(+), 37 deletions(-)
- create mode 100644 arch/arm/boot/dts/nuvoton-npcm750-pincfg-evb.dtsi
-
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/clock/nuvoton,npcm7xx-clock.h>
+ 
+ / {
+ 	#address-cells = <1>;
+@@ -80,7 +81,7 @@
+ 			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+ 			cache-unified;
+ 			cache-level = <2>;
+-			clocks = <&clk 10>;
++			clocks = <&clk NPCM7XX_CLK_AXI>;
+ 			arm,shared-override;
+ 		};
+ 
+@@ -120,7 +121,7 @@
+ 				compatible = "nuvoton,npcm750-timer";
+ 				interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x8000 0x50>;
+-				clocks = <&clk 5>;
++				clocks = <&clk NPCM7XX_CLK_TIMER>;
+ 			};
+ 
+ 			watchdog0: watchdog@801C {
+@@ -128,7 +129,7 @@
+ 				interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x801C 0x4>;
+ 				status = "disabled";
+-				clocks = <&clk 5>;
++				clocks = <&clk NPCM7XX_CLK_TIMER>;
+ 			};
+ 
+ 			watchdog1: watchdog@901C {
+@@ -136,7 +137,7 @@
+ 				interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x901C 0x4>;
+ 				status = "disabled";
+-				clocks = <&clk 5>;
++				clocks = <&clk NPCM7XX_CLK_TIMER>;
+ 			};
+ 
+ 			watchdog2: watchdog@a01C {
+@@ -144,13 +145,13 @@
+ 				interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0xa01C 0x4>;
+ 				status = "disabled";
+-				clocks = <&clk 5>;
++				clocks = <&clk NPCM7XX_CLK_TIMER>;
+ 			};
+ 
+ 			serial0: serial@1000 {
+ 				compatible = "nuvoton,npcm750-uart";
+ 				reg = <0x1000 0x1000>;
+-				clocks = <&clk 6>;
++				clocks = <&clk NPCM7XX_CLK_UART>;
+ 				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg-shift = <2>;
+ 				status = "disabled";
+@@ -159,7 +160,7 @@
+ 			serial1: serial@2000 {
+ 				compatible = "nuvoton,npcm750-uart";
+ 				reg = <0x2000 0x1000>;
+-				clocks = <&clk 6>;
++				clocks = <&clk NPCM7XX_CLK_UART>;
+ 				interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg-shift = <2>;
+ 				status = "disabled";
+@@ -168,7 +169,7 @@
+ 			serial2: serial@3000 {
+ 				compatible = "nuvoton,npcm750-uart";
+ 				reg = <0x3000 0x1000>;
+-				clocks = <&clk 6>;
++				clocks = <&clk NPCM7XX_CLK_UART>;
+ 				interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg-shift = <2>;
+ 				status = "disabled";
+@@ -177,7 +178,7 @@
+ 			serial3: serial@4000 {
+ 				compatible = "nuvoton,npcm750-uart";
+ 				reg = <0x4000 0x1000>;
+-				clocks = <&clk 6>;
++				clocks = <&clk NPCM7XX_CLK_UART>;
+ 				interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg-shift = <2>;
+ 				status = "disabled";
+diff --git a/arch/arm/boot/dts/nuvoton-npcm750.dtsi b/arch/arm/boot/dts/nuvoton-npcm750.dtsi
+index 6ac340533587..a37bb2294b8f 100644
+--- a/arch/arm/boot/dts/nuvoton-npcm750.dtsi
++++ b/arch/arm/boot/dts/nuvoton-npcm750.dtsi
+@@ -17,7 +17,7 @@
+ 		cpu@0 {
+ 			device_type = "cpu";
+ 			compatible = "arm,cortex-a9";
+-			clocks = <&clk 0>;
++			clocks = <&clk NPCM7XX_CLK_CPU>;
+ 			clock-names = "clk_cpu";
+ 			reg = <0>;
+ 			next-level-cache = <&l2>;
+@@ -26,7 +26,7 @@
+ 		cpu@1 {
+ 			device_type = "cpu";
+ 			compatible = "arm,cortex-a9";
+-			clocks = <&clk 0>;
++			clocks = <&clk NPCM7XX_CLK_CPU>;
+ 			clock-names = "clk_cpu";
+ 			reg = <1>;
+ 			next-level-cache = <&l2>;
+@@ -38,7 +38,7 @@
+ 			reg = <0x3fe600 0x20>;
+ 			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) |
+ 						  IRQ_TYPE_LEVEL_HIGH)>;
+-			clocks = <&clk 5>;
++			clocks = <&clk NPCM7XX_CLK_AHB>;
+ 		};
+ 	};
+ };
 -- 
 2.22.0
 
