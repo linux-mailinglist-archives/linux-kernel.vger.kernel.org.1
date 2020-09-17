@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939DE26D0D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F58226D0C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgIQBvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:51:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:42354 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726072AbgIQBvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:51:05 -0400
-X-Greylist: delayed 950 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:51:04 EDT
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id CAED83E5D1A9CAA3CECC;
-        Thu, 17 Sep 2020 09:35:11 +0800 (CST)
-Received: from [10.174.179.108] (10.174.179.108) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 09:35:07 +0800
-Subject: Re: [PATCH -next] net/sched: Remove unused function
- qdisc_queue_drop_head()
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-References: <20200916141611.43524-1-yuehaibing@huawei.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <5b7b6ff1-19ea-33b6-87b7-2cee6db8157d@huawei.com>
-Date:   Thu, 17 Sep 2020 09:35:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1726117AbgIQBpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726072AbgIQBpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:45:30 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F2BB20684;
+        Thu, 17 Sep 2020 01:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600306538;
+        bh=oGKEU0SwK4LnjTiWr5ukfXNFIYbnnmMpvPAu1mpxRnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p1DhXw+NqESUsJxjIz2x75aGifEBZU7s0BO36qof9ETHhi5tAFSaYcQe9KRFSOmSs
+         15AIYqCIa9JgKSte4it817SsKKQWttAzpXEODBpQGeSNH0LPXDSexTRyfYeDJ8b+9u
+         ruvx3JaD3dt4YMmlPcA7XMkxwnCKtzL1abw6mzWU=
+Date:   Wed, 16 Sep 2020 21:35:37 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: Re: [PATCH 4.19 28/78] nvme: have nvme_wait_freeze_timeout return if
+ it timed out
+Message-ID: <20200917013537.GG2431@sasha-vm>
+References: <20200915140633.552502750@linuxfoundation.org>
+ <20200915140634.986905823@linuxfoundation.org>
+ <20200916073427.GB32537@duo.ucw.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200916141611.43524-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200916073427.GB32537@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pls drop this duplicate.
+On Wed, Sep 16, 2020 at 09:34:27AM +0200, Pavel Machek wrote:
+>Hi!
+>
+>> [ Upstream commit 7cf0d7c0f3c3b0203aaf81c1bc884924d8fdb9bd ]
+>>
+>> Users can detect if the wait has completed or not and take appropriate
+>> actions based on this information (e.g. weather to continue
+>> initialization or rather fail and schedule another initialization
+>> attempt).
+>
+>This does not fix any bug and is not needed in 4.19-stable. In the
+>5.8-stable there are other patches that depend on that (which is
+>probably why it was merged), but those are not present in 4.19.
+>
+>Please drop.
 
-On 2020/9/16 22:16, YueHaibing wrote:
-> It is not used since commit a09ceb0e0814 ("sched: remove qdisc->drop")
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  include/net/sch_generic.h | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index d60e7c39d60c..6c762457122f 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -1047,12 +1047,6 @@ static inline unsigned int __qdisc_queue_drop_head(struct Qdisc *sch,
->  	return 0;
->  }
->  
-> -static inline unsigned int qdisc_queue_drop_head(struct Qdisc *sch,
-> -						 struct sk_buff **to_free)
-> -{
-> -	return __qdisc_queue_drop_head(sch, &sch->q, to_free);
-> -}
-> -
->  static inline struct sk_buff *qdisc_peek_head(struct Qdisc *sch)
->  {
->  	const struct qdisc_skb_head *qh = &sch->q;
-> 
+Right, now dropped. Thanks!
+
+-- 
+Thanks,
+Sasha
