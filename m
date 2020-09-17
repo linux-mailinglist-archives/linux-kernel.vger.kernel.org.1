@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28BF26E78F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4020A26E7B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgIQVqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:46:31 -0400
-Received: from mga14.intel.com ([192.55.52.115]:65310 "EHLO mga14.intel.com"
+        id S1726037AbgIQVzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:55:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:12370 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726040AbgIQVqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:46:31 -0400
-IronPort-SDR: axf+HoJ90SfdUDYT1oOxFUDQ685O/BR61kqcGfrW5LFwCvuUucEGilAmwHGxEG+iWV5OghJ1Wp
- OcgEnYKi05mQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159105813"
+        id S1725858AbgIQVzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:55:42 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 17:55:42 EDT
+IronPort-SDR: jRxvhOvAyKFRAKG4POtDmJZdbOLKFpHngnI7FqFkPfUn3kFsdbC0Z0MAlG9ag/+OESqNF0MtWk
+ MseN3o52Roqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="177899243"
 X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
-   d="scan'208";a="159105813"
+   d="scan'208";a="177899243"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 14:46:29 -0700
-IronPort-SDR: 4v506Jv4WNG8inJA6c0dcYElPBXLhmBjERs77eC/TvL6SfRnAMW2nK5nbrBfR3DgUSYstFPc5M
- DckGfjp+fSsA==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 14:48:34 -0700
+IronPort-SDR: DX1pqr/rasoGJGjKeGOdu7eMEy4RC3SvbgMQmyF6vW6QUwgqGohfhguGYmPQ9DQ5WmkoPalbwy
+ QVgicDjCtLXA==
 X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
-   d="scan'208";a="344508817"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 14:46:28 -0700
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 3FC1A6369;
-        Thu, 17 Sep 2020 14:46:28 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 14:46:28 -0700
-From:   mark gross <mgross@linux.intel.com>
-To:     trix@redhat.com
-Cc:     ibm-acpi@hmh.eng.br, dvhart@infradead.org, andy@infradead.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        len.brown@intel.com, ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: initialize tp_nvram_state
- variable
-Message-ID: <20200917214628.GC29136@mtg-dev.jf.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20200913190203.22238-1-trix@redhat.com>
+   d="scan'208";a="483919158"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.151.155]) ([10.212.151.155])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 14:48:33 -0700
+Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
+ hosekeeping CPUs
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, frederic@kernel.org,
+        mtosatti@redhat.com, sassmann@redhat.com,
+        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20200917201123.GA1726926@bjorn-Precision-5520>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <238f4d32-ac26-e0c6-b53c-9f7ab98050ca@intel.com>
+Date:   Thu, 17 Sep 2020 14:48:30 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200913190203.22238-1-trix@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200917201123.GA1726926@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: mark gross <mgross@linux.intel.com>
-
---mark
 
 
-On Sun, Sep 13, 2020 at 12:02:03PM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On 9/17/2020 1:11 PM, Bjorn Helgaas wrote:
+> [+cc Ingo, Peter, Juri, Vincent (scheduler maintainers)]
 > 
-> clang static analysis flags this represenative problem
-> thinkpad_acpi.c:2523:7: warning: Branch condition evaluates
->   to a garbage value
->                 if (!oldn->mute ||
->                     ^~~~~~~~~~~
+> s/hosekeeping/housekeeping/ (in subject)
 > 
-> In hotkey_kthread() mute is conditionally set by hotkey_read_nvram()
-> but unconditionally checked by hotkey_compare_and_issue_event().
-> So the tp_nvram_state variable s[2] needs to be initialized.
+> On Wed, Sep 09, 2020 at 11:08:16AM -0400, Nitesh Narayan Lal wrote:
+>> Introduce a new API num_housekeeping_cpus(), that can be used to retrieve
+>> the number of housekeeping CPUs by reading an atomic variable
+>> __num_housekeeping_cpus. This variable is set from housekeeping_setup().
+>>
+>> This API is introduced for the purpose of drivers that were previously
+>> relying only on num_online_cpus() to determine the number of MSIX vectors
+>> to create. In an RT environment with large isolated but a fewer
+>> housekeeping CPUs this was leading to a situation where an attempt to
+>> move all of the vectors corresponding to isolated CPUs to housekeeping
+>> CPUs was failing due to per CPU vector limit.
 > 
-> Fixes: 01e88f25985d ("ACPI: thinkpad-acpi: add CMOS NVRAM polling for hot keys (v9)")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/platform/x86/thinkpad_acpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Totally kibitzing here, but AFAICT the concepts of "isolated CPU" and
+> "housekeeping CPU" are not currently exposed to drivers, and it's not
+> completely clear to me that they should be.
 > 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index 47925c319d7b..24da8b6872f2 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -2573,7 +2573,7 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
->   */
->  static int hotkey_kthread(void *data)
->  {
-> -	struct tp_nvram_state s[2];
-> +	struct tp_nvram_state s[2] = { 0 };
->  	u32 poll_mask, event_mask;
->  	unsigned int si, so;
->  	unsigned long t;
-> -- 
-> 2.18.1
+> We have carefully constructed notions of possible, present, online,
+> active CPUs, and it seems like whatever we do here should be
+> somehow integrated with those.
 > 
+
+Perhaps "active" CPUs could be separated to not include the isolated CPUs?
