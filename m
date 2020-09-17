@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C24D26DA8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D723E26DAE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgIQLnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:43:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgIQLjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:39:16 -0400
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECCB321734
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:39:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600342752;
-        bh=2kFT8juYwsoWVzI7Gq+GsE3itaIadnAkZ07YinPSRLM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tvlPHrWAbfHzeALQ3FScCd2/cS8WzS7Z+m1J15aLvYrV2REfj3RMU4vd5mUus+WjJ
-         I+CLBi3DxCghZTVCPYty6KplFv7CXtwGO5Tm3o4iUme6OyGRORe5Km31cd1/wkomIV
-         Goj980jY6gxYDQlcTyBWByd1ZJ04ZaTTFsSWJeLw=
-Received: by mail-lj1-f172.google.com with SMTP id b19so1706612lji.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:39:11 -0700 (PDT)
-X-Gm-Message-State: AOAM530g7YEYyceWDj7OubtHT11TzuIfrhC8d+Mpt0od16XzFgsod+/J
-        B4xXXoEJ8PVcm6t7d84JtopSx0E7LQH72faop/w=
-X-Google-Smtp-Source: ABdhPJwoHeTsp9Hl9XkIyBQug7suvujQKpXb1f1sRZCguXUEwXE3AQHbyb1VPFKzFK7Tn3JsTZrDVGbiWNqlu6j+f+M=
-X-Received: by 2002:a2e:a28b:: with SMTP id k11mr10380503lja.405.1600342750320;
- Thu, 17 Sep 2020 04:39:10 -0700 (PDT)
+        id S1726830AbgIQL5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:57:40 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13233 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726695AbgIQLy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 07:54:28 -0400
+X-Greylist: delayed 923 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 07:54:27 EDT
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D8C347362039763D03B9;
+        Thu, 17 Sep 2020 19:38:59 +0800 (CST)
+Received: from [10.174.178.16] (10.174.178.16) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 17 Sep 2020 19:38:57 +0800
+Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
+ {max,dimm}_location
+To:     Borislav Petkov <bp@alien8.de>
+CC:     <mchehab@kernel.org>, <tony.luck@intel.com>,
+        <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
+ <20200916170052.GO2643@zn.tnic>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
+Date:   Thu, 17 Sep 2020 19:38:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200916160552.1062243-1-ribalda@kernel.org> <20200916162824.GC6374@sirena.org.uk>
- <CAPybu_20oay941cqHqa_D13cN0XCrk=Pa113ZuwbbAuVC3yX3A@mail.gmail.com> <20200917112203.GB4755@sirena.org.uk>
-In-Reply-To: <20200917112203.GB4755@sirena.org.uk>
-From:   Ricardo Ribalda Delgado <ribalda@kernel.org>
-Date:   Thu, 17 Sep 2020 13:38:53 +0200
-X-Gmail-Original-Message-ID: <CAPybu_2L5eK7SckELHxUsW72TZ8kG0TsTHbSn1Z6ohyUaPzQCg@mail.gmail.com>
-Message-ID: <CAPybu_2L5eK7SckELHxUsW72TZ8kG0TsTHbSn1Z6ohyUaPzQCg@mail.gmail.com>
-Subject: Re: [PATCH] regmap: Add support for 12/20 register formatting
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200916170052.GO2643@zn.tnic>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.16]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Mark
+Hi ,
 
-On Thu, Sep 17, 2020 at 1:22 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Sep 17, 2020 at 08:31:54AM +0200, Ricardo Ribalda Delgado wrote:
-> > On Wed, Sep 16, 2020 at 6:29 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > What exactly is the format you're trying to describe here?  It sounds
-> > > like there's two blocks of padding in here (I'm assuing that's what
-> > > dummy means) but what's the exact arrangement here and what are the
-> > > commands?  It sounds like this might not work ideally with things like
-> > > the cache code (if it makes things seems sparser than they are) and
-> > > might not be obvious to someone looking at the datsheet.
->
-> > The format is
->
-> > XXXXCCCCAAAADDDDDDDDDDDDDDDDXXXX
->
-> > Where X is dont care, C is command, A is address and D is data bits. I
->
-> > Shall I add this to the commit message? I want to send a V2 anyway,
-> > because I screwed up the identity (ribalda.com instead of kernel.org)
->
-> Yes, please.  I was fairly sure it worked, it was just a question of if
-> it was ideal for the format described.  The only issue I can see with
-> the above is that the users will need to left shift their data - on the
-> face of it it would seem better to add a facility for padding the LSBs
-> of the data field to the core so that users can just use the data field
-> as documented.
+On 2020/9/17 1:00, Borislav Petkov wrote:
+> On Mon, Sep 14, 2020 at 10:48:54AM +0800, Xiongfeng Wang wrote:
+>> @@ -813,15 +817,21 @@ static ssize_t mci_max_location_show(struct device *dev,
+>>  				     char *data)
+>>  {
+>>  	struct mem_ctl_info *mci = to_mci(dev);
+>> -	int i;
+>> +	int i, n;
+>>  	char *p = data;
+>> +	unsigned int len = PAGE_SIZE;
+>>  
+>>  	for (i = 0; i < mci->n_layers; i++) {
+>> -		p += sprintf(p, "%s %d ",
+>> +		n = snprintf(p, len, "%s %d ",
+>>  			     edac_layer_name[mci->layers[i].type],
+>>  			     mci->layers[i].size - 1);
+>> +		p += n;
+>> +		len -= n;
+> 
+> What happens if that subtraction causes len to wrap around and become a
+> huge positive unsigned integer?
+> 
+>> +		if (!len)
+> 
+> Would that test still work?
 
-I was thinking also about that, the problem is that there are many
-devices on that family that are "software" compatible and it only
-changes the width of the data. Eg:
+I am not sure if snprintf will return a value larger than its second input
+paramter 'size'. But we can also check if 'len' is less than 0. It's better.
 
-DDDDDDDDDDDDDDDDXXXX
-DDDDDDDDDDDDXXXXXXXX
-DDDDDDDDXXXXXXXXXXXX
+> 
+> IOW, I did this to your patch ontop. Note that I've moved the "p"
+> pointer incrementation after the length check so that the pointer
+> doesn't overflow too:
 
-So if we need to make a driver, we could use the same driver for all
-the chips on that family, saying to the user that the data size is
-always 20 bits....
+Thanks. I will add it in the next version.
 
-I will send v2 ASAP with the updated doc.
+> 
+> ---
+> diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
+> index bf0e075fb635..fa0551c81e63 100644
+> --- a/drivers/edac/edac_mc_sysfs.c
+> +++ b/drivers/edac/edac_mc_sysfs.c
+> @@ -817,19 +817,22 @@ static ssize_t mci_max_location_show(struct device *dev,
+>  				     char *data)
+>  {
+>  	struct mem_ctl_info *mci = to_mci(dev);
+> -	int i, n;
+> +	int len = PAGE_SIZE;
+>  	char *p = data;
+> -	unsigned int len = PAGE_SIZE;
+> +	int i, n;
+>  
+>  	for (i = 0; i < mci->n_layers; i++) {
+>  		n = snprintf(p, len, "%s %d ",
+>  			     edac_layer_name[mci->layers[i].type],
+>  			     mci->layers[i].size - 1);
+> -		p += n;
+> +
+>  		len -= n;
+> -		if (!len)
+> +		if (len < 0)
 
-Thanks
+Not sure whether we need to check 'len' equals to 0.
+if (len <= 0) ?
+
+
+>  			goto out;
+> +
+> +		p += n;
+>  	}
+> +
+>  	p += snprintf(p, len, "\n");
+>  out:
+>  	return p - data;
+> 
+
+Thanks,
+XIongfeng
