@@ -2,94 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDE526DFD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D8726DFC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgIQPkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728114AbgIQPYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:24:04 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B08302075B;
-        Thu, 17 Sep 2020 15:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600356243;
-        bh=VQrKB0M8C0OLRLnfDiXt9ur+vgkb9cWELt8+8NHidwE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nYOe6ostHpqNNmiFVi+8ZXveTAMe1riUHwnmGMoAmpMgX6sSEXmzTXV9DPVAFjBpV
-         RdtP75lLcmfjKrnQGW3mGfRWPclQiqTEBPYrYrf+MlZMvk7rDFO3nz7s0mI31Zl62C
-         6OZmVLYgJIwSd9uTD1b3r0oVYGa/FQ0YP0lNmbuU=
-Date:   Thu, 17 Sep 2020 08:24:02 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "\\xcH3332\\" <ch3332xr@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, syzkaller@googlegroups.com
-Subject: Re: memory leak in getname_flags ( 5.9.0-rc5)
-Message-ID: <20200917152402.GA855@sol.localdomain>
-References: <CAJ5WPnFq5TrRT9uyjnZdVB_V6doXVGYQQJ3h98cnuRYY6xueQQ@mail.gmail.com>
+        id S1728111AbgIQPef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728183AbgIQPZG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 11:25:06 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D73C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:24:58 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id 19so2184471qtp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/MIjfA84FROcmh2Yr+++vHpa0nobfYfMg9k42KNVp2M=;
+        b=KItZq7TLRwXkeSUDV7TVakSYOYYpYVj1lFuOvU0VuV2nyeTZkDl+5SDk5YU6xRfdQb
+         mmJrGXwRgXiqpqZBf8DLOJr/gMeGErqhZkM8rZSmNzY3KpK/NJt55cQb3C29WXfmsp40
+         KJdpWLxQBDyknwAoYt/ULy2EsSn//x6zNDDJW/sQmVP1idUubfNstwrhi9t017rZ3QZJ
+         3sDqFSKs5FzHiMnyyMyLtAnPX0Naf0m0oIbzEeYFHkliee0CZ1/6R0VN7TcyiVwxLFrO
+         JOOOGOMacxM9ezg1v7YEt3scmLEmwNPGkyrd88i/jnPrnz/LvnJkdxDuuHZJUSvAh0TC
+         tmSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/MIjfA84FROcmh2Yr+++vHpa0nobfYfMg9k42KNVp2M=;
+        b=PLWxflWh2UkTADl3jUMP060BEYfifW7N0yd3UduT6c1pNn07tAbw9FSfhgb62bEsCw
+         oE+bvek8qd/f/lY9M6DtJbs6DtcKnEzWJwGT35roD+ePTyvfmQq1S7O9pMm0v1Kx/skb
+         HSYAM3NxI+iGXsIDL9pMSWvobXeads3Vu+fschEyH2dycYVAGyxdcjUSk28RiqXfSfYe
+         H1LN3BUrax0h0YPUOizGv7m78koTdkZbsIxyzFK2RSooOOhicbiwWxn+p20K30SJLOjj
+         aVQj/E/Thba24Bb7+elQsC/feDPsRyYP4d4HZ+a6ipRphGH5CR33x9TwdfVJyZJ+py6V
+         ZNRQ==
+X-Gm-Message-State: AOAM531eoW7N9bJ/5VclHOSdQk0WxLiF74nyGL031seCGp64GamL8XCR
+        eYsMYY3z6XepRtIMKJywE0DymQ==
+X-Google-Smtp-Source: ABdhPJyml2ehbabsQ2p5uBo50b15HPhlS1qE50x7EQpnsGFfmEF+Ym7+K38vhRLvzw2lQSd1AWRM1Q==
+X-Received: by 2002:ac8:5d04:: with SMTP id f4mr16143583qtx.290.1600356297898;
+        Thu, 17 Sep 2020 08:24:57 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id z74sm86638qkb.11.2020.09.17.08.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 08:24:57 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kIvmK-000VsL-KF; Thu, 17 Sep 2020 12:24:56 -0300
+Date:   Thu, 17 Sep 2020 12:24:56 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     christian.koenig@amd.com
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Linux MM <linux-mm@kvack.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
+Message-ID: <20200917152456.GH8409@ziepe.ca>
+References: <aa953b09-53b1-104b-dc4b-156ad8a75e62@gmail.com>
+ <CAKMK7uHJNRzCJfWVSmMrLmGXE0qo+OCXiMd+zPTOkeG2pnVrmQ@mail.gmail.com>
+ <8d8693db-a3f0-4f5f-3e32-57d23ca620f8@amd.com>
+ <CAKMK7uE=UqZD3PVC8XZAXrgGH-VsUF_-YQD3MLV8KK1kpxO4yQ@mail.gmail.com>
+ <20200917113110.GE8409@ziepe.ca>
+ <6fd74b84-959c-8b3b-c27b-e9fbf66396c7@gmail.com>
+ <20200917121858.GF8409@ziepe.ca>
+ <d82f08ee-2dec-18e8-fb06-d26f18ed777a@gmail.com>
+ <20200917143551.GG8409@ziepe.ca>
+ <5b330920-c789-fac7-e9b1-49f3bc1097a8@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJ5WPnFq5TrRT9uyjnZdVB_V6doXVGYQQJ3h98cnuRYY6xueQQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5b330920-c789-fac7-e9b1-49f3bc1097a8@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 07:32:12PM +0530, \xcH3332\ wrote:
-> Syzkaller hit 'memory leak in getname_flags' bug.
+On Thu, Sep 17, 2020 at 04:54:44PM +0200, Christian König wrote:
+> Am 17.09.20 um 16:35 schrieb Jason Gunthorpe:
+> > On Thu, Sep 17, 2020 at 02:24:29PM +0200, Christian König wrote:
+> > > Am 17.09.20 um 14:18 schrieb Jason Gunthorpe:
+> > > > On Thu, Sep 17, 2020 at 02:03:48PM +0200, Christian König wrote:
+> > > > > Am 17.09.20 um 13:31 schrieb Jason Gunthorpe:
+> > > > > > On Thu, Sep 17, 2020 at 10:09:12AM +0200, Daniel Vetter wrote:
+> > > > > > 
+> > > > > > > Yeah, but it doesn't work when forwarding from the drm chardev to the
+> > > > > > > dma-buf on the importer side, since you'd need a ton of different
+> > > > > > > address spaces. And you still rely on the core code picking up your
+> > > > > > > pgoff mangling, which feels about as risky to me as the vma file
+> > > > > > > pointer wrangling - if it's not consistently applied the reverse map
+> > > > > > > is toast and unmap_mapping_range doesn't work correctly for our needs.
+> > > > > > I would think the pgoff has to be translated at the same time the
+> > > > > > vm->vm_file is changed?
+> > > > > > 
+> > > > > > The owner of the dma_buf should have one virtual address space and FD,
+> > > > > > all its dma bufs should be linked to it, and all pgoffs translated to
+> > > > > > that space.
+> > > > > Yeah, that is exactly like amdgpu is doing it.
+> > > > > 
+> > > > > Going to document that somehow when I'm done with TTM cleanups.
+> > > > BTW, while people are looking at this, is there a way to go from a VMA
+> > > > to a dma_buf that owns it?
+> > > Only a driver specific one.
+> > Sounds OK
+> > 
+> > > For TTM drivers vma->vm_private_data points to the buffer object. Not sure
+> > > about the drivers using GEM only.
+> > Why are drivers in control of the vma? I would think dma_buf should be
+> > the vma owner. IIRC module lifetime correctness essentially hings on
+> > the module owner of the struct file
 > 
-> 
->  5.9.0-rc5
-> 
-> 
-> 2020/09/17 10:31:39 executed programs: 195
-> 2020/09/17 10:31:45 executed programs: 204
-> 2020/09/17 10:31:50 executed programs: 226
-> 2020/09/17 10:31:56 executed programs: 239
-> BUG: memory leak
-> unreferenced object 0xffff8ba9f42fa000 (size 4096):
->   comm "syz-executor.4", pid 5686, jiffies 4295939335 (age 12.397s)
->   hex dump (first 32 bytes):
->     20 a0 2f f4 a9 8b ff ff 40 02 00 20 00 00 00 00   ./.....@.. ....
->     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<0000000084fbe16c>] getname_flags+0x57/0x260
->     [<00000000a25b6483>] __io_openat_prep+0x76/0x100
->     [<0000000030fd3f89>] io_openat2_prep.part.0+0x5b/0xb0
->     [<00000000e274bfc6>] io_issue_sqe+0x445/0x1940
->     [<00000000bad7fba6>] __io_queue_sqe+0x189/0x540
->     [<000000000d09a5ef>] io_queue_sqe+0x28f/0x440
->     [<00000000c36c4e95>] io_submit_sqes+0x7e9/0xa90
->     [<00000000a15f6a28>] __x64_sys_io_uring_enter+0x23e/0x350
->     [<00000000449792f4>] do_syscall_64+0x33/0x40
->     [<00000000bdacf1c3>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> 
-> 
-> Syzkaller reproducer:
-> # {Threaded:true Collide:true Repeat:true RepeatTimes:0 Procs:8
-> Sandbox:none Fault:false FaultCall:-1 FaultNth:0 Leak:true
-> NetInjection:false NetDevices:true NetReset:true Cgroups:true
-> BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false USB:false
-> VhciInjection:false UseTmpDir:true HandleSegv:true Repro:false
-> Trace:false}
-> r0 = syz_io_uring_setup(0x5bfa, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x2,
-> 0x0, 0x0, 0x0}, &(0x7f00000a0000)=nil, &(0x7f00000b0000)=nil,
-> &(0x7f0000000100)=<r1=>0x0, &(0x7f0000000140)=<r2=>0x0)
-> syz_io_uring_submit(r1, r2,
-> &(0x7f00000001c0)=@IORING_OP_OPENAT2={0x1c, 0x0, 0x0,
-> 0xffffffffffffff9c, &(0x7f0000000200)={0x42},
-> &(0x7f0000000240)='./file1\x00', 0x18, 0x0, 0x12345}, 0x0)
-> io_uring_enter(r0, 0x1, 0x1, 0x1, 0x0, 0x0)
+> Because the page fault handling is completely driver specific.
+>
+> We could install some DMA-buf vmops, but that would just be another layer of
+> redirection.
 
-You need to send this to the appropriate maintainers:
+If it is already taking a page fault I'm not sure the extra function
+call indirection is going to be a big deal. Having a uniform VMA
+sounds saner than every driver custom rolling something.
 
-$ ./scripts/get_maintainer.pl fs/io_uring.c
-Jens Axboe <axboe@kernel.dk> (maintainer:IO_URING)
-Alexander Viro <viro@zeniv.linux.org.uk> (maintainer:FILESYSTEMS (VFS and infrastructure))
-io-uring@vger.kernel.org (open list:IO_URING)
-linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS (VFS and infrastructure))
-linux-kernel@vger.kernel.org (open list)
+When I unwound a similar mess in RDMA all the custom VMA stuff in the
+drivers turned out to be generally buggy, at least.
+
+Is vma->vm_file->private_data universally a dma_buf pointer at least?
+
+> > So, user VA -> find_vma -> dma_buf object -> dma_buf operations on the
+> > memory it represents
+> 
+> Ah, yes we are already doing this in amdgpu as well. But only for DMA-bufs
+> or more generally buffers which are mmaped by this driver instance.
+
+So there is no general dma_buf service? That is a real bummer
+
+Jason
