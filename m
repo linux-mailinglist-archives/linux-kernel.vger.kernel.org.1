@@ -2,138 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB3726D891
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6070626D894
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgIQKMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
+        id S1726667AbgIQKMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgIQKM0 (ORCPT
+        with ESMTP id S1726524AbgIQKMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:12:26 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6F2C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:12:26 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id l126so916029pfd.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:12:26 -0700 (PDT)
+        Thu, 17 Sep 2020 06:12:41 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A662DC06174A;
+        Thu, 17 Sep 2020 03:12:40 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id a2so1303419ybj.2;
+        Thu, 17 Sep 2020 03:12:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8I5syEFzYXSRk+uSOFJ1LBkGshbWMD1FtRIoI4eUqrM=;
-        b=DXqhBNLvrOpzm/WiMVfuqadagjwe5PQxj3q+Pc1uBJ7yTs5Nxvlrdquq9Rrb8qx0Ls
-         HJNVzPxgDFVtgC+bKF0qxLf/XY7ZpskadXW5ZwwzREuu7jCRyLWuHmDMkkr8WsvLBgE8
-         /09FRxVMfdEDkhO4Kq0qh0Q3tt9YH1bNupkzw5qg9f+ZTIFrwE0Xq6MeCPgYAluh8Jo4
-         lCrLLvu4IG4DoLxdrYRF+0STMGkujXZ8eclSSWWceNsoAl/bclMQ2DkhUesE2wd8lS8H
-         el//wi1IO7DnDSrRAe3W0AB1Rq3mbljFQy9icPK+/wydY/WM3ZUfNjJqCIIHqM4ccnFv
-         JLUQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wr0X2v6394FbdTIf6rHS1eHtFra+Zcue68b3yKpahjg=;
+        b=sJzPSCNtVfQCCumhCyA7M4aTmlR9HQT7sBpUtWtd+aVLqYOu1DDOUjqpdS10pft85C
+         Zim1vwPFJSQtpeM4GEF4fLV7qolZcIkOETPiPaAZJqenJvsl/kaHexHkzuB3vjNHuLX2
+         v3Yypa7vr88uLv5gUTGdY9wnMCfSFo9ZQjefZYGQubw43V8VSQNx/1HkxzbH0gjkcZlu
+         LCxOyJRzmL2LmE3pN0vqDPr3T0PvVzxma+TJC/XhRUtARnLK6eRPmzHhDhJE/dXBmGNC
+         XwZno6rSOP0oALzGNUXKiorJjgh5oMUhB0CrCTZaan1k8XoRJYRxdDWr18YvUZD1it6z
+         3ocw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8I5syEFzYXSRk+uSOFJ1LBkGshbWMD1FtRIoI4eUqrM=;
-        b=Qj45QLM2B82KQ22XWf2bebh1M+rnK1ZOI5bGPITOeZCNhFLe6UL+MhN1p+IXy+aZX+
-         y65zc/7lX3C8am5hqhiswzR6Vzj1G/TbjLXrsZlEqb+5nEFkVBZ3sXp0GoeyNVRH79dV
-         s95WzEZqlrHiDk9VIX7xrNWyPaVkAIdbK8m8AzkYrrCFL8Vlbcir4rsYkc/ODdUsFwIm
-         /rnCkH6sZQq3wc4g9DpWHQmZvnm77tgpIxciR6KKf8pl7pBiOYTCupGtGc5MW5O3mpuC
-         4XWqAGdAmoM7ll0Rv2UixJPVsSGObeYesyMhSlpKQSlT3jBGHVXQuSJShi86tL/4t1vI
-         prWQ==
-X-Gm-Message-State: AOAM533+BvMbpUhPLG6kaY+C9HCOfSIJQ4hUx+HNyETXvJydJWvxZFW9
-        JROXVpBq51bHjhATPcv2Boe9Sw==
-X-Google-Smtp-Source: ABdhPJwVNfyNv6ekHlyUhzXzygE1It0dJ8XU3+DqczN/LPOjJ1tC5bAo3VVMJnlmrNkjmGjU4+4mNQ==
-X-Received: by 2002:a63:8ac8:: with SMTP id y191mr21800032pgd.159.1600337545751;
-        Thu, 17 Sep 2020 03:12:25 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id d5sm22100002pfq.72.2020.09.17.03.12.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 17 Sep 2020 03:12:25 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 18:12:19 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv3] perf kvm: add kvm-stat for arm64
-Message-ID: <20200917101219.GD12548@leoy-ThinkPad-X240s>
-References: <20200917003645.689665-1-sergey.senozhatsky@gmail.com>
- <20200917100950.GC12548@leoy-ThinkPad-X240s>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wr0X2v6394FbdTIf6rHS1eHtFra+Zcue68b3yKpahjg=;
+        b=sJkXf5ZE2DVNiz2pT8kvB6Ls5LkhkD0Jj3JZ1qUx40hCZ9dwQa1fA0Avo2WfnoI/gh
+         B7sQ7HBzTInt6BXwluzFgfUd+gmFs8bPVq7rgElplnmTUwTEYSypUZTIkkRR3GrWKJG5
+         HGyciBXsSGKBaCkbwZpZO2f4sxeWbjQm+KhSg7njnGMI6WrbCHYUM3Fm0wIWjk11g12i
+         JWT9yfDIcvz3tjuzI0Q7mupdI9fCYvkyuNk6kXJDjbqFJxdGYJuZY3pirZOV44CMDYKU
+         bXOAQhuaNbneM017kvgm+KcBCsIs1ZAl72mnhTiR6yQeh3/9gY42VaxtkQOEFw/D5Y+G
+         E9yQ==
+X-Gm-Message-State: AOAM532b5rB1jYYs0OEI0AefFBhW/uur7/wMGftM8r2H1LZn3Ra+fvSR
+        v9fS5Cf6fTz7sFNBfFNO1uLRSW84cclVDJJVhJU=
+X-Google-Smtp-Source: ABdhPJwtiRxMg5ZZenV0V64rB3KkZ+tu4NwSJkcO4Xx0UcCC2Vu+2XToymNgGe3lTnrYZsaUDDT9aojB2gxRfieDzVw=
+X-Received: by 2002:a25:d10d:: with SMTP id i13mr43977913ybg.476.1600337558769;
+ Thu, 17 Sep 2020 03:12:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917100950.GC12548@leoy-ThinkPad-X240s>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200710111054.29562-1-benchuanggli@gmail.com>
+ <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com> <20200917051253.GA3094018@laputa>
+In-Reply-To: <20200917051253.GA3094018@laputa>
+From:   Ben Chuang <benchuanggli@gmail.com>
+Date:   Thu, 17 Sep 2020 18:12:27 +0800
+Message-ID: <CACT4zj9LuJoy9mX4Fqm+jZf1bDa5oUZcR6mPa-otW1mXfNLh1g@mail.gmail.com>
+Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
+ additional operations
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ben Chuang <benchuanggli@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
+Cc:     Renius.Chen@genesyslogic.com.tw
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Marc at this time, sorry for spamming.
+Hi Takahiro,
 
-On Thu, Sep 17, 2020 at 06:09:50PM +0800, Leo Yan wrote:
-> [ + Marc ]
-> 
-> On Thu, Sep 17, 2020 at 09:36:45AM +0900, Sergey Senozhatsky wrote:
-> 
-> [...]
-> 
-> > diff --git a/tools/perf/arch/arm64/util/kvm-stat.c b/tools/perf/arch/arm64/util/kvm-stat.c
-> > new file mode 100644
-> > index 000000000000..32e58576f186
-> > --- /dev/null
-> > +++ b/tools/perf/arch/arm64/util/kvm-stat.c
-> > @@ -0,0 +1,86 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <errno.h>
-> > +#include <memory.h>
-> > +#include "../../util/evsel.h"
-> > +#include "../../util/kvm-stat.h"
-> > +#include "arm64_exception_types.h"
-> > +#include "debug.h"
-> > +
-> > +define_exit_reasons_table(arm64_exit_reasons, kvm_arm_exception_type);
-> > +define_exit_reasons_table(arm64_trap_exit_reasons, kvm_arm_exception_class);
-> > +
-> > +const char *kvm_trap_exit_reason = "esr_ec";
-> > +const char *vcpu_id_str = "id";
-> 
-> On Arm64, ftrace tracepoint "kvm_entry" doesn't contain the field "id"
-> or field "vcpu_id", thus it always reads out the "id" is 0 and it is
-> recorded into Perf's structure vcpu_event_record::vcpu_id and assigned
-> to perf thread's private data "thread::private".
-> 
-> With current code, it will not mess up different vcpus' samples because
-> now the samples are analyzed based on thread context, but since all
-> threads' "vcpu_id" is zero, thus all samples are accounted for
-> "vcpu_id=0" and cannot print out correct result with option "--vcpu":
-> 
-> 
->   $ perf kvm stat report --vcpu 4
-> 
->   Analyze events for all VMs, VCPU 4:
-> 
->              VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
-> 
->   Total Samples:0, Total events handled time:0.00us.
-> 
-> 
-> This is an issue I observed, if we want to support option "--vcpu",
-> seems we need to change ftrace event for "kvm_entry", but this will
-> break ABI.
-> 
-> Essentially, this issue is caused by different archs using different
-> format for ftrace event "kvm_entry", on x86 it contains feild
-> "vcpu_id" but arm64 only just records "vcpu_pc".
-> 
-> @Marc, @Will, do you have any suggestion for this?  Do you think it's
-> feasible to add a new field "vcpu_id" into the tracepoint "kvm_entry"
-> for Arm64's version?
-> 
-> Thanks,
-> Leo
+On Thu, Sep 17, 2020 at 1:12 PM AKASHI Takahiro
+<takahiro.akashi@linaro.org> wrote:
+>
+> Adrian, Ben,
+>
+> Regarding _reset() function,
+>
+> On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
+> > On 10/07/20 2:10 pm, Ben Chuang wrote:
+> > > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > >
+> > > In this commit, UHS-II related operations will be called via a function
+> > > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
+> > > a kernel module.
+> > > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
+> > > and when the UHS-II module is loaded. Otherwise, all the functions
+> > > stay void.
+> > >
+> > > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > > ---
+> > >  drivers/mmc/host/sdhci.c | 152 ++++++++++++++++++++++++++++++++++-----
+> > >  1 file changed, 136 insertions(+), 16 deletions(-)
+> > >
+>
+>   (snip)
+>
+> > >     if (host->ops->platform_send_init_74_clocks)
+> > >             host->ops->platform_send_init_74_clocks(host, ios->power_mode);
+> > >
+> > > @@ -2331,7 +2411,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+> > >     }
+> > >
+> > >     if (host->version >= SDHCI_SPEC_300) {
+> > > -           u16 clk, ctrl_2;
+> > > +           u16 clk;
+> > >
+> > >             if (!host->preset_enabled) {
+> > >                     sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
+> > > @@ -3173,11 +3253,19 @@ static bool sdhci_request_done(struct sdhci_host *host)
+> > >                     /* This is to force an update */
+> > >                     host->ops->set_clock(host, host->clock);
+> > >
+> > > -           /* Spec says we should do both at the same time, but Ricoh
+> > > -              controllers do not like that. */
+> > > -           sdhci_do_reset(host, SDHCI_RESET_CMD);
+> > > -           sdhci_do_reset(host, SDHCI_RESET_DATA);
+> > > -
+> > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > +               host->mmc->flags & MMC_UHS2_INITIALIZED) {
+> > > +                   if (sdhci_uhs2_ops.reset)
+> > > +                           sdhci_uhs2_ops.reset(host,
+> > > +                                                SDHCI_UHS2_SW_RESET_SD);
+> > > +           } else {
+> > > +                   /*
+> > > +                    * Spec says we should do both at the same time, but
+> > > +                    * Ricoh controllers do not like that.
+> > > +                    */
+> > > +                   sdhci_do_reset(host, SDHCI_RESET_CMD);
+> > > +                   sdhci_do_reset(host, SDHCI_RESET_DATA);
+> > > +           }
+> >
+> > Please look at using the existing ->reset() sdhci host op instead.
+>
+> Well, the second argument to those reset functions is a bit-wise value
+> to different "reset" registers, SDHCI_SOFTWARE_RESET and SDHCI_UHS2_SW_RESET,
+> respectively.
+>
+> This fact raises a couple of questions to me:
+>
+> 1) Does it make sense to merge two functionality into one, i.e.
+>    sdhci_do_reset(), which is set to call ->reset hook?
+>
+>         -> Adrian
+>
+> 2) UHS2_SW_RESET_SD is done only at this place while there are many callsites
+>    of reset(RESET_CMD|RESET_DATA) in sdhci.c.
+>    Why does the current code work?
+>
+>    I found, in sdhci-pci-gli.c,
+>    sdhci_gl9755_reset()
+>         /* reset sd-tran on UHS2 mode if need to reset cmd/data */
+>         if ((mask & SDHCI_RESET_CMD) | (mask & SDHCI_RESET_DATA))
+>                 gl9755_uhs2_reset_sd_tran(host);
+>
+>    Is this the trick to avoid the issue?
+>    (It looks redundant in terms of the hack above in sdhci_request_done()
+>    and even quite dirty to me. Moreover, no corresponding code for gl9750
+>    and gl9763.)
+
+GL9755 currently does SD reset and UHS-II reset together.
+There is no UHS-II interface on gl9750 and gl9763e.
+
+>
+>         -> Ben
+>
+> 3) (More or less SD specification issue)
+>    In UHS-II mode, do we have to call reset(SHCI_RESET_ALL) along with
+>    reset(UHS2_SW_RESET_FULL)?
+>    Under the current implementation, both will be called at the end.
+>
+
+As I know, the UHS2_SW_RESET_FULL is only for UHS-II.
+Can you list the lines that reset(SHCI_RESET_ALL) and
+reset(UHS2_SW_RESET_FULL) are both called?
+
+>         -> Adrian, Ben
+>
+> 4) (Not directly linked to UHS-II support)
+>   In some places, we see the sequence:
+>         sdhci_do_reset(host, SDHCI_RESET_CMD);
+>         sdhci_do_reset(host, SDHCI_RESET_DATA);
+>   while in other places,
+>         sdhci_do_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
+>
+>   If the statement below is true,
+> > > -           /* Spec says we should do both at the same time, but Ricoh
+> > > -              controllers do not like that. */
+>   the latter should be wrong.
+>
+>         -> Adrian
+>
+> -Takahiro Akashi
+>
+>
+>
+> > >             host->pending_reset = false;
+> > >     }
+> > >
+> > > @@ -3532,6 +3620,13 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
+> > >                               SDHCI_INT_BUS_POWER);
+> > >             sdhci_writel(host, mask, SDHCI_INT_STATUS);
+> > >
+> > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > +               intmask & SDHCI_INT_ERROR &&
+> > > +               host->mmc->flags & MMC_UHS2_SUPPORT) {
+> > > +                   if (sdhci_uhs2_ops.irq)
+> > > +                           sdhci_uhs2_ops.irq(host);
+> > > +           }
+> > > +
+> >
+> > Please look at using the existing ->irq() sdhci host op instead
+> >
+> > >             if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
+> > >                     u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
+> > >                                   SDHCI_CARD_PRESENT;
+> > > @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
+> > >             /* This may alter mmc->*_blk_* parameters */
+> > >             sdhci_allocate_bounce_buffer(host);
+> > >
+> > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > +       host->version >= SDHCI_SPEC_400 &&
+> > > +       sdhci_uhs2_ops.add_host) {
+> > > +           ret = sdhci_uhs2_ops.add_host(host, host->caps1);
+> > > +           if (ret)
+> > > +                   goto unreg;
+> > > +   }
+> > > +
+> >
+> > I think you should look at creating uhs2_add_host() instead
+> >
+> > >     return 0;
+> > >
+> > >  unreg:
+> > > @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
+> > >  {
+> > >     struct mmc_host *mmc = host->mmc;
+> > >
+> > > +   /* FIXME: Do we have to do some cleanup for UHS2 here? */
+> > > +
+> > >     if (!IS_ERR(mmc->supply.vqmmc))
+> > >             regulator_disable(mmc->supply.vqmmc);
+> > >
+> > > @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
+> > >             mmc->cqe_ops = NULL;
+> > >     }
+> > >
+> > > +   if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
+> > > +           /* host doesn't want to enable UHS2 support */
+> > > +           mmc->caps &= ~MMC_CAP_UHS2;
+> > > +           mmc->flags &= ~MMC_UHS2_SUPPORT;
+> > > +
+> > > +           /* FIXME: Do we have to do some cleanup here? */
+> > > +   }
+> > > +
+> > >     host->complete_wq = alloc_workqueue("sdhci", flags, 0);
+> > >     if (!host->complete_wq)
+> > >             return -ENOMEM;
+> > > @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
+> > >  unled:
+> > >     sdhci_led_unregister(host);
+> > >  unirq:
+> > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > +       sdhci_uhs2_ops.remove_host)
+> > > +           sdhci_uhs2_ops.remove_host(host, 0);
+> > >     sdhci_do_reset(host, SDHCI_RESET_ALL);
+> > >     sdhci_writel(host, 0, SDHCI_INT_ENABLE);
+> > >     sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
+> > > @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
+> > >
+> > >     sdhci_led_unregister(host);
+> > >
+> > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > +       sdhci_uhs2_ops.remove_host)
+> > > +           sdhci_uhs2_ops.remove_host(host, dead);
+> > > +
+> >
+> > I think you should look at creating uhs2_remove_host() instead
+> >
+> > >     if (!dead)
+> > >             sdhci_do_reset(host, SDHCI_RESET_ALL);
+> > >
+> > >
+> >
