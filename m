@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6CB26E34C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9367726E343
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgIQSKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:10:38 -0400
-Received: from mga05.intel.com ([192.55.52.43]:25199 "EHLO mga05.intel.com"
+        id S1726467AbgIQRbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:31:51 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45372 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726416AbgIQRaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:30:55 -0400
-X-Greylist: delayed 487 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 13:30:53 EDT
-IronPort-SDR: dVC2EB4KFrksVxj7y3cdAvKK8ITdpQqY/jAw1O+8Yi8uL8Jx67lkWU7AgKh3N5PX+knsXRSPRv
- hpiQm0MYZk5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="244584975"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="244584975"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 10:22:42 -0700
-IronPort-SDR: d8KguAnRbfpRkGIt60HaTbUnGHuynchkWUobyiJR18CSUF98cdcJxOFmZoRAW0SG2N2WbH/LV+
- f1X/BFqPAyzw==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="339503224"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 10:22:41 -0700
-Date:   Thu, 17 Sep 2020 10:22:39 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v8 3/9] Documentation/x86: Add documentation for SVA
- (Shared Virtual Addressing)
-Message-ID: <20200917172239.GB92038@otc-nc-03>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
- <1600187413-163670-4-git-send-email-fenghua.yu@intel.com>
- <20200917075338.GC31960@zn.tnic>
- <20200917145609.GB91028@otc-nc-03>
- <20200917171849.GO31960@zn.tnic>
+        id S1726610AbgIQR31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:29:27 -0400
+Received: from zn.tnic (p200300ec2f105300d80be81ad57dea02.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:d80b:e81a:d57d:ea02])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B07011EC03D2;
+        Thu, 17 Sep 2020 19:28:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600363722;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DPFZ7R7KMR4GIHVlYtjgerY8lFRwnbkOZgmyXUzJz/8=;
+        b=KIsGzNW5GDbEH/cPxtlMc/bbz/A0UiKdMoc5YwFnhJI8eSiLJbzS/+EpkniTK4FgMaldZ8
+        LTzJfcs/cJoJgSBmRAH8snOjI13ouHxBeNkoy2TuOLT6oVqvz1waBb2Y9qZON32RJljipD
+        9VQWx1qx8jeO/V97FNpt9POn51GevXg=
+Date:   Thu, 17 Sep 2020 19:28:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/cmdline: Disable instrumentation of cmdline
+ unconditionally
+Message-ID: <20200917172840.GP31960@zn.tnic>
+References: <20200906154637.1618112-1-nivedita@alum.mit.edu>
+ <20200917094055.GF31960@zn.tnic>
+ <20200917160548.GA1877352@rani.riverdale.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200917171849.GO31960@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200917160548.GA1877352@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Boris.
+On Thu, Sep 17, 2020 at 12:05:48PM -0400, Arvind Sankar wrote:
+> I did have a crash and this patch fixed it, but it seems it was on a
+> branch where I was making changes to cmdline.c, which triggered clang to
+> use a jump table for cmdline_find_option_bool(). That was the cause of
+> the crash, and the reason this patch fixed it was because it enabled
+> -fno-jump-tables, rather than because it disabled instrumentation.
 
-multiple "again" makes it funny again :-)
+I see.
 
+> The instrumentation code does write data to random addresses, but
+> apparently that doesn't necessarily crash the system. This patch would
+> also be insufficient to fix it, since load_ucode_bsp() itself can have
+> instrumentation code in it.
 
-On Thu, Sep 17, 2020 at 07:18:49PM +0200, Borislav Petkov wrote:
-> On Thu, Sep 17, 2020 at 07:56:09AM -0700, Raj, Ashok wrote:
-> > Just tweaked it a bit: 
-> > 
-> > "When ATS lookup fails for a virtual address, device should use PRI in
-> > order to request the virtual address to be paged into the CPU page tables.
-> > The device must use ATS again in order the fetch the translation again
+Yeah, it better not have any.
 
-s/translation again/translation
-
-> > before use"
+> Eg with GCOV_PROFILE_ALL enabled, the start of the function is:
 > 
-> Thanks, amended.
+> 	c2a7706a <load_ucode_bsp>:
+> 	c2a7706a:       55                      push   %ebp
+> 	c2a7706b:       83 05 c0 4d ba c2 01    addl   $0x1,0xc2ba4dc0
+> 	c2a77072:       83 15 c4 4d ba c2 00    adcl   $0x0,0xc2ba4dc4
+> 	c2a77079:       89 e5                   mov    %esp,%ebp
 > 
+> but when it's called from arch/x86/kernel/head_32.S, paging is disabled
+> and the code is executing out of physical addresses, so it's going to
+> read/write data from garbage addresses.
 
+Right, so I'm sceptical to all this instrumentation nonsense - it is
+fine and good if you have it but not everywhere. And certainly not when
+the thing is loading microcode.
 
+microcode/core.c contains all the code, early and late so it might make
+some little sense to have instrumentation there for whatever reasons,
+say KASANing (yah, I made a verb :)) the thing for leaks or whatnot,
+but meh, I can't find it in me to care. So at some point, if it starts
+getting in the way, we might remove all instrumentation from that thing
+altogether.
+
+> Anyway, please ignore this patch and sorry for the noise.
+
+No worries.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
