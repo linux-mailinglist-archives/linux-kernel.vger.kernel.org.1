@@ -2,113 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5F526D93E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FCC26D945
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgIQKjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:39:44 -0400
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:40509 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726285AbgIQKjl (ORCPT
+        id S1726603AbgIQKk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgIQKjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:39:41 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id IrK7kLrEDPTBMIrK9klcOJ; Thu, 17 Sep 2020 12:39:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1600339173; bh=ovPmCy2WU4DV9C/CbTpmAM6WjhC6BguH4dx89notBIg=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=Qml+oBHA7thqryEPovgtmdqNEaiX+u5+Gpi/kTvOYl5xSe7wD3AWwFJXuH235XZ47
-         EIxHoanS6a4FazdiTBmOK+K/KC81qxNjYvCe4TApm9dy3DnaizX35KzKeNU3l9WNiu
-         b3im30uwET2yRhzZupRD+MlkJV4s90133RcXPyIaq9FocftfGyZZMo96d+BfPoH3RM
-         IHmXogGGXIZJHhuS0d77VC7l7MdYI7b6XmZl3fKx5UGXQSDLsZCoHG3lwQIPS7p4uN
-         bkg6WBwq3KHCydqH3RXPrnqEOSo3FS1DXY2DYRK9bAiFyK/P/ppUw6RG3HT+G1rL76
-         LCnEwUPyy9iaA==
-Subject: Re: [PATCH] media: cedrus: Propagate OUTPUT resolution to CAPTURE
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Cc:     kernel@collabora.com, Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200514153903.341287-1-nicolas.dufresne@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <b868e559-25e0-7381-67f4-d3a6f7c0e2ed@xs4all.nl>
-Date:   Thu, 17 Sep 2020 12:39:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Sep 2020 06:39:48 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2DAC061788
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:39:47 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a17so1508279wrn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:39:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i61APjl9FpHUWCD5kz7OHKcLpHTXAoxGDIDfWxkIIKA=;
+        b=TzPoWKJpf/wfLnHIxcrXxgZWuK60ap9//CbBd+TZNU2y8pdavUxikjEt2gi5POaKmE
+         sqkFdSnMaVS1uKBMNwFz2LD2WOzuwU1zj8wyFkyUcYMrba7+P5J1c2Fv+B2pA0YKvxEq
+         PITadgTrH/zkaB/+nsMN0He+jN7epa8nGmBTppCHFZArS1XrWopPHaOZ+a73fw3w9qPn
+         3XYS+1a630QJtEokkLq6ui9qWO+5TNMwL2/5JCPrGShBHnRRp8yqSVLE+jWSTS3LU4CV
+         qBTpOaf7Qkp9W9WrfV8ijmWDL8lGRzqW6IiHDacIJmABTVU1gQ89/bti1zIaAMhXKSaT
+         im5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i61APjl9FpHUWCD5kz7OHKcLpHTXAoxGDIDfWxkIIKA=;
+        b=QBmOaHMu2tPUIedHeve5xYGcorwUDvCuT8eCJEWHQu/hzQkkeN3TNm6lTPmc22WOpI
+         KOeMTvtCfU3/k2dD98S5/Wx67iW4Zn+ILOQGDkOVkG4/UQfJ4t1RZoRiPRhVoumzjTMr
+         lzeAUN1mDDFmWgTtih/X0nP/mWik/UyVrR3waF48nymfjs53RYrHVn2n1muZF5yVvBO1
+         rn8D3fY6ExAUrtACZUaXLArTTjQNIp6guQMrQvHDK5y/9AIgEuqJ6EVUnMLlQntKPgND
+         PxSRwgGAJtMFVw8TTY/pllaRwBzC1cxvoRxgwEV6mxa4fUvobEl+gK322atlJs+w4NQo
+         Fibw==
+X-Gm-Message-State: AOAM533soymDrhSrmZdJcCLZJG0Cl9XHZq7l28LmjofUb0U14IMAxJNz
+        x+NrPSAqgcEFy8LDGNzki0o5TQ==
+X-Google-Smtp-Source: ABdhPJxDq+/9WZYcvn4wKFY6MtwgqeKWNaxXznfDHBKkyGKGAQpnGiuIZ/ycslis6B1djEELBpVQXA==
+X-Received: by 2002:a5d:51c5:: with SMTP id n5mr7428723wrv.265.1600339185727;
+        Thu, 17 Sep 2020 03:39:45 -0700 (PDT)
+Received: from x1 ([2001:16b8:5c22:e701:5f2:8f03:4748:2bc6])
+        by smtp.gmail.com with ESMTPSA id r14sm38384764wrn.56.2020.09.17.03.39.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 03:39:45 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 12:39:42 +0200
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Trent Piepho <tpiepho@gmail.com>
+Cc:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Christina Quast <cquast@hanoverdisplays.com>
+Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
+ #pinctrl-cells = 2
+Message-ID: <20200917103942.GA2477958@x1>
+References: <20200914104352.2165818-1-drew@beagleboard.org>
+ <CA+7tXii8rwBexgAHeqYsvBywhWLmk-Hf5_VWUU5bQkBREeFcSA@mail.gmail.com>
+ <20200917092004.GA2468349@x1>
+ <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200514153903.341287-1-nicolas.dufresne@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfNdzMGLz+xOc27mAcRC5nGCJ0Z1gcbHjBQcsVrd+8VTj6OMxdfftRLAFEtE5SuJ3kpxtqG1IPfG0ykbqZcktO14SOE8/cpJJla2CU5gqAjSx8PqeR5Gt
- a2lKzoCMroWlIpvyIQHolKjF7pvwFvYURo3oByAgspezKpO/6DcTdaRNRy1IPOaJVgJWdaX20c/Ofq8NcEWF3zkJ1fuvR/WzIvh8YzvjhkrwcF7UjeBNYMfF
- 6chbFl7Q/iYU4JgtV0q6flUpJY3aDRNfZ6mbryJkOg8fvi6LosdpXFylZ1lyjhbKDl5xU6OlyHdFNUGcMrH7Pka0pURwHjxA2fAvSNlNvvnWeSP59R4SuQ44
- S3CanQUNAPgUB1Wb589JLwfLCOkG2xg3TadC4yJdCnIfwipQ9j+0kkwFV/XixT/7v/938i97HKY0tWCbWA+QviU0dkisUljlErZjk5YxZkd90SD1+geNi7PZ
- eKLnLaveAX8VCROayJb5FiG/lj4/ngAKQNMR2nWTc6yu0dZCJGSw/tn7J8c6y4uNoKYNvfwbCGDluWxf2GCJjuWgHXcLpnZRMUGITdRbrmAcvJmLw42J0aU7
- o52rCsBFsNgXLY7F2yfW04DYTIUGhk8FLS89yjDWcwGi/VlU7/xvRjzNCzdPG3leOL4=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/05/2020 17:39, Nicolas Dufresne wrote:
-> As per spec, the CAPTURE resolution should be automatically set based on
-> the OTUPUT resolution. This patch properly propagate width/height to the
-> capture when the OUTPUT format is set and override the user provided
-> width/height with configured OUTPUT resolution when the CAPTURE fmt is
-> updated.
+On Thu, Sep 17, 2020 at 03:00:36AM -0700, Trent Piepho wrote:
+> On Thu, Sep 17, 2020 at 2:20 AM Drew Fustini <drew@beagleboard.org> wrote:
+> >
+> > On Thu, Sep 17, 2020 at 02:03:46AM -0700, Trent Piepho wrote:
+> > > On Mon, Sep 14, 2020 at 3:44 AM Drew Fustini <drew@beagleboard.org> wrote:
+> > > >
+> > > > +
+> > > > +When #pinctrl-cells = 2, then setting a pin for a device could be done with:
+> > > > +
+> > > > +       pinctrl-single,pins = <0xdc 0x30 0x07>;
+> > > > +
+> > > > +Where 0x30 is the pin configuration value and 0x07 is the pin mux mode value.
+> > > > +See the device example and static board pins example below for more information.
+> > >
+> > > Pin configuration and mux mode don't mean anything in pinctrl-single.
+> > > On another machine, mux mode might not be programmed this way or even
+> > > exist.  Or the location of bits would probably be different, and this
+> > > would seem to imply the 0x07 would get shifted to the correct location
+> > > for where the pin mux setting was on that machine's pinctrl registers.
+> > >
+> > > It seems like it would be better to explain the values are ORed together.
+> >
+> > I descirbed it as seoerate values as I did not want to prescribe what
+> > the pcs driver would do with those values.  But, yes, it is a just an OR
+> > operation, so I could change the language to reflect tat.
 > 
-> This also prevents userspace from selecting a CAPTURE resolution that is
-> too small, avoiding unwanted page faults.
+> If you don't say what the pinctrl-single driver does with the values,
+> how would anyone know how to use it?
 > 
-> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> ---
->  drivers/staging/media/sunxi/cedrus/cedrus_video.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > What is the purpose of this change anyway?  It seems like in the end
+> > > it just does what it did before.  The data is now split into two cells
+> > > in the device tree, but why?
+> >
+> > These changes were a result of desire to seperate pinconf and pinmux.
+> > Tony raised the idea in a thread at the end of May [1].
+> >
+> > Tony wrote:
+> > > Only slightly related, but we should really eventually move omaps to use
+> > > #pinctrl-cells = <2> (or 3) instead of 1, and pass the pinconf seprately
+> > > from the mux mode. We already treat them separately with the new
+> > > AM33XX_PADCONF macro, so we'd only have to change one SoC at a time to
+> > > use updated #pinctrl-cells. But I think pinctrl-single might need some
+> > > changes before we can do that.
 > 
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> index 16d82309e7b6..a6d6b15adc2e 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> @@ -247,6 +247,8 @@ static int cedrus_try_fmt_vid_cap(struct file *file, void *priv,
->  		return -EINVAL;
->  
->  	pix_fmt->pixelformat = fmt->pixelformat;
-> +	pix_fmt->width = ctx->src_fmt.width;
-> +	pix_fmt->height = ctx->src_fmt.height;
->  	cedrus_prepare_format(pix_fmt);
->  
->  	return 0;
-> @@ -319,11 +321,14 @@ static int cedrus_s_fmt_vid_out(struct file *file, void *priv,
->  		break;
->  	}
->  
-> -	/* Propagate colorspace information to capture. */
-> +	/* Propagate format information to capture. */
->  	ctx->dst_fmt.colorspace = f->fmt.pix.colorspace;
->  	ctx->dst_fmt.xfer_func = f->fmt.pix.xfer_func;
->  	ctx->dst_fmt.ycbcr_enc = f->fmt.pix.ycbcr_enc;
->  	ctx->dst_fmt.quantization = f->fmt.pix.quantization;
-> +	ctx->dst_fmt.width = ctx->src_fmt.width;
-> +	ctx->dst_fmt.height = ctx->src_fmt.height;
+> I still don't see what the goal is here.  Support generic pinconf?
 
-You can only do this if the capture queue isn't busy.
+My interest is came out of my desire to turn on generic pinconf for AM3358
+and I had to fix a bug that was breaking compatible "pinconf,single":
+f46fe79ff1b6 ("pinctrl-single: fix pcs_parse_pinconf() return value")
 
-See also hantro_reset_raw_fmt() where it does that check.
+> Also note that while AM33XX_PADCONF() is changed, there is an in tree
+> board that doesn't use it, so it's broken now.  I found this change
+> when it broke my out of tree board, due to the dtsi change not being
+> reflected in my board's pinctrl values.
 
-So this needs a v2.
+Thanks, that is a good point that arch/arm/boot/dts/am335x-guardian.dts
+needs to be converted from AM33XX_IOPAD to AM33XX_PADCONF.  I'll submit
+a patch for that.
 
-Regards,
+Regarding AM33XX_PADCONF() restructuring, the change to have seperate
+arguments for direction and mux in AM33XX_PADCONF() predates my
+invovlement, so I've CC'd Christina Quast.
 
-	Hans
+    commit f1ff9be7652b716c7eea67c9ca795027d911f148
+    Author: Christina Quast <cquast@hanoverdisplays.com>
+    Date:   Mon Apr 8 10:01:51 2019 -0700
 
-> +	cedrus_prepare_format(&ctx->dst_fmt);
->  
->  	return 0;
->  }
-> 
+    ARM: dts: am33xx: Added AM33XX_PADCONF macro
+    
+    AM33XX_PADCONF takes three instead of two parameters, to make
+    future changes to #pinctrl-cells easier.
+    
+    For old boards which are not mainlined, we left the AM33XX_IOPAD
+    macro.
+    
+    Signed-off-by: Christina Quast <cquast@hanoverdisplays.com>
+    Reviewed-by: Rob Herring <robh@kernel.org>
+    Signed-off-by: Tony Lindgren <tony@atomide.com>
 
+Hopefully, Tony can also chime in.
+
+-Drew
