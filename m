@@ -2,162 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B86B26D0C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B756A26D0CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgIQBqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:46:23 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:47585 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbgIQBqS (ORCPT
+        id S1726202AbgIQBsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgIQBr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:46:18 -0400
-X-Greylist: delayed 387 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:46:16 EDT
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08H1dJ9Y1015685, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08H1dJ9Y1015685
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Sep 2020 09:39:19 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Thu, 17 Sep 2020 09:39:19 +0800
-Received: from localhost.localdomain (172.21.179.130) by
- RTEXMB04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Thu, 17 Sep 2020 09:39:18 +0800
-From:   Willy Liu <willy.liu@realtek.com>
-To:     <hkallweit1@gmail.com>
-CC:     <davem@davemloft.net>, <andrew@lunn.ch>, <linux@armlinux.org.uk>,
-        <kuba@kernel.org>, <ryankao@realtek.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Willy Liu <willy.liu@realtek.com>
-Subject: [PATCH] net: phy: realtek: Replace 2.5Gbps name from RTL8125 to RTL8226
-Date:   Thu, 17 Sep 2020 09:39:08 +0800
-Message-ID: <1600306748-3176-1-git-send-email-willy.liu@realtek.com>
-X-Mailer: git-send-email 1.9.1
+        Wed, 16 Sep 2020 21:47:59 -0400
+X-Greylist: delayed 472 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:47:59 EDT
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1FEC061756;
+        Wed, 16 Sep 2020 18:40:06 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w7so197576pfi.4;
+        Wed, 16 Sep 2020 18:40:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XqPbYyibnBtLglSdw8vOUWlJOpkDU98bhZmP3GMf8Os=;
+        b=qqmoYxYc6VcwCfc0BqmTEcqzfwNOGjSGMso04JaPbmuw/EydDLtQVRLCtGC2jGxPvE
+         VE+grz+sg14en51ypU9qVlltQn9SbmiwAQhMjQecc4L0ULFF1p57ozcu93pDwPI9c7XL
+         7BjCwNc6VCjLFhpqsuO+oyQ7Bw5Ga7H821P+/2S3ZFESrHS+x98BlBFB1jByEss0Rkbn
+         QK75uVLq7u4Ue4qhBg9/5QEBqX6bda1eu+qpPiBIBJuXNiIq4pw7m7ljC5PaMhZxzP3p
+         Tp0ozd7mH1CtY2n3qSY11bNs0UQqypy6Cg6LzdE87yy8tToArxjE7VrgLiqheH9bieKr
+         2aHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XqPbYyibnBtLglSdw8vOUWlJOpkDU98bhZmP3GMf8Os=;
+        b=ovPygVfLPfkAIDDIhXfitTkll/6w+eDCr1jWrPVAdfi0oI7iWl6Dx/55r9MbjkmSIf
+         +Yem6YoqAp4Gowz64pHUfTwFtsL4+wDOeiUSnkitU3dbpbaVWgfM7QnlAeZKhDXpguea
+         6GonZMtHET1L+DW+AauC3laiDQrdZ4kse0/8JUSK5F12mMbUWWxGlbCFQBCOJBiBFf5a
+         E/P4aLLY6frYnUaSFnuZnX6Wls/9lkeJRqBwTMlcoJJGwk8+bUmhe+8CUCfTmtocEEaT
+         JARgMYUmTFgoJZLYo3q9qS+ttpeMpxurGKTG01E+5d+H2yCd6TnrllThAnIoTbq0xmwz
+         /Olw==
+X-Gm-Message-State: AOAM532qog3hMo9GCWsjoXmcJLG+AsQ9Ww5Vbiz0pQp02inSrEOCO8xT
+        6hyVq1rOiJA9xqNHxzwGYQQ=
+X-Google-Smtp-Source: ABdhPJyFaLqjWKbe+lIDDeWVibl2M1DKnZpbUCR7PPzkGrRtAG0dO9OdnoibRJi6DqJSH4FRnWZWeQ==
+X-Received: by 2002:aa7:9583:0:b029:142:2501:396a with SMTP id z3-20020aa795830000b02901422501396amr8944858pfj.47.1600306805981;
+        Wed, 16 Sep 2020 18:40:05 -0700 (PDT)
+Received: from dc803.localdomain (FL1-111-169-191-163.hyg.mesh.ad.jp. [111.169.191.163])
+        by smtp.gmail.com with ESMTPSA id l7sm3664769pjz.56.2020.09.16.18.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 18:40:05 -0700 (PDT)
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+To:     kohada.t2@gmail.com
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] exfat: remove 'rwoffset' in exfat_inode_info
+Date:   Thu, 17 Sep 2020 10:39:16 +0900
+Message-Id: <20200917013916.4523-1-kohada.t2@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.179.130]
-X-ClientProxiedBy: RTEXMB01.realtek.com.tw (172.21.6.94) To
- RTEXMB04.realtek.com.tw (172.21.6.97)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to PHY ID, 0x001cc800 should be named "RTL8226 2.5Gbps PHY"
-and 0x001cc840 should be named "RTL8226B_RTL8221B 2.5Gbps PHY".
-RTL8125 is not a single PHY solution, it integrates PHY/MAC/PCIE bus
-controller and embedded memory.
+Remove 'rwoffset' in exfat_inode_info and replace it with the parameter of
+exfat_readdir().
+Since rwoffset is referenced only by exfat_readdir(), it is not necessary
+a exfat_inode_info's member.
+Also, change cpos to point to the next of entry-set, and return the index
+of dir-entry via dir_entry->entry.
 
-Signed-off-by: Willy Liu <willy.liu@realtek.com>
+Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
 ---
- drivers/net/phy/realtek.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
- mode change 100644 => 100755 drivers/net/phy/realtek.c
+Changes in v2
+ - 'cpos' point to the next of entry-set
+ - return the index of dir-entry via dir_entry->entry
+ - fix commit-message
 
-diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
-old mode 100644
-new mode 100755
-index 95dbe5e..a98b09d
---- a/drivers/net/phy/realtek.c
-+++ b/drivers/net/phy/realtek.c
-@@ -400,7 +400,7 @@ static int rtlgen_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
- 	return ret;
+ fs/exfat/dir.c      | 21 +++++++++------------
+ fs/exfat/exfat_fs.h |  2 --
+ fs/exfat/file.c     |  2 --
+ fs/exfat/inode.c    |  3 ---
+ fs/exfat/super.c    |  1 -
+ 5 files changed, 9 insertions(+), 20 deletions(-)
+
+diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
+index a9b13ae3f325..82bee625549d 100644
+--- a/fs/exfat/dir.c
++++ b/fs/exfat/dir.c
+@@ -59,9 +59,9 @@ static void exfat_get_uniname_from_ext_entry(struct super_block *sb,
  }
  
--static int rtl8125_read_mmd(struct phy_device *phydev, int devnum, u16 regnum)
-+static int rtl822x_read_mmd(struct phy_device *phydev, int devnum, u16 regnum)
+ /* read a directory entry from the opened directory */
+-static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
++static int exfat_readdir(struct inode *inode, loff_t *cpos, struct exfat_dir_entry *dir_entry)
  {
- 	int ret = rtlgen_read_mmd(phydev, devnum, regnum);
+-	int i, dentries_per_clu, dentries_per_clu_bits = 0;
++	int i, dentries_per_clu, dentries_per_clu_bits = 0, num_ext;
+ 	unsigned int type, clu_offset;
+ 	sector_t sector;
+ 	struct exfat_chain dir, clu;
+@@ -70,7 +70,7 @@ static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
+ 	struct super_block *sb = inode->i_sb;
+ 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
+ 	struct exfat_inode_info *ei = EXFAT_I(inode);
+-	unsigned int dentry = ei->rwoffset & 0xFFFFFFFF;
++	unsigned int dentry = EXFAT_B_TO_DEN(*cpos) & 0xFFFFFFFF;
+ 	struct buffer_head *bh;
  
-@@ -424,7 +424,7 @@ static int rtl8125_read_mmd(struct phy_device *phydev, int devnum, u16 regnum)
- 	return ret;
+ 	/* check if the given file ID is opened */
+@@ -127,6 +127,7 @@ static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
+ 				continue;
+ 			}
+ 
++			num_ext = ep->dentry.file.num_ext;
+ 			dir_entry->attr = le16_to_cpu(ep->dentry.file.attr);
+ 			exfat_get_entry_time(sbi, &dir_entry->crtime,
+ 					ep->dentry.file.create_tz,
+@@ -157,12 +158,13 @@ static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
+ 				return -EIO;
+ 			dir_entry->size =
+ 				le64_to_cpu(ep->dentry.stream.valid_size);
++			dir_entry->entry = dentry;
+ 			brelse(bh);
+ 
+ 			ei->hint_bmap.off = dentry >> dentries_per_clu_bits;
+ 			ei->hint_bmap.clu = clu.dir;
+ 
+-			ei->rwoffset = ++dentry;
++			*cpos = EXFAT_DEN_TO_B(dentry + 1 + num_ext);
+ 			return 0;
+ 		}
+ 
+@@ -178,7 +180,7 @@ static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
+ 	}
+ 
+ 	dir_entry->namebuf.lfn[0] = '\0';
+-	ei->rwoffset = dentry;
++	*cpos = EXFAT_DEN_TO_B(dentry);
+ 	return 0;
  }
  
--static int rtl8125_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
-+static int rtl822x_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
- 			     u16 val)
- {
- 	int ret = rtlgen_write_mmd(phydev, devnum, regnum, val);
-@@ -441,7 +441,7 @@ static int rtl8125_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
- 	return ret;
- }
+@@ -242,12 +244,10 @@ static int exfat_iterate(struct file *filp, struct dir_context *ctx)
+ 	if (err)
+ 		goto unlock;
+ get_new:
+-	ei->rwoffset = EXFAT_B_TO_DEN(cpos);
+-
+ 	if (cpos >= i_size_read(inode))
+ 		goto end_of_dir;
  
--static int rtl8125_get_features(struct phy_device *phydev)
-+static int rtl822x_get_features(struct phy_device *phydev)
- {
- 	int val;
+-	err = exfat_readdir(inode, &de);
++	err = exfat_readdir(inode, &cpos, &de);
+ 	if (err) {
+ 		/*
+ 		 * At least we tried to read a sector.  Move cpos to next sector
+@@ -262,13 +262,10 @@ static int exfat_iterate(struct file *filp, struct dir_context *ctx)
+ 		goto end_of_dir;
+ 	}
  
-@@ -459,7 +459,7 @@ static int rtl8125_get_features(struct phy_device *phydev)
- 	return genphy_read_abilities(phydev);
- }
+-	cpos = EXFAT_DEN_TO_B(ei->rwoffset);
+-
+ 	if (!nb->lfn[0])
+ 		goto end_of_dir;
  
--static int rtl8125_config_aneg(struct phy_device *phydev)
-+static int rtl822x_config_aneg(struct phy_device *phydev)
- {
- 	int ret = 0;
+-	i_pos = ((loff_t)ei->start_clu << 32) |
+-		((ei->rwoffset - 1) & 0xffffffff);
++	i_pos = ((loff_t)ei->start_clu << 32) |	(de.entry & 0xffffffff);
+ 	tmp = exfat_iget(sb, i_pos);
+ 	if (tmp) {
+ 		inum = tmp->i_ino;
+diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
+index 44dc04520175..e586daf5a2e7 100644
+--- a/fs/exfat/exfat_fs.h
++++ b/fs/exfat/exfat_fs.h
+@@ -263,8 +263,6 @@ struct exfat_inode_info {
+ 	 * the validation of hint_stat.
+ 	 */
+ 	unsigned int version;
+-	/* file offset or dentry index for readdir */
+-	loff_t rwoffset;
  
-@@ -479,7 +479,7 @@ static int rtl8125_config_aneg(struct phy_device *phydev)
- 	return __genphy_config_aneg(phydev, ret);
- }
+ 	/* hint for cluster last accessed */
+ 	struct exfat_hint hint_bmap;
+diff --git a/fs/exfat/file.c b/fs/exfat/file.c
+index 4831a39632a1..a92478eabfa4 100644
+--- a/fs/exfat/file.c
++++ b/fs/exfat/file.c
+@@ -208,8 +208,6 @@ int __exfat_truncate(struct inode *inode, loff_t new_size)
+ 	/* hint information */
+ 	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
+ 	ei->hint_bmap.clu = EXFAT_EOF_CLUSTER;
+-	if (ei->rwoffset > new_size)
+-		ei->rwoffset = new_size;
  
--static int rtl8125_read_status(struct phy_device *phydev)
-+static int rtl822x_read_status(struct phy_device *phydev)
- {
- 	int ret;
+ 	/* hint_stat will be used if this is directory. */
+ 	ei->hint_stat.eidx = 0;
+diff --git a/fs/exfat/inode.c b/fs/exfat/inode.c
+index 7f90204adef5..70a33d4807c3 100644
+--- a/fs/exfat/inode.c
++++ b/fs/exfat/inode.c
+@@ -114,8 +114,6 @@ static int exfat_map_cluster(struct inode *inode, unsigned int clu_offset,
+ 	unsigned int local_clu_offset = clu_offset;
+ 	unsigned int num_to_be_allocated = 0, num_clusters = 0;
  
-@@ -521,7 +521,7 @@ static int rtlgen_match_phy_device(struct phy_device *phydev)
- 	       !rtlgen_supports_2_5gbps(phydev);
- }
+-	ei->rwoffset = EXFAT_CLU_TO_B(clu_offset, sbi);
+-
+ 	if (EXFAT_I(inode)->i_size_ondisk > 0)
+ 		num_clusters =
+ 			EXFAT_B_TO_CLU_ROUND_UP(EXFAT_I(inode)->i_size_ondisk,
+@@ -567,7 +565,6 @@ static int exfat_fill_inode(struct inode *inode, struct exfat_dir_entry *info)
+ 	ei->hint_stat.eidx = 0;
+ 	ei->hint_stat.clu = info->start_clu;
+ 	ei->hint_femp.eidx = EXFAT_HINT_NONE;
+-	ei->rwoffset = 0;
+ 	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
+ 	ei->i_pos = 0;
  
--static int rtl8125_match_phy_device(struct phy_device *phydev)
-+static int rtl8226_match_phy_device(struct phy_device *phydev)
- {
- 	return phydev->phy_id == RTL_GENERIC_PHYID &&
- 	       rtlgen_supports_2_5gbps(phydev);
-@@ -626,29 +626,29 @@ static int rtlgen_resume(struct phy_device *phydev)
- 		.read_mmd	= rtlgen_read_mmd,
- 		.write_mmd	= rtlgen_write_mmd,
- 	}, {
--		.name		= "RTL8125 2.5Gbps internal",
--		.match_phy_device = rtl8125_match_phy_device,
--		.get_features	= rtl8125_get_features,
--		.config_aneg	= rtl8125_config_aneg,
--		.read_status	= rtl8125_read_status,
-+		.name		= "RTL8226 2.5Gbps PHY",
-+		.match_phy_device = rtl8226_match_phy_device,
-+		.get_features	= rtl822x_get_features,
-+		.config_aneg	= rtl822x_config_aneg,
-+		.read_status	= rtl822x_read_status,
- 		.suspend	= genphy_suspend,
- 		.resume		= rtlgen_resume,
- 		.read_page	= rtl821x_read_page,
- 		.write_page	= rtl821x_write_page,
--		.read_mmd	= rtl8125_read_mmd,
--		.write_mmd	= rtl8125_write_mmd,
-+		.read_mmd	= rtl822x_read_mmd,
-+		.write_mmd	= rtl822x_write_mmd,
- 	}, {
- 		PHY_ID_MATCH_EXACT(0x001cc840),
--		.name		= "RTL8125B 2.5Gbps internal",
--		.get_features	= rtl8125_get_features,
--		.config_aneg	= rtl8125_config_aneg,
--		.read_status	= rtl8125_read_status,
-+		.name		= "RTL8226B_RTL8221B 2.5Gbps PHY",
-+		.get_features	= rtl822x_get_features,
-+		.config_aneg	= rtl822x_config_aneg,
-+		.read_status	= rtl822x_read_status,
- 		.suspend	= genphy_suspend,
- 		.resume		= rtlgen_resume,
- 		.read_page	= rtl821x_read_page,
- 		.write_page	= rtl821x_write_page,
--		.read_mmd	= rtl8125_read_mmd,
--		.write_mmd	= rtl8125_write_mmd,
-+		.read_mmd	= rtl822x_read_mmd,
-+		.write_mmd	= rtl822x_write_mmd,
- 	}, {
- 		PHY_ID_MATCH_EXACT(0x001cc961),
- 		.name		= "RTL8366RB Gigabit Ethernet",
+diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+index 3b6a1659892f..b29935a91b9b 100644
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -342,7 +342,6 @@ static int exfat_read_root(struct inode *inode)
+ 	ei->flags = ALLOC_FAT_CHAIN;
+ 	ei->type = TYPE_DIR;
+ 	ei->version = 0;
+-	ei->rwoffset = 0;
+ 	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
+ 	ei->hint_stat.eidx = 0;
+ 	ei->hint_stat.clu = sbi->root_dir;
 -- 
-1.9.1
+2.25.1
 
