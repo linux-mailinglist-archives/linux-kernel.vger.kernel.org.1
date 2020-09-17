@@ -2,134 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E8126E520
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA7C26E52F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgIQTNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726493AbgIQTNJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 15:13:09 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09690C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 12:12:59 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id i22so4826625eja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 12:12:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3LEPP0iVO4pOzmayuWFbUiTrC/zzrJHdmu9l66uZ3ww=;
-        b=A8v+LFGmLAiO8xRtH9s3ZBA0ErXORvSRkCXdgySdxxbuOJB+chA7rl6b2sM/AI825O
-         Duj98X4AUtCKr3G6eEUT0XjUWGnlWIKxlHKBnAnETBWPH492e2lWXygqMxF2mxj6qp3V
-         29WHJr0FOv9xnowF0TTP/IZx7KBni2v04ANGLmndnlpXSmjQAO/gL+Y93X+C8GxZLcKr
-         QHbPxm+Sy/tBBQyvrA1YiwkhB6EXXh1JJhsIGzjbIYDvesYwtwnYxldcZs7OkNdjeqLG
-         QlfB9h7T6clAyJiCmitV6GggXDkLu4D2bSEUuO04R1kWjvEQ0524+xyPUOqr0N3IKtGS
-         Gmmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3LEPP0iVO4pOzmayuWFbUiTrC/zzrJHdmu9l66uZ3ww=;
-        b=l4g+jqeoN/A0BYGcsa9KunjUu20OODEH2BMIeEmW1hxsj/YkiN5KbaS4sFaRkbTfHC
-         KiX/T5zrW5O7V5gDScY6s4eaFj+4kWr/KPdHINYQpPJgANZ32eKcM5f8qkcSGefLV+0a
-         H7tQHcHjPHpEkK2lbSQYjUkwAnNd7HeGLTx06jsABGY0kudunt5yNIuKv1cxeKsLRu5q
-         SofEDfODOCZROkljBdiCPP+9HiOQoujYQyj/hp7OFmrTCoPX2/w0eAJWoLgV1wfQFFh8
-         CandqZ+oJhUbTA8GNSi1bFvl2Bb09908M6R8Kok+pPUcj0jTtMBXjlNLNB1q9/WAOkuE
-         /qpg==
-X-Gm-Message-State: AOAM532aWCUhdbXTnwJ0prRBlWI9b4bGwtAV1zDOZKDFavuKYf+ali6f
-        zjqhlH2218ugPYBeQuRgKwMKvDjltCPl8GTaoFSyxw==
-X-Google-Smtp-Source: ABdhPJwQfuJiXhXQahr+dOg2pgt3CLLw7RBQj5IqI09dioBvbhiK8kYARiekAKmguXmiDhUnJ9irhoIyWQ2VuILnUQA=
-X-Received: by 2002:a17:906:4553:: with SMTP id s19mr31491477ejq.475.1600369978174;
- Thu, 17 Sep 2020 12:12:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200916223512.2885524-5-haoluo@google.com> <202009170943.rYEs5XMN%lkp@intel.com>
-In-Reply-To: <202009170943.rYEs5XMN%lkp@intel.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 17 Sep 2020 12:12:47 -0700
-Message-ID: <CA+khW7iDK+g_W30doEtjse1BSHmB62GcrtmkH3pMk7shymw=XA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/6] bpf: Introduce bpf_per_cpu_ptr()
-To:     kernel test robot <lkp@intel.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, kbuild-all@lists.01.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726672AbgIQTPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:15:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726599AbgIQTNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 15:13:33 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FC50206C9;
+        Thu, 17 Sep 2020 19:13:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600370009;
+        bh=S2cd1mTZZBuFhAywOxVG6MpC2f1HBymLfjDK2WX2YT8=;
+        h=From:To:Subject:Date:From;
+        b=Q/H3ZQ7SI/cEqiFDlrehdSzRxjS4CVgvQMrj7wxBeeffD1ftOTwBEzEVnbQ0WeVec
+         TM26Vd+B+vz5g4Hy+/Groz1h9CfPgEivpZHdqItjqdV3f0z0kT5bkHoXBzjoGwVJBQ
+         Vcg7I++dsOw7Rhujse7PIhB/S0SAh7aChPiuLtB0=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Wolfram Sang <wolfram@the-dreams.de>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/4] dt-bindings: i2c: imx-lpi2c: Add properties and use unevaluatedProperties
+Date:   Thu, 17 Sep 2020 21:13:18 +0200
+Message-Id: <20200917191321.28741-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I need to cast the pointer to "const void __percpu *" before passing
-into per_cpu_ptr. I will update and resend.
+Additional properties actually might appear (e.g. power-domains) so
+describe all typical properties, reference generic i2c schema and use
+unevaluatedProperties to fix dtbs_check warnings like:
 
-On Wed, Sep 16, 2020 at 6:14 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Hao,
->
-> Thank you for the patch! Perhaps something to improve:
->
-> [auto build test WARNING on bpf-next/master]
->
-> url:    https://github.com/0day-ci/linux/commits/Hao-Luo/bpf-BTF-support-for-ksyms/20200917-064052
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> config: powerpc-randconfig-s032-20200916 (attached as .config)
-> compiler: powerpc64-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.2-201-g24bdaac6-dirty
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=powerpc
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
->
-> sparse warnings: (new ones prefixed by >>)
->
-> >> kernel/bpf/helpers.c:631:31: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got void const * @@
-> >> kernel/bpf/helpers.c:631:31: sparse:     expected void const [noderef] __percpu *__vpp_verify
-> >> kernel/bpf/helpers.c:631:31: sparse:     got void const *
->
-> # https://github.com/0day-ci/linux/commit/3f6ea3c1c73efe466a96ff7499219fe3b03b8f48
-> git remote add linux-review https://github.com/0day-ci/linux
-> git fetch --no-tags linux-review Hao-Luo/bpf-BTF-support-for-ksyms/20200917-064052
-> git checkout 3f6ea3c1c73efe466a96ff7499219fe3b03b8f48
-> vim +631 kernel/bpf/helpers.c
->
->    625
->    626  BPF_CALL_2(bpf_per_cpu_ptr, const void *, ptr, u32, cpu)
->    627  {
->    628          if (cpu >= nr_cpu_ids)
->    629                  return (unsigned long)NULL;
->    630
->  > 631          return (unsigned long)per_cpu_ptr(ptr, cpu);
->    632  }
->    633
->    634  const struct bpf_func_proto bpf_per_cpu_ptr_proto = {
->    635          .func           = bpf_per_cpu_ptr,
->    636          .gpl_only       = false,
->    637          .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL,
->    638          .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
->    639          .arg2_type      = ARG_ANYTHING,
->    640  };
->    641
->  > 642  const struct bpf_func_proto bpf_get_current_task_proto __weak;
->    643  const struct bpf_func_proto bpf_probe_read_user_proto __weak;
->    644  const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
->    645  const struct bpf_func_proto bpf_probe_read_kernel_proto __weak;
->    646  const struct bpf_func_proto bpf_probe_read_kernel_str_proto __weak;
->    647
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+  arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml: i2c@5a800000:
+    'assigned-clock-rates', 'assigned-clocks', 'clock-names', 'power-domains' do not match any of the regexes: 'pinctrl-[0-9]+'
+
+  arch/arm64/boot/dts/freescale/imx8qxp-colibri-eval-v3.dt.yaml: i2c@5a800000:
+    'touchscreen@2c' does not match any of the regexes: 'pinctrl-[0-9]+'
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+---
+
+Changes since v3:
+1. Drop address/size cells
+2. Set maxItems to power domains to 1
+
+Changes since v2:
+1. Add assigned-clock-parents
+
+Changes since v1:
+1. Add more properties and include /schemas/i2c/i2c-controller.yaml#
+---
+ .../devicetree/bindings/i2c/i2c-imx-lpi2c.yaml | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
+index ac0bc5dd64d6..bf68489eecd1 100644
+--- a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
+@@ -9,6 +9,9 @@ title: Freescale Low Power Inter IC (LPI2C) for i.MX
+ maintainers:
+   - Anson Huang <Anson.Huang@nxp.com>
+ 
++allOf:
++  - $ref: /schemas/i2c/i2c-controller.yaml#
++
+ properties:
+   compatible:
+     enum:
+@@ -22,23 +25,34 @@ properties:
+   interrupts:
+     maxItems: 1
+ 
++  assigned-clock-parents: true
++  assigned-clock-rates: true
++  assigned-clocks: true
++  clock-frequency: true
++
++  clock-names:
++    maxItems: 1
++
+   clocks:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+   - interrupts
+   - clocks
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+     #include <dt-bindings/clock/imx7ulp-clock.h>
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+ 
+-    lpi2c7@40a50000 {
++    i2c@40a50000 {
+         compatible = "fsl,imx7ulp-lpi2c";
+         reg = <0x40A50000 0x10000>;
+         interrupt-parent = <&intc>;
+-- 
+2.17.1
+
