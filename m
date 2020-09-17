@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABE926D3F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E9C26D3F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgIQGup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        id S1726151AbgIQGwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgIQGup (ORCPT
+        with ESMTP id S1726106AbgIQGv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:50:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAF5C06174A;
-        Wed, 16 Sep 2020 23:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FT9kKWqO44LtdODqEL2MRar9ou6XSVxG66enGGgs8Es=; b=g5CcHwamwpXA0o1C6qQ9TZ56eP
-        VOarKxr3hUyo+hJpsUhl01pWk1xTjBiFdw+lBU55OAClpb1VcZ8EEikff0FSz8RJJy1MCNTY80Rbb
-        M8JVGM8OzPsNYvf1r6H7nZQGwtF3LORlpwgMHWiUGk4nnf9RmoNfCDEcrX6/VM2bhzCVnm23CXHLh
-        vsbapnZKgfigwTxcdVp8K9LYMBKCcJQy5+8V5ATsTk1eQ/Hrs5II0+RfkZjMuZeKV/HTowP9yGvM+
-        e15KNpMXlQ2UT1mbVV93jxwsSVV8yCPQozn32YNC4AReBIWmF0f+XXjnF/IAuf1q7Y8/BrIztF/CB
-        AETmfowA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kInkQ-0003E4-5e; Thu, 17 Sep 2020 06:50:26 +0000
-Date:   Thu, 17 Sep 2020 07:50:26 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Mikulas Patocka <mpatocka@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
-        <rajesh.tadakamadla@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: [PATCH] pmem: export the symbols __copy_user_flushcache and
- __copy_from_user_flushcache
-Message-ID: <20200917065026.GA11920@infradead.org>
-References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com>
- <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
- <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
+        Thu, 17 Sep 2020 02:51:58 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A102AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:51:57 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t18so1236031ilp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WmO3lehPU5xgp/AaU9lW0DTy2BiuALKSxjt4YpqCbPQ=;
+        b=OXBVMolKXu9oHOH/RIVylOl8xeQHwn7gTVs/vMb1xmk0j8xZdei1Po6uQNaOcCi0rz
+         k/Jz5O9iQZos06Ktg9342AdyYAQwGZNtt26Mwkfv0C35hYQyYctENMR8d/OqQCdpTbS4
+         QBVmNA9+8VsrdPxfGbmfu219GQDfZJ9EL/j/jHq9WnPHJTfkYv+T4y1pLQUGrLNHA1yd
+         Mu7KIvQVM+I6p+UhhZw2Ji0gC497GSvFD0it8TrSqlO5Fam7Zk3fnx1S3HpBdVjy6wU/
+         saKkt6Ejo4b5N/r+CYf70DfONvV0JcvnKQ7ZIyaC2Sr5OoAh9KEn6JuJd1g+gpIB7kCk
+         SIsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WmO3lehPU5xgp/AaU9lW0DTy2BiuALKSxjt4YpqCbPQ=;
+        b=W3T5LmhkXXfgSRw7sz+6H7qDEcXYqSaYoxL3dXpwWMMkGDsOe8FDw37J2+QVj66IFW
+         U4bdsEAof3EUKIMkmPHTpBpNvhj3Ah5WFJHrXRjedq7YdrU6qqMFL6rvnaK/x6PiYrbz
+         5PGKXdGUMbE6Eo/WId47qs/vcz6s/ye3vlQgrpQdWHidFbvYgjHD1RXwsD9ls87XDrVe
+         nVs0nhyjgdTLogTiZlAb/Dg24/59KQByHjVNnmf5WXtgkLlXhQAFLxglJusit1NRdTnQ
+         GDPye/j+HBKtOSunAG8FqUJvdsmV/Zo+CRiXOVEMpKlmtZMQlzQUtxvxHPu3TXiKLzPQ
+         iTcA==
+X-Gm-Message-State: AOAM532wD1ouBr3gU9kwSwTiwC+kmzzGaGrRh7zMTIP+MM34wpJUwbQr
+        mZf6ikkz0lbEjAidfxTCvXBijkzKeHK/hd8SpNgCFg==
+X-Google-Smtp-Source: ABdhPJxFYzwV1YLidOSKXI1r/DxKCDAaTVJyjocue5dOmnluWfcXOUoJWW2TLVCA5K/Yy25eZFSB7+QxpoVqTOXas+8=
+X-Received: by 2002:a92:d48b:: with SMTP id p11mr19958635ilg.69.1600325516756;
+ Wed, 16 Sep 2020 23:51:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200917020021.0860995C06B9@us180.sjc.aristanetworks.com> <CA+HUmGjX4_4_UXWNn=EehQ_3QtFPZq8RJU146r-nc0nA8apx7w@mail.gmail.com>
+In-Reply-To: <CA+HUmGjX4_4_UXWNn=EehQ_3QtFPZq8RJU146r-nc0nA8apx7w@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 17 Sep 2020 08:51:45 +0200
+Message-ID: <CANn89iJOO9cbOqCNpRK4OrZy-L6P8aJJcPMjs5=RHF=fsjEe2Q@mail.gmail.com>
+Subject: Re: [PATCH] net: make netdev_wait_allrefs wake-able
+To:     Francesco Ruggeri <fruggeri@arista.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:40:13AM -0700, Dan Williams wrote:
-> > Before nvfs gets included in the kernel, I need to distribute it as a
-> > module. So, it would make my maintenance easier. But if you don't want to
-> > export it now, no problem, I can just copy __copy_user_flushcache from the
-> > kernel to the module.
-> 
-> That sounds a better plan than exporting symbols with no in-kernel consumer.
+On Thu, Sep 17, 2020 at 8:33 AM Francesco Ruggeri <fruggeri@arista.com> wrote:
+>
+> >  static inline void dev_put(struct net_device *dev)
+> >  {
+> > +       struct task_struct *destroy_task = dev->destroy_task;
+> > +
+> >         this_cpu_dec(*dev->pcpu_refcnt);
+> > +       if (destroy_task)
+> > +               wake_up_process(destroy_task);
+> >  }
+>
+> I just realized that this introduces a race, if dev_put drops the last
+> reference, an already running netdev_wait_allrefs runs to completion
+> and then dev_put tries to wake it up.
+> Any suggestions on how to avoid this without resorting to
+> locking?
+>
 
-Exporting symbols without a user is a complete no-go.
+Honestly I would not touch dev_put() at all.
 
-> > > My first question about nvfs is how it compares to a daxfs with
-> > > executables and other binaries configured to use page cache with the
-> > > new per-file dax facility?
-> >
-> > nvfs is faster than dax-based filesystems on metadata-heavy operations
-> > because it doesn't have the overhead of the buffer cache and bios. See
-> > this: http://people.redhat.com/~mpatocka/nvfs/BENCHMARKS
-> 
-> ...and that metadata problem is intractable upstream? Christoph poked
-> at bypassing the block layer for xfs metadata operations [1], I just
-> have not had time to carry that further.
-> 
-> [1]: "xfs: use dax_direct_access for log writes", although it seems
-> he's dropped that branch from his xfs.git
-
-I've pushed the old branch out again:
-
-    http://git.infradead.org/users/hch/xfs.git/shortlog/refs/heads/xfs-log-dax
-
-The main sticking points here are:
-
- - currently all our nvdimm/DAX code does totally pointless pmem_flush
-   calls just to be on the safe side.  That probably is one of the big
-   speedups of nova and other academic snake oil projects over our
-   stack.  We need to handle this properly
- - what do we do about write error handling?  That is the other big
-   thing in the pmem/dax stack that all of the direct writers (including
-   MAP_SYNC mmaps) pretty much ignore
-
-Once that is sorted out we can not just put the log changes like above
-in, but also move the buffer cache over to do a direct access and
-basically stop using the block layer for a pure DAX XFS.
+Simply change the msleep(250) to something better, with maybe
+exponential backoff.
