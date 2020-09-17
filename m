@@ -2,237 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0C926D2EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A1726D2F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgIQFQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgIQFQi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:16:38 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6457C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:16:37 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id l126so475744pfd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:16:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9XtLHYVfm+BR9OEJ4f29pIKtgyhVRfQbh1PSyFLI3vA=;
-        b=I9VN5VlYuRIPT/7Ruux2nCuo4TmsRtOPHlYQTDi2ovbDj3kQ+P5lc+aGIJ8TC7PL+L
-         3z4i399IHJWHRUPuCBUTzyHo+P5stkGymiMgB30y6PFkPoNNijOlb1GDfG51jfeWtEow
-         iK4kluMiAycen1zBJ28BGdGncBMAM9m9gGKk0/prJnQ842p/StLRDanPJUwq6PbkzUiC
-         Hif1Luc9/srxP00ljK+cfGL8FtkxsqYc5iA6mSvsEk9yFKOrMSwQn2j+c0awQSdO01No
-         Jh+FLvsVdASpd2r3/QW6rVpmOsXXUFpd+tzRbtnGUP6XMriTw9boNsMU9zeL+/x3NUDH
-         YjVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=9XtLHYVfm+BR9OEJ4f29pIKtgyhVRfQbh1PSyFLI3vA=;
-        b=RhAzYiyuQC1k4x85T/hksdfR66majx/x+T0plKMEAVpp/SlI+kfBKq9tecvw1f/A9b
-         tKNZGMEEDL+n0Oq499W/rmouZerQL8hctUvJkytKE31upfi7zQJd5901V2VIS+wDCVXy
-         bLOivecQISAYSKJN/5L22sCwxy7Lmn2x+xlBWBLyCrtl/CtYyN51SI2P3MT6nrbFAQwe
-         L4/dS9an0AZXZ1y5uNShFxcVvFkP4YGmvk9Wyp7/lgO4AstaP1uq/lN3R8YrtKiJgl2Z
-         G6D9x85REAxqXS58Z+baRETqsOQ6d5XaTpvsvB+mOkSua6fykQjqCRMj42Iqqho7m0WM
-         NsDQ==
-X-Gm-Message-State: AOAM530q2vdSQTnuNFBay+yppBG4kGAWbIPMu4HvLW3EH4KrztwnI+i/
-        /lYAQxF3s9j78BryhO7kjkpbAg==
-X-Google-Smtp-Source: ABdhPJyWeKpsNo04BwT9GyrSz9bi95i7kaOExulgDBaktfJRO+b0s1dg4qc4VfTMOVlk9dpBkd4/Vg==
-X-Received: by 2002:a63:3645:: with SMTP id d66mr1853058pga.167.1600319797345;
-        Wed, 16 Sep 2020 22:16:37 -0700 (PDT)
-Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id kf10sm4352858pjb.2.2020.09.16.22.16.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 22:16:36 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 14:16:32 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
- additional operations
-Message-ID: <20200917051632.GB3094018@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111054.29562-1-benchuanggli@gmail.com>
- <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
- <20200916080558.GA2978867@laputa>
- <6bf86b26-391a-0699-1818-d070357b9ddc@intel.com>
- <20200917023113.GB3071249@laputa>
- <255e030e-98e3-713a-a8fe-9f4c470c630f@intel.com>
+        id S1726169AbgIQFTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:19:16 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:41599 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbgIQFTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 01:19:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsQHg3SN9z9sS8;
+        Thu, 17 Sep 2020 15:19:11 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600319951;
+        bh=8x6My4yLymL23hkhEsIHQUGZQoyJSvjsNsvTSj03kIw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qLtoO//7IC9Z/8+Oxt81ogveZDHKPWgSDwPsPFijew/I9sGpn6KoZFl3OF59W7NAA
+         hYbHU4PMaSJubsLNSyleRnD00/tFkIVxPACauBLeS0WgM4zphk8XpBf5z/wwXAzL4q
+         Bi/GoqgcpmK7u+2+Al+WFIMKRslZeaY9DeUOAva30j8raBcpwPF7Zz5xyDbGQcmGmc
+         nzSmZyPEUvSJ8aUEIE7R+grJBOoH6u5yPZZhibVM6rCA23U7FNwKlqyG33IObFpkyn
+         wM3JyChOMI4WucXUiIsCaeFqNUhGi85YY0v7pBFJlrGFRPfmEPwXtV35fqXeNZXUOQ
+         t1JUdbJIFbEow==
+Date:   Thu, 17 Sep 2020 15:19:09 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build failure after merge of the rcu tree
+Message-ID: <20200917151909.01fa6684@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <255e030e-98e3-713a-a8fe-9f4c470c630f@intel.com>
+Content-Type: multipart/signed; boundary="Sig_/ugjVfSCQeVwOcREAaml3/2R";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 07:52:03AM +0300, Adrian Hunter wrote:
-> On 17/09/20 5:31 am, AKASHI Takahiro wrote:
-> > Adrian,
-> > 
-> > On Wed, Sep 16, 2020 at 01:00:35PM +0300, Adrian Hunter wrote:
-> >> On 16/09/20 11:05 am, AKASHI Takahiro wrote:
-> >>> Adrian,
-> >>>
-> >>> Your comments are scattered over various functions, and so
-> >>> I would like to address them in separate replies.
-> >>>
-> >>> First, I'd like to discuss sdhci_[add|remove]_host().
-> >>>
-> >>> On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
-> >>>> On 10/07/20 2:10 pm, Ben Chuang wrote:
-> >>>>> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> >>>>>
-> >>>>> In this commit, UHS-II related operations will be called via a function
-> >>>>> pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
-> >>>>> a kernel module.
-> >>>>> This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
-> >>>>> and when the UHS-II module is loaded. Otherwise, all the functions
-> >>>>> stay void.
-> >>>>>
-> >>>>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> >>>>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> >>>>> ---
-> >>>
-> >>>  (snip)
-> >>>
-> >>>>>  		if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
-> >>>>>  			u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
-> >>>>>  				      SDHCI_CARD_PRESENT;
-> >>>>> @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
-> >>>>>  		/* This may alter mmc->*_blk_* parameters */
-> >>>>>  		sdhci_allocate_bounce_buffer(host);
-> >>>>>  
-> >>>>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> >>>>> +	    host->version >= SDHCI_SPEC_400 &&
-> >>>>> +	    sdhci_uhs2_ops.add_host) {
-> >>>>> +		ret = sdhci_uhs2_ops.add_host(host, host->caps1);
-> >>>>> +		if (ret)
-> >>>>> +			goto unreg;
-> >>>>> +	}
-> >>>>> +
-> >>>>
-> >>>> I think you should look at creating uhs2_add_host() instead
-> >>>>
-> >>>>>  	return 0;
-> >>>>>  
-> >>>>>  unreg:
-> >>>>> @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
-> >>>>>  {
-> >>>>>  	struct mmc_host *mmc = host->mmc;
-> >>>>>  
-> >>>>> +	/* FIXME: Do we have to do some cleanup for UHS2 here? */
-> >>>>> +
-> >>>>>  	if (!IS_ERR(mmc->supply.vqmmc))
-> >>>>>  		regulator_disable(mmc->supply.vqmmc);
-> >>>>>  
-> >>>>> @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >>>>>  		mmc->cqe_ops = NULL;
-> >>>>>  	}
-> >>>>>  
-> >>>>> +	if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
-> >>>>> +		/* host doesn't want to enable UHS2 support */
-> >>>>> +		mmc->caps &= ~MMC_CAP_UHS2;
-> >>>>> +		mmc->flags &= ~MMC_UHS2_SUPPORT;
-> >>>>> +
-> >>>>> +		/* FIXME: Do we have to do some cleanup here? */
-> >>>>> +	}
-> >>>>> +
-> >>>>>  	host->complete_wq = alloc_workqueue("sdhci", flags, 0);
-> >>>>>  	if (!host->complete_wq)
-> >>>>>  		return -ENOMEM;
-> >>>>> @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >>>>>  unled:
-> >>>>>  	sdhci_led_unregister(host);
-> >>>>>  unirq:
-> >>>>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> >>>>> +	    sdhci_uhs2_ops.remove_host)
-> >>>>> +		sdhci_uhs2_ops.remove_host(host, 0);
-> >>>>>  	sdhci_do_reset(host, SDHCI_RESET_ALL);
-> >>>>>  	sdhci_writel(host, 0, SDHCI_INT_ENABLE);
-> >>>>>  	sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
-> >>>>> @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
-> >>>>>  
-> >>>>>  	sdhci_led_unregister(host);
-> >>>>>  
-> >>>>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> >>>>> +	    sdhci_uhs2_ops.remove_host)
-> >>>>> +		sdhci_uhs2_ops.remove_host(host, dead);
-> >>>>> +
-> >>>>
-> >>>> I think you should look at creating uhs2_remove_host() instead
-> >>>
-> >>> You suggest that we will have separate sdhci_uhs2_[add|remove]_host(),
-> >>> but I don't think it's always convenient.
-> >>>
-> >>> UHS-II capable host will be set to call sdhci_uhs2_add_host() explicitly,
-> >>> but we can't do that in case of pci and pltfm based drivers as they utilize
-> >>> common helper functions, sdhci_pci_probe() and sdhci_pltfm_register(),
-> >>> respectively.
-> >>
-> >> sdhci-pci has an add_host op
-> >>
-> >> sdhci_pltfm_init can be used instead of sdhci_pltfm_register
-> >>
-> >>
-> >>> Therefore, we inevitably have to call sdhci_uhs2_add_host() there.
-> >>>
-> >>> If so, why should we distinguish sdhci_uhs2_add_host from sdhci_uhs_add_host?
-> >>> I don't see any good reason.
-> >>> Moreover, as a result, there exists a mixed usage of sdhci_ interfaces
-> >>> and sdhci_uhs2_ interfaces in sdhci-pci-core.c and sdhci-pltfm.c.
-> >>>
-> >>> It sounds odd to me.
-> >>
-> >> It is already done that way for cqhci.
-> > 
-> > Okay, if it is your policy, I will follow that.
-> > Then, I'm going to add
-> > - remove_host field to struct sdhci_pci_fixes
-> > - a controller specific helper function to each driver (only pci-gli for now)
-> >   even though it looks quite generic.
-> 
-> If they seem generic then consider naming them
-> sdhci_pci_uhs2_[add|remove]_host and putting them in sdhci-pci-core.c
+--Sig_/ugjVfSCQeVwOcREAaml3/2R
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So you don't mind that UHS-I and UHS-II code are mixed in sdhci-pci-core.c,
-do you?
+Hi all,
 
--Takahiro Akashi
+After merging the rcu tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-> > 
-> >   sdhci_gli_[add|remove]_host(struct sdhci_pci_slot *slot)
-> >   {
-> >       return sdhci_uhs2_[add|remove]_host(slot->host);
-> >   }
-> > 
-> > # Or do you want to create a file like sdhci-uhs2-pci.c for those functions?
-> 
-> No
-> 
-> > 
-> > -Takahiro Akashi
-> > 
-> >>>
-> >>> -Takahiro Akashi
-> >>>
-> >>>
-> >>>>
-> >>>>>  	if (!dead)
-> >>>>>  		sdhci_do_reset(host, SDHCI_RESET_ALL);
-> >>>>>  
-> >>>>>
-> >>>>
-> >>
-> 
+In file included from kernel/rcu/update.c:578:
+kernel/rcu/tasks.h:601:20: error: static declaration of 'show_rcu_tasks_cla=
+ssic_gp_kthread' follows non-static declaration
+  601 | static inline void show_rcu_tasks_classic_gp_kthread(void) { }
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from kernel/rcu/update.c:49:
+kernel/rcu/rcu.h:537:6: note: previous declaration of 'show_rcu_tasks_class=
+ic_gp_kthread' was here
+  537 | void show_rcu_tasks_classic_gp_kthread(void);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Caused by commit
+
+  675d3ca52626 ("rcutorture: Make grace-period kthread report match RCU fla=
+vor being tested")
+
+I have used the rcu tree from next-20200916 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ugjVfSCQeVwOcREAaml3/2R
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9i8c0ACgkQAVBC80lX
+0GzynQf7BMwrVYierw5HXRqoGbXZpWWbOsG1vSEXbhyYunuvAn7oC7empBoh4TAb
+oQo+6hxJQPolXaoEU0wOIz0BWlWkN4PTjO5UXapXO18iXiDLKu0KzkaVYmGUBE+f
+lYPRx8mfFo7pt1ap1mSSXUizM4LjQe80jd59I0f+5cir7pPJJj70uyPLUpys6FXI
+KPyXj0StpahULiqI3eIxIdxYVNt/cIPbSPPv018yZmI3XbatGm2V9JuV/FwYnBIW
+dN5N6fOKQDBYszp3jfRYYbOxTw37xdd8aAzspmJyhOt0HznvfRYbwpkJ1k3RcLUA
+3L55E15E0u1raFxUyslr4tF7GGF+6A==
+=VncY
+-----END PGP SIGNATURE-----
+
+--Sig_/ugjVfSCQeVwOcREAaml3/2R--
