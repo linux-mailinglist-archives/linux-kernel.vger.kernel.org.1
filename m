@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804B726D423
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9628026D417
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgIQHEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45492 "EHLO
+        id S1726201AbgIQHC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgIQHAS (ORCPT
+        with ESMTP id S1726185AbgIQHBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:00:18 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B99C061354
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:00:07 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k18so872309wmj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:00:07 -0700 (PDT)
+        Thu, 17 Sep 2020 03:01:16 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3190EC06174A;
+        Thu, 17 Sep 2020 00:01:16 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so840906wmh.4;
+        Thu, 17 Sep 2020 00:01:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nh4GdIJJbybBRmBf+gZ13SWErJtKYoaJY9ok96suIOo=;
-        b=028KlmU2+WuM/M/w6dvQvAw4gzelsPWlRz7bmqYfPpZX3WFwx431DJAvmmBtpDgZYj
-         Q+LJ/9h99RBMQISoeUEKAJiy4EXP0SNcahPA1kbNDHAAKar3Tz44sc0X89XO4X2InKMZ
-         Ee7ARd/zXqotYZwIpxHkmgjKfOUruIm4DfT6gyByi1jE3OoAPCKBqCJ+KYPDmrJCbkjB
-         88kt9S2JioJwL3MFUDnrvb5hGomGHHu/erXlTQ3gjo+BnWqC8qTSPQGsilUNAKa5YurH
-         Z1WMD/eH8xvjfdt6+g/FDGN3M1vTG+UNnkOwwnLY7C5+7c2yvE8xH///FhwNZw46htBs
-         5oPw==
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tfD26LMyhgpotnYrwG+fpASFKdva0Ki40Uu2hWWrybc=;
+        b=s67WhDDWl7+mVfYvSBsuyAP2t007InxSyYECBYeGO9wlN8ganVhA2E8WHP49036kos
+         iXbXRW89EYgHP3MeXXXssQt5pv+nmr6Sa+Lr+nQTE/N9d54DQp1PS30QcngflAYBK/vq
+         46iFl3M8cbNOBr9yPIa9x/IzcOBXJo16CaVkvBKQROynrvusrJHyZJYitX3IZcYr41ra
+         dbOzqJp+367ZEwwZsWJxep2YnoSpuv0RKToYAZOqBIfupmZzrbkC4f0YCFEGj69E0l6X
+         50StUQ28PZCVwSrME5Odu/X8/ZEXP1aPLZYU/hH42jxzb2gi1ZROwBKVC2FTu6sNzYHt
+         7n8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nh4GdIJJbybBRmBf+gZ13SWErJtKYoaJY9ok96suIOo=;
-        b=qMs8kCl0qkkjre2AJIkhLKum0EjzdsOwyzWrP46p71QnKYzsL6fUXiuRWk1fGTdiqg
-         j7o7MvRiWx2NPiQ/kKY4HsIbLcyfmAXpov34OD/bZJosKPqLY4mfGLL7oNRcFoUgv9bB
-         GcXis4raMc2AdPHjI3GVAdh0ic9MZGfmaS1Douv7My2jDd3qgarFdB8qK6b4RU8lH7cH
-         haK7arzOtFE1VbiKycb2rOhmDV1FaL/IG5OfDHGkZW9vaPnY9rZ2q9dm/f8VYPSLkkhT
-         0GAGyr/MQ6NmoWQSKktBJgvrLJBza4vjdXn3qZdvH8HQd1PkCGl0vxkWYyIUl/Db5U2z
-         Wbkg==
-X-Gm-Message-State: AOAM5310uGIWyiZ7VYbA4Sr4WZkYf9m8WM7FnPFgOEFw1gNcszf5rm7g
-        Yh4OYKWSC9STJUNRR2icUtZlwg==
-X-Google-Smtp-Source: ABdhPJyjeIXkATG0vP51yK2uo6XEBRO8bjCqeGDjxeohvfzbr3xkDk9Axc8TM3MAeWczPQ7AZqJEvw==
-X-Received: by 2002:a1c:2e4b:: with SMTP id u72mr8469691wmu.69.1600326005809;
-        Thu, 17 Sep 2020 00:00:05 -0700 (PDT)
-Received: from bender.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id z14sm35709055wrh.14.2020.09.17.00.00.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 00:00:05 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v2 5/5] arm64: dts: meson-axg-s400: enable USB OTG
-Date:   Thu, 17 Sep 2020 08:59:49 +0200
-Message-Id: <20200917065949.3476-6-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200917065949.3476-1-narmstrong@baylibre.com>
-References: <20200917065949.3476-1-narmstrong@baylibre.com>
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tfD26LMyhgpotnYrwG+fpASFKdva0Ki40Uu2hWWrybc=;
+        b=g+32DBdV7nuGZscoJLbvXKkfbEz9rpcdJMm+tf20Tz0vijXtZroLIioXwbhLafzb2o
+         kf4By5YcaBtv+gcfsh707jK7q7qcmHJGHp9xtfDHSpwMXdcFIJL4cjEq5+heMaVkGbp/
+         67z+eGE1+GuT2sWTCfAI1MXcvhVmmwsF48XFhI8QNGHRUX/5l7FEZI8+6rMVTfVM6a3K
+         /U/nxsG1yvDZVn4oYLko2MobQk4iipk6+oZxbL7vkehBcxZ7RenQkmHo7hFG78C7NrY1
+         dMRhr2vxDGCKXTDHozSDsJTkUBgHJc8Rr2HnfDFBB99OTz9ru7daDLf1chEx5sx9Lv33
+         /LeQ==
+X-Gm-Message-State: AOAM530ebJb3Z4xmNyOKc5hs/Qq0MdeQxUsxV3WTRNq5y1Vxu2elINhQ
+        HGIjBPyFaSviF7v8lBgsjSZyKKrlKhU=
+X-Google-Smtp-Source: ABdhPJyKAmmGh8jPCDGDtftWtnxw52J7lkM+btm9a7fla/NV2Fui/UL+Qn+adUSFuXmnE4cp5ISg3w==
+X-Received: by 2002:a1c:4303:: with SMTP id q3mr8341691wma.158.1600326074533;
+        Thu, 17 Sep 2020 00:01:14 -0700 (PDT)
+Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
+        by smtp.gmail.com with ESMTPSA id c25sm9177701wml.31.2020.09.17.00.01.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 00:01:13 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, milan.opensource@gmail.com,
+        lkml <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] fsync.2: ERRORS: add EIO and ENOSPC
+To:     NeilBrown <neilb@suse.de>, Jeff Layton <jlayton@kernel.org>,
+        Jan Kara <jack@suse.cz>
+References: <1598685186-27499-1-git-send-email-milan.opensource@gmail.com>
+ <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
+ <20200908112742.GA2956@quack2.suse.cz>
+ <e4f5ccb298170357ba16ae2870fde6a90ca2aa81.camel@kernel.org>
+ <87k0x2k0wn.fsf@notabene.neil.brown.name>
+ <8842543f4c929f7004cf356224230516a7fe2fb7.camel@kernel.org>
+ <87sgbhi9sf.fsf@notabene.neil.brown.name>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <20f8c520-49e2-142b-df75-4980a76f3c38@gmail.com>
+Date:   Thu, 17 Sep 2020 09:01:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87sgbhi9sf.fsf@notabene.neil.brown.name>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables USB OTG on the S400 board.
+On 9/17/20 1:25 AM, NeilBrown wrote:
+> On Thu, Sep 10 2020, Jeff Layton wrote:
+>>
+>>> Regarding your "NOTES" addition, I don't feel comfortable with the
+>>> "clean" language.  I would prefer something like:
+>>>
+>>>  When fsync() reports a failure (EIO, ENOSPC, EDQUOT) it must be assumed
+>>>  that any write requests initiated since the previous successful fsync
+>>>  was initiated may have failed, and that any cached data may have been
+>>>  lost.  A future fsync() will not attempt to write out the same data
+>>>  again.  If recovery is possible and desired, the application must
+>>>  repeat all the writes that may have failed.
+>>>
+>>>  If the regions of a file that were written to prior to a failed fsync()
+>>>  are read, the content reported may not reflect the stored content, and
+>>>  subsequent reads may revert to the stored content at any time.
+>>>
+>>
+>> Much nicer.
+> 
+> I guess someone should turn it into a patch....
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/meson-axg-s400.dts | 6 ++++++
- 1 file changed, 6 insertions(+)
+That woud be great.
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
-index cb1360ae1211..7740f97c240f 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
-@@ -584,3 +584,9 @@
- 	pinctrl-0 = <&uart_ao_a_pins>;
- 	pinctrl-names = "default";
- };
-+
-+&usb {
-+	status = "okay";
-+	dr_mode = "otg";
-+	vbus-supply = <&usb_pwr>;
-+};
+>> Should we make a distinction between usage and functional classes of
+>> errors in this? The "usage" errors will probably not result in the pages
+>> being tossed out, but the functional ones almost certainly will...
+> 
+> Maybe.  I think it is a useful distinction, but to be consistent it
+> would be best to make it in all (section 2) man pages.  Maybe not all at
+> once though.  It is really up to Michael if that is a direction he is
+> interesting in following.
+
+I think it's useful, and I'd accept patches that make such
+distinctions. Of course, if we said *everything* should get fixed
+at the same time, nothing would get fixed :-). So, I think
+I'd just take individual patches that made such changes on an
+ad hoc basis.
+
+Thanks,
+
+Michael
+
 -- 
-2.22.0
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
