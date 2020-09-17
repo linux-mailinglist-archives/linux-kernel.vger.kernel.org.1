@@ -2,110 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D18826E407
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098D126E422
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgIQSkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:40:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48620 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726543AbgIQSje (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:39:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600367973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s8/ARKLQp0M0HyDLCLKuWSzwoxVAsS/APQ6NuiD3MNU=;
-        b=MxgcqBmfoL55kXzMxVKa8ElPitFjArTK3zcge1FM2E8kClMQyAqh6FqRKBEcOf0tVQs27b
-        zfxTskc27y+nVtrLJJ/hJqIHxiNIIs1ARkeG800EDJNqSTy7WC42VF1XRomxKTS5PaaYSx
-        FLwH3x0huYEU3SgOjeUoJjGfO4NLQxY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-I6O1PZQ6O7yXfGqmLvj70w-1; Thu, 17 Sep 2020 14:39:29 -0400
-X-MC-Unique: I6O1PZQ6O7yXfGqmLvj70w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1CC6D10A7AE1;
-        Thu, 17 Sep 2020 18:39:27 +0000 (UTC)
-Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E159819D6C;
-        Thu, 17 Sep 2020 18:39:24 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 13:39:23 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Marco Elver <elver@google.com>,
+        id S1726480AbgIQSlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:41:39 -0400
+Received: from mout.gmx.net ([212.227.17.22]:49501 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726379AbgIQSld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:41:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1600368012;
+        bh=BJaSI38+zQjgcLqD+dMdPDjGZYHwT/xid39c3EhZ514=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=e9t1Z/p/aOHSebcLMutxKwgppPMe/c4ATNfVeaagoYuVRoFaa2lcxDVvXkzWR76hB
+         YofRiSl0Oz66n/3Ox6RXXKJl0zCEVor4IEaBtxU8K7RZNYnhgrVIaB3LpC3/tCCxMV
+         KpFqJTeep7knJ//m+d/o4g/0m+imNEeAr2az4VAk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MqJmF-1kmnc722Vv-00nPxK; Thu, 17
+ Sep 2020 20:40:12 +0200
+Date:   Thu, 17 Sep 2020 20:40:06 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jann Horn <jannh@google.com>, kernel-hardening@lists.openwall.com,
+        John Wood <john.wood@gmx.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Daniel Kiss <daniel.kiss@arm.com>, momchil.velikov@arm.com
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
- e6eb15c9ba3165698488ae5c34920eea20eaa38e
-Message-ID: <20200917183923.b5b2btxt26u73fgx@treble>
-References: <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian>
- <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble>
- <20200915172152.GR14436@zn.tnic>
- <CAKwvOdkh=bZE6uY8zk_QePq5B3fY1ue9VjEguJ_cQi4CtZ4xgw@mail.gmail.com>
- <CANpmjNPWOus2WnMLSAXnzaXC5U5RDM3TTeV8vFDtvuZvrkoWtA@mail.gmail.com>
- <20200916083032.GL2674@hirez.programming.kicks-ass.net>
- <CANpmjNOBUp0kRTODJMuSLteE=-woFZ2nUzk1=H8wqcusvi+T_g@mail.gmail.com>
- <CAKwvOd=T3w1eqwBkpa8_dJjbOLMTTDshfevT3EuQD4aNn4e_ZQ@mail.gmail.com>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH 1/6] security/fbfam: Add a Kconfig to enable the
+ fbfam feature
+Message-ID: <20200917175146.GB3637@ubuntu>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <20200910202107.3799376-2-keescook@chromium.org>
+ <202009101615.8566BA3967@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOd=T3w1eqwBkpa8_dJjbOLMTTDshfevT3EuQD4aNn4e_ZQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <202009101615.8566BA3967@keescook>
+X-Provags-ID: V03:K1:hfSrV/JuouzV96KqzDpTM0p1F5fgksRQkQ6glwDqKnplLy7aA51
+ LEXmlmjhZhsKwcw5j0kbmt75CSucf6iASudyPU5ybTSp6TwgdsHyhmEvzYWejOaYtXBaxA/
+ PnRKC9PzHtt0+UFq1WxYfr9s9ZeCojzAxzMMqSLlO3HjvJvoExAeNrCrqI6qFldyYkuwPt5
+ pa5DJIH2/13k0Vpfy5WPw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F+CYmWgFS1M=:BsRffWDkQBmHd+tKnquYN/
+ 8GM8gVMJzJUHm1wLN6sXJNkaM1TtRt/1V5S2aDYLosqzA7/u+EEtothfBo8QFKI9FsOFNyOFy
+ H4gOTJ0PF86fTmrXj6o7Tz1Z6U8o7uI4HIj5/mIYwLFl/TTv52z/+P6riiqXobBwn6C+80my/
+ gFNP+8JTHOp6yYAVBo+A8OSWoCQ5MagOVy0OoyK9mTw/3jXZItatZ2UsEYTSyPeb9+sQXm2tH
+ LLvGlF9TZ83maf5WrMyEJMqXha5sf7FjN4voWB3UEc8J4dWImKh15qpA/hr2sicARZPIKPe6F
+ K6QNgXaMIap5HLkHsnQETPu+cPdKK61VbmNLxFBwlfNcvFNu4y05X0UuH7IrTqMxlfV4MSus1
+ mkxSH4DErxV9mJfPRiannVBfsktkpXJAC8eczFtHls1VXsqZ+UTYg6BRGmdK4MGtH1ReFH9ZA
+ ywFRgt+be+8LcK4jyQAFgZQpRqrGJRqYUGTdFbGZ/tEdNcBc/q8s9ygAr7KMCKBmITyFkDRYN
+ E2K4u3EPUFOIaJqgd7EZ84wtGR39Sqniot95q5qpQEC8HNFBJ6yGzLnHy311i48kU+X2Z2yjp
+ kfxfaNP66eE/U59rDWestmaYslNyqva/9g2civeO4EtLuH3mpUwArmBzb0/qlIit5/fVwI/Cf
+ RN1Ur93LTn76zDgltjycZ8ALztU4UiZeDL5ChGXw3vK1pDz8pndc4M+kTZMdxWLAjKfqQURqJ
+ PKMjOcNHsujSTb9s3fJVMCIuM1ndW0RPV89rtBn38eMK77nv3r4yrzQpZdykSZQmvi2wgvWiK
+ HUz6U8VlqmJVX0IcIupeW1EWfrtdYb9JcWvMnhX8yfjg7N0/4Ijrly8zmsppeNTu3kZrMdLj1
+ VO7J368MKPC0a5VAZ510UDgycg7VfOfLijEnyU5EmK6FwTQJ3AodhBVWJJt/b4CUCs1gdsrIC
+ dXLbIuM177k0+HIj51B+7ikdPWBivlOy8obh0XKgsNk5GliXVn6jCrxTUtT+C1WvaxSYOlUxm
+ 8ZSYhm/OSApgQDJD2mvOL9huMsK/GHuEMP5N2x78Ewd6j8QsvmGBY3daU7p5WFAac5BELEUmp
+ IOhwYHNGrrQI/FUuAy1z5G/w46UgEIYf4p5lOTNp+lmjx9tHvtb0EoAdpU/1t1rzPsPSwXc5d
+ jQWlqvI38Yv94/imXFKlXrwpMtvjpHh39fqQxvy1z7m85HSQrL5DuN01Fp0JhxQtXd/s24Dsq
+ V81jzjHU6ZR+y6kUDixI7ItGZU/kNMJFd4Eerpw==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:22:02AM -0700, Nick Desaulniers wrote:
-> I looked into this a bit, and IIRC, the issue was that compiler
-> generated functions aren't very good about keeping track of whether
-> they should or should not emit framepointer setup/teardown
-> prolog/epilogs.  In LLVM's IR, -fno-omit-frame-pointer gets attached
-> to every function as a function level attribute.
-> https://godbolt.org/z/fcn9c6 ("frame-pointer"="all").
-> 
-> There were some recent LLVM patches for BTI (arm64) that made some BTI
-> related command line flags module level attributes, which I thought
-> was interesting; I was wondering last night if -fno-omit-frame-pointer
-> and maybe even the level of stack protector should be?  I guess LTO
-> would complicate things; not sure it would be good to merge modules
-> with different attributes; I'm not sure how that's handled today in
-> LLVM.
-> 
-> Basically, when the compiler is synthesizing a new function
-> definition, it should check whether a frame pointer should be emitted
-> or not.  We could do that today by maybe scanning all other function
-> definitions for the presence of "frame-pointer"="all" fn attr,
-> breaking early if we find one, and emitting the frame pointer setup in
-> that case.  Though I guess it's "frame-pointer"="none" otherwise, so
-> maybe checking any other fn def would be fine; I don't see any C fn
-> attr's that allow you to keep frame pointers or not.  What's tricky is
-> that the front end flag was resolved much earlier than where this code
-> gets generated, so it would need to look for traces that the flag ever
-> existed, which sounds brittle on paper to me.
+Hi,
 
-For code generated by the kernel at runtime, our current (x86) policy is
-"always use frame pointers for non-leaf functions".
+On Thu, Sep 10, 2020 at 04:18:08PM -0700, Kees Cook wrote:
+> On Thu, Sep 10, 2020 at 01:21:02PM -0700, Kees Cook wrote:
+> > From: John Wood <john.wood@gmx.com>
+> >
+> > Add a menu entry under "Security options" to enable the "Fork brute
+> > force attack mitigation" feature.
+> >
+> > Signed-off-by: John Wood <john.wood@gmx.com>
+> > ---
+> >  security/Kconfig       |  1 +
+> >  security/fbfam/Kconfig | 10 ++++++++++
+> >  2 files changed, 11 insertions(+)
+> >  create mode 100644 security/fbfam/Kconfig
+> >
+> > diff --git a/security/Kconfig b/security/Kconfig
+> > index 7561f6f99f1d..00a90e25b8d5 100644
+> > --- a/security/Kconfig
+> > +++ b/security/Kconfig
+> > @@ -290,6 +290,7 @@ config LSM
+> >  	  If unsure, leave this as the default.
+> >
+> >  source "security/Kconfig.hardening"
+> > +source "security/fbfam/Kconfig"
+>
+> Given the layout you've chosen and the interface you've got, I think
+> this should just be treated like a regular LSM.
 
-A lot of this compiler talk is over my head, but if *non-leaf* generated
-functions are rare enough then it might be worth considering to just
-always use frame pointers for them.
+Yes, throughout the review it seems the most appropiate is treat
+this feature as a regular LSM. Thanks.
 
--- 
-Josh
+> >
+> >  endmenu
+> >
+> > diff --git a/security/fbfam/Kconfig b/security/fbfam/Kconfig
+> > new file mode 100644
+> > index 000000000000..bbe7f6aad369
+> > --- /dev/null
+> > +++ b/security/fbfam/Kconfig
+> > @@ -0,0 +1,10 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +config FBFAM
+>
+> To jump on the bikeshed: how about just calling this
+> FORK_BRUTE_FORCE_DETECTION or FORK_BRUTE, and the directory could be
+> "brute", etc. "fbfam" doesn't tell anyone anything.
+
+Understood. But how about use the fbfam abbreviation in the code? Like as
+function name prefix, struct name prefix, ... It would be better to use a
+more descriptive name in this scenario? It is not clear to me.
+
+> --
+> Kees Cook
+
+Thanks,
+John Wood
 
