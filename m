@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD52026E414
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64AC26E40E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgIQQ66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:58:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727667AbgIQQ5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:57:12 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E0292220E;
-        Thu, 17 Sep 2020 16:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600361815;
-        bh=3CcSAgmJymqX4erpPOGNuiR94tStAH1tIhGienjiYwc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ehh/IOcVlyp+UzApCJd2uZjTnmaJ85CG1bFw5Xp5VD6lgKUEw8ObK1OdLXYqAxsAI
-         /FQXYjYHs/evznTntqzPiI+ybw3MYVG6jh3P53c2dKcURoHyEflt5A0qgMIexJ4Coz
-         hWB1F8aIxFFehtu2IMK2+HseBdDD+lc6ZKAlu6is=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yash Shah <yash.shah@sifive.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        - <patches@opensource.cirrus.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Andy Teng <andy.teng@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Sricharan R <sricharan@codeaurora.org>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-unisoc@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 12/13] arm64: dts: imx8mq-librem5: align GPIO hog names with dtschema
-Date:   Thu, 17 Sep 2020 18:53:00 +0200
-Message-Id: <20200917165301.23100-13-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200917165301.23100-1-krzk@kernel.org>
-References: <20200917165301.23100-1-krzk@kernel.org>
+        id S1726390AbgIQSiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728793AbgIQREK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:04:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F606C06174A;
+        Thu, 17 Sep 2020 10:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=1fBT9s1q2BeyeX5HlyXsJ+Y6Y5+WpSqbNQWYXqzlTr0=; b=P6srGR6vEznh8lHtplE7kMZUWt
+        NC07bfyxiYydvJofD1807i3dSytM+YwHGjTqXPxPxVItTdUyA3Y5tN/K5vADXgpxE6OZRhUADgvFU
+        xSQVyeLBnlSaVXGkYFI2TnoQgbrSA1qj7L6NeTFBTQiGAqnNO6EomBrAE8LBfpN/g97kN+89KshXt
+        3vH8sjjPHQN56MPFQdlJ43XVOo/g4nQmyS7PXGmypC56CULLI41HYb+f8SYkTZjCVSzth1iP0lbiI
+        Y7JIy2SR9IGcI1kT0VMb0xyLEAlWiOUgK2lQgr9pbh0UJmhEyE6SX3aG5bpiuzVgHzxmZS+i74gxH
+        VS4vkhvA==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIxK6-0000Y8-TJ; Thu, 17 Sep 2020 17:03:55 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        linux-ide@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-pm@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org
+Subject: [PATCH 02/14] block: switch register_disk to use blkdev_get_by_dev
+Date:   Thu, 17 Sep 2020 18:57:08 +0200
+Message-Id: <20200917165720.3285256-3-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200917165720.3285256-1-hch@lst.de>
+References: <20200917165720.3285256-1-hch@lst.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dtschema expects GPIO hogs to end with 'hog' suffix.
+Use blkdev_get_by_dev instead of open coding it using bdget_disk +
+blkdev_get.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/genhd.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-index e4dedcb58f76..6cbcee2fb938 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-@@ -249,7 +249,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pmic_5v>;
+diff --git a/block/genhd.c b/block/genhd.c
+index 7b56203c90a303..f778716fac6cde 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -732,10 +732,9 @@ static void register_disk(struct device *parent, struct gendisk *disk,
+ 		goto exit;
  
--	pmic-5v {
-+	pmic-5v-hog {
- 		gpio-hog;
- 		gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
- 		input;
+ 	set_bit(GD_NEED_PART_SCAN, &disk->state);
+-	err = blkdev_get(bdev, FMODE_READ, NULL);
+-	if (err < 0)
+-		goto exit;
+-	blkdev_put(bdev, FMODE_READ);
++	bdev = blkdev_get_by_dev(disk_devt(disk), FMODE_READ, NULL);
++	if (!IS_ERR(bdev))
++		blkdev_put(bdev, FMODE_READ);
+ 
+ exit:
+ 	/* announce disk after possible partitions are created */
 -- 
-2.17.1
+2.28.0
 
