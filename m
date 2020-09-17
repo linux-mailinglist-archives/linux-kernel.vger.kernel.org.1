@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B85B26DBDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8CC26DB95
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgIQMoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:44:03 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49912 "EHLO huawei.com"
+        id S1726886AbgIQMbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:31:46 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40214 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727034AbgIQMkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:40:16 -0400
-X-Greylist: delayed 965 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:40:10 EDT
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 7EAB13B5571B7F534558;
-        Thu, 17 Sep 2020 20:22:55 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 20:22:49 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Coly Li <colyli@suse.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-CC:     <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] bcache: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Thu, 17 Sep 2020 20:23:26 +0800
-Message-ID: <20200917122326.99080-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726861AbgIQMbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:31:31 -0400
+X-Greylist: delayed 951 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:30:47 EDT
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id CD4F6876081258B6973F;
+        Thu, 17 Sep 2020 20:14:34 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
+ 20:14:31 +0800
+From:   Huang Guobin <huangguobin4@huawei.com>
+To:     <john.johansen@canonical.com>, <jmorris@namei.org>,
+        <serge@hallyn.com>
+CC:     <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] apparmor: Fix several kernel-doc warnings
+Date:   Thu, 17 Sep 2020 08:24:57 -0400
+Message-ID: <20200917122457.206198-1-huangguobin4@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+X-Originating-IP: [10.175.104.82]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+Fixes the following W=1 kernel build warning(s):
 
-As inode->iprivate equals to third parameter of
-debugfs_create_file() which is NULL. So it's equivalent
-to original code logic.
+security/apparmor/apparmorfs.c:2127: warning: Excess function parameter 'profile' description in '__next_profile'
+security/apparmor/domain.c:1292: warning: Excess function parameter 'onexec' description in 'aa_change_profile'
+security/apparmor/domain.c:136: warning: Excess function parameter 'start' description in 'label_compound_match'
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Rename profile to p.
+@onexec in 'aa_change_profile' and @start in 'label_compound_match' are not in use, Remove it.
+
+Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
 ---
-v2: based on linux-next(20200917), and can be applied to
-    mainline cleanly now.
+ security/apparmor/apparmorfs.c | 2 +-
+ security/apparmor/domain.c     | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
- drivers/md/bcache/closure.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/md/bcache/closure.c b/drivers/md/bcache/closure.c
-index 0164a1fe9..d8d9394a6 100644
---- a/drivers/md/bcache/closure.c
-+++ b/drivers/md/bcache/closure.c
-@@ -159,7 +159,7 @@ void closure_debug_destroy(struct closure *cl)
+diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
+index 5fd4a64e431f..f00a372be7b6 100644
+--- a/security/apparmor/apparmorfs.c
++++ b/security/apparmor/apparmorfs.c
+@@ -2116,7 +2116,7 @@ static struct aa_profile *__first_profile(struct aa_ns *root,
  
- static struct dentry *closure_debug;
- 
--static int debug_seq_show(struct seq_file *f, void *data)
-+static int debug_show(struct seq_file *f, void *data)
- {
- 	struct closure *cl;
- 
-@@ -188,17 +188,7 @@ static int debug_seq_show(struct seq_file *f, void *data)
- 	return 0;
- }
- 
--static int debug_seq_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, debug_seq_show, NULL);
--}
--
--static const struct file_operations debug_ops = {
--	.owner		= THIS_MODULE,
--	.open		= debug_seq_open,
--	.read		= seq_read,
--	.release	= single_release
--};
-+DEFINE_SHOW_ATTRIBUTE(debug);
- 
- void  __init closure_debug_init(void)
- {
-@@ -209,7 +199,7 @@ void  __init closure_debug_init(void)
- 		 * about this.
- 		 */
- 		closure_debug = debugfs_create_file(
--			"closures", 0400, bcache_debug, NULL, &debug_ops);
-+			"closures", 0400, bcache_debug, NULL, &debug_fops);
- }
- #endif
- 
+ /**
+  * __next_profile - step to the next profile in a profile tree
+- * @profile: current profile in tree (NOT NULL)
++ * @p: current profile in tree (NOT NULL)
+  *
+  * Perform a depth first traversal on the profile tree in a namespace
+  *
+diff --git a/security/apparmor/domain.c b/security/apparmor/domain.c
+index f919ebd042fd..12a9d80cd63a 100644
+--- a/security/apparmor/domain.c
++++ b/security/apparmor/domain.c
+@@ -178,7 +178,6 @@ static int label_compound_match(struct aa_profile *profile,
+  * @profile: profile to find perms for
+  * @label: label to check access permissions for
+  * @stack: whether this is a stacking request
+- * @start: state to start match in
+  * @subns: whether to do permission checks on components in a subns
+  * @request: permissions to request
+  * @perms: an initialized perms struct to add accumulation to
+@@ -1277,14 +1276,11 @@ static int change_profile_perms_wrapper(const char *op, const char *name,
+ /**
+  * aa_change_profile - perform a one-way profile transition
+  * @fqname: name of profile may include namespace (NOT NULL)
+- * @onexec: whether this transition is to take place immediately or at exec
+  * @flags: flags affecting change behavior
+  *
+  * Change to new profile @name.  Unlike with hats, there is no way
+  * to change back.  If @name isn't specified the current profile name is
+  * used.
+- * If @onexec then the transition is delayed until
+- * the next exec.
+  *
+  * Returns %0 on success, error otherwise.
+  */
 -- 
-2.23.0
+2.25.1
 
