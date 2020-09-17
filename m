@@ -2,180 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E68226DCDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05A626DCFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgIQNbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgIQN3n (ORCPT
+        id S1726950AbgIQNlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:41:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41767 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727015AbgIQNez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:29:43 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBE9C0611C1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:29:02 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c18so2070145wrm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VXnokbFwaIT7VX7ySLaYW+p97LOfw5oIrujXpIr02w0=;
-        b=YhtNwsS5EvW9wWdW0ET2SOg7FW6/fm0TOPmHQKipPLCr3EfGF1dYktxktoMauq3MyG
-         Gtc3F4EdJm7Skmycwfiti1rvHXn5w5Y+pIYmtfz13lf8DovTFs5+WjrgOttK2mGIVDr4
-         zO2h4zetldL4/9owZvYijsqtb4D3ppFAcTZ8rJdchatZnRbckqS4T9VAkUO4YrAN0DGt
-         u8B+VB+3oyqvl6kYwKaYfrnVUEEf0fzPGxl+jWb/LCHto6aXmR1hOeWB0luqBgcw3Rlq
-         P877I2RYE/VhlaQzsra3l3wYNn9/ADDUZ3Cn//OBjx9/4s+8gFiAtN+nA3kkLgls4TXp
-         K1Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VXnokbFwaIT7VX7ySLaYW+p97LOfw5oIrujXpIr02w0=;
-        b=TES2roZqn0qVuriYYkipMDvr7wNnAVrJUqmOisGjibR5M0lAhrAWd9Xl13SYkESMXi
-         3CRewVh4IZXbqXWvhoom2IbbJ2hcvrNDHQC0iMC1f93jquLhv8Oah2Js84ijnPoVGyMP
-         LCi22YSx756mxIm78YXKDG7k48w8anaB+DuuJHQc+FC2bGwyz96Qbi1mJn6KdXtWFCmd
-         sesT5QSz7lvDHf18PGb2myT4uILlLlIgxLNdXsA+VoO2ZhswCcOliVGZOsBRtneMvQ3N
-         aen7VSxRpxLEnzPyYsOL2+2CPVHWbvIsHtKAAnsxDf+zaw+iXZOE8H1VVd+flezqXxuN
-         puMw==
-X-Gm-Message-State: AOAM533OJNfDc2OVFDaFErap3J9d0HQlZkze65h9tIxCo/ad5M/pp4/2
-        LKaI5I9q6WNf2NZF3koQ2UII+w==
-X-Google-Smtp-Source: ABdhPJxwtR7oBdq4afBifC7Rg+K/286K5d8bHf/oiQjz59hxtnrtlu7e7eCW1oFzS8JgGdVTD3B3GA==
-X-Received: by 2002:adf:e304:: with SMTP id b4mr31131498wrj.141.1600349341564;
-        Thu, 17 Sep 2020 06:29:01 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id n10sm11486910wmk.7.2020.09.17.06.29.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 06:29:00 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     sboyd@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 4/4] clk: qcom: Add support to LPASS AON_CC Glitch Free Mux clocks
-Date:   Thu, 17 Sep 2020 14:28:50 +0100
-Message-Id: <20200917132850.7730-5-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
-References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
+        Thu, 17 Sep 2020 09:34:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600349661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAZ7GYrpBa5ucLCP/AOwHIdySIKLL/ta6t+Gc/7xpW4=;
+        b=f7+EgQ4J2PhaDA1G2yv/CQgQiIF96kLEhMy+1DQOzBB3lELkCTkWpRZkUZ6UlltZatQtNk
+        Sdoe/TtObHFzAqRkewM523OOIklUXQJBUbmLd823JfciOfBtxfJQ/zPpFUzl9LL0w7KNaw
+        GWUL+GJ/bi1p1dicmxRxdq02NNXaeyo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-2Aq0qTI6MbitNKLSTYgyNw-1; Thu, 17 Sep 2020 09:34:17 -0400
+X-MC-Unique: 2Aq0qTI6MbitNKLSTYgyNw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9A05ACE37;
+        Thu, 17 Sep 2020 13:34:15 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.159])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D2FF45DEBB;
+        Thu, 17 Sep 2020 13:34:12 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 17 Sep 2020 15:34:15 +0200 (CEST)
+Date:   Thu, 17 Sep 2020 15:34:11 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Boaz Harrosh <boaz@plexistor.com>, Hou Tao <houtao1@huawei.com>,
+        peterz@infradead.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200917133411.GB5602@redhat.com>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
+ <20200917124838.GT5449@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917124838.GT5449@casper.infradead.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LPASS Always ON Clock controller has one GFM mux to control VA
-and TX clocks to codec macro on LPASS.
-This patch adds support to this mux.
+On 09/17, Matthew Wilcox wrote:
+>
+> On Thu, Sep 17, 2020 at 02:01:33PM +0200, Oleg Nesterov wrote:
+> > IIUC, file_end_write() was never IRQ safe (at least if !CONFIG_SMP), even
+> > before 8129ed2964 ("change sb_writers to use percpu_rw_semaphore"), but this
+> > doesn't matter...
+> >
+> > Perhaps we can change aio.c, io_uring.c and fs/overlayfs/file.c to avoid
+> > file_end_write() in IRQ context, but I am not sure it's worth the trouble.
+>
+> If we change bio_endio to invoke the ->bi_end_io callbacks in softirq
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/clk/qcom/lpass-gfm-sm8250.c | 61 +++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+Not sure I understand...
 
-diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass-gfm-sm8250.c
-index 2d5c41ae4969..6b11bea912bf 100644
---- a/drivers/clk/qcom/lpass-gfm-sm8250.c
-+++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
-@@ -12,6 +12,7 @@
- #include <linux/platform_device.h>
- #include <linux/of_device.h>
- #include <dt-bindings/clock/qcom,sm8250-lpass-audiocc.h>
-+#include <dt-bindings/clock/qcom,sm8250-lpass-aoncc.h>
- 
- struct lpass_gfm {
- 	struct device *dev;
-@@ -61,6 +62,44 @@ static const struct clk_ops clk_gfm_ops = {
- 	.determine_rate = __clk_mux_determine_rate,
- };
- 
-+static struct clk_gfm lpass_gfm_va_mclk = {
-+	.mux_reg = 0x20000,
-+	.mux_mask = BIT(0),
-+	.hw.init = &(struct clk_init_data) {
-+		.name = "VA_MCLK",
-+		.ops = &clk_gfm_ops,
-+		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
-+		.parent_names = (const char *[]) {
-+			"LPASS_CLK_ID_TX_CORE_MCLK",
-+			"LPASS_CLK_ID_VA_CORE_MCLK",
-+		},
-+		.num_parents = 2,
-+		.parent_data = (const struct clk_parent_data[]){
-+				{ .index = 0 },
-+				{ .index = 1 },
-+		},
-+	},
-+};
-+
-+static struct clk_gfm lpass_gfm_tx_npl = {
-+	.mux_reg = 0x20000,
-+	.mux_mask = BIT(0),
-+	.hw.init = &(struct clk_init_data) {
-+		.name = "TX_NPL",
-+		.ops = &clk_gfm_ops,
-+		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
-+		.parent_names = (const char *[]){
-+			"LPASS_CLK_ID_TX_CORE_NPL_MCLK",
-+			"LPASS_CLK_ID_VA_CORE_2X_MCLK",
-+		},
-+		.parent_data = (const struct clk_parent_data[]){
-+				{ .index = 0 },
-+				{ .index = 1 },
-+		},
-+		.num_parents = 2,
-+	},
-+};
-+
- static struct clk_gfm lpass_gfm_wsa_mclk = {
- 	.mux_reg = 0x220d8,
- 	.mux_mask = BIT(0),
-@@ -137,6 +176,19 @@ static struct clk_gfm lpass_gfm_rx_npl = {
- 	},
- };
- 
-+static struct clk_gfm *aoncc_gfm_clks[] = {
-+	[LPASS_CDC_VA_MCLK]		= &lpass_gfm_va_mclk,
-+	[LPASS_CDC_TX_NPL]		= &lpass_gfm_tx_npl,
-+};
-+
-+static struct clk_hw_onecell_data aoncc_hw_onecell_data = {
-+	.hws = {
-+		[LPASS_CDC_VA_MCLK]	= &lpass_gfm_va_mclk.hw,
-+		[LPASS_CDC_TX_NPL]	= &lpass_gfm_tx_npl.hw,
-+	},
-+	.num = ARRAY_SIZE(aoncc_gfm_clks),
-+};
-+
- static struct clk_gfm *audiocc_gfm_clks[] = {
- 	[LPASS_CDC_WSA_NPL]		= &lpass_gfm_wsa_npl,
- 	[LPASS_CDC_WSA_MCLK]		= &lpass_gfm_wsa_mclk,
-@@ -164,6 +216,11 @@ static struct lpass_gfm_data audiocc_data = {
- 	.gfm_clks = audiocc_gfm_clks,
- };
- 
-+static struct lpass_gfm_data aoncc_data = {
-+	.onecell_data = &aoncc_hw_onecell_data,
-+	.gfm_clks = aoncc_gfm_clks,
-+};
-+
- static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
- {
- 	const struct lpass_gfm_data *data;
-@@ -218,6 +275,10 @@ static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id lpass_gfm_clk_match_table[] = {
-+	{
-+		.compatible = "qcom,sm8250-lpass-aoncc",
-+		.data = &aoncc_data,
-+	},
- 	{
- 		.compatible = "qcom,sm8250-lpass-audiocc",
- 		.data = &audiocc_data,
--- 
-2.21.0
+How can this help? irq_exit() can invoke_softirq() -> __do_softirq() ?
+
+Oleg.
 
