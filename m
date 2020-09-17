@@ -2,159 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A20126E136
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACAC26E13F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgIQQxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57114 "EHLO mail.kernel.org"
+        id S1728697AbgIQQyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:54:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728544AbgIQQxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:53:08 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728680AbgIQQxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:53:42 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9B5A2078D;
-        Thu, 17 Sep 2020 16:52:23 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 17:52:21 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 27/37] arm64: mte: Switch GCR_EL1 in kernel entry and
- exit
-Message-ID: <20200917165221.GF10662@gaia>
-References: <cover.1600204505.git.andreyknvl@google.com>
- <c801517c8c6c0b14ac2f5d9e189ff86fdbf1d495.1600204505.git.andreyknvl@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c801517c8c6c0b14ac2f5d9e189ff86fdbf1d495.1600204505.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BD6320838;
+        Thu, 17 Sep 2020 16:53:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600361620;
+        bh=LNr3F6vUQ7DT7Vs4mRissQqyWTp6Maw/uPs1wDTihEw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=yeo4MNqxqC/0rz60dpD7fLLtv1ESeHX2KZc97xj2v6ggaQfUM97Jr3QW5WwdStQmS
+         Fpq6bmCpxks5q1+3NvLTNNqb8abOukMhKoMkRZXnMxp5roNeV5a8N5rWUZEPTPMd9g
+         kKCq6g9PCfmnot5dawhs35T9ZSnDlUPM0ALOyrEI=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        - <patches@opensource.cirrus.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Teng <andy.teng@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sricharan R <sricharan@codeaurora.org>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-unisoc@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 01/13] dt-bindings: gpio: add common schema for GPIO controllers
+Date:   Thu, 17 Sep 2020 18:52:49 +0200
+Message-Id: <20200917165301.23100-2-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200917165301.23100-1-krzk@kernel.org>
+References: <20200917165301.23100-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:16:09PM +0200, Andrey Konovalov wrote:
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index eca06b8c74db..3602ac45d093 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -1721,6 +1721,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
->  
->  	/* Enable in-kernel MTE only if KASAN_HW_TAGS is enabled */
->  	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {
-> +		/* Enable the kernel exclude mask for random tags generation */
-> +		write_sysreg_s((SYS_GCR_EL1_RRND | gcr_kernel_excl), SYS_GCR_EL1);
+Convert parts of gpio.txt bindings into common dtschema file for GPIO
+controllers.  The schema enforces proper naming of GPIO controller nodes
+and GPIO hogs.
 
-Nitpick: no need for extra braces, the comma has lower precedence.
+The schema should be included by specific GPIO controllers bindings.
 
-> +
->  		/* Enable MTE Sync Mode for EL1 */
->  		sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
->  		isb();
-> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-> index ff34461524d4..79a6848840bd 100644
-> --- a/arch/arm64/kernel/entry.S
-> +++ b/arch/arm64/kernel/entry.S
-> @@ -175,6 +175,28 @@ alternative_else_nop_endif
->  #endif
->  	.endm
->  
-> +	.macro mte_restore_gcr, el, tsk, tmp, tmp2
-> +#ifdef CONFIG_ARM64_MTE
-> +alternative_if_not ARM64_MTE
-> +	b	1f
-> +alternative_else_nop_endif
-> +	.if	\el == 0
-> +	ldr	\tmp, [\tsk, #THREAD_GCR_EL1_USER]
-> +	.else
-> +	ldr_l	\tmp, gcr_kernel_excl
-> +	.endif
-> +	/*
-> +	 * Calculate and set the exclude mask preserving
-> +	 * the RRND (bit[16]) setting.
-> +	 */
-> +	mrs_s	\tmp2, SYS_GCR_EL1
-> +	bfi	\tmp2, \tmp, #0, #16
-> +	msr_s	SYS_GCR_EL1, \tmp2
-> +	isb
-> +1:
-> +#endif
-> +	.endm
-> +
->  	.macro	kernel_entry, el, regsize = 64
->  	.if	\regsize == 32
->  	mov	w0, w0				// zero upper 32 bits of x0
-> @@ -214,6 +236,8 @@ alternative_else_nop_endif
->  
->  	ptrauth_keys_install_kernel tsk, x20, x22, x23
->  
-> +	mte_restore_gcr 1, tsk, x22, x23
-> +
->  	scs_load tsk, x20
->  	.else
->  	add	x21, sp, #S_FRAME_SIZE
-> @@ -332,6 +356,8 @@ alternative_else_nop_endif
->  	/* No kernel C function calls after this as user keys are set. */
->  	ptrauth_keys_install_user tsk, x0, x1, x2
->  
-> +	mte_restore_gcr 0, tsk, x0, x1
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Some nitpicks on these macros to match the ptrauth_keys_* above. Define
-separate mte_set_{user,kernel}_gcr macros with a common mte_set_gcr that
-is used by both.
+---
 
-> +
->  	apply_ssbd 0, x0, x1
->  	.endif
->  
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index 858e75cfcaa0..1c7d963b5038 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -18,10 +18,13 @@
->  
->  #include <asm/barrier.h>
->  #include <asm/cpufeature.h>
-> +#include <asm/kprobes.h>
+Changes since v1:
+1. Do not require compatible (some child nodes are gpio-controllers
+   without the compatible).
+---
+ .../devicetree/bindings/gpio/gpio-common.yaml | 125 ++++++++++++++++++
+ 1 file changed, 125 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-common.yaml
 
-What's this apparently random kprobes.h include?
-
->  #include <asm/mte.h>
->  #include <asm/ptrace.h>
->  #include <asm/sysreg.h>
->  
-> +u64 gcr_kernel_excl __ro_after_init;
-> +
->  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
->  {
->  	pte_t old_pte = READ_ONCE(*ptep);
-> @@ -120,6 +123,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
->  	return ptr;
->  }
->  
-> +void mte_init_tags(u64 max_tag)
-> +{
-> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
-> +
-> +	gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
-> +}
-
-Do we need to set the actual GCR_EL1 register here? We may not get an
-exception by the time KASAN starts using it.
-
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-common.yaml b/Documentation/devicetree/bindings/gpio/gpio-common.yaml
+new file mode 100644
+index 000000000000..af9f6c7feeec
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/gpio-common.yaml
+@@ -0,0 +1,125 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/gpio-common.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Common GPIO controller properties
++
++maintainers:
++  - Krzysztof Kozlowski <krzk@kernel.org>
++  - Linus Walleij <linus.walleij@linaro.org>
++
++properties:
++  nodename:
++    pattern: "^(gpio-controller|gpio)(@[0-9a-f]+|-[0-9a-f]+)?$"
++
++  '#gpio-cells': true
++  gpio-controller: true
++  gpio-ranges: true
++
++  gpio-line-names:
++    description: |
++      Optionally, a GPIO controller may have a "gpio-line-names" property. This
++      is an array of strings defining the names of the GPIO lines going out of
++      the GPIO controller. This name should be the most meaningful producer
++      name for the system, such as a rail name indicating the usage. Package
++      names such as pin name are discouraged: such lines have opaque names
++      (since they are by definition generic purpose) and such names are usually
++      not very helpful.
++
++      For example "MMC-CD", "Red LED Vdd" and "ethernet reset" are reasonable
++      line names as they describe what the line is used for. "GPIO0" is not a
++      good name to give to a GPIO line.
++
++      Placeholders are discouraged: rather use the "" (blank string) if the use
++      of the GPIO line is undefined in your design. The names are assigned
++      starting from line offset 0 from left to right from the passed array. An
++      incomplete array (where the number of passed named are less than ngpios)
++      will still be used up until the last provided valid line index.
++
++  gpio-reserved-ranges:
++    description:
++      Indicates the start and size of the GPIOs that can't be used.
++
++  ngpios:
++    description: |
++      Optionally, a GPIO controller may have a "ngpios" property. This property
++      indicates the number of in-use slots of available slots for GPIOs. The
++      typical example is something like this: the hardware register is 32 bits
++      wide, but only 18 of the bits have a physical counterpart. The driver is
++      generally written so that all 32 bits can be used, but the IP block is
++      reused in a lot of designs, some using all 32 bits, some using 18 and
++      some using 12. In this case, setting "ngpios = <18>;" informs the driver
++      that only the first 18 GPIOs, at local offset 0 .. 17, are in use.
++
++      If these GPIOs do not happen to be the first N GPIOs at offset 0...N-1,
++      an additional set of tuples is needed to specify which GPIOs are
++      unusable, with the gpio-reserved-ranges binding.
++
++patternProperties:
++  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
++    type: object
++    description:
++      The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
++      providing automatic GPIO request and configuration as part of the
++      gpio-controller's driver probe function.
++      Each GPIO hog definition is represented as a child node of the GPIO controller.
++
++    properties:
++      gpio-hog: true
++      gpios: true
++      input: true
++      output-high: true
++      output-low: true
++      line-name:
++        description:
++          The GPIO label name. If not present the node name is used.
++
++    required:
++      - gpio-hog
++      - gpios
++
++    oneOf:
++      - required:
++          - input
++      - required:
++          - output-high
++      - required:
++          - output-low
++
++    additionalProperties: false
++
++required:
++  - "#gpio-cells"
++  - gpio-controller
++
++examples:
++  - |
++    gpio-controller@15000000 {
++        compatible = "foo";
++        reg = <0x15000000 0x1000>;
++        gpio-controller;
++        #gpio-cells = <2>;
++        ngpios = <18>;
++        gpio-reserved-ranges = <0 4>, <12 2>;
++        gpio-line-names = "MMC-CD", "MMC-WP", "VDD eth", "RST eth", "LED R",
++                          "LED G", "LED B", "Col A", "Col B", "Col C", "Col D",
++                          "Row A", "Row B", "Row C", "Row D", "NMI button",
++                          "poweroff", "reset";
++    };
++
++  - |
++    gpio-controller@1400 {
++        compatible = "fsl,qe-pario-bank-a", "fsl,qe-pario-bank";
++        reg = <0x1400 0x18>;
++        gpio-controller;
++        #gpio-cells = <2>;
++
++        line-b-hog {
++            gpio-hog;
++            gpios = <6 0>;
++            input;
++            line-name = "foo-bar-gpio";
++        };
++    };
 -- 
-Catalin
+2.17.1
+
