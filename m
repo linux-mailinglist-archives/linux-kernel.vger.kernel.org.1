@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D91726F4B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AEC26F4DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 06:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgIRD0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:26:51 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51150 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgIRD0v (ORCPT
+        id S1726457AbgIREA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 00:00:27 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53426 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIREA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:26:51 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08I3P8DU042413;
-        Fri, 18 Sep 2020 03:26:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=u5Wc1Rpfr9jGdrhv1sc2/WJ6KhTGK1VbK75D+xbwxjk=;
- b=N2c8J+TX50ard6WzXvKuXvMzu8Ny7YDzu7hCLo9GwNodb31EWmpUrFl5bsuCytfsChSD
- WXI27EeNkCju8P8h0Wwlkx+J0Y8Ggg7Sp2V8yxp75zwDJMcCz4+IRu4yDBlI2SFItyqa
- WQvuKcbHV1D5ac8UuwmJt6bmyOoF6FmiS5fZIy/K6j8tdqpWTj2iDkbWRBQ1yo/OjKiS
- MMX8myPzkL8V0RBS7ytepYH9ryhKcZJXTH9+CDKLWRbMAwo1ykBeU7iM6RhwyUzmu8nX
- 0CqDLybVW3fRhxwllj96ymABnWTttDPznx11muMrX1vesyqzpjzZFP2zVf6YMWM9JFtF rw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33j91dxctw-1
+        Fri, 18 Sep 2020 00:00:26 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HLTktu184295;
+        Thu, 17 Sep 2020 21:33:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=yqQ3WmKDbBWmnu4TolrzXoVeaW+xc7/FA1Hu1sSodXM=;
+ b=Wsu1CrpNP6KkuEc4XWwQKhzFCzKY8m9BAeMYM+fUTvk6fnrwaeow18tKsO4fSUIJOT2g
+ kBD42QH2SNR+G31RyL2Vb3bgqewtjwFQ3eJxdJLb/PWuADG6f0MibLt6riQlxtBkUVln
+ cBO6sKEHklxnMOgUD7UiTP3whkJu1rFn1+rzY110w/D6ix6UOooKxjAQZduLn+ZGhwS/
+ v83nOiJvz+CKtPbyKljQ6MjmfNa5h/VRAXuyob2qhgUAlbQfQbK79/Hj7EiOESiryq2N
+ iS42nKWo8reuaDCPpQKdDC4ZcYktuo0l5Whk92JYoz/CZAkQQkxsMlv1iFmoiDvhYXub xw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 33gnrrbye4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 03:26:48 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08I3PvQF180306;
-        Fri, 18 Sep 2020 03:26:48 GMT
+        Thu, 17 Sep 2020 21:33:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HLVYxU182545;
+        Thu, 17 Sep 2020 21:33:16 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33hm361gdc-1
+        by aserp3020.oracle.com with ESMTP id 33h88ch72v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 03:26:48 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08I3QlSN009154;
-        Fri, 18 Sep 2020 03:26:47 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        Thu, 17 Sep 2020 21:33:16 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08HLXEdA025950;
+        Thu, 17 Sep 2020 21:33:14 GMT
+Received: from localhost (/67.169.218.210)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Sep 2020 03:26:47 +0000
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/3] scsi: mpt: Refactor and port to dma_* interface
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq15z8bu5v6.fsf@ca-mkp.ca.oracle.com>
-References: <20200903152832.484908-1-alex.dewar90@gmail.com>
-        <yq1ft7ixyg8.fsf@ca-mkp.ca.oracle.com>
-        <20200916164411.hkpmqigdhgdb66dl@lenovo-laptop>
-Date:   Thu, 17 Sep 2020 23:26:45 -0400
-In-Reply-To: <20200916164411.hkpmqigdhgdb66dl@lenovo-laptop> (Alex Dewar's
-        message of "Wed, 16 Sep 2020 17:44:11 +0100")
+        with ESMTP ; Thu, 17 Sep 2020 21:33:14 +0000
+Date:   Thu, 17 Sep 2020 14:33:12 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Brian Foster <bfoster@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, willy@infradead.org,
+        minlei@redhat.com
+Subject: Re: [PATCH] iomap: Fix the write_count in iomap_add_to_ioend().
+Message-ID: <20200917213312.GF7954@magnolia>
+References: <20200824150417.GA12258@infradead.org>
+ <20200824154841.GB295033@bfoster>
+ <20200825004203.GJ12131@dread.disaster.area>
+ <20200825144917.GA321765@bfoster>
+ <20200916001242.GE7955@magnolia>
+ <20200916084510.GA30815@infradead.org>
+ <20200916130714.GA1681377@bfoster>
+ <20200917080455.GY26262@infradead.org>
+ <20200917104219.GA1811187@bfoster>
+ <20200917144804.GA31389@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917144804.GA31389@infradead.org>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=1 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009180028
+ definitions=main-2009170159
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=1 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180028
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=1
+ clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009170159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 17, 2020 at 03:48:04PM +0100, Christoph Hellwig wrote:
+> On Thu, Sep 17, 2020 at 06:42:19AM -0400, Brian Foster wrote:
+> > That wouldn't address the latency concern Dave brought up. That said, I
+> > have no issue with this as a targeted solution for the softlockup issue.
+> > iomap_finish_ioend[s]() is common code for both the workqueue and
+> > ->bi_end_io() contexts so that would require either some kind of context
+> > detection (and my understanding is in_atomic() is unreliable/frowned
+> > upon) or a new "atomic" parameter through iomap_finish_ioend[s]() to
+> > indicate whether it's safe to reschedule. Preference?
+> 
+> True, it would not help with latency.  But then again the latency
+> should be controlled by the writeback code not doing giant writebacks
+> to start with, shouldn't it?
+> 
+> Any XFS/iomap specific limit also would not help with the block layer
+> merging bios.
 
-Alex,
+/me hasn't totally been following this thread, but iomap will also
+aggregate the ioend completions; do we need to cap that to keep
+latencies down?  I was assuming that amortization was always favorable,
+but maybe not?
 
->> Have you tested your changes?
->
-> No, as I'm afraid I don't have the hardware.
-
-QEMU supports it, I propose you try testing with that.
-
-I hesitate merging big changes to abandoned drivers unless they've been
-tested. It's too easy to miss things during review...
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+--D
