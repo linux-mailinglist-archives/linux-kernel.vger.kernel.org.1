@@ -2,68 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E82B26D436
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EC126D43C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgIQHGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55610 "EHLO mail.kernel.org"
+        id S1726348AbgIQHHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:07:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726335AbgIQHFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:05:52 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726293AbgIQHGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 03:06:24 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AB4D206E6;
-        Thu, 17 Sep 2020 07:05:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600326351;
-        bh=hX1In47qa8OCVR1/+Z+2iH6fj4+wNmfyDrAD9kegMnE=;
-        h=From:To:Subject:Date:From;
-        b=OGgk4kTNPctyksWF5avH2T7CgRRwqlo/9o4AcrznGvgvFy5vrDnKIlNSHNQ0pTiAR
-         4pf0C8cEly7QqSgEleySU4IVb+7mwXPPDBTaMmqy1yc8lBGlh3a7DTe+bxuMCMsD2a
-         FE/jMduluk8vasCcRVo2oWRbEI6BjXBc0L4ixnGA=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: soc: ti: ti,pruss: fix schema ID
-Date:   Thu, 17 Sep 2020 09:05:43 +0200
-Message-Id: <20200917070543.19064-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        by mail.kernel.org (Postfix) with ESMTPSA id B6941206E6;
+        Thu, 17 Sep 2020 07:06:17 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 10:06:14 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Wong Vee Khee <vee.khee.wong@intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Tan Tee Min <tee.min.tan@intel.com>,
+        Vijaya Balan Sadhishkhanna 
+        <sadhishkhanna.vijaya.balan@intel.com>,
+        Seow Chen Yong <chen.yong.seow@intel.com>
+Subject: Re: [PATCH net-next] net: stmmac: introduce rtnl_lock|unlock() on
+ configuring real_num_rx|tx_queues
+Message-ID: <20200917070614.GP486552@unreal>
+References: <20200917050215.8725-1-vee.khee.wong@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917050215.8725-1-vee.khee.wong@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing '#' to fix schema errors:
+On Thu, Sep 17, 2020 at 01:02:15PM +0800, Wong Vee Khee wrote:
+> From: "Tan, Tee Min" <tee.min.tan@intel.com>
+>
+> For driver open(), rtnl_lock is acquired by network stack but not in the
+> resume(). Therefore, we introduce lock_acquired boolean to control when
+> to use rtnl_lock|unlock() within stmmac_hw_setup().
 
-  $id: 'http://devicetree.org/schemas/soc/ti/ti,pruss.yaml' does not match 'http://devicetree.org/schemas/.*\\.yaml#'
-  $schema: 'http://devicetree.org/meta-schemas/core.yaml' is not one of ['http://devicetree.org/meta-schemas/core.yaml#', 'http://devicetree.org/meta-schemas/base.yaml#']
-  Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml: ignoring, error in schema: $id
+Doesn't really make sense, if function needs to have lock acquired, the
+caller is supposed to take it and function should have proper lockdep
+annotation inside and not this conditional lock/unlock.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks
 
-diff --git a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-index cf7dc83f724f..037c51b2f972 100644
---- a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-+++ b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-@@ -1,8 +1,8 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- %YAML 1.2
- ---
--$id: http://devicetree.org/schemas/soc/ti/ti,pruss.yaml
--$schema: http://devicetree.org/meta-schemas/core.yaml
-+$id: http://devicetree.org/schemas/soc/ti/ti,pruss.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
- 
- title: |+
-   TI Programmable Real-Time Unit and Industrial Communication Subsystem
--- 
-2.17.1
+>
+> Fixes: 686cff3d7022 ("net: stmmac: Fix incorrect location to set real_num_rx|tx_queues")
+>
 
+Extra line.
+
+> Signed-off-by: Tan, Tee Min <tee.min.tan@intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index df2c74bbfcff..22e6a3defa78 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -2607,7 +2607,8 @@ static void stmmac_safety_feat_configuration(struct stmmac_priv *priv)
+>   *  0 on success and an appropriate (-)ve integer as defined in errno.h
+>   *  file on failure.
+>   */
+> -static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
+> +static int stmmac_hw_setup(struct net_device *dev, bool init_ptp,
+> +			   bool lock_acquired)
+>  {
+>  	struct stmmac_priv *priv = netdev_priv(dev);
+>  	u32 rx_cnt = priv->plat->rx_queues_to_use;
+> @@ -2715,9 +2716,15 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
+>  	}
+>
+>  	/* Configure real RX and TX queues */
+> +	if (!lock_acquired)
+> +		rtnl_lock();
+> +
+>  	netif_set_real_num_rx_queues(dev, priv->plat->rx_queues_to_use);
+>  	netif_set_real_num_tx_queues(dev, priv->plat->tx_queues_to_use);
+>
+> +	if (!lock_acquired)
+> +		rtnl_unlock();
+> +
+>  	/* Start the ball rolling... */
+>  	stmmac_start_all_dma(priv);
+>
+> @@ -2804,7 +2811,7 @@ static int stmmac_open(struct net_device *dev)
+>  		goto init_error;
+>  	}
+>
+> -	ret = stmmac_hw_setup(dev, true);
+> +	ret = stmmac_hw_setup(dev, true, true);
+>  	if (ret < 0) {
+>  		netdev_err(priv->dev, "%s: Hw setup failed\n", __func__);
+>  		goto init_error;
+> @@ -5238,7 +5245,7 @@ int stmmac_resume(struct device *dev)
+>
+>  	stmmac_clear_descriptors(priv);
+>
+> -	stmmac_hw_setup(ndev, false);
+> +	stmmac_hw_setup(ndev, false, false);
+>  	stmmac_init_coalesce(priv);
+>  	stmmac_set_rx_mode(ndev);
+>
+> --
+> 2.17.0
+>
