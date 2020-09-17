@@ -2,272 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B2026D721
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3139B26D72B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgIQItr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
+        id S1726532AbgIQIvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgIQItd (ORCPT
+        with ESMTP id S1726458AbgIQIvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:49:33 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C057FC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:49:31 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id j11so2218693ejk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:49:31 -0700 (PDT)
+        Thu, 17 Sep 2020 04:51:15 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D94DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:51:14 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id u48so455607uau.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/ZD6uiMISg/fpcyTy88cLwJ4vqsBUwMi3b4vpK88cUM=;
-        b=kFhLAcUMkbF4edZ9eKREh3+VZQMUJqW2YJ+W+d+1k5RC4KmEycQqotxAqYVrui1zOu
-         MJurHSUWV1vZlmxaqTPDpScrPArADgfONJE4ONU+wHD27zlesJH7APjnnNeL5Hyu8WCh
-         C4fAqUlrVL5xqk0pz3tov56HVHYZmf5VCIdsjY2I5SB8pvcSOCrGAb17Do3/DLu50IPO
-         mQldNKHsLCwdf3fv8ko9VHUai0K1tzD0WXJCags87pS/U9JC0JbwOg9o7zo0OqlVM/9s
-         H5HLr6QwoggBU4u78jV79dGO5WzBVs+WlIm8sXgNUkULCC9AM+0lmKxwzf4BSrjqA0u2
-         Zkgw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sj5UyJ8Py1XxMDm1b+Dp3kuayDC9hTLomojipNJ49uc=;
+        b=jFzLRPPIW49GK3JuychHrqNiDw05L+uuzWGpzbxeyx8Du8MaP9ZsQ71e9xkmAz08Ps
+         Zgn9QZ23r8KwHYIoTDS9kw6d1UxhgY21LUwAJDESWqBd5PmdYb5e6sKPcw0/LiePv1uL
+         Ci8zwmuJv4I/hNyh4QkIV/TrGlUXIIRKEThamueOtLskzhc3tKRlZNhgwcb9PpYXVPYs
+         9VjSAlghdUTyhLsTBXLUomEroYjo5QR+fdtWJtqMWAyB060b7SvEe1Glvv+l/Df0ZTnw
+         ikcwKmWLMV21PrQ/mZNeDg4vj0gaT5tZW7ISSY6AuL1NLwY3MJ6ut939ADxj+CjF1XbV
+         n0nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/ZD6uiMISg/fpcyTy88cLwJ4vqsBUwMi3b4vpK88cUM=;
-        b=NfFJ/vw8vCLkJ4rWVyZLcO1vjJl8ao4MHvv+z2p85BdSXlLzOXWe2igp5yw+e7DPgX
-         vMmJHbKbUfXFkWs8vz98TU4SWWGlshxrMo3EzczeFe52FVyGdK7Zh+o1f5xw/kEUu5vV
-         MsdlrTEZIxEMrrkUfFfhbHTnwqnEoTofi1HKjnFMwTOrg9mO6PcRiAsIObXumRkzkC5u
-         TWmD05nw629dU2EmCbw9tGeMXvo8Rzz6thGdbKq0svP92PVebL4GZlZTOjVHi+uli8fB
-         PjT14uenJA8mHQ9XmPpGLRpUwg+NB9iiMQq4r4BbqTEOmLiQ6flNi45l9QZbVIDwyJ7u
-         ZgWw==
-X-Gm-Message-State: AOAM532K4m/c5oHiO+X79vcABm2bfmrNlaroUznw7KnDLMynn97SCfvS
-        wWNBzWh19cncvsfIoqmmPnG7vQ==
-X-Google-Smtp-Source: ABdhPJyNRfp0OtisgQ1SdFHWwaIMZS2PexUPwtv9uoGERRa6Db+PA/QE5xxnZ7iO6FUZ0pih+rf/PA==
-X-Received: by 2002:a17:906:52c2:: with SMTP id w2mr30212544ejn.389.1600332570250;
-        Thu, 17 Sep 2020 01:49:30 -0700 (PDT)
-Received: from apalos.home ([2a02:587:4615:c071:2e56:dcff:fe9a:8f06])
-        by smtp.gmail.com with ESMTPSA id y24sm15822393eds.35.2020.09.17.01.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 01:49:29 -0700 (PDT)
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     bpf@vger.kernel.org
-Cc:     ardb@kernel.org, naresh.kamboju@linaro.org, xi.wang@gmail.com,
-        luke.r.nels@gmail.com,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] arm64: bpf: Fix branch offset in JIT
-Date:   Thu, 17 Sep 2020 11:49:25 +0300
-Message-Id: <20200917084925.177348-1-ilias.apalodimas@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sj5UyJ8Py1XxMDm1b+Dp3kuayDC9hTLomojipNJ49uc=;
+        b=DckuZvGU2Nx/o6T6EnMmPNXeDM6TBRSx5J5wSozUCoshZ/Blp+P0Wvk8rXbjM8OIO+
+         GFASXgCfTDOK7qo8Qurn8qWO+CPnqSf54dU2ktPj+KAyxJyH0QY3IAFtxa3PACDhJ+my
+         7tdd8xxNaJVhHx7Oof/ShV0herEJbMxmqL0KaZuVr/kPVTmgs1n5XZu8vBBRGLvjmavO
+         pW74nniLAUG2kH9JhAjMlns9LVbYU76ClFceFpW8KwUsUxPCMfQNFB9++w8uuL94pKaa
+         NH7oLKwxzrErVwedSgTk3GTosAdWaJAZJimXNYNXSnmge33B+hRqIgsXwhxi4RUvLv6P
+         OxUQ==
+X-Gm-Message-State: AOAM533cfp7wzTHQCs9lljQjBIu7wJGx91f+nU+50MZFcQTSMFGoUxtk
+        LojiNvmv2E4Ahy10O4yPooooXnBRFph/lQ==
+X-Google-Smtp-Source: ABdhPJzFz7q7RzR9xnQaONhG3J8g7ifNlG/ft5xpxWMU5NVgYNPrW++hIVkBRVEkT/TNuwBLTT9HbA==
+X-Received: by 2002:ab0:2e85:: with SMTP id f5mr14303267uaa.89.1600332671206;
+        Thu, 17 Sep 2020 01:51:11 -0700 (PDT)
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
+        by smtp.gmail.com with ESMTPSA id h16sm2989772vso.7.2020.09.17.01.51.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 01:51:09 -0700 (PDT)
+Received: by mail-vk1-f174.google.com with SMTP id c63so283567vkb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:51:09 -0700 (PDT)
+X-Received: by 2002:a1f:1f15:: with SMTP id f21mr16008951vkf.12.1600332668648;
+ Thu, 17 Sep 2020 01:51:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200916122308.11678-1-xie.he.0141@gmail.com>
+In-Reply-To: <20200916122308.11678-1-xie.he.0141@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 17 Sep 2020 10:50:30 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSf4di9Zsw+7XD1+3rwRMT4f0pUPprWKtmg83mVkHum9Zw@mail.gmail.com>
+Message-ID: <CA+FuTSf4di9Zsw+7XD1+3rwRMT4f0pUPprWKtmg83mVkHum9Zw@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/packet: Fix a comment about mac_header
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Wang Hai <wanghai38@huawei.com>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running the eBPF test_verifier leads to random errors looking like this:
+On Wed, Sep 16, 2020 at 8:54 PM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> 1. Change all "dev->hard_header" to "dev->header_ops"
+>
+> 2. On receiving incoming frames when header_ops == NULL:
+>
+> The comment only says what is wrong, but doesn't say what is right.
+> This patch changes the comment to make it clear what is right.
+>
+> 3. On transmitting and receiving outgoing frames when header_ops == NULL:
+>
+> The comment explains that the LL header will be later added by the driver.
+>
+> However, I think it's better to simply say that the LL header is invisible
+> to us. This phrasing is better from a software engineering perspective,
+> because this makes it clear that what happens in the driver should be
+> hidden from us and we should not care about what happens internally in the
+> driver.
+>
+> 4. On resuming the LL header (for RAW frames) when header_ops == NULL:
+>
+> The comment says we are "unlikely" to restore the LL header.
+>
+> However, we should say that we are "unable" to restore it.
+> It's not possible (rather than not likely) to restore it, because:
+>
+> 1) There is no way for us to restore because the LL header internally
+> processed by the driver should be invisible to us.
+>
+> 2) In function packet_rcv and tpacket_rcv, the code only tries to restore
+> the LL header when header_ops != NULL.
+>
+> Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
 
-[ 6525.735488] Unexpected kernel BRK exception at EL1
-[ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
-[ 6525.741609] Modules linked in: nls_utf8 cifs libdes libarc4 dns_resolver fscache binfmt_misc nls_ascii nls_cp437 vfat fat aes_ce_blk crypto_simd cryptd aes_ce_cipher ghash_ce gf128mul efi_pstore sha2_ce sha256_arm64 sha1_ce evdev efivars efivarfs ip_tables x_tables autofs4 btrfs blake2b_generic xor xor_neon zstd_compress raid6_pq libcrc32c crc32c_generic ahci xhci_pci libahci xhci_hcd igb libata i2c_algo_bit nvme realtek usbcore nvme_core scsi_mod t10_pi netsec mdio_devres of_mdio gpio_keys fixed_phy libphy gpio_mb86s7x
-[ 6525.787760] CPU: 3 PID: 7881 Comm: test_verifier Tainted: G        W         5.9.0-rc1+ #47
-[ 6525.796111] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
-[ 6525.804812] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-[ 6525.810390] pc : bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
-[ 6525.815613] lr : bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
-[ 6525.820832] sp : ffff8000130cbb80
-[ 6525.824141] x29: ffff8000130cbbb0 x28: 0000000000000000
-[ 6525.829451] x27: 000005ef6fcbf39b x26: 0000000000000000
-[ 6525.834759] x25: ffff8000130cbb80 x24: ffff800011dc7038
-[ 6525.840067] x23: ffff8000130cbd00 x22: ffff0008f624d080
-[ 6525.845375] x21: 0000000000000001 x20: ffff800011dc7000
-[ 6525.850682] x19: 0000000000000000 x18: 0000000000000000
-[ 6525.855990] x17: 0000000000000000 x16: 0000000000000000
-[ 6525.861298] x15: 0000000000000000 x14: 0000000000000000
-[ 6525.866606] x13: 0000000000000000 x12: 0000000000000000
-[ 6525.871913] x11: 0000000000000001 x10: ffff8000000a660c
-[ 6525.877220] x9 : ffff800010951810 x8 : ffff8000130cbc38
-[ 6525.882528] x7 : 0000000000000000 x6 : 0000009864cfa881
-[ 6525.887836] x5 : 00ffffffffffffff x4 : 002880ba1a0b3e9f
-[ 6525.893144] x3 : 0000000000000018 x2 : ffff8000000a4374
-[ 6525.898452] x1 : 000000000000000a x0 : 0000000000000009
-[ 6525.903760] Call trace:
-[ 6525.906202]  bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
-[ 6525.911076]  bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
-[ 6525.915957]  bpf_dispatcher_xdp_func+0x14/0x20
-[ 6525.920398]  bpf_test_run+0x70/0x1b0
-[ 6525.923969]  bpf_prog_test_run_xdp+0xec/0x190
-[ 6525.928326]  __do_sys_bpf+0xc88/0x1b28
-[ 6525.932072]  __arm64_sys_bpf+0x24/0x30
-[ 6525.935820]  el0_svc_common.constprop.0+0x70/0x168
-[ 6525.940607]  do_el0_svc+0x28/0x88
-[ 6525.943920]  el0_sync_handler+0x88/0x190
-[ 6525.947838]  el0_sync+0x140/0x180
-[ 6525.951154] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
-[ 6525.957249] ---[ end trace cecc3f93b14927e2 ]---
-
-The reason is the offset[] creation and later usage, while building
-the eBPF body. The code currently omits the first instruction, since
-build_insn() will increase our ctx->idx before saving it.
-That was fine up until bounded eBPF loops were introduced. After that
-introduction, offset[0] must be the offset of the end of prologue which
-is the start of the 1st insn while, offset[n] holds the
-offset of the end of n-th insn.
-
-When "taken loop with back jump to 1st insn" test runs, it will
-eventually call bpf2a64_offset(-1, 2, ctx). Since negative indexing is
-permitted, the current outcome depends on the value stored in
-ctx->offset[-1], which has nothing to do with our array.
-If the value happens to be 0 the tests will work. If not this error
-triggers.
-
-commit 7c2e988f400e ("bpf: fix x64 JIT code generation for jmp to 1st insn")
-fixed an indentical bug on x86 when eBPF bounded loops were introduced.
-
-So let's fix it by creating the ctx->offset[] differently. Track the
-beginning of instruction and account for the extra instruction while
-calculating the arm instruction offsets.
-
-Fixes: 2589726d12a1 ("bpf: introduce bounded loops")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: Jiri Olsa <jolsa@kernel.org>
-Co-developed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Co-developed-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
----
-Changes since v1: 
- - Added Co-developed-by, Reported-by and Fixes tags correctly
- - Describe the expected context of ctx->offset[] in comments
-Changes since v2:
- - Drop the change of behavior for 16-byte eBPF instructions. This won't
- currently cause any problems and can go in on a different patch
- - simplify bpf2a64_offset()
-
- arch/arm64/net/bpf_jit_comp.c | 43 +++++++++++++++++++++++++----------
- 1 file changed, 31 insertions(+), 12 deletions(-)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index f8912e45be7a..ef9f1d5e989d 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -143,14 +143,17 @@ static inline void emit_addr_mov_i64(const int reg, const u64 val,
- 	}
- }
- 
--static inline int bpf2a64_offset(int bpf_to, int bpf_from,
-+static inline int bpf2a64_offset(int bpf_insn, int off,
- 				 const struct jit_ctx *ctx)
- {
--	int to = ctx->offset[bpf_to];
--	/* -1 to account for the Branch instruction */
--	int from = ctx->offset[bpf_from] - 1;
--
--	return to - from;
-+	/* BPF JMP offset is relative to the next instruction */
-+	bpf_insn++;
-+	/*
-+	 * Whereas arm64 branch instructions encode the offset
-+	 * from the branch itself, so we must subtract 1 from the
-+	 * instruction offset.
-+	 */
-+	return ctx->offset[bpf_insn + off] - (ctx->offset[bpf_insn] - 1);
- }
- 
- static void jit_fill_hole(void *area, unsigned int size)
-@@ -642,7 +645,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 
- 	/* JUMP off */
- 	case BPF_JMP | BPF_JA:
--		jmp_offset = bpf2a64_offset(i + off, i, ctx);
-+		jmp_offset = bpf2a64_offset(i, off, ctx);
- 		check_imm26(jmp_offset);
- 		emit(A64_B(jmp_offset), ctx);
- 		break;
-@@ -669,7 +672,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	case BPF_JMP32 | BPF_JSLE | BPF_X:
- 		emit(A64_CMP(is64, dst, src), ctx);
- emit_cond_jmp:
--		jmp_offset = bpf2a64_offset(i + off, i, ctx);
-+		jmp_offset = bpf2a64_offset(i, off, ctx);
- 		check_imm19(jmp_offset);
- 		switch (BPF_OP(code)) {
- 		case BPF_JEQ:
-@@ -908,10 +911,21 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
- 	const struct bpf_prog *prog = ctx->prog;
- 	int i;
- 
-+	/*
-+	 * - offset[0] offset of the end of prologue,
-+	 *   start of the 1st instruction.
-+	 * - offset[1] - offset of the end of 1st instruction,
-+	 *   start of the 2nd instruction
-+	 * [....]
-+	 * - offset[3] - offset of the end of 3rd instruction,
-+	 *   start of 4th instruction
-+	 */
- 	for (i = 0; i < prog->len; i++) {
- 		const struct bpf_insn *insn = &prog->insnsi[i];
- 		int ret;
- 
-+		if (ctx->image == NULL)
-+			ctx->offset[i] = ctx->idx;
- 		ret = build_insn(insn, ctx, extra_pass);
- 		if (ret > 0) {
- 			i++;
-@@ -919,11 +933,16 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
- 				ctx->offset[i] = ctx->idx;
- 			continue;
- 		}
--		if (ctx->image == NULL)
--			ctx->offset[i] = ctx->idx;
- 		if (ret)
- 			return ret;
- 	}
-+	/*
-+	 * offset is allocated with prog->len + 1 so fill in
-+	 * the last element with the offset after the last
-+	 * instruction (end of program)
-+	 */
-+	if (ctx->image == NULL)
-+		ctx->offset[i] = ctx->idx;
- 
- 	return 0;
- }
-@@ -1002,7 +1021,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	memset(&ctx, 0, sizeof(ctx));
- 	ctx.prog = prog;
- 
--	ctx.offset = kcalloc(prog->len, sizeof(int), GFP_KERNEL);
-+	ctx.offset = kcalloc(prog->len + 1, sizeof(int), GFP_KERNEL);
- 	if (ctx.offset == NULL) {
- 		prog = orig_prog;
- 		goto out_off;
-@@ -1089,7 +1108,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	prog->jited_len = prog_size;
- 
- 	if (!prog->is_func || extra_pass) {
--		bpf_prog_fill_jited_linfo(prog, ctx.offset);
-+		bpf_prog_fill_jited_linfo(prog, ctx.offset + 1);
- out_off:
- 		kfree(ctx.offset);
- 		kfree(jit_data);
--- 
-2.28.0
-
+Acked-by: Willem de Bruijn <willemb@google.com>
