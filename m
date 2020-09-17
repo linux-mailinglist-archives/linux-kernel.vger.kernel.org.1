@@ -2,94 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E7126E823
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC02726E826
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgIQWTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:19:20 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:48972 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgIQWTT (ORCPT
+        id S1726187AbgIQWT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:19:26 -0400
+Received: from mx.aristanetworks.com ([162.210.129.12]:15395 "EHLO
+        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgIQWTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:19:19 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HMJ2VC131566;
-        Thu, 17 Sep 2020 22:19:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=RUEE1gdARxSd8TLKFRIs3ndOmPAr4ZKel97nw+RPwJM=;
- b=K3zvi+KuVfbFuBqN+Gfl8KU0HDG27V5ZTPOFdbX2O2b8q+JKQIj/tukic9oNphrt1hAb
- GAO8IgAh1dDpnKNKmf6qMzK12U8EnBzrvvyhKLVW4uCLDopCU/KXTI+UJb+UxiHvvOva
- 0M6RQrhk3HzsGCfi52OoQ3nKcB/EdhTMgfX31uTcjecFWCNCn5QNhoDlB/i3hFTxX0QQ
- vQX5nfPOblo+bpHgSEue0x2ZhhQZ0aIjtD95kbgR/06U/3p2RdLCC4xxFy+df3VagSQx
- 71Qx9lkLQS9aqd4xmu0CCNyJ/7vnTPDkFgKO1dzywKAFztPYDeS5fP8DdPoO85vD+OBe BA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33gp9mm15q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 22:19:02 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HM05kk102004;
-        Thu, 17 Sep 2020 22:19:01 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33khpnr2mf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 22:19:01 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08HMJ0kd019685;
-        Thu, 17 Sep 2020 22:19:00 GMT
-Received: from localhost (/10.159.155.161)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 22:18:59 +0000
-Date:   Thu, 17 Sep 2020 15:18:58 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        Dave Kleikamp <shaggy@kernel.org>,
-        jfs-discussion@lists.sourceforge.net
-Subject: Re: [PATCH v2 9/9] iomap: Change calling convention for zeroing
-Message-ID: <20200917221858.GH7964@magnolia>
-References: <20200910234707.5504-1-willy@infradead.org>
- <20200910234707.5504-10-willy@infradead.org>
- <20200917220500.GR7955@magnolia>
- <20200917221115.GY5449@casper.infradead.org>
-MIME-Version: 1.0
+        Thu, 17 Sep 2020 18:19:23 -0400
+Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [10.243.128.7])
+        by smtp.aristanetworks.com (Postfix) with ESMTP id BFF41402CE1;
+        Thu, 17 Sep 2020 15:19:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1600381162;
+        bh=k9P2QeP8+h4sKQYgygqDAJqCac3kqaF+OlOMeZPgGfs=;
+        h=Date:To:Subject:From:From;
+        b=GldQ0CyuHp6mXwpztLt6sjjxM+NnkqfNRYeH50kE5Bz5oZQGurEe8ZrqtnXkoZjxY
+         VkOFQbCFzOcIJ/X71duHNZbT+h7XPjEi/zCCNoPySTxvqprpjrsFcvK8D0ZXhLGU1i
+         do4OsC6o28KnyXR3h7t2FLqW3pcVBH+rPAvMgpgwjd94RNJC6UFKuWn9z7NW4/GIf/
+         M5NzgOOpV6Tn2s7FDfYtUMvA8Cgki+GGjekE7PnH9a/YvTSO7hv8iUCHzI0UImVjFm
+         y0NGQjk9nsJNUf+/J0prD4Xgs2c4703y+dGdkavzDAnkaUf/BhnUAq+j0w3Cs0H6Yx
+         09dMVfnHkrtQQ==
+Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
+        id A5D3D95C0A57; Thu, 17 Sep 2020 15:19:22 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 15:19:22 -0700
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        xiyou.wangcong@gmail.com, ap420073@gmail.com, andriin@fb.com,
+        edumazet@google.com, jiri@mellanox.com, ast@kernel.org,
+        kuba@kernel.org, davem@davemloft.net, fruggeri@arista.com
+Subject: [PATCH v2] net: use exponential backoff in netdev_wait_allrefs
+User-Agent: Heirloom mailx 12.5 7/5/10
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917221115.GY5449@casper.infradead.org>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
- mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170162
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170163
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200917221922.A5D3D95C0A57@us180.sjc.aristanetworks.com>
+From:   fruggeri@arista.com (Francesco Ruggeri)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 11:11:15PM +0100, Matthew Wilcox wrote:
-> On Thu, Sep 17, 2020 at 03:05:00PM -0700, Darrick J. Wong wrote:
-> > > -static loff_t
-> > > -iomap_zero_range_actor(struct inode *inode, loff_t pos, loff_t count,
-> > > -		void *data, struct iomap *iomap, struct iomap *srcmap)
-> > > +static loff_t iomap_zero_range_actor(struct inode *inode, loff_t pos,
-> > > +		loff_t length, void *data, struct iomap *iomap,
-> > 
-> > Any reason not to change @length and the return value to s64?
-> 
-> Because it's an actor, passed to iomap_apply, so its types have to match.
-> I can change that, but it'll be a separate patch series.
+The combination of aca_free_rcu, introduced in commit 2384d02520ff
+("net/ipv6: Add anycast addresses to a global hashtable"), and
+fib6_info_destroy_rcu, introduced in commit 9b0a8da8c4c6 ("net/ipv6:
+respect rcu grace period before freeing fib6_info"), can result in
+an extra rcu grace period being needed when deleting an interface,
+with the result that netdev_wait_allrefs ends up hitting the msleep(250),
+which is considerably longer than the required grace period.
+This can result in long delays when deleting a large number of interfaces,
+and it can be observed with this script:
 
-Ah, right.  I seemingly forgot that. :(
+ns=dummy-ns
+NIFS=100
 
-Carry on.
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+ip netns add $ns
+ip netns exec $ns ip link set lo up
+ip netns exec $ns sysctl net.ipv6.conf.default.disable_ipv6=0
+ip netns exec $ns sysctl net.ipv6.conf.default.forwarding=1
 
---D
+for ((i=0; i<$NIFS; i++))
+do
+        if=eth$i
+        ip netns exec $ns ip link add $if type dummy
+        ip netns exec $ns ip link set $if up
+        ip netns exec $ns ip -6 addr add 2021:$i::1/120 dev $if
+done
+
+for ((i=0; i<$NIFS; i++))
+do
+        if=eth$i
+        ip netns exec $ns ip link del $if
+done
+
+ip netns del $ns
+
+This patch uses exponential backoff instead of the fixed msleep(250)
+to get out of the loop faster.
+
+Time with this patch on a 5.4 kernel:
+
+real	0m8.199s
+user	0m0.402s
+sys	0m1.213s
+
+Time without this patch:
+
+real	0m31.522s
+user	0m0.438s
+sys	0m1.156s
+
+v2: use exponential backoff instead of trying to wake up
+    netdev_wait_allrefs.
+
+Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+
+---
+ net/core/dev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 4086d335978c..69f549780b8e 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9986,10 +9986,13 @@ EXPORT_SYMBOL(netdev_refcnt_read);
+  * We can get stuck here if buggy protocols don't correctly
+  * call dev_put.
+  */
++#define MIN_MSLEEP	((unsigned int)16)
++#define MAX_MSLEEP	((unsigned int)250)
+ static void netdev_wait_allrefs(struct net_device *dev)
+ {
+ 	unsigned long rebroadcast_time, warning_time;
+ 	int refcnt;
++	unsigned int wait = MIN_MSLEEP;
+ 
+ 	linkwatch_forget_dev(dev);
+ 
+@@ -10023,7 +10026,8 @@ static void netdev_wait_allrefs(struct net_device *dev)
+ 			rebroadcast_time = jiffies;
+ 		}
+ 
+-		msleep(250);
++		msleep(wait);
++		wait = min(wait << 1, MAX_MSLEEP);
+ 
+ 		refcnt = netdev_refcnt_read(dev);
+ 
+-- 
+2.28.0
