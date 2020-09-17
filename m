@@ -2,60 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E94D26DCA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA94426DC9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgIQNRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:17:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34514 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727015AbgIQNQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:16:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 36D62AC3F;
-        Thu, 17 Sep 2020 13:16:06 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D6053DA7C7; Thu, 17 Sep 2020 15:14:19 +0200 (CEST)
-Date:   Thu, 17 Sep 2020 15:14:19 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     syzbot <syzbot+e864a35d361e1d4e29a5@syzkaller.appspotmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: kernel BUG at lib/string.c:LINE! (5)
-Message-ID: <20200917131419.GU1791@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        syzbot <syzbot+e864a35d361e1d4e29a5@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000a61d6b05af580e62@google.com>
+        id S1727014AbgIQNPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:15:31 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33708 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726478AbgIQNPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 09:15:02 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 948F8699CE1CC840A75F;
+        Thu, 17 Sep 2020 21:15:00 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 17 Sep 2020 21:14:52 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <b.zolnierkie@samsung.com>, <gregkh@linuxfoundation.org>,
+        <daniel.vetter@ffwll.ch>, <jirislaby@kernel.org>,
+        <ndesaulniers@google.com>, <natechancellor@gmail.com>,
+        <george.kennedy@oracle.com>, <peda@axentia.se>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jingxiangfeng@huawei.com>
+Subject: [PATCH] fbcon: Remove the superfluous break
+Date:   Thu, 17 Sep 2020 21:15:15 +0800
+Message-ID: <20200917131515.147029-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000a61d6b05af580e62@google.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 04:00:21AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13b17bed900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e864a35d361e1d4e29a5
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177582be900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13deb2b5900000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+e864a35d361e1d4e29a5@syzkaller.appspotmail.com
+Remove the superfuous break, as there is a 'return' before it.
 
-#syz fix: btrfs: fix overflow when copying corrupt csums for a message
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/video/fbdev/core/fbcon.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index 0b49b0f44edf..623359aadd1e 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -1727,7 +1727,6 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 				    vc->vc_video_erase_char,
+ 				    vc->vc_size_row * count);
+ 			return true;
+-			break;
+ 
+ 		case SCROLL_WRAP_MOVE:
+ 			if (b - t - count > 3 * vc->vc_rows >> 2) {
+@@ -1818,7 +1817,6 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 				    vc->vc_video_erase_char,
+ 				    vc->vc_size_row * count);
+ 			return true;
+-			break;
+ 
+ 		case SCROLL_WRAP_MOVE:
+ 			if (b - t - count > 3 * vc->vc_rows >> 2) {
+-- 
+2.17.1
+
