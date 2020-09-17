@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A4A26D31B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959A426D321
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgIQFah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:30:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726335AbgIQFaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:30:30 -0400
-X-Greylist: delayed 386 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 01:30:30 EDT
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7195820872;
-        Thu, 17 Sep 2020 05:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600320244;
-        bh=UGaV4bPDAIQKtAtd9YR88RIFno2wkC9EtNA2IyAhL74=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w37CBUhxXjLcNTQwpYRXoCYtiOQ253HRAqe6sUGlOiirWNiUbjy4DYLDp6ooGfDHg
-         wa6WYy86p/QMso1Ub0WrRyvKVvvgfuqF5MyDIlB7NW6ILpggMyUjDuNr6+cDJjQ1aH
-         UDMqkdYvN02eDQ+Z2AcJer8uQYzc1jlKS0p4TKLs=
-Date:   Thu, 17 Sep 2020 07:24:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        davem@davemloft.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bitfield.h: annotate type_replace_bits functions with
- __must_check
-Message-ID: <20200917052400.GA44257@kroah.com>
-References: <20200916150333.11790-1-srinivas.kandagatla@linaro.org>
- <20200916152059.GA3018065@kroah.com>
- <66657ed6-b8ef-7e8d-b77c-9fd65453f53e@linaro.org>
- <20200917040459.GU2968@vkoul-mobl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917040459.GU2968@vkoul-mobl>
+        id S1726218AbgIQFbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbgIQFaB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 01:30:01 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E1CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:30:00 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id dj20so769198qvb.23
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:30:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=7nkg26OctKifdMOC9ynUWWxtGcGNDDYGKPUOkQnY3w4=;
+        b=U8+7NojOYti39Ndb55+oUUZODqy28ZqLq7usV9TXykszcGEUcIaGxINuFHmsczZGR7
+         y3wcHneEG/GwcGYsVuZMKJ+g9s0sobZain0ZpNeEFZSTsEnGN0pzzxhPMQ91tuiK/Nup
+         9WDvmOCD3KN87jlt8fRKIkSIjWrAoNOmpr8qgqhh8bagUQFzGsKXIm/d9isNsvnlgfpg
+         7k5JtoN2e3/t7abbv2N93nlK2oM1cH9K2AHDBwBrL/6i0dC/NVGtO1Ud1U3EULXSdAwz
+         7Ki8K6qrbYU7amPKnroGPJbyzTbgWoQrn3oFgmtWFzphOboIuE1mAKVwaABQj7YiDt5X
+         ZsgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=7nkg26OctKifdMOC9ynUWWxtGcGNDDYGKPUOkQnY3w4=;
+        b=gQ+J18pEBaUeQU0Bg14KkHl+Fv7wlqycaclV4/6ssIziJcmc+zMpuUtVBeY6pGqyFy
+         8LPYXr7bpjdJy6Qho3TNCEkcT+xEK/QlJN7VlQgXsA6OyCOgX7d4dkcMBbUnkVtO04Kr
+         +G7NhXpt9UFm5RMTZMfDC1piF0F5LZ0uB1owZS3kvunDT9cN4X7ROHeTs64fEsXkpiIK
+         WnRB46jJmvKEXLwsZYEy/Oj6Dq5gs06nw+wOsI3AHqjBecKQgDygcTIRFWnZ6HQc9xNP
+         4VVfKfN6m+J79ksCNw4C2s0n7Ba12da1lgloBKE2utwZ5F5z5nLEhrvA0ySTeSDgvhYy
+         +R3Q==
+X-Gm-Message-State: AOAM531nJ8qQV1qTvwO4ZpKLqBsQunaHxKJp8MfxQh23JSUR1bvgqnlb
+        jJr15B9huX1c6tvAc66Dx7G/beTCtMi3IW45XA==
+X-Google-Smtp-Source: ABdhPJx9ZmYekTuJ/BhlyqGQ4czVqNMFjtGq/Gk82PXi4hOOI1yccVgQZUa5Uncin2WGcIFeqGQy/QNzj8A0cEkccA==
+X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
+ (user=howardchung job=sendgmr) by 2002:a0c:e0c3:: with SMTP id
+ x3mr10242050qvk.43.1600320599505; Wed, 16 Sep 2020 22:29:59 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 13:29:41 +0800
+In-Reply-To: <20200917132836.BlueZ.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
+Message-Id: <20200917132836.BlueZ.4.I3774a8f0d748c7c6ec3402c4adcead32810c9164@changeid>
+Mime-Version: 1.0
+References: <20200917132836.BlueZ.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [BlueZ PATCH 4/6] Bluetooth: Handle system suspend resume case
+From:   Howard Chung <howardchung@google.com>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     mcchou@chromium.org, marcel@holtmann.org, mmandlik@chromium.org,
+        howardchung@google.com, luiz.dentz@gmail.com, alainm@chromium.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 09:34:59AM +0530, Vinod Koul wrote:
-> On 16-09-20, 16:33, Srinivas Kandagatla wrote:
-> > 
-> > 
-> > On 16/09/2020 16:20, Greg KH wrote:
-> > > On Wed, Sep 16, 2020 at 04:03:33PM +0100, Srinivas Kandagatla wrote:
-> > > > usage of apis like u32_replace_bits() without actually catching the return
-> > > > value could hide problems without any warning!
-> > > > 
-> > > > Found this with recent usage of this api in SoundWire!
-> > > > Having __must_check annotation would really catch this issues in future!
-> > > > 
-> > > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > > ---
-> > > >   include/linux/bitfield.h | 2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-> > > > index 4e035aca6f7e..eb4f69253946 100644
-> > > > --- a/include/linux/bitfield.h
-> > > > +++ b/include/linux/bitfield.h
-> > > > @@ -131,7 +131,7 @@ static __always_inline __##type type##_encode_bits(base v, base field)	\
-> > > >   		__field_overflow();					\
-> > > >   	return to((v & field_mask(field)) * field_multiplier(field));	\
-> > > >   }									\
-> > > > -static __always_inline __##type type##_replace_bits(__##type old,	\
-> > > > +static __always_inline __must_check __##type type##_replace_bits(__##type old, \
-> > > >   					base val, base field)		\
-> > > >   {									\
-> > > >   	return (old & ~to(field)) | type##_encode_bits(val, field);	\
-> > > > -- 
-> > > > 2.21.0
-> > > > 
-> > > 
-> > > Don't add __must_check to things that if merged will instantly cause
-> > > build warnings to the system, that's just rude :(
-> > Currently there are not many users for this api, found only one instance in
-> > drivers/net/ipa/ipa_table.c which is also fixed with
-> > https://lkml.org/lkml/2020/9/10/1062
-> > 
-> > > 
-> > > Fix up everything first, and then try to make this type of change.
-> > > 
-> > > But why does this function have to be checked?
-> > As this function would return updated value, this check is more to with
-> > using the return value!
-> > 
-> > It is easy for someone to ignore this return value assuming that the new
-> > value is already updated! So this check should help!
-> > 
-> > TBH, This is what happened when we(vkoul and me) tried use this api :-)
-> 
-> So the only user of this has been moved to *p_replace_bits(), looking
-> back I think we should remove *_replace_bits (no users atm) and
-> duplicate of *p_replace_bits(). If not adding this patch would be
-> sensible thing to do
-> 
-> Somehow I feel former is a better idea ;-)
+This patch adds code to handle the system suspension during interleave
+scan. The interleave scan will be canceled when the system is going to
+sleep, and will be restarted after waking up.
 
-Yes, please remove it if there is no users.
+Signed-off-by: Howard Chung <howardchung@google.com>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+---
 
-thanks,
+ net/bluetooth/hci_request.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-greg k-h
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 89443b48d90ce..d9082019b6386 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1081,6 +1081,9 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
+ 		filter_policy |= 0x02;
+ 
+ 	if (hdev->suspended) {
++		/* Block suspend notifier on response */
++		set_bit(SUSPEND_SCAN_ENABLE, hdev->suspend_tasks);
++
+ 		window = hdev->le_scan_window_suspend;
+ 		interval = hdev->le_scan_int_suspend;
+ 	} else if (hci_is_le_conn_scanning(hdev)) {
+@@ -1167,10 +1170,8 @@ static void hci_req_config_le_suspend_scan(struct hci_request *req)
+ 		hci_req_add_le_scan_disable(req, false);
+ 
+ 	/* Configure params and enable scanning */
+-	hci_req_add_le_passive_scan(req);
++	__hci_update_background_scan(req);
+ 
+-	/* Block suspend notifier on response */
+-	set_bit(SUSPEND_SCAN_ENABLE, req->hdev->suspend_tasks);
+ }
+ 
+ static void cancel_adv_timeout(struct hci_dev *hdev)
+@@ -1282,8 +1283,10 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
+ 		hci_req_add(&req, HCI_OP_WRITE_SCAN_ENABLE, 1, &page_scan);
+ 
+ 		/* Disable LE passive scan if enabled */
+-		if (hci_dev_test_flag(hdev, HCI_LE_SCAN))
++		if (hci_dev_test_flag(hdev, HCI_LE_SCAN)) {
++			cancel_interleave_scan(hdev);
+ 			hci_req_add_le_scan_disable(&req, false);
++		}
+ 
+ 		/* Mark task needing completion */
+ 		set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
