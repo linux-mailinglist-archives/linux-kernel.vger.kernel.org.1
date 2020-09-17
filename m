@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADD726DCB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597D326DCAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgIQNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
+        id S1726795AbgIQNT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgIQNRe (ORCPT
+        with ESMTP id S1727043AbgIQNRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:17:34 -0400
+        Thu, 17 Sep 2020 09:17:22 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD691C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:17:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64864C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:16:48 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600348605;
+        s=2020; t=1600348606;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d5X6go9Lo+FBLXjpppRs4yVnhAG8TNVWLpVaq68wFlY=;
-        b=jiUjn210/skyBEikRarS40dGAuUR9zV+xln0KAcQfS2x6obfmHisYuKho1whr8pKzi+xWP
-        AVMWs2MprlWb/0JKFMdOaNn2IOHQJeBrbWywSll8mmsRbcdF04nsiu0hn4oYsYUFyrvhPj
-        7+xu5+VL7Tv9nw8dOXtb3sBeXxvKM/sCVbAk9zo0VJBLvgO163bO+4VnzOjLNrtdI/4Mdt
-        OM20/JpSmhAoHzXnoqAvDcd2Pwk2woqKxMwNk4KHbMmh3wyT8dSW37uBo8JwWyOVxXRIHG
-        yjgQ9Ob11/sekVbcEmEJ8y75Y68cS5pvaO6KQpHniD3rWIUAdqkIrT9/0fOObg==
+        bh=+0NjCuc/488TWber4+CNnRekbhSIFGPLMuy+PyRLXPU=;
+        b=vlH1jTEiA5LwH1A3O2104rr5Y9NxPD+OMzrlBw+SowEFHoFv0hcEiPaBbzfaUVKmqqSDg9
+        7Kst4lV/H04QXMmWt+dblNCBGMOPltmcxzVynfiJxuZ9H5m2V/KRbKiV5GIAg6oWFq60ve
+        NlW0sBDXPMgEXtOMNXlcxZ4qei4UN5tLBH1C7zrJeetA7tMMUGMNoLgOrx0kbhGcdgaA1o
+        6VIAoDaBTYJuosanMsKt29sBh2vcJEeqN70NXVmpkWPoeZNHig/3jcWRyyqMQ+3c+DKSdt
+        Mh7jyN4AmrCrwRGddT8ffUhXipjOOfaXROvez/6Qb/i4AOETiaDtUeqjVD/T8g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600348605;
+        s=2020e; t=1600348606;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d5X6go9Lo+FBLXjpppRs4yVnhAG8TNVWLpVaq68wFlY=;
-        b=1G1MopOSRhwP0VmCuU/StFfAIoglbV+/urBkp5KNWw+k/PDkPBoIJpDRUuxvVskgnk8Sjp
-        C3nAezSpL8eZ4VBA==
+        bh=+0NjCuc/488TWber4+CNnRekbhSIFGPLMuy+PyRLXPU=;
+        b=fRWRzLtqspR/oRpImPTrC08Ge6rEYIYgKXbjcDmgC7Zw+tzqIMqSn6LLM/yvH6HAbJX3Yu
+        PWDH3WSlsjzVBkDQ==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -45,9 +45,9 @@ Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH printk 1/3] printk: move printk_info into separate array
-Date:   Thu, 17 Sep 2020 15:22:42 +0206
-Message-Id: <20200917131644.25838-2-john.ogness@linutronix.de>
+Subject: [PATCH printk 2/3] printk: move dictionary keys to dev_printk_info
+Date:   Thu, 17 Sep 2020 15:22:43 +0206
+Message-Id: <20200917131644.25838-3-john.ogness@linutronix.de>
 In-Reply-To: <20200917131644.25838-1-john.ogness@linutronix.de>
 References: <20200917131644.25838-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -56,577 +56,767 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The majority of the size of a descriptor is taken up by meta data,
-which is often not of interest to the ringbuffer (for example,
-when performing state checks). Since descriptors are often
-temporarily stored on the stack, keeping their size minimal will
-help reduce stack pressure.
+Dictionaries are only used for SUBSYSTEM and DEVICE properties. The
+current implementation stores the property names each time they are
+used. This requires more space than otherwise necessary. Also,
+because the dictionary entries are currently considered optional,
+it cannot be relied upon that they are always available, even if the
+writer wanted to store them. These issues will increase should new
+dictionary properties be introduced.
 
-Rather than embedding the printk_info into the descriptor, create
-a separate printk_info array. The index of a descriptor in the
-descriptor array corresponds to the printk_info with the same
-index in the printk_info array. The rules for validity of a
-printk_info match the existing rules for the data blocks: the
-descriptor must be in a consistent state.
+Rather than storing the subsystem and device properties in the
+dict ring, introduce a struct dev_printk_info with separate fields
+to store only the property values. Embed this struct within the
+struct printk_info to provide guaranteed availability.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk.c            |  17 +++-
- kernel/printk/printk_ringbuffer.c | 145 +++++++++++++++++++-----------
- kernel/printk/printk_ringbuffer.h |  29 +++---
- 3 files changed, 125 insertions(+), 66 deletions(-)
+ Documentation/admin-guide/kdump/gdbmacros.txt |  73 ++++----
+ drivers/base/core.c                           |  46 ++---
+ include/linux/dev_printk.h                    |   8 +
+ include/linux/printk.h                        |   6 +-
+ kernel/printk/internal.h                      |   4 +-
+ kernel/printk/printk.c                        | 161 +++++++++---------
+ kernel/printk/printk_ringbuffer.h             |   3 +
+ kernel/printk/printk_safe.c                   |   2 +-
+ scripts/gdb/linux/dmesg.py                    |  16 +-
+ 9 files changed, 159 insertions(+), 160 deletions(-)
 
+diff --git a/Documentation/admin-guide/kdump/gdbmacros.txt b/Documentation/admin-guide/kdump/gdbmacros.txt
+index 94fabb165abf..82aecdcae8a6 100644
+--- a/Documentation/admin-guide/kdump/gdbmacros.txt
++++ b/Documentation/admin-guide/kdump/gdbmacros.txt
+@@ -172,13 +172,13 @@ end
+ 
+ define dump_record
+ 	set var $desc = $arg0
+-	if ($argc > 1)
+-		set var $prev_flags = $arg1
++	set var $info = $arg1
++	if ($argc > 2)
++		set var $prev_flags = $arg2
+ 	else
+ 		set var $prev_flags = 0
+ 	end
+ 
+-	set var $info = &$desc->info
+ 	set var $prefix = 1
+ 	set var $newline = 1
+ 
+@@ -237,44 +237,36 @@ define dump_record
+ 
+ 	# handle dictionary data
+ 
+-	set var $begin = $desc->dict_blk_lpos.begin % (1U << prb->dict_data_ring.size_bits)
+-	set var $next = $desc->dict_blk_lpos.next % (1U << prb->dict_data_ring.size_bits)
+-
+-	# handle data-less record
+-	if ($begin & 1)
+-		set var $dict_len = 0
+-		set var $dict = ""
+-	else
+-		# handle wrapping data block
+-		if ($begin > $next)
+-			set var $begin = 0
+-		end
+-
+-		# skip over descriptor id
+-		set var $begin = $begin + sizeof(long)
+-
+-		# handle truncated message
+-		if ($next - $begin < $info->dict_len)
+-			set var $dict_len = $next - $begin
+-		else
+-			set var $dict_len = $info->dict_len
++	set var $dict = &$info->dev_info.subsystem[0]
++	set var $dict_len = sizeof($info->dev_info.subsystem)
++	if ($dict[0] != '\0')
++		printf " SUBSYSTEM="
++		set var $idx = 0
++		while ($idx < $dict_len)
++			set var $c = $dict[$idx]
++			if ($c == '\0')
++				loop_break
++			else
++				if ($c < ' ' || $c >= 127 || $c == '\\')
++					printf "\\x%02x", $c
++				else
++					printf "%c", $c
++				end
++			end
++			set var $idx = $idx + 1
+ 		end
+-
+-		set var $dict = &prb->dict_data_ring.data[$begin]
++		printf "\n"
+ 	end
+ 
+-	if ($dict_len > 0)
++	set var $dict = &$info->dev_info.device[0]
++	set var $dict_len = sizeof($info->dev_info.device)
++	if ($dict[0] != '\0')
++		printf " DEVICE="
+ 		set var $idx = 0
+-		set var $line = 1
+ 		while ($idx < $dict_len)
+-			if ($line)
+-				printf " "
+-				set var $line = 0
+-			end
+ 			set var $c = $dict[$idx]
+ 			if ($c == '\0')
+-				printf "\n"
+-				set var $line = 1
++				loop_break
+ 			else
+ 				if ($c < ' ' || $c >= 127 || $c == '\\')
+ 					printf "\\x%02x", $c
+@@ -288,10 +280,10 @@ define dump_record
+ 	end
+ end
+ document dump_record
+-	Dump a single record. The first parameter is the descriptor
+-	sequence number, the second is optional and specifies the
+-	previous record's flags, used for properly formatting
+-	continued lines.
++	Dump a single record. The first parameter is the descriptor,
++	the second parameter is the info, the third parameter is
++	optional and specifies the previous record's flags, used for
++	properly formatting continued lines.
+ end
+ 
+ define dmesg
+@@ -311,12 +303,13 @@ define dmesg
+ 
+ 	while (1)
+ 		set var $desc = &prb->desc_ring.descs[$id % $desc_count]
++		set var $info = &prb->desc_ring.infos[$id % $desc_count]
+ 
+ 		# skip non-committed record
+ 		set var $state = 3 & ($desc->state_var.counter >> $desc_flags_shift)
+ 		if ($state == $desc_committed || $state == $desc_finalized)
+-			dump_record $desc $prev_flags
+-			set var $prev_flags = $desc->info.flags
++			dump_record $desc $info $prev_flags
++			set var $prev_flags = $info->flags
+ 		end
+ 
+ 		set var $id = ($id + 1) & $id_mask
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 67d39a90b45c..bdc5fcbd12e9 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -3815,22 +3815,21 @@ void device_shutdown(void)
+  */
+ 
+ #ifdef CONFIG_PRINTK
+-static int
+-create_syslog_header(const struct device *dev, char *hdr, size_t hdrlen)
++static void
++set_dev_info(const struct device *dev, struct dev_printk_info *dev_info)
+ {
+ 	const char *subsys;
+-	size_t pos = 0;
++
++	memset(dev_info, 0, sizeof(*dev_info));
+ 
+ 	if (dev->class)
+ 		subsys = dev->class->name;
+ 	else if (dev->bus)
+ 		subsys = dev->bus->name;
+ 	else
+-		return 0;
++		return;
+ 
+-	pos += snprintf(hdr + pos, hdrlen - pos, "SUBSYSTEM=%s", subsys);
+-	if (pos >= hdrlen)
+-		goto overflow;
++	snprintf(dev_info->subsystem, sizeof(dev_info->subsystem), subsys);
+ 
+ 	/*
+ 	 * Add device identifier DEVICE=:
+@@ -3846,41 +3845,28 @@ create_syslog_header(const struct device *dev, char *hdr, size_t hdrlen)
+ 			c = 'b';
+ 		else
+ 			c = 'c';
+-		pos++;
+-		pos += snprintf(hdr + pos, hdrlen - pos,
+-				"DEVICE=%c%u:%u",
+-				c, MAJOR(dev->devt), MINOR(dev->devt));
++
++		snprintf(dev_info->device, sizeof(dev_info->device),
++			 "%c%u:%u", c, MAJOR(dev->devt), MINOR(dev->devt));
+ 	} else if (strcmp(subsys, "net") == 0) {
+ 		struct net_device *net = to_net_dev(dev);
+ 
+-		pos++;
+-		pos += snprintf(hdr + pos, hdrlen - pos,
+-				"DEVICE=n%u", net->ifindex);
++		snprintf(dev_info->device, sizeof(dev_info->device),
++			 "n%u", net->ifindex);
+ 	} else {
+-		pos++;
+-		pos += snprintf(hdr + pos, hdrlen - pos,
+-				"DEVICE=+%s:%s", subsys, dev_name(dev));
++		snprintf(dev_info->device, sizeof(dev_info->device),
++			 "+%s:%s", subsys, dev_name(dev));
+ 	}
+-
+-	if (pos >= hdrlen)
+-		goto overflow;
+-
+-	return pos;
+-
+-overflow:
+-	dev_WARN(dev, "device/subsystem name too long");
+-	return 0;
+ }
+ 
+ int dev_vprintk_emit(int level, const struct device *dev,
+ 		     const char *fmt, va_list args)
+ {
+-	char hdr[128];
+-	size_t hdrlen;
++	struct dev_printk_info dev_info;
+ 
+-	hdrlen = create_syslog_header(dev, hdr, sizeof(hdr));
++	set_dev_info(dev, &dev_info);
+ 
+-	return vprintk_emit(0, level, hdrlen ? hdr : NULL, hdrlen, fmt, args);
++	return vprintk_emit(0, level, &dev_info, fmt, args);
+ }
+ EXPORT_SYMBOL(dev_vprintk_emit);
+ 
+diff --git a/include/linux/dev_printk.h b/include/linux/dev_printk.h
+index 3028b644b4fb..6f009559ee54 100644
+--- a/include/linux/dev_printk.h
++++ b/include/linux/dev_printk.h
+@@ -21,6 +21,14 @@
+ 
+ struct device;
+ 
++#define PRINTK_INFO_SUBSYSTEM_LEN	16
++#define PRINTK_INFO_DEVICE_LEN		48
++
++struct dev_printk_info {
++	char subsystem[PRINTK_INFO_SUBSYSTEM_LEN];
++	char device[PRINTK_INFO_DEVICE_LEN];
++};
++
+ #ifdef CONFIG_PRINTK
+ 
+ __printf(3, 0) __cold
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index fc8f03c54543..071500ee7281 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -158,10 +158,12 @@ static inline void printk_nmi_direct_enter(void) { }
+ static inline void printk_nmi_direct_exit(void) { }
+ #endif /* PRINTK_NMI */
+ 
++struct dev_printk_info;
++
+ #ifdef CONFIG_PRINTK
+-asmlinkage __printf(5, 0)
++asmlinkage __printf(4, 0)
+ int vprintk_emit(int facility, int level,
+-		 const char *dict, size_t dictlen,
++		 const struct dev_printk_info *dev_info,
+ 		 const char *fmt, va_list args);
+ 
+ asmlinkage __printf(1, 0)
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index 660f9a6bf73a..3a8fd491758c 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -14,9 +14,9 @@
+ 
+ extern raw_spinlock_t logbuf_lock;
+ 
+-__printf(5, 0)
++__printf(4, 0)
+ int vprintk_store(int facility, int level,
+-		  const char *dict, size_t dictlen,
++		  const struct dev_printk_info *dev_info,
+ 		  const char *fmt, va_list args);
+ 
+ __printf(1, 0) int vprintk_default(const char *fmt, va_list args);
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 9a2e23191576..7ad45d897277 100644
+index 7ad45d897277..b2e2bdd37028 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -959,11 +959,11 @@ void log_buf_vmcoreinfo_setup(void)
- 	VMCOREINFO_STRUCT_SIZE(prb_desc_ring);
- 	VMCOREINFO_OFFSET(prb_desc_ring, count_bits);
- 	VMCOREINFO_OFFSET(prb_desc_ring, descs);
-+	VMCOREINFO_OFFSET(prb_desc_ring, infos);
- 	VMCOREINFO_OFFSET(prb_desc_ring, head_id);
- 	VMCOREINFO_OFFSET(prb_desc_ring, tail_id);
+@@ -296,8 +296,8 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
  
- 	VMCOREINFO_STRUCT_SIZE(prb_desc);
--	VMCOREINFO_OFFSET(prb_desc, info);
- 	VMCOREINFO_OFFSET(prb_desc, state_var);
- 	VMCOREINFO_OFFSET(prb_desc, text_blk_lpos);
- 	VMCOREINFO_OFFSET(prb_desc, dict_blk_lpos);
-@@ -1097,6 +1097,7 @@ static char setup_dict_buf[CONSOLE_EXT_LOG_MAX] __initdata;
+ /*
+  * The printk log buffer consists of a sequenced collection of records, each
+- * containing variable length message and dictionary text. Every record
+- * also contains its own meta-data (@info).
++ * containing variable length message text. Every record also contains its
++ * own meta-data (@info).
+  *
+  * Every record meta-data carries the timestamp in microseconds, as well as
+  * the standard userspace syslog level and syslog facility. The usual kernel
+@@ -310,9 +310,7 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+  * terminated.
+  *
+  * Optionally, a record can carry a dictionary of properties (key/value
+- * pairs), to provide userspace with a machine-readable message context. The
+- * length of the dictionary is available in @dict_len. The dictionary is not
+- * terminated.
++ * pairs), to provide userspace with a machine-readable message context.
+  *
+  * Examples for well-defined, commonly used property names are:
+  *   DEVICE=b12:8               device identifier
+@@ -322,21 +320,20 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+  *                                +sound:card0  subsystem:devname
+  *   SUBSYSTEM=pci              driver-core subsystem name
+  *
+- * Valid characters in property names are [a-zA-Z0-9.-_]. The plain text value
+- * follows directly after a '=' character. Every property is terminated by
+- * a '\0' character. The last property is not terminated.
++ * Valid characters in property names are [a-zA-Z0-9.-_]. Property names
++ * and values are terminated by a '\0' character.
+  *
+  * Example of record values:
+- *   record.text_buf       = "it's a line" (unterminated)
+- *   record.dict_buf       = "DEVICE=b8:2\0DRIVER=bug" (unterminated)
+- *   record.info.seq       = 56
+- *   record.info.ts_nsec   = 36863
+- *   record.info.text_len  = 11
+- *   record.info.dict_len  = 22
+- *   record.info.facility  = 0 (LOG_KERN)
+- *   record.info.flags     = 0
+- *   record.info.level     = 3 (LOG_ERR)
+- *   record.info.caller_id = 299 (task 299)
++ *   record.text_buf                = "it's a line" (unterminated)
++ *   record.info.seq                = 56
++ *   record.info.ts_nsec            = 36863
++ *   record.info.text_len           = 11
++ *   record.info.facility           = 0 (LOG_KERN)
++ *   record.info.flags              = 0
++ *   record.info.level              = 3 (LOG_ERR)
++ *   record.info.caller_id          = 299 (task 299)
++ *   record.info.dev_info.subsystem = "pci" (terminated)
++ *   record.info.dev_info.device    = "+pci:0000:00:01.0" (terminated)
+  *
+  * The 'struct printk_info' buffer must never be directly exported to
+  * userspace, it is a kernel-private implementation detail that might
+@@ -498,19 +495,19 @@ static void truncate_msg(u16 *text_len, u16 *trunc_msg_len)
+ /* insert record into the buffer, discard old ones, update heads */
+ static int log_store(u32 caller_id, int facility, int level,
+ 		     enum log_flags flags, u64 ts_nsec,
+-		     const char *dict, u16 dict_len,
++		     const struct dev_printk_info *dev_info,
+ 		     const char *text, u16 text_len)
+ {
+ 	struct prb_reserved_entry e;
+ 	struct printk_record r;
+ 	u16 trunc_msg_len = 0;
+ 
+-	prb_rec_init_wr(&r, text_len, dict_len);
++	prb_rec_init_wr(&r, text_len, 0);
+ 
+ 	if (!prb_reserve(&e, prb, &r)) {
+ 		/* truncate the message if it is too long for empty buffer */
+ 		truncate_msg(&text_len, &trunc_msg_len);
+-		prb_rec_init_wr(&r, text_len + trunc_msg_len, dict_len);
++		prb_rec_init_wr(&r, text_len + trunc_msg_len, 0);
+ 		/* survive when the log buffer is too small for trunc_msg */
+ 		if (!prb_reserve(&e, prb, &r))
+ 			return 0;
+@@ -521,10 +518,6 @@ static int log_store(u32 caller_id, int facility, int level,
+ 	if (trunc_msg_len)
+ 		memcpy(&r.text_buf[text_len], trunc_msg, trunc_msg_len);
+ 	r.info->text_len = text_len + trunc_msg_len;
+-	if (r.dict_buf) {
+-		memcpy(&r.dict_buf[0], dict, dict_len);
+-		r.info->dict_len = dict_len;
+-	}
+ 	r.info->facility = facility;
+ 	r.info->level = level & 7;
+ 	r.info->flags = flags & 0x1f;
+@@ -533,6 +526,8 @@ static int log_store(u32 caller_id, int facility, int level,
+ 	else
+ 		r.info->ts_nsec = local_clock();
+ 	r.info->caller_id = caller_id;
++	if (dev_info)
++		memcpy(&r.info->dev_info, dev_info, sizeof(r.info->dev_info));
+ 
+ 	/* insert message */
+ 	if ((flags & LOG_CONT) || !(flags & LOG_NEWLINE))
+@@ -613,9 +608,9 @@ static ssize_t info_print_ext_header(char *buf, size_t size,
+ 			 ts_usec, info->flags & LOG_CONT ? 'c' : '-', caller);
+ }
+ 
+-static ssize_t msg_print_ext_body(char *buf, size_t size,
+-				  char *dict, size_t dict_len,
+-				  char *text, size_t text_len)
++static ssize_t msg_add_ext_text(char *buf, size_t size,
++				const char *text, size_t text_len,
++				unsigned char endc)
+ {
+ 	char *p = buf, *e = buf + size;
+ 	size_t i;
+@@ -629,36 +624,43 @@ static ssize_t msg_print_ext_body(char *buf, size_t size,
+ 		else
+ 			append_char(&p, e, c);
+ 	}
+-	append_char(&p, e, '\n');
++	append_char(&p, e, endc);
+ 
+-	if (dict_len) {
+-		bool line = true;
++	return p - buf;
++}
+ 
+-		for (i = 0; i < dict_len; i++) {
+-			unsigned char c = dict[i];
++static ssize_t msg_add_dict_text(char *buf, size_t size,
++				 const char *key, const char *val)
++{
++	size_t val_len = strlen(val);
++	ssize_t len;
+ 
+-			if (line) {
+-				append_char(&p, e, ' ');
+-				line = false;
+-			}
++	if (!val_len)
++		return 0;
+ 
+-			if (c == '\0') {
+-				append_char(&p, e, '\n');
+-				line = true;
+-				continue;
+-			}
++	len = msg_add_ext_text(buf, size, key, strlen(key), '=');
++	len += msg_add_ext_text(buf + len, size - len, val, val_len, '\n');
+ 
+-			if (c < ' ' || c >= 127 || c == '\\') {
+-				p += scnprintf(p, e - p, "\\x%02x", c);
+-				continue;
+-			}
++	return len;
++}
+ 
+-			append_char(&p, e, c);
+-		}
+-		append_char(&p, e, '\n');
+-	}
++static ssize_t msg_print_ext_body(char *buf, size_t size,
++				  char *text, size_t text_len,
++				  struct dev_printk_info *dev_info)
++{
++	ssize_t len;
+ 
+-	return p - buf;
++	len = msg_add_ext_text(buf, size, text, text_len, '\n');
++
++	if (!dev_info)
++		goto out;
++
++	len += msg_add_dict_text(buf + len, size - len, "SUBSYSTEM",
++				 dev_info->subsystem);
++	len += msg_add_dict_text(buf + len, size - len, "DEVICE",
++				 dev_info->device);
++out:
++	return len;
+ }
+ 
+ /* /dev/kmsg - userspace message inject/listen interface */
+@@ -670,7 +672,6 @@ struct devkmsg_user {
+ 
+ 	struct printk_info info;
+ 	char text_buf[CONSOLE_EXT_LOG_MAX];
+-	char dict_buf[CONSOLE_EXT_LOG_MAX];
+ 	struct printk_record record;
+ };
+ 
+@@ -681,7 +682,7 @@ int devkmsg_emit(int facility, int level, const char *fmt, ...)
+ 	int r;
+ 
+ 	va_start(args, fmt);
+-	r = vprintk_emit(facility, level, NULL, 0, fmt, args);
++	r = vprintk_emit(facility, level, NULL, fmt, args);
+ 	va_end(args);
+ 
+ 	return r;
+@@ -791,8 +792,8 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
+ 
+ 	len = info_print_ext_header(user->buf, sizeof(user->buf), r->info);
+ 	len += msg_print_ext_body(user->buf + len, sizeof(user->buf) - len,
+-				  &r->dict_buf[0], r->info->dict_len,
+-				  &r->text_buf[0], r->info->text_len);
++				  &r->text_buf[0], r->info->text_len,
++				  &r->info->dev_info);
+ 
+ 	user->seq = r->info->seq + 1;
+ 	logbuf_unlock_irq();
+@@ -897,7 +898,7 @@ static int devkmsg_open(struct inode *inode, struct file *file)
+ 
+ 	prb_rec_init_rd(&user->record, &user->info,
+ 			&user->text_buf[0], sizeof(user->text_buf),
+-			&user->dict_buf[0], sizeof(user->dict_buf));
++			NULL, 0);
+ 
+ 	logbuf_lock_irq();
+ 	user->seq = prb_first_valid_seq(prb);
+@@ -978,6 +979,11 @@ void log_buf_vmcoreinfo_setup(void)
+ 	VMCOREINFO_OFFSET(printk_info, text_len);
+ 	VMCOREINFO_OFFSET(printk_info, dict_len);
+ 	VMCOREINFO_OFFSET(printk_info, caller_id);
++	VMCOREINFO_OFFSET(printk_info, dev_info);
++
++	VMCOREINFO_STRUCT_SIZE(dev_printk_info);
++	VMCOREINFO_OFFSET(dev_printk_info, subsystem);
++	VMCOREINFO_OFFSET(dev_printk_info, device);
+ 
+ 	VMCOREINFO_STRUCT_SIZE(prb_data_ring);
+ 	VMCOREINFO_OFFSET(prb_data_ring, size_bits);
+@@ -1070,22 +1076,19 @@ static unsigned int __init add_to_rb(struct printk_ringbuffer *rb,
+ 	struct prb_reserved_entry e;
+ 	struct printk_record dest_r;
+ 
+-	prb_rec_init_wr(&dest_r, r->info->text_len, r->info->dict_len);
++	prb_rec_init_wr(&dest_r, r->info->text_len, 0);
+ 
+ 	if (!prb_reserve(&e, rb, &dest_r))
+ 		return 0;
+ 
+ 	memcpy(&dest_r.text_buf[0], &r->text_buf[0], r->info->text_len);
+ 	dest_r.info->text_len = r->info->text_len;
+-	if (dest_r.dict_buf) {
+-		memcpy(&dest_r.dict_buf[0], &r->dict_buf[0], r->info->dict_len);
+-		dest_r.info->dict_len = r->info->dict_len;
+-	}
+ 	dest_r.info->facility = r->info->facility;
+ 	dest_r.info->level = r->info->level;
+ 	dest_r.info->flags = r->info->flags;
+ 	dest_r.info->ts_nsec = r->info->ts_nsec;
+ 	dest_r.info->caller_id = r->info->caller_id;
++	memcpy(&dest_r.info->dev_info, &r->info->dev_info, sizeof(dest_r.info->dev_info));
+ 
+ 	prb_final_commit(&e);
+ 
+@@ -1093,7 +1096,6 @@ static unsigned int __init add_to_rb(struct printk_ringbuffer *rb,
+ }
+ 
+ static char setup_text_buf[CONSOLE_EXT_LOG_MAX] __initdata;
+-static char setup_dict_buf[CONSOLE_EXT_LOG_MAX] __initdata;
  
  void __init setup_log_buf(int early)
  {
-+	struct printk_info *new_infos;
- 	unsigned int new_descs_count;
- 	struct prb_desc *new_descs;
+@@ -1170,7 +1172,7 @@ void __init setup_log_buf(int early)
+ 
+ 	prb_rec_init_rd(&r, &info,
+ 			&setup_text_buf[0], sizeof(setup_text_buf),
+-			&setup_dict_buf[0], sizeof(setup_dict_buf));
++			NULL, 0);
+ 
+ 	prb_init(&printk_rb_dynamic,
+ 		 new_log_buf, ilog2(new_log_buf_len),
+@@ -1900,7 +1902,9 @@ static inline u32 printk_caller_id(void)
+ 		0x80000000 + raw_smp_processor_id();
+ }
+ 
+-static size_t log_output(int facility, int level, enum log_flags lflags, const char *dict, size_t dictlen, char *text, size_t text_len)
++static size_t log_output(int facility, int level, enum log_flags lflags,
++			 const struct dev_printk_info *dev_info,
++			 char *text, size_t text_len)
+ {
+ 	const u32 caller_id = printk_caller_id();
+ 
+@@ -1924,12 +1928,12 @@ static size_t log_output(int facility, int level, enum log_flags lflags, const c
+ 
+ 	/* Store it in the record log */
+ 	return log_store(caller_id, facility, level, lflags, 0,
+-			 dict, dictlen, text, text_len);
++			 dev_info, text, text_len);
+ }
+ 
+ /* Must be called under logbuf_lock. */
+ int vprintk_store(int facility, int level,
+-		  const char *dict, size_t dictlen,
++		  const struct dev_printk_info *dev_info,
+ 		  const char *fmt, va_list args)
+ {
+ 	static char textbuf[LOG_LINE_MAX];
+@@ -1971,15 +1975,14 @@ int vprintk_store(int facility, int level,
+ 	if (level == LOGLEVEL_DEFAULT)
+ 		level = default_message_loglevel;
+ 
+-	if (dict)
++	if (dev_info)
+ 		lflags |= LOG_NEWLINE;
+ 
+-	return log_output(facility, level, lflags,
+-			  dict, dictlen, text, text_len);
++	return log_output(facility, level, lflags, dev_info, text, text_len);
+ }
+ 
+ asmlinkage int vprintk_emit(int facility, int level,
+-			    const char *dict, size_t dictlen,
++			    const struct dev_printk_info *dev_info,
+ 			    const char *fmt, va_list args)
+ {
+ 	int printed_len;
+@@ -2000,7 +2003,7 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 
+ 	/* This stops the holder of console_sem just where we want him */
+ 	logbuf_lock_irqsave(flags);
+-	printed_len = vprintk_store(facility, level, dict, dictlen, fmt, args);
++	printed_len = vprintk_store(facility, level, dev_info, fmt, args);
+ 	logbuf_unlock_irqrestore(flags);
+ 
+ 	/* If called from the scheduler, we can not call up(). */
+@@ -2034,7 +2037,7 @@ EXPORT_SYMBOL(vprintk);
+ 
+ int vprintk_default(const char *fmt, va_list args)
+ {
+-	return vprintk_emit(0, LOGLEVEL_DEFAULT, NULL, 0, fmt, args);
++	return vprintk_emit(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+ }
+ EXPORT_SYMBOL_GPL(vprintk_default);
+ 
+@@ -2097,8 +2100,8 @@ static ssize_t info_print_ext_header(char *buf, size_t size,
+ 	return 0;
+ }
+ static ssize_t msg_print_ext_body(char *buf, size_t size,
+-				  char *dict, size_t dict_len,
+-				  char *text, size_t text_len) { return 0; }
++				  char *text, size_t text_len,
++				  struct dev_printk_info *dev_info) { return 0; }
+ static void console_lock_spinning_enable(void) { }
+ static int console_lock_spinning_disable_and_check(void) { return 0; }
+ static void call_console_drivers(const char *ext_text, size_t ext_len,
+@@ -2387,7 +2390,6 @@ void console_unlock(void)
+ {
+ 	static char ext_text[CONSOLE_EXT_LOG_MAX];
+ 	static char text[LOG_LINE_MAX + PREFIX_MAX];
+-	static char dict[LOG_LINE_MAX];
+ 	unsigned long flags;
+ 	bool do_cond_resched, retry;
  	struct printk_info info;
-@@ -1156,6 +1157,17 @@ void __init setup_log_buf(int early)
+@@ -2398,7 +2400,7 @@ void console_unlock(void)
  		return;
  	}
  
-+	new_descs_size = new_descs_count * sizeof(struct printk_info);
-+	new_infos = memblock_alloc(new_descs_size, LOG_ALIGN);
-+	if (unlikely(!new_infos)) {
-+		pr_err("log_buf_len: %zu info bytes not available\n",
-+		       new_descs_size);
-+		memblock_free(__pa(new_descs), new_log_buf_len);
-+		memblock_free(__pa(new_dict_buf), new_log_buf_len);
-+		memblock_free(__pa(new_log_buf), new_log_buf_len);
-+		return;
-+	}
-+
- 	prb_rec_init_rd(&r, &info,
- 			&setup_text_buf[0], sizeof(setup_text_buf),
- 			&setup_dict_buf[0], sizeof(setup_dict_buf));
-@@ -1163,7 +1175,8 @@ void __init setup_log_buf(int early)
- 	prb_init(&printk_rb_dynamic,
- 		 new_log_buf, ilog2(new_log_buf_len),
- 		 new_dict_buf, ilog2(new_log_buf_len),
--		 new_descs, ilog2(new_descs_count));
-+		 new_descs, ilog2(new_descs_count),
-+		 new_infos);
- 
- 	logbuf_lock_irqsave(flags);
- 
-diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index f4e2e9890e0f..de4b10a98623 100644
---- a/kernel/printk/printk_ringbuffer.c
-+++ b/kernel/printk/printk_ringbuffer.c
-@@ -15,10 +15,10 @@
-  * The printk_ringbuffer is made up of 3 internal ringbuffers:
-  *
-  *   desc_ring
-- *     A ring of descriptors. A descriptor contains all record meta data
-- *     (sequence number, timestamp, loglevel, etc.) as well as internal state
-- *     information about the record and logical positions specifying where in
-- *     the other ringbuffers the text and dictionary strings are located.
-+ *     A ring of descriptors and their meta data (such as sequence number,
-+ *     timestamp, loglevel, etc.) as well as internal state information about
-+ *     the record and logical positions specifying where in the other
-+ *     ringbuffers the text and dictionary strings are located.
-  *
-  *   text_data_ring
-  *     A ring of data blocks. A data block consists of an unsigned long
-@@ -38,13 +38,14 @@
-  *
-  * Descriptor Ring
-  * ~~~~~~~~~~~~~~~
-- * The descriptor ring is an array of descriptors. A descriptor contains all
-- * the meta data of a printk record as well as blk_lpos structs pointing to
-- * associated text and dictionary data blocks (see "Data Rings" below). Each
-- * descriptor is assigned an ID that maps directly to index values of the
-- * descriptor array and has a state. The ID and the state are bitwise combined
-- * into a single descriptor field named @state_var, allowing ID and state to
-- * be synchronously and atomically updated.
-+ * The descriptor ring is an array of descriptors. A descriptor contains
-+ * essential meta data to track the data of a printk record using
-+ * blk_lpos structs pointing to associated text and dictionary data blocks
-+ * (see "Data Rings" below). Each descriptor is assigned an ID that maps
-+ * directly to index values of the descriptor array and has a state. The ID
-+ * and the state are bitwise combined into a single descriptor field named
-+ * @state_var, allowing ID and state to be synchronously and atomically
-+ * updated.
-  *
-  * Descriptors have four states:
-  *
-@@ -150,6 +151,14 @@
-  * descriptor. If a data block is not valid, the @tail_lpos cannot be
-  * advanced beyond it.
-  *
-+ * Info Array
-+ * ~~~~~~~~~~
-+ * The general meta data of printk records are stored in printk_info structs,
-+ * stored in an array with the same number of elements as the descriptor ring.
-+ * Each info corresponds to the descriptor of the same index in the
-+ * descriptor ring. Info validity is confirmed by evaluating the corresponding
-+ * descriptor before and after loading the info.
-+ *
-  * Usage
-  * -----
-  * Here are some simple examples demonstrating writers and readers. For the
-@@ -367,6 +376,15 @@ static struct prb_desc *to_desc(struct prb_desc_ring *desc_ring, u64 n)
- 	return &desc_ring->descs[DESC_INDEX(desc_ring, n)];
- }
- 
-+/*
-+ * Return the printk_info associated with @n. @n can be either a
-+ * descriptor ID or a sequence number.
-+ */
-+static struct printk_info *to_info(struct prb_desc_ring *desc_ring, u64 n)
-+{
-+	return &desc_ring->infos[DESC_INDEX(desc_ring, n)];
-+}
-+
- static struct prb_data_block *to_block(struct prb_data_ring *data_ring,
- 				       unsigned long begin_lpos)
- {
-@@ -425,10 +443,16 @@ static enum desc_state get_desc_state(unsigned long id,
-  * Get a copy of a specified descriptor and return its queried state. If the
-  * descriptor is in an inconsistent state (miss or reserved), the caller can
-  * only expect the descriptor's @state_var field to be valid.
-+ *
-+ * The sequence number and caller_id can be optionally retrieved. Like all
-+ * non-state_var data, they are only valid if the descriptor is in a
-+ * consistent state.
-  */
- static enum desc_state desc_read(struct prb_desc_ring *desc_ring,
--				 unsigned long id, struct prb_desc *desc_out)
-+				 unsigned long id, struct prb_desc *desc_out,
-+				 u64 *seq_out, u32 *caller_id_out)
- {
-+	struct printk_info *info = to_info(desc_ring, id);
- 	struct prb_desc *desc = to_desc(desc_ring, id);
- 	atomic_long_t *state_var = &desc->state_var;
- 	enum desc_state d_state;
-@@ -469,11 +493,14 @@ static enum desc_state desc_read(struct prb_desc_ring *desc_ring,
- 	 * state has been re-checked. A memcpy() for all of @desc
- 	 * cannot be used because of the atomic_t @state_var field.
- 	 */
--	memcpy(&desc_out->info, &desc->info, sizeof(desc_out->info)); /* LMM(desc_read:C) */
- 	memcpy(&desc_out->text_blk_lpos, &desc->text_blk_lpos,
--	       sizeof(desc_out->text_blk_lpos)); /* also part of desc_read:C */
-+	       sizeof(desc_out->text_blk_lpos)); /* LMM(desc_read:C) */
- 	memcpy(&desc_out->dict_blk_lpos, &desc->dict_blk_lpos,
- 	       sizeof(desc_out->dict_blk_lpos)); /* also part of desc_read:C */
-+	if (seq_out)
-+		*seq_out = info->seq; /* also part of desc_read:C */
-+	if (caller_id_out)
-+		*caller_id_out = info->caller_id; /* also part of desc_read:C */
+-	prb_rec_init_rd(&r, &info, text, sizeof(text), dict, sizeof(dict));
++	prb_rec_init_rd(&r, &info, text, sizeof(text), NULL, 0);
  
  	/*
- 	 * 1. Guarantee the descriptor content is loaded before re-checking
-@@ -588,7 +615,8 @@ static bool data_make_reusable(struct printk_ringbuffer *rb,
- 		 */
- 		id = blk->id; /* LMM(data_make_reusable:A) */
- 
--		d_state = desc_read(desc_ring, id, &desc); /* LMM(data_make_reusable:B) */
-+		d_state = desc_read(desc_ring, id, &desc,
-+				    NULL, NULL); /* LMM(data_make_reusable:B) */
- 
- 		switch (d_state) {
- 		case desc_miss:
-@@ -771,7 +799,7 @@ static bool desc_push_tail(struct printk_ringbuffer *rb,
- 	enum desc_state d_state;
- 	struct prb_desc desc;
- 
--	d_state = desc_read(desc_ring, tail_id, &desc);
-+	d_state = desc_read(desc_ring, tail_id, &desc, NULL, NULL);
- 
- 	switch (d_state) {
- 	case desc_miss:
-@@ -823,7 +851,8 @@ static bool desc_push_tail(struct printk_ringbuffer *rb,
- 	 * equal to @head_id so there is no risk of pushing the tail past the
- 	 * head.
- 	 */
--	d_state = desc_read(desc_ring, DESC_ID(tail_id + 1), &desc); /* LMM(desc_push_tail:A) */
-+	d_state = desc_read(desc_ring, DESC_ID(tail_id + 1), &desc,
-+			    NULL, NULL); /* LMM(desc_push_tail:A) */
- 
- 	if (d_state == desc_finalized || d_state == desc_reusable) {
- 		/*
-@@ -1264,6 +1293,7 @@ static struct prb_desc *desc_reopen_last(struct prb_desc_ring *desc_ring,
- 	struct prb_desc desc;
- 	struct prb_desc *d;
- 	unsigned long id;
-+	u32 cid;
- 
- 	id = atomic_long_read(&desc_ring->head_id);
- 
-@@ -1271,8 +1301,8 @@ static struct prb_desc *desc_reopen_last(struct prb_desc_ring *desc_ring,
- 	 * To reduce unnecessarily reopening, first check if the descriptor
- 	 * state and caller ID are correct.
- 	 */
--	d_state = desc_read(desc_ring, id, &desc);
--	if (d_state != desc_committed || desc.info.caller_id != caller_id)
-+	d_state = desc_read(desc_ring, id, &desc, NULL, &cid);
-+	if (d_state != desc_committed || cid != caller_id)
- 		return NULL;
- 
- 	d = to_desc(desc_ring, id);
-@@ -1353,6 +1383,8 @@ static struct prb_desc *desc_reopen_last(struct prb_desc_ring *desc_ring,
- bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 			 struct printk_record *r, u32 caller_id)
- {
-+	struct prb_desc_ring *desc_ring = &rb->desc_ring;
-+	struct printk_info *info;
- 	unsigned int data_size;
- 	struct prb_desc *d;
- 	unsigned long id;
-@@ -1360,7 +1392,7 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
- 	local_irq_save(e->irqflags);
- 
- 	/* Transition the newest descriptor back to the reserved state. */
--	d = desc_reopen_last(&rb->desc_ring, caller_id, &id);
-+	d = desc_reopen_last(desc_ring, caller_id, &id);
- 	if (!d) {
- 		local_irq_restore(e->irqflags);
- 		goto fail_reopen;
-@@ -1368,6 +1400,8 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
- 
- 	/* Now the writer has exclusive access: LMM(prb_reserve_in_last:A) */
- 
-+	info = to_info(desc_ring, id);
-+
- 	/*
- 	 * Set the @e fields here so that prb_commit() can be used if
- 	 * anything fails from now on.
-@@ -1380,14 +1414,14 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
- 	 * exclusive access at that point. The descriptor may have
- 	 * changed since then.
- 	 */
--	if (caller_id != d->info.caller_id)
-+	if (caller_id != info->caller_id)
- 		goto fail;
- 
- 	if (BLK_DATALESS(&d->text_blk_lpos)) {
--		if (WARN_ON_ONCE(d->info.text_len != 0)) {
-+		if (WARN_ON_ONCE(info->text_len != 0)) {
- 			pr_warn_once("wrong text_len value (%hu, expecting 0)\n",
--				     d->info.text_len);
--			d->info.text_len = 0;
-+				     info->text_len);
-+			info->text_len = 0;
+ 	 * Console drivers are called with interrupts disabled, so
+@@ -2470,10 +2472,9 @@ void console_unlock(void)
+ 						r.info);
+ 			ext_len += msg_print_ext_body(ext_text + ext_len,
+ 						sizeof(ext_text) - ext_len,
+-						&r.dict_buf[0],
+-						r.info->dict_len,
+ 						&r.text_buf[0],
+-						r.info->text_len);
++						r.info->text_len,
++						&r.info->dev_info);
  		}
- 
- 		if (!data_check_size(&rb->text_data_ring, r->text_buf_size))
-@@ -1404,12 +1438,12 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
- 		 * the meta data (@text_len) is not sane, use the full data
- 		 * block size.
- 		 */
--		if (WARN_ON_ONCE(d->info.text_len > data_size)) {
-+		if (WARN_ON_ONCE(info->text_len > data_size)) {
- 			pr_warn_once("wrong text_len value (%hu, expecting <=%u)\n",
--				     d->info.text_len, data_size);
--			d->info.text_len = data_size;
-+				     info->text_len, data_size);
-+			info->text_len = data_size;
- 		}
--		r->text_buf_size += d->info.text_len;
-+		r->text_buf_size += info->text_len;
- 
- 		if (!data_check_size(&rb->text_data_ring, r->text_buf_size))
- 			goto fail;
-@@ -1424,7 +1458,7 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
- 	r->dict_buf = NULL;
- 	r->dict_buf_size = 0;
- 
--	r->info = &d->info;
-+	r->info = info;
- 
- 	e->text_space = space_used(&rb->text_data_ring, &d->text_blk_lpos);
- 
-@@ -1486,6 +1520,7 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 		 struct printk_record *r)
+ 		len = record_print_text(&r,
+ 				console_msg_format & MSG_FORMAT_SYSLOG,
+@@ -3052,7 +3053,7 @@ int vprintk_deferred(const char *fmt, va_list args)
  {
- 	struct prb_desc_ring *desc_ring = &rb->desc_ring;
-+	struct printk_info *info;
- 	struct prb_desc *d;
- 	unsigned long id;
- 	u64 seq;
-@@ -1512,14 +1547,15 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 	}
+ 	int r;
  
- 	d = to_desc(desc_ring, id);
-+	info = to_info(desc_ring, id);
+-	r = vprintk_emit(0, LOGLEVEL_SCHED, NULL, 0, fmt, args);
++	r = vprintk_emit(0, LOGLEVEL_SCHED, NULL, fmt, args);
+ 	defer_console_output();
  
- 	/*
- 	 * All @info fields (except @seq) are cleared and must be filled in
- 	 * by the writer. Save @seq before clearing because it is used to
- 	 * determine the new sequence number.
- 	 */
--	seq = d->info.seq;
--	memset(&d->info, 0, sizeof(d->info));
-+	seq = info->seq;
-+	memset(info, 0, sizeof(*info));
- 
- 	/*
- 	 * Set the @e fields here so that prb_commit() can be used if
-@@ -1533,16 +1569,16 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 	 * Otherwise just increment it by a full wrap.
- 	 *
- 	 * @seq is considered "never been set" if it has a value of 0,
--	 * _except_ for @descs[0], which was specially setup by the ringbuffer
-+	 * _except_ for @infos[0], which was specially setup by the ringbuffer
- 	 * initializer and therefore is always considered as set.
- 	 *
- 	 * See the "Bootstrap" comment block in printk_ringbuffer.h for
- 	 * details about how the initializer bootstraps the descriptors.
- 	 */
- 	if (seq == 0 && DESC_INDEX(desc_ring, id) != 0)
--		d->info.seq = DESC_INDEX(desc_ring, id);
-+		info->seq = DESC_INDEX(desc_ring, id);
- 	else
--		d->info.seq = seq + DESCS_COUNT(desc_ring);
-+		info->seq = seq + DESCS_COUNT(desc_ring);
- 
- 	/*
- 	 * New data is about to be reserved. Once that happens, previous
-@@ -1550,7 +1586,7 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 	 * previous descriptor now so that it can be made available to
- 	 * readers. (For seq==0 there is no previous descriptor.)
- 	 */
--	if (d->info.seq > 0)
-+	if (info->seq > 0)
- 		desc_make_final(desc_ring, DESC_ID(id - 1));
- 
- 	r->text_buf = data_alloc(rb, &rb->text_data_ring, r->text_buf_size,
-@@ -1571,7 +1607,7 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 	if (r->dict_buf_size && !r->dict_buf)
- 		r->dict_buf_size = 0;
- 
--	r->info = &d->info;
-+	r->info = info;
- 
- 	/* Record full text space used by record. */
- 	e->text_space = space_used(&rb->text_data_ring, &d->text_blk_lpos);
-@@ -1726,12 +1762,12 @@ static bool copy_data(struct prb_data_ring *data_ring,
- 	/*
- 	 * Actual cannot be less than expected. It can be more than expected
- 	 * because of the trailing alignment padding.
-+	 *
-+	 * Note that invalid @len values can occur because the caller loads
-+	 * the value during an allowed data race.
- 	 */
--	if (WARN_ON_ONCE(data_size < (unsigned int)len)) {
--		pr_warn_once("wrong data size (%u, expecting >=%hu) for data: %.*s\n",
--			     data_size, len, data_size, data);
-+	if (data_size < (unsigned int)len)
- 		return false;
--	}
- 
- 	/* Caller interested in the line count? */
- 	if (line_count)
-@@ -1764,8 +1800,9 @@ static int desc_read_finalized_seq(struct prb_desc_ring *desc_ring,
- {
- 	struct prb_data_blk_lpos *blk_lpos = &desc_out->text_blk_lpos;
- 	enum desc_state d_state;
-+	u64 s;
- 
--	d_state = desc_read(desc_ring, id, desc_out);
-+	d_state = desc_read(desc_ring, id, desc_out, &s, NULL);
- 
- 	/*
- 	 * An unexpected @id (desc_miss) or @seq mismatch means the record
-@@ -1775,7 +1812,7 @@ static int desc_read_finalized_seq(struct prb_desc_ring *desc_ring,
- 	if (d_state == desc_miss ||
- 	    d_state == desc_reserved ||
- 	    d_state == desc_committed ||
--	    desc_out->info.seq != seq) {
-+	    s != seq) {
- 		return -EINVAL;
- 	}
- 
-@@ -1802,6 +1839,7 @@ static int prb_read(struct printk_ringbuffer *rb, u64 seq,
- 		    struct printk_record *r, unsigned int *line_count)
- {
- 	struct prb_desc_ring *desc_ring = &rb->desc_ring;
-+	struct printk_info *info = to_info(desc_ring, seq);
- 	struct prb_desc *rdesc = to_desc(desc_ring, seq);
- 	atomic_long_t *state_var = &rdesc->state_var;
- 	struct prb_desc desc;
-@@ -1823,10 +1861,10 @@ static int prb_read(struct printk_ringbuffer *rb, u64 seq,
- 
- 	/* If requested, copy meta data. */
- 	if (r->info)
--		memcpy(r->info, &desc.info, sizeof(*(r->info)));
-+		memcpy(r->info, info, sizeof(*(r->info)));
- 
- 	/* Copy text data. If it fails, this is a data-less record. */
--	if (!copy_data(&rb->text_data_ring, &desc.text_blk_lpos, desc.info.text_len,
-+	if (!copy_data(&rb->text_data_ring, &desc.text_blk_lpos, info->text_len,
- 		       r->text_buf, r->text_buf_size, line_count)) {
- 		return -ENOENT;
- 	}
-@@ -1836,7 +1874,7 @@ static int prb_read(struct printk_ringbuffer *rb, u64 seq,
- 	 * important. So if it fails, modify the copied meta data to report
- 	 * that there is no dict data, thus silently dropping the dict data.
- 	 */
--	if (!copy_data(&rb->dict_data_ring, &desc.dict_blk_lpos, desc.info.dict_len,
-+	if (!copy_data(&rb->dict_data_ring, &desc.dict_blk_lpos, info->dict_len,
- 		       r->dict_buf, r->dict_buf_size, NULL)) {
- 		if (r->info)
- 			r->info->dict_len = 0;
-@@ -1853,11 +1891,12 @@ static u64 prb_first_seq(struct printk_ringbuffer *rb)
- 	enum desc_state d_state;
- 	struct prb_desc desc;
- 	unsigned long id;
-+	u64 seq;
- 
- 	for (;;) {
- 		id = atomic_long_read(&rb->desc_ring.tail_id); /* LMM(prb_first_seq:A) */
- 
--		d_state = desc_read(desc_ring, id, &desc); /* LMM(prb_first_seq:B) */
-+		d_state = desc_read(desc_ring, id, &desc, &seq, NULL); /* LMM(prb_first_seq:B) */
- 
- 		/*
- 		 * This loop will not be infinite because the tail is
-@@ -1886,7 +1925,7 @@ static u64 prb_first_seq(struct printk_ringbuffer *rb)
- 		smp_rmb(); /* LMM(prb_first_seq:C) */
- 	}
- 
--	return desc.info.seq;
-+	return seq;
- }
- 
- /*
-@@ -2049,6 +2088,7 @@ u64 prb_next_seq(struct printk_ringbuffer *rb)
-  * @dictbits: The size of @dict_buf as a power-of-2 value.
-  * @descs:    The descriptor buffer for ringbuffer records.
-  * @descbits: The count of @descs items as a power-of-2 value.
-+ * @infos:    The printk_info buffer for ringbuffer records.
-  *
-  * This is the public function available to writers to setup a ringbuffer
-  * during runtime using provided buffers.
-@@ -2060,12 +2100,15 @@ u64 prb_next_seq(struct printk_ringbuffer *rb)
- void prb_init(struct printk_ringbuffer *rb,
- 	      char *text_buf, unsigned int textbits,
- 	      char *dict_buf, unsigned int dictbits,
--	      struct prb_desc *descs, unsigned int descbits)
-+	      struct prb_desc *descs, unsigned int descbits,
-+	      struct printk_info *infos)
- {
- 	memset(descs, 0, _DESCS_COUNT(descbits) * sizeof(descs[0]));
-+	memset(infos, 0, _DESCS_COUNT(descbits) * sizeof(infos[0]));
- 
- 	rb->desc_ring.count_bits = descbits;
- 	rb->desc_ring.descs = descs;
-+	rb->desc_ring.infos = infos;
- 	atomic_long_set(&rb->desc_ring.head_id, DESC0_ID(descbits));
- 	atomic_long_set(&rb->desc_ring.tail_id, DESC0_ID(descbits));
- 
-@@ -2081,14 +2124,14 @@ void prb_init(struct printk_ringbuffer *rb,
- 
- 	atomic_long_set(&rb->fail, 0);
- 
--	descs[0].info.seq = -(u64)_DESCS_COUNT(descbits);
--
--	descs[_DESCS_COUNT(descbits) - 1].info.seq = 0;
- 	atomic_long_set(&(descs[_DESCS_COUNT(descbits) - 1].state_var), DESC0_SV(descbits));
- 	descs[_DESCS_COUNT(descbits) - 1].text_blk_lpos.begin = FAILED_LPOS;
- 	descs[_DESCS_COUNT(descbits) - 1].text_blk_lpos.next = FAILED_LPOS;
- 	descs[_DESCS_COUNT(descbits) - 1].dict_blk_lpos.begin = FAILED_LPOS;
- 	descs[_DESCS_COUNT(descbits) - 1].dict_blk_lpos.next = FAILED_LPOS;
-+
-+	infos[0].seq = -(u64)_DESCS_COUNT(descbits);
-+	infos[_DESCS_COUNT(descbits) - 1].seq = 0;
- }
- 
- /**
+ 	return r;
 diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
-index 853ea62dc5f2..97c8561e74e0 100644
+index 97c8561e74e0..480499ce3c6b 100644
 --- a/kernel/printk/printk_ringbuffer.h
 +++ b/kernel/printk/printk_ringbuffer.h
-@@ -58,7 +58,6 @@ struct prb_data_blk_lpos {
-  * @state_var: A bitwise combination of descriptor ID and descriptor state.
-  */
- struct prb_desc {
--	struct printk_info		info;
- 	atomic_long_t			state_var;
- 	struct prb_data_blk_lpos	text_blk_lpos;
- 	struct prb_data_blk_lpos	dict_blk_lpos;
-@@ -76,6 +75,7 @@ struct prb_data_ring {
- struct prb_desc_ring {
- 	unsigned int		count_bits;
- 	struct prb_desc		*descs;
-+	struct printk_info	*infos;
- 	atomic_long_t		head_id;
- 	atomic_long_t		tail_id;
- };
-@@ -237,19 +237,8 @@ enum desc_state {
- static char _##name##_dict[1U << ((avgdictbits) + (descbits))]					\
- 			__aligned(__alignof__(unsigned long));					\
- static struct prb_desc _##name##_descs[_DESCS_COUNT(descbits)] = {				\
--	/* this will be the first record reserved by a writer */				\
--	[0] = {											\
--		.info = {									\
--			/* will be incremented to 0 on the first reservation */			\
--			.seq = -(u64)_DESCS_COUNT(descbits),					\
--		},										\
--	},											\
- 	/* the initial head and tail */								\
- 	[_DESCS_COUNT(descbits) - 1] = {							\
--		.info = {									\
--			/* reports the first seq value during the bootstrap phase */		\
--			.seq = 0,								\
--		},										\
- 		/* reusable */									\
- 		.state_var	= ATOMIC_INIT(DESC0_SV(descbits)),				\
- 		/* no associated data block */							\
-@@ -257,10 +246,23 @@ static struct prb_desc _##name##_descs[_DESCS_COUNT(descbits)] = {				\
- 		.dict_blk_lpos	= FAILED_BLK_LPOS,						\
- 	},											\
- };												\
-+static struct printk_info _##name##_infos[_DESCS_COUNT(descbits)] = {				\
-+	/* this will be the first record reserved by a writer */				\
-+	[0] = {											\
-+		/* will be incremented to 0 on the first reservation */				\
-+		.seq = -(u64)_DESCS_COUNT(descbits),						\
-+	},											\
-+	/* the initial head and tail */								\
-+	[_DESCS_COUNT(descbits) - 1] = {							\
-+		/* reports the first seq value during the bootstrap phase */			\
-+		.seq = 0,									\
-+	},											\
-+};												\
- static struct printk_ringbuffer name = {							\
- 	.desc_ring = {										\
- 		.count_bits	= descbits,							\
- 		.descs		= &_##name##_descs[0],						\
-+		.infos		= &_##name##_infos[0],						\
- 		.head_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
- 		.tail_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
- 	},											\
-@@ -336,7 +338,8 @@ void prb_final_commit(struct prb_reserved_entry *e);
- void prb_init(struct printk_ringbuffer *rb,
- 	      char *text_buf, unsigned int text_buf_size,
- 	      char *dict_buf, unsigned int dict_buf_size,
--	      struct prb_desc *descs, unsigned int descs_count_bits);
-+	      struct prb_desc *descs, unsigned int descs_count_bits,
-+	      struct printk_info *infos);
- unsigned int prb_record_text_space(struct prb_reserved_entry *e);
+@@ -4,6 +4,7 @@
+ #define _KERNEL_PRINTK_RINGBUFFER_H
  
- /* Reader Interface */
+ #include <linux/atomic.h>
++#include <linux/dev_printk.h>
+ 
+ /*
+  * Meta information about each stored message.
+@@ -21,6 +22,8 @@ struct printk_info {
+ 	u8	flags:5;	/* internal record flags */
+ 	u8	level:3;	/* syslog level */
+ 	u32	caller_id;	/* thread id or processor id */
++
++	struct dev_printk_info	dev_info;
+ };
+ 
+ /*
+diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
+index 50aeae770434..5dbc40160990 100644
+--- a/kernel/printk/printk_safe.c
++++ b/kernel/printk/printk_safe.c
+@@ -375,7 +375,7 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
+ 	    raw_spin_trylock(&logbuf_lock)) {
+ 		int len;
+ 
+-		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, 0, fmt, args);
++		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+ 		raw_spin_unlock(&logbuf_lock);
+ 		defer_console_output();
+ 		return len;
+diff --git a/scripts/gdb/linux/dmesg.py b/scripts/gdb/linux/dmesg.py
+index bce14de5f610..a92c55bd8de5 100644
+--- a/scripts/gdb/linux/dmesg.py
++++ b/scripts/gdb/linux/dmesg.py
+@@ -52,6 +52,12 @@ class LxDmesg(gdb.Command):
+         addr = utils.read_ulong(desc_ring, off)
+         descs = utils.read_memoryview(inf, addr, desc_sz * desc_ring_count).tobytes()
+ 
++        # read in info array
++        info_sz = printk_info_type.get_type().sizeof
++        off = prb_desc_ring_type.get_type()['infos'].bitpos // 8
++        addr = utils.read_ulong(desc_ring, off)
++        infos = utils.read_memoryview(inf, addr, info_sz * desc_ring_count).tobytes()
++
+         # read in text data ring structure
+         off = printk_ringbuffer_type.get_type()['text_data_ring'].bitpos // 8
+         addr = prb_addr + off
+@@ -73,9 +79,8 @@ class LxDmesg(gdb.Command):
+         begin_off = off + (prb_data_blk_lpos_type.get_type()['begin'].bitpos // 8)
+         next_off = off + (prb_data_blk_lpos_type.get_type()['next'].bitpos // 8)
+ 
+-        off = prb_desc_type.get_type()['info'].bitpos // 8
+-        ts_off = off + printk_info_type.get_type()['ts_nsec'].bitpos // 8
+-        len_off = off + printk_info_type.get_type()['text_len'].bitpos // 8
++        ts_off = printk_info_type.get_type()['ts_nsec'].bitpos // 8
++        len_off = printk_info_type.get_type()['text_len'].bitpos // 8
+ 
+         # definitions from kernel/printk/printk_ringbuffer.h
+         desc_committed = 1
+@@ -95,6 +100,7 @@ class LxDmesg(gdb.Command):
+         while True:
+             ind = did % desc_ring_count
+             desc_off = desc_sz * ind
++            info_off = info_sz * ind
+ 
+             # skip non-committed record
+             state = 3 & (utils.read_u64(descs, desc_off + sv_off +
+@@ -119,7 +125,7 @@ class LxDmesg(gdb.Command):
+                 # skip over descriptor id
+                 text_start = begin + utils.get_long_type().sizeof
+ 
+-                text_len = utils.read_u16(descs, desc_off + len_off)
++                text_len = utils.read_u16(infos, info_off + len_off)
+ 
+                 # handle truncated message
+                 if end - text_start < text_len:
+@@ -128,7 +134,7 @@ class LxDmesg(gdb.Command):
+                 text = text_data[text_start:text_start + text_len].decode(
+                     encoding='utf8', errors='replace')
+ 
+-            time_stamp = utils.read_u64(descs, desc_off + ts_off)
++            time_stamp = utils.read_u64(infos, info_off + ts_off)
+ 
+             for line in text.splitlines():
+                 msg = u"[{time:12.6f}] {line}\n".format(
 -- 
 2.20.1
 
