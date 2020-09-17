@@ -2,156 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B8626D79D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7592F26D7A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgIQJ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:27:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41746 "EHLO mx2.suse.de"
+        id S1726441AbgIQJ3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:29:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgIQJ1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:27:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5C817AFEC;
-        Thu, 17 Sep 2020 09:28:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 50F3D1E12E1; Thu, 17 Sep 2020 11:27:42 +0200 (CEST)
-Date:   Thu, 17 Sep 2020 11:27:42 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 11/12] bdi: invert BDI_CAP_NO_ACCT_WB
-Message-ID: <20200917092742.GD7347@quack2.suse.cz>
-References: <20200910144833.742260-1-hch@lst.de>
- <20200910144833.742260-12-hch@lst.de>
+        id S1726180AbgIQJ3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:29:04 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 760A6206E6;
+        Thu, 17 Sep 2020 09:29:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600334943;
+        bh=+HiIxjCTi2UxE0tL5EFrkZ6hadNYj6Tx+yaIuvsKGAQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zgzseetFM2Zg7BX1vbmvRwxcaGYWo0pVQRch8wbH4Do9FqEoBt4zfkh5O8LqRPW47
+         lEKWnLEvXzaWXjA4Tksp6LbYi4ou27CsQBuOEmGCRgWGu0gkp6bIg/pRejIjnbeQur
+         VRr/6lvePHSK0YUq1XEVlFlQNgWrXrgVr9wqGAzs=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kIqDt-00CaaF-HC; Thu, 17 Sep 2020 10:29:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910144833.742260-12-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 17 Sep 2020 10:29:01 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        kernel-team@android.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+In-Reply-To: <54318b15-cfa4-1460-1e8b-049da2ab2bda@samsung.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+ <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+ <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+ <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
+ <049d62ac7de32590cb170714b47fb87d@kernel.org>
+ <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
+ <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
+ <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
+ <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
+ <bec733a1-227f-d943-90dd-85fc9a993109@nvidia.com>
+ <54318b15-cfa4-1460-1e8b-049da2ab2bda@samsung.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <1831a66f81bbacc337329a8b57297d83@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: m.szyprowski@samsung.com, jonathanh@nvidia.com, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, b.zolnierkie@samsung.com, krzk@kernel.org, linux-samsung-soc@vger.kernel.org, tglx@linutronix.de, will@kernel.org, Valentin.Schneider@arm.com, linux-tegra@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10-09-20 16:48:31, Christoph Hellwig wrote:
-> Replace BDI_CAP_NO_ACCT_WB with a positive BDI_CAP_WRITEBACK_ACCT to
-> make the checks more obvious.  Also remove the pointless
-> bdi_cap_account_writeback wrapper that just obsfucates the check.
+On 2020-09-17 10:13, Marek Szyprowski wrote:
+
+[...]
+
+>>>> Linus, what -next are you testing on? I am using next-20200916.
+>>> next-20200916 completely broken on ARM and ARM64. Please check
+>>> next-20200915 + the mentioned fix or just check
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/ipi-as-irq
+>> Ah thanks! Any idea what is causing the other failure on 
+>> next-20200916?
+>> 
+>> Yes we have noticed that now everything fails next-20200916 so not 
+>> just
+>> this issue.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-The patch looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/fuse/inode.c             |  3 ++-
->  include/linux/backing-dev.h | 13 +++----------
->  mm/backing-dev.c            |  1 +
->  mm/page-writeback.c         |  4 ++--
->  4 files changed, 8 insertions(+), 13 deletions(-)
+> The issue is caused by commit c999bd436fe9 ("mm/cma: make number of CMA
+> areas dynamic, remove CONFIG_CMA_AREAS")
 > 
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index 17b00670fb539e..581329203d6860 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -1050,7 +1050,8 @@ static int fuse_bdi_init(struct fuse_conn *fc, struct super_block *sb)
->  		return err;
->  
->  	/* fuse does it's own writeback accounting */
-> -	sb->s_bdi->capabilities = BDI_CAP_NO_ACCT_WB | BDI_CAP_STRICTLIMIT;
-> +	sb->s_bdi->capabilities &= ~BDI_CAP_WRITEBACK_ACCT;
-> +	sb->s_bdi->capabilities |= BDI_CAP_STRICTLIMIT;
->  
->  	/*
->  	 * For a single fuse filesystem use max 1% of dirty +
-> diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-> index 5da4ea3dd0cc5c..b217344a2c63be 100644
-> --- a/include/linux/backing-dev.h
-> +++ b/include/linux/backing-dev.h
-> @@ -120,17 +120,17 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
->   *
->   * BDI_CAP_NO_ACCT_DIRTY:  Dirty pages shouldn't contribute to accounting
->   * BDI_CAP_NO_WRITEBACK:   Don't write pages back
-> - * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
-> + * BDI_CAP_WRITEBACK_ACCT: Automatically account writeback pages
->   * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
->   */
->  #define BDI_CAP_NO_ACCT_DIRTY	0x00000001
->  #define BDI_CAP_NO_WRITEBACK	0x00000002
-> -#define BDI_CAP_NO_ACCT_WB	0x00000004
-> +#define BDI_CAP_WRITEBACK_ACCT	0x00000004
->  #define BDI_CAP_STRICTLIMIT	0x00000010
->  #define BDI_CAP_CGROUP_WRITEBACK 0x00000020
->  
->  #define BDI_CAP_NO_ACCT_AND_WRITEBACK \
-> -	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_ACCT_WB)
-> +	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY)
->  
->  extern struct backing_dev_info noop_backing_dev_info;
->  
-> @@ -179,13 +179,6 @@ static inline bool bdi_cap_account_dirty(struct backing_dev_info *bdi)
->  	return !(bdi->capabilities & BDI_CAP_NO_ACCT_DIRTY);
->  }
->  
-> -static inline bool bdi_cap_account_writeback(struct backing_dev_info *bdi)
-> -{
-> -	/* Paranoia: BDI_CAP_NO_WRITEBACK implies BDI_CAP_NO_ACCT_WB */
-> -	return !(bdi->capabilities & (BDI_CAP_NO_ACCT_WB |
-> -				      BDI_CAP_NO_WRITEBACK));
-> -}
-> -
->  static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
->  {
->  	return bdi_cap_writeback_dirty(inode_to_bdi(mapping->host));
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index f9a2842bd81c3d..ab0415dde5c66c 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -744,6 +744,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
->  		kfree(bdi);
->  		return NULL;
->  	}
-> +	bdi->capabilities = BDI_CAP_WRITEBACK_ACCT;
->  	bdi->ra_pages = VM_READAHEAD_PAGES;
->  	bdi->io_pages = VM_READAHEAD_PAGES;
->  	return bdi;
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index e9c36521461aaa..0139f9622a92da 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2738,7 +2738,7 @@ int test_clear_page_writeback(struct page *page)
->  		if (ret) {
->  			__xa_clear_mark(&mapping->i_pages, page_index(page),
->  						PAGECACHE_TAG_WRITEBACK);
-> -			if (bdi_cap_account_writeback(bdi)) {
-> +			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
->  				struct bdi_writeback *wb = inode_to_wb(inode);
->  
->  				dec_wb_stat(wb, WB_WRITEBACK);
-> @@ -2791,7 +2791,7 @@ int __test_set_page_writeback(struct page *page, bool keep_write)
->  						   PAGECACHE_TAG_WRITEBACK);
->  
->  			xas_set_mark(&xas, PAGECACHE_TAG_WRITEBACK);
-> -			if (bdi_cap_account_writeback(bdi))
-> +			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT)
->  				inc_wb_stat(inode_to_wb(inode), WB_WRITEBACK);
->  
->  			/*
-> -- 
-> 2.28.0
-> 
+> https://lore.kernel.org/linux-arm-kernel/20200915205703.34572-1-mike.kravetz@oracle.com/
+
+There is a workaround here[1] for arm64, but I doubt that's the end of
+it (32bit is still dead).
+
+         M.
+
+[1] 
+https://lore.kernel.org/linux-arm-kernel/20200916085933.25220-1-song.bao.hua@hisilicon.com/
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jazz is not dead. It just smells funny...
