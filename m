@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D42226DA16
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511E326D9E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgIQLXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbgIQLIf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:08:35 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827F6C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:08:30 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id k25so1644015ljg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:08:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fzxb6kNCOD+DqnVPedrk4ksMuODtrVDGEO33gyPazGw=;
-        b=B64gIrXrRDM1onplNYixz/gQEBZY1ILGIczqYFuVbeUT85sUR7x1nBTni0AD2S8U0X
-         Ux0Sm4hyhvgvsP1Vk1IZQgu6cuCHxj23/8yd1pFvkPAvw+KU9sEa3DAFJAh/Cj0b5Vme
-         vjWfRAyoq6KKPkDXhmfdZk00JrJNNfNElPmO8UkOnySs718i9HZTIFRHg5BPJkZaye3w
-         gx5go2pQ5wpbScBofFhfzg7fEsIh8QVJcO6AUxyr81QtaW1r9h11pHYYXPWr7yN6dAM5
-         j0KKiYNkh/wtmw2rmLfYjrg2069HNaht/lDiri5X+UfEc7TQUBWPSwt+vnxqBvC4fyB0
-         4UhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fzxb6kNCOD+DqnVPedrk4ksMuODtrVDGEO33gyPazGw=;
-        b=MQPotOoJknmS+xqlQxSDqSdrMMKDzGf8HYvoYHB0Fpi4IGMFi5W8oHaxTiuq8v5h3Q
-         +nFLHhONZubKc3L2paW+DdwjmyIFl1V+jS4fNsys75bBbaZHN3k+xo5F5OdUxyeVJHOk
-         lE0EN7ArhcdggZO0oi+srwUZDMv4Zru662Tkm/VACFoNbLlKR8KTywn4daP5M5f7LiXE
-         F1fdKcOtYnNB7xKMqhbNm7IsgVp+H0aKV9Px+roWiyC5BSBMw7eQ6gNgS4zDaiEf1OpI
-         6Yjn+0hh+zKjz7ON/MPZS0lNb2WTeIv/p4xK3l/1bIyuJQw7s9QXm916FX8HNpXHCLAK
-         K9ow==
-X-Gm-Message-State: AOAM531a56ukDgirviSF2BHn62Syu3CCx1JjohBrkoJh9NKtM6CsVRVq
-        GLj+dzLepgBJDutw+WwBKOnV7ntRuFa8+w==
-X-Google-Smtp-Source: ABdhPJz47WCCueKSK2oljgVZEVs06Xevc2jCjCDRWBviVru8kGC2LKPhdr0mNzOmQsedW3VMt63RaQ==
-X-Received: by 2002:a05:651c:1203:: with SMTP id i3mr5625871lja.382.1600340906861;
-        Thu, 17 Sep 2020 04:08:26 -0700 (PDT)
-Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
-        by smtp.gmail.com with ESMTPSA id m22sm6001734lji.36.2020.09.17.04.08.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 04:08:26 -0700 (PDT)
-From:   mateusznosek0@gmail.com
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, akpm@linux-foundation.org
-Subject: [PATCH] include/linux/compaction.h: clean code by removing unused enum value
-Date:   Thu, 17 Sep 2020 13:07:50 +0200
-Message-Id: <20200917110750.12015-1-mateusznosek0@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726617AbgIQLLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:11:52 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:41757 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726333AbgIQLKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 07:10:41 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsZ4n5g9Rz9sSn;
+        Thu, 17 Sep 2020 21:10:17 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600341017;
+        bh=WgBa20qobIP1NTevgK+CZPRTSep8ttMyfa6zfCns6Hs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=omEWjyGQri6+wVOuWic9PWoFBf6hPONqMS2DL/CScJc9u+BB5UyYOQprxFS9id4Ju
+         o3u7i4g74xwIz2FbMbxqPziTr/HetHVpbzP+Zs/D9JhG6mbWON3S5zZYl2kdYb0a53
+         qyCB0iInPOij4XKNqW7Yt45KUAR4Rc5CnxP5cHC5F7QiccUzPhdm4YSr40un6kFA31
+         m4O+M5U4LJxE05WY3xZlAy/gJPZDpHeYYB2GoTjQkrpg3vE5c1BNjnyJTk+8k5yFVt
+         GUqlq35FCJ0r4N/CJykSTT/5b2EQO7SNAwFvMpmi1c4G6HMtZ8u+WcFG4ipaT2jQ5o
+         wi7n1RqnVxesA==
+Date:   Thu, 17 Sep 2020 21:10:17 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the irqchip tree
+Message-ID: <20200917211017.1d1216b7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/TevJp64OHmXh7L4/CQ7eDZg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Nosek <mateusznosek0@gmail.com>
+--Sig_/TevJp64OHmXh7L4/CQ7eDZg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The enum value 'COMPACT_INACTIVE' is never used so can be removed.
+Hi all,
 
-Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
----
- include/linux/compaction.h | 3 ---
- 1 file changed, 3 deletions(-)
+Commits
 
-diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-index 25a521d299c1..1de5a1151ee7 100644
---- a/include/linux/compaction.h
-+++ b/include/linux/compaction.h
-@@ -29,9 +29,6 @@ enum compact_result {
- 	/* compaction didn't start as it was deferred due to past failures */
- 	COMPACT_DEFERRED,
- 
--	/* compaction not active last round */
--	COMPACT_INACTIVE = COMPACT_DEFERRED,
--
- 	/* For more detailed tracepoint output - internal to compaction */
- 	COMPACT_NO_SUITABLE_PAGE,
- 	/* compaction should continue to another pageblock */
--- 
-2.20.1
+  e86085c6e2fb ("irqchip/irq-pruss-intc: Add support for ICSSG INTC on K3 S=
+oCs")
+  1c46bcaed207 ("irqchip/irq-pruss-intc: Implement irq_{get, set}_irqchip_s=
+tate ops")
+  7d1ca43a7c14 ("irqchip/irq-pruss-intc: Add logic for handling reserved in=
+terrupts")
+  7a141591acde ("irqchip/irq-pruss-intc: Add a PRUSS irqchip driver for PRU=
+SS interrupts")
+  309f1f85f7b0 ("dt-bindings: irqchip: Add PRU-ICSS interrupt controller bi=
+ndings")
 
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/TevJp64OHmXh7L4/CQ7eDZg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9jRBkACgkQAVBC80lX
+0Gz6iQf/Udj1BrH6NVYa4nypIA0MMHbj2TDinhhz+HPAjTEp3zze0rKsRHS4N0+E
+LyZQqbpRd8LKXS87j5czw9VIoBN5Lne2a91XhmyNqBp1UN+lVS/2vfX9cows9Mri
+Njr1hnrGHj/SZDaFmuG2NAy594/ZooI9KBPI0GDOx3GM5MqWritmol/RrgMu0v5L
+nDY+uAvGJpyomu3D2aCL7Ms85sB/tyP9RbxGEn2iTX4NGidTAz8dWq0gc0Fy/NIB
+flAuiCBuvb+kbsunDUktVmnT8xzBhuFPZTQfOLDQZPKYC7EWWEma/inl9SED0B5/
+3qwR29K/5UOL1Tju5UrEilzyxC/gIg==
+=ZB3y
+-----END PGP SIGNATURE-----
+
+--Sig_/TevJp64OHmXh7L4/CQ7eDZg--
