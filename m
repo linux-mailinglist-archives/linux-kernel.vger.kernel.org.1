@@ -2,207 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B94F26E820
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E7126E823
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgIQWSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:18:45 -0400
-Received: from mail-dm6nam10on2042.outbound.protection.outlook.com ([40.107.93.42]:7680
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725858AbgIQWSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:18:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fBC3aM3p9d7bFPig7JEwDy45VknGqgQIdM36BgtIDQC3DSlZ9pfr7V53eoa2zHB+P7ZTUKHXUd1GSxVg8Y3c+V1nZqel1BRcPrNKh0ri5xtYbg/4vy1gQjL4u6+SpmCHl8EJWa/78aU2gLXrvj0VX3XYFs2G6pqvOuwV14TdABCH8HEvK2yXc013gCWKIxNR2ojrO9eJ+SHMWrUgS/FjwU49lphkiZ0ey3SmHBT/6nEDRU3f5rOSKApRvdIshmzA/bHLR+azJfo0Ths6j9rHNpguTwE7nTUNMVsss9+ls/O3eMsL6lHOtk591kG5b94zyeuM7eEDzrGxfnQUZerKkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yky8QWWp7nfqWOZYSaPa/RiXeDZ9Ao7IcTYvRPZn2YE=;
- b=Ozj02uUoVVopaEkf1iW5iJtJsIjYkAs2NTsuTO5psMx11ecXamx1uYUDn/rSN57h9+Z9r1alcBa7FfRk3J+rAmYlU7Ks54+l4d49AJLQsQ68guc1ORt2cisBIrXMNRcopYPrIcRxXfgKcqZp8JyTVhlg/P34uEtIPEcdYPD4x6CZENPDyPF3IDVixTjyfVOXgbrJTxO+exd7U9cmAvfaPvS6ue1r+TrpQbuTsixVy4mLmmW8j91kpYxR80eDDlMzPm0d+hhG5Mv/4i7WRbf+XtJSnQx3OsTcb5YG4yeW1zGV0to8qNtIsKRYTZDq0D9x5myYdQrmKY3mGLRFn/IPMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yky8QWWp7nfqWOZYSaPa/RiXeDZ9Ao7IcTYvRPZn2YE=;
- b=mT+V+pD1nT1ranxgCWd1DnDwm+MK4E7P4nxmGAnb+vnrfcs1nLEuU3ZedD6bvZJA9J2ni/4sAP2rzRIemBRRPO2mrLr7GiPi6vzL0djbO0xp/GJdlIbH19Gjb3WWNmyteGaEUb3//6fpvJ6iqO5UWJqXpAVBXHYFBt0y382WWdU=
-Received: from BYAPR02MB4407.namprd02.prod.outlook.com (2603:10b6:a03:55::31)
- by BY5PR02MB6961.namprd02.prod.outlook.com (2603:10b6:a03:23b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Thu, 17 Sep
- 2020 22:18:41 +0000
-Received: from BYAPR02MB4407.namprd02.prod.outlook.com
- ([fe80::b0f6:b3a:6543:26f5]) by BYAPR02MB4407.namprd02.prod.outlook.com
- ([fe80::b0f6:b3a:6543:26f5%5]) with mapi id 15.20.3391.011; Thu, 17 Sep 2020
- 22:18:40 +0000
-From:   Ben Levinsky <BLEVINSK@xilinx.com>
-To:     Michael Auchter <michael.auchter@ni.com>
-CC:     "punit1.agrawal@toshiba.co.jp" <punit1.agrawal@toshiba.co.jp>,
-        Stefano Stabellini <stefanos@xilinx.com>,
-        Michal Simek <michals@xilinx.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "Ed T. Mooring" <emooring@xilinx.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiaying Liang <jliang@xilinx.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Jiaying Liang <jliang@xilinx.com>,
-        Michal Simek <michals@xilinx.com>,
-        "Ed T. Mooring" <emooring@xilinx.com>, Jason Wu <j.wu@xilinx.com>
-Subject: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5 remoteproc
- driver
-Thread-Topic: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5 remoteproc
- driver
-Thread-Index: AQHWjSzx2v36zrUuJk25DA+tFuTaOqltZJcAgAAAbzA=
-Date:   Thu, 17 Sep 2020 22:18:39 +0000
-Message-ID: <BYAPR02MB44073E7A3BEA401FF4684E95B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
-References: <20200917194341.16272-1-ben.levinsky@xilinx.com>
- <20200917194341.16272-6-ben.levinsky@xilinx.com>
- <20200917221120.GA15530@xaphan>
-In-Reply-To: <20200917221120.GA15530@xaphan>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: ni.com; dkim=none (message not signed)
- header.d=none;ni.com; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [24.5.142.107]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8e67a53f-924f-4740-2e4e-08d85b57a1ad
-x-ms-traffictypediagnostic: BY5PR02MB6961:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR02MB6961056CEB70E85871EE8CE2B53E0@BY5PR02MB6961.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jrnYseDDknJUfzzWL0bCZntLNrhTIai/1R2gR4KPj8PEbc6YrnWij/jQZtH9ra0S5n0PdTY3WfyLNUgx4duq3v4lnOlBd4Y/YY/qTFUHdr5RMZrgma4is/iAGZuq1Xb6RU+lvV2p/gDY1E8ykg+OAX1Clfgz3OPOwY+q31rpy9Vtx0zpCkRV9+hyafuC2lTNxKJ0eO35Efp2iol7rPfNoUaxP7EQd/qnkBgFzlxhHGnXCtymqVcpJJIWcEI/yVrP93sk4gTAeZlN0ya+obDlseV+k6aofBewdOsD3xNGULoBXNL52sR+FbotkArEAUbi/FrSVKC4Ptl6dplu01S/Tw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4407.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(136003)(366004)(346002)(39860400002)(33656002)(4326008)(66946007)(107886003)(6916009)(478600001)(8936002)(71200400001)(66446008)(64756008)(316002)(66556008)(66476007)(186003)(86362001)(52536014)(5660300002)(8676002)(76116006)(83380400001)(2906002)(54906003)(55016002)(9686003)(26005)(6506007)(7696005)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: hFe+v4/ZUMZnG6GWl3d+iZzicro5+NrXsvu19Q+bK18KMqRIg5kki0KnRVtITCSGwX2GZ0Yz1LK39cMakHkcPppMLc0Irk/TXdbzjCbiHvJgpRdSrcf+9BhF9HlgH2wFcGE56svVgoSNOqFRNGr7XodxbGO5Xk3qUO4DP9tj4nQXI8FH+nFRtheepjtKRDN18gCDx9HKO8YiTqZYcrNf0P7qci417s5ATpcj1ATpP0B78nCAGRe0dO/OF5BJmLq+cchHRMJQzY1BWRf+ki2b/WNCIvJSkt+7yxe2jEz8FF0M+euW1qWv81JfGPQbYBNN1cZv+j2ydWg+M0fMXhHCW8ebnGRm8eC2pkNk70sRBXVJzL70yFoZi6dkwy/MRIhxU0bDD0nEuoxeBpfjb223UaR4XkOUM4Sb0raFX6x2fxAberTUHAikGeo8pYotA+FQdnwJj+FdarFxzLMFmPZpgwfrw18BkRS27K2rPgwv1MLRd96T2Zfkfkw689v5kN90PsbILzhAEqjYxGbRxJzrIsNIlsj6Rdj3dAmw5WMs68bIXvzJHNCRIIVZz/7Hmn8Sp7rMw8y4xOUzoExc/PiT0vFee1sacWLm+sMY7cILso2dqs0BPeWeR3cvS8ycygEiZzBW6hJpW31SGJFrds+VEA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726134AbgIQWTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:19:20 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:48972 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgIQWTT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 18:19:19 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HMJ2VC131566;
+        Thu, 17 Sep 2020 22:19:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=RUEE1gdARxSd8TLKFRIs3ndOmPAr4ZKel97nw+RPwJM=;
+ b=K3zvi+KuVfbFuBqN+Gfl8KU0HDG27V5ZTPOFdbX2O2b8q+JKQIj/tukic9oNphrt1hAb
+ GAO8IgAh1dDpnKNKmf6qMzK12U8EnBzrvvyhKLVW4uCLDopCU/KXTI+UJb+UxiHvvOva
+ 0M6RQrhk3HzsGCfi52OoQ3nKcB/EdhTMgfX31uTcjecFWCNCn5QNhoDlB/i3hFTxX0QQ
+ vQX5nfPOblo+bpHgSEue0x2ZhhQZ0aIjtD95kbgR/06U/3p2RdLCC4xxFy+df3VagSQx
+ 71Qx9lkLQS9aqd4xmu0CCNyJ/7vnTPDkFgKO1dzywKAFztPYDeS5fP8DdPoO85vD+OBe BA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 33gp9mm15q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Sep 2020 22:19:02 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HM05kk102004;
+        Thu, 17 Sep 2020 22:19:01 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 33khpnr2mf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Sep 2020 22:19:01 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08HMJ0kd019685;
+        Thu, 17 Sep 2020 22:19:00 GMT
+Received: from localhost (/10.159.155.161)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 17 Sep 2020 22:18:59 +0000
+Date:   Thu, 17 Sep 2020 15:18:58 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net
+Subject: Re: [PATCH v2 9/9] iomap: Change calling convention for zeroing
+Message-ID: <20200917221858.GH7964@magnolia>
+References: <20200910234707.5504-1-willy@infradead.org>
+ <20200910234707.5504-10-willy@infradead.org>
+ <20200917220500.GR7955@magnolia>
+ <20200917221115.GY5449@casper.infradead.org>
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4407.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e67a53f-924f-4740-2e4e-08d85b57a1ad
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2020 22:18:40.3600
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ylBp/00vcBb9n0cdmGAABLmWnugt7g9WlHnhWNIGaWsrjSvNkTJgncdZYBdzi3rbDmTecUNEMDvyWO031tBDmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6961
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917221115.GY5449@casper.infradead.org>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009170162
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009170163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On Thu, Sep 17, 2020 at 11:11:15PM +0100, Matthew Wilcox wrote:
+> On Thu, Sep 17, 2020 at 03:05:00PM -0700, Darrick J. Wong wrote:
+> > > -static loff_t
+> > > -iomap_zero_range_actor(struct inode *inode, loff_t pos, loff_t count,
+> > > -		void *data, struct iomap *iomap, struct iomap *srcmap)
+> > > +static loff_t iomap_zero_range_actor(struct inode *inode, loff_t pos,
+> > > +		loff_t length, void *data, struct iomap *iomap,
+> > 
+> > Any reason not to change @length and the return value to s64?
+> 
+> Because it's an actor, passed to iomap_apply, so its types have to match.
+> I can change that, but it'll be a separate patch series.
 
-Thanks for the comments,
+Ah, right.  I seemingly forgot that. :(
 
-> -----Original Message-----
-> From: Michael Auchter <michael.auchter@ni.com>
-> Sent: Thursday, September 17, 2020 3:11 PM
-> To: Ben Levinsky <BLEVINSK@xilinx.com>
-> Cc: punit1.agrawal@toshiba.co.jp; Stefano Stabellini <stefanos@xilinx.com=
->;
-> Michal Simek <michals@xilinx.com>; devicetree@vger.kernel.org;
-> mathieu.poirier@linaro.org; Ed T. Mooring <emooring@xilinx.com>; linux-
-> remoteproc@vger.kernel.org; linux-kernel@vger.kernel.org; Jiaying Liang
-> <jliang@xilinx.com>; robh+dt@kernel.org; linux-arm-
-> kernel@lists.infradead.org; Jiaying Liang <jliang@xilinx.com>; Michal Sim=
-ek
-> <michals@xilinx.com>; Ed T. Mooring <emooring@xilinx.com>; Jason Wu
-> <j.wu@xilinx.com>
-> Subject: Re: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5 remoteproc
-> driver
->=20
-> Hey Ben,
->=20
-> Split mode is still not functional in this patch series (as was the case
-> with the last few revisions).
->=20
-> Before sending out the next revision, can you _please_ ensure you're
-> testing all supported configurations?
->=20
-[Ben Levinsky]  I will make sure to update in next revision.
- As per review, I tested on QEMU and hardware firmware loading in split mod=
-e on R5 0 split, R5 1 split and R5 lockstep and  was  able to successfully =
-load, start and establish IPC links
+Carry on.
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-That being said, I will update the to reflect the values between the enum f=
-or rpu operation mode and the documentation in the binding.
-
-For testing, I can provide a pointer to a publicly available device tree I =
-am using if that helps. If not, can you expand on the testing of supported =
-configurations?
-
-> On Thu, Sep 17, 2020 at 12:43:41PM -0700, Ben Levinsky wrote:
-> > +/**
-> > + * RPU core configuration
-> > + */
-> > +static enum rpu_oper_mode rpu_mode;
-> > +
->=20
-> <.. snip ..>
->=20
-> > +static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
-> > +{
-> > +	int ret, i =3D 0;
-> > +	u32 lockstep_mode;
-> > +	struct device *dev =3D &pdev->dev;
-> > +	struct device_node *nc;
-> > +
-> > +	ret =3D of_property_read_u32(dev->of_node,
-> > +				   "lockstep-mode",
-> > +				   &lockstep_mode);
-> > +	if (ret < 0) {
-> > +		return ret;
-> > +	} else if (lockstep_mode !=3D PM_RPU_MODE_LOCKSTEP &&
-> > +	    lockstep_mode !=3D PM_RPU_MODE_SPLIT) {
-> > +		dev_err(dev,
-> > +			"Invalid lockstep-mode %x in %pOF\n",
-> > +			lockstep_mode, dev->of_node);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	rpu_mode =3D lockstep_mode;
-> > +
-> > +	dev_dbg(dev, "RPU configuration: %s\n",
-> > +		lockstep_mode ? "lockstep" : "split");
->=20
-> The binding documents lockstep-mode as:
->=20
-> > +  lockstep-mode:
-> > +    description:
-> > +      R5 core configuration (split is 0 or lock-step and 1)
-> > +    maxItems: 1
->=20
-will update this as you note so that lockstep and split mode are accurately=
- reflected.=20
-
-> (Which needs to be reworded, but it looks like the intent was "split is
-> 0 and lock-step is 1")
->=20
-> However, rpu_oper_mode is defined as:
->=20
-> > +enum rpu_oper_mode {
-> > +       PM_RPU_MODE_LOCKSTEP =3D 0,
-> > +       PM_RPU_MODE_SPLIT =3D 1,
-> > +};
->=20
-> so the assignment "rpu_mode =3D lockstep_mode" is incorrect.
->=20
-once the binding is updated, why would this still be incorrect? Assuming th=
-e documentation is updated, the above line would be ok, right?
-
-Thank you for the review
-Ben
-
-> - Michael
+--D
