@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D796526D16B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9845926D17C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgIQDEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 23:04:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:51718 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726007AbgIQDEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 23:04:22 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6F50573C8FE365E61F5B;
-        Thu, 17 Sep 2020 11:04:18 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 11:04:08 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Bin Luo <luobin9@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <huawei.libin@huawei.com>, <guohanjun@huawei.com>
-Subject: [PATCH] hinic: fix potential resource leak
-Date:   Thu, 17 Sep 2020 11:03:07 +0800
-Message-ID: <20200917030307.47195-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+        id S1726064AbgIQDPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 23:15:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726002AbgIQDPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 23:15:32 -0400
+X-Greylist: delayed 477 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 23:15:32 EDT
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DDA42078D;
+        Thu, 17 Sep 2020 03:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600312053;
+        bh=RQRBoaQqDALDP4kOlcUyHxmW7glid2QWf8ufXBgsveI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Iwk7g+uGaaYCujkc7/ItS11t29T650I74YOla9t4oOYV6DfPh9T0/RCV/RM4OXEDm
+         AdU33vBshNENwyhCzn7sl/ZHEXT2VRRGexmFhC+sPCDvWCWYAzwDSnSDP3+Avijf7s
+         MXNRcM4eTVQGj2x+6vHGx8PMuFLuPCnokClFM8OY=
+Date:   Thu, 17 Sep 2020 12:07:28 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Frank Ch. Eigler" <fche@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Aaron Merey <amerey@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] perf probe: Support debuginfod client
+Message-Id: <20200917120728.d5ecb9587ff3366b6c04228b@kernel.org>
+In-Reply-To: <20200916201753.GC16238@redhat.com>
+References: <160027467316.803747.10741549521899847231.stgit@devnote2>
+        <20200916181307.GB16238@redhat.com>
+        <20200916185218.GA1322686@kernel.org>
+        <20200916201753.GC16238@redhat.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In rx_request_irq(), it will just return what irq_set_affinity_hint()
-returns. If it is failed, the napi added is not deleted properly.
-Add a common exit for failures to do this.
+On Wed, 16 Sep 2020 16:17:53 -0400
+"Frank Ch. Eigler" <fche@redhat.com> wrote:
 
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- drivers/net/ethernet/huawei/hinic/hinic_rx.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+> Hi -
+> 
+> > > Nice, even uses the source code fetching part of the webapi!
+> > 
+> > So, can I take that as an Acked-by or Reviewed-by? 
+> 
+> Sure.
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_rx.c b/drivers/net/ethernet/huawei/hinic/hinic_rx.c
-index 5bee951fe9d4..63da9cc8ca51 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_rx.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_rx.c
-@@ -543,18 +543,23 @@ static int rx_request_irq(struct hinic_rxq *rxq)
- 	if (err) {
- 		netif_err(nic_dev, drv, rxq->netdev,
- 			  "Failed to set RX interrupt coalescing attribute\n");
--		rx_del_napi(rxq);
--		return err;
-+		goto err_irq;
- 	}
- 
- 	err = request_irq(rq->irq, rx_irq, 0, rxq->irq_name, rxq);
--	if (err) {
--		rx_del_napi(rxq);
--		return err;
--	}
-+	if (err)
-+		goto err_irq;
- 
- 	cpumask_set_cpu(qp->q_id % num_online_cpus(), &rq->affinity_mask);
--	return irq_set_affinity_hint(rq->irq, &rq->affinity_mask);
-+	err = irq_set_affinity_hint(rq->irq, &rq->affinity_mask);
-+	if (err)
-+		goto err_irq;
-+
-+	return 0;
-+
-+err_irq:
-+	rx_del_napi(rxq);
-+	return err;
- }
- 
- static void rx_free_irq(struct hinic_rxq *rxq)
+Thanks Frank and Arnaldo!
+
+> 
+> > I need to support this in pahole...
+> 
+> pahole/dwarves use elfutils, so it already has automatic support.
+> 
+> https://sourceware.org/elfutils/Debuginfod.html
+
+I'm still not sure that which interface of elfutils I should use
+for this "automatic" debuginfod support. Are there good documentation
+about it?
+Since this series just for the kernel binary, I have to check we
+can do something on user-space binaries.
+
+Thank you,
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
