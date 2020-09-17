@@ -2,144 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C967026E5B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C53B26E5B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgIQTz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:55:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727772AbgIQO4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:56:04 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE5672223D;
-        Thu, 17 Sep 2020 14:46:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600353973;
-        bh=OAcKwoDjKOPDSdsU+T5CHJlT04hOipONnzcreUUefdQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yWy7RkdPe2vMlXwdX1Y/RQ2zjLDxFcRBEsuaKQZvJX3dOWfIkCS5xpbmT6p4iPv0C
-         IoTIVbpxIWCpV06ETCvwRqCPTpeKEVv26wRsDCmwk8wrMBWl7Gp3farhrExatEFEK7
-         MEQHXdQwx1wFaW71p/2vxqBvm+1FeKyUh0RxY6aI=
-Date:   Thu, 17 Sep 2020 16:46:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Prateek Sood <prsood@codeaurora.org>, Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-Message-ID: <20200917144645.GA275135@kroah.com>
-References: <20200915140653.610388773@linuxfoundation.org>
- <b94c29b3-ef68-897b-25a8-e6fcc181a22a@linuxfoundation.org>
- <8277900f-d300-79fa-eac7-096686a6fbc3@linuxfoundation.org>
- <20200916062958.GH142621@kroah.com>
- <69e7c908-4332-91fd-bdb2-6be19fcbf126@linuxfoundation.org>
- <20200916152629.GD3018065@kroah.com>
- <09de87b0-8055-26ef-cc31-0c63e63e5d2a@linuxfoundation.org>
- <20200916172529.GA3056792@kroah.com>
- <9365ff94-2a28-cc5f-7487-a6d8d42de302@linuxfoundation.org>
+        id S1726782AbgIQT4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:56:05 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12254 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727757AbgIQOyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:54:43 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6378080002>; Thu, 17 Sep 2020 07:51:52 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Thu, 17 Sep 2020 07:53:21 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Thu, 17 Sep 2020 07:53:21 -0700
+Received: from [10.26.74.242] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
+ 2020 14:53:09 +0000
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Marc Zyngier <maz@kernel.org>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Sumit Garg" <sumit.garg@linaro.org>, <kernel-team@android.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Gregory Clement" <gregory.clement@bootlin.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Linux Samsung SOC" <linux-samsung-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+ <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+ <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+ <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
+ <049d62ac7de32590cb170714b47fb87d@kernel.org>
+ <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
+ <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
+ <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
+ <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <ace68d00-f005-fee3-1f01-44522c180462@nvidia.com>
+Date:   Thu, 17 Sep 2020 15:53:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9365ff94-2a28-cc5f-7487-a6d8d42de302@linuxfoundation.org>
+In-Reply-To: <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600354312; bh=JvhskCgRRc+by6CEI8mCU2/vrU7nc17FP3zO033b9jg=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=gWnvu/cyb8ETmuvHuS85SQkDc0iD+QnmQ5xmwjvHmr7dpAdvG02eZggPEx5xq/yoP
+         CI5kwWAviTU0lE/2QCaSTE11nna/qI+/b3O6W3MbI/qwTb85w6eSkd/FS/AYlGZlkX
+         vryYTr3aT7GFbksMsJhg5hzivJg7dYFo1M3u1L9AIMK8Et0FD7ZFaUBFy2k95BJX8G
+         qPlt+zqWvWw5XGuSVI1cCZYZdE6IPn1Gl5uxFqRAcbu3FzDmUKwE1tmzvRqcAmjXF8
+         EvqYNfFv6Dz5H36qrqeFxgUJlsrN7AN5pfv28L4H/48v0MKDddNjA3BCXdV+p36qQa
+         869zQF2HOlTow==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 08:34:58AM -0600, Shuah Khan wrote:
-> On 9/16/20 11:25 AM, Greg Kroah-Hartman wrote:
-> > On Wed, Sep 16, 2020 at 09:34:52AM -0600, Shuah Khan wrote:
-> > > On 9/16/20 9:26 AM, Greg Kroah-Hartman wrote:
-> > > > On Wed, Sep 16, 2020 at 08:26:48AM -0600, Shuah Khan wrote:
-> > > > > On 9/16/20 12:29 AM, Greg Kroah-Hartman wrote:
-> > > > > > On Tue, Sep 15, 2020 at 08:54:24PM -0600, Shuah Khan wrote:
-> > > > > > > On 9/15/20 3:06 PM, Shuah Khan wrote:
-> > > > > > > > On 9/15/20 8:11 AM, Greg Kroah-Hartman wrote:
-> > > > > > > > > This is the start of the stable review cycle for the 5.8.10 release.
-> > > > > > > > > There are 177 patches in this series, all will be posted as a response
-> > > > > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > > > > let me know.
-> > > > > > > > > 
-> > > > > > > > > Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
-> > > > > > > > > Anything received after that time might be too late.
-> > > > > > > > > 
-> > > > > > > > > The whole patch series can be found in one patch at:
-> > > > > > > > >        https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
-> > > > > > > > > 
-> > > > > > > > > or in the git tree and branch at:
-> > > > > > > > >        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > > > > > > > linux-5.8.y
-> > > > > > > > > and the diffstat can be found below.
-> > > > > > > > > 
-> > > > > > > > > thanks,
-> > > > > > > > > 
-> > > > > > > > > greg k-h
-> > > > > > > > > 
-> > > > > > > > 
-> > > > > > > > Compiled and booted fine. wifi died:
-> > > > > > > > 
-> > > > > > > > ath10k_pci 0000:02:00.0: could not init core (-110)
-> > > > > > > > ath10k_pci 0000:02:00.0: could not probe fw (-110)
-> > > > > > > > 
-> > > > > > > > This is regression from 5.8.9 and 5.9-rc5 works just fine.
-> > > > > > > > 
-> > > > > > > > I will try to bisect later this evening to see if I can isolate the
-> > > > > > > > commit.
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > The following commit is what caused ath10k_pci driver problem
-> > > > > > > that killed wifi.
-> > > > > > > 
-> > > > > > > Prateek Sood <prsood@codeaurora.org>
-> > > > > > >        firmware_loader: fix memory leak for paged buffer
-> > > > > > > 
-> > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.8.y&id=ec0a59266c9c9f46037efd3dcc0323973e102271
-> > > > > > 
-> > > > > > Ugh, that's not good, is this also a problem in 5.9-rc5 as well?  For
-> > > > > > reference, this is commit 4965b8cd1bc1 ("firmware_loader: fix memory
-> > > > > > leak for paged buffer") in Linus's tree.
-> > > > > > 
-> > > > > 
-> > > > > I am not seeing this on Linux 5.9-rc5 for sure.
-> > > > > 
-> > > > > > And it should be showing up in 5.4.y at the moment too, as this patch is
-> > > > > > in that tree right now...
-> > > > > > 
-> > > > > 
-> > > > > I don't see this patch in  4.19.146-rc1
-> > > > 
-> > > > It's not there, it's in 5.4.66-rc1, which worked for you somehow, right?
-> > > > 
-> > > > > Linus's tree works for with this patch in. I compared the two files
-> > > > > for differences in commit between Linus's tree and 5.8.10-rc1
-> > > > > 
-> > > > > Couldn't find anything obvious.
-> > > > 
-> > > > Again, really odd...
-> > > > 
-> > > > I don't have a problem dropping it, but I should drop it from both 5.4.y
-> > > > and 5.8.y, right?
-> > > > 
-> > > 
-> > > Sorry. Yes. Dropping from 5.8 and 5.4 would be great until we figure out
-> > > why this patch causes problems.
-> > > 
-> > > I will continue debugging and let you know what I find.
-> > 
-> 
-> With this it boots and wifi is good for me. I am very puzzled by why
-> this made a difference to make sure I am not narrowing in on the wrong
-> patch.
-> 
-> Compiled and booted on my test system. No dmesg regressions.
-> 
-> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Great, thanks for testing them all and letting me know.
+On 17/09/2020 09:54, Marek Szyprowski wrote:
+> Hi Jon,
+>=20
+> On 17.09.2020 10:49, Jon Hunter wrote:
+>> On 17/09/2020 09:45, Marc Zyngier wrote:
+>>> On 2020-09-17 08:54, Jon Hunter wrote:
+>>>> On 17/09/2020 08:50, Marc Zyngier wrote:
+>>>>> On 2020-09-17 08:40, Linus Walleij wrote:
+>>>>>> On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
+>>>>>>
+>>>>>>> Can you try the patch below and let me know?
+>>>>>> I tried this patch and now Ux500 WORKS. So this patch is definitely
+>>>>>> something you should apply.
+>>>>>>
+>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (is_f=
+rankengic())
+>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_sgi_intid(irqstat);
+>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 this_cpu=
+_write(sgi_intid, intid);
+>>>>>> This needs changing to irqstat to compile as pointed out by Jon.
+>>>>>>
+>>>>>> With that:
+>>>>>> Tested-by: Linus Walleij <linus.walleij@linaro.org>
+>>>>> Thanks a lot for that.
+>>>>>
+>>>>> Still need to understand why some of Jon's systems are left unbootabl=
+e,
+>>>>> despite having similar GIC implementations (Tegra194 and Tegra210 use
+>>>>> the same GIC-400, and yet only one of the two boots correctly...).
+>>>> So far, I have only tested this patch on Tegra20. Let me try the other
+>>>> failing boards this morning and see if those still fail.
+>>> Tegra20 (if I remember well) is a dual A9 with the same GIC implementat=
+ion
+>>> as Ux500, hence requiring the source CPU bits to be written back. So th=
+is
+>>> patch should have cured it, but didn't...
+>>>
+>>> /me puzzled.
+>> Me too. Maybe there just happens to be something else also going wrong
+>> in next. I am doing a bit more testing to see if applying the fix
+>> directly on top of this change fixes it to try and eliminate anything
+>> else in -next.
+>>
+>> Linus, what -next are you testing on? I am using next-20200916.
+>=20
+> next-20200916 completely broken on ARM and ARM64. Please check=20
+> next-20200915 + the mentioned fix or just check=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log=
+/?h=3Dirq/ipi-as-irq
 
-greg k-h
+OK, I have confirmed that on Tegra20 and Tegra30, that next-20200915 +
+Marc's fix boots fine.
+
+Tegra186 and Tegra194 are not booting, but I am wondering if this is yet
+another issue that is not related. I have not actually bisected on these
+boards, but I am now bisecting on Tegra186 to confirm.
+
+Jon
+
+--=20
+nvpublic
