@@ -2,167 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C78826DE6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EBA26DEC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727396AbgIQOjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        id S1727804AbgIQOwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727428AbgIQOfw (ORCPT
+        with ESMTP id S1727671AbgIQOnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:35:52 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4261C06178C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:35:01 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id n61so2072833ota.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:35:01 -0700 (PDT)
+        Thu, 17 Sep 2020 10:43:01 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A10EC061351
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:35:19 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id m17so2438791ioo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pxmiWVhEehzHd6ZFjD+jJGJKKJXwae5fQoIEeS/lt3A=;
-        b=Ur3SSfoKIzOhlMrokNh3d0LSIycelY4+JWEQbg+FShKSXi1LpiZrIq8Jh4xbbyXgDd
-         1riseZqUbte0g3wM1FjeXzCiKzQ+SF/TaO3xtljB1N1ABjea15AXAT/WowvxPADy8HkG
-         vxAZFY3tX2HddxkEOtUhzsrulM617ykltWnik=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V9Zju+tm0Sa6Z1fnnq43Sy6GY7DhLfZ3ESLmGY3QN/E=;
+        b=ub336/6Pjba1dtAjwl9nDrPxr3O5UDSMScfz8w3nXsc+cbxPcXlbzNSpUZO6wLjw+V
+         QmmGiFmxHQRMXe+u41B1rITW3Ttx2UjN2Ru5bKqCKGAU9QBNnp4cDyv+gQQwbJPtetlq
+         YC+VjO5vpLotco7ZXaYJehNFxPM7E/xiqK8ORTtBdf/S8d+5Aaub8yLj8XVsURY9S/T6
+         HIwbIfHesJ0gkDQuFV4F0b2tX4EbKmEImMn/XdB3e41/0ISd+rgkU0uIpfWMcha8GLo6
+         BG30HcdoGOwhhodS4N0JYzsj731vuLWxgiwvjRMpOS4i2zH9SrfJwRYdX7b8Op0Of0gF
+         QAqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pxmiWVhEehzHd6ZFjD+jJGJKKJXwae5fQoIEeS/lt3A=;
-        b=BzWIp28nFx2UphJnDsvC4jmevDkTRowBSCeT4Zyha5Lvf0feAy+kbBtleX+x2Yx3Bz
-         JPSpr+vEYD470BryjB1+pKD/Q/doZeSOonJuVcjQxBrpziZp9anx0jnOhulsmEqKnlYi
-         84lx88FaWvs3qlW9KRYmfip1COCsGaBD7LVX894uA+9zcSf5X8qIBgikRYSGykrgZouN
-         Q68EOSToEPuOdcQEj+CT7i+p8QV30gO5A7LcxMa6WrOrLyNdefbyYx6W1Igmv21t/3bd
-         koIDl1jyY4+cRdG3PbwoNdkwPI1I3Mq1cyFDBnI8z+6UIwXxnXknw74aQQOr2QRLh0Nt
-         0gEg==
-X-Gm-Message-State: AOAM532Nui8fF9bYQZMyG+NL3aSCo2r4FR7wOw5aqOkVx5Rkme5KLN2u
-        nbZ0udeCC+K/YTpYHDzPRqf/zw==
-X-Google-Smtp-Source: ABdhPJyEN1ccVTpTrxj/BTLOknlXwp71HLPU26SVjNkxO20a0OqX6zwVNBiACSaugK7UKkzxCQJEKQ==
-X-Received: by 2002:a9d:4b99:: with SMTP id k25mr20946151otf.281.1600353300965;
-        Thu, 17 Sep 2020 07:35:00 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g7sm4410436otl.59.2020.09.17.07.34.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 07:35:00 -0700 (PDT)
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Prateek Sood <prsood@codeaurora.org>, Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200915140653.610388773@linuxfoundation.org>
- <b94c29b3-ef68-897b-25a8-e6fcc181a22a@linuxfoundation.org>
- <8277900f-d300-79fa-eac7-096686a6fbc3@linuxfoundation.org>
- <20200916062958.GH142621@kroah.com>
- <69e7c908-4332-91fd-bdb2-6be19fcbf126@linuxfoundation.org>
- <20200916152629.GD3018065@kroah.com>
- <09de87b0-8055-26ef-cc31-0c63e63e5d2a@linuxfoundation.org>
- <20200916172529.GA3056792@kroah.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <9365ff94-2a28-cc5f-7487-a6d8d42de302@linuxfoundation.org>
-Date:   Thu, 17 Sep 2020 08:34:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V9Zju+tm0Sa6Z1fnnq43Sy6GY7DhLfZ3ESLmGY3QN/E=;
+        b=fWPm8tbcqEzldwuDv9VKO0HudSBEZ8wmTrS1lgsfrn5NUQ68pCIfeGgU8+80VA+cZF
+         IOEmiVb82Hyy6VbGvJEcLYZgshiMP1iajpQZg9TP5nWfnWZQ0yXOR+KDByz8OM5IJeyP
+         qUX141DZwuXds+8L+lESEv7fMlRBoRuLyQxH8Vy3fVs6SU3urH8UsDqHO7uYP4W1+0xz
+         PUgn8Fm/bixTqZ2wYF9WKbktKpSvNuLMzogvQZD8Qqr6HD2Yr7SYH6m50rg9pG4uvoUJ
+         lt/w0bP1En1NedNogJiJFENFNSkUIiBhW+a1r8epqzhiH0j0Cd9BX8P0JBOpz6uEXzEt
+         z4Pg==
+X-Gm-Message-State: AOAM532HY68C2LD7IpdjA9de9QsG+FGXCVjeR/N7+TZ/cbOYZ1PVlRc6
+        PDsZFx9l/2gbKAZS2bX1WlZ7xqdOD0ZOzchf+7myb8bo2mM=
+X-Google-Smtp-Source: ABdhPJy+UB5fmZyJ9BpUT/adGb+iZ5z5l4/ZEp4ftuFedj37WtawOETrRx84yv/+yUikmB46SbLzaP3vuUkAuf7uJhs=
+X-Received: by 2002:a5e:a705:: with SMTP id b5mr19309425iod.73.1600353318630;
+ Thu, 17 Sep 2020 07:35:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200916172529.GA3056792@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200916191737.4001561-1-mathieu.poirier@linaro.org> <20200917090835.GB51699@kroah.com>
+In-Reply-To: <20200917090835.GB51699@kroah.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Thu, 17 Sep 2020 08:35:07 -0600
+Message-ID: <CANLsYkya-7-XXX8AL3yyRHEe-KgNhTZAba_O5YzzJ1KiTRe_Og@mail.gmail.com>
+Subject: Re: [PATCH 00/16] coresight: next v5.9-rc5
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 11:25 AM, Greg Kroah-Hartman wrote:
-> On Wed, Sep 16, 2020 at 09:34:52AM -0600, Shuah Khan wrote:
->> On 9/16/20 9:26 AM, Greg Kroah-Hartman wrote:
->>> On Wed, Sep 16, 2020 at 08:26:48AM -0600, Shuah Khan wrote:
->>>> On 9/16/20 12:29 AM, Greg Kroah-Hartman wrote:
->>>>> On Tue, Sep 15, 2020 at 08:54:24PM -0600, Shuah Khan wrote:
->>>>>> On 9/15/20 3:06 PM, Shuah Khan wrote:
->>>>>>> On 9/15/20 8:11 AM, Greg Kroah-Hartman wrote:
->>>>>>>> This is the start of the stable review cycle for the 5.8.10 release.
->>>>>>>> There are 177 patches in this series, all will be posted as a response
->>>>>>>> to this one.  If anyone has any issues with these being applied, please
->>>>>>>> let me know.
->>>>>>>>
->>>>>>>> Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
->>>>>>>> Anything received after that time might be too late.
->>>>>>>>
->>>>>>>> The whole patch series can be found in one patch at:
->>>>>>>>        https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
->>>>>>>>
->>>>>>>> or in the git tree and branch at:
->>>>>>>>        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->>>>>>>> linux-5.8.y
->>>>>>>> and the diffstat can be found below.
->>>>>>>>
->>>>>>>> thanks,
->>>>>>>>
->>>>>>>> greg k-h
->>>>>>>>
->>>>>>>
->>>>>>> Compiled and booted fine. wifi died:
->>>>>>>
->>>>>>> ath10k_pci 0000:02:00.0: could not init core (-110)
->>>>>>> ath10k_pci 0000:02:00.0: could not probe fw (-110)
->>>>>>>
->>>>>>> This is regression from 5.8.9 and 5.9-rc5 works just fine.
->>>>>>>
->>>>>>> I will try to bisect later this evening to see if I can isolate the
->>>>>>> commit.
->>>>>>>
->>>>>>
->>>>>> The following commit is what caused ath10k_pci driver problem
->>>>>> that killed wifi.
->>>>>>
->>>>>> Prateek Sood <prsood@codeaurora.org>
->>>>>>        firmware_loader: fix memory leak for paged buffer
->>>>>>
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.8.y&id=ec0a59266c9c9f46037efd3dcc0323973e102271
->>>>>
->>>>> Ugh, that's not good, is this also a problem in 5.9-rc5 as well?  For
->>>>> reference, this is commit 4965b8cd1bc1 ("firmware_loader: fix memory
->>>>> leak for paged buffer") in Linus's tree.
->>>>>
->>>>
->>>> I am not seeing this on Linux 5.9-rc5 for sure.
->>>>
->>>>> And it should be showing up in 5.4.y at the moment too, as this patch is
->>>>> in that tree right now...
->>>>>
->>>>
->>>> I don't see this patch in  4.19.146-rc1
->>>
->>> It's not there, it's in 5.4.66-rc1, which worked for you somehow, right?
->>>
->>>> Linus's tree works for with this patch in. I compared the two files
->>>> for differences in commit between Linus's tree and 5.8.10-rc1
->>>>
->>>> Couldn't find anything obvious.
->>>
->>> Again, really odd...
->>>
->>> I don't have a problem dropping it, but I should drop it from both 5.4.y
->>> and 5.8.y, right?
->>>
->>
->> Sorry. Yes. Dropping from 5.8 and 5.4 would be great until we figure out
->> why this patch causes problems.
->>
->> I will continue debugging and let you know what I find.
-> 
+On Thu, 17 Sep 2020 at 03:08, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Sep 16, 2020 at 01:17:21PM -0600, Mathieu Poirier wrote:
+> > Good morning Greg,
+> >
+> > Here are the CS patches I'd like to see included in the v5.10 merge window.
+> > There might be a part two but I'm not sure yet.
+>
+> Hopefully the "make things a module" gets fixed up to make it there :)
+>
 
-With this it boots and wifi is good for me. I am very puzzled by why
-this made a difference to make sure I am not narrowing in on the wrong
-patch.
+Right - that's the part I'm not sure about.
 
-Compiled and booted on my test system. No dmesg regressions.
-
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+> I'll apply this later today, thanks!
+>
+> greg k-h
