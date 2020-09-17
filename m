@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A3726E665
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F155826E655
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgIQUM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgIQUM7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:12:59 -0400
-Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E97C061356;
-        Thu, 17 Sep 2020 12:33:45 -0700 (PDT)
-Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
-        by mail.nic.cz (Postfix) with ESMTP id 38E29140AE4;
-        Thu, 17 Sep 2020 21:31:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1600371101; bh=JNJBel4wKH1Ej8C26iz5DB6vJq84QpVnS656iTCudLE=;
-        h=From:To:Date;
-        b=xL+PObdj8K7gL2ztGwJeLu6BIXTtUEUk6Bq1GbxVhfYyl2571DCah9U+wbNeC134P
-         8GBqxqJIqxrwNbWGI5tgakEQbxwJShH8hFWWAa9rvFSom7+x8svs7OrvwhM4SF7tr7
-         a0jnqzBi9WvTg+HF6y5/KPwBG35Ezl9QOuTYsqNM=
-From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
-        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
-        Phil Blundell <pb@handhelds.org>,
-        Samuel Ortiz <sameo@openedhand.com>
-Subject: [PATCH mfd] mfd: asic3: build if COMPILE_TEST=y
-Date:   Thu, 17 Sep 2020 21:31:40 +0200
-Message-Id: <20200917193140.5324-1-marek.behun@nic.cz>
-X-Mailer: git-send-email 2.26.2
+        id S1726619AbgIQULs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:11:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgIQULj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 16:11:39 -0400
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E0AE20707;
+        Thu, 17 Sep 2020 19:34:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600371264;
+        bh=qyJdM6F52/Q1voZiWeq2UVFE1j/RfRq6JpEmt5HrtKs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=nl87bhq0c52XQGZSTqrkMQjJQK2LDpZiLIfNrMmyTyp4HjdmKZyyA/GVJn1T7cv2y
+         1ztlfS7jeG9uKgfG0hM9TalYvO6pW26KOD6++2q2bwpphVrqgkvJWEPM09Y322unKU
+         nuYQBxFPoXB2fhaYjnMpZYM/BHBSSU5Hmh7UpXFw=
+Message-ID: <ef456db1319b0ef390afd3ca7e7f204721d2484c.camel@kernel.org>
+Subject: Re: [PATCH -next] vdpa: mlx5: select VHOST to fix build errors
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Thu, 17 Sep 2020 12:34:23 -0700
+In-Reply-To: <f47e2bab-c19c-fab5-cfb9-e2b5ba1be69a@infradead.org>
+References: <f47e2bab-c19c-fab5-cfb9-e2b5ba1be69a@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Spam-Status: No, score=0.00
-X-Spamd-Bar: /
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Build this driver on another platforms if COMPILE_TEST=y. Another
-drivers may depend on this, for example leds-asic3.
+On Thu, 2020-09-17 at 11:58 -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+> 
+> drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so select
+> VHOST to eliminate build errors.
+> 
+> ld: drivers/vdpa/mlx5/core/mr.o: in function `add_direct_chain':
+> mr.c:(.text+0x106): undefined reference to `vhost_iotlb_itree_first'
+> ld: mr.c:(.text+0x1cf): undefined reference to
+> `vhost_iotlb_itree_next'
+> ld: mr.c:(.text+0x30d): undefined reference to
+> `vhost_iotlb_itree_first'
+> ld: mr.c:(.text+0x3e8): undefined reference to
+> `vhost_iotlb_itree_next'
+> ld: drivers/vdpa/mlx5/core/mr.o: in function `_mlx5_vdpa_create_mr':
+> mr.c:(.text+0x908): undefined reference to `vhost_iotlb_itree_first'
+> ld: mr.c:(.text+0x9e6): undefined reference to
+> `vhost_iotlb_itree_next'
+> ld: drivers/vdpa/mlx5/core/mr.o: in function
+> `mlx5_vdpa_handle_set_map':
+> mr.c:(.text+0xf1d): undefined reference to `vhost_iotlb_itree_first'
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Leon Romanovsky <leonro@nvidia.com>
+> Cc: netdev@vger.kernel.org
+> ---
+> Note: This patch may not be the right thing, but it fixes the build
+> errors.
+> 
+>  drivers/vdpa/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- linux-next-20200917.orig/drivers/vdpa/Kconfig
+> +++ linux-next-20200917/drivers/vdpa/Kconfig
+> @@ -32,6 +32,7 @@ config IFCVF
+>  config MLX5_VDPA
+>  	bool "MLX5 VDPA support library for ConnectX devices"
+>  	depends on MLX5_CORE
+> +	select VHOST
 
-Signed-off-by: Marek Behún <marek.behun@nic.cz>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Phil Blundell <pb@handhelds.org>
-Cc: Samuel Ortiz <sameo@openedhand.com>
----
- drivers/mfd/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+select keyword usually complicates things.
+It is better if you add a dependency rather than forcing VHOST.
+Just do:
+depends on VHOST & MLX5_CORE
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 33df0837ab415..599a01aee7abe 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -290,7 +290,8 @@ config MFD_CS47L92
- 
- config MFD_ASIC3
- 	bool "Compaq ASIC3"
--	depends on GPIOLIB && ARM
-+	depends on GPIOLIB
-+	depends on ARM || COMPILE_TEST
- 	select MFD_CORE
- 	help
- 	  This driver supports the ASIC3 multifunction chip found on many
--- 
-2.26.2
+>  	default n
+>  	help
+>  	  Support library for Mellanox VDPA drivers. Provides code that
+> is
+> 
 
