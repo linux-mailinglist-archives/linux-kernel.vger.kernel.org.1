@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0C826E3F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCC526E3F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgIQSiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
+        id S1726421AbgIQSin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbgIQSgN (ORCPT
+        with ESMTP id S1726650AbgIQSgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:36:13 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4B2C061353
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:36:13 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id m6so3142795wrn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:36:13 -0700 (PDT)
+        Thu, 17 Sep 2020 14:36:14 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233E6C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:36:14 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id m6so3142839wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=9qViGrdUGpa0ThWB+YcFxDSbeYaJXJqK+FKlEA3vuxA=;
-        b=nXYqabRMAd6ecAv6o7n+gbyP8lIEInIM1bduwtk6gkOAsnFCZFVNSEbxc4gjOhn2He
-         ptpAwvp9f3TYVItGu0CWnX8YSH/bNnf0ThJJc04JiOHRtJMed/bQytK4fSDx4xLq5ZFy
-         2m4lN2B4zic6x4Z0W5EltglSFnAcB7ulIL3JEUQJH5Hr2l/z6JlRsNalfq6BcCfjKvAj
-         A/ePNKMUbjPbVkZSg+jaPLF0FQ+UpFYLQ/Rcio52l545Dp9pyaJkaLSFTbVsYy8PWjf/
-         ffSH9+EovqeSe4kEUnRyjBJXUU1DtlGiKikA5V3fqYz9taWP5JG+htBaVRd3EDpVFT9l
-         lffw==
+        bh=95zSQXucA3JVtCyytHmj0YY6t7Txi03VIMdUw17K6OY=;
+        b=dy8qrGfBrIm415C/AKe+zhxMSYXEPCm5p9tVIbpQLxrIuNdaArcxZmfXZ2+/RjNVSr
+         cePOmHKnEe8/oekKxsYVXhS0ri5fv0JFc85DA/dP2bKxJfQfndLjhVb+x/+zOD/HXyMn
+         rj45ayusWqqcbZXaaPYBr297PIQka5gcTb11rNycGtej9/l27rxbt4x+xnzUFOmN+/6d
+         QBYEM6og75J3XUgMb306Mumrb7sSofApnV8jTGgGvhykwNDPRHl3XBZwxQ9j+n/b/U/i
+         rkWlL9qDydk04KgRl65sEpqnbosBla5cYMC5Mom2JtamY9zp/HfqYT1X2z+PJDfr6d5F
+         Umlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=9qViGrdUGpa0ThWB+YcFxDSbeYaJXJqK+FKlEA3vuxA=;
-        b=qZ7fLQnKUxl+cAUnchWYX9bwLQu5/EFO7CeMvlf7QA0hlMa5Z+moBmEMmsBYpFqbAn
-         6wXCfj9BJIE53fK3jxZP81ZSqPUuKH5pmIUSLQdlwofIkS2tGxI4aWb+AR7ZKHqe2fss
-         PfeV0lIy+QCPv99JIH6pqk8hJZeBzpzcI3PY4n29fHegd4IFA4WxPw/esoR6qM8bz0jV
-         K5j+K8uzYaFmbmciFOdLaK2uJdJKnXVVwJrqBKsnB1hML8SJu9IPl6Rxq9lXn+bpcawh
-         /YOUXxaMMkRNh5SMfP3ua/9uzpVJcShETyxAWc1Cf2FX/O3Y2eGRsQcEju6Q/DWjbk0S
-         5thA==
-X-Gm-Message-State: AOAM533Ff96RnJ/oUu5gzFR5Hbelv7UzlHDxylsXECh+qwYUyer1xix8
-        higmRybeF6LzsJ2/4nbZNOplxg==
-X-Google-Smtp-Source: ABdhPJy7+7QERE4fHeCWidnhS46dr4Oq55POtQVLZeXG+8jIPa6GyhVDO/qNZvzRbwQjpN82CwAdSw==
-X-Received: by 2002:adf:81e6:: with SMTP id 93mr33456129wra.412.1600367771799;
-        Thu, 17 Sep 2020 11:36:11 -0700 (PDT)
+        bh=95zSQXucA3JVtCyytHmj0YY6t7Txi03VIMdUw17K6OY=;
+        b=t6uN9tDpWcnf33skkIUigiIHBnKDd2MeUEs7RPjRKmBEMHlr77+9BeNEcIHkDLG1CJ
+         jHhfYnnPqfP5Ezjoo0Y8SnFJuBK8tRW5VGM9daviblWmC8FhGZ/Id6xrWFnGIfNohqns
+         G/15uwRnMQsN7LiuINgxhWsUAkXR3CZbLkLUjfiVI5GcUdrKtpZP4erRvLpF8x35z96x
+         PDkoeUrP2vQ7FSr/yQ+4M+9ZCOQ+acEgBUefhF5odItEUH+Ku67HD7F86EcbUYgwXUig
+         v287kEdgGa5RrLztTPph8MW/KpnG0dblWrghUp8d1dmHAPkDu7zrKoYDbou8ebSmt69E
+         Lhqw==
+X-Gm-Message-State: AOAM530u2eiiYbWYV9YIqahTi5AaWmSpz1/SBaZ7MLfEbajLaTTr/xeh
+        PqhW5Qy3PYqYmsLIb4aYLartZg==
+X-Google-Smtp-Source: ABdhPJyOLICoWIu3123UpyJexAwTB9qPRSR1qGn78IXm3kL9cpE2LR7gh5Zt/pUtPXnwu2PxLEAwlQ==
+X-Received: by 2002:a5d:5261:: with SMTP id l1mr33249298wrc.193.1600367772844;
+        Thu, 17 Sep 2020 11:36:12 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id x16sm571901wrq.62.2020.09.17.11.36.10
+        by smtp.googlemail.com with ESMTPSA id x16sm571901wrq.62.2020.09.17.11.36.11
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Sep 2020 11:36:11 -0700 (PDT)
+        Thu, 17 Sep 2020 11:36:12 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     arnd@arndb.de, davem@davemloft.net, herbert@gondor.apana.org.au,
         mripard@kernel.org, wens@csie.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
         Corentin Labbe <clabbe@baylibre.com>, stable@vger.kernel.org
-Subject: [PATCH 4/7] crypto: sun4i-ss: handle BigEndian for cipher
-Date:   Thu, 17 Sep 2020 18:35:55 +0000
-Message-Id: <1600367758-28589-5-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH 5/7] crypto: sun4i-ss: initialize need_fallback
+Date:   Thu, 17 Sep 2020 18:35:56 +0000
+Message-Id: <1600367758-28589-6-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1600367758-28589-1-git-send-email-clabbe@baylibre.com>
 References: <1600367758-28589-1-git-send-email-clabbe@baylibre.com>
@@ -63,68 +63,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ciphers produce invalid results on BE.
-Key and IV need to be written in LE.
-Furthermore, the non-optimized function is too complicated to convert,
-let's simply fallback on BE for the moment.
+The need_fallback is never initialized and seem to be always true at runtime.
+So all hardware operations are always bypassed.
 
-Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+Fixes: 0ae1f46c55f87 ("crypto: sun4i-ss - fallback when length is not multiple of blocksize")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- .../crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-index c6c25204780d..d66bb9cf657c 100644
+index d66bb9cf657c..c21a1a0a8b16 100644
 --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
 +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-@@ -52,13 +52,13 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+@@ -181,7 +181,7 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	unsigned int obo = 0;	/* offset in bufo*/
+ 	unsigned int obl = 0;	/* length of data in bufo */
+ 	unsigned long flags;
+-	bool need_fallback;
++	bool need_fallback = false;
  
- 	spin_lock_irqsave(&ss->slock, flags);
- 
--	for (i = 0; i < op->keylen; i += 4)
--		writel(*(op->key + i / 4), ss->base + SS_KEY0 + i);
-+	for (i = 0; i < op->keylen / 4; i++)
-+		writel(cpu_to_le32(op->key[i]), ss->base + SS_KEY0 + i * 4);
- 
- 	if (areq->iv) {
- 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
- 			v = *(u32 *)(areq->iv + i * 4);
--			writel(v, ss->base + SS_IV0 + i * 4);
-+			writel(cpu_to_le32(v), ss->base + SS_IV0 + i * 4);
- 		}
- 	}
- 	writel(mode, ss->base + SS_CTL);
-@@ -213,6 +213,11 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 	if (no_chunk == 1 && !need_fallback)
- 		return sun4i_ss_opti_poll(areq);
- 
-+/* The non aligned function does not work on BE. Probably due to buf/bufo handling.*/
-+#ifdef CONFIG_CPU_BIG_ENDIAN
-+	need_fallback = true;
-+#endif
-+
- 	if (need_fallback)
- 		return sun4i_ss_cipher_poll_fallback(areq);
- 
-@@ -225,13 +230,13 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 
- 	spin_lock_irqsave(&ss->slock, flags);
- 
--	for (i = 0; i < op->keylen; i += 4)
--		writel(*(op->key + i / 4), ss->base + SS_KEY0 + i);
-+	for (i = 0; i < op->keylen / 4; i++)
-+		writel(cpu_to_le32(op->key[i]), ss->base + SS_KEY0 + i * 4);
- 
- 	if (areq->iv) {
- 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
- 			v = *(u32 *)(areq->iv + i * 4);
--			writel(v, ss->base + SS_IV0 + i * 4);
-+			writel(cpu_to_le32(v), ss->base + SS_IV0 + i * 4);
- 		}
- 	}
- 	writel(mode, ss->base + SS_CTL);
+ 	if (!areq->cryptlen)
+ 		return 0;
 -- 
 2.26.2
 
