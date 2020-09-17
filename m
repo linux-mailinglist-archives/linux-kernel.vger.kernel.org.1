@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1276526DBC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D4926DBA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgIQMjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:39:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:17406 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726589AbgIQMgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:36:07 -0400
-X-Greylist: delayed 501 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:35:56 EDT
-IronPort-SDR: fd79BEHzpQKWVRy46I/7xhpDdyTgT5OGwJGtXBSiHszomggQzvHZLQybBGDqZKdWAOpB8zwKzw
- w8dTuZWx4O4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="139188102"
-X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; 
-   d="scan'208";a="139188102"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 05:25:37 -0700
-IronPort-SDR: jMwGTc1ljHPuFBxuAjHrcoVSsWcREA7H6qljjXAyITclEhlpWZmxmCgo2Qt68QLHzh5nWtxjLw
- hwXWkcDrbg+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; 
-   d="scan'208";a="336395898"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 17 Sep 2020 05:25:33 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kIsyf-00HK03-ST; Thu, 17 Sep 2020 15:25:29 +0300
-Date:   Thu, 17 Sep 2020 15:25:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        devel@driverdev.osuosl.org, robh@kernel.org,
-        jorhand@linux.microsoft.com, linux-media@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        kieran.bingham@ideasonboard.com, kitakar@gmail.com,
-        bingbu.cao@intel.com, mchehab@kernel.org, davem@davemloft.net,
-        tian.shu.qiu@intel.com, yong.zhi@intel.com
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-Message-ID: <20200917122529.GJ3956970@smile.fi.intel.com>
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917103343.GW26842@paasikivi.fi.intel.com>
- <20200917104941.GP4282@kadam>
+        id S1726979AbgIQMfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726935AbgIQMdC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:33:02 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36792C061788;
+        Thu, 17 Sep 2020 05:26:26 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0A53A2DB;
+        Thu, 17 Sep 2020 14:26:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1600345580;
+        bh=VW/FHynYWkvJI2rwZqPU2m2AOLCsdOx8X7PJldOHHDg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jUOw1GsRgvr0PgFeswIP1NUhmsue2/ZJEh7tqki/99R86mOcPHbwpx/iHHa6P6TAM
+         cXKqdRJ+eWIolQcRAf0g6/NHcPH18KqMHXQ5Q3wimeb/hWcqzHbVjrZmFB1zdTi22b
+         BEW5af60jlN7ArxvouEQ3fcsf9BuuZC9aNnYMue0=
+Date:   Thu, 17 Sep 2020 15:25:50 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/7] media: usb: uvc: no need to check return value of
+ debugfs_create functions
+Message-ID: <20200917122550.GA5053@pendragon.ideasonboard.com>
+References: <20200818133608.462514-1-gregkh@linuxfoundation.org>
+ <20200818133608.462514-7-gregkh@linuxfoundation.org>
+ <20200818234719.GD2360@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200917104941.GP4282@kadam>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200818234719.GD2360@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 01:49:41PM +0300, Dan Carpenter wrote:
-> On Thu, Sep 17, 2020 at 01:33:43PM +0300, Sakari Ailus wrote:
+Hi Greg,
 
-> > > +	int i, ret;
+On Wed, Aug 19, 2020 at 02:47:19AM +0300, Laurent Pinchart wrote:
+> Hi Greg,
+> 
+> Thank you for the patch.
+> 
+> On Tue, Aug 18, 2020 at 03:36:08PM +0200, Greg Kroah-Hartman wrote:
+> > When calling debugfs functions, there is no need to ever check the
+> > return value.  The function can work or not, but the code logic should
+> > never do something different based on this.
+> 
+> Is there no value in warning the user that something went wrong ? Silent
+> failures are harder to debug.
+
+Could yous share your opinion about this ?
+
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_debugfs.c | 20 ++++----------------
+> >  1 file changed, 4 insertions(+), 16 deletions(-)
 > > 
-> > unsigned int i
-> > 
-> 
-> Why?
-> 
-> For list iterators then "int i;" is best...  For sizes then unsigned is
-> sometimes best.  Or if it's part of the hardware spec or network spec
-> unsigned is best.  Otherwise unsigned variables cause a ton of bugs.
-> They're not as intuitive as signed variables.  Imagine if there is an
-> error in this loop and you want to unwind.  With a signed variable you
-> can do:
-> 
-> 	while (--i >= 0)
-> 		cleanup(&bridge.sensors[i]);
-
-Ha-ha. It's actually a counter argument to your stuff because above is the same as
-
-	while (i--)
-		cleanup(&bridge.sensors[i]);
-
-with pretty much unsigned int i.
-
-> There are very few times where raising the type maximum from 2 billion
-> to 4 billion fixes anything.
+> > diff --git a/drivers/media/usb/uvc/uvc_debugfs.c b/drivers/media/usb/uvc/uvc_debugfs.c
+> > index 2b8af4b54117..1a1258d4ffca 100644
+> > --- a/drivers/media/usb/uvc/uvc_debugfs.c
+> > +++ b/drivers/media/usb/uvc/uvc_debugfs.c
+> > @@ -73,7 +73,6 @@ static struct dentry *uvc_debugfs_root_dir;
+> >  void uvc_debugfs_init_stream(struct uvc_streaming *stream)
+> >  {
+> >  	struct usb_device *udev = stream->dev->udev;
+> > -	struct dentry *dent;
+> >  	char dir_name[33];
+> >  
+> >  	if (uvc_debugfs_root_dir == NULL)
+> > @@ -82,22 +81,11 @@ void uvc_debugfs_init_stream(struct uvc_streaming *stream)
+> >  	snprintf(dir_name, sizeof(dir_name), "%u-%u-%u", udev->bus->busnum,
+> >  		 udev->devnum, stream->intfnum);
+> >  
+> > -	dent = debugfs_create_dir(dir_name, uvc_debugfs_root_dir);
+> > -	if (IS_ERR_OR_NULL(dent)) {
+> > -		uvc_printk(KERN_INFO, "Unable to create debugfs %s "
+> > -			   "directory.\n", dir_name);
+> > -		return;
+> > -	}
+> > -
+> > -	stream->debugfs_dir = dent;
+> > +	stream->debugfs_dir = debugfs_create_dir(dir_name,
+> > +						 uvc_debugfs_root_dir);
+> >  
+> > -	dent = debugfs_create_file("stats", 0444, stream->debugfs_dir,
+> > -				   stream, &uvc_debugfs_stats_fops);
+> > -	if (IS_ERR_OR_NULL(dent)) {
+> > -		uvc_printk(KERN_INFO, "Unable to create debugfs stats file.\n");
+> > -		uvc_debugfs_cleanup_stream(stream);
+> > -		return;
+> > -	}
+> > +	debugfs_create_file("stats", 0444, stream->debugfs_dir, stream,
+> > +			    &uvc_debugfs_stats_fops);
+> >  }
+> >  
+> >  void uvc_debugfs_cleanup_stream(struct uvc_streaming *stream)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
 
-
+Laurent Pinchart
