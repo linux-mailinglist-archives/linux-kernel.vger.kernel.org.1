@@ -2,194 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AB926E1ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7513726E1D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgIQRMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbgIQRKl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:10:41 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BF0C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:10:40 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id y6so3310824oie.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HXoZogvsJhjtKuFoK3WF+ubF8suRBhDTxKDkq/Kclug=;
-        b=V3Qajdh0L/sUW2TIlpukVKiGNt84Vf6lK+ONZ/PkrfsXb9IUxsS4hJkLWYSwQH7pHY
-         ni+lagq8EeSCInPObfzwUls1VlBLuuMYXS3rs/6NgrZ/9DFKRb9pVwG7cakqnAvcvXLG
-         +Csdp9juOwbKzFwxyjWGmifliULd9JQXOS3Bs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HXoZogvsJhjtKuFoK3WF+ubF8suRBhDTxKDkq/Kclug=;
-        b=e7yaxS0Lp74dGckuh5+SLnD93s/ZJHYarzDIr1OTOtkgNd0jca0y7Tq+cpYcwoGez3
-         YeVF0ffBpEj1wKxAbM2c5FkNnn4PpXdbhy3Jw49O/gM+TV69det/k7+oBCGGfQJ+DD/R
-         Aeph8qpSQ1kAjdSd9zHVbOEKmOAWaFWAceqB50aix/AA27fMTTodR+h+dEqvde1RTGSX
-         7JMJ/X/0obaKgUh9aUwjijyqLYEV80aT/hoLXYsHJqPv1F8br8sVTFo+B2vU3X4sjCZj
-         Vt4MhHdkv78ikg3Pu92M9rjYOj81vh6ez03Tite1KIZYX3DHHluctqHPcx90JpGy26YD
-         aSYA==
-X-Gm-Message-State: AOAM5314CQuLvS3u/dU622GgZTGb3GTQ3jljh5OwayRSENlr+F9at4m1
-        vDW1mfJV6IUzs4N6KYk1Tnak23UmicNORooM59Y=
-X-Google-Smtp-Source: ABdhPJxw4wlOU05830Hhh3AmFblQ7U7Mt8U1jfpf/7jDYNR82XL8xy5ocKbsn1Qyk36hAjxgV0XdXA==
-X-Received: by 2002:a05:6808:8c1:: with SMTP id k1mr7198408oij.92.1600362639468;
-        Thu, 17 Sep 2020 10:10:39 -0700 (PDT)
-Received: from khost.hsd1.co.comcast.net ([2601:281:8380:670:a6ae:11ff:fe11:fba7])
-        by smtp.gmail.com with ESMTPSA id x21sm314866oie.49.2020.09.17.10.10.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 10:10:38 -0700 (PDT)
-From:   Kevin Chowski <chowski@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     intel-gfx@lists.freedesktop.org,
-        Kevin Chowski <chowski@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH] i915: Introduce quirk for shifting eDP brightness.
-Date:   Thu, 17 Sep 2020 11:09:06 -0600
-Message-Id: <20200917110838.1.I63d52f5b96d7e81e1e2dc2a72c4bf5fd84d3d3d0@changeid>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+        id S1726765AbgIQRKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:10:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727037AbgIQRJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:09:37 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68CB2221EC;
+        Thu, 17 Sep 2020 17:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600362576;
+        bh=nciZRCdNYJT5LRSin2ZAx5m8XyoA9EAOhiwakEqj6jQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=SyiIfpHuIoW9U8P/nV2+0jm0bcVB6Hze+sQfLOfLnkLaijZwE9rxcNcykSSJazMY3
+         DLBGkjGNT7matV4WJxZ/nbNtbVuAXSE7fbQJTPhE50BXB9jJHwE9CbkTUGZnwMr7pj
+         h4y9H/qTr5CLR/UWtwFLkgmTJ1bOCCGpu9WZs8WU=
+Date:   Thu, 17 Sep 2020 12:09:35 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Clint Sbisa <csbisa@amazon.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Ali Saidi <alisaidi@amazon.com>,
+        David Woodhouse <dwmw@amazon.co.uk>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Trivial comment fixup for PCI mmap ifdefs
+Message-ID: <20200917170935.GA1710267@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821155121.nzxjeeoze4h5pone@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have observed that Google Pixelbook's backlight hardware is
-interpretting these backlight bits from the most-significant side of the
-16 bit word (if DP_EDP_PWMGEN_BIT_COUNT < 16), whereas the driver code
-assumes the peripheral cares about the least-significant bits.
+On Fri, Aug 21, 2020 at 03:51:21PM +0000, Clint Sbisa wrote:
+> The else/endif comments for pci_{create,remove}_resource_files were
+> not updated in commit f719582435afe9c7985206e42d804ea6aa315d33 ("PCI:
+> Add pci_mmap_resource_range() and use it for ARM64").
+> 
+> Signed-off-by: Clint Sbisa <csbisa@amazon.com>
 
-Testing was done from within Chrome OS's build environment when the
-patch is backported to 5.4 (the version we are newly targeting for the
-Pixelbook); for the record:
-   $ emerge-eve-kernelnext sys-kernel/chromeos-kernel-5_4 && \
-      ./update_kernel.sh --remote=$IP
+Applied to pci/misc for v5.10, thanks!
 
-I used `/sys/kernel/debug/dri/0/eDP-1/i915_dpcd` on my laptop to verify
-that the registers were being set according to what the actual hardware
-expects; I also observe that the backlight is noticeably brighter with
-this patch.
-
-Signed-off-by: Kevin Chowski <chowski@chromium.org>
----
-
- .../drm/i915/display/intel_dp_aux_backlight.c | 34 +++++++++++++++++++
- drivers/gpu/drm/i915/display/intel_quirks.c   | 13 +++++++
- drivers/gpu/drm/i915/i915_drv.h               |  1 +
- 3 files changed, 48 insertions(+)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-index acbd7eb66cbe3..99c98f217356d 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-@@ -91,6 +91,23 @@ static u32 intel_dp_aux_get_backlight(struct intel_connector *connector)
- 	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT)
- 		level = (read_val[0] << 8 | read_val[1]);
- 
-+	if (i915->quirks & QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS) {
-+		if (!drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
-+						&read_val[0])) {
-+			DRM_DEBUG_KMS("Failed to read DPCD register 0x%x\n",
-+					DP_EDP_PWMGEN_BIT_COUNT);
-+			return 0;
-+		}
-+		// Only bits 4:0 are used, 7:5 are reserved.
-+		read_val[0] = read_val[0] & 0x1F;
-+		if (read_val[0] > 16) {
-+			DRM_DEBUG_KMS("Invalid DP_EDP_PWNGEN_BIT_COUNT 0x%X, expected at most 16\n",
-+						read_val[0]);
-+			return 0;
-+		}
-+		level >>= 16 - read_val[0];
-+	}
-+
- 	return level;
- }
- 
-@@ -106,6 +123,23 @@ intel_dp_aux_set_backlight(const struct drm_connector_state *conn_state, u32 lev
- 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
- 	u8 vals[2] = { 0x0 };
- 
-+	if (i915->quirks & QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS) {
-+		if (!drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
-+						&vals[0])) {
-+			DRM_DEBUG_KMS("Failed to write aux backlight level: Failed to read DPCD register 0x%x\n",
-+					  DP_EDP_PWMGEN_BIT_COUNT);
-+			return;
-+		}
-+		// Only bits 4:0 are used, 7:5 are reserved.
-+		vals[0] = vals[0] & 0x1F;
-+		if (vals[0] > 16) {
-+			DRM_DEBUG_KMS("Failed to write aux backlight level: Invalid DP_EDP_PWNGEN_BIT_COUNT 0x%X, expected at most 16\n",
-+						vals[0]);
-+			return;
-+		}
-+		level <<= (16 - vals[0]) & 0xFFFF;
-+	}
-+
- 	vals[0] = level;
- 
- 	/* Write the MSB and/or LSB */
-diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c b/drivers/gpu/drm/i915/display/intel_quirks.c
-index 46beb155d835f..63b27d49b2864 100644
---- a/drivers/gpu/drm/i915/display/intel_quirks.c
-+++ b/drivers/gpu/drm/i915/display/intel_quirks.c
-@@ -53,6 +53,16 @@ static void quirk_increase_ddi_disabled_time(struct drm_i915_private *i915)
- 	drm_info(&i915->drm, "Applying Increase DDI Disabled quirk\n");
- }
- 
-+/*
-+ * Some eDP backlight hardware uses the most-significant bits of the brightness
-+ * register, so brightness values must be shifted first.
-+ */
-+static void quirk_shift_edp_backlight_brightness(struct drm_i915_private *i915)
-+{
-+	i915->quirks |= QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS;
-+	DRM_INFO("Applying shift eDP backlight brightness quirk\n");
-+}
-+
- struct intel_quirk {
- 	int device;
- 	int subsystem_vendor;
-@@ -156,6 +166,9 @@ static struct intel_quirk intel_quirks[] = {
- 	/* ASRock ITX*/
- 	{ 0x3185, 0x1849, 0x2212, quirk_increase_ddi_disabled_time },
- 	{ 0x3184, 0x1849, 0x2212, quirk_increase_ddi_disabled_time },
-+
-+	/* Google Pixelbook */
-+	{ 0x591E, 0x8086, 0x2212, quirk_shift_edp_backlight_brightness },
- };
- 
- void intel_init_quirks(struct drm_i915_private *i915)
-diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index e4f7f6518945b..cc93bede4fab8 100644
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -525,6 +525,7 @@ struct i915_psr {
- #define QUIRK_PIN_SWIZZLED_PAGES (1<<5)
- #define QUIRK_INCREASE_T12_DELAY (1<<6)
- #define QUIRK_INCREASE_DDI_DISABLED_TIME (1<<7)
-+#define QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS (1<<8)
- 
- struct intel_fbdev;
- struct intel_fbc_work;
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+> ---
+>  drivers/pci/pci-sysfs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 6d78df981d41..cfc67b208616 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1196,10 +1196,10 @@ static int pci_create_resource_files(struct pci_dev *pdev)
+>  	}
+>  	return 0;
+>  }
+> -#else /* !HAVE_PCI_MMAP */
+> +#else /* ! (defined(HAVE_PCI_MMAP) || defined(ARCH_GENERIC_PCI_MMAP_RESOURCE)) */
+>  int __weak pci_create_resource_files(struct pci_dev *dev) { return 0; }
+>  void __weak pci_remove_resource_files(struct pci_dev *dev) { return; }
+> -#endif /* HAVE_PCI_MMAP */
+> +#endif /* defined(HAVE_PCI_MMAP) || defined(ARCH_GENERIC_PCI_MMAP_RESOURCE) */
+>  
+>  /**
+>   * pci_write_rom - used to enable access to the PCI ROM display
+> -- 
+> 2.23.3
+> 
