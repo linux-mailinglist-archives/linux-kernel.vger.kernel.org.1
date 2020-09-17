@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1D726D510
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE01726D526
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgIQHsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:48:15 -0400
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:8850 "EHLO
+        id S1726205AbgIQHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:50:41 -0400
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:2372 "EHLO
         mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726353AbgIQHsI (ORCPT
+        by vger.kernel.org with ESMTP id S1726236AbgIQHuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:48:08 -0400
-X-Greylist: delayed 1021 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 03:48:02 EDT
+        Thu, 17 Sep 2020 03:50:06 -0400
 Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08H7SkfK008571;
-        Thu, 17 Sep 2020 00:30:56 -0700
+        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08H7ShpW008558;
+        Thu, 17 Sep 2020 00:30:55 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=proofpoint;
- bh=j3cOSKhwOjurZeqFhTrv/DMoOKmM7vFZ5PNLDVetTUU=;
- b=doe0Jz58zA5DPgd2gCq7HGVhQ7bdnnPGmDpo2NDgw2ui6k6DF+0eDypyJsD+AhK68wpG
- Uj5hqe5ZmrZ/8/OWuXK8q7v9e1RTwdAvP2myd+jLB+tsCK6Z7b8hBvmUX6H2+eEEtG8C
- QCC/YWeE3yDnPmRi9cfDeHleb6mYP7Q9IvRjcDgKf8q2ADqSCUlXfC9kX5c2NgL8rL5p
- MjrT7HbmRoHCCZ6IQcrJHXWcp64FxzpSUPsVjuBaNp0fDIP1ObY/OQop19OVAZzrwGIQ
- nEhumTcUKMdT1mqU03pvCYCv8NQozu0CWOglb4Atb5BWIzGlMjrevZgYPBJZFqYuoSG5 BA== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 33k5njxkq6-1
+ bh=GLcNRh5GEMYTGltjLYZU5wei2ID6oWmvcQtjbSDCBik=;
+ b=WPkDIVfgsGKZVOgGUR3mDi+2CUJAH9jaqd4Bpmrx+QSqMZmCV5GuT5En94MfU7txW/Kf
+ OJtM2I90umm01/2CoJybgLeNBvKfdZOCbLztA75wXiDmnbnI8R6DXyk2vfAv9iBH4Hs2
+ wnnzOUWBcEiyjO4uGrHrzCzub3WQauOsx7IBMdGLEb6419qwXfn5+pR2oNL79VFNBrZw
+ tJv6QJxkIqcTOfDHigjK972+7IBO/JaPFzIWQDBTIcAlRD05DrgzxO/dBW8pkNTXeH4X
+ scIAf44QaWWkPLOGhYh3slxW3iPVvJLnvXj2BmgH1v5ry25e0oCI/D83FVkLcEN9Vyd0 SA== 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 33k5njxkpy-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 00:30:56 -0700
+        Thu, 17 Sep 2020 00:30:55 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CH+ptLWeCBtuuylVq/vvraHoEHIPDaOjTHtPO02bVSGRoo8SQ93ZwwUTf/DbdWmV63Pei8c48Vu92xDx7olu682r5Y0rkM9x2SQ2n9YkACwKx8K+6a2mfu4mxT7wu8pyMBAUSpR9JyBhFLYh/b4iju4Hn+QS5kJFilKqarxJ3pVXrUqepXXrL2eRirREqLk5D9H0HSuW08UdRqbGGNbrAVQwJc1jLcS5f/RyBn8bEu34VzeRHkYKRGy122XHMluyhwgq8tFBoZIyNeaY7GF3BzzdbpSS1Nx0v7tEVK7PMHcB2ASIc8vmxnpRHN0yCJWSMZ+BphUgRS/RY67Yaxjrhw==
+ b=K+A/iRnPsjjNlpYknX15AonDQIgDM5grEQKKTtUVmfTCoxzB9uUI+QH6lWWr7mC4yFNHf6S6ptKUob6qq7lvMsNpnflRuTGf9kHIAiHHdhR7xJjS4oTOWrr0uQjD050aki0SroyEYXu7k2eJ4sIJnLDS5cH/aO04brYoox8IQLqyjA6Rq/K4qjZpI1ukpVjCWVTBpTDma2CbPlj4Qm+9A+gGg6W9dkwMncPDUhXtlCRFyspehIUgFC7QOezqVnffe92luLVnEvIGAGHbi7RPIy3ZtlODOFHbrCfwsOpDRwvvH+j5LOJZKlXVkxZRXVvNlgK3iJ/LcqFdZyuULTAiwg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j3cOSKhwOjurZeqFhTrv/DMoOKmM7vFZ5PNLDVetTUU=;
- b=l14Tasui7TU+E/759yrzTXLj7kBSI+u+IY7kyvgrE3Zyxon9CiSSo/Wn0l5hhN/PUIMm13x6tQU/e9UG2LKH760ZIhoqM3v2HSE/SqGwsEcqIQKRHSvTTLKI0BmjaWqhQqFJnAB1sL6AAuD0qfALYBpdXYyKRyWKnrWeYM7tjk9erPXh0/8scNxvqBr0XgqMslnSlXxBIN+TsgzLlMgyLuGcxjfGVTCR9JWoyOQd0T4iH9oMEInIiblRcJFkC4UJ2XNDg+IxeyeKA7B4KjsELnJJLPbydFzZKDAXPZvq4ozK0nJUfELmMztZOeJbeTtsuU8XIXgCIlI/njlu4Puvfw==
+ bh=GLcNRh5GEMYTGltjLYZU5wei2ID6oWmvcQtjbSDCBik=;
+ b=VNGpj8N4oxv+lfYlj0i/JasX8davL71yk0u/tJ5/R+1MTJe+JIAcfteMvhistTfECOgdjUbo4pbrXn9WmHpv7e1Mls5c6cpOAT7Uooedbtl+pXR5TietBqZXBm+TQ1e/XIjRyD9ClFphdMVrD645H+PDgJH3rX3meDrGB5fGQffXwPnC0GvuukP9HWD6vbBHJUN/N9lsBEBOtf+tEDOdRg42Z/M3EBgkH7bsnsY5bnwt6J0LyKBuGq710A0qn4SEZHXck3f2BDtP9T0TnzJcL/Dm/ll6Qoz97V9AzPbv4zxdsttkMwwFYCkXod1QAVExgGXEs0yat2Anoyt3/QX+SA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  199.43.4.23) smtp.rcpttodomain=kernel.org smtp.mailfrom=cadence.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
@@ -43,18 +42,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j3cOSKhwOjurZeqFhTrv/DMoOKmM7vFZ5PNLDVetTUU=;
- b=FG7jppDtYuwA2yNIlToAiyOajgR6s5V/d0v7svsvKfyq3UtkKzSyr+1xPlgyYyp6QleLnfC2DP1MRSSvshfkX9tca+SsaQYy5o0n3Nn59NJuj2mAauEzkV6sWlmKAPABiBGAtcAaGKMRwHm7fPMjiURVEP5L/Uqo7gKm2E2dlS0=
-Received: from BN8PR16CA0013.namprd16.prod.outlook.com (2603:10b6:408:4c::26)
- by MWHPR07MB3024.namprd07.prod.outlook.com (2603:10b6:300:e6::11) with
+ bh=GLcNRh5GEMYTGltjLYZU5wei2ID6oWmvcQtjbSDCBik=;
+ b=phQ5RKvn+q0pJS2DCPN6e8jgKBVyagLciMF1bHk8JtRV+sMzbi+AS/zR88f/A3Y/5ZTTSsS0brLDOsgOcXKnFZnTHrNgBPwjau5TE+VHEJTC3N1U8KvGClefwc0Ll6oeNldAPxmAc3TAPYCfGuXh9o23HZZEEqV2OONsP6h+w60=
+Received: from DM5PR15CA0040.namprd15.prod.outlook.com (2603:10b6:4:4b::26) by
+ BLAPR07MB7747.namprd07.prod.outlook.com (2603:10b6:208:299::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 17 Sep
- 2020 07:30:51 +0000
-Received: from BN8NAM12FT057.eop-nam12.prod.protection.outlook.com
- (2603:10b6:408:4c:cafe::9c) by BN8PR16CA0013.outlook.office365.com
- (2603:10b6:408:4c::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend
- Transport; Thu, 17 Sep 2020 07:30:51 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Thu, 17 Sep
+ 2020 07:30:53 +0000
+Received: from DM6NAM12FT061.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:4:4b:cafe::d8) by DM5PR15CA0040.outlook.office365.com
+ (2603:10b6:4:4b::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend
+ Transport; Thu, 17 Sep 2020 07:30:53 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
  smtp.mailfrom=cadence.com; kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=pass action=none header.from=cadence.com;
@@ -62,13 +61,13 @@ Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
  199.43.4.23 as permitted sender) receiver=protection.outlook.com;
  client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
 Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- BN8NAM12FT057.mail.protection.outlook.com (10.13.182.192) with Microsoft SMTP
+ DM6NAM12FT061.mail.protection.outlook.com (10.13.179.123) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.6 via Frontend Transport; Thu, 17 Sep 2020 07:30:51 +0000
+ 15.20.3391.14 via Frontend Transport; Thu, 17 Sep 2020 07:30:52 +0000
 Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 08H7UmHV011305
+        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 08H7UmHZ011305
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Thu, 17 Sep 2020 03:30:50 -0400
+        Thu, 17 Sep 2020 03:30:52 -0400
 X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
 Received: from maileu3.global.cadence.com (10.160.88.99) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
@@ -77,10 +76,10 @@ Received: from vleu-orange.cadence.com (10.160.88.83) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
  15.0.1367.3 via Frontend Transport; Thu, 17 Sep 2020 09:30:48 +0200
 Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 08H7Umsx009793;
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 08H7UmJK009801;
         Thu, 17 Sep 2020 09:30:48 +0200
 Received: (from sjakhade@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 08H7UmcI009792;
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 08H7UmUG009800;
         Thu, 17 Sep 2020 09:30:48 +0200
 From:   Swapnil Jakhade <sjakhade@cadence.com>
 To:     <vkoul@kernel.org>, <kishon@ti.com>, <robh+dt@kernel.org>,
@@ -89,9 +88,9 @@ To:     <vkoul@kernel.org>, <kishon@ti.com>, <robh+dt@kernel.org>,
 CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
         <yamonkar@cadence.com>, <tomi.valkeinen@ti.com>, <jsarha@ti.com>,
         <nsekhar@ti.com>
-Subject: [PATCH v3 05/13] phy: cadence-torrent: Add support for PHY multilink configuration
-Date:   Thu, 17 Sep 2020 09:30:38 +0200
-Message-ID: <1600327846-9733-6-git-send-email-sjakhade@cadence.com>
+Subject: [PATCH v3 07/13] phy: cadence-torrent: Add clk changes for multilink configuration
+Date:   Thu, 17 Sep 2020 09:30:40 +0200
+Message-ID: <1600327846-9733-8-git-send-email-sjakhade@cadence.com>
 X-Mailer: git-send-email 2.4.5
 In-Reply-To: <1600327846-9733-1-git-send-email-sjakhade@cadence.com>
 References: <1600327846-9733-1-git-send-email-sjakhade@cadence.com>
@@ -100,28 +99,28 @@ Content-Type: text/plain
 X-OrganizationHeadersPreserved: maileu3.global.cadence.com
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3a38ca87-fcfe-4bf7-5ce6-08d85adb9ac3
-X-MS-TrafficTypeDiagnostic: MWHPR07MB3024:
-X-Microsoft-Antispam-PRVS: <MWHPR07MB3024A608BA7999F37BBC8509C53E0@MWHPR07MB3024.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:568;
+X-MS-Office365-Filtering-Correlation-Id: 617e9ccc-1d61-465f-f9ea-08d85adb9bb2
+X-MS-TrafficTypeDiagnostic: BLAPR07MB7747:
+X-Microsoft-Antispam-PRVS: <BLAPR07MB774755DFE8F7B4D34D93CE9FC53E0@BLAPR07MB7747.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:475;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: i+YPzfZkgZzVckSv9c7cOts/7ZCRVuRHmuPUipa6sEJbkHB77gmph8uq7Hjg6KdUMqUY+VKlg4WMNBERoQPCIf7Q+FBR59S5q2AxMOQMA+Q4/zJynwlarR5Bm36w7GaovLVLs7ZjPLyKzQNohVgk8MV2/AHaqUlUeP+njrHrUr7YYMh2RgxTEZfBXop3loGVXEeLluEQlvdDlLuwaey+Pw0mi04og7uHk4TCGt3VAPWllMAGWUpUnjoqHHLpF2sVpfCsdquKA/LGYj5IqF0ArodthE8aQBlnZE+ToR3qV/926dU12WXGJeeSV3PJiBfBkt0l2m8gGNBRpu6BMR2XUAET302uQRdGZAreTNmDnQS3p45EB2xWwsOiDG8qRNadFHM/R+B0YPg3D/9v3F9yj9c1OtlpILEITubL3rkcXY4zmTP8RAAVWiGWmbMC2k1lLthaBi8roBK+Q5Z9CZjlKJDabhWBn9QQMcXASYzscu8=
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(36092001)(46966005)(36756003)(110136005)(82740400003)(186003)(8676002)(54906003)(2906002)(82310400003)(26005)(2616005)(4326008)(5660300002)(47076004)(70586007)(478600001)(86362001)(81166007)(356005)(42186006)(70206006)(83380400001)(6666004)(8936002)(316002)(36906005)(336012)(30864003)(426003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: gbgB9c5mF0Vcq3OGk4KZlVLtuLbNVnaR/7qwS3OdKpUOoLUTADVxsa+eKIvYCnnaMqYUnNM7Hujcd9DohAUX+grprqW085+btAZ5CifqumhLNLEzkcgtzzKmbwNpamXPI+KrSIMIdPpwBBXax3O2ZA5STlPMdlwSwjaXbVR8/xx1h7Rwnzu6wZ3npb0SDY3dxQ1KA4oxpigHQdyG4G8C1xIzeQM4zUc92no7Go9FudCCHNMfSSN5dwgRVLrhfLr6I+VF9qUi0qA3c60vqxNer5TUyd2SHBLVkFIH9gu3b93Mf3XVAxZwTubIDE01gt5wu+5A5F+MNpIjQEYl3XLegzQ7OmJNMSOcEsLsFEagLumEoEvbQ3aniDz04hxHI82x+JhUPSO+Z0DfwBKPR1Yv0i0qikKkZ4FpOj+yv0xABL7Ec6sFc+4lxxggZeakQsnavkp8F7Ro2WODT+o8EvFW/bit3Xh+05skr2dA6/4iUTg=
+X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(136003)(346002)(36092001)(46966005)(316002)(2616005)(8936002)(82310400003)(70586007)(5660300002)(4326008)(26005)(83380400001)(42186006)(47076004)(8676002)(336012)(70206006)(6666004)(186003)(2906002)(478600001)(82740400003)(36906005)(81166007)(356005)(36756003)(86362001)(426003)(54906003)(110136005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 07:30:51.3237
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 07:30:52.8691
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a38ca87-fcfe-4bf7-5ce6-08d85adb9ac3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 617e9ccc-1d61-465f-f9ea-08d85adb9bb2
 X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT057.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT061.eop-nam12.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR07MB3024
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR07MB7747
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-17_03:2020-09-16,2020-09-17 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
- bulkscore=0 spamscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
+ bulkscore=0 spamscore=0 mlxlogscore=978 phishscore=0 lowpriorityscore=0
  clxscore=1015 priorityscore=1501 suspectscore=0 adultscore=0
  impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2009170054
@@ -129,963 +128,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added support for multilink configuration of Torrent PHY. Currently,
-maximum two links are supported. In case of multilink configuration,
-PHY needs to be configured for both the protocols simultaneously at
-the beginning as per the requirement of Torrent PHY.
-Also, register sequences for PCIe + SGMII/QSGMII Unique SSC PHY multilink
-configurations are added.
+Prepare and enable clock in probe instead of phy_init.
+Also, remove phy_exit callback.
 
 Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
 ---
- drivers/phy/cadence/phy-cadence-torrent.c | 783 +++++++++++++++++++++-
- 1 file changed, 757 insertions(+), 26 deletions(-)
+ drivers/phy/cadence/phy-cadence-torrent.c | 41 ++++++++++-------------
+ 1 file changed, 17 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-index 1d0c9bb7cfa0..cd02aa47dbc9 100644
+index bdd96c76751e..6641f2f3a367 100644
 --- a/drivers/phy/cadence/phy-cadence-torrent.c
 +++ b/drivers/phy/cadence/phy-cadence-torrent.c
-@@ -29,7 +29,7 @@
- #define DEFAULT_MAX_BIT_RATE	8100 /* in Mbps */
- 
- #define NUM_SSC_MODE		3
--#define NUM_PHY_TYPE		2
-+#define NUM_PHY_TYPE		5
- 
- #define POLL_TIMEOUT_US		5000
- #define PLL_LOCK_TIMEOUT	100000
-@@ -127,8 +127,10 @@
- #define CMN_PLL1_LOCK_REFCNT_START      0x00DCU
- #define CMN_PLL1_LOCK_PLLCNT_START	0x00DEU
- #define CMN_PLL1_LOCK_PLLCNT_THR        0x00DFU
-+#define CMN_TXPUCAL_TUNE		0x0103U
- #define CMN_TXPUCAL_INIT_TMR		0x0104U
- #define CMN_TXPUCAL_ITER_TMR		0x0105U
-+#define CMN_TXPDCAL_TUNE		0x010BU
- #define CMN_TXPDCAL_INIT_TMR		0x010CU
- #define CMN_TXPDCAL_ITER_TMR		0x010DU
- #define CMN_RXCAL_INIT_TMR		0x0114U
-@@ -143,6 +145,7 @@
- #define CMN_PDIAG_PLL0_CP_IADJ_M0	0x01A5U
- #define CMN_PDIAG_PLL0_FILT_PADJ_M0	0x01A6U
- #define CMN_PDIAG_PLL0_CTRL_M1		0x01B0U
-+#define CMN_PDIAG_PLL0_CLK_SEL_M1	0x01B1U
- #define CMN_PDIAG_PLL0_CP_PADJ_M1	0x01B4U
- #define CMN_PDIAG_PLL0_CP_IADJ_M1	0x01B5U
- #define CMN_PDIAG_PLL0_FILT_PADJ_M1	0x01B6U
-@@ -151,6 +154,7 @@
- #define CMN_PDIAG_PLL1_CP_PADJ_M0	0x01C4U
- #define CMN_PDIAG_PLL1_CP_IADJ_M0	0x01C5U
- #define CMN_PDIAG_PLL1_FILT_PADJ_M0	0x01C6U
-+#define CMN_DIAG_BIAS_OVRD1		0x01E1U
- 
- /* PMA TX Lane registers */
- #define TX_TXCC_CTRL			0x0040U
-@@ -173,11 +177,20 @@
- #define RX_PSC_A2			0x0002U
- #define RX_PSC_A3			0x0003U
- #define RX_PSC_CAL			0x0006U
-+#define RX_CDRLF_CNFG			0x0080U
- #define RX_REE_GCSM1_CTRL		0x0108U
-+#define RX_REE_GCSM1_EQENM_PH1		0x0109U
-+#define RX_REE_GCSM1_EQENM_PH2		0x010AU
- #define RX_REE_GCSM2_CTRL		0x0110U
- #define RX_REE_PERGCSM_CTRL		0x0118U
- #define RX_REE_TAP1_CLIP		0x0171U
- #define RX_REE_TAP2TON_CLIP		0x0172U
-+#define RX_DIAG_DFE_CTRL		0x01E0U
-+#define RX_DIAG_DFE_AMP_TUNE_2		0x01E2U
-+#define RX_DIAG_DFE_AMP_TUNE_3		0x01E3U
-+#define RX_DIAG_NQST_CTRL		0x01E5U
-+#define RX_DIAG_PI_RATE			0x01F4U
-+#define RX_DIAG_PI_CAP			0x01F5U
- #define RX_DIAG_ACYA			0x01FFU
- 
- /* PHY PCS common registers */
-@@ -204,8 +217,11 @@ static const struct reg_field phy_reset_ctrl =
- 				REG_FIELD(PHY_RESET, 8, 8);
- 
- enum cdns_torrent_phy_type {
-+	TYPE_NONE,
- 	TYPE_DP,
--	TYPE_PCIE
-+	TYPE_PCIE,
-+	TYPE_SGMII,
-+	TYPE_QSGMII,
+@@ -273,7 +273,6 @@ enum phy_powerstate {
  };
  
- enum cdns_torrent_ssc_mode {
-@@ -309,9 +325,16 @@ struct cdns_torrent_vals {
- struct cdns_torrent_data {
- 	u8 block_offset_shift;
- 	u8 reg_offset_shift;
--	struct cdns_torrent_vals *cmn_vals[NUM_PHY_TYPE][NUM_SSC_MODE];
--	struct cdns_torrent_vals *tx_ln_vals[NUM_PHY_TYPE][NUM_SSC_MODE];
--	struct cdns_torrent_vals *rx_ln_vals[NUM_PHY_TYPE][NUM_SSC_MODE];
-+	struct cdns_torrent_vals *link_cmn_vals[NUM_PHY_TYPE][NUM_PHY_TYPE]
-+					       [NUM_SSC_MODE];
-+	struct cdns_torrent_vals *xcvr_diag_vals[NUM_PHY_TYPE][NUM_PHY_TYPE]
-+						[NUM_SSC_MODE];
-+	struct cdns_torrent_vals *cmn_vals[NUM_PHY_TYPE][NUM_PHY_TYPE]
-+					  [NUM_SSC_MODE];
-+	struct cdns_torrent_vals *tx_ln_vals[NUM_PHY_TYPE][NUM_PHY_TYPE]
-+					    [NUM_SSC_MODE];
-+	struct cdns_torrent_vals *rx_ln_vals[NUM_PHY_TYPE][NUM_PHY_TYPE]
-+					    [NUM_SSC_MODE];
- };
+ static int cdns_torrent_phy_init(struct phy *phy);
+-static int cdns_torrent_phy_exit(struct phy *phy);
+ static int cdns_torrent_dp_init(struct phy *phy);
+ static int cdns_torrent_dp_run(struct cdns_torrent_phy *cdns_phy,
+ 			       u32 num_lanes);
+@@ -305,7 +304,6 @@ static int cdns_torrent_phy_off(struct phy *phy);
  
- struct cdns_regmap_cdb_context {
-@@ -1787,6 +1810,7 @@ static int cdns_torrent_regmap_init(struct cdns_torrent_phy *cdns_phy)
- static int cdns_torrent_phy_init(struct phy *phy)
- {
- 	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(phy->dev.parent);
-+	const struct cdns_torrent_data *init_data = cdns_phy->init_data;
- 	struct cdns_torrent_vals *cmn_vals, *tx_ln_vals, *rx_ln_vals;
- 	struct cdns_torrent_inst *inst = phy_get_drvdata(phy);
- 	enum cdns_torrent_phy_type phy_type = inst->phy_type;
-@@ -1809,11 +1833,14 @@ static int cdns_torrent_phy_init(struct phy *phy)
- 		return -EINVAL;
- 	}
- 
-+	if (cdns_phy->nsubnodes > 1)
-+		return 0;
-+
- 	if (phy_type == TYPE_DP)
- 		return cdns_torrent_dp_init(phy);
- 
- 	/* PMA common registers configurations */
--	cmn_vals = cdns_phy->init_data->cmn_vals[phy_type][ssc];
-+	cmn_vals = init_data->cmn_vals[phy_type][TYPE_NONE][ssc];
- 	if (cmn_vals) {
- 		reg_pairs = cmn_vals->reg_pairs;
- 		num_regs = cmn_vals->num_regs;
-@@ -1824,7 +1851,7 @@ static int cdns_torrent_phy_init(struct phy *phy)
- 	}
- 
- 	/* PMA TX lane registers configurations */
--	tx_ln_vals = cdns_phy->init_data->tx_ln_vals[phy_type][ssc];
-+	tx_ln_vals = init_data->tx_ln_vals[phy_type][TYPE_NONE][ssc];
- 	if (tx_ln_vals) {
- 		reg_pairs = tx_ln_vals->reg_pairs;
- 		num_regs = tx_ln_vals->num_regs;
-@@ -1837,7 +1864,7 @@ static int cdns_torrent_phy_init(struct phy *phy)
- 	}
- 
- 	/* PMA RX lane registers configurations */
--	rx_ln_vals = cdns_phy->init_data->rx_ln_vals[phy_type][ssc];
-+	rx_ln_vals = init_data->rx_ln_vals[phy_type][TYPE_NONE][ssc];
- 	if (rx_ln_vals) {
- 		reg_pairs = rx_ln_vals->reg_pairs;
- 		num_regs = rx_ln_vals->num_regs;
-@@ -1852,6 +1879,121 @@ static int cdns_torrent_phy_init(struct phy *phy)
- 	return 0;
+ static const struct phy_ops cdns_torrent_phy_ops = {
+ 	.init		= cdns_torrent_phy_init,
+-	.exit		= cdns_torrent_phy_exit,
+ 	.configure	= cdns_torrent_dp_configure,
+ 	.power_on	= cdns_torrent_phy_on,
+ 	.power_off	= cdns_torrent_phy_off,
+@@ -977,14 +975,6 @@ static int cdns_torrent_dp_init(struct phy *phy)
+ 	return ret;
  }
  
-+static
-+int cdns_torrent_phy_configure_multilink(struct cdns_torrent_phy *cdns_phy)
-+{
-+	const struct cdns_torrent_data *init_data = cdns_phy->init_data;
-+	struct cdns_torrent_vals *cmn_vals, *tx_ln_vals, *rx_ln_vals;
-+	struct cdns_torrent_vals *link_cmn_vals, *xcvr_diag_vals;
-+	enum cdns_torrent_phy_type phy_t1, phy_t2, tmp_phy_type;
-+	int i, j, node, mlane, num_lanes;
-+	struct cdns_reg_pairs *reg_pairs;
-+	enum cdns_torrent_ssc_mode ssc;
-+	struct regmap *regmap;
-+	u32 num_regs;
+-static int cdns_torrent_phy_exit(struct phy *phy)
+-{
+-	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(phy->dev.parent);
+-
+-	clk_disable_unprepare(cdns_phy->clk);
+-	return 0;
+-}
+-
+ static
+ int cdns_torrent_dp_wait_pma_cmn_ready(struct cdns_torrent_phy *cdns_phy)
+ {
+@@ -1825,20 +1815,7 @@ static int cdns_torrent_phy_init(struct phy *phy)
+ 	struct cdns_reg_pairs *reg_pairs;
+ 	struct regmap *regmap;
+ 	u32 num_regs;
+-	int ret, i, j;
+-
+-	ret = clk_prepare_enable(cdns_phy->clk);
+-	if (ret) {
+-		dev_err(cdns_phy->dev, "Failed to prepare ref clock\n");
+-		return ret;
+-	}
+-
+-	cdns_phy->ref_clk_rate = clk_get_rate(cdns_phy->clk);
+-	if (!(cdns_phy->ref_clk_rate)) {
+-		dev_err(cdns_phy->dev, "Failed to get ref clock rate\n");
+-		clk_disable_unprepare(cdns_phy->clk);
+-		return -EINVAL;
+-	}
++	int i, j;
+ 
+ 	if (cdns_phy->nsubnodes > 1)
+ 		return 0;
+@@ -2071,6 +2048,19 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = clk_prepare_enable(cdns_phy->clk);
++	if (ret) {
++		dev_err(cdns_phy->dev, "Failed to prepare ref clock\n");
++		return ret;
++	}
 +
-+	/* Maximum 2 links (subnodes) are supported */
-+	if (cdns_phy->nsubnodes != 2)
++	cdns_phy->ref_clk_rate = clk_get_rate(cdns_phy->clk);
++	if (!(cdns_phy->ref_clk_rate)) {
++		dev_err(cdns_phy->dev, "Failed to get ref clock rate\n");
++		clk_disable_unprepare(cdns_phy->clk);
 +		return -EINVAL;
-+
-+	phy_t1 = cdns_phy->phys[0].phy_type;
-+	phy_t2 = cdns_phy->phys[1].phy_type;
-+
-+	regmap_field_write(cdns_phy->phy_pll_cfg, 0x0003);
-+
-+	/**
-+	 * First configure the PHY for first link with phy_t1. Get the array
-+	 * values as [phy_t1][phy_t2][ssc].
-+	 */
-+	for (node = 0; node < cdns_phy->nsubnodes; node++) {
-+		if (node == 1) {
-+			/**
-+			 * If first link with phy_t1 is configured, then
-+			 * configure the PHY for second link with phy_t2.
-+			 * Get the array values as [phy_t2][phy_t1][ssc].
-+			 */
-+			tmp_phy_type = phy_t1;
-+			phy_t1 = phy_t2;
-+			phy_t2 = tmp_phy_type;
-+		}
-+
-+		mlane = cdns_phy->phys[node].mlane;
-+		ssc = cdns_phy->phys[node].ssc_mode;
-+		num_lanes = cdns_phy->phys[node].num_lanes;
-+
-+		/**
-+		 * PHY configuration specific registers:
-+		 * link_cmn_vals depend on combination of PHY types being
-+		 * configured and are common for both PHY types, so array
-+		 * values should be same for [phy_t1][phy_t2][ssc] and
-+		 * [phy_t2][phy_t1][ssc].
-+		 * xcvr_diag_vals also depend on combination of PHY types
-+		 * being configured, but these can be different for particular
-+		 * PHY type and are per lane.
-+		 */
-+		link_cmn_vals = init_data->link_cmn_vals[phy_t1][phy_t2][ssc];
-+		if (link_cmn_vals) {
-+			reg_pairs = link_cmn_vals->reg_pairs;
-+			num_regs = link_cmn_vals->num_regs;
-+			regmap = cdns_phy->regmap_common_cdb;
-+			for (i = 0; i < num_regs; i++)
-+				regmap_write(regmap, reg_pairs[i].off,
-+					     reg_pairs[i].val);
-+		}
-+
-+		xcvr_diag_vals = init_data->xcvr_diag_vals[phy_t1][phy_t2][ssc];
-+		if (xcvr_diag_vals) {
-+			reg_pairs = xcvr_diag_vals->reg_pairs;
-+			num_regs = xcvr_diag_vals->num_regs;
-+			for (i = 0; i < num_lanes; i++) {
-+				regmap = cdns_phy->regmap_tx_lane_cdb[i + mlane];
-+				for (j = 0; j < num_regs; j++)
-+					regmap_write(regmap, reg_pairs[j].off,
-+						     reg_pairs[j].val);
-+			}
-+		}
-+
-+		/* PMA common registers configurations */
-+		cmn_vals = init_data->cmn_vals[phy_t1][phy_t2][ssc];
-+		if (cmn_vals) {
-+			reg_pairs = cmn_vals->reg_pairs;
-+			num_regs = cmn_vals->num_regs;
-+			regmap = cdns_phy->regmap_common_cdb;
-+			for (i = 0; i < num_regs; i++)
-+				regmap_write(regmap, reg_pairs[i].off,
-+					     reg_pairs[i].val);
-+		}
-+
-+		/* PMA TX lane registers configurations */
-+		tx_ln_vals = init_data->tx_ln_vals[phy_t1][phy_t2][ssc];
-+		if (tx_ln_vals) {
-+			reg_pairs = tx_ln_vals->reg_pairs;
-+			num_regs = tx_ln_vals->num_regs;
-+			for (i = 0; i < num_lanes; i++) {
-+				regmap = cdns_phy->regmap_tx_lane_cdb[i + mlane];
-+				for (j = 0; j < num_regs; j++)
-+					regmap_write(regmap, reg_pairs[j].off,
-+						     reg_pairs[j].val);
-+			}
-+		}
-+
-+		/* PMA RX lane registers configurations */
-+		rx_ln_vals = init_data->rx_ln_vals[phy_t1][phy_t2][ssc];
-+		if (rx_ln_vals) {
-+			reg_pairs = rx_ln_vals->reg_pairs;
-+			num_regs = rx_ln_vals->num_regs;
-+			for (i = 0; i < num_lanes; i++) {
-+				regmap = cdns_phy->regmap_rx_lane_cdb[i + mlane];
-+				for (j = 0; j < num_regs; j++)
-+					regmap_write(regmap, reg_pairs[j].off,
-+						     reg_pairs[j].val);
-+			}
-+		}
 +	}
 +
-+	return 0;
-+}
-+
- static int cdns_torrent_phy_probe(struct platform_device *pdev)
- {
- 	struct cdns_torrent_phy *cdns_phy;
-@@ -1921,6 +2063,10 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
- 	for_each_available_child_of_node(dev->of_node, child) {
- 		struct phy *gphy;
+ 	/* Enable APB */
+ 	reset_control_deassert(cdns_phy->apb_rst);
  
-+		/* PHY subnode name must be 'phy'. */
-+		if (!(of_node_name_eq(child, "phy")))
-+			continue;
-+
- 		cdns_phy->phys[node].lnk_rst =
- 				of_reset_control_array_get_exclusive(child);
- 		if (IS_ERR(cdns_phy->phys[node].lnk_rst)) {
-@@ -1952,6 +2098,12 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
- 		case PHY_TYPE_DP:
- 			cdns_phy->phys[node].phy_type = TYPE_DP;
- 			break;
-+		case PHY_TYPE_SGMII:
-+			cdns_phy->phys[node].phy_type = TYPE_SGMII;
-+			break;
-+		case PHY_TYPE_QSGMII:
-+			cdns_phy->phys[node].phy_type = TYPE_QSGMII;
-+			break;
- 		default:
- 			dev_err(dev, "Unsupported protocol\n");
- 			ret = -EINVAL;
-@@ -2056,6 +2208,12 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
- 		goto put_lnk_rst;
+@@ -2243,6 +2233,7 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
+ 		reset_control_put(cdns_phy->phys[i].lnk_rst);
+ 	of_node_put(child);
+ 	reset_control_assert(cdns_phy->apb_rst);
++	clk_disable_unprepare(cdns_phy->clk);
+ 	return ret;
+ }
+ 
+@@ -2258,6 +2249,8 @@ static int cdns_torrent_phy_remove(struct platform_device *pdev)
+ 		reset_control_put(cdns_phy->phys[i].lnk_rst);
  	}
  
-+	if (cdns_phy->nsubnodes > 1) {
-+		ret = cdns_torrent_phy_configure_multilink(cdns_phy);
-+		if (ret)
-+			goto put_lnk_rst;
-+	}
++	clk_disable_unprepare(cdns_phy->clk);
 +
- 	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
- 	if (IS_ERR(phy_provider)) {
- 		ret = PTR_ERR(phy_provider);
-@@ -2089,6 +2247,311 @@ static int cdns_torrent_phy_remove(struct platform_device *pdev)
  	return 0;
  }
  
-+/* PCIe and SGMII/QSGMII Unique SSC link configuration */
-+static struct cdns_reg_pairs pcie_sgmii_link_cmn_regs[] = {
-+	{0x0601, CMN_PDIAG_PLL0_CLK_SEL_M0},
-+	{0x0400, CMN_PDIAG_PLL0_CLK_SEL_M1},
-+	{0x0601, CMN_PDIAG_PLL1_CLK_SEL_M0}
-+};
-+
-+static struct cdns_reg_pairs pcie_sgmii_xcvr_diag_ln_regs[] = {
-+	{0x0000, XCVR_DIAG_HSCLK_SEL},
-+	{0x0001, XCVR_DIAG_HSCLK_DIV},
-+	{0x0012, XCVR_DIAG_PLLDRC_CTRL}
-+};
-+
-+static struct cdns_reg_pairs sgmii_pcie_xcvr_diag_ln_regs[] = {
-+	{0x0011, XCVR_DIAG_HSCLK_SEL},
-+	{0x0003, XCVR_DIAG_HSCLK_DIV},
-+	{0x009B, XCVR_DIAG_PLLDRC_CTRL}
-+};
-+
-+static struct cdns_torrent_vals pcie_sgmii_link_cmn_vals = {
-+	.reg_pairs = pcie_sgmii_link_cmn_regs,
-+	.num_regs = ARRAY_SIZE(pcie_sgmii_link_cmn_regs),
-+};
-+
-+static struct cdns_torrent_vals pcie_sgmii_xcvr_diag_ln_vals = {
-+	.reg_pairs = pcie_sgmii_xcvr_diag_ln_regs,
-+	.num_regs = ARRAY_SIZE(pcie_sgmii_xcvr_diag_ln_regs),
-+};
-+
-+static struct cdns_torrent_vals sgmii_pcie_xcvr_diag_ln_vals = {
-+	.reg_pairs = sgmii_pcie_xcvr_diag_ln_regs,
-+	.num_regs = ARRAY_SIZE(sgmii_pcie_xcvr_diag_ln_regs),
-+};
-+
-+/* SGMII 100 MHz Ref clk, no SSC */
-+static struct cdns_reg_pairs sgmii_100_no_ssc_cmn_regs[] = {
-+	{0x0003, CMN_PLL0_VCOCAL_TCTRL},
-+	{0x0003, CMN_PLL1_VCOCAL_TCTRL},
-+	{0x3700, CMN_DIAG_BIAS_OVRD1},
-+	{0x0008, CMN_TXPUCAL_TUNE},
-+	{0x0008, CMN_TXPDCAL_TUNE}
-+};
-+
-+static struct cdns_reg_pairs sgmii_100_no_ssc_tx_ln_regs[] = {
-+	{0x00F3, TX_PSC_A0},
-+	{0x04A2, TX_PSC_A2},
-+	{0x04A2, TX_PSC_A3},
-+	{0x0000, TX_TXCC_CPOST_MULT_00},
-+	{0x00B3, DRV_DIAG_TX_DRV}
-+};
-+
-+static struct cdns_reg_pairs sgmii_100_no_ssc_rx_ln_regs[] = {
-+	{0x091D, RX_PSC_A0},
-+	{0x0900, RX_PSC_A2},
-+	{0x0100, RX_PSC_A3},
-+	{0x03C7, RX_REE_GCSM1_EQENM_PH1},
-+	{0x01C7, RX_REE_GCSM1_EQENM_PH2},
-+	{0x0000, RX_DIAG_DFE_CTRL},
-+	{0x0019, RX_REE_TAP1_CLIP},
-+	{0x0019, RX_REE_TAP2TON_CLIP},
-+	{0x0098, RX_DIAG_NQST_CTRL},
-+	{0x0C01, RX_DIAG_DFE_AMP_TUNE_2},
-+	{0x0000, RX_DIAG_DFE_AMP_TUNE_3},
-+	{0x0000, RX_DIAG_PI_CAP},
-+	{0x0010, RX_DIAG_PI_RATE},
-+	{0x0001, RX_DIAG_ACYA},
-+	{0x018C, RX_CDRLF_CNFG},
-+};
-+
-+static struct cdns_torrent_vals sgmii_100_no_ssc_cmn_vals = {
-+	.reg_pairs = sgmii_100_no_ssc_cmn_regs,
-+	.num_regs = ARRAY_SIZE(sgmii_100_no_ssc_cmn_regs),
-+};
-+
-+static struct cdns_torrent_vals sgmii_100_no_ssc_tx_ln_vals = {
-+	.reg_pairs = sgmii_100_no_ssc_tx_ln_regs,
-+	.num_regs = ARRAY_SIZE(sgmii_100_no_ssc_tx_ln_regs),
-+};
-+
-+static struct cdns_torrent_vals sgmii_100_no_ssc_rx_ln_vals = {
-+	.reg_pairs = sgmii_100_no_ssc_rx_ln_regs,
-+	.num_regs = ARRAY_SIZE(sgmii_100_no_ssc_rx_ln_regs),
-+};
-+
-+/* SGMII 100 MHz Ref clk, internal SSC */
-+static struct cdns_reg_pairs sgmii_100_int_ssc_cmn_regs[] = {
-+	{0x0004, CMN_PLL0_DSM_DIAG_M0},
-+	{0x0004, CMN_PLL0_DSM_DIAG_M1},
-+	{0x0004, CMN_PLL1_DSM_DIAG_M0},
-+	{0x0509, CMN_PDIAG_PLL0_CP_PADJ_M0},
-+	{0x0509, CMN_PDIAG_PLL0_CP_PADJ_M1},
-+	{0x0509, CMN_PDIAG_PLL1_CP_PADJ_M0},
-+	{0x0F00, CMN_PDIAG_PLL0_CP_IADJ_M0},
-+	{0x0F00, CMN_PDIAG_PLL0_CP_IADJ_M1},
-+	{0x0F00, CMN_PDIAG_PLL1_CP_IADJ_M0},
-+	{0x0F08, CMN_PDIAG_PLL0_FILT_PADJ_M0},
-+	{0x0F08, CMN_PDIAG_PLL0_FILT_PADJ_M1},
-+	{0x0F08, CMN_PDIAG_PLL1_FILT_PADJ_M0},
-+	{0x0064, CMN_PLL0_INTDIV_M0},
-+	{0x0050, CMN_PLL0_INTDIV_M1},
-+	{0x0064, CMN_PLL1_INTDIV_M0},
-+	{0x0002, CMN_PLL0_FRACDIVH_M0},
-+	{0x0002, CMN_PLL0_FRACDIVH_M1},
-+	{0x0002, CMN_PLL1_FRACDIVH_M0},
-+	{0x0044, CMN_PLL0_HIGH_THR_M0},
-+	{0x0036, CMN_PLL0_HIGH_THR_M1},
-+	{0x0044, CMN_PLL1_HIGH_THR_M0},
-+	{0x0002, CMN_PDIAG_PLL0_CTRL_M0},
-+	{0x0002, CMN_PDIAG_PLL0_CTRL_M1},
-+	{0x0002, CMN_PDIAG_PLL1_CTRL_M0},
-+	{0x0001, CMN_PLL0_SS_CTRL1_M0},
-+	{0x0001, CMN_PLL0_SS_CTRL1_M1},
-+	{0x0001, CMN_PLL1_SS_CTRL1_M0},
-+	{0x011B, CMN_PLL0_SS_CTRL2_M0},
-+	{0x011B, CMN_PLL0_SS_CTRL2_M1},
-+	{0x011B, CMN_PLL1_SS_CTRL2_M0},
-+	{0x006E, CMN_PLL0_SS_CTRL3_M0},
-+	{0x0058, CMN_PLL0_SS_CTRL3_M1},
-+	{0x006E, CMN_PLL1_SS_CTRL3_M0},
-+	{0x000E, CMN_PLL0_SS_CTRL4_M0},
-+	{0x0012, CMN_PLL0_SS_CTRL4_M1},
-+	{0x000E, CMN_PLL1_SS_CTRL4_M0},
-+	{0x0C5E, CMN_PLL0_VCOCAL_REFTIM_START},
-+	{0x0C5E, CMN_PLL1_VCOCAL_REFTIM_START},
-+	{0x0C56, CMN_PLL0_VCOCAL_PLLCNT_START},
-+	{0x0C56, CMN_PLL1_VCOCAL_PLLCNT_START},
-+	{0x0003, CMN_PLL0_VCOCAL_TCTRL},
-+	{0x0003, CMN_PLL1_VCOCAL_TCTRL},
-+	{0x00C7, CMN_PLL0_LOCK_REFCNT_START},
-+	{0x00C7, CMN_PLL1_LOCK_REFCNT_START},
-+	{0x00C7, CMN_PLL0_LOCK_PLLCNT_START},
-+	{0x00C7, CMN_PLL1_LOCK_PLLCNT_START},
-+	{0x0005, CMN_PLL0_LOCK_PLLCNT_THR},
-+	{0x0005, CMN_PLL1_LOCK_PLLCNT_THR},
-+	{0x3700, CMN_DIAG_BIAS_OVRD1},
-+	{0x0008, CMN_TXPUCAL_TUNE},
-+	{0x0008, CMN_TXPDCAL_TUNE}
-+};
-+
-+static struct cdns_torrent_vals sgmii_100_int_ssc_cmn_vals = {
-+	.reg_pairs = sgmii_100_int_ssc_cmn_regs,
-+	.num_regs = ARRAY_SIZE(sgmii_100_int_ssc_cmn_regs),
-+};
-+
-+/* QSGMII 100 MHz Ref clk, no SSC */
-+static struct cdns_reg_pairs qsgmii_100_no_ssc_cmn_regs[] = {
-+	{0x0003, CMN_PLL0_VCOCAL_TCTRL},
-+	{0x0003, CMN_PLL1_VCOCAL_TCTRL}
-+};
-+
-+static struct cdns_reg_pairs qsgmii_100_no_ssc_tx_ln_regs[] = {
-+	{0x00F3, TX_PSC_A0},
-+	{0x04A2, TX_PSC_A2},
-+	{0x04A2, TX_PSC_A3},
-+	{0x0000, TX_TXCC_CPOST_MULT_00},
-+	{0x0003, DRV_DIAG_TX_DRV}
-+};
-+
-+static struct cdns_reg_pairs qsgmii_100_no_ssc_rx_ln_regs[] = {
-+	{0x091D, RX_PSC_A0},
-+	{0x0900, RX_PSC_A2},
-+	{0x0100, RX_PSC_A3},
-+	{0x03C7, RX_REE_GCSM1_EQENM_PH1},
-+	{0x01C7, RX_REE_GCSM1_EQENM_PH2},
-+	{0x0000, RX_DIAG_DFE_CTRL},
-+	{0x0019, RX_REE_TAP1_CLIP},
-+	{0x0019, RX_REE_TAP2TON_CLIP},
-+	{0x0098, RX_DIAG_NQST_CTRL},
-+	{0x0C01, RX_DIAG_DFE_AMP_TUNE_2},
-+	{0x0000, RX_DIAG_DFE_AMP_TUNE_3},
-+	{0x0000, RX_DIAG_PI_CAP},
-+	{0x0010, RX_DIAG_PI_RATE},
-+	{0x0001, RX_DIAG_ACYA},
-+	{0x018C, RX_CDRLF_CNFG},
-+};
-+
-+static struct cdns_torrent_vals qsgmii_100_no_ssc_cmn_vals = {
-+	.reg_pairs = qsgmii_100_no_ssc_cmn_regs,
-+	.num_regs = ARRAY_SIZE(qsgmii_100_no_ssc_cmn_regs),
-+};
-+
-+static struct cdns_torrent_vals qsgmii_100_no_ssc_tx_ln_vals = {
-+	.reg_pairs = qsgmii_100_no_ssc_tx_ln_regs,
-+	.num_regs = ARRAY_SIZE(qsgmii_100_no_ssc_tx_ln_regs),
-+};
-+
-+static struct cdns_torrent_vals qsgmii_100_no_ssc_rx_ln_vals = {
-+	.reg_pairs = qsgmii_100_no_ssc_rx_ln_regs,
-+	.num_regs = ARRAY_SIZE(qsgmii_100_no_ssc_rx_ln_regs),
-+};
-+
-+/* QSGMII 100 MHz Ref clk, internal SSC */
-+static struct cdns_reg_pairs qsgmii_100_int_ssc_cmn_regs[] = {
-+	{0x0004, CMN_PLL0_DSM_DIAG_M0},
-+	{0x0004, CMN_PLL0_DSM_DIAG_M1},
-+	{0x0004, CMN_PLL1_DSM_DIAG_M0},
-+	{0x0509, CMN_PDIAG_PLL0_CP_PADJ_M0},
-+	{0x0509, CMN_PDIAG_PLL0_CP_PADJ_M1},
-+	{0x0509, CMN_PDIAG_PLL1_CP_PADJ_M0},
-+	{0x0F00, CMN_PDIAG_PLL0_CP_IADJ_M0},
-+	{0x0F00, CMN_PDIAG_PLL0_CP_IADJ_M1},
-+	{0x0F00, CMN_PDIAG_PLL1_CP_IADJ_M0},
-+	{0x0F08, CMN_PDIAG_PLL0_FILT_PADJ_M0},
-+	{0x0F08, CMN_PDIAG_PLL0_FILT_PADJ_M1},
-+	{0x0F08, CMN_PDIAG_PLL1_FILT_PADJ_M0},
-+	{0x0064, CMN_PLL0_INTDIV_M0},
-+	{0x0050, CMN_PLL0_INTDIV_M1},
-+	{0x0064, CMN_PLL1_INTDIV_M0},
-+	{0x0002, CMN_PLL0_FRACDIVH_M0},
-+	{0x0002, CMN_PLL0_FRACDIVH_M1},
-+	{0x0002, CMN_PLL1_FRACDIVH_M0},
-+	{0x0044, CMN_PLL0_HIGH_THR_M0},
-+	{0x0036, CMN_PLL0_HIGH_THR_M1},
-+	{0x0044, CMN_PLL1_HIGH_THR_M0},
-+	{0x0002, CMN_PDIAG_PLL0_CTRL_M0},
-+	{0x0002, CMN_PDIAG_PLL0_CTRL_M1},
-+	{0x0002, CMN_PDIAG_PLL1_CTRL_M0},
-+	{0x0001, CMN_PLL0_SS_CTRL1_M0},
-+	{0x0001, CMN_PLL0_SS_CTRL1_M1},
-+	{0x0001, CMN_PLL1_SS_CTRL1_M0},
-+	{0x011B, CMN_PLL0_SS_CTRL2_M0},
-+	{0x011B, CMN_PLL0_SS_CTRL2_M1},
-+	{0x011B, CMN_PLL1_SS_CTRL2_M0},
-+	{0x006E, CMN_PLL0_SS_CTRL3_M0},
-+	{0x0058, CMN_PLL0_SS_CTRL3_M1},
-+	{0x006E, CMN_PLL1_SS_CTRL3_M0},
-+	{0x000E, CMN_PLL0_SS_CTRL4_M0},
-+	{0x0012, CMN_PLL0_SS_CTRL4_M1},
-+	{0x000E, CMN_PLL1_SS_CTRL4_M0},
-+	{0x0C5E, CMN_PLL0_VCOCAL_REFTIM_START},
-+	{0x0C5E, CMN_PLL1_VCOCAL_REFTIM_START},
-+	{0x0C56, CMN_PLL0_VCOCAL_PLLCNT_START},
-+	{0x0C56, CMN_PLL1_VCOCAL_PLLCNT_START},
-+	{0x0003, CMN_PLL0_VCOCAL_TCTRL},
-+	{0x0003, CMN_PLL1_VCOCAL_TCTRL},
-+	{0x00C7, CMN_PLL0_LOCK_REFCNT_START},
-+	{0x00C7, CMN_PLL1_LOCK_REFCNT_START},
-+	{0x00C7, CMN_PLL0_LOCK_PLLCNT_START},
-+	{0x00C7, CMN_PLL1_LOCK_PLLCNT_START},
-+	{0x0005, CMN_PLL0_LOCK_PLLCNT_THR},
-+	{0x0005, CMN_PLL1_LOCK_PLLCNT_THR}
-+};
-+
-+static struct cdns_torrent_vals qsgmii_100_int_ssc_cmn_vals = {
-+	.reg_pairs = qsgmii_100_int_ssc_cmn_regs,
-+	.num_regs = ARRAY_SIZE(qsgmii_100_int_ssc_cmn_regs),
-+};
-+
-+/* Multi link PCIe, 100 MHz Ref clk, internal SSC */
-+static struct cdns_reg_pairs pcie_100_int_ssc_cmn_regs[] = {
-+	{0x0004, CMN_PLL0_DSM_DIAG_M0},
-+	{0x0004, CMN_PLL0_DSM_DIAG_M1},
-+	{0x0004, CMN_PLL1_DSM_DIAG_M0},
-+	{0x0509, CMN_PDIAG_PLL0_CP_PADJ_M0},
-+	{0x0509, CMN_PDIAG_PLL0_CP_PADJ_M1},
-+	{0x0509, CMN_PDIAG_PLL1_CP_PADJ_M0},
-+	{0x0F00, CMN_PDIAG_PLL0_CP_IADJ_M0},
-+	{0x0F00, CMN_PDIAG_PLL0_CP_IADJ_M1},
-+	{0x0F00, CMN_PDIAG_PLL1_CP_IADJ_M0},
-+	{0x0F08, CMN_PDIAG_PLL0_FILT_PADJ_M0},
-+	{0x0F08, CMN_PDIAG_PLL0_FILT_PADJ_M1},
-+	{0x0F08, CMN_PDIAG_PLL1_FILT_PADJ_M0},
-+	{0x0064, CMN_PLL0_INTDIV_M0},
-+	{0x0050, CMN_PLL0_INTDIV_M1},
-+	{0x0064, CMN_PLL1_INTDIV_M0},
-+	{0x0002, CMN_PLL0_FRACDIVH_M0},
-+	{0x0002, CMN_PLL0_FRACDIVH_M1},
-+	{0x0002, CMN_PLL1_FRACDIVH_M0},
-+	{0x0044, CMN_PLL0_HIGH_THR_M0},
-+	{0x0036, CMN_PLL0_HIGH_THR_M1},
-+	{0x0044, CMN_PLL1_HIGH_THR_M0},
-+	{0x0002, CMN_PDIAG_PLL0_CTRL_M0},
-+	{0x0002, CMN_PDIAG_PLL0_CTRL_M1},
-+	{0x0002, CMN_PDIAG_PLL1_CTRL_M0},
-+	{0x0001, CMN_PLL0_SS_CTRL1_M0},
-+	{0x0001, CMN_PLL0_SS_CTRL1_M1},
-+	{0x0001, CMN_PLL1_SS_CTRL1_M0},
-+	{0x011B, CMN_PLL0_SS_CTRL2_M0},
-+	{0x011B, CMN_PLL0_SS_CTRL2_M1},
-+	{0x011B, CMN_PLL1_SS_CTRL2_M0},
-+	{0x006E, CMN_PLL0_SS_CTRL3_M0},
-+	{0x0058, CMN_PLL0_SS_CTRL3_M1},
-+	{0x006E, CMN_PLL1_SS_CTRL3_M0},
-+	{0x000E, CMN_PLL0_SS_CTRL4_M0},
-+	{0x0012, CMN_PLL0_SS_CTRL4_M1},
-+	{0x000E, CMN_PLL1_SS_CTRL4_M0},
-+	{0x0C5E, CMN_PLL0_VCOCAL_REFTIM_START},
-+	{0x0C5E, CMN_PLL1_VCOCAL_REFTIM_START},
-+	{0x0C56, CMN_PLL0_VCOCAL_PLLCNT_START},
-+	{0x0C56, CMN_PLL1_VCOCAL_PLLCNT_START},
-+	{0x0003, CMN_PLL0_VCOCAL_TCTRL},
-+	{0x0003, CMN_PLL1_VCOCAL_TCTRL},
-+	{0x00C7, CMN_PLL0_LOCK_REFCNT_START},
-+	{0x00C7, CMN_PLL1_LOCK_REFCNT_START},
-+	{0x00C7, CMN_PLL0_LOCK_PLLCNT_START},
-+	{0x00C7, CMN_PLL1_LOCK_PLLCNT_START},
-+	{0x0005, CMN_PLL0_LOCK_PLLCNT_THR},
-+	{0x0005, CMN_PLL1_LOCK_PLLCNT_THR}
-+};
-+
-+static struct cdns_torrent_vals pcie_100_int_ssc_cmn_vals = {
-+	.reg_pairs = pcie_100_int_ssc_cmn_regs,
-+	.num_regs = ARRAY_SIZE(pcie_100_int_ssc_cmn_regs),
-+};
-+
- /* Single link PCIe, 100 MHz Ref clk, internal SSC */
- static struct cdns_reg_pairs sl_pcie_100_int_ssc_cmn_regs[] = {
- 	{0x0004, CMN_PLL0_DSM_DIAG_M0},
-@@ -2171,25 +2634,159 @@ static struct cdns_torrent_vals pcie_100_no_ssc_rx_ln_vals = {
- static const struct cdns_torrent_data cdns_map_torrent = {
- 	.block_offset_shift = 0x2,
- 	.reg_offset_shift = 0x2,
-+	.link_cmn_vals = {
-+		[TYPE_PCIE] = {
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+			},
-+		},
-+	},
-+	.xcvr_diag_vals = {
-+		[TYPE_PCIE] = {
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+			},
-+		},
-+	},
- 	.cmn_vals = {
- 		[TYPE_PCIE] = {
--			[NO_SSC] = &pcie_100_no_ssc_cmn_vals,
--			[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
--			[INTERNAL_SSC] = &sl_pcie_100_int_ssc_cmn_vals,
-+			[TYPE_NONE] = {
-+				[NO_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sl_pcie_100_int_ssc_cmn_vals,
-+			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_100_int_ssc_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_100_int_ssc_cmn_vals,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sgmii_100_int_ssc_cmn_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_int_ssc_cmn_vals,
-+			},
- 		},
- 	},
- 	.tx_ln_vals = {
- 		[TYPE_PCIE] = {
--			[NO_SSC] = NULL,
--			[EXTERNAL_SSC] = NULL,
--			[INTERNAL_SSC] = NULL,
-+			[TYPE_NONE] = {
-+				[NO_SSC] = NULL,
-+				[EXTERNAL_SSC] = NULL,
-+				[INTERNAL_SSC] = NULL,
-+			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = NULL,
-+				[EXTERNAL_SSC] = NULL,
-+				[INTERNAL_SSC] = NULL,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = NULL,
-+				[EXTERNAL_SSC] = NULL,
-+				[INTERNAL_SSC] = NULL,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+			},
- 		},
- 	},
- 	.rx_ln_vals = {
- 		[TYPE_PCIE] = {
--			[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
--			[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
--			[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+			[TYPE_NONE] = {
-+				[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+			},
- 		},
- 	},
- };
-@@ -2197,25 +2794,159 @@ static const struct cdns_torrent_data cdns_map_torrent = {
- static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 	.block_offset_shift = 0x0,
- 	.reg_offset_shift = 0x1,
-+	.link_cmn_vals = {
-+		[TYPE_PCIE] = {
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_link_cmn_vals,
-+			},
-+		},
-+	},
-+	.xcvr_diag_vals = {
-+		[TYPE_PCIE] = {
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &pcie_sgmii_xcvr_diag_ln_vals,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_pcie_xcvr_diag_ln_vals,
-+			},
-+		},
-+	},
- 	.cmn_vals = {
- 		[TYPE_PCIE] = {
--			[NO_SSC] = &pcie_100_no_ssc_cmn_vals,
--			[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
--			[INTERNAL_SSC] = &sl_pcie_100_int_ssc_cmn_vals,
-+			[TYPE_NONE] = {
-+				[NO_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sl_pcie_100_int_ssc_cmn_vals,
-+			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_100_int_ssc_cmn_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &pcie_100_int_ssc_cmn_vals,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &sgmii_100_int_ssc_cmn_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_cmn_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_int_ssc_cmn_vals,
-+			},
- 		},
- 	},
- 	.tx_ln_vals = {
- 		[TYPE_PCIE] = {
--			[NO_SSC] = NULL,
--			[EXTERNAL_SSC] = NULL,
--			[INTERNAL_SSC] = NULL,
-+			[TYPE_NONE] = {
-+				[NO_SSC] = NULL,
-+				[EXTERNAL_SSC] = NULL,
-+				[INTERNAL_SSC] = NULL,
-+			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = NULL,
-+				[EXTERNAL_SSC] = NULL,
-+				[INTERNAL_SSC] = NULL,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = NULL,
-+				[EXTERNAL_SSC] = NULL,
-+				[INTERNAL_SSC] = NULL,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_tx_ln_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_tx_ln_vals,
-+			},
- 		},
- 	},
- 	.rx_ln_vals = {
- 		[TYPE_PCIE] = {
--			[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
--			[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
--			[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+			[TYPE_NONE] = {
-+				[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+			},
-+			[TYPE_SGMII] = {
-+				[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+			},
-+			[TYPE_QSGMII] = {
-+				[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-+			},
-+		},
-+		[TYPE_SGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &sgmii_100_no_ssc_rx_ln_vals,
-+			},
-+		},
-+		[TYPE_QSGMII] = {
-+			[TYPE_PCIE] = {
-+				[NO_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+				[EXTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+				[INTERNAL_SSC] = &qsgmii_100_no_ssc_rx_ln_vals,
-+			},
- 		},
- 	},
- };
 -- 
 2.26.1
 
