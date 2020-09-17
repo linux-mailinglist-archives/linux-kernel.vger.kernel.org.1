@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692D426D73A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8B126D73C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgIQI4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:56:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726153AbgIQI4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:56:06 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D02D20872;
-        Thu, 17 Sep 2020 08:56:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600332965;
-        bh=ASfbwo/4BJotCpMj7MrnxB32LQiVl0LY/S/7W1o9ClQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NIsDDqrMZEiDV2K+294cpkk8I8IoVTVX++VJYwcYjwvpsHYyEivEzbcDY7kS4dv/C
-         f6MW32b0HphaYNgS5OTQxCb0fXwDpCMuadjC8HpR3T0iGaNegdR93t+LctC3djZ7TA
-         3S3HCD2P2yGXRYsv9fIdurfAplIkBU0xb393URxw=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kIphz-00CaER-QG; Thu, 17 Sep 2020 09:56:03 +0100
+        id S1726448AbgIQI42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:56:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27591 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726171AbgIQI4Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:56:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600332983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u2Q5W6NAzslAk1ByBm0MYfEGJIT21PziYx8gteQ5Vhs=;
+        b=ZazY5rTciOz5z3PkF74rvLA3KRiEgy/gl27HcF9URyWcDF3bEkd5Vuv0BWp8rVZTvnoGTK
+        Wl/e04/AxEW4Y9PWYbG7/8REHkCrx7GLttUJEAz1rLE3OCxiuDEBrJxchZYGKcx9RKS/Oe
+        oUrCBK3rJ6qhddlLyndC/3S1iImje9A=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-119-PvbhCh1aNRm0H_fo6Oq5MQ-1; Thu, 17 Sep 2020 04:56:21 -0400
+X-MC-Unique: PvbhCh1aNRm0H_fo6Oq5MQ-1
+Received: by mail-wr1-f72.google.com with SMTP id h4so621456wrb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:56:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u2Q5W6NAzslAk1ByBm0MYfEGJIT21PziYx8gteQ5Vhs=;
+        b=H25yasmsESS9AZu6qNCgLGvzdv02dntJPJkuqWbN13bB/k3WAuu0odDBkSL2es7xwW
+         zL9AvwctNVArdNyE+zougP7yc9mGD7jwHK3mnfe1EzlfM044Qw41spDUfI84x2jBzlbV
+         Kc7v3FvhdU6c3RTMdqRmbVKe+guj6VriopWOqtsrf3Fm/2hVojJ2bOk/FoFQMz3kjMoO
+         pZzsXYiyiH/gdQYcU1ZRaQxlKqNK7AbljvquXHSuCMIaOOpIdhSE5x32OBz7puODuHPX
+         /C1f5oTFBwWuxUqzABiNNFX5qlo5c5/rHM2PuR9SUZFyDkOofiEL22lnjo+UfJPv/GD6
+         lgMw==
+X-Gm-Message-State: AOAM532L/Kp+aDDwzl0EpsuUjOAougsf9qg2GkswiSmKAvoSiKXkSAgP
+        QD0bONidUBFqPpyF3WeABcSTTp1IfKeUMaWjCHWRtyQXrG3FM/ASbFF88TWcLBOH2p0Is261Tq+
+        WYb11RCAXi/WrK0fGTKCXPLj2
+X-Received: by 2002:adf:f5c7:: with SMTP id k7mr31978533wrp.246.1600332979873;
+        Thu, 17 Sep 2020 01:56:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4OF1kdzQGvwv13LuHvoUh2lakQ8Xdk63kyMZtVuSxMDmrRTKIgQMp+gqghXnztKnI07Yygw==
+X-Received: by 2002:adf:f5c7:: with SMTP id k7mr31978509wrp.246.1600332979621;
+        Thu, 17 Sep 2020 01:56:19 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:d003:b94f:6314:4839? ([2001:b07:6468:f312:d003:b94f:6314:4839])
+        by smtp.gmail.com with ESMTPSA id v2sm37283429wrm.16.2020.09.17.01.56.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 01:56:19 -0700 (PDT)
+Subject: Re: [PATCH RFC] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
+To:     yadong.qi@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        liran.alon@oracle.com, nikita.leshchenko@oracle.com,
+        chao.gao@intel.com, kevin.tian@intel.com, luhai.chen@intel.com,
+        bing.zhu@intel.com, kai.z.wang@intel.com
+References: <20200917022501.369121-1-yadong.qi@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c3eaf796-67f1-9224-3e16-72d93501b6cf@redhat.com>
+Date:   Thu, 17 Sep 2020 10:56:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20200917022501.369121-1-yadong.qi@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 17 Sep 2020 09:56:03 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        kernel-team@android.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-In-Reply-To: <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-9-maz@kernel.org>
- <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
- <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
- <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
- <3378cd07b92e87a24f1db75f708424ee@kernel.org>
- <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
- <049d62ac7de32590cb170714b47fb87d@kernel.org>
- <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
- <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
- <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <2fc64291c2c890c7ea7b8718c810ad64@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, linus.walleij@linaro.org, m.szyprowski@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, b.zolnierkie@samsung.com, krzk@kernel.org, linux-samsung-soc@vger.kernel.org, tglx@linutronix.de, will@kernel.org, Valentin.Schneider@arm.com, linux-tegra@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-17 09:49, Jon Hunter wrote:
-> On 17/09/2020 09:45, Marc Zyngier wrote:
->> On 2020-09-17 08:54, Jon Hunter wrote:
-
->>> So far, I have only tested this patch on Tegra20. Let me try the 
->>> other
->>> failing boards this morning and see if those still fail.
->> 
->> Tegra20 (if I remember well) is a dual A9 with the same GIC 
->> implementation
->> as Ux500, hence requiring the source CPU bits to be written back. So 
->> this
->> patch should have cured it, but didn't...
->> 
->> /me puzzled.
+On 17/09/20 04:25, yadong.qi@intel.com wrote:
+> From: Yadong Qi <yadong.qi@intel.com>
 > 
-> Me too. Maybe there just happens to be something else also going wrong
-> in next. I am doing a bit more testing to see if applying the fix
-> directly on top of this change fixes it to try and eliminate anything
-> else in -next.
+> Background: We have a lightweight HV, it needs INIT-VMExit and
+> SIPI-VMExit to wake-up APs for guests since it do not monitoring
+> the Local APIC. But currently virtual wait-for-SIPI(WFS) state
+> is not supported in KVM, so when running on top of KVM, the L1
+> HV cannot receive the INIT-VMExit and SIPI-VMExit which cause
+> the L2 guest cannot wake up the APs.
 > 
-> Linus, what -next are you testing on? I am using next-20200916.
+> This patch is incomplete, it emulated wait-for-SIPI state by halt
+> the vCPU and emulated SIPI-VMExit to L1 when trapped SIPI signal
+> from L2. I am posting it RFC to gauge whether or not upstream
+> KVM is interested in emulating wait-for-SIPI state before
+> investing the time to finish the full support.
 
-You can directly try [1], which has all the queued fixes (and only 
-that).
+Yes, the patch makes sense and is a good addition.  What exactly is
+missing?  (Apart from test cases in kvm-unit-tests!)
 
-         M.
+Paolo
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/ipi-as-irq
--- 
-Jazz is not dead. It just smells funny...
+> According to Intel SDM Chapter 25.2 Other Causes of VM Exits,
+> SIPIs cause VM exits when a logical processor is in
+> wait-for-SIPI state.
+> 
+> In this patch:
+>     1. introduce SIPI exit reason,
+>     2. introduce wait-for-SIPI state for nVMX,
+>     3. advertise wait-for-SIPI support to guest.
+> 
+> When L1 hypervisor is not monitoring Local APIC, L0 need to emulate
+> INIT-VMExit and SIPI-VMExit to L1 to emulate INIT-SIPI-SIPI for
+> L2. L2 LAPIC write would be traped by L0 Hypervisor(KVM), L0 should
+> emulate the INIT/SIPI vmexit to L1 hypervisor to set proper state
+> for L2's vcpu state.
+
