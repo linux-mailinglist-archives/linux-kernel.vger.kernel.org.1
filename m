@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DE226E4F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A49626E4DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgIQTDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:03:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59640 "EHLO mail.kernel.org"
+        id S1726573AbgIQTAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726664AbgIQS7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:59:16 -0400
+        id S1726440AbgIQS7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:59:22 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E0D42072E;
-        Thu, 17 Sep 2020 18:58:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71100221F1;
+        Thu, 17 Sep 2020 18:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600369134;
-        bh=rr3dqiLdvWkyEd1pfoXZ2dEs5VJ/LPeZYXSEk8qGaeU=;
+        s=default; t=1600369153;
+        bh=jgfxIwQ3buaDWwgfrTvZ/q+CtMCIqzy4zsJMZH6k0zg=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=WT/5cMsw/rbv3BnUcqZRGNf/BOUINNMTlTZ+pOjSZQCF/e3upkj9SF/lYLH0xbIHk
-         knAvevwoH1pJVEONygW3spCBkpPbc/eFU6Xc9GFvWmZCT87Vb73Y4/BfTmWbp+9et/
-         eIAveXNHZV8oI7X59dCPx2weHGAwA56qUpy6iyXE=
-Date:   Thu, 17 Sep 2020 19:58:04 +0100
+        b=rOAzfqWdN9+rFhm7LDq9dTKiu6sl7I7bzD3Ihw5ZKLGf2a4/1SyW5EX8X5isGh8m2
+         oOivUXzNfuqBlmZMxBfmFsrsEA4dZYdB16MS8e7alW7ST1yvu99js2ciqAtRrbM0nT
+         EcstC6m2OMB6QCZM8ZpUa1j9F4T3tATFoFNfNuiI=
+Date:   Thu, 17 Sep 2020 19:58:23 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-In-Reply-To: <20200917120828.12987-1-ckeepax@opensource.cirrus.com>
-References: <20200917120828.12987-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2] regmap: debugfs: Fix handling of name string for debugfs init delays
-Message-Id: <160036907918.20286.4753770618414417911.b4-ty@kernel.org>
+To:     Ashish Kumar <ashish.kumar@nxp.com>, linux-spi@vger.kernel.org,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Arokia Samy <arokia.samy@nxp.com>,
+        Ard Biesheuvel <Ard.Biesheuvel@arm.com>,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Varun Sethi <V.Sethi@nxp.com>, Paul Yang <Paul.Yang@arm.com>
+In-Reply-To: <20200911130331.6313-1-kuldip.dwivedi@puresoftware.com>
+References: <20200911130331.6313-1-kuldip.dwivedi@puresoftware.com>
+Subject: Re: [PATCH v3] spi: spi-nxp-fspi: Add ACPI support
+Message-Id: <160036909795.20353.12392603785811661559.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 13:08:28 +0100, Charles Keepax wrote:
-> In regmap_debugfs_init the initialisation of the debugfs is delayed
-> if the root node isn't ready yet. Most callers of regmap_debugfs_init
-> pass the name from the regmap_config, which is considered temporary
-> ie. may be unallocated after the regmap_init call returns. This leads
-> to a potential use after free, where config->name has been freed by
-> the time it is used in regmap_debugfs_initcall.
-> 
-> [...]
+On Fri, 11 Sep 2020 18:33:31 +0530, kuldip dwivedi wrote:
+> Currently NXP fspi  driver has support of DT only. Adding ACPI
+> support to the driver so that it can be used by UEFI firmware
+> booting in ACPI mode. This driver will be probed if any firmware
+> will expose HID "NXP0009" in DSDT table.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regmap: debugfs: Fix handling of name string for debugfs init delays
-      commit: 94cc89eb8fa5039fcb6e3e3d50f929ddcccee095
+[1/1] spi: spi-nxp-fspi: Add ACPI support
+      commit: 55ab8487e01d18466ddf596acc7a11e8c53b2812
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
