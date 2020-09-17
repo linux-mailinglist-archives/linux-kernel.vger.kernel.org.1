@@ -2,172 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBA926E018
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D571E26E019
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgIQP4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:56:24 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:55182 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727959AbgIQPvA (ORCPT
+        id S1728069AbgIQPuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728084AbgIQPsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:51:00 -0400
-Received: from [192.168.254.38] (unknown [47.187.206.220])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B4CB020B7178;
-        Thu, 17 Sep 2020 08:36:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B4CB020B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1600356964;
-        bh=QO+LfG0Faopxheg2cutvYRBT+pPhms6wveYLa1LgL+U=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=BFLuqVFA/BDQQm7DZtjpCvIA39dAw9ux6L9xLBXRs6zIIXnRN+iAbXLuSLqhrzA+k
-         BG7bFfSeOzurlviYcp2xoC7KmQR6uPkch48sGL+8ZSgMbTtNqSk+vcT3F4zKwn48wg
-         Rw5oLxGtZN7S6/Kam+IanR5OdBOQIIId/5GCFEoU=
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, libffi-discuss@sourceware.org
-References: <20200916150826.5990-1-madvenka@linux.microsoft.com>
- <87v9gdz01h.fsf@mid.deneb.enyo.de>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <96ea02df-4154-5888-1669-f3beeed60b33@linux.microsoft.com>
-Date:   Thu, 17 Sep 2020 10:36:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Sep 2020 11:48:37 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8966FC06178B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:37:14 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e23so2292736otk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZKdwGNTuB7raHchRws1uZpYC5kiBgIgkW7sRbNdes8U=;
+        b=ISCJ5Tw66UvgaeWJoGMvoGpBgdi+Pvh73WzxPCKZycvbr4Kw5zYOwmcCQjHLfF+3da
+         CYy+53x/nyxrzX0KXw6ljYFdDcKO3M9i08qHW5NqtLtlz6ZhbasQ8xieyUjx4qmoUfzZ
+         Zbi23eh19F5Vb4GtV/XcziMcnv0MJy1iuV014=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZKdwGNTuB7raHchRws1uZpYC5kiBgIgkW7sRbNdes8U=;
+        b=M+N685D++tgNcaPpzg0i+zqoIOhYnVebo7HO5ucZb+Jw72sdvnp8VBMH812yLZsY0e
+         yvhGPi6YN7+EwMPtSEAx4QmiTYwz+TKmt4TZYDP0WXh0IiBht/uFiACfhOzDDN6oCfHQ
+         5HooJCN1X84GXwiiCa1yxdpu+UgT9MDKSz9UEh/8dXLw6grn9XfmnZizCigT4JBPbApv
+         WhMRRi0+Ptj0jWcwqZDF3DTIIsyhq4GwzpcbxtoFsxih42jZ6xp1IUSn7VU4jpb/qgsI
+         49iMovMjm8J5vhFWbuuOif/6B+OKJgVIcmhV0tu56ef2Q6o1d72Qj+4RGPhr4nOcRsiF
+         3/Zw==
+X-Gm-Message-State: AOAM531IgHNtuyPW28GrnDDEyQy8IuH/Wzgo6DztfcXySctWc6z+VqvC
+        l/bXcdTzTAIBNbXCz76FIybm3xdacG722HkfIncfAxbUFflg6g==
+X-Google-Smtp-Source: ABdhPJzGgOa/Oz2wRUro/hKXS9FrrveYmtnBfxpRy+S4Y7u9DCAavZtFsw1BfFfAu8kbrs7cNgN2/BHLCGrXvdc8BOY=
+X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr21146655otq.188.1600357033519;
+ Thu, 17 Sep 2020 08:37:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87v9gdz01h.fsf@mid.deneb.enyo.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <aa953b09-53b1-104b-dc4b-156ad8a75e62@gmail.com>
+ <CAKMK7uHJNRzCJfWVSmMrLmGXE0qo+OCXiMd+zPTOkeG2pnVrmQ@mail.gmail.com>
+ <8d8693db-a3f0-4f5f-3e32-57d23ca620f8@amd.com> <CAKMK7uE=UqZD3PVC8XZAXrgGH-VsUF_-YQD3MLV8KK1kpxO4yQ@mail.gmail.com>
+ <20200917113110.GE8409@ziepe.ca> <6fd74b84-959c-8b3b-c27b-e9fbf66396c7@gmail.com>
+ <20200917121858.GF8409@ziepe.ca> <d82f08ee-2dec-18e8-fb06-d26f18ed777a@gmail.com>
+ <20200917143551.GG8409@ziepe.ca> <5b330920-c789-fac7-e9b1-49f3bc1097a8@gmail.com>
+ <20200917152456.GH8409@ziepe.ca>
+In-Reply-To: <20200917152456.GH8409@ziepe.ca>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 17 Sep 2020 17:37:01 +0200
+Message-ID: <CAKMK7uHQLAHXC_aBZZco0e3tbAqnNuW8QdJk=-V-yM2khw5e=Q@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 17, 2020 at 5:24 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Thu, Sep 17, 2020 at 04:54:44PM +0200, Christian K=C3=B6nig wrote:
+> > Am 17.09.20 um 16:35 schrieb Jason Gunthorpe:
+> > > On Thu, Sep 17, 2020 at 02:24:29PM +0200, Christian K=C3=B6nig wrote:
+> > > > Am 17.09.20 um 14:18 schrieb Jason Gunthorpe:
+> > > > > On Thu, Sep 17, 2020 at 02:03:48PM +0200, Christian K=C3=B6nig wr=
+ote:
+> > > > > > Am 17.09.20 um 13:31 schrieb Jason Gunthorpe:
+> > > > > > > On Thu, Sep 17, 2020 at 10:09:12AM +0200, Daniel Vetter wrote=
+:
+> > > > > > >
+> > > > > > > > Yeah, but it doesn't work when forwarding from the drm char=
+dev to the
+> > > > > > > > dma-buf on the importer side, since you'd need a ton of dif=
+ferent
+> > > > > > > > address spaces. And you still rely on the core code picking=
+ up your
+> > > > > > > > pgoff mangling, which feels about as risky to me as the vma=
+ file
+> > > > > > > > pointer wrangling - if it's not consistently applied the re=
+verse map
+> > > > > > > > is toast and unmap_mapping_range doesn't work correctly for=
+ our needs.
+> > > > > > > I would think the pgoff has to be translated at the same time=
+ the
+> > > > > > > vm->vm_file is changed?
+> > > > > > >
+> > > > > > > The owner of the dma_buf should have one virtual address spac=
+e and FD,
+> > > > > > > all its dma bufs should be linked to it, and all pgoffs trans=
+lated to
+> > > > > > > that space.
+> > > > > > Yeah, that is exactly like amdgpu is doing it.
+> > > > > >
+> > > > > > Going to document that somehow when I'm done with TTM cleanups.
+> > > > > BTW, while people are looking at this, is there a way to go from =
+a VMA
+> > > > > to a dma_buf that owns it?
+> > > > Only a driver specific one.
+> > > Sounds OK
+> > >
+> > > > For TTM drivers vma->vm_private_data points to the buffer object. N=
+ot sure
+> > > > about the drivers using GEM only.
+> > > Why are drivers in control of the vma? I would think dma_buf should b=
+e
+> > > the vma owner. IIRC module lifetime correctness essentially hings on
+> > > the module owner of the struct file
+> >
+> > Because the page fault handling is completely driver specific.
+> >
+> > We could install some DMA-buf vmops, but that would just be another lay=
+er of
+> > redirection.
 
+Uh geez I didn't know amdgpu was doing that :-/
 
-On 9/16/20 8:04 PM, Florian Weimer wrote:
-> * madvenka:
-> 
->> Examples of trampolines
->> =======================
->>
->> libffi (A Portable Foreign Function Interface Library):
->>
->> libffi allows a user to define functions with an arbitrary list of
->> arguments and return value through a feature called "Closures".
->> Closures use trampolines to jump to ABI handlers that handle calling
->> conventions and call a target function. libffi is used by a lot
->> of different applications. To name a few:
->>
->> 	- Python
->> 	- Java
->> 	- Javascript
->> 	- Ruby FFI
->> 	- Lisp
->> 	- Objective C
-> 
-> libffi does not actually need this.  It currently collocates
-> trampolines and the data they need on the same page, but that's
-> actually unecessary.  It's possible to avoid doing this just by
-> changing libffi, without any kernel changes.
-> 
-> I think this has already been done for the iOS port.
-> 
+Since this is on, I guess the inverse of trying to convert a userptr
+into a dma-buf is properly rejected?
 
-The trampoline table that has been implemented for the iOS port (MACH)
-is based on PC-relative data referencing. That is, the code and data
-are placed in adjacent pages so that the code can access the data using
-an address relative to the current PC.
+> If it is already taking a page fault I'm not sure the extra function
+> call indirection is going to be a big deal. Having a uniform VMA
+> sounds saner than every driver custom rolling something.
+>
+> When I unwound a similar mess in RDMA all the custom VMA stuff in the
+> drivers turned out to be generally buggy, at least.
+>
+> Is vma->vm_file->private_data universally a dma_buf pointer at least?
 
-This is an ISA feature that is not supported on all architectures.
+Nope. I think if you want this without some large scale rewrite of a
+lot of code we'd need a vmops->get_dmabuf or similar. Not pretty, but
+would get the job done.
 
-Now, if it is a performance feature, we can include some architectures
-and exclude others. But this is a security feature. IMO, we cannot
-exclude any architecture even if it is a legacy one as long as Linux
-is running on the architecture. So, we need a solution that does
-not assume any specific ISA feature.
+> > > So, user VA -> find_vma -> dma_buf object -> dma_buf operations on th=
+e
+> > > memory it represents
+> >
+> > Ah, yes we are already doing this in amdgpu as well. But only for DMA-b=
+ufs
+> > or more generally buffers which are mmaped by this driver instance.
+>
+> So there is no general dma_buf service? That is a real bummer
 
->> The code for trampoline X in the trampoline table is:
->>
->> 	load	&code_table[X], code_reg
->> 	load	(code_reg), code_reg
->> 	load	&data_table[X], data_reg
->> 	load	(data_reg), data_reg
->> 	jump	code_reg
->>
->> The addresses &code_table[X] and &data_table[X] are baked into the
->> trampoline code. So, PC-relative data references are not needed. The user
->> can modify code_table[X] and data_table[X] dynamically.
-> 
-> You can put this code into the libffi shared object and map it from
-> there, just like the rest of the libffi code.  To get more
-> trampolines, you can map the page containing the trampolines multiple
-> times, each instance preceded by a separate data page with the control
-> information.
-> 
-
-If you put the code in the libffi shared object, how do you pass data to
-the code at runtime? If the code we are talking about is a function, then
-there is an ABI defined way to pass data to the function. But if the
-code we are talking about is some arbitrary code such as a trampoline,
-there is no ABI defined way to pass data to it except in a couple of
-platforms such as HP PA-RISC that have support for function descriptors
-in the ABI itself.
-
-As mentioned before, if the ISA supports PC-relative data references
-(e.g., X86 64-bit platforms support RIP-relative data references)
-then we can pass data to that code by placing the code and data in
-adjacent pages. So, you can implement the trampoline table for X64.
-i386 does not support it.
-
-
-> I think the previous patch submission has also resulted in several
-> comments along those lines, so I'm not sure why you are reposting
-> this.
-
-IIRC, I have answered all of those comments by mentioning the point
-that we need to support all architectures without requiring special
-ISA features. Taking the kernel's help in this is one solution.
-
-
-> 
->> libffi
->> ======
->>
->> I have implemented my solution for libffi and provided the changes for
->> X86 and ARM, 32-bit and 64-bit. Here is the reference patch:
->>
->> http://linux.microsoft.com/~madvenka/libffi/libffi.v2.txt
-> 
-> The URL does not appear to work, I get a 403 error.
-
-I apologize for that. That site is supposed to be accessible publicly.
-I will contact the administrator and get this resolved.
-
-Sorry for the annoyance.
-
-> 
->> If the trampfd patchset gets accepted, I will send the libffi changes
->> to the maintainers for a review. BTW, I have also successfully executed
->> the libffi self tests.
-> 
-> I have not seen your libffi changes, but I expect that the complexity
-> is about the same as a userspace-only solution.
-> 
-> 
-
-I agree. The complexity is about the same. But the support is for all
-architectures. Once the common code is in place, the changes for each
-architecture are trivial.
-
-Madhavan
-
-> Cc:ing libffi upstream for awareness.  The start of the thread is
-> here:
-> 
-> <https://lore.kernel.org/linux-api/20200916150826.5990-1-madvenka@linux.microsoft.com/>
-> 
+Mostly historical reasons and "it's complicated". One problem is that
+dma-buf isn't a powerful enough interface that drivers could use it
+for all their native objects, e.g. userptr doesn't pass through it,
+and clever cache flushing tricks aren't allowed and a bunch of other
+things. So there's some serious roadblocks before we could have a
+common allocator (or set of allocators) behind dma-buf.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
