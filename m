@@ -2,61 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E4126D0FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AA526D105
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgIQCM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:12:59 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12803 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725858AbgIQCM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:12:57 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2F6678C789C4D430621E;
-        Thu, 17 Sep 2020 10:12:55 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
- 10:12:47 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <hao.wu@intel.com>, <trix@redhat.com>, <mdf@kernel.org>,
-        <yilun.xu@intel.com>
-CC:     <linux-fpga@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH v2 next] fpga: dfl: n3000-nios: Make m10_n3000_info static
-Date:   Thu, 17 Sep 2020 10:12:40 +0800
-Message-ID: <20200917021240.40252-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1725267AbgIQCOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbgIQCOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 22:14:43 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29BEC06174A;
+        Wed, 16 Sep 2020 19:14:42 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIjRX-00088p-UJ; Thu, 17 Sep 2020 02:14:40 +0000
+Date:   Thu, 17 Sep 2020 03:14:39 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Qian Cai <cai@redhat.com>
+Cc:     torvalds@linux-foundation.org, vgoyal@redhat.com,
+        miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: slab-out-of-bounds in iov_iter_revert()
+Message-ID: <20200917021439.GA31009@ZenIV.linux.org.uk>
+References: <20200911215903.GA16973@lca.pw>
+ <20200911235511.GB3421308@ZenIV.linux.org.uk>
+ <87ded87d232d9cf87c9c64495bf9190be0e0b6e8.camel@redhat.com>
+ <20200917020440.GQ3421308@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917020440.GQ3421308@ZenIV.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warning:
+On Thu, Sep 17, 2020 at 03:04:40AM +0100, Al Viro wrote:
+> On Wed, Sep 16, 2020 at 05:09:49PM -0400, Qian Cai wrote:
+> > On Sat, 2020-09-12 at 00:55 +0100, Al Viro wrote:
+> > > On Fri, Sep 11, 2020 at 05:59:04PM -0400, Qian Cai wrote:
+> > > > Super easy to reproduce on today's mainline by just fuzzing for a few
+> > > > minutes
+> > > > on virtiofs (if it ever matters). Any thoughts?
+> > > 
+> > > Usually happens when ->direct_IO() fucks up and reports the wrong amount
+> > > of data written/read.  We had several bugs like that in the past - see
+> > > e.g. 85128b2be673 (fix nfs O_DIRECT advancing iov_iter too much).
+> > > 
+> > > Had there been any recent O_DIRECT-related patches on the filesystems
+> > > involved?
+> > 
+> > This is only reproducible using FUSE/virtiofs so far, so I will stare at
+> > fuse_direct_IO() until someone can beat me to it.
+> 
+> What happens there is that it tries to play with iov_iter_truncate() in
+> ->direct_IO() without a corresponding iov_iter_reexpand().  Could you
+> check if the following helps?
 
-drivers/fpga/dfl-n3000-nios.c:392:23: warning:
- symbol 'm10_n3000_info' was not declared. Should it be static?
+Gyah...  Sorry, that should be
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- drivers/fpga/dfl-n3000-nios.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/fpga/dfl-n3000-nios.c b/drivers/fpga/dfl-n3000-nios.c
-index 5088f8f0e0cd..686813b59d33 100644
---- a/drivers/fpga/dfl-n3000-nios.c
-+++ b/drivers/fpga/dfl-n3000-nios.c
-@@ -389,7 +389,7 @@ static int n3000_nios_init_done_check(struct n3000_nios *ns)
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 6611ef3269a8..92de6b9b06b0 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -3095,7 +3095,7 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+ 	loff_t pos = 0;
+ 	struct inode *inode;
+ 	loff_t i_size;
+-	size_t count = iov_iter_count(iter);
++	size_t count = iov_iter_count(iter), shortened;
+ 	loff_t offset = iocb->ki_pos;
+ 	struct fuse_io_priv *io;
+ 
+@@ -3111,7 +3111,8 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+ 		if (offset >= i_size)
+ 			return 0;
+ 		iov_iter_truncate(iter, fuse_round_up(ff->fc, i_size - offset));
+-		count = iov_iter_count(iter);
++		shortened = count - iov_iter_count(iter);
++		count -= shortened;
+ 	}
+ 
+ 	io = kmalloc(sizeof(struct fuse_io_priv), GFP_KERNEL);
+@@ -3177,6 +3178,7 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+ 		else if (ret < 0 && offset + count > i_size)
+ 			fuse_do_truncate(file);
+ 	}
++	iov_iter_reexpand(iter, iov_iter_count(iter) + shortened);
+ 
  	return ret;
  }
- 
--struct spi_board_info m10_n3000_info = {
-+static struct spi_board_info m10_n3000_info = {
- 	.modalias = "m10-n3000",
- 	.max_speed_hz = 12500000,
- 	.bus_num = 0,
--- 
-2.17.1
-
