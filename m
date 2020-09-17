@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FCC26D945
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1557B26D957
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgIQKk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
+        id S1726618AbgIQKlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbgIQKjs (ORCPT
+        with ESMTP id S1726217AbgIQKlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:39:48 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2DAC061788
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:39:47 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a17so1508279wrn.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:39:47 -0700 (PDT)
+        Thu, 17 Sep 2020 06:41:44 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2F1C06174A;
+        Thu, 17 Sep 2020 03:41:43 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l15so4157174wmh.1;
+        Thu, 17 Sep 2020 03:41:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i61APjl9FpHUWCD5kz7OHKcLpHTXAoxGDIDfWxkIIKA=;
-        b=TzPoWKJpf/wfLnHIxcrXxgZWuK60ap9//CbBd+TZNU2y8pdavUxikjEt2gi5POaKmE
-         sqkFdSnMaVS1uKBMNwFz2LD2WOzuwU1zj8wyFkyUcYMrba7+P5J1c2Fv+B2pA0YKvxEq
-         PITadgTrH/zkaB/+nsMN0He+jN7epa8nGmBTppCHFZArS1XrWopPHaOZ+a73fw3w9qPn
-         3XYS+1a630QJtEokkLq6ui9qWO+5TNMwL2/5JCPrGShBHnRRp8yqSVLE+jWSTS3LU4CV
-         qBTpOaf7Qkp9W9WrfV8ijmWDL8lGRzqW6IiHDacIJmABTVU1gQ89/bti1zIaAMhXKSaT
-         im5g==
+         :content-disposition:in-reply-to:user-agent;
+        bh=X83+YxLNLakSEy2MO2kNdUk1vFYzpBNVVoYA7qc9Hv8=;
+        b=r8Zs4fj610xUajyLYCKzJ7kAYSxcX52cD0GDHf40+fI98gr6h+EEWEzyMRb075ARrd
+         I4sQVmOtKcmMh9a+5BNplnzJgXH3H25Zj9voFQqDQ+xop77fAYdWEjS1wT6K98E1DRCr
+         BVBWvX6+Y0BzkRUk6UgA7Hgj3WPBr8HhdmogWFQYUibY6Mpol9wiICtNNiHZoEbj4+SZ
+         8TrBabmozaC37Inx39cnR26MiNEG68s44MsDxPnMLY5nwuoubCF0djgum70p26BQBADS
+         mcZ1QsQWAAvz4kTrJ++tk5PgAIVrK8UrUbAl4aLFZ1dr9p1vR+yQ+21BhkLKWpUdEnsT
+         VrQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i61APjl9FpHUWCD5kz7OHKcLpHTXAoxGDIDfWxkIIKA=;
-        b=QBmOaHMu2tPUIedHeve5xYGcorwUDvCuT8eCJEWHQu/hzQkkeN3TNm6lTPmc22WOpI
-         KOeMTvtCfU3/k2dD98S5/Wx67iW4Zn+ILOQGDkOVkG4/UQfJ4t1RZoRiPRhVoumzjTMr
-         lzeAUN1mDDFmWgTtih/X0nP/mWik/UyVrR3waF48nymfjs53RYrHVn2n1muZF5yVvBO1
-         rn8D3fY6ExAUrtACZUaXLArTTjQNIp6guQMrQvHDK5y/9AIgEuqJ6EVUnMLlQntKPgND
-         PxSRwgGAJtMFVw8TTY/pllaRwBzC1cxvoRxgwEV6mxa4fUvobEl+gK322atlJs+w4NQo
-         Fibw==
-X-Gm-Message-State: AOAM533soymDrhSrmZdJcCLZJG0Cl9XHZq7l28LmjofUb0U14IMAxJNz
-        x+NrPSAqgcEFy8LDGNzki0o5TQ==
-X-Google-Smtp-Source: ABdhPJxDq+/9WZYcvn4wKFY6MtwgqeKWNaxXznfDHBKkyGKGAQpnGiuIZ/ycslis6B1djEELBpVQXA==
-X-Received: by 2002:a5d:51c5:: with SMTP id n5mr7428723wrv.265.1600339185727;
-        Thu, 17 Sep 2020 03:39:45 -0700 (PDT)
-Received: from x1 ([2001:16b8:5c22:e701:5f2:8f03:4748:2bc6])
-        by smtp.gmail.com with ESMTPSA id r14sm38384764wrn.56.2020.09.17.03.39.44
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=X83+YxLNLakSEy2MO2kNdUk1vFYzpBNVVoYA7qc9Hv8=;
+        b=My2Vnx/vz5mQBgZMa0/joBJ9x0MnXZcYWOjJzgRsPNd348NkLOKmyI4gPNDKZ9GwuI
+         5tOKaz/t5D33bOtUnqm1UYdq6Q1xL3cey6cHiYY7mIxK0VGb2rW/vvGjNk68KeZZQzKd
+         OeJ1e0m/ESXyWCVs4i4S977yBkDB+43x3QWpKcBVHQeGJuPE36v3XfP5KaJdIlPQpQSD
+         01DAfCxucyfC5tL6wE3tlcT704XqIcnaWa+HDsxx7QnwM+wgKykzIHi3CkBgtlrT2dio
+         HaoWGr/eEtYiR+bSaGtUq734/UQrN95BxxHf3AiTQ0lZzT1uWDD8o3Fsk3AFPQnJTRz6
+         H9uQ==
+X-Gm-Message-State: AOAM5326sM4lkYOHFccn7uxutIKmnFzcNciHTIY6/u+0lSVgK6+7AxDS
+        m98M0iyTmGwEvflHWa7V3Zc=
+X-Google-Smtp-Source: ABdhPJzLaq0pt0bNv92XyZEyoER6JQVztwJxVRUOSMo+cF5R4NCHmce2JIVKbOJMi0TkQ/eTSVcYZA==
+X-Received: by 2002:a1c:6a11:: with SMTP id f17mr8726659wmc.143.1600339302168;
+        Thu, 17 Sep 2020 03:41:42 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id y6sm38883203wrn.41.2020.09.17.03.41.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 03:39:45 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 12:39:42 +0200
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Trent Piepho <tpiepho@gmail.com>
-Cc:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Christina Quast <cquast@hanoverdisplays.com>
-Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
- #pinctrl-cells = 2
-Message-ID: <20200917103942.GA2477958@x1>
-References: <20200914104352.2165818-1-drew@beagleboard.org>
- <CA+7tXii8rwBexgAHeqYsvBywhWLmk-Hf5_VWUU5bQkBREeFcSA@mail.gmail.com>
- <20200917092004.GA2468349@x1>
- <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
+        Thu, 17 Sep 2020 03:41:40 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 12:41:39 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     joro@8bytes.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
+        vdumpa@nvidia.com
+Subject: Re: [PATCH] iommu/tegra-smmu: Fix tlb_mask
+Message-ID: <20200917104139.GH3515672@ulmo>
+References: <20200916002359.10823-1-nicoleotsuka@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Yia77v5a8fyVHJSl"
 Content-Disposition: inline
-In-Reply-To: <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
+In-Reply-To: <20200916002359.10823-1-nicoleotsuka@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:00:36AM -0700, Trent Piepho wrote:
-> On Thu, Sep 17, 2020 at 2:20 AM Drew Fustini <drew@beagleboard.org> wrote:
-> >
-> > On Thu, Sep 17, 2020 at 02:03:46AM -0700, Trent Piepho wrote:
-> > > On Mon, Sep 14, 2020 at 3:44 AM Drew Fustini <drew@beagleboard.org> wrote:
-> > > >
-> > > > +
-> > > > +When #pinctrl-cells = 2, then setting a pin for a device could be done with:
-> > > > +
-> > > > +       pinctrl-single,pins = <0xdc 0x30 0x07>;
-> > > > +
-> > > > +Where 0x30 is the pin configuration value and 0x07 is the pin mux mode value.
-> > > > +See the device example and static board pins example below for more information.
-> > >
-> > > Pin configuration and mux mode don't mean anything in pinctrl-single.
-> > > On another machine, mux mode might not be programmed this way or even
-> > > exist.  Or the location of bits would probably be different, and this
-> > > would seem to imply the 0x07 would get shifted to the correct location
-> > > for where the pin mux setting was on that machine's pinctrl registers.
-> > >
-> > > It seems like it would be better to explain the values are ORed together.
-> >
-> > I descirbed it as seoerate values as I did not want to prescribe what
-> > the pcs driver would do with those values.  But, yes, it is a just an OR
-> > operation, so I could change the language to reflect tat.
-> 
-> If you don't say what the pinctrl-single driver does with the values,
-> how would anyone know how to use it?
-> 
-> > > What is the purpose of this change anyway?  It seems like in the end
-> > > it just does what it did before.  The data is now split into two cells
-> > > in the device tree, but why?
-> >
-> > These changes were a result of desire to seperate pinconf and pinmux.
-> > Tony raised the idea in a thread at the end of May [1].
-> >
-> > Tony wrote:
-> > > Only slightly related, but we should really eventually move omaps to use
-> > > #pinctrl-cells = <2> (or 3) instead of 1, and pass the pinconf seprately
-> > > from the mux mode. We already treat them separately with the new
-> > > AM33XX_PADCONF macro, so we'd only have to change one SoC at a time to
-> > > use updated #pinctrl-cells. But I think pinctrl-single might need some
-> > > changes before we can do that.
-> 
-> I still don't see what the goal is here.  Support generic pinconf?
 
-My interest is came out of my desire to turn on generic pinconf for AM3358
-and I had to fix a bug that was breaking compatible "pinconf,single":
-f46fe79ff1b6 ("pinctrl-single: fix pcs_parse_pinconf() return value")
+--Yia77v5a8fyVHJSl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Also note that while AM33XX_PADCONF() is changed, there is an in tree
-> board that doesn't use it, so it's broken now.  I found this change
-> when it broke my out of tree board, due to the dtsi change not being
-> reflected in my board's pinctrl values.
+On Tue, Sep 15, 2020 at 05:23:59PM -0700, Nicolin Chen wrote:
+> The "num_tlb_lines" might not be a power-of-2 value, being 48 on
+> Tegra210 for example. So the current way of calculating tlb_mask
+> using the num_tlb_lines is not correct: tlb_mask=3D0x5f in case of
+> num_tlb_lines=3D48, which will trim a setting of 0x30 (48) to 0x10.
+>=20
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>  drivers/iommu/tegra-smmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks, that is a good point that arch/arm/boot/dts/am335x-guardian.dts
-needs to be converted from AM33XX_IOPAD to AM33XX_PADCONF.  I'll submit
-a patch for that.
+This is technically a prerequisite for this patch you sent out earlier:
 
-Regarding AM33XX_PADCONF() restructuring, the change to have seperate
-arguments for direction and mux in AM33XX_PADCONF() predates my
-invovlement, so I've CC'd Christina Quast.
+    https://patchwork.ozlabs.org/project/linux-tegra/patch/20200915232803.2=
+6163-1-nicoleotsuka@gmail.com/
 
-    commit f1ff9be7652b716c7eea67c9ca795027d911f148
-    Author: Christina Quast <cquast@hanoverdisplays.com>
-    Date:   Mon Apr 8 10:01:51 2019 -0700
+You should send both of those out as one series and add maintainers for
+both subsystems to both patches so that they can work out who will be
+applying them.
 
-    ARM: dts: am33xx: Added AM33XX_PADCONF macro
-    
-    AM33XX_PADCONF takes three instead of two parameters, to make
-    future changes to #pinctrl-cells easier.
-    
-    For old boards which are not mainlined, we left the AM33XX_IOPAD
-    macro.
-    
-    Signed-off-by: Christina Quast <cquast@hanoverdisplays.com>
-    Reviewed-by: Rob Herring <robh@kernel.org>
-    Signed-off-by: Tony Lindgren <tony@atomide.com>
+For this pair it's probably best for Joerg to pick up both patches
+because this primarily concerns the Tegra SMMU, whereas the above patch
+only provides the per-SoC data update for the SMMU. Obviously if Joerg
+prefers for Krzysztof to pick up both patches that's fine with me too.
 
-Hopefully, Tony can also chime in.
+In either case, please send this out as a series so that both Joerg and
+Krzysztof (Cc'ed for visibility) are aware of both patches. From the
+Tegra side:
 
--Drew
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> index 84fdee473873..0becdbfea306 100644
+> --- a/drivers/iommu/tegra-smmu.c
+> +++ b/drivers/iommu/tegra-smmu.c
+> @@ -1120,7 +1120,7 @@ struct tegra_smmu *tegra_smmu_probe(struct device *=
+dev,
+>  		BIT_MASK(mc->soc->num_address_bits - SMMU_PTE_SHIFT) - 1;
+>  	dev_dbg(dev, "address bits: %u, PFN mask: %#lx\n",
+>  		mc->soc->num_address_bits, smmu->pfn_mask);
+> -	smmu->tlb_mask =3D (smmu->soc->num_tlb_lines << 1) - 1;
+> +	smmu->tlb_mask =3D (1 << fls(smmu->soc->num_tlb_lines)) - 1;
+>  	dev_dbg(dev, "TLB lines: %u, mask: %#lx\n", smmu->soc->num_tlb_lines,
+>  		smmu->tlb_mask);
+> =20
+> --=20
+> 2.17.1
+>=20
+
+--Yia77v5a8fyVHJSl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jPWMACgkQ3SOs138+
+s6F/bg//XdumYVA2ODztwS8iTzCljbnXyjUzNX8Ru37N5Br82W9rXoStYRiZ7boA
+8IQVASAvvHf8pKd8J6Sm1sXasSi6yGFeJqPrCfZxYq1PCs+RIM93OrXtBd1JRajl
+8d/u3ivynx6Qd3E98BQTc9uNc2+6cXY11XR6dKwhHuI4wb43BS/4FOR8a3lq+VWf
+gznzq/QZPd11ZbCNLF4eI/LaWByGR4c/J1yrnw4O/QcCv/MTMr2m6YViJHhybm+V
+XOTLotbAK0sjn2ihlieHKVUHvluPKkAn+qJVdB9/9SpgaPBq1/wueXu4GpLOcA9F
+1ffbBx27wHv/dW3QzAqyOrjeTsKd0vFwTVziux0eZ1zOt74n9ARp9C+KDEn4b28G
+2XtbuBE4CVTsZ2IS+ePrWAAG3ZnPfcz+cu+v6NNxZ9cd65qDK2aqOD6nskkUbbaf
+m8eV41RK2PqT8p5FaeA3KFmXASVIMAwSFqWhNGnPYO5fzPSdr43m/iPas77sM8pE
+OXPy/+SL5YDyYwez4mEs3gCzdPy19pFcnXgKGACS9yR5xnYAEBBvU+UpV8xAHFfE
+vJYX5UyOBqJbmUAccVEhqllklQ0iWpTR1gmGBWlwjizBGxyR4bXW82oL/+ePcv0c
+xdzFtey9zMVqmbsX3wqCi83VoEEwfo8VzxWF399WCoUiQMUJo+s=
+=dbE2
+-----END PGP SIGNATURE-----
+
+--Yia77v5a8fyVHJSl--
