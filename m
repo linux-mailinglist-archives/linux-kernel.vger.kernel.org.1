@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E521F26D8F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE4726D8C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgIQKZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
+        id S1726686AbgIQKUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726610AbgIQKTF (ORCPT
+        with ESMTP id S1726575AbgIQKTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:19:05 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225CBC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:19:05 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id x13so1056825plm.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:19:05 -0700 (PDT)
+        Thu, 17 Sep 2020 06:19:07 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC98C06178B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:19:07 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id l5so1231712qtu.20
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=lTFIRTR1zNwvJ04BgZN6fFlBDrcI3QRsPDim78iCLb4=;
-        b=sZXLpVdl+nNo2cP9flul5No44LJwj8N0mPdruUaP6v2aqiRrUHLUsX2r3kJ6R2lgEY
-         5pcMgvASvtXPMvdOZjcZtRoHpY9EGMi3Fw9TQ9bjtLy/4KfF6ZihSWfduHQs+kUmynKs
-         KINImWENB/1MfEWHxhQdM7W7nssHpp67TB17hk2KoafoNA0tUqMbcZH8FF8+x1BDfzke
-         YUm2sev4F2W3BfhD6cZvas1PRNN9xgXg5x7YsNT+bqgjP0W4xgpuWDctKIzDynNHIrfz
-         3BODPguF7t/VhrlueO3gI+jWZNZzJlMAQ9uVoh7TgTMpoexsThUTdhr34m9GnR6iT8lG
-         R2ww==
+        bh=RX+6Qhr618+Jmg2ZrMqvcKnkrQM1L81+sxgM+9sQd8s=;
+        b=mCzsehzbgob0T9s2K5+oEPxrF0SCZUTUzob4D9z9vOCUlBa8Zu4RaUQXWqPpt6TLEI
+         IS4ciTbnS33Vha/W9PVDqOTLNCeyj4ux6G8h/JlO9prRAxR2H6l4xoDSVSjtxhcscMdp
+         7kGEw+l4mBSlnXbHfvlmISaB+HnM2o8tFsNAKWCXnjgiJl2bNRNe0D4BbMWHZsEPbik9
+         XCX4UcOIJuUgm2nxAB//89RCneQUopohLw04rO4b46QeYlKIE9CRo/7ryjPIcaH0FI/r
+         aEcuRRG8v5CC+knFUmZk807LjRVVmLbNddT1h27MpSgEYRMSa6kDwjV649JeSmoOYlp6
+         79og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=lTFIRTR1zNwvJ04BgZN6fFlBDrcI3QRsPDim78iCLb4=;
-        b=Gkqbtc0JXfx6x0GPBcuvtpdpjxGeGcB5DCJv9fAUXgCnGmJax3xQW0FFD7IxdFZQ0S
-         6pZ1yb/F/w7IoDsEKODdZ9kj9OZPn/roKgtWqs/1gGdsWOdojmGip+7jbV5X6ImU02Bf
-         wKWjVjS1hADBERI2GyjzpecHYfp0WeQnGkz6OodKZr1TmMqgr/5pRGRGpC5RkQHxsaUl
-         dLIIJkFeZlp/E9ADoCAMgm6WVBuX0ka3GhOWOrtT97E7yUGMHF41WBQJJZ1rZKd1B8CW
-         m/PaQx6RwAP3ChagqtpYAWiDJAE3CitsMDpxj4AZnoNdeGBrV95KT/U+YtiLgHr8wh0D
-         TfZQ==
-X-Gm-Message-State: AOAM53072f8DDP4DR1PHOV/kRg60CHkh6disBllVAqAidw+w2zPGpKOK
-        E5PzJFaqMkQGvkB4PqOixmd5VHeybY4=
-X-Google-Smtp-Source: ABdhPJz2NDBYgm2dEJ0aYPOKY7ua+ImoHCM7sFC3Sx2DEdycXosdR3QJHU4KT70Qvt68Krz6YZCEGJZbKwo=
+        bh=RX+6Qhr618+Jmg2ZrMqvcKnkrQM1L81+sxgM+9sQd8s=;
+        b=mk3cWsNPYURipxTkpQLICqGnPrVDPurjRDEjltBUU6N92ZxrMTVDpwP+Gh4cHKIKye
+         ffqqUE12gXglOcmPw7EslwD5kbYP/Q30aKKbNMk9ppGrO5DEbR5XPaiREooj6MNSf5EY
+         R0sPZ+ZFAy0yBbAc9BwEjU9I2D21FMCOIzUCUVa80ZjZilf7NuzOGbOX5x8QaOKYh7ba
+         j8KTnR5ogvyA/ACklf+ongUakmNS81IqOSFV7bHQqb82VRsN4PhyIc9VzrkYrXfBXz4H
+         cVYh+odNvhiamROPi9FEQge9x9+pfu+HXuULzkMDFsWVeQyuiPyLL5sZpHZh+92Ckpt8
+         GyUg==
+X-Gm-Message-State: AOAM5325I3804fTrIw9g+JKbtoW4ooskomJuX6AwEfYBAL2VBsJH2Rs4
+        af9vsYkEoTG2YcbxzMmHiO/jy8ZXS30=
+X-Google-Smtp-Source: ABdhPJwxZ7NvJNv7Zuokgq3yxPc04wFAvBxhQCc5GSzzBIH72QbI7P3xWNXCleHOd6qqRCvRRbhlakFDg58=
 X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a17:90b:941:: with SMTP id
- dw1mr733475pjb.1.1600337944220; Thu, 17 Sep 2020 03:19:04 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 03:18:47 -0700
+ (user=badhri job=sendgmr) by 2002:a0c:8d84:: with SMTP id t4mr11496884qvb.36.1600337946327;
+ Thu, 17 Sep 2020 03:19:06 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 03:18:48 -0700
 In-Reply-To: <20200917101856.3156869-1-badhri@google.com>
-Message-Id: <20200917101856.3156869-2-badhri@google.com>
+Message-Id: <20200917101856.3156869-3-badhri@google.com>
 Mime-Version: 1.0
 References: <20200917101856.3156869-1-badhri@google.com>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH v7 02/11] usb: typec: tcpci: Add set_vbus tcpci callback
+Subject: [PATCH v7 03/11] dt-bindings: usb: Maxim type-c controller device
+ tree binding document
 From:   Badhri Jagan Sridharan <badhri@google.com>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -63,9 +64,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_vbus callback allows TCPC which are TCPCI based, however,
-does not support turning on sink and source mode through
-Command.SinkVbus and Command.SourceVbusDefaultVoltage.
+Add device tree binding document for Maxim TCPCI based Type-C chip driver
 
 Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
@@ -73,42 +72,81 @@ Changes since v1:
 - Changing patch version to v6 to fix version number confusion.
 
 Changes since v6:
-- Rebase on usb-next
+- Migrated to yaml format.
 ---
- drivers/usb/typec/tcpm/tcpci.c | 7 +++++++
- drivers/usb/typec/tcpm/tcpci.h | 1 +
- 2 files changed, 8 insertions(+)
+ .../devicetree/bindings/usb/maxim,tcpci.txt   | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.txt
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index b960fe5a0f28..d6a6fac82d48 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -328,6 +328,13 @@ static int tcpci_set_vbus(struct tcpc_dev *tcpc, bool source, bool sink)
- 	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
- 	int ret;
- 
-+	if (tcpci->data->set_vbus) {
-+		ret = tcpci->data->set_vbus(tcpci, tcpci->data, source, sink);
-+		/* Bypass when ret > 0 */
-+		if (ret != 0)
-+			return ret < 0 ? ret : 0;
-+	}
+diff --git a/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+new file mode 100644
+index 000000000000..8e646b4483eb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+@@ -0,0 +1,63 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/usb/maxim,tcpci.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
- 	/* Disable both source and sink first before enabling anything */
- 
- 	if (!source) {
-diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-index 04c49a0b0368..4d441bdf24d5 100644
---- a/drivers/usb/typec/tcpm/tcpci.h
-+++ b/drivers/usb/typec/tcpm/tcpci.h
-@@ -144,6 +144,7 @@ struct tcpci_data {
- 			 bool enable);
- 	int (*start_drp_toggling)(struct tcpci *tcpci, struct tcpci_data *data,
- 				  enum typec_cc_status cc);
-+	int (*set_vbus)(struct tcpci *tcpci, struct tcpci_data *data, bool source, bool sink);
- };
- 
- struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data);
++title: Maxim TCPCI Type-C PD controller DT bindings
++
++maintainers:
++  - Badhri Jagan Sridharan <badhri@google.com>
++
++description: Maxim TCPCI Type-C PD controller
++
++properties:
++  compatible:
++    enum:
++      - maxim,tcpci
++  reg:
++    const: 0x25
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        maxtcpc@25 {
++            compatible = "maxim,tcpc";
++            reg = <0x25>;
++            interrupt-parent = <&gpa8>;
++            interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
++
++            connector {
++                compatible = "usb-c-connector";
++                label = "USB-C";
++                data-role = "dual";
++                power-role = "dual";
++                try-power-role = "sink";
++                self-powered;
++                op-sink-microwatt = <2600000>;
++                source-pdos = <PDO_FIXED(5000, 900,
++                                         PDO_FIXED_SUSPEND |
++                                         PDO_FIXED_USB_COMM |
++                                         PDO_FIXED_DATA_SWAP |
++                                         PDO_FIXED_DUAL_ROLE)>;
++                sink-pdos = <PDO_FIXED(5000, 3000,
++                                       PDO_FIXED_USB_COMM |
++                                       PDO_FIXED_DATA_SWAP |
++                                       PDO_FIXED_DUAL_ROLE)
++                                       PDO_FIXED(9000, 2000, 0)
++                frs-typec-current = <FRS_5V_1P5A>;
++        };
++    };
++...
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
