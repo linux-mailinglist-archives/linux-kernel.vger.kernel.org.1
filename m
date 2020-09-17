@@ -2,146 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A2926D2E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F6926D2EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgIQFKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        id S1726186AbgIQFNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgIQFKO (ORCPT
+        with ESMTP id S1726152AbgIQFNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:10:14 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA87C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:10:13 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id t76so1046968oif.7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:10:13 -0700 (PDT)
+        Thu, 17 Sep 2020 01:13:00 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6E5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:12:59 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id n14so466936pff.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:12:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FSMe0eSMdIe3Gfx6n3S8crTzPvy5rJ0iSHhhJ3uKFKQ=;
-        b=iepgFmQ3Sui7+BcQEaNk/iFybMWOQ0B86m5XI/ZdRIUoMN0f6VUK8V3Lt68EYUEwzR
-         NpyYa7w3a4CU1H8rh9UvWl9FqtD3Uu5eWb0rKPoG6AKl0UN1EzZjRvvE6StOxT9q0lNq
-         vcVV3rZYILRRUqUzHt+DmzHj0nSe3fFpJhcomgoDBLLT1t44r44j7SKLiT4p4w46u+Sa
-         NFRDONt4EAwfsR/1HsbxT6jZCEV5QpNj90MLkARVC9L1OhfnoZnnFrA5gIue3tLt5lN2
-         Z/M3T73c4p53V2IFF3EX20OaB/yePEHVRIz5NVEn5vcFAbcz05Td3rGBNkWoWu7zt7gd
-         cYXQ==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qXMpYhecBeuqzUAGr3eBH/btIMT72oL1vXttuRwPdRY=;
+        b=DXzS5r2SFx2p77SvZs2InZJEGQXoE1vqORBwq2kF+4I7EwKAd4j3PBJtq54LAWbPf1
+         yxQxJ8h3MppjKq7XlcRLy0J1krhqIBvDj/2ZqN3VGafiBPI3+WeZQTM/QT3ig8J7s+XU
+         NG4SIzEi5bSlYgrIkSJZkEB0UIkOuSevuGNzNu2ZOebE7AoXlLmBzIs+vl+lwuR8TUUC
+         o1LZpHnHu6mnH4owGH4PpOD2aJu0vxsJ/fu/hA8wWOvUW8Pi5ar1zEVITVI327r9Svwb
+         a9wOOUh+fTNCMFJz0U6EY/ol5JbOo2n6ZqtCuZt/PB/yR1RMjcW/axgXuWNTDlWYbLwa
+         ho0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FSMe0eSMdIe3Gfx6n3S8crTzPvy5rJ0iSHhhJ3uKFKQ=;
-        b=FGqBz3Ir9kru6sMfciN58xGoW/PFVAkXLqwUGAiwh9cKHN7OjbKitd71BG103KNWVS
-         qK0wVeGjIxhputszD2tOsPLbsXe5NM/hVBtc+DFkMWAjmOJ1SX01y+Cp5kbaUaqQrvci
-         gVHrxYKcaMV1htvF+EOoqrNEwT67yEUAf0714lQluqxmqqbk7B7iTwak6VJyzw4nvycv
-         4Y28z8tOjR3a4/lfxWMwQZ/d470rRS8I4MtL/1nGKx6MtonARHYkliDKoLnVZAtqyiOE
-         VJSTlZKKRHJmTX+ddSTiSbZeWK4gUiFd2OVGpV9wBYK8W2ajTq/UhllQ49n1qsJZGaki
-         ja2w==
-X-Gm-Message-State: AOAM53095T8vwRsgq/2/0yTPwA3Tay7MZ/KLpk3Um0IClV0Qv0uVp59K
-        3DRbWKeInXfDKGrO6+yl945Z/g==
-X-Google-Smtp-Source: ABdhPJwlxnRFSwIwfe8pWnIKka7QS5n3Xntowx6Mq4Fdts+kaIq8AluucE5JQFb/Uuoh9uwg/npQDg==
-X-Received: by 2002:aca:c7c5:: with SMTP id x188mr5535465oif.34.1600319412788;
-        Wed, 16 Sep 2020 22:10:12 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:7cad:6eff:fec8:37e4])
-        by smtp.gmail.com with ESMTPSA id 189sm10965833oid.40.2020.09.16.22.10.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=qXMpYhecBeuqzUAGr3eBH/btIMT72oL1vXttuRwPdRY=;
+        b=fc+1bZ734jvwReNv0Lsg6nH572JA5TcT2nAPc9DNCjggbGKQBJXL6v8VlL8NspmSoQ
+         DDT6LH+Y4xLkG0pSEkP96+l5t5yxX7R4K8+DU8CELmT6HI2YB2SQl5M9z+M/tUfcdg13
+         92+fAaYuVH1Tor54RpuoiKg1Yz4oPyztEKaDBQnw7sQHuMVphmsff3WX9nwT3jpoTzCd
+         1VFly75iWjn/60pHl3SRGCHBGhEw3ZPSCPdafMsT19NTKAh0wioBeIGxfktzUs7buMoD
+         FbKOsFYeypmOCTaX3zICI8LISkofpGmyBGNFnC6Spzs5Ml49MvAH+nAIVL0XiJCNrOO0
+         6a0w==
+X-Gm-Message-State: AOAM533yL28134J1kKw0yweaq6SXKd8pR4sHHNJJL/o4DGAT1wwfbD+c
+        eNEloDOTKLes4Xql7nWyVxrMzw==
+X-Google-Smtp-Source: ABdhPJyBF9JQoD+adDRDl69cLFop7DNj+CsII5Ioo20OPT+VjA1wn9rq2QZZoqj22m1CiXvs7hkadw==
+X-Received: by 2002:a63:4102:: with SMTP id o2mr21108868pga.354.1600319578460;
+        Wed, 16 Sep 2020 22:12:58 -0700 (PDT)
+Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
+        by smtp.gmail.com with ESMTPSA id q198sm15866801pfq.185.2020.09.16.22.12.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 22:10:11 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 00:10:08 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        agross@kernel.org, kishon@ti.com, robh@kernel.org,
-        svarbanov@mm-sol.com, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: phy: qcom,qmp: Document SM8250 PCIe PHY
- bindings
-Message-ID: <20200917051008.GM1893@yoga>
-References: <20200916132000.1850-1-manivannan.sadhasivam@linaro.org>
- <20200916132000.1850-2-manivannan.sadhasivam@linaro.org>
- <20200916224541.GF1893@yoga>
- <20200917043239.GW2968@vkoul-mobl>
+        Wed, 16 Sep 2020 22:12:57 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:12:53 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
+ additional operations
+Message-ID: <20200917051253.GA3094018@laputa>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20200710111054.29562-1-benchuanggli@gmail.com>
+ <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917043239.GW2968@vkoul-mobl>
+In-Reply-To: <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16 Sep 23:32 CDT 2020, Vinod Koul wrote:
+Adrian, Ben,
 
-> On 16-09-20, 17:45, Bjorn Andersson wrote:
-> > On Wed 16 Sep 08:19 CDT 2020, Manivannan Sadhasivam wrote:
+Regarding _reset() function,
+
+On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
+> On 10/07/20 2:10 pm, Ben Chuang wrote:
+> > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 > > 
-> > > Document the DT bindings of below PCIe PHY versions used on SM8250:
-> > > 
-> > > QMP GEN3x1 PHY - 1 lane
-> > > QMP GEN3x2 PHY - 2 lanes
-> > > QMP Modem PHY - 2 lanes
+> > In this commit, UHS-II related operations will be called via a function
+> > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
+> > a kernel module.
+> > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
+> > and when the UHS-II module is loaded. Otherwise, all the functions
+> > stay void.
 > > 
-> > How about something like "Add the three PCIe PHYs found in SM8250 to the
-> > QMP binding"?
+> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > ---
+> >  drivers/mmc/host/sdhci.c | 152 ++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 136 insertions(+), 16 deletions(-)
+> > 
+
+  (snip)
+
+> >  	if (host->ops->platform_send_init_74_clocks)
+> >  		host->ops->platform_send_init_74_clocks(host, ios->power_mode);
+> >  
+> > @@ -2331,7 +2411,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+> >  	}
+> >  
+> >  	if (host->version >= SDHCI_SPEC_300) {
+> > -		u16 clk, ctrl_2;
+> > +		u16 clk;
+> >  
+> >  		if (!host->preset_enabled) {
+> >  			sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
+> > @@ -3173,11 +3253,19 @@ static bool sdhci_request_done(struct sdhci_host *host)
+> >  			/* This is to force an update */
+> >  			host->ops->set_clock(host, host->clock);
+> >  
+> > -		/* Spec says we should do both at the same time, but Ricoh
+> > -		   controllers do not like that. */
+> > -		sdhci_do_reset(host, SDHCI_RESET_CMD);
+> > -		sdhci_do_reset(host, SDHCI_RESET_DATA);
+> > -
+> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > +		    host->mmc->flags & MMC_UHS2_INITIALIZED) {
+> > +			if (sdhci_uhs2_ops.reset)
+> > +				sdhci_uhs2_ops.reset(host,
+> > +						     SDHCI_UHS2_SW_RESET_SD);
+> > +		} else {
+> > +			/*
+> > +			 * Spec says we should do both at the same time, but
+> > +			 * Ricoh controllers do not like that.
+> > +			 */
+> > +			sdhci_do_reset(host, SDHCI_RESET_CMD);
+> > +			sdhci_do_reset(host, SDHCI_RESET_DATA);
+> > +		}
 > 
-> Or add just one compatible sm8250-qmp-pcie and then use number of lanes
-> as dt property?
+> Please look at using the existing ->reset() sdhci host op instead.
+
+Well, the second argument to those reset functions is a bit-wise value
+to different "reset" registers, SDHCI_SOFTWARE_RESET and SDHCI_UHS2_SW_RESET,
+respectively.
+
+This fact raises a couple of questions to me:
+
+1) Does it make sense to merge two functionality into one, i.e.
+   sdhci_do_reset(), which is set to call ->reset hook?
+
+        -> Adrian
+
+2) UHS2_SW_RESET_SD is done only at this place while there are many callsites
+   of reset(RESET_CMD|RESET_DATA) in sdhci.c.
+   Why does the current code work?
+
+   I found, in sdhci-pci-gli.c,
+   sdhci_gl9755_reset()
+        /* reset sd-tran on UHS2 mode if need to reset cmd/data */
+        if ((mask & SDHCI_RESET_CMD) | (mask & SDHCI_RESET_DATA))
+                gl9755_uhs2_reset_sd_tran(host);
+
+   Is this the trick to avoid the issue?
+   (It looks redundant in terms of the hack above in sdhci_request_done()
+   and even quite dirty to me. Moreover, no corresponding code for gl9750
+   and gl9763.)
+
+        -> Ben
+
+3) (More or less SD specification issue)
+   In UHS-II mode, do we have to call reset(SHCI_RESET_ALL) along with
+   reset(UHS2_SW_RESET_FULL)?
+   Under the current implementation, both will be called at the end.
+
+        -> Adrian, Ben
+
+4) (Not directly linked to UHS-II support)
+  In some places, we see the sequence:
+        sdhci_do_reset(host, SDHCI_RESET_CMD);
+        sdhci_do_reset(host, SDHCI_RESET_DATA);
+  while in other places,
+        sdhci_do_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
+
+  If the statement below is true,
+> > -		/* Spec says we should do both at the same time, but Ricoh
+> > -		   controllers do not like that. */
+  the latter should be wrong.
+
+        -> Adrian
+
+-Takahiro Akashi
+
+
+
+> >  		host->pending_reset = false;
+> >  	}
+> >  
+> > @@ -3532,6 +3620,13 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
+> >  				  SDHCI_INT_BUS_POWER);
+> >  		sdhci_writel(host, mask, SDHCI_INT_STATUS);
+> >  
+> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > +		    intmask & SDHCI_INT_ERROR &&
+> > +		    host->mmc->flags & MMC_UHS2_SUPPORT) {
+> > +			if (sdhci_uhs2_ops.irq)
+> > +				sdhci_uhs2_ops.irq(host);
+> > +		}
+> > +
 > 
-
-If we have the same initialization sequence then that sounds reasonable.
-Perhaps we can derive the number of lanes from the child node?
-
-A bigger question is how we deal with this going forward, if there are
-more crazy setups like on sc8180x where the lanes might be grouped
-differently based on board...
-
-Regards,
-Bjorn
-
-> > 
-> > > 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> > > index 185cdea9cf81..69b67f79075c 100644
-> > > --- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> > > +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> > > @@ -31,6 +31,9 @@ properties:
-> > >        - qcom,sdm845-qmp-usb3-uni-phy
-> > >        - qcom,sm8150-qmp-ufs-phy
-> > >        - qcom,sm8250-qmp-ufs-phy
-> > > +      - qcom,qcom,sm8250-qmp-gen3x1-pcie-phy
-> > > +      - qcom,qcom,sm8250-qmp-gen3x2-pcie-phy
-> > > +      - qcom,qcom,sm8250-qmp-modem-pcie-phy
-> > 
-> > One "qcom," should be enough.
-> > 
-> > >  
-> > >    reg:
-> > >      items:
-> > > @@ -259,6 +262,8 @@ allOf:
-> > >              enum:
-> > >                - qcom,sdm845-qhp-pcie-phy
-> > >                - qcom,sdm845-qmp-pcie-phy
-> > > +              - qcom,sm8250-qhp-pcie-phy
-> > > +              - qcom,sm8250-qmp-pcie-phy
-> > 
-> > Adjust these.
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > >      then:
-> > >        properties:
-> > >          clocks:
-> > > -- 
-> > > 2.17.1
-> > > 
+> Please look at using the existing ->irq() sdhci host op instead
 > 
-> -- 
-> ~Vinod
+> >  		if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
+> >  			u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
+> >  				      SDHCI_CARD_PRESENT;
+> > @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
+> >  		/* This may alter mmc->*_blk_* parameters */
+> >  		sdhci_allocate_bounce_buffer(host);
+> >  
+> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > +	    host->version >= SDHCI_SPEC_400 &&
+> > +	    sdhci_uhs2_ops.add_host) {
+> > +		ret = sdhci_uhs2_ops.add_host(host, host->caps1);
+> > +		if (ret)
+> > +			goto unreg;
+> > +	}
+> > +
+> 
+> I think you should look at creating uhs2_add_host() instead
+> 
+> >  	return 0;
+> >  
+> >  unreg:
+> > @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
+> >  {
+> >  	struct mmc_host *mmc = host->mmc;
+> >  
+> > +	/* FIXME: Do we have to do some cleanup for UHS2 here? */
+> > +
+> >  	if (!IS_ERR(mmc->supply.vqmmc))
+> >  		regulator_disable(mmc->supply.vqmmc);
+> >  
+> > @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
+> >  		mmc->cqe_ops = NULL;
+> >  	}
+> >  
+> > +	if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
+> > +		/* host doesn't want to enable UHS2 support */
+> > +		mmc->caps &= ~MMC_CAP_UHS2;
+> > +		mmc->flags &= ~MMC_UHS2_SUPPORT;
+> > +
+> > +		/* FIXME: Do we have to do some cleanup here? */
+> > +	}
+> > +
+> >  	host->complete_wq = alloc_workqueue("sdhci", flags, 0);
+> >  	if (!host->complete_wq)
+> >  		return -ENOMEM;
+> > @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
+> >  unled:
+> >  	sdhci_led_unregister(host);
+> >  unirq:
+> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > +	    sdhci_uhs2_ops.remove_host)
+> > +		sdhci_uhs2_ops.remove_host(host, 0);
+> >  	sdhci_do_reset(host, SDHCI_RESET_ALL);
+> >  	sdhci_writel(host, 0, SDHCI_INT_ENABLE);
+> >  	sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
+> > @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
+> >  
+> >  	sdhci_led_unregister(host);
+> >  
+> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > +	    sdhci_uhs2_ops.remove_host)
+> > +		sdhci_uhs2_ops.remove_host(host, dead);
+> > +
+> 
+> I think you should look at creating uhs2_remove_host() instead
+> 
+> >  	if (!dead)
+> >  		sdhci_do_reset(host, SDHCI_RESET_ALL);
+> >  
+> > 
+> 
