@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9915826D0BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C6D26D0EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgIQBlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:41:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgIQBlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:41:08 -0400
-X-Greylist: delayed 325 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:41:07 EDT
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 951FF2076C;
-        Thu, 17 Sep 2020 01:41:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600306862;
-        bh=OrX6m8YxPdWu8LBOXGQR6nbtrtQ8xnzMdSfG0Bwlx8o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jCFkelld6YgZXIe4JMpf7n7A8kOGwHqXO0M/BS9qU0gklNkpK/OMGUC6JrNNLSyUk
-         j1vV2g9Tjgo+Z+Ixfq3dxoNZsbkCv3YFBDNDFV0wIt24KdbewLoQxA/rL/qjB1EC5L
-         JEY9uDm8R/e35A6026FVqTGVC8RaPIac6jXijWNI=
-Date:   Wed, 16 Sep 2020 21:41:01 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Angelo Compagnucci <angelo.compagnucci@gmail.com>
-Subject: Re: [PATCH 4.19 09/78] iio: adc: mcp3422: fix locking on error path
-Message-ID: <20200917014101.GH2431@sasha-vm>
-References: <20200915140633.552502750@linuxfoundation.org>
- <20200915140634.010489871@linuxfoundation.org>
- <20200916073100.GA32537@duo.ucw.cz>
+        id S1726055AbgIQB5U convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Sep 2020 21:57:20 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3518 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725886AbgIQB5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:57:19 -0400
+X-Greylist: delayed 937 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:57:18 EDT
+Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id 685C42EE129367064534;
+        Thu, 17 Sep 2020 09:41:38 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 17 Sep 2020 09:41:38 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Thu, 17 Sep 2020 09:41:37 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: memcontrol: correct the comment of
+ mem_cgroup_unmark_under_oom()
+Thread-Topic: [PATCH] mm: memcontrol: correct the comment of
+ mem_cgroup_unmark_under_oom()
+Thread-Index: AdaMk2onBuSUvuaupEiH3Zos6miJVQ==
+Date:   Thu, 17 Sep 2020 01:41:37 +0000
+Message-ID: <e192943774324dc6af20095c0e274dbf@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.109]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200916073100.GA32537@duo.ucw.cz>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:31:00AM +0200, Pavel Machek wrote:
->Hi!
+Michal Hocko <mhocko@suse.com> wrote:
+> On Wed 16-09-20 09:19:27, Miaohe Lin wrote:
+>> Since commit fb2a6fc56be6 ("mm: memcg: rework and document OOM waiting 
+>> and wakeup"), we have renamed mem_cgroup_oom_lock to 
+>> mem_cgroup_oom_trylock. So replace mem_cgroup_oom_lock with mem_cgroup_oom_trylock in comment.
 >
->> [ Upstream commit a139ffa40f0c24b753838b8ef3dcf6ad10eb7854 ]
->>
->> Reading from the chip should be unlocked on error path else the lock
->> could never being released.
->>
->> Fixes: 07914c84ba30 ("iio: adc: Add driver for Microchip MCP3422/3/4 high resolution ADC")
->> Fixes: 3f1093d83d71 ("iio: adc: mcp3422: fix locking scope")
->
->Well, 3f1093d83d71 is only applied later in the stable series, so this
->introduces spurious unlock.
->
->Ideally this should go just after 3f1093d83d71 ("iio: adc: mcp3422:
->fix locking scope").
+>While you are right I find the comment more confusing then helpful.
+>What does it try to tell us actually? Is it still valid? Shouldn't we rather remove it or make it more clear?
+>> 
 
-Patches rearranged, thanks!
+It seems this comment no long make sense. Many thanks for your nice advise.
 
--- 
-Thanks,
-Sasha
