@@ -2,94 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3DD26E951
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FD326E94E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgIQXPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 19:15:03 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48584 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725886AbgIQXPC (ORCPT
+        id S1726168AbgIQXOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 19:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725886AbgIQXOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 19:15:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600384501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3IZMOFHDfDgqgBMZv+C4q9OSWQXJrKtdRyzz00lZbe4=;
-        b=GOAffZN7VCBYzVD3y2M1CyPdKCXDJCZP78Ojg4+AyUTVZgSfyHJfsXDPNj8O1yqLUJAkva
-        xEPRx4SKMLoAEqDXv0JNYYRtnd2pAUOHy+4EhsdGWDPnD3NP+xdijC8XsX0TOuizVEQMbA
-        cJhieyC5slBUY8e7kEXGHiV7AJnjAOM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-M4VA2YllOCWBMzXqqOnuOQ-1; Thu, 17 Sep 2020 19:13:52 -0400
-X-MC-Unique: M4VA2YllOCWBMzXqqOnuOQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3885864085;
-        Thu, 17 Sep 2020 23:13:51 +0000 (UTC)
-Received: from T590 (ovpn-12-51.pek2.redhat.com [10.72.12.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F0D160BEC;
-        Thu, 17 Sep 2020 23:13:39 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 07:13:35 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Brian Foster <bfoster@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, willy@infradead.org,
-        minlei@redhat.com
-Subject: Re: [PATCH] iomap: Fix the write_count in iomap_add_to_ioend().
-Message-ID: <20200917231335.GB1139137@T590>
-References: <20200822131312.GA17997@infradead.org>
- <20200824142823.GA295033@bfoster>
- <20200824150417.GA12258@infradead.org>
- <20200824154841.GB295033@bfoster>
- <20200825004203.GJ12131@dread.disaster.area>
- <20200825144917.GA321765@bfoster>
- <20200916001242.GE7955@magnolia>
- <20200916084510.GA30815@infradead.org>
- <20200916130714.GA1681377@bfoster>
- <20200917080455.GY26262@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917080455.GY26262@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Thu, 17 Sep 2020 19:14:44 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB7CC06174A;
+        Thu, 17 Sep 2020 16:14:43 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 2C05C13659CA5;
+        Thu, 17 Sep 2020 15:57:56 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 16:14:42 -0700 (PDT)
+Message-Id: <20200917.161442.927252621269123026.davem@davemloft.net>
+To:     tanhuazhong@huawei.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        salil.mehta@huawei.com, yisen.zhuang@huawei.com,
+        linuxarm@huawei.com, kuba@kernel.org, saeed@kernel.org
+Subject: Re: [PATCH V2 net-next 0/6] net: hns3: updates for -next
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1600248830-59477-1-git-send-email-tanhuazhong@huawei.com>
+References: <1600248830-59477-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 17 Sep 2020 15:57:56 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 09:04:55AM +0100, Christoph Hellwig wrote:
-> On Wed, Sep 16, 2020 at 09:07:14AM -0400, Brian Foster wrote:
-> > Dave described the main purpose earlier in this thread [1]. The initial
-> > motivation is that we've had downstream reports of soft lockup problems
-> > in writeback bio completion down in the bio -> bvec loop of
-> > iomap_finish_ioend() that has to finish writeback on each individual
-> > page of insanely large bios and/or chains. We've also had an upstream
-> > reports of a similar problem on linux-xfs [2].
-> > 
-> > The magic number itself was just pulled out of a hat. I picked it
-> > because it seemed conservative enough to still allow large contiguous
-> > bios (1GB w/ 4k pages) while hopefully preventing I/O completion
-> > problems, but was hoping for some feedback on that bit if the general
-> > approach was acceptable. I was also waiting for some feedback on either
-> > of the two users who reported the problem but I don't think I've heard
-> > back on that yet...
+From: Huazhong Tan <tanhuazhong@huawei.com>
+Date: Wed, 16 Sep 2020 17:33:44 +0800
+
+> There are some optimizations related to IO path.
 > 
-> I think the saner answer is to always run large completions in the
-> workqueue, and add a bunch of cond_resched() calls, rather than
-> arbitrarily breaking up the I/O size.
+> Change since V1:
+> - fixes a unsuitable handling in hns3_lb_clear_tx_ring() of #6 which
+>   pointed out by Saeed Mahameed.
+> 
+> previous version:
+> V1: https://patchwork.ozlabs.org/project/netdev/cover/1600085217-26245-1-git-send-email-tanhuazhong@huawei.com/
 
-Completion all ioend pages in single bio->end_bio() may pin too many pages
-unnecessary long, and adding cond_resched() can make the issue worse.
-
-
-thanks,
-Ming
-
+Series applied, thank you.
