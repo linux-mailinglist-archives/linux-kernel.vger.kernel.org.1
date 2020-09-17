@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C8026E4BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E184D26E4B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgIQS5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:57:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
+        id S1726441AbgIQSzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:55:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726576AbgIQSy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:54:59 -0400
+        id S1726456AbgIQSzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:55:05 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3169A2087D;
-        Thu, 17 Sep 2020 18:54:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7284A22211;
+        Thu, 17 Sep 2020 18:54:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600368898;
-        bh=U0vVjhUISNwPrjeZu16FGsqMLDo7E7ppL+M4B8scFkg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Aeq5BGF1fX3kvLjtgdh+DZzkwA7lzl0Lsiw+EsCiLRyssJWgEgr3lfJjQ0+/JQmxz
-         5LbXiGtsRroKboaxJXsyDwXCvhwHkRzzAkgJefhhRixYNpmxSzfOsfFro6DtMYX4TR
-         0fKMYDalTBEZ5pTXa2KL5p47V2i1FEdPK/z+PRcQ=
+        s=default; t=1600368903;
+        bh=Tf6j9/g6ssvG3k+ON3t83cV1K0lTh2I4Nkn5/PHO+4M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aHEyE9l2fhYri/8Ux0H7W2GgoHVPLOG2EkQ81mTkLbdbGiK0gkzM0JKUPWfBGlD/J
+         RX2O57M3kZvkHu4GWi5pCBa444OP2Uy0KA/w/RuuV/VEj/VEzZPPOteKOsq5ab96fD
+         2iHgDdU1O3hD3SLYy1wu/nSGptsggS2v2TberEPw=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -37,10 +37,12 @@ To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Peter Chen <peter.chen@nxp.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH v2 1/4] ARM: dts: imx6qdl-gw5xxx: correct interrupt flags
-Date:   Thu, 17 Sep 2020 20:54:46 +0200
-Message-Id: <20200917185449.5687-1-krzk@kernel.org>
+Subject: [PATCH v2 2/4] arm64: dts: imx8mm: correct interrupt flags
+Date:   Thu, 17 Sep 2020 20:54:47 +0200
+Message-Id: <20200917185449.5687-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200917185449.5687-1-krzk@kernel.org>
+References: <20200917185449.5687-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -54,326 +56,102 @@ have the same meaning:
 Correct the interrupt flags, assuming the author of the code wanted same
 logical behavior behind the name "ACTIVE_xxx", this is:
   ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
+  ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
+
+In case of level low interrupts, enable also internal pull up.  It is
+required at least on imx8mm-evk, according to schematics.
+
+The schematics for Variscite imx8mm-var-som are not available and
+I was unable to get proper configuration from Variscite.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 ---
 
-Not tested on HW.
-
 Changes since v1:
-1. Correct title
+1. Correct title.
+2. Enable pull ups.
 ---
- arch/arm/boot/dts/imx6qdl-gw51xx.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw52xx.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw53xx.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw54xx.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw551x.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw552x.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw553x.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw560x.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw5903.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw5904.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw5907.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw5910.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw5912.dtsi | 3 ++-
- arch/arm/boot/dts/imx6qdl-gw5913.dtsi | 3 ++-
- 14 files changed, 28 insertions(+), 14 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi      | 4 ++--
+ arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi             | 4 ++--
+ arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi         | 6 +++++-
+ 4 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
-index 4d01c3300b97..3c04b5a4f3cb 100644
---- a/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -152,7 +153,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+index 502faf6144b0..6de86a4f0ec4 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+@@ -74,7 +74,7 @@
+ 		reg = <0x4b>;
+ 		pinctrl-0 = <&pinctrl_pmic>;
  		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
-index f6182a9d201c..736074f1c3ef 100644
---- a/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
-@@ -5,6 +5,7 @@
+-		interrupts = <3 GPIO_ACTIVE_LOW>;
++		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+ 		rohm,reset-snvs-powered;
  
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
+ 		regulators {
+@@ -292,7 +292,7 @@
  
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -217,7 +218,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
+ 		pinctrl_pmic: pmicirqgrp {
+ 			fsl,pins = <
+-				MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x41
++				MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x141
+ 			>;
+ 		};
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+index f572b7d207f4..f305a530ff6f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+@@ -123,7 +123,7 @@
+ 		reg = <0x4b>;
+ 		pinctrl-0 = <&pinctrl_pmic>;
  		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
-index a28e79463d0c..8072ed47c6bb 100644
---- a/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
-@@ -5,6 +5,7 @@
+-		interrupts = <3 GPIO_ACTIVE_LOW>;
++		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+ 		rohm,reset-snvs-powered;
  
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
+ 		#clock-cells = <0>;
+@@ -392,7 +392,7 @@
  
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -210,7 +211,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
-index 55f368e192c0..8c9bcdd39830 100644
---- a/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
-@@ -5,6 +5,7 @@
+ 	pinctrl_pmic: pmicirqgrp {
+ 		fsl,pins = <
+-			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x41
++			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x141
+ 		>;
+ 	};
  
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/sound/fsl-imx-audmux.h>
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+index 67ceda14d648..a56f602ba0a3 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+@@ -134,7 +134,7 @@
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_captouch>;
+ 		interrupt-parent = <&gpio5>;
+-		interrupts = <4 GPIO_ACTIVE_HIGH>;
++		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
  
- / {
-@@ -247,7 +248,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#address-cells = <1>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
-index 1516e2b0bcde..e5d803d023c8 100644
---- a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
-@@ -48,6 +48,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/media/tda1997x.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/sound/fsl-imx-audmux.h>
+ 		touchscreen-size-x = <800>;
+ 		touchscreen-size-y = <480>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
+index 9c6e91243ba0..4107fe914d08 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
+@@ -137,7 +137,11 @@
+ 		reg = <0x4b>;
+ 		pinctrl-0 = <&pinctrl_pmic>;
+ 		interrupt-parent = <&gpio2>;
+-		interrupts = <8 GPIO_ACTIVE_LOW>;
++		/*
++		 * The interrupt is not correct. It should be level low,
++		 * however with internal pull up this causes IRQ storm.
++		 */
++		interrupts = <8 IRQ_TYPE_EDGE_RISING>;
+ 		rohm,reset-snvs-powered;
  
- / {
-@@ -219,7 +220,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw552x.dtsi b/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
-index 0da6e6f7482b..290a607fede9 100644
---- a/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -144,7 +145,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw553x.dtsi b/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
-index faf9a3ba61b2..c15b9cc63bf8 100644
---- a/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
-@@ -47,6 +47,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -180,7 +181,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw560x.dtsi b/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
-index f68f9dada5b0..093a219a77ae 100644
---- a/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
-@@ -47,6 +47,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -294,7 +295,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw5903.dtsi b/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
-index fbe6c32bd756..e1c8dd233cab 100644
---- a/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
-@@ -47,6 +47,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	chosen {
-@@ -235,7 +236,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw5904.dtsi b/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
-index 23c6e4047621..3cd2e717c1da 100644
---- a/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
-@@ -47,6 +47,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -257,7 +258,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw5907.dtsi b/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
-index b1ff7c859c4d..21c68a55bcb9 100644
---- a/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -154,7 +155,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw5910.dtsi b/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
-index 6c943a517ad7..ed4e22259959 100644
---- a/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -163,7 +164,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw5912.dtsi b/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
-index 441d8ce97aa4..797f160249f7 100644
---- a/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -158,7 +159,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#address-cells = <1>;
-diff --git a/arch/arm/boot/dts/imx6qdl-gw5913.dtsi b/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
-index d62a8da49367..4cd7d290f5b2 100644
---- a/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -139,7 +140,7 @@
- 		compatible = "gw,gsc";
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio1>;
--		interrupts = <4 GPIO_ACTIVE_LOW>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		#size-cells = <0>;
+ 		#clock-cells = <0>;
 -- 
 2.17.1
 
