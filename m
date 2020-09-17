@@ -2,135 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2765426D075
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6128226D082
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgIQBQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:16:34 -0400
-Received: from mga04.intel.com ([192.55.52.120]:59622 "EHLO mga04.intel.com"
+        id S1726139AbgIQBTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:19:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63717 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgIQBQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:16:30 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:16:30 EDT
-IronPort-SDR: m3l7vfWtAffhSbjCEPJFDGIg+TbXBbL0hTr44HSB4ufQd2jomzRhbFd54y24FCHatYRFDjVPi0
- Wz3nFCGLvUSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="156982019"
+        id S1726011AbgIQBTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:19:51 -0400
+IronPort-SDR: nTaEnIbghPhQPXblRFpbJUOMrgKBhByY5dkpJZMhjS/JujZA4pJAvsXBe+uGKm+5V4TJpbpmRy
+ OWK+qyjGe0WQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="244435243"
 X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="156982019"
+   d="scan'208";a="244435243"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 18:09:21 -0700
-IronPort-SDR: hmsRNOgsXNVJVvJx0cAQLagijiHwosmnCPveYTnafbybnITSam3345zTiGI1T4zurv0/N7rlRn
- k4jW35BFRO/Q==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 18:12:45 -0700
+IronPort-SDR: ULLVDtr54XNknEtX7yPohPIr1xHjQYckQS5oQeGc7nfr+CtECQBmwzayDWFFGfLEWYTTyrvnYc
+ QoJ73hArZWtg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="331931692"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Sep 2020 18:09:13 -0700
-Subject: Re: [RFC PATCH v7 11/23] sched/fair: core wide cfs task priority
- comparison
-To:     chris hyser <chris.hyser@oracle.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>
-Cc:     mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
-        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
-        Aaron Lu <ziqian.lzq@antfin.com>,
-        "Ning, Hongyu" <hongyu.ning@linux.intel.com>
-References: <cover.1598643276.git.jdesfossez@digitalocean.com>
- <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
- <f20f4d5b-574a-7c3d-8c08-3e6b7893fc58@oracle.com>
- <81b208ad-b9e6-bfbf-631e-02e9f75d73a2@linux.intel.com>
- <51424491-b7e0-b245-1062-319021eb1845@oracle.com>
- <b7bfdba2-b1db-2acd-5f50-e6eb0008c817@oracle.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <600ffdab-472b-0190-481c-a4042f3ee833@linux.intel.com>
-Date:   Thu, 17 Sep 2020 09:09:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+   d="scan'208";a="287390048"
+Received: from lkp-server02.sh.intel.com (HELO bdcb92cf8b4e) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Sep 2020 18:12:44 -0700
+Received: from kbuild by bdcb92cf8b4e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kIiTb-0000LG-6u; Thu, 17 Sep 2020 01:12:43 +0000
+Date:   Thu, 17 Sep 2020 09:12:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/pti] BUILD SUCCESS WITH WARNING
+ 767d46ab566dd489733666efe48732d523c8c332
+Message-ID: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <b7bfdba2-b1db-2acd-5f50-e6eb0008c817@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/17 4:53, chris hyser wrote:
-> On 9/16/20 10:24 AM, chris hyser wrote:
->> On 9/16/20 8:57 AM, Li, Aubrey wrote:
->>>> Here are the uperf results of the various patchsets. Note, that disabling smt is better for these tests and that that presumably reflects the overall overhead of core scheduling which went from bad to really bad. The primary focus in this email is to start to understand what happened within core sched itself.
->>>>
->>>> patchset          smt=on/cs=off  smt=off    smt=on/cs=on
->>>> --------------------------------------------------------
->>>> v5-v5.6.y      :    1.78Gb/s     1.57Gb/s     1.07Gb/s
->>>> pre-v6-v5.6.y  :    1.75Gb/s     1.55Gb/s    822.16Mb/s
->>>> v6-5.7         :    1.87Gs/s     1.56Gb/s    561.6Mb/s
->>>> v6-5.7-hotplug :    1.75Gb/s     1.58Gb/s    438.21Mb/s
->>>> v7             :    1.80Gb/s     1.61Gb/s    440.44Mb/s
->>>
->>> I haven't had a chance to play with v7, but I got something different.
->>>
->>>    branch        smt=on/cs=on
->>> coresched/v5-v5.6.y    1.09Gb/s
->>> coresched/v6-v5.7.y    1.05Gb/s
->>>
->>> I attached my kernel config in case you want to make a comparison, or you
->>> can send yours, I'll try to see I can replicate your result.
->>
->> I will give this config a try. One of the reports forwarded to me about the drop in uperf perf was an email from you I believe mentioning a 50% perf drop between v5 and v6?? I was actually setting out to duplicate your results. :-)
-> 
-> The first thing I did was to verify I built and tested the right bits. Presumably as I get same numbers. I'm still trying to tweak your config to get a root disk in my setup. Oh, one thing I missed in reading your first response, I had 24 cores/48 cpus. I think you had half that, though my guess is that that should have actually made the numbers even worse. :-)
-> 
-> The following was forwarded to me originally sent on Aug 3, by you I believe:
-> 
->> We found uperf(in cgroup) throughput drops by ~50% with corescheduling.
->>
->> The problem is, uperf triggered a lot of softirq and offloaded softirq
->> service to *ksoftirqd* thread.
->>
->> - default, ksoftirqd thread can run with uperf on the same core, we saw
->>   100% CPU utilization.
->> - coresched enabled, ksoftirqd's core cookie is different from uperf, so
->>   they can't run concurrently on the same core, we saw ~15% forced idle.
->>
->> I guess this kind of performance drop can be replicated by other similar
->> (a lot of softirq activities) workloads.
->>
->> Currently core scheduler picks cookie-match tasks for all SMT siblings, does
->> it make sense we add a policy to allow cookie-compatible task running together?
->> For example, if a task is trusted(set by admin), it can work with kernel thread.
->> The difference from corescheduling disabled is that we still have user to user
->> isolation.
->>
->> Thanks,
->> -Aubrey
-> 
-> Would you please elaborate on what this test was? In trying to duplicate this, I just kept adding uperf threads to my setup until I started to see performance losses similar to what is reported above (and a second report about v7). Also, I wasn't looking for absolute numbers per-se, just significant enough differences to try to track where the performance went.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/pti
+branch HEAD: 767d46ab566dd489733666efe48732d523c8c332  Documentation: Add L1D flushing Documentation
 
-This test was smt-on/cs-on against smt-on/cs-off on the same corescheduling version,
-we didn't find such big regression between different versions as you encountered.
+Warning in current branch:
 
-Thanks,
--Aubrey
+arch/x86/mm/tlb.c:426:36: sparse:     expected void const [noderef] __percpu *__vpp_verify
+arch/x86/mm/tlb.c:426:36: sparse:     got bool *
+arch/x86/mm/tlb.c:426:36: sparse: sparse: incorrect type in initializer (different address spaces)
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+`-- i386-randconfig-s002-20200916
+    |-- arch-x86-mm-tlb.c:sparse:expected-void-const-noderef-__percpu-__vpp_verify
+    |-- arch-x86-mm-tlb.c:sparse:got-bool
+    `-- arch-x86-mm-tlb.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-const-noderef-__percpu-__vpp_verify-got-bool
+
+elapsed time: 722m
+
+configs tested: 152
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                        mvme16x_defconfig
+sh                ecovec24-romimage_defconfig
+sh                        sh7763rdp_defconfig
+arm                          pxa168_defconfig
+arm                      integrator_defconfig
+arc                     nsimosci_hs_defconfig
+arc                          axs101_defconfig
+sh                          landisk_defconfig
+m68k                          atari_defconfig
+arm                  colibri_pxa270_defconfig
+sh                          rsk7264_defconfig
+mips                      bmips_stb_defconfig
+powerpc                        fsp2_defconfig
+arc                             nps_defconfig
+arm                            dove_defconfig
+sh                     sh7710voipgw_defconfig
+arm                         socfpga_defconfig
+sh                          r7785rp_defconfig
+s390                             alldefconfig
+mips                        nlm_xlp_defconfig
+microblaze                    nommu_defconfig
+sh                           se7780_defconfig
+mips                     decstation_defconfig
+mips                      malta_kvm_defconfig
+arm                          pcm027_defconfig
+powerpc                  storcenter_defconfig
+mips                         cobalt_defconfig
+arm                         axm55xx_defconfig
+mips                          rm200_defconfig
+m68k                        stmark2_defconfig
+powerpc                  mpc885_ads_defconfig
+sh                          kfr2r09_defconfig
+c6x                        evmc6678_defconfig
+c6x                                 defconfig
+arm                           stm32_defconfig
+mips                           ci20_defconfig
+m68k                       m5475evb_defconfig
+arm                          tango4_defconfig
+sh                  sh7785lcr_32bit_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                     tqm5200_defconfig
+arm                        spear6xx_defconfig
+mips                           jazz_defconfig
+powerpc                     rainier_defconfig
+powerpc                      ppc64e_defconfig
+nios2                            allyesconfig
+arm                           sama5_defconfig
+arm                           efm32_defconfig
+mips                         tb0287_defconfig
+mips                         db1xxx_defconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                      katmai_defconfig
+sh                        apsh4ad0a_defconfig
+powerpc                         wii_defconfig
+arm                          exynos_defconfig
+ia64                         bigsur_defconfig
+mips                         rt305x_defconfig
+powerpc                  mpc866_ads_defconfig
+alpha                            alldefconfig
+m68k                         apollo_defconfig
+alpha                               defconfig
+powerpc                      walnut_defconfig
+riscv                    nommu_virt_defconfig
+arc                 nsimosci_hs_smp_defconfig
+powerpc                    klondike_defconfig
+c6x                        evmc6472_defconfig
+arc                        nsimosci_defconfig
+mips                         tb0219_defconfig
+arm                        mini2440_defconfig
+arm                          lpd270_defconfig
+powerpc                 mpc8315_rdb_defconfig
+mips                   sb1250_swarm_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                       eiger_defconfig
+powerpc                mpc7448_hpc2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200916
+x86_64               randconfig-a004-20200916
+x86_64               randconfig-a003-20200916
+x86_64               randconfig-a002-20200916
+x86_64               randconfig-a001-20200916
+x86_64               randconfig-a005-20200916
+i386                 randconfig-a004-20200916
+i386                 randconfig-a006-20200916
+i386                 randconfig-a003-20200916
+i386                 randconfig-a001-20200916
+i386                 randconfig-a002-20200916
+i386                 randconfig-a005-20200916
+i386                 randconfig-a004-20200917
+i386                 randconfig-a006-20200917
+i386                 randconfig-a003-20200917
+i386                 randconfig-a001-20200917
+i386                 randconfig-a002-20200917
+i386                 randconfig-a005-20200917
+i386                 randconfig-a015-20200916
+i386                 randconfig-a014-20200916
+i386                 randconfig-a011-20200916
+i386                 randconfig-a013-20200916
+i386                 randconfig-a016-20200916
+i386                 randconfig-a012-20200916
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20200916
+x86_64               randconfig-a011-20200916
+x86_64               randconfig-a016-20200916
+x86_64               randconfig-a012-20200916
+x86_64               randconfig-a015-20200916
+x86_64               randconfig-a013-20200916
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
