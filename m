@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7872F26D419
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60C526D410
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgIQHCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:02:39 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11781 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgIQHC1 (ORCPT
+        id S1726255AbgIQHBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726106AbgIQHAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:02:27 -0400
-X-Greylist: delayed 306 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 03:02:21 EDT
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f63086e0003>; Wed, 16 Sep 2020 23:55:42 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 16 Sep 2020 23:57:11 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 23:57:11 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
- 2020 06:57:08 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Thu, 17 Sep 2020 06:57:07 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.57.133]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f6308c30000>; Wed, 16 Sep 2020 23:57:07 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     <dan.carpenter@oracle.com>
-CC:     <akpm@linux-foundation.org>, <alex.bou9@gmail.com>,
-        <gustavoars@kernel.org>, <ira.weiny@intel.com>,
-        <jhubbard@nvidia.com>, <jrdr.linux@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <madhuparnabhowmik10@gmail.com>,
-        <mporter@kernel.crashing.org>, <willy@infradead.org>
-Subject: [PATCH] mm/gup: protect unpin_user_pages() against npages==-ERRNO
-Date:   Wed, 16 Sep 2020 23:57:06 -0700
-Message-ID: <20200917065706.409079-1-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916100232.GF18329@kadam>
-References: <20200916100232.GF18329@kadam>
+        Thu, 17 Sep 2020 03:00:00 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123E0C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:00:00 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so806694wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AYO9vI1jssWFcgU0C4Kub0Gl3FwLz/cFiMnc7N/ZW8M=;
+        b=wifFBUQy+ttQ5Td1dl7VKNfBfS1AhjM4edEBr+Q8ZvPNeGybfd68skZoMlLwAwzCSX
+         B+QDjxln57NaBDmolZ1oCx7SocjTeiAQtD1oB+9nEzpZZd0cOZXeNJZEthygcKm9EuvT
+         nrB1dQzYuhUPHy6+TGWhs/vyWQ46B/pXi2M3OUT/7JAnIkmjvp/EIEkZlWJ0sN4ymo/n
+         dXYbGHzg2ou8am6oaD6a5FwA3mkN6e0DPLXYtJnF73U2hIkwBPjk8YGSoJDVvRN+kxgo
+         El7B8mMDQMuBn7+eD7ogF6WajlCFtRgnXpAzrDj4BenoFMA4FzNFvH5JLpjf6THsji6b
+         U+JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AYO9vI1jssWFcgU0C4Kub0Gl3FwLz/cFiMnc7N/ZW8M=;
+        b=dIfJRNv5suQTA3LbTrUKUgAbpQOkwNVw8zsBFhMqGa/oIEJuEmAG+/90VEfaGEf5Tq
+         Tub+AANzHNqcyqcBaJKZYO1H9TOFHqFl+DlXzmEefVWOAaQlrYG89a0hv9lvcSSSyKnp
+         vF75gXpERIJ1cWA1PaOThaR9O4MV8ndoZPFfUCLapn9CAYYDWlcjxx/KBIxpXk2xiEdl
+         8N8zsbRw/luzInSOD0gdnOSoZLGtlATqNT1x43ulqhMlCitd22bV4zJ7+a79r7a0N1ra
+         qw2AzDL1nUGUR1nnKH6qBsLdTiLMBhvPFRsrEeD7KNVNumoI/uMSFaqREojHXT+zcBH3
+         VSYw==
+X-Gm-Message-State: AOAM533L2vX05jTkTc6iBQxQxhdG00lhqoHTLqFu0vj8wrWtlN/qtXbz
+        3UOntFXd+jKjw6G1P0QkF4tteM6WCE9lhlVd
+X-Google-Smtp-Source: ABdhPJz8bKW3OvFfUb/6QzuoM+0dCijwwS3cJjUsFtm6QbvCnlA4iVmILfLpLhYU5ZyBMa9zQTuP9w==
+X-Received: by 2002:adf:e8c3:: with SMTP id k3mr30942832wrn.228.1600325998448;
+        Wed, 16 Sep 2020 23:59:58 -0700 (PDT)
+Received: from bender.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id z14sm35709055wrh.14.2020.09.16.23.59.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 23:59:57 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     khilman@baylibre.com, kishon@ti.com, balbi@kernel.org,
+        martin.blumenstingl@googlemail.com
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH v2 0/5] usb: dwc-meson-g12a: Add support for USB on S400 board
+Date:   Thu, 17 Sep 2020 08:59:44 +0200
+Message-Id: <20200917065949.3476-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600325742; bh=Sw6GoMTE1Ahsx/O0nTGxzqX6p0IVyTasU273plPnv7w=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=Q5jaHL5otDVB6AESLJeXZ/lSuNkAGz0Pdp0LnGdDVpGwaS8H+mWxD/RsHTXLVOvnb
-         xWCTUzxZr5OEKh5nNSy/Ix0QSLWESAWLKZAjI/gc+fQEYC8pfWbBbAgNj126beLw6v
-         DfvcHWJlYeBABHkzkBkv5ihX+ezky4AhytiXMXQn3AFjUQii3/ORVeIFg4BOsTudlA
-         3f4Njq2/mmXhxzrXbauQuAk1Jw2BI6MJgN9OE53D7PBRUURb6ZHpaoiJ3TJzj/FLhB
-         zAbJcICq5wTHl72es3ZEg68gMPs3joevtRblC+P+SdQjXxKL8UUUEAQWegmM5vFokv
-         ZZ/9DbDD+meDw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As suggested by Dan Carpenter, fortify unpin_user_pages() just a bit,
-against a typical caller mistake: check if the npages arg is really a
--ERRNO value, which would blow up the unpinning loop: WARN and return.
+The Amlogic AXG is close to the GXL Glue but with a single OTG PHY.
 
-If this new WARN_ON() fires, then the system *might* be leaking pages
-(by leaving them pinned), but probably not. More likely, gup/pup
-returned a hard -ERRNO error to the caller, who erroneously passed it
-here.
+It needs the same init sequence as GXL & GXM, but it seems it doesn't need
+the host disconnect bit.
 
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Souptick Joarder <jrdr.linux@gmail.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
+The Glue driver reuses the already implemented GXL & GXM work.
 
-Hi Dan,
+The USB2 PHY driver needs a slight tweak to keep the OTG detection working.
 
-Is is OK to use your signed-off-by here? Since you came up with this.
+Changes since v1 at [1]:
+- s/close from/close to/g
+- collected review tags
+- added small comment about phy management in patch 3
+- removed status = "okay" in patch 4
+- removed invalid phy-supply of phy1 in patch 5
 
-thanks,
-John Hubbard
-NVIDIA
+[1] http://lore.kernel.org/r/20200909160409.8678-1-narmstrong@baylibre.com
 
- mm/gup.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Neil Armstrong (5):
+  phy: amlogic: phy-meson-gxl-usb2: keep ID pull-up even in Host mode
+  dt-bindings: usb: amlogic,meson-g12a-usb-ctrl: add the Amlogic AXG
+    Families USB Glue Bindings
+  usb: dwc-meson-g12a: Add support for USB on AXG SoCs
+  arm64: dts: meson-axg: add USB nodes
+  arm64: dts: meson-axg-s400: enable USB OTG
 
-diff --git a/mm/gup.c b/mm/gup.c
-index e5739a1974d5..41d082707016 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -328,6 +328,13 @@ void unpin_user_pages(struct page **pages, unsigned lo=
-ng npages)
- {
- 	unsigned long index;
-=20
-+	/*
-+	 * If this WARN_ON() fires, then the system *might* be leaking pages (by
-+	 * leaving them pinned), but probably not. More likely, gup/pup returned
-+	 * a hard -ERRNO error to the caller, who erroneously passed it here.
-+	 */
-+	if (WARN_ON(IS_ERR_VALUE(npages)))
-+		return;
- 	/*
- 	 * TODO: this can be optimized for huge pages: if a series of pages is
- 	 * physically contiguous and part of the same compound page, then a
---=20
-2.28.0
+ .../usb/amlogic,meson-g12a-usb-ctrl.yaml      | 22 +++++++-
+ .../arm64/boot/dts/amlogic/meson-axg-s400.dts |  6 +++
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi    | 50 +++++++++++++++++++
+ drivers/phy/amlogic/phy-meson-gxl-usb2.c      |  3 +-
+ drivers/usb/dwc3/dwc3-meson-g12a.c            | 18 +++++++
+ 5 files changed, 97 insertions(+), 2 deletions(-)
+
+-- 
+2.22.0
 
