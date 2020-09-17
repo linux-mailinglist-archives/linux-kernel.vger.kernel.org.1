@@ -2,77 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C7726DC2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4767F26DC42
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbgIQM4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:56:40 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13241 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726877AbgIQMzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:55:21 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B32109264EA415BF75E2;
-        Thu, 17 Sep 2020 20:55:17 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 20:55:10 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-CC:     <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] x86/xen: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Thu, 17 Sep 2020 20:55:47 +0800
-Message-ID: <20200917125547.104472-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727092AbgIQM7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727138AbgIQM61 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:58:27 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BD6C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:58:26 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id u126so2301836oif.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=v+fNl0lP+nDgkIqWYqUCp9ojQxRjrA9fuGvhmoD3cl4=;
+        b=Xx9BA4CJAQ+/KNh9Oytu6Cp3JJRd7dZPKb0a9lbgdBNsP4TrCuCoM2hv/MeNZDJOt2
+         MIgdbjC+wvFlCsmnuqIU88Zn/DGSfwCm49nVbgVhm4JGYS3rQqQQ8VztYVsEiBaiVSYt
+         P3rMGajvrLFM8xPLxVdoUq+XX/LyQQsFsonFU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v+fNl0lP+nDgkIqWYqUCp9ojQxRjrA9fuGvhmoD3cl4=;
+        b=GTscZhdFbtzPQtPP4o8QVBgAVtK/C1BJRVU1wgIk4Es0lveSepSdGvG5sv8iOCkUk9
+         258l8nw1Zq0XTK6boHK3B6RkTz9gPkElsGOjsCMvYd0fy77j4oJOKzSFlv7TE1OZX71t
+         Q8Fxj/4wnLOSCcQIbzLKTZ/yMYWHTPHk+9YW0342oiOGfiEMXwju5mH33UHSWb2NamWR
+         HWPiYfkyIkzGPzCabI9Gcxtx9D+y2psC/x7mZ64hvIXnasjZuvJXGBVJt4dDebJzylBu
+         +MDgD08TEvGNGrzZok3k28sIw4WZtbMuYT7AE7KmQR2mYI4/csdZmPRkPCXMIVwuH4CP
+         GQ7g==
+X-Gm-Message-State: AOAM533auqtp6dAfzXxghqiI92iHTS85CGFBmxwweujweKiQ9WtxMkKd
+        +BgBEPQqQ/kr07NTFiAzPPN3J6XGNaasdQ==
+X-Google-Smtp-Source: ABdhPJxJ+hJC5NgrepAXypYOwEjQMM4lNMMM27TkWxWgD7WozscsKqRmtHl4Tv93I1l3RzjjxNAuQw==
+X-Received: by 2002:aca:a88e:: with SMTP id r136mr5904429oie.13.1600347506033;
+        Thu, 17 Sep 2020 05:58:26 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h14sm10380230otr.21.2020.09.17.05.58.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 05:58:25 -0700 (PDT)
+Subject: Re: [PATCH] selftests/harness: Flush stdout before forking
+To:     Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200917041519.3284582-1-mpe@ellerman.id.au>
+ <CAMo8BfJ5j4nG0z1Bk00J=3xPM++J68Hp2idJ-D5aHT84-vOzsQ@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e24df908-c50d-59ef-563c-9db24c819248@linuxfoundation.org>
+Date:   Thu, 17 Sep 2020 06:58:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAMo8BfJ5j4nG0z1Bk00J=3xPM++J68Hp2idJ-D5aHT84-vOzsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+On 9/16/20 10:53 PM, Max Filippov wrote:
+> On Wed, Sep 16, 2020 at 9:16 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>
+>> The test harness forks() a child to run each test. Both the parent and
+>> the child print to stdout using libc functions. That can lead to
+>> duplicated (or more) output if the libc buffers are not flushed before
+>> forking.
+>>
+>> It's generally not seen when running programs directly, because stdout
+>> will usually be line buffered when it's pointing to a terminal.
+>>
+>> This was noticed when running the seccomp_bpf test, eg:
+>>
+>>    $ ./seccomp_bpf | tee test.log
+>>    $ grep -c "TAP version 13" test.log
+>>    2
+>>
+>> But we only expect the TAP header to appear once.
+>>
+>> It can be exacerbated using stdbuf to increase the buffer size:
+>>
+>>    $ stdbuf -o 1MB ./seccomp_bpf > test.log
+>>    $ grep -c "TAP version 13" test.log
+>>    13
+>>
+>> The fix is simple, we just flush stdout & stderr before fork. Usually
+>> stderr is unbuffered, but that can be changed, so flush it as well
+>> just to be safe.
+>>
+>> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+>> ---
+>>   tools/testing/selftests/kselftest_harness.h | 5 +++++
+>>   1 file changed, 5 insertions(+)
+> 
+> Tested-by: Max Filippov <jcmvbkbc@gmail.com>
+> 
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
-v2: based on linux-next(20200917), and can be applied to
-    mainline cleanly now.
+Thank you both. Applying to linux-kselftest fixes for 5.9-rc7
 
- arch/x86/xen/p2m.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
-index be4151f42..3301875dd 100644
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -795,17 +795,7 @@ static int p2m_dump_show(struct seq_file *m, void *v)
- 	return 0;
- }
- 
--static int p2m_dump_open(struct inode *inode, struct file *filp)
--{
--	return single_open(filp, p2m_dump_show, NULL);
--}
--
--static const struct file_operations p2m_dump_fops = {
--	.open		= p2m_dump_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(p2m_dump);
- 
- static struct dentry *d_mmu_debug;
- 
--- 
-2.23.0
-
+thanks,
+-- Shuah
