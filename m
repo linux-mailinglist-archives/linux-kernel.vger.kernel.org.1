@@ -2,116 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C4B26E364
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E8526E380
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgIQSUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgIQSSV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:18:21 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B518FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:17:39 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id z2so2637437qtv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ki8/NOkpFvs3XxTS93OGfUDB/VnTY+Hw6EkRY5HIJZs=;
-        b=GZaBRiQ9WPc7NkQAE0jqjGGYjkOYBWmzeGoKul57v7BPJfgPhtlrZXHUW6mbS6ZDCA
-         tNSk9vQhRNReJ9gBsoGDPjgl+T4eT6te0GK4HtRB1w1dPUHxfpiLB1Etmbz21pSgEKGP
-         /P0iKQuLf4R0h4k3a9BfatYorU2kLtm8+GgWMrOxkjuSFzBWmNTlzMpRj4B/8yggeu36
-         NMJL+gte16yTX0LBooeg+GUUg+VkYShK61Q0Zya9ngcgi9ACOs+sv4aCyOh9uxe8fhq2
-         I2Ar1q1ixCmOhpIW2pM0umipFIvANhdcly/BFa+PE/Ozbu6wtOcVsFNuKs/WymIUbFEG
-         wlHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ki8/NOkpFvs3XxTS93OGfUDB/VnTY+Hw6EkRY5HIJZs=;
-        b=LwfCE3rJxHpGPrHEZrNXdkKtK3/5aO+3qZIbRdrC5undz46QHXsN/k7RZa6NLPXPgJ
-         Ffhj3oD0/SUKNQVmwRe6HNYDm+I3NUnZ6GUt62Lv57yMjO9kKRxMVlCEQRhIK0v72NQX
-         u5omIzevXNjGOBRgqgf90J6KckHO0kO6T0Z04rAk/XCuiMPmRyfU4BzyiWXaLJ1QtfS3
-         Ted4PozHIaEinhqH43bK171CNKgDPDQkXd/mPKsGKevLvSGLLKWUTpe2j1BjRzOYxdYj
-         TXXU+5ZrDN6N5CObkelDcfTgjv/NyBIbXt5z0TQXEo9HyPN51izUmYx1rPFWWx8waJVw
-         7apQ==
-X-Gm-Message-State: AOAM533X9HFTdmW1JUiknoocB9OtC3MfoKONL16cK3ufGjEN/mKsNNeM
-        TatUb9S00GpEgvspA5MFGuoIkNTQuRrAVu80YySu7g==
-X-Google-Smtp-Source: ABdhPJyVQHzYu1Aj9+VqPfHZXnK0Aqr173fPvmOQMN/L328PRHuWfV9ruZW1fqpnFhP8GdLA5JaEel77uv4sNSC8hJI=
-X-Received: by 2002:ac8:748c:: with SMTP id v12mr28117317qtq.200.1600366658123;
- Thu, 17 Sep 2020 11:17:38 -0700 (PDT)
+        id S1726629AbgIQS0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:26:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26062 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726480AbgIQSZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:25:48 -0400
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 14:25:43 EDT
+IronPort-SDR: OAQrGXnofE2ix3QRRVleUwYmAlE6vjAZIGibBdpXLt/flMsxHVckRqBtyd0juqiepdb1BVwuaO
+ fZEpp5aOdY6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221321883"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="221321883"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:18:10 -0700
+IronPort-SDR: kkf8DHurafAM1VSYqAAV2BJk2FzaMJxjF7+wDR/y4P+41vjGqfRSxJQo2xlOcYnKH0JPjLLL3m
+ GnyV5m2HTutw==
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="483850364"
+Received: from jbrandeb-mobl3.amr.corp.intel.com (HELO localhost) ([10.251.16.238])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:18:10 -0700
+Date:   Thu, 17 Sep 2020 11:18:07 -0700
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <frederic@kernel.org>,
+        <mtosatti@redhat.com>, <sassmann@redhat.com>,
+        <jeffrey.t.kirsher@intel.com>, <jacob.e.keller@intel.com>,
+        <jlelli@redhat.com>, <hch@infradead.org>, <bhelgaas@google.com>,
+        <mike.marciniszyn@intel.com>, <dennis.dalessandro@intel.com>,
+        <thomas.lendacky@amd.com>, <jerinj@marvell.com>,
+        <mathias.nyman@intel.com>, <jiri@nvidia.com>
+Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
+ hosekeeping CPUs
+Message-ID: <20200917111807.00002eac@intel.com>
+In-Reply-To: <20200909150818.313699-2-nitesh@redhat.com>
+References: <20200909150818.313699-1-nitesh@redhat.com>
+        <20200909150818.313699-2-nitesh@redhat.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20200915075732.100804-1-weiyongjun1@huawei.com>
-In-Reply-To: <20200915075732.100804-1-weiyongjun1@huawei.com>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Thu, 17 Sep 2020 20:17:27 +0200
-Message-ID: <CAMxfBF5n-eCyMR2=yz8P=J=f3smDpw_3N3yZLqH9uQmZCXQy8g@mail.gmail.com>
-Subject: Re: [PATCH -next] soc: ti: pruss: Fix return value check
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        "Anna, Suman" <s-anna@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Nitesh Narayan Lal wrote:
 
-On Tue, 15 Sep 2020 at 09:58, Wei Yongjun <weiyongjun1@huawei.com> wrote:
->
-> In case of error, the function of_device_get_match_data() returns NULL
-> pointer not ERR_PTR(). The IS_ERR() test in the return value check
-> should be replaced with NULL test.
->
-> Fixes: ba59c9b43c86 ("soc: ti: pruss: support CORECLK_MUX and IEPCLK_MUX")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Introduce a new API num_housekeeping_cpus(), that can be used to retrieve
+> the number of housekeeping CPUs by reading an atomic variable
+> __num_housekeeping_cpus. This variable is set from housekeeping_setup().
+> 
+> This API is introduced for the purpose of drivers that were previously
+> relying only on num_online_cpus() to determine the number of MSIX vectors
+> to create. In an RT environment with large isolated but a fewer
+> housekeeping CPUs this was leading to a situation where an attempt to
+> move all of the vectors corresponding to isolated CPUs to housekeeping
+> CPUs was failing due to per CPU vector limit.
+> 
+> If there are no isolated CPUs specified then the API returns the number
+> of all online CPUs.
+> 
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
 > ---
->  drivers/soc/ti/pruss.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
-> index cc0b4ad7a3d3..582f48051c30 100644
-> --- a/drivers/soc/ti/pruss.c
-> +++ b/drivers/soc/ti/pruss.c
-> @@ -126,7 +126,7 @@ static int pruss_clk_init(struct pruss *pruss, struct device_node *cfg_node)
->         int ret = 0;
->
->         data = of_device_get_match_data(dev);
-> -       if (IS_ERR(data))
-> +       if (!data)
->                 return -ENODEV;
->
->         clks_np = of_get_child_by_name(cfg_node, "clocks");
-> @@ -175,7 +175,7 @@ static int pruss_probe(struct platform_device *pdev)
->         const char *mem_names[PRUSS_MEM_MAX] = { "dram0", "dram1", "shrdram2" };
->
->         data = of_device_get_match_data(&pdev->dev);
-> -       if (IS_ERR(data)) {
-> +       if (!data) {
->                 dev_err(dev, "missing private data\n");
->                 return -ENODEV;
->         }
+>  include/linux/sched/isolation.h |  7 +++++++
+>  kernel/sched/isolation.c        | 23 +++++++++++++++++++++++
+>  2 files changed, 30 insertions(+)
 
-First of all thank you for reporting this issue. Indeed the IS_ERR is
-wrongly used and is leftover from a bit different former internal
-implementation. Nevertheless with your fix the driver will not be
-functional anymore for all devices without match data (e.g.
-"ti,am3356-pruss") which is not what we want.
+I'm not a scheduler expert, but a couple comments follow.
 
-The proper fix would be removing the mentioned error checks, since the
-"data" in both cases is checked later, before usage:
-if (data && data->...).
+> 
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> index cc9f393e2a70..94c25d956d8a 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -25,6 +25,7 @@ extern bool housekeeping_enabled(enum hk_flags flags);
+>  extern void housekeeping_affine(struct task_struct *t, enum hk_flags flags);
+>  extern bool housekeeping_test_cpu(int cpu, enum hk_flags flags);
+>  extern void __init housekeeping_init(void);
+> +extern unsigned int num_housekeeping_cpus(void);
+>  
+>  #else
+>  
+> @@ -46,6 +47,12 @@ static inline bool housekeeping_enabled(enum hk_flags flags)
+>  static inline void housekeeping_affine(struct task_struct *t,
+>  				       enum hk_flags flags) { }
+>  static inline void housekeeping_init(void) { }
+> +
+> +static unsigned int num_housekeeping_cpus(void)
+> +{
+> +	return num_online_cpus();
+> +}
+> +
+>  #endif /* CONFIG_CPU_ISOLATION */
+>  
+>  static inline bool housekeeping_cpu(int cpu, enum hk_flags flags)
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 5a6ea03f9882..7024298390b7 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -13,6 +13,7 @@ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+>  EXPORT_SYMBOL_GPL(housekeeping_overridden);
+>  static cpumask_var_t housekeeping_mask;
+>  static unsigned int housekeeping_flags;
+> +static atomic_t __num_housekeeping_cpus __read_mostly;
+>  
+>  bool housekeeping_enabled(enum hk_flags flags)
+>  {
+> @@ -20,6 +21,27 @@ bool housekeeping_enabled(enum hk_flags flags)
+>  }
+>  EXPORT_SYMBOL_GPL(housekeeping_enabled);
+>  
+> +/*
 
-Please let me know if you want to improve this patch by yourself or
-want me to push a proper fix with your e.g. "Reported-by:" tag. For me
-both solutions are ok.
+use correct kdoc style, and you get free documentation from your source
+(you're so close!)
 
-Thank you,
-Grzegorz
+should be (note the first line and the function title line change to
+remove parens:
+/**
+ * num_housekeeping_cpus - Read the number of housekeeping CPUs.
+ *
+ * This function returns the number of available housekeeping CPUs
+ * based on __num_housekeeping_cpus which is of type atomic_t
+ * and is initialized at the time of the housekeeping setup.
+ */
+
+> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
+> + *
+> + * This function returns the number of available housekeeping CPUs
+> + * based on __num_housekeeping_cpus which is of type atomic_t
+> + * and is initialized at the time of the housekeeping setup.
+> + */
+> +unsigned int num_housekeeping_cpus(void)
+> +{
+> +	unsigned int cpus;
+> +
+> +	if (static_branch_unlikely(&housekeeping_overridden)) {
+> +		cpus = atomic_read(&__num_housekeeping_cpus);
+> +		/* We should always have at least one housekeeping CPU */
+> +		BUG_ON(!cpus);
+
+you need to crash the kernel because of this? maybe a WARN_ON? How did
+the global even get set to the bad value? It's going to blame the poor
+caller for this in the trace, but the caller likely had nothing to do
+with setting the value incorrectly!
+
+> +		return cpus;
+> +	}
+> +	return num_online_cpus();
+> +}
+> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
+
