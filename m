@@ -2,152 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CA826E322
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF77026E323
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgIQSE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgIQSCv (ORCPT
+        id S1726553AbgIQSEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:04:32 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43730 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgIQSD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:02:51 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2EBC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:02:49 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w2so2826932wmi.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:02:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VMjGHIdZoN2oxghKfwIVedc2rc75vIEU71EGKBKi4Vw=;
-        b=Rw4H1am04yaRpFiTHOynRZlFoGtQnCuPQuwrQzRGIF6J323Ni+X4epQdP8RPddNlW6
-         rBkbIxfyjT2Fnqv+qsog+PE6vumYuQcGK9GAQ68o31h76ft64UNz+J6Egx34Uou0gL5Z
-         wk6fLnKW65+lJ4i527oHJy4TGXWyNKPwKnRQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VMjGHIdZoN2oxghKfwIVedc2rc75vIEU71EGKBKi4Vw=;
-        b=gvmiCEgEh3CJ7b0kvAExjKDCEAtOSLo55FNGaim0rn5klQWG07XCxy5HJaRFlD3C3h
-         Yw/eNsHUKSIbQ1mkFqp+Qts1vaj6BDftewNPDRF2qpPze+RSQHL+NQUYYJkn7UhaBMeK
-         M4UcfLxflNFZyxUKKJMYizbG7b0kvDGcwBWqZUWHWxmvIz1dpCaZIKaMm4NAiWiyUg2M
-         +rwq6qVubLjtImZeFUw2j/zRivEurgDgG8JrUcGpLKD/O2cdvV/OPnx2Lw7HRJTzeAMC
-         a0bywLCqA8+dE62spkMuDJMqo8BFxnHv/zrRtc/fNyAydAh7tYNwk9PrRXX8HpLwhTa4
-         IImA==
-X-Gm-Message-State: AOAM532TZxLXwOTRjVk1HUJb3PrHP97YjNQFr4vB89GuQx/qncirBkZI
-        /ePdX02pmrjJhi4wNg0zJNF4NNoNn6wX8eYVJ7vWlQ==
-X-Google-Smtp-Source: ABdhPJwK3mtEBCJ+znIVX4TRVKA++GpeRR4CpX/gV4dLL6lJ47pX6bzp/5So/xiQBELnrZ9ehGsMeKaPsbyIityIEg0=
-X-Received: by 2002:a1c:408a:: with SMTP id n132mr10890855wma.45.1600365768299;
- Thu, 17 Sep 2020 11:02:48 -0700 (PDT)
+        Thu, 17 Sep 2020 14:03:59 -0400
+Received: from [192.168.0.121] (unknown [209.134.121.133])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C36AA20B7178;
+        Thu, 17 Sep 2020 11:03:57 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C36AA20B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600365838;
+        bh=6JyPUsm4XBTi8jnz7iQrYrl0MN3/q5hOA0x3AKWKDpU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=loJ4sthnKgyPCRujnsQVSyARpiGMSyLDCbe6jYGimKcTEzI90hScxCAkSkhuJaNcS
+         aBl+evvD2SgvG2pIAUPOF7xV71akF/X4wwxZu+YrqyakoyY+2nNQPWlFXPpDCXUsG8
+         wvrq1ZMXA/4xMv4MOpPUgqZ3iIVJaiBvGsRpYJd8=
+Subject: Re: [[PATCH]] mm: khugepaged: recalculate min_free_kbytes after
+ memory hotplug as expected by khugepaged
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <1599770859-14826-1-git-send-email-vijayb@linux.microsoft.com>
+ <20200914143312.GU16999@dhcp22.suse.cz>
+ <c6fcc196-ce7f-1f48-e9bd-c18448272df1@linux.microsoft.com>
+ <20200915081832.GA4649@dhcp22.suse.cz>
+ <53dd1e2c-f07e-ee5b-51a1-0ef8adb53926@linux.microsoft.com>
+ <20200916065306.GB18998@dhcp22.suse.cz>
+ <32b73685-48f2-b6dd-f000-8ea52cfee70a@linux.microsoft.com>
+ <20200917121213.GC29887@dhcp22.suse.cz>
+From:   Vijay Balakrishna <vijayb@linux.microsoft.com>
+Message-ID: <7eddcc58-f65f-0be9-60e8-2de013365909@linux.microsoft.com>
+Date:   Thu, 17 Sep 2020 11:03:56 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200824204002.45500-1-james.quinlan@broadcom.com> <32b000b801202c3d6318da6c5bc52d47ab6947e0.camel@pengutronix.de>
-In-Reply-To: <32b000b801202c3d6318da6c5bc52d47ab6947e0.camel@pengutronix.de>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Thu, 17 Sep 2020 14:02:36 -0400
-Message-ID: <CA+-6iNwSS0U7zga2WEoWw48bHtOzWzSppKPGV8KEthnNnasH-w@mail.gmail.com>
-Subject: Re: [PATCH v1] ata: ahci_brcm: Fix use of BCM7216 reset controller
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200917121213.GC29887@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 4:16 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
->
-> On Mon, 2020-08-24 at 16:40 -0400, Jim Quinlan wrote:
-> > From: Jim Quinlan <jquinlan@broadcom.com>
-> >
-> > A reset controller "rescal" is shared between the AHCI driver and the PCIe
-> > driver for the BrcmSTB 7216 chip.  Use
-> > devm_reset_control_get_optional_shared() to handle this sharing.
-> >
-> > Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
-> > Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
-> > Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> > ---
-> >  drivers/ata/ahci_brcm.c | 11 +++--------
-> >  1 file changed, 3 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
-> > index 6853dbb4131d..d6115bc04b09 100644
-> > --- a/drivers/ata/ahci_brcm.c
-> > +++ b/drivers/ata/ahci_brcm.c
-> > @@ -428,7 +428,6 @@ static int brcm_ahci_probe(struct platform_device *pdev)
-> >  {
-> >       const struct of_device_id *of_id;
-> >       struct device *dev = &pdev->dev;
-> > -     const char *reset_name = NULL;
-> >       struct brcm_ahci_priv *priv;
-> >       struct ahci_host_priv *hpriv;
-> >       struct resource *res;
-> > @@ -452,11 +451,10 @@ static int brcm_ahci_probe(struct platform_device *pdev)
-> >
-> >       /* Reset is optional depending on platform and named differently */
-> >       if (priv->version == BRCM_SATA_BCM7216)
-> > -             reset_name = "rescal";
-> > +             priv->rcdev = devm_reset_control_get_optional_shared(&pdev->dev, "rescal");
-> >       else
-> > -             reset_name = "ahci";
-> > +             priv->rcdev = devm_reset_control_get_optional(&pdev->dev, "ahci");
->
-> I think it would be cleaner to use two separate reset control handles
-> here. It is hard to reason about what the code does when the reset
-> control is shared on one platform and exclusive on the other.
->
-> > -     priv->rcdev = devm_reset_control_get_optional(&pdev->dev, reset_name);
-> >       if (IS_ERR(priv->rcdev))
-> >               return PTR_ERR(priv->rcdev);
-> >
-> > @@ -479,10 +477,7 @@ static int brcm_ahci_probe(struct platform_device *pdev)
-> >               break;
-> >       }
-> >
-> > -     if (priv->version == BRCM_SATA_BCM7216)
-> > -             ret = reset_control_reset(priv->rcdev);
->
-> I think we might have a similar issue currently with
-> "usb: dwc3: meson-g12a: fix shared reset control use", where two IP
-> cores try to share a pulsed reset line.
->
-> > -     else
-> > -             ret = reset_control_deassert(priv->rcdev);
-> > +     ret = reset_control_deassert(priv->rcdev);
->
-> Isn't the shared 'rescal' reset a triggered reset pulse? Looking at the
-> reset-brcmstb-rescal reset controller driver, without reset line level
-> control implemented, this will turn into a no-op for BCM7216. Yes, the
-> reset line will be deasserted after this call, but there is no guarantee
-> that the reset line was ever pulsed.
 
-Hi Philipp,
 
-I believe you have observed that our reset-brcmstb-rescal.c driver
-sets only the "reset" op and implements a pulse when called (it's
-actually more of a "start the engine" operation).  This suits us fine
-except such a driver can only fire its reset once in its lifetime.  We
-would actually like a "new lifetime" when we emerge from resume()
-after being suspended.  This would probably require a modification to
-core.c to set triggered_count to 0 on resume_early time.  My instincts
-say this approach would upset some apple carts.
+On 9/17/2020 5:12 AM, Michal Hocko wrote:
+> On Wed 16-09-20 11:28:40, Vijay Balakrishna wrote:
+> [...]
+>> OOM splat below.  I see we had kmem leak detection turned on here.  We
+>> haven't run stress with kmem leak detection since uncovereing low
+>> min_free_kbytes.  During investigation we wanted to make sure there is no
+>> kmem leaks, we didn't find significant leaks detected.
+>>
+>> [330319.766059] systemd invoked oom-killer:
+>> gfp_mask=0x40cc0(GFP_KERNEL|__GFP_COMP), order=1, oom_score_adj=0
+> 
+> [...]
+>> [330319.861064] Mem-Info:
+>> [330319.863519] active_anon:60744 inactive_anon:109226 isolated_anon:0
+>>                   active_file:6418 inactive_file:3869 isolated_file:2
+>>                   unevictable:0 dirty:8 writeback:1 unstable:0
+>>                   slab_reclaimable:34660 slab_unreclaimable:795718
+>>                   mapped:1256 shmem:165765 pagetables:689 bounce:0
+>>                   free:340962 free_pcp:4672 free_cma:0
+> 
+> The memory consumption is predominantely in slab (unreclaimable). Only
+> ~8% of the memory is on LRUs (anonymous + file). Slab (both reclaimable
+> and unreclaimable) is ~40%. So there is still a lot of memory
+> unaccounted (direct users of the page allocator). This would partially
+> explain why the oom killer is not able to make progress and eventually
+> panics because it is the kernel which is blowing the memory consumption.
+> 
+> There is still ~1G free memory but the problem is that this is a
+> GFP_KERNEL request which is not allowed to consume Movable memory.
+> Zone normal is depleted and therefore it cannot satisfy this request
+> even when there are some order-1 pages available.
+> 
+>> [330319.928124] Node 0 Normal free:12652kB min:14344kB low:19092kB=20
+>> high:23840kB active_anon:55340kB inactive_anon:60276kB active_file:60kB
+>> inactive_file:128kB unevictable:0kB writepending:4kB present:6220656kB
+>> managed:4750196kB mlocked:0kB kernel_stack:9568kB pagetables:2756kB
+>> bounce:0kB free_pcp:10056kB local_pcp:1376kB free_cma:0kB
+> [...]
+>> [330319.996879] Node 0 Normal: 3138*4kB (UME) 38*8kB (UM) 0*16kB 0*32kB
+>> 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 12856kB
+> 
+> I do not see the state of swap in the oom splat so I assume you have
+> swap disabled. If that is the case then the memory reclaim cannot really
+> do much for this request. There is almost no page cache to reclaim.
 
-What we could do instead is use the deassert op instead of the reset
-op so that the pulse and be activated on probe and every time we
-resume().
+No swap configured in our system.
+> 
+> That being said I do not see how a increased min_free_kbytes could help
+> for this particular OOM situation. If there is really any relation it is
+> more of a unintended side effect.
 
-Are you okay with that?
+I haven't had a chance to rerun stress with kmem leak detection to know 
+if we still see OOM kills after min_free_kbytes restore.
+> 
+> [...]
+>>>> Extreme values can damage your system. Setting min_free_kbytes to an
+>>>> extremely low value prevents the system from reclaiming memory, which can
+>>>> result in system hangs and OOM-killing processes. However, setting
+>>>> min_free_kbytes too high (for example, to 5–10% of total system memory)
+>>>> causes the system to enter an out-of-memory state immediately, resulting in
+>>>> the system spending too much time reclaiming memory.
+>>>
+>>> The auto tuned value should never reach such a low value to cause
+>>> problems.
+>>
+>> The auto tuned value is incorrect post hotplug memory operation, in our use
+>> case memoy hot add occurs very early during boot.
+>   
+> Define incorrect. What are the actual values? Have you tried to increase
+> the value manually after the hotplug?
+
+In our case SoC with 8GB memory, system tuned min_free_kbytes
+- first to 22528
+- we perform memory hot add very early in boot
+- now min_free_kbytes is 8703
+
+Before looking at code, first I manually restored min_free_kbytes soon 
+after boot, reran stress and didn't notice symptoms I mentioned in 
+change log.
 
 Thanks,
-Jim
->
-> regards
-> Philipp
+Vijay
