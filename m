@@ -2,114 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857DF26DB90
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FAE26DB5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgIQMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:30:09 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:43644 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726793AbgIQM1h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:27:37 -0400
-X-Greylist: delayed 735 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:27:35 EDT
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HCR44A044284;
-        Thu, 17 Sep 2020 07:27:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600345624;
-        bh=h6OSpodV87NvHPxkIpIpIZPach27yXLw2FWSGojvvF4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Rh/QMCITmgUxEIqK/aTN6LkyK3HkutT6/qo58DtuiVyZlg2I4qZ3DOUwxnh3ulGBD
-         8idi+DOxwRqf6GWUkk8SOYZsXXOx5RIcaMr2A9wqqbayfO6Ve/WANjJA8RzKBqYVMr
-         oi/iwBZkcRPonwNq549pe7ATCZmWJpDVtKj/nmfA=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08HCR3Q6129725
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 07:27:03 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
- Sep 2020 07:27:03 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 17 Sep 2020 07:27:03 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HCR3Em125110;
-        Thu, 17 Sep 2020 07:27:03 -0500
-Date:   Thu, 17 Sep 2020 07:27:03 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Peter Rosin <peda@axentia.se>
-CC:     Roger Quadros <rogerq@ti.com>, <t-kristo@ti.com>,
-        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
-        <kishon@ti.com>
-Subject: Re: [PATCH v3 1/6] dt-bindings: mux-j7200-wiz: Add lane function
- defines
-Message-ID: <20200917122703.ojuzn6b3tvqbnssc@akan>
-References: <20200915112038.30219-1-rogerq@ti.com>
- <20200915112038.30219-2-rogerq@ti.com>
- <e28e98a0-f3fc-29bd-d7a6-cc45f3a69ede@axentia.se>
- <20200916154536.m552ft2jzfsaeokr@akan>
- <d8b8c070-577f-f778-e595-58517ffce6e3@axentia.se>
+        id S1726998AbgIQMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:20:23 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:37994 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726952AbgIQMUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:20:02 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id EFCE8EDA883CF9A60A83;
+        Thu, 17 Sep 2020 20:19:57 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
+ 20:19:54 +0800
+From:   Huang Guobin <huangguobin4@huawei.com>
+To:     <ajay.kathat@microchip.com>, <claudiu.beznea@microchip.com>,
+        <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <gregkh@linuxfoundation.org>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] net: wilc1000: clean up resource in error path of init mon interface
+Date:   Thu, 17 Sep 2020 08:30:19 -0400
+Message-ID: <20200917123019.206382-1-huangguobin4@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <d8b8c070-577f-f778-e595-58517ffce6e3@axentia.se>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11:45-20200917, Peter Rosin wrote:
-[...]
-> 
-> >> Should not the defines start with J7200_WIZ? SERDES0 seems like a too
-> >> generic prefix, at least to me.
-> > 
-> > Thanks, good point. I am not sure if WIZ should even be used.. It is
-> > a TI internal prefix for various serdes solutions, but I agree that
-> > SERDES0 is too generic a terminology. That said, we should cleanup
-> > include/dt-bindings/mux/mux-j721e-wiz.h as well, prior to introducing
-> > j7200 changes.
-> 
-> Right. As maintainer for the directory in question, I should have
-> been on Cc for that series too, but it appears I wasn't. Hence, I
+The wilc_wfi_init_mon_int() forgets to clean up resource when
+register_netdevice() failed. Add the missed call to fix it.
+And the return value of netdev_priv can't be NULL, so remove
+the unnecessary error handling.
 
-yes, you should have been. The following commit introduced it.
+Fixes: 588713006ea4 ("staging: wilc1000: avoid the use of 'wilc_wfi_mon' static variable")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
+---
+ drivers/net/wireless/microchip/wilc1000/mon.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-commit b766e3b0d5f6 ("arm64: dts: ti: k3-j721e-main: Add system controller
-node and SERDES lane mux")
-
-> didn't notice that file until now when I went looking for it. Why
-> wasn't I on Cc?
-
-Got through the SoC tree - an oversight on our part[1] and should'nt have,
-Apologies on the bad call.
-
-I would like to propose the following:
-a) The header should be renamed to be something more human friendly.
-b) The header should be renamed to be something TI specific and NOT per
-TI SoC.
-c) The macros need renaming to be less generic as it stands right now.
-
-
-If you ack the changes, I am guessing that the changes will impact dts
-a lot and would rather take the cleanups through SoC tree to maintain
-bisectability? OR I can pick on an immutable tag from you with just the
-header file change and pick on the dts - but I doubt that would be
-bisectable. Just worried that I have picked a bunch of cleanups already
-on the dts for 5.10, and would like to avoid a merge conflict.
-
-
-your thoughts?
-
-[1] https://lore.kernel.org/linux-devicetree/20200709231933.GA1083562@bogus/
-
+diff --git a/drivers/net/wireless/microchip/wilc1000/mon.c b/drivers/net/wireless/microchip/wilc1000/mon.c
+index 358ac8601333..b5a1b65c087c 100644
+--- a/drivers/net/wireless/microchip/wilc1000/mon.c
++++ b/drivers/net/wireless/microchip/wilc1000/mon.c
+@@ -235,11 +235,10 @@ struct net_device *wilc_wfi_init_mon_interface(struct wilc *wl,
+ 
+ 	if (register_netdevice(wl->monitor_dev)) {
+ 		netdev_err(real_dev, "register_netdevice failed\n");
++		free_netdev(wl->monitor_dev);
+ 		return NULL;
+ 	}
+ 	priv = netdev_priv(wl->monitor_dev);
+-	if (!priv)
+-		return NULL;
+ 
+ 	priv->real_ndev = real_dev;
+ 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.25.1
+
