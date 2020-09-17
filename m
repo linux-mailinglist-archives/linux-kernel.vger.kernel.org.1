@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5806E26DAB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FC526DAB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgIQLts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:49:48 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13232 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726822AbgIQLrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726890AbgIQLsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbgIQLrA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Sep 2020 07:47:00 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9018B256F03204D11C74;
-        Thu, 17 Sep 2020 19:46:55 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
- 19:46:49 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm: avoid possible multiple call to swap_node()
-Date:   Thu, 17 Sep 2020 07:44:49 -0400
-Message-ID: <20200917114449.35285-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064ECC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:46:59 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c18so1710660wrm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tA2MnF+xX5A+y1nwTZ/SIj7zddP7OKV0u4z97awhN10=;
+        b=hnPvr4eChbEyyJP8bfkcbCT6MsgCUk/u15m7HEpvrWG/gW8SsknnNy6fpGlP+eT6OB
+         lj6th/bEfjIxfDK05iLXLeqaTSPmgD2eZ2epav60PHuMs6yAEQ9XP8BCxUoEIRLZY46D
+         /rHj4KSsgvs51/tL8wqJRxJv+FsxJIVMfAFUCtDeYHsQOw/r5Kc9DCx2T7Us4cJueSOz
+         B49NbetA7ejxLAEtL/ZszfcjC5dZwzxlcp87ms0+gB5iodUj/YrbP+EM5SRj2I+RKxee
+         cjWIBfVDxcxGBHIHhJ5phQ/wXK0V6wTCv1Xu3FQhtyH+WP2cGYcSos2PuyqiCvhj+QEX
+         fsNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tA2MnF+xX5A+y1nwTZ/SIj7zddP7OKV0u4z97awhN10=;
+        b=oIqOO/gzHGVFVGWNo97huOPmKKiqfJxbArff59jTHBAN61W3ajNqTz9qjEqaf8X+N1
+         naHsT5yUofkkASytH0tsN4kwdFhVIhWgsZ/Km68QHWJHfWgFj0uNVEXfYmglJHdEtxLI
+         wGmfQPpYVvWsh/pI2rUokbcvL4fmxh0TARRo8Q73EvQMyaRHPmYzpVytQc33zRgCwDa9
+         2G+uWQCvrBUOEKG+LWv/GDJLNskGIefuNIPssI4Am1VGcUGHge2t1EL8WyrwD9IiKGv1
+         ZrRtNuGbHIlduhbjeVy6tFWlbnyq6ab5eIkV9401xU6TriGy3zJoaV1yYEEKcOVsqZLD
+         F6Qw==
+X-Gm-Message-State: AOAM531IfOM87sDSMFKdWpirKw1G2Dyb9M7Tx2cKvKqqsS0eOjMnEJQq
+        GcJm04Gvv/7pJjS3mZ7geBnf1Q==
+X-Google-Smtp-Source: ABdhPJyctzOy9Pflh2x0wS3K31Ol8OKgxXVffSt33p+5bZqVfIjotAcDZbXH6ue/9X0hmhgkzfVdcQ==
+X-Received: by 2002:adf:ed12:: with SMTP id a18mr33536235wro.178.1600343218615;
+        Thu, 17 Sep 2020 04:46:58 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id a15sm40747720wrn.3.2020.09.17.04.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 04:46:58 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] rtc: rx8010: rename rx8010_init_client() to rx8010_init()
+Date:   Thu, 17 Sep 2020 13:46:56 +0200
+Message-Id: <20200917114656.9036-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cache the swap_node() in a local variable to avoid possible multiple call
-to swap_node(), though compiler may do this for us.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Since the switch to using regmap this function no longer takes the
+I2C client struct as argument nor do we even interact with the client
+anywhere other than when creating the regmap.
+
+Rename it to a less misleading name: "rx8010_init()".
+
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- mm/swapfile.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/rtc/rtc-rx8010.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 20012c0c0252..cd66b50f0490 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -2454,7 +2454,7 @@ static void setup_swap_info(struct swap_info_struct *p, int prio,
- 			    unsigned char *swap_map,
- 			    struct swap_cluster_info *cluster_info)
- {
--	int i;
-+	int i, node;
+diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
+index 01e9017d4025..dca41a2a39b2 100644
+--- a/drivers/rtc/rtc-rx8010.c
++++ b/drivers/rtc/rtc-rx8010.c
+@@ -169,7 +169,7 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+ 	return 0;
+ }
  
- 	if (prio >= 0)
- 		p->prio = prio;
-@@ -2465,11 +2465,12 @@ static void setup_swap_info(struct swap_info_struct *p, int prio,
- 	 * low-to-high, while swap ordering is high-to-low
- 	 */
- 	p->list.prio = -p->prio;
-+	node = swap_node(p);
- 	for_each_node(i) {
- 		if (p->prio >= 0)
- 			p->avail_lists[i].prio = -p->prio;
- 		else {
--			if (swap_node(p) == i)
-+			if (node == i)
- 				p->avail_lists[i].prio = 1;
- 			else
- 				p->avail_lists[i].prio = -p->prio;
+-static int rx8010_init_client(struct device *dev)
++static int rx8010_init(struct device *dev)
+ {
+ 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
+ 	u8 ctrl[2];
+@@ -391,7 +391,7 @@ static int rx8010_probe(struct i2c_client *client)
+ 	if (IS_ERR(rx8010->regs))
+ 		return PTR_ERR(rx8010->regs);
+ 
+-	err = rx8010_init_client(dev);
++	err = rx8010_init(dev);
+ 	if (err)
+ 		return err;
+ 
 -- 
-2.19.1
+2.26.1
 
