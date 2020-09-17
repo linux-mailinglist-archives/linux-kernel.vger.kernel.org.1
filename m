@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F84726D2BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 06:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC21026D2AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 06:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgIQEjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 00:39:05 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:43034 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgIQEjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 00:39:04 -0400
-X-Greylist: delayed 12460 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 00:39:03 EDT
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08H18u4d003589;
-        Thu, 17 Sep 2020 01:10:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=tjZQK6ULcGr0MkqRNUv7sTRb+fPh/vA/4XgPl7/esnU=;
- b=uZc1SkBAODgzfsLj2OPNti3MoEtuZff14d/u5deKYcez5I5bUXV6l1GRgD8v9aAqoWWF
- aoWxyHjJpY3uRmg2w05ePcz2Bl+yp/sx5usZMeb2KS/iBxVU/yBolS5VKGk6iOOHfhRl
- V0/2w7NV7nzDthXnmf53BurvV7ue7WfT7Ul2Y1lTy8HRkddi1ktgOXDxYbmAAAowBOox
- YDF8fP99qn2smWUtFSLrwTF466/GZvfxvMVlbVuULHEQ4atFpXMi+3ngjd6hNM2/Gz2p
- HDFMw6mI06RFIt4bptHT1hcmomM64fnFztwTacD/edpx7NvjwbAw91UJIca/3DhdJCca Xw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33gp9me6ej-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 01:10:52 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08H19te4010994;
-        Thu, 17 Sep 2020 01:10:51 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33hm33v1s6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 01:10:51 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08H1AedG009064;
-        Thu, 17 Sep 2020 01:10:40 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 01:10:39 +0000
-To:     John Garry <john.garry@huawei.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, <jejb@linux.ibm.com>,
-        <don.brace@microsemi.com>, <kashyap.desai@broadcom.com>,
-        <ming.lei@redhat.com>, <bvanassche@acm.org>,
-        <dgilbert@interlog.com>, <paolo.valente@linaro.org>,
-        <hare@suse.de>, <hch@lst.de>, <sumit.saxena@broadcom.com>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <esc.storagedev@microsemi.com>,
-        <megaraidlinux.pdl@broadcom.com>, <chenxiang66@hisilicon.com>,
-        <luojiaxing@huawei.com>
-Subject: Re: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for
- SCSI HBAs
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1imcdw6ni.fsf@ca-mkp.ca.oracle.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-        <df6a3bd3-a89e-5f2f-ece1-a12ada02b521@kernel.dk>
-        <379ef8a4-5042-926a-b8a0-2d0a684a0e01@huawei.com>
-        <yq1363xbtk7.fsf@ca-mkp.ca.oracle.com>
-        <32def143-911f-e497-662e-a2a41572fe4f@huawei.com>
-Date:   Wed, 16 Sep 2020 21:10:36 -0400
-In-Reply-To: <32def143-911f-e497-662e-a2a41572fe4f@huawei.com> (John Garry's
-        message of "Wed, 16 Sep 2020 08:21:25 +0100")
+        id S1726142AbgIQEcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 00:32:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbgIQEco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 00:32:44 -0400
+Received: from localhost (unknown [136.185.111.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A48D02075E;
+        Thu, 17 Sep 2020 04:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600317163;
+        bh=s17TDe+HqxPv+0W4FH6Ox4FMMt2wi7Eu6ArcbO9bhkA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TurpCaD5gtig9W8PoCYREz2lJlmgzsA58TCSwN/U9l6CiDsM23pwmRXXe85F/LIqF
+         BubWSy4a/0Tg1MSv3gbWEn/WqxrBMcZwO0vPPy/BaLeX0KBU5yzLN5I3gJ+cCpBFdf
+         RoySljMsD8wUqaUX2HZVXfvLCDonq8+ScJRgi/R0=
+Date:   Thu, 17 Sep 2020 10:02:39 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        agross@kernel.org, kishon@ti.com, robh@kernel.org,
+        svarbanov@mm-sol.com, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/5] dt-bindings: phy: qcom,qmp: Document SM8250 PCIe PHY
+ bindings
+Message-ID: <20200917043239.GW2968@vkoul-mobl>
+References: <20200916132000.1850-1-manivannan.sadhasivam@linaro.org>
+ <20200916132000.1850-2-manivannan.sadhasivam@linaro.org>
+ <20200916224541.GF1893@yoga>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170005
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170005
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916224541.GF1893@yoga>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16-09-20, 17:45, Bjorn Andersson wrote:
+> On Wed 16 Sep 08:19 CDT 2020, Manivannan Sadhasivam wrote:
+> 
+> > Document the DT bindings of below PCIe PHY versions used on SM8250:
+> > 
+> > QMP GEN3x1 PHY - 1 lane
+> > QMP GEN3x2 PHY - 2 lanes
+> > QMP Modem PHY - 2 lanes
+> 
+> How about something like "Add the three PCIe PHYs found in SM8250 to the
+> QMP binding"?
 
-John,
+Or add just one compatible sm8250-qmp-pcie and then use number of lanes
+as dt property?
 
-> Have you had a chance to check these outstanding SCSI patches?
->
-> scsi: megaraid_sas: Added support for shared host tagset for cpuhotplug
-> scsi: scsi_debug: Support host tagset
-> scsi: hisi_sas: Switch v3 hw to MQ
-> scsi: core: Show nr_hw_queues in sysfs
-> scsi: Add host and host template flag 'host_tagset'
-
-These look good to me.
-
-Jens, feel free to merge.
-
-Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+> 
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> > index 185cdea9cf81..69b67f79075c 100644
+> > --- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> > +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> > @@ -31,6 +31,9 @@ properties:
+> >        - qcom,sdm845-qmp-usb3-uni-phy
+> >        - qcom,sm8150-qmp-ufs-phy
+> >        - qcom,sm8250-qmp-ufs-phy
+> > +      - qcom,qcom,sm8250-qmp-gen3x1-pcie-phy
+> > +      - qcom,qcom,sm8250-qmp-gen3x2-pcie-phy
+> > +      - qcom,qcom,sm8250-qmp-modem-pcie-phy
+> 
+> One "qcom," should be enough.
+> 
+> >  
+> >    reg:
+> >      items:
+> > @@ -259,6 +262,8 @@ allOf:
+> >              enum:
+> >                - qcom,sdm845-qhp-pcie-phy
+> >                - qcom,sdm845-qmp-pcie-phy
+> > +              - qcom,sm8250-qhp-pcie-phy
+> > +              - qcom,sm8250-qmp-pcie-phy
+> 
+> Adjust these.
+> 
+> Regards,
+> Bjorn
+> 
+> >      then:
+> >        properties:
+> >          clocks:
+> > -- 
+> > 2.17.1
+> > 
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+~Vinod
