@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2855926D88F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947CA26D8A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgIQKMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:12:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25885 "EHLO
+        id S1726554AbgIQKRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:17:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46026 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726614AbgIQKME (ORCPT
+        by vger.kernel.org with ESMTP id S1726180AbgIQKRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:12:04 -0400
+        Thu, 17 Sep 2020 06:17:11 -0400
+X-Greylist: delayed 368 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 06:17:11 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600337524;
+        s=mimecast20190719; t=1600337830;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/Hhy9FvabiDG5Ek4mu3Z7RZKm3yT/cj4T3OHkyQ6r2k=;
-        b=T5smQWIerx3cHxZqLmoocFnur56sPinINIqdmrpa40VqsTgHBSR1HiY6rNYRYYXeaqMMuD
-        fhKiBYiyiSzA1wFKzSxN1XjfEbQoKEd1UG+djmiEDDYtK9mUEbcZEkr0gFF25FcVk2yXa+
-        vnLcRbAa2/4vPPMt5aZlXypXn7F6BLM=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sYHG4V6fy3u/g4UVdawRvlE3KZPiniHhZvdOnhelAps=;
+        b=R1AU/hLUDi/kfh3GEBE7ZcZ6Rb7ITaX04YczHJ4k7ijSHIPWU9Qje8om6YchP0pTsEZDUB
+        MIX+Ca/ifAwf/Xw40vYNGiWHB9KaAJ3hGhh8ERS88p45MmpNeDrwVsrG7Ffy3TmoZo6b2/
+        FBWVDe33LMWzpi2zpZdLeet0YiTjxYU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-1yKMiu0XOV2XoIf9IxiM3g-1; Thu, 17 Sep 2020 06:10:56 -0400
-X-MC-Unique: 1yKMiu0XOV2XoIf9IxiM3g-1
+ us-mta-108-yqSV6GPdOoWRQpRVufXO1Q-1; Thu, 17 Sep 2020 06:10:59 -0400
+X-MC-Unique: yqSV6GPdOoWRQpRVufXO1Q-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BC6664085;
-        Thu, 17 Sep 2020 10:10:54 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4937F801AAB;
+        Thu, 17 Sep 2020 10:10:58 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.35.206.187])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 954451000239;
-        Thu, 17 Sep 2020 10:10:50 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A4218101416F;
+        Thu, 17 Sep 2020 10:10:54 +0000 (UTC)
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     kvm@vger.kernel.org
 Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
@@ -46,37 +48,59 @@ Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
         x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
         linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH v4 0/2] KVM: nSVM: ondemand nested state allocation
-Date:   Thu, 17 Sep 2020 13:10:46 +0300
-Message-Id: <20200917101048.739691-1-mlevitsk@redhat.com>
+Subject: [PATCH v4 1/2] KVM: add request KVM_REQ_OUT_OF_MEMORY
+Date:   Thu, 17 Sep 2020 13:10:47 +0300
+Message-Id: <20200917101048.739691-2-mlevitsk@redhat.com>
+In-Reply-To: <20200917101048.739691-1-mlevitsk@redhat.com>
+References: <20200917101048.739691-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is new version of ondemand nested state allocation.=0D
-=0D
-In this version I dropped the changes to set_efer and instead=0D
-added a new request KVM_REQ_OUT_OF_MEMORY which makes the kvm=0D
-exit to userspace with KVM_EXIT_INTERNAL_ERROR=0D
-=0D
-This request is used in (unlikely) case of memory allocation=0D
-failure.=0D
-=0D
-Maxim Levitsky (2):=0D
-  KVM: add request KVM_REQ_OUT_OF_MEMORY=0D
-  KVM: nSVM: implement ondemand allocation of the nested state=0D
-=0D
- arch/x86/kvm/svm/nested.c | 42 ++++++++++++++++++++++++++++++=0D
- arch/x86/kvm/svm/svm.c    | 54 ++++++++++++++++++++++-----------------=0D
- arch/x86/kvm/svm/svm.h    |  7 +++++=0D
- arch/x86/kvm/x86.c        |  7 +++++=0D
- include/linux/kvm_host.h  |  1 +=0D
- 5 files changed, 87 insertions(+), 24 deletions(-)=0D
-=0D
--- =0D
-2.26.2=0D
-=0D
+This request will be used in rare cases when emulation can't continue
+due to being out of memory, to kill the current VM.
+
+Currently only implemented for x86.
+
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+---
+ arch/x86/kvm/x86.c       | 7 +++++++
+ include/linux/kvm_host.h | 1 +
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 17f4995e80a7e..ea1834dd807f9 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8471,6 +8471,13 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 			kvm_vcpu_update_apicv(vcpu);
+ 		if (kvm_check_request(KVM_REQ_APF_READY, vcpu))
+ 			kvm_check_async_pf_completion(vcpu);
++
++		if (kvm_check_request(KVM_REQ_OUT_OF_MEMORY, vcpu)) {
++			vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
++			vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
++			r = 0;
++			goto out;
++		}
+ 	}
+ 
+ 	if (kvm_check_request(KVM_REQ_EVENT, vcpu) || req_int_win) {
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 05e3c2fb3ef78..487c8ed2e3f88 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -146,6 +146,7 @@ static inline bool is_error_page(struct page *page)
+ #define KVM_REQ_MMU_RELOAD        (1 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
+ #define KVM_REQ_PENDING_TIMER     2
+ #define KVM_REQ_UNHALT            3
++#define KVM_REQ_OUT_OF_MEMORY     4
+ #define KVM_REQUEST_ARCH_BASE     8
+ 
+ #define KVM_ARCH_REQ_FLAGS(nr, flags) ({ \
+-- 
+2.26.2
 
