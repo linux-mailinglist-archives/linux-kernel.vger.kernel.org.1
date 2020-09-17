@@ -2,123 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E1726E0DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0246826E0E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728552AbgIQQhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:37:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728513AbgIQQfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:35:43 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D54420672;
-        Thu, 17 Sep 2020 16:35:39 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 17:35:37 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 25/37] arm64: kasan: Enable in-kernel MTE
-Message-ID: <20200917163536.GE10662@gaia>
-References: <cover.1600204505.git.andreyknvl@google.com>
- <859111cf1d862ce26f094cf14511461c372e5bbc.1600204505.git.andreyknvl@google.com>
+        id S1728583AbgIQQid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:38:33 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:55649 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728439AbgIQQhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:37:25 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id EC4FE51A;
+        Thu, 17 Sep 2020 12:37:06 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 17 Sep 2020 12:37:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=h7SdjkeO3jNCS/5ABpoNoHTBuVI
+        Z3+T7KqCv1t/PuWo=; b=iunaG6uxOLgrPGy5e1t5auTmohTM2aMxt+pmo9zphB0
+        +QetciHJjVU67aEz6qt+EDLFGLhFeV6zFqRYlE6y4GBcxbHarrdRZc2SC3SJepEl
+        v9KQg0skJ3vnwHL1mssEcPvwTEsKYy4cuga4XHo0bCeXrF+bW7SUEg6iwPy58amA
+        G+tgIQUgGF5f49lnM0/pZ5KyOOquD37Mfboopf/DGhsL+ZtQG7LD8QJp8ktUJuG/
+        i4QSbWtrJJZNNuKuREq7QHCW2j5LsIeQMBYA2PccxKliGGAmW7cvDyHZw8tiM4LW
+        a65xwzLRfFpleP+aoLWhKFgvppMe3KodNMx8vRKxgDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=h7Sdjk
+        eO3jNCS/5ABpoNoHTBuVIZ3+T7KqCv1t/PuWo=; b=frqEve+JtHqY12AuwrEwxh
+        HnX+5Y92mJ/21XRmYMhsqQ2L0DeFx/k1Zhdek1+NP7BFjW+hDLa2871RTY2zB8NT
+        VsQyo6NkhsUH2Xr83oM4b3days2UrCrVATFTepf5led3mI8bkO1fE8apAZLdnFj1
+        yua9J2eu109zOm7EPKWw/gENPmzmkz4W3ysbGMsgQaJmuUNN/weDdsubl/m2obc5
+        /O0nFJi+k/orbJWdKsWG1Tlh9Lwe/eqOTdvDTHGKXvXvTG+ipvf5ejYmNOAGoQZw
+        1xJ4LM3L3saUutpggCGyiU8ea0JtilO1dDHYkzjYX99ivfMWBub0EHr87roR40KQ
+        ==
+X-ME-Sender: <xms:sJBjX-IKEuWTVO7Qio1L6WurpElaajG3D7Ydfq3_KtuK2mHVqWKOug>
+    <xme:sJBjX2LKwwoUCoP1ddG7z47ayNpCf3sFd_629ZIJ0Cc5PfawthFNliWbYkZSnZlkj
+    WFVGWcamJ0oury_Xf8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdeggddutdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:sJBjX-uP6QI4ZALAlssAnYzInWG63vVmd-Bq9khQJlvdySn1NwAjvw>
+    <xmx:sJBjXzbVRtCyuBwP07l_AEduK8w922Rx1VgF9lxaybUAD1So8YyEzA>
+    <xmx:sJBjX1YQw-84on2q8v0dku-kcJw-qsIqc-8SK-NjfskYHQwqI0AJyg>
+    <xmx:spBjXyRkBp7WnVSGxiez1mEWwAdlOjDICJUmX_uKGwXllvIRETSfx3W5pog>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 241163280065;
+        Thu, 17 Sep 2020 12:37:04 -0400 (EDT)
+Date:   Thu, 17 Sep 2020 18:37:01 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>, wens@csie.org,
+        paul.kocialkowski@bootlin.com, mchehab@kernel.org,
+        robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 0/5] ARM: dts: sun8i: r40: Enable video decoder
+Message-ID: <20200917163701.vmxbxpaztm4kyduf@gilmour.lan>
+References: <20200825173523.1289379-1-jernej.skrabec@siol.net>
+ <20200827151914.copcle3xjn3ek6p4@gilmour.lan>
+ <e9d108ee-29c8-7a34-16c0-f9fb2b788f25@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wnnnti5ad3adpfz3"
 Content-Disposition: inline
-In-Reply-To: <859111cf1d862ce26f094cf14511461c372e5bbc.1600204505.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e9d108ee-29c8-7a34-16c0-f9fb2b788f25@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:16:07PM +0200, Andrey Konovalov wrote:
-> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-> index 23c326a06b2d..5ba7ac5e9c77 100644
-> --- a/arch/arm64/mm/proc.S
-> +++ b/arch/arm64/mm/proc.S
-> @@ -427,6 +427,10 @@ SYM_FUNC_START(__cpu_setup)
->  	 */
->  	mov_q	x5, MAIR_EL1_SET
->  #ifdef CONFIG_ARM64_MTE
-> +	mte_present	.req	x20
-> +
-> +	mov	mte_present, #0
-> +
->  	/*
->  	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
->  	 * (ID_AA64PFR1_EL1[11:8] > 1).
-> @@ -447,6 +451,8 @@ SYM_FUNC_START(__cpu_setup)
->  	/* clear any pending tag check faults in TFSR*_EL1 */
->  	msr_s	SYS_TFSR_EL1, xzr
->  	msr_s	SYS_TFSRE0_EL1, xzr
-> +
-> +	mov	mte_present, #1
->  1:
->  #endif
->  	msr	mair_el1, x5
-> @@ -485,6 +491,13 @@ SYM_FUNC_START(__cpu_setup)
->  	orr	x10, x10, #TCR_HA		// hardware Access flag update
->  1:
->  #endif	/* CONFIG_ARM64_HW_AFDBM */
-> +#ifdef CONFIG_ARM64_MTE
-> +	/* Update TCR_EL1 if MTE is supported (ID_AA64PFR1_EL1[11:8] > 1) */
-> +	cbz	mte_present, 1f
-> +	orr	x10, x10, #SYS_TCR_EL1_TCMA1
-> +1:
-> +	.unreq	mte_present
-> +#endif
->  	msr	tcr_el1, x10
->  	/*
->  	 * Prepare SCTLR
 
-I'd keep this simpler, no branches or #ifdefs (you can still add the
-.req if you want):
+--wnnnti5ad3adpfz3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-index 23c326a06b2d..a35344754081 100644
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -426,6 +426,7 @@ SYM_FUNC_START(__cpu_setup)
- 	 * Memory region attributes
- 	 */
- 	mov_q	x5, MAIR_EL1_SET
-+	mov	x8, #0
- #ifdef CONFIG_ARM64_MTE
- 	/*
- 	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
-@@ -447,6 +448,9 @@ SYM_FUNC_START(__cpu_setup)
- 	/* clear any pending tag check faults in TFSR*_EL1 */
- 	msr_s	SYS_TFSR_EL1, xzr
- 	msr_s	SYS_TFSRE0_EL1, xzr
-+
-+	/* set the TCR_EL1 bits */
-+	orr	x8, x8, #SYS_TCR_EL1_TCMA1
- 1:
- #endif
- 	msr	mair_el1, x5
-@@ -457,6 +461,7 @@ SYM_FUNC_START(__cpu_setup)
- 	mov_q	x10, TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \
- 			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
- 			TCR_TBI0 | TCR_A1 | TCR_KASAN_FLAGS
-+	orr	x10, x10, x8
- 	tcr_clear_errata_bits x10, x9, x5
- 
- #ifdef CONFIG_ARM64_VA_BITS_52
+On Thu, Sep 17, 2020 at 10:33:39AM +0200, Hans Verkuil wrote:
+> Hi Maxime,
+>=20
+> On 27/08/2020 17:19, Maxime Ripard wrote:
+> > On Tue, Aug 25, 2020 at 07:35:18PM +0200, Jernej Skrabec wrote:
+> >> Allwinner R40 SoC contains video engine very similar to that in A33.
+> >>
+> >> First two patches add system controller nodes and the rest of them
+> >> add support for Cedrus VPU.
+> >>
+> >> Please take a look.
+> >=20
+> > Applied all 5 patches, thanks
+>=20
+> Just to confirm: you've taken patches 3 and 4 as well? If so, then I
+> can mark them as done in patchwork.
 
--- 
-Catalin
+Uh... Yeah, I did, but they were definitely not mine to take... I'm
+sorry, I'll drop them and you can merge totally merge them :)
+
+Maxime
+
+--wnnnti5ad3adpfz3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX2OQrQAKCRDj7w1vZxhR
+xWGiAP44ziQw20tV2YoN0wiBPi77hkH/koRrpfYtnYTwmUEV6AD/euikZFS19Mu7
+DfzMBKBAPCIolO1Cbon5d/3aOTFhmQA=
+=eTc6
+-----END PGP SIGNATURE-----
+
+--wnnnti5ad3adpfz3--
