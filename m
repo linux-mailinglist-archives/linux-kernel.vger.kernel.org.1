@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE8926DE9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116C426DE55
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727717AbgIQOoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41806 "EHLO mail.kernel.org"
+        id S1726827AbgIQOfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:35:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727221AbgIQOk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:40:59 -0400
+        id S1727562AbgIQObv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:31:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5A552075B;
-        Thu, 17 Sep 2020 14:30:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A64A221734;
+        Thu, 17 Sep 2020 14:31:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600353028;
-        bh=mNducYnn6GocnUGx9uKnVpsRRB0lS8iJe/gIbbhHKXo=;
+        s=default; t=1600353085;
+        bh=RQzGDkJ16DWM4LpJPhCsDdniy1/GiubLcOMEypN4wUU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zfeTIXW10NFEKUDSsvRvgfT+v9X8the3QrZhPj74dBUhnVXwhIxW06ctF2AjcO6Pj
-         l4ouLnKeAkezIcfEH2astmXgqd6TH/67hor2RgZ6z5Enf72so+KRrxZ62yLFq6aZr+
-         4/5XcwRfk33D2ph+XU4ilPdd66X2t2Taus23Ali4=
-Date:   Thu, 17 Sep 2020 16:31:00 +0200
+        b=EaYrI8f9M6QiIu2YOvkJT8CafGG1cUX5DrAcglPoYbeZy9tb+oFLGubPx64RVro9U
+         8CSkOd9cTkrtNcMSNoyxUKRgl796ub4LVyK+z7e71/dbjyB+g7kB8uk0vwvpCoiO49
+         b0RW/ZFUZKC8vUqLfttvP2CwkYEY1jqfaxMUpq5o=
+Date:   Thu, 17 Sep 2020 16:31:57 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/78] 4.19.146-rc1 review
-Message-ID: <20200917143100.GA3941575@kroah.com>
-References: <20200915140633.552502750@linuxfoundation.org>
- <20200916082042.GE32537@duo.ucw.cz>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
+Message-ID: <20200917143157.GD3941575@kroah.com>
+References: <20200915140653.610388773@linuxfoundation.org>
+ <CA+G9fYtQ6w-J46aRY9i5CAfOq0jMAxpxYv-JXibeXf-tnDLDzQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200916082042.GE32537@duo.ucw.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYtQ6w-J46aRY9i5CAfOq0jMAxpxYv-JXibeXf-tnDLDzQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:20:42AM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > This is the start of the stable review cycle for the 4.19.146 release.
-> > There are 78 patches in this series, all will be posted as a response
+On Wed, Sep 16, 2020 at 04:02:57PM +0530, Naresh Kamboju wrote:
+> On Tue, 15 Sep 2020 at 19:55, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.8.10 release.
+> > There are 177 patches in this series, all will be posted as a response
 > > to this one.  If anyone has any issues with these being applied, please
 > > let me know.
-> > 
+> >
 > > Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
 > > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> >
 > 
-> CIP testing did not find any kernel problems:
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 > 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/190209473
-> 
-> (de0-nano failed, but logs reveal it timed out before reaching
-> bootloader; likely board has problems.)
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks for testing.
+Thanks for testing all of these and letting me know.
 
 greg k-h
