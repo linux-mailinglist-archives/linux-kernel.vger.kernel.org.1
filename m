@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C2026DBB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E573F26DBB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgIQMhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726951AbgIQMeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:34:23 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1626A2087D;
-        Thu, 17 Sep 2020 12:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600346034;
-        bh=tdZKh1qLT5/CZgLEYm1IvQYFAkgpFAnpj9CITh0Zkqw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H1VYO8wh+cqUCtIwF8Gg/BZkUMELrZ3utpX5LMxkJmTBAW3S1GIZicW2tVT1t3zpC
-         bM18Uo9l2XCsLNapvssmLb91kGpS4dXeuvJ1AZD5JQBGCrUscMfBtsiIsZVhkZHKj4
-         jaA66+mq3vHtmPSI35KnEWR5fJ9T2LvSvJkiwUYw=
-Date:   Thu, 17 Sep 2020 14:34:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/7] media: usb: uvc: no need to check return value of
- debugfs_create functions
-Message-ID: <20200917123426.GA3595353@kroah.com>
-References: <20200818133608.462514-1-gregkh@linuxfoundation.org>
- <20200818133608.462514-7-gregkh@linuxfoundation.org>
- <20200818234719.GD2360@pendragon.ideasonboard.com>
- <20200917122550.GA5053@pendragon.ideasonboard.com>
+        id S1727011AbgIQMid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726959AbgIQMel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:34:41 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E7BC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:34:39 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so1880618wmi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KyyxODxIBbOj2ahnrjUn6zJncw7bD6W4xO64z4Qh99g=;
+        b=SIkF3wBG49sq64Ru5pxTu9VG4dImtz8k9fpsrVMfspidhbnFEYMBx94X3vmhNH1eAC
+         7mIxW56E1ZejxsAn1uAg3C0pA1PcNfP7Y0BfPq8pRVhZOErrDNqeqA1hd6OjaY+A6GYe
+         D5kd2SHZxEXMWnTQSpQnV85GpM5cAJF2Vy2nqB3eD7OU7b37b1Ng0MSVMRI1nRHRiF/Y
+         AAYQi8FB1uOBQsRk84PG66fV4BqFj6EsB+MN6aqZzr0IR3wXcsiLcvbUTMYoDjNNfglm
+         Gy4Qf/vTFlBfEhgQE8vxPlMaTTRmiYzf0qk/+fJUmltMxOrWqaO56EJZjq9BaVMauJaX
+         lcag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KyyxODxIBbOj2ahnrjUn6zJncw7bD6W4xO64z4Qh99g=;
+        b=WQEyaauNs9ttDl7qSRoQx+P25d0oHBbFzhKI+arSqXt9A5Llbr/H122cJV4hlcO+me
+         rlPQxVTZsd+1/XhWIgBM4pp27GeCyeHtuPhTO4tDb9BopnDdpWcBATC3s68xnlaaDAUz
+         zEXG058El2T5xWtef06o9zpaRWrefP471csCA3NVcxYaGbJc0TsY5pyV0zZOMNIf9t1I
+         A2qUTiTAcGcsBdlGEu2pSmmUhiGqMYqbToyrZZIU4JVr/ePEv3emqyNRIzuNLWM38A+T
+         12I+GUXVKnjYdwjSDwzkANCUV0UQUFCIEqH2z4l5c14NOaV5orq/2rT6lDgwDgIoh1oG
+         vziA==
+X-Gm-Message-State: AOAM531jzZHP2xOF6+l9CQIUfvy5CiQUdmMHjzf5vqrOnE9eDze9/2YT
+        DEww7xKCVP++9cJk7UXaeLutQOdO9yiepA/u
+X-Google-Smtp-Source: ABdhPJwEFBCLLZevIUsDUu0g/lTJZapZPwCZXRvCvVrY0SvomDpvO3vVm7TE7tP/p1BOdm2694u+Mw==
+X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr10190752wmh.71.1600346078370;
+        Thu, 17 Sep 2020 05:34:38 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:9934:ad8d:e364:de32? ([2a01:e34:ed2f:f020:9934:ad8d:e364:de32])
+        by smtp.googlemail.com with ESMTPSA id c16sm9407232wrx.31.2020.09.17.05.34.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 05:34:37 -0700 (PDT)
+Subject: Re: [PATCH v2 0/9] clocksource: sp804: add support for Hisilicon
+ sp804 timer
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Jianguo Chen <chenjianguo3@huawei.com>
+References: <20200912114536.2910-1-thunder.leizhen@huawei.com>
+ <b6bc2ed2-cf83-cca4-d599-ad4f20438349@huawei.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <0af1f6a8-56dd-a60c-7fd9-6a6ac51a6526@linaro.org>
+Date:   Thu, 17 Sep 2020 14:34:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917122550.GA5053@pendragon.ideasonboard.com>
+In-Reply-To: <b6bc2ed2-cf83-cca4-d599-ad4f20438349@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:25:50PM +0300, Laurent Pinchart wrote:
-> Hi Greg,
-> 
-> On Wed, Aug 19, 2020 at 02:47:19AM +0300, Laurent Pinchart wrote:
-> > Hi Greg,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Tue, Aug 18, 2020 at 03:36:08PM +0200, Greg Kroah-Hartman wrote:
-> > > When calling debugfs functions, there is no need to ever check the
-> > > return value.  The function can work or not, but the code logic should
-> > > never do something different based on this.
-> > 
-> > Is there no value in warning the user that something went wrong ? Silent
-> > failures are harder to debug.
-> 
-> Could yous share your opinion about this ?
+On 15/09/2020 03:27, Leizhen (ThunderTown) wrote:
+> Hi, Daniel Lezcano, Thomas Gleixner:
+>   Do you have time to review these patches?
 
-For debugfs, this isn't an issue, what can a user do with something like
-"debugfs isn't working?  What does that mean???"
+Give me a couple of days.
 
-And if we _really_ want warnings like this, it should go into the
-debugfs core, not require this to be done for every debugfs user, right?
 
-debugfs is just there for kernel developers to help debug things, it's
-not a dependancy on any userspace functionality, so if it works or not
-should not be an issue for any user.
 
-Unless that user is a kernel developer of course :)
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-thanks,
-
-greg k-h
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
