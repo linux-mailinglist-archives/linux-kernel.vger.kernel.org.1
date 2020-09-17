@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A9226D02D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DCC26D03A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgIQAsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 20:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
+        id S1726126AbgIQAxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 20:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726169AbgIQAsJ (ORCPT
+        with ESMTP id S1726043AbgIQAxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 20:48:09 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:48:00 EDT
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3CCC061352;
-        Wed, 16 Sep 2020 17:39:52 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsJ5G6swKzB3yN;
-        Thu, 17 Sep 2020 10:39:46 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1600303188;
-        bh=COHpZK0BD0VqQ7amRyqQpQAYRPxhUDHH36Dg3xKyUzE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=WtHyNl5RuVAVzBUi6IiSpYd32cWlj/8QiYwHDQkzF5qZ5lH+RSRxUrqR0jJQRNyIB
-         dd+YPElX28UKWhi0pmBGjBXTiZJ7YYjbFN2MBhDFCciTSOUKrmQqbxiLUnjKh7DvgN
-         i6InX4eNbxk9T6r7TkPxK7VSNrEkPvRSBVAHon5vxyAS8kiOBEMFoU+tQ0b3YHfl7S
-         s3hH28Hm82++uC/v9pTrbcKb96vSqVf1I63KROvk1egNk1a8pCET65h3YcuEKSL4AB
-         N/juH6rjcy5WGx/7h/q8qeCjkB68++E1Jc9hNYP9k8OwNI1eqMG89Dm9xYpSNJyzgu
-         aFozBTXoBW4zw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Robert O'Callahan <rocallahan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kyle Huey <me@kylehuey.com>
-Subject: Re: [REGRESSION] x86/entry: Tracer no longer has opportunity to change the syscall number at entry via orig_ax
-In-Reply-To: <202009141303.08B39E5783@keescook>
-References: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com> <87blj6ifo8.fsf@nanos.tec.linutronix.de> <87a6xzrr89.fsf@mpe.ellerman.id.au> <202009111609.61E7875B3@keescook> <87d02qqfxy.fsf@mpe.ellerman.id.au> <87o8m98rck.fsf@nanos.tec.linutronix.de> <202009141303.08B39E5783@keescook>
-Date:   Thu, 17 Sep 2020 10:39:40 +1000
-Message-ID: <875z8dp777.fsf@mpe.ellerman.id.au>
+        Wed, 16 Sep 2020 20:53:01 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549ADC061353;
+        Wed, 16 Sep 2020 17:45:46 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b22so203566lfs.13;
+        Wed, 16 Sep 2020 17:45:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hhwWIdmoDfeRtla5zf1ymCAqzs41GJNhIs9x0pXt6Mw=;
+        b=YHPv0+IzmbaKgKDSdY0AwJQvcUwj9q/bwOqGnIPsOV7qxVwlBrWutMMObuxwnoLueF
+         puEFawK+WyonzflpzIzD8txJ4sW6AfAtS766xUjnVDqRo5OBQxhM3teLushvd7bVzxEm
+         ekfqHuiNiZKW4fQqq6NYljp7OFx5g9PTyE4+JVEnt6fAs0cHjKpDVxFBMY+VPrAHMlZs
+         YweNUXlUFvvEDJQcomlgpzmZrDZgX7/dqIhcMV0ZOxYq/LFA4HwpgrYkofnPPubKg6T/
+         PfDcB9mZKbmWCaW5APy5nP8C0HtWCwDeUk4G8AeBI+WLze0VuHy8LWaHc2ntBTO+I0XV
+         Yx1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hhwWIdmoDfeRtla5zf1ymCAqzs41GJNhIs9x0pXt6Mw=;
+        b=ODkpsZq95uKZ13Bdm4oY2BGfft6aKMtfRHbCf7Kd4CnmjI8JlpJ5F84irw9rknVLuT
+         SXMfo4pY7/5j7KvaUwytxCeyR05hd6WU+/1J4cyfdVPAAS0pbS/+mf1Z8KrNrr7GMhxr
+         4aJtX9rbdgorrMrlEe9DM6tICUnN+IENEGWrkBB0nO2MPSFN+3KtKzdBFfSYJbOpFYDI
+         hfEOAgVrRxfJ61fcTgKIZCSB1BoT4YPCX+oSHxIF69hsaGea7yZmJusmsBKbfWlmAiM4
+         BtZyypLK/gOugdEZL1Uc6ElFHQBm/OxiakSYh5T+/3APe5OeN22PwmX7w/xSmMkHYyc7
+         XEZg==
+X-Gm-Message-State: AOAM532yUO4DzXkMpoOZb94T4JUerZC6FtCMauc1znZMYSnDaOY4gBHD
+        KtNSPEd6PvB0kNcVS1iY445RKR/BAsSiNcLUcB8=
+X-Google-Smtp-Source: ABdhPJx/Mkxr1F57JCoOl8++VCiAX4t7jqJtnMR64G6EEPr349WzIUeFGskUi6F4dhMtENrhhPIWdl0iuLfkktuIHAE=
+X-Received: by 2002:ac2:4c07:: with SMTP id t7mr7986166lfq.194.1600303544747;
+ Wed, 16 Sep 2020 17:45:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com> <20200916165748.20927-1-alex.dewar90@gmail.com>
+In-Reply-To: <20200916165748.20927-1-alex.dewar90@gmail.com>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Thu, 17 Sep 2020 10:45:33 +1000
+Message-ID: <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: sdio: remove redundant check in for loop
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> On Sun, Sep 13, 2020 at 08:27:23PM +0200, Thomas Gleixner wrote:
->> On Sun, Sep 13 2020 at 17:44, Michael Ellerman wrote:
->> > Kees Cook <keescook@chromium.org> writes:
->> > diff --git a/kernel/entry/common.c b/kernel/entry/common.c
->> > index 18683598edbc..901361e2f8ea 100644
->> > --- a/kernel/entry/common.c
->> > +++ b/kernel/entry/common.c
->> > @@ -60,13 +60,15 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
->> >                         return ret;
->> >         }
->> >  
->> > +       syscall = syscall_get_nr(current, regs);
->> > +
->> >         if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
->> >                 trace_sys_enter(regs, syscall);
->> >  
->> >         syscall_enter_audit(regs, syscall);
->> >  
->> >         /* The above might have changed the syscall number */
->> > -       return ret ? : syscall_get_nr(current, regs);
->> > +       return ret ? : syscall;
->> >  }
->> 
->> Yup, this looks right. Can you please send a proper patch?
+Hi Alex,
+
+On Thu, Sep 17, 2020 at 3:09 AM Alex Dewar <alex.dewar90@gmail.com> wrote:
 >
-> I already did on Friday:
-> https://lore.kernel.org/lkml/20200912005826.586171-1-keescook@chromium.org/
+> The for loop checks whether cur_section is NULL on every iteration, but
+> we know it can never be NULL as there is another check towards the
+> bottom of the loop body. Refactor to avoid this unnecessary check.
+>
+> Also, increment the variable i inline for clarity
 
-Thanks.
+Comments below.
 
-cheers
+> Addresses-Coverity: 1496984 ("Null pointer dereferences)
+> Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
+> v2: refactor in the manner suggested by Saeed
+>
+>  drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
+>  1 file changed, 3 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index 81ddaafb6721..486886c74e6a 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
+>         }
+>
+>         count = 0;
+> -
+> -       for (i = 0; cur_section; i++) {
+> +       i = 0;
+> +       for (; cur_section; cur_section = next_section) {
+
+You can have multiple statements in each section of a for() if you need to, e.g.
+
+for (i = 1; cur_section; cur_section = next_section, i++) {
+
+which means that the increment of i isn't hidden deep in the function body.
+
+
+That said, this function is a mess. Something (approximately) like
+this might be more readable:
+
+prev_end = memregion->start;
+for (i = 0; i < mem_region->section_table.size; i++) {
+    cur_section = &mem_region->section_table.sections[i];
+
+    // fail if prev_end is greater than cur_section->start - message
+from line 2329 and 2294
+    // check section size - from line 2315
+
+    skip_size = cur_section->start - prev_end;
+
+    // check buffer size - from line 2339 - needs to account for the
+skip size too.
+    // fill in the skip size amount - from line 2358 and 2304
+    // ath10k_sdio_read_mem - from line 2346
+
+    prev_end = cur_section->end;
+}
+
+Thanks,
+
+-- 
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
