@@ -2,194 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8AD26E833
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487F326E837
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgIQWUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:20:19 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:50331 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726040AbgIQWUT (ORCPT
+        id S1726055AbgIQWVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgIQWVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:20:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600381218; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=0jhDq/IcXhg9V/FSXaZMIaCtYv4s4UQkBmfvWd7/73c=; b=o4HIqALdtU65Xnesu/sZR2BzCrUsobWORmfUrUZZUlBVXNsBThjQdz1Hml1TL1yZJ+/KJgnA
- 6KgCn6yyDQjq7f7t1r9oD5SjUx/DtL/VVnOfAMfTdLR17nYqJryHIisMfXoUkqSeST1ktOtm
- JGB+KSYCONr6wDKLldnR5dqWV/E=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f63e108fda7475cca660796 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 22:19:52
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 83B1CC433FF; Thu, 17 Sep 2020 22:19:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 535A3C433CA;
-        Thu, 17 Sep 2020 22:19:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 535A3C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v1 3/3] bus: mhi: core: Introduce sysfs entries for MHI
-Date:   Thu, 17 Sep 2020 15:19:36 -0700
-Message-Id: <1600381176-37604-4-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600381176-37604-1-git-send-email-bbhatt@codeaurora.org>
-References: <1600381176-37604-1-git-send-email-bbhatt@codeaurora.org>
+        Thu, 17 Sep 2020 18:21:49 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DC5C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:21:49 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x18so1877851pll.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9DPIpM4LW2/8oZNQwQFTEuyuoQvJ/tNgC5mR+LCoUuA=;
+        b=ciFNzf+hWaaGAKU6nkGzF1KKLKx3MJ70q8Ni0LPweKihXGvpq6moFu4zD/nw+2Lsu2
+         hG7z5Vbe2Fr+pZbcXaXgeQOOcwOSHXdKYdGRyAb3lYBBjHrdV/XrZmxlXYGyh8CQWs4j
+         ANuu2VhQPJzyzwyw6dJ3li/I9SmdUgDjG3jzY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9DPIpM4LW2/8oZNQwQFTEuyuoQvJ/tNgC5mR+LCoUuA=;
+        b=ZobLDJagSoWqreuRifk5XPlB+IKsHmyPszMUDbFjzkUh6iW0atwtzirdNKCTsv/u+z
+         06SqD9gWsnqSwvXyigZPEFf6muSuidNKIJ3ya8418ll82z1S+WR6N9YhETHkqjK5I8U2
+         HHoFa2pkPWa4dGlaW/LbwnW1TpcMnzo/dTehHsWobNZBsJEFS/phXCNtb0J3D+RUKIly
+         CeDpvCjHNM2RscOJunRfjiFcoFbNE0P32WAqpXbeWr3nSQxxRNLE0NvaMoVHR3ZpG8hr
+         dXKxOQkhctcZTNLshU+jswirbL9qIFWh6yF/RGdGwjJA9h6PwUs95CAQ9+qqHiGDN8ZC
+         /6rQ==
+X-Gm-Message-State: AOAM533zhOpztQEeJ7KkjjRNWryVArFBU48d+RzX9x/BN3zTvIJE91ha
+        lYUDC/bahl+dM3TWhLcfoE2RKA==
+X-Google-Smtp-Source: ABdhPJwbTUDkLG7CpK2l4q0THRgaxSIQsaFQZa0MeaaJn7k/XwhUlLp3dEUsHAcW8oF24GhOQ/5eBg==
+X-Received: by 2002:a17:902:c212:b029:d1:e629:92f4 with SMTP id 18-20020a170902c212b02900d1e62992f4mr12676668pll.75.1600381309149;
+        Thu, 17 Sep 2020 15:21:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m5sm627685pjn.19.2020.09.17.15.21.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 15:21:48 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 15:21:47 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     George Popescu <georgepope@google.com>
+Cc:     Marco Elver <elver@google.com>, maz@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        David Brazdil <dbrazdil@google.com>, broonie@kernel.org,
+        Fangrui Song <maskray@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH 06/14] Fix CFLAGS for UBSAN_BOUNDS on Clang
+Message-ID: <202009171519.951D26DB@keescook>
+References: <20200915102458.GA1650630@google.com>
+ <CANpmjNOTcS_vvZ1swh1iHYaRbTvGKnPAe4Q2DpR1MGhk_oZDeA@mail.gmail.com>
+ <20200915120105.GA2294884@google.com>
+ <CANpmjNPpq7LfTHYesz2wTVw6Pqv0FQ2gc-vmSB6Mdov+XWPZiw@mail.gmail.com>
+ <20200916074027.GA2946587@google.com>
+ <CANpmjNMT9-a8qKZSvGWBPAb9x9y1DkrZMSvHGq++_TcEv=7AuA@mail.gmail.com>
+ <20200916121401.GA3362356@google.com>
+ <20200916134029.GA1146904@elver.google.com>
+ <CANpmjNOfgeR0zpL-4AtOt0FL56BFZ_sud-mR3CrYB7OCMg0PaA@mail.gmail.com>
+ <20200917113540.GA1742660@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917113540.GA1742660@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce sysfs entries to enable userspace clients the ability to read
-the serial number and the OEM PK Hash values obtained from BHI. OEMs
-need to read these device-specific hardware information values through
-userspace for factory testing purposes and cannot be exposed via degbufs
-as it may remain disabled for performance reasons. Also, update the
-documentation for ABI to include these entries.
+On Thu, Sep 17, 2020 at 11:35:40AM +0000, George Popescu wrote:
+> On Thu, Sep 17, 2020 at 08:37:07AM +0200, Marco Elver wrote:
+> > So, it seems that local-bounds can still catch some rare OOB accesses,
+> > where KASAN fails to catch it because the access might skip over the
+> > redzone.
+> > 
+> > The other more interesting bit of history is that
+> > -fsanitize=local-bounds used to be -fbounds-checking, and meant for
+> > production use as a hardening feature:
+> > http://lists.llvm.org/pipermail/llvm-dev/2012-May/049972.html
+> > 
+> > And local-bounds just does not behave like any other sanitizer as a
+> > result, it just traps. The fact that it's enabled via
+> > -fsanitize=local-bounds (or just bounds) but hasn't much changed in
+> > behaviour is a little unfortunate.
+> 
+> > I suppose there are 3 options:
+> > 
+> > 1. George implements trap handling somehow. Is this feasible? If not,
+> > why not? Maybe that should also have been explained in the commit
+> > message.
+> > 
+> > 2. Only enable -fsanitize=local-bounds if UBSAN_TRAP was selected, at
+> > least for as long as Clang traps for local-bounds. I think this makes
+> > sense either way, because if we do not expect UBSAN to trap, it really
+> > should not trap!
+> > 
+> > 3. Change the compiler. As always, this will take a while to implement
+> > and then to reach whoever should have that updated compiler.
+> > 
+> > Preferences?
+> Considering of what you said above, I find option 2 the most elegant.
+> The first one doesn't sound doable for the moment, also the third.
+> I will edit this patch considering your comments and resend it to the
+> list.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- Documentation/ABI/stable/sysfs-bus-mhi | 21 ++++++++++++++
- MAINTAINERS                            |  1 +
- drivers/bus/mhi/core/init.c            | 53 ++++++++++++++++++++++++++++++++++
- 3 files changed, 75 insertions(+)
- create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+I have a slightly different suggestion that is very nearly #2 above:
+split local-bounds into a separate CONFIG that requires UBSAN_TRAP, and
+then carefully document both:
+- what does it catch that "bounds" doesn't
+- why it only operates in trap mode
 
-diff --git a/Documentation/ABI/stable/sysfs-bus-mhi b/Documentation/ABI/stable/sysfs-bus-mhi
-new file mode 100644
-index 0000000..59da56d
---- /dev/null
-+++ b/Documentation/ABI/stable/sysfs-bus-mhi
-@@ -0,0 +1,21 @@
-+What:		/sys/bus/mhi/devices/.../serialnumber
-+Date:		Aug 2020
-+KernelVersion:	5.10
-+Contact:	Bhaumik Bhatt <bbhatt@codeaurora.org>
-+Description:	The file holds the serial number of the client device obtained
-+		using a BHI (Boot Host Interface) register read after at least
-+		one attempt to power up the device has been done. If read
-+		without having the device power on at least once, the file will
-+		read all 0's.
-+Users:		Any userspace application or clients interested in device info.
-+
-+What:		/sys/bus/mhi/devices/.../oem_pk_hash
-+Date:		Aug 2020
-+KernelVersion:	5.10
-+Contact:	Bhaumik Bhatt <bbhatt@codeaurora.org>
-+Description:	The file holds the OEM PK Hash value of the endpoint device
-+		obtained using a BHI (Boot Host Interface) register read after
-+		at least one attempt to power up the device has been done. If
-+		read without having the device power on at least once, the file
-+		will read all 0's.
-+Users:		Any userspace application or clients interested in device info.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb6..11e7be9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11323,6 +11323,7 @@ M:	Hemant Kumar <hemantk@codeaurora.org>
- L:	linux-arm-msm@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git
-+F:	Documentation/ABI/stable/sysfs-bus-mhi
- F:	Documentation/mhi/
- F:	drivers/bus/mhi/
- F:	include/linux/mhi.h
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 61e5885..1b4161e 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -76,6 +76,56 @@ const char *to_mhi_pm_state_str(enum mhi_pm_state state)
- 	return mhi_pm_state_str[index];
- }
- 
-+static ssize_t serial_number_show(struct device *dev,
-+				  struct device_attribute *attr,
-+				  char *buf)
-+{
-+	struct mhi_device *mhi_dev = to_mhi_device(dev);
-+	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-+
-+	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
-+			mhi_cntrl->serial_number);
-+}
-+static DEVICE_ATTR_RO(serial_number);
-+
-+static ssize_t oem_pk_hash_show(struct device *dev,
-+				struct device_attribute *attr,
-+				char *buf)
-+{
-+	struct mhi_device *mhi_dev = to_mhi_device(dev);
-+	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-+	int i, cnt = 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(mhi_cntrl->oem_pk_hash); i++)
-+		cnt += snprintf(buf + cnt, PAGE_SIZE - cnt,
-+				"OEMPKHASH[%d]: 0x%x\n", i,
-+				mhi_cntrl->oem_pk_hash[i]);
-+
-+	return cnt;
-+}
-+static DEVICE_ATTR_RO(oem_pk_hash);
-+
-+static struct attribute *mhi_sysfs_attrs[] = {
-+	&dev_attr_serial_number.attr,
-+	&dev_attr_oem_pk_hash.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group mhi_sysfs_group = {
-+	.attrs = mhi_sysfs_attrs,
-+};
-+
-+static int mhi_create_sysfs(struct mhi_controller *mhi_cntrl)
-+{
-+	return sysfs_create_group(&mhi_cntrl->mhi_dev->dev.kobj,
-+				  &mhi_sysfs_group);
-+}
-+
-+static void mhi_destroy_sysfs(struct mhi_controller *mhi_cntrl)
-+{
-+	sysfs_remove_group(&mhi_cntrl->mhi_dev->dev.kobj, &mhi_sysfs_group);
-+}
-+
- /* MHI protocol requires the transfer ring to be aligned with ring length */
- static int mhi_alloc_aligned_ring(struct mhi_controller *mhi_cntrl,
- 				  struct mhi_ring *ring,
-@@ -917,6 +967,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
- 	mhi_cntrl->mhi_dev = mhi_dev;
- 
- 	mhi_create_debugfs(mhi_cntrl);
-+	if (mhi_create_sysfs(mhi_cntrl))
-+		dev_err(mhi_cntrl->cntrl_dev, "Failed to create sysfs entries\n");
- 
- 	return 0;
- 
-@@ -940,6 +992,7 @@ void mhi_unregister_controller(struct mhi_controller *mhi_cntrl)
- 	struct mhi_chan *mhi_chan = mhi_cntrl->mhi_chan;
- 	unsigned int i;
- 
-+	mhi_destroy_sysfs(mhi_cntrl);
- 	mhi_destroy_debugfs(mhi_cntrl);
- 
- 	kfree(mhi_cntrl->mhi_cmd);
+The rationale I have is that I don't like the coverage of some
+mitigation or detection to "silently" vary between builds. e.g. someone
+would build with/without UBSAN_TRAP and end up with unexpectedly
+different coverage. I'd rather there be a separate CONFIG that appears.
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Kees Cook
