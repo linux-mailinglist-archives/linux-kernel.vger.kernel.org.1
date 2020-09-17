@@ -2,136 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF9326D9FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A46326D9F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbgIQLTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        id S1726672AbgIQLTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726241AbgIQLNp (ORCPT
+        with ESMTP id S1726612AbgIQLRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:13:45 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39BEC061788;
-        Thu, 17 Sep 2020 04:13:24 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x14so1594597wrl.12;
-        Thu, 17 Sep 2020 04:13:24 -0700 (PDT)
+        Thu, 17 Sep 2020 07:17:00 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64BCC06174A;
+        Thu, 17 Sep 2020 04:15:39 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id s14so2712601pju.1;
+        Thu, 17 Sep 2020 04:15:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Nt7n7JGDESks5UU38AjyadhzQHGiDeVLbF1cBRJfheE=;
-        b=bHRuTsVo+POh92t4Xme7cL9+MvYsfa7QSHOja6EzFdMma+VIOuYC6qnbX8rMdXnJN5
-         tWB8iXQNq/Kta7ZsL6C9pB+W5Qy2iA7aoKpPCYRwksWIJdpqdKmHu0m5kwcFagL9TT+C
-         JoI/zmflZ9ernYOgTrA2vTpeeCiykO7eFdL3uySj3uYkJByGGBW3pueqfMY9pDhiepXY
-         wG6Y83TsCzgNR5CFCi/omYKSLckO9rW2eCoaC0BoNirNyPJ5XoVliNXqOc6uu+r7/gLv
-         8zXYAfUsa/2BMuKM2jRa6w30vnY0SjJB9MizY2/mzVjol2UCuA3y11fATOYAGKaT0V2i
-         eYKg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding:content-language:thread-index;
+        bh=4noCCvhHiWRpb6TjMZphz0uFHYVs2DO7cT34uO/rcGg=;
+        b=cG57dsITXmzFEQQeTWICIuup8V6fCYrpMvJBITPzwEqQ538ZWyI7U4VO4+5z+CeldQ
+         mWfRi+PxCuYvlNSGfzbH6k94n+NTHU46RXrmZXMtzYl190HPkf+DdDtPK6OWwta2Xpsk
+         Xdvh4omCOgh5/KN/KFABIE1oQ1LPlxdF9/MkIWe7MZODEqEwrUHDCktv5iyUWm4929n2
+         8qYO1ih466sfAqc5g6qmpopYQAG7KrFAk3bvQVxnMLeC/tRxDrxdIHuVyFggytydQXEa
+         M2yKPimRUhoWOI2j6+aTtapxE45dxLRsc5vtJud13gDmLfBG7IQGoiwdP2i0wMgBE9t4
+         Ivwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Nt7n7JGDESks5UU38AjyadhzQHGiDeVLbF1cBRJfheE=;
-        b=gVG35KYuY4E4Jg/ggVUw6DNDMwjCwEGInvCb26+WnrCj195yPtdvr4KuePvNQYI/tc
-         sh+3jM5W2ROpGVCfTUAOvH7EpJFBj4jqJ/6KYDo8l9RpTe3FNGz4ir3lTOMm1i8GlM/R
-         LtwjkwGSs6fgXfwfyuOt9hxUpwTXXMx9lqGYuCXQF+attAcNjw/PaH5UWj9nTzIPUr1M
-         n6Sot82r4tRy/Sg04Zz9W2R+cCn6PmAoel1Pl+blTJhidWgtMpkCeVeZ6LI5iF8YcPKe
-         Hsib3Tpyu2uq5oq47JEFW0B24SXoBIfmPYbF323LVgwsKG4LSnpV4xK/PRZwpVaKQZyR
-         75Qw==
-X-Gm-Message-State: AOAM532eAhNhd6KlZ2SdBHwc9UVJd24l85ioOR3XmeGOb4eTXWpWn8uo
-        ZnfADrGg91S3X4qwt42Qjnc=
-X-Google-Smtp-Source: ABdhPJzNG9RMf/CqtZbx6j49UbPE/EFJ1dRmob3JO3cojh1nlUXoSX5IBSf/lejj/vTtvBX0T69lmQ==
-X-Received: by 2002:adf:f586:: with SMTP id f6mr31442811wro.299.1600341203527;
-        Thu, 17 Sep 2020 04:13:23 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id a81sm11327645wmf.32.2020.09.17.04.13.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 04:13:22 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 13:13:20 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 03/34] i2c: tegra: Handle potential error of
- tegra_i2c_flush_fifos()
-Message-ID: <20200917111320.GO3515672@ulmo>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-4-digetx@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding:content-language:thread-index;
+        bh=4noCCvhHiWRpb6TjMZphz0uFHYVs2DO7cT34uO/rcGg=;
+        b=V9YzTlO/Gzl7oqqsOwoxGoVZBvIICAyGWDoyQm4Dr9PPp+syXFKc7Dh4tKzwfLK9qU
+         qx2k9ccm5f0Zo2vZyHRqcSDbB6bWZFE2tE6xie2b008v0AHokCt5z2E9jshTJs3OIigP
+         HOKJ7HRcp1xhNxanC89bUHtRxTSr4BwK+7mRBR5yL1XClGRF1F8A+qqVDYyqm6RLy3xS
+         aATc0msyevHT3BnKl2/69wIGK6umuCiAL68pLN3NErRFLFilWiM74wfOg+YvB1hFkOyP
+         MAiGjm/iDlI0r0pBD6btVdfKmEwfWrimFKUwoyd+jEenr6aRgPCk+6Y28Dov6cmQWX6i
+         +YDg==
+X-Gm-Message-State: AOAM5333JIhjXhHvri415j61+EMNa6rlPulrnoyY94uKXt8Yif8tPawQ
+        bruL2Lj4i1qQLFlIodgVmfb/HUYA3Gp4ng==
+X-Google-Smtp-Source: ABdhPJzFOPuP1BfrSr+OQ4t9dPFBEES+txnxCNpQ+4hbxUbrogVoY7U9il9c0uVVVcMZVsPkP+MBGQ==
+X-Received: by 2002:a17:90a:5b04:: with SMTP id o4mr7804325pji.128.1600341339047;
+        Thu, 17 Sep 2020 04:15:39 -0700 (PDT)
+Received: from DESKTOPIUKEMQD ([43.224.245.179])
+        by smtp.gmail.com with ESMTPSA id l123sm17296626pgl.24.2020.09.17.04.15.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Sep 2020 04:15:38 -0700 (PDT)
+From:   "zhuguangqing83" <zhuguangqing83@gmail.com>
+To:     "'Daniel Lezcano'" <daniel.lezcano@linaro.org>,
+        <amit.kachhap@gmail.com>, <viresh.kumar@linaro.org>,
+        <javi.merino@kernel.org>, <rui.zhang@intel.com>,
+        <amitk@kernel.org>, <zhuguangqing@xiaomi.com>
+Cc:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] thermal/drivers/cpuidle_cooling: Change the set_cur_state function
+Date:   Thu, 17 Sep 2020 19:15:32 +0800
+Message-ID: <19e301d68ce3$de5f9840$9b1ec8c0$@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IpgPcFyQO6wM49Um"
-Content-Disposition: inline
-In-Reply-To: <20200908224006.25636-4-digetx@gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: zh-cn
+Thread-Index: AdaM49uODbRjhj1+TV+U8HtXWehl5A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---IpgPcFyQO6wM49Um
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 09, 2020 at 01:39:35AM +0300, Dmitry Osipenko wrote:
-> Technically the tegra_i2c_flush_fifos() may fail and transfer should be
-> aborted in this case, but this shouldn't ever happen in practice unless
-> there is a bug somewhere in the driver. Let's add the error check just
-> for completeness.
+> > From: zhuguangqing <zhuguangqing@xiaomi.com>
+> >
+> > In the function cpuidle_cooling_set_cur_state(), if current_state is
+> > not equal to state and both current_state and state are greater than
+> > 0(scene 4 as follows), then maybe it should stop->start or restart
+> > idle_inject.
 >=20
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-
-Reviewed-by: Thierry Reding <treding@nvidia.com>
-
-> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegr=
-a.c
-> index 4e7d0eec0dd3..88d6e7bb14a2 100644
-> --- a/drivers/i2c/busses/i2c-tegra.c
-> +++ b/drivers/i2c/busses/i2c-tegra.c
-> @@ -1177,7 +1177,9 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev =
-*i2c_dev,
->  	bool dma;
->  	u16 xfer_time =3D 100;
-> =20
-> -	tegra_i2c_flush_fifos(i2c_dev);
-> +	err =3D tegra_i2c_flush_fifos(i2c_dev);
-> +	if (err)
-> +		return err;
-> =20
->  	i2c_dev->msg_buf =3D msg->buf;
->  	i2c_dev->msg_buf_remaining =3D msg->len;
-> --=20
-> 2.27.0
+> Sorry, I don't get it.
+>=20
+> It is an update of the state, why do we need to restart the idle
+> injection ? The state change will be automatically take into account =
+by
+> the idle injection code at the new injection cycle.
 >=20
 
---IpgPcFyQO6wM49Um
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks for your comments.
 
------BEGIN PGP SIGNATURE-----
+For example, we call cpuidle_cooling_set_cur_state() twice, first time
+the input parameter state is 20, second time the input parameter state
+is 30.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jRNAACgkQ3SOs138+
-s6H/qA//UB+x04pnr7VzSdeexRXpI67j12uMWfv5MzDAIRhA6inj5p+WT2/fQRTh
-vJo4OxgaoZzl9H6L1GkkWlReqGs9K48wyAR8tILOVW5JCGSM5aFs31EXQgS8gv1v
-8C87sbg2kO/lsi+bne7gemCGa7MERqOmLgMPfMCkkT5ZpAffJd6yDEOfU23vsexr
-bhGQT0vHCtIaHTCzLaav1R7kVQndERsxbaDrpNWdxruLhbJeX0IDAeP1jZNPZdla
-DHjHZRe0M7fFcZCKyxql66YuElAHr79JS12C2RbdT5lPHxT46F+2ILk3kbITBSBx
-ERN5m/xD5XdGuRPB3DERqI/0bMio77htYnLVnUQm+aq2Dsg4SHnhkdEo4nc5pNtm
-fyUMm451j5ymrunVZGdIcdMGw8DPH6vz891RRzAMwfisxOHBXlmfjbsj+Hr1FRJP
-YaonB4v3TwUpWxAqZr/8vR6XgzYcJjktf78n4jbZ2twKKVj0iV3Aw+9w2uNAfc3a
-9S/rP4x4JbETGySejOqdI7WKq1PVdGhjJhYWR1vb1Jcq3Rx1kX2DqhW5luTOfrWG
-4PwcX6XLCP6nMLWjLLUgRD9FmQ/IeTgGdc5BK0VUcRZcsT7D4FdrzgmoKkQlbuPI
-QXSM1Uo181EuQ9aLtc7g9IlIiTSosHqnuh/FhQ5ZTDm7H4WXSQU=
-=TlkS
------END PGP SIGNATURE-----
+In current code, in the second call of cpuidle_cooling_set_cur_state(),
+current_state =3D=3D 20, state =3D=3D 30, then "if (current_state =3D=3D =
+0 &&
+state > 0)" is not satisfied, "else if (current_state > 0 && !state)"
+is not satisfied either, so we just update idle_cdev->state to 30 and
+idle_inject_set_duration to new injection cycle=EF=BC=8Cbut we do not =
+call
+idle injection code.
 
---IpgPcFyQO6wM49Um--
+In the example mentioned above, we should call idle injection code. If
+idle_inject_start() takes into account by the idle injection code at
+the new injection cycle, then just calling idle_inject_start() is ok.
+Otherwise, we need a restart or stop->start process to execute idle
+injection code at the new state 30.
+
+> > The scenes changed is as follows,
+> >
+> > scene    current_state    state    action
+> >  1              0          >0       start
+> >  2              0          0        do nothing
+> >  3              >0         0        stop
+> >  4        >0 && !=3Dstate    >0       stop->start or restart
+> >  5        >0 && =3D=3Dstate    >0       do nothing
+> >
+> > Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+> > ---
+> >  drivers/thermal/cpuidle_cooling.c | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/thermal/cpuidle_cooling.c
+> b/drivers/thermal/cpuidle_cooling.c
+> > index 78e3e8238116..868919ad3dda 100644
+> > --- a/drivers/thermal/cpuidle_cooling.c
+> > +++ b/drivers/thermal/cpuidle_cooling.c
+> > @@ -113,7 +113,7 @@ static int cpuidle_cooling_get_cur_state(struct
+> > thermal_cooling_device *cdev,
+> >  /**
+> >   * cpuidle_cooling_set_cur_state - Set the current cooling state
+> >   * @cdev: the thermal cooling device
+> > - * @state: the target state
+> > + * @state: the target state, max value is 100
+> >   *
+> >   * The function checks first if we are initiating the mitigation =
+which
+> >   * in turn wakes up all the idle injection tasks belonging to the =
+idle
+> > @@ -130,6 +130,9 @@ static int cpuidle_cooling_set_cur_state(struct
+> > thermal_cooling_device *cdev,
+> >  	unsigned long current_state =3D idle_cdev->state;
+> >  	unsigned int runtime_us, idle_duration_us;
+> >
+> > +	if (state > 100 || current_state =3D=3D state)
+> > +		return 0;
+> > +
+> >  	idle_cdev->state =3D state;
+> >
+> >  	idle_inject_get_duration(ii_dev, &runtime_us, &idle_duration_us);
+> > @@ -140,8 +143,11 @@ static int cpuidle_cooling_set_cur_state(struct
+> > thermal_cooling_device *cdev,
+> >
+> >  	if (current_state =3D=3D 0 && state > 0) {
+> >  		idle_inject_start(ii_dev);
+> > -	} else if (current_state > 0 && !state)  {
+> > +	} else if (current_state > 0 && !state) {
+> >  		idle_inject_stop(ii_dev);
+> > +	} else {
+> > +		idle_inject_stop(ii_dev);
+> > +		idle_inject_start(ii_dev);
+> >  	}
+> >
+> >  	return 0;
+> >
+>=20
+>=20
+> --
+> <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for =
+ARM SoCs
+>=20
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
+
