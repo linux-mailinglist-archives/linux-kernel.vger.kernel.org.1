@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA8D26D5CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5E226D5AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgIQIJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
+        id S1726479AbgIQIHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726450AbgIQIGh (ORCPT
+        with ESMTP id S1726350AbgIQIGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:06:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EA6C061756;
-        Thu, 17 Sep 2020 01:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lZgl1cIMN7+DBJKNz3wSb8COgVIR6YozfdX3tuODUOg=; b=BRAMO6phbmsLLmlUPGW2ypxOzy
-        B2pTmY7ToP8X4oer6pk8fWW4WJHDB8FJE7wQTh934hJpnaBYGSx9L8bOsZ6gOJImuMFkmn/8ATeR5
-        cDE8Xv6ZwRBN+WNAuyZipd4qpJncjr5xegrovLr12RBIluj4srVVym60qaiaclSA6GQ9MajHnmUpU
-        72dum/t/XeKM6FLV62FXSiY2JE21w0C+P4yW8tQX6kk0Rg5wNgwezUiFEe5J3jSLrTuJfZMyuqfvv
-        Y3sIjy0nbzcXoZUQmhyCoo6KwbRgTZt58b/F74gJrR1Aob+kcKgHSd/vZVRTeC3iqMuU9lS9PdZo/
-        mVHD0VKA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIouV-0007yk-R9; Thu, 17 Sep 2020 08:04:55 +0000
-Date:   Thu, 17 Sep 2020 09:04:55 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, willy@infradead.org,
-        minlei@redhat.com
-Subject: Re: [PATCH] iomap: Fix the write_count in iomap_add_to_ioend().
-Message-ID: <20200917080455.GY26262@infradead.org>
-References: <20200821215358.GG7941@dread.disaster.area>
- <20200822131312.GA17997@infradead.org>
- <20200824142823.GA295033@bfoster>
- <20200824150417.GA12258@infradead.org>
- <20200824154841.GB295033@bfoster>
- <20200825004203.GJ12131@dread.disaster.area>
- <20200825144917.GA321765@bfoster>
- <20200916001242.GE7955@magnolia>
- <20200916084510.GA30815@infradead.org>
- <20200916130714.GA1681377@bfoster>
+        Thu, 17 Sep 2020 04:06:35 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F38C061788
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:06:19 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id lo4so1961897ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y5BAoQ8Ga3wPT4OqKnKaprIGJrT/HusINmypTex/K/Y=;
+        b=fykaRfQxvrMFJBznzJC/4DXMvQdeEBXRCs0ipScrz7+TPQLj/PDg3NN+YFiRbyaU7B
+         VJO+L2D9In6sycTN85X+zrnOPiWVZ33kF9HGFGbrlfbnwBg0dIdBOWuC8cNxDwuihD+J
+         P4nRreyyL/zIRM0SJn02HVctVDiqEtYYyR9aenjUWScNfPljCalUFsOnwBCrcCH5quHp
+         avU/HWv8vqjAsxTfDotKNqdqFIskXaAuxTC27+MdJAUeOCqeE5k1UsIomEze3gkAj2b5
+         JGnjXp1o5yfQLIp4yFsLPzI+JNF8wTuvjEWgyYgf0V53kg0zkpIL/tM6lSUzO6kwWews
+         MoMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y5BAoQ8Ga3wPT4OqKnKaprIGJrT/HusINmypTex/K/Y=;
+        b=jXdyj3cQtYy9e9POW2fPWrhkcs24Qw0Xrh5kepThyJ2gu2Lk/TWiBszx1cJbRPw1OG
+         zB7nO3xW6429cw9junZp4NSAlXbbkLs7mIlBXNe8E1FgGtDLqYyngRxLYgYir4F/Uo84
+         EzkxcOBegFiF73WYHcLksOQC0XzP9JrfPDvUk8fjGZYfHzwh8yI/epNkBYlC7NH78EQL
+         QE5utrkUvUy8Yt2KE88NgiE+rUybE+/0kF0ipYQvZRT+Q8ejVoLYQZLGRmwz2m7Hm2lo
+         jhbe+lw6d++qKbGw3E6JpkLKWrVKrfeXG5Fclj10rjHU9QRopgVU/OsWl3P0iT0N0L96
+         35hg==
+X-Gm-Message-State: AOAM531235Qt2ryWPgyykbqUkIGX82QYeIkcldl+UNTQ8llOwpR7hydJ
+        Sg4nmKVybnNmjTeZabTuPd/uVP8fEGygpjqxXbVIoA==
+X-Google-Smtp-Source: ABdhPJyVrvKr9O4Mdmci3LL1u8dOErH3YZeH/3QVImK3nZcr6/ha1wPAfWTKAntu/g6l2IcYVH8rCrQQSXatqi0ubnM=
+X-Received: by 2002:a17:906:7489:: with SMTP id e9mr28986969ejl.154.1600329978090;
+ Thu, 17 Sep 2020 01:06:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916130714.GA1681377@bfoster>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200916170933.20302-1-vadym.kochan@plvision.eu> <20200916170933.20302-2-vadym.kochan@plvision.eu>
+In-Reply-To: <20200916170933.20302-2-vadym.kochan@plvision.eu>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 17 Sep 2020 10:06:07 +0200
+Message-ID: <CAMpxmJXehV1R7FdgefxWL3aG9dZvtO1SQJdhL4MjDDbuGtuMhA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] eeprom: at24: set type id as EEPROM
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 09:07:14AM -0400, Brian Foster wrote:
-> Dave described the main purpose earlier in this thread [1]. The initial
-> motivation is that we've had downstream reports of soft lockup problems
-> in writeback bio completion down in the bio -> bvec loop of
-> iomap_finish_ioend() that has to finish writeback on each individual
-> page of insanely large bios and/or chains. We've also had an upstream
-> reports of a similar problem on linux-xfs [2].
-> 
-> The magic number itself was just pulled out of a hat. I picked it
-> because it seemed conservative enough to still allow large contiguous
-> bios (1GB w/ 4k pages) while hopefully preventing I/O completion
-> problems, but was hoping for some feedback on that bit if the general
-> approach was acceptable. I was also waiting for some feedback on either
-> of the two users who reported the problem but I don't think I've heard
-> back on that yet...
+On Wed, Sep 16, 2020 at 7:10 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
+>
+> Set type as NVMEM_TYPE_EEPROM to expose this info via
+> sysfs:
+>
+> $ cat /sys/bus/nvmem/devices/{DEVICE}/type
+> EEPROM
+>
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> ---
+>  drivers/misc/eeprom/at24.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index 2591c21b2b5d..800300296c74 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -678,6 +678,7 @@ static int at24_probe(struct i2c_client *client)
+>                         return err;
+>         }
+>
+> +       nvmem_config.type = NVMEM_TYPE_EEPROM;
+>         nvmem_config.name = dev_name(dev);
+>         nvmem_config.dev = dev;
+>         nvmem_config.read_only = !writable;
+> --
+> 2.17.1
+>
 
-I think the saner answer is to always run large completions in the
-workqueue, and add a bunch of cond_resched() calls, rather than
-arbitrarily breaking up the I/O size.
+Queued for v5.10, thanks!
+
+Bartosz
