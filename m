@@ -2,69 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FAE26DB5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6CA26DC1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgIQMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:20:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37994 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726952AbgIQMUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:20:02 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EFCE8EDA883CF9A60A83;
-        Thu, 17 Sep 2020 20:19:57 +0800 (CST)
-Received: from huawei.com (10.175.104.82) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
- 20:19:54 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <ajay.kathat@microchip.com>, <claudiu.beznea@microchip.com>,
-        <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] net: wilc1000: clean up resource in error path of init mon interface
-Date:   Thu, 17 Sep 2020 08:30:19 -0400
-Message-ID: <20200917123019.206382-1-huangguobin4@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727003AbgIQMyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:54:51 -0400
+Received: from mailout06.rmx.de ([94.199.90.92]:53012 "EHLO mailout06.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726993AbgIQMid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:38:33 -0400
+X-Greylist: delayed 1962 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:37:38 EDT
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout06.rmx.de (Postfix) with ESMTPS id 4BsbGy2wP2z9x2S;
+        Thu, 17 Sep 2020 14:04:10 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4BsbGR4pKsz2TTN4;
+        Thu, 17 Sep 2020 14:03:43 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.80) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 17 Sep
+ 2020 14:03:43 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Christian Eggers <ceggers@arri.de>, <stable@vger.kernel.org>
+Subject: [PATCH v2] iio: trigger: Don't use RT priority
+Date:   Thu, 17 Sep 2020 14:03:33 +0200
+Message-ID: <20200917120333.2337-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [192.168.54.80]
+X-RMX-ID: 20200917-140343-4BsbGR4pKsz2TTN4-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wilc_wfi_init_mon_int() forgets to clean up resource when
-register_netdevice() failed. Add the missed call to fix it.
-And the return value of netdev_priv can't be NULL, so remove
-the unnecessary error handling.
+Triggers may raise transactions on slow busses like I2C.  Using the
+original RT priority of a threaded IRQ may prevent other important IRQ
+handlers from being run.
 
-Fixes: 588713006ea4 ("staging: wilc1000: avoid the use of 'wilc_wfi_mon' static variable")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Cc: stable@vger.kernel.org
 ---
- drivers/net/wireless/microchip/wilc1000/mon.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+In my particular case (on a RT kernel), the RT priority of the sysfstrig
+threaded IRQ handler caused (temporarily) raising the prio of a user
+space process which was holding the I2C bus mutex.
 
-diff --git a/drivers/net/wireless/microchip/wilc1000/mon.c b/drivers/net/wireless/microchip/wilc1000/mon.c
-index 358ac8601333..b5a1b65c087c 100644
---- a/drivers/net/wireless/microchip/wilc1000/mon.c
-+++ b/drivers/net/wireless/microchip/wilc1000/mon.c
-@@ -235,11 +235,10 @@ struct net_device *wilc_wfi_init_mon_interface(struct wilc *wl,
+Due to a bug in the i2c-imx driver, this process spent 500 ms in a busy-wait
+loop and prevented all threaded IRQ handlers from being run during this
+time.
+
+v2:
+- Use sched_set_normal() instead of sched_setscheduler_nocheck()
+
+ drivers/iio/industrialio-trigger.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/iio/industrialio-trigger.c b/drivers/iio/industrialio-trigger.c
+index 6f16357fd732..7ed00ad695c7 100644
+--- a/drivers/iio/industrialio-trigger.c
++++ b/drivers/iio/industrialio-trigger.c
+@@ -9,7 +9,10 @@
+ #include <linux/err.h>
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqdesc.h>
+ #include <linux/list.h>
++#include <linux/sched.h>
+ #include <linux/slab.h>
  
- 	if (register_netdevice(wl->monitor_dev)) {
- 		netdev_err(real_dev, "register_netdevice failed\n");
-+		free_netdev(wl->monitor_dev);
- 		return NULL;
- 	}
- 	priv = netdev_priv(wl->monitor_dev);
--	if (!priv)
--		return NULL;
+ #include <linux/iio/iio.h>
+@@ -245,6 +248,7 @@ int iio_trigger_attach_poll_func(struct iio_trigger *trig,
+ 	int ret = 0;
+ 	bool notinuse
+ 		= bitmap_empty(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER);
++	struct irq_desc *irq_desc;
  
- 	priv->real_ndev = real_dev;
+ 	/* Prevent the module from being removed whilst attached to a trigger */
+ 	__module_get(pf->indio_dev->driver_module);
+@@ -264,6 +268,12 @@ int iio_trigger_attach_poll_func(struct iio_trigger *trig,
+ 	if (ret < 0)
+ 		goto out_put_irq;
  
++	/* Triggers may raise transactions on slow busses like I2C.  Using the original RT priority
++	 * of a threaded IRQ may prevent other threaded IRQ handlers from being run.
++	 */
++	irq_desc = irq_to_desc(pf->irq);
++	sched_set_normal(irq_desc->action->thread, 0);
++
+ 	/* Enable trigger in driver */
+ 	if (trig->ops && trig->ops->set_trigger_state && notinuse) {
+ 		ret = trig->ops->set_trigger_state(trig, true);
 -- 
-2.25.1
+Christian Eggers
+Embedded software developer
+
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
 
