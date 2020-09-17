@@ -2,112 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7BD26E6D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6530C26E6DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbgIQUkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:40:03 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34864 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgIQUj6 (ORCPT
+        id S1726537AbgIQUnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbgIQUnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:39:58 -0400
-Received: from [192.168.86.179] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C409120B7178;
-        Thu, 17 Sep 2020 13:39:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C409120B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1600375198;
-        bh=0uKuarWd2xUvr1x37IumPqUrk4kLzvFwkDr+AogX5/Y=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=KRRE7LKzY3YE0Pk3ihtzBxX8cUZwGZZ+XoKv7+GqlSdMN/kmLm0TBiUG7hf8aLLwX
-         0hRMPGdmqkKqllg1JIwmBGgxaYumDS5nzzZJZGhfToQFeWucMyherv2hirhPKKTZO9
-         JNxcUWRZSMbmddG/Zvt7Nj92y88k1RX4gA5WvEqY=
-Subject: Re: [RFC PATCH v7 11/23] sched/fair: core wide cfs task priority
- comparison
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Julien Desfossez <jdesfossez@digitalocean.com>
-Cc:     Joel Fernandes <joelaf@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
-        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
-        Aaron Lu <ziqian.lzq@antfin.com>
-References: <cover.1598643276.git.jdesfossez@digitalocean.com>
- <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
- <20200828212927.GE29142@worktop.programming.kicks-ass.net>
- <8b9f28f2-7f21-b7da-1056-732b6227ea25@linux.microsoft.com>
-Message-ID: <bdc919e5-0bfb-9ec6-b8e7-5a98a30f821c@linux.microsoft.com>
-Date:   Thu, 17 Sep 2020 16:39:53 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Sep 2020 16:43:41 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F22C06174A;
+        Thu, 17 Sep 2020 13:43:40 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id BA277C6366; Thu, 17 Sep 2020 21:43:36 +0100 (BST)
+Date:   Thu, 17 Sep 2020 21:43:36 +0100
+From:   Sean Young <sean@mess.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+ system
+Message-ID: <20200917204336.GA21441@gofer.mess.org>
+References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
+ <20200915093342.GA24139@gofer.mess.org>
+ <DB8PR04MB6795CB9F519D2BD277654B29E63E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <8b9f28f2-7f21-b7da-1056-732b6227ea25@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <DB8PR04MB6795CB9F519D2BD277654B29E63E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Joakim,
 
-> +
-> +bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
-> +{
-> +       struct sched_entity *se_a = &a->se, *se_b = &b->se;
-> +       struct cfs_rq *cfs_rq_a, *cfs_rq_b;
-> +       u64 vruntime_a, vruntime_b;
-> +
-> +#ifdef CONFIG_FAIR_GROUP_SCHED
-> +       while (!is_same_tg(se_a, se_b)) {
-> +               int se_a_depth = se_a->depth;
-> +               int se_b_depth = se_b->depth;
-> +
-> +               if (se_a_depth <= se_b_depth)
-> +                       se_b = parent_entity(se_b);
-> +               if (se_a_depth >= se_b_depth)
-> +                       se_a = parent_entity(se_a);
-> +       }
-> +#endif
-> +
-> +       cfs_rq_a = cfs_rq_of(se_a);
-> +       cfs_rq_b = cfs_rq_of(se_b);
-> +
-> +       vruntime_a = se_a->vruntime - cfs_rq_a->min_vruntime;
-> +       vruntime_b = se_b->vruntime - cfs_rq_b->min_vruntime;
-> +
-> +       trace_printk("(%s/%d;%Ld,%Lu) ?< (%s/%d;%Ld,%Lu)\n",
-> +                    a->comm, a->pid, vruntime_a, cfs_rq_a->core_lag,
-> +                    b->comm, b->pid, vruntime_b, cfs_rq_b->core_lag);
-> +       if (cfs_rq_a != cfs_rq_b) {
-> +               vruntime_a -= calc_delta_fair(cfs_rq_a->core_lag, 
-> &a->se);
-> +               vruntime_b -= calc_delta_fair(cfs_rq_b->core_lag, 
-> &b->se);
+On Thu, Sep 17, 2020 at 09:12:32AM +0000, Joakim Zhang wrote:
+> 
+> > -----Original Message-----
+> > From: Sean Young <sean@mess.org>
+> > Sent: 2020年9月15日 17:34
+> > To: Joakim Zhang <qiangqing.zhang@nxp.com>
+> > Cc: mchehab@kernel.org; linux-media@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
+> > Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+> > system
+> > 
+> > 
+> 
+> [...]
+> > > @@ -92,6 +113,12 @@ static int gpio_ir_recv_probe(struct
+> > > platform_device *pdev)
+> > >
+> > >  	platform_set_drvdata(pdev, gpio_dev);
+> > >
+> > > +
+> > > +	pm_runtime_set_autosuspend_delay(dev, (rcdev->timeout / 1000 /
+> > > +1000));
+> > 
+> > rcdev->timeout is in microseconds (since very recently), so this is wrong.
+> > Also, the timeout can be changed using the LIRC_SET_REC_TIMEOUT ioctl
+> > (using ir-ctl -t in userspace). The autosuspend delay should be updated when
+> > this happens. This can be done by implementing the s_timeout rcdev function.
+> 
+> Hi Sean,
+> 
+> I come across a problem when implementing this feature.
+> 
+> At probe stage, devm_rc_register_device -> change_protocol, then timeout set to 125ms.
+> 
+> When echo sony or nec to protocols, will call change_protocol changing the timeout value, that timeout would change to handler->min_timeout + 10ms. For sony is 16000000ns, for 15625000ns.
 
-This should be:
-+               vruntime_a -= calc_delta_fair(cfs_rq_a->core_lag, se_a);
-+               vruntime_b -= calc_delta_fair(cfs_rq_b->core_lag, se_b);
+The sony protocol decoder wants a 6ms space after the last bit. So, the timeout
+for the IR receiver can be set to 6ms (plus 10ms margin). This has the
+advantage that decoding is happens very quickly. Before this change, there
+as a 125ms delay before the first and last IR frame was decoded. This
+causes decoding to feel laggy and keys also a bit sticky.
 
+> This is not the way I want to take before, this would frequently disable/enable cpuidle. So is it necessary to provide s_timeout, this callback should be used to change protocols' timeout?
+> If implement s_timeout, users need change the timeout value from userspace, this is a mandatory operation and unfriendly. And it will affect protocol's timeout.
+> 
+> Autosuspend delay should be fixed value, should be set to gpio device timeout value, which is 125ms.
 
-Thanks,
-Vineeth
+So the idea was that cpuidle is only enabled while IR frames are being
+received, that's why I suggested it.
 
+If you set the autosuspend delay to 125ms, then the cpuidle will not be enabled
+between IR frames. Maybe this is what you want, but it does mean cpuidle
+is totally suspended while anyone is pressing buttons on a remote.
 
+Thanks
+Sean
+
+> 
+> Best Regards,
+> Joakim Zhang
+> > > +	pm_runtime_use_autosuspend(dev);
+> > > +	pm_runtime_set_suspended(dev);
+> > > +	pm_runtime_enable(dev);
+> > > +
+> > >  	return devm_request_irq(dev, gpio_dev->irq, gpio_ir_recv_irq,
+> > >  				IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
+> > >  				"gpio-ir-recv-irq", gpio_dev);
