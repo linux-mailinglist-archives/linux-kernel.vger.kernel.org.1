@@ -2,184 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4EB26D994
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE8326D910
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgIQKvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbgIQKs5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:48:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50B6C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:48:56 -0700 (PDT)
-Message-Id: <20200917101624.907536563@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600339731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=OrB01BH6Q64hZGxuj6QnQFXBl/a0jOJLmVQxnZHsfwI=;
-        b=ipoDYSQbXvA4n0ePEn93fD2XL2Vnjl6zKNz3pFlr7idGoahV7c10icF1+dWby5wD3bpLdC
-        ZPLuAuiLEGpdEK2k0UfZjrFC3+tWM2wNolQbfgu/Ix1sMqoHBpIsKndzpXbjEEI2Oklhkh
-        8eAXgt92se9i+jTtELU0Owp2DQDaremdXZptF7Levice541Jxn3dDaCEgGYEAgGuM/EV38
-        Z5v9fVkl085zeWAYw7GDUaTzIprmi9Ch1lc7N5VLrz2eNh5Di00AVsxhSLpPEz99Xmi87q
-        iWzjgtBEa2L9YlWBUDrgV6woOhkXKO/uFgXXX1TGvmUVHs8sa2GvKqUxJAJ6RA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600339731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=OrB01BH6Q64hZGxuj6QnQFXBl/a0jOJLmVQxnZHsfwI=;
-        b=kO4Car/Z8zNieAmc6WRqgFOYWzOvMNXKI2lfXcYJe0mNHzVL2e0iuodYi+VpRxp+J6FZxP
-        zievY96g2DvbhkBg==
-Date:   Thu, 17 Sep 2020 11:42:12 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Sebastian Siewior <bigeasy@linutronix.de>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Scott Wood <swood@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [patch 10/10] sched/core: Make migrate disable and CPU hotplug cooperative
-References: <20200917094202.301694311@linutronix.de>
+        id S1726592AbgIQKbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:31:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:44236 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726446AbgIQKaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 06:30:20 -0400
+X-Greylist: delayed 444 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 06:30:19 EDT
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AF2230E;
+        Thu, 17 Sep 2020 03:22:53 -0700 (PDT)
+Received: from [10.57.47.84] (unknown [10.57.47.84])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 35C5C3F68F;
+        Thu, 17 Sep 2020 03:22:52 -0700 (PDT)
+Subject: Re: [PATCH 2/2] arm64/mm: Enable color zero pages
+To:     Gavin Shan <gshan@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     mark.rutland@arm.com, anshuman.khandual@arm.com,
+        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
+        shan.gavin@gmail.com, linux-arm-kernel@lists.infradead.org
+References: <20200916032523.13011-1-gshan@redhat.com>
+ <20200916032523.13011-3-gshan@redhat.com>
+ <20200916082819.GB27496@willie-the-truck>
+ <c1b79a8c-e5a5-f375-87e1-20bbc5cc2707@redhat.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <33e9a04e-9f93-6a06-273d-284900bc1535@arm.com>
+Date:   Thu, 17 Sep 2020 11:22:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+In-Reply-To: <c1b79a8c-e5a5-f375-87e1-20bbc5cc2707@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On CPU unplug tasks which are in a migrate disabled region cannot be pushed
-to a different CPU until they returned to migrateable state.
+On 2020-09-17 04:35, Gavin Shan wrote:
+> Hi Will,
+> 
+> On 9/16/20 6:28 PM, Will Deacon wrote:
+>> On Wed, Sep 16, 2020 at 01:25:23PM +1000, Gavin Shan wrote:
+>>> This enables color zero pages by allocating contigous page frames
+>>> for it. The number of pages for this is determined by L1 dCache
+>>> (or iCache) size, which is probbed from the hardware.
+>>>
+>>>     * Add cache_total_size() to return L1 dCache (or iCache) size
+>>>
+>>>     * Implement setup_zero_pages(), which is called after the page
+>>>       allocator begins to work, to allocate the contigous pages
+>>>       needed by color zero page.
+>>>
+>>>     * Reworked ZERO_PAGE() and define __HAVE_COLOR_ZERO_PAGE.
+>>>
+>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>> ---
+>>>   arch/arm64/include/asm/cache.h   | 22 ++++++++++++++++++++
+>>>   arch/arm64/include/asm/pgtable.h |  9 ++++++--
+>>>   arch/arm64/kernel/cacheinfo.c    | 34 +++++++++++++++++++++++++++++++
+>>>   arch/arm64/mm/init.c             | 35 ++++++++++++++++++++++++++++++++
+>>>   arch/arm64/mm/mmu.c              |  7 -------
+>>>   5 files changed, 98 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/include/asm/cache.h 
+>>> b/arch/arm64/include/asm/cache.h
+>>> index a4d1b5f771f6..420e9dde2c51 100644
+>>> --- a/arch/arm64/include/asm/cache.h
+>>> +++ b/arch/arm64/include/asm/cache.h
+>>> @@ -39,6 +39,27 @@
+>>>   #define CLIDR_LOC(clidr)    (((clidr) >> CLIDR_LOC_SHIFT) & 0x7)
+>>>   #define CLIDR_LOUIS(clidr)    (((clidr) >> CLIDR_LOUIS_SHIFT) & 0x7)
+>>> +#define CSSELR_TND_SHIFT    4
+>>> +#define CSSELR_TND_MASK        (UL(1) << CSSELR_TND_SHIFT)
+>>> +#define CSSELR_LEVEL_SHIFT    1
+>>> +#define CSSELR_LEVEL_MASK    (UL(7) << CSSELR_LEVEL_SHIFT)
+>>> +#define CSSELR_IND_SHIFT    0
+>>> +#define CSSERL_IND_MASK        (UL(1) << CSSELR_IND_SHIFT)
+>>> +
+>>> +#define CCSIDR_64_LS_SHIFT    0
+>>> +#define CCSIDR_64_LS_MASK    (UL(7) << CCSIDR_64_LS_SHIFT)
+>>> +#define CCSIDR_64_ASSOC_SHIFT    3
+>>> +#define CCSIDR_64_ASSOC_MASK    (UL(0x1FFFFF) << CCSIDR_64_ASSOC_SHIFT)
+>>> +#define CCSIDR_64_SET_SHIFT    32
+>>> +#define CCSIDR_64_SET_MASK    (UL(0xFFFFFF) << CCSIDR_64_SET_SHIFT)
+>>> +
+>>> +#define CCSIDR_32_LS_SHIFT    0
+>>> +#define CCSIDR_32_LS_MASK    (UL(7) << CCSIDR_32_LS_SHIFT)
+>>> +#define CCSIDR_32_ASSOC_SHIFT    3
+>>> +#define CCSIDR_32_ASSOC_MASK    (UL(0x3FF) << CCSIDR_32_ASSOC_SHIFT)
+>>> +#define CCSIDR_32_SET_SHIFT    13
+>>> +#define CCSIDR_32_SET_MASK    (UL(0x7FFF) << CCSIDR_32_SET_SHIFT)
+>>
+>> I don't think we should be inferring cache structure from these register
+>> values. The Arm ARM helpfully says:
+>>
+>>    | You cannot make any inference about the actual sizes of caches based
+>>    | on these parameters.
+>>
+>> so we need to take the topology information from elsewhere.
+>>
+> 
+> Yeah, I also noticed the statement in the spec. However, the L1 cache size
+> figured out from above registers are matching with "lscpu" on the machine
+> where I did my tests. Note "lscpu" depends on sysfs entries whose 
+> information
+> is retrieved from ACPI (PPTT) table. The number of cache levels are 
+> partially
+> retrieved from system register (clidr_el1).
+> 
+> It's doable to retrieve the L1 cache size from ACPI (PPTT) table. I'll
+> change accordingly in v2 if this enablement is really needed. More clarify
+> is provided below.
+> 
+>> But before we get into that, can you justify why we need to do this at 
+>> all,
+>> please? Do you have data to show the benefit of adding this complexity?
+>>
+> 
+> Initially, I found it's the missed feature which has been enabled on
+> mips/s390. Currently, all read-only anonymous VMAs are backed up by
+> same zero page. It means all reads to these VMAs are cached by same
+> set of cache, but still multiple ways if supported. So it would be
+> nice to have multiple zero pages to back up these read-only anonymous
+> VMAs, so that the reads on them can be cached by multiple sets (multiple
+> ways still if supported). It's overall beneficial to the performance.
 
-Account the number of tasks on a runqueue which are in a migrate disabled
-section and make the hotplug wait mechanism respect that.
+Is this a concern for true PIPT caches, or is it really just working 
+around a pathological case for alias-detecting VIPT caches?
 
-Originally-by: Scott Wood <swood@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- kernel/sched/core.c  |   38 ++++++++++++++++++++++++++++++++++----
- kernel/sched/sched.h |    4 ++++
- 2 files changed, 38 insertions(+), 4 deletions(-)
+> Unfortunately, I didn't find a machine where the size of cache set is
+> larger than page size. So I had one experiment as indication how L1
+> data cache miss affects the overall performance:
+> 
+>      L1 data cache size:           32KB
+>      L1 data cache line size:      64
+>      Number of L1 data cache set:  64
+>      Number of L1 data cache ways: 8
+>      ----------------------------------------------------------------------
+>                    size = (cache_line_size) * (num_of_sets) * (num_of_ways)
+> 
+>      Kernel configuration:
+>             VA_BITS:               48
+>             PAGE_SIZE:             4KB
+>             PMD HugeTLB Page Size: 2MB
+> 
+>      Experiment:
+>             I have a program to do the following things and check the
+>             consumed time and L1-data-cache-misses by perf.
+> 
+>             (1) Allocate (mmap) a PMD HugeTLB Page, which is 2MB.
+>             (2) Read on the mmap'd region in step of page size (4KB)
+>                 for 8 or 9 times. Note 8 is the number of data cache
+>                 ways.
+>             (3) Repeat (2) for 1000000 times.
+>      Result:
+>             (a) when we have 8 for the steps in (2):
+>                 37,103      L1-dcache-load-misses
+>                 0.217522515 seconds time elapsed
+>                 0.217564000 seconds user
+>                 0.000000000 seconds sys
+>             (b) when we have 9 for the steps in (2):
+>                 4,687,932   L1-dcache-load-misses            (126 times)
+>                 0.248132105 seconds time elapsed             (+14.2%)
+>                 0.248267000 seconds user
+>                 0.000000000 seconds sys
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -494,6 +494,11 @@ static bool task_self_migration(struct t
- 	return true;
- }
- 
-+static inline bool rq_has_pinned_tasks(struct rq *rq)
-+{
-+	return rq->nr_pinned > 0;
-+}
-+
- #else /* defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT) */
- static inline void task_lock_migration_ctrl(struct task_struct *p) { }
- static inline void task_unlock_migration_ctrl(struct task_struct *p) { }
-@@ -504,6 +509,10 @@ static bool task_self_migration(struct t
- {
- 	return false;
- }
-+static inline bool rq_has_pinned_tasks(struct rq *rq)
-+{
-+	return false;
-+}
- #endif /* !(defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT)) */
- 
- /*
-@@ -3591,6 +3600,12 @@ void migrate_disable(void)
- 	if (!current->migration_ctrl.disable_cnt) {
- 		raw_spin_lock_irqsave(&current->pi_lock, flags);
- 		current->migration_ctrl.disable_cnt++;
-+		/*
-+		 * Account the pinned task in the runqueue so that an
-+		 * eventual CPU hot unplug operation will wait until
-+		 * this task left the migrate disabled section.
-+		 */
-+		this_rq()->nr_pinned++;
- 		raw_spin_unlock_irqrestore(&current->pi_lock, flags);
- 	} else {
- 		current->migration_ctrl.disable_cnt++;
-@@ -3619,6 +3634,13 @@ void migrate_enable(void)
- 	p->migration_ctrl.pending = NULL;
- 
- 	/*
-+	 * Adjust the number of pinned tasks in the runqueue. No further
-+	 * action required here. An eventually waiting CPU hot unplug
-+	 * operation will be woken up once the CPU goes through idle.
-+	 */
-+	this_rq()->nr_pinned--;
-+
-+	/*
- 	 * If the task was never scheduled out while in the migrate
- 	 * disabled region and there is no migration request pending,
- 	 * return.
-@@ -6989,8 +7011,13 @@ static bool balance_push(struct rq *rq)
- 		 * last task to vanish. The rcuwait_active() check is
- 		 * accurate here because the waiter is pinned on this CPU
- 		 * and can't obviously be running in parallel.
-+		 *
-+		 * On RT kernels this also has to check whether there are
-+		 * pinned and scheduled out tasks on the runqueue. They
-+		 * need to leave the migrate disabled section first.
- 		 */
--		if (!rq->nr_running && rcuwait_active(&rq->hotplug_wait)) {
-+		if (!rq->nr_running && !rq_has_pinned_tasks(rq) &&
-+		    rcuwait_active(&rq->hotplug_wait)) {
- 			raw_spin_unlock(&rq->lock);
- 			rcuwait_wake_up(&rq->hotplug_wait);
- 			raw_spin_lock(&rq->lock);
-@@ -7033,13 +7060,16 @@ static void balance_push_set(int cpu, bo
-  * Invoked from a CPUs hotplug control thread after the CPU has been marked
-  * inactive. All tasks which are not per CPU kernel threads are either
-  * pushed off this CPU now via balance_push() or placed on a different CPU
-- * during wakeup. Wait until the CPU is quiescent.
-+ * during wakeup. Wait until the CPU is quiescent.  On RT kernels this also
-+ * waits for pinned non-runnable tasks to leave the migrate disabled
-+ * section.
-  */
- static void balance_hotplug_wait(void)
- {
- 	struct rq *rq = this_rq();
- 
--	rcuwait_wait_event(&rq->hotplug_wait, rq->nr_running == 1,
-+	rcuwait_wait_event(&rq->hotplug_wait,
-+			   rq->nr_running == 1 && !rq_has_pinned_tasks(rq),
- 			   TASK_UNINTERRUPTIBLE);
- }
- 
-@@ -7279,7 +7309,7 @@ int sched_cpu_dying(unsigned int cpu)
- 		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
- 		set_rq_offline(rq);
- 	}
--	BUG_ON(rq->nr_running != 1);
-+	BUG_ON(rq->nr_running != 1 || rq_has_pinned_tasks(rq));
- 	rq_unlock_irqrestore(rq, &rf);
- 
- 	calc_load_migrate(rq);
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1053,6 +1053,10 @@ struct rq {
- 	/* Must be inspected within a rcu lock section */
- 	struct cpuidle_state	*idle_state;
- #endif
-+
-+#if defined(CONFIG_PREEMPT_RT) && defined(CONFIG_SMP)
-+	unsigned int		nr_pinned;
-+#endif
- };
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
+I have a vague feeling this may have come up before, but are there 
+real-world applications that have a performance bottleneck on reading 
+from uninitialised memory? As far as synthetic benchmarks go, I'm sure 
+we could equally come up with one that shows a regression due to real 
+data being pushed out of the cache by all those extra zeros ;)
 
+Robin.
+
+> Please let me know if it's worthy for a v2, to retrieve the cache size
+> from ACPI (PPTT) table. The cost is to allocate multiple zero pages and
+> the worst case is fail back to one zero page, as before :)
+> 
+> Cheers,
+> Gavin
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
