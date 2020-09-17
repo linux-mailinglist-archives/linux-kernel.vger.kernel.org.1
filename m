@@ -2,146 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F34A26D4CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607CA26D4CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgIQHeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:34:01 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:44816 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726185AbgIQHd5 (ORCPT
+        id S1726199AbgIQHgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgIQHg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:33:57 -0400
-X-UUID: 6bf3f0a16c3a426f8b290967d0360315-20200917
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=6NUUedpXNQ5jCOHG+M6D9uQsy5p+hcL39YSoVGePx3c=;
-        b=bFZnH+PglSm8fz8D0GqgaK2VrI4v9JOn6PU3NRas99SuV9A3vlV8VaX8p5F4acVpIN8x+ZDl/eqjc8NO1IW/YI4KoSOcOMSMnZOIe17dwNUvDKsqTTETXS7P7D2dDxCl7OHhhAvj3CdBKBuKzrHbjjt1NDiisbCQUwBFpeI1KV0=;
-X-UUID: 6bf3f0a16c3a426f8b290967d0360315-20200917
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 18555539; Thu, 17 Sep 2020 15:33:45 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Sep
- 2020 15:33:41 +0800
-Received: from mszsdaap41.gcn.mediatek.inc (10.16.6.141) by
- MTKCAS32.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Thu, 17 Sep 2020 15:33:41 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
-        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
-        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [v2 PATCH] dt-bindings: display: mediatek: convert the dpi bindings to yaml
-Date:   Thu, 17 Sep 2020 15:33:05 +0800
-Message-ID: <20200917073305.25738-1-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.12.5
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: C44404ACF078DEF47CC277602C88AD09DC917700FE540F3FA3845207F68AE0262000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Thu, 17 Sep 2020 03:36:28 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19500C06174A;
+        Thu, 17 Sep 2020 00:36:28 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id k14so853335pgi.9;
+        Thu, 17 Sep 2020 00:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=LVgjNZrNQHeGVyzoXCZ5eaezteocik+IrAZzCdzJuBs=;
+        b=QLoT4iocwJDgRY3jVhIx2DI4949mVscTOINeUfXIxEZ6B5God1X8pv8ghXq9RS/aJa
+         oqKXCcAgyLDBPezA0SA2dIdsGYy9EMv6DRb8EhC1h1PMH1PHVlyiTscxmG36D5LJ9Efq
+         K+/lgt9VC2Eo9oQc7KdqHaK2GD1N3ZsMkGeWG5TfQTbhMyx2Isgl1aCOrlzfrpGawq9N
+         fdx97Ug9bNjbsMuC0bCq5liTXYmQoHovaXNrL0kzAHAOa2rAfzhQLi3Njfu6lW5R9jO3
+         t+hcQddrpcL+4PCDb9jQTZ/pkgt1euQmifwy1IRcLi7Oy8joLWCP5VHszTKqkRj3DVby
+         f3Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LVgjNZrNQHeGVyzoXCZ5eaezteocik+IrAZzCdzJuBs=;
+        b=AXhZ2qlT7uRFuDulE0HOXgryTP+7GSdxbBGhCsY1fbhixLqyVbyG4pIdIjDmoRzEaP
+         AKp4r6HYBs/H1fnMTARE7M9TkVudB7qc7fXqJLA6f7Eb53Nuh5YKavXtoKhn7dnFPyft
+         BUkgBlWcrqSoftlR+P9TMhFs9HQPyFnb0IW5Z9NpEWpAN5tCVkeRnV1WBk82uFVRqfyr
+         46XQWZQmXEdyw5aItmFBrqowaMM5ls11ZjjZAc2n4MYDCDIoDoj7EIB35TRAc2VwWdna
+         YPqNrCAcidvUqA9Gy0HH63SPNeOD3itTmkw0xcdp7Rghgs3A8o46jYkykOe+qYOzb29q
+         3a1g==
+X-Gm-Message-State: AOAM530Mg8Qv06nQWqJDR+boJt28Q6l3F93/xDCP24ElRsOU1O4Y0rmc
+        cQwaS7jTeGiyM5JAmv1GINk=
+X-Google-Smtp-Source: ABdhPJx6RK7QekcSJhCtPgsq4WyKnAmNS0Vif0ivK8GqYif0kzjdgiRloWKMja0iM+RMIh7hEWszHg==
+X-Received: by 2002:a63:f342:: with SMTP id t2mr21786819pgj.313.1600328187689;
+        Thu, 17 Sep 2020 00:36:27 -0700 (PDT)
+Received: from localhost.localdomain ([43.224.245.179])
+        by smtp.gmail.com with ESMTPSA id 22sm5491834pfw.17.2020.09.17.00.36.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 00:36:27 -0700 (PDT)
+From:   zhuguangqing83@gmail.com
+To:     amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, javi.merino@kernel.org,
+        rui.zhang@intel.com, amitk@kernel.org, rafael.j.wysocki@intel.com,
+        zhuguangqing@xiaomi.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] thermal/idle_inject: Fix comment of idle_duration_us and name of latency_ns
+Date:   Thu, 17 Sep 2020 15:35:53 +0800
+Message-Id: <20200917073553.898-1-zhuguangqing83@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q29udmVydCBkaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGRwaS50eHQgdG8gZGlzcGxheS9tZWRp
-YXRlay9tZWRpYXRlayxkcGkueWFtbA0KYW5kIHJlbW92ZSB0aGUgb2xkIHRleHQgYmluZGluZ3Mu
-DQoNClNpZ25lZC1vZmYtYnk6IEppdGFvIFNoaSA8aml0YW8uc2hpQG1lZGlhdGVrLmNvbT4NCi0t
-LQ0KIC4uLi9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGRwaS50eHQgICAgIHwg
-NDIgLS0tLS0tLS0tLQ0KIC4uLi9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGRw
-aS55YW1sICAgIHwgOTcgKysrKysrKysrKysrKysrKysrKysrKw0KIDIgZmlsZXMgY2hhbmdlZCwg
-OTcgaW5zZXJ0aW9ucygrKSwgNDIgZGVsZXRpb25zKC0pDQogZGVsZXRlIG1vZGUgMTAwNjQ0IERv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVr
-LGRwaS50eHQNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssZHBpLnlhbWwNCg0KZGlmZiAtLWdpdCBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlh
-dGVrLGRwaS50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9t
-ZWRpYXRlay9tZWRpYXRlayxkcGkudHh0DQpkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQNCmluZGV4
-IDc3ZGVmNDQ1NjcwNi4uMDAwMDAwMDAwMDAwDQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxkcGkudHh0DQorKysgL2Rldi9u
-dWxsDQpAQCAtMSw0MiArMCwwIEBADQotTWVkaWF0ZWsgRFBJIERldmljZQ0KLT09PT09PT09PT09
-PT09PT09PT0NCi0NCi1UaGUgTWVkaWF0ZWsgRFBJIGZ1bmN0aW9uIGJsb2NrIGlzIGEgc2luayBv
-ZiB0aGUgZGlzcGxheSBzdWJzeXN0ZW0gYW5kDQotcHJvdmlkZXMgOC1iaXQgUkdCL1lVVjQ0NCBv
-ciA4LzEwLzEwLWJpdCBZVVY0MjIgcGl4ZWwgZGF0YSBvbiBhIHBhcmFsbGVsDQotb3V0cHV0IGJ1
-cy4NCi0NCi1SZXF1aXJlZCBwcm9wZXJ0aWVzOg0KLS0gY29tcGF0aWJsZTogIm1lZGlhdGVrLDxj
-aGlwPi1kcGkiDQotICB0aGUgc3VwcG9ydGVkIGNoaXBzIGFyZSBtdDI3MDEgLCBtdDgxNzMgYW5k
-IG10ODE4My4NCi0tIHJlZzogUGh5c2ljYWwgYmFzZSBhZGRyZXNzIGFuZCBsZW5ndGggb2YgdGhl
-IGNvbnRyb2xsZXIncyByZWdpc3RlcnMNCi0tIGludGVycnVwdHM6IFRoZSBpbnRlcnJ1cHQgc2ln
-bmFsIGZyb20gdGhlIGZ1bmN0aW9uIGJsb2NrLg0KLS0gY2xvY2tzOiBkZXZpY2UgY2xvY2tzDQot
-ICBTZWUgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Nsb2NrL2Nsb2NrLWJpbmRp
-bmdzLnR4dCBmb3IgZGV0YWlscy4NCi0tIGNsb2NrLW5hbWVzOiBtdXN0IGNvbnRhaW4gInBpeGVs
-IiwgImVuZ2luZSIsIGFuZCAicGxsIg0KLS0gcG9ydDogT3V0cHV0IHBvcnQgbm9kZSB3aXRoIGVu
-ZHBvaW50IGRlZmluaXRpb25zIGFzIGRlc2NyaWJlZCBpbg0KLSAgRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL2dyYXBoLnR4dC4gVGhpcyBwb3J0IHNob3VsZCBiZSBjb25uZWN0ZWQN
-Ci0gIHRvIHRoZSBpbnB1dCBwb3J0IG9mIGFuIGF0dGFjaGVkIEhETUkgb3IgTFZEUyBlbmNvZGVy
-IGNoaXAuDQotDQotT3B0aW9uYWwgcHJvcGVydGllczoNCi0tIHBpbmN0cmwtbmFtZXM6IENvbnRh
-aW4gImRlZmF1bHQiIGFuZCAic2xlZXAiLg0KLQ0KLUV4YW1wbGU6DQotDQotZHBpMDogZHBpQDE0
-MDFkMDAwIHsNCi0JY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtZHBpIjsNCi0JcmVnID0g
-PDAgMHgxNDAxZDAwMCAwIDB4MTAwMD47DQotCWludGVycnVwdHMgPSA8R0lDX1NQSSAxOTQgSVJR
-X1RZUEVfTEVWRUxfTE9XPjsNCi0JY2xvY2tzID0gPCZtbXN5cyBDTEtfTU1fRFBJX1BJWEVMPiwN
-Ci0JCSA8Jm1tc3lzIENMS19NTV9EUElfRU5HSU5FPiwNCi0JCSA8JmFwbWl4ZWRzeXMgQ0xLX0FQ
-TUlYRURfVFZEUExMPjsNCi0JY2xvY2stbmFtZXMgPSAicGl4ZWwiLCAiZW5naW5lIiwgInBsbCI7
-DQotCXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCIsICJzbGVlcCI7DQotCXBpbmN0cmwtMCA9IDwm
-ZHBpX3Bpbl9mdW5jPjsNCi0JcGluY3RybC0xID0gPCZkcGlfcGluX2lkbGU+Ow0KLQ0KLQlwb3J0
-IHsNCi0JCWRwaTBfb3V0OiBlbmRwb2ludCB7DQotCQkJcmVtb3RlLWVuZHBvaW50ID0gPCZoZG1p
-MF9pbj47DQotCQl9Ow0KLQl9Ow0KLX07DQpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssZHBpLnlhbWwgYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxk
-cGkueWFtbA0KbmV3IGZpbGUgbW9kZSAxMDA2NDQNCmluZGV4IDAwMDAwMDAwMDAwMC4uNGRlMDhi
-YzQ2ZmIzDQotLS0gL2Rldi9udWxsDQorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxkcGkueWFtbA0KQEAgLTAsMCArMSw5NyBA
-QA0KKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xh
-dXNlKQ0KKyVZQU1MIDEuMg0KKy0tLQ0KKyRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVt
-YXMvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxkcGkueWFtbCMNCiskc2NoZW1hOiBodHRwOi8v
-ZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCisNCit0aXRsZTogbWVkaWF0
-ZWsgRFBJIENvbnRyb2xsZXIgRGV2aWNlIFRyZWUgQmluZGluZ3MNCisNCittYWludGFpbmVyczoN
-CisgIC0gQ0sgSHUgPGNrLmh1QG1lZGlhdGVrLmNvbT4NCisgIC0gSml0YW8gc2hpIDxqaXRhby5z
-aGlAbWVkaWF0ZWsuY29tPg0KKw0KK2Rlc2NyaXB0aW9uOiB8DQorICBUaGUgTWVkaWF0ZWsgRFBJ
-IGZ1bmN0aW9uIGJsb2NrIGlzIGEgc2luayBvZiB0aGUgZGlzcGxheSBzdWJzeXN0ZW0gYW5kDQor
-ICBwcm92aWRlcyA4LWJpdCBSR0IvWVVWNDQ0IG9yIDgvMTAvMTAtYml0IFlVVjQyMiBwaXhlbCBk
-YXRhIG9uIGEgcGFyYWxsZWwNCisgIG91dHB1dCBidXMuDQorDQorcHJvcGVydGllczoNCisgIGNv
-bXBhdGlibGU6DQorICAgIGVudW06DQorICAgICAgLSBtZWRpYXRlayxtdDI3MDEtZHBpDQorICAg
-ICAgLSBtZWRpYXRlayxtdDgxNzMtZHBpDQorICAgICAgLSBtZWRpYXRlayxtdDgxODMtZHBpDQor
-DQorICByZWc6DQorICAgIG1heEl0ZW1zOiAxDQorDQorICBpbnRlcnJ1cHRzOg0KKyAgICBtYXhJ
-dGVtczogMQ0KKw0KKyAgY2xvY2tzOg0KKyAgICBpdGVtczoNCisgICAgICAtIGRlc2NyaXB0aW9u
-OiBQaXhlbCBDbG9jaw0KKyAgICAgIC0gZGVzY3JpcHRpb246IEVuZ2luZSBDbG9jaw0KKyAgICAg
-IC0gZGVzY3JpcHRpb246IERQSSBQTEwNCisNCisgIGNsb2NrLW5hbWVzOg0KKyAgICBpdGVtczoN
-CisgICAgICAtIGNvbnN0OiBwaXhlbA0KKyAgICAgIC0gY29uc3Q6IGVuZ2luZQ0KKyAgICAgIC0g
-Y29uc3Q6IHBsbA0KKw0KKyAgcGluY3RybC0wOiB0cnVlDQorICBwaW5jdHJsLTE6IHRydWUNCisN
-CisgIHBpbmN0cmwtbmFtZXM6DQorICAgIGl0ZW1zOg0KKyAgICAgIC0gY29uc3Q6IGRlZmF1bHQN
-CisgICAgICAtIGNvbnN0OiBzbGVlcA0KKw0KKyAgcG9ydDoNCisgICAgdHlwZTogb2JqZWN0DQor
-ICAgIGRlc2NyaXB0aW9uOg0KKyAgICAgIE91dHB1dCBwb3J0IG5vZGUgd2l0aCBlbmRwb2ludCBk
-ZWZpbml0aW9ucyBhcyBkZXNjcmliZWQgaW4NCisgICAgICBEb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvZ3JhcGgudHh0LiBUaGlzIHBvcnQgc2hvdWxkIGJlIGNvbm5lY3RlZA0KKyAg
-ICAgIHRvIHRoZSBpbnB1dCBwb3J0IG9mIGFuIGF0dGFjaGVkIEhETUkgb3IgTFZEUyBlbmNvZGVy
-IGNoaXAuDQorDQorICAgIHByb3BlcnRpZXM6DQorICAgICAgZW5kcG9pbnQ6DQorICAgICAgICB0
-eXBlOiBvYmplY3QNCisNCityZXF1aXJlZDoNCisgIC0gY29tcGF0aWJsZQ0KKyAgLSByZWcNCisg
-IC0gaW50ZXJydXB0cw0KKyAgLSBjbG9ja3MNCisgIC0gY2xvY2stbmFtZXMNCisgIC0gcG9ydA0K
-Kw0KK2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZQ0KKw0KK2V4YW1wbGVzOg0KKyAgLSB8DQor
-ICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9hcm0tZ2ljLmg+
-DQorICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9jbG9jay9tdDgxNzMtY2xrLmg+DQorICAgICNp
-bmNsdWRlIDxkdC1iaW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9hcm0tZ2ljLmg+DQorICAg
-ICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9pcnEuaD4NCisgICAg
-ZHBpMDogZHBpQDE0MDFkMDAwIHsNCisgICAgICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4
-MTczLWRwaSI7DQorICAgICAgICByZWcgPSA8MHgxNDAxZDAwMCAweDEwMDA+Ow0KKyAgICAgICAg
-aW50ZXJydXB0cyA9IDxHSUNfU1BJIDE5NCBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0KKyAgICAgICAg
-Y2xvY2tzID0gPCZtbXN5cyBDTEtfTU1fRFBJX1BJWEVMPiwNCisgICAgICAgICAgICAgPCZtbXN5
-cyBDTEtfTU1fRFBJX0VOR0lORT4sDQorICAgICAgICAgICAgIDwmYXBtaXhlZHN5cyBDTEtfQVBN
-SVhFRF9UVkRQTEw+Ow0KKyAgICAgICAgY2xvY2stbmFtZXMgPSAicGl4ZWwiLCAiZW5naW5lIiwg
-InBsbCI7DQorICAgICAgICBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiLCAic2xlZXAiOw0KKyAg
-ICAgICAgcGluY3RybC0wID0gPCZkcGlfcGluX2Z1bmM+Ow0KKyAgICAgICAgcGluY3RybC0xID0g
-PCZkcGlfcGluX2lkbGU+Ow0KKw0KKyAgICAgICAgcG9ydCB7DQorICAgICAgICAgICAgZHBpMF9v
-dXQ6IGVuZHBvaW50IHsNCisgICAgICAgICAgICAgICAgcmVtb3RlLWVuZHBvaW50ID0gPCZoZG1p
-MF9pbj47DQorICAgICAgICAgICAgfTsNCisgICAgICAgIH07DQorICAgIH07DQorDQorLi4uDQot
-LSANCjIuMTIuNQ0K
+From: zhuguangqing <zhuguangqing@xiaomi.com>
+
+The comment of idle_duration_us and the name of latency_ns can be misleading,
+so fix them.
+
+Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+---
+ drivers/thermal/cpuidle_cooling.c | 2 +-
+ include/linux/idle_inject.h       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
+index 78e3e8238116..7ecab4b16b29 100644
+--- a/drivers/thermal/cpuidle_cooling.c
++++ b/drivers/thermal/cpuidle_cooling.c
+@@ -30,7 +30,7 @@ static DEFINE_IDA(cpuidle_ida);
+ 
+ /**
+  * cpuidle_cooling_runtime - Running time computation
+- * @idle_duration_us: the idle cooling device
++ * @idle_duration_us: CPU idle time to inject in microseconds
+  * @state: a percentile based number
+  *
+  * The running duration is computed from the idle injection duration
+diff --git a/include/linux/idle_inject.h b/include/linux/idle_inject.h
+index 91a8612b8bf9..fb88e23a99d3 100644
+--- a/include/linux/idle_inject.h
++++ b/include/linux/idle_inject.h
+@@ -28,6 +28,6 @@ void idle_inject_get_duration(struct idle_inject_device *ii_dev,
+ 				 unsigned int *idle_duration_us);
+ 
+ void idle_inject_set_latency(struct idle_inject_device *ii_dev,
+-			     unsigned int latency_ns);
++			     unsigned int latency_us);
+ 
+ #endif /* __IDLE_INJECT_H__ */
+-- 
+2.17.1
 
