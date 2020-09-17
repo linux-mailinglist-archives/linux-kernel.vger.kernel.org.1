@@ -2,46 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4B926E783
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0521926E78B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgIQVms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:42:48 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:41558 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgIQVmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:42:47 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kJ1ft-00F8jM-Uo; Thu, 17 Sep 2020 23:42:41 +0200
-Date:   Thu, 17 Sep 2020 23:42:41 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] ethtool: add and use message type for tunnel info
- reply
-Message-ID: <20200917214241.GC3598897@lunn.ch>
-References: <20200916230410.34FCE6074F@lion.mk-sys.cz>
- <20200917014151.GK3463198@lunn.ch>
- <20200917212919.3n6f3zdegjeyhfud@lion.mk-sys.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917212919.3n6f3zdegjeyhfud@lion.mk-sys.cz>
+        id S1726022AbgIQVqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgIQVqA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:46:00 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76805C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:46:00 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 205so2801410qkd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=IhKMP2yDqla4bVCkJ4x51hskFiR/f7svOYkmrG2KUNE=;
+        b=TWVIG1xeekErrOWhlV/nnA95BVALmStjr90hXy/egUz8wcg3E7GRjsC/6lUH7WXmVS
+         WP2xLDEH9zdJ5H4JOeOjACFo4v6PzBNl+fPBYMRsvX7ScJZsTnym7BQ0WaAkujxIH1bo
+         ZNGnhG2+/3JenN40EmcHrLeuN/YJX72pwiec2eiHBdeLk+dNhqI06ADPH6+oBcsAhOMN
+         ORyP4k58pVw5u+A8aaljsWgSm5XhiljRIH54YphSCpJaJ5cWx5Nq//cFJZiLGnp3GzfU
+         g3nphqn8pyMDlyMqyBmSX6J/BIRswGQd8FExW3fSz6/JX1Hfz3VjXJcNIEXWkfnsm9D2
+         mw4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=IhKMP2yDqla4bVCkJ4x51hskFiR/f7svOYkmrG2KUNE=;
+        b=IU2OwTqU65tJE8J97yJkwiPr6sqXWADiFKWJH9EVLNg/bid7pGLfc5oyN9szLLIat9
+         R41P83+SckaWdHVQqCUYiVSwMLQqB+UrSg1JFz8kRRuVYaOdxhDDjkKhDaYVk2KkcI8u
+         /Hcu9MSmH0KNlDjc4Xj/fWqIFGKIRAOL8XiRKJQfUMAdiGaiZCAJapiYSJ0RcTgKPV5h
+         l9Srkl4FTi9gNG5UiSvn4Whhk4B1PbNwrNlFIlVFBpMsYT19Z6HE+szSXtmZNrLXi4Hk
+         XvJED8nPVTFToD+nlJLc407gy7mJFfwiPQMKPplbx7fTEwetWUMDl/qpnTN8VD2mq27j
+         tZPA==
+X-Gm-Message-State: AOAM530dNYN+UbP39yEFbnpcy8KWg/bx/1SRaBNc+hmCPOQ0YcEOUZr6
+        nU3OgZonNIB8GPE1V96iFtUupvc7jEE7bQ8/N7o=
+X-Google-Smtp-Source: ABdhPJzHIimFKFdpvNlyjrJFZoq+9sht5as+u3dxKNL5X6CgRp/ja15bbH7/Fz9n2O8EwngZkHNGrzkGuL4Rca57TYE=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:ad4:5745:: with SMTP id
+ q5mr30422692qvx.29.1600379158156; Thu, 17 Sep 2020 14:45:58 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:45:45 -0700
+In-Reply-To: <ce28bb9bc25cb3f1197f75950a0cfe14947f9002.camel@perches.com>
+Message-Id: <20200917214545.199463-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <ce28bb9bc25cb3f1197f75950a0cfe14947f9002.camel@perches.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v3] nfs: remove incorrect fallthrough label
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>
+Cc:     "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        Joe Perches <joe@perches.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Hongxiang Lou <louhongxiang@huawei.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On the other hand, the enums are part of userspace API so I better take
-> a closer look to make sure we don't run into some trouble there.
+There is no case after the default from which to fallthrough to. Clang
+will error in this case (unhelpfully without context, see link below)
+and GCC will with -Wswitch-unreachable.
 
-Hi Michal
+The previous commit should have just replaced the comment with a break
+statement.
 
-Yes, that is what i was thinking about. But i guess you can pass a
-tagged enum to a function expecting an int and the compiler will
-silently cast it. Which is what we should have at the moment. So i'm
-expecting it to be O.K.
+If we consider implicit fallthrough to be a design mistake of C, then
+all case statements should be terminated with one of the following
+statements:
+* break
+* continue
+* return
+* fallthrough
+* goto
+* (call of function with __attribute__(__noreturn__))
 
-	  Andrew
+Fixes: 2a1390c95a69 ("nfs: Convert to use the preferred fallthrough macro")
+Link: https://bugs.llvm.org/show_bug.cgi?id=47539
+Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Changes v3:
+* update the commit message as per Joe.
+* collect tags.
+
+Changes v2:
+* add break rather than no terminating statement as per Joe.
+* add Joe's suggested by tag.
+* add blurb about acceptable terminal statements.
+
+ fs/nfs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+index d20326ee0475..eb2401079b04 100644
+--- a/fs/nfs/super.c
++++ b/fs/nfs/super.c
+@@ -889,7 +889,7 @@ static struct nfs_server *nfs_try_mount_request(struct fs_context *fc)
+ 		default:
+ 			if (rpcauth_get_gssinfo(flavor, &info) != 0)
+ 				continue;
+-			fallthrough;
++			break;
+ 		}
+ 		dfprintk(MOUNT, "NFS: attempting to use auth flavor %u\n", flavor);
+ 		ctx->selected_flavor = flavor;
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
