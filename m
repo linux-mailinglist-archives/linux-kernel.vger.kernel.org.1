@@ -2,197 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF4B26DBAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C2026DBB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgIQMf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbgIQMdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:33:47 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BE0C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:33:23 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id e11so4357030wme.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:33:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lSmbmSp0vTLjkpjcwc95ATbPKvR5uzI8SEkr43DYMdw=;
-        b=cwflIlv1fOV5pfkvMZO++S3xQGizRiz3OlTTI1yyFgQ1RKH8t80pYLJZXn56J1nJKF
-         MGWcuRc54Etd0RZXzfnTtM09DCDIIsRZcJboumPTCmYM7fSwPvAfc0apDIe+vu35EuaB
-         uFAG1eG1ZAjQms6AvF94xXJwyyXAj9C9FTKBWIUIIsdrt9jwrIFqLdntvAZaDBjYXHtl
-         wt70ZFiMHowCa/qZPBbzMSNcM4R7EF8GqdKpbtlwVwQ898xWmORMPXiI4lO5Z/5WPZF5
-         VzsSCPERoRDLEZDQNFuRmu1sd3mPIsAShAv9JFzPCsxPdOotCNb9u0+AU3hg/86ky+qr
-         FQ5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lSmbmSp0vTLjkpjcwc95ATbPKvR5uzI8SEkr43DYMdw=;
-        b=Cy8BqUpSx8NdLJ2kPl7qZfjSEnYJhoDyfCQGzCa6/uNWMtthBZjfDSc+K8V0oHO+L8
-         hJBgMRPb4aQrBlK9pEg41biuLI60zcDEKXUZsCLLLER2KNaS2A9OSdgJgdC1Np77Fg0Y
-         MSZqjRKXTJmhSxRdCfyhOMnQx6a3WJaBA+Ke57WloKiXPE7JsxKgKTGq6U0Eiu+1lhLR
-         RO5Z8Wq1VNkrZguzrv3b1sdUEcOJ73bfdDEgEVgKcOvbM4yrIJ8XswKcue5aDgZYLD7G
-         HZqeNzO0GTmyn3DB13yqYSBF0dBkqSx2OCXYHWZo3ehINrC8S+amE+w+3dqC3KDw0nuJ
-         oMhQ==
-X-Gm-Message-State: AOAM532oIhmaByvBQjGpuz5LcqHSo3X29g7/kk0EizUEp8ZWHDBATBmW
-        EvOXt9TFzLcbJEI8jqLdDlgcZ3S1pA4lGybx
-X-Google-Smtp-Source: ABdhPJx8C5DUkFdyQvBVG3t6Qjy71GoM60WhVQfU91ytC7Jw3n/jtHODvaamTau0i+WocGKKzGcvyQ==
-X-Received: by 2002:a7b:c958:: with SMTP id i24mr10273808wml.50.1600346000592;
-        Thu, 17 Sep 2020 05:33:20 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9934:ad8d:e364:de32? ([2a01:e34:ed2f:f020:9934:ad8d:e364:de32])
-        by smtp.googlemail.com with ESMTPSA id r14sm38800456wrn.56.2020.09.17.05.33.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 05:33:20 -0700 (PDT)
-Subject: Re: [PATCH] thermal/drivers/cpuidle_cooling: Change the set_cur_state
- function
-To:     zhuguangqing83 <zhuguangqing83@gmail.com>, amit.kachhap@gmail.com,
-        viresh.kumar@linaro.org, javi.merino@kernel.org,
-        rui.zhang@intel.com, amitk@kernel.org, zhuguangqing@xiaomi.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <19e301d68ce3$de5f9840$9b1ec8c0$@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d1367763-335a-53ba-d4fc-7b02dbd59c88@linaro.org>
-Date:   Thu, 17 Sep 2020 14:33:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726721AbgIQMhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:37:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726951AbgIQMeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:34:23 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1626A2087D;
+        Thu, 17 Sep 2020 12:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600346034;
+        bh=tdZKh1qLT5/CZgLEYm1IvQYFAkgpFAnpj9CITh0Zkqw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H1VYO8wh+cqUCtIwF8Gg/BZkUMELrZ3utpX5LMxkJmTBAW3S1GIZicW2tVT1t3zpC
+         bM18Uo9l2XCsLNapvssmLb91kGpS4dXeuvJ1AZD5JQBGCrUscMfBtsiIsZVhkZHKj4
+         jaA66+mq3vHtmPSI35KnEWR5fJ9T2LvSvJkiwUYw=
+Date:   Thu, 17 Sep 2020 14:34:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/7] media: usb: uvc: no need to check return value of
+ debugfs_create functions
+Message-ID: <20200917123426.GA3595353@kroah.com>
+References: <20200818133608.462514-1-gregkh@linuxfoundation.org>
+ <20200818133608.462514-7-gregkh@linuxfoundation.org>
+ <20200818234719.GD2360@pendragon.ideasonboard.com>
+ <20200917122550.GA5053@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <19e301d68ce3$de5f9840$9b1ec8c0$@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917122550.GA5053@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/2020 13:15, zhuguangqing83 wrote:
+On Thu, Sep 17, 2020 at 03:25:50PM +0300, Laurent Pinchart wrote:
+> Hi Greg,
 > 
->>> From: zhuguangqing <zhuguangqing@xiaomi.com>
->>>
->>> In the function cpuidle_cooling_set_cur_state(), if current_state is
->>> not equal to state and both current_state and state are greater than
->>> 0(scene 4 as follows), then maybe it should stop->start or restart
->>> idle_inject.
->>
->> Sorry, I don't get it.
->>
->> It is an update of the state, why do we need to restart the idle
->> injection ? The state change will be automatically take into account by
->> the idle injection code at the new injection cycle.
->>
+> On Wed, Aug 19, 2020 at 02:47:19AM +0300, Laurent Pinchart wrote:
+> > Hi Greg,
+> > 
+> > Thank you for the patch.
+> > 
+> > On Tue, Aug 18, 2020 at 03:36:08PM +0200, Greg Kroah-Hartman wrote:
+> > > When calling debugfs functions, there is no need to ever check the
+> > > return value.  The function can work or not, but the code logic should
+> > > never do something different based on this.
+> > 
+> > Is there no value in warning the user that something went wrong ? Silent
+> > failures are harder to debug.
 > 
-> Thanks for your comments.
-> 
-> For example, we call cpuidle_cooling_set_cur_state() twice, first time
-> the input parameter state is 20, second time the input parameter state
-> is 30.
-> 
-> In current code, in the second call of cpuidle_cooling_set_cur_state(),
-> current_state == 20, state == 30, then "if (current_state == 0 &&
-> state > 0)" is not satisfied, "else if (current_state > 0 && !state)"
-> is not satisfied either, so we just update idle_cdev->state to 30 and
-> idle_inject_set_duration to new injection cycle，but we do not call
-> idle injection code.
+> Could yous share your opinion about this ?
 
-Ok, I think understand your question.
+For debugfs, this isn't an issue, what can a user do with something like
+"debugfs isn't working?  What does that mean???"
 
-When the idle injection is started, a timer is periodically calling the
-function play_idle_precise() with the idle duration. This one is updated
-by idle_inject_set_duration().
+And if we _really_ want warnings like this, it should go into the
+debugfs core, not require this to be done for every debugfs user, right?
 
-So when the state is changed, that changes the idle duration. At the
-next timer expiration, a few Milli seconds after, play_idle_precise()
-will be called with the new idle duration which was updated by
-idle_inject_set_duration().
+debugfs is just there for kernel developers to help debug things, it's
+not a dependancy on any userspace functionality, so if it works or not
+should not be an issue for any user.
 
-There is no need to stop and start the idle injection at each update.
+Unless that user is a kernel developer of course :)
 
-The new value is take into account automatically for the next cycle.
+thanks,
 
-It does not really matter if the update is delayed. Restarting the idle
-injection at each update will be worth in the cooling context than
-waiting an idle cycle.
-
-> In the example mentioned above, we should call idle injection code. If
-> idle_inject_start() takes into account by the idle injection code at
-> the new injection cycle, then just calling idle_inject_start() is ok.
-> Otherwise, we need a restart or stop->start process to execute idle
-> injection code at the new state 30.
-> 
->>> The scenes changed is as follows,
->>>
->>> scene    current_state    state    action
->>>  1              0          >0       start
->>>  2              0          0        do nothing
->>>  3              >0         0        stop
->>>  4        >0 && !=state    >0       stop->start or restart
->>>  5        >0 && ==state    >0       do nothing
->>>
->>> Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
->>> ---
->>>  drivers/thermal/cpuidle_cooling.c | 10 ++++++++--
->>>  1 file changed, 8 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/thermal/cpuidle_cooling.c
->> b/drivers/thermal/cpuidle_cooling.c
->>> index 78e3e8238116..868919ad3dda 100644
->>> --- a/drivers/thermal/cpuidle_cooling.c
->>> +++ b/drivers/thermal/cpuidle_cooling.c
->>> @@ -113,7 +113,7 @@ static int cpuidle_cooling_get_cur_state(struct
->>> thermal_cooling_device *cdev,
->>>  /**
->>>   * cpuidle_cooling_set_cur_state - Set the current cooling state
->>>   * @cdev: the thermal cooling device
->>> - * @state: the target state
->>> + * @state: the target state, max value is 100
->>>   *
->>>   * The function checks first if we are initiating the mitigation which
->>>   * in turn wakes up all the idle injection tasks belonging to the idle
->>> @@ -130,6 +130,9 @@ static int cpuidle_cooling_set_cur_state(struct
->>> thermal_cooling_device *cdev,
->>>  	unsigned long current_state = idle_cdev->state;
->>>  	unsigned int runtime_us, idle_duration_us;
->>>
->>> +	if (state > 100 || current_state == state)
->>> +		return 0;
->>> +
->>>  	idle_cdev->state = state;
->>>
->>>  	idle_inject_get_duration(ii_dev, &runtime_us, &idle_duration_us);
->>> @@ -140,8 +143,11 @@ static int cpuidle_cooling_set_cur_state(struct
->>> thermal_cooling_device *cdev,
->>>
->>>  	if (current_state == 0 && state > 0) {
->>>  		idle_inject_start(ii_dev);
->>> -	} else if (current_state > 0 && !state)  {
->>> +	} else if (current_state > 0 && !state) {
->>>  		idle_inject_stop(ii_dev);
->>> +	} else {
->>> +		idle_inject_stop(ii_dev);
->>> +		idle_inject_start(ii_dev);
->>>  	}
->>>
->>>  	return 0;
->>>
->>
->>
->> --
->> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
->>
->> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
->> <http://twitter.com/#!/linaroorg> Twitter |
->> <http://www.linaro.org/linaro-blog/> Blog
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+greg k-h
