@@ -2,75 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09CC26DA79
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62AE26DAA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgIQLj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:39:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24620 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726707AbgIQLgK (ORCPT
+        id S1726867AbgIQLrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726871AbgIQLgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:36:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600342557;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5n7wJKyexD2oiZEydGT+/+g5eqfjGOnTvWw7VQtJAzQ=;
-        b=L8znAvSCc4CF9oWcs7z4WspCJmSx7mTnWbDGLK9urFzVGxA8tGw7P2t6hkNoXxdHv2mDd/
-        f4gUHAKMtSifecut22XQIv6OV12TlGH9pF525wptKFgEEB/iE0jPbsc5/yFeAKahn8s+bb
-        ya2iZMKJCMkTMlwKB1GWzHSR3edO/Zw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-dqePwP51NmafVBHYPjGY7g-1; Thu, 17 Sep 2020 07:35:55 -0400
-X-MC-Unique: dqePwP51NmafVBHYPjGY7g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1BC685C731;
-        Thu, 17 Sep 2020 11:35:54 +0000 (UTC)
-Received: from gondolin (ovpn-113-19.ams2.redhat.com [10.36.113.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A2662101416C;
-        Thu, 17 Sep 2020 11:35:50 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 13:35:37 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alex.williamson@redhat.com>, <wanghaibin.wang@huawei.com>
-Subject: Re: [PATCH 2/2] vfio/pci: Remove bardirty from vfio_pci_device
-Message-ID: <20200917133537.17af2ef3.cohuck@redhat.com>
-In-Reply-To: <20200917033128.872-2-yuzenghui@huawei.com>
-References: <20200917033128.872-1-yuzenghui@huawei.com>
-        <20200917033128.872-2-yuzenghui@huawei.com>
-Organization: Red Hat GmbH
+        Thu, 17 Sep 2020 07:36:09 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A9DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:35:45 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k15so1678634wrn.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EtH4/cbuQgykQYd+jjjiuY8limbLr894Hm1Wfr5TKQE=;
+        b=MZtwfo2Wkr6xjMeQYiz0AzKCHXOeKN48g2ul8ghIqc3xiqk9zQf+HOBZ+UHRPpswvD
+         9SBgHRwMaFLJDl27uhHNtO8R/rVQPrHwHvld1k1cSpz8o0eAbb3ZsN9tjQpOpqlJKGlW
+         GrwSOQnzS9k0pLp3WVTGsfCkX2nwuK4/KULnQidX0PveC+EMFDCZsR5EPDsAU4hnW/C4
+         FwjND5Y6WgjF+MR48bLLBhiZwio2a9ADpBpQiFIj+6TTVuegNGnGK+5dwnjCcZZiHSIO
+         9G8jASY5hC9NeCi7D/s0svoVNRSESbWKf5XK5jmgjExYi5hfODHSRbI3XH+jyy9nFahP
+         i+zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EtH4/cbuQgykQYd+jjjiuY8limbLr894Hm1Wfr5TKQE=;
+        b=Tt5XVNOTMvW+YunuYgEiU8pt8p/CUVKx/nDmVyXfu2aXBAFh2Amgh9/o7BKne+KvXM
+         rSgdTKsPZ8DCLkFdd/Xje7vE/sWVjMGexgbeN1jqlvl3+ZoEeyikowpZqJvs14CCFI8W
+         B25rrwbka1FrnqBLqdOzz72tBuMr9Vvf/5fYwSapa4gh0zTP8itOcfOdpCsKP2lz0E+k
+         vfzC6tICZ4x4Y+paEugm/r4AFJ8FOH83Puq9NP3a3IWtvBqbm6qoDY6IeQpdsVDByFDM
+         KFwti5VP+wpc7sgxXHPhjo/+KdYaLwliVpnDsIjOyx/z3Jiy4VLmAotReeZZO1amWH8X
+         Fcng==
+X-Gm-Message-State: AOAM531WXZfyrAVel6NUOg3d7+2vy5w4mN5v982qoBUrme4I/n/bidnG
+        Jn7LHUzD5dgRHLbcXwM6PIF3Ug==
+X-Google-Smtp-Source: ABdhPJwAdcQbPsLcZZV58AgYAMNaXQbRRw54r+D+72HaJLI/PEWaAMsAwIznC1PUJ+lKzs+dj/3gLQ==
+X-Received: by 2002:adf:df87:: with SMTP id z7mr32658549wrl.239.1600342544219;
+        Thu, 17 Sep 2020 04:35:44 -0700 (PDT)
+Received: from google.com (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
+        by smtp.gmail.com with ESMTPSA id f14sm10591991wme.22.2020.09.17.04.35.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 04:35:42 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 11:35:40 +0000
+From:   George Popescu <georgepope@google.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, maz@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        David Brazdil <dbrazdil@google.com>, broonie@kernel.org,
+        Fangrui Song <maskray@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH 06/14] Fix CFLAGS for UBSAN_BOUNDS on Clang
+Message-ID: <20200917113540.GA1742660@google.com>
+References: <202009141509.CDDC8C8@keescook>
+ <20200915102458.GA1650630@google.com>
+ <CANpmjNOTcS_vvZ1swh1iHYaRbTvGKnPAe4Q2DpR1MGhk_oZDeA@mail.gmail.com>
+ <20200915120105.GA2294884@google.com>
+ <CANpmjNPpq7LfTHYesz2wTVw6Pqv0FQ2gc-vmSB6Mdov+XWPZiw@mail.gmail.com>
+ <20200916074027.GA2946587@google.com>
+ <CANpmjNMT9-a8qKZSvGWBPAb9x9y1DkrZMSvHGq++_TcEv=7AuA@mail.gmail.com>
+ <20200916121401.GA3362356@google.com>
+ <20200916134029.GA1146904@elver.google.com>
+ <CANpmjNOfgeR0zpL-4AtOt0FL56BFZ_sud-mR3CrYB7OCMg0PaA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOfgeR0zpL-4AtOt0FL56BFZ_sud-mR3CrYB7OCMg0PaA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 11:31:28 +0800
-Zenghui Yu <yuzenghui@huawei.com> wrote:
-
-> It isn't clear what purpose the @bardirty serves. It might be used to avoid
-> the unnecessary vfio_bar_fixup() invoking on a user-space BAR read, which
-> is not required when bardirty is unset.
+On Thu, Sep 17, 2020 at 08:37:07AM +0200, Marco Elver wrote:
+> On Wed, 16 Sep 2020 at 15:40, Marco Elver <elver@google.com> wrote:
+> > On Wed, Sep 16, 2020 at 12:14PM +0000, George Popescu wrote:
+> > > On Wed, Sep 16, 2020 at 10:32:40AM +0200, Marco Elver wrote:
+> > > > On Wed, 16 Sep 2020 at 09:40, George Popescu <georgepope@google.com> wrote:
+> > > > > On Tue, Sep 15, 2020 at 07:32:28PM +0200, Marco Elver wrote:
+> > > > > > On Tue, 15 Sep 2020 at 14:01, George Popescu <georgepope@google.com> wrote:
+> > > > > > > On Tue, Sep 15, 2020 at 01:18:11PM +0200, Marco Elver wrote:
+> > > > > > > > On Tue, 15 Sep 2020 at 12:25, George Popescu <georgepope@google.com> wrote:
+> > > > > > > > > On Mon, Sep 14, 2020 at 03:13:14PM -0700, Kees Cook wrote:
+> > > > > > > > > > On Mon, Sep 14, 2020 at 05:27:42PM +0000, George-Aurelian Popescu wrote:
+> > > > > > > > > > > From: George Popescu <georgepope@google.com>
+> > > > > > > > > > >
+> > > > > > > > > > > When the kernel is compiled with Clang, UBSAN_BOUNDS inserts a brk after
+> > > > > > > > > > > the handler call, preventing it from printing any information processed
+> > > > > > > > > > > inside the buffer.
+> > > > > > > > > > > For Clang -fsanitize=bounds expands to -fsanitize=array-bounds and
+> > > > > > > > > > > -fsanitize=local-bounds, and the latter adds a brk after the handler
+> > > > > > > > > > > call
+> > > > > > > > > >
+> > > > > > > > > This would mean losing the local-bounds coverage. I tried to  test it without
+> > > > > > > > > local-bounds and with a locally defined array on the stack and it works fine
+> > > > > > > > > (the handler is called and the error reported). For me it feels like
+> > > > > > > > > --array-bounds and --local-bounds are triggered for the same type of
+> > > > > > > > > undefined_behaviours but they are handling them different.
+> > > > > > > >
+> > > > > > > > Does -fno-sanitize-trap=bounds help?
+> > [...]
+> > > > Your full config would be good, because it includes compiler version etc.
+> > > My full config is:
+> >
+> > Thanks. Yes, I can reproduce, and the longer I keep digging I start
+> > wondering why we have local-bounds at all.
+> >
+> > It appears that local-bounds finds a tiny subset of the issues that
+> > KASAN finds:
+> >
+> >         http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20131021/091536.html
+> >         http://llvm.org/viewvc/llvm-project?view=revision&revision=193205
+> >
+> > fsanitize=undefined also does not include local-bounds:
+> >
+> >         https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#available-checks
+> >
+> > And the reason is that we do want to enable KASAN and UBSAN together;
+> > but local-bounds is useless overhead if we already have KASAN.
+> >
+> > I'm inclined to say that what you propose is reasonable (but the commit
+> > message needs to be more detailed explaining the relationship with
+> > KASAN) -- but I have no idea if this is going to break somebody's
+> > usecase (e.g. find some OOB bugs, but without KASAN -- but then why not
+> > use KASAN?!)
 > 
-> The variable was introduced in commit 89e1f7d4c66d ("vfio: Add PCI device
-> driver") but never actually used, so it shouldn't be that important. Remove
-> it.
+> So, it seems that local-bounds can still catch some rare OOB accesses,
+> where KASAN fails to catch it because the access might skip over the
+> redzone.
 > 
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> ---
->  drivers/vfio/pci/vfio_pci_config.c  | 7 -------
->  drivers/vfio/pci/vfio_pci_private.h | 1 -
->  2 files changed, 8 deletions(-)
+> The other more interesting bit of history is that
+> -fsanitize=local-bounds used to be -fbounds-checking, and meant for
+> production use as a hardening feature:
+> http://lists.llvm.org/pipermail/llvm-dev/2012-May/049972.html
+> 
+> And local-bounds just does not behave like any other sanitizer as a
+> result, it just traps. The fact that it's enabled via
+> -fsanitize=local-bounds (or just bounds) but hasn't much changed in
+> behaviour is a little unfortunate.
 
-Yes, it seems to have been write-only all the time.
+> I suppose there are 3 options:
+> 
+> 1. George implements trap handling somehow. Is this feasible? If not,
+> why not? Maybe that should also have been explained in the commit
+> message.
+> 
+> 2. Only enable -fsanitize=local-bounds if UBSAN_TRAP was selected, at
+> least for as long as Clang traps for local-bounds. I think this makes
+> sense either way, because if we do not expect UBSAN to trap, it really
+> should not trap!
+> 
+> 3. Change the compiler. As always, this will take a while to implement
+> and then to reach whoever should have that updated compiler.
+> 
+> Preferences?
+Considering of what you said above, I find option 2 the most elegant.
+The first one doesn't sound doable for the moment, also the third.
+I will edit this patch considering your comments and resend it to the
+list.
+Thank you for your support.
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Thanks,
+George
+
 
