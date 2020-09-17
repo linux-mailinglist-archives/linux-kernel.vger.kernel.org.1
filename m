@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C731F26D9A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD7426D9A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgIQKxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:53:47 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:45190 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbgIQKwL (ORCPT
+        id S1726759AbgIQKxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726505AbgIQKwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:52:11 -0400
-X-Greylist: delayed 1995 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 06:52:09 EDT
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HAmPgZ173583;
-        Thu, 17 Sep 2020 10:51:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=128JYvB1/lmV8xI78ndvYWC8FeCoUJpVcSljx9SrvpM=;
- b=BgicA9ehoRykkgTkNpjKAwj/XN7TtpnaePV4WmuvWeT2mqC1TRh6WLVaL4T8NkFQQLvt
- oAhaYrwk4G5HijzeIMZKgAPUwxsa8yEASN/XkHzKjdFoDrFXVdEGBdF8Ka0YjHoDflaV
- bWGkroDeTkLZHB66X2EjxXxmXIcs7Z4PeGegZMXYUigmZcH7YTmvjSGMdZ0PNHRdzESg
- DjLdDhR5axaXvG4fM6ZOaiXT6Da5JvJZHvFDVLyM3xqQ9RUfQSnEhiDwxhqdKeHREg89
- K7Zkac9PX+layGgGUWIlkGmma6sR54e/C46HhAbN9FRdIsvb0rxrba9Xlme32YHUefKg rw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 33j91dt402-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 10:51:53 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HAinTl095421;
-        Thu, 17 Sep 2020 10:49:53 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33h893gq3a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 10:49:53 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08HAnp23028997;
-        Thu, 17 Sep 2020 10:49:51 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 10:49:50 +0000
-Date:   Thu, 17 Sep 2020 13:49:41 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, devel@driverdev.osuosl.org,
-        robh@kernel.org, andriy.shevchenko@linux.intel.com,
-        jorhand@linux.microsoft.com, linux-media@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        kieran.bingham@ideasonboard.com, kitakar@gmail.com,
-        bingbu.cao@intel.com, mchehab@kernel.org, davem@davemloft.net,
-        tian.shu.qiu@intel.com, yong.zhi@intel.com
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-Message-ID: <20200917104941.GP4282@kadam>
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917103343.GW26842@paasikivi.fi.intel.com>
+        Thu, 17 Sep 2020 06:52:03 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A015C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:51:47 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p9so2613060ejf.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=plexistor-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RGELJOdeW4b71Bd2hOfjUNQx1LOgRfzHQbemIj8oBT0=;
+        b=O0TtsmLM1mEFIkrW6anX3vSM03iH1kz/jz/9BRDaIXPnsJg4HNTPwrPH4S6h6v+QxH
+         fo3b8B+eccCAlrXekzTvJqfBUJuYybnyedE9Wy9kbhmxLRc/11586mNEUSmOQHqYDEAK
+         nl0xhJ3jWt3e9gODjq5Bwm9y12LpEoA/KHf1Egr2NupjbXOqGFf/r5r2GumD2Tc1Nm0v
+         ECojT+VG2co/i0QGYzk4xjMUpNSHcROAkpbT/B/99nZwOcYcMjLZBo76NdBhz9fkwMCJ
+         9Z0ofblkD/ibR0p1939tW5trBtib1MJ64i+b3Ftxgph6z5pGoUswJBsy/bZW+JI81ZEq
+         fXOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RGELJOdeW4b71Bd2hOfjUNQx1LOgRfzHQbemIj8oBT0=;
+        b=H+IieTWF50PqzCK3jp7AgFfEOV0VtMxFFP7EcIgcV9X+wfEU2xySreV7fAPiR3KyA8
+         DdwV3cluP5Qbol+waKTH/KPkUTkmelfAGfqAxKtQnVO5yCnK4LMgYXfwdaaCp48Gczjj
+         VzgFhJSoCJ7Do7GvCPGVBS0xaKBIXNtrtm1PY46LAMG8NoUHzc+SGOuR/sxu/+gpvwaD
+         dAJ/1UGCQTe1oZGHSL9TxJUd5MdSr6JKXKx+M1uUg/LTYK3n5oPkrxzu0ZpRZ9ERm1dD
+         SqHebC5qxUMUCEDIyg4et6EV7DFborwe5bojp2GCHDNYx5Y/3xHwxQIEVoFBrHHWUy+g
+         UqNg==
+X-Gm-Message-State: AOAM533NQJFS4I2zlG9JraTcY5MEI4/v8LHjtmrUzZaJ/N71KP2BWoPH
+        zRlXy0KEqeb0lEtHy44bmUSC2A==
+X-Google-Smtp-Source: ABdhPJzJfw93qfgF7JBy0y8RzBEbFoASNUOTDTI5xFQKbX5C9c6f9EmP5lkwoB3UUsK73XcUntjoWw==
+X-Received: by 2002:a17:906:724b:: with SMTP id n11mr30523847ejk.328.1600339906107;
+        Thu, 17 Sep 2020 03:51:46 -0700 (PDT)
+Received: from ?IPv6:2a02:587:d40:1d00:c424:9586:23a2:8162? ([2a02:587:d40:1d00:c424:9586:23a2:8162])
+        by smtp.gmail.com with ESMTPSA id x6sm14706311ejf.59.2020.09.17.03.51.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 03:51:45 -0700 (PDT)
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+To:     Hou Tao <houtao1@huawei.com>, peterz@infradead.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+From:   Boaz Harrosh <boaz@plexistor.com>
+Message-ID: <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+Date:   Thu, 17 Sep 2020 13:51:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917103343.GW26842@paasikivi.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170082
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170083
+In-Reply-To: <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 01:33:43PM +0300, Sakari Ailus wrote:
-> > +static int connect_supported_devices(void)
-> > +{
-> > +	struct acpi_device *adev;
-> > +	struct device *dev;
-> > +	struct sensor_bios_data ssdb;
-> > +	struct sensor *sensor;
-> > +	struct property_entry *sensor_props;
-> > +	struct property_entry *cio2_props;
-> > +	struct fwnode_handle *fwnode;
-> > +	struct software_node *nodes;
-> > +	struct v4l2_subdev *sd;
-> > +	int i, ret;
+On 16/09/2020 15:32, Hou Tao wrote:
+<>
+> However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
 > 
-> unsigned int i
+> v4.19.111
+> no writer, reader cn                               | 24        | 48        | 72        | 96
+> the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
+> the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
 > 
 
-Why?
+I believe perhaps Peter Z's suggestion of an additional
+percpu_down_read_irqsafe() API and let only those in IRQ users pay the 
+penalty.
 
-For list iterators then "int i;" is best...  For sizes then unsigned is
-sometimes best.  Or if it's part of the hardware spec or network spec
-unsigned is best.  Otherwise unsigned variables cause a ton of bugs.
-They're not as intuitive as signed variables.  Imagine if there is an
-error in this loop and you want to unwind.  With a signed variable you
-can do:
+Peter Z wrote:
+> My leading alternative was adding: percpu_down_read_irqsafe() /
+> percpu_up_read_irqsafe(), which use local_irq_save() instead of
+> preempt_disable().
 
-	while (--i >= 0)
-		cleanup(&bridge.sensors[i]);
-
-There are very few times where raising the type maximum from 2 billion
-to 4 billion fixes anything.
-
-regards,
-dan carpenter
-
+Thanks
+Boaz
