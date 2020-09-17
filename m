@@ -2,143 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B7026E4F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED73E26E504
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgIQTEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:04:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36396 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726598AbgIQTDl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 15:03:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600369419;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1726180AbgIQTFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:05:51 -0400
+Received: from crapouillou.net ([89.234.176.41]:35340 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726670AbgIQTEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 15:04:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1600369440; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=werZBEA6aQYY57n+G7CDD2kpsyT+DQ1TWdsoiO3KsTk=;
-        b=aRxotHNlZRv+xdPlVocKzzxCi3mkgvhN5XkEeaJp2/Kts+BMTZ5EMJRO6lTt8BcD7DxiGj
-        yPJaueqRLvx2agZgjY4OY0Y2ODOJgAYI6xM9gCJL171KiOL6Iby0m1oSSGhwPQWCx90xAq
-        I97erkXaHGp8VUkeVtMXIw3d2Je3gRw=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-VgTHY9PnOpuSrGqjNwpciA-1; Thu, 17 Sep 2020 15:03:35 -0400
-X-MC-Unique: VgTHY9PnOpuSrGqjNwpciA-1
-Received: by mail-qv1-f70.google.com with SMTP id dj20so2120553qvb.23
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 12:03:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=werZBEA6aQYY57n+G7CDD2kpsyT+DQ1TWdsoiO3KsTk=;
-        b=onaXMrT5WTDm/zgxAFp3g87Akl1uc2mDYMl9TfxsH4MSXCB3BdZ+EjjUc2pU/CDbGr
-         Fi3MOR6CyoUcnxhMVFDwWQjQK9stgktcfPXamYZ9S+kpvApUySsEBEaaxSCw3vxsMUir
-         B1BDcMOnhD/DzwDRrBBM+fpi6HFr1bTI9YBH+hshr9qbLcflICWUHpTWq9XVV600QwoH
-         X/NeAsPbxQn4neZDwJvTGp09g5T/e+8/y11VYcVdAL9BNp6zESFStp27dT6e7vr5K819
-         sdc2T8b7JoJbj/Neg+b0HUIDjMYDiH+zoj9qA37ALP/oddGs21J4Wd/CCrg8EtlZfJ+K
-         aTlQ==
-X-Gm-Message-State: AOAM5305YWFNs+EeuOZVjTaLg//imPXj8TNoalsSfJSg9bCnFkgLjrt/
-        79QCsawxSkYe5tLbGXpXyt4GrS2KCKA2I88FBMbnIhZp67J5pUFV1Md3jpT7Ouy26OeKkXT07KX
-        AjrycToe0zRBFoJkcPcMjwrf0
-X-Received: by 2002:ac8:3261:: with SMTP id y30mr29831090qta.242.1600369415120;
-        Thu, 17 Sep 2020 12:03:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyMcFp/ZC2dSEfUBEXD6VSFje71VAmHUeXv1Bo/4H1yZr0fGe/3WGTbE9mhvRnP9pBE7wVyLw==
-X-Received: by 2002:ac8:3261:: with SMTP id y30mr29831049qta.242.1600369414812;
-        Thu, 17 Sep 2020 12:03:34 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id g25sm423162qto.47.2020.09.17.12.03.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 12:03:33 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 15:03:32 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200917190332.GB133226@xz-x1>
-References: <20200915191346.GD2949@xz-x1>
- <20200915193838.GN1221970@ziepe.ca>
- <20200915213330.GE2949@xz-x1>
- <20200915232238.GO1221970@ziepe.ca>
- <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca>
- <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca>
- <20200917181411.GA133226@xz-x1>
- <CAHk-=wgMVPAhD7C24ipe03+MScgp6F=zMS-roOznvxJ+hOGfSA@mail.gmail.com>
+        bh=L3OBK4G1Rvv8T0Xnqj3/8Lbig0kqsWBBjd0US1g/rPo=;
+        b=dyOMV3sQSIuXwuaky8QYur2ywbBqBFDkh4I8lC8CviZwJ4xXUpL4z0HKUxmZFgT1wCRV+i
+        lmglasQwXio0xAlmn9AwPeNsR0gejQ1N0ipvwaxZk7O7qZVgtm6UVhMbStHccEmV266mP4
+        NNt/TuV+D6L8z9EtegHwMbZvBfl1a4o=
+Date:   Thu, 17 Sep 2020 21:03:36 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 09/13] dt-bindings: pinctrl: include common schema in
+ GPIO controllers
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?iso-8859-1?q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andreas =?iso-8859-1?q?F=E4rber?= <afaerber@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        - <patches@opensource.cirrus.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Andy Teng <andy.teng@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sricharan R <sricharan@codeaurora.org>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-unisoc@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Message-Id: <0YGTGQ.TCQDDTXFCWNX2@crapouillou.net>
+In-Reply-To: <20200917165301.23100-10-krzk@kernel.org>
+References: <20200917165301.23100-1-krzk@kernel.org>
+        <20200917165301.23100-10-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgMVPAhD7C24ipe03+MScgp6F=zMS-roOznvxJ+hOGfSA@mail.gmail.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 11:26:01AM -0700, Linus Torvalds wrote:
-> On Thu, Sep 17, 2020 at 11:14 AM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > In my humble opinion, the real solution is still to use MADV_DONTFORK properly
-> > so we should never share the DMA pages with others when we know the fact.
-> 
-> Is this all just because somebody does a fork() after doing page pinning?
-> 
-> If so, I feel this should be trivially fixed in  copy_one_pte().
-> That's where we currently do
-> 
->         /*
->          * If it's a COW mapping, write protect it both
->          * in the parent and the child
->          */
->         if (is_cow_mapping(vm_flags) && pte_write(pte)) {
->                 ptep_set_wrprotect(src_mm, addr, src_pte);
->                 pte = pte_wrprotect(pte);
->         }
-> 
-> and I feel that that is where we could just change the code to do a
-> COW event for pinned pages (and *not* mark the parent write protected,
-> since the parent page now isn't a COW page).
-> 
-> Because if that's the case that Jason is hitting, then I feel that
-> really is the correct fix: make sure that the pinning action is
-> meaningful.
-> 
-> As mentioned, I really think the whole (and only) point of page
-> pinning is that it should keep the page locked in the page tables. And
-> by "locked" I mean exactly that: not just present, but writable.
-> 
-> And then the "we never COW a pinned page" comes not from the COW code
-> doing magic, but by it simply never becoming non-writable - because
-> the page table entry is locked!
+Hi,
 
-Looks reasonable to me.
 
-The fork() should be slightly slower though, since we'll need to copy the data
-for all the DMA buffers for each of the child processes, even if we should be
-pretty sure those processes won't use these pages at all. But it seems a good
-approach anyway if we care about the potential breakages in the userspace so
-the breakage is turned into perf degrades, and if any userspace noticed such
-perf degrade on fork() then people will probably remember to use MADV_DONTFORK
-properly since afaict MADV_DONTFORK can remove this extra overhead..
+Le jeu. 17 sept. 2020 =E0 18:52, Krzysztof Kozlowski <krzk@kernel.org> a=20
+=E9crit :
+> Include the common GPIO schema in GPIO controllers to be sure all=20
+> common
+> properties are properly validated.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Another side effect I can think of is that we'll bring some uncertainty to
-fork() starting from when page_maybe_dma_pinned() is used, since it's sometimes
-bogus (hpage_pincount_available()==false) so some COWs might be triggered
-during fork() even when not necessary if we've got some normal pages with too
-many refcounts (over GUP_PIN_COUNTING_BIAS).  But assuming that's not a big
-deal since it should be extremely rare, or is it?..
+Acked-by: Paul Cercueil <paul@crapouillou.net>
 
--- 
-Peter Xu
+Cheers,
+-Paul
+
+>=20
+> ---
+>=20
+> Changes since v1:
+> 1. New patch
+> ---
+>  .../devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml      | 3=20
+> +++
+>  .../bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml          | 1 +
+>  .../devicetree/bindings/pinctrl/cirrus,lochnagar.yaml          | 3=20
+> +++
+>  Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml | 3=20
+> +++
+>  .../devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml   | 3=20
+> +++
+>  Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml  | 3=20
+> +++
+>  .../devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml      | 3=20
+> +++
+>  .../devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml      | 3=20
+> +++
+>  .../devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml       | 3=20
+> +++
+>  .../devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml      | 3=20
+> +++
+>  .../devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml          | 3=20
+> +++
+>  11 files changed, 31 insertions(+)
+>=20
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> index 33391d30c00c..51bfc214bba6 100644
+> ---=20
+> a/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> +++=20
+> b/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> @@ -15,6 +15,9 @@ description: |
+>    GPIO function selection & GPIO attributes configuration. Please=20
+> refer to
+>    pinctrl-bindings.txt in this directory for common binding part and=20
+> usage.
+>=20
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: actions,s500-pinctrl
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.y=
+aml=20
+> b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.y=
+aml
+> index 7556be6e2754..55662f8d1f94 100644
+> ---=20
+> a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.y=
+aml
+> +++=20
+> b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.y=
+aml
+> @@ -143,6 +143,7 @@ allOf:
+>    # boards are defining it at the moment so it would generate a lot=20
+> of
+>    # warnings.
+>=20
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+>    - if:
+>        properties:
+>          compatible:
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> index 420d74856032..ed478b0ed4cc 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> @@ -31,6 +31,9 @@ description: |
+>    This binding must be part of the Lochnagar MFD binding:
+>      [4] ../mfd/cirrus,lochnagar.yaml
+>=20
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      enum:
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> index 44c04d11ae4c..ffa64832b4f9 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> @@ -59,6 +59,9 @@ properties:
+>  patternProperties:
+>    "^gpio@[0-9]$":
+>      type: object
+> +    allOf:
+> +      - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>      properties:
+>        compatible:
+>          enum:
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> index 152c151c27ad..7d0a4cb96f39 100644
+> ---=20
+> a/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> +++=20
+> b/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> @@ -14,6 +14,9 @@ description: |+
+>    required property:
+>    - compatible: "syscon"
+>=20
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: mediatek,mt6779-pinctrl
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> index 5556def6b99b..bc8bc0ac1926 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> @@ -12,6 +12,9 @@ maintainers:
+>  description: |
+>    The Mediatek's Pin controller is used to control SoC pins.
+>=20
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: mediatek,mt8192-pinctrl
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> index c64c93206817..22a6b80b4c0e 100644
+> ---=20
+> a/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> +++=20
+> b/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found=20
+> in the
+>    IPQ6018 platform.
+>=20
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,ipq6018-pinctrl
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> index 1f0f5757f9e1..9855d859fe61 100644
+> ---=20
+> a/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> +++=20
+> b/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found=20
+> in the
+>    MSM8226 platform.
+>=20
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,msm8226-pinctrl
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> index 8508c57522fd..e5757b6ced40 100644
+> ---=20
+> a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> +++=20
+> b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found=20
+> in the
+>    SM8250 platform.
+>=20
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,sm8250-pinctrl
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> index b7911a994f3a..4d7bf4340262 100644
+> ---=20
+> a/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> +++=20
+> b/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> @@ -10,6 +10,9 @@ maintainers:
+>    - Chris Brandt <chris.brandt@renesas.com>
+>    - Geert Uytterhoeven <geert+renesas@glider.be>
+>=20
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  description:
+>    The Renesas SoCs of the RZ/A2 series feature a combined Pin and=20
+> GPIO
+>    controller.
+> diff --git=20
+> a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml=20
+> b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> index 72877544ca78..28b861362ba0 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> @@ -56,6 +56,9 @@ properties:
+>  patternProperties:
+>    '^gpio@[0-9a-f]*$':
+>      type: object
+> +    allOf:
+> +      - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>      properties:
+>        gpio-controller: true
+>        '#gpio-cells':
+> --
+> 2.17.1
+>=20
+
 
