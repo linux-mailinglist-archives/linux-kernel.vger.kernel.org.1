@@ -2,284 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6070626D894
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA4426D8C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgIQKMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgIQKMl (ORCPT
+        id S1726601AbgIQKVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:21:20 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:43873 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726684AbgIQKUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:12:41 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A662DC06174A;
-        Thu, 17 Sep 2020 03:12:40 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id a2so1303419ybj.2;
-        Thu, 17 Sep 2020 03:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wr0X2v6394FbdTIf6rHS1eHtFra+Zcue68b3yKpahjg=;
-        b=sJzPSCNtVfQCCumhCyA7M4aTmlR9HQT7sBpUtWtd+aVLqYOu1DDOUjqpdS10pft85C
-         Zim1vwPFJSQtpeM4GEF4fLV7qolZcIkOETPiPaAZJqenJvsl/kaHexHkzuB3vjNHuLX2
-         v3Yypa7vr88uLv5gUTGdY9wnMCfSFo9ZQjefZYGQubw43V8VSQNx/1HkxzbH0gjkcZlu
-         LCxOyJRzmL2LmE3pN0vqDPr3T0PvVzxma+TJC/XhRUtARnLK6eRPmzHhDhJE/dXBmGNC
-         XwZno6rSOP0oALzGNUXKiorJjgh5oMUhB0CrCTZaan1k8XoRJYRxdDWr18YvUZD1it6z
-         3ocw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wr0X2v6394FbdTIf6rHS1eHtFra+Zcue68b3yKpahjg=;
-        b=sJkXf5ZE2DVNiz2pT8kvB6Ls5LkhkD0Jj3JZ1qUx40hCZ9dwQa1fA0Avo2WfnoI/gh
-         B7sQ7HBzTInt6BXwluzFgfUd+gmFs8bPVq7rgElplnmTUwTEYSypUZTIkkRR3GrWKJG5
-         HGyciBXsSGKBaCkbwZpZO2f4sxeWbjQm+KhSg7njnGMI6WrbCHYUM3Fm0wIWjk11g12i
-         JWT9yfDIcvz3tjuzI0Q7mupdI9fCYvkyuNk6kXJDjbqFJxdGYJuZY3pirZOV44CMDYKU
-         bXOAQhuaNbneM017kvgm+KcBCsIs1ZAl72mnhTiR6yQeh3/9gY42VaxtkQOEFw/D5Y+G
-         E9yQ==
-X-Gm-Message-State: AOAM532b5rB1jYYs0OEI0AefFBhW/uur7/wMGftM8r2H1LZn3Ra+fvSR
-        v9fS5Cf6fTz7sFNBfFNO1uLRSW84cclVDJJVhJU=
-X-Google-Smtp-Source: ABdhPJwtiRxMg5ZZenV0V64rB3KkZ+tu4NwSJkcO4Xx0UcCC2Vu+2XToymNgGe3lTnrYZsaUDDT9aojB2gxRfieDzVw=
-X-Received: by 2002:a25:d10d:: with SMTP id i13mr43977913ybg.476.1600337558769;
- Thu, 17 Sep 2020 03:12:38 -0700 (PDT)
+        Thu, 17 Sep 2020 06:20:25 -0400
+X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 06:20:25 EDT
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200917101430euoutp01b7e99bf1e38563b496de71402420c46b~1iqHrcN842859928599euoutp01H
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:14:30 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200917101430euoutp01b7e99bf1e38563b496de71402420c46b~1iqHrcN842859928599euoutp01H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600337670;
+        bh=8z0Q/zllco9taX8DhGAyt2E9g1QJtkv+J7GHxLWbFa4=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=gjeggAwdEFrG3xjxo0/ItWd+aDLmg151TLik934UCQynZMz0rEWcmIslJxegXqfM0
+         KX+0Qu3i7kx+N+ulBjlix5ntX9lCqjWPcm7kTwTOXQaU9LF8WK5rUKR/gwyt/hqccT
+         MN1xge6VD14a4jTDNaWb3CFy8E4hre1kp27W1oBM=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200917101430eucas1p115b36c9a44d1aaf4e42c1d47b53844ce~1iqHdDa-i0221902219eucas1p1Z;
+        Thu, 17 Sep 2020 10:14:30 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id DD.D4.06456.607336F5; Thu, 17
+        Sep 2020 11:14:30 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200917101429eucas1p20d6a56a9856cd0e1296496f650ae33cf~1iqHEsMVW0645206452eucas1p2p;
+        Thu, 17 Sep 2020 10:14:29 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200917101429eusmtrp1db6072aed6347d0942fe07718290909f~1iqHEBF3a0383903839eusmtrp1P;
+        Thu, 17 Sep 2020 10:14:29 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-76-5f6337060210
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 6F.BE.06017.507336F5; Thu, 17
+        Sep 2020 11:14:29 +0100 (BST)
+Received: from [106.210.123.115] (unknown [106.210.123.115]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200917101429eusmtip1c5764a956b50d084bfef5e98d28f2bbd~1iqGgMZfB1685116851eusmtip1A;
+        Thu, 17 Sep 2020 10:14:29 +0000 (GMT)
+Subject: Re: [PATCH v2 2/2] clk: samsung: exynos5420: Avoid __clk_lookup()
+ calls when enabling clocks
+To:     linux-clk@vger.kernel.org
+Cc:     tomasz.figa@gmail.com, cw00.choi@samsung.com, sboyd@kernel.org,
+        mturquette@baylibre.com, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, b.zolnierkie@samsung.com,
+        m.szyprowski@samsung.com
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <534c401e-611e-4cb4-644d-8ed9d00ce36d@samsung.com>
+Date:   Thu, 17 Sep 2020 12:14:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200710111054.29562-1-benchuanggli@gmail.com>
- <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com> <20200917051253.GA3094018@laputa>
-In-Reply-To: <20200917051253.GA3094018@laputa>
-From:   Ben Chuang <benchuanggli@gmail.com>
-Date:   Thu, 17 Sep 2020 18:12:27 +0800
-Message-ID: <CACT4zj9LuJoy9mX4Fqm+jZf1bDa5oUZcR6mPa-otW1mXfNLh1g@mail.gmail.com>
-Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
- additional operations
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw
-Cc:     Renius.Chen@genesyslogic.com.tw
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200811151251.31613-2-s.nawrocki@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0gUURjt7szszkpr11XxQ3vQplGZmig4lthmBZtI+EcII3XVQcV1lR21
+        7JcSSj6zhLTFR4WRLZkPNi0jhSXXx6amlZpl4qMyS81HhFaa4yj575zznXPu98GlCXkt5UjH
+        aZNZnVatUYityAbzUreb2Ccq/EjtnA1TV1JDMQOLXyhmLu8jxbxuKhUzJT3NIqb6xbCE6e08
+        zaz015GMoekPUkpVs4OZEtVT/bBEVW/IFqsKjAakWqjfHUyFWvlFs5q4VFbn4R9hFfv5wbgo
+        aRJfMhqbReko0zoHSWnA3jCT3yLKQVa0HFcheJUxTAhkEUHlWyOZg+g1soBgfO9mYGWmc8Nz
+        H8Fse6VEIHMIbloWKT5gi2PAWBzHB+zwLhgyL4l5D4H7EZiuG8T8QIw9Ib+1APF+GfaHrF/7
+        eZnELmAun0c8tsdhYO4cI3kswzbQcWtiHUuxH7Rmv1v3ENgBhiYqRALeA43TpYSwqFkCPVOB
+        fD3gU5D/0EOQbWGqzSgR8E6wFOWR/GqAryDIe/ZeIpBCBCNtt5HgOgYfupfFfBGBD0JN00bR
+        CegrmqaEfmsYnLYRVrCGGw3FhCDL4GqWXHA7w29DsUjAjpA7sUoWIoV+y2H6Lcfotxyj///u
+        bUQakAObwiXEsJynlr3ozqkTuBRtjHtUYkI9WvtHlpW2+SfoZ1+kCWEaKbbLau0jw+WUOpVL
+        SzAhoAmFnSygyxIml0Wr0y6zusRwXYqG5UzIiSYVDjKvu18vyHGMOpmNZ9kkVrc5FdFSx3Sk
+        7GBPtvgXmw6fbXzJXvu06tb7PeKMzai2J3lpuLJlAIVoQs8f1YxW5XqlNlVRymDnN3GotDoj
+        qGzsh7f+QNJcisk/XRof8vxxoMIy1VW+PF4tD+IyXc45b2u7027cYe9TVl/1TWlQ/3XSuyjv
+        7Tte4esx6Vvi6mpfmE8vBzwaUZBcrNrzEKHj1P8AetigBEMDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKIsWRmVeSWpSXmKPExsVy+t/xu7qs5snxBjPWWFlsnLGe1eL6l+es
+        Fh977rFaXN41h81ixvl9TBZrj9xlt7h4ytXi37WNLBardv1hdOD0eH+jld1j56y77B6bVnWy
+        efRtWcXo8XmTXABrlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpO
+        Zllqkb5dgl7Gs5WPmQpeCFRs2bKPqYGxla+LkZNDQsBE4t+7U8xdjFwcQgJLGSU2n97M1sXI
+        AZSQkpjfogRRIyzx51oXG0TNe0aJ1zcvsILUCAukS2yZnglSIyIgK3Hr2E+wGmaBa4wSy7dt
+        g2o4yChxd8FfVpAqNgFDid6jfYwgzbwCdhJt39VAwiwCqhLH5n1iBLFFBeIkzvS8YAOxeQUE
+        JU7OfMICYnMK2Egc7bwJVsMsoC7xZ94lZghbXOLWk/lMELa8xPa3c5gnMArNQtI+C0nLLCQt
+        s5C0LGBkWcUoklpanJueW2ykV5yYW1yal66XnJ+7iREYhduO/dyyg7HrXfAhRgEORiUe3g2i
+        SfFCrIllxZW5hxglOJiVRHidzp6OE+JNSaysSi3Kjy8qzUktPsRoCvTcRGYp0eR8YILIK4k3
+        NDU0t7A0NDc2NzazUBLn7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAuMckb7FXX1VU7IaHk499
+        93adueBOT9jXd1dXTLM868Kxhsv384fQUwtm1LXmTbY9IfrO0UZGSiAjZkFru6nnqhR7d1PZ
+        subAk6lvLnn0aTalL2i/229fzOn/JYmRef++b98Srj3ldT/+ST27zVV58R275vSfIhvexL3c
+        fI37htKtoqCIh8fjlViKMxINtZiLihMB+feusNgCAAA=
+X-CMS-MailID: 20200917101429eucas1p20d6a56a9856cd0e1296496f650ae33cf
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200811151304eucas1p2c113097f89229b51bb55329c38990830
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200811151304eucas1p2c113097f89229b51bb55329c38990830
+References: <20200811151251.31613-1-s.nawrocki@samsung.com>
+        <CGME20200811151304eucas1p2c113097f89229b51bb55329c38990830@eucas1p2.samsung.com>
+        <20200811151251.31613-2-s.nawrocki@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takahiro,
+On 11.08.2020 17:12, Sylwester Nawrocki wrote:
+> This patch adds a clk ID to the mout_sw_aclk_g3d clk definition so related
+> clk pointer gets cached in the driver's private data and can be used
+> later instead of a __clk_lookup() call.
+> 
+> With that we have all clocks used in the clk_prepare_enable() calls in the
+> clk provider init callback cached in clk_data.hws[] and we can reference
+> the clk pointers directly rather than using __clk_lookup() with global names.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> Changes for v2:
+>  - added missing part of the patch lost during rebase of the previous version
 
-On Thu, Sep 17, 2020 at 1:12 PM AKASHI Takahiro
-<takahiro.akashi@linaro.org> wrote:
->
-> Adrian, Ben,
->
-> Regarding _reset() function,
->
-> On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
-> > On 10/07/20 2:10 pm, Ben Chuang wrote:
-> > > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > >
-> > > In this commit, UHS-II related operations will be called via a function
-> > > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
-> > > a kernel module.
-> > > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
-> > > and when the UHS-II module is loaded. Otherwise, all the functions
-> > > stay void.
-> > >
-> > > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > > ---
-> > >  drivers/mmc/host/sdhci.c | 152 ++++++++++++++++++++++++++++++++++-----
-> > >  1 file changed, 136 insertions(+), 16 deletions(-)
-> > >
->
->   (snip)
->
-> > >     if (host->ops->platform_send_init_74_clocks)
-> > >             host->ops->platform_send_init_74_clocks(host, ios->power_mode);
-> > >
-> > > @@ -2331,7 +2411,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> > >     }
-> > >
-> > >     if (host->version >= SDHCI_SPEC_300) {
-> > > -           u16 clk, ctrl_2;
-> > > +           u16 clk;
-> > >
-> > >             if (!host->preset_enabled) {
-> > >                     sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
-> > > @@ -3173,11 +3253,19 @@ static bool sdhci_request_done(struct sdhci_host *host)
-> > >                     /* This is to force an update */
-> > >                     host->ops->set_clock(host, host->clock);
-> > >
-> > > -           /* Spec says we should do both at the same time, but Ricoh
-> > > -              controllers do not like that. */
-> > > -           sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > > -           sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > > -
-> > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > +               host->mmc->flags & MMC_UHS2_INITIALIZED) {
-> > > +                   if (sdhci_uhs2_ops.reset)
-> > > +                           sdhci_uhs2_ops.reset(host,
-> > > +                                                SDHCI_UHS2_SW_RESET_SD);
-> > > +           } else {
-> > > +                   /*
-> > > +                    * Spec says we should do both at the same time, but
-> > > +                    * Ricoh controllers do not like that.
-> > > +                    */
-> > > +                   sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > > +                   sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > > +           }
-> >
-> > Please look at using the existing ->reset() sdhci host op instead.
->
-> Well, the second argument to those reset functions is a bit-wise value
-> to different "reset" registers, SDHCI_SOFTWARE_RESET and SDHCI_UHS2_SW_RESET,
-> respectively.
->
-> This fact raises a couple of questions to me:
->
-> 1) Does it make sense to merge two functionality into one, i.e.
->    sdhci_do_reset(), which is set to call ->reset hook?
->
->         -> Adrian
->
-> 2) UHS2_SW_RESET_SD is done only at this place while there are many callsites
->    of reset(RESET_CMD|RESET_DATA) in sdhci.c.
->    Why does the current code work?
->
->    I found, in sdhci-pci-gli.c,
->    sdhci_gl9755_reset()
->         /* reset sd-tran on UHS2 mode if need to reset cmd/data */
->         if ((mask & SDHCI_RESET_CMD) | (mask & SDHCI_RESET_DATA))
->                 gl9755_uhs2_reset_sd_tran(host);
->
->    Is this the trick to avoid the issue?
->    (It looks redundant in terms of the hack above in sdhci_request_done()
->    and even quite dirty to me. Moreover, no corresponding code for gl9750
->    and gl9763.)
+Actually that conflict resolution was incorrect and I squashed 
+below patch as a correction.
 
-GL9755 currently does SD reset and UHS-II reset together.
-There is no UHS-II interface on gl9750 and gl9763e.
+-----------------8<--------------------
+From 1594bdb8fd1ab85e994d638256d214adff4e9d40 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Thu, 17 Sep 2020 11:42:14 +0200
+Subject: [PATCH] clk: samsung: exynos5420: Fix assignment of hws
 
->
->         -> Ben
->
-> 3) (More or less SD specification issue)
->    In UHS-II mode, do we have to call reset(SHCI_RESET_ALL) along with
->    reset(UHS2_SW_RESET_FULL)?
->    Under the current implementation, both will be called at the end.
->
+Fix incorrect rebase conflict resolution.
 
-As I know, the UHS2_SW_RESET_FULL is only for UHS-II.
-Can you list the lines that reset(SHCI_RESET_ALL) and
-reset(UHS2_SW_RESET_FULL) are both called?
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ drivers/clk/samsung/clk-exynos5420.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->         -> Adrian, Ben
->
-> 4) (Not directly linked to UHS-II support)
->   In some places, we see the sequence:
->         sdhci_do_reset(host, SDHCI_RESET_CMD);
->         sdhci_do_reset(host, SDHCI_RESET_DATA);
->   while in other places,
->         sdhci_do_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
->
->   If the statement below is true,
-> > > -           /* Spec says we should do both at the same time, but Ricoh
-> > > -              controllers do not like that. */
->   the latter should be wrong.
->
->         -> Adrian
->
-> -Takahiro Akashi
->
->
->
-> > >             host->pending_reset = false;
-> > >     }
-> > >
-> > > @@ -3532,6 +3620,13 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
-> > >                               SDHCI_INT_BUS_POWER);
-> > >             sdhci_writel(host, mask, SDHCI_INT_STATUS);
-> > >
-> > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > +               intmask & SDHCI_INT_ERROR &&
-> > > +               host->mmc->flags & MMC_UHS2_SUPPORT) {
-> > > +                   if (sdhci_uhs2_ops.irq)
-> > > +                           sdhci_uhs2_ops.irq(host);
-> > > +           }
-> > > +
-> >
-> > Please look at using the existing ->irq() sdhci host op instead
-> >
-> > >             if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
-> > >                     u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
-> > >                                   SDHCI_CARD_PRESENT;
-> > > @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
-> > >             /* This may alter mmc->*_blk_* parameters */
-> > >             sdhci_allocate_bounce_buffer(host);
-> > >
-> > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > +       host->version >= SDHCI_SPEC_400 &&
-> > > +       sdhci_uhs2_ops.add_host) {
-> > > +           ret = sdhci_uhs2_ops.add_host(host, host->caps1);
-> > > +           if (ret)
-> > > +                   goto unreg;
-> > > +   }
-> > > +
-> >
-> > I think you should look at creating uhs2_add_host() instead
-> >
-> > >     return 0;
-> > >
-> > >  unreg:
-> > > @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
-> > >  {
-> > >     struct mmc_host *mmc = host->mmc;
-> > >
-> > > +   /* FIXME: Do we have to do some cleanup for UHS2 here? */
-> > > +
-> > >     if (!IS_ERR(mmc->supply.vqmmc))
-> > >             regulator_disable(mmc->supply.vqmmc);
-> > >
-> > > @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
-> > >             mmc->cqe_ops = NULL;
-> > >     }
-> > >
-> > > +   if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
-> > > +           /* host doesn't want to enable UHS2 support */
-> > > +           mmc->caps &= ~MMC_CAP_UHS2;
-> > > +           mmc->flags &= ~MMC_UHS2_SUPPORT;
-> > > +
-> > > +           /* FIXME: Do we have to do some cleanup here? */
-> > > +   }
-> > > +
-> > >     host->complete_wq = alloc_workqueue("sdhci", flags, 0);
-> > >     if (!host->complete_wq)
-> > >             return -ENOMEM;
-> > > @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
-> > >  unled:
-> > >     sdhci_led_unregister(host);
-> > >  unirq:
-> > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > +       sdhci_uhs2_ops.remove_host)
-> > > +           sdhci_uhs2_ops.remove_host(host, 0);
-> > >     sdhci_do_reset(host, SDHCI_RESET_ALL);
-> > >     sdhci_writel(host, 0, SDHCI_INT_ENABLE);
-> > >     sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
-> > > @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
-> > >
-> > >     sdhci_led_unregister(host);
-> > >
-> > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > +       sdhci_uhs2_ops.remove_host)
-> > > +           sdhci_uhs2_ops.remove_host(host, dead);
-> > > +
-> >
-> > I think you should look at creating uhs2_remove_host() instead
-> >
-> > >     if (!dead)
-> > >             sdhci_do_reset(host, SDHCI_RESET_ALL);
-> > >
-> > >
-> >
+diff --git a/drivers/clk/samsung/clk-exynos5420.c b/drivers/clk/samsung/clk-exynos5420.c
+index ba4e0a4..3ccd4ea 100644
+--- a/drivers/clk/samsung/clk-exynos5420.c
++++ b/drivers/clk/samsung/clk-exynos5420.c
+@@ -1574,6 +1574,7 @@ static void __init exynos5x_clk_init(struct device_node *np,
+ 	exynos5x_soc = soc;
+ 
+ 	ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
++	hws = ctx->clk_data.hws;
+ 
+ 	samsung_clk_of_register_fixed_ext(ctx, exynos5x_fixed_rate_ext_clks,
+ 			ARRAY_SIZE(exynos5x_fixed_rate_ext_clks),
+@@ -1651,7 +1652,6 @@ static void __init exynos5x_clk_init(struct device_node *np,
+ 				     exynos5x_subcmus);
+ 	}
+ 
+-	hws = ctx->clk_data.hws;
+ 	/*
+ 	 * Keep top part of G3D clock path enabled permanently to ensure
+ 	 * that the internal busses get their clock regardless of the
+-- 
+2.7.4
+-----------------8<--------------------
