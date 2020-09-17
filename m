@@ -2,91 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEE826D0DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D9A26D0E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgIQBww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:52:52 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:43526 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgIQBws (ORCPT
+        id S1726267AbgIQBxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:53:43 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:17585 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726115AbgIQBxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:52:48 -0400
-Received: by mail-io1-f68.google.com with SMTP id z25so402132iol.10;
-        Wed, 16 Sep 2020 18:52:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Eeo2RxIy09U3tisfj7sBhkZOIk4q9g2XE/z4whZwqUA=;
-        b=VKvawtrbKeud7wt2MBz0dL6srq13WxBpvOIwvUwOTd2f6K5I0BKkvafGXVke8vqAfa
-         egu0zDRneKT7+0ZY0jpDdVGUCWZIMOjUdSXXnFDM4JQL3SAciTSwWYRh6P/RmfgyLo9+
-         IiAcfkKIqFgfvA/RvskKs/kfvnL7lHSdzXcc4K+tGkbJaD2LpOD/ttNK1DHW6WWHOhu1
-         5+IhAp7I5NCEQ8x6WUfbCXJuKllaALMpbjImkL64mdXCrLsGDzBucBQlsyN2NNNKefpK
-         0fvv7q6QF010Z/nwbo5Sxzj7kx5WFVzoa7WerTNvCu/5uvOGPB9D4yvA3m9DrswLJSbX
-         7FuQ==
-X-Gm-Message-State: AOAM532chYa9Ya0NE6gL56i6cyofcgnTKJFTGvCYH5QJ4S+gnqCjshfK
-        w9Da6ULV6pStO7bmZreKYg==
-X-Google-Smtp-Source: ABdhPJwY6xr3vb1swKAQ5WvmeGwOnOBoBbtymdMSqkRnDHosXTbREj7fm0gsF54+Ft9qfMhdo+0Ahg==
-X-Received: by 2002:a6b:e206:: with SMTP id z6mr21772899ioc.208.1600307568030;
-        Wed, 16 Sep 2020 18:52:48 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id w70sm11885701ilk.87.2020.09.16.18.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 18:52:47 -0700 (PDT)
-Received: (nullmailer pid 680592 invoked by uid 1000);
-        Thu, 17 Sep 2020 01:52:45 -0000
-Date:   Wed, 16 Sep 2020 19:52:45 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Srinath Mannam <srinath.mannam@broadcom.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ray Jui <rjui@broadcom.com>, linux-pci@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 3/3] PCI: iproc: Display PCIe Link information
-Message-ID: <20200917015245.GA678675@bogus>
-References: <20200915134541.14711-1-srinath.mannam@broadcom.com>
- <20200915134541.14711-4-srinath.mannam@broadcom.com>
+        Wed, 16 Sep 2020 21:53:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600307614; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=5gKnvHK1s7h+t4dIt5Jw6+hoAVJacQi86HN6L5bs5zA=;
+ b=P4MpNKDT0PnxJBVyzxxQiMiucoP5n2D0s9GaR4CrhR4VSWWZzAiHB2Kt4pZGxf33Cm+J6jHE
+ ZhW4iWRqU3yoQ4C1qpAbm7t8B0U9vdJoTBALwOYr9tKLnVLQCmM0972hcCyOEbw71NgbRx4I
+ b0Oim5qD3fRTmYNQrHgyILdZNyg=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f62c18d91755cb92b41fd8a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 01:53:17
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1D317C433F0; Thu, 17 Sep 2020 01:53:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mansur)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6D5EC433C8;
+        Thu, 17 Sep 2020 01:53:16 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915134541.14711-4-srinath.mannam@broadcom.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 17 Sep 2020 07:23:16 +0530
+From:   mansur@codeaurora.org
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, vgarodia@codeaurora.org
+Subject: Re: [PATCH v2 2/3] venus: core: cancel pending work items in
+ workqueue
+In-Reply-To: <a96d7cce-2781-e3d6-6238-8fec411511a1@linaro.org>
+References: <1599741856-16239-1-git-send-email-mansur@codeaurora.org>
+ <1599741856-16239-3-git-send-email-mansur@codeaurora.org>
+ <a96d7cce-2781-e3d6-6238-8fec411511a1@linaro.org>
+Message-ID: <51eeedbe7e84ce67e8d5b3f9fd3a7a2e@codeaurora.org>
+X-Sender: mansur@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 07:15:41PM +0530, Srinath Mannam wrote:
-> After successful linkup more comprehensive information about PCIe link
-> speed and link width will be displayed to the console.
+On 2020-09-11 15:52, Stanimir Varbanov wrote:
+> Hi,
 > 
-> Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
-> ---
->  drivers/pci/controller/pcie-iproc.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> On 9/10/20 3:44 PM, Mansur Alisha Shaik wrote:
+>> In concurrency usecase and reboot scenario we are
+>> observing race condition and seeing NULL pointer
+>> dereference crash. In shutdown path and system
+>> recovery path we are destroying the same mutex
+>> hence seeing crash.
+>> 
+>> This case is handled by mutex protection and
+>> cancel delayed work items in work queue.
+>> 
+>> Below is the call trace for the crash
+>> Call trace:
+>>  venus_remove+0xdc/0xec [venus_core]
+>>  venus_core_shutdown+0x1c/0x34 [venus_core]
+>>  platform_drv_shutdown+0x28/0x34
+>>  device_shutdown+0x154/0x1fc
+>>  kernel_restart_prepare+0x40/0x4c
+>>  kernel_restart+0x1c/0x64
+>> 
+>> Call trace:
+>>  mutex_lock+0x34/0x60
+>>  venus_hfi_destroy+0x28/0x98 [venus_core]
+>>  hfi_destroy+0x1c/0x28 [venus_core]
 > 
-> diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
-> index cc5b7823edeb..8ef2d1fe392c 100644
-> --- a/drivers/pci/controller/pcie-iproc.c
-> +++ b/drivers/pci/controller/pcie-iproc.c
-> @@ -1479,6 +1479,7 @@ int iproc_pcie_setup(struct iproc_pcie *pcie, struct list_head *res)
->  {
->  	struct device *dev;
->  	int ret;
-> +	struct pci_dev *pdev;
->  	struct pci_host_bridge *host = pci_host_bridge_from_priv(pcie);
->  
->  	dev = pcie->dev;
-> @@ -1542,6 +1543,11 @@ int iproc_pcie_setup(struct iproc_pcie *pcie, struct list_head *res)
->  		goto err_power_off_phy;
->  	}
->  
-> +	for_each_pci_bridge(pdev, host->bus) {
-> +		if (pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT)
-> +			pcie_print_link_status(pdev);
-> +	}
+> I queued up [1] and after it this cannot happen anymore because
+> hfi_destroy() is not called by venus_sys_error_handler().
+> 
+> So I guess this patch is not needed anymore.
+> 
+> [1] https://www.spinics.net/lists/linux-arm-msm/msg70092.html
+> 
+Yes, this patch is not needed any more. rebased and posted new version
+https://lore.kernel.org/patchwork/project/lkml/list/?series=463091
 
-If this information is useful for 1 host implementation, why not all of 
-them and put this in a common spot.
-
-Rob
+>>  venus_sys_error_handler+0x60/0x14c [venus_core]
+>>  process_one_work+0x210/0x3d0
+>>  worker_thread+0x248/0x3f4
+>>  kthread+0x11c/0x12c
+>>  ret_from_fork+0x10/0x18
+>> 
+>> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+>> ---
+>>  drivers/media/platform/qcom/venus/core.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>> 
+>> diff --git a/drivers/media/platform/qcom/venus/core.c 
+>> b/drivers/media/platform/qcom/venus/core.c
+>> index c5af428..69aa199 100644
+>> --- a/drivers/media/platform/qcom/venus/core.c
+>> +++ b/drivers/media/platform/qcom/venus/core.c
+>> @@ -323,6 +323,8 @@ static int venus_remove(struct platform_device 
+>> *pdev)
+>>  	struct device *dev = core->dev;
+>>  	int ret;
+>> 
+>> +	cancel_delayed_work_sync(&core->work);
+>> +
+>>  	ret = pm_runtime_get_sync(dev);
+>>  	WARN_ON(ret < 0);
+>> 
+>> @@ -340,7 +342,9 @@ static int venus_remove(struct platform_device 
+>> *pdev)
+>>  	if (pm_ops->core_put)
+>>  		pm_ops->core_put(dev);
+>> 
+>> +	mutex_lock(&core->lock);
+>>  	hfi_destroy(core);
+>> +	mutex_unlock(&core->lock);
+>> 
+>>  	icc_put(core->video_path);
+>>  	icc_put(core->cpucfg_path);
+>> 
