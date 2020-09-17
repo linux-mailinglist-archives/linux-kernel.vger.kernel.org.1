@@ -2,120 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA9126DA4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3483B26DA64
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgIQLdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:33:22 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:53792 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbgIQL1x (ORCPT
+        id S1726832AbgIQLgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:36:51 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:35824 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726822AbgIQL3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:27:53 -0400
-X-Greylist: delayed 24715 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 07:27:22 EDT
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCikrT073721;
-        Wed, 16 Sep 2020 07:44:46 -0500
+        Thu, 17 Sep 2020 07:29:10 -0400
+X-Greylist: delayed 4201 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 07:29:03 EDT
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HAI0qe010583;
+        Thu, 17 Sep 2020 05:18:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600260286;
-        bh=CKHgmJWPb3bVn2eZwKmoyTawTcp8T99/wZEZ4Kh7wHk=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Tc1yZhCBT5SEBRa2HgeXq4d6bqxyZSkIvKm8dyG4Ofq7BMURmdQV2cVJbc6Np5JjB
-         EiiBO70VjtbKilTR5k6Po5n3d/BAX0BIx0aGJqy4mhRUs9cgvSx7UKvWNnF9EztaWR
-         m1PTVij+O4tTJ8wK/IJqBhNTmXmvOvsEsZP6jMwA=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCikv5070046
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 07:44:46 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:44:46 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+        s=ti-com-17Q1; t=1600337880;
+        bh=nF94rj5wLkPLwYnqYDJZW1Y0SHQFeOaaaswY3EiKhnc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=U4hsB4GEEz0ISKqJEzygwcJ6aG1Qwr0mQtol8Sc1gN3bvW51sUnpsQgT3hDzFe193
+         YzAFiA/36TbMGOslABZw8HTU2POqsPgonKBCIiXj1z2Bsdg6CqdX87HpQvqMa6pivJ
+         VZEUtjrLwhKNYIaWXmEthcLkXlpYbSZ8qiwCikBM=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HAI0WH073785;
+        Thu, 17 Sep 2020 05:18:00 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Sep 2020 05:18:00 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:44:46 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpc125391;
-        Wed, 16 Sep 2020 07:44:43 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v13 08/15] mtd: spi-nor: core: do 2 byte reads for SR and FSR in DTR mode
-Date:   Wed, 16 Sep 2020 18:14:11 +0530
-Message-ID: <20200916124418.833-9-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
+ Frontend Transport; Thu, 17 Sep 2020 05:18:00 -0500
+Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HAHuAd120951;
+        Thu, 17 Sep 2020 05:17:57 -0500
+Subject: Re: [PATCH v3 1/6] dt-bindings: mux-j7200-wiz: Add lane function
+ defines
+To:     Nishanth Menon <nm@ti.com>, Peter Rosin <peda@axentia.se>
+CC:     Roger Quadros <rogerq@ti.com>, <t-kristo@ti.com>,
+        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>
+References: <20200915112038.30219-1-rogerq@ti.com>
+ <20200915112038.30219-2-rogerq@ti.com>
+ <e28e98a0-f3fc-29bd-d7a6-cc45f3a69ede@axentia.se>
+ <20200916154536.m552ft2jzfsaeokr@akan>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <8a27f8f3-20c4-f72c-b683-81153107d867@ti.com>
+Date:   Thu, 17 Sep 2020 15:47:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20200916154536.m552ft2jzfsaeokr@akan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some controllers, like the cadence qspi controller, have trouble reading
-only 1 byte in DTR mode. So, do 2 byte reads for SR and FSR commands in
-DTR mode, and then discard the second byte.
+Nishanth,
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/core.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+On 16/09/20 9:15 pm, Nishanth Menon wrote:
+> On 06:52-20200916, Peter Rosin wrote:
+>> Hi,
+>>
+>> Sorry for the delay.
+>>
+>> On 2020-09-15 13:20, Roger Quadros wrote:
+>>> Each SERDES lane mux can select upto 4 different IPs.
+>>> There are 4 lanes in each J7200 SERDES. Define all
+>>> the possible functions in this file.
+>>>
+>>> Cc: Peter Rosin <peda@axentia.se>
+>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>>> ---
+>>>  include/dt-bindings/mux/mux-j7200-wiz.h | 29 +++++++++++++++++++++++++
+>>>  1 file changed, 29 insertions(+)
+>>>  create mode 100644 include/dt-bindings/mux/mux-j7200-wiz.h
+>>>
+>>> diff --git a/include/dt-bindings/mux/mux-j7200-wiz.h b/include/dt-bindings/mux/mux-j7200-wiz.h
+>>> new file mode 100644
+>>> index 000000000000..b091b1185a36
+>>> --- /dev/null
+>>> +++ b/include/dt-bindings/mux/mux-j7200-wiz.h
+>>> @@ -0,0 +1,29 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +/*
+>>> + * This header provides constants for J7200 WIZ.
+>>> + */
+>>> +
+>>> +#ifndef _DT_BINDINGS_J7200_WIZ
+>>> +#define _DT_BINDINGS_J7200_WIZ
+>>> +
+>>> +#define SERDES0_LANE0_QSGMII_LANE3	0x0
+>>> +#define SERDES0_LANE0_PCIE1_LANE0	0x1
+>>> +#define SERDES0_LANE0_IP3_UNUSED	0x2
+>>> +#define SERDES0_LANE0_IP4_UNUSED	0x3
+>>> +
+>>> +#define SERDES0_LANE1_QSGMII_LANE4	0x0
+>>> +#define SERDES0_LANE1_PCIE1_LANE1	0x1
+>>> +#define SERDES0_LANE1_IP3_UNUSED	0x2
+>>> +#define SERDES0_LANE1_IP4_UNUSED	0x3
+>>> +
+>>> +#define SERDES0_LANE2_QSGMII_LANE1	0x0
+>>> +#define SERDES0_LANE2_PCIE1_LANE2	0x1
+>>> +#define SERDES0_LANE2_IP3_UNUSED	0x2
+>>> +#define SERDES0_LANE2_IP4_UNUSED	0x3
+>>> +
+>>> +#define SERDES0_LANE3_QSGMII_LANE2	0x0
+>>> +#define SERDES0_LANE3_PCIE1_LANE3	0x1
+>>> +#define SERDES0_LANE3_USB		0x2
+>>> +#define SERDES0_LANE3_IP4_UNUSED	0x3
+>>> +
+>>> +#endif /* _DT_BINDINGS_J7200_WIZ */
+>>
+>> Should not the defines start with J7200_WIZ? SERDES0 seems like a too
+>> generic prefix, at least to me.
+> 
+> Thanks, good point. I am not sure if WIZ should even be used.. It is
+> a TI internal prefix for various serdes solutions, but I agree that
+> SERDES0 is too generic a terminology. That said, we should cleanup
+> include/dt-bindings/mux/mux-j721e-wiz.h as well, prior to introducing
+> j7200 changes.
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 88c9e18067f4..87c568debf14 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -368,7 +368,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
-  * spi_nor_read_sr() - Read the Status Register.
-  * @nor:	pointer to 'struct spi_nor'.
-  * @sr:		pointer to a DMA-able buffer where the value of the
-- *              Status Register will be written.
-+ *              Status Register will be written. Should be at least 2 bytes.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
-@@ -386,6 +386,11 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
- 		if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
- 			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
- 			op.dummy.nbytes = nor->params->rdsr_dummy;
-+			/*
-+			 * We don't want to read only one byte in DTR mode. So,
-+			 * read 2 and then discard the second byte.
-+			 */
-+			op.data.nbytes = 2;
- 		}
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-@@ -405,7 +410,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
-  * spi_nor_read_fsr() - Read the Flag Status Register.
-  * @nor:	pointer to 'struct spi_nor'
-  * @fsr:	pointer to a DMA-able buffer where the value of the
-- *              Flag Status Register will be written.
-+ *              Flag Status Register will be written. Should be at least 2
-+ *              bytes.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
-@@ -423,6 +429,11 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
- 		if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
- 			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
- 			op.dummy.nbytes = nor->params->rdsr_dummy;
-+			/*
-+			 * We don't want to read only one byte in DTR mode. So,
-+			 * read 2 and then discard the second byte.
-+			 */
-+			op.data.nbytes = 2;
- 		}
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
--- 
-2.28.0
+WIZ is defined in public TRM (https://www.ti.com/lit/pdf/spruiu1).
+"
+The SERDES mux (WIZ) module supports the following features:
+*) Multiplexes device interfaces onto a single SERDES lane (Tx and Rx)
+*) Provides registers to implement SERDES control and status functions
+and alignment delays
+.
+.
+"
 
+Thanks
+Kishon
