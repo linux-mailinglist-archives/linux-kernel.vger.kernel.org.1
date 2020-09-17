@@ -2,268 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3839A26D366
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CDB26D36E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgIQGFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
+        id S1726199AbgIQGJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgIQGFj (ORCPT
+        with ESMTP id S1726112AbgIQGJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:05:39 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABF9C06174A;
-        Wed, 16 Sep 2020 23:05:39 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z18so556340pfg.0;
-        Wed, 16 Sep 2020 23:05:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pbPHu2PuH4qcHADJrXkNowzKC39J0pwMZtsiGih/dV4=;
-        b=TOwQXSDXw5HygVk495IeVn+i2S8342sbCNL+0eyJPD7bXkQF9WNJUeWCX+UZWJ992k
-         GBgeYN0+YizUPScQE+M384a9pMMLdgXz+uxslfARL/gCZ7bVfPZXo9Wbjhu7XltaYlpH
-         6m/4AL4UkQOw90csermz2RsBIl8QyGYfUwf0O8NRpLnGONLFIta8/bY5bDY7xQbEo5QB
-         1P7LSbnJBhyPxj0adxRnfGp9psuqXHSfFQLtvgjYaDI6US0rte9cm5xh+0Qa6JQ0I5e7
-         MXa7Kv7v7me5dwprzf1PYpTEVUTWNSaOk7liAWpayRdWiSzbdor1GenFjtFxEXMb9smY
-         M4ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pbPHu2PuH4qcHADJrXkNowzKC39J0pwMZtsiGih/dV4=;
-        b=E4YnoQX/g+A4TB3y9XksTtzXbQhwTwGufLpUweD7hAKmovZhdYPcLerYRhjKpoEYhq
-         H7aWVABKaWN2MA1TBmbtnaaKKna0JOrvTWdRM+YVAgoKs+bZAV3WxyRNKgi6fVs1emtQ
-         6FdzfYPj4XU4KmIcUQ0vbwnQ/zq/ubJUiyzIWA37QNy+Q2UGw9Huus3sWmv1RvcTu9dP
-         vNsbpv8YBuEnX8DKpUR58z0ANsoiOy8g3UPTioZXJuEDEXA0TPS9QvYWyy6JH7Hfsp3r
-         Uysocd0r/oNt5MnI/b4wxEiTQcppbrcUpZlDhpdCJW8WFtn1GarHDeepY8zXBjmvaJCR
-         UQ0g==
-X-Gm-Message-State: AOAM530mn1f/Q/D664SckNRsS5PQ3qk9Tu2cNlmb32rxoIwlg8XrM/hy
-        Tb/rKxqbNHZUGcL6Gyz7RvLRYxqzrhbicw==
-X-Google-Smtp-Source: ABdhPJyTSzRIHL37V9LwkQ+z+94onYUaCMywPIGgjkoTfvAjwyVN3s2v/XSsCR7PoVZXhZS9ehAuww==
-X-Received: by 2002:a62:7747:0:b029:13f:d779:5f95 with SMTP id s68-20020a6277470000b029013fd7795f95mr19039059pfc.2.1600322738752;
-        Wed, 16 Sep 2020 23:05:38 -0700 (PDT)
-Received: from localhost.localdomain ([115.192.213.183])
-        by smtp.gmail.com with ESMTPSA id m12sm4587060pjs.34.2020.09.16.23.05.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 23:05:38 -0700 (PDT)
-From:   Xiaoyong Yan <yanxiaoyong5@gmail.com>
-To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyong Yan <yanxiaoyong5@gmail.com>
-Subject: [PATCH] [PATCH] net/sched : cbs : fix calculation error of idleslope credits
-Date:   Wed, 16 Sep 2020 23:05:33 -0700
-Message-Id: <20200917060533.73217-1-yanxiaoyong5@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 17 Sep 2020 02:09:52 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF82C06174A;
+        Wed, 16 Sep 2020 23:09:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsRQ33Dw4z9sRK;
+        Thu, 17 Sep 2020 16:09:47 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600322987;
+        bh=TmdBztbuMOuTpuG9Y4p4s7EACpR273w2NT17CR0+Gls=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GhcGTVIXbNve5mPigJrhq1s3cBbO0Zz94lX94mMquSI/OnjHHUwrl79ezPrv4Wn6g
+         onescsuSveYZVX8M2P9UBFvafWY+3UrG0/6kwvRPvgZDNM+9CqM0fyxpxQUMdCVu4N
+         mQB6sIDX1NldK8wqdZHVGRH5ypsA0jMxGqM3dFV84zwXQ/Vc63B2f2WuW4S8xrHmJq
+         rx0RPv+P8Q05L30OYtz/xQ+6EJ3xf/HL0SQJOBjOFwiLyyKWNo4Ulzsqhoq7V0hVpp
+         ir+0spveesBRkqYKaxdsF0KX+60MKHswBzqmXG1ZqS3fwsN8ZYLncQVpqdD/OmrJZS
+         EgqITFAg8PvsA==
+Date:   Thu, 17 Sep 2020 16:09:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Tobias Diedrich <tobiasdiedrich@gmail.com>,
+        Du Huanpeng <u74147@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the tty tree with the tty.current tree
+Message-ID: <20200917160946.02dc6bb0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/P0Vvc.GkmmM9s/NVdD=CAf6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-in the function cbs_dequeue_soft, when q->credits <0, [now - q->last]
-should be accounted for sendslope,not idleslope.
+--Sig_/P0Vvc.GkmmM9s/NVdD=CAf6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-so the solution as follows: when q->credits is less than 0, directly
-calculate delay time, activate hrtimer and when hrtimer fires,
-calculate idleslope credits and update it to q->credits.
+Hi all,
 
-because of the lack of self-defined qdisc_watchdog_func, so in the
-generic sch_api, add qdisc_watchdog_init_func and
-qdisc_watchdog_init_clockid_func, so sch_cbs can use it to define its
-own process.
+Today's linux-next merge of the tty tree got a conflict in:
 
-the patch is changed based on v5.4.42,and the test result as follows:
-the NIC is 100Mb/s ,full duplex.
+  drivers/tty/serial/8250/8250_pci.c
 
-step1:
-tc qdisc add dev ens33 root cbs idleslope 75 sendslope -25 hicredit 1000000 locredit -1000000 offload 0
-step2:
-root@ubuntu:/home/yxy/kernel/linux-stable# iperf -c 192.168.1.114 -i 1
-------------------------------------------------------------
-Client connecting to 192.168.1.114, TCP port 5001
-TCP window size:  246 KByte (default)
-------------------------------------------------------------
-[  3] local 192.168.1.120 port 42004 connected with 192.168.1.114 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0- 1.0 sec  9.00 MBytes  75.5 Mbits/sec
-[  3]  1.0- 2.0 sec  8.50 MBytes  71.3 Mbits/sec
-[  3]  2.0- 3.0 sec  8.50 MBytes  71.3 Mbits/sec
-[  3]  3.0- 4.0 sec  8.38 MBytes  70.3 Mbits/sec
-[  3]  4.0- 5.0 sec  8.38 MBytes  70.3 Mbits/sec
-[  3]  5.0- 6.0 sec  8.50 MBytes  71.3 Mbits/sec
-[  3]  6.0- 7.0 sec  8.50 MBytes  71.3 Mbits/sec
-[  3]  7.0- 8.0 sec  8.62 MBytes  72.4 Mbits/sec
-[  3]  8.0- 9.0 sec  8.50 MBytes  71.3 Mbits/sec
-[  3]  9.0-10.0 sec  8.62 MBytes  72.4 Mbits/sec
-[  3]  0.0-10.0 sec  85.5 MBytes  71.5 Mbits/sec
+between commit:
 
-Signed-off-by: Xiaoyong Yan <yanxiaoyong5@gmail.com>
----
- include/net/pkt_sched.h |  7 +++++++
- net/sched/sch_api.c     | 20 ++++++++++++++++++--
- net/sched/sch_cbs.c     | 41 +++++++++++++++++++++++++----------------
- 3 files changed, 50 insertions(+), 18 deletions(-)
+  3c5a87be170a ("serial: 8250_pci: Add Realtek 816a and 816b")
 
-diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-index 6a70845bd9ab..5fec23b15e1c 100644
---- a/include/net/pkt_sched.h
-+++ b/include/net/pkt_sched.h
-@@ -9,6 +9,7 @@
- #include <net/sch_generic.h>
- #include <net/net_namespace.h>
- #include <uapi/linux/pkt_sched.h>
-+#include <linux/hrtimer.h>
+from the tty.current tree and commit:
 
-#define DEFAULT_TX_QUEUE_LEN	1000
+  04b6ff5f25de ("serial: 8250_pci: Add WCH384_8S 8 port serial device")
 
-@@ -72,6 +73,12 @@ struct qdisc_watchdog {
- 	struct Qdisc	*qdisc;
- };
+from the tty tree.
 
-+typedef enum hrtimer_restart (*qdisc_watchdog_func_t)(struct hrtimer *timer);
-+void qdisc_watchdog_init_clockid_func(struct qdisc_watchdog *wd, struct Qdisc *qdisc,
-+		 clockid_t clockid,qdisc_watchdog_func_t func);
-+void qdisc_watchdog_init_func(struct qdisc_watchdog *wd,struct Qdisc *qdisc,qdisc_watchdog_func_t func);
-+enum hrtimer_restart qdisc_watchdog(struct hrtimer *timer);
-+
- void qdisc_watchdog_init_clockid(struct qdisc_watchdog *wd, struct Qdisc *qdisc,
- 				 clockid_t clockid);
- void qdisc_watchdog_init(struct qdisc_watchdog *wd, struct Qdisc *qdisc);
-diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index 50794125bf02..fea08d10c811 100644
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -22,7 +22,6 @@
- #include <linux/seq_file.h>
- #include <linux/kmod.h>
- #include <linux/list.h>
--#include <linux/hrtimer.h>
- #include <linux/slab.h>
- #include <linux/hashtable.h>
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-@@ -591,7 +590,7 @@ void qdisc_warn_nonwc(const char *txt, struct Qdisc *qdisc)
- }
- EXPORT_SYMBOL(qdisc_warn_nonwc);
+--=20
+Cheers,
+Stephen Rothwell
 
--static enum hrtimer_restart qdisc_watchdog(struct hrtimer *timer)
-+enum hrtimer_restart qdisc_watchdog(struct hrtimer *timer)
- {
- 	struct qdisc_watchdog *wd = container_of(timer, struct qdisc_watchdog,
- 						 timer);
-@@ -602,7 +601,24 @@ static enum hrtimer_restart qdisc_watchdog(struct hrtimer *timer)
+diff --cc drivers/tty/serial/8250/8250_pci.c
+index 55bb7b897d97,85810b8b9d20..000000000000
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@@ -5566,17 -5618,10 +5618,21 @@@ static const struct pci_device_id seria
+  		PCI_ANY_ID, PCI_ANY_ID,
+  		0, 0, pbn_wch384_4 },
+ =20
++ 	{	PCIE_VENDOR_ID_WCH, PCIE_DEVICE_ID_WCH_CH384_8S,
++ 		PCI_ANY_ID, PCI_ANY_ID,
++ 		0, 0, pbn_wch384_8 },
++=20
+ +	/*
+ +	 * Realtek RealManage
+ +	 */
+ +	{	PCI_VENDOR_ID_REALTEK, 0x816a,
+ +		PCI_ANY_ID, PCI_ANY_ID,
+ +		0, 0, pbn_b0_1_115200 },
+ +
+ +	{	PCI_VENDOR_ID_REALTEK, 0x816b,
+ +		PCI_ANY_ID, PCI_ANY_ID,
+ +		0, 0, pbn_b0_1_115200 },
+ +
+  	/* Fintek PCI serial cards */
+  	{ PCI_DEVICE(0x1c29, 0x1104), .driver_data =3D pbn_fintek_4 },
+  	{ PCI_DEVICE(0x1c29, 0x1108), .driver_data =3D pbn_fintek_8 },
 
- 	return HRTIMER_NORESTART;
- }
-+EXPORT_SYMBOL(qdisc_watchdog);
+--Sig_/P0Vvc.GkmmM9s/NVdD=CAf6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-+void qdisc_watchdog_init_clockid_func(struct qdisc_watchdog *wd,struct Qdisc *qdisc,clockid_t clockid,qdisc_watchdog_func_t func)
-+{
-+	hrtimer_init(&wd->timer,clockid,HRTIMER_MODE_ABS_PINNED);
-+	if(!func)
-+		wd->timer.function = qdisc_watchdog;
-+	else
-+		wd->timer.function = func;
-+	wd->qdisc = qdisc;
-+}
-+EXPORT_SYMBOL(qdisc_watchdog_init_clockid_func);
-+
-+void qdisc_watchdog_init_func(struct qdisc_watchdog *wd,struct Qdisc *qdisc,qdisc_watchdog_func_t func)
-+{
-+	qdisc_watchdog_init_clockid_func(wd,qdisc,CLOCK_MONOTONIC,func);
-+}
-+EXPORT_SYMBOL(qdisc_watchdog_init_func);
- void qdisc_watchdog_init_clockid(struct qdisc_watchdog *wd, struct Qdisc *qdisc,
- 				 clockid_t clockid)
- {
-diff --git a/net/sched/sch_cbs.c b/net/sched/sch_cbs.c
-index 2eaac2ff380f..351d3927e107 100644
---- a/net/sched/sch_cbs.c
-+++ b/net/sched/sch_cbs.c
-@@ -187,21 +187,15 @@ static struct sk_buff *cbs_dequeue_soft(struct Qdisc *sch)
- 		return NULL;
- 	}
- 	if (q->credits < 0) {
--		credits = timediff_to_credits(now - q->last, q->idleslope);
-+		s64 delay;
-+
-+		delay = delay_from_credits(q->credits, q->idleslope);
-+		qdisc_watchdog_schedule_ns(&q->watchdog, now + delay);
+-----BEGIN PGP SIGNATURE-----
 
--		credits = q->credits + credits;
--		q->credits = min_t(s64, credits, q->hicredit);
--
--		if (q->credits < 0) {
--			s64 delay;
--
--			delay = delay_from_credits(q->credits, q->idleslope);
--			qdisc_watchdog_schedule_ns(&q->watchdog, now + delay);
--
--			q->last = now;
-+		q->last = now;
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9i/aoACgkQAVBC80lX
+0GznaAf+J7Q6fQUti6m2u7v75zIFn2I0XdHaQtCOCKKh1q0OIliavPywDpX7yeqi
+kDXATlWrlfnB8EwGXHY1crA3NPtnxCLzxgIjpwGO/fLhvgsUXhnr1QZL8BjmBMw9
+45Yas8SALI2OcYDzHBZHnzit+EUd2vYCmdCAEDq2Nb/2L2I5mqxtyYYtKqh7GCvX
+yxO4UOQTSx1eFXL8VOnQ5O5ujKIf6CvWX01lMOHOtQDRHFYv1OBWG09H2VE/aMN5
+ZJ96aN0wRCSh4QLMPjLcw325eVSWZYWKMsS97qxLA6p6GqFjq7NqWfe7up0Kty6V
+5UaKZIOLfRnhjnH/HCe/8TmP4h2iPg==
+=Xg2Q
+-----END PGP SIGNATURE-----
 
--			return NULL;
--		}
-+		return NULL;
-+
- 	}
- 	skb = cbs_child_dequeue(sch, qdisc);
- 	if (!skb)
-@@ -212,11 +206,12 @@ static struct sk_buff *cbs_dequeue_soft(struct Qdisc *sch)
- 	/* As sendslope is a negative number, this will decrease the
- 	 * amount of q->credits.
- 	 */
-+
- 	credits = credits_from_len(len, q->sendslope,
- 				   atomic64_read(&q->port_rate));
- 	credits += q->credits;
-
--	q->credits = max_t(s64, credits, q->locredit);
-+	q->credits = clamp_t(s64, credits, q->locredit,q->hicredit);
- 	/* Estimate of the transmission of the last byte of the packet in ns */
- 	if (unlikely(atomic64_read(&q->port_rate) == 0))
- 		q->last = now;
-@@ -323,7 +318,7 @@ static void cbs_set_port_rate(struct net_device *dev, struct cbs_sched_data *q)
- 	port_rate = speed * 1000 * BYTES_PER_KBIT;
-
- 	atomic64_set(&q->port_rate, port_rate);
--	netdev_dbg(dev, "cbs: set %s's port_rate to: %lld, linkspeed: %d\n",
-+	netdev_dbg(dev,"cbs: set %s's port_rate to: %lld, linkspeed: %d\n",
- 		   dev->name, (long long)atomic64_read(&q->port_rate),
- 		   ecmd.base.speed);
- }
-@@ -396,7 +391,21 @@ static int cbs_change(struct Qdisc *sch, struct nlattr *opt,
-
- 	return 0;
- }
-+static enum hrtimer_restart cbs_qdisc_watchdog(struct hrtimer *timer)
-+{
-+	struct qdisc_watchdog *wd = container_of(timer,struct qdisc_watchdog,timer);
-+	struct Qdisc *sch = wd->qdisc;
-+	struct cbs_sched_data *q = qdisc_priv(sch);
-+	s64 now = ktime_get_ns();
-+	s64 credits;
-+
-+	credits  = timediff_to_credits(now-q->last,q->idleslope);
-+	credits = q->credits+credits;
-+	q->credits = clamp_t(s64,credits,q->locredit,q->hicredit);
-+	q->last = now;
-
-+	return qdisc_watchdog(timer);
-+}
- static int cbs_init(struct Qdisc *sch, struct nlattr *opt,
- 		    struct netlink_ext_ack *extack)
- {
-@@ -424,7 +433,7 @@ static int cbs_init(struct Qdisc *sch, struct nlattr *opt,
- 	q->enqueue = cbs_enqueue_soft;
- 	q->dequeue = cbs_dequeue_soft;
-
--	qdisc_watchdog_init(&q->watchdog, sch);
-+	qdisc_watchdog_init_func(&q->watchdog, sch,cbs_qdisc_watchdog);
-
- 	return cbs_change(sch, opt, extack);
- }
---
-2.25.1
-
+--Sig_/P0Vvc.GkmmM9s/NVdD=CAf6--
