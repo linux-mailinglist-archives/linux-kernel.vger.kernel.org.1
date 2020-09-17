@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7618526D5D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730F126D60F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgIQIGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgIQIE2 (ORCPT
+        id S1726495AbgIQIMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:12:16 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:43689 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIQIMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:04:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C7EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:03:38 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b79so1040010wmb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TUShtxADeMIRUv08jDyFnIdO2h4AVdi1g89uLOtrWXw=;
-        b=Xm9muXpLMfdw+3JTaQ5+6nxJDSneO0K8th2wgQ0VLh2VI2BmK+XWoQ9cDtIn8+KaRJ
-         B45Xbntr5JjNU8mF7nIZd8VP+CTHviEtF1Um5VazOhr6GEQCgh9bbRNIM6C+XWioNjmk
-         ImuOo8Gi8eD0FtSQ7hHZ1yPAo82BLFHJwGGg0UxKCYs0oMSSpMWIe45dJUN+DzUELaKQ
-         JzvvcS8KVPQMZJTfgm/lLBewbBl9UGKGHM3XV6hYGQwunOqgCSfJKO8sQaLl1M6X9BRD
-         K+XM2hJttDJQqNZl5Xftk9yd2fnhmTZR2ol6vfSH0itoQkT2+o/FcX7saxpuLl0f47l5
-         EzpA==
+        Thu, 17 Sep 2020 04:12:10 -0400
+Received: by mail-ed1-f68.google.com with SMTP id n13so1511028edo.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:12:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TUShtxADeMIRUv08jDyFnIdO2h4AVdi1g89uLOtrWXw=;
-        b=OnYEqiBBWhrfJHkfk9nu7RkuBOfd4+HFxzeTIXsNnh47HDgWCmi+SJI8JCtW8Uw5K8
-         gjUZl136BCYput5Rmr6yh1GwjT1rEcw4MBfLMPk8A2OFmqwjzVIempAOcz3tuqvoXJ9l
-         ExX5IAxbe7PT8ERKIOpfve3fi7qwBysm2WioCjxlZ7HVQiyiEFAtLCxLzcE1808FnzMY
-         NE1rcjoqPOuc5EsddeJ7J9F8+XBpGJ1jaZWEDA8P/w5z6OnC8a+63/iutToYZL7xL7t2
-         ZvxWELiIvAY8n7Zo7c8y2ieJt6zMvgPTk+IOPUB6AXSyGjSfB3VFCPPmXZDkzBpCX0eo
-         qoiA==
-X-Gm-Message-State: AOAM531UcVw25KfcDpORn1dfZCZdC/mJnFEimRX4Hl6CJU/sWvMEiXdf
-        L8Cm6Ei5WLkonup4a0ZNDwXPcA==
-X-Google-Smtp-Source: ABdhPJzTwzfeJOnCQh65prZummqH9JR09Yxja+zvv2OTSAZpPcom4k7xuvXSyH3Yv50qn/8+2aIWyQ==
-X-Received: by 2002:a1c:e256:: with SMTP id z83mr8793930wmg.33.1600329817598;
-        Thu, 17 Sep 2020 01:03:37 -0700 (PDT)
-Received: from netronome.com ([2001:982:756:703:d63d:7eff:fe99:ac9d])
-        by smtp.gmail.com with ESMTPSA id a13sm9836030wme.26.2020.09.17.01.03.36
+        bh=Z2cMPrnQf5Z9BUMQYWdci5L6icLIhq49YJLAXZRSXl0=;
+        b=tCyh+8eYCxeUS09FhH1LvQDSMqC/pmru0aBWVY4tgqjLKofeG5XABU47aJdXCWU1Xo
+         Q0kYTU4KAvoOnywPfbqCNAkd2W7pcsewkMvedP9dSINsJs3Ghu+JkDpcY4X7mQlBmW6V
+         RFTWZrt2JTp4keI6828OHVC9V8TYz4gO6Ph6BVM4NOWLPAdPlpdFWdyti5VHdIIp7PGB
+         v4cNfweClrYKG+pY4pzm25gJKf+4YPGEJMozwlmZLdebW/+dfvt000EFLfksRwaKwgjL
+         PxCDbz04o43SjhDrJm0cmFvbGMcrY4F4LgqD5Bbhm80iscDsRXkBkMUcpMZcOf71dTW6
+         6rnA==
+X-Gm-Message-State: AOAM532WJ6u8U2pX9R8lAaYV2/VSFwsMZ5DXZ+XiVhlTjUiH3cGlnsQz
+        rbs05T2BYvxD9Wi/jWy89m/pB1bccxqqpQ==
+X-Google-Smtp-Source: ABdhPJzX5oLzb4C53YfeJYtuZP0zd8DG+nEsuvOi+XpsvP5f5D4FioGJS5r7XaMIWwa+3LG/o71vGg==
+X-Received: by 2002:ac2:4301:: with SMTP id l1mr8104366lfh.389.1600329843054;
+        Thu, 17 Sep 2020 01:04:03 -0700 (PDT)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id t2sm5089852lff.150.2020.09.17.01.04.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 01:03:36 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 10:03:35 +0200
-From:   Simon Horman <simon.horman@netronome.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        storagedev@microchip.com, sparclinux@vger.kernel.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
-        alsa-devel <alsa-devel@alsa-project.org>
-Subject: Re: [oss-drivers] [trivial PATCH] treewide: Convert switch/case
- fallthrough; to break;
-Message-ID: <20200917080334.GB5769@netronome.com>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+        Thu, 17 Sep 2020 01:04:01 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 11:03:54 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v1 6/6] MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
+Message-ID: <358f571158d344196dc56b2eab7fcd802a236d69.1600329307.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1600329307.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cover.1600329307.git.matti.vaittinen@fi.rohmeurope.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
-> fallthrough to a separate case/default label break; isn't very readable.
-> 
-> Convert pseudo-keyword fallthrough; statements to a simple break; when
-> the next label is case or default and the only statement in the next
-> label block is break;
-> 
-> Found using:
-> 
-> $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
-> 
-> Miscellanea:
-> 
-> o Move or coalesce a couple label blocks above a default: block.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+Add maintainer entries for ROHM BD9576MUF and ROHM BD9573MUF drivers.
+MFD, regulator and watchdog drivers were introduced for these PMICs.
 
-...
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ MAINTAINERS | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c
-> index 252fe06f58aa..1d5b87079104 100644
-> --- a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c
-> +++ b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c
-> @@ -345,7 +345,7 @@ static int matching_bar(struct nfp_bar *bar, u32 tgt, u32 act, u32 tok,
->  		baract = NFP_CPP_ACTION_RW;
->  		if (act == 0)
->  			act = NFP_CPP_ACTION_RW;
-> -		fallthrough;
-> +		break;
->  	case NFP_PCIE_BAR_PCIE2CPP_MapType_FIXED:
->  		break;
->  	default:
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b5cfab015bd6..630a23fc84f0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14956,16 +14956,20 @@ F:	drivers/gpio/gpio-bd71828.c
+ F:	drivers/mfd/rohm-bd70528.c
+ F:	drivers/mfd/rohm-bd71828.c
+ F:	drivers/mfd/rohm-bd718x7.c
++F:	drivers/mfd/rohm-bd9576.c
+ F:	drivers/power/supply/bd70528-charger.c
+ F:	drivers/regulator/bd70528-regulator.c
+ F:	drivers/regulator/bd71828-regulator.c
+ F:	drivers/regulator/bd718x7-regulator.c
++F:	drivers/regulator/bd9576-regulator.c
+ F:	drivers/regulator/rohm-regulator.c
+ F:	drivers/rtc/rtc-bd70528.c
+ F:	drivers/watchdog/bd70528_wdt.c
++F:	drivers/watchdog/bd9576_wdt.c
+ F:	include/linux/mfd/rohm-bd70528.h
+ F:	include/linux/mfd/rohm-bd71828.h
+ F:	include/linux/mfd/rohm-bd718x7.h
++F:	include/linux/mfd/rohm-bd957x.h
+ F:	include/linux/mfd/rohm-generic.h
+ F:	include/linux/mfd/rohm-shared.h
+ 
+-- 
+2.21.0
 
-This is a cascading fall-through handling all map types.
-I don't think this change improves readability.
 
-...
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
