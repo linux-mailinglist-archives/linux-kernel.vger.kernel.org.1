@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7F226E32A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2A426E31A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIQSBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        id S1726498AbgIQR6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726549AbgIQRjl (ORCPT
+        with ESMTP id S1726565AbgIQRjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:39:41 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8341C061355
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:34 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y74so3102392iof.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:34 -0700 (PDT)
+        Thu, 17 Sep 2020 13:39:42 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B3AC06121E
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:37 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id u18so3053198iln.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1JC8Jq8l5d3FMIOqG3s3tOJTv29rQ/B9PWS+aSrpLGw=;
-        b=U405yXMXivO9GetXit4zYyFid6bzqqIA4UwrlGS5LHR/5sRVogi2Yb/2UL2pKQhQ6I
-         h2y8mLHqugpSytlwllaXNvD6yLD2LkMx6JYV9OkEP9tOlOXqlqXR51d7I0PXmXIgGSsN
-         Z56BE5EQTRP3G5Ug/DWidnc4tOtRGffpZTTssuJqbgiX/9ELY7wXCL/+ZS3FxPlQWGF6
-         macQV8BiucaZiMVMEUIulgydWrNK1duaqGU3OOj+9FOBLjc3olAiIFCgp8R3MkMyWWgA
-         5qS+MG6/cUb69sajAlTpfCU8wIwH/K+AT3KB9jsPOHI/1Cg3LPckfVKgyvafgZhfiaOt
-         2cXA==
+        bh=c6CNu1LYWNz4YTYxiYPRvkqPWBqpDM+ovhrPcXJRY08=;
+        b=xcjO2apobyoynwr8mlo+BSGWBbL2VnaNrO/p5X+YCAfoQW0L3BTq5m4l9/P5y82U1b
+         31XYlB/+9ASi1ngE2ipcUdePPYfd3yRJrFhgHXqqU1y6x4ymTawjEeEyat16xG3dy3JI
+         dUQ+qPqLg/kCTQPGyc/nWbHkBo1CJFnyQzLvnIhoGjtUbjGVK3gQQL+UfJFTv1JSMMVb
+         4trRT8nGQQxMY4b9jpbIHpHzq6QLy6KhCUOO066hxad3KHSQtV0btNKx2hRwsbOA/2RS
+         /22uXRYgObFyCedDtzl17so7ac6enMRyDVgttaNomlW33nsHMxuUCP3B/RlQjVJJYY1t
+         Z+cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1JC8Jq8l5d3FMIOqG3s3tOJTv29rQ/B9PWS+aSrpLGw=;
-        b=K8aUqfgQC2ZiixJgVVG/9lw+z14dgTtRejXweR5/VLzcNuWUkMeSulMiobG+u9RZ24
-         2tgq1R9luEc9g//WWnuCqDEYx6ZYZcSc4Qz8B5zCMacVaRPeeQGalu7w96UFvAor4tkV
-         tf8y1FNbD7rIPqRNyM9zEvzSzyRmOrcDFND1joMyrHo6XiDiIVb8t83BZXlZ/mH8OT7l
-         QKpzUbWUxSGGR+cYpatllPFN3sf4Pr6KYK9RfLEZwidsT5sqL6rUiwwCy7UyXIxYCshm
-         ubSUxP8voQaviTBO444o2K86kIeaT5QN8UuDt5hlyTXatNeDXtUGY8It9+TarIPoXFTT
-         snBg==
-X-Gm-Message-State: AOAM530UB62AKHHQPlltPVd9PyvNHf3qfYb9vMquNs4uBeh88xqz0Oz0
-        waSyo1ZWiLuETN9C1BShAugdJA==
-X-Google-Smtp-Source: ABdhPJybbRBFZ3GvAgFEYWFu2IpIWGxn/o7bQ4EoBVHUsEH7hygQHQnFqx2LFmtttDZyH5am5EUs7Q==
-X-Received: by 2002:a05:6638:144:: with SMTP id y4mr27177041jao.61.1600364374081;
-        Thu, 17 Sep 2020 10:39:34 -0700 (PDT)
+        bh=c6CNu1LYWNz4YTYxiYPRvkqPWBqpDM+ovhrPcXJRY08=;
+        b=ePXeUG5SdOmBTkcTsoyUbrVGA1vMguCq9DgPIlwgc27r1qBdCsgCpmsQ5ztWSQKNva
+         AenTGW2F9A8bAaeT0RZl9+8FLXYEwX2QuKVNGJSoG4Ug2XaS+ga0qCJ4rurtIJPzcZue
+         EvfVfu14lFLHQVZ7qvjyhr2iZxTZ0S6INTTYkpe5Mo3lF8OGpScoXnrGGc1zgH0Nrft1
+         5iH6NphZaBQ6z/1D25F1xC4PN7dtvttnlxSXwq7SKrypwPMOA8JVHjqQ8fy1aku2A6Ba
+         zKpvo0a8TEjCoZdEJHhxVZN74dp557HoGTRQQtVAV6xGWArndj/KFn1A8lZxiWDA6dyS
+         wa5w==
+X-Gm-Message-State: AOAM532RH0cXHP5Pk5oBXN15UDARs8dVe0dNlNvdtul9NXkGdWGuCzx3
+        2lRMevfnKQ5mnpCeN8/Vx8lfCA==
+X-Google-Smtp-Source: ABdhPJwaFsCSU3TPi/ucp9NUFbo+IVA1+K0seDDcl5QN5d1HKoNl+4jATzsWhbdJY0CYLF0bWqLxcw==
+X-Received: by 2002:a92:8b0e:: with SMTP id i14mr485068ild.28.1600364376991;
+        Thu, 17 Sep 2020 10:39:36 -0700 (PDT)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id l6sm192725ilt.34.2020.09.17.10.39.33
+        by smtp.gmail.com with ESMTPSA id l6sm192725ilt.34.2020.09.17.10.39.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 10:39:33 -0700 (PDT)
+        Thu, 17 Sep 2020 10:39:35 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 3/7] net: ipa: manage endpoints separate from clock
-Date:   Thu, 17 Sep 2020 12:39:22 -0500
-Message-Id: <20200917173926.24266-4-elder@linaro.org>
+Subject: [PATCH net-next v3 5/7] net: ipa: repurpose CLOCK_HELD flag
+Date:   Thu, 17 Sep 2020 12:39:24 -0500
+Message-Id: <20200917173926.24266-6-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200917173926.24266-1-elder@linaro.org>
 References: <20200917173926.24266-1-elder@linaro.org>
@@ -65,108 +65,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when (before) the last IPA clock reference is dropped,
-all endpoints are suspended.  And whenever the first IPA clock
-reference is taken, all endpoints are resumed (or started).
+The previous patch causes a system resume to be triggered when a
+packet is available for receipt on a suspended RX endpoint.
 
-In most cases there's no need to start endpoints when the clock
-starts.  So move the calls to ipa_endpoint_suspend() and
-ipa_endpoint_resume() out of ipa_clock_put() and ipa_clock_get(),
-respectiely.  Instead, only suspend endpoints when handling a system
-suspend, and only resume endpoints when handling a system resume.
+The CLOCK_HELD flag was previously used to indicate that an extra
+clock reference was held, preventing suspend.  But we no longer need
+such a flag:
+  - We take an initial reference in ipa_config().
+  - That reference is held until ipa_suspend() releases it.
+  - A subsequent system resume leads to a reference getting
+    re-acquired in ipa_resume().
+  - This can repeat until ultimately the module is removed, where
+    ipa_remove() releases the reference.
+We no longer need a special flag to determine whether this extra
+reference is held--it is, provided probe has completed successfully
+and the driver is not suspended (or removed).
+
+On the other hand, once suspended, it's possible for more than one
+endpoint to trip the IPA SUSPEND interrupt, and we only want to
+trigger the system resume once.  So repurpose the Boolean CLOCK_HELD
+flag to record whether the IPA SUSPEND handler should initiate a
+system resume.
+
+The flag will be be cleared each time ipa_suspend() is called,
+*before* any endpoints are suspended.  And it will be set inside the
+IPA SUSPEND interrupt handler exactly once per suspend.
+
+Rename the flag IPA_FLAG_RESUMED to reflect its new purpose.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
-v3: Added Bjorn's reviewed-by tag.
+v3: New; eliminated need for "clock held" flag, as Bjorn suggested.
 
- drivers/net/ipa/ipa_clock.c | 14 ++++----------
- drivers/net/ipa/ipa_main.c  |  8 ++++++++
- 2 files changed, 12 insertions(+), 10 deletions(-)
+ drivers/net/ipa/ipa.h      |  6 +++---
+ drivers/net/ipa/ipa_main.c | 14 +++++++-------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
-index b703866f2e20b..a2c0fde058199 100644
---- a/drivers/net/ipa/ipa_clock.c
-+++ b/drivers/net/ipa/ipa_clock.c
-@@ -200,9 +200,8 @@ bool ipa_clock_get_additional(struct ipa *ipa)
+diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
+index c688155ccf375..6c2371084c55a 100644
+--- a/drivers/net/ipa/ipa.h
++++ b/drivers/net/ipa/ipa.h
+@@ -29,11 +29,11 @@ struct ipa_interrupt;
  
- /* Get an IPA clock reference.  If the reference count is non-zero, it is
-  * incremented and return is immediate.  Otherwise it is checked again
-- * under protection of the mutex, and if appropriate the clock (and
-- * interconnects) are enabled suspended endpoints (if any) are resumed
-- * before returning.
-+ * under protection of the mutex, and if appropriate the IPA clock
-+ * is enabled.
-  *
-  * Incrementing the reference count is intentionally deferred until
-  * after the clock is running and endpoints are resumed.
-@@ -229,17 +228,14 @@ void ipa_clock_get(struct ipa *ipa)
- 		goto out_mutex_unlock;
- 	}
- 
--	ipa_endpoint_resume(ipa);
--
- 	refcount_set(&clock->count, 1);
- 
- out_mutex_unlock:
- 	mutex_unlock(&clock->mutex);
- }
- 
--/* Attempt to remove an IPA clock reference.  If this represents the last
-- * reference, suspend endpoints and disable the clock (and interconnects)
-- * under protection of a mutex.
-+/* Attempt to remove an IPA clock reference.  If this represents the
-+ * last reference, disable the IPA clock under protection of the mutex.
+ /**
+  * enum ipa_flag - IPA state flags
+- * @IPA_FLAG_CLOCK_HELD:	Whether IPA clock is held to prevent suspend
+- * @IPA_FLAG_COUNT:		Number of defined IPA flags
++ * @IPA_FLAG_RESUMED:	Whether resume from suspend has been signaled
++ * @IPA_FLAG_COUNT:	Number of defined IPA flags
   */
- void ipa_clock_put(struct ipa *ipa)
- {
-@@ -249,8 +245,6 @@ void ipa_clock_put(struct ipa *ipa)
- 	if (!refcount_dec_and_mutex_lock(&clock->count, &clock->mutex))
- 		return;
+ enum ipa_flag {
+-	IPA_FLAG_CLOCK_HELD,
++	IPA_FLAG_RESUMED,
+ 	IPA_FLAG_COUNT,		/* Last; not a flag */
+ };
  
--	ipa_endpoint_suspend(ipa);
--
- 	ipa_clock_disable(ipa);
- 
- 	mutex_unlock(&clock->mutex);
 diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 409375b96eb8f..4d5394bcfe47e 100644
+index 4e2508bb1bf80..1044758b501d2 100644
 --- a/drivers/net/ipa/ipa_main.c
 +++ b/drivers/net/ipa/ipa_main.c
-@@ -907,11 +907,15 @@ static int ipa_remove(struct platform_device *pdev)
-  * Return:	Always returns zero
-  *
-  * Called by the PM framework when a system suspend operation is invoked.
-+ * Suspends endpoints and releases the clock reference held to keep
-+ * the IPA clock running until this point.
-  */
- static int ipa_suspend(struct device *dev)
+@@ -86,7 +86,7 @@ static void ipa_suspend_handler(struct ipa *ipa, enum ipa_irq_id irq_id)
+ 	 * More than one endpoint could signal this; if so, ignore
+ 	 * all but the first.
+ 	 */
+-	if (!test_and_set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
++	if (!test_and_set_bit(IPA_FLAG_RESUMED, ipa->flags))
+ 		pm_wakeup_dev_event(&ipa->pdev->dev, 0, true);
+ 
+ 	/* Acknowledge/clear the suspend interrupt on all endpoints */
+@@ -518,7 +518,6 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
+ 	 * is held after initialization completes, and won't get dropped
+ 	 * unless/until a system suspend request arrives.
+ 	 */
+-	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+ 	ipa_clock_get(ipa);
+ 
+ 	ipa_hardware_config(ipa);
+@@ -554,7 +553,6 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
+ err_hardware_deconfig:
+ 	ipa_hardware_deconfig(ipa);
+ 	ipa_clock_put(ipa);
+-	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+ 
+ 	return ret;
+ }
+@@ -572,7 +570,6 @@ static void ipa_deconfig(struct ipa *ipa)
+ 	ipa_endpoint_deconfig(ipa);
+ 	ipa_hardware_deconfig(ipa);
+ 	ipa_clock_put(ipa);
+-	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+ }
+ 
+ static int ipa_firmware_load(struct device *dev)
+@@ -778,7 +775,6 @@ static int ipa_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(dev, ipa);
+ 	ipa->modem_rproc = rproc;
+ 	ipa->clock = clock;
+-	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+ 	ipa->version = data->version;
+ 
+ 	ret = ipa_reg_init(ipa);
+@@ -908,10 +904,15 @@ static int ipa_suspend(struct device *dev)
  {
  	struct ipa *ipa = dev_get_drvdata(dev);
  
-+	ipa_endpoint_suspend(ipa);
++	/* When a suspended RX endpoint has a packet ready to receive, we
++	 * get an IPA SUSPEND interrupt.  We trigger a system resume in
++	 * that case, but only on the first such interrupt since suspend.
++	 */
++	__clear_bit(IPA_FLAG_RESUMED, ipa->flags);
 +
+ 	ipa_endpoint_suspend(ipa);
+ 
  	ipa_clock_put(ipa);
- 	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+-	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
  
-@@ -925,6 +929,8 @@ static int ipa_suspend(struct device *dev)
-  * Return:	Always returns 0
-  *
-  * Called by the PM framework when a system resume operation is invoked.
-+ * Takes an IPA clock reference to keep the clock running until suspend,
-+ * and resumes endpoints.
-  */
- static int ipa_resume(struct device *dev)
- {
-@@ -936,6 +942,8 @@ static int ipa_resume(struct device *dev)
- 	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
- 	ipa_clock_get(ipa);
- 
-+	ipa_endpoint_resume(ipa);
-+
  	return 0;
  }
+@@ -933,7 +934,6 @@ static int ipa_resume(struct device *dev)
+ 	/* This clock reference will keep the IPA out of suspend
+ 	 * until we get a power management suspend request.
+ 	 */
+-	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+ 	ipa_clock_get(ipa);
  
+ 	ipa_endpoint_resume(ipa);
 -- 
 2.20.1
 
