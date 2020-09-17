@@ -2,213 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EC726D64A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F87326D668
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgIQIU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:20:56 -0400
-Received: from mail-co1nam11on2118.outbound.protection.outlook.com ([40.107.220.118]:51097
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726198AbgIQIUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:20:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IRgO2ZHjpBjYZcVdTlZjnTxzbkY/IvvgRWVkCih/cp5ehbiMgez1M3eoGCZb9F9BFcMYaw0bEb05+JbbuhGMRHaO3ZkEZeqYHgXDX0eCbvPQef0DShZ14PMQKLqweB+bJjEcHMYrldY2Cr36unFe3ZNyEZBZxibcBibkqNsu//m2Awm3QHGswUViGKz730hACnlK6/528O+YBmIjys8Lr2nwXPCpxWjVjmyMo6yM04SZNRH6L0bOo4cPbg4lFnEfAagf+uiQd3f0xXscoHAO7zrvKKf/rXdCA5yO8+frb3rNBA+V2/S8M2hvjknXsoPROpjaEvw6Zc7iBiC33Dcx9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g2l02bwqOJcFgzvXOM1FKabFhPQkV7mDdw5aOX8Ym6k=;
- b=bD1zYMZinHJdId4fupW6FI6Tc9+m0LXCb/WnGvT7aCA9LvU5JRsFj2zZiWfxNJ95W/RVHjDmvJKF6ESTk4wywnD4xOUdRpjZ3wPaxG41niYupGgbIjg824XBM1ZsUBj8fJhMM2cFp8veCldWXilylTXWCkMMfmt9hFoQtnaS9dOFvW3c8AUR2cIIU3ila3QcpiqqJCbXzZ5yRCTChgxN+O6RsJfw9GBAIbo2zCfWT9Iuc8DD/wJjegwwdS+1KiAOSvTEJcK1hA/KJL553KUhkUhIAOO+xk0Hzk/GJBamk5OAWNARM0RDhc6B/vxal/15HGVfqTJpNk6iS+QCWWin7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g2l02bwqOJcFgzvXOM1FKabFhPQkV7mDdw5aOX8Ym6k=;
- b=3b4PqR5baI+kuHk1auQ3+anyUqkDDm4HOMZNigBeILP4TOjLHhvVvlVwigvGuUMDNVgvu9y8R6bZlaogN3dsZvjubMgJBddncjIUIsRyowF7a/7HL4UUxvxQW3cc7wlXAL/WghNPUtkAx1RRo/Go12d+Qh4PNEwsTzLKbGwAyxo=
-Authentication-Results: analogixsemi.com; dkim=none (message not signed)
- header.d=none;analogixsemi.com; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB4902.namprd04.prod.outlook.com (2603:10b6:a03:4e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 17 Sep
- 2020 08:20:52 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::1dc0:7d4b:9820:e68]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::3c04:982f:7d75:779e%7]) with mapi id 15.20.3370.019; Thu, 17 Sep 2020
- 08:20:52 +0000
-Date:   Thu, 17 Sep 2020 16:18:37 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     devicetree@vger.kernel.org, devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>
-Subject: [PATCH v16 1/2] dt-bindings: drm/bridge: anx7625: MIPI to DP
- transmitter DT schema
-Message-ID: <bafa02aa50c5c29b3336ca6930c406150a3c60d2.1600324895.git.xji@analogixsemi.com>
-References: <cover.1600324894.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1600324894.git.xji@analogixsemi.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-ClientProxiedBy: HKAPR03CA0009.apcprd03.prod.outlook.com
- (2603:1096:203:c8::14) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        id S1726435AbgIQIZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726153AbgIQIY6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:24:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E408C06174A;
+        Thu, 17 Sep 2020 01:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Dv3rGFm1Kct421bC4ikilNsrxpM6Mgb8/oXPwK5ENVk=; b=j7Y+k4l3TyDcf89UtdqgGjIGxl
+        h4jq9Ekj+WZrxuJtFRYsIghVbyktSEIRLzh2f0Y1BHlGLoClXQseIx2oNy+aDX1UV/TZDiz3At2SW
+        PNR9/okKDUrOJ3UMLcEAxG0O/muyWsah+9ntiGzgPmlpPAgwXX4jCy4cviYtFkuWpeaSRB53qrKkW
+        l5XRzuwt7KiuW2CXZF84PeNeTYHAnNCTIe71RJrgoI+yjzUW1muogLu8OCPOKfZodCHKrGljPG6Ai
+        sFBjo1v/PvsaGcnw2XFAKpMNJmtE48kUHfwRYU3HM064RZnaFJuf2V1IDPwaKxR33sp4eN4s/vkSf
+        4Q0IE0Tg==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIpDi-0000wS-VP; Thu, 17 Sep 2020 08:24:47 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: remove compat_sys_mount
+Date:   Thu, 17 Sep 2020 10:22:31 +0200
+Message-Id: <20200917082236.2518236-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-user (114.247.245.146) by HKAPR03CA0009.apcprd03.prod.outlook.com (2603:1096:203:c8::14) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3412.6 via Frontend Transport; Thu, 17 Sep 2020 08:20:51 +0000
-X-Originating-IP: [114.247.245.146]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2849b505-3a6a-46bf-5999-08d85ae2972b
-X-MS-TrafficTypeDiagnostic: BYAPR04MB4902:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB4902E44299E868AB3926D7EAC73E0@BYAPR04MB4902.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gbxCXUnkKGNwrGMa3GPQeYkbXxSpbzfCZZSNiiI9W2c2PsFiwhXwvfV+GCJ/GUTTEtT/qMLcFzW7hORmPB9BWSX0+Tt9DXaua/itelRxPC6oovaIyOj2q6UAsx0Fn4m5Xd7n3Sc7YZ0lIRu66FeThsRffWXgBl1NXDr77+vtzdxna4UT8cJOaJ0u8InXoAXMCUJRe/aM4QwlwMgSPgGzJfC8rp/U5HbEGRHxWP8Amtw/T+oadXYuJUILGgnacnUFOK6Z8c5QNXGRxSYq073oKVNrj4v0SwN85KPOHL3x9YC0RjMYpGmOlOcFgD52zb/6VYOC9/GwG02NWywuxEMBhL42A6dPtrCG/RvG167c3P33P2JbL8FxNxlI0NG+Rm8o1K1eJyDgxw+f3Nh4KwS1vA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(39840400004)(396003)(136003)(36756003)(8936002)(186003)(316002)(6666004)(8676002)(2906002)(4326008)(86362001)(478600001)(16526019)(5660300002)(26005)(66476007)(6496006)(52116002)(107886003)(6486002)(110136005)(66556008)(956004)(66946007)(2616005)(54906003)(7416002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: rSaXH/9OXkFXtpkz8CCtZC2l5k9QH5LtmfBHsMcSjKXSbOx3tgKaOtZWLB2Wu9hTDQ030WPHG9tsXPheP+pMkDG2hBSeQOr083agfg5N5x+R49Y4tMBpLj7C1/JIGMRdPydI2sUMPBIrUb4d2jjZ2MAIpuWHrcKdM/Lr3UsK/N+ge/K/d+dGH5R4LUY9KQyt/roijYZxEvKNcrzg5bY9XG7KSWkCgKbmJkP3qoTLVCmvGwWOUf8oXIcQBwl9HrjVKPokvGB06e1PN71ymQUrixIJUs0vBRb1WkmRMlJHJe7y7krcAh6pGWgjgn0f4xZhviyhfpSPbknD+eT0dKkU3l0vPesuJMcAk5sGm1+ZRtD9sW4dbCJEUWTTbPlMxy/YY5Cj5Zt1M/lDgLAMZ+lAOt6x8tozKx3xxLt8kjYZ+f3rxRYIHeKVpePjW09Y/XnRzD/gqMpBgV95WgOe0X+VkFycEtVrr80MyEboLaRXtBsDdX/mfWPXlsBV4tIh+NwPOZyF1hzu8zyZY8/d0K5lGk44bM4lqi+ZNaeDH89eRtCk0JST1vYp65Wcc1DDYcgO2ZtKec3GPbsmX4Kp9+dkv+2LwqPEkF8wyV/AXJarKS65aTidoLuxV+8qXAjNlRAadAT6G5bjS8T5jq3baXEgDw==
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2849b505-3a6a-46bf-5999-08d85ae2972b
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 08:20:52.1788
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FwtfoIuW4YoU4d3y/XiejS4t5WPmoZc4sXVZaIt1RFVvIHIZtQTPx8tfMMW4U0qHU+hbJampMUYyyNEd6l2t4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4902
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-anx7625: MIPI to DP transmitter DT schema
+Hi Al,
 
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/display/bridge/analogix,anx7625.yaml  | 95 ++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+this series moves the NFSv4 binary mount data compat handling to fs/nfs/,
+and removes the now pointless compat_sys_mount.
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-new file mode 100644
-index 0000000..60585a4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-@@ -0,0 +1,95 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2019 Analogix Semiconductor, Inc.
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/display/bridge/analogix,anx7625.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Analogix ANX7625 SlimPort (4K Mobile HD Transmitter)
-+
-+maintainers:
-+  - Xin Ji <xji@analogixsemi.com>
-+
-+description: |
-+  The ANX7625 is an ultra-low power 4K Mobile HD Transmitter
-+  designed for portable devices.
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: analogix,anx7625
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    description: used for interrupt pin B8.
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: used for power on chip control, POWER_EN pin D2.
-+    maxItems: 1
-+
-+  reset-gpios:
-+    description: used for reset chip control, RESET_N pin B7.
-+    maxItems: 1
-+
-+  ports:
-+    type: object
-+
-+    properties:
-+      port@0:
-+        type: object
-+        description:
-+          Video port for MIPI DSI input.
-+
-+      port@1:
-+        type: object
-+        description:
-+          Video port for panel or connector.
-+
-+    required:
-+        - port@0
-+        - port@1
-+
-+required:
-+  - compatible
-+  - reg
-+  - ports
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        encoder@58 {
-+            compatible = "analogix,anx7625";
-+            reg = <0x58>;
-+            enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
-+            reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
-+
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                mipi2dp_bridge_in: port@0 {
-+                    reg = <0>;
-+                    anx7625_in: endpoint {
-+                        remote-endpoint = <&mipi_dsi>;
-+                    };
-+                };
-+
-+                mipi2dp_bridge_out: port@1 {
-+                    reg = <1>;
-+                    anx7625_out: endpoint {
-+                        remote-endpoint = <&panel_in>;
-+                    };
-+                };
-+            };
-+        };
-+    };
--- 
-2.7.4
-
+Diffstat:
+ b/arch/alpha/kernel/osf_sys.c                        |  116 +++--------
+ b/arch/arm64/include/asm/unistd32.h                  |    2 
+ b/arch/mips/kernel/syscalls/syscall_n32.tbl          |    2 
+ b/arch/mips/kernel/syscalls/syscall_o32.tbl          |    2 
+ b/arch/parisc/kernel/syscalls/syscall.tbl            |    2 
+ b/arch/powerpc/kernel/syscalls/syscall.tbl           |    2 
+ b/arch/s390/kernel/syscalls/syscall.tbl              |    2 
+ b/arch/sparc/kernel/syscalls/syscall.tbl             |    2 
+ b/arch/x86/entry/syscalls/syscall_32.tbl             |    2 
+ b/fs/Makefile                                        |    1 
+ b/fs/internal.h                                      |    3 
+ b/fs/namespace.c                                     |   29 --
+ b/fs/nfs/fs_context.c                                |  195 ++++++++++++-------
+ b/include/linux/compat.h                             |    6 
+ b/include/linux/fs.h                                 |    2 
+ b/include/uapi/asm-generic/unistd.h                  |    2 
+ b/tools/include/uapi/asm-generic/unistd.h            |    2 
+ b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl |    2 
+ b/tools/perf/arch/s390/entry/syscalls/syscall.tbl    |    2 
+ fs/compat.c                                          |  132 ------------
+ 20 files changed, 179 insertions(+), 329 deletions(-)
