@@ -2,159 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF6F26E654
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7DD26E660
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgIQULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:11:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbgIQULl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:11:41 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46EC6206B7;
-        Thu, 17 Sep 2020 20:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600373484;
-        bh=U/TSXspbUHQHp2IjHc8xcgoC/95vhBzwyLQ+rvvEyUU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=WAuVWb5n0Y0idAVKi6/3xBq7O6nIQjGkrHzP/QC/mAnVhT+DkBdtjV4wkcmrdPa7E
-         VzLP3NvEwLSXZWkth1Mo3c7xZx5knRzPXZL/Zrt4tdjUmjX0tGwUijVcts7O5e67uz
-         Ew0dxDpkOIliI5OhcTUKMBG2ld9OG3Q987ml6HZg=
-Date:   Thu, 17 Sep 2020 15:11:23 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, frederic@kernel.org,
-        mtosatti@redhat.com, sassmann@redhat.com,
-        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
-        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
-        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
-        thomas.lendacky@amd.com, jerinj@marvell.com,
-        mathias.nyman@intel.com, jiri@nvidia.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
- hosekeeping CPUs
-Message-ID: <20200917201123.GA1726926@bjorn-Precision-5520>
+        id S1726690AbgIQUMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgIQUMh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 16:12:37 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA91C06174A;
+        Thu, 17 Sep 2020 13:12:36 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7270FFD1;
+        Thu, 17 Sep 2020 22:12:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1600373554;
+        bh=ImtDkhOM3E58XUZj9vjsNqp730R4NQ3rMHUu/Xaa14E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gXtNWWraWwEmJdkNh1LFbj1LUPr5Rh6c2/gqhc04TotlmCEVMe9driHUsSEp7s6IV
+         v0lgY95h6Z5kaJoqD7Viq+KMIl50T/q4bx5UMjGwUaP1gbIrkc4dOJceRtJNIijJj8
+         rmxsypz7uhzzO3+03nbKH86AhoEVZASp7Sw6kvqs=
+Date:   Thu, 17 Sep 2020 23:12:04 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        - <patches@opensource.cirrus.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Teng <andy.teng@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sricharan R <sricharan@codeaurora.org>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-unisoc@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v2 09/13] dt-bindings: pinctrl: include common schema in
+ GPIO controllers
+Message-ID: <20200917201204.GG3969@pendragon.ideasonboard.com>
+References: <20200917165301.23100-1-krzk@kernel.org>
+ <20200917165301.23100-10-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200909150818.313699-2-nitesh@redhat.com>
+In-Reply-To: <20200917165301.23100-10-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Ingo, Peter, Juri, Vincent (scheduler maintainers)]
+Hi Krzysztof,
 
-s/hosekeeping/housekeeping/ (in subject)
+Thank you for the patch.
 
-On Wed, Sep 09, 2020 at 11:08:16AM -0400, Nitesh Narayan Lal wrote:
-> Introduce a new API num_housekeeping_cpus(), that can be used to retrieve
-> the number of housekeeping CPUs by reading an atomic variable
-> __num_housekeeping_cpus. This variable is set from housekeeping_setup().
+On Thu, Sep 17, 2020 at 06:52:57PM +0200, Krzysztof Kozlowski wrote:
+> Include the common GPIO schema in GPIO controllers to be sure all common
+> properties are properly validated.
+
+Shouldn't we delete the properties that are now redundant from these
+schemas ?
+
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> This API is introduced for the purpose of drivers that were previously
-> relying only on num_online_cpus() to determine the number of MSIX vectors
-> to create. In an RT environment with large isolated but a fewer
-> housekeeping CPUs this was leading to a situation where an attempt to
-> move all of the vectors corresponding to isolated CPUs to housekeeping
-> CPUs was failing due to per CPU vector limit.
-
-Totally kibitzing here, but AFAICT the concepts of "isolated CPU" and
-"housekeeping CPU" are not currently exposed to drivers, and it's not
-completely clear to me that they should be.
-
-We have carefully constructed notions of possible, present, online,
-active CPUs, and it seems like whatever we do here should be
-somehow integrated with those.
-
-> If there are no isolated CPUs specified then the API returns the number
-> of all online CPUs.
-> 
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
 > ---
->  include/linux/sched/isolation.h |  7 +++++++
->  kernel/sched/isolation.c        | 23 +++++++++++++++++++++++
->  2 files changed, 30 insertions(+)
 > 
-> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-> index cc9f393e2a70..94c25d956d8a 100644
-> --- a/include/linux/sched/isolation.h
-> +++ b/include/linux/sched/isolation.h
-> @@ -25,6 +25,7 @@ extern bool housekeeping_enabled(enum hk_flags flags);
->  extern void housekeeping_affine(struct task_struct *t, enum hk_flags flags);
->  extern bool housekeeping_test_cpu(int cpu, enum hk_flags flags);
->  extern void __init housekeeping_init(void);
-> +extern unsigned int num_housekeeping_cpus(void);
->  
->  #else
->  
-> @@ -46,6 +47,12 @@ static inline bool housekeeping_enabled(enum hk_flags flags)
->  static inline void housekeeping_affine(struct task_struct *t,
->  				       enum hk_flags flags) { }
->  static inline void housekeeping_init(void) { }
-> +
-> +static unsigned int num_housekeeping_cpus(void)
-> +{
-> +	return num_online_cpus();
-> +}
-> +
->  #endif /* CONFIG_CPU_ISOLATION */
->  
->  static inline bool housekeeping_cpu(int cpu, enum hk_flags flags)
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index 5a6ea03f9882..7024298390b7 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -13,6 +13,7 @@ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
->  EXPORT_SYMBOL_GPL(housekeeping_overridden);
->  static cpumask_var_t housekeeping_mask;
->  static unsigned int housekeeping_flags;
-> +static atomic_t __num_housekeeping_cpus __read_mostly;
->  
->  bool housekeeping_enabled(enum hk_flags flags)
->  {
-> @@ -20,6 +21,27 @@ bool housekeeping_enabled(enum hk_flags flags)
->  }
->  EXPORT_SYMBOL_GPL(housekeeping_enabled);
->  
-> +/*
-> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
-> + *
-> + * This function returns the number of available housekeeping CPUs
-> + * based on __num_housekeeping_cpus which is of type atomic_t
-> + * and is initialized at the time of the housekeeping setup.
-> + */
-> +unsigned int num_housekeeping_cpus(void)
-> +{
-> +	unsigned int cpus;
-> +
-> +	if (static_branch_unlikely(&housekeeping_overridden)) {
-> +		cpus = atomic_read(&__num_housekeeping_cpus);
-> +		/* We should always have at least one housekeeping CPU */
-> +		BUG_ON(!cpus);
-> +		return cpus;
-> +	}
-> +	return num_online_cpus();
-> +}
-> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
-> +
->  int housekeeping_any_cpu(enum hk_flags flags)
->  {
->  	int cpu;
-> @@ -131,6 +153,7 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
->  
->  	housekeeping_flags |= flags;
->  
-> +	atomic_set(&__num_housekeeping_cpus, cpumask_weight(housekeeping_mask));
->  	free_bootmem_cpumask_var(non_housekeeping_mask);
->  
->  	return 1;
-> -- 
-> 2.27.0
+> Changes since v1:
+> 1. New patch
+> ---
+>  .../devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml      | 3 +++
+>  .../bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml          | 1 +
+>  .../devicetree/bindings/pinctrl/cirrus,lochnagar.yaml          | 3 +++
+>  Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml | 3 +++
+>  .../devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml   | 3 +++
+>  Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml  | 3 +++
+>  .../devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml      | 3 +++
+>  .../devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml      | 3 +++
+>  .../devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml       | 3 +++
+>  .../devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml      | 3 +++
+>  .../devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml          | 3 +++
+>  11 files changed, 31 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> index 33391d30c00c..51bfc214bba6 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl.yaml
+> @@ -15,6 +15,9 @@ description: |
+>    GPIO function selection & GPIO attributes configuration. Please refer to
+>    pinctrl-bindings.txt in this directory for common binding part and usage.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: actions,s500-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> index 7556be6e2754..55662f8d1f94 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+> @@ -143,6 +143,7 @@ allOf:
+>    # boards are defining it at the moment so it would generate a lot of
+>    # warnings.
+>  
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+>    - if:
+>        properties:
+>          compatible:
+> diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> index 420d74856032..ed478b0ed4cc 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+> @@ -31,6 +31,9 @@ description: |
+>    This binding must be part of the Lochnagar MFD binding:
+>      [4] ../mfd/cirrus,lochnagar.yaml
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      enum:
+> diff --git a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> index 44c04d11ae4c..ffa64832b4f9 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
+> @@ -59,6 +59,9 @@ properties:
+>  patternProperties:
+>    "^gpio@[0-9]$":
+>      type: object
+> +    allOf:
+> +      - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>      properties:
+>        compatible:
+>          enum:
+> diff --git a/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> index 152c151c27ad..7d0a4cb96f39 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/mediatek,mt6779-pinctrl.yaml
+> @@ -14,6 +14,9 @@ description: |+
+>    required property:
+>    - compatible: "syscon"
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: mediatek,mt6779-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> index 5556def6b99b..bc8bc0ac1926 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> @@ -12,6 +12,9 @@ maintainers:
+>  description: |
+>    The Mediatek's Pin controller is used to control SoC pins.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: mediatek,mt8192-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> index c64c93206817..22a6b80b4c0e 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,ipq6018-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found in the
+>    IPQ6018 platform.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,ipq6018-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> index 1f0f5757f9e1..9855d859fe61 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,msm8226-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found in the
+>    MSM8226 platform.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,msm8226-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> index 8508c57522fd..e5757b6ced40 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> @@ -13,6 +13,9 @@ description: |
+>    This binding describes the Top Level Mode Multiplexer block found in the
+>    SM8250 platform.
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  properties:
+>    compatible:
+>      const: qcom,sm8250-pinctrl
+> diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> index b7911a994f3a..4d7bf4340262 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/renesas,rza2-pinctrl.yaml
+> @@ -10,6 +10,9 @@ maintainers:
+>    - Chris Brandt <chris.brandt@renesas.com>
+>    - Geert Uytterhoeven <geert+renesas@glider.be>
+>  
+> +allOf:
+> +  - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>  description:
+>    The Renesas SoCs of the RZ/A2 series feature a combined Pin and GPIO
+>    controller.
+> diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> index 72877544ca78..28b861362ba0 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+> @@ -56,6 +56,9 @@ properties:
+>  patternProperties:
+>    '^gpio@[0-9a-f]*$':
+>      type: object
+> +    allOf:
+> +      - $ref: /schemas/gpio/gpio-common.yaml#
+> +
+>      properties:
+>        gpio-controller: true
+>        '#gpio-cells':
+
+-- 
+Regards,
+
+Laurent Pinchart
