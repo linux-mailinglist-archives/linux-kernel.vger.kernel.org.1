@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DF726DDEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536C126DE21
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727238AbgIQOMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:12:49 -0400
-Received: from mga05.intel.com ([192.55.52.43]:3614 "EHLO mga05.intel.com"
+        id S1727358AbgIQOXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:23:51 -0400
+Received: from mga05.intel.com ([192.55.52.43]:3698 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727356AbgIQOLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:11:21 -0400
-IronPort-SDR: 73TDc76BmINIsYmtfe5bxBKh279i3kTiBc8Y6822tD9paet11VtojrbuZeGohQkrATgim8x70j
- 2tui+7iL/1Qg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="244532742"
+        id S1727124AbgIQOL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:11:57 -0400
+IronPort-SDR: 1Hyyq2N66Z1k+JHOOZcm8MR9rKsUYv8EmaMdlrC3Di5XUzesyxmJVGoH3FpWofw0gyKaNW9+VJ
+ J5rWYpGElDQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="244532744"
 X-IronPort-AV: E=Sophos;i="5.76,437,1592895600"; 
-   d="scan'208";a="244532742"
+   d="scan'208";a="244532744"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 06:53:40 -0700
-IronPort-SDR: uejv6rVOqNdgvOQq78PFJQ/Fgb3VaCRACDAdNTuYQ0xb3YFVC2t408+y0KASJG25Y+E4AvxcCJ
- 0TpV52ACjy6g==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 06:53:41 -0700
+IronPort-SDR: Os+bWV+7XxTVYVpsAgPIP2GYoaYDMuvc6qoEBrJX1fyTKEHbF1WogAiQlDrEP0R36+fiJt81fJ
+ r+t+81bm7Biw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,437,1592895600"; 
-   d="scan'208";a="380543132"
+   d="scan'208";a="380543136"
 Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga001.jf.intel.com with ESMTP; 17 Sep 2020 06:53:40 -0700
+  by orsmga001.jf.intel.com with ESMTP; 17 Sep 2020 06:53:41 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         linux-kernel@vger.kernel.org
@@ -35,9 +35,9 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
         mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V7 2/4] perf/x86/intel: Support PERF_SAMPLE_DATA_PAGE_SIZE
-Date:   Thu, 17 Sep 2020 06:52:35 -0700
-Message-Id: <20200917135237.2857-3-kan.liang@linux.intel.com>
+Subject: [PATCH V7 3/4] powerpc/perf: Support PERF_SAMPLE_DATA_PAGE_SIZE
+Date:   Thu, 17 Sep 2020 06:52:36 -0700
+Message-Id: <20200917135237.2857-4-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200917135237.2857-1-kan.liang@linux.intel.com>
 References: <20200917135237.2857-1-kan.liang@linux.intel.com>
@@ -50,59 +50,35 @@ From: Kan Liang <kan.liang@linux.intel.com>
 The new sample type, PERF_SAMPLE_DATA_PAGE_SIZE, requires the virtual
 address. Update the data->addr if the sample type is set.
 
-The large PEBS is disabled with the sample type, because perf doesn't
-support munmap tracking yet. The PEBS buffer for large PEBS cannot be
-flushed for each munmap. Wrong page size may be calculated. The large
-PEBS can be enabled later separately when munmap tracking is supported.
-
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/ds.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/powerpc/perf/core-book3s.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 404315df1e16..444e5f061d04 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -959,7 +959,8 @@ static void adaptive_pebs_record_size_update(void)
+diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+index 78fe34986594..ce22bd23082d 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -2065,6 +2065,9 @@ static struct pmu power_pmu = {
+ 	.sched_task	= power_pmu_sched_task,
+ };
  
- #define PERF_PEBS_MEMINFO_TYPE	(PERF_SAMPLE_ADDR | PERF_SAMPLE_DATA_SRC |   \
- 				PERF_SAMPLE_PHYS_ADDR | PERF_SAMPLE_WEIGHT | \
--				PERF_SAMPLE_TRANSACTION)
-+				PERF_SAMPLE_TRANSACTION |		     \
++#define PERF_SAMPLE_ADDR_TYPE  (PERF_SAMPLE_ADDR |		\
++				PERF_SAMPLE_PHYS_ADDR |		\
 +				PERF_SAMPLE_DATA_PAGE_SIZE)
+ /*
+  * A counter has overflowed; update its count and record
+  * things if requested.  Note that interrupts are hard-disabled
+@@ -2120,8 +2123,7 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
  
- static u64 pebs_update_adaptive_cfg(struct perf_event *event)
- {
-@@ -1335,6 +1336,10 @@ static u64 get_data_src(struct perf_event *event, u64 aux)
- 	return val;
- }
+ 		perf_sample_data_init(&data, ~0ULL, event->hw.last_period);
  
-+#define PERF_SAMPLE_ADDR_TYPE	(PERF_SAMPLE_ADDR |		\
-+				 PERF_SAMPLE_PHYS_ADDR |	\
-+				 PERF_SAMPLE_DATA_PAGE_SIZE)
-+
- static void setup_pebs_fixed_sample_data(struct perf_event *event,
- 				   struct pt_regs *iregs, void *__pebs,
- 				   struct perf_sample_data *data,
-@@ -1449,7 +1454,7 @@ static void setup_pebs_fixed_sample_data(struct perf_event *event,
- 	}
+-		if (event->attr.sample_type &
+-		    (PERF_SAMPLE_ADDR | PERF_SAMPLE_PHYS_ADDR))
++		if (event->attr.sample_type & PERF_SAMPLE_ADDR_TYPE)
+ 			perf_get_data_addr(event, regs, &data.addr);
  
- 
--	if ((sample_type & (PERF_SAMPLE_ADDR | PERF_SAMPLE_PHYS_ADDR)) &&
-+	if ((sample_type & PERF_SAMPLE_ADDR_TYPE) &&
- 	    x86_pmu.intel_cap.pebs_format >= 1)
- 		data->addr = pebs->dla;
- 
-@@ -1577,7 +1582,7 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
- 		if (sample_type & PERF_SAMPLE_DATA_SRC)
- 			data->data_src.val = get_data_src(event, meminfo->aux);
- 
--		if (sample_type & (PERF_SAMPLE_ADDR | PERF_SAMPLE_PHYS_ADDR))
-+		if (sample_type & PERF_SAMPLE_ADDR_TYPE)
- 			data->addr = meminfo->address;
- 
- 		if (sample_type & PERF_SAMPLE_TRANSACTION)
+ 		if (event->attr.sample_type & PERF_SAMPLE_BRANCH_STACK) {
 -- 
 2.17.1
 
