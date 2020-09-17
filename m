@@ -2,239 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A517526DBAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B85B26DBDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgIQMdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:33:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40647 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726794AbgIQMbk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:31:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600345881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EpwSRZwF6kCzeEsY4bUVgEiUx1sx1UhSc53TJLpGhZc=;
-        b=ROMZB3XFafPtD8EK8gU+2i3iKuXzFvvuLRPxVE2rmswPCx67DVzXokWAqtSqV7x45cMUIR
-        kXdvh9MuXXob/tGcAFsgyZNwGlkwIzO83P1bRb9h4iMC8jTmGjsBi0ntH0d4LneNr03zPF
-        vufW5clIYiY7YOfYhcWD6+ulzP8/4S0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-VMRKAMtaOxmxkVQo_FgJkA-1; Thu, 17 Sep 2020 08:23:15 -0400
-X-MC-Unique: VMRKAMtaOxmxkVQo_FgJkA-1
-Received: by mail-ej1-f69.google.com with SMTP id m24so794098ejx.22
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:23:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EpwSRZwF6kCzeEsY4bUVgEiUx1sx1UhSc53TJLpGhZc=;
-        b=Ek4kBBbLg/6prVTewiu/+mzyNfsJfpMhFleo6x39EL7D0hzetdapLaWJei8JVffUcN
-         ZsCLND/s+BR1arGgaju7F24Bk19672oNGDvGpxONGEY2d7GFdp3iJKOMdAwxqGlOZzd2
-         WiisPNcY16wt5E9CmXMvWSUh+TSGWGlp2LpuSRiKKIBRc8vLZZEzz3e8r4c86JiIbrqa
-         i25XxUiaewWWdLZynCo61KnvzXSSkni20YbWsxgy22B8SOt7RiuY9BpuqASwDCulqtRR
-         zfR3hxbjcU5yjz98NlascsrOi6cOQrwhvIWsqJaSXuo9mu4l4+u1ZGvigZFlKxpQXqUr
-         ePOw==
-X-Gm-Message-State: AOAM532suHVUsw++Fd9AR7AxEN8010KQ7OSQtNZ75mvzLWikTYn6lVWP
-        Dy74guGCiiL9yqnoVwRUf6DeJ1xZJztX/suvBkBnn3EjNGt8OefBwxoC3R4L6rrjaOoKC/+TvNJ
-        O0u1x/vl9+fozvFnfvMXwrqe5
-X-Received: by 2002:a17:906:7d5:: with SMTP id m21mr13155776ejc.538.1600345394017;
-        Thu, 17 Sep 2020 05:23:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxEPoMFT7XB6P070flyc8A8/xwSwiaeGfTUgNTZRGcyvkspku8nczgnWd/GoC6eG+3j8Wo7Yg==
-X-Received: by 2002:a17:906:7d5:: with SMTP id m21mr13155751ejc.538.1600345393714;
-        Thu, 17 Sep 2020 05:23:13 -0700 (PDT)
-Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
-        by smtp.gmail.com with ESMTPSA id nh1sm14681428ejb.21.2020.09.17.05.23.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 05:23:13 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: asus-wmi: Add support for SW_TABLET_MODE on
- UX360
-To:     =?UTF-8?Q?Samuel_=c4=8cavoj?= <samuel@cavoj.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Corentin Chary <corentin.chary@gmail.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200916191232.1020318-1-samuel@cavoj.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <206d51c4-401d-e73b-b81a-fc57346a47ee@redhat.com>
-Date:   Thu, 17 Sep 2020 14:23:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727056AbgIQMoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:44:03 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49912 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727034AbgIQMkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:40:16 -0400
+X-Greylist: delayed 965 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:40:10 EDT
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 7EAB13B5571B7F534558;
+        Thu, 17 Sep 2020 20:22:55 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 17 Sep 2020 20:22:49 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+CC:     <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH -next v2] bcache: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Thu, 17 Sep 2020 20:23:26 +0800
+Message-ID: <20200917122326.99080-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200916191232.1020318-1-samuel@cavoj.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
-On 9/16/20 9:12 PM, Samuel Čavoj wrote:
-> The UX360CA has a WMI device id 0x00060062, which reports whether the
-> lid is flipped in tablet mode (1) or in normal laptop mode (0).
-> 
-> This commit adds a quirk (quirk_asus_use_lid_flip_devid) for devices on
-> which this WMI device should be used to figure out the SW_TABLET_MODE
-> state, as opposed to the quirk_asus_use_kbd_dock_devid.
-> 
-> It is assumed other UX360* models have the same WMI device. As such, the
-> quirk is applied to devices with DMI_MATCH(DMI_PRODUCT_NAME, "UX360").
-> More devices with this feature need to be tested and added accordingly.
-> 
-> The reason for using a whitelist via the quirk mechanism is that the new
-> WMI device (0x00060062) is also present on some models which do not have
-> a 360 degree hinge (at least FX503VD and GL503VD from Hans' DSTS
-> collection) and therefore its presence cannot be relied on.
-> 
-> This patch is a followup to "platform/x86: asus-wmi: Fix SW_TABLET_MODE
-> always reporting 1 on many different models" by Hans de Goede.
-> 
-> Signed-off-by: Samuel Čavoj <samuel@cavoj.net>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> ---
->   drivers/platform/x86/asus-nb-wmi.c         | 14 +++++++++++++
->   drivers/platform/x86/asus-wmi.c            | 23 ++++++++++++++++++++++
->   drivers/platform/x86/asus-wmi.h            |  1 +
->   include/linux/platform_data/x86/asus-wmi.h |  1 +
->   4 files changed, 39 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
-> index 345bd224494b..ae5501e07712 100644
-> --- a/drivers/platform/x86/asus-nb-wmi.c
-> +++ b/drivers/platform/x86/asus-nb-wmi.c
-> @@ -119,6 +119,10 @@ static struct quirk_entry quirk_asus_use_kbd_dock_devid = {
->   	.use_kbd_dock_devid = true,
->   };
->   
-> +static struct quirk_entry quirk_asus_use_lid_flip_devid = {
-> +	.use_lid_flip_devid = true,
+As inode->iprivate equals to third parameter of
+debugfs_create_file() which is NULL. So it's equivalent
+to original code logic.
 
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+v2: based on linux-next(20200917), and can be applied to
+    mainline cleanly now.
 
-Note the default (quirk_asus_unknown) quirks set:
+ drivers/md/bcache/closure.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-         .wmi_backlight_set_devstate = true,
-
-So you're changing that to false for all devices using that
-quirk now.  I did not set this quirk for the transformer devices,
-since the quirk has to do with the handling of Fn + F7 (display off hotkey)
-by the embedded-controller. Since on transformer devices the keyboard is
-an USB device and not handled by the embedded-controller they do not need
-the wmi_backlight_set_devstate quirk, so I left it out. Chances are that
-your UX360 does need it. The purpose of the quirk is to make the embbedded
-controller send a KEY_DISPLAY_OFF event on FN + F7 and have it not do anything
-else (like turning off the backlight by itself).
-
-TL;DR: you should probably add:         .wmi_backlight_set_devstate = true,
-to your new quirk_asus_use_lid_flip_devid quirk.
-
-
-
-> +};
-> +
->   static int dmi_matched(const struct dmi_system_id *dmi)
->   {
->   	pr_info("Identified laptop model '%s'\n", dmi->ident);
-> @@ -520,6 +524,16 @@ static const struct dmi_system_id asus_quirks[] = {
->   		},
->   		.driver_data = &quirk_asus_use_kbd_dock_devid,
->   	},
-> +	{
-> +		.callback = dmi_matched,
-> +		.ident = "ASUS ZenBook Flip UX360",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +			/* Match UX360* */
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "UX360"),
-> +		},
-> +		.driver_data = &quirk_asus_use_lid_flip_devid,
-> +	},
->   	{},
->   };
->   
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index ae6289d37faf..a628a7d9e066 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -63,6 +63,7 @@ MODULE_LICENSE("GPL");
->   #define NOTIFY_KBD_BRTTOGGLE		0xc7
->   #define NOTIFY_KBD_FBM			0x99
->   #define NOTIFY_KBD_TTP			0xae
-> +#define NOTIFY_LID_FLIP			0xfa
->   
->   #define ASUS_WMI_FNLOCK_BIOS_DISABLED	BIT(0)
->   
-> @@ -375,6 +376,18 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
->   		}
->   	}
->   
-> +	if (asus->driver->quirks->use_lid_flip_devid) {
-> +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
-> +		if (result >= 0) {
-> +			input_set_capability(asus->inputdev, EV_SW, SW_TABLET_MODE);
-> +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
-> +		} else if (result == -ENODEV) {
-> +			pr_err("This device has lid_flip quirk but got ENODEV checking it. This is a bug.");
-> +		} else {
-> +			pr_err("Error checking for lid-flip: %d\n", result);
-> +		}
-> +	}
-> +
->   	err = input_register_device(asus->inputdev);
->   	if (err)
->   		goto err_free_dev;
-> @@ -2127,6 +2140,16 @@ static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
->   		return;
->   	}
->   
-> +	if (asus->driver->quirks->use_lid_flip_devid && code == NOTIFY_LID_FLIP) {
-> +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
-> +
-> +		if (result >= 0) {
-> +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
-> +			input_sync(asus->inputdev);
-> +		}
-> +		return;
-> +	}
-> +
->   	if (asus->fan_boost_mode_available && code == NOTIFY_KBD_FBM) {
->   		fan_boost_mode_switch_next(asus);
->   		return;
-> diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
-> index 1a95c172f94b..b302415bf1d9 100644
-> --- a/drivers/platform/x86/asus-wmi.h
-> +++ b/drivers/platform/x86/asus-wmi.h
-> @@ -34,6 +34,7 @@ struct quirk_entry {
->   	bool wmi_backlight_set_devstate;
->   	bool wmi_force_als_set;
->   	bool use_kbd_dock_devid;
-> +	bool use_lid_flip_devid;
->   	int wapf;
->   	/*
->   	 * For machines with AMD graphic chips, it will send out WMI event
-> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-> index 897b8332a39f..2f274cf52805 100644
-> --- a/include/linux/platform_data/x86/asus-wmi.h
-> +++ b/include/linux/platform_data/x86/asus-wmi.h
-> @@ -62,6 +62,7 @@
->   
->   /* Misc */
->   #define ASUS_WMI_DEVID_CAMERA		0x00060013
-> +#define ASUS_WMI_DEVID_LID_FLIP		0x00060062
->   
->   /* Storage */
->   #define ASUS_WMI_DEVID_CARDREADER	0x00080013
-> 
-
-Otherwise the patch looks good to me, thank you for the patch.
-
-Regards,
-
-Hans
+diff --git a/drivers/md/bcache/closure.c b/drivers/md/bcache/closure.c
+index 0164a1fe9..d8d9394a6 100644
+--- a/drivers/md/bcache/closure.c
++++ b/drivers/md/bcache/closure.c
+@@ -159,7 +159,7 @@ void closure_debug_destroy(struct closure *cl)
+ 
+ static struct dentry *closure_debug;
+ 
+-static int debug_seq_show(struct seq_file *f, void *data)
++static int debug_show(struct seq_file *f, void *data)
+ {
+ 	struct closure *cl;
+ 
+@@ -188,17 +188,7 @@ static int debug_seq_show(struct seq_file *f, void *data)
+ 	return 0;
+ }
+ 
+-static int debug_seq_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, debug_seq_show, NULL);
+-}
+-
+-static const struct file_operations debug_ops = {
+-	.owner		= THIS_MODULE,
+-	.open		= debug_seq_open,
+-	.read		= seq_read,
+-	.release	= single_release
+-};
++DEFINE_SHOW_ATTRIBUTE(debug);
+ 
+ void  __init closure_debug_init(void)
+ {
+@@ -209,7 +199,7 @@ void  __init closure_debug_init(void)
+ 		 * about this.
+ 		 */
+ 		closure_debug = debugfs_create_file(
+-			"closures", 0400, bcache_debug, NULL, &debug_ops);
++			"closures", 0400, bcache_debug, NULL, &debug_fops);
+ }
+ #endif
+ 
+-- 
+2.23.0
 
