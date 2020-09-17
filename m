@@ -2,133 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DCC26D03A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2216926D023
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgIQAxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 20:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
+        id S1726179AbgIQAqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 20:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgIQAxB (ORCPT
+        with ESMTP id S1726007AbgIQAqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 20:53:01 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549ADC061353;
-        Wed, 16 Sep 2020 17:45:46 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id b22so203566lfs.13;
-        Wed, 16 Sep 2020 17:45:46 -0700 (PDT)
+        Wed, 16 Sep 2020 20:46:31 -0400
+X-Greylist: delayed 408 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:46:31 EDT
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8494C061355
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 17:46:30 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id c13so462870oiy.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 17:46:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hhwWIdmoDfeRtla5zf1ymCAqzs41GJNhIs9x0pXt6Mw=;
-        b=YHPv0+IzmbaKgKDSdY0AwJQvcUwj9q/bwOqGnIPsOV7qxVwlBrWutMMObuxwnoLueF
-         puEFawK+WyonzflpzIzD8txJ4sW6AfAtS766xUjnVDqRo5OBQxhM3teLushvd7bVzxEm
-         ekfqHuiNiZKW4fQqq6NYljp7OFx5g9PTyE4+JVEnt6fAs0cHjKpDVxFBMY+VPrAHMlZs
-         YweNUXlUFvvEDJQcomlgpzmZrDZgX7/dqIhcMV0ZOxYq/LFA4HwpgrYkofnPPubKg6T/
-         PfDcB9mZKbmWCaW5APy5nP8C0HtWCwDeUk4G8AeBI+WLze0VuHy8LWaHc2ntBTO+I0XV
-         Yx1g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=xPfF/+vHZ8xULDak5kE3Di70hl+PzaH5PBbg6iuyFFM=;
+        b=Zbt3vPlHy3YASoVcQRtmExxjDK9LYi8zfmrC+8SVKZwsmZrRDgo3laAVlvKH/05dNd
+         zXIr/6NLQ52gEsE5syvHRvxlZkUCJ1v4YyHIeRV7jXyGvxzNWzDlaSQMeKklDyLAxOYc
+         v40p05Y/X8G/EhRRP0LgSWLb//JPsAgaaSvokwHYCMiAS7/y7PVrTVmsjd+bIVuum/FC
+         yLC3Sx4RRtIyvKNkNqQby4x9ii2xJbaQuVM+FS7If4XInO7mbscnYZVRZH7j7gGxKFO9
+         2BszYiF9xEN3nz+IhfoOShY4FTKBy1UIAdthCZP8p2sMkwkgNvESkXGkstd1V2UmHEpo
+         tKcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hhwWIdmoDfeRtla5zf1ymCAqzs41GJNhIs9x0pXt6Mw=;
-        b=ODkpsZq95uKZ13Bdm4oY2BGfft6aKMtfRHbCf7Kd4CnmjI8JlpJ5F84irw9rknVLuT
-         SXMfo4pY7/5j7KvaUwytxCeyR05hd6WU+/1J4cyfdVPAAS0pbS/+mf1Z8KrNrr7GMhxr
-         4aJtX9rbdgorrMrlEe9DM6tICUnN+IENEGWrkBB0nO2MPSFN+3KtKzdBFfSYJbOpFYDI
-         hfEOAgVrRxfJ61fcTgKIZCSB1BoT4YPCX+oSHxIF69hsaGea7yZmJusmsBKbfWlmAiM4
-         BtZyypLK/gOugdEZL1Uc6ElFHQBm/OxiakSYh5T+/3APe5OeN22PwmX7w/xSmMkHYyc7
-         XEZg==
-X-Gm-Message-State: AOAM532yUO4DzXkMpoOZb94T4JUerZC6FtCMauc1znZMYSnDaOY4gBHD
-        KtNSPEd6PvB0kNcVS1iY445RKR/BAsSiNcLUcB8=
-X-Google-Smtp-Source: ABdhPJx/Mkxr1F57JCoOl8++VCiAX4t7jqJtnMR64G6EEPr349WzIUeFGskUi6F4dhMtENrhhPIWdl0iuLfkktuIHAE=
-X-Received: by 2002:ac2:4c07:: with SMTP id t7mr7986166lfq.194.1600303544747;
- Wed, 16 Sep 2020 17:45:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=xPfF/+vHZ8xULDak5kE3Di70hl+PzaH5PBbg6iuyFFM=;
+        b=bQHgCXqjIl+BnMjBMGUdmkLZDtrl9LqosSkyvypdIucj40/Xjbdx6VrSjX9A+Ualng
+         dfCt7OI8jQnaHSjX5vUGJ+4qpeInnP8qawRKniqeDOsv20eON56KmO7n7W64sKnWFi80
+         +6fLIrQFp72QqkL/bSH93LJt647TflA0+1zSJ052Xj8EvtNox0VvQismeTf5KxU+kn0I
+         xgyozvBYbxzgIUdwTkWK2Nm2tMb/TPd7HcaJeQqQVKSn4pXUoIfFZU0OAbQ+7DU0HJNN
+         8YW4KSEgRTGVyF3LcaHD8YLP8EIbQryNAJlEQSAL04NHBr0e7e4ge3CbGbtBIf97jaT+
+         nsLQ==
+X-Gm-Message-State: AOAM530/pKNUkjLqojitNpF6zQFcOLOoS1gg7Ua9f87wPTGcPmfWAwgr
+        wZX49q/8XEC4Tm9A+YRARoeGHA==
+X-Google-Smtp-Source: ABdhPJyvdeAESwOnVofeOkEEXJbZoFus3jAmQOAYorS8U5WznmT9jpjEZek/Y/mXG1+xL43TucnVqg==
+X-Received: by 2002:aca:2301:: with SMTP id e1mr5001999oie.177.1600303590034;
+        Wed, 16 Sep 2020 17:46:30 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:7cad:6eff:fec8:37e4])
+        by smtp.gmail.com with ESMTPSA id j34sm262867otc.15.2020.09.16.17.46.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 17:46:29 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 19:46:25 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Marek Beh?n <marek.behun@nic.cz>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        Ond??ej Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH leds v1 06/10] leds: pm8058: use struct led_init_data
+ when registering
+Message-ID: <20200917004625.GJ1893@yoga>
+References: <20200916231650.11484-1-marek.behun@nic.cz>
+ <20200916231650.11484-7-marek.behun@nic.cz>
 MIME-Version: 1.0
-References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com> <20200916165748.20927-1-alex.dewar90@gmail.com>
-In-Reply-To: <20200916165748.20927-1-alex.dewar90@gmail.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Thu, 17 Sep 2020 10:45:33 +1000
-Message-ID: <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: sdio: remove redundant check in for loop
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200916231650.11484-7-marek.behun@nic.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+On Wed 16 Sep 18:16 CDT 2020, Marek Beh?n wrote:
 
-On Thu, Sep 17, 2020 at 3:09 AM Alex Dewar <alex.dewar90@gmail.com> wrote:
->
-> The for loop checks whether cur_section is NULL on every iteration, but
-> we know it can never be NULL as there is another check towards the
-> bottom of the loop body. Refactor to avoid this unnecessary check.
->
-> Also, increment the variable i inline for clarity
-
-Comments below.
-
-> Addresses-Coverity: 1496984 ("Null pointer dereferences)
-> Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> By using struct led_init_data when registering we do not need to parse
+> `label` DT property nor `linux,default-trigger` property.
+> 
+> Signed-off-by: Marek Behún <marek.behun@nic.cz>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
-> v2: refactor in the manner suggested by Saeed
->
->  drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-> index 81ddaafb6721..486886c74e6a 100644
-> --- a/drivers/net/wireless/ath/ath10k/sdio.c
-> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-> @@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
->         }
->
->         count = 0;
-> -
-> -       for (i = 0; cur_section; i++) {
-> +       i = 0;
-> +       for (; cur_section; cur_section = next_section) {
+>  drivers/leds/leds-pm8058.c | 38 +++++++++++++++++++-------------------
+>  1 file changed, 19 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/leds/leds-pm8058.c b/drivers/leds/leds-pm8058.c
+> index 7869ccdf70ce6..f6190e4af60fe 100644
+> --- a/drivers/leds/leds-pm8058.c
+> +++ b/drivers/leds/leds-pm8058.c
+> @@ -87,36 +87,37 @@ static enum led_brightness pm8058_led_get(struct led_classdev *cled)
+>  
+>  static int pm8058_led_probe(struct platform_device *pdev)
+>  {
+> +	struct led_init_data init_data = {};
+> +	struct device *dev = &pdev->dev;
+> +	enum led_brightness maxbright;
+> +	struct device_node *np;
+>  	struct pm8058_led *led;
+> -	struct device_node *np = pdev->dev.of_node;
+> -	int ret;
+>  	struct regmap *map;
+>  	const char *state;
+> -	enum led_brightness maxbright;
+> +	int ret;
+>  
+> -	led = devm_kzalloc(&pdev->dev, sizeof(*led), GFP_KERNEL);
+> +	led = devm_kzalloc(dev, sizeof(*led), GFP_KERNEL);
 
-You can have multiple statements in each section of a for() if you need to, e.g.
+The pdev->dev -> dev and of_node changes are reasonable, but shouldn't
+be part of this patch. It simply makes it hard to reason about he actual
+change.
 
-for (i = 1; cur_section; cur_section = next_section, i++) {
-
-which means that the increment of i isn't hidden deep in the function body.
-
-
-That said, this function is a mess. Something (approximately) like
-this might be more readable:
-
-prev_end = memregion->start;
-for (i = 0; i < mem_region->section_table.size; i++) {
-    cur_section = &mem_region->section_table.sections[i];
-
-    // fail if prev_end is greater than cur_section->start - message
-from line 2329 and 2294
-    // check section size - from line 2315
-
-    skip_size = cur_section->start - prev_end;
-
-    // check buffer size - from line 2339 - needs to account for the
-skip size too.
-    // fill in the skip size amount - from line 2358 and 2304
-    // ath10k_sdio_read_mem - from line 2346
-
-    prev_end = cur_section->end;
-}
+Please respin this with only the introduction of led_init_data.
 
 Thanks,
+Bjorn
 
--- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+>  	if (!led)
+>  		return -ENOMEM;
+>  
+> -	led->ledtype = (u32)(unsigned long)of_device_get_match_data(&pdev->dev);
+> +	led->ledtype = (u32)(unsigned long)device_get_match_data(dev);
+>  
+> -	map = dev_get_regmap(pdev->dev.parent, NULL);
+> +	map = dev_get_regmap(dev->parent, NULL);
+>  	if (!map) {
+> -		dev_err(&pdev->dev, "Parent regmap unavailable.\n");
+> +		dev_err(dev, "Parent regmap unavailable.\n");
+>  		return -ENXIO;
+>  	}
+>  	led->map = map;
+>  
+> +	np = dev_of_node(dev);
+> +
+>  	ret = of_property_read_u32(np, "reg", &led->reg);
+>  	if (ret) {
+> -		dev_err(&pdev->dev, "no register offset specified\n");
+> +		dev_err(dev, "no register offset specified\n");
+>  		return -EINVAL;
+>  	}
+>  
+>  	/* Use label else node name */
+> -	led->cdev.name = of_get_property(np, "label", NULL) ? : np->name;
+> -	led->cdev.default_trigger =
+> -		of_get_property(np, "linux,default-trigger", NULL);
+>  	led->cdev.brightness_set = pm8058_led_set;
+>  	led->cdev.brightness_get = pm8058_led_get;
+>  	if (led->ledtype == PM8058_LED_TYPE_COMMON)
+> @@ -142,14 +143,13 @@ static int pm8058_led_probe(struct platform_device *pdev)
+>  	    led->ledtype == PM8058_LED_TYPE_FLASH)
+>  		led->cdev.flags	= LED_CORE_SUSPENDRESUME;
+>  
+> -	ret = devm_led_classdev_register(&pdev->dev, &led->cdev);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "unable to register led \"%s\"\n",
+> -			led->cdev.name);
+> -		return ret;
+> -	}
+> +	init_data.fwnode = of_fwnode_handle(np);
+> +
+> +	ret = devm_led_classdev_register_ext(dev, &led->cdev, &init_data);
+> +	if (ret)
+> +		dev_err(dev, "Failed to register LED for node %pOF\n", np);
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static const struct of_device_id pm8058_leds_id_table[] = {
+> @@ -173,7 +173,7 @@ static struct platform_driver pm8058_led_driver = {
+>  	.probe		= pm8058_led_probe,
+>  	.driver		= {
+>  		.name	= "pm8058-leds",
+> -		.of_match_table = pm8058_leds_id_table,
+> +		.of_match_table = of_match_ptr(pm8058_leds_id_table),
+>  	},
+>  };
+>  module_platform_driver(pm8058_led_driver);
+> -- 
+> 2.26.2
+> 
