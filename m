@@ -2,177 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033B126E5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B5B26E5C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726850AbgIQT4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:56:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43278 "EHLO mail.kernel.org"
+        id S1726824AbgIQT4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:56:18 -0400
+Received: from mga02.intel.com ([134.134.136.20]:10770 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727512AbgIQOpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:45:39 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0325C21582;
-        Thu, 17 Sep 2020 14:45:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600353902;
-        bh=PebSWXQKwXVcYAUHxdRQaN64t6YAf60XzC+pP27srAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GFoqH90oTcBu9apcTAJzYnF+qJnUghZfdBsfz+bu3MF8YN5/FJc1akTVS43BtbyMA
-         9XMPgoHHVIUS/s95Oyl1ioYtUJ6f7hmyCuvzylcrWW1Ad5TBT92IEqDJXgOKqdhl95
-         mgQ91bWRGGx4I4tPpkmUAxvPv+UMJ6K0R6iq6bu4=
-Date:   Thu, 17 Sep 2020 16:45:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bob Peterson <rpeterso@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Daniel Craig <Daniel.Craig@csiro.au>,
-        Nicolas Courtel <courtel@cena.fr>,
-        Salvatore Bonaccorso <carnil@debian.org>
-Subject: Re: [PATCH 4.19 142/206] gfs2: fix use-after-free on transaction ail
- lists
-Message-ID: <20200917144529.GJ3941575@kroah.com>
-References: <20200623195316.864547658@linuxfoundation.org>
- <20200623195323.968867013@linuxfoundation.org>
- <20200910194319.GA131386@eldamar.local>
- <20200911115816.GB3717176@kroah.com>
- <942693093.16771250.1599826115915.JavaMail.zimbra@redhat.com>
- <20200911122024.GA3758477@kroah.com>
- <1542145456.16781948.1599828554609.JavaMail.zimbra@redhat.com>
- <20200912064713.GA291675@eldamar.local>
- <1934025224.17237499.1600188721184.JavaMail.zimbra@redhat.com>
+        id S1727487AbgIQOqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:46:18 -0400
+X-Greylist: delayed 7082 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:45:51 EDT
+IronPort-SDR: B+ZFbACdWBlZuVV/TCXBd/VpeYAwOaT1O3QOIQXzLiAOomkKv7NeGj4fVD89HoGtESO38iiWVl
+ /8TCPP9R/LUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147398662"
+X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; 
+   d="scan'208";a="147398662"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 07:45:39 -0700
+IronPort-SDR: wUnwzzA+zhduLkhwDoEyFcAwETHWsz3DLEWqMEamXY2uxGQu14k40LWrcdYwWVuDWxO8Ua2Xjs
+ XKWyDyW06dPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; 
+   d="scan'208";a="336440069"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 17 Sep 2020 07:45:35 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kIvAC-00HLjp-9b; Thu, 17 Sep 2020 17:45:32 +0300
+Date:   Thu, 17 Sep 2020 17:45:32 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc:     Sultan Alsawaf <sultan@kerneltoast.com>, linux-i2c@vger.kernel.org,
+        jikos@kernel.org, aaron.ma@canonical.com, admin@kryma.net,
+        benjamin.tissoires@redhat.com, hdegoede@redhat.com,
+        hn.chen@weidahitech.com, kai.heng.feng@canonical.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
+        wsa@kernel.org
+Subject: Re: [PATCH v2 2/4] i2c: designware: Ensure tx_buf_len is nonzero for
+ SMBus block reads
+Message-ID: <20200917144532.GO3956970@smile.fi.intel.com>
+References: <20200917052256.5770-1-sultan@kerneltoast.com>
+ <20200917052256.5770-3-sultan@kerneltoast.com>
+ <4698b23c-7af6-3f44-975d-b1f692ae3f00@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1934025224.17237499.1600188721184.JavaMail.zimbra@redhat.com>
+In-Reply-To: <4698b23c-7af6-3f44-975d-b1f692ae3f00@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:52:01PM -0400, Bob Peterson wrote:
-> ----- Original Message -----
-> > Hi Bob, hi Greg,
+On Thu, Sep 17, 2020 at 04:44:18PM +0300, Jarkko Nikula wrote:
+> On 9/17/20 8:22 AM, Sultan Alsawaf wrote:
+> > From: Sultan Alsawaf <sultan@kerneltoast.com>
 > > 
-> > On Fri, Sep 11, 2020 at 08:49:14AM -0400, Bob Peterson wrote:
-> > > ----- Original Message -----
-> > > > On Fri, Sep 11, 2020 at 08:08:35AM -0400, Bob Peterson wrote:
-> > > > > ----- Original Message -----
-> > > > > > On Thu, Sep 10, 2020 at 09:43:19PM +0200, Salvatore Bonaccorso wrote:
-> > > > > > > Hi,
-> > > > > > > 
-> > > > > > > On Tue, Jun 23, 2020 at 09:57:50PM +0200, Greg Kroah-Hartman wrote:
-> > > > > > > > From: Bob Peterson <rpeterso@redhat.com>
-> > > > > > > > 
-> > > > > > > > [ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
-> > > > > > > > 
-> > > > > > > > Before this patch, transactions could be merged into the system
-> > > > > > > > transaction by function gfs2_merge_trans(), but the transaction
-> > > > > > > > ail
-> > > > > > > > lists were never merged. Because the ail flushing mechanism can
-> > > > > > > > run
-> > > > > > > > separately, bd elements can be attached to the transaction's
-> > > > > > > > buffer
-> > > > > > > > list during the transaction (trans_add_meta, etc) but quickly
-> > > > > > > > moved
-> > > > > > > > to its ail lists. Later, in function gfs2_trans_end, the
-> > > > > > > > transaction
-> > > > > > > > can be freed (by gfs2_trans_end) while it still has bd elements
-> > > > > > > > queued to its ail lists, which can cause it to either lose track
-> > > > > > > > of
-> > > > > > > > the bd elements altogether (memory leak) or worse, reference the
-> > > > > > > > bd
-> > > > > > > > elements after the parent transaction has been freed.
-> > > > > > > > 
-> > > > > > > > Although I've not seen any serious consequences, the problem
-> > > > > > > > becomes
-> > > > > > > > apparent with the previous patch's addition of:
-> > > > > > > > 
-> > > > > > > > 	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
-> > > > > > > > 
-> > > > > > > > to function gfs2_trans_free().
-> > > > > > > > 
-> > > > > > > > This patch adds logic into gfs2_merge_trans() to move the merged
-> > > > > > > > transaction's ail lists to the sdp transaction. This prevents the
-> > > > > > > > use-after-free. To do this properly, we need to hold the ail
-> > > > > > > > lock,
-> > > > > > > > so we pass sdp into the function instead of the transaction
-> > > > > > > > itself.
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-> > > > > > > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > > > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > > (snip)
-> > > > > > > 
-> > > > > > > In Debian two user confirmed issues on writing on a GFS2 partition
-> > > > > > > with this commit applied. The initial Debian report is at
-> > > > > > > https://bugs.debian.org/968567 and Daniel Craig reported it into
-> > > > > > > Bugzilla at https://bugzilla.kernel.org/show_bug.cgi?id=209217 .
-> > > > > > > 
-> > > > > > > Writing to a gfs2 filesystem fails and results in a soft lookup of
-> > > > > > > the
-> > > > > > > machine for kernels with that commit applied. I cannot reporduce
-> > > > > > > the
-> > > > > > > issue myself due not having a respective setup available, but
-> > > > > > > Daniel
-> > > > > > > described a minimal serieos of steps to reproduce the issue.
-> > > > > > > 
-> > > > > > > This might affect as well other stable series where this commit was
-> > > > > > > applied, as there was a similar report for someone running 5.4.58
-> > > > > > > in
-> > > > > > > https://www.redhat.com/archives/linux-cluster/2020-August/msg00000.html
-> > > > > > 
-> > > > > > Can you report this to the gfs2 developers?
-> > > > > > 
-> > > > > > thanks,
-> > > > > > 
-> > > > > > greg k-h
-> > > > > 
-> > > > > Hi Greg,
-> > > > > 
-> > > > > No need. The patch came from the gfs2 developers. I think he just wants
-> > > > > it added to a stable release.
-> > > > 
-> > > > What commit needs to be added to a stable release?
-> > > > 
-> > > > confused,
-> > > > 
-> > > > greg k-h
-> > > 
-> > > Sorry Greg,
-> > > 
-> > > It's pretty early here and the caffeine hadn't quite hit my system.
-> > > The problem is most likely that 4.19.132 is missing this upstream patch:
-> > > 
-> > > cbcc89b630447ec7836aa2b9242d9bb1725f5a61
-> > > 
-> > > I'm not sure how or why 83d060ca8d90fa1e3feac227f995c013100862d3 got
-> > > put into stable without a stable CC but cbcc89b6304 is definitely
-> > > required.
-> > > 
-> > > I'd like to suggest Salvatore try cherry-picking this patch to see if
-> > > it fixes the problem, and if so, perhaps Greg can add it to stable.
+> > The point of adding a byte to len in i2c_dw_recv_len() is to make sure
+> > that tx_buf_len is nonzero, so that i2c_dw_xfer_msg() can let the i2c
+> > controller know that the i2c transaction can end. Otherwise, the i2c
+> > controller will think that the transaction can never end for block
+> > reads, which results in the stop-detection bit never being set and thus
+> > the transaction timing out.
 > > 
-> > I can confirm (Daniel was able to test): Applying cbcc89b63044 ("gfs2:
-> > initialize transaction tr_ailX_lists earlier") fixes the issue. So
-> > would be great if you can pick that up for stable for those series
-> > which had 83d060ca8d90 ("gfs2: fix use-after-free on transaction ail
-> > lists") as well.
+> > Adding a byte to len is not a reliable way to do this though; sometimes
+> > it lets tx_buf_len become zero, which results in the scenario described
+> > above. Therefore, just directly ensure tx_buf_len cannot be zero to fix
+> > the issue.
 > > 
-> > Regards,
-> > Salvatore
+> > Fixes: c3ae106050b9 ("i2c: designware: Implement support for SMBus block read and write")
+> > Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> > ---
+> >   drivers/i2c/busses/i2c-designware-master.c | 5 +++--
+> >   1 file changed, 3 insertions(+), 2 deletions(-)
 > > 
-> > 
-> 
-> Hi Greg,
-> 
-> As per Salvatore's email above, can you please cherry-pick GFS2 patch
-> cbcc89b630447ec7836aa2b9242d9bb1725f5a61 to the stable releases like
-> 4.19 to which ("gfs2: fix use-after-free on transaction ail lists")
-> (83d060ca8d90fa1e3feac227f995c013100862d3) was applied? Thanks.
+> Were other patches in series dropped somewhere? I received only this.
 
-Now queued up, thanks.
+@linux.intel.com has some issues in delivery (accepting) messages. You may
+download thru lore.kernel.org entire series and reply.
 
-greg k-h
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
