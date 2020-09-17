@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5797926E279
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E4126E2B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgIQRcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:32:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54287 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726494AbgIQRcY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:32:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600363936;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JDy+vxvRfZGmnu6cg8GKuFwx7k+u4v4T4TYyDPV/nUE=;
-        b=ga5xtDB2XUoecA+5h18IfIRhrYFA+hGNxNUX16GxQMP+OxtZqlyE6hbK7UAuSCCTwzAoRx
-        xjMrlXsZuMyY69hcHDNZgSWnsicQ94PYiaxzWItFHidbi3Mq8TvsnMGLDw0i4Sb+RbXSV8
-        CMxKgg8WPyxYvKMdgBr0utovTTCJ88k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-212-vjKounHvMB-E6fZzxPGr2w-1; Thu, 17 Sep 2020 13:30:26 -0400
-X-MC-Unique: vjKounHvMB-E6fZzxPGr2w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92E0C8015C6;
-        Thu, 17 Sep 2020 17:30:22 +0000 (UTC)
-Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5522160BEC;
-        Thu, 17 Sep 2020 17:30:17 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 11:30:16 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, vkoul@kernel.org,
-        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
-        tglx@linutronix.de, jacob.jun.pan@intel.com, ashok.raj@intel.com,
-        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
-        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        dan.j.williams@intel.com, kwankhede@nvidia.com,
-        eric.auger@redhat.com, parav@mellanox.com, rafael@kernel.org,
-        netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v3 00/18] Add VFIO mediated device support and DEV-MSI
- support for the idxd driver
-Message-ID: <20200917113016.425dcde7@x1.home>
-In-Reply-To: <f4a085f1-f6de-2539-12fe-c7308d243a4a@intel.com>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
-        <20200917150641.GM3699@nvidia.com>
-        <f4a085f1-f6de-2539-12fe-c7308d243a4a@intel.com>
-Organization: Red Hat
+        id S1726496AbgIQRn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:43:29 -0400
+Received: from mout.gmx.net ([212.227.17.22]:34289 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726593AbgIQRlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:41:05 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 13:40:46 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1600364424;
+        bh=AtpaLz5T0doiwW45rKTXhN9OPitxExJgCcjhtNz0x98=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=AZ54eguBjBVpgfrIyJQ0SsL2DbHWtMwIHELHexCYssWjgRYBO475Odahy/r27XRnm
+         Ko3nlAolpxQqLoaPfZuDLPzAu76osTD6vmmgZAWj8rrYTPHYfElYy3nzEOB3yom1u1
+         pU/Ymjp7/OXsClocPacrbIv2nF3gNU9P0nV5ZqbI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOA3F-1k7jNd13M1-00OYlk; Thu, 17
+ Sep 2020 19:32:28 +0200
+Date:   Thu, 17 Sep 2020 19:32:09 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, John Wood <john.wood@gmx.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/6] security/fbfam: Add a Kconfig to enable the
+ fbfam feature
+Message-ID: <20200917173209.GA3637@ubuntu>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <20200910202107.3799376-2-keescook@chromium.org>
+ <CAG48ez1V=oVczCCSuRaWX=bbN2cOi0Y9q48=e-Fuhg7mwMOi0A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez1V=oVczCCSuRaWX=bbN2cOi0Y9q48=e-Fuhg7mwMOi0A@mail.gmail.com>
+X-Provags-ID: V03:K1:R5ZkovHXd6oUrfcKmVNF76tjDIn4TAPnGKJDjlfIyNZe9chhDUt
+ Esh/G27SFDsxpGe3eTJoHTkEtlKWjMzGSWaf4NY77J0KknyMS4Kn3FifB6lpQ9wSsgJm6aR
+ GWM1FOcKZJ7nuqitu7T9wYT0c/x3o41HPECfOOo6S21tnSwhYbEzXGPZ8NK/o/DFW7XB3Cr
+ jdRHD05vg7a/XdyN7NGVA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/6CMB5QJPcI=:X8wmKlFpZ253znFDwPLRvb
+ YlZ/RdCI9xCVOBo9khl6lMLnAtBDlf5hMUNoOiyWZOv1J4QhAiinM2EoW6kY+qc8hjBJl2874
+ 9bMUGQjsWdx4JH9U5brc4MuC19cin2DtZ29eZvfSI96b/elLNnR9aTov1mQB/C5Eimqy4fn+3
+ 9Nf5mi/WXSFRHDUYdkLT8IszB7q6thtLFe2tvdQdPiPTRvVggd2/V0NX3n/t8N7/R+eCLy7lo
+ 68v/prC3P0LDKQ+MsH3wLOPe1kT9PYMxyCYZsb5EN5iD67JB+g8PBu+1B0UA4Z048/10ti3SE
+ WBTOV59GkNvF1RMmhH7mB7wW8J3GsMXdEfsTvEl98flGZc8dVunjEYCs8SNhdYTyUtklweh1b
+ tSLoGPdXya8K0TH79aqwk++pYYNHLo9XWonep/6IkJBZCb32iDfJvruIeklbxHTtLgwJzuPpG
+ 86NTtzC11WP5tG+UpwhgE1A6XzX0ItSGweTHyBkR20t1yP05fmU48TuhjvwJDnZzLxx+W9CKg
+ 0ZmvuiW7I6Jrx5Vu26y4FLlWxROQn+C96iSZDx9M9G/hYncOeeY13LyUbh5wAVg1cblVy4QLD
+ iQzVNhCq0J/ncRiijX1j7rDxLIFiwFZ5SI36ewts0CarJmfwiFE7lzIi+Xwg/+PeLHK8nnNLu
+ DkN1N0tORU5izm1eHOOKBV208HzG4zOw/uTKyxEcsncBin1AKCVMaBFTJjV5WEKxvNjxU97mi
+ zkLokRyZdGski1EAt1kPj3oG3AM2QZ7YRa6PeSsWKIPFqL4YeHgAxowfhHzQfNAAYTRFz6geZ
+ Bn/7XX6nPF7sxU3E5mzUu643lR3FWnXR4STPrrP/P25HBZ6IYiQjGUzd11xrNx78P7H0yPm9S
+ x9ii8+mMdTo+hTZ8ThfI2h5HyP40BIL2lFq5V7wafb8nRnoiq2Sdu3EvAhe8PRiReC8A8T7ci
+ wSQf+RvoGk8M9D8n1TF4g5icDvjJsssP8O5usLHZAIIfum5N/qwYm0dRHsaGDwcEnS7lr2CY9
+ BUJxYj5K3maLD/TaiF4AOmUIqZ+8pL7UAzpKTFkXA+JqapWjrdFAlftP2UPCet8sAsd4M6WSX
+ qS7gKahFwtQGMhnhzlsB2FF+5OciezSR/rQWZE6EoMRN6hqTok023YEUIjq28NmnUzBCwhjcy
+ LEuRV4FCDPe0Y7DnC/SknZzc5eO758PryvZxDUo87FL3KE6/El5axTRhxOkyWI2+ou/MBoEqs
+ DhSvYP2Mo0rcNzsdPPid0MuNieSbeSjCHLNBOaQ==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 10:15:24 -0700
-Dave Jiang <dave.jiang@intel.com> wrote:
+On Thu, Sep 10, 2020 at 11:21:58PM +0200, Jann Horn wrote:
+> On Thu, Sep 10, 2020 at 10:21 PM Kees Cook <keescook@chromium.org> wrote=
+:
+> > From: John Wood <john.wood@gmx.com>
+> >
+> > Add a menu entry under "Security options" to enable the "Fork brute
+> > force attack mitigation" feature.
+> [...]
+> > +config FBFAM
+>
+> Please give this a more descriptive name than FBFAM. Some name where,
+> if a random kernel developer sees an "#ifdef" with that name in some
+> random piece of kernel code, they immediately have a rough idea for
+> what kind of feature this is.
+>
+> Perhaps something like THROTTLE_FORK_CRASHES. Or something else that
+> is equally descriptive.
 
-> On 9/17/2020 8:06 AM, Jason Gunthorpe wrote:
-> > On Tue, Sep 15, 2020 at 04:27:35PM -0700, Dave Jiang wrote:  
-> >>   drivers/dma/idxd/idxd.h                            |   65 +
-> >>   drivers/dma/idxd/init.c                            |  100 ++
-> >>   drivers/dma/idxd/irq.c                             |    6
-> >>   drivers/dma/idxd/mdev.c                            | 1089 ++++++++++++++++++++
-> >>   drivers/dma/idxd/mdev.h                            |  118 ++  
-> > 
-> > It is common that drivers of a subsystem will be under that
-> > subsystem's directory tree. This allows the subsystem community to
-> > manage pages related to their subsystem and it's drivers.
-> > 
-> > Should the mdev parts be moved there?  
-> 
-> I personally don't have a preference. I'll defer to Alex or Kirti to provide 
-> that guidance. It may make certains things like dealing with dma fault regions 
-> and etc easier using vfio calls from vfio_pci_private.h later on for vSVM 
-> support. It also may be the better code review and maintenance domain and 
-> alleviate Vinod having to deal with that portion since it's not dmaengine domain.
+Ok, understood. This will be fixed for the next version. Thanks.
 
-TBH, I'd expect an mdev driver to be co-located with the remainder of
-its parent driver.  It's hopefully sharing more code with that driver
-than anything in mdev of vfio (either of which should be exported for
-the vendor driver).  mdev support is largely expected to be a feature of
-a driver, much like it is for i915, not necessarily its sole purpose for
-existing (see the rejected fpga mdev driver).  Also being nearby
-vfio_pci_private shouldn't invite anyone other than vfio_pci to make
-use of that header.  Thanks,
+> > +       bool "Fork brute force attack mitigation"
+> > +       default n
+>
+> "default n" is superfluous and should AFAIK be omitted.
 
-Alex
+Ok. I will remove it. Thanks.
 
+> > +       help
+> > +         This is a user defense that detects any fork brute force att=
+ack
+> > +         based on the application's crashing rate. When this measure =
+is
+> > +         triggered the fork system call is blocked.
+>
+> This help text claims that the mitigation will block fork(), but patch
+> 6/6 actually kills the process hierarchy.
+
+Sorry, it's a mistake. It was the first idea but finally the implementatio=
+n
+changed and this description not was modified. Apologies. It will be fixed
+for the next version.
+
+Thanks,
+John Wood
