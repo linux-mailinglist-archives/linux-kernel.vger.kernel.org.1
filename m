@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BEA26D4E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3BF26D4EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgIQHlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
+        id S1726142AbgIQHmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgIQHlL (ORCPT
+        with ESMTP id S1726180AbgIQHlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:41:11 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C0AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:41:08 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id b12so1092054lfp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:41:08 -0700 (PDT)
+        Thu, 17 Sep 2020 03:41:49 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EADC061788
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:41:48 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d9so689555pfd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:41:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KzGRfdSlTsnA6ugMb6NVstzypnemez8bSdibR9WaXZI=;
-        b=n9IUahF4nx7eVElB/b5yWlOaTpw9Io8kHvS+30WVF70Vvg5Rs4hKZ7sjWxfbQXCL6U
-         HknbOUTOEMlKX8yT9+2zjSIvUrlhFXl6wOHqUopLSO3WaKLX2wJXbImMlr6kHNkdXflD
-         WPlirGqKCrNnSytHO+6HX3dHHHypAzcaWjAWw5/gS2dFyRNCyUbAlSVqC3VkElPX2DZ9
-         UO0U4136FDAdV6SdfKKHfhd1ptDfdmFMjIG4VZLwtWJJnUkee3hs4kmm0xC/cmttQvUr
-         PTbBysSr02mkeQO1rIPMPimPK15nN/p1pYu1DUyruNPcK1vjY2rwqm8MfM7t7cE1oPCQ
-         5kAg==
+        h=from:to:cc:subject:date:message-id:author;
+        bh=FXDiiYkOrBBkVMM60XIvsHKuLK5wSyPpdEYR7aXyVeE=;
+        b=iCw4GwLwH4XXyDXgc0qXrpwDfvZsPiJOvBqE4DHe9rNTw9dyeZdz73ZGAaYeJFhfAc
+         5jBxJXFSncPIyRXCtdeFWzeXnTb9NyZEDSzN0E7DaOPWo5kyl0920tplCBronsYZeneR
+         8jOUfjj5ef671oSxEfy3FiXQZ9FtXWywocHpg8liT1Rl8jvyJZ7NyWmcMGkI9K7NMbRz
+         uKEVG8/DE88glop1q9AdGMTFU5fppJsVLWyZ27UGFTkbp3cS5UNMNcONYteUA/Lz+AVw
+         YQ3JmUkIMUz175TX0Ff6jGGvDv3BsPDDtzRklvJrBKDA8iibWpfjGd/LaOHKQyLD5AkA
+         tFVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KzGRfdSlTsnA6ugMb6NVstzypnemez8bSdibR9WaXZI=;
-        b=b4GZNVZ8xt7tca0j99gyLD9LWkq1fIRMypwSYrQOwki+a0/c9ZSiDqrqTp0DKzvoAM
-         pcrPOUlPo+LaQ6h0aAQgSN2qXrqkOFzyme9wOd33MBcFATXZcipFqsYgjbY1M46tLJ/q
-         czCU0XrFJjmXOn/CTaIlw/DXQaBeJ6lW7QqVG3DOA0jnagQ6lmOpLFlB6DctkzxaVImK
-         WxnV023h+HeimNekiL8yDS1jIn8Gknx1Ic3/rEZV2DWcnUosIAyDyq5VF47ei3n5gVUo
-         XIcDyQXUB0MEr6aVGpKQVYAmLhgpUvsD5C16y2JrGiF57ZAYdkq348q60YEL8nWGtowA
-         L+BQ==
-X-Gm-Message-State: AOAM530O9IuT4M/HJZBU4smuhUhTMJecN+DTlfsWWwsKJKEeN6i/MwlM
-        xGIQYQEngTW71NmIJdh3dwmzCoZnYGrI7Wo1gO5ddQ==
-X-Google-Smtp-Source: ABdhPJw0G6CbvuXojTz0DEQfjC8hW/vyZAE4oeQjTVpHpNO2gXIiI69QIvEFy8ZZF35IJs0vUQ1miDcDwk3aoGuHm0Y=
-X-Received: by 2002:a19:6c2:: with SMTP id 185mr8308729lfg.441.1600328467251;
- Thu, 17 Sep 2020 00:41:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200901144324.1071694-1-maz@kernel.org> <20200901144324.1071694-9-maz@kernel.org>
- <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
- <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com> <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
- <3378cd07b92e87a24f1db75f708424ee@kernel.org>
-In-Reply-To: <3378cd07b92e87a24f1db75f708424ee@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 17 Sep 2020 09:40:56 +0200
-Message-ID: <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard interrupts
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:author;
+        bh=FXDiiYkOrBBkVMM60XIvsHKuLK5wSyPpdEYR7aXyVeE=;
+        b=LbJ+3x8fHB9K5Lvg2kbKQHLF73VxUDixVXmzmjda8zUbQlLB6tzwZcy9u7jiHStWhf
+         OlCuLuGzhGXKtV9+Eedb2IeQQOvOkD+QsalSOn+wvIAuIKR8SRnQqxaPU7mP5Vxc7xXB
+         rZw22DMuoZwUqwpaiLMtl4HOo3UzWS6WMvoTo5KDbk/7DQj4FCpwgF1qePfuLdURvwSC
+         L44dBn8EL1ZFm/173Q4c6HvY5WpWn0JqsUDrT5+SaqyLZWsISHsjr50JcZmv+3wuGtkr
+         w6uFjT5qnAabVqGg+mzfLL0FBBcUCX0Ueioc7jfNGbY/Flx5a6EuTXslEYiPMZ55vE3e
+         rW1w==
+X-Gm-Message-State: AOAM533BIAqAALi01ZtsWOdBGocCKIuZo8uimzG/VZoXdWmvU0zO68Ja
+        1H9OPhbUeC+I0rWgFoeRyhT82A==
+X-Google-Smtp-Source: ABdhPJzeq73boIofbBUIov5zoWTDDc1vmS133UThfzm7c+wWboFUL3yGWk8BGO8uBksiOtHwbMmvyA==
+X-Received: by 2002:a63:4c57:: with SMTP id m23mr20910626pgl.77.1600328508312;
+        Thu, 17 Sep 2020 00:41:48 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:6803:6073:ddd6:7b70:6083:ecc4])
+        by smtp.gmail.com with ESMTPSA id e27sm19365745pfj.62.2020.09.17.00.41.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Sep 2020 00:41:47 -0700 (PDT)
+From:   Amit Pundir <amit.pundir@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi Poco F1
+Date:   Thu, 17 Sep 2020 13:11:41 +0530
+Message-Id: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+X-Mailer: git-send-email 2.7.4
+Author: Amit Pundir <amit.pundir@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
+Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+message in ath10k_qmi_host_cap_send_sync(), but we can still
+bring up WiFi services successfully on AOSP if we ignore it.
 
-> Can you try the patch below and let me know?
+We suspect either the host cap is not implemented or there
+may be firmware specific issues. Firmware version is
+QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
 
-I tried this patch and now Ux500 WORKS. So this patch is definitely
-something you should apply.
+qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+quirk, then the host capability request does get accepted,
+but we run into fatal "msa info req rejected" error and
+WiFi interface doesn't come up.
 
-> -                       if (is_frankengic())
-> -                               set_sgi_intid(irqstat);
-> +                       this_cpu_write(sgi_intid, intid);
+Attempts are being made to debug the failure reasons but no
+luck so far. Hence this device specific workaround instead
+of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+linux-firmware project but it didn't help and neither did
+building board-2.bin file from stock bdwlan* files.
 
-This needs changing to irqstat to compile as pointed out by Jon.
+This workaround will be removed once we have a viable fix.
+Thanks to postmarketOS guys for catching this.
 
-With that:
-Tested-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+---
+Device-tree for Xiaomi Poco F1(Beryllium) got merged in
+qcom/arm64-for-5.10 last week
+https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/commit/?id=77809cf74a8c
 
-Yours,
-Linus Walleij
+ drivers/net/wireless/ath/ath10k/qmi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 0dee1353d395..37c5350eb8b1 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
+ 
+ 	/* older FW didn't support this request, which is not fatal */
+ 	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+-	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
++	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
++	    !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
+ 		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
+ 		ret = -EINVAL;
+ 		goto out;
+-- 
+2.7.4
+
