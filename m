@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6EE26E85A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89EF26E858
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgIQW1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:27:16 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:56708 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgIQW1O (ORCPT
+        id S1726115AbgIQW1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbgIQW1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:27:14 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 44EE0E42;
-        Fri, 18 Sep 2020 00:27:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1600381631;
-        bh=6fqrhPzjRJc26qteyZCg0T1UetD3chkmfFf/oUQbZ/E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oLoj7c+C8+Su3vhmjCnrQAp0OmYmF9lbg2jbx8jmle2Vub2NJc8muhhMNdwh0MObn
-         8G8dUldXb+vxNc7ifbztijijnC5Ey0lnv3Cwpkustuwp9wOIfCqL7VPyBbTFwIGiuG
-         D/+JvfcMiSXtPmGyJOpgqDJIL3MMqOMaJo3D3gA4=
-Date:   Fri, 18 Sep 2020 01:26:41 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Fix compilation warning with
- !CONFIG_TASKS_RCU and CONFIG_TINY_RCU
-Message-ID: <20200917222641.GA589@pendragon.ideasonboard.com>
-References: <20200823030405.22174-1-laurent.pinchart@ideasonboard.com>
- <20200825150222.GP2855@paulmck-ThinkPad-P72>
- <20200825152249.GF6767@pendragon.ideasonboard.com>
- <20200825161629.GS2855@paulmck-ThinkPad-P72>
+        Thu, 17 Sep 2020 18:27:10 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96DDC06174A;
+        Thu, 17 Sep 2020 15:27:09 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bss5j2PCTz9sSJ;
+        Fri, 18 Sep 2020 08:27:05 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600381625;
+        bh=65GgIVjHlsKL7mcg4a+XCD4S0QJQ0hobEgxDH3w58vE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tqtIP0EtIAK/7pxLmSQSvqpyQZPMnIztWi0f1pUQ63/sLsiT0G2+P7MMu0CUHV9qt
+         qr1DiueMVKSZ4Sgudrn+9f0bKyNBosPxtoQ9l3O1Ui3RlHC+AZBjmoRGORmWZcD7gI
+         9m2wvXGLhZiXfxS9J/A5v0jmnpv4jC9pGRbGj0wQV4qddWWihTgEfNaUP695DrULs7
+         JiojES3GaVcjY1wAlAXbC/rcTb2EWwuJLC4QFNSotz54uB0sabapDkXBR3XEv8QOwl
+         cRb38A3CGGkh/nlcXne0PxgfqeYmyilFj8ORtB7AAxRUVIbXZQLI0qHQhDyUDZQvGX
+         GIZuZ3gK0BicA==
+Date:   Fri, 18 Sep 2020 08:27:04 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
+Subject: linux-next: Fixes tags need some work in the amdgpu tree
+Message-ID: <20200918082704.466c822a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200825161629.GS2855@paulmck-ThinkPad-P72>
+Content-Type: multipart/signed; boundary="Sig_/9=e4Li/30Z3EhUqJDWMNFpT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+--Sig_/9=e4Li/30Z3EhUqJDWMNFpT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 25, 2020 at 09:16:29AM -0700, Paul E. McKenney wrote:
-> On Tue, Aug 25, 2020 at 06:22:49PM +0300, Laurent Pinchart wrote:
-> > On Tue, Aug 25, 2020 at 08:02:22AM -0700, Paul E. McKenney wrote:
-> > > On Sun, Aug 23, 2020 at 06:04:05AM +0300, Laurent Pinchart wrote:
-> > > > Commit 8344496e8b49 ("rcu-tasks: Conditionally compile
-> > > > show_rcu_tasks_gp_kthreads()") introduced conditional compilation of
-> > > > several functions, but forgot one occurrence of
-> > > > show_rcu_tasks_classic_gp_kthread() that causes the compiler to warn of
-> > > > an unused static function. Fix it.
-> > > > 
-> > > > Fixes: 8344496e8b49 ("rcu-tasks: Conditionally compile show_rcu_tasks_gp_kthreads()")
-> > > > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > > ---
-> > > >  kernel/rcu/tasks.h | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > > 
-> > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > > index 835e2df8590a..bddf3968c1eb 100644
-> > > > --- a/kernel/rcu/tasks.h
-> > > > +++ b/kernel/rcu/tasks.h
-> > > > @@ -590,7 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
-> > > >  }
-> > > >  
-> > > >  #else /* #ifdef CONFIG_TASKS_RCU */
-> > > > +#ifndef CONFIG_TINY_RCU
-> > > >  static void show_rcu_tasks_classic_gp_kthread(void) { }
-> > > > +#endif /* #ifndef CONFIG_TINY_RCU */
-> > > >  void exit_tasks_rcu_start(void) { }
-> > > >  void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-> > > >  #endif /* #else #ifdef CONFIG_TASKS_RCU */
-> > > 
-> > > Good catch!!!
-> > > 
-> > > But does the following addition of "static inline" work for you?
-> > 
-> > They do. I initially added a static inline, and realized #ifdef was used
-> > extensively when trying to find the proper Fixes: tag, so I went for
-> > that. I don't mind either way, as long as this gets fixed :-)
-> 
-> This is admittedly an odd .h file, given that it is included but once.
-> 
-> I have applied the following patch with your Reported-by, cc-ing -stable
-> for v5.8 and later.
+Hi all,
 
-I don't see the fix in Linus' master branch. Given that 8344496e8b49 was
-introduced in v5.9-rc1, shouldn't this be treated as a regression and
-merged before Linus releases v5.9 ?
+In commit
 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index 835e2df..3dc3ffc 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -590,9 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
-> > >  }
-> > >  
-> > >  #else /* #ifdef CONFIG_TASKS_RCU */
-> > > -static void show_rcu_tasks_classic_gp_kthread(void) { }
-> > > -void exit_tasks_rcu_start(void) { }
-> > > -void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-> > > +static inline void show_rcu_tasks_classic_gp_kthread(void) { }
-> > > +static inline void exit_tasks_rcu_start(void) { }
-> > > +static inline void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-> > >  #endif /* #else #ifdef CONFIG_TASKS_RCU */
-> > >  
-> > >  #ifdef CONFIG_TASKS_RUDE_RCU
+  2561adedd576 ("drm/amd/display: dc/clk_mgr: make function static")
 
--- 
-Regards,
+Fixes tag
 
-Laurent Pinchart
+  Fixes: 3ecb3b794e2 "drm/amd/display: dc/clk_mgr: add support for SI parts=
+ (v2)"
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+In commit
+
+  d5c0af573279 ("drm/amd/display: Add missing "Copy GSL groups when committ=
+ing a new context"")
+
+Fixes tag
+
+  Fixes: b6e881c9474 ("drm/amd/display: update navi to use new surface prog=
+ramming behaviour")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9=e4Li/30Z3EhUqJDWMNFpT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9j4rgACgkQAVBC80lX
+0GwNKQf/TPJM3QhpZqVVWuANzX8M8NhZDd8U/aXbm3UZtwQWoHyBNLJOSFjuPAB8
+YGBrSTuJV1OoWir7c7gcx763YsCj0/wkL2hCe7Sa/A3nswgyME0iwiV+IsMRnQhU
+gtSu9cnnIcH4GJ7x72ypykZxNRMgjOpvcOgR48e0DSy9/QkC93VemKyu/UQg4eAm
+aScRTNqYhbS4ndLb45J869TNUrTxUowHuezaOqHwY4Qi1pmsfmWbnUjIR7SiuBiG
+3+pRUQ+eGsM701onilAwcO3aMxe9pgC/BEJYvCXSUfoMXzYzJziS19k+ejlGfxxC
+1rXntwUX+xlJLpDbPFeyJ+lIDpHesw==
+=EIEx
+-----END PGP SIGNATURE-----
+
+--Sig_/9=e4Li/30Z3EhUqJDWMNFpT--
