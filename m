@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0A426E0EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4774426E0F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgIQQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:40:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46886 "EHLO mail.kernel.org"
+        id S1728619AbgIQQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:41:55 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:38044 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728612AbgIQQkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:40:17 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1728537AbgIQQk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:40:57 -0400
+Received: from zn.tnic (p200300ec2f105300c872f9f06eecfc48.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:c872:f9f0:6eec:fc48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C59972078D;
-        Thu, 17 Sep 2020 16:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600360816;
-        bh=PfeDtz/OoPclm3bNfVIaaR8Nu/X3bxOlyimE6jLBMQc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N7TgR4sCm108vbJnhxJwG8nd4acMcrZNiVB55Cs/+87LYapRXQL2mJZz8uuhr+HHH
-         miRYpE207BTGZZnA0ul12QSG0oU3721WDIJngTYjaKCGbYZTTKHLQaiT56pFO67GsK
-         sUgeIdccpwIEuZFAWWgusoBx/CMUoFl9d2Wn8Nxg=
-Date:   Thu, 17 Sep 2020 18:40:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jhugo@codeaurora.org,
-        bbhatt@codeaurora.org
-Subject: Re: [PATCH v6 4/4] bus: mhi: Add userspace client interface driver
-Message-ID: <20200917164047.GB721081@kroah.com>
-References: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
- <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7182A1EC037C;
+        Thu, 17 Sep 2020 18:40:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600360855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=x75byr5tRA3UvdckcFoWl2xo1AcldQR1ZS4h77zB560=;
+        b=ls3G8vFnGCoEcczlb+o5Gph42paXYsTqnynDesCzz3riU8TMPZsusWinIIfZ7lovC+/Q93
+        hsmlZPDcjnp63cD+I8ZwPtTa3ax+5yar2ZRPz7QO/F946l7zSKvPB8D1OpS+0XBohtMkck
+        jTn/sD+qHwD4PnKMq582/NqqTcurWjw=
+Date:   Thu, 17 Sep 2020 18:40:48 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 1/8] x86/CPU/AMD: Save NodeId on AMD-based systems
+Message-ID: <20200917164048.GM31960@zn.tnic>
+References: <20200903200144.310991-1-Yazen.Ghannam@amd.com>
+ <20200903200144.310991-2-Yazen.Ghannam@amd.com>
+ <20200909180647.GF12237@zn.tnic>
+ <20200909201755.GB3014671@yaz-nikka.amd.com>
+ <20200910101443.GC8357@zn.tnic>
+ <20200914192039.GA39519@yaz-nikka.amd.com>
+ <20200915083259.GC14436@zn.tnic>
+ <20200916195152.GA3042858@yaz-nikka.amd.com>
+ <20200917103720.GG31960@zn.tnic>
+ <20200917162053.GA234735@yaz-nikka.amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
+In-Reply-To: <20200917162053.GA234735@yaz-nikka.amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 12:56:07PM -0700, Hemant Kumar wrote:
-> +/**
-> + * struct uci_dev - MHI uci device
-> + * @minor: uci device node minor number
-> + * @mhi_dev: associated mhi device object
-> + * @chan: MHI channel name
-> + * @lock: mutex lock
-> + * @ul_chan: uplink uci channel object
-> + * @dl_chan: downlink uci channel object
-> + * @mtu: max tx buffer length
-> + * @actual_mtu: maximum size of incoming buffer
-> + * @open: open called for device node
-> + * @enabled: uci device probed
-> + * @ref_count: uci_dev reference count
-> + */
-> +struct uci_dev {
-> +	unsigned int minor;
-> +	struct mhi_device *mhi_dev;
-> +	const char *chan;
-> +
-> +	/* protects uci_dev struct members */
-> +	struct mutex lock;
-> +
-> +	struct uci_chan ul_chan;
-> +	struct uci_chan dl_chan;
-> +	size_t mtu;
-> +	size_t actual_mtu;
-> +	bool enabled;
-> +	struct kref ref_count;
-> +};
+On Thu, Sep 17, 2020 at 11:20:53AM -0500, Yazen Ghannam wrote:
+> But newer systems support CPUID Leaf 0xB, so cpu_die_id will get
+> explicitly set by detect_extended_topology(). The value set is
+> different from the AMD NodeId. And at that point I shied away from
+> doing any override or fixup.
 
-I don't think you actually made the kernel documentation based on these
-lines.
+Well, different how? Can you extract the node_id you need
+from CPUID(0xb)? If yes, we can do an AMD-specific branch in
+detect_extended_topology() but that better be future proof.
 
-Or if you did, you ignored the warnings :(
+IOW, is information from CPUID(0xb) ever going to be needed in the
+kernel?
 
-Please test build your patches before sending them out...
+Also, and independently, if its definition do not give you the
+node_id you need, then you can just as well overwrite ->cpu_die_id in
+detect_extended_topology() because that value - whatever that is, could
+be garbage, just as well - is wrong on AMD anyway.
 
-thanks,
+So it would be a fix for the leaf parsing, regardless of whether you
+need it or not.
 
-greg k-h
+Makes sense?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
