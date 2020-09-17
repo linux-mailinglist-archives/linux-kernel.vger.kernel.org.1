@@ -2,161 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AC426DB59
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FBB26DB64
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIQMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:17:16 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:41910 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726611AbgIQMP3 (ORCPT
+        id S1726913AbgIQMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:21:03 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19248 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbgIQMUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:15:29 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HCEqlZ040922;
-        Thu, 17 Sep 2020 07:14:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600344892;
-        bh=cGd0Zeuy4+fUXyw2xolJhUi55PGX5GYAQgVtJo/AyC4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=E6UgGNdeQX6dbpJ4gAkJ65gVnBRDaQ9Skax2apqdMdlFOvb9W8bL+Z0iofqK932j4
-         adlW/Pt/M8ZfCEU/ZUrW+PB/KDMCrGICol8hrwIlEpbeS3nqjkiOxMysyNcn3L9P8t
-         p8m6LibnfbctlgKpdbhq1uONMaoL/5PHMV5Bxz5w=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08HCEqq6085548
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 07:14:52 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
- Sep 2020 07:14:52 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 17 Sep 2020 07:14:52 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HCEpmP058482;
-        Thu, 17 Sep 2020 07:14:51 -0500
-Date:   Thu, 17 Sep 2020 07:14:51 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Roger Quadros <rogerq@ti.com>
-CC:     Peter Rosin <peda@axentia.se>, <t-kristo@ti.com>,
-        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
-        <kishon@ti.com>
-Subject: Re: [PATCH v3 1/6] dt-bindings: mux-j7200-wiz: Add lane function
- defines
-Message-ID: <20200917121451.mp4pdld5w6qkv6d3@akan>
-References: <20200915112038.30219-1-rogerq@ti.com>
- <20200915112038.30219-2-rogerq@ti.com>
- <e28e98a0-f3fc-29bd-d7a6-cc45f3a69ede@axentia.se>
- <20200916154536.m552ft2jzfsaeokr@akan>
- <08c84d02-abe1-8399-50fb-9268c7130f8a@ti.com>
+        Thu, 17 Sep 2020 08:20:54 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6353460000>; Thu, 17 Sep 2020 05:15:02 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 17 Sep 2020 05:15:46 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 17 Sep 2020 05:15:46 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
+ 2020 12:15:43 +0000
+Date:   Thu, 17 Sep 2020 15:15:40 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <lulu@redhat.com>
+Subject: [vhost next 2/2] vdpa/mlx5: Fix failure to bring link up
+Message-ID: <20200917121540.GA98184@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <08c84d02-abe1-8399-50fb-9268c7130f8a@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600344903; bh=xNDUVAOiUY33eFNSRyaUWgqKQPOQCmaCt04lCyjdrng=;
+        h=X-PGP-Universal:Date:From:To:CC:Subject:Message-ID:MIME-Version:
+         Content-Type:Content-Disposition:User-Agent:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=N8snmDHwUzWH/4rEqkfw024J/57ZCERxZ9AYEi+tDuC+d13qDUOj4q45ITfV+VZ6c
+         eYdyGUqiAaADQDFWWvbl+Yu47tfv7KkeosojLswVPLxah0hLg9AFkakdrCYHgcVFBu
+         myR0YTJMJW4KNHeo9Vrnkm3QRHFX5RDvsgXA9PKYemBEwTAkDeYJtu0puq6vBlCvuw
+         iGQtsRix4H6JJPcbQf7nVNAaYtQiDHkzLmsFsyeQvf2ybUIsaTi8FPzALQVpbHJQPb
+         MIHez5fF1SbpzBCfeXwlaFi/FwoTrAXKlPq+dvoNbIXzAGX/TtqoMc365lf+InwYFJ
+         F+bKOXqAyphrA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15:00-20200917, Roger Quadros wrote:
-> Hi Peter & Nishanth,
-> 
-> On 16/09/2020 18:45, Nishanth Menon wrote:
-> > On 06:52-20200916, Peter Rosin wrote:
-> > > Hi,
-> > > 
-> > > Sorry for the delay.
-> > > 
-> > > On 2020-09-15 13:20, Roger Quadros wrote:
-> > > > Each SERDES lane mux can select upto 4 different IPs.
-> > > > There are 4 lanes in each J7200 SERDES. Define all
-> > > > the possible functions in this file.
-> > > > 
-> > > > Cc: Peter Rosin <peda@axentia.se>
-> > > > Signed-off-by: Roger Quadros <rogerq@ti.com>
-> > > > ---
-> > > >   include/dt-bindings/mux/mux-j7200-wiz.h | 29 +++++++++++++++++++++++++
-> > > >   1 file changed, 29 insertions(+)
-> > > >   create mode 100644 include/dt-bindings/mux/mux-j7200-wiz.h
-> > > > 
-> > > > diff --git a/include/dt-bindings/mux/mux-j7200-wiz.h b/include/dt-bindings/mux/mux-j7200-wiz.h
-> > > > new file mode 100644
-> > > > index 000000000000..b091b1185a36
-> > > > --- /dev/null
-> > > > +++ b/include/dt-bindings/mux/mux-j7200-wiz.h
-> > > > @@ -0,0 +1,29 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > > +/*
-> > > > + * This header provides constants for J7200 WIZ.
-> > > > + */
-> > > > +
-> > > > +#ifndef _DT_BINDINGS_J7200_WIZ
-> > > > +#define _DT_BINDINGS_J7200_WIZ
-> > > > +
-> > > > +#define SERDES0_LANE0_QSGMII_LANE3	0x0
-> > > > +#define SERDES0_LANE0_PCIE1_LANE0	0x1
-> > > > +#define SERDES0_LANE0_IP3_UNUSED	0x2
-> > > > +#define SERDES0_LANE0_IP4_UNUSED	0x3
-> > > > +
-> > > > +#define SERDES0_LANE1_QSGMII_LANE4	0x0
-> > > > +#define SERDES0_LANE1_PCIE1_LANE1	0x1
-> > > > +#define SERDES0_LANE1_IP3_UNUSED	0x2
-> > > > +#define SERDES0_LANE1_IP4_UNUSED	0x3
-> > > > +
-> > > > +#define SERDES0_LANE2_QSGMII_LANE1	0x0
-> > > > +#define SERDES0_LANE2_PCIE1_LANE2	0x1
-> > > > +#define SERDES0_LANE2_IP3_UNUSED	0x2
-> > > > +#define SERDES0_LANE2_IP4_UNUSED	0x3
-> > > > +
-> > > > +#define SERDES0_LANE3_QSGMII_LANE2	0x0
-> > > > +#define SERDES0_LANE3_PCIE1_LANE3	0x1
-> > > > +#define SERDES0_LANE3_USB		0x2
-> > > > +#define SERDES0_LANE3_IP4_UNUSED	0x3
-> > > > +
-> > > > +#endif /* _DT_BINDINGS_J7200_WIZ */
-> > > 
-> > > Should not the defines start with J7200_WIZ? SERDES0 seems like a too
-> > > generic prefix, at least to me.
-> > 
-> > Thanks, good point. I am not sure if WIZ should even be used.. It is
-> > a TI internal prefix for various serdes solutions, but I agree that
-> > SERDES0 is too generic a terminology. That said, we should cleanup
-> > include/dt-bindings/mux/mux-j721e-wiz.h as well, prior to introducing
-> > j7200 changes.
-> > 
-> 
-> I'm planning to put all TI SERDES definitions in one header file "ti-serdes-mux.h"
-> and add SOC specific prefixes to the macros.
-> 
-> This will mean some churn in the existing DT files. (only 2 so far)
+Set VIRTIO_NET_S_LINK_UP in config status to allow the get the bring the
+net device's link up.
 
-Please check bindings and examples if any reference as well. Those
-changes will need to be considered as well.
+Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+---
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> Are you guys OK if I do the change in one patch to avoid a broken build in between.
-> You guys can then decide whose tree it goes through.
-> 
-> The new SoC addition will be separate of course.
-
-If Peter acks and is OK with the changes, then based on Peter's opinion,
-I'd rather take the changes via SoC tree for 5.10+ for maintaining
-bisectability.
-
-I prefer we name it ti-serdes-mux or something that Peter is OK with as
-well. reasons:
-
-i) "wiz" is yet another TLA deal even if documented in public TI TRM in some
-   remote chapter, other non-TI folks are going to go scratching their
-   heads..
-ii) There is no way this can scale with one header per SoC!
-
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index e70ff7dee33d..d0df768f29da 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -1533,6 +1533,7 @@ static int mlx5_vdpa_set_features(struct vdpa_device *vdev, u64 features)
+ 
+ 	ndev->mvdev.actual_features = features & ndev->mvdev.mlx_features;
+ 	ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
++	ndev->config.status |= cpu_to_mlx5vdpa16(mvdev, VIRTIO_NET_S_LINK_UP);
+ 	return err;
+ }
+ 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.27.0
+
