@@ -2,227 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6128226D082
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2A326D070
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgIQBTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:19:55 -0400
-Received: from mga05.intel.com ([192.55.52.43]:63717 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgIQBTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:19:51 -0400
-IronPort-SDR: nTaEnIbghPhQPXblRFpbJUOMrgKBhByY5dkpJZMhjS/JujZA4pJAvsXBe+uGKm+5V4TJpbpmRy
- OWK+qyjGe0WQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="244435243"
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="244435243"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 18:12:45 -0700
-IronPort-SDR: ULLVDtr54XNknEtX7yPohPIr1xHjQYckQS5oQeGc7nfr+CtECQBmwzayDWFFGfLEWYTTyrvnYc
- QoJ73hArZWtg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="287390048"
-Received: from lkp-server02.sh.intel.com (HELO bdcb92cf8b4e) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Sep 2020 18:12:44 -0700
-Received: from kbuild by bdcb92cf8b4e with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kIiTb-0000LG-6u; Thu, 17 Sep 2020 01:12:43 +0000
-Date:   Thu, 17 Sep 2020 09:12:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/pti] BUILD SUCCESS WITH WARNING
- 767d46ab566dd489733666efe48732d523c8c332
-Message-ID: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726104AbgIQBND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIQBMw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:12:52 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BFCC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 18:12:50 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id k25so503505ljg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 18:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mVFEQ2ojzPXsy6/BeRJx9bRw+Riz8xGIOrZymfMmFx0=;
+        b=hCWvmjETmGnj8dUIeEh40To0bivwiX4baV3SR2d+cyGlVkknWwoi6Y+qun6337DBn3
+         6vkj+oNBHIvrog4mWgYHGc1SHsSTVZOo9flRSF7hlnkIxSv04V4sQXiXlkddxIFiu++W
+         qclMQQaZarvaopfB5zwebgXTvvXK2+yqK3ZPBEnoTmz/wDoWbdZOauruH+KPcLwYO7lH
+         4pzDhGIDAPMWaZFoPW8FMDDsSFCM0nJUv4puoYBtq8Y/8fKLHvSo0i/eT1JLoFqxmC+V
+         PPMJ7Dr+J98VTyKN2NhTgEh8GhFMx0MbbLSn3s7QtluAj87WfYg3ktn2mRD19++UB0/J
+         0iTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mVFEQ2ojzPXsy6/BeRJx9bRw+Riz8xGIOrZymfMmFx0=;
+        b=q5EFfo489DqGCCmxPSNeqdek8vTJXsPTxOzK/nQFcggfozL9UldqE0gZAPwQpJk5lz
+         4EUqYwv3AEEHIXAXfj9uuGvPr+Twl+vl5H9J3Bq3sW6FijEiOkOgR0fu71cMgxVZWshg
+         /a6Q7JE/9X1F0ds0BwDJyIbOg+WKyqan0Hb67GhbZJW6uwvBWsaOXMJw2cLYxwP/9rO6
+         f48/Fs+Z0ETJgEv28h5mw1ldd7mTa4mP/luJTxy+Wcp07jLi1N1R4VAT+GEiMmgEuy03
+         tSUzkKDZdSFxuV4E4TYGvdCFfyD3ArCZYT3oywvSjZkMkWHO6iR1ddv+A5rmEAqzuzID
+         1Atw==
+X-Gm-Message-State: AOAM533JWjqJMhIp6KVMVWhxKSvN+RSG7WXi9N2iZg97taYGphKWQW+m
+        Fjhw0ChMo+StnZavotbjpzVmsdtQrzA9s/Q++bsO8Q==
+X-Google-Smtp-Source: ABdhPJz5EIVwc296/t23ooatEw7C3O5jedtlzyePX2E6TSDGKVSVz/hsQc16mfeeNDN1rP+EeMd6vcK2o0IJLrqcj2E=
+X-Received: by 2002:a2e:3511:: with SMTP id z17mr8747331ljz.58.1600305168793;
+ Wed, 16 Sep 2020 18:12:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200910202659.1378404-1-guro@fb.com> <20200910202659.1378404-4-guro@fb.com>
+In-Reply-To: <20200910202659.1378404-4-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 16 Sep 2020 18:12:37 -0700
+Message-ID: <CALvZod7qbM8iM0eafOWXEBjyK_K4HZLztyh0wtsVncnmHrotEg@mail.gmail.com>
+Subject: Re: [PATCH rfc 3/5] mm: memcontrol/slab: use helpers to access slab
+ page's memcg_data
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/pti
-branch HEAD: 767d46ab566dd489733666efe48732d523c8c332  Documentation: Add L1D flushing Documentation
+On Thu, Sep 10, 2020 at 1:27 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> To gather all direct accesses to struct page's memcg_data field
+> in one place, let's introduce 4 new helper functions to use in
+> the slab accounting code:
+>   struct obj_cgroup **page_obj_cgroups(struct page *page);
+>   struct obj_cgroup **page_obj_cgroups_check(struct page *page);
+>   bool set_page_obj_cgroups(struct page *page, struct obj_cgroup **objcgs);
+>   void clear_page_obj_cgroups(struct page *page);
+>
+> They are similar to the corresponding API for generic pages, except
+> that the setter can return false, indicating that the value has been
+> already set from a different thread.
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Warning in current branch:
+Nit below.
 
-arch/x86/mm/tlb.c:426:36: sparse:     expected void const [noderef] __percpu *__vpp_verify
-arch/x86/mm/tlb.c:426:36: sparse:     got bool *
-arch/x86/mm/tlb.c:426:36: sparse: sparse: incorrect type in initializer (different address spaces)
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Warning ids grouped by kconfigs:
+> ---
+>  include/linux/memcontrol.h | 48 ++++++++++++++++++++++++++++++++++++++
+>  mm/memcontrol.c            |  4 ++--
+>  mm/slab.h                  | 27 +++------------------
+>  3 files changed, 53 insertions(+), 26 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 0997220c84ce..48d4c2c1ce81 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -375,6 +375,54 @@ static inline void clear_page_mem_cgroup(struct page *page)
+>         page->memcg_data = 0;
+>  }
+>
 
-gcc_recent_errors
-`-- i386-randconfig-s002-20200916
-    |-- arch-x86-mm-tlb.c:sparse:expected-void-const-noderef-__percpu-__vpp_verify
-    |-- arch-x86-mm-tlb.c:sparse:got-bool
-    `-- arch-x86-mm-tlb.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-const-noderef-__percpu-__vpp_verify-got-bool
+I think adding comments on these functions would be helpful.
 
-elapsed time: 722m
-
-configs tested: 152
-configs skipped: 2
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                        mvme16x_defconfig
-sh                ecovec24-romimage_defconfig
-sh                        sh7763rdp_defconfig
-arm                          pxa168_defconfig
-arm                      integrator_defconfig
-arc                     nsimosci_hs_defconfig
-arc                          axs101_defconfig
-sh                          landisk_defconfig
-m68k                          atari_defconfig
-arm                  colibri_pxa270_defconfig
-sh                          rsk7264_defconfig
-mips                      bmips_stb_defconfig
-powerpc                        fsp2_defconfig
-arc                             nps_defconfig
-arm                            dove_defconfig
-sh                     sh7710voipgw_defconfig
-arm                         socfpga_defconfig
-sh                          r7785rp_defconfig
-s390                             alldefconfig
-mips                        nlm_xlp_defconfig
-microblaze                    nommu_defconfig
-sh                           se7780_defconfig
-mips                     decstation_defconfig
-mips                      malta_kvm_defconfig
-arm                          pcm027_defconfig
-powerpc                  storcenter_defconfig
-mips                         cobalt_defconfig
-arm                         axm55xx_defconfig
-mips                          rm200_defconfig
-m68k                        stmark2_defconfig
-powerpc                  mpc885_ads_defconfig
-sh                          kfr2r09_defconfig
-c6x                        evmc6678_defconfig
-c6x                                 defconfig
-arm                           stm32_defconfig
-mips                           ci20_defconfig
-m68k                       m5475evb_defconfig
-arm                          tango4_defconfig
-sh                  sh7785lcr_32bit_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                     tqm5200_defconfig
-arm                        spear6xx_defconfig
-mips                           jazz_defconfig
-powerpc                     rainier_defconfig
-powerpc                      ppc64e_defconfig
-nios2                            allyesconfig
-arm                           sama5_defconfig
-arm                           efm32_defconfig
-mips                         tb0287_defconfig
-mips                         db1xxx_defconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      katmai_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                         wii_defconfig
-arm                          exynos_defconfig
-ia64                         bigsur_defconfig
-mips                         rt305x_defconfig
-powerpc                  mpc866_ads_defconfig
-alpha                            alldefconfig
-m68k                         apollo_defconfig
-alpha                               defconfig
-powerpc                      walnut_defconfig
-riscv                    nommu_virt_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                    klondike_defconfig
-c6x                        evmc6472_defconfig
-arc                        nsimosci_defconfig
-mips                         tb0219_defconfig
-arm                        mini2440_defconfig
-arm                          lpd270_defconfig
-powerpc                 mpc8315_rdb_defconfig
-mips                   sb1250_swarm_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                       eiger_defconfig
-powerpc                mpc7448_hpc2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20200916
-x86_64               randconfig-a004-20200916
-x86_64               randconfig-a003-20200916
-x86_64               randconfig-a002-20200916
-x86_64               randconfig-a001-20200916
-x86_64               randconfig-a005-20200916
-i386                 randconfig-a004-20200916
-i386                 randconfig-a006-20200916
-i386                 randconfig-a003-20200916
-i386                 randconfig-a001-20200916
-i386                 randconfig-a002-20200916
-i386                 randconfig-a005-20200916
-i386                 randconfig-a004-20200917
-i386                 randconfig-a006-20200917
-i386                 randconfig-a003-20200917
-i386                 randconfig-a001-20200917
-i386                 randconfig-a002-20200917
-i386                 randconfig-a005-20200917
-i386                 randconfig-a015-20200916
-i386                 randconfig-a014-20200916
-i386                 randconfig-a011-20200916
-i386                 randconfig-a013-20200916
-i386                 randconfig-a016-20200916
-i386                 randconfig-a012-20200916
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a014-20200916
-x86_64               randconfig-a011-20200916
-x86_64               randconfig-a016-20200916
-x86_64               randconfig-a012-20200916
-x86_64               randconfig-a015-20200916
-x86_64               randconfig-a013-20200916
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static inline struct obj_cgroup **page_obj_cgroups(struct page *page)
+> +{
+> +       return (struct obj_cgroup **)(page->memcg_data & ~0x1UL);
+> +}
+> +
+> +static inline struct obj_cgroup **page_obj_cgroups_check(struct page *page)
+> +{
+> +       unsigned long memcg_data = page->memcg_data;
+> +
+> +       if (memcg_data && (memcg_data & 0x1UL))
+> +               return (struct obj_cgroup **)memcg_data;
+> +
+> +       return NULL;
+> +}
+> +
+> +static inline bool set_page_obj_cgroups(struct page *page,
+> +                                       struct obj_cgroup **objcgs)
+> +{
+> +       return !cmpxchg(&page->memcg_data, 0, (unsigned long)objcgs | 0x1UL);
+> +}
+> +
+> +static inline void clear_page_obj_cgroups(struct page *page)
+> +{
+> +       page->memcg_data = 0;
+> +}
