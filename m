@@ -2,173 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D3726DC14
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF4B26DBAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgIQMxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:53:10 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:25852 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727017AbgIQMtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:49:47 -0400
-X-Greylist: delayed 948 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:49:42 EDT
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6357940000>; Thu, 17 Sep 2020 20:33:24 +0800
-Received: from HKMAIL104.nvidia.com ([10.18.16.13])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 17 Sep 2020 05:33:24 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Thu, 17 Sep 2020 05:33:24 -0700
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
- 2020 12:33:21 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 17 Sep 2020 12:33:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mWj8LObK1fECdsqaVetx+VFv7h+tqUAZICcnrgRkuYlKJsWLEPdRO3IpqPoG5LoiAwzcgnYh8cLnIfPLLI70iviH9JFMifdys3l6o1TpQunvr7YEs1BFZjYB2xo92AMyzo60CCv9S2qThU2h1AvOGs6cfY+wcyjcdezD3zLLWrEgU+bcXdWb5ipa8NSaX+yh5kPsmKEeYkVeX2AZKjwbnNN9YbHg995fVAPSqR7ykc2MqcQnFrQn8/DIe9dd8y/CANbHvrB+BmnDMCusYvEiugSPVyeq8Yjg7xvTK1eWDkUVR7xO1ZlHfMDUqqf1LAUD4ZxY/uoqTzDpw/l6uxOcDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1yLxJt0yZPPbQtgXBuZx6a6czQdjw3yH6/DsWW2d0YU=;
- b=fTC7MBCRMT/USO3UEF2iptIy9onv6hVduxC2JgcqN1KX8YEAItoD7K28qiB4xRgotJWFCVyS6k7X/bNFIOzbvoeXp+ktKfupFnIvygs3ngqeu2Bmz5hl1O4Z+kjsEJ9Q2lVQcYo9J9LXeRdt7j0mRKqpn+XtUquIPlxNEFkMlxAXtlqmRqU/P6F2yBvogMQkXoW48+Raz4Mm99Z+5KZl5679g1T+KiwOpgToONlyw64EQopSWDal9dByipCYLcwy5lwBhDNh0axMBZamqdgy5/YqWWWSN4ekkxKdXC/We/+1idh+MiVuSzgXBH/MgPIjDfr6ua5UEvv8jdIdVUCJgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3596.namprd12.prod.outlook.com (2603:10b6:5:3e::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 17 Sep
- 2020 12:33:17 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Thu, 17 Sep 2020
- 12:33:17 +0000
-Date:   Thu, 17 Sep 2020 09:33:16 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Eli Cohen <eli@dev.mellanox.co.il>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Roland Dreier <rolandd@cisco.com>
-Subject: Re: [PATCH rdma-next 0/8] Cleanup and fix the CMA state machine
-Message-ID: <20200917123316.GA113655@nvidia.com>
-References: <20200902081122.745412-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200902081122.745412-1-leon@kernel.org>
-X-ClientProxiedBy: MN2PR12CA0035.namprd12.prod.outlook.com
- (2603:10b6:208:a8::48) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726984AbgIQMf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726955AbgIQMdr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:33:47 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BE0C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:33:23 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e11so4357030wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lSmbmSp0vTLjkpjcwc95ATbPKvR5uzI8SEkr43DYMdw=;
+        b=cwflIlv1fOV5pfkvMZO++S3xQGizRiz3OlTTI1yyFgQ1RKH8t80pYLJZXn56J1nJKF
+         MGWcuRc54Etd0RZXzfnTtM09DCDIIsRZcJboumPTCmYM7fSwPvAfc0apDIe+vu35EuaB
+         uFAG1eG1ZAjQms6AvF94xXJwyyXAj9C9FTKBWIUIIsdrt9jwrIFqLdntvAZaDBjYXHtl
+         wt70ZFiMHowCa/qZPBbzMSNcM4R7EF8GqdKpbtlwVwQ898xWmORMPXiI4lO5Z/5WPZF5
+         VzsSCPERoRDLEZDQNFuRmu1sd3mPIsAShAv9JFzPCsxPdOotCNb9u0+AU3hg/86ky+qr
+         FQ5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lSmbmSp0vTLjkpjcwc95ATbPKvR5uzI8SEkr43DYMdw=;
+        b=Cy8BqUpSx8NdLJ2kPl7qZfjSEnYJhoDyfCQGzCa6/uNWMtthBZjfDSc+K8V0oHO+L8
+         hJBgMRPb4aQrBlK9pEg41biuLI60zcDEKXUZsCLLLER2KNaS2A9OSdgJgdC1Np77Fg0Y
+         MSZqjRKXTJmhSxRdCfyhOMnQx6a3WJaBA+Ke57WloKiXPE7JsxKgKTGq6U0Eiu+1lhLR
+         RO5Z8Wq1VNkrZguzrv3b1sdUEcOJ73bfdDEgEVgKcOvbM4yrIJ8XswKcue5aDgZYLD7G
+         HZqeNzO0GTmyn3DB13yqYSBF0dBkqSx2OCXYHWZo3ehINrC8S+amE+w+3dqC3KDw0nuJ
+         oMhQ==
+X-Gm-Message-State: AOAM532oIhmaByvBQjGpuz5LcqHSo3X29g7/kk0EizUEp8ZWHDBATBmW
+        EvOXt9TFzLcbJEI8jqLdDlgcZ3S1pA4lGybx
+X-Google-Smtp-Source: ABdhPJx8C5DUkFdyQvBVG3t6Qjy71GoM60WhVQfU91ytC7Jw3n/jtHODvaamTau0i+WocGKKzGcvyQ==
+X-Received: by 2002:a7b:c958:: with SMTP id i24mr10273808wml.50.1600346000592;
+        Thu, 17 Sep 2020 05:33:20 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:9934:ad8d:e364:de32? ([2a01:e34:ed2f:f020:9934:ad8d:e364:de32])
+        by smtp.googlemail.com with ESMTPSA id r14sm38800456wrn.56.2020.09.17.05.33.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 05:33:20 -0700 (PDT)
+Subject: Re: [PATCH] thermal/drivers/cpuidle_cooling: Change the set_cur_state
+ function
+To:     zhuguangqing83 <zhuguangqing83@gmail.com>, amit.kachhap@gmail.com,
+        viresh.kumar@linaro.org, javi.merino@kernel.org,
+        rui.zhang@intel.com, amitk@kernel.org, zhuguangqing@xiaomi.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <19e301d68ce3$de5f9840$9b1ec8c0$@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <d1367763-335a-53ba-d4fc-7b02dbd59c88@linaro.org>
+Date:   Thu, 17 Sep 2020 14:33:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR12CA0035.namprd12.prod.outlook.com (2603:10b6:208:a8::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Thu, 17 Sep 2020 12:33:17 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kIt6C-000Tfn-5f; Thu, 17 Sep 2020 09:33:16 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2e5129e0-5b1a-4b46-b217-08d85b05dabd
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3596:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3596BAD88EFB275180992A2FC23E0@DM6PR12MB3596.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 64jmYwlwqcxw2l8iglwd5e8DD2OO9kRaeiMb+qEiadL0xxG9/AAMcTmYUMVmSyjZUrzSzQcqmFlTBivnouK9PrKbY1ewvGe7/7jYdGjWMFxY1gtMo63cxt0zR+0ozItKBkd5avx1PwQ6M5voblySqZ/wO+KsbxsluNxKSvhg0a+rz1G+YXgLVz4KuK6MhhnBfzc9GZ+0b0j/qyf1OhER9tpEvDkMKWwWMbD+oR3UYFAsqY1HDAhgWRKwIv9V/eDlULkIDIqoVZD5yq+SO9eQdw2Xa0M8B3I1N0hwrDDbbQaXhZ9dVukBOEMhr39fH3G7RPtfdym2dWwS8pq12odOJOitXWTzKJVgqRxd9xSSt0xegmyDq4zhZ7UY8AMcneVf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(346002)(136003)(396003)(9786002)(316002)(186003)(8676002)(2906002)(6916009)(36756003)(33656002)(426003)(66476007)(9746002)(66556008)(26005)(4326008)(66946007)(86362001)(478600001)(5660300002)(1076003)(8936002)(83380400001)(54906003)(2616005)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 8fnWdPjsUcT5FWk4qpvHO9hi4u/b4p2WEqpXcHgdB/llG7NPsIBpkF13J8DLt4BM5RqHNKbcIFe9fw0wtYSY08MUQ/d6GXMNvxv1mS7pdkfw+LV2K8mo/sOOvYSegZ6d8jweiWxOUCh1sKmVwhYzgbPYTZ/X75N1Mp8PJ7fZsVt3kj/fztAAgn4xTJekv+nanjniV4XnZuAE8ANtpJk1GZg/DrOFpzJg5yGwO+OeEAfXg7Rgzr3vBF6lnz0Xbn52g1pbgclxETwVz/cIyLnmSgvQIw7CpY/xo5C/LB9lF1xA2Ium4zc9WTmZK40kiTu1iCVqOeT0468hxQMNoAhTwUA93ldxHJ4HwnI6n/C3NOOVmsdBYIUKeglBL2tkL1dPy+AEkNyEY7wXEaSd6AMeIiiZaEiYsr8Ow83EqWB34Bg/voZWA/uzEP+zbeyaI7InpF6mv4tEaFZdJfD0pGeMqr+y3U6xblrc9XUd3VYxVPb/aM5SPUPjMvVD1SR6fAI9iqLnmsgLxQynlSilndKcLlk92doqImIEJGQyPL4TRt0NcZrJ8IUD/bXmNNSIon/VXQd5RU/aQTd7XViC63gTkVu8LCdRhcfiCXBONQ+E0cswEzCdBpe1g/DvuPWg0Au1TDY1K1Rxa59+prVCkVSmMg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e5129e0-5b1a-4b46-b217-08d85b05dabd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 12:33:17.7223
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fh2Ymu/waGBR8KvpznRGBxW0/VWcTByjadVNABZjCM+WV7rwdQhXuF4dfSxOvfEd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3596
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600346004; bh=1yLxJt0yZPPbQtgXBuZx6a6czQdjw3yH6/DsWW2d0YU=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=nUdnU0cCS7unOAJNa3pHAVVY1vmVVBTR5Pkfh0TII4naZuwaGFQNPl7oJ3m+Hxffb
-         pQmP9G8G2fWOnXlmkC3MuYvL26bSkzhJKK+capuUpvZgRbP1K7QISl/Dflf6Ehk2k1
-         UWEc8X5+qcbO2c0aG+lp1AfO5/g7n8tFWXU4XuG/p99mdgUTazRTBUIhuSakNoUmQJ
-         3yXjV0dSMO7Q3d0CIXi7VBFOG6pqL9kF5pP5iAM/elJolKAhBFhrqcQ+GvgISZ0Wft
-         L5FwwDzJQUP4lIk6OntXuHhvPTy0YUXpm12Qx+Y0djX6Tsm+a19a44aTIGojbG8QyQ
-         fpZTkAinYrWiQ==
+In-Reply-To: <19e301d68ce3$de5f9840$9b1ec8c0$@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 11:11:14AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On 17/09/2020 13:15, zhuguangqing83 wrote:
 > 
-> >From Jason:
+>>> From: zhuguangqing <zhuguangqing@xiaomi.com>
+>>>
+>>> In the function cpuidle_cooling_set_cur_state(), if current_state is
+>>> not equal to state and both current_state and state are greater than
+>>> 0(scene 4 as follows), then maybe it should stop->start or restart
+>>> idle_inject.
+>>
+>> Sorry, I don't get it.
+>>
+>> It is an update of the state, why do we need to restart the idle
+>> injection ? The state change will be automatically take into account by
+>> the idle injection code at the new injection cycle.
+>>
 > 
-> The RDMA CMA continues to attract syzkaller bugs due to its somewhat loose
-> operation of its FSM. Audit and scrub the whole thing to follow modern
-> expectations.
+> Thanks for your comments.
 > 
-> Overall the design elements are broadly:
+> For example, we call cpuidle_cooling_set_cur_state() twice, first time
+> the input parameter state is 20, second time the input parameter state
+> is 30.
 > 
-> - The ULP entry points MUST NOT run in parallel with each other. The ULP
->   is solely responsible for preventing this.
-> 
-> - If the ULP returns !0 from it's event callback it MUST guarentee that no
->   other ULP threads are touching the cm_id or calling into any RDMA CM
->   entry point.
-> 
-> - ULP entry points can sometimes run conurrently with handler callbacks,
->   although it is tricky because there are many entry points that exist
->   in the flow before the handler is registered.
-> 
-> - Some ULP entry points are called from the ULP event handler callback,
->   under the handler_mutex. (however ucma never does this)
-> 
-> - state uses a weird double locking scheme, in most cases one should hold
->   the handler_mutex. (It is somewhat unclear what exactly the spinlock is
->   for)
-> 
-> - Reading the state without holding the spinlock should use READ_ONCE,
->   even if the handler_mutex is held.
-> 
-> - There are certain states which are 'stable' under the handler_mutex,
->   exit from that state requires also holding the handler_mutex. This
->   explains why testing the test under only the handler_mutex makes sense.
-> 
-> Thanks
-> 
-> Jason Gunthorpe (8):
->   RDMA/cma: Fix locking for the RDMA_CM_CONNECT state
->   RDMA/cma: Make the locking for automatic state transition more clear
->   RDMA/cma: Fix locking for the RDMA_CM_LISTEN state
->   RDMA/cma: Remove cma_comp()
->   RDMA/cma: Combine cma_ndev_work with cma_work
->   RDMA/cma: Remove dead code for kernel rdmacm multicast
->   RDMA/cma: Consolidate the destruction of a cma_multicast in one place
->   RDMA/cma: Fix use after free race in roce multicast join
+> In current code, in the second call of cpuidle_cooling_set_cur_state(),
+> current_state == 20, state == 30, then "if (current_state == 0 &&
+> state > 0)" is not satisfied, "else if (current_state > 0 && !state)"
+> is not satisfied either, so we just update idle_cdev->state to 30 and
+> idle_inject_set_duration to new injection cycle，but we do not call
+> idle injection code.
 
-Applied to for-next
+Ok, I think understand your question.
 
-Jason
+When the idle injection is started, a timer is periodically calling the
+function play_idle_precise() with the idle duration. This one is updated
+by idle_inject_set_duration().
+
+So when the state is changed, that changes the idle duration. At the
+next timer expiration, a few Milli seconds after, play_idle_precise()
+will be called with the new idle duration which was updated by
+idle_inject_set_duration().
+
+There is no need to stop and start the idle injection at each update.
+
+The new value is take into account automatically for the next cycle.
+
+It does not really matter if the update is delayed. Restarting the idle
+injection at each update will be worth in the cooling context than
+waiting an idle cycle.
+
+> In the example mentioned above, we should call idle injection code. If
+> idle_inject_start() takes into account by the idle injection code at
+> the new injection cycle, then just calling idle_inject_start() is ok.
+> Otherwise, we need a restart or stop->start process to execute idle
+> injection code at the new state 30.
+> 
+>>> The scenes changed is as follows,
+>>>
+>>> scene    current_state    state    action
+>>>  1              0          >0       start
+>>>  2              0          0        do nothing
+>>>  3              >0         0        stop
+>>>  4        >0 && !=state    >0       stop->start or restart
+>>>  5        >0 && ==state    >0       do nothing
+>>>
+>>> Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+>>> ---
+>>>  drivers/thermal/cpuidle_cooling.c | 10 ++++++++--
+>>>  1 file changed, 8 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/thermal/cpuidle_cooling.c
+>> b/drivers/thermal/cpuidle_cooling.c
+>>> index 78e3e8238116..868919ad3dda 100644
+>>> --- a/drivers/thermal/cpuidle_cooling.c
+>>> +++ b/drivers/thermal/cpuidle_cooling.c
+>>> @@ -113,7 +113,7 @@ static int cpuidle_cooling_get_cur_state(struct
+>>> thermal_cooling_device *cdev,
+>>>  /**
+>>>   * cpuidle_cooling_set_cur_state - Set the current cooling state
+>>>   * @cdev: the thermal cooling device
+>>> - * @state: the target state
+>>> + * @state: the target state, max value is 100
+>>>   *
+>>>   * The function checks first if we are initiating the mitigation which
+>>>   * in turn wakes up all the idle injection tasks belonging to the idle
+>>> @@ -130,6 +130,9 @@ static int cpuidle_cooling_set_cur_state(struct
+>>> thermal_cooling_device *cdev,
+>>>  	unsigned long current_state = idle_cdev->state;
+>>>  	unsigned int runtime_us, idle_duration_us;
+>>>
+>>> +	if (state > 100 || current_state == state)
+>>> +		return 0;
+>>> +
+>>>  	idle_cdev->state = state;
+>>>
+>>>  	idle_inject_get_duration(ii_dev, &runtime_us, &idle_duration_us);
+>>> @@ -140,8 +143,11 @@ static int cpuidle_cooling_set_cur_state(struct
+>>> thermal_cooling_device *cdev,
+>>>
+>>>  	if (current_state == 0 && state > 0) {
+>>>  		idle_inject_start(ii_dev);
+>>> -	} else if (current_state > 0 && !state)  {
+>>> +	} else if (current_state > 0 && !state) {
+>>>  		idle_inject_stop(ii_dev);
+>>> +	} else {
+>>> +		idle_inject_stop(ii_dev);
+>>> +		idle_inject_start(ii_dev);
+>>>  	}
+>>>
+>>>  	return 0;
+>>>
+>>
+>>
+>> --
+>> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+>>
+>> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+>> <http://twitter.com/#!/linaroorg> Twitter |
+>> <http://www.linaro.org/linaro-blog/> Blog
+> 
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
