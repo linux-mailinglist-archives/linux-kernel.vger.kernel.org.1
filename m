@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F8126D125
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CB926D144
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgIQCbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgIQCbv (ORCPT
+        id S1726129AbgIQChJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:37:09 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:31574 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725886AbgIQChH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:31:51 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E115CC061351;
-        Wed, 16 Sep 2020 19:31:50 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsLZW4rKqz9sRf;
-        Thu, 17 Sep 2020 12:31:47 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600309909;
-        bh=390y6I+DYM38qkkVXCcUkc6LlriptJwAccl9l3BvkgI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rzr9aEngQMP5agzlqO2vQstP9xUarpY7Y24jgCYeDFZjBHC00upkaKyVMt/7Ts6E3
-         kknawMhaiPzO7unlf5UbJzykgXcEmorP5ww2zMy8rYPibDJ4B35Z9y0fpordI4eqTK
-         fLUh37f8WEbc9jEEob3MumCwLVjDm+ZhabyxUldCzF5woebiskKm3VT54MaOx6mLF2
-         us904viYiCk4++CoQfxXECtBOr81Vz2deN70iHGlh3ljZg/ltBrPaSk5exWRENMJm8
-         CcmpoJJ+c1yRsLNNtWeypZgIujZ6ytZ9JxUKSxeASE2eK0aSGnBJZalC0xBn02hdZu
-         U6DI67nWLHLXg==
-Date:   Thu, 17 Sep 2020 12:31:46 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     peterz@infradead.org
-Cc:     Qian Cai <caiqian@redhat.com>, Qian Cai <cai@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 0/5] seqlock: Introduce PREEMPT_RT support
-Message-ID: <20200917123146.1ddc2f6d@canb.auug.org.au>
-In-Reply-To: <20200916130233.GS2674@hirez.programming.kicks-ass.net>
-References: <20200904153231.11994-1-a.darwish@linutronix.de>
-        <224bd11b533dd2acff3f6cce51ab4ca676eb4f9f.camel@redhat.com>
-        <20200915124817.GA127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-        <20200915143028.GB2674@hirez.programming.kicks-ass.net>
-        <32bfdec1ad4e11cfecd840e1b83d95ba2bab1abc.camel@redhat.com>
-        <20200916125402.GR2674@hirez.programming.kicks-ass.net>
-        <1750732498.13475000.1600261259894.JavaMail.zimbra@redhat.com>
-        <20200916130233.GS2674@hirez.programming.kicks-ass.net>
+        Wed, 16 Sep 2020 22:37:07 -0400
+X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:37:06 EDT
+X-UUID: b5f35bf3bcf240a48189df19bb23c453-20200917
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=55vZkGLvgoeApgdN8nM2vlO2w+ACfA3EPA25BOlXP70=;
+        b=bZSqCHxHRCTfgbe5XYPyHlPB48YAIS7XGniDa3QYe7igJJ5UHfaK9BSvttbbJGntPtI0pGBBgymqBvM2ego2yTc7UfPEPm7odDLc9RIg7pyxNnlLWOvvg2TiTw+y/rhfqfccY9WbvXyTsS0oG/U7zh3HvhKjxwsXWVOf9QJTwzM=;
+X-UUID: b5f35bf3bcf240a48189df19bb23c453-20200917
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 240590259; Thu, 17 Sep 2020 10:31:59 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 17 Sep 2020 10:31:45 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 17 Sep 2020 10:31:50 +0800
+Message-ID: <1600309910.7042.15.camel@mtkswgap22>
+Subject: Re: [PATCH v7] cpufreq: mediatek-hw: Add support for Mediatek
+ cpufreq HW driver
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     Viresh Kumar <viresh.kumar@linaro.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Thu, 17 Sep 2020 10:31:50 +0800
+In-Reply-To: <1600256353.7042.13.camel@mtkswgap22>
+References: <1599712262-8819-1-git-send-email-hector.yuan@mediatek.com>
+         <20200910050341.pgyieq3q7ijitosn@vireshk-i7>
+         <1599715851.7042.9.camel@mtkswgap22>
+         <20200910053406.t37rgioykzvk3oem@vireshk-i7>
+         <1600256353.7042.13.camel@mtkswgap22>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZJigch=EJZvUj24UONED_0g";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-TM-SNTS-SMTP: 7B895C27C73AF267B15AA01BCC80074C1740AE0C6671D6C49EB69B78158A5A792000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZJigch=EJZvUj24UONED_0g
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+SGksIFJvYiBzaXI6DQoNClNvcnJ5IHRvIGJvdGhlciB5b3UsIG1heSBJIGhhdmUgeW91ciByZXZp
+ZXcgY29tbWVudCBmb3IgdGhlIGJpbmRpbmcNCnBhcnQ/DQpBcHByZWNpYXRlZC4NCg0KT24gV2Vk
+LCAyMDIwLTA5LTE2IGF0IDE5OjM5ICswODAwLCBIZWN0b3IgWXVhbiB3cm90ZToNCj4gSGksIFJv
+YiBzaXI6DQo+IA0KPiBTb3JyeSB0byBib3RoZXIgeW91LCBtYXkgSSBoYXZlIHlvdXIgcmV2aWV3
+IGNvbW1lbnQgZm9yIHRoZSBiaW5kaW5nDQo+IHBhcnQ/DQo+IEFwcHJlY2lhdGVkLg0KPiANCj4g
+T24gVGh1LCAyMDIwLTA5LTEwIGF0IDExOjA0ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
+ID4gT24gMTAtMDktMjAsIDEzOjMwLCBIZWN0b3IgWXVhbiB3cm90ZToNCj4gPiA+IE9uIFRodSwg
+MjAyMC0wOS0xMCBhdCAxMDozMyArMDUzMCwgVmlyZXNoIEt1bWFyIHdyb3RlOg0KPiA+ID4gPiBP
+biAxMC0wOS0yMCwgMTI6MzEsIEhlY3RvciBZdWFuIHdyb3RlOg0KPiA+ID4gPiA+IFRoZSBDUFVm
+cmVxIEhXIHByZXNlbnQgaW4gc29tZSBNZWRpYXRlayBjaGlwc2V0cyBvZmZsb2FkcyB0aGUgc3Rl
+cHMgbmVjZXNzYXJ5IGZvciBjaGFuZ2luZyB0aGUgZnJlcXVlbmN5IG9mIENQVXMuIA0KPiA+ID4g
+PiA+IFRoZSBkcml2ZXIgaW1wbGVtZW50cyB0aGUgY3B1ZnJlcSBkcml2ZXIgaW50ZXJmYWNlIGZv
+ciB0aGlzIGhhcmR3YXJlIGVuZ2luZS4gDQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gVGhpcyBwYXRj
+aCBkZXBlbmRzIG9uIHRoZSBNVDY3NzkgRFRTIHBhdGNoIHN1Ym1pdHRlZCBieSBIYW5rcyBDaGVu
+DQo+ID4gPiA+ID4gIGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDIwLzgvNC8xMDk0DQo+ID4gPiA+
+IA0KPiA+ID4gPiBUaGFua3MgZm9yIGhhbmdpbmcgdGhlcmUuIExvb2tzIGdvb2QgdG8gbWUuIEkg
+d2lsbCBhcHBseSBpdCBvbmNlIFJvYg0KPiA+ID4gPiBBY2sncyB0aGUgYmluZGluZyBwYXRjaC4N
+Cj4gPiA+ID4gDQo+ID4gPiANCj4gPiA+IE1hbnkgdGhhbmtzIGZvciB5b3VyIGhlbHAuIE1heSBJ
+IGtub3cgaWYgeW91IGNhbiBhZGQgUmV2aWV3ZWQtYnkgdGFnIHRvDQo+ID4gPiB0aGlzIHBhdGNo
+IHNldC4NCj4gPiANCj4gPiBTaW5jZSB0aGlzIHBhdGNoc2V0IGlzIGdvaW5nIHRvIGdldCBtZXJn
+ZWQgdmlhIG15IHRyZWUgKEFSTSBjcHVmcmVxDQo+ID4gdHJlZSksIGEgcmV2aWV3ZWQtYnkgaXNu
+J3QgcmVxdWlyZWQgaGVyZS4gSSB3aWxsIHF1ZXVlIGl0IHVwIGZvcg0KPiA+IDUuMTAtcmMxIGFm
+dGVyIEkgcmVjZWl2ZSBhbiBBY2sgZnJvbSBSb2IuDQo+ID4gDQo+ID4gPiBJIHdvdWxkIGxpa2Ug
+dG8gcHJlcGFyZSBzb21lIHBhdGNoZXMgZm9yIG1vcmUgZmVhdHVyZXMNCj4gPiA+IGJhc2VkIG9u
+IHRoaXMuIElzIHRoYXQgb2theSB0byB5b3U/IFRoYW5rcyBhZ2Fpbi4NCj4gPiANCj4gPiBUaGF0
+IHNob3VsZCBiZSBmaW5lLg0KPiA+IA0KPiANCj4gDQoNCg==
 
-Hi all,
-
-On Wed, 16 Sep 2020 15:02:33 +0200 peterz@infradead.org wrote:
->
-> On Wed, Sep 16, 2020 at 09:00:59AM -0400, Qian Cai wrote:
-> >=20
-> >=20
-> > ----- Original Message ----- =20
-> > > On Wed, Sep 16, 2020 at 08:52:07AM -0400, Qian Cai wrote: =20
-> > > > On Tue, 2020-09-15 at 16:30 +0200, peterz@infradead.org wrote: =20
-> > > > > On Tue, Sep 15, 2020 at 08:48:17PM +0800, Boqun Feng wrote: =20
-> > > > > > I think this happened because seqcount_##lockname##_init() is d=
-efined
-> > > > > > at
-> > > > > > function rather than macro, so when the seqcount_init() gets ex=
-pand in =20
-> > > > >=20
-> > > > > Bah! I hate all this :/
-> > > > >=20
-> > > > > I suspect the below, while more verbose than I'd like is the best
-> > > > > option. =20
-> > > >=20
-> > > > Stephen, can you add this patch for now until Peter beats you to it=
-? =20
-> > >=20
-> > > Did you verify it works? I only wrote it.. =20
-> >=20
-> > Yes, I did. =20
->=20
-> Excellent, I'll stick a Tested-by from you on then.
-
-I'll add this into the tip tree merge today (unless the tip tree is
-updated in the mean time).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ZJigch=EJZvUj24UONED_0g
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9iypIACgkQAVBC80lX
-0Gy1zggAjI2K6Kl9QkLwo+d/njeP3TD356LUn4zvKepNoeRA0/Wz9TWA4gRpaTzg
-a28nOfWT3SNuuDSTxaw0/EAA6i1uBUSh0weJlsdwtO3B0Il/rzXRfJgfoCMJCd0a
-CfhIWur6ceGx4y9+JY2lTV/ua4+lxqGofqKdA1U6bpWud3t9XGtJqUFn1NVFAYNd
-1FOSw5aMISEPhiCGCH4dVTm855pgWGfH+9N5Cav75U01230Q8+ZCoMDCSdGqCrYf
-ZvVH/RD/uxtGBdrUXW4EUt4i+XliTJyaY2kZzgyADcfB3SghfwmrhOQYoXURm3vV
-iXH7/gv3r+uj+i4ZeoYnf+bsPWcf3g==
-=sfKF
------END PGP SIGNATURE-----
-
---Sig_/ZJigch=EJZvUj24UONED_0g--
