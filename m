@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5475C26DBCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B1426DBF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgIQMmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726827AbgIQMhn (ORCPT
+        id S1727053AbgIQMq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:46:29 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42774 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727003AbgIQMnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:37:43 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EDFC061788;
-        Thu, 17 Sep 2020 05:36:30 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k15so1878358wrn.10;
-        Thu, 17 Sep 2020 05:36:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MokMm/FLs+Sj4gwWG5HS9e12djHrZ+NZZNdFZk133Bw=;
-        b=kv6hNtSDH/EgEe4Lv3fdMeAGUOLl2vIXGTRRnv1t+sgzjy9N2EszgDVJ6f67TcAYIq
-         CcQ/XDWknVMZsF6DLK7wKudQiu73AT4oTN7ENefmS+B5r3kmzVP/YS57peKGs6gGHN3r
-         fpsE6rb+nbtow6xiELrmS6ad6ZlZtIdJ8nkmtGkSHlhqngaWPeI1LYjiWMAbfAtUbO9f
-         r79hxzhkR9Uw+aN8JN0Q9qpvETI41JZUOcZMK5Bz2TLcgCfIpzx6qqvkWYACKJd3Mv52
-         PEfE6GSbLEcQa9arsDNM43ux6TpFojd6SOmOh9pvGeWJ5+In2mO+fX3F2az2axQb//v3
-         21zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MokMm/FLs+Sj4gwWG5HS9e12djHrZ+NZZNdFZk133Bw=;
-        b=LNiuMLqBCXRISZq332kOJj/DvaQR3NuWj4Vh0nKDemRalt7CXTlAw8rIbZSULspAG1
-         OUJSLCUPOaHXsVBk6E+pAEdGoYbb+qIrdvp3GgQS9lJ/vcVgaHRl4tTCj2I9Dlg4ldLM
-         DxfLaaijQufnghrEXFa50D/G1slTrbS9QiPgUZIYmbiUYUnppS7ll03T0gA86Y8w+HMo
-         s7Gkz4WoZ0KKudH/moJOkYQn5r+jSkHlQ5JAcLZ5o3ThN69+FH09edkFAHxI3a9jro0u
-         23sA6v7b5sUlJuZZqbhRYJRSQFsyj2HgCEsuBbX9QMe9IHJw9LWt3n8lJWk05k/3Lbea
-         VzAA==
-X-Gm-Message-State: AOAM532inu/oymjjbb749YwUVvUG+dCQ/ykzdnuq3OBWijWpxnpHV5U9
-        Roxmuw/TMTgK9fH+kzzk280=
-X-Google-Smtp-Source: ABdhPJxRMqECTdz9dwTSLAN/7LD5KigPqG8k+BnBJy9/Ld7b0rfeUli0oPm1sdfaaHFq8YTYxpj7Zw==
-X-Received: by 2002:a5d:6407:: with SMTP id z7mr31672989wru.65.1600346189025;
-        Thu, 17 Sep 2020 05:36:29 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id a83sm10847590wmh.48.2020.09.17.05.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 05:36:27 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 14:36:26 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 09/34] i2c: tegra: Use reset_control_reset()
-Message-ID: <20200917123626.GN3515672@ulmo>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-10-digetx@gmail.com>
+        Thu, 17 Sep 2020 08:43:15 -0400
+X-Greylist: delayed 377 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:43:09 EDT
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HCaTQ6032716;
+        Thu, 17 Sep 2020 07:36:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600346189;
+        bh=vYoWYgW6dB3En0e3iIC586CdvGCOhfHOK4t+npUDGJM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=bMnfncX2TGo97mlzV5RCdKdsS0EXF4SE6ZZBh8o8TLKoPlVKdoFE0DYvg4vWG8RZh
+         Hpn/VJq4mBNNMeVp8HEK+CzhYGeMEdXBlOQbTsqBLzKWoiWFk+YDjZcFVeiNWQ/Qzu
+         Gpo6jV33Q6PeANzA7HtUhrTENZWZymF7ToInMbis=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08HCaT6V015109
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Sep 2020 07:36:29 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Sep 2020 07:36:29 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 17 Sep 2020 07:36:29 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HCaTQu011989;
+        Thu, 17 Sep 2020 07:36:29 -0500
+Date:   Thu, 17 Sep 2020 07:36:29 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Peter Rosin <peda@axentia.se>, Roger Quadros <rogerq@ti.com>,
+        <t-kristo@ti.com>, <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>
+Subject: Re: [PATCH v3 1/6] dt-bindings: mux-j7200-wiz: Add lane function
+ defines
+Message-ID: <20200917123629.ve77q7koqjlhgdhc@akan>
+References: <20200915112038.30219-1-rogerq@ti.com>
+ <20200915112038.30219-2-rogerq@ti.com>
+ <e28e98a0-f3fc-29bd-d7a6-cc45f3a69ede@axentia.se>
+ <20200916154536.m552ft2jzfsaeokr@akan>
+ <8a27f8f3-20c4-f72c-b683-81153107d867@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BxZB57hXMgIq1JsC"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200908224006.25636-10-digetx@gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <8a27f8f3-20c4-f72c-b683-81153107d867@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15:47-20200917, Kishon Vijay Abraham I wrote:
 
---BxZB57hXMgIq1JsC
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[..]
+> > Thanks, good point. I am not sure if WIZ should even be used.. It is
+> > a TI internal prefix for various serdes solutions, but I agree that
+> > SERDES0 is too generic a terminology. That said, we should cleanup
+> > include/dt-bindings/mux/mux-j721e-wiz.h as well, prior to introducing
+> > j7200 changes.
+> 
+> WIZ is defined in public TRM (https://www.ti.com/lit/pdf/spruiu1).
+> "
 
-On Wed, Sep 09, 2020 at 01:39:41AM +0300, Dmitry Osipenko wrote:
-> Use a single reset_control_reset() instead of assert/deasset couple in
-> order to make code cleaner a tad. Note that the reset_control_reset()
-> uses 1 microsecond delay instead of 2 that was used previously, but this
-> shouldn't matter because one microsecond is a default reset time for most
-> of Tegra peripherals and TRM doesn't mention anything special in regards
-> to I2C controller's reset propagation time.
->=20
-> In addition don't ignore potential error of the reset control by emitting
-> a noisy warning if it fails, which will indicate an existence of a severe
-> problem, while still allow machine to boot up.
->=20
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
+Maybe give the TRM team a feedback to use a little more human readable
+naming? if I just ctrl+f "wiz" in the 10,000 page trm the first match
+is: "CA bits can be swizzled between any bit positions via the
+DDRSS_PHY_1053[23-0] PHY_ADR_ADDR_SEL_0 field" (it is not even in the
+table of contents?)
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+However, if I search for serdes, and then go down to page 7773, "WIZ:
+The WIZ acts as a wrapper for the SerDes, and can both send control
+signals to and report status signals from the SerDes, and muxes SerDes
+to peripherals"
 
---BxZB57hXMgIq1JsC
-Content-Type: application/pgp-signature; name="signature.asc"
+just call it ti-k3-serdes-mux (since there are other TI serdes muxes..)?
 
------BEGIN PGP SIGNATURE-----
+You dont want to be on the brunt of something like [1] caused by, your's
+truely..
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jWEkACgkQ3SOs138+
-s6FGyA/+LUKSWNjlGfuwG5hN3wAKNyvo9ixbGUEqUGWGmhlRaeECx+qcVAHi1i6V
-KfmAL1PMkfpI9HgDXzZ/1HZMdHkVvEx1Vy0Eh6/iYfnFcCWDDDwwd169VcnzoZST
-uzitg/ixEnSZV4zytvdvufisoR3OeZZE1q+9kGN9tSKZfqXVz33NSvvKJFSh7/M2
-HK69K2Ho5/FxL6RG6IWe3c1dIaGSjLNjewRDjpInpKjj7qMVoi7baLL2/tbXQBTA
-0tQhR5Hokhp1R+tAZxt3BY1GxRcB150V5GOFBVRLA0TD2+wxAYcOmMbcA3yuHOCY
-T8WEP+XNvonWPaib3OwCgt/KA/JO/zjssEycONipMlMuUhyU3qPVKikR7TnJdrfy
-pT3Um5Q5X6kqi30CkBq/7+WA7zoMdtYJL1/5WvCd1eYUH0yqmsOaz+orYbP9VSdX
-lre7RUe8LoNaSawTilo2nzdiihmhgQa7WluRFWUp4dLuh8xxSYG91P4PdybRIqIr
-8inS5kTxmkr64Y1OTogXRTJStxM415vGmeSQRr78oZe/e0RzwcpbvkofUeFH4qzk
-1FLBQ+fIjtqwiEOy9B6cjOxLkRPTLAcmZuFnQujtbPTaaaDXL8HhUWS1X5Hv8wei
-M+FC5JFH8x5YVgQmjpAz03onDtVD4a2yR9eJAghHT4N53CP6H7U=
-=fenL
------END PGP SIGNATURE-----
 
---BxZB57hXMgIq1JsC--
+Also this is never going to scale with the number of devices we are
+spinning out.. one header per SoC? makes no sense to me.
+
+[1]
+https://groups.google.com/forum/#!msg/linux.kernel/fcntv48yoOc/35bAdI1eaiUJ
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
